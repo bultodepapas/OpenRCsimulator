@@ -1,0 +1,108 @@
+{
+  "base": "flight.csv",
+  "candidate": "flight.csv",
+  "differences": {
+    "angular_rate_radps": {
+      "components": {
+        "p_radps": {
+          "max_abs": 9.76158574501635e-06,
+          "rmse": 4.794024401577604e-06
+        },
+        "q_radps": {
+          "max_abs": 3.5070871320843494e-07,
+          "rmse": 2.0815909169333225e-07
+        },
+        "r_radps": {
+          "max_abs": 2.3537230882554735e-07,
+          "rmse": 1.887677837746036e-07
+        }
+      },
+      "max_abs": 9.76158574501635e-06,
+      "max_at": {
+        "component": "p_radps",
+        "t_s": 0.004166666666666667,
+        "tick": 1
+      },
+      "rmse": 2.772582036451899e-06,
+      "unit": "rad/s"
+    },
+    "position_m": {
+      "components": {
+        "down_m": {
+          "max_abs": 1.0070486666791112e-09,
+          "rmse": 4.4316700774759097e-10
+        },
+        "east_m": {
+          "max_abs": 1.4452702146172669e-08,
+          "rmse": 1.0349068217048367e-08
+        },
+        "north_m": {
+          "max_abs": 1.072869793006248e-09,
+          "rmse": 7.060135021943286e-10
+        }
+      },
+      "max_abs": 1.4452702146172669e-08,
+      "max_at": {
+        "component": "east_m",
+        "t_s": 0.03333333333333333,
+        "tick": 8
+      },
+      "rmse": 5.994388070608411e-09,
+      "unit": "m"
+    },
+    "quaternion_angle_rad": {
+      "max_abs": 1.310105443809572e-07,
+      "max_at": {
+        "t_s": 0.004166666666666667,
+        "tick": 1
+      },
+      "rmse": 8.354337637766515e-08,
+      "unit": "rad"
+    },
+    "velocity_mps": {
+      "components": {
+        "u_mps": {
+          "max_abs": 8.018776220808377e-07,
+          "rmse": 4.684638144131456e-07
+        },
+        "v_mps": {
+          "max_abs": 7.683625913301739e-08,
+          "rmse": 5.546940116516002e-08
+        },
+        "w_mps": {
+          "max_abs": 9.465057604352012e-08,
+          "rmse": 6.393378272696247e-08
+        }
+      },
+      "max_abs": 8.018776220808377e-07,
+      "max_at": {
+        "component": "u_mps",
+        "t_s": 0.06666666666666667,
+        "tick": 16
+      },
+      "rmse": 2.748470656285746e-07,
+      "unit": "m/s"
+    }
+  },
+  "first_divergence": {
+    "metrics": [
+      "position_m",
+      "velocity_mps",
+      "angular_rate_radps",
+      "quaternion_angle_rad"
+    ],
+    "t_s": 0.004166666666666667,
+    "tick": 1
+  },
+  "rows": 17,
+  "status": "ok",
+  "tick": {
+    "first": 0,
+    "last": 16
+  },
+  "time_s": {
+    "duration": 0.06666666666666667,
+    "first": 0.0,
+    "last": 0.06666666666666667
+  }
+}

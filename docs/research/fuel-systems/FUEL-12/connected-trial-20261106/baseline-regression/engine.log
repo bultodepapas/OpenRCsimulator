@@ -1,0 +1,113 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   res://data/aircraft/stik_glow_55ax_2t.json loads
+ok   glow_2t above reserve burns
+FAIL glow_2t connected trial consumes at 0.0042846
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t wet connected feed stays available
+FAIL glow_2t connected trial consumes at 0.0042846
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t wet connected feed stays available
+FAIL glow_2t connected trial consumes at 0.0042845
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t wet connected feed stays available
+FAIL glow_2t connected trial consumes at -0.0000001
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t wet connected feed stays available
+ok   glow_2t accepted starved source burns no fuel
+ok   glow_2t owner cut remains inactive
+ok   constant-flow step accepted dt=0.00833333333333
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.53198585488125, expected 1.53198585488372 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00015558721009, expected 0.00015558721009 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.02127913554469, expected 0.02127913554469 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   constant-flow step accepted dt=0.00416666666667
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.53198585488451, expected 1.53198585488372 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.000258090936, expected 0.000258090936 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.01063956777235, expected 0.01063956777235 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   constant-flow step accepted dt=0.00208333333333
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.53198585488339, expected 1.53198585488372 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00030934279895, expected 0.00030934279895 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.00531978388617, expected 0.00531978388617 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   res://data/aircraft/stik_glow_fs64v_4t.json loads
+ok   glow_4t above reserve burns
+FAIL glow_4t connected trial consumes at 0.0042846
+ok   glow_4t trial input stays read-only
+ok   glow_4t physical inventory excludes availability sentinel
+FAIL glow_4t wet connected feed stays available
+FAIL glow_4t connected trial consumes at 0.0042846
+ok   glow_4t trial input stays read-only
+ok   glow_4t physical inventory excludes availability sentinel
+FAIL glow_4t wet connected feed stays available
+FAIL glow_4t connected trial consumes at 0.0042845
+ok   glow_4t trial input stays read-only
+ok   glow_4t physical inventory excludes availability sentinel
+FAIL glow_4t wet connected feed stays available
+FAIL glow_4t connected trial consumes at -0.0000001
+ok   glow_4t trial input stays read-only
+ok   glow_4t physical inventory excludes availability sentinel
+FAIL glow_4t wet connected feed stays available
+ok   glow_4t accepted starved source burns no fuel
+ok   glow_4t owner cut remains inactive
+ok   constant-flow step accepted dt=0.00833333333333
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.25272072406116, expected 1.252720724064 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00020925922851, expected 0.00020925922851 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.00275085921885, expected 0.00275085921885 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   constant-flow step accepted dt=0.00416666666667
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.25272072406116, expected 1.252720724064 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00036241263923, expected 0.00036241263923 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.00137542960943, expected 0.00137542960943 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   constant-flow step accepted dt=0.00208333333333
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.25272072406365, expected 1.252720724064 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00043898934459, expected 0.00043898934459 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.00068771480471, expected 0.00068771480471 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   res://data/aircraft/gp_extra_300s_60.json loads
+ok   glow_2t above reserve burns
+FAIL glow_2t connected trial consumes at 0.0042846
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t connected trial consumes at 0.0042846
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t connected trial consumes at 0.0042845
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+FAIL glow_2t connected trial consumes at -0.0000001
+ok   glow_2t trial input stays read-only
+ok   glow_2t physical inventory excludes availability sentinel
+ok   glow_2t accepted starved source burns no fuel
+ok   glow_2t owner cut remains inactive
+ok   constant-flow step accepted dt=0.00833333333333
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.61861112281248, expected 1.61861112281269 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00015495571867, expected 0.00015495571867 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.0423331982032, expected 0.0423331982032 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   constant-flow step accepted dt=0.00416666666667
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.61861112281079, expected 1.61861112281269 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00026797000021, expected 0.00026797000022 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.0211665991016, expected 0.0211665991016 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+ok   constant-flow step accepted dt=0.00208333333333
+FAIL constant-flow analytic exhaustion time  got 0.00096, expected 0.0008 (tol 0.00000000002)
+ok   constant-flow chemical work  got 1.61861112281446, expected 1.61861112281269 (tol 0.0000001)
+ok   constant-flow torque impulse  got 0.00032447714099, expected 0.00032447714099 (tol 0.0000000001)
+ok   constant-flow thrust impulse  got 0.0105832995508, expected 0.0105832995508 (tol 0.0000000001)
+ok   event commits exact residue and stopped source
+glow connected trial: 110 checks, 29 failed

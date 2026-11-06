@@ -57,6 +57,15 @@ struct GlowStageResult {
 	R feed_factor = 1.0;
 };
 
+// The event locator evaluates the connected left limit even at or just past
+// the resource surface. Match GlowFlight._connected_trial_fuel exactly; never
+// add a fixed epsilon that can round back onto the unusable reserve.
+inline R glow_connected_trial_fuel(R reserve) {
+	if (!is_finite(reserve) || reserve.v < 0.0) return kNan;
+	const double next = std::nextafter(reserve.v, kInf);
+	return std::isfinite(next) ? R(next) : R(kNan);
+}
+
 // GlowFlight.properties(raw total, raw line); unlike _stage_mass_context this
 // does not first clamp the line and reconstruct total before subtracting it.
 inline LiquidMassProperties glow_raw_mass(const GlowStageModel &model, R total, R line) {
@@ -111,7 +120,7 @@ inline GlowStageTrial glow_stage_prepare(const GlowStageModel &model, const Prop
 	const double mode = std::trunc(values[18].v);
 	if (mode == 1.0 && !model.has_line && mass.main_fuel_kg.v <= model.unusable_kg.v) {
 		// Connected left limit while locating the residue boundary.
-		state.fuel_kg = model.unusable_kg + 1.0e-30;
+		state.fuel_kg = glow_connected_trial_fuel(model.unusable_kg);
 	}
 	const R rpm = maxf(0.0, values[0]);
 	const R axis[3] = {prop.has_axis ? prop.axis[0] : R(1.0), prop.has_axis ? prop.axis[1] : R(0.0),
@@ -198,7 +207,8 @@ inline GlowStageResult glow_stage_finish(const GlowStageModel &model, const Glow
 	R tank_arm[3] = {model.feed.tank_center[0] - mass.cg[0], model.feed.tank_center[1] - mass.cg[1],
 			model.feed.tank_center[2] - mass.cg[2]};
 	if (model.has_feed && trial.mode == 1.0) {
-		const R solve_fuel = maxf(trial.stage_mass.main_fuel_kg, model.unusable_kg + 1.0e-30);
+		R solve_fuel = trial.stage_mass.main_fuel_kg;
+		if (solve_fuel.v <= model.unusable_kg.v) solve_fuel = glow_connected_trial_fuel(model.unusable_kg);
 		// Flight.admission_at uses the raw lifecycle air_fraction, not the
 		// lifecycle evaluator's clamped opening.
 		const R breathing = glow_source_table_sample(model.lifecycle.source.breathing, trial.rpm);

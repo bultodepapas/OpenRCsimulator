@@ -40,7 +40,7 @@ func _checks() -> void:
 	if _states < 1 or ticks < 1:
 		_failures.append("glow stage states and ticks must be positive")
 		return
-	_report.glow_stage = {cases = [], trajectories = []}
+	_report.glow_stage = {cases = [], trajectories = [], connected_boundaries = []}
 	var scenarios: Array[Dictionary] = []
 	for label: String in ["calm", "gusty", "turbulent", "hot-high", "standard-column",
 			"spatial-gusty-v1", "spatial-thermal-soaring-v2"]:
@@ -61,6 +61,8 @@ func _checks() -> void:
 	for id: String in GLOW_AIRCRAFT:
 		for scenario: Dictionary in scenarios:
 			_check_glow_stage(id, scenario, _states)
+		if id == "stik-glow-55ax-2t":
+			_check_glow_connected_boundaries(id, scenarios[0])
 		_check_glow_trajectory(id, scenarios[[0, 2, 3, 6][index]], ticks)
 		for event_kind: String in ["exhaustion", "overheat", "stall", "cut_restart"]:
 			_check_glow_trajectory(id, scenarios[0], maxi(12, ticks), event_kind)
@@ -191,6 +193,79 @@ func _check_glow_stage(id: String, scenario: Dictionary, count: int) -> void:
 	_report.glow_stage.cases.append({name = label, states = count, finite = finite, refused = refused,
 		family = install.profile.family, feed = install.has("fuel_feed"), wheel_count = session.wheel_count()})
 	if scenario.id == "calm": _check_glow_snapshot_guards(id, config, session)
+	session.free()
+
+
+## Probe the connected left limit directly; ordinary random stages rarely land
+## on a one-ULP boundary, and matching inactive stages alone would be a false pass.
+func _check_glow_connected_boundaries(id: String, scenario: Dictionary) -> void:
+	var session := _glow_session(id, scenario.config)
+	if session == null: return
+	var install: Dictionary = session.aircraft.model.propulsion.glow
+	if not install.has("fuel_feed") or install.has("feed_line"):
+		_failures.append("connected-boundary fixture needs a main tank with optional feed and no line")
+		session.free()
+		return
+	var stock_feed: Dictionary = install.fuel_feed
+	var stock_reserve: float = float(install.unusable_fuel_kg)
+	if not is_finite(stock_reserve) or stock_reserve <= 0.0:
+		_failures.append("connected-boundary fixture needs a finite positive reserve")
+		session.free()
+		return
+	var negative_zero: float = _from_bits(PackedInt64Array([-9223372036854775808]))[0]
+	var smallest: float = _from_bits(PackedInt64Array([1]))[0]
+	var cases: Array[Dictionary] = [
+		{name = "below", reserve = stock_reserve, fuel = _from_bits(PackedInt64Array([_bits(stock_reserve) - 1]))[0]},
+		{name = "at", reserve = stock_reserve, fuel = stock_reserve},
+		{name = "above", reserve = stock_reserve, fuel = _from_bits(PackedInt64Array([_bits(stock_reserve) + 1]))[0]},
+		{name = "zero", reserve = 0.0, fuel = 0.0},
+		{name = "negative_zero", reserve = negative_zero, fuel = negative_zero},
+		{name = "below_zero", reserve = 0.0, fuel = -smallest},
+		{name = "committed_stop", reserve = stock_reserve, fuel = stock_reserve, running = false},
+	]
+	for with_feed: bool in [false, true]:
+		if with_feed: install.fuel_feed = stock_feed
+		else: install.erase("fuel_feed")
+		for item: Dictionary in cases:
+			install.unusable_fuel_kg = item.reserve
+			var config: Dictionary = GlowAdapter.config_for(session)
+			var prepared: Dictionary = _native.prepare_stage(config) if not config.is_empty() else {ok = false}
+			if not prepared.get("ok", false) or not GlowAdapter.set_context(session, _native, session.sim.aux,
+					session.sim.inputs, session.sim.time()):
+				_failures.append("connected-boundary native setup failed: %s feed=%s" % [item.name, with_feed])
+				continue
+			var values: PackedFloat64Array = session.sim.continuous.duplicate()
+			values[1] = float(item.fuel)
+			var running: bool = bool(item.get("running", true))
+			values[7] = 1.0 if running else 0.0
+			values[GlowFlight.SOURCE_MODE_INDEX] = float(GlowFlight.MODE_MAIN_TANK if running else GlowFlight.MODE_STARVED)
+			var body: PackedFloat64Array = session.sim.state.duplicate()
+			var before_calls: int = int(_native.stage_stats().get("stage_calls", 0))
+			var reference: Dictionary = GlowFlight.evaluate(body, values, session.sim.time(), session)
+			var native: Dictionary = _native.stage(body, values, session.sim.time())
+			var native_calls: int = int(_native.stage_stats().get("stage_calls", 0)) - before_calls
+			var label := "%s/feed=%s/%s" % [id, with_feed, item.name]
+			# Keep the random-stage component counts unchanged: the installation
+			# verifier requires them to equal the declared random-state totals.
+			_compare("glow_connected_boundary_stage", var_to_bytes(reference), var_to_bytes(native), [label, values])
+			var finite: bool = _glow_finite_stage(reference, values.size()) and _glow_finite_stage(native, values.size())
+			var source_ok: bool = finite and (native.derivative[1] < 0.0 and native.derivative[16] > 0.0 if running \
+				else native.derivative[1] == 0.0 and native.derivative[16] == 0.0)
+			var feed_active := true
+			if with_feed and finite and running:
+				# Current transported fuel can keep combustion active even if the feed
+				# factor is wrongly zero. Check its target separately through the rate.
+				var point: Dictionary = GlowFlight.point(session, body, values, session.sim.time())
+				var feed: Dictionary = point.get("fuel_feed", {})
+				var target: float = float(point.get("telemetry", {}).get("fuel_target_kg_s", 0.0))
+				var stopped_feed_rate: float = -values[5] / float(install.settings.fuel_transport_time_constant_s)
+				feed_active = bool(point.get("ok", false)) and float(feed.get("factor", 0.0)) > 0.0 \
+					and target > 0.0 and native.derivative[5] > stopped_feed_rate
+			if not finite or not source_ok or not feed_active or native_calls != 1:
+				_failures.append("connected-boundary stage failed %s finite=%s source=%s feed=%s calls=%d" %
+					[label, finite, source_ok, feed_active, native_calls])
+			_report.glow_stage.connected_boundaries.append({name = label, finite = finite, source_ok = source_ok,
+				feed_active = feed_active, native_stage_calls = native_calls})
 	session.free()
 
 

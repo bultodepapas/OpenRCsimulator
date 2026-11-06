@@ -1,0 +1,161 @@
+{
+  "base_commit": "cbd1aa8aef0d8d9c175d9e6a45a92b0d3922a205",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "backend": "gdscript_reference",
+  "checks": [
+    {
+      "label": "test_glow_connected_trial",
+      "report": "checks/test_glow_connected_trial/report.json"
+    },
+    {
+      "label": "test_glow_flight_physics",
+      "report": "checks/test_glow_flight_physics/report.json"
+    },
+    {
+      "label": "test_glow_lifecycle",
+      "report": "checks/test_glow_lifecycle/report.json"
+    },
+    {
+      "label": "test_glow_prepared",
+      "report": "checks/test_glow_prepared/report.json"
+    },
+    {
+      "label": "test_glow_stage_reuse",
+      "report": "checks/test_glow_stage_reuse/report.json"
+    },
+    {
+      "label": "test_glow_fuel_feed",
+      "report": "checks/test_glow_fuel_feed/report.json"
+    },
+    {
+      "label": "test_glow_session",
+      "report": "checks/test_glow_session/report.json"
+    },
+    {
+      "label": "test_glow_trace-final",
+      "report": "checks/test_glow_trace-final/report.json"
+    },
+    {
+      "label": "test_trace_metadata-final",
+      "report": "checks/test_trace_metadata-final/report.json"
+    },
+    {
+      "label": "test_fuel_event_boundaries-final",
+      "report": "checks/test_fuel_event_boundaries-final/report.json"
+    },
+    {
+      "label": "test_golden-final",
+      "report": "checks/test_golden-final/report.json"
+    },
+    {
+      "label": "final-import",
+      "report": "checks/final-import/report.json"
+    }
+  ],
+  "flights": [
+    {
+      "name": "55ax-exhaust",
+      "rows": 17,
+      "exact_complete": true,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "all_csv_numeric_rows_equal": false,
+      "max_abs_delta": {
+        "engine_rpm": 0.02898773649121722,
+        "continuous_1": 0.0,
+        "continuous_13": 0.0007399712383396317,
+        "continuous_16": 0.004530028359891913,
+        "north_m": 1.3343068872018193e-09,
+        "u_mps": 1.522882218552013e-06
+      }
+    },
+    {
+      "name": "fs64-exhaust",
+      "rows": 17,
+      "exact_complete": true,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "all_csv_numeric_rows_equal": false,
+      "max_abs_delta": {
+        "engine_rpm": 0.0005483306522364728,
+        "continuous_1": 0.0,
+        "continuous_13": 1.860345786586226e-06,
+        "continuous_16": 2.6310632339487938e-08,
+        "north_m": 1.2482530564739136e-09,
+        "u_mps": 5.169092993639879e-07
+      }
+    },
+    {
+      "name": "extra-exhaust",
+      "rows": 17,
+      "exact_complete": true,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "all_csv_numeric_rows_equal": false,
+      "max_abs_delta": {
+        "engine_rpm": 0.026970439753313258,
+        "continuous_1": 0.0,
+        "continuous_13": 0.0006227328311218527,
+        "continuous_16": 0.0038989241045368495,
+        "north_m": 1.072869793006248e-09,
+        "u_mps": 8.018776220808377e-07
+      }
+    },
+    {
+      "name": "55ax-control",
+      "rows": 17,
+      "exact_complete": true,
+      "candidate_complete": true,
+      "candidate_solver_changed": true,
+      "all_csv_numeric_rows_equal": true,
+      "max_abs_delta": {
+        "engine_rpm": 0.0,
+        "continuous_1": 0.0,
+        "continuous_13": 0.0,
+        "continuous_16": 0.0,
+        "north_m": 0.0,
+        "u_mps": 0.0
+      }
+    }
+  ],
+  "candidate_source_sha256": {
+    "app/physics/glow/flight.gd": "cd0d3f5b8ec0586fb30577ca4bf21bc74c8c81e885f439e568603dfca25c2992",
+    "app/sim/trace.gd": "2674198c02157f9dda6fb9e7b408ae87c1444a62558bd897d9d4ebaea4ee4a37",
+    "app/tests/check_atmosphere_trace.py": "d536ff69cbc34dd0bfd9216808e64046214d346b0e6318542e46693dd7be033f",
+    "app/tests/check_trimmed_flight.py": "917d98a7c95a0fe9431e56fd0bbb81fb1c29fcfe5cf48134c7d5d49f77ae5fb9",
+    "app/tests/test_trace_acceptance.py": "1a715f2acb42fed5982468b635323d4eec09b1eb583d40a03aab17099de48783",
+    "app/tests/test_glow_session.gd": "97f6e167afb65b8b6e5b8f2fb99d60ecb362d89b9876296f1d0bb17245337f5a",
+    "app/tests/test_glow_trace.gd": "d1cd25317e5f7ae6a4f47299a74cdbf90879a5bf1a50eca46c5238f4190f6bac",
+    "app/tests/test_glow_connected_trial.gd": "413ad0a5556f56549cd3d0e3225cd67d051edbf8018df61aa5460c06a110c27b",
+    "app/tests/test_glow_connected_trial.gd.uid": "22d17fe4e318845933a22404d7f0919be1f8d8d5336721ae87bd7cad9a3d6ae1",
+    "research/native-kernel/src/nk_glow_stage.hpp": "220a3c2feaccfc6dd08dbb56906402879ecd9081daf7608d4c3e0de18f913967",
+    "research/native-kernel/build.py": "a7216b06960abcbfebf786e8925db11ffefb0263ca81b7880c860b67f65e6bb7",
+    "research/native-kernel/glow_stage_oracle.gd": "29af3818d41f1743f9db547d9908ba86004190030088543bad1f25d6adaa1a52",
+    "research/glow-engines/packaged_smoke.py": "acf03fc4d2866c9128ee04e4d951bc80fc1bc249518f35da3e6ae9dbe6bd1f1f"
+  },
+  "limits": [
+    "short 16-tick exhaustion tapes and full-fill control",
+    "explicit test-only v4-to-v5 checkpoint-law migration for candidate replay",
+    "not exact candidate equivalence, physical validation, performance qualification or full CI"
+  ],
+  "native": {
+    "oracle": "native/oracle.json",
+    "build_receipt": "native/build-receipt.json",
+    "checked_report": "native/report.json",
+    "comparisons": 8046,
+    "identical": 8046,
+    "boundary_cases": 14,
+    "trajectories": 4,
+    "ticks_per_trajectory": 12,
+    "full_installation_gate": false
+  },
+  "engine_executable": ".tools/Godot_v4.8-beta2_win64_console.exe",
+  "worker_engine_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+  "source_cli_smoke": "source-cli-smoke/report.json",
+  "integration": {
+    "source_hashes_match_tested_candidate": true,
+    "checked_paths": 13,
+    "root_head_at_verification": "61fe7ba89d10f09e2daf31d5772e46d62dbb6b19"
+  }
+}

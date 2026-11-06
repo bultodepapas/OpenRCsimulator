@@ -1,0 +1,1303 @@
+{
+  "kind": "dated cross-platform optimization verification",
+  "date": "2026-11-06",
+  "source": {
+    "start_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+    "end_commit": "61fe7ba89d10f09e2daf31d5772e46d62dbb6b19",
+    "end_branch": "main",
+    "changed_paths_during_campaign": [
+      "AGENTS.md",
+      "CONTRIBUTING.md",
+      "app/tests/AGENTS.md",
+      "docs/tools/shared.md",
+      "external Audits/CONSOLIDATED-AUDITS.md",
+      "external Audits/extra-300-physics-optimization-audit-2026-11-06.md"
+    ],
+    "visible_application_and_fixture_sources_match_all_six": true,
+    "visible_source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+    "visible_source_count": 4581,
+    "main": "61fe7ba89d10f09e2daf31d5772e46d62dbb6b19",
+    "origin_main": "61fe7ba89d10f09e2daf31d5772e46d62dbb6b19",
+    "repair_ancestry": {
+      "main": {
+        "dd2c17a04": true,
+        "0fced1b46": true,
+        "3f08b7b9e": true,
+        "a1e6e66cb": true,
+        "de19806bc": true,
+        "f2084f3b8": true,
+        "e72d878b6": true
+      },
+      "origin/main": {
+        "dd2c17a04": true,
+        "0fced1b46": true,
+        "3f08b7b9e": true,
+        "a1e6e66cb": true,
+        "de19806bc": true,
+        "f2084f3b8": true,
+        "e72d878b6": true
+      }
+    }
+  },
+  "host": {
+    "os": "Windows 11 Pro",
+    "version": "10.0.26100",
+    "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "617.42",
+    "desktop_reported_size": [
+      3840,
+      2160
+    ],
+    "power_scheme_after_campaign": "Balanced",
+    "during_campaign_power_thermal_and_other_process_load": "not independently qualified",
+    "engine": "4.8.beta2.official.cafc17a19",
+    "engine_executable_sha512": "e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55",
+    "engine_pin_verified": true
+  },
+  "focused_checks": [
+    {
+      "test": "test_cloud_shadow_map",
+      "assertions": 59,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_cloud_shadow_map-f8wgzhz4/report.json",
+        "bytes": 1227,
+        "sha256": "3bd4d3e9ac4e98201c578c9eb37c60ffb47501389f5a501ba682ec3db8390420"
+      },
+      "log": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_cloud_shadow_map-f8wgzhz4/engine.log",
+        "bytes": 111,
+        "sha256": "f1f790821342a334163d32340c7de4ebb139995aa10205cf32abef59ed739bb5"
+      }
+    },
+    {
+      "test": "test_renderer_guard",
+      "assertions": 40,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_renderer_guard-zpeqd_b5/report.json",
+        "bytes": 1643,
+        "sha256": "ec449ab8aab54fae9822972967809d4b67f8e9528183b5fe0622f5f953a7e477"
+      },
+      "log": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_renderer_guard-zpeqd_b5/engine.log",
+        "bytes": 578,
+        "sha256": "2be3e2539493cd15e207d1c83c2f1b84059025a19c5a58e28530d5e588d3f81c"
+      }
+    },
+    {
+      "test": "test_reconstruction",
+      "assertions": 127,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_reconstruction-dms3fw33/report.json",
+        "bytes": 1219,
+        "sha256": "d0e23d06cc602da19a1d9181212fd3c33f91176e761316042038c8f167cc397f"
+      },
+      "log": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_reconstruction-dms3fw33/engine.log",
+        "bytes": 129,
+        "sha256": "acb9be51ffbbd0902d2a6657fe4f19f0ba2526d3b55523610c995cfefc79861a"
+      }
+    },
+    {
+      "test": "test_lake_world",
+      "assertions": 52,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_lake_world-vvp8ivha/report.json",
+        "bytes": 1205,
+        "sha256": "84616bd70d789f9010f84c426091a27c519a525bf18ebdc87f143d01103ca61d"
+      },
+      "log": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_lake_world-vvp8ivha/engine.log",
+        "bytes": 4169,
+        "sha256": "50c51cc0c47f8080be10a4e4765267fde61bbed8ddad218f01db6808961fbf95"
+      }
+    },
+    {
+      "test": "test_flight_statistics_terrain",
+      "assertions": 82,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_flight_statistics_terrain-7b2suxe8/report.json",
+        "bytes": 1263,
+        "sha256": "1eb0fc87928ad10b8ea188d8fd55c381c995e81aa0ec982efe8e89fbf77b77e3"
+      },
+      "log": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/checks/test_flight_statistics_terrain-7b2suxe8/engine.log",
+        "bytes": 294,
+        "sha256": "82e0c1ed22a20f5c25a5c902322b39a4be8707c1f76c3860c7fbc6ff3988f723"
+      }
+    }
+  ],
+  "python_reducer_tests": {
+    "command": "python -m unittest discover -s research/performance -p test_native_summary.py",
+    "ran": 79,
+    "passed": 78,
+    "skipped": 1,
+    "result": "OK",
+    "retention": "observed tool invocation output; no separate disk log"
+  },
+  "gpu_agreement": [
+    {
+      "renderer": "gl_compatibility",
+      "driver": "opengl3",
+      "passed": true,
+      "cases": 30,
+      "probe_size": [
+        512,
+        512
+      ],
+      "bounds": {
+        "detail_max_abs": 0.025,
+        "detail_mean_abs": 0.0015,
+        "max_abs": 0.05,
+        "mean_abs": 0.003
+      },
+      "source_sha256": {
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/atmosphere/shadow_map_probe.gd": "416b8aa6ce989eef7600f22248ab61674064dae2213408d99af845008cb0b12f",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "4848b724e4c7e1a1e9cb598aa1ba35ee7d12fef782f0f14199322422da9b869f",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/cloud-gpu-opengl.json",
+        "bytes": 5710,
+        "sha256": "a6afba4f2dcd38bfa5ee0998408824162fdf9e2f4ac9ebcf6900428a8d9c6037"
+      },
+      "ordinary_cases": 24,
+      "expected_blank_tile_negative_controls": 6
+    },
+    {
+      "renderer": "mobile",
+      "driver": "vulkan",
+      "passed": true,
+      "cases": 30,
+      "probe_size": [
+        512,
+        512
+      ],
+      "bounds": {
+        "detail_max_abs": 0.025,
+        "detail_mean_abs": 0.0015,
+        "max_abs": 0.05,
+        "mean_abs": 0.003
+      },
+      "source_sha256": {
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/atmosphere/shadow_map_probe.gd": "416b8aa6ce989eef7600f22248ab61674064dae2213408d99af845008cb0b12f",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "4848b724e4c7e1a1e9cb598aa1ba35ee7d12fef782f0f14199322422da9b869f",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      },
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/cloud-gpu-vulkan.json",
+        "bytes": 5721,
+        "sha256": "145c61f7944707686e1cf66d97614fe78b8e1836d914b68093fd255e3168f264"
+      },
+      "ordinary_cases": 24,
+      "expected_blank_tile_negative_controls": 6
+    }
+  ],
+  "protocol": {
+    "order": [
+      "off1",
+      "on1",
+      "on2",
+      "off2",
+      "off3",
+      "on3"
+    ],
+    "warmup_s": 10,
+    "requested_sample_s": 60,
+    "render_target_estimate": [
+      1920,
+      1080
+    ],
+    "renderer": "gl_compatibility",
+    "driver": "opengl3",
+    "reconstruction": "native",
+    "msaa": "4x",
+    "vsync": false,
+    "max_fps": 0,
+    "view": "pilot",
+    "autozoom": false,
+    "scene_detail": "medium",
+    "audio_driver": "Dummy",
+    "route": "benchmark-input-circuit",
+    "resources": "psutil 7.2.2; 1 Hz; maximum 240 samples; direct engine PID",
+    "state_input_hashing": true,
+    "observer_overhead": "not independently qualified",
+    "complete_product_route_or_display_acceptance": false
+  },
+  "campaigns": {
+    "cache-off": {
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/summary.json",
+        "bytes": 25533,
+        "sha256": "92e0862149b98fa57ebe059340d845d7e523e679ff62d394f250093596ad9b29"
+      },
+      "collection_valid": true,
+      "active_flight_qualifier_count": 3,
+      "benchmark_identity_consistent": true,
+      "performance_pass": false,
+      "performance_pass_count": 2,
+      "policy": {
+        "active_nonadvancing_interval_max_usec": 250000,
+        "minimum_runs": 3,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "p95_max_ms": 18.0,
+        "p99_max_ms": 25.0,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99
+      },
+      "campaign_reasons": [
+        "one or more runs failed an individual performance gate"
+      ]
+    },
+    "cache-on": {
+      "report": {
+        "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/summary.json",
+        "bytes": 26902,
+        "sha256": "9196050643f2201c7a7b2b2acfaed5fb8fa4c2f495ee1979869e7dd8c2153eae"
+      },
+      "collection_valid": true,
+      "active_flight_qualifier_count": 3,
+      "benchmark_identity_consistent": true,
+      "performance_pass": true,
+      "performance_pass_count": 3,
+      "policy": {
+        "active_nonadvancing_interval_max_usec": 250000,
+        "minimum_runs": 3,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "p95_max_ms": 18.0,
+        "p99_max_ms": 25.0,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99
+      },
+      "campaign_reasons": []
+    }
+  },
+  "runs": [
+    {
+      "role": "cache-off",
+      "run": 1,
+      "capture_id": "08fd6fec-ce42-4c9e-8a98-c13d9710707f",
+      "frames": 13551,
+      "fps_mean": 225.84237781974852,
+      "actual_sample_s": 60.00202500000002,
+      "metrics": {
+        "frame_ms": {
+          "max": 28.132,
+          "p50": 4.041,
+          "p95": 6.571,
+          "p99": 14.217
+        },
+        "max_frame_interval_usec": 28132,
+        "max_nonadvancing_interval_usec": 3203,
+        "sample_simulation_span_s": 60.0,
+        "sample_simulation_ticks": 14400,
+        "sample_wall_span_excluding_first_interval_s": 59.998159,
+        "simulation_wall_ratio": 1.0000306842748292,
+        "tick_wall_ratio": 1.0000306842748292
+      },
+      "performance_pass": true,
+      "source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+      "source_file_count": 4581,
+      "source_unchanged": true,
+      "violation_counts": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "effective_render": {
+        "backend": "gl_compatibility",
+        "dimension_observation_scope": "per_frame_viewport_estimate_v1",
+        "driver": "opengl3",
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider_mode_id": 0,
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "msaa_3d": 2,
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "temporal": false
+        },
+        "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR",
+        "scaling_3d_scale": 1.0,
+        "visible_rect_size": [
+          1920.0,
+          1080.0
+        ],
+        "window_size_property": [
+          1920,
+          1080
+        ]
+      },
+      "cache_effective": {
+        "ground": "disabled",
+        "sky": "disabled"
+      },
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-1.json",
+          "bytes": 90103,
+          "sha256": "ab236b64607ff17090a50f45d62a33e26d1f154b187d45bb5319c2a8fd60b1e1"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-1.log",
+          "bytes": 1040,
+          "sha256": "08ead0f7f8e9e819b8c311f658429b9dccb93d83b4e6955e3b231bcf4066bccb"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/health-run-1.json",
+          "bytes": 565912,
+          "sha256": "9e820715393e882f28c26deb53bdd52d387227bf8d46050883f8bc898f0cb1fd"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/checked-run-1.json",
+          "bytes": 3426,
+          "sha256": "734ff905cea9338b6172d6a51999ee34e96632c3b8ce09672cc24a17d57f402c"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-1.json.frames.jsonl",
+          "bytes": 2122578,
+          "sha256": "443f4b2969ea325c3aa7dd8a1f508886da44cf3adecd31c77efd899574019abf"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/checks-1/cache-off-1-gcu2czeq/resources.json",
+          "bytes": 114551,
+          "sha256": "feb6a73d8d8e2af167621ba2da6cb996fbdfcd58efbdf20c97b14ffb1216bff3"
+        }
+      ],
+      "resources": {
+        "required_coverage": "complete",
+        "measurement_status": "ok",
+        "sample_count": 92,
+        "poll_ms": {
+          "median": 0.7915000000000001,
+          "p95_nearest_rank": 1.196,
+          "max": 261.234
+        },
+        "peak_rss_bytes": 1286758400,
+        "scope": "whole process, including startup/teardown; not isolated cache memory or joined causal evidence"
+      },
+      "stream_max_write_usec": 3250
+    },
+    {
+      "role": "cache-off",
+      "run": 2,
+      "capture_id": "9b0b78cc-156c-4f29-918c-812f4bc5311f",
+      "frames": 3219,
+      "fps_mean": 53.64719335766749,
+      "actual_sample_s": 60.00313900000002,
+      "metrics": {
+        "frame_ms": {
+          "max": 259.522,
+          "p50": 21.371000000000002,
+          "p95": 27.851,
+          "p99": 30.53
+        },
+        "max_frame_interval_usec": 259522,
+        "max_nonadvancing_interval_usec": 0,
+        "sample_simulation_span_s": 59.78333333333333,
+        "sample_simulation_ticks": 14348,
+        "sample_wall_span_excluding_first_interval_s": 59.979222,
+        "simulation_wall_ratio": 0.9967340578931373,
+        "tick_wall_ratio": 0.9967340578931373
+      },
+      "performance_pass": false,
+      "source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+      "source_file_count": 4581,
+      "source_unchanged": true,
+      "violation_counts": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "effective_render": {
+        "backend": "gl_compatibility",
+        "dimension_observation_scope": "per_frame_viewport_estimate_v1",
+        "driver": "opengl3",
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider_mode_id": 0,
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "msaa_3d": 2,
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "temporal": false
+        },
+        "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR",
+        "scaling_3d_scale": 1.0,
+        "visible_rect_size": [
+          1920.0,
+          1080.0
+        ],
+        "window_size_property": [
+          1920,
+          1080
+        ]
+      },
+      "cache_effective": {
+        "ground": "disabled",
+        "sky": "disabled"
+      },
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-2.json",
+          "bytes": 90120,
+          "sha256": "e81bb233de28e6f2566134cfc0a49ab230652fbe161cdfa061a617bdde8e16fc"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-2.log",
+          "bytes": 1041,
+          "sha256": "cb882583572ac6ab00179ed60e035c5396dfc49376c3d7582094fb37b40cfcff"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/health-run-2.json",
+          "bytes": 565912,
+          "sha256": "6b836adf70be2d219077427b545e5b7b3e131bfc7f0b5e219f0351b19ad6e84d"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/checked-run-2.json",
+          "bytes": 3428,
+          "sha256": "4dba9c1cec8ddcc58c54bf953ccf89d1e7a1c18ee1eb60068f2c9b9cf9084dc4"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-2.json.frames.jsonl",
+          "bytes": 508324,
+          "sha256": "acf097047417f9e44ff2c9b4141c13642c5416090dc9c461af5b35405fe348a8"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/checks-2/cache-off-2-klw7echy/resources.json",
+          "bytes": 184886,
+          "sha256": "d61579d8ac8cda22d97cbbdaf917b4aa2eb0a474da7c0c9230eb33e6f609b43c"
+        }
+      ],
+      "resources": {
+        "required_coverage": "complete",
+        "measurement_status": "ok",
+        "sample_count": 151,
+        "poll_ms": {
+          "median": 1.489,
+          "p95_nearest_rank": 62.84,
+          "max": 6454.274
+        },
+        "peak_rss_bytes": 1228316672,
+        "scope": "whole process, including startup/teardown; not isolated cache memory or joined causal evidence"
+      },
+      "stream_max_write_usec": 231104
+    },
+    {
+      "role": "cache-off",
+      "run": 3,
+      "capture_id": "727dfc5c-8abf-4482-adaf-cff15cbee245",
+      "frames": 14035,
+      "fps_mean": 233.9119299500844,
+      "actual_sample_s": 60.001215000000194,
+      "metrics": {
+        "frame_ms": {
+          "max": 18.025,
+          "p50": 4.103,
+          "p95": 5.851,
+          "p99": 7.718
+        },
+        "max_frame_interval_usec": 18025,
+        "max_nonadvancing_interval_usec": 3216,
+        "sample_simulation_span_s": 59.99583333333332,
+        "sample_simulation_ticks": 14399,
+        "sample_wall_span_excluding_first_interval_s": 59.997079,
+        "simulation_wall_ratio": 0.9999792378781194,
+        "tick_wall_ratio": 0.9999792378781196
+      },
+      "performance_pass": true,
+      "source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+      "source_file_count": 4581,
+      "source_unchanged": true,
+      "violation_counts": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "effective_render": {
+        "backend": "gl_compatibility",
+        "dimension_observation_scope": "per_frame_viewport_estimate_v1",
+        "driver": "opengl3",
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider_mode_id": 0,
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "msaa_3d": 2,
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "temporal": false
+        },
+        "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR",
+        "scaling_3d_scale": 1.0,
+        "visible_rect_size": [
+          1920.0,
+          1080.0
+        ],
+        "window_size_property": [
+          1920,
+          1080
+        ]
+      },
+      "cache_effective": {
+        "ground": "disabled",
+        "sky": "disabled"
+      },
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-3.json",
+          "bytes": 90078,
+          "sha256": "38436098bf35a7f29e952d7d0c5a0bcd5800ad671b8ecca9fbf9c4f012effeed"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-3.log",
+          "bytes": 1039,
+          "sha256": "83acb77dd227043788c5a6aa059e31b9826fb1ff840121ecd1072faedc27248d"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/health-run-3.json",
+          "bytes": 565911,
+          "sha256": "d9ca24ae46608a5b78297d7335b4043d473a03104d55e3b1ccfcd3ffc06c755b"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/checked-run-3.json",
+          "bytes": 3423,
+          "sha256": "c4e17d5b16dd0a45d5d52827663ba196636b91af790fde994b951e3b6a92fca9"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/run-3.json.frames.jsonl",
+          "bytes": 2201532,
+          "sha256": "6e4e68d60e86925c324fc3a11498b3a94e92f92d474ebbc012228aefbbf147e1"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-off/checks-3/cache-off-3-g72cex6d/resources.json",
+          "bytes": 115741,
+          "sha256": "67e81dfe43a08b86f17f90b097d612cfc84801fb8e1676e4ee930b83cee2275f"
+        }
+      ],
+      "resources": {
+        "required_coverage": "complete",
+        "measurement_status": "ok",
+        "sample_count": 93,
+        "poll_ms": {
+          "median": 0.817,
+          "p95_nearest_rank": 1.041,
+          "max": 288.271
+        },
+        "peak_rss_bytes": 1263185920,
+        "scope": "whole process, including startup/teardown; not isolated cache memory or joined causal evidence"
+      },
+      "stream_max_write_usec": 2098
+    },
+    {
+      "role": "cache-on",
+      "run": 1,
+      "capture_id": "25f088d9-5d50-45a5-90f6-f0e81df7ee7e",
+      "frames": 11382,
+      "fps_mean": 189.69304774979963,
+      "actual_sample_s": 60.00219900000011,
+      "metrics": {
+        "frame_ms": {
+          "max": 17.787,
+          "p50": 4.5360000000000005,
+          "p95": 8.565,
+          "p99": 11.325
+        },
+        "max_frame_interval_usec": 17787,
+        "max_nonadvancing_interval_usec": 3171,
+        "sample_simulation_span_s": 60.0,
+        "sample_simulation_ticks": 14400,
+        "sample_wall_span_excluding_first_interval_s": 59.997516,
+        "simulation_wall_ratio": 1.000041401714031,
+        "tick_wall_ratio": 1.000041401714031
+      },
+      "performance_pass": true,
+      "source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+      "source_file_count": 4581,
+      "source_unchanged": true,
+      "violation_counts": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "effective_render": {
+        "backend": "gl_compatibility",
+        "dimension_observation_scope": "per_frame_viewport_estimate_v1",
+        "driver": "opengl3",
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider_mode_id": 0,
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "msaa_3d": 2,
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "temporal": false
+        },
+        "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR",
+        "scaling_3d_scale": 1.0,
+        "visible_rect_size": [
+          1920.0,
+          1080.0
+        ],
+        "window_size_property": [
+          1920,
+          1080
+        ]
+      },
+      "cache_effective": {
+        "ground": "ready",
+        "sky": "ready"
+      },
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-1.json",
+          "bytes": 90116,
+          "sha256": "ff74408c1f5dd50f1dd0891b7f2578fedeba7b56a1beb9ac4ed70d40c2ace2d6"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-1.log",
+          "bytes": 1038,
+          "sha256": "0bdc129237dda4b7d1944e66e4948a6df3fbd227b773e5518c27f1d73e0e075e"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/health-run-1.json",
+          "bytes": 566539,
+          "sha256": "2760d7746d32a24decef1b77f5c4b7aa32a710e2ec3f8682597a92b1bd9eb2df"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/checked-run-1.json",
+          "bytes": 3417,
+          "sha256": "ee3fd22672b823451692d4706030b8c85e8d617caac27a3a5680e9f07729bb06"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-1.json.frames.jsonl",
+          "bytes": 1781463,
+          "sha256": "c3b64ac65442d02eb7f7e16812a13ee4487b9ff62f164a4ae4b80682f8a22139"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/checks-1/cache-on-1-w4hbuj6m/resources.json",
+          "bytes": 118140,
+          "sha256": "190222682bb340679c62e235a4a4e80e34966e6b04881e452b8a6acecbd87426"
+        }
+      ],
+      "resources": {
+        "required_coverage": "complete",
+        "measurement_status": "ok",
+        "sample_count": 95,
+        "poll_ms": {
+          "median": 0.92,
+          "p95_nearest_rank": 1.475,
+          "max": 276.898
+        },
+        "peak_rss_bytes": 1278681088,
+        "scope": "whole process, including startup/teardown; not isolated cache memory or joined causal evidence"
+      },
+      "stream_max_write_usec": 3197
+    },
+    {
+      "role": "cache-on",
+      "run": 2,
+      "capture_id": "9a19769b-1dea-42d0-9daa-1be134f53d24",
+      "frames": 14044,
+      "fps_mean": 234.05517845832378,
+      "actual_sample_s": 60.002945000000054,
+      "metrics": {
+        "frame_ms": {
+          "max": 17.299,
+          "p50": 4.013,
+          "p95": 6.539,
+          "p99": 8.855
+        },
+        "max_frame_interval_usec": 17299,
+        "max_nonadvancing_interval_usec": 3188,
+        "sample_simulation_span_s": 59.99999999999999,
+        "sample_simulation_ticks": 14400,
+        "sample_wall_span_excluding_first_interval_s": 59.998447,
+        "simulation_wall_ratio": 1.0000258840032976,
+        "tick_wall_ratio": 1.0000258840032976
+      },
+      "performance_pass": true,
+      "source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+      "source_file_count": 4581,
+      "source_unchanged": true,
+      "violation_counts": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "effective_render": {
+        "backend": "gl_compatibility",
+        "dimension_observation_scope": "per_frame_viewport_estimate_v1",
+        "driver": "opengl3",
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider_mode_id": 0,
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "msaa_3d": 2,
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "temporal": false
+        },
+        "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR",
+        "scaling_3d_scale": 1.0,
+        "visible_rect_size": [
+          1920.0,
+          1080.0
+        ],
+        "window_size_property": [
+          1920,
+          1080
+        ]
+      },
+      "cache_effective": {
+        "ground": "ready",
+        "sky": "ready"
+      },
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-2.json",
+          "bytes": 90110,
+          "sha256": "e3dd4e1568c9489062f53a6942df4a1cf2ff7aa08cae6c254a79ee747e2f79a9"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-2.log",
+          "bytes": 1037,
+          "sha256": "600c8aa58c45894acec58d2e531c917027cb3d117129e1d4352eb1e5da03e254"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/health-run-2.json",
+          "bytes": 566541,
+          "sha256": "71beb6f0d37e69d1c74c41601e229405a9dea25002ad62af2736014c0332a2c4"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/checked-run-2.json",
+          "bytes": 3420,
+          "sha256": "6baea12d620c1a23576e0ad2309d66c73dc6485389727e11da4e6183eead94f6"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-2.json.frames.jsonl",
+          "bytes": 2200406,
+          "sha256": "e2d3c3faadf3845818bf84b469cbdff4236b041aa4da91ff22cc833f59503eb8"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/checks-2/cache-on-2-yqzqye88/resources.json",
+          "bytes": 120542,
+          "sha256": "529a2152e4d069f56d02daba8792aaa9ab5593963ec79780d42250f40732383a"
+        }
+      ],
+      "resources": {
+        "required_coverage": "complete",
+        "measurement_status": "ok",
+        "sample_count": 97,
+        "poll_ms": {
+          "median": 0.865,
+          "p95_nearest_rank": 1.291,
+          "max": 347.283
+        },
+        "peak_rss_bytes": 1316999168,
+        "scope": "whole process, including startup/teardown; not isolated cache memory or joined causal evidence"
+      },
+      "stream_max_write_usec": 2325
+    },
+    {
+      "role": "cache-on",
+      "run": 3,
+      "capture_id": "404791b8-c543-4984-b5c7-9e8f1d192798",
+      "frames": 12316,
+      "fps_mean": 205.25335598653174,
+      "actual_sample_s": 60.00389099999977,
+      "metrics": {
+        "frame_ms": {
+          "max": 14.373999999999999,
+          "p50": 4.555,
+          "p95": 6.881,
+          "p99": 9.293
+        },
+        "max_frame_interval_usec": 14374,
+        "max_nonadvancing_interval_usec": 3201,
+        "sample_simulation_span_s": 60.0,
+        "sample_simulation_ticks": 14400,
+        "sample_wall_span_excluding_first_interval_s": 59.999263,
+        "simulation_wall_ratio": 1.0000122834842156,
+        "tick_wall_ratio": 1.0000122834842156
+      },
+      "performance_pass": true,
+      "source_digest": "7ba3ee07d9cab49c5d57522201f1759a83de6d5093de46b2e02ce4e9ba890b9c",
+      "source_file_count": 4581,
+      "source_unchanged": true,
+      "violation_counts": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "effective_render": {
+        "backend": "gl_compatibility",
+        "dimension_observation_scope": "per_frame_viewport_estimate_v1",
+        "driver": "opengl3",
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+        "output_size": [
+          1920,
+          1080
+        ],
+        "output_size_scope": "viewport_render_target_estimate_v1",
+        "provider_mode_id": 0,
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "msaa_3d": 2,
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "temporal": false
+        },
+        "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR",
+        "scaling_3d_scale": 1.0,
+        "visible_rect_size": [
+          1920.0,
+          1080.0
+        ],
+        "window_size_property": [
+          1920,
+          1080
+        ]
+      },
+      "cache_effective": {
+        "ground": "ready",
+        "sky": "ready"
+      },
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-3.json",
+          "bytes": 90053,
+          "sha256": "4856f2d52000876d614cd116f9dcb15c40a4978699cb472c0371d488de0a7339"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-3.log",
+          "bytes": 1037,
+          "sha256": "519255403118406c48460902c9e53e545e1461ceeb7a6fb9cf10b4380940c9c0"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/health-run-3.json",
+          "bytes": 566530,
+          "sha256": "2d4073f316cc5dc86463404be31d4772f0b56779328036ecfda254394b6cae4d"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/checked-run-3.json",
+          "bytes": 3417,
+          "sha256": "fa4cda17b2af1ae06517bff49b91fb88904c303bbe904f7f187e57c084113589"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/run-3.json.frames.jsonl",
+          "bytes": 1930275,
+          "sha256": "66b30d0f1671c4bf6177e9e90ec265af66a95086be2b3c39396b9ed16d479684"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/campaign/cache-on/checks-3/cache-on-3-zo1s4l7t/resources.json",
+          "bytes": 114522,
+          "sha256": "171380b64b945e1b0f427a7b7f6688d2e1a9bfaef8557ddc743700f98179ae7e"
+        }
+      ],
+      "resources": {
+        "required_coverage": "complete",
+        "measurement_status": "ok",
+        "sample_count": 92,
+        "poll_ms": {
+          "median": 0.904,
+          "p95_nearest_rank": 1.12,
+          "max": 280.747
+        },
+        "peak_rss_bytes": 1222049792,
+        "scope": "whole process, including startup/teardown; not isolated cache memory or joined causal evidence"
+      },
+      "stream_max_write_usec": 1988
+    }
+  ],
+  "pairs": [
+    {
+      "pair": 1,
+      "off_fps": 225.84237781974852,
+      "on_fps": 189.69304774979963,
+      "fps_change_percent": -16.006442377612906,
+      "scope": "descriptive only; direction changes and large within-role variation prevent a portable gain claim"
+    },
+    {
+      "pair": 2,
+      "off_fps": 53.64719335766749,
+      "on_fps": 234.05517845832378,
+      "fps_change_percent": 336.28597100666707,
+      "scope": "descriptive only; direction changes and large within-role variation prevent a portable gain claim"
+    },
+    {
+      "pair": 3,
+      "off_fps": 233.9119299500844,
+      "on_fps": 205.25335598653174,
+      "fps_change_percent": -12.251865037267773,
+      "scope": "descriptive only; direction changes and large within-role variation prevent a portable gain claim"
+    }
+  ],
+  "complete_state_input_hash_windows_equal_all_six": [
+    {
+      "end_tick": 6000,
+      "sha256": "65962c214d296d6c376f8d4988d82514c21233e3457d878064a7d91610a0c5ff",
+      "start_tick": 1
+    },
+    {
+      "end_tick": 12000,
+      "sha256": "0cf1b20b3b9fb953c2bf35ddc734eaa7b2f302074f7e663b3e04e7689ca65e76",
+      "start_tick": 6001
+    }
+  ],
+  "partial_hash_windows_compared": false,
+  "preliminary": [
+    {
+      "role": "cache-off",
+      "complete": false,
+      "failure": "simulation paused during flight",
+      "violations": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 1,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 1,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "campaign_included": false,
+      "reason": "focus-loss incomplete prefix",
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off/run-1.json",
+          "bytes": 88593,
+          "sha256": "4d1562ac56dda34de6993d113f75fb1d7aaecbae92ca71f3f3f03b42e7247264"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off/run-1.log",
+          "bytes": 1019,
+          "sha256": "44d8a894e6bfaad97173d00393d0d9d3c0f5b700919b2a4d35c0d1a273379735"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off/checked-run-1.json",
+          "bytes": 3395,
+          "sha256": "b7d9fa1219e5e6122bb095f5152c9bf272c0964895ecb65a4c529569fdd48b3e"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off/health-run-1.json",
+          "bytes": 546629,
+          "sha256": "8fb85454be0b84adf56cc59b59a2de1489c1c08a4422e77dcb478f2edb292bba"
+        }
+      ]
+    },
+    {
+      "role": "cache-off-retry",
+      "complete": true,
+      "failure": "",
+      "violations": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 0,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 0,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "campaign_included": false,
+      "reason": "separate preliminary single run, before the fresh controlled block",
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off-retry/run-1.json",
+          "bytes": 90086,
+          "sha256": "29109cb36e004bcef7c8c44e4d4f9141cd0bbfdba6e36b8c669b804e49726567"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off-retry/run-1.log",
+          "bytes": 1035,
+          "sha256": "3949b8de7111925df699a2b21cd5f1958248ff6d9f9ef243127fe49d7619def1"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off-retry/checked-run-1.json",
+          "bytes": 3431,
+          "sha256": "bd0228f92573cee2dc10d7eb9cfad51a1656dd273eba24cf19f5fb557a829591"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-off-retry/health-run-1.json",
+          "bytes": 565897,
+          "sha256": "c5315bca4550d5cfa7b2222ee513135a19ab882e577f7d61743c18039db33035"
+        }
+      ]
+    },
+    {
+      "role": "cache-on",
+      "complete": false,
+      "failure": "simulation paused during flight",
+      "violations": {
+        "contact": 0,
+        "crash": 0,
+        "fault": 0,
+        "focus_loss": 1,
+        "hold": 0,
+        "input_ownership": 0,
+        "nonfinite": 0,
+        "observation_overflow": 0,
+        "pause": 1,
+        "pilot_failure": 0,
+        "prop_strike": 0,
+        "tick_discontinuity": 0
+      },
+      "campaign_included": false,
+      "reason": "focus-loss incomplete prefix",
+      "artifacts": [
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-on/run-1.json",
+          "bytes": 90156,
+          "sha256": "4515dd6d5aa0112b48c791962e0c8f8782930602bb9a113bc38aa428de077752"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-on/run-1.log",
+          "bytes": 1023,
+          "sha256": "0b5d263f369a2d8c49d08399c4361a5a0bb2dbd7de4e612c8038dc08116cab85"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-on/checked-run-1.json",
+          "bytes": 3389,
+          "sha256": "0434bd0f832d61f8bbf721f93405a86da31cd4514ce5157201b002f586247a05"
+        },
+        {
+          "path": "tmp/cross-platform-cloud-20261106-r1/cache-on/health-run-1.json",
+          "bytes": 563615,
+          "sha256": "8ef675920b5a8dca9516dab40ea8045ab73622fa691bc9910119f63b9f677169"
+        }
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "path": "tmp/cross-platform-cloud-20261106-r1/slow-off-diagnosis.json",
+      "bytes": 18829,
+      "sha256": "bca102a74dfe1085cb35c5ee48bb41051c69a63f16d9eceed3485c1cc86385cc"
+    },
+    {
+      "path": "tmp/cross-platform-cloud-20261106-r1/fast-off-diagnosis.json",
+      "bytes": 15464,
+      "sha256": "d38d67b9d32cefc7e55b2012ba8e00a86d780f29450292d5a32cedd5852ff74e"
+    }
+  ],
+  "verdict": {
+    "shared_path_software_checks": "pass",
+    "default_cache_on_short_pacing_campaign": "pass",
+    "cache_off_short_pacing_campaign": "fail; run 2 misses p95 and p99",
+    "comparative_optimization_gain": "inconclusive; do not average out or discard slow baseline",
+    "slow_baseline_cause": "unattributed; GPU timings unavailable and OS polling not causally joined",
+    "runtime_changes": "none",
+    "defaults": "unchanged",
+    "full_CI_sustained_package_physical_or_motion_acceptance": "not claimed"
+  }
+}

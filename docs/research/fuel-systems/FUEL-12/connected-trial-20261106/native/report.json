@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5b71b1a8-bb82-4221-877f-11edaf30f5e1",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace/app",
+    "--script",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace/research/native-kernel/glow_stage_oracle.gd",
+    "--",
+    "--extension=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace/tmp/native-kernel/openrc_native_kernel.gdextension",
+    "--output=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace/tmp/native-kernel/glow-stage-20261106T180937045425Z.json",
+    "--seed=20261027",
+    "--states=48",
+    "--variant-states=1",
+    "--timing-rounds=0",
+    "--ticks=1"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace",
+  "started_utc": "2026-11-06T18:09:37.177922+00:00",
+  "label": "nk3-glow-stage",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace/tmp/native-kernel/checks/glow-stage-4oyji_8k/nk3-glow-stage-g8tm96ee/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/glow-connected-f4/workspace/tmp/native-kernel/checks/glow-stage-4oyji_8k/nk3-glow-stage-g8tm96ee/report.json",
+  "timeout_seconds": 900.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 55.47803,
+  "log_bytes": 12411,
+  "log_sha256": "85665782ce71829cfd0a7b272f65e1a7432d2373ad9e5375b06d0359c7d6d690"
+}

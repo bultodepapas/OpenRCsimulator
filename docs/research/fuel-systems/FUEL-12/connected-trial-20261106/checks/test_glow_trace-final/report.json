@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a75edabc-1c66-4399-aad9-485eabce25b7",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_glow_trace.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\glow-connected-f4\\workspace",
+  "started_utc": "2026-11-06T18:06:11.256667+00:00",
+  "label": "test_glow_trace-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\glow-connected-f4\\candidate-checks\\test_glow_trace-final-a8n1pqku\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\glow-connected-f4\\candidate-checks\\test_glow_trace-final-a8n1pqku\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.375,
+  "log_bytes": 491,
+  "log_sha256": "8a46b076120242486681f89cbbc94826e9f40c859b34a3c2d7ae3077eae2ddfa"
+}

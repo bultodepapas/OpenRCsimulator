@@ -27,13 +27,23 @@ const MODE_FEED_LINE := 2
 ## Fixed-point passes and tolerance for the initial needled fuel-transport seed (fuel_feed installations).
 const SEED_PASSES := 8
 const SEED_TOLERANCE := 1.0e-15
-const LAW := "glow-mean-cycle-carburettor-v4"
+const LAW := "glow-mean-cycle-connected-fuel-v5"
 const CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const EVALUATOR_META := &"_glow_prepared_evaluator"
 const PROPELLER_EVALUATOR_META := &"_glow_prepared_propeller"
 const VIBRATION_EVALUATOR_META := &"_glow_source_vibration"
 const EVALUATOR_IDENTITY_META := &"_glow_prepared_identity"
+
+## Availability only: keep a connected trial above its reserve until the event commits.
+## A fixed epsilon can round back to the reserve. Never store this sentinel in inventory.
+static func _connected_trial_fuel(reserve: float) -> float:
+	if not is_finite(reserve) or reserve < 0.0: return NAN
+	var bytes := PackedFloat64Array([reserve]).to_byte_array()
+	# Both signed zeros must advance to the smallest positive subnormal.
+	bytes.encode_u64(0, 1 if reserve == 0.0 else bytes.decode_u64(0) + 1)
+	var successor: float = bytes.decode_double(0)
+	return successor if is_finite(successor) else NAN
 
 ## NITRO-06: the charge per cycle the carburettor admits at this barrel opening and speed, relative to wide open.
 static func admission_at(install: Dictionary, opening: float, rpm: float) -> float:
@@ -456,7 +466,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	line_fuel=float(mass_context.line_fuel_kg)
 	if mode==MODE_MAIN_TANK and not install.has("feed_line") and main_fuel<=install.unusable_fuel_kg:
 		# Keep the connected left-limit source active while localizing the fixed tank residue.
-		state.fuel_kg=install.unusable_fuel_kg+1.0e-30
+		state.fuel_kg=_connected_trial_fuel(install.unusable_fuel_kg)
 	var lifecycle_floor: float=0.0 if install.has("feed_line") else install.unusable_fuel_kg
 	if install.has("fuel_feed"):
 		airframe=_airframe(owner,body,values,air,hub_air,rpm,load,density)
@@ -468,7 +478,9 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		var omega: PackedFloat64Array=body.slice(RB.RATE,RB.RATE+3)
 		var pickup: PackedFloat64Array=install.get("pickup_position",PackedFloat64Array()) \
 			if mode==MODE_MAIN_TANK else PackedFloat64Array()
-		var solve_fuel: float=maxf(main_fuel,install.unusable_fuel_kg+1.0e-30)
+		var solve_fuel: float=main_fuel
+		if main_fuel<=install.unusable_fuel_kg:
+			solve_fuel=_connected_trial_fuel(install.unusable_fuel_kg)
 		var solve_admission: float=admission_at(install,state.air_fraction,rpm)
 		var feed_context: Dictionary=FuelFeed.prepare_factor_context(install.fuel_feed,solve_fuel,
 			install.capacity_fuel_kg,install.unusable_fuel_kg,solve_admission,rpm,

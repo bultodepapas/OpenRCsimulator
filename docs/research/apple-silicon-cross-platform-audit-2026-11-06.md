@@ -2,6 +2,8 @@
 
 Reviewed **2026-11-06**. Documentation-only audit under DT-MAC-00-R4 / VQ-01c, with SF/NK/FL ownership retained for simulation and recording.
 
+**Execution follow-up, 2026-11-06:** the branch-only repairs below are now integrated into `main` through `cbd1aa8ae` (PR #8). Native Windows checks and six 1080p render-target timing runs are recorded in [section 7](#7-native-windows-follow-up-2026-11-06). The default cache-on path passed its short software pacing campaign; a comparative speedup remains inconclusive. Runtime defaults were not changed.
+
 **Conclusion:** most recent Apple Silicon work that removes application work is already in shared game code. Windows and Linux already take those paths where the relevant effect is active. The useful next delivery is to integrate the remaining correctness repairs, measure these shared changes on non-Apple hardware, and selectively extend the existing graphics policy. There is no separate Mac shader implementation that needs copying into the general game.
 
 “Already implemented” below means present in the inspected source, not a demonstrated speedup on every platform or inclusion in every downloadable build.
@@ -14,7 +16,7 @@ Reviewed **2026-11-06**. Documentation-only audit under DT-MAC-00-R4 / VQ-01c, w
 - Existing uncommitted `app/sim/flight_session.gd` changes and the untracked `test_downwash_air_reuse.gd` / UID are separate work. They were preserved and are not counted as delivered optimization.
 - Method: retained evidence, current source inspection, commit diffs and ancestry checks. Graph discovery lacked several recent symbols, so direct source reads were used for those paths. No new runtime benchmark, Mac session, engine build or physics experiment was run.
 
-The [Apple master plan](../plans/apple-silicon-performance.md), [global performance plan](../plans/global-performance-visual-quality.md) and [optimization priorities](../plans/optimization-priorities.md) remain the operating/planning authorities. This report is a dated portability assessment, not another implementation plan. Older sections of the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) retain historical beta1/default-renderer statements. The priorities document also retains superseded “M1 unmeasured” and Stik-only native-scope statements. Current source, the [NK-3 guide](../../research/native-kernel/README.md) and later [R4 evidence](desktop-delivery-investigations/DT-MAC-00-R4/README.md) determine present status.
+The [Apple master plan](../plans/apple-silicon-performance.md), [global performance plan](../plans/global-performance-visual-quality.md) and [optimization priorities](../plans/optimization-priorities.md) remain the operating/planning authorities. This report is a dated portability assessment, not another implementation plan. Older sections of the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) retain historical beta1/default-renderer statements. The priorities document's superseded “M1 unmeasured” and Stik-only native-scope entries were corrected during the section 7 follow-up. Current source, the [NK-3 guide](../../research/native-kernel/README.md) and later [R4 evidence](desktop-delivery-investigations/DT-MAC-00-R4/README.md) determine present status.
 
 ## 1. Optimizations already shared
 
@@ -46,7 +48,7 @@ In particular, “Auto” being visible on Windows/Linux does **not** mean it al
 
 **Native physics is a separate boundary.** [NativeStage._load_library](../../app/sim/native_stage.gd) explicitly rejects platforms other than Linux x86_64 and verifies engine, library and source receipts. NK-3's current scope is broader than the old Stik-only descriptions, but its historical fleet results and current exclusions must be read in the [native guide](../../research/native-kernel/README.md). There is no completed ARM64 evaluator to import. An ARM port requires a math/toolchain strategy, reference equivalence, lifecycle, packaging and admission evidence; requesting `native` does not prove the current session actually uses it. The shared GDScript optimizations already benefit reference sessions on Mac and Windows.
 
-## 3. Integration is different from release inclusion
+## 3. Original integration snapshot versus release inclusion
 
 Commit ancestry was checked locally. “Yes” means the commit is in that ref's history; it does not verify the bytes of a downloaded package.
 
@@ -83,7 +85,7 @@ For an older release branch missing the cloud/shoreline work, carry the implemen
 
 ## 5. Recommended sequence for the general game
 
-These are engineering priorities, not measured future speedups or new track IDs.
+These are the original engineering priorities, not measured future speedups or new track IDs. Item 1 was subsequently completed by PR #8; section 7 records the first bounded Windows work on item 2.
 
 1. **Integrate the missing repairs first — DT/PT/VQ/LU/UI-FS.** Review the branch gaps above, including tests and dependencies. Keep cloud analytic fallback, transactional lake publication, composed-terrain observer bounds and durable provider recovery. This is the highest-confidence import work; its benefit is correctness and dependable measurement.
 2. **Qualify the already-shared changes at actual 1920×1080 — VQ-01c / DT.** Use the existing sustained fixture, reducers, area checkers and debug bridge. Compare one mechanism at a time on a named Windows/Linux target, with the same renderer/profile, aircraft, input circuit, scenery, MSAA and VSync policy. Include a lower-memory/integrated GPU when available; an RTX 3090 cannot establish that floor. Measure cache-on/off separately for ground and sky, first-bake/loading cost, steady memory, sky-tail latency and moving-aircraft readability. Rollback D1 requires the matching geometry/shader baseline, not just a uniform switch.
@@ -101,3 +103,41 @@ The corrected `de19806bc` M1 campaign used attribute-aware checkout bytes, Godot
 Older raw-blob exports bypassed checkout EOL attributes and caused descriptor-integrity failures. Their reports explicitly restrict them to the nonstock snapshots; the corrected reruns take precedence for checkout-level conclusions. Likewise, earlier single profiled GPU runs are useful attribution evidence, not substitutes for current unprofiled paired campaigns.
 
 This review therefore supports **shared implementation and a concrete integration backlog**. It does not establish a new cross-platform FPS gain, current full-suite pass, downloaded-package integrity, physical flight validation or moving-aircraft acceptance. Report links and whitespace are checked separately; runtime files remain unchanged by this task.
+
+## 7. Native Windows follow-up, 2026-11-06
+
+The user requested continuation beyond the source audit. The remaining practical step was to verify the existing shared implementation on Windows. No missing application port was found, and no speculative renderer, reconstruction, MSAA or physics change was introduced.
+
+**Integration is complete for the listed repairs.** Work began at `8e5f2f0ba`; during collection, PR #8 merged into `main`, followed by an unrelated audit commit. At the final integration check, both local `main` and `origin/main` were `61fe7ba89`. Every repair listed as absent from `main` in section 3 is now an ancestor of both refs. This integration occurred independently of these checks; no merge or publication was performed by this verification task. The release-tag inclusion table remains a historical statement about `v0.1.10`.
+
+**Identity and method.** Windows 11 Pro 26100, Ryzen 9 5900X, RTX 3090, NVIDIA 617.42, and the SHA-512-verified official Godot 4.8-beta2 Windows executable. The existing sustained-flight fixture ran six fresh processes in order **off/on, on/off, off/on**, with 10 s warmup and 60 s collection. Both ground and sky caches were explicitly disabled or enabled together; density bounds stayed off. Standard/OpenGL, Native reconstruction, 4× MSAA, Medium scenery, pilot view, calm reference Stik circuit, hashing, Dummy audio and 1 Hz resource sampling were held fixed. VSync was disabled for throughput comparison.
+
+All six receipts observed a **1920×1080 viewport/render-target estimate**, unchanged configuration, render-server progress, and no focus/pause/contact/fault violations. They share all **4,581 visible application/fixture input hashes** and both complete state/input/auxiliary hash windows, ticks 1–6,000 and 6,001–12,000. Different final partial windows were excluded from equality claims. Concurrent commits changed documentation/instructions only. Imported-cache identity, physical presentation, the full product route and whole-observer overhead remain outside this qualification.
+
+| Check | Result |
+| --- | --- |
+| Pinned editor import | Passed |
+| Cloud lifecycle, renderer guard, reconstruction, lake world, statistics terrain | **360 assertions passed** across five existing suites; one intentional renderer-guard write-failure warning |
+| Native cloud-density probe, Compatibility/OpenGL | **30 cases passed:** 24 ordinary cases plus six blank-texture controls that correctly detected failure |
+| Same probe, Mobile/Vulkan | **30 cases passed**, with the original density bounds unchanged |
+| Native frame reducer regressions | 79 tests run: 78 passed, one optional engine-path test skipped |
+| Six flight captures | All collection-valid and active-flight eligible; source/configuration identities consistent |
+
+The numerical GPU probes exercise canvas, spatial and sky consumers at 512². They do not establish exact image equivalence, motion readability or 1080p performance by themselves.
+
+| Collection order | Cache | Mean process-loop FPS | p95 / p99 frame interval (ms) | Individual software pacing gate |
+| --- | --- | ---: | ---: | --- |
+| 1 | Off, repeat 1 | 225.84 | 6.571 / 14.217 | Pass |
+| 2 | On, repeat 1 | 189.69 | 8.565 / 11.325 | Pass |
+| 3 | On, repeat 2 | 234.06 | 6.539 / 8.855 | Pass |
+| 4 | Off, repeat 2 | 53.65 | 27.851 / 30.530 | Fail: p95 and p99 |
+| 5 | Off, repeat 3 | 233.91 | 5.851 / 7.718 | Pass |
+| 6 | On, repeat 3 | 205.25 | 6.881 / 9.293 | Pass |
+
+**Decision:** retain the current shared default. Cache-on passed all three short software pacing runs; cache-off passed two. However, paired mean-FPS differences were **−16.0%, +336.3%, −12.3%**. The sign reversal and large within-baseline variation do not support a reliable comparative gain, nor a global rollback of the cache. Neither average the slow baseline away nor use it to claim an enormous speedup. The next performance investigation should isolate the source of this variation and measurement overhead before considering a graphics-policy change.
+
+The existing frame-diagnosis tool found 2,255 over-budget intervals and a 259.522 ms maximum in the slow off run, versus one over-budget interval and an 18.025 ms maximum in off repeat 3. GPU times were unavailable. The slow run also had a 231.104 ms maximum synchronous stream write and unusually slow OS polling: 62.840 ms p95, with a 6.454 s first poll during startup. These are diagnostic leads, not joined causal evidence; startup polling cannot by itself explain a measured-frame hitch or the sustained slowdown. Resource sampling completed, but neither those process-wide RAM readings nor this short campaign establishes cache memory cost or a leak-free plateau.
+
+Before the fresh six-run block, one off and one on attempt lost focus, paused and produced incomplete captures. They remain explicitly rejected. A separate valid preliminary off run is also excluded from the fresh block. No failure threshold, focus safety, duration or numerical tolerance was relaxed.
+
+[Compact evidence and raw-artifact hashes](apple-silicon-cross-platform-checks-2026-11-06.json) retain source/engine identities, per-run metrics, reducer verdicts, resource context and failed-attempt records. Raw logs and streams remain under ignored `tmp/cross-platform-cloud-20261106-r1/`; no images were added. The full app/visual CI, VSync pacing, 30-minute soak, final-package acceptance, other GPUs and moving-aircraft review remain unclaimed. All task-owned Godot processes finished before reduction.

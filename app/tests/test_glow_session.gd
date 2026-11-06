@@ -36,6 +36,8 @@ func _initialize():
 		var legacy_law: Dictionary=snapshot.duplicate(true)
 		legacy_law.glow_law="glow-mean-cycle-finite-tank-fixed-datum-v1"
 		check(id+" pre-hub-inflow law checkpoint rejected",not f.restore_checkpoint(legacy_law))
+		legacy_law.glow_law="glow-mean-cycle-carburettor-v4"
+		check(id+" pre-connected-fuel law checkpoint rejected",not f.restore_checkpoint(legacy_law))
 		var observed: Dictionary=f.glow_state()
 		check(id+" source vibration is a constant-speed inertial estimate",observed.source_vibration.ok
 			and observed.source_vibration.constant_speed_assumption and observed.source_vibration.order_1x_force_peak_n>0.

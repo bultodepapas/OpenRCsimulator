@@ -62,6 +62,7 @@ GLOW_COLUMNS_V3 = GLOW_COLUMNS + ['glow_line_fuel_kg', 'glow_fuel_source_mode']
 GLOW_LAW_V2 = 'glow-mean-cycle-finite-tank-hub-inflow-v2'
 GLOW_LAW_V3 = 'glow-mean-cycle-finite-tank-line-pickup-v3'
 GLOW_LAW_V4 = 'glow-mean-cycle-carburettor-v4'
+GLOW_LAW_V5 = 'glow-mean-cycle-connected-fuel-v5'
 GLOW_TRACE_SCHEMA_V1 = 'openrc-glow-trace v1'
 GLOW_TRACE_SCHEMA_V2 = 'openrc-glow-trace v2'
 GLOW_LAYOUT_V2 = ('rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; '
@@ -521,8 +522,8 @@ def _glow_start_contract(metadata, wheel_claim):
         columns = GLOW_COLUMNS_V2
         line_layout = False
     elif schema == GLOW_TRACE_SCHEMA_V2:
-        state_size, laws, flight_schema = 19, (GLOW_LAW_V3, GLOW_LAW_V4), 'openrc-flight-meta v10'
-        layout = GLOW_LAYOUT_V4 if metadata.get('propulsion_model') == GLOW_LAW_V4 else GLOW_LAYOUT_V3
+        state_size, laws, flight_schema = 19, (GLOW_LAW_V3, GLOW_LAW_V4, GLOW_LAW_V5), 'openrc-flight-meta v10'
+        layout = GLOW_LAYOUT_V4 if metadata.get('propulsion_model') in (GLOW_LAW_V4, GLOW_LAW_V5) else GLOW_LAYOUT_V3
         reason_codes = GLOW_REASON_CODES_V3
         columns = GLOW_COLUMNS_V3
         line_layout = True

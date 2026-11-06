@@ -126,7 +126,7 @@ REFERENCE_SOURCES = [
     "app/data/glow/stik_55ax_2t.json", "app/data/glow/stik_61fx_2t.json", "app/data/glow/stik_fs64v_4t.json",
 ]
 LIBM_SYMBOLS = {"sin", "cos", "tan", "asin", "acos", "atan", "atan2", "sqrt", "pow", "exp", "log",
-                "sinh", "cosh", "tanh", "fmod", "floor", "sincos"}
+                "sinh", "cosh", "tanh", "fmod", "floor", "sincos", "nextafter"}
 # Floating-point policy: NK-1 flags plus the pow shim's asm barrier (no -fno-builtin needed; checked below).
 EXTRA_FLAGS = ["-std=c++17"]
 # Stage contract identity; must equal nk_kernel.cpp kBackendVersion/kAbi and app/sim/native_stage.gd.

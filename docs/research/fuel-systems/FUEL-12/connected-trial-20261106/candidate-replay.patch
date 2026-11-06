@@ -1,0 +1,17 @@
+--- app/tools/flight_log_cli.gd
++++ candidate_replay.gd
+@@ -1,3 +1,4 @@
++# FUEL-12 F4 experiment adapter; exact replay remains strict.
+ ## FL-03: bounded offline export and verified/open-loop replay. No live user settings.
+ extends SceneTree
+ 
+@@ -414,6 +415,9 @@
+ 			# Open-loop counterfactual: identical body/internal initial state, candidate mass/configuration.
+ 			# Existing restore validates laws, wheel identities, typed layouts and admissibility.
+ 			checkpoint.configuration = candidate_checkpoint.configuration
++			# F4 experiment only: explicit V4 -> V5 law migration; all numeric initial state stays recorded.
++			if checkpoint.get("glow_law") == "glow-mean-cycle-carburettor-v4" and candidate_checkpoint.get("glow_law") == "glow-mean-cycle-connected-fuel-v5":
++				checkpoint.glow_law = candidate_checkpoint.glow_law
+ 			for key in ["mass", "inertia", "gravity"]:
+ 				checkpoint.simulation[key] = candidate_checkpoint.simulation[key]
+ 			# wheel_profiles.json gains rows when other aircraft are added. Adopt the candidate's file identity,

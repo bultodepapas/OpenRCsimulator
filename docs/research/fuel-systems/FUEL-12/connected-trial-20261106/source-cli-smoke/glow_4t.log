@@ -1,0 +1,5 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+trace saved: C:\DEVELOPMENT\OpenRCsimulator\tmp\glow-connected-f4\source-smoke\glow_4t.csv (721 rows)

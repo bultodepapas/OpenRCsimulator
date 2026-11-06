@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs and Extra 300 audit. **Read this document first.** It organizes eight distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The eight source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 and Corsair audits. **Read this document first.** It organizes nine distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The nine source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A8 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A9 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -30,10 +30,11 @@ The labels A1–A8 identify source documents in this consolidation; they are not
 | A6 | [Developer audit and remediation handoff — developer-audit-remediation-2026-11-06.md][A6] | Dated 2026-11-06; consolidates two audit passes at `3df2791752fe2c1faad132fcb11febbb0ae788d1`. Linux headless/debug Godot `4.8.beta2.official.cafc17a19`, GDScript reference backend, normally 240 Hz. Six reported defects F1–F6 and six optimization opportunities O1–O6; no production fixes or native execution. |
 | A7 | [Apple Silicon and Metal Optimization Handoff][A7] | Dated 2026-11-06, America/Bogota. Combines historical `fc018b38` audit, shader/architecture experiments at `93ffbb101917dff86ecc2632f07e2e45c450a178`, and separate CPU/physics results at `3df2791`. Pinned Godot beta2, Linux x86-64, Python 3.12.14/NumPy 2.3.5; CPU screens, shader-language checks and headless camera-method checks, but no new native Metal GPU execution. Not the same mathematical lab as A2. |
 | A8 | [Extra 300 physics and optimization audit][A8] | Attached report dated 2026-11-06, reviewed `codex/m1-native-validation-20261106` at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`. Two Extra-specific physics consistency defects, three optimization opportunities and one visual defect. Pinned Linux Godot/headless probes; 13 reported successful checked receipts; no new production fixes, complete suite, native qualification, rendered flight or full replay campaign. |
+| A9 | [F4U Corsair physics and optimization audit][A9] | Experiments at `84f4657814c157f1556f965861c0ab8623f48d8e` on `codex/m1-native-validation-20261106`; report also checks subsequent `e72d878` and says it does not alter the responsible files. No report date stated; received 2026-11-06. One material rate-datum inconsistency, one smaller thrust-lookup defect, two optimization opportunities and two unpromoted candidates. Reported isolated diagnostics, not full flight/native/render qualification. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and eight source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and nine source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -45,6 +46,7 @@ The folder contains this consolidated document and eight source reports. Source 
 | `NEWONE.MD` | [developer-audit-remediation-2026-11-06.md][A6] |
 | `NEW.MD` | [apple-silicon-metal-optimization-handoff-2026-11-06.md][A7] |
 | Attached `Pasted text.txt` (Extra 300 audit) | [extra-300-physics-optimization-audit-2026-11-06.md][A8] |
+| Attached `Pasted text.txt` (Corsair audit) | [f4u-corsair-physics-optimization-audit-84f4657.md][A9] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -60,6 +62,8 @@ The folder contains this consolidated document and eight source reports. Source 
 
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
+| Corsair force/moment and thrust continuity | A9 reports CF-01 rate moments supplied about CG where ARP is required, and CF-02 a final-table thrust discontinuity from the extrapolation floor. | Scoped generator/runtime and accepted-tick witnesses. CF-01 is a Corsair recurrence related to earlier Stik datum work and A8's Extra finding, not another count of those same aircraft defects. |
+| Corsair work elimination | A9 isolates repeated retract-data validation within one build (CF-03) and repeated full-vector calculations in the offline VLM generator (CF-04). | Synthetic construction-component timing and byte-identical generated output, respectively; no measured aircraft-loading/FPS gain. Stationary-pose cache was slower; gasoline-result reuse had inconclusive timings. |
 | Extra 300 generator consistency | A8 reports E300-01 mixed CG/ARP moment conventions and E300-02 missing installed blade camber in generated crossflow tables; it recommends resolving both before retuning. | Production-code diagnostic witnesses at `e72d878`, not physical calibration or current-fix verification. These are distinct from A5's earlier documented force-arm conventions. |
 | Extra 300 performance and presentation | A8 adds stage-local mass reuse, a mesh-memory tradeoff, custom-paint shader sharing, and reversed visual blade handedness. | Sampled parity, headless buffer/resource measurements and geometric direction checks; no whole-app speedup or rendered-flight qualification. |
 | Additional shader and renderer experiments | A7 prioritizes a small zero-contribution sky patch, bounded density evaluation and a high-octave hash lattice; it also develops polynomial, integer/angular/ground, crop-camera and rate-map proposals. | Portable numerical, front-end and camera-method evidence; no new GPU speedup for these candidates. A7's historical working-cache profile is separately scoped below. |
@@ -87,6 +91,34 @@ A6 arrived later in this folder but reviews the **same commit as A2–A5**, not 
 - **Related mathematics:** A7's remaining-noise density bounds differ from A2 M03's relief-contribution budget. Its high-octave hash lattice differs from A2 M01's coarse-corner sharing. Solar LUT versus A2 M02 chord geometry are separate alternatives. A7 parcel/derivative screens overlap A2 M12/M05 conceptually but use distinct controls and result sets.
 
 ## 3. Correctness and measurement findings
+
+### Corsair force/moment datum and thrust-lookup findings
+
+**Source: [A9][A9], experiments at `84f4657814c157f1556f965861c0ab8623f48d8e`.** Keep CF-01–04 as the external report's IDs. A9 says it checked the subsequent `e72d878` change and found the responsible files unchanged; that is not a fresh audit of today's branch. CF-03/04 are in §6 below.
+
+**CF-01 — Rate-derivative moment reference.** The generic runtime correctly transfers ARP forces/moments to CG. The Corsair generator derives `Cmq` with a squared tail-to-CG arm and fin `Cnr` with a squared fin-to-CG arm, then emits them into ARP fields. Its `CLq` tail force uses a tail-to-ARP arm, so force and moment derivations also mix datums. The fin kinematics independently establish the CG reference, beyond the generator's comment. At zero angles, the extra terms are `CLq*(xCG−xARP)/c` in pitch and `CYr*(xCG−xARP)/b` in yaw, with authored aft-positive x and coefficient chord `c=S/b`.
+
+| CF-01 quantity | Stored CG-derived field | Additional runtime transfer | Realized CG derivative |
+| --- | ---: | ---: | ---: |
+| Pitch damping Cmq | −10.193066 | +0.789336415 | −9.403729585 |
+| Yaw damping Cnr | −0.093768 | +0.004090166 | −0.089677834 |
+
+The loaded reference-inventory witness uses x separation 0.0742843807412 m, chord 0.518605 m and span 2.777778 m. Magnitudes are **7.7439% weaker in pitch and 4.3620% weaker in yaw** than those stored CG-derived coefficients; these are not whole-aircraft handling percentages. Production `Aero.loads` at 23 m/s recovers the predicted derivatives with central perturbations ±0.02, ±0.002 and ±0.0002 rad/s, entirely in the empirical branch. Coincident longitudinal CG/ARP removes the extra terms; diagnostic in-memory moment shifts recover the target values.
+
+Production level trim converges near α=3.54535°, β=0.51218° while retaining the inconsistency. Its angle-corrected pitch transfer is 0.809636836; at separate pitch/yaw rates of 0.2 rad/s, aerodynamic moments differ from the reference-shift diagnostics by **0.441908 N·m pitch / 0.0640453 N·m yaw**, vanishing at zero rate. Static trim therefore does not qualify rate-response consistency.
+
+Repair the complete force/moment rate pairs at a declared reference-inventory datum, angle and wake condition, then transform dimensional moment derivatives to ARP once before normalization. Keep the correct generic ARP-to-live-CG transfer; do not merely tune `Cmq` by the measured offset or replace the reference datum with empty-tank plan CG. Generate/regenerate through the owning pipeline and independently check zero/trim angles, mixed rates, fuel-dependent mass and empirical/local transitions. This is a Corsair recurrence of the convention addressed for Stik under D6e-R1/D11g, and is related to A8 E300-01; each aircraft generator still needs its own evidence. The audit shifts are diagnostics, not validated replacement physics.
+
+**CF-02 — Endpoint/floor discontinuity.** Corsair's thrust table ends at `J=1.35`, `CT=−0.1029`, while shared extrapolation applies `CT_FLOOR=−0.1` only beyond the table. Interpolation preserves the final authored value, but immediately outside returns −0.1: a coefficient jump of **+0.0029**, not an ordinary interpolation slope change.
+
+| CF-02 witness | Reported result and limit |
+| --- | --- |
+| Boundary samples at 1.35−1e−9 / 1.35 / 1.35+1e−9 | CT −0.102899999772 / −0.1029 / −0.1. Power coefficient stays continuous; a nearby J=1.30 control changes CT only about 5.14e−10 at the same perturbation. |
+| Dimensional thrust | Diameter 0.762 m, 1,750 RPM, density 1.225 kg/m³: about **1.01889 N** jump at roughly 30.00375 m/s axial speed. |
+| Finite-fuel production stage comparison | About 1.012 N forward-force and 0.04625 m/s² forward-acceleration difference with the session's own atmosphere/coupled mass. |
+| Reachable crossing | Valid constructed engine-off state starts at J=1.35001/1,750 RPM; one accepted 240 Hz tick reaches J=1.3469053786/1,753.2005673 RPM without fault. This is not evidence of visible jerk or sustained handling failure. |
+
+For that extrapolation form, continuity requires `floor ≤ last_value`. Define a declared per-propeller floor or table-aware shared rule, preserving in-table values. Test final values above/equal/below the floor, neighboring binary64 inputs, ordinary interpolation and the engine-off crossing. The same interaction appears in other data, including P-51; avoid a Corsair-specific kernel branch. Keep lookup continuity separate from uncertain propeller calibration and from previously reported reverse-flow limitations.
 
 ### Extra 300 generator and presentation findings
 
@@ -127,6 +159,8 @@ At J=0.5, stock coefficients are 28.6%/55.6% below the respective consistent res
 | **F6 / P1 — Tire/brake constraints can add energy** | Acceleration-relaxation target and symmetric magnitude limits permit positive tangential contact or brake work. Production-solver examples, stock Bisonte energy balance, and a from-rest drive sequence demonstrate the tire defect; a separate brake example/scan establishes the brake defect. | Enforce dissipative admissibility with the existing load-scaled force limit, preserve static reactions at zero slip, and qualify combined slip, reversal, holding, load loss, stage-integrated energy, convergence and backend parity. A magnitude-only force circle is insufficient; independent component sign clamps impose a different constraint. Native equations were inspected but not executed. |
 
 **F4 timing detail:** from `reserve + 1e-7 kg`, production versus connected-trial diagnostic exhaustion times are 1.763268/0.877741 ms (Stik 55AX), 1.373147/1.144313 ms (Stik FS64V), and 1.702545/0.847247 ms (Extra). Reported differences are 0.885527, 0.228833, and 0.855298 ms; displayed columns round independently. The roughly 5e−13 s event `time_error_bound_s` bounds the root bracket, not accuracy of a trajectory using the wrong trial law. Initial-flow estimates support the diagnosis but are not physical stopping-time measurements. This is separate from [A4's firing-counter finding](#glow-fuel-event-counter-defect).
+
+**F4 implementation update (2026-11-06):** the V5 glow law now uses a representable connected-trial successor in GDScript and C++, without adding fuel to physical inventory. The independent constant-flow regression locates 0.800 ms at 120/240/480 Hz; focused checks, baseline/candidate tapes and 8,046 identical native comparisons are retained in the [FUEL-12-R3 evidence](../docs/research/fuel-systems/FUEL-12/README.md#connected-main-tank-trials-fuel-12-r3-2026-11-06). Historical V4 traces remain readable; normal checkpoint restore requires the current law. A4's firing-counter defect remains separate and open. This is software verification, not full CI, complete native installation or physical qualification.
 
 ### F6 energy and reachability evidence
 
@@ -412,7 +446,25 @@ E300-03 compares 90 direct stages (72 accepted, 18 refused), unchanged default p
 
 Stock buffer savings are 944,376 bytes (**71.68%**, about 0.901 MiB/model for those buffers), falling to **19.18%** after the paint adapter expands target triangles. After warmup and 16 alternating Linux headless pairs, median build times are **96.19 ms baseline / 103.24 ms candidate**, with median paired change **+8.5%**. Paired percentages need not equal the ratio of independent medians. Noisy samples do not support faster construction; a memory benefit must be evaluated with its lifecycle cost.
 
+### Corsair optimization opportunities CF-03–04 and negative results
+
+**Source: [A9, §§3–5][A9].** CF-03 is construction-time validation reuse, distinct from A3's kernel validation. CF-04 is offline generation, distinct from M09/M10 runtime physics reuse.
+
+| ID | Reported mechanism/evidence | Qualification boundary |
+| --- | --- | --- |
+| **CF-03 — Duplicate retract-rig validation** | Imported construction calls geometry validation, which validates the rig; subsequent `Retraction.bind()` immediately scans the same data again. Corsair rig has 101 samples ×17 carrier nodes (1,717 poses), plus 606 wheel-path vectors. Prototype retains public `bind()` validation and uses a private immediately-validated construction handoff. | Preserve scene-dependent unique bindings/parents, rest transforms, wheel helpers and stowed-pose checks. Rig contents must remain unchanged between validation/binding; no stale receipt or cross-build identity cache. Any copying/guards enter the measured cost. |
+| **CF-04 — Offline VLM vector reuse** | Matrix entry calls `horseshoe(...)` separately for each of three components although each call returns the full identical vector. Store it once, then retain original multiplication/summation order. For 80 panels and 14 solves, matrix calls fall 268,800→89,600; total including unchanged tail/Trefftz work falls 371,840→192,640. | **179,200 fewer evaluations (48.19%)**, with complete JSON output bytes identical across all heights and both fits; baseline also passes retained-data tolerance. No elapsed-time benchmark and no in-flight execution: this is a generator cleanup, not FPS improvement. |
+
+CF-03's eight alternating pairs with four builds/batch report median batch means **15.9835→8.3696 ms/build**, median paired reduction **49.69%**, range **25.46–67.93%**, all eight pairs favoring the candidate. These are noisy component batch means, not individual-load latency percentiles or ratios of the displayed medians. The candidate passes 21 bind-level and eight synthetic complete-build assertions, covering malformed poses, wheel paths, bindings, transforms and public articulation structure. Fixtures use real generated Corsair geometry inside synthetic hierarchies, **not the actual GLB/textures/materials**. Qualify real Corsair and Avanti construction and the actual selection/start route before claiming loading-time benefit.
+
+| Unpromoted A9 candidate | Reported result | Decision |
+| --- | --- | --- |
+| Stationary gear-pose cache | 24,850 sampled transform/rest comparisons match, but stowed 37.08→45.74 µs/call, deployed 35.19→44.74, moving 41.75→86.28; every measured pair favors original. | Reject this guarded prototype. Source checks cost more than interpolation. Unchanged extension does not justify skipping `apply()`: restore sampled pose before adding suspension compression. Cheaper immutable-data design remains unmeasured. |
+| Legacy gasoline propeller-result reuse | Narrow handoff between propulsion/slipstream matches 291 load/refusal checks. Ten timing pairs split five/five, with changes from −9.91% to +22.53%. | Defer; no reliable speedup. Electric hub inflow is not interchangeable with legacy datum inflow, and shaft torque uses different floating-point operation order. Require suitable profiling and contract evidence before substitution. |
+
 ## 7. Follow-up order and acceptance evidence
+
+For Corsair, A9 recommends: repair complete rate-force/moment datum derivation; define shared continuous thrust extrapolation; apply output-preserving offline VLM reuse; then qualify the synchronous retract-validation handoff. Use the [Corsair integration plan](../docs/F4U-PLAN.md) and [aircraft contract](../docs/AIRCRAFT_CONTRACT.md). Physics repairs intentionally change affected behavior and need regenerated data, explained expected results and flight qualification. Work-elimination candidates must preserve outputs/refusals. Keep reference-inventory and live-fuel CG separate; do not require parity with defective physics as the repair criterion.
 
 For the Extra-specific work, A8 recommends **E300-01 and E300-02 before aerodynamic/propulsion retuning**, then completing E300-03 parity and measuring full-session cost. Keep E300-04's memory tradeoff, E300-05 shader sharing and E300-06 presentation correction separately reviewable. Use the [Extra guide](../docs/EXTRA-300-PLAN.md), [aircraft contract](../docs/AIRCRAFT_CONTRACT.md) and existing owning generators; do not hand-edit generated aircraft physics data or hide an intentional physics correction inside a performance patch.
 
@@ -486,7 +538,7 @@ Primary technical references, frozen source URLs, and derivations remain in [A1]
 
 ### What is supplied here
 
-This directory contains eight source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains nine source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -498,6 +550,11 @@ This directory contains eight source Markdown files and this consolidated docume
 | A6 | `OpenRCsimulator-audit-3df2791.zip` (F1–F5, manifests, original/packaged receipts, `run_audit.py`) and `OpenRCsimulator-math-audit-3df2791.zip` (F6 scalar/energy/driving/refinement, traces, O4 `prestep-candidate.patch`, exact/refusal/timing results, O5 exploration and additional controls). Both archives and their extracted directories are absent here; the second is distinct from A2's similarly themed Optimization Kit. |
 | A7 | `OpenRC_Apple_Silicon_Experimental_Kit_2026-11-05.zip` (66 entries) and `OpenRC_Mathematical_Optimization_Lab_2026-11-05.zip` (69 entries, manifest covering 68 payload files), plus the original Apple PDF and separate `OpenRCsimulator-math-audit-3df2791.txt`. These are reported artifacts, not supplied here. Neither shader ZIP contains the later CPU harness, and A7's math ZIP is distinct from A2's `OpenRC_Mathematical_Optimization_Kit.zip`. |
 | A8 | `Extra300_Audit_e72d878_2026-11-06.zip`, described as the full report, scripts, experimental patches, raw results and checked receipts. Only the pasted report was supplied here; its `sandbox:/workspace/...` link is an external-session artifact reference, not a local package. No archive or raw receipts were inspected for this integration. |
+| A9 | `F4U_Corsair_Audit_84f4657.txt` (complete report) and `F4U_Corsair_Evidence_84f4657.zip` (probes, isolated prototypes, raw measurements, checked receipts, hashes and replay helper). The supplied summary links external ChatGPT-library files; those linked artifacts were not supplied locally or inspected here. |
+
+### A9 verification boundary
+
+A9 reports replaying eight packaged diagnostics and two imports in fresh isolated projects with required markers, `ok=true`, `complete=true` and zero engine errors/warnings. Portable VLM replay reproduces exact output comparison. Those are reported software/mathematical consistency results, not newly run checks in this consolidation. Full flight-tape comparison, native qualification, actual imported-scene timing, rendered behavior and independent aircraft measurements remain outside the audit. The original attached summary and its external deliverable links are preserved verbatim; no production fixes are claimed.
 
 ### A8 evidence and source-link limits
 
@@ -542,7 +599,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files at intake. They identify the eight retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
+These hashes were calculated from the supplied files at intake. They identify the nine retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -554,6 +611,7 @@ These hashes were calculated from the supplied files at intake. They identify th
 | A6 — `developer-audit-remediation-2026-11-06.md` | `dc5adfd6cb64860fa1ec948f002e1ffac47c16c458d875922b403104ee7c7120` |
 | A7 — `apple-silicon-metal-optimization-handoff-2026-11-06.md` | `1eb780371898d91a5afec6052be9289fd900101633251ea66919da680c0b8f1b` |
 | A8 — `extra-300-physics-optimization-audit-2026-11-06.md` | `af7109d1bf85e7bcdb1d3106b9aada79850e1c5f944ea9f0eb2f75f15ad326a0` |
+| A9 — `f4u-corsair-physics-optimization-audit-84f4657.md` | `4626555a8dc24e3f496d5be8b88dbd9048e049c9638a2e82163f78252e757cc7` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -563,3 +621,4 @@ These hashes were calculated from the supplied files at intake. They identify th
 [A6]: developer-audit-remediation-2026-11-06.md
 [A7]: apple-silicon-metal-optimization-handoff-2026-11-06.md
 [A8]: extra-300-physics-optimization-audit-2026-11-06.md
+[A9]: f4u-corsair-physics-optimization-audit-84f4657.md

@@ -93,7 +93,7 @@ class TraceAcceptance(unittest.TestCase):
             ('jensen-das-ugly-stik-60', 'propeller-rpm-lag-v1', 'none', False),
             # The Extra source installs a dedicated glow carburettor model; the P-51
             # source supplies the shaft power curve used by the coupled RPM balance.
-            ('gp-extra-300s-60', 'glow-mean-cycle-carburettor-v4', 'tail-slipstream-increment-v1', True),
+            ('gp-extra-300s-60', 'glow-mean-cycle-connected-fuel-v5', 'tail-slipstream-increment-v1', True),
             ('p51d-mustang-120', 'propeller-shaft-coupled-rk4-v1', 'tail-slipstream-increment-v1', True),
             ('sebart-avanti-s-a200-p100rx', 'turbine-rpm-governor-rk4-v1', 'none', False),
             # BAT-13: the Lumber flies its finite pack by default; --battery=ideal keeps the fixed bus.
@@ -167,23 +167,32 @@ class TraceAcceptance(unittest.TestCase):
                                          capture_output=True, text=True, timeout=10)
                 self.assertEqual(checked.returncode, 0, checked.stderr)
 
-    def test_glow_v4_layout_and_claim_mutations_fail(self):
+    def test_glow_v5_layout_and_claim_mutations_fail(self):
         from check_atmosphere_trace import GLOW_LAYOUT_V3, GLOW_LAYOUT_V4, WHEEL_LAYOUT_SUFFIX
 
-        path = self.directory / 'extra-glow-v4.csv'
+        path = self.directory / 'extra-glow-v5.csv'
         result = self.run_app('--aircraft=gp-extra-300s-60', '--trace=' + str(path), '--t=.05')
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertNotIn('ERROR:', result.stdout)
         lines = path.read_text().splitlines()
         metadata = dict(line[2:].split(': ', 1) for line in lines if line.startswith('# '))
-        self.assertEqual(metadata['propulsion_model'], 'glow-mean-cycle-carburettor-v4')
+        self.assertEqual(metadata['propulsion_model'], 'glow-mean-cycle-connected-fuel-v5')
         self.assertEqual(metadata['glow_trace_schema'], 'openrc-glow-trace v2')
         self.assertEqual(metadata['continuous_layout'], GLOW_LAYOUT_V4 + '; ' + WHEEL_LAYOUT_SUFFIX)
         from check_trimmed_flight import check
         self.assertIn('12 ticks', check(path, .05, 240))
 
+        # V5 changes event localization, not the V4 trace layout. Historical CSVs
+        # remain readable; this is a schema check, not a claim of exact replay.
+        historical = self.directory / 'extra-glow-v4-schema.csv'
+        historical.write_text('\n'.join(
+            '# propulsion_model: glow-mean-cycle-carburettor-v4'
+            if line.startswith('# propulsion_model: ') else line for line in lines
+        ) + '\n', encoding='utf-8')
+        self.assertIn('12 ticks', check(historical, .05, 240))
+
         mutations = (
-            ('v4 law with old admission layout',
+            ('v5 law with old admission layout',
              {'continuous_layout': GLOW_LAYOUT_V3 + '; ' + WHEEL_LAYOUT_SUFFIX}),
             ('glow law without trace schema', {'glow_trace_schema': None}),
             ('glow law with split shaft integrator', {'shaft_integrator': 'split'}),
@@ -206,7 +215,7 @@ class TraceAcceptance(unittest.TestCase):
                     else:
                         seen.add(key)
                 self.assertEqual(seen, set(changes))
-                candidate = self.directory / f'bad-glow-v4-{index}.csv'
+                candidate = self.directory / f'bad-glow-v5-{index}.csv'
                 candidate.write_text('\n'.join(changed_lines) + '\n', encoding='utf-8')
                 with self.assertRaises(ValueError):
                     check(candidate, .05, 240)

@@ -86,7 +86,7 @@ func _test_live_glow_traces() -> void:
 			str(trace.columns()))
 		_check("" + family + " metadata preserves cycle family", trace.meta.glow_family == family
 			and trace.meta.metadata_schema == "openrc-flight-meta v10"
-			and trace.meta.propulsion_model == Trace.GLOW_LAW_V4
+			and trace.meta.propulsion_model == Trace.GLOW_LAW_V5
 			and trace.meta.continuous_layout == Trace.GLOW_CONTINUOUS_LAYOUT_V4
 				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if session.wheel_count() > 0 else ""))
 		if not trace_ready:
@@ -104,6 +104,7 @@ func _test_live_glow_traces() -> void:
 			and trace.value(0, "mass_kg") > 0.0
 			and trace.to_csv().contains("# glow_trace_schema: " + Trace.GLOW_TRACE_SCHEMA_V2))
 		_test_legacy_glow_trace(session)
+		_test_v4_glow_trace(session)
 		var initial_fuel: float = float(before.fuel_kg)
 		for _tick in 120:
 			session.sim.step()
@@ -190,6 +191,24 @@ func _test_legacy_glow_trace(session: Node) -> void:
 		legacy.row_count() == 1 and legacy.columns().slice(Trace.COLUMNS.size()) == LEGACY_GLOW_COLUMNS
 		and legacy.to_csv().begins_with("# format: openrc-trace v9\n"),
 		"rows=%d invalid=%s" % [legacy.row_count(), legacy._invalid_weather])
+
+
+func _test_v4_glow_trace(session: Node) -> void:
+	# V5 preserves the V4 layout. This exercises reading old metadata and samples,
+	# independently of the stricter checkpoint/replay law identity.
+	var sample: Dictionary = session.mass_properties().duplicate(true)
+	sample.law = Trace.GLOW_LAW_V4
+	for law: String in [Trace.GLOW_LAW_V4, ""]:
+		var historical := Trace.new()
+		historical.meta = session.trace_meta().duplicate(true)
+		historical.meta.mass_trace_schema = "openrc-mass-sample v1"
+		historical.meta.propulsion_model = law
+		historical.record(session.sim.tick, session.sim.time(), session.sim.state, session.sim.last_loads,
+			session.sim.inputs, session.sim.aux, session.sim.continuous, sample)
+		_check("historical V4 schema remains readable; empty law is refused",
+			(historical.row_count() == 1 and not historical.to_csv().is_empty()) if law == Trace.GLOW_LAW_V4
+			else historical.row_count() == 0 and historical.to_csv().is_empty(),
+			"law=%s rows=%d invalid=%s" % [law, historical.row_count(), historical._invalid_weather])
 
 
 func _all_glow_rows_finite(trace: RefCounted, family: String) -> bool:
