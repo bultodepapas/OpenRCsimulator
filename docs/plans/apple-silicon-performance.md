@@ -1,6 +1,6 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Current repair baseline:** `a1e6e66cb`; [resumed native checks and dated performance limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106). **Status:** bounded observer/shader optimizations, native measurement repairs, display recovery hardening and corrected Retina dimension reporting implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
+Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Current repair baseline:** `de19806bc`; [resumed native checks and dated performance limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106). **Status:** bounded observer/shader optimizations, native measurement repairs, display recovery hardening and corrected Retina dimension reporting implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
@@ -24,8 +24,12 @@ The attribute-aware `bf4745d68` checkout rerun passed descriptor checks, 165
 native graphics assertions at each target size, the Home/Fly/Settings resize
 route and the full 52-step debug smoke. `a1e6e66cb` additionally observes viewport
 dimensions in every benchmark mode; old unobserved receipts fail its current
-qualification gate. Native performance remeasurement with that fixture remains
-pending.
+qualification gate. `de19806bc` additionally requires contiguous observation
+coverage and correctly accounts for deferred seals; review repairs harden
+MetalFX marker persistence, letterboxed Auto selection, copied cloud materials
+and transactional lake startup. Focused Windows software and GPU checks passed.
+Native remeasurement of these later changes remains pending direct SSH key
+enrollment after the Linux gateway became unavailable.
 
 ## 1. Priorities, invariants and decision rules
 

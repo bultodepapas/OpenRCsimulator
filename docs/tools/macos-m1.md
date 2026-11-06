@@ -36,8 +36,28 @@ commands above after connecting with `ssh vscode-megatron`, or pass a quoted
 remote command through that host. Keep both hops' host-key verification enabled.
 Do not copy the private key merely to make Windows access direct.
 
+For direct access from Windows, the owner can instead enroll a dedicated Windows
+public key on the Mac. The 2026-11-06 task created
+`$env:USERPROFILE\.ssh\openrc_m1_ed25519` at the owner's request; its private
+half stays on Windows. Use the command below only after the public half has been
+added to the Mac account's existing `~/.ssh/authorized_keys`. Preserve the Linux
+key and all existing authorized entries. A reachable SSH server does not prove
+that the new key is authorized.
+
+```powershell
+ssh -i "$env:USERPROFILE/.ssh/openrc_m1_ed25519" -o IdentitiesOnly=yes `
+  -o BatchMode=yes -o StrictHostKeyChecking=yes -o UpdateHostKeys=no `
+  -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 `
+  gius@100.79.151.42 'uname -sm; sw_vers -productVersion; pmset -g batt'
+```
+
+Retain normal host-key verification, including the initial trust decision for
+a new client. Do not disable checking or replace an existing host-key entry to
+work around a mismatch. Once enrollment is verified, this route needs no Linux
+gateway. Keep private keys outside source snapshots, Git and evidence bundles.
+
 **Keep the existing SSH keys.** The user explicitly requested their retention.
-The private key is mode 0600 inside ignored `tmp/apple-m1-access/`; the Mac user
+The original Linux private key is mode 0600 inside ignored `tmp/apple-m1-access/`; the Mac user
 is `gius`, with the corresponding public key in `~/.ssh/authorized_keys`.
 Never include key contents or debug-bridge tokens in Git, reports or chat.
 A new clone does not contain this credential: obtain authorized access to the

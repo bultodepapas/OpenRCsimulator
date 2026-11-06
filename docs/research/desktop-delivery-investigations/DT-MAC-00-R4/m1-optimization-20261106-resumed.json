@@ -1746,5 +1746,423 @@
       "tmp/m1-followup-ci/dimension-diagnostic/run.json": "8aa639d983761a04e316ccc7ef39267d5d6b317f3baf412fdf9229362bebbab4",
       "tmp/m1-followup-ci/dimension-diagnostic/run.json.frames.jsonl": "f57f82b8acfda26a505a7a7515638ca8f17f9d6551b59021cba11345fafb703f"
     }
+  },
+  "pr8_review_repairs": {
+    "date": "2026-11-06",
+    "source_head": "de19806bc2e07a8e9f04ed8c11b28fe9328eda9a",
+    "runtime_commits": {
+      "reconstruction_guard": "dd2c17a04",
+      "lake": "0fced1b46",
+      "cloud": "3f08b7b9e"
+    },
+    "operating_guide_commit": "929403210",
+    "benchmark_commit": "de19806bc",
+    "review": {
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/pull/8",
+      "threads": [
+        {
+          "id": "PRRT_kwDOU8q-Ac60aXbh",
+          "path": "research/performance/native_summary.py"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60aXb6",
+          "path": "tools/atmosphere/shadow_map_probe.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amiq",
+          "path": "app/app_state/renderer_guard.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amit",
+          "path": "app/render/cloud_shadow_map.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amiy",
+          "path": "app/render/lake/lake_world.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60ami2",
+          "path": "app/render/lake/lake_world.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60ami9",
+          "path": "app/render/reconstruction.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amjI",
+          "path": "docs/tools/macos-m1.md"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amjN",
+          "path": "research/performance/native_summary.py"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amjY",
+          "path": "research/performance/sustained_flight.gd"
+        },
+        {
+          "id": "PRRT_kwDOU8q-Ac60amjb",
+          "path": "tools/atmosphere/shadow_map_probe.gd"
+        }
+      ],
+      "snapshot": "tmp\\m1-optimization-20261106\\pr8-review-20261106.json",
+      "snapshot_sha256": "c3b33b62be4aed54e97a45959a0cbbd201643ec69b957f89d3c49a86c9134564"
+    },
+    "changes": [
+      "Recovery marker is saved and read back before reconstruction applies; descriptor changes rearm it and stale timers are retired.",
+      "Auto uses the viewport render target estimate rather than the enclosing window size.",
+      "Disjoint ground stays unchanged, fully covered triangles stay removed, and a refused lake prevents helicopter startup.",
+      "Final near-grass and track material copies receive cloud publications; all probe cases reject absent or nonfinite readbacks.",
+      "Mac source exports disable external attributes and reject repository-local overrides.",
+      "Benchmark observations require contiguous unique frame coverage plus the preceding bracket; duplicate seal states remain compared.",
+      "Benchmark outputs cannot contaminate application source, Auto dimensions use their explicit viewport scope, and cloud seed order is canonical."
+    ],
+    "windows_checked_runs": [
+      {
+        "label": "reconstruction",
+        "directory": "tmp/m1-pr-review-renderer/reconstruction-o9ylnc_w",
+        "assertions": 127,
+        "capture_id": "890be61f-7b8a-4441-8b2a-d26a801d5b2b",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [],
+        "elapsed_seconds": 0.61,
+        "report_sha256": "903f2b7f43b80f167699ec882148a2a8adaa90dbbdcb07623c792f2d35a366fc",
+        "log_sha256": "acb9be51ffbbd0902d2a6657fe4f19f0ba2526d3b55523610c995cfefc79861a"
+      },
+      {
+        "label": "renderer_guard",
+        "directory": "tmp/m1-pr-review-renderer/renderer-guard-bounded-urwn2jjw",
+        "assertions": 40,
+        "capture_id": "f629daa7-9727-4bae-b7a0-fd00adeb77cd",
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "required_text": [],
+        "elapsed_seconds": 3.437,
+        "report_sha256": "96d2feb6e185918946530c433b31e21ffb8a2753ac0d1a359838e2581e1e697e",
+        "log_sha256": "8df2a913e4c70002f19fe97fc351ea0f1a92f0ca5ae0bf4760ff1ff841eecac2"
+      },
+      {
+        "label": "advanced_graphics_vulkan",
+        "directory": "tmp/m1-pr-review-renderer/gpu/advanced-mobile-gdd9uq6q",
+        "assertions": 165,
+        "capture_id": "50ca0ee7-98ca-44ce-8fbe-3c9961c01e20",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "advanced graphics:"
+        ],
+        "elapsed_seconds": 30.656,
+        "report_sha256": "69262e8e94b012156fabbb1763a5568da72c7179b0da5e170c57370c87a5965d",
+        "log_sha256": "aed68a375b3a8c35085bebaa1654d622cff4598aec87230d8a34d2f7f339c04a"
+      },
+      {
+        "label": "lake_world",
+        "directory": "tmp/m1-pr-review-lake/stable/lake-cas3p9wi",
+        "assertions": 52,
+        "capture_id": "14381390-58cd-48d0-b0b5-3c7737a5b36e",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [],
+        "elapsed_seconds": 15.437,
+        "report_sha256": "7bf829ead05520a7d77f819b69f7dfee37ebc26fe6ef7e3ef052e8c93a054750",
+        "log_sha256": "50c51cc0c47f8080be10a4e4765267fde61bbed8ddad218f01db6808961fbf95"
+      },
+      {
+        "label": "helicopter_route",
+        "directory": "tmp/m1-pr-review-lake/stable/native-helicopter-route-8yx2j9nt",
+        "assertions": 14,
+        "capture_id": "aba45174-b8ba-462d-80b0-d7cb2579b296",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [],
+        "elapsed_seconds": 17.297,
+        "report_sha256": "8322351f6962a389e4f05efbad24dd386bb55d099be5fccf5ea513f51a61ad89",
+        "log_sha256": "edf4dbc84e66f89a75f21908669e0299b3f8883b2f94ca4fb34440200339dea7"
+      },
+      {
+        "label": "cloud_lifecycle_readback",
+        "directory": "tmp/m1-pr-review-cloud/focused/lifecycle-readback-v2-u_is9gfb",
+        "assertions": 59,
+        "capture_id": "850de9ef-c1ec-4ebb-a8fd-e59da7c296a6",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "cloud shadow map:"
+        ],
+        "elapsed_seconds": 2.89,
+        "report_sha256": "ffa09a3c4bd58f7ab306fe47db0a08b13ad95c06437a541a034b277d0ef3b2c9",
+        "log_sha256": "f1f790821342a334163d32340c7de4ebb139995aa10205cf32abef59ed739bb5"
+      },
+      {
+        "label": "near_grass",
+        "directory": "tmp/m1-pr-review-cloud/focused/near-grass-sw_t607b",
+        "assertions": 48,
+        "capture_id": "08350525-ac22-4c18-8f9f-83d7c7b03a41",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "near-grass checks"
+        ],
+        "elapsed_seconds": 6.594,
+        "report_sha256": "09191a0a75fe06f96781f6069815701fc7312199be588210c4f95ca46502e03a",
+        "log_sha256": "f4fd7bb36d9ab81fd23cb7fca8c86b75ee5796f6c9e1501cf5325c8e526d3223"
+      },
+      {
+        "label": "rc_track",
+        "directory": "tmp/m1-pr-review-cloud/focused/rc-track-7k_yhxk4",
+        "assertions": 60,
+        "capture_id": "de485504-cfdb-4040-bdfd-431f8f175840",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "RC circuit flight checks"
+        ],
+        "elapsed_seconds": 8.079,
+        "report_sha256": "2596db6d55cfe6ce00485b55bb4835d0668ce37e56be15aca02aa592d1b7b326",
+        "log_sha256": "c036e1d452557c7aeed714379b0d9601233403d109e3f18e2e96c9781ffdb877"
+      },
+      {
+        "label": "atmosphere",
+        "directory": "tmp/m1-pr-review-cloud/focused/atmosphere-qiu5fv1x",
+        "assertions": 149,
+        "capture_id": "e4c780cb-d383-437a-9bf3-d0492cabf487",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "checks,"
+        ],
+        "elapsed_seconds": 0.765,
+        "report_sha256": "e5680a71e59d248d4d3cacb8395b5f63540a00044772ba69df0d7018d5c2babe",
+        "log_sha256": "30223bf6b54a860ee5efa9ecd2a3ed41ebc3a061d3efbbc25b3f477402b9ba35"
+      },
+      {
+        "label": "staged_field",
+        "directory": "tmp/m1-pr-review-cloud/focused/staged-field-nhqid62u",
+        "assertions": 43,
+        "capture_id": "e3013e29-b035-4814-a33b-e73908f7ba98",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "field staged build checks"
+        ],
+        "elapsed_seconds": 14.719,
+        "report_sha256": "771768b3efbbd487059c993c17898d97468d536045183b6b2458a853c568dc3d",
+        "log_sha256": "419c2b2f228b2d09d289390c4851aaf9949ceb8b0852493bdf4055ae9cb27f9c"
+      },
+      {
+        "label": "cloud_gl_off",
+        "directory": "tmp/m1-pr-review-cloud/gpu-checks/gl-off-0zzlvev6",
+        "assertions": null,
+        "capture_id": "63b75d8c-861e-4e9a-800b-b20ba7ebc435",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "openrc-shadow-map-probe"
+        ],
+        "elapsed_seconds": 5.531,
+        "report_sha256": "2a26977e3eb07de1b6de5c7d528920c939a980204ad5f75a900dbb763510c5ce",
+        "log_sha256": "6493972db34c759a1a1e66b5c7a05299e4d7f85ecfee60157ec58fc59d87dc12"
+      },
+      {
+        "label": "cloud_gl_three",
+        "directory": "tmp/m1-pr-review-cloud/gpu-checks/gl-bounds-three-x7vn9i16",
+        "assertions": null,
+        "capture_id": "912362d2-790e-463f-b4ff-e98d5032eae2",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "openrc-shadow-map-probe"
+        ],
+        "elapsed_seconds": 4.985,
+        "report_sha256": "9bbb0d85598279b1ec85981d187dbe61309eec10235b0795510ad9991ef18a1f",
+        "log_sha256": "dc14e81055524270b13cedc1d0d9a987ba5f11632f245c8e8378691bd9048523"
+      },
+      {
+        "label": "cloud_gl_two_three",
+        "directory": "tmp/m1-pr-review-cloud/gpu-checks/gl-bounds-two-three-bztfs5xu",
+        "assertions": null,
+        "capture_id": "44308ed1-ceaf-4acf-959f-10a049ed06a6",
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "openrc-shadow-map-probe"
+        ],
+        "elapsed_seconds": 4.796,
+        "report_sha256": "07e0c0c74cf01dcf5ec3ee97348f08f1b23791ba79b9501037c341c2c8d30e09",
+        "log_sha256": "1fefc0dd966f5b8bf6dc778f9b978754341f164f44fcbd52916517f101810c21"
+      }
+    ],
+    "advanced_headless": {
+      "assertions": 156,
+      "log": "tmp/m1-optimization-20261106/pr-stable-advanced.log",
+      "log_sha256": "d40967fc796197c55df9cbc6b9b4910ca4b8d5f0dc5d6127f599dcaf33bb523c"
+    },
+    "negative_readback_controls": {
+      "summary": "tmp\\m1-pr-review-cloud\\missing-controls\\summary.json",
+      "sha256": "b862547881fb2b171703d4d295602d31d62148cbcf9913a30011bdf9cda4d20a",
+      "outcomes": [
+        {
+          "case": "baseline-canvas",
+          "runner_exit": 0,
+          "overall_passed": true,
+          "other_failures": []
+        },
+        {
+          "case": "baseline-spatial",
+          "runner_exit": 0,
+          "overall_passed": true,
+          "other_failures": []
+        },
+        {
+          "case": "baseline-sky",
+          "runner_exit": 0,
+          "overall_passed": true,
+          "other_failures": []
+        },
+        {
+          "case": "fixed-canvas",
+          "runner_exit": 1,
+          "overall_passed": false,
+          "other_failures": []
+        },
+        {
+          "case": "fixed-spatial",
+          "runner_exit": 1,
+          "overall_passed": false,
+          "other_failures": []
+        },
+        {
+          "case": "fixed-sky",
+          "runner_exit": 1,
+          "overall_passed": false,
+          "other_failures": []
+        }
+      ]
+    },
+    "benchmark_checks": {
+      "python_tests": 79,
+      "test_log": "tmp/m1-pr-review-benchmark/native-summary-tests.txt",
+      "test_log_sha256": "bb6a41a1cc8294d2fb69cb94886d834aedbeb5b546409d606d9902c913ff10e7",
+      "godot_path_regression_enabled": true,
+      "runs": [
+        {
+          "directory": "tmp\\m1-pr-review-benchmark\\repaired-timed",
+          "render_matches": true,
+          "frames": 68,
+          "source_unchanged": true,
+          "health_complete": true,
+          "timing_complete": true,
+          "timing_eligible": false,
+          "observation": {
+            "samples": 69,
+            "observed_frame_count": 68,
+            "stable": true,
+            "first_frame_bracketed": true,
+            "contiguous": true,
+            "seal_observed": true,
+            "seal_reuses_last_frame": false
+          },
+          "frame_sha256": "7937165303621c1aaf2e249b787684a50c905b4391fe1228ea12a11461fe82a1",
+          "health_sha256": "ed2eda6a475000850ca3c1466d6141dedfacf94fac378915cdd5497e76114aa9"
+        },
+        {
+          "directory": "tmp\\m1-pr-review-benchmark\\repaired-diagnostic",
+          "render_matches": true,
+          "frames": 117,
+          "source_unchanged": true,
+          "health_complete": true,
+          "timing_complete": false,
+          "timing_eligible": false,
+          "observation": {
+            "samples": 118,
+            "observed_frame_count": 117,
+            "stable": true,
+            "first_frame_bracketed": true,
+            "contiguous": true,
+            "seal_observed": true,
+            "seal_reuses_last_frame": true
+          },
+          "frame_sha256": "8c7a97b3c14503943d9ceb79d4e5f4bd2dc74787586ec318da54bebae8cfe9ff",
+          "health_sha256": "e2270b06424984a36b69c5b85a5b53b9821f017e9523d143d36953ade32c2cec"
+        },
+        {
+          "directory": "tmp\\m1-pr-review-benchmark\\mutation-skip",
+          "render_matches": false,
+          "frames": 122,
+          "source_unchanged": true,
+          "health_complete": true,
+          "timing_complete": false,
+          "timing_eligible": false,
+          "observation": {
+            "samples": 121,
+            "observed_frame_count": 122,
+            "stable": true,
+            "first_frame_bracketed": true,
+            "contiguous": false,
+            "seal_observed": true,
+            "seal_reuses_last_frame": true
+          },
+          "frame_sha256": "f06601bcbc2bf84e61c563171590b3e116de9c0c7b8c447f1827667ef764192a",
+          "health_sha256": "c7c7cec504dc96ec00b141e1f43979c9f88df0a7590d1c0de7aa8650ac889d68"
+        },
+        {
+          "directory": "tmp\\m1-pr-review-benchmark\\mutation-seal",
+          "render_matches": false,
+          "frames": 129,
+          "source_unchanged": true,
+          "health_complete": true,
+          "timing_complete": false,
+          "timing_eligible": false,
+          "observation": {
+            "samples": 130,
+            "observed_frame_count": 129,
+            "stable": false,
+            "first_frame_bracketed": true,
+            "contiguous": true,
+            "seal_observed": true,
+            "seal_reuses_last_frame": true
+          },
+          "frame_sha256": "f0357b7356ea5f34b921d9910faa317c7834ebd22f463d82649506a089408d72",
+          "health_sha256": "8c7c8b042f4b1ba7383026ca1e73e0e8161e152395832fb54e4d6732577a4a3d"
+        }
+      ],
+      "initial_reproduction": "tmp/m1-pr-review-fixture-stable: 120 retained frames / 122 calls; a deferred seal duplicated the final frame observation.",
+      "scope": "Headless receipt and mutation checks only; no headless timing acceptance or native speedup."
+    },
+    "limits": [
+      "These review reruns are Windows checks; the corrected bf4745d68 M1 evidence above is not evidence for later runtime commits.",
+      "Renderer guard check includes one expected cannot-save warning; the graphical Vulkan log retains unclassified OpVectorExtractDynamic notices.",
+      "Godot may resize an active viewport before size_changed; the marker guards subsequent reconstruction application, not every native resize.",
+      "OpenGL numerical agreement does not supersede retained Metal bounds failures; conservative bounds remain off.",
+      "No new speedup, physical display qualification, MetalFX SDK execution or M2-M6 result is established."
+    ],
+    "native_status": "pending: direct M1 SSH responds, but local keys were refused; dedicated Windows key created at owner request and public-key installation requested"
   }
 }

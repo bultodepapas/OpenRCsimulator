@@ -1023,3 +1023,41 @@ diagnostic passed; its 133 observations matched the final receipt. That 64×64
 headless diagnostic is not native timing evidence. The M1 benchmark entrypoint
 was deliberately held before its first capture while this fix was prepared;
 native performance remeasurement is pending restored connectivity.
+
+**PR review repairs.** `dd2c17a04` persists and reads back the complete MetalFX
+recovery marker before applying reconstruction, rearms changed configurations
+and retires stale confirmation timers. Auto now uses the viewport render-target
+estimate, including letterboxing and viewport stretch. This does not guard an
+OS resize that Godot performs before emitting `size_changed`. Windows beta2
+passed 127 reconstruction, 40 guard and 156 headless graphics checks; a real
+Mobile/Vulkan run on RTX 3090 passed 165 graphics checks. The guard's intentional
+write-failure warning and Vulkan's unclassified exit notices remain in the logs.
+
+`0fced1b46` distinguishes unchanged, cut, fully removed and refused ground
+meshes, and refuses helicopter startup after a failed lake attachment. Stable
+Windows reruns passed 52 lake and 14 helicopter-route checks. `3f08b7b9e`
+registers final near-grass and track material copies for cloud publication and
+requires complete finite readbacks in every GPU probe case. It passed 59 cloud
+checks and 300 related checks. All three shader stages passed Windows OpenGL
+probes with bounds off, three and two-three. Six disposable controls confirmed
+that absent readbacks falsely passed the old negative cases and are rejected
+by the repair. These OpenGL results do not supersede the retained M1 Metal
+failures; conservative bounds remain off.
+
+`de19806bc` requires contiguous observations of every retained frame plus its
+preceding bracket, rejects output paths that can contaminate the source tree,
+reconciles Auto's explicit output scope and canonicalizes required cloud seeds.
+A real diagnostic exposed a duplicate final observation during deferred seal:
+the producer now compares that state without counting the same frame twice.
+The corrected headless timed Auto run had 68 frames/69 observations; the
+240-tick diagnostic had 117/118. Both kept source identity unchanged. Skipping
+an observation or changing the duplicate seal state caused rejection. All 79
+Python regressions passed with the optional Godot path check enabled. These
+short headless runs establish receipt behavior only. Legacy receipts without
+the coverage fields cannot satisfy the current gate.
+
+The compact JSON retains checked-run hashes, review thread identities and
+mutation outcomes. The last native M1 functional evidence remains the corrected
+`bf4745d68` checkout above; it does not validate these later commits. Direct SSH
+from Windows was requested after the Linux gateway became unavailable. A
+dedicated local key was created; native reruns await its public-key enrollment.
