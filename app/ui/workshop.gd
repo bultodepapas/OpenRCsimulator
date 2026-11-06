@@ -1050,6 +1050,7 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_base_bytes = source_bytes
 	_refresh_base_summary()
 	if not preserve_recipe:
+		_discard_presentation_edits()
 		_recipe = Compiler.defaults()
 		_presentation = {}
 		_resolve_presentation()
@@ -1283,6 +1284,8 @@ func _load_variant_snapshot(selected_id: String) -> void:
 	if not checked.ok:
 		set_note(_messages(checked.errors, "The saved build could not be loaded."))
 		return
+	commit_navigation()
+	_discard_presentation_edits()
 	_invalid_fields.clear()
 	_pending_numbers.clear()
 	_base_id = next_base_id
@@ -1677,7 +1680,7 @@ func _reset_recipe() -> void:
 
 
 func _undo() -> void:
-	if _undo_history.is_empty():
+	if _undo_history.is_empty() or not _history_lighting_ready(_undo_history.back()):
 		return
 	_redo_history.append(_history_snapshot())
 	var previous: Dictionary = _undo_history.pop_back()
@@ -1687,13 +1690,29 @@ func _undo() -> void:
 
 
 func _redo() -> void:
-	if _redo_history.is_empty():
+	if _redo_history.is_empty() or not _history_lighting_ready(_redo_history.back()):
 		return
 	_undo_history.append(_history_snapshot())
 	var next: Dictionary = _redo_history.pop_back()
 	_restore_history(next)
 	_update_undo_button()
 	set_note("Recipe change reapplied.")
+
+
+func _history_lighting_ready(snapshot: Dictionary) -> bool:
+	if not _page_nodes.has("lighting") or not _page_nodes.lighting.has_pending_edit():
+		return true
+	var current: Dictionary = _presentation.get("lighting", Presentation.LightingProfile.defaults())
+	var target: Dictionary = snapshot.presentation_profile.get("lighting", Presentation.LightingProfile.defaults())
+	if current == target:
+		return true
+	set_note("Apply or cancel the current lighting edit first.")
+	_set_page("lighting")
+	var pending: Control = _page_nodes.lighting.pending_control()
+	if pending != null:
+		pending.grab_focus()
+		_body_scroll.ensure_control_visible(pending)
+	return false
 
 
 func _set_recipe(next_recipe: Dictionary, remember_current: bool) -> void:
@@ -2396,7 +2415,7 @@ func _load_selected_variant() -> void:
 			target_name = str(summary.name)
 			break
 	_close_library()
-	request_navigation(tr("Open saved build") + " · " + target_name, _load_variant_snapshot.bind(target), _return_to_library.bind(_variant_selector))
+	request_navigation(tr("Open saved build") + " · " + target_name, _load_variant_snapshot.bind(target), _return_to_library.bind(_variant_selector), null, true)
 
 
 func _set_page(page: String) -> void:
@@ -2995,7 +3014,7 @@ func _prepare_bundle_dialog() -> void:
 func _bundle_file_selected(path: String) -> void:
 	if _bundle_import:
 		_close_library()
-		request_navigation("Import aircraft build", _import_bundle_file.bind(path))
+		request_navigation("Import aircraft build", _import_bundle_file.bind(path), Callable(), null, true)
 		return
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
@@ -3045,6 +3064,14 @@ func _resolve_presentation() -> void:
 	_presentation_errors = PackedStringArray(checked.get("errors", []))
 	if checked.ok: _presentation = checked.profile.duplicate(true)
 	_sync_presentation()
+
+
+## Called only once a document replacement has passed its admission checks.
+func _discard_presentation_edits() -> void:
+	for page: String in ["appearance", "smoke", "lighting"]:
+		if _page_nodes.has(page):
+			_page_nodes[page].cancel_pending_edit()
+	_presentation_buffers.clear()
 
 
 func _sync_presentation(source_page: String = "") -> void:
@@ -3379,6 +3406,7 @@ func _apply_recovered_draft() -> void:
 			_trial_button.disabled = not _edit_valid()
 			return
 	_recovery_restoring = true
+	_discard_presentation_edits()
 	_base_id = payload.base_id
 	_base = payload.base.duplicate(true)
 	_base_bytes = payload.base_bytes.duplicate()

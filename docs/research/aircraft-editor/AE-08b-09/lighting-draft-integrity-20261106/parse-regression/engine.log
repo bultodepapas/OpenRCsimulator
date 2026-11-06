@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot assign a value of type res://ui/workshop.gd to variable "editor" with specified type Control.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-draft-integrity/drafts/test_workshop_lighting_drafts.gd:40)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-draft-integrity/drafts/test_workshop_lighting_drafts.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)

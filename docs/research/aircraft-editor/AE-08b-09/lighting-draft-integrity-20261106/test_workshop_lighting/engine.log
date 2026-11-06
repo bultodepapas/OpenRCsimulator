@@ -1,0 +1,275 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   visiting Lighting leaves the stored profile untouched
+ok   stored presentation keeps the fields required by its historical version
+ok   inherited night preview retains the stock orientation strips without editing the build
+ok   Original night comparison shows the same stock equipment
+ok   Original day comparison switches the fitted kit off
+ok   preset menu lists each registered preset once, including Custom
+ok   Custom provides all semantic zones and optional effect entries
+ok   lighting edit upgrades only historical v1/v2 and preserves newer fields
+ok   Custom starts with orientation lock and blocks ineffective navigation palette/pattern edits
+ok   sequence requires a saved cue for the selected zone
+ok   unlocking makes navigation palette and pattern controls editable
+ok   invalid hex remains visible and blocks Save and Test fly
+ok   a pending lighting edit holds page navigation
+ok   cancel restores accepted palette text and launch validity
+ok   rebuilt zone palette controls retain crystal feedback
+ok   rebuilt palette action shows crystal feedback on keyboard focus
+ok   ColorPicker applies canonical six-digit HTML colors
+ok   Lighting participates in shared Undo
+ok   shared Redo restores the lighting edit
+ok   per-zone brightness is an explicit pending edit
+ok   zone brightness applies independently of global brightness
+ok   zone slider stays synchronized after commit
+ok   pattern, cycle speed and telemetry response save through the advanced editor
+ok   zones without saved cues keep Sequence disabled
+ok   Festival enables Sequence on cue-backed zones
+ok   rebuilt effect toggles and selectors retain crystal feedback
+ok   effects expose Wingtip spark/trail/burst, intensity and lifetime controls
+ok   (1920, 1080)/en/1.0 rejected color keeps its input and focus
+ok   (1920, 1080)/en/1.0 rejected color keeps scroll
+ok   (1920, 1080)/en/1.0 rejected color restores accepted text without discarding effects
+ok   (1920, 1080)/en/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (1920, 1080)/en/1.0 rejected picker restores the accepted color
+ok   (1920, 1080)/en/1.0/enabled rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/1.0/enabled rejection restores value and preserves pending color
+ok   (1920, 1080)/en/1.0/kind rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/1.0/kind rejection restores value and preserves pending color
+ok   (1920, 1080)/en/1.0/intensity rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/1.0/intensity rejection restores value and preserves pending color
+ok   (1920, 1080)/en/1.0/lifetime rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/1.0/lifetime rejection restores value and preserves pending color
+ok   (1920, 1080)/en/2.0 rejected color keeps its input and focus
+ok   (1920, 1080)/en/2.0 rejected color keeps scroll
+ok   (1920, 1080)/en/2.0 rejected color restores accepted text without discarding effects
+ok   (1920, 1080)/en/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (1920, 1080)/en/2.0 rejected picker restores the accepted color
+ok   (1920, 1080)/en/2.0/enabled rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/2.0/enabled rejection restores value and preserves pending color
+ok   (1920, 1080)/en/2.0/kind rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/2.0/kind rejection restores value and preserves pending color
+ok   (1920, 1080)/en/2.0/intensity rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/2.0/intensity rejection restores value and preserves pending color
+ok   (1920, 1080)/en/2.0/lifetime rejection keeps input, focus and scroll
+ok   (1920, 1080)/en/2.0/lifetime rejection restores value and preserves pending color
+ok   (1920, 1080)/es/1.0 rejected color keeps its input and focus
+ok   (1920, 1080)/es/1.0 rejected color keeps scroll
+ok   (1920, 1080)/es/1.0 rejected color restores accepted text without discarding effects
+ok   (1920, 1080)/es/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (1920, 1080)/es/1.0 rejected picker restores the accepted color
+ok   (1920, 1080)/es/1.0/enabled rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/1.0/enabled rejection restores value and preserves pending color
+ok   (1920, 1080)/es/1.0/kind rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/1.0/kind rejection restores value and preserves pending color
+ok   (1920, 1080)/es/1.0/intensity rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/1.0/intensity rejection restores value and preserves pending color
+ok   (1920, 1080)/es/1.0/lifetime rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/1.0/lifetime rejection restores value and preserves pending color
+ok   (1920, 1080)/es/2.0 rejected color keeps its input and focus
+ok   (1920, 1080)/es/2.0 rejected color keeps scroll
+ok   (1920, 1080)/es/2.0 rejected color restores accepted text without discarding effects
+ok   (1920, 1080)/es/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (1920, 1080)/es/2.0 rejected picker restores the accepted color
+ok   (1920, 1080)/es/2.0/enabled rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/2.0/enabled rejection restores value and preserves pending color
+ok   (1920, 1080)/es/2.0/kind rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/2.0/kind rejection restores value and preserves pending color
+ok   (1920, 1080)/es/2.0/intensity rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/2.0/intensity rejection restores value and preserves pending color
+ok   (1920, 1080)/es/2.0/lifetime rejection keeps input, focus and scroll
+ok   (1920, 1080)/es/2.0/lifetime rejection restores value and preserves pending color
+ok   (2560, 1440)/en/1.0 rejected color keeps its input and focus
+ok   (2560, 1440)/en/1.0 rejected color keeps scroll
+ok   (2560, 1440)/en/1.0 rejected color restores accepted text without discarding effects
+ok   (2560, 1440)/en/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (2560, 1440)/en/1.0 rejected picker restores the accepted color
+ok   (2560, 1440)/en/1.0/enabled rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/1.0/enabled rejection restores value and preserves pending color
+ok   (2560, 1440)/en/1.0/kind rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/1.0/kind rejection restores value and preserves pending color
+ok   (2560, 1440)/en/1.0/intensity rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/1.0/intensity rejection restores value and preserves pending color
+ok   (2560, 1440)/en/1.0/lifetime rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/1.0/lifetime rejection restores value and preserves pending color
+ok   (2560, 1440)/en/2.0 rejected color keeps its input and focus
+ok   (2560, 1440)/en/2.0 rejected color keeps scroll
+ok   (2560, 1440)/en/2.0 rejected color restores accepted text without discarding effects
+ok   (2560, 1440)/en/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (2560, 1440)/en/2.0 rejected picker restores the accepted color
+ok   (2560, 1440)/en/2.0/enabled rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/2.0/enabled rejection restores value and preserves pending color
+ok   (2560, 1440)/en/2.0/kind rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/2.0/kind rejection restores value and preserves pending color
+ok   (2560, 1440)/en/2.0/intensity rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/2.0/intensity rejection restores value and preserves pending color
+ok   (2560, 1440)/en/2.0/lifetime rejection keeps input, focus and scroll
+ok   (2560, 1440)/en/2.0/lifetime rejection restores value and preserves pending color
+ok   (2560, 1440)/es/1.0 rejected color keeps its input and focus
+ok   (2560, 1440)/es/1.0 rejected color keeps scroll
+ok   (2560, 1440)/es/1.0 rejected color restores accepted text without discarding effects
+ok   (2560, 1440)/es/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (2560, 1440)/es/1.0 rejected picker restores the accepted color
+ok   (2560, 1440)/es/1.0/enabled rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/1.0/enabled rejection restores value and preserves pending color
+ok   (2560, 1440)/es/1.0/kind rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/1.0/kind rejection restores value and preserves pending color
+ok   (2560, 1440)/es/1.0/intensity rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/1.0/intensity rejection restores value and preserves pending color
+ok   (2560, 1440)/es/1.0/lifetime rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/1.0/lifetime rejection restores value and preserves pending color
+ok   (2560, 1440)/es/2.0 rejected color keeps its input and focus
+ok   (2560, 1440)/es/2.0 rejected color keeps scroll
+ok   (2560, 1440)/es/2.0 rejected color restores accepted text without discarding effects
+ok   (2560, 1440)/es/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (2560, 1440)/es/2.0 rejected picker restores the accepted color
+ok   (2560, 1440)/es/2.0/enabled rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/2.0/enabled rejection restores value and preserves pending color
+ok   (2560, 1440)/es/2.0/kind rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/2.0/kind rejection restores value and preserves pending color
+ok   (2560, 1440)/es/2.0/intensity rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/2.0/intensity rejection restores value and preserves pending color
+ok   (2560, 1440)/es/2.0/lifetime rejection keeps input, focus and scroll
+ok   (2560, 1440)/es/2.0/lifetime rejection restores value and preserves pending color
+ok   (3840, 2160)/en/1.0 rejected color keeps its input and focus
+ok   (3840, 2160)/en/1.0 rejected color keeps scroll
+ok   (3840, 2160)/en/1.0 rejected color restores accepted text without discarding effects
+ok   (3840, 2160)/en/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (3840, 2160)/en/1.0 rejected picker restores the accepted color
+ok   (3840, 2160)/en/1.0/enabled rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/1.0/enabled rejection restores value and preserves pending color
+ok   (3840, 2160)/en/1.0/kind rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/1.0/kind rejection restores value and preserves pending color
+ok   (3840, 2160)/en/1.0/intensity rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/1.0/intensity rejection restores value and preserves pending color
+ok   (3840, 2160)/en/1.0/lifetime rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/1.0/lifetime rejection restores value and preserves pending color
+ok   (3840, 2160)/en/2.0 rejected color keeps its input and focus
+ok   (3840, 2160)/en/2.0 rejected color keeps scroll
+ok   (3840, 2160)/en/2.0 rejected color restores accepted text without discarding effects
+ok   (3840, 2160)/en/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (3840, 2160)/en/2.0 rejected picker restores the accepted color
+ok   (3840, 2160)/en/2.0/enabled rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/2.0/enabled rejection restores value and preserves pending color
+ok   (3840, 2160)/en/2.0/kind rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/2.0/kind rejection restores value and preserves pending color
+ok   (3840, 2160)/en/2.0/intensity rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/2.0/intensity rejection restores value and preserves pending color
+ok   (3840, 2160)/en/2.0/lifetime rejection keeps input, focus and scroll
+ok   (3840, 2160)/en/2.0/lifetime rejection restores value and preserves pending color
+ok   (3840, 2160)/es/1.0 rejected color keeps its input and focus
+ok   (3840, 2160)/es/1.0 rejected color keeps scroll
+ok   (3840, 2160)/es/1.0 rejected color restores accepted text without discarding effects
+ok   (3840, 2160)/es/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (3840, 2160)/es/1.0 rejected picker restores the accepted color
+ok   (3840, 2160)/es/1.0/enabled rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/1.0/enabled rejection restores value and preserves pending color
+ok   (3840, 2160)/es/1.0/kind rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/1.0/kind rejection restores value and preserves pending color
+ok   (3840, 2160)/es/1.0/intensity rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/1.0/intensity rejection restores value and preserves pending color
+ok   (3840, 2160)/es/1.0/lifetime rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/1.0/lifetime rejection restores value and preserves pending color
+ok   (3840, 2160)/es/2.0 rejected color keeps its input and focus
+ok   (3840, 2160)/es/2.0 rejected color keeps scroll
+ok   (3840, 2160)/es/2.0 rejected color restores accepted text without discarding effects
+ok   (3840, 2160)/es/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (3840, 2160)/es/2.0 rejected picker restores the accepted color
+ok   (3840, 2160)/es/2.0/enabled rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/2.0/enabled rejection restores value and preserves pending color
+ok   (3840, 2160)/es/2.0/kind rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/2.0/kind rejection restores value and preserves pending color
+ok   (3840, 2160)/es/2.0/intensity rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/2.0/intensity rejection restores value and preserves pending color
+ok   (3840, 2160)/es/2.0/lifetime rejection keeps input, focus and scroll
+ok   (3840, 2160)/es/2.0/lifetime rejection restores value and preserves pending color
+ok   (1280, 720)/en/1.0 rejected color keeps its input and focus
+ok   (1280, 720)/en/1.0 rejected color keeps scroll
+ok   (1280, 720)/en/1.0 rejected color restores accepted text without discarding effects
+ok   (1280, 720)/en/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (1280, 720)/en/1.0 rejected picker restores the accepted color
+ok   (1280, 720)/en/1.0/enabled rejection keeps input, focus and scroll
+ok   (1280, 720)/en/1.0/enabled rejection restores value and preserves pending color
+ok   (1280, 720)/en/1.0/kind rejection keeps input, focus and scroll
+ok   (1280, 720)/en/1.0/kind rejection restores value and preserves pending color
+ok   (1280, 720)/en/1.0/intensity rejection keeps input, focus and scroll
+ok   (1280, 720)/en/1.0/intensity rejection restores value and preserves pending color
+ok   (1280, 720)/en/1.0/lifetime rejection keeps input, focus and scroll
+ok   (1280, 720)/en/1.0/lifetime rejection restores value and preserves pending color
+ok   (1280, 720)/en/2.0 rejected color keeps its input and focus
+ok   (1280, 720)/en/2.0 rejected color keeps scroll
+ok   (1280, 720)/en/2.0 rejected color restores accepted text without discarding effects
+ok   (1280, 720)/en/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (1280, 720)/en/2.0 rejected picker restores the accepted color
+ok   (1280, 720)/en/2.0/enabled rejection keeps input, focus and scroll
+ok   (1280, 720)/en/2.0/enabled rejection restores value and preserves pending color
+ok   (1280, 720)/en/2.0/kind rejection keeps input, focus and scroll
+ok   (1280, 720)/en/2.0/kind rejection restores value and preserves pending color
+ok   (1280, 720)/en/2.0/intensity rejection keeps input, focus and scroll
+ok   (1280, 720)/en/2.0/intensity rejection restores value and preserves pending color
+ok   (1280, 720)/en/2.0/lifetime rejection keeps input, focus and scroll
+ok   (1280, 720)/en/2.0/lifetime rejection restores value and preserves pending color
+ok   (1280, 720)/es/1.0 rejected color keeps its input and focus
+ok   (1280, 720)/es/1.0 rejected color keeps scroll
+ok   (1280, 720)/es/1.0 rejected color restores accepted text without discarding effects
+ok   (1280, 720)/es/1.0 rejected picker edit keeps its control, focus and scroll
+ok   (1280, 720)/es/1.0 rejected picker restores the accepted color
+ok   (1280, 720)/es/1.0/enabled rejection keeps input, focus and scroll
+ok   (1280, 720)/es/1.0/enabled rejection restores value and preserves pending color
+ok   (1280, 720)/es/1.0/kind rejection keeps input, focus and scroll
+ok   (1280, 720)/es/1.0/kind rejection restores value and preserves pending color
+ok   (1280, 720)/es/1.0/intensity rejection keeps input, focus and scroll
+ok   (1280, 720)/es/1.0/intensity rejection restores value and preserves pending color
+ok   (1280, 720)/es/1.0/lifetime rejection keeps input, focus and scroll
+ok   (1280, 720)/es/1.0/lifetime rejection restores value and preserves pending color
+ok   (1280, 720)/es/2.0 rejected color keeps its input and focus
+ok   (1280, 720)/es/2.0 rejected color keeps scroll
+ok   (1280, 720)/es/2.0 rejected color restores accepted text without discarding effects
+ok   (1280, 720)/es/2.0 rejected picker edit keeps its control, focus and scroll
+ok   (1280, 720)/es/2.0 rejected picker restores the accepted color
+ok   (1280, 720)/es/2.0/enabled rejection keeps input, focus and scroll
+ok   (1280, 720)/es/2.0/enabled rejection restores value and preserves pending color
+ok   (1280, 720)/es/2.0/kind rejection keeps input, focus and scroll
+ok   (1280, 720)/es/2.0/kind rejection restores value and preserves pending color
+ok   (1280, 720)/es/2.0/intensity rejection keeps input, focus and scroll
+ok   (1280, 720)/es/2.0/intensity rejection restores value and preserves pending color
+ok   (1280, 720)/es/2.0/lifetime rejection keeps input, focus and scroll
+ok   (1280, 720)/es/2.0/lifetime rejection restores value and preserves pending color
+ok   unrelated presentation changes reuse all lighting editor rows
+ok   reused lighting controls keep the full incoming presentation snapshot
+ok   unrelated presentation changes preserve current preview capability feedback
+ok   identical accepted configure keeps lighting row identity
+ok   changed lighting still rebuilds and synchronizes its controls
+ok   fixture has pending invalid zone text before configure
+ok   configure still discards pending zone text for identical accepted inputs
+ok   fixture restores pending cue text
+ok   configure still discards pending cue text for identical accepted inputs
+ok   a lighting edit after reuse retains unrelated accepted presentation values
+ok   configure also restores accepted state after a detached panel proposal
+ok   opening an old lighting build preserves its pin and edited values
+ok   zone reset uses the pinned revision 1 default instead of revision 2
+ok   explicit fresh preset selection adopts revision 2
+ok   lighting recovery includes bounded sequence editor state
+ok   valid lighting editor state restores
+ok   historical lighting recovery without sequence state restores
+ok   lighting recovery rejects unknown editor-state fields
+ok   lighting recovery rejects more than eight raw color fields
+ok   sequence integration has an editable profile
+ok   sequence changes enter shared Workshop presentation
+ok   sequence addition participates in shared Undo
+ok   shared Redo restores sequence addition
+ok   unfinished cue timing restores as pending
+ok   unfinished cue timing blocks Save and Test fly
+ok   pending sequence holds Workshop navigation
+ok   Workshop recovery carries raw cue timing
+ok   owner synchronization restores pending cue text after an unrelated appearance edit
+ok   cancel discards only pending cue edits
+ok   Undo of an unrelated appearance edit keeps accepted lighting and clears no extra state
+ok   Redo refreshes the lighting panel's full presentation snapshot without changing lighting
+ok   v1 profile visit does not migrate or inject lighting
+ok   v1 lighting edit promotes additively and preserves smoke
+ok   v2 profile visit does not migrate or inject lighting
+ok   v2 lighting edit promotes additively and preserves smoke
+ok   v4 profile visit does not migrate or inject lighting
+ok   v4 lighting edit promotes additively and preserves smoke
+Workshop lighting checks: 0 failures

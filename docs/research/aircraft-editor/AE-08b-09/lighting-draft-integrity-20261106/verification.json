@@ -1,0 +1,538 @@
+{
+  "step": "AE-09d-R3",
+  "audit": [
+    "A17 UI3-01 (pending model values)",
+    "A17 UI3-02 (saved-build replacement)",
+    "A17 UI3-04"
+  ],
+  "date": "2026-11-06",
+  "source_base_commit": "347905cafed505cad758107f2790fab2b018e4c6",
+  "shared_head_at_exact_source_comparison": "347905cafed505cad758107f2790fab2b018e4c6",
+  "tested_snapshot": "source_base_commit plus tested-source.patch; reused imported isolated workspace. Its older Git HEAD is not the source baseline.",
+  "snapshot_patch_sha256": "07f720d18a920b651cff449b6daa002a8d32db7f619071eb4d8e8c7a37c2f443",
+  "snapshot_patch_applies_to_base": true,
+  "snapshot_only_differences": "Three scenery PNG import sidecars and one pre-existing test_alert_efficiency UID differ from the base; retained only in the snapshot patch, not promoted to the shared tree.",
+  "source_files": [
+    {
+      "path": "app/ui/workshop.gd",
+      "sha256": "fb6995694f22a273466e1fcae917a4f897bac1f00cd62dd578c9b5f033e14834",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/ui/workshop_lighting.gd",
+      "sha256": "5dca925a78ee9b46f9c3de2663db7a3ef71c77f6012baaeab840056b2adc707c",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/workshop/draft_store.gd",
+      "sha256": "301af2394084de6860eaf891adf6204fece59ea6e41173ff0905eec334939d3a",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/workshop/lighting_editor_state.gd",
+      "sha256": "d8d8ed62feb6ed682bf0c77e96abf07b1b6619ace54dfcd109461a01d90a77ae",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/workshop/lighting_editor_state.gd.uid",
+      "sha256": "f3aef72968af5be139d473530e5b0aae43464fd67130f3e5b0aa7639fde20b45",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_lighting_drafts.gd",
+      "sha256": "ebd530560945b6d35dad205e1b8f6735ea59306d5181bf538ff9f5ab788d3c6e",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_lighting_drafts.gd.uid",
+      "sha256": "c21aa29a3889edfe06519fec0823fbf65845967c2be072a9dc011fe311667e43",
+      "exact_shared_tree_match": true
+    }
+  ],
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "platform": "Windows",
+    "headless": true,
+    "audio": "Dummy",
+    "new_fixture_logical_viewport": [
+      1920,
+      1080
+    ]
+  },
+  "baseline": {
+    "run": "baseline-final",
+    "report": "baseline-final/report.json",
+    "log": "baseline-final/engine.log",
+    "ok": false,
+    "complete": true,
+    "reason": "process_exit",
+    "engine_counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "checks": 80,
+    "failures": 33,
+    "log_sha256": "5eae8ef37bcf179da806504122520b86823799f236e4f3fd9b7d9743c2f9ec71"
+  },
+  "qualified_suites": [
+    {
+      "run": "test_workshop_lighting_drafts",
+      "report": "test_workshop_lighting_drafts/report.json",
+      "log": "test_workshop_lighting_drafts/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 84,
+      "failures": 0,
+      "log_sha256": "9b9f69892304df04eca74c37991a2e0e415161a3887ee9094ac6579cf7f7e228"
+    },
+    {
+      "run": "test_workshop_lighting",
+      "report": "test_workshop_lighting/report.json",
+      "log": "test_workshop_lighting/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 272,
+      "failures": 0,
+      "log_sha256": "ecb10b7fef7ecb7f2ec33a304d55f712118e80e3b728217be2295d779589caab"
+    },
+    {
+      "run": "test_lighting_sequence_ui",
+      "report": "test_lighting_sequence_ui/report.json",
+      "log": "test_lighting_sequence_ui/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 39,
+      "failures": 0,
+      "log_sha256": "7bbb4ae2788dc72b667dc5f96a2caa1352ba4f9521e89efd252cc80f53be342b"
+    },
+    {
+      "run": "test_workshop_drafts",
+      "report": "test_workshop_drafts/report.json",
+      "log": "test_workshop_drafts/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 108,
+      "failures": 0,
+      "log_sha256": "744eeab147d6216625eb24781cfac6346f06fd9399310b3110cae2a1f2566b7e"
+    },
+    {
+      "run": "test_workshop_recovery_ui",
+      "report": "test_workshop_recovery_ui/report.json",
+      "log": "test_workshop_recovery_ui/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 75,
+      "failures": 0,
+      "log_sha256": "785d102391135c92a2f2aa9cb3430aa0fc7c27d6cdf6d59f3214321d13b22852"
+    },
+    {
+      "run": "test_workshop_document_flow",
+      "report": "test_workshop_document_flow/report.json",
+      "log": "test_workshop_document_flow/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 23,
+      "failures": 0,
+      "log_sha256": "61ff9419bc4428033841f2d4809f118e51b08894ff90a082dc3c24139296c97a"
+    },
+    {
+      "run": "test_workshop_presentation",
+      "report": "test_workshop_presentation/report.json",
+      "log": "test_workshop_presentation/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 92,
+      "failures": 0,
+      "log_sha256": "4bbb058c135fba54052ce627e3ace00834cfe3258ffc6c17218a1146211a6a99"
+    },
+    {
+      "run": "test_workshop_ui",
+      "report": "test_workshop_ui/report.json",
+      "log": "test_workshop_ui/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 151,
+      "failures": 0,
+      "log_sha256": "ce60b65fe62dcb7b4e59af44d032e02415137a0b6682d7e25fa2bf87210cadd0"
+    },
+    {
+      "run": "test_workshop_presets",
+      "report": "test_workshop_presets/report.json",
+      "log": "test_workshop_presets/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 88,
+      "failures": 0,
+      "log_sha256": "1a5e28c7d9036799453958bbea9c46b5747ddf3304871d1fca55ec04f4dab6b8"
+    },
+    {
+      "run": "test_workshop_name_integrity",
+      "report": "test_workshop_name_integrity/report.json",
+      "log": "test_workshop_name_integrity/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 153,
+      "failures": 0,
+      "log_sha256": "cb8b855ee0f6f75cc44e45db5bfa3af99ce87fdfefe583009eebe38c6297054c"
+    },
+    {
+      "run": "test_exit_transaction",
+      "report": "test_exit_transaction/report.json",
+      "log": "test_exit_transaction/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 41,
+      "failures": 0,
+      "log_sha256": "5dea3b67626ff5b4d53a11bf8ebd9effa0556e729823613fc885f859cc1dfda7"
+    },
+    {
+      "run": "test_workshop_bundle",
+      "report": "test_workshop_bundle/report.json",
+      "log": "test_workshop_bundle/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 28,
+      "failures": 0,
+      "log_sha256": "17ee263ad35b23018fc6d1738f25348dba9cd020d124d5b7866caa9555bb55b7"
+    },
+    {
+      "run": "test_workshop_customization-complete",
+      "report": "test_workshop_customization-complete/report.json",
+      "log": "test_workshop_customization-complete/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 54,
+      "failures": 0,
+      "log_sha256": "f4a556669019e6473e158cb49cb67c6abc0dbbc8a06b1e94a335be5cc097f398"
+    },
+    {
+      "run": "library-preferences-complete",
+      "report": "library-preferences-complete/report.json",
+      "log": "library-preferences-complete/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 67,
+      "failures": 0,
+      "log_sha256": "a2cef4f8a9898e8baeaabe35ef91b1b995232476f913eb1f2a293e64f3318a83"
+    }
+  ],
+  "qualified_checks": 1275,
+  "parse_checks": [
+    {
+      "run": "parse-lighting_editor_state",
+      "report": "parse-lighting_editor_state/report.json",
+      "log": "parse-lighting_editor_state/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "run": "parse-workshop_lighting",
+      "report": "parse-workshop_lighting/report.json",
+      "log": "parse-workshop_lighting/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "run": "parse-draft_store",
+      "report": "parse-draft_store/report.json",
+      "log": "parse-draft_store/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "run": "parse-workshop",
+      "report": "parse-workshop/report.json",
+      "log": "parse-workshop/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "run": "parse-regression-2",
+      "report": "parse-regression-2/report.json",
+      "log": "parse-regression-2/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    }
+  ],
+  "import": {
+    "run": "import-final",
+    "report": "import-final/report.json",
+    "log": "import-final/engine.log",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "engine_counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "checks": 0,
+    "failures": 0,
+    "log_sha256": "680c0b2f82c0653355f19591e295a7de80ab90c2cb0ddbbdc4794291ec275c09"
+  },
+  "new_suite_discovered_by_required_units_roster": true,
+  "remaining_numeric_text_diagnostic_not_acceptance": {
+    "run": "numeric-boundary",
+    "report": "numeric-boundary/report.json",
+    "log": "numeric-boundary/engine.log",
+    "ok": true,
+    "complete": true,
+    "reason": "passed",
+    "engine_counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "checks": 10,
+    "failures": 0,
+    "log_sha256": "01a30131609493bc3290b5a810de92d00531393737a3872077dc3921ae9fa9e2"
+  },
+  "development_attempts": [
+    {
+      "run": "parse-regression",
+      "report": "parse-regression/report.json",
+      "log": "parse-regression/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "172f4a84857a2f90af1d75c6c4ae7603eca460763466909f4602049c14fb4a37"
+    },
+    {
+      "run": "baseline",
+      "report": "baseline/report.json",
+      "log": "baseline/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "checks": 51,
+      "failures": 14,
+      "log_sha256": "e44523104d31fff49338a5ee6d407a1abc2edc8deb2f888acdae292e66de05be"
+    },
+    {
+      "run": "baseline-complete",
+      "report": "baseline-complete/report.json",
+      "log": "baseline-complete/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 74,
+      "failures": 30,
+      "log_sha256": "a919f75c758aa9b5a509319e626a8595fe5e665dd3e258bb36823429aa79e584"
+    },
+    {
+      "run": "candidate",
+      "report": "candidate/report.json",
+      "log": "candidate/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 77,
+      "failures": 4,
+      "log_sha256": "0b8ed78f88eb59bd9e866441dc9db6b8c1c1d6e2c16c50a69e6c9370e20ffedc"
+    },
+    {
+      "run": "candidate-data-oracle",
+      "report": "candidate-data-oracle/report.json",
+      "log": "candidate-data-oracle/engine.log",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 77,
+      "failures": 0,
+      "log_sha256": "544ff65f4ece02736cace08df5a2ee15c2d8e054eb37eb26f088923eb69afcd8"
+    },
+    {
+      "run": "test_workshop_customization",
+      "report": "test_workshop_customization/report.json",
+      "log": "test_workshop_customization/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "missing_required_text",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 54,
+      "failures": 0,
+      "log_sha256": "f4a556669019e6473e158cb49cb67c6abc0dbbc8a06b1e94a335be5cc097f398"
+    },
+    {
+      "run": "test_workshop_library_reuse",
+      "report": "test_workshop_library_reuse/report.json",
+      "log": "test_workshop_library_reuse/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "engine_counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "checks": 0,
+      "failures": 0,
+      "log_sha256": "8a315cf4e7e76aacbcc76992693b0fc242ed575c81b163dfc831d4c39fa1b6cb"
+    },
+    {
+      "run": "test_workshop_library_preferences",
+      "report": "test_workshop_library_preferences/report.json",
+      "log": "test_workshop_library_preferences/engine.log",
+      "ok": false,
+      "complete": true,
+      "reason": "missing_required_text",
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 67,
+      "failures": 0,
+      "log_sha256": "a2cef4f8a9898e8baeaabe35ef91b1b995232476f913eb1f2a293e64f3318a83"
+    }
+  ],
+  "development_notes": [
+    "Initial test return type Control did not match Workshop CanvasLayer; fixed before candidate runtime execution.",
+    "Baseline fixture history setup and Smoke method names were corrected; final baseline uses the exact final regression.",
+    "Initial candidate test expected intensity values between SpinBox 0.05 steps and compared typed arrays directly to JSON arrays. Final fixture uses representable control values and full-precision JSON data comparison.",
+    "Four malformed-state checks run only when the new draft payload exists: baseline 80 checks, candidate 84.",
+    "Two supplemental checks initially used wrong completion markers; a guessed library test path did not exist. Correct customization/library-preferences runs are retained as qualified.",
+    "An exploratory raw numeric text extension was not integrated: native deferred parsing/cancel and invalid-expression boundaries need a separate change. Only the qualified source snapshot was promoted."
+  ],
+  "limits": [
+    "Unsubmitted SpinBox raw text is not recovered: actual Cycle text 3.75 with value 1.0 reopens as 1.0; pending brightness 0.42 is preserved. Follow-up remains under UI3-01.",
+    "Failed catalog-source replacement can still clear outgoing data before source validation; source review only, outside named-build replacement verification.",
+    "Optional draft extension accepts legacy four/five-key Lighting states; older applications may reject the new pending payload. No downgrade compatibility claim.",
+    "Overall brightness recovery restarts the normal 0.28-second debounce; it does not retain remaining wall time.",
+    "Full required CI, native rendering, physical devices, release/power-loss durability and aircraft physical validation were not run."
+  ],
+  "new_local_documentation_links_checked": 30,
+  "git_diff_check_exit": 0
+}

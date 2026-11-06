@@ -1,0 +1,15 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   raw text entered through the field
+ok   witness text differs from the SpinBox value
+ok   witness completed recovery snapshot exists
+NUMERIC_BOUNDARY before={"text":"3.75","value":1.0} stored={"color_text":["#FFFFFF"],"draft":{"brightness":null,"color_pending":false,"effects":[],"zone":{"brightness":0.42,"enabled":false,"id":"landing_lamp","pattern":{"duty":0.5,"floor":1.0,"id":"steady","palette":["#FFFFFF"],"period_ticks":240.0,"phase_turns":0.0,"reverse":false,"segments":1.0},"reactive":{"gain":0.0,"source":"none"}}},"effects_open":false,"sequence":{"color_text":["#20DFFF"],"duration_text":"4.0","effect_anchor_ids":[],"open":false,"pattern_id":"steady","period_text":"4.0","selected_id":"","zone_ids":[]},"zone":"landing_lamp","zones_open":true}
+ok   dialog action exists: Restore as a new build
+NUMERIC_BOUNDARY restored={"text":"1.0  s","value":1.0,"zone_brightness":0.42}
+ok   remaining limitation reproduced; this is not acceptance
+Numeric boundary witness: 10 checks, 0 failed; limitation remains

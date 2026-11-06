@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3495abde-4707-449b-af12-522bdaa1a7f6",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-draft-integrity/drafts/probe_numeric_boundary.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:48:45.963076+00:00",
+  "label": "numeric-boundary-witness",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\numeric-boundary\\numeric-boundary-witness-55b91exh\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\numeric-boundary\\numeric-boundary-witness-55b91exh\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "limitation remains"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.906,
+  "log_bytes": 1268,
+  "log_sha256": "01a30131609493bc3290b5a810de92d00531393737a3872077dc3921ae9fa9e2"
+}

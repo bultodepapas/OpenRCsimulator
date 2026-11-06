@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "44769d9c-e6b1-43f8-9db9-825ccbb4f232",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_customization.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:50:26.503111+00:00",
+  "label": "test_workshop_customization",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_customization\\test_workshop_customization-mzhdnj14\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_customization\\test_workshop_customization-mzhdnj14\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "checks"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "checks"
+  ],
+  "reason": "missing_required_text",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 5.953,
+  "log_bytes": 3246,
+  "log_sha256": "f4a556669019e6473e158cb49cb67c6abc0dbbc8a06b1e94a335be5cc097f398"
+}

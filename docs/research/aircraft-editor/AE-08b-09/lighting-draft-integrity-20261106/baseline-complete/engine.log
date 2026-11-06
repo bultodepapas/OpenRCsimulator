@@ -1,0 +1,77 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   action is enabled: UndoRecipe
+ok   Undo changes only the accepted recipe
+FAIL Undo retains proposed zone brightness and blocked actions 
+ok   action is enabled: RedoRecipe
+FAIL Redo retains the same unapplied zone 
+FAIL action is enabled: ApplyLightingZone 
+FAIL explicit Apply publishes restored brightness 
+ok   action is enabled: UndoRecipe
+FAIL incompatible Undo preserves both history stacks and the draft 
+FAIL action is enabled: @Button@524 
+FAIL action is enabled: UndoRecipe 
+ok   Cancel then Undo resolves the guarded transition
+ok   action is enabled: RedoRecipe
+FAIL incompatible Redo also preserves both stacks 
+FAIL action is enabled: @Button@524 
+FAIL action is enabled: RedoRecipe 
+ok   raw text entered through the field
+ok   action is enabled: UndoRecipe
+FAIL unrelated history preserves invalid color and Cancel availability 
+FAIL action is enabled: @Button@524 
+FAIL visible Cancel resolves an invalid first color 
+ok   action is enabled: LightingMoreEffects
+ok   choice exists: trail
+FAIL popup selected trail 
+ok   action is enabled: UndoRecipe
+ok   action is enabled: RedoRecipe
+FAIL effects and their controls survive Undo/Redo without publishing 
+FAIL action is enabled: @Button@529 
+FAIL explicit Apply publishes the complete effect proposal 
+FAIL pending overall brightness survives synchronous history refresh 
+FAIL restored brightness resumes its bounded commit timer 
+FAIL cancelled brightness timer cannot publish later 
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   raw text entered through the field
+ok   completed debounce snapshot decodes the maximum palette depth
+FAIL snapshot separates accepted profile from the complete pending zone 
+ok   dialog action exists: Restore as a new build
+FAIL recovery restores raw values without canonicalizing steady period { "id": "landing_lamp", "enabled": false, "brightness": 1.0, "pattern": { "id": "steady", "palette": ["#FFFFFF"], "period_ticks": 240, "phase_turns": 0.0, "floor": 1.0, "duty": 0.5, "reverse": false, "segments": 1 }, "reactive": { "source": "none", "gain": 0.0 } }
+FAIL recovery preserves invalid text, accepted profile and blocked actions 
+ok   unknown state is refused atomically
+FAIL action is enabled: @Button@3845 
+ok   Cancel resolves recovered raw state
+ok   legacy five-key state still restores
+ok   legacy four-key state still restores
+ok   action is enabled: LightingMoreEffects
+ok   pending effects can be snapshotted
+ok   dialog action exists: Restore as a new build
+FAIL JSON effects recover into typed controls and remain pending 
+FAIL action is enabled: @Button@5296 
+FAIL restored effects can be explicitly applied 
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   named build fixture saves
+ok   raw text entered through the field
+ok   outgoing draft recovery completes
+ok   dialog action exists: Cancel
+ok   cancelled load retains the outgoing field and recovery
+ok   dialog action exists: Discard changes
+FAIL failed load retains the outgoing field and recovery 
+ok   dialog action exists: Discard changes
+FAIL successful replacement clears outgoing presentation drafts 
+FAIL loaded build is clean with coherent actions and no stale recovery 
+Lighting drafts: 74 checks, 30 failed

@@ -1,0 +1,33 @@
+extends "res://tests/test_workshop_lighting_drafts.gd"
+## Diagnostic witness of the remaining unsubmitted-SpinBox recovery boundary.
+
+func _run() -> void:
+	ui = UiDriver.new(self)
+	TranslationServer.set_locale("en")
+	root.size = Vector2i(1920, 1080)
+	_root = "user://probe_lighting_numeric_%d" % Time.get_ticks_usec()
+	var first := await _editor("numeric", true)
+	var panel := await _lighting(first)
+	panel._zone_brightness.value = 0.42
+	await _edit(panel._period.get_line_edit(), "3.75")
+	var before := {"text": panel._period.get_line_edit().text, "value": panel._period.value}
+	_check("witness text differs from the SpinBox value", before.text == "3.75" and before.value != 3.75)
+	await create_timer(0.9).timeout
+	var saved: Dictionary = DraftStore.load_snapshot(first.recovery_root)
+	_check("witness completed recovery snapshot exists", saved.ok and saved.compatible)
+	var state: Dictionary = saved.get("editor", {}).get("presentation_buffers", {}).get("lighting", {})
+	print("NUMERIC_BOUNDARY before=", JSON.stringify(before), " stored=", JSON.stringify(state))
+	first.free()
+	await ui.settle()
+	var second := await _editor("numeric", true)
+	await _window_button(second._recovery_dialog, "Restore as a new build")
+	panel = second._page_nodes.lighting
+	print("NUMERIC_BOUNDARY restored=", JSON.stringify({"text": panel._period.get_line_edit().text,
+		"value": panel._period.value, "zone_brightness": panel._zone_brightness.value}))
+	_check("remaining limitation reproduced; this is not acceptance", panel._period.value == before.value
+		and panel._period.get_line_edit().text != "3.75" and panel._zone_brightness.value == 0.42)
+	second.free()
+	ui = null
+	await process_frame
+	print("Numeric boundary witness: %d checks, %d failed; limitation remains" % [_checks, _failures])
+	quit(1 if _failures else 0)

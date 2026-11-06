@@ -1,0 +1,58 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "01169b07-c724-4d52-8781-c36595a76585",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--check-only",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-draft-integrity/drafts/test_workshop_lighting_drafts.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:35:04.590301+00:00",
+  "label": "parse-regression",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\parse-regression\\parse-regression-nifjfi7u\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\parse-regression\\parse-regression-nifjfi7u\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot assign a value of type res://ui/workshop.gd to variable \"editor\" with specified type Control.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-draft-integrity/drafts/test_workshop_lighting_drafts.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/lighting-draft-integrity/drafts/test_workshop_lighting_drafts.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.391,
+  "log_bytes": 553,
+  "log_sha256": "172f4a84857a2f90af1d75c6c4ae7603eca460763466909f4602049c14fb4a37"
+}

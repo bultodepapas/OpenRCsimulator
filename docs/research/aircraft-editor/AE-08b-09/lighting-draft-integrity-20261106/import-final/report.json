@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8af6840b-f08f-4490-bbf0-9e7b308757ad",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--editor",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:49:49.363612+00:00",
+  "label": "import-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\import-final\\import-final-78jtdsdm\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\import-final\\import-final-78jtdsdm\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.406,
+  "log_bytes": 1871,
+  "log_sha256": "680c0b2f82c0653355f19591e295a7de80ab90c2cb0ddbbdc4794291ec275c09"
+}

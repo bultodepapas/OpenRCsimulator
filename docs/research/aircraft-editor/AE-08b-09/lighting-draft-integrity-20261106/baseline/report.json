@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7ccf4eb1-58bb-45d3-8c02-f4b1203648b4",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_lighting_drafts.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:35:36.011602+00:00",
+  "label": "lighting-drafts-before",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\baseline\\lighting-drafts-before-4f6khodb\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\baseline\\lighting-drafts-before-4f6khodb\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 19,
+      "message": "Invalid access to property or key 'lighting' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: _history (res://tests/test_workshop_lighting_drafts.gd:148)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _history (res://tests/test_workshop_lighting_drafts.gd:148)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 61,
+      "message": "Invalid call. Nonexistent function 'has_pending_edit' in base 'VBoxContainer (workshop_customization.gd)'.",
+      "context": [
+        "   at: _replacement (res://tests/test_workshop_lighting_drafts.gd:284)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _replacement (res://tests/test_workshop_lighting_drafts.gd:284)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 12.312,
+  "log_bytes": 3531,
+  "log_sha256": "e44523104d31fff49338a5ee6d407a1abc2edc8deb2f888acdae292e66de05be"
+}

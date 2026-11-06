@@ -1,0 +1,42 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   editor recovery state has the exact eight-field contract
+ok   Neon targets stay limited to zones present in its profile
+ok   cue pattern menu excludes nested Sequence
+ok   Add cue creates a valid custom sequence from Neon
+ok   Add cue emits one complete profile immediately
+ok   unapplied duration is pending without emitting a profile
+ok   Apply converts duration seconds to accepted ticks
+ok   Duplicate inserts an ordered second cue
+ok   cue selector shows cumulative start and duration seconds
+ok   Move earlier changes saved order while preserving cue identity
+ok   pending raw text holds cue navigation
+ok   invalid Apply remains pending and does not emit
+ok   Cancel restores accepted duration and releases navigation
+ok   hex palette edit stays local until Apply
+ok   hex palette Apply updates the committed cue
+ok   RGB picker updates the local hex entry
+ok   RGB picker color commits through Apply
+ok   palette supports eight colors and blocks a ninth
+ok   rebuilt sequence controls retain crystal feedback
+ok   eight-color palette applies as one cue edit
+ok   palette removal is a pending cue edit
+ok   Cancel restores the accepted palette after removal
+ok   Remove cue preserves the remaining cue
+ok   removing the last cue clears orphan Sequence zone patterns
+ok   configure clears pending state while retaining selected cue and section
+ok   explicit editor recovery preserves invalid raw timing
+ok   restoring pending text does not emit a lighting profile
+ok   configure initializes sequence availability without an external pending transition
+ok   unchanged external pending state does not rescan sequence controls
+ok   external pending transition refreshes and disables cue editing once
+ok   repeated pending slider events do not rescan hidden sequence controls
+ok   clearing external pending refreshes and enables cue editing once
+ok   test effect profile remains valid
+ok   orientation lock disables navigation targets
+ok   only installed anchors appear and disabled effects cannot be targeted
+ok   enabled effect fixture is a valid profile
+ok   installed and enabled anchor becomes selectable
+ok   enabled effect target is saved with the cue
+ok   pending signal reports dirty and applied transitions
+FW-RGB-09 sequence UI: 39 checks, 0 failed

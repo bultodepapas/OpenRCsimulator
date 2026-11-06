@@ -6,6 +6,7 @@ const Widgets := preload("res://ui/widgets.gd")
 const Crystal := preload("res://ui/crystal_surface.gd")
 const Presentation := preload("res://workshop/presentation.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
+const EditorState := preload("res://workshop/lighting_editor_state.gd")
 const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
 
 signal profile_changed(profile: Dictionary)
@@ -408,6 +409,7 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 	var checked: Dictionary = Profile.validate(_profile)
 	if bool(checked.get("ok", false)):
 		_profile = checked.profile.duplicate(true)
+	_brightness_timer.stop()
 	_brightness_pending = false
 	_zone_pending = false
 	_zone_text_pending = false
@@ -428,53 +430,96 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 
 
 func get_editor_state() -> Dictionary:
-	return {
+	var state := {
 		"zone": _selected_zone_id,
 		"zones_open": _zone_section.visible,
 		"effects_open": _effects_section.visible,
 		"color_text": _zone_hex_fields.map(func(field: LineEdit) -> String: return field.text),
 		"sequence": _sequence_editor.get_editor_state(),
 	}
+	if _zone_pending or _zone_text_pending or _effects_pending or _brightness_pending:
+		state["draft"] = {
+			"zone": _zone_draft.duplicate(true) if _zone_pending or _zone_text_pending else {},
+			"effects": _effects_draft.duplicate(true) if _effects_pending else [],
+			"brightness": _brightness.value if _brightness_pending else null,
+			"color_pending": _zone_text_pending,
+		}
+	return state
 
 
 func restore_editor_state(state: Dictionary) -> bool:
-	var keys := ["zone", "zones_open", "effects_open", "color_text"]
-	if state.size() != keys.size() + (1 if state.has("sequence") else 0):
-		return false
-	for key: String in keys:
-		if not state.has(key):
-			return false
-	if typeof(state.zone) != TYPE_STRING or str(state.zone).length() > 80:
-		return false
-	if typeof(state.zones_open) != TYPE_BOOL or typeof(state.effects_open) != TYPE_BOOL or not state.color_text is Array:
-		return false
-	if state.color_text.size() > 8:
+	if not EditorState.validate(state).ok:
 		return false
 	if state.zone != "" and not _zone_exists(str(state.zone)):
 		return false
-	for color_text: Variant in state.color_text:
-		if typeof(color_text) != TYPE_STRING or str(color_text).length() > 16:
+	var draft: Dictionary = state.get("draft", {})
+	var zone: Dictionary = draft.get("zone", {})
+	var effects: Array = draft.get("effects", [])
+	if not zone.is_empty():
+		var accepted_zone: Dictionary = _zone_for_id(str(state.zone))
+		for key: String in ["phase_turns", "floor", "duty", "reverse", "segments"]:
+			if zone.pattern[key] != accepted_zone.pattern[key]:
+				return false
+		if bool(_profile.get("orientation_lock", false)) and str(state.zone).begins_with("nav_") \
+				and zone.pattern != accepted_zone.pattern:
 			return false
-	if state.has("sequence") and not Sequence.validate_editor_state(state.sequence).ok:
-		return false
+	if not effects.is_empty():
+		var anchors: Array = _profile.get("effects", []).map(func(effect: Dictionary) -> String: return effect.anchor_id)
+		if effects.size() != anchors.size():
+			return false
+		for effect: Dictionary in effects:
+			if effect.anchor_id not in anchors:
+				return false
+			for accepted_effect: Dictionary in _profile.get("effects", []):
+				if accepted_effect.anchor_id == effect.anchor_id and effect.get("required", true) != accepted_effect.get("required", true):
+					return false
+	# All component/selection checks precede mutation. The cue editor also checks
+	# its references before changing anything, so a refusal leaves this view intact.
+	_syncing = true
 	if state.has("sequence") and not _sequence_editor.restore_editor_state(state.sequence):
+		_syncing = false
 		return false
+	_brightness_timer.stop()
+	_brightness_pending = false
+	_effects_pending = false
 	_selected_zone_id = str(state.zone)
 	_zone_section.visible = bool(state.zones_open)
-	_zone_button.button_pressed = _zone_section.visible
+	_zone_button.set_pressed_no_signal(_zone_section.visible)
 	_zone_button.text = tr("Hide zone controls" if _zone_section.visible else "Customize zones")
 	_effects_section.visible = bool(state.effects_open)
-	_more_effects_button.button_pressed = _effects_section.visible
+	_more_effects_button.set_pressed_no_signal(_effects_section.visible)
 	_more_effects_button.text = tr("Hide effects" if _effects_section.visible else "More effects")
 	_rebuild_zone_selector(_selected_zone_id)
-	_sync_zone_editor()
+	if not zone.is_empty():
+		_zone_draft = zone.duplicate(true)
+	_sync_zone_editor(not zone.is_empty())
 	_sync_simple_controls()
+	if not effects.is_empty():
+		_effects_draft.clear()
+		for effect: Dictionary in effects:
+			_effects_draft.append(effect.duplicate(true))
+		_effects_pending = _effects_draft != _profile.get("effects", [])
+	_rebuild_effect_controls(not effects.is_empty())
+	_syncing = false
 	for index in mini(state.color_text.size(), _zone_hex_fields.size()):
 		var text_value := str(state.color_text[index])
-		var accepted: Array = _zone_draft.get("pattern", {}).get("palette", [])
-		if index < accepted.size() and text_value.to_upper() != str(accepted[index]).to_upper():
+		if text_value != _zone_hex_fields[index].text:
 			_zone_hex_fields[index].text = text_value
 			_on_zone_hex_changed(text_value, index)
+	_zone_text_pending = _zone_text_pending or bool(draft.get("color_pending", false))
+	_zone_text_invalid = _has_invalid_zone_text()
+	if _zone_text_invalid:
+		_set_status(tr("Enter a six-digit hex color such as #20DFFF."))
+	else:
+		_set_status("")
+	if draft.get("brightness") != null:
+		_brightness.set_value_no_signal(float(draft.brightness))
+		_brightness_value.text = "%d%%" % roundi(float(draft.brightness) * 100.0)
+		_brightness_pending = true
+		# Resume the usual bounded debounce, never an orphaned pending flag.
+		_brightness_timer.start()
+	_refresh_zone_pending()
+	_emit_validity()
 	return true
 
 
@@ -705,8 +750,9 @@ func _on_zone_selected(index: int) -> void:
 	_sync_zone_editor()
 
 
-func _sync_zone_editor() -> void:
-	_zone_draft = _zone_for_id(_selected_zone_id)
+func _sync_zone_editor(keep_draft: bool = false) -> void:
+	if not keep_draft:
+		_zone_draft = _zone_for_id(_selected_zone_id)
 	_refresh_capability_feedback()
 	_zone_pending = false
 	_zone_text_pending = false
@@ -864,7 +910,7 @@ func _on_zone_hex_changed(value: String, index: int) -> void:
 	if not _valid_hex(value):
 		_zone_text_invalid = _has_invalid_zone_text()
 		_set_status(tr("Enter a six-digit hex color such as #20DFFF."))
-		_emit_validity()
+		_refresh_zone_pending()
 		return
 	_zone_text_invalid = _has_invalid_zone_text()
 	_set_palette_color(index, value.to_upper())
@@ -1180,12 +1226,13 @@ func _cancel_effects() -> void:
 	_emit_validity()
 
 
-func _rebuild_effect_controls() -> void:
+func _rebuild_effect_controls(keep_draft: bool = false) -> void:
 	if not is_instance_valid(_effects_controls):
 		return
 	_clear_children(_effects_controls)
 	_effects_controls_by_anchor.clear()
-	_effects_draft = _profile.get("effects", []).duplicate(true)
+	if not keep_draft:
+		_effects_draft = _profile.get("effects", []).duplicate(true)
 	for entry_value: Variant in _effects_draft:
 		if not entry_value is Dictionary:
 			continue
@@ -1459,6 +1506,8 @@ func _capability_status(row: Dictionary) -> String:
 
 
 func _emit_validity() -> void:
+	if _syncing:
+		return
 	if is_instance_valid(_sequence_editor):
 		_sequence_editor.set_external_pending(_brightness_pending or _zone_pending or _effects_pending or _zone_text_pending)
 	validity_changed.emit("lighting", has_pending_edit())

@@ -1,0 +1,70 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0bae74f9-92a6-40dc-901b-1c1e40ac0950",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_library_reuse.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:51:24.428022+00:00",
+  "label": "test_workshop_library_reuse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_library_reuse\\test_workshop_library_reuse-ed12yyon\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_library_reuse\\test_workshop_library_reuse-ed12yyon\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop library"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Attempt to open script 'res://tests/test_workshop_library_reuse.gd' resulted in error 'File not found'.",
+      "context": [
+        "   at: load_source_code (modules/gdscript/gdscript.cpp:1160)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://tests/test_workshop_library_reuse.gd.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Can't load script: res://tests/test_workshop_library_reuse.gd",
+      "context": [
+        "   at: start (main/main.cpp:4409)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "Workshop library"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.328,
+  "log_bytes": 476,
+  "log_sha256": "8a315cf4e7e76aacbcc76992693b0fc242ed575c81b163dfc831d4c39fa1b6cb"
+}

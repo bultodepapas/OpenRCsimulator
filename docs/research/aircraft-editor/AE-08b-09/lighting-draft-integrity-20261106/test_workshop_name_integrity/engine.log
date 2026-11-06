@@ -1,0 +1,156 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   64 source name is valid in the existing format
+ok   64 portable import retains the full name under a new identity
+ok   64 opening a saved build preserves the complete name
+ok   64 clean baseline retains the source identity
+ok   64 unrelated edit saves successfully
+ok   64 unrelated save preserves name in revision two
+ok   64 reload preserves the full name and clean state
+ok   64 re-export preserves the full accepted name
+ok   64 original record remains unchanged
+ok   64 Save and continue displays the full existing name
+ok   64 keyboard Save and continue preserves name in revision three
+ok   64 cancelling a guard rename preserves full editor name and revision
+ok   64 completed recovery snapshot contains the full name
+ok   64 recovery retains unrelated pending text
+ok   64 recovery rejects an over-limit name without replacing its snapshot
+ok   64 raw editor name remains recoverable: ''
+ok   64 raw editor name remains recoverable: '  Unsaved name  '
+ok   64 actual recovery restores the entire name without ancestry
+ok   64 restored pending numeric input remains blocking
+ok   64 recovered build saves as a new copy
+ok   64 recovered copy keeps the complete name
+ok   64 export after recovery retains the full name
+ok   64 recovering a copy preserves the original imported revision
+ok   64 store refuses 97 characters without publication
+ok   64 bundle refuses 97 characters without publication
+ok   65 source name is valid in the existing format
+ok   65 portable import retains the full name under a new identity
+ok   65 opening a saved build preserves the complete name
+ok   65 clean baseline retains the source identity
+ok   65 unrelated edit saves successfully
+ok   65 unrelated save preserves name in revision two
+ok   65 reload preserves the full name and clean state
+ok   65 re-export preserves the full accepted name
+ok   65 original record remains unchanged
+ok   65 Save and continue displays the full existing name
+ok   65 keyboard Save and continue preserves name in revision three
+ok   65 cancelling a guard rename preserves full editor name and revision
+ok   65 completed recovery snapshot contains the full name
+ok   65 recovery retains unrelated pending text
+ok   65 recovery rejects an over-limit name without replacing its snapshot
+ok   65 raw editor name remains recoverable: ''
+ok   65 raw editor name remains recoverable: '  Unsaved name  '
+ok   65 actual recovery restores the entire name without ancestry
+ok   65 restored pending numeric input remains blocking
+ok   65 recovered build saves as a new copy
+ok   65 recovered copy keeps the complete name
+ok   65 export after recovery retains the full name
+ok   65 recovering a copy preserves the original imported revision
+ok   65 store refuses 97 characters without publication
+ok   65 bundle refuses 97 characters without publication
+ok   80 source name is valid in the existing format
+ok   80 portable import retains the full name under a new identity
+ok   80 opening a saved build preserves the complete name
+ok   80 clean baseline retains the source identity
+ok   80 unrelated edit saves successfully
+ok   80 unrelated save preserves name in revision two
+ok   80 reload preserves the full name and clean state
+ok   80 re-export preserves the full accepted name
+ok   80 original record remains unchanged
+ok   80 Save and continue displays the full existing name
+ok   80 keyboard Save and continue preserves name in revision three
+ok   80 cancelling a guard rename preserves full editor name and revision
+ok   80 completed recovery snapshot contains the full name
+ok   80 recovery retains unrelated pending text
+ok   80 recovery rejects an over-limit name without replacing its snapshot
+ok   80 raw editor name remains recoverable: ''
+ok   80 raw editor name remains recoverable: '  Unsaved name  '
+ok   80 actual recovery restores the entire name without ancestry
+ok   80 restored pending numeric input remains blocking
+ok   80 recovered build saves as a new copy
+ok   80 recovered copy keeps the complete name
+ok   80 export after recovery retains the full name
+ok   80 recovering a copy preserves the original imported revision
+ok   80 store refuses 97 characters without publication
+ok   80 bundle refuses 97 characters without publication
+ok   96 source name is valid in the existing format
+ok   96 portable import retains the full name under a new identity
+ok   96 opening a saved build preserves the complete name
+ok   96 clean baseline retains the source identity
+ok   96 unrelated edit saves successfully
+ok   96 unrelated save preserves name in revision two
+ok   96 reload preserves the full name and clean state
+ok   96 re-export preserves the full accepted name
+ok   96 original record remains unchanged
+ok   96 Save and continue displays the full existing name
+ok   96 keyboard Save and continue preserves name in revision three
+ok   96 cancelling a guard rename preserves full editor name and revision
+ok   96 completed recovery snapshot contains the full name
+ok   96 recovery retains unrelated pending text
+ok   96 recovery rejects an over-limit name without replacing its snapshot
+ok   96 raw editor name remains recoverable: ''
+ok   96 raw editor name remains recoverable: '  Unsaved name  '
+ok   96 actual recovery restores the entire name without ancestry
+ok   96 restored pending numeric input remains blocking
+ok   96 recovered build saves as a new copy
+ok   96 recovered copy keeps the complete name
+ok   96 export after recovery retains the full name
+ok   96 recovering a copy preserves the original imported revision
+ok   96 store refuses 97 characters without publication
+ok   96 bundle refuses 97 characters without publication
+ok   96 one extra character rejects consistently across all data boundaries
+ok   unicode96 source name is valid in the existing format
+ok   unicode96 portable import retains the full name under a new identity
+ok   unicode96 opening a saved build preserves the complete name
+ok   unicode96 clean baseline retains the source identity
+ok   unicode96 unrelated edit saves successfully
+ok   unicode96 unrelated save preserves name in revision two
+ok   unicode96 reload preserves the full name and clean state
+ok   unicode96 re-export preserves the full accepted name
+ok   unicode96 original record remains unchanged
+ok   unicode96 Save and continue displays the full existing name
+ok   unicode96 keyboard Save and continue preserves name in revision three
+ok   unicode96 cancelling a guard rename preserves full editor name and revision
+ok   unicode96 completed recovery snapshot contains the full name
+ok   unicode96 recovery retains unrelated pending text
+ok   unicode96 recovery rejects an over-limit name without replacing its snapshot
+ok   unicode96 raw editor name remains recoverable: ''
+ok   unicode96 raw editor name remains recoverable: '  Unsaved name  '
+ok   unicode96 actual recovery restores the entire name without ancestry
+ok   unicode96 restored pending numeric input remains blocking
+ok   unicode96 recovered build saves as a new copy
+ok   unicode96 recovered copy keeps the complete name
+ok   unicode96 export after recovery retains the full name
+ok   unicode96 recovering a copy preserves the original imported revision
+ok   unicode96 store refuses 97 characters without publication
+ok   unicode96 bundle refuses 97 characters without publication
+ok   unicode96 one extra character rejects consistently across all data boundaries
+ok   combining96 source name is valid in the existing format
+ok   combining96 portable import retains the full name under a new identity
+ok   combining96 opening a saved build preserves the complete name
+ok   combining96 clean baseline retains the source identity
+ok   combining96 unrelated edit saves successfully
+ok   combining96 unrelated save preserves name in revision two
+ok   combining96 reload preserves the full name and clean state
+ok   combining96 re-export preserves the full accepted name
+ok   combining96 original record remains unchanged
+ok   combining96 Save and continue displays the full existing name
+ok   combining96 keyboard Save and continue preserves name in revision three
+ok   combining96 cancelling a guard rename preserves full editor name and revision
+ok   combining96 completed recovery snapshot contains the full name
+ok   combining96 recovery retains unrelated pending text
+ok   combining96 recovery rejects an over-limit name without replacing its snapshot
+ok   combining96 raw editor name remains recoverable: ''
+ok   combining96 raw editor name remains recoverable: '  Unsaved name  '
+ok   combining96 actual recovery restores the entire name without ancestry
+ok   combining96 restored pending numeric input remains blocking
+ok   combining96 recovered build saves as a new copy
+ok   combining96 recovered copy keeps the complete name
+ok   combining96 export after recovery retains the full name
+ok   combining96 recovering a copy preserves the original imported revision
+ok   combining96 store refuses 97 characters without publication
+ok   combining96 bundle refuses 97 characters without publication
+ok   combining96 one extra character rejects consistently across all data boundaries
+Workshop name integrity: 153 checks, 0 failures

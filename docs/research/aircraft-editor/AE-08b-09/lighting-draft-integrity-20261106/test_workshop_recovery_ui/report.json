@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2d3e83a5-237a-4514-bbbb-6c2025065961",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp\\workshop-presets\\workspace\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_recovery_ui.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:42:10.375384+00:00",
+  "label": "test_workshop_recovery_ui",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_recovery_ui\\test_workshop_recovery_ui-ji8cnigh\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_recovery_ui\\test_workshop_recovery_ui-ji8cnigh\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop recovery UI:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 28.766,
+  "log_bytes": 4926,
+  "log_sha256": "785d102391135c92a2f2aa9cb3430aa0fc7c27d6cdf6d59f3214321d13b22852"
+}

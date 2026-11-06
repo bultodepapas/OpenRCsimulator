@@ -1,0 +1,67 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   action is enabled: UndoRecipe
+ok   Undo changes only the accepted recipe
+FAIL Undo retains proposed zone brightness and blocked actions 
+ok   action is enabled: RedoRecipe
+FAIL Redo retains the same unapplied zone 
+FAIL action is enabled: ApplyLightingZone 
+FAIL explicit Apply publishes restored brightness 
+ok   action is enabled: UndoRecipe
+FAIL incompatible Undo preserves both history stacks and the draft 
+FAIL action is enabled: @Button@524 
+ok   action is enabled: UndoRecipe
+SCRIPT ERROR: Invalid access to property or key 'lighting' on a base object of type 'Dictionary'.
+   at: _history (res://tests/test_workshop_lighting_drafts.gd:148)
+   GDScript backtrace (most recent call first):
+       [0] _history (res://tests/test_workshop_lighting_drafts.gd:148)
+       [1] _click (res://tests/test_workshop_lighting_drafts.gd:53)
+       [2] tap (res://tests/ui_driver.gd:24)
+       [3] settle (res://tests/ui_driver.gd:55)
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   raw text entered through the field
+ok   completed debounce snapshot decodes the maximum palette depth
+FAIL snapshot separates accepted profile from the complete pending zone 
+ok   dialog action exists: Restore as a new build
+FAIL recovery restores raw values without canonicalizing steady period { "id": "landing_lamp", "enabled": false, "brightness": 1.0, "pattern": { "id": "steady", "palette": ["#FFFFFF"], "period_ticks": 240, "phase_turns": 0.0, "floor": 1.0, "duty": 0.5, "reverse": false, "segments": 1 }, "reactive": { "source": "none", "gain": 0.0 } }
+FAIL recovery preserves invalid text, accepted profile and blocked actions 
+ok   unknown state is refused atomically
+FAIL action is enabled: @Button@2655 
+ok   Cancel resolves recovered raw state
+ok   legacy five-key state still restores
+ok   legacy four-key state still restores
+ok   action is enabled: LightingMoreEffects
+ok   pending effects can be snapshotted
+ok   dialog action exists: Restore as a new build
+FAIL JSON effects recover into typed controls and remain pending 
+FAIL action is enabled: @Button@4107 
+FAIL restored effects can be explicitly applied 
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   named build fixture saves
+ok   raw text entered through the field
+ok   outgoing draft recovery completes
+ok   dialog action exists: Cancel
+ok   cancelled load retains the outgoing field and recovery
+ok   dialog action exists: Discard changes
+FAIL failed load retains the outgoing field and recovery 
+ok   dialog action exists: Discard changes
+SCRIPT ERROR: Invalid call. Nonexistent function 'has_pending_edit' in base 'VBoxContainer (workshop_customization.gd)'.
+   at: _replacement (res://tests/test_workshop_lighting_drafts.gd:284)
+   GDScript backtrace (most recent call first):
+       [0] _replacement (res://tests/test_workshop_lighting_drafts.gd:284)
+       [1] _window_button (res://tests/test_workshop_lighting_drafts.gd:104)
+       [2] settle (res://tests/ui_driver.gd:55)
+Lighting drafts: 51 checks, 14 failed

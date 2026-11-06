@@ -1,0 +1,80 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   action is enabled: UndoRecipe
+ok   Undo changes only the accepted recipe
+ok   Undo retains proposed zone brightness and blocked actions
+ok   action is enabled: RedoRecipe
+ok   Redo retains the same unapplied zone
+ok   action is enabled: ApplyLightingZone
+ok   explicit Apply publishes restored brightness
+ok   action is enabled: UndoRecipe
+ok   incompatible Undo preserves both history stacks and the draft
+ok   action is enabled: @Button@524
+ok   action is enabled: UndoRecipe
+ok   Cancel then Undo resolves the guarded transition
+ok   action is enabled: RedoRecipe
+ok   incompatible Redo also preserves both stacks
+ok   action is enabled: @Button@524
+ok   action is enabled: RedoRecipe
+ok   raw text entered through the field
+ok   action is enabled: UndoRecipe
+ok   unrelated history preserves invalid color and Cancel availability
+ok   action is enabled: @Button@524
+ok   visible Cancel resolves an invalid first color
+ok   action is enabled: LightingMoreEffects
+ok   choice exists: trail
+ok   popup selected trail
+ok   action is enabled: UndoRecipe
+ok   action is enabled: RedoRecipe
+FAIL effects and their controls survive Undo/Redo without publishing 
+ok   action is enabled: @Button@529
+ok   explicit Apply publishes the complete effect proposal
+ok   pending overall brightness survives synchronous history refresh
+ok   restored brightness resumes its bounded commit timer
+ok   cancelled brightness timer cannot publish later
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   raw text entered through the field
+ok   completed debounce snapshot decodes the maximum palette depth
+FAIL snapshot separates accepted profile from the complete pending zone 
+ok   dialog action exists: Restore as a new build
+FAIL recovery restores raw values without canonicalizing steady period { "brightness": 0.42, "enabled": false, "id": "landing_lamp", "pattern": { "duty": 0.5, "floor": 1.0, "id": "steady", "palette": ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"], "period_ticks": 900.0, "phase_turns": 0.0, "reverse": false, "segments": 1.0 }, "reactive": { "gain": 0.0, "source": "none" } }
+ok   recovery preserves invalid text, accepted profile and blocked actions
+ok   unknown state is refused atomically
+ok   nonfinite draft is refused atomically
+ok   hidden pattern fields cannot change through recovery
+ok   malformed nested data is refused without runtime errors
+ok   action is enabled: @Button@4976
+ok   Cancel resolves recovered raw state
+ok   legacy five-key state still restores
+ok   legacy four-key state still restores
+ok   action is enabled: LightingMoreEffects
+ok   pending effects can be snapshotted
+ok   dialog action exists: Restore as a new build
+FAIL JSON effects recover into typed controls and remain pending 
+ok   action is enabled: @Button@6698
+ok   restored effects can be explicitly applied
+ok   choice exists: custom
+ok   popup selected custom
+ok   action is enabled: CustomizeLightingZones
+ok   choice exists: landing_lamp
+ok   popup selected landing_lamp
+ok   named build fixture saves
+ok   raw text entered through the field
+ok   outgoing draft recovery completes
+ok   dialog action exists: Cancel
+ok   cancelled load retains the outgoing field and recovery
+ok   dialog action exists: Discard changes
+ok   failed load retains the outgoing field and recovery
+ok   dialog action exists: Discard changes
+ok   successful replacement clears outgoing presentation drafts
+ok   loaded build is clean with coherent actions and no stale recovery
+Lighting drafts: 77 checks, 4 failed

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "049bde79-069b-4aee-bfad-f216d692e31d",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp\\workshop-presets\\workspace\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_lighting_drafts.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T23:41:21.685474+00:00",
+  "label": "test_workshop_lighting_drafts",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_lighting_drafts\\test_workshop_lighting_drafts-h0zjwxzs\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lighting-draft-integrity\\test_workshop_lighting_drafts\\test_workshop_lighting_drafts-h0zjwxzs\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Lighting drafts:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 15.89,
+  "log_bytes": 4017,
+  "log_sha256": "9b9f69892304df04eca74c37991a2e0e415161a3887ee9094ac6579cf7f7e228"
+}

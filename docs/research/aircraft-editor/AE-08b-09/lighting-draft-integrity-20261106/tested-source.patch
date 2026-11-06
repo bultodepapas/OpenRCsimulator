@@ -1,0 +1,796 @@
+diff --git a/app/assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import b/app/assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import
+index ede20638c..ff46fde92 100644
+--- a/app/assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import
++++ b/app/assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import
+@@ -2,7 +2,7 @@
+ 
+ importer="texture"
+ type="CompressedTexture2D"
+-uid="uid://pthxjuftypte"
++uid="uid://ck82k5gqpog7n"
+ path="res://.godot/imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.ctex"
+ metadata={
+ "vram_texture": false
+diff --git a/app/assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import b/app/assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import
+index 1ec07010b..2904cedbf 100644
+--- a/app/assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import
++++ b/app/assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import
+@@ -2,7 +2,7 @@
+ 
+ importer="texture"
+ type="CompressedTexture2D"
+-uid="uid://dli31cpqeoj3e"
++uid="uid://xxkawjcj6lw8"
+ path="res://.godot/imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.ctex"
+ metadata={
+ "vram_texture": false
+diff --git a/app/assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import b/app/assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import
+index f61aba403..9d555209c 100644
+--- a/app/assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import
++++ b/app/assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import
+@@ -2,7 +2,7 @@
+ 
+ importer="texture"
+ type="CompressedTexture2D"
+-uid="uid://krk0vlfr3vl2"
++uid="uid://dqggmj4x1dtxn"
+ path="res://.godot/imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.ctex"
+ metadata={
+ "vram_texture": false
+diff --git a/app/tests/test_alert_efficiency.gd.uid b/app/tests/test_alert_efficiency.gd.uid
+index 21ea18624..7e7de78b6 100644
+--- a/app/tests/test_alert_efficiency.gd.uid
++++ b/app/tests/test_alert_efficiency.gd.uid
+@@ -1 +1 @@
+-uid://ivtbq40br28i
++uid://cd2boodvknw2n
+diff --git a/app/tests/test_workshop_lighting_drafts.gd b/app/tests/test_workshop_lighting_drafts.gd
+new file mode 100644
+index 000000000..7ff954971
+--- /dev/null
++++ b/app/tests/test_workshop_lighting_drafts.gd
+@@ -0,0 +1,317 @@
++extends SceneTree
++## AE-09d-R3 / A17: pending values, accepted data and available actions are separate.
++
++const Workshop := preload("res://ui/workshop.gd")
++const DraftStore := preload("res://workshop/draft_store.gd")
++const UiDriver := preload("res://tests/ui_driver.gd")
++var ui: RefCounted
++var _checks := 0
++var _failures := 0
++var _root := ""
++
++
++func _initialize() -> void:
++	_run.call_deferred()
++
++
++func _run() -> void:
++	ui = UiDriver.new(self)
++	TranslationServer.set_locale("en")
++	root.size = Vector2i(1920, 1080)
++	_root = "user://test_lighting_drafts_%d" % Time.get_ticks_usec()
++	await _history()
++	await _recovery()
++	await _replacement()
++	ui = null
++	await process_frame
++	print("Lighting drafts: %d checks, %d failed" % [_checks, _failures])
++	quit(1 if _failures else 0)
++
++
++func _check(label: String, ok: bool, detail: String = "") -> void:
++	_checks += 1
++	if ok: print("ok   ", label)
++	else:
++		_failures += 1
++		printerr("FAIL %s %s" % [label, detail])
++
++
++func _editor(key: String, recover := false) -> CanvasLayer:
++	var editor: CanvasLayer = Workshop.new()
++	editor.variants_root = _root + "/" + key + "/library"
++	editor.recovery_root = _root + "/" + key + "/recovery"
++	editor.recovery_enabled = recover
++	root.add_child(editor)
++	await ui.settle()
++	return editor
++
++
++func _click(button: Button) -> void:
++	_check("action is enabled: " + button.name, not button.disabled)
++	if button.disabled: return
++	button.grab_focus()
++	await ui.tap(KEY_ENTER)
++
++
++func _choose(picker: OptionButton, metadata: String) -> void:
++	var index := -1
++	for item: int in picker.item_count:
++		if str(picker.get_item_metadata(item)) == metadata: index = item
++	_check("choice exists: " + metadata, index >= 0)
++	if index < 0: return
++	picker.grab_focus()
++	await ui.tap(KEY_SPACE)
++	var popup := picker.get_popup()
++	popup.set_focused_item(index)
++	for pressed: bool in [true, false]:
++		var event := InputEventKey.new()
++		event.keycode = KEY_ENTER
++		event.physical_keycode = KEY_ENTER
++		event.pressed = pressed
++		event.window_id = popup.get_window_id()
++		Input.parse_input_event(event)
++	await ui.settle()
++	_check("popup selected " + metadata, picker.selected == index and not popup.visible)
++
++
++func _edit(field: LineEdit, text: String) -> void:
++	field.grab_focus()
++	field.edit()
++	field.select_all()
++	await ui.tap(KEY_BACKSPACE)
++	for index: int in text.length():
++		var event := InputEventKey.new()
++		event.unicode = text.unicode_at(index)
++		event.pressed = true
++		Input.parse_input_event(event)
++	await ui.settle()
++	_check("raw text entered through the field", field.text == text, field.text)
++
++
++func _window_button(dialog: Window, label: String) -> void:
++	var target: Button
++	for button: Node in dialog.find_children("*", "Button", true, false):
++		if button.text == label: target = button
++	_check("dialog action exists: " + label, target != null and not target.disabled)
++	if target == null: return
++	target.grab_focus()
++	for pressed: bool in [true, false]:
++		var event := InputEventKey.new()
++		event.keycode = KEY_ENTER
++		event.physical_keycode = KEY_ENTER
++		event.pressed = pressed
++		dialog.push_input(event)
++	await ui.settle()
++
++
++func _lighting(editor: CanvasLayer) -> Control:
++	editor._set_page("lighting")
++	var panel: Control = editor._page_nodes.lighting
++	await _choose(panel._preset, "custom")
++	await _click(panel._zone_button)
++	await _choose(panel._zone_selector, "landing_lamp")
++	return panel
++
++
++func _zone(profile: Dictionary) -> Dictionary:
++	for zone: Dictionary in profile.zones:
++		if zone.id == "landing_lamp": return zone
++	return {}
++
++
++func _same_data(left: Variant, right: Variant) -> bool:
++	# JSON has neither typed arrays nor separate integer/float number types.
++	# Full-precision round trips compare every value without those runtime tags.
++	return JSON.parse_string(JSON.stringify(left, "", true, true)) == JSON.parse_string(JSON.stringify(right, "", true, true))
++
++
++func _blocked(editor: CanvasLayer, panel: Control) -> bool:
++	return panel.has_pending_edit() and editor.has_unsaved_changes() and editor.save_button.disabled and editor._trial_button.disabled
++
++
++func _history() -> void:
++	var editor := await _editor("history")
++	var panel := await _lighting(editor)
++	editor._clear_history()
++	editor.set_recipe({power_multiplier = 1.1})
++	var accepted: Dictionary = editor.get_presentation()
++	panel._zone_brightness.value = 0.42
++	await _click(editor._undo_button)
++	_check("Undo changes only the accepted recipe", editor.get_recipe().power_multiplier == 1.0 and editor.get_presentation() == accepted)
++	_check("Undo retains proposed zone brightness and blocked actions", panel._zone_brightness.value == 0.42 and _blocked(editor, panel))
++	await _click(editor._redo_button)
++	_check("Redo retains the same unapplied zone", editor.get_recipe().power_multiplier == 1.1
++		and panel._zone_brightness.value == 0.42 and _blocked(editor, panel) and editor.get_presentation() == accepted)
++	await _click(panel._zone_apply)
++	_check("explicit Apply publishes restored brightness", _zone(editor.get_presentation().lighting).brightness == 0.42 and not panel.has_pending_edit())
++	panel._zone_brightness.value = 0.18
++	var undo: Array = editor._undo_history.duplicate(true)
++	var redo: Array = editor._redo_history.duplicate(true)
++	await _click(editor._undo_button)
++	_check("incompatible Undo preserves both history stacks and the draft", editor._undo_history == undo and editor._redo_history == redo
++		and panel._zone_brightness.value == 0.18 and _zone(editor.get_presentation().lighting).brightness == 0.42)
++	await _click(panel._zone_cancel)
++	await _click(editor._undo_button)
++	_check("Cancel then Undo resolves the guarded transition", _zone(editor.get_presentation().lighting).brightness == 1.0)
++	panel._zone_brightness.value = 0.3
++	undo = editor._undo_history.duplicate(true)
++	redo = editor._redo_history.duplicate(true)
++	await _click(editor._redo_button)
++	_check("incompatible Redo also preserves both stacks", editor._undo_history == undo and editor._redo_history == redo and panel._zone_brightness.value == 0.3)
++	await _click(panel._zone_cancel)
++	await _click(editor._redo_button)
++	editor.set_recipe({power_multiplier = 1.2})
++	await _edit(panel._zone_hex_fields[0], "#BAD")
++	await _click(editor._undo_button)
++	_check("unrelated history preserves invalid color and Cancel availability", panel._zone_hex_fields[0].text == "#BAD"
++		and panel._zone_text_invalid and panel._zone_apply.disabled and not panel._zone_cancel.disabled and _blocked(editor, panel))
++	await _click(panel._zone_cancel)
++	_check("visible Cancel resolves an invalid first color", not panel.has_pending_edit() and editor._edit_valid())
++	editor.set_recipe({power_multiplier = 1.25})
++	var unchanged_color: String = panel._zone_hex_fields[0].text
++	await _edit(panel._zone_hex_fields[0], unchanged_color)
++	await _click(editor._undo_button)
++	_check("text-dirty intent survives even when the color equals accepted data", panel._zone_text_pending
++		and panel._zone_hex_fields[0].text == unchanged_color and _blocked(editor, panel))
++	await _click(panel._zone_cancel)
++	await _click(panel._more_effects_button)
++	editor.set_recipe({power_multiplier = 1.3})
++	var effect: Dictionary = panel._effects_controls_by_anchor.vfx_tip_left
++	effect.enabled.button_pressed = true
++	await _choose(effect.kind, "trail")
++	effect.intensity.value = 0.4
++	effect.lifetime.value = 1.2
++	var effects: Array = panel._effects_draft.duplicate(true)
++	accepted = editor.get_presentation()
++	await _click(editor._undo_button)
++	await _click(editor._redo_button)
++	_check("effects and their controls survive Undo/Redo without publishing", _same_data(panel._effects_draft, effects)
++		and panel._effects_controls_by_anchor.vfx_tip_left.intensity.value == 0.4 and editor.get_presentation() == accepted and _blocked(editor, panel))
++	await _click(panel._effects_apply)
++	_check("explicit Apply publishes the complete effect proposal", editor.get_presentation().lighting.effects == effects and not panel.has_pending_edit())
++	editor.set_recipe({power_multiplier = 1.4})
++	panel._brightness.value = 0.63
++	editor._undo()
++	_check("pending overall brightness survives synchronous history refresh", panel._brightness_pending and panel._brightness.value == 0.63)
++	await create_timer(0.4).timeout
++	_check("restored brightness resumes its bounded commit timer", not panel.has_pending_edit() and editor.get_presentation().lighting.brightness == 0.63)
++	panel._brightness.value = 0.27
++	panel.cancel_pending_edit()
++	await create_timer(0.4).timeout
++	_check("cancelled brightness timer cannot publish later", editor.get_presentation().lighting.brightness == 0.63)
++	panel._brightness.value = 0.0
++	var zero_state: Dictionary = panel.get_editor_state()
++	panel.configure(editor._presentation_bindings, editor.get_presentation())
++	_check("pending zero brightness restores as a value, not an absent edit", panel.restore_editor_state(zero_state)
++		and panel._brightness_pending and panel._brightness.value == 0.0)
++	await create_timer(0.4).timeout
++	_check("restored zero brightness commits once its debounce expires", not panel.has_pending_edit()
++		and editor.get_presentation().lighting.brightness == 0.0)
++	editor.free()
++	await ui.settle()
++
++
++func _recovery() -> void:
++	var first := await _editor("recovery", true)
++	var panel := await _lighting(first)
++	first.set_recipe({power_multiplier = 1.1})
++	panel._zone_brightness.value = 0.42
++	panel._period.value = 3.75 # Steady normalizes on Apply, but this is still a raw proposal.
++	for _index: int in 7: panel._add_palette_color()
++	await _edit(panel._zone_hex_fields[7], "#BAD")
++	var proposed: Dictionary = panel._zone_draft.duplicate(true)
++	var accepted: Dictionary = first.get_presentation()
++	await create_timer(0.9).timeout
++	var saved: Dictionary = DraftStore.load_snapshot(first.recovery_root)
++	_check("completed debounce snapshot decodes the maximum palette depth", saved.ok and saved.compatible, str(saved.get("errors", [])))
++	var state: Dictionary = saved.get("editor", {}).get("presentation_buffers", {}).get("lighting", {})
++	_check("snapshot separates accepted profile from the complete pending zone", state.has("draft")
++		and _same_data(state.get("draft", {}).get("zone", {}), proposed) and saved.get("payload", {}).get("presentation_profile", {}) == accepted)
++	first.free()
++	await ui.settle()
++	var second := await _editor("recovery", true)
++	await _window_button(second._recovery_dialog, "Restore as a new build")
++	panel = second._page_nodes.lighting
++	_check("recovery restores raw values without canonicalizing steady period", _same_data(panel._zone_draft, proposed)
++		and panel._period.value == 3.75 and panel._zone_hex_fields.size() == 8, str(panel._zone_draft))
++	_check("recovery preserves invalid text, accepted profile and blocked actions", panel._zone_hex_fields.back().text == "#BAD"
++		and panel._zone_text_invalid and second.get_presentation() == accepted and _blocked(second, panel))
++	var intact: Dictionary = panel.get_editor_state()
++	var invalid: Dictionary = intact.duplicate(true)
++	invalid["unsupported"] = true
++	_check("unknown state is refused atomically", not panel.restore_editor_state(invalid) and panel.get_editor_state() == intact)
++	if intact.has("draft"):
++		invalid = intact.duplicate(true)
++		invalid.draft.zone.brightness = INF
++		_check("nonfinite draft is refused atomically", not panel.restore_editor_state(invalid) and panel.get_editor_state() == intact)
++		invalid = intact.duplicate(true)
++		invalid.draft.zone.pattern.reverse = not invalid.draft.zone.pattern.reverse
++		_check("hidden pattern fields cannot change through recovery", not panel.restore_editor_state(invalid) and panel.get_editor_state() == intact)
++		invalid = intact.duplicate(true)
++		invalid.draft.zone.pattern = "malformed"
++		_check("malformed nested data is refused without runtime errors", not panel.restore_editor_state(invalid) and panel.get_editor_state() == intact)
++		var malformed_editor: Dictionary = saved.editor.duplicate(true)
++		malformed_editor.presentation_buffers.lighting = invalid
++		var refused: Dictionary = DraftStore.save_snapshot(second.recovery_root, saved.payload, malformed_editor)
++		_check("malformed recovery cannot replace the completed snapshot", not refused.ok
++			and DraftStore.load_snapshot(second.recovery_root).digest == saved.digest)
++	await _click(panel._zone_cancel)
++	_check("Cancel resolves recovered raw state", not panel.has_pending_edit() and second._edit_valid())
++	var legacy: Dictionary = panel.get_editor_state()
++	legacy.erase("draft")
++	_check("legacy five-key state still restores", panel.restore_editor_state(legacy))
++	legacy.erase("sequence")
++	_check("legacy four-key state still restores", panel.restore_editor_state(legacy))
++	await _click(panel._more_effects_button)
++	panel._effects_controls_by_anchor.vfx_tip_right.enabled.button_pressed = true
++	panel._effects_controls_by_anchor.vfx_tip_right.intensity.value = 0.25
++	var effects: Array = panel._effects_draft.duplicate(true)
++	_check("pending effects can be snapshotted", second._autosave_draft())
++	second.free()
++	await ui.settle()
++	var third := await _editor("recovery", true)
++	await _window_button(third._recovery_dialog, "Restore as a new build")
++	panel = third._page_nodes.lighting
++	_check("JSON effects recover into typed controls and remain pending", _same_data(panel._effects_draft, effects)
++		and panel._effects_controls_by_anchor.vfx_tip_right.intensity.value == 0.25 and _blocked(third, panel))
++	await _click(panel._effects_apply)
++	_check("restored effects can be explicitly applied", third.get_presentation().lighting.effects == effects and third._edit_valid())
++	third.free()
++	await ui.settle()
++
++
++func _replacement() -> void:
++	var editor := await _editor("replacement", true)
++	var panel := await _lighting(editor)
++	var smoke: Control = editor._page_nodes.smoke
++	smoke.apply_preset(5)
++	editor.set_variant_name("Pending replacement fixture")
++	editor.save_named_variant()
++	var saved_id: String = editor._saved_variant_id
++	var accepted: Dictionary = editor.get_presentation()
++	_check("named build fixture saves", not saved_id.is_empty())
++	editor.set_recipe({power_multiplier = 1.1})
++	editor._set_page("smoke")
++	await _edit(smoke._custom_color, "#BAD")
++	_check("outgoing draft recovery completes", editor._autosave_draft())
++	var before: Dictionary = DraftStore.load_snapshot(editor.recovery_root)
++	editor._selected_variant_id = saved_id
++	editor._load_selected_variant()
++	await _window_button(editor._guard_dialog, "Cancel")
++	_check("cancelled load retains the outgoing field and recovery", smoke._custom_color.text == "#BAD"
++		and DraftStore.load_snapshot(editor.recovery_root).digest == before.digest)
++	editor._selected_variant_id = "missing-build"
++	editor._load_selected_variant()
++	await _window_button(editor._guard_dialog, "Discard changes")
++	_check("failed load retains the outgoing field and recovery", smoke._custom_color.text == "#BAD"
++		and editor.get_recipe().power_multiplier == 1.1 and DraftStore.load_snapshot(editor.recovery_root).digest == before.digest)
++	editor._selected_variant_id = saved_id
++	editor._load_selected_variant()
++	await _window_button(editor._guard_dialog, "Discard changes")
++	_check("successful replacement clears outgoing presentation drafts", not smoke.has_pending_color() and not smoke.has_pending_marking() and not panel.has_pending_edit()
++		and editor.get_presentation() == accepted and editor.get_recipe().power_multiplier == 1.0)
++	_check("loaded build is clean with coherent actions and no stale recovery", not editor.has_unsaved_changes()
++		and editor._edit_valid() and not editor.save_button.disabled and not editor._trial_button.disabled
++		and not DraftStore.load_snapshot(editor.recovery_root).exists)
++	editor.free()
++	await ui.settle()
+diff --git a/app/tests/test_workshop_lighting_drafts.gd.uid b/app/tests/test_workshop_lighting_drafts.gd.uid
+new file mode 100644
+index 000000000..1a00d799c
+--- /dev/null
++++ b/app/tests/test_workshop_lighting_drafts.gd.uid
+@@ -0,0 +1 @@
++uid://bjim5q0getjhg
+diff --git a/app/ui/workshop.gd b/app/ui/workshop.gd
+index ee301d7a5..6d2877350 100644
+--- a/app/ui/workshop.gd
++++ b/app/ui/workshop.gd
+@@ -1050,6 +1050,7 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
+ 	_base_bytes = source_bytes
+ 	_refresh_base_summary()
+ 	if not preserve_recipe:
++		_discard_presentation_edits()
+ 		_recipe = Compiler.defaults()
+ 		_presentation = {}
+ 		_resolve_presentation()
+@@ -1283,6 +1284,8 @@ func _load_variant_snapshot(selected_id: String) -> void:
+ 	if not checked.ok:
+ 		set_note(_messages(checked.errors, "The saved build could not be loaded."))
+ 		return
++	commit_navigation()
++	_discard_presentation_edits()
+ 	_invalid_fields.clear()
+ 	_pending_numbers.clear()
+ 	_base_id = next_base_id
+@@ -1677,7 +1680,7 @@ func _reset_recipe() -> void:
+ 
+ 
+ func _undo() -> void:
+-	if _undo_history.is_empty():
++	if _undo_history.is_empty() or not _history_lighting_ready(_undo_history.back()):
+ 		return
+ 	_redo_history.append(_history_snapshot())
+ 	var previous: Dictionary = _undo_history.pop_back()
+@@ -1687,7 +1690,7 @@ func _undo() -> void:
+ 
+ 
+ func _redo() -> void:
+-	if _redo_history.is_empty():
++	if _redo_history.is_empty() or not _history_lighting_ready(_redo_history.back()):
+ 		return
+ 	_undo_history.append(_history_snapshot())
+ 	var next: Dictionary = _redo_history.pop_back()
+@@ -1696,6 +1699,22 @@ func _redo() -> void:
+ 	set_note("Recipe change reapplied.")
+ 
+ 
++func _history_lighting_ready(snapshot: Dictionary) -> bool:
++	if not _page_nodes.has("lighting") or not _page_nodes.lighting.has_pending_edit():
++		return true
++	var current: Dictionary = _presentation.get("lighting", Presentation.LightingProfile.defaults())
++	var target: Dictionary = snapshot.presentation_profile.get("lighting", Presentation.LightingProfile.defaults())
++	if current == target:
++		return true
++	set_note("Apply or cancel the current lighting edit first.")
++	_set_page("lighting")
++	var pending: Control = _page_nodes.lighting.pending_control()
++	if pending != null:
++		pending.grab_focus()
++		_body_scroll.ensure_control_visible(pending)
++	return false
++
++
+ func _set_recipe(next_recipe: Dictionary, remember_current: bool) -> void:
+ 	var checked: Dictionary = Parameters.validate(next_recipe)
+ 	if not checked.ok:
+@@ -2396,7 +2415,7 @@ func _load_selected_variant() -> void:
+ 			target_name = str(summary.name)
+ 			break
+ 	_close_library()
+-	request_navigation(tr("Open saved build") + " · " + target_name, _load_variant_snapshot.bind(target), _return_to_library.bind(_variant_selector))
++	request_navigation(tr("Open saved build") + " · " + target_name, _load_variant_snapshot.bind(target), _return_to_library.bind(_variant_selector), null, true)
+ 
+ 
+ func _set_page(page: String) -> void:
+@@ -2995,7 +3014,7 @@ func _prepare_bundle_dialog() -> void:
+ func _bundle_file_selected(path: String) -> void:
+ 	if _bundle_import:
+ 		_close_library()
+-		request_navigation("Import aircraft build", _import_bundle_file.bind(path))
++		request_navigation("Import aircraft build", _import_bundle_file.bind(path), Callable(), null, true)
+ 		return
+ 	var file := FileAccess.open(path, FileAccess.WRITE)
+ 	if file == null:
+@@ -3047,6 +3066,14 @@ func _resolve_presentation() -> void:
+ 	_sync_presentation()
+ 
+ 
++## Called only once a document replacement has passed its admission checks.
++func _discard_presentation_edits() -> void:
++	for page: String in ["appearance", "smoke", "lighting"]:
++		if _page_nodes.has(page):
++			_page_nodes[page].cancel_pending_edit()
++	_presentation_buffers.clear()
++
++
+ func _sync_presentation(source_page: String = "") -> void:
+ 	var pending_states: Dictionary = {}
+ 	for page: String in _presentation_buffers:
+@@ -3379,6 +3406,7 @@ func _apply_recovered_draft() -> void:
+ 			_trial_button.disabled = not _edit_valid()
+ 			return
+ 	_recovery_restoring = true
++	_discard_presentation_edits()
+ 	_base_id = payload.base_id
+ 	_base = payload.base.duplicate(true)
+ 	_base_bytes = payload.base_bytes.duplicate()
+diff --git a/app/ui/workshop_lighting.gd b/app/ui/workshop_lighting.gd
+index 96de6842b..ef79d4a9b 100644
+--- a/app/ui/workshop_lighting.gd
++++ b/app/ui/workshop_lighting.gd
+@@ -6,6 +6,7 @@ const Widgets := preload("res://ui/widgets.gd")
+ const Crystal := preload("res://ui/crystal_surface.gd")
+ const Presentation := preload("res://workshop/presentation.gd")
+ const Sequence := preload("res://workshop/lighting_sequence.gd")
++const EditorState := preload("res://workshop/lighting_editor_state.gd")
+ const SequenceEditor := preload("res://ui/workshop_lighting_sequence.gd")
+ 
+ signal profile_changed(profile: Dictionary)
+@@ -408,6 +409,7 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
+ 	var checked: Dictionary = Profile.validate(_profile)
+ 	if bool(checked.get("ok", false)):
+ 		_profile = checked.profile.duplicate(true)
++	_brightness_timer.stop()
+ 	_brightness_pending = false
+ 	_zone_pending = false
+ 	_zone_text_pending = false
+@@ -428,53 +430,96 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
+ 
+ 
+ func get_editor_state() -> Dictionary:
+-	return {
++	var state := {
+ 		"zone": _selected_zone_id,
+ 		"zones_open": _zone_section.visible,
+ 		"effects_open": _effects_section.visible,
+ 		"color_text": _zone_hex_fields.map(func(field: LineEdit) -> String: return field.text),
+ 		"sequence": _sequence_editor.get_editor_state(),
+ 	}
++	if _zone_pending or _zone_text_pending or _effects_pending or _brightness_pending:
++		state["draft"] = {
++			"zone": _zone_draft.duplicate(true) if _zone_pending or _zone_text_pending else {},
++			"effects": _effects_draft.duplicate(true) if _effects_pending else [],
++			"brightness": _brightness.value if _brightness_pending else null,
++			"color_pending": _zone_text_pending,
++		}
++	return state
+ 
+ 
+ func restore_editor_state(state: Dictionary) -> bool:
+-	var keys := ["zone", "zones_open", "effects_open", "color_text"]
+-	if state.size() != keys.size() + (1 if state.has("sequence") else 0):
+-		return false
+-	for key: String in keys:
+-		if not state.has(key):
+-			return false
+-	if typeof(state.zone) != TYPE_STRING or str(state.zone).length() > 80:
+-		return false
+-	if typeof(state.zones_open) != TYPE_BOOL or typeof(state.effects_open) != TYPE_BOOL or not state.color_text is Array:
+-		return false
+-	if state.color_text.size() > 8:
++	if not EditorState.validate(state).ok:
+ 		return false
+ 	if state.zone != "" and not _zone_exists(str(state.zone)):
+ 		return false
+-	for color_text: Variant in state.color_text:
+-		if typeof(color_text) != TYPE_STRING or str(color_text).length() > 16:
++	var draft: Dictionary = state.get("draft", {})
++	var zone: Dictionary = draft.get("zone", {})
++	var effects: Array = draft.get("effects", [])
++	if not zone.is_empty():
++		var accepted_zone: Dictionary = _zone_for_id(str(state.zone))
++		for key: String in ["phase_turns", "floor", "duty", "reverse", "segments"]:
++			if zone.pattern[key] != accepted_zone.pattern[key]:
++				return false
++		if bool(_profile.get("orientation_lock", false)) and str(state.zone).begins_with("nav_") \
++				and zone.pattern != accepted_zone.pattern:
+ 			return false
+-	if state.has("sequence") and not Sequence.validate_editor_state(state.sequence).ok:
+-		return false
++	if not effects.is_empty():
++		var anchors: Array = _profile.get("effects", []).map(func(effect: Dictionary) -> String: return effect.anchor_id)
++		if effects.size() != anchors.size():
++			return false
++		for effect: Dictionary in effects:
++			if effect.anchor_id not in anchors:
++				return false
++			for accepted_effect: Dictionary in _profile.get("effects", []):
++				if accepted_effect.anchor_id == effect.anchor_id and effect.get("required", true) != accepted_effect.get("required", true):
++					return false
++	# All component/selection checks precede mutation. The cue editor also checks
++	# its references before changing anything, so a refusal leaves this view intact.
++	_syncing = true
+ 	if state.has("sequence") and not _sequence_editor.restore_editor_state(state.sequence):
++		_syncing = false
+ 		return false
++	_brightness_timer.stop()
++	_brightness_pending = false
++	_effects_pending = false
+ 	_selected_zone_id = str(state.zone)
+ 	_zone_section.visible = bool(state.zones_open)
+-	_zone_button.button_pressed = _zone_section.visible
++	_zone_button.set_pressed_no_signal(_zone_section.visible)
+ 	_zone_button.text = tr("Hide zone controls" if _zone_section.visible else "Customize zones")
+ 	_effects_section.visible = bool(state.effects_open)
+-	_more_effects_button.button_pressed = _effects_section.visible
++	_more_effects_button.set_pressed_no_signal(_effects_section.visible)
+ 	_more_effects_button.text = tr("Hide effects" if _effects_section.visible else "More effects")
+ 	_rebuild_zone_selector(_selected_zone_id)
+-	_sync_zone_editor()
++	if not zone.is_empty():
++		_zone_draft = zone.duplicate(true)
++	_sync_zone_editor(not zone.is_empty())
+ 	_sync_simple_controls()
++	if not effects.is_empty():
++		_effects_draft.clear()
++		for effect: Dictionary in effects:
++			_effects_draft.append(effect.duplicate(true))
++		_effects_pending = _effects_draft != _profile.get("effects", [])
++	_rebuild_effect_controls(not effects.is_empty())
++	_syncing = false
+ 	for index in mini(state.color_text.size(), _zone_hex_fields.size()):
+ 		var text_value := str(state.color_text[index])
+-		var accepted: Array = _zone_draft.get("pattern", {}).get("palette", [])
+-		if index < accepted.size() and text_value.to_upper() != str(accepted[index]).to_upper():
++		if text_value != _zone_hex_fields[index].text:
+ 			_zone_hex_fields[index].text = text_value
+ 			_on_zone_hex_changed(text_value, index)
++	_zone_text_pending = _zone_text_pending or bool(draft.get("color_pending", false))
++	_zone_text_invalid = _has_invalid_zone_text()
++	if _zone_text_invalid:
++		_set_status(tr("Enter a six-digit hex color such as #20DFFF."))
++	else:
++		_set_status("")
++	if draft.get("brightness") != null:
++		_brightness.set_value_no_signal(float(draft.brightness))
++		_brightness_value.text = "%d%%" % roundi(float(draft.brightness) * 100.0)
++		_brightness_pending = true
++		# Resume the usual bounded debounce, never an orphaned pending flag.
++		_brightness_timer.start()
++	_refresh_zone_pending()
++	_emit_validity()
+ 	return true
+ 
+ 
+@@ -705,8 +750,9 @@ func _on_zone_selected(index: int) -> void:
+ 	_sync_zone_editor()
+ 
+ 
+-func _sync_zone_editor() -> void:
+-	_zone_draft = _zone_for_id(_selected_zone_id)
++func _sync_zone_editor(keep_draft: bool = false) -> void:
++	if not keep_draft:
++		_zone_draft = _zone_for_id(_selected_zone_id)
+ 	_refresh_capability_feedback()
+ 	_zone_pending = false
+ 	_zone_text_pending = false
+@@ -864,7 +910,7 @@ func _on_zone_hex_changed(value: String, index: int) -> void:
+ 	if not _valid_hex(value):
+ 		_zone_text_invalid = _has_invalid_zone_text()
+ 		_set_status(tr("Enter a six-digit hex color such as #20DFFF."))
+-		_emit_validity()
++		_refresh_zone_pending()
+ 		return
+ 	_zone_text_invalid = _has_invalid_zone_text()
+ 	_set_palette_color(index, value.to_upper())
+@@ -1180,12 +1226,13 @@ func _cancel_effects() -> void:
+ 	_emit_validity()
+ 
+ 
+-func _rebuild_effect_controls() -> void:
++func _rebuild_effect_controls(keep_draft: bool = false) -> void:
+ 	if not is_instance_valid(_effects_controls):
+ 		return
+ 	_clear_children(_effects_controls)
+ 	_effects_controls_by_anchor.clear()
+-	_effects_draft = _profile.get("effects", []).duplicate(true)
++	if not keep_draft:
++		_effects_draft = _profile.get("effects", []).duplicate(true)
+ 	for entry_value: Variant in _effects_draft:
+ 		if not entry_value is Dictionary:
+ 			continue
+@@ -1459,6 +1506,8 @@ func _capability_status(row: Dictionary) -> String:
+ 
+ 
+ func _emit_validity() -> void:
++	if _syncing:
++		return
+ 	if is_instance_valid(_sequence_editor):
+ 		_sequence_editor.set_external_pending(_brightness_pending or _zone_pending or _effects_pending or _zone_text_pending)
+ 	validity_changed.emit("lighting", has_pending_edit())
+diff --git a/app/workshop/draft_store.gd b/app/workshop/draft_store.gd
+index fd89a0a91..065b0fa38 100644
+--- a/app/workshop/draft_store.gd
++++ b/app/workshop/draft_store.gd
+@@ -9,7 +9,7 @@ const StrictJSON := preload("res://workshop/strict_json.gd")
+ const Dependencies := preload("res://workshop/dependencies.gd")
+ const Descriptor := preload("res://workshop/descriptor.gd")
+ const Presentation := preload("res://workshop/presentation.gd")
+-const LightingSequence := preload("res://workshop/lighting_sequence.gd")
++const LightingEditorState := preload("res://workshop/lighting_editor_state.gd")
+ const Compiler := preload("res://workshop/compiler.gd")
+ 
+ const FORMAT: String = "openrc-aircraft-workshop-recovery"
+@@ -260,20 +260,10 @@ static func validate_editor_state(value: Variant) -> Dictionary:
+ 			return checked
+ 		checked_presentations[page] = checked["value"]
+ 	if presentations.has("lighting"):
+-		var lighting: Variant = presentations.lighting
+-		if typeof(lighting) != TYPE_DICTIONARY or not _exact_keys_optional(lighting, PackedStringArray(["zone", "zones_open", "effects_open", "color_text"]), PackedStringArray(["sequence"])):
+-			return _failure("Lighting editor recovery has missing or unsupported fields.")
+-		if typeof(lighting.zone) != TYPE_STRING or (not str(lighting.zone).is_empty() and not Presentation.LightingProfile.ZONE_IDS.has(str(lighting.zone))) \
+-				or typeof(lighting.zones_open) != TYPE_BOOL or typeof(lighting.effects_open) != TYPE_BOOL:
+-			return _failure("Lighting editor recovery selection is malformed.")
+-		if typeof(lighting.color_text) != TYPE_ARRAY or lighting.color_text.size() > 8:
+-			return _failure("Lighting editor recovery palette exceeds eight entries.")
+-		for text_value: Variant in lighting.color_text:
+-			if typeof(text_value) != TYPE_STRING or not _bounded_text(str(text_value), 16):
+-				return _failure("Lighting editor recovery color text is malformed.")
+-		if lighting.has("sequence") and not LightingSequence.validate_editor_state(lighting.sequence).ok:
+-			return _failure("Lighting sequence recovery has malformed or unsupported fields.")
+-		checked_presentations["lighting"] = lighting.duplicate(true)
++		var lighting: Dictionary = LightingEditorState.validate(presentations.lighting)
++		if not lighting.ok:
++			return _failure(str(lighting.errors[0]))
++		checked_presentations["lighting"] = lighting.value
+ 	var normalized: Dictionary = {
+ 		"page": str(editor["page"]),
+ 		"name": str(editor["name"]),
+@@ -370,7 +360,7 @@ static func _has_bundle_variant_shape(value: Dictionary) -> bool:
+ 
+ 
+ static func _decode_snapshot(bytes: PackedByteArray) -> Dictionary:
+-	var parsed: Dictionary = StrictJSON.parse(bytes, MAX_SNAPSHOT_BYTES, 8, 256)
++	var parsed: Dictionary = StrictJSON.parse(bytes, MAX_SNAPSHOT_BYTES, MAX_EDITOR_DEPTH, MAX_EDITOR_NODES)
+ 	if not bool(parsed.get("ok", false)):
+ 		return _result(false, parsed.get("errors", PackedStringArray()))
+ 	var object_result: Dictionary = _normalize_object(parsed.get("data", null), "recovery snapshot")
+diff --git a/app/workshop/lighting_editor_state.gd b/app/workshop/lighting_editor_state.gd
+new file mode 100644
+index 000000000..56185dfb3
+--- /dev/null
++++ b/app/workshop/lighting_editor_state.gd
+@@ -0,0 +1,73 @@
++extends RefCounted
++## Data-only Lighting edit buffers. Component bounds are shared with the profile;
++## validated raw values remain authoritative until the player explicitly applies.
++
++const Profile := preload("res://render/lighting/lighting_profile.gd")
++const Sequence := preload("res://workshop/lighting_sequence.gd")
++const REQUIRED := ["zone", "zones_open", "effects_open", "color_text"]
++const OPTIONAL := ["sequence", "draft"]
++const DRAFT_KEYS := ["zone", "effects", "brightness", "color_pending"]
++
++
++static func validate(raw: Variant) -> Dictionary:
++	if not _keys(raw, REQUIRED, OPTIONAL):
++		return _failure("Lighting editor recovery has missing or unsupported fields.")
++	if not _text(raw.zone, 80) or (not raw.zone.is_empty() and raw.zone not in Profile.ZONE_IDS) \
++			or typeof(raw.zones_open) != TYPE_BOOL or typeof(raw.effects_open) != TYPE_BOOL:
++		return _failure("Lighting editor recovery selection is malformed.")
++	if not raw.color_text is Array or raw.color_text.size() > 8:
++		return _failure("Lighting editor recovery palette exceeds eight entries.")
++	for color: Variant in raw.color_text:
++		if not _text(color, 16):
++			return _failure("Lighting editor recovery color text is malformed.")
++	if raw.has("sequence") and not Sequence.validate_editor_state(raw.sequence).ok:
++		return _failure("Lighting sequence recovery has malformed or unsupported fields.")
++	if raw.has("draft"):
++		var draft: Variant = raw.draft
++		if not _keys(draft, DRAFT_KEYS, []) or not draft.zone is Dictionary \
++				or not draft.effects is Array or draft.effects.size() > Profile.MAX_EFFECTS \
++				or typeof(draft.color_pending) != TYPE_BOOL:
++			return _failure("Lighting pending recovery fields are malformed.")
++		if draft.brightness != null and (typeof(draft.brightness) not in [TYPE_INT, TYPE_FLOAT] \
++				or not is_finite(float(draft.brightness)) or float(draft.brightness) < 0.0 or float(draft.brightness) > 2.0):
++			return _failure("Lighting pending brightness is outside its limits.")
++		var errors: Array[String] = []
++		if not draft.zone.is_empty():
++			Profile._normalize_zone(draft.zone, "pending zone", errors)
++			if not errors.is_empty():
++				return {"ok": false, "errors": errors}
++			if draft.zone.get("id") != raw.zone or raw.color_text.size() != draft.zone.pattern.palette.size():
++				return _failure("Lighting pending zone does not match its editor selection.")
++		elif draft.color_pending:
++			return _failure("Lighting pending color has no zone draft.")
++		Profile._normalize_effects(draft.effects, errors)
++		if not errors.is_empty():
++			return {"ok": false, "errors": errors}
++	# Profile normalization canonicalizes steady/sequence patterns. Do not replace
++	# a pending period, palette or other control value with that accepted form.
++	return {"ok": true, "value": raw.duplicate(true), "errors": []}
++
++
++static func _keys(raw: Variant, required: Array, optional: Array) -> bool:
++	if not raw is Dictionary:
++		return false
++	for key: Variant in raw:
++		if key not in required and key not in optional:
++			return false
++	for key: String in required:
++		if not raw.has(key):
++			return false
++	return true
++
++
++static func _text(value: Variant, limit: int) -> bool:
++	if not value is String or value.length() > limit:
++		return false
++	for index: int in value.length():
++		if value.unicode_at(index) < 32 or value.unicode_at(index) == 127:
++			return false
++	return true
++
++
++static func _failure(message: String) -> Dictionary:
++	return {"ok": false, "errors": [message]}
+diff --git a/app/workshop/lighting_editor_state.gd.uid b/app/workshop/lighting_editor_state.gd.uid
+new file mode 100644
+index 000000000..23a828584
+--- /dev/null
++++ b/app/workshop/lighting_editor_state.gd.uid
+@@ -0,0 +1 @@
++uid://bi4ushb7o7axi

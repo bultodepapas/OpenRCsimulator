@@ -9,7 +9,7 @@ const StrictJSON := preload("res://workshop/strict_json.gd")
 const Dependencies := preload("res://workshop/dependencies.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Presentation := preload("res://workshop/presentation.gd")
-const LightingSequence := preload("res://workshop/lighting_sequence.gd")
+const LightingEditorState := preload("res://workshop/lighting_editor_state.gd")
 const Compiler := preload("res://workshop/compiler.gd")
 
 const FORMAT: String = "openrc-aircraft-workshop-recovery"
@@ -260,20 +260,10 @@ static func validate_editor_state(value: Variant) -> Dictionary:
 			return checked
 		checked_presentations[page] = checked["value"]
 	if presentations.has("lighting"):
-		var lighting: Variant = presentations.lighting
-		if typeof(lighting) != TYPE_DICTIONARY or not _exact_keys_optional(lighting, PackedStringArray(["zone", "zones_open", "effects_open", "color_text"]), PackedStringArray(["sequence"])):
-			return _failure("Lighting editor recovery has missing or unsupported fields.")
-		if typeof(lighting.zone) != TYPE_STRING or (not str(lighting.zone).is_empty() and not Presentation.LightingProfile.ZONE_IDS.has(str(lighting.zone))) \
-				or typeof(lighting.zones_open) != TYPE_BOOL or typeof(lighting.effects_open) != TYPE_BOOL:
-			return _failure("Lighting editor recovery selection is malformed.")
-		if typeof(lighting.color_text) != TYPE_ARRAY or lighting.color_text.size() > 8:
-			return _failure("Lighting editor recovery palette exceeds eight entries.")
-		for text_value: Variant in lighting.color_text:
-			if typeof(text_value) != TYPE_STRING or not _bounded_text(str(text_value), 16):
-				return _failure("Lighting editor recovery color text is malformed.")
-		if lighting.has("sequence") and not LightingSequence.validate_editor_state(lighting.sequence).ok:
-			return _failure("Lighting sequence recovery has malformed or unsupported fields.")
-		checked_presentations["lighting"] = lighting.duplicate(true)
+		var lighting: Dictionary = LightingEditorState.validate(presentations.lighting)
+		if not lighting.ok:
+			return _failure(str(lighting.errors[0]))
+		checked_presentations["lighting"] = lighting.value
 	var normalized: Dictionary = {
 		"page": str(editor["page"]),
 		"name": str(editor["name"]),
@@ -370,7 +360,7 @@ static func _has_bundle_variant_shape(value: Dictionary) -> bool:
 
 
 static func _decode_snapshot(bytes: PackedByteArray) -> Dictionary:
-	var parsed: Dictionary = StrictJSON.parse(bytes, MAX_SNAPSHOT_BYTES, 8, 256)
+	var parsed: Dictionary = StrictJSON.parse(bytes, MAX_SNAPSHOT_BYTES, MAX_EDITOR_DEPTH, MAX_EDITOR_NODES)
 	if not bool(parsed.get("ok", false)):
 		return _result(false, parsed.get("errors", PackedStringArray()))
 	var object_result: Dictionary = _normalize_object(parsed.get("data", null), "recovery snapshot")
