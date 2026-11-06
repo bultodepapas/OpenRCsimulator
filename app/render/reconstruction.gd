@@ -5,7 +5,7 @@ const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const MetalFX := preload("res://render/metalfx_policy.gd")
 const MODES: Array[String] = [
-	"native",
+	"auto", "native",
 	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
 	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
 	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
@@ -35,6 +35,13 @@ const SCALES := {
 	"metalfx_spatial_85": 0.85, "metalfx_spatial_quality": 2.0 / 3.0,
 	"metalfx_temporal_native": 1.0, "metalfx_temporal_85": 0.85, "metalfx_temporal_quality": 2.0 / 3.0,
 }
+## DT-MAC-07b: "auto" picks MetalFX Spatial only when its 3D input stays at least 1080p-class
+## (AUTO_MIN_INPUT_HEIGHT rows, e.g. Quality on a 2560 × 1600 Retina panel), else Native. Other
+## providers are never chosen automatically. The output size is the viewport's pixel size at apply.
+const AUTO := "auto"
+const AUTO_MIN_INPUT_HEIGHT := 1000
+const AUTO_METALFX_ORDER: Array[String] = ["metalfx_spatial_quality", "metalfx_spatial_85"]
+static var auto_output_size := Vector2i.ZERO
 const DEFAULT_SHARPNESS := 0.9 # User strength; matches Godot's default fsr_sharpness=0.2.
 const ENVIRONMENT_KEY := "OPENRC_RECONSTRUCTION"
 const SHARPNESS_ENVIRONMENT_KEY := "OPENRC_FSR2_SHARPNESS"
@@ -105,6 +112,13 @@ static func runtime_capabilities() -> Dictionary:
 static func resolve(requested: String, high_available_or_capabilities: Variant = true,
 		capabilities: Dictionary = {}) -> Dictionary:
 	var gates := _resolve_capabilities(high_available_or_capabilities, capabilities)
+	if requested == AUTO:
+		var chosen := auto_mode(gates, auto_output_size)
+		var resolved := resolve(chosen, gates)
+		resolved["requested"] = AUTO
+		resolved["auto_selected"] = chosen
+		resolved["auto_output_size"] = [auto_output_size.x, auto_output_size.y]
+		return resolved
 	var status := option_status(requested, gates)
 	var selected := requested if bool(status.available) else "native"
 	var provider := str(MODE_PROVIDERS.get(selected, "native"))
@@ -132,8 +146,19 @@ static func resolve(requested: String, high_available_or_capabilities: Variant =
 	}
 
 
+## The concrete mode "auto" selects for these capabilities and output pixels.
+static func auto_mode(capabilities: Dictionary, output_size: Vector2i) -> String:
+	for mode: String in AUTO_METALFX_ORDER:
+		if float(output_size.y) * float(SCALES[mode]) >= AUTO_MIN_INPUT_HEIGHT \
+				and bool(option_status(mode, capabilities).available):
+			return mode
+	return "native"
+
+
 ## Explain why a menu entry is disabled without discarding its saved request.
 static func option_status(mode: String, capabilities: Dictionary = {}) -> Dictionary:
+	if mode == AUTO:
+		return {"available": true, "reason": ""}
 	var gates := runtime_capabilities() if capabilities.is_empty() else capabilities.duplicate(true)
 	if not MODE_PROVIDERS.has(mode):
 		return {"available": false, "reason": "unknown_mode"}
@@ -195,6 +220,9 @@ static func capabilities_for_viewport(viewport: Viewport, capabilities: Dictiona
 
 static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
 	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
+	var pixels: Variant = viewport.get("size") # Window/SubViewport pixels, not canvas units
+	if pixels is Vector2i:
+		auto_output_size = pixels
 	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
 	var gates := capabilities_for_viewport(viewport, capabilities)
 	var requested := str(config.get("reconstruction", "native"))

@@ -565,3 +565,26 @@ Tests: `test_cloud_shadow_map` (21 checks), `test_atmosphere`,
 `test_sky_render`, `test_world_sky`, `test_lake_world`,
 `test_field_staged_build`, `test_world_moon_flow` and
 `test_time_of_day_render` pass with no engine errors.
+
+## DT-MAC-07b MetalFX "Auto" default (owner, 2026-11-05)
+
+`Reconstruction.AUTO` resolves at apply time from the viewport's pixel size.
+It selects the first MetalFX Spatial preset, Quality then 85 %, whose 3D input
+keeps at least 1,000 rows, and only when that preset is available; otherwise
+it selects Native. "Auto" is the first Settings option (existing translated
+caption), the default preference, and the fixture's
+`--sustained-reconstruction=auto`. A window resize re-applies it and the
+MetalFX guard. Display preferences gain `meta.reconstruction_auto`, which every
+save writes: an older file's unflagged "native" (the only choosable value
+before) reads as "auto", and an explicit later Native save is kept. There is
+no schema bump, and older builds ignore the key.
+
+Tests: `test_metalfx_policy` (63 checks) covers selection by output size (2560
+× 1600 → Quality; 2560 × 1440 and 1920 × 1200 → 85 %; 1080p and 720p →
+Native; no MetalFX → Native). `test_display_preferences` (175) covers the
+migration, `test_advanced_graphics_settings` (148) now selects options by value,
+and `test_reconstruction` (121) and `test_ui_language` pass.
+
+Native M1, no environment overrides: a 2560 × 1600 window logged "Renderer
+guard: MetalFX active", a 1920 × 1080 window did not, and neither logged an
+engine error.

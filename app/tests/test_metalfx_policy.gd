@@ -33,6 +33,23 @@ func _run() -> void:
 		and spatial.execution_status == "unverified_trial")
 	_check("Mobile rejects temporal before applying an engine enum", Reconstruction.resolve("metalfx_temporal_85", mobile).fallback_reason == "metalfx_requires_forward_plus")
 	_check("provider picker can operate without High", Reconstruction.options_available(mobile))
+	# DT-MAC-07b: "auto" keeps MetalFX input at >= 1000 rows (1080p-class), else Native.
+	var auto_caps := MetalFX.from_facts(facts)
+	auto_caps.high = false
+	for row: Array in [[Vector2i(2560, 1600), "metalfx_spatial_quality"], [Vector2i(2880, 1800), "metalfx_spatial_quality"],
+			[Vector2i(2560, 1440), "metalfx_spatial_85"], [Vector2i(1920, 1200), "metalfx_spatial_85"],
+			[Vector2i(1920, 1080), "native"], [Vector2i(1280, 720), "native"]]:
+		_check("auto at %s selects %s" % [row[0], row[1]], Reconstruction.auto_mode(auto_caps, row[0]) == row[1])
+	var no_metal := facts.duplicate(true)
+	no_metal.driver = "opengl3"
+	no_metal.method = "gl_compatibility"
+	_check("auto without MetalFX stays Native", Reconstruction.auto_mode(MetalFX.from_facts(no_metal), Vector2i(2560, 1600)) == "native")
+	Reconstruction.auto_output_size = Vector2i(2560, 1600)
+	var auto_policy := Reconstruction.resolve("auto", auto_caps)
+	_check("auto reports its request and concrete choice", auto_policy.requested == "auto"
+		and auto_policy.auto_selected == "metalfx_spatial_quality" and auto_policy.provider == "metalfx_spatial")
+	_check("auto is always a selectable option", Reconstruction.option_status("auto", MetalFX.from_facts(no_metal)).available)
+	Reconstruction.auto_output_size = Vector2i.ZERO
 	# DT-MAC-07a: Spatial no longer needs the trial; Temporal does; a guard block disables both.
 	var no_trial := facts.duplicate(true)
 	no_trial.trial = false

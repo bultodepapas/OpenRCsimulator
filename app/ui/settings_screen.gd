@@ -670,7 +670,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
-		"reconstruction": return {native = tr("Native"),
+		"reconstruction": return {auto = tr("Auto"), native = tr("Native"),
 			fsr2_native = tr("FSR2 · Native AA"), fsr2_85 = tr("FSR2 · 85%"), fsr2_quality = tr("FSR2 · Quality"),
 			fsr2_balanced = tr("FSR2 · Balanced"), fsr2_performance = tr("FSR2 · Performance"),
 			fsr3_native = tr("FSR3 · Native AA"), fsr3_85 = tr("FSR3 · 85%"), fsr3_quality = tr("FSR3 · Quality"),

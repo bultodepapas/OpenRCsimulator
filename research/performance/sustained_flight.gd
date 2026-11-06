@@ -369,7 +369,7 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 						return {ok = false, reason = "--sustained-shader-param entries are shader.param=number"}
 					params.append({shader = target[0], parameter = target[1], value = assignment[1].to_float()})
 			"sustained-reconstruction":
-				if not Reconstruction.MODE_PROVIDERS.has(value):
+				if value != Reconstruction.AUTO and not Reconstruction.MODE_PROVIDERS.has(value):
 					return {ok = false, reason = "--sustained-reconstruction requires a Reconstruction mode"}
 				override.reconstruction = value
 			"sustained-msaa":
