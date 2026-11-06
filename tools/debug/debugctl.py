@@ -19,6 +19,8 @@ Observe and hunt bugs
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
   render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    inspect render-cost observations
   rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
+  gizmos show=all | gizmos off=true                          flight-model lines: velocity, air, wind, forces, trail
+  bugit [--note TEXT] [--out DIR] | bugitgo DIR [--resume]   a reproducible report folder / restore its exact flight
   watch [--every TICKS] [--count N] [--csv FILE] name=expr …   live values every n simulation ticks
   timeline [--hitch] [--since N] [--until N] [--top N]         where a long frame's time went (launch --verbose)
 Scripts and checks
@@ -1414,6 +1416,150 @@ def print_ui(result: dict, full_paths: bool = False) -> None:
         print(f"{mark} {item['type']:<13} {json.dumps(item['text'], ensure_ascii=False):<34} {' '.join(state):<16} {shown}")
 
 
+def _flag_value(argv: list[str], name: str, default: str | None = None) -> str | None:
+    return argv[argv.index(name) + 1] if name in argv and argv.index(name) + 1 < len(argv) else default
+
+
+def bugit(argv: list[str]) -> int:
+    """BugIt (after Unreal's BugIt/BugItGo): one folder with what is on screen now and how to get back to it.
+    report.json holds every reading; REPORT.md is the short human summary; checkpoint.json is the exact flight
+    state that `bugitgo` restores. Nothing is written into the repository (the default folder is under tmp/)."""
+    note = _flag_value(argv, "--note", "") or ""
+    out = _flag_value(argv, "--out")
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    folder = Path(out).resolve() if out else RUNS / "bugit" / stamp
+    folder.mkdir(parents=True, exist_ok=True)
+    report: dict = {"format": "openrc-bugit v1", "note": note,
+                    "created": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+                    "port": port()}
+
+    def grab(key: str, cmd: str, args: dict | None = None, timeout: float = 60.0):
+        try:
+            report[key] = result_of(cmd, args or {}, timeout=timeout)
+        except Refused as error:
+            report[key] = {"unavailable": str(error)}
+        return report[key]
+
+    ping = grab("ping", "ping")
+    state = grab("state", "state", {"fresh": True})
+    grab("perf", "perf")
+    grab("frames", "frames", {"window": 600})
+    grab("problems", "logs", {"summary": True, "level": "error,warning,script_error"})
+    since = max(0, int(ping.get("log_seq", 0)) - 200) if isinstance(ping, dict) else 0
+    grab("recent_log", "logs", {"since": since, "limit": 200})
+    grab("render", "render", {"frames": 30})
+    grab("objects", "objects", {"top": 15})
+    grab("prefs", "prefs")
+    grab("rewind", "rewind", {"list": True})
+    if isinstance(state, dict) and state.get("route") == "flight":
+        grab("view", "view")
+        grab("gizmo_values", "eval", {"expr": "bridge._gizmos.last if bridge._gizmos != null else {}"})
+        grab("checkpoint", "checkpoint", {"action": "save", "path": str(folder / "checkpoint.json")})
+    grab("screenshot", "screenshot", {"path": str(folder / "screenshot.jpg"), "format": "jpg"}, timeout=120.0)
+    report["git"] = _git_identity()
+    (folder / "report.json").write_text(json.dumps(report, indent=1, default=str), encoding="utf-8")
+    (folder / "REPORT.md").write_text(_bugit_markdown(report, folder), encoding="utf-8")
+    flight = state.get("flight", {}) if isinstance(state, dict) else {}
+    print(json.dumps({"folder": str(folder), "route": state.get("route") if isinstance(state, dict) else None,
+                      "aircraft": flight.get("aircraft"), "tick": flight.get("tick"),
+                      "checkpoint": "path" in report.get("checkpoint", {}),
+                      "screenshot": "path" in report.get("screenshot", {}),
+                      "problems": len(report["problems"].get("groups", [])) if isinstance(report["problems"], dict) else None,
+                      "replay": f"debugctl.py bugitgo {folder}"}))
+    return 0
+
+
+def _git_identity() -> dict:
+    def git(*args: str) -> str:
+        try:
+            return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True, timeout=20).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            return ""
+    changed = [line for line in git("status", "--short").splitlines() if line.strip()]
+    return {"head": git("rev-parse", "HEAD"), "branch": git("rev-parse", "--abbrev-ref", "HEAD"),
+            "changed_files": len(changed), "changed": changed[:200]}
+
+
+def _bugit_markdown(report: dict, folder: Path) -> str:
+    state = report.get("state", {}) if isinstance(report.get("state"), dict) else {}
+    flight = state.get("flight", {}) or {}
+    lines = [f"# BugIt {report['created']}", ""]
+    if report["note"]:
+        lines += [report["note"], ""]
+    git = report["git"]
+    lines.append(f"- Source: `{git['head'][:12]}` on `{git['branch']}`, {git['changed_files']} changed files")
+    ping = report.get("ping", {})
+    lines.append(f"- Engine: {ping.get('godot')}, display {ping.get('display')}; route `{state.get('route')}`, "
+                 f"screens {state.get('screens')}")
+    if flight:
+        attitude = flight.get("attitude_deg", {})
+        lines.append(f"- Flight: `{flight.get('aircraft')}` tick {flight.get('tick')} ({flight.get('time_s')} s), "
+                     f"height {flight.get('height_m')} m, speed {flight.get('speed_mps')} m/s, "
+                     f"attitude {attitude}, paused {flight.get('paused')} {flight.get('pause_reason') or ''}, "
+                     f"crashed {flight.get('crashed')}")
+    frames = report.get("frames", {})
+    if "p50_ms" in frames:
+        lines.append(f"- Frames: p50 {frames['p50_ms']} ms, p95 {frames['p95_ms']} ms, max {frames['max_ms']} ms, "
+                     f"{frames['hitch_total']} hitches")
+    render = report.get("render", {})
+    if render.get("measuring"):
+        lines.append(f"- Render: GPU {render['gpu_ms']} ms, {render['draw_calls']:g} draw calls; {render['bound']}")
+    problems = report.get("problems", {})
+    groups = problems.get("groups", []) if isinstance(problems, dict) else []
+    lines.append(f"- Errors and warnings: {len(groups)} distinct")
+    for group in groups[:10]:
+        lines.append(f"  - {group['count']}× {group['level']}: {group['text'][:200]} ({group.get('script', '')})")
+    lines.append("")
+    if (folder / "screenshot.jpg").exists():
+        lines += ["![screenshot](screenshot.jpg)", ""]
+    if "path" in report.get("checkpoint", {}):
+        lines += ["Reproduce: `python3 tools/debug/debugctl.py bugitgo " + str(folder) + "` (a running app; it flies "
+                  "the same aircraft and restores this exact state, paused).", ""]
+    lines.append("Everything else: `report.json`.")
+    return "\n".join(lines) + "\n"
+
+
+def bugitgo(argv: list[str]) -> int:
+    """BugItGo: restore a bugit folder's exact flight state in the running app (same aircraft, field and weather)."""
+    if not argv or argv[0].startswith("--"):
+        print("usage: bugitgo FOLDER [--resume]", file=sys.stderr)
+        return 2
+    folder = Path(argv[0]).resolve()
+    report = json.loads((folder / "report.json").read_text(encoding="utf-8"))
+    checkpoint = folder / "checkpoint.json"
+    flight = (report.get("state") or {}).get("flight") or {}
+    if not checkpoint.exists() or not flight.get("aircraft"):
+        print(f"bugitgo: {folder} holds no flight checkpoint (the report was taken on {report.get('state', {}).get('route')})",
+              file=sys.stderr)
+        return 1
+    state = result_of("state", {"fresh": True})
+    current = (state.get("flight") or {}).get("aircraft")
+    if state.get("route") != "flight" or current != flight["aircraft"]:
+        if state.get("route") not in ("home", None):
+            result_of("home", timeout=120.0)
+        result_of("fly", {"aircraft": flight["aircraft"], "start": "airborne"}, timeout=300.0)
+    for _ in range(3):  # the launch review / pause menu holds the flight
+        if not result_of("state", {"fresh": True}).get("screens"):
+            break
+        try:
+            result_of("close")
+        except Refused:
+            break
+    loaded = result_of("checkpoint", {"action": "load", "path": str(checkpoint), "pause": True})
+    view = report.get("view", {})
+    if isinstance(view, dict) and view.get("view"):
+        with contextlib.suppress(Refused):
+            result_of("view", {"name": view["view"]})
+    if "--resume" in argv:
+        with contextlib.suppress(Refused):
+            result_of("resume")
+    restored = loaded.get("flight", {})
+    print(json.dumps({"restored": str(checkpoint), "aircraft": restored.get("aircraft"), "tick": restored.get("tick"),
+                      "height_m": restored.get("height_m"), "paused": restored.get("paused"),
+                      "recorded_tick": flight.get("tick"), "note": report.get("note", "")}))
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not argv or "-h" in argv or "--help" in argv:  # never contacts an app, whatever comes before it
         print(__doc__)
@@ -1455,6 +1601,10 @@ def main(argv: list[str]) -> int:
             print(f"debugctl: {len(others)} live sessions on ports {others}: which one is yours? Repeat with "
                   f"OPENRC_DEBUG_BRIDGE=<port> {Path(sys.argv[0]).name} {command} …", file=sys.stderr)
             return 2
+        if command == "bugit":
+            return bugit(rest)
+        if command == "bugitgo":
+            return bugitgo(rest)
         flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]
         result = result_of(command, parse_args([w for w in rest if w not in flags]))
     except Refused as error:

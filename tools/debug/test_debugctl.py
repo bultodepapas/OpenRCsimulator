@@ -261,6 +261,32 @@ class DebugctlTests(unittest.TestCase):
         result["gpu_timing_status"] = "unavailable_or_zero"
         self.assertIn("GPU root: unavailable", self.show_output("frames", result))
 
+    def test_bugit_report_summarizes_and_bugitgo_refuses_without_checkpoint(self) -> None:
+        folder = Path(self.tmp.name) / "bugit"
+        folder.mkdir()
+        report = {"created": "2026-11-06T14:39:16+00:00", "note": "wing drop on landing",
+                  "git": {"head": "f3770ac6f913aa", "branch": "main", "changed_files": 2, "changed": []},
+                  "ping": {"godot": "4.8-beta2", "display": "Windows"},
+                  "state": {"route": "flight", "screens": [],
+                            "flight": {"aircraft": "jensen-das-ugly-stik-60", "tick": 799, "time_s": 3.3,
+                                       "height_m": 41.5, "speed_mps": 25.2, "attitude_deg": {}, "paused": True,
+                                       "crashed": False}},
+                  "frames": {"p50_ms": 8.33, "p95_ms": 8.47, "max_ms": 16.6, "hitch_total": 1},
+                  "render": {"measuring": True, "gpu_ms": 2.3, "draw_calls": 797.0, "bound": "frame cap"},
+                  "problems": {"groups": [{"count": 3, "level": "warning", "text": "slow shader", "script": "x.gd"}]},
+                  "checkpoint": {"path": str(folder / "checkpoint.json")}}
+        text = debugctl._bugit_markdown(report, folder)
+        self.assertIn("wing drop on landing", text)
+        self.assertIn("`jensen-das-ugly-stik-60` tick 799", text)
+        self.assertIn("3× warning: slow shader", text)
+        self.assertIn("bugitgo", text)
+        (folder / "report.json").write_text(json.dumps(report), encoding="utf-8")
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            status = debugctl.bugitgo([str(folder)])  # no checkpoint.json on disk
+        self.assertEqual(status, 1)
+        self.assertIn("no flight checkpoint", err.getvalue())
+
     def test_exported_launch_uses_packaged_executable_without_project_path(self) -> None:
         exe = Path(self.tmp.name) / "packaged app.exe"
         exe.touch()

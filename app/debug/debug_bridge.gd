@@ -21,6 +21,7 @@ const ControllerActions := preload("res://input/controller_actions.gd")
 const ScreenStack := preload("res://ui/screen_stack.gd")
 const RenderProbe := preload("res://debug/render_probe.gd")
 const RewindRing := preload("res://debug/rewind_ring.gd")
+const FlightGizmos := preload("res://debug/flight_gizmos.gd")
 ## AppRoot openers by screen name (each takes an optional focus-return control).
 const SCREEN_OPENERS := {pause = "open_pause", settings = "open_settings", controls = "open_controls", help = "open_help",
 	weather = "open_weather", time_of_day = "open_time_of_day", overlays = "open_overlays",
@@ -64,6 +65,8 @@ const COMMANDS := {
 	"layers": "depth=<n> root=<path>: 3D scene census (geometry, MultiMesh instances, shadow casters, lights per node)",
 	"ablate": "targets=[paths|@flags] depth=<n> frames=<n> warmup=<n> freeze=<bool>: switch each off, measure, restore; GPU ms ranking",
 	"viewmode": "name=normal|unshaded|wireframe|overdraw|lighting|...: viewport debug draw (no name: current and list)",
+	"gizmos": "show=all|axes,velocity,air,wind,forces,moments,trail,label | off=true [force_m_per_g= velocity_m_per_mps= trail_s= auto_scale=]: flight-model lines",
+	"checkpoint": "action=save|load path=<absolute .json> [pause=<bool>] [inputs=pilot|recorded]: the exact flight state as a file (bugit/bugitgo)",
 	"rewind": "arm=<bool> every_s=<s> keep_s=<s> | list=true | seconds=<s>|tick=<t> attempt=current|previous|<n> pause=<bool> inputs=pilot|recorded",
 	"sample": "exprs={name: expr} every_ticks=<n> count=<m>: values each n simulation ticks (live telemetry)",
 	"assert": "expr=<expression> message=<s>: ok when truthy, else an error (for repro scripts)",
@@ -168,6 +171,8 @@ var _ablation: RenderProbe.Ablation
 var _ablation_pause := {}
 var _ablation_owned_measure := false
 var _rewind := RewindRing.new()
+var _gizmos: Node3D # PT1h-R10 flight-model lines, a child of the flight while shown
+var _gizmo_settings := {}
 
 
 ## The environment opts in; release templates never open the socket.
@@ -246,6 +251,8 @@ func _process(_delta: float) -> void:
 		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
+	if not _gizmo_settings.is_empty():
+		_update_gizmos()
 	# The work a command asked for (building a flight, a screenshot readback) is not bridge overhead.
 	started += Time.get_ticks_usec() - handlers_started
 	_observe()
@@ -2212,20 +2219,124 @@ func _cmd_rewind(request: Dictionary) -> Dictionary:
 	var had_input: Variant = session.get("input_enabled")
 	if not _rewind.restore(session, entry):
 		return _fail("the session refused the checkpoint of tick %d (see logs)" % entry.tick)
-	# A restored checkpoint is a replay boundary: the session holds the recorded inputs and ignores the pilot.
-	# inputs=pilot hands control back, starting from the recorded throttle (the keyboard ramps it slowly).
+	_after_restore(session, had_input, mode, _bool(request.get("pause", true)))
+	debug_log.event("rewind to tick %d (attempt %d)" % [entry.tick, entry.attempt], RewindRing.describe(entry))
+	return _settle(1, {rewound = RewindRing.describe(entry), flight = _flight_state(session)})
+
+
+## A restored checkpoint is a replay boundary: the session holds the recorded inputs and ignores the pilot.
+## inputs=pilot hands control back, starting from the recorded throttle (the keyboard ramps it slowly).
+func _after_restore(session: Node, had_input: Variant, mode: String, pause: bool) -> void:
 	if mode == "pilot" and had_input is bool:
 		session.set("input_enabled", had_input)
+		if str(session.get("pause_reason")).contains("recorded inputs"):
+			session.set("pause_reason", "debug restore (pilot inputs)") # resume() clears it
 		var commands: Variant = session.get("commands")
-		var recorded: PackedFloat64Array = entry.snapshot.simulation.inputs
-		if commands is Dictionary and recorded.size() >= 4:
+		var recorded: Variant = session.sim.get("inputs")
+		if commands is Dictionary and recorded is PackedFloat64Array and recorded.size() >= 4:
 			commands.throttle = recorded[3]
-	if _bool(request.get("pause", true)):
+	if pause:
 		session.sim.set_paused(true)
 	elif session.has_method("resume"):
 		session.resume()
-	debug_log.event("rewind to tick %d (attempt %d)" % [entry.tick, entry.attempt], RewindRing.describe(entry))
-	return _settle(1, {rewound = RewindRing.describe(entry), flight = _flight_state(session)})
+
+
+# ---- checkpoint files and flight gizmos (PT1h-R10) -------------------------------------------------------------
+
+## BugIt/BugItGo for flights: the session's exact checkpoint (float64 bits preserved by its JSON carrier) to a
+## file, and back into a flight of the same aircraft, field and weather (the session refuses anything else).
+func _cmd_checkpoint(request: Dictionary) -> Dictionary:
+	var session := _flight_session()
+	if session == null or not session.has_method("checkpoint_json"):
+		return _fail("no flight: checkpoints are flight states")
+	var action := str(request.get("action", ""))
+	var path := str(request.get("path", ""))
+	if action == "save" and path.is_empty() and not out_dir.is_empty():
+		path = out_dir.path_join("checkpoints/tick-%d.json" % int(session.sim.tick))
+	if not path.is_absolute_path():
+		return _fail("give an absolute path= (a relative one would land in the Godot project)")
+	match action:
+		"save":
+			var text: String = session.checkpoint_json()
+			if text.is_empty() or text == "{}":
+				return _fail("the session cannot checkpoint now (not ready, crash transition, or an unsupported state)")
+			DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+			var file := FileAccess.open(path, FileAccess.WRITE)
+			if file == null:
+				return _fail("cannot write %s: %s" % [path, error_string(FileAccess.get_open_error())])
+			file.store_string(text)
+			file.close()
+			return _ok({path = path, bytes = text.length(), tick = session.sim.tick, time_s = session.sim.time(),
+				aircraft = app.flight.get("aircraft_id") if app.get("flight") != null else null})
+		"load":
+			if _step_target >= 0:
+				return _fail("a step is running")
+			var mode := str(request.get("inputs", "pilot"))
+			if mode not in ["pilot", "recorded"]:
+				return _fail("inputs must be pilot or recorded")
+			if not FileAccess.file_exists(path):
+				return _fail("no checkpoint at %s" % path)
+			var had_input: Variant = session.get("input_enabled")
+			if not session.restore_checkpoint_json(FileAccess.get_file_as_string(path)):
+				return _fail("the session refused %s: it needs the same aircraft data, field and weather it was saved with" % path.get_file())
+			_after_restore(session, had_input, mode, _bool(request.get("pause", true)))
+			debug_log.event("checkpoint loaded at tick %d" % session.sim.tick, {path = path})
+			return _settle(1, {loaded = path, flight = _flight_state(session)})
+	return _fail("action must be save or load")
+
+
+func _cmd_gizmos(request: Dictionary) -> Dictionary:
+	if _bool(request.get("off", false)):
+		_gizmo_settings = {}
+		if is_instance_valid(_gizmos):
+			_gizmos.queue_free()
+		_gizmos = null
+		return _ok({shown = []})
+	var raw: Variant = request.get("show", "all")
+	var layers: Array = raw if raw is Array else Array(str(raw).split(",", false))
+	if layers.has("all"):
+		layers = FlightGizmos.LAYERS.duplicate()
+	for layer: Variant in layers:
+		if not FlightGizmos.LAYERS.has(str(layer)):
+			return _fail("unknown layer '%s'; layers: all, %s" % [layer, ", ".join(FlightGizmos.LAYERS)])
+	var settings := {layers = layers}
+	for key: String in ["force_m_per_g", "velocity_m_per_mps", "moment_gain", "trail_s", "axis_m", "thickness_m"]:
+		if request.has(key):
+			var value: Variant = _number(request[key])
+			if value == null or value < 0.0:
+				return _fail("%s must be a non-negative number" % key)
+			settings[key] = value
+	if request.has("auto_scale"):
+		settings.auto_scale = _bool(request.auto_scale)
+	_gizmo_settings = settings
+	_update_gizmos()
+	var out := {shown = layers, flight = is_instance_valid(_gizmos)}
+	if is_instance_valid(_gizmos):
+		out.values = _gizmos.last
+	return _settle(1, out) if out.flight else _ok(out.merged({note = "shown from the next flight on"}))
+
+
+## Follow the flight: (re)create the overlay under the flight's 3D root and draw this frame.
+func _update_gizmos() -> void:
+	var session := _flight_session()
+	var flight: Variant = app.get("flight")
+	if session == null or not flight is Node3D:
+		if is_instance_valid(_gizmos):
+			_gizmos.queue_free()
+		_gizmos = null
+		return
+	if not is_instance_valid(_gizmos) or _gizmos.get_parent() != flight:
+		_gizmos = FlightGizmos.new()
+		flight.add_child(_gizmos)
+	_gizmos.configure(_gizmo_settings.layers)
+	for key: String in _gizmo_settings:
+		if key != "layers":
+			_gizmos.set(key, _gizmo_settings[key])
+	var pose: Dictionary = flight.call("_current_pose") if flight.has_method("_current_pose") else {}
+	var s: PackedFloat64Array = session.sim.state
+	if pose.is_empty() and s.size() >= 10: # vehicles without the airplane's presentation estimate: the tick state
+		pose = {pos = FlightGizmos.Frames.ned_to_render([s[0], s[1], s[2]]), basis = FlightGizmos.Frames.quat_to_render(s.slice(6, 10))}
+	_gizmos.update_from(session, pose)
 
 
 func _settle(frames: int, result: Dictionary) -> Dictionary:
