@@ -206,7 +206,7 @@ def write_stream_fixture(report_path: Path, report: dict, records: list[dict]) -
 
 
 def render_snapshot(scale: float = 1.0, msaa: int = 2) -> dict:
-    return {
+    snapshot = {
         "backend": "gl_compatibility", "driver": "opengl3", "scaling_3d_mode": 0,
         "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR", "provider_mode_id": 0,
         "scaling_3d_scale": scale, "msaa_3d": msaa,
@@ -216,6 +216,25 @@ def render_snapshot(scale: float = 1.0, msaa: int = 2) -> dict:
                            "fallback": False, "fallback_reason": "", "temporal": False,
                            "scaling_3d_mode": 0, "scale": scale, "msaa_3d": msaa},
     }
+    set_snapshot_dimensions(snapshot, (1920, 1080))
+    return snapshot
+
+
+def set_snapshot_dimensions(snapshot: dict, window: tuple[int, int], *,
+                            visible: tuple[int, int] | None = None, output: tuple[int, int] | None = None) -> None:
+    visible = window if visible is None else visible
+    output = window if output is None else output
+    snapshot.update(dimension_observation_scope="per_frame_viewport_estimate_v1",
+                    window_size_property=list(window), visible_rect_size=list(visible),
+                    output_size=list(output), output_size_scope="viewport_render_target_estimate_v1",
+                    nominal_3d_size=[max(1, int(value * snapshot["scaling_3d_scale"])) for value in output],
+                    nominal_3d_size_scope="scaled_viewport_estimate_not_sdk_execution")
+
+
+def frame_dimensions(snapshot: dict) -> dict:
+    return {"logical_canvas_size": copy.deepcopy(snapshot["visible_rect_size"]),
+            **{key: copy.deepcopy(snapshot[key]) for key in
+               ("output_size", "output_size_scope", "nominal_3d_size", "nominal_3d_size_scope")}}
 
 
 def set_render_observation(receipt: dict, report: dict, scale: float = 1.0, msaa: int = 2) -> None:
@@ -226,6 +245,7 @@ def set_render_observation(receipt: dict, report: dict, scale: float = 1.0, msaa
     report["rendering_driver"] = snapshot["driver"]
     report["render_settings"] = {key: copy.deepcopy(snapshot[key])
                                  for key in ("scaling_3d_mode", "scaling_3d_scale", "msaa_3d", "reconstruction")}
+    report["render_settings"]["reconstruction"].update(frame_dimensions(snapshot))
 
 
 def set_auto_native_observation(receipt: dict, report: dict, size: tuple[int, int] = (1920, 1080)) -> None:
@@ -235,9 +255,9 @@ def set_auto_native_observation(receipt: dict, report: dict, size: tuple[int, in
     for endpoint in ("start", "end"):
         snapshot = observation[endpoint]
         snapshot["reconstruction"].update(requested="auto", auto_selected="native", auto_output_size=list(size))
-        snapshot.update(window_size_property=list(size), visible_rect_size=list(size))
+        set_snapshot_dimensions(snapshot, size)
     report["render_settings"]["reconstruction"].update(requested="auto", auto_selected="native",
-                                                       auto_output_size=list(size), output_size=list(size))
+                                                       auto_output_size=list(size), **frame_dimensions(observation["start"]))
 
 
 def save_benchmark_report(path: Path, receipt: dict, report: dict) -> None:
@@ -1415,6 +1435,61 @@ class BenchmarkHealthTests(unittest.TestCase):
             health_path.write_text(json.dumps(receipt), encoding="utf-8")
             self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
 
+    def test_native_dimensions_are_observed_and_match_the_frame_report(self):
+        def run(mutate=None) -> dict:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                report = json.loads(path.read_text())
+                if mutate is not None:
+                    mutate(receipt["scenario"], report)
+                save_benchmark_report(path, receipt, report)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                return summarize_run(path, SHORT_POLICY)
+
+        self.assertTrue(run()["performance_pass"])
+        for window, visible, output in (((2560, 1600), (1920, 1200), (2560, 1600)),
+                                        ((2560, 1600), (1280, 720), (2560, 1440))):
+            def scaled_canvas(s: dict, report: dict) -> None:
+                for endpoint in ("start", "end"):
+                    snapshot = s["effective_render"][endpoint]
+                    set_snapshot_dimensions(snapshot, window, visible=visible, output=output)
+                report["render_settings"]["reconstruction"].update(frame_dimensions(snapshot))
+            with self.subTest(window=window, visible=visible, output=output):
+                self.assertTrue(run(scaled_canvas)["performance_pass"])
+        mutations = {
+            "window resize": lambda s, r: s["effective_render"]["end"].update(window_size_property=[1280, 720]),
+            "output resize": lambda s, r: s["effective_render"]["end"].update(output_size=[1280, 720]),
+            "intermediate resize": lambda s, r: s["effective_render"].update(stable=False),
+            "missing output sample": lambda s, r: [s["effective_render"][k].pop("output_size")
+                                                    for k in ("start", "end")],
+            "unscoped new dimensions": lambda s, r: [s["effective_render"][k].pop("dimension_observation_scope")
+                                                      for k in ("start", "end")],
+            "unknown observation scope": lambda s, r: [s["effective_render"][k].update(
+                dimension_observation_scope="physical_display") for k in ("start", "end")],
+            "frame output mismatch": lambda s, r: r["render_settings"]["reconstruction"].update(output_size=[1280, 720]),
+            "frame logical mismatch": lambda s, r: r["render_settings"]["reconstruction"].update(logical_canvas_size=[1280, 720]),
+            "frame nominal mismatch": lambda s, r: r["render_settings"]["reconstruction"].update(nominal_3d_size=[1280, 720]),
+            "boolean output": lambda s, r: [s["effective_render"][k].update(output_size=[True, 1080])
+                                            for k in ("start", "end")],
+            "unbounded output": lambda s, r: [s["effective_render"][k].update(output_size=[10**400, 1080])
+                                              for k in ("start", "end")],
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                self.assertFalse(run(mutate)["performance_pass"])
+
+        def historical(s: dict, _report: dict) -> None:
+            for endpoint in ("start", "end"):
+                snapshot = s["effective_render"][endpoint]
+                for key in ("dimension_observation_scope", "window_size_property", "visible_rect_size", "output_size",
+                            "output_size_scope", "nominal_3d_size", "nominal_3d_size_scope"):
+                    snapshot.pop(key)
+
+        legacy = run(historical)
+        self.assertFalse(legacy["performance_pass"])
+        self.assertEqual(legacy["benchmark_health"]["dimension_observation_scope"], "legacy_unobserved")
+        self.assertIn("per-frame observation", " ".join(legacy["benchmark_health"]["reasons"]))
+
     def test_cloud_modes_require_explicit_ready_and_stable_consumers(self):
         for snapshot in (cloud_snapshot(), cloud_snapshot("1"), cloud_snapshot("1", ground="0"),
                          cloud_snapshot("0", sky="1"), cloud_snapshot("", ground="1", sky="0")):
@@ -1474,11 +1549,13 @@ class BenchmarkHealthTests(unittest.TestCase):
                       "execution_status": "policy_selected", "provider_available": True, "fallback": False,
                       "fallback_reason": "", "temporal": True, "scaling_3d_mode": 7, "scale": 2 / 3, "msaa_3d": 0}
             for endpoint in ("start", "end"):
-                receipt["scenario"]["effective_render"][endpoint].update(
+                snapshot = receipt["scenario"]["effective_render"][endpoint]
+                snapshot.update(
                     scaling_3d_mode=7, scaling_3d_mode_constant="SCALING_3D_MODE_FSR2", provider_mode_id=7,
                     scaling_3d_scale=2 / 3, msaa_3d=0, reconstruction=copy.deepcopy(policy))
+                set_snapshot_dimensions(snapshot, (1920, 1080))
             report["render_settings"].update(scaling_3d_mode=7, scaling_3d_scale=2 / 3, msaa_3d=0,
-                                             reconstruction=copy.deepcopy(policy))
+                                             reconstruction={**copy.deepcopy(policy), **frame_dimensions(snapshot)})
             save_benchmark_report(path, receipt, report)
             checked_path = path.with_name("checked-" + path.name)
             checked = json.loads(checked_path.read_text())
@@ -1544,18 +1621,26 @@ class BenchmarkHealthTests(unittest.TestCase):
                 snapshot = s["effective_render"][endpoint]
                 snapshot.update(window_size_property=[2560, 1600], visible_rect_size=[1920, 1200])
                 snapshot["reconstruction"]["auto_output_size"] = [2560, 1600]
+                for key in ("dimension_observation_scope", "output_size", "output_size_scope",
+                            "nominal_3d_size", "nominal_3d_size_scope"):
+                    snapshot.pop(key)
             report["render_settings"]["reconstruction"].update(
                 auto_output_size=[2560, 1600], output_size=[1920, 1200])
+            for key in ("output_size_scope", "logical_canvas_size", "nominal_3d_size", "nominal_3d_size_scope"):
+                report["render_settings"]["reconstruction"].pop(key)
 
-        # Historical reports used output_size for the logical canvas.
-        self.assertTrue(run(scaled_canvas)["performance_pass"])
+        # Historical Auto observed the window and canvas, but not every output estimate.
+        historical = run(scaled_canvas)
+        self.assertFalse(historical["performance_pass"])
+        self.assertEqual(historical["benchmark_health"]["dimension_observation_scope"], "legacy_auto_window_canvas_only")
 
         def corrected_canvas(s: dict, report: dict) -> None:
-            scaled_canvas(s, report)
-            report["render_settings"]["reconstruction"].update(
-                output_size=[2560, 1600], output_size_scope="viewport_render_target_estimate_v1",
-                logical_canvas_size=[1920, 1200], nominal_3d_size=[2560, 1600],
-                nominal_3d_size_scope="scaled_viewport_estimate_not_sdk_execution")
+            for endpoint in ("start", "end"):
+                snapshot = s["effective_render"][endpoint]
+                set_snapshot_dimensions(snapshot, (2560, 1600), visible=(1920, 1200))
+                snapshot["reconstruction"]["auto_output_size"] = [2560, 1600]
+            report["render_settings"]["reconstruction"].update(auto_output_size=[2560, 1600],
+                                                               **frame_dimensions(snapshot))
 
         self.assertTrue(run(corrected_canvas)["performance_pass"])
         new_mutations = {
@@ -1621,6 +1706,23 @@ class BenchmarkHealthTests(unittest.TestCase):
                 check = json.loads(check_path.read_text())
                 check["command"].append("--sustained-reconstruction=auto")
                 check_path.write_text(json.dumps(check), encoding="utf-8")
+                self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            summary, status = summarize_directory(directory, directory / "summary.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertFalse(summary["benchmark_identity_consistent"])
+
+    def test_native_output_size_is_part_of_campaign_identity(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            directory = Path(temp_dir)
+            for index, size in enumerate(((1920, 1080), (2560, 1600)), 1):
+                path, health_path, receipt = write_benchmark_run(directory, f"run-{index}")
+                report = json.loads(path.read_text())
+                for endpoint in ("start", "end"):
+                    snapshot = receipt["scenario"]["effective_render"][endpoint]
+                    set_snapshot_dimensions(snapshot, size)
+                report["render_settings"]["reconstruction"].update(frame_dimensions(snapshot))
+                save_benchmark_report(path, receipt, report)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
                 self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
             summary, status = summarize_directory(directory, directory / "summary.json", SHORT_POLICY)
             self.assertEqual(status, 1)

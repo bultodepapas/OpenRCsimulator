@@ -29,6 +29,7 @@ const MAX_DIAGNOSTIC_TICKS := 432000
 const CHECKPOINT_TICKS := 6000
 const DWELL_USEC := 2_500_000
 const AUDIO_RETIRE_TIMEOUT_USEC := 250_000
+const DIMENSION_OBSERVATION_SCOPE := "per_frame_viewport_estimate_v1"
 const FORCED_OPTIONS := {"aircraft": "jensen-das-ugly-stik-60", "start": "airborne",
 	"rates": "full", "weather": "calm", "landscape": "club_field", "companions": "0",
 	"physics-backend": "gdscript_reference"}
@@ -702,16 +703,18 @@ func _render_snapshot() -> Dictionary:
 		else "SCALING_3D_MODE_" + provider.to_upper()
 	var mode_id: Variant = ClassDB.class_get_integer_constant("Viewport", mode_constant) \
 		if ClassDB.class_has_integer_constant("Viewport", mode_constant) else null
+	var visible := root.get_visible_rect().size
+	var output := Reconstruction.viewport_output_size(root)
+	var nominal := Reconstruction.nominal_input_size(output, root.scaling_3d_scale)
 	var snapshot := {backend = RenderingServer.get_current_rendering_method(),
 		driver = RenderingServer.get_current_rendering_driver_name(), scaling_3d_mode = root.scaling_3d_mode,
 		scaling_3d_mode_constant = mode_constant, provider_mode_id = mode_id,
-		scaling_3d_scale = root.scaling_3d_scale, msaa_3d = root.msaa_3d, reconstruction = policy}
-	if policy.requested == Reconstruction.AUTO:
-		# Auto uses Window.size at apply time; keep that property and the visible rect
-		# separately. Neither measurement proves physical presentation pixels.
-		snapshot["window_size_property"] = [root.size.x, root.size.y]
-		var visible := root.get_visible_rect().size
-		snapshot["visible_rect_size"] = [visible.x, visible.y]
+		scaling_3d_scale = root.scaling_3d_scale, msaa_3d = root.msaa_3d, reconstruction = policy,
+		dimension_observation_scope = DIMENSION_OBSERVATION_SCOPE,
+		window_size_property = [root.size.x, root.size.y], visible_rect_size = [visible.x, visible.y],
+		output_size = [output.x, output.y],
+		output_size_scope = Reconstruction.OUTPUT_SIZE_SCOPE if output.x > 0 and output.y > 0 else "unavailable",
+		nominal_3d_size = [nominal.x, nominal.y], nominal_3d_size_scope = Reconstruction.NOMINAL_SIZE_SCOPE}
 	return snapshot
 
 

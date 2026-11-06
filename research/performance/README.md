@@ -449,8 +449,9 @@ selects `Viewport.MSAA` (0 off, 1 2×, 2 4×, 3 8×). The receipt records them a
 `scenario.render_override`, and the applied viewport/policy as `effective_render`.
 `native_summary.py` requires explicit checked `--rendering-method` and
 `--rendering-driver` values matching the observed renderer. It checks requested
-reconstruction, provider, scale and MSAA against the frame report and observations
-from the frame before sampling through the seal, and refuses fallbacks or changes.
+reconstruction, provider, scale, MSAA and window/viewport dimensions against the
+frame report and observations from the frame before sampling through the seal,
+and refuses fallbacks or changes.
 An explicit temporal MSAA request must be zero. The current MetalFX policy reports
 execution as unknown, so it cannot meet effective-provider acceptance until an
 independent execution observation is available. Renderer policy and viewport
@@ -460,14 +461,23 @@ The reducer treats differing effective settings and overrides as different bench
 so a campaign cannot pool them with each other or with default captures.
 For example, append `--sustained-render-scale=0.75 --sustained-msaa=1` after
 the fixture's other user options. A sweep is a screening diagnostic: the frame
-report's viewport size remains the output size, not the internal 3D size.
+report distinguishes `logical_canvas_size` from the estimated `output_size` and
+the scaled `nominal_3d_size`.
 
 The technical fixture still requests Native by default; it does not exercise the
 player's Auto default. To observe Auto explicitly, add `--sustained-reconstruction=auto`.
-The receipt records `auto_selected`, the window size used for that selection, the
-observed window-size property and visible rect through the sample. The reducer
+The receipt records `auto_selected` and the window size used for that selection.
+All reconstruction modes record the window, visible canvas and output and nominal
+input estimates through the sample under `per_frame_viewport_estimate_v1`. The reducer
 accepts Auto selecting Native only when these records and the frame report agree.
 Auto selecting MetalFX remains ineligible while execution is reported as unknown.
+New reconstruction reports distinguish `logical_canvas_size` from `output_size`
+with scope `viewport_render_target_estimate_v1`; CanvasItems scaling can make
+these differ. `nominal_3d_size` uses the pinned renderer's positive-size truncation
+and remains a scaled viewport estimate, not an SDK execution or allocation query.
+The reducer validates both sizes and their scopes. Older receipts remain readable
+but are unqualified for the current benchmark gate: their dimension scope is
+reported as `legacy_unobserved` or `legacy_auto_window_canvas_only`.
 Those size properties do not independently prove physical drawable or presentation
 pixels, and the fixture does not establish the normal Home/Fly preference path.
 
