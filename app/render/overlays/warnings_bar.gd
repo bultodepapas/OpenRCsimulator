@@ -122,6 +122,8 @@ func refresh(new_codes: PackedStringArray) -> bool:
 	var previous := codes
 	codes = new_codes.duplicate()
 	_render_cards()
+	if codes.is_empty():
+		_stop_entrance()
 	var appeared := false
 	for index in mini(codes.size(), _limit):
 		if not previous.has(codes[index]):

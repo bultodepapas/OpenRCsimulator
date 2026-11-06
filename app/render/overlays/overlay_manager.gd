@@ -396,6 +396,11 @@ func set_radio_model(model: String) -> void:
 
 func set_warning_option(key: String, value: Variant) -> void:
 	if not Settings.WARNING_DEFAULTS.has(key): return
+	if key == "warning_limit":
+		if typeof(value) != TYPE_INT or value not in Settings.WARNING_LIMITS: return
+	elif typeof(value) != TYPE_BOOL:
+		return
+	if settings.get(key, Settings.WARNING_DEFAULTS[key]) == value: return
 	var next := settings.duplicate(true)
 	next[key] = value
 	apply(next)

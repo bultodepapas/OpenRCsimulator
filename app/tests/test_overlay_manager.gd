@@ -14,6 +14,7 @@ const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
+const AlertPolicy := preload("res://render/overlays/alert_policy.gd")
 const Guide := preload("res://render/overlays/controls_guide.gd")
 const Profile := preload("res://input/controller_profile.gd")
 const PREFS := "user://test_overlay_settings.cfg"
@@ -104,14 +105,19 @@ func _contrast() -> void:
 	_check("amber caution remains distinct from green interaction", UiTheme.CAUTION.r > UiTheme.CAUTION.g
 		and UiTheme.CAUTION.g > UiTheme.CAUTION.b and UiTheme.CAUTION != UiTheme.FOCUS)
 	var warnings := WarningsBar.new()
-	for code: String in ["battery", "battery_hot", "fuel_reserve", "fuel_reserve_estimated", "stall", "experimental"]:
-		var chip: PanelContainer = warnings._chip(code)
-		var background: Color = (chip.get_theme_stylebox("panel") as StyleBoxFlat).bg_color
-		var expected := UiTheme.CAUTION
-		if code == "stall": expected = UiTheme.DANGER.pressed
-		if code == "experimental": expected = backplate
-		_check("warning retains its semantic surface: " + code, background == expected)
-		chip.free()
+	for code: String in ["battery", "battery_hot", "fuel_reserve", "fuel_reserve_estimated", "stall", "experimental", "fuel_empty"]:
+		warnings.refresh(PackedStringArray([code]))
+		var chip: PanelContainer = warnings.chips.get_child(0)
+		var headline: Label = chip.find_child("Headline", true, false)
+		var detail: Label = chip.find_child("Detail", true, false)
+		var severity: Label = chip.find_child("Severity", true, false)
+		var well: PanelContainer = headline.get_parent().get_parent()
+		var background: Color = (well.get_theme_stylebox("panel") as StyleBoxFlat).bg_color
+		_check("warning severity remains explicit: " + code, severity.text == AlertPolicy.severity(code).to_upper())
+		_check("alert title, detail and severity retain contrast over any sky: " + code,
+			UiTheme.contrast(headline.get_theme_color("font_color"), background) >= 4.5
+			and UiTheme.contrast(detail.get_theme_color("font_color"), background) >= 4.5
+			and UiTheme.contrast(severity.get_theme_color("font_color"), background) >= 4.5)
 	warnings.free()
 
 
@@ -361,7 +367,8 @@ func _fuel() -> void:
 		and spanish.frames.flight.values.fuel.get_parent().get_child(spanish.frames.flight.values.fuel.get_index() - 1).tooltip_text
 			== "Reserva: 12% (reserva estimada)"
 		and spanish.frames.warnings.chips.get_child_count() == 1
-		and spanish.frames.warnings.chips.get_child(0).get_child(0).text == "RESERVA DE COMBUSTIBLE · ESTIMADA")
+		and spanish.frames.warnings.chips.get_child(0).find_child("Headline", true, false).text == "RESERVA DE COMBUSTIBLE · ESTIMADA"
+		and spanish.frames.warnings.chips.get_child(0).find_child("Detail", true, false).text == "Has llegado a la reserva estimada. Prepara el aterrizaje.")
 	spanish.queue_free()
 	TranslationServer.set_locale("en")
 	await process_frame
@@ -552,9 +559,9 @@ func _spanish_layout() -> void:
 	await process_frame
 	await process_frame
 	var wind_calm_up: Vector2 = manager.frames.wind.size
-	_check("all eight Spanish warnings wrap inside the bar's width", manager.frames.warnings.chips.size.x <= WarningsBar.MAX_WIDTH + 0.5
-		and manager.frames.warnings.chips.size.y > 40.0, str(manager.frames.warnings.chips.size))
-	_check("seven warnings still overlap nothing at 1280×720", _layout_ok(manager, false), _rects(manager))
+	_check("Spanish alert rail bounds three cards and reports further active alerts", manager.frames.warnings.size.x <= WarningsBar.MAX_WIDTH + 0.5
+		and manager.frames.warnings.chips.get_child_count() == 3 and manager.frames.warnings.summary.visible, str(manager.frames.warnings.size))
+	_check("busy alert rail overlaps nothing at 1280×720", _layout_ok(manager, false), _rects(manager))
 	var gust := _snapshot(every)
 	gust.telemetry.wind_up = 1.2
 	manager.refresh_numbers(gust)

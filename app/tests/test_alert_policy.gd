@@ -85,6 +85,11 @@ func _run() -> void:
 	_check("manager prioritizes sampled urgent warnings", manager.frames.warnings.codes == PackedStringArray(["stall", "far"]))
 	manager.set_warning_option("warning_navigation", false)
 	_check("menu filter changes apply immediately", manager.frames.warnings.codes == PackedStringArray(["stall"]))
+	manager.set_warning_option("warning_detail", false)
+	manager.refresh_numbers({warnings = PackedStringArray(["fuel_reserve_estimated"])})
+	_check("compact alerts preserve estimated reserve provenance",
+		manager.frames.warnings.chips.get_child(0).find_child("Headline", true, false).text == "FUEL RESERVE · ESTIMATED"
+		and not manager.frames.warnings.chips.get_child(0).find_child("Detail", true, false).visible)
 	manager.set_warning_option("warning_training", true)
 	manager.refresh_numbers(live)
 	live.telemetry.time_s = 0.6
