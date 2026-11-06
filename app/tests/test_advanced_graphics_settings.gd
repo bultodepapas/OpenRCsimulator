@@ -110,10 +110,30 @@ func _run() -> void:
 		var effective_vsync := tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")
 		_check("effective VSync is visible to the player", settings._graphics_info.text.contains(
 			tr("Output: %d × %d · VSync: %s") % [root.size.x, root.size.y, effective_vsync]))
+	var reconstruction_caps := Reconstruction.runtime_capabilities()
+	var saved_graphics: Dictionary = app.display_preferences.config.duplicate(true)
+	var saved_auto := {"mode": root.scaling_3d_mode, "scale": root.scaling_3d_scale,
+		"msaa": root.msaa_3d, "sharpness": root.fsr_sharpness,
+		"slider_value": settings._fsr2_sharpness_slider.value, "slider_editable": settings._fsr2_sharpness_slider.editable}
+	# Auto uses Spatial Quality from 1500 output rows, then 85% from 1177 rows, when Spatial is supported.
+	var spatial := bool(reconstruction_caps.get("metalfx_spatial", false))
+	var expected_auto := "metalfx_spatial_quality" if spatial and root.size.y >= 1500 \
+		else ("metalfx_spatial_85" if spatial and root.size.y >= 1177 else "native")
+	var expected_scale := (2.0 / 3.0) if expected_auto == "metalfx_spatial_quality" \
+		else (0.85 if expected_auto == "metalfx_spatial_85" else 1.0)
+	var expected_mode := int(reconstruction_caps.get("metalfx_spatial_mode", -1)) if expected_auto != "native" \
+		else Viewport.SCALING_3D_MODE_BILINEAR
+	var auto_receipt := Reconstruction.describe(root)
+	_check("saved Auto viewport follows supported mode and output height",
+		saved_graphics.reconstruction == "auto" and auto_receipt.requested == "auto"
+		and auto_receipt.auto_selected == expected_auto and root.scaling_3d_mode == expected_mode
+		and is_equal_approx(root.scaling_3d_scale, expected_scale) and root.msaa_3d == Viewport.MSAA_4X
+		and is_equal_approx(root.fsr_sharpness, 0.2 if expected_auto == "native" else 0.0)
+		and is_equal_approx(settings._fsr2_sharpness_slider.value, float(saved_graphics.fsr2_sharpness))
+		and not settings._fsr2_sharpness_slider.editable)
 	settings._msaa_picker.select(3)
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
-	var reconstruction_caps := Reconstruction.runtime_capabilities()
 	_check("reconstruction menu follows provider capabilities", settings._reconstruction_picker.disabled == not Reconstruction.options_available(reconstruction_caps))
 	_check("1080p help compares Quality and Performance input sizes",
 		settings._reconstruction_picker.tooltip_text.contains("1280 × 720")
@@ -126,7 +146,10 @@ func _run() -> void:
 			settings._reconstruction_picker.is_item_disabled(index) == not bool(option.available))
 	var saved_reconstruction := str(settings._draft.reconstruction)
 	settings._draft.reconstruction = "native"
-	settings._sync_controls()
+	settings._on_graphics_option_changed()
+	_check("Native preview uses full 3D resolution and the selected MSAA",
+		root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+		and is_equal_approx(root.scaling_3d_scale, 1.0) and root.msaa_3d == Viewport.MSAA_8X)
 	_check("Native disables FSR sharpness and explains the saved value",
 		not settings._fsr2_sharpness_slider.editable
 		and settings._fsr2_sharpness_slider.focus_mode == Control.FOCUS_NONE
@@ -195,10 +218,15 @@ func _run() -> void:
 		and root.msaa_3d == (Viewport.MSAA_DISABLED if fsr2_policy.temporal else Viewport.MSAA_8X))
 	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
 	settings._process(0.0)
-	_check("FSR2 timeout restores native resolution and saved MSAA", root.scaling_3d_scale == 1.0
-		and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR and root.msaa_3d == Viewport.MSAA_4X)
-	_check("timeout restores sharpening and disables slider", is_equal_approx(root.fsr_sharpness, 0.2)
-		and not settings._fsr2_sharpness_slider.editable)
+	_check("FSR2 timeout restores saved Auto viewport and MSAA",
+		settings._draft.reconstruction == saved_graphics.reconstruction and settings._draft.msaa_3d == saved_graphics.msaa_3d
+		and is_equal_approx(root.scaling_3d_scale, float(saved_auto.scale))
+		and root.scaling_3d_mode == int(saved_auto.mode) and root.msaa_3d == int(saved_auto.msaa))
+	_check("timeout restores saved sharpening and slider state",
+		is_equal_approx(root.fsr_sharpness, float(saved_auto.sharpness))
+		and is_equal_approx(settings._draft.fsr2_sharpness, float(saved_graphics.fsr2_sharpness))
+		and is_equal_approx(settings._fsr2_sharpness_slider.value, float(saved_auto.slider_value))
+		and settings._fsr2_sharpness_slider.editable == bool(saved_auto.slider_editable))
 	for index: int in settings._reconstruction_picker.item_count:
 		settings._reconstruction_picker.select(index)
 		settings._reconstruction_picker.item_selected.emit(index)
