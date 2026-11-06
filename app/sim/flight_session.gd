@@ -2889,10 +2889,14 @@ func _physics_process(_delta: float) -> void:
 			if not _poll_controller(): return
 			var previous_yaw: float = commands.yaw
 			commands = radio.sticks()
-			# An unbound AUX defaults to zero: it must not override keyboard/controller toggles.
-			if gear_is_retractable() and not sim.paused and not radio.profile.get("aux", {}).get("gear", {}).is_empty():
+			# An unbound AUX defaults to zero: it must not override keyboard/controller toggles. A bound channel that is
+			# not armed again after a pause/menu/focus boundary has no valid position: keep the last accepted target
+			# until fresh OFF evidence re-arms it (external audit A6 F2), instead of reading its 0.0 as retract/down.
+			if gear_is_retractable() and not sim.paused and not radio.profile.get("aux", {}).get("gear", {}).is_empty() \
+					and radio.auxiliary_request_valid("gear"):
 				_gear_requested_down = radio.auxiliary_amount("gear") < 0.5
-			if flaps_available() and not sim.paused and not radio.profile.get("aux", {}).get("flaps", {}).is_empty():
+			if flaps_available() and not sim.paused and not radio.profile.get("aux", {}).get("flaps", {}).is_empty() \
+					and radio.auxiliary_request_valid("flaps"):
 				_flap_requested = radio.auxiliary_amount("flaps")
 			if controller_cut_held:
 				controller_throttle_cut()
@@ -5131,8 +5135,19 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		# E0a2b: the tail's downwash follows the wing's lift l/V late. Exact first-order lag over the tick, from the
 		# committed state and the servos the last tick used; held through the RK stages like rpm.
 		var s: PackedFloat64Array = sim.state
-		var cl_now := _wing_cl(s, aux)
-		var speed: float = air_data(s, sim.time()).V
+		var cl_now: float
+		var speed: float
+		if get_script() == load("res://sim/flight_session.gd"):
+			# NK-2a / A6 O4: pure queries at the same state/time yield the same air. Reuse only here,
+			# after the anchor update; never reuse a shaft sample, an RK stage or a previous tick.
+			var air: Dictionary = air_data(s)
+			cl_now = Aero.wing_wake_velocity(s, air, _deflections(aux), aircraft.model, _ground_up(s))
+			speed = air.V
+		else:
+			# Derived sessions may override either helper, including the second air query.
+			# Keep their original signature, dispatch and implicit/explicit time arguments.
+			cl_now = _wing_cl(s, aux)
+			speed = air_data(s, sim.time()).V
 		var length: float = aircraft.model.surfaces.horizontal.downwash_lag_length
 		out.append(cl_now + (aux[lag] - cl_now) * M.exp_(-dt * speed / length))
 	if gear_is_retractable():
@@ -5775,6 +5790,27 @@ func _configuration_for_weather(field: WeatherField) -> String:
 
 ## Restoring switches to recorded-input replay and stays paused. No raw radio state is deserialized.
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
+const CHECKPOINT_RESTORED_REASON := "checkpoint restored (recorded inputs)"
+
+
+## PT1h-R12 (game findings #9). restore_checkpoint() is a replay boundary: the session holds the recorded inputs and
+## ignores live input, which exact replays need. A player-facing "retry from here" (and the debug bridge's rewind and
+## bugitgo) hands control back with this. Pilot input resumes from the recorded throttle, so power does not jump, with
+## centred sticks; the flight stays paused until resume(). External drivers and invalid flights are refused.
+func hand_control_to_pilot() -> bool:
+	if _reject_reset_publication_reentry(): return false
+	if external_driver_enabled or not _flight_ready():
+		return false
+	var recorded_throttle: float = sim.inputs[3] if sim.inputs.size() >= 4 else commands.throttle
+	input_enabled = true
+	commands = Commands.neutral_commands()
+	commands.throttle = recorded_throttle
+	raw = Commands.neutral_raw()
+	if pause_reason == CHECKPOINT_RESTORED_REASON:
+		pause_reason = "checkpoint restored"
+	return true
+
+
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if _reject_reset_publication_reentry(): return false
 	var transaction := _begin_start_transaction()
@@ -6114,7 +6150,7 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 		crash = {}
 		_last_scenery_event = null
 		_last_lake_event = null
-		pause_reason = "checkpoint restored (recorded inputs)"
+		pause_reason = CHECKPOINT_RESTORED_REASON
 		_airframe_offset = restored_airframe_offset
 		_deflection_key = PackedFloat64Array()
 		scenery_damage_changed.emit()

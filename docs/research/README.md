@@ -151,6 +151,8 @@ Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [D
 
 The [consolidated Apple technical background, 2026-11-02](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) and [master implementation plan](../plans/apple-silicon-performance.md) are the two current Apple optimization homes. The [Apple/Godot audit, 2026-10-28](desktop-delivery-investigations/DT-MAC-00-R2/README.md), [twenty investigations, 2026-10-24](desktop-delivery-investigations/DT-MAC-00-R1/README.md) and [initial review](apple-silicon-performance-2026-10-24.md) retain dated source evidence. [DT-MAC-02](desktop-delivery-investigations/DT-MAC-02/README.md) records implemented Windows preparation and incomplete native qualification; no Mac performance result is inferred from those fixtures.
 
+[Apple Silicon cross-platform audit, 2026-11-06](apple-silicon-cross-platform-audit-2026-11-06.md) distinguishes optimizations already in shared game code, Apple-specific policy, remaining branch/release integration, rejected experiments and the next non-Apple qualification work. It is a source/evidence review, not a new benchmark.
+
 ### Roadmap knowledge base (all phases)
 
 [Roadmap investigations](roadmap-investigations/README.md) collects pre-work research for numerics, aerodynamics, propulsion, ground handling, radio, weather, validation, aircraft data and presentation. Read the relevant phase brief before starting its implementation step.

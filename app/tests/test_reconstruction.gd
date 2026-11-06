@@ -3,6 +3,7 @@ extends SceneTree
 const Reconstruction := preload("res://render/reconstruction.gd")
 const Preferences := preload("res://app_state/display_preferences.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const UiScale := preload("res://ui/ui_scale.gd")
 const FSR3_TEST_MODE := 101
 const DLSS_TEST_MODE := 102
 const PREFS_PATH := "user://test_reconstruction_preferences.cfg"
@@ -196,6 +197,7 @@ func _initialize() -> void:
 		Reconstruction.apply(root, different_config, failure_caps)
 		_check("choosing another provider clears stale failure evidence: " + provider,
 			not root.has_meta(Reconstruction.RUNTIME_FAILURE_META))
+	_test_output_dimensions(secondary)
 	if had_profile:
 		OS.set_environment("OPENRC_GRAPHICS_PROFILE", previous_profile)
 	else:
@@ -203,6 +205,50 @@ func _initialize() -> void:
 	secondary.free()
 	print("reconstruction: %d checks, %d failed; High active=%s" % [checks, failures, HighGraphics.active()])
 	quit(0 if failures == 0 else 1)
+
+
+func _test_output_dimensions(secondary: SubViewport) -> void:
+	var original_size := root.size
+	var original_mode := root.content_scale_mode
+	var original_aspect := root.content_scale_aspect
+	var original_factor := root.content_scale_factor
+	var original_scale_size := root.content_scale_size
+	var original_3d_scale := root.scaling_3d_scale
+	root.size = Vector2i(2560, 1600)
+	UiScale.apply(root)
+	root.scaling_3d_scale = 2.0 / 3.0
+	var receipt := Reconstruction.describe(root)
+	_check("receipt separates canvas units from estimated render pixels",
+		receipt.logical_canvas_size == [1920.0, 1200.0] and receipt.output_size == [2560, 1600]
+		and receipt.output_size_scope == Reconstruction.OUTPUT_SIZE_SCOPE
+		and receipt.nominal_3d_size == [1706, 1066]
+		and receipt.nominal_3d_size_scope == Reconstruction.NOMINAL_SIZE_SCOPE)
+	root.content_scale_size = Vector2i(1280, 720)
+	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	_check("letterboxed canvas uses the render target rather than the whole window",
+		Reconstruction.viewport_output_size(root) == Vector2i(2560, 1440))
+	var metalfx_caps := {metalfx_spatial = true, metalfx_spatial_mode = 101}
+	var letterbox_policy := Reconstruction.resolve_for_viewport(root, {reconstruction = "auto"}, metalfx_caps)
+	_check("letterboxed Auto preserves minimum input rows using the render target",
+		letterbox_policy.auto_selected == "metalfx_spatial_85"
+		and letterbox_policy.auto_output_size == [2560, 1440]
+		and letterbox_policy.auto_output_size_scope == Reconstruction.OUTPUT_SIZE_SCOPE)
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
+	_check("viewport stretching reports its lower render target", Reconstruction.viewport_output_size(root) == Vector2i(1280, 720))
+	_check("Auto keeps a lower-resolution stretched render target Native",
+		Reconstruction.resolve_for_viewport(root, {reconstruction = "auto"}, metalfx_caps).auto_selected == "native")
+	secondary.size = Vector2i(900, 600)
+	secondary.size_2d_override = Vector2i(450, 300)
+	secondary.size_2d_override_stretch = true
+	_check("subviewport reports render pixels instead of its logical canvas",
+		secondary.get_visible_rect().size == Vector2(450, 300)
+		and Reconstruction.viewport_output_size(secondary) == Vector2i(900, 600))
+	root.size = original_size
+	root.content_scale_mode = original_mode
+	root.content_scale_aspect = original_aspect
+	root.content_scale_factor = original_factor
+	root.content_scale_size = original_scale_size
+	root.scaling_3d_scale = original_3d_scale
 
 
 func _caps(high: bool, fsr3: bool, dlss: bool, fsr3_mode := -1, dlss_mode := -1) -> Dictionary:

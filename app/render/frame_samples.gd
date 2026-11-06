@@ -24,6 +24,7 @@ const RAW_CLOCK_MAX_OUTPUT_BYTES := 4096
 const RAW_CLOCK_MAX_HELPER_BYTES := 67108864
 const RAW_CLOCK_MAX_EXACT_INTEGER := 9007199254740991
 const RAW_CLOCK_GODOT_COMMIT := "4d10419cacd6d3009976e8f9fd3abd970fd58018"
+const RAW_CLOCK_BETA2_GODOT_COMMIT := "cafc17a192acf67903910a68aeb3c076c0907a4b"
 const RAW_CLOCK_HELPER_ENV := "OPENRC_RAW_CLOCK_HELPER"
 const RAW_CLOCK_SHA_ENV := "OPENRC_RAW_CLOCK_HELPER_SHA256"
 const GrassSceneSnapshot := preload("res://render/grass_scene_snapshot.gd")
@@ -425,8 +426,9 @@ static func _raw_clock_anchor(config: Dictionary) -> Dictionary:
 ## alone is not a cryptographic identity for the running engine.
 static func _raw_clock_supported_engine(version: Dictionary) -> bool:
 	return version.get("major") == 4 and version.get("minor") == 8 and version.get("patch") == 0 \
-		and version.get("status") == "beta1" and version.get("build") == "official" \
-		and version.get("hash") == RAW_CLOCK_GODOT_COMMIT
+		and version.get("build") == "official" \
+		and ((version.get("status") == "beta1" and version.get("hash") == RAW_CLOCK_GODOT_COMMIT) \
+			or (version.get("status") == "beta2" and version.get("hash") == RAW_CLOCK_BETA2_GODOT_COMMIT))
 
 
 static func _raw_clock_checked_call(config: Dictionary) -> Dictionary:

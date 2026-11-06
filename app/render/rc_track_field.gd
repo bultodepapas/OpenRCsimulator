@@ -9,6 +9,7 @@ const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 const GrassMask := preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
 
 ## Grass, meadow plants and near-grass clumps stay off the lane and the inner 60 % of its shoulder,
 ## where the dirt coverage exceeds about one third; the outer shoulder keeps a worn grass edge.
@@ -47,6 +48,9 @@ static func build(field: Dictionary, track: Dictionary, lake: Dictionary, ground
 	view.set_meta("rc_track_identity", Track.identity(track))
 	var surface := view.get_node_or_null("DirtLoopSurface") as MeshInstance3D
 	if surface != null and surface.material_override is ShaderMaterial:
+		# TrackView duplicates the configured material again; register the final surface copy.
+		if ground_material != null:
+			Atmosphere.track_shadow_material_copy(surface.material_override as ShaderMaterial, ground_material)
 		view.set_meta("lighting_material", surface.material_override)
 	return view
 

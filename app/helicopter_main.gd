@@ -63,6 +63,7 @@ var _crash_presentation: Node3D
 var _aftermath_paused: bool=false
 var _lighting_snapshot: Dictionary={}
 var _environment: Environment
+var _field_node: Node3D
 var _field_world_lighting: bool=false
 var _overlays: RefCounted
 var _hud_layer: CanvasLayer
@@ -110,9 +111,14 @@ func _ready() -> void:
  if str(args.get("heli-lights","auto")) not in NightLights.MODES: _refuse("--heli-lights must be auto, all, nav or off"); return
  var snapshot: Dictionary=Lighting.snapshot(lighting_config) if lighting_config.mode!="legacy" else {}
  _lighting_snapshot=snapshot
- var build_field := func() -> void: add_child(Landscapes.build(landscape_id,field,snapshot))
+ var build_field := func() -> void:
+  _field_node=_build_landscape_field(snapshot)
+  if _field_node!=null: add_child(_field_node)
  var world: Dictionary=World.build(self,field,build_field,{},snapshot,night_options)
  _environment=world.environment
+ if not is_instance_valid(_field_node): _refuse("Landscape field could not be built."); return
+ var lake_error: String=str(_field_node.get_meta("lake_error",""))
+ if not lake_error.is_empty(): _refuse("Lake configuration refused: "+lake_error); return
  livery=str(args.get("livery",livery))
  _airplane=AirplaneBuilder.build(aircraft_id,NAN,{},livery)
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
@@ -191,6 +197,11 @@ func _ready() -> void:
   var error: Error=get_viewport().get_texture().get_image().save_png(path)
   print("HELICOPTER CAPTURE ",path," error=",error)
   get_tree().quit(error)
+
+
+func _build_landscape_field(snapshot: Dictionary) -> Node3D:
+ return Landscapes.build(landscape_id,field,snapshot)
+
 
 func _refuse(reason: String) -> void:
  startup_error=reason

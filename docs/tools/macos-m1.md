@@ -4,7 +4,9 @@ Use this guide to connect from Linux, prepare a native task workspace, run Godot
 checks and retrieve evidence. DT/PT owns this operating guide; the
 [Apple plan](../plans/apple-silicon-performance.md) owns acceptance and the
 [dated M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md)
-owns measurements. Access and tool paths below were rechecked on **2026-11-03**.
+owns measurements. Historical inventory below was checked on **2026-11-03**;
+the Windows-through-Linux route and reusable beta2 engine were rechecked on
+**2026-11-06**.
 
 ## 1. Connect from Linux
 
@@ -27,8 +29,59 @@ without `m1ssh` still execute on Linux. `m1ssh` with no command opens a native
 shell from an interactive terminal. Recreate these shell variables/functions
 in each new terminal; they are not repository configuration.
 
+From the Windows development checkout, the existing SSH alias `vscode-megatron`
+reaches that Linux checkout. Access was verified on **2026-11-06** through this
+route; the key is on Linux, not in the Windows or WSL checkout. Run the Linux
+commands above after connecting with `ssh vscode-megatron`, or pass a quoted
+remote command through that host. Keep both hops' host-key verification enabled.
+Do not copy the private key merely to make Windows access direct.
+
+For direct access from Windows, the owner can instead enroll a dedicated Windows
+public key on the Mac. The 2026-11-06 task created
+`$env:USERPROFILE\.ssh\openrc_m1_ed25519` at the owner's request; its private
+half stays on Windows. Use the command below only after the public half has been
+added to the Mac account's existing `~/.ssh/authorized_keys`. Preserve the Linux
+key and all existing authorized entries. A reachable SSH server does not prove
+that the new key is authorized. This direct route was verified on 2026-11-06
+after owner enrollment and used for the current native checks.
+
+For a Windows client that does not yet trust this host, first obtain its ED25519
+host fingerprint from Terminal on the Mac, or through an already verified SSH
+session. This is the server's identity, separate from the login key above:
+
+```bash
+ssh-keygen -l -E sha256 -f /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+Then make one interactive connection from Windows. Compare its displayed
+fingerprint with the trusted value before answering `yes`; stop on a mismatch.
+Confirmation adds the host key to the Windows user's `~/.ssh/known_hosts`.
+These options follow the [OpenSSH host-key policy](https://man.openbsd.org/ssh_config#StrictHostKeyChecking).
+
+```powershell
+ssh -i "$env:USERPROFILE/.ssh/openrc_m1_ed25519" -o IdentitiesOnly=yes `
+  -o HostKeyAlgorithms=ssh-ed25519 -o StrictHostKeyChecking=ask `
+  -o BatchMode=no -o UpdateHostKeys=no -o ConnectTimeout=15 `
+  gius@100.79.151.42 'uname -sm'
+```
+
+After both host trust and login-key enrollment are established, use the strict
+noninteractive command for automation:
+
+```powershell
+ssh -i "$env:USERPROFILE/.ssh/openrc_m1_ed25519" -o IdentitiesOnly=yes `
+  -o BatchMode=yes -o StrictHostKeyChecking=yes -o UpdateHostKeys=no `
+  -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 `
+  gius@100.79.151.42 'uname -sm; sw_vers -productVersion; pmset -g batt'
+```
+
+Retain normal host-key verification, including the initial trust decision for
+a new client. Do not disable checking or replace an existing host-key entry to
+work around a mismatch. Once enrollment is verified, this route needs no Linux
+gateway. Keep private keys outside source snapshots, Git and evidence bundles.
+
 **Keep the existing SSH keys.** The user explicitly requested their retention.
-The private key is mode 0600 inside ignored `tmp/apple-m1-access/`; the Mac user
+The original Linux private key is mode 0600 inside ignored `tmp/apple-m1-access/`; the Mac user
 is `gius`, with the corresponding public key in `~/.ssh/authorized_keys`.
 Never include key contents or debug-bridge tokens in Git, reports or chat.
 A new clone does not contain this credential: obtain authorized access to the
@@ -54,10 +107,12 @@ campaign evidence remains available. Check existence before reuse.
 | Round-6 final analysis on Linux | `/home/bulto/OpenRCsimulator/tmp/apple-round6/analysis/long-final.json`; raw captures in sibling `metal-long-{baseline,candidate}-{1..3}/` directories |
 | Historical development package | `/Users/gius/OpenRC-m1-package-check/tmp/round2-final-20261102/OpenRC-M1-round2.zip`; **absent at final check**, not a current release |
 | New task workspaces | Use a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
+| Verified reusable beta2 engine (2026-11-06) | `/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot`; `4.8.beta2.official.cafc17a19`. Recheck the bundle/hash before reuse; preserve the owning campaign. |
 | Apple tools | `/usr/bin/xcrun`, `/usr/bin/caffeinate`; clang resolves under `/Library/Developer/CommandLineTools/` |
 
-The tested engine reports `4.8.beta1.official.4d10419ca`. Recheck `--version`
-and source/build hashes when identifying a new result. The inventory was
+Historical campaigns used `4.8.beta1.official.4d10419ca`; the current reusable
+engine above reports `4.8.beta2.official.cafc17a19`. Recheck `--version`
+and source/build hashes when identifying a new result. The historical inventory was
 MacBookAir10,1, M1/8 GiB, macOS 27.0.1; these are dated facts, not permanent
 assumptions. Use the existing
 [native preflight](../../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a)
@@ -98,8 +153,17 @@ set -euo pipefail
 mkdir "tmp/$M1_TASK"
 printf '%s\n' "$M1_COMMIT" > "tmp/$M1_TASK/source-head.txt"
 git status --short > "tmp/$M1_TASK/source-status.txt"
+# info/attributes overrides committed rules; refuse it rather than changing the developer's configuration.
+M1_INFO_ATTRIBUTES="$(git rev-parse --git-path info/attributes)"
+if test -s "$M1_INFO_ATTRIBUTES"; then
+  echo "Nonempty info/attributes: use an isolated repository export." >&2
+  exit 1
+fi
+: > "tmp/$M1_TASK/empty-attributes"
 m1ssh "mkdir -p /Users/gius/OpenRC-m1-work && mkdir '$M1_WORK'"
-git archive --format=tar "$M1_COMMIT" | m1ssh "tar -xf - -C '$M1_WORK'"
+GIT_ATTR_NOSYSTEM=1 git -c core.attributesFile="$PWD/tmp/$M1_TASK/empty-attributes" \
+  -c core.autocrlf=false -c core.eol=lf -c tar.umask=0022 \
+  archive --format=tar "$M1_COMMIT" | m1ssh "tar -xf - -C '$M1_WORK'"
 scp -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
   "tmp/$M1_TASK/source-head.txt" "$M1_HOST:$M1_WORK/source-head.txt"
 )
@@ -107,10 +171,23 @@ scp -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
 
 This transfers tracked committed contents without ignored Linux `.godot`, `.tools`,
 virtual environments, credentials or capture outputs. It excludes uncommitted and
-untracked changes. For a dirty candidate, transfer only reviewed changes into
+untracked changes. Global and system attributes are disabled for this export;
+nonempty repository-local override attributes cause an early refusal. For a dirty candidate, transfer only reviewed changes into
 your new task directory and retain its diff and file hashes; identify the actual
 bytes tested. A failed transfer leaves a partial directory: inspect it and use a
 new task ID for a fresh attempt.
+
+When disk headroom is limited, an APFS copy-on-write clone (`cp -cR`) into a new
+task directory can avoid duplicating unchanged source bytes. This is separate
+storage from the old campaign, not a hard link. Reconcile every scoped source
+file against an export using the same pinned settings and the intended commit's
+`.gitattributes`, transfer differences, and record the materialized file hashes
+in a complete manifest before import or checks. Raw Git blob bytes can differ
+from checkout bytes: stock aircraft data uses CRLF, and Workshop descriptors
+bind those exact bytes. Blob identity alone does not verify a usable snapshot.
+Remove extra files only in the new task-owned clone. A copied import cache still
+needs a checked import; a clone does not establish the new source identity by
+itself.
 
 The archive is a source snapshot, **not a historical Git checkout**. If the engine
 is missing, section 4 initializes local Git metadata solely so the existing getter
@@ -143,6 +220,7 @@ has no source commit. With a working engine, run the dependent checks together:
 ```bash
 (
 set -eu
+"$M1_PY" research/aircraft-editor/build_descriptors.py --check
 "$M1_PY" tools/godot/macos_preflight.py --godot "$OPENRC_GODOT"
 "$M1_PY" tools/graphics/prepare_research.py --dest tmp/research
 "$M1_PY" tools/godot/run_checked.py --out-dir tmp/checks --label m1-import \

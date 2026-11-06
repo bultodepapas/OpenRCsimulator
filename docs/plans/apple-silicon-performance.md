@@ -1,6 +1,6 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-05 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Current source baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Status:** bounded observer/shader optimizations and native measurement repairs implemented. Three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for the named instrumented Metal circuit. Whole-observer and full product/release qualification remain open.
+Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Current repair baseline:** `de19806bc`; [resumed native checks and dated performance limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106). **Status:** bounded observer/shader optimizations, native measurement repairs, display recovery hardening and corrected Retina dimension reporting implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
@@ -8,13 +8,41 @@ The objective is the maximum practical **sustained performance with readable air
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.
 
+The initial resumed 2026-11-06 campaign used a task snapshot that incorrectly
+materialized normalized Git blobs instead of checkout bytes required by
+`.gitattributes`. Its three 120-second Native screens, ten-minute Auto/VSync
+sample and later native UI checks remain evidence only for those nonstock LF
+inputs; they do not qualify a normal checkout. The descriptor integrity guard
+correctly refused Workshop saves. The corrected export and rerun belong to the
+[dated evidence](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106).
+The window
+server reported a 2880×1800 screen property; this is not a new physical-panel
+measurement. Logical UI, estimated render-target and presentation pixels remain
+separate evidence.
+
+The attribute-aware `bf4745d68` checkout rerun passed descriptor checks, 165
+native graphics assertions at each target size, the Home/Fly/Settings resize
+route and the full 52-step debug smoke. `a1e6e66cb` additionally observes viewport
+dimensions in every benchmark mode; old unobserved receipts fail its current
+qualification gate. `de19806bc` additionally requires contiguous observation
+coverage and correctly accounts for deferred seals; review repairs harden
+MetalFX marker persistence, letterboxed Auto selection, copied cloud materials
+and transactional lake startup. Focused Windows software and GPU checks passed.
+The direct Windows SSH route now works with the owner's enrolled dedicated key.
+The attribute-aware `de19806bc` snapshot passed native functional checks, both
+165-assertion graphics suites and the full 52-step smoke. Three 30 s/120 s runs
+each pass the current software pacing gates at an estimated 1920×1080 target:
+Native uncapped p95 is 15.741–15.831 ms; Auto/Native with VSync p95 is
+17.127–17.135 ms. These short technical circuits do not establish sustained
+product, moving-aircraft readability or physical presentation qualification.
+
 ## 1. Priorities, invariants and decision rules
 
 1. Prefer a source-proven correctness/tooling repair before requiring hardware. Do not repeat completed acquisition, streaming, renderer-isolation, culling, caching or MetalFX-policy work.
 2. Do not invent performance gains from source inspection. Prepare workloads, fixtures, receipts, reducers and bounded failure behavior off-Mac; require native evidence before promoting a renderer, preset, native solver or performance claim.
 3. Keep one hypothesis and mechanism per candidate. If a baseline miss is CPU/observer-bound, reconstruction is not its repair. If it is GPU/pixel-bound, an ARM64 evaluator port is not its first repair. Estimate engineering effort after attribution, not from advertised GPU throughput.
 4. Preserve float64 state, 240 Hz, RK4 order, validation, accepted-tick transactions, input sampling, collision identity, exact replay policies and the vehicle-independent kernel. Never weaken a guard, lower physics rate, loosen tolerance or re-record goldens to pass a performance gate.
-5. Keep the current exact Godot 4.8-beta1 pin for the baseline. Engine upgrades, Apple Clang changes, shader changes, SDK changes and backend changes are independent candidates. Preserve the beta1 universal-template workaround only where applicable.
+5. Freeze the exact engine identity per campaign. The current pin is Godot 4.8-beta2 (`cafc17a192acf67903910a68aeb3c076c0907a4b`); historical beta1 campaigns remain separate. Engine upgrades, Apple Clang changes, shader changes, SDK changes and backend changes are independent candidates. Preserve the beta1 universal-template workaround only where applicable.
 6. Reuse official Godot, Apple tools, existing repository collectors, free plotting tools and retained licensed assets. Build only missing glue with a demonstrable contract; no replacement profiler, telemetry backend, asset library, renderer or GPU flight solver.
 7. A failed optional path must leave a usable reference/Native/Standard route. No chip-name-only feature gates, global App Nap disabling, forced CPU affinity, automatic privilege escalation or surprise launch-time stress tests.
 8. Timing runs are serial on an otherwise idle host. Independent developers may work on separate files, but shared app interaction, imports, engine builds and benchmark CPU/GPU load cannot overlap a campaign.
@@ -49,7 +77,7 @@ The [R4 research refresh](../research/desktop-delivery-investigations/DT-MAC-00-
 
 | Order | Step | Work | Decision / exit |
 | --- | --- | --- | --- |
-| 0 | Prerequisite (owner) | Restore the M1 SSH key: `tmp/apple-m1-access/` is absent on the Linux checkout. Check free disk before transfer. Optionally install full Xcode for `xctrace`, if disk allows. | Native preflight receipt on a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
+| 0 | Prerequisite (owner) | Direct Windows SSH verified on 2026-11-06; preserve that dedicated key and the existing Linux key. Follow the [M1 guide](../tools/macos-m1.md), check disk before transfer and use a fresh verified source snapshot. Optionally install full Xcode for `xctrace`, if disk allows. | Native preflight receipt and every file in the selected snapshot's export manifest verified in the fresh review workspace |
 | 1 | DT-MAC-03b-a sweep | Current source on the repository's **4.8-beta2** pin; the beta1 round-6 numbers are not a baseline for it. First one default 30 s + 120 s screen, then the [sustained-fixture sweep options](../../research/performance/README.md#repeatable-active-flight-dt-mac-03): `--sustained-render-scale` 1.0 / 0.75 / 0.5 × `--sustained-msaa` 2 / 1 / 0 (4× / 2× / off). One 30 s warmup + 60 s screen each, Metal HUD log (`MTL_HUD_ENABLED=1 MTL_HUD_LOG_ENABLED=1`, plus encoder timing in a separate run) and `sample <pid> 10` for main-thread stacks. HUD runs are diagnostic only. | FPS(0.5)/FPS(1.0) ≥ 1.7 and HUD GPU time ≈ frame interval → **GPU track**. Ratio < 1.2 → **CPU track** (DT-MAC-04a/b). Otherwise both, CPU first. |
 | 2 | DT-MAC-03b-b hitches | Attribute the 120–160 ms maxima and >50 ms frames using pipeline-compilation monitors, frame diagnostics and `sample` during Home→Fly and first lake/sun views. | Hitch cause named per event class, or a discriminating follow-up measurement |
 | 3a | DT-MAC-06b GPU track | One candidate at a time, five-pair protocol: (i) Retina **1080p-class internal 3D**, scale 0.75 → 1920×1200 with native UI; (ii) MSAA 2× on Apple; (iii) price the S5/S6 pass costs with a diagnostic scene lacking water/sun-glare/afterimage materials, then replace only the cheapest consumer (sun-glare depth occlusion, afterimage mipmapped screen read). | ≥ 5 % workload gain and moving-readability acceptance. (i) must also pass the visual gate before becoming a Mac default proposal. |
@@ -59,6 +87,32 @@ The [R4 research refresh](../research/desktop-delivery-investigations/DT-MAC-00-
 | — | Diagnostic only | One A/B of `GODOT_MTL_SYNC_MODE=none` against barriers on the frozen candidate. | Record the result. Change nothing unless it is beyond noise, and then report upstream. |
 
 Keep phases 10–12 (NK-3 ARM64, iOS, Metal 4 and engine work) parked. R4 found no trigger.
+
+#### Audit follow-up (DT-MAC-06b-R1 / DT-MAC-02b-R1, 2026-11-05)
+
+The local `optimization help.md` audit contains two dated reviews. Its later
+section corrects the earlier C5 diagnosis; neither its synthetic experiments nor
+the historical profiled M1 pair establish current sustained 1080p acceptance.
+Implementation and focused evidence are retained in the
+[R4 follow-up](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#optimization-help-follow-up-2026-11-05).
+
+| Recommendation | Current disposition / next gate |
+| --- | --- |
+| UID omissions, benchmark effective state, profiler eligibility and source identity | Repaired; new receipts bind runtime rendering sources and actual observed configuration. Historical receipts remain historical and cannot silently satisfy the stricter gate. |
+| Cloud publication/failure, separate ground/sky controls and graphical probes | Implemented with analytic pending/failure fallback, bounded retry and canvas/spatial/sky checks. Native Metal lifecycle, motion and sustained qualification remain open. |
+| Stale MetalFX confirmation; shoreline clipping publication | Activation tokens and transactional lake attachment implemented. Process responsiveness is explicitly not display confirmation. Unsupported cuts refuse the lake/session instead of publishing mismatched physics. |
+| Conservative density bounds | Default remains `off`. Both original variants failed the unchanged native M1 Metal numerical gate on 2026-11-06. A disposable reference-fallback `two_three` passed numerical checks but regressed the layered-cloud screen; it was not integrated. See the [native follow-up](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-06b-r2--dt-mac-02b-r2-native-verification-2026-11-06). |
+| Two-octave lattice atlas; half-resolution sky | Next independent GPU experiments after the repaired baseline. Retain analytic fallback, seed/readiness identity and full-resolution sun/moon/IBL behavior; require incremental memory, transition and complete-frame evidence. No claimed gain or default change. |
+| Aircraft-centered native crop | Separate rendering experiment after the cloud comparison: share complete scene/occluders, synchronized pose, padded crop and full-resolution UI. Camera geometry alone is not seam/readability/performance proof. |
+| Native Metal rate maps, FP16, memoryless attachments, ARM64 physics | Conditional engine/native branches; no new trigger or available on-device proof. Do not fork the engine or change simulation arithmetic as part of this repair. |
+| Packed three-sample relief cache; solar-halo lookup | Retain the guide's rejection/deprioritization. Measured interpolation error and shared solar angle work do not justify integrating these candidates. |
+| Ground anchor/cache, hidden-layer relief, screen/depth dependencies, presets, shader baking and presentation | Keep the existing single-candidate attribution/export/pacing gates. Native Mac shader baking requires a non-headless native export and measured first-use behavior; no preset or queue policy is promoted by source inspection. |
+
+The documented M1 key was absent from the current Windows workspace and the
+known WSL checkout location during the 2026-11-05 follow-up. On 2026-11-06 the
+existing key was found on `vscode-megatron`; the native follow-up above retains
+the new checks and rejected experiments. Sustained/product qualification remains
+open. No new library or asset is needed for these repairs and experiments.
 
 **Step 1 result (2026-11-05):** [GPU track](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-03b-a-attribution-sweep-2026-11-05). FPS(0.5)/FPS(1.0) was 2.34, and the main thread waited on GPU completion in 57 % of samples. MSAA off versus 4× gained only 10 %. At scale 0.75 (1920×1200 internal), p50 was 17.9 ms and p95 20.8 ms, each from one short screen. Next is step 3a, candidate (i), then per-pixel shader cost. The CPU track (3b) is not entered. Step 2 hitch attribution remains open.
 

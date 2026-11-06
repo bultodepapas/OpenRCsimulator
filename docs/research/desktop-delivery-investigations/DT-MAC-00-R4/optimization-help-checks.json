@@ -1,0 +1,382 @@
+{
+  "format": "openrc-optimization-help-followup v1",
+  "date": "2026-11-05",
+  "baseline_commit": "a6ccffaa7a72d14d296e27a08a20cde2285893d2",
+  "platform": "Windows native; NVIDIA GeForce RTX 3090; NVIDIA 617.42",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "source_sha256_at_review": {
+    "app/app_state/renderer_guard.gd": "526b50ebaf9eeefd89a673d7cdd5df272daa59a0d24cad6de33043400a1b49cd",
+    "app/app_state/renderer_guard.gd.uid": "d8ef320fa4dadb2598e0fd3e9be935961279086fd0bb9710ce85a3991555f7db",
+    "app/render/atmosphere.gd": "dec9000f3c2ff13d4f12363e2223295f557e74442910071b2560de4e5ef9ff95",
+    "app/render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+    "app/render/cloud_shader_variants.gd": "09735e06cc1d4055b10303dd2ea5c001d4a403ce7b148f9cd4efb90f9892a6b9",
+    "app/render/cloud_shader_variants.gd.uid": "377362cd46fdf55546a4a1122c18d874375d6bab4655fdd61d5ef270bda2f05f",
+    "app/render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+    "app/render/cloud_shadow_map.gd.uid": "f38c054de4aa1b1c4bd7d530cdd97dcdcbfb9a9c97afb5c15b6e1bdc3ff32438",
+    "app/render/cloud_shadow_map.gdshader.uid": "8b4400789ebacba119991f5648f43229b9d49ab8a81e298f141f7cc82b091c57",
+    "app/render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+    "app/render/cloud_shadow_map.gdshaderinc.uid": "bc71bd7e5b5931eca92a8c7fd1131e52aa8009e21d4511353aa05b9ad66166bc",
+    "app/render/horizon.gd": "115633128539019d69baa935b7f07fd5b0ac62237c2a33671f3cda147cb08190",
+    "app/render/lake/lake_world.gd": "4d2432f4f366402af684b5d013e99466fa8452bd750aec067ca84ef043fa2dae",
+    "app/tests/test_cloud_shader_variants.gd": "f20700dea02c1807fdb047320863db777b34e9fcce148ec87b5cdd15aab0e7a4",
+    "app/tests/test_cloud_shader_variants.gd.uid": "ca0bbc1f81542a696b7d370b131f0ede1538e6baea6281b22a28391ad762f352",
+    "app/tests/test_cloud_shadow_map.gd": "d2848a59d515f21e8bb212c96bdc0751519478a35a4bec4dc21d0c093e36daaa",
+    "app/tests/test_cloud_shadow_map.gd.uid": "1211564b270d1cf65babcd5b93a7886b5691eac51b636670b9d97face73bbc3c",
+    "app/tests/test_lake_world.gd": "31909214a017ce5761bd1c3e4e73100ca193d508f49d1e18076f8e7e52a0be40",
+    "app/tests/test_renderer_guard.gd": "e7de0c4a3ebcb830d16a1abad5a72309eb0183d17197b8c81b0e659d9dc116a8",
+    "app/tests/test_renderer_guard.gd.uid": "df493d1395ef9ca463978d96cda1bd526139400b10111b465b5a8eab6f7d362b",
+    "app/vehicles/ground/ground_scene.gd": "8bb117d4fed598a0e30c2e747ac6d95c8e074b137f003eab0e991f79ca9ab6e0",
+    "research/performance/native_summary.py": "fcf65218be91de413c56add320bcf8bd40fe64b64b6fafc5145046a0c0789c1d",
+    "research/performance/sustained_flight.gd": "8e21639f0c71d6115809b7d8ee921d8e50e70b81e94d8a58857d776d99fc96f3",
+    "research/performance/test_native_summary.py": "12b3d2c78108820829f63559ab44767960b5775e0fc5e1ac4968b1366a66d04c",
+    "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3"
+  },
+  "probes": [
+    {
+      "name": "cache-gl",
+      "report_sha256": "1d23c457fc69471a7ec0a6e0b655fdf95a01a340ba1a11c70da3242c7bfc3074",
+      "renderer": "gl_compatibility",
+      "driver": "opengl3",
+      "variant": "off",
+      "passed": true,
+      "canvas_cases": 10,
+      "spatial_cases": 10,
+      "sky_cases": 10,
+      "max_normal_density_error": 0.0404411759227514,
+      "max_normal_mean_density_error": 0.00264508548647058,
+      "source_sha256": {
+        "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      }
+    },
+    {
+      "name": "cache-mobile",
+      "report_sha256": "890977f36bc7d3edd1b9e541998a98f9ada0ca00b01dfcedd48726fb3c28f042",
+      "renderer": "mobile",
+      "driver": "vulkan",
+      "variant": "off",
+      "passed": true,
+      "canvas_cases": 10,
+      "spatial_cases": 10,
+      "sky_cases": 10,
+      "max_normal_density_error": 0.0404411759227514,
+      "max_normal_mean_density_error": 0.00263794227123526,
+      "source_sha256": {
+        "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      }
+    },
+    {
+      "name": "three-gl",
+      "report_sha256": "663138d889ea7b6e5198ca68bedb1d160ef25b29d1a329b3df3b3217711b3301",
+      "renderer": "gl_compatibility",
+      "driver": "opengl3",
+      "variant": "three",
+      "passed": true,
+      "canvas_cases": 9,
+      "spatial_cases": 9,
+      "sky_cases": 9,
+      "max_normal_density_error": 0.0,
+      "max_normal_mean_density_error": 0.0,
+      "source_sha256": {
+        "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      }
+    },
+    {
+      "name": "three-mobile",
+      "report_sha256": "2e79d96a2a931c3640f669350a00f839c31ac5e5be949ae5e7647f9203ddbd20",
+      "renderer": "mobile",
+      "driver": "vulkan",
+      "variant": "three",
+      "passed": true,
+      "canvas_cases": 9,
+      "spatial_cases": 9,
+      "sky_cases": 9,
+      "max_normal_density_error": 0.0,
+      "max_normal_mean_density_error": 0.0,
+      "source_sha256": {
+        "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      }
+    },
+    {
+      "name": "two-gl",
+      "report_sha256": "a410e411f3d1117f6607bec66039de9d2066b7359cd91f20ffd6bb66da64b7b2",
+      "renderer": "gl_compatibility",
+      "driver": "opengl3",
+      "variant": "two_three",
+      "passed": true,
+      "canvas_cases": 9,
+      "spatial_cases": 9,
+      "sky_cases": 9,
+      "max_normal_density_error": 0.0,
+      "max_normal_mean_density_error": 0.0,
+      "source_sha256": {
+        "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      }
+    },
+    {
+      "name": "two-mobile",
+      "report_sha256": "583ac11e3a1342a7f89ba33bb79376238afc957603ab11b77c49d5ed8bd3265d",
+      "renderer": "mobile",
+      "driver": "vulkan",
+      "variant": "two_three",
+      "passed": true,
+      "canvas_cases": 9,
+      "spatial_cases": 9,
+      "sky_cases": 9,
+      "max_normal_density_error": 0.0,
+      "max_normal_mean_density_error": 0.0,
+      "source_sha256": {
+        "tools/atmosphere/shadow_map_probe.gd": "b3ac97b4815f7840641bef35de4bee1702826b62ac06221e0b1ea4132470c2e3",
+        "res://render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+        "res://render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+        "res://render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8"
+      }
+    }
+  ],
+  "captures": [
+    {
+      "case": "classic",
+      "output_pixels": [
+        1920,
+        1080
+      ],
+      "variant": "two_three",
+      "reference_sha256": "ffbfd1a28643c911a93f9a5c8e233a0e9183761bf4d8c5aded4be5595f6425df",
+      "candidate_sha256": "ffbfd1a28643c911a93f9a5c8e233a0e9183761bf4d8c5aded4be5595f6425df",
+      "max_channel_error_u8": 0,
+      "changed_pixels": 0,
+      "renderer": "mobile",
+      "driver": "vulkan"
+    },
+    {
+      "case": "layered",
+      "output_pixels": [
+        1920,
+        1080
+      ],
+      "variant": "two_three",
+      "reference_sha256": "c6160bf5b6a9e3c547a0b14ea6457294f0561412105bf7fd293bf4c115542909",
+      "candidate_sha256": "c6160bf5b6a9e3c547a0b14ea6457294f0561412105bf7fd293bf4c115542909",
+      "max_channel_error_u8": 0,
+      "changed_pixels": 0,
+      "renderer": "mobile",
+      "driver": "vulkan"
+    }
+  ],
+  "checked_runs": [
+    {
+      "label": "test_cloud_shadow_map",
+      "report": "tmp/optimization-help-copy-binding/test_cloud_shadow_map-7wqq0a6r/report.json",
+      "report_sha256": "743599005e9350000a6966b887a0860db3a6709c1a762795c8ff84d211489607",
+      "log_sha256": "92972e7e561f70132f25483e6f10ea26dd24d5ac77e40355914959ff74a4254a",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "test_field_staged_build",
+      "report": "tmp/optimization-help-copy-binding/test_field_staged_build-vuoudqkj/report.json",
+      "report_sha256": "723c47a14de501ab92e915df8c265c2d97729c4878ac32272cc67eeda9c9364e",
+      "log_sha256": "419c2b2f228b2d09d289390c4851aaf9949ceb8b0852493bdf4055ae9cb27f9c",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "test_atmosphere",
+      "report": "tmp/optimization-help-integration/test_atmosphere-qwp760p9/report.json",
+      "report_sha256": "689aaeb246001ab1ec67c09b68f44f973ae6f110f1275d1e0d5268519a8644dd",
+      "log_sha256": "30223bf6b54a860ee5efa9ecd2a3ed41ebc3a061d3efbbc25b3f477402b9ba35",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "test_cloud_shader_variants",
+      "report": "tmp/optimization-help-integration/test_cloud_shader_variants-1j5y99_d/report.json",
+      "report_sha256": "225e1d53bcdab632cd7999709ecd6faf670ec30055068c5de3829fc112af00a9",
+      "log_sha256": "06c2c2bfe9baa5956f92661946b38f2c6223b3303dfb09acd4fec2815fa66d77",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "test_sky_render",
+      "report": "tmp/optimization-help-integration/test_sky_render-wj53lofv/report.json",
+      "report_sha256": "023a4ae31e8b13fb806f6b910cb728f67c182f964b9e90def4b44aa5e5866345",
+      "log_sha256": "cfb17279b401e00845c721aef72647bf15144c39874ea7d8fef0991079998280",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "test_world_sky",
+      "report": "tmp/optimization-help-integration/test_world_sky-n8mu3h0k/report.json",
+      "report_sha256": "05bdf2e24a810238baacc969d9f28f64f5cab6b28a367387958b1e583c4b0a23",
+      "log_sha256": "001606acf24adf43827e42496d94bf1abe51ff8288d37050f52d2aa54d30e127",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      }
+    },
+    {
+      "label": "test_time_of_day_render",
+      "report": "tmp/optimization-help-integration-remainder/test_time_of_day_render-ev2uk3u3/report.json",
+      "report_sha256": "2e70cebc4a0e0b0f187627ee6e0a2ecbb5a9154568b68e1b64a9953722c7ece2",
+      "log_sha256": "94eb69b1a660e8199d066893c9c62ed98053d427496cf62a2f049482ec74290d",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "test_world_moon_flow",
+      "report": "tmp/optimization-help-integration-remainder/test_world_moon_flow-y_95fcki/report.json",
+      "report_sha256": "368f5f7b8f9c8c239b2be184b20343e483abf2bbd6a0cfd06d483f545fc4e21e",
+      "log_sha256": "5b1dc729ab4405819ad6550ab7acaf5bd79e7d0a6759c5f7b36f65b966b420f1",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "renderer-guard",
+      "report": "tmp/optimization-help-cache/guard/renderer-guard-5emjwnl7/report.json",
+      "report_sha256": "d8a6203a0a9e40b5e91ab37742484a391d3b7f4edb8c2408e7651e49b04eb30b",
+      "log_sha256": "5b79f19db02c2e6830427aec97f9da2de36147290493b7be8c040ccbd8eff3ae",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "lake-world",
+      "report": "tmp/optimization-help-shoreline/final-world/lake-world-urzfe4l4/report.json",
+      "report_sha256": "430781810c9429455fcc7111fcaa9384ada94f50c48f631b618ba2f2342faf47",
+      "log_sha256": "785372ac6a5cd088eeee2caa8258e6795c6a73a7881ebe741f63fe265c014ebe",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "water-checkpoint",
+      "report": "tmp/optimization-help-shoreline/final-flight-complete/water-checkpoint-di5swqmj/report.json",
+      "report_sha256": "6115c92b653dd48e9d35644cd2981f47f650ede2827c3ea4ed670c7562a38df1",
+      "log_sha256": "3cb9177c66798533c1d8bf9bbc1413a2b41202a6f41dfe1c352e0b30b9de8825",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "godot",
+      "report": "tmp/optimization-help-import-final/godot-9duko9a0/report.json",
+      "report_sha256": "0d3756399126df363489ed688bcf2fa7f1d16e824f571c3496405236b57de706",
+      "log_sha256": "0e0a1dc47d67320a62f5fcd3c77e837e4983a40798401696dcc9d3bb2fc4d821",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "godot",
+      "report": "tmp/optimization-help-benchmark-post-import/checks/godot-9ah1669g/report.json",
+      "report_sha256": "134cde73f62fb134ca5d725d9b846c1b978135fcc976a77c6dfae44cff50f1f7",
+      "log_sha256": "d1206e863c3382df104365773c1120a6b2edd2c9c9d5cd3f0cf88d938a02328f",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "offline_tests": {
+    "research/performance/test_native_summary.py": 71,
+    "tools/ci/test_release_preflight.py": 10
+  },
+  "uid_gate": "passed with a temporary candidate Git index; user index unchanged",
+  "debug_smoke": {
+    "ok": true,
+    "steps": 52,
+    "failed": [],
+    "hitches": 98,
+    "launcher_exit_code": 0,
+    "leaked_objects_at_exit": 0,
+    "soak_growing_counters": 0,
+    "engine_log_sha256": "41765a440487a61feee3cd58888f9d15ca372fadcc2ab77dafdd95204cf20128",
+    "scope": "headless route/lifecycle regression; hitches are diagnostic, not pacing acceptance"
+  },
+  "benchmark_fixture": {
+    "report_sha256": "21ceeb80fd70bbc4684c26d5208a1c740bb75635b1967544dee7de51435c7cf4",
+    "complete": true,
+    "source_unchanged": true,
+    "source_scope": "application-visible-tree-v1",
+    "source_count": 4559,
+    "source_digest": "22b982cc821d6d89a25f80d7a65c81da3fbb3f5fc274536e8ec912310b86f80b",
+    "scope": "240-tick headless diagnostic; not timing or display qualification"
+  },
+  "limits": [
+    "No native M1/Metal run: documented SSH key unavailable.",
+    "512x512 numeric probes do not qualify 1080p performance.",
+    "1080p still pairs do not qualify motion, aircraft readability or frame pacing.",
+    "No full app/visual CI suite or release qualification; no FPS gain claimed.",
+    "Bounds variants remain opt-in; lattice/half-resolution/crop/native-map experiments are gated in the plan."
+  ]
+}

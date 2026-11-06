@@ -300,7 +300,10 @@ static func inspect(path: String, recover := false) -> Dictionary:
 				if not snapshot.get("last_loads") is PackedFloat64Array or row.loads.to_byte_array() != snapshot.last_loads.to_byte_array():
 					return {ok = false, error = "Initial loads disagree with checkpoint."}
 				for key in ["state", "inputs", "aux", "continuous", "modes"]:
-					if not snapshot.has(key) or var_to_bytes(row[key]) != var_to_bytes(snapshot[key]):
+					# The kernel checkpoint omits an empty continuous block by format (restore reads absence as empty);
+					# compare it as empty instead of rejecting a valid file (external audit A6 F5). Other keys are required.
+					var expected: Variant = snapshot.get(key, PackedFloat64Array() if key == "continuous" else null)
+					if expected == null or var_to_bytes(row[key]) != var_to_bytes(expected):
 						return {ok = false, error = "Initial sample disagrees with checkpoint: " + key}
 			next_tick += 1
 			rows += 1

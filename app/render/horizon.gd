@@ -132,20 +132,28 @@ static func mesh() -> ArrayMesh:
 ## DT-MAC-06b D1: the same surface with `hole_xz` (mesh-local XZ, a simple polygon) removed geometrically,
 ## so the ground shader needs no per-pixel `discard` (which disables hidden-surface removal on tile GPUs).
 ## Triangles away from the hole keep their indices; crossing ones are clipped and re-triangulated with
-## barycentric height and normal, preserving winding. Returns null if a clip would leave an interior hole
-## inside one triangle (not representable without bridging), or on malformed input.
-static func with_hole(source: Mesh, hole_xz: PackedVector2Array) -> ArrayMesh:
-	if source == null or source.get_surface_count() != 1 or hole_xz.size() < 3:
+## barycentric height and normal, preserving winding. Returns the original mesh if no triangle changes,
+## a replacement mesh for a cut (possibly empty), or null for an interior hole or malformed input.
+static func with_hole(source: Mesh, hole_xz: PackedVector2Array) -> Mesh:
+	if source == null or source.get_surface_count() != 1 or hole_xz.size() < 3 \
+			or source.surface_get_primitive_type(0) != Mesh.PRIMITIVE_TRIANGLES:
 		return null
 	var arrays: Array = source.surface_get_arrays(0)
+	if arrays.size() != Mesh.ARRAY_MAX or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array \
+			or not arrays[Mesh.ARRAY_NORMAL] is PackedVector3Array:
+		return null
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var indices := PackedInt32Array()
+	if arrays[Mesh.ARRAY_INDEX] is PackedInt32Array:
+		indices = arrays[Mesh.ARRAY_INDEX]
+	elif arrays[Mesh.ARRAY_INDEX] != null:
+		return null
 	if indices.is_empty():
 		indices.resize(vertices.size())
 		for i: int in vertices.size():
 			indices[i] = i
-	if normals.size() != vertices.size():
+	if normals.size() != vertices.size() or indices.size() % 3 != 0:
 		return null
 	var hole_min := Vector2(INF, INF)
 	var hole_max := Vector2(-INF, -INF)
@@ -199,7 +207,11 @@ static func with_hole(source: Mesh, hole_xz: PackedVector2Array) -> ArrayMesh:
 				else:
 					out_indices.append_array([base + local[t], base + local[t + 2], base + local[t + 1]])
 	if removed == 0:
-		return null
+		return source
+	# An empty index array means an unindexed surface, not an empty one. Keep a
+	# fully covered mesh empty instead of accidentally drawing its old vertices.
+	if out_indices.is_empty():
+		return ArrayMesh.new()
 	var cut: Array = []
 	cut.resize(Mesh.ARRAY_MAX)
 	cut[Mesh.ARRAY_VERTEX] = vertices

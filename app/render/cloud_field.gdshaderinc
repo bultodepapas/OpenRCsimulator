@@ -61,7 +61,7 @@ float cloud_field_threshold(float noise, float coverage) {
 
 // One coarse, 16-cell cluster octave shifts the local coverage threshold to leave broad clear gaps.
 // cluster_strength=0 is exactly the L4 threshold and is the legacy A/B setting.
-float cloud_density(vec2 cells, uint seed, float coverage, float cluster_strength) {
+float cloud_density_reference(vec2 cells, uint seed, float coverage, float cluster_strength) {
 	float bounded_coverage = clamp(coverage, 0.0, 1.0);
 	if (bounded_coverage <= 0.0) {
 		return 0.0;
@@ -76,6 +76,57 @@ float cloud_density(vec2 cells, uint seed, float coverage, float cluster_strengt
 		local_coverage = clamp(bounded_coverage + (cluster - 0.5) * 0.7 * strength, 0.0, 1.0);
 	}
 	return cloud_field_threshold(noise, local_coverage);
+}
+
+// DT-MAC-06b experiment: exact saturation bounds, with a conservative FP32 margin.
+// Only opt-in sky variants compile this path. The margin is not a proof for every
+// GPU compiler: near either threshold we always finish the original accumulation.
+// Keep weights, sample order and final normalization identical to cloud_field_fbm.
+#ifdef OPENRC_CLOUD_BOUNDS
+float cloud_density_bounded(vec2 cells, uint seed, float coverage, float cluster_strength) {
+	float bounded_coverage = clamp(coverage, 0.0, 1.0);
+	if (bounded_coverage <= 0.0) return 0.0;
+	float strength = clamp(cluster_strength, 0.0, 1.0);
+	float local_coverage = bounded_coverage;
+	if (strength > 0.0) {
+		vec2 coarse_cells = mod(cells, float(CLOUD_FIELD_PERIOD)) / 16.0;
+		float cluster = cloud_field_value_noise(coarse_cells, ivec2(4), seed + 104729u);
+		cluster = smoothstep(0.2, 0.8, cluster);
+		local_coverage = clamp(bounded_coverage + (cluster - 0.5) * 0.7 * strength, 0.0, 1.0);
+	}
+	vec2 p = cells;
+	vec2 period = vec2(float(CLOUD_FIELD_PERIOD));
+	float sum = 0.0;
+	float amp = 0.5;
+	for (int octave = 0; octave < 5; octave++) {
+		vec2 q = mod(p, period);
+		ivec2 lattice_period = ivec2(floor(period + vec2(0.5)));
+		sum += amp * cloud_field_value_noise(q, lattice_period, seed + uint(octave) * 7919u);
+		bool check_bound = octave == 2;
+#if OPENRC_CLOUD_BOUNDS == 2
+		check_bound = check_bound || octave == 1;
+#endif
+		if (check_bound) {
+			float remaining = octave == 1 ? 0.21875 : 0.09375;
+			float lower = sum / 0.96875;
+			float upper = (sum + remaining) / 0.96875;
+			if (upper < 1.0 - local_coverage - 0.00001) return 0.0;
+			if (lower > 1.25 - local_coverage + 0.00001) return 1.0;
+		}
+		p *= 2.0;
+		period *= 2.0;
+		amp *= 0.5;
+	}
+	return cloud_field_threshold(sum / 0.96875, local_coverage);
+}
+#endif
+
+float cloud_density(vec2 cells, uint seed, float coverage, float cluster_strength) {
+#ifdef OPENRC_CLOUD_BOUNDS
+	return cloud_density_bounded(cells, seed, coverage, cluster_strength);
+#else
+	return cloud_density_reference(cells, seed, coverage, cluster_strength);
+#endif
 }
 
 // A separate stretched deck (for cirrus). Frequency is an exact rational of base coordinates,

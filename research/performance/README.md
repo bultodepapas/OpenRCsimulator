@@ -352,6 +352,14 @@ seed 20261021. The production session retains automatic 240 Hz physics; the
 fixture does not reposition the aircraft or manually step the solver. It selects
 native reconstruction and 4x MSAA, redirects accident/controller files beside
 its receipt, and labels the route `benchmark-input-circuit`.
+Frame and receipt outputs and their sidecars must be fresh, distinct absolute
+paths outside `app/`, with existing directories and no `.` or `..` path
+components. The fixture refuses symbolic links or junctions in the project or
+output directory ancestry rather than assuming their targets; use real paths
+(for example `/private/tmp` instead of macOS `/tmp`). This prevents outputs from
+entering the visible source inventory. It is not a concurrent-filesystem guard.
+The optional Godot path regression in `test_native_summary.py` runs when
+`OPENRC_SUSTAINED_TEST_GODOT` names a Godot editor binary and the project has been imported.
 
 For the named M1 built-in-display campaign, after importing and freezing the
 source, authoring inputs and imported resources, use a fresh directory:
@@ -360,7 +368,7 @@ source, authoring inputs and imported resources, use a fresh directory:
 run="$PWD/tmp/sustained-new"
 mkdir "$run"
 godot="/absolute/path/to/Godot.app/Contents/MacOS/Godot"
-/usr/bin/caffeinate -dis python3 tools/godot/run_checked.py \
+OPENRC_CLOUD_SHADOW_MAP=0 /usr/bin/caffeinate -dis python3 tools/godot/run_checked.py \
   --resources --resource-interval 1 --resource-max-samples 2500 \
   --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app \
   --resolution 2560x1600 --windowed --always-on-top --disable-vsync --max-fps 0 \
@@ -389,8 +397,42 @@ focus, changed input/physics ownership and missing accepted ticks. The frame
 collector separately checks drawability and render progress. The fixture stays
 alive for at least 2.5 seconds after sealing the frame report so the 1 Hz resource
 sampler can bracket its endpoint; verify the actual clock alignment afterward.
+After writing the health receipt, the fixture detaches and frees the flight, then
+waits up to 250 ms (checked once per process frame) for weakly observed audio
+playbacks to retire. `SUSTAINED_FLIGHT_AUDIO_TEARDOWN` reports `observed_released`
+or `timeout`; a timeout also emits a warning. The observations cover at most the
+playback exposed by each player, not every server-owned object, and do not prove
+the process leak-free. Teardown follows timing and keeps the capture's exit code;
+an outer runner may separately treat warnings as errors.
 Predeclare the circuit envelope and inspect the retained 1 Hz trajectory over
 the measured interval. Endpoint health alone cannot establish the whole flight.
+
+Each fixture receipt hashes the visible application resource tree before and after
+the capture, including scripts, shaders, assets, import recipes and `project.godot`,
+plus both fixture scripts. Hidden engine caches and linked files are not part of this
+source identity; a linked input causes refusal. Keep the separately frozen imported
+resources, engine and hardware identities. Hashing occurs outside the timed sample.
+The reducer requires the expanded source scope; older receipts lacking these fields
+are ineligible under the new gate, not proof their historical measurements were wrong.
+
+Set `OPENRC_CLOUD_SHADOW_MAP` explicitly to `0` or `1`; the example selects the
+analytic baseline. `OPENRC_CLOUD_SHADOW_MAP_GROUND` and `_SKY` can independently
+override it with `0` or `1`. An unset global is admissible only when both paths
+have explicit overrides. The receipt records the raw settings, requested modes,
+live consumers, required seeds, sampled bake results and an interval change counter.
+It also records the counter before and after the first and final diagnostic snapshots,
+the preceding-frame counter and the first observed change, if any. The reducer
+requires these records for new acceptance; a missing record is not evidence of stability.
+Every enabled mode must have a live consumer whose tile is ready before the first
+sample and remains stable through the seal; pending, failed and analytic fallback
+states are ineligible for that enabled configuration. `ready` means a validated tile
+is bound to that material, not that displayed pixels or all weather-layer lookups
+used the cache: layers with different seeds can still use analytic noise. A bake's
+sample checks are not full image or target-hardware qualification.
+
+The receipt also records the requested and bound `OPENRC_CLOUD_DENSITY_BOUNDS`
+variant (`off`, `three` or `two_three`). These are separate workload identities;
+the experimental variants require their own numerical, visual and hardware evidence.
 
 `--sustained-hash` retains independent 6,000-tick hashes of accepted state,
 inputs, auxiliary state and modes. Compare identical tick windows and full
@@ -412,13 +454,45 @@ package delivery, physical fuel endurance or pilot acceptance.
 For DT-MAC-03b attribution sweeps, `--sustained-render-scale=<0.25..1>` keeps
 Native bilinear scaling and lowers only the 3D input scale. `--sustained-msaa=<0..3>`
 selects `Viewport.MSAA` (0 off, 1 2×, 2 4×, 3 8×). The receipt records them as
-`scenario.render_override`, and the applied viewport values as `effective_render`.
-`native_summary.py` refuses a run when the checked command and the receipt
-disagree. It also treats differing overrides as different benchmark scenarios,
+`scenario.render_override`, and the applied viewport/policy as `effective_render`.
+`native_summary.py` requires explicit checked `--rendering-method` and
+`--rendering-driver` values matching the observed renderer. It checks requested
+reconstruction, provider, scale, MSAA and window/viewport dimensions against the
+frame report and observations from the frame before sampling through the seal,
+and refuses fallbacks or changes. The receipt must show contiguous observations
+for every retained frame and a preceding process-frame bracket. A deferred seal
+can sample the last retained frame again; its state is compared without counting
+it as a new frame.
+An explicit temporal MSAA request must be zero. The current MetalFX policy reports
+execution as unknown, so it cannot meet effective-provider acceptance until an
+independent execution observation is available. Renderer policy and viewport
+properties alone do not prove displayed output. These per-frame observations add
+measurement overhead; retain them in both roles and compare observer cost separately.
+The reducer treats differing effective settings and overrides as different benchmark scenarios,
 so a campaign cannot pool them with each other or with default captures.
 For example, append `--sustained-render-scale=0.75 --sustained-msaa=1` after
 the fixture's other user options. A sweep is a screening diagnostic: the frame
-report's viewport size remains the output size, not the internal 3D size.
+report distinguishes `logical_canvas_size` from the estimated `output_size` and
+the scaled `nominal_3d_size`.
+
+The technical fixture still requests Native by default; it does not exercise the
+player's Auto default. To observe Auto explicitly, add `--sustained-reconstruction=auto`.
+The receipt records `auto_selected` and the scoped viewport output-size estimate
+used for that selection; the window size is recorded separately and can differ.
+All reconstruction modes record the window, visible canvas and output and nominal
+input estimates through the sample under `per_frame_viewport_estimate_v1`. The reducer
+accepts Auto selecting Native only when these records and the frame report agree.
+Auto selecting MetalFX remains ineligible while execution is reported as unknown.
+New reconstruction reports distinguish `logical_canvas_size` from `output_size`
+with scope `viewport_render_target_estimate_v1`; CanvasItems scaling can make
+these differ. `nominal_3d_size` uses the pinned renderer's positive-size truncation
+and remains a scaled viewport estimate, not an SDK execution or allocation query.
+The reducer validates both sizes and their scopes. Older receipts remain readable,
+but those missing per-frame dimensions, contiguous-coverage provenance or the Auto
+selection scope cannot satisfy the current gate.
+Missing dimensions are reported as `legacy_unobserved` or `legacy_auto_window_canvas_only`.
+Those size properties do not independently prove physical drawable or presentation
+pixels, and the fixture does not establish the normal Home/Fly preference path.
 
 Two further options remove or alter visible work for GPU attribution. With
 Godot's `--gpu-profile` engine flag, they price individual materials or stages.
@@ -428,7 +502,8 @@ Godot's `--gpu-profile` engine flag, they price individual materials or stages.
 every material of that shader, including the `WorldEnvironment` sky material, writing only on
 change and keeping the uniform's int or bool type.
 The receipt records hidden instance counts, the pre-override values and the
-read-back values. `native_summary.py` refuses both options for qualification.
+read-back values. `native_summary.py` refuses both options and `--gpu-profile` for
+performance qualification; profile runs are diagnostic even without an override.
 
 ### Long continuous captures (DT-MAC-02b)
 

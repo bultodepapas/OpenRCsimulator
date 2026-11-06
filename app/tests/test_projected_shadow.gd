@@ -399,4 +399,34 @@ func _test_framing_reuse_inputs() -> void:
 	_check("height changes above the blur cap retain the same mask framing",
 		var_to_bytes(projected._last_signature) == capped_signature
 		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	# PT1h-R12: in flight the attitude changes every frame. Changes the blurred shadow cannot show reuse the drawn
+	# mask; the error is measured from the last drawn mask, so small steps cannot accumulate past the tolerance.
+	_check("the reuse cosine is cos(REUSE_ANGLE_DEG)",
+		is_equal_approx(Projected.REUSE_COS, cos(deg_to_rad(Projected.REUSE_ANGLE_DEG))))
+	height = 3.0
+	model.rotation = Vector3.ZERO
+	projected.refresh(height, direction, 0.5, true)
+	var drawn := var_to_bytes(projected._last_signature)
+	var redraws: Array[bool] = []
+	for step in 3:
+		projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+		model.rotate_object_local(Vector3.FORWARD, deg_to_rad(0.1))
+		model.position.x += 0.5
+		projected.refresh(height, direction, 0.5, true)
+		redraws.append(projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
+	_check("rotations under 0.25° from the drawn mask reuse it; the third 0.1° step (0.3° in total) redraws",
+		redraws == [false, false, true] and var_to_bytes(projected._last_signature) != drawn, str(redraws))
+	var moved_transform: Transform3D = projected.receiver.transform
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	model.position.x += 1.0
+	projected.refresh(height + 0.1, direction, 0.5, true) # +0.93 mm of blur
+	_check("a reused mask still follows the aircraft and its blur",
+		projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+		and projected.receiver.transform.origin.x > moved_transform.origin.x
+		and is_equal_approx(projected.receiver.material_override.get_shader_parameter("blur_uv"),
+			clampf(0.018 + (height + 0.1) * 0.0093, 0.018, 0.45) / projected._last_signature[2].size.x))
+	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	model.scale = Vector3(1.01, 1.01, 1.01)
+	projected.refresh(height + 0.1, direction, 0.5, true)
+	_check("a scale change is never reused", projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
 	host.free()

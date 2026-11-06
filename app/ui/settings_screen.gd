@@ -592,6 +592,11 @@ func _add_row(parent: Control, caption: String, input: Control) -> void:
 	input.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(input)
 	input.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
+	# The row's caption names its control for screen readers (AccessKit) and agents; a picker alone only shows
+	# its current value. Retranslated with the captions.
+	if "accessibility_name" in input:
+		input.set("accessibility_name", tr(caption))
+		_localized_controls.append({"control": input, "source": caption, "property": "accessibility_name"})
 	parent.add_child(row)
 	_rows.append(row)
 
@@ -825,15 +830,15 @@ func _refresh_graphics_info() -> void:
 	var capabilities := Reconstruction.capabilities_for_viewport(viewport)
 	var active_policy := _reconstruction_preview_policy(requested, capabilities)
 	var effective := str(active_policy.get("effective", "native"))
-	var output_size := viewport.get_visible_rect().size
+	var output_size := Reconstruction.viewport_output_size(viewport)
 	var scale := float(active_policy.get("scale", 1.0))
-	var input_width := roundi(output_size.x * scale)
-	var input_height := roundi(output_size.y * scale)
+	var input_size := Reconstruction.nominal_input_size(output_size, scale)
 	_graphics_info.text += "\n" + tr("Reconstruction: Requested %s → Active %s") % [
 		_choice_caption("reconstruction", requested), tr("Unconfirmed") if active_policy.get("execution_status", "") == "unverified_trial" \
 		else _choice_caption("reconstruction", effective)]
-	_graphics_info.text += "\n" + tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
-		input_width, input_height, roundi(output_size.x), roundi(output_size.y)]
+	if output_size.x > 0 and output_size.y > 0:
+		_graphics_info.text += "\n" + tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
+			input_size.x, input_size.y, output_size.x, output_size.y]
 	if bool(active_policy.get("fallback", false)):
 		var reason := str(active_policy.get("fallback_reason", ""))
 		_graphics_info.text += "\n" + _reconstruction_fallback_text(requested, reason)
@@ -1121,17 +1126,18 @@ func _reconstruction_option_tooltip(mode: String, reason: String) -> String:
 		return _reconstruction_unavailable_text(provider, reason)
 	if not is_inside_tree():
 		return ""
-	var output_size := get_viewport().get_visible_rect().size
+	var output_size := Reconstruction.viewport_output_size(get_viewport())
+	if output_size.x <= 0 or output_size.y <= 0:
+		return ""
 	var policy := Reconstruction.resolve(mode, Reconstruction.runtime_capabilities())
-	var input_width := roundi(output_size.x * float(policy.scale))
-	var input_height := roundi(output_size.y * float(policy.scale))
+	var input_size := Reconstruction.nominal_input_size(output_size, float(policy.scale))
 	if provider == "native":
 		return tr("Native keeps full-resolution 3D input and uses your MSAA choice.")
 	if is_equal_approx(float(policy.scale), 1.0):
 		return tr("%s keeps full-resolution 3D input and provides antialiasing. Your MSAA choice returns with Native rendering.") % _choice_caption("reconstruction", mode)
 	return tr("%s renders 3D at about %d × %d while output stays %d × %d. Lower input may soften distant detail; compare while moving.") % [
-		_choice_caption("reconstruction", mode), input_width, input_height,
-		roundi(output_size.x), roundi(output_size.y)]
+		_choice_caption("reconstruction", mode), input_size.x, input_size.y,
+		output_size.x, output_size.y]
 
 
 func _reconstruction_unavailable_text(provider: String, reason: String) -> String:
@@ -1254,7 +1260,9 @@ func _refresh_translated_text() -> void:
 		_category_picker.set_item_text(index, tr(CATEGORIES[index]))
 	for entry: Dictionary in _localized_controls:
 		var control: Control = entry.control
-		if control is Button or control is Label:
+		if entry.has("property"):
+			control.set(entry.property, tr(str(entry.source)))
+		elif control is Button or control is Label:
 			control.text = tr(str(entry.source))
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))

@@ -50,14 +50,29 @@ func _initialize() -> void:
 func _test_raw_clock() -> void:
 	var good := '{"format":"openrc-raw-clock-v1","clock":"CLOCK_UPTIME_RAW","raw_uptime_usec":123456789}\n'
 	var digest := "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-	var supported := {major = 4, minor = 8, patch = 0, status = "beta1", build = "official", hash = FrameSamples.RAW_CLOCK_GODOT_COMMIT}
-	_check("vetted engine metadata is accepted", FrameSamples._raw_clock_supported_engine(supported))
+	var supported := {major = 4, minor = 8, patch = 0, status = "beta1", build = "official",
+		hash = "4d10419cacd6d3009976e8f9fd3abd970fd58018"}
+	_check("vetted beta1 metadata is accepted", FrameSamples._raw_clock_supported_engine(supported))
+	var beta2 := {major = 4, minor = 8, patch = 0, status = "beta2", build = "official",
+		hash = "cafc17a192acf67903910a68aeb3c076c0907a4b"}
+	_check("vetted beta2 metadata is accepted", FrameSamples._raw_clock_supported_engine(beta2))
 	var wrong_engine: Dictionary = supported.duplicate()
 	wrong_engine.hash = "other"
 	_check("different engine commit is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))
 	wrong_engine = supported.duplicate()
 	wrong_engine.status = "stable"
 	_check("different engine release is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))
+	wrong_engine = beta2.duplicate()
+	wrong_engine.hash = supported.hash
+	_check("beta2 with beta1's commit is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))
+	wrong_engine = supported.duplicate()
+	wrong_engine.hash = beta2.hash
+	_check("beta1 with beta2's commit is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine))
+	for change: Dictionary in [{major = 5}, {minor = 9}, {patch = 1}, {status = "beta3"},
+			{build = "custom"}, {hash = "cafc17a19"}]:
+		wrong_engine = beta2.duplicate()
+		wrong_engine.merge(change, true)
+		_check("unvetted beta2 identity component is refused", not FrameSamples._raw_clock_supported_engine(wrong_engine), str(change))
 	var parsed: Dictionary = FrameSamples._raw_clock_parse(good.to_ascii_buffer())
 	_check("raw uptime integer parses exactly", parsed.ok and parsed.raw_usec == 123456789)
 	var interval: Dictionary = FrameSamples._raw_clock_interval(good.to_ascii_buffer(), 1000, 2000, digest)

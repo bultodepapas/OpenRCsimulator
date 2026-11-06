@@ -51,6 +51,8 @@ const DLSS_CAPABILITY := "STREAMLINE_CAPABILITY_DLSS"
 const POLICY_META := &"openrc_reconstruction"
 const CONFIG_META := &"openrc_reconstruction_config"
 const RUNTIME_FAILURE_META := &"openrc_reconstruction_runtime_failure"
+const OUTPUT_SIZE_SCOPE := "viewport_render_target_estimate_v1"
+const NOMINAL_SIZE_SCOPE := "scaled_viewport_estimate_not_sdk_execution"
 const HISTORY_RESET_META := &"openrc_reconstruction_history_reset"
 const HISTORY_RESET_METHOD := &"viewport_request_temporal_history_reset"
 
@@ -118,6 +120,7 @@ static func resolve(requested: String, high_available_or_capabilities: Variant =
 		resolved["requested"] = AUTO
 		resolved["auto_selected"] = chosen
 		resolved["auto_output_size"] = [auto_output_size.x, auto_output_size.y]
+		resolved["auto_output_size_scope"] = OUTPUT_SIZE_SCOPE
 		return resolved
 	var status := option_status(requested, gates)
 	var selected := requested if bool(status.available) else "native"
@@ -218,15 +221,18 @@ static func capabilities_for_viewport(viewport: Viewport, capabilities: Dictiona
 	return gates
 
 
-static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
-	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
-	var pixels: Variant = viewport.get("size") # Window/SubViewport pixels, not canvas units
-	if pixels is Vector2i:
-		auto_output_size = pixels
-	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
+## Resolve before changing renderer properties so the application can persist its recovery marker first.
+static func resolve_for_viewport(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> Dictionary:
+	auto_output_size = viewport_output_size(viewport)
 	var gates := capabilities_for_viewport(viewport, capabilities)
 	var requested := str(config.get("reconstruction", "native"))
-	var policy := resolve(requested, gates)
+	return resolve(requested, gates)
+
+
+static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
+	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
+	var policy := resolve_for_viewport(viewport, config, capabilities)
+	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
 	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
 	viewport.scaling_3d_scale = float(policy.scale)
 	var strength := sharpness_strength(config.get("fsr2_sharpness", DEFAULT_SHARPNESS))
@@ -315,6 +321,27 @@ static func request_history_reset(viewport: Viewport, reason: String, backend: O
 	return submit
 
 
+## Estimated render-target pixels; visible_rect is the logical 2D canvas when a size override is active.
+static func viewport_output_size(viewport: Viewport) -> Vector2i:
+	if not is_instance_valid(viewport):
+		return Vector2i.ZERO
+	if viewport is SubViewport:
+		return (viewport as SubViewport).size
+	if viewport is Window and not (viewport as Window).is_embedded():
+		var logical := viewport.get_visible_rect().size
+		var stretch := viewport.get_stretch_transform().get_scale()
+		return Vector2i(roundi(logical.x * stretch.x), roundi(logical.y * stretch.y))
+	# Embedded windows can render at their embedder's separate oversampling scale.
+	return Vector2i.ZERO
+
+
+## Mirrors the pinned renderer's positive-size truncation; this is not a backend allocation query.
+static func nominal_input_size(output: Vector2i, scale: float) -> Vector2i:
+	if output.x <= 0 or output.y <= 0 or not is_finite(scale) or scale <= 0.0:
+		return Vector2i.ZERO
+	return Vector2i(maxi(1, int(output.x * scale)), maxi(1, int(output.y * scale)))
+
+
 static func describe(viewport: Viewport) -> Dictionary:
 	var policy: Dictionary = viewport.get_meta(POLICY_META, resolve("native", runtime_capabilities())).duplicate(true)
 	var config: Variant = viewport.get_meta(CONFIG_META, {})
@@ -338,10 +365,15 @@ static func describe(viewport: Viewport) -> Dictionary:
 		policy["backend"] = backend
 	if viewport.has_meta(RUNTIME_FAILURE_META):
 		policy["runtime_failure"] = viewport.get_meta(RUNTIME_FAILURE_META).duplicate(true)
-	policy["output_size"] = [viewport.get_visible_rect().size.x, viewport.get_visible_rect().size.y]
-	# Nominal dimensions, not a GPU allocation measurement (engine rounding may differ).
-	policy["nominal_3d_size"] = [roundi(policy.output_size[0] * viewport.scaling_3d_scale),
-		roundi(policy.output_size[1] * viewport.scaling_3d_scale)]
+	var output := viewport_output_size(viewport)
+	var logical := viewport.get_visible_rect().size
+	policy["output_size"] = [output.x, output.y]
+	policy["output_size_scope"] = OUTPUT_SIZE_SCOPE if output.x > 0 and output.y > 0 else "unavailable"
+	policy["logical_canvas_size"] = [logical.x, logical.y]
+	# Nominal dimensions, not a GPU allocation or SDK execution measurement (engine rounding may differ).
+	var nominal := nominal_input_size(output, viewport.scaling_3d_scale)
+	policy["nominal_3d_size"] = [nominal.x, nominal.y]
+	policy["nominal_3d_size_scope"] = NOMINAL_SIZE_SCOPE
 	return policy
 
 

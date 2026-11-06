@@ -9,7 +9,6 @@ var profile: Dictionary = {}
 var session: Node
 var _consumer: Callable
 var _attached := false
-var _lake: Dictionary = {}
 
 
 func configure(owner: Node, aircraft_id: String, consumer: Callable) -> void:
@@ -18,7 +17,6 @@ func configure(owner: Node, aircraft_id: String, consumer: Callable) -> void:
 	profile = load("res://statistics/profiles.gd").resolve(aircraft_id, session.aircraft.model, session.contact_contract())
 	profile.initial_tick = int(session.sim.tick)
 	profile.generation_id = str(session.statistics_generation)
-	_lake = session.lake_context()
 	_configure_damage_observation()
 
 
@@ -61,7 +59,10 @@ func sample() -> Dictionary:
 	var speed: float = sqrt(velocity[0] ** 2 + velocity[1] ** 2 + velocity[2] ** 2)
 	var angular: float = sqrt(rates[0] ** 2 + rates[1] ** 2 + rates[2] ** 2)
 	var air: Dictionary = session.air_data(s, session.sim.time())
-	var terrain: PackedFloat64Array = Terrain.sample(s[0], s[1], session.ground_surfaces, _lake)
+	# UI-FS-08-R2: height and attitude use the same current field/lake/circuit as
+	# physical contacts. Keep the public sampler's malformed-table refusal.
+	var terrain: PackedFloat64Array = session.environment.ground(s[0], s[1]) \
+		if Terrain.is_valid_surface_table(session.ground_surfaces) else PackedFloat64Array([NAN, NAN, NAN])
 	var normal: PackedFloat64Array = M.v3(-terrain[1], -terrain[2], -1.0)
 	var body_normal: PackedFloat64Array = M.q_rotate(M.q_conj(q), normal)
 	var bank: float = atan2(body_normal[1], -body_normal[2])
@@ -126,15 +127,14 @@ func sample() -> Dictionary:
 
 ## Gear compressions, or one negative value per contact above the contact law's own no-touch bound
 ## (gear reach over the terrain height bound): only `> 0.00001` contact flags are read here, and every
-## flag is false there, so the per-wheel terrain samples are skipped (UI-FS-08-R1). The session
-## lake needs no check: set_lake_context refuses invalid definitions, so its [NAN] result cannot occur.
+## flag is false there, so the per-wheel terrain samples are skipped (UI-FS-08-R1).
+## UI-FS-08-R2 includes the circuit in that bound; session setters validate lake/track definitions.
 func _compressions(s: PackedFloat64Array) -> PackedFloat64Array:
 	if not session.aircraft.get("ok", false) or not session.sim.state_is_valid(s):
 		return session.gear_compressions(s)
-	var surfaces: PackedFloat64Array = session.ground_surfaces if session.wheel_count() > 0 else PackedFloat64Array()
 	var gear: Dictionary = session.current_landing_gear()
-	if gear.is_empty() or not Terrain.is_valid_surface_table(surfaces) \
-			or -s[RB.POS + 2] <= float(gear.get("reach", INF)) + Terrain.max_height_validated(surfaces):
+	if gear.is_empty() or not Terrain.is_valid_surface_table(session.ground_surfaces) \
+			or -s[RB.POS + 2] <= float(gear.get("reach", INF)) + session.environment.ground_max_height():
 		return session.gear_compressions(s)
 	var clear := PackedFloat64Array()
 	clear.resize(gear.get("contacts", []).size())

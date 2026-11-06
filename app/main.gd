@@ -1028,6 +1028,7 @@ func _prepare_flight() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
+	session.name = "FlightSession" # a stable path for tools and reports
 	add_child(session)
 	if startup_checkpoint.is_valid():
 		session.hold("loading")
@@ -1071,6 +1072,7 @@ func _prepare_flight() -> void:
 			_smoke_key_on = str(args.get("smoke-pump", "off")) == "on"
 			var described := AircraftCustomization.describe(aircraft_id)
 			_profile_smoke = ProfileSmoke.new()
+			_profile_smoke.name = "Smoke"
 			add_child(_profile_smoke)
 			if not described.get("ok", false) or not _profile_smoke.configure(selected_smoke_profile, described.get("bindings", {})):
 				startup_error = "The aircraft smoke profile is no longer available."
@@ -1082,6 +1084,7 @@ func _prepare_flight() -> void:
 		if mouths.size() == 1 and EngineSmoke.valid_anchor(mouths[0]) \
 				and Propulsion.source_kind(session.aircraft.model.propulsion) == mouths[0].kind:
 			_smoke = EngineSmoke.new()
+			_smoke.name = "Smoke"
 			add_child(_smoke)
 			_smoke.configure(mouths[0])
 			_smoke_key_on = str(args.get("smoke-pump", "off")) == "on" # explicit technical capture/profile request

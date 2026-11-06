@@ -6,8 +6,11 @@ physics ticks, sample telemetry, take screenshots, record flight logs and evalua
 one script, use the [checked runner](../godot/README.md) instead. Claude Code and Codex find this tool through the
 `openrc-debug` skill; the [tool index](../../docs/tools/README.md) routes every other task.
 
-Contents: [quick start](#quick-start) · [I want to…](#i-want-to) · [commands](#commands) ·
-[stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) · [recipes](#recipes) ·
+Contents: [agents and MCP](#agents-and-mcp-pt1h-r11) · [quick start](#quick-start) · [I want to…](#i-want-to) ·
+[commands](#commands) ·
+[stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) ·
+[GPU cost and rewind](#gpu-cost-and-rewind-pt1h-r9) ·
+[flight gizmos and BugIt](#flight-gizmos-and-bugit-pt1h-r10) · [recipes](#recipes) ·
 [how it works and limits](#how-it-works-and-limits) · [performance](#performance) · [verification](#verification).
 `python3 tools/debug/debugctl.py --help` prints the client's commands; `debugctl.py help` asks a running app for its
 own list.
@@ -21,6 +24,8 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 
 | Task | Commands |
 | --- | --- |
+| **See what is on screen and act (agents: start here)** | `$D look`, then `$D press ref=e7` / `$D choose ref=e9 value="1920 × 1080"` / `$D choose field="Text size" value=125%`; or the [MCP server](#agents-and-mcp-pt1h-r11) |
+| Pick aircraft, start, landscape, time of day | `$D catalog` (valid ids), `$D setup aircraft=<id> start=airborne time_of_day=sunset`, then `$D fly` |
 | Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 on the native display, with Xvfb only on displayless Linux); add `--import` after pulling new assets; `$D status`; `$D stop` (prints `"crash": null, "leaked_objects": 0` on a clean exit) |
 | See what is on screen and click it | `$D ui`, `$D press text="Fly"`, `$D select text=Language item="Español"`, `$D close` |
 | Open a menu or setting directly | `$D open screen=settings` (no screen: list them) |
@@ -32,12 +37,91 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
 | Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
 | Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --hitch`; `launch --script-profile` + `$D profile seconds=20` |
+| Inspect render costs | `$D render` (raw GPU/CPU observations, draw calls), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
+| Go back before a crash and try again | `$D rewind arm=true` before flying, then `$D rewind seconds=2` (`attempt=previous` after an auto-restart) |
+| See the forces, velocities and wind on the aircraft | `$D gizmos show=all`, then `$D screenshot` |
+| File a reproducible bug report / reopen one | `$D bugit --note "…"`; `$D bugitgo <folder>` |
 | Find a leak | `$D soak scenario.txt --cycles 5`, `$D objects baseline=true` then `$D objects diff=true` |
 | Find UI bugs | `$D crawl`, `$D monkey --steps 300 --seed 1 --keys` |
 | Reproduce a bug as a script | write `tmp/repro.txt` (one command per line), `$D run tmp/repro.txt --fail-on-error` |
 | Check everything before a commit | `$D smoke` (own session, about 3.5 min) |
 | Any property or method | `$D methods node=AppRoot`, `$D get node=… prop=…`, `$D call …`, `$D eval expr="…"` |
 | GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'` |
+
+## Agents and MCP (PT1h-R11)
+
+The fastest way for a coding agent to drive the whole simulator: menus, options and flights. Design after
+[Playwright MCP](https://playwright.dev/mcp/introduction): read an accessibility-style snapshot, act on its refs,
+and read the next snapshot.
+
+**The loop: `look`, then act.**
+
+```text
+$ debugctl.py look
+# route home · screens ['home', 'settings'] · scope AppRoot/Settings · focus e2
+e1            button   "Close"
+e2            toggle   "Display" = true  focused
+e9            option   "Window resolution" = "Automatic"  [Automatic | 1280 × 720 | … | 1920 × 1080 | …]
+e10           option   "Text size" = "100%"  [100% | 125% | 150% | 175% | 200%]
+> press ref=<ref> | choose ref=<ref> value=<v> (or field=/text= instead of ref=)
+> close  (Esc/Back on the top dialog or menu)
+$ debugctl.py choose ref=e9 value="1920 × 1080"      # or: choose field="Window resolution" value=…
+$ debugctl.py press text="Keep changes"
+```
+
+- **`look`** lists, for every visible control of the top screen or dialog:
+  - its **ref**;
+  - its **role**: button, toggle, option, slider, number, text, tabs, list or progress;
+  - its **name**: the app's accessible name, the one a screen reader announces. That is its `accessibility_name`, or
+    the Label that [`ui/accessible_labels.gd`](../../app/ui/accessible_labels.gd) links to it, else the label just
+    before it. The OptionButton that shows "Automatic" is therefore named "Window resolution". A symbol-only button
+    is named by its tooltip or its parent (`× (Close · Wind)`);
+  - its **value** and **options**, and whether it is disabled or focused.
+
+  `look` also gives the route, the screens, a one-line flight summary and **next steps** for this situation.
+  `look all=true` lists every layer.
+- **Refs** (`e12`) are short, and a control keeps its ref for its lifetime: a ref from an earlier `look` still works
+  while that control exists, and a freed one is refused with "run look again". `ref=` and `field=` work in
+  `press`, `select`, `choose`, `type`, `focus`, `set_value` and `mouse`. Field names also match `text=`, after
+  exact labels.
+- **`choose`** is one verb for every widget. It takes an item label (option, tabs, list), on/off (toggle), a
+  number (slider, spin box) or text (a text field; submitted unless `submit=false`). The change goes through the
+  widget's own signals, as a player's would. A toggle that already has the value is left alone. A button is refused
+  with the matching `press`.
+- **`catalog`** lists the valid ids, so agents do not guess them: aircraft with the starts each supports,
+  landscapes, time-of-day presets, languages, screens, camera views and the current Home selection.
+- **`setup aircraft= start= landscape= time_of_day= language=`** changes Home choices.
+  - All values are validated first; an invalid one changes nothing.
+  - Each value is applied through AppRoot's setters, then read back. `differs` names any choice the app adjusted:
+    the Vantage jet has no hand launch, so `start=hand_launch` came back `airborne`.
+  - The AppRoot setters alone ignore invalid values silently.
+- **`open screen=<…>`** inside a flight opens the pause menu first (the reply says `via: pause`), as a player
+  reaches those screens.
+
+**MCP server.** [`mcp_server.py`](mcp_server.py) exposes the simulator as typed tools: `sim_launch`, `sim_look`,
+`sim_press`, `sim_choose`, `sim_close`, `sim_open`, `sim_catalog`, `sim_setup`, `sim_fly`, `sim_home`, `sim_state`,
+`sim_sticks`, `sim_key`, `sim_screenshot` (an inline JPEG), `sim_bugit`, `sim_stop`, and `sim_command`, which reaches
+any other bridge command.
+
+- Every action returns the fresh snapshot.
+- `sim_fly` closes the launch menu and resumes, so the aircraft is flying when it returns.
+- `sim_launch` points that server at its own session.
+
+The server uses MCP over stdio, the standard library and `debugctl.py`, and nothing else.
+
+```sh
+claude mcp add openrc-sim -- python3 tools/debug/mcp_server.py   # Claude Code; .mcp.json also declares it
+# Codex (~/.codex/config.toml):  [mcp_servers.openrc-sim]  command = "python3"  args = ["tools/debug/mcp_server.py"]
+```
+
+A whole session, run against the real app on Windows through a stdio client:
+
+1. `sim_launch` (headless) and the snapshot;
+2. a refused `sim_press` (`isError`, with the reason);
+3. `sim_setup` of the Extra 300S, airborne;
+4. `sim_fly`, which ended flying at tick 24;
+5. `sim_sticks`, `sim_command frames` and `sim_screenshot` (refused headless, with the reason);
+6. `sim_home`, then `sim_stop` (launcher exit 0, 0 leaked objects).
 
 ## Quick start
 
@@ -46,7 +130,7 @@ From the repository root, Bash:
 ```sh
 D="python3 tools/debug/debugctl.py"
 $D launch                       # Home at 1920x1080 on the display (Xvfb on displayless Linux); prints the run folder
-$D ui                           # controls of the top dialog/menu; * marks keyboard focus
+$D look                         # every visible control: ref, role, name, value, options; next steps
 $D fly aircraft=p51d-mustang-120 start=airborne
 $D state                        # route, screens, focus; flight tick, pause/holds/crash, pose, commands, log counts
 $D shortcuts                    # every key and controller action for this vehicle
@@ -112,10 +196,12 @@ Launch options:
 | --- | --- |
 | Session | `launch`, `status`, `ready`, `stop [--force]`, `ping`, `quit`, `clean [--keep N]` (old run folders hold about 11 MB of shader cache each; never removes the live one) |
 | Routes | `fly aircraft=<id> start=<runway\|airborne\|…>` (from Home), `home`, `restart`; truck: `call node=AppRoot method=start_ground_vehicle args=["mt8-bisonte"]`, then `press text=drive` |
-| Menus and settings | `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
+| Menus and settings | `look [all=true]`, `choose ref=\|field=\|text= value=`, `catalog`, `setup aircraft= start= landscape= time_of_day= language=`, `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
-| Time | `pause`, `resume`, `step ticks=<n>`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
+| Time | `pause`, `resume`, `step ticks=<n>`, `rewind arm=\|list=\|seconds=\|tick= [attempt=] [pause=] [inputs=pilot\|recorded]`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
+| Flight debugging | `gizmos [show=] [off=true] [auto_scale=] …`, `checkpoint action=save\|load path=`; client `bugit [--note] [--out]`, `bugitgo DIR [--resume]` |
+| Render cost | `render [frames=] [measure=]`, `layers [depth=] [root=]`, `ablate [targets=] [depth=] [frames=] [warmup=] [freeze=]`, `viewmode [name=]` |
 | Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames [window=] [hitch_ms=] [factor=] [reset=]`, `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
 | Introspection | `methods node=<path>`, `find name=<glob> type=<class>`, `get node= [prop=]`, `set node= prop= value=`, `call node= method= args=[…]`, `eval expr= [node=]`, `assert expr= [message=]`, `nodes path= depth=` |
@@ -160,6 +246,8 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - `break expr="-s[2] < 2" wait=true` checks the expression before every flight tick (inputs: `session`, `sim`,
     `s`, `app`, singletons). It pauses at the exact tick it becomes true, logs a `break` event and returns the state.
   - It fires on each false → true entry. `once=true` removes it after one hit; `pause=false` only logs.
+  - A paused flight is re-checked once per new tick, so a tick that pauses itself (a crash, a fault) or a `rewind`
+    still triggers it at its own tick.
   - An expression that fails is removed with an event.
 - **Errors: `logs --summary` and `run --fail-on-error`.**
   - The summary groups records whose texts differ only in numbers, with counts, first/last sequence and the
@@ -178,10 +266,11 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - `soak scenario.txt --cycles N` runs a script repeatedly. After warm-up it diffs every cycle against the first
     measured one, and reports counters that grow in every cycle and any new errors. It also prints process RSS from
     `/proc` on Linux.
-  - The `smoke` fly/Home scenario waits for deferred teardown and explicitly sweeps dead shadow-lighting weak
-    references before each census. That registry otherwise sweeps every 64 registrations, which can make a short
-    soak report bounded bookkeeping as growth. Live references and zero-tolerance growth checks remain in scope;
-    `soak` itself does not sweep caches. `test_shadow_settings.gd` checks the registry's ordinary bound.
+  - The `smoke` fly/Home scenario waits for deferred teardown and sweeps dead weak references from the
+    shadow-lighting and cloud-shadow consumer registries before each census. These normally sweep every 64 new
+    registrations, which can make a short soak report bounded bookkeeping as growth. Live references and
+    zero-tolerance growth checks remain in scope; `soak` itself does not sweep caches. `test_shadow_settings.gd`
+    and `test_cloud_shadow_map.gd` check the registries' ordinary bounds.
 - **Script CPU: `profile`.**
   - Launch with `--script-profile`. Read `profile seconds=20` (the last 20 s), or `profile since=<log_seq>` with the
     sequence `ping` gave before the action you want to measure. The engine prints a sample about every 1–3 s, so use
@@ -260,6 +349,164 @@ key from a copy of the baseline makes the matching warning new (exit 1).
 - It could not parse 9 files.
 
 The engine's own warnings are the better signal.
+
+## GPU cost and rewind (PT1h-R9)
+
+Research and the first Windows measurements: [debug tooling 2026-11-06](../../docs/research/debug-tooling-render-rewind-2026-11-06.md).
+
+### Render cost (PT1h-R9)
+
+These commands need a renderer: launch without `--headless`, on the target display and GPU. Results describe that
+machine, renderer and view only.
+
+- **`render [frames=30]`** reports root CPU render time, draw calls per pass, objects, primitives, wall frame time
+  and render configuration. GPU timestamps are raw, delayed last readings: freshness and alignment to a sampled or
+  presented frame are unverified. Zero, non-finite or absent readings are unavailable. The response's
+  `gpu_timing_status` distinguishes unavailable, unverified and mixed readings; it does not establish a GPU/CPU
+  bottleneck or budget headroom.
+  - `gpu_ms` and `root_gpu_ms` are root-viewport observations (`gpu_ms_scope=root_only_freshness_unverified`).
+    `sub_gpu_ms` sums separate last SubViewport readings and is **not** included in `gpu_ms`. A SubViewport may
+    not have drawn for the sampled frame, so neither its last reading nor the sum is a per-frame cost.
+  - `render measure=false` stops timestamp collection. When positive readings exist, `frames` reports root GPU
+    percentiles as unverified last readings; a hitch's GPU reading is context, not a GPU-bound verdict.
+  - `--json` retains the bridge's raw values and status fields. Responses from older bridges have unknown timing and
+    scope semantics; the client labels them as legacy rather than upgrading them to the current contract.
+- **`layers [depth=2] [root=<path>]`** is a census of the 3D scene below the active camera's top Node3D: visible
+  geometry instances, MultiMesh instances, shadow casters and lights per node.
+- **`ablate`** compares raw observations while switching one scene layer or feature off at a time:
+  - It switches one target off, measures, restores it, and moves to the next. Targets are scene-root-relative node
+    paths, or flags: `@shadows`, `@fog`, `@glow`, `@msaa`, `@half_res` (3D scale ×0.5: is the frame pixel-bound?),
+    `@subviewports`, `@canvas`. `@half_res` is skipped with reason `non_bilinear_reconstruction` when the viewport
+    uses a non-bilinear reconstruction mode; if it is the only target the command refuses with that reason.
+    It does not replace that mode or silently change the player's settings.
+  - Without `targets=`, it measures every flag, every top-level layer, and the children of any layer that holds a
+    large share of the geometry. `targets=Field,airplane,@fog` (comma-separated or a JSON list) narrows it.
+  - Measurement is interleaved A-B-A: baseline, target off, baseline, next target, …, baseline. Each raw delta is
+    compared with the mean of its adjacent baselines. If any contributing phase has unavailable or mixed GPU
+    readings, `saved_gpu_ms` and `saved_pct` are `null` and the client shows `n/a`; other observations and counters
+    remain available. The timestamps may be stale, so a real-data delta is not proof of a saving, ranking,
+    statistical significance, or cancellation of drift. Only synthetic test data can set `significant`; real rows
+    report `false` and are not ranked by the unverified delta.
+  - `overridden` means the app switched the target back on during its phase (for example a script that sets
+    `visible` every frame). That row is not trustworthy.
+  - Each phase discards `warmup=10` frames, then keeps `frames=60`. With `freeze=true` the probe attempts to hold the
+    simulation, and refuses a hold if the flight's controller (radio or gamepad) is connected or a helicopter mode
+    change is pending.
+    `freeze=false` explicitly runs without a diagnostic hold. `paused_at_start` records the initial state; `frozen`
+    means an owned simulation hold stayed valid. Neither establishes camera or visual stability. Target values are
+    captured at phase start and restored only if they still have the probe's off value, preserving intervening
+    changes; freed targets cannot be restored. Cleanup is attempted on completion, route change, timeout and
+    disconnect. A later pause, focus loss, hold or session change prevents automatic resumption.
+  - A target may also affect indirect work: hiding the aircraft can remove its projected-shadow silhouette pass.
+    Use an external, synchronized GPU profiler and controlled repeated captures to establish causal costs.
+- **`viewmode name=<mode>`** sets the viewport's debug draw. `viewmode` without a name lists the modes. In
+  Compatibility, `overdraw` and `unshaded` work. `wireframe` covers only meshes created after it was set, so set it
+  on Home and then fly. Most other modes need Forward+ or Mobile. Use `viewmode name=normal` to return.
+
+### Rewind (PT1h-R9)
+
+A ring of exact flight checkpoints for temporal debugging, after the rewindable-replay approach in Mark Wesley's
+GDC 2013 talk.
+
+- **`rewind arm=true [every_s=0.25] [keep_s=60]`** stores `FlightSession.checkpoint()` at a tick boundary every
+  `every_s` while the flight runs. This is the boundary flight logs replay from. Each checkpoint costs about 0.5–0.6 ms
+  on the main thread and 2.7 KB for the Ugly Stik. Arm it before the event you want to revisit.
+- **`rewind seconds=2`** or **`rewind tick=<t>`** restores the newest checkpoint at or before that moment, through
+  `FlightSession.restore_checkpoint()`:
+  - Physics, inputs, weather, failures and contacts return bit-exactly. Two branches from one checkpoint, each
+    stepped 480 ticks, gave identical state.
+  - The presentation resets as on a restart: camera history, smoke and particles. A running flight log stops, and
+    an accident report is archived.
+  - The flight stays paused (`pause=false` resumes it).
+  - The default `inputs=pilot` hands control back through `FlightSession.hand_control_to_pilot()`: the recorded
+    throttle, centred sticks, still paused. `inputs=recorded` keeps the session's replay contract, which holds the
+    restored inputs and ignores the pilot.
+- **Attempts.** A reset of the simulation clock (restart, crash auto-restart) starts a new attempt. `attempt=previous`
+  (or a number) with `seconds=` counts back from that attempt's last checkpoint, which is the moment before the
+  crash. `rewind list=true` shows the attempts.
+- **The timeline is cut.** Restoring drops the later checkpoints of that attempt and every later attempt.
+- **Limits.** It is a debugging tool, not evidence: pilot input after a rewind enters at frame boundaries. Exact,
+  shareable replays use [flight logs](../../docs/FLIGHT-LOGGING.md). The checkpoint covers the player's aircraft
+  only (no companions fleet). `rewind arm=false` frees the ring.
+
+```sh
+# Why did that landing end in a crash? Fly it again from 2 s before, by hand or with sticks.
+$D rewind arm=true; $D fly start=runway
+# ... fly until the crash (the accident report pauses the flight) ...
+$D rewind seconds=2                          # paused, 2 s before; the crash is gone
+$D sample exprs={"h":"-s[2]","sink":"s[5]"} every_ticks=24 count=10   # or step and inspect
+$D resume; $D sticks pitch=0.4 throttle=1 for_s=1.5
+
+# What costs the GPU in this view?
+$D launch; $D fly start=airborne; $D close; $D resume
+$D render; $D ablate; $D viewmode name=overdraw; $D screenshot max_width=960; $D viewmode name=normal
+```
+
+## Flight gizmos and BugIt (PT1h-R10)
+
+### Flight gizmos (PT1h-R10)
+
+`gizmos show=all` draws flight-model lines on the aircraft, in the style of X-Plane's flight-model display and the
+force gizmos of avian_fdm and Unreal's Chaos vehicles. Screenshots then show what the physics is doing. The overlay
+is read-only presentation: each frame it converts the session's committed state, loads and air data at the render
+boundary (`render/frames.gd`), like the RC truck's contact overlay.
+
+| Layer | Colour | Meaning |
+| --- | --- | --- |
+| `axes` | red, green, blue | body x forward, y right, z down |
+| `velocity` | white | inertial velocity (0.1 m per m/s) |
+| `air` | cyan | velocity through the air; its difference from `velocity` is the wind |
+| `wind` | blue | wind at the aircraft |
+| `forces` | yellow; orange; green; magenta | aerodynamic + propulsive force (1 m = the aircraft's weight); its component along the flight path (thrust − drag); its component across it (lift + side force); gravity |
+| `moments` | purple | body moment as an equivalent lever arm, 10 × \|M\| / (m·g) |
+| `trail` | white, fading | CG path over the last `trail_s=10` s; a restart or rewind starts a new path |
+| `label` | — | V, α, β, load factor, height and tick |
+
+- `show=forces,trail` picks layers. `gizmos off=true` removes the overlay. Settings stay in force across flights
+  until `off`.
+- The reply's `values` are this frame's numbers: airspeed, α, β, load factor, the forces along and across the
+  path, wind speed, height and `arrow_scale`.
+- `auto_scale=true` (the default) grows arrows with distance and zoom, so they stay readable from the pilot's
+  ground camera (×5.9 at about 150 m). Lengths are then multiplied by `arrow_scale`. The label is not scaled.
+  `force_m_per_g=`, `velocity_m_per_mps=`, `moment_gain=`, `trail_s=`, `axis_m=` and `thickness_m=` tune the
+  drawing.
+- Cost while shown: about 0.3–0.4 ms of main-thread time per frame with a 10 s trail. GL lines are one pixel wide,
+  so each arrow is drawn as five parallel copies; the trail is drawn as one.
+- Aircraft without the airplane's presentation estimate (`_current_pose`) are drawn at the tick state.
+- Not shown: per-surface forces. The kernel exposes only total loads; see the
+  [research note](../../docs/research/debug-tooling-render-rewind-2026-11-06.md#next-steps-not-built).
+
+### BugIt and BugItGo (PT1h-R10)
+
+After Unreal's `BugIt`/`BugItGo`: one command files a reproducible report, and another puts any running app back
+into that exact flight.
+
+- **`bugit [--note "what went wrong"] [--out DIR]`** writes `tmp/debug-bridge/bugit/<time>/`:
+  - `REPORT.md`, a short summary: source revision and changed files, engine, route, flight pose, frame and render
+    numbers, and the grouped errors and warnings;
+  - `report.json`, every reading: state, perf, frames, the problems summary, the last 200 log records, render,
+    objects, preferences, rewind, view, gizmo values and git status;
+  - `screenshot.jpg` (rendered sessions only);
+  - `checkpoint.json`, the session's exact flight checkpoint (in flight).
+  - Nothing is written into the repository.
+- **`bugitgo DIR [--resume]`** restores that state:
+  - it flies the same aircraft when needed and closes the launch menu;
+  - `checkpoint action=load` restores the exact state, paused, with pilot inputs;
+  - it sets the recorded camera view.
+  - The session refuses a checkpoint whose aircraft data, field or weather differ: the report then names the
+    configuration that must match. On Windows, a report taken at tick 799 was restored from Home in 2.6 s, and its
+    state hash was identical.
+- **`checkpoint action=save|load path=<absolute .json>`** is the bridge command underneath. A relative path is
+  refused, because it would land in the Godot project. `save` without a path writes to the run folder.
+- Use `bugit` when a bug shows up during any session, and attach the folder, not a description of how to get there.
+  For an exact replay of a whole flight, record a [flight log](../../docs/FLIGHT-LOGGING.md).
+
+```sh
+$D gizmos show=all; $D view name=chase; $D screenshot max_width=1280 format=jpg
+$D bugit --note "left wing drops at touchdown"   # prints the folder and the bugitgo line
+# later, in any running app:
+$D bugitgo tmp/debug-bridge/bugit/20261106-093916 --resume
+```
 
 ## Recipes
 
@@ -412,7 +659,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 69 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 101 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -438,8 +685,23 @@ to the bridge on a stand-in AppRoot. It covers:
   exact tick and `once` removes it; `logs` summary groups messages differing only in numbers; `objects diff` names 5
   new orphan `Node`s; `profile` parses the engine's profile format, and 5,000 profile lines evict no warning from
   the main log.
+- PT1h-R9: the rewind ring (a checkpoint every n ticks, `tick=`, the timeline cut, `inputs=pilot|recorded`, a clock
+  reset starting a new attempt, `attempt=previous`, refused old ticks); a watchpoint on a tick that pauses itself;
+  `render`/`ablate` refused headless; `viewmode` modes; the `layers` census; and the A-B-A ablation against a fake
+  probe with linear drift (exact 0.5 ms saving, inert target insignificant, overridden target flagged, everything
+  restored, abort restores).
+- PT1h-R10: checkpoint files (relative path refused, save then load restores the tick paused with pilot inputs,
+  missing file refused); gizmo numbers against hand values (load factor, along-path force, wind, α), lines and
+  label drawn, nothing drawn when nothing is shown; the `gizmos` command's refusals and `off`.
+- PT1h-R11: `look` fields, roles, values and options, symbol-only buttons named by context, next steps; refs short,
+  stable across looks and refused once freed; `choose` for option, toggle (once), text and slider, refusing a
+  button and a missing value; field names as `text=`; `setup` refused outside Home; `catalog` ids.
+- The test listens on a random free port. With the former fixed port 47911, a concurrent run of the same test by
+  another agent on the same Windows machine (two loopback listeners may share a port there) answered some
+  requests. That caused the intermittent failures first blamed on load, including `blocked frame` and
+  `old snapshot`.
 
-**Client tests.** These run in `research/test-tools.sh`, with 37 tests, mostly against a fake server. They cover:
+**Client tests.** These run in `research/test-tools.sh`, mostly against a fake server. They cover:
 
 - argument and JSON parsing, and quoted values that stay strings;
 - the token, exit codes, and the `ui` table with its short paths;
@@ -486,4 +748,5 @@ snapshot invalidation on replies, and the log ring read from one sequence too la
 - `set_landscape` switched Home to Green paradise. A settings resolution choice enabled Revert and Keep.
 - `launch` at 1920×1080 gave 1920×1080 screenshots.
 
-Not run on Windows or macOS.
+Not run on Windows or macOS for PT1h-R7/R8. PT1h-R9 on Windows 11 (RTX 3090, Godot 4.8 beta2, Compatibility,
+1920×1080) is recorded in the [2026-11-06 research note](../../docs/research/debug-tooling-render-rewind-2026-11-06.md).

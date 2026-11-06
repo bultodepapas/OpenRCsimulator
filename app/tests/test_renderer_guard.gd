@@ -90,10 +90,67 @@ func _test_persistence_and_confirmation() -> void:
 	check("a missing file loads as empty", RendererGuard.load_state(path + ".missing").is_empty())
 	RendererGuard.save_state(path, {pending = {method = "mobile", build = "b"}, metalfx_pending = {build = "b"}})
 	RendererGuard.clear_renderer_pending(path)
-	check("stable RD rendering does not confirm MetalFX", not RendererGuard.load_state(path).has("pending")
+	check("RD responsiveness does not confirm MetalFX", not RendererGuard.load_state(path).has("pending")
 		and RendererGuard.load_state(path).has("metalfx_pending"))
 	RendererGuard.confirm(path)
 	check("a clean quit clears both markers", not RendererGuard.load_state(path).has("metalfx_pending"))
+	# Exercise the callback directly in headless mode: the old activation must not clear a newer marker.
+	var first_activation := RendererGuard._arm_metalfx(path, "b")
+	RendererGuard._disarm_metalfx(path)
+	var second_activation := RendererGuard._arm_metalfx(path, "b")
+	RendererGuard._confirm_metalfx_activation(path, first_activation)
+	check("a stale MetalFX confirmer cannot clear the next activation",
+		RendererGuard.load_state(path).get("metalfx_pending", {}).get("activation", -1) == second_activation)
+	RendererGuard._confirm_metalfx_activation(path, second_activation)
+	check("the current MetalFX confirmer clears its own marker", not RendererGuard.load_state(path).has("metalfx_pending"))
+	var third_activation := RendererGuard._arm_metalfx(path, "b")
+	RendererGuard.save_state(path, {metalfx_pending = {build = "b", activation = third_activation + 1}})
+	RendererGuard._confirm_metalfx_activation(path, third_activation)
+	check("a confirmer cannot clear a marker it does not own", RendererGuard.load_state(path).has("metalfx_pending"))
+	RendererGuard._disarm_metalfx(path)
+	var previous_block := RendererGuard.MetalFX.blocked_reason
+	var impossible_path := path + "/pending.cfg" # its parent is the existing regular file, so saving must fail
+	var refused_activation := RendererGuard._arm_metalfx(impossible_path, "b")
+	check("a failed marker write refuses activation and leaves the guard disarmed",
+		refused_activation == -1 and not RendererGuard._metalfx_armed
+		and RendererGuard.MetalFX.blocked_reason == RendererGuard.METALFX_STORAGE_REASON)
+	var blocked_caps := RendererGuard.MetalFX.from_facts({blocked = RendererGuard.MetalFX.blocked_reason,
+		headless = false, method = "mobile", driver = "metal", rd_available = true,
+		metalfx_spatial_mode = 101, metalfx_spatial_supported = true})
+	check("a marker storage failure disables an otherwise supported MetalFX provider",
+		not blocked_caps.metalfx_spatial and blocked_caps.metalfx_spatial_reason == RendererGuard.METALFX_STORAGE_REASON)
+	RendererGuard._confirm_metalfx_activation(path, third_activation)
+	check("a callback from before the failed activation cannot rearm the guard", not RendererGuard._metalfx_armed)
+	RendererGuard.MetalFX.blocked_reason = previous_block
+	var expected := ConfigFile.new()
+	expected.set_value(RendererGuard.SECTION, "metalfx_pending", {build = "b"})
+	var partial := ConfigFile.new()
+	partial.set_value(RendererGuard.SECTION, "failed", {build = "a"})
+	partial.save(path)
+	check("a readable partial state cannot stand in for a persisted marker", not RendererGuard._saved_state_matches(path, expected))
+	expected.save(path)
+	check("the complete marker passes readback verification", RendererGuard._saved_state_matches(path, expected))
+	var quality := {provider = "metalfx_spatial", mode = 101, scale = 2.0 / 3.0, output = Vector2i(2560, 1600)}
+	var initial_configuration := RendererGuard._prepare_metalfx(path, "b", quality)
+	RendererGuard._confirm_metalfx_activation(path, initial_configuration)
+	check("identical confirmed reconstruction does not rearm on unrelated settings",
+		RendererGuard._prepare_metalfx(path, "b", quality) == 0 and not RendererGuard.load_state(path).has("metalfx_pending"))
+	var resized := quality.duplicate(true)
+	resized.scale = 0.85
+	resized.output = Vector2i(1920, 1200)
+	var previous_confirmer := RendererGuard.confirmer_for(path)
+	root.add_child(previous_confirmer)
+	RendererGuard._metalfx_confirmer = weakref(previous_confirmer)
+	var resized_activation := RendererGuard._prepare_metalfx(path, "b", resized)
+	check("a descriptor change retires the previous timer instead of accumulating resize timers",
+		previous_confirmer.is_queued_for_deletion() and not previous_confirmer.is_processing())
+	RendererGuard._confirm_metalfx_activation(path, initial_configuration)
+	check("a changed MetalFX descriptor rearms and rejects the previous callback",
+		resized_activation > initial_configuration
+		and RendererGuard.load_state(path).get("metalfx_pending", {}).get("activation", -1) == resized_activation)
+	RendererGuard._confirm_metalfx_activation(path, resized_activation)
+	check("the changed descriptor confirms only its own marker", not RendererGuard.load_state(path).has("metalfx_pending"))
+	RendererGuard._disarm_metalfx(path)
 	RendererGuard.save_state(path, {failed = {method = "mobile", build = "a"}})
 	# This SceneTree runs headless: begin() must neither restart nor arm a marker.
 	check("headless begin never restarts", not RendererGuard.begin(self, path))

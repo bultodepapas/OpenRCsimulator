@@ -416,6 +416,17 @@ func auxiliary_amount(channel_name: String) -> float:
 	return channel.amount() if not channel.binding.is_empty() else float(_aux_action_values.get(channel_name, 0.0))
 
 
+## Whether auxiliary_amount(channel_name) is a pilot command now (external audit A6 F2). A pause, menu or focus
+## boundary clears a bound channel's arming, and it reports 0.0 until fresh OFF evidence arms it again. That 0.0
+## means "no valid command yet", not "the pilot commanded zero": a position consumer (flap and gear targets) must
+## keep its last accepted request instead. Smoke keeps its own pump semantics (off at the boundary).
+func auxiliary_request_valid(channel_name: String) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return false
+	var channel = smoke_aux if channel_name == "smoke" else _extra_aux.get(channel_name)
+	if channel == null: return false
+	return channel.binding.is_empty() or channel.is_armed()
+
+
 func auxiliary_action(action: String) -> bool:
 	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return false
 	var channel_name := "smoke" if action == "smoke_toggle" else ("gear" if action == "gear_toggle" else "flaps")

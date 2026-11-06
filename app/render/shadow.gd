@@ -59,6 +59,7 @@ class _CuePolicy:
 
 static func create(parent: Node3D) -> MeshInstance3D:
 	var m := MeshInstance3D.new()
+	m.name = "AircraftShadow" # a stable path for tools and reports
 	var quad := PlaneMesh.new() # 1 × 1 in the XZ plane; UV u along +X, v along +Z
 	quad.size = Vector2(1, 1)
 	m.mesh = quad

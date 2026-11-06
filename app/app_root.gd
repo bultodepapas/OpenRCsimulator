@@ -76,6 +76,7 @@ const RunwayMeadow := preload("res://scenery/runway_meadow.gd")
 const RcTrackOption := preload("res://scenery/rc_track_option.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const DebugBridge := preload("res://debug/debug_bridge.gd")
+const AccessibleLabels := preload("res://ui/accessible_labels.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
 const UiSurface := preload("res://ui/screen.gd")
@@ -251,6 +252,8 @@ func _ready() -> void:
 		diagnostic.output_path = options.path
 		add_child(diagnostic)
 		return
+	# PT1h-R12: labels name the value controls that follow them, on every route with UI (not the diagnostic one).
+	add_child(AccessibleLabels.new())
 	UiInput.isolate_joypads() # before any menu exists (UI-01b): radio sticks never move the focus
 	if user_args.has("--vehicle=mt8-bisonte") or user_args.has("--vehicle=monster-car-2"):
 		TranslationServer.set_locale("en")
@@ -608,9 +611,11 @@ func end_ground_vehicle() -> void:
 
 
 ## Applies a language at once and remembers it. A failed save keeps the language for this session and says so.
-func set_language(code: String) -> void:
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_language(code: String) -> bool:
 	if not Preferences.LANGUAGES.has(code):
-		return
+		return false
 	TranslationServer.set_locale(code)
 	preferences.language = code
 	var err := Preferences.save_to(preferences_path, preferences)
@@ -618,14 +623,17 @@ func set_language(code: String) -> void:
 		_menu_feedback(&"reject")
 	if home != null:
 		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	return true # a failed save keeps the language for this session
 
 
 ## Shows another aircraft on Home (card and backdrop) and remembers it, like the language: a failed save keeps the
 ## choice for this session and says so.
-func set_aircraft(id: String) -> void:
-	if _loading_active: return
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_aircraft(id: String) -> bool:
+	if _loading_active: return false
 	if home == null or not Catalog.has(id):
-		return
+		return false
 	id = Catalog.canonical_id(id)
 	preferences.aircraft = id
 	home.set_aircraft(id) # shows the start remembered for this vehicle class (UI-32, UI-30 AS-7)
@@ -636,6 +644,7 @@ func set_aircraft(id: String) -> void:
 	if home_scene != null:
 		home_scene.request_aircraft(id, home.livery_id)
 	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+	return true
 
 
 ## F4U-16: the paint scheme of Home's aircraft. The default paint keeps no [liveries] entry.
@@ -732,17 +741,23 @@ func _on_home_preview_state(id: String, state: String, scene: Node3D) -> void:
 
 
 ## Preview the launch choice; only a successful Fly remembers it.
-func set_start_choice(choice: String) -> void:
-	if _loading_active: return
-	if home != null:
-		home.set_start_choice(choice)
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_start_choice(choice: String) -> bool:
+	if _loading_active or home == null:
+		return false
+	home.set_start_choice(choice)
+	# Home falls back for this aircraft and landscape (no runway, no hand launch, no pad): report it.
+	return str(home.start_choice) == choice
 
 
 ## Applies an FW preset immediately and clears any explicit lighting selection so the Home and flight agree.
-func set_time_of_day(preset: String) -> void:
-	if _loading_active: return
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_time_of_day(preset: String) -> bool:
+	if _loading_active: return false
 	if home == null or not Conditions.HOME_CHOICES.has(preset):
-		return
+		return false
 	preferences.time_of_day = preset
 	preferences.lighting_config = TimeOfDay.defaults()
 	preferences.lighting_invalid = false
@@ -752,6 +767,7 @@ func set_time_of_day(preset: String) -> void:
 	_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	return true
 
 
 ## FW-MOON-12: the saved moon choices, validated (an invalid value recovers to the real moon).
@@ -1375,7 +1391,8 @@ func _restore_display_window_state(state: Dictionary) -> void:
 	if window.mode != int(state.mode) or window.borderless != bool(state.borderless) \
 			or window.size != Vector2i(state.size) or window.position != Vector2i(state.position):
 		window.mode = Window.MODE_WINDOWED
-		window.borderless = bool(state.borderless)
+		if window.borderless != bool(state.borderless):
+			window.borderless = bool(state.borderless)
 		window.size = state.get("normal_size", state.size)
 		window.position = state.get("normal_position", state.position)
 		window.mode = int(state.mode) as Window.Mode
@@ -1426,9 +1443,7 @@ func _apply_presentation(config: Dictionary) -> void:
 		_refresh_screen_themes(self)
 	# These settings affect presentation only, including an already paused flight.
 	Engine.max_fps = int(config.get("max_fps", 0))
-	Reconstruction.apply(get_viewport(), config)
-	RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
-		str(Reconstruction.describe(get_viewport()).get("provider", "")) in Reconstruction.MetalFX.PROVIDERS)
+	_apply_guarded_reconstruction(get_viewport(), config)
 	# VQ-06b: the LOD threshold applies at once; scenery and 3D trees follow at the next world build.
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
@@ -1463,7 +1478,8 @@ func _apply_presentation(config: Dictionary) -> void:
 			window.mode = Window.MODE_FULLSCREEN
 		else:
 			window.mode = Window.MODE_WINDOWED
-			window.borderless = _windowed_borderless
+			if window.borderless != _windowed_borderless:
+				window.borderless = _windowed_borderless
 			window.size = _windowed_size
 			window.position = _windowed_position
 			if _windowed_mode != DisplayServer.WINDOW_MODE_WINDOWED and not resolution_changed:
@@ -1496,14 +1512,25 @@ func _refresh_screen_themes(node: Node) -> void:
 	for child: Node in node.get_children(): _refresh_screen_themes(child)
 
 
+func _apply_guarded_reconstruction(viewport: Viewport, config: Dictionary) -> void:
+	var selected := Reconstruction.resolve_for_viewport(viewport, config)
+	RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
+		str(selected.get("provider", "")) in Reconstruction.MetalFX.PROVIDERS,
+		{provider = selected.get("provider", ""), mode = selected.get("scaling_3d_mode", -1),
+			scale = selected.get("scale", 1.0), output = Reconstruction.viewport_output_size(viewport)})
+	# A failed marker write blocks MetalFX before this reconstruction apply changes provider or scale.
+	# The OS may already have resized the viewport before delivering a size_changed callback.
+	Reconstruction.apply(viewport, config)
+
+
 func _on_ui_window_resized() -> void:
 	var ui_window: Window = get_tree().root
 	var scale_state: Dictionary = UiScale.apply(ui_window)
-	# DT-MAC-07b: "auto" reconstruction depends on the output pixels (windowed versus fullscreen).
-	if display_preferences != null and str(display_preferences.config.get("reconstruction", "")) == Reconstruction.AUTO:
-		Reconstruction.apply(get_viewport(), display_preferences.config)
-		RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
-			str(Reconstruction.describe(get_viewport()).get("provider", "")) in Reconstruction.MetalFX.PROVIDERS)
+	# The active viewport config can be an unsaved Settings preview. Reusing saved preferences here would
+	# replace that preview, or skip an Auto preview, when a window-size change triggers this callback.
+	var active_config: Variant = ui_window.get_meta(Reconstruction.CONFIG_META, {})
+	if active_config is Dictionary and str(active_config.get("reconstruction", "")) == Reconstruction.AUTO:
+		_apply_guarded_reconstruction(ui_window, active_config)
 	if not _popup_realign_pending:
 		_popup_realign_pending = true
 		call_deferred("_realign_open_popups")
@@ -2817,15 +2844,19 @@ func _rebuild_home_scene() -> bool:
 
 
 ## Landscape changes create a fresh Home world; a running flight keeps its accepted field and contacts.
-func set_landscape(id: String) -> void:
-	if not screens.is_top("home") or flight != null or not Landscapes.has(id) or id == landscape_id:
-		return
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_landscape(id: String) -> bool:
+	if id == landscape_id and Landscapes.has(id):
+		return true
+	if not screens.is_top("home") or flight != null or not Landscapes.has(id):
+		return false
 	var path: String = Landscapes.entry(id).field_path
 	var checked: Dictionary = FieldLoader.load_from(path)
 	if not checked.ok:
 		home.set_note("; ".join(checked.errors))
 		_menu_feedback(&"reject")
-		return
+		return false
 	var old_id: String = landscape_id
 	var old_path: String = field_path
 	landscape_id = id
@@ -2836,13 +2867,14 @@ func set_landscape(id: String) -> void:
 	elif not _rebuild_home_scene():
 		landscape_id = old_id
 		field_path = old_path
-		return
+		return false
 	home.runway_available = checked.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not checked.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)
 	home.reapply_start_preference()
 	preferences.landscape = id
 	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+	return true
 
 
 func close_weather() -> void:

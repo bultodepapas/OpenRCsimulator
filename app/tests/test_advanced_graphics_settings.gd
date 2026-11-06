@@ -4,6 +4,7 @@ extends SceneTree
 
 const UiDriver := preload("res://tests/ui_driver.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const RendererGuard := preload("res://app_state/renderer_guard.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -44,6 +45,7 @@ func _run() -> void:
 	var settings: CanvasLayer = app.screens.get_screen("settings")
 	var initial_size := root.size
 	var initial_position := root.position
+	await _test_auto_preview_resize(app, settings, initial_size)
 	settings._resolution_picker.select(1)
 	settings._resolution_picker.item_selected.emit(1)
 	await ui.settle()
@@ -108,10 +110,30 @@ func _run() -> void:
 		var effective_vsync := tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")
 		_check("effective VSync is visible to the player", settings._graphics_info.text.contains(
 			tr("Output: %d × %d · VSync: %s") % [root.size.x, root.size.y, effective_vsync]))
+	var reconstruction_caps := Reconstruction.runtime_capabilities()
+	var saved_graphics: Dictionary = app.display_preferences.config.duplicate(true)
+	var saved_auto := {"mode": root.scaling_3d_mode, "scale": root.scaling_3d_scale,
+		"msaa": root.msaa_3d, "sharpness": root.fsr_sharpness,
+		"slider_value": settings._fsr2_sharpness_slider.value, "slider_editable": settings._fsr2_sharpness_slider.editable}
+	# Auto uses Spatial Quality from 1500 output rows, then 85% from 1177 rows, when Spatial is supported.
+	var spatial := bool(reconstruction_caps.get("metalfx_spatial", false))
+	var expected_auto := "metalfx_spatial_quality" if spatial and root.size.y >= 1500 \
+		else ("metalfx_spatial_85" if spatial and root.size.y >= 1177 else "native")
+	var expected_scale := (2.0 / 3.0) if expected_auto == "metalfx_spatial_quality" \
+		else (0.85 if expected_auto == "metalfx_spatial_85" else 1.0)
+	var expected_mode := int(reconstruction_caps.get("metalfx_spatial_mode", -1)) if expected_auto != "native" \
+		else Viewport.SCALING_3D_MODE_BILINEAR
+	var auto_receipt := Reconstruction.describe(root)
+	_check("saved Auto viewport follows supported mode and output height",
+		saved_graphics.reconstruction == "auto" and auto_receipt.requested == "auto"
+		and auto_receipt.auto_selected == expected_auto and root.scaling_3d_mode == expected_mode
+		and is_equal_approx(root.scaling_3d_scale, expected_scale) and root.msaa_3d == Viewport.MSAA_4X
+		and is_equal_approx(root.fsr_sharpness, 0.2 if expected_auto == "native" else 0.0)
+		and is_equal_approx(settings._fsr2_sharpness_slider.value, float(saved_graphics.fsr2_sharpness))
+		and not settings._fsr2_sharpness_slider.editable)
 	settings._msaa_picker.select(3)
 	settings._msaa_picker.item_selected.emit(3)
 	_check("8x MSAA reaches the real viewport", root.msaa_3d == Viewport.MSAA_8X)
-	var reconstruction_caps := Reconstruction.runtime_capabilities()
 	_check("reconstruction menu follows provider capabilities", settings._reconstruction_picker.disabled == not Reconstruction.options_available(reconstruction_caps))
 	_check("1080p help compares Quality and Performance input sizes",
 		settings._reconstruction_picker.tooltip_text.contains("1280 × 720")
@@ -124,7 +146,10 @@ func _run() -> void:
 			settings._reconstruction_picker.is_item_disabled(index) == not bool(option.available))
 	var saved_reconstruction := str(settings._draft.reconstruction)
 	settings._draft.reconstruction = "native"
-	settings._sync_controls()
+	settings._on_graphics_option_changed()
+	_check("Native preview uses full 3D resolution and the selected MSAA",
+		root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR
+		and is_equal_approx(root.scaling_3d_scale, 1.0) and root.msaa_3d == Viewport.MSAA_8X)
 	_check("Native disables FSR sharpness and explains the saved value",
 		not settings._fsr2_sharpness_slider.editable
 		and settings._fsr2_sharpness_slider.focus_mode == Control.FOCUS_NONE
@@ -142,13 +167,18 @@ func _run() -> void:
 		and settings._fsr2_sharpness_slider.tooltip_text.contains(
 			"inactive while Native is active" if dlss_policy.fallback else "DLSS controls its own reconstruction sharpness")
 		and settings._fsr2_sharpness_slider.tooltip_text.contains("FSR2 or FSR3"))
-	var current_output := settings.get_viewport().get_visible_rect().size
-	var expected_dimensions := "%d × %d" % [roundi(current_output.x), roundi(current_output.y)]
+	# AppRoot uses CanvasItems + Expand: the render target fills the native window, independently of UI canvas units.
+	var current_output := root.size
+	var expected_dimensions := tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
+		int(current_output.x * root.scaling_3d_scale), int(current_output.y * root.scaling_3d_scale),
+		current_output.x, current_output.y]
 	_check("graphics status shows requested and effective providers",
 		settings._graphics_info.text.contains(tr("Reconstruction: Requested %s → Active %s")
 			% [tr("DLSS · Quality"), tr("Native") if dlss_policy.fallback else tr("DLSS · Quality")]))
 	_check("graphics status shows the current 3D input and output sizes",
-		settings._graphics_info.text.contains(expected_dimensions))
+		root.content_scale_mode == Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+		and root.content_scale_aspect == Window.CONTENT_SCALE_ASPECT_EXPAND
+		and settings._graphics_info.text.contains(expected_dimensions))
 	_check("unsupported provider explanation names the actual graphics limitation in player language",
 		settings._reconstruction_unavailable_text("fsr3", "fsr3_support_missing").contains("game build")
 		and not settings._reconstruction_unavailable_text("fsr3", "fsr3_support_missing").contains("native extension"))
@@ -188,10 +218,15 @@ func _run() -> void:
 		and root.msaa_3d == (Viewport.MSAA_DISABLED if fsr2_policy.temporal else Viewport.MSAA_8X))
 	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
 	settings._process(0.0)
-	_check("FSR2 timeout restores native resolution and saved MSAA", root.scaling_3d_scale == 1.0
-		and root.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR and root.msaa_3d == Viewport.MSAA_4X)
-	_check("timeout restores sharpening and disables slider", is_equal_approx(root.fsr_sharpness, 0.2)
-		and not settings._fsr2_sharpness_slider.editable)
+	_check("FSR2 timeout restores saved Auto viewport and MSAA",
+		settings._draft.reconstruction == saved_graphics.reconstruction and settings._draft.msaa_3d == saved_graphics.msaa_3d
+		and is_equal_approx(root.scaling_3d_scale, float(saved_auto.scale))
+		and root.scaling_3d_mode == int(saved_auto.mode) and root.msaa_3d == int(saved_auto.msaa))
+	_check("timeout restores saved sharpening and slider state",
+		is_equal_approx(root.fsr_sharpness, float(saved_auto.sharpness))
+		and is_equal_approx(settings._draft.fsr2_sharpness, float(saved_graphics.fsr2_sharpness))
+		and is_equal_approx(settings._fsr2_sharpness_slider.value, float(saved_auto.slider_value))
+		and settings._fsr2_sharpness_slider.editable == bool(saved_auto.slider_editable))
 	for index: int in settings._reconstruction_picker.item_count:
 		settings._reconstruction_picker.select(index)
 		settings._reconstruction_picker.item_selected.emit(index)
@@ -318,7 +353,10 @@ func _run() -> void:
 	settings.keep_changes()
 	settings.close()
 	await ui.settle()
-	await ui.close_app(app)
+	if not await _close_confirmed_shell(app):
+		_clean()
+		quit(1)
+		return
 	# Recreate the actual shell with the same isolated store, not just a new settings dialog.
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
@@ -337,7 +375,10 @@ func _run() -> void:
 	await ui.settle()
 	_check("kept FSR2 preserves native MSAA preference", DisplayPreferences.load_from(PREFS + ".display").reconstruction == "fsr2_quality"
 		and DisplayPreferences.load_from(PREFS + ".display").msaa_3d == 1)
-	await ui.close_app(app)
+	if not await _close_confirmed_shell(app):
+		_clean()
+		quit(1)
+		return
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
 	app.preferences_path = PREFS
@@ -347,7 +388,10 @@ func _run() -> void:
 		int(Reconstruction.resolve("fsr2_quality", Reconstruction.runtime_capabilities()).scaling_3d_mode))
 	_check("shell relaunch preserves disabled sharpening", root.fsr_sharpness == 2.0
 		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.0)
-	await ui.close_app(app)
+	if not await _close_confirmed_shell(app):
+		_clean()
+		quit(1)
+		return
 	Engine.max_fps = 0
 	root.msaa_3d = Viewport.MSAA_4X
 	UiTheme.text_scale = 1.0
@@ -356,8 +400,53 @@ func _run() -> void:
 	print("advanced graphics: %d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)
 
+
+## Shell recreation is not an OS quit: let the real responsiveness confirmers clear their own markers.
+func _close_confirmed_shell(app: Node) -> bool:
+	var path: String = app.renderer_guard_path
+	var deadline := Time.get_ticks_msec() + 60000
+	var state := RendererGuard.load_state(path)
+	while (state.has("pending") or state.has("metalfx_pending")) and Time.get_ticks_msec() < deadline:
+		await process_frame
+		state = RendererGuard.load_state(path)
+	var confirmed := not state.has("pending") and not state.has("metalfx_pending")
+	_check("no pending renderer guard before closing shell", confirmed)
+	await ui.close_app(app)
+	return confirmed
+
+
+func _test_auto_preview_resize(app: Node, settings: CanvasLayer, initial_size: Vector2i) -> void:
+	# A resize during a display trial must preserve the active preview rather than the saved configuration.
+	settings._reconstruction_picker.select(_reconstruction_index(settings, "native"))
+	settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "native"))
+	root.size_changed.emit()
+	await ui.settle()
+	_check("saved Auto does not replace a Native preview on resize",
+		app.display_preferences.config.reconstruction == "auto" and settings._draft.reconstruction == "native"
+		and Reconstruction.describe(root).requested == "native"
+		and root.get_meta(Reconstruction.CONFIG_META).reconstruction == "native")
+	settings.keep_changes()
+	_check("Native preview is saved for the inverse resize case", app.display_preferences.config.reconstruction == "native")
+	settings._reconstruction_picker.select(_reconstruction_index(settings, "auto"))
+	settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "auto"))
+	if DisplayServer.get_name() == "headless":
+		root.size = Vector2i(1920, 1200) # cross an Auto threshold without requiring a particular desktop size
+	Reconstruction.auto_output_size = Vector2i.ZERO
+	root.size_changed.emit()
+	await ui.settle()
+	var receipt := Reconstruction.describe(root)
+	_check("saved Native does not prevent an Auto preview from recomputing on resize",
+		app.display_preferences.config.reconstruction == "native" and settings._draft.reconstruction == "auto"
+		and receipt.requested == "auto" and Reconstruction.auto_output_size == root.size
+		and receipt.auto_output_size == [root.size.x, root.size.y])
+	if DisplayServer.get_name() == "headless":
+		root.size = initial_size
+		await ui.settle()
+	settings.keep_changes() # restore the original default for the remaining graphics transaction tests
+
+
 func _clean() -> void:
-	for suffix: String in ["", ".bad", ".display", ".display.bad"]:
+	for suffix: String in ["", ".bad", ".display", ".display.bad", ".renderer"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
 
 

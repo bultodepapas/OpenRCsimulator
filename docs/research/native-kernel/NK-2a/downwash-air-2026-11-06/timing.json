@@ -1,0 +1,431 @@
+{
+	"baseline_sha256": "d0c29a291b705b918e22c09719337ef9ac3619ae86244c13a95c315a2bfaf531",
+	"benchmark_sha256": "ce4b83a5d4165c556676841732a4f11804c66ef21b1156b362070041d4892f6e",
+	"callbacks_per_batch": 256,
+	"candidate_sha256": "3fddd841ce97533d5a5e52f521a2dae1b1bcaaaed33edaec5b6cc5f1dde23ff2",
+	"cases": [
+		{
+			"backend": {
+				"identity": {
+					"backend": "gdscript_reference"
+				},
+				"reason": "",
+				"requested": "gdscript_reference"
+			},
+			"callback": [
+				{
+					"baseline_us": 73.14453125,
+					"candidate_us": 68.84375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 74.078125,
+					"candidate_us": 69.4765625,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 74.046875,
+					"candidate_us": 72.265625,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 74.6328125,
+					"candidate_us": 70.09375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 74.08203125,
+					"candidate_us": 68.8125,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 73.83203125,
+					"candidate_us": 70.421875,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 74.83984375,
+					"candidate_us": 69.96875,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 74.80078125,
+					"candidate_us": 69.453125,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				}
+			],
+			"case_id": "legacy-v4-steady",
+			"tick": [
+				{
+					"baseline_us": 526.7333333333333,
+					"candidate_us": 508.5625,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 518.8875,
+					"candidate_us": 514.4166666666666,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 519.4041666666667,
+					"candidate_us": 516.3375,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 523.9333333333333,
+					"candidate_us": 523.1708333333333,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 526.2416666666667,
+					"candidate_us": 518.5,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 518.9916666666667,
+					"candidate_us": 519.5458333333333,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 610.1875,
+					"candidate_us": 519.9625,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 511.65,
+					"candidate_us": 520.9541666666667,
+					"fingerprints": [
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402",
+						"91b5749bc582e8cf38c1ca381cee54f9b94eef9be9c1d3952a42868ff4701402"
+					],
+					"order": "BA"
+				}
+			],
+			"weather": {
+				"atmosphere_mode": "reference",
+				"field_elevation_m": 0.0,
+				"format": "openrc-weather v4",
+				"from_deg": 270.0,
+				"gust_delay_s": 2.0,
+				"gust_duration_s": 4.0,
+				"gust_mps": 0.0,
+				"gust_period_s": 12.0,
+				"gust_up_mps": 0.0,
+				"qnh_hpa": 1013.25,
+				"relative_humidity_pct": 0.0,
+				"speed_mps": 3.0,
+				"temperature_c": 15.0,
+				"turbulence_rms_mps": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"turbulence_seed": 20261009,
+				"turbulence_tau_s": 2.0
+			}
+		},
+		{
+			"backend": {
+				"identity": {
+					"backend": "gdscript_reference"
+				},
+				"reason": "",
+				"requested": "gdscript_reference"
+			},
+			"callback": [
+				{
+					"baseline_us": 638.87890625,
+					"candidate_us": 468.15234375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 632.15234375,
+					"candidate_us": 355.96484375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 634.859375,
+					"candidate_us": 345.4375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 658.76171875,
+					"candidate_us": 353.0234375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 634.7265625,
+					"candidate_us": 355.0703125,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 642.21875,
+					"candidate_us": 351.5859375,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 640.37890625,
+					"candidate_us": 354.72265625,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 651.53125,
+					"candidate_us": 354.88671875,
+					"fingerprints": [
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084",
+						"0428a01ae1e310af581fc1d44219975ba4e5df33ee85922247609a643f55d084"
+					],
+					"order": "BA"
+				}
+			],
+			"case_id": "spatial-v5-modes-8",
+			"tick": [
+				{
+					"baseline_us": 2969.5875,
+					"candidate_us": 2587.2458333333334,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 2900.7791666666667,
+					"candidate_us": 2606.704166666667,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 2916.5833333333335,
+					"candidate_us": 2657.8083333333334,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 2935.508333333333,
+					"candidate_us": 2614.304166666667,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 3029.0208333333335,
+					"candidate_us": 4776.7875,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 2877.454166666667,
+					"candidate_us": 3222.054166666667,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "BA"
+				},
+				{
+					"baseline_us": 2926.8708333333334,
+					"candidate_us": 2712.25,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "AB"
+				},
+				{
+					"baseline_us": 2885.0958333333333,
+					"candidate_us": 2602.516666666667,
+					"fingerprints": [
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d",
+						"d2a0a6c54d10e3d1abe95dbb2402a9b5daab5e8399638e075815d20e91ee633d"
+					],
+					"order": "BA"
+				}
+			],
+			"weather": {
+				"atmosphere_mode": "reference",
+				"field_elevation_m": 0.0,
+				"format": "openrc-weather v5",
+				"from_deg": 0.0,
+				"gust_delay_s": 2.0,
+				"gust_duration_s": 4.0,
+				"gust_mps": 0.0,
+				"gust_period_s": 12.0,
+				"gust_up_mps": 0.0,
+				"qnh_hpa": 1013.25,
+				"relative_humidity_pct": 0.0,
+				"spatial_wind": {
+					"datum": {
+						"ground_down_m": 0.0,
+						"law": "flat-site-ground-plane-v1"
+					},
+					"domain": {
+						"ground_extension_m": 0.25,
+						"ground_transition_height_m": 3.0,
+						"half_extent_east_m": 10000.0,
+						"half_extent_north_m": 10000.0,
+						"max_height_agl_m": 200.0,
+						"time_horizon_s": 86400.0
+					},
+					"format": "openrc-spatial-wind v1",
+					"frame": "NED",
+					"gusts": {
+						"events": [],
+						"law": "resolved-degree6-c2-bell-uniform-v1"
+					},
+					"identity": {
+						"epoch_offset_s": 0.0,
+						"seed_algorithm": "xorshift32-v1",
+						"seed_u32": 20261025,
+						"world_epoch_id_u32": 451
+					},
+					"profile": {
+						"displacement_height_m": 0.0,
+						"free_air_join_height_m": 20.0,
+						"free_air_wind_ned_mps": [
+							0.0,
+							0.0,
+							0.0
+						],
+						"law": "neutral-log-flat-site-c1-wall-v1",
+						"layers": [],
+						"reference_from_deg": 270.0,
+						"reference_height_agl_m": 10.0,
+						"reference_speed_mps": 3.0,
+						"roughness_length_m": 0.03,
+						"surface_layer_top_agl_m": 80.0,
+						"wall_join_height_agl_m": 0.3
+					},
+					"turbulence": {
+						"coherence_time_s": 4.0,
+						"law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+						"max_wavelength_m": 50.0,
+						"min_wavelength_m": 5.0,
+						"mode_count": 8,
+						"rms_mps": 0.3
+					}
+				},
+				"speed_mps": 0.0,
+				"temperature_c": 15.0,
+				"turbulence_rms_mps": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"turbulence_seed": 20261009,
+				"turbulence_tau_s": 2.0
+			}
+		}
+	],
+	"complete": true,
+	"error": "",
+	"fixture_helpers_sha256": "a3a9d51a6ad2fe24a221962580f0f0c4c1a3d8548621c838ce23608eb4a1ec4d",
+	"format": "openrc-downwash-pair v1",
+	"machine": {
+		"cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+		"godot": "4.8-beta2 (official)",
+		"os": "Windows"
+	},
+	"pairs": 8,
+	"scope": "Detached GDScript Stik, no scenery/companions/render/input observer; production kernel pre-step and full Simulation.step including session accepted-step handlers. Alternating AB/BA; batch means, not tick percentiles. Warmup, resets, query instrumentation and final-state hashes excluded from timing.",
+	"ticks_per_batch": 240
+}

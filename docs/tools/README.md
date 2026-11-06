@@ -18,9 +18,12 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
 | Frame time or GPU cost | [Frame diagnosis](graphics.md#frame-diagnosis); use the target display/GPU and record actual pixels. |
 | High profile or Windows NVIDIA package | [Graphics modes](../../tools/graphics/README.md); [NVIDIA build/launch](../../tools/graphics/native/README.md). |
+| An agent driving the app: menus, options, flights | `debugctl.py look` / `choose` / `catalog` / `setup`, or the MCP server `tools/debug/mcp_server.py`; [agents and MCP](../../tools/debug/README.md#agents-and-mcp-pt1h-r11). |
 | Running-app UI, keys, sticks, state, logs or screenshots | `python3 tools/debug/debugctl.py launch`; [debug bridge](../../tools/debug/README.md#quick-start). Add `--headless` when rendering is unnecessary. |
 | Running-app regression pass | `python3 tools/debug/debugctl.py smoke`; [scenarios and limits](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8). |
 | Stutter, script CPU, leaks, watchpoints or UI fuzzing | [Debug bridge diagnostics](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8): `frames`, `timeline`, `profile`, `objects`, `soak`, `break`, `monkey`. |
+| What the GPU spends a running frame on; rewinding a flight | [Debug bridge GPU cost and rewind](../../tools/debug/README.md#gpu-cost-and-rewind-pt1h-r9): `render`, `layers`, `ablate`, `viewmode`, `rewind`. |
+| Flight-model overlay; a bug report with its exact flight state | [Flight gizmos and BugIt](../../tools/debug/README.md#flight-gizmos-and-bugit-pt1h-r10): `gizmos`, `bugit`, `bugitgo`. |
 | GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`; [warning baseline](../../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8). |
 | Crash, exit leaks, process RAM or disk use | [Incident bundles](../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5), [resource tools](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4). |
 | Bug investigation | [General playbook](debugging.md), [physics](debugging-physics.md), [graphics](debugging-graphics.md). |

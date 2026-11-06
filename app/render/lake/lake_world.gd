@@ -52,7 +52,11 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 	var table := GroundSurfaces.load_table()
 	var surfaces := GroundSurfaces.build(table.table, field) if table.ok else {ok = false}
 	if not surfaces.ok:
-		push_error("lake: cannot build matching physical ground surfaces")
+		field_node.set_meta("lake_error", "cannot build matching physical ground surfaces")
+		return null
+	var prepared := _prepare_ground_cut(field_node, ground_material, lake)
+	if not prepared.ok:
+		field_node.set_meta("lake_error", prepared.error)
 		return null
 	var node := Terrain.build(lake, ground_material, surfaces.rects, lighting)
 	# Bind the already licensed soil maps after building the basin. The geometry
@@ -64,26 +68,32 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 	for parameter: String in ["grass_photo_enabled", "rc_grass_albedo", "rc_grass_normal",
 			"rc_grass_roughness", "turf_detail", "turf_detail_strength"]:
 		bank_material.set_shader_parameter(parameter, ground_material.get_shader_parameter(parameter))
-	Terrain.mask_parameters(ground_material, lake)
-	ground_material.set_shader_parameter("lake_mask_mode", 1)
-	field_node.set_meta("ground_lake_cut", _cut_ground(field_node, ground_material, lake))
-	field_node.add_child(node)
 	node.add_child(LakePlants.build(lake))
-	field_node.set_meta("lake_context", lake.duplicate(true))
-	field_node.set_meta("lake_identity", lake.identity)
 	var ambience := WaterEffects.ambient_player(lake, audio_on)
 	if ambience != null:
 		node.add_child(ambience)
+	# All cuts and detached lake children are ready. Commit without yielding so a
+	# failed cut cannot leave a partial hole or publish a physical lake context.
+	for replacement: Dictionary in prepared.replacements:
+		(replacement.instance as MeshInstance3D).mesh = replacement.mesh
+	Terrain.mask_parameters(ground_material, lake)
+	ground_material.set_shader_parameter("lake_mask_mode", 1)
+	field_node.set_meta("ground_lake_cut", prepared.replacements.size())
+	field_node.add_child(node)
+	field_node.set_meta("lake_context", lake.duplicate(true))
+	field_node.set_meta("lake_identity", lake.identity)
+	if field_node.has_meta("lake_error"):
+		field_node.remove_meta("lake_error")
 	return node
 
 
 ## DT-MAC-06b D1: remove the validated bank polygon from every ground mesh drawn with the field's ground
 ## material. The ground shader has no `discard`, which would disable hidden-surface removal on tile GPUs.
-## Returns the number of cut meshes; a failed cut is an error, never a silent overlap.
-static func _cut_ground(field_node: Node3D, ground_material: ShaderMaterial, lake: Dictionary) -> int:
+## Prepare every replacement before changing a mesh; a failed cut refuses the whole lake.
+static func _prepare_ground_cut(field_node: Node3D, ground_material: ShaderMaterial, lake: Dictionary) -> Dictionary:
 	var Horizon := preload("res://render/horizon.gd")
 	var polygon: PackedFloat64Array = lake.get("bank_ne_m", PackedFloat64Array())
-	var cut := 0
+	var replacements: Array[Dictionary] = []
 	for found: Node in field_node.find_children("*", "MeshInstance3D", true, false):
 		var instance := found as MeshInstance3D
 		if instance.material_override != ground_material or instance.mesh == null:
@@ -101,11 +111,10 @@ static func _cut_ground(field_node: Node3D, ground_material: ShaderMaterial, lak
 			hole.append(Vector2(local.x, local.z))
 		var mesh := Horizon.with_hole(instance.mesh, hole)
 		if mesh == null:
-			push_error("lake: cannot cut the bank polygon from ground mesh %s" % instance.name)
-			continue
-		instance.mesh = mesh
-		cut += 1
-	return cut
+			return {ok = false, error = "cannot cut the bank polygon from ground mesh %s" % instance.name}
+		if mesh != instance.mesh:
+			replacements.append({instance = instance, mesh = mesh})
+	return {ok = true, replacements = replacements}
 
 
 static func ambience_player(field_node: Node) -> AudioStreamPlayer3D:

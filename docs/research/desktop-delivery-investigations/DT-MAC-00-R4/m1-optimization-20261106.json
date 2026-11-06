@@ -1,0 +1,3313 @@
+{
+  "format": "openrc-m1-optimization-followup v1",
+  "date_utc": "2026-11-06",
+  "scope": "Native M1 short diagnostic screens and correctness checks; no hardware-family or release qualification",
+  "commits": {
+    "merged": "9e72665ff44b6c4c51974633063a728c8d266c44",
+    "auto_preview_and_receipts": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+    "matrix_and_cache_publication": "8717e4c435c6514db16b06b464c5654aa6d55f26",
+    "clock_identity_repair": "096c21f176b3ad050e9b5236d3dea7b9de6cb868"
+  },
+  "host": {
+    "model_identifier": "MacBookAir10,1",
+    "cpu": "Apple M1",
+    "memory_bytes": 8589934592,
+    "os_version": "27.0.1",
+    "os_build": "26A434",
+    "hardware_arm64": true,
+    "python_process_architecture": "arm64",
+    "python_process_rosetta": false,
+    "python_process_native_arm64": true
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "identity": {
+      "size_bytes": 125379328,
+      "sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+      "sha512": "f899b2e84de992ffaa8733850cb4724038b2bbc511650cc9b1c3592dc6c341cfec933207f74c11f3f51697fcfa6c4f25b458cbdfa2f9e113a52c3e82c520fc74"
+    },
+    "file_architectures": [
+      "arm64"
+    ],
+    "forced_arm64_version_succeeded": true,
+    "identity_stable_across_version_checks": true
+  },
+  "preflight": {
+    "path": "tmp/m1-optimization-20261106/evidence/tmp/macos-preflight/macos-preflight-20261106T021546Z-c4405bfbfeab4a7ea9bbbecf12adcbfe.json",
+    "bytes": 3239,
+    "sha256": "1825f29fbd61e9a0c76a2814734224195a804c282973c145dc973be7f3a1661e"
+  },
+  "source_snapshots": [
+    {
+      "remote": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106",
+      "commit": "096c21f176b3ad050e9b5236d3dea7b9de6cb868",
+      "files": 9412,
+      "delta_files": 3,
+      "delta_bytes": 122880,
+      "delta_sha256": "21dbd0e18f5a8db2da6645b4696449033311b84edea83969cdfd1cfb0c9f68b6",
+      "removed_clone_extras": [],
+      "verified": true
+    },
+    {
+      "remote": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106",
+      "commit": "8717e4c435c6514db16b06b464c5654aa6d55f26",
+      "files": 9412,
+      "delta_files": 6,
+      "delta_bytes": 368640,
+      "delta_sha256": "2fd4dcdef1b945c4f2bb993909315af0bfc28058ebc079474a0fa1a52aa4cdf2",
+      "removed_clone_extras": [],
+      "verified": true
+    },
+    {
+      "remote": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106",
+      "commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+      "files": 9412,
+      "delta_files": 6,
+      "delta_bytes": 512000,
+      "delta_sha256": "b357a7067890c05b5795a978d370bfca745c663401301ad6d005dc3b8a9f82c1",
+      "removed_clone_extras": [],
+      "verified": true
+    },
+    {
+      "remote": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106",
+      "commit": "9e72665ff44b6c4c51974633063a728c8d266c44",
+      "files": 9412,
+      "delta_files": 90,
+      "delta_bytes": 43653120,
+      "delta_sha256": "21b0bdb3c4b29544b7683c30e943976073912b315958c7b3c0deeaabc7b107d7",
+      "removed_clone_extras": [],
+      "verified": true
+    }
+  ],
+  "visible_source_audit": {
+    "commit": "8717e4c435c6514db16b06b464c5654aa6d55f26",
+    "scope": "all visible app files plus two research fixture scripts; hidden imports and sibling assets excluded",
+    "receipt_count": 15,
+    "all_receipts_unchanged": true,
+    "all_receipt_maps_identical": true,
+    "all_digests_match_recomputed": true,
+    "receipt_paths": 4515,
+    "visible_git_paths": 4515,
+    "missing_in_git": [],
+    "absent_in_receipt": [],
+    "git_blob_exact_matches": 4514,
+    "git_blob_mismatches": [
+      {
+        "path": "res://project.godot",
+        "git_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+        "receipt_sha256": "7e518834b158b584a401abdfebab6131fcf664c23636c63d3d0ce6aa69d899e5"
+      }
+    ],
+    "errors": [],
+    "project": {
+      "git_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+      "receipt_sha256": "7e518834b158b584a401abdfebab6131fcf664c23636c63d3d0ce6aa69d899e5",
+      "prep_source_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+      "prep_destination_sha256": "7e518834b158b584a401abdfebab6131fcf664c23636c63d3d0ce6aa69d899e5",
+      "reconstructed_sha256": "7e518834b158b584a401abdfebab6131fcf664c23636c63d3d0ce6aa69d899e5",
+      "project_name": "OpenRC-Research-af03860451034589aa54c6be9c298037",
+      "edits": [
+        "config/name",
+        "lights_and_shadows/multi_bounce_occlusion/enabled true to false"
+      ],
+      "matches_expected_edits": true
+    },
+    "limitations": [
+      "A receipt hash checks files captured within its scope, not a physical clone or unobserved hidden imports/sibling assets.",
+      "Preparation receipt describes candidate-research, not a separate candidate-fixed clone inventory."
+    ]
+  },
+  "native_checks": [
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/candidate-checks/import-fleu_zvt/report.json",
+      "bytes": 1209,
+      "sha256": "198c903c71c6b942a06b0ad271e204f30d7dda4537b9bc13f7e66057a3fe81a8",
+      "commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+      "label": "import",
+      "capture_id": "802521e5-f604-4cef-90eb-c5c7d29d64d7",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4"
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/candidate-checks/research-import-kqk541mq/report.json",
+      "bytes": 1259,
+      "sha256": "67530128412e3667c058b5b7f8e732ee618a9e641491d08df99f633f76ea4506",
+      "commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+      "label": "research-import",
+      "capture_id": "60865dc6-d73f-4daa-ae2f-8e042655038b",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4"
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/candidate-checks/test_advanced_graphics_settings-6qkweehe/report.json",
+      "bytes": 1339,
+      "sha256": "0ab9266afbaca939b1022081a34d5686351055df3c8a443e276f417a481cb626",
+      "commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+      "label": "test_advanced_graphics_settings",
+      "capture_id": "face76f6-06ab-40e4-8b91-3ff0ee782955",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "851bf5e29808a5b6641878545127719040e372e4159b1269fad5494bc4e97da7"
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/candidate-checks/test_metalfx_policy-hmy3dt73/report.json",
+      "bytes": 1289,
+      "sha256": "51ab07a217e5d84fd203aaf7b147cf0ec7d5ef7ff0bd7d9c40cd74278cafc0e9",
+      "commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+      "label": "test_metalfx_policy",
+      "capture_id": "d7d1753b-22a2-4488-97ad-5ead9e8fa25b",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "293244f7c094b6f49e1b642cccd75871e547717006f5edd0b09d3d9b01dc1c13"
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/fixed-checks/fixed-cache-metal-8jw6kc4g/report.json",
+      "bytes": 1540,
+      "sha256": "7a5182cb0bc3679e74973f2bd0334632746939f8d39e4a1756a8852a15a4dc72",
+      "commit": "8717e4c435c6514db16b06b464c5654aa6d55f26",
+      "label": "fixed-cache-metal",
+      "capture_id": "3615af03-0dc6-431e-9421-ecd7f9ed63f1",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2b1feccce5078633148121a89b318407ed34ad8154981daa6dea67a735ebc31d"
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/fixed-checks/fixed-cache-zof3u317/report.json",
+      "bytes": 1279,
+      "sha256": "f7f218af5e4385e7d2f29c29bd509a7d460a1d42976d2ce12b62f2206c5744be",
+      "commit": "8717e4c435c6514db16b06b464c5654aa6d55f26",
+      "label": "fixed-cache",
+      "capture_id": "2291fa24-600b-4d95-8ed8-6e5731b98804",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ad786007879c2fe2294c91af6aa70049852f2eabf10b0e8a0f1ef63a592a4092"
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/fixed-checks/fixed-import-sqcj4eny/report.json",
+      "bytes": 1239,
+      "sha256": "0b16e22a0383e7b8a5a8691a38b0c55f70428dc2c3b1825fcbb9d93d690a19e1",
+      "commit": "8717e4c435c6514db16b06b464c5654aa6d55f26",
+      "label": "fixed-import",
+      "capture_id": "3b2969d0-194b-4900-92e5-43187ecb29b1",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1b54a523c92032d9a92b8d79853413a0eceb2046aa54d515d5a12c04514aa980"
+    }
+  ],
+  "metal_probes": [
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/metal-probes/off.json",
+      "bytes": 5349,
+      "sha256": "579f2bf0aa3904029b6e1b391b8d0bbf5aeeeb4159ae0179d2871488ed32fdf2",
+      "passed": true,
+      "variant": "off",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 10,
+          "total": 10,
+          "failed_cases": []
+        },
+        "spatial_cases": {
+          "passed": 10,
+          "total": 10,
+          "failed_cases": []
+        },
+        "sky_cases": {
+          "passed": 10,
+          "total": 10,
+          "failed_cases": []
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tools/atmosphere/shadow_map_probe.gd": "cfa4d0e6be83e9061f605f6ba5e9ab946159756e4bb033a6977e91863efa3b6c",
+        "res://render/cloud_field.gdshaderinc": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/metal-probes/three.json",
+      "bytes": 4696,
+      "sha256": "8e88516c433271404a9f0f0829835f03c25936adba0928ac9d25d9aae6489617",
+      "passed": false,
+      "variant": "three",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 4,
+          "total": 9,
+          "failed_cases": [
+            "bounds_default_deck",
+            "bounds_cluster_overcast",
+            "bounds_full_tile",
+            "bounds_dense",
+            "bounds_lattice_edges"
+          ]
+        },
+        "spatial_cases": {
+          "passed": 3,
+          "total": 9,
+          "failed_cases": [
+            "spatial_bounds_default_deck",
+            "spatial_bounds_tile_wrap",
+            "spatial_bounds_cluster_overcast",
+            "spatial_bounds_full_tile",
+            "spatial_bounds_dense",
+            "spatial_bounds_lattice_edges"
+          ]
+        },
+        "sky_cases": {
+          "passed": 3,
+          "total": 9,
+          "failed_cases": [
+            "sky_bounds_default_deck",
+            "sky_bounds_tile_wrap",
+            "sky_bounds_cluster_overcast",
+            "sky_bounds_full_tile",
+            "sky_bounds_dense",
+            "sky_bounds_lattice_edges"
+          ]
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tools/atmosphere/shadow_map_probe.gd": "cfa4d0e6be83e9061f605f6ba5e9ab946159756e4bb033a6977e91863efa3b6c",
+        "res://render/cloud_field.gdshaderinc": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/metal-probes/two_three.json",
+      "bytes": 4700,
+      "sha256": "da9a4041362fac044030b6263d28b45d44a7679b88002ee487ae248555e219c4",
+      "passed": false,
+      "variant": "two_three",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 4,
+          "total": 9,
+          "failed_cases": [
+            "bounds_default_deck",
+            "bounds_cluster_overcast",
+            "bounds_full_tile",
+            "bounds_dense",
+            "bounds_lattice_edges"
+          ]
+        },
+        "spatial_cases": {
+          "passed": 3,
+          "total": 9,
+          "failed_cases": [
+            "spatial_bounds_default_deck",
+            "spatial_bounds_tile_wrap",
+            "spatial_bounds_cluster_overcast",
+            "spatial_bounds_full_tile",
+            "spatial_bounds_dense",
+            "spatial_bounds_lattice_edges"
+          ]
+        },
+        "sky_cases": {
+          "passed": 3,
+          "total": 9,
+          "failed_cases": [
+            "sky_bounds_default_deck",
+            "sky_bounds_tile_wrap",
+            "sky_bounds_cluster_overcast",
+            "sky_bounds_full_tile",
+            "sky_bounds_dense",
+            "sky_bounds_lattice_edges"
+          ]
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tools/atmosphere/shadow_map_probe.gd": "cfa4d0e6be83e9061f605f6ba5e9ab946159756e4bb033a6977e91863efa3b6c",
+        "res://render/cloud_field.gdshaderinc": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/bounds-experiment/fallback-three.json",
+      "bytes": 4183,
+      "sha256": "ae3e798595356ee6e2a16fbe94c7b8298e71a3f4990619b1ae6cc0c78ea10cad",
+      "passed": false,
+      "variant": "three",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 8,
+          "total": 9,
+          "failed_cases": [
+            "bounds_default_deck"
+          ]
+        },
+        "spatial_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "sky_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tools/atmosphere/shadow_map_probe.gd": "cfa4d0e6be83e9061f605f6ba5e9ab946159756e4bb033a6977e91863efa3b6c",
+        "res://render/cloud_field.gdshaderinc": "99284c4188b46ff1a72f40d8a1d59ec646bc8f9d13fb800462f0bd6a0ffbc897",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/bounds-experiment/fallback-two_three.json",
+      "bytes": 4146,
+      "sha256": "37ccc9e6c3a433e20c01c18cb1d51e870dac7809089115ac09835b6dda4546c0",
+      "passed": true,
+      "variant": "two_three",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "spatial_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "sky_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tools/atmosphere/shadow_map_probe.gd": "cfa4d0e6be83e9061f605f6ba5e9ab946159756e4bb033a6977e91863efa3b6c",
+        "res://render/cloud_field.gdshaderinc": "99284c4188b46ff1a72f40d8a1d59ec646bc8f9d13fb800462f0bd6a0ffbc897",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/bounds-experiment/same-reference.json",
+      "bytes": 4145,
+      "sha256": "97e5f9f446d3e02bb67b87079d8391a1dbffc0c602105393b64b11332c41d157",
+      "passed": true,
+      "variant": "three",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "spatial_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "sky_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tmp/bounds-experiment/same-reference.gd": "3d7200a32da9d556a96de750d3223df6db78c03b12246e3a2ff379983318760a",
+        "res://render/cloud_field.gdshaderinc": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/bounds-experiment/same-value.json",
+      "bytes": 4141,
+      "sha256": "f229490f044d54c9677bd2f73244955a09549dbadd4a9c53ba140249ff21957c",
+      "passed": true,
+      "variant": "three",
+      "renderer": "mobile",
+      "driver": "metal",
+      "groups": {
+        "cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "spatial_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        },
+        "sky_cases": {
+          "passed": 9,
+          "total": 9,
+          "failed_cases": []
+        }
+      },
+      "scope": "density agreement only; appearance, motion and performance are separate checks",
+      "source_sha256": {
+        "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tmp/bounds-experiment/same-value.gd": "0489e55c7db2a5b31aa4045be9738fbda2058e672ebf25c586e51fc69573770b",
+        "res://render/cloud_field.gdshaderinc": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+        "res://render/cloud_shadow_map.gd": "ffaee5e6f97914be560afd7aee8e4bce7e10bb35ff83753c61429570c8caa785",
+        "res://render/cloud_shadow_map.gdshader": "cdf8ed8e6ec07c7df20d9e42ffb6521d3baee8f66cc6184b03b0c78688104800",
+        "res://render/cloud_shadow_map.gdshaderinc": "4979a8a06b3f267e039f1dfad27173b2e24b70e78e5f36bd5a4c7e04a4b51fd0",
+        "res://render/sun/sky_mirror.gd": "4c65ea5c2de5f8b403c839a5972e0d39710192c6f0c004397cd19256538766c8"
+      }
+    }
+  ],
+  "still_captures": [
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/default-captures/auto-1600.json",
+      "bytes": 88911,
+      "sha256": "4ecb57fd058c82c7e00bd9c3c13ca70eef3d366de2de1162097921bcf48fc606",
+      "image_sha256": "ff6aa272e9aa8720c034889d08e989af5c8c44ebf60faf548925d0d2e65d6c17",
+      "viewport": [
+        2560.0,
+        1600.0
+      ],
+      "distance_to_pilot_m": 68.6502227783203,
+      "reconstruction": {
+        "auto_output_size": [
+          2560,
+          1600
+        ],
+        "auto_selected": "metalfx_spatial_quality",
+        "effective": "unknown",
+        "effective_provider": "unknown",
+        "execution_status": "unverified_trial",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.0,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "camera_flight_reset",
+          "notifications": 1,
+          "submitted": 0
+        },
+        "metalfx_capabilities": {
+          "metalfx_driver": "metal",
+          "metalfx_max_scale": 1.0,
+          "metalfx_method": "mobile",
+          "metalfx_min_scale": 0.333333,
+          "metalfx_spatial": true,
+          "metalfx_spatial_mode": 3,
+          "metalfx_spatial_reason": "",
+          "metalfx_temporal": false,
+          "metalfx_temporal_mode": 4,
+          "metalfx_temporal_reason": "metalfx_trial_disabled",
+          "metalfx_trial": false
+        },
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1707,
+          1067
+        ],
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          2560.0,
+          1600.0
+        ],
+        "provider": "metalfx_spatial",
+        "provider_available": true,
+        "requested": "auto",
+        "requested_provider": "metalfx_spatial",
+        "scale": 0.666666686534882,
+        "scaling_3d_mode": 3,
+        "selected": "metalfx_spatial_quality",
+        "sharpening_active": false,
+        "sharpening_strength": 0.0,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0,
+        "viewport_property_scope": "requested inputs; internal engine fallback and SDK execution are not observed"
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/default-captures/native-1080.json",
+      "bytes": 88159,
+      "sha256": "bae096bc6a091f6135f146b548b0d6bc5e2703accfb447d980ac328486a5edfd",
+      "image_sha256": "9d5fbb459a8de0635234ed43dcf6f9aa66be44019757f090ab7d0996dc859e47",
+      "viewport": [
+        1920.0,
+        1080.0
+      ],
+      "distance_to_pilot_m": 68.6502227783203,
+      "reconstruction": {
+        "effective": "native",
+        "effective_provider": "native",
+        "execution_status": "policy_selected",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "camera_flight_reset",
+          "notifications": 1,
+          "submitted": 0
+        },
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          1920,
+          1080
+        ],
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          1920.0,
+          1080.0
+        ],
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "selected": "native",
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/default-captures/native-1600.json",
+      "bytes": 88160,
+      "sha256": "701d08e2cf2a0bbb63526b15145407d4ce91bad2df301758ee1c58b7defe8860",
+      "image_sha256": "f07a27b298f0e61b3a8c245a087c65fba553e21a4fa17f47648fd53407c9197d",
+      "viewport": [
+        2560.0,
+        1600.0
+      ],
+      "distance_to_pilot_m": 68.6502227783203,
+      "reconstruction": {
+        "effective": "native",
+        "effective_provider": "native",
+        "execution_status": "policy_selected",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.200000002980232,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "camera_flight_reset",
+          "notifications": 1,
+          "submitted": 0
+        },
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          2560,
+          1600
+        ],
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          2560.0,
+          1600.0
+        ],
+        "provider": "native",
+        "provider_available": true,
+        "requested": "native",
+        "requested_provider": "native",
+        "scale": 1.0,
+        "scaling_3d_mode": 0,
+        "selected": "native",
+        "sharpening_active": false,
+        "sharpening_strength": 0.899999998509884,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0
+      }
+    },
+    {
+      "path": "tmp/m1-optimization-20261106/evidence/tmp/default-captures/spatial85-1600.json",
+      "bytes": 88806,
+      "sha256": "2b1512e0ebd9b7c1b793a5faff899a92a9cd086605b75f115eb678fcff3d2362",
+      "image_sha256": "d8eb101ca0d2986e1465d9b4d0747e6666c903baac6ba20038907cd6049bf918",
+      "viewport": [
+        2560.0,
+        1600.0
+      ],
+      "distance_to_pilot_m": 68.6502227783203,
+      "reconstruction": {
+        "effective": "unknown",
+        "effective_provider": "unknown",
+        "execution_status": "unverified_trial",
+        "fallback": false,
+        "fallback_reason": "",
+        "fsr_sharpness": 0.0,
+        "history_reset": {
+          "api_available": false,
+          "last_reason": "camera_flight_reset",
+          "notifications": 1,
+          "submitted": 0
+        },
+        "metalfx_capabilities": {
+          "metalfx_driver": "metal",
+          "metalfx_max_scale": 1.0,
+          "metalfx_method": "mobile",
+          "metalfx_min_scale": 0.333333,
+          "metalfx_spatial": true,
+          "metalfx_spatial_mode": 3,
+          "metalfx_spatial_reason": "",
+          "metalfx_temporal": false,
+          "metalfx_temporal_mode": 4,
+          "metalfx_temporal_reason": "metalfx_trial_disabled",
+          "metalfx_trial": false
+        },
+        "msaa_3d": 2,
+        "nominal_3d_size": [
+          2176,
+          1360
+        ],
+        "nvidia_reflex": {
+          "accepted": "unconfirmed",
+          "available": false,
+          "pending": false,
+          "reason": "support_missing",
+          "requested": "on"
+        },
+        "output_size": [
+          2560.0,
+          1600.0
+        ],
+        "provider": "metalfx_spatial",
+        "provider_available": true,
+        "requested": "metalfx_spatial_85",
+        "requested_provider": "metalfx_spatial",
+        "scale": 0.850000023841858,
+        "scaling_3d_mode": 3,
+        "selected": "metalfx_spatial_85",
+        "sharpening_active": false,
+        "sharpening_strength": 0.0,
+        "temporal": false,
+        "texture_mipmap_bias": 0.0,
+        "viewport_property_scope": "requested inputs; internal engine fallback and SDK execution are not observed"
+      }
+    }
+  ],
+  "limitations": [
+    "The v2 matrix has no valid frame raw-uptime anchors; complete host/resource streams do not establish a frame-to-host join.",
+    "V2 is 30 seconds warmup and 60 seconds sample except the 10/20-second profiled diagnostic; no new 30-minute qualification.",
+    "The preliminary v1 bounds screens have a cache-generation diagnostic defect and unsupported time flag and remain ineligible.",
+    "Output viewport and nominal internal dimensions do not independently establish physical drawable pixels or presentation.",
+    "MetalFX selections report unknown SDK execution and remain ineligible for effective-provider acceptance.",
+    "Observer overhead, moving-aircraft readability, normal Mac Home/Fly routing, packaging and audio output remain unqualified.",
+    "Only this M1 was measured; M2, M3, M4, M5 and M6 remain untested."
+  ],
+  "rejected_bounds_candidate": {
+    "base_commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+    "source_sha256": "15940f34d3d24cb101643128ce506641e849c569fba1a5b8ab3a0b764031dfb5",
+    "candidate_sha256": "99284c4188b46ff1a72f40d8a1d59ec646bc8f9d13fb800462f0bd6a0ffbc897",
+    "changed_file": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106/tmp/bounds-reference-fallback/app/render/cloud_field.gdshaderinc",
+    "mechanism": "Check saturation through three octaves; use unchanged reference function for ambiguous samples",
+    "scope": "Disposable candidate; no gate or tolerance changed"
+  },
+  "matrix_audit": {
+    "scope": "tmp\\m1-optimization-20261106\\evidence\\tmp\\screens-v2",
+    "run_count": 15,
+    "timing_run_count": 14,
+    "capture_ids_distinct": true,
+    "engine_renderer": {
+      "backend": "mobile",
+      "driver": "metal",
+      "adapter": "Apple M1 (Apple7)",
+      "engine": "4.8-beta2 (official)",
+      "architecture": "arm64"
+    },
+    "campaigns": {
+      "analytic": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "auto1080": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "auto1600": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs",
+          "one or more runs failed an individual performance gate",
+          "benchmark source or scenario identities differ or are incomplete"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "baseline": {
+        "run_count": 3,
+        "performance_pass": true,
+        "reasons": [],
+        "independent_summary_exact_match": true
+      },
+      "bilinear751600": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs",
+          "one or more runs failed an individual performance gate"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "gpu-profile": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs",
+          "one or more runs failed an individual performance gate"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "ground-off": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "msaa0": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "msaa2": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "native1600": {
+        "run_count": 2,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs",
+          "one or more runs failed an individual performance gate"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "sky-off": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "independent_summary_exact_match": true
+      },
+      "spatial851600": {
+        "run_count": 1,
+        "performance_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs",
+          "one or more runs failed an individual performance gate",
+          "benchmark source or scenario identities differ or are incomplete"
+        ],
+        "independent_summary_exact_match": true
+      }
+    },
+    "checkpoint_comparison": {
+      "compatible_invariant_identity": true,
+      "excluded_differences": [
+        "cloud cache and rendering experiments",
+        "GPU-profile flag and different sample duration",
+        "per-run file paths"
+      ],
+      "windows": [
+        {
+          "start_tick": 1,
+          "end_tick": 6000,
+          "hash_groups": [
+            {
+              "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+              "runs": [
+                "analytic/1",
+                "auto1080/1",
+                "auto1600/1",
+                "baseline/1",
+                "baseline/2",
+                "baseline/3",
+                "bilinear751600/1",
+                "gpu-profile/1",
+                "ground-off/1",
+                "msaa0/1",
+                "msaa2/1",
+                "native1600/1",
+                "native1600/2",
+                "sky-off/1",
+                "spatial851600/1"
+              ],
+              "count": 15
+            }
+          ]
+        },
+        {
+          "start_tick": 6001,
+          "end_tick": 12000,
+          "hash_groups": [
+            {
+              "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+              "runs": [
+                "analytic/1",
+                "auto1080/1",
+                "auto1600/1",
+                "baseline/1",
+                "baseline/2",
+                "baseline/3",
+                "bilinear751600/1",
+                "ground-off/1",
+                "msaa0/1",
+                "msaa2/1",
+                "native1600/1",
+                "native1600/2",
+                "sky-off/1",
+                "spatial851600/1"
+              ],
+              "count": 14
+            }
+          ]
+        },
+        {
+          "start_tick": 12001,
+          "end_tick": 18000,
+          "hash_groups": [
+            {
+              "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+              "runs": [
+                "analytic/1",
+                "auto1080/1",
+                "auto1600/1",
+                "baseline/1",
+                "baseline/2",
+                "baseline/3",
+                "bilinear751600/1",
+                "ground-off/1",
+                "msaa0/1",
+                "msaa2/1",
+                "native1600/1",
+                "native1600/2",
+                "sky-off/1",
+                "spatial851600/1"
+              ],
+              "count": 14
+            }
+          ]
+        }
+      ],
+      "partial_windows_excluded": true,
+      "scope": "Exact state/input/auxiliary/mode hash within matching full windows only; not full-flight equivalence, rendered equivalence or a performance-cause proof."
+    },
+    "limitations": [
+      "All raw frame uptime anchors are errors, so no bounded joining of frame intervals to host or resource samples.",
+      "Reported window/output and nominal input sizes are not proof of actual allocated or physically presented pixels.",
+      "A ready bound material does not count all weather-layer shader cache hits.",
+      "MetalFX provider selection and requested viewport properties do not prove actual MetalFX execution.",
+      "GPU profile capture is diagnostic, 10 s warmup/20 s sample, and rejected by checked and duration gates. Its log blocks are not frame-correlated GPU causation evidence.",
+      "All tests are one M1 machine and classic sky, bound variant off; most settings have one timing run. No normal product route, visual acceptance, sustained thermal overlap or hardware acceptance is established."
+    ],
+    "artifact": {
+      "path": "tmp/m1-followup-benchmark-review/matrix-audit.json",
+      "bytes": 116016,
+      "sha256": "c51bd1c3bd8eb5d3aab44a6ede972c11f12b483931344b72d0ee49ac56a243b4"
+    },
+    "runs": [
+      {
+        "id": "analytic/1",
+        "capture_id": "feb13f7c-8c9d-41b2-9e05-e2a01d40a5a8",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.011446,
+          "actual_sample_s": 60.005471000000085,
+          "sampled_frames": 3793
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 20.595,
+            "p50": 16.244999999999997,
+            "p95": 17.572999999999997,
+            "p99": 19.074
+          },
+          "max_frame_interval_usec": 20595,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.9875,
+          "sample_simulation_ticks": 14397,
+          "sample_wall_span_excluding_first_interval_s": 59.989354,
+          "simulation_wall_ratio": 0.999969094516337,
+          "tick_wall_ratio": 0.999969094516337
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.011446,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": false,
+            "sky": false
+          },
+          "effective_start": {
+            "ground": "disabled",
+            "sky": "disabled"
+          },
+          "effective_end": {
+            "ground": "disabled",
+            "sky": "disabled"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/analytic/run-1.json",
+            "bytes": 90017,
+            "sha256": "67776237991701fa3cf579227757b70e843bd02df04cd02fa5dd15292d57e50b"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/analytic/run-1.json.frames.jsonl",
+            "bytes": 593485,
+            "sha256": "4ad692a2115c84fc815198969e7cbeb36ff90310c56d2ac80e54b116b8654c85"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/analytic/health-run-1.json",
+            "bytes": 561705,
+            "sha256": "df92e6ccb969dd0c050d85a9212719529e4b7592e428b2ac05066f4001fe6c07"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/analytic/checked-run-1.json",
+            "bytes": 6380,
+            "sha256": "a960756bc4884db0ba954b59e394144d3767f4f3c89dde09869f6e86499223ac"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/analytic/configuration-1.json",
+            "bytes": 2214,
+            "sha256": "2d04e413229d1c9097ef70a5afc0910ed4b5bfd189e4ca5c16058e1aaab79430"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "auto1080/1",
+        "capture_id": "a56e912b-d2e4-41cd-9e3a-afd5e07e6c2f",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.000342,
+          "actual_sample_s": 60.00810399999992,
+          "sampled_frames": 4341
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "auto",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 20.183,
+            "p50": 13.965,
+            "p95": 15.958,
+            "p99": 17.067
+          },
+          "max_frame_interval_usec": 20183,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.99583333333334,
+          "sample_simulation_ticks": 14399,
+          "sample_wall_span_excluding_first_interval_s": 59.994008,
+          "simulation_wall_ratio": 1.0000304252606917,
+          "tick_wall_ratio": 1.0000304252606915
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.000342,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1080/run-1.json",
+            "bytes": 90073,
+            "sha256": "04e15be268aeb84cb12d7c0a67b57b098a268fba0199adee3ebbf13a159cc825"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1080/run-1.json.frames.jsonl",
+            "bytes": 678470,
+            "sha256": "6e12853f6da779f0e1ebef4348e1f8fbaa355f924471accd14d9241f39f3304e"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1080/health-run-1.json",
+            "bytes": 562750,
+            "sha256": "f928c992cbc086f8e82139da1051ecb2a8a580f5c04e43d136535eb412c24b35"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1080/checked-run-1.json",
+            "bytes": 6380,
+            "sha256": "3d6cfbac5c392a5c9a333b54912fe5164a4fcc030f8f2c3244b9241814ef446e"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1080/configuration-1.json",
+            "bytes": 2210,
+            "sha256": "c2c30b704648b2044c590d2af6c391b1d197ec2d9bafbf6b8326dd2f0ba10cfa"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "auto1600/1",
+        "capture_id": "8a5667a9-669d-4f46-9fe4-3acd766c0d88",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.009123,
+          "actual_sample_s": 60.01741499999996,
+          "sampled_frames": 3478
+        },
+        "size": {
+          "requested_window": "2560x1600",
+          "reported_window": "2560x1600",
+          "reported_output_size": [
+            2560.0,
+            1600.0
+          ],
+          "nominal_3d_size": [
+            1707,
+            1067
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "auto",
+          "selected_reconstruction": "metalfx_spatial_quality",
+          "effective_reconstruction": "unknown",
+          "provider": "metalfx_spatial",
+          "effective_provider": "unknown",
+          "execution_status": "unverified_trial",
+          "scale": 0.6666666865348816,
+          "mode": 3,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 23.921999999999997,
+            "p50": 17.993,
+            "p95": 20.134,
+            "p99": 21.413
+          },
+          "max_frame_interval_usec": 23922,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 60.0,
+          "sample_simulation_ticks": 14400,
+          "sample_wall_span_excluding_first_interval_s": 59.999515,
+          "simulation_wall_ratio": 1.0000080833986742,
+          "tick_wall_ratio": 1.0000080833986742
+        },
+        "health": {
+          "eligible": false,
+          "reasons": [
+            "health requested and observed rendering configuration is missing, changed or inconsistent"
+          ],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": false,
+          "reasons": [
+            "checked invocation workload reconciliation unavailable because benchmark health scenario is ineligible"
+          ],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.009123,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": false,
+          "active_flight_reasons": [
+            "route is not live-input",
+            "benchmark health receipt is ineligible",
+            "benchmark checked-runner receipt is ineligible"
+          ],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": false,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": false,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": false
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1600/run-1.json",
+            "bytes": 90663,
+            "sha256": "1ea63d3631a3d6044cc97d36cf7b2958d4f65ec6ba40067de69ca001f5ca2898"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1600/run-1.json.frames.jsonl",
+            "bytes": 543673,
+            "sha256": "7362181f3e8829c89e2757a6f8b88f0a6077a7793b556e64508d24be2bb20f3e"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1600/health-run-1.json",
+            "bytes": 562922,
+            "sha256": "8be9e56ebe8b5760a91375f639ea279c12a897837d7de84de3c19222f772c8a9"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1600/checked-run-1.json",
+            "bytes": 6379,
+            "sha256": "402538a96d38663c36708ba3c9664127189c3eb3b46399ce736c6e3d44129c14"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/auto1600/configuration-1.json",
+            "bytes": 2210,
+            "sha256": "3e56d2482421706acf2b8e85d319bba0a597fe195f3e11e1a8ab85aa0e533d18"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "baseline/1",
+        "capture_id": "f8145b72-3087-4406-bd68-6d5c377dbbb3",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.005899,
+          "actual_sample_s": 60.000265999999925,
+          "sampled_frames": 4349
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 18.807000000000002,
+            "p50": 13.956,
+            "p95": 15.972,
+            "p99": 17.076
+          },
+          "max_frame_interval_usec": 18807,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.9875,
+          "sample_simulation_ticks": 14397,
+          "sample_wall_span_excluding_first_interval_s": 59.986343,
+          "simulation_wall_ratio": 1.0000192877235408,
+          "tick_wall_ratio": 1.0000192877235408
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.005899,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/run-1.json",
+            "bytes": 90019,
+            "sha256": "75ba878ca95dfc529c8cdf933cb23b6da9ed9af9a087a2e3693532e4cd8eed95"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/run-1.json.frames.jsonl",
+            "bytes": 681098,
+            "sha256": "3021a25779a25223e4fdcf59aaeedc9e84017fa5dfd2f7fedc77a5df30718f1b"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/health-run-1.json",
+            "bytes": 562341,
+            "sha256": "5735e94be03b4109d0422105db7d1acc30044b5c808093369774de40bec3915d"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/checked-run-1.json",
+            "bytes": 6379,
+            "sha256": "c83f914ca56576bf4fdbd4c9cf835333d8e085bceb664381e700ce1a305d22c0"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/configuration-1.json",
+            "bytes": 2214,
+            "sha256": "c34d63c74cc109f29f1dd29a9655458131a8dbed4d383074fcad362009e2651f"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "baseline/2",
+        "capture_id": "79afb141-5ea7-4028-b5f7-d656837d021c",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.004533,
+          "actual_sample_s": 60.011492000000054,
+          "sampled_frames": 4348
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 20.036,
+            "p50": 13.966,
+            "p95": 15.934000000000001,
+            "p99": 16.895
+          },
+          "max_frame_interval_usec": 20036,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.99583333333333,
+          "sample_simulation_ticks": 14399,
+          "sample_wall_span_excluding_first_interval_s": 59.996455,
+          "simulation_wall_ratio": 0.9999896382766837,
+          "tick_wall_ratio": 0.9999896382766837
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.004533,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/run-2.json",
+            "bytes": 89958,
+            "sha256": "aa75ad76ac263ccf34983ac53503aee960c026f725f104d7991e321871f0d27b"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/run-2.json.frames.jsonl",
+            "bytes": 681346,
+            "sha256": "a093ef1613774c811d69f51b19d903b36200fd422f5269adbae7d709e5a2800f"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/health-run-2.json",
+            "bytes": 562329,
+            "sha256": "c24f31685ce2b5db7ded34b1aadc9b66f427b2d199db96f4df6727bcad73850f"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/checked-run-2.json",
+            "bytes": 6648,
+            "sha256": "46f1a68cb0896f90145a8fb6c58eff260840d25e576391df3f68c4de536c2252"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/configuration-2.json",
+            "bytes": 2214,
+            "sha256": "eb5470151fb8d11463ab43ea20d6cecabb13dcf308713d330551a936f4aa0585"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "baseline/3",
+        "capture_id": "4f86250a-ef49-4f61-85e2-123237bce21e",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.011223,
+          "actual_sample_s": 60.00787300000005,
+          "sampled_frames": 4357
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 19.032,
+            "p50": 13.927999999999999,
+            "p95": 15.848,
+            "p99": 16.947
+          },
+          "max_frame_interval_usec": 19032,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.99583333333332,
+          "sample_simulation_ticks": 14399,
+          "sample_wall_span_excluding_first_interval_s": 59.993579,
+          "simulation_wall_ratio": 1.0000375762435065,
+          "tick_wall_ratio": 1.0000375762435065
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.011223,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/run-3.json",
+            "bytes": 89985,
+            "sha256": "3a9463e655b72ab006c3cae63deab1f8e4f020b20f71f7bc3c018dbe128149ac"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/run-3.json.frames.jsonl",
+            "bytes": 681544,
+            "sha256": "c868c2cdc24a53f28935d46cb38f37ace9c1a1e05557fc6c2b7ae2aa3821e706"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/health-run-3.json",
+            "bytes": 562341,
+            "sha256": "c7f36cb445a10724fc8e0002006fe4277da56a2a176d2fface3e706ec176fc12"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/checked-run-3.json",
+            "bytes": 6381,
+            "sha256": "0ce06996d77ffd611111e52da5f95ec57679670ebb94f6dd602f5a55e1222721"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/baseline/configuration-3.json",
+            "bytes": 2214,
+            "sha256": "5c3f83ddb4dd107cc3661d1f8b0f5f33c4b88a3ae5babd4be0247b19628af392"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "bilinear751600/1",
+        "capture_id": "6ab06ead-7124-444b-a46f-b012d8093e59",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.008105,
+          "actual_sample_s": 60.002310999999914,
+          "sampled_frames": 3513
+        },
+        "size": {
+          "requested_window": "2560x1600",
+          "reported_window": "2560x1600",
+          "reported_output_size": [
+            2560.0,
+            1600.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1200
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 0.75,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 26.276999999999997,
+            "p50": 17.835,
+            "p95": 19.936,
+            "p99": 21.428
+          },
+          "max_frame_interval_usec": 26277,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.983333333333334,
+          "sample_simulation_ticks": 14396,
+          "sample_wall_span_excluding_first_interval_s": 59.983567,
+          "simulation_wall_ratio": 0.99999610448864,
+          "tick_wall_ratio": 0.99999610448864
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.008105,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": false,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": false,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": false
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/bilinear751600/run-1.json",
+            "bytes": 89936,
+            "sha256": "3b7ff4c332d8224cf850794531930d46c8af5532882c1d5082a8e5298be47d6f"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/bilinear751600/run-1.json.frames.jsonl",
+            "bytes": 549906,
+            "sha256": "0bd6496e4ca2a60fe6b5c7825cd422a2b73888c7c470e5a3f1153585eaa8d425"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/bilinear751600/health-run-1.json",
+            "bytes": 562384,
+            "sha256": "8abf51f352bb63074b9a34a773ba177e1b49cd3eb2561b79f2902c459f912835"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/bilinear751600/checked-run-1.json",
+            "bytes": 6460,
+            "sha256": "7e912b8aaac763cd9ac3afa49c0b2d8e04a7ffd757004b1fd7e071d927246bb2"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/bilinear751600/configuration-1.json",
+            "bytes": 2296,
+            "sha256": "fccaace24ad63f7021ffc7ce4a06a650425a94b29d11dd3546cbd9af411e4e33"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "gpu-profile/1",
+        "capture_id": "ff0eef28-4565-4268-b286-20376f3eea46",
+        "duration": {
+          "requested_warmup_s": 10,
+          "requested_sample_s": 20,
+          "actual_warmup_s": 10.014176,
+          "actual_sample_s": 20.01062900000002,
+          "sampled_frames": 1236
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 27.597,
+            "p50": 16.097,
+            "p95": 18.154,
+            "p99": 19.830000000000002
+          },
+          "max_frame_interval_usec": 27597,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 19.99583333333333,
+          "sample_simulation_ticks": 4799,
+          "sample_wall_span_excluding_first_interval_s": 19.994996,
+          "simulation_wall_ratio": 1.000041877144328,
+          "tick_wall_ratio": 1.0000418771443282
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": false,
+          "reasons": [
+            "GPU profiling is diagnostic and ineligible for performance acceptance"
+          ],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 10.014176,
+            "eligible": false,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [
+              "requested warm-up is shorter than 30 s",
+              "requested sample is shorter than 60 s"
+            ],
+            "requested_sample_s": 20.0,
+            "requested_warmup_s": 10.0
+          },
+          "active_flight": false,
+          "active_flight_reasons": [
+            "route is not live-input",
+            "benchmark checked-runner receipt is ineligible"
+          ],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": false,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": false,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": false
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/gpu-profile/run-1.json",
+            "bytes": 90014,
+            "sha256": "2c472403faa7f04dc15fef07f5029a48f140a5f27ff8542651dfba38d899f65a"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/gpu-profile/run-1.json.frames.jsonl",
+            "bytes": 193427,
+            "sha256": "438b4171da8e4bf9fea97d7aed2617c02823b4d159a7a5b847137e99f5fab516"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/gpu-profile/health-run-1.json",
+            "bytes": 547558,
+            "sha256": "36a53d6d850c4c8f43398b58ec14c25814232180cb70c6c1cc14e278184f2510"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/gpu-profile/checked-run-1.json",
+            "bytes": 6686,
+            "sha256": "12a7b91f48e53b307fba75e31f03340d8873ee8ca62d447eb6bac8ee1b5195aa"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/gpu-profile/configuration-1.json",
+            "bytes": 2268,
+            "sha256": "5e198da4397d0a15dfb06ae9943ac01753de03ff83f33ea047f1756d5482f010"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "ground-off/1",
+        "capture_id": "84984a96-4047-4ede-97e4-76e69cba7ccf",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.008057,
+          "actual_sample_s": 60.000419999999956,
+          "sampled_frames": 4034
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 20.56,
+            "p50": 15.29,
+            "p95": 16.951,
+            "p99": 18.134999999999998
+          },
+          "max_frame_interval_usec": 20560,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.98333333333333,
+          "sample_simulation_ticks": 14396,
+          "sample_wall_span_excluding_first_interval_s": 59.984369,
+          "simulation_wall_ratio": 0.9999827343909098,
+          "tick_wall_ratio": 0.99998273439091
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.008057,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": false,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "disabled",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "disabled",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/ground-off/run-1.json",
+            "bytes": 89959,
+            "sha256": "77a57e9152b9b15ebd996fc607ee0338d84464e897fccc6766ffad6abe4cd3d5"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/ground-off/run-1.json.frames.jsonl",
+            "bytes": 631684,
+            "sha256": "bfe11aafeef481b02c87a19803e4450f90c52434593949980a4ce6ce7b178cb0"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/ground-off/health-run-1.json",
+            "bytes": 562132,
+            "sha256": "c769b6d14f7dab6ee98c3760093fe2fbfa4495933beb6c71c2f07786755774a8"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/ground-off/checked-run-1.json",
+            "bytes": 6669,
+            "sha256": "36230ac06e4c94fe90781169395c10b8b12e35a0ee2c52efed58afe0d89fef23"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/ground-off/configuration-1.json",
+            "bytes": 2222,
+            "sha256": "3390b572b9c6178c1f0259e92c210ed6eb52c05685691b6386c04c199b3ba162"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "msaa0/1",
+        "capture_id": "09ea314d-fddf-472c-b033-2f5b26175cd7",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.008041,
+          "actual_sample_s": 60.002702000000205,
+          "sampled_frames": 4752
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 0,
+          "observed_msaa_enum": 0,
+          "msaa_samples": 0,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 21.124,
+            "p50": 12.94,
+            "p95": 14.678999999999998,
+            "p99": 15.998999999999999
+          },
+          "max_frame_interval_usec": 21124,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.9875,
+          "sample_simulation_ticks": 14397,
+          "sample_wall_span_excluding_first_interval_s": 59.990244,
+          "simulation_wall_ratio": 0.9999542592292173,
+          "tick_wall_ratio": 0.9999542592292173
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.008041,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa0/run-1.json",
+            "bytes": 90016,
+            "sha256": "3ffaa504307d0809fd33fb02b76463dc9743701d015e8b3a64191ef86741f584"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa0/run-1.json.frames.jsonl",
+            "bytes": 742609,
+            "sha256": "c25afec80b032c1a4689b4cb12c8b4c3ff1f01aa81421786acc901e41490c08f"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa0/health-run-1.json",
+            "bytes": 562328,
+            "sha256": "b68975b3493e3b6744227ad9dd771560b19d1906a456e65051069ab5e5e90d16"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa0/checked-run-1.json",
+            "bytes": 6360,
+            "sha256": "8155e8a4802492beb3c5727ff905455952c3577d28425884952cea0f72f976f1"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa0/configuration-1.json",
+            "bytes": 2202,
+            "sha256": "8a742157b97d9aa633bb3e44bee670e24e94a579acfdc1688c3720d0c96572cc"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "msaa2/1",
+        "capture_id": "b61beb8d-2e12-4404-be6e-4e6bb77618f2",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.005368,
+          "actual_sample_s": 60.01040899999997,
+          "sampled_frames": 4546
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 1,
+          "observed_msaa_enum": 1,
+          "msaa_samples": 2,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 23.317,
+            "p50": 13.388,
+            "p95": 15.377,
+            "p99": 16.543
+          },
+          "max_frame_interval_usec": 23317,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.99583333333334,
+          "sample_simulation_ticks": 14399,
+          "sample_wall_span_excluding_first_interval_s": 59.996037,
+          "simulation_wall_ratio": 0.9999966053313377,
+          "tick_wall_ratio": 0.9999966053313376
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.005368,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa2/run-1.json",
+            "bytes": 89943,
+            "sha256": "1b29705615d2852519522a28de6c1cf97f4189f59d13360d67c32b580391bf91"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa2/run-1.json.frames.jsonl",
+            "bytes": 710109,
+            "sha256": "5b98da8982fd561bc0d1eb6e390b5f925e3fe0ea2e44a64b97fa74d9f110b775"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa2/health-run-1.json",
+            "bytes": 562329,
+            "sha256": "f7a7623640ecfa4af25d06dab12eb452465a7474594534e8e11d71906bd31a49"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa2/checked-run-1.json",
+            "bytes": 6365,
+            "sha256": "213264e927b8f2868444c8cb526b38561d872199f089e653dcaf83a5bb665234"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/msaa2/configuration-1.json",
+            "bytes": 2202,
+            "sha256": "c0cc5765d75a43180cb5a6caf4d3055665a4349dae7aaef98bfa90d708804591"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "native1600/1",
+        "capture_id": "46f5f387-666b-48dc-9ccc-b9dd7f9ef045",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.002515,
+          "actual_sample_s": 60.02094899999983,
+          "sampled_frames": 2458
+        },
+        "size": {
+          "requested_window": "2560x1600",
+          "reported_window": "2560x1600",
+          "reported_output_size": [
+            2560.0,
+            1600.0
+          ],
+          "nominal_3d_size": [
+            2560,
+            1600
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 37.727,
+            "p50": 25.165,
+            "p95": 27.881,
+            "p99": 29.081
+          },
+          "max_frame_interval_usec": 37727,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.99583333333332,
+          "sample_simulation_ticks": 14399,
+          "sample_wall_span_excluding_first_interval_s": 59.996067,
+          "simulation_wall_ratio": 0.9999961053002578,
+          "tick_wall_ratio": 0.999996105300258
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.002515,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": false,
+            "p99_max_ms": 25.0,
+            "p99_pass": false,
+            "pass": false,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": false
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/run-1.json",
+            "bytes": 89920,
+            "sha256": "c26d17a164ba3d86052c224747b7558ba798c20f1d850bfe51914d83cb5d20dc"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/run-1.json.frames.jsonl",
+            "bytes": 384330,
+            "sha256": "42021f3616d9d5423c37c68289dc37b72bcfec7458953c71e17049edc50734f7"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/health-run-1.json",
+            "bytes": 562334,
+            "sha256": "4dbe4fbbdaab0c6c147ba501f7b409a443009b02738b835fdc3709eac4289419"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/checked-run-1.json",
+            "bytes": 6401,
+            "sha256": "a99b5753320d15007c5fa0ee343f4b0bed9f8fc1a4036d3df833e16c9841f328"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/configuration-1.json",
+            "bytes": 2222,
+            "sha256": "0f0db0ee759e8deec81d51bf6e64c8e1f322ccaa55b5e68666442a4ee8c9cf27"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "native1600/2",
+        "capture_id": "47fb2fc7-dcb8-4c8f-aa6d-7e8efa8e2786",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.006725,
+          "actual_sample_s": 60.01517699999995,
+          "sampled_frames": 2453
+        },
+        "size": {
+          "requested_window": "2560x1600",
+          "reported_window": "2560x1600",
+          "reported_output_size": [
+            2560.0,
+            1600.0
+          ],
+          "nominal_3d_size": [
+            2560,
+            1600
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 35.638000000000005,
+            "p50": 25.155,
+            "p95": 27.886999999999997,
+            "p99": 29.524
+          },
+          "max_frame_interval_usec": 35638,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.99166666666666,
+          "sample_simulation_ticks": 14398,
+          "sample_wall_span_excluding_first_interval_s": 59.990112,
+          "simulation_wall_ratio": 1.000025915381966,
+          "tick_wall_ratio": 1.000025915381966
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.006725,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": false,
+            "p99_max_ms": 25.0,
+            "p99_pass": false,
+            "pass": false,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": false
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/run-2.json",
+            "bytes": 90001,
+            "sha256": "c26f0126c8f642cc2035312e754a6aae8f4840df8a76fbcc709f133d0864fb7f"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/run-2.json.frames.jsonl",
+            "bytes": 383806,
+            "sha256": "1543ff1c49c6da9e55a6722f869fe8de313be340d6f19d65cffc2e922d480af4"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/health-run-2.json",
+            "bytes": 562338,
+            "sha256": "fa5f70702be4e93a084218523d657d4aef8749ce73adec0fb5b91b912490c298"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/checked-run-2.json",
+            "bytes": 6401,
+            "sha256": "78709b9b4f94c872d7209c6f24bcb609339da99a8c8101358f6a1a371c8a5100"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/native1600/configuration-2.json",
+            "bytes": 2222,
+            "sha256": "a6bbee50bb0a1161608f4e0075da023a94c393d1878292fb2a1b1671cf823f57"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "sky-off/1",
+        "capture_id": "63cefbff-21c3-416a-b86a-9d4ebf288989",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.004162,
+          "actual_sample_s": 60.00026699999991,
+          "sampled_frames": 4084
+        },
+        "size": {
+          "requested_window": "1920x1080",
+          "reported_window": "1920x1080",
+          "reported_output_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "native",
+          "selected_reconstruction": "native",
+          "effective_reconstruction": "native",
+          "provider": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "mode": 0,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 19.432000000000002,
+            "p50": 14.91,
+            "p95": 16.573,
+            "p99": 17.582
+          },
+          "max_frame_interval_usec": 19432,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.9875,
+          "sample_simulation_ticks": 14397,
+          "sample_wall_span_excluding_first_interval_s": 59.98598,
+          "simulation_wall_ratio": 1.0000253392542724,
+          "tick_wall_ratio": 1.0000253392542724
+        },
+        "health": {
+          "eligible": true,
+          "reasons": [],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": true,
+          "reasons": [],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.004162,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": true,
+          "active_flight_reasons": [],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": true,
+            "p99_max_ms": 25.0,
+            "p99_pass": true,
+            "pass": true,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": true
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": false
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "disabled"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "disabled"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/sky-off/run-1.json",
+            "bytes": 89934,
+            "sha256": "fec1532232bbd30aeb9f3f3e17da8e7d49cc4854a6482aad3faa3d92461b2572"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/sky-off/run-1.json.frames.jsonl",
+            "bytes": 638260,
+            "sha256": "947cfe379b01e62bb45d51b633c16fff6716bdb5fee5fd9fa6ba519605fe30e2"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/sky-off/health-run-1.json",
+            "bytes": 562108,
+            "sha256": "5cb7862643736d9d46b82b34d43ee17302602f169fd57b496ed6542c502a11a4"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/sky-off/checked-run-1.json",
+            "bytes": 6642,
+            "sha256": "e5474c5ff01c44e70afd2ccc1b63113668f39021a63564aa34fd49e21f77b7de"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/sky-off/configuration-1.json",
+            "bytes": 2210,
+            "sha256": "270ea7b8b0766fcdedfe701213fc843ed5dbc7afdf81f7afbeffe6ebf480d7ef"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      },
+      {
+        "id": "spatial851600/1",
+        "capture_id": "17e9fc7c-a035-4a4e-9277-81bbaa0932e1",
+        "duration": {
+          "requested_warmup_s": 30,
+          "requested_sample_s": 60,
+          "actual_warmup_s": 30.006411,
+          "actual_sample_s": 60.015525,
+          "sampled_frames": 2688
+        },
+        "size": {
+          "requested_window": "2560x1600",
+          "reported_window": "2560x1600",
+          "reported_output_size": [
+            2560.0,
+            1600.0
+          ],
+          "nominal_3d_size": [
+            2176,
+            1360
+          ],
+          "note": "Reported configuration and computed nominal input; actual allocated/presented pixels not verified."
+        },
+        "render": {
+          "requested_msaa_enum": 2,
+          "observed_msaa_enum": 2,
+          "msaa_samples": 4,
+          "requested_reconstruction": "metalfx_spatial_85",
+          "selected_reconstruction": "metalfx_spatial_85",
+          "effective_reconstruction": "unknown",
+          "provider": "metalfx_spatial",
+          "effective_provider": "unknown",
+          "execution_status": "unverified_trial",
+          "scale": 0.8500000238418579,
+          "mode": 3,
+          "fallback": false,
+          "fallback_reason": ""
+        },
+        "metrics": {
+          "frame_ms": {
+            "max": 28.615000000000002,
+            "p50": 23.175,
+            "p95": 25.281000000000002,
+            "p99": 26.793999999999997
+          },
+          "max_frame_interval_usec": 28615,
+          "max_nonadvancing_interval_usec": 0,
+          "sample_simulation_span_s": 59.991666666666674,
+          "sample_simulation_ticks": 14398,
+          "sample_wall_span_excluding_first_interval_s": 59.992483,
+          "simulation_wall_ratio": 0.9999863927396816,
+          "tick_wall_ratio": 0.9999863927396815
+        },
+        "health": {
+          "eligible": false,
+          "reasons": [
+            "health requested and observed rendering configuration is missing, changed or inconsistent"
+          ],
+          "raw_complete": true,
+          "source_unchanged": true,
+          "violations": {
+            "contact": 0,
+            "crash": 0,
+            "fault": 0,
+            "focus_loss": 0,
+            "hold": 0,
+            "input_ownership": 0,
+            "nonfinite": 0,
+            "observation_overflow": 0,
+            "pause": 0,
+            "pilot_failure": 0,
+            "prop_strike": 0,
+            "tick_discontinuity": 0
+          }
+        },
+        "checked_runner": {
+          "eligible": false,
+          "reasons": [
+            "checked invocation workload reconciliation unavailable because benchmark health scenario is ineligible"
+          ],
+          "raw_ok": true
+        },
+        "gates": {
+          "collection_valid": true,
+          "duration": {
+            "actual_warmup_s": 30.006411,
+            "eligible": true,
+            "minimum_sample_s": 60.0,
+            "minimum_warmup_s": 30.0,
+            "reasons": [],
+            "requested_sample_s": 60.0,
+            "requested_warmup_s": 30.0
+          },
+          "active_flight": false,
+          "active_flight_reasons": [
+            "route is not live-input",
+            "benchmark health receipt is ineligible",
+            "benchmark checked-runner receipt is ineligible"
+          ],
+          "pacing": {
+            "p95_max_ms": 18.0,
+            "p95_pass": false,
+            "p99_max_ms": 25.0,
+            "p99_pass": false,
+            "pass": false,
+            "simulation_wall_ratio_max": 1.01,
+            "simulation_wall_ratio_min": 0.99,
+            "simulation_wall_ratio_pass": true
+          },
+          "individual_performance_pass": false
+        },
+        "cache": {
+          "requested": {
+            "ground": true,
+            "sky": true
+          },
+          "effective_start": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "effective_end": {
+            "ground": "ready",
+            "sky": "ready"
+          },
+          "stable": true
+        },
+        "raw_files": [
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/spatial851600/run-1.json",
+            "bytes": 90636,
+            "sha256": "742352fede446594c0801e69df785979aac1b54b08fa4012416e8b97ee3035cb"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/spatial851600/run-1.json.frames.jsonl",
+            "bytes": 421178,
+            "sha256": "6c1a5077e6a6dfeebeed4ab94809340b3fa13785261dd9ff768645ebe43feae5"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/spatial851600/health-run-1.json",
+            "bytes": 562536,
+            "sha256": "21297407c7bc3e0bc3bbb2a3cc43f2f77948d0665887a5722cc20d7b3de43feb"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/spatial851600/checked-run-1.json",
+            "bytes": 6426,
+            "sha256": "3f5d3d16ddcb586b28f75ec0795ad0cb4d43f999e21b5a1ee11218dce1769168"
+          },
+          {
+            "path": "tmp/m1-optimization-20261106/evidence/tmp/screens-v2/spatial851600/configuration-1.json",
+            "bytes": 2258,
+            "sha256": "07c13b9b4dec32212d8fbd08c26e01234e7e185b236c147b3554310c2cc0775a"
+          }
+        ],
+        "host_stream_coverage": "complete",
+        "frame_host_join": "unavailable: both frame raw-uptime anchors failed"
+      }
+    ]
+  },
+  "software_followup": {
+    "source_commit": "096c21f176b3ad050e9b5236d3dea7b9de6cb868",
+    "windows_headless_smoke": {
+      "ok": true,
+      "failed": [],
+      "steps": 52,
+      "hitches": 98,
+      "launcher_exit_code": 0,
+      "leaked_objects_at_exit": 0,
+      "cycles": 8,
+      "log": {
+        "path": "tmp/m1-optimization-20261106/windows-smoke-8.log",
+        "bytes": 91276,
+        "sha256": "822850d493d9aa033c2f664cf79b7e230835832576ef329b45f6f7613ef938d3"
+      }
+    },
+    "earlier_three_cycle_smoke": {
+      "ok": false,
+      "failed": [
+        "soak fly/Home x3"
+      ],
+      "steps": 52,
+      "observation": "objects +1 across two compared cycles; no node/resource growth or leaked objects at exit",
+      "followup": "An isolated eight-cycle repeat and the full eight-cycle smoke did not reproduce monotonic growth; no tolerance or code changed",
+      "engine_log": {
+        "path": "tmp/debug-bridge/20261105-222212-47870/engine.log",
+        "bytes": 3914,
+        "sha256": "ba723e0b5583137e0565558a5fe4d11421c8f4f9b1e1c13f3fdcb6a7774e4255"
+      }
+    },
+    "isolated_soak": {
+      "cycles": 8,
+      "growing_counters": 0,
+      "errors": 0,
+      "log": {
+        "path": "tmp/m1-optimization-20261106/windows-soak/soak.log",
+        "bytes": 944,
+        "sha256": "1988f34665a3a8ae14b3fc65d1cb364f8a82bf04051750bec7a204ac6b588ec6"
+      }
+    },
+    "linux_full_suite_checkpoint": {
+      "source_commit": "877ca17e3d0b36ac27a35d9f3ccabb46480434e8",
+      "observed_utc": "2026-11-06T03:29:38Z",
+      "status": "running; no full-gate result",
+      "nonunit_parse_scripts_completed": 694,
+      "unit_scripts_completed": 246,
+      "unit_scripts_total": 878,
+      "current_check": "strict historical fixed-brake reference import",
+      "source_checks": "passed; optional battery reference-input hash check skipped because external reference is absent",
+      "integration_runtime_phase": "not yet run",
+      "retained_root": "/home/bulto/OpenRCsimulator/tmp/m1-optimization-20261106-ci",
+      "completion_file": "full.exit",
+      "log": "full.log",
+      "later_repair_followup": "focused 096c21f17 verification remains pending after the frozen 877 full run"
+    },
+    "native_clock_product_followup": "blocked by loss of SSH/Tailscale reachability; no completed 096 native run"
+  }
+}

@@ -39,6 +39,7 @@ MAX_LOG_BYTES = 64 * 1024 * 1024
 SUMMARY_FORMAT = "openrc-native-frame-summary v1"
 BENCHMARK_ROUTE = "benchmark-input-circuit"
 BENCHMARK_HEALTH_FORMAT = "openrc-benchmark-health v1"
+BENCHMARK_DIMENSION_SCOPE = "per_frame_viewport_estimate_v1"
 MAX_BENCHMARK_HEALTH_BYTES = 4 * 1024 * 1024
 MAX_BENCHMARK_CHECK_BYTES = 1024 * 1024
 MAX_BENCHMARK_SOURCES = 8192
@@ -50,8 +51,28 @@ BENCHMARK_REQUIRED_SOURCES = frozenset({
     "res://data/aircraft/jensen_ugly_stik_60.json", "res://data/fields/default.json", "res://data/fields/lake.json",
     "res://statistics/fixed_wing_adapter.gd", "res://physics/ground_terrain.gd",
     "res://main.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
-    "res://render/frame_samples.gd",
+    "res://render/frame_samples.gd", "res://project.godot", "res://render/reconstruction.gd",
+    "res://render/cloud_shadow_map.gd", "res://render/cloud_shader_variants.gd", "res://render/cloud_shadow_map.gdshader",
+    "res://render/cloud_shadow_map.gdshaderinc", "res://render/cloud_field.gdshaderinc",
+    "res://render/sky.gdshader", "res://render/ground.gdshader",
 })
+BENCHMARK_SOURCE_SCOPE = "application-visible-tree-v1"
+BENCHMARK_RECONSTRUCTION = {
+    "native": ("native", 1.0),
+    "fsr2_native": ("fsr2", 1.0), "fsr2_85": ("fsr2", 0.85),
+    "fsr2_quality": ("fsr2", 2 / 3), "fsr2_balanced": ("fsr2", 1 / 1.7),
+    "fsr2_performance": ("fsr2", 0.5),
+    "fsr3_native": ("fsr3", 1.0), "fsr3_85": ("fsr3", 0.85),
+    "fsr3_quality": ("fsr3", 2 / 3), "fsr3_balanced": ("fsr3", 1 / 1.7),
+    "fsr3_performance": ("fsr3", 0.5),
+    "dlss_native": ("dlss", 1.0), "dlss_quality": ("dlss", 2 / 3),
+    "dlss_balanced": ("dlss", 1 / 1.7), "dlss_performance": ("dlss", 0.5),
+    "metalfx_spatial_85": ("metalfx_spatial", 0.85),
+    "metalfx_spatial_quality": ("metalfx_spatial", 2 / 3),
+    "metalfx_temporal_native": ("metalfx_temporal", 1.0),
+    "metalfx_temporal_85": ("metalfx_temporal", 0.85),
+    "metalfx_temporal_quality": ("metalfx_temporal", 2 / 3),
+}
 BENCHMARK_PROVENANCE_SOURCES = frozenset({
     "res://main.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
     "res://render/frame_samples.gd", "res://input/commands.gd", "res://spec.gd",
@@ -868,6 +889,7 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
     reasons: list[str] = []
     receipt_bytes: bytes | None = None
     receipt: Any = None
+    dimension_scope = "unavailable"
     try:
         if path.is_symlink():
             raise ValueError("health receipt must not be a symbolic link")
@@ -926,13 +948,15 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
             reasons.append("health requires the matching validated v3 frame stream")
 
         sources = receipt.get("source_sha256")
+        if receipt.get("source_scope") != BENCHMARK_SOURCE_SCOPE:
+            reasons.append("health lacks the complete visible application source-tree identity")
         provenance = report.get("code_provenance")
         provenance = provenance.get("source_sha256") if isinstance(provenance, dict) else None
         valid_sources = isinstance(sources, dict) and 1 <= len(sources) <= MAX_BENCHMARK_SOURCES
         if valid_sources:
             valid_sources = all(
-                isinstance(key, str) and 1 <= len(key) <= 512 and key.isascii()
-                and all(33 <= ord(char) <= 126 for char in key)
+                isinstance(key, str) and 1 <= len(key) <= 512
+                and all(char.isprintable() for char in key)
                 and isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
                 for key, value in sources.items()
             )
@@ -947,7 +971,7 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
                     or any(value != provenance[key] for key, value in sources.items() if key in provenance)):
                 reasons.append("health runtime source identities do not match frame provenance")
             identity = "".join(f"{key}:{sources[key]}\n" for key in sorted(sources))
-            identity_hash = hashlib.sha256(identity.encode("ascii")).hexdigest()
+            identity_hash = hashlib.sha256(identity.encode("utf-8")).hexdigest()
             if report.get("case_id") != f"{BENCHMARK_ROUTE}-{identity_hash}":
                 reasons.append("health source identities are not bound to the frame case ID")
 
@@ -955,6 +979,9 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
         if not isinstance(scenario, dict):
             reasons.append("health scenario identity is missing")
             scenario = {}
+        dimension_scope = _dimension_observation_scope(scenario)
+        if dimension_scope != BENCHMARK_DIMENSION_SCOPE:
+            reasons.append(f"health render dimensions lack the current per-frame observation ({dimension_scope})")
         if (scenario.get("aircraft_id") != report.get("aircraft_id")
                 or scenario.get("aircraft_id") != "jensen-das-ugly-stik-60"
                 or scenario.get("field_id") != "default" or scenario.get("seed") != 20261021
@@ -971,6 +998,10 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
                 or type(scenario.get("state_input_hashing")) is not bool
                 or not isinstance(scenario.get("weather"), dict) or not scenario["weather"]):
             reasons.append("health scenario does not identify the declared automatic circuit workload")
+        if not _effective_render_matches(scenario, report):
+            reasons.append("health requested and observed rendering configuration is missing, changed or inconsistent")
+        if not _cloud_observations_valid(scenario):
+            reasons.append("health cloud modes, consumer readiness or density variant are missing or inconsistent")
         arguments = scenario.get("arguments")
         if (not isinstance(arguments, list) or not 1 <= len(arguments) <= 128
                 or any(not isinstance(arg, str) or not arg.startswith("--") or len(arg) > 4096 for arg in arguments)):
@@ -1110,6 +1141,7 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
         "receipt_sha256": _sha256_bytes(receipt_bytes) if receipt_bytes is not None else None,
         "eligible": not reasons,
         "reasons": reasons,
+        "dimension_observation_scope": dimension_scope,
         "source_identity_sha256": identity_hash if isinstance(receipt, dict) and valid_sources else None,
         "declared_frame_path": declared_frame if isinstance(receipt, dict) and isinstance(declared_frame, str) else None,
         "scenario": ({**{key: scenario.get(key) for key in (
@@ -1118,10 +1150,236 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
             "solver_identity", "input_enabled", "physics_enabled", "external_driver_enabled", "fixed_fps_diagnostic",
             "observation_mode", "state_input_hashing", "render_override",
             "collision_world_identity", "lake_identity", "checkpoint_configuration",
-        )}, "arguments": [arg for arg in arguments if not arg.startswith(("--frametimes=", "--case="))]}
+        )}, "effective_render": scenario["effective_render"]["start"],
+            "cloud_cache": _canonical_cloud(scenario["cloud_cache"]["start"]),
+            "cloud_density_bounds": scenario["cloud_density_bounds"]["start"],
+            "arguments": [arg for arg in arguments if not arg.startswith(("--frametimes=", "--case="))]}
             if isinstance(receipt, dict) and not reasons else None),
         "scope": "technical benchmark circuit; not normal product-route, package or pilot acceptance",
     }
+
+
+def _cloud_observations_valid(scenario: dict[str, Any]) -> bool:
+    observed = scenario.get("cloud_cache")
+    bounds = scenario.get("cloud_density_bounds")
+    if not isinstance(observed, dict) or observed.get("stable") is not True:
+        return False
+    start = observed.get("start")
+    if (not isinstance(start, dict) or start != observed.get("end")
+            or not _is_int(start.get("generation")) or start["generation"] < 0):
+        return False
+    initial, final = observed.get("initial_generations"), observed.get("final_generations")
+    if (not isinstance(initial, dict) or not isinstance(final, dict)
+            or "first_change" not in observed or observed["first_change"] is not None
+            or any(type(initial.get(key)) is not int or initial[key] != start["generation"]
+                   for key in ("previous_frame", "before_snapshot", "after_snapshot"))
+            or any(type(final.get(key)) is not int or final[key] != start["generation"]
+                   for key in ("before_snapshot", "after_snapshot"))):
+        return False
+    env, requested, effective = (start.get(key) for key in ("environment", "requested", "effective"))
+    consumers, required, seeds = (start.get(key) for key in ("consumers", "required_seeds", "seeds"))
+    if (not all(isinstance(value, dict) for value in (env, requested, effective, consumers, required))
+            or not isinstance(seeds, list) or len(seeds) > 4
+            or set(env) != {"global", "ground", "sky"}
+            or any(value not in ("", "0", "1") for value in env.values())):
+        return False
+    by_seed: dict[int, dict[str, Any]] = {}
+    for row in seeds:
+        if (not isinstance(row, dict) or not _is_int(row.get("seed")) or row["seed"] in by_seed
+                or row.get("status") not in ("pending", "ready", "failed")
+                or not _is_int(row.get("attempts")) or not 1 <= row["attempts"] <= 2
+                or not isinstance(row.get("failure"), str)):
+            return False
+        by_seed[row["seed"]] = row
+    for mode in ("ground", "sky"):
+        raw = env[mode] or env["global"]
+        if raw not in ("0", "1") or requested.get(mode) is not (raw == "1"):
+            return False
+        rows, ids = consumers.get(mode), required.get(mode)
+        if (not isinstance(rows, list) or len(rows) > 8192 or not isinstance(ids, list)
+                or any(not _is_int(seed) for seed in ids) or sorted(set(ids)) != ids):
+            return False
+        if effective.get(mode) != ("ready" if raw == "1" else "disabled"):
+            return False
+        if raw == "1" and not rows:
+            return False
+        actual_seeds = set()
+        for row in rows:
+            if (not isinstance(row, dict) or not _is_int(row.get("seed"))
+                    or row.get("status") != ("ready" if raw == "1" else "disabled")
+                    or row.get("enabled") is not (raw == "1")):
+                return False
+            actual_seeds.add(row["seed"])
+            if raw == "1":
+                tile = by_seed.get(row["seed"], {})
+                if tile.get("status") != "ready" or tile.get("failure") != "":
+                    return False
+        if sorted(actual_seeds) != ids:
+            return False
+    if not isinstance(bounds, dict) or bounds.get("stable") is not True:
+        return False
+    setting = bounds.get("start")
+    if not isinstance(setting, dict) or setting != bounds.get("end"):
+        return False
+    value = setting.get("requested")
+    return (value in ("", "off", "three", "two_three")
+            and setting.get("effective") == (value if value in ("three", "two_three") else "off")
+            and setting.get("bound") == setting.get("effective")
+            and setting.get("scope") == "sky density and analytic relief fallback"
+            and setting.get("qualified") is False)
+
+
+def _canonical_cloud(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Compare workload identity, excluding process-local counters and old, unused tiles."""
+    required = set(snapshot["required_seeds"]["ground"] + snapshot["required_seeds"]["sky"])
+    return {"environment": snapshot["environment"], "requested": snapshot["requested"],
+            "effective": snapshot["effective"], "required_seeds": snapshot["required_seeds"],
+            "consumers": {mode: sorted(snapshot["consumers"][mode], key=lambda row: (row["seed"], row["status"], row["enabled"]))
+                          for mode in ("ground", "sky")},
+            "seeds": sorted(({"seed": row["seed"], "status": row["status"]} for row in snapshot["seeds"]
+                             if row["seed"] in required), key=lambda row: row["seed"])}
+
+
+def _dimension_observation_scope(scenario: dict[str, Any]) -> str:
+    observation = scenario.get("effective_render")
+    start = observation.get("start") if isinstance(observation, dict) else None
+    if not isinstance(start, dict):
+        return "unavailable"
+    if "dimension_observation_scope" not in start:
+        if any(key in start for key in ("output_size", "output_size_scope", "nominal_3d_size", "nominal_3d_size_scope")):
+            return "unscoped"
+        policy = start.get("reconstruction")
+        if (isinstance(policy, dict) and policy.get("requested") == "auto"
+                and "window_size_property" in start and "visible_rect_size" in start):
+            return "legacy_auto_window_canvas_only"
+        return "legacy_unobserved"
+    return (BENCHMARK_DIMENSION_SCOPE if start.get("dimension_observation_scope") == BENCHMARK_DIMENSION_SCOPE
+            else "unrecognized")
+
+
+def _render_dimensions_match(snapshot: dict[str, Any], reported_policy: dict[str, Any]) -> bool:
+    """Compare per-frame viewport estimates with the frame-seal receipt, not physical pixels."""
+    window = snapshot.get("window_size_property")
+    visible = snapshot.get("visible_rect_size")
+    output = snapshot.get("output_size")
+    nominal = snapshot.get("nominal_3d_size")
+    scale = snapshot.get("scaling_3d_scale")
+    if (snapshot.get("dimension_observation_scope") != BENCHMARK_DIMENSION_SCOPE
+            or not isinstance(window, list) or len(window) != 2
+            or any(not _is_int(value) or value <= 0 or not _is_number(value) for value in window)
+            or not isinstance(visible, list) or len(visible) != 2
+            or any(not _is_number(value) or value <= 0 for value in visible)
+            or snapshot.get("output_size_scope") != "viewport_render_target_estimate_v1"
+            or not isinstance(output, list) or len(output) != 2
+            or any(not _is_int(value) or value <= 0 or not _is_number(value) for value in output)
+            or snapshot.get("nominal_3d_size_scope") != "scaled_viewport_estimate_not_sdk_execution"
+            or not isinstance(nominal, list) or len(nominal) != 2
+            or any(not _is_int(value) or value <= 0 or not _is_number(value) for value in nominal)
+            or not _is_number(scale) or not 0.1 <= scale <= 2.0
+            or any(not _is_number(pixels * scale) for pixels in output)
+            or any(value != max(1, int(pixels * scale)) for value, pixels in zip(nominal, output))):
+        return False
+    reported_visible = reported_policy.get("logical_canvas_size")
+    reported_output = reported_policy.get("output_size")
+    reported_nominal = reported_policy.get("nominal_3d_size")
+    return (reported_policy.get("output_size_scope") == snapshot["output_size_scope"]
+            and isinstance(reported_output, list) and len(reported_output) == 2
+            and all(_is_int(value) and value > 0 for value in reported_output) and reported_output == output
+            and reported_policy.get("nominal_3d_size_scope") == snapshot["nominal_3d_size_scope"]
+            and isinstance(reported_nominal, list) and len(reported_nominal) == 2
+            and all(_is_int(value) and value > 0 for value in reported_nominal) and reported_nominal == nominal
+            and isinstance(reported_visible, list) and len(reported_visible) == 2
+            and all(_is_number(value) and value > 0 for value in reported_visible)
+            and all(_close(a, b, tolerance=1e-6) for a, b in zip(visible, reported_visible)))
+
+
+def _effective_render_matches(scenario: dict[str, Any], report: dict[str, Any]) -> bool:
+    """Require the selected policy and viewport to agree throughout the measured sample."""
+    observation = scenario.get("effective_render")
+    # The fixture samples the preceding process-frame bracket and each retained
+    # frame. A deferred seal can re-observe the final frame without adding one.
+    if (not isinstance(observation, dict) or observation.get("stable") is not True
+            or not _is_int(report.get("frames")) or report["frames"] < 1
+            or not _is_int(observation.get("samples")) or observation["samples"] != report["frames"] + 1
+            or not _is_int(observation.get("observed_frame_count"))
+            or observation["observed_frame_count"] != report["frames"]
+            or observation.get("first_frame_bracketed") is not True or observation.get("contiguous") is not True
+            or observation.get("seal_observed") is not True
+            or type(observation.get("seal_reuses_last_frame")) is not bool):
+        return False
+    start, end = observation.get("start"), observation.get("end")
+    if not isinstance(start, dict) or start != end:
+        return False
+    policy = start.get("reconstruction")
+    settings = report.get("render_settings")
+    reported_policy = settings.get("reconstruction") if isinstance(settings, dict) else None
+    if not isinstance(policy, dict) or not isinstance(reported_policy, dict):
+        return False
+    if not _render_dimensions_match(start, reported_policy):
+        return False
+    backend_status = reported_policy.get("backend")
+    if backend_status is not None and (not isinstance(backend_status, dict)
+                                       or backend_status.get("backend_failed", False) is not False):
+        return False
+    override = scenario.get("render_override")
+    if override is not None and not isinstance(override, dict):
+        return False
+    override = override or {}
+    requested_mode = override.get("reconstruction", "native")
+    if not isinstance(requested_mode, str):
+        return False
+    mode = requested_mode
+    if requested_mode == "auto":
+        mode = policy.get("auto_selected")
+        if mode not in ("native", "metalfx_spatial_85", "metalfx_spatial_quality"):
+            return False
+        auto_size = policy.get("auto_output_size")
+        if (not isinstance(auto_size, list) or len(auto_size) != 2
+                or any(type(value) is not int or value <= 0 or not _is_number(value) for value in auto_size)
+                or policy.get("auto_output_size_scope") != "viewport_render_target_estimate_v1"
+                or auto_size != start.get("output_size")):
+            return False
+    if mode not in BENCHMARK_RECONSTRUCTION:
+        return False
+    provider, nominal_scale = BENCHMARK_RECONSTRUCTION[mode]
+    temporal = provider not in ("native", "metalfx_spatial")
+    scale = override.get("scaling_3d_scale", nominal_scale)
+    requested_msaa = override.get("msaa_3d", 2)
+    if (not _is_number(scale) or not 0.25 <= scale <= 1.0
+            or (provider != "native" and not _close(scale, nominal_scale, tolerance=2e-6))
+            or type(requested_msaa) is not int or not 0 <= requested_msaa <= 3
+            or (temporal and "msaa_3d" in override and requested_msaa != 0)):
+        return False
+    expected_msaa = 0 if temporal else requested_msaa
+    mode_constant = "SCALING_3D_MODE_BILINEAR" if provider == "native" else "SCALING_3D_MODE_" + provider.upper()
+    if (start.get("backend") != report.get("backend")
+            or start.get("driver") != report.get("rendering_driver")
+            or not isinstance(start.get("backend"), str) or not start["backend"]
+            or not isinstance(start.get("driver"), str) or not start["driver"]
+            or type(start.get("scaling_3d_mode")) is not int or start["scaling_3d_mode"] < 0
+            or start.get("scaling_3d_mode_constant") != mode_constant
+            or type(start.get("provider_mode_id")) is not int or start["provider_mode_id"] != start["scaling_3d_mode"]
+            or (provider == "native" and start["scaling_3d_mode"] != 0)
+            or (provider != "native" and start["scaling_3d_mode"] == 0)
+            or not _is_number(start.get("scaling_3d_scale"))
+            or not _close(start["scaling_3d_scale"], scale, tolerance=2e-6)
+            or type(start.get("msaa_3d")) is not int or start["msaa_3d"] != expected_msaa):
+        return False
+    if (policy.get("requested") != requested_mode or policy.get("selected") != mode
+            or policy.get("effective") != mode or policy.get("requested_provider") != provider
+            or policy.get("provider") != provider or policy.get("effective_provider") != provider
+            or policy.get("provider_available") is not True or policy.get("fallback") is not False
+            or policy.get("fallback_reason") != "" or policy.get("temporal") is not temporal
+            or policy.get("execution_status") != "policy_selected"
+            or type(policy.get("scaling_3d_mode")) is not int
+            or policy.get("scaling_3d_mode") != start["scaling_3d_mode"]
+            or not _is_number(policy.get("scale")) or not _close(policy["scale"], scale, tolerance=2e-6)
+            or type(policy.get("msaa_3d")) is not int or policy.get("msaa_3d") != expected_msaa
+            or type(settings.get("scaling_3d_mode")) is not int or type(settings.get("msaa_3d")) is not int
+            or not _is_number(settings.get("scaling_3d_scale"))):
+        return False
+    return all(settings.get(key) == start[key] for key in ("scaling_3d_mode", "scaling_3d_scale", "msaa_3d")) \
+        and all(reported_policy.get(key) == value for key, value in policy.items())
 
 
 def _benchmark_arguments_match(user: list[str], scenario: dict[str, Any], report: dict[str, Any]) -> bool:
@@ -1251,12 +1509,24 @@ def benchmark_checked_runner(report_path: Path, report: dict[str, Any], log_byte
             forbidden = {"--fixed-fps", "--write-movie", "--time-scale", "--frame-delay", "--disable-render-loop"}
             if any(token.partition("=")[0] in forbidden for token in engine):
                 reasons.append("checked invocation uses a non-real-time or artificial engine option")
+            if any(token.partition("=")[0] == "--gpu-profile" for token in engine):
+                reasons.append("GPU profiling is diagnostic and ineligible for performance acceptance")
             if any(token.partition("=")[0] == "--headless"
                    or token in ("--display-driver=headless", "--rendering-driver=dummy")
                    or (token in ("--display-driver", "--rendering-driver") and index + 1 < len(engine)
                        and engine[index + 1] == ("headless" if token == "--display-driver" else "dummy"))
                    for index, token in enumerate(engine)):
                 reasons.append("checked invocation uses a headless display")
+            for option, field in (("--rendering-method", "backend"), ("--rendering-driver", "rendering_driver")):
+                values: list[str] = []
+                for index, token in enumerate(engine):
+                    if token.startswith(option + "="):
+                        values.append(token.partition("=")[2])
+                    elif token == option:
+                        values.append(engine[index + 1] if index + 1 < len(engine) else "")
+                if (len(values) != 1 or not values[0] or values[0].startswith("--")
+                        or values[0] != report.get(field)):
+                    reasons.append(f"checked invocation must explicitly match the effective {option[2:]}")
             script_paths = []
             for index, token in enumerate(engine):
                 if token == "--script" and index + 1 < len(engine):
@@ -1281,7 +1551,9 @@ def benchmark_checked_runner(report_path: Path, report: dict[str, Any], log_byte
             expected_health = (frame_directory + "/" if frame_directory else "") + "health-" + report_path.name
             if health_targets != [expected_health]:
                 reasons.append("checked invocation health output does not match the report")
-            if not isinstance(scenario, dict) or not _benchmark_arguments_match(user, scenario, report):
+            if not isinstance(scenario, dict):
+                reasons.append("checked invocation workload reconciliation unavailable because benchmark health scenario is ineligible")
+            elif not _benchmark_arguments_match(user, scenario, report):
                 reasons.append("checked invocation workload arguments do not match the benchmark scenario")
 
     return {

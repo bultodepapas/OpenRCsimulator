@@ -10,6 +10,8 @@ Reviewed **2026-10-28**, source `f1e877d54`. Planning only: this review ran no n
 
 **Recommended next delivery:** establish a current release baseline at 1080p, then remove one measured observer, physics or loading cost. Prefer a small change with complete-workload evidence over a new scheduler, renderer or vendor SDK.
 
+**CPU follow-up, 2026-11-06:** NK-2a implements audit A6 O4 by sharing one air sample inside the downwash pre-step while retaining derived-session dispatch. Eight longer alternating pairs show a median **7.47% reduction in spatial-wind simulation-step cost** on the Windows reference host; steady-wind tick benefit remains inconclusive. [Source identities, byte comparisons, checked regressions and measurement limits](../research/native-kernel/NK-2a/downwash-air-2026-11-06/README.md). This is headless airborne evidence, not native or 1080p frame qualification.
+
 This document triages future optimization ideas. It introduces no new track or step IDs. The [global performance plan](global-performance-visual-quality.md) owns delivery gates; the [track registry](../README.md#tracks-plans-and-step-ids) assigns implementation ownership; [ROADMAP](../../ROADMAP.md#execution-order-and-release-gates) owns Gate P. Detailed status and evidence remain in those homes.
 
 ## 1. Actual starting point

@@ -19,6 +19,12 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const ControlsReference := preload("res://ui/controls_reference.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ScreenStack := preload("res://ui/screen_stack.gd")
+const RenderProbe := preload("res://debug/render_probe.gd")
+const RewindRing := preload("res://debug/rewind_ring.gd")
+const FlightGizmos := preload("res://debug/flight_gizmos.gd")
+const Landscapes := preload("res://landscapes/catalog.gd")
+const Conditions := preload("res://render/world/conditions.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 ## AppRoot openers by screen name (each takes an optional focus-return control).
 const SCREEN_OPENERS := {pause = "open_pause", settings = "open_settings", controls = "open_controls", help = "open_help",
 	weather = "open_weather", time_of_day = "open_time_of_day", overlays = "open_overlays",
@@ -46,6 +52,10 @@ const SNAPSHOT_IDLE_MS := 30000
 const SNAPSHOT_INTERVAL_MS := 50
 const COMMANDS := {
 	"help": "this list",
+	"look": "all=<bool>: START HERE. route, screens, flight summary, every visible control as {ref, role, name, value, options}, next steps",
+	"choose": "ref=|field=|text=|path= value=<item | on/off | number | text>: set any widget by its field name, as a player would",
+	"catalog": "valid ids: aircraft (with their starts), landscapes, time_of_day, languages, screens, camera views",
+	"setup": "aircraft= start= landscape= time_of_day= language=: Home choices, validated and read back (then fly)",
 	"ping": "liveness: pid, engine version, frame, fps",
 	"state": "route, screens, focus, fps, log counts; flight: aircraft, tick, pause/holds/crash, pose, commands",
 	"fly": "aircraft=<catalog id> start=<runway|airborne|...>: from Home, select and fly (no menu navigation)",
@@ -55,9 +65,16 @@ const COMMANDS := {
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
 	"frames": "window=<n> hitch_ms=<ms> factor=<x> reset=<bool>: frame-time percentiles, 1 % low, hitches with causes",
-	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint",
+	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint (also sees ticks that pause, e.g. a crash)",
 	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
 	"profile": "seconds=<s> | since=<log seq> top=<n> sort=self|total: GDScript functions by time (launch --script-profile)",
+	"render": "frames=<n> measure=<bool>: GPU/CPU render ms (root + SubViewports), draw calls per pass, bound-by verdict, render config",
+	"layers": "depth=<n> root=<path>: 3D scene census (geometry, MultiMesh instances, shadow casters, lights per node)",
+	"ablate": "targets=[paths|@flags] depth=<n> frames=<n> warmup=<n> freeze=<bool>: switch each off, measure, restore; GPU ms ranking",
+	"viewmode": "name=normal|unshaded|wireframe|overdraw|lighting|...: viewport debug draw (no name: current and list)",
+	"gizmos": "show=all|axes,velocity,air,wind,forces,moments,trail,label | off=true [force_m_per_g= velocity_m_per_mps= trail_s= auto_scale=]: flight-model lines",
+	"checkpoint": "action=save|load path=<absolute .json> [pause=<bool>] [inputs=pilot|recorded]: the exact flight state as a file (bugit/bugitgo)",
+	"rewind": "arm=<bool> every_s=<s> keep_s=<s> | list=true | seconds=<s>|tick=<t> attempt=current|previous|<n> pause=<bool> inputs=pilot|recorded",
 	"sample": "exprs={name: expr} every_ticks=<n> count=<m>: values each n simulation ticks (live telemetry)",
 	"assert": "expr=<expression> message=<s>: ok when truthy, else an error (for repro scripts)",
 	"find": "name=<glob> type=<class> under=<path> limit=<n>: nodes by name pattern and class",
@@ -149,10 +166,23 @@ var hitch_ms := 50.0
 var hitch_factor := 3.0
 var _hitches: Array[Dictionary] = []
 var _breaks: Array[Dictionary] = []
+var _breaks_tick := -1 # the tick last evaluated (paused flights re-evaluate only on a new tick)
 var _objects_baseline := {}
 var _drive_vehicle: Node
 var _drive_until_tick := -1
 var realtime_factor := -1.0
+## Render cost (PT1h-R9): GPU time per frame (root viewport; -1 when not measured), the probe and a running ablation.
+var _frame_gpu_ms := PackedFloat64Array()
+var _render: RenderProbe
+var _ablation: RenderProbe.Ablation
+var _ablation_pause := {}
+var _ablation_owned_measure := false
+var _rewind := RewindRing.new()
+var _gizmos: Node3D # PT1h-R10 flight-model lines, a child of the flight while shown
+var _gizmo_settings := {}
+var _ref_by_id := {} # PT1h-R11 short control refs for look/choose
+var _id_by_ref := {}
+var _ref_count := 0
 
 
 ## The environment opts in; release templates never open the socket.
@@ -181,6 +211,8 @@ func _ready() -> void:
 		if _log_file == null:
 			push_warning("debug bridge: cannot write %s: %s" % [log_path, error_string(FileAccess.get_open_error())])
 	_display_name = DisplayServer.get_name()
+	_render = RenderProbe.new(get_viewport())
+	_render.set_measure(true) # two GPU timestamps per frame; no-op headless. render measure=false turns it off.
 	var err := _server.listen(port, "127.0.0.1")
 	if err != OK:
 		push_error("debug bridge: cannot listen on 127.0.0.1:%d: %s" % [port, error_string(err)])
@@ -190,6 +222,13 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if _ablation != null:
+		_ablation.abort()
+		_ablation = null
+	if _ablation_owned_measure and _render != null:
+		_render.set_measure(false)
+	_ablation_owned_measure = false
+	_finish_ablation_pause()
 	_restore_sticks()
 	_release_drive()
 	_net_mutex.lock()
@@ -198,6 +237,11 @@ func _exit_tree() -> void:
 	if _thread.is_started():
 		_thread.wait_to_finish() # its last pass sends queued replies (quit) and the remaining log lines
 	OS.remove_logger(debug_log)
+
+
+func _notification(what: int) -> void:
+	if what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT] and not _ablation_pause.is_empty():
+		_ablation_pause.interrupted = true
 
 
 func _process(_delta: float) -> void:
@@ -217,6 +261,8 @@ func _process(_delta: float) -> void:
 		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
+	if not _gizmo_settings.is_empty():
+		_update_gizmos()
 	# The work a command asked for (building a flight, a screenshot readback) is not bridge overhead.
 	started += Time.get_ticks_usec() - handlers_started
 	_observe()
@@ -436,6 +482,8 @@ func _physics_process(_delta: float) -> void:
 	# Before the session samples input and the simulation steps: a step or drive ends exactly at its tick.
 	_finish_step()
 	_check_breaks()
+	if _rewind.armed:
+		_rewind.capture(_flight_session()) # after a watchpoint's pause: a paused tick is not stored
 	_expire_drive()
 	_collect_samples()
 	if _sticks.is_empty():
@@ -615,8 +663,14 @@ func _cmd_type(request: Dictionary) -> Dictionary:
 	# An open dialog is its own viewport with its own focus.
 	var window := _top_window()
 	var control: Control = (window if window != null else get_viewport()).gui_get_focus_owner()
-	if request.has("path") or request.has("into"):
-		var found := _find_control({path = request.path} if request.has("path") else {text = request.into})
+	if request.has("path") or request.has("into") or request.has("ref") or request.has("field"):
+		var lookup := {}
+		for key: String in ["ref", "field", "path"]:
+			if request.has(key):
+				lookup[key] = request[key]
+		if lookup.is_empty():
+			lookup.text = request.into
+		var found := _find_control(lookup)
 		if found.has("error"):
 			return _fail(found.error)
 		control = found.control
@@ -856,6 +910,7 @@ func _cmd_pause(_request: Dictionary) -> Dictionary:
 	var session := _flight_session()
 	if session == null:
 		return _fail("no flight (the RC truck pauses through its garage: press text=Garage)")
+	if not _ablation_pause.is_empty(): _ablation_pause.interrupted = true
 	session.sim.set_paused(true)
 	return _ok(_flight_state(session))
 
@@ -1358,14 +1413,23 @@ func _cmd_open(request: Dictionary) -> Dictionary:
 	if not app.has_method(SCREEN_OPENERS[screen]):
 		return _fail("this app root cannot open %s" % screen)
 	var before := [_screen_ids(), _top_window()]
+	# In a flight every other screen opens from the pause menu, as a player reaches it (Esc, then the item).
+	var via := ""
+	if _route() == "flight" and screen != "pause" and not _screen_ids().has("pause") and app.has_method("open_pause"):
+		app.open_pause()
+		via = "pause"
 	app.call(SCREEN_OPENERS[screen])
 	var until := Engine.get_process_frames() + 1
 	return {pending = func() -> Variant:
 		if Engine.get_process_frames() < until:
 			return null
 		if _screen_ids() == before[0] and _top_window() == before[1]:
-			return _fail("%s did not open here (route %s, screens %s)" % [screen, _route(), _screen_ids()])
-		return _ok({opened = screen, screens = _screen_ids(), focus = _path(get_viewport().gui_get_focus_owner())})}
+			return _fail("%s did not open here (route %s, screens %s); flight screens open from pause, Home ones from Home" % [
+				screen, _route(), _screen_ids()])
+		var opened := {opened = screen, screens = _screen_ids(), focus = _path(get_viewport().gui_get_focus_owner())}
+		if not via.is_empty():
+			opened.via = via # the flight is now held by the pause menu; close twice and resume to fly on
+		return _ok(opened)}
 
 
 func _cmd_close(_request: Dictionary) -> Dictionary:
@@ -1469,7 +1533,7 @@ func _cmd_methods(request: Dictionary) -> Dictionary:
 
 func _cmd_mouse(request: Dictionary) -> Dictionary:
 	var at := Vector2(float(request.get("x", 0.0)), float(request.get("y", 0.0)))
-	if request.has("text") or request.has("path"):
+	if request.has("text") or request.has("path") or request.has("ref") or request.has("field"):
 		var found := _find_control(request)
 		if found.has("error"):
 			return _fail(found.error)
@@ -1582,19 +1646,23 @@ func _record_frame(now_us: int) -> void:
 		_frame_log_seq = debug_log.last_seq()
 		_frame_ms.resize(FRAME_CAPACITY)
 		_frame_ticks.resize(FRAME_CAPACITY)
+		_frame_gpu_ms.resize(FRAME_CAPACITY)
 		return
 	var ms := (now_us - _frame_last_us) / 1000.0
 	_frame_last_us = now_us
 	var index := _frame_count % FRAME_CAPACITY
 	_frame_ms[index] = ms
 	_frame_ticks[index] = ticks
+	_frame_gpu_ms[index] = _render.root_gpu_ms() if _render != null else -1.0
 	_frame_count += 1
 	# Typical = median of the previous (up to) 60 frames, refreshed every 15: robust to the hitches themselves and to
 	# long startup frames, and it adapts to slow renderers (llvmpipe frames are seconds long, and not hitches).
 	if _frame_count % 15 == 1 or _frame_ema_ms == 0.0:
 		_frame_ema_ms = _recent_median(mini(_frame_count - 1, 60))
+	# Before a typical time exists (the first frames after launch), the absolute threshold alone applies: a long
+	# start-up frame (first-use shader compilation) is a hitch too.
 	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
-	if _frame_ema_ms > 0.0 and ms > threshold:
+	if ms > threshold:
 		_hitch(ms, threshold, ticks, monitors)
 	_frame_monitors = monitors
 	_frame_log_seq = debug_log.last_seq()
@@ -1627,12 +1695,16 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 		causes.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
 	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
 		causes.append("scene/resource construction")
+	# A positive GPU readback is context only: freshness relative to this frame is unverified.
+	var gpu_ms: float = _render.root_gpu_ms() if _render != null else -1.0
 	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
 		func(entry: Dictionary) -> String: return str(entry.text).left(160))
 	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
 		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
 		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
-		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01)}
+		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01),
+		gpu_ms = snappedf(gpu_ms, 0.01) if gpu_ms >= 0.0 else null,
+		gpu_timing_status = "unverified_freshness" if gpu_ms >= 0.0 else "unavailable_or_zero"}
 	var session := _session()
 	if session != null:
 		record.tick = session.sim.tick
@@ -1659,10 +1731,13 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	var window_value: Variant = _number(request.get("window", available))
 	var window := clampi(int(window_value) if window_value != null else available, 0, available)
 	var times := PackedFloat64Array()
+	var gpu := PackedFloat64Array()
 	var catch_up := 0
 	for i in window:
 		var index := (_frame_count - 1 - i) % FRAME_CAPACITY
 		times.append(_frame_ms[index])
+		if _frame_gpu_ms[index] >= 0.0:
+			gpu.append(_frame_gpu_ms[index])
 		if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
 			catch_up += 1
 	var out := {frames = window, hitch_ms = hitch_ms, factor = hitch_factor, typical_ms = snappedf(_frame_ema_ms, 0.01),
@@ -1683,6 +1758,12 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 		out.merge({mean_ms = snappedf(mean, 0.01), p50_ms = _percentile(sorted, 0.5), p95_ms = _percentile(sorted, 0.95),
 			p99_ms = _percentile(sorted, 0.99), max_ms = snappedf(sorted[sorted.size() - 1], 0.01),
 			fps_mean = snappedf(1000.0 / mean, 0.1), fps_1pct_low = snappedf(1000.0 / worst_mean, 0.1)})
+	if not gpu.is_empty():
+		gpu.sort()
+		out.gpu = {frames = gpu.size(), p50_ms = _percentile(gpu, 0.5), p95_ms = _percentile(gpu, 0.95),
+			p99_ms = _percentile(gpu, 0.99), max_ms = snappedf(gpu[gpu.size() - 1], 0.01),
+			status = "unverified_freshness", note = "root viewport last-read values; not synchronized to frame or presentation"}
+	out.gpu_timing_status = "unavailable_or_zero" if gpu.is_empty() else "unverified_freshness"
 	return _ok(out)
 
 
@@ -1729,8 +1810,11 @@ func _check_breaks() -> void:
 	if session == null:
 		return
 	var sim: Node = session.sim
-	if sim.paused:
+	# Paused: evaluate once per new tick only. A tick that pauses the flight itself (a crash, a fault) is then still
+	# seen at its own tick, and so is a rewind; an ordinary pause costs nothing.
+	if sim.paused and int(sim.tick) == _breaks_tick:
 		return
+	_breaks_tick = int(sim.tick)
 	for watch: Dictionary in _breaks.duplicate():
 		var value: Variant = watch.expression.execute(_input_values([session, sim, sim.state]), app, false)
 		if watch.expression.has_execute_failed():
@@ -1741,7 +1825,7 @@ func _check_breaks() -> void:
 		if now_true and not watch.was_true:
 			watch.hits += 1
 			watch.last_tick = sim.tick
-			if watch.pause:
+			if watch.pause and not sim.paused:
 				sim.set_paused(true)
 			watch.hit = {name = watch.name, tick = sim.tick, time_s = sim.time(), value = jsonable(value),
 				paused = sim.paused, state = jsonable(_flight_state(session))}
@@ -1918,6 +2002,723 @@ func _observe() -> void:
 
 # ---- helpers --------------------------------------------------------------------------------------------------
 
+# ---- render cost and rewind (PT1h-R9) --------------------------------------------------------------------------
+
+func _cmd_render(request: Dictionary) -> Dictionary:
+	if _ablation != null and request.has("measure"):
+		return _fail("cannot change GPU observations during an ablation")
+	if request.has("measure"):
+		_render.set_measure(_bool(request.measure))
+	if not RenderProbe.available():
+		return _fail("render needs a renderer: launch without --headless")
+	if not _render.measuring:
+		return _ok({measuring = false, config = _render.config()})
+	var count_value: Variant = _number(request.get("frames", 30))
+	var count := clampi(int(count_value) if count_value != null else 30, 1, 3600)
+	var samples: Array = []
+	var skip := [3] # SubViewports measured for the first time report 0 for a frame or two
+	return {pending = func() -> Variant:
+		if skip[0] > 0:
+			skip[0] -= 1
+			return null
+		samples.append(_render.sample())
+		if samples.size() < count:
+			return null
+		return _ok(_render_summary(samples)),
+		timeout_s = 60.0 + count / 10.0}
+
+
+## Raw sample medians and wall time; GPU timestamp freshness and the bottleneck remain unverified.
+func _render_summary(samples: Array) -> Dictionary:
+	# A median reduces isolated outliers; it does not establish timestamp freshness.
+	var out := {measuring = true, frames = samples.size(), statistic = "median per frame"}
+	for key: String in ["gpu_ms", "root_gpu_ms", "sub_gpu_ms", "root_cpu_ms", "setup_cpu_ms", "draw_calls",
+			"shadow_draw_calls", "canvas_draw_calls", "primitives", "objects"]:
+		var values := PackedFloat64Array()
+		for sample: Dictionary in samples:
+			values.append(float(sample[key]))
+		out[key] = snappedf(RenderProbe.median(values), 0.001 if key.ends_with("_ms") else 1.0)
+	var gpu := PackedFloat64Array(samples.map(func(sample: Dictionary) -> float: return sample.gpu_ms))
+	gpu.sort()
+	out.gpu_p95_ms = _percentile(gpu, 0.95)
+	out.gpu_max_ms = snappedf(gpu[gpu.size() - 1], 0.001)
+	var wall := PackedFloat64Array()
+	for i in mini(mini(_frame_count, FRAME_CAPACITY), samples.size()):
+		wall.append(_frame_ms[(_frame_count - 1 - i) % FRAME_CAPACITY])
+	var frame_ms := RenderProbe.median(wall)
+	out.frame_ms = snappedf(frame_ms, 0.01)
+	out.fps = snappedf(1000.0 / frame_ms, 0.1) if frame_ms > 0.0 else 0.0
+	var statuses := {}
+	for sample: Dictionary in samples:
+		statuses[str(sample.get("gpu_timing_status", "unavailable_or_zero"))] = true
+	out.gpu_timing_status = statuses.keys()[0] if statuses.size() == 1 else "mixed_or_unavailable"
+	out.gpu_ms_scope = "root_only_freshness_unverified"
+	out.sub_gpu_ms_scope = "last_readings_unverified_may_not_have_drawn"
+	out.gpu_budget_pct = {at_60fps = -1.0, at_120fps = -1.0}
+	out.gpu_budget_status = "unavailable"
+	var config := _render.config()
+	out.bound = "unknown: GPU timestamp availability and freshness do not establish a frame bottleneck"
+	out.viewports = _render.viewport_rows().slice(0, 12)
+	out.config = config
+	return out
+
+
+func _render_root(request: Dictionary) -> Node3D:
+	if request.has("root"):
+		var node: Node = get_node_or_null(NodePath(str(request.root)))
+		if node == null:
+			node = get_tree().root.get_node_or_null(NodePath(str(request.root)))
+		return node as Node3D
+	return _render.scene_root()
+
+
+func _cmd_layers(request: Dictionary) -> Dictionary:
+	var root := _render_root(request)
+	if root == null:
+		return _fail("no 3D scene: no active Camera3D (or root= is not a Node3D)")
+	var depth_value: Variant = _number(request.get("depth", 2))
+	var depth := clampi(int(depth_value) if depth_value != null else 2, 1, 8)
+	var rows := _render.layers(root, depth)
+	return _ok({root = _path(root), depth = depth, layers = rows.slice(0, 200), truncated = rows.size() > 200,
+		flags = RenderProbe.FLAG_HELP})
+
+
+func _ablation_window_focused() -> bool:
+	return DisplayServer.get_name() == "headless" or (get_viewport() != null and get_viewport().has_focus())
+
+
+func _ablation_freeze_refusal(session: Node) -> String:
+	if not is_instance_valid(session): return ""
+	if "radio" in session:
+		var radio: Variant = session.get("radio")
+		if is_instance_valid(radio) and "connected" in radio and bool(radio.connected):
+			return "cannot freeze ablation with a connected controller; disconnect it or use freeze=false"
+	if "pending_mode" in session and not str(session.get("pending_mode")).is_empty():
+		return "cannot freeze ablation while a helicopter mode change is pending; settle it or use freeze=false"
+	return ""
+
+
+## Own a session hold rather than bypassing menu, controller and crash resume rules.
+func _begin_ablation_pause(session: Node) -> bool:
+	if not _ablation_pause.is_empty() or not is_instance_valid(session) or not session.has_method("hold") \
+			or not session.has_method("release") or not session.has_method("resume") \
+			or not ("sim" in session) or not is_instance_valid(session.sim) or not ("holds" in session):
+		return false
+	if not _ablation_freeze_refusal(session).is_empty(): return false
+	var token := "debug_render_ablation_%d" % get_instance_id()
+	if session.holds.has(token): return false
+	var sim: Node = session.sim
+	var before_holds: Array = session.holds.keys()
+	before_holds.sort()
+	var context := {session = weakref(session), sim = weakref(sim), token = token,
+		was_paused = bool(sim.paused), holds = before_holds,
+		pause_reason = str(session.get("pause_reason")), crash = session.get("crash"),
+		interrupted = not _ablation_window_focused()}
+	if context.crash is Dictionary: context.crash = context.crash.duplicate(true)
+	session.hold(token)
+	if not session.holds.has(token) or not sim.paused:
+		if session.holds.has(token): session.release(token)
+		return false
+	_ablation_pause = context
+	return true
+
+
+func _ablation_pause_valid() -> bool:
+	if _ablation_pause.is_empty(): return true
+	var session: Variant = _ablation_pause.session.get_ref()
+	var sim: Variant = _ablation_pause.sim.get_ref()
+	if session == null or sim == null:
+		_ablation_pause.interrupted = true
+		return false
+	var holds: Array = session.holds.keys()
+	holds.erase(_ablation_pause.token)
+	holds.sort()
+	var valid: bool = session.sim == sim and sim.paused and session.holds.has(_ablation_pause.token) \
+		and holds == _ablation_pause.holds and str(session.get("pause_reason")) == _ablation_pause.pause_reason \
+		and session.get("crash") == _ablation_pause.crash and _ablation_window_focused() \
+		and not _ablation_pause.interrupted
+	if not valid: _ablation_pause.interrupted = true
+	return valid
+
+
+func _ablation_freeze_metadata(paused_at_start: bool) -> Dictionary:
+	return {paused_at_start = paused_at_start,
+		frozen = not _ablation_pause.is_empty() and _ablation_pause_valid(),
+		freeze_scope = "simulation only; camera and visuals may change"}
+
+
+func _finish_ablation_pause() -> Dictionary:
+	if _ablation_pause.is_empty(): return {owned = false}
+	var valid := _ablation_pause_valid()
+	var context := _ablation_pause
+	_ablation_pause = {}
+	var session: Variant = context.session.get_ref()
+	var sim: Variant = context.sim.get_ref()
+	if session == null or sim == null: return {owned = true, restored = false, reason = "session freed"}
+	if session.holds.has(context.token): session.release(context.token)
+	if not context.was_paused and valid and sim.paused:
+		session.resume()
+	var restored: bool = bool(sim.paused) == bool(context.was_paused)
+	return {owned = true, restored = restored, interrupted = not valid, paused = bool(sim.paused)}
+
+
+func _finish_ablation(run: RenderProbe.Ablation, reply: Dictionary) -> Dictionary:
+	run.abort()
+	if _ablation == run:
+		_ablation = null
+		if _ablation_owned_measure: _render.set_measure(false)
+		_ablation_owned_measure = false
+	var pause_restore := _finish_ablation_pause()
+	if reply.get("ok", false) and reply.get("result") is Dictionary:
+		reply.result["pause_restore"] = pause_restore
+	return reply
+
+
+func _cmd_ablate(request: Dictionary) -> Dictionary:
+	if not RenderProbe.available():
+		return _fail("ablate needs a renderer: launch without --headless")
+	if _ablation != null:
+		return _fail("an ablation is already running")
+	var root := _render_root(request)
+	if root == null:
+		return _fail("no 3D scene: no active Camera3D (or root= is not a Node3D)")
+	var raw: Variant = request.get("targets", [])
+	var names: Array = raw if raw is Array else Array(str(raw).split(",", false))
+	var numbers := {}
+	for key: String in ["depth", "frames", "warmup"]:
+		var value: Variant = _number(request.get(key, {depth = 2, frames = 60, warmup = 10}[key]))
+		if value == null:
+			return _fail("%s must be a number" % key)
+		numbers[key] = int(value)
+	var picked := _render.ablation_targets(root, names, clampi(numbers.depth, 1, 4))
+	if picked.targets.is_empty():
+		return _fail("nothing to switch off%s" % (("; skipped: %s" % JSON.stringify(picked.skipped_reasons)) if not picked.skipped.is_empty() else ""))
+	var session := _flight_session()
+	var freeze_requested := _bool(request.get("freeze", true))
+	var paused_at_start := session != null and bool(session.sim.paused)
+	if freeze_requested and session != null:
+		var refusal := _ablation_freeze_refusal(session)
+		if not refusal.is_empty(): return _fail(refusal)
+		if not _begin_ablation_pause(session): return _fail("cannot acquire the flight's diagnostic pause hold")
+	_ablation_owned_measure = not _render.measuring
+	if _ablation_owned_measure: _render.set_measure(true)
+	var run := RenderProbe.Ablation.new(_render, picked.targets, clampi(numbers.warmup, 2, 240), clampi(numbers.frames, 5, 1200))
+	_ablation = run
+	var route := _route()
+	debug_log.event("ablate: %d targets, about %d frames" % [picked.targets.size(), run.total_frames()], {route = route})
+	var finish := func(reply: Dictionary) -> Dictionary:
+		return _finish_ablation(run, reply)
+	return {pending = func() -> Variant:
+		if _route() != route or not is_instance_valid(root) or not root.is_inside_tree() or not _ablation_pause_valid():
+			if not _ablation_pause.is_empty(): _ablation_pause.interrupted = true
+			return finish.call(_fail("route, scene or pause ownership changed; target restoration attempted"))
+		if not run.advance():
+			return null
+		var out: Dictionary = run.result()
+		out.merge(_ablation_freeze_metadata(paused_at_start))
+		out.merge({root = _path(root),
+			skipped = picked.skipped, skipped_reasons = picked.skipped_reasons, truncated = picked.truncated,
+			renderer = RenderingServer.get_current_rendering_method(), size = [get_viewport().size.x, get_viewport().size.y]})
+		return finish.call(_ok(out)),
+		timeout_s = 120.0 + run.total_frames() / 5.0,
+		on_timeout = func() -> Dictionary: return finish.call(_fail("ablation timed out; target restoration attempted"))}
+
+
+func _cmd_viewmode(request: Dictionary) -> Dictionary:
+	if not request.has("name"):
+		return _ok({mode = RenderProbe.view_mode_name(get_viewport().debug_draw), modes = ["normal"] + RenderProbe.view_modes().slice(1),
+			renderer = RenderingServer.get_current_rendering_method()})
+	var result := _render.set_view_mode(str(request.name))
+	if not result.ok:
+		return _fail(result.error)
+	result.erase("ok")
+	result.renderer = RenderingServer.get_current_rendering_method()
+	return _settle(2, result)
+
+
+func _cmd_rewind(request: Dictionary) -> Dictionary:
+	if request.has("arm"):
+		if _bool(request.arm):
+			var every_value: Variant = _number(request.get("every_s", 0.25))
+			var keep_value: Variant = _number(request.get("keep_s", 60.0))
+			if every_value == null or keep_value == null or every_value <= 0.0 or keep_value <= 0.0:
+				return _fail("every_s and keep_s must be positive numbers")
+			var every_ticks := maxi(1, roundi(every_value * Engine.physics_ticks_per_second))
+			_rewind.arm(every_ticks, ceili(keep_value * Engine.physics_ticks_per_second / every_ticks))
+		else:
+			_rewind.disarm()
+		return _ok(_rewind.summary())
+	if not request.has("seconds") and not request.has("tick"):
+		return _ok(_rewind.summary())
+	var session := _flight_session()
+	if session == null:
+		return _fail("no flight to rewind")
+	if _step_target >= 0:
+		return _fail("a step is running")
+	for key: String in ["seconds", "tick"]:
+		if request.has(key) and (_number(request[key]) == null or _number(request[key]) < 0.0):
+			return _fail("%s must be a non-negative number" % key)
+	var mode := str(request.get("inputs", "pilot"))
+	if mode not in ["pilot", "recorded"]:
+		return _fail("inputs must be pilot (fly on from the restored moment) or recorded (hold the restored inputs)")
+	var entry := _rewind.find(request, int(session.sim.tick), float(session.sim.dt()))
+	if entry.has("error"):
+		return _fail(entry.error)
+	var had_input: Variant = session.get("input_enabled")
+	if not _rewind.restore(session, entry):
+		return _fail("the session refused the checkpoint of tick %d (see logs)" % entry.tick)
+	_after_restore(session, had_input, mode, _bool(request.get("pause", true)))
+	debug_log.event("rewind to tick %d (attempt %d)" % [entry.tick, entry.attempt], RewindRing.describe(entry))
+	return _settle(1, {rewound = RewindRing.describe(entry), flight = _flight_state(session)})
+
+
+## A restored checkpoint is a replay boundary: the session holds the recorded inputs and ignores the pilot.
+## inputs=pilot hands control back, starting from the recorded throttle (the keyboard ramps it slowly).
+func _after_restore(session: Node, had_input: Variant, mode: String, pause: bool) -> void:
+	if mode == "pilot" and had_input == true and session.has_method("hand_control_to_pilot"):
+		session.hand_control_to_pilot() # the session's own hand-back (game findings #9)
+	elif mode == "pilot" and had_input is bool:
+		session.set("input_enabled", had_input)
+		if str(session.get("pause_reason")).contains("recorded inputs"):
+			session.set("pause_reason", "debug restore (pilot inputs)") # resume() clears it
+		var commands: Variant = session.get("commands")
+		var recorded: Variant = session.sim.get("inputs")
+		if commands is Dictionary and recorded is PackedFloat64Array and recorded.size() >= 4:
+			commands.throttle = recorded[3]
+	if pause:
+		session.sim.set_paused(true)
+	elif session.has_method("resume"):
+		session.resume()
+
+
+# ---- checkpoint files and flight gizmos (PT1h-R10) -------------------------------------------------------------
+
+## BugIt/BugItGo for flights: the session's exact checkpoint (float64 bits preserved by its JSON carrier) to a
+## file, and back into a flight of the same aircraft, field and weather (the session refuses anything else).
+func _cmd_checkpoint(request: Dictionary) -> Dictionary:
+	var session := _flight_session()
+	if session == null or not session.has_method("checkpoint_json"):
+		return _fail("no flight: checkpoints are flight states")
+	var action := str(request.get("action", ""))
+	var path := str(request.get("path", ""))
+	if action == "save" and path.is_empty() and not out_dir.is_empty():
+		path = out_dir.path_join("checkpoints/tick-%d.json" % int(session.sim.tick))
+	if not path.is_absolute_path():
+		return _fail("give an absolute path= (a relative one would land in the Godot project)")
+	match action:
+		"save":
+			var text: String = session.checkpoint_json()
+			if text.is_empty() or text == "{}":
+				return _fail("the session cannot checkpoint now (not ready, crash transition, or an unsupported state)")
+			DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+			var file := FileAccess.open(path, FileAccess.WRITE)
+			if file == null:
+				return _fail("cannot write %s: %s" % [path, error_string(FileAccess.get_open_error())])
+			file.store_string(text)
+			file.close()
+			return _ok({path = path, bytes = text.length(), tick = session.sim.tick, time_s = session.sim.time(),
+				aircraft = app.flight.get("aircraft_id") if app.get("flight") != null else null})
+		"load":
+			if _step_target >= 0:
+				return _fail("a step is running")
+			var mode := str(request.get("inputs", "pilot"))
+			if mode not in ["pilot", "recorded"]:
+				return _fail("inputs must be pilot or recorded")
+			if not FileAccess.file_exists(path):
+				return _fail("no checkpoint at %s" % path)
+			var had_input: Variant = session.get("input_enabled")
+			if not session.restore_checkpoint_json(FileAccess.get_file_as_string(path)):
+				return _fail("the session refused %s: it needs the same aircraft data, field and weather it was saved with" % path.get_file())
+			_after_restore(session, had_input, mode, _bool(request.get("pause", true)))
+			debug_log.event("checkpoint loaded at tick %d" % session.sim.tick, {path = path})
+			return _settle(1, {loaded = path, flight = _flight_state(session)})
+	return _fail("action must be save or load")
+
+
+func _cmd_gizmos(request: Dictionary) -> Dictionary:
+	if _bool(request.get("off", false)):
+		_gizmo_settings = {}
+		if is_instance_valid(_gizmos):
+			_gizmos.queue_free()
+		_gizmos = null
+		return _ok({shown = []})
+	var raw: Variant = request.get("show", "all")
+	var layers: Array = raw if raw is Array else Array(str(raw).split(",", false))
+	if layers.has("all"):
+		layers = FlightGizmos.LAYERS.duplicate()
+	for layer: Variant in layers:
+		if not FlightGizmos.LAYERS.has(str(layer)):
+			return _fail("unknown layer '%s'; layers: all, %s" % [layer, ", ".join(FlightGizmos.LAYERS)])
+	var settings := {layers = layers}
+	for key: String in ["force_m_per_g", "velocity_m_per_mps", "moment_gain", "trail_s", "axis_m", "thickness_m"]:
+		if request.has(key):
+			var value: Variant = _number(request[key])
+			if value == null or value < 0.0:
+				return _fail("%s must be a non-negative number" % key)
+			settings[key] = value
+	if request.has("auto_scale"):
+		settings.auto_scale = _bool(request.auto_scale)
+	_gizmo_settings = settings
+	_update_gizmos()
+	var out := {shown = layers, flight = is_instance_valid(_gizmos)}
+	if is_instance_valid(_gizmos):
+		out.values = _gizmos.last
+	return _settle(1, out) if out.flight else _ok(out.merged({note = "shown from the next flight on"}))
+
+
+## Follow the flight: (re)create the overlay under the flight's 3D root and draw this frame.
+func _update_gizmos() -> void:
+	var session := _flight_session()
+	var flight: Variant = app.get("flight")
+	if session == null or not flight is Node3D:
+		if is_instance_valid(_gizmos):
+			_gizmos.queue_free()
+		_gizmos = null
+		return
+	if not is_instance_valid(_gizmos) or _gizmos.get_parent() != flight:
+		_gizmos = FlightGizmos.new()
+		flight.add_child(_gizmos)
+	_gizmos.configure(_gizmo_settings.layers)
+	for key: String in _gizmo_settings:
+		if key != "layers":
+			_gizmos.set(key, _gizmo_settings[key])
+	var pose: Dictionary = flight.call("_current_pose") if flight.has_method("_current_pose") else {}
+	var s: PackedFloat64Array = session.sim.state
+	if pose.is_empty() and s.size() >= 10: # vehicles without the airplane's presentation estimate: the tick state
+		pose = {pos = FlightGizmos.Frames.ned_to_render([s[0], s[1], s[2]]), basis = FlightGizmos.Frames.quat_to_render(s.slice(6, 10))}
+	_gizmos.update_from(session, pose)
+
+
+# ---- agent ergonomics (PT1h-R11) -------------------------------------------------------------------------------
+# After Playwright MCP's accessibility snapshot: `look` lists what is on screen with a ref per control, a role, the
+# field's accessible name and its value; `choose` sets any widget by that name; refs, field names and labels all
+# work wherever a control is looked up. `catalog` lists valid option values, and `setup` applies Home choices and
+# reads them back, because the AppRoot setters ignore invalid values silently.
+
+## The accessible name of a field: accessibility_name, else the Label just before it in its row (a settings grid
+## pairs "Window resolution" with its OptionButton), else the Label just before its row, when it leads that row.
+func _field(control: Control) -> String:
+	var own := str(control.get("accessibility_name")) if "accessibility_name" in control else ""
+	if not own.is_empty() and own != "<null>":
+		return own
+	# The app's own label link (ui/accessible_labels.gd): the name a screen reader announces.
+	var labelled_by: Variant = control.get("accessibility_labeled_by_nodes")
+	if labelled_by is Array and not labelled_by.is_empty():
+		var label := control.get_node_or_null(labelled_by[0])
+		if label is Label and not str(label.text).strip_edges().is_empty():
+			return str(label.text).strip_edges()
+	if control is BaseButton and not control is OptionButton and not _own_text(control).is_empty():
+		return "" # a button names itself; the label before it belongs to something else
+	var parent := control.get_parent()
+	if not parent is Container:
+		return ""
+	var before := _previous_visible(parent, control.get_index())
+	if before is Label:
+		return str(before.text).strip_edges()
+	if before != null:
+		return "" # another control or container comes first: no label of its own
+	var row := parent.get_parent()
+	if row is Container:
+		var above := _previous_visible(row, parent.get_index())
+		if above is Label:
+			return str(above.text).strip_edges()
+	return ""
+
+
+static func _previous_visible(parent: Node, index: int) -> Control:
+	for i in range(index - 1, -1, -1):
+		var sibling := parent.get_child(i)
+		if sibling is Control and (sibling as Control).visible:
+			return sibling
+	return null
+
+
+static func _has_word(text: String) -> bool:
+	return RegEx.create_from_string("[\\p{L}\\p{N}]").search(text) != null
+
+
+## Where a symbol-only control sits: its tooltip, else its own or the nearest ancestor's meaningful node name
+## (a "Close" button inside "FlightOverlay" is "FlightOverlay").
+static func _context(control: Control) -> String:
+	if not control.tooltip_text.is_empty():
+		return control.tooltip_text
+	var node: Node = control
+	while node != null and (str(node.name).begins_with("@") or str(node.name) in ["Close", "Button", "Root", "Panel", "Header"]):
+		node = node.get_parent()
+	return str(node.name) if node != null else ""
+
+
+## The text a control shows for itself (no node-name fallback): empty for an unlabelled check box.
+static func _own_text(control: Control) -> String:
+	for property: String in ["text", "placeholder_text", "tooltip_text"]:
+		if property in control and not str(control.get(property)).is_empty():
+			return str(control.get(property))
+	return ""
+
+
+static func _interactive(node: Node) -> bool:
+	return node is BaseButton or node is Range or node is LineEdit or node is TextEdit or node is ItemList or node is TabBar
+
+
+static func _role(control: Control) -> String:
+	if control is OptionButton:
+		return "option"
+	if control is CheckBox or control is CheckButton or (control is BaseButton and control.toggle_mode):
+		return "toggle"
+	if control is BaseButton:
+		return "button"
+	if control is SpinBox:
+		return "number"
+	if control is Slider:
+		return "slider"
+	if control is Range:
+		return "progress"
+	if control is LineEdit or control is TextEdit:
+		return "text"
+	if control is ItemList:
+		return "list"
+	if control is TabBar:
+		return "tabs"
+	return "label"
+
+
+## Short refs (e1, e2, ...), one per control for its lifetime: the same control keeps its ref across looks, so an
+## agent can act on a ref it read earlier; a freed control's ref answers "gone".
+func _ref(control: Control) -> String:
+	var id := control.get_instance_id()
+	if not _ref_by_id.has(id):
+		if _ref_by_id.size() > 20000:
+			_prune_refs()
+		_ref_count += 1
+		_ref_by_id[id] = "e%d" % _ref_count
+		_id_by_ref[_ref_by_id[id]] = id
+	return _ref_by_id[id]
+
+
+func _prune_refs() -> void:
+	for id: int in _ref_by_id.keys():
+		if not is_instance_valid(instance_from_id(id)):
+			_id_by_ref.erase(_ref_by_id[id])
+			_ref_by_id.erase(id)
+
+
+func _from_ref(ref: String) -> Control:
+	if not _id_by_ref.has(ref):
+		return null
+	var object: Object = instance_from_id(_id_by_ref[ref])
+	return object if object is Control and is_instance_valid(object) and object.is_inside_tree() else null
+
+
+## One compact row: what an agent needs to name, read and change the control.
+func _look_row(control: Control) -> Dictionary:
+	var role := _role(control)
+	var label := _label(control)
+	var field := _field(control)
+	var named_by_field := not field.is_empty() and (role not in ["button", "toggle"] or _own_text(control).is_empty())
+	var row := {ref = _ref(control), role = role, name = field if named_by_field else label}
+	if role in ["button", "toggle"] and not _has_word(label):
+		row.name = "%s (%s)" % [label, _context(control)] # "×" alone does not say which overlay it closes
+	if not field.is_empty() and field != row.name:
+		row.field = field
+	match role:
+		"option":
+			row.value = control.get_item_text(control.selected) if control.selected >= 0 else ""
+			row.options = _item_labels(control).slice(0, 40)
+		"toggle":
+			row.value = control.button_pressed
+		"number", "slider", "progress":
+			row.value = control.value
+			row.range = [control.min_value, control.max_value, control.step]
+		"text":
+			row.value = control.text
+		"tabs":
+			row.value = control.get_tab_title(control.current_tab) if control.current_tab >= 0 else ""
+			row.options = _item_labels(control).slice(0, 40)
+		"list":
+			var selected: PackedInt32Array = control.get_selected_items()
+			row.value = control.get_item_text(selected[0]) if not selected.is_empty() else ""
+			row.options = _item_labels(control).slice(0, 40)
+	if control is BaseButton and control.disabled:
+		row.disabled = true
+	if control is LineEdit and not control.editable:
+		row.disabled = true
+	if control.has_focus():
+		row.focused = true
+	return row
+
+
+func _cmd_look(request: Dictionary) -> Dictionary:
+	var scope: Node = get_tree().root if _bool(request.get("all", false)) else _ui_scope()
+	var rows: Array = []
+	for control: Control in _controls(scope, false):
+		rows.append(_look_row(control))
+		if rows.size() >= UI_LIMIT:
+			break
+	var focus: Control = get_viewport().gui_get_focus_owner()
+	var out := {route = _route(), screens = _screen_ids(), scope = _path(scope),
+		focus = _ref(focus) if focus != null else "", controls = rows}
+	if scope is Window and scope != get_tree().root:
+		out.window = {type = scope.get_class(), title = scope.title}
+		if scope is PopupMenu:
+			out.window.items = _item_labels(scope)
+	var session := _session()
+	if session != null and app.get("flight") != null:
+		var state := _flight_state(session)
+		out.flight = {aircraft = state.get("aircraft"), tick = state.get("tick"), paused = state.get("paused"),
+			pause_reason = state.get("pause_reason"), holds = state.get("holds"), crashed = state.get("crashed"),
+			height_m = snappedf(float(state.get("height_m", 0.0)), 0.1), speed_mps = snappedf(float(state.get("speed_mps", 0.0)), 0.1)}
+	out.next = _hints(out)
+	return _ok(out)
+
+
+## What an agent can do from here, as ready commands.
+func _hints(snapshot: Dictionary) -> Array:
+	var hints: Array = ["press ref=<ref> | choose ref=<ref> value=<v> (or field=/text= instead of ref=)"]
+	if snapshot.screens.any(func(id: Variant) -> bool: return str(id) != "home") or snapshot.has("window"):
+		hints.append("close  (Esc/Back on the top dialog or menu)")
+	match str(snapshot.route):
+		"home":
+			hints.append("setup aircraft=<id> start=<runway|airborne|hand_launch> landscape=<id> time_of_day=<preset>; catalog lists ids")
+			hints.append("fly  (then close + resume if the launch menu holds the flight)")
+		"flight":
+			var flight: Dictionary = snapshot.get("flight", {})
+			if flight.get("paused", false) and not flight.get("crashed", false):
+				hints.append("resume  (after close, when holds is [\"menu\"])")
+			if flight.get("crashed", false):
+				hints.append("restart | rewind seconds=2 (if armed) | home")
+			hints.append("sticks pitch= roll= yaw= throttle= for_s= | key name=<shortcut> | shortcuts | home")
+	hints.append("open screen=<%s>" % "|".join(SCREEN_OPENERS.keys()))
+	return hints
+
+
+## One verb for every widget: the value is an item label (option, tabs, list), on/off (toggle), a number (slider,
+## spin box) or text (text field, submitted). The change goes through the widget's own signals, as a player's would.
+func _cmd_choose(request: Dictionary) -> Dictionary:
+	if not request.has("value"):
+		return _fail("give value=<item label | on/off | number | text>")
+	var found := _find_control(request)
+	if found.has("error"):
+		return _fail(found.error)
+	var control: Control = found.control
+	var value: Variant = request.value
+	var ref := _ref(control)
+	match _role(control):
+		"option", "tabs", "list":
+			var choice := {ref = ref}
+			if value is float and value == floorf(value) and not _item_labels(control).has(str(value)):
+				choice.index = int(value)
+			else:
+				choice.item = str(value)
+			return _cmd_select(choice)
+		"toggle":
+			if control.disabled:
+				return _fail("%s is disabled" % _path(control))
+			var wanted := _bool(value)
+			if control.button_pressed == wanted:
+				return _ok({unchanged = true, row = _look_row(control)})
+			return _cmd_press({ref = ref})
+		"number", "slider":
+			var number: Variant = _number(value)
+			if number == null:
+				return _fail("%s takes a number in %s..%s" % [_field(control), control.min_value, control.max_value])
+			control.value = number # Range emits value_changed itself
+			return _settle(1, {row = _look_row(control)})
+		"text":
+			if control is LineEdit:
+				if not control.editable:
+					return _fail("%s is read-only" % _path(control))
+				control.text = str(value)
+				control.caret_column = control.text.length()
+				control.text_changed.emit(control.text)
+				if _bool(request.get("submit", true)):
+					control.text_submitted.emit(control.text)
+			else:
+				control.text = str(value)
+				control.text_changed.emit()
+			return _settle(1, {row = _look_row(control)})
+		"button":
+			return _fail("%s is a button: use press ref=%s" % [_label(control), ref])
+	return _fail("%s (%s) cannot take a value" % [_path(control), control.get_class()])
+
+
+## Valid values for every Home option and route command, so agents never guess ids.
+func _cmd_catalog(_request: Dictionary) -> Dictionary:
+	var aircraft: Array = []
+	for id: String in Catalog.flyable_ids():
+		var starts: Array = ["airborne"]
+		if Catalog.is_rotorcraft(id):
+			starts = ["runway", "airborne"]
+		else:
+			if Catalog.runway_supported(id):
+				starts.push_front("runway")
+			if Catalog.hand_launch_supported(id):
+				starts.append("hand_launch")
+		aircraft.append({id = id, name = Catalog.short_name(id), rotorcraft = Catalog.is_rotorcraft(id), starts = starts})
+	var home: Variant = app.get("home") if app != null else null
+	return _ok({aircraft = aircraft, landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
+		languages = Preferences.LANGUAGES, screens = SCREEN_OPENERS.keys(), camera_views = CameraViews,
+		gizmo_layers = FlightGizmos.LAYERS, selected = _home_selection() if home != null else {},
+		notes = ["start: a runway-less landscape or aircraft falls back (see setup's read-back)",
+			"rotorcraft: runway = helicopter pad, airborne = hover"]})
+
+
+func _home_selection() -> Dictionary:
+	var home: Variant = app.get("home")
+	var prefs: Variant = app.get("preferences")
+	return {aircraft = home.get("aircraft_id") if home != null else null, start = home.get("start_choice") if home != null else null,
+		landscape = app.get("landscape_id"), time_of_day = prefs.get("time_of_day") if prefs != null else null,
+		language = TranslationServer.get_locale()}
+
+
+## Apply Home choices through AppRoot's setters (as the Home buttons do), then read each one back.
+func _cmd_setup(request: Dictionary) -> Dictionary:
+	if app.get("home") == null or app.get("flight") != null or app.get("ground_vehicle") != null:
+		return _fail("setup works on Home: use home first")
+	# Validate everything first: an invalid value changes nothing at all.
+	var errors: Array = []
+	if request.has("language") and not Preferences.LANGUAGES.has(str(request.language)):
+		errors.append("language '%s' unknown; one of %s" % [request.language, Preferences.LANGUAGES.keys()])
+	if request.has("aircraft") and not Catalog.flyable_ids().has(str(request.aircraft)):
+		errors.append("aircraft '%s' unknown or not flyable; see catalog" % request.aircraft)
+	if request.has("landscape") and not Landscapes.has(str(request.landscape)):
+		errors.append("landscape '%s' unknown; one of %s" % [request.landscape, Landscapes.ids()])
+	if request.has("time_of_day") and not Conditions.HOME_CHOICES.has(str(request.time_of_day)):
+		errors.append("time_of_day '%s' unknown; one of %s" % [request.time_of_day, Conditions.HOME_CHOICES])
+	if request.has("start") and str(request.start) not in ["runway", "airborne", "hand_launch"]:
+		errors.append("start '%s' unknown; one of runway, airborne, hand_launch" % request.start)
+	if not errors.is_empty():
+		return _fail("nothing changed: " + "; ".join(errors))
+	if request.has("language"):
+		app.set_language(str(request.language))
+	if request.has("aircraft"):
+		app.set_aircraft(str(request.aircraft)) # before start: the start choice depends on the aircraft
+	if request.has("landscape"):
+		app.set_landscape(str(request.landscape))
+	if request.has("time_of_day"):
+		app.set_time_of_day(str(request.time_of_day))
+	if request.has("start"):
+		app.set_start_choice(str(request.start))
+	var wanted := {}
+	for key: String in ["aircraft", "start", "landscape", "time_of_day", "language"]:
+		if request.has(key):
+			wanted[key] = str(request[key])
+	return {pending = func() -> Variant:
+		var now := _home_selection()
+		var differs := {}
+		for key: String in wanted:
+			if str(now.get(key)) != wanted[key]:
+				differs[key] = {asked = wanted[key], got = now.get(key)}
+		# The landscape rebuilds over a few frames; wait for it, then report what really applies.
+		if differs.has("landscape") and _screen_ids().has("loading"):
+			return null
+		var out := {selected = now}
+		if not differs.is_empty():
+			out.differs = differs
+			out.note = "the app kept other values (an aircraft without a runway start, a landscape without a pad, ...)"
+		return _ok(out),
+		timeout_s = 120.0}
+
+
 func _settle(frames: int, result: Dictionary) -> Dictionary:
 	var until := Engine.get_process_frames() + frames
 	return {pending = func() -> Variant:
@@ -2042,7 +2843,7 @@ func _controls(scope: Node, labels: bool) -> Array[Control]:
 
 
 func _control_info(control: Control) -> Dictionary:
-	var info := {path = _path(control), type = control.get_class(), text = _label(control),
+	var info := {path = _path(control), type = control.get_class(), text = _label(control), ref = _ref(control),
 		focused = control.has_focus(), rect = [roundi(control.global_position.x), roundi(control.global_position.y),
 			roundi(control.size.x), roundi(control.size.y)]}
 	if control is BaseButton:
@@ -2063,6 +2864,9 @@ func _control_info(control: Control) -> Dictionary:
 		info.items = _item_labels(control)
 	if control is ItemList:
 		info.items = _item_labels(control)
+	var field := _field(control)
+	if not field.is_empty() and field != info.text:
+		info.field = field
 	return info
 
 
@@ -2074,28 +2878,51 @@ static func _label(control: Control) -> String:
 
 
 func _find_control(request: Dictionary) -> Dictionary:
+	if request.has("ref"):
+		var by_ref := _from_ref(str(request.ref))
+		return {control = by_ref} if by_ref != null else {error = "ref '%s' is gone (the screen changed): run look again" % request.ref}
+	if request.has("field"):
+		var wanted_field := str(request.field).to_lower()
+		var field_scope: Node = get_tree().root if _bool(request.get("all", false)) else _ui_scope()
+		var exact: Array = []
+		var partial: Array = []
+		for control: Control in _controls(field_scope, false):
+			var name := _field(control).to_lower()
+			if name == wanted_field:
+				exact.append(control)
+			elif not name.is_empty() and name.contains(wanted_field):
+				partial.append(control)
+		var picked: Array = exact if not exact.is_empty() else partial
+		if picked.size() == 1:
+			return {control = picked[0]}
+		if picked.is_empty():
+			return {error = "no field named '%s' in %s; run look" % [request.field, _path(field_scope)]}
+		return {error = "field '%s' is ambiguous: %s; use ref=" % [request.field, ", ".join(picked.map(func(c: Control) -> String:
+			return "%s (%s)" % [_ref(c), _field(c)]))]}
 	if request.has("path"):
 		var node := _node(str(request.path))
 		return {control = node} if node is Control else {error = "no Control at '%s'" % request.path}
 	if not request.has("text"):
-		return {error = "give text=<label> or path=<node>"}
+		return {error = "give ref=<ref from look>, field=<field name>, text=<label> or path=<node>"}
 	var wanted := str(request.text).to_lower()
 	var scope: Node = get_tree().root if _bool(request.get("all", false)) else _ui_scope()
 	# Best tier wins: exact label, label without its key hint ("DRIVE · Enter"), node name (an OptionButton shows its
 	# choice, its name is stable), label prefix, then any substring.
-	var tiers: Array = [[], [], [], [], []]
+	var tiers: Array = [[], [], [], [], [], []]
 	for control: Control in _controls(scope, false):
 		var label := _label(control).to_lower()
 		if label == wanted:
 			tiers[0].append(control)
 		elif label.get_slice(" · ", 0).strip_edges() == wanted:
 			tiers[1].append(control)
+		elif _field(control).to_lower() == wanted:
+			tiers[2].append(control) # "Window resolution" names the OptionButton that shows "Automatic"
 		elif str(control.name).to_lower() == wanted:
-			tiers[2].append(control)
-		elif label.begins_with(wanted):
 			tiers[3].append(control)
-		elif label.contains(wanted):
+		elif label.begins_with(wanted):
 			tiers[4].append(control)
+		elif label.contains(wanted):
+			tiers[5].append(control)
 	var matches: Array = []
 	for tier: Array in tiers:
 		if not tier.is_empty():
@@ -2104,8 +2931,8 @@ func _find_control(request: Dictionary) -> Dictionary:
 	if matches.size() == 1:
 		return {control = matches[0]}
 	if matches.is_empty():
-		return {error = "no visible control labelled '%s' in %s; list them with ui" % [request.text, _path(scope)]}
-	return {error = "'%s' is ambiguous: %s; use path=" % [request.text, ", ".join(matches.map(func(c: Control) -> String:
+		return {error = "no visible control labelled '%s' in %s; run look for refs, names and fields" % [request.text, _path(scope)]}
+	return {error = "'%s' is ambiguous: %s; use ref= (look) or path=" % [request.text, ", ".join(matches.map(func(c: Control) -> String:
 		return _path(c)))]}
 
 

@@ -4,6 +4,7 @@ extends RefCounted
 const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const Frames = preload("res://render/frames.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
+const Atmosphere = preload("res://render/atmosphere.gd")
 const SHADER: Shader = preload("res://render/near_grass.gdshader")
 const DATA_PATH: String = "res://data/fields/grass.json"
 const RADIUS_M: float = 30.0
@@ -244,6 +245,7 @@ static func build(field: Dictionary, ground: ShaderMaterial, exclusions: Array =
 		var value: Variant = ground.get_shader_parameter(parameter)
 		if value != null:
 			material.set_shader_parameter(parameter, value)
+	Atmosphere.track_shadow_material_copy(material, ground)
 	var mesh: ArrayMesh = clump_mesh()
 	mesh.surface_set_material(0, material)
 	var chunks: Array = clipped_chunks(field, rows, exclusions)

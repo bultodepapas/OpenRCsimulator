@@ -10,13 +10,18 @@ Session
                                                             --exported uses OPENRC_GODOT as the packaged debug executable
   status | ready [--timeout S] | stop [--force]            alive? / wait for it / quit it (prints crash + exit leaks)
   clean [--keep N]                                          delete old run folders (never a live session)
-Drive the app (any bridge command; `help` asks the app for its list)
+Drive the app (any bridge command; `help` asks the app for its list). Agents: start with `look`.
+  look | choose ref=<ref> value=<v> | press ref=<ref> | catalog | setup aircraft=<id> start=airborne
   ui | press text="Fly" | select text=X item="Y" | open screen=settings | close | type text=… into=…
   fly aircraft=<id> start=airborne | home | restart | key name=Shift+C | control name=gear_toggle
   sticks pitch=0.3 throttle=0.8 for_s=2 | drive throttle=0.6 for_s=1 | pause | step ticks=240
 Observe and hunt bugs
   state | logs [--since N] [--level …] [--follow] [--summary] | frames | objects [baseline|diff=true]
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
+  render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    inspect render-cost observations
+  rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
+  gizmos show=all | gizmos off=true                          flight-model lines: velocity, air, wind, forces, trail
+  bugit [--note TEXT] [--out DIR] | bugitgo DIR [--resume]   a reproducible report folder / restore its exact flight
   watch [--every TICKS] [--count N] [--csv FILE] name=expr …   live values every n simulation ticks
   timeline [--hitch] [--since N] [--until N] [--top N]         where a long frame's time went (launch --verbose)
 Scripts and checks
@@ -39,6 +44,7 @@ import csv
 import datetime
 import io
 import json
+import math
 import os
 import random
 import re
@@ -1139,12 +1145,13 @@ def smoke(argv: list[str]) -> int:
         step(f"monkey seed {seed}", monkey, ["--steps", steps, "--seed", seed, "--keys"])
         step("back to Home", home_reset, [])
         soak_file = Path(session["out"]) / "smoke-soak.txt"
-        # Atmosphere normally sweeps dead shadow-lighting WeakRefs every 64 new
-        # registrations. Settle that bounded bookkeeping before each census;
-        # live objects and the soak's zero-tolerance growth check are unchanged.
+        # These registries normally sweep dead WeakRefs every 64 new registrations.
+        # Settle that bounded bookkeeping before each census; live objects and
+        # the soak's zero-tolerance growth check are unchanged.
         soak_file.write_text("fly start=airborne\nwait frames=30\nhome\nwait frames=5\n"
-                             'eval expr=\'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()\'\n')
-        print("   settle: sweep dead shadow-lighting WeakRefs before each census", flush=True)
+                             'eval expr=\'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()\'\n'
+                             'eval expr=\'ResourceLoader.load("res://render/cloud_shadow_map.gd")._prune_consumers()\'\n')
+        print("   settle: sweep dead shadow-lighting and cloud-shadow WeakRefs before each census", flush=True)
         step(f"soak fly/Home x{cycles}", soak, [str(soak_file), "--cycles", cycles, "--warmup", "1"])
         hitches = result_of("frames")["hitch_total"]
         home_reset()
@@ -1234,6 +1241,121 @@ def repl() -> int:
             print(f"connection: {error}", file=sys.stderr)
 
 
+def format_look(result: dict) -> str:
+    """The look snapshot as short lines an agent (or a person) reads at a glance: one control per line, its ref first."""
+    out = [f"# route {result['route']} · screens {result['screens']} · scope {result['scope']} · focus {result['focus'] or '-'}"]
+    if "window" in result:
+        out.append(f"# dialog {result['window'].get('type')}: {result['window'].get('title', '')!r} "
+                   f"{result['window'].get('items', '')}")
+    flight = result.get("flight")
+    if flight:
+        out.append(f"# flight {flight['aircraft']} tick {flight['tick']} h {flight['height_m']} m v {flight['speed_mps']} m/s "
+                   f"paused {flight['paused']} {flight.get('pause_reason') or ''} holds {flight.get('holds')} "
+                   f"crashed {flight['crashed']}")
+    for row in result["controls"]:
+        line = f"{row['ref']:<13} {row['role']:<8} {json.dumps(row['name'], ensure_ascii=False)}"
+        if row.get("field"):
+            line += f" ({row['field']})"
+        if "value" in row:
+            line += f" = {json.dumps(row['value'], ensure_ascii=False)}"
+        if row.get("range"):
+            line += f" in {row['range'][0]:g}..{row['range'][1]:g}"
+        if row.get("options"):
+            shown = row["options"][:12]
+            line += "  [" + " | ".join(shown) + (" | …" if len(row["options"]) > 12 else "") + "]"
+        for flag in ("disabled", "focused"):
+            if row.get(flag):
+                line += f"  {flag}"
+        out.append(line)
+    out += [f"> {hint}" for hint in result.get("next", [])]
+    return "\n".join(out)
+
+
+def _finite_number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def _gpu_reading(value) -> str:
+    """Zero and invalid GPU timestamps do not establish a measurement."""
+    return f"{value:g}" if _finite_number(value) and value > 0 else "unavailable"
+
+
+def _raw_number(value) -> str:
+    return f"{value:g}" if _finite_number(value) else "unavailable"
+
+
+def _gpu_status(status) -> str:
+    if status == "unverified_freshness":
+        return "delayed, freshness unverified"
+    if status == "mixed_or_unavailable":
+        return "mixed or unavailable readings; freshness unverified"
+    if status == "unavailable_or_zero":
+        return "unavailable or zero"
+    if status == "synthetic_valid":
+        return "synthetic test data"
+    return "legacy or unknown status; freshness unverified"
+
+
+def print_ablation(result: dict) -> None:
+    """Show raw A-B-A observations without treating unverified timings as GPU savings."""
+    base = result["baseline"]
+    status = result.get("gpu_timing_status")
+    base_status = base.get("gpu_timing_status", status)
+    noise_status = result.get("noise_timing_status", base_status)
+    scope = "root" if result.get("gpu_ms_scope") == "root_only_freshness_unverified" else "reported (scope unknown)"
+    aggregate_available = base_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+    base_gpu = _gpu_reading(base.get("gpu_ms")) if aggregate_available else "unavailable"
+    if base_gpu == "unavailable":
+        range_text, drift, noise = "unavailable", "unavailable", "unavailable"
+    else:
+        range_text = f"{_gpu_reading(base.get('min_ms'))}..{_gpu_reading(base.get('max_ms'))}"
+        drift = _raw_number(base.get("drift_ms"))
+        noise = (_raw_number(result.get("noise_ms")) if noise_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                 else "unavailable")
+    freeze = (f"owned simulation freeze {result['frozen']}; paused at start {result['paused_at_start']}"
+              if "paused_at_start" in result else f"reported frozen {result['frozen']} (ownership unknown)")
+    print(f"# baseline GPU {scope} {base_gpu} ms ({_gpu_status(base_status)}); {base['draw_calls']} draw calls; "
+          f"raw range {range_text}, drift {drift}, noise {noise} ms; "
+          f"{result['frames']} frames per phase after {result['warmup']}; {freeze}"
+          + (f" ({result['freeze_scope']})" if result.get("freeze_scope") else ""))
+    print(f"{'raw ms':>9} {'raw %':>6}  sig  {'draws':>6} {'prims':>9} {'cpu ms':>7}  target")
+    for row in result["rows"]:
+        row_status = row.get("gpu_timing_status")
+        baseline = row.get("baseline_gpu_ms", base.get("gpu_ms"))
+        # Old responses omit per-phase readings. Their numeric delta can be inspected only as legacy data.
+        phase = row.get("gpu_ms", baseline)
+        available = (_gpu_reading(baseline) != "unavailable" and _gpu_reading(phase) != "unavailable"
+                     and row_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                     and _finite_number(row.get("saved_gpu_ms")) and _finite_number(row.get("saved_pct")))
+        delta = f"{row['saved_gpu_ms']:.3f}" if available else "n/a"
+        percent = f"{row['saved_pct']:.1f}" if available else "n/a"
+        flag = "*" if (status == "synthetic_valid" and row_status == "synthetic_valid"
+                       and available and row.get("significant") and not row.get("overridden")) else " "
+        note = "  (app turned it back on: not trustworthy)" if row["overridden"] else ""
+        phases = ""
+        if all(key in row for key in ("baseline_before_gpu_ms", "gpu_ms", "baseline_after_gpu_ms",
+                                      "baseline_before_gpu_timing_status", "target_gpu_timing_status",
+                                      "baseline_after_gpu_timing_status")):
+            readings = []
+            for label, field, state_field in (("before", "baseline_before_gpu_ms", "baseline_before_gpu_timing_status"),
+                                              ("target", "gpu_ms", "target_gpu_timing_status"),
+                                              ("after", "baseline_after_gpu_ms", "baseline_after_gpu_timing_status")):
+                phase_status = row[state_field]
+                reading = (_gpu_reading(row[field]) if phase_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                           else "unavailable")
+                readings.append(f"{label} {reading} ({_gpu_status(phase_status)})")
+            phases = " [raw phase ms: " + ", ".join(readings) + "]"
+        print(f"{delta:>9} {percent:>6}   {flag}  {row['saved_draw_calls']:>6} "
+              f"{row['saved_primitives']:>9} {row['saved_cpu_ms']:>7.3f}  {row['name']} "
+              f"({_gpu_status(row_status)}){phases}{note}")
+    if result.get("skipped"):
+        reasons = result.get("skipped_reasons", {})
+        print("# skipped: " + ", ".join(f"{name} ({reasons[name]})" if name in reasons else name
+                                      for name in result["skipped"]))
+    if result.get("pause_restore"):
+        print(f"# pause restore: {json.dumps(result['pause_restore'], ensure_ascii=False)}")
+
+
 def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = False) -> None:
     if command == "ui" and not raw_json and isinstance(result, dict):
         print_ui(result, full_paths)
@@ -1257,11 +1379,49 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
               f"p99 {result['p99_ms']}, max {result['max_ms']} ms; {result['fps_mean']} fps, 1 % low {result['fps_1pct_low']} fps; "
               f"physics catch-up frames {result['physics_catch_up_frames']}; hitches {result['hitch_total']} "
               f"(> max({result['hitch_ms']} ms, {result['factor']}x typical {result['typical_ms']} ms))")
+        if isinstance(result.get("gpu"), dict):
+            gpu = result["gpu"]
+            print(f"GPU root ({_gpu_status(gpu.get('status', result.get('gpu_timing_status')))}): "
+                  f"p50 {_gpu_reading(gpu.get('p50_ms'))}, p95 {_gpu_reading(gpu.get('p95_ms'))}, "
+                  f"p99 {_gpu_reading(gpu.get('p99_ms'))}, max {_gpu_reading(gpu.get('max_ms'))} ms")
+        else:
+            print("GPU root: unavailable")
         for hitch in result["hitches"]:
-            causes = ", ".join(hitch["causes"]) or "no counter changed"
+            causes = ", ".join(f"{cause} [legacy claim; freshness unverified]" if cause.startswith("GPU-bound") else cause
+                               for cause in hitch["causes"]) or "no counter changed"
             print(f"  frame {hitch['frame']}: {hitch['ms']} ms, {hitch['physics_ticks']} ticks; {causes}; deltas {hitch['deltas']}")
             for text in hitch["log"][:3]:
                 print(f"      log: {text}")
+    elif command == "look" and not raw_json and isinstance(result, dict) and "controls" in result:
+        print(format_look(result))
+    elif command == "ablate" and not raw_json and isinstance(result, dict) and "rows" in result:
+        print_ablation(result)
+    elif command == "render" and not raw_json and isinstance(result, dict) and result.get("measuring"):
+        status = _gpu_status(result.get("gpu_timing_status"))
+        scope = "root" if result.get("gpu_ms_scope") == "root_only_freshness_unverified" else "reported (scope unknown)"
+        print(f"# {result['frames']} frames, {result['statistic']}: GPU {scope} {_gpu_reading(result.get('gpu_ms'))} ms "
+              f"(p95 {_gpu_reading(result.get('gpu_p95_ms'))}; {status}), frame {result['frame_ms']} ms = {result['fps']} fps")
+        if result.get("gpu_ms_scope") != "root_only_freshness_unverified":
+            print(f"root GPU reading: {_gpu_reading(result.get('root_gpu_ms'))} ms (freshness unverified)")
+        sub_note = ("not included in root; may not have drawn" if result.get("sub_gpu_ms_scope") ==
+                    "last_readings_unverified_may_not_have_drawn" else "legacy or unknown scope")
+        print(f"SubViewport last-reading sum: {_gpu_reading(result.get('sub_gpu_ms'))} ms "
+              f"(freshness unverified; {sub_note})")
+        print("bound: unknown (GPU timestamp freshness does not establish a bottleneck)")
+        print(f"draw calls {result['draw_calls']:g} (shadow {result['shadow_draw_calls']:g}, canvas {result['canvas_draw_calls']:g}), "
+              f"objects {result['objects']:g}, primitives {result['primitives']:g}; GPU budget unavailable")
+        config = result["config"]
+        print(f"{config['renderer']} on {config['adapter']}, {config['size'][0]}x{config['size'][1]}, vsync {config['vsync']}, "
+              f"MSAA {config['msaa_3d']}, 3D scale {config['scaling_3d_scale']}, view {config['debug_draw']}")
+        for row in result["viewports"]:
+            print(f"  {_gpu_reading(row.get('gpu_ms')):>11} ms  {row['size'][0]}x{row['size'][1]} "
+                  f"{row['update']:<8} {row['path']} ({_gpu_status(row.get('gpu_timing_status'))}; may not have drawn)")
+    elif command == "layers" and not raw_json and isinstance(result, dict) and "layers" in result:
+        print(f"# {result['root']} (depth {result['depth']}): geometry  multimesh  shadow  lights  path")
+        for row in result["layers"]:
+            hidden = "" if row["visible"] else "  (hidden)"
+            print(f"{row['geometry']:>9} {row['multimesh_instances']:>10} {row['shadow_casters']:>7} {row['lights']:>7}  "
+                  f"{'  ' * (row['level'] - 1)}{row['path']}{hidden}")
     elif command == "objects" and not raw_json and isinstance(result, dict):
         print("totals " + ", ".join(f"{k} {v:g}" for k, v in result["totals"].items()))
         for title in ("diff",):
@@ -1312,6 +1472,150 @@ def print_ui(result: dict, full_paths: bool = False) -> None:
         print(f"{mark} {item['type']:<13} {json.dumps(item['text'], ensure_ascii=False):<34} {' '.join(state):<16} {shown}")
 
 
+def _flag_value(argv: list[str], name: str, default: str | None = None) -> str | None:
+    return argv[argv.index(name) + 1] if name in argv and argv.index(name) + 1 < len(argv) else default
+
+
+def bugit(argv: list[str]) -> int:
+    """BugIt (after Unreal's BugIt/BugItGo): one folder with what is on screen now and how to get back to it.
+    report.json holds every reading; REPORT.md is the short human summary; checkpoint.json is the exact flight
+    state that `bugitgo` restores. Nothing is written into the repository (the default folder is under tmp/)."""
+    note = _flag_value(argv, "--note", "") or ""
+    out = _flag_value(argv, "--out")
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    folder = Path(out).resolve() if out else RUNS / "bugit" / stamp
+    folder.mkdir(parents=True, exist_ok=True)
+    report: dict = {"format": "openrc-bugit v1", "note": note,
+                    "created": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+                    "port": port()}
+
+    def grab(key: str, cmd: str, args: dict | None = None, timeout: float = 60.0):
+        try:
+            report[key] = result_of(cmd, args or {}, timeout=timeout)
+        except Refused as error:
+            report[key] = {"unavailable": str(error)}
+        return report[key]
+
+    ping = grab("ping", "ping")
+    state = grab("state", "state", {"fresh": True})
+    grab("perf", "perf")
+    grab("frames", "frames", {"window": 600})
+    grab("problems", "logs", {"summary": True, "level": "error,warning,script_error"})
+    since = max(0, int(ping.get("log_seq", 0)) - 200) if isinstance(ping, dict) else 0
+    grab("recent_log", "logs", {"since": since, "limit": 200})
+    grab("render", "render", {"frames": 30})
+    grab("objects", "objects", {"top": 15})
+    grab("prefs", "prefs")
+    grab("rewind", "rewind", {"list": True})
+    if isinstance(state, dict) and state.get("route") == "flight":
+        grab("view", "view")
+        grab("gizmo_values", "eval", {"expr": "bridge._gizmos.last if bridge._gizmos != null else {}"})
+        grab("checkpoint", "checkpoint", {"action": "save", "path": str(folder / "checkpoint.json")})
+    grab("screenshot", "screenshot", {"path": str(folder / "screenshot.jpg"), "format": "jpg"}, timeout=120.0)
+    report["git"] = _git_identity()
+    (folder / "report.json").write_text(json.dumps(report, indent=1, default=str), encoding="utf-8")
+    (folder / "REPORT.md").write_text(_bugit_markdown(report, folder), encoding="utf-8")
+    flight = state.get("flight", {}) if isinstance(state, dict) else {}
+    print(json.dumps({"folder": str(folder), "route": state.get("route") if isinstance(state, dict) else None,
+                      "aircraft": flight.get("aircraft"), "tick": flight.get("tick"),
+                      "checkpoint": "path" in report.get("checkpoint", {}),
+                      "screenshot": "path" in report.get("screenshot", {}),
+                      "problems": len(report["problems"].get("groups", [])) if isinstance(report["problems"], dict) else None,
+                      "replay": f"debugctl.py bugitgo {folder}"}))
+    return 0
+
+
+def _git_identity() -> dict:
+    def git(*args: str) -> str:
+        try:
+            return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True, timeout=20).stdout.strip()
+        except (OSError, subprocess.SubprocessError):
+            return ""
+    changed = [line for line in git("status", "--short").splitlines() if line.strip()]
+    return {"head": git("rev-parse", "HEAD"), "branch": git("rev-parse", "--abbrev-ref", "HEAD"),
+            "changed_files": len(changed), "changed": changed[:200]}
+
+
+def _bugit_markdown(report: dict, folder: Path) -> str:
+    state = report.get("state", {}) if isinstance(report.get("state"), dict) else {}
+    flight = state.get("flight", {}) or {}
+    lines = [f"# BugIt {report['created']}", ""]
+    if report["note"]:
+        lines += [report["note"], ""]
+    git = report["git"]
+    lines.append(f"- Source: `{git['head'][:12]}` on `{git['branch']}`, {git['changed_files']} changed files")
+    ping = report.get("ping", {})
+    lines.append(f"- Engine: {ping.get('godot')}, display {ping.get('display')}; route `{state.get('route')}`, "
+                 f"screens {state.get('screens')}")
+    if flight:
+        attitude = flight.get("attitude_deg", {})
+        lines.append(f"- Flight: `{flight.get('aircraft')}` tick {flight.get('tick')} ({flight.get('time_s')} s), "
+                     f"height {flight.get('height_m')} m, speed {flight.get('speed_mps')} m/s, "
+                     f"attitude {attitude}, paused {flight.get('paused')} {flight.get('pause_reason') or ''}, "
+                     f"crashed {flight.get('crashed')}")
+    frames = report.get("frames", {})
+    if "p50_ms" in frames:
+        lines.append(f"- Frames: p50 {frames['p50_ms']} ms, p95 {frames['p95_ms']} ms, max {frames['max_ms']} ms, "
+                     f"{frames['hitch_total']} hitches")
+    render = report.get("render", {})
+    if render.get("measuring"):
+        lines.append(f"- Render: GPU {render['gpu_ms']} ms, {render['draw_calls']:g} draw calls; {render['bound']}")
+    problems = report.get("problems", {})
+    groups = problems.get("groups", []) if isinstance(problems, dict) else []
+    lines.append(f"- Errors and warnings: {len(groups)} distinct")
+    for group in groups[:10]:
+        lines.append(f"  - {group['count']}× {group['level']}: {group['text'][:200]} ({group.get('script', '')})")
+    lines.append("")
+    if (folder / "screenshot.jpg").exists():
+        lines += ["![screenshot](screenshot.jpg)", ""]
+    if "path" in report.get("checkpoint", {}):
+        lines += ["Reproduce: `python3 tools/debug/debugctl.py bugitgo " + str(folder) + "` (a running app; it flies "
+                  "the same aircraft and restores this exact state, paused).", ""]
+    lines.append("Everything else: `report.json`.")
+    return "\n".join(lines) + "\n"
+
+
+def bugitgo(argv: list[str]) -> int:
+    """BugItGo: restore a bugit folder's exact flight state in the running app (same aircraft, field and weather)."""
+    if not argv or argv[0].startswith("--"):
+        print("usage: bugitgo FOLDER [--resume]", file=sys.stderr)
+        return 2
+    folder = Path(argv[0]).resolve()
+    report = json.loads((folder / "report.json").read_text(encoding="utf-8"))
+    checkpoint = folder / "checkpoint.json"
+    flight = (report.get("state") or {}).get("flight") or {}
+    if not checkpoint.exists() or not flight.get("aircraft"):
+        print(f"bugitgo: {folder} holds no flight checkpoint (the report was taken on {report.get('state', {}).get('route')})",
+              file=sys.stderr)
+        return 1
+    state = result_of("state", {"fresh": True})
+    current = (state.get("flight") or {}).get("aircraft")
+    if state.get("route") != "flight" or current != flight["aircraft"]:
+        if state.get("route") not in ("home", None):
+            result_of("home", timeout=120.0)
+        result_of("fly", {"aircraft": flight["aircraft"], "start": "airborne"}, timeout=300.0)
+    for _ in range(3):  # the launch review / pause menu holds the flight
+        if not result_of("state", {"fresh": True}).get("screens"):
+            break
+        try:
+            result_of("close")
+        except Refused:
+            break
+    loaded = result_of("checkpoint", {"action": "load", "path": str(checkpoint), "pause": True})
+    view = report.get("view", {})
+    if isinstance(view, dict) and view.get("view"):
+        with contextlib.suppress(Refused):
+            result_of("view", {"name": view["view"]})
+    if "--resume" in argv:
+        with contextlib.suppress(Refused):
+            result_of("resume")
+    restored = loaded.get("flight", {})
+    print(json.dumps({"restored": str(checkpoint), "aircraft": restored.get("aircraft"), "tick": restored.get("tick"),
+                      "height_m": restored.get("height_m"), "paused": restored.get("paused"),
+                      "recorded_tick": flight.get("tick"), "note": report.get("note", "")}))
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if not argv or "-h" in argv or "--help" in argv:  # never contacts an app, whatever comes before it
         print(__doc__)
@@ -1353,6 +1657,10 @@ def main(argv: list[str]) -> int:
             print(f"debugctl: {len(others)} live sessions on ports {others}: which one is yours? Repeat with "
                   f"OPENRC_DEBUG_BRIDGE=<port> {Path(sys.argv[0]).name} {command} …", file=sys.stderr)
             return 2
+        if command == "bugit":
+            return bugit(rest)
+        if command == "bugitgo":
+            return bugitgo(rest)
         flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]
         result = result_of(command, parse_args([w for w in rest if w not in flags]))
     except Refused as error:
