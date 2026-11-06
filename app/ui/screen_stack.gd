@@ -73,6 +73,8 @@ func pop(dispose := true, restore_focus := true) -> Node:
 	if not _entries.is_empty():
 		_entries.back().surface.set_active(true)
 	entry.surface.close(restore_focus)
+	if restore_focus and not _entries.is_empty():
+		_entries.back().surface.ensure_focus()
 	_sync_hold()
 	surface_closed.emit(str(entry.id), restore_focus)
 	if dispose:

@@ -80,6 +80,7 @@ func _init(can_end := true, trial_mode := false) -> void:
 	name = "PauseMenu"
 	layer = LAYER
 	var screen := Screen.mount(self, "Screen")
+	screen.focus_fallback = _focus_primary
 	screen.kind = Screen.Kind.SIDEBAR
 	screen.escape_before_gui = true
 	screen.dismiss_option_popup_first = true
@@ -235,20 +236,22 @@ func show_for(session: Node, failure_config: Dictionary = {}, notifications_enab
 	if not is_inside_tree():
 		return
 	var tree := get_tree()
-	var focus_callback := Callable(self, "_focus_primary")
+	var focus_callback := Callable(get_node("Screen"), "ensure_focus")
 	if not tree.process_frame.is_connected(focus_callback):
 		tree.process_frame.connect(focus_callback, CONNECT_ONE_SHOT)
 
 
 func _focus_primary() -> void:
-	if not is_inside_tree():
+	if not is_inside_tree() or is_queued_for_deletion():
 		return
 	var screen := get_node_or_null("Screen")
-	if screen == null or not screen._active:
+	if screen == null or not screen._active or not screen.is_visible_in_tree():
 		return
 	var primary := continue_button if not continue_button.disabled else restart_button
-	if controller_recovery_button.visible and bool(_session.get("_controller_lost")):
+	if Screen.can_focus(controller_recovery_button) and is_instance_valid(_session) and bool(_session.get("_controller_lost")):
 		primary = controller_recovery_button # Continue cannot succeed until a device is chosen
+	if not Screen.can_focus(primary):
+		return
 	primary.grab_focus()
 	var scroll := find_child("PauseScroll", true, false) as ScrollContainer
 	if scroll != null:
@@ -443,7 +446,10 @@ func _refresh_controller_recovery() -> void:
 	if needed and not bool(_session.get("_controller_lost")) and _session.radio.is_gamepad():
 		needed = _controller_attention_elapsed >= GAMEPAD_ATTENTION_DELAY
 	# Only where the shell offers Controls at all (controls_button is hidden without a registry).
+	var had_focus := controller_recovery_button.has_focus()
 	controller_recovery_button.visible = controls_button.visible and needed
+	if had_focus and not controller_recovery_button.visible:
+		get_node("Screen").ensure_focus()
 
 
 func _refresh_controller_value() -> void:

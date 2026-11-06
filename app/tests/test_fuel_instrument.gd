@@ -267,7 +267,7 @@ func _rendered_fixture(requested_dir: String) -> void:
 	var output := requested_dir
 	if not output.is_absolute_path():
 		output = ProjectSettings.globalize_path("res://").path_join(output).simplify_path()
-	for filename: String in ["board.png", "motion_before.png", "motion_after.png"]:
+	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png"]:
 		if FileAccess.file_exists(output.path_join(filename)):
 			_check("fixture never overwrites a prior image", false, output.path_join(filename))
 			return
@@ -298,6 +298,24 @@ func _rendered_fixture(requested_dir: String) -> void:
 	var board: Image = root.get_texture().get_image()
 	_check("fixture board uses a 1080p viewport", board.get_size() == Vector2i(1920, 1080), str(board.get_size()))
 	_check("fixture board was saved", board.save_png(output.path_join("board.png")) == OK)
+	TranslationServer.set_locale("es")
+	for i in widgets.size():
+		var compact: Control = widgets[i]
+		compact.set_appearance("small", 0.94, true)
+		compact.title_label.text = TranslationServer.translate("Fuel tank").to_upper()
+		var fuel := _fuel(families[i], 0.5 if i < 3 else 0.08)
+		if i == 3:
+			fuel.low_fuel = true
+			fuel.reserve_estimated = true
+		if i == 4: fuel = {}
+		_refresh(compact, fuel, _telemetry(20.0))
+	await _settle()
+	await RenderingServer.frame_post_draw
+	_check("Spanish compact fixture was saved", root.get_texture().get_image().save_png(output.path_join("compact_es.png")) == OK)
+	TranslationServer.set_locale("en")
+	for widget: Control in widgets:
+		widget.set_appearance("normal", 0.94, false)
+	await _settle()
 
 	var tank: Control = widgets[0]
 	var sample := _fuel("glow", 0.5)

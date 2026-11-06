@@ -13,6 +13,8 @@ var kind: Kind = Kind.MODAL
 var escape_before_gui := false
 var dismiss_option_popup_first := false
 var return_focus: Control
+## Optional screen-owned default when its opener disappears. Never activates an action.
+var focus_fallback: Callable
 var _active := true
 var _focus_policy: FocusBehaviorRecursive
 var _mouse_policy: MouseBehaviorRecursive
@@ -81,10 +83,28 @@ func _entrance_alpha(value: float) -> void:
 func close(restore_focus := true) -> void:
 	if _entrance != null: _entrance.kill()
 	modulate.a = 1.0
-	if restore_focus and is_instance_valid(return_focus) and return_focus.is_inside_tree() \
-		and return_focus.is_visible_in_tree() and return_focus.focus_mode != Control.FOCUS_NONE:
-		return_focus.grab_focus()
+	if restore_focus and can_focus(return_focus):
+		# The stack has detached this surface. Use the opener's live viewport,
+		# and preserve focus acquired by the returning screen during activation.
+		if not can_focus(return_focus.get_viewport().gui_get_focus_owner()):
+			return_focus.grab_focus()
 	return_focus = null
+
+
+func ensure_focus() -> void:
+	if not _active or not is_inside_tree() or not is_visible_in_tree() or is_queued_for_deletion():
+		return
+	if can_focus(get_viewport().gui_get_focus_owner()):
+		return
+	if focus_fallback.is_valid():
+		focus_fallback.call()
+
+
+static func can_focus(control: Variant) -> bool:
+	return is_instance_valid(control) and control is Control and control.is_inside_tree() \
+		and not control.is_queued_for_deletion() and control.is_visible_in_tree() \
+		and control.focus_mode != Control.FOCUS_NONE \
+		and (not control is BaseButton or not control.disabled)
 
 
 ## Keep lower screens drawn, but remove all of their controls from mouse and keyboard navigation.

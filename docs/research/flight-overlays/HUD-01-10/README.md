@@ -670,6 +670,15 @@ fill/reserve propagation and unchanged flight state. Receipts are in ignored `tm
 `fuel-widget-final-player-*`, `fuel-widget-manager-*`, `fuel-family-production-*` and `fuel-widget-redraw-*`.
 The redraw suite covers the shared base graphics; the dedicated liquid tests cover the new shader path.
 
+`test_fuel_instrument.gd` passed **61 headless checks and 71 rendered checks**. It covers invalid/missing data,
+family fallback, usable-empty residue, reserve provenance, motion at unchanged quantity, paused samples,
+reset/rewind/gaps, hidden/reopened widgets and compact geometry. Pixel comparisons establish visible motion,
+identical frozen frames, correct render-clock lag handling and invariant full/empty endpoints under bank.
+The rendered run also includes all headless cases. Receipts are under `tmp/fuel-widget-tests-agent/` and
+`tmp/fuel-widget-tests-final/`. English normal and Spanish small/compact fixtures in
+`tmp/fuel-widget-preview-20261106/` were visually inspected at 1920×1080. These use synthetic telemetry and
+are explicitly separate from the production-aircraft integration checks.
+
 Native debug-bridge review used Godot **4.8-beta2**, Windows, RTX 3090 driver 617.42, OpenGL Compatibility,
 **1920×1080**. The turbine's All instruments view fits without overlap; a roll input changed the liquid target.
 Captures and engine log remain in `tmp/debug-bridge/20261106-140913-47870/`. Shutdown reported no crash or leaked
