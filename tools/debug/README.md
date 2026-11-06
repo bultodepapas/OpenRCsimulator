@@ -178,10 +178,11 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - `soak scenario.txt --cycles N` runs a script repeatedly. After warm-up it diffs every cycle against the first
     measured one, and reports counters that grow in every cycle and any new errors. It also prints process RSS from
     `/proc` on Linux.
-  - The `smoke` fly/Home scenario waits for deferred teardown and explicitly sweeps dead shadow-lighting weak
-    references before each census. That registry otherwise sweeps every 64 registrations, which can make a short
-    soak report bounded bookkeeping as growth. Live references and zero-tolerance growth checks remain in scope;
-    `soak` itself does not sweep caches. `test_shadow_settings.gd` checks the registry's ordinary bound.
+  - The `smoke` fly/Home scenario waits for deferred teardown and sweeps dead weak references from the
+    shadow-lighting and cloud-shadow consumer registries before each census. These normally sweep every 64 new
+    registrations, which can make a short soak report bounded bookkeeping as growth. Live references and
+    zero-tolerance growth checks remain in scope; `soak` itself does not sweep caches. `test_shadow_settings.gd`
+    and `test_cloud_shadow_map.gd` check the registries' ordinary bounds.
 - **Script CPU: `profile`.**
   - Launch with `--script-profile`. Read `profile seconds=20` (the last 20 s), or `profile since=<log_seq>` with the
     sequence `ping` gave before the action you want to measure. The engine prints a sample about every 1–3 s, so use

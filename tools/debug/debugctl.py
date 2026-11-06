@@ -1139,12 +1139,13 @@ def smoke(argv: list[str]) -> int:
         step(f"monkey seed {seed}", monkey, ["--steps", steps, "--seed", seed, "--keys"])
         step("back to Home", home_reset, [])
         soak_file = Path(session["out"]) / "smoke-soak.txt"
-        # Atmosphere normally sweeps dead shadow-lighting WeakRefs every 64 new
-        # registrations. Settle that bounded bookkeeping before each census;
-        # live objects and the soak's zero-tolerance growth check are unchanged.
+        # These registries normally sweep dead WeakRefs every 64 new registrations.
+        # Settle that bounded bookkeeping before each census; live objects and
+        # the soak's zero-tolerance growth check are unchanged.
         soak_file.write_text("fly start=airborne\nwait frames=30\nhome\nwait frames=5\n"
-                             'eval expr=\'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()\'\n')
-        print("   settle: sweep dead shadow-lighting WeakRefs before each census", flush=True)
+                             'eval expr=\'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()\'\n'
+                             'eval expr=\'ResourceLoader.load("res://render/cloud_shadow_map.gd")._prune_consumers()\'\n')
+        print("   settle: sweep dead shadow-lighting and cloud-shadow WeakRefs before each census", flush=True)
         step(f"soak fly/Home x{cycles}", soak, [str(soak_file), "--cycles", cycles, "--warmup", "1"])
         hitches = result_of("frames")["hitch_total"]
         home_reset()

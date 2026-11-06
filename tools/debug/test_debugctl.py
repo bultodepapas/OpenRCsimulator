@@ -604,7 +604,8 @@ class DebugctlTests(unittest.TestCase):
         scenarios.mkdir()
         for growing in (False, True):
             with self.subTest(growing=growing):
-                state = {"live": 100, "dead": 0, "baseline": 0, "sweeps": 0,
+                state = {"live": 100, "dead": {"shadow": 0, "cloud": 0}, "baseline": 0,
+                         "sweeps": {"shadow": 0, "cloud": 0},
                          "home_pending": False, "settled": False}
 
                 def fake_launch(_args):
@@ -620,8 +621,10 @@ class DebugctlTests(unittest.TestCase):
                     words = debugctl.split_line(line)
                     args = debugctl.parse_args(words[1:])
                     if words[0] == "fly":
-                        state["dead"] += 16
+                        state["dead"]["shadow"] += 16
+                        state["dead"]["cloud"] += 4
                         state["live"] += int(growing)
+                        state["settled"] = False
                     elif words[0] == "home":
                         state["home_pending"] = True
                     elif words[0] == "wait" and state["home_pending"]:
@@ -630,11 +633,14 @@ class DebugctlTests(unittest.TestCase):
                         state["settled"] = True
                     elif words[0] == "eval":
                         self.assertTrue(state["settled"], "teardown must settle before the sweep")
-                        self.assertEqual(args["expr"],
-                            'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()')
-                        state["sweeps"] += 1
-                        state["dead"] = 0
-                        state["settled"] = False
+                        expressions = {
+                            'ResourceLoader.load("res://render/atmosphere.gd")._prune_shadow_lighting()': "shadow",
+                            'ResourceLoader.load("res://render/cloud_shadow_map.gd")._prune_consumers()': "cloud",
+                        }
+                        self.assertIn(args["expr"], expressions)
+                        registry = expressions[args["expr"]]
+                        state["sweeps"][registry] += 1
+                        state["dead"][registry] = 0
 
                 def result(command, args=None):
                     args = args or {}
@@ -642,7 +648,8 @@ class DebugctlTests(unittest.TestCase):
                     if command == "frames": return {"hitch_total": 0}
                     if command == "wait": return {}
                     if command == "objects":
-                        objects = state["live"] + state["dead"]
+                        self.assertEqual(state["dead"], {"shadow": 0, "cloud": 0})
+                        objects = state["live"] + sum(state["dead"].values())
                         if args.get("baseline"): state["baseline"] = objects
                         return {"totals": {"objects": objects, "nodes": 1, "orphans": 0,
                                            "resources": 1, "static_memory_mib": 1},
@@ -658,10 +665,10 @@ class DebugctlTests(unittest.TestCase):
                                     refuse_ambiguous=lambda: False), contextlib.redirect_stdout(output):
                     status = debugctl.smoke([])
                 report = json.loads(output.getvalue().strip().splitlines()[-1])
-                self.assertEqual(state["sweeps"], 4) # one warm-up and three measured cycles
+                self.assertEqual(state["sweeps"], {"shadow": 4, "cloud": 4}) # one warm-up and three measured cycles
                 self.assertEqual(status, int(growing))
                 self.assertEqual(report["ok"], not growing)
-                self.assertIn("settle: sweep dead shadow-lighting WeakRefs", output.getvalue())
+                self.assertIn("settle: sweep dead shadow-lighting and cloud-shadow WeakRefs", output.getvalue())
                 if growing:
                     self.assertIn("GROWS totals: objects +2", output.getvalue())
                     self.assertIn("soak fly/Home x3", report["failed"])
