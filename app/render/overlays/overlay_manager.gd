@@ -63,6 +63,9 @@ var _since_text := INF
 var _last_telemetry := {}
 var _warning_codes := PackedStringArray()
 var _raw_warning_codes := PackedStringArray()
+var _selection_input := PackedStringArray()
+var _selection_filters := -1
+var _selected_warnings := PackedStringArray()
 var _alert_policy := AlertPolicy.new()
 var _has_battery := false
 var _battery_dock := Vector3(-1.0, -1.0, -1.0)
@@ -477,7 +480,17 @@ func refresh_numbers(snap: Dictionary) -> void:
 
 
 func _refresh_warnings(animate := true) -> void:
-	_warning_codes = AlertPolicy.select_codes(_raw_warning_codes, settings)
+	# Only selection is cached. Accepted battery/fuel/training observations and the
+	# audio clock still run for every snapshot, including unchanged source codes.
+	var filters := int(bool(settings.get("warning_energy", true))) \
+		| (int(bool(settings.get("warning_navigation", true))) << 1) \
+		| (int(bool(settings.get("warning_status", true))) << 2) \
+		| (int(bool(settings.get("warning_training", false))) << 3)
+	if filters != _selection_filters or _raw_warning_codes != _selection_input:
+		_selection_filters = filters
+		_selection_input = _raw_warning_codes.duplicate()
+		_selected_warnings = AlertPolicy.select_codes(_raw_warning_codes, settings)
+	_warning_codes = _selected_warnings
 	if not is_overlay_visible("warnings"):
 		frames.warnings.clear_immediate()
 		frames.warnings.visible = false

@@ -80,6 +80,7 @@ var warning_limit_picker: OptionButton
 var warning_motion_picker: OptionButton
 var warning_volume_slider: HSlider
 var warning_volume_value: Label
+var warning_test_button: Button
 var warning_switches := {}
 var switches := {}
 var done_button: Button
@@ -458,6 +459,7 @@ func _sync() -> void:
 	warning_volume_value.text = "%d%%" % roundi(volume * 100.0)
 	for key: String in warning_switches:
 		warning_switches[key].set_pressed_no_signal(bool(settings.get(key, Settings.WARNING_DEFAULTS[key])))
+	warning_test_button.disabled = not bool(settings.get("warning_sound", true)) or volume <= 0.0
 	for id: String in Settings.IDS:
 		switches[id].set_pressed_no_signal(settings.visible.has(id))
 	lock_switch.set_pressed_no_signal(bool(settings.get("layout_locked", false)))
@@ -509,6 +511,10 @@ func _warning_volume_row(column: VBoxContainer) -> void:
 		warning_volume_value.text = "%d%%" % roundi(value * 100.0)
 		if not _syncing:
 			manager.set_warning_option("warning_volume", value))
+	warning_test_button = Widgets.button(tr("Test sound"), "", "TestAlertSound")
+	warning_test_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	warning_test_button.pressed.connect(func() -> void: manager.alert_audio.preview("caution"))
+	column.add_child(warning_test_button)
 
 
 func _nearest_opacity_index(opacity: float) -> int:

@@ -1,0 +1,30 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   first recording save failure is pending
+ok   same generation is not auto-retried
+ok   explicit discard resolves the first generation
+ok   new manually failed recording is not hidden by the old discard
+ok   a stale dialog cannot discard or retry the new failure
+ok   new generation discard is explicit
+ok   new active recording is stopped independently
+ok   manual save after Stay reconciles pending without retry
+ok   a new generation supersedes old pending identity
+ok   stale pending actions refuse the replacement generation
+ok   stopped unexported adapter is saved once
+ok   pending adapter does not auto-retry
+ok   failed explicit retry retains pending and data
+ok   adapter discard refusal retains pending and data
+ok   adapter discard accepts only its captured generation
+ok   new stopped adapter generation remains independently pending
+ok   stale adapter discard does not touch replacement data
+ok   manual ground export reconciles pending without re-export
+ok   Retry after an external save does not save twice
+ok   legacy recorder failure remains supported
+ok   legacy recorder failure remains pending without automatic retry
+ok   legacy recorder can still be discarded
+ok   legacy active recording clears the object-scoped discard
+ok   discard marker does not retain its recorder
+ok   real recorders begin at generation zero
+ok   real recorder starts increment the generation
+ok   starting again changes generation even on the same object
+Trace departure generations: 27 checks, 0 failed

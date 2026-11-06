@@ -9493,8 +9493,8 @@ msgstr "Wähle eine Steuerung, um fortzufahren."
 msgid "Reconnect the radio to continue."
 msgstr "Verbinde den Sender erneut, um fortzufahren."
 
-msgid "Reduce angle of attack."
-msgstr "Verringere den Anstellwinkel."
+msgid "Ease angle of attack toward zero."
+msgstr "Führe den Anstellwinkel sanft in Richtung null."
 
 msgid "Fast sink near terrain."
 msgstr "Schnelles Sinken nahe am Boden."
@@ -9558,3 +9558,13 @@ msgstr "Übernehmen oder verwerfen Sie ausstehende Feldeingaben, bevor Sie eine 
 
 msgid "Preset not applied. The draft is unchanged."
 msgstr "Voreinstellung nicht angewendet. Der Entwurf bleibt unverändert."
+
+# UI-31-R2: shared recording recovery for flights and ground vehicles.
+msgid "Recording not saved"
+msgstr "Aufzeichnung nicht gespeichert"
+
+msgid "The recording was not saved (error %d). Retry saving, discard this recording and continue, or stay."
+msgstr "Die Aufzeichnung konnte nicht gespeichert werden (Fehler %d). Erneut speichern, diese Aufzeichnung verwerfen und fortfahren oder bleiben."
+
+msgid "Discard recording and continue"
+msgstr "Aufzeichnung verwerfen und fortfahren"

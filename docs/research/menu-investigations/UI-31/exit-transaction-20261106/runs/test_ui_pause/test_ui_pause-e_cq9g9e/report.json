@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "555029df-475f-4f5f-9a74-d06f6c7826cb",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_pause.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:35:28.698954+00:00",
+  "label": "test_ui_pause",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\test_ui_pause\\test_ui_pause-e_cq9g9e\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\test_ui_pause\\test_ui_pause-e_cq9g9e\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "UI pause:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "UI pause:"
+  ],
+  "reason": "missing_required_text",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 46.985,
+  "log_bytes": 7049,
+  "log_sha256": "b97d0aad44864a9ed20fd14dbd3a3d6065235ace964e93395951539ef8a0beac"
+}

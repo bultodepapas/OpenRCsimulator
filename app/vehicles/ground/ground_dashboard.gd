@@ -236,7 +236,7 @@ func _ready() -> void:
 	plot.visible = false
 	root_control.add_child(plot)
 	set_controllers([], -1, false)
-	resume_button.grab_focus.call_deferred()
+	_focus_resume.call_deferred()
 
 
 func set_controllers(devices: Array, selected: int, needs_selection: bool) -> void:
@@ -345,11 +345,21 @@ func set_menu(shown: bool) -> void:
 	menu_visible = shown
 	panel.visible = shown
 	if shown:
-		resume_button.grab_focus.call_deferred()
+		_focus_resume.call_deferred()
 	else:
 		var focus := root_control.get_viewport().gui_get_focus_owner()
 		if focus != null:
 			focus.release_focus()
+
+
+func _focus_resume() -> void:
+	if not is_inside_tree() or not menu_visible or not is_instance_valid(resume_button) \
+		or not resume_button.is_inside_tree() or not resume_button.is_visible_in_tree() \
+		or resume_button.get_focus_mode_with_override() == Control.FOCUS_NONE:
+		return
+	var focus := root_control.get_viewport().gui_get_focus_owner()
+	if is_instance_valid(focus) and focus.is_visible_in_tree(): return
+	resume_button.grab_focus()
 
 func select_spawn(id: String) -> void:
 	var index := spawn_ids.find(id)

@@ -40,6 +40,56 @@ identify that scope separately from later unrelated edits.
 These are software and headless layout checks, not physical-controller, native
 visual or screen-reader qualification. Required CI remains separate.
 
+## Coordinated departures (UI-31-R2, 2026-11-06)
+
+External audits A13 UI2-01/UI2-05 and A14 F14 identify three parts of one failure:
+garage recordings could bypass root quit, Workshop recovery was deleted before a
+later cancellation, and trace-to-statistics recovery released the departure guard.
+
+AppRoot now retains the destination, original session holds, input ownership and
+recording decisions until commit or cancellation. Airplane, helicopter and ground
+recordings have generation identities; an earlier discard cannot authorize losing
+a later recording. Ground keeps its own explicit neutral/Resume policy. Failed
+statistics closure also restores an idle session's open state. Workshop authorizes
+Discard separately from terminal recovery cleanup, preserving its existing identity
+check against newer writers.
+
+Dialog callbacks are bound to their owner and request generation. Retired windows
+hide before successors open; an incumbent exclusive decision is cancelled before a
+new quit request. The underlying activity cannot start a recording or navigate in
+the frame between dialogs. Controller edge tracking, ground physical-button
+reconciliation and deferred Garage focus preserve usable controls after Stay.
+The independent Good Enemy review found these input/focus cases during integration;
+the final bounded source review reported no additional concrete blocker.
+
+[Verification manifest](exit-transaction-20261106/verification.json) and
+[reproducible snapshot patch](exit-transaction-20261106/tested-snapshot.patch) retain
+**910 passing checks across 18 focused suites**, including **115 checks in four new
+regressions**. The final receipts are complete with zero engine errors or warnings:
+
+| New regression | Checks | Boundary |
+| --- | ---: | --- |
+| `test_exit_transaction` | 41 | Real Recorder/Trace and statistics store write failures; Quit and End; Retry, Discard, Stay, Cancel and Leave; Workshop snapshot bytes; stale/duplicate events; input gaps; incumbent Statistics dialog. |
+| `test_ground_exit_transaction` | 22 | Both root and ground close owners, active/stopped recordings, repeated close, retained samples, manual save/Home, Retry/Discard, pad edges and Garage focus. |
+| `test_ground_departure` | 25 | Real session generation/discard contract, unchanged state/tapes/damage, managed/standalone ownership and weak adapter lifetime. |
+| `test_trace_departure_generations` | 27 | Replacement recordings, stale decisions, manual-save reconciliation, refused adapter discard, weak ownership and both flight recorders. |
+
+Affected existing suites cover Pause/Quit/Restart recovery, loading, audio retirement,
+Workshop navigation/recovery, statistics lifecycle, controller routing, ground sessions
+and activity, and all translation catalogs. The controller/statistics suites include
+eight additional assertions. No physics law, aircraft data or golden flight changed.
+
+Runs used pinned Godot `4.8.beta2.official.cafc17a19`, Windows headless and isolated
+preferences in a frozen checkout derived from `5460013fd3`. New integration fixtures
+use a 1920×1080 logical viewport. The ground close fixture visits both production
+handlers while excluding nested Windows, matching the pinned engine's
+[window-notification boundary](https://github.com/godotengine/godot/blob/cafc17a19/scene/main/window.cpp#L828).
+Earlier failed checks and fixture corrections remain in the manifest. Ground export
+outcomes use an injected adapter; flight trace/statistics failures use real filesystem
+operations. The RCV session suite explicitly skips its unstaged native-backend case.
+Native OS-window interaction, physical controllers, rendered/assistive-technology
+acceptance and required full CI remain separate qualification gates.
+
 ## Behaviour
 
 | Finding | Change |

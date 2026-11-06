@@ -900,3 +900,77 @@ Live baseline session: `tmp/debug-bridge/20261106-150542-47870/`, clean shutdown
 Final SHA-256: `fuel_liquid.gdshader` = `dbbe65e204a06ceb814ac5eb155153a5ed44c1f73faf6b70fceafb649a64a441`;
 `test_fuel_instrument.gd` = `61724a142fe721e7970e939bbf21a3e6c77a2aa2355f664054b0ae0253fa2e07`.
 Full CI, Mobile/Metal, Forward+, WebGL and other-GPU qualification were not run for this localized change.
+
+### Alert motion and sound (2026-11-06, HUD-09-R3)
+
+Research preceded implementation. [Material 3 motion](https://m3.material.io/styles/motion) informed the
+Playful/Subtle distinction; the older [Material duration and easing guide](https://m1.material.io/motion/duration-easing.html)
+informed a quicker exit than entry. The selected 230/160 ms timings are this project's choices.
+[Xbox audio accessibility](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/105)
+and [motion settings](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/117)
+informed independent alert volume, mute and motion controls. This does not claim guideline conformance.
+The sounds reuse the existing CC0 Impact Sounds bank; its [source mapping](../../../../assets/ui-audio/README.md)
+remains authoritative. No new sound/image assets or dependencies were added.
+
+Playful arrivals use a small spring slide, Subtle a smaller cubic slide, and Off/global reduced motion settle
+immediately. Text remains opaque. On insertion, survivors occupy their new vertical slots immediately and settle
+horizontally, keeping urgent copy separate; removals reflow upward over 230 ms. Cleared copy disappears from
+the visual/accessibility tree immediately while its unlabelled glass silhouette exits over 160 ms. Explicit
+close/reset removes every silhouette. Active cards, retirees and their reusable pool are bounded; there is
+no recurring idle process for motion. The existing single 560 ms optical sweep remains.
+
+The manager now routes all selected warning audio through one Master-bus voice, including finite-fuel reserve;
+the accepted fuel-crossing signal remains, without a second player. New danger immediately replaces lower
+severity or lower-priority danger audio. Other cues use a 0.9 s global gap; a repeated code needs 0.8 s absent
+and a 4 s cooldown. A lower-priority danger inside that gap is suppressed rather than queued. Clear confirmation
+requires at least 1 s of actual active flight plus 0.3 s quiet. Initial state, menus, hidden warnings, ordinary
+pause, option changes, reset and rewind silently re-baseline. A new radio/controller-loss cue can still play
+when that fault itself pauses flight. Test sound explicitly auditions a caution without changing flight history.
+
+GOOD ENEMY review found and corrected a lost critical cue after a recent caution and ambiguous signed-AoA
+stall guidance. Motion tests additionally exposed insertion overlap, intermediate-container-sort jumps and
+detached-node teardown defects; those were fixed before the final native capture.
+
+Checked results on Windows / pinned Godot 4.8-beta2:
+
+| Focused script | Passed checks |
+| --- | ---: |
+| `test_warning_motion.gd` | 30 |
+| `test_alert_audio.gd` | 51 |
+| `test_alert_feedback.gd` | 16 |
+| `test_warning_settings.gd` | 89 |
+| `test_overlay_manager.gd` | 222 |
+| `test_overlay_fuel_flight.gd` | 25 |
+| `test_alert_policy.gd` | 33 |
+| `test_warning_presentation.gd`, rendered | 49 |
+
+Total: **515 checks**, plus language coverage for all **2666 source messages** across all eight catalogs.
+The 1080p rendered checks retain contrast ≥4.5:1 over white/black through the optical sweep and measurable
+scene transmission. Motion checks sample text rectangles during insertion, interruption, churn, hide/reset,
+reduced motion and teardown. Receipts are in `tmp/godot-checks/alert-feedback-*` and
+`tmp/alerts-motion-ui/checks/`; the final manager/boundary/fuel runs use the `*-frozen` labels.
+
+The reusable [feedback fixture](../../../../research/flight-overlays/feedback_preview.gd) exercises actual
+production rail/audio classes without simulation state. Pass `--out=<fresh absolute directory>`; native PCM
+recording additionally needs `--record-audio`, `--display-driver headless --audio-driver WASAPI`, and real time
+(omit `--fixed-fps`/`--write-movie`). Final output: `tmp/alert-feedback-HUD09R3/native-final/`. At 48 kHz stereo,
+all four cue windows contain nonzero PCM; overall peak is **0.2474**, RMS **0.00711**. The Master-muted pass
+contains **zero nonzero samples**. These are mixer measurements, not speaker preference or output latency.
+
+The 499-frame movie is **1920×1080 at 60 fps**, reviewed during insertion and removal. Godot Movie Maker takes
+its initial viewport from project settings, so capture used an ignored temporary project mirror with only
+viewport width/height changed from 1280×720 to 1920×1080. The production project was unchanged. The first
+720p movie was diagnostic only. Final preview `tmp/alert-feedback-HUD09R3/alert-feedback-native.mp4` combines
+the 1080p video with the separate WASAPI mix, shifted 50 ms to align fixture preroll; it is not a latency test.
+Source/artifact hashes and PCM-window review are retained beside it. No images or recordings are added to Git.
+
+Native OpenGL Compatibility / RTX 3090 review also covered Spanish controls and Test sound at 1920×1080
+(`tmp/debug-bridge/20261106-154912-47878/`, shot 002). Final-source alert fixtures in a paused production flight
+were reviewed at 1920×1080 and 2560×1440 (`tmp/debug-bridge/20261106-155206-47879/`, shots 001–002), using injected
+selected codes for presentation review. The loaded warning-script hash matched the candidate; both sessions
+closed with no crash or leaked objects. These do not validate physical warning thresholds or flight behavior.
+
+Final SHA-256: `warnings_bar.gd` = `f033075500e0fc83e91d1b173a6e8a6bac404e80ae52022da309f70e88166ee0`;
+`alert_audio.gd` = `a00c33753c72187977f46768727f3732a1df440e553f7e4a55ceab26856c133c`;
+`overlay_manager.gd` = `15ba9e53047ddb18dc640477dd092ab75ff0e305b182a0edd8fa981d023377fe`.
+Full CI, other renderers/hardware and perceptual audio preference remain unqualified by this focused pass.

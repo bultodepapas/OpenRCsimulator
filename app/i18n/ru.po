@@ -9362,8 +9362,8 @@ msgstr "Выберите управление для продолжения."
 msgid "Reconnect the radio to continue."
 msgstr "Подключите передатчик снова для продолжения."
 
-msgid "Reduce angle of attack."
-msgstr "Уменьшите угол атаки."
+msgid "Ease angle of attack toward zero."
+msgstr "Плавно приближайте угол атаки к нулю."
 
 msgid "Fast sink near terrain."
 msgstr "Быстрое снижение у земли."
@@ -9415,3 +9415,13 @@ msgstr "Примените или отмените незавершённые и
 
 msgid "Preset not applied. The draft is unchanged."
 msgstr "Предустановка не применена. Черновик не изменён."
+
+# UI-31-R2: shared recording recovery for flights and ground vehicles.
+msgid "Recording not saved"
+msgstr "Запись не сохранена"
+
+msgid "The recording was not saved (error %d). Retry saving, discard this recording and continue, or stay."
+msgstr "Не удалось сохранить запись (ошибка %d). Повторите сохранение, удалите эту запись и продолжите или останьтесь здесь."
+
+msgid "Discard recording and continue"
+msgstr "Удалить запись и продолжить"

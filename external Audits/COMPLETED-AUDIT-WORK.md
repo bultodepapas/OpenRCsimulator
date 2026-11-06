@@ -1,6 +1,6 @@
 # External audits — implemented work
 
-Reviewed **2026-11-06**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. No runtime tests were rerun for this classification.
+Reviewed **2026-11-06**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
@@ -8,6 +8,9 @@ Each finding row includes an **Original report** link; implementation evidence r
 
 | Source / ID | Delivered behavior | Evidence / limits | Original report |
 | --- | --- | --- | --- |
+| A13 UI2-01 | Root owns ground recording save/retry/stay/discard and window-close decisions; failed export vetoes departure. | [UI-31-R2](../docs/research/menu-investigations/UI-31/README.md#coordinated-departures-ui-31-r2-2026-11-06): 910 focused checks across 18 suites, including ground integration and standalone contracts. Native/physical qualification separate. | [A13 original][A13] |
+| A13 UI2-05 | Workshop Discard authorizes departure; snapshot deletion waits for final quit commitment and retains the existing identity check. | [UI-31-R2](../docs/research/menu-investigations/UI-31/README.md#coordinated-departures-ui-31-r2-2026-11-06): exact recovery bytes survive trace Stay and statistics Cancel; terminal cleanup verified. | [A13 original][A13] |
+| A14 F14 | One coordinator retains destination, pause/input ownership, recording generations and statistics decisions through commit/cancel; stale callbacks cannot affect successors. | [UI-31-R2](../docs/research/menu-investigations/UI-31/README.md#coordinated-departures-ui-31-r2-2026-11-06): real trace/statistics write failures, Quit/End, repeats, input gaps, earlier exclusive dialogs and async final shutdown checked. | [A14 original][A14] |
 | A11 F01 | New controller profile uses an independent draft/UUID. | [UI-15-GP-01-R1](../docs/research/controller-support-2026-10-14/README.md#new-profile-identity-2026-11-06-ui-15-gp-01-r1): 57 new + 283 existing checks. Physical/native acceptance separate. | [A11 original][A11] |
 | A11 F02 | Recovery restores usable Pause focus without resuming or stealing newer focus. | [UI-31-R1](../docs/research/menu-investigations/UI-31/README.md#successful-controller-recovery-focus-ui-31-r1-2026-11-06): 72 new + 2,275 existing checks. | [A11 original][A11] |
 | A14 F10 | Starting presets patch current recipe, preserving compatible measurements and unrelated data; pending/incompatible proposals refuse. | [AE-09d-R1](../docs/research/aircraft-editor/AE-08b-09/README.md#preset-integrity-ae-09d-r1-2026-11-06): 88 new + 319 existing checks. | [A14 original][A14] |
@@ -33,6 +36,8 @@ These delivered changes supersede corresponding A1 implementation requests; targ
 | Failed shoreline attachment | [0fced1b46](https://github.com/bultodepapas/OpenRCsimulator/commit/0fced1b46): unchanged/refused/covered geometry, rollback/retry; 52 lake + 14 helicopter checks reported. | A15 H03 concerns successful attachment lacking physics context, still pending. | [A1 original][A1] |
 
 The solar support candidate was reverted (`36ce206fd`) after the M1 screen; it is not a delivered speedup. Instrumentation eligibility must be checked against current gates before accepting historical measurements.
+
+**Coordinated departure update (2026-11-06):** A13 UI2-01/UI2-05 and A14 F14 retain distinct historical witnesses under one delivered coordinator. A17's excluded synthetic statistics reentry test is not another defect and does not negate A14's transition evidence. [UI-31-R2](../docs/research/menu-investigations/UI-31/README.md#coordinated-departures-ui-31-r2-2026-11-06) retains the identified candidate, 115 checks in four new regressions, affected existing coverage and failed intermediate receipts. Final focused runs have zero engine errors/warnings. Original reports: [A13][A13], [A14][A14], [A17][A17].
 
 ## Retained implementation notes
 

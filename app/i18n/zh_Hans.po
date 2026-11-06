@@ -8548,8 +8548,8 @@ msgstr "选择控制方式以继续。"
 msgid "Reconnect the radio to continue."
 msgstr "重新连接遥控器以继续。"
 
-msgid "Reduce angle of attack."
-msgstr "减小迎角。"
+msgid "Ease angle of attack toward zero."
+msgstr "平缓地将迎角调整至接近零。"
 
 msgid "Fast sink near terrain."
 msgstr "接近地面时快速下沉。"
@@ -8613,3 +8613,13 @@ msgstr "应用预设前，请先应用或取消尚未完成的字段编辑。"
 
 msgid "Preset not applied. The draft is unchanged."
 msgstr "未应用预设。草稿保持不变。"
+
+# UI-31-R2: shared recording recovery for flights and ground vehicles.
+msgid "Recording not saved"
+msgstr "记录未保存"
+
+msgid "The recording was not saved (error %d). Retry saving, discard this recording and continue, or stay."
+msgstr "无法保存记录（错误 %d）。请重试保存、丢弃此记录并继续，或留在此处。"
+
+msgid "Discard recording and continue"
+msgstr "丢弃记录并继续"

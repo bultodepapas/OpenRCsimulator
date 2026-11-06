@@ -130,6 +130,7 @@ var _guard_error: Label
 var _navigation_proceed: Callable
 var _navigation_cancel: Callable
 var _navigation_focus: Control
+var _navigation_defer_commit := false
 var _library_button: Button
 var _build_identity: Label
 var _page_buttons: Dictionary = {}
@@ -2471,7 +2472,7 @@ func _finish_close() -> void:
 	closed.emit()
 
 
-func request_navigation(destination: String, proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null) -> void:
+func request_navigation(destination: String, proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null, defer_commit := false) -> void:
 	if is_instance_valid(_guard_dialog): return
 	if not has_unsaved_changes():
 		# Undo may have restored the baseline just before closing, ahead of the debounce.
@@ -2481,6 +2482,7 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 		return
 	_navigation_proceed = proceed
 	_navigation_cancel = cancel
+	_navigation_defer_commit = defer_commit
 	_navigation_focus = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	_guard_dialog = ConfirmationDialog.new()
 	_guard_dialog.name = "UnsavedBuildDialog"
@@ -2500,11 +2502,15 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# Save and Discard can close the Workshop, and this dialog with it, while the dialog's own viewport is still
 	# dispatching the keyboard Accept that pressed the button: end that dispatch first (PT1h-R8 monkey finding).
+	var guard := _guard_dialog
 	_guard_dialog.confirmed.connect(func() -> void:
+		if guard != _guard_dialog: return
 		_end_dialog_input(_guard_dialog)
 		_navigation_save())
-	_guard_dialog.canceled.connect(_navigation_abort)
+	_guard_dialog.canceled.connect(func() -> void:
+		if guard == _guard_dialog: _navigation_abort())
 	_guard_dialog.custom_action.connect(func(action: String) -> void:
+		if guard != _guard_dialog: return
 		if action == "discard":
 			_end_dialog_input(_guard_dialog)
 			_navigation_finish())
@@ -2559,9 +2565,14 @@ func _navigation_save() -> void:
 
 func _navigation_finish() -> void:
 	var next := _navigation_proceed
-	if recovery_enabled and not _recovery_pending: _discard_current_recovery()
+	if not _navigation_defer_commit: commit_navigation()
 	_clear_navigation()
 	if next.is_valid(): next.call()
+
+
+## A host with later save guards commits recovery deletion only after the entire departure succeeds.
+func commit_navigation() -> void:
+	if recovery_enabled and not _recovery_pending: _discard_current_recovery()
 
 
 func _navigation_abort() -> void:
@@ -2580,6 +2591,7 @@ func _clear_navigation() -> void:
 	_navigation_proceed = Callable()
 	_navigation_cancel = Callable()
 	_navigation_focus = null
+	_navigation_defer_commit = false
 
 
 func _number_changed(value: String, key: String) -> void:

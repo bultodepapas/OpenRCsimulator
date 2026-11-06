@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f368ad62-36af-4290-a31c-ca03b95b9262",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_trace_departure_generations.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:34:13.593785+00:00",
+  "label": "generations",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\generations-r2\\generations-e79xa0r4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\generations-r2\\generations-e79xa0r4\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Trace departure generations:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.046,
+  "log_bytes": 1605,
+  "log_sha256": "168fc98e5e59e28a15ea92e4af34997809732b9befdcfe5787678efdc422fb05"
+}

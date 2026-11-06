@@ -142,6 +142,7 @@ class TrackedApp extends "res://app_root.gd":
 			"trim_stats": SessionScript.launch_trim_cache_stats().duplicate(true),
 			"status": str(last_flight_loading.get("status", "")),
 		}
+		_complete_exit_request() # this fixture replaces the terminal commit, including its cleanup
 
 
 class QuitPreparationApp extends "res://app_root.gd":

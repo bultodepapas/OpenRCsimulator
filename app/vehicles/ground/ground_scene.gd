@@ -86,6 +86,7 @@ var startup_error := ""
 var vehicle_id := VehicleCatalog.DEFAULT_ID
 ## Set before entering the tree when AppRoot owns window-close and departure decisions.
 var departure_managed := false
+var _departure_guard_active := false
 var _visual_adapter: Script
 var _vehicle_entry := {}
 var session: Node
@@ -698,6 +699,7 @@ func get_departure_recorder() -> RefCounted:
 
 ## A cancelled departure leaves the car in the garage for an explicit, neutral resume.
 func begin_exit_guard() -> void:
+	_departure_guard_active = true
 	if not is_instance_valid(session):
 		return
 	open_garage()
@@ -705,8 +707,31 @@ func begin_exit_guard() -> void:
 
 
 func end_exit_guard() -> void:
+	_reconcile_departure_buttons()
+	_departure_guard_active = false
 	if is_instance_valid(session):
 		session.release_pause_hold("exit_guard")
+	# The host restores input synchronously; deferred focus then serves Stay from driving.
+	# A committed departure may detach us first, which the dashboard helper safely ignores.
+	if is_instance_valid(dashboard) and dashboard.has_method("_focus_resume"):
+		dashboard.call_deferred("_focus_resume")
+
+
+func _reconcile_departure_buttons() -> void:
+	# An exclusive Window may consume releases without delivering _unhandled_input here.
+	# Reconcile physical state so released buttons rearm and held buttons remain consumed.
+	var devices := {}
+	for role: String in ["ui", "flight"]:
+		var device := _registry_selected_device_id(role)
+		if device >= 0: devices[device] = true
+	for edge: String in _shortcut_buttons:
+		devices[int(edge.get_slice(":", 0))] = true
+	_shortcut_buttons.clear()
+	for device: int in devices:
+		if not _accept_controller_button(device): continue
+		for button: int in JOY_BUTTON_MAX:
+			if bool(joy_button_reader.call(device, button)):
+				_shortcut_buttons["%d:%d" % [device, button]] = true
 
 
 func open_garage() -> void:
@@ -725,6 +750,7 @@ func _controls_ready(controls: Dictionary) -> bool:
 		and controls.get("reverse", true) == false
 
 func handle_action(action: String) -> void:
+	if _departure_guard_active: return
 	match action:
 		"menu": open_garage()
 		"resume":
@@ -1053,6 +1079,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_shortcut_buttons.erase("%d:%d" % [event.device, event.button_index])
 		return
 	if not _focused: return
+	if _departure_guard_active and not event is InputEventJoypadButton: return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_ESCAPE: handle_action("menu")
@@ -1073,6 +1100,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _shortcut_buttons.has(edge):
 			return
 		_shortcut_buttons[edge] = true
+		if _departure_guard_active: return # observe edges, including a button held through Stay
 		var action := ""
 		if event.button_index == JOY_BUTTON_START:
 			action = "resume" if dashboard.menu_visible else "menu"

@@ -44,6 +44,8 @@ class FlightRows extends RefCounted:
 
 var trace: FlightRows=FlightRows.new()
 var recording: bool=false
+## Monotonic identity for each new manual recording, independent of saved trace data.
+var recording_generation: int=0
 var note: String=""
 var _recording_error: String=""
 var _sim: Node
@@ -53,6 +55,7 @@ func _init(sim: Node,controls: Callable=Callable()) -> void:
  _controls=controls
  sim.stepped.connect(_record)
 func start(meta: Dictionary) -> void:
+ recording_generation+=1
  _recording_error=""
  trace.clear()
  trace.meta=meta.duplicate(true)

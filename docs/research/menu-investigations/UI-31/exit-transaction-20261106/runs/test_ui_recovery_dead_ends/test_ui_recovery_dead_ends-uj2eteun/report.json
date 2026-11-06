@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b8dd7f8b-1235-475a-85eb-2a6bfc487229",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_recovery_dead_ends.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:36:15.911101+00:00",
+  "label": "test_ui_recovery_dead_ends",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\test_ui_recovery_dead_ends\\test_ui_recovery_dead_ends-uj2eteun\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\test_ui_recovery_dead_ends\\test_ui_recovery_dead_ends-uj2eteun\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "UI recovery dead ends:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 27.672,
+  "log_bytes": 2939,
+  "log_sha256": "5920f0d4e1ab057e2d70ea345467508bfd0c0050d3523729093a0136d8ad7951"
+}

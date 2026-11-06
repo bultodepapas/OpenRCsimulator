@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ec2b3dde-c62a-451a-91c0-11b3a1386a8d",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_quit.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:34:16.805284+00:00",
+  "label": "ui-quit",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\ui-quit\\ui-quit-_gyanjh_\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\ui-quit\\ui-quit-_gyanjh_\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "UI quit:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 23.672,
+  "log_bytes": 4308,
+  "log_sha256": "60e30b130721b707c0b0be99f6504f59dd8c212f8e42aa11d5db6d1d6e617e8a"
+}

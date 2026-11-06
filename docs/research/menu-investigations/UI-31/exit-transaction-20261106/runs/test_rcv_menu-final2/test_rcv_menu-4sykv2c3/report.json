@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0531b124-140c-461f-b8e8-13745deeeb3a",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_rcv_menu.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:58:05.765557+00:00",
+  "label": "test_rcv_menu",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\test_rcv_menu-final2\\test_rcv_menu-4sykv2c3\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\exit-transaction\\test_rcv_menu-final2\\test_rcv_menu-4sykv2c3\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "RCV menu:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.422,
+  "log_bytes": 105,
+  "log_sha256": "1a13d1b0e90089fe8717ff8354435e22da91682e73c81fb571432ced0530a0eb"
+}

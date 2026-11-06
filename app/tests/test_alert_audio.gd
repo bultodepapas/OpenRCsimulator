@@ -78,14 +78,14 @@ func _global_gap_and_preemption() -> void:
 	_check("blocked cues never play later", _observe(2.5, 2.5, ["experimental", "far"]) == "" and cues == [["info", "experimental"]])
 	_fresh()
 	_observe(0, 0, [])
-	_observe(1, 1, ["experimental"])
-	_check("even a danger waits for urgent gap", _observe(1.2, 1.2, ["experimental", "stall"]) == "")
-	_check("blocked danger is not queued", _observe(1.8, 1.8, ["experimental", "stall"]) == "")
-	_fresh()
-	_observe(0, 0, [])
-	_observe(1, 1, ["experimental"])
-	_check("new danger preempts lower severity after urgent gap", _observe(1.4, 1.4, ["experimental", "stall"]) == "danger"
-		and cues == [["info", "experimental"], ["danger", "stall"]])
+	_observe(1, 1, ["far"])
+	_check("new danger immediately preempts a caution", _observe(1.1, 1.1, ["far", "stall"]) == "danger"
+		and cues == [["caution", "far"], ["danger", "stall"]])
+	_check("higher-priority danger immediately replaces lower-priority danger", _observe(1.2, 1.2, ["far", "stall", "failsafe"]) == "danger"
+		and cues.back() == ["danger", "failsafe"])
+	_check("lower-priority danger remains bounded by the global gap", _observe(1.3, 1.3, ["far", "stall", "failsafe", "low"]) == "")
+	_check("suppressed lower-priority danger is not queued", _observe(2.5, 2.5, ["far", "stall", "failsafe", "low"]) == ""
+		and cues.size() == 3)
 	_check("preemption keeps a single voice", director.get_child_count() == 1 and director.audio_player().stream == Director.STREAM_BY_CUE.danger)
 
 
@@ -139,6 +139,12 @@ func _baselines_and_configuration() -> void:
 	_observe(1, 1, ["far"])
 	director.configure({"warning_navigation": false})
 	_check("category change stops voice and does not make an all-clear", not director.audio_player().playing
+		and _observe(2.2, 2.2, []) == "" and _observe(2.6, 2.6, []) == "" and cues.size() == 1)
+	_fresh()
+	_observe(0, 0, [])
+	_observe(1, 1, ["far"])
+	director.configure({"warning_motion": "off"})
+	_check("motion option change also establishes a silent baseline", not director.audio_player().playing
 		and _observe(2.2, 2.2, []) == "" and _observe(2.6, 2.6, []) == "" and cues.size() == 1)
 	director.configure({"visible": []})
 	_check("Warnings off is silent even if caller asks to play", _observe(3, 3, []) == ""

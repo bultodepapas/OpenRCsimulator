@@ -1,0 +1,716 @@
+{
+  "step": "UI-31-R2",
+  "date": "2026-11-06",
+  "base_commit": "5460013fd3c7cab18daa194def2ba312ff6a8551",
+  "integration_head_observed": "ece94f9ede8c90c92652ebce68196f81eded6c70",
+  "engine": "Godot 4.8.beta2.official.cafc17a19",
+  "environment": "Windows headless; isolated preferences and imported disposable checkout",
+  "new_integration_viewport": [
+    1920,
+    1080
+  ],
+  "final_suites": [
+    {
+      "suite": "generations-r2",
+      "checks": 27,
+      "report": "runs/generations-r2/generations-e79xa0r4/report.json",
+      "seconds": 3.046
+    },
+    {
+      "suite": "test_ground_departure-final2",
+      "checks": 25,
+      "report": "runs/test_ground_departure-final2/test_ground_departure-c1ix9uby/report.json",
+      "seconds": 4.0
+    },
+    {
+      "suite": "test_ground_exit_transaction-final2",
+      "checks": 22,
+      "report": "runs/test_ground_exit_transaction-final2/test_ground_exit_transaction-joh8cz8u/report.json",
+      "seconds": 12.172
+    },
+    {
+      "suite": "test_exit_transaction-final3",
+      "checks": 41,
+      "report": "runs/test_exit_transaction-final3/test_exit_transaction-fl3n8zi_/report.json",
+      "seconds": 29.125
+    },
+    {
+      "suite": "controller-routing",
+      "checks": 28,
+      "report": "runs/controller-routing/controller-routing-9t7cqft2/report.json",
+      "seconds": 7.188
+    },
+    {
+      "suite": "test_flight_statistics_lifecycle",
+      "checks": 74,
+      "report": "runs/test_flight_statistics_lifecycle/test_flight_statistics_lifecycle-rxuf3b3c/report.json",
+      "seconds": 5.766
+    },
+    {
+      "suite": "test_workshop_document_flow",
+      "checks": 23,
+      "report": "runs/test_workshop_document_flow/test_workshop_document_flow-mizj4n3m/report.json",
+      "seconds": 6.859
+    },
+    {
+      "suite": "test_workshop_recovery_ui",
+      "checks": 75,
+      "report": "runs/test_workshop_recovery_ui/test_workshop_recovery_ui-red2wjpe/report.json",
+      "seconds": 31.094
+    },
+    {
+      "suite": "test_ui_recovery_dead_ends-final",
+      "checks": 26,
+      "report": "runs/test_ui_recovery_dead_ends-final/test_ui_recovery_dead_ends-bbe6vfxw/report.json",
+      "seconds": 27.203
+    },
+    {
+      "suite": "test_ui_quit-verified",
+      "checks": 51,
+      "report": "runs/test_ui_quit-verified/test_ui_quit-sa9so06h/report.json",
+      "seconds": 21.797
+    },
+    {
+      "suite": "test_ui_pause-verified",
+      "checks": 94,
+      "report": "runs/test_ui_pause-verified/test_ui_pause-80rfx8t9/report.json",
+      "seconds": 43.547
+    },
+    {
+      "suite": "test_rcv_session",
+      "checks": 162,
+      "report": "runs/test_rcv_session/test_rcv_session-93exj1fc/report.json",
+      "seconds": 18.438
+    },
+    {
+      "suite": "test_rcv_menu-final2",
+      "checks": 27,
+      "report": "runs/test_rcv_menu-final2/test_rcv_menu-4sykv2c3/report.json",
+      "seconds": 12.422
+    },
+    {
+      "suite": "test_rcv_activity",
+      "checks": 24,
+      "report": "runs/test_rcv_activity/test_rcv_activity-82_1jpwp/report.json",
+      "seconds": 11.109
+    },
+    {
+      "suite": "test_rcv_activity_audit",
+      "checks": 40,
+      "report": "runs/test_rcv_activity_audit/test_rcv_activity_audit-bxi9y9rg/report.json",
+      "seconds": 5.047
+    },
+    {
+      "suite": "test_flight_loading-final2",
+      "checks": 56,
+      "report": "runs/test_flight_loading-final2/test_flight_loading-151bcppm/report.json",
+      "seconds": 44.782
+    },
+    {
+      "suite": "test_quit_audio_retirement-final2",
+      "checks": 11,
+      "report": "runs/test_quit_audio_retirement-final2/test_quit_audio_retirement-ala2955k/report.json",
+      "seconds": 7.422
+    },
+    {
+      "suite": "test_ui_language-final3",
+      "checks": 104,
+      "report": "runs/test_ui_language-final3/test_ui_language-tudm55f3/report.json",
+      "seconds": 29.671
+    }
+  ],
+  "total_checks": 910,
+  "final_engine_errors": 0,
+  "final_engine_warnings": 0,
+  "source_files": [
+    {
+      "path": "app/app_root.gd",
+      "tested_sha256": "d2f691f9301f3c7345b5440f05063052265352c352e00ba950905b76118d056f",
+      "integrated_sha256": "d2f691f9301f3c7345b5440f05063052265352c352e00ba950905b76118d056f",
+      "normalized_sha256": "4d7bf9c5ca62396a8bb82f7224429602997cdb4ecb0810ef32f1fcd10e83d6dc"
+    },
+    {
+      "path": "app/i18n/de.po",
+      "tested_sha256": "317b8d5873c01327694b07e0faaeefb1f3901ff1bf53e7611518f27db0e3ed0c",
+      "integrated_sha256": "317b8d5873c01327694b07e0faaeefb1f3901ff1bf53e7611518f27db0e3ed0c",
+      "normalized_sha256": "a55f54703d80ca5d523b8acb90a6df959c16dbe034956234e225bf250e4d2972"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "tested_sha256": "5bb2fc5b6d4df7d46611c3f2403ec502a430af47e1128c1ccc2caedd854f7bf4",
+      "integrated_sha256": "5bb2fc5b6d4df7d46611c3f2403ec502a430af47e1128c1ccc2caedd854f7bf4",
+      "normalized_sha256": "239deb631092e4627ffb5a4b7c1c6278bf86bcee7a9637ff095f6f2d9e35f594"
+    },
+    {
+      "path": "app/i18n/fr.po",
+      "tested_sha256": "2849394d444fbb1a50c11bed32de80c0a41aa3db982b5568ae8117ca3c5c2f62",
+      "integrated_sha256": "2849394d444fbb1a50c11bed32de80c0a41aa3db982b5568ae8117ca3c5c2f62",
+      "normalized_sha256": "8ec22c862e18915d9e2a51108e7d75c9e429e8e07ddeee34a5fd6d71f70fe23f"
+    },
+    {
+      "path": "app/i18n/it.po",
+      "tested_sha256": "fed0331aed2b43187c4a16b217f708c2ac79735a6a7c25e1013a8b58849a2e91",
+      "integrated_sha256": "fed0331aed2b43187c4a16b217f708c2ac79735a6a7c25e1013a8b58849a2e91",
+      "normalized_sha256": "10d433423ba452928d754f0860eecaa84e8d1e160d5b4607432ce0a369d5dbc9"
+    },
+    {
+      "path": "app/i18n/ja.po",
+      "tested_sha256": "fbae6f4260cd8074b14544359a0da4527d49f7dc2b7d2dee9932436880534bd7",
+      "integrated_sha256": "fbae6f4260cd8074b14544359a0da4527d49f7dc2b7d2dee9932436880534bd7",
+      "normalized_sha256": "1d06c234c8dfdc6ad31c372f3fe601a39f01cf5fa6cd3ffe34bc51cb29a19c74"
+    },
+    {
+      "path": "app/i18n/pt_BR.po",
+      "tested_sha256": "458ed182243c5740f6b7a8407e25d616c0d9568bb5f12e7589becc39061ec55a",
+      "integrated_sha256": "458ed182243c5740f6b7a8407e25d616c0d9568bb5f12e7589becc39061ec55a",
+      "normalized_sha256": "3708547791f5efaa77ee88a8ad9e55dca55944e76e555184fbf902e8134eb679"
+    },
+    {
+      "path": "app/i18n/ru.po",
+      "tested_sha256": "7450b1ee73019e02c56285158b02f281e128ba0180f48ebe3d56fe9bb946d227",
+      "integrated_sha256": "7450b1ee73019e02c56285158b02f281e128ba0180f48ebe3d56fe9bb946d227",
+      "normalized_sha256": "f7e5c832c4e52ca528120832770fba6b84d29f52e8d72ff7eaddf7cd74450739"
+    },
+    {
+      "path": "app/i18n/zh_Hans.po",
+      "tested_sha256": "f0f05e7b5e98e290b05af1c8dfde627bd2a23b386e586d6f8c7f8fd8ae7daf7a",
+      "integrated_sha256": "f0f05e7b5e98e290b05af1c8dfde627bd2a23b386e586d6f8c7f8fd8ae7daf7a",
+      "normalized_sha256": "afcf8882f5cd65923f7fce2851638202bb787ed46a36490a547e92b775c1ded3"
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "tested_sha256": "806561b3750eff200a774b39110edce639a0e623b50955a000d0fb0955e85d35",
+      "integrated_sha256": "806561b3750eff200a774b39110edce639a0e623b50955a000d0fb0955e85d35",
+      "normalized_sha256": "784394997afc55a14b2ccd92ded2f274600f8401d031aaa32f291a09fb98aad9"
+    },
+    {
+      "path": "app/sim/recorder.gd",
+      "tested_sha256": "8c5eb4096cf21cbedf45ed90362663aa9b50ade0ee8213a1b5e166b2cba907c9",
+      "integrated_sha256": "8c5eb4096cf21cbedf45ed90362663aa9b50ade0ee8213a1b5e166b2cba907c9",
+      "normalized_sha256": "fb16dfaced4ed999db63e7cd920e8fecd1b5baf3f1b23237186f71405882177a"
+    },
+    {
+      "path": "app/sim/rotorcraft_recorder.gd",
+      "tested_sha256": "d21d3e2234cadf4648d66fd6d170feeeee2f47cee9c4561a11b1e6ad945fae84",
+      "integrated_sha256": "d21d3e2234cadf4648d66fd6d170feeeee2f47cee9c4561a11b1e6ad945fae84",
+      "normalized_sha256": "4a06d32ce28619386e805fe768c2a61057c9b2fa285c49ae888ee279f50c0467"
+    },
+    {
+      "path": "app/statistics/service.gd",
+      "tested_sha256": "58417c55bb0034723abe3722ffaea35b713ce3e9fb5bef4cbdd4402ef3c35b65",
+      "integrated_sha256": "58417c55bb0034723abe3722ffaea35b713ce3e9fb5bef4cbdd4402ef3c35b65",
+      "normalized_sha256": "7378e5a61710b8edcf5dc03020a661a05d412537021cd0f899cc9d5d55930bd2"
+    },
+    {
+      "path": "app/tests/test_controller_routing_audit.gd",
+      "tested_sha256": "eddbaee83f8f82be7a8777fc686bece903bdad5853f80fc5a8ae927e6aae3454",
+      "integrated_sha256": "eddbaee83f8f82be7a8777fc686bece903bdad5853f80fc5a8ae927e6aae3454",
+      "normalized_sha256": "eddbaee83f8f82be7a8777fc686bece903bdad5853f80fc5a8ae927e6aae3454"
+    },
+    {
+      "path": "app/tests/test_exit_transaction.gd",
+      "tested_sha256": "9b9fe5d2b8108d30e90d61114149709e22914b89166830da8405cda7007ffea2",
+      "integrated_sha256": "9b9fe5d2b8108d30e90d61114149709e22914b89166830da8405cda7007ffea2",
+      "normalized_sha256": "9b9fe5d2b8108d30e90d61114149709e22914b89166830da8405cda7007ffea2"
+    },
+    {
+      "path": "app/tests/test_exit_transaction.gd.uid",
+      "tested_sha256": "cb15f64d037b7172ce9d64583de44bbdb3f42f668a41107573946b1144129116",
+      "integrated_sha256": "cb15f64d037b7172ce9d64583de44bbdb3f42f668a41107573946b1144129116",
+      "normalized_sha256": "cb15f64d037b7172ce9d64583de44bbdb3f42f668a41107573946b1144129116"
+    },
+    {
+      "path": "app/tests/test_flight_loading.gd",
+      "tested_sha256": "f8716b913b25d7cca7db12f0ccd1359c0802eb54ebb1efc28a4db43537d6377d",
+      "integrated_sha256": "f8716b913b25d7cca7db12f0ccd1359c0802eb54ebb1efc28a4db43537d6377d",
+      "normalized_sha256": "cd4f716f7d85fc7749a9eac40f017608d1cf9bf0132d7530d2bcbdcae883402e"
+    },
+    {
+      "path": "app/tests/test_flight_statistics_lifecycle.gd",
+      "tested_sha256": "b42193c6d3e4a748c61321e69dd91dc0f19597145059aaf1e5fbf6b69c4e8d15",
+      "integrated_sha256": "b42193c6d3e4a748c61321e69dd91dc0f19597145059aaf1e5fbf6b69c4e8d15",
+      "normalized_sha256": "3213380920851cbfe98149ca68e674cad22c41e914bdb7c553f93ece3222b6e0"
+    },
+    {
+      "path": "app/tests/test_ground_departure.gd",
+      "tested_sha256": "e3116a0190c93a5f9c3f0e19ff7bb7fb62369ab927b10b23a4f99d2d8d2d994d",
+      "integrated_sha256": "e3116a0190c93a5f9c3f0e19ff7bb7fb62369ab927b10b23a4f99d2d8d2d994d",
+      "normalized_sha256": "e3116a0190c93a5f9c3f0e19ff7bb7fb62369ab927b10b23a4f99d2d8d2d994d"
+    },
+    {
+      "path": "app/tests/test_ground_departure.gd.uid",
+      "tested_sha256": "920e44c51e4042b90534042451c802c0f161e05db69e16d2545377120ffe5623",
+      "integrated_sha256": "920e44c51e4042b90534042451c802c0f161e05db69e16d2545377120ffe5623",
+      "normalized_sha256": "920e44c51e4042b90534042451c802c0f161e05db69e16d2545377120ffe5623"
+    },
+    {
+      "path": "app/tests/test_ground_exit_transaction.gd",
+      "tested_sha256": "79a057d4ec994c8e3dff8606b1f47adf1182b80d6f55db953c414a10cfa3c0ef",
+      "integrated_sha256": "79a057d4ec994c8e3dff8606b1f47adf1182b80d6f55db953c414a10cfa3c0ef",
+      "normalized_sha256": "79a057d4ec994c8e3dff8606b1f47adf1182b80d6f55db953c414a10cfa3c0ef"
+    },
+    {
+      "path": "app/tests/test_ground_exit_transaction.gd.uid",
+      "tested_sha256": "ec2c18ab062de186100b375758628de0c54328a8e22ed0f407ab38763b09aee0",
+      "integrated_sha256": "ec2c18ab062de186100b375758628de0c54328a8e22ed0f407ab38763b09aee0",
+      "normalized_sha256": "ec2c18ab062de186100b375758628de0c54328a8e22ed0f407ab38763b09aee0"
+    },
+    {
+      "path": "app/tests/test_trace_departure_generations.gd",
+      "tested_sha256": "b35cd7d36e26cd969bfd004f8acf920caa6e1392221c032e4f7ec0ea989fbb4e",
+      "integrated_sha256": "b35cd7d36e26cd969bfd004f8acf920caa6e1392221c032e4f7ec0ea989fbb4e",
+      "normalized_sha256": "b35cd7d36e26cd969bfd004f8acf920caa6e1392221c032e4f7ec0ea989fbb4e"
+    },
+    {
+      "path": "app/tests/test_trace_departure_generations.gd.uid",
+      "tested_sha256": "fcc359a8271f6eafbf952e117ef62fe65592f86e61e95c7a39bddf5977a0eb16",
+      "integrated_sha256": "fcc359a8271f6eafbf952e117ef62fe65592f86e61e95c7a39bddf5977a0eb16",
+      "normalized_sha256": "fcc359a8271f6eafbf952e117ef62fe65592f86e61e95c7a39bddf5977a0eb16"
+    },
+    {
+      "path": "app/ui/trace_recovery.gd",
+      "tested_sha256": "588912681e38983d8999cb0e17ec67a370cf6885c3cc62dd8e94cb731ee87b41",
+      "integrated_sha256": "588912681e38983d8999cb0e17ec67a370cf6885c3cc62dd8e94cb731ee87b41",
+      "normalized_sha256": "588912681e38983d8999cb0e17ec67a370cf6885c3cc62dd8e94cb731ee87b41"
+    },
+    {
+      "path": "app/ui/workshop.gd",
+      "tested_sha256": "29524157abfcbb59397edae96df2dcd5aab2420232de8d9153534902f4022679",
+      "integrated_sha256": "29524157abfcbb59397edae96df2dcd5aab2420232de8d9153534902f4022679",
+      "normalized_sha256": "d45ef38cc66564052842268c072f69e636488de8e4d28f49f31243238987f9b0"
+    },
+    {
+      "path": "app/vehicles/ground/ground_dashboard.gd",
+      "tested_sha256": "0635dd2fd8026e64c364bd09a7d61a9c24a53ec0a20ab68068a094534d3faa9a",
+      "integrated_sha256": "0635dd2fd8026e64c364bd09a7d61a9c24a53ec0a20ab68068a094534d3faa9a",
+      "normalized_sha256": "07149a31a19731e5e14d88677157b3e041169490590f15563d080ec3961d2a1e"
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "tested_sha256": "154497ac72db54fdf5fe7020089f2130f6f4d39a50603c98c0deb4593fbcb71a",
+      "integrated_sha256": "154497ac72db54fdf5fe7020089f2130f6f4d39a50603c98c0deb4593fbcb71a",
+      "normalized_sha256": "1cc6594d8f24521ac1f59e3fe3fe12130b466848d97d5c508d69834764eb1d73"
+    }
+  ],
+  "snapshot_patch_sha256": "9eff610176c28d044fb5e3f032ae9d15c3cfde9079fae41ce25379d69fadbe4e",
+  "snapshot_patch_paths": [
+    "app/app_root.gd",
+    "app/assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import",
+    "app/assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import",
+    "app/assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import",
+    "app/i18n/de.po",
+    "app/i18n/es.po",
+    "app/i18n/fr.po",
+    "app/i18n/it.po",
+    "app/i18n/ja.po",
+    "app/i18n/pt_BR.po",
+    "app/i18n/ru.po",
+    "app/i18n/zh_Hans.po",
+    "app/sim/ground_vehicle/session.gd",
+    "app/sim/recorder.gd",
+    "app/sim/rotorcraft_recorder.gd",
+    "app/statistics/service.gd",
+    "app/tests/test_controller_routing_audit.gd",
+    "app/tests/test_exit_transaction.gd",
+    "app/tests/test_exit_transaction.gd.uid",
+    "app/tests/test_flight_loading.gd",
+    "app/tests/test_flight_statistics_lifecycle.gd",
+    "app/tests/test_ground_departure.gd",
+    "app/tests/test_ground_departure.gd.uid",
+    "app/tests/test_ground_exit_transaction.gd",
+    "app/tests/test_ground_exit_transaction.gd.uid",
+    "app/tests/test_trace_departure_generations.gd",
+    "app/tests/test_trace_departure_generations.gd.uid",
+    "app/ui/trace_recovery.gd",
+    "app/ui/workshop.gd",
+    "app/vehicles/ground/ground_dashboard.gd",
+    "app/vehicles/ground/ground_scene.gd"
+  ],
+  "all_receipts": [
+    {
+      "path": "runs/combined/combined-lf46r6_m/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/controller-routing/controller-routing-9t7cqft2/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/generations/generations-675oq21r/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/generations-r2/generations-e79xa0r4/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/ground/ground-j025ml2g/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/ground-integration/ground-integration-0rbfi3u6/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/ground-integration-r2/ground-integration-o6mqeghg/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/ground-parse/ground-lsbwcg92/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/import/import-t7a27qlv/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/import-final/import-9v2ixgh8/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/parse/app-root-rdjdkzbr/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/parse-r2/app-root-k2r2qlb9/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/rcv-menu-final/rcv-menu-nlwfqkal/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_exit_transaction-final3/test_exit_transaction-fl3n8zi_/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_exit_transaction-verified/test_exit_transaction-uya2v5p5/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_flight_loading/test_flight_loading-nx43d152/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_flight_loading-final2/test_flight_loading-151bcppm/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_flight_statistics_lifecycle/test_flight_statistics_lifecycle-rxuf3b3c/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ground_departure-final2/test_ground_departure-c1ix9uby/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ground_departure-verified/test_ground_departure-cbq6kgui/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ground_exit_transaction-final2/test_ground_exit_transaction-joh8cz8u/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ground_exit_transaction-verified/test_ground_exit_transaction-3_75704h/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_quit_audio_retirement/test_quit_audio_retirement-ojo5ifac/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_quit_audio_retirement-final2/test_quit_audio_retirement-ala2955k/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_rcv_activity/test_rcv_activity-82_1jpwp/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_rcv_activity_audit/test_rcv_activity_audit-bxi9y9rg/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_rcv_menu/test_rcv_menu-1twphggk/report.json",
+      "ok": false,
+      "reason": "engine_error",
+      "counts": {
+        "error": 1,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_rcv_menu-final2/test_rcv_menu-4sykv2c3/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_rcv_session/test_rcv_session-93exj1fc/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_language/test_ui_language-h6kzpdpq/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_language-final3/test_ui_language-tudm55f3/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_pause/test_ui_pause-e_cq9g9e/report.json",
+      "ok": false,
+      "reason": "missing_required_text",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_pause-final/test_ui_pause-sofsu9x9/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_pause-verified/test_ui_pause-80rfx8t9/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_quit-final/test_ui_quit-pssc59oq/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_quit-verified/test_ui_quit-sa9so06h/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_recovery_dead_ends/test_ui_recovery_dead_ends-uj2eteun/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_ui_recovery_dead_ends-final/test_ui_recovery_dead_ends-bbe6vfxw/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_workshop_document_flow/test_workshop_document_flow-mizj4n3m/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/test_workshop_recovery_ui/test_workshop_recovery_ui-red2wjpe/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "path": "runs/ui-quit/ui-quit-_gyanjh_/report.json",
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "limits": [
+    "Required full CI not run in this local pass.",
+    "Native OS close, physical controllers, visual and screen-reader qualification remain separate.",
+    "RCV session suite skips native backend switch when the pinned native backend is not staged."
+  ],
+  "earlier_attempt_notes": [
+    "Initial generation-test parse failed on inferred WeakRef type; fixed and rerun.",
+    "One UI pause receipt used an incorrect completion marker; the final repeated suite used the correct marker.",
+    "Quit and Pause first rejected changed message wording; generic wording restored the existing semantic assertion and both reran.",
+    "RCV menu exposed a deferred focus call on a removed control; guarded callback and cancellation focus were checked.",
+    "Early ground notification fixture incorrectly broadcast into nested Windows; corrected to the pinned engine window boundary, retaining both root and ground recipients."
+  ],
+  "primary_engine_references": [
+    "https://github.com/godotengine/godot/blob/cafc17a19/scene/main/window.cpp#L828",
+    "https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-method-get-focus-mode-with-override"
+  ]
+}

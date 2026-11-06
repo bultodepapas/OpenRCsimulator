@@ -8611,8 +8611,8 @@ msgstr "操作を選んで続行してください。"
 msgid "Reconnect the radio to continue."
 msgstr "送信機を再接続して続行してください。"
 
-msgid "Reduce angle of attack."
-msgstr "迎角を小さくしてください。"
+msgid "Ease angle of attack toward zero."
+msgstr "迎角をゆっくりゼロに近づけてください。"
 
 msgid "Fast sink near terrain."
 msgstr "地面付近で急速に降下しています。"
@@ -8664,3 +8664,13 @@ msgstr "プリセットを適用する前に、編集中の項目を適用また
 
 msgid "Preset not applied. The draft is unchanged."
 msgstr "プリセットは適用されませんでした。下書きは変更されていません。"
+
+# UI-31-R2: shared recording recovery for flights and ground vehicles.
+msgid "Recording not saved"
+msgstr "記録が保存されていません"
+
+msgid "The recording was not saved (error %d). Retry saving, discard this recording and continue, or stay."
+msgstr "記録を保存できませんでした（エラー %d）。保存を再試行するか、この記録を破棄して続行するか、ここにとどまってください。"
+
+msgid "Discard recording and continue"
+msgstr "記録を破棄して続行"

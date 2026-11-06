@@ -352,8 +352,15 @@ func end_activity(reason: String = "abandoned", discard_unsaved: bool = false, c
 			# A store opened read-only never began a session here; its existing history belongs to another writer.
 			if _opened_read_only and persistent and not store.writable and not _dirty:
 				return true
+			var previous_idle_data: Dictionary = data.duplicate(true)
 			_close_session_record()
-			return flush(false)
+			if flush(false):
+				return true
+			# Cancel must leave this still-running session open, even with no active flight.
+			data = previous_idle_data
+			_query_cache.clear()
+			_summary_cache.clear()
+			return false
 		return true
 	var previous_data: Dictionary = data.duplicate(true)
 	var previous_record: Dictionary = _active_record.duplicate(true)

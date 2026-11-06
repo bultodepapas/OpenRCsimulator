@@ -8158,8 +8158,8 @@ msgstr "Selecciona los controles para continuar."
 msgid "Reconnect the radio to continue."
 msgstr "Reconecta la radio para continuar."
 
-msgid "Reduce angle of attack."
-msgstr "Reduce el ángulo de ataque."
+msgid "Ease angle of attack toward zero."
+msgstr "Acerca suavemente el ángulo de ataque a cero."
 
 msgid "Fast sink near terrain."
 msgstr "Descenso rápido cerca del suelo."
@@ -8208,3 +8208,13 @@ msgstr "Aplica o cancela los campos pendientes antes de aplicar un preajuste."
 
 msgid "Preset not applied. The draft is unchanged."
 msgstr "No se ha aplicado el preajuste. El borrador no ha cambiado."
+
+# UI-31-R2: shared recording recovery for flights and ground vehicles.
+msgid "Recording not saved"
+msgstr "Grabación no guardada"
+
+msgid "The recording was not saved (error %d). Retry saving, discard this recording and continue, or stay."
+msgstr "No se pudo guardar la grabación (error %d). Reintenta guardarla, descarta esta grabación y continúa, o permanece aquí."
+
+msgid "Discard recording and continue"
+msgstr "Descartar grabación y continuar"

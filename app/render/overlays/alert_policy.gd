@@ -96,7 +96,7 @@ static func detail_for(code: String) -> String:
 	match code:
 		"controller_lost": return "Select controls to continue."
 		"failsafe": return "Reconnect the radio to continue."
-		"stall": return "Reduce angle of attack."
+		"stall": return "Ease angle of attack toward zero."
 		"low": return "Fast sink near terrain."
 		"far": return "Come closer for a clearer view."
 		"battery_empty", "battery_critical", "battery_lvc": return "Land as soon as possible."

@@ -1,0 +1,24 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   root sets managed ownership before the real ground scene enters
+ok   departure begins driving with no focused menu control
+ok   active recording starts
+ok   record shortcuts and queued button actions cannot replace pending data
+ok   combined WM close is vetoed by one failed export
+ok   the garage input surface is blocked throughout the request
+ok   repeated close reuses the decision and retained data
+ok   a pad press during the guard is remembered without acting
+ok   a pad release during the guard clears its edge
+ok   Stay preserves garage pause and a still-held pad cannot resume
+ok   Stay restores the original input surface and retains unsaved samples
+ok   Stay from driving gives the garage a usable Resume focus
+ok   releasing after Stay rearms the pad shortcut
+ok   manual save resolves the failed generation
+ok   manual save then Home completes without another save or quit
+ok   stopped recording fixture starts and retains data
+ok   already-stopped recording also vetoes departure
+ok   explicit Retry saves and reaches final quit once
+ok   discard fixture starts
+ok   explicit Discard clears only this recording and commits once
+ok   host automatic-close policy is restored after disposal
+Ground exit transaction: 21 checks, 0 failed

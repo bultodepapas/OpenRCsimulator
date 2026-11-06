@@ -1,4 +1,4 @@
-## HUD-09-R2: presentation-only, non-positional alert earcons.
+## HUD-09-R3: presentation-only, non-positional alert earcons.
 ## Caller supplies the selected visible codes and accepted simulation time. Menus, preview,
 ## pauses and hidden warnings must call observe with audible=false, or retire_playbacks().
 extends Node
@@ -16,7 +16,6 @@ const STREAM_BY_CUE := {
 const GAINS := {"danger": 0.5, "caution": 0.32, "info": 0.23, "cleared": 0.17}
 const PITCHES := {"danger": 0.95, "caution": 0.98, "info": 1.02, "cleared": 1.0}
 const GLOBAL_GAP_S := 0.9
-const URGENT_GAP_S := 0.35
 const REARM_QUIET_S := 0.8
 const CODE_COOLDOWN_S := 4.0
 const MIN_ACTIVE_S := 1.0
@@ -37,6 +36,7 @@ var _last_time := -INF
 var _last_wall := -INF
 var _last_cue_wall := -INF
 var _last_cue_rank := -1
+var _last_cue_code := ""
 var _active_since_wall := -INF
 var _active_since_sim := -INF
 var _clear_since_wall := -INF
@@ -80,6 +80,7 @@ func configure(settings: Dictionary) -> void:
 		"warning_energy": _bool_option(settings, "warning_energy", true),
 		"warning_status": _bool_option(settings, "warning_status", true),
 		"warning_training": _bool_option(settings, "warning_training", false),
+		"warning_motion": settings.get("warning_motion", "playful"),
 		"warnings_visible": _warnings_visible(settings),
 	}
 	if next == _configuration:
@@ -101,6 +102,13 @@ func observe(codes: PackedStringArray, time_s: float, audible: bool) -> String:
 	if not is_finite(now) or (_primed and (time_s < _last_time or now < _last_wall)):
 		reset()
 		if not is_finite(now): return ""
+	# The manager normally supplies canonical codes. Stable active input needs
+	# clock validation above, but no sorting, history writes or clear transition.
+	# Empty input must keep reaching the quiet-period check below.
+	if _primed and not codes.is_empty() and codes == _previous:
+		_last_time = time_s
+		_last_wall = now
+		return ""
 	var current := _canonical(codes)
 	if not _primed:
 		_primed = true
@@ -137,8 +145,11 @@ func observe(codes: PackedStringArray, time_s: float, audible: bool) -> String:
 	if not chosen.is_empty():
 		var severity: String = Policy.severity(chosen)
 		var rank := _rank(severity)
-		var gap := URGENT_GAP_S if severity == "danger" and rank > _last_cue_rank else GLOBAL_GAP_S
-		if now - _last_cue_wall >= gap:
+		# Critical escalation preempts the current single voice immediately. Two
+		# danger codes use the catalog's order, so e.g. radio loss can replace stall.
+		var escalation := severity == "danger" and (rank > _last_cue_rank or (rank == _last_cue_rank \
+				and Policy.ORDER.find(chosen) < Policy.ORDER.find(_last_cue_code)))
+		if escalation or now - _last_cue_wall >= GLOBAL_GAP_S:
 			_last_code_cue[chosen] = now
 			return _play(severity, chosen, now, rank)
 	if current.is_empty() and is_finite(_clear_since_wall) and now - _clear_since_wall >= CLEAR_QUIET_S:
@@ -154,6 +165,9 @@ func observe(codes: PackedStringArray, time_s: float, audible: bool) -> String:
 
 ## Reset/reopen/rewind and explicit retirement are silent; no delayed cue survives.
 func reset() -> void:
+	# Once unprimed and silent, all history is already clear. Preview playback
+	# keeps processing enabled and therefore cannot bypass its first retirement.
+	if not _primed and not _player.playing and not is_processing(): return
 	_player.stop()
 	set_process(false)
 	_primed = false
@@ -165,6 +179,7 @@ func reset() -> void:
 	_last_wall = -INF
 	_last_cue_wall = -INF
 	_last_cue_rank = -1
+	_last_cue_code = ""
 	_active_since_wall = -INF
 	_active_since_sim = -INF
 	_clear_since_wall = -INF
@@ -193,6 +208,7 @@ func audio_player() -> AudioStreamPlayer:
 func _play(cue: String, code: String, now: float, rank: int) -> String:
 	_last_cue_wall = now
 	_last_cue_rank = rank
+	_last_cue_code = code
 	_start_player(cue)
 	cue_requested.emit(cue, code)
 	return cue
@@ -221,6 +237,7 @@ func _now() -> float:
 
 static func _canonical(codes: PackedStringArray) -> PackedStringArray:
 	var out := PackedStringArray()
+	if codes.is_empty(): return out
 	for code: String in Policy.ORDER:
 		if codes.has(code): out.append(code)
 	return out

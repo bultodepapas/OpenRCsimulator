@@ -49,9 +49,16 @@ var _limit := 3
 var _motion := "playful"
 var _opaque := false
 var _entrance: Tween
+var _lit_materials := {}
+var _motion_dirty := false
+var _well_styles := {}
+var _badge_styles := {}
 var _pending_positions := {}
 var _pending_entries := PackedStringArray()
 var _reflow_pending := false
+var _insertion_floor := -1
+var _sort_positions := {}
+var _sort_entries := PackedStringArray()
 var _summary_reflow_pending := false
 var _summary_before := Vector2.ZERO
 var _summary_entry := false
@@ -76,6 +83,7 @@ func _init() -> void:
 	chips.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chips.add_theme_constant_override("separation", 4)
 	_column.add_child(chips)
+	chips.pre_sort_children.connect(_before_chip_sort)
 	chips.sort_children.connect(_after_chip_sort)
 	_summary_card = _make_card("Summary")
 	summary = _summary_card.root
@@ -101,15 +109,18 @@ func _exit_tree() -> void:
 		get_viewport().size_changed.disconnect(_resize_to_viewport)
 	_stop_entrance()
 	_settle_motion()
+	# Exiting a queued-for-deletion rail can retire nodes after PREDELETE has run.
+	if is_queued_for_deletion():
+		for card: Dictionary in _cards:
+			if is_instance_valid(card.root) and card.root.get_parent() == null: card.root.free()
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		# Cards outside the tree remain in the pool so later alerts reuse them.
 		for card: Dictionary in _cards:
-			var node: PanelContainer = card.root
-			if is_instance_valid(node) and node.get_parent() == null:
-				node.free()
+			if is_instance_valid(card.root) and card.root.get_parent() == null:
+				card.root.free()
 	elif what == NOTIFICATION_TRANSLATION_CHANGED and chips != null:
 		_render_cards(false, codes)
 
@@ -157,6 +168,9 @@ func configure(settings: Dictionary) -> void:
 ## Inputs are already filtered and ordered. Retiring silhouettes remain present briefly after the last alert clears.
 func refresh(new_codes: PackedStringArray, animate := true) -> bool:
 	if new_codes == codes:
+		if not animate:
+			_stop_entrance()
+			_settle_motion()
 		return is_presenting()
 	var previous := codes
 	codes = new_codes.duplicate()
@@ -184,6 +198,9 @@ func is_presenting() -> bool:
 
 ## Used by explicit hide/reset: no exit visuals remain and no deferred callback can resurrect them.
 func clear_immediate() -> void:
+	if codes.is_empty() and _active.is_empty() and _ghosts.is_empty() and not _motion_dirty \
+			and _lit_materials.is_empty() and (_entrance == null or not _entrance.is_valid()) and not summary.visible:
+		return
 	_stop_entrance()
 	_settle_motion()
 	codes = PackedStringArray()
@@ -201,6 +218,12 @@ func clear_immediate() -> void:
 func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
 	var shown := mini(codes.size(), _limit)
 	var desired := codes.slice(0, shown)
+	_insertion_floor = -1
+	if animate_change:
+		for index in shown:
+			if not _active.has(codes[index]):
+				_insertion_floor = index
+				break
 	var had_summary := summary.get_parent() == _column and summary.visible
 	var summary_before: Vector2 = _summary_card.visual.global_position if had_summary and animate_change else Vector2.ZERO
 	var before := {}
@@ -233,7 +256,7 @@ func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
 			_active[code] = card
 			chips.add_child(card.root)
 			if not previous.has(code): entries.append(code)
-		chips.move_child(card.root, index)
+		if card.root.get_index() != index: chips.move_child(card.root, index)
 		_update_card(card, AlertPolicy.severity(code), tr(AlertPolicy.title_for(code)),
 			tr(AlertPolicy.detail_for(code)) if _detail else "", code)
 	var remaining := codes.size() - shown
@@ -260,6 +283,7 @@ func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
 		_pending_positions = before
 		_pending_entries = entries
 		_reflow_pending = true
+		_motion_dirty = true
 		chips.queue_sort()
 	if animate_change and remaining > 0:
 		var new_hidden := false
@@ -268,7 +292,9 @@ func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
 		_summary_reflow_pending = had_summary or new_hidden
 		_summary_before = summary_before
 		_summary_entry = not had_summary and new_hidden
-		if _summary_reflow_pending: _column.queue_sort()
+		if _summary_reflow_pending:
+			_motion_dirty = true
+			_column.queue_sort()
 
 
 func _can_animate() -> bool:
@@ -313,6 +339,7 @@ func _retire(card: Dictionary, animate_change: bool) -> void:
 	root.set("accessibility_name", "")
 	root.modulate = Color(0.72, 0.72, 0.72, 0.36)
 	_ghosts.append(card)
+	_motion_dirty = true
 	var tween := create_tween().set_parallel(true).set_ignore_time_scale().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	card.ghost_tween = tween
@@ -335,15 +362,20 @@ func _finish_ghost(card: Dictionary, announce := true) -> void:
 
 func _recycle(card: Dictionary) -> void:
 	_cancel_card_motion(card)
+	if not is_instance_valid(card.root): return
 	var root: Control = card.root
 	if root.get_parent() != null: root.get_parent().remove_child(root)
-	card.visual.position = Vector2.ZERO
-	card.row.visible = true
+	if is_instance_valid(card.visual): card.visual.position = Vector2.ZERO
+	if is_instance_valid(card.row): card.row.visible = true
 	root.modulate = Color.WHITE
+	card.render_valid = false # retirement clears the accessibility name
 	_clear_light(card.material)
 	if card.is_summary:
 		root.visible = false
-		_column.add_child(root)
+		if is_instance_valid(_column):
+			_column.add_child(root)
+		else:
+			root.free()
 	elif not _available.has(card):
 		_available.append(card)
 
@@ -353,23 +385,52 @@ func _restore_summary() -> void:
 	if summary.get_parent() == null: _column.add_child(summary)
 
 
+func _before_chip_sort() -> void:
+	_sort_positions.clear()
+	_sort_entries.clear()
+	if not _can_animate(): return
+	if _reflow_pending:
+		_sort_positions = _pending_positions.duplicate()
+		_sort_entries = _pending_entries.duplicate()
+	else:
+		var moving := false
+		for current: Dictionary in _active.values():
+			var tween: Tween = current.motion_tween
+			if tween != null and tween.is_valid():
+				moving = true
+				break
+		if not moving: return
+		# Width and wrapped text can require several sorts. Preserve the visible
+		# location through each one, including an already-moving card.
+		for code: String in _active:
+			var card: Dictionary = _active[code]
+			_sort_positions[code] = card.visual.global_position
+
+
 func _after_chip_sort() -> void:
-	if not _reflow_pending: return
 	_reflow_pending = false
-	if not _can_animate():
-		_settle_motion()
-		return
+	if not _can_animate(): return
 	for code: String in _active:
 		var card: Dictionary = _active[code]
 		var start := Vector2.ZERO
-		var entry := _pending_entries.has(code)
-		if _pending_positions.has(code):
-			start = Vector2(_pending_positions[code]) - card.root.global_position
+		var entry := _sort_entries.has(code)
+		if _sort_positions.has(code):
+			start = Vector2(_sort_positions[code]) - card.root.global_position
 		elif entry:
 			start.x = 4.0 if _motion == "subtle" else 10.0
+		else:
+			continue
+		# A new row immediately owns its slot. Move survivors horizontally, not
+		# through the newly visible warning text, even across intermediate sorts.
+		if _insertion_floor >= 0 and card.root.get_index() >= _insertion_floor and not entry and absf(start.y) > 0.5:
+			start.y = 0.0
+			start.x = 4.0 if _motion == "subtle" else 6.0
+		if not entry and start.is_equal_approx(card.visual.position): continue
 		_move_card(card, start, entry)
 	_pending_positions.clear()
 	_pending_entries.clear()
+	_sort_positions.clear()
+	_sort_entries.clear()
 
 
 func _after_column_sort() -> void:
@@ -388,6 +449,7 @@ func _move_card(card: Dictionary, start: Vector2, entry: bool) -> void:
 	_cancel_card_motion(card)
 	card.visual.position = start
 	if start.is_zero_approx(): return
+	_motion_dirty = true
 	var tween := create_tween().set_ignore_time_scale().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	card.motion_tween = tween
 	var transition := Tween.TRANS_BACK if entry and _motion == "playful" else Tween.TRANS_CUBIC
@@ -401,17 +463,22 @@ func _cancel_card_motion(card: Dictionary) -> void:
 
 
 func _settle_motion() -> void:
+	if not _motion_dirty: return
 	_reflow_pending = false
 	_summary_reflow_pending = false
+	_insertion_floor = -1
 	_pending_positions.clear()
 	_pending_entries.clear()
+	_sort_positions.clear()
+	_sort_entries.clear()
 	for card: Dictionary in _cards:
 		_cancel_card_motion(card)
-		card.visual.position = Vector2.ZERO
+		if is_instance_valid(card.visual): card.visual.position = Vector2.ZERO
 	_cancel_card_motion(_summary_card)
-	_summary_card.visual.position = Vector2.ZERO
+	if is_instance_valid(_summary_card.visual): _summary_card.visual.position = Vector2.ZERO
 	while not _ghosts.is_empty():
 		_finish_ghost(_ghosts[0], false)
+	_motion_dirty = false
 
 
 func _make_card(card_name: String) -> Dictionary:
@@ -490,37 +557,64 @@ func _make_card(card_name: String) -> Dictionary:
 	_resize_glass(card, glass, material, surface)
 	return {root = card, visual = underlay, surface = surface, row = row, material = material,
 		outer = outer, badge = badge, severity = severity, well = well, headline = headline, detail = detail,
-		motion_tween = null, ghost_tween = null, is_summary = card_name == "Summary"}
+		motion_tween = null, ghost_tween = null, is_summary = card_name == "Summary", render_valid = false}
 
 
 func _update_card(card: Dictionary, level: String, title: String, detail: String, code: String) -> void:
+	var severity_text := tr(level.to_upper())
+	if card.render_valid and card.render_level == level and card.render_title == title \
+			and card.render_detail == detail and card.render_code == code and card.render_opaque == _opaque \
+			and card.render_severity == severity_text:
+		return
+	var tone_changed: bool = not card.render_valid or card.render_level != level or card.render_opaque != _opaque
 	var tone: Dictionary = GLASS_TONES.get(level, GLASS_TONES.info)
 	var severity: Label = card.severity
-	severity.text = tr(level.to_upper())
-	severity.add_theme_color_override("font_color", tone.crystal)
+	severity.text = severity_text
 	var headline: Label = card.headline
 	headline.text = title
-	headline.add_theme_color_override("font_color", tone.text)
 	var description: Label = card.detail
 	description.text = detail
 	description.visible = not detail.is_empty()
-	description.add_theme_color_override("font_color", tone.secondary)
 	card.root.set_meta("code", code)
 	card.root.set("accessibility_name", ": ".join([severity.text, title, detail]).trim_suffix(": "))
-	var badge_style := _well_style()
-	badge_style.bg_color = Color(tone.base, 1.0 if _opaque else 0.20)
-	badge_style.set_border_width_all(1)
-	badge_style.border_color = Color(tone.crystal, 0.32)
-	card.badge.add_theme_stylebox_override("panel", badge_style)
-	card.well.add_theme_stylebox_override("panel", _well_style())
-	card.outer.shadow_color = Color(tone.emission, 0.26)
-	card.material.set_shader_parameter("base_color", Color(tone.base, 1.0 if _opaque else GLASS_ALPHA))
-	card.material.set_shader_parameter("crystal_color", tone.crystal)
-	card.material.set_shader_parameter("emission_color", tone.emission)
-	card.material.set_shader_parameter("well_ceiling", tone.ceiling)
+	if tone_changed:
+		severity.add_theme_color_override("font_color", tone.crystal)
+		headline.add_theme_color_override("font_color", tone.text)
+		description.add_theme_color_override("font_color", tone.secondary)
+		card.badge.add_theme_stylebox_override("panel", _badge_style(level, tone))
+		card.well.add_theme_stylebox_override("panel", _well_style())
+		card.outer.shadow_color = Color(tone.emission, 0.26)
+		card.material.set_shader_parameter("base_color", Color(tone.base, 1.0 if _opaque else GLASS_ALPHA))
+		card.material.set_shader_parameter("crystal_color", tone.crystal)
+		card.material.set_shader_parameter("emission_color", tone.emission)
+		card.material.set_shader_parameter("well_ceiling", tone.ceiling)
+	card.render_level = level
+	card.render_title = title
+	card.render_detail = detail
+	card.render_code = code
+	card.render_opaque = _opaque
+	card.render_severity = severity_text
+	card.render_valid = true
 
 
 func _well_style() -> StyleBoxFlat:
+	if not _well_styles.has(_opaque):
+		_well_styles[_opaque] = _new_well_style()
+	return _well_styles[_opaque]
+
+
+func _badge_style(level: String, tone: Dictionary) -> StyleBoxFlat:
+	var key := level + ("/opaque" if _opaque else "/glass")
+	if not _badge_styles.has(key):
+		var style := _new_well_style()
+		style.bg_color = Color(tone.base, 1.0 if _opaque else 0.20)
+		style.set_border_width_all(1)
+		style.border_color = Color(tone.crystal, 0.32)
+		_badge_styles[key] = style
+	return _badge_styles[key]
+
+
+func _new_well_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(WELL, 1.0 if _opaque else 0.14)
 	style.set_corner_radius_all(6)
@@ -563,29 +657,34 @@ func _reveal_light(progress: float) -> void:
 	if not _can_animate():
 		_stop_entrance()
 		return
-	for card: Dictionary in _cards:
-		if card.root.get_parent() == chips:
-			_set_light(card.material, progress)
-	if summary.visible: _set_light(_summary_card.material, progress)
+	var shine := lerpf(-0.25, 1.65, progress)
+	var energy := 0.8 * sin(PI * progress)
+	for code: String in _active:
+		_set_light(_active[code].material, shine, energy)
+	if summary.visible and summary.get_parent() == _column:
+		_set_light(_summary_card.material, shine, energy)
 
 
-func _set_light(material: ShaderMaterial, progress: float) -> void:
-	material.set_shader_parameter("shine_progress", lerpf(-0.25, 1.65, progress))
-	material.set_shader_parameter("energy", 0.8 * sin(PI * progress))
+func _set_light(material: ShaderMaterial, shine: float, energy: float) -> void:
+	material.set_shader_parameter("shine_progress", shine)
+	material.set_shader_parameter("energy", energy)
+	_lit_materials[material] = true
 
 
 func _clear_light(material: ShaderMaterial) -> void:
+	if not _lit_materials.has(material): return
 	material.set_shader_parameter("shine_progress", -1.0)
 	material.set_shader_parameter("energy", 0.0)
+	_lit_materials.erase(material)
 
 
 func _stop_entrance() -> void:
 	if _entrance != null and _entrance.is_valid(): _entrance.kill()
 	_entrance = null
-	modulate.a = 1.0
-	for card: Dictionary in _cards:
-		_clear_light(card.material)
-	_clear_light(_summary_card.material)
+	if modulate.a != 1.0: modulate.a = 1.0
+	if _lit_materials.is_empty(): return
+	for material: ShaderMaterial in _lit_materials.keys():
+		_clear_light(material)
 
 
 func _visibility_changed() -> void:

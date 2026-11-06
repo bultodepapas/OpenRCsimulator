@@ -267,12 +267,25 @@ func _dialog_cases() -> void:
 	manager.set_warning_option("warning_volume", 0.64)
 	_check("external changes synchronize controls", dialog.warning_motion_picker.selected == 2
 		and is_equal_approx(dialog.warning_volume_slider.value, 0.64) and dialog.warning_volume_value.text == "64%")
+	_check("sound-off disables explicit audition", dialog.warning_test_button.disabled)
+	manager.set_warning_option("warning_sound", true)
+	var previews: Array[String] = []
+	manager.alert_audio.preview_requested.connect(func(cue: String) -> void: previews.append(cue))
+	before = manager.settings.duplicate(true)
+	changes.clear()
+	dialog.warning_test_button.pressed.emit()
+	_check("Test sound auditions a caution without saving or creating a flight event", previews == ["caution"]
+		and manager.settings == before and changes.is_empty())
+	manager.set_warning_option("warning_volume", 0.0)
+	_check("zero volume disables Test sound and retires playback", dialog.warning_test_button.disabled
+		and not manager.alert_audio.audio_player().playing)
+	manager.set_warning_option("warning_volume", 0.64)
 	var scroll: ScrollContainer = dialog.get("_scroll")
 	dialog.warning_motion_picker.grab_focus()
 	await ui.settle()
 	_check("motion selector receives focus at 200 percent text", root.gui_get_focus_owner() == dialog.warning_motion_picker)
 	for control: Control in [dialog.warning_switches.warning_sound, dialog.warning_volume_slider,
-			dialog.warning_switches.warning_clear_sound]:
+			dialog.warning_test_button, dialog.warning_switches.warning_clear_sound]:
 		await ui.tap(KEY_TAB)
 		_check("Tab reaches " + control.name, root.gui_get_focus_owner() == control)
 		_check("focused control is revealed in the scroll area: " + control.name,
@@ -280,6 +293,7 @@ func _dialog_cases() -> void:
 	dialog.queue_free()
 	manager.queue_free()
 	await ui.settle()
+	await create_timer(0.25).timeout # release the explicit preview's Ogg playback on the audio mix thread
 	UiTheme.text_scale = previous_scale
 	root.size = previous_size
 

@@ -6,6 +6,8 @@ const Trace := preload("res://sim/trace.gd")
 
 var trace := Trace.new()
 var recording := false
+## Monotonic identity for each new manual recording, independent of saved trace data.
+var recording_generation := 0
 ## Result of the last save, for the panel ("" before any).
 var note := ""
 var _sim: Node
@@ -20,6 +22,7 @@ func _init(sim: Node, electrical_sample: Callable = Callable(), mass_sample: Cal
 
 
 func start(meta: Dictionary) -> void:
+	recording_generation += 1
 	trace.clear()
 	trace.meta = meta.duplicate(true)
 	if _mass_sample.is_valid():

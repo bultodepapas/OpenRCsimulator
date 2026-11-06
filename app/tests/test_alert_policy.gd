@@ -107,5 +107,6 @@ func _run() -> void:
 	_check("absent snapshot stays empty", not manager.frames.warnings.visible)
 	manager.queue_free()
 	await process_frame
+	await create_timer(0.25).timeout # drain stopped shared-alert playback before engine shutdown
 	print("alert policy: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)

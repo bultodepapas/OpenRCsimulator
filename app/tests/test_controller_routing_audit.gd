@@ -148,6 +148,39 @@ func _initialize() -> void:
 	session.calibration = null
 	shell._route_controller_restart(motion)
 	check("held calibration channel cannot queue a reset", shell.restarts == 3)
+	# Exit decisions must observe releases/presses while suppressing every flight action.
+	service.profile = Profile.defaults()
+	flight.capabilities = {gear = true, smoke = false}
+	flight.received.clear()
+	shell._controller_action_edges.clear()
+	equipment.device = 1
+	equipment.button_index = JOY_BUTTON_B
+	equipment.pressed = true
+	shell._input(equipment)
+	check("departure fixture begins with one gear action", flight.received == ["gear_toggle"])
+	shell._exit_request_active = true
+	equipment.pressed = false
+	shell._input(equipment)
+	check("release during departure clears the old action edge", not shell._controller_action_edges.has(Actions.event_source(equipment)))
+	equipment.pressed = true
+	shell._input(equipment)
+	check("press during departure cannot dispatch an action", flight.received.size() == 1)
+	shell._exit_request_active = false
+	shell._input(equipment)
+	check("button held through Stay cannot become a fresh command", flight.received.size() == 1)
+	equipment.pressed = false
+	shell._input(equipment)
+	equipment.pressed = true
+	shell._input(equipment)
+	check("release and fresh press after Stay acts exactly once", flight.received.size() == 2)
+	shell._exit_request_active = true
+	equipment.button_index = JOY_BUTTON_BACK
+	equipment.pressed = false
+	shell._route_controller_restart(equipment)
+	equipment.pressed = true
+	check("restart is observed but refused during departure", not shell._route_controller_restart(equipment) and shell.restarts == 3)
+	shell._exit_request_active = false
+	check("restart held through Stay remains consumed", shell._route_controller_restart(equipment) and shell.restarts == 3)
 	shell.free()
 	flight.free()
 	session.free()

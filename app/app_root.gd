@@ -98,6 +98,10 @@ var _auto_accept_quit_tree: SceneTree
 var _auto_accept_quit_before_root := true
 var _wm_close_pending := false
 var _exit_request_active := false
+var _exit_request_generation := 0
+var _exit_request_phase := ""
+var _exit_request_ground: Node
+var _exit_request_focus: Control
 var _quit_audio_pending := false
 var last_quit_audio_retirement: Dictionary = {}
 const QUIT_AUDIO_RETIRE_TIMEOUT_USEC := 250_000
@@ -108,10 +112,13 @@ var _exit_request_recorder_index := 0
 var _exit_request_editors: Array[Node] = []
 var _exit_authorized_editors: Array[Node] = []
 var _exit_request_holds: Array[Dictionary] = []
+var _exit_request_input: Array[Dictionary] = []
+var _exit_request_surfaces: Array[Dictionary] = []
 var _trace_recovery := TraceRecovery.new()
 var _trace_recovery_dialog: ConfirmationDialog
 var _trace_retry_button: Button
 var _trace_discard_button: Button
+var _trace_recording_generation := -1
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -123,6 +130,9 @@ var statistics_path := ""
 var statistics_service: Node
 var _statistics_discard_exit := false
 var _statistics_save_dialog: ConfirmationDialog
+var _statistics_decision_pending := false
+var _statistics_dialog_generation := 0
+var _statistics_release_hold := Callable()
 ## Test seam; both routes always use the same file, including after Home → Fly.
 var field_path: String = FieldLoader.DEFAULT_PATH
 var landscape_id: String = Landscapes.DEFAULT_ID
@@ -561,6 +571,8 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 			candidate = script.new()
 	var error := "Ground vehicle activity could not be loaded"
 	if candidate != null:
+		if _has_property(candidate, "departure_managed"):
+			candidate.departure_managed = true
 		if _has_property(candidate, "vehicle_id"):
 			candidate.vehicle_id = vehicle_id
 		if _has_property(candidate, "field_path"):
@@ -598,16 +610,21 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 func end_ground_vehicle() -> void:
 	if ground_vehicle == null:
 		return
+	if not has_home:
+		quit_app()
+		return
+	_begin_exit_request("end_ground", [_ground_recorder()], Callable(self, "_commit_end_ground_vehicle"))
+
+
+func _commit_end_ground_vehicle() -> void:
 	_menu_feedback(&"exit")
 	remove_child(ground_vehicle)
 	ground_vehicle.queue_free()
 	ground_vehicle = null
+	_complete_exit_request()
 	if controllers != null:
 		_controller_ui_changed(controllers.registry.selected_device_id("ui"))
-	if has_home:
-		show_home()
-	else:
-		get_tree().quit()
+	show_home()
 
 
 ## Applies a language at once and remembers it. A failed save keeps the language for this session and says so.
@@ -1709,6 +1726,9 @@ func _input(event: InputEvent) -> void:
 	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not menu_context), id, "menu" if menu_context else "flight", previous)
 	if actions.is_empty(): _controller_action_edges.erase(source)
 	else: _controller_action_edges[source] = actions
+	if _exit_request_active:
+		_release_controller_holds()
+		return # decision dialogs own input; observe edges without dispatching flight/menu actions
 	if flight != null and flight.session != null and flight.session.has_method("set_controller_cut"):
 		var held := false
 		for active: PackedStringArray in _controller_action_edges.values():
@@ -1755,7 +1775,7 @@ func _route_controller_rates(event: InputEvent) -> bool:
 	if actions.is_empty(): _controller_rate_edges.erase(source)
 	else: _controller_rate_edges[source] = actions
 	if actions.is_empty() or flight == null or flight.session == null: return false
-	if screens.top() != null or flight.session.calibration != null: return false
+	if _exit_request_active or screens.top() != null or flight.session.calibration != null: return false
 	if flight.has_method("accident_menu_active") and flight.accident_menu_active(): return false
 	if previous.is_empty(): flight.controller_action("rates_toggle")
 	return true
@@ -1774,7 +1794,7 @@ func _route_controller_restart(event: InputEvent) -> bool:
 	if actions.is_empty(): _controller_restart_edges.erase(source)
 	else: _controller_restart_edges[source] = actions
 	if actions.is_empty() or flight == null or flight.session == null: return false
-	if screens.top() != null or flight.session.calibration != null: return false
+	if _exit_request_active or screens.top() != null or flight.session.calibration != null: return false
 	if previous.is_empty():
 		_request_flight_restart()
 	return true
@@ -2236,6 +2256,7 @@ func _commit_return_to_workshop() -> void:
 	_workshop_screens = []
 	for entry: Dictionary in restored:
 		screens.push(entry.id, entry.node, entry.opener if is_instance_valid(entry.opener) else null)
+	_complete_exit_request()
 
 
 func _exit_tree() -> void:
@@ -2308,15 +2329,19 @@ func open_statistics(from: Control = null, aircraft_id: String = "") -> void:
 
 
 func _statistics_save_failed(retry: Callable) -> void:
-	if is_instance_valid(_statistics_save_dialog):
-		_statistics_save_dialog.queue_free()
+	if is_instance_valid(_statistics_save_dialog) or _statistics_decision_pending:
+		return
+	var request_generation := _exit_request_generation if _exit_request_active else -1
+	_statistics_dialog_generation += 1
+	var dialog_generation := _statistics_dialog_generation
 	_statistics_save_dialog = ConfirmationDialog.new()
 	var dialog := _statistics_save_dialog
 	dialog.exclusive = true
 	dialog.theme = UiTheme.build()
 	dialog.dialog_autowrap = true
-	# The trace exit guard has released its holds before this independent decision.
-	var held_session: Node = flight.get("session") if is_instance_valid(flight) else null
+	# Coordinated departures keep their original holds across every save decision.
+	# The standalone helper remains usable by callers with no active departure.
+	var held_session: Node = flight.get("session") if request_generation < 0 and is_instance_valid(flight) else null
 	var resume_after := false
 	if is_instance_valid(held_session):
 		resume_after = not held_session.sim.paused and held_session.holds.is_empty()
@@ -2325,28 +2350,58 @@ func _statistics_save_failed(retry: Callable) -> void:
 		if is_instance_valid(held_session):
 			held_session.release("statistics_save")
 			if resume_after and held_session.holds.is_empty(): held_session.resume()
+	_statistics_release_hold = release_hold
 	_statistics_save_dialog.title = tr("Flight statistics could not be saved")
 	_statistics_save_dialog.dialog_text = tr("The current flight has unsaved statistics. Retry saving, cancel, or leave without the unsaved changes.")
 	_statistics_save_dialog.ok_button_text = tr("Retry")
 	_statistics_save_dialog.add_button(tr("Leave without saving"), true, "discard")
 	add_child(_statistics_save_dialog)
 	_statistics_save_dialog.confirmed.connect(func() -> void:
-		dialog.queue_free()
-		await get_tree().process_frame # release the old exclusive window before Retry can open another
-		release_hold.call()
-		retry.call())
+		_on_statistics_recovery_action("retry", dialog, retry, request_generation, dialog_generation))
 	_statistics_save_dialog.custom_action.connect(func(action: StringName) -> void:
 		if action == &"discard":
-			_statistics_discard_exit = true
-			dialog.queue_free()
-			await get_tree().process_frame
-			release_hold.call()
-			retry.call())
+			_on_statistics_recovery_action("discard", dialog, retry, request_generation, dialog_generation))
 	_statistics_save_dialog.canceled.connect(func() -> void:
-		release_hold.call()
-		dialog.queue_free())
+		_on_statistics_recovery_action("cancel", dialog, retry, request_generation, dialog_generation))
 	_statistics_save_dialog.popup_centered_clamped(Vector2i(560, 240), 0.9)
 	_statistics_save_dialog.get_cancel_button().grab_focus()
+
+
+func _on_statistics_recovery_action(action: String, dialog: ConfirmationDialog, retry: Callable,
+		request_generation: int, dialog_generation: int) -> void:
+	if dialog != _statistics_save_dialog or dialog_generation != _statistics_dialog_generation:
+		return
+	if request_generation >= 0 and (not _exit_request_active or request_generation != _exit_request_generation):
+		return
+	_statistics_save_dialog = null
+	_statistics_decision_pending = true
+	_retire_exit_dialog(dialog)
+	if action == "cancel":
+		_release_statistics_hold()
+		_statistics_decision_pending = false
+		if request_generation >= 0: _cancel_exit_request()
+		return
+	if action == "discard": _statistics_discard_exit = true
+	await get_tree().process_frame
+	if not is_inside_tree() or dialog_generation != _statistics_dialog_generation:
+		return
+	if request_generation >= 0 and (not _exit_request_active or request_generation != _exit_request_generation):
+		return
+	_statistics_decision_pending = false
+	_release_statistics_hold()
+	if retry.is_valid(): retry.call()
+
+
+func _release_statistics_hold() -> void:
+	var release_hold := _statistics_release_hold
+	_statistics_release_hold = Callable()
+	if release_hold.is_valid(): release_hold.call()
+
+
+static func _retire_exit_dialog(dialog: Window) -> void:
+	if is_instance_valid(dialog):
+		dialog.hide() # release the exclusive child before its successor can open
+		dialog.queue_free()
 
 
 func close_overlays() -> void:
@@ -2930,6 +2985,7 @@ func _commit_restart_flight() -> void:
 		flight.session.reset(true) # same radio ownership; the recorder closes its file on reset
 	var session: Node = flight.session
 	if not session.start_error.is_empty() or not session.is_flyable():
+		_cancel_exit_request()
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Could not restart flight: %s") % (session.start_error if not session.start_error.is_empty() else session.pause_reason))
 		_menu_feedback(&"reject")
@@ -2938,6 +2994,9 @@ func _commit_restart_flight() -> void:
 	if controllers != null and session.radio.connected and not helicopter_route:
 		# Refresh readiness after reset without advancing the flight or incremental throttle.
 		session._poll_controller(false)
+	# Reset has committed. Release this guard before the explicit Resume below;
+	# the menu/controller holds still own sessions that are not ready to resume.
+	_complete_exit_request()
 	if controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed))):
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Flight restarted. Select Resume when the controls are ready."))
@@ -2955,7 +3014,7 @@ func change_aircraft() -> void:
 
 
 func _commit_change_aircraft() -> void:
-	if not _commit_end_flight(Callable(self, "_commit_change_aircraft")):
+	if not _commit_end_flight():
 		return
 	if home != null:
 		home.open_aircraft_catalog.call_deferred() # after Home's own initial focus on Fly
@@ -2987,11 +3046,7 @@ func end_flight() -> void:
 	_begin_exit_request("end_flight", [_flight_recorder(flight)], Callable(self, "_commit_end_flight"))
 
 
-func _commit_end_flight(retry: Callable = Callable()) -> bool:
-	if statistics_service != null and not statistics_service.end_activity("abandoned", _statistics_discard_exit):
-		_statistics_save_failed(retry if retry.is_valid() else Callable(self, "_commit_end_flight"))
-		return false
-	_statistics_discard_exit = false
+func _commit_end_flight() -> bool:
 	_menu_feedback(&"exit")
 	var last_failure_status: Dictionary = {}
 	var session: Node = flight.get("session")
@@ -3007,6 +3062,7 @@ func _commit_end_flight(retry: Callable = Callable()) -> bool:
 	flight.queue_free()
 	flight = null
 	_flight_companions_available = false
+	_complete_exit_request()
 	show_home()
 	if home != null and not last_failure_status.is_empty():
 		home.set_failure_debrief(last_failure_status)
@@ -3028,10 +3084,6 @@ func _commit_app_quit() -> void:
 		return
 	if not renderer_guard_path.is_empty():
 		RendererGuard.confirm(renderer_guard_path) # a clean quit proves the renderer survived
-	if statistics_service != null and not statistics_service.finish(_statistics_discard_exit):
-		_statistics_save_failed(Callable(self, "_commit_app_quit"))
-		return
-	_statistics_discard_exit = false
 	_home_preparation_quit_pending = true
 	await shutdown_home_flight_preparation()
 	if not is_inside_tree():
@@ -3062,6 +3114,7 @@ func _commit_app_quit() -> void:
 		elapsed_usec = Time.get_ticks_usec() - drain_started_usec, timeout_usec = QUIT_AUDIO_RETIRE_TIMEOUT_USEC}
 	if remaining > 0:
 		printerr("Menu audio shutdown incomplete: %d playback(s) retained after %d usec" % [remaining, last_quit_audio_retirement.elapsed_usec])
+	_complete_exit_request()
 	_request_app_quit()
 
 
@@ -3098,14 +3151,20 @@ func _close_pause() -> void:
 
 
 func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard_workshop := false) -> void:
-	if _exit_request_active or _quit_audio_pending:
+	if _exit_request_active or _quit_audio_pending or is_instance_valid(_statistics_save_dialog) or _statistics_decision_pending:
 		return
 	if kind == "quit":
 		for editor: Node in _workshop_editors():
 			if is_instance_valid(editor) and editor.has_method("dismiss_modal_for_exit") \
 				and bool(editor.call("dismiss_modal_for_exit")):
 				return
+		if _dismiss_exit_modal():
+			return
 	_exit_request_active = true
+	_exit_request_generation += 1
+	_exit_request_phase = "drafts"
+	_exit_request_focus = get_viewport().gui_get_focus_owner()
+	_statistics_discard_exit = false
 	_exit_request_kind = kind
 	_exit_request_commit = commit
 	_exit_request_recorders.clear()
@@ -3114,11 +3173,29 @@ func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard
 			_exit_request_recorders.append(recorder)
 	_exit_request_recorder_index = 0
 	_exit_authorized_editors.clear()
+	_hold_exit_input()
 	_hold_exit_sessions()
 	if guard_workshop:
 		_request_quit_draft_guard(0)
 	else:
 		_advance_trace_exit()
+
+
+func _dismiss_exit_modal() -> bool:
+	# A window close cancels the innermost existing decision first. Never open a
+	# competing exclusive recovery Window over Statistics management or another editor.
+	var windows := find_children("*", "Window", true, false)
+	windows.reverse()
+	for node: Node in windows:
+		var window := node as Window
+		if not window.visible or not window.exclusive: continue
+		window.hide()
+		if window is AcceptDialog:
+			(window as AcceptDialog).canceled.emit()
+		else:
+			window.close_requested.emit()
+		return true
+	return false
 
 
 func _request_quit_draft_guard(start_index: int) -> void:
@@ -3133,13 +3210,14 @@ func _request_quit_draft_guard(start_index: int) -> void:
 			or not bool(editor.call("has_unsaved_changes")):
 			continue
 		var next_index := index + 1
+		var generation := _exit_request_generation
 		var proceed := func() -> void:
-			if not _exit_request_active:
+			if not _exit_request_active or generation != _exit_request_generation:
 				return
 			if not _exit_authorized_editors.has(editor):
 				_exit_authorized_editors.append(editor)
 			_request_quit_draft_guard(next_index)
-		editor.call("request_navigation", "Quit", proceed, Callable(self, "_cancel_exit_request"), self)
+		editor.call("request_navigation", "Quit", proceed, Callable(self, "_cancel_exit_request"), self, true)
 		return
 	_advance_trace_exit()
 
@@ -3162,7 +3240,16 @@ func _quit_recorders() -> Array[RefCounted]:
 		var recorder := _flight_recorder(owner)
 		if recorder != null and not recorders.has(recorder):
 			recorders.append(recorder)
+	var ground_recorder := _ground_recorder()
+	if ground_recorder != null and not recorders.has(ground_recorder):
+		recorders.append(ground_recorder)
 	return recorders
+
+
+func _ground_recorder() -> RefCounted:
+	if is_instance_valid(ground_vehicle) and ground_vehicle.has_method("get_departure_recorder"):
+		return ground_vehicle.call("get_departure_recorder") as RefCounted
+	return null
 
 
 func _flight_recorder(flight_node: Node) -> RefCounted:
@@ -3174,6 +3261,9 @@ func _flight_recorder(flight_node: Node) -> RefCounted:
 
 func _hold_exit_sessions() -> void:
 	_exit_request_holds.clear()
+	_exit_request_ground = ground_vehicle
+	if is_instance_valid(_exit_request_ground) and _exit_request_ground.has_method("begin_exit_guard"):
+		_exit_request_ground.call("begin_exit_guard")
 	for owner: Node in [flight, _workshop_previous_flight]:
 		if not is_instance_valid(owner) or not _has_property(owner, "session"):
 			continue
@@ -3195,6 +3285,40 @@ func _hold_exit_sessions() -> void:
 			HeldKeys.mask(session, reader)
 
 
+func _hold_exit_input() -> void:
+	# Exclusive dialogs have frame gaps between them. Keep record/reset shortcuts and
+	# the underlying screen actions closed for the entire request, including those gaps.
+	# Ground owns its shortcut edge observer and suppresses actions in begin_exit_guard.
+	for owner: Node in [flight, _workshop_previous_flight, screens.top()]:
+		if not is_instance_valid(owner): continue
+		if _exit_request_input.any(func(entry: Dictionary) -> bool: return entry.owner == owner): continue
+		_exit_request_input.append({owner = owner, unhandled = owner.is_processing_unhandled_input()})
+		owner.set_process_unhandled_input(false)
+	for node: Node in find_children("*", "Control", true, false):
+		if node.get_parent() is Control: continue
+		var surface := node as Control
+		_exit_request_surfaces.append({surface = surface, mouse = surface.mouse_behavior_recursive,
+			focus = surface.focus_behavior_recursive, input = surface.is_processing_input(),
+			unhandled = surface.is_processing_unhandled_input()})
+		surface.set_process_input(false)
+		surface.set_process_unhandled_input(false)
+		surface.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
+		surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+
+
+func _release_exit_input() -> void:
+	for entry: Dictionary in _exit_request_surfaces:
+		if not is_instance_valid(entry.surface): continue
+		entry.surface.mouse_behavior_recursive = int(entry.mouse)
+		entry.surface.focus_behavior_recursive = int(entry.focus)
+		entry.surface.set_process_input(bool(entry.input))
+		entry.surface.set_process_unhandled_input(bool(entry.unhandled))
+	_exit_request_surfaces.clear()
+	for entry: Dictionary in _exit_request_input:
+		if is_instance_valid(entry.owner): entry.owner.set_process_unhandled_input(bool(entry.unhandled))
+	_exit_request_input.clear()
+
+
 func _keyboard_reader_for(session: Node) -> Callable:
 	if is_instance_valid(flight) and _has_property(flight, "session") and flight.session == session:
 		return _keyboard_reader
@@ -3204,31 +3328,40 @@ func _keyboard_reader_for(session: Node) -> Callable:
 	return Callable()
 
 
-func _release_exit_sessions() -> void:
+func _release_exit_sessions(restore_running := true) -> void:
+	if is_instance_valid(_exit_request_ground) and _exit_request_ground.has_method("end_exit_guard"):
+		_exit_request_ground.call("end_exit_guard")
+	_exit_request_ground = null
 	for entry: Dictionary in _exit_request_holds:
 		var session: Variant = entry.session
 		if not is_instance_valid(session):
 			continue
 		session.call("release", "exit_guard")
 		var holds: Variant = session.get("holds") if _has_property(session, "holds") else {}
-		if not bool(entry.was_paused) and not bool(entry.had_holds) \
+		if restore_running and not bool(entry.was_paused) and not bool(entry.had_holds) \
 			and holds is Dictionary and holds.is_empty() and session.has_method("resume"):
 			session.call("resume")
 	_exit_request_holds.clear()
 
 
 func _advance_trace_exit() -> void:
-	if not _exit_request_active or _trace_recovery_dialog != null:
+	if not _exit_request_active or _trace_recovery_dialog != null or _exit_request_phase in ["statistics", "committing"]:
 		return
+	_exit_request_phase = "recordings"
+	var generation := _exit_request_generation
 	while _exit_request_recorder_index < _exit_request_recorders.size():
 		var recorder: RefCounted = _exit_request_recorders[_exit_request_recorder_index]
 		var result: Dictionary = _trace_recovery.save_if_recording(recorder)
 		if not bool(result.get("ok", false)):
 			var error_code := int(result.get("error", ERR_CANT_CREATE))
+			var recording_generation := int(result.get("generation", -1))
 			# A dirty-editor decision can have just closed its own native exclusive dialog.
 			# Let Window release that child before presenting the next exclusive decision.
 			await get_tree().process_frame
-			if not _exit_request_active or _trace_recovery_dialog != null:
+			if not is_inside_tree() or not _exit_request_active or generation != _exit_request_generation or _trace_recovery_dialog != null:
+				return
+			if recording_generation != _trace_recovery.generation_of(recorder):
+				_advance_trace_exit()
 				return
 			_show_trace_recovery_dialog(error_code)
 			return
@@ -3238,9 +3371,10 @@ func _advance_trace_exit() -> void:
 
 func _show_trace_recovery_dialog(error_code: int) -> void:
 	_menu_feedback(&"reject")
+	_trace_recording_generation = _trace_recovery.generation_of(_exit_request_recorders[_exit_request_recorder_index])
 	var dialog := ConfirmationDialog.new()
-	dialog.title = tr("Trace not saved")
-	var recovery_message := tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	dialog.title = tr("Recording not saved")
+	var recovery_message := tr("The recording was not saved (error %d). Retry saving, discard this recording and continue, or stay.") % error_code
 	# Keep the native AcceptDialog label empty: its full translated minimum height can
 	# outgrow the clamped Window at enlarged text. Put the message in a bounded scroller.
 	dialog.dialog_text = ""
@@ -3249,7 +3383,7 @@ func _show_trace_recovery_dialog(error_code: int) -> void:
 	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
 	dialog.get_cancel_button().hide() # Escape and the window close still map to Stay
 	_trace_retry_button = dialog.add_button(tr("Retry save"), false, "retry")
-	_trace_discard_button = dialog.add_button(tr("Discard trace and continue"), true, "discard")
+	_trace_discard_button = dialog.add_button(tr("Discard recording and continue"), true, "discard")
 	var text_scale := clampf(UiTheme.text_scale, 1.0, 2.0)
 	var scroll := ScrollContainer.new()
 	scroll.name = "TraceRecoveryMessageScroll"
@@ -3275,10 +3409,13 @@ func _show_trace_recovery_dialog(error_code: int) -> void:
 	dialog.add_theme_constant_override("buttons_min_height", roundi(44.0 * text_scale))
 	dialog.min_size = dialog_minimum
 	dialog.size = dialog_minimum
-	dialog.custom_action.connect(_on_trace_recovery_action)
-	dialog.confirmed.connect(_cancel_exit_request)
-	dialog.canceled.connect(_cancel_exit_request)
-	dialog.close_requested.connect(_cancel_exit_request)
+	dialog.custom_action.connect(func(action: StringName) -> void:
+		if dialog == _trace_recovery_dialog: _on_trace_recovery_action(action))
+	var stay := func() -> void:
+		if dialog == _trace_recovery_dialog: _cancel_exit_request()
+	dialog.confirmed.connect(stay)
+	dialog.canceled.connect(stay)
+	dialog.close_requested.connect(stay)
 	_trace_recovery_dialog = dialog
 	add_child(dialog)
 	dialog.popup_centered_clamped(dialog_minimum, 0.9)
@@ -3294,34 +3431,55 @@ func _on_trace_recovery_action(action: StringName) -> void:
 	_trace_recovery_dialog = null
 	_trace_retry_button = null
 	_trace_discard_button = null
-	dialog.queue_free()
+	_retire_exit_dialog(dialog)
 	if action == "retry":
-		var result: Dictionary = _trace_recovery.retry(recorder)
-		if not bool(result.get("ok", false)):
-			var error_code := int(result.get("error", ERR_CANT_CREATE))
-			await get_tree().process_frame
-			if _exit_request_active and _trace_recovery_dialog == null:
-				_show_trace_recovery_dialog(error_code)
-			return
+		var result: Dictionary = _trace_recovery.retry(recorder, _trace_recording_generation)
+		if bool(result.get("ok", false)):
+			_exit_request_recorder_index += 1
 	elif action == "discard":
-		_trace_recovery.discard(recorder)
+		if _trace_recovery.discard(recorder, _trace_recording_generation):
+			_exit_request_recorder_index += 1
 	else:
 		_cancel_exit_request()
 		return
-	_exit_request_recorder_index += 1
+	# A refused or stale decision rechecks this participant; it never authorizes departure.
 	_advance_trace_exit()
 
 
 func _finish_exit_request() -> void:
+	if not _exit_request_active or _exit_request_phase == "committing":
+		return
+	_exit_request_phase = "statistics"
+	if statistics_service != null:
+		var saved := true
+		if _exit_request_kind == "quit":
+			saved = statistics_service.finish(_statistics_discard_exit)
+		elif _exit_request_kind == "end_flight":
+			saved = statistics_service.end_activity("abandoned", _statistics_discard_exit)
+		if not saved:
+			_statistics_save_failed(Callable(self, "_finish_exit_request"))
+			return
 	var commit := _exit_request_commit
+	if not commit.is_valid():
+		_cancel_exit_request()
+		return
+	_exit_request_phase = "committing"
+	commit.call()
+
+
+func _complete_exit_request() -> void:
+	if not _exit_request_active:
+		return
+	if _exit_request_kind == "quit":
+		for editor: Node in _exit_authorized_editors:
+			if is_instance_valid(editor) and editor.has_method("commit_navigation"):
+				editor.call("commit_navigation")
 	# Quit tears down the recovery owner with the tree; its discard markers are weak
 	# and can still protect a later route if a host overrides the quit seam.
 	if _exit_request_kind != "quit":
 		for recorder: RefCounted in _exit_request_recorders:
 			_trace_recovery.forget_completed(recorder)
-	_clear_exit_request()
-	if commit.is_valid():
-		commit.call()
+	_clear_exit_request(false)
 
 
 func _cancel_exit_request() -> void:
@@ -3330,21 +3488,33 @@ func _cancel_exit_request() -> void:
 	_clear_exit_request()
 
 
-func _clear_exit_request() -> void:
+func _clear_exit_request(restore_running := true) -> void:
+	var focus := _exit_request_focus
 	var dialog := _trace_recovery_dialog
 	_trace_recovery_dialog = null
 	_trace_retry_button = null
 	_trace_discard_button = null
-	if is_instance_valid(dialog):
-		dialog.queue_free()
-	_release_exit_sessions()
+	_retire_exit_dialog(dialog)
+	var statistics_dialog := _statistics_save_dialog
+	_statistics_save_dialog = null
+	_retire_exit_dialog(statistics_dialog)
+	_statistics_dialog_generation += 1
+	_statistics_decision_pending = false
+	_statistics_discard_exit = false
+	_release_statistics_hold()
+	_release_exit_sessions(restore_running)
+	_release_exit_input()
 	_exit_request_active = false
+	_exit_request_phase = ""
+	_exit_request_focus = null
 	_exit_request_kind = ""
 	_exit_request_commit = Callable()
 	_exit_request_recorders.clear()
 	_exit_request_recorder_index = 0
 	_exit_request_editors.clear()
 	_exit_authorized_editors.clear()
+	if restore_running and is_instance_valid(focus) and focus.is_inside_tree() and focus.is_visible_in_tree():
+		focus.grab_focus()
 
 
 func _has_property(object: Object, property_name: String) -> bool:

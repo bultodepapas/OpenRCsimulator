@@ -191,8 +191,10 @@ func _test_durable_service() -> void:
 	check("recovery retains session and durable time", recovered.data.current_session == saved_session and result.airborne_seconds == saved_time)
 	check("recovery closes once as partial without completion", result.started == 1 and result.completed == 0 and result.closed == 1 and result.partial == 1)
 	check("recovered ledger permits independent reset", recovered.reset_counters("account"))
+	var idle_before: Dictionary = recovered.data.duplicate(true)
 	recovered.store.writable = false
 	check("owned recovered session still reports a failed finish", not recovered.finish())
+	check("failed idle finish preserves the open session and clean-exit flag", recovered.data == idle_before)
 	recovered.store.writable = true
 	check("clean finish saved", recovered.finish())
 	recovered.close()

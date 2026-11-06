@@ -234,7 +234,8 @@ func _manager() -> void:
 	_check("closed warnings stay hidden while warnings exist", not manager.frames.warnings.visible)
 	manager.set_overlay_visible("warnings", true)
 	manager.update(_snapshot(PackedStringArray()), 1.0)
-	_check("open warnings hide when there is nothing to say", not manager.frames.warnings.visible)
+	await create_timer(0.25).timeout
+	_check("open warnings hide after their last exit", not manager.frames.warnings.visible)
 	manager.set_units("metric")
 	manager.update(snap, 1.0)
 	_check("metric: 72 km/h, 30 m", manager.frames.flight.values.airspeed.text == "72 km/h" and manager.frames.flight.values.height.text == "30 m")

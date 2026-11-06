@@ -185,6 +185,8 @@ func _rendered_materials(warnings: Control) -> void:
 	warnings.configure({warning_limit = 3, warning_detail = true})
 	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]), false)
 	warnings._stop_entrance()
+	# Resize, translation and nested minimum sizes must settle before sampling their screen rectangles.
+	for frame in 6: await process_frame
 	var backdrop := ColorRect.new()
 	backdrop.size = Vector2(1920, 1080)
 	root.add_child(backdrop)

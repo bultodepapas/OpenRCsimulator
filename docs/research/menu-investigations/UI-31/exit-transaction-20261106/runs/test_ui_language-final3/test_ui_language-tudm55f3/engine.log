@@ -1,0 +1,111 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   language-name glyphs cannot corrupt the shared 26px UI atlas
+ok   no file -> English, writable
+ok   save
+ok   load what was saved
+ok   diagnostic marker opt-out persists
+ok   diagnostic preference rejects the wrong type
+ok   unsupported language -> English
+ok   wrong type -> English (ConfigFile keeps the file's type)
+ok   unreadable file -> defaults, kept as .bad
+ok   preserved unreadable settings allow a new file
+ok   second unreadable settings preserve the first backup and receive a distinct backup
+ok   second recovery allows a new file
+ok   third unreadable settings preserve both earlier backups
+ok   create blocked backup directory
+ok   failed settings backup protects the original
+ok   failed settings backup refuses later saves
+ok   newer schema: valid values read, file marked read-only
+ok   newer schema: never overwritten
+ok   language en has a catalog or is the source
+ok   language es has a catalog or is the source
+ok   es catalog covers all 2669 source messages
+ok   language zh_Hans has a catalog or is the source
+ok   zh_Hans catalog covers all 2669 source messages
+ok   zh_Hans format arguments remain ordered and intact
+ok   Chinese glyphs are bundled
+ok   language pt_BR has a catalog or is the source
+ok   pt_BR catalog covers all 2669 source messages
+ok   pt_BR format arguments remain ordered and intact
+ok   language de has a catalog or is the source
+ok   de catalog covers all 2669 source messages
+ok   de format arguments remain ordered and intact
+ok   language fr has a catalog or is the source
+ok   fr catalog covers all 2669 source messages
+ok   fr format arguments remain ordered and intact
+ok   language it has a catalog or is the source
+ok   it catalog covers all 2669 source messages
+ok   it format arguments remain ordered and intact
+ok   language ru has a catalog or is the source
+ok   ru catalog covers all 2669 source messages
+ok   ru format arguments remain ordered and intact
+ok   all Russian catalog Cyrillic glyphs use the original font
+ok   language ja has a catalog or is the source
+ok   ja catalog covers all 2669 source messages
+ok   ja format arguments remain ordered and intact
+ok   all Japanese non-ASCII glyphs are bundled
+ok   Latin UI keeps its original fallback metrics
+ok   Chinese UI includes the bundled fallback
+ok   Japanese uses Japanese glyph forms without the Chinese fallback
+ok   switching back to Chinese removes the Japanese font
+ok   returning to English restores the font
+ok   regional Japanese locales resolve to Japanese
+ok   script-qualified Chinese locale remains Chinese
+ok   traditional Chinese is not mislabeled as simplified
+ok   Brazilian Portuguese region is retained
+ok   Portuguese accents are in the original font
+ok   regional German locales resolve to German
+ok   German umlauts and sharp s are in the original font
+ok   regional French locales resolve to French
+ok   French accents and ligatures are in the original font
+ok   regional Italian locales resolve to Italian
+ok   Italian accented letters are in the original font
+ok   regional Russian locales resolve to Russian
+ok   complete Russian alphabet is in the original font
+ok   English by default, even on a Spanish OS
+ok   language button names the language in itself
+ok   language control can receive keyboard focus
+ok   Enter on Language -> Spanish at once
+ok   dynamic texts rebuilt in Spanish
+ok   AUX profile errors translate
+ok   focus stays on Language
+ok   Home companion summary and detail translate
+ok   Home empty history summaries translate
+ok   every Home text resolves from English or matches an explicit Spanish translation
+ok   choice saved
+ok   next start remembers Spanish
+ok   third option switches to Chinese immediately
+ok   Chinese choice saved
+ok   next start remembers Chinese
+ok   fourth option switches to Brazilian Portuguese
+ok   Portuguese choice saved
+ok   Portuguese uses the original Latin font
+ok   next start remembers Portuguese
+ok   fifth option switches to German
+ok   German choice saved
+ok   German uses the original Latin font
+ok   next start remembers German
+ok   sixth option switches to French
+ok   French choice saved
+ok   French uses the original Latin font
+ok   next start remembers French
+ok   seventh option switches to Italian
+ok   Italian choice saved
+ok   Italian uses the original Latin font
+ok   next start remembers Italian
+ok   eighth option switches to Russian
+ok   Russian choice saved
+ok   Russian uses the original font without a CJK fallback
+ok   next start remembers Russian
+ok   ninth option switches to Japanese
+ok   Japanese choice saved
+ok   next start remembers Japanese
+ok   and cycles back to English
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+ok   direct flight: English, no settings file created
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+ok   direct flight ignores a saved Spanish preference and leaves the file alone
+all UI language checks passed

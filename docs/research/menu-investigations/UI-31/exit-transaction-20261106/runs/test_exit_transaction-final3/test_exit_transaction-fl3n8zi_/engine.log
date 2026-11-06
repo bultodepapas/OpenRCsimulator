@@ -1,0 +1,57 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   isolated fixture directory opens
+ok   blocked destination fixture opens
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+ok   discard: Home flight and real statistics observer start
+trace save failed: error 7
+ok   failed real trace stays intact while input is blocked
+ok   trace discard reaches the statistics decision under the same hold
+ok   repeated quit does not replace the statistics window
+ok   statistics Cancel preserves the prior pause and independent holds
+ok   later quit keeps the original discard decision
+ok   failed statistics Retry replaces its window without accepting T
+ok   successful statistics Retry commits exactly one quit
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+ok   retry: Home flight and real statistics observer start
+trace save failed: error 7
+ok   retry fixture exposes the real failed trace
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/test_exit_transaction_508_6869779/retried-trace.csv (1 rows)
+ok   trace Retry saves before reporting statistics failure
+ok   Cancel after trace Retry restores the prior running state and holds
+ok   saved trace is not saved a second time on a later quit
+ok   trace Retry followed by failed statistics Retry keeps its decision
+ok   explicit Leave completes the requested quit once
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+ok   end-flight: Home flight and real statistics observer start
+trace save failed: error 7
+ok   End flight first guards its failed trace
+ok   End flight retains its destination through statistics failure
+ok   Cancel preserves Pause, flight and original holds
+ok   second End preserves the recording discard decision
+ok   successful End returns Home without quitting or closing the app session
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+ok   workshop: Home flight and real statistics observer start
+ok   Workshop is open over the retained flight
+ok   dirty Workshop writes a recovery snapshot
+ok   Workshop recovery has bytes and identity
+ok   quit asks about the dirty Workshop
+trace save failed: error 7
+ok   duplicate Workshop Discard cannot stop the trace twice
+ok   discarding draft proceeds to the failed trace
+ok   trace Stay preserves the live draft and exact recovery bytes
+ok   trace Discard continues to the real failed statistics save
+ok   statistics Cancel preserves the live draft and exact recovery bytes
+ok   repeated quit reuses trace resolution but asks about statistics
+ok   terminal quit clears only the authorized draft recovery
+ok   idle statistics fixture is writable
+ok   statistics screen opens for the incumbent modal
+ok   statistics reset starts as an exclusive decision
+ok   first close cancels the incumbent decision without starting departure
+ok   second close presents failed statistics save as the only active decision
+ok   cancel returns to the unchanged statistics screen
+Exit transaction: 41 checks, 0 failed
