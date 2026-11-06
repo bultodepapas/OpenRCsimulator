@@ -334,3 +334,469 @@ I would organize the next campaign around these deliverables:
 Every candidate should preserve **float64 simulation state, 240 Hz RK4 behavior, replay and transaction contracts, and the supported desktop paths**.
 
 **My first three investments would be benchmark integrity, cloud-cache qualification, and the half-resolution sky experiment.** They address the clearest findings in the current code and measurements, while giving the next round of Apple Silicon work a trustworthy basis for adoption.
+
+
+other out of the box thinkgin: 
+## The strongest direction is to eliminate unnecessary shading—and preserve native detail around the aircraft
+
+I built and ran **five isolated experiments**, read the latest OpenRC source at [`93ffbb1`](https://github.com/bultodepapas/OpenRCsimulator/commit/93ffbb101917dff86ecc2632f07e2e45c450a178), and inspected the Metal implementation in the project’s pinned Godot version.
+
+**My priorities are now:**
+
+1. **Stop evaluating cloud noise as soon as the remaining octaves cannot change the result.**
+2. **Store noise’s integer lattice values and use texture filtering to perform its interpolation.**
+3. **Render a native-resolution region around the aircraft while reducing background shading.**
+4. **Investigate Apple’s native rasterization-rate maps as the larger engine-level opportunity.**
+
+One apparently attractive idea—caching the three cloud-lighting samples together—performed poorly in the numerical experiments. That result helped narrow the direction.
+
+**Download the runnable experiments, results, shader sketches, camera tests, source references and engine logs:**  
+[OpenRC_Apple_Silicon_Experimental_Kit_2026-11-05.zip](https://chatgpt.com/library?file_id=libfile_96be4c46e2348191a2a39474f708e767&account_id=personal)
+
+The evidence below includes CPU numerical experiments, actual Godot camera-method tests, and shader-language compilation. **There are no new Metal performance measurements:** the documented M1 access key was unavailable in this environment. The prototypes are outside the application checkout, which remains unchanged.
+
+### What the experiments established
+
+| Experiment | Result obtained | Assessment |
+|---|---|---|
+| Conservative cloud-noise bounds | **105,144,320 parameterized float32 comparisons**, with zero differing outputs; one representative grid avoided **44.9% of fBm noise evaluations** | Strong first candidate for a native GPU trial |
+| High-octave lattice atlas | Maximum incremental density difference ≈ **0.000134**; active-cloud scalar-lighting difference ≈ **0.000247** against the modeled current path | Promising arithmetic-to-texture trade |
+| Native-resolution aircraft crop | **96 camera configurations**; maximum projection mismatch **0.00869 pixels** | Geometry works in the tested engine; rendering and performance remain to be tested |
+| Packed cloud-relief cache | At 2048², maximum scalar-lighting error **0.0425–0.0496**, with **32 MiB** per parameter combination | Deprioritize the tested design |
+| Warped solar-halo lookup | **1 KB** table; maximum normalized halo error **0.00067842** over 820,197 sampled float32 inputs | Numerically interesting, but lower priority after inspecting integration costs |
+
+The quantities in this table have different meanings. Density and lighting-factor differences are not displayed pixel errors, and avoided noise evaluations are not predicted FPS gains.
+
+---
+
+## 1. Start from the corrected, working cloud implementation
+
+The latest commit changes an important conclusion from the earlier investigation.
+
+The earlier flattened-cloud failure was caused by the Mobile/Metal sky shader reading a `ViewportTexture` as black. The current implementation bakes into an HDR viewport and publishes a stable **RG16F `ImageTexture`**. Its channels serve ground shadows and the low-frequency portion of cloud relief, while the cloud silhouette remains analytic.
+
+The repository’s retained M1 diagnostic reports **26.20 ms → 23.45 ms GPU time** with C2+C5b enabled at 2560×1600, a 2.75 ms saving in that particular comparison. Separate 1920×1080 pilot and aircraft-ground stills differed by no more than 2/255. These are existing project measurements, from one profiled run per configuration and separate still captures—not results produced by this new investigation. [Pinned evidence report](https://github.com/bultodepapas/OpenRCsimulator/blob/93ffbb101917dff86ecc2632f07e2e45c450a178/docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md).
+
+That makes the next question more specific: **what expensive work remains after the current cache succeeds?**
+
+The source points to repeated high-octave hashes, exact silhouette evaluation, cloud-lighting samples, and the amount of screen space shaded at full resolution.
+
+---
+
+## 2. First experiment: prove that a cloud pixel is clear before finishing its noise
+
+**This is the first shader change I would take to the M1.** It adds no texture memory and exploits the mathematical structure already present in [`cloud_field.gdshaderinc`](https://github.com/bultodepapas/OpenRCsimulator/blob/93ffbb101917dff86ecc2632f07e2e45c450a178/app/render/cloud_field.gdshaderinc).
+
+The shader combines five noise octaves with weights:
+
+\[
+\frac12,\quad \frac14,\quad \frac18,\quad \frac1{16},\quad \frac1{32}
+\]
+
+Their sum is \(31/32\). Each octave is bounded between zero and one in exact arithmetic.
+
+Consequently, after evaluating only part of the noise, we know how much the unfinished portion could possibly contribute:
+
+| Octaves already evaluated | Maximum remaining normalized contribution |
+|---|---:|
+| Two | \(7/31\) |
+| Three | \(3/31\) |
+| Four | \(1/31\) |
+
+The final density is a smooth threshold:
+
+\[
+\rho=\operatorname{smoothstep}(1-c,\;1.25-c,\;N)
+\]
+
+Here, \(c\) is the existing cluster-adjusted coverage.
+
+Suppose the largest possible final noise value is still below the clear-sky threshold. The remaining octaves cannot change the answer: density will be zero. Similarly, if the smallest possible final value already exceeds the opaque threshold, density will be one.
+
+**Only ambiguous samples need the remaining octaves.**
+
+### What I tested
+
+The prototype computes the existing clustering adjustment first, evaluates two or three octaves, and checks the remaining interval. Samples near the threshold continue through the original calculation.
+
+Across the three numerical screens:
+
+- **105,144,320 parameterized float32 comparisons** produced zero differing outputs.
+- The cases included multiple seeds, coverage levels, clustering strengths, periodic seams and threshold-focused inputs.
+- Two shader variants passed the pinned Godot shader-language compiler: a check after three octaves, and checks after both two and three.
+
+That comparison count includes repeated coordinates under different parameters. It is evidence about the numerical implementation, not 105 million independent hardware observations.
+
+On a 256×256 periodic grid with seed 1253, coverage 0.35 and clustering 0.35:
+
+| Check placement | fBm noise evaluations avoided | All noise hashes avoided, including clustering |
+|---|---:|---:|
+| After three octaves | 31.638% | 26.365% |
+| After two octaves | 39.778% | 33.148% |
+| After two and three octaves | **44.897%** | **37.415%** |
+
+### Why this could win—and where it could lose
+
+The opportunity is substantial because the shader is currently calculating detail even where that detail cannot affect the thresholded result.
+
+However, the benefit depends on how neighboring GPU lanes behave. If some lanes exit and others continue, the GPU may still execute much of the remaining work. Extra branches can also increase register pressure or interfere with compiler optimization. The uniform coordinate grid used here is not the actual distribution of sky pixels in a pilot view.
+
+There is also a numerical qualification still to complete: the prototype uses an empirical `1e-5` guard around threshold decisions. The interval argument is exact in real arithmetic; that guard has not been proved sufficient for every shader backend and fast-math configuration.
+
+**My implementation choice:** benchmark the two-and-three variant against the simpler three-only variant. More checks are not automatically better, especially in dense cloud conditions.
+
+Under the current tile-enabled implementation, this targets exact sky-body evaluation and exact fallbacks. It does **not** automatically accelerate the cached ground-shadow or relief paths. That distinction matters when selecting the comparison.
+
+---
+
+## 3. Second experiment: make the texture sampler do the noise interpolation
+
+**This is the most interesting new data representation I found.**
+
+The current value-noise function hashes four integer lattice corners, then blends those values using a quintic interpolation weight. Instead of storing a sampled picture of the resulting noise, the proposed texture stores the **original corner hashes**.
+
+For a coordinate \(p\):
+
+\[
+i=\lfloor p\rfloor,\qquad f=p-i
+\]
+
+\[
+u(f)=f^3\left(f(6f-15)+10\right)
+\]
+
+A linear texture sample at the appropriately wrapped coordinate
+
+\[
+\frac{i+0.5+u(f)}{P}
+\]
+
+can perform the same four-corner weighted interpolation in ideal arithmetic. The half-texel offset places integer lattice values at texel centers.
+
+Lookup-based noise and using texture operations to substitute for arithmetic have established graphics precedents. The particular corner-lattice mapping here is derived from OpenRC’s value-noise implementation; it is not a claim that an older Perlin-noise example already validates this shader on Apple GPUs. [NVIDIA Developer](https://developer.nvidia.com/gpugems/gpugems2/part-iii-high-quality-rendering/chapter-26-implementing-improved-perlin-noise?utm_source=chatgpt.com)
+
+### The version I actually tested
+
+The isolated prototype keeps the existing low-octave C5b cache and adds a **1024×1024 RG16F atlas**:
+
+- R contains the octave-3 corner hashes, with their 512-cell period repeated across the atlas.
+- G contains the octave-4 corner hashes, with a 1024-cell period.
+- The shader retains the existing quintic interpolation weights.
+- A missing, unready or incorrectly seeded atlas uses the analytic fallback.
+
+For a fully evaluated three-offset cloud-relief branch, the source-level trade is:
+
+**24 corner-hash calls removed, six additional texture samples introduced.**
+
+That is a source-operation count. A GPU compiler may already share or simplify some arithmetic, while each filtered lookup has a real cache and bandwidth cost.
+
+### Numerical results
+
+The screen covered 65,536 coordinates across five seeds, including negative coordinates, periodic seams, large float32 coordinates and different cloud conditions. It evaluated the three existing relief offsets.
+
+Against the modeled current C5b path:
+
+| Quantity | Maximum observed incremental difference |
+|---|---:|
+| Cloud density | ≈ **0.000134** |
+| Scalar relief lighting on active cloud points | ≈ **0.000247** |
+
+An independent scalar integer/double implementation checked the float32 noise reference on 1,024 binary-exact inputs. Deliberately omitting the half-texel offset or using the wrong seed produced large, detectable errors.
+
+The proposed persistent atlas is **4 MiB per seed**, excluding its bake target, staging and upload lifetime.
+
+Actual sampler behavior remains important. A deliberately hypothetical model that rounded interpolation weights to eight fractional bits increased the error. That sensitivity experiment is useful precisely because we should not assume ideal interpolation matches the M1 sampler.
+
+### The more aggressive extension: use a mip chain as an octave dictionary
+
+The next version would store all five independently generated lattices in one texture:
+
+| Mip level | Contents |
+|---|---|
+| 0 | 1024² corner hashes for octave 4 |
+| 1 | 512² corner hashes for octave 3 |
+| 2 | 256² corner hashes for octave 2 |
+| 3 | 128² corner hashes for octave 1 |
+| 4 | 64² corner hashes for octave 0 |
+
+Those five useful levels total approximately **2.664 MiB in R16F per seed**, before smaller mip tails and allocation overhead.
+
+This is an unusual use of mipmaps: **each level is a different independently seeded lattice**. Automatically generating the mipmaps by downsampling would destroy the intended data. Godot supports loading supplied mip data through `Image.create_from_data`; the sampler must also enable mip access, with explicit integral LOD selection. [Godot Engine (4.7) documentation in English](https://docs.godotengine.org/en/4.7/classes/class_image.html?utm_source=chatgpt.com)
+
+This full pyramid is a proposal, not the tested two-octave atlas. It could eventually replace more of the current cache infrastructure, but it must prove that extra sampling beats arithmetic and that all consumers retain acceptable agreement.
+
+R32F is another precision option, but its filtering support must be queried rather than assumed. Apple exposes `supports32BitFloatFiltering` for exactly that distinction. [Apple Developer Documentation](https://developer.apple.com/la/documentation/metal/mtldevice/supports32bitfloatfiltering?utm_source=chatgpt.com)
+
+**My recommendation:** take the smaller two-octave atlas to Metal first. If it wins, the full pyramid becomes a justified second experiment.
+
+---
+
+## 4. The biggest architectural bet: native-resolution detail around the aircraft
+
+The simulator has a clear visual priority: the pilot must read the aircraft’s silhouette, attitude, motion and control response.
+
+That suggests a rendering strategy with **different spatial budgets for different parts of the image**.
+
+### Proposed rendering arrangement
+
+Render the background at a reduced internal scale. Then render a tightly cropped, native-pixel region around the aircraft using a second camera with the same world position and orientation, but an off-axis frustum.
+
+The second view must include **the complete visible scene inside that rectangle**:
+
+- The aircraft and propeller.
+- Smoke, lights and other relevant effects.
+- Trees, terrain and objects that can occlude the aircraft.
+- The sky and background needed to composite the region correctly.
+
+Composite that crop into the reconstructed background, then draw the native-resolution UI.
+
+Godot supplies `SubViewport`, shared world access and off-axis camera configuration through `Camera3D.set_frustum`. The project’s existing [magnifier](https://github.com/bultodepapas/OpenRCsimulator/blob/93ffbb101917dff86ecc2632f07e2e45c450a178/app/render/camera/magnifier.gd) provides useful infrastructure, but its aircraft-only layers and different camera setup do not already implement this crop. [Godot Engine (stable) documentation in English](https://docs.godotengine.org/en/stable/classes/class_camera3d.html?utm_source=chatgpt.com)
+
+### Why this is worth testing
+
+A simple shading-area model is:
+
+\[
+\text{relative area}\approx s^2+p
+\]
+
+where \(s\) is the background’s linear resolution scale and \(p\) is the native crop’s fraction of the output area.
+
+For example, a background scale of 0.75 and a crop covering 10% of the output gives:
+
+\[
+0.75^2+0.10=0.6625
+\]
+
+That is about two-thirds of the full-screen fragment area **before** duplicated scene work and compositing. It is not a prediction of a one-third frame-time improvement.
+
+The actual implementation can duplicate culling, draw submissions, shadows and other passes. Those costs may erase the saving. The architectural attraction is that it offers a way to reduce background shading while explicitly protecting the detail that matters for flying.
+
+### What I validated in the real engine
+
+The headless geometry experiment used the actual pinned Godot camera methods:
+
+| Check | Result |
+|---|---|
+| Crop/FOV/aspect/transform configurations | **96 passed** |
+| World-to-crop projection comparisons | **3,168**, maximum mismatch **0.00869 px** |
+| Near/far and crop-edge inclusion checks | **1,152 passed** |
+| Inverse-projection ray comparisons | **1,056**, maximum vector difference **2.885×10⁻⁶** |
+| Deliberately reversed offset controls | All detected |
+
+This establishes the sampled camera geometry. It does not establish rendered seams, sky behavior, depth-texture agreement or performance.
+
+### A concrete engine trap discovered during the experiment
+
+In the pinned version, calling `project_ray_normal()` on the off-axis crop camera did not produce the corresponding main-camera ray in **792 of 1,056** samples.
+
+I then checked the [pinned Camera3D implementation](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/scene/3d/camera_3d.cpp). Its ray helper constructs a centered ray from viewport half-extents, which is consistent with the observed off-axis discrepancy.
+
+The tested workaround is:
+
+```gdscript
+main_camera.project_ray_normal(crop_origin + crop_local_pixel)
+```
+
+Reconstruction through the inverse crop projection matrix also matched in the sampled cases.
+
+That matters for picking and any later reconstruction work: successful image projection does not guarantee that every camera helper respects the same off-axis geometry.
+
+### How I would develop the rendered version
+
+Use a padded crop that covers aircraft motion and effects, with hysteresis so small movements do not constantly resize targets. Synchronize the two cameras to the same render pose. Match exposure, fog, lighting and postprocessing, and account for internal versus output pixel coordinates.
+
+The decisive scenes are a fast pan, an aircraft passing behind trees, a spinning propeller near the crop edge, and a changing sky/exposure. At 1920×1080 output, the patch must remain visually seamless while total frame cost falls.
+
+**This is the large project-level experiment I would pursue before committing to an engine fork.**
+
+---
+
+## 5. Go further with Apple’s native rasterization-rate maps
+
+The native Metal version of selective-resolution rendering is potentially more efficient because it can reduce physical fragments within the principal scene pass.
+
+Apple’s `MTLRasterizationRateMap` maps logical screen coordinates onto a nonuniform physical render target. The rendered image is subsequently reconstructed into the final output. Its rates are defined separately along the horizontal and vertical axes, so it is not an arbitrary two-dimensional quality mask. Actual supported rates and physical dimensions must be queried. [Apple Developer](https://developer.apple.com/videos/play/tech-talks/608/?utm_source=chatgpt.com)
+
+For OpenRC, the map could follow a padded aircraft region:
+
+- Preserve high sampling density where the aircraft and nearby effects appear.
+- Reduce density farther away.
+- Keep the HUD at output resolution.
+- Change the map conservatively as the region moves.
+
+### The useful source discovery
+
+The pinned Godot Metal backend already contains relevant machinery:
+
+- `texture_create_from_extension` recognizes an actual native rasterization-rate-map object.
+- The framebuffer path retains the map.
+- The Metal render-pass setup assigns it to the render-pass descriptor.
+- The XR interface exposes a related map format and import route.
+
+These are concrete integration points in the pinned [Metal driver](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/metal/rendering_device_driver_metal.cpp) and [Metal render-pass implementation](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/metal/metal3_objects.cpp).
+
+**What remains unresolved is getting that native map safely into the existing desktop scene-rendering path.** An ordinary Godot desktop VRS texture does not automatically become an Apple rasterization-rate-map object.
+
+I would stage this work as follows:
+
+1. Query support on the target device and create a small native map.
+2. Prove import and reconstruction in an isolated framebuffer.
+3. Establish how the built-in desktop scene pass can consume it.
+4. Validate screen/depth readers, MSAA, transparency, scaling and the final composite.
+5. Compare complete frames against the simpler crop approach.
+
+Apple’s **metal-cpp** provides a low-overhead C++ interface suitable for a native experiment. It is a practical option for a GDExtension investigation; it does not itself solve ownership of Godot’s built-in scene passes. [Apple Developer](https://developer.apple.com/metal/cpp/?utm_source=chatgpt.com)
+
+This is the highest-upside engine-level candidate in the research, with correspondingly greater integration risk.
+
+---
+
+## 6. An aggressive idea I tested and would deprioritize: cache all cloud-relief samples
+
+The cloud-relief shader evaluates density at three positions along the light direction, using offsets 0.10, 0.28 and 0.62. Those values feed transmission, illumination and the shoulder term. [Current relief source](https://github.com/bultodepapas/OpenRCsimulator/blob/93ffbb101917dff86ecc2632f07e2e45c450a178/app/render/cloud_relief.gdshaderinc).
+
+The tempting optimization was to bake the three resulting densities into RGB. One filtered texture sample would then supply all three inputs.
+
+It also offered temporal reuse: if wind only translates a periodic cloud field, lookup coordinates can move without rebuilding the field.
+
+### The numerical screen showed the problem
+
+For the unclustered coverage-0.35 case:
+
+| Cache size | Persistent RGBA16F storage | Maximum active-cloud scalar-lighting error |
+|---|---:|---:|
+| 512² | 2 MiB | **0.366** |
+| 1024² | 8 MiB | **0.160** |
+| 2048² | 32 MiB | **0.0425** |
+
+The clustered low-sun case reached **0.0496** at 2048².
+
+These are raw scalar-lighting differences, not final RGB errors. Nevertheless, they are much larger than those of the lattice experiment, and the memory cost is substantial.
+
+The mechanism is clear: **interpolating already-thresholded density loses sub-texel structure**. The shoulder term then uses a difference between the exact cloud body and an interpolated neighboring density, which can amplify the discrepancy.
+
+Light changes create another problem. In one controlled stale-cache test, changing the light-ray x component by 0.05 without rebuilding increased the maximum error from 0.0425 to 0.0878.
+
+**I would stop this particular design here.** A future cache could retain only a smoother, low-frequency lighting component, but that would be a different experiment requiring its own error analysis.
+
+---
+
+## 7. A small mathematical trick: a 1 KB solar-halo table
+
+The sky contains a broad solar halo of the form:
+
+\[
+H(\mu)=e^{-18\arccos(\mu)}
+\]
+
+where \(\mu\) is the view/sun dot product.
+
+A table sampled uniformly in \(\mu\) wastes most of its resolution away from the steep region near the sun. I tested a change of variable:
+
+\[
+t=\sqrt{\frac{1-\mu}{2}}=\sin\left(\frac{\theta}{2}\right)
+\]
+
+The stored function becomes:
+
+\[
+H(t)=e^{-36\arcsin(t)}
+\]
+
+This places useful table resolution around the steep part of the halo.
+
+### Result
+
+A **512-entry R16F table—1,024 bytes—** produced a maximum normalized halo error of **0.00067842** over 820,197 unique float32 inputs, including every float32 dot value between approximately 0.99 and 1.
+
+A naive 512-entry table uniformly spaced in the dot product produced a maximum error around **0.351** in the same screen.
+
+That is a useful example of improving an approximation through its coordinate system rather than simply making the texture larger.
+
+### The source review also exposed a limitation
+
+The current [sky shader](https://github.com/bultodepapas/OpenRCsimulator/blob/93ffbb101917dff86ecc2632f07e2e45c450a178/app/render/sky.gdshader) shares the `acos` result with the analytic solar-disc edge.
+
+Therefore, replacing the halo alone does **not** remove that shared angle calculation. It replaces the halo exponential while adding a square root and a lookup.
+
+Removing most angle evaluations would require a separate, conservatively bounded disc-support path that preserves the analytic disc and cubemap behavior. That restructuring has not been implemented here.
+
+**I would keep this below the cloud experiments in priority.** Its numerical behavior is attractive; its integrated performance case is still weak.
+
+---
+
+## 8. Additional source-specific opportunities
+
+### Hoist the pilot’s ground-color anchor out of fragment work
+
+The shared [grass-surface shader](https://github.com/bultodepapas/OpenRCsimulator/blob/93ffbb101917dff86ecc2632f07e2e45c450a178/app/render/grass_surface.gdshaderinc) evaluates three value-noise terms at the uniform `pilot_xz` inside the relevant near-pilot region.
+
+That anchor depends on the station, not on each fragment.
+
+I would test computing it in a shared GPU or vertex-stage path and passing the result to the ground and near-grass shading. First inspect what the compiler already does: some uniform-expression work may already be optimized.
+
+A direct GDScript replacement needs care because the float hash contains operations such as `fract`; CPU double precision and GPU float arithmetic can produce different hash values. This is a case where moving an expression to a “cheaper” stage can quietly change the image.
+
+### Cache terrain material channels, with lighting kept live
+
+The terrain shader contains procedural fields at several spatial scales. Slowly varying material channels are candidates for a bounded world-space cache.
+
+I would cache the underlying broad variation, while keeping near detail, footprint filtering, pilot-specific adjustments, weather and lighting live. Begin with a bounded texture for the current field; introduce clipmaps only if travel extent makes them necessary.
+
+The distinction is important: caching the final shaded color would make the cache dependent on far more changing inputs.
+
+### Use front-to-back reasoning for layered clouds
+
+The layered sky currently computes multiple decks. Front-to-back accumulation exposes how much later layers can still contribute:
+
+\[
+C \mathrel{+}=T\alpha C_{\text{layer}},\qquad
+T\mathrel{*}=1-\alpha
+\]
+
+This permits an error-bounded decision to skip some hidden upper-layer shading.
+
+A conservative first version would still compute density for solar occlusion, while selectively skipping expensive relief on almost-hidden decks. Arbitrary opacity cutoffs are unsuitable because the omitted contribution can matter near a bright sun.
+
+This opportunity is weather-specific. The classic single-deck case has no inter-layer work to eliminate.
+
+### Publish read-mostly textures deliberately
+
+Apple documents texture optimization and lossless compression opportunities associated with private storage and appropriate usage flags. Permanently writable resources can have different optimization opportunities from read-mostly ones. [Apple Developer](https://developer.apple.com/videos/play/tech-talks/10580/?utm_source=chatgpt.com)
+
+The pinned Godot Metal backend already places eligible textures in private storage, so simply recommending “use private textures” would repeat existing behavior.
+
+For a future compute-built lattice cache, the useful experiment is narrower: compare a writable bake resource against publishing a read-mostly texture, accounting for the copy and synchronization cost. That decision should follow measurements.
+
+---
+
+## 9. Tools and experiments I would use next
+
+The project already has useful infrastructure. I would extend its existing probes and checked runner for these candidates.
+
+| Tool or facility | Specific purpose |
+|---|---|
+| Existing cloud-shadow probe | Compare reference and candidate values through actual canvas, spatial **and sky** consumers |
+| Existing checked Godot runner | Retain logs, catch shader/engine errors and require explicit completion markers |
+| Existing debug bridge and capture workflow | Reproduce flight views, motion, transitions and application behavior |
+| Xcode Metal debugger and available GPU counters | Determine whether a candidate reduces arithmetic pressure or merely shifts the bottleneck to texture access, occupancy or bandwidth |
+| Godot `Image` and explicit mip sampling | Build the independently authored lattice pyramid without adding a runtime library |
+| metal-cpp/native GDExtension experiment | Test native rasterization-rate-map support, import and reconstruction |
+| NumPy reference harnesses in the kit | Reject inaccurate mathematical ideas before spending time integrating them into rendering |
+
+Apple’s profiling guidance emphasizes examining the GPU timeline together with occupancy, limiter and bandwidth information. Those measurements are what distinguish a useful arithmetic reduction from a trade that slows the complete frame. [Apple Developer Documentation](https://developer.apple.com/documentation/xcode/optimizing-gpu-performance?utm_source=chatgpt.com)
+
+### The order I would execute
+
+**First, qualify the bounded-density variants.** Compare them with the current implementation at actual 1920×1080 output, across sparse and dense clouds. Check raw GPU output near thresholds and seams before judging speed.
+
+**Second, qualify the two-octave lattice atlas.** Include texture readiness, wrong-seed fallback and actual sky sampling. Measure the additional resident memory and bake/transition cost as well as steady-state frames.
+
+**Third, build the rendered native-aircraft crop.** The geometry groundwork is complete. The next test must show that foreground occlusion, propellers, fog, lighting and crop edges remain correct during motion.
+
+**Fourth, investigate the native Metal rate-map path.** Use a small extension-level proof before committing to modifications of the built-in desktop renderer.
+
+For each, compare paired complete-frame runs under matched settings, retain moving image evidence, and measure transition hitches and sustained behavior. The 240 Hz float64 RK4 simulation, input timing and deterministic replay remain fixed.
+
+**My strongest immediate bet is the combination of conservative cloud evaluation and the lattice atlas. My strongest architectural bet is aircraft-centered rendering.** The experiments now provide concrete code and evidence for pursuing both—and a clear reason to drop the first version of the full relief cache.
