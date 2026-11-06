@@ -4,12 +4,15 @@
 # re-installed behind its back), exact pause/step and wait; tick sampling, assert, find/get/set/call, performance
 # counters, state-change events; select by item text (OptionButton, TabBar, PopupMenu), key modifiers, dialogs on top
 # of the UI scope (internal OK/Cancel buttons), close, mouse clicks, methods, shortcuts and controller actions; and the
-# network thread answering ping/state/logs while the main thread is blocked in a slow frame. The real app routes (fly/home/restart/view/record) are checked in
+# network thread answering ping/state/logs while the main thread is blocked in a slow frame. PT1h-R9: the rewind ring
+# (attempts, timeline cut, pilot/recorded inputs), watchpoints on self-pausing ticks, render commands refused
+# headless, the layer census, and the interleaved ablation statistics against a fake probe with drift. The real app routes (fly/home/restart/view/record) are checked in
 # tools/debug/README.md.
 # Run: godot --headless --path . --script res://tests/test_debug_bridge.gd
 extends SceneTree
 
 const DebugBridge := preload("res://debug/debug_bridge.gd")
+const RenderProbe := preload("res://debug/render_probe.gd")
 const PORT := 47911
 
 var _failures := 0
@@ -59,6 +62,21 @@ class FakeSession extends Node:
 	func resume() -> void:
 		if holds.is_empty():
 			sim.set_paused(false)
+
+	# PT1h-R9 rewind seam: the real session's checkpoint boundary holds `simulation.inputs`, and a restore leaves
+	# the session on recorded inputs (input_enabled = false).
+	var input_enabled := true
+	var restores := 0
+
+	func checkpoint() -> Dictionary:
+		return {simulation = {tick = sim.tick, inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.25]), state = sim.state.duplicate()}}
+
+	func restore_checkpoint(candidate: Dictionary) -> bool:
+		sim.tick = candidate.simulation.tick
+		sim.state = candidate.simulation.state.duplicate()
+		input_enabled = false
+		restores += 1
+		return true
 
 
 class FakeFlight extends Node:
@@ -130,6 +148,8 @@ func _run() -> void:
 	await _read_after_write(bridge)
 	await _hardening(flight.session)
 	await _gap_tools(bridge, flight.session)
+	await _render_and_rewind(bridge, app, flight.session)
+	_ablation_math()
 	bridge.queue_free()
 	await process_frame
 	print("debug bridge: %d failed" % _failures if _failures > 0 else "all debug bridge checks passed")
@@ -549,6 +569,154 @@ static func _blocking_call(line: String) -> Dictionary:
 	peer.disconnect_from_host()
 	var reply: Variant = JSON.parse_string(buffer.get_string_from_utf8()) if buffer.find(10) >= 0 else null
 	return reply if reply is Dictionary else {ok = false, error = "no reply"}
+
+## PT1h-R9: rewind ring and attempts, a watchpoint on a tick that pauses itself, render commands without a renderer,
+## the layer census.
+func _render_and_rewind(_bridge: Node, app: Node, session: Node) -> void:
+	session.sim.set_paused(false)
+	var none: Dictionary = await _call({cmd = "rewind", seconds = 1})
+	_check("rewind without snapshots explains how to arm", not none.ok and str(none.error).contains("arm=true"), str(none))
+	var every_s := 10.0 / Engine.physics_ticks_per_second
+	var armed: Dictionary = await _call({cmd = "rewind", arm = true, every_s = every_s, keep_s = 1000})
+	var start: int = session.sim.tick
+	while session.sim.tick < start + 45:
+		await physics_frame
+	var listed: Dictionary = await _call({cmd = "rewind", list = true})
+	var kept: int = listed.result.snapshots
+	_check("armed rewind stores one checkpoint every n ticks", armed.ok and armed.result.every_ticks == 10
+		and kept >= 4 and kept <= 6, str(listed))
+	session.commands.throttle = 0.9
+	var target: int = start + 20
+	var rewound: Dictionary = await _call({cmd = "rewind", tick = target})
+	_check("rewind tick= restores the newest checkpoint at or before it, paused, pilot inputs back on",
+		rewound.ok and int(rewound.result.rewound.tick) <= target and int(rewound.result.rewound.tick) > target - 10
+		and session.sim.paused and session.input_enabled and is_equal_approx(session.commands.throttle, 0.25)
+		and session.restores == 1, str(rewound).left(300))
+	var after: Dictionary = await _call({cmd = "rewind", list = true})
+	_check("restoring cuts the later checkpoints of that attempt",
+		int(after.result.attempts[0].last_tick) == int(rewound.result.rewound.tick), str(after.result.attempts))
+	var recorded: Dictionary = await _call({cmd = "rewind", tick = target, inputs = "recorded"})
+	_check("inputs=recorded keeps the session on the restored inputs", recorded.ok and not session.input_enabled,
+		str(recorded).left(200))
+	session.input_enabled = true
+	# A restart: the clock goes back, so a new attempt begins and the previous one stays reachable.
+	session.sim.set_paused(false)
+	var before_restart: int = session.sim.tick
+	while session.sim.tick < before_restart + 25:
+		await physics_frame
+	session.sim.tick = 0
+	while session.sim.tick < 15:
+		await physics_frame
+	var attempts: Dictionary = await _call({cmd = "rewind", list = true})
+	var previous: Dictionary = await _call({cmd = "rewind", attempt = "previous", seconds = 0})
+	_check("a clock reset starts a new attempt; attempt=previous restores the end of the earlier one",
+		attempts.ok and attempts.result.current_attempt == 1 and previous.ok and int(previous.result.rewound.attempt) == 0
+		and int(previous.result.rewound.tick) >= before_restart, str(previous).left(300))
+	var too_old: Dictionary = await _call({cmd = "rewind", tick = 0, attempt = 0})
+	_check("a tick older than the ring is refused with the kept range",
+		(not too_old.ok and str(too_old.error).contains("keeps ticks")) or (too_old.ok and int(too_old.result.rewound.tick) == 0),
+		str(too_old))
+	await _call({cmd = "rewind", arm = false})
+	# A tick that pauses the flight itself (a crash) must still trigger a watchpoint, at that tick.
+	session.sim.set_paused(false)
+	await _call({cmd = "break", name = "crash", expr = "not session.crash.is_empty()", pause = true})
+	await physics_frame
+	session.crash = {why = "test"}
+	session.sim.tick += 1
+	session.sim.set_paused(true)
+	await physics_frame
+	await physics_frame
+	var hits: Dictionary = await _call({cmd = "break", list = true})
+	_check("a watchpoint sees a tick that paused itself", hits.ok and hits.result[0].hits == 1
+		and int(hits.result[0].last_tick) == session.sim.tick, str(hits))
+	session.crash = {}
+	await _call({cmd = "break", clear = "all"})
+	# Render commands need a renderer; the census and view modes do not.
+	var render: Dictionary = await _call({cmd = "render"})
+	var ablate: Dictionary = await _call({cmd = "ablate"})
+	_check("render and ablate refuse to run headless", not render.ok and not ablate.ok
+		and str(render.error).contains("renderer") and str(ablate.error).contains("renderer"), str([render, ablate]))
+	var modes: Dictionary = await _call({cmd = "viewmode"})
+	var bogus: Dictionary = await _call({cmd = "viewmode", name = "x-ray"})
+	_check("viewmode lists the debug draw modes and refuses unknown ones", modes.ok and modes.result.modes.has("overdraw")
+		and modes.result.modes[0] == "normal" and not bogus.ok, str(modes).left(200))
+	var scene := Node3D.new()
+	scene.name = "Scene3D"
+	var forest := Node3D.new()
+	forest.name = "Forest"
+	scene.add_child(forest)
+	for i in 3:
+		var tree_mesh := MeshInstance3D.new()
+		tree_mesh.mesh = BoxMesh.new()
+		forest.add_child(tree_mesh)
+	var hidden := MeshInstance3D.new()
+	hidden.name = "Hidden"
+	hidden.mesh = BoxMesh.new()
+	hidden.visible = false
+	scene.add_child(hidden)
+	var lamp := OmniLight3D.new()
+	scene.add_child(lamp)
+	app.add_child(scene)
+	var layers: Dictionary = await _call({cmd = "layers", root = str(root.get_path_to(scene)), depth = 2})
+	var forest_row: Array = layers.result.layers.filter(func(r: Dictionary) -> bool: return r.path == "Forest") if layers.ok else []
+	_check("layers counts visible geometry and shadow casters per node, skipping hidden ones", layers.ok
+		and forest_row.size() == 1 and forest_row[0].geometry == 3 and forest_row[0].shadow_casters == 3
+		and not layers.result.layers.any(func(r: Dictionary) -> bool: return r.path == "Hidden"), str(layers).left(400))
+	scene.queue_free()
+
+
+## A fake probe whose GPU time is 2 ms + 0.5 ms while the forest is visible + a linear drift: the interleaved
+## A-B-A comparison must report the forest's 0.5 ms despite the drift, an inert target as insignificant, restore
+## everything, and flag a target the app switches back on as overridden.
+class FakeProbe extends "res://debug/render_probe.gd":
+	var forest: Node3D
+	var ticks := 0
+
+	func _init() -> void:
+		super(null)
+
+	func sample() -> Dictionary:
+		ticks += 1
+		return {gpu_ms = 2.0 + (0.5 if forest.visible else 0.0) + 0.01 * ticks, draw_calls = 10 if forest.visible else 7,
+			primitives = 100, objects = 5, root_cpu_ms = 0.1}
+
+
+func _ablation_math() -> void:
+	var probe := FakeProbe.new()
+	probe.forest = Node3D.new()
+	var inert := Node3D.new()
+	var stubborn := Node3D.new()
+	var targets: Array = [probe._toggle("Forest", "layer", [[probe.forest, "visible"]], [false]),
+		probe._toggle("Inert", "layer", [[inert, "visible"]], [false]),
+		probe._toggle("Stubborn", "layer", [[stubborn, "visible"]], [false])]
+	var run := RenderProbe.Ablation.new(probe, targets, 2, 6)
+	var frames := 0
+	var hidden_during_run := false
+	while not run.advance():
+		frames += 1
+		stubborn.visible = true # the app turns it back on every frame
+		hidden_during_run = hidden_during_run or not probe.forest.visible
+	var result := run.result()
+	var rows := {}
+	for row: Dictionary in result.rows:
+		rows[row.name] = row
+	_check("ablation: interleaved baselines cancel drift and rank the real saving",
+		absf(rows.Forest.saved_gpu_ms - 0.5) < 1.0e-6 and rows.Forest.significant and rows.Forest.saved_draw_calls == 3,
+		str(rows.Forest))
+	_check("ablation: an inert target is not significant", absf(rows.Inert.saved_gpu_ms) < 1.0e-6
+		and not rows.Inert.significant, str(rows.Inert))
+	_check("ablation: a target switched back on is flagged overridden", rows.Stubborn.overridden and not rows.Forest.overridden)
+	_check("ablation: every target was off during its phase and is restored after", hidden_during_run and probe.forest.visible
+		and inert.visible and frames + 1 == run.total_frames(), "frames=%d total=%d" % [frames, run.total_frames()])
+	var aborted := RenderProbe.Ablation.new(probe, [probe._toggle("Forest", "layer", [[probe.forest, "visible"]], [false])], 2, 6)
+	for i in 10:
+		aborted.advance()
+	var off_mid_run := not probe.forest.visible
+	aborted.abort()
+	_check("ablation: abort restores a target that is still off", off_mid_run and probe.forest.visible)
+	for node: Node in [probe.forest, inert, stubborn]:
+		node.free()
+
 
 func _call(payload: Dictionary) -> Dictionary:
 	return await _raw_line(JSON.stringify(payload))

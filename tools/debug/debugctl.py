@@ -17,6 +17,8 @@ Drive the app (any bridge command; `help` asks the app for its list)
 Observe and hunt bugs
   state | logs [--since N] [--level …] [--follow] [--summary] | frames | objects [baseline|diff=true]
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
+  render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    what the GPU spends the frame on
+  rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
   watch [--every TICKS] [--count N] [--csv FILE] name=expr …   live values every n simulation ticks
   timeline [--hitch] [--since N] [--until N] [--top N]         where a long frame's time went (launch --verbose)
 Scripts and checks
@@ -1235,6 +1237,22 @@ def repl() -> int:
             print(f"connection: {error}", file=sys.stderr)
 
 
+def print_ablation(result: dict) -> None:
+    """The ablate ranking: what each layer or feature costs on the GPU, most expensive first."""
+    base = result["baseline"]
+    print(f"# baseline GPU {base['gpu_ms']} ms (range {base['min_ms']}..{base['max_ms']}, drift {base['drift_ms']}), "
+          f"{base['draw_calls']} draw calls; noise {result['noise_ms']} ms ({result['significance']}); "
+          f"{result['frames']} frames per phase after {result['warmup']}; frozen {result['frozen']}")
+    print(f"{'saved ms':>9} {'%':>6}  sig  {'draws':>6} {'prims':>9} {'cpu ms':>7}  target")
+    for row in result["rows"]:
+        flag = "*" if row["significant"] else " "
+        note = "  (app turned it back on: not trustworthy)" if row["overridden"] else ""
+        print(f"{row['saved_gpu_ms']:>9.3f} {row['saved_pct']:>6.1f}   {flag}  {row['saved_draw_calls']:>6} "
+              f"{row['saved_primitives']:>9} {row['saved_cpu_ms']:>7.3f}  {row['name']}{note}")
+    if result.get("skipped"):
+        print(f"# skipped (unknown, hidden or already off): {', '.join(result['skipped'])}")
+
+
 def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = False) -> None:
     if command == "ui" and not raw_json and isinstance(result, dict):
         print_ui(result, full_paths)
@@ -1258,11 +1276,34 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
               f"p99 {result['p99_ms']}, max {result['max_ms']} ms; {result['fps_mean']} fps, 1 % low {result['fps_1pct_low']} fps; "
               f"physics catch-up frames {result['physics_catch_up_frames']}; hitches {result['hitch_total']} "
               f"(> max({result['hitch_ms']} ms, {result['factor']}x typical {result['typical_ms']} ms))")
+        if "gpu" in result:
+            gpu = result["gpu"]
+            print(f"GPU ({gpu['note']}): p50 {gpu['p50_ms']}, p95 {gpu['p95_ms']}, p99 {gpu['p99_ms']}, max {gpu['max_ms']} ms")
         for hitch in result["hitches"]:
             causes = ", ".join(hitch["causes"]) or "no counter changed"
             print(f"  frame {hitch['frame']}: {hitch['ms']} ms, {hitch['physics_ticks']} ticks; {causes}; deltas {hitch['deltas']}")
             for text in hitch["log"][:3]:
                 print(f"      log: {text}")
+    elif command == "ablate" and not raw_json and isinstance(result, dict) and "rows" in result:
+        print_ablation(result)
+    elif command == "render" and not raw_json and isinstance(result, dict) and result.get("measuring"):
+        print(f"# {result['frames']} frames, {result['statistic']}: GPU {result['gpu_ms']} ms (root {result['root_gpu_ms']}, "
+              f"SubViewports {result['sub_gpu_ms']}; p95 {result['gpu_p95_ms']}), frame {result['frame_ms']} ms = {result['fps']} fps")
+        print(f"bound: {result['bound']}")
+        print(f"draw calls {result['draw_calls']:g} (shadow {result['shadow_draw_calls']:g}, canvas {result['canvas_draw_calls']:g}), "
+              f"objects {result['objects']:g}, primitives {result['primitives']:g}; GPU budget {result['gpu_budget_pct']}")
+        config = result["config"]
+        print(f"{config['renderer']} on {config['adapter']}, {config['size'][0]}x{config['size'][1]}, vsync {config['vsync']}, "
+              f"MSAA {config['msaa_3d']}, 3D scale {config['scaling_3d_scale']}, view {config['debug_draw']}")
+        for row in result["viewports"]:
+            if row["gpu_ms"]:
+                print(f"  {row['gpu_ms']:>7.3f} ms  {row['size'][0]}x{row['size'][1]} {row['update']:<8} {row['path']}")
+    elif command == "layers" and not raw_json and isinstance(result, dict) and "layers" in result:
+        print(f"# {result['root']} (depth {result['depth']}): geometry  multimesh  shadow  lights  path")
+        for row in result["layers"]:
+            hidden = "" if row["visible"] else "  (hidden)"
+            print(f"{row['geometry']:>9} {row['multimesh_instances']:>10} {row['shadow_casters']:>7} {row['lights']:>7}  "
+                  f"{'  ' * (row['level'] - 1)}{row['path']}{hidden}")
     elif command == "objects" and not raw_json and isinstance(result, dict):
         print("totals " + ", ".join(f"{k} {v:g}" for k, v in result["totals"].items()))
         for title in ("diff",):

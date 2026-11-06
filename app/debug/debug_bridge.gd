@@ -19,6 +19,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const ControlsReference := preload("res://ui/controls_reference.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ScreenStack := preload("res://ui/screen_stack.gd")
+const RenderProbe := preload("res://debug/render_probe.gd")
+const RewindRing := preload("res://debug/rewind_ring.gd")
 ## AppRoot openers by screen name (each takes an optional focus-return control).
 const SCREEN_OPENERS := {pause = "open_pause", settings = "open_settings", controls = "open_controls", help = "open_help",
 	weather = "open_weather", time_of_day = "open_time_of_day", overlays = "open_overlays",
@@ -55,9 +57,14 @@ const COMMANDS := {
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
 	"frames": "window=<n> hitch_ms=<ms> factor=<x> reset=<bool>: frame-time percentiles, 1 % low, hitches with causes",
-	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint",
+	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint (also sees ticks that pause, e.g. a crash)",
 	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
 	"profile": "seconds=<s> | since=<log seq> top=<n> sort=self|total: GDScript functions by time (launch --script-profile)",
+	"render": "frames=<n> measure=<bool>: GPU/CPU render ms (root + SubViewports), draw calls per pass, bound-by verdict, render config",
+	"layers": "depth=<n> root=<path>: 3D scene census (geometry, MultiMesh instances, shadow casters, lights per node)",
+	"ablate": "targets=[paths|@flags] depth=<n> frames=<n> warmup=<n> freeze=<bool>: switch each off, measure, restore; GPU ms ranking",
+	"viewmode": "name=normal|unshaded|wireframe|overdraw|lighting|...: viewport debug draw (no name: current and list)",
+	"rewind": "arm=<bool> every_s=<s> keep_s=<s> | list=true | seconds=<s>|tick=<t> attempt=current|previous|<n> pause=<bool> inputs=pilot|recorded",
 	"sample": "exprs={name: expr} every_ticks=<n> count=<m>: values each n simulation ticks (live telemetry)",
 	"assert": "expr=<expression> message=<s>: ok when truthy, else an error (for repro scripts)",
 	"find": "name=<glob> type=<class> under=<path> limit=<n>: nodes by name pattern and class",
@@ -149,10 +156,16 @@ var hitch_ms := 50.0
 var hitch_factor := 3.0
 var _hitches: Array[Dictionary] = []
 var _breaks: Array[Dictionary] = []
+var _breaks_tick := -1 # the tick last evaluated (paused flights re-evaluate only on a new tick)
 var _objects_baseline := {}
 var _drive_vehicle: Node
 var _drive_until_tick := -1
 var realtime_factor := -1.0
+## Render cost (PT1h-R9): GPU time per frame (root viewport; -1 when not measured), the probe and a running ablation.
+var _frame_gpu_ms := PackedFloat64Array()
+var _render: RenderProbe
+var _ablation: RenderProbe.Ablation
+var _rewind := RewindRing.new()
 
 
 ## The environment opts in; release templates never open the socket.
@@ -181,6 +194,8 @@ func _ready() -> void:
 		if _log_file == null:
 			push_warning("debug bridge: cannot write %s: %s" % [log_path, error_string(FileAccess.get_open_error())])
 	_display_name = DisplayServer.get_name()
+	_render = RenderProbe.new(get_viewport())
+	_render.set_measure(true) # two GPU timestamps per frame; no-op headless. render measure=false turns it off.
 	var err := _server.listen(port, "127.0.0.1")
 	if err != OK:
 		push_error("debug bridge: cannot listen on 127.0.0.1:%d: %s" % [port, error_string(err)])
@@ -190,6 +205,9 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if _ablation != null:
+		_ablation.abort()
+		_ablation = null
 	_restore_sticks()
 	_release_drive()
 	_net_mutex.lock()
@@ -436,6 +454,8 @@ func _physics_process(_delta: float) -> void:
 	# Before the session samples input and the simulation steps: a step or drive ends exactly at its tick.
 	_finish_step()
 	_check_breaks()
+	if _rewind.armed:
+		_rewind.capture(_flight_session()) # after a watchpoint's pause: a paused tick is not stored
 	_expire_drive()
 	_collect_samples()
 	if _sticks.is_empty():
@@ -1582,12 +1602,14 @@ func _record_frame(now_us: int) -> void:
 		_frame_log_seq = debug_log.last_seq()
 		_frame_ms.resize(FRAME_CAPACITY)
 		_frame_ticks.resize(FRAME_CAPACITY)
+		_frame_gpu_ms.resize(FRAME_CAPACITY)
 		return
 	var ms := (now_us - _frame_last_us) / 1000.0
 	_frame_last_us = now_us
 	var index := _frame_count % FRAME_CAPACITY
 	_frame_ms[index] = ms
 	_frame_ticks[index] = ticks
+	_frame_gpu_ms[index] = _render.root_gpu_ms() if _render != null else -1.0
 	_frame_count += 1
 	# Typical = median of the previous (up to) 60 frames, refreshed every 15: robust to the hitches themselves and to
 	# long startup frames, and it adapts to slow renderers (llvmpipe frames are seconds long, and not hitches).
@@ -1627,12 +1649,17 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 		causes.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
 	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
 		causes.append("scene/resource construction")
+	# The newest measured GPU time can lag the frame by one or two frames (timestamp readback).
+	var gpu_ms: float = _render.root_gpu_ms() if _render != null else -1.0
+	if gpu_ms >= 0.0 and gpu_ms >= 0.75 * ms:
+		causes.append("GPU-bound (%.1f ms GPU)" % gpu_ms)
 	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
 		func(entry: Dictionary) -> String: return str(entry.text).left(160))
 	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
 		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
 		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
-		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01)}
+		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01),
+		gpu_ms = snappedf(gpu_ms, 0.01) if gpu_ms >= 0.0 else null}
 	var session := _session()
 	if session != null:
 		record.tick = session.sim.tick
@@ -1659,10 +1686,13 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	var window_value: Variant = _number(request.get("window", available))
 	var window := clampi(int(window_value) if window_value != null else available, 0, available)
 	var times := PackedFloat64Array()
+	var gpu := PackedFloat64Array()
 	var catch_up := 0
 	for i in window:
 		var index := (_frame_count - 1 - i) % FRAME_CAPACITY
 		times.append(_frame_ms[index])
+		if _frame_gpu_ms[index] >= 0.0:
+			gpu.append(_frame_gpu_ms[index])
 		if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
 			catch_up += 1
 	var out := {frames = window, hitch_ms = hitch_ms, factor = hitch_factor, typical_ms = snappedf(_frame_ema_ms, 0.01),
@@ -1683,6 +1713,10 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 		out.merge({mean_ms = snappedf(mean, 0.01), p50_ms = _percentile(sorted, 0.5), p95_ms = _percentile(sorted, 0.95),
 			p99_ms = _percentile(sorted, 0.99), max_ms = snappedf(sorted[sorted.size() - 1], 0.01),
 			fps_mean = snappedf(1000.0 / mean, 0.1), fps_1pct_low = snappedf(1000.0 / worst_mean, 0.1)})
+	if not gpu.is_empty():
+		gpu.sort()
+		out.gpu = {frames = gpu.size(), p50_ms = _percentile(gpu, 0.5), p95_ms = _percentile(gpu, 0.95),
+			p99_ms = _percentile(gpu, 0.99), max_ms = snappedf(gpu[gpu.size() - 1], 0.01), note = "root viewport; render shows SubViewports"}
 	return _ok(out)
 
 
@@ -1729,8 +1763,11 @@ func _check_breaks() -> void:
 	if session == null:
 		return
 	var sim: Node = session.sim
-	if sim.paused:
+	# Paused: evaluate once per new tick only. A tick that pauses the flight itself (a crash, a fault) is then still
+	# seen at its own tick, and so is a rewind; an ordinary pause costs nothing.
+	if sim.paused and int(sim.tick) == _breaks_tick:
 		return
+	_breaks_tick = int(sim.tick)
 	for watch: Dictionary in _breaks.duplicate():
 		var value: Variant = watch.expression.execute(_input_values([session, sim, sim.state]), app, false)
 		if watch.expression.has_execute_failed():
@@ -1741,7 +1778,7 @@ func _check_breaks() -> void:
 		if now_true and not watch.was_true:
 			watch.hits += 1
 			watch.last_tick = sim.tick
-			if watch.pause:
+			if watch.pause and not sim.paused:
 				sim.set_paused(true)
 			watch.hit = {name = watch.name, tick = sim.tick, time_s = sim.time(), value = jsonable(value),
 				paused = sim.paused, state = jsonable(_flight_state(session))}
@@ -1917,6 +1954,203 @@ func _observe() -> void:
 
 
 # ---- helpers --------------------------------------------------------------------------------------------------
+
+# ---- render cost and rewind (PT1h-R9) --------------------------------------------------------------------------
+
+func _cmd_render(request: Dictionary) -> Dictionary:
+	if request.has("measure"):
+		_render.set_measure(_bool(request.measure))
+	if not RenderProbe.available():
+		return _fail("render needs a renderer: launch without --headless")
+	if not _render.measuring:
+		return _ok({measuring = false, config = _render.config()})
+	var count_value: Variant = _number(request.get("frames", 30))
+	var count := clampi(int(count_value) if count_value != null else 30, 1, 3600)
+	var samples: Array = []
+	var skip := [3] # SubViewports measured for the first time report 0 for a frame or two
+	return {pending = func() -> Variant:
+		if skip[0] > 0:
+			skip[0] -= 1
+			return null
+		samples.append(_render.sample())
+		if samples.size() < count:
+			return null
+		return _ok(_render_summary(samples)),
+		timeout_s = 60.0 + count / 10.0}
+
+
+## Means over the sampled frames, the frame's wall time over the same frames, and what bounds the frame rate.
+func _render_summary(samples: Array) -> Dictionary:
+	# Medians: one stale readback (a long startup or compilation frame) must not move the typical cost.
+	var out := {measuring = true, frames = samples.size(), statistic = "median per frame"}
+	for key: String in ["gpu_ms", "root_gpu_ms", "sub_gpu_ms", "root_cpu_ms", "setup_cpu_ms", "draw_calls",
+			"shadow_draw_calls", "canvas_draw_calls", "primitives", "objects"]:
+		var values := PackedFloat64Array()
+		for sample: Dictionary in samples:
+			values.append(float(sample[key]))
+		out[key] = snappedf(RenderProbe.median(values), 0.001 if key.ends_with("_ms") else 1.0)
+	var gpu := PackedFloat64Array(samples.map(func(sample: Dictionary) -> float: return sample.gpu_ms))
+	gpu.sort()
+	out.gpu_p95_ms = _percentile(gpu, 0.95)
+	out.gpu_max_ms = snappedf(gpu[gpu.size() - 1], 0.001)
+	var wall := PackedFloat64Array()
+	for i in mini(mini(_frame_count, FRAME_CAPACITY), samples.size()):
+		wall.append(_frame_ms[(_frame_count - 1 - i) % FRAME_CAPACITY])
+	var frame_ms := RenderProbe.median(wall)
+	out.frame_ms = snappedf(frame_ms, 0.01)
+	out.fps = snappedf(1000.0 / frame_ms, 0.1) if frame_ms > 0.0 else 0.0
+	out.gpu_budget_pct = {at_60fps = snappedf(100.0 * out.gpu_ms / (1000.0 / 60.0), 0.1),
+		at_120fps = snappedf(100.0 * out.gpu_ms / (1000.0 / 120.0), 0.1)}
+	var config := _render.config()
+	var cap_ms := 0.0
+	if config.vsync != "disabled" and float(config.refresh_hz) > 0.0:
+		cap_ms = 1000.0 / float(config.refresh_hz)
+	if int(config.max_fps) > 0:
+		cap_ms = maxf(cap_ms, 1000.0 / float(config.max_fps))
+	if OS.low_processor_usage_mode:
+		out.bound = "idle: low-processor mode redraws only on change (frame time is not a cost here)"
+	elif out.gpu_ms >= 0.85 * frame_ms:
+		out.bound = "GPU: %.2f ms of a %.2f ms frame" % [out.gpu_ms, frame_ms]
+	elif cap_ms > 0.0 and frame_ms <= cap_ms * 1.1:
+		out.bound = "frame cap (vsync/max_fps %.2f ms): GPU headroom %.2f ms" % [cap_ms, cap_ms - out.gpu_ms]
+	else:
+		out.bound = "CPU: GPU busy %.2f of %.2f ms (see profile and frames)" % [out.gpu_ms, frame_ms]
+	out.viewports = _render.viewport_rows().slice(0, 12)
+	out.config = config
+	return out
+
+
+func _render_root(request: Dictionary) -> Node3D:
+	if request.has("root"):
+		var node: Node = get_node_or_null(NodePath(str(request.root)))
+		if node == null:
+			node = get_tree().root.get_node_or_null(NodePath(str(request.root)))
+		return node as Node3D
+	return _render.scene_root()
+
+
+func _cmd_layers(request: Dictionary) -> Dictionary:
+	var root := _render_root(request)
+	if root == null:
+		return _fail("no 3D scene: no active Camera3D (or root= is not a Node3D)")
+	var depth_value: Variant = _number(request.get("depth", 2))
+	var depth := clampi(int(depth_value) if depth_value != null else 2, 1, 8)
+	var rows := _render.layers(root, depth)
+	return _ok({root = _path(root), depth = depth, layers = rows.slice(0, 200), truncated = rows.size() > 200,
+		flags = RenderProbe.FLAG_HELP})
+
+
+func _cmd_ablate(request: Dictionary) -> Dictionary:
+	if not RenderProbe.available():
+		return _fail("ablate needs a renderer: launch without --headless")
+	if _ablation != null:
+		return _fail("an ablation is already running")
+	var root := _render_root(request)
+	if root == null:
+		return _fail("no 3D scene: no active Camera3D (or root= is not a Node3D)")
+	if not _render.measuring:
+		_render.set_measure(true)
+	var raw: Variant = request.get("targets", [])
+	var names: Array = raw if raw is Array else Array(str(raw).split(",", false))
+	var numbers := {}
+	for key: String in ["depth", "frames", "warmup"]:
+		var value: Variant = _number(request.get(key, {depth = 2, frames = 60, warmup = 10}[key]))
+		if value == null:
+			return _fail("%s must be a number" % key)
+		numbers[key] = int(value)
+	var picked := _render.ablation_targets(root, names, clampi(numbers.depth, 1, 4))
+	if picked.targets.is_empty():
+		return _fail("nothing to switch off%s" % (("; unknown, hidden or already off: %s" % [picked.skipped]) if not picked.skipped.is_empty() else ""))
+	# A frozen flight keeps the camera still, so the frames being compared show the same picture.
+	var session := _flight_session()
+	var frozen: Node = null
+	if _bool(request.get("freeze", true)) and session != null and not session.sim.paused:
+		frozen = session.sim
+		frozen.set_paused(true)
+	var unfreeze := func() -> void:
+		if is_instance_valid(frozen):
+			frozen.set_paused(false)
+	var run := RenderProbe.Ablation.new(_render, picked.targets, clampi(numbers.warmup, 2, 240), clampi(numbers.frames, 5, 1200))
+	_ablation = run
+	var route := _route()
+	debug_log.event("ablate: %d targets, about %d frames" % [picked.targets.size(), run.total_frames()], {route = route})
+	var finish := func(reply: Dictionary) -> Dictionary:
+		run.abort()
+		if _ablation == run:
+			_ablation = null
+		unfreeze.call()
+		return reply
+	return {pending = func() -> Variant:
+		if _route() != route:
+			return finish.call(_fail("the route changed during the ablation; everything was restored"))
+		if not run.advance():
+			return null
+		var out: Dictionary = run.result()
+		out.merge({root = _path(root), frozen = frozen != null, skipped = picked.skipped, truncated = picked.truncated,
+			renderer = RenderingServer.get_current_rendering_method(), size = [get_viewport().size.x, get_viewport().size.y]})
+		return finish.call(_ok(out)),
+		timeout_s = 120.0 + run.total_frames() / 5.0,
+		on_timeout = func() -> Dictionary: return finish.call(_fail("ablation timed out; everything was restored"))}
+
+
+func _cmd_viewmode(request: Dictionary) -> Dictionary:
+	if not request.has("name"):
+		return _ok({mode = RenderProbe.view_mode_name(get_viewport().debug_draw), modes = ["normal"] + RenderProbe.view_modes().slice(1),
+			renderer = RenderingServer.get_current_rendering_method()})
+	var result := _render.set_view_mode(str(request.name))
+	if not result.ok:
+		return _fail(result.error)
+	result.erase("ok")
+	result.renderer = RenderingServer.get_current_rendering_method()
+	return _settle(2, result)
+
+
+func _cmd_rewind(request: Dictionary) -> Dictionary:
+	if request.has("arm"):
+		if _bool(request.arm):
+			var every_value: Variant = _number(request.get("every_s", 0.25))
+			var keep_value: Variant = _number(request.get("keep_s", 60.0))
+			if every_value == null or keep_value == null or every_value <= 0.0 or keep_value <= 0.0:
+				return _fail("every_s and keep_s must be positive numbers")
+			var every_ticks := maxi(1, roundi(every_value * Engine.physics_ticks_per_second))
+			_rewind.arm(every_ticks, ceili(keep_value * Engine.physics_ticks_per_second / every_ticks))
+		else:
+			_rewind.disarm()
+		return _ok(_rewind.summary())
+	if not request.has("seconds") and not request.has("tick"):
+		return _ok(_rewind.summary())
+	var session := _flight_session()
+	if session == null:
+		return _fail("no flight to rewind")
+	if _step_target >= 0:
+		return _fail("a step is running")
+	for key: String in ["seconds", "tick"]:
+		if request.has(key) and (_number(request[key]) == null or _number(request[key]) < 0.0):
+			return _fail("%s must be a non-negative number" % key)
+	var mode := str(request.get("inputs", "pilot"))
+	if mode not in ["pilot", "recorded"]:
+		return _fail("inputs must be pilot (fly on from the restored moment) or recorded (hold the restored inputs)")
+	var entry := _rewind.find(request, int(session.sim.tick), float(session.sim.dt()))
+	if entry.has("error"):
+		return _fail(entry.error)
+	var had_input: Variant = session.get("input_enabled")
+	if not _rewind.restore(session, entry):
+		return _fail("the session refused the checkpoint of tick %d (see logs)" % entry.tick)
+	# A restored checkpoint is a replay boundary: the session holds the recorded inputs and ignores the pilot.
+	# inputs=pilot hands control back, starting from the recorded throttle (the keyboard ramps it slowly).
+	if mode == "pilot" and had_input is bool:
+		session.set("input_enabled", had_input)
+		var commands: Variant = session.get("commands")
+		var recorded: PackedFloat64Array = entry.snapshot.simulation.inputs
+		if commands is Dictionary and recorded.size() >= 4:
+			commands.throttle = recorded[3]
+	if _bool(request.get("pause", true)):
+		session.sim.set_paused(true)
+	elif session.has_method("resume"):
+		session.resume()
+	debug_log.event("rewind to tick %d (attempt %d)" % [entry.tick, entry.attempt], RewindRing.describe(entry))
+	return _settle(1, {rewound = RewindRing.describe(entry), flight = _flight_state(session)})
+
 
 func _settle(frames: int, result: Dictionary) -> Dictionary:
 	var until := Engine.get_process_frames() + frames

@@ -7,7 +7,8 @@ one script, use the [checked runner](../godot/README.md) instead. Claude Code an
 `openrc-debug` skill; the [tool index](../../docs/tools/README.md) routes every other task.
 
 Contents: [quick start](#quick-start) · [I want to…](#i-want-to) · [commands](#commands) ·
-[stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) · [recipes](#recipes) ·
+[stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) ·
+[GPU cost and rewind](#gpu-cost-and-rewind-pt1h-r9) · [recipes](#recipes) ·
 [how it works and limits](#how-it-works-and-limits) · [performance](#performance) · [verification](#verification).
 `python3 tools/debug/debugctl.py --help` prints the client's commands; `debugctl.py help` asks a running app for its
 own list.
@@ -32,6 +33,8 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
 | Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
 | Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --hitch`; `launch --script-profile` + `$D profile seconds=20` |
+| Find what the GPU spends a frame on | `$D render` (GPU/CPU ms, draw calls, bound-by verdict), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
+| Go back before a crash and try again | `$D rewind arm=true` before flying, then `$D rewind seconds=2` (`attempt=previous` after an auto-restart) |
 | Find a leak | `$D soak scenario.txt --cycles 5`, `$D objects baseline=true` then `$D objects diff=true` |
 | Find UI bugs | `$D crawl`, `$D monkey --steps 300 --seed 1 --keys` |
 | Reproduce a bug as a script | write `tmp/repro.txt` (one command per line), `$D run tmp/repro.txt --fail-on-error` |
@@ -115,7 +118,8 @@ Launch options:
 | Menus and settings | `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
-| Time | `pause`, `resume`, `step ticks=<n>`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
+| Time | `pause`, `resume`, `step ticks=<n>`, `rewind arm=\|list=\|seconds=\|tick= [attempt=] [pause=] [inputs=pilot\|recorded]`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
+| Render cost | `render [frames=] [measure=]`, `layers [depth=] [root=]`, `ablate [targets=] [depth=] [frames=] [warmup=] [freeze=]`, `viewmode [name=]` |
 | Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames [window=] [hitch_ms=] [factor=] [reset=]`, `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
 | Introspection | `methods node=<path>`, `find name=<glob> type=<class>`, `get node= [prop=]`, `set node= prop= value=`, `call node= method= args=[…]`, `eval expr= [node=]`, `assert expr= [message=]`, `nodes path= depth=` |
@@ -160,6 +164,8 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - `break expr="-s[2] < 2" wait=true` checks the expression before every flight tick (inputs: `session`, `sim`,
     `s`, `app`, singletons). It pauses at the exact tick it becomes true, logs a `break` event and returns the state.
   - It fires on each false → true entry. `once=true` removes it after one hit; `pause=false` only logs.
+  - A paused flight is re-checked once per new tick, so a tick that pauses itself (a crash, a fault) or a `rewind`
+    still triggers it at its own tick.
   - An expression that fails is removed with an event.
 - **Errors: `logs --summary` and `run --fail-on-error`.**
   - The summary groups records whose texts differ only in numbers, with counts, first/last sequence and the
@@ -261,6 +267,93 @@ key from a copy of the baseline makes the matching warning new (exit 1).
 - It could not parse 9 files.
 
 The engine's own warnings are the better signal.
+
+## GPU cost and rewind (PT1h-R9)
+
+Research and the first Windows measurements: [debug tooling 2026-11-06](../../docs/research/debug-tooling-render-rewind-2026-11-06.md).
+
+### Render cost (PT1h-R9)
+
+These commands need a renderer: launch without `--headless`, on the target display and GPU. Results describe that
+machine, renderer and view only.
+
+- **`render [frames=30]`** answers "what bounds this frame?" in one read:
+  - the median GPU time of the root viewport and of every active SubViewport (render-to-texture work, such as the
+    projected-shadow silhouettes), with p95;
+  - root CPU render time, draw calls per pass (visible, shadow, canvas), objects and primitives;
+  - the wall frame time over the same frames, and a verdict: `GPU`, `frame cap` (vsync or `max_fps`, with the
+    remaining GPU headroom), `CPU`, or `idle` in low-processor mode;
+  - the render configuration: renderer, adapter, size, vsync, MSAA, 3D scale, environment features, lights and
+    their shadows, video memory.
+  - Medians matter: one stale readback after a long load frame reported 971 ms and moved a 60-frame mean to 20 ms.
+- **GPU time is always measured** when a renderer exists (two GPU timestamps per frame; `render measure=false`
+  stops it). `frames` then adds GPU p50/p95/p99/max for the root viewport, and a hitch names `GPU-bound` when the
+  latest GPU time is at least 75 % of the frame. That GPU reading can lag the frame by one or two frames.
+- **`layers [depth=2] [root=<path>]`** is a census of the 3D scene below the active camera's top Node3D: visible
+  geometry instances, MultiMesh instances, shadow casters and lights per node.
+- **`ablate`** ranks what the GPU time is spent on, by elimination (Unreal's show flags and ProfileGPU, done with
+  Godot's own measurements):
+  - It switches one target off, measures, restores it, and moves to the next. Targets are scene-root-relative node
+    paths, or flags: `@shadows`, `@fog`, `@glow`, `@msaa`, `@half_res` (3D scale ×0.5: is the frame pixel-bound?),
+    `@subviewports`, `@canvas`.
+  - Without `targets=`, it measures every flag, every top-level layer, and the children of any layer that holds a
+    large share of the geometry. `targets=Field,airplane,@fog` (comma-separated or a JSON list) narrows it.
+  - Measurement is interleaved A-B-A: baseline, target off, baseline, next target, …, baseline. Each target is
+    compared with the mean of the baselines before and after it, which cancels slow drift. On a lightly loaded
+    desktop GPU, clock changes moved the baseline 0.26 ms during one run, more than most of the effects measured.
+  - `noise_ms` is the robust spread between consecutive baselines. A row is `significant` (`*` in the table) when
+    its saving exceeds 3 × noise.
+  - `overridden` means the app switched the target back on during its phase (for example a script that sets
+    `visible` every frame). That row is not trustworthy.
+  - Each phase discards `warmup=10` frames, then keeps `frames=60`. A flight is paused for the run (`freeze=true`),
+    so the camera holds still. Everything is restored at the end, on a route change, on a timeout, or when the
+    client disconnects.
+  - About 30 s at 110 fps for 20 targets. Negative savings within the noise are noise. A real negative saving is a
+    finding: `@half_res` cost more than it saved in Compatibility on the RTX 3090, because the frame was not
+    pixel-bound.
+  - A switched-off target removes all of its cost, including indirect costs. Hiding the aircraft also removes its
+    projected-shadow silhouette pass.
+- **`viewmode name=<mode>`** sets the viewport's debug draw. `viewmode` without a name lists the modes. In
+  Compatibility, `overdraw` and `unshaded` work. `wireframe` covers only meshes created after it was set, so set it
+  on Home and then fly. Most other modes need Forward+ or Mobile. Use `viewmode name=normal` to return.
+
+### Rewind (PT1h-R9)
+
+A ring of exact flight checkpoints for temporal debugging, after the rewindable-replay approach in Mark Wesley's
+GDC 2013 talk.
+
+- **`rewind arm=true [every_s=0.25] [keep_s=60]`** stores `FlightSession.checkpoint()` at a tick boundary every
+  `every_s` while the flight runs. This is the boundary flight logs replay from. Each checkpoint costs about 0.5–0.6 ms
+  on the main thread and 2.7 KB for the Ugly Stik. Arm it before the event you want to revisit.
+- **`rewind seconds=2`** or **`rewind tick=<t>`** restores the newest checkpoint at or before that moment, through
+  `FlightSession.restore_checkpoint()`:
+  - Physics, inputs, weather, failures and contacts return bit-exactly. Two branches from one checkpoint, each
+    stepped 480 ticks, gave identical state.
+  - The presentation resets as on a restart: camera history, smoke and particles. A running flight log stops, and
+    an accident report is archived.
+  - The flight stays paused (`pause=false` resumes it).
+  - The default `inputs=pilot` hands control back from the recorded throttle. `inputs=recorded` keeps the session's
+    replay contract, which holds the restored inputs and ignores the pilot.
+- **Attempts.** A reset of the simulation clock (restart, crash auto-restart) starts a new attempt. `attempt=previous`
+  (or a number) with `seconds=` counts back from that attempt's last checkpoint, which is the moment before the
+  crash. `rewind list=true` shows the attempts.
+- **The timeline is cut.** Restoring drops the later checkpoints of that attempt and every later attempt.
+- **Limits.** It is a debugging tool, not evidence: pilot input after a rewind enters at frame boundaries. Exact,
+  shareable replays use [flight logs](../../docs/FLIGHT-LOGGING.md). The checkpoint covers the player's aircraft
+  only (no companions fleet). `rewind arm=false` frees the ring.
+
+```sh
+# Why did that landing end in a crash? Fly it again from 2 s before, by hand or with sticks.
+$D rewind arm=true; $D fly start=runway
+# ... fly until the crash (the accident report pauses the flight) ...
+$D rewind seconds=2                          # paused, 2 s before; the crash is gone
+$D sample exprs={"h":"-s[2]","sink":"s[5]"} every_ticks=24 count=10   # or step and inspect
+$D resume; $D sticks pitch=0.4 throttle=1 for_s=1.5
+
+# What costs the GPU in this view?
+$D launch; $D fly start=airborne; $D close; $D resume
+$D render; $D ablate; $D viewmode name=overdraw; $D screenshot max_width=960; $D viewmode name=normal
+```
 
 ## Recipes
 
@@ -413,7 +506,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 69 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 85 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -439,6 +532,11 @@ to the bridge on a stand-in AppRoot. It covers:
   exact tick and `once` removes it; `logs` summary groups messages differing only in numbers; `objects diff` names 5
   new orphan `Node`s; `profile` parses the engine's profile format, and 5,000 profile lines evict no warning from
   the main log.
+- PT1h-R9: the rewind ring (a checkpoint every n ticks, `tick=`, the timeline cut, `inputs=pilot|recorded`, a clock
+  reset starting a new attempt, `attempt=previous`, refused old ticks); a watchpoint on a tick that pauses itself;
+  `render`/`ablate` refused headless; `viewmode` modes; the `layers` census; and the A-B-A ablation against a fake
+  probe with linear drift (exact 0.5 ms saving, inert target insignificant, overridden target flagged, everything
+  restored, abort restores).
 
 **Client tests.** These run in `research/test-tools.sh`, with 37 tests, mostly against a fake server. They cover:
 
@@ -487,4 +585,5 @@ snapshot invalidation on replies, and the log ring read from one sequence too la
 - `set_landscape` switched Home to Green paradise. A settings resolution choice enabled Revert and Keep.
 - `launch` at 1920×1080 gave 1920×1080 screenshots.
 
-Not run on Windows or macOS.
+Not run on Windows or macOS for PT1h-R7/R8. PT1h-R9 on Windows 11 (RTX 3090, Godot 4.8 beta2, Compatibility,
+1920×1080) is recorded in the [2026-11-06 research note](../../docs/research/debug-tooling-render-rewind-2026-11-06.md).

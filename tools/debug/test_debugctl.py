@@ -122,6 +122,26 @@ class DebugctlTests(unittest.TestCase):
             status = debugctl.main(list(argv))
         return status, out.getvalue(), err.getvalue()
 
+    def test_ablate_table_ranks_savings_and_flags_untrustworthy_rows(self) -> None:
+        result = {"baseline": {"gpu_ms": 1.7, "min_ms": 1.3, "max_ms": 1.8, "drift_ms": 0.08, "draw_calls": 387,
+                               "primitives": 318944},
+                  "noise_ms": 0.055, "significance": "|saved| > 3 x noise", "warmup": 10, "frames": 60, "frozen": True,
+                  "skipped": ["@glow"],
+                  "rows": [{"name": "@msaa", "kind": "flag", "saved_gpu_ms": 0.254, "saved_pct": 17.6, "significant": True,
+                            "saved_draw_calls": 0, "saved_primitives": 0, "saved_cpu_ms": 0.0, "overridden": False},
+                           {"name": "SunGlare", "kind": "layer", "saved_gpu_ms": -0.02, "saved_pct": -1.2,
+                            "significant": False, "saved_draw_calls": 0, "saved_primitives": 0, "saved_cpu_ms": 0.09,
+                            "overridden": True}]}
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            debugctl.show("ablate", result, False, False)
+        lines = out.getvalue().splitlines()
+        self.assertIn("baseline GPU 1.7 ms", lines[0])
+        self.assertIn("@msaa", lines[2])
+        self.assertIn("*", lines[2])
+        self.assertIn("not trustworthy", lines[3])
+        self.assertIn("skipped", lines[4])
+
     def test_exported_launch_uses_packaged_executable_without_project_path(self) -> None:
         exe = Path(self.tmp.name) / "packaged app.exe"
         exe.touch()
