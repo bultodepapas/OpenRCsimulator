@@ -17,10 +17,13 @@ const RD_METHODS := ["mobile", "forward_plus"]
 const STATE_KEYS := ["pending", "failed", "metalfx_pending", "metalfx_failed"]
 const MetalFX := preload("res://render/metalfx_policy.gd")
 const METALFX_BLOCK_REASON := "metalfx_failed_previously"
+const METALFX_STORAGE_REASON := "metalfx_guard_unavailable"
 ## DT-MAC-07a: the pinned engine stores MetalFX scaler creation without a null guard, so an unsupported
 ## descriptor can crash on first use. The same per-build marker pattern blocks MetalFX after such a session.
 static var _metalfx_armed := false
 static var _metalfx_activation := 0
+static var _metalfx_configuration := {}
+static var _metalfx_confirmer: WeakRef
 
 
 ## Pure decision. facts: {method, standard_method, profile, headless, build}; state: {pending, failed}.
@@ -73,13 +76,30 @@ static func load_state(path: String) -> Dictionary:
 	return state
 
 
-static func save_state(path: String, state: Dictionary) -> void:
+static func save_state(path: String, state: Dictionary) -> bool:
 	var cfg := ConfigFile.new()
 	for key: String in STATE_KEYS:
 		if state.has(key):
 			cfg.set_value(SECTION, key, state[key])
-	if cfg.save(path) != OK:
+	# The pinned ConfigFile::save can return OK after an opened file has a short write.
+	# Observe the complete state again before treating a recovery marker as persisted.
+	if cfg.save(path) != OK or not _saved_state_matches(path, cfg):
 		push_warning("Renderer guard: cannot save %s" % path)
+		return false
+	return true
+
+
+static func _saved_state_matches(path: String, expected: ConfigFile) -> bool:
+	var actual := ConfigFile.new()
+	if actual.load(path) != OK or actual.get_sections() != expected.get_sections():
+		return false
+	for section: String in expected.get_sections():
+		if actual.get_section_keys(section) != expected.get_section_keys(section):
+			return false
+		for key: String in expected.get_section_keys(section):
+			if actual.get_value(section, key) != expected.get_value(section, key):
+				return false
+	return true
 
 
 ## Call once from the normal Home route before building UI. Returns true when a Compatibility restart was
@@ -124,28 +144,47 @@ static func decide_metalfx(build: String, state: Dictionary) -> Dictionary:
 	return {state = out, blocked = blocked}
 
 
-## Call after every reconstruction apply. Entering MetalFX arms a marker (confirmed after process callbacks);
+## Call before reconstruction apply. Entering MetalFX first persists a marker (confirmed after process callbacks);
 ## leaving it before confirmation is a user choice, not a failure.
-static func observe_metalfx(tree: SceneTree, path: String, active: bool) -> void:
-	if path.is_empty() or DisplayServer.get_name() == "headless":
-		return
-	if active and not _metalfx_armed:
-		var activation := _arm_metalfx(path, str(build_identity()))
+static func observe_metalfx(tree: SceneTree, path: String, active: bool, configuration: Dictionary = {}) -> bool:
+	if DisplayServer.get_name() == "headless":
+		return true
+	if active:
+		var activation := _prepare_metalfx(path, str(build_identity()), configuration)
+		if activation < 0:
+			return false # the process capability block makes the following apply use its safe fallback
+		if activation == 0:
+			return true # unrelated preference changes do not restart the responsiveness window
 		print("Renderer guard: MetalFX active; confirming process responsiveness.")
 		var confirmer := confirmer_for(path)
 		confirmer.name = "MetalFXGuardConfirm"
 		confirmer.on_stable = func() -> void: _confirm_metalfx_activation(path, activation)
+		_metalfx_confirmer = weakref(confirmer)
 		tree.root.add_child.call_deferred(confirmer)
 	elif not active:
-		_disarm_metalfx(path)
+		if not path.is_empty():
+			_disarm_metalfx(path)
+	return true
 
 
-static func _arm_metalfx(path: String, build: String) -> int:
+static func _prepare_metalfx(path: String, build: String, configuration: Dictionary) -> int:
+	if _metalfx_armed and configuration == _metalfx_configuration:
+		return 0
+	return _arm_metalfx(path, build, configuration)
+
+
+static func _arm_metalfx(path: String, build: String, configuration: Dictionary = {}) -> int:
 	_metalfx_activation += 1
-	_metalfx_armed = true
+	_cancel_metalfx_confirmer()
+	_metalfx_armed = false
+	_metalfx_configuration = {}
 	var state := load_state(path)
-	state["metalfx_pending"] = {build = build, activation = _metalfx_activation}
-	save_state(path, state)
+	state["metalfx_pending"] = {build = build, activation = _metalfx_activation, configuration = configuration.duplicate(true)}
+	if path.is_empty() or not save_state(path, state):
+		MetalFX.blocked_reason = METALFX_STORAGE_REASON
+		return -1
+	_metalfx_armed = true
+	_metalfx_configuration = configuration.duplicate(true)
 	return _metalfx_activation
 
 
@@ -153,13 +192,24 @@ static func _disarm_metalfx(path: String) -> void:
 	if _metalfx_armed:
 		_metalfx_activation += 1
 		_metalfx_armed = false
+	_metalfx_configuration = {}
+	_cancel_metalfx_confirmer()
 	clear_metalfx_pending(path)
+
+
+static func _cancel_metalfx_confirmer() -> void:
+	var previous: Variant = _metalfx_confirmer.get_ref() if _metalfx_confirmer != null else null
+	_metalfx_confirmer = null
+	if is_instance_valid(previous):
+		previous.set_process(false)
+		previous.queue_free()
 
 
 ## A previous on/off cycle cannot confirm the current activation, even if its timer fires late.
 static func _confirm_metalfx_activation(path: String, activation: int) -> void:
 	if not _metalfx_armed or activation != _metalfx_activation:
 		return
+	_metalfx_confirmer = null
 	var state := load_state(path)
 	var pending: Variant = state.get("metalfx_pending", {})
 	if pending is Dictionary and int(pending.get("activation", -1)) == activation:

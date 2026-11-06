@@ -227,8 +227,16 @@ func _test_output_dimensions(secondary: SubViewport) -> void:
 	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
 	_check("letterboxed canvas uses the render target rather than the whole window",
 		Reconstruction.viewport_output_size(root) == Vector2i(2560, 1440))
+	var metalfx_caps := {metalfx_spatial = true, metalfx_spatial_mode = 101}
+	var letterbox_policy := Reconstruction.resolve_for_viewport(root, {reconstruction = "auto"}, metalfx_caps)
+	_check("letterboxed Auto preserves minimum input rows using the render target",
+		letterbox_policy.auto_selected == "metalfx_spatial_85"
+		and letterbox_policy.auto_output_size == [2560, 1440]
+		and letterbox_policy.auto_output_size_scope == Reconstruction.OUTPUT_SIZE_SCOPE)
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
 	_check("viewport stretching reports its lower render target", Reconstruction.viewport_output_size(root) == Vector2i(1280, 720))
+	_check("Auto keeps a lower-resolution stretched render target Native",
+		Reconstruction.resolve_for_viewport(root, {reconstruction = "auto"}, metalfx_caps).auto_selected == "native")
 	secondary.size = Vector2i(900, 600)
 	secondary.size_2d_override = Vector2i(450, 300)
 	secondary.size_2d_override_stretch = true

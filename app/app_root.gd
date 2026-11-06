@@ -1427,9 +1427,7 @@ func _apply_presentation(config: Dictionary) -> void:
 		_refresh_screen_themes(self)
 	# These settings affect presentation only, including an already paused flight.
 	Engine.max_fps = int(config.get("max_fps", 0))
-	Reconstruction.apply(get_viewport(), config)
-	RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
-		str(Reconstruction.describe(get_viewport()).get("provider", "")) in Reconstruction.MetalFX.PROVIDERS)
+	_apply_guarded_reconstruction(get_viewport(), config)
 	# VQ-06b: the LOD threshold applies at once; scenery and 3D trees follow at the next world build.
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
@@ -1498,6 +1496,17 @@ func _refresh_screen_themes(node: Node) -> void:
 	for child: Node in node.get_children(): _refresh_screen_themes(child)
 
 
+func _apply_guarded_reconstruction(viewport: Viewport, config: Dictionary) -> void:
+	var selected := Reconstruction.resolve_for_viewport(viewport, config)
+	RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
+		str(selected.get("provider", "")) in Reconstruction.MetalFX.PROVIDERS,
+		{provider = selected.get("provider", ""), mode = selected.get("scaling_3d_mode", -1),
+			scale = selected.get("scale", 1.0), output = Reconstruction.viewport_output_size(viewport)})
+	# A failed marker write blocks MetalFX before this reconstruction apply changes provider or scale.
+	# The OS may already have resized the viewport before delivering a size_changed callback.
+	Reconstruction.apply(viewport, config)
+
+
 func _on_ui_window_resized() -> void:
 	var ui_window: Window = get_tree().root
 	var scale_state: Dictionary = UiScale.apply(ui_window)
@@ -1505,9 +1514,7 @@ func _on_ui_window_resized() -> void:
 	# replace that preview, or skip an Auto preview, when a window-size change triggers this callback.
 	var active_config: Variant = ui_window.get_meta(Reconstruction.CONFIG_META, {})
 	if active_config is Dictionary and str(active_config.get("reconstruction", "")) == Reconstruction.AUTO:
-		Reconstruction.apply(ui_window, active_config)
-		RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
-			str(Reconstruction.describe(ui_window).get("provider", "")) in Reconstruction.MetalFX.PROVIDERS)
+		_apply_guarded_reconstruction(ui_window, active_config)
 	if not _popup_realign_pending:
 		_popup_realign_pending = true
 		call_deferred("_realign_open_popups")

@@ -120,6 +120,7 @@ static func resolve(requested: String, high_available_or_capabilities: Variant =
 		resolved["requested"] = AUTO
 		resolved["auto_selected"] = chosen
 		resolved["auto_output_size"] = [auto_output_size.x, auto_output_size.y]
+		resolved["auto_output_size_scope"] = OUTPUT_SIZE_SCOPE
 		return resolved
 	var status := option_status(requested, gates)
 	var selected := requested if bool(status.available) else "native"
@@ -220,15 +221,18 @@ static func capabilities_for_viewport(viewport: Viewport, capabilities: Dictiona
 	return gates
 
 
-static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
-	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
-	var pixels: Variant = viewport.get("size") # Window/SubViewport pixels, not canvas units
-	if pixels is Vector2i:
-		auto_output_size = pixels
-	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
+## Resolve before changing renderer properties so the application can persist its recovery marker first.
+static func resolve_for_viewport(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> Dictionary:
+	auto_output_size = viewport_output_size(viewport)
 	var gates := capabilities_for_viewport(viewport, capabilities)
 	var requested := str(config.get("reconstruction", "native"))
-	var policy := resolve(requested, gates)
+	return resolve(requested, gates)
+
+
+static func apply(viewport: Viewport, config: Dictionary, capabilities: Dictionary = {}) -> void:
+	var previous_failure: Variant = viewport.get_meta(RUNTIME_FAILURE_META, {})
+	var policy := resolve_for_viewport(viewport, config, capabilities)
+	NvidiaReflex.apply(str(config.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE)))
 	viewport.scaling_3d_mode = int(policy.scaling_3d_mode)
 	viewport.scaling_3d_scale = float(policy.scale)
 	var strength := sharpness_strength(config.get("fsr2_sharpness", DEFAULT_SHARPNESS))
