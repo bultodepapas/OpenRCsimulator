@@ -7,6 +7,13 @@
       "env": {
         "BLENDER_MCP_PORT": "9876"
       }
+    },
+    "openrc-sim": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "tools/debug/mcp_server.py"
+      ]
     }
   }
 }

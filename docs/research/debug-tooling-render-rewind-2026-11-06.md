@@ -122,6 +122,46 @@ also had no way to carry an exact flight state.
 - `bugit` in flight wrote a report, a screenshot and a checkpoint. `home`, then `bugitgo`, restored tick 799 in
   2.6 s, with the same state hash as before.
 
+## Round 3 (same day): agent ergonomics and MCP (PT1h-R11)
+
+Measured friction while driving the app as a fresh agent would:
+
+- Settings' option buttons were listed by their current value ("Automatic", "Automatic (Off)"), not by their field.
+  `labels=true` showed the labels, but only as separate rows.
+- Lookups needed internal node names such as `WindowResolution`.
+- Flight overlays showed four identical "×" buttons.
+- The AppRoot setters (`set_landscape`, `set_time_of_day`, …) ignore invalid values silently.
+- Valid ids had to be guessed from errors.
+- Flight screens such as overlays opened only from the pause menu, and the error said nothing more.
+
+**Inspiration:**
+
+- [Playwright MCP](https://playwright.dev/mcp/introduction): accessibility snapshots with element refs, actions by
+  ref, and a snapshot after each action.
+- [AltTester](https://alttester.com/docs/sdk/pages/commands.html): game UI selectors by name, text and path.
+- The [MCP tools specification](https://modelcontextprotocol.io/specification/2025-06-18/server/tools.md): typed
+  tools with `inputSchema`, image content, and `isError` for failures inside a tool.
+
+**Built:**
+
+- `look`, with refs, roles, field names, values, options and next steps;
+- `choose`; `catalog`; `setup` (validated and read back);
+- `open` through the pause menu inside a flight;
+- a stdio MCP server with 17 tools.
+
+**Evidence** (Windows, headless):
+
+- Settings now read `"Window resolution" = "Automatic"`. `choose field="Window resolution" value="1920 × 1080"` and
+  `field="Text size" value=125%` changed both values, and Revert restored them.
+- `setup` with an unknown landscape changed nothing. The Vantage jet asked for `hand_launch` came back `airborne`,
+  and `differs` reported it.
+- The flight's close buttons read `× (Close · Flight data)` and so on.
+- One MCP session, through a stdio client, went from launch to stop with no step needing a second call.
+- Root cause of the intermittent bridge-test failures: another agent's concurrent checks on this machine shared
+  the test's fixed port. The test now picks a free port.
+
+Game bugs and opportunities found along the way, with owners: [game findings](game-findings-debug-tooling-2026-11-06.md).
+
 ## Next steps (not built)
 
 - **Per-surface force vectors in 3D**: lift, drag and thrust per aerodynamic surface, with CG, wind and velocity, as

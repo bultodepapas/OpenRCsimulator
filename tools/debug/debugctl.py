@@ -10,7 +10,8 @@ Session
                                                             --exported uses OPENRC_GODOT as the packaged debug executable
   status | ready [--timeout S] | stop [--force]            alive? / wait for it / quit it (prints crash + exit leaks)
   clean [--keep N]                                          delete old run folders (never a live session)
-Drive the app (any bridge command; `help` asks the app for its list)
+Drive the app (any bridge command; `help` asks the app for its list). Agents: start with `look`.
+  look | choose ref=<ref> value=<v> | press ref=<ref> | catalog | setup aircraft=<id> start=airborne
   ui | press text="Fly" | select text=X item="Y" | open screen=settings | close | type text=… into=…
   fly aircraft=<id> start=airborne | home | restart | key name=Shift+C | control name=gear_toggle
   sticks pitch=0.3 throttle=0.8 for_s=2 | drive throttle=0.6 for_s=1 | pause | step ticks=240
@@ -1239,6 +1240,36 @@ def repl() -> int:
             print(f"connection: {error}", file=sys.stderr)
 
 
+def format_look(result: dict) -> str:
+    """The look snapshot as short lines an agent (or a person) reads at a glance: one control per line, its ref first."""
+    out = [f"# route {result['route']} · screens {result['screens']} · scope {result['scope']} · focus {result['focus'] or '-'}"]
+    if "window" in result:
+        out.append(f"# dialog {result['window'].get('type')}: {result['window'].get('title', '')!r} "
+                   f"{result['window'].get('items', '')}")
+    flight = result.get("flight")
+    if flight:
+        out.append(f"# flight {flight['aircraft']} tick {flight['tick']} h {flight['height_m']} m v {flight['speed_mps']} m/s "
+                   f"paused {flight['paused']} {flight.get('pause_reason') or ''} holds {flight.get('holds')} "
+                   f"crashed {flight['crashed']}")
+    for row in result["controls"]:
+        line = f"{row['ref']:<13} {row['role']:<8} {json.dumps(row['name'], ensure_ascii=False)}"
+        if row.get("field"):
+            line += f" ({row['field']})"
+        if "value" in row:
+            line += f" = {json.dumps(row['value'], ensure_ascii=False)}"
+        if row.get("range"):
+            line += f" in {row['range'][0]:g}..{row['range'][1]:g}"
+        if row.get("options"):
+            shown = row["options"][:12]
+            line += "  [" + " | ".join(shown) + (" | …" if len(row["options"]) > 12 else "") + "]"
+        for flag in ("disabled", "focused"):
+            if row.get(flag):
+                line += f"  {flag}"
+        out.append(line)
+    out += [f"> {hint}" for hint in result.get("next", [])]
+    return "\n".join(out)
+
+
 def print_ablation(result: dict) -> None:
     """The ablate ranking: what each layer or feature costs on the GPU, most expensive first."""
     base = result["baseline"]
@@ -1286,6 +1317,8 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
             print(f"  frame {hitch['frame']}: {hitch['ms']} ms, {hitch['physics_ticks']} ticks; {causes}; deltas {hitch['deltas']}")
             for text in hitch["log"][:3]:
                 print(f"      log: {text}")
+    elif command == "look" and not raw_json and isinstance(result, dict) and "controls" in result:
+        print(format_look(result))
     elif command == "ablate" and not raw_json and isinstance(result, dict) and "rows" in result:
         print_ablation(result)
     elif command == "render" and not raw_json and isinstance(result, dict) and result.get("measuring"):

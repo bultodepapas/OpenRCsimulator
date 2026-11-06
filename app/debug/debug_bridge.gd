@@ -22,6 +22,9 @@ const ScreenStack := preload("res://ui/screen_stack.gd")
 const RenderProbe := preload("res://debug/render_probe.gd")
 const RewindRing := preload("res://debug/rewind_ring.gd")
 const FlightGizmos := preload("res://debug/flight_gizmos.gd")
+const Landscapes := preload("res://landscapes/catalog.gd")
+const Conditions := preload("res://render/world/conditions.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 ## AppRoot openers by screen name (each takes an optional focus-return control).
 const SCREEN_OPENERS := {pause = "open_pause", settings = "open_settings", controls = "open_controls", help = "open_help",
 	weather = "open_weather", time_of_day = "open_time_of_day", overlays = "open_overlays",
@@ -49,6 +52,10 @@ const SNAPSHOT_IDLE_MS := 30000
 const SNAPSHOT_INTERVAL_MS := 50
 const COMMANDS := {
 	"help": "this list",
+	"look": "all=<bool>: START HERE. route, screens, flight summary, every visible control as {ref, role, name, value, options}, next steps",
+	"choose": "ref=|field=|text=|path= value=<item | on/off | number | text>: set any widget by its field name, as a player would",
+	"catalog": "valid ids: aircraft (with their starts), landscapes, time_of_day, languages, screens, camera views",
+	"setup": "aircraft= start= landscape= time_of_day= language=: Home choices, validated and read back (then fly)",
 	"ping": "liveness: pid, engine version, frame, fps",
 	"state": "route, screens, focus, fps, log counts; flight: aircraft, tick, pause/holds/crash, pose, commands",
 	"fly": "aircraft=<catalog id> start=<runway|airborne|...>: from Home, select and fly (no menu navigation)",
@@ -171,6 +178,9 @@ var _ablation: RenderProbe.Ablation
 var _rewind := RewindRing.new()
 var _gizmos: Node3D # PT1h-R10 flight-model lines, a child of the flight while shown
 var _gizmo_settings := {}
+var _ref_by_id := {} # PT1h-R11 short control refs for look/choose
+var _id_by_ref := {}
+var _ref_count := 0
 
 
 ## The environment opts in; release templates never open the socket.
@@ -642,8 +652,14 @@ func _cmd_type(request: Dictionary) -> Dictionary:
 	# An open dialog is its own viewport with its own focus.
 	var window := _top_window()
 	var control: Control = (window if window != null else get_viewport()).gui_get_focus_owner()
-	if request.has("path") or request.has("into"):
-		var found := _find_control({path = request.path} if request.has("path") else {text = request.into})
+	if request.has("path") or request.has("into") or request.has("ref") or request.has("field"):
+		var lookup := {}
+		for key: String in ["ref", "field", "path"]:
+			if request.has(key):
+				lookup[key] = request[key]
+		if lookup.is_empty():
+			lookup.text = request.into
+		var found := _find_control(lookup)
 		if found.has("error"):
 			return _fail(found.error)
 		control = found.control
@@ -1385,14 +1401,23 @@ func _cmd_open(request: Dictionary) -> Dictionary:
 	if not app.has_method(SCREEN_OPENERS[screen]):
 		return _fail("this app root cannot open %s" % screen)
 	var before := [_screen_ids(), _top_window()]
+	# In a flight every other screen opens from the pause menu, as a player reaches it (Esc, then the item).
+	var via := ""
+	if _route() == "flight" and screen != "pause" and not _screen_ids().has("pause") and app.has_method("open_pause"):
+		app.open_pause()
+		via = "pause"
 	app.call(SCREEN_OPENERS[screen])
 	var until := Engine.get_process_frames() + 1
 	return {pending = func() -> Variant:
 		if Engine.get_process_frames() < until:
 			return null
 		if _screen_ids() == before[0] and _top_window() == before[1]:
-			return _fail("%s did not open here (route %s, screens %s)" % [screen, _route(), _screen_ids()])
-		return _ok({opened = screen, screens = _screen_ids(), focus = _path(get_viewport().gui_get_focus_owner())})}
+			return _fail("%s did not open here (route %s, screens %s); flight screens open from pause, Home ones from Home" % [
+				screen, _route(), _screen_ids()])
+		var opened := {opened = screen, screens = _screen_ids(), focus = _path(get_viewport().gui_get_focus_owner())}
+		if not via.is_empty():
+			opened.via = via # the flight is now held by the pause menu; close twice and resume to fly on
+		return _ok(opened)}
 
 
 func _cmd_close(_request: Dictionary) -> Dictionary:
@@ -1496,7 +1521,7 @@ func _cmd_methods(request: Dictionary) -> Dictionary:
 
 func _cmd_mouse(request: Dictionary) -> Dictionary:
 	var at := Vector2(float(request.get("x", 0.0)), float(request.get("y", 0.0)))
-	if request.has("text") or request.has("path"):
+	if request.has("text") or request.has("path") or request.has("ref") or request.has("field"):
 		var found := _find_control(request)
 		if found.has("error"):
 			return _fail(found.error)
@@ -2263,6 +2288,330 @@ func _update_gizmos() -> void:
 	_gizmos.update_from(session, pose)
 
 
+# ---- agent ergonomics (PT1h-R11) -------------------------------------------------------------------------------
+# After Playwright MCP's accessibility snapshot: `look` lists what is on screen with a ref per control, a role, the
+# field's accessible name and its value; `choose` sets any widget by that name; refs, field names and labels all
+# work wherever a control is looked up. `catalog` lists valid option values, and `setup` applies Home choices and
+# reads them back, because the AppRoot setters ignore invalid values silently.
+
+## The accessible name of a field: accessibility_name, else the Label just before it in its row (a settings grid
+## pairs "Window resolution" with its OptionButton), else the Label just before its row, when it leads that row.
+func _field(control: Control) -> String:
+	var own := str(control.get("accessibility_name")) if "accessibility_name" in control else ""
+	if not own.is_empty() and own != "<null>":
+		return own
+	if control is BaseButton and not control is OptionButton and not _own_text(control).is_empty():
+		return "" # a button names itself; the label before it belongs to something else
+	var parent := control.get_parent()
+	if not parent is Container:
+		return ""
+	var before := _previous_visible(parent, control.get_index())
+	if before is Label:
+		return str(before.text).strip_edges()
+	if before != null:
+		return "" # another control or container comes first: no label of its own
+	var row := parent.get_parent()
+	if row is Container:
+		var above := _previous_visible(row, parent.get_index())
+		if above is Label:
+			return str(above.text).strip_edges()
+	return ""
+
+
+static func _previous_visible(parent: Node, index: int) -> Control:
+	for i in range(index - 1, -1, -1):
+		var sibling := parent.get_child(i)
+		if sibling is Control and (sibling as Control).visible:
+			return sibling
+	return null
+
+
+static func _has_word(text: String) -> bool:
+	return RegEx.create_from_string("[\\p{L}\\p{N}]").search(text) != null
+
+
+## Where a symbol-only control sits: its tooltip, else its own or the nearest ancestor's meaningful node name
+## (a "Close" button inside "FlightOverlay" is "FlightOverlay").
+static func _context(control: Control) -> String:
+	if not control.tooltip_text.is_empty():
+		return control.tooltip_text
+	var node: Node = control
+	while node != null and (str(node.name).begins_with("@") or str(node.name) in ["Close", "Button", "Root", "Panel", "Header"]):
+		node = node.get_parent()
+	return str(node.name) if node != null else ""
+
+
+## The text a control shows for itself (no node-name fallback): empty for an unlabelled check box.
+static func _own_text(control: Control) -> String:
+	for property: String in ["text", "placeholder_text", "tooltip_text"]:
+		if property in control and not str(control.get(property)).is_empty():
+			return str(control.get(property))
+	return ""
+
+
+static func _interactive(node: Node) -> bool:
+	return node is BaseButton or node is Range or node is LineEdit or node is TextEdit or node is ItemList or node is TabBar
+
+
+static func _role(control: Control) -> String:
+	if control is OptionButton:
+		return "option"
+	if control is CheckBox or control is CheckButton or (control is BaseButton and control.toggle_mode):
+		return "toggle"
+	if control is BaseButton:
+		return "button"
+	if control is SpinBox:
+		return "number"
+	if control is Slider:
+		return "slider"
+	if control is Range:
+		return "progress"
+	if control is LineEdit or control is TextEdit:
+		return "text"
+	if control is ItemList:
+		return "list"
+	if control is TabBar:
+		return "tabs"
+	return "label"
+
+
+## Short refs (e1, e2, ...), one per control for its lifetime: the same control keeps its ref across looks, so an
+## agent can act on a ref it read earlier; a freed control's ref answers "gone".
+func _ref(control: Control) -> String:
+	var id := control.get_instance_id()
+	if not _ref_by_id.has(id):
+		if _ref_by_id.size() > 20000:
+			_prune_refs()
+		_ref_count += 1
+		_ref_by_id[id] = "e%d" % _ref_count
+		_id_by_ref[_ref_by_id[id]] = id
+	return _ref_by_id[id]
+
+
+func _prune_refs() -> void:
+	for id: int in _ref_by_id.keys():
+		if not is_instance_valid(instance_from_id(id)):
+			_id_by_ref.erase(_ref_by_id[id])
+			_ref_by_id.erase(id)
+
+
+func _from_ref(ref: String) -> Control:
+	if not _id_by_ref.has(ref):
+		return null
+	var object: Object = instance_from_id(_id_by_ref[ref])
+	return object if object is Control and is_instance_valid(object) and object.is_inside_tree() else null
+
+
+## One compact row: what an agent needs to name, read and change the control.
+func _look_row(control: Control) -> Dictionary:
+	var role := _role(control)
+	var label := _label(control)
+	var field := _field(control)
+	var named_by_field := not field.is_empty() and (role not in ["button", "toggle"] or _own_text(control).is_empty())
+	var row := {ref = _ref(control), role = role, name = field if named_by_field else label}
+	if role in ["button", "toggle"] and not _has_word(label):
+		row.name = "%s (%s)" % [label, _context(control)] # "×" alone does not say which overlay it closes
+	if not field.is_empty() and field != row.name:
+		row.field = field
+	match role:
+		"option":
+			row.value = control.get_item_text(control.selected) if control.selected >= 0 else ""
+			row.options = _item_labels(control).slice(0, 40)
+		"toggle":
+			row.value = control.button_pressed
+		"number", "slider", "progress":
+			row.value = control.value
+			row.range = [control.min_value, control.max_value, control.step]
+		"text":
+			row.value = control.text
+		"tabs":
+			row.value = control.get_tab_title(control.current_tab) if control.current_tab >= 0 else ""
+			row.options = _item_labels(control).slice(0, 40)
+		"list":
+			var selected: PackedInt32Array = control.get_selected_items()
+			row.value = control.get_item_text(selected[0]) if not selected.is_empty() else ""
+			row.options = _item_labels(control).slice(0, 40)
+	if control is BaseButton and control.disabled:
+		row.disabled = true
+	if control is LineEdit and not control.editable:
+		row.disabled = true
+	if control.has_focus():
+		row.focused = true
+	return row
+
+
+func _cmd_look(request: Dictionary) -> Dictionary:
+	var scope: Node = get_tree().root if _bool(request.get("all", false)) else _ui_scope()
+	var rows: Array = []
+	for control: Control in _controls(scope, false):
+		rows.append(_look_row(control))
+		if rows.size() >= UI_LIMIT:
+			break
+	var focus: Control = get_viewport().gui_get_focus_owner()
+	var out := {route = _route(), screens = _screen_ids(), scope = _path(scope),
+		focus = _ref(focus) if focus != null else "", controls = rows}
+	if scope is Window and scope != get_tree().root:
+		out.window = {type = scope.get_class(), title = scope.title}
+		if scope is PopupMenu:
+			out.window.items = _item_labels(scope)
+	var session := _session()
+	if session != null and app.get("flight") != null:
+		var state := _flight_state(session)
+		out.flight = {aircraft = state.get("aircraft"), tick = state.get("tick"), paused = state.get("paused"),
+			pause_reason = state.get("pause_reason"), holds = state.get("holds"), crashed = state.get("crashed"),
+			height_m = snappedf(float(state.get("height_m", 0.0)), 0.1), speed_mps = snappedf(float(state.get("speed_mps", 0.0)), 0.1)}
+	out.next = _hints(out)
+	return _ok(out)
+
+
+## What an agent can do from here, as ready commands.
+func _hints(snapshot: Dictionary) -> Array:
+	var hints: Array = ["press ref=<ref> | choose ref=<ref> value=<v> (or field=/text= instead of ref=)"]
+	if snapshot.screens.any(func(id: Variant) -> bool: return str(id) != "home") or snapshot.has("window"):
+		hints.append("close  (Esc/Back on the top dialog or menu)")
+	match str(snapshot.route):
+		"home":
+			hints.append("setup aircraft=<id> start=<runway|airborne|hand_launch> landscape=<id> time_of_day=<preset>; catalog lists ids")
+			hints.append("fly  (then close + resume if the launch menu holds the flight)")
+		"flight":
+			var flight: Dictionary = snapshot.get("flight", {})
+			if flight.get("paused", false) and not flight.get("crashed", false):
+				hints.append("resume  (after close, when holds is [\"menu\"])")
+			if flight.get("crashed", false):
+				hints.append("restart | rewind seconds=2 (if armed) | home")
+			hints.append("sticks pitch= roll= yaw= throttle= for_s= | key name=<shortcut> | shortcuts | home")
+	hints.append("open screen=<%s>" % "|".join(SCREEN_OPENERS.keys()))
+	return hints
+
+
+## One verb for every widget: the value is an item label (option, tabs, list), on/off (toggle), a number (slider,
+## spin box) or text (text field, submitted). The change goes through the widget's own signals, as a player's would.
+func _cmd_choose(request: Dictionary) -> Dictionary:
+	if not request.has("value"):
+		return _fail("give value=<item label | on/off | number | text>")
+	var found := _find_control(request)
+	if found.has("error"):
+		return _fail(found.error)
+	var control: Control = found.control
+	var value: Variant = request.value
+	var ref := _ref(control)
+	match _role(control):
+		"option", "tabs", "list":
+			var choice := {ref = ref}
+			if value is float and value == floorf(value) and not _item_labels(control).has(str(value)):
+				choice.index = int(value)
+			else:
+				choice.item = str(value)
+			return _cmd_select(choice)
+		"toggle":
+			if control.disabled:
+				return _fail("%s is disabled" % _path(control))
+			var wanted := _bool(value)
+			if control.button_pressed == wanted:
+				return _ok({unchanged = true, row = _look_row(control)})
+			return _cmd_press({ref = ref})
+		"number", "slider":
+			var number: Variant = _number(value)
+			if number == null:
+				return _fail("%s takes a number in %s..%s" % [_field(control), control.min_value, control.max_value])
+			control.value = number # Range emits value_changed itself
+			return _settle(1, {row = _look_row(control)})
+		"text":
+			if control is LineEdit:
+				if not control.editable:
+					return _fail("%s is read-only" % _path(control))
+				control.text = str(value)
+				control.caret_column = control.text.length()
+				control.text_changed.emit(control.text)
+				if _bool(request.get("submit", true)):
+					control.text_submitted.emit(control.text)
+			else:
+				control.text = str(value)
+				control.text_changed.emit()
+			return _settle(1, {row = _look_row(control)})
+		"button":
+			return _fail("%s is a button: use press ref=%s" % [_label(control), ref])
+	return _fail("%s (%s) cannot take a value" % [_path(control), control.get_class()])
+
+
+## Valid values for every Home option and route command, so agents never guess ids.
+func _cmd_catalog(_request: Dictionary) -> Dictionary:
+	var aircraft: Array = []
+	for id: String in Catalog.flyable_ids():
+		var starts: Array = ["airborne"]
+		if Catalog.is_rotorcraft(id):
+			starts = ["runway", "airborne"]
+		else:
+			if Catalog.runway_supported(id):
+				starts.push_front("runway")
+			if Catalog.hand_launch_supported(id):
+				starts.append("hand_launch")
+		aircraft.append({id = id, name = Catalog.short_name(id), rotorcraft = Catalog.is_rotorcraft(id), starts = starts})
+	var home: Variant = app.get("home") if app != null else null
+	return _ok({aircraft = aircraft, landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
+		languages = Preferences.LANGUAGES, screens = SCREEN_OPENERS.keys(), camera_views = CameraViews,
+		gizmo_layers = FlightGizmos.LAYERS, selected = _home_selection() if home != null else {},
+		notes = ["start: a runway-less landscape or aircraft falls back (see setup's read-back)",
+			"rotorcraft: runway = helicopter pad, airborne = hover"]})
+
+
+func _home_selection() -> Dictionary:
+	var home: Variant = app.get("home")
+	var prefs: Variant = app.get("preferences")
+	return {aircraft = home.get("aircraft_id") if home != null else null, start = home.get("start_choice") if home != null else null,
+		landscape = app.get("landscape_id"), time_of_day = prefs.get("time_of_day") if prefs != null else null,
+		language = TranslationServer.get_locale()}
+
+
+## Apply Home choices through AppRoot's setters (as the Home buttons do), then read each one back.
+func _cmd_setup(request: Dictionary) -> Dictionary:
+	if app.get("home") == null or app.get("flight") != null or app.get("ground_vehicle") != null:
+		return _fail("setup works on Home: use home first")
+	# Validate everything first: an invalid value changes nothing at all.
+	var errors: Array = []
+	if request.has("language") and not Preferences.LANGUAGES.has(str(request.language)):
+		errors.append("language '%s' unknown; one of %s" % [request.language, Preferences.LANGUAGES.keys()])
+	if request.has("aircraft") and not Catalog.flyable_ids().has(str(request.aircraft)):
+		errors.append("aircraft '%s' unknown or not flyable; see catalog" % request.aircraft)
+	if request.has("landscape") and not Landscapes.has(str(request.landscape)):
+		errors.append("landscape '%s' unknown; one of %s" % [request.landscape, Landscapes.ids()])
+	if request.has("time_of_day") and not Conditions.HOME_CHOICES.has(str(request.time_of_day)):
+		errors.append("time_of_day '%s' unknown; one of %s" % [request.time_of_day, Conditions.HOME_CHOICES])
+	if request.has("start") and str(request.start) not in ["runway", "airborne", "hand_launch"]:
+		errors.append("start '%s' unknown; one of runway, airborne, hand_launch" % request.start)
+	if not errors.is_empty():
+		return _fail("nothing changed: " + "; ".join(errors))
+	if request.has("language"):
+		app.set_language(str(request.language))
+	if request.has("aircraft"):
+		app.set_aircraft(str(request.aircraft)) # before start: the start choice depends on the aircraft
+	if request.has("landscape"):
+		app.set_landscape(str(request.landscape))
+	if request.has("time_of_day"):
+		app.set_time_of_day(str(request.time_of_day))
+	if request.has("start"):
+		app.set_start_choice(str(request.start))
+	var wanted := {}
+	for key: String in ["aircraft", "start", "landscape", "time_of_day", "language"]:
+		if request.has(key):
+			wanted[key] = str(request[key])
+	return {pending = func() -> Variant:
+		var now := _home_selection()
+		var differs := {}
+		for key: String in wanted:
+			if str(now.get(key)) != wanted[key]:
+				differs[key] = {asked = wanted[key], got = now.get(key)}
+		# The landscape rebuilds over a few frames; wait for it, then report what really applies.
+		if differs.has("landscape") and _screen_ids().has("loading"):
+			return null
+		var out := {selected = now}
+		if not differs.is_empty():
+			out.differs = differs
+			out.note = "the app kept other values (an aircraft without a runway start, a landscape without a pad, ...)"
+		return _ok(out),
+		timeout_s = 120.0}
+
+
 func _settle(frames: int, result: Dictionary) -> Dictionary:
 	var until := Engine.get_process_frames() + frames
 	return {pending = func() -> Variant:
@@ -2387,7 +2736,7 @@ func _controls(scope: Node, labels: bool) -> Array[Control]:
 
 
 func _control_info(control: Control) -> Dictionary:
-	var info := {path = _path(control), type = control.get_class(), text = _label(control),
+	var info := {path = _path(control), type = control.get_class(), text = _label(control), ref = _ref(control),
 		focused = control.has_focus(), rect = [roundi(control.global_position.x), roundi(control.global_position.y),
 			roundi(control.size.x), roundi(control.size.y)]}
 	if control is BaseButton:
@@ -2408,6 +2757,9 @@ func _control_info(control: Control) -> Dictionary:
 		info.items = _item_labels(control)
 	if control is ItemList:
 		info.items = _item_labels(control)
+	var field := _field(control)
+	if not field.is_empty() and field != info.text:
+		info.field = field
 	return info
 
 
@@ -2419,28 +2771,51 @@ static func _label(control: Control) -> String:
 
 
 func _find_control(request: Dictionary) -> Dictionary:
+	if request.has("ref"):
+		var by_ref := _from_ref(str(request.ref))
+		return {control = by_ref} if by_ref != null else {error = "ref '%s' is gone (the screen changed): run look again" % request.ref}
+	if request.has("field"):
+		var wanted_field := str(request.field).to_lower()
+		var field_scope: Node = get_tree().root if _bool(request.get("all", false)) else _ui_scope()
+		var exact: Array = []
+		var partial: Array = []
+		for control: Control in _controls(field_scope, false):
+			var name := _field(control).to_lower()
+			if name == wanted_field:
+				exact.append(control)
+			elif not name.is_empty() and name.contains(wanted_field):
+				partial.append(control)
+		var picked: Array = exact if not exact.is_empty() else partial
+		if picked.size() == 1:
+			return {control = picked[0]}
+		if picked.is_empty():
+			return {error = "no field named '%s' in %s; run look" % [request.field, _path(field_scope)]}
+		return {error = "field '%s' is ambiguous: %s; use ref=" % [request.field, ", ".join(picked.map(func(c: Control) -> String:
+			return "%s (%s)" % [_ref(c), _field(c)]))]}
 	if request.has("path"):
 		var node := _node(str(request.path))
 		return {control = node} if node is Control else {error = "no Control at '%s'" % request.path}
 	if not request.has("text"):
-		return {error = "give text=<label> or path=<node>"}
+		return {error = "give ref=<ref from look>, field=<field name>, text=<label> or path=<node>"}
 	var wanted := str(request.text).to_lower()
 	var scope: Node = get_tree().root if _bool(request.get("all", false)) else _ui_scope()
 	# Best tier wins: exact label, label without its key hint ("DRIVE · Enter"), node name (an OptionButton shows its
 	# choice, its name is stable), label prefix, then any substring.
-	var tiers: Array = [[], [], [], [], []]
+	var tiers: Array = [[], [], [], [], [], []]
 	for control: Control in _controls(scope, false):
 		var label := _label(control).to_lower()
 		if label == wanted:
 			tiers[0].append(control)
 		elif label.get_slice(" · ", 0).strip_edges() == wanted:
 			tiers[1].append(control)
+		elif _field(control).to_lower() == wanted:
+			tiers[2].append(control) # "Window resolution" names the OptionButton that shows "Automatic"
 		elif str(control.name).to_lower() == wanted:
-			tiers[2].append(control)
-		elif label.begins_with(wanted):
 			tiers[3].append(control)
-		elif label.contains(wanted):
+		elif label.begins_with(wanted):
 			tiers[4].append(control)
+		elif label.contains(wanted):
+			tiers[5].append(control)
 	var matches: Array = []
 	for tier: Array in tiers:
 		if not tier.is_empty():
@@ -2449,8 +2824,8 @@ func _find_control(request: Dictionary) -> Dictionary:
 	if matches.size() == 1:
 		return {control = matches[0]}
 	if matches.is_empty():
-		return {error = "no visible control labelled '%s' in %s; list them with ui" % [request.text, _path(scope)]}
-	return {error = "'%s' is ambiguous: %s; use path=" % [request.text, ", ".join(matches.map(func(c: Control) -> String:
+		return {error = "no visible control labelled '%s' in %s; run look for refs, names and fields" % [request.text, _path(scope)]}
+	return {error = "'%s' is ambiguous: %s; use ref= (look) or path=" % [request.text, ", ".join(matches.map(func(c: Control) -> String:
 		return _path(c)))]}
 
 

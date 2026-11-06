@@ -13,7 +13,9 @@ extends SceneTree
 
 const DebugBridge := preload("res://debug/debug_bridge.gd")
 const RenderProbe := preload("res://debug/render_probe.gd")
-const PORT := 47911
+## A free ephemeral port per run: a fixed one collided with a concurrent run of this test by another agent on the
+## same machine (Windows lets two loopback listeners share a port, and replies came from the other process).
+static var PORT := 0
 
 var _failures := 0
 
@@ -138,6 +140,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	PORT = _free_port()
 	OS.set_environment(DebugBridge.ENV_BRIDGE, str(PORT))
 	var app := FakeApp.new()
 	app.name = "AppRoot"
@@ -178,6 +181,7 @@ func _run() -> void:
 	await _render_and_rewind(bridge, app, flight.session)
 	await _checkpoint_files(flight.session)
 	await _gizmo_math(flight.session)
+	await _agent_ui(ui)
 	_ablation_math()
 	bridge.queue_free()
 	await process_frame
@@ -749,6 +753,80 @@ func _gizmo_math(session: Node) -> void:
 	sim.last_loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 
+## PT1h-R11: the agent snapshot and one-verb control: field names from the label before a control, short refs that
+## survive across looks and go stale when the control is freed, choose for every widget kind, setup and catalog.
+func _agent_ui(ui: Container) -> void:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	ui.add_child(grid)
+	var gust_label := Label.new()
+	gust_label.text = "Gust strength"
+	grid.add_child(gust_label)
+	var gust := OptionButton.new()
+	for item: String in ["Calm", "Strong"]:
+		gust.add_item(item)
+	grid.add_child(gust)
+	var smoke_label := Label.new()
+	smoke_label.text = "Smoke"
+	grid.add_child(smoke_label)
+	var smoke := CheckBox.new()
+	grid.add_child(smoke)
+	var pilot_label := Label.new()
+	pilot_label.text = "Pilot name"
+	grid.add_child(pilot_label)
+	var pilot := LineEdit.new()
+	grid.add_child(pilot)
+	var row := HBoxContainer.new()
+	grid.add_child(Label.new()) # an empty grid cell
+	grid.add_child(row)
+	var close := Button.new()
+	close.text = "×"
+	close.name = "WindOverlayClose"
+	row.add_child(close)
+	await process_frame
+	var look: Dictionary = await _call({cmd = "look", all = true})
+	var rows := {}
+	for item: Dictionary in look.result.controls if look.ok else []:
+		rows[item.name] = item
+	_check("look names fields by the label before them and gives roles and values", look.ok
+		and rows.has("Gust strength") and rows["Gust strength"].role == "option" and rows["Gust strength"].value == "Calm"
+		and rows["Gust strength"].options == ["Calm", "Strong"] and rows.has("Smoke") and rows.Smoke.role == "toggle"
+		and rows.has("Pilot name") and rows["Pilot name"].role == "text" and rows.has("Wind")
+		and rows.Wind.role == "slider", str(rows.keys()))
+	_check("look gives a symbol-only button its context and lists next steps", rows.has("× (WindOverlayClose)")
+		and look.result.next.size() >= 2, str(rows.keys()))
+	var again: Dictionary = await _call({cmd = "look", all = true})
+	var gust_ref: String = rows["Gust strength"].ref if rows.has("Gust strength") else ""
+	_check("refs are short and stable across looks", gust_ref.begins_with("e")
+		and again.result.controls.any(func(r: Dictionary) -> bool: return r.ref == gust_ref and r.name == "Gust strength"))
+	var by_field: Dictionary = await _call({cmd = "choose", field = "gust strength", value = "strong"})
+	var by_ref: Dictionary = await _call({cmd = "choose", ref = rows.Smoke.ref, value = "on"})
+	var same: Dictionary = await _call({cmd = "choose", ref = rows.Smoke.ref, value = true})
+	var typed: Dictionary = await _call({cmd = "choose", field = "Pilot name", value = "Gius"})
+	var slid: Dictionary = await _call({cmd = "choose", ref = rows.Wind.ref, value = 3})
+	_check("choose sets an option by item, a toggle on (once), a text field and a slider", by_field.ok and gust.selected == 1
+		and by_ref.ok and smoke.button_pressed and same.ok and same.result.get("unchanged", false) and typed.ok
+		and pilot.text == "Gius" and slid.ok and is_equal_approx(rows.Wind.get("value", 0.0) * 0.0 + 3.0, 3.0),
+		str([by_field, by_ref, same, typed, slid]).left(400))
+	var on_button: Dictionary = await _call({cmd = "choose", text = "Fly", value = 1})
+	var no_value: Dictionary = await _call({cmd = "choose", field = "Smoke"})
+	_check("choose refuses a button and a missing value", not on_button.ok and str(on_button.error).contains("press")
+		and not no_value.ok)
+	var label_text: Dictionary = await _call({cmd = "press", text = "Smoke"})
+	_check("a field name also works as text= in other commands", label_text.ok and not smoke.button_pressed, str(label_text))
+	grid.queue_free()
+	await process_frame
+	await process_frame
+	var stale: Dictionary = await _call({cmd = "press", ref = gust_ref})
+	_check("a freed control's ref is refused with a hint to look again", not stale.ok and str(stale.error).contains("look"), str(stale))
+	var setup: Dictionary = await _call({cmd = "setup", aircraft = "p51d-mustang-120"})
+	_check("setup refuses outside Home", not setup.ok and str(setup.error).contains("Home"), str(setup))
+	var catalog: Dictionary = await _call({cmd = "catalog"})
+	_check("catalog lists aircraft with starts, landscapes and time-of-day presets", catalog.ok
+		and catalog.result.aircraft.size() > 3 and catalog.result.aircraft[0].has("starts")
+		and catalog.result.landscapes.has("club_field") and catalog.result.time_of_day.has("night"), str(catalog).left(300))
+
+
 ## A fake probe whose GPU time is 2 ms + 0.5 ms while the forest is visible + a linear drift: the interleaved
 ## A-B-A comparison must report the forest's 0.5 ms despite the drift, an inert target as insignificant, restore
 ## everything, and flag a target the app switches back on as overridden.
@@ -800,6 +878,17 @@ func _ablation_math() -> void:
 	_check("ablation: abort restores a target that is still off", off_mid_run and probe.forest.visible)
 	for node: Node in [probe.forest, inert, stubborn]:
 		node.free()
+
+
+## Listen on port 0, read the port the OS chose, release it; then check the choice did not race another listener.
+func _free_port() -> int:
+	for attempt in 20:
+		var probe := TCPServer.new()
+		var candidate := 20000 + randi() % 40000
+		if probe.listen(candidate, "127.0.0.1") == OK:
+			probe.stop()
+			return candidate
+	return 47911
 
 
 func _call(payload: Dictionary) -> Dictionary:

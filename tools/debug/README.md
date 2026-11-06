@@ -6,7 +6,8 @@ physics ticks, sample telemetry, take screenshots, record flight logs and evalua
 one script, use the [checked runner](../godot/README.md) instead. Claude Code and Codex find this tool through the
 `openrc-debug` skill; the [tool index](../../docs/tools/README.md) routes every other task.
 
-Contents: [quick start](#quick-start) · [I want to…](#i-want-to) · [commands](#commands) ·
+Contents: [agents and MCP](#agents-and-mcp-pt1h-r11) · [quick start](#quick-start) · [I want to…](#i-want-to) ·
+[commands](#commands) ·
 [stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) ·
 [GPU cost and rewind](#gpu-cost-and-rewind-pt1h-r9) ·
 [flight gizmos and BugIt](#flight-gizmos-and-bugit-pt1h-r10) · [recipes](#recipes) ·
@@ -23,6 +24,8 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 
 | Task | Commands |
 | --- | --- |
+| **See what is on screen and act (agents: start here)** | `$D look`, then `$D press ref=e7` / `$D choose ref=e9 value="1920 × 1080"` / `$D choose field="Text size" value=125%`; or the [MCP server](#agents-and-mcp-pt1h-r11) |
+| Pick aircraft, start, landscape, time of day | `$D catalog` (valid ids), `$D setup aircraft=<id> start=airborne time_of_day=sunset`, then `$D fly` |
 | Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 on the native display, with Xvfb only on displayless Linux); add `--import` after pulling new assets; `$D status`; `$D stop` (prints `"crash": null, "leaked_objects": 0` on a clean exit) |
 | See what is on screen and click it | `$D ui`, `$D press text="Fly"`, `$D select text=Language item="Español"`, `$D close` |
 | Open a menu or setting directly | `$D open screen=settings` (no screen: list them) |
@@ -45,6 +48,79 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Any property or method | `$D methods node=AppRoot`, `$D get node=… prop=…`, `$D call …`, `$D eval expr="…"` |
 | GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'` |
 
+## Agents and MCP (PT1h-R11)
+
+The fastest way for a coding agent to drive the whole simulator: menus, options and flights. Design after
+[Playwright MCP](https://playwright.dev/mcp/introduction): read an accessibility-style snapshot, act on its refs,
+and read the next snapshot.
+
+**The loop: `look`, then act.**
+
+```text
+$ debugctl.py look
+# route home · screens ['home', 'settings'] · scope AppRoot/Settings · focus e2
+e1            button   "Close"
+e2            toggle   "Display" = true  focused
+e9            option   "Window resolution" = "Automatic"  [Automatic | 1280 × 720 | … | 1920 × 1080 | …]
+e10           option   "Text size" = "100%"  [100% | 125% | 150% | 175% | 200%]
+> press ref=<ref> | choose ref=<ref> value=<v> (or field=/text= instead of ref=)
+> close  (Esc/Back on the top dialog or menu)
+$ debugctl.py choose ref=e9 value="1920 × 1080"      # or: choose field="Window resolution" value=…
+$ debugctl.py press text="Keep changes"
+```
+
+- **`look`** lists, for every visible control of the top screen or dialog:
+  - its **ref**;
+  - its **role**: button, toggle, option, slider, number, text, tabs, list or progress;
+  - its **name**. A field takes the name of the label before it, so the OptionButton that shows "Automatic" is
+    named "Window resolution". A symbol-only button is named by its tooltip or its parent (`× (Close · Wind)`);
+  - its **value** and **options**, and whether it is disabled or focused.
+
+  `look` also gives the route, the screens, a one-line flight summary and **next steps** for this situation.
+  `look all=true` lists every layer.
+- **Refs** (`e12`) are short, and a control keeps its ref for its lifetime: a ref from an earlier `look` still works
+  while that control exists, and a freed one is refused with "run look again". `ref=` and `field=` work in
+  `press`, `select`, `choose`, `type`, `focus`, `set_value` and `mouse`. Field names also match `text=`, after
+  exact labels.
+- **`choose`** is one verb for every widget. It takes an item label (option, tabs, list), on/off (toggle), a
+  number (slider, spin box) or text (a text field; submitted unless `submit=false`). The change goes through the
+  widget's own signals, as a player's would. A toggle that already has the value is left alone. A button is refused
+  with the matching `press`.
+- **`catalog`** lists the valid ids, so agents do not guess them: aircraft with the starts each supports,
+  landscapes, time-of-day presets, languages, screens, camera views and the current Home selection.
+- **`setup aircraft= start= landscape= time_of_day= language=`** changes Home choices.
+  - All values are validated first; an invalid one changes nothing.
+  - Each value is applied through AppRoot's setters, then read back. `differs` names any choice the app adjusted:
+    the Vantage jet has no hand launch, so `start=hand_launch` came back `airborne`.
+  - The AppRoot setters alone ignore invalid values silently.
+- **`open screen=<…>`** inside a flight opens the pause menu first (the reply says `via: pause`), as a player
+  reaches those screens.
+
+**MCP server.** [`mcp_server.py`](mcp_server.py) exposes the simulator as typed tools: `sim_launch`, `sim_look`,
+`sim_press`, `sim_choose`, `sim_close`, `sim_open`, `sim_catalog`, `sim_setup`, `sim_fly`, `sim_home`, `sim_state`,
+`sim_sticks`, `sim_key`, `sim_screenshot` (an inline JPEG), `sim_bugit`, `sim_stop`, and `sim_command`, which reaches
+any other bridge command.
+
+- Every action returns the fresh snapshot.
+- `sim_fly` closes the launch menu and resumes, so the aircraft is flying when it returns.
+- `sim_launch` points that server at its own session.
+
+The server uses MCP over stdio, the standard library and `debugctl.py`, and nothing else.
+
+```sh
+claude mcp add openrc-sim -- python3 tools/debug/mcp_server.py   # Claude Code; .mcp.json also declares it
+# Codex (~/.codex/config.toml):  [mcp_servers.openrc-sim]  command = "python3"  args = ["tools/debug/mcp_server.py"]
+```
+
+A whole session, run against the real app on Windows through a stdio client:
+
+1. `sim_launch` (headless) and the snapshot;
+2. a refused `sim_press` (`isError`, with the reason);
+3. `sim_setup` of the Extra 300S, airborne;
+4. `sim_fly`, which ended flying at tick 24;
+5. `sim_sticks`, `sim_command frames` and `sim_screenshot` (refused headless, with the reason);
+6. `sim_home`, then `sim_stop` (launcher exit 0, 0 leaked objects).
+
 ## Quick start
 
 From the repository root, Bash:
@@ -52,7 +128,7 @@ From the repository root, Bash:
 ```sh
 D="python3 tools/debug/debugctl.py"
 $D launch                       # Home at 1920x1080 on the display (Xvfb on displayless Linux); prints the run folder
-$D ui                           # controls of the top dialog/menu; * marks keyboard focus
+$D look                         # every visible control: ref, role, name, value, options; next steps
 $D fly aircraft=p51d-mustang-120 start=airborne
 $D state                        # route, screens, focus; flight tick, pause/holds/crash, pose, commands, log counts
 $D shortcuts                    # every key and controller action for this vehicle
@@ -118,7 +194,7 @@ Launch options:
 | --- | --- |
 | Session | `launch`, `status`, `ready`, `stop [--force]`, `ping`, `quit`, `clean [--keep N]` (old run folders hold about 11 MB of shader cache each; never removes the live one) |
 | Routes | `fly aircraft=<id> start=<runway\|airborne\|…>` (from Home), `home`, `restart`; truck: `call node=AppRoot method=start_ground_vehicle args=["mt8-bisonte"]`, then `press text=drive` |
-| Menus and settings | `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
+| Menus and settings | `look [all=true]`, `choose ref=\|field=\|text= value=`, `catalog`, `setup aircraft= start= landscape= time_of_day= language=`, `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
 | Time | `pause`, `resume`, `step ticks=<n>`, `rewind arm=\|list=\|seconds=\|tick= [attempt=] [pause=] [inputs=pilot\|recorded]`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
@@ -576,7 +652,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 90 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 101 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -610,9 +686,13 @@ to the bridge on a stand-in AppRoot. It covers:
 - PT1h-R10: checkpoint files (relative path refused, save then load restores the tick paused with pilot inputs,
   missing file refused); gizmo numbers against hand values (load factor, along-path force, wind, α), lines and
   label drawn, nothing drawn when nothing is shown; the `gizmos` command's refusals and `off`.
-- Timing-sensitive: "the network thread answers … during a blocked frame" blocks the main thread for 800 ms and
-  needs the replies within 700 ms. On Windows it failed twice in about 20 runs, both times while a rendered app
-  was running or exiting on the same machine. Run the bridge test on an otherwise idle machine.
+- PT1h-R11: `look` fields, roles, values and options, symbol-only buttons named by context, next steps; refs short,
+  stable across looks and refused once freed; `choose` for option, toggle (once), text and slider, refusing a
+  button and a missing value; field names as `text=`; `setup` refused outside Home; `catalog` ids.
+- The test listens on a random free port. With the former fixed port 47911, a concurrent run of the same test by
+  another agent on the same Windows machine (two loopback listeners may share a port there) answered some
+  requests. That caused the intermittent failures first blamed on load, including `blocked frame` and
+  `old snapshot`.
 
 **Client tests.** These run in `research/test-tools.sh`, with 37 tests, mostly against a fake server. They cover:
 

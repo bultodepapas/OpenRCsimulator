@@ -7,6 +7,14 @@ const ReceiverShader = preload("res://render/projected_shadow_receiver.gdshader"
 const RESOLUTION := 256
 const Spec = preload("res://spec.gd")
 const HEIGHT: float = Spec.SHADOW.height
+## PT1h-R12: a flying aircraft changes attitude every frame, so an exact-match cache redrew the full-detail
+## silhouette (165,398 triangles for the Ugly Stik, MSAA 4x) every frame: about 0.9 ms of GPU on an RTX 3090,
+## a third of the frame's GPU time. Below these tolerances the blurred shadow cannot show the difference:
+## 0.25° moves a 1.5 m span's tips by 6.5 mm, under the 18 mm minimum blur; 2 mm of blur stays inside the frame's
+## fixed 4 cm margin (see framing()).
+const REUSE_ANGLE_DEG := 0.25
+const REUSE_COS: float = 0.99999048 # cos(0.25°)
+const REUSE_BLUR_M := 0.002
 
 var source: Node3D
 var viewport: SubViewport
@@ -80,6 +88,26 @@ static func append_above(vertices: PackedVector3Array, faces: PackedVector3Array
 	elif run_start < faces.size():
 		vertices.append_array(faces.slice(run_start))
 	return (vertices.size() - before) / 3
+
+
+## Every axis within the angle (cos_limit) and its length unchanged: a scaled model is never "close".
+static func same_within(a: Basis, b: Basis, cos_limit: float) -> bool:
+	for axis in 3:
+		var u: Vector3 = a[axis]
+		var v: Vector3 = b[axis]
+		var lu := u.length()
+		var lv := v.length()
+		if absf(lu - lv) > 1.0e-5 * maxf(1.0, lu):
+			return false
+		if lu > 0.0 and u.dot(v) < cos_limit * lu * lv:
+			return false
+	return true
+
+
+static func _direction_within(a: Vector3, b: Vector3, cos_limit: float) -> bool:
+	var la := a.length()
+	var lb := b.length()
+	return la > 0.0 and lb > 0.0 and a.dot(b) >= cos_limit * la * lb
 
 
 static func project(point: Vector3, direction: Vector3) -> Vector2:
@@ -189,8 +217,13 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 	var blur := clampf(0.018 + maxf(height, 0.0) * 0.0093, 0.018, 0.45)
 	var pose := source.global_transform if source.is_inside_tree() else source.transform
 	var frame: Rect2
-	if _last_signature.size() == 3 and pose.basis == _last_signature[0] \
-			and direction == _last_signature[1] and bounds == _frame_bounds and blur == _frame_blur:
+	# Reuse the drawn mask while the attitude, light and blur stay within what the blurred shadow cannot show.
+	# Tolerances compare against the last DRAWN mask, so the error never accumulates past them.
+	var reuse := _last_signature.size() == 3 and bounds == _frame_bounds \
+			and absf(blur - _frame_blur) <= REUSE_BLUR_M \
+			and same_within(pose.basis, _last_signature[0], REUSE_COS) \
+			and _direction_within(direction, _last_signature[1], REUSE_COS)
+	if reuse:
 		frame = _last_signature[2]
 	else:
 		frame = framing(bounds, pose.basis, direction, blur)
@@ -203,6 +236,8 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 	var material := receiver.material_override as ShaderMaterial
 	material.set_shader_parameter("opacity", opacity)
 	material.set_shader_parameter("blur_uv", blur / frame.size.x)
+	if reuse:
+		return # the receiver moved with the aircraft; the mask on it is still the right shape
 	var signature := [pose.basis, direction, frame]
 	if signature != _last_signature:
 		mask_material.set_shader_parameter("aircraft_basis", pose.basis)

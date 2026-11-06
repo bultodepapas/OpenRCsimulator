@@ -1,6 +1,6 @@
 ---
 name: openrc-debug
-description: Launch, inspect and drive the running OpenRC simulator from the shell (no mouse) through its debug bridge — menus by label, keys and shortcuts, controller actions, sticks, pause/step, telemetry, screenshots, live logs, settings, UI crawl — and hunt stutter (frame hitches), leaks (object census, soak), physics bugs (tick watchpoints, rewind to before a crash, force/velocity/wind gizmos), reproducible bug reports (bugit/bugitgo), GPU cost (render, layer ablation, overdraw view), script CPU (profiler), UI bugs (seeded monkey) and GDScript compiler warnings. Use when a task needs the real running app rather than a test script.
+description: Launch, inspect and drive the running OpenRC simulator from the shell (no mouse) through its debug bridge or its MCP server (sim_* tools) — look (every control with a ref, name, value and options), choose any option by its field name, catalog/setup for aircraft, start, landscape and time of day, menus by label, keys and shortcuts, controller actions, sticks, pause/step, telemetry, screenshots, live logs, settings, UI crawl — and hunt stutter (frame hitches), leaks (object census, soak), physics bugs (tick watchpoints, rewind to before a crash, force/velocity/wind gizmos), reproducible bug reports (bugit/bugitgo), GPU cost (render, layer ablation, overdraw view), script CPU (profiler), UI bugs (seeded monkey) and GDScript compiler warnings. Use when a task needs the real running app rather than a test script.
 ---
 
 # Drive the running app
@@ -13,7 +13,9 @@ task (tests, traces, flight-test battery, captures) use the `openrc-tools` skill
 D="python3 tools/debug/debugctl.py"
 $D launch --headless            # prints its port; plain `launch` renders 1920x1080 under Xvfb (for screenshots)
 export OPENRC_DEBUG_BRIDGE=<port> # in the same shell command as the calls below when other agents share the machine
-$D ui                           # what is on screen; press text=<label>, select, set_value, type, close
+$D look                         # START HERE: every control as ref/role/name/value/options, plus next steps
+$D choose field="Text size" value=125%   # or ref=e9; one verb for options, toggles, sliders, text
+$D catalog; $D setup aircraft=<id> start=airborne time_of_day=sunset   # validated, read back
 $D fly aircraft=<catalog-id> start=airborne
 $D state                        # route, screens, pose, pause, crash, log counts
 $D shortcuts                    # every key; key name=Shift+C; control name=gear_toggle
@@ -23,6 +25,8 @@ $D crawl                        # UI smoke test of every screen
 $D stop
 ```
 
+- MCP: `python3 tools/debug/mcp_server.py` (declared in `.mcp.json`) gives the same as typed `sim_*` tools;
+  each action returns the new snapshot, and `sim_fly` leaves the aircraft flying.
 - Write a repro as a file of these lines and run it with `$D run repro.txt --fail-on-error` (stops at the first
   failure or new engine error; `assert expr=`).
 - Stutter: `$D frames` (percentiles, hitches with causes). Leaks: `$D objects baseline=true` … `diff=true`, or
