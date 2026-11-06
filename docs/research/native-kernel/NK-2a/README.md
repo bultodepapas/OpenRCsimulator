@@ -76,6 +76,15 @@ fault notification before `faulted`. The [follow-up evidence](battery-queries-20
 owns the current-source timings, exact checkpoint comparisons and battery-layout
 regressions; the original Linux measurements above remain historical.
 
+## Downwash-air follow-up, 2026-11-06
+
+The base session now shares one air sample between the downwash wake and lag-speed
+calculations within a pre-step. Derived sessions retain their original dispatch.
+Eight longer alternating spatial-wind pairs reduce median full simulation-step
+cost by 7.47% on the measured Windows reference host; steady-wind tick benefit is
+inconclusive. [A6 O4 implementation, byte comparisons, regression checks and limits](downwash-air-2026-11-06/README.md)
+own this result. It is not a native, rendered-frame or 1080p qualification.
+
 ## Remaining
 
 The lake and surface-table guards (`LakeSurface.is_valid_definition`, `Terrain.is_valid_surface_table`) run inside

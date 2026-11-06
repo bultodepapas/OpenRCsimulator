@@ -5135,8 +5135,19 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 		# E0a2b: the tail's downwash follows the wing's lift l/V late. Exact first-order lag over the tick, from the
 		# committed state and the servos the last tick used; held through the RK stages like rpm.
 		var s: PackedFloat64Array = sim.state
-		var cl_now := _wing_cl(s, aux)
-		var speed: float = air_data(s, sim.time()).V
+		var cl_now: float
+		var speed: float
+		if get_script() == load("res://sim/flight_session.gd"):
+			# NK-2a / A6 O4: pure queries at the same state/time yield the same air. Reuse only here,
+			# after the anchor update; never reuse a shaft sample, an RK stage or a previous tick.
+			var air: Dictionary = air_data(s)
+			cl_now = Aero.wing_wake_velocity(s, air, _deflections(aux), aircraft.model, _ground_up(s))
+			speed = air.V
+		else:
+			# Derived sessions may override either helper, including the second air query.
+			# Keep their original signature, dispatch and implicit/explicit time arguments.
+			cl_now = _wing_cl(s, aux)
+			speed = air_data(s, sim.time()).V
 		var length: float = aircraft.model.surfaces.horizontal.downwash_lag_length
 		out.append(cl_now + (aux[lag] - cl_now) * M.exp_(-dt * speed / length))
 	if gear_is_retractable():
