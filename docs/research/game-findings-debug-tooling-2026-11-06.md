@@ -19,7 +19,7 @@ On Apple Silicon or other GPUs, re-measure with `render` and `ablate` before act
 | 3 | Desktop frames are CPU- or vsync-bound, not GPU-bound | Performance | Medium | Performance (PT) | Open: profile |
 | 4 | Half 3D resolution makes Compatibility slower on a fast GPU | Performance policy | Medium | Graphics settings | **Already handled** by the reconstruction policy |
 | 5 | Home → Fly builds the flight in one frame of 3.6–6 s | UX / performance | Medium | UI / loading | Open |
-| 6 | A long stall when Home starts (one stale 971 ms GPU reading) | Performance | Low; needs a re-check | Graphics | Open: re-check |
+| 6 | A long stall when Home starts (one stale 971 ms GPU reading) | Performance | Medium | Graphics | **Confirmed**: 1.0 s cold, 0.33 s on every warm start |
 | 7 | AppRoot setters ignore invalid values silently | Bug-prone API | Medium | App / UI | **Fixed** (PT1h-R12) |
 | 8 | Paired visual checkpoint refused in default flights | Limitation | Medium | Time of day (TOD) | Open |
 | 9 | Session restore leaves the pilot without control | Contract trap | Medium | Flight session | **Fixed** (PT1h-R12): explicit hand-back |
@@ -415,4 +415,36 @@ Fresh rendered session:
 
 The remainder on Home is first-use caching: the fly/Home soak in `smoke` shows no growth after its warm-up cycle.
 The three start hitches belong to finding #5.
+
+### #6 Home start-up stall (re-checked)
+
+**Confirmed.** Rendered launches, with the frame's measured GPU time:
+
+| Launch | Longest frame | GPU |
+| --- | --- | --- |
+| Empty shader cache (two fresh profiles) | 1,008–1,033 ms | 876–895 ms |
+| Warm cache (second and third launch on the same profile) | 327–337 ms | 278–286 ms |
+
+The shader cache removes two thirds, but every launch still freezes one frame for about 0.33 s. `timeline --hitch`
+with `--verbose` shows no log line inside that frame, so no resource loads: the work is on the GPU or in the driver.
+The likely causes are first-use texture uploads and GL program linking for Home's first 3D frame. Attributing it
+needs a GPU capture (RenderDoc or Nsight).
+
+Note for measurements: debug-bridge launches use a fresh isolated profile, so every one of them is a cold-cache
+start. Use `launch --profile DIR` to measure what a returning player sees.
+
+**Opportunity:** render one warm-up frame of the Home scene behind the start-up screen, so the freeze is not seen.
+
+**Tool fix found here:** `frames` did not flag this frame. A hitch needed a typical frame time, which does not
+exist for the first frames after launch. The bridge now applies the absolute threshold until it does.
+
+## Pre-existing failures seen during verification (not caused by these fixes)
+
+`test_shaft_publication.gd` and `test_weather_publication.gd` fail their "frozen 25-endpoint trace" digests. They
+fail the same way with the committed `flight_session.gd`: the HEAD version was swapped in and both runs failed
+identically. These 25-tick checkpoint hashes need their owner (physics or weather) to decide whether a recent
+intentional change explains them.
+
+The other 277 of 281 affected tests passed. `test_fixed_gear_brake_input.gd` passes through its dedicated runner,
+`fixed_brake_legacy.py` (258 checks).
 
