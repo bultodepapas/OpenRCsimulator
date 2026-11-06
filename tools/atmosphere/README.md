@@ -108,6 +108,13 @@ are numerical fixtures, not 1080p performance evidence. Use the
 for matched complete-frame runs and the [capture workflow](../../docs/tools/graphics.md)
 for actual 1920×1080 motion/readability review before promoting a variant.
 
+**Native M1 result (2026-11-06):** both original bounded variants failed the
+unchanged Metal numerical gate despite their earlier Windows GPU passes. Keep
+them experimental and default `off`. A disposable reference-fallback variant
+passed the strict `two_three` probe but regressed a layered-cloud flight screen;
+it was not integrated. The cache itself passed canvas, spatial and sky checks.
+[Native evidence and limits](../../docs/research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-06b-r2--dt-mac-02b-r2-native-verification-2026-11-06).
+
 ## Distant storm-bank views (FW-83)
 
 `storm_bank_capture.gd` builds the production default field and World with the

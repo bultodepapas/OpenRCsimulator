@@ -4,7 +4,9 @@ Use this guide to connect from Linux, prepare a native task workspace, run Godot
 checks and retrieve evidence. DT/PT owns this operating guide; the
 [Apple plan](../plans/apple-silicon-performance.md) owns acceptance and the
 [dated M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md)
-owns measurements. Access and tool paths below were rechecked on **2026-11-03**.
+owns measurements. Historical inventory below was checked on **2026-11-03**;
+the Windows-through-Linux route and reusable beta2 engine were rechecked on
+**2026-11-06**.
 
 ## 1. Connect from Linux
 
@@ -26,6 +28,13 @@ The address is the Mac's **Tailscale** address. Expect `Darwin arm64`; commands
 without `m1ssh` still execute on Linux. `m1ssh` with no command opens a native
 shell from an interactive terminal. Recreate these shell variables/functions
 in each new terminal; they are not repository configuration.
+
+From the Windows development checkout, the existing SSH alias `vscode-megatron`
+reaches that Linux checkout. Access was verified on **2026-11-06** through this
+route; the key is on Linux, not in the Windows or WSL checkout. Run the Linux
+commands above after connecting with `ssh vscode-megatron`, or pass a quoted
+remote command through that host. Keep both hops' host-key verification enabled.
+Do not copy the private key merely to make Windows access direct.
 
 **Keep the existing SSH keys.** The user explicitly requested their retention.
 The private key is mode 0600 inside ignored `tmp/apple-m1-access/`; the Mac user
@@ -54,10 +63,12 @@ campaign evidence remains available. Check existence before reuse.
 | Round-6 final analysis on Linux | `/home/bulto/OpenRCsimulator/tmp/apple-round6/analysis/long-final.json`; raw captures in sibling `metal-long-{baseline,candidate}-{1..3}/` directories |
 | Historical development package | `/Users/gius/OpenRC-m1-package-check/tmp/round2-final-20261102/OpenRC-M1-round2.zip`; **absent at final check**, not a current release |
 | New task workspaces | Use a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
+| Verified reusable beta2 engine (2026-11-06) | `/Users/gius/OpenRC-m1-work/m1-20261105T153146Z/.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot`; `4.8.beta2.official.cafc17a19`. Recheck the bundle/hash before reuse; preserve the owning campaign. |
 | Apple tools | `/usr/bin/xcrun`, `/usr/bin/caffeinate`; clang resolves under `/Library/Developer/CommandLineTools/` |
 
-The tested engine reports `4.8.beta1.official.4d10419ca`. Recheck `--version`
-and source/build hashes when identifying a new result. The inventory was
+Historical campaigns used `4.8.beta1.official.4d10419ca`; the current reusable
+engine above reports `4.8.beta2.official.cafc17a19`. Recheck `--version`
+and source/build hashes when identifying a new result. The historical inventory was
 MacBookAir10,1, M1/8 GiB, macOS 27.0.1; these are dated facts, not permanent
 assumptions. Use the existing
 [native preflight](../../tools/godot/README.md#native-apple-silicon-setup-and-preflight-dt-mac-02a)
@@ -111,6 +122,14 @@ untracked changes. For a dirty candidate, transfer only reviewed changes into
 your new task directory and retain its diff and file hashes; identify the actual
 bytes tested. A failed transfer leaves a partial directory: inspect it and use a
 new task ID for a fresh attempt.
+
+When disk headroom is limited, an APFS copy-on-write clone (`cp -cR`) into a new
+task directory can avoid duplicating unchanged source bytes. This is separate
+storage from the old campaign, not a hard link. Reconcile every scoped source
+file against the intended commit, transfer differences, and record the complete
+verified manifest before import or checks. Remove extra files only in the new
+task-owned clone. A copied import cache still needs a checked import; a clone
+does not establish the new source identity by itself.
 
 The archive is a source snapshot, **not a historical Git checkout**. If the engine
 is missing, section 4 initializes local Git metadata solely so the existing getter

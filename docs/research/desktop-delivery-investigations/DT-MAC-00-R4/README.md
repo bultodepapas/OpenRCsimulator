@@ -657,3 +657,168 @@ and `test_reconstruction` (121) and `test_ui_language` pass.
 Native M1, no environment overrides: a 2560 × 1600 window logged "Renderer
 guard: MetalFX active", a 1920 × 1080 window did not, and neither logged an
 engine error.
+
+## DT-MAC-06b-R2 / DT-MAC-02b-R2 native verification (2026-11-06)
+
+The prior repair commit `0e49383e1` was merged with `origin/main` in
+`9e72665ff`, preserving the owner's Auto policy and both evidence sections.
+Duplicate UID sidecars use the upstream identifiers; no tracked resource referred
+to the discarded values. The merge passed the pinned Windows import and 644
+assertions across eight focused suites.
+
+Native work uses the shared MacBookAir10,1, Apple M1/8 GiB, macOS 27.0.1,
+Godot `4.8.beta2.official.cafc17a19`, Mobile/Metal, AC power and the built-in
+display. Existing credentials and campaigns remain intact. A new task directory
+uses APFS clones reconciled against 9,412 committed files; changed Git blobs were
+transferred and rehashed before the final checks. Research copies isolate the
+player's preferences and disable startup multi-bounce as documented by the
+research-copy tool. Actual frame-report output and nominal input sizes are kept
+separate from unmeasured physical drawable pixels. Raw logs, captures and scripts
+remain under ignored `tmp/m1-optimization-20261106/` locally and
+`/Users/gius/OpenRC-m1-work/m1-optimization-20261106/` on the Mac.
+
+**Repairs discovered during integration and native checking.** `877ca17e3`
+preserves the active Settings preview on resize: saved Auto no longer overwrites
+a Native preview, and saved Native no longer prevents an Auto preview from
+recomputing. Both regression cases failed before the fix. The native graphics
+suite passed 151 checks and MetalFX policy passed 63. Auto benchmark receipts
+now retain their concrete selection, Window size and visible rectangle; unknown
+MetalFX execution remains ineligible.
+
+The first M1 flight exposed a separate cache diagnostic bug: publication advanced
+the generation, then a later diagnostic read counted the same pending-to-ready
+change again. `8717e4c43` synchronizes that observed status at publication and
+retains detection of later inconsistent bindings. A focused regression failed
+before the repair. Cache lifecycle passed 44 native checks; local staged build
+43, atmosphere 149 and reducer 74 checks passed. Receipts now preserve first/final
+generation brackets and the first observed change. A real pending-to-failed
+transition remains rejected. Earlier captures are retained as ineligible; they
+are not repaired by editing their receipts. An unrelated unsupported `--time`
+argument in the preliminary screen was corrected to `--time-of-day` for the new
+matrix; the two phases are not pooled.
+
+**Cloud experiment.** The original `three` and `two_three` variants both failed
+the unchanged M1 Metal gate. The `three` probe reached a density delta of
+3.5686e-7 against the 2e-7 canvas limit; spatial and sky also failed their stricter
+zero-error signal. Matching-value and independent-reference positive controls
+passed, and all deliberate negative controls were detected. No tolerance was
+relaxed. The ordinary C2/C5b cache passed its existing canvas, spatial and sky
+limits, including blank-tile negative controls, before and after the publication
+repair.
+
+A disposable candidate checked saturation through three octaves and recomputed
+the original reference for ambiguous samples. Only its `two_three` mode passed
+all strict numerical cases. In the preliminary classic flight, p95 changed
+12.807 → 12.424 ms; in the layered broken-cloud flight it changed
+21.061 → 24.438 ms. These are single, nonqualified screens with the earlier
+diagnostic bug, not a performance claim. Host thermal state remained nominal.
+The regressions and repeated-work cost reject this as a general default; the
+candidate was not integrated and production bounds remain `off`.
+
+**Clock identity.** The v2 matrix also revealed that the frame collector's raw
+clock helper still admitted only beta1, although the repository pins beta2.
+Its frame pacing and health results remain usable within their own gates, but
+host/resource stream completeness alone cannot supply a missing frame-to-host
+clock join. `096c21f17` adds only the exact official beta2 status/full-hash pair.
+Six official clock implementation/delegation files are byte-identical between
+the two pinned commits; [source links and the clock contract](../../../../tools/godot/README.md#optional-macos-host-state-companion-dt-mac-02e)
+remain in the tool guide. Wrong versions, custom builds, short hashes and crossed
+status/hash pairs still refuse. Local checks passed 148 frame-sample and 26
+diagnostic assertions, 29 Perfetto tests (one skip), 14 resource-runner tests,
+18 POSIX host-state tests (two native-helper skips) and 19 resource-sample tests
+(one skip). Fresh native anchors are required; no earlier receipt is rewritten.
+
+**Completed native matrix.** The [compact evidence](m1-optimization-20261106.json)
+retains source identities, probe outcomes, capture hashes and the independently
+recomputed gates for 15 captures in 12 groups. Fourteen timing runs used 30 s
+warmup and 60 s collection; the separate GPU profile used 10/20 s. All were
+uncapped, with the classic noon sky, Medium scenery and the normal reference
+physics/input circuit. These are short screens, not sustained product qualification.
+
+| Output / candidate | Runs | p95 wall-frame interval (ms) | Interpretation |
+| --- | ---: | ---: | --- |
+| 1920×1080 Native, caches on, 4× MSAA | 3 | 15.972 / 15.934 / 15.848 | Passes the three-run software campaign gate |
+| 1920×1080 Auto | 1 | 15.958 | Selected Native; individual gates pass |
+| 1920×1080 both caches off | 1 | 17.573 | Individual gates pass |
+| 1920×1080 ground cache off | 1 | 16.951 | Individual gates pass |
+| 1920×1080 sky cache off | 1 | 16.573 | Individual gates pass |
+| 1920×1080 2× / no MSAA | 1 each | 15.377 / 14.679 | Screening only; no visual-quality/default promotion |
+| 2560×1600 Native | 2 | 27.881 / 27.887 | Pacing gate fails |
+| 2560×1600 Auto → Spatial Quality | 1 | 20.134 | Pacing fails; effective SDK execution remains unknown |
+| 2560×1600 Spatial 85% | 1 | 25.281 | Pacing fails; effective SDK execution remains unknown |
+| 2560×1600 bilinear 75% | 1 | 19.936 | Pacing gate fails |
+
+The software gate is p95 ≤18 ms, p99 ≤25 ms and simulation/wall ratio
+0.99–1.01, plus collection, rendering and flight-health requirements; it is not
+an on-glass 60 Hz guarantee. Only the baseline has three eligible repeats.
+All 12 retained summaries reproduce exactly. Every receipt has the same 4,515
+visible input paths: 4,514 SHA-256 values match Git `8717e4c43`; applying only the
+recorded isolated project name and disabled multi-bounce setting reproduces the
+remaining `project.godot` hash. Hidden imports and sibling assets are outside
+that receipt-level audit. Full 6,000-tick state/input windows agree across all
+15 runs for ticks 1–6000 and all 14 timing runs for the next two windows; partial
+tails are excluded. Render equivalence does not follow from those hashes.
+
+The matrix supports retaining the cache combination and prioritizing pixel work
+over a physics rewrite. Single alternative runs and sequential host drift do
+not establish a causal percentage gain. The profiled diagnostic repeatedly
+reports roughly 8.4 ms opaque, 2.6 ms canvas and 1.2 ms transparent work. These
+aggregate stages do not attribute cost to a particular material. Four native
+stills record Native 1080p/Retina and Auto/Spatial 85% Retina selections; they do
+not qualify moving-aircraft readability or MetalFX execution.
+
+SSH and Tailscale connectivity stopped after this matrix and the frozen
+`096c21f17` source transfer. No new clock-enabled native run completed. Fresh
+raw-clock joins, paced Auto/VSync flight, the Mac product-route smoke and longer
+repeats remain open; prepared commands and all earlier evidence are retained.
+
+**Next discriminating screen-read experiment.** Source inspection found that
+`SunGlare._show_afterimage` checks patch strength and whether it faces the eye,
+but not its projected viewport footprint. An off-screen patch can therefore keep
+the full-screen, mipmapped screen-reading canvas active. This is a candidate,
+not attribution of the measured canvas time. The mask has positive tails
+(`alpha * exp(-0.5 * distance^4)`), so simply rejecting an outside patch center
+would erase real near-edge contributions. With normalized center `(u,v)`, radius
+`r` and aspect `A`, its minimum shader distance is
+`sqrt((A*max(0,-u,u-1))^2 + max(0,-v,v-1)^2) / max(r,1e-4)`.
+At vertical FOV 38° and 16:9, a 32.5° side patch can still contribute strongly;
+a 40° patch is a useful far-offscreen control. Use the existing debug bridge to
+observe `Afterimage.visible` and `_after_material`'s `patches`, then the existing
+glare image checks before a separate timing comparison. Keep patch history
+advancing when testing draw suppression; no cutoff is accepted here.
+
+A separate fresh-process comparison should distinguish `sun-glare=off` from
+never constructing its depth-reading materials. The current off setting still
+constructs them; the pinned Mobile renderer's persistent depth-reader flag can
+affect MSAA resolve. A hidden canvas layer is different: canvas screen copying
+depends on its draw-list participation. Match sky `disc_cloud_occlusion` in both
+branches and account for water as another depth/screen reader. Disabling the lake
+changes the scene and physics identity, so that additional control must stay a
+separate diagnostic. No screen-read candidate was integrated without native
+evidence.
+
+**Product/software follow-up.** On final runtime source `096c21f17`, the Windows
+headless debug smoke passed 52 steps and an eight-cycle Fly/Home soak: no growing
+counters or engine errors, process exit 0 and zero leaked objects at exit. An
+earlier three-cycle smoke flagged one additional object across two compared
+cycles, with stable nodes/resources; an isolated eight-cycle repeat and the
+full longer smoke did not reproduce monotonic growth. No code or tolerance was
+changed to obtain the pass. This does not establish Mac UI or rendered behavior.
+The separate Linux full suite is still running on frozen `877ca17e3`; its
+694-script nonunit parse phase passed, but neither the full suite nor its later
+repair follow-up has a completed gate. The compact evidence records the dated
+checkpoint and retained log location; do not count it as a pass.
+
+**Default policy and generation coverage.** Preserve the existing capability
+query and output-size rule: Auto chooses Native at 1920×1080; on a supported
+2560×1600 Metal viewport it requests Spatial Quality (nominal 1707×1067), with
+the 85% option available manually. MSAA remains 4× and VSync remains enabled in
+the normal product defaults. Uncapped diagnostic runs are not a recommendation
+to disable VSync. The requested/effective distinction and renderer recovery stay
+visible; a selected MetalFX policy does not prove SDK execution.
+
+Only the named M1 host is measured here. M2, M3, M4, M5 and M6 have no new hardware
+qualification from this work. Use the same runtime capability/fallback rules,
+not generation-name presets or inferred speedups. Future comparisons must record
+the actual chip variant, GPU cores, RAM, cooling, power mode, OS and output size;
+the [master plan](../../../plans/apple-silicon-performance.md) owns that coverage.
