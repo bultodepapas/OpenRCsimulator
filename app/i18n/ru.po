@@ -9243,8 +9243,135 @@ msgstr "Луг"
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Куртины травы, клевера и полевых цветов по обе стороны полосы. Выключение снижает нагрузку на GPU на медленных компьютерах. Выключение действует сразу; включение — со следующего полёта. Плотность зависит от детализации сцены."
 
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "ОПАСНОСТЬ"
+
+msgid "CAUTION"
+msgstr "ВНИМАНИЕ"
+
+msgid "INFO"
+msgstr "ИНФО"
+
+msgid "+%d MORE ALERTS"
+msgstr "ЕЩЁ %d ПРЕДУПРЕЖДЕНИЙ"
+
+msgid "Alerts"
+msgstr "Предупреждения"
+
+msgid "Flight alerts"
+msgstr "Предупреждения в полёте"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "Критические предупреждения остаются активными, пока включены «Предупреждения»."
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "Учебные подсказки носят информационный характер и не являются ограничениями самолёта."
+
+msgid "Show alert details"
+msgstr "Показывать подробности предупреждений"
+
+msgid "Maximum visible alerts"
+msgstr "Максимум видимых предупреждений"
+
+msgid "Range reminders"
+msgstr "Напоминания о расстоянии"
+
+msgid "Energy advisories"
+msgstr "Предупреждения об энергии"
+
+msgid "Status notices"
+msgstr "Уведомления о состоянии"
+
+msgid "Flight training cues"
+msgstr "Подсказки для обучения полёту"
+
+msgid "CONTROLLER LOST"
+msgstr "КОНТРОЛЛЕР ОТКЛЮЧЁН"
+
+msgid "RADIO LOST"
+msgstr "РАДИОСВЯЗЬ ПОТЕРЯНА"
+
+msgid "LOW ALTITUDE"
+msgstr "МАЛАЯ ВЫСОТА"
+
+msgid "FAR FROM PILOT"
+msgstr "ДАЛЕКО ОТ ПИЛОТА"
+
+msgid "POWER LIMITED"
+msgstr "МОЩНОСТЬ ОГРАНИЧЕНА"
+
+msgid "NO USABLE FUEL"
+msgstr "ДОСТУПНОЕ ТОПЛИВО ИСЧЕРПАНО"
+
+msgid "RAPID DESCENT"
+msgstr "БЫСТРОЕ СНИЖЕНИЕ"
+
+msgid "HIGH G LOAD"
+msgstr "ВЫСОКАЯ ПЕРЕГРУЗКА"
+
+msgid "STEEP BANK"
+msgstr "БОЛЬШОЙ КРЕН"
+
+msgid "RADIO SAFE"
+msgstr "ПЕРЕДАТЧИК НЕ РАЗБЛОКИРОВАН"
+
+msgid "Select controls to continue."
+msgstr "Выберите управление для продолжения."
+
+msgid "Reconnect the radio to continue."
+msgstr "Подключите передатчик снова для продолжения."
+
+msgid "Reduce angle of attack."
+msgstr "Уменьшите угол атаки."
+
+msgid "Fast sink near terrain."
+msgstr "Быстрое снижение у земли."
+
+msgid "Come closer for a clearer view."
+msgstr "Подлетите ближе, чтобы лучше видеть самолёт."
+
+msgid "Land as soon as possible."
+msgstr "Выполните посадку как можно скорее."
+
+msgid "Prepare for an unpowered landing."
+msgstr "Подготовьтесь к посадке без двигателя."
+
+msgid "Land and let the pack cool."
+msgstr "Выполните посадку и дайте батарее остыть."
+
+msgid "Reserve reached. Plan to land."
+msgstr "Достигнут резерв. Подготовьтесь к посадке."
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "Достигнут расчётный резерв. Подготовьтесь к посадке."
+
+msgid "Low energy. Plan to land."
+msgstr "Мало энергии. Подготовьтесь к посадке."
+
+msgid "Descending faster than 6 m/s."
+msgstr "Снижение быстрее 6 m/s."
+
+msgid "Body G magnitude above 4 g."
+msgstr "Перегрузка по модулю превышает 4 g."
+
+msgid "Bank angle beyond 75°."
+msgstr "Угол крена превышает 75°."
+
+msgid "Lower throttle to arm."
+msgstr "Уберите газ для разблокировки."
+
+msgid "Flight model under development."
+msgstr "Модель полёта находится в разработке."
+
 msgid "RC circuit"
 msgstr "Трасса RC"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "Грунтовая трасса для RC-машин к северу от полосы: трамплины, виражи и барьеры. Она физическая: колёса катятся по её рельефу, а самолёт может в неё врезаться. «Автоматически» включает её на дискретной видеокарте при детализации сцены «Высокая» или «Экстрим». Применяется со следующего полёта."
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "Примените или отмените незавершённые изменения полей перед применением предустановки."
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "Предустановка не применена. Черновик не изменён."

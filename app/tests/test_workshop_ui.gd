@@ -255,10 +255,11 @@ func _run() -> void:
 		var preset_inheritance_ok := true
 		for surface_key: String in surface_keys:
 			var surface_slider: HSlider = surface_sliders[surface_key]
+			var expected: float = 1.35 if surface_key == "control_multiplier_aileron" else 0.9
 			preset_inheritance_ok = preset_inheritance_ok \
-				and not preset_recipe.has(surface_key) \
-				and is_equal_approx(surface_slider.value, 0.9)
-		_check("presets leave surface overrides absent and inherit their global travel",
+				and preset_recipe.has(surface_key) == (surface_key == "control_multiplier_aileron") \
+				and is_equal_approx(surface_slider.value, expected)
+		_check("presets preserve explicit surface overrides while absent values inherit global travel",
 			is_equal_approx(float(preset_recipe.get("control_multiplier", 0.0)), 0.9)
 			and preset_inheritance_ok)
 		workshop.set_recipe(Compiler.defaults(), false)

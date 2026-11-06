@@ -6,6 +6,7 @@ const ORDER := ["controller_lost", "failsafe", "stall", "low", "battery_empty", 
 const DANGER := ["controller_lost", "failsafe", "stall", "low", "battery_empty", "battery_critical", "battery_lvc", "fuel_empty"]
 const ENERGY := ["battery", "battery_hot", "fuel_reserve", "fuel_reserve_estimated"]
 const TRAINING := ["sink_rate", "high_load", "steep_bank"]
+const TRAINING_FIELDS := {sink_rate = "vertical_speed", high_load = "load_factor", steep_bank = "bank_deg"}
 const STATUS := ["safe", "experimental"]
 const TRAINING_MIN_AGL_M := 10.0
 const TRAINING_MIN_SPEED_MPS := 3.0
@@ -43,6 +44,11 @@ func update(snap: Dictionary, settings: Dictionary) -> PackedStringArray:
 	if now < _last_time: reset()
 	_last_time = now
 	for code: String in TRAINING:
+		if not _finite(t.get(TRAINING_FIELDS[code])):
+			var at := _training_active.find(code)
+			if at >= 0: _training_active.remove_at(at)
+			_training_pending.erase(code)
+			continue
 		var wanted := candidates.has(code)
 		if wanted == _training_active.has(code):
 			_training_pending.erase(code)

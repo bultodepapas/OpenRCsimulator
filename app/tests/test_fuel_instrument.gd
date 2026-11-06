@@ -28,6 +28,7 @@ func _initialize() -> void:
 	_test_data(widget)
 	_test_motion(widget)
 	_test_attitudes(widget)
+	_test_aeration(widget)
 	await _test_geometry(widget)
 	await _test_visibility()
 	widget.queue_free()
@@ -203,9 +204,56 @@ func _test_motion(widget: Control) -> void:
 func _motion_signature(widget: Control) -> Array:
 	var material: ShaderMaterial = widget._liquid_material
 	return [widget._motion_time, widget._tilt, widget._velocity, widget._target, widget._energy,
+		widget._foam, widget._force_g, widget._wave_phase, widget._bubble_phase,
 		material.get_shader_parameter("sample_clock"), material.get_shader_parameter("tilt"),
 		material.get_shader_parameter("tilt_velocity"), material.get_shader_parameter("target_tilt"),
-		material.get_shader_parameter("wave_energy")]
+		material.get_shader_parameter("wave_energy"), material.get_shader_parameter("foam_energy"),
+		material.get_shader_parameter("force_g"), material.get_shader_parameter("wave_phase"),
+		material.get_shader_parameter("bubble_phase")]
+
+
+func _test_aeration(widget: Control) -> void:
+	var fuel := _fuel("gasoline", 0.5)
+	widget.reset_flight()
+	_refresh(widget, fuel, _telemetry(100.0))
+	_refresh(widget, fuel, _telemetry(100.1, 0.0, 0.0, 3.0))
+	_check("a load impulse entrains air without changing quantity", widget._foam > 0.4
+		and widget._energy > 0.4 and widget.value_label.text == "50")
+	var stirred: float = widget._foam
+	var phase: float = widget._bubble_phase
+	_refresh(widget, fuel, _telemetry(100.2, 0.0, 0.0, 3.0))
+	_check("sustained high g clears foam rather than continuously boiling", widget._foam < stirred)
+	_check("bubble rise speed responds to force magnitude", is_equal_approx(
+		widget._bubble_phase - phase, sqrt(3.0) * 0.1))
+	var low := FuelInstrument.spring(0.0, 0.0, 1.0, 0.1, 0.04)
+	var normal := FuelInstrument.spring(0.0, 0.0, 1.0, 0.1, 1.0)
+	var high := FuelInstrument.spring(0.0, 0.0, 1.0, 0.1, 3.0)
+	_check("higher g accelerates surface response", low.x < normal.x and normal.x < high.x)
+	var first := FuelInstrument.spring(0.2, -0.3, 1.1, 0.07, 2.5)
+	var partitioned := FuelInstrument.spring(first.x, first.y, 1.1, 0.13, 2.5)
+	var whole := FuelInstrument.spring(0.2, -0.3, 1.1, 0.2, 2.5)
+	_check("g-scaled spring is independent of sample partition", partitioned.distance_to(whole) < 0.00001)
+	for i in range(3, 123):
+		_refresh(widget, fuel, _telemetry(100.0 + i * 0.1, 0.0, 0.0, 3.0))
+	_check("steady flight eventually clears waves and entrained air", widget._foam == 0.0 and widget._energy == 0.0)
+	_refresh(widget, fuel, _telemetry(112.3, 0.0, 0.0, -2.0))
+	_check("negative-g transition agitates the tank", widget._foam > 0.0)
+	widget.reset_flight()
+	_check("flight reset clears every effect phase", widget._foam == 0.0
+		and widget._wave_phase == 0.0 and widget._bubble_phase == 0.0)
+	var t := _telemetry(1023.9, 90.0, 0.0, 0.0)
+	t.specific_force_right_g = -2.0
+	_refresh(widget, fuel, t)
+	_check("knife-edge side force supplies g magnitude", is_equal_approx(widget._force_g, 2.0))
+	t.time_s = 1024.1
+	_refresh(widget, fuel, t)
+	_check("effect phases cross the shared clock rollover continuously", is_equal_approx(widget._bubble_phase, sqrt(2.0) * 0.2)
+		and widget._wave_phase > 0.0)
+	t.time_s = 1024.2
+	t.specific_force_right_g = 0.0
+	_refresh(widget, fuel, t)
+	_check("zero-g visual response stays finite", widget._force_g == 0.0 and is_finite(widget._tilt)
+		and is_finite(widget._velocity) and widget._foam <= 1.0 and widget._energy <= 1.0)
 
 
 func _test_attitudes(widget: Control) -> void:
@@ -293,7 +341,7 @@ func _rendered_fixture(requested_dir: String) -> void:
 	var output := requested_dir
 	if not output.is_absolute_path():
 		output = ProjectSettings.globalize_path("res://").path_join(output).simplify_path()
-	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png", "attitudes.png"]:
+	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png", "attitudes.png", "aeration.png"]:
 		if FileAccess.file_exists(output.path_join(filename)):
 			_check("fixture never overwrites a prior image", false, output.path_join(filename))
 			return
@@ -384,9 +432,64 @@ func _rendered_fixture(requested_dir: String) -> void:
 		var tilted: Image = await _tank_image(tank)
 		_check("tilt cannot change an endpoint fill %.0f" % fill, level.get_data() == tilted.get_data())
 	await _rendered_attitudes(tank, output)
+	await _rendered_aeration(widgets, output)
 	for widget: Control in widgets:
 		widget.queue_free()
 	background.queue_free()
+	await process_frame
+
+
+func _rendered_aeration(widgets: Array, output: String) -> void:
+	var poses := [["CALM / 1 G", 0.0, 0.0, 1.0], ["PULL UP / 3 G", 0.0, 0.0, 3.0],
+		["RIGHT KNIFE EDGE", 90.0, -1.0, 0.0], ["INVERTED / -1 G", 180.0, 0.0, -1.0],
+		["LEFT KNIFE EDGE", -90.0, 1.0, 0.0]]
+	var captions: Array[Label] = []
+	for i in widgets.size():
+		var widget: Control = widgets[i]
+		widget.reset_flight()
+		var t := _telemetry(80.0, poses[i][1], 0.0, poses[i][3])
+		t.specific_force_right_g = poses[i][2]
+		_refresh(widget, _fuel(["glow", "gasoline", "kerosene"][i % 3], 0.5), t)
+		if i > 0:
+			# Hold direction, kick magnitude: isolate aeration from the angular spring.
+			t.time_s = 80.1
+			t.load_factor *= 2.0
+			t.specific_force_right_g *= 2.0
+			_refresh(widget, _fuel(["glow", "gasoline", "kerosene"][i % 3], 0.5), t)
+		var caption := Label.new()
+		caption.text = poses[i][0]
+		caption.position = Vector2(20 + i * 370, 15)
+		caption.add_theme_font_size_override("font_size", 14)
+		_stage.add_child(caption)
+		captions.append(caption)
+	Clock.update(80.4)
+	await _settle()
+	await RenderingServer.frame_post_draw
+	_check("aeration board was saved", root.get_texture().get_image().save_png(output.path_join("aeration.png")) == OK)
+	for index: int in [1, 2, 3, 4]:
+		var tank: Control = widgets[index]
+		var material: ShaderMaterial = tank._liquid_material
+		var aerated: Image = await _tank_image(tank)
+		material.set_shader_parameter("foam_energy", 0.0)
+		var clear: Image = await _tank_image(tank)
+		_check("foam and bubbles are visible at attitude %d" % index, _different_pixels(aerated, clear) > 30)
+		material.set_shader_parameter("foam_energy", 1.0)
+		Clock.update(80.55)
+		var advanced: Image = await _tank_image(tank)
+		var paused: Image = await _tank_image(tank)
+		_check("all aeration pixels freeze on pause %d" % index, advanced.get_data() == paused.get_data())
+		Clock.update(80.4)
+	# Empty/full/unknown tanks may never acquire a decorative false fuel surface.
+	var endpoint: Control = widgets[0]
+	for amount: float in [-1.0, 0.0, 1.0]:
+		endpoint._liquid_material.set_shader_parameter("fill", amount)
+		endpoint._liquid_material.set_shader_parameter("foam_energy", 0.0)
+		var clear: Image = await _tank_image(endpoint)
+		endpoint._liquid_material.set_shader_parameter("foam_energy", 1.0)
+		endpoint._liquid_material.set_shader_parameter("wave_energy", 1.0)
+		var foamy: Image = await _tank_image(endpoint)
+		_check("endpoint %.0f suppresses foam and bubbles" % amount, clear.get_data() == foamy.get_data())
+	for caption: Label in captions: caption.queue_free()
 	await process_frame
 
 

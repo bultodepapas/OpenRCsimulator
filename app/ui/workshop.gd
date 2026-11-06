@@ -1626,27 +1626,28 @@ func _on_slider_drag_ended(_changed: bool) -> void:
 func _apply_preset(preset_id: String) -> void:
 	if _base.is_empty() or not PRESETS.has(preset_id):
 		return
-	var next: Dictionary = Compiler.defaults()
+	# The selector has already changed; a refused action must not look applied.
+	_preset_selector.select(0)
+	if not _pending_numbers.is_empty() or not _invalid_fields.is_empty() or not _presentation_buffers.is_empty():
+		set_note("Apply or cancel pending fields before applying a preset.")
+		_review_issues()
+		return
+	# PRESETS declares the patch scope. Unlisted factors, individual surface
+	# overrides and measured component records remain player-authored values.
+	var next: Dictionary = _recipe.duplicate(true)
 	var preset: Dictionary = PRESETS[preset_id]
 	var caps: Dictionary = Compiler.capabilities(_base)
-	for key in ["scale", "mass_policy"]:
-		if key == "scale" and not bool(caps.get("scale", false)):
-			next[key] = _recipe.get(key, next[key])
-		elif key == "mass_policy" and not bool(caps.get("weight", false)):
-			next[key] = _recipe.get(key, next[key])
-		else:
-			next[key] = preset.get(key, next[key])
-	for key: String in _factor_capabilities:
-		var capability := str(_factor_capabilities[key])
-		if _inherited_factor_keys.has(key):
-			if not bool(caps.get(capability, false)) and _recipe.has(key):
-				next[key] = _recipe[key]
-			continue
-		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
+	for key: String in preset:
+		var capability := "scale" if key == "scale" else "weight" if key == "mass_policy" else str(_factor_capabilities.get(key, ""))
+		if bool(caps.get(capability, false)):
+			next[key] = preset[key]
 	if float(next.get("scale", 1.0)) != float(_recipe.get("scale", 1.0)):
 		next["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
-	elif _recipe.has("size_model"):
-		next["size_model"] = _recipe["size_model"]
+	# Check cross-field measurement constraints before publishing or adding Undo.
+	var checked := Compiler.compile(_base, next)
+	if not checked.ok:
+		set_note(tr("Preset not applied. The draft is unchanged.") + "\n" + _messages(checked.errors, ""))
+		return
 	_set_recipe(next, true)
 	for index in _preset_selector.item_count:
 		if _preset_selector.get_item_metadata(index) == preset_id: _preset_selector.select(index)
@@ -2667,8 +2668,10 @@ func _review_issues() -> void:
 		_body_scroll.ensure_control_visible(pending)
 		return
 	_set_page("setup")
-	for key: String in _invalid_fields:
+	for key: String in _invalid_fields.merged(_pending_numbers):
 		var entry: LineEdit = _factor_inputs[key]
+		if _inherited_factor_keys.has(key):
+			_advanced_controls_toggle.button_pressed = true
 		entry.grab_focus()
 		_body_scroll.ensure_control_visible(entry)
 		return

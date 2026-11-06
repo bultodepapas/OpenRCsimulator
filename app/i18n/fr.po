@@ -9415,8 +9415,135 @@ msgstr "Prairie"
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Touffes d'herbe, de trèfle et de fleurs sauvages des deux côtés de la piste. Désactivée, elle allège le travail du GPU sur les ordinateurs plus lents. La désactivation s'applique immédiatement ; l'activation s'applique au prochain vol. La densité suit le détail de la scène."
 
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "DANGER"
+
+msgid "CAUTION"
+msgstr "PRUDENCE"
+
+msgid "INFO"
+msgstr "INFO"
+
+msgid "+%d MORE ALERTS"
+msgstr "+%d ALERTES SUPPLÉMENTAIRES"
+
+msgid "Alerts"
+msgstr "Alertes"
+
+msgid "Flight alerts"
+msgstr "Alertes de vol"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "Les alertes critiques restent actives tant que les alertes sont activées."
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "Les indications d'entraînement sont indicatives et ne sont pas des limites de l'avion."
+
+msgid "Show alert details"
+msgstr "Afficher les détails des alertes"
+
+msgid "Maximum visible alerts"
+msgstr "Nombre maximal d'alertes visibles"
+
+msgid "Range reminders"
+msgstr "Rappels de distance"
+
+msgid "Energy advisories"
+msgstr "Alertes d'énergie"
+
+msgid "Status notices"
+msgstr "Avis d'état"
+
+msgid "Flight training cues"
+msgstr "Indications d'entraînement au vol"
+
+msgid "CONTROLLER LOST"
+msgstr "CONTRÔLEUR DÉCONNECTÉ"
+
+msgid "RADIO LOST"
+msgstr "RADIOCOMMANDE DÉCONNECTÉE"
+
+msgid "LOW ALTITUDE"
+msgstr "ALTITUDE BASSE"
+
+msgid "FAR FROM PILOT"
+msgstr "LOIN DU PILOTE"
+
+msgid "POWER LIMITED"
+msgstr "PUISSANCE LIMITÉE"
+
+msgid "NO USABLE FUEL"
+msgstr "PLUS DE CARBURANT UTILISABLE"
+
+msgid "RAPID DESCENT"
+msgstr "DESCENTE RAPIDE"
+
+msgid "HIGH G LOAD"
+msgstr "FORTE CHARGE EN G"
+
+msgid "STEEP BANK"
+msgstr "FORTE INCLINAISON"
+
+msgid "RADIO SAFE"
+msgstr "RADIOCOMMANDE NON ARMÉE"
+
+msgid "Select controls to continue."
+msgstr "Sélectionnez les commandes pour continuer."
+
+msgid "Reconnect the radio to continue."
+msgstr "Reconnectez la radiocommande pour continuer."
+
+msgid "Reduce angle of attack."
+msgstr "Réduisez l'angle d'attaque."
+
+msgid "Fast sink near terrain."
+msgstr "Descente rapide près du sol."
+
+msgid "Come closer for a clearer view."
+msgstr "Rapprochez-vous pour mieux voir l'avion."
+
+msgid "Land as soon as possible."
+msgstr "Atterrissez dès que possible."
+
+msgid "Prepare for an unpowered landing."
+msgstr "Préparez un atterrissage sans moteur."
+
+msgid "Land and let the pack cool."
+msgstr "Atterrissez et laissez refroidir la batterie."
+
+msgid "Reserve reached. Plan to land."
+msgstr "Réserve atteinte. Préparez l'atterrissage."
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "Réserve estimée atteinte. Préparez l'atterrissage."
+
+msgid "Low energy. Plan to land."
+msgstr "Énergie faible. Préparez l'atterrissage."
+
+msgid "Descending faster than 6 m/s."
+msgstr "Descente supérieure à 6 m/s."
+
+msgid "Body G magnitude above 4 g."
+msgstr "Charge corporelle supérieure à 4 g en valeur absolue."
+
+msgid "Bank angle beyond 75°."
+msgstr "Angle d'inclinaison supérieur à 75°."
+
+msgid "Lower throttle to arm."
+msgstr "Baissez les gaz pour armer."
+
+msgid "Flight model under development."
+msgstr "Modèle de vol en cours de développement."
+
 msgid "RC circuit"
 msgstr "Circuit RC"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "Le circuit en terre pour voitures RC au nord de la piste, avec ses sauts, virages relevés et barrières. Il est physique : les roues roulent sur son relief et l’avion peut le percuter. Automatique l’active avec un GPU dédié et un détail de scène Élevé ou Extrême. S’applique au prochain vol."
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "Appliquez ou annulez les champs en cours de modification avant d’appliquer un préréglage."
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "Le préréglage n’a pas été appliqué. Le brouillon reste inchangé."

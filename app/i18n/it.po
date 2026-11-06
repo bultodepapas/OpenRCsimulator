@@ -9268,8 +9268,135 @@ msgstr "Prato"
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Ciuffi d'erba, trifoglio e fiori selvatici su entrambi i lati della pista. Disattivato riduce il lavoro della GPU sui computer più lenti. La disattivazione si applica subito; l'attivazione si applica al volo successivo. La densità segue il dettaglio della scena."
 
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "PERICOLO"
+
+msgid "CAUTION"
+msgstr "ATTENZIONE"
+
+msgid "INFO"
+msgstr "INFO"
+
+msgid "+%d MORE ALERTS"
+msgstr "+%d ALTRI AVVISI"
+
+msgid "Alerts"
+msgstr "Avvisi"
+
+msgid "Flight alerts"
+msgstr "Avvisi di volo"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "Gli avvisi critici restano attivi finché Avvisi è attivo."
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "Le indicazioni di addestramento sono orientative e non sono limiti dell'aereo."
+
+msgid "Show alert details"
+msgstr "Mostra i dettagli degli avvisi"
+
+msgid "Maximum visible alerts"
+msgstr "Numero massimo di avvisi visibili"
+
+msgid "Range reminders"
+msgstr "Avvisi di distanza"
+
+msgid "Energy advisories"
+msgstr "Avvisi di energia"
+
+msgid "Status notices"
+msgstr "Avvisi di stato"
+
+msgid "Flight training cues"
+msgstr "Indicazioni di addestramento al volo"
+
+msgid "CONTROLLER LOST"
+msgstr "CONTROLLER DISCONNESSO"
+
+msgid "RADIO LOST"
+msgstr "TRASMITTENTE DISCONNESSA"
+
+msgid "LOW ALTITUDE"
+msgstr "QUOTA BASSA"
+
+msgid "FAR FROM PILOT"
+msgstr "LONTANO DAL PILOTA"
+
+msgid "POWER LIMITED"
+msgstr "POTENZA LIMITATA"
+
+msgid "NO USABLE FUEL"
+msgstr "CARBURANTE UTILIZZABILE ESAURITO"
+
+msgid "RAPID DESCENT"
+msgstr "DISCESA RAPIDA"
+
+msgid "HIGH G LOAD"
+msgstr "CARICO G ELEVATO"
+
+msgid "STEEP BANK"
+msgstr "FORTE INCLINAZIONE"
+
+msgid "RADIO SAFE"
+msgstr "TRASMITTENTE NON ARMATA"
+
+msgid "Select controls to continue."
+msgstr "Seleziona i comandi per continuare."
+
+msgid "Reconnect the radio to continue."
+msgstr "Ricollega la trasmittente per continuare."
+
+msgid "Reduce angle of attack."
+msgstr "Riduci l'angolo d'attacco."
+
+msgid "Fast sink near terrain."
+msgstr "Discesa rapida vicino al suolo."
+
+msgid "Come closer for a clearer view."
+msgstr "Avvicinati per vedere meglio l'aereo."
+
+msgid "Land as soon as possible."
+msgstr "Atterra appena possibile."
+
+msgid "Prepare for an unpowered landing."
+msgstr "Preparati a un atterraggio senza motore."
+
+msgid "Land and let the pack cool."
+msgstr "Atterra e lascia raffreddare la batteria."
+
+msgid "Reserve reached. Plan to land."
+msgstr "Riserva raggiunta. Preparati ad atterrare."
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "Riserva stimata raggiunta. Preparati ad atterrare."
+
+msgid "Low energy. Plan to land."
+msgstr "Energia bassa. Preparati ad atterrare."
+
+msgid "Descending faster than 6 m/s."
+msgstr "Discesa superiore a 6 m/s."
+
+msgid "Body G magnitude above 4 g."
+msgstr "Carico G del corpo superiore a 4 g in valore assoluto."
+
+msgid "Bank angle beyond 75°."
+msgstr "Angolo di rollio oltre 75°."
+
+msgid "Lower throttle to arm."
+msgstr "Riduci il gas per armare."
+
+msgid "Flight model under development."
+msgstr "Modello di volo in sviluppo."
+
 msgid "RC circuit"
 msgstr "Circuito RC"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "Il circuito in terra per auto RC a nord della pista, con salti, curve sopraelevate e barriere. È fisico: le ruote rotolano sul suo rilievo e l’aereo può urtarlo. Automatico lo attiva con una GPU dedicata e dettaglio scena Alto o Estremo. Si applica dal prossimo volo."
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "Applica o annulla i campi in sospeso prima di applicare una preimpostazione."
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "Preimpostazione non applicata. La bozza è rimasta invariata."

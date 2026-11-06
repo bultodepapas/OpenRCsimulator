@@ -51,7 +51,8 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 Pause → **Flight overlays → Alerts** controls details, maximum visible alerts (1/3/5; default 3), range
 reminders, energy advisories, status notices and optional flight training cues. Closing Warnings still hides
 the whole rail. Critical conditions bypass advisory-category switches; stronger battery/fuel/terrain alerts
-replace redundant reminders. The overflow count retains the presence of further active alerts.
+replace redundant reminders. The overflow count reports further active alerts and always names any hidden
+critical conditions, including in compact mode.
 
 No usable fuel comes only from an accepted finite-fuel sample with zero usable mass. Training cues are off
 by default: rapid descent below −6 m/s, absolute bank above 75°, or absolute body G above 4 g. They require

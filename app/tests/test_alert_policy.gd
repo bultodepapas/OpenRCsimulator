@@ -65,6 +65,10 @@ func _run() -> void:
 	policy.update(snap, enabled)
 	snap.telemetry.time_s = 2.6
 	_check("coaching rearms", policy.update(snap, enabled).size() == 3)
+	snap.telemetry.bank_deg = NAN
+	_check("unavailable input clears only its held cue without advancing time",
+		policy.update(snap, enabled) == PackedStringArray(["sink_rate", "high_load"]))
+	snap.telemetry.bank_deg = 80.0
 	snap.telemetry.time_s = 0.0
 	_check("rewind discards held and pending cues", policy.update(snap, enabled).is_empty())
 	snap.telemetry.time_s = 0.6

@@ -721,3 +721,45 @@ Final SHA-256: `fuel_instrument.gd` = `61e7ae3e7cd01ca10dac05eccdc761ad6fd4fdcc6
 `fuel_liquid.gdshader` = `73fd41ae1dc3393b99b60a0a007cd16eba86e18f02821d36079b00c183adb91d`;
 `telemetry.gd` = `331493ce55f432091d8cafb0ff889f77c5a1ed618c1e5543179229fc97079237`.
 No images are added to Git. Full CI, other-GPU performance and physical slosh validation remain separate.
+
+### Glass flight alerts (2026-11-06, HUD-09-R1)
+
+O3 now reuses the existing fluorescent crystal shader above dark text wells, with explicit severity, a short
+action and a mouse-only close button. Settings add an Alerts page for details, visible-card limit (1/3/5),
+range/energy/status advisories and optional training cues. Critical conditions bypass advisory switches;
+the capped overflow summary still names every hidden critical condition. Estimated reserve provenance stays
+in the headline when details are off. Presets and older preference dictionaries retain their previous shape.
+
+The presenter sorts and deduplicates accepted warning codes after battery sensor sampling. It does not
+infer pack-ECM alarms from model SOC. No usable fuel requires an accepted finite-fuel mass sample with zero
+usable fuel. The optional descent/bank/G cues use the display thresholds documented in the
+[overlay guide](../../../plans/flight-overlays.md#warning-triggers), with accepted-time dwell/clear grace,
+reset/rewind handling and immediate retirement of a cue whose source becomes unavailable. None of these
+thresholds changes flight physics or claims an aircraft operating limit.
+
+The card pool is bounded by the largest supported limit. Unchanged warning samples leave its nodes and
+transitions untouched; hidden layers stop the entrance tween, and reduced motion cancels it. The shader has
+no automatic clock, screen copy or background blur. This establishes bounded UI work, not a frame-time gain.
+
+Checked native Windows / Godot 4.8-beta2 results: `test_alert_policy.gd` **33**, `test_warning_settings.gd`
+**35**, `test_warning_presentation.gd` **29**, `test_overlay_manager.gd` **222**,
+`test_overlay_battery_flight.gd` **12**, and `test_overlay_fuel_flight.gd` **21** checks, all passed.
+Receipts are in `tmp/godot-checks/` under `alerts-policy-invalid-data-*`, `alerts-manager-final-*`,
+`alerts-battery-flight-*` and `alerts-fuel-flight-*`; presentation receipts are under
+`tmp/alerts-glass-ui-final/checks/`. Geometry coverage includes Spanish action/badge sizing, compact critical
+overflow, a 480 px narrow-window fixture, 720p compatibility, and a 1080p Spanish 200% settings fixture.
+
+Native rendered review used the debug bridge on Windows / NVIDIA RTX 3090 / OpenGL Compatibility, first at
+**1920×1080**, then **2560×1440**. English and Spanish alert fixtures have readable severity, titles and
+actions; the native Alerts page remains usable, with tab scrolling for longer Spanish labels. Settings were
+changed through real controls and retained across app restart. The initial native review caught a collapsed
+action-label height; the repaired geometry is covered by the presentation test and final captures.
+These are presentation fixtures in a paused production scene, not flight-model evidence. Captures/logs stay
+in `tmp/debug-bridge/20261106-144745-47870/` (shots 004–008); the prior session holds the English Alerts page.
+Both sessions shut down without crashes or leaked objects. No images are added to Git.
+
+The shared branch advanced during implementation; runtime SHA-256 identifies the reviewed candidate:
+`alert_policy.gd` = `a7a1a349807d0998a36996146020a5b61b8be306c3849ee48d17dcd374020399`;
+`warnings_bar.gd` = `ae32991e5cb32f5f5dd9567019eed5ec6782b11bbd163ae36d1d221706d89971`;
+`overlay_manager.gd` = `850af74740dc4f9e52703830dd418a39c21f2a94edc84de9a6723147d48e5d11`.
+Full CI, other-hardware performance and pilot acceptance remain separate.

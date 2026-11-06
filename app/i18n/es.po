@@ -8181,3 +8181,9 @@ msgstr "Modelo de vuelo en desarrollo."
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "El circuito de tierra para carros RC al norte de la pista, con saltos, curvas peraltadas y barreras. Es físico: las ruedas ruedan sobre su relieve y el avión puede chocar con él. Automático lo activa con una GPU dedicada y detalle de escena Alto o Extremo. Se aplica en el siguiente vuelo."
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "Aplica o cancela los campos pendientes antes de aplicar un preajuste."
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "No se ha aplicado el preajuste. El borrador no ha cambiado."

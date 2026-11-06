@@ -8447,3 +8447,130 @@ msgstr "RC 赛道"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "跑道北侧的 RC 赛车土路赛道，包含跳台、倾斜弯道和护栏。它是实体的：机轮会在起伏上滚动，机身也可能撞上它。自动模式在独立显卡且场景细节为高或极高时开启。下次飞行时生效。"
+
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "危险"
+
+msgid "CAUTION"
+msgstr "注意"
+
+msgid "INFO"
+msgstr "信息"
+
+msgid "+%d MORE ALERTS"
+msgstr "+%d 条其他警报"
+
+msgid "Alerts"
+msgstr "警报"
+
+msgid "Flight alerts"
+msgstr "飞行警报"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "启用“警告”时，严重警报始终保持启用。"
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "训练提示仅用于显示，不代表飞行器的极限。"
+
+msgid "Show alert details"
+msgstr "显示警报详情"
+
+msgid "Maximum visible alerts"
+msgstr "最多显示警报数"
+
+msgid "Range reminders"
+msgstr "距离提醒"
+
+msgid "Energy advisories"
+msgstr "能量提示"
+
+msgid "Status notices"
+msgstr "状态提示"
+
+msgid "Flight training cues"
+msgstr "飞行训练提示"
+
+msgid "CONTROLLER LOST"
+msgstr "控制器已断开"
+
+msgid "RADIO LOST"
+msgstr "遥控器信号丢失"
+
+msgid "LOW ALTITUDE"
+msgstr "高度过低"
+
+msgid "FAR FROM PILOT"
+msgstr "距飞行员过远"
+
+msgid "POWER LIMITED"
+msgstr "动力受限"
+
+msgid "NO USABLE FUEL"
+msgstr "无可用燃油"
+
+msgid "RAPID DESCENT"
+msgstr "快速下降"
+
+msgid "HIGH G LOAD"
+msgstr "高 G 载荷"
+
+msgid "STEEP BANK"
+msgstr "大倾斜角"
+
+msgid "RADIO SAFE"
+msgstr "遥控器安全锁定"
+
+msgid "Select controls to continue."
+msgstr "选择控制方式以继续。"
+
+msgid "Reconnect the radio to continue."
+msgstr "重新连接遥控器以继续。"
+
+msgid "Reduce angle of attack."
+msgstr "减小迎角。"
+
+msgid "Fast sink near terrain."
+msgstr "接近地面时快速下沉。"
+
+msgid "Come closer for a clearer view."
+msgstr "飞近一些以看得更清楚。"
+
+msgid "Land as soon as possible."
+msgstr "尽快降落。"
+
+msgid "Prepare for an unpowered landing."
+msgstr "准备无动力降落。"
+
+msgid "Land and let the pack cool."
+msgstr "降落并让电池组冷却。"
+
+msgid "Reserve reached. Plan to land."
+msgstr "已达到储备量。请准备降落。"
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "已达到估算储备量。请准备降落。"
+
+msgid "Low energy. Plan to land."
+msgstr "能量不足。请准备降落。"
+
+msgid "Descending faster than 6 m/s."
+msgstr "下沉速度超过 6 m/s。"
+
+msgid "Body G magnitude above 4 g."
+msgstr "机体 G 载荷的绝对值超过 4 g。"
+
+msgid "Bank angle beyond 75°."
+msgstr "横滚倾斜角超过 75°。"
+
+msgid "Lower throttle to arm."
+msgstr "降低油门以解锁。"
+
+msgid "Flight model under development."
+msgstr "飞行模型仍在开发中。"
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "应用预设前，请先应用或取消尚未完成的字段编辑。"
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "未应用预设。草稿保持不变。"

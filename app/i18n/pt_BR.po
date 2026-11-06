@@ -9288,3 +9288,130 @@ msgstr "Circuito RC"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "O circuito de terra para carros RC ao norte da pista, com saltos, curvas inclinadas e barreiras. Ele é físico: as rodas rolam sobre o relevo e o avião pode colidir com ele. Automático o ativa com uma GPU dedicada e detalhe de cena Alto ou Extremo. Aplica-se no próximo voo."
+
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "PERIGO"
+
+msgid "CAUTION"
+msgstr "ATENÇÃO"
+
+msgid "INFO"
+msgstr "INFO"
+
+msgid "+%d MORE ALERTS"
+msgstr "+%d ALERTAS A MAIS"
+
+msgid "Alerts"
+msgstr "Alertas"
+
+msgid "Flight alerts"
+msgstr "Alertas de voo"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "Os alertas críticos permanecem ativos enquanto Avisos estiver ativado."
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "Os avisos de treinamento são apenas visuais e não representam limites da aeronave."
+
+msgid "Show alert details"
+msgstr "Mostrar detalhes dos alertas"
+
+msgid "Maximum visible alerts"
+msgstr "Máximo de alertas visíveis"
+
+msgid "Range reminders"
+msgstr "Avisos de distância"
+
+msgid "Energy advisories"
+msgstr "Avisos de energia"
+
+msgid "Status notices"
+msgstr "Avisos de status"
+
+msgid "Flight training cues"
+msgstr "Avisos de treinamento de voo"
+
+msgid "CONTROLLER LOST"
+msgstr "CONTROLE DESCONECTADO"
+
+msgid "RADIO LOST"
+msgstr "SINAL DO TRANSMISSOR PERDIDO"
+
+msgid "LOW ALTITUDE"
+msgstr "ALTITUDE BAIXA"
+
+msgid "FAR FROM PILOT"
+msgstr "LONGE DO PILOTO"
+
+msgid "POWER LIMITED"
+msgstr "POTÊNCIA LIMITADA"
+
+msgid "NO USABLE FUEL"
+msgstr "SEM COMBUSTÍVEL UTILIZÁVEL"
+
+msgid "RAPID DESCENT"
+msgstr "DESCIDA RÁPIDA"
+
+msgid "HIGH G LOAD"
+msgstr "CARGA G ELEVADA"
+
+msgid "STEEP BANK"
+msgstr "INCLINAÇÃO ACENTUADA"
+
+msgid "RADIO SAFE"
+msgstr "TRANSMISSOR SEGURO"
+
+msgid "Select controls to continue."
+msgstr "Selecione os controles para continuar."
+
+msgid "Reconnect the radio to continue."
+msgstr "Reconecte o transmissor para continuar."
+
+msgid "Reduce angle of attack."
+msgstr "Reduza o ângulo de ataque."
+
+msgid "Fast sink near terrain."
+msgstr "Descida rápida perto do solo."
+
+msgid "Come closer for a clearer view."
+msgstr "Aproxime a aeronave para enxergar melhor."
+
+msgid "Land as soon as possible."
+msgstr "Pouse assim que possível."
+
+msgid "Prepare for an unpowered landing."
+msgstr "Prepare-se para um pouso sem motor."
+
+msgid "Land and let the pack cool."
+msgstr "Pouse e deixe a bateria esfriar."
+
+msgid "Reserve reached. Plan to land."
+msgstr "Reserva atingida. Planeje o pouso."
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "Reserva estimada atingida. Planeje o pouso."
+
+msgid "Low energy. Plan to land."
+msgstr "Pouca energia. Planeje o pouso."
+
+msgid "Descending faster than 6 m/s."
+msgstr "Descendo a mais de 6 m/s."
+
+msgid "Body G magnitude above 4 g."
+msgstr "Magnitude da carga G no avião acima de 4 g."
+
+msgid "Bank angle beyond 75°."
+msgstr "Ângulo de inclinação além de 75°."
+
+msgid "Lower throttle to arm."
+msgstr "Reduza o acelerador para armar."
+
+msgid "Flight model under development."
+msgstr "Modelo de voo em desenvolvimento."
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "Aplique ou cancele os campos pendentes antes de aplicar uma predefinição."
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "A predefinição não foi aplicada. O rascunho permanece inalterado."

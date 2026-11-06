@@ -8492,8 +8492,135 @@ msgstr "草地"
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "滑走路の両側に草、クローバー、野花の株を表示します。オフにすると低速なコンピューターで GPU の負荷を減らせます。オフはすぐに反映され、オンは次のフライトから反映されます。密度はシーンの詳細に従います。"
 
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "危険"
+
+msgid "CAUTION"
+msgstr "注意"
+
+msgid "INFO"
+msgstr "情報"
+
+msgid "+%d MORE ALERTS"
+msgstr "他に%d件の警告"
+
+msgid "Alerts"
+msgstr "アラート"
+
+msgid "Flight alerts"
+msgstr "飛行アラート"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "「警告」がオンの間、重大なアラートは常に有効です。"
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "トレーニングの表示は参考情報であり、機体の限界値ではありません。"
+
+msgid "Show alert details"
+msgstr "アラートの詳細を表示"
+
+msgid "Maximum visible alerts"
+msgstr "表示するアラートの最大数"
+
+msgid "Range reminders"
+msgstr "距離の注意"
+
+msgid "Energy advisories"
+msgstr "エネルギーの注意"
+
+msgid "Status notices"
+msgstr "状態の通知"
+
+msgid "Flight training cues"
+msgstr "飛行トレーニングの案内"
+
+msgid "CONTROLLER LOST"
+msgstr "コントローラー切断"
+
+msgid "RADIO LOST"
+msgstr "送信機との通信なし"
+
+msgid "LOW ALTITUDE"
+msgstr "高度が低い"
+
+msgid "FAR FROM PILOT"
+msgstr "操縦者から遠い"
+
+msgid "POWER LIMITED"
+msgstr "出力制限"
+
+msgid "NO USABLE FUEL"
+msgstr "使用可能な燃料なし"
+
+msgid "RAPID DESCENT"
+msgstr "急降下"
+
+msgid "HIGH G LOAD"
+msgstr "高G負荷"
+
+msgid "STEEP BANK"
+msgstr "大きなバンク角"
+
+msgid "RADIO SAFE"
+msgstr "送信機は未アーム"
+
+msgid "Select controls to continue."
+msgstr "操作を選んで続行してください。"
+
+msgid "Reconnect the radio to continue."
+msgstr "送信機を再接続して続行してください。"
+
+msgid "Reduce angle of attack."
+msgstr "迎角を小さくしてください。"
+
+msgid "Fast sink near terrain."
+msgstr "地面付近で急速に降下しています。"
+
+msgid "Come closer for a clearer view."
+msgstr "機体がよく見えるよう近づけてください。"
+
+msgid "Land as soon as possible."
+msgstr "できるだけ早く着陸してください。"
+
+msgid "Prepare for an unpowered landing."
+msgstr "動力なしの着陸に備えてください。"
+
+msgid "Land and let the pack cool."
+msgstr "着陸し、バッテリーを冷ましてください。"
+
+msgid "Reserve reached. Plan to land."
+msgstr "予備量に達しました。着陸の準備をしてください。"
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "推定予備量に達しました。着陸の準備をしてください。"
+
+msgid "Low energy. Plan to land."
+msgstr "エネルギーが少なくなっています。着陸の準備をしてください。"
+
+msgid "Descending faster than 6 m/s."
+msgstr "6 m/sを超える速度で降下しています。"
+
+msgid "Body G magnitude above 4 g."
+msgstr "機体のG負荷の絶対値が4 gを超えています。"
+
+msgid "Bank angle beyond 75°."
+msgstr "バンク角が75°を超えています。"
+
+msgid "Lower throttle to arm."
+msgstr "アームするにはスロットルを下げてください。"
+
+msgid "Flight model under development."
+msgstr "飛行モデルは開発中です。"
+
 msgid "RC circuit"
 msgstr "RCサーキット"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "滑走路の北にあるRCカー用のダートサーキット（ジャンプ、バンク付きカーブ、バリア）。物理的に存在し、車輪は起伏の上を転がり、機体は衝突することがあります。自動では専用GPUでシーン詳細が「高」または「最高」のときに有効になります。次のフライトから適用されます。"
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "プリセットを適用する前に、編集中の項目を適用またはキャンセルしてください。"
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "プリセットは適用されませんでした。下書きは変更されていません。"

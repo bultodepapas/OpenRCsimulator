@@ -9392,3 +9392,130 @@ msgstr "RC-Strecke"
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "Die Erdstrecke für RC-Autos nördlich der Piste, mit Sprüngen, Steilkurven und Barrieren. Sie ist physisch: Räder rollen über ihr Relief, und das Flugzeug kann mit ihr kollidieren. Automatisch schaltet sie bei einer dedizierten GPU und Szenendetail Hoch oder Extrem ein. Wirkt beim nächsten Flug."
+
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "GEFAHR"
+
+msgid "CAUTION"
+msgstr "VORSICHT"
+
+msgid "INFO"
+msgstr "INFO"
+
+msgid "+%d MORE ALERTS"
+msgstr "+%d WEITERE ALARME"
+
+msgid "Alerts"
+msgstr "Alarme"
+
+msgid "Flight alerts"
+msgstr "Flugalarme"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "Kritische Alarme bleiben aktiv, solange „Warnungen“ eingeschaltet ist."
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "Trainingshinweise dienen nur der Anzeige und sind keine Flugzeuggrenzwerte."
+
+msgid "Show alert details"
+msgstr "Alarmdetails anzeigen"
+
+msgid "Maximum visible alerts"
+msgstr "Maximal sichtbare Alarme"
+
+msgid "Range reminders"
+msgstr "Entfernungshinweise"
+
+msgid "Energy advisories"
+msgstr "Energiehinweise"
+
+msgid "Status notices"
+msgstr "Statusmeldungen"
+
+msgid "Flight training cues"
+msgstr "Flugtrainingshinweise"
+
+msgid "CONTROLLER LOST"
+msgstr "CONTROLLER VERLOREN"
+
+msgid "RADIO LOST"
+msgstr "SENDERSIGNAL VERLOREN"
+
+msgid "LOW ALTITUDE"
+msgstr "GERINGE HÖHE"
+
+msgid "FAR FROM PILOT"
+msgstr "WEIT VOM PILOTEN ENTFERNT"
+
+msgid "POWER LIMITED"
+msgstr "LEISTUNG BEGRENZT"
+
+msgid "NO USABLE FUEL"
+msgstr "KEIN NUTZBARER KRAFTSTOFF"
+
+msgid "RAPID DESCENT"
+msgstr "SCHNELLER SINKFLUG"
+
+msgid "HIGH G LOAD"
+msgstr "HOHE G-BELASTUNG"
+
+msgid "STEEP BANK"
+msgstr "STARKE QUERNEIGUNG"
+
+msgid "RADIO SAFE"
+msgstr "SENDER SICHER"
+
+msgid "Select controls to continue."
+msgstr "Wähle eine Steuerung, um fortzufahren."
+
+msgid "Reconnect the radio to continue."
+msgstr "Verbinde den Sender erneut, um fortzufahren."
+
+msgid "Reduce angle of attack."
+msgstr "Verringere den Anstellwinkel."
+
+msgid "Fast sink near terrain."
+msgstr "Schnelles Sinken nahe am Boden."
+
+msgid "Come closer for a clearer view."
+msgstr "Fliege näher heran, um besser zu sehen."
+
+msgid "Land as soon as possible."
+msgstr "Lande so bald wie möglich."
+
+msgid "Prepare for an unpowered landing."
+msgstr "Bereite dich auf eine Landung ohne Antrieb vor."
+
+msgid "Land and let the pack cool."
+msgstr "Lande und lass den Akku abkühlen."
+
+msgid "Reserve reached. Plan to land."
+msgstr "Reserve erreicht. Plane die Landung."
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "Geschätzte Reserve erreicht. Plane die Landung."
+
+msgid "Low energy. Plan to land."
+msgstr "Wenig Energie. Plane die Landung."
+
+msgid "Descending faster than 6 m/s."
+msgstr "Sinkgeschwindigkeit über 6 m/s."
+
+msgid "Body G magnitude above 4 g."
+msgstr "Betrag der G-Belastung am Flugzeug über 4 g."
+
+msgid "Bank angle beyond 75°."
+msgstr "Querneigung über 75°."
+
+msgid "Lower throttle to arm."
+msgstr "Verringere das Gas zum Scharfschalten."
+
+msgid "Flight model under development."
+msgstr "Das Flugmodell befindet sich in Entwicklung."
+
+msgid "Apply or cancel pending fields before applying a preset."
+msgstr "Übernehmen oder verwerfen Sie ausstehende Feldeingaben, bevor Sie eine Voreinstellung anwenden."
+
+msgid "Preset not applied. The draft is unchanged."
+msgstr "Voreinstellung nicht angewendet. Der Entwurf bleibt unverändert."

@@ -103,6 +103,8 @@ static func text_for(code: String) -> String:
 
 ## Settings affect presentation only; the manager owns filtering and priority.
 func configure(settings: Dictionary) -> void:
+	if UiTheme.reduced_motion:
+		_stop_entrance()
 	var detail: Variant = settings.get("warning_detail", true)
 	var limit: Variant = settings.get("warning_limit", 3)
 	var next_detail: bool = detail if typeof(detail) == TYPE_BOOL else true
@@ -151,13 +153,17 @@ func _render_cards() -> void:
 	summary.visible = remaining > 0
 	if remaining > 0:
 		var severity := "info"
+		var hidden_danger := PackedStringArray()
 		for index in range(shown, codes.size()):
 			var candidate := AlertPolicy.severity(codes[index])
 			if candidate == "danger":
-				severity = candidate
-				break
-			if candidate == "caution": severity = candidate
-		_update_card(_summary_card, severity, tr("+%d MORE ALERTS") % remaining, "", "")
+				severity = "danger"
+				hidden_danger.append(tr(AlertPolicy.title_for(codes[index])))
+			elif candidate == "caution" and severity != "danger":
+				severity = "caution"
+		# A cap never hides the identity of a critical condition, even in compact mode.
+		_update_card(_summary_card, severity, tr("+%d MORE ALERTS") % remaining,
+			" · ".join(hidden_danger), "")
 
 
 func _make_card(card_name: String) -> Dictionary:
@@ -205,7 +211,6 @@ func _make_card(card_name: String) -> Dictionary:
 	severity.name = "Severity"
 	severity.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	severity.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	severity.clip_text = true
 	badge.add_child(severity)
 	var well := PanelContainer.new()
 	well.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -215,14 +220,13 @@ func _make_card(card_name: String) -> Dictionary:
 	copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	copy.add_theme_constant_override("separation", 0)
 	well.add_child(copy)
-	var headline := Frame.text_label("", 15, UiTheme.TEXT)
+	var headline := Frame.text_label("", 17, UiTheme.TEXT)
 	headline.name = "Headline"
 	headline.clip_text = true
 	headline.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	copy.add_child(headline)
 	var detail := Frame.text_label("", 14, UiTheme.TEXT_2)
 	detail.name = "Detail"
-	detail.clip_text = true
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	copy.add_child(detail)
 	return {root = card, material = material, badge = badge, severity = severity,
