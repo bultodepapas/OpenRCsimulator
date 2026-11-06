@@ -135,17 +135,25 @@ static func mesh() -> ArrayMesh:
 ## barycentric height and normal, preserving winding. Returns null if a clip would leave an interior hole
 ## inside one triangle (not representable without bridging), or on malformed input.
 static func with_hole(source: Mesh, hole_xz: PackedVector2Array) -> ArrayMesh:
-	if source == null or source.get_surface_count() != 1 or hole_xz.size() < 3:
+	if source == null or source.get_surface_count() != 1 or hole_xz.size() < 3 \
+			or source.surface_get_primitive_type(0) != Mesh.PRIMITIVE_TRIANGLES:
 		return null
 	var arrays: Array = source.surface_get_arrays(0)
+	if arrays.size() != Mesh.ARRAY_MAX or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array \
+			or not arrays[Mesh.ARRAY_NORMAL] is PackedVector3Array:
+		return null
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var indices := PackedInt32Array()
+	if arrays[Mesh.ARRAY_INDEX] is PackedInt32Array:
+		indices = arrays[Mesh.ARRAY_INDEX]
+	elif arrays[Mesh.ARRAY_INDEX] != null:
+		return null
 	if indices.is_empty():
 		indices.resize(vertices.size())
 		for i: int in vertices.size():
 			indices[i] = i
-	if normals.size() != vertices.size():
+	if normals.size() != vertices.size() or indices.size() % 3 != 0:
 		return null
 	var hole_min := Vector2(INF, INF)
 	var hole_max := Vector2(-INF, -INF)

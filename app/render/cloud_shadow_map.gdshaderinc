@@ -3,6 +3,8 @@
 // cloud_density(); the tile replaces only the five-octave fbm and cluster noise, not the thresholding.
 uniform sampler2D cloud_shadow_map : filter_linear, repeat_enable;
 uniform bool cloud_shadow_map_enabled = false;
+uniform bool cloud_shadow_map_ground_enabled = true;
+uniform bool cloud_shadow_map_detail_enabled = true;
 uniform uint cloud_shadow_map_seed = 0u;
 
 // Exactly cloud_density()'s cluster shift: one per-pixel value-noise sample, only when clustering is on.
@@ -18,7 +20,7 @@ float _cloud_tile_coverage(vec2 cells, uint seed, float bounded_coverage, float 
 
 
 float cloud_shadow_density(vec2 cells, uint seed, float coverage, float cluster_strength) {
-	if (!cloud_shadow_map_enabled || seed != cloud_shadow_map_seed) {
+	if (!cloud_shadow_map_enabled || !cloud_shadow_map_ground_enabled || seed != cloud_shadow_map_seed) {
 		return cloud_density(cells, seed, coverage, cluster_strength);
 	}
 	float bounded_coverage = clamp(coverage, 0.0, 1.0);
@@ -34,7 +36,7 @@ float cloud_shadow_density(vec2 cells, uint seed, float coverage, float cluster_
 // C5b: cloud_density() with octaves 0-2 from the tile's half-float G channel and octaves 3-4 evaluated here,
 // exactly as cloud_field_fbm(); the per-pixel octaves keep the high-frequency detail that relief shading needs.
 float cloud_detail_density(vec2 cells, uint seed, float coverage, float cluster_strength) {
-	if (!cloud_shadow_map_enabled || seed != cloud_shadow_map_seed) {
+	if (!cloud_shadow_map_enabled || !cloud_shadow_map_detail_enabled || seed != cloud_shadow_map_seed) {
 		return cloud_density(cells, seed, coverage, cluster_strength);
 	}
 	float bounded_coverage = clamp(coverage, 0.0, 1.0);

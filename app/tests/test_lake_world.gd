@@ -14,6 +14,36 @@ const Ground := preload("res://render/ground.gd")
 const Session := preload("res://sim/flight_session.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
+
+## Use a real refused shoreline cut at the ground activity's field-build boundary.
+class RefusedLakeActivity extends "res://vehicles/ground/ground_scene.gd":
+	var fixture_refused := false
+
+	func _build_airfield_field(_exclusions: Array) -> Node3D:
+		var fixture := Node3D.new()
+		fixture.name = "Field"
+		var material: ShaderMaterial = preload("res://render/ground.gd").grass_material({})
+		var arrays := []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(-1000.0, 0.0, -1000.0),
+			Vector3(3000.0, 0.0, -1000.0), Vector3(-1000.0, 0.0, 3000.0)])
+		arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP])
+		arrays[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 1, 2])
+		var mesh := ArrayMesh.new()
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		var ground := MeshInstance3D.new()
+		ground.name = "refused_ground"
+		ground.mesh = mesh
+		ground.material_override = material
+		fixture.add_child(ground)
+		var lake_result: Dictionary = preload("res://data/lake_loader.gd").load_from()
+		var attached: Node3D = preload("res://render/lake/lake_world.gd").attach(
+			fixture, field, material, lake_result.lake, {}, false)
+		fixture_refused = attached == null and ground.mesh == mesh \
+			and str(fixture.get_meta("lake_error", "")).contains("refused_ground")
+		return fixture
+
+
 var _checks := 0
 var _failures := 0
 var _saved_lake_environment := ""
@@ -62,6 +92,7 @@ func _run() -> void:
 	_check_no_lake_hazard("explicit scenery layout", explicit_scenery_file.lake)
 
 	_test_attached_scene(field, lake)
+	_test_ground_activities()
 	_finish()
 
 
@@ -148,9 +179,16 @@ func _test_ground_cut(field: Dictionary, lake: Dictionary) -> void:
 	ground.position = Vector3(3.0, -0.02, -7.0) # a non-origin placement exercises the field-to-mesh transform
 	field_node.add_child(ground)
 	var original: ArrayMesh = ground.mesh
+	var other := MeshInstance3D.new()
+	other.name = "rough_copy"
+	other.mesh = original
+	other.material_override = ground_material
+	other.position = ground.position
+	field_node.add_child(other)
 	var attached: Node3D = LakeWorld.attach(field_node, field, ground_material, lake, {}, false)
-	_check("one ground mesh receives the geometric lake cut",
-		attached != null and int(field_node.get_meta("ground_lake_cut", 0)) == 1 and ground.mesh != original)
+	_check("both ground meshes receive the geometric lake cut",
+		attached != null and int(field_node.get_meta("ground_lake_cut", 0)) == 2
+		and ground.mesh != original and other.mesh != original)
 	var bank: PackedFloat64Array = lake.bank_ne_m
 	var hole := PackedVector2Array()
 	var hole_min := Vector2(INF, INF)
@@ -172,6 +210,134 @@ func _test_ground_cut(field: Dictionary, lake: Dictionary) -> void:
 	_check("cut triangles keep the source winding", after.flipped == 0 and before.flipped == 0)
 	_check("ground shader no longer discards", not FileAccess.get_file_as_string("res://render/ground.gdshader").contains("discard;"))
 	field_node.free()
+	_test_atomic_ground_failure(field, lake, original, hole, hole_min, hole_max)
+
+
+## A bank wholly inside one source triangle creates a hole that the clipper refuses.
+## The first ground mesh is cuttable, so failure on the second must not commit it.
+func _test_atomic_ground_failure(field: Dictionary, lake: Dictionary, cuttable: Mesh,
+		hole: PackedVector2Array, hole_min: Vector2, hole_max: Vector2) -> void:
+	var Horizon := preload("res://render/horizon.gd")
+	var span := hole_max - hole_min
+	var a := hole_min - span
+	var b := Vector2(hole_max.x + 3.0 * span.x, a.y)
+	var c := Vector2(a.x, hole_max.y + 3.0 * span.y)
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(a.x, 0.0, a.y),
+		Vector3(b.x, 0.0, b.y), Vector3(c.x, 0.0, c.y)])
+	arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP])
+	arrays[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 1, 2])
+	var enclosing := ArrayMesh.new()
+	enclosing.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var triangle := PackedVector2Array([a, b, c])
+	var pieces: Array[PackedVector2Array] = Geometry2D.clip_polygons(triangle, hole)
+	_check("fixture clip produces an outer polygon and interior hole",
+		pieces.size() == 2 and Geometry2D.is_polygon_clockwise(pieces[0]) != Geometry2D.is_polygon_clockwise(pieces[1]))
+	_check("fixture has a cuttable first mesh and a refused interior-hole triangle",
+		Horizon.with_hole(cuttable, hole) != null and Horizon.with_hole(enclosing, hole) == null)
+	arrays[Mesh.ARRAY_INDEX] = null
+	var unindexed := ArrayMesh.new()
+	unindexed.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	_check("unindexed interior-hole triangle is refused without an engine error",
+		Horizon.with_hole(unindexed, hole) == null)
+	var crossing_arrays := []
+	crossing_arrays.resize(Mesh.ARRAY_MAX)
+	crossing_arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(0.0, 0.0, 0.0),
+		Vector3(10.0, 0.0, 0.0), Vector3(0.0, 0.0, 10.0)])
+	crossing_arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP])
+	var crossing := ArrayMesh.new()
+	crossing.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, crossing_arrays)
+	var crossing_hole := PackedVector2Array([Vector2(4.0, 4.0), Vector2(8.0, 4.0),
+		Vector2(8.0, 8.0), Vector2(4.0, 8.0)])
+	_check("unindexed triangle with an edge-crossing hole is cut",
+		Horizon.with_hole(crossing, crossing_hole) != null)
+	var material: ShaderMaterial = Ground.grass_material({})
+	material.set_shader_parameter("lake_mask_mode", 0)
+	material.set_shader_parameter("lake_bank_count", 7)
+	var original_points := PackedVector2Array([Vector2(12.0, 34.0)])
+	var original_bounds := Vector4(1.0, 2.0, 3.0, 4.0)
+	material.set_shader_parameter("lake_bank_points", original_points)
+	material.set_shader_parameter("lake_bank_bounds", original_bounds)
+	var field_node := Node3D.new()
+	var first := MeshInstance3D.new()
+	first.name = "cuttable"
+	first.mesh = cuttable
+	first.material_override = material
+	first.position = Vector3(3.0, -0.02, -7.0)
+	field_node.add_child(first)
+	var second := MeshInstance3D.new()
+	second.name = "interior_hole"
+	second.mesh = enclosing
+	second.material_override = material
+	second.position = first.position
+	field_node.add_child(second)
+	var attached: Node3D = LakeWorld.attach(field_node, field, material, lake, {}, false)
+	_check("failed later cut preserves both original ground meshes",
+		attached == null and first.mesh == cuttable and second.mesh == enclosing)
+	_check("failed cut publishes no lake scene, contact context or cut metadata",
+		field_node.get_node_or_null("Lake") == null and not field_node.has_meta("lake_context")
+		and not field_node.has_meta("lake_identity") and not field_node.has_meta("ground_lake_cut"))
+	_check("failed cut preserves ground shader parameters",
+		int(material.get_shader_parameter("lake_mask_mode")) == 0
+		and int(material.get_shader_parameter("lake_bank_count")) == 7
+		and material.get_shader_parameter("lake_bank_points") == original_points
+		and material.get_shader_parameter("lake_bank_bounds") == original_bounds)
+	_check("failed cut names the refused mesh for the startup boundary",
+		str(field_node.get_meta("lake_error", "")).contains("interior_hole"))
+	_check_no_lake_hazard("refused ground cut", field_node.get_meta("lake_context", {}))
+	second.free()
+	var retried: Node3D = LakeWorld.attach(field_node, field, material, lake, {}, false)
+	_check("successful retry commits the cut and clears its earlier refusal",
+		retried != null and first.mesh != cuttable and not field_node.has_meta("lake_error")
+		and int(field_node.get_meta("ground_lake_cut", 0)) == 1
+		and field_node.get_meta("lake_context", {}).get("identity", "") == lake.identity)
+	field_node.free()
+
+
+func _test_ground_activities() -> void:
+	var saved_scenery := OS.get_environment("OPENRC_SCENERY")
+	var saved_scenery_file := OS.get_environment("OPENRC_SCENERY_FILE")
+	OS.set_environment("OPENRC_SCENERY", "on")
+	OS.unset_environment("OPENRC_SCENERY_FILE")
+	_test_ground_activity_lake_rejection()
+	_test_ground_activity_default()
+	if saved_scenery.is_empty():
+		OS.unset_environment("OPENRC_SCENERY")
+	else:
+		OS.set_environment("OPENRC_SCENERY", saved_scenery)
+	if saved_scenery_file.is_empty():
+		OS.unset_environment("OPENRC_SCENERY_FILE")
+	else:
+		OS.set_environment("OPENRC_SCENERY_FILE", saved_scenery_file)
+
+
+func _test_ground_activity_lake_rejection() -> void:
+	var activity := RefusedLakeActivity.new()
+	activity.enable_audio = false
+	activity.enable_vehicle_effects = false
+	root.add_child(activity)
+	_check("ground activity receives an actual refused lake cut", activity.fixture_refused)
+	_check("ground activity rejects the lake before driving can start",
+		activity.startup_error.contains("refused_ground") and activity.session == null
+		and activity.dashboard == null and not activity.is_physics_processing())
+	activity._physics_process(1.0 / 240.0)
+	_check("a rejected ground activity cannot create a physical tick", activity.session == null)
+	activity.free()
+
+
+func _test_ground_activity_default() -> void:
+	var activity := preload("res://vehicles/ground/ground_scene.gd").new()
+	activity.enable_audio = false
+	activity.enable_vehicle_effects = false
+	root.add_child(activity)
+	var built := activity.get_node_or_null("Field")
+	_check("default ground activity accepts its visible lake and prepared session",
+		activity.startup_error.is_empty() and activity.session != null and activity.session.prepared
+		and built != null and not built.has_meta("lake_error")
+		and int(built.get_meta("ground_lake_cut", 0)) > 0
+		and not (built.get_meta("lake_context", {}) as Dictionary).is_empty(), activity.startup_error)
+	activity.free()
 
 
 func _area_near(mesh: Mesh, low: Vector2, high: Vector2, hole: PackedVector2Array) -> Dictionary:

@@ -60,6 +60,31 @@ The [R4 research refresh](../research/desktop-delivery-investigations/DT-MAC-00-
 
 Keep phases 10–12 (NK-3 ARM64, iOS, Metal 4 and engine work) parked. R4 found no trigger.
 
+#### Audit follow-up (DT-MAC-06b-R1 / DT-MAC-02b-R1, 2026-11-05)
+
+The local `optimization help.md` audit contains two dated reviews. Its later
+section corrects the earlier C5 diagnosis; neither its synthetic experiments nor
+the historical profiled M1 pair establish current sustained 1080p acceptance.
+Implementation and focused evidence are retained in the
+[R4 follow-up](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#optimization-help-follow-up-2026-11-05).
+
+| Recommendation | Current disposition / next gate |
+| --- | --- |
+| UID omissions, benchmark effective state, profiler eligibility and source identity | Repaired; new receipts bind runtime rendering sources and actual observed configuration. Historical receipts remain historical and cannot silently satisfy the stricter gate. |
+| Cloud publication/failure, separate ground/sky controls and graphical probes | Implemented with analytic pending/failure fallback, bounded retry and canvas/spatial/sky checks. Native Metal lifecycle, motion and sustained qualification remain open. |
+| Stale MetalFX confirmation; shoreline clipping publication | Activation tokens and transactional lake attachment implemented. Process responsiveness is explicitly not display confirmation. Unsupported cuts refuse the lake/session instead of publishing mismatched physics. |
+| Conservative density bounds | Both `three` and `two_three` opt-in sky variants implemented; default remains `off`. Compare sparse/dense, layered and low-sun motion on M1 at actual 1080p before choosing either. |
+| Two-octave lattice atlas; half-resolution sky | Next independent GPU experiments after the repaired baseline. Retain analytic fallback, seed/readiness identity and full-resolution sun/moon/IBL behavior; require incremental memory, transition and complete-frame evidence. No claimed gain or default change. |
+| Aircraft-centered native crop | Separate rendering experiment after the cloud comparison: share complete scene/occluders, synchronized pose, padded crop and full-resolution UI. Camera geometry alone is not seam/readability/performance proof. |
+| Native Metal rate maps, FP16, memoryless attachments, ARM64 physics | Conditional engine/native branches; no new trigger or available on-device proof. Do not fork the engine or change simulation arithmetic as part of this repair. |
+| Packed three-sample relief cache; solar-halo lookup | Retain the guide's rejection/deprioritization. Measured interpolation error and shared solar angle work do not justify integrating these candidates. |
+| Ground anchor/cache, hidden-layer relief, screen/depth dependencies, presets, shader baking and presentation | Keep the existing single-candidate attribution/export/pacing gates. Native Mac shader baking requires a non-headless native export and measured first-use behavior; no preset or queue policy is promoted by source inspection. |
+
+The documented M1 key was absent from the current Windows workspace and the
+known WSL checkout location during this follow-up. Native M1 results therefore
+remain a required next step, not a passed gate. No new library or asset is needed
+for the delivered repairs and bounded shader experiment.
+
 **Step 1 result (2026-11-05):** [GPU track](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-03b-a-attribution-sweep-2026-11-05). FPS(0.5)/FPS(1.0) was 2.34, and the main thread waited on GPU completion in 57 % of samples. MSAA off versus 4× gained only 10 %. At scale 0.75 (1920×1200 internal), p50 was 17.9 ms and p95 20.8 ms, each from one short screen. Next is step 3a, candidate (i), then per-pixel shader cost. The CPU track (3b) is not entered. Step 2 hitch attribution remains open.
 
 **Step 3a attribution (2026-11-05):** [per-pass and per-stage evidence](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-03b-c-gpu-pass-and-ground-shader-attribution-2026-11-05). The opaque pass is 79 % of GPU time. The single ground material costs ≈ 11 ms of 28.4 ms. Its cloud shadow is the largest stage, at 3.6 ms. Vegetation is negligible. An exact integer-wrap rewrite of the shared cloud noise gave no gain and was reverted. The candidates below each need owner visual acceptance:

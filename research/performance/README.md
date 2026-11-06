@@ -360,7 +360,7 @@ source, authoring inputs and imported resources, use a fresh directory:
 run="$PWD/tmp/sustained-new"
 mkdir "$run"
 godot="/absolute/path/to/Godot.app/Contents/MacOS/Godot"
-/usr/bin/caffeinate -dis python3 tools/godot/run_checked.py \
+OPENRC_CLOUD_SHADOW_MAP=0 /usr/bin/caffeinate -dis python3 tools/godot/run_checked.py \
   --resources --resource-interval 1 --resource-max-samples 2500 \
   --out-dir "$run/checks" --timeout 2100 -- "$godot" --path app \
   --resolution 2560x1600 --windowed --always-on-top --disable-vsync --max-fps 0 \
@@ -392,6 +392,30 @@ sampler can bracket its endpoint; verify the actual clock alignment afterward.
 Predeclare the circuit envelope and inspect the retained 1 Hz trajectory over
 the measured interval. Endpoint health alone cannot establish the whole flight.
 
+Each fixture receipt hashes the visible application resource tree before and after
+the capture, including scripts, shaders, assets, import recipes and `project.godot`,
+plus both fixture scripts. Hidden engine caches and linked files are not part of this
+source identity; a linked input causes refusal. Keep the separately frozen imported
+resources, engine and hardware identities. Hashing occurs outside the timed sample.
+The reducer requires the expanded source scope; older receipts lacking these fields
+are ineligible under the new gate, not proof their historical measurements were wrong.
+
+Set `OPENRC_CLOUD_SHADOW_MAP` explicitly to `0` or `1`; the example selects the
+analytic baseline. `OPENRC_CLOUD_SHADOW_MAP_GROUND` and `_SKY` can independently
+override it with `0` or `1`. An unset global is admissible only when both paths
+have explicit overrides. The receipt records the raw settings, requested modes,
+live consumers, required seeds, sampled bake results and an interval change counter.
+Every enabled mode must have a live consumer whose tile is ready before the first
+sample and remains stable through the seal; pending, failed and analytic fallback
+states are ineligible for that enabled configuration. `ready` means a validated tile
+is bound to that material, not that displayed pixels or all weather-layer lookups
+used the cache: layers with different seeds can still use analytic noise. A bake's
+sample checks are not full image or target-hardware qualification.
+
+The receipt also records the requested and bound `OPENRC_CLOUD_DENSITY_BOUNDS`
+variant (`off`, `three` or `two_three`). These are separate workload identities;
+the experimental variants require their own numerical, visual and hardware evidence.
+
 `--sustained-hash` retains independent 6,000-tick hashes of accepted state,
 inputs, auxiliary state and modes. Compare identical tick windows and full
 scenario/collision identities on the same host; matching partial windows with
@@ -412,9 +436,17 @@ package delivery, physical fuel endurance or pilot acceptance.
 For DT-MAC-03b attribution sweeps, `--sustained-render-scale=<0.25..1>` keeps
 Native bilinear scaling and lowers only the 3D input scale. `--sustained-msaa=<0..3>`
 selects `Viewport.MSAA` (0 off, 1 2×, 2 4×, 3 8×). The receipt records them as
-`scenario.render_override`, and the applied viewport values as `effective_render`.
-`native_summary.py` refuses a run when the checked command and the receipt
-disagree. It also treats differing overrides as different benchmark scenarios,
+`scenario.render_override`, and the applied viewport/policy as `effective_render`.
+`native_summary.py` requires explicit checked `--rendering-method` and
+`--rendering-driver` values matching the observed renderer. It checks requested
+reconstruction, provider, scale and MSAA against the frame report and observations
+from the frame before sampling through the seal, and refuses fallbacks or changes.
+An explicit temporal MSAA request must be zero. The current MetalFX policy reports
+execution as unknown, so it cannot meet effective-provider acceptance until an
+independent execution observation is available. Renderer policy and viewport
+properties alone do not prove displayed output. These per-frame observations add
+measurement overhead; retain them in both roles and compare observer cost separately.
+The reducer treats differing effective settings and overrides as different benchmark scenarios,
 so a campaign cannot pool them with each other or with default captures.
 For example, append `--sustained-render-scale=0.75 --sustained-msaa=1` after
 the fixture's other user options. A sweep is a screening diagnostic: the frame
@@ -428,7 +460,8 @@ Godot's `--gpu-profile` engine flag, they price individual materials or stages.
 every material of that shader, including the `WorldEnvironment` sky material, writing only on
 change and keeping the uniform's int or bool type.
 The receipt records hidden instance counts, the pre-override values and the
-read-back values. `native_summary.py` refuses both options for qualification.
+read-back values. `native_summary.py` refuses both options and `--gpu-profile` for
+performance qualification; profile runs are diagnostic even without an override.
 
 ### Long continuous captures (DT-MAC-02b)
 

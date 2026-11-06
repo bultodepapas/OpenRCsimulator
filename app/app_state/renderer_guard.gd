@@ -2,9 +2,10 @@ extends RefCounted
 ## DT-MAC-05b: recovery for a RenderingDevice default renderer that initializes but then crashes or hangs.
 ## Godot already falls back to OpenGL when the Metal/Vulkan context cannot be created; this covers what follows.
 ## A normal Home launch on the project's RD Standard renderer (Mobile on Apple Silicon) writes a pending marker,
-## cleared after CONFIRM_FRAMES drawn frames and CONFIRM_SECONDS, or on a clean quit. A later launch that finds the
-## marker unconfirmed records a failure for that build and restarts once into Compatibility. Compatibility sessions
-## write no marker, so no restart loop is possible; a new build retries the RD renderer once.
+## cleared after CONFIRM_FRAMES process callbacks and CONFIRM_SECONDS, or on a clean quit. This detects continued
+## process responsiveness; it does not prove images reached the display. A later launch that finds the marker
+## unconfirmed records a failure for that build and restarts once into Compatibility. Compatibility sessions write
+## no marker, so no restart loop is possible; a new build retries the RD renderer once.
 
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -19,6 +20,7 @@ const METALFX_BLOCK_REASON := "metalfx_failed_previously"
 ## DT-MAC-07a: the pinned engine stores MetalFX scaler creation without a null guard, so an unsupported
 ## descriptor can crash on first use. The same per-build marker pattern blocks MetalFX after such a session.
 static var _metalfx_armed := false
+static var _metalfx_activation := 0
 
 
 ## Pure decision. facts: {method, standard_method, profile, headless, build}; state: {pending, failed}.
@@ -43,7 +45,7 @@ static func decide(facts: Dictionary, state: Dictionary) -> Dictionary:
 	var failed: Dictionary = out.get("failed", {})
 	if str(failed.get("method", "")) == method and str(failed.get("build", "")) == build:
 		return {action = "fallback", state = out,
-			reason = "the previous %s launch of this build never confirmed rendering" % method}
+			reason = "the previous %s launch of this build never confirmed process responsiveness" % method}
 	out["pending"] = {method = method, build = build}
 	return {action = "guard", state = out, reason = ""}
 
@@ -122,24 +124,47 @@ static func decide_metalfx(build: String, state: Dictionary) -> Dictionary:
 	return {state = out, blocked = blocked}
 
 
-## Call after every reconstruction apply. Entering MetalFX arms a marker (confirmed after stable frames);
+## Call after every reconstruction apply. Entering MetalFX arms a marker (confirmed after process callbacks);
 ## leaving it before confirmation is a user choice, not a failure.
 static func observe_metalfx(tree: SceneTree, path: String, active: bool) -> void:
 	if path.is_empty() or DisplayServer.get_name() == "headless":
 		return
-	var state := load_state(path)
 	if active and not _metalfx_armed:
-		_metalfx_armed = true
-		print("Renderer guard: MetalFX active; confirming after stable frames.")
-		state["metalfx_pending"] = {build = build_identity()}
-		save_state(path, state)
+		var activation := _arm_metalfx(path, str(build_identity()))
+		print("Renderer guard: MetalFX active; confirming process responsiveness.")
 		var confirmer := confirmer_for(path)
 		confirmer.name = "MetalFXGuardConfirm"
-		confirmer.on_stable = func() -> void: clear_metalfx_pending(path)
+		confirmer.on_stable = func() -> void: _confirm_metalfx_activation(path, activation)
 		tree.root.add_child.call_deferred(confirmer)
 	elif not active:
+		_disarm_metalfx(path)
+
+
+static func _arm_metalfx(path: String, build: String) -> int:
+	_metalfx_activation += 1
+	_metalfx_armed = true
+	var state := load_state(path)
+	state["metalfx_pending"] = {build = build, activation = _metalfx_activation}
+	save_state(path, state)
+	return _metalfx_activation
+
+
+static func _disarm_metalfx(path: String) -> void:
+	if _metalfx_armed:
+		_metalfx_activation += 1
 		_metalfx_armed = false
-		clear_metalfx_pending(path)
+	clear_metalfx_pending(path)
+
+
+## A previous on/off cycle cannot confirm the current activation, even if its timer fires late.
+static func _confirm_metalfx_activation(path: String, activation: int) -> void:
+	if not _metalfx_armed or activation != _metalfx_activation:
+		return
+	var state := load_state(path)
+	var pending: Variant = state.get("metalfx_pending", {})
+	if pending is Dictionary and int(pending.get("activation", -1)) == activation:
+		state.erase("metalfx_pending")
+		save_state(path, state)
 
 
 static func clear_metalfx_pending(path: String) -> void:
@@ -149,7 +174,7 @@ static func clear_metalfx_pending(path: String) -> void:
 		save_state(path, state)
 
 
-## Clears this launch's pending markers (stable rendering or a clean quit). Failure records stay.
+## Clears this launch's pending markers on a clean quit. Failure records stay.
 static func confirm(path: String) -> void:
 	var state := load_state(path)
 	if state.has("pending") or state.has("metalfx_pending"):
@@ -158,17 +183,17 @@ static func confirm(path: String) -> void:
 		save_state(path, state)
 
 
-## A node that confirms `path` once rendering has been stable for the thresholds, then frees itself.
+## A node that confirms `path` after the process callback and time thresholds, then frees itself.
 static func confirmer_for(path: String) -> Node:
 	var confirmer := Confirmer.new()
 	confirmer.name = "RendererGuardConfirm"
-	# Home pauses the tree while unfocused; rendering stability is independent of that pause.
+	# Home pauses the tree while unfocused; the responsiveness timer runs independently of that pause.
 	confirmer.process_mode = Node.PROCESS_MODE_ALWAYS
 	confirmer.on_stable = func() -> void: clear_renderer_pending(path)
 	return confirmer
 
 
-## Stable RD rendering clears only the renderer marker; MetalFX proves itself separately.
+## RD responsiveness clears only the renderer marker; MetalFX has a separate timer.
 static func clear_renderer_pending(path: String) -> void:
 	var state := load_state(path)
 	if state.has("pending"):

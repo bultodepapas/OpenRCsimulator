@@ -63,6 +63,51 @@ xvfb-run -a -s "-screen 0 1280x720x24" "$(app/get-godot.sh)" --path app --audio-
 
 On macOS, add `--rendering-method mobile --rendering-driver metal` and omit `xvfb-run`. Probe uniforms are prefixed: `cloud_density()` reassigns a local `cluster`, which a same-named uniform captures on RenderingDevice backends. It also checks C5b `cloud_detail_density` (tile octaves 0–2 plus per-pixel octaves 3–4; ≤ 0.025 / 0.0015). A 3D mode renders a spatial quad with the exact density in R and the tile density in G, so 3D-stage sampling is checked independently of output encoding. This checks density agreement only; appearance, motion and performance need their own evidence.
 
+The v2 probe also exercises a real **sky shader**, refuses headless execution and
+fails if any required seed never becomes ready. Canvas retains the original
+maximum/mean density bounds. Spatial and sky consumers test the same maximum
+inside the shader, before output encoding; encoded R/G differences remain
+diagnostics. This avoids interpreting Mobile's sRGB amplification as linear
+density error. It does not waive a visual gate.
+Blank-tile negative controls must fail agreement in both cache modes and all
+three shader stages, so a silently disabled cache cannot pass by comparing the
+analytic function to itself. Reports retain engine and source hashes.
+
+### Cache lifecycle and isolated experiments (DT-MAC-06b-R1)
+
+The production cache now keeps analytic noise until a validated HDR bake is
+published. It retries once, then stays analytic for that seed. At most four seeds
+are retained. `CloudShadowMap.diagnostics()` distinguishes disabled, unused,
+pending, ready, failed and capacity-limited consumers. Readiness checks 16
+seed-specific samples in both channels; it is not a complete image comparison.
+
+| Environment | Meaning |
+| --- | --- |
+| `OPENRC_CLOUD_SHADOW_MAP=0` / `1` | Global off/on; unset enables graphical runs only |
+| `OPENRC_CLOUD_SHADOW_MAP_GROUND=0` / `1` | Override ground/near-grass caching independently |
+| `OPENRC_CLOUD_SHADOW_MAP_SKY=0` / `1` | Override sky-relief caching independently |
+| `OPENRC_CLOUD_DENSITY_BOUNDS=off` / `three` / `two_three` | Sky analytic density baseline, bounds after octave three, or bounds after octaves two and three |
+
+Unset per-consumer cache overrides inherit the global setting. The bounds
+experiment defaults to `off`; unknown values also select `off` and remain visible
+in diagnostics. Select it **before world construction**. The two shader variants
+are cached, not rebuilt during flight. They preserve the original accumulation
+for ambiguous samples; a `1e-5` threshold margin is conservative empirical
+protection, not a proof for every backend. Cirrus/stretched decks are unchanged.
+The sky's analytic relief fallback uses the selected variant too; cached relief
+and ground shading retain their separate mechanisms.
+
+Run the same probe with `--bounds=three` and `--bounds=two_three` to compare the
+actual GPU candidate to the original analytic function in canvas, spatial and
+sky consumers. Eight cases cover coverage extremes, clustering, negative
+coordinates, lattice seams and different seeds. A deliberate density mutation
+must be detected in all three consumers. The probe amplifies error before
+8-bit readback; it is not a float32 bitwise equivalence proof. Its 512² targets
+are numerical fixtures, not 1080p performance evidence. Use the
+[sustained flight fixture](../../research/performance/README.md#repeatable-active-flight-dt-mac-03)
+for matched complete-frame runs and the [capture workflow](../../docs/tools/graphics.md)
+for actual 1920×1080 motion/readability review before promoting a variant.
+
 ## Distant storm-bank views (FW-83)
 
 `storm_bank_capture.gd` builds the production default field and World with the

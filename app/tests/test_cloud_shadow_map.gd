@@ -1,5 +1,6 @@
 extends SceneTree
-## DT-MAC-06b C2: the cloud-shadow tile is opt-in, shared per seed, and leaves every material untouched while off.
+## DT-MAC-06b: cache fallback, seed ownership, independent modes and bounded bake failure.
+## Synthetic sample images exercise state transitions only; they do not establish a graphical bake.
 
 const Atmosphere := preload("res://render/atmosphere.gd")
 const CloudShadowMap := preload("res://render/cloud_shadow_map.gd")
@@ -18,22 +19,32 @@ func check(label: String, ok: bool) -> void:
 		printerr("FAIL ", label)
 
 
+func _sample_image(seed: int) -> Image:
+	# Only sampled pixels are populated: sufficient to exercise the publication state machine.
+	var image := Image.create_empty(CloudShadowMap.SIZE, CloudShadowMap.SIZE, false, Image.FORMAT_RGH)
+	for i in CloudShadowMap.SAMPLE_COUNT:
+		var point: Vector2i = CloudShadowMap._sample_point(i)
+		image.set_pixel(point.x, point.y, CloudShadowMap._reference_sample(seed, point))
+	return image
+
+
 func _tiles() -> Array[Node]:
 	return root.find_children("CloudShadowMap*", "SubViewport", false, false)
 
 
 func run() -> void:
-	var previous := OS.get_environment(CloudShadowMap.ENVIRONMENT_KEY)
+	var keys := [CloudShadowMap.ENVIRONMENT_KEY, CloudShadowMap.GROUND_ENVIRONMENT_KEY,
+		CloudShadowMap.SKY_ENVIRONMENT_KEY]
+	var previous := {}
+	for key: String in keys:
+		previous[key] = OS.get_environment(key)
+		OS.set_environment(key, "")
 	var grass := ImageTexture.create_from_image(Image.create(2, 2, false, Image.FORMAT_RGB8))
-
-	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "")
 	var off := Atmosphere.ground_material(grass)
 	check("headless without an explicit request stays off", not CloudShadowMap.enabled())
-	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "0")
-	check("0 disables it", not CloudShadowMap.enabled())
-	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "")
-	check("disabled leaves the flag unset", off.get_shader_parameter("cloud_shadow_map_enabled") == null)
-	check("disabled leaves the texture unset", off.get_shader_parameter("cloud_shadow_map") == null)
+	check("disabled leaves new materials untouched", off.get_shader_parameter("cloud_shadow_map_enabled") == null
+		and off.get_shader_parameter("cloud_shadow_map") == null)
+	check("disabled retains no material references", CloudShadowMap._consumers.is_empty())
 	check("disabled returns no texture", CloudShadowMap.texture_for(1253) == null)
 	await process_frame
 	check("disabled creates no tile", _tiles().is_empty())
@@ -43,40 +54,144 @@ func run() -> void:
 	var near := ShaderMaterial.new()
 	near.shader = Atmosphere.NEAR_GRASS_SHADER
 	Atmosphere.update_ground_material(near)
-	var sky := ShaderMaterial.new()
-	sky.shader = Atmosphere.SKY_SHADER
-	Atmosphere.update_ground_material(sky)
-	var seed_param: Variant = ground.get_shader_parameter(
+	var unrelated := ShaderMaterial.new()
+	unrelated.shader = Atmosphere.SKY_SHADER
+	Atmosphere.update_ground_material(unrelated)
+	var sky := Atmosphere.sky_material()
+	var surface := ground.duplicate() as ShaderMaterial
+	Atmosphere.track_shadow_material_copy(surface, ground)
+	var seed: int = ground.get_shader_parameter(
 		"appearance_shadow_seed" if ground.get_shader_parameter("appearance_cloud_shadow") == true else "cloud_seed")
-	check("enabled sets the ground flag", ground.get_shader_parameter("cloud_shadow_map_enabled") == true)
-	check("tile seed matches the shadow seed", ground.get_shader_parameter("cloud_shadow_map_seed") == seed_param)
-	var texture: Variant = ground.get_shader_parameter("cloud_shadow_map")
-	check("ground receives a stable image texture", texture is ImageTexture
-		and texture.get_size() == Vector2(CloudShadowMap.SIZE, CloudShadowMap.SIZE))
-	check("near grass shares the same tile", near.get_shader_parameter("cloud_shadow_map") == ground.get_shader_parameter("cloud_shadow_map"))
-	check("the ground path leaves other shaders untouched", sky.get_shader_parameter("cloud_shadow_map_enabled") == null)
-	var real_sky := Atmosphere.sky_material() # C5b: relief shading reads the tile of the sky's own seed
-	check("the sky receives the tile for its cloud seed", real_sky.get_shader_parameter("cloud_shadow_map_enabled") == true
-		and real_sky.get_shader_parameter("cloud_shadow_map_seed") == real_sky.get_shader_parameter("cloud_seed"))
-	await process_frame
-	var tiles := _tiles()
-	check("one renderer per seed", tiles.size() == 1)
-	if tiles.size() == 1:
-		var tile: SubViewport = tiles[0]
-		check("tile size", tile.size == Vector2i(CloudShadowMap.SIZE, CloudShadowMap.SIZE))
-		check("tile renders once", tile.render_target_update_mode == SubViewport.UPDATE_ONCE)
-		check("tile has no 3D world", tile.disable_3d)
-	Atmosphere.update_ground_material(ground)
-	check("refresh reuses the same texture", ground.get_shader_parameter("cloud_shadow_map") == texture)
-	var other := CloudShadowMap.texture_for(int(seed_param) + 1)
-	check("a second seed gets its own texture", other != null and other != texture)
-	for frame in CloudShadowMap.BAKE_FRAMES + 4:
-		await process_frame
-	check("temporary tile renderers are freed after the copy", _tiles().is_empty())
-	check("without a rendering device the tile stays unbaked", not CloudShadowMap.baked(int(seed_param))
-		or DisplayServer.get_name() != "headless")
-	check("the texture identity survives baking", ground.get_shader_parameter("cloud_shadow_map") == texture)
+	check("pending ground stays analytic", ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	check("pending sky stays analytic", sky.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	check("pending texture is not exposed", CloudShadowMap.texture_for(seed) == null)
+	check("the ground path leaves other shader kinds untouched",
+		unrelated.get_shader_parameter("cloud_shadow_map_enabled") == null)
+	var initial := CloudShadowMap.diagnostics()
+	check("default modes inherit the explicit global request", initial.requested == {ground = true, sky = true})
+	check("diagnostics include both required seed sets", initial.required_seeds.ground.has(seed)
+		and initial.required_seeds.sky.has(seed))
+	check("pending state is explicit", initial.effective.ground == "pending" and initial.effective.sky == "pending")
 
-	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, previous)
+	var next_seed := seed + 1
+	var before_change := CloudShadowMap.diagnostics_generation()
+	CloudShadowMap.apply(ground, next_seed)
+	check("seed replacement advances diagnostics", CloudShadowMap.diagnostics_generation() > before_change)
+	check("replacement seed remains analytic while pending", ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	CloudShadowMap._complete_bake(self, seed, _sample_image(seed), "")
+	check("a validated first tile enables its current consumers", near.get_shader_parameter("cloud_shadow_map_enabled") == true
+		and sky.get_shader_parameter("cloud_shadow_map_enabled") == true)
+	check("a field surface copied before publication receives the ready tile",
+		surface.get_shader_parameter("cloud_shadow_map_enabled") == true
+		and surface.get_shader_parameter("cloud_shadow_map") == near.get_shader_parameter("cloud_shadow_map"))
+	check("an old completion cannot enable a material requesting a new seed",
+		ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	CloudShadowMap._complete_bake(self, next_seed, _sample_image(next_seed), "")
+	var texture: Variant = ground.get_shader_parameter("cloud_shadow_map")
+	check("matching publication enables the replacement seed", ground.get_shader_parameter("cloud_shadow_map_enabled") == true
+		and ground.get_shader_parameter("cloud_shadow_map_seed") == next_seed and texture is ImageTexture)
+	check("ready texture is stable", CloudShadowMap.texture_for(next_seed) == texture and CloudShadowMap.baked(next_seed))
+	var stable_generation := CloudShadowMap.diagnostics_generation()
+	CloudShadowMap.apply(ground, next_seed)
+	check("unchanged bindings do not advance the generation", CloudShadowMap.diagnostics_generation() == stable_generation)
+	CloudShadowMap.diagnostics()
+	var before_tamper := CloudShadowMap.diagnostics_generation()
+	ground.set_shader_parameter("cloud_shadow_map_seed", seed)
+	check("diagnostics reject an externally changed binding", CloudShadowMap.diagnostics().effective.ground == "inconsistent"
+		and CloudShadowMap.diagnostics_generation() > before_tamper)
+	CloudShadowMap.apply(ground, next_seed)
+	check("refresh repairs an externally changed seed", ground.get_shader_parameter("cloud_shadow_map_seed") == next_seed
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") == true)
+
+	OS.set_environment(CloudShadowMap.GROUND_ENVIRONMENT_KEY, "0")
+	var ground_off := CloudShadowMap.diagnostics()
+	check("ground can be disabled independently", ground_off.effective.ground == "disabled"
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") == false
+		and ground.get_shader_parameter("cloud_shadow_map") == null
+		and not CloudShadowMap._consumers.has(ground.get_instance_id())
+		and sky.get_shader_parameter("cloud_shadow_map_enabled") == true)
+	var untracked := ShaderMaterial.new()
+	untracked.shader = Atmosphere.GROUND_SHADER
+	untracked.set_shader_parameter("cloud_shadow_map_enabled", true)
+	untracked.set_shader_parameter("cloud_shadow_map", texture)
+	CloudShadowMap.apply(untracked, seed)
+	check("disabled apply clears even an untracked enabled binding", untracked.get_shader_parameter("cloud_shadow_map_enabled") == false
+		and untracked.get_shader_parameter("cloud_shadow_map") == null
+		and not CloudShadowMap._consumers.has(untracked.get_instance_id()))
+	OS.set_environment(CloudShadowMap.SKY_ENVIRONMENT_KEY, "0")
+	CloudShadowMap.diagnostics()
+	check("sky can also be disabled", sky.get_shader_parameter("cloud_shadow_map_enabled") == false)
+	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "0")
+	OS.set_environment(CloudShadowMap.GROUND_ENVIRONMENT_KEY, "1")
+	var ground_only := CloudShadowMap.diagnostics()
+	check("per-mode on overrides global off", ground_only.requested == {ground = true, sky = false})
+	check("re-enabled mode waits for material refresh", ground_only.effective.ground == "unused"
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") == false)
+	CloudShadowMap.apply(ground, next_seed)
+	check("material refresh reuses the ready tile", ground.get_shader_parameter("cloud_shadow_map_enabled") == true
+		and ground.get_shader_parameter("cloud_shadow_map") == texture
+		and sky.get_shader_parameter("cloud_shadow_map_enabled") == false)
+	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "1")
+	OS.set_environment(CloudShadowMap.GROUND_ENVIRONMENT_KEY, "")
+	OS.set_environment(CloudShadowMap.SKY_ENVIRONMENT_KEY, "")
+	CloudShadowMap.apply(near, seed)
+	CloudShadowMap.apply(sky, seed, "sky")
+	var both := CloudShadowMap.diagnostics()
+	check("restoring inherited modes reuses ready tiles", both.effective.ground == "ready" and both.effective.sky == "ready")
+
+	var bad_seed := seed + 2
+	var bad := ShaderMaterial.new()
+	bad.shader = Atmosphere.GROUND_SHADER
+	CloudShadowMap.apply(bad, bad_seed)
+	check("wrong-seed samples are rejected", CloudShadowMap._validate_image(_sample_image(seed), bad_seed) == "sample_mismatch")
+	var blank := Image.create_empty(CloudShadowMap.SIZE, CloudShadowMap.SIZE, false, Image.FORMAT_RGH)
+	check("a blank HDR readback is rejected", CloudShadowMap._validate_image(blank, bad_seed) == "sample_mismatch")
+	var ldr := Image.create_empty(CloudShadowMap.SIZE, CloudShadowMap.SIZE, false, Image.FORMAT_RGBA8)
+	check("an LDR readback is rejected", CloudShadowMap._validate_image(ldr, bad_seed) == "non_hdr_format")
+	CloudShadowMap._complete_bake(self, bad_seed, blank, "")
+	check("a failed first readback schedules one retry", CloudShadowMap._tiles[bad_seed].attempts == 2
+		and CloudShadowMap._tiles[bad_seed].status == "pending")
+	CloudShadowMap._complete_bake(self, bad_seed, blank, "")
+	check("a failed retry remains analytic with a diagnostic reason", CloudShadowMap._tiles[bad_seed].status == "failed"
+		and CloudShadowMap._tiles[bad_seed].failure == "sample_mismatch"
+		and bad.get_shader_parameter("cloud_shadow_map_enabled") == false)
+	CloudShadowMap.apply(bad, bad_seed)
+	check("refresh does not restart a failed bake", CloudShadowMap._tiles[bad_seed].attempts == 2)
+
+	var headless_seed := seed + 3
+	var headless := ShaderMaterial.new()
+	headless.shader = Atmosphere.GROUND_SHADER
+	CloudShadowMap.apply(headless, headless_seed)
+	CloudShadowMap.apply(ground, seed + 4)
+	check("capacity fallback disables the previous binding", ground.get_shader_parameter("cloud_shadow_map_enabled") == false
+		and CloudShadowMap.diagnostics().effective.ground == "mixed")
+	CloudShadowMap.apply(ground, next_seed)
+	check("a ready seed can be restored after capacity fallback", ground.get_shader_parameter("cloud_shadow_map") == texture
+		and ground.get_shader_parameter("cloud_shadow_map_enabled") == true)
+
+	var transient := ShaderMaterial.new()
+	transient.shader = Atmosphere.GROUND_SHADER
+	CloudShadowMap.apply(transient, seed)
+	var weak: WeakRef = weakref(transient)
+	transient = null
+	check("consumer registry does not retain material", weak.get_ref() == null)
+	var before_prune := CloudShadowMap.diagnostics_generation()
+	CloudShadowMap.diagnostics()
+	check("pruning a freed consumer advances diagnostics", CloudShadowMap.diagnostics_generation() > before_prune)
+	for i in CloudShadowMap.PRUNE_EVERY * 2:
+		var short_lived := ShaderMaterial.new()
+		short_lived.shader = Atmosphere.GROUND_SHADER
+		CloudShadowMap.apply(short_lived, seed)
+	check("periodic pruning bounds dead consumer records", CloudShadowMap._consumers.size() <= CloudShadowMap.PRUNE_EVERY + 8)
+
+	for frame in (CloudShadowMap.BAKE_FRAMES + 2) * CloudShadowMap.MAX_ATTEMPTS + 3:
+		await process_frame
+	check("temporary tile renderers are freed", _tiles().is_empty())
+	check("headless readback fails after bounded attempts", CloudShadowMap._tiles[headless_seed].status == "failed"
+		and CloudShadowMap._tiles[headless_seed].failure == "headless"
+		and CloudShadowMap._tiles[headless_seed].attempts == CloudShadowMap.MAX_ATTEMPTS
+		and headless.get_shader_parameter("cloud_shadow_map_enabled") == false)
+	for key: String in keys:
+		OS.set_environment(key, previous[key])
 	print("cloud shadow map: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)

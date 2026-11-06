@@ -18,6 +18,8 @@ extends SceneTree
 const Simulation := preload("res://sim/simulation.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const CloudShadowMap := preload("res://render/cloud_shadow_map.gd")
+const CloudShaderVariants := preload("res://render/cloud_shader_variants.gd")
 const FixedWingContactObserver := preload("res://statistics/fixed_wing_adapter.gd")
 const ROUTE := "benchmark-input-circuit"
 const SEED := 20261021
@@ -81,6 +83,12 @@ var diagnostic_ticks := 0
 var hashes_enabled := false
 var observation_enabled := true
 var render_override: Variant = null
+var render_previous: Dictionary = {}
+var render_observation: Dictionary = {}
+var cloud_previous_generation := -1
+var cloud_observation: Dictionary = {}
+var bounds_at_construction: Dictionary = {}
+var bounds_observation: Dictionary = {}
 var hide_shaders: PackedStringArray = []
 var hidden_instances := {}
 var hide_scan_frames := 0
@@ -186,6 +194,7 @@ func _run() -> void:
 	# runtime guard re-applies only FSR/DLSS failures, so this stays for the flight.
 	if render_override is Dictionary and render_override.has("scaling_3d_scale"):
 		root.scaling_3d_scale = float(render_override.scaling_3d_scale)
+	bounds_at_construction = CloudShaderVariants.diagnostics()
 	scene = load("res://main.tscn").instantiate()
 	if scene == null:
 		_fail_start("cannot instantiate the production Main scene")
@@ -254,8 +263,6 @@ func _run() -> void:
 		settings_scope = "direct technical Main; native reconstruction, 4x MSAA; private accident archive"
 			if render_override == null else "direct technical Main; DT-MAC-03b render_override diagnostic; private accident archive",
 		render_override = render_override,
-		effective_render = {scaling_3d_mode = root.scaling_3d_mode, scaling_3d_scale = root.scaling_3d_scale,
-			msaa_3d = root.msaa_3d, reconstruction = Reconstruction.describe(root)},
 		accident_archive_path = scene.accident_archive_path, controller_profile_path = session.profiles_path}
 	if absf(float(session.start.V) - 15.0) > 1e-9:
 		_fail_start("reference Stik trim must be 15 m/s")
@@ -268,14 +275,14 @@ func _run() -> void:
 		var before := []
 		for entry: Dictionary in shader_params:
 			for material: ShaderMaterial in param_materials:
-				if material.shader.resource_path.get_file().get_basename() == entry.shader:
+				if _shader_name(material.shader) == entry.shader:
 					before.append({target = entry.shader + "." + entry.parameter, value = material.get_shader_parameter(entry.parameter)})
 		_apply_shader_params()
 		var readback := []
 		for entry: Dictionary in shader_params:
 			var values := []
 			for material: ShaderMaterial in param_materials:
-				if material.shader.resource_path.get_file().get_basename() == entry.shader:
+				if _shader_name(material.shader) == entry.shader:
 					values.append(material.get_shader_parameter(entry.parameter))
 			readback.append({target = entry.shader + "." + entry.parameter, values = values})
 		scenario["forced_shader_parameters"] = {parameters = shader_params.duplicate(true),
@@ -286,6 +293,10 @@ func _run() -> void:
 		return
 	observer = Observer.new()
 	observer.host = self
+	bounds_at_construction["bound"] = _bound_cloud_density()
+	render_previous = _render_snapshot()
+	CloudShadowMap.diagnostics() # synchronize settings and prune prior consumers before observation
+	cloud_previous_generation = CloudShadowMap.diagnostics_generation()
 	root.add_child(observer)
 	# Cover the synchronous handoff from settled window to flight observer.
 	if focus_readiness != null:
@@ -412,7 +423,7 @@ func _uses_hidden_shader(instance: GeometryInstance3D) -> bool:
 	for material: Material in _materials_of(instance):
 		while material != null:
 			if material is ShaderMaterial and material.shader != null \
-					and material.shader.resource_path.get_file().get_basename() in hide_shaders:
+					and _shader_name(material.shader) in hide_shaders:
 				return true
 			material = material.next_pass
 	return false
@@ -428,7 +439,7 @@ func _collect_param_materials(node: Node) -> void:
 		for material: Material in owned:
 			while material != null:
 				if material is ShaderMaterial and material.shader != null and not param_materials.has(material):
-					var name: String = material.shader.resource_path.get_file().get_basename()
+					var name := _shader_name(material.shader)
 					for entry: Dictionary in shader_params:
 						if entry.shader == name:
 							param_materials.append(material)
@@ -440,7 +451,7 @@ func _collect_param_materials(node: Node) -> void:
 
 func _apply_shader_params() -> void:
 	for material: ShaderMaterial in param_materials:
-		var name: String = material.shader.resource_path.get_file().get_basename()
+		var name := _shader_name(material.shader)
 		for entry: Dictionary in shader_params:
 			if entry.shader != name: continue
 			# Keep the declared type: Godot rejects a float written to an int or bool uniform.
@@ -466,6 +477,20 @@ func _materials_of(instance: GeometryInstance3D) -> Array[Material]:
 		for surface: int in mesh.get_surface_count():
 			materials.append(mesh.surface_get_material(surface))
 	return materials
+
+
+func _shader_name(shader: Shader) -> String:
+	return str(shader.get_meta(&"openrc_base_shader_path", shader.resource_path)).get_file().get_basename()
+
+
+func _bound_cloud_density() -> String:
+	if not is_instance_valid(scene) or not is_instance_valid(scene._world_environment) \
+			or scene._world_environment.environment == null or scene._world_environment.environment.sky == null:
+		return "unknown"
+	var material: Variant = scene._world_environment.environment.sky.sky_material
+	if not material is ShaderMaterial or material.shader == null or _shader_name(material.shader) != "sky":
+		return "unknown"
+	return str(material.shader.get_meta(&"openrc_cloud_density_bounds", "off"))
 
 
 func _disable_live_events(node: Node) -> void:
@@ -559,6 +584,8 @@ func _update_checkpoint(tick: int, state: PackedFloat64Array, inputs: PackedFloa
 
 
 func _observe_frame() -> void:
+	if not sealed:
+		_observe_render()
 	if not shader_params.is_empty() and not sealed:
 		if hide_scan_frames % 60 == 0 and is_instance_valid(scene):
 			_collect_param_materials(scene)
@@ -634,6 +661,10 @@ func _finish_diagnostic() -> void:
 
 func _on_sealed(exit_code: int) -> void:
 	if sealed: return
+	_observe_render(true)
+	scenario["effective_render"] = render_observation.duplicate(true)
+	scenario["cloud_cache"] = cloud_observation.duplicate(true)
+	scenario["cloud_density_bounds"] = bounds_observation.duplicate(true)
 	if not observation_enabled:
 		last_tick = int(scene.session.sim.tick)
 	elif samples.is_empty() or int(samples[-1].tick) != last_tick:
@@ -653,15 +684,92 @@ func _on_sealed(exit_code: int) -> void:
 			sha256 = checkpoint_hash.finish().hex_encode(), partial = true})
 
 
+func _render_snapshot() -> Dictionary:
+	var saved: Variant = root.get_meta(&"openrc_reconstruction", {})
+	var policy := {}
+	for key: String in ["requested", "requested_provider", "selected", "effective", "provider",
+			"effective_provider", "execution_status", "provider_available", "fallback", "fallback_reason", "temporal"]:
+		policy[key] = saved.get(key) if saved is Dictionary else null
+	policy["scaling_3d_mode"] = root.scaling_3d_mode
+	policy["scale"] = root.scaling_3d_scale
+	policy["msaa_3d"] = root.msaa_3d
+	var provider := str(policy.get("provider", ""))
+	var mode_constant := "SCALING_3D_MODE_BILINEAR" if provider == "native" \
+		else "SCALING_3D_MODE_" + provider.to_upper()
+	var mode_id: Variant = ClassDB.class_get_integer_constant("Viewport", mode_constant) \
+		if ClassDB.class_has_integer_constant("Viewport", mode_constant) else null
+	return {backend = RenderingServer.get_current_rendering_method(),
+		driver = RenderingServer.get_current_rendering_driver_name(), scaling_3d_mode = root.scaling_3d_mode,
+		scaling_3d_mode_constant = mode_constant, provider_mode_id = mode_id,
+		scaling_3d_scale = root.scaling_3d_scale, msaa_3d = root.msaa_3d, reconstruction = policy}
+
+
+## The preceding process-frame observation brackets the first retained frame. Observe
+## every subsequent frame, including the synchronous final report/seal callback.
+func _observe_render(final := false) -> void:
+	var current := _render_snapshot()
+	var generation := CloudShadowMap.diagnostics_generation()
+	var bounds := CloudShaderVariants.diagnostics()
+	bounds["bound"] = _bound_cloud_density()
+	if is_instance_valid(scene) and scene._frametime_samples != null \
+			and int(scene._frametime_samples._actual_sample_start_usec) >= 0:
+		if render_observation.is_empty():
+			render_observation = {start = render_previous.duplicate(true), end = current,
+				stable = render_previous == current, samples = 2}
+		else:
+			render_observation.stable = bool(render_observation.stable) and current == render_observation.start
+			render_observation.end = current
+			render_observation.samples += 1
+		if cloud_observation.is_empty():
+			var cloud := CloudShadowMap.diagnostics()
+			cloud_observation = {start = cloud, end = {},
+				stable = cloud_previous_generation == generation and generation == int(cloud.generation)}
+			bounds_observation = {start = bounds_at_construction.duplicate(true), end = bounds,
+				stable = bounds == bounds_at_construction}
+		else:
+			cloud_observation.stable = bool(cloud_observation.stable) \
+				and generation == int(cloud_observation.start.generation)
+			bounds_observation.stable = bool(bounds_observation.stable) and bounds == bounds_observation.start
+			bounds_observation.end = bounds
+		if final:
+			var cloud := CloudShadowMap.diagnostics()
+			cloud_observation.end = cloud
+			cloud_observation.stable = bool(cloud_observation.stable) \
+				and generation == int(cloud.generation) and cloud == cloud_observation.start
+	render_previous = current
+	cloud_previous_generation = CloudShadowMap.diagnostics_generation()
+
+
 func _source_hashes(input_path: String) -> Dictionary:
-	var paths := ["res://ai/companions/pilot.gd", "res://ai/companions/circuit_controller.gd",
-		"res://statistics/fixed_wing_adapter.gd", "res://physics/ground_terrain.gd",
-		"res://ai/companions/observation_airdata.gd", "res://input/commands.gd", "res://spec.gd",
-		"res://sim/flight_session.gd", "res://sim/simulation.gd", "res://render/frame_samples.gd",
-		"res://main.gd", "res://data/aircraft/jensen_ugly_stik_60.json", "res://data/fields/default.json",
-		"res://data/fields/lake.json"]
+	# Include the visible application resource tree, including rendering scripts,
+	# shaders, authored assets, import recipes and project settings. Hidden engine
+	# caches are separate evidence and are deliberately not treated as source.
 	var out := {}
-	for path: String in paths: out[path] = FileAccess.get_sha256(path)
+	var pending: Array[String] = ["res://"]
+	while not pending.is_empty():
+		var base: String = pending.pop_back()
+		var dir := DirAccess.open(base)
+		if dir == null or dir.list_dir_begin() != OK:
+			out[base] = "" # fail closed if the tree cannot be read
+			break
+		var name := dir.get_next()
+		while not name.is_empty():
+			if name.begins_with("."):
+				name = dir.get_next()
+				continue
+			var path := base.path_join(name)
+			if dir.is_link(name):
+				out[path] = "" # never silently omit a linked input
+			elif dir.current_is_dir():
+				pending.append(path)
+			else:
+				out[path] = FileAccess.get_sha256(path)
+			if out.size() > 8190:
+				out["source-limit-exceeded"] = ""
+				break
+			name = dir.get_next()
+		dir.list_dir_end()
+		if out.has("source-limit-exceeded"): break
 	out["research/performance/sustained_input.gd"] = FileAccess.get_sha256(input_path)
 	out["research/performance/sustained_flight.gd"] = FileAccess.get_sha256(get_script().resource_path)
 	return out
@@ -710,6 +818,7 @@ func _write_receipt_and_exit() -> void:
 		frame_stream_sha256 = str(frame.get("stream", {}).get("sha256", "")) if frame is Dictionary else "",
 		frame_capture_id_matches = report_valid, frame_exit_code = seal_exit_code,
 		scenario = scenario, source_sha256 = source_hashes, source_digest = source_digest,
+		source_scope = "application-visible-tree-v1",
 		source_unchanged = source_unchanged, initial_state = initial_state,
 		observation = {start_monotonic_usec = observation_start_usec, end_monotonic_usec = observation_end_usec,
 			start_tick = 0, end_tick = sealed_tick, accepted_ticks = sealed_tick, input_reads = sealed_input.input_reads,

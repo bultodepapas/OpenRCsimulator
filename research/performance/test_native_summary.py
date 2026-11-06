@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import hashlib
 import contextlib
+import copy
 import io
 import tempfile
 import unittest
@@ -204,6 +205,52 @@ def write_stream_fixture(report_path: Path, report: dict, records: list[dict]) -
     report_path.write_text(json.dumps(report, allow_nan=False), encoding="utf-8")
 
 
+def render_snapshot(scale: float = 1.0, msaa: int = 2) -> dict:
+    return {
+        "backend": "gl_compatibility", "driver": "opengl3", "scaling_3d_mode": 0,
+        "scaling_3d_mode_constant": "SCALING_3D_MODE_BILINEAR", "provider_mode_id": 0,
+        "scaling_3d_scale": scale, "msaa_3d": msaa,
+        "reconstruction": {"requested": "native", "requested_provider": "native", "selected": "native",
+                           "effective": "native", "provider": "native", "effective_provider": "native",
+                           "execution_status": "policy_selected", "provider_available": True,
+                           "fallback": False, "fallback_reason": "", "temporal": False,
+                           "scaling_3d_mode": 0, "scale": scale, "msaa_3d": msaa},
+    }
+
+
+def set_render_observation(receipt: dict, report: dict, scale: float = 1.0, msaa: int = 2) -> None:
+    snapshot = render_snapshot(scale, msaa)
+    receipt["scenario"]["effective_render"] = {
+        "start": copy.deepcopy(snapshot), "end": copy.deepcopy(snapshot), "stable": True, "samples": 4,
+    }
+    report["rendering_driver"] = snapshot["driver"]
+    report["render_settings"] = {key: copy.deepcopy(snapshot[key])
+                                 for key in ("scaling_3d_mode", "scaling_3d_scale", "msaa_3d", "reconstruction")}
+
+
+def save_benchmark_report(path: Path, receipt: dict, report: dict) -> None:
+    path.write_text(json.dumps(report), encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    receipt.update(report_sha256=digest, frame_report_sha256=digest)
+
+
+def cloud_snapshot(global_mode: str = "0", ground: str = "", sky: str = "") -> dict:
+    environment = {"global": global_mode, "ground": ground, "sky": sky}
+    requested = {mode: (environment[mode] or global_mode) == "1" for mode in ("ground", "sky")}
+    return {"environment": environment, "requested": requested,
+            "effective": {mode: "ready" if enabled else "disabled" for mode, enabled in requested.items()},
+            "consumers": {mode: [{"seed": 42, "status": "ready" if enabled else "disabled", "enabled": enabled}]
+                          for mode, enabled in requested.items()},
+            "required_seeds": {mode: [42] for mode in requested},
+            "seeds": [{"seed": 42, "status": "ready", "attempts": 1, "failure": ""}]
+                     if any(requested.values()) else [], "generation": 12}
+
+
+def set_cloud_observation(receipt: dict, snapshot: dict) -> None:
+    receipt["scenario"]["cloud_cache"] = {"start": copy.deepcopy(snapshot), "end": copy.deepcopy(snapshot),
+                                          "stable": True}
+
+
 def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Path, dict]:
     """An independently constructed complete v3 capture and its health receipt."""
     report = valid_report(route="benchmark-input-circuit")
@@ -234,7 +281,7 @@ def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Pat
         "frame_collection_complete": True, "frame_exit_code": 0, "observer_off_control_complete": False,
         "timing_eligible": True, "failure": "", "source_unchanged": True,
         "dwell_after_frame_seal_s": 2.5,
-        "source_sha256": sources,
+        "source_sha256": sources, "source_scope": "application-visible-tree-v1",
         "scenario": {
             "aircraft_id": "jensen-das-ugly-stik-60", "field_id": "default", "seed": 20261021,
             "start_choice": "airborne", "trim_speed_m_s": 15.0, "trim_throttle": 0.28,
@@ -264,13 +311,21 @@ def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Pat
                    "min_altitude_m": 25.0, "min_ground_clearance_m": 24.0, "max_abs_radius_error_m": 0.5},
         "checkpoints": [],
     }
+    set_render_observation(receipt, sealed)
+    set_cloud_observation(receipt, cloud_snapshot())
+    bounds = {"requested": "", "effective": "off", "bound": "off",
+              "scope": "sky density and analytic relief fallback", "qualified": False}
+    receipt["scenario"]["cloud_density_bounds"] = {"start": copy.deepcopy(bounds), "end": copy.deepcopy(bounds),
+                                                   "stable": True}
+    save_benchmark_report(report_path, receipt, sealed)
     health_path = report_path.with_name("health-" + report_path.name)
     health_path.write_text(json.dumps(receipt, allow_nan=False), encoding="utf-8")
     check = {
         "format": "openrc-godot-check v1", "capture_id": capture_id, "complete": True,
         "ok": True, "reason": "passed", "exit_code": 0, "process_exit": 0,
         "log_sha256": hashlib.sha256(report_path.with_suffix(".log").read_bytes()).hexdigest(),
-        "command": ["/Applications/Godot", "--path", "/frozen/app", "--script",
+        "command": ["/Applications/Godot", "--path", "/frozen/app", "--rendering-method", "gl_compatibility",
+                    "--rendering-driver", "opengl3", "--script",
                     "/frozen/research/performance/sustained_flight.gd", "--",
                     "--warmup=0", "--t=0.0375", "--view=pilot", "--scene_detail=medium",
                     "--frametimes=/evidence/" + report_path.name,
@@ -1230,7 +1285,7 @@ class BenchmarkHealthTests(unittest.TestCase):
                     elif difference == "health_directory":
                         check["command"][-1] = "--sustained-receipt=/other/health-run-1.json"
                     elif difference == "script":
-                        check["command"][4] = "/different.gd"
+                        check["command"][check["command"].index("--script") + 1] = "/different.gd"
                     check_path.write_text(json.dumps(check), encoding="utf-8")
                 result = summarize_run(path, SHORT_POLICY)
                 self.assertTrue(result["benchmark_health"]["eligible"])
@@ -1240,7 +1295,7 @@ class BenchmarkHealthTests(unittest.TestCase):
 
     def test_checked_launch_rejects_engine_time_control_but_not_user_text(self):
         for option in ("--fixed-fps", "--fixed-fps=60", "--write-movie", "--time-scale=2",
-                       "--frame-delay", "--disable-render-loop"):
+                       "--frame-delay", "--disable-render-loop", "--gpu-profile", "--gpu-profile=1"):
             with self.subTest(option=option), tempfile.TemporaryDirectory() as temp_dir:
                 path, _, _ = write_benchmark_run(Path(temp_dir))
                 check_path = path.with_name("checked-" + path.name)
@@ -1260,6 +1315,165 @@ class BenchmarkHealthTests(unittest.TestCase):
             receipt["scenario"]["arguments"].extend(["--note=--fixed-fps", "--fixed-fps=60"])
             health_path.write_text(json.dumps(receipt), encoding="utf-8")
             self.assertTrue(summarize_run(path, SHORT_POLICY)["benchmark_checked_runner"]["eligible"])
+
+    def test_checked_renderer_must_be_explicit_and_match_actual(self):
+        cases = (["--rendering-method", "mobile"], ["--rendering-driver", "metal"],
+                 ["--rendering-method=gl_compatibility", "--rendering-driver=opengl3",
+                  "--rendering-method=mobile"], ["--rendering-driver=opengl3"], [])
+        for flags in cases:
+            with self.subTest(flags=flags), tempfile.TemporaryDirectory() as temp_dir:
+                path, _, _ = write_benchmark_run(Path(temp_dir))
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                start = check["command"].index("--rendering-method")
+                del check["command"][start:start + 4]
+                check["command"][start:start] = flags
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _, _ = write_benchmark_run(Path(temp_dir))
+            check_path = path.with_name("checked-" + path.name)
+            check = json.loads(check_path.read_text())
+            start = check["command"].index("--rendering-method")
+            check["command"][start:start + 4] = ["--rendering-method=gl_compatibility", "--rendering-driver=opengl3"]
+            check_path.write_text(json.dumps(check), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_effective_render_and_sample_continuity_are_required(self):
+        mutations = {
+            "missing": lambda s: s.pop("effective_render"),
+            "unobserved transition": lambda s: s["effective_render"].update(stable=False),
+            "missing frame observation": lambda s: s["effective_render"].update(samples=1),
+            "changed scale": lambda s: s["effective_render"]["end"].update(scaling_3d_scale=0.5),
+            "unexpected msaa": lambda s: [s["effective_render"][k].update(msaa_3d=0) for k in ("start", "end")],
+            "boolean policy mode": lambda s: [s["effective_render"][k]["reconstruction"].update(
+                                           scaling_3d_mode=False) for k in ("start", "end")],
+            "fallback": lambda s: [s["effective_render"][k]["reconstruction"].update(fallback=True,
+                                   fallback_reason="metalfx_unavailable") for k in ("start", "end")],
+            "unknown execution": lambda s: [s["effective_render"][k]["reconstruction"].update(
+                                            effective="unknown", effective_provider="unknown",
+                                            execution_status="unverified_trial") for k in ("start", "end")],
+            "wrong backend": lambda s: [s["effective_render"][k].update(backend="mobile") for k in ("start", "end")],
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt["scenario"])
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                result = summarize_run(path, SHORT_POLICY)
+                self.assertFalse(result["benchmark_health"]["eligible"])
+                self.assertFalse(result["performance_pass"])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            receipt["scenario"]["render_override"] = {"reconstruction": "metalfx_spatial_quality"}
+            for endpoint in ("start", "end"):
+                receipt["scenario"]["effective_render"][endpoint]["reconstruction"].update(
+                    requested="metalfx_spatial_quality", requested_provider="metalfx_spatial",
+                    selected="native", provider="native", effective="native", effective_provider="native",
+                    fallback=True, fallback_reason="metalfx_unavailable")
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            checked_path = path.with_name("checked-" + path.name)
+            checked = json.loads(checked_path.read_text())
+            checked["command"].append("--sustained-reconstruction=metalfx_spatial_quality")
+            checked_path.write_text(json.dumps(checked), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            report = json.loads(path.read_text())
+            report["render_settings"]["scaling_3d_scale"] = 0.5
+            save_benchmark_report(path, receipt, report)
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            report = json.loads(path.read_text())
+            # The guard polls every 60 frames; a backend failure can be reported
+            # before that guard has replaced the selected viewport policy.
+            report["render_settings"]["reconstruction"]["backend"] = {"backend_failed": True}
+            save_benchmark_report(path, receipt, report)
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+    def test_cloud_modes_require_explicit_ready_and_stable_consumers(self):
+        for snapshot in (cloud_snapshot(), cloud_snapshot("1"), cloud_snapshot("1", ground="0"),
+                         cloud_snapshot("0", sky="1"), cloud_snapshot("", ground="1", sky="0")):
+            with self.subTest(snapshot=snapshot), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                set_cloud_observation(receipt, snapshot)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+        cases = {
+            "unset modes": lambda c: c["environment"].update(global_=""),
+            "unsupported setting": lambda c: c["environment"].update(global_="garbage"),
+            "pending bake": lambda c: c["seeds"][0].update(status="pending"),
+            "failed bake": lambda c: c["seeds"][0].update(status="failed", failure="readback"),
+            "unexpected analytic fallback": lambda c: c["consumers"]["sky"][0].update(enabled=False),
+            "inconsistent consumer": lambda c: c["consumers"]["ground"][0].update(status="inconsistent"),
+            "wrong consumer seed": lambda c: c["consumers"]["sky"][0].update(seed=43),
+            "unused enabled path": lambda c: c["consumers"].update(sky=[]),
+        }
+        for name, mutate in cases.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                snapshot = cloud_snapshot("1")
+                mutate(snapshot)
+                if "global_" in snapshot["environment"]:
+                    snapshot["environment"]["global"] = snapshot["environment"].pop("global_")
+                set_cloud_observation(receipt, snapshot)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            receipt["scenario"]["cloud_cache"]["stable"] = False
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_reconstruction_mode_uses_the_provider_enum_from_the_engine(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            report = json.loads(path.read_text())
+            receipt["scenario"]["render_override"] = {"reconstruction": "fsr2_quality"}
+            policy = {"requested": "fsr2_quality", "requested_provider": "fsr2", "selected": "fsr2_quality",
+                      "effective": "fsr2_quality", "provider": "fsr2", "effective_provider": "fsr2",
+                      "execution_status": "policy_selected", "provider_available": True, "fallback": False,
+                      "fallback_reason": "", "temporal": True, "scaling_3d_mode": 7, "scale": 2 / 3, "msaa_3d": 0}
+            for endpoint in ("start", "end"):
+                receipt["scenario"]["effective_render"][endpoint].update(
+                    scaling_3d_mode=7, scaling_3d_mode_constant="SCALING_3D_MODE_FSR2", provider_mode_id=7,
+                    scaling_3d_scale=2 / 3, msaa_3d=0, reconstruction=copy.deepcopy(policy))
+            report["render_settings"].update(scaling_3d_mode=7, scaling_3d_scale=2 / 3, msaa_3d=0,
+                                             reconstruction=copy.deepcopy(policy))
+            save_benchmark_report(path, receipt, report)
+            checked_path = path.with_name("checked-" + path.name)
+            checked = json.loads(checked_path.read_text())
+            checked["command"].append("--sustained-reconstruction=fsr2_quality")
+            checked_path.write_text(json.dumps(checked), encoding="utf-8")
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            for endpoint in ("start", "end"):
+                receipt["scenario"]["effective_render"][endpoint]["provider_mode_id"] = 8
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            for endpoint in ("start", "end"):
+                receipt["scenario"]["effective_render"][endpoint].update(
+                    scaling_3d_mode_constant="SCALING_3D_MODE_FSR", provider_mode_id=7)
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_cloud_density_selector_and_actual_shader_are_identity(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            bounds = receipt["scenario"]["cloud_density_bounds"]
+            for endpoint in ("start", "end"):
+                bounds[endpoint].update(requested="three", effective="three", bound="three")
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            bounds["end"]["bound"] = "off"
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
 
     def test_checked_launch_rejects_headless_engine_options(self):
         for flags in (["--headless"], ["--headless=1"], ["--display-driver", "headless"],
@@ -1317,6 +1531,13 @@ class BenchmarkHealthTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as temp_dir:
                 path, health_path, receipt = write_benchmark_run(Path(temp_dir))
                 receipt["scenario"]["render_override"] = recorded
+                report = json.loads(path.read_text())
+                if isinstance(recorded, dict):
+                    scale = recorded.get("scaling_3d_scale", 1.0)
+                    msaa = recorded.get("msaa_3d", 2)
+                    if type(scale) in (int, float) and type(msaa) is int:
+                        set_render_observation(receipt, report, scale=scale, msaa=msaa)
+                        save_benchmark_report(path, receipt, report)
                 health_path.write_text(json.dumps(receipt), encoding="utf-8")
                 check_path = path.with_name("checked-" + path.name)
                 check = json.loads(check_path.read_text())
@@ -1330,8 +1551,8 @@ class BenchmarkHealthTests(unittest.TestCase):
         self.assertEqual(result["benchmark_health"]["scenario"]["render_override"],
                          {"scaling_3d_scale": 0.75, "msaa_3d": 1})
         self.assertTrue(run(["--sustained-msaa=0"], {"msaa_3d": 0})["performance_pass"])
-        self.assertTrue(run(["--sustained-reconstruction=metalfx_spatial_quality"],
-                            {"reconstruction": "metalfx_spatial_quality"})["performance_pass"])
+        self.assertTrue(run(["--sustained-reconstruction=native"],
+                            {"reconstruction": "native"})["performance_pass"])
         self.assertTrue(run([], None)["performance_pass"])
         mismatches = {
             "unrecorded override": (both, None),
@@ -1369,7 +1590,12 @@ class BenchmarkHealthTests(unittest.TestCase):
 
     def test_source_map_is_required_and_bound_to_report_and_case(self):
         mutations = {
+            "missing source scope": lambda r: r.pop("source_scope"),
+            "incomplete source scope": lambda r: r.update(source_scope="named-inputs"),
             "missing adapter": lambda r: r["source_sha256"].pop("research/performance/sustained_flight.gd"),
+            "missing cloud implementation": lambda r: r["source_sha256"].pop("res://render/cloud_shadow_map.gd"),
+            "missing cloud include": lambda r: r["source_sha256"].pop("res://render/cloud_field.gdshaderinc"),
+            "missing render project": lambda r: r["source_sha256"].pop("res://project.godot"),
             "missing pilot airdata": lambda r: r["source_sha256"].pop("res://ai/companions/observation_airdata.gd"),
             "missing input laws": lambda r: r["source_sha256"].pop("res://input/commands.gd"),
             "missing aircraft data": lambda r: r["source_sha256"].pop("res://data/aircraft/jensen_ugly_stik_60.json"),
@@ -1484,6 +1710,9 @@ class BenchmarkHealthTests(unittest.TestCase):
                         receipt["scenario"]["trim_throttle"] = 0.3
                     elif difference == "render_override":
                         receipt["scenario"]["render_override"] = {"scaling_3d_scale": 0.5}
+                        report = json.loads(second.read_text())
+                        set_render_observation(receipt, report, scale=0.5)
+                        save_benchmark_report(second, receipt, report)
                         checked_path = second.with_name("checked-" + second.name)
                         checked = json.loads(checked_path.read_text())
                         checked["command"].append("--sustained-render-scale=0.5")

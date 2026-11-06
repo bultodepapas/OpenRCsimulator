@@ -565,3 +565,72 @@ Tests: `test_cloud_shadow_map` (21 checks), `test_atmosphere`,
 `test_sky_render`, `test_world_sky`, `test_lake_world`,
 `test_field_staged_build`, `test_world_moon_flow` and
 `test_time_of_day_render` pass with no engine errors.
+
+## Optimization help follow-up (2026-11-05)
+
+**Scope.** Reviewed both sections of the root `optimization help.md` against
+`a6ccffaa7a72d14d296e27a08a20cde2285893d2`. Implemented the reproducible integrity
+and lifecycle repairs plus the first bounded cloud-density experiment. The
+[master plan](../../../plans/apple-silicon-performance.md#next-campaign-dt-mac-00-r4)
+records the remaining experiments and promotion gates. The later section of the
+input guide supersedes its earlier flattened-cloud diagnosis; its numerical
+operation savings are not measured frame-rate gains.
+
+**Delivered.** Pinned-editor UID sidecars; analytic rendering until a validated
+HDR tile is published; two bounded bake attempts; independent ground/sky cache
+selection; weak consumer lifetime and material-copy publication; explicit
+readiness/failure diagnostics. Renderer recovery now owns MetalFX confirmations
+by activation token and describes its process-responsiveness limit accurately.
+Lake ground cuts are prepared before publication; a failed cut leaves meshes and
+materials unchanged and rejects both fixed-wing and ground-vehicle startup.
+Unindexed triangles are handled without script errors; contained interior holes
+remain an explicit refusal, not newly supported geometry.
+
+The sustained fixture binds the visible application resource tree, requested and
+observed renderer/provider/scale/MSAA, cache state and actual bound sky variant.
+The reducer rejects mismatches, fallback/backend failure, changing or unready
+consumers and `--gpu-profile` runs. Existing MetalFX's unknown execution cannot
+pass an effective-provider claim. Older receipts lack this new evidence; they
+are not retrospectively declared incorrect. Commands and observation limits
+remain in the [performance guide](../../../../research/performance/README.md).
+
+**Opt-in candidate.** `OPENRC_CLOUD_DENSITY_BOUNDS=three|two_three` selects a
+compile-time sky variant. It exits only when remaining octave contributions
+cannot change zero/full density, with the guide's empirical `1e-5` guard; all
+ambiguous samples retain the original accumulation. Default `off` preserves the
+reference. Layered clouds use it on ordinary analytic decks, while stretched
+decks remain unchanged. A cache-ready base seed does not imply layered relief
+cache hits: mismatched layer seeds remain analytic.
+
+**Verification.** Windows native, RTX 3090, NVIDIA 617.42,
+`4.8.beta2.official.cafc17a19`. Compact receipts, hashes and limits are in
+[optimization-help-checks.json](optimization-help-checks.json); images and raw
+logs remain in ignored `tmp/optimization-help-*`.
+
+| Check | Result and boundary |
+| --- | --- |
+| Focused GDScript | 665 assertions passed across variants, cloud lifecycle, renderer guard, atmosphere/sky/time, staged field construction, lake and real Main water checkpoint suites |
+| Offline regressions | 71 benchmark-reducer and 10 release-preflight tests passed |
+| UID/import | Pinned editor import passed; sidecar gate passed against a temporary candidate index without modifying the user's staging area |
+| GPU numeric matrix | Six runs: cache / three / two-three on Compatibility/OpenGL and Mobile/Vulkan; canvas, spatial and actual sky consumers passed at 512² |
+| Cache accuracy | Original C2 maximum/mean limits 0.05/0.003 and C5b 0.025/0.0015 retained; blank-texture controls detected in every consumer |
+| Bounded density | Eight ordinary cases per variant/renderer; amplified difference signal zero; deliberate mutation detected. This is finite sampled agreement, not a universal floating-point proof |
+| Production captures | Final classic-noon and layered-broken 18:00 pairs at actual 1920×1080, Mobile/Vulkan: `off` versus `two_three` byte-identical. Stills do not qualify motion/readability |
+| Fixture execution | Post-import 240-tick headless diagnostic completed; 4,559 visible input hashes unchanged, renderer/cache validators passed and bound variant `three` observed. Timing report deliberately incomplete/ineligible |
+| Product regression | Debug-bridge smoke passed: 52 steps, Home/flight/Workshop routes, seeded UI walk and Fly/Home soak; no growing counters or leaked objects at exit |
+
+The review caught and repaired two intermediate regressions: disabled cache
+registration retained WeakRefs during cancelled field construction, and copies
+made before publication could stay analytic. The extended GPU probe also closes
+the analytic-versus-itself false pass with blank-tile controls. Mobile's encoded
+R/G threshold reached 0.57% above 4/255 in the full-tile C5b case even though its
+linear maximum was 0.02034. Spatial/sky acceptance now tests the original linear
+maximum inside the shader; encoded differences remain reported, and the canvas
+mean gate is unchanged. No density tolerance was increased.
+
+**Open.** No M1 key was available at the documented Windows/WSL locations; no
+native Metal, new FPS, sustained pacing, memory trend, moving-aircraft or package
+claim is made. The complete app/visual CI suites were not run. Half-resolution
+sky, lattice atlas, aircraft crop, native Metal rate maps and the other
+measurement-gated proposals remain explicit next steps. No shader experiment,
+renderer preset, MSAA tradeoff or physics rewrite was promoted by these checks.

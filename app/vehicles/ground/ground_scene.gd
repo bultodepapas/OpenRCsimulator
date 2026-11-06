@@ -173,6 +173,12 @@ func _ready() -> void:
 	if not use_practice_fixture and enable_course_visual:
 		Atmosphere.configure_appearance(sky_config)
 		_environment = World.build(self, field, _build_airfield, {}, _lighting, night_options).environment
+		if not startup_error.is_empty():
+			session.free()
+			session = null
+			set_physics_process(false)
+			set_process(false)
+			return
 	else:
 		ShaderClock.register()
 		Atmosphere.state = {}
@@ -297,7 +303,12 @@ func _build_airfield() -> void:
 			Vector2(float(access.north_min_m) - float(track.shoulder_m), float(access.east_m) + half)])
 		exclusions.append(GrassMask._record("rc-access", "dirt_track", points))
 		camera_rig.track_center = Vector3(track.center_east_m, 0.0, -float(track.center_north_m))
-	var field_node := FieldBuilder.build(field, _lighting, exclusions)
+	var field_node := _build_airfield_field(exclusions)
+	var lake_error := str(field_node.get_meta("lake_error", ""))
+	if not lake_error.is_empty():
+		startup_error = "Lake configuration refused: " + lake_error
+		field_node.free()
+		return
 	add_child(field_node)
 	var ground_material := RcGroundMaterial.configure_field(field_node)
 	if _course.has("track"):
@@ -308,6 +319,11 @@ func _build_airfield() -> void:
 			# Shared field lighting updates must reach the shoulder material too.
 			var materials: Array = field_node.get_meta("lighting_materials")
 			materials.append(surface.material_override)
+
+
+func _build_airfield_field(exclusions: Array) -> Node3D:
+	return FieldBuilder.build(field, _lighting, exclusions)
+
 
 func _prepare_airfield() -> bool:
 	var loaded := FieldLoader.load_from(field_path)
