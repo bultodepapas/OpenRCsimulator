@@ -162,9 +162,6 @@ vec3 sun_aureole(vec3 d, vec3 dir) {
 // the photosphere's limb darkening, divided by its disc mean (1 − u/3 − v/2) so the calibrated brightness stays.
 float sun_disc_profile(vec3 d, vec3 dir) {
 	float c = dot(d, dir);
-	if (c <= 0.0) {
-		return 0.0;
-	}
 	vec3 o = d - dir * c;
 	vec3 up_sky = vec3(0.0, 1.0, 0.0) - dir * dir.y;
 	float up_len = length(up_sky);
@@ -172,14 +169,10 @@ float sun_disc_profile(vec3 d, vec3 dir) {
 		up_sky /= up_len;
 		o += up_sky * (dot(o, up_sky) * (1.0 / max(sun_squash, 0.1) - 1.0));
 	}
-	float projected_radius = length(o);
-	float outer_radius = 1.1 * sun_radius;
-	// The original edge is zero when asin(clamp(projected_radius, 0, 1)) reaches
-	// outer_radius. A wide margin skips only points well outside that support.
-	if (outer_radius > 0.0 && outer_radius < 1.0 && projected_radius > 2.0 * outer_radius) {
+	float ang = asin(clamp(length(o), 0.0, 1.0));
+	if (c <= 0.0) {
 		return 0.0;
 	}
-	float ang = asin(clamp(projected_radius, 0.0, 1.0));
 	float rr = min(ang / max(sun_radius, 1e-6), 1.0);
 	float mu = sqrt(max(1.0 - rr * rr, 0.0));
 	float law = (1.0 - SUN_LIMB_U * (1.0 - mu) - SUN_LIMB_V * (1.0 - mu * mu)) / (1.0 - SUN_LIMB_U / 3.0 - SUN_LIMB_V / 2.0);
