@@ -1,0 +1,266 @@
+{
+  "step": "AE-09d-R1",
+  "audit": "A14 F10",
+  "date": "2026-11-06",
+  "baseline_commit": "d0b672b09663226ff8b8ac4f43eae8643c77a8c4",
+  "shared_tree_at_source_comparison": "f4c81eca429923a36e88da5993fe444d1583c7e1",
+  "tested_snapshot": "isolated baseline plus tested-source.patch; copied import cache subsequently reimported",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "platform": "Windows",
+    "headless": true,
+    "audio": "Dummy",
+    "regression_logical_viewport": [
+      1920,
+      1080
+    ]
+  },
+  "source_files": [
+    {
+      "path": "app/ui/workshop.gd",
+      "sha256": "e9281bc50569da5e8a90b917f4ff44eb9354753a925737311bc6382a279069de",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_ui.gd",
+      "sha256": "f5b8ab3e9f4c075fa29017f47fa7b917fda0b89e1ac47f1ed69f4f4d3078f537",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_presets.gd",
+      "sha256": "af1dc0fbb322a0a04dd732f1ec47b19d5758288a8880e5fba027c95fa1af467b",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_presets.gd.uid",
+      "sha256": "0139bcaed8f58395fb47fca4a99573c6243bf71b2435843fb199725fc10678e4",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "ab8cfffb6c0a5a3637f12b46b897d83a4721c9192704335cfcf84a444701f854",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/zh_Hans.po",
+      "sha256": "19c7f57db10fabae234629478c39558e45a34c5b0d6a6ca8a8fe224310d4d226",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/pt_BR.po",
+      "sha256": "09b5e9cb8d31def25f336c11ddcfda530f116ae6a72f1b7e23c3a62f5003c6fa",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/de.po",
+      "sha256": "18088b2b7e8eb130060dfd23df82ca4f308c81ddef8d9d90566362be8dc42e7a",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/fr.po",
+      "sha256": "75c1e8078bb7533139df72976a45256984774aa88e1c2f8f632935f490478a01",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/it.po",
+      "sha256": "42cb0d3ed6395b8967bb73afad9a7f2542711e2a6152d9cafc7c2b14652a6c94",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/ru.po",
+      "sha256": "dbf6fc34e5438b17ab27aa287a1409b83ddb795ece127373e2621c441dbee630",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/i18n/ja.po",
+      "sha256": "a32fbeb42e8c33aca2267ead2a66c64989dff68300124f8f2c1efd260bb489cb",
+      "exact_shared_tree_match": true
+    }
+  ],
+  "final_checks": [
+    {
+      "label": "test_ui_language",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 97,
+      "failed_assertions": 7,
+      "report": "checks/test_ui_language/report.json",
+      "log_sha256": "d97371ce0c1e4da71b8b3cffa242cf0c4c8455a0ff814a78b474f6dffa22cb82"
+    },
+    {
+      "label": "test_workshop_customization",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 54,
+      "failed_assertions": 0,
+      "report": "checks/test_workshop_customization/report.json",
+      "log_sha256": "f4a556669019e6473e158cb49cb67c6abc0dbbc8a06b1e94a335be5cc097f398"
+    },
+    {
+      "label": "test_workshop_mass_recipe",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 39,
+      "failed_assertions": 0,
+      "report": "checks/test_workshop_mass_recipe/report.json",
+      "log_sha256": "ef617271ff01a82a6a72f012d8baa85c2a5f80eafcb287f1017446c45eb5f78b"
+    },
+    {
+      "label": "test_workshop_presets",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 88,
+      "failed_assertions": 0,
+      "report": "checks/test_workshop_presets/report.json",
+      "log_sha256": "1a5e28c7d9036799453958bbea9c46b5747ddf3304871d1fca55ec04f4dab6b8"
+    },
+    {
+      "label": "test_workshop_recovery_ui",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 75,
+      "failed_assertions": 0,
+      "report": "checks/test_workshop_recovery_ui/report.json",
+      "log_sha256": "785d102391135c92a2f2aa9cb3430aa0fc7c27d6cdf6d59f3214321d13b22852"
+    },
+    {
+      "label": "test_workshop_ui",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 151,
+      "failed_assertions": 0,
+      "report": "checks/test_workshop_ui/report.json",
+      "log_sha256": "ce60b65fe62dcb7b4e59af44d032e02415137a0b6682d7e25fa2bf87210cadd0"
+    }
+  ],
+  "final_import": [
+    {
+      "label": "isolated-import",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 0,
+      "failed_assertions": 0,
+      "report": "checks/isolated-import/report.json",
+      "log_sha256": "f38d14bc1f9bd3277514e9cf1dabdd9b3d285a01cef96385f9b4c1d48b90eb71"
+    }
+  ],
+  "prior_failures": [
+    {
+      "label": "presets",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "passed_assertions": 38,
+      "failed_assertions": 46,
+      "report": "prior-failures/baseline/presets/report.json",
+      "log_sha256": "909becfb3487ae990427fb19cc4c957dbed480aaa0f997789aa754dbd97a0ab2"
+    },
+    {
+      "label": "isolated-import",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 9,
+        "warning": 0
+      },
+      "passed_assertions": 0,
+      "failed_assertions": 0,
+      "report": "prior-failures/initial-import/isolated-import/report.json",
+      "log_sha256": "0b0bd2f48221d566bb7ee739fbc280ca05801a871ac68fa3c3a13316ae0cd892"
+    },
+    {
+      "label": "isolated-import",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "passed_assertions": 0,
+      "failed_assertions": 0,
+      "report": "prior-failures/import-retry/isolated-import-3jv122b5/report.json",
+      "log_sha256": "5138b8ba2c261974c2e63b6bab8ffadf4fc04a1d36084e657e4e63a62d97959c"
+    },
+    {
+      "label": "isolated-import",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 54,
+        "warning": 0
+      },
+      "passed_assertions": 0,
+      "failed_assertions": 0,
+      "report": "prior-failures/import-retry/isolated-import/report.json",
+      "log_sha256": "03aafc795a65913ffadb726a2c0e72358a9028c592ea001f3723f6cce52acfd8"
+    }
+  ],
+  "assertions": {
+    "new_regression_passed": 88,
+    "existing_workshop_passed": 319,
+    "language_passed": 97,
+    "language_failed": 7
+  },
+  "language_failure": {
+    "preexisting_at": "d0b672b09663226ff8b8ac4f43eae8643c77a8c4",
+    "source_messages": [
+      "Liquid responds to flight loads. Quantity comes from the fuel tanks.",
+      "TURBINE",
+      "NITRO / GLOW",
+      "GASOLINE",
+      "No usable fuel · land now",
+      "Fuel telemetry unavailable"
+    ],
+    "missing_in": [
+      "zh_Hans",
+      "pt_BR",
+      "de",
+      "fr",
+      "it",
+      "ru",
+      "ja"
+    ],
+    "new_preset_messages_present_in_all_eight_catalogs": true
+  },
+  "scope_limits": [
+    "Initial baseline fixture contained 84 checks; final fixture adds four real-keyboard checks and bounded cleanup.",
+    "Final headless checks do not establish rendered layout, hardware input or full required CI qualification.",
+    "No physics laws, aircraft data, goldens or physical validation changed.",
+    "Language catalog parity remains failing for the identified pre-existing fuel strings.",
+    "Shared application edits outside the listed source snapshot were not qualified by these runs.",
+    "After source comparison, parallel work changed these shared catalogs; their final language gate is not represented by this frozen run: app/i18n/zh_Hans.po, app/i18n/pt_BR.po, app/i18n/de.po, app/i18n/fr.po, app/i18n/it.po, app/i18n/ru.po, app/i18n/ja.po"
+  ],
+  "source_review": "Independent read-only review found no remaining must-fix preset defect."
+}

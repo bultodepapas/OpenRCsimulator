@@ -8569,6 +8569,24 @@ msgstr "降低油门以解锁。"
 msgid "Flight model under development."
 msgstr "飞行模型仍在开发中。"
 
+msgid "Liquid responds to flight loads. Quantity comes from the fuel tanks."
+msgstr "液体会随飞行载荷变化。油量取自燃油箱。"
+
+msgid "TURBINE"
+msgstr "涡轮"
+
+msgid "NITRO / GLOW"
+msgstr "硝基 / GLOW"
+
+msgid "GASOLINE"
+msgstr "汽油"
+
+msgid "No usable fuel · land now"
+msgstr "无可用燃油 · 立即降落"
+
+msgid "Fuel telemetry unavailable"
+msgstr "燃油遥测不可用"
+
 msgid "Apply or cancel pending fields before applying a preset."
 msgstr "应用预设前，请先应用或取消尚未完成的字段编辑。"
 

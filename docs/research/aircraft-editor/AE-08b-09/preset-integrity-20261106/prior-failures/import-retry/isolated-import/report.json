@@ -1,0 +1,236 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c95ae0f6-5e0c-42f0-a4f2-0b03c22cde7b",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:52:16.731659+00:00",
+  "label": "isolated-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-presets\\import-retry\\isolated-import-8qjy8l1v\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-presets\\import-retry\\isolated-import-8qjy8l1v\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 3221225477,
+  "complete": true,
+  "counts": {
+    "error": 54,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Parameter \"mem\" is null.",
+      "context": [
+        "   at: alloc_static (core/os/memory.cpp:104)",
+        "================================================================"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "CrashHandlerException: Program crashed with signal 11"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 12,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "Engine version: Godot Engine v4.8.beta2.official (cafc17a192acf67903910a68aeb3c076c0907a4b)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 15,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "Dumping the backtrace. Please include this when reporting the bug on: https://github.com/godotengine/godot/issues"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 18,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "Load address: 7ff5621b0000"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 22,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 24,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[1] 7ff6a60c0421 (main+7ff6a60c0421) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 27,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[2] 7ffc784e1b72 (main+7ffc784e1b72) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 30,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[3] 7ffc7852640e (main+7ffc7852640e) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 33,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[4] 7ffc783d2326 (main+7ffc783d2326) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 36,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[5] 7ffc78525d4d (main+7ffc78525d4d) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 39,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[6] 7ff6a5af4e95 (main+7ff6a5af4e95) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 42,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[7] 7ff6a5d9c0b8 (main+7ff6a5d9c0b8) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 45,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[8] 7ff6a5e22803 (main+7ff6a5e22803) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 48,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[9] 7ff6a5d89869 (main+7ff6a5d89869) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 51,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[10] 7ff6a5d89a74 (main+7ff6a5d89a74) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 54,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[11] 7ff6a459b93a (main+7ff6a459b93a) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 57,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[12] 7ff6a2228d1b (main+7ff6a2228d1b) - no debug info in PE/COFF executable"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 60,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)",
+        "[13] 7ff6a2224b14 (main+7ff6a2224b14) - no debug info in PE/COFF executable"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 3.687,
+  "log_bytes": 9067,
+  "log_sha256": "03aafc795a65913ffadb726a2c0e72358a9028c592ea001f3723f6cce52acfd8"
+}

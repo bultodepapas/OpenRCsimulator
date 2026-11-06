@@ -77,7 +77,7 @@ limits; missing/nonfinite readings do not invent cues. Existing urgent source wa
 | HUD-07 | O4 Wind | arrow angle for view headings; calm hides the arrow / done |
 | HUD-08 | Height above ground and load factor | from existing public state; level n = 1, 60° turn n = 2, terrain AGL / done, no seam needed |
 | HUD-09 | O3 Warnings | one fixture per code, order, no STALL without a stall angle / done |
-| HUD-09-R1 | Glass alert rail, priority/noise controls, accepted fuel-empty warning and optional training cues | Focused checks and native 1080p review in the [HUD evidence](../research/flight-overlays/HUD-01-10/README.md#glass-flight-alerts-2026-11-06-hud-09-r1) |
+| HUD-09-R1 | Glass alert rail, priority/noise controls, accepted fuel-empty warning and optional training cues | [356 focused checks, language checks and native 1080p/1440p review](../research/flight-overlays/HUD-01-10/README.md#glass-flight-alerts-2026-11-06-hud-09-r1) / implemented |
 | HUD-10 | O5 Telemetry | live flight scene / done |
 | HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p and 1080p / done |
 | HUD-11-R1 | Visual review repairs: "-0°", wind jitter, warning wrap, dialog preview, hint and latency-marker placement | [review](../research/flight-overlays/HUD-01-10/README.md#visual-review-and-repairs-2026-10-13-hud-11-r1) / done |
@@ -184,17 +184,23 @@ unknown/mixed families retain a generic label. Low fuel uses the accepted warnin
 fuel has a separate message even when unusable fuel remains onboard. Missing/invalid readings remain explicit.
 Compact mode keeps a smaller tank. The existing frame, drag/close controls and appearance settings are reused.
 
-The fuel shader is an explicit exception to the original static instrument graphics. HUD-13-R14-R1 uses
+The fuel shader is an explicit exception to the original static instrument graphics. HUD-13-R14-R2 uses
 the body right/down projection of apparent gravity from accepted non-gravitational forces: negative-g inverted
 flight can move fuel to the roof, knife-edge side loads to a wall, and a positive-g roll can retain it at the
 bottom. Older snapshots without lateral force fall back to bank angle. An angular spring unwraps the ±180°
-boundary; near-zero projected g retains the last direction. Pitch, roll and load changes excite bounded waves.
-The full-circle surface preserves rectangular fill area, including side-on and inverted views. Translucent
+boundary; near-zero projected g retains the last direction. Spring frequency and bubble rise speed scale with
+the square root of bounded projected g. Pitch, roll and load changes excite three damped surface modes and
+entrain a separately decaying air effect: broken surface foam and at most 16 round bubbles rising toward the
+free surface. Steady loads let both effects clear; a steady high-g turn does not continuously create foam.
+The full-circle surface preserves rectangular fill area at rest, including side-on and inverted views. Translucent
 tinted liquid reveals the tank's internal ribs; the numeric quantity remains authoritative. This is a 2D
 presentation approximation, not physical tank slosh, pickup or starvation prediction. It omits tank-specific
 geometry and longitudinal/angular acceleration effects. Accepted quantity and physics remain unchanged. Inputs arrive at 10 Hz;
 the existing simulation shader clock animates between samples and freezes on pause. No widget frame callback,
 screen texture, wall clock or hidden sampling is added. Reset, rewind and reopening discard old motion.
+Empty, full and unavailable tanks suppress aeration. Value noise and the foam approach reuse PWira's
+MIT-licensed [2D Liquid Wave](https://godotshaders.com/shader/2d-liquid-wave/); the
+[upstream notice](../../app/render/overlays/FUEL_LIQUID_LICENSE.txt) ships beside the shader.
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
 

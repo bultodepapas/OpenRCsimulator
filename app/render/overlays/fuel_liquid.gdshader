@@ -79,7 +79,8 @@ void fragment() {
 	vec2 down = vec2(sin(angle), cos(angle));
 	vec2 tangent = vec2(down.y, -down.x);
 	float energy = wave_energy * exp(-1.8 * dt);
-	float aeration = foam_energy * exp(-0.65 * dt);
+	// Perceptual gain keeps small, short-lived air pockets readable at HUD size.
+	float aeration = sqrt(clamp(foam_energy * exp(-0.65 * dt), 0.0, 1.0));
 	float clearance = clamp(min(fill, 1.0 - fill) / 0.15, 0.0, 1.0);
 	float phase = wave_phase + 5.0 * rate * dt;
 	float flow = bubble_phase + rate * dt;
@@ -90,7 +91,7 @@ void fragment() {
 	float along = clamp((dot(point, tangent) - chord.x) / span, 0.0, 1.0);
 	float scale = clamp(min(rect_size.x, rect_size.y) / 100.0, 0.35, 2.5);
 	// Three zero-mean standing modes across the actual surface, including knife edge.
-	float wave = clearance * energy * scale * (7.0 * cos(along * PI) * sin(phase)
+	float wave = clearance * (energy + sqrt(energy)) * 0.5 * scale * (7.0 * cos(along * PI) * sin(phase)
 		+ 2.7 * cos(along * TAU) * sin(2.0 * phase)
 		+ 1.1 * cos(along * 3.0 * PI) * sin(3.0 * phase));
 	float depth = dot(point, down) - surface - wave;
@@ -117,7 +118,7 @@ void fragment() {
 			float froth = wet * (1.0 - smoothstep(foam_depth * 0.25, foam_depth + 0.5, depth));
 			froth *= aeration * smoothstep(0.18, 0.72, froth_noise);
 			color = mix(color, mix(liquid_color.rgb, vec3(1.0), 0.78), froth * 0.8);
-			opacity = max(opacity, froth * 0.7);
+			opacity = min(0.82, opacity + froth * 0.32);
 			// Fixed-budget bubbles rise opposite apparent gravity and vanish at the
 			// free surface. Radius is in pixels so they remain round at any aspect ratio.
 			float column = max(dot(abs(down), half_size) - surface, 1.0);
@@ -141,9 +142,9 @@ void fragment() {
 			}
 			float submerged = smoothstep(0.5, 2.0 * scale, depth) * wet * aeration * clearance;
 			color *= 1.0 - cores * submerged * 0.16;
-			color = mix(color, mix(liquid_color.rgb, vec3(1.0), 0.7), bubbles * submerged * 0.65);
+			color = mix(color, mix(liquid_color.rgb, vec3(1.0), 0.7), bubbles * submerged * 0.85);
 			color += vec3(glints * submerged * 0.45);
-			opacity = max(opacity, (bubbles * 0.62 + glints * 0.2) * submerged);
+			opacity = min(0.82, opacity + (bubbles * 0.30 + glints * 0.18) * submerged);
 		}
 	}
 	float reflection = 1.0 - smoothstep(0.0, 0.045, abs(UV.x + UV.y * 0.14 - 0.18));

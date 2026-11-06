@@ -1,0 +1,129 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "936c439a-d566-4929-80d6-26d77f865e0f",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:48:46.274964+00:00",
+  "label": "isolated-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-presets\\import\\isolated-import-_0u2d12z\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-presets\\import\\isolated-import-_0u2d12z\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 3221225477,
+  "complete": true,
+  "counts": {
+    "error": 9,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 1,
+      "message": "Error loading GDExtension configuration file: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.",
+      "context": [
+        "   at: parse_gdextension_file (core/extension/gdextension_library_loader.cpp:288)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "GDExtension dynamic library not found: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.",
+      "context": [
+        "   at: open_library (core/extension/gdextension.cpp:808)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Error loading extension: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.",
+      "context": [
+        "   at: load_extensions (core/extension/gdextension_manager.cpp:339)",
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2457,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   4% ] reimport | NotoSansCJKjp-Regular.otf",
+        "[   5% ] reimport | randommind-vistula-short.mp3"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2495,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  13% ] reimport | Fabric001_1K-JPG_NormalGL.jpg",
+        "[  14% ] reimport | Fabric001_1K-JPG_Color.jpg"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2649,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  52% ] reimport | b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png",
+        "[  52% ] reimport | stick_press.svg"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2674,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  58% ] reimport | face_right.svg",
+        "[  58% ] reimport | face_top.svg"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2914,
+      "message": "Condition \"basisu_err != basisu::basis_compressor::cECSuccess\" is true. Returning: Vector<uint8_t>()",
+      "context": [
+        "   at: basis_universal_packer (modules/basis_universal/image_compress_basisu.cpp:202)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2916,
+      "message": "Condition \"!transcoder.validate_header(src_ptr, src_size)\" is true. Returning: image",
+      "context": [
+        "   at: basis_universal_unpacker_ptr (modules/basis_universal/image_compress_basisu.cpp:379)",
+        "================================================================"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 178.828,
+  "log_bytes": 201376,
+  "log_sha256": "0b0bd2f48221d566bb7ee739fbc280ca05801a871ac68fa3c3a13316ae0cd892"
+}

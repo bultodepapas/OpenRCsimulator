@@ -433,6 +433,7 @@ func _rendered_fixture(requested_dir: String) -> void:
 		_check("tilt cannot change an endpoint fill %.0f" % fill, level.get_data() == tilted.get_data())
 	await _rendered_attitudes(tank, output)
 	await _rendered_aeration(widgets, output)
+	await _rendered_clock_continuity(tank)
 	for widget: Control in widgets:
 		widget.queue_free()
 	background.queue_free()
@@ -449,6 +450,10 @@ func _rendered_aeration(widgets: Array, output: String) -> void:
 		widget.reset_flight()
 		var t := _telemetry(80.0, poses[i][1], 0.0, poses[i][3])
 		t.specific_force_right_g = poses[i][2]
+		# Preload at half the captioned force, then reach the stated load at 80.1.
+		if i > 0:
+			t.load_factor *= 0.5
+			t.specific_force_right_g *= 0.5
 		_refresh(widget, _fuel(["glow", "gasoline", "kerosene"][i % 3], 0.5), t)
 		if i > 0:
 			# Hold direction, kick magnitude: isolate aeration from the angular spring.
@@ -472,12 +477,19 @@ func _rendered_aeration(widgets: Array, output: String) -> void:
 		var aerated: Image = await _tank_image(tank)
 		material.set_shader_parameter("foam_energy", 0.0)
 		var clear: Image = await _tank_image(tank)
-		_check("foam and bubbles are visible at attitude %d" % index, _different_pixels(aerated, clear) > 30)
+		var changed := _different_pixels(aerated, clear)
+		_check("foam and bubbles are visible at attitude %d" % index, changed > 30, "changed pixels=%d" % changed)
 		material.set_shader_parameter("foam_energy", 1.0)
 		Clock.update(80.55)
 		var advanced: Image = await _tank_image(tank)
 		var paused: Image = await _tank_image(tank)
 		_check("all aeration pixels freeze on pause %d" % index, advanced.get_data() == paused.get_data())
+		material.set_shader_parameter("foam_energy", 0.0)
+		var without_air: Image = await _tank_image(tank)
+		material.set_shader_parameter("fill", 0.0)
+		var dry: Image = await _tank_image(tank)
+		material.set_shader_parameter("fill", 0.5)
+		_check("air effects stay inside the liquid %d" % index, _dry_effect_pixels(dry, without_air, advanced) == 0)
 		Clock.update(80.4)
 	# Empty/full/unknown tanks may never acquire a decorative false fuel surface.
 	var endpoint: Control = widgets[0]
@@ -491,6 +503,38 @@ func _rendered_aeration(widgets: Array, output: String) -> void:
 		_check("endpoint %.0f suppresses foam and bubbles" % amount, clear.get_data() == foamy.get_data())
 	for caption: Label in captions: caption.queue_free()
 	await process_frame
+
+
+func _rendered_clock_continuity(tank: Control) -> void:
+	tank.reset_flight()
+	var fuel := _fuel("gasoline", 0.5)
+	_refresh(tank, fuel, _telemetry(1023.8))
+	# The preceding endpoint test overrides the uniform directly, outside the fill cache.
+	tank._liquid_material.set_shader_parameter("fill", 0.5)
+	_refresh(tank, fuel, _telemetry(1023.9, 60.0, 0.0, 1.5))
+	# Exercise all three rollover boundaries in one accepted sample interval.
+	tank._bubble_phase = 63.95
+	tank._wave_phase = TAU - 0.1
+	tank._publish_motion()
+	Clock.update(1024.05)
+	var extrapolated: Image = await _tank_image(tank)
+	_refresh(tank, fuel, _telemetry(1024.05, 60.0, 0.0, 1.5))
+	var accepted: Image = await _tank_image(tank)
+	var changed := _different_pixels(extrapolated, accepted)
+	_check("CPU and shader agree across clock and effect-phase rollover", changed < 10, "changed pixels=%d" % changed)
+
+
+func _dry_effect_pixels(dry: Image, wet: Image, aerated: Image) -> int:
+	var count := 0
+	for y in dry.get_height():
+		for x in dry.get_width():
+			var clear := dry.get_pixel(x, y)
+			var liquid := wet.get_pixel(x, y)
+			var air := aerated.get_pixel(x, y)
+			var liquid_difference := maxf(absf(clear.r - liquid.r), maxf(absf(clear.g - liquid.g), absf(clear.b - liquid.b)))
+			var air_difference := maxf(absf(air.r - liquid.r), maxf(absf(air.g - liquid.g), absf(air.b - liquid.b)))
+			if liquid_difference < 0.005 and air_difference > 0.025: count += 1
+	return count
 
 
 func _rendered_attitudes(tank: Control, output: String) -> void:

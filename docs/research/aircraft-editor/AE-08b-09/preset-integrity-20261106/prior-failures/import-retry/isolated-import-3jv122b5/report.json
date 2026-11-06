@@ -1,0 +1,60 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a89686cb-3641-4e45-91aa-95a3e44eeea5",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:53:50.597745+00:00",
+  "label": "isolated-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-presets\\import-retry\\isolated-import-3jv122b5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-presets\\import-retry\\isolated-import-3jv122b5\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2117,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[   1% ] reimport | 9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png",
+        "[   2% ] reimport | 62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 2132,
+      "message": "Condition \"f.is_null()\" is true. Continuing.",
+      "context": [
+        "   at: get_multiple_md5 (core/io/file_access.cpp:967)",
+        "[  17% ] reimport | utility_box_01_diff_1k.jpg",
+        "[  19% ] reimport | barrier-tape-on-weighted-posts_tape.png"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 47.516,
+  "log_bytes": 152325,
+  "log_sha256": "5138b8ba2c261974c2e63b6bab8ffadf4fc04a1d36084e657e4e63a62d97959c"
+}

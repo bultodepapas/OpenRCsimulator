@@ -110,6 +110,24 @@ func _test_fuel_families() -> void:
 			and is_equal_approx(manager.frames.fuel._reserve, snap.mass_sample.reserve_fraction))
 		_check("production %s presentation does not modify flight state" % entry[1],
 			session.sim.continuous == before and session.sim.state == state_before)
+		if session.liquid_fuel_is_active():
+			# Locate the real exhaustion transition, including its required source-off latch.
+			# Keep the rundown clear of terrain; accepted mass retains any unusable tank residue.
+			var fuel_index: int = session._liquid_index()
+			session.sim.state[2] = -1000.0
+			session.sim.continuous[fuel_index] = 1.0e-9
+			session.sim.continuous[fuel_index + 1] = 1.0
+			session.sim.step()
+			session.sim.set_paused(true) # Review the accepted alert without starting another audible crossing.
+			var empty := OverlayManager.snapshot(session, {}, 2.0, false, 0.0)
+			var accepted: PackedFloat64Array = session.sim.continuous.duplicate()
+			manager.refresh_numbers(empty)
+			_check("production %s usable-empty sample raises the urgent fuel alert" % entry[1],
+				empty.mass_sample.get("ok", false) and empty.mass_sample.get("fuel_usable_kg", NAN) == 0.0
+				and manager.frames.warnings.codes.has("fuel_empty"), str(empty.mass_sample))
+			_check("production %s empty alert replaces reserve without modifying tank state" % entry[1],
+				not manager.frames.warnings.codes.has("fuel_reserve_estimated")
+				and not manager.frames.warnings.codes.has("fuel_reserve") and session.sim.continuous == accepted)
 		session.free()
 	manager.queue_free()
 	await process_frame

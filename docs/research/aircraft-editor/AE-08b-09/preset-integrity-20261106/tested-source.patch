@@ -1,0 +1,1277 @@
+diff --git a/app/i18n/de.po b/app/i18n/de.po
+index ac02f6c8f..8c0a9dbd0 100644
+--- a/app/i18n/de.po
++++ b/app/i18n/de.po
+@@ -9392,3 +9392,130 @@ msgstr "RC-Strecke"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "Die Erdstrecke für RC-Autos nördlich der Piste, mit Sprüngen, Steilkurven und Barrieren. Sie ist physisch: Räder rollen über ihr Relief, und das Flugzeug kann mit ihr kollidieren. Automatisch schaltet sie bei einer dedizierten GPU und Szenendetail Hoch oder Extrem ein. Wirkt beim nächsten Flug."
++
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "GEFAHR"
++
++msgid "CAUTION"
++msgstr "VORSICHT"
++
++msgid "INFO"
++msgstr "INFO"
++
++msgid "+%d MORE ALERTS"
++msgstr "+%d WEITERE ALARME"
++
++msgid "Alerts"
++msgstr "Alarme"
++
++msgid "Flight alerts"
++msgstr "Flugalarme"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "Kritische Alarme bleiben aktiv, solange „Warnungen“ eingeschaltet ist."
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "Trainingshinweise dienen nur der Anzeige und sind keine Flugzeuggrenzwerte."
++
++msgid "Show alert details"
++msgstr "Alarmdetails anzeigen"
++
++msgid "Maximum visible alerts"
++msgstr "Maximal sichtbare Alarme"
++
++msgid "Range reminders"
++msgstr "Entfernungshinweise"
++
++msgid "Energy advisories"
++msgstr "Energiehinweise"
++
++msgid "Status notices"
++msgstr "Statusmeldungen"
++
++msgid "Flight training cues"
++msgstr "Flugtrainingshinweise"
++
++msgid "CONTROLLER LOST"
++msgstr "CONTROLLER VERLOREN"
++
++msgid "RADIO LOST"
++msgstr "SENDERSIGNAL VERLOREN"
++
++msgid "LOW ALTITUDE"
++msgstr "GERINGE HÖHE"
++
++msgid "FAR FROM PILOT"
++msgstr "WEIT VOM PILOTEN ENTFERNT"
++
++msgid "POWER LIMITED"
++msgstr "LEISTUNG BEGRENZT"
++
++msgid "NO USABLE FUEL"
++msgstr "KEIN NUTZBARER KRAFTSTOFF"
++
++msgid "RAPID DESCENT"
++msgstr "SCHNELLER SINKFLUG"
++
++msgid "HIGH G LOAD"
++msgstr "HOHE G-BELASTUNG"
++
++msgid "STEEP BANK"
++msgstr "STARKE QUERNEIGUNG"
++
++msgid "RADIO SAFE"
++msgstr "SENDER SICHER"
++
++msgid "Select controls to continue."
++msgstr "Wähle eine Steuerung, um fortzufahren."
++
++msgid "Reconnect the radio to continue."
++msgstr "Verbinde den Sender erneut, um fortzufahren."
++
++msgid "Reduce angle of attack."
++msgstr "Verringere den Anstellwinkel."
++
++msgid "Fast sink near terrain."
++msgstr "Schnelles Sinken nahe am Boden."
++
++msgid "Come closer for a clearer view."
++msgstr "Fliege näher heran, um besser zu sehen."
++
++msgid "Land as soon as possible."
++msgstr "Lande so bald wie möglich."
++
++msgid "Prepare for an unpowered landing."
++msgstr "Bereite dich auf eine Landung ohne Antrieb vor."
++
++msgid "Land and let the pack cool."
++msgstr "Lande und lass den Akku abkühlen."
++
++msgid "Reserve reached. Plan to land."
++msgstr "Reserve erreicht. Plane die Landung."
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "Geschätzte Reserve erreicht. Plane die Landung."
++
++msgid "Low energy. Plan to land."
++msgstr "Wenig Energie. Plane die Landung."
++
++msgid "Descending faster than 6 m/s."
++msgstr "Sinkgeschwindigkeit über 6 m/s."
++
++msgid "Body G magnitude above 4 g."
++msgstr "Betrag der G-Belastung am Flugzeug über 4 g."
++
++msgid "Bank angle beyond 75°."
++msgstr "Querneigung über 75°."
++
++msgid "Lower throttle to arm."
++msgstr "Verringere das Gas zum Scharfschalten."
++
++msgid "Flight model under development."
++msgstr "Das Flugmodell befindet sich in Entwicklung."
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "Übernehmen oder verwerfen Sie ausstehende Feldeingaben, bevor Sie eine Voreinstellung anwenden."
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "Voreinstellung nicht angewendet. Der Entwurf bleibt unverändert."
+diff --git a/app/i18n/es.po b/app/i18n/es.po
+index 9cf061e55..45577e6d6 100644
+--- a/app/i18n/es.po
++++ b/app/i18n/es.po
+@@ -8181,3 +8181,9 @@ msgstr "Modelo de vuelo en desarrollo."
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "El circuito de tierra para carros RC al norte de la pista, con saltos, curvas peraltadas y barreras. Es físico: las ruedas ruedan sobre su relieve y el avión puede chocar con él. Automático lo activa con una GPU dedicada y detalle de escena Alto o Extremo. Se aplica en el siguiente vuelo."
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "Aplica o cancela los campos pendientes antes de aplicar un preajuste."
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "No se ha aplicado el preajuste. El borrador no ha cambiado."
+diff --git a/app/i18n/fr.po b/app/i18n/fr.po
+index aeb4064a9..bb0d82d14 100644
+--- a/app/i18n/fr.po
++++ b/app/i18n/fr.po
+@@ -9415,8 +9415,135 @@ msgstr "Prairie"
+ msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+ msgstr "Touffes d'herbe, de trèfle et de fleurs sauvages des deux côtés de la piste. Désactivée, elle allège le travail du GPU sur les ordinateurs plus lents. La désactivation s'applique immédiatement ; l'activation s'applique au prochain vol. La densité suit le détail de la scène."
+ 
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "DANGER"
++
++msgid "CAUTION"
++msgstr "PRUDENCE"
++
++msgid "INFO"
++msgstr "INFO"
++
++msgid "+%d MORE ALERTS"
++msgstr "+%d ALERTES SUPPLÉMENTAIRES"
++
++msgid "Alerts"
++msgstr "Alertes"
++
++msgid "Flight alerts"
++msgstr "Alertes de vol"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "Les alertes critiques restent actives tant que les alertes sont activées."
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "Les indications d'entraînement sont indicatives et ne sont pas des limites de l'avion."
++
++msgid "Show alert details"
++msgstr "Afficher les détails des alertes"
++
++msgid "Maximum visible alerts"
++msgstr "Nombre maximal d'alertes visibles"
++
++msgid "Range reminders"
++msgstr "Rappels de distance"
++
++msgid "Energy advisories"
++msgstr "Alertes d'énergie"
++
++msgid "Status notices"
++msgstr "Avis d'état"
++
++msgid "Flight training cues"
++msgstr "Indications d'entraînement au vol"
++
++msgid "CONTROLLER LOST"
++msgstr "CONTRÔLEUR DÉCONNECTÉ"
++
++msgid "RADIO LOST"
++msgstr "RADIOCOMMANDE DÉCONNECTÉE"
++
++msgid "LOW ALTITUDE"
++msgstr "ALTITUDE BASSE"
++
++msgid "FAR FROM PILOT"
++msgstr "LOIN DU PILOTE"
++
++msgid "POWER LIMITED"
++msgstr "PUISSANCE LIMITÉE"
++
++msgid "NO USABLE FUEL"
++msgstr "PLUS DE CARBURANT UTILISABLE"
++
++msgid "RAPID DESCENT"
++msgstr "DESCENTE RAPIDE"
++
++msgid "HIGH G LOAD"
++msgstr "FORTE CHARGE EN G"
++
++msgid "STEEP BANK"
++msgstr "FORTE INCLINAISON"
++
++msgid "RADIO SAFE"
++msgstr "RADIOCOMMANDE NON ARMÉE"
++
++msgid "Select controls to continue."
++msgstr "Sélectionnez les commandes pour continuer."
++
++msgid "Reconnect the radio to continue."
++msgstr "Reconnectez la radiocommande pour continuer."
++
++msgid "Reduce angle of attack."
++msgstr "Réduisez l'angle d'attaque."
++
++msgid "Fast sink near terrain."
++msgstr "Descente rapide près du sol."
++
++msgid "Come closer for a clearer view."
++msgstr "Rapprochez-vous pour mieux voir l'avion."
++
++msgid "Land as soon as possible."
++msgstr "Atterrissez dès que possible."
++
++msgid "Prepare for an unpowered landing."
++msgstr "Préparez un atterrissage sans moteur."
++
++msgid "Land and let the pack cool."
++msgstr "Atterrissez et laissez refroidir la batterie."
++
++msgid "Reserve reached. Plan to land."
++msgstr "Réserve atteinte. Préparez l'atterrissage."
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "Réserve estimée atteinte. Préparez l'atterrissage."
++
++msgid "Low energy. Plan to land."
++msgstr "Énergie faible. Préparez l'atterrissage."
++
++msgid "Descending faster than 6 m/s."
++msgstr "Descente supérieure à 6 m/s."
++
++msgid "Body G magnitude above 4 g."
++msgstr "Charge corporelle supérieure à 4 g en valeur absolue."
++
++msgid "Bank angle beyond 75°."
++msgstr "Angle d'inclinaison supérieur à 75°."
++
++msgid "Lower throttle to arm."
++msgstr "Baissez les gaz pour armer."
++
++msgid "Flight model under development."
++msgstr "Modèle de vol en cours de développement."
++
+ msgid "RC circuit"
+ msgstr "Circuit RC"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "Le circuit en terre pour voitures RC au nord de la piste, avec ses sauts, virages relevés et barrières. Il est physique : les roues roulent sur son relief et l’avion peut le percuter. Automatique l’active avec un GPU dédié et un détail de scène Élevé ou Extrême. S’applique au prochain vol."
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "Appliquez ou annulez les champs en cours de modification avant d’appliquer un préréglage."
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "Le préréglage n’a pas été appliqué. Le brouillon reste inchangé."
+diff --git a/app/i18n/it.po b/app/i18n/it.po
+index 8c2f097da..d632183d1 100644
+--- a/app/i18n/it.po
++++ b/app/i18n/it.po
+@@ -9268,8 +9268,135 @@ msgstr "Prato"
+ msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+ msgstr "Ciuffi d'erba, trifoglio e fiori selvatici su entrambi i lati della pista. Disattivato riduce il lavoro della GPU sui computer più lenti. La disattivazione si applica subito; l'attivazione si applica al volo successivo. La densità segue il dettaglio della scena."
+ 
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "PERICOLO"
++
++msgid "CAUTION"
++msgstr "ATTENZIONE"
++
++msgid "INFO"
++msgstr "INFO"
++
++msgid "+%d MORE ALERTS"
++msgstr "+%d ALTRI AVVISI"
++
++msgid "Alerts"
++msgstr "Avvisi"
++
++msgid "Flight alerts"
++msgstr "Avvisi di volo"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "Gli avvisi critici restano attivi finché Avvisi è attivo."
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "Le indicazioni di addestramento sono orientative e non sono limiti dell'aereo."
++
++msgid "Show alert details"
++msgstr "Mostra i dettagli degli avvisi"
++
++msgid "Maximum visible alerts"
++msgstr "Numero massimo di avvisi visibili"
++
++msgid "Range reminders"
++msgstr "Avvisi di distanza"
++
++msgid "Energy advisories"
++msgstr "Avvisi di energia"
++
++msgid "Status notices"
++msgstr "Avvisi di stato"
++
++msgid "Flight training cues"
++msgstr "Indicazioni di addestramento al volo"
++
++msgid "CONTROLLER LOST"
++msgstr "CONTROLLER DISCONNESSO"
++
++msgid "RADIO LOST"
++msgstr "TRASMITTENTE DISCONNESSA"
++
++msgid "LOW ALTITUDE"
++msgstr "QUOTA BASSA"
++
++msgid "FAR FROM PILOT"
++msgstr "LONTANO DAL PILOTA"
++
++msgid "POWER LIMITED"
++msgstr "POTENZA LIMITATA"
++
++msgid "NO USABLE FUEL"
++msgstr "CARBURANTE UTILIZZABILE ESAURITO"
++
++msgid "RAPID DESCENT"
++msgstr "DISCESA RAPIDA"
++
++msgid "HIGH G LOAD"
++msgstr "CARICO G ELEVATO"
++
++msgid "STEEP BANK"
++msgstr "FORTE INCLINAZIONE"
++
++msgid "RADIO SAFE"
++msgstr "TRASMITTENTE NON ARMATA"
++
++msgid "Select controls to continue."
++msgstr "Seleziona i comandi per continuare."
++
++msgid "Reconnect the radio to continue."
++msgstr "Ricollega la trasmittente per continuare."
++
++msgid "Reduce angle of attack."
++msgstr "Riduci l'angolo d'attacco."
++
++msgid "Fast sink near terrain."
++msgstr "Discesa rapida vicino al suolo."
++
++msgid "Come closer for a clearer view."
++msgstr "Avvicinati per vedere meglio l'aereo."
++
++msgid "Land as soon as possible."
++msgstr "Atterra appena possibile."
++
++msgid "Prepare for an unpowered landing."
++msgstr "Preparati a un atterraggio senza motore."
++
++msgid "Land and let the pack cool."
++msgstr "Atterra e lascia raffreddare la batteria."
++
++msgid "Reserve reached. Plan to land."
++msgstr "Riserva raggiunta. Preparati ad atterrare."
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "Riserva stimata raggiunta. Preparati ad atterrare."
++
++msgid "Low energy. Plan to land."
++msgstr "Energia bassa. Preparati ad atterrare."
++
++msgid "Descending faster than 6 m/s."
++msgstr "Discesa superiore a 6 m/s."
++
++msgid "Body G magnitude above 4 g."
++msgstr "Carico G del corpo superiore a 4 g in valore assoluto."
++
++msgid "Bank angle beyond 75°."
++msgstr "Angolo di rollio oltre 75°."
++
++msgid "Lower throttle to arm."
++msgstr "Riduci il gas per armare."
++
++msgid "Flight model under development."
++msgstr "Modello di volo in sviluppo."
++
+ msgid "RC circuit"
+ msgstr "Circuito RC"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "Il circuito in terra per auto RC a nord della pista, con salti, curve sopraelevate e barriere. È fisico: le ruote rotolano sul suo rilievo e l’aereo può urtarlo. Automatico lo attiva con una GPU dedicata e dettaglio scena Alto o Estremo. Si applica dal prossimo volo."
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "Applica o annulla i campi in sospeso prima di applicare una preimpostazione."
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "Preimpostazione non applicata. La bozza è rimasta invariata."
+diff --git a/app/i18n/ja.po b/app/i18n/ja.po
+index 9526fcd8b..6a75f083d 100644
+--- a/app/i18n/ja.po
++++ b/app/i18n/ja.po
+@@ -8492,8 +8492,135 @@ msgstr "草地"
+ msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+ msgstr "滑走路の両側に草、クローバー、野花の株を表示します。オフにすると低速なコンピューターで GPU の負荷を減らせます。オフはすぐに反映され、オンは次のフライトから反映されます。密度はシーンの詳細に従います。"
+ 
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "危険"
++
++msgid "CAUTION"
++msgstr "注意"
++
++msgid "INFO"
++msgstr "情報"
++
++msgid "+%d MORE ALERTS"
++msgstr "他に%d件の警告"
++
++msgid "Alerts"
++msgstr "アラート"
++
++msgid "Flight alerts"
++msgstr "飛行アラート"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "「警告」がオンの間、重大なアラートは常に有効です。"
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "トレーニングの表示は参考情報であり、機体の限界値ではありません。"
++
++msgid "Show alert details"
++msgstr "アラートの詳細を表示"
++
++msgid "Maximum visible alerts"
++msgstr "表示するアラートの最大数"
++
++msgid "Range reminders"
++msgstr "距離の注意"
++
++msgid "Energy advisories"
++msgstr "エネルギーの注意"
++
++msgid "Status notices"
++msgstr "状態の通知"
++
++msgid "Flight training cues"
++msgstr "飛行トレーニングの案内"
++
++msgid "CONTROLLER LOST"
++msgstr "コントローラー切断"
++
++msgid "RADIO LOST"
++msgstr "送信機との通信なし"
++
++msgid "LOW ALTITUDE"
++msgstr "高度が低い"
++
++msgid "FAR FROM PILOT"
++msgstr "操縦者から遠い"
++
++msgid "POWER LIMITED"
++msgstr "出力制限"
++
++msgid "NO USABLE FUEL"
++msgstr "使用可能な燃料なし"
++
++msgid "RAPID DESCENT"
++msgstr "急降下"
++
++msgid "HIGH G LOAD"
++msgstr "高G負荷"
++
++msgid "STEEP BANK"
++msgstr "大きなバンク角"
++
++msgid "RADIO SAFE"
++msgstr "送信機は未アーム"
++
++msgid "Select controls to continue."
++msgstr "操作を選んで続行してください。"
++
++msgid "Reconnect the radio to continue."
++msgstr "送信機を再接続して続行してください。"
++
++msgid "Reduce angle of attack."
++msgstr "迎角を小さくしてください。"
++
++msgid "Fast sink near terrain."
++msgstr "地面付近で急速に降下しています。"
++
++msgid "Come closer for a clearer view."
++msgstr "機体がよく見えるよう近づけてください。"
++
++msgid "Land as soon as possible."
++msgstr "できるだけ早く着陸してください。"
++
++msgid "Prepare for an unpowered landing."
++msgstr "動力なしの着陸に備えてください。"
++
++msgid "Land and let the pack cool."
++msgstr "着陸し、バッテリーを冷ましてください。"
++
++msgid "Reserve reached. Plan to land."
++msgstr "予備量に達しました。着陸の準備をしてください。"
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "推定予備量に達しました。着陸の準備をしてください。"
++
++msgid "Low energy. Plan to land."
++msgstr "エネルギーが少なくなっています。着陸の準備をしてください。"
++
++msgid "Descending faster than 6 m/s."
++msgstr "6 m/sを超える速度で降下しています。"
++
++msgid "Body G magnitude above 4 g."
++msgstr "機体のG負荷の絶対値が4 gを超えています。"
++
++msgid "Bank angle beyond 75°."
++msgstr "バンク角が75°を超えています。"
++
++msgid "Lower throttle to arm."
++msgstr "アームするにはスロットルを下げてください。"
++
++msgid "Flight model under development."
++msgstr "飛行モデルは開発中です。"
++
+ msgid "RC circuit"
+ msgstr "RCサーキット"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "滑走路の北にあるRCカー用のダートサーキット（ジャンプ、バンク付きカーブ、バリア）。物理的に存在し、車輪は起伏の上を転がり、機体は衝突することがあります。自動では専用GPUでシーン詳細が「高」または「最高」のときに有効になります。次のフライトから適用されます。"
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "プリセットを適用する前に、編集中の項目を適用またはキャンセルしてください。"
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "プリセットは適用されませんでした。下書きは変更されていません。"
+diff --git a/app/i18n/pt_BR.po b/app/i18n/pt_BR.po
+index fc0f0493a..fe066cb96 100644
+--- a/app/i18n/pt_BR.po
++++ b/app/i18n/pt_BR.po
+@@ -9288,3 +9288,130 @@ msgstr "Circuito RC"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "O circuito de terra para carros RC ao norte da pista, com saltos, curvas inclinadas e barreiras. Ele é físico: as rodas rolam sobre o relevo e o avião pode colidir com ele. Automático o ativa com uma GPU dedicada e detalhe de cena Alto ou Extremo. Aplica-se no próximo voo."
++
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "PERIGO"
++
++msgid "CAUTION"
++msgstr "ATENÇÃO"
++
++msgid "INFO"
++msgstr "INFO"
++
++msgid "+%d MORE ALERTS"
++msgstr "+%d ALERTAS A MAIS"
++
++msgid "Alerts"
++msgstr "Alertas"
++
++msgid "Flight alerts"
++msgstr "Alertas de voo"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "Os alertas críticos permanecem ativos enquanto Avisos estiver ativado."
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "Os avisos de treinamento são apenas visuais e não representam limites da aeronave."
++
++msgid "Show alert details"
++msgstr "Mostrar detalhes dos alertas"
++
++msgid "Maximum visible alerts"
++msgstr "Máximo de alertas visíveis"
++
++msgid "Range reminders"
++msgstr "Avisos de distância"
++
++msgid "Energy advisories"
++msgstr "Avisos de energia"
++
++msgid "Status notices"
++msgstr "Avisos de status"
++
++msgid "Flight training cues"
++msgstr "Avisos de treinamento de voo"
++
++msgid "CONTROLLER LOST"
++msgstr "CONTROLE DESCONECTADO"
++
++msgid "RADIO LOST"
++msgstr "SINAL DO TRANSMISSOR PERDIDO"
++
++msgid "LOW ALTITUDE"
++msgstr "ALTITUDE BAIXA"
++
++msgid "FAR FROM PILOT"
++msgstr "LONGE DO PILOTO"
++
++msgid "POWER LIMITED"
++msgstr "POTÊNCIA LIMITADA"
++
++msgid "NO USABLE FUEL"
++msgstr "SEM COMBUSTÍVEL UTILIZÁVEL"
++
++msgid "RAPID DESCENT"
++msgstr "DESCIDA RÁPIDA"
++
++msgid "HIGH G LOAD"
++msgstr "CARGA G ELEVADA"
++
++msgid "STEEP BANK"
++msgstr "INCLINAÇÃO ACENTUADA"
++
++msgid "RADIO SAFE"
++msgstr "TRANSMISSOR SEGURO"
++
++msgid "Select controls to continue."
++msgstr "Selecione os controles para continuar."
++
++msgid "Reconnect the radio to continue."
++msgstr "Reconecte o transmissor para continuar."
++
++msgid "Reduce angle of attack."
++msgstr "Reduza o ângulo de ataque."
++
++msgid "Fast sink near terrain."
++msgstr "Descida rápida perto do solo."
++
++msgid "Come closer for a clearer view."
++msgstr "Aproxime a aeronave para enxergar melhor."
++
++msgid "Land as soon as possible."
++msgstr "Pouse assim que possível."
++
++msgid "Prepare for an unpowered landing."
++msgstr "Prepare-se para um pouso sem motor."
++
++msgid "Land and let the pack cool."
++msgstr "Pouse e deixe a bateria esfriar."
++
++msgid "Reserve reached. Plan to land."
++msgstr "Reserva atingida. Planeje o pouso."
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "Reserva estimada atingida. Planeje o pouso."
++
++msgid "Low energy. Plan to land."
++msgstr "Pouca energia. Planeje o pouso."
++
++msgid "Descending faster than 6 m/s."
++msgstr "Descendo a mais de 6 m/s."
++
++msgid "Body G magnitude above 4 g."
++msgstr "Magnitude da carga G no avião acima de 4 g."
++
++msgid "Bank angle beyond 75°."
++msgstr "Ângulo de inclinação além de 75°."
++
++msgid "Lower throttle to arm."
++msgstr "Reduza o acelerador para armar."
++
++msgid "Flight model under development."
++msgstr "Modelo de voo em desenvolvimento."
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "Aplique ou cancele os campos pendentes antes de aplicar uma predefinição."
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "A predefinição não foi aplicada. O rascunho permanece inalterado."
+diff --git a/app/i18n/ru.po b/app/i18n/ru.po
+index b7ab7a4e5..194dc1693 100644
+--- a/app/i18n/ru.po
++++ b/app/i18n/ru.po
+@@ -9243,8 +9243,135 @@ msgstr "Луг"
+ msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
+ msgstr "Куртины травы, клевера и полевых цветов по обе стороны полосы. Выключение снижает нагрузку на GPU на медленных компьютерах. Выключение действует сразу; включение — со следующего полёта. Плотность зависит от детализации сцены."
+ 
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "ОПАСНОСТЬ"
++
++msgid "CAUTION"
++msgstr "ВНИМАНИЕ"
++
++msgid "INFO"
++msgstr "ИНФО"
++
++msgid "+%d MORE ALERTS"
++msgstr "ЕЩЁ %d ПРЕДУПРЕЖДЕНИЙ"
++
++msgid "Alerts"
++msgstr "Предупреждения"
++
++msgid "Flight alerts"
++msgstr "Предупреждения в полёте"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "Критические предупреждения остаются активными, пока включены «Предупреждения»."
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "Учебные подсказки носят информационный характер и не являются ограничениями самолёта."
++
++msgid "Show alert details"
++msgstr "Показывать подробности предупреждений"
++
++msgid "Maximum visible alerts"
++msgstr "Максимум видимых предупреждений"
++
++msgid "Range reminders"
++msgstr "Напоминания о расстоянии"
++
++msgid "Energy advisories"
++msgstr "Предупреждения об энергии"
++
++msgid "Status notices"
++msgstr "Уведомления о состоянии"
++
++msgid "Flight training cues"
++msgstr "Подсказки для обучения полёту"
++
++msgid "CONTROLLER LOST"
++msgstr "КОНТРОЛЛЕР ОТКЛЮЧЁН"
++
++msgid "RADIO LOST"
++msgstr "РАДИОСВЯЗЬ ПОТЕРЯНА"
++
++msgid "LOW ALTITUDE"
++msgstr "МАЛАЯ ВЫСОТА"
++
++msgid "FAR FROM PILOT"
++msgstr "ДАЛЕКО ОТ ПИЛОТА"
++
++msgid "POWER LIMITED"
++msgstr "МОЩНОСТЬ ОГРАНИЧЕНА"
++
++msgid "NO USABLE FUEL"
++msgstr "ДОСТУПНОЕ ТОПЛИВО ИСЧЕРПАНО"
++
++msgid "RAPID DESCENT"
++msgstr "БЫСТРОЕ СНИЖЕНИЕ"
++
++msgid "HIGH G LOAD"
++msgstr "ВЫСОКАЯ ПЕРЕГРУЗКА"
++
++msgid "STEEP BANK"
++msgstr "БОЛЬШОЙ КРЕН"
++
++msgid "RADIO SAFE"
++msgstr "ПЕРЕДАТЧИК НЕ РАЗБЛОКИРОВАН"
++
++msgid "Select controls to continue."
++msgstr "Выберите управление для продолжения."
++
++msgid "Reconnect the radio to continue."
++msgstr "Подключите передатчик снова для продолжения."
++
++msgid "Reduce angle of attack."
++msgstr "Уменьшите угол атаки."
++
++msgid "Fast sink near terrain."
++msgstr "Быстрое снижение у земли."
++
++msgid "Come closer for a clearer view."
++msgstr "Подлетите ближе, чтобы лучше видеть самолёт."
++
++msgid "Land as soon as possible."
++msgstr "Выполните посадку как можно скорее."
++
++msgid "Prepare for an unpowered landing."
++msgstr "Подготовьтесь к посадке без двигателя."
++
++msgid "Land and let the pack cool."
++msgstr "Выполните посадку и дайте батарее остыть."
++
++msgid "Reserve reached. Plan to land."
++msgstr "Достигнут резерв. Подготовьтесь к посадке."
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "Достигнут расчётный резерв. Подготовьтесь к посадке."
++
++msgid "Low energy. Plan to land."
++msgstr "Мало энергии. Подготовьтесь к посадке."
++
++msgid "Descending faster than 6 m/s."
++msgstr "Снижение быстрее 6 m/s."
++
++msgid "Body G magnitude above 4 g."
++msgstr "Перегрузка по модулю превышает 4 g."
++
++msgid "Bank angle beyond 75°."
++msgstr "Угол крена превышает 75°."
++
++msgid "Lower throttle to arm."
++msgstr "Уберите газ для разблокировки."
++
++msgid "Flight model under development."
++msgstr "Модель полёта находится в разработке."
++
+ msgid "RC circuit"
+ msgstr "Трасса RC"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "Грунтовая трасса для RC-машин к северу от полосы: трамплины, виражи и барьеры. Она физическая: колёса катятся по её рельефу, а самолёт может в неё врезаться. «Автоматически» включает её на дискретной видеокарте при детализации сцены «Высокая» или «Экстрим». Применяется со следующего полёта."
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "Примените или отмените незавершённые изменения полей перед применением предустановки."
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "Предустановка не применена. Черновик не изменён."
+diff --git a/app/i18n/zh_Hans.po b/app/i18n/zh_Hans.po
+index b04927e14..c4f623dfa 100644
+--- a/app/i18n/zh_Hans.po
++++ b/app/i18n/zh_Hans.po
+@@ -8447,3 +8447,130 @@ msgstr "RC 赛道"
+ 
+ msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+ msgstr "跑道北侧的 RC 赛车土路赛道，包含跳台、倾斜弯道和护栏。它是实体的：机轮会在起伏上滚动，机身也可能撞上它。自动模式在独立显卡且场景细节为高或极高时开启。下次飞行时生效。"
++
++# HUD-09-R1: prioritized glass flight alerts.
++msgid "DANGER"
++msgstr "危险"
++
++msgid "CAUTION"
++msgstr "注意"
++
++msgid "INFO"
++msgstr "信息"
++
++msgid "+%d MORE ALERTS"
++msgstr "+%d 条其他警报"
++
++msgid "Alerts"
++msgstr "警报"
++
++msgid "Flight alerts"
++msgstr "飞行警报"
++
++msgid "Critical alerts remain enabled while Warnings is on."
++msgstr "启用“警告”时，严重警报始终保持启用。"
++
++msgid "Training cues are display-only and are not aircraft limits."
++msgstr "训练提示仅用于显示，不代表飞行器的极限。"
++
++msgid "Show alert details"
++msgstr "显示警报详情"
++
++msgid "Maximum visible alerts"
++msgstr "最多显示警报数"
++
++msgid "Range reminders"
++msgstr "距离提醒"
++
++msgid "Energy advisories"
++msgstr "能量提示"
++
++msgid "Status notices"
++msgstr "状态提示"
++
++msgid "Flight training cues"
++msgstr "飞行训练提示"
++
++msgid "CONTROLLER LOST"
++msgstr "控制器已断开"
++
++msgid "RADIO LOST"
++msgstr "遥控器信号丢失"
++
++msgid "LOW ALTITUDE"
++msgstr "高度过低"
++
++msgid "FAR FROM PILOT"
++msgstr "距飞行员过远"
++
++msgid "POWER LIMITED"
++msgstr "动力受限"
++
++msgid "NO USABLE FUEL"
++msgstr "无可用燃油"
++
++msgid "RAPID DESCENT"
++msgstr "快速下降"
++
++msgid "HIGH G LOAD"
++msgstr "高 G 载荷"
++
++msgid "STEEP BANK"
++msgstr "大倾斜角"
++
++msgid "RADIO SAFE"
++msgstr "遥控器安全锁定"
++
++msgid "Select controls to continue."
++msgstr "选择控制方式以继续。"
++
++msgid "Reconnect the radio to continue."
++msgstr "重新连接遥控器以继续。"
++
++msgid "Reduce angle of attack."
++msgstr "减小迎角。"
++
++msgid "Fast sink near terrain."
++msgstr "接近地面时快速下沉。"
++
++msgid "Come closer for a clearer view."
++msgstr "飞近一些以看得更清楚。"
++
++msgid "Land as soon as possible."
++msgstr "尽快降落。"
++
++msgid "Prepare for an unpowered landing."
++msgstr "准备无动力降落。"
++
++msgid "Land and let the pack cool."
++msgstr "降落并让电池组冷却。"
++
++msgid "Reserve reached. Plan to land."
++msgstr "已达到储备量。请准备降落。"
++
++msgid "Estimated reserve reached. Plan to land."
++msgstr "已达到估算储备量。请准备降落。"
++
++msgid "Low energy. Plan to land."
++msgstr "能量不足。请准备降落。"
++
++msgid "Descending faster than 6 m/s."
++msgstr "下沉速度超过 6 m/s。"
++
++msgid "Body G magnitude above 4 g."
++msgstr "机体 G 载荷的绝对值超过 4 g。"
++
++msgid "Bank angle beyond 75°."
++msgstr "横滚倾斜角超过 75°。"
++
++msgid "Lower throttle to arm."
++msgstr "降低油门以解锁。"
++
++msgid "Flight model under development."
++msgstr "飞行模型仍在开发中。"
++
++msgid "Apply or cancel pending fields before applying a preset."
++msgstr "应用预设前，请先应用或取消尚未完成的字段编辑。"
++
++msgid "Preset not applied. The draft is unchanged."
++msgstr "未应用预设。草稿保持不变。"
+diff --git a/app/tests/test_workshop_ui.gd b/app/tests/test_workshop_ui.gd
+index 486396613..53d467f40 100644
+--- a/app/tests/test_workshop_ui.gd
++++ b/app/tests/test_workshop_ui.gd
+@@ -255,10 +255,11 @@ func _run() -> void:
+ 		var preset_inheritance_ok := true
+ 		for surface_key: String in surface_keys:
+ 			var surface_slider: HSlider = surface_sliders[surface_key]
++			var expected: float = 1.35 if surface_key == "control_multiplier_aileron" else 0.9
+ 			preset_inheritance_ok = preset_inheritance_ok \
+-				and not preset_recipe.has(surface_key) \
+-				and is_equal_approx(surface_slider.value, 0.9)
+-		_check("presets leave surface overrides absent and inherit their global travel",
++				and preset_recipe.has(surface_key) == (surface_key == "control_multiplier_aileron") \
++				and is_equal_approx(surface_slider.value, expected)
++		_check("presets preserve explicit surface overrides while absent values inherit global travel",
+ 			is_equal_approx(float(preset_recipe.get("control_multiplier", 0.0)), 0.9)
+ 			and preset_inheritance_ok)
+ 		workshop.set_recipe(Compiler.defaults(), false)
+diff --git a/app/ui/workshop.gd b/app/ui/workshop.gd
+index 905644a79..3b82b9464 100644
+--- a/app/ui/workshop.gd
++++ b/app/ui/workshop.gd
+@@ -1626,27 +1626,28 @@ func _on_slider_drag_ended(_changed: bool) -> void:
+ func _apply_preset(preset_id: String) -> void:
+ 	if _base.is_empty() or not PRESETS.has(preset_id):
+ 		return
+-	var next: Dictionary = Compiler.defaults()
++	# The selector has already changed; a refused action must not look applied.
++	_preset_selector.select(0)
++	if not _pending_numbers.is_empty() or not _invalid_fields.is_empty() or not _presentation_buffers.is_empty():
++		set_note("Apply or cancel pending fields before applying a preset.")
++		_review_issues()
++		return
++	# PRESETS declares the patch scope. Unlisted factors, individual surface
++	# overrides and measured component records remain player-authored values.
++	var next: Dictionary = _recipe.duplicate(true)
+ 	var preset: Dictionary = PRESETS[preset_id]
+ 	var caps: Dictionary = Compiler.capabilities(_base)
+-	for key in ["scale", "mass_policy"]:
+-		if key == "scale" and not bool(caps.get("scale", false)):
+-			next[key] = _recipe.get(key, next[key])
+-		elif key == "mass_policy" and not bool(caps.get("weight", false)):
+-			next[key] = _recipe.get(key, next[key])
+-		else:
+-			next[key] = preset.get(key, next[key])
+-	for key: String in _factor_capabilities:
+-		var capability := str(_factor_capabilities[key])
+-		if _inherited_factor_keys.has(key):
+-			if not bool(caps.get(capability, false)) and _recipe.has(key):
+-				next[key] = _recipe[key]
+-			continue
+-		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
++	for key: String in preset:
++		var capability := "scale" if key == "scale" else "weight" if key == "mass_policy" else str(_factor_capabilities.get(key, ""))
++		if bool(caps.get(capability, false)):
++			next[key] = preset[key]
+ 	if float(next.get("scale", 1.0)) != float(_recipe.get("scale", 1.0)):
+ 		next["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
+-	elif _recipe.has("size_model"):
+-		next["size_model"] = _recipe["size_model"]
++	# Check cross-field measurement constraints before publishing or adding Undo.
++	var checked := Compiler.compile(_base, next)
++	if not checked.ok:
++		set_note(tr("Preset not applied. The draft is unchanged.") + "\n" + _messages(checked.errors, ""))
++		return
+ 	_set_recipe(next, true)
+ 	for index in _preset_selector.item_count:
+ 		if _preset_selector.get_item_metadata(index) == preset_id: _preset_selector.select(index)
+@@ -2667,8 +2668,10 @@ func _review_issues() -> void:
+ 		_body_scroll.ensure_control_visible(pending)
+ 		return
+ 	_set_page("setup")
+-	for key: String in _invalid_fields:
++	for key: String in _invalid_fields.merged(_pending_numbers):
+ 		var entry: LineEdit = _factor_inputs[key]
++		if _inherited_factor_keys.has(key):
++			_advanced_controls_toggle.button_pressed = true
+ 		entry.grab_focus()
+ 		_body_scroll.ensure_control_visible(entry)
+ 		return
+diff --git a/app/tests/test_workshop_presets.gd b/app/tests/test_workshop_presets.gd
+new file mode 100644
+--- /dev/null
++++ b/app/tests/test_workshop_presets.gd
+@@ -0,0 +1,206 @@
++# AE-09d-R1 / A14 F10: presets must preserve authored data and unresolved input.
++extends SceneTree
++
++const Workshop := preload("res://ui/workshop.gd")
++const Compiler := preload("res://workshop/compiler.gd")
++const MassEdit := preload("res://workshop/mass_edit.gd")
++const Store := preload("res://workshop/store.gd")
++const Trial := preload("res://workshop/trial.gd")
++const UiDriver := preload("res://tests/ui_driver.gd")
++
++var checks := 0
++var failures := 0
++var editor: Variant
++var ui: RefCounted
++
++func _initialize() -> void:
++	_run.call_deferred()
++
++func check(label: String, passed: bool) -> void:
++	checks += 1
++	print(("ok   " if passed else "FAIL ") + label)
++	if not passed: failures += 1
++
++func select_preset(id: String) -> void:
++	var selector: OptionButton = editor.get("_preset_selector")
++	for index in selector.item_count:
++		if selector.get_item_metadata(index) == id:
++			selector.select(index)
++			selector.item_selected.emit(index)
++			return
++
++func _run() -> void:
++	TranslationServer.set_locale("en")
++	root.size = Vector2i(1920, 1080)
++	ui = UiDriver.new(self)
++	editor = Workshop.new()
++	editor.variants_root = "user://test_workshop_presets_%d" % Time.get_ticks_usec()
++	root.add_child(editor)
++	await ui.settle()
++	editor.call("_set_page", "setup")
++	var base: Dictionary = editor.get("_base")
++	var inventory: Dictionary = MassEdit.inspect(base)
++	var measured: Dictionary = Compiler.defaults()
++	measured.mass_edits = []
++	for item: Dictionary in inventory.get("inventory", []):
++		if item.editable:
++			measured.mass_edits.append({"id": item.id, "mass_kg": float(item.mass_kg) * 1.0001,
++				"source": "Synthetic preset regression fixture; not physical evidence"})
++			if measured.mass_edits.size() == 2: break
++	check("fixture has two compatible measured components", measured.mass_edits.size() == 2 and Compiler.compile(base, measured).ok)
++	if measured.mass_edits.size() != 2: editor.free(); quit(1); return
++	measured.control_multiplier_aileron = 1.31
++	editor.set_recipe(measured, false)
++	measured = editor.get_recipe()
++	editor.call("_clear_history")
++	var presentation: Dictionary = editor.get_presentation()
++	select_preset("fast")
++	var accepted: Dictionary = editor.get_recipe()
++	check("More power retains exact measurements and provenance", accepted.get("mass_edits", []) == measured.mass_edits)
++	check("More power retains explicit individual control travel", accepted.get("control_multiplier_aileron", 0.0) == 1.31)
++	check("preset applies its supported declared control change", accepted.control_multiplier == 1.15 and editor.get_compiled().ok)
++	check("unchanged scale preserves legacy size identity", not accepted.has("size_model"))
++	check("preset preserves presentation and records one Undo", editor.get_presentation() == presentation and editor.get("_undo_history").size() == 1)
++	editor.call("_undo")
++	check("one Undo restores the complete measured recipe", editor.get_recipe() == measured)
++	editor.call("_redo")
++	check("one Redo restores the reviewed preset recipe", editor.get_recipe() == accepted)
++	select_preset("fast")
++	check("repeating the same preset creates no history entry", editor.get("_undo_history").size() == 1)
++	editor.call("_undo")
++	var redo_before: Array = editor.get("_redo_history").duplicate(true)
++	var compiled_before: Dictionary = editor.get_compiled()
++	select_preset("mini")
++	check("refused preset preserves compiled values, presentation and Redo", editor.get_compiled() == compiled_before and editor.get_presentation() == presentation and editor.get("_redo_history") == redo_before)
++	editor.call("_redo")
++	check("Redo remains usable after refusing a preset", editor.get_recipe() == accepted)
++	var repairable: Dictionary = measured.duplicate(true)
++	repairable.weight_multiplier = 1.2
++	editor.set_recipe(repairable, false)
++	check("fixture exposes an incompatible accepted recipe", not editor.get_compiled().ok)
++	select_preset("fast")
++	check("compatible preset can repair a compiler-invalid recipe without removing measurements", editor.get_compiled().ok and editor.get_recipe() == accepted)
++
++	# Both measurement-incompatible size and weight changes must fail atomically.
++	for id: String in ["mini", "light", "heavy", "agile", "slow", "giant"]:
++		editor.set_recipe(measured, false)
++		editor.call("_clear_history")
++		select_preset(id)
++		check(id + " refuses an incompatible measured recipe without data loss", editor.get_recipe() == measured and editor.get_compiled().ok)
++		check(id + " refusal leaves no history and no applied preset label", editor.get("_undo_history").is_empty() and editor.get("_preset_selector").selected == 0)
++		check(id + " refusal explains the preserved measurement constraint", str(editor.get("_status_label").text).contains("measured components require"))
++
++	# Tank capacity and explicit surface values are outside every starting preset.
++	var custom: Dictionary = Compiler.defaults()
++	custom.tank_capacity_multiplier = 1.23
++	custom.control_multiplier_aileron = 1.31
++	for id: String in Workshop.PRESETS:
++		editor.set_recipe(custom, false)
++		editor.call("_clear_history")
++		select_preset(id)
++		var recipe: Dictionary = editor.get_recipe()
++		check(id + " preserves unrelated tank capacity and individual travel", recipe.tank_capacity_multiplier == 1.23 and recipe.get("control_multiplier_aileron", 0.0) == 1.31)
++		check(id + " accepts a compatible patch as one Undo", editor.get_compiled().ok and editor.get("_undo_history").size() == 1)
++		check(id + " changes size identity only when scale changes", recipe.has("size_model") == (id in ["mini", "giant"]))
++		editor.call("_undo")
++		check(id + " Undo restores all authored values", editor.get_recipe() == custom)
++
++	var payloads: Array[Dictionary] = []
++	editor.trial_requested.connect(func(payload: Dictionary) -> void: payloads.append(payload))
++	var weight: LineEdit = editor.get("_factor_inputs").weight_multiplier
++	for raw: String in ["bad", "", "999", "0.731"]:
++		editor.set_recipe(Compiler.defaults(), false)
++		editor.call("_clear_history")
++		weight.text = raw
++		weight.text_changed.emit(raw)
++		var before: Dictionary = editor.get_recipe()
++		var pending: Dictionary = editor.get("_pending_numbers").duplicate(true)
++		var invalid: Dictionary = editor.get("_invalid_fields").duplicate(true)
++		select_preset("fast")
++		check("pending '%s' survives preset unchanged" % raw, weight.text == raw and editor.get_recipe() == before and editor.get("_pending_numbers") == pending and editor.get("_invalid_fields") == invalid)
++		check("pending '%s' refusal is focusable and undo-neutral" % raw, root.gui_get_focus_owner() == weight and editor.get("_undo_history").is_empty() and editor.get("_preset_selector").selected == 0)
++		if raw != "0.731":
++			check("invalid '%s' keeps Save and Test fly blocked" % raw, editor.save_button.disabled and editor.get("_trial_button").disabled and not editor.call("_save_variant"))
++			editor.call("_request_trial")
++			check("invalid '%s' emits no trial payload" % raw, payloads.is_empty())
++		# Explicit cancellation, rather than a preset, removes unresolved input.
++		weight.grab_focus()
++		if editor.get("_pending_numbers").has("weight_multiplier"):
++			editor.call("_request_close")
++		check("explicit Back cancels only the numeric buffer", weight.text == String.num(float(before.weight_multiplier), 4) and editor.get("_pending_numbers").is_empty())
++		editor.set("_trial_pending", false)
++		payloads.clear()
++
++	# A hidden advanced field must become visible before issue focus is restored.
++	var advanced: LineEdit = editor.get("_factor_inputs").control_multiplier_aileron
++	advanced.text = "bad"
++	advanced.text_changed.emit(advanced.text)
++	editor.get("_advanced_controls_toggle").button_pressed = false
++	select_preset("fast")
++	check("preset refusal reveals a hidden invalid surface field", advanced.is_visible_in_tree() and root.gui_get_focus_owner() == advanced and advanced.text == "bad")
++	editor.call("_request_close")
++
++	editor.call("_set_page", "appearance")
++	var appearance: Control = editor.get("_page_nodes").appearance
++	var inscription: LineEdit = appearance.get("_marking_text")
++	inscription.text = "Bad@"
++	inscription.text_changed.emit(inscription.text)
++	var before_visual: Dictionary = editor.get_recipe()
++	select_preset("fast")
++	check("preset preserves unresolved presentation text and accepted recipe", inscription.text == "Bad@" and editor.get_recipe() == before_visual and editor.get("_presentation_buffers").has("appearance"))
++	check("presentation refusal returns focus to the pending field", root.gui_get_focus_owner() == inscription and editor.get("_trial_button").disabled)
++	appearance.call("cancel_pending_edit")
++
++	# Exercise focus loss and real keyboard activation of the preset popup.
++	editor.call("_set_page", "setup")
++	editor.set_recipe(Compiler.defaults(), false)
++	weight.grab_focus()
++	weight.text = "bad"
++	weight.text_changed.emit(weight.text)
++	var selector: OptionButton = editor.get("_preset_selector")
++	selector.select(0)
++	selector.grab_focus()
++	await ui.settle()
++	check("invalid text survives leaving the field for the preset selector", weight.text == "bad" and editor.get("_pending_numbers").has("weight_multiplier"))
++	await ui.tap(KEY_SPACE)
++	await ui.tap(KEY_HOME)
++	for unused in 5: await ui.tap(KEY_DOWN)
++	await ui.tap(KEY_ENTER)
++	check("keyboard preset selection refuses invalid text and restores field focus", not selector.get_popup().visible and weight.text == "bad" and root.gui_get_focus_owner() == weight and editor.get_recipe() == Compiler.defaults())
++	# Explicit correction retains the existing submit/focus-loss commit semantics.
++	weight.text = "0.731"
++	weight.text_changed.emit(weight.text)
++	await ui.tap(KEY_ENTER)
++	check("keyboard correction commits the exact accepted value", editor.get_recipe().weight_multiplier == 0.731 and editor.get("_pending_numbers").is_empty())
++	select_preset("fast")
++	check("resolved numeric edit permits a later preset", editor.get_recipe().control_multiplier == 1.15 and editor.get_compiled().ok)
++
++	# Save, reload and the real frozen trial consume precisely the accepted recipe.
++	editor.set_recipe(measured, false)
++	select_preset("fast")
++	accepted = editor.get_recipe()
++	editor.get("_variant_name").text = "Scoped preset fixture"
++	var saved: bool = editor.call("_save_variant")
++	check("reviewed measured preset saves", saved)
++	if saved:
++		var loaded: Dictionary = Store.load_variant(editor.get("_saved_variant_id"), editor.variants_root)
++		check("stored recipe retains measurements and every reviewed value", loaded.ok and loaded.variant.recipe == accepted)
++		editor.call("_load_variant_snapshot", loaded.variant.id)
++		check("editor reload retains the accepted recipe", editor.get_recipe() == accepted)
++	editor.call("_request_trial")
++	var frozen: Dictionary = Trial.freeze(payloads[0]) if payloads.size() == 1 else {"ok": false}
++	check("Test fly consumes the exact reviewed measured recipe", payloads.size() == 1 and payloads[0].recipe == accepted and frozen.ok and frozen.identity.compiler == Compiler.SURFACE_CONTROLS_COMPILER_VERSION)
++	var fixture_root := ProjectSettings.globalize_path(str(editor.variants_root))
++	editor.free()
++	await process_frame
++	_remove_fixture(fixture_root)
++	print("Workshop presets: %d checks, %d failures" % [checks, failures])
++	quit(1 if failures else 0)
++
++func _remove_fixture(path: String) -> void:
++	assert(path.begins_with(ProjectSettings.globalize_path("user://test_workshop_presets_")))
++	var directory := DirAccess.open(path)
++	if directory == null: return
++	for file: String in directory.get_files(): DirAccess.remove_absolute(path.path_join(file))
++	for child: String in directory.get_directories(): _remove_fixture(path.path_join(child))
++	DirAccess.remove_absolute(path)
+diff --git a/app/tests/test_workshop_presets.gd.uid b/app/tests/test_workshop_presets.gd.uid
+new file mode 100644
+--- /dev/null
++++ b/app/tests/test_workshop_presets.gd.uid
+@@ -0,0 +1 @@
++uid://og4lllsew6la

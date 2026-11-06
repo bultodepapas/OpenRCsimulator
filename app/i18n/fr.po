@@ -9415,6 +9415,25 @@ msgstr "Prairie"
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Touffes d'herbe, de trèfle et de fleurs sauvages des deux côtés de la piste. Désactivée, elle allège le travail du GPU sur les ordinateurs plus lents. La désactivation s'applique immédiatement ; l'activation s'applique au prochain vol. La densité suit le détail de la scène."
 
+# Fuel widget messages.
+msgid "Liquid responds to flight loads. Quantity comes from the fuel tanks."
+msgstr "Le liquide réagit aux charges de vol. La quantité provient des réservoirs de carburant."
+
+msgid "TURBINE"
+msgstr "TURBINE"
+
+msgid "NITRO / GLOW"
+msgstr "NITRO / GLOW"
+
+msgid "GASOLINE"
+msgstr "ESSENCE"
+
+msgid "No usable fuel · land now"
+msgstr "Plus de carburant utilisable · atterrissez maintenant"
+
+msgid "Fuel telemetry unavailable"
+msgstr "Télémétrie carburant indisponible"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "DANGER"

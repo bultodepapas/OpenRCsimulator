@@ -9268,6 +9268,25 @@ msgstr "Prato"
 msgid "Clumps of grass, clover and wildflowers along both runway sides. Off saves GPU work on slower computers. Turning it off applies at once; turning it on applies at the next flight. Density follows Scene detail."
 msgstr "Ciuffi d'erba, trifoglio e fiori selvatici su entrambi i lati della pista. Disattivato riduce il lavoro della GPU sui computer più lenti. La disattivazione si applica subito; l'attivazione si applica al volo successivo. La densità segue il dettaglio della scena."
 
+# Fuel widget messages.
+msgid "Liquid responds to flight loads. Quantity comes from the fuel tanks."
+msgstr "Il liquido reagisce ai carichi di volo. La quantità proviene dai serbatoi di carburante."
+
+msgid "TURBINE"
+msgstr "TURBINA"
+
+msgid "NITRO / GLOW"
+msgstr "NITRO / GLOW"
+
+msgid "GASOLINE"
+msgstr "BENZINA"
+
+msgid "No usable fuel · land now"
+msgstr "Carburante utilizzabile esaurito · atterra subito"
+
+msgid "Fuel telemetry unavailable"
+msgstr "Telemetria del carburante non disponibile"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "PERICOLO"

@@ -9514,6 +9514,24 @@ msgstr "Verringere das Gas zum Scharfschalten."
 msgid "Flight model under development."
 msgstr "Das Flugmodell befindet sich in Entwicklung."
 
+msgid "Liquid responds to flight loads. Quantity comes from the fuel tanks."
+msgstr "Die Flüssigkeit reagiert auf Flugbelastungen. Die Menge stammt aus den Kraftstofftanks."
+
+msgid "TURBINE"
+msgstr "TURBINE"
+
+msgid "NITRO / GLOW"
+msgstr "NITRO / GLOW"
+
+msgid "GASOLINE"
+msgstr "BENZIN"
+
+msgid "No usable fuel · land now"
+msgstr "Kein nutzbarer Kraftstoff · sofort landen"
+
+msgid "Fuel telemetry unavailable"
+msgstr "Kraftstofftelemetrie nicht verfügbar"
+
 msgid "Apply or cancel pending fields before applying a preset."
 msgstr "Übernehmen oder verwerfen Sie ausstehende Feldeingaben, bevor Sie eine Voreinstellung anwenden."
 

@@ -1,0 +1,163 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Parameter "mem" is null.
+   at: alloc_static (core/os/memory.cpp:104)
+
+================================================================
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+CrashHandlerException: Program crashed with signal 11
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+Engine version: Godot Engine v4.8.beta2.official (cafc17a192acf67903910a68aeb3c076c0907a4b)
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+Dumping the backtrace. Please include this when reporting the bug on: https://github.com/godotengine/godot/issues
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+Load address: 7ff5621b0000
+
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[1] 7ff6a60c0421 (main+7ff6a60c0421) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[2] 7ffc784e1b72 (main+7ffc784e1b72) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[3] 7ffc7852640e (main+7ffc7852640e) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[4] 7ffc783d2326 (main+7ffc783d2326) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[5] 7ffc78525d4d (main+7ffc78525d4d) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[6] 7ff6a5af4e95 (main+7ff6a5af4e95) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[7] 7ff6a5d9c0b8 (main+7ff6a5d9c0b8) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[8] 7ff6a5e22803 (main+7ff6a5e22803) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[9] 7ff6a5d89869 (main+7ff6a5d89869) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[10] 7ff6a5d89a74 (main+7ff6a5d89a74) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[11] 7ff6a459b93a (main+7ff6a459b93a) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[12] 7ff6a2228d1b (main+7ff6a2228d1b) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[13] 7ff6a2224b14 (main+7ff6a2224b14) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[14] 7ff6a8440172 (main+7ff6a8440172) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[15] 7ff6a21b10c8 (main+7ff6a21b10c8) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[16] 7ff6a21b13f5 (main+7ff6a21b13f5) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[17] 7ffc76ece8d6 (main+7ffc76ece8d6) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+[18] 7ffc7844c53b (main+7ffc7844c53b) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to print an error, another error was printed:
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+While attempting to p[19] -1 (main+-1) - no debug info in PE/COFF executable
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+-- END OF C++ BACKTRACE --
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)
+================================================================
+ERROR: Condition "p_image.is_null()" is true.
+   at: add_image (scene/gui/rich_text_label.cpp:4565)

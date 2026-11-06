@@ -1,0 +1,87 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   fixture has two compatible measured components
+FAIL More power retains exact measurements and provenance
+FAIL More power retains explicit individual control travel
+ok   preset applies its supported declared control change
+ok   unchanged scale preserves legacy size identity
+ok   preset preserves presentation and records one Undo
+ok   one Undo restores the complete measured recipe
+ok   one Redo restores the reviewed preset recipe
+ok   repeating the same preset creates no history entry
+FAIL refused preset preserves compiled values, presentation and Redo
+FAIL Redo remains usable after refusing a preset
+ok   fixture exposes an incompatible accepted recipe
+ok   compatible preset can repair a compiler-invalid recipe without removing measurements
+FAIL mini refuses an incompatible measured recipe without data loss
+FAIL mini refusal leaves no history and no applied preset label
+FAIL mini refusal explains the preserved measurement constraint
+FAIL light refuses an incompatible measured recipe without data loss
+FAIL light refusal leaves no history and no applied preset label
+FAIL light refusal explains the preserved measurement constraint
+FAIL heavy refuses an incompatible measured recipe without data loss
+FAIL heavy refusal leaves no history and no applied preset label
+FAIL heavy refusal explains the preserved measurement constraint
+FAIL agile refuses an incompatible measured recipe without data loss
+FAIL agile refusal leaves no history and no applied preset label
+FAIL agile refusal explains the preserved measurement constraint
+FAIL slow refuses an incompatible measured recipe without data loss
+FAIL slow refusal leaves no history and no applied preset label
+FAIL slow refusal explains the preserved measurement constraint
+FAIL giant refuses an incompatible measured recipe without data loss
+FAIL giant refusal leaves no history and no applied preset label
+FAIL giant refusal explains the preserved measurement constraint
+FAIL mini preserves unrelated tank capacity and individual travel
+ok   mini accepts a compatible patch as one Undo
+ok   mini changes size identity only when scale changes
+ok   mini Undo restores all authored values
+FAIL giant preserves unrelated tank capacity and individual travel
+ok   giant accepts a compatible patch as one Undo
+ok   giant changes size identity only when scale changes
+ok   giant Undo restores all authored values
+FAIL light preserves unrelated tank capacity and individual travel
+ok   light accepts a compatible patch as one Undo
+ok   light changes size identity only when scale changes
+ok   light Undo restores all authored values
+FAIL heavy preserves unrelated tank capacity and individual travel
+ok   heavy accepts a compatible patch as one Undo
+ok   heavy changes size identity only when scale changes
+ok   heavy Undo restores all authored values
+FAIL fast preserves unrelated tank capacity and individual travel
+ok   fast accepts a compatible patch as one Undo
+ok   fast changes size identity only when scale changes
+ok   fast Undo restores all authored values
+FAIL agile preserves unrelated tank capacity and individual travel
+ok   agile accepts a compatible patch as one Undo
+ok   agile changes size identity only when scale changes
+ok   agile Undo restores all authored values
+FAIL slow preserves unrelated tank capacity and individual travel
+ok   slow accepts a compatible patch as one Undo
+ok   slow changes size identity only when scale changes
+ok   slow Undo restores all authored values
+FAIL pending 'bad' survives preset unchanged
+FAIL pending 'bad' refusal is focusable and undo-neutral
+FAIL invalid 'bad' keeps Save and Test fly blocked
+FAIL invalid 'bad' emits no trial payload
+ok   explicit Back cancels only the numeric buffer
+FAIL pending '' survives preset unchanged
+FAIL pending '' refusal is focusable and undo-neutral
+FAIL invalid '' keeps Save and Test fly blocked
+FAIL invalid '' emits no trial payload
+ok   explicit Back cancels only the numeric buffer
+FAIL pending '999' survives preset unchanged
+FAIL pending '999' refusal is focusable and undo-neutral
+FAIL invalid '999' keeps Save and Test fly blocked
+FAIL invalid '999' emits no trial payload
+ok   explicit Back cancels only the numeric buffer
+FAIL pending '0.731' survives preset unchanged
+FAIL pending '0.731' refusal is focusable and undo-neutral
+ok   explicit Back cancels only the numeric buffer
+FAIL preset refusal reveals a hidden invalid surface field
+ok   preset preserves unresolved presentation text and accepted recipe
+FAIL presentation refusal returns focus to the pending field
+ok   reviewed measured preset saves
+ok   stored recipe retains measurements and every reviewed value
+ok   editor reload retains the accepted recipe
+FAIL Test fly consumes the exact reviewed measured recipe
+Workshop presets: 84 checks, 46 failures

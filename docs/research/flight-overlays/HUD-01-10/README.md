@@ -743,11 +743,21 @@ no automatic clock, screen copy or background blur. This establishes bounded UI 
 
 Checked native Windows / Godot 4.8-beta2 results: `test_alert_policy.gd` **33**, `test_warning_settings.gd`
 **35**, `test_warning_presentation.gd` **29**, `test_overlay_manager.gd` **222**,
-`test_overlay_battery_flight.gd` **12**, and `test_overlay_fuel_flight.gd` **21** checks, all passed.
+`test_overlay_battery_flight.gd` **12**, and `test_overlay_fuel_flight.gd` **25** checks, all passed.
 Receipts are in `tmp/godot-checks/` under `alerts-policy-invalid-data-*`, `alerts-manager-final-*`,
 `alerts-battery-flight-*` and `alerts-fuel-flight-*`; presentation receipts are under
 `tmp/alerts-glass-ui-final/checks/`. Geometry coverage includes Spanish action/badge sizing, compact critical
 overflow, a 480 px narrow-window fixture, 720p compatibility, and a 1080p Spanish 200% settings fixture.
+The extended production fuel check uses the real gasoline/turbine exhaustion transition and accepted source-off
+latch; the paused alert replaces reserve reminders without modifying the accepted fuel state. Its final receipt
+is `alerts-accepted-empty-fuel-final-*`. The settings test also passed in isolation under `alerts-settings-isolated-*`
+after a parallel final run hit an engine allocation failure.
+
+All eight translated catalogs include the 40 new alert messages. Six adjacent fuel-widget messages that were
+missing from the other seven catalogs were completed too. The serialized `test_ui_language.gd` run passed
+all language checks, including coverage of **2,659** source messages per catalog, format arguments, bundled
+glyphs, switching and preference restart behavior (`tmp/godot-checks/alerts-language-isolated-*`).
+The earlier parallel language run's allocation failure is retained under `alerts-languages-*`; it is not a pass.
 
 Native rendered review used the debug bridge on Windows / NVIDIA RTX 3090 / OpenGL Compatibility, first at
 **1920×1080**, then **2560×1440**. English and Spanish alert fixtures have readable severity, titles and
@@ -763,3 +773,43 @@ The shared branch advanced during implementation; runtime SHA-256 identifies the
 `warnings_bar.gd` = `ae32991e5cb32f5f5dd9567019eed5ec6782b11bbd163ae36d1d221706d89971`;
 `overlay_manager.gd` = `850af74740dc4f9e52703830dd418a39c21f2a94edc84de9a6723147d48e5d11`.
 Full CI, other-hardware performance and pilot acceptance remain separate.
+
+### G-driven waves, bubbles and foam (2026-11-06, HUD-13-R14-R2)
+
+Research and tool selection preceded implementation. [PWira's 2D Liquid Wave](https://godotshaders.com/shader/2d-liquid-wave/)
+provides freely reusable MIT shader code; its value noise and noisy foam approach were adapted, with the full
+notice in `app/render/overlays/FUEL_LIQUID_LICENSE.txt`. No upstream images or new dependencies were imported.
+[GPU Gems' wave chapter](https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-1-effective-water-simulation-physical-models)
+informed the multi-mode surface, and the [SwRI slosh references](https://www2.swri.org/www2/fluid-slosh/slosh-dynamics.htm)
+provide mechanical-analog background. These sources do not validate this HUD's parameters against a real fuel tank.
+[Godot's compute documentation](https://docs.godotengine.org/en/stable/tutorials/shaders/compute_shaders.html)
+excludes the Compatibility renderer from compute support; the existing CanvasItem shader and simulation clock
+therefore remain the implementation. The checked runner and debug bridge provide acceptance evidence.
+
+The bounded angular spring and bubble phase now scale with square-root projected g. Three standing surface
+modes use the actual surface chord, so waves retain useful shape on either wall or the roof. Maneuver impulses
+excite a separate air envelope that decays more slowly than wave energy. Sixteen procedural hollow bubbles rise
+opposite apparent down; broken foam patches sit on the wet side of the meniscus. Numeric fuel remains accepted
+simulation data. This is a 2D visual approximation, not CFD, tank-specific slosh or fuel-feed prediction.
+
+The first rendered pass found air effects too faint under smaller load changes. Perceptual gain and stronger
+bubble rims corrected that without changing the accepted quantity. Preview force captions were also corrected.
+Final checked result: **133 fuel-widget checks** (including 80 non-rendered assertions), plus **21 production-fuel
+checks** across glow, gasoline and turbine aircraft. Coverage includes both knife edges, inverted positive/negative
+g, high/low g response, decay, clipping, transparency, empty/full/unknown guards, pause, lifecycle resets, area at
+rest, and CPU/shader agreement across the 1024-second clock and both effect-phase rollovers. Receipts:
+`tmp/fuel-aeration-checks/`; final 1920×1080 fixtures: `tmp/fuel-aeration-preview-clock-checked/`.
+
+Live Extra 300 flight on Windows / Godot 4.8-beta2 / OpenGL Compatibility / RTX 3090 at 1920×1080 reached
+**87.713°** bank (tick 103), **175.895°** inverted (tick 179, vertical load **−2.350 g**), and **−92.059°** bank
+(tick 259). Inverted fuel visibly moved to the roof with aeration and a moving meniscus. These are transient
+maneuver samples, not sustained trim. Logs and captures: `tmp/debug-bridge/20261106-145532-47870/`, shots 002–003;
+shot 001 has a focus-loss pause menu obscuring the HUD. No script/shader diagnostics, crash or exit leaks occurred.
+Some glyphs in the last live capture again showed the previously recorded intermittent font issue; controlled
+fixtures remain clear. Raw render timings were observed, but the attempted isolated shader ablation was rejected
+as an unknown/hidden target, so no shader-cost or wider performance qualification is claimed.
+
+Final SHA-256: `fuel_instrument.gd` = `cf2e2e9d34b1e131fa903937e68ab4a355808b0fa7917ba8828a878e998d0b24`;
+`fuel_liquid.gdshader` = `1a5a32acd0ea29ec9e633102221d5f72e36573b97bbc51c0e962b84ee553fbad`;
+`test_fuel_instrument.gd` = `f6abce32405e722f63e0ba4ec084c8580fe941205e22aa3b6f724ee8313801ef`.
+No images are added to Git. Full CI, other-GPU performance and physical slosh validation remain separate.

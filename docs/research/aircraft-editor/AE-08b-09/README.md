@@ -2,6 +2,16 @@
 
 **Date:** 2026-10-19. **Gate:** partial; current physical-editor interface delivered, broader product/user acceptance open. The [guide](../../../AIRCRAFT-WORKSHOP.md) owns operating instructions; the [AE plan](../../../plans/aircraft-editor.md#59-menus-workflow-and-visual-design) owns remaining work.
 
+## Preset integrity (AE-09d-R1, 2026-11-06)
+
+[A14 F10](../../../../external%20Audits/CONSOLIDATED-AUDITS.md) reproduced silent loss of measured components and unresolved numeric input when selecting a Starting preset. Presets now patch the current recipe within their declared supported fields and compile the proposal before publication. Measurements, tank capacity, individual surface overrides and presentation remain intact; incompatible combinations and pending fields are refused. Refusal preserves history and returns pending-field focus, including collapsed advanced controls. Direct master-travel edits retain their existing reset semantics.
+
+The original source at `d0b672b09` fails 46 of the initial 84 regression assertions with zero engine errors. The final regression passes **88 checks**, including real keyboard popup selection and correction, measured-component compatibility, exact Undo/Redo, Save/reload and frozen trial payloads. Existing Workshop UI, measured-recipe, customization and recovery suites add **319 passing checks**. All five reports are complete with zero engine errors or warnings. An independent source review found no remaining blocking defect.
+
+The broader language suite passes 97 assertions but fails seven catalog-coverage assertions: six fuel-widget strings were already missing from the seven non-Spanish catalogs at `d0b672b09`. Both new preset messages have translations in all eight catalogs. These failures are retained rather than reported as a passing language gate; subsequent shared catalog edits are outside this frozen run.
+
+[Verification and source identities](preset-integrity-20261106/verification.json) retain the baseline, final receipts and language failure. Tests used the pinned Windows Godot 4.8-beta2, headless/Dummy audio, isolated preferences and a frozen checkout; the new fixture uses a 1920×1080 logical viewport. Resource import initially failed, then completed cleanly; those attempts are retained separately. The shared tree incorporated the implementation in `f4c81eca4` during verification. Exact source comparison ties the tested Workshop files to that tree. No rendered-layout, physical-device, full-CI or aircraft-realism qualification is claimed; no solver, aircraft data or golden flight changed.
+
 ## Delivered scope
 
 - Flight setup/Compare pages, a large isolated Inspect/Compare preview, standard views, orbit/zoom/reset, exact size/grid labels and one-shot redraws. Front follows the renderer's −Z nose convention. Compact inspection expands the model area and retains Edit and Save/Test fly.
