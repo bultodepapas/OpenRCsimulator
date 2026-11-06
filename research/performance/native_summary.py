@@ -1265,15 +1265,41 @@ def _effective_render_matches(scenario: dict[str, Any], report: dict[str, Any]) 
         if mode not in ("native", "metalfx_spatial_85", "metalfx_spatial_quality"):
             return False
         auto_size, window_size = policy.get("auto_output_size"), start.get("window_size_property")
-        visible, reported_visible = start.get("visible_rect_size"), reported_policy.get("output_size")
+        visible = start.get("visible_rect_size")
         if (not isinstance(auto_size, list) or len(auto_size) != 2
-                or any(type(value) is not int or value <= 0 for value in auto_size)
+                or any(type(value) is not int or value <= 0 or not _is_number(value) for value in auto_size)
                 or window_size != auto_size
                 or not isinstance(window_size, list) or len(window_size) != 2
                 or any(type(value) is not int or value <= 0 for value in window_size)
                 or not isinstance(visible, list) or len(visible) != 2
-                or not isinstance(reported_visible, list) or len(reported_visible) != 2
-                or any(not _is_number(value) or value <= 0 for value in visible + reported_visible)
+                or any(not _is_number(value) or value <= 0 for value in visible)):
+            return False
+        output_scope = reported_policy.get("output_size_scope")
+        reported_output = reported_policy.get("output_size")
+        if "output_size_scope" not in reported_policy:
+            # Older receipts called the logical canvas size output_size.
+            if "logical_canvas_size" in reported_policy or "nominal_3d_size_scope" in reported_policy:
+                return False
+            reported_visible = reported_output
+        elif output_scope == "viewport_render_target_estimate_v1":
+            reported_visible = reported_policy.get("logical_canvas_size")
+            nominal = reported_policy.get("nominal_3d_size")
+            reported_scale = reported_policy.get("scale")
+            if (not isinstance(reported_output, list) or len(reported_output) != 2
+                    or any(type(value) is not int or value <= 0 for value in reported_output)
+                    or reported_output != auto_size
+                    or reported_policy.get("nominal_3d_size_scope") != "scaled_viewport_estimate_not_sdk_execution"
+                    or not isinstance(nominal, list) or len(nominal) != 2
+                    or any(type(value) is not int or value <= 0 for value in nominal)
+                    or not _is_number(reported_scale) or not 0.1 <= reported_scale <= 2.0
+                    or any(not _is_number(pixels * reported_scale) for pixels in reported_output)
+                    or any(value != max(1, int(pixels * reported_scale))
+                           for value, pixels in zip(nominal, reported_output))):
+                return False
+        else:
+            return False
+        if (not isinstance(reported_visible, list) or len(reported_visible) != 2
+                or any(not _is_number(value) or value <= 0 for value in reported_visible)
                 or any(not _close(a, b, tolerance=1e-6) for a, b in zip(visible, reported_visible))):
             return False
     if mode not in BENCHMARK_RECONSTRUCTION:

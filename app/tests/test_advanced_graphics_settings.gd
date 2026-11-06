@@ -144,13 +144,18 @@ func _run() -> void:
 		and settings._fsr2_sharpness_slider.tooltip_text.contains(
 			"inactive while Native is active" if dlss_policy.fallback else "DLSS controls its own reconstruction sharpness")
 		and settings._fsr2_sharpness_slider.tooltip_text.contains("FSR2 or FSR3"))
-	var current_output := settings.get_viewport().get_visible_rect().size
-	var expected_dimensions := "%d × %d" % [roundi(current_output.x), roundi(current_output.y)]
+	# AppRoot uses CanvasItems + Expand: the render target fills the native window, independently of UI canvas units.
+	var current_output := root.size
+	var expected_dimensions := tr("Estimated 3D input: %d × %d → Output: %d × %d") % [
+		int(current_output.x * root.scaling_3d_scale), int(current_output.y * root.scaling_3d_scale),
+		current_output.x, current_output.y]
 	_check("graphics status shows requested and effective providers",
 		settings._graphics_info.text.contains(tr("Reconstruction: Requested %s → Active %s")
 			% [tr("DLSS · Quality"), tr("Native") if dlss_policy.fallback else tr("DLSS · Quality")]))
 	_check("graphics status shows the current 3D input and output sizes",
-		settings._graphics_info.text.contains(expected_dimensions))
+		root.content_scale_mode == Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+		and root.content_scale_aspect == Window.CONTENT_SCALE_ASPECT_EXPAND
+		and settings._graphics_info.text.contains(expected_dimensions))
 	_check("unsupported provider explanation names the actual graphics limitation in player language",
 		settings._reconstruction_unavailable_text("fsr3", "fsr3_support_missing").contains("game build")
 		and not settings._reconstruction_unavailable_text("fsr3", "fsr3_support_missing").contains("native extension"))

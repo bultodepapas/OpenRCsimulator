@@ -1539,6 +1539,55 @@ class BenchmarkHealthTests(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertFalse(run(mutate)["performance_pass"])
 
+        def scaled_canvas(s: dict, report: dict) -> None:
+            for endpoint in ("start", "end"):
+                snapshot = s["effective_render"][endpoint]
+                snapshot.update(window_size_property=[2560, 1600], visible_rect_size=[1920, 1200])
+                snapshot["reconstruction"]["auto_output_size"] = [2560, 1600]
+            report["render_settings"]["reconstruction"].update(
+                auto_output_size=[2560, 1600], output_size=[1920, 1200])
+
+        # Historical reports used output_size for the logical canvas.
+        self.assertTrue(run(scaled_canvas)["performance_pass"])
+
+        def corrected_canvas(s: dict, report: dict) -> None:
+            scaled_canvas(s, report)
+            report["render_settings"]["reconstruction"].update(
+                output_size=[2560, 1600], output_size_scope="viewport_render_target_estimate_v1",
+                logical_canvas_size=[1920, 1200], nominal_3d_size=[2560, 1600],
+                nominal_3d_size_scope="scaled_viewport_estimate_not_sdk_execution")
+
+        self.assertTrue(run(corrected_canvas)["performance_pass"])
+        new_mutations = {
+            "missing scope": lambda p: p.pop("output_size_scope"),
+            "null scope": lambda p: p.update(output_size_scope=None),
+            "unknown scope": lambda p: p.update(output_size_scope="physical_display"),
+            "output is logical": lambda p: p.update(output_size=[1920, 1200]),
+            "logical size mismatch": lambda p: p.update(logical_canvas_size=[2560, 1600]),
+            "boolean output": lambda p: p.update(output_size=[True, 1600]),
+            "nominal size mismatch": lambda p: p.update(nominal_3d_size=[1280, 800]),
+            "nominal scope missing": lambda p: p.pop("nominal_3d_size_scope"),
+            "nominal claims SDK execution": lambda p: p.update(nominal_3d_size_scope="sdk_observed"),
+            "unbounded scale": lambda p: p.update(scale=1e308),
+        }
+        for name, mutate in new_mutations.items():
+            def change(s: dict, report: dict) -> None:
+                corrected_canvas(s, report)
+                mutate(report["render_settings"]["reconstruction"])
+            with self.subTest(name=name):
+                self.assertFalse(run(change)["performance_pass"])
+
+        def unbounded_size(s: dict, report: dict) -> None:
+            corrected_canvas(s, report)
+            huge = [10**400, 1600]
+            for endpoint in ("start", "end"):
+                snapshot = s["effective_render"][endpoint]
+                snapshot["window_size_property"] = huge
+                snapshot["reconstruction"]["auto_output_size"] = huge
+            report["render_settings"]["reconstruction"].update(auto_output_size=huge, output_size=huge)
+
+        self.assertFalse(run(unbounded_size)["performance_pass"])
+
         def unverified_metalfx(s: dict, report: dict) -> None:
             for endpoint in ("start", "end"):
                 snap = s["effective_render"][endpoint]

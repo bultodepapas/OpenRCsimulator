@@ -146,6 +146,14 @@ func _run() -> void:
 	_check("game volume drives the Master bus: 50 % = -6.02 dB, 0 mutes, 100 % restores 0 dB",
 		absf(half_db - linear_to_db(0.5)) < 1e-4 and not half_muted and zero_muted
 		and AudioServer.get_bus_volume_db(master_bus) == 0.0 and not AudioServer.is_bus_mute(master_bus))
+	test_viewport.size_2d_override = Vector2i(960, 540)
+	test_viewport.size_2d_override_stretch = true
+	default_settings._refresh_graphics_info()
+	_check("graphics dimensions use viewport pixels rather than logical canvas units",
+		test_viewport.get_visible_rect().size == Vector2(960, 540)
+		and default_settings._graphics_info.text.contains("Estimated 3D input: 1920 × 1080 → Output: 1920 × 1080"))
+	test_viewport.size_2d_override = Vector2i.ZERO
+	test_viewport.size_2d_override_stretch = false
 	default_settings.queue_free()
 	await process_frame
 
