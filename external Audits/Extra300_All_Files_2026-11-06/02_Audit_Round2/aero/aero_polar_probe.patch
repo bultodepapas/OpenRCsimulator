@@ -1,0 +1,17 @@
+--- a/physics/aero_polar_probe.gd
++++ b/physics/aero_polar_probe.gd
+@@ -366,7 +366,13 @@
+ 			var source_angle: float = angles[i] if stall_back == 0.0 else angles[i] - stall_back * flap_shifts[i]
+ 			var stall: float = _smoothstep((source_angle - a1) / a_span) if source_angle >= 0.0 \
+ 				else _smoothstep((-source_angle - n1) / n_span)
+-			sources.append((speeds[i]/reference_speed) * (1.0-stall))
++			var retained: float = 1.0-stall
++			var candidate_polar: Dictionary = env.get("wing_polar", {})
++			if not candidate_polar.is_empty():
++				var factors: PackedFloat64Array = candidate_polar.get("strip_factor", PackedFloat64Array())
++				var sample_alpha: float = source_angle if factors.is_empty() else source_angle*factors[i]
++				retained = WingPolar.evaluate(sample_alpha, 0.0, candidate_polar)[2]
++			sources.append((speeds[i]/reference_speed) * retained)
+ 	else:
+ 		for i in ys.size():
+ 			sources.append(0.0)

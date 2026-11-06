@@ -1,0 +1,92 @@
+{
+  "checks": 23,
+  "failures": 0,
+  "fills": [
+    {
+      "cg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cg_error": 0.0,
+      "fill": 1.0,
+      "fuel_error": 0.0,
+      "fuel_kg": 0.30420660000000005,
+      "inertia_error": 0.0,
+      "mass_error": 0.0,
+      "mass_kg": 3.819547600000001
+    },
+    {
+      "cg": [
+        -0.0026887210701876376,
+        0.0,
+        0.0004891142433534014
+      ],
+      "cg_error": 0.0,
+      "fill": 0.75,
+      "fuel_error": 0.0,
+      "fuel_kg": 0.22815495000000002,
+      "inertia_error": 2.7755575615628914e-17,
+      "mass_error": 0.0,
+      "mass_kg": 3.7434959500000007
+    },
+    {
+      "cg": [
+        -0.005488953949172226,
+        0.0,
+        0.000998513972839763
+      ],
+      "cg_error": 0.0,
+      "fill": 0.5,
+      "fuel_error": 0.0,
+      "fuel_kg": 0.15210330000000002,
+      "inertia_error": 5.551115123125783e-17,
+      "mass_error": 0.0,
+      "mass_kg": 3.667444300000001
+    },
+    {
+      "cg": [
+        -0.00840778278888031,
+        0.0,
+        0.0015294878902317505
+      ],
+      "cg_error": 0.0,
+      "fill": 0.25,
+      "fuel_error": 0.0,
+      "fuel_kg": 0.07605165000000001,
+      "inertia_error": 5.551115123125783e-17,
+      "mass_error": 0.0,
+      "mass_kg": 3.591392650000001
+    }
+  ],
+  "log": {
+    "interventions": [
+      {
+        "keys": [
+          "continuous",
+          "modes"
+        ],
+        "tick": 5
+      },
+      {
+        "keys": [
+          "state",
+          "aux",
+          "continuous",
+          "modes"
+        ],
+        "tick": 9
+      }
+    ],
+    "mismatches": 0,
+    "ticks": 16
+  },
+  "starter": {
+    "angular_residual": 5.421010862427522e-19,
+    "fuel_after_kg": 0.07604165000000002,
+    "fuel_before_kg": 0.07605165000000001,
+    "linear_residual": 0.0,
+    "prime_kg": 1e-05,
+    "rpm": 2200.0
+  }
+}

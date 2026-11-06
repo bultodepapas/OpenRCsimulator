@@ -1,0 +1,272 @@
+EXTRA 300S — DEEP CODE AND MATHEMATICS AUDIT
+OpenRCsimulator / 6 November 2026
+
+REVIEW IDENTITY
+
+Repository: https://github.com/bultodepapas/OpenRCsimulator
+Branch: codex/m1-native-validation-20261106
+Commit: e72d878b6b4a89209dfe1a992ba119921dcdd34c
+Aircraft: gp-extra-300s-60, Great Planes GPMA0236 RC Extra 300S, finite-fuel MAX-61FX installation.
+Engine: Godot 4.8.beta2.official.cafc17a19, Linux x86-64, headless.
+The development branch head was rechecked with the GitHub connector and remained at this commit. This is not a claim about the older main branch, which was 3df2791752fe2c1faad132fcb11febbb0ae788d1 when selected.
+
+The complete external Audits/CONSOLIDATED-AUDITS.md was read before review. Its Git blob was 43583ad68c3492e7792212ed5292c756fd269dd6. Findings were cross-checked against that ledger, earlier audit context, the Extra EX-06/EX-08/EX-14 research, and GitHub issues/PRs. GitHub tools were used for repository, branch, commit, PR, and immutable source verification. PR #7 only integrated the Workshop control subset from #1; its deferred aerodynamic proposals were not treated as new discoveries.
+
+Production source was not changed. Experiments used isolated app copies and in-memory alternatives. All proposed patches are review candidates; no production fix, deployment, PR, or physical-aircraft validation is claimed.
+
+RESULTS
+
+E300-01: Physics correctness — mixed CG/ARP aerodynamic moment references.
+E300-02: Physics correctness — propeller crossflow tables omit the installed blade camber.
+E300-03: CPU optimization candidate — repeated same-stage mass, CG, inertia and inverse calculations.
+E300-04: Mesh storage tradeoff — unindexed lofts duplicate vertex attributes.
+E300-05: Resource reuse opportunity — custom paint recreates identical shader resources.
+E300-06: Presentation correctness — visual propeller blade handedness opposes its spin.
+
+E300-01 and E300-02 should be addressed before aerodynamic retuning. E300-03 has a guarded parity-tested prototype but no timing evidence. E300-04 has measured storage savings and an observed construction-time cost. E300-05 and E300-06 are lower-priority, bounded findings.
+
+1. E300-01 — AERODYNAMIC MOMENTS MIX REFERENCE POINTS
+
+Evidence and cause
+
+The aircraft contract states that aerodynamic moment coefficients are about the aerodynamic reference point (ARP), using body axes. Aero._global_loads then transfers the associated resultant force to the center of gravity:
+
+    M_CG = M_ARP + (r_ARP - r_CG) cross F.
+
+The Extra generator instead uses the loaded-CG fin height in the fin part of Clb:
+    z_v = fin_cy - cg_model_y
+    Clb = Clb_wing + dihedral_low + CYb_v * z_v / b
+
+Other nearby derivatives, including rudder roll and static yaw, correctly use ARP arms. This is a mixed-reference data-generation defect, not a reason to remove the runtime's shared transfer.
+
+Sources:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/docs/AIRCRAFT_CONTRACT.md#L61-L70
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/research/extra-300/ex05/derive_physics.py#L346-L391
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/physics/aero.gd#L216-L246
+
+Mathematical diagnosis
+
+Let CYb_fin = -a_v*S_v/S and use the documented structural z-up coordinates. The fin's coefficient supplied to this consumer must be:
+    Clb_fin_ARP = CYb_fin*(z_fin - z_ARP)/b.
+The generator supplies:
+    Clb_fin_generated = CYb_fin*(z_fin - z_CG)/b.
+Their difference is:
+    excess = -CYb_fin*(z_CG - z_ARP)/b.
+
+At the stock full-tank reference:
+    CYb_fin             = -0.355109230808814 /rad
+    z_CG - z_ARP        = 0.028424293699338 m
+    b                   = 1.6256 m
+    excess              = +0.006209232942825 /rad.
+
+This shifts the fin contribution toward less stabilizing roll in the tested attached-flow regime.
+
+Measured witness
+
+A production-code test used rho=1.225 kg/m^3, V=20 m/s, alpha=0, beta=+5 degrees, zero body rates, neutral controls, a settled wake, no ground effect and 12,000 rpm. Only Clb was adjusted in a diagnostic model copy by the independently derived fin-reference correction.
+
+                                 Stock             Reference diagnostic
+Aerodynamic roll, N m           -0.328073977873    -0.431661020058
+Combined external roll, N m     -0.919020790990    -1.022607833175
+Difference, N m                                    -0.103587042185
+
+The aerodynamic difference is 24.0% of the diagnostic aerodynamic roll moment; it is approximately 10.1% of the diagnostic combined roll moment at this positive-beta state. Do not present 24% as an error in the whole aircraft's roll response. The same magnitude changes sign at beta=-5 degrees. The other five load components and propeller/slipstream contributions stay unchanged. The local-flow selector is exactly zero, so this is not a stall-blending artifact.
+
+The rate coefficients have a related, smaller inconsistency. Cmq is explicitly generated and labeled about the CG, while Cnr's fin term uses a squared CG arm. The attached consumer nevertheless transfers the accompanying rate forces again. Central differences at rates +/-1e-5 rad/s give:
+    pitch: generated CG Cmq -9.360761; effective -9.157953337632;
+    yaw: generated Cnr -0.180871; effective -0.178733953118.
+These match the transfer terms CLq*(cg_x-arp_x)/c and CYr*(cg_x-arp_x)/b. They are approximately 2.17% and 1.18% less negative. This does not establish that every derivative is wrong; wing/fuselage approximations and rate-velocity reference points require individual treatment.
+
+Repair and regression
+
+Correct the Extra generator's fin static Clb arm to the ARP. Keep the wing/body estimates distinct. The fuselage side force is already defined at the ARP; a blanket correction using total CYb would incorrectly move it as if it were fin force. For rate moments, distinguish the arm defining rotational local inflow from the arm defining the moment about ARP. Review the associated force derivative and all component contributions before changing Cmq or Cnr.
+
+Add independent component-force/arm assertions to the generator and compare both signs of beta and rates in production loads. The loader already has an optional fin/wing Clb relation, but enabling wing_body_cl_beta also changes the local-regime roll couple at aero.gd:666-671. That flag is not a validation-only fix. A narrow generator invariant is safer.
+
+Regenerate the owned aircraft output and dependent identities. Qualify transitions between global/local models, fuel states and fixed-datum/live-CG transfers, replay and reference/native behavior. A diagnostic moment-datum shift in the new test proves the algebraic -delta_r cross F relation; it is not an accepted-tick fuel-burn test.
+
+Evidence: probes/aero/test_reference_witness.gd; receipts/aero/reference-witness-datum-wi2nfqxi. 29 checks passed. Existing body-side-force (25 checks) and Extra-post-stall (7 checks) programs passed on the baseline. See supporting/AERODYNAMICS.txt for all details and exploration limits.
+
+2. E300-02 — PROPELLER CROSSFLOW TABLES USE A DIFFERENT BLADE SECTION
+
+Evidence and cause
+
+The installed Extra propeller has zero_lift_angle_rad = -0.10223236266152576, approximately -5.8575 degrees. The runtime's annular model correctly uses:
+    alpha = beta - phi - zero_lift_angle.
+
+However, derive_physics.py constructs the section dictionary used to generate normal_force and pfactor_moment with lift slope, profile drag, induced drag and blade count, omitting zero_lift_angle_rad. The Python annular mirror defaults that missing value to zero. The generator's own comments and generated provenance say these coefficients come from the same installed glow propeller.
+
+Sources:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/research/extra-300/ex05/derive_physics.py#L493-L527
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/research/glow-engines/calibration_report.py#L470-L500
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/physics/glow/propeller.gd#L39-L89
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/data/glow/extra_61fx_2t.json#L203-L207
+
+The source-section assembly can be corrected with the existing optional parameter:
+    "zero_lift_angle_rad": gp.get("zero_lift_angle_rad", 0.0)
+
+This restores declared-method consistency; it does not independently validate the crossflow law or the borrowed propeller fit.
+
+Measured table differences
+
+All 44 shipped rows (22 for each coefficient) exactly reproduce the unmodified generator block. Adding only the omitted section parameter yields:
+
+Advance J      CN stock       CN consistent       CM stock       CM consistent
+0.30           0.001884       0.002474            0.002999       0.005058
+0.50           0.004456       0.006239            0.002978       0.006713
+0.70           0.006712       0.010410            0.000957       0.006488
+0.80           0.007221       0.012175            0.000000       0.005572
+
+At J=0.5, stock CN is 28.58% below the consistent result; stock CM is 55.64% below it. At J=0.8 the current table clips CM to zero while the same declared method with installed camber remains positive.
+
+An independent simplification of the generator's equations gives, before clamping and six-decimal rounding:
+    delta_CN = 3*J^2/(2*pi^2) * delta_CT
+    delta_CM = J/(2*pi) * delta_CT.
+The probe checks these identities as well as a zero-camber negative control.
+
+At 12,000 rpm, D=0.3048 m and J=0.5, axial speed is 30.48 m/s. The symmetric intermediate model would produce -0.18517 N thrust while the installed cambered model produces +19.66442 N. The game already uses the latter thrust. The defect is that it combines that correct installed thrust with crossflow tables generated from the former section.
+
+Production-load consequence
+
+Using the real Propulsion functions at rho=1.225 kg/m^3 and a 10-degree disc-flow angle:
+
+                                 Stock             Consistent table diagnostic
+Normal-force magnitude, N        0.3272437365       0.4581852945
+P-factor moment magnitude, N m   0.0666600779       0.1502649775
+
+For the vertical-crossflow test, the full propulsion wrench changes by about -0.083602 N m in yaw and +0.047535 N m in pitch (including the normal-force arm). Shaft thrust and shaft torque are byte-identical between the two in-memory table variants. Both vertical and horizontal crossflow directions, zero RPM and shaft-aligned controls are checked. These are valid static operating points, not trimmed-flight or real-aircraft validation.
+
+Repair and regression
+
+Use one installation-to-section adapter so the generator cannot silently omit a newly added optional section parameter. The existing calibration reader already carries camber correctly at calibration_report.py:77-82; avoid another manually maintained incomplete mapping. Regenerate the aircraft tables and dependent descriptors through the owning pipeline. Record the resulting model change intentionally.
+
+The current test_extra_installation passes 17/17 but computes its normal-force and P-factor expectations from the same shipped tables. It is an excellent assembly check; it does not detect this generator-to-installation disagreement. Add an independent generated-table/installed-section consistency check while retaining the existing test.
+
+Evidence: probes/propeller/probe_propeller_camber.py; probes/propeller/probe_camber_loads.gd; results/propeller/camber_tables.json; results/propeller/runtime_loads.json; patches/generator_camber_candidate.patch. Production-load witness: 46 checks passed.
+
+3. E300-03 — IDENTICAL MASS PROPERTIES ARE COMPUTED TWICE PER ORDINARY EXTRA STAGE
+
+flight.point() calls _stage_mass_context and obtains mass, CG, inertia and inverse. It only returns that result as evaluation.mass when an airframe result was needed for the optional fuel-feed model. Stock Extra has no fuel_feed. flight.evaluate() therefore receives no mass and recomputes properties from the same ordinary single-tank state.
+
+Sources:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/physics/glow/flight.gd#L445-L462
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/physics/glow/flight.gd#L569-L583
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/physics/glow/flight.gd#L666-L682
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/physics/mass_inventory.gd#L228-L276
+
+This rebuilds the six inertia components and their inverse, with packed-array/dictionary work, rather than merely rereading a scalar. At four RK stages and 240 Hz, the ordinary route incurs 960 duplicate evaluations per simulated second. This count excludes event trials, endpoints, observers and extra contact substeps, and is not a timing measurement.
+
+If soft-hull evaluation activates near the flat-ground reference, _ground_evaluation calls properties yet again. Its optional properties argument already supports reuse, but _airframe does not supply it. Source:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/sim/flight_session.gd#L4373-L4393
+
+Guarded experiment
+
+The included one-file patch exposes a private stage-only reuse payload under a narrow guard:
+    no fuel_feed; no feed_line; line mass exactly zero; 0 < fuel <= capacity.
+The default public point() payload stays unchanged. Other cases use the existing recomputation. It removes one evaluation per qualifying stage: 2 to 1 airborne and 3 to 2 on the qualifying soft-hull route. It does not implement the additional ground reuse.
+
+Checks:
+- 1,010 finite amount samples plus nonfinite controls compared the local mass functions.
+- 90 direct stages: 72 accepted and 18 refused; exact serialized-output digests match.
+- Default public point results match for the same cases.
+- 48 accepted airborne/engine-cut ticks, 16 runway ticks, four near-exhaustion ticks and two event records match.
+- Existing glow-flight physics: 110 checks passed on baseline and candidate.
+
+Limits and implementation direction
+
+This prototype is not production-ready. An explicitly requested point(..., true) payload changes. Supported callback dispatch, possible mutation between callbacks, solver identities, native/reference behavior, full recordings/checkpoints/replays and the wider supported fleet still require qualification. Do not infer a CPU percentage from removed call counts or from runner wall time.
+
+Use one private, validated, stage-local context and pass it to the consumers that need it, retaining exact evaluation/refusal ordering and safe fallbacks. Do not cache across stages or fuel events. A controlled whole-session benchmark should decide practical priority after parity is complete.
+
+Evidence: probes/dynamics/probe_mass_reuse.gd and probe_stage_parity.gd; patches/stage-mass-reuse.patch; paired receipts under receipts/dynamics. See supporting/DYNAMICS.txt for the guard proof and limits.
+
+4. E300-04 — INDEX LOFTS FOR STORAGE, WITH A MEASURED BUILD-TIME TRADEOFF
+
+The Extra _loft() emits repeated triangle corners and directly commits the SurfaceTool. An experimental st.index() immediately before commit preserves complete vertex attributes and triangle order while allowing identical vertices to share indices.
+
+Source:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/aircraft/extra_300s_model.gd#L71-L105
+
+Measured stock/candidate:
+- Stored vertices across the 31 distinct mesh resources: 53,204 to 10,878.
+- Serialized vertex/attribute/index buffers across 27 ArrayMesh resources: 1,317,552 to 373,176 bytes.
+- Buffer reduction: 944,376 bytes, 71.68%, about 0.901 MiB per stock model.
+- Mesh instances: unchanged at 32. Instance triangles: unchanged at 19,502.
+- After custom-paint preparation: 1,825,800 to 1,475,672 bytes, only 19.18% smaller, because the paint adapter expands target triangles.
+
+These are exact inspected engine buffer lengths, not total RAM or GPU allocation measurements.
+
+The checked comparison re-expands indexed meshes and compares every present corner attribute, triangle order, local transform and relative mesh path, both stock and custom-prepared. Godot value equality is exact; signed-zero bit equality and rendered-image parity were not tested. Position-only vertex merging would be insufficient because normals and UV seams must remain distinct.
+
+A rejected alternative indexed after committing and decoding the mesh through SurfaceTool.create_from(). That extra encode/decode cycle changed normals/tangents; it is not the supplied candidate.
+
+Timing
+
+Pinned headless Linux Godot on Xeon Platinum 8573C, CPU affinity 0, three warmups per builder and 16 alternating AB/BA pairs:
+    baseline build median: 96.1925 ms
+    indexed build median: 103.238 ms
+    median paired change: +8.505%
+    paired range: -22.802% to +32.249%; 4/16 pairs favored indexing.
+Only builder.build() was timed. Freeing, import, loading and renderer work were excluded.
+
+A separate custom-prepare-only comparison was noisy; it does not establish a complete customization speedup. See raw samples and MODEL_PRESENTATION.txt.
+
+Recommendation
+
+Treat the patch as a storage tradeoff. If adopting indexing, consider doing it once in an owned build/preparation lifecycle or caching verified immutable mesh resources while keeping per-instance nodes, hinges and paint overrides separate. The existing Home preview cache already retains complete models; this is not a discovery that Home lacks caching. Qualify actual reset/customization/render/manifest behavior and measure on the target device.
+
+Evidence: probes/model/geometry_probe.gd; results/model/geometry_counts.json; patches/extra_loft_index_candidate.patch; receipts/model/geometry-custom-assert-j_0ahqce and bench-index-g_b1yxdo.
+
+5. E300-05 — CUSTOM PAINT RECREATES IDENTICAL SHADERS
+
+The stock Extra finish correctly shares one shader among five materials. The duplication occurs in the custom-paint adapter. _prepare_material() creates a new Shader for each painted surface; paint() builds another Shader for each distinct prepared material.
+
+Sources:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/aircraft/procedural_skin.gd#L120-L150
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/aircraft/procedural_skin.gd#L302-L364
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/aircraft/custom_skin.gd#L181-L215
+
+The headless Extra probe found 14 prepared shader objects with one exact code string. Applying a representative opaque, untextured paint record generated 14 final shader objects with one exact code string. This is a resource-allocation observation; it does not prove 28 hardware compilations, a GPU-memory saving or a frame-rate improvement. An actual .orskin import was not run.
+
+Reuse immutable Shader resources by exact generated source and relevant texture/alpha variant. Keep separate ShaderMaterial uniform values and instance ownership. Do not merge independently painted materials merely because their shader code is equal. Preserve the adapter's prepare-then-commit behavior and bounded cache lifetime; cover multiple liveries, alpha, textures and resets.
+
+Evidence: results/model/geometry_counts.json, probes/model/geometry_probe.gd and the checked geometry receipt.
+
+6. E300-06 — THE VISUAL PROP BLADE TRAVELS TRAILING-EDGE FIRST
+
+The +X blade is authored with its leading edge toward +Y. The finite-glow render path uses negative rotation about local Z for positive shaft RPM. At a point on +X, omega cross r therefore points toward -Y. The two conventions disagree.
+
+Sources:
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/aircraft/extra_300s_model.gd#L661-L685
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/render/airplane.gd#L143-L149
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/main.gd#L1367-L1371
+https://github.com/bultodepapas/OpenRCsimulator/blob/e72d878b6b4a89209dfe1a992ba119921dcdd34c/app/main.gd#L3170-L3175
+
+The witness locates the authored leading and trailing points in the actual mesh and evaluates:
+    (leading - trailing) dot (omega cross midpoint).
+At radius 0.1112777921 m with unit negative-Z angular speed, it is -0.0023391903378 m^2/s; reversing the test spin gives the positive control. Both blades share this relative handedness.
+
+Correct the blade geometry's leading edge/camber/pitch convention together while keeping the physics-consistent rotation convention. Verify the selected shaft axis/hub, blur, stopped appearance, and strike visuals. This finding concerns presentation; physical thrust and shaft solver signs were not shown wrong. No rendered perceptibility or gameplay cost was measured.
+
+Evidence: probes/model/spin_probe.gd and receipts/model/spin-probe-2fcpk9u6.
+
+WHAT WAS EXCLUDED
+
+The report does not reissue ledger findings for AUX retention, Workshop glow admission, terrain stats, reserve sentinels, event counters, rotor event localization, reverse-flow discontinuity, trim beta, radio failsafe surfaces, skid friction, shader/terrain work or earlier airflow/station caches. The absence of wing propwash, transported wake, Extra feed-pressure calibration, and the known knife-edge/hammerhead limitations are documented limitations.
+
+A missed prop strike after manual engine cut was reproduced with a still-coasting Extra rotor. It is excluded from new findings because GP-17 already plans stopped/coasting blade coverage. The dynamics supporting report documents the case as known/planned. An unverified crash-label lead remains explicitly unverified and is not counted. Sampled wake-subdivision differences and a power screen were not promoted to defects without independent acceptance evidence.
+
+VALIDATION AND DELIVERY
+
+The new camber load witness passed 46 checks. The final reference-point witness passed 29 checks. Mesh equality, shader counts, blade handedness, paired stage parity and the stated existing tests have successful bounded checked-runner receipts with no diagnostics. The complete application suite, rendered flight, physical measurement, hardware controller, native backend and full replay qualification were not performed. Patches have distinct boundaries: generator input correction, loft indexing experiment, and guarded stage-mass reuse experiment.
+
+The source remains unchanged. The archive contains this report, portable probe sources, experimental diffs, source identities, successful receipts, raw results and explicit reproduction guidance. Original environment paths in receipts document the actual runs; REPRODUCE.txt explains how to map probes into a fresh disposable checkout.
+
+Recommended order:
+1. Correct the two generator/consumer physics contracts and add independent invariants.
+2. Complete stage-local mass reuse parity and then measure the real session.
+3. Choose mesh indexing based on a memory target, with construction cost measured.
+4. Share immutable custom-paint shaders and repair visual blade handedness with focused visual checks.
+
+END OF REPORT
+

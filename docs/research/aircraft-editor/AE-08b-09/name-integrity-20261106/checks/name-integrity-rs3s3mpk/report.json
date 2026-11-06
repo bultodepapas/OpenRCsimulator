@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d1756b8e-a74d-4b91-8887-a09f98009260",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_name_integrity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:09:50.815821+00:00",
+  "label": "name-integrity",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-names\\candidate\\name-integrity-rs3s3mpk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-names\\candidate\\name-integrity-rs3s3mpk\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop name integrity:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 41.391,
+  "log_bytes": 9384,
+  "log_sha256": "cb8b855ee0f6f75cc44e45db5bfa3af99ce87fdfefe583009eebe38c6297054c"
+}

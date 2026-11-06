@@ -1,0 +1,12 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+STOCK {"array_meshes":27,"attribute_data":260832,"index_data":0,"indices_unique":1224,"instances":32,"shader_materials":5,"shaders":1,"skin_data":0,"triangles_instance":19502,"unique_meshes":31,"vertex_data":1056720,"vertices_unique":53204}
+STOCK_CROSS_BUILD_MESH_INSTANCES_SHARED 0
+STOCK_CROSS_BUILD_DIFFERENCES {}
+INDEXED {"array_meshes":27,"attribute_data":58576,"index_data":104400,"indices_unique":53424,"instances":32,"shader_materials":5,"shaders":1,"skin_data":0,"triangles_instance":19502,"unique_meshes":31,"vertex_data":210200,"vertices_unique":10878}
+STOCK_INDEX_DIFFERENCES {}
+PREPARED_ORIGINAL {"array_meshes":27,"attribute_data":712608,"index_data":56472,"indices_unique":29460,"instances":32,"shader_materials":14,"shaders":14,"skin_data":0,"triangles_instance":19502,"unique_meshes":31,"vertex_data":1056720,"vertices_unique":53204}
+PREPARED_INDEXED {"array_meshes":27,"attribute_data":712608,"index_data":105144,"indices_unique":53796,"instances":32,"shader_materials":14,"shaders":14,"skin_data":0,"triangles_instance":19502,"unique_meshes":31,"vertex_data":657920,"vertices_unique":33264}
+PREPARED_INDEX_DIFFERENCES {}
+PAINT_SHADER_COUNTS {"paint_distinct_code":1,"paint_materials":14,"paint_shaders":14,"prepared_distinct_code":1}
+EXTRA_GEOMETRY_PROBE_DONE failures=0

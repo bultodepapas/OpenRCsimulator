@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4feee946-47d3-4a25-bf4e-4abf3718e6e5",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/root/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/probe_camber_loads.gd",
+    "--",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/root/camber_python/camber_tables.json",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/root/camber_python/runtime_loads.json"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/source",
+  "started_utc": "2026-11-06T17:20:57.378957+00:00",
+  "label": "camber-loads",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/root/checks/camber-loads-bf97fi28/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/root/checks/camber-loads-bf97fi28/report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "CAMBER LOAD PROBE: 46 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.498491,
+  "log_bytes": 2747,
+  "log_sha256": "78f973d613d0f85dbe743751415fd0fd4beaf0c9f25eb5d278c27bd8a3637786"
+}

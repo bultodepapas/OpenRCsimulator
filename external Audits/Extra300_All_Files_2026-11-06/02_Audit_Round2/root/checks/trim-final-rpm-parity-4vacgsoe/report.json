@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e4ea70fd-2836-4396-bf5e-82a9975f8958",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/root/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://probe_trim_reuse.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee",
+  "started_utc": "2026-11-06T17:52:01.382979+00:00",
+  "label": "trim-final-rpm-parity",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/root/checks/trim-final-rpm-parity-4vacgsoe/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/root/checks/trim-final-rpm-parity-4vacgsoe/report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_TRIM_REUSE:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 21.485322,
+  "log_bytes": 730,
+  "log_sha256": "1174361e7233fd0aa4172f80736cd982f7a7e0660ef1e6b43a710ed2cc30ab56"
+}

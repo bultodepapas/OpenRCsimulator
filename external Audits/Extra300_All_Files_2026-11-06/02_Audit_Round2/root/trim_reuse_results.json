@@ -1,0 +1,405 @@
+{
+	"checks": 87,
+	"conditions": [
+		{
+			"charge": 1.0,
+			"name": "reference",
+			"rho": 1.225
+		},
+		{
+			"charge": 0.754410799788835,
+			"name": "hot-high",
+			"rho": 0.943935309684744
+		}
+	],
+	"failures": 0,
+	"rows": [
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=1.0 reference level V=17.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "52e4f4e109e6bc1eaf6d1b57510335579a82884db02e399af408bc13049beb19",
+			"rpm": 6038.43793141496,
+			"throttle": 0.163375280140888
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=1.0 reference level V=22.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "e174ed1cf7686af2d9f5fda97187e79f2d68d0699a47e63404f327184d810357",
+			"rpm": 7473.1925175715,
+			"throttle": 0.244450701621056
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=1.0 reference level V=30.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "42b686d0654e5a7c3c043786c26754cdeb714332b31cd7aaceb952d5a2a0b4e6",
+			"rpm": 9991.16181644667,
+			"throttle": 0.429028014325948
+		},
+		{
+			"V": 32.4591201889649,
+			"exact": true,
+			"iterations": 1,
+			"label": "Extra fill=1.0 reference half-power launch",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "9ec0fe241b025c01e983ce3737f68b756854a2b64ac0cfb9378917674146640b",
+			"rpm": 10784.9340656827,
+			"search_iterations": 14,
+			"throttle": 0.499999993282885
+		},
+		{
+			"exact": true,
+			"iterations": 5,
+			"label": "Extra fill=1.0 hot-high level V=17.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "cad7cae84c6d91af998d05419a9819b4e92a3e9949c56383d8cf6f439a593c9c",
+			"rpm": 6296.07731205632,
+			"throttle": 0.207860722893633
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=1.0 hot-high level V=22.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "9787fb755bc0ab9aec86790e47aec4e9c3b2b4eb2fa6f3ec46ea3a5099f00f3d",
+			"rpm": 7606.44413288725,
+			"throttle": 0.277973531961037
+		},
+		{
+			"exact": true,
+			"iterations": 3,
+			"label": "Extra fill=1.0 hot-high level V=30.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "8b11ceeaa6bcf4c1ecf232d0d58cdc75f9f06f586777a89646953104088b1798",
+			"rpm": 10048.4038456554,
+			"throttle": 0.455538462412364
+		},
+		{
+			"V": 31.5052767054305,
+			"exact": true,
+			"iterations": 2,
+			"label": "Extra fill=1.0 hot-high half-power launch",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "aa94490be8362a94548ba1815efe5669b4b7ae2b4b2190cf943057c29f8fa20a",
+			"rpm": 10526.5241579637,
+			"search_iterations": 10,
+			"throttle": 0.499999997757576
+		},
+		{
+			"exact": true,
+			"iterations": 3,
+			"label": "Extra fill=1.0 stopped-engine glide",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "5d93315b64582d020725fa7917ce95ecd5689f569ea03aabd3f0f8ff1a0afb1a",
+			"rpm": 0.0,
+			"throttle": 0.0
+		},
+		{
+			"exact": true,
+			"iterations": 2,
+			"label": "Extra fill=1.0 excessive-idle refusal",
+			"message": "glow trim stalled: no finite residual-decreasing step within throttle [0,1]",
+			"ok": false,
+			"result_sha256": "87fbe6f4ea3c04e4bafdfd2eecafceb602bedf0293f2d7291b67fc1e53ab3b0e",
+			"rpm": 9869.05481879747,
+			"throttle": 0.0
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=0.1 reference level V=17.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "b6d9ed78ac3d825a23b8f33209251ff4b293d21e77ad9915a92587c873bbf29b",
+			"rpm": 5978.8255173148,
+			"throttle": 0.155784537205225
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=0.1 reference level V=22.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "4af195a3b2aca8dbe3fe68233f526bfd0299a442c8b2e03eaa34c4c405af264f",
+			"rpm": 7441.39688399191,
+			"throttle": 0.239632047350622
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=0.1 reference level V=30.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "8270086a53b18443d403f37e36da40fbc56ee64c97d26a3561fdf88ec22377a2",
+			"rpm": 9976.17627000281,
+			"throttle": 0.426610509026613
+		},
+		{
+			"V": 32.5395190601593,
+			"exact": true,
+			"iterations": 1,
+			"label": "Extra fill=0.1 reference half-power launch",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "eea720a26c2cbf5ff980546460d1ca2c0fb8eba2d0c450eda25e4700735531e4",
+			"rpm": 10798.5519375615,
+			"search_iterations": 14,
+			"throttle": 0.499999993528456
+		},
+		{
+			"exact": true,
+			"iterations": 5,
+			"label": "Extra fill=0.1 hot-high level V=17.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "8d22106fc91e639ffc86af022883f84f24b8e6014f6d3507dc37e82ef2622fab",
+			"rpm": 6204.65559132369,
+			"throttle": 0.196352115510557
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=0.1 hot-high level V=22.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "0f13c0c556ba97c45717560e88af3d73da951122c885fa1e2bcae1d4b157b37d",
+			"rpm": 7556.51650677397,
+			"throttle": 0.270411497432379
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra fill=0.1 hot-high level V=30.0",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "b733042f897a42ceba7576630a2964ebc19844b1960bc21bfef0643e1d7dbeed",
+			"rpm": 10025.1156672737,
+			"throttle": 0.451256130088711
+		},
+		{
+			"V": 31.6414080115876,
+			"exact": true,
+			"iterations": 2,
+			"label": "Extra fill=0.1 hot-high half-power launch",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "15025e1d119b9b8a6a1b8124cdbfa74b17da648129eaacacb7cd0c72ccc4c5f6",
+			"rpm": 10549.4407141787,
+			"search_iterations": 10,
+			"throttle": 0.499999999070429
+		},
+		{
+			"exact": true,
+			"iterations": 3,
+			"label": "Extra fill=0.1 stopped-engine glide",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "a09ec4456f1faeec6bf2d86a6e3df608ee8b16fb6af8a62b0a807bb4329b3f4c",
+			"rpm": 0.0,
+			"throttle": 0.0
+		},
+		{
+			"exact": true,
+			"iterations": 2,
+			"label": "Extra fill=0.1 excessive-idle refusal",
+			"message": "glow trim stalled: no finite residual-decreasing step within throttle [0,1]",
+			"ok": false,
+			"result_sha256": "0033cf22dbd7d801326ebc5cfaf72b4533364016ef7b049235ba9c507d76d5ae",
+			"rpm": 9869.13521198538,
+			"throttle": 0.0
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "Extra explicit warm start=0.4",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "e174ed1cf7686af2d9f5fda97187e79f2d68d0699a47e63404f327184d810357",
+			"rpm": 7473.1925175715,
+			"throttle": 0.244450701621056
+		},
+		{
+			"exact": true,
+			"iterations": 6,
+			"label": "Extra explicit warm start=0.75",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "98d784a534bab8013c9a30a06971594e125f9b14b3df2eb0ed5e0407f17fe2e3",
+			"rpm": 7473.1925175715,
+			"throttle": 0.244450701621056
+		},
+		{
+			"exact": true,
+			"iterations": 6,
+			"label": "Extra explicit warm start=0.95",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "0f644a04182d1d958f2bdb976dce9de9ea4c1013be77486346a38c58f3d04f52",
+			"rpm": 7473.1925175715,
+			"throttle": 0.244450701621056
+		},
+		{
+			"exact": true,
+			"iterations": 0,
+			"label": "Extra invalid speed=0.0",
+			"message": "trim needs finite positive speed and finite nonnegative gravity",
+			"ok": false,
+			"result_sha256": "9a74ef0ebdf9308e8ab8d5d831bfbd9739708db1eb0f5577bf3cd8f30849ab09",
+			"rpm": null,
+			"throttle": null
+		},
+		{
+			"exact": true,
+			"iterations": 0,
+			"label": "Extra invalid speed=-1.0",
+			"message": "trim needs finite positive speed and finite nonnegative gravity",
+			"ok": false,
+			"result_sha256": "1a02dbb318fc6a6e20a1f97fb06f5496dfe916aec041f844fed11c1f8c19142d",
+			"rpm": null,
+			"throttle": null
+		},
+		{
+			"exact": true,
+			"iterations": 0,
+			"label": "Extra invalid speed=nan",
+			"message": "trim needs finite positive speed and finite nonnegative gravity",
+			"ok": false,
+			"result_sha256": "f041fdfc0d2ada80b48c6697eb4410b16113f26fee6805274d7a221b19eb8a44",
+			"rpm": null,
+			"throttle": null
+		},
+		{
+			"exact": true,
+			"iterations": 0,
+			"label": "Extra invalid speed=inf",
+			"message": "trim needs finite positive speed and finite nonnegative gravity",
+			"ok": false,
+			"result_sha256": "67c065355121e3a6a03044f9805178febbd8aa7a44efd84754784b9d81881bf2",
+			"rpm": null,
+			"throttle": null
+		},
+		{
+			"exact": true,
+			"iterations": 0,
+			"label": "Extra unsupported mode",
+			"message": "unsupported trim mode",
+			"ok": false,
+			"result_sha256": "2aa1d25b1d51de43e824cf60c05dede0f9c472f9ad31f825f26da7c048659543",
+			"rpm": null,
+			"throttle": null
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "jensen_ugly_stik_60 level control",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "64310fc781e9951b3743ece33f880e2e8ca3194d4d492b066bea2a1d6e0913af",
+			"rpm": 5159.10717598005,
+			"throttle": 0.282561645224584
+		},
+		{
+			"exact": true,
+			"iterations": 3,
+			"label": "jensen_ugly_stik_60 glide control",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "5443be6aad04dffa73be23b5d32829047ce82158573877a3c9840b76e505242b",
+			"rpm": 0.0,
+			"throttle": 0.0
+		},
+		{
+			"exact": true,
+			"iterations": 5,
+			"label": "synthetic_stik_electric_4s level control",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "e18e7a8cd3f9a2ffef8f59a77a1e70a8d094cc613d37e8a3787b206ab202595c",
+			"rpm": 5174.24535643894,
+			"throttle": 0.502465456396503
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "synthetic_stik_electric_4s glide control",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "90ff804569207144af6ae3cd2419aaa091a161df77f11e9909696103bf1246a2",
+			"rpm": 0.0,
+			"throttle": 0.0
+		},
+		{
+			"exact": true,
+			"iterations": 4,
+			"label": "stik_glow_fs64v_4t level control",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "fe52f084d1850fe8bab5ca7d19d34a8babbbf4b4de40d49056963dc9bef16b8a",
+			"rpm": 6504.94056186891,
+			"throttle": 0.18948103716187
+		},
+		{
+			"exact": true,
+			"iterations": 3,
+			"label": "stik_glow_fs64v_4t glide control",
+			"message": "trimmed",
+			"ok": true,
+			"result_sha256": "7f107e8e5f5bae83b3de5ba767cf83204ab883420057bc811a875eb5d1f5eaff",
+			"rpm": 0.0,
+			"throttle": 0.0
+		}
+	],
+	"source_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+	"work": [
+		{
+			"baseline_rpm_solves": 19,
+			"candidate_rpm_solves": 17,
+			"exact": true,
+			"finalizations": 1,
+			"label": "Extra reference level V=22",
+			"ok": true,
+			"removed": 2
+		},
+		{
+			"baseline_rpm_solves": 202,
+			"candidate_rpm_solves": 174,
+			"exact": true,
+			"finalizations": 14,
+			"label": "Extra half-power cruise",
+			"ok": true,
+			"removed": 28
+		},
+		{
+			"baseline_rpm_solves": 0,
+			"candidate_rpm_solves": 0,
+			"exact": true,
+			"finalizations": 1,
+			"label": "Extra stopped-engine glide",
+			"ok": true,
+			"removed": 0
+		},
+		{
+			"baseline_rpm_solves": 30,
+			"candidate_rpm_solves": 24,
+			"exact": true,
+			"finalizations": 3,
+			"label": "Extra bounded excessive-idle refusal",
+			"ok": false,
+			"removed": 6
+		}
+	]
+}

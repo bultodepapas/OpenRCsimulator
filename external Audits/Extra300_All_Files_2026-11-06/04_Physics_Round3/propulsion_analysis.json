@@ -1,0 +1,23 @@
+{
+  "source_basis": "Gierke printed pages 122,124,128; selected graph and table points personally checked; corrected BHP is not raw measured power.",
+  "bench_reported_rpm_apc_12x6": 11750.0,
+  "model_nominal_rpm": 10288.179431337394,
+  "model_vs_reported_rpm_percent": -12.441026116277499,
+  "bench_over_model_rpm_ratio": 1.1420873905260591,
+  "constant_CQ_density_power_ratio": 1.4896972288994679,
+  "published_corrected_power_hp_at_11750": 1.15,
+  "published_corrected_power_w_at_11750": 857.5548523196107,
+  "torque_equivalent_of_corrected_power_nm": 0.6969400530337345,
+  "model_engine_torque_at_11750_nm": 0.6795522415928924,
+  "model_prop_torque_at_11750_nm": 0.8863571190653065,
+  "model_engine_vs_corrected_power_percent": -2.4948790595624826,
+  "model_prop_power_at_11750_w": 1090.6244303707608,
+  "model_prop_load_over_corrected_power_ratio": 1.2717838718079866,
+  "normalization_example_9900": {
+    "quoted_torque_oz_in": 99.8,
+    "torque_nm": 0.7047428710597591,
+    "power_hp_from_torque": 0.9797842088383167,
+    "times_1p04_hp": 1.0189755771918494
+  },
+  "interpretation": "Unmatched settings; do not treat differences as validated physical error or a justified production tune."
+}

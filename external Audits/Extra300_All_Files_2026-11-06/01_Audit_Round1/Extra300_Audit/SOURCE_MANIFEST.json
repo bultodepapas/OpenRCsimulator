@@ -1,0 +1,260 @@
+{
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "branch": "codex/m1-native-validation-20261106",
+  "commit": "e72d878b6b4a89209dfe1a992ba119921dcdd34c",
+  "github_head_rechecked_unchanged": true,
+  "source_worktree_clean": true,
+  "aircraft": "gp-extra-300s-60",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564",
+  "source_files": [
+    {
+      "path": "external Audits/CONSOLIDATED-AUDITS.md",
+      "git_blob": "43583ad68c3492e7792212ed5292c756fd269dd6",
+      "checkout_sha256": "772a484f0aad5f36241bca4b13c09437fdc1b00b43def686ebbe180abb7a55fa",
+      "checkout_bytes": 91606
+    },
+    {
+      "path": "AGENTS.md",
+      "git_blob": "8530752e991afbeb4c2d55c48e7fe566347f800f",
+      "checkout_sha256": "c777daa025e42d1c6b2735892bec083bd20277cccf8edc221a1800048e74ef5c",
+      "checkout_bytes": 7228
+    },
+    {
+      "path": "app/physics/aero.gd",
+      "git_blob": "a1c7413f071a1337a1c64c711c839f193489b4f7",
+      "checkout_sha256": "062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d",
+      "checkout_bytes": 76712
+    },
+    {
+      "path": "app/physics/dynamics.gd",
+      "git_blob": "a525cf9fe540e216e6a7f723cf0eb77970130c40",
+      "checkout_sha256": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+      "checkout_bytes": 8687
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "git_blob": "6e9de81adbf368263c5882a6b544e1e2fe8fbdaa",
+      "checkout_sha256": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8",
+      "checkout_bytes": 40248
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "git_blob": "c29f540c53408284fdf81e0d2a21f30d1082b816",
+      "checkout_sha256": "3f8879f6c6f87b87956bffda19d0fb89e40463695025508b01aae4dbae48455f",
+      "checkout_bytes": 151442
+    },
+    {
+      "path": "app/physics/glow/propeller.gd",
+      "git_blob": "09f4c151c6b6c6aa77a2d86f851c00ee46350f56",
+      "checkout_sha256": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e",
+      "checkout_bytes": 7595
+    },
+    {
+      "path": "app/physics/glow/flight.gd",
+      "git_blob": "402c5113cce1c6a1099c4d7a2fe64e3f14500d83",
+      "checkout_sha256": "a70a73e8409b42dfdcee33c6ea72e09492a66de59d180ced730817c2c64e6e55",
+      "checkout_bytes": 47675
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "git_blob": "f22935dc5786f6dc89fba89c9958245216097946",
+      "checkout_sha256": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d",
+      "checkout_bytes": 24425
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "git_blob": "10c551f8ff456519aef7a0dc81edc0d7e34bc770",
+      "checkout_sha256": "f4eea7d8686c1e96c8e07722dac46f051181f74014fa81b69abdeabb355479ce",
+      "checkout_bytes": 313707
+    },
+    {
+      "path": "app/aircraft/extra_300s_model.gd",
+      "git_blob": "64c8f86a93ef31438d76c85f7ca560277e839130",
+      "checkout_sha256": "b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51",
+      "checkout_bytes": 32934
+    },
+    {
+      "path": "app/aircraft/extra_300s_geometry.gd",
+      "git_blob": "2e526018ac7d9a85a2e374f0fa713192b3c6d91f",
+      "checkout_sha256": "4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42",
+      "checkout_bytes": 12086
+    },
+    {
+      "path": "app/aircraft/extra_300s_finish.gd",
+      "git_blob": "5707029bce9ef899804618c54174b0f592b5ecee",
+      "checkout_sha256": "faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be",
+      "checkout_bytes": 6687
+    },
+    {
+      "path": "app/aircraft/extra_300s_appearance.gd",
+      "git_blob": "f164aa1839064a7c2ca0b576dd26f0526564b79b",
+      "checkout_sha256": "af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b",
+      "checkout_bytes": 2150
+    },
+    {
+      "path": "app/aircraft/procedural_skin.gd",
+      "git_blob": "f27f6abbd9885c644369a7cb79408e9c72b1dd0a",
+      "checkout_sha256": "42f588a9bbedf4271fb4a13808a153a7a10a4019c60a942018b3c9ad528012a4",
+      "checkout_bytes": 21192
+    },
+    {
+      "path": "app/aircraft/custom_skin.gd",
+      "git_blob": "b56592cb45b143847bdcfd2a22f3d8b9f881bcbb",
+      "checkout_sha256": "27c0b18b3ee8db6da049cc9dfff19f2205cfccc430b6b7480fbb07e44288b635",
+      "checkout_bytes": 29495
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "git_blob": "efcaebb0f0e09688e2e9b18e84495b525d990ea4",
+      "checkout_sha256": "b98e744ff9bb954cc1b5d5da57d14eb335152cf7280f80bd7b4dc8be66c4fde4",
+      "checkout_bytes": 19438
+    },
+    {
+      "path": "app/main.gd",
+      "git_blob": "e9f0838fbbfa9af5cd691e59864dd58b88694901",
+      "checkout_sha256": "6a0ac32976935ae9233c40966a004b6e494bb24c5eee9a74c76f97b508b3dff2",
+      "checkout_bytes": 189261
+    },
+    {
+      "path": "app/data/glow/extra_61fx_2t.json",
+      "git_blob": "6aa7a0880bbf33e6078287161767dc7a0aa50106",
+      "checkout_sha256": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+      "checkout_bytes": 8245
+    },
+    {
+      "path": "app/data/aircraft/gp_extra_300s_60.json",
+      "git_blob": "4c585d2d12a8ed131d58dde0aca00f81643d57b5",
+      "checkout_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+      "checkout_bytes": 71834
+    },
+    {
+      "path": "research/extra-300/ex05/derive_physics.py",
+      "git_blob": "b1ab95b19d9e2b1ba84265d94fcd3a37e55c1491",
+      "checkout_sha256": "399e3804ec4d967b3984e8d3ae853a66012f7a9469fde4863b6d2c2756b06265",
+      "checkout_bytes": 70334
+    },
+    {
+      "path": "research/glow-engines/calibration_report.py",
+      "git_blob": "cbeb87fcc292b8039116fdbc2c19f483d0757861",
+      "checkout_sha256": "06cb1047e30af650ad2b00c5f9e90ff3c7ed5c914fd3e3bc71c9a05bcc8232f7",
+      "checkout_bytes": 68965
+    },
+    {
+      "path": "docs/AIRCRAFT_CONTRACT.md",
+      "git_blob": "85d6ac1bfab0c81b4042feab764b6a3ed7f6c7e4",
+      "checkout_sha256": "76a975f4a6128fb4827bd30581782c074cfc6e38c6054b77b2fd52fda6740856",
+      "checkout_bytes": 84394
+    },
+    {
+      "path": "app/tests/test_extra_installation.gd",
+      "git_blob": "a6b3e492b6ec8fc7a2fbb39d4105ce2a7754e7a1",
+      "checkout_sha256": "24e4b1bff251c73a1a66429f2ac57d905244c781728a5bda83a5addd870d7baa",
+      "checkout_bytes": 8454
+    },
+    {
+      "path": "app/tests/test_body_side_force.gd",
+      "git_blob": "5cd6e9039091e61ed4bbef5cb56d9191e012a072",
+      "checkout_sha256": "a792cb2b66b41fb3d76c309a09c55a67677f98926c2c149f6145679fc659a05c",
+      "checkout_bytes": 11973
+    },
+    {
+      "path": "app/tests/test_extra_post_stall.gd",
+      "git_blob": "19cf86ca2d2181e03ad69758e63e0bb99a93ec2e",
+      "checkout_sha256": "0b5f9f28001a52a401a5c7289d3a72f89a14e3886261f426c803dec0b9e5f7e7",
+      "checkout_bytes": 4461
+    },
+    {
+      "path": "app/tests/test_glow_flight_physics.gd",
+      "git_blob": "4aa9d40ac98dcaba3f759f7b0908501424829191",
+      "checkout_sha256": "6ae0ee5204d103b2936b3eabe29d4fd0f2ab95c2d0c426af73c521606992bd8f",
+      "checkout_bytes": 25860
+    }
+  ],
+  "selected_receipts": [
+    {
+      "receipt": "receipts/root/camber-loads-bf97fi28/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/root/installation-existing-verified-tvfxmp4d/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/aero/reference-witness-datum-wi2nfqxi/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/aero/side-force-existing-pcrlbu57/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/aero/extra-post-stall-existing-ilwzuos1/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/dynamics/mass-reuse-rjsb75b2/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/dynamics/parity-baseline-fkhlhg2p/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/dynamics/parity-candidate-hoy7j_7_/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/dynamics/glow-flight-baseline-spv_4t2u/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/dynamics/glow-flight-candidate-27xo_uvy/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/model/geometry-custom-assert-j_0ahqce/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/model/spin-probe-2fcpk9u6/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    },
+    {
+      "receipt": "receipts/model/bench-index-g_b1yxdo/report.json",
+      "ok": true,
+      "complete": true,
+      "diagnostics": []
+    }
+  ],
+  "limits": [
+    "Headless Linux reference-script probes; no target GPU or rendered evidence.",
+    "Original absolute commands are retained in receipts; map them using REPRODUCE.txt.",
+    "Experimental patches have not been production-integrated or replay/native qualified.",
+    "All counted findings cross-checked against the consolidated audit and Extra documentation."
+  ]
+}

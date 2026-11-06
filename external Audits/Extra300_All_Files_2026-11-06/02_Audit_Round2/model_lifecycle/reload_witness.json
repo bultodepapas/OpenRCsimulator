@@ -1,0 +1,96 @@
+{
+  "source_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+  "transcript": "bridge_transcript.jsonl",
+  "no_op_reload": [
+    "aircraft reloaded: trimmed at 32 m/s, throttle 50 %",
+    0.3048,
+    0.30479999999999996,
+    0.1524,
+    1.0,
+    0.1524282544851303
+  ],
+  "invalid_one_file_reload": [
+    "reload failed; previous aircraft and flight retained: aircraft data invalid: Glow installation and aircraft propeller diameters disagree",
+    0.3048,
+    0.30479999999999996,
+    0.1524,
+    1.0,
+    0.1524282544851303
+  ],
+  "accepted_stock_to_13in": [
+    "aircraft reloaded: trimmed at 32 m/s, throttle 50 %",
+    0.3302,
+    0.3302,
+    0.1651,
+    1.0,
+    0.1524282544851303,
+    1.0,
+    1.0
+  ],
+  "post_reload_direct_setter": [
+    0.1651,
+    1.0833333730697632,
+    1.0833333730697632,
+    1.0833333730697632,
+    0.1524282544851303
+  ],
+  "fresh_13in_start": [
+    0.3302,
+    0.3302,
+    0.1651,
+    1.0833333730697632,
+    1.0833333730697632,
+    0.1524282544851303,
+    1.0833333730697632
+  ],
+  "accepted_13in_to_stock": [
+    "aircraft reloaded: trimmed at 32 m/s, throttle 50 %",
+    0.3048,
+    0.30479999999999996,
+    0.1524,
+    1.0833333730697632,
+    0.1524282544851303,
+    1.0833332538604736
+  ],
+  "normal_force_13in_N": [
+    0.0049071818876977496,
+    -0.145418878554103,
+    0.0195778269589471
+  ],
+  "annular_shaft_13in": {
+    "ok": true,
+    "thrust_n": 25.687793289119465,
+    "torque_nm": 0.9365223861860322,
+    "shaft_power_w": 1176.8687393457687,
+    "thrust_power_w": 770.633798673584,
+    "dissipation_w": 406.23494067218485
+  },
+  "normal_force_stock_N": [
+    0.004033015928384458,
+    -0.11951394240486433,
+    0.016090230559118734
+  ],
+  "annular_shaft_stock": {
+    "ok": true,
+    "thrust_n": 20.29446857240327,
+    "torque_nm": 0.722211567469146,
+    "shaft_power_w": 907.5578218794554,
+    "thrust_power_w": 608.8340571720981,
+    "dissipation_w": 298.7237647073573
+  },
+  "log_summary": {
+    "tmp/debug-bridge/20261106-125550-47871/engine.log": {
+      "warning_count": 120,
+      "invalid_uid_fallback_count": 120,
+      "engine_error_count": 0
+    },
+    "tmp/debug-bridge/20261106-125825-47871/engine.log": {
+      "warning_count": 120,
+      "invalid_uid_fallback_count": 120,
+      "engine_error_count": 0
+    }
+  },
+  "expected_stock_files_restored": {
+    "restored": true
+  }
+}

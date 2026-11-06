@@ -1,0 +1,36 @@
+Exploratory and setup attempts excluded from acceptance claims
+=============================================================
+
+The main findings use the successful checks and identified real-app runs listed
+in their reports. The following earlier attempts are retained separately so a
+failed or incomplete process is not mistaken for acceptance evidence:
+
+1. dynamics/extra-fuel-transitions-dj6krfe2: engine exit 0 and all 23 assertions
+   passed, but the runner required a mistyped marker naming 18 checks. The
+   runner correctly marked missing_required_text. A separate corrected run,
+   extra-fuel-transitions-verified-g_2wfyup, passed with the correct marker.
+
+2. dynamics/scenery-rotor-xf8de_u4: a nominal zero-RPM control windmilled to
+   approximately 5.54 RPM during the collision tick. It therefore failed its
+   claimed zero-RPM condition. The later scenery-rotor-control-m3ihqosi run
+   uses a separate zero-forward-flow control that remains at zero RPM. Its
+   different incoming speed and the known collision convention are explicitly
+   disclosed; neither run is promoted to a new bug.
+
+3. model_lifecycle/lifecycle-import-7lirrtz6: sparse imported app lacked tracked
+   resources, giving engine diagnostics despite process exit 0. This is setup
+   failure, not evidence against production behavior.
+
+4. model_lifecycle/lifecycle-full-import-mne_4g5c: import stalled and was
+   canceled. It has an engine log but no complete checked verdict. Subsequent
+   headless witnesses used the disclosed reconstructed imported copy.
+
+5. The early debug-bridge startup 20261106-125306-47871 lacked the repository's
+   authoring-source model-bindings file and refused startup. That dependency
+   was supplied from the pinned source before the successful runs. The full
+   chronological controller transcript retains the failed attempt. Only the
+   later 20261106-125550-47871 and 20261106-125825-47871 app runs support E300-08.
+
+The two successful lifecycle app runs each have 120 landscape resource UID
+fallback warnings; these are preserved in their original logs. They are not
+claimed to be clean graphical, exported-app or target-hardware qualification.

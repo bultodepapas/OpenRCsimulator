@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e98bdc64-f875-41d5-9130-1be713979d34",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "model_perf/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://spin_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit",
+  "started_utc": "2026-11-06T17:19:01.628986+00:00",
+  "label": "spin-probe",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/model_perf/checks/spin-probe-2fcpk9u6/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/model_perf/checks/spin-probe-2fcpk9u6/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "SPIN_PROBE_DONE PASS"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.363284,
+  "log_bytes": 591,
+  "log_sha256": "07832f44af09e07f22978c66da40e929269263ec0dca0e5f25ee4bfbbcc05666"
+}

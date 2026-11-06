@@ -1,0 +1,24 @@
+# Independent review: final bounded-glow trim RPM reuse
+
+Baseline `8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd`; reviewed candidate `/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/root/trim_final_rpm_reuse.patch` against `app/physics/trim.gd`. This is source review only; the lead owns the independent execution, byte-parity and timing evidence. The candidate was not edited.
+
+**Verdict:** no correctness objection found for a validated model/profile that remains unchanged throughout the synchronous solve. The cached value is the current iterate's `_rpm_at` result at every affected `_result` exit. `_rpm_at` and `_result` independently reconstruct the same level-flight RPM inputs, so a finite cached RPM equals the value the baseline re-solves for that final iterate. This is an invariant of the implementation and its deterministic steady-solver contract, not a claim that the selected mathematical equilibrium is unique or physically validated.
+
+## Inductive invariant and the five exits
+
+At `trim.gd:143–146` x is initialized or duplicated, then `x_rpm = _rpm_at(x, ...)` and r is evaluated using that value. In the bounded glow level path:
+
+- The finite-difference Jacobian probes a duplicated `xp` (`:156–165`); it does not modify x or x_rpm.
+- A trial is another duplicate (`:186–194`). Its `candidate_rpm` and residual are local. Rejected, nonfinite, out-of-range and halved trials do not assign x or x_rpm.
+- On acceptance, x, x_rpm, r and the residual norm are assigned from the **same candidate** together (`:196–203`). No later operation in that iteration changes x before the next iteration.
+- Therefore a failed bounded line search (`:205–206`) returns the last accepted x and its RPM, not the last rejected trial's RPM. If the 50-iteration limit is reached (`:217–218`), or a surface throw check (`:219–221`), throttle check (`:222–223`) or successful result (`:224`) follows, the same invariant holds.
+
+Initial/perturbed/iterated nonfinite residual and singular Jacobian failures return `_numerical_failure` instead of `_result`; the patch does not change those exits. The ordinary public bounded-glow level path starts in [0,1] and accepts only candidates in [0,1], so its out-of-range-throttle `_result` is not normally reachable; the invariant is still preserved on any entry that reaches it with finite x/rpm.
+
+For level mode, `_rpm_at` (`:82–86`) calls `state_for(V, x[0], 0, 0, [0,0,-100], x[3], bank)` and `_rpm(x[2], state, mode, model, rho, charge_ratio)`. `_evaluate` (`:50–57`) reconstructs that same state and throttle when `_result` recomputes it. `_rpm` uses only body velocity, propulsion axis, throttle, density and charge ratio. The same x, V, model and arguments therefore feed `Propulsion.steady_rpm`; for the detailed-glow path it returns the RPM from the same `GlowOperating.solve` (`propulsion.gd:511–514`). Under a stable model and deterministic pure evaluation, repeating the solve is numerically redundant. A nonfinite RPM remains handled by the existing NAN fallback and nonfinite-residual refusal; no stale prior candidate should be substituted.
+
+## Guard and limitations
+
+`bounded_glow_level` requires `mode == "level"` and `Propulsion.is_glow` (`trim.gd:144`; `propulsion.gd:76–77`). On glide and non-detailed-glow/legacy propulsion, `_result` receives NAN, so `_evaluate` and the reported RPM retain the old recomputation path. The public `solve` dispatches electric propulsion to `_solve_electric_from` before reaching `_solve_from` (`trim.gd:116–126`); its `_result` calls use the newly appended argument's NAN default, and electric output still reads `e.rpm`. Explicitly forwarding NAN to `_evaluate` is equivalent to its previous NAN default. A malformed hybrid or a direct private helper call is not evidence of public behavior for an admitted electric model.
+
+The proof assumes no concurrent mutation of the passed model, installation/profile, atmospheric inputs or callbacks while this synchronous solve runs. It does not independently establish repeatability of every platform/native implementation, a whole-session speedup, changed solver identity, or measured aircraft performance. Public-output comparisons should include successful and failed bounded steps, the zero-iteration/warm-start case, throw refusals, glide, legacy and electric controls, with complete byte-level result and state comparisons. No tests or CPU timings were run as part of this independent review.

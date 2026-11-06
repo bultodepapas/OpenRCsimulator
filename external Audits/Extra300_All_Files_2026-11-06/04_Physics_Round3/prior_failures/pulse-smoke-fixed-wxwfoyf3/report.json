@@ -1,0 +1,100 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "bf60e189-524c-4cdf-96a1-9b8d452e2687",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "extra300_audit/round3/root/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://character_pulses.gd",
+    "--",
+    "--quick",
+    "--out=/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/smoke-fixed"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee",
+  "started_utc": "2026-11-06T19:44:13.884747+00:00",
+  "label": "pulse-smoke-fixed",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/pulse-smoke-fixed-wxwfoyf3/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/pulse-smoke-fixed-wxwfoyf3/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_CHARACTER_PULSES_COMPLETE failures=0 cases=1"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 6,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Preload file \"res://assets/landscape/rc-ground/dirt-albedo.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier_planting.gd:100)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/collision_world.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://sim/flight_session.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://character_pulses.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 13,
+      "message": "Failed to load script \"res://character_pulses.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed",
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 6.79883,
+  "log_bytes": 1832,
+  "log_sha256": "f57b0085498902eebd8b7cf75ba97a8c84e46e85f3aefb0b35f01be431a6e4fd"
+}

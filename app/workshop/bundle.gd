@@ -349,7 +349,7 @@ static func _is_unbound_stock_profile(profile: Dictionary) -> bool:
 
 
 static func _valid_name(value: String) -> bool:
-	return not value.is_empty() and value == value.strip_edges() and value.length() <= 96 \
+	return not value.is_empty() and value == value.strip_edges() and value.length() <= Store.MAX_NAME_LENGTH \
 		and not value.contains("\n") and not value.contains("\r")
 
 

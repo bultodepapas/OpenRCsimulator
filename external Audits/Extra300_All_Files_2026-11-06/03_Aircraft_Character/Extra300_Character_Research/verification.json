@@ -1,0 +1,20 @@
+{
+  "calculation_reproduction": "byte-identical",
+  "json_parse": "passed",
+  "prior_audit_ledger_sha256": "772a484f0aad5f36241bca4b13c09437fdc1b00b43def686ebbe180abb7a55fa",
+  "additional_source_identifiers_not_in_reviewed_EX14_manifest": [
+    "3A8ySNRpGqE",
+    "11359480"
+  ],
+  "new_simulator_flights": 0,
+  "physical_experiments": 0,
+  "production_source_edits": 0,
+  "files": {
+    "CHARACTER_RESEARCH.txt": "e4941cf4c02d99b00b131704011ac189da661f150f130459490b04785de79bf1",
+    "README.txt": "cb776a0c3926abcfd479b9298255eb4a9ca4a3ad266bf3f346fa083cf07bf907",
+    "calculate_extra.py": "a0c0c62bf6a49e1e25ba1867e0f28c9626844440e0308a097d06bf7c931887e9",
+    "extra_source_math.json": "ef27749c16cca47adf49e15d645c18a71f6f3fab4c40957167ec5d35f17ea9f8",
+    "flight_cards.json": "f8ae3a3168036528c56402eb841f58379b2084c67f09cb6aa74b8008f021b17f",
+    "sources.json": "4aa225fb8552415b5f4bad4776bb19d74a4ec6dc6a3ee6784449ec589f7047e9"
+  }
+}

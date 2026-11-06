@@ -1,0 +1,32 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS stock Extra prepared 
+PASS one fixed tank, no feed line 
+PASS selection accepted 1.00 
+PASS reset mass formula 1.00 { &"fuel": 0.3042066, &"mass": 3.8195476, &"cg": [0.0, 0.0, 0.0], &"fuel_error": 0.0, &"mass_error": 0.0, &"cg_max_error": 0.0, &"inertia_max_error": 0.0 }
+PASS selection accepted 0.75 
+PASS reset mass formula 0.75 { &"fuel": 0.22815495, &"mass": 3.74349595, &"cg": [-0.00268872107019, 0.0, 0.00048911424335], &"fuel_error": 0.0, &"mass_error": 0.0, &"cg_max_error": 0.0, &"inertia_max_error": 0.0 }
+PASS selection accepted 0.50 
+PASS reset mass formula 0.50 { &"fuel": 0.1521033, &"mass": 3.6674443, &"cg": [-0.00548895394917, 0.0, 0.00099851397284], &"fuel_error": 0.0, &"mass_error": 0.0, &"cg_max_error": 0.0, &"inertia_max_error": 0.0 }
+PASS selection accepted 0.25 
+PASS reset mass formula 0.25 { &"fuel": 0.07605165, &"mass": 3.59139265, &"cg": [-0.00840778278888, 0.0, 0.00152948789023], &"fuel_error": 0.0, &"mass_error": 0.0, &"cg_max_error": 0.0, &"inertia_max_error": 0.0 }
+PASS field installed 
+PASS selected-fill runway starts stopped 
+PASS starter consumes prime and starts { &"old_fuel": 0.07605165, &"new_fuel": 0.07604165, &"prime": 0.00001, &"rpm": 2200.0, &"linear_residual": 0.0, &"angular_residual": 0.0 }
+PASS starter impulse preserves post-prime linear and angular momentum 
+Flight log REC: /workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/fuel-transitions.orfl
+PASS log starts 
+PASS F6 cut accepted 
+PASS F7 restart accepted 
+PASS 16 ticks complete 
+Flight log saved: /workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/fuel-transitions.orfl (16 ticks)
+PASS log closes 
+PASS log inspection accepts 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS log replay prepares 
+PASS cut and restart replay exact { &"ticks": 16, &"mismatches": 0, &"interventions": [{ &"tick": 5, &"keys": ["continuous", "modes"] }, { &"tick": 9, &"keys": ["state", "aux", "continuous", "modes"] }] }
+PASS runway reset refuels and stops 
+FUEL-TRANSITION-PROBE 23 checks, 0 failures

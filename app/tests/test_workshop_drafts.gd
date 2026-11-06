@@ -109,8 +109,12 @@ func _test_validation_bounds() -> void:
 	var good: Dictionary = DraftStore.validate_editor_state(_editor_state())
 	_check("bounded raw editor text remains valid recovery data", bool(good.get("ok", false)), str(good.get("errors", [])))
 	var too_long: Dictionary = _editor_state()
-	too_long.name = "x".repeat(65)
+	too_long.name = "x".repeat(97)
 	_check("oversized editor name is refused", not DraftStore.validate_editor_state(too_long).ok)
+	too_long.name = "x".repeat(96)
+	_check("format-limit editor name is recoverable", DraftStore.validate_editor_state(too_long).ok)
+	too_long.numeric_buffers = {"power_multiplier": "1".repeat(65)}
+	_check("longer names do not expand numeric recovery buffers", not DraftStore.validate_editor_state(too_long).ok)
 	var unknown: Dictionary = _editor_state()
 	unknown.injected = "ignored?"
 	_check("unknown recovery editor keys are refused", not DraftStore.validate_editor_state(unknown).ok)

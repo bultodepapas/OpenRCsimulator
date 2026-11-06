@@ -1,0 +1,36 @@
+# Extra 300S fuel and propulsion review — round three
+
+## Conclusion
+
+No new serious defect is established in this bounded pass. The quantitative comparison below identifies a substantial **cooling-model sensitivity**, not a demonstrated bug or physical calibration. It is distinct from the existing Extra moment-datum/camber findings, E300-03 mass-stage reuse, E300-07 trim reuse, the locked/relative-shaft convention, and the historical fuel-boundary/firing-counter defects. The current Glow law is `glow-mean-cycle-segmented-firing-v6`.
+
+Reviewed clean source commit `2e2e3492e67d30635cc4e727025581e2848cdf2e`; the current consolidated ledger contains 13 source reports. Read the current fuel and Glow guides, FUEL-12 R2/R3/R4 and Extra scope. FUEL-12 R3 and R4 explicitly record the existing fuel-trial and segmented-counter repairs; this report does not reopen them.
+
+## Discriminating stage-local cooling comparison
+
+At the valid, full-fuel, stock Extra **trimmed airborne start**, `Glow.point()` evaluates these current model values at one instant: airspeed 22.0000 m/s, axial propeller inflow 21.96176 m/s, shaft 7,473.19 RPM, thrust 5.17050 N, density 1.225 kg/m³, head proxy 390 K, ambient 288.15 K. No maneuver or cooling trajectory is simulated by the comparison.
+
+Production `app/physics/glow/flight.gd:447`–`:458` computes a scalar cooling-flow proxy
+
+`v_cool = |v_hub| + sqrt(T/(2ρA))`, `A=πD²/4`,
+
+where the added term is the ideal actuator-disk induced speed **at zero inflow**. The installed head/cowl location, actual local airflow and cooling coefficient remain estimates. For comparison alone, an ideal steady, aligned, axial, positive-thrust actuator disk has the relation `T=2ρA v_i(U+v_i)` and therefore
+
+`v_i = 2v_0² / (sqrt(U²+4v_0²)+U)`, `v_0=sqrt(T/(2ρA))`.
+
+The alternate expression agrees with the current added term at zero axial inflow. At this actual trimmed start the two values are:
+
+| Quantity at the same frozen source/body state | Current proxy | Ideal aligned-disk comparison |
+| --- | ---: | ---: |
+| Added induced speed | 5.37803 m/s | 1.24626 m/s |
+| Proxy cooling heat | 487.389 W | 436.891 W |
+| Head-proxy temperature rate | −2.02342 K/s | −1.66272 K/s |
+
+The 50.4985 W cooling and 0.360704 K/s rate differences follow the **existing estimated** coefficients: airflow conductance 0.12 W/(K·m/s), heat capacity 140 J/K, and ΔT=101.85 K (`app/data/glow/extra_61fx_2t.json`; `app/physics/glow/thermal.gd:29`–`:31`). The alternate is evaluated with the same source result and thermal state; it is not integrated, retuned, or substituted into production. It is useful because a pilot's throttle/airspeed changes can affect estimated temperature and subsequently the firing fraction, but neither the effect on a maneuver nor any measured engine error was established. A real engine head may see upstream/downstream, off-axis and cowl-modified flow, and static disk theory is not a measured local head-cooling law. The transverse inflow is nonzero in this trimmed pose, while the comparator assumes alignment. A repair cannot be justified by the algebra alone; matched installed airflow/temperature data and separately justified model changes are needed.
+
+## Evidence and scope
+
+- Probe: `probe_cooling.gd`; results: `cooling_results.json`; checked runner: `checks/cooling-stage-final-e1fnzxgl/report.json` and adjacent `engine.log`. Seven checks pass: actual stock session/point evaluation, positive forward axial flow and thrust, independent reconstruction of current cooling, guarded thermal comparison and rate identity, and a zero-airspeed algebra control.
+- Linux x86-64, headless Godot `4.8.beta2.official.cafc17a19`, float64, 240 Hz, reference GDScript; isolated XDG. The isolated imported runtime copied from the root workspace is not the source checkout. Glow `flight.gd` SHA-256 `9f05a9b8803ff98c833b79e962085340d03887a1c0c0d7ff6b923aeba1dde7a6` and `lifecycle.gd` SHA-256 `33de28dbacca94864b5307f9f0d290f452adb613676a6c51ff8885f12fafcfb7` match source. The root runtime copy lacked landscape preload resources; unchanged landscape files from the earlier imported runtime were added to this private copy and reimported. Three originally missing assets match the current Git blobs. No production edits.
+- The initial checked attempt `checks/cooling-stage-comparison-xvl6nye6/` is **failed evidence**: the initial sparse runtime lacked landscape preloads, and an attempted runway starter control had a small negative axial velocity from starter reaction, outside that probe's strictly positive-flow comparison. The final checked run is separate and passes; its static control is analytic, not a runway flight.
+- This is one accepted launch state and an independently evaluated thermal-function counterfactual. It is not a tape replay, finite-time aircraft trajectory, exhaust/flow observation, target-platform measurement, or evidence of unsafe operation. The documented unmodeled feed-pressure, wing-wake and physical engine/thermal calibration boundaries remain open. No performance claim or code change is made.

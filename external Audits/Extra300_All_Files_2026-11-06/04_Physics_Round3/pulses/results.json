@@ -1,0 +1,454 @@
+{
+	"backend": "gdscript_reference",
+	"cases": [
+		{
+			"case": "15_normal_left",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "4a22364cf34f295f25f534ec743c17a9d8304d6e1c16353ac72a907328c734f7",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.1423538361073366,
+			"max_abs_surface_during_pulse_deg": 6.887859189995274,
+			"peak_abs_p_during_pulse_deg_s": 77.73155067478606,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "normal",
+			"raw_roll": -1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/15_normal_left.orfl",
+			"release_p_deg_s": -77.73155067478606,
+			"speed_mps": 15.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.2024810064215349,
+				"roll": 0.0033641506630416713,
+				"yaw": -0.03815199104949461
+			}
+		},
+		{
+			"case": "15_full_left",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "620efea224f61e813713c251a67445eecb59c67d324bd4e3551e2467c680e2a0",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.1423538361073366,
+			"max_abs_surface_during_pulse_deg": 17.541453711170277,
+			"peak_abs_p_during_pulse_deg_s": 227.85301153391876,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "full",
+			"raw_roll": -1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/15_full_left.orfl",
+			"release_p_deg_s": -208.54111405453355,
+			"speed_mps": 15.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.2024810064215349,
+				"roll": 0.0033641506630416713,
+				"yaw": -0.03815199104949461
+			}
+		},
+		{
+			"case": "15_normal_right",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "9458cdf29a97776d01128d638de1e6075b06b1d60c739505782a8a817c638383",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.1423538361073366,
+			"max_abs_surface_during_pulse_deg": 7.006281767654724,
+			"peak_abs_p_during_pulse_deg_s": 77.13203879885403,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "normal",
+			"raw_roll": 1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/15_normal_right.orfl",
+			"release_p_deg_s": 76.65323158983179,
+			"speed_mps": 15.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.2024810064215349,
+				"roll": 0.0033641506630416713,
+				"yaw": -0.03815199104949461
+			}
+		},
+		{
+			"case": "15_full_right",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "d43605ea6d6da78a263315b669738bec5af0146239919bb8a46a55f2cec16990",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.1423538361073366,
+			"max_abs_surface_during_pulse_deg": 17.600665,
+			"peak_abs_p_during_pulse_deg_s": 224.48946938391506,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "full",
+			"raw_roll": 1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/15_full_right.orfl",
+			"release_p_deg_s": 199.5070688874369,
+			"speed_mps": 15.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.2024810064215349,
+				"roll": 0.0033641506630416713,
+				"yaw": -0.03815199104949461
+			}
+		},
+		{
+			"case": "22_normal_left",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "6ebd66160e8c3fff10e275cea0d349c71a9cb82cb66734432921d821ccd0c332",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 6.921776943449833,
+			"peak_abs_p_during_pulse_deg_s": 107.70868557491036,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "normal",
+			"raw_roll": -1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_normal_left.orfl",
+			"release_p_deg_s": -107.70868557491036,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_full_left",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "a1e90baf2ddcd8d309d7159dec435cf3c7d5e7d1e894b5f538cf8bc0e7596644",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 17.575371464624833,
+			"peak_abs_p_during_pulse_deg_s": 283.6907821467753,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "full",
+			"raw_roll": -1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_full_left.orfl",
+			"release_p_deg_s": -270.5125729416637,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_normal_right",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "0ee64879cfa1472d1f59203ebc23609682f3935280e0b049256f2c284dbf5762",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 6.972364014200165,
+			"peak_abs_p_during_pulse_deg_s": 107.85981795676845,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "normal",
+			"raw_roll": 1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_normal_right.orfl",
+			"release_p_deg_s": 107.85981795676845,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_full_right",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "333dc08841da64824f5cf73851d0cfb1e67b6e49bd2b824664aff284bdedd421",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 17.600665,
+			"peak_abs_p_during_pulse_deg_s": 279.04549659602225,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "full",
+			"raw_roll": 1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_full_right.orfl",
+			"release_p_deg_s": 269.3919638762231,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_sport_left",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "a1e90baf2ddcd8d309d7159dec435cf3c7d5e7d1e894b5f538cf8bc0e7596644",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 17.575371464624833,
+			"peak_abs_p_during_pulse_deg_s": 283.6907821467753,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "sport",
+			"raw_roll": -1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_sport_left.orfl",
+			"release_p_deg_s": -270.5125729416637,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_matched_left",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "6ebd66160e8c3fff10e275cea0d349c71a9cb82cb66734432921d821ccd0c332",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 6.921776943449833,
+			"peak_abs_p_during_pulse_deg_s": 107.70868557491036,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "full",
+			"raw_roll": -0.394705,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_matched_left.orfl",
+			"release_p_deg_s": -107.70868557491036,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_sport_right",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "333dc08841da64824f5cf73851d0cfb1e67b6e49bd2b824664aff284bdedd421",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 17.600665,
+			"peak_abs_p_during_pulse_deg_s": 279.04549659602225,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "sport",
+			"raw_roll": 1.0,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_sport_right.orfl",
+			"release_p_deg_s": 269.3919638762231,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		},
+		{
+			"case": "22_matched_right",
+			"dt_s": 0.004166666666666667,
+			"dynamics_sha256": "0ee64879cfa1472d1f59203ebc23609682f3935280e0b049256f2c284dbf5762",
+			"exact_replay": {
+				"complete": true,
+				"mismatch": "",
+				"ok": true,
+				"solver_changed": false,
+				"ticks": 480
+			},
+			"initial_cg_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"initial_mass_kg": 3.819547600000001,
+			"initial_rho_kg_m3": 1.225,
+			"initial_throttle": 0.2444507016210564,
+			"max_abs_surface_during_pulse_deg": 6.972364014200165,
+			"peak_abs_p_during_pulse_deg_s": 107.85981795676845,
+			"pulse_ticks": [
+				48,
+				168
+			],
+			"rate_profile": "full",
+			"raw_roll": 0.394705,
+			"recording": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/22_matched_right.orfl",
+			"release_p_deg_s": 107.85981795676845,
+			"speed_mps": 22.0,
+			"total_ticks": 480,
+			"trims": {
+				"pitch": 0.08362871284473813,
+				"roll": 0.001437078393070179,
+				"yaw": -0.02015260738238268
+			}
+		}
+	],
+	"engine": "4.8-beta2 (official)",
+	"failures": 0,
+	"format": "extra-character-pulses-v1",
+	"interpretation": "Unchanged production physics, deterministic short control pulses; no physical calibration or timing claim.",
+	"source_commit": "2e2e3492e67d30635cc4e727025581e2848cdf2e"
+}

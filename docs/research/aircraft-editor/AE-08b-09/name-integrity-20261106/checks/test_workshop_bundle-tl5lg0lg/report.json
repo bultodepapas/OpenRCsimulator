@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d1fe5073-8e72-4653-96b4-c260345b89fe",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_bundle.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:11:38.117700+00:00",
+  "label": "test_workshop_bundle",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-names\\final-checks\\test_workshop_bundle-tl5lg0lg\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-names\\final-checks\\test_workshop_bundle-tl5lg0lg\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop bundle:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.937,
+  "log_bytes": 215,
+  "log_sha256": "17ee263ad35b23018fc6d1738f25348dba9cd020d124d5b7866caa9555bb55b7"
+}

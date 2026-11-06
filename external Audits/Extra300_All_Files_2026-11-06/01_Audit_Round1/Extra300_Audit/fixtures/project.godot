@@ -1,0 +1,9 @@
+config_version=5
+[application]
+config/name="Extra Audit Isolation"
+config/features=PackedStringArray("4.8")
+[physics]
+common/physics_ticks_per_second=240
+[rendering]
+renderer/rendering_method="gl_compatibility"
+

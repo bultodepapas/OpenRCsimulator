@@ -1,0 +1,371 @@
+{
+  "source_commit": "2e2e3492e67d30635cc4e727025581e2848cdf2e",
+  "recordings": 12,
+  "replayed_physics_ticks": 5760,
+  "pulse_on_s": 0.2,
+  "pulse_off_s": 0.7,
+  "recording_duration_s": 2.0,
+  "initial_density_kg_m3": 1.225,
+  "initial_mass_kg": 3.819547600000001,
+  "interpretation": "Open-loop, scripted pre-servo stick steps; no real-aircraft, steady-rate, native performance or device-latency claim.",
+  "equal_physics_pairs": [
+    {
+      "first": "22_sport_left",
+      "second": "22_full_left",
+      "physical_array_hashes_equal": true
+    },
+    {
+      "first": "22_matched_left",
+      "second": "22_normal_left",
+      "physical_array_hashes_equal": true
+    },
+    {
+      "first": "22_sport_right",
+      "second": "22_full_right",
+      "physical_array_hashes_equal": true
+    },
+    {
+      "first": "22_matched_right",
+      "second": "22_normal_right",
+      "physical_array_hashes_equal": true
+    }
+  ],
+  "metrics": [
+    {
+      "case": "15_normal_left",
+      "initial_speed_mps": 15.0,
+      "peak_abs_body_roll_deg_s": 77.73155067478606,
+      "peak_time_s": 0.7,
+      "right_aileron_baseline_deg": 0.05921128882972433,
+      "right_aileron_pulse_end_deg": -6.887859189995274,
+      "right_aileron_increment_deg": -6.947070478824998,
+      "servo_first_target_sample_after_on_s": 0.05833333333333329,
+      "servo_first_neutral_sample_after_off_s": 0.05833333333333335,
+      "body_roll_deg_s_at_0p8s": -18.951747246921943,
+      "right_aileron_deg_at_0p8s": 0.05921128882972433,
+      "first_half_release_roll_sample_after_off_s": 0.0625,
+      "pulse_airspeed_range_mps": [
+        14.98900895595025,
+        15.006532226667966
+      ],
+      "pulse_alpha_range_deg": [
+        7.083438086133365,
+        7.742702466352366
+      ],
+      "pulse_beta_range_deg": [
+        -3.1649234408615103,
+        0.9071225967283353
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 6.693500871011191,
+      "pulse_max_abs_yaw_rate_deg_s": 26.497866095092736
+    },
+    {
+      "case": "15_full_left",
+      "initial_speed_mps": 15.0,
+      "peak_abs_body_roll_deg_s": 227.85301153391876,
+      "peak_time_s": 0.5291666666666667,
+      "right_aileron_baseline_deg": 0.05921128882972433,
+      "right_aileron_pulse_end_deg": -17.541453711170277,
+      "right_aileron_increment_deg": -17.600665000000003,
+      "servo_first_target_sample_after_on_s": 0.14166666666666666,
+      "servo_first_neutral_sample_after_off_s": 0.14166666666666672,
+      "body_roll_deg_s_at_0p8s": -111.4954420976648,
+      "right_aileron_deg_at_0p8s": -4.969550139741703,
+      "first_half_release_roll_sample_after_off_s": 0.10833333333333339,
+      "pulse_airspeed_range_mps": [
+        14.956426766667645,
+        15.067178960680337
+      ],
+      "pulse_alpha_range_deg": [
+        3.582041971374795,
+        7.76222061444246
+      ],
+      "pulse_beta_range_deg": [
+        -7.451325606175381,
+        0.9071225967283353
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 36.13397499915187,
+      "pulse_max_abs_yaw_rate_deg_s": 46.835117153353764
+    },
+    {
+      "case": "15_normal_right",
+      "initial_speed_mps": 15.0,
+      "peak_abs_body_roll_deg_s": 77.13203879885403,
+      "peak_time_s": 0.475,
+      "right_aileron_baseline_deg": 0.05921128882972433,
+      "right_aileron_pulse_end_deg": 7.006281767654724,
+      "right_aileron_increment_deg": 6.947070478825,
+      "servo_first_target_sample_after_on_s": 0.05833333333333329,
+      "servo_first_neutral_sample_after_off_s": 0.05833333333333335,
+      "body_roll_deg_s_at_0p8s": 18.3776222317196,
+      "right_aileron_deg_at_0p8s": 0.05921128882972433,
+      "first_half_release_roll_sample_after_off_s": 0.0625,
+      "pulse_airspeed_range_mps": [
+        14.989338436233583,
+        15.017207852468484
+      ],
+      "pulse_alpha_range_deg": [
+        6.816520827980196,
+        7.716484439415015
+      ],
+      "pulse_beta_range_deg": [
+        0.9073645162753545,
+        5.260832593248319
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 6.795865817083185,
+      "pulse_max_abs_yaw_rate_deg_s": 24.458044423509225
+    },
+    {
+      "case": "15_full_right",
+      "initial_speed_mps": 15.0,
+      "peak_abs_body_roll_deg_s": 224.48946938391506,
+      "peak_time_s": 0.5125,
+      "right_aileron_baseline_deg": 0.05921128882972433,
+      "right_aileron_pulse_end_deg": 17.600665,
+      "right_aileron_increment_deg": 17.541453711170274,
+      "servo_first_target_sample_after_on_s": 0.14166666666666666,
+      "servo_first_neutral_sample_after_off_s": 0.14166666666666672,
+      "body_roll_deg_s_at_0p8s": 108.74600157016054,
+      "right_aileron_deg_at_0p8s": 5.028761428571426,
+      "first_half_release_roll_sample_after_off_s": 0.10833333333333339,
+      "pulse_airspeed_range_mps": [
+        14.955327810549,
+        15.085467513156297
+      ],
+      "pulse_alpha_range_deg": [
+        2.9445893541307124,
+        7.716484439415015
+      ],
+      "pulse_beta_range_deg": [
+        0.9073645162753545,
+        9.573563132072666
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 36.51144489586621,
+      "pulse_max_abs_yaw_rate_deg_s": 42.200915236311715
+    },
+    {
+      "case": "22_normal_left",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 107.70868557491036,
+      "peak_time_s": 0.7,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": -6.921776943449833,
+      "right_aileron_increment_deg": -6.947070478825,
+      "servo_first_target_sample_after_on_s": 0.05833333333333329,
+      "servo_first_neutral_sample_after_off_s": 0.05833333333333335,
+      "body_roll_deg_s_at_0p8s": -14.532435037451865,
+      "right_aileron_deg_at_0p8s": 0.02529353537516654,
+      "first_half_release_roll_sample_after_off_s": 0.054166666666666696,
+      "pulse_airspeed_range_mps": [
+        21.973848963094387,
+        21.999961458055264
+      ],
+      "pulse_alpha_range_deg": [
+        3.163082349813869,
+        3.6431870771716772
+      ],
+      "pulse_beta_range_deg": [
+        -1.9462420026114782,
+        0.7143862411365381
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 8.142136896455861,
+      "pulse_max_abs_yaw_rate_deg_s": 25.690520497754346
+    },
+    {
+      "case": "22_full_left",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 283.6907821467753,
+      "peak_time_s": 0.42916666666666664,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": -17.575371464624833,
+      "right_aileron_increment_deg": -17.600665,
+      "servo_first_target_sample_after_on_s": 0.14166666666666666,
+      "servo_first_neutral_sample_after_off_s": 0.14166666666666672,
+      "body_roll_deg_s_at_0p8s": -135.06195061443938,
+      "right_aileron_deg_at_0p8s": -5.00346789319626,
+      "first_half_release_roll_sample_after_off_s": 0.10000000000000009,
+      "pulse_airspeed_range_mps": [
+        21.94097065282779,
+        22.00858409351006
+      ],
+      "pulse_alpha_range_deg": [
+        0.869283222088992,
+        3.6443582976971083
+      ],
+      "pulse_beta_range_deg": [
+        -4.340048860305471,
+        0.7143862411365381
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 32.667229035804226,
+      "pulse_max_abs_yaw_rate_deg_s": 28.72164043112339
+    },
+    {
+      "case": "22_normal_right",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 107.85981795676845,
+      "peak_time_s": 0.7,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": 6.972364014200165,
+      "right_aileron_increment_deg": 6.947070478824998,
+      "servo_first_target_sample_after_on_s": 0.05833333333333329,
+      "servo_first_neutral_sample_after_off_s": 0.05833333333333335,
+      "body_roll_deg_s_at_0p8s": 14.776802174241183,
+      "right_aileron_deg_at_0p8s": 0.02529353537516654,
+      "first_half_release_roll_sample_after_off_s": 0.054166666666666696,
+      "pulse_airspeed_range_mps": [
+        21.971967088706087,
+        21.999956555819587
+      ],
+      "pulse_alpha_range_deg": [
+        2.9689221042326457,
+        3.6260598506314747
+      ],
+      "pulse_beta_range_deg": [
+        0.7146122053483231,
+        3.417305989370614
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 8.483510246394998,
+      "pulse_max_abs_yaw_rate_deg_s": 26.274411705503883
+    },
+    {
+      "case": "22_full_right",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 279.04549659602225,
+      "peak_time_s": 0.425,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": 17.600665,
+      "right_aileron_increment_deg": 17.575371464624833,
+      "servo_first_target_sample_after_on_s": 0.14166666666666666,
+      "servo_first_neutral_sample_after_off_s": 0.14166666666666672,
+      "body_roll_deg_s_at_0p8s": 134.59766685604728,
+      "right_aileron_deg_at_0p8s": 5.028761428571426,
+      "first_half_release_roll_sample_after_off_s": 0.10000000000000009,
+      "pulse_airspeed_range_mps": [
+        21.935736479739347,
+        22.012290976240774
+      ],
+      "pulse_alpha_range_deg": [
+        0.459664113077198,
+        3.6260598506314747
+      ],
+      "pulse_beta_range_deg": [
+        0.7146122053483231,
+        6.02566693145857
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 36.46983554492589,
+      "pulse_max_abs_yaw_rate_deg_s": 29.228420793545684
+    },
+    {
+      "case": "22_sport_left",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 283.6907821467753,
+      "peak_time_s": 0.42916666666666664,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": -17.575371464624833,
+      "right_aileron_increment_deg": -17.600665,
+      "servo_first_target_sample_after_on_s": 0.14166666666666666,
+      "servo_first_neutral_sample_after_off_s": 0.14166666666666672,
+      "body_roll_deg_s_at_0p8s": -135.06195061443938,
+      "right_aileron_deg_at_0p8s": -5.00346789319626,
+      "first_half_release_roll_sample_after_off_s": 0.10000000000000009,
+      "pulse_airspeed_range_mps": [
+        21.94097065282779,
+        22.00858409351006
+      ],
+      "pulse_alpha_range_deg": [
+        0.869283222088992,
+        3.6443582976971083
+      ],
+      "pulse_beta_range_deg": [
+        -4.340048860305471,
+        0.7143862411365381
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 32.667229035804226,
+      "pulse_max_abs_yaw_rate_deg_s": 28.72164043112339
+    },
+    {
+      "case": "22_matched_left",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 107.70868557491036,
+      "peak_time_s": 0.7,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": -6.921776943449833,
+      "right_aileron_increment_deg": -6.947070478825,
+      "servo_first_target_sample_after_on_s": 0.05833333333333329,
+      "servo_first_neutral_sample_after_off_s": 0.05833333333333335,
+      "body_roll_deg_s_at_0p8s": -14.532435037451865,
+      "right_aileron_deg_at_0p8s": 0.02529353537516654,
+      "first_half_release_roll_sample_after_off_s": 0.054166666666666696,
+      "pulse_airspeed_range_mps": [
+        21.973848963094387,
+        21.999961458055264
+      ],
+      "pulse_alpha_range_deg": [
+        3.163082349813869,
+        3.6431870771716772
+      ],
+      "pulse_beta_range_deg": [
+        -1.9462420026114782,
+        0.7143862411365381
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 8.142136896455861,
+      "pulse_max_abs_yaw_rate_deg_s": 25.690520497754346
+    },
+    {
+      "case": "22_sport_right",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 279.04549659602225,
+      "peak_time_s": 0.425,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": 17.600665,
+      "right_aileron_increment_deg": 17.575371464624833,
+      "servo_first_target_sample_after_on_s": 0.14166666666666666,
+      "servo_first_neutral_sample_after_off_s": 0.14166666666666672,
+      "body_roll_deg_s_at_0p8s": 134.59766685604728,
+      "right_aileron_deg_at_0p8s": 5.028761428571426,
+      "first_half_release_roll_sample_after_off_s": 0.10000000000000009,
+      "pulse_airspeed_range_mps": [
+        21.935736479739347,
+        22.012290976240774
+      ],
+      "pulse_alpha_range_deg": [
+        0.459664113077198,
+        3.6260598506314747
+      ],
+      "pulse_beta_range_deg": [
+        0.7146122053483231,
+        6.02566693145857
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 36.46983554492589,
+      "pulse_max_abs_yaw_rate_deg_s": 29.228420793545684
+    },
+    {
+      "case": "22_matched_right",
+      "initial_speed_mps": 22.0,
+      "peak_abs_body_roll_deg_s": 107.85981795676845,
+      "peak_time_s": 0.7,
+      "right_aileron_baseline_deg": 0.02529353537516654,
+      "right_aileron_pulse_end_deg": 6.972364014200165,
+      "right_aileron_increment_deg": 6.947070478824998,
+      "servo_first_target_sample_after_on_s": 0.05833333333333329,
+      "servo_first_neutral_sample_after_off_s": 0.05833333333333335,
+      "body_roll_deg_s_at_0p8s": 14.776802174241183,
+      "right_aileron_deg_at_0p8s": 0.02529353537516654,
+      "first_half_release_roll_sample_after_off_s": 0.054166666666666696,
+      "pulse_airspeed_range_mps": [
+        21.971967088706087,
+        21.999956555819587
+      ],
+      "pulse_alpha_range_deg": [
+        2.9689221042326457,
+        3.6260598506314747
+      ],
+      "pulse_beta_range_deg": [
+        0.7146122053483231,
+        3.417305989370614
+      ],
+      "pulse_max_abs_pitch_rate_deg_s": 8.483510246394998,
+      "pulse_max_abs_yaw_rate_deg_s": 26.274411705503883
+    }
+  ]
+}

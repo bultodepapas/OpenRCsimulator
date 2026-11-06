@@ -1,0 +1,73 @@
+# Extra high-angle aerodynamic review — bounded modeling observation
+
+## Verdict and scope
+
+No new confirmed implementation defect was established in this bounded pass. One **quantified model-law/contract tension** is worth preserving: Extra's selected spanwise stall-progression rule also stretches the entire high-angle polar. This deliberately follows the explicit aircraft contract, yet changes the strip's nominal flat-plate endpoint when the *geometric* strip angle is 90°. A constructed rolling state exposes a yaw sensitivity that cancels in a symmetric zero-roll example. This observation is not physical validation, evidence of a normal-flight failure, or a recommendation to change the selected law.
+
+Source: clean detached checkout `2e2e3492e67d30635cc4e727025581e2848cdf2e`, stock `gp_extra_300s_60.json`. Current consolidated ledger was read in full before source; its SHA-256 is `981352b5c175007ee660d64a38b21524be406b82377444203619ff6b4b0cede0`. Pinned Godot `4.8.beta2.official.cafc17a19`, Linux x86-64, float64 scalar state. Tests use a disposable copy of the shared imported minimal runtime, isolated XDG profile and no production edits. The shared runtime import receipt was complete with zero errors/warnings (`round3/root/checks/import-fyy1taq6/`).
+
+## Mechanism and stated contracts
+
+1. Extra selects `spanwise_progression = 1` in `app/data/aircraft/gp_extra_300s_60.json:1368–1375`, in its EX-14h fitted polar. `app/physics/aircraft_data.gd:2332–2350` derives per-strip factors from the induced-map row sums. The stock factors, in station order, are `[1.01155018658088, 1.02426809678006, 0.964181716639057, 0.964181716639057, 1.02426809678006, 1.01155018658088]`.
+2. `app/physics/aero.gd:473–474,495,516,524` passes the **whole** geometric angle times the factor to `WingPolar.evaluate`, including the tabulated high-angle region and analytic continuation. The dynamic wing-wake evaluation takes the same scaled argument (`aero.gd:929,947`). `docs/AIRCRAFT_CONTRACT.md:105` and `docs/research/flight-robustness/D8b-R2/analog/README.md`, “Spanwise stall progression”, explicitly prescribe angle × factor. This is why the current behavior is **not classified as an implementation bug**.
+3. In the no-progression model, `app/physics/wing_polar.gd:44–46,82–94` uses zero CL and `CD0 + CD90` at 90°, continuing with `0.5 CD90 sin(2α)` and `CD0 + CD90 sin²α` thereafter. The model-method discussion `docs/research/flight-robustness/D8b-R2/implementation/polar-method.md` describes these limits using geometric strip angle; `aero.gd:495` likewise says stall and flat plate follow geometric angle. Those descriptions and the explicit whole-angle progression law need interpretation together. This is a tension between two model statements, not proof that one is the correct description of a real Extra.
+4. Existing `app/tests/test_spatial_aero_continuation.gd:251–275` checks a 90° flat-plate oracle **after explicitly emptying `strip_factor`**, so that check does not assert the geometric endpoint for the stock Extra's progression. `test_wing_polar.gd:144–214` does exercise progression, symmetry, passivity, wake consistency and low-angle identity; it does not require a zero per-strip CL at geometric 90°.
+
+The reader can inspect historical documents missing from the sparse checkout using `git show HEAD:docs/research/flight-robustness/D8b-R2/analog/README.md` and the similarly named `implementation/polar-method.md`, if those Git objects are available. The tracked aircraft contract and production scripts are present in the checkout.
+
+## Counterfactual diagnostic, not a repair
+
+The diagnostic is an in-memory deep copy of the exact loaded production model with only `envelope.wing_polar.strip_factor` erased; it leaves the loaded production model unchanged. Erasing progression changes the law over the broader nonlinear envelope, including its intended stall-progression effect, and **must not be treated as an acceptable fix**. It is used solely to isolate the contribution of the documented angle scaling.
+
+Inputs: density 1.225 kg/m³; body-relative air velocity `[0, 0, 20]` m/s (geometric α = +90°, β = 0°); neutral elevator, ailerons and rudder; flat-weather free-air model, no ground effect; no propeller, thrust, gravity, propulsion or control/transmitter dynamics in `Aero.loads`; quasi-static wing/tail with settled wake. Rows are the six production `Aero.wing_strip_loads` in the stock model. No source files or generated data were altered. Both the full and no-progression models return `local_flow_weight = 1` for this condition.
+
+At zero body rate, every geometric strip angle is exactly 90° and the reported attached fraction is zero. Nevertheless their stock CL values are:
+
+| Station, span order | Factor | Stock section CL at geometric +90° |
+| --- | ---: | ---: |
+| 1 and 6 | 1.011550 | −0.021932 |
+| 2 and 5 | 1.024268 | −0.046046 |
+| 3 and 4 | 0.964182 | +0.069483 |
+
+For the diagnostic model each corresponding CL is zero within `1e−12`, and its CD is exactly `CD0+CD90 = 1.239139` within `1e−12`. At geometric −90° every stock section's CL sign reverses, although positive/negative tables need not have identical magnitudes. At +90°, summing wing strips gives `Fx = +0.0590004 N`, `Fz = −145.4624672 N`, compared with approximately `0 N`, `−145.7224428 N` for the no-progression diagnostic. Aerodynamic wing yaw is effectively zero in both cases, because opposite-span effects cancel. Full `Aero.loads` Fz changes by +0.2600025 N; its small difference from the wing-only delta includes the wing-wake/tail coupling.
+
+For body roll `p = ±2 rad/s` (other rates zero), all six wing section flows still have geometric incidence +90°; only their positive normal speeds differ with station position. Results:
+
+| p (rad/s) | Stock full aerodynamic Mz (N·m) | No-progression diagnostic Mz (N·m) | Stock minus diagnostic (N·m) |
+| ---: | ---: | ---: | ---: |
+| −2 | −0.109528801 | −0.002567911 | −0.106960890 |
+| 0 | approximately 0 | approximately 0 | approximately 0 |
+| +2 | +0.109528801 | +0.002567911 | +0.106960890 |
+
+The production strip-moment sum independently accounts for the difference to `1e−10 N·m`: at `p=+2`, wing Mz is +0.106960890 N·m versus essentially zero in the no-progression model. This follows directly from `Fx_i = 0.5 ρ Vp_i² S_i CL_i` and `Mz_i = −y_i Fx_i` for pure normal wing-plane flow. Here `Vp_i = 20 + p y_i` (using each strip's actual body arm), so otherwise symmetric spanwise contributions cease to cancel when the wing rolls. The relative percentage against the near-zero counterfactual yaw is not a useful severity measure. At geometric α = 0° and both `p=±2`, the two models' **six complete aerodynamic loads are byte-identical** in these cases; this is a narrow control, not a claim of identity over all attached states.
+
+The high-angle state is a deliberate fixed-state diagnostic, not an observed recording or evidence that the stock airplane encounters α = 90° at 20 m/s. It is not a knife-edge trim result: β is zero, and aircraft attitude/trajectory were not integrated. It does not measure how propeller wake, pilot commands or coupled rigid-body dynamics alter a real maneuver. No independent Extra 300S polar or cross-coupling measurement was obtained, so neither the prescribed progression law nor the geometric-plate diagnostic is validated against the real airplane. At current evidence strength this belongs with model limitations, not the defect count.
+
+## Evidence and reproducibility
+
+- `runtime/check_flat_plate_progression.gd`: final 16 asserted checks. `checks/progression-observation-final-_yqxyrza/{report.json,engine.log}`: `ok=true`, `complete=true`, no errors/warnings, completion `PROGRESSION_OBSERVATION_COMPLETE: 16 checks, 0 failed`. The assertions cover production model identity/load, local selector, six station signs/values, 90° unscaled plate endpoint, ±p symmetry, wing-versus-total attribution, exact forward-flow controls and no mutation of the loaded production model.
+- Initial receipt `checks/progression-observation-nyad2egh/` is **not accepted**: the script completed 16/16 assertions, but the invocation incorrectly required a literal 14-check marker, so the checked runner correctly rejected it as `missing_required_text`. The final receipt corrected the required marker; it was not a production change.
+- Exploratory output: `runtime/flat_plate_scan.gd` and `checks/flat-plate-scan-3qb9olk7/`; `runtime/flat_plate_rates.gd` and `checks/flat-plate-paired-qg1xzoms/` (the earlier broad exploratory rates receipt `flat-plate-rates-080jjwgb` precedes the narrowed script). These were print scans, not replacements for the asserted final witness.
+- Existing `test_wing_polar.gd`: **126 checks, 0 failed** (`checks/existing-wing-polar-3omhi0li/`). Existing `test_spatial_aero_continuation.gd`: **91 checks, 0 failed** (`checks/existing-spatial-continuation-z80go34f/`). Both checked receipts are complete, `ok=true`, with zero recorded errors/warnings. They establish their stated software scope only; see their source for fixture coverage.
+- Source SHA-256: `aero.gd` `062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d`; `wing_polar.gd` `5ad827fb1726a935a49c3adb6691dd4a7f652996d5f11e053eaebe6752cf79ff`; `aircraft_data.gd` `3f8879f6c6f87b87956bffda19d0fb89e40463695025508b01aae4dbae48455f`; `air_data.gd` `1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50`; Extra JSON `6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75`.
+
+To replay in the retained copy, use the repository checked runner with isolated XDG directories and the pinned engine, for example:
+
+```sh
+cd /workspace/scratch/b3c27b2e84ee/extra300_audit/round3/source
+XDG_DATA_HOME=/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/xdg/data \
+XDG_CONFIG_HOME=/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/xdg/config \
+XDG_CACHE_HOME=/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/xdg/cache \
+python3 tools/godot/run_checked.py --timeout 90 \
+  --out-dir /workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/checks \
+  --label progression-replay --require-text 'PROGRESSION_OBSERVATION_COMPLETE: 16 checks, 0 failed' -- \
+  /workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64 \
+  --headless --path /workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/runtime \
+  --audio-driver Dummy --script res://check_flat_plate_progression.gd
+```
+
+## Overlap and next decision
+
+The ±90° *geometric endpoint* and roll-to-yaw comparison are distinct from E300-01 moment datum, E300-02 propeller camber, the negative-stall **selector**, the known ±180° reverse-flow discontinuity, lower-rudder reference arm, ground-effect/wake convention and missing wing propwash. The same progression mechanism is already an explicit D8b-R2d design; this handoff adds the high-angle/rate consequence, not a new countable defect. Prior A10 source-weight/polar-attachment and max-speed-cusp observations are also different mechanisms. No production source, generated file, model tuning, benchmark or physics-validation claim is included.
+
+A useful next step, if a future owner wants to resolve the tension, is to explicitly decide whether the geometric flat-plate endpoint should constrain each progressed strip and gather matched RC-aircraft/section evidence. Any candidate would need its own smooth transition and wake/force consistency analysis, no-progression and local-flow controls, and the required held-out replay/flight tests. This audit selects no candidate and does not propose disabling progression.

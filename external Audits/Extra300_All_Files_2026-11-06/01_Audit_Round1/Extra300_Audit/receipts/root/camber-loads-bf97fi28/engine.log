@@ -1,0 +1,49 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   stock Extra model validates
+ok   installed annular propeller valid at J 0.30
+ok   Python and production installed thrust agree J 0.30
+ok   shaft thrust and torque bit-identical J 0.30 vertical
+ok   independent normal-force magnitude J 0.30 vertical
+ok   independent P-factor magnitude J 0.30 vertical
+ok   both crossflow effects oppose transverse flow J 0.30 vertical
+ok   shaft thrust and torque bit-identical J 0.30 horizontal
+ok   independent normal-force magnitude J 0.30 horizontal
+ok   independent P-factor magnitude J 0.30 horizontal
+ok   both crossflow effects oppose transverse flow J 0.30 horizontal
+ok   axis-aligned control has negligible crossflow J 0.30
+ok   installed annular propeller valid at J 0.50
+ok   Python and production installed thrust agree J 0.50
+ok   shaft thrust and torque bit-identical J 0.50 vertical
+ok   independent normal-force magnitude J 0.50 vertical
+ok   independent P-factor magnitude J 0.50 vertical
+ok   both crossflow effects oppose transverse flow J 0.50 vertical
+ok   shaft thrust and torque bit-identical J 0.50 horizontal
+ok   independent normal-force magnitude J 0.50 horizontal
+ok   independent P-factor magnitude J 0.50 horizontal
+ok   both crossflow effects oppose transverse flow J 0.50 horizontal
+ok   axis-aligned control has negligible crossflow J 0.50
+ok   installed annular propeller valid at J 0.70
+ok   Python and production installed thrust agree J 0.70
+ok   shaft thrust and torque bit-identical J 0.70 vertical
+ok   independent normal-force magnitude J 0.70 vertical
+ok   independent P-factor magnitude J 0.70 vertical
+ok   both crossflow effects oppose transverse flow J 0.70 vertical
+ok   shaft thrust and torque bit-identical J 0.70 horizontal
+ok   independent normal-force magnitude J 0.70 horizontal
+ok   independent P-factor magnitude J 0.70 horizontal
+ok   both crossflow effects oppose transverse flow J 0.70 horizontal
+ok   axis-aligned control has negligible crossflow J 0.70
+ok   installed annular propeller valid at J 0.80
+ok   Python and production installed thrust agree J 0.80
+ok   shaft thrust and torque bit-identical J 0.80 vertical
+ok   independent normal-force magnitude J 0.80 vertical
+ok   independent P-factor magnitude J 0.80 vertical
+ok   both crossflow effects oppose transverse flow J 0.80 vertical
+ok   shaft thrust and torque bit-identical J 0.80 horizontal
+ok   independent normal-force magnitude J 0.80 horizontal
+ok   independent P-factor magnitude J 0.80 horizontal
+ok   both crossflow effects oppose transverse flow J 0.80 horizontal
+ok   axis-aligned control has negligible crossflow J 0.80
+ok   zero RPM control has no crossflow terms
+CAMBER LOAD PROBE: 46 checks, 0 failed

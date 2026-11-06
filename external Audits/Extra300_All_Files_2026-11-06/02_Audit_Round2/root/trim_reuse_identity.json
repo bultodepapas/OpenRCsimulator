@@ -1,0 +1,6 @@
+{
+  "source_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+  "baseline_trim_sha256": "a4d6be9967aa047464a11b00dcfbd24d7ca9822f98086ecf18460bff4dae8ea8",
+  "candidate_trim_sha256": "5dac227ec0a745aa9ac7ac582e1ca23fc686cc65969ea8867272f4ac1b7686d5",
+  "scope": "Only finite-glow level finalization reuses the accepted iterate's RPM; instrumented variants are never timed."
+}

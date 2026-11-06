@@ -1,0 +1,48 @@
+{
+  "platform": "Linux",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "pairs_per_case": 24,
+  "warmup_pairs_per_case": 2,
+  "failures": 0,
+  "limits": "Warm solver CPU only, no launch cache, import, full UI, native backend, frame or GPU timing.",
+  "cases": {
+    "level_22": {
+      "baseline_median_ms": 148.6705,
+      "candidate_median_ms": 134.183,
+      "paired_reduction_median_percent": 10.06787840377753,
+      "paired_reduction_quartiles_percent": [
+        6.656139162032754,
+        10.06787840377753,
+        10.998440929694265
+      ],
+      "candidate_faster_pairs": 24,
+      "baseline_range_ms": [
+        143.899,
+        171.005
+      ],
+      "candidate_range_ms": [
+        130.894,
+        146.935
+      ]
+    },
+    "half_power_cruise": {
+      "baseline_median_ms": 1518.482,
+      "candidate_median_ms": 1332.003,
+      "paired_reduction_median_percent": 11.957093280996789,
+      "paired_reduction_quartiles_percent": [
+        -5.1883303031131645,
+        11.957093280996789,
+        13.191663514471374
+      ],
+      "candidate_faster_pairs": 17,
+      "baseline_range_ms": [
+        1506.246,
+        1865.773
+      ],
+      "candidate_range_ms": [
+        1307.649,
+        1836.349
+      ]
+    }
+  }
+}

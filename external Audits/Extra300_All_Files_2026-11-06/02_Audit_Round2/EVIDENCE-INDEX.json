@@ -1,0 +1,109 @@
+{
+  "source_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+  "source_clean": true,
+  "patch_applies_cleanly": true,
+  "checked_runs": [
+    {
+      "path": "root/checks/candidate-cruise-trim-eguez5ro/report.json",
+      "label": "candidate-cruise-trim",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "7fc60fbb1b1daf5a8a011ee1c0824de9da80c44d7b4888532d85e16a623ca1bc"
+    },
+    {
+      "path": "root/checks/candidate-trim-integrity-otvkjxkk/report.json",
+      "label": "candidate-trim-integrity",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "c33135becceacf55892e9a45a78f060844b3b0c0b9da067e33fedd07d087a192"
+    },
+    {
+      "path": "root/checks/trim-final-rpm-parity-4vacgsoe/report.json",
+      "label": "trim-final-rpm-parity",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "1174361e7233fd0aa4172f80736cd982f7a7e0660ef1e6b43a710ed2cc30ab56"
+    },
+    {
+      "path": "root/checks/trim-final-rpm-timing-mvbh8rir/report.json",
+      "label": "trim-final-rpm-timing",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "a2985db62cdeb9d5d64a5e37440666634b566ad1f170982105df085d673f3381"
+    },
+    {
+      "path": "aero/checks/cusp-attribution-qxc_pld8/report.json",
+      "label": "cusp-attribution",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "efaa17332fd47c2c404cc7219e2ccce64d67b29e84b023c91a85b50408017ff1"
+    },
+    {
+      "path": "aero/checks/cusp-scan-zc2nct6a/report.json",
+      "label": "cusp-scan",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "ae98dba318526f91e00b75e507e0417b9e031341548e8453252da8be40f470c2"
+    },
+    {
+      "path": "aero/checks/polar-source-compare-n5xlsipp/report.json",
+      "label": "polar-source-compare",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "8621455aa88d3991711b781cdf6400448d60f0869aa58697b3ea3eef721b8543"
+    },
+    {
+      "path": "aero/checks/spanflow-scan-yajl9iha/report.json",
+      "label": "spanflow-scan",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "62803ce03281f320f03643bb4f3cf4f50acbeb5155998d8cd767cc471f42f3b8"
+    },
+    {
+      "path": "dynamics/checks/dynamic-contact-existing-mx1d067w/report.json",
+      "label": "dynamic-contact-existing",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "11ee5bb335c06fecbacc1b8f397399abd7cd3fabfd048a3810e1f4f119e59e60"
+    },
+    {
+      "path": "dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/report.json",
+      "label": "extra-fuel-transitions-verified",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "43c374ca87f4724124974a48ea9d1a5cd633a72ee8e8d570b409155501218bb5"
+    },
+    {
+      "path": "dynamics/checks/scenery-rotor-control-m3ihqosi/report.json",
+      "label": "scenery-rotor-control",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "3c905d999d40dafaae7e1e9124ad841e18aeac9af9782b6cded21e234f3a319d"
+    },
+    {
+      "path": "model_lifecycle/checks/extra-installation-marker-eo3oz2_u/report.json",
+      "label": "extra-installation-marker",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "log_sha256": "d9822ef0ee200d4b333264b69d4dd3222794a6ecd3eab95c0a2dcf9a843f06a0"
+    }
+  ],
+  "real_app_runs": [
+    "model_lifecycle/tmp/debug-bridge/20261106-125550-47871",
+    "model_lifecycle/tmp/debug-bridge/20261106-125825-47871"
+  ],
+  "real_app_limits": "Headless imported-runtime witnesses; 120 landscape UID fallback warnings per successful run; see lifecycle report.",
+  "excluded_attempts": "EXCLUDED_RUNS.txt"
+}

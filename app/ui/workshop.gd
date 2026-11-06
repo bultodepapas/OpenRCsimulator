@@ -737,7 +737,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_name = LineEdit.new()
 	_variant_name.name = "VariantName"
 	_variant_name.placeholder_text = tr("Name this build")
-	_variant_name.max_length = 64
+	_variant_name.max_length = Store.MAX_NAME_LENGTH
 	_variant_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_variant_name.text_changed.connect(_on_variant_name_changed)
 	_variant_name.visible = false
@@ -2522,7 +2522,7 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	body.add_child(_label(destination, "SecondaryLabel", true))
 	_guard_name = LineEdit.new()
 	_guard_name.placeholder_text = tr("Name this build")
-	_guard_name.max_length = 64
+	_guard_name.max_length = Store.MAX_NAME_LENGTH
 	_guard_name.text = _variant_name.text
 	body.add_child(_label("Build name", "SecondaryLabel"))
 	body.add_child(_guard_name)

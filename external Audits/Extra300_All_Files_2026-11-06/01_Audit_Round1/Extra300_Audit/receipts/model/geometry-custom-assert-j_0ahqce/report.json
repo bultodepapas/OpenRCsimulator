@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "156f9fc3-c5d9-478a-925d-f67b1e91c4cf",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "model_perf/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://geometry_probe.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit",
+  "started_utc": "2026-11-06T17:24:53.374347+00:00",
+  "label": "geometry-custom-assert",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/model_perf/checks/geometry-custom-assert-j_0ahqce/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/model_perf/checks/geometry-custom-assert-j_0ahqce/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_GEOMETRY_PROBE_DONE failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.675592,
+  "log_bytes": 1359,
+  "log_sha256": "42859cff747454bbfd204330d211a801683215b7e1f5cb76d00888608de87f4d"
+}

@@ -1,0 +1,35 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   stock Extra and wheel profile load []
+ok   generated CG-arm fin Clbeta minus ARP-arm fin Clbeta matches transfer 
+ok   stock Extra identifies expected duplicated fin term excess Clbeta 0.006209232943
+ok   zero beta selector stays attached 
+ok   zero beta: neutral or moved controls preserve every load exactly 
+ok   zero beta selector stays attached 
+ok   zero beta: neutral or moved controls preserve every load exactly 
+ok   both sides stay on the attached oracle beta -5.0
+ok   combined roll changes by the independently calculated fin transfer beta -5.0 delta 0.103587042185 expected 0.103587042185
+ok   no change to the other five combined loads or propeller/wake contribution 
+ok   roll delta belongs entirely to aerodynamic load 
+ROLL_WITNESS beta=-5.0 aero=0.32807397787312 diagnostic_aero=0.43166102005792 combined=0.42446753190288 diagnostic_combined=0.52805457408769
+ok   both sides stay on the attached oracle beta 5.0
+ok   combined roll changes by the independently calculated fin transfer beta 5.0 delta -0.103587042185 expected -0.103587042185
+ok   no change to the other five combined loads or propeller/wake contribution 
+ok   roll delta belongs entirely to aerodynamic load 
+ROLL_WITNESS beta=5.0 aero=-0.32807397787312 diagnostic_aero=-0.43166102005792 combined=-0.9190207909899 diagnostic_combined=-1.02260783317471
+ok   roll deltas reverse exactly with sideslip 
+ok   changed moment datum transforms the same force exactly direction -1.0
+ok   fin correction stays fixed while the datum moves direction -1.0
+ok   changed moment datum transforms the same force exactly direction 1.0
+ok   fin correction stays fixed while the datum moves direction 1.0
+ok   positive and negative rate samples stay in the attached oracle axis 0
+ok   rate derivative equals ARP coefficient plus force transfer axis 0 measured -0.595724485375 expected -0.595724485375
+ok   signed rates are symmetric around zero-rate moment axis 0
+ok   positive and negative rate samples stay in the attached oracle axis 1
+ok   rate derivative equals ARP coefficient plus force transfer axis 1 measured -9.157953337632 expected -9.157953337630
+ok   signed rates are symmetric around zero-rate moment axis 1
+ok   positive and negative rate samples stay in the attached oracle axis 2
+ok   rate derivative equals ARP coefficient plus force transfer axis 2 measured -0.178733953118 expected -0.178733953118
+ok   signed rates are symmetric around zero-rate moment axis 2
+29 checks, 0 failed
+REFERENCE_WITNESS_COMPLETE

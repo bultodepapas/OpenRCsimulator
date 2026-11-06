@@ -1,0 +1,182 @@
+REPRODUCING THIS AUDIT
+
+Pinned repository
+https://github.com/bultodepapas/OpenRCsimulator
+codex/m1-native-validation-20261106 at e72d878b6b4a89209dfe1a992ba119921dcdd34c
+
+Pinned engine
+Godot 4.8.beta2.official.cafc17a19 Linux x86-64
+SHA-256: 34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564
+
+This package does not contain the repository or the Godot executable. Use a full
+disposable checkout at the pinned commit. Do not apply experiments to an active
+worktree with uncommitted user changes. Original checked-runner receipts preserve
+the actual absolute invocation paths used in this audit.
+
+1. PYTHON PROPELLER CONSISTENCY WITNESS
+
+Python 3, standard library only, with the repository's calibration mirror:
+  python3 probes/propeller/probe_propeller_camber.py --repo REPO --out NEW_OUTPUT
+
+NEW_OUTPUT must not exist. The script executes only the exact generator
+crossflow-table block with its own installation and compares it to the shipped
+tables. It does not execute the full authoring generator or rewrite repository
+data. It emits candidate tables, source hashes, numerical differences and a
+minimal source diff. The generated candidate is not a physically validated
+propeller law.
+
+2. ISOLATED GODOT PROJECT
+
+The successful audit runs used an isolated copy of app/ with this minimal
+project.godot (included as fixtures/project.godot):
+  config_version=5
+  [application]
+  config/name="Extra Audit Isolation"
+  config/features=PackedStringArray("4.8")
+  [physics]
+  common/physics_ticks_per_second=240
+  [rendering]
+  renderer/rendering_method="gl_compatibility"
+
+Keep physics, sim, aircraft, render, data, shaders and preload assets identical
+to the pinned checkout. Use the normal Godot import step for that disposable
+copy and preserve the full relative resource structure. Some existing tests
+also read repository research files relative to app/; keep that layout for
+test_extra_post_stall.gd. The audit's sparse checkout required asset recovery
+from an older checkout, but every recovered tracked resource was verified
+against the pinned Git blob; a full checkout should not need that recovery.
+
+Set task-specific XDG_CONFIG_HOME, XDG_DATA_HOME and XDG_CACHE_HOME directories.
+Do not use a real player profile. Read the repository AGENTS.md and openrc-tools
+instructions, including tools/godot/run_checked.py, before running the probes.
+Use the checked runner, not only the engine exit status.
+
+Common invocation from REPO:
+  python3 tools/godot/run_checked.py --label LABEL --timeout 90 \
+    --out-dir NEW_CHECKS --require-text COMPLETION -- \
+    GODOT --headless --path ISOLATED_APP --audio-driver Dummy \
+    --script res://PROBE
+
+Replace symbolic paths with local absolute paths; keep them shell-quoted.
+A successful receipt must have ok=true, complete=true, reason=passed and no
+engine errors. Godot can print data and still report a parse/compile error.
+Do not use failed exploratory receipts as evidence.
+
+3. CAMBER LOADS
+
+Copy probes/propeller/probe_camber_loads.gd into ISOLATED_APP/tests/.
+Use script res://tests/probe_camber_loads.gd and completion:
+  CAMBER LOAD PROBE: 46 checks, 0 failed
+
+Append to the Godot arguments:
+  -- NEW_OUTPUT/camber_tables.json NEW_OUTPUT/runtime_loads.json
+
+This compares normal/P-factor loads with in-memory alternative tables. It
+asserts the installed thrust matches the Python mirror and shaft thrust/torque
+remain byte-identical. The full source aircraft is never rewritten.
+
+4. AERODYNAMIC REFERENCE WITNESS
+
+Copy probes/aero/test_reference_witness.gd to ISOLATED_APP/.
+Use script res://test_reference_witness.gd and require both:
+  REFERENCE_WITNESS_COMPLETE
+  0 failed
+
+The final witness reports 29 checks. It changes copies of normalized model
+dictionaries for an algebraic diagnostic; this is not a full generated-data
+repair or a fuel-burn trajectory test.
+
+5. MESH, CUSTOM PAINT AND BLADE DIRECTION
+
+Copy probes/model/geometry_probe.gd, spin_probe.gd and bench_index.gd into
+ISOLATED_APP/. The geometry/benchmark probes load both the baseline builder
+and res://aircraft/extra_300s_model_indexed.gd.
+
+Generate the isolated alternative using:
+  python3 probes/model/prepare_indexed_builder.py \
+    --source ISOLATED_APP/aircraft/extra_300s_model.gd \
+    --output ISOLATED_APP/aircraft/extra_300s_model_indexed.gd
+
+The helper requires the pinned baseline file hash and inserts only st.index()
+at the end of _loft. The equivalent review diff is in patches/.
+
+Run geometry_probe.gd with completion:
+  EXTRA_GEOMETRY_PROBE_DONE failures=0
+Run spin_probe.gd with completion:
+  SPIN_PROBE_DONE PASS
+
+Read the JSON records in the engine log. The geometry test asserts exact Godot
+value equality of all re-expanded vertex attributes and order, including
+custom-paint-prepared geometry. It does not compare signed-zero bits or images.
+
+The optional timing harness is bench_index.gd, completion BENCH_INDEX_DONE.
+Only rerun timing on an otherwise idle host. The recorded benchmark used CPU
+affinity 0 (taskset -c 0), isolated XDG directories, 3 warmups / 16 alternating
+builder pairs, and 2 warmups / 8 custom-preparation pairs. The prepared-root
+build was outside the custom-preparation timing. Freeing and renderer work
+were excluded. A representative wrapper is:
+  XDG_CONFIG_HOME=TASK_CONFIG XDG_DATA_HOME=TASK_DATA XDG_CACHE_HOME=TASK_CACHE \
+    taskset -c 0 python3 REPO/tools/godot/run_checked.py ... -- \
+    GODOT --headless --path ISOLATED_APP --audio-driver Dummy \
+    --script res://bench_index.gd
+
+The helper environment and affinity were inherited, so the receipt's engine
+argv alone does not encode them. The recorded samples showed reduced buffer
+sizes but slower median construction. Do not advertise an FPS improvement.
+
+6. MASS-REUSE PARITY EXPERIMENT
+
+Use two independent disposable app copies, baseline and candidate. Apply
+patches/stage-mass-reuse.patch only in the candidate's enclosing repository
+layout. It changes app/physics/glow/flight.gd. Do not modify the baseline.
+
+Copy probes/dynamics/probe_mass_reuse.gd and probe_stage_parity.gd into each
+isolated app root. The local mass probe can run on baseline; the stage parity
+probe must run separately on baseline and candidate.
+
+Use completion MASS_REUSE_PROBE PASS for the local mass probe (consult its
+printed marker/source if adapting placement) and STAGE_PARITY_PROBE PASS for
+stage parity. Compare the complete STAGE_PARITY_RESULT JSON dictionaries in
+both engine logs:
+  python3 probes/dynamics/compare_stage_logs.py BASELINE_ENGINE_LOG CANDIDATE_ENGINE_LOG
+
+The included baseline/candidate logs should compare exactly. Also run the
+unchanged res://tests/test_glow_flight_physics.gd on both and require:
+  110 checks, 0 failed
+
+The public point() default output, accepted/refused stages, short trajectories
+and events were compared. point(..., true) contains a new private field in the
+candidate. Native/reference, callback mutation, full-fleet and replay gates
+remain open. This experiment is not approved production code.
+
+7. EXISTING BASELINE CHECKS
+
+The successful receipts include:
+  test_extra_installation.gd — 17 checks
+  test_body_side_force.gd — 25 checks
+  test_extra_post_stall.gd — 7 checks
+  test_glow_flight_physics.gd — 110 checks on each side of the mass experiment.
+
+These tests passed despite the new generator/consumer consistency findings.
+Their pass is not a proof of physical accuracy. No full suite was run.
+
+8. DATA IDENTITY AND FAILED EXPLORATIONS
+
+SOURCE_MANIFEST.json records source Git blobs, checked-out SHA-256 values,
+engine identity and evidence selection. The repository requires CRLF checkout
+for some JSON files, so their checked-out hashes differ from raw LF Git blobs.
+runtime_source_identity.json verifies 3,483 available tracked assets against
+the pinned Git blobs, allowing only exact CRLF-to-LF normalization for the 27
+declared checkout differences; it lists absent assets and no source mismatch.
+
+The archive retains selected successful evidence, not every preparatory
+import or exploratory attempt. Supporting reports disclose excluded failures.
+One existing-installation run used an incorrect expected completion count
+(20 rather than 17); the program itself passed, and a corrected checked run
+is the included evidence. A post-commit indexing experiment changed decoded
+normals/tangents and was rejected. An early aero dependency/compile failure
+was superseded by the final asserted reference witness.
+
+All patches remain experiments. Review the owning generation/manifest pipeline
+and identity consequences before adopting any source or data change.
+

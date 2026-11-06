@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f1554069-9895-4858-a4ee-d51062767794",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "model_perf/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://bench_index.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit",
+  "started_utc": "2026-11-06T17:20:11.642331+00:00",
+  "label": "bench-index",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/model_perf/checks/bench-index-g_b1yxdo/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/model_perf/checks/bench-index-g_b1yxdo/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "BENCH_INDEX_DONE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.480309,
+  "log_bytes": 1568,
+  "log_sha256": "829e66626387070c811db8acdadd51485acedb07326ba7c327e9f9d2ad7d3888"
+}

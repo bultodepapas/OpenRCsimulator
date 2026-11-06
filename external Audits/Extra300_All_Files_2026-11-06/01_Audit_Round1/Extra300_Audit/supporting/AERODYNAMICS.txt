@@ -1,0 +1,52 @@
+# Extra 300S aerodynamic reference-point review
+
+## Identity and scope
+
+Source is `/workspace/scratch/b3c27b2e84ee/extra300_audit/source`, detached at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`, clean when examined. I read the full `external Audits/CONSOLIDATED-AUDITS.md` before source review. The reviewed engine is Godot `4.8.beta2.official.cafc17a19` on Linux x86-64, executable SHA-256 `34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564`. Float64 simulation code and a 240 Hz project configuration were retained. The source checkout was not modified; the runnable project, diagnostic scripts and receipts are in this directory. These are static stage evaluations, not integrated 240 Hz flight trajectories or physical validation.
+
+## Finding: Extra generator mixes CG and aerodynamic-reference moment coefficients
+
+The frame contract is explicit: aircraft aerodynamic moment coefficients are about the aerodynamic reference point (ARP) and the consumer transfers their associated force to the CG (`docs/AIRCRAFT_CONTRACT.md:68`; `app/physics/aero.gd:156–159,216–246`). The Extra generator's fin contribution to `Clb` instead uses the fin height above the **loaded CG** (`research/extra-300/ex05/derive_physics.py:346–348,353–356,377–380`). The same generator's `Cmq` is explicitly labelled and derived about the CG (`:389–391,605`); the fin part of `Cnr` uses the CG-based tail arm (`:347,384–386`). `Aero._global_loads` treats those coefficients as ARP values and transfers the associated aerodynamic force to the CG. Thus it introduces an additional moment transfer on the affected CG-based contributions. This is a data/generator-to-consumer contract inconsistency; it does not establish actual aerodynamic calibration.
+
+The fin roll discrepancy is the clearest and most material witness. Define `CYb_fin = -a_v S_v/S`, and let `z_fin`, `z_cg`, and `z_arp` use the documented LE frame with positive z up. The generator puts `CYb_fin * (z_fin - z_cg)/b` into `Clb`. The contract instead requires that fin component to be `CYb_fin * (z_fin - z_arp)/b`, because the runtime subsequently transfers force from ARP to CG. At the authored full-tank reference:
+
+- `CYb_fin = -0.355109230808814 /rad`, `z_cg - z_arp = 0.028424293699338 m`, and `b = 1.6256 m`.
+- The generator's fin contribution exceeds the required ARP contribution by `+0.006209232942825 /rad`. The diagnostic changes only `aero.Clb` by its negative; it is a reference-point counterexample, not a complete repair.
+- Sea-level density `1.225 kg/m³`, `V=20 m/s`, `alpha=0°`, `beta=+5°`, zero body rates, neutral controls, settled reference wing wake, no ground effect, and 12,000 rpm: `Aero.loads` gives roll `-0.328073977873 N m`; the diagnostic gives `-0.431661020058 N m`. The difference `-0.103587042185 N m` is 24.0% of the diagnostic aerodynamic roll moment.
+- With the propeller and tail-slipstream components added through the unmodified `Dynamics._components_from_air`, total roll is `-0.919020790990` versus `-1.022607833175 N m`, exactly the same `-0.103587042185 N m` difference. At `beta=-5°` the change is equal and opposite. Propeller, slipstream, and the other five total components remain unchanged. All cases stay on the attached oracle (`local_flow_weight=0`).
+
+The rate cases support the same contract mismatch at smaller effects. At `V=20 m/s`, zero angle/controls and each rate at `±1e-5 rad/s`, the actual nondimensional CG derivatives from `Aero.loads` are `Cmq=-9.157953337632` vs the generated `-9.360761` explicitly labelled CG (2.17% less negative), and `Cnr=-0.178733953118` vs the generated `-0.180871` from the CG fin-arm expression (1.18% less negative). The measured values agree with the production transfer equations `Cmq_effective=Cmq+CLq*(cg_x-arp_x)/c` and `Cnr_effective=Cnr+CYr*(cg_x-arp_x)/b`. The generated rate derivatives also contain wing/fuselage approximations; this observation does not prove every derivative is wrong or validate a corrected aerodynamic coefficient. Alpha-dot behavior and time evolution were not tested.
+
+This issue is distinct from the previous reports' lower-rudder-centroid convention, ground-effect/propwash convention, negative-stall selector, and reverse-flow Extra discontinuity. The fin/wing reference contract is corroborated by the opt-in loader rule `app/physics/aircraft_data.gd:2641–2645`: where a separate wing-body `Clb` term is supplied, the fin term uses fin height relative to ARP. The Extra lacks that optional field and therefore is not checked by this relation. Do not enable it solely to obtain the loader assertion: the same field adds a local-regime roll couple (`app/physics/aero.gd:666–671`), changing the physics and requiring separate validation. Prefer a generator-level fin-reference invariant. The original `test_damping_regimes.gd:105–117` separately confirms that the project's coefficient interpretation is ARP followed by transfer.
+
+### Repair boundary and validation
+
+Correct the owning Extra generator, regenerate outputs using the established dependency chain, and load the output with the production validator. For the fin static `Clb` term use its ARP height, retaining the existing wing-body estimates. The fuselage side force is already defined at the ARP, so do not subtract a correction based on total `CYb` as though all side force were the fin's. For rate moments, explicitly derive the resultant about the reference datum using its associated force and the appropriate reference velocity; retain the authored, full-reference point and do not guess a correction solely from a tail-only factor when the corresponding force includes wing contributions. Audit `Cmq` and the fin part of `Cnr` and cross-rate moments individually; `CLq` also contains both wing and tail estimates. Assess local/oracle transition and native/reference parity. This is an intentional physics change and may invalidate recorded flights.
+
+Add independent component-force/arm assertions and both signs of beta and rates. In a real accepted-tick fuel regression compare full, intermediate and near-reserve stages, distinguish fixed-reference and live-CG moments, and prove the wrench is transferred exactly once. A comparison of complete `Clb` after regenerating at different loading conditions is insufficient by itself: this generator also uses a mass-dependent `CL_ref` for a wing contribution. Compare the fixed-geometry fin term independently. Follow the repository's baseline recording, exact replay and same-input candidate workflow; test meaningful handling before deciding practical severity. No repair or aircraft-validation claim is made here.
+
+## Checks, reproduction, and limits
+
+- Assertion-based production-code witness: `runtime/test_reference_witness.gd`; checked receipt `checks/reference-witness-datum-wi2nfqxi/report.json` and engine log in that directory. **29 checks, 0 failed.** It covers ±5° beta, symmetric ±rates, neutral and nonzero control cases, exactly unchanged non-roll components, propulsion/wake cancellation, and datum-only `−Δr × F` moment translations. Datum translations mutate model copies and are algebraic checks only; they are not live fuel-burn tests.
+- Existing stock test `test_body_side_force.gd`: 25 checks, 0 failed, receipt `checks/side-force-existing-pcrlbu57/report.json`.
+- Existing stock test `test_extra_post_stall.gd`: 7 checks, 0 failed, receipt `checks/extra-post-stall-existing-ilwzuos1/report.json`.
+- A separate 16,875-state neutral-control aerodynamic power screen (`checks/aero-power-a0psbscq/`) found no positive `F·v+M·ω` in its sampled grid: speeds 10, 20, 30 m/s; alpha −30…30°, beta −30…30°, and each rate in {−4, −2, 0, 2, 4} rad/s. This is not proof of passivity over all states; body crossflow is explicitly documented as lacking an arbitrary-rotation passivity guarantee.
+- An exploratory finite-subdivision wake comparison at 162 constructed states found a largest sampled component difference of 0.367 N between subdivisions 1 and 32. This was not converted into a new defect: it is a numerical approximation without a demonstrated acceptance bound or actual flight consequence and requires independent convergence and applicability work.
+- Failed, excluded exploratory receipts: `aero-power-zdj5r4zy` and `aero-power-ahlld4w0` were GDScript parse errors subsequently corrected. `combined-reference-0hx86cph` printed data while a dependency failed to compile; it is invalid evidence. The later `combined-reference-wtjpyyqx` succeeded, and the 29-check final witness supersedes both exploratory scripts.
+- No CPU performance benchmark, native extension execution, hardware controller, rendered flight, full suite, or flight replay was run. No mathematical speedup or whole-flight severity is claimed.
+
+From the source checkout, reproduce the final witness using the existing checked runner and the already prepared isolated runtime:
+
+```bash
+XDG_CONFIG_HOME=/workspace/scratch/b3c27b2e84ee/extra300_audit/aero/xdg \
+XDG_DATA_HOME=/workspace/scratch/b3c27b2e84ee/extra300_audit/aero/xdg \
+XDG_CACHE_HOME=/workspace/scratch/b3c27b2e84ee/extra300_audit/aero/xdg \
+python3 tools/godot/run_checked.py --label reference-witness-rerun \
+  --out-dir /workspace/scratch/b3c27b2e84ee/extra300_audit/aero/checks \
+  --timeout 90 --require-text REFERENCE_WITNESS_COMPLETE --require-text '0 failed' -- \
+  /workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64 \
+  --headless --path /workspace/scratch/b3c27b2e84ee/extra300_audit/aero/runtime \
+  --audio-driver Dummy --script res://test_reference_witness.gd
+```
+
+Important source fingerprints: `app/physics/aero.gd` SHA-256 `062ce4711837db206906a9e67b27e756787a2b7a7bddb48deaac0e1c84184d1d`; `app/physics/dynamics.gd` `d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f`; `research/extra-300/ex05/derive_physics.py` `399e3804ec4d967b3984e8d3ae853a66012f7a9469fde4863b6d2c2756b06265`; `app/data/aircraft/gp_extra_300s_60.json` `6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75`.

@@ -1,0 +1,220 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7d85d74c-a03b-4304-86ed-87728177197b",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "model_lifecycle/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2",
+  "started_utc": "2026-11-06T17:46:41.461331+00:00",
+  "label": "lifecycle-import",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/model_lifecycle/checks/lifecycle-import-7lirrtz6/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/model_lifecycle/checks/lifecycle-import-7lirrtz6/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 54,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Cannot open file 'res://i18n/es.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://i18n/es.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Cannot open file 'res://i18n/zh_Hans.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Failed loading resource: res://i18n/zh_Hans.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 11,
+      "message": "Cannot open file 'res://i18n/pt_BR.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 13,
+      "message": "Failed loading resource: res://i18n/pt_BR.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 15,
+      "message": "Cannot open file 'res://i18n/de.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 17,
+      "message": "Failed loading resource: res://i18n/de.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Cannot open file 'res://i18n/fr.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 21,
+      "message": "Failed loading resource: res://i18n/fr.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 23,
+      "message": "Cannot open file 'res://i18n/it.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 25,
+      "message": "Failed loading resource: res://i18n/it.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 27,
+      "message": "Cannot open file 'res://i18n/ru.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 29,
+      "message": "Failed loading resource: res://i18n/ru.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 31,
+      "message": "Cannot open file 'res://i18n/ja.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 33,
+      "message": "Failed loading resource: res://i18n/ja.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 35,
+      "message": "Cannot open file 'res://i18n/es.po'.",
+      "context": [
+        "   at: load (core/io/translation_loader_po.cpp:356)",
+        "While attempting to print an error, another error was printed:"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 38,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 40,
+      "message": "Failed loading resource: res://i18n/es.po.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "While attempting to print an error, another error was printed:"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 43,
+      "message": "Condition \"p_image.is_null()\" is true.",
+      "context": [
+        "   at: add_image (scene/gui/rich_text_label.cpp:4565)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 9.175373,
+  "log_bytes": 100267,
+  "log_sha256": "8fc638c62cdf495bd704ffe31a498cd27296703bd6ff94b7d3a02eebe4916a11"
+}

@@ -1,0 +1,181 @@
+{
+  "step": "AE-09d-R2",
+  "audit": "A14 F11",
+  "date": "2026-11-06",
+  "isolated_base_commit": "f4c81eca429923a36e88da5993fe444d1583c7e1",
+  "shared_head_at_exact_source_comparison": "a79b8e5d54ec70a5d5cca6966409deb29bb0bdf1",
+  "tested_snapshot": "isolated_base_commit plus tested-source.patch; existing imported resources reused; final import receipt retained",
+  "source_files": [
+    {
+      "path": "app/ui/workshop.gd",
+      "sha256": "4f9a707fe901de22a869d3835a5ce6cbaf4571b2f6ff4c02be41eb60ab81d92a",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/workshop/store.gd",
+      "sha256": "9f753e52046f4b002a0517e7e7482e704f31d1ff44e7ac65f3e7cdc2f8f3055b",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/workshop/bundle.gd",
+      "sha256": "2bf076d998bcb200493e2ca02a81b0798be44ac0ba7c05e5516f145e106ea945",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/workshop/draft_store.gd",
+      "sha256": "f580beafc8d4a61c44b6cf7bd65721ddd78aaadd36de4d350053d52ca5dd4aaa",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_drafts.gd",
+      "sha256": "2e6e27d7815969d5cf74950f563a06ef5359e5cb092374d65d9c0248fa5fd1d0",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_name_integrity.gd",
+      "sha256": "03aa6d7e927afa6182ae4bac03d8da612d981a4ea07b08da22a1a6154c5a4ed8",
+      "exact_shared_tree_match": true
+    },
+    {
+      "path": "app/tests/test_workshop_name_integrity.gd.uid",
+      "sha256": "02ca8afc65a642f9fbbeb9026187d61dc986efb7bde109e02317e80a00efae0f",
+      "exact_shared_tree_match": true
+    }
+  ],
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "platform": "Windows",
+    "headless": true,
+    "audio": "Dummy",
+    "new_fixture_logical_viewport": [
+      1920,
+      1080
+    ]
+  },
+  "baseline": [
+    {
+      "label": "name-integrity",
+      "ok": false,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 120,
+      "failures": 48,
+      "report": "baseline/name-integrity-8q8l1o5n/report.json",
+      "log_sha256": "d7d0deb1ddb8dab6e4c28841f8fadff673bea38ac03081187ee5587847a79055"
+    }
+  ],
+  "regression": [
+    {
+      "label": "name-integrity",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 153,
+      "failures": 0,
+      "report": "checks/name-integrity-rs3s3mpk/report.json",
+      "log_sha256": "cb8b855ee0f6f75cc44e45db5bfa3af99ce87fdfefe583009eebe38c6297054c"
+    }
+  ],
+  "related_checks": [
+    {
+      "label": "test_workshop_bundle",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 28,
+      "failures": 0,
+      "report": "checks/test_workshop_bundle-tl5lg0lg/report.json",
+      "log_sha256": "17ee263ad35b23018fc6d1738f25348dba9cd020d124d5b7866caa9555bb55b7"
+    },
+    {
+      "label": "test_workshop_document_flow",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 23,
+      "failures": 0,
+      "report": "checks/test_workshop_document_flow-dxtvogd_/report.json",
+      "log_sha256": "61ff9419bc4428033841f2d4809f118e51b08894ff90a082dc3c24139296c97a"
+    },
+    {
+      "label": "test_workshop_drafts",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 108,
+      "failures": 0,
+      "report": "checks/test_workshop_drafts-qg5bzh0x/report.json",
+      "log_sha256": "744eeab147d6216625eb24781cfac6346f06fd9399310b3110cae2a1f2566b7e"
+    },
+    {
+      "label": "test_workshop_recovery_ui",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 75,
+      "failures": 0,
+      "report": "checks/test_workshop_recovery_ui-rs6sb_fo/report.json",
+      "log_sha256": "785d102391135c92a2f2aa9cb3430aa0fc7c27d6cdf6d59f3214321d13b22852"
+    },
+    {
+      "label": "test_workshop_store",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "checks": 151,
+      "failures": 0,
+      "report": "checks/test_workshop_store-63kbqh2g/report.json",
+      "log_sha256": "4b1c52d00e2a0f723061c3ed1e9fcc1be08a1854bb772bd61d5309862944075f"
+    }
+  ],
+  "import": [
+    {
+      "label": "final-import",
+      "ok": true,
+      "complete": true,
+      "engine_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "checks/final-import-i11uo4jq/report.json",
+      "log_sha256": "6f38d190446b1c30bcad8a46ba18f3b8d9d536e14c63e517118ccc00375e769c"
+    }
+  ],
+  "assertions": {
+    "dedicated": 153,
+    "related": 385,
+    "total_passed": 538,
+    "failed": 0
+  },
+  "notes": [
+    "The initial baseline fixture had 120 checks; the final fixture adds guard Cancel, combining Unicode and additional one-character overflow coverage.",
+    "Store, bundle and raw recovery retain their distinct whitespace/control-character policies. Numeric recovery buffers remain capped at 64.",
+    "The bundle suite intentionally exercises invalid UTF-8 and emits its existing parsing diagnostic.",
+    "No aircraft data, solver, golden flight or physical-validation claim changed.",
+    "Headless logical UI checks do not qualify native rendered layout, physical input or full required CI.",
+    "Unrelated shared-tree work is outside the tested snapshot."
+  ],
+  "review": "Independent read-only review found no remaining name-boundary or regression defect."
+}

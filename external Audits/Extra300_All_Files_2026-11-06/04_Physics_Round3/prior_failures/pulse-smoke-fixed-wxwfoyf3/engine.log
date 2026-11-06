@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/rc-ground/dirt-albedo.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier_planting.gd:100)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://render/flightline_barrier.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/collision_world.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/flight_session.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://character_pulses.gd:0)
+ERROR: Failed to load script "res://character_pulses.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/smoke-fixed/smoke_normal_right.orfl
+Flight log saved: /workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/smoke-fixed/smoke_normal_right.orfl (480 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PULSE smoke_normal_right peak_deg_s=107.859817956768 exact=true
+EXTRA_CHARACTER_PULSES_COMPLETE failures=0 cases=1

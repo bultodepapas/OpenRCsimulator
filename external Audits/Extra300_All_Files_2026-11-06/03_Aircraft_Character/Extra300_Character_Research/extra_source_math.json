@@ -1,0 +1,111 @@
+{
+  "aircraft_id": "gp-extra-300s-60",
+  "assumptions": {
+    "fuel": "one reference-full main tank, no separate line, fixed dry inventory",
+    "gravity_m_s2": 9.80665,
+    "kinematic_viscosity_m2_s": 1.5e-05,
+    "knife_edge": "idealized 90-degree steady-level force balance; side force alone supports weight, no vertical thrust or wing lift",
+    "rate_slopes": "zero trim, unsaturated steady commands; no servo dynamics or device response lag",
+    "reference_air_density_kg_m3": 1.225,
+    "stall_ratio": "level, same density, area, CLmax and power effects"
+  },
+  "control_rates": {
+    "aileron": {
+      "aircraft_expo_center_derivative": 1.0,
+      "default_gamepad_normal_derivative_just_outside_deadzone_deg_per_unit": 5.285814494758151,
+      "default_gamepad_sport_derivative_just_outside_deadzone_deg_per_unit": 13.391810326086954,
+      "gamepad_device_scale": 1.0,
+      "keyboard_or_joystick_normal_center_derivative_deg_per_unit": 6.947070478824999,
+      "keyboard_or_joystick_sport_center_derivative_deg_per_unit": 17.600665,
+      "max_throw_deg": 17.600665,
+      "normal_aircraft_expo": 0.0,
+      "normal_max_throw_deg": 6.947070478824999,
+      "normal_rate_fraction": 0.394705,
+      "sport_max_throw_deg": 17.600665
+    },
+    "elevator": {
+      "aircraft_expo_center_derivative": 1.0,
+      "default_gamepad_normal_derivative_just_outside_deadzone_deg_per_unit": 10.713881608242064,
+      "default_gamepad_sport_derivative_just_outside_deadzone_deg_per_unit": 10.713881608242064,
+      "gamepad_device_scale": 1.0,
+      "keyboard_or_joystick_normal_center_derivative_deg_per_unit": 14.081101542260999,
+      "keyboard_or_joystick_sport_center_derivative_deg_per_unit": 14.081101542260999,
+      "max_throw_deg": 23.921943,
+      "normal_aircraft_expo": 0.0,
+      "normal_max_throw_deg": 14.081101542260999,
+      "normal_rate_fraction": 0.588627,
+      "sport_max_throw_deg": 14.081101542260999
+    },
+    "rudder": {
+      "aircraft_expo_center_derivative": 1.0,
+      "default_gamepad_normal_derivative_just_outside_deadzone_deg_per_unit": 13.293768784166955,
+      "default_gamepad_sport_derivative_just_outside_deadzone_deg_per_unit": 13.293768784166955,
+      "gamepad_device_scale": 1.0,
+      "keyboard_or_joystick_normal_center_derivative_deg_per_unit": 17.471810402048,
+      "keyboard_or_joystick_sport_center_derivative_deg_per_unit": 17.471810402048,
+      "max_throw_deg": 30.026071,
+      "normal_aircraft_expo": 0.0,
+      "normal_max_throw_deg": 17.471810402048,
+      "normal_rate_fraction": 0.581888,
+      "sport_max_throw_deg": 17.471810402048
+    }
+  },
+  "default_gamepad_expo": {
+    "complete_conditioner_derivative_at_raw_center": 0.0,
+    "complete_conditioner_derivative_just_outside_deadzone": 0.7608695652173912,
+    "deadzone": 0.08,
+    "expo": 0.3,
+    "expo_only_derivative_at_rescaled_center": 0.7
+  },
+  "dry_over_full_stall_speed_ratio_fixed_clmax": 0.9593515164599985,
+  "format": "extra-300s-source-math-v1",
+  "fuel_blend_density_kg_m3": 856.92,
+  "full_over_dry_stall_speed_ratio_fixed_clmax": 1.0423707919803933,
+  "geometry": {
+    "coefficient_reference_chord_m": 0.295275,
+    "mac_m_from_tapered_wing": 0.3055974657881399,
+    "mac_m_geometry_rounded": 0.3056,
+    "wing_area_m2": 0.479999,
+    "wing_span_m": 1.6256
+  },
+  "ideal_knife_edge_required_abs_cy_by_airspeed_mps": {
+    "15": 0.5662440590634827,
+    "22": 0.2632332919200075
+  },
+  "interpretation": "Algebra from authored model inputs only; no flight run or measured handling target.",
+  "mass_kg": {
+    "dry_empty_tank": 3.5153410000000003,
+    "full_fuel": 0.3042066,
+    "full_tank": 3.8195476000000004,
+    "quarter_fuel": 0.07605165,
+    "quarter_tank": 3.5913926500000004
+  },
+  "rate_profile_defaults": {
+    "live_app": "sport",
+    "normal": "manual-derived low-rate travel",
+    "radio_transmitter": "own transmitter shaping; simulator aircraft rate profile bypassed",
+    "sport": "full aileron; normal elevator and rudder",
+    "standalone_technical_session": "full"
+  },
+  "reynolds_by_airspeed_mps_using_mac": {
+    "11": 224104.8082446359,
+    "22": 448209.6164892718
+  },
+  "source_sha256": {
+    "app/data/aircraft/gp_extra_300s_60.json": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+    "app/data/fuels/openrc-fuel-registry.json": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+    "app/input/commands.gd": "6d8bac6ec73254b87a25f8aa11613a918bd7c2fbdc05cd405c9b6a2c2433b0c5",
+    "app/input/controller_profile.gd": "949f94ddda6ff8f28790f0fb5b55ab6e17d35837e94a9c5c0aa4b7705568028a",
+    "app/main.gd": "6a0ac32976935ae9233c40966a004b6e494bb24c5eee9a74c76f97b508b3dff2",
+    "app/physics/atmosphere.gd": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+    "app/sim/flight_session.gd": "87dda14a5cafe24109eaf751211ba6acb44cc9e5c0bdf56685444dfe3b1d0441",
+    "app/sim/simulation.gd": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92",
+    "assets/aircraft/extra-300s-60/geometry.json": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c"
+  },
+  "sport_over_normal_aileron_travel_ratio": 2.5335377053749006,
+  "wing_loading_oz_per_ft2": {
+    "dry": 24.00000290461069,
+    "full": 26.07688798733858,
+    "quarter": 24.519224175292663
+  }
+}

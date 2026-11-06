@@ -17,6 +17,8 @@ const MAX_BASE_BYTES: int = 16 * 1024 * 1024
 const MAX_VARIANT_BYTES: int = 32 * 1024 * 1024
 const MAX_JSON_DEPTH: int = 64
 const MAX_JSON_NODES: int = 250000
+## Shared character bound for persisted names, editor fields and draft recovery.
+const MAX_NAME_LENGTH: int = 96
 const RECIPE_KEYS: PackedStringArray = [
 	"scale",
 	"mass_policy",
@@ -1375,7 +1377,7 @@ static func _make_directory(path: String) -> Error:
 
 
 static func _valid_name(value: String) -> bool:
-	return not value.is_empty() and value == value.strip_edges() and value.length() <= 96 and not value.contains("\n") and not value.contains("\r") and not value.contains("\t")
+	return not value.is_empty() and value == value.strip_edges() and value.length() <= MAX_NAME_LENGTH and not value.contains("\n") and not value.contains("\r") and not value.contains("\t")
 
 
 static func _valid_base_id(value: String) -> bool:

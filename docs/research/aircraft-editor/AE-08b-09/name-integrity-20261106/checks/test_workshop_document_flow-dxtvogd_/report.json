@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9a9cd2cf-04af-4681-b59d-94d2f1b1648a",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_document_flow.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T20:11:57.251371+00:00",
+  "label": "test_workshop_document_flow",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-names\\final-checks\\test_workshop_document_flow-dxtvogd_\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-names\\final-checks\\test_workshop_document_flow-dxtvogd_\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop document flow:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.406,
+  "log_bytes": 1577,
+  "log_sha256": "61ff9419bc4428033841f2d4809f118e51b08894ff90a082dc3c24139296c97a"
+}

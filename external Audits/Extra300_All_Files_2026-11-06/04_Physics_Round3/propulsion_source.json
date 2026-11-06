@@ -1,0 +1,41 @@
+{
+  "title": "Dave Gierke, Radio Control Airplane Engine Guide, chapter 5",
+  "url": "https://www.gruppofalchi.com/files/Gierke-D.-Airplane-Engine-Guide.pdf",
+  "inspection": "Selected tables and graph visually checked against PDF; source files not redistributed.",
+  "pages": {
+    "APC_table": {
+      "printed": 122,
+      "pdf_1_based": 120
+    },
+    "equipment": {
+      "printed": 124,
+      "pdf_1_based": 122
+    },
+    "dyno_method": {
+      "printed": 125,
+      "pdf_1_based": 123
+    },
+    "FX61_graph": {
+      "printed": 128,
+      "pdf_1_based": 126
+    }
+  },
+  "selected_facts": {
+    "engine": "O.S. FX-61",
+    "propeller": "APC 12x6",
+    "static_rpm": 11750,
+    "muffler": "O.S. E-4010 expansion",
+    "fuel_nitro_oil_percent": [
+      10,
+      20
+    ],
+    "corrected_hp_at_11750_rpm": 1.15,
+    "correction_factor": 1.04,
+    "normalization_check": {
+      "rpm": 9900,
+      "torque_oz_in": 99.8,
+      "corrected_hp": 1.02
+    }
+  },
+  "limits": "Torque normalization inferred, not expressly stated. Tach RPM is not claimed corrected. No propeller thrust measurement. Unmatched Pitts installation and model fuel; existing 1.24 hp anchor is prior work."
+}

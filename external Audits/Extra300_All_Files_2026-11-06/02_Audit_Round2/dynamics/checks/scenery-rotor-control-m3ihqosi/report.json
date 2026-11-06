@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fe7429c7-d434-4d20-9768-780f934f0186",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/probe_scenery_rotor.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/source",
+  "started_utc": "2026-11-06T17:47:28.239965+00:00",
+  "label": "scenery-rotor-control",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/checks/scenery-rotor-control-m3ihqosi/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/checks/scenery-rotor-control-m3ihqosi/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "SCENERY_ROTOR_REPRO PASS"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.817895,
+  "log_bytes": 2665,
+  "log_sha256": "3c905d999d40dafaae7e1e9124ad841e18aeac9af9782b6cded21e234f3a319d"
+}

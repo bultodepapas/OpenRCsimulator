@@ -1,0 +1,55 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://scenery/club_furniture.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://scenery/pit_chair.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb" does not exist.
+          at: GDScript::reload (res://scenery/power_lines.gd:5)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/prefabs.gd:0)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:101)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:102)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:103)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:104)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:105)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:106)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:107)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:108)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:109)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:110)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg" does not exist.
+          at: GDScript::reload (res://render/flightline_barrier.gd:111)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://scenery/collision_world.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (res://sim/flight_session.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+          at: GDScript::reload (/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/probe_cooling.gd:0)
+ERROR: Failed to load script "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/probe_cooling.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS stock Extra starts 
+PASS trimmed airborne stage evaluates 
+PASS trimmed airborne forward positive thrust 
+PASS trimmed airborne current proxy matches cooling 
+PASS trimmed airborne comparison thermal evaluates 
+PASS trimmed airborne fixed-state rate identity 
+PASS field loads 
+PASS runway starts 
+PASS starter accepted 
+PASS runway starter stage evaluates 
+FAIL runway starter forward positive thrust { &"axial": -0.00038515458443, &"thrust": 1.46952673738152 }
+PASS zero airspeed analytic control 
+COOLING-PROBE 12 checks, 1 failures

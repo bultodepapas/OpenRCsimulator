@@ -54,6 +54,10 @@ the whole rail. Critical conditions bypass advisory-category switches; stronger 
 replace redundant reminders. The overflow count reports further active alerts and always names any hidden
 critical conditions, including in compact mode.
 
+Alerts share the menus' crystal material: translucent red danger glass, yellow caution glass and green status
+glass, with pale text, soft colored halos and one 560 ms arrival reflection. Opaque panels and reduced motion
+remain supported; the reflection never fades the text or runs continuously.
+
 No usable fuel comes only from an accepted finite-fuel sample with zero usable mass. Training cues are off
 by default: rapid descent below −6 m/s, absolute bank above 75°, or absolute body G above 4 g. They require
 more than 10 m AGL and at least 3 m/s airspeed, with a 0.6 s onset dwell and 0.4 s clear grace in accepted
@@ -78,6 +82,7 @@ limits; missing/nonfinite readings do not invent cues. Existing urgent source wa
 | HUD-08 | Height above ground and load factor | from existing public state; level n = 1, 60° turn n = 2, terrain AGL / done, no seam needed |
 | HUD-09 | O3 Warnings | one fixture per code, order, no STALL without a stall angle / done |
 | HUD-09-R1 | Glass alert rail, priority/noise controls, accepted fuel-empty warning and optional training cues | [356 focused checks, language checks and native 1080p/1440p review](../research/flight-overlays/HUD-01-10/README.md#glass-flight-alerts-2026-11-06-hud-09-r1) / implemented |
+| HUD-09-R2 | Translucent red/yellow/green crystal alerts, semantic halos and arrival reflections | [Rendered contrast/transmission, shared menu-material checks and native review](../research/flight-overlays/HUD-01-10/README.md#colored-translucent-alert-glass-2026-11-06-hud-09-r2) / implemented |
 | HUD-10 | O5 Telemetry | live flight scene / done |
 | HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p and 1080p / done |
 | HUD-11-R1 | Visual review repairs: "-0°", wind jitter, warning wrap, dialog preview, hint and latency-marker placement | [review](../research/flight-overlays/HUD-01-10/README.md#visual-review-and-repairs-2026-10-13-hud-11-r1) / done |
@@ -201,6 +206,10 @@ screen texture, wall clock or hidden sampling is added. Reset, rewind and reopen
 Empty, full and unavailable tanks suppress aeration. Value noise and the foam approach reuse PWira's
 MIT-licensed [2D Liquid Wave](https://godotshaders.com/shader/2d-liquid-wave/); the
 [upstream notice](../../app/render/overlays/FUEL_LIQUID_LICENSE.txt) ships beside the shader.
+HUD-13-R14-R3 evaluates shared spring, surface and wave coefficients at the quad vertices using four flat
+varyings. Fragment work skips dry aeration, foam outside its possible band, and bubble distance calculations
+outside each bubble's conservative bounds. The 16 bubbles, antialiased wet edge and existing update lifecycle
+are retained. Matched native image comparisons and the optional shader profile are recorded in the evidence guide.
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
 

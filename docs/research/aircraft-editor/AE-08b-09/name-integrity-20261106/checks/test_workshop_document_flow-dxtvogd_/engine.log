@@ -1,0 +1,26 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   delete confirmation names its destructive action
+ok   empty library explains how to create its first saved build
+ok   first Save opens the name dialog
+ok   real Enter creates exactly one UUID at revision one
+ok   first-save fallback leaves a readable revision-one fixture
+ok   updating a saved build keeps its UUID and creates revision two
+ok   Save a copy labels the dialog and its primary action consistently
+ok   copy dialog and primary actions fit the target viewport
+ok   real Enter saves a separate first revision
+ok   copy leaves the original UUID and revision two intact
+ok   unmatched search has distinct empty feedback and disables loading
+ok   long library feedback stays in view while the library scrolls
+ok   Cancel in the rename dialog restores its prior name without saving
+ok   Cancel returns to the originating library and rename action
+ok   dirty navigation opens a named Save and continue decision
+ok   real Enter completes the captured navigation once
+ok   Save and continue stores the current copy as revision two
+ok   external writer fixture creates the stale-revision conflict
+ok   real Enter attempts the stale save and keeps the decision open
+ok   failed overwrite keeps the newer stored revision and local recipe
+ok   Cancel after failed stale Save restores the original name and full recipe
+ok   fresh Spanish copy dialog fits at 100 percent text
+ok   fresh Spanish copy dialog fits at 200 percent text
+Workshop document flow: 23 checks, 0 failures

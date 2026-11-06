@@ -1,0 +1,109 @@
+Independent interpretation review: Extra 300S control-pulse probe
+2026-11-06
+
+Scope and evidence
+------------------
+Read-only review of the completed probe, not a separate execution. The probe is
+/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/runtime/character_pulses.gd.
+The checked-runner engine log is
+/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/character-pulses-final-j3_xmcoc/engine.log;
+the output is /workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses/.
+It reports 12 cases, zero check failures, and 480 replayed ticks in each case.
+The examined runtime copies of flight_session.gd, flight_log.gd, simulation.gd,
+flight_log_cli.gd, control_surfaces.gd, and gp_extra_300s_60.json match the
+corresponding source files byte for byte by SHA-256. Source checkout: 2e2e3492e67d30635cc4e727025581e2848cdf2e.
+No source, probe, log, or output file was modified by this review.
+
+What the comparison establishes
+--------------------------------
+The probe assigns an idealized virtual roll-stick value each tick and passes it
+through FlightSession._inputs(). Although input_enabled is false, rates remain
+available because no external driver or radio is active. Normal and sport
+therefore go through the production rate logic; full bypasses that shaping.
+Roll trim is added after shaping and the result is clipped. The CSV field
+raw_roll is the assigned virtual target, not a raw physical controller sample;
+cmd_roll is the resulting post-profile, post-trim and post-clamp command.
+
+With the stock Extra's zero aileron expo and no nonzero pitch/yaw pilot input,
+sport roll and full roll have the same command for the tested +/-1 pulses. The
+full-profile +/-0.394705 pulses match normal-profile +/-1, including trim. The
+probe asserts equality of sampled dynamics hashes for both signs, with checks
+passing. These identities are specific to this setup; they do not establish
+that all axes, devices, or aircraft profiles are identical.
+
+The direct Simulation.step() path still runs the production pre-tick, including
+servo limiting, and emits the logging signals: the recorder captures each
+accepted tick. Direct stepping bypasses Session._physics_process, including
+keyboard virtual-stick slew, physical controller polling and conditioning, and
+session-level crash/UI handling; it also bypasses normal pause/hold scheduling.
+It supports an open-loop, ideal pre-servo stick-step interpretation, not an
+end-to-end keyboard/radio latency test, closed-loop piloted maneuver, or claim
+about physical aircraft handling. The technical level trims at 15 and 22 m/s
+were independently solved with different equilibrium conditions; the nominal
+speed is an initial target, not a speed held by feedback.
+
+Servo angle and trim
+--------------------
+`surface_roll` is the accepted normalized simulated servo position. For this
+Extra's symmetric ailerons, `aileron_deg = surface_roll * 17.600665` is the
+signed RIGHT aileron trailing-edge angle, positive up; the left angle is its
+negative. It is a model-derived angle, not a measured physical servo or sensor
+reading. For aircraft with different up/down travel or other surface topology,
+use the production surface_angles_deg() mapping instead of this multiplication.
+`max_abs_surface_during_pulse_deg` includes the nonzero starting trim; it is not
+just the incremental movement induced by the stick.
+
+At 22 m/s the trim is +0.0014370784 of full roll command. Consequently +1 is
+clipped to +1.0000000, while -1 becomes -0.9985629; the positive and negative
+full servo targets are +17.600665 and -17.575371 degrees, respectively. The
+normal targets also differ in absolute angle (about +6.972364 and -6.921777
+degrees). Thus differences between right and left pulse outcomes cannot be
+ascribed entirely to aerodynamic asymmetry without allowing for this small
+input asymmetry and the trimmed initial condition.
+
+Time, response, and coupling
+----------------------------
+At 240 Hz, the ON interval starts at pre-step tick 48 = 0.2 s and ends at
+pre-step tick 168 = 0.7 s. Inputs are applied for 120 steps = 0.5 s. CSV rows
+are post-step: the first ON sample is tick 49, the last ON sample is tick 168,
+and tick 169 is the first OFF sample. `release_p_deg_s` is sampled at tick 168,
+immediately BEFORE the command release has acted; peak_abs_p_during_pulse is
+the maximum absolute body roll-axis angular rate over the ON samples, not a
+settled or steady roll rate. Body-axis p need not equal Euler roll-angle rate
+when other rates and attitudes are present. Flight-log loads are RK4 k1 values
+at the interval start even though state/servo are accepted at interval end.
+
+For example, 22 m/s/full/right airspeed during the pulse was 21.9357--22.0123
+m/s, while sideslip reached about +6.03 degrees and body pitch and yaw rates
+reached +36.47 and +29.23 degrees/s. The airspeed is nearly constant during
+that particular pulse, but the response includes coupled uncorrected motion;
+its peak is not a pure-axis derivative at a fixed attitude. No physical flight
+or pilot validation is implied.
+
+Replay meaning and minor reporting wart
+----------------------------------------
+Reader.inspect() checks complete ordered log structure and the initial snapshot.
+With no candidate supplied, Reader.prepare_replay() refuses mismatched solver
+identity, engine, timestep, stage backend, or incompatible checkpoint. The
+probe feeds recorded post-conditioning input and interventions to fresh physics
+and Reader.disagreement() compares state, loads, inputs, aux, continuous state,
+modes, air and mass bytes at all 480 accepted ticks. This establishes exact
+replay of those physics fields for these recordings and this solver identity,
+not reconstruction of the original controller, UI, or human pilot. Raw/stick
+observations and events are not themselves compared by that routine.
+
+The probe's result reads `replay.get("solver_changed", false)`, but successful
+Reader.prepare_replay() does not return that key. Its reported false is thus a
+default rather than a separately measured field. In this same-solver path the
+strict identity check above still enforces the stated equality; this wart does
+not invalidate the exact physics replay. Do not represent the default value as
+an independent solver-comparison result.
+
+Code anchors, relative to round3/source:
+  app/sim/flight_session.gd:2873, :3883, :3955, :3978, :3987
+  app/sim/simulation.gd:274, :299, :519, :522
+  app/sim/flight_log.gd:94, :110, :196
+  app/tools/flight_log_cli.gd:232, :357, :437
+  app/physics/control_surfaces.gd:26
+  app/data/aircraft/gp_extra_300s_60.json:901, :921, :927
+Probe anchors: character_pulses.gd:41, :112, :124, :131, :150.

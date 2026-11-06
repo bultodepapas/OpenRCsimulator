@@ -1,0 +1,68 @@
+# Extra 300S model and presentation audit
+
+## Identity and scope
+
+Source: `e72d878b6b4a89209dfe1a992ba119921dcdd34c`, clean working tree at review. No production source was edited. The checked Godot is `4.8.beta2.official.cafc17a19`, Linux x86-64; executable SHA-256 `34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564`. Model script SHA-256 `b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51`; geometry `4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42`; finish `faea2743660f847527f85005e8e185340ac693ddc22d1babda2f191996c0b2be`; appearance `af12be9c57d122492ca59e5072794931af3ce4596a7c79b196152e683e07708b`; paint adapter `42f588a9bbedf4271fb4a13808a153a7a10a4019c60a942018b3c9ad528012a4`.
+
+The investigation covers new model/presentation findings and bounded geometry CPU/storage experiments. Existing physics, shader, renderer and kernel audit entries are not restated. The target is the simulated Great Planes GPMA0236 RC kit, not the full-sized aircraft. All visual results below are headless; actual images, target-device GPU memory, visual acceptance and gameplay frame times remain unmeasured.
+
+## 1. The blade's modeled leading edge is on the trailing side of positive-RPM rotation
+
+`app/aircraft/extra_300s_model.gd:661-682` constructs the +X blade with its leading edge in the +Y direction from its trailing edge, with an authored cambered front face and fixed pitch. For the Extra's finite-glow engine `app/render/airplane.gd:148-149` selects spin sign `-1`. Positive RPM advances `_prop_angle` in `app/main.gd:1369-1371`, and `main.gd:3175` applies the negative angle about local Z. Thus a point on the +X blade moves toward -Y, so the designated trailing edge advances first. The second blade is the same geometry rotated by pi (`extra_300s_model.gd:646-649`), so the same relative handedness applies.
+
+The check in `runtime/spin_probe.gd` selects the ninth radial station, locates both calculated section-edge positions exactly in the actual generated mesh, and computes `(leading - trailing) · (angular_velocity × midpoint)`. At radius `0.1112777921 m`, chord `0.0215147533 m`, and unit angular velocity about -Z, that dot product is `-0.0023391903378 m²/s`; an opposite-spin control gives `+0.0023391903378`. Successful checked receipt and output: `checks/spin-probe-2fcpk9u6/report.json` and `engine.log`.
+
+This is a model presentation/handedness inconsistency, not evidence that physical thrust or the simulated rotation direction is wrong. The actual appearance and perceptibility at rendered speeds were not assessed. A correction should reconcile leading edge, camber and pitch with the existing physics-consistent spin direction, then check the shaft axis/hub, selected propeller geometry, blur and strike visuals at stopped and moving RPM. Do not just reverse the shared spin sign without reassessing the physical convention and other aircraft.
+
+## 2. Construction-time loft indexing reduces stored geometry, at a CPU cost in this test
+
+`extra_300s_model.gd:71-105` emits repeated triangle corners into every loft and commits an unindexed surface. The minimal experimental patch `extra_loft_index_candidate.patch` adds `st.index()` immediately before the `_loft` commit. It uses Godot's complete vertex attributes, rather than position-only merging, and retains the authored triangle order. It is a disposable experiment, not a production change.
+
+The checked probe builds two separate stock models and the indexed candidate. It visits every `MeshInstance3D` surface and re-expands indices into triangle-corner order, comparing every present vertex attribute, plus relative mesh paths and local transforms, using exact Godot value equality. It repeats this after `procedural_skin.gd:83-151` prepares the Extra for custom paint; both stock and prepared comparisons report `{}` differences. The updated probe explicitly fails if either comparison is nonempty. These are same-engine numeric comparisons, not byte comparisons that distinguish signed zero, full integration tests or rendered-image equivalence. The model has 32 mesh instances, 31 distinct mesh resources (the two blades share one resource within a build), and 19,502 instance triangles before and after. Two independently generated stock builds share no mesh instances with each other.
+
+| Measured quantity | Stock builder | Indexed `_loft` | Scope |
+| --- | ---: | ---: | --- |
+| Stored vertices, all 31 distinct meshes | 53,204 | 10,878 | Includes the four distinct cylinder meshes; repeated blade counted once |
+| Serialized vertex + attribute + index buffers | 1,317,552 B | 373,176 B | 27 distinct ArrayMesh resources only; 944,376 B or 71.68% reduction |
+| The same buffers after custom paint preparation | 1,825,800 B | 1,475,672 B | 350,128 B or 19.18% reduction |
+
+These are `_surfaces` byte-array sizes retrieved in the headless engine, not total process RAM, actual GPU allocation, object overhead or memory savings under a production renderer. Paint preparation expands each painted triangle (`procedural_skin.gd:186-241`), explaining why the gain becomes smaller. Comparing retained source vertex bytes and indices after custom preparation also confirms that the custom adapter does not simply preserve the indexed representation.
+
+On an Intel Xeon Platinum 8573C with the checked debug engine and CPU affinity 0, the two warmed builder scripts were measured in one process using `Time.get_ticks_usec`, 16 alternating AB/BA pairs after three warmups each. Only `builder.build()` was inside the measured interval; freeing, project import, registry validation, file loading and any renderer work were outside. Baseline median was **96,192.5 µs** and indexed median **103,238 µs**. The median of paired candidate changes was **+8.505%** (range -22.802% to +32.249%; candidate was faster in 4/16 pairs). The candidate should therefore be considered a possible geometry-storage tradeoff, not a supported startup-time optimization.
+
+For `PaintAdapter.prepare()` alone on already built matching roots, eight alternating pairs after two warmups per role gave medians 86,330 µs stock versus 76,200 µs indexed and median paired change -10.818% (range -34.215% to +58.586%; 7/8 favor candidate). Those widely varying, few samples do not establish a repeatable full custom-build speedup; they also omit building the model. Raw samples, warmups, exact command and runner verdict: `checks/bench-index-g_b1yxdo/{engine.log,report.json}`. No target-hardware, GPU or frame-speed claim follows.
+
+**Rejected candidate:** indexing meshes after committing and reading them back via `SurfaceTool.create_from()` introduced an extra encode/decode pass. The failed diagnostic in `checks/geometry-stock-taat7mxb/engine.log` reports changed decoded normals and tangents, e.g. up to `0.0001264107` in normal-vector distance and `0.0000703931` in a tangent component. It is not the candidate patch and does not satisfy exact comparison.
+
+**Additional future opportunity, not prototyped:** the builder constructs the same immutable meshes again on every fresh `build()`. Reuse needs a bounded lifetime and fresh node/hinge/gear ownership, stable source and generator identities, and independent material overrides. Existing Home retains up to three complete preview models (`app/ui/home_scene.gd:137-161`); reuse therefore must be evaluated on actual new build paths, not mischaracterized as a missing Home selection cache. Custom paint makes its own mesh per target and installs instance overrides (`procedural_skin.gd:120-150`; `custom_skin.gd:165-220`), but this is not a proof that every other mesh consumer is safe to share.
+
+## 3. Custom-paint preparation produces duplicate shader resources
+
+Stock `extra_300s_finish.gd:127-139` correctly caches **one** shader and five material variants; the stock probe observed exactly those counts. This is not a duplicate-stock-shader finding.
+
+On the Extra custom-skin route, `render/airplane.gd:172-183` invokes `procedural_skin.prepare()`. The latter creates a new prepared `Shader` for every painted mesh surface in `_prepare_material` (`procedural_skin.gd:120-147,302-324`). The stock Extra has 14 such surfaces: the checked headless probe observed 14 prepared material objects and **14 different Shader objects with one identical code string**. `custom_skin.gd:181-215` keys final copies by the prepared material instance ID, so the distinct inputs each go through `paint()`; `procedural_skin.gd:327-364` creates a fresh Shader again. With one representative opaque no-texture paint record, the probe observed **14 final Shader objects with one identical code string**. Production paint records can vary, and final shader-code identity should be grouped by actual generated code/alpha/texture branch rather than assumed across all possible records. The test calls the real adapter preparation and paint functions; it does not import a user `.orskin` or measure compilation or loading latency.
+
+A narrow candidate is to reuse an immutable Shader by exact generated code and relevant variant, while retaining per-material uniform values, instance ownership and transactional failure behavior. Prepare-time and final-paint caches have different generated code and lifetimes; never merge materials merely because the shader source matches. Qualify alpha and textured/untextured variants, multiple liveries/instances, reset and mutable material isolation. No hardware compilation or GPU improvement is established by object counts.
+
+## Reproduction and limits
+
+All paths below are relative to `/workspace/scratch/b3c27b2e84ee/extra300_audit`. `runtime/` is a minimal project copy at `model_perf/runtime`; `model_perf/xdg/` isolates user settings. The candidate builder is identical to the source except for the patch, SHA-256 `a73504724a6b1952a9c6282afdec47dcffa3ae0132df47bbf97aa24edbad033b`. Source identity must be revalidated and generated dependency/manifest hashes regenerated through the owning pipeline before any production change.
+
+The successful checked runs are `model_perf/checks/geometry-custom-assert-j_0ahqce`, `model_perf/checks/spin-probe-2fcpk9u6`, and `model_perf/checks/bench-index-g_b1yxdo`; each has the exact invocation and engine log. The geometry probe has SHA-256 `7673c5900bbac9a292c3119fa76ec0353dd0a6c6d45f1c04e46e6a729d5ad1a3`. Its numeric results are also transcribed programmatically to `model_perf/geometry_counts.json`. The correctness run required `EXTRA_GEOMETRY_PROBE_DONE failures=0`, the blade witness required `SPIN_PROBE_DONE PASS`, and the timing run required `BENCH_INDEX_DONE`. All three receipts have `ok: true`, `exit_code: 0` and `reason: passed`. Read the full logs; do not substitute the earlier deliberately failed quantization screen.
+
+The receipts record the Godot argument array and working directory; XDG environment variables and CPU affinity are recorded here separately. From `/workspace/scratch/b3c27b2e84ee/extra300_audit`, after importing the minimal project with the pinned engine, a fresh correctness run can use:
+
+```sh
+AUDIT_ROOT="$PWD"
+AUDIT_ENGINE=/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64
+env XDG_CONFIG_HOME="$AUDIT_ROOT/model_perf/xdg/config" \
+    XDG_CACHE_HOME="$AUDIT_ROOT/model_perf/xdg/cache" \
+    XDG_DATA_HOME="$AUDIT_ROOT/model_perf/xdg/data" \
+    python3 source/tools/godot/run_checked.py \
+    --out-dir model_perf/checks --label geometry-repeat --timeout 180 \
+    --require-text 'EXTRA_GEOMETRY_PROBE_DONE failures=0' -- \
+    "$AUDIT_ENGINE" --headless --path model_perf/runtime --audio-driver Dummy \
+    --script res://geometry_probe.gd
+```
+
+Change the script to `res://spin_probe.gd` and the required marker to `SPIN_PROBE_DONE PASS` for the handedness witness. For comparable timing select `res://bench_index.gd`, require `BENCH_INDEX_DONE`, prepend `taskset -c 0` to the `env` command, use the same source and engine with an idle host, and inspect the pair distribution. The original timing run used timeout 120 and label `bench-index`. These tests do not qualify graphical parity, culling, moving shadows, 1080p, full aircraft startup/customization lifecycle, real propeller data or the full application suite.

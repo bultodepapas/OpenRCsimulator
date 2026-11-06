@@ -1,0 +1,23 @@
+--- a/app/physics/glow/flight.gd
++++ b/app/physics/glow/flight.gd
+@@ -580,6 +580,11 @@
+ 	# Keep this internal payload out of the public point() result used by observers.
+ 	if include_stage_coupling and not stage_coupling.is_empty():
+ 		evaluation["_stage_coupling"]=stage_coupling
++	# Diagnostic candidate: only reuse a positive ordinary single-tank amount.
++	# Public point() without include_stage_coupling retains its original payload.
++	if include_stage_coupling and not install.has("fuel_feed") and not install.has("feed_line") \
++			and values[LINE_FUEL_INDEX] == 0.0 and values[1] > 0.0 and values[1] <= install.capacity_fuel_kg:
++		evaluation["_stage_mass_reuse"] = feed_mass
+ 	return evaluation
+ 
+ 
+@@ -667,7 +672,7 @@
+ 	if values.size()!=SIZE+owner.wheel_count(): return {}
+ 	var result: Dictionary=point(owner,body,values,time_s,true)
+ 	if not result.ok: return {}
+-	var mass: Dictionary=result.get("mass",{})
++	var mass: Dictionary=result.get("mass",result.get("_stage_mass_reuse",{}))
+ 	if mass.is_empty(): mass=properties(owner,values[1],values[LINE_FUEL_INDEX])
+ 	if not mass.ok: return {}
+ 	var rpm: float=maxf(0.0,values[0])

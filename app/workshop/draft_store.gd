@@ -238,7 +238,7 @@ static func validate_editor_state(value: Variant) -> Dictionary:
 	if not _exact_keys_optional(editor, EDITOR_KEYS, EDITOR_OPTIONAL_KEYS):
 		return _failure("Workshop editor recovery state has missing or unsupported fields.")
 	if typeof(editor.get("page", null)) != TYPE_STRING or not PAGES.has(str(editor["page"])) \
-			or typeof(editor.get("name", null)) != TYPE_STRING or not _bounded_text(str(editor["name"]), 64):
+			or typeof(editor.get("name", null)) != TYPE_STRING or not _bounded_text(str(editor["name"]), Store.MAX_NAME_LENGTH):
 		return _failure("Workshop editor recovery page or name is malformed.")
 	var numeric_result: Dictionary = _normalize_object(editor.get("numeric_buffers", null), "numeric buffers")
 	if not bool(numeric_result.get("ok", false)):

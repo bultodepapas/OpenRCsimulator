@@ -1,0 +1,506 @@
+{
+  "source_revision": "e72d878b6b4a89209dfe1a992ba119921dcdd34c",
+  "source_sha256": {
+    "research/extra-300/ex05/derive_physics.py": "399e3804ec4d967b3984e8d3ae853a66012f7a9469fde4863b6d2c2756b06265",
+    "research/glow-engines/calibration_report.py": "06cb1047e30af650ad2b00c5f9e90ff3c7ed5c914fd3e3bc71c9a05bcc8232f7",
+    "app/data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+    "app/data/aircraft/gp_extra_300s_60.json": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+    "app/physics/glow/propeller.gd": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e",
+    "app/physics/propulsion.gd": "f36f3e679799131151a74f424133da5df991a608d0c0e09183603ad3107caff8"
+  },
+  "zero_lift_angle_rad": -0.10223236266152576,
+  "zero_lift_angle_deg": -5.85748291015625,
+  "stock_rows_reproduced_exactly": 44,
+  "zero_camber_control_exact": true,
+  "rows": [
+    {
+      "J": 0.0,
+      "axial_mps_at_12000rpm": 0.0,
+      "thrust_symmetric_n": 37.52234311542058,
+      "thrust_installed_n": 43.721305207905836,
+      "Cn_stock": 0.0,
+      "Cn_consistent": 0.0,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.0,
+      "Cn_analytic_delta_unrounded": 0.0,
+      "Cm_analytic_delta_unclamped": 0.0,
+      "Cn_stock_shortfall_percent": null,
+      "Cm_stock_shortfall_percent": null
+    },
+    {
+      "J": 0.05,
+      "axial_mps_at_12000rpm": 3.0479999999999996,
+      "thrust_symmetric_n": 34.78825966327498,
+      "thrust_installed_n": 43.53236970265458,
+      "Cn_stock": 7.6e-05,
+      "Cn_consistent": 8.3e-05,
+      "Cm_stock": 0.000672,
+      "Cm_consistent": 0.000837,
+      "Cn_analytic_delta_unrounded": 7.855814248277014e-06,
+      "Cm_analytic_delta_unclamped": 0.00016453178886902058,
+      "Cn_stock_shortfall_percent": 8.43373493975903,
+      "Cm_stock_shortfall_percent": 19.713261648745515
+    },
+    {
+      "J": 0.1,
+      "axial_mps_at_12000rpm": 6.095999999999999,
+      "thrust_symmetric_n": 31.727914045774565,
+      "thrust_installed_n": 43.291634201155716,
+      "Cn_stock": 0.000245,
+      "Cn_consistent": 0.000287,
+      "Cm_stock": 0.001299,
+      "Cm_consistent": 0.001734,
+      "Cn_analytic_delta_unrounded": 4.155594435596864e-05,
+      "Cm_analytic_delta_unclamped": 0.00043517283167232427,
+      "Cn_stock_shortfall_percent": 14.634146341463417,
+      "Cm_stock_shortfall_percent": 25.086505190311424
+    },
+    {
+      "J": 0.15,
+      "axial_mps_at_12000rpm": 9.143999999999998,
+      "thrust_symmetric_n": 28.370032326332307,
+      "thrust_installed_n": 42.30288279567425,
+      "Cn_stock": 0.000517,
+      "Cn_consistent": 0.00063,
+      "Cm_stock": 0.001861,
+      "Cm_consistent": 0.002647,
+      "Cn_analytic_delta_unrounded": 0.00011265697282961203,
+      "Cm_analytic_delta_unclamped": 0.0007864940404826093,
+      "Cn_stock_shortfall_percent": 17.93650793650794,
+      "Cm_stock_shortfall_percent": 29.69399319984889
+    },
+    {
+      "J": 0.2,
+      "axial_mps_at_12000rpm": 12.191999999999998,
+      "thrust_symmetric_n": 24.743933523844138,
+      "thrust_installed_n": 40.52656304833734,
+      "Cn_stock": 0.000888,
+      "Cn_consistent": 0.001115,
+      "Cm_stock": 0.002342,
+      "Cm_consistent": 0.00353,
+      "Cn_analytic_delta_unrounded": 0.00022686888492558452,
+      "Cm_analytic_delta_unclamped": 0.0011878827036838739,
+      "Cn_stock_shortfall_percent": 20.358744394618846,
+      "Cm_stock_shortfall_percent": 33.6543909348442
+    },
+    {
+      "J": 0.25,
+      "axial_mps_at_12000rpm": 15.239999999999998,
+      "thrust_symmetric_n": 20.856852899563382,
+      "thrust_installed_n": 38.05454327677743,
+      "Cn_stock": 0.001349,
+      "Cn_consistent": 0.001735,
+      "Cm_stock": 0.002725,
+      "Cm_consistent": 0.004343,
+      "Cn_analytic_delta_unrounded": 0.00038626532744423286,
+      "Cm_analytic_delta_unclamped": 0.0016179844200470105,
+      "Cn_stock_shortfall_percent": 22.2478386167147,
+      "Cm_stock_shortfall_percent": 37.255353442320974
+    },
+    {
+      "J": 0.3,
+      "axial_mps_at_12000rpm": 18.287999999999997,
+      "thrust_symmetric_n": 16.76049276770803,
+      "thrust_installed_n": 34.99788041852361,
+      "Cn_stock": 0.001884,
+      "Cn_consistent": 0.002474,
+      "Cm_stock": 0.002999,
+      "Cm_consistent": 0.005058,
+      "Cn_analytic_delta_unrounded": 0.0005898488294500649,
+      "Cm_analytic_delta_unclamped": 0.002058960832587625,
+      "Cn_stock_shortfall_percent": 23.848019401778497,
+      "Cm_stock_shortfall_percent": 40.707789640173985
+    },
+    {
+      "J": 0.35,
+      "axial_mps_at_12000rpm": 21.336,
+      "thrust_symmetric_n": 12.571156458434363,
+      "thrust_installed_n": 31.46943659062179,
+      "Cn_stock": 0.002479,
+      "Cn_consistent": 0.003311,
+      "Cm_stock": 0.003162,
+      "Cm_consistent": 0.005651,
+      "Cn_analytic_delta_unrounded": 0.0008319437318865429,
+      "Cm_analytic_delta_unclamped": 0.0024891698250427046,
+      "Cn_stock_shortfall_percent": 25.128360012080954,
+      "Cm_stock_shortfall_percent": 44.04530171651035
+    },
+    {
+      "J": 0.4,
+      "axial_mps_at_12000rpm": 24.383999999999997,
+      "thrust_symmetric_n": 8.350989455910316,
+      "thrust_installed_n": 27.596505191992193,
+      "Cn_stock": 0.00312,
+      "Cn_consistent": 0.004226,
+      "Cm_stock": 0.003217,
+      "Cm_consistent": 0.006114,
+      "Cn_analytic_delta_unrounded": 0.0011065858672249078,
+      "Cm_analytic_delta_unclamped": 0.002897035025866717,
+      "Cn_stock_shortfall_percent": 26.171320397539045,
+      "Cm_stock_shortfall_percent": 47.383055282957145
+    },
+    {
+      "J": 0.45,
+      "axial_mps_at_12000rpm": 27.431999999999995,
+      "thrust_symmetric_n": 4.099172429499131,
+      "thrust_installed_n": 23.649246000114204,
+      "Cn_stock": 0.003785,
+      "Cn_consistent": 0.005208,
+      "Cm_stock": 0.003158,
+      "Cm_consistent": 0.006468,
+      "Cn_analytic_delta_unrounded": 0.001422685832103924,
+      "Cm_analytic_delta_unclamped": 0.0033107402655584957,
+      "Cn_stock_shortfall_percent": 27.32334869431643,
+      "Cm_stock_shortfall_percent": 51.17501546072973
+    },
+    {
+      "J": 0.5,
+      "axial_mps_at_12000rpm": 30.479999999999997,
+      "thrust_symmetric_n": -0.18516947240923853,
+      "thrust_installed_n": 19.66442169353423,
+      "Cn_stock": 0.004456,
+      "Cn_consistent": 0.006239,
+      "Cm_stock": 0.002978,
+      "Cm_consistent": 0.006713,
+      "Cn_analytic_delta_unrounded": 0.0017833112849864813,
+      "Cm_analytic_delta_unclamped": 0.003734958421318202,
+      "Cn_stock_shortfall_percent": 28.57829780413528,
+      "Cm_stock_shortfall_percent": 55.638313719648444
+    },
+    {
+      "J": 0.55,
+      "axial_mps_at_12000rpm": 33.528,
+      "thrust_symmetric_n": -4.502869374903491,
+      "thrust_installed_n": 15.641418426995344,
+      "Cn_stock": 0.005108,
+      "Cn_consistent": 0.007298,
+      "Cm_stock": 0.002674,
+      "Cm_consistent": 0.006844,
+      "Cn_analytic_delta_unrounded": 0.0021898424966253164,
+      "Cm_analytic_delta_unclamped": 0.004169450363585955,
+      "Cn_stock_shortfall_percent": 30.008221430528913,
+      "Cm_stock_shortfall_percent": 60.92928112215079
+    },
+    {
+      "J": 0.6,
+      "axial_mps_at_12000rpm": 36.57599999999999,
+      "thrust_symmetric_n": -8.854652442794368,
+      "thrust_installed_n": 11.579526458108024,
+      "Cn_stock": 0.005719,
+      "Cn_consistent": 0.008362,
+      "Cm_stock": 0.00224,
+      "Cm_consistent": 0.006853,
+      "Cn_analytic_delta_unrounded": 0.002643597150259944,
+      "Cm_analytic_delta_unclamped": 0.004613947436837529,
+      "Cn_stock_shortfall_percent": 31.60727098780196,
+      "Cm_stock_shortfall_percent": 67.31358529111337
+    },
+    {
+      "J": 0.65,
+      "axial_mps_at_12000rpm": 39.623999999999995,
+      "thrust_symmetric_n": -13.241096755288295,
+      "thrust_installed_n": 7.478018273424319,
+      "Cn_stock": 0.006262,
+      "Cn_consistent": 0.009408,
+      "Cm_stock": 0.001669,
+      "Cm_consistent": 0.006737,
+      "Cn_analytic_delta_unrounded": 0.0031458173097419165,
+      "Cm_analytic_delta_unclamped": 0.005068141820420928,
+      "Cn_stock_shortfall_percent": 33.43962585034013,
+      "Cm_stock_shortfall_percent": 75.2263618821434
+    },
+    {
+      "J": 0.7,
+      "axial_mps_at_12000rpm": 42.672,
+      "thrust_symmetric_n": -17.66261552262454,
+      "thrust_installed_n": 3.3362040288344947,
+      "Cn_stock": 0.006712,
+      "Cn_consistent": 0.01041,
+      "Cm_stock": 0.000957,
+      "Cm_consistent": 0.006488,
+      "Cn_analytic_delta_unrounded": 0.0036976563328846883,
+      "Cm_analytic_delta_unclamped": 0.005531680938519196,
+      "Cn_stock_shortfall_percent": 35.52353506243997,
+      "Cm_stock_shortfall_percent": 85.24969173859432
+    },
+    {
+      "J": 0.75,
+      "axial_mps_at_12000rpm": 45.71999999999999,
+      "thrust_symmetric_n": -22.119454754600607,
+      "thrust_installed_n": -0.8465320355487301,
+      "Cn_stock": 0.007041,
+      "Cn_consistent": 0.011341,
+      "Cm_stock": 9.8e-05,
+      "Cm_consistent": 0.006102,
+      "Cn_analytic_delta_unrounded": 0.004300166505841813,
+      "Cm_analytic_delta_unclamped": 0.0060041651128735695,
+      "Cn_stock_shortfall_percent": 37.91552773124063,
+      "Cm_stock_shortfall_percent": 98.39396919042936
+    },
+    {
+      "J": 0.8,
+      "axial_mps_at_12000rpm": 48.767999999999994,
+      "thrust_symmetric_n": -26.61170126883559,
+      "thrust_installed_n": -5.070710102126832,
+      "Cn_stock": 0.007221,
+      "Cn_consistent": 0.012175,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.005572,
+      "Cn_analytic_delta_unrounded": 0.004954287890847526,
+      "Cm_analytic_delta_unclamped": 0.0064851476840231065,
+      "Cn_stock_shortfall_percent": 40.68993839835729,
+      "Cm_stock_shortfall_percent": 100.0
+    },
+    {
+      "J": 0.85,
+      "axial_mps_at_12000rpm": 51.815999999999995,
+      "thrust_symmetric_n": -31.00832040643439,
+      "thrust_installed_n": -9.336744396557455,
+      "Cn_stock": 0.007256,
+      "Cn_consistent": 0.012882,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.004894,
+      "Cn_analytic_delta_unrounded": 0.005626831756131771,
+      "Cm_analytic_delta_unclamped": 0.00693224051296052,
+      "Cn_stock_shortfall_percent": 43.673342648657034,
+      "Cm_stock_shortfall_percent": 100.0
+    },
+    {
+      "J": 0.9,
+      "axial_mps_at_12000rpm": 54.86399999999999,
+      "thrust_symmetric_n": -35.21386770360472,
+      "thrust_installed_n": -13.644940727860227,
+      "Cn_stock": 0.007156,
+      "Cn_consistent": 0.013435,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.004062,
+      "Cn_analytic_delta_unrounded": 0.0062784023213495075,
+      "Cm_analytic_delta_unclamped": 0.007305252818160265,
+      "Cn_stock_shortfall_percent": 46.736136955712695,
+      "Cm_stock_shortfall_percent": 100.0
+    },
+    {
+      "J": 0.95,
+      "axial_mps_at_12000rpm": 57.91199999999999,
+      "thrust_symmetric_n": -39.207571607056956,
+      "thrust_installed_n": -17.99549943178052,
+      "Cn_stock": 0.006922,
+      "Cn_consistent": 0.013802,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.00307,
+      "Cn_analytic_delta_unrounded": 0.006879642800321423,
+      "Cm_analytic_delta_unclamped": 0.007583521151161998,
+      "Cn_stock_shortfall_percent": 49.847848137951026,
+      "Cm_stock_shortfall_percent": 100.0
+    },
+    {
+      "J": 1.0,
+      "axial_mps_at_12000rpm": 60.959999999999994,
+      "thrust_symmetric_n": -42.924219574887836,
+      "thrust_installed_n": -22.38288501088712,
+      "Cn_stock": 0.006573,
+      "Cn_consistent": 0.013954,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.001916,
+      "Cn_analytic_delta_unrounded": 0.007381833395040447,
+      "Cm_analytic_delta_unclamped": 0.007730237854627624,
+      "Cn_stock_shortfall_percent": 52.89522717500359,
+      "Cm_stock_shortfall_percent": 100.0
+    },
+    {
+      "J": 1.05,
+      "axial_mps_at_12000rpm": 64.008,
+      "thrust_symmetric_n": -46.35511920107025,
+      "thrust_installed_n": -26.653822584654463,
+      "Cn_stock": 0.006117,
+      "Cn_consistent": 0.013923,
+      "Cm_stock": 0.0,
+      "Cm_consistent": 0.000655,
+      "Cn_analytic_delta_unrounded": 0.007805648505513386,
+      "Cm_analytic_delta_unclamped": 0.007784815238547618,
+      "Cn_stock_shortfall_percent": 56.06550312432665,
+      "Cm_stock_shortfall_percent": 100.0
+    }
+  ],
+  "normal_force": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.05,
+      8.3e-05
+    ],
+    [
+      0.1,
+      0.000287
+    ],
+    [
+      0.15,
+      0.00063
+    ],
+    [
+      0.2,
+      0.001115
+    ],
+    [
+      0.25,
+      0.001735
+    ],
+    [
+      0.3,
+      0.002474
+    ],
+    [
+      0.35,
+      0.003311
+    ],
+    [
+      0.4,
+      0.004226
+    ],
+    [
+      0.45,
+      0.005208
+    ],
+    [
+      0.5,
+      0.006239
+    ],
+    [
+      0.55,
+      0.007298
+    ],
+    [
+      0.6,
+      0.008362
+    ],
+    [
+      0.65,
+      0.009408
+    ],
+    [
+      0.7,
+      0.01041
+    ],
+    [
+      0.75,
+      0.011341
+    ],
+    [
+      0.8,
+      0.012175
+    ],
+    [
+      0.85,
+      0.012882
+    ],
+    [
+      0.9,
+      0.013435
+    ],
+    [
+      0.95,
+      0.013802
+    ],
+    [
+      1.0,
+      0.013954
+    ],
+    [
+      1.05,
+      0.013923
+    ]
+  ],
+  "pfactor_moment": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.05,
+      0.000837
+    ],
+    [
+      0.1,
+      0.001734
+    ],
+    [
+      0.15,
+      0.002647
+    ],
+    [
+      0.2,
+      0.00353
+    ],
+    [
+      0.25,
+      0.004343
+    ],
+    [
+      0.3,
+      0.005058
+    ],
+    [
+      0.35,
+      0.005651
+    ],
+    [
+      0.4,
+      0.006114
+    ],
+    [
+      0.45,
+      0.006468
+    ],
+    [
+      0.5,
+      0.006713
+    ],
+    [
+      0.55,
+      0.006844
+    ],
+    [
+      0.6,
+      0.006853
+    ],
+    [
+      0.65,
+      0.006737
+    ],
+    [
+      0.7,
+      0.006488
+    ],
+    [
+      0.75,
+      0.006102
+    ],
+    [
+      0.8,
+      0.005572
+    ],
+    [
+      0.85,
+      0.004894
+    ],
+    [
+      0.9,
+      0.004062
+    ],
+    [
+      0.95,
+      0.00307
+    ],
+    [
+      1.0,
+      0.001916
+    ],
+    [
+      1.05,
+      0.000655
+    ]
+  ],
+  "scope": "Declared-method consistency only; existing crossflow law and calibration assumptions retained."
+}

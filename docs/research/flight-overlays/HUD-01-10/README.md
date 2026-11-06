@@ -774,6 +774,40 @@ The shared branch advanced during implementation; runtime SHA-256 identifies the
 `overlay_manager.gd` = `850af74740dc4f9e52703830dd418a39c21f2a94edc84de9a6723147d48e5d11`.
 Full CI, other-hardware performance and pilot acceptance remain separate.
 
+### Colored translucent alert glass (2026-11-06, HUD-09-R2)
+
+The owner's follow-up asked for alerts closer to the menus' radioactive glass, including red and yellow light.
+O3 now uses red danger, yellow caution and green status glass across the whole surface, with rounded 12 px
+walls, soft semantic halos and pale text. Base opacity is 78%; a 14% dark interior film protects copy without
+covering the glass reflections. Opaque mode still produces solid backplates. The shared crystal shader adds
+an optional per-material text-area brightness ceiling; its default is numerically identical to the menu's
+previous green bound. Existing shader provenance and export notices remain in place.
+
+One 560 ms sine-eased arrival sweep animates only optical uniforms. Text stays fully opaque. Hiding the rail,
+enabling reduced motion, removing a pooled card or hiding the overflow summary clears its light immediately.
+There is no automatic shader clock, screen read, new texture or continuously running effect.
+
+`test_warning_presentation.gd` passed **40 headless / 49 rendered checks** on Windows, Godot 4.8-beta2,
+NVIDIA RTX 3090 / OpenGL Compatibility. Rendered checks sample each severity's text rectangles over white
+and black at rest and through the sweep, require at least **4.5:1** contrast, and establish actual transmission
+by requiring the glass-center color to change by more than 0.05 between backdrops. The first rendered palette
+failed the caution/status detail threshold (4.07:1 / 4.02:1); paler supporting text passed on the final candidate.
+Headless color bounds are estimates; the actual-pixel result is specific to this renderer. The rendered
+`test_ui_crystal.gd` consumer checks and **222** overlay-manager checks also passed. Receipts are under
+`tmp/godot-checks/alerts-radiant-*` and `alerts-menu-glass-consumer-*`.
+
+Native production-scene fixtures were reviewed in English at **1920×1080** and Spanish at **2560×1440**;
+captures/logs are in `tmp/debug-bridge/20261106-151629-47876/` (shots 001 and 003). These show all three semantic
+colors together and preserve the estimated-reserve qualifier. The session exited without a crash or leaks.
+Spanish was also reviewed at **1920×1080** after selecting Spanish through Home before flight, in
+`tmp/debug-bridge/20261106-151928-47876/` (shot 001); every severity label and action is visible. This session
+also exited without a crash or leaks.
+Images remain ignored. This is focused appearance/contrast evidence; full CI and other-renderer/hardware
+qualification remain separate.
+
+Final runtime SHA-256: `warnings_bar.gd` = `ceb918151574f63514d5f6b97ce8ecea1f575ffa401abd5c4cab3bce8aaee77b`;
+`crystal.gdshader` = `21c72c091d1775efee3828c72af0f309d0816fff5691624fbd0917cb0ec816ee`.
+
 ### G-driven waves, bubbles and foam (2026-11-06, HUD-13-R14-R2)
 
 Research and tool selection preceded implementation. [PWira's 2D Liquid Wave](https://godotshaders.com/shader/2d-liquid-wave/)
@@ -813,3 +847,56 @@ Final SHA-256: `fuel_instrument.gd` = `cf2e2e9d34b1e131fa903937e68ab4a355808b0fa
 `fuel_liquid.gdshader` = `1a5a32acd0ea29ec9e633102221d5f72e36573b97bbc51c0e962b84ee553fbad`;
 `test_fuel_instrument.gd` = `f6abce32405e722f63e0ba4ec084c8580fe941205e22aa3b6f724ee8313801ef`.
 No images are added to Git. Full CI, other-GPU performance and physical slosh validation remain separate.
+
+### Liquid shader efficiency (2026-11-06, HUD-13-R14-R3)
+
+The pre-optimization shader was preserved as `tmp/fuel-optimization/baseline.gdshader`, SHA-256
+`1a5a32acd0ea29ec9e633102221d5f72e36573b97bbc51c0e962b84ee553fbad`. The widget's CPU lifecycle already avoids
+per-frame callbacks, hidden refreshes and repeated paused motion publication, so that code was left intact.
+Shader inspection found uniform-only spring, force direction, surface/chord and wave-coefficient work repeated
+per fragment, plus bubble/noise work where its contribution was zero.
+
+The candidate moves those shared calculations to the quad's vertex stage through four flat `vec4` varyings.
+It skips settled wave cosines, aeration outside the antialiased wet region, foam noise outside its maximum
+band, and bubble distances outside conservative rim/core/glint bounds. The original 16 seeds, paths, fades,
+accumulation order, opacity clamps and glass expressions are retained. The shader adds no texture, pass,
+particle node or CPU frame callback. [Godot's varying documentation](https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html#interpolation-qualifiers)
+was checked before using flat vertex-to-fragment data.
+
+**335 checks passed** on Windows / Godot 4.8-beta2 / OpenGL Compatibility / NVIDIA RTX 3090, driver 617.42,
+at 1920×1080. These include the existing 133 widget checks, 177 same-process baseline/candidate image pairs,
+24 timing-batch changing-image checks and the report-write check. The image matrix covers normal/compact
+tanks, six attitudes including both knife edges and inverted, calm/agitated states, and seven fills including
+unknown, empty, 2%, 37%, 85%, 98% and full. Nine further pairs exercise nonzero spring offset/velocity at
+0.04, 1 and 6 g, clock rollover and a render clock trailing its sample. Every pair had
+**zero pixels exceeding 0.025 maximum RGB difference**;
+this is tolerance-based parity, not a claim of identical encoded files. Native fixture images were inspected.
+
+The optional test mode accepts `--fuel-reference-shader=<absolute-path>` alongside the existing
+`--fuel-capture-dir=<fresh-directory>`. Add `--fuel-profile` for the bounded comparison. It loads the reference
+in memory, preserves the production source, and writes `shader-comparison.json` with source hashes, engine,
+adapter, matrix results and raw timings. Profiling uses three ABBA sequences per size, 12 warmup and 60 measured
+samples per phase. Each sample forces eight draws without swapping window buffers, then synchronously reads
+back the 1080p root image. Other fixture cards are hidden, and start/end changes are checked within the tank's
+rectangle rather than across the whole viewport. The render-loop setting
+is restored. This measures draw submission/completion plus readback, not isolated GPU time or flight FPS.
+
+| Workload | Reference median | Candidate median | Interpretation |
+| --- | ---: | ---: | --- |
+| Normal 208×101 liquid rectangle | 8.250 ms | 8.287 ms | Inconclusive: paired ABBA changes ranged from 0.93% lower to 0.96% higher. |
+| Amplified 1860×900 rectangle | 8.521 ms | 8.330 ms | Inconclusive: paired groups ranged from 2.62% higher to 9.65% lower. |
+
+Medians are across the six phase medians per role, for eight draws plus one readback. The enlarged rectangle
+retains the normal shader dimensions to amplify fragment workload; it is not a player HUD layout. Earlier
+window-scheduled and single-draw probes were noisy. An eight-draw run with other fixture cards still visible
+showed a 13.6% lower stress median, but the stronger isolated fixture did not reproduce that magnitude consistently.
+These observations do not establish a reliable speedup. The normal-widget difference remains below the resolution
+of this comparison; no FPS or general hardware performance improvement is claimed. The retained benefit is the
+structural reduction in repeated shader calculations, with matched visual coverage and unchanged CPU lifecycle.
+The baseline live scene stayed at its 120 Hz display cap; raw root GPU readings have unverified freshness.
+
+Final receipts and comparison: `tmp/fuel-optimization/checks/` and `tmp/fuel-optimization/final-reviewed/`.
+Live baseline session: `tmp/debug-bridge/20261106-150542-47870/`, clean shutdown with no crash or leaked objects.
+Final SHA-256: `fuel_liquid.gdshader` = `dbbe65e204a06ceb814ac5eb155153a5ed44c1f73faf6b70fceafb649a64a441`;
+`test_fuel_instrument.gd` = `61724a142fe721e7970e939bbf21a3e6c77a2aa2355f664054b0ae0253fa2e07`.
+Full CI, Mobile/Metal, Forward+, WebGL and other-GPU qualification were not run for this localized change.

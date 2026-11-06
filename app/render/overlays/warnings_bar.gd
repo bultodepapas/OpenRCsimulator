@@ -12,7 +12,16 @@ const MAX_WIDTH := 640.0
 const CLOSE_WIDTH := 28.0
 const GAP := 6.0
 const LIMITS := [1, 3, 5]
-const WELL := Color("#101713")
+const WELL := Color("#080B0A")
+const GLASS_ALPHA := 0.78
+const GLASS_TONES := {
+	danger = {base = Color("#35090B"), emission = Color("#FF2A18"), crystal = Color("#FFD1C7"),
+		ceiling = Vector3(0.26, 0.05, 0.045), text = Color("#FFECE5"), secondary = Color("#F5E5DF")},
+	caution = {base = Color("#302606"), emission = Color("#FFD318"), crystal = Color("#FFF0AF"),
+		ceiling = Vector3(0.20, 0.15, 0.02), text = Color("#FFF4D5"), secondary = Color("#F8EFD5")},
+	info = {base = Color("#08290F"), emission = UiTheme.GLASS_EMISSION, crystal = UiTheme.CRYSTAL,
+		ceiling = Vector3(0.06, 0.20, 0.04), text = UiTheme.PRIMARY_TEXT, secondary = Color("#E4F4DE")},
+}
 
 var id := "warnings"
 var chips: VBoxContainer
@@ -141,7 +150,9 @@ func _render_cards() -> void:
 	while _cards.size() < shown:
 		_cards.append(_make_card("Warning"))
 	while chips.get_child_count() > shown:
-		chips.remove_child(chips.get_child(chips.get_child_count() - 1))
+		var index := chips.get_child_count() - 1
+		_clear_light(_cards[index].material)
+		chips.remove_child(chips.get_child(index))
 	for index in shown:
 		var card: Dictionary = _cards[index]
 		if card.root.get_parent() == null:
@@ -151,6 +162,7 @@ func _render_cards() -> void:
 			tr(AlertPolicy.detail_for(code)) if _detail else "", code)
 	var remaining := codes.size() - shown
 	summary.visible = remaining > 0
+	if remaining <= 0: _clear_light(_summary_card.material)
 	if remaining > 0:
 		var severity := "info"
 		var hidden_danger := PackedStringArray()
@@ -173,10 +185,12 @@ func _make_card(card_name: String) -> Dictionary:
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var outer := StyleBoxFlat.new()
 	outer.bg_color = Color.TRANSPARENT
-	outer.content_margin_left = 7
-	outer.content_margin_right = 7
-	outer.content_margin_top = 5
-	outer.content_margin_bottom = 5
+	outer.set_corner_radius_all(12)
+	outer.shadow_size = 5
+	outer.content_margin_left = 9
+	outer.content_margin_right = 9
+	outer.content_margin_top = 7
+	outer.content_margin_bottom = 7
 	card.add_theme_stylebox_override("panel", outer)
 	var underlay := Node2D.new()
 	underlay.name = "Glass"
@@ -185,23 +199,22 @@ func _make_card(card_name: String) -> Dictionary:
 	var material := ShaderMaterial.new()
 	material.shader = GLASS
 	material.set_shader_parameter("primary", 1.0)
-	material.set_shader_parameter("corner_radius", 9.0)
-	material.set_shader_parameter("crystal_color", UiTheme.CRYSTAL)
-	material.set_shader_parameter("emission_color", UiTheme.FOCUS)
-	material.set_shader_parameter("edge_width", 0.65)
-	material.set_shader_parameter("edge_strength", 0.60)
-	material.set_shader_parameter("reflection_strength", 0.25)
-	material.set_shader_parameter("glint_strength", 0.0)
+	material.set_shader_parameter("corner_radius", 12.0)
+	material.set_shader_parameter("edge_width", 0.70)
+	material.set_shader_parameter("edge_strength", 0.90)
+	material.set_shader_parameter("reflection_strength", 0.62)
+	material.set_shader_parameter("glint_strength", 0.65)
 	material.set_shader_parameter("energy", 0.0)
 	material.set_shader_parameter("shine_progress", -1.0)
 	var glass := ColorRect.new()
+	glass.name = "Face"
 	glass.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	glass.material = material
 	underlay.add_child(glass)
 	card.resized.connect(_resize_glass.bind(card, glass, material))
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_theme_constant_override("separation", 4)
+	row.add_theme_constant_override("separation", 8)
 	card.add_child(row)
 	var badge := PanelContainer.new()
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -229,36 +242,41 @@ func _make_card(card_name: String) -> Dictionary:
 	detail.name = "Detail"
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	copy.add_child(detail)
-	return {root = card, material = material, badge = badge, severity = severity,
+	return {root = card, material = material, outer = outer, badge = badge, severity = severity,
 		well = well, headline = headline, detail = detail}
 
 
 func _update_card(card: Dictionary, level: String, title: String, detail: String, code: String) -> void:
-	var accent := UiTheme.CRYSTAL
-	if level == "danger": accent = UiTheme.ERROR
-	elif level == "caution": accent = UiTheme.CAUTION
+	var tone: Dictionary = GLASS_TONES.get(level, GLASS_TONES.info)
 	var severity: Label = card.severity
 	severity.text = tr(level.to_upper())
-	severity.add_theme_color_override("font_color", accent)
+	severity.add_theme_color_override("font_color", tone.crystal)
 	var headline: Label = card.headline
 	headline.text = title
+	headline.add_theme_color_override("font_color", tone.text)
 	var description: Label = card.detail
 	description.text = detail
 	description.visible = not detail.is_empty()
+	description.add_theme_color_override("font_color", tone.secondary)
 	card.root.set_meta("code", code)
 	card.root.set("accessibility_name", ": ".join([severity.text, title, detail]).trim_suffix(": "))
 	var badge_style := _well_style()
+	badge_style.bg_color = Color(tone.base, 1.0 if _opaque else 0.20)
 	badge_style.set_border_width_all(1)
-	badge_style.border_color = Color(accent, 0.75)
+	badge_style.border_color = Color(tone.crystal, 0.32)
 	card.badge.add_theme_stylebox_override("panel", badge_style)
 	card.well.add_theme_stylebox_override("panel", _well_style())
-	card.material.set_shader_parameter("base_color", Color("#08290F", 1.0 if _opaque else 0.94))
+	card.outer.shadow_color = Color(tone.emission, 0.26)
+	card.material.set_shader_parameter("base_color", Color(tone.base, 1.0 if _opaque else GLASS_ALPHA))
+	card.material.set_shader_parameter("crystal_color", tone.crystal)
+	card.material.set_shader_parameter("emission_color", tone.emission)
+	card.material.set_shader_parameter("well_ceiling", tone.ceiling)
 
 
 func _well_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(WELL, 1.0 if _opaque else 0.96)
-	style.set_corner_radius_all(4)
+	style.bg_color = Color(WELL, 1.0 if _opaque else 0.14)
+	style.set_corner_radius_all(6)
 	style.content_margin_left = 8
 	style.content_margin_right = 8
 	style.content_margin_top = 3
@@ -280,15 +298,39 @@ func _resize_to_viewport() -> void:
 
 func _start_entrance() -> void:
 	_stop_entrance()
-	modulate.a = 0.85
-	_entrance = create_tween()
-	_entrance.tween_property(self, "modulate:a", 1.0, 0.16)
+	_entrance = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_entrance.tween_method(_reveal_light, 0.0, 1.0, 0.56)
+	_entrance.finished.connect(_stop_entrance)
+
+
+## Animate the optical layer only. Text stays fully opaque, and no clock runs at rest.
+func _reveal_light(progress: float) -> void:
+	if UiTheme.reduced_motion or not is_visible_in_tree():
+		_stop_entrance()
+		return
+	for card: Dictionary in _cards:
+		if card.root.get_parent() == chips:
+			_set_light(card.material, progress)
+	if summary.visible: _set_light(_summary_card.material, progress)
+
+
+func _set_light(material: ShaderMaterial, progress: float) -> void:
+	material.set_shader_parameter("shine_progress", lerpf(-0.25, 1.65, progress))
+	material.set_shader_parameter("energy", 0.8 * sin(PI * progress))
+
+
+func _clear_light(material: ShaderMaterial) -> void:
+	material.set_shader_parameter("shine_progress", -1.0)
+	material.set_shader_parameter("energy", 0.0)
 
 
 func _stop_entrance() -> void:
 	if _entrance != null and _entrance.is_valid(): _entrance.kill()
 	_entrance = null
 	modulate.a = 1.0
+	for card: Dictionary in _cards:
+		_clear_light(card.material)
+	_clear_light(_summary_card.material)
 
 
 func _visibility_changed() -> void:

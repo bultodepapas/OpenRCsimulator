@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4ded03ce-6c6f-4d35-b833-82790f9e63d2",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/probe_fuel_transitions.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/source",
+  "started_utc": "2026-11-06T17:56:00.337753+00:00",
+  "label": "extra-fuel-transitions-verified",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "FUEL-TRANSITION-PROBE 23 checks, 0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.82813,
+  "log_bytes": 2600,
+  "log_sha256": "43c374ca87f4724124974a48ea9d1a5cd633a72ee8e8d570b409155501218bb5"
+}

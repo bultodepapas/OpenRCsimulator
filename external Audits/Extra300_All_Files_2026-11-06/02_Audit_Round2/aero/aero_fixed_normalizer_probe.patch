@@ -1,0 +1,11 @@
+--- a/physics/aero_fixed_normalizer_probe.gd
++++ b/physics/aero_fixed_normalizer_probe.gd
+@@ -351,7 +351,7 @@
+ 		angles.append(angle)
+ 		speeds.append(vp)
+ 		flap_shifts.append(flap_shift)
+-		reference_speed = maxf(reference_speed, sqrt(f0*f0 + f1*f1 + f2*f2))
++		reference_speed = 20.0 # diagnostic only: freeze normalizer at zero-rate value of this fixture
+ 	# P51-11a (optional flaps.stall_shift_fraction): a flapped strip's stall onset moves by only this fraction of its
+ 	# camber shift; absent keeps the whole shift without any added arithmetic.
+ 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0

@@ -52,6 +52,11 @@ func _run() -> void:
 	_check("noninteractive descendants ignore pointer input", _ignores_pointer(warnings, warnings.close_button))
 	_check("unchanged sample reports shown", warnings.refresh(alerts.duplicate()))
 	_check("unchanged sample keeps card instances", warnings.chips.get_child(0).get_instance_id() == first_id)
+	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]))
+	await process_frame
+	await process_frame
+	_material_checks(warnings)
+	warnings.refresh(alerts)
 	warnings.configure({"warning_limit": 1, "warning_detail": false})
 	_check("compact setting caps cards without dropping codes", warnings.codes == alerts
 		and _shown(warnings) == ["failsafe"] and not _label(first, "Detail").visible)
@@ -79,9 +84,19 @@ func _run() -> void:
 	UiTheme.reduced_motion = false
 	warnings.refresh(PackedStringArray(["stall", "far"]))
 	_check("new visible alert starts a bounded transition", warnings.get("_entrance") != null)
+	_check("arrival light never fades the alert text", is_equal_approx(warnings.modulate.a, 1.0))
 	var transition: Tween = warnings.get("_entrance")
 	warnings.refresh(PackedStringArray(["stall", "far"]))
 	_check("unchanged sample does not restart transition", warnings.get("_entrance") == transition)
+	warnings.refresh(PackedStringArray(["stall", "far", "experimental", "low"]))
+	warnings.get("_entrance").custom_step(0.22)
+	var retired: Control = warnings.chips.get_child(2)
+	var retired_material: ShaderMaterial = retired.get_node("Glass/Face").material
+	warnings.configure({warning_limit = 1})
+	_check("a pooled card stops its light immediately when detached",
+		retired.get_parent() == null and retired_material.get_shader_parameter("energy") == 0.0
+		and retired_material.get_shader_parameter("shine_progress") == -1.0)
+	warnings.configure({warning_limit = 3})
 	UiTheme.reduced_motion = true
 	warnings.configure({})
 	_check("enabling reduced motion stops an active transition", warnings.get("_entrance") == null)
@@ -118,6 +133,8 @@ func _run() -> void:
 	_check("wrapped Spanish action and overflow lines fit", action.get_line_count() > 1
 		and _fits_lines(action) and _fits_lines(_label(warnings.summary, "Detail")),
 		"action=%s lines=%d summary=%s" % [action.size, action.get_line_count(), _label(warnings.summary, "Detail").size])
+	if DisplayServer.get_name() != "headless":
+		await _rendered_materials(warnings)
 	# Free a pooled node outside the tree as well as the visible ones.
 	warnings.refresh(PackedStringArray())
 	var pooled: WeakRef = weakref(first)
@@ -131,6 +148,82 @@ func _run() -> void:
 	TranslationServer.set_locale("en")
 	print("warning presentation: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
+
+
+func _material_checks(warnings: Control) -> void:
+	var levels := ["danger", "caution", "info"]
+	for index in levels.size():
+		var card: Control = warnings.chips.get_child(index)
+		var material: ShaderMaterial = card.get_node("Glass/Face").material
+		var emission: Color = material.get_shader_parameter("emission_color")
+		var base: Color = material.get_shader_parameter("base_color")
+		var hue_ok := emission.r > emission.g * 2.0 if index == 0 else (
+			emission.r > 0.9 and emission.g > 0.6 and emission.b < 0.2 if index == 1 else emission.g > emission.r * 2.0)
+		_check("glass light matches severity: " + levels[index], hue_ok)
+		var title := _label(card, "Headline")
+		var well: PanelContainer = title.get_parent().get_parent()
+		_check("tinted glass and interior film remain translucent: " + levels[index], base.a < 0.85
+			and (well.get_theme_stylebox("panel") as StyleBoxFlat).bg_color.a < 0.25)
+		var ceiling: Vector3 = material.get_shader_parameter("well_ceiling")
+		var brightest := Color(ceiling.x, ceiling.y, ceiling.z, base.a)
+		var readable := true
+		for label_name: String in ["Headline", "Detail", "Severity"]:
+			readable = readable and UiTheme.contrast(_label(card, label_name).get_theme_color("font_color"), brightest) >= 4.5
+		_check("glass ceiling protects all text over bright and dark scenes: " + levels[index], readable)
+
+
+## Sample the actual shader at rest and through its single sweep; no glyphs cover the measured text area.
+func _rendered_materials(warnings: Control) -> void:
+	root.size = Vector2i(1920, 1080)
+	TranslationServer.set_locale("en")
+	UiTheme.opaque_panels = false
+	warnings.configure({warning_limit = 3, warning_detail = true})
+	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]))
+	warnings._stop_entrance()
+	var backdrop := ColorRect.new()
+	backdrop.size = Vector2(1920, 1080)
+	root.add_child(backdrop)
+	root.move_child(backdrop, 0)
+	for card: Control in warnings.chips.get_children():
+		for label_name: String in ["Headline", "Detail", "Severity"]:
+			_label(card, label_name).self_modulate.a = 0.0
+	var centers: Array[Color] = []
+	for background: Color in [Color.WHITE, Color.BLACK]:
+		backdrop.color = background
+		var worst := [INF, INF, INF]
+		var worst_at := ["", "", ""]
+		for phase: float in [0.0, 0.5, 1.0]:
+			warnings._reveal_light(phase)
+			await RenderingServer.frame_post_draw
+			var rendered := root.get_texture().get_image()
+			for index in warnings.chips.get_child_count():
+				var card: Control = warnings.chips.get_child(index)
+				for label_name: String in ["Headline", "Detail", "Severity"]:
+					var label := _label(card, label_name)
+					var rect := Rect2i(label.get_global_rect())
+					for x in range(rect.position.x + 1, rect.end.x - 1, 6):
+						for y in range(rect.position.y + 1, rect.end.y - 1, 3):
+							var pixel := rendered.get_pixel(x, y)
+							var contrast := UiTheme.contrast(label.get_theme_color("font_color"), pixel)
+							if contrast < worst[index]:
+								worst[index] = contrast
+								worst_at[index] = "%s at %d,%d phase %.2f bg=%s" % [label_name, x, y, phase, pixel]
+				if phase == 1.0:
+					var well: Control = _label(card, "Headline").get_parent().get_parent()
+					centers.append(rendered.get_pixelv(Vector2i(well.get_global_rect().get_center())))
+		for index in worst.size():
+			_check("rendered severity %d keeps text contrast through sweep over %s" % [index, "white" if background == Color.WHITE else "black"],
+				worst[index] >= 4.5, "%s %s" % [worst[index], worst_at[index]])
+	for index in 3:
+		var difference := maxf(absf(centers[index].r - centers[index + 3].r),
+			maxf(absf(centers[index].g - centers[index + 3].g), absf(centers[index].b - centers[index + 3].b)))
+		_check("rendered glass transmits the scene behind severity %d" % index, difference > 0.05, str(difference))
+	for card: Control in warnings.chips.get_children():
+		for label_name: String in ["Headline", "Detail", "Severity"]:
+			_label(card, label_name).self_modulate = Color.WHITE
+	warnings._stop_entrance()
+	backdrop.queue_free()
+	await process_frame
 
 
 func _shown(warnings: Control) -> Array:

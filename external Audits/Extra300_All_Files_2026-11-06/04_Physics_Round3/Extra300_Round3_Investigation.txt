@@ -1,0 +1,321 @@
+EXTRA 300S — ROUND THREE
+Measured control response and propulsion evidence
+2026-11-06
+
+RESULT
+
+This bounded pass establishes no new serious implementation defect and no new
+runtime speedup. It adds an executed, exactly replayable control-response
+baseline; closes a documented primary-source gap for the O.S. .61FX; identifies
+a useful engine-versus-propeller calibration experiment; and quantifies two
+model sensitivities without mistaking them for demonstrated physical errors.
+
+The most useful practical result is that input travel affects both the peak
+roll response and the time the modeled servo needs to return to trim. The
+propulsion result also changes the next diagnostic priority: inspect the
+propeller torque demand independently before increasing engine power.
+
+SOURCE AND AUDIT BOUNDARY
+
+Executed source: bultodepapas/OpenRCsimulator at
+2e2e3492e67d30635cc4e727025581e2848cdf2e.
+Engine: Godot 4.8.beta2.official.cafc17a19, Linux x86-64.
+Physics: reference GDScript, float64 state, 240 Hz.
+
+The consolidated audit ledger was read before review, including the earlier
+Extra findings E300-01 through E300-08 and the previous non-bug observations.
+The closing GitHub comparison reached d0b672b09663226ff8b8ac4f43eae8643c77a8c4.
+The ledger's additions were read again: it now contains fourteen reports and
+adds UI findings, not another Extra physics finding. The responsible physics,
+session, input and aircraft/glow data paths were unchanged in that comparison.
+The later head was not the executed baseline. See closing_comparison.json.
+
+Production source and generated aircraft data were not changed. Isolated
+runtime copies contained the production files plus diagnostic scripts, a
+minimal project configuration and required scenery preload resources. All
+3,528 manifest-listed runtime source/support files match their pinned source
+hashes. Additional tracked scenery assets match their Git blobs; generated
+import sidecars are identified separately. No rendering/FPS claim is made.
+
+1. EXECUTED ROLL-RESPONSE BASELINE
+
+Each case starts with a fresh stock Extra, full fuel, 100 m initial altitude,
+reference density 1.225 kg/m3, and a newly solved level trim. Initial live mass
+is 3.8195476 kg. Density is the session's reference-air value, not an assumed
+altitude-dependent ISA value. The initial speeds are 15 or 22 m/s. A scripted
+roll target is applied from 0.2 to 0.7 seconds; the recording lasts 2 seconds.
+Pitch/yaw pilot commands remain zero and throttle remains at the initial trim.
+There is no pilot feedback or speed-hold controller.
+
+The probe calls the actual Session input-shaping path and production physics
+step. Servo limiting, propulsion, coupled rigid-body motion and the connected
+recorder hooks remain active. Direct stepping bypasses device sampling,
+keyboard virtual-stick slew, UI scheduling and session-level crash handling.
+It is an open-loop pre-servo stick-step experiment, not a controller-latency
+test or a coordinated piloted roll.
+
+Peak absolute body-axis roll rate during the 0.5 s pulse, degrees/second:
+
+  Initial speed     Profile       Left         Right
+  15 m/s            normal        77.7316      77.1320
+  15 m/s            full         227.8530     224.4895
+  22 m/s            normal       107.7087     107.8598
+  22 m/s            full         283.6908     279.0455
+  22 m/s            sport        283.6908     279.0455
+  22 m/s            matched      107.7087     107.8598
+
+"Matched" is the full profile with stick amplitude +/-0.394705, instead of
+the normal profile's +/-1. These two configurations produce identical
+post-profile commands, including trim and clamping.
+
+The four paired physics comparisons are exact across their sampled numeric
+arrays: sport versus full for each direction, and matched versus normal for
+each direction. Every recording was then replayed in a fresh instance using
+the existing reader's strict identity and byte-comparison path: 12 recordings,
+480 replayed physics ticks each, 5,760 replayed ticks total, no mismatches.
+The complete footer was verified for every recording. This verifies software
+reproducibility at this source/engine/backend identity, not physical realism.
+
+The equal-command controls establish the causal scope of the profile effect
+for this setup. They do not show that sport and full are interchangeable on
+other axes or with other devices. Expo is zero in this stock Extra profile.
+
+The quoted values are pulse peaks, not steady roll rates. Body-axis p is not
+always the Euler roll-angle derivative. At 22 m/s/full/right, airspeed stays
+within 21.9357--22.0123 m/s during the pulse, but sideslip reaches +6.03 degrees,
+and pitch/yaw rates reach 36.47/29.23 degrees/s. The response contains coupled
+motion even though its airspeed changes little.
+
+The signed aileron value is the modeled right-aileron trailing-edge angle,
+positive up; the symmetric left angle has the opposite sign. It includes
+trim. At 22 m/s the roll trim is +0.0014370784 of maximum travel. A positive
+full command clips at +1, while a negative full command reaches -0.9985629.
+Consequently the small left/right differences do not isolate aerodynamic
+asymmetry. Exact command matching is more discriminating than comparing only
+the labels "normal" and "full".
+
+Evidence: pulses/results.json, all twelve ORFL/CSV pairs, pulse_analysis.json,
+pulse_summary.csv, Extra300_Roll_Response.png, and the accepted control-pulse
+receipt. PULSE_REVIEW.txt contains the independent interpretation review.
+
+2. WHY THE STOPPING RESPONSE CHANGES
+
+Stock data selects a constant servo rate corresponding to 0.14 s from neutral
+to full throw. Normal roll travel is 0.394705 of full travel. The ideal
+continuous-time movement durations are therefore approximately
+
+  normal: 0.394705 * 0.14 = 0.0552587 s
+  full:   1.0 * 0.14 = 0.14 s
+
+At 240 Hz, the first accepted sample at the target occurs after 14 ticks
+(58.33 ms) for normal and 34 ticks (141.67 ms) for full in these cases. The
+return from pulse target to initial trim has the same measured durations.
+This is predicted by the implemented rate limiter, not a newly discovered bug.
+
+At 22 m/s/right roll, 100 ms after release the normal case has slowed to
+14.78 degrees/s, while full retains 134.60 degrees/s. The full aileron is still
+about 5 degrees up at that instant, whereas normal is already back at trim.
+The comparison combines different initial roll rates, ongoing servo motion,
+aerodynamic damping and coupling. It does not attribute all of the rate
+difference to the servo alone.
+
+This is useful for interpreting pilot language such as "doesn't stop crisply".
+The actuator can still be commanding a roll after the pilot target returns
+to zero. Changing aerodynamic damping before checking that signal chain can
+compensate for the wrong mechanism.
+
+A small-disturbance roll equation makes the separation explicit:
+
+  Ixx * dp/dt = qbar*S*b * [Cl_delta*delta_a + Cl_p*p*b/(2V)]
+
+The first term supplies control moment; the second supplies roll damping;
+delta_a is the actual surface angle after the rate limiter. For frozen V and
+linear coefficients, equilibrium p scales approximately as V*delta_a, whereas
+initial control acceleration scales as V^2*delta_a/Ixx. The measured full
+pulse additionally contains nonlinear and cross-axis dynamics, so these
+relations are diagnostic guides rather than fits to the reported peaks.
+
+Recommendation: preserve the surface trace alongside the stick and body-rate
+traces when comparing future tuning. Separate response delay, initial roll
+acceleration, peak/settled rate, and release behavior. Do not use one generic
+"agility" multiplier to compensate for all of them. Extend the existing
+flight-test/logging tools with the paired commands if this becomes a project
+gate; do not maintain a second physics implementation.
+
+3. NEW PRIMARY EVIDENCE AND CURRENT SHAFT BALANCE
+
+The original Gierke source was located and its tables and graph visually
+checked. The project had already used one secondhand power anchor and marked
+the primary text unavailable. The source identity, selected measurements and
+page mapping are in propulsion_source.json. The full copyrighted publication
+and page images are not included here. The old anchor itself is not claimed
+as a new discovery.
+
+The current Extra was evaluated with the production GlowOperating.solve()
+path at full throttle, zero axial inflow and total/dry density 1.225 kg/m3.
+This assumes nominal mixture, a running engine and full firing. It does not
+integrate temperature, fuel transport or fuel-feed equilibrium.
+
+The selected restoring root is 10,288.179431 RPM. Engine and propeller torque
+both equal 0.679532236 N m, the residual is zero at printed float64 precision,
+shaft power is 732.111472 W and modeled static thrust is 32.137174 N. Eight
+checks passed, including a residual sign reversal around the selected root.
+These are current software calculations, not an assertion of a measured
+aircraft bench result. The old EX-14g value is not substituted for this run.
+
+At the new source's APC operating speed, current component values are:
+
+  Model engine torque                 0.679552242 N m
+  Model propeller resisting torque     0.886357119 N m
+  Engine minus propeller torque       -0.206804877 N m
+  Model engine power                 836.159896 W
+  Power needed by modeled prop       1090.624430 W
+
+For a comparison of scale, the published corrected power at that speed has
+a torque equivalent of 0.696940053 N m. Current modeled engine power is about
+2.49% below that number, while the current propeller power demand is about
+27.18% above it. This is not a matched-condition physical error percentage.
+It shows that the present equations' operating-point gap cannot be removed
+by a small adjustment toward that power point while leaving the prop load
+unchanged. It prioritizes inspecting the propeller torque law independently.
+
+Known comparability differences remain material: the aircraft target has a
+Pitts-style installation, while the model's installed engine curve is a
+generic muffler hypothesis, not measured Pitts data. Model fuel has 18% oil.
+The nominal 12x6 propeller section fit was transferred from measured 11x6
+data rather than identified from this installed 12x6. Atmospheric reference,
+mixture, engine sample and installed exhaust must be reconciled.
+
+Normalization needs care. Applying P=Q*omega to the selected lower-speed
+torque point produces 0.979784 mechanical hp; applying the listed correction
+factor produces 1.018976 hp, consistent with the plotted corrected power.
+This suggests the torque is uncorrected, but the inspected source does not
+explicitly declare its normalization. Do not count torque and its derived
+power as independent raw observations. The exact correction convention and
+target atmosphere must be established before a fit.
+
+The diagnostic quantities and independent arithmetic are retained in
+static_propulsion_point.json and propulsion_analysis.json. No production
+propeller/engine parameter was changed.
+
+4. THE IDENTIFICATION PROBLEM AND A BETTER CALIBRATION ORDER
+
+The observed shaft speed satisfies
+
+  R(n) = Q_engine(n, throttle, mixture, density) - Q_prop(n, U, density) = 0.
+
+One measured RPM constrains the equality, not the two torque laws separately.
+An engine curve and a propeller curve can both be wrong while their crossing
+is right. For a parameter theta near a simple root,
+
+  dn/dtheta = -(partial R/partial theta)/(partial R/partial n).
+
+This explains why forcing a target RPM can hide a wrong load model. At fixed
+diameter, density and torque coefficient, propeller torque scales as n^2 and
+absorbed power as n^3. The new tach reference is about 14.21% above the modeled
+root; that would require approximately 48.97% more absorbed power if those
+other quantities stayed fixed. This is conditional scaling, not a proposed
+power increase.
+
+The useful next implementation sequence is:
+
+1. Update the source record through research/glow-engines/build_profiles.py
+   and the owning NITRO/EX-14 provenance, retaining the old interpretation and
+   explicitly distinguishing corrected power from raw observations.
+2. Make a separate stock-exhaust bench fixture with explicit fuel, mixture,
+   atmosphere and correction convention. Constrain engine torque with the
+   primary curve before touching the aircraft's installed power scale.
+3. Check propeller torque and thrust independently over more than one speed
+   and advance ratio. A static RPM does not validate forward-flight thrust.
+4. Keep the Pitts installation as a separately supported estimate until
+   matched installed measurements exist; do not invent an exhaust penalty.
+5. Only then compare one explicit candidate against the preserved flight tape,
+   and separately retrim the changed aircraft for equilibrium tests.
+
+A weighted fit should use independent measurements and retain at least one
+held-out operating condition. Measurement uncertainties were not supplied by
+the inspected excerpt, so this review invents no statistical confidence
+interval and declares no calibrated optimum.
+
+5. TWO BOUNDED MODEL SENSITIVITIES
+
+High-angle wing progression. The documented spanwise progression multiplies
+the whole strip angle before polar evaluation. At geometric alpha=90 degrees
+this leaves small nonzero section CL values because the factors differ from
+one. With a constructed 20 m/s normal flow and body roll p=+/-2 rad/s, the
+stock-versus-no-progression aerodynamic yaw-moment difference is
++/-0.106960890 N m. Wing-strip moment sums account for it; the paired signs
+reverse symmetrically, and the tested alpha=0-degree controls are exact.
+
+The explicit aircraft contract authorizes the full-angle rule, so this is not
+an implementation defect. The counterfactual deletes a useful stall-progression
+effect and is not an acceptable proposed fix. This extreme fixed-state probe
+is not a flown maneuver, a knife-edge trim or an occurrence-rate estimate.
+Sixteen new asserted checks passed; existing wing-polar and spatial-continuation
+tests passed 126 and 91 checks. Details and source hashes are in aero/HANDOFF.txt.
+
+Cooling. At one stock 22 m/s trimmed airborne state, the production cooling
+proxy adds sqrt(T/(2*rho*A)) to hub-speed magnitude. That additional speed is
+the static ideal-disk value. For an ideal aligned forward-flow disk,
+
+  T = 2*rho*A*vi*(U+vi)
+  vi = 2*v0^2 / [sqrt(U^2 + 4*v0^2) + U], v0=sqrt(T/(2*rho*A)).
+
+Using the same frozen state gives 5.37803 m/s from the present added term and
+1.24626 m/s from the ideal forward-flow comparison. With the existing estimated
+thermal coefficients, estimated cooling changes by 50.4985 W and head-proxy
+temperature rate by 0.360704 K/s. Seven checks passed, including the zero-flow
+algebra control. These are instantaneous sensitivities, not a thermal
+trajectory. Real head/cowl flow is not necessarily an ideal disk flow, and
+the installed thermal law remains uncalibrated. There is no justified repair
+or real-engine temperature-error claim. See dynamics/FINDINGS.txt.
+
+6. REPRODUCIBILITY AND EXCLUSIONS
+
+Accepted receipt directories retain the required completion markers and report
+ok=true, complete=true, zero engine errors/warnings. The application still
+prints its intentional experimental-data notices; those are not physical
+qualification. Independent source review checked the pulse's input/replay
+boundaries and source identity.
+
+A small reporting wart is preserved transparently: the probe's solver_changed
+field defaults to false because prepare_replay does not return that key.
+Same-solver identity is actually enforced by prepare_replay before execution;
+the default is not a separate solver-comparison measurement. The exact-byte
+replay results and complete-recording checks are the evidence used here.
+
+Failed setup attempts are not accepted evidence. The first root smoke run had
+missing scenery preloads and an unsupported format specifier; the second had
+one remaining missing texture. The final full matrix is separate and clean.
+The aero witness initially requested the wrong completion count, and the
+first cooling attempt had missing assets plus an out-of-scope negative-flow
+control. Retained rejected receipts are labelled under prior_failures/.
+
+This review excludes the previous E300-01..08 defects/optimizations, previous
+fuel/firing-counter repairs, previously discussed induced-source weighting,
+the normalization cusp, the shaft convention and the already known review
+weight/fuel ambiguity. They are not new discoveries or reopened defect counts.
+
+The next concrete gain is better identification: preserve the now-measured
+command/surface/rate relationship, and separate engine output from propeller
+load using the newly recovered primary reference. The retained experiments
+make that next comparison reviewable without claiming a tune is already valid.
+
+SOURCE LOCATIONS
+
+Repository, pinned executed revision:
+https://github.com/bultodepapas/OpenRCsimulator/tree/2e2e3492e67d30635cc4e727025581e2848cdf2e
+
+Input profiles and actuators:
+app/sim/flight_session.gd (rate_profile_available, flown_commands, surfaces,
+_inputs, servo advancement); app/physics/control_surfaces.gd;
+app/data/aircraft/gp_extra_300s_60.json (controls, servo_full_throw_time).
+
+Replay: app/sim/flight_log.gd; app/tools/flight_log_cli.gd (prepare_replay,
+disagreement). Propulsion: app/physics/glow/operating_point.gd, source.gd,
+propeller.gd; research/glow-engines/build_profiles.py; app/data/glow/
+extra_61fx_2t.json and os_max_61fx_installed_candidate.json.
+
+Prior provenance gap: docs/research/extra-300-realism/EX-14/propeller-sources.json
+and EX-14/README.md. High-angle/cooling details and their exact code anchors
+are in the two scoped handoffs.

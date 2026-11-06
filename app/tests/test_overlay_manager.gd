@@ -111,8 +111,11 @@ func _contrast() -> void:
 		var headline: Label = chip.find_child("Headline", true, false)
 		var detail: Label = chip.find_child("Detail", true, false)
 		var severity: Label = chip.find_child("Severity", true, false)
-		var well: PanelContainer = headline.get_parent().get_parent()
-		var background: Color = (well.get_theme_stylebox("panel") as StyleBoxFlat).bg_color
+		# The shader bounds the brightest glass beneath text; the dark interior film only lowers it.
+		var material: ShaderMaterial = chip.get_node("Glass/Face").material
+		var ceiling: Vector3 = material.get_shader_parameter("well_ceiling")
+		var base: Color = material.get_shader_parameter("base_color")
+		var background := Color(ceiling.x, ceiling.y, ceiling.z, base.a)
 		_check("warning severity remains explicit: " + code, severity.text == AlertPolicy.severity(code).to_upper())
 		_check("alert title, detail and severity retain contrast over any sky: " + code,
 			UiTheme.contrast(headline.get_theme_color("font_color"), background) >= 4.5

@@ -1,0 +1,1232 @@
+{
+  "format": "extra300-complete-deliverables-v1",
+  "created_date": "2026-11-06",
+  "original_file_count": 199,
+  "package_count": 4,
+  "input_archives": [
+    {
+      "archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "sha256": "50c3dee97416a27a640655fca71dcc219e015f8df7023e15402b2c779889947f",
+      "destination": "01_Audit_Round1",
+      "file_count": 51,
+      "archive_bytes": 91777
+    },
+    {
+      "archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "sha256": "a7acfd0414a0b2e64b174184350087f5edd8261ba3dc4ae66cbfce9059f256bc",
+      "destination": "02_Audit_Round2",
+      "file_count": 72,
+      "archive_bytes": 176878
+    },
+    {
+      "archive": "Extra300_Character_Research_2026-11-06.zip",
+      "sha256": "d66a8cb87164bc35364c654e71abe1043b68cbd95cb2899a757c01e14769419b",
+      "destination": "03_Aircraft_Character",
+      "file_count": 7,
+      "archive_bytes": 19109
+    },
+    {
+      "archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "sha256": "a229ba7acca8e96679c8e638b987c71490774457eabc18fd3b36d25616b7e0c8",
+      "destination": "04_Physics_Round3",
+      "file_count": 69,
+      "archive_bytes": 2862923
+    }
+  ],
+  "original_files": {
+    "01_Audit_Round1/Extra300_Audit/AUDIT.txt": {
+      "bytes": 23588,
+      "sha256": "4bea0581d1e053227060eecb06139111baa47e2fa6217f0b799291c5aaa60edf",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/AUDIT.txt"
+    },
+    "01_Audit_Round1/Extra300_Audit/PACKAGE_SHA256.json": {
+      "bytes": 5853,
+      "sha256": "c37b1c8fda1c57fa5f2316d63ad5298de08e77d6e978bf39e4c3d4d4c62682ed",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/PACKAGE_SHA256.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/REPRODUCE.txt": {
+      "bytes": 8564,
+      "sha256": "69c30967b1fb15bee063ad5df0918d2d5d70e2f4e41cea62c464955bec22f2ea",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/REPRODUCE.txt"
+    },
+    "01_Audit_Round1/Extra300_Audit/SOURCE_MANIFEST.json": {
+      "bytes": 9490,
+      "sha256": "9e2f98daa1f7e25500eaf89696250cdc23b2f55a7286fe3084ef4719a5df2ce6",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/SOURCE_MANIFEST.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/fixtures/project.godot": {
+      "bytes": 212,
+      "sha256": "5877171c875e30b8db13a09001b1cdb3fad2192ee221cc496e3cf602f7a7a7ad",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/fixtures/project.godot"
+    },
+    "01_Audit_Round1/Extra300_Audit/patches/extra_loft_index_candidate.patch": {
+      "bytes": 346,
+      "sha256": "8fecba1d8d29f28421dbe4ca9fcede835b8b9d23af4f15772a9706b3b25de587",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/patches/extra_loft_index_candidate.patch"
+    },
+    "01_Audit_Round1/Extra300_Audit/patches/generator_camber_candidate.patch": {
+      "bytes": 930,
+      "sha256": "ad382006dcf94b50edf579bb52638fce58103aba9ada4a95c11a79aeebb46102",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/patches/generator_camber_candidate.patch"
+    },
+    "01_Audit_Round1/Extra300_Audit/patches/stage-mass-reuse.patch": {
+      "bytes": 1141,
+      "sha256": "a92aae09c1d9d03c149996a536f3c94239534d788caac4cb5f52406fb2a3c23d",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/patches/stage-mass-reuse.patch"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/aero/test_reference_witness.gd": {
+      "bytes": 7459,
+      "sha256": "bdb15bda2ef394352b825b8fbabbcfdd8d153a844c5b50a22c3d8c11b1b782d1",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/aero/test_reference_witness.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/dynamics/compare_stage_logs.py": {
+      "bytes": 1427,
+      "sha256": "a8dcfae93e612f97fb81f7cfd5dd2b28260af04000be1afe8c223b6593a31855",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/dynamics/compare_stage_logs.py"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/dynamics/probe_mass_reuse.gd": {
+      "bytes": 2033,
+      "sha256": "9db221362175b6841fef896361217a0f8241fd8647974a9a35a2fdf3959959ab",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/dynamics/probe_mass_reuse.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/dynamics/probe_stage_parity.gd": {
+      "bytes": 4528,
+      "sha256": "105249095627ae160ea144875ea910ea9254bae68dc540aa4718eae51eb9e022",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/dynamics/probe_stage_parity.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/model/bench_index.gd": {
+      "bytes": 1927,
+      "sha256": "0eb7bcab33d3778f96e9b771bb9d4c89d551c3c18b2a8e9d748995edc8893946",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/model/bench_index.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/model/geometry_probe.gd": {
+      "bytes": 8594,
+      "sha256": "7673c5900bbac9a292c3119fa76ec0353dd0a6c6d45f1c04e46e6a729d5ad1a3",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/model/geometry_probe.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/model/prepare_indexed_builder.py": {
+      "bytes": 963,
+      "sha256": "bc7b570b4428110877b151280ab6c526b57624e3a6c17b38895e1d9625e1a844",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/model/prepare_indexed_builder.py"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/model/spin_probe.gd": {
+      "bytes": 1988,
+      "sha256": "c67e1b98022581dd2d8468df3ffada555f6839cf1634f99714caaf1b51cc294f",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/model/spin_probe.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/propeller/probe_camber_loads.gd": {
+      "bytes": 5627,
+      "sha256": "f73ba4961eab8c7574f48e2b7772f64527afa1e3973513012cb55d8679d238af",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/propeller/probe_camber_loads.gd"
+    },
+    "01_Audit_Round1/Extra300_Audit/probes/propeller/probe_propeller_camber.py": {
+      "bytes": 5762,
+      "sha256": "b26ba08b8b08404d315162b5208c5e39a3a7a550d26e6fe7eab6d2598b761659",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/probes/propeller/probe_propeller_camber.py"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/aero/extra-post-stall-existing-ilwzuos1/engine.log": {
+      "bytes": 711,
+      "sha256": "55f3b5c717b99b998e3591bfec2c5766ba4201d927fd934f2faff1bfb63ddb59",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/aero/extra-post-stall-existing-ilwzuos1/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/aero/extra-post-stall-existing-ilwzuos1/report.json": {
+      "bytes": 1266,
+      "sha256": "301f01245dd1ab1c58d725125ce2c900d7d2b8ab397f58442ccb256f0e4593f3",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/aero/extra-post-stall-existing-ilwzuos1/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/aero/reference-witness-datum-wi2nfqxi/engine.log": {
+      "bytes": 2569,
+      "sha256": "2543069af5af5decba02a1bea23a8c6cbca2cd77ae09e37676d6474e7b202b17",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/aero/reference-witness-datum-wi2nfqxi/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/aero/reference-witness-datum-wi2nfqxi/report.json": {
+      "bytes": 1296,
+      "sha256": "865c52feeca8017bb90a80c2074a4339cb1c73f365e3c65c4c8740efdbcd331b",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/aero/reference-witness-datum-wi2nfqxi/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/aero/side-force-existing-pcrlbu57/engine.log": {
+      "bytes": 3009,
+      "sha256": "928446c50b4cc9e41cc9cf7e6e0de0ab61740e2a0eeac03c21ca5111efe9fe7b",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/aero/side-force-existing-pcrlbu57/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/aero/side-force-existing-pcrlbu57/report.json": {
+      "bytes": 1248,
+      "sha256": "4a4ed3e3cdc3854f910b6fbb588b1f96f2ef2d70d8231b442652516ae4dcca86",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/aero/side-force-existing-pcrlbu57/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/glow-flight-baseline-spv_4t2u/engine.log": {
+      "bytes": 16103,
+      "sha256": "d59e2b785cbde13c7000ea66c0e43afc4fd999f30e039dee49035c9bbfb1d83c",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/glow-flight-baseline-spv_4t2u/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/glow-flight-baseline-spv_4t2u/report.json": {
+      "bytes": 1275,
+      "sha256": "beafd0d2df3bc2186e31088e3509bd18642f0ae6fa3f3f8b80cbeee021591252",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/glow-flight-baseline-spv_4t2u/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/glow-flight-candidate-27xo_uvy/engine.log": {
+      "bytes": 16103,
+      "sha256": "d59e2b785cbde13c7000ea66c0e43afc4fd999f30e039dee49035c9bbfb1d83c",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/glow-flight-candidate-27xo_uvy/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/glow-flight-candidate-27xo_uvy/report.json": {
+      "bytes": 1280,
+      "sha256": "747259b0586ba62e9adc3ada0a9c7141a37b85f9e211417eab371a29ea8a1ec1",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/glow-flight-candidate-27xo_uvy/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/mass-reuse-rjsb75b2/engine.log": {
+      "bytes": 468,
+      "sha256": "94a1a9ffdb67c839aa30d2e7c63ce5e95df13bb5bcd95423e2fde28c9c567030",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/mass-reuse-rjsb75b2/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/mass-reuse-rjsb75b2/report.json": {
+      "bytes": 1291,
+      "sha256": "99da11026b5c45ff52bf85e292b497022f7ba5ebbb86c1237ac4afe1e060b46d",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/mass-reuse-rjsb75b2/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/parity-baseline-fkhlhg2p/engine.log": {
+      "bytes": 2508,
+      "sha256": "267f4e5750104e1c41866ef311145fc816f0bb55ab2b32c32b440e2fdbaa2514",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/parity-baseline-fkhlhg2p/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/parity-baseline-fkhlhg2p/report.json": {
+      "bytes": 1312,
+      "sha256": "d41327526097218df93bbf1425f40df14a1d7793346518b08dc39b13e16a5a1a",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/parity-baseline-fkhlhg2p/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/parity-candidate-hoy7j_7_/engine.log": {
+      "bytes": 2508,
+      "sha256": "267f4e5750104e1c41866ef311145fc816f0bb55ab2b32c32b440e2fdbaa2514",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/parity-candidate-hoy7j_7_/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/dynamics/parity-candidate-hoy7j_7_/report.json": {
+      "bytes": 1317,
+      "sha256": "60d05b542b212521fd96e09a01f0d48ce86be3f35e79c62d19d9f6c264deb84f",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/dynamics/parity-candidate-hoy7j_7_/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/model/bench-index-g_b1yxdo/engine.log": {
+      "bytes": 1568,
+      "sha256": "829e66626387070c811db8acdadd51485acedb07326ba7c327e9f9d2ad7d3888",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/model/bench-index-g_b1yxdo/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/model/bench-index-g_b1yxdo/report.json": {
+      "bytes": 1188,
+      "sha256": "1574f1a1fbf9483014333690b5bc80d0d46d228a1e341165362950ec6525adca",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/model/bench-index-g_b1yxdo/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/model/geometry-custom-assert-j_0ahqce/engine.log": {
+      "bytes": 1359,
+      "sha256": "42859cff747454bbfd204330d211a801683215b7e1f5cb76d00888608de87f4d",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/model/geometry-custom-assert-j_0ahqce/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/model/geometry-custom-assert-j_0ahqce/report.json": {
+      "bytes": 1244,
+      "sha256": "0d39f4562a0695337dd9b74f0db30a9a6db174e4d9d3ab37b62944cc4917d6ec",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/model/geometry-custom-assert-j_0ahqce/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/model/spin-probe-2fcpk9u6/engine.log": {
+      "bytes": 591,
+      "sha256": "07832f44af09e07f22978c66da40e929269263ec0dca0e5f25ee4bfbbcc05666",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/model/spin-probe-2fcpk9u6/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/model/spin-probe-2fcpk9u6/report.json": {
+      "bytes": 1186,
+      "sha256": "76a1c0263f9cb17c5ccea7ba28099d4e6459a75c95635b718c3a9f99a42556f5",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/model/spin-probe-2fcpk9u6/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/root/camber-loads-bf97fi28/engine.log": {
+      "bytes": 2747,
+      "sha256": "78f973d613d0f85dbe743751415fd0fd4beaf0c9f25eb5d278c27bd8a3637786",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/root/camber-loads-bf97fi28/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/root/camber-loads-bf97fi28/report.json": {
+      "bytes": 1455,
+      "sha256": "65ac60f95e110564dab55759f7f31f5a7ef99764c49f0e31c6eccb8c138932fa",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/root/camber-loads-bf97fi28/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/root/installation-existing-verified-tvfxmp4d/engine.log": {
+      "bytes": 1215,
+      "sha256": "d9822ef0ee200d4b333264b69d4dd3222794a6ecd3eab95c0a2dcf9a843f06a0",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/root/installation-existing-verified-tvfxmp4d/engine.log"
+    },
+    "01_Audit_Round1/Extra300_Audit/receipts/root/installation-existing-verified-tvfxmp4d/report.json": {
+      "bytes": 1301,
+      "sha256": "99432803bc73e891c3ed8b0f8b74ab0823cbf5ce05fc3c08b115d4134266ab73",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/receipts/root/installation-existing-verified-tvfxmp4d/report.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/results/model/geometry_counts.json": {
+      "bytes": 2108,
+      "sha256": "dd3b7ab355b265d4cf66379561835fcdf3fbfdc74e0f86d9bcb84154bdc242b8",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/results/model/geometry_counts.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/results/propeller/camber_tables.json": {
+      "bytes": 14157,
+      "sha256": "bcf97a9331ffef237414a39123490bc7f18aa9d3f055954387a81a1a743f6c94",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/results/propeller/camber_tables.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/results/propeller/runtime_loads.json": {
+      "bytes": 8311,
+      "sha256": "c257478e2a36fbd40d8f599fd36bcee642471e808e77da292af722384ae59017",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/results/propeller/runtime_loads.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/runtime_source_identity.json": {
+      "bytes": 15125,
+      "sha256": "f7025ef297e3f64001146f7e667a0926c0a8b0b26b3146e549ecebf661179aaf",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/runtime_source_identity.json"
+    },
+    "01_Audit_Round1/Extra300_Audit/supporting/AERODYNAMICS.txt": {
+      "bytes": 10058,
+      "sha256": "0078cd18d8f1a51db4ebe348951d0cbe4ceb069fa77bd026bf52679c8c3633fe",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/supporting/AERODYNAMICS.txt"
+    },
+    "01_Audit_Round1/Extra300_Audit/supporting/DYNAMICS.txt": {
+      "bytes": 8899,
+      "sha256": "106fb1facae7e0ec169029f1d61b776fd24a853ec9fc8c5fde0d3b7a0f8bb664",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/supporting/DYNAMICS.txt"
+    },
+    "01_Audit_Round1/Extra300_Audit/supporting/MODEL_PRESENTATION.txt": {
+      "bytes": 12211,
+      "sha256": "3963da879a84b1c5d23e7a59292b173346e2c5e320a3c30328fbef0bf07f838e",
+      "source_archive": "Extra300_Audit_e72d878_2026-11-06.zip",
+      "source_member": "Extra300_Audit/supporting/MODEL_PRESENTATION.txt"
+    },
+    "02_Audit_Round2/AUDIT.txt": {
+      "bytes": 13419,
+      "sha256": "78ee850b13f30d85ba5f516e2d2c3635fc6c368c04b0c8373f1ae316b83286b7",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "AUDIT.txt"
+    },
+    "02_Audit_Round2/EVIDENCE-INDEX.json": {
+      "bytes": 3838,
+      "sha256": "4a51b43632dc549eaea9f2e63912620405b0013614382f772ffe8bee16f0af43",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "EVIDENCE-INDEX.json"
+    },
+    "02_Audit_Round2/EXCLUDED_RUNS.txt": {
+      "bytes": 2160,
+      "sha256": "293d6972c3a59e81f45eb64aac272ac0bb996be99daac22d0bf55f13275ccbf9",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "EXCLUDED_RUNS.txt"
+    },
+    "02_Audit_Round2/REPRODUCE.txt": {
+      "bytes": 7484,
+      "sha256": "6fd885900ae478c9ff2cc2ad8d7ac4fc0076e5b48d63f60294bcfe3914cdb151",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "REPRODUCE.txt"
+    },
+    "02_Audit_Round2/SHA256SUMS.txt": {
+      "bytes": 7774,
+      "sha256": "0fb7e79c2fc3ea9ca7db6cadf04d3e501440420bf10a7e52671233c242f5964a",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "SHA256SUMS.txt"
+    },
+    "02_Audit_Round2/aero/NOTES.txt": {
+      "bytes": 5623,
+      "sha256": "cf498028f959b955ff1a7cf456549fa990829acae23d5535fe6d473a751897c9",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/NOTES.txt"
+    },
+    "02_Audit_Round2/aero/TRIM_REUSE_REVIEW.txt": {
+      "bytes": 4462,
+      "sha256": "a9462155b96589d967994421c0f04bf31a3832804c61ccd472c63ffcfddf0369",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/TRIM_REUSE_REVIEW.txt"
+    },
+    "02_Audit_Round2/aero/aero_fixed_normalizer_probe.patch": {
+      "bytes": 684,
+      "sha256": "145bb6ebdb7d8496dbe0a7cf3d8d8ea4e3280a2c6c264bbe362ae5ee4978ca42",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/aero_fixed_normalizer_probe.patch"
+    },
+    "02_Audit_Round2/aero/aero_polar_probe.patch": {
+      "bytes": 919,
+      "sha256": "19723fb71a3e1c501cffe729e5928f6beee7cf070ef4127d3ca4c90ec22c5847",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/aero_polar_probe.patch"
+    },
+    "02_Audit_Round2/aero/build_diagnostics.py": {
+      "bytes": 1550,
+      "sha256": "3059856a68e9ecffe6bc0de45b4c5760b27e29435ca15c7f7512b9a7a199c6ea",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/build_diagnostics.py"
+    },
+    "02_Audit_Round2/aero/checks/cusp-attribution-qxc_pld8/engine.log": {
+      "bytes": 1572,
+      "sha256": "efaa17332fd47c2c404cc7219e2ccce64d67b29e84b023c91a85b50408017ff1",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/cusp-attribution-qxc_pld8/engine.log"
+    },
+    "02_Audit_Round2/aero/checks/cusp-attribution-qxc_pld8/report.json": {
+      "bytes": 1279,
+      "sha256": "0549dc2c895558ad088d5e450ae2eaaae14142bd22b8300276010b0e5d6cb2cb",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/cusp-attribution-qxc_pld8/report.json"
+    },
+    "02_Audit_Round2/aero/checks/cusp-scan-zc2nct6a/engine.log": {
+      "bytes": 15938,
+      "sha256": "ae98dba318526f91e00b75e507e0417b9e031341548e8453252da8be40f470c2",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/cusp-scan-zc2nct6a/engine.log"
+    },
+    "02_Audit_Round2/aero/checks/cusp-scan-zc2nct6a/report.json": {
+      "bytes": 1246,
+      "sha256": "f6a0bd0bfbb4301c47a517eb44d2830c62c17287b2f114730a1b3cb8ca73f31c",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/cusp-scan-zc2nct6a/report.json"
+    },
+    "02_Audit_Round2/aero/checks/polar-source-compare-n5xlsipp/engine.log": {
+      "bytes": 21895,
+      "sha256": "8621455aa88d3991711b781cdf6400448d60f0869aa58697b3ea3eef721b8543",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/polar-source-compare-n5xlsipp/engine.log"
+    },
+    "02_Audit_Round2/aero/checks/polar-source-compare-n5xlsipp/report.json": {
+      "bytes": 1297,
+      "sha256": "eb2798ca494c8ee82a0e402d9d77656187f87ad33618de1cc144370405ee63a4",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/polar-source-compare-n5xlsipp/report.json"
+    },
+    "02_Audit_Round2/aero/checks/spanflow-scan-yajl9iha/engine.log": {
+      "bytes": 7370,
+      "sha256": "62803ce03281f320f03643bb4f3cf4f50acbeb5155998d8cd767cc471f42f3b8",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/spanflow-scan-yajl9iha/engine.log"
+    },
+    "02_Audit_Round2/aero/checks/spanflow-scan-yajl9iha/report.json": {
+      "bytes": 1265,
+      "sha256": "3f0241ac5d55e12ff08e78fe62aeecb7ec27d23ac564d2d4bb2e18ff70826900",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/checks/spanflow-scan-yajl9iha/report.json"
+    },
+    "02_Audit_Round2/aero/cusp_attribution.gd": {
+      "bytes": 1442,
+      "sha256": "057e2f98bb693b6426aca0421e577f941d034d15b2ffc69df65694bc1d57c6d3",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/cusp_attribution.gd"
+    },
+    "02_Audit_Round2/aero/cusp_scan.gd": {
+      "bytes": 1625,
+      "sha256": "328ecce14756a694c1c5d927785f1bf3f4616f664def6db17c520857e03b189e",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/cusp_scan.gd"
+    },
+    "02_Audit_Round2/aero/polar_source_compare.gd": {
+      "bytes": 1895,
+      "sha256": "1990025e4de6b1965c25faef15b09bd324acf5253ad8204c99ffc01d1190868d",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/polar_source_compare.gd"
+    },
+    "02_Audit_Round2/aero/spanflow_scan.gd": {
+      "bytes": 1422,
+      "sha256": "7450ecd3be9231d4e3588d5276b247d779e81dc8b8d3bd75f208db64d4330e7a",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "aero/spanflow_scan.gd"
+    },
+    "02_Audit_Round2/dynamics/FINDINGS.txt": {
+      "bytes": 6224,
+      "sha256": "6546468eee5949c18df6eb5508752643323e0fa344288316e73b9269d5562869",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/FINDINGS.txt"
+    },
+    "02_Audit_Round2/dynamics/checks/dynamic-contact-existing-mx1d067w/engine.log": {
+      "bytes": 2493,
+      "sha256": "11ee5bb335c06fecbacc1b8f397399abd7cd3fabfd048a3810e1f4f119e59e60",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/checks/dynamic-contact-existing-mx1d067w/engine.log"
+    },
+    "02_Audit_Round2/dynamics/checks/dynamic-contact-existing-mx1d067w/report.json": {
+      "bytes": 1316,
+      "sha256": "46cfed8875d6d1424c7963deaa23ae66355796a524eb0786ca9dca6e16063088",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/checks/dynamic-contact-existing-mx1d067w/report.json"
+    },
+    "02_Audit_Round2/dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/engine.log": {
+      "bytes": 2600,
+      "sha256": "43c374ca87f4724124974a48ea9d1a5cd633a72ee8e8d570b409155501218bb5",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/engine.log"
+    },
+    "02_Audit_Round2/dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/report.json": {
+      "bytes": 1417,
+      "sha256": "ad8c7ffab88b36398c33c49a4bf9f0203474afef557188730de1005d0aa2768c",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/checks/extra-fuel-transitions-verified-g_2wfyup/report.json"
+    },
+    "02_Audit_Round2/dynamics/checks/scenery-rotor-control-m3ihqosi/engine.log": {
+      "bytes": 2665,
+      "sha256": "3c905d999d40dafaae7e1e9124ad841e18aeac9af9782b6cded21e234f3a319d",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/checks/scenery-rotor-control-m3ihqosi/engine.log"
+    },
+    "02_Audit_Round2/dynamics/checks/scenery-rotor-control-m3ihqosi/report.json": {
+      "bytes": 1366,
+      "sha256": "2a50d1ad92fc4b235ee55faf2806932844c99f3766e22a6143391f859222e4d1",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/checks/scenery-rotor-control-m3ihqosi/report.json"
+    },
+    "02_Audit_Round2/dynamics/fuel-transition-results.json": {
+      "bytes": 1836,
+      "sha256": "d5632ee6e786bab4cec6c7c989a6e316e4e65e4716234b976a75512cf45d3767",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/fuel-transition-results.json"
+    },
+    "02_Audit_Round2/dynamics/fuel-transitions.orfl": {
+      "bytes": 79128,
+      "sha256": "917b34dd06566b0cbbfe69509aa35876e3246a9c35e3e965a1f129de95e24f8e",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/fuel-transitions.orfl"
+    },
+    "02_Audit_Round2/dynamics/probe_fuel_transitions.gd": {
+      "bytes": 7975,
+      "sha256": "2a1e83fa98aa3d5279a3f37f6d4152391e6aa079e7761c96dc918ffebe7d39f3",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/probe_fuel_transitions.gd"
+    },
+    "02_Audit_Round2/dynamics/probe_scenery_rotor.gd": {
+      "bytes": 6021,
+      "sha256": "d1615e0508c322d1c9d65eb9fff81e4838c95274feaf38bf35a6db9fe1c671f9",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "dynamics/probe_scenery_rotor.gd"
+    },
+    "02_Audit_Round2/exploration/dynamics/extra-fuel-transitions-dj6krfe2/engine.log": {
+      "bytes": 2600,
+      "sha256": "43c374ca87f4724124974a48ea9d1a5cd633a72ee8e8d570b409155501218bb5",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/dynamics/extra-fuel-transitions-dj6krfe2/engine.log"
+    },
+    "02_Audit_Round2/exploration/dynamics/extra-fuel-transitions-dj6krfe2/report.json": {
+      "bytes": 1460,
+      "sha256": "c03c402edb93ff78216d3e6620a9aafe9f1f0028e0afd39555e01349c44907ef",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/dynamics/extra-fuel-transitions-dj6krfe2/report.json"
+    },
+    "02_Audit_Round2/exploration/dynamics/scenery-rotor-xf8de_u4/engine.log": {
+      "bytes": 2681,
+      "sha256": "183d50dc0fbc4a549d67e7383753dcbdc86a7656fa08ae004c16bc0c5ec1159d",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/dynamics/scenery-rotor-xf8de_u4/engine.log"
+    },
+    "02_Audit_Round2/exploration/dynamics/scenery-rotor-xf8de_u4/report.json": {
+      "bytes": 1383,
+      "sha256": "008080514e8b36483edf1132882782f67dd68365bc81afa2adcba8a15fba9f1c",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/dynamics/scenery-rotor-xf8de_u4/report.json"
+    },
+    "02_Audit_Round2/exploration/model_lifecycle/lifecycle-full-import-mne_4g5c/engine.log": {
+      "bytes": 89096,
+      "sha256": "2abc8ea9dba61aac7bc47f1fd7c80f9ba25883b18cb3e4c46620df33008ba220",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/model_lifecycle/lifecycle-full-import-mne_4g5c/engine.log"
+    },
+    "02_Audit_Round2/exploration/model_lifecycle/lifecycle-import-7lirrtz6/engine.log": {
+      "bytes": 100267,
+      "sha256": "8fc638c62cdf495bd704ffe31a498cd27296703bd6ff94b7d3a02eebe4916a11",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/model_lifecycle/lifecycle-import-7lirrtz6/engine.log"
+    },
+    "02_Audit_Round2/exploration/model_lifecycle/lifecycle-import-7lirrtz6/report.json": {
+      "bytes": 5914,
+      "sha256": "bffa07dfcbafb4906df315994ee5361c610e7e5fee31a40e06c8398dc4d8dd2a",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "exploration/model_lifecycle/lifecycle-import-7lirrtz6/report.json"
+    },
+    "02_Audit_Round2/model_lifecycle/FINDINGS.txt": {
+      "bytes": 9184,
+      "sha256": "a9e49594b18ba221ecd1e1f1ce497b1287e418f0104e0d91bff696ebccb83d78",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/FINDINGS.txt"
+    },
+    "02_Audit_Round2/model_lifecycle/REPRODUCE.txt": {
+      "bytes": 3254,
+      "sha256": "d2197160c3a2b2dc9beab80a18d238cdde21f33f76ad2fe9a2bc1fd03d8fcaff",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/REPRODUCE.txt"
+    },
+    "02_Audit_Round2/model_lifecycle/bridge_console.py": {
+      "bytes": 3426,
+      "sha256": "7f8c375208639b3fe99b3db6cc158da5c71c9bebd587b973d4850f14e0f7535a",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/bridge_console.py"
+    },
+    "02_Audit_Round2/model_lifecycle/bridge_transcript.jsonl": {
+      "bytes": 16692,
+      "sha256": "efd6bcdb3608faa74c55247c7dd070ef709623a59c468cee3d654101a4aaa1f2",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/bridge_transcript.jsonl"
+    },
+    "02_Audit_Round2/model_lifecycle/checks/extra-installation-marker-eo3oz2_u/engine.log": {
+      "bytes": 1215,
+      "sha256": "d9822ef0ee200d4b333264b69d4dd3222794a6ecd3eab95c0a2dcf9a843f06a0",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/checks/extra-installation-marker-eo3oz2_u/engine.log"
+    },
+    "02_Audit_Round2/model_lifecycle/checks/extra-installation-marker-eo3oz2_u/report.json": {
+      "bytes": 1282,
+      "sha256": "8e63dcf3c438482c2ae32656cdc7906531477850865520dbc333c1cbbb74f1b8",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/checks/extra-installation-marker-eo3oz2_u/report.json"
+    },
+    "02_Audit_Round2/model_lifecycle/fixtures/extra_61fx_2t_13in.json": {
+      "bytes": 8022,
+      "sha256": "7674c2491152bb34d93d7b3c02cf5d0cab039a482373cdc61c9534dcd8602f9d",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/fixtures/extra_61fx_2t_13in.json"
+    },
+    "02_Audit_Round2/model_lifecycle/fixtures/gp_extra_300s_60_13in.json": {
+      "bytes": 69789,
+      "sha256": "7f4c61aa81e4758ee7c0c8aaa0cdc2615cd588a3290f9da43bf5eede6c0f1a31",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/fixtures/gp_extra_300s_60_13in.json"
+    },
+    "02_Audit_Round2/model_lifecycle/reload_witness.json": {
+      "bytes": 2346,
+      "sha256": "247371134445d25d464c0e5dcef9cd9db2011ed6a15ba474c08ba7c434a2f390",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/reload_witness.json"
+    },
+    "02_Audit_Round2/model_lifecycle/tmp/debug-bridge/20261106-125550-47871/engine.log": {
+      "bytes": 133504,
+      "sha256": "e7c937ec2fe3c7a0a12f44c588d617dbe1daa28a13ba4ac1b9b4252ba2c989c7",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/tmp/debug-bridge/20261106-125550-47871/engine.log"
+    },
+    "02_Audit_Round2/model_lifecycle/tmp/debug-bridge/20261106-125550-47871/log.jsonl": {
+      "bytes": 79134,
+      "sha256": "9fad66461783b52c8dcce9ad1de733fad761d12a191b8e0056d080cad2157b37",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/tmp/debug-bridge/20261106-125550-47871/log.jsonl"
+    },
+    "02_Audit_Round2/model_lifecycle/tmp/debug-bridge/20261106-125825-47871/engine.log": {
+      "bytes": 132716,
+      "sha256": "767fdaeeac339a39c63736bb7fca0568de1a062b58b34b9cd4c1405ac13d103c",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/tmp/debug-bridge/20261106-125825-47871/engine.log"
+    },
+    "02_Audit_Round2/model_lifecycle/tmp/debug-bridge/20261106-125825-47871/log.jsonl": {
+      "bytes": 74651,
+      "sha256": "3d0559fd8e0cedca31885fcc12aae03c866867af112954565ef1c74fe9720600",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "model_lifecycle/tmp/debug-bridge/20261106-125825-47871/log.jsonl"
+    },
+    "02_Audit_Round2/root/TRIM-FINDING.txt": {
+      "bytes": 6577,
+      "sha256": "28e88403db317697192f6b57c5e2302b38f72a22559ac0b8f77728b53e89cfa4",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/TRIM-FINDING.txt"
+    },
+    "02_Audit_Round2/root/bench_trim_reuse.gd": {
+      "bytes": 3390,
+      "sha256": "28008fb151c8b6025d45a0f279f0787ad7fe7ceb963309564c46373983baa3d3",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/bench_trim_reuse.gd"
+    },
+    "02_Audit_Round2/root/checks/candidate-cruise-trim-eguez5ro/engine.log": {
+      "bytes": 1629,
+      "sha256": "7fc60fbb1b1daf5a8a011ee1c0824de9da80c44d7b4888532d85e16a623ca1bc",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/candidate-cruise-trim-eguez5ro/engine.log"
+    },
+    "02_Audit_Round2/root/checks/candidate-cruise-trim-eguez5ro/report.json": {
+      "bytes": 1273,
+      "sha256": "b46e854960a21a7426409d74e802977c4f6cd924325ccc99ffad734f94e8f46a",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/candidate-cruise-trim-eguez5ro/report.json"
+    },
+    "02_Audit_Round2/root/checks/candidate-trim-integrity-otvkjxkk/engine.log": {
+      "bytes": 113,
+      "sha256": "c33135becceacf55892e9a45a78f060844b3b0c0b9da067e33fedd07d087a192",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/candidate-trim-integrity-otvkjxkk/engine.log"
+    },
+    "02_Audit_Round2/root/checks/candidate-trim-integrity-otvkjxkk/report.json": {
+      "bytes": 1289,
+      "sha256": "9b9cf650b171892c4959d3fe8ab5a88e7bc118215caf24e8733439b8f2a4bacb",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/candidate-trim-integrity-otvkjxkk/report.json"
+    },
+    "02_Audit_Round2/root/checks/trim-final-rpm-parity-4vacgsoe/engine.log": {
+      "bytes": 730,
+      "sha256": "1174361e7233fd0aa4172f80736cd982f7a7e0660ef1e6b43a710ed2cc30ab56",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/trim-final-rpm-parity-4vacgsoe/engine.log"
+    },
+    "02_Audit_Round2/root/checks/trim-final-rpm-parity-4vacgsoe/report.json": {
+      "bytes": 1259,
+      "sha256": "b934b54d94d8ec34a7213520a51d383f193f47424ff8a597a55524524e14b1d2",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/trim-final-rpm-parity-4vacgsoe/report.json"
+    },
+    "02_Audit_Round2/root/checks/trim-final-rpm-timing-mvbh8rir/engine.log": {
+      "bytes": 107,
+      "sha256": "a2985db62cdeb9d5d64a5e37440666634b566ad1f170982105df085d673f3381",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/trim-final-rpm-timing-mvbh8rir/engine.log"
+    },
+    "02_Audit_Round2/root/checks/trim-final-rpm-timing-mvbh8rir/report.json": {
+      "bytes": 1259,
+      "sha256": "d50e654f001ca70b3ae246fd9f5b0af34144243576398a47246bcd685666f41c",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/checks/trim-final-rpm-timing-mvbh8rir/report.json"
+    },
+    "02_Audit_Round2/root/github_source_identity.json": {
+      "bytes": 767,
+      "sha256": "2b07fc6e0f9a3ad285aa93871e15e41e8dfd96dea93c4226b4b08f15f58c7f64",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/github_source_identity.json"
+    },
+    "02_Audit_Round2/root/prepare_trim_reuse.py": {
+      "bytes": 4309,
+      "sha256": "472c26616cdc6c74c3c6b302e3bb01ad48bb3a5c21c9d9c97bda682717a3523d",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/prepare_trim_reuse.py"
+    },
+    "02_Audit_Round2/root/probe_trim_reuse.gd": {
+      "bytes": 8018,
+      "sha256": "2a0c6d340e59e4fd6632822fe77462a8ae1319b070979b6393f28094dc3d73e1",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/probe_trim_reuse.gd"
+    },
+    "02_Audit_Round2/root/runtime_source_identity.json": {
+      "bytes": 74700,
+      "sha256": "02021c2cf37c6d72ec4c8e6804554ef2bb8580252a6007e1fa565d99cc98f6f0",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/runtime_source_identity.json"
+    },
+    "02_Audit_Round2/root/trim_final_rpm_reuse.patch": {
+      "bytes": 3694,
+      "sha256": "6fc2c5acfd8719539987c849014782997eceb006fac3d2bb66dc07ae4efacb32",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/trim_final_rpm_reuse.patch"
+    },
+    "02_Audit_Round2/root/trim_reuse_benchmark.json": {
+      "bytes": 7391,
+      "sha256": "4c041923d7bc6b6660d3a66c4a55b8ca710f0743f023f1ae2c93d4019c75c17f",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/trim_reuse_benchmark.json"
+    },
+    "02_Audit_Round2/root/trim_reuse_identity.json": {
+      "bytes": 379,
+      "sha256": "1c44a5e8d27a3a85a36e7d73b7013863de20eb0153ca00d1e3c2f07407638c5f",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/trim_reuse_identity.json"
+    },
+    "02_Audit_Round2/root/trim_reuse_results.json": {
+      "bytes": 11082,
+      "sha256": "5aa290fee007f020894b99636809762c9352ed7755403ce03a87bd53d3e50bf0",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/trim_reuse_results.json"
+    },
+    "02_Audit_Round2/root/trim_reuse_timing_summary.json": {
+      "bytes": 1234,
+      "sha256": "a0517fc060f07c487afbd7d50e1e172bbdd13430d33f2ecabd421349d81c5cd0",
+      "source_archive": "Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip",
+      "source_member": "root/trim_reuse_timing_summary.json"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/CHARACTER_RESEARCH.txt": {
+      "bytes": 12945,
+      "sha256": "e4941cf4c02d99b00b131704011ac189da661f150f130459490b04785de79bf1",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/CHARACTER_RESEARCH.txt"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/README.txt": {
+      "bytes": 1417,
+      "sha256": "cb776a0c3926abcfd479b9298255eb4a9ca4a3ad266bf3f346fa083cf07bf907",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/README.txt"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/calculate_extra.py": {
+      "bytes": 10239,
+      "sha256": "a0c0c62bf6a49e1e25ba1867e0f28c9626844440e0308a097d06bf7c931887e9",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/calculate_extra.py"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/extra_source_math.json": {
+      "bytes": 5289,
+      "sha256": "ef27749c16cca47adf49e15d645c18a71f6f3fab4c40957167ec5d35f17ea9f8",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/extra_source_math.json"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/flight_cards.json": {
+      "bytes": 7271,
+      "sha256": "f8ae3a3168036528c56402eb841f58379b2084c67f09cb6aa74b8008f021b17f",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/flight_cards.json"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/sources.json": {
+      "bytes": 7343,
+      "sha256": "4aa225fb8552415b5f4bad4776bb19d74a4ec6dc6a3ee6784449ec589f7047e9",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/sources.json"
+    },
+    "03_Aircraft_Character/Extra300_Character_Research/verification.json": {
+      "bytes": 947,
+      "sha256": "feccde36d51119957dba551166a4f0c9d6a5f0279d8114433825156c69364d27",
+      "source_archive": "Extra300_Character_Research_2026-11-06.zip",
+      "source_member": "Extra300_Character_Research/verification.json"
+    },
+    "04_Physics_Round3/Extra300_Roll_Response.png": {
+      "bytes": 221019,
+      "sha256": "512138b6ac831af9f3038934d265589716cf15caf8373ff828ae9451dd56a39c",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "Extra300_Roll_Response.png"
+    },
+    "04_Physics_Round3/Extra300_Roll_Response.svg": {
+      "bytes": 95482,
+      "sha256": "e97bcf8fc49ddb7c731a82814978211f49ae86c1e7a44a66f1c72345297ea701",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "Extra300_Roll_Response.svg"
+    },
+    "04_Physics_Round3/Extra300_Round3_Investigation.txt": {
+      "bytes": 17683,
+      "sha256": "e8ccac5de48d61519b759b602ae2f01d9f4df9a258bb3b9015d793e210287390",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "Extra300_Round3_Investigation.txt"
+    },
+    "04_Physics_Round3/PULSE_REVIEW.txt": {
+      "bytes": 6667,
+      "sha256": "6ea87a1dc33f25146d7191111dc82e8f1a6ea328a897360d6de1ef055f2560c6",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "PULSE_REVIEW.txt"
+    },
+    "04_Physics_Round3/README.txt": {
+      "bytes": 6891,
+      "sha256": "7a1b036935ef0937ba61a36f7310d979cff48b7e5a7d9f395736d3b6fa23b74f",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "README.txt"
+    },
+    "04_Physics_Round3/aero/HANDOFF.txt": {
+      "bytes": 11662,
+      "sha256": "ae8e3a08513720d4735ddd0ab40a728d3f2bed3fa7964caa5dbe649a3779be74",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "aero/HANDOFF.txt"
+    },
+    "04_Physics_Round3/checks/character-pulses-final-j3_xmcoc/engine.log": {
+      "bytes": 10025,
+      "sha256": "d3c8aa13ba91fe8c85fcf12936f64d05e57b87778799ef91ad7f07853ed26c05",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/character-pulses-final-j3_xmcoc/engine.log"
+    },
+    "04_Physics_Round3/checks/character-pulses-final-j3_xmcoc/report.json": {
+      "bytes": 1355,
+      "sha256": "6fdfa4402328a16fb8518ece4256f99495abf0bce89f16b01d08b1a7b54e0f6f",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/character-pulses-final-j3_xmcoc/report.json"
+    },
+    "04_Physics_Round3/checks/cooling-stage-final-e1fnzxgl/engine.log": {
+      "bytes": 681,
+      "sha256": "336b29145fb0f9fd2888c86db82005217628b1704e6cbda92d751db178df8a9f",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/cooling-stage-final-e1fnzxgl/engine.log"
+    },
+    "04_Physics_Round3/checks/cooling-stage-final-e1fnzxgl/report.json": {
+      "bytes": 1363,
+      "sha256": "e48cf12b08e55ff115068f331eb90b038c1349513b008f50e193896a238c65a9",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/cooling-stage-final-e1fnzxgl/report.json"
+    },
+    "04_Physics_Round3/checks/existing-spatial-continuation-z80go34f/engine.log": {
+      "bytes": 117,
+      "sha256": "9fab93105ce9b39e821e4a0cc997e8554a07214aef0dbf2edbbcd624f08cb029",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/existing-spatial-continuation-z80go34f/engine.log"
+    },
+    "04_Physics_Round3/checks/existing-spatial-continuation-z80go34f/report.json": {
+      "bytes": 1355,
+      "sha256": "18f2a94c088a2f4324a1ffe004e31fefb15e07d7d06826f63f50d5fa273fd346",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/existing-spatial-continuation-z80go34f/report.json"
+    },
+    "04_Physics_Round3/checks/existing-wing-polar-3omhi0li/engine.log": {
+      "bytes": 105,
+      "sha256": "c48c5bf5058d3667a3d9e52155c909a2bd233b485db90c032c264faeb57980bd",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/existing-wing-polar-3omhi0li/engine.log"
+    },
+    "04_Physics_Round3/checks/existing-wing-polar-3omhi0li/report.json": {
+      "bytes": 1297,
+      "sha256": "23514db841a128c258afe380be0e48d048af6fe3654fa3db3b06dc8baa97f796",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/existing-wing-polar-3omhi0li/report.json"
+    },
+    "04_Physics_Round3/checks/progression-observation-final-_yqxyrza/engine.log": {
+      "bytes": 1314,
+      "sha256": "b007b7831e558d519b74d23c0c7cfcbcb43a11bc10aa9dabea8ce522cbe0ee02",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/progression-observation-final-_yqxyrza/engine.log"
+    },
+    "04_Physics_Round3/checks/progression-observation-final-_yqxyrza/report.json": {
+      "bytes": 1359,
+      "sha256": "234d7d7077dc49836800e280da4bad6aca336e6787c14cd0cdae79087023b409",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/progression-observation-final-_yqxyrza/report.json"
+    },
+    "04_Physics_Round3/checks/static-extra-final-8skqsamm/engine.log": {
+      "bytes": 139,
+      "sha256": "b0563cbd4969374a478acd8940c971a24761228acf76c7a8b743ff634307d23b",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/static-extra-final-8skqsamm/engine.log"
+    },
+    "04_Physics_Round3/checks/static-extra-final-8skqsamm/report.json": {
+      "bytes": 1364,
+      "sha256": "498113d513bb24758ca9249b6f10b9de825eb4efdabd6785e3322aa86b2c2a78",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "checks/static-extra-final-8skqsamm/report.json"
+    },
+    "04_Physics_Round3/closing_comparison.json": {
+      "bytes": 5286,
+      "sha256": "769a4c8afb3ae0286d20310ebd9c9cae8e6769e88576ed3a00f827a7dcd569ce",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "closing_comparison.json"
+    },
+    "04_Physics_Round3/config/project.godot": {
+      "bytes": 219,
+      "sha256": "c898baf4d5301e28750869474df5e56a40081fbb61e91e4cb1c3fc9c92586c06",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "config/project.godot"
+    },
+    "04_Physics_Round3/dynamics/FINDINGS.txt": {
+      "bytes": 5083,
+      "sha256": "0861d4cbd103dc4b70684d8ccb6dc448f03299b9af95cffdcab3f8c36cc4cb97",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "dynamics/FINDINGS.txt"
+    },
+    "04_Physics_Round3/dynamics/cooling_results.json": {
+      "bytes": 812,
+      "sha256": "113622947b52c8e39c78cc8accbabfab8bfc50e2b3957d47976b553129d4a013",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "dynamics/cooling_results.json"
+    },
+    "04_Physics_Round3/prior_failures/cooling-stage-comparison-xvl6nye6/engine.log": {
+      "bytes": 4331,
+      "sha256": "0569b2cbb391b8526eda88c849af9e07c080b828b98bcad0267776aa3dc5dc37",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/cooling-stage-comparison-xvl6nye6/engine.log"
+    },
+    "04_Physics_Round3/prior_failures/cooling-stage-comparison-xvl6nye6/report.json": {
+      "bytes": 7694,
+      "sha256": "8bc572577b02c2fce79f7ff14e2b8dd8e508deeeef0b90c48c75a5fc7cc7bb1c",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/cooling-stage-comparison-xvl6nye6/report.json"
+    },
+    "04_Physics_Round3/prior_failures/progression-observation-nyad2egh/engine.log": {
+      "bytes": 1314,
+      "sha256": "b007b7831e558d519b74d23c0c7cfcbcb43a11bc10aa9dabea8ce522cbe0ee02",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/progression-observation-nyad2egh/engine.log"
+    },
+    "04_Physics_Round3/prior_failures/progression-observation-nyad2egh/report.json": {
+      "bytes": 1420,
+      "sha256": "d27f1ae3c18413e5369c3cde8dbb1d81833eb85c74c38c55048235dc134e05e8",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/progression-observation-nyad2egh/report.json"
+    },
+    "04_Physics_Round3/prior_failures/pulse-smoke-5ovc39h4/engine.log": {
+      "bytes": 4252,
+      "sha256": "c53d29ee1ba72f37c27c40416bc1fff51e596e12a9a67c8fa7c0aa9a496603ae",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/pulse-smoke-5ovc39h4/engine.log"
+    },
+    "04_Physics_Round3/prior_failures/pulse-smoke-5ovc39h4/report.json": {
+      "bytes": 7868,
+      "sha256": "a056c929ac7e8d1d341799a1bf4e4ab465209da8d31db5489e4566f806c51fda",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/pulse-smoke-5ovc39h4/report.json"
+    },
+    "04_Physics_Round3/prior_failures/pulse-smoke-fixed-wxwfoyf3/engine.log": {
+      "bytes": 1832,
+      "sha256": "f57b0085498902eebd8b7cf75ba97a8c84e46e85f3aefb0b35f01be431a6e4fd",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/pulse-smoke-fixed-wxwfoyf3/engine.log"
+    },
+    "04_Physics_Round3/prior_failures/pulse-smoke-fixed-wxwfoyf3/report.json": {
+      "bytes": 3312,
+      "sha256": "f3104c67f7bae39dc1b2b6b15b35c91c24e06821954f29d8c13059e88d29f80c",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "prior_failures/pulse-smoke-fixed-wxwfoyf3/report.json"
+    },
+    "04_Physics_Round3/probes/analyze_pulses.py": {
+      "bytes": 6965,
+      "sha256": "393cf80a4f8064c9c037dc0d23983d0afa46db859fc3de4b20d4e79a84c71e84",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "probes/analyze_pulses.py"
+    },
+    "04_Physics_Round3/probes/character_pulses.gd": {
+      "bytes": 7985,
+      "sha256": "2777437b6cef4d113dacceca81fd7c714b0441eac075e342616dfd33ee688e57",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "probes/character_pulses.gd"
+    },
+    "04_Physics_Round3/probes/check_flat_plate_progression.gd": {
+      "bytes": 6066,
+      "sha256": "39e122af847799add773f614b34e27f7f53a24aa88ad125b1e5dfd363c13b850",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "probes/check_flat_plate_progression.gd"
+    },
+    "04_Physics_Round3/probes/probe_cooling.gd": {
+      "bytes": 4006,
+      "sha256": "1f8e19913a03ffcecd085d708f63a77d5182faae691e368a27aba56dca33a314",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "probes/probe_cooling.gd"
+    },
+    "04_Physics_Round3/probes/static_propulsion_point.gd": {
+      "bytes": 2628,
+      "sha256": "17f1d6aa5b26eb28d343362c39c18c2a36b6499136efbe1110c15e9342c01498",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "probes/static_propulsion_point.gd"
+    },
+    "04_Physics_Round3/propulsion_analysis.json": {
+      "bytes": 1200,
+      "sha256": "84d22223ad8c27de676998f44823d4c61e09b3779b35b1c29a5e12e8f867cd64",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "propulsion_analysis.json"
+    },
+    "04_Physics_Round3/propulsion_source.json": {
+      "bytes": 1185,
+      "sha256": "43a0860b8383b6cc5798d0311eebdf558625f097c265a6d6fddd617302c5613e",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "propulsion_source.json"
+    },
+    "04_Physics_Round3/pulse_analysis.json": {
+      "bytes": 13558,
+      "sha256": "39496321f7a070115605257f55ded4f167e54625d6411cd3ed3b200fe297b2dd",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulse_analysis.json"
+    },
+    "04_Physics_Round3/pulse_summary.csv": {
+      "bytes": 4784,
+      "sha256": "990fadcea708d2b8fc8f94002a767609519f5a281a8d3afc82c32befa22027de",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulse_summary.csv"
+    },
+    "04_Physics_Round3/pulses/15_full_left.csv": {
+      "bytes": 131052,
+      "sha256": "eb785a640a62090f8b37dd2aed7f2e23cb5b9087191cced6977e8acae7f7d037",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_full_left.csv"
+    },
+    "04_Physics_Round3/pulses/15_full_left.orfl": {
+      "bytes": 512564,
+      "sha256": "a68022f1191574b736330ad5a62cbe37e1698896b8ee1531ea3f55c22482f10c",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_full_left.orfl"
+    },
+    "04_Physics_Round3/pulses/15_full_right.csv": {
+      "bytes": 129396,
+      "sha256": "f8cfa0a26a847b55b6f029177fdd3a102fad5b5dd74051a50e72e6654980a1f4",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_full_right.csv"
+    },
+    "04_Physics_Round3/pulses/15_full_right.orfl": {
+      "bytes": 512564,
+      "sha256": "68e203bee4c5f93dee133f3466660750e04fd2808c8d6ea259078b86a1c9bb92",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_full_right.orfl"
+    },
+    "04_Physics_Round3/pulses/15_normal_left.csv": {
+      "bytes": 130939,
+      "sha256": "e3f0e9e6bfab9d7409a8ff93431bc7a6c6d083f5b4f2cfbf8879e846b425534f",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_normal_left.csv"
+    },
+    "04_Physics_Round3/pulses/15_normal_left.orfl": {
+      "bytes": 512568,
+      "sha256": "214119c219cd735fe9b6e51a5b7fbcdfce6ac58a40c5830157951355606c92ce",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_normal_left.orfl"
+    },
+    "04_Physics_Round3/pulses/15_normal_right.csv": {
+      "bytes": 129197,
+      "sha256": "e3d093d6c9c9af4241a4544616b1c7fcfa5ad9dc26402148119ad62ac063d14d",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_normal_right.csv"
+    },
+    "04_Physics_Round3/pulses/15_normal_right.orfl": {
+      "bytes": 512568,
+      "sha256": "e7b4d8c054843d3376b52cb471f21c0127546e460d604adbf8ee3c3d4cde41f8",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/15_normal_right.orfl"
+    },
+    "04_Physics_Round3/pulses/22_full_left.csv": {
+      "bytes": 130976,
+      "sha256": "45de6f4ef8699cd6bbe2edf88972abd97be74ce1e1a8e6ea19a48f79edc4f7d9",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_full_left.csv"
+    },
+    "04_Physics_Round3/pulses/22_full_left.orfl": {
+      "bytes": 512572,
+      "sha256": "ab2efc41094d708d40d6a598df141818996263a433c309b84a69d4baba147dfb",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_full_left.orfl"
+    },
+    "04_Physics_Round3/pulses/22_full_right.csv": {
+      "bytes": 129420,
+      "sha256": "5474354c64696b1b945854e578ad03d594ea2f4485d72f0c576ca8710dcd2b6a",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_full_right.csv"
+    },
+    "04_Physics_Round3/pulses/22_full_right.orfl": {
+      "bytes": 512572,
+      "sha256": "23bf5a914dcac0278256aaedd8561a9f740c98f5ac835b3a267a7aa49767d772",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_full_right.orfl"
+    },
+    "04_Physics_Round3/pulses/22_matched_left.csv": {
+      "bytes": 130847,
+      "sha256": "3c953e7daf83b5f59d439749bfbd446df443b4b0c238a394a9bcfde7efd43956",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_matched_left.csv"
+    },
+    "04_Physics_Round3/pulses/22_matched_left.orfl": {
+      "bytes": 512572,
+      "sha256": "29526bb3b02dfbb46b3e7d18ddf77cb4f495b23179fdc5530b737f1d5b3072c3",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_matched_left.orfl"
+    },
+    "04_Physics_Round3/pulses/22_matched_right.csv": {
+      "bytes": 129247,
+      "sha256": "2d40793b9b188b3ff3fa8e8421d5674d75e5bb19a5b9d3d66ed15dd80832ff3b",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_matched_right.csv"
+    },
+    "04_Physics_Round3/pulses/22_matched_right.orfl": {
+      "bytes": 512572,
+      "sha256": "41ddb932f303f7f75456223d4bf627ef54a331534222913e84f404b9193e6081",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_matched_right.orfl"
+    },
+    "04_Physics_Round3/pulses/22_normal_left.csv": {
+      "bytes": 130847,
+      "sha256": "761727801921ca85efd317a738f02e2e2c1c582c6767912722f0583bd9491bde",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_normal_left.csv"
+    },
+    "04_Physics_Round3/pulses/22_normal_left.orfl": {
+      "bytes": 512576,
+      "sha256": "bd207f3516e33c00279a5b62d3ae440c2d7d7bdd75766ad6a558f311b7b2a2b4",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_normal_left.orfl"
+    },
+    "04_Physics_Round3/pulses/22_normal_right.csv": {
+      "bytes": 129247,
+      "sha256": "0ff04e50d31ebd42f164ece84e3cba6ebef2f13c4a2b13f27a7a883a93fff1c4",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_normal_right.csv"
+    },
+    "04_Physics_Round3/pulses/22_normal_right.orfl": {
+      "bytes": 512576,
+      "sha256": "845f152aef1c2ea3674793d32fa188f8706635b6a2cae7d7a21729734630353b",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_normal_right.orfl"
+    },
+    "04_Physics_Round3/pulses/22_sport_left.csv": {
+      "bytes": 130976,
+      "sha256": "45de6f4ef8699cd6bbe2edf88972abd97be74ce1e1a8e6ea19a48f79edc4f7d9",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_sport_left.csv"
+    },
+    "04_Physics_Round3/pulses/22_sport_left.orfl": {
+      "bytes": 512576,
+      "sha256": "8d39421f8c54f2f087c56b7342c5fc6cf52bbd41fc759e112691fdca732c6829",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_sport_left.orfl"
+    },
+    "04_Physics_Round3/pulses/22_sport_right.csv": {
+      "bytes": 129420,
+      "sha256": "5474354c64696b1b945854e578ad03d594ea2f4485d72f0c576ca8710dcd2b6a",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_sport_right.csv"
+    },
+    "04_Physics_Round3/pulses/22_sport_right.orfl": {
+      "bytes": 512576,
+      "sha256": "06b3b49dfa8e5233b55e151b4b2d40043bbb63ad437d1ed04c53188193d5b426",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/22_sport_right.orfl"
+    },
+    "04_Physics_Round3/pulses/results.json": {
+      "bytes": 12077,
+      "sha256": "6199436e0c3197f93b6a3b51d443e6e5120a5893fd9ff98ba6d083a975e1325d",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "pulses/results.json"
+    },
+    "04_Physics_Round3/source_manifest.json": {
+      "bytes": 394806,
+      "sha256": "fb156b0606182ddb642407849911318d8d6b1ea8eb907e4aea37419f80c9f3ae",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "source_manifest.json"
+    },
+    "04_Physics_Round3/source_verification.json": {
+      "bytes": 191,
+      "sha256": "c2b5972fc987b6c6f7e9fe3de1a013dfa51f6099daac77052c390ca7ff763dac",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "source_verification.json"
+    },
+    "04_Physics_Round3/static_propulsion_point.json": {
+      "bytes": 1505,
+      "sha256": "2b20be1bc0131a6032a93b7727e19124521b5cc283607ba431912e4c2f1dd0f0",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "static_propulsion_point.json"
+    },
+    "04_Physics_Round3/support_assets_verification.json": {
+      "bytes": 13891,
+      "sha256": "84b8cf49d3254b103081d3efeb4df5e3991161fe91705cfc37f8803ae329505b",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "support_assets_verification.json"
+    },
+    "04_Physics_Round3/verification.json": {
+      "bytes": 13280,
+      "sha256": "2e41732d558999af1c59fb8755934e83b9c58d1bb4453dbbb4ecba73c9e2ae80",
+      "source_archive": "Extra300_Deep_Analysis_Round3_2e2e349_2026-11-06.zip",
+      "source_member": "verification.json"
+    }
+  }
+}

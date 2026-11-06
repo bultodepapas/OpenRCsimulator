@@ -1,0 +1,52 @@
+{
+	"checks": 8,
+	"engine": "4.8-beta2 (official)",
+	"failures": 0,
+	"inputs": {
+		"axial_inflow_mps": 0.0,
+		"dry_density_kg_m3": 1.225,
+		"throttle": 1.0,
+		"total_density_kg_m3": 1.225
+	},
+	"interpretation": "Algebraic nominal-mixture fully-firing shaft balance; not an integrated thermal/fuel equilibrium or matched physical bench experiment.",
+	"points": [
+		{
+			"engine_power_w": 732.1114715212784,
+			"engine_shaft_torque_nm": 0.6795322361815347,
+			"propeller_thrust_n": 32.13717415475183,
+			"propeller_torque_nm": 0.6795322361815347,
+			"residual_nm": 0.0,
+			"rpm": 10288.179431337394
+		},
+		{
+			"engine_power_w": 699.3800797687021,
+			"engine_shaft_torque_nm": 0.6746048290617759,
+			"propeller_thrust_n": 29.757813357130896,
+			"propeller_torque_nm": 0.6292212674664783,
+			"residual_nm": 0.04538356159529755,
+			"rpm": 9900.0
+		},
+		{
+			"engine_power_w": 836.1598958848268,
+			"engine_shaft_torque_nm": 0.6795522415928924,
+			"propeller_thrust_n": 41.91856041851734,
+			"propeller_torque_nm": 0.8863571190653065,
+			"residual_nm": -0.20680487747241405,
+			"rpm": 11750.0
+		},
+		{
+			"engine_power_w": 924.6678407620153,
+			"engine_shaft_torque_nm": 0.679225188809466,
+			"propeller_thrust_n": 51.31180958427834,
+			"propeller_torque_nm": 1.084974943391846,
+			"residual_nm": -0.40574975458238005,
+			"rpm": 13000.0
+		}
+	],
+	"root_residual_nm": 0.0,
+	"roots_rpm": [
+		10288.179431337394
+	],
+	"selected_rpm": 10288.179431337394,
+	"source_commit": "2e2e3492e67d30635cc4e727025581e2848cdf2e"
+}

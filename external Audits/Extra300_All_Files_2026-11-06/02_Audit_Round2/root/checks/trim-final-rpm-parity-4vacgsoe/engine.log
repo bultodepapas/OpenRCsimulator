@@ -1,0 +1,4 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+EXTRA_TRIM_REUSE: 87 checks, 0 failed; 34 complete-result pairs
+WORK_COUNTS [{"baseline_rpm_solves":19,"candidate_rpm_solves":17,"exact":true,"finalizations":1,"label":"Extra reference level V=22","ok":true,"removed":2},{"baseline_rpm_solves":202,"candidate_rpm_solves":174,"exact":true,"finalizations":14,"label":"Extra half-power cruise","ok":true,"removed":28},{"baseline_rpm_solves":0,"candidate_rpm_solves":0,"exact":true,"finalizations":1,"label":"Extra stopped-engine glide","ok":true,"removed":0},{"baseline_rpm_solves":30,"candidate_rpm_solves":24,"exact":true,"finalizations":3,"label":"Extra bounded excessive-idle refusal","ok":false,"removed":6}]

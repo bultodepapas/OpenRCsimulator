@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4ff16cef-7068-44d7-bad6-fd41561b5e20",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/probe_stage_parity.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/source",
+  "started_utc": "2026-11-06T17:22:29.600160+00:00",
+  "label": "parity-baseline",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/checks/parity-baseline-fkhlhg2p/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/checks/parity-baseline-fkhlhg2p/report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "STAGE_PARITY_PROBE PASS"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.604046,
+  "log_bytes": 2508,
+  "log_sha256": "267f4e5750104e1c41866ef311145fc816f0bb55ab2b32c32b440e2fdbaa2514"
+}

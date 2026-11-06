@@ -1,0 +1,411 @@
+{
+	"charge_ratio": 1.0,
+	"cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+	"engine": {
+		"build": "official",
+		"hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta2",
+		"string": "4.8-beta2 (official)",
+		"timestamp": 0
+	},
+	"failures": 0,
+	"fuel_fill": 1.0,
+	"limits": "Warm solver CPU only, no launch cache, import, full UI, native backend, frame or GPU timing.",
+	"pairs_per_case": 24,
+	"platform": "Linux",
+	"precision": "GDScript float64",
+	"renderer": "headless",
+	"rho_kg_m3": 1.225,
+	"rows": [
+		{
+			"baseline_us": 147385,
+			"candidate_us": 138545,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 0
+		},
+		{
+			"baseline_us": 144715,
+			"candidate_us": 132303,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 1
+		},
+		{
+			"baseline_us": 148661,
+			"candidate_us": 132823,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 2
+		},
+		{
+			"baseline_us": 149060,
+			"candidate_us": 139875,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 3
+		},
+		{
+			"baseline_us": 145902,
+			"candidate_us": 131088,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 4
+		},
+		{
+			"baseline_us": 149137,
+			"candidate_us": 130894,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 5
+		},
+		{
+			"baseline_us": 154924,
+			"candidate_us": 131651,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 6
+		},
+		{
+			"baseline_us": 148590,
+			"candidate_us": 133141,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 7
+		},
+		{
+			"baseline_us": 144855,
+			"candidate_us": 132839,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 8
+		},
+		{
+			"baseline_us": 171005,
+			"candidate_us": 146935,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 9
+		},
+		{
+			"baseline_us": 149454,
+			"candidate_us": 134061,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 10
+		},
+		{
+			"baseline_us": 148011,
+			"candidate_us": 133236,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 11
+		},
+		{
+			"baseline_us": 143899,
+			"candidate_us": 134163,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 12
+		},
+		{
+			"baseline_us": 150126,
+			"candidate_us": 133442,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 13
+		},
+		{
+			"baseline_us": 148036,
+			"candidate_us": 134246,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 14
+		},
+		{
+			"baseline_us": 147054,
+			"candidate_us": 131765,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 15
+		},
+		{
+			"baseline_us": 148620,
+			"candidate_us": 138782,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 16
+		},
+		{
+			"baseline_us": 156111,
+			"candidate_us": 136922,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 17
+		},
+		{
+			"baseline_us": 155836,
+			"candidate_us": 134611,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 18
+		},
+		{
+			"baseline_us": 149879,
+			"candidate_us": 142427,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 19
+		},
+		{
+			"baseline_us": 147956,
+			"candidate_us": 138851,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 20
+		},
+		{
+			"baseline_us": 149412,
+			"candidate_us": 134828,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 21
+		},
+		{
+			"baseline_us": 148680,
+			"candidate_us": 142000,
+			"exact": true,
+			"kind": "level_22",
+			"order": "AB",
+			"pair": 22
+		},
+		{
+			"baseline_us": 149384,
+			"candidate_us": 134203,
+			"exact": true,
+			"kind": "level_22",
+			"order": "BA",
+			"pair": 23
+		},
+		{
+			"baseline_us": 1512124,
+			"candidate_us": 1329078,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 0
+		},
+		{
+			"baseline_us": 1520105,
+			"candidate_us": 1345994,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 1
+		},
+		{
+			"baseline_us": 1509951,
+			"candidate_us": 1317308,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 2
+		},
+		{
+			"baseline_us": 1541805,
+			"candidate_us": 1307649,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 3
+		},
+		{
+			"baseline_us": 1512226,
+			"candidate_us": 1344581,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 4
+		},
+		{
+			"baseline_us": 1506246,
+			"candidate_us": 1319795,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 5
+		},
+		{
+			"baseline_us": 1534873,
+			"candidate_us": 1319021,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 6
+		},
+		{
+			"baseline_us": 1516654,
+			"candidate_us": 1343686,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 7
+		},
+		{
+			"baseline_us": 1530711,
+			"candidate_us": 1329232,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 8
+		},
+		{
+			"baseline_us": 1525351,
+			"candidate_us": 1836349,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 9
+		},
+		{
+			"baseline_us": 1523370,
+			"candidate_us": 1707503,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 10
+		},
+		{
+			"baseline_us": 1513100,
+			"candidate_us": 1482556,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 11
+		},
+		{
+			"baseline_us": 1509983,
+			"candidate_us": 1317203,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 12
+		},
+		{
+			"baseline_us": 1517942,
+			"candidate_us": 1317648,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 13
+		},
+		{
+			"baseline_us": 1543725,
+			"candidate_us": 1323144,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 14
+		},
+		{
+			"baseline_us": 1515032,
+			"candidate_us": 1312470,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 15
+		},
+		{
+			"baseline_us": 1513503,
+			"candidate_us": 1334774,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 16
+		},
+		{
+			"baseline_us": 1519022,
+			"candidate_us": 1633610,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 17
+		},
+		{
+			"baseline_us": 1566711,
+			"candidate_us": 1807688,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 18
+		},
+		{
+			"baseline_us": 1635207,
+			"candidate_us": 1720503,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 19
+		},
+		{
+			"baseline_us": 1515380,
+			"candidate_us": 1592735,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 20
+		},
+		{
+			"baseline_us": 1508409,
+			"candidate_us": 1599370,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 21
+		},
+		{
+			"baseline_us": 1521673,
+			"candidate_us": 1321096,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "AB",
+			"pair": 22
+		},
+		{
+			"baseline_us": 1865773,
+			"candidate_us": 1307963,
+			"exact": true,
+			"kind": "half_power_cruise",
+			"order": "BA",
+			"pair": 23
+		}
+	],
+	"source_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+	"warmup_pairs_per_case": 2
+}

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b04fe1de-d9ae-4c04-8320-c38b7715bf3f",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/aero/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://polar_source_compare.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/source",
+  "started_utc": "2026-11-06T17:45:48.134336+00:00",
+  "label": "polar-source-compare",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/aero/checks/polar-source-compare-n5xlsipp/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/aero/checks/polar-source-compare-n5xlsipp/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "POLAR_COMPARISON_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.409607,
+  "log_bytes": 21895,
+  "log_sha256": "8621455aa88d3991711b781cdf6400448d60f0869aa58697b3ea3eef721b8543"
+}

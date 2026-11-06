@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "status": "design_only_not_executed",
+  "target": "GPMA0236 .60 kit",
+  "baseline_commit": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+  "not_runtime_configuration": true,
+  "required_metadata": [
+    "model_identity",
+    "commit",
+    "physics_backend",
+    "physics_timestep_s",
+    "aircraft_data_sha256",
+    "engine_data_sha256",
+    "propeller_data_sha256",
+    "loaded_mass_kg",
+    "fuel_mass_kg",
+    "cg_body_m_and_datum",
+    "inertia_kg_m2",
+    "actual_surface_max_deg",
+    "rate_profile",
+    "expo_definition_and_value",
+    "input_device",
+    "servo_response",
+    "trim",
+    "wind_m_s",
+    "air_density_kg_m3",
+    "stabilization_and_mixes",
+    "camera_and_input_latency_for_subjective_tests"
+  ],
+  "common_channels": [
+    "time_s",
+    "raw_stick",
+    "shaped_surface_demand",
+    "actual_surface_deg",
+    "airspeed_m_s",
+    "groundspeed_m_s",
+    "angle_of_attack_rad",
+    "sideslip_rad",
+    "attitude",
+    "body_rates_rad_s",
+    "rpm",
+    "throttle",
+    "fuel_mass_kg",
+    "cg",
+    "altitude_m",
+    "ground_contact_state"
+  ],
+  "cards": [
+    {
+      "id": "C01",
+      "title": "Control path",
+      "purpose": "Separate pilot command shaping from airframe response",
+      "conditions": [
+        "normal, sport and full where applicable",
+        "radio inputs retain documented external shaping"
+      ],
+      "procedure": [
+        "Apply repeatable small and endpoint stick commands.",
+        "Compare raw input, demand and actual surface angle."
+      ],
+      "metrics": [
+        "center_slope",
+        "endpoint_travel_deg",
+        "surface_onset_delay_s",
+        "surface_transit_time_s"
+      ],
+      "acceptance": "Conformance to declared software configuration only; no physical servo target inferred."
+    },
+    {
+      "id": "C02",
+      "title": "Trim and tracking",
+      "purpose": "Separate trim, disturbance response and required pilot correction",
+      "conditions": [
+        "matched speed, power, mass and weather",
+        "upright and inverted trims treated separately"
+      ],
+      "procedure": [
+        "Establish trim over a selected speed grid.",
+        "Measure line tracking and correction effort.",
+        "Apply small pitch/roll pulses and release."
+      ],
+      "metrics": [
+        "trim_surface_deg",
+        "path_error_m",
+        "bank_and_heading_drift",
+        "correction_rms",
+        "response_settling"
+      ],
+      "acceptance": "No invented numerical real-aircraft threshold; record reproducible curves for comparison."
+    },
+    {
+      "id": "C03",
+      "title": "Roll response",
+      "purpose": "Separate authority, damping, inertia and actuator lag",
+      "conditions": [
+        "left and right",
+        "normal and full rates",
+        "several matched airspeeds"
+      ],
+      "procedure": [
+        "Run matched stick pulses.",
+        "Repeat with matched actual surface deflection.",
+        "Measure acceleration and stopping as well as peak/steady rate."
+      ],
+      "metrics": [
+        "roll_acceleration_rad_s2",
+        "normalized_roll_rate_pb_over_2V",
+        "peak_rate_rad_s",
+        "stop_time_s",
+        "roll_overshoot_rad",
+        "cross_axis_response"
+      ],
+      "acceptance": "Use small-disturbance analysis only in its valid regime."
+    },
+    {
+      "id": "C04",
+      "title": "Slow flight and stall",
+      "purpose": "Distinguish low-rate mush from wing drop and aggressive stall entry",
+      "conditions": [
+        "normal-rate baseline",
+        "recorded CG, fuel and actual elevator",
+        "power-off and powered cases distinguished"
+      ],
+      "procedure": [
+        "Decelerate from repeatable trimmed state.",
+        "Log alpha, speed, sideslip and controls.",
+        "Compare entry, held state and recovery separately."
+      ],
+      "metrics": [
+        "stall_entry_speed_if_identifiable",
+        "alpha_history",
+        "bank_change",
+        "sink_rate",
+        "height_loss",
+        "recovery_control_and_time"
+      ],
+      "acceptance": "Qualitative reports are hypotheses; do not force every stall to be benign."
+    },
+    {
+      "id": "C05",
+      "title": "Knife-edge and coupling",
+      "purpose": "Identify side-force and cross-axis limitations",
+      "conditions": [
+        "left and right",
+        "matched airspeed and actual rudder",
+        "distinct RPM/power levels",
+        "mixes separately labeled"
+      ],
+      "procedure": [
+        "Measure sink and pitch/roll correction demand.",
+        "Compare equal-speed cases before changing propulsion or CG.",
+        "Compute idealized required CY separately from available force."
+      ],
+      "metrics": [
+        "sink_m_s",
+        "aileron_and_elevator_correction_deg",
+        "sideslip_rad",
+        "pitch_and_roll_rate",
+        "rpm",
+        "required_CY_idealization"
+      ],
+      "acceptance": "No inference of zero bare-airframe coupling from a compensated flight."
+    },
+    {
+      "id": "C06",
+      "title": "Approach and flare",
+      "purpose": "Separate airborne energy dissipation from ground contact",
+      "conditions": [
+        "matched entry airspeed, height, fuel and wind",
+        "idle and small-power cases distinct"
+      ],
+      "procedure": [
+        "Measure approach sink and flare duration/distance.",
+        "Record touchdown separately.",
+        "Evaluate rollout only after contact."
+      ],
+      "metrics": [
+        "height_over_span",
+        "airspeed_m_s",
+        "sink_m_s",
+        "flare_distance_m",
+        "touchdown_speed_m_s",
+        "ground_roll_m"
+      ],
+      "acceptance": "Do not alter wheel friction to fit an airborne float discrepancy."
+    },
+    {
+      "id": "C07",
+      "title": "Snap and spin classification",
+      "purpose": "Distinguish stalled autorotation from axial roll or accelerating spiral",
+      "conditions": [
+        "actual rates and entry energy recorded",
+        "left and right",
+        "CG and power controlled"
+      ],
+      "procedure": [
+        "Track alpha, speed and angular rates throughout entry and hold.",
+        "Describe recovery controls and residual turns.",
+        "Validate a held-out maneuver after any calibration."
+      ],
+      "metrics": [
+        "alpha_history",
+        "airspeed_trend",
+        "p_q_r",
+        "height_loss",
+        "rotation_count",
+        "recovery_turns"
+      ],
+      "acceptance": "Rotation alone is insufficient to classify a spin; no imported full-scale rotation target."
+    },
+    {
+      "id": "C08",
+      "title": "Fuel and balance sensitivity",
+      "purpose": "Separate mass, CG and inertia effects",
+      "conditions": [
+        "full and quarter tank",
+        "same declared propulsion, density and input setup"
+      ],
+      "procedure": [
+        "Recompute actual state properties.",
+        "Obtain fresh trims at each inventory.",
+        "Compare both matched-tape and freshly trimmed maneuvers."
+      ],
+      "metrics": [
+        "mass_kg",
+        "cg_m",
+        "inertia_kg_m2",
+        "trim_change",
+        "roll_and_pitch_response",
+        "approach_behavior"
+      ],
+      "acceptance": "Square-root loading relation is an algebraic reference, not full nonlinear prediction."
+    }
+  ]
+}
+

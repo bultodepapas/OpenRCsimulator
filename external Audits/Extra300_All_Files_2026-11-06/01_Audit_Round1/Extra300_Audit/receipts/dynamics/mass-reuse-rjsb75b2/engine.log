@@ -1,0 +1,6 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+MASS_EQUALITY samples=1010 nonfinite=3 mismatches=0 cap=0.3042066 floor=0.0042846 reference=0.3042066
+MASS_REUSE_PROBE PASS

@@ -1,0 +1,110 @@
+E300-07 — Reuse the accepted glow trim RPM during result construction
+==================================================================
+
+Disposition: new, demonstrated CPU optimization; no change of physical model.
+Baseline: bultodepapas/OpenRCsimulator, branch codex/m1-native-validation-20261106,
+commit 8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd. Production checkout remained clean.
+This work does not apply or supersede the first pass's six findings.
+
+Problem and code path
+---------------------
+app/physics/trim.gd already calculates x_rpm for the current Newton iterate.
+The bounded glow line search assigns x, x_rpm and residual together only when
+it accepts a trial. However, all five result exits drop x_rpm. _result calls
+_evaluate without a supplied RPM, which solves the equilibrium again; _result
+then calls _rpm again to obtain the reported scalar. Those two equilibrium
+searches have identical inputs to the already accepted iterate's search.
+
+Each finite-glow RPM solve calls the production operating-point solver, which
+checks engine and propeller evaluators, traverses engine knots plus a 128-interval
+RPM mesh, and bisects restoring roots. These are not just two cheap lookups.
+
+The proposed patch adds an optional steady_rpm argument to _result, passes the
+existing x_rpm only for the bounded glow level path, feeds it to _evaluate, and
+uses it in the reported result. Glide, legacy and electric call paths retain
+their original fallback. The patch is a reviewable, isolated candidate only.
+
+Mathematical justification
+--------------------------
+The steady source solves Q_engine(omega,tau,rho_dry)-Q_prop(omega,u,rho)=0,
+with the existing highest-restoring-root selection. At a final trim x, all of
+tau, body-axis inflow u, density, charge ratio and model/profile are unchanged.
+No interpolation, tolerance relaxation or new root selection is required.
+
+The invariant x_rpm = steady_rpm(x) holds initially, survives rejected local
+line-search candidates, and is updated atomically with accepted candidates.
+Thus even a refused bounded step must use the last accepted x_rpm, not the RPM
+of the last rejected trial. The patch retains precisely that association.
+An independent source review is included. It assumes stable validated model
+inputs for the synchronous solve, as the existing solver already does.
+
+Exact work reduction (instrumented work-count run; not timed)
+------------------------------------------------------------
+Case                           Original  Candidate  Removed  Finalizations
+Extra level, 22 m/s                    19         17        2              1
+Extra half-power cruise               202        174       28             14
+Extra excessive-idle refusal           30         24        6              3
+Extra stopped-engine glide              0          0        0              1
+
+Numbers count calls from Trim._rpm to Propulsion.steady_rpm for finite glow.
+The cruise reduction is 28/202 = 13.861386% fewer equilibrium solves, not a
+claim of 13.861386% less total application time. The existing Jacobian reuse
+of RPM for surface perturbations remains intact and is not a new finding.
+
+Correctness evidence
+--------------------
+probe_trim_reuse.gd: 87 checks passed, including 34 byte-identical complete
+result pairs. This compares all serialized result fields, not rounded printed
+numbers. Inputs remain unchanged. Cases include Extra full/10% inventories,
+reference/hot-high atmospheres, 17/22/30 m/s, half-power cruise, three warm
+starts, excessive-idle refusal, glide and invalid inputs. Controls include a
+legacy Stik, an electric Stik and a four-stroke glow Stik. The counted variants
+also assert exact outputs and exactly two saved solves per glow finalization.
+
+Production tests in a disposable candidate runtime:
+- test_trim_integrity.gd: 731 checks, zero failures.
+- test_cruise_trim.gd: 22 checks, zero failures; its rollout is the Stik control,
+  not an Extra physical flight-validation experiment.
+
+All cited checked-runner receipts have ok=true, complete=true, exit=0 and no
+diagnostics. The source-only invariant review is in aero/TRIM_REUSE_REVIEW.txt
+in the packaged deliverable.
+
+Measured CPU timing and limits
+------------------------------
+Pinned Godot 4.8.beta2.official.cafc17a19, Linux x86-64, Intel Xeon Platinum
+8573C, float64 GDScript, headless. The run uses uninstrumented baseline and
+candidate code, identical full-fuel Extra inputs, reference rho=1.225 kg/m^3
+and charge ratio=1.0. Other audit engine/CPU tasks were paused. Two warmup
+pairs per case precede 24 measured pairs, alternating AB and BA order.
+
+Case                  Original median    Candidate median    Paired median reduction
+22 m/s level trim          148.6705 ms         134.1830 ms                 10.0679%
+Half-power cruise        1,518.4820 ms       1,332.0030 ms                 11.9571%
+
+The fixed-speed candidate was faster in 24/24 pairs. The longer cruise search
+was faster in 17/24 pairs; its paired reduction interquartile range was
+-5.1883% to +13.1917%. The shared host produced substantial variability even
+with other audit jobs paused. Retain the raw pairs; do not promise a fixed
+12% gain on another platform. All 48 measured pairs remained byte-identical.
+
+The scope is a warm, uncached solver call. The existing two-entry launch cache
+already avoids a solve on cache hits; no additional benefit is claimed there.
+No complete startup, UI responsiveness, frame rate, GPU, native backend or
+M1 timing was measured. The improvement matters when the launch operating
+point must actually be recomputed, including new fuel/atmosphere/model inputs.
+
+Novelty cross-check
+-------------------
+The unchanged consolidated ledger was read and searched alongside the first
+pass and current source notes. Earlier source preparation, propeller evaluator
+reuse, Jacobian-RPM reuse, stage mass reuse and the now-implemented O4 downwash
+air reuse are separate. This candidate only removes the two finalization
+searches that the accepted Newton iterate has already made unnecessary.
+
+Source links
+------------
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/trim.gd#L142-L224
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/trim.gd#L352-L377
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/glow/operating_point.gd#L36-L88
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/sim/launch_trim_cache.gd#L41-L72

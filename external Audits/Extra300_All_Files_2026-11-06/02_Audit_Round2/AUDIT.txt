@@ -1,0 +1,227 @@
+EXTRA 300 — SECOND-PASS CODE, MATHEMATICS AND PERFORMANCE AUDIT
+============================================================
+
+New actionable results
+----------------------
+E300-07: An exact-reuse optimization removes two steady-RPM searches from each
+finite-glow level-trim finalization. For the Extra's half-power cruise search,
+the measured work count falls from 202 to 174 searches. A reviewable candidate
+patch preserves all tested output bytes and reduces median solver time in the
+isolated Linux benchmark.
+
+E300-08: A successful F5 reload can change the Extra's physical propeller and
+collision radius while leaving the visible propeller and blur at the previous
+diameter. The real application reproduces the mismatch in both directions;
+fresh startup and a rejected inconsistent edit provide discriminating controls.
+
+The performance opportunity and developer reload defect are distinct from the
+six first-pass findings. No additional severe flight-dynamics defect was proved
+in this bounded second pass. The aerodynamic sensitivities and previously
+documented collision convention are retained as research context, not counted
+as newly discovered bugs.
+
+Scope and novelty
+-----------------
+Repository: bultodepapas/OpenRCsimulator.
+Reviewed development branch: codex/m1-native-validation-20261106.
+Pinned commit: 8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd, FUSION.
+Its parent is the first pass's e72d878b6b4a89209dfe1a992ba119921dcdd34c.
+
+GitHub connector reads checked the branch, commit and relevant source. The
+required external Audits/CONSOLIDATED-AUDITS.md was read before the review and
+cross-checked before reporting. Its bytes are unchanged: SHA-256
+772a484f0aad5f36241bca4b13c09437fdc1b00b43def686ebbe180abb7a55fa.
+The new commit's downwash-air reuse corresponds to previously reported O4;
+it is recognized as implemented and excluded from the new findings.
+
+This is a code audit with isolated executable witnesses. The production
+checkout remained clean. The trim candidate was applied only to a disposable
+runtime; F5 witnesses changed and restored disposable data. Nothing was pushed,
+and no new physical calibration or target-hardware qualification is claimed.
+
+E300-07 — Exact RPM reuse in trim finalization
+--------------------------------------------
+Practical priority: medium; a localized CPU improvement when a glow launch
+operating point must actually be solved.
+
+The Newton solver already owns both the accepted six-variable state x and its
+steady RPM. In app/physics/trim.gd:142-224, accepted bounded steps commit x,
+x_rpm and residual together. A rejected trial leaves the last accepted pair
+unchanged. Nevertheless, _result at lines 352-377 drops that RPM, calls
+_evaluate without it (one new equilibrium solve), then calls _rpm again for
+the reported result (another new equilibrium solve).
+
+The equilibrium is a deterministic root of
+
+    Q_engine(omega, throttle, dry_density) - Q_prop(omega, inflow, density) = 0.
+
+The existing operating-point algorithm keeps the highest restoring root from
+an RPM mesh, engine knots and bisection. Every relevant input at final x is
+the same as it was for the retained x_rpm. Reusing that exact value preserves
+the root-selection law, nonlinear equations and convergence tolerance. It is
+not an approximate cache across different Newton iterates or flight stages.
+
+The candidate passes x_rpm into an optional _result argument only on the
+bounded finite-glow level path, supplies it to _evaluate, and uses it in the
+returned result. Other paths keep their existing fallback. Independent source
+review checked all five exits, including failed line searches, and confirmed
+that the saved value belongs to the reported iterate.
+
+The measured equilibrium-call counts were:
+
+    Extra level trim at 22 m/s:    19 -> 17, two saved.
+    Extra half-power cruise:     202 -> 174, 28 saved over 14 finalizations.
+    Excessive-idle refusal:       30 -> 24, six saved over three attempts.
+    Stopped-engine glide:          0 -> 0, unchanged control.
+
+The half-power calculation uses the production CruiseTrim search with full
+fuel and the reference atmosphere. The final result remains V=32.4591201889649
+m/s and 10784.9340656827 RPM. The 13.861386% reduction is an exact source-level
+work-count reduction for that case; it is not an application-wide percentage.
+
+Verification:
+- 87 audit checks passed, covering 34 byte-identical full result pairs and
+  unchanged model inputs. Full and 10% fuel, reference/hot-high conditions,
+  17/22/30 m/s, half-power searches, warm starts, invalid inputs, refusal and
+  glide are included. Legacy, electric and four-stroke-glow controls are included.
+- The candidate passed the repository's test_trim_integrity.gd (731 checks)
+  and test_cruise_trim.gd (22 checks). The latter's rollout is a Stik control.
+- All 48 measured benchmark pairs also returned identical result bytes.
+- git apply --check accepted the patch on the pinned clean source.
+
+Timing used uninstrumented code, two warmup pairs and 24 alternating-order
+pairs per case, with other audit CPU work paused. Host: Linux x86-64, Intel
+Xeon Platinum 8573C; engine: Godot 4.8.beta2.official.cafc17a19; GDScript
+float64, headless.
+
+    Fixed 22 m/s trim: 148.6705 -> 134.1830 ms medians;
+        median paired reduction 10.0679%, faster in 24/24 pairs.
+    Half-power cruise: 1518.4820 -> 1332.0030 ms medians;
+        median paired reduction 11.9571%, faster in 17/24 pairs.
+
+The longer search is noisy: paired reduction IQR is -5.1883% to +13.1917%.
+The exact count reduction is stronger evidence than a promised 12% time gain.
+These are warm uncached solver calls. Existing launch-cache hits already avoid
+the solve, and no additional cache-hit benefit is claimed. Full startup, UI,
+native backend, M1, frame time and GPU cost were not measured.
+
+Implementation deliverables: root/trim_final_rpm_reuse.patch;
+root/prepare_trim_reuse.py; root/probe_trim_reuse.gd; root/bench_trim_reuse.gd;
+raw results, timing pairs and checked receipts under root/; independent review
+in aero/TRIM_REUSE_REVIEW.txt. root/TRIM-FINDING.txt expands the proof and scope.
+
+E300-08 — F5 changes the physical propeller but keeps stale visual size
+---------------------------------------------------------------------
+Practical priority: medium; a reproducible developer-workflow correctness bug.
+It was not observed on an unchanged stock launch and is not classified as a
+new ordinary-flight instability.
+
+Startup in app/main.gd:880-899 applies the validated glow propeller diameter
+through AirplaneBuilder.apply_propeller_diameter(). The adjacent comment
+explicitly mentions same-ID installation-profile reloads. The actual F5 path
+at lines 2137-2140 calls session.reload() and updates only the model CG.
+Meanwhile the accepted session rebuilds its physical propeller collision disc.
+
+The witness used the real headless application and real F5 key events through
+the repository's debug bridge. It changed both diameter quantities from
+0.3048 m (12 inches) to 0.3302 m (13 inches) in a disposable same-ID Extra
+aircraft/installation pair. This is a synthetic accepted developer edit,
+not a shipped alternative or a calibrated propeller configuration.
+
+Observed states:
+- Stock/no-op F5: physical radius 0.1524 m, visual scale 1.0.
+- Aircraft-only edit: rejected because installation and aircraft disagree;
+  accepted physics and visual state remain unchanged.
+- Coherent 13-inch F5: accepted diameter 0.3302 m and collision radius
+  0.1651 m, but visual propeller and blur basis scales remain 1.0.
+- Fresh 13-inch startup: scales correctly become 1.0833333731.
+- Restore stock files in that fresh flight and press F5: physics returns to
+  radius 0.1524 m, but the 13-inch visual scale remains.
+
+For a diameter-only change, the necessary scale is absolute:
+
+    scale_xy = accepted_diameter / authored_diameter.
+
+Thus 13/12 = 1.0833333333. It must not be multiplied repeatedly into the
+previous scale. The existing setter already follows this rule. The defect is
+the missing accepted-reload call.
+
+The blur's measured.radius is local to the propeller, so effective radius is
+measured.radius times the world basis scale. After 12-to-13-inch F5, physical
+radius is 0.1651 m but effective blur radius remains 0.1524282545 m: a radial
+difference of approximately 12.672 mm. The reverse-direction control gives
+about 0.1651306 m visible radius against 0.1524 m physical radius. The original
+mesh tip is already about 28 micrometres beyond nominal; that small difference
+does not explain the reload mismatch. No actual strike at that boundary was
+flown or rendered during this audit.
+
+A diagnostic invocation of the existing absolute setter after the reproduced
+mismatch returned true and updated both propeller and blur transforms to the
+correct 13/12 scale. PropellerBlur.update copies the propeller global transform
+before its early return, so a diameter-only repair does not inherently require
+rebuilding the blur profile. The recommended code organization is one helper
+for applying accepted installation geometry, called from startup and successful
+reload. Keep refused reloads unchanged, refresh dependent extents consistently,
+and handle any post-commit presentation failure explicitly.
+
+The regression needs the actual accepted F5 path: no-op, both diameter-change
+directions, inconsistent-edit refusal, repeated reload idempotency, and blade/
+blur/collision geometry observations. A helper-only unit test would miss the
+missing wiring. The existing nominal Extra installation test passed 17 checks
+but does not exercise F5.
+
+No production F5 patch was applied or qualified. Evidence is the application
+witness, source diagnosis, controls and tested setter primitive. Successful
+headless runs each emitted 120 landscape UID text-path fallback warnings and
+no engine error lines; their reconstructed import environment and complete
+transcript are disclosed. This does not qualify pixels, a clean exported app,
+or target-hardware rendering.
+
+Evidence: model_lifecycle/FINDINGS.txt, reload_witness.json, bridge_transcript.jsonl,
+the two modified fixture JSONs, successful application logs and the 17-check
+installation receipt.
+
+Additional investigation: what was and was not established
+----------------------------------------------------------
+Finite fuel: 23 stock-session checks passed for the four offered fill levels,
+independently computed live mass/CG/inertia, runway prime/starter momentum,
+short cut/restart replay and reset refueling. The 16-tick tape and exact replay
+observations are included. This is useful control evidence, not a new fix or
+long-flight/real-tank validation.
+
+Aerodynamics: the active polar's attachment fraction and the induced-source
+retention heuristic can differ substantially on the negative-alpha branch.
+At -20 degrees and 20 m/s, a diagnostic alternative changed Fz by about
+22.366 N. A separate station-speed maximum causes a small roll-rate cusp,
+and uniform spanwise velocity changes the same normalization. The controlled
+probes attribute these behaviors, but there is no established contract or
+measurement proving the alternative wake law correct. They are questions for
+model validation and documentation; no generic aerodynamic repair is proposed.
+
+Excluded as covered or unsupported: the six first-pass findings; O4 downwash
+reuse; the documented locked-rotor scenery approximation; planned coasting
+prop-strike work; the fixed tailwheel-contact approximation; and an apparent
+Workshop scale issue that cannot be reached because finite-glow Extra scaling
+is refused. The source/sign/unit review found no additional distinct defect.
+
+Suggested implementation order
+------------------------------
+1. Review and integrate the exact trim reuse as a small independent change.
+   Retain failed-trim and non-glow controls; use repository CI for merge gates.
+2. Fix accepted F5 visual synchronization using the existing absolute setter
+   and a public-path regression. Keep this separate from propulsion tuning.
+3. Resolve aerodynamic modeling questions with explicit intended invariants
+   and independent data before changing negative-alpha wake behavior.
+
+Primary source links
+--------------------
+https://github.com/bultodepapas/OpenRCsimulator/commit/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/external%20Audits/CONSOLIDATED-AUDITS.md
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/trim.gd#L142-L224
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/trim.gd#L352-L377
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/glow/operating_point.gd#L36-L88
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/main.gd#L880-L899
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/main.gd#L2137-L2140
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/render/airplane.gd#L228-L241
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/render/propeller_blur.gd#L460-L475
+https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/physics/aero.gd#L340-L370

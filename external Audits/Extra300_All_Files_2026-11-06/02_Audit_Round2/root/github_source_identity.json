@@ -1,0 +1,14 @@
+{
+  "repository": "bultodepapas/OpenRCsimulator",
+  "branch": "codex/m1-native-validation-20261106",
+  "sha": "8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+  "parent": "e72d878b6b4a89209dfe1a992ba119921dcdd34c",
+  "tree": "2599b5b9ece42f94a6a546914fb49c416db209b4",
+  "commit_message": "FUSION",
+  "commit_date": "2026-11-06T17:33:16Z",
+  "url": "https://github.com/bultodepapas/OpenRCsimulator/commit/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd",
+  "trim_blob": "bbb70d96d81faa200f29c5902aaf1ca966c64ea9",
+  "ledger_blob": "43583ad68c3492e7792212ed5292c756fd269dd6",
+  "ledger_sha256": "772a484f0aad5f36241bca4b13c09437fdc1b00b43def686ebbe180abb7a55fa",
+  "note": "GitHub connector reads verified this immutable revision and the current branch head. No remote writes."
+}

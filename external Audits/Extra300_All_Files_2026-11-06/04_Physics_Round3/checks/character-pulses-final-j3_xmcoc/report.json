@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d40b85e4-86f4-43a2-a7be-9c628459695f",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "extra300_audit/round3/root/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://character_pulses.gd",
+    "--",
+    "--out=/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/pulses"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee",
+  "started_utc": "2026-11-06T19:49:47.310774+00:00",
+  "label": "character-pulses-final",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/character-pulses-final-j3_xmcoc/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/character-pulses-final-j3_xmcoc/report.json",
+  "timeout_seconds": 900.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_CHARACTER_PULSES_COMPLETE failures=0 cases=12"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 39.838046,
+  "log_bytes": 10025,
+  "log_sha256": "d3c8aa13ba91fe8c85fcf12936f64d05e57b87778799ef91ad7f07853ed26c05"
+}

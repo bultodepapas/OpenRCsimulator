@@ -10,9 +10,15 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 var _checks := 0
 var _failures := 0
 var _stage: Control
+var _reference_shader_path := ""
+var _profile_shader := false
 
 
 func _initialize() -> void:
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--fuel-reference-shader="):
+			_reference_shader_path = argument.trim_prefix("--fuel-reference-shader=")
+		if argument == "--fuel-profile": _profile_shader = true
 	TranslationServer.set_locale("en")
 	root.size = Vector2i(1920, 1080)
 	await process_frame
@@ -434,6 +440,7 @@ func _rendered_fixture(requested_dir: String) -> void:
 	await _rendered_attitudes(tank, output)
 	await _rendered_aeration(widgets, output)
 	await _rendered_clock_continuity(tank)
+	if not _reference_shader_path.is_empty(): await _compare_shader(tank, output)
 	for widget: Control in widgets:
 		widget.queue_free()
 	background.queue_free()
@@ -598,6 +605,116 @@ func _rendered_attitudes(tank: Control, output: String) -> void:
 	tank.graphic.queue_redraw()
 	for item: Node in rows: item.queue_free()
 	await process_frame
+
+
+## Optional same-process comparison against an explicit immutable pre-change shader.
+## Profile numbers include forced drawing and synchronous image readback, not pure GPU time.
+func _compare_shader(tank: Control, output: String) -> void:
+	var source := FileAccess.get_file_as_string(_reference_shader_path)
+	if source.is_empty():
+		_check("reference shader is readable", false, _reference_shader_path)
+		return
+	var reference := Shader.new()
+	reference.code = source
+	var material: ShaderMaterial = tank._liquid_material
+	var candidate: Shader = material.shader
+	var original_size: Vector2 = tank._liquid.size
+	var rows: Array = []
+	Clock.update(200.17)
+	for dimensions: Vector2 in [Vector2(208, 101), Vector2(208, 41)]:
+		tank._liquid.size = dimensions
+		material.set_shader_parameter("rect_size", dimensions)
+		for angle: float in [-180.0, -135.0, -90.0, 0.0, 45.0, 90.0]:
+			for amount: float in [-1.0, 0.0, 0.02, 0.37, 0.85, 0.98, 1.0]:
+				for active: bool in [false, true]:
+					var values := {fill = amount, tilt = deg_to_rad(angle), target_tilt = deg_to_rad(angle),
+						tilt_velocity = 0.0, sample_clock = 200.0, wave_energy = 0.8 if active else 0.0,
+						foam_energy = 1.0 if active else 0.0, force_g = 2.5, wave_phase = 1.2, bubble_phase = 13.7}
+					for key: String in values: material.set_shader_parameter(key, values[key])
+					material.shader = reference
+					var before: Image = await _tank_image(tank)
+					material.shader = candidate
+					var after: Image = await _tank_image(tank)
+					var changed := _different_pixels(before, after)
+					rows.append({size = [dimensions.x, dimensions.y], angle = angle, fill = amount,
+						active = active, changed_pixels_over_0_025 = changed})
+					_check("shader parity %s / %.0f deg / %.2f fill / active %s" % [dimensions, angle, amount, active],
+						changed <= 2, "changed pixels=%d" % changed)
+	tank._liquid.size = Vector2(208, 101)
+	material.set_shader_parameter("rect_size", Vector2(208, 101))
+	for force: float in [0.04, 1.0, 6.0]:
+		for clocks: Array in [[200.0, 200.17], [1023.9, 1024.1], [200.0, 199.99]]:
+			var values := {fill = 0.37, tilt = 0.5, target_tilt = -1.4, tilt_velocity = 2.1,
+				sample_clock = Clock.value(clocks[0]), wave_energy = 0.8, foam_energy = 1.0,
+				force_g = force, wave_phase = 6.1, bubble_phase = 63.9}
+			for key: String in values: material.set_shader_parameter(key, values[key])
+			Clock.update(clocks[1])
+			material.shader = reference
+			var before: Image = await _tank_image(tank)
+			material.shader = candidate
+			var after: Image = await _tank_image(tank)
+			var changed := _different_pixels(before, after)
+			rows.append({transition = true, force_g = force, sample_time = clocks[0], render_time = clocks[1],
+				changed_pixels_over_0_025 = changed})
+			_check("moving spring shader parity at %.2f g / %s" % [force, clocks], changed <= 2,
+				"changed pixels=%d" % changed)
+	var profile: Array = []
+	if _profile_shader:
+		var previous_loop := RenderingServer.render_loop_enabled
+		var original_position: Vector2 = tank._liquid.global_position
+		var hidden_controls: Array[Control] = []
+		for child: Node in _stage.get_children():
+			if child is Control and child != tank and child.visible:
+				hidden_controls.append(child)
+				child.hide()
+		for dimensions: Vector2 in [Vector2(208, 101), Vector2(1860, 900)]:
+			tank._liquid.size = dimensions
+			tank._liquid.global_position = Vector2(30, 100)
+			# The large rectangle amplifies the same shader workload; it is a stress case, not a HUD layout.
+			material.set_shader_parameter("rect_size", Vector2(208, 101))
+			var values := {fill = 0.37, tilt = 0.6, target_tilt = 0.6, tilt_velocity = 0.0,
+				sample_clock = 150.0, wave_energy = 1.0, foam_energy = 1.0, force_g = 1.0,
+				wave_phase = 1.2, bubble_phase = 13.7}
+			for key: String in values: material.set_shader_parameter(key, values[key])
+			for repeat in 3:
+				for role: String in ["reference", "candidate", "candidate", "reference"]:
+					material.shader = reference if role == "reference" else candidate
+					await process_frame
+					RenderingServer.render_loop_enabled = false
+					var samples: Array[int] = []
+					var first_pixels := PackedByteArray()
+					var last_pixels := PackedByteArray()
+					for frame in 72:
+						var started := Time.get_ticks_usec()
+						# Amortize the fixed readback cost over a bounded group of actual draws.
+						for draw_index in 8:
+							Clock.update(150.0 + (frame * 8 + draw_index) / 480.0)
+							RenderingServer.force_draw(false)
+						# Readback completes this viewport's work before the sample ends.
+						var pixels := root.get_texture().get_image()
+						var elapsed := Time.get_ticks_usec() - started
+						if frame >= 12: samples.append(elapsed)
+						if frame == 12: first_pixels = pixels.get_region(Rect2i(Vector2i(30, 100), Vector2i(dimensions))).get_data()
+						if frame == 71: last_pixels = pixels.get_region(Rect2i(Vector2i(30, 100), Vector2i(dimensions))).get_data()
+						if pixels.is_empty(): _check("profile readback is available", false)
+					_check("timed %s draws produce changing pixels" % role, first_pixels != last_pixels)
+					RenderingServer.render_loop_enabled = previous_loop
+					profile.append({role = role, repeat = repeat, size = [dimensions.x, dimensions.y],
+						draws_per_sample = 8, draw_and_readback_usec = samples, changing_pixels = first_pixels != last_pixels})
+			tank._liquid.global_position = original_position
+		for child: Control in hidden_controls: child.show()
+	material.shader = candidate
+	tank._liquid.size = original_size
+	material.set_shader_parameter("rect_size", original_size)
+	var report := {reference_sha256 = source.sha256_text(), candidate_sha256 = candidate.code.sha256_text(),
+		viewport = [root.size.x, root.size.y], engine = Engine.get_version_info(),
+		renderer = RenderingServer.get_current_rendering_method(), adapter = RenderingServer.get_video_adapter_name(),
+		parity = rows, profile = profile,
+		measurement_scope = "Forced draw without buffer swap + synchronous root image readback; not isolated GPU time or flight FPS."}
+	var file := FileAccess.open(output.path_join("shader-comparison.json"), FileAccess.WRITE)
+	_check("shader comparison report is writable", file != null)
+	if file != null: file.store_string(JSON.stringify(report, "\t"))
+	print("fuel shader comparison: %d image pairs, %d timing batches" % [rows.size(), profile.size()])
 
 
 func _different_pixels(a: Image, b: Image) -> int:

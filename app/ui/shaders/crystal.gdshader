@@ -21,6 +21,8 @@ uniform float edge_width : hint_range(0.2, 1.0) = 0.52;
 uniform float edge_strength : hint_range(0.0, 1.2) = 0.82;
 uniform float reflection_strength : hint_range(0.0, 1.0) = 0.48;
 uniform float glint_strength : hint_range(0.0, 1.0) = 0.65;
+// Preserve the menu's green ceiling by default; semantic glass can bound its own tint.
+uniform vec3 well_ceiling = vec3(0.10, 0.30, 0.10);
 varying vec4 vertex_tint;
 
 void vertex() {
@@ -125,7 +127,7 @@ void fragment() {
 			float pointer_light = energy > 0.0 ? exp(-dot(pointer_delta, pointer_delta) / (0.22 * 0.22)) : 0.0;
 			body += emission_color.rgb * bevel * (pointer_light * energy * 0.10 + confirmation * 0.18);
 			// Protect the text well while retaining a broad luminous wall outside it.
-			body = mix(body, min(body, vec3(0.10, 0.30, 0.10)), smoothstep(7.0, 10.0, depth));
+			body = mix(body, min(body, well_ceiling), smoothstep(7.0, 10.0, depth));
 			opacity = mix(base_color.a, 1.0, bevel);
 		}
 	}

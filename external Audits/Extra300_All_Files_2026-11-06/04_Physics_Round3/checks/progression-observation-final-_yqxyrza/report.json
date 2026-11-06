@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "96ba4596-d7eb-4a2f-9fcf-a8ee43a14090",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://check_flat_plate_progression.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/source",
+  "started_utc": "2026-11-06T19:44:26.606976+00:00",
+  "label": "progression-observation-final",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/checks/progression-observation-final-_yqxyrza/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/aero/checks/progression-observation-final-_yqxyrza/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PROGRESSION_OBSERVATION_COMPLETE: 16 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.107449,
+  "log_bytes": 1314,
+  "log_sha256": "b007b7831e558d519b74d23c0c7cfcbcb43a11bc10aa9dabea8ce522cbe0ee02"
+}

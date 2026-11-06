@@ -1,0 +1,275 @@
+[
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg.import",
+    "sha256": "7893bd04ae408bd6ec5fd46ddf2ef8dac8d303782fc96dd2d1c462029077d7ca",
+    "git_blob": "737b79c3ce9b287d0a190f23774a1f5a3987cd23",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg",
+    "sha256": "57971f79d5c7d6c0cdb3fb296b13d84a553d75cc259d3642788836c9a5e0ef59",
+    "git_blob": "76be62354aa7c44bfc97f833f44da15ee2c85594",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg.import",
+    "sha256": "16dc046886c582d33a69b3f437d61a7a5053f17746ca35bbb4007f34011330d8",
+    "git_blob": "56782b28e8fff877824afab9cc3f750b9928ec9a",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg.import",
+    "sha256": "2bab5b2b587104c65488b8a6e4f2718bb71df09b1687462f19ec07e258a58cb7",
+    "git_blob": "2522a5400f01eaaec14bd194c22d82b28bc96a67",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg",
+    "sha256": "5f8ecd7ef3ac085d42b65f26c6ed099dbb8c25d687973e6bb60abd8b7e788e87",
+    "git_blob": "50044bc3b0dc4a910b20a15af092b15a9122c9ba",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg",
+    "sha256": "6a849e369a2a21ff44f87327b64753616224ca6992f2efef4d233bf319e3c1b1",
+    "git_blob": "91654a9d1d1e1c41f275b968e15f28dc4307ab0d",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg",
+    "sha256": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61",
+    "git_blob": "f8862a375965596a6422c498e5bcf5bbf186b249",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg",
+    "sha256": "0f49cbf317e84b7e0f058fa692b13c97b66daa75a77b3215bc21772cc931514e",
+    "git_blob": "0a83e48912afa239f2f21ca940ad45d9f1fed0db",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg.import",
+    "sha256": "94bcd86e95aa149b942f023c768bb4f8690d0abbe19d0cbce9fccdb29babc289",
+    "git_blob": "87bee12b5487b7dc25d7787db0f2f3140345831d",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood060_2K-JPG_Color.jpg",
+    "sha256": "0473543a25a05f4f10a0fd85c373abe1ce5ce34eb72a12266cb21395b435b478",
+    "git_blob": "51292fface4bd105dfe40d633944d9d63ccdb787",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg",
+    "sha256": "1eca99188667aebb5c7ca5144370720a92b8a4278fb05fb7c8dec32c6151df2e",
+    "git_blob": "1a43c0df94d1e7a223c0a83fda1922547958be9d",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg",
+    "sha256": "d34b92bb2514c17cff0922371b63820cebfba749ecf309e6511f8c7060703a2f",
+    "git_blob": "a8805c64057a072ad89f247afccc92878be54abe",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_Color.jpg.import",
+    "sha256": "7be2b63f382660fb7768aed4d2b97a16974c271f0aaca29ec1d0a1469d9b18ab",
+    "git_blob": "9819f9518f834ac7357df2bd844639913f28987c",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg.import",
+    "sha256": "c5fab00416467f7c62e0d9e5239579ade42fa40b7b60d48b12f24b86ea0e8389",
+    "git_blob": "bd8f72068b1c5fc6877204bb4feba1bbe18e8f13",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg.import",
+    "sha256": "0a6f7eb59889387d9a4bd70a9762ac659b3b38d39efe4b400130d9622d562568",
+    "git_blob": "00c5f7c29fef13c128dbd2bd31368ce9161ba3e2",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_Color.jpg",
+    "sha256": "6f4edb2201ebf72832aa7cb44c883bd75edc3595dc8ad57ba25c0c02bb4c71c3",
+    "git_blob": "f46314e3905aa2cf13b21ee118de0253c35bcd57",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood060_2K-JPG_Color.jpg.import",
+    "sha256": "f0d9d9fd92479acf7b6e350fb6312cd31f08adfe6f8e514d710ae61ef9ad2479",
+    "git_blob": "fe4fe30037fba49a77cd3d9a3d17e42e9a445e70",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_Color.jpg",
+    "sha256": "f89631556587042a5973806c822af39928098743c28effcbab531d3dc68d7421",
+    "git_blob": "41a0e1bcb0a3e278d2377570714838bc27200478",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg",
+    "sha256": "76d6607368f37410047194498f8370850b866e7112358f5e3dcae6c2d92ce375",
+    "git_blob": "63f874f9c5945e68063cde38d8433216ebcec578",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal038_1K-JPG_Color.jpg.import",
+    "sha256": "0a8ef4dddeb498528bfd2f1637a29e76de3db33fa976d1a94eb6c493a75d68ff",
+    "git_blob": "25b6c4144339910949fd2a2848f0b55980560c64",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg.import",
+    "sha256": "ad8275da9547ee86ff36a6b022cf515b3bd1c63b9e34f20774f6d87376a3c8c1",
+    "git_blob": "dab7a78c3e52e6c781cd07dc80c7481e0ef53777",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg.import",
+    "sha256": "da8fed2d088764fdc19f4400852dd54fc5f6675f8f93abfb475e03d9e71cd0a9",
+    "git_blob": "1a7476b7f109fe4f48b4e85d53bd7f3e2ebc17b7",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg.import",
+    "sha256": "6709daadaa83966b9551693909e472d27e62c527f99a5f67213872434de6074d",
+    "git_blob": "74a402c273d7a51d7d3b0fbcac161369bd151ab2",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg",
+    "sha256": "e7bf6ad2192404b98a3d8878b5a0e43731b4ea3b6761dbe153531a79e168cb0f",
+    "git_blob": "04834a2d1cc6e7b881688f8b32f7e88e56e11b06",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg.import",
+    "sha256": "40147d343def4998df37e0d913bb956e94724da1683d7566be0838bb431d4eaa",
+    "git_blob": "7838f5f2cd7bfe2916d73e2c8b4253f0a8d9308b",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg",
+    "sha256": "e4d03bf5210d01b4b21a846b0256b5d322104094688a7f2f7babb84e8140a20a",
+    "git_blob": "c835d640ad70cdfbbb15a828c11fc06bca2d22ae",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb",
+    "sha256": "b0ab9d357e5fb70714db6a4322d3b73c326e959954a5c8962acefc0d1db0494e",
+    "git_blob": "99ef1121c2f68d759ebacb478f402d41995522fc",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb.import",
+    "sha256": "fa39def693dd477fae440606d3e7d22ce01c40555d710b73c876dcf6384b6604",
+    "git_blob": "3e337369c370e54dcc11e000a710389653cde128",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/UPGRADE_CREDITS.md",
+    "sha256": "d6e4f7497ea3bd2eaf2d6713865f0653dc3b42076399237283e4c3536a1787eb",
+    "git_blob": "4d59f77878e0b8d11a023bbc40471ba9f296a5a9",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/building-roofs/LICENSES.md",
+    "sha256": "459c724e31f51bcc5ed99ea1f602aedad0ca3427ef537a14193cd0e156dc0a33",
+    "git_blob": "151496676b1686125d9fbf85917805cd12d6ff9b",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/countryside/LICENSES.md",
+    "sha256": "ebe3f3791e13740008e32557ab91c8a74e820b2c7bd353dbd3841135290cec75",
+    "git_blob": "3d9d291bff648be726f290ab09f378658eec97fc",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/mountains/LICENSES.md",
+    "sha256": "463aed44501f810034654cebe8e30d8ef1a47b6eaeaf3fceeb3664828bf7e95a",
+    "git_blob": "117e50e79f0f17cec76b694fb289af985f8d237a",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/night-lighting/LICENSES.md",
+    "sha256": "c7f186b7997938d0989c969d54679dc896bc7c92177a6b67403bff88fb3288a9",
+    "git_blob": "d2a0de2f9435081508f2bd8bdc4248c3997f6cd5",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/pit-shelter/LICENSE.md",
+    "sha256": "c5f3e2e54d98309a5b966f675917a742ab705dbf76d66549a522e7a89e49c478",
+    "git_blob": "8da55fd57fd895f56196fbe49b1c6e44c2522b75",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/rc-ground/dirt-albedo.jpg",
+    "sha256": "126d3e4886cc94b494ba609ddc323a77ff0362a1b156c3750d5d2a0a0ead02b8",
+    "git_blob": "c727acb9f6002760157b21c24a6d05631d777e91",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/rc-ground/dirt-albedo.jpg.import",
+    "sha256": "5037be011de70147cfeb08c3c8aacd1542d5aac16094a38689ba07116f2c9797",
+    "git_blob": "5c610d3202c7dc155f89be98565518c779dbaf8d",
+    "matches_source_git_blob": false,
+    "classification": "untracked generated Godot import sidecar; not claimed as a source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/regional-lighting/LICENSES.md",
+    "sha256": "9d73c749feb8439411c5ac640e3d5b1f1e2cd08fae12ca2269536f217170cfc6",
+    "git_blob": "77b058f0633e1e5fb355271aaf5ce5e8ee53ad14",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/track-signage/README.md",
+    "sha256": "833707b60f1b6ba9d720ffc7e9f0a19d1e72594575d1e09198840c459b874983",
+    "git_blob": "a58511ed3e3274d9b1f734f901cdbe3b56e44fa2",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  },
+  {
+    "path": "app/assets/landscape/track-timing-cabinet/README.md",
+    "sha256": "1df7571464f8abcc2c845c70cdc782a139ce646659f4ae3e6991c0de5136999f",
+    "git_blob": "beecfb3dbf85148784b2650dd464436e8d35a40a",
+    "matches_source_git_blob": true,
+    "classification": "tracked support asset verified against the pinned source Git blob"
+  }
+]

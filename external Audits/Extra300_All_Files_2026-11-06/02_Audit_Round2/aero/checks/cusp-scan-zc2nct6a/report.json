@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "cc6b1433-f3c9-42c4-92a3-e51b16d93afc",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/aero/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://cusp_scan.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/source",
+  "started_utc": "2026-11-06T17:44:47.520270+00:00",
+  "label": "cusp-scan",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/aero/checks/cusp-scan-zc2nct6a/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round2/aero/checks/cusp-scan-zc2nct6a/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "CUSP_SCAN_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.307658,
+  "log_bytes": 15938,
+  "log_sha256": "ae98dba318526f91e00b75e507e0417b9e031341548e8453252da8be40f470c2"
+}

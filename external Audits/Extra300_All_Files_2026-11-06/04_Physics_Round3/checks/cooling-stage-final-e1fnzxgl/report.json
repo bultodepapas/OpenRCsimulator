@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e5583988-7c4d-4c0a-af1b-d374928b2425",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/probe_cooling.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/source",
+  "started_utc": "2026-11-06T19:43:04.663257+00:00",
+  "label": "cooling-stage-final",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/checks/cooling-stage-final-e1fnzxgl/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/checks/cooling-stage-final-e1fnzxgl/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COOLING-PROBE 7 checks, 0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.547855,
+  "log_bytes": 681,
+  "log_sha256": "336b29145fb0f9fd2888c86db82005217628b1704e6cbda92d751db178df8a9f"
+}

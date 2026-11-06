@@ -1,0 +1,66 @@
+Reproduce the F5 diameter mismatch in a disposable full checkout
+===============================================================
+
+Use commit 8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd and the pinned Godot engine.
+Read docs/tools/README.md and tools/debug/README.md in that checkout. Import its
+resources using the documented workflow; preserve the repository-level assets/
+authoring sources as well as app/. The live witness used the actual app/debug
+bridge, not a reimplementation of the F5 handler.
+
+Copy bridge_console.py from this bundle into the disposable checkout's root.
+Set its OPENRC_GODOT path to your pinned executable and select an unused bridge
+port if needed. The retained script has the exact paths used for the audit.
+It accepts one JSON object per stdin line, logs commands/results, and restores
+the original two data files in finally. Keep the app and controller in one
+runtime/sandbox if your environment isolates loopback between commands.
+
+Start the controller interactively with python3 bridge_console.py. Commands:
+
+{"command":["launch","--headless","--timeout","45","--","--quick-flight","--aircraft=gp-extra-300s-60","--start=airborne"]}
+{"command":["state"]}
+
+Poll state until route=flight, then pause. Read the transcript for the full
+read-only expressions. The relevant observations are accepted physical
+diameter, session._prop_disc.radius, _airplane.propeller.scale.x, propeller
+global basis scale, and PropellerBlur's measured.radius/global basis scale.
+
+{"command":["pause"]}
+{"command":["key","name=F5"]}
+
+Confirm a no-op F5 preserves diameter and scale. For the refusal control:
+
+{"aircraft_diameter":0.3302}
+{"command":["key","name=F5"]}
+
+This changes only the aircraft quantity; the installation still disagrees and
+the reload must be refused. Accepted model/contact/visual state must be retained.
+For the accepted counterexample:
+
+{"diameter":0.3302}
+{"command":["key","name=F5"]}
+
+This changes both aircraft and installation quantities coherently. Read the
+accepted reload message and the observed arrays: physical radius becomes
+0.1651 m while propeller and blur scale remain 1.0. Both fixture JSONs are in
+fixtures/ for exact reconstruction and hash comparison.
+
+To distinguish startup from reload, stop the app, keep the coherent 13-inch
+fixtures, start the same public route again, and observe scale about 13/12.
+Then restore the stock files and invoke F5:
+
+{"restore":true}
+{"command":["key","name=F5"]}
+
+Physics returns to radius 0.1524 m while the larger visual scale persists.
+Close the controller with {"quit":true}; its finally block restores the files
+and stops its debug app. Confirm the original hashes afterward.
+
+The transcript also records a diagnostic invocation of the existing diameter
+setter after the stale state was observed. That intervention is clearly marked
+in FINDINGS.txt; it is evidence for the repair boundary, not a production fix
+or part of the initial public F5 reproduction.
+
+All data edits are synthetic accepted developer fixtures. The audit did not
+qualify a 13-inch propeller for real aircraft performance or a shipped catalog.
+The original headless logs have landscape UID fallback warnings, disclosed in
+FINDINGS.txt, and cannot qualify rendered pixels or target GPU behavior.

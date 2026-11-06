@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8629ceb6-af67-4033-91d7-01f7725fa650",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "extra300_audit/round3/root/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://static_propulsion_point.gd",
+    "--",
+    "--out=/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/static_propulsion_point.json"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee",
+  "started_utc": "2026-11-06T19:52:49.375243+00:00",
+  "label": "static-extra-final",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/static-extra-final-8skqsamm/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/root/checks/static-extra-final-8skqsamm/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "STATIC_EXTRA_POINT_COMPLETE checks=8 failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.437411,
+  "log_bytes": 139,
+  "log_sha256": "b0563cbd4969374a478acd8940c971a24761228acf76c7a8b743ff634307d23b"
+}

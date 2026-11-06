@@ -1,0 +1,24 @@
+{
+  "checks": 7,
+  "failures": 0,
+  "interpretation": "Stage-local numerical contrast only; ideal axial-flow disk is not a validated cowl-cooling measurement.",
+  "samples": [
+    {
+      "airspeed_m_s": 22.0,
+      "ambient_k": 288.15,
+      "axial_speed_m_s": 21.961755461804444,
+      "cooling_heat_alternative_w": 436.8908009964236,
+      "cooling_heat_current_w": 487.3893249650248,
+      "density_kg_m3": 1.225,
+      "head_k": 390.0,
+      "label": "trimmed airborne",
+      "rpm": 7473.1925175715005,
+      "thermal_rate_alternative_k_s": -1.6627208451023399,
+      "thermal_rate_current_k_s": -2.0234245877352057,
+      "thermal_rate_difference_k_s": 0.36070374263286586,
+      "thrust_n": 5.170504150674472,
+      "vi_forward_ideal": 1.2462609226332408,
+      "vi_static": 5.378033461383136
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6ad01646-b555-490e-a867-5129e90dfd7b",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/aero/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://test_reference_witness.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/source",
+  "started_utc": "2026-11-06T17:25:01.954313+00:00",
+  "label": "reference-witness-datum",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/aero/checks/reference-witness-datum-wi2nfqxi/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/aero/checks/reference-witness-datum-wi2nfqxi/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "REFERENCE_WITNESS_COMPLETE",
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.985414,
+  "log_bytes": 2569,
+  "log_sha256": "2543069af5af5decba02a1bea23a8c6cbca2cd77ae09e37676d6474e7b202b17"
+}

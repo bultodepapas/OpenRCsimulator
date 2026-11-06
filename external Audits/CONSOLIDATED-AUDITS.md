@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits and continuations, the helicopter audit, and the Corsair flight-feel research plan. **Read this document first.** It organizes seventeen distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The seventeen source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits and continuations, the helicopter audit, and the Corsair flight-feel research plan. **Read this document first.** It organizes eighteen distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The eighteen source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A17 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A18 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -39,10 +39,11 @@ The labels A1–A17 identify source documents in this consolidation; they are no
 | A15 | [Helicopter controls, contact, trim and optimization audit][A15] | Dated 2026-11-06; experiments at `3e652a879ab8e928fc7d0b23d8303ac5724c3be6`. Closing comparison to `2e2e3492e67d30635cc4e727025581e2848cdf2e` found responsible helicopter files unchanged and checked newly added A13 for overlap. Six playable-path correctness findings H01–H06, laboratory API defect H07, and two parity-tested optimizations with inconclusive timings. Linux x86-64, pinned Godot beta2, 240 Hz, float64/reference GDScript; no production changes. |
 | A16 | [Corsair flight-feel and realism research plan][A16] | Dated 2026-11-06; implementation references pinned to `3751e35e1cccf574c4446d21273a4d5ecaf80ddf`. Research-informed handling target, analytical sensitivities and development/validation plan, not a new defect audit or physical qualification. Prior CF findings are prerequisites; pilot accounts, manufacturer guidance, derived model values and proposed tests remain distinct. |
 | A17 | [Workshop pending-state and menu-flow audit][A17] | Dated 2026-11-06; frozen `3e652a879ab8e928fc7d0b23d8303ac5724c3be6`, historical A1–A12 ledger/prior UI reconciliation. Five findings UI3-01–05, a qualified Companions refresh case and an explicitly excluded synthetic statistics case. Headless component/running-app interaction state; no native visual, physical-controller, assistive-technology or GPU qualification. |
+| A18 | [Player journeys cognitive walkthrough][A18] | Dated 2026-11-06; reviewed `2e2e3492e67d30635cc4e727025581e2848cdf2e`. Seven imagined journeys with selected complete-app checks at verified 1920×1080 logical viewport, plus source-only routes. Inspection and wording/discoverability proposals, not participant research, seven new defects or native usability qualification. Existing concerns retain their owners. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and seventeen source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and eighteen source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -63,6 +64,7 @@ The folder contains this consolidated document and seventeen source reports. Sou
 | Attached `Pasted text.txt` (helicopter audit) | [helicopter-controls-contact-trim-audit-3e652a8.md][A15] |
 | Attached `Pasted text.txt` (Corsair flight-feel research plan) | [f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md][A16] |
 | Attached `Pasted text.txt` (Workshop menu-flow audit) | [ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md][A17] |
+| Attached `Pasted text.txt` (player journeys walkthrough) | [ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md][A18] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -79,6 +81,7 @@ The folder contains this consolidated document and seventeen source reports. Sou
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
 | Corsair continuous collision, flap transfer and presentation | A12 adds missed interior raised-track contacts (CF-05), an omitted local-flow projection in flap lift-reference transfer (CF-06), and discarded overspeed-advisory work in render flap reads (CF-07). | Accepted-tick counterexamples, production-load cross-product oracle and isolated presentation timing/parity, respectively. Separate from A9 CF-01–04; no occurrence-rate, physical-fidelity or FPS claim. |
+| Predictable player journeys | A18 prioritizes truthful failure-setting lifetime/Restart wording, explicit save-before-calibration, shared effective launch summary and contextual startup guidance. It also retains successful detour/focus behavior. | Cognitive walkthrough: player thoughts are imagined; selected routes were exercised headlessly, other routes source-traced. No new numbered defect count or measured player confusion. |
 | Workshop pending edits and navigation | A17 reports missing Lighting draft recovery, outgoing Smoke buffers surviving Discard/load, refused navigation changing selection, disabled Cancel on invalid first edit and short-window focus loss. | UI3-01–05 are new report IDs; qualified Companions behavior used a status fixture. Preserve pending state during editing but clear it on committed authorized replacement; do not apply a blanket refresh reset. |
 | Corsair handling research and calibration | A16 proposes a precise, powerful giant RC Corsair with smooth ordinary flight and demanding approach energy/elevator management. Establish installation/input/fuel identity, resolve known defects and then identify controls, propulsion, drag and flap/elevator reserve. | Research target and analytical sensitivity, not new CF defects, measured speedup or established real-aircraft fidelity. Heavier forum builds and smaller Corsairs cannot directly calibrate the authored reference. |
 | Helicopter control, domain and terrain contracts | A15 reports latent ground yaw demand, stale mode confirmation, a reachable startup-domain gap, missing lake terrain context, nonconservative rotor-disc rejection and collective telemetry mismatch; HX trim has a separate lab-only contract defect. | Accepted production-session/input witnesses and constructed contact counterexamples, not flown upset rates or physical realism. Both optimization timings are inconclusive despite sampled parity. |
@@ -132,6 +135,22 @@ A6 arrived later in this folder but reviews the **same commit as A2–A5**, not 
 
 **H02 reachable startup.** Accepted weather is mean **15 m/s FROM 0°**, gust peak **8 m/s**, duration **12 s**, period **120 s**, zero delay. Normal zero-pitch arm/hold release accepts **740 ticks**; at **3.0833333333 s**, accepted shaft **16.6514856023 rad/s**, world wind **[−19.1744775495,0,0] m/s**, next RK trial refuses main-rotor advance-ratio domain and session becomes unflyable. Actual domain input is hub-relative flow including motion and `omega×r`, not world wind alone. Retained-script rerun matches; three steady-wind controls each complete **2,400 ticks**. This demonstrates admitted strong-gust startup failure, not every windy startup.
 
+### Player journeys: A18 cognitive walkthrough
+
+**Source: [A18][A18], reviewed `2e2e349`.** Seven journeys examine whether actions disclose what launches, persists, cancels or repeats. Imagined thoughts are **not quotations, observed reactions or participant-study results**. The local journey numbers below mirror the source order, not new finding or tracker IDs. Preserve previous owners rather than multiplying onboarding, transaction or loading tickets.
+
+| Journey | Established behavior and evidence class | Proposed experience and prior-work boundary |
+| --- | --- | --- |
+| **1. Beginner chooses Ugly Stick · 61FX** | Complete-app runway flight starts finite-glow engine stopped; Resume→F7→Pause leaves engine running. Compact hint covers arrows/throttle/Pause; Help/default Control guide already include F7. No evidence that a real player missed it. | Preflight predicts stopped engine; current-state cue shows stopped/starter, running, or actual refusal reason. F7 is fixed physical-key dispatch: use existing key-label machinery; gamepad starter binding is separate work. Specific UI-30/UI-36 contextual-help case, not a newly missing entire tutorial or change to deliberate startup. |
+| **2. RC enthusiast seeks calibration** | Source-grounded route for unfamiliar joystick-like device: select Flight device→Profile→Radio transmitter · custom→Devices→calibrate. Connected radio draft is prerequisite, documented in Profile/FIRST-LAUNCH but not beside initial search point. No physical transmitter attached. Saved profile persists; explicit Flight/Menu roles are app-session selections, with automatic selection on startup by intentional policy. | Contextual Using an RC transmitter? guidance plus Choose radio profile action; disclose profile saved versus session-only device selection. Preserve separate roles, keyboard/mouse fallback and explicit hardware identification. Does not reopen profile identity or recovery-focus defects. |
+| **3. Cancel in-flight calibration** | Source/documented Pause route calls `setup._save_profile(false)` and checks save before wizard, committing Controls draft/device roles. Wizard Cancel retains those accepted settings. Home calibration instead remains draft until Controls Save. Not newly discovered accidental behavior or a physical-device reproduction. | Caption **Save controller settings and calibrate**; explain cancellation retains saved settings before action and after cancellation. Start with clear wording rather than extra confirmation. Acceptance: edit mapping/roles, begin/cancel and test whether user predicts committed state. |
+| **4. Failure practice then Restart** | Strongest new copy evidence: dialog says next flight only, but settings intentionally persist for new ordinary airplane flights until changed. Complete-app check: change future probability 100%→0% while paused, Restart retains current resolved episode; later new airplane flight disables failures. **No failure activated in ground-only check.** Practice summary is hidden when Flight page active. | Disclose lifetime and distinguish Resume=current flight/draw, Restart=same resolved draw (including no-failure draw), Home→Fly=new flight with saved settings. Notifications apply immediately; Natural Random ignores these saved failure settings, helicopters excluded. Show practice configuration/Review beside Fly without revealing intended-hidden failure. New wording evidence, distinct from A14 F16 history metadata and onboarding. |
+| **5. Change aircraft to MoonRunner X99** | Exercised Change aircraft ends flight transaction and focuses current catalog entry. Remembered runway preference resolves gearless MoonRunner to **Hand launch**; Aircraft caption names aircraft but Start row is on hidden Flight page. Loading already shows effective start and permits Cancel. Valid configuration, not launch failure. | Expand shared next-flight summary with aircraft/field/effective start and Change start, plus active practice. Use exactly the resolver values consumed by loading/session creation, not duplicate compatibility rules. Extend UI-34/remembered-start work; no mandatory new confirmation screen. |
+| **6. Airplane pilot tries X-Cell** | Source-only: vehicle-specific hint content shares one `first_flight_hint_seen`; airplane completion may suppress first helicopter hint. Helicopter disarmed HUD/Help already explain startup. | Track tip exposure by vehicle class coordinated with input-family/visible-exposure work (A13 UI2-06, UI-36/HELI). Appropriate disarmed pad cue: centered cyclic/yaw, zero pitch, B arm, H release hold, wait governed RPM before collective. Hover start differs. Add on-demand Show flight tips without resetting unrelated preferences; no parallel tutorial system. |
+| **7. Explore and return** | Exercised Help→Back restores Help focus; Controls Cancel restores Controls focus; Change aircraft focuses current entry; Natural Random browse/reroll→Back preserves Home aircraft/start and restores Natural Random focus. These are positive scoped checks, not global navigation qualification. Settings/Sky scope examples below are source-traced. | Preserve opener/fallback ownership and browsing isolation. Explain each screen's draft/live/save scope; ordinary Sky Apply should distinguish applied-and-saved from applied-live/save-failed. Known Settings/Sky concerns illustrate the journey rather than add duplicate findings. |
+
+**Scope map retained from A18:** presentation preview uses Keep/Revert draft; language selection attempts immediate save; Home calibration stays draft until Save; in-flight calibration commits Controls before wizard; ordinary paused Sky/lighting affects current flight and attempts to save defaults. These are intent/transaction distinctions, not guarantees every write succeeds. Natural Random isolation and prior reported save-failure paths remain separately scoped.
+
 ### Workshop menu-flow continuation: UI3-01–05
 
 **Source: [A17][A17], frozen `3e652a8`.** Five numbered issues, one separately qualified Companions case and one excluded diagnostic. The author reconciled the historical A1–A12 ledger/prior UI review and did not recount repaired New profile identity. These are additional interaction boundaries, not a new UI-framework proposal or verification of current fixes.
@@ -165,6 +184,8 @@ A17 excludes its potential statistics-dialog reentry finding because the synthet
 | **A14 F16 — P2, flight context missing or misattributed** | Writer stores scenario/failure under `record.metadata`; renderer reads top-level `record.scenario`, forbidden by schema, and lacks failure context. Schema-valid synthetic minimal nested fixture displays normal statistics but no context; nested data was **not a complete validated launch config**, nor a flown Natural Random session. Source also shows Natural Random using default failure config while statistics capture saved `preferences.failure_config`, which can differ from effective flight. | Schema-aware record-to-view adapter and capture effective accepted configuration at admission. Show scenario/practice context, expanded seed/settings, actual failure events separately from enabled practice and exact airborne seconds. The 42-second fixture shown only as `<1 min` is a smaller extension, not another major finding. Unknown/unreliable legacy context stays unknown. Test ordinary/Random, enabled/disabled practice, deliberately mismatched preferences, legacy/translation and real store round-trip. |
 
 **Implementation update (A14 F10, 2026-11-06):** AE-09d-R1 applies Starting presets as validated patches to the current recipe. Compatible measurements, tank capacity, individual control overrides and presentation survive; incompatible combinations and pending input are refused without changing the draft/history. Keyboard issue focus, Undo/Redo, Save/reload and trial payloads are covered by 88 new checks plus 319 existing Workshop checks, all passing without engine errors. The broader language suite retains seven pre-existing coverage failures for six fuel-widget strings; the two new messages are translated in all eight catalogs. [Evidence and limits](../docs/research/aircraft-editor/AE-08b-09/README.md#preset-integrity-ae-09d-r1-2026-11-06). F11–F16 remain separate findings.
+
+**Implementation update (A14 F11, 2026-11-06):** AE-09d-R2 centralizes the existing 96-character name bound across storage, bundles, editor/save guards and recovery. Valid imported names survive unrelated edits, save/reload, recovery and export; 97-character inputs remain refused at data boundaries. The dedicated regression passes 153 checks, with 385 more in affected suites and zero checked engine errors. Existing whitespace rules and the 64-character numeric recovery limit are unchanged. [Evidence and limits](../docs/research/aircraft-editor/AE-08b-09/README.md#name-integrity-ae-09d-r2-2026-11-06). F12–F16 remain separate findings.
 
 **Overlap and ownership.** F14 adds an actually exercised trace→statistics modal/decision failure to A13 UI2-01's omitted garage participant and UI2-05's premature Workshop recovery deletion; these remain separate witnesses for one coordinated departure design. Do not claim A14 executed A13's Workshop recovery sequence. F10 is a separate scoped-preset counterexample to A11 R01; F13 is a launch-specific hidden-notice path, distinct from A11 F06's hidden language-save outcome. Retain existing implementation updates and current-track disposition rather than treating this historical continuation as a reopened defect list.
 
@@ -795,6 +816,12 @@ Any complexity increase needs convergence evidence, for example **6/10/14 total 
 
 A15 prioritizes H01/H04 accepted-control semantics, then H02 admitted startup envelope, H03/H05 shared terrain/conservative contact, then H06 telemetry and H07 lab trim. Respect generated-configuration pipelines, shared kernel boundaries, controller memories/rollback and backend parity. Any actual flight-physics correction needs the repository's baseline/replay/candidate evidence workflow; these reported counterexamples alone do not qualify a repair. Preserve optimization parity cases and profile complete target workloads before adopting either candidate. Do not infer advanced HX realism or completed release gates from fixes to the historical playable path.
 
+### Player-journey proposals and acceptance
+
+A18 orders failure lifetime/Restart copy plus practice summary; explicit save-and-calibrate caption; shared effective aircraft/field/start summary; state/vehicle startup guidance; then unknown-radio prerequisites and device-selection lifetime. Reuse Home/screen stack/theme and Container wrapping, qualify **1080p first**, keep focus distinguishable from selection/press and use visible text as well as color. Refresh summary on accepted configuration changes, not per-frame menu rebuilds; non-actionable summary text need not become an interactive control. Preserve loading/cancellation ownership; A13 OBS-01 already owns synchronous Natural Random preparation. A loading label alone does not establish rendered responsiveness.
+
+Participant validation is **proposed, not performed**: give goals without teaching the route—start 61FX, set transmitter plus menu pad, edit/calibrate/cancel, leave failure practice, switch runway aircraft to MoonRunner, try helicopter after airplane, browse random then return. Before consequential actions, ask what should change and remain; record prediction/result mismatches. This would test the walkthrough hypotheses rather than treating imagined confusion as measured usability. Existing successful detours are regression expectations.
+
 ### Workshop menu-flow follow-up and acceptance
 
 A17 orders complete pending Lighting serialization/recovery, committed-replacement buffer clearing, refused-navigation reconciliation, usable explicit Cancel, short-window focus transfer, then admitted-session Companions verification. Keep three contracts explicit: accepted recipe/presentation/revision changes only on accepted operations; pending raw/zone/effects edits survive until Apply/Cancel/authorized Discard; navigation selection/focus/scroll agrees with the usable visible surface. Extend existing Workshop owners rather than introducing a new framework. Preserve current implementation updates and triage historical witnesses against the current source before repairs.
@@ -868,7 +895,7 @@ For loading, A13 notes early `load_threaded_get()` may block and exact-beta repe
 
 ### What is supplied here
 
-This directory contains seventeen source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains eighteen source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -889,6 +916,11 @@ This directory contains seventeen source Markdown files and this consolidated do
 | A15 | `OpenRC_Helicopter_Audit_3e652a8_2026-11-06.zip`, described as full report, reproduction/candidate scripts, checked logs, source identities, closing comparison and replay instructions. Only pasted summary supplied; its external ChatGPT-library archive was not inspected or replayed for this consolidation. |
 | A16 | `F4U-CORSAIR-FLIGHT-FEEL-REALISM-PLAN-2026-11-06.md`, described as approximately 7,100 words with source research, derivations, code owners, development priorities, 15-case matrix and reproducible calculations. Only pasted summary supplied; external ChatGPT-library full plan was not inspected. Original accessible-source citations and inaccessible-forum limitations remain preserved. |
 | A17 | `OpenRC_Menu_Flow_Audit_3e652a8_2026-11-06.pdf` (12-page report) and `OpenRC_Menu_Flow_Evidence_3e652a8_2026-11-06.zip` (probes, checked logs, exact source identities, Godot research and running-app transcript). Only pasted summary supplied; linked ChatGPT-library artifacts were not inspected/replayed. |
+| A18 | `OpenRC_Player_Journeys_2026-11-06.pdf` (13-page walkthrough) and `OpenRC_Player_Journeys_Evidence_2026-11-06.zip` (application transcript/logs, final test-profile settings, source identities and reproduction guidance). Only pasted summary supplied; linked ChatGPT-library deliverables were not inspected/replayed. |
+
+### A18 evidence boundary
+
+Cognitive inspection is separate from real-participant research. Selected complete-app headless checks at verified **1920×1080 logical viewport** cover Help/Controls detours, failure settings/Restart, aircraft change, 61FX starter and Natural Random browsing. Radio prerequisites/calibration commitment, helicopter tip completion and Settings/Sky scope include source-only analysis; no physical transmitter or user study was performed. Ground-only failure test activated no failure. No native visual polish, physical-controller usability, audio/GPU or general launch qualification follows. Source remained unchanged in the review; proposed wording is not implemented by this consolidation.
 
 ### A17 evidence boundary
 
@@ -969,7 +1001,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files at intake. They identify the seventeen retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
+These hashes were calculated from the supplied files at intake. They identify the eighteen retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -990,6 +1022,7 @@ These hashes were calculated from the supplied files at intake. They identify th
 | A15 — `helicopter-controls-contact-trim-audit-3e652a8.md` | `213c16f7990e58d5c75f1aa317d6d2402403832efb2d6e0db5b4b32841f92fb3` |
 | A16 — `f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md` | `28ddefeba585ccea0b512c06c19bad9d0b5e89382e6935075ab3a9c0d3db8e28` |
 | A17 — `ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md` | `0bf68e8259541a7fb9acb14c832b5bbb0ebebb73bc91c7870688b8d60f12df14` |
+| A18 — `ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md` | `fcea95473a9fc27add914878844739bd1c8271869f4533382d21f1586e22521a` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -1015,3 +1048,5 @@ These hashes were calculated from the supplied files at intake. They identify th
 [A16]: f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md
 
 [A17]: ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md
+
+[A18]: ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md

@@ -1,0 +1,10 @@
+--- a/app/aircraft/extra_300s_model.gd
++++ b/app/aircraft/extra_300s_model.gd
+@@ -102,6 +102,7 @@
+ 		for j in count:
+ 			var cap := [[end, -1], [end, j], [end, (j + 1) % count]]
+ 			_tri(st, centers[end], rings[end][j], rings[end][(j + 1) % count], axis, axis, axis, axis, _pick(uvs, cap), _pick(uv2s, cap))
++	st.index()
+ 	return st.commit()
+ 
+ 

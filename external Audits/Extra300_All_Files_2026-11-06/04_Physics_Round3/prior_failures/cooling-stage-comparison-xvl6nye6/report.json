@@ -1,0 +1,216 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a18a3374-df9d-45c8-a477-4c33886269da",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/probe_cooling.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/source",
+  "started_utc": "2026-11-06T19:41:02.548808+00:00",
+  "label": "cooling-stage-comparison",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/checks/cooling-stage-comparison-xvl6nye6/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/checks/cooling-stage-comparison-xvl6nye6/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COOLING-PROBE 15 checks, 0 failures"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 19,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/club_furniture.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Preload file \"res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/pit_chair.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Parse Error: Preload file \"res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/power_lines.gd:5)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 9,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/prefabs.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:101)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 13,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:102)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 15,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:103)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:104)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 19,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:105)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 21,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:106)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 23,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:107)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 25,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:108)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 27,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:109)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 29,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:110)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 31,
+      "message": "Parse Error: Preload file \"res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg\" does not exist.",
+      "context": [
+        "          at: GDScript::reload (res://render/flightline_barrier.gd:111)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 33,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://scenery/collision_world.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 35,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (res://sim/flight_session.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 37,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "          at: GDScript::reload (/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/probe_cooling.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 39,
+      "message": "Failed to load script \"/workspace/scratch/b3c27b2e84ee/extra300_audit/round3/dynamics/probe_cooling.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed",
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "COOLING-PROBE 15 checks, 0 failures"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 3.172123,
+  "log_bytes": 4331,
+  "log_sha256": "0569b2cbb391b8526eda88c849af9e07c080b828b98bcad0267776aa3dc5dc37"
+}

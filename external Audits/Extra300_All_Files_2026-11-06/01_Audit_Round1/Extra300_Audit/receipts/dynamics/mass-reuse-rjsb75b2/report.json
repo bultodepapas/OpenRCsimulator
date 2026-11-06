@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f35588a4-af44-49aa-8d3b-e04ff984fd6c",
+  "command": [
+    "/workspace/scratch/bc7264df490c/audit_round3/engine/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/runtime",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/probe_mass_reuse.gd"
+  ],
+  "cwd": "/workspace/scratch/b3c27b2e84ee/extra300_audit/source",
+  "started_utc": "2026-11-06T17:17:55.814177+00:00",
+  "label": "mass-reuse",
+  "log": "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/checks/mass-reuse-rjsb75b2/engine.log",
+  "report": "/workspace/scratch/b3c27b2e84ee/extra300_audit/dynamics/checks/mass-reuse-rjsb75b2/report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "MASS_REUSE_PROBE PASS"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.808186,
+  "log_bytes": 468,
+  "log_sha256": "94a1a9ffdb67c839aa30d2e7c63ce5e95df13bb5bcd95423e2fde28c9c567030"
+}

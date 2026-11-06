@@ -1,0 +1,136 @@
+Extra 300 audit, second pass — reproduction and evidence guide
+=============================================================
+
+Repository: https://github.com/bultodepapas/OpenRCsimulator
+Revision: 8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd
+Engine: Godot 4.8.beta2.official.cafc17a19, Linux x86-64
+Engine SHA-256: 34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564
+
+This is an audit evidence bundle, not an installed game or a production change.
+The checked-out production source was not edited. New findings are E300-07
+(trim result work reuse) and E300-08 (F5 propeller visual synchronization).
+The first pass's E300-01 through E300-06 remain separate. The shared audit
+ledger has SHA-256 772a484f0aad5f36241bca4b13c09437fdc1b00b43def686ebbe180abb7a55fa.
+
+Use a disposable checkout/copy. The propeller reload reproduction deliberately
+edits both aircraft and installation JSON, then restores them. The alternative
+aerodynamic implementations are diagnostics, not proposed physics repairs.
+
+1. Recreate the trim variants
+----------------------------
+Place a checkout of the pinned revision at source/ alongside this file, and
+obtain/import the pinned engine using that repository's documented workflow.
+Consult source/docs/tools/README.md and source/docs/tools/shared.md first.
+The recorded tests used an isolated app copy, a minimal project with 240 Hz and
+gl_compatibility, and previously imported resources. Complete runtime identity
+and its declared import/project deviations are in root/runtime_source_identity.json.
+
+Starting from an already imported checkout, copy source/app to root/runtime
+(including the import cache if needed). A complete ordinary source/app copy
+also provides the production data and scripts; this bundle omits those public
+repository files and the engine executable. Preserve source/ unchanged.
+
+Run from the extracted bundle root:
+
+    cp -a source/app root/runtime
+    python3 root/prepare_trim_reuse.py
+    cp root/probe_trim_reuse.gd root/runtime/probe_trim_reuse.gd
+    cp root/bench_trim_reuse.gd root/runtime/bench_trim_reuse.gd
+
+The preparer verifies the baseline trim file, writes the reviewable patch and
+isolated alternate scripts, and constructs separately counted variants. The
+counted variants are used only for work counts, never for timing.
+
+Set EXTRA_AUDIT_ENGINE to the absolute pinned engine path and EXTRA_AUDIT_ROOT
+to the absolute extracted bundle path. Use fresh output directories and
+isolated XDG_CONFIG_HOME, XDG_DATA_HOME and XDG_CACHE_HOME for each run.
+
+    EXTRA_TRIM_REPORT="$EXTRA_AUDIT_ROOT/root/reproduced-trim-results.json" \
+      python3 source/tools/godot/run_checked.py \
+      --label trim-parity-reproduction --out-dir root/reproduced-checks \
+      --timeout 180 --require-text 'EXTRA_TRIM_REUSE: 87 checks, 0 failed' -- \
+      "$EXTRA_AUDIT_ENGINE" --headless --path root/runtime \
+      --audio-driver Dummy --script res://probe_trim_reuse.gd
+
+Expected: 34 byte-identical complete-result pairs and 87 checks, zero failures.
+The Extra half-power counted case must show 202 original versus 174 candidate
+RPM solves, with 14 finalizations and identical results.
+
+2. Reproduce the measured solver scope
+-------------------------------------
+Pause other CPU-heavy jobs; keep the counted and timed code separate. This is
+not a rendered-frame, full-startup, launch-cache or native-backend benchmark.
+
+    EXTRA_TRIM_BENCH_REPORT="$EXTRA_AUDIT_ROOT/root/reproduced-timing.json" \
+      python3 source/tools/godot/run_checked.py \
+      --label trim-timing-reproduction --out-dir root/reproduced-checks \
+      --timeout 300 --require-text 'EXTRA_TRIM_BENCH: 48 pairs, 0 failed' -- \
+      "$EXTRA_AUDIT_ENGINE" --headless --path root/runtime \
+      --audio-driver Dummy --script res://bench_trim_reuse.gd
+
+The benchmark performs two warmup pairs and 24 measured pairs for each of two
+cases, alternating original/candidate order. Report paired ratios and raw
+ranges; do not demand the same timing numbers on a different host. Both
+results must remain exactly equal on every pair. The original raw pairs and
+the timing summary are included under root/.
+
+3. Verify the candidate with the existing repository tests
+---------------------------------------------------------
+Copy root/runtime to root/candidate_runtime and replace only its
+physics/trim.gd with root/runtime/physics/audit_trim_candidate.gd. Run the
+unchanged production test scripts through source/tools/godot/run_checked.py:
+
+    res://tests/test_trim_integrity.gd  (recorded: 731 checks, zero failures)
+    res://tests/test_cruise_trim.gd     (recorded: 22 checks, zero failures)
+
+Use --path root/candidate_runtime and require the printed completion marker.
+The second script's dynamic rollout is a Stik control, not Extra validation.
+The candidate patch can separately be checked with git apply --check in a
+disposable checkout. No patch was applied to the reviewed production checkout.
+
+4. Propeller reload witness
+---------------------------
+See model_lifecycle/FINDINGS.txt, its bridge transcript and reproduction notes.
+The real app was operated through the repository debug bridge. The mutation
+changes only the diameter quantities in these disposable files:
+
+    app/data/aircraft/gp_extra_300s_60.json
+    app/data/glow/extra_61fx_2t.json
+
+Aircraft-only disagreement is a required rejection control. The coherent
+12-to-13-inch edit is accepted by F5. Compare physics diameter/collision disc
+with propeller scale and the blur's effective world radius. A fresh 13-inch
+launch and a 13-to-12-inch F5 reload distinguish startup from reload behavior.
+This is a synthetic developer mutation, not a calibrated catalog propeller.
+
+5. Supplemental research and negative controls
+---------------------------------------------
+dynamics/ contains a 23-check stock finite-fuel probe, results and a short exact
+flight log with cut/restart interventions. It also retains a quantified,
+explicitly already documented scenery-contact convention; that is excluded
+from the new findings. Read the handoff before interpreting it.
+
+aero/ contains fixed-state diagnostics, checked logs, and an independent review
+of the trim patch. The polar-source and fixed-normalizer variants are labeled
+diagnostic in both filename and report. Copy an imported pinned app to
+aero/runtime, then run python3 aero/build_diagnostics.py and copy the supplied
+probe scripts to that runtime root. The builder writes alternate filenames;
+it never patches production aero.gd. The included diffs show the two changes.
+The frozen
+20 m/s normalizer is deliberately fixture-specific and is not a valid general
+flight model. No alternative wake law has been physically validated.
+
+6. Reading receipts
+-------------------
+Only ok=true, complete=true, process_exit=0 receipts with the required marker
+establish a completed checked run. Read diagnostics as well as exit status.
+The bundle includes successful checks supporting the report. EXCLUDED_RUNS.txt
+identifies discarded setup attempts and the corrected finite-fuel
+completion-marker typo. Their retained receipts are under exploration/ and
+are not counted as acceptance evidence.
+Full-app reload logs retain resource UID fallback warnings; those runs are not
+described as warning-free or as rendered visual/GPU qualification.
+
+The SHA256SUMS.txt manifest identifies the delivered evidence files. Logs keep
+their original absolute runtime paths so their recorded commands remain
+auditable; adapt those paths for a new workspace.

@@ -1,0 +1,11 @@
+--- a/research/extra-300/ex05/derive_physics.py
++++ b/research/extra-300/ex05/derive_physics.py
+@@ -504,7 +504,7 @@
+ from calibration_report import annular_prop_performance  # noqa: E402
+ INSTALLATION = "app/data/glow/extra_61fx_2t.json"
+ gp = {k: v["value"] for k, v in json.load(open(ROOT / INSTALLATION))["propeller"].items()}
+-section = {"lift_slope_per_rad": gp["lift_slope"], "cd0": gp["cd0"], "induced_drag": gp["induced_drag"], "blades": gp["blades"]}
++section = {"lift_slope_per_rad": gp["lift_slope"], "cd0": gp["cd0"], "induced_drag": gp["induced_drag"], "blades": gp["blades"], "zero_lift_angle_rad": gp.get("zero_lift_angle_rad", 0.0)}
+ D_p, N_REF = gp["diameter_m"], 12000.0  # Ct of the no-induction surrogate does not depend on rpm at fixed J
+ n_ref = N_REF / 60.0
+ sigma = note("propulsion", "solidity of the Glow propeller surrogate", gp["blades"] * gp["chord_m"] * 0.8 * (D_p / 2) / (math.pi * (D_p / 2) ** 2),
