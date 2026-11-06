@@ -68,6 +68,15 @@ func _initialize() -> void:
 		{ last_loads = PackedFloat64Array([0.0, 0.0, -2.0 * MASS * G, 0.0, 0.0, 0.0]) })
 	_check("60° turn: load factor 2", _near(turn.load_factor, 2.0))
 	_check("60° turn: heading 090, bank 60°", _near(turn.heading_deg, 90.0, 1e-9) and _near(turn.bank_deg, 60.0, 1e-9))
+	_check("coordinated turn has no lateral specific force", _near(turn.specific_force_right_g, 0.0))
+	var knife := _telemetry(_state([0.0, 0.0, -30.0], [20.0, 0.0, 0.0], 0.0, 0.0, PI / 2.0), calm,
+		{last_loads = PackedFloat64Array([0.0, -MASS * G, 0.0, 0.0, 0.0, 0.0])})
+	_check("knife edge forwards body-right specific force with its sign", _near(knife.specific_force_right_g, -1.0)
+		and _near(knife.load_factor, 0.0))
+	var inverted := _telemetry(_state([0.0, 0.0, -30.0], [20.0, 0.0, 0.0], 0.0, 0.0, PI), calm,
+		{last_loads = PackedFloat64Array([0.0, 0.0, MASS * G, 0.0, 0.0, 0.0])})
+	_check("inverted negative g points apparent down toward tank roof", _near(inverted.load_factor, -1.0)
+		and _near(inverted.specific_force_right_g, 0.0))
 
 	# Height above ground follows the terrain under the aircraft.
 	var hill := _telemetry(_state([0.0, 0.0, -30.0], [15.0, 0.0, 0.0], 0.0, 0.0, 0.0), calm, { terrain_up = 12.5 })

@@ -76,6 +76,8 @@ var radio_picker: OptionButton
 var widget_size_picker: OptionButton
 var widget_background_picker: OptionButton
 var session_scope_picker: OptionButton
+var warning_limit_picker: OptionButton
+var warning_switches := {}
 var switches := {}
 var done_button: Button
 var _syncing := false
@@ -140,7 +142,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	tab_bar.clip_tabs = true
 	tab_bar.scroll_to_selected = true
 	tab_bar.scrolling_enabled = true
-	for section: String in ["Modern", "Classic", "Flight tools", "Appearance", "Other overlays"]:
+	for section: String in ["Modern", "Classic", "Flight tools", "Appearance", "Other overlays", "Alerts"]:
 		tab_bar.add_tab(tr(section))
 	tab_bar.current_tab = 0
 	shell.add_child(tab_bar)
@@ -274,6 +276,16 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 24)
 	other_page.add_child(grid)
+	var alerts_page := VBoxContainer.new()
+	alerts_page.name = "AlertsPage"
+	alerts_page.add_theme_constant_override("separation", 8)
+	alerts_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	alerts_page.visible = false
+	pages.add_child(alerts_page)
+	_pages.append(alerts_page)
+	alerts_page.add_child(Widgets.label(tr("Flight alerts"), "SectionLabel", true, false))
+	alerts_page.add_child(Widgets.label(tr("Critical alerts remain enabled while Warnings is on."), "SecondaryLabel", true, false))
+	alerts_page.add_child(Widgets.label(tr("Training cues are display-only and are not aircraft limits."), "SecondaryLabel", true, false))
 	for id: String in Settings.IDS:
 		var box := InstrumentSwitch.new()
 		box.name = id.capitalize().replace(" ", "")
@@ -287,7 +299,9 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 			if not _syncing:
 				manager.set_overlay_visible(id, on)
 			)
-		if id in Settings.CLASSIC_IDS:
+		if id == "warnings":
+			alerts_page.add_child(box)
+		elif id in Settings.CLASSIC_IDS:
 			_classic_grid.add_child(box)
 		elif id in Settings.NAVIGATION_IDS:
 			_navigation_grid.add_child(box)
@@ -298,6 +312,17 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 		else:
 			grid.add_child(box)
 		switches[id] = box
+	_alert_switch(alerts_page, "warning_detail", tr("Show alert details"))
+	warning_limit_picker = _picker(alerts_page, tr("Maximum visible alerts"), "WarningLimit")
+	for limit: int in Settings.WARNING_LIMITS:
+		warning_limit_picker.add_item(str(limit))
+	warning_limit_picker.item_selected.connect(func(index: int) -> void:
+		if not _syncing:
+			manager.set_warning_option("warning_limit", Settings.WARNING_LIMITS[index]))
+	_alert_switch(alerts_page, "warning_navigation", tr("Range reminders"))
+	_alert_switch(alerts_page, "warning_energy", tr("Energy advisories"))
+	_alert_switch(alerts_page, "warning_status", tr("Status notices"))
+	_alert_switch(alerts_page, "warning_training", tr("Flight training cues"))
 	if flight != null and flight.has_method("set_latency_marker_enabled"):
 		latency_switch = CheckBox.new()
 		latency_switch.name = "LatencyMarker"
@@ -340,7 +365,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 func _ready() -> void:
 	_resize_layout()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
-		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker, widget_size_picker, widget_background_picker, session_scope_picker]:
+		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker, widget_size_picker, widget_background_picker, session_scope_picker, warning_limit_picker]:
 			picker.get_popup().force_native = true # as the time-of-day dialog: avoids embedded-popup teardown errors
 	preset_picker.grab_focus.call_deferred()
 
@@ -372,7 +397,7 @@ func _resize_layout() -> void:
 			if focused != null and row.is_ancestor_of(focused):
 				focused.grab_focus()
 	if tab_bar != null:
-		# Five sections fit at the primary 1080p/default-text target; larger text retains native tab scrolling.
+		# Larger text retains native tab scrolling.
 		tab_bar.add_theme_font_size_override("font_size", roundi(22 * preload("res://ui/ui_theme.gd").text_scale))
 		tab_bar.ensure_tab_visible(tab_bar.current_tab)
 
@@ -412,6 +437,9 @@ func _sync() -> void:
 	widget_background_picker.select(_nearest_opacity_index(float(settings.get("widget_opacity", Settings.DEFAULT_WIDGET_OPACITY))))
 	compact_switch.set_pressed_no_signal(bool(settings.get("widget_compact", Settings.DEFAULT_WIDGET_COMPACT)))
 	session_scope_picker.select(1 if settings.get("session_stats_scope", "all") == "aircraft" else 0)
+	warning_limit_picker.select(Settings.WARNING_LIMITS.find(int(settings.get("warning_limit", Settings.WARNING_DEFAULTS.warning_limit))))
+	for key: String in warning_switches:
+		warning_switches[key].set_pressed_no_signal(bool(settings.get(key, Settings.WARNING_DEFAULTS[key])))
 	for id: String in Settings.IDS:
 		switches[id].set_pressed_no_signal(settings.visible.has(id))
 	lock_switch.set_pressed_no_signal(bool(settings.get("layout_locked", false)))
@@ -419,6 +447,19 @@ func _sync() -> void:
 	radio_picker.select(Settings.RADIO_MODELS.find(settings.radio_model))
 	mode_picker.select(int(settings.stick_mode) - 1)
 	_syncing = false
+
+
+func _alert_switch(column: VBoxContainer, key: String, label_text: String) -> void:
+	var box := CheckBox.new()
+	box.name = key.capitalize().replace(" ", "")
+	box.text = label_text
+	box.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	box.toggled.connect(func(on: bool) -> void:
+		if not _syncing:
+			manager.set_warning_option(key, on))
+	column.add_child(box)
+	warning_switches[key] = box
 
 
 func _nearest_opacity_index(opacity: float) -> int:

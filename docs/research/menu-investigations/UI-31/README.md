@@ -2,6 +2,44 @@
 
 2026-10-20. This step repairs [UI-30](../UI-30/README.md) findings PS-1–PS-4, PS-7 and PS-10–PS-12. It follows the [redesign plan §11](../../../plans/menu-redesign.md#11-ui-30-audit-repairs). The rule it enforces: no reachable flight state may hold the simulation without a visible next action.
 
+## Successful controller recovery focus (UI-31-R1, 2026-11-06)
+
+External audit A11 F02 reproduces at `077b8be1d`: recovery hides the Controls
+opener before or after the setup dialog closes, leaving Pause without keyboard
+or gamepad focus. The initial production-route regression failed 16 of 39 checks
+with no engine errors, for both Keyboard and replacement-controller recovery.
+
+`Screen` now accepts an optional focus fallback. `ScreenStack` restores a usable
+opener first, then asks the exposed active screen to recover missing focus.
+Pause supplies its primary action and also repairs focus when its focused
+recovery shortcut disappears. Hidden, disabled, nonfocusable, freed and queued
+targets are rejected. A newer valid selection is preserved, including against
+Pause's queued initial-focus callback. Explicit no-restore pops remain unchanged.
+Standalone dialogs return their own outgoing focus to the opener; focus outside
+the closing dialog is preserved. Focusing Resume never activates it.
+
+[Source identities and checked receipts](recovery-focus-20261106/verification.json)
+retain **72 new passing checks** and **2,275 existing checks** across eight UI and
+controller suites. The new test runs the real AppRoot → Pause → Controls → Save
+route at a 1920×1080 viewport with synthetic devices. It checks both visibility
+timings, a separate menu pad, Keyboard/replacement recovery, continued navigation
+and Accept, device isolation, unchanged paused state, shared-stack edge cases and
+standalone Help. Existing coverage includes Pause, screen-stack cycles, controller
+recovery, calibration, responsive layouts, Settings and quit transactions.
+
+Final tests used pinned Godot 4.8-beta2 on Windows headless in a frozen checkout
+with isolated preferences. All final receipts are complete with zero engine
+errors; calibration retains its expected AUX-overlap warning. Two earlier
+shared-tree suites failed during concurrent fuel-widget edits: parse errors
+caused downstream missing-frame accesses despite passing assertions. Those failed
+receipts remain retained. The final snapshot includes the corrected shared fuel
+code, with no feature exclusion; the integrated focus source and test match it.
+The [snapshot patch](recovery-focus-20261106/tested-snapshot.patch) and manifest
+identify that scope separately from later unrelated edits.
+
+These are software and headless layout checks, not physical-controller, native
+visual or screen-reader qualification. Required CI remains separate.
+
 ## Behaviour
 
 | Finding | Change |

@@ -86,7 +86,9 @@ func close(restore_focus := true) -> void:
 	if restore_focus and can_focus(return_focus):
 		# The stack has detached this surface. Use the opener's live viewport,
 		# and preserve focus acquired by the returning screen during activation.
-		if not can_focus(return_focus.get_viewport().gui_get_focus_owner()):
+		var focused := return_focus.get_viewport().gui_get_focus_owner()
+		# Standalone dialogs close before detaching; their own focus is outgoing.
+		if not can_focus(focused) or focused == self or is_ancestor_of(focused):
 			return_focus.grab_focus()
 	return_focus = null
 

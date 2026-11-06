@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits (both rounds). **Read this document first.** It organizes thirteen distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The thirteen source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits and continuations. **Read this document first.** It organizes fourteen distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The fourteen source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A13 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A14 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -35,10 +35,11 @@ The labels A1–A13 identify source documents in this consolidation; they are no
 | A11 | [UI/UX, configuration integrity and accessibility audit][A11] | Dated 2026-11-06; reviewed `codex/m1-native-validation-20261106` at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`, Godot `4.8.beta2.official.cafc17a19`. Nine new findings F01–F09 and one reproduced case R01 in an existing design concern. Actual headless application, production-component and source evidence are separated; no fresh native visual, physical-controller, screen-reader or renderer qualification. |
 | A12 | [Corsair collision, flap geometry and presentation handoff][A12] | Dated 2026-11-06; experiments at `3751e35e1cccf574c4446d21273a4d5ecaf80ddf`. Closing source comparison at `842339369a58e7320177a6caecf22a7dc012ec0f` found responsible files unchanged; that later revision was not the executed baseline. Adds CF-05–07, excluding A9 CF-01–04 after checking the A1–A11 ledger. Two correctness counterexamples and one measured presentation-component opportunity; no production modification or full-scene/native qualification. |
 | A13 | [Incremental UI/UX exit, settings and feedback audit][A13] | Dated 2026-11-06; reviewed `3751e35e1cccf574c4446d21273a4d5ecaf80ddf` with pinned Godot 4.8 beta 2. Eight additional findings UI2-01–08 and unmeasured loading candidate OBS-01. Seven component witnesses plus separate headless Settings/Conditions and navigation checks; native visuals, physical devices, audio, screen readers and target loading cadence unverified. Reconciles two historical ledger versions and the prior dedicated UI review; does not claim to have reviewed this later A1–A12 ledger. |
+| A14 | [UI/UX Workshop, launch and statistics continuation][A14] | Dated 2026-11-06; reviews `main` at `3751e35e1cccf574c4446d21273a4d5ecaf80ddf`. Seven findings F10–F16 continue the dedicated F01–F09 review; six checked component runs and full-app diagnostics. Additional paint observations remain outside the seven findings. Historical source/node-visibility evidence, not native visual, physical-input, assistive-technology or OS-window qualification. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and thirteen source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and fourteen source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -55,6 +56,7 @@ The folder contains this consolidated document and thirteen source reports. Sour
 | Attached `Pasted text.txt` (UI/UX audit) | [ui-ux-accessibility-audit-2026-11-06.md][A11] |
 | Attached `Pasted text.txt` (Corsair senior-developer handoff) | [f4u-corsair-collision-flaps-presentation-audit-3751e35.md][A12] |
 | Attached `Pasted text.txt` (incremental UI/UX audit) | [ui-ux-round2-exit-settings-feedback-audit-3751e35.md][A13] |
+| Attached `Pasted text.txt` (UI/UX F10–F16 continuation) | [ui-ux-workshop-launch-statistics-continuation-3751e35.md][A14] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -71,6 +73,7 @@ The folder contains this consolidated document and thirteen source reports. Sour
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
 | Corsair continuous collision, flap transfer and presentation | A12 adds missed interior raised-track contacts (CF-05), an omitted local-flow projection in flap lift-reference transfer (CF-06), and discarded overspeed-advisory work in render flap reads (CF-07). | Accepted-tick counterexamples, production-load cross-product oracle and isolated presentation timing/parity, respectively. Separate from A9 CF-01–04; no occurrence-rate, physical-fidelity or FPS claim. |
+| Workshop authorship, launch recovery and history | A14 adds F10–F16: preset scope, imported-name truncation, unreadable library states, hidden helicopter rejection, combined exit ownership, committed-deletion publication and missing effective flight context. | Component and full-app witnesses with explicit limits. F14 extends the shared exit-transaction concern from A13; paint observations are narrower evidence, not extra numbered defects or measured optimizations. |
 | Incremental UI exit and settings reliability | A13 prioritizes a garage recording failure that does not block root quit, premature Workshop recovery deletion, transient save errors and overbroad display-test rollback. Adds field-specific validation, hint/audio/localization consistency and a briefing-preparation candidate. | UI2-01–08 are separate report IDs; OBS-01 is unmeasured. Final quit was intercepted, Workshop canceled-exit consequence is inferred, and native behavior is not qualified. |
 | UI choices, focus and save outcomes | A11 prioritizes profile identity, session/default isolation, scoped weather presets and usable focus after successful controller recovery; also covers Help, editing-key conflicts, save feedback and accessibility. | Nine new findings plus one reproduction of an existing concern. Evidence ranges from actual headless app routes to source inspection; these are historical findings, not current-fix verification. |
 | Extra 300 trim finalization and F5 reload | A10 reports two redundant steady-RPM searches per bounded glow trim finalization (E300-07), and physical/visible propeller diameter divergence after accepted same-ID reload (E300-08). | Tested solver candidate with byte-identical results; actual headless F5-route state/transform witnesses. Separate from E300-03 stage-mass reuse and E300-06 blade handedness. No new aerodynamic calibration is justified by these findings. |
@@ -103,6 +106,32 @@ A6 arrived later in this folder but reviews the **same commit as A2–A5**, not 
 - **Related mathematics:** A7's remaining-noise density bounds differ from A2 M03's relief-contribution budget. Its high-octave hash lattice differs from A2 M01's coarse-corner sharing. Solar LUT versus A2 M02 chord geometry are separate alternatives. A7 parcel/derivative screens overlap A2 M12/M05 conceptually but use distinct controls and result sets.
 
 ## 3. Correctness and measurement findings
+
+### UI/UX continuation: Workshop, launch and statistics F10–F16
+
+**Source: [A14][A14], reviewed `main` at `3751e35`.** F10–F16 continue A11's F01–F09 numbering and are distinct from A13 UI2-01–08, A6 F1–F6 and project tracker IDs. The author assigns P1 to silent changes in player-authored inputs and P2 to narrower functional/feedback failures. No production repair is established by the audit.
+
+| Finding | Reported behavior and evidence | Recommended repair and acceptance |
+| --- | --- | --- |
+| **A14 F10 — P1, preset drops measured/pending inputs** | Workshop Starting preset rebuilds from `Compiler.defaults()` without `mass_edits`. Component witness: More power removes synthetic measured entries; a positive control retaining them with preset power/control factors compiles; Undo restores measurements. Separately, invalid weight text survives focus loss and blocks Test fly, but More power replaces it with `1.0`, clears pending/error state and re-enables testing; accepted-recipe history does not preserve rejected raw text. | Apply a declared patch to the current recipe: fields outside its scope remain unchanged; preserve compatible measurements, explain dependencies before removing/invalidation, and require correction or explicit cancellation of pending input. One accepted Undo operation; Save/Test fly consume reviewed values. Scoped presets already required by aircraft-editor plan. Same broad pattern as A11 R01 weather presets, but distinct Workshop data and controls. |
+| **A14 F11 — P2, imported name silently shortened** | Store/bundle allow 96 characters; main editor caps at 64. A valid exported/imported 80-character name opens truncated to 64, becomes clean baseline and says Saved. Changing only power and saving persists shortened name in revision 2; original record/earlier immutable revision remain intact. Guard and recovery state have additional 64-character limits. | One contract across import/storage/editor/guards/recovery; supporting existing 96-character names end to end avoids silent renames. Preserve underlying value when visually abbreviating. Test 64/65/80/96 through unrelated edits, save/reload/recovery/export; reject above format limit. A widget's truncated loaded value must not become saved identity implicitly. |
+| **A14 F12 — P2, unreadable builds appear absent** | Isolated nonfavorite saved build with deliberately malformed manifest/no usable backup: direct load errors, files remain, `Store.list_variants()` omits entry and returns empty; Workshop enables No saved builds yet. Real label state inspected after refresh, not visually rendered. | Return usable summaries plus read diagnostics. Distinguish empty, filtered-out, partially unreadable and root-access failure; show healthy builds and unavailable entries with Retry/Details. Cover damaged/mixed records, valid/invalid backups, root failure and Favorites; preserve unreadable originals. |
+| **A14 F13 — P2, helicopter launch rejection hidden** | Full-app Conditions→standard atmosphere by altitude→Aircraft→X-Cell .60 Trainer→Fly correctly refuses unsupported atmosphere. No flight is created; Aircraft remains visible/Fly re-enabled, but explanation lives in hidden `FlightPage/HomeNotice`, `is_visible_in_tree()=false`. Flight page reveals it. Both nonstaged/staged paths reproduced, including **1920×1080 logical viewport**; Reference air positive control reaches staged ready/flyable with no startup error. | Put launch status beside shared Fly outside page-specific containers. Preflight known incompatibility while retaining authoritative runtime validation. Offer Review Conditions; preserve airplane weather choices. Test Flight/Aircraft entry, supported/refused conditions, cancellation versus failure, focus/translations and actual tree visibility, not text alone. Logical viewport does not establish native rendered acceptance. |
+| **A14 F14 — P2, combined departure loses ownership** | Full app with actual recorder/statistics store and disposable-profile filesystem conflicts: Return Home→Trace not saved→Discard advances to statistics failure with exclusive-window conflict; statistics Cancel keeps flight; next Return Home reoffers explicitly discarded trace. Dialog remained bridge-reachable, not proof of universal native lockout. Separate synthetic production-close calls: one close/Cancel resumes; two pending closes replace dialog, log conflict and leave paused session without active hold/screen after Cancel; Escape recovers Pause. OS close delivery untested. | Retain one coordinator through destination commit/cancel, including recording-specific resolved decision, statistics decision, destination, pause/holds and modal ownership. Repeated requests join; new recordings get fresh decisions. Relinquish old exclusive dialog before showing successor because queued deletion is deferred. Test trace Retry/Discard→statistics failure, Retry/Cancel/Leave, repeats, already-paused state and new recording. Distinct from repaired Restart guard; extends A13's exit-transaction concern. |
+| **A14 F15 — P2, deletion durable but screen stale** | Actual store/service/screen/reset dialog with interruption hook, programmatic confirmation/Cancel: two post-commit failures leave deleted row, Completed=1, cached aircraft and new all-aircraft queries returning one, delete enabled and management shown available although `can_manage()` is false. Reopening store completes committed deletion and yields zero; pre-commit control retains record. | Distinguish refused-before-commit, committed/cleanup-pending and completed. After commitment publish verified survivors and invalidate queries, or explicitly make history unavailable until safe forward recovery. Update actions with data. Screen/counters/cached and uncached queries/HUD must agree with durable state or explicitly report unavailability; choose error wording from established commitment state. |
+| **A14 F16 — P2, flight context missing or misattributed** | Writer stores scenario/failure under `record.metadata`; renderer reads top-level `record.scenario`, forbidden by schema, and lacks failure context. Schema-valid synthetic minimal nested fixture displays normal statistics but no context; nested data was **not a complete validated launch config**, nor a flown Natural Random session. Source also shows Natural Random using default failure config while statistics capture saved `preferences.failure_config`, which can differ from effective flight. | Schema-aware record-to-view adapter and capture effective accepted configuration at admission. Show scenario/practice context, expanded seed/settings, actual failure events separately from enabled practice and exact airborne seconds. The 42-second fixture shown only as `<1 min` is a smaller extension, not another major finding. Unknown/unreliable legacy context stays unknown. Test ordinary/Random, enabled/disabled practice, deliberately mismatched preferences, legacy/translation and real store round-trip. |
+
+**Overlap and ownership.** F14 adds an actually exercised trace→statistics modal/decision failure to A13 UI2-01's omitted garage participant and UI2-05's premature Workshop recovery deletion; these remain separate witnesses for one coordinated departure design. Do not claim A14 executed A13's Workshop recovery sequence. F10 is a separate scoped-preset counterexample to A11 R01; F13 is a launch-specific hidden-notice path, distinct from A11 F06's hidden language-save outcome. Retain existing implementation updates and current-track disposition rather than treating this historical continuation as a reopened defect list.
+
+### A14 bounded custom-paint observations
+
+These are **outside F10–F16** and have narrower evidence:
+
+- **Card identity:** actual gallery component given distinct custom-shaped IDs with the same allowed label produces two equally labelled cards without thumbnails. Use a cached preview or intentional fallback swatch, clear selection and stable distinguishing detail; labels need not be unique. Importing two real same-label packages and using mouse/keyboard/controller remains acceptance work.
+- **Unavailable installed paint:** source indicates changed model identity can hide incompatible skin and resolve saved choice to stock while archive survives, without explanation. Keep unavailable entry/reason and supported legacy compatibility exception. Upgrade scenario was not executed.
+- **Import recovery language:** `SkinTools` translates the prefix but appends raw English reasons. Stable error codes should map wrong aircraft/revision, invalid package and full inventory to localized explanations. In-game management would improve recovery at the **32-paint limit**; a documented manual removal route already exists.
+
+Immediate names/selection/availability should not wait for expensive previews. Any preview cache should be bounded, key aircraft/model plus skin identity and discard stale selection results. Background resource preparation is distinct from live scene-tree work; **no GPU benchmark, frame-time improvement or new measured loading gain** was produced.
 
 ### Incremental UI/UX: exit, settings and feedback
 
@@ -139,6 +168,8 @@ A13 explicitly excludes prior profile overwrite, recovery focus, Help scrolling,
 | **A11 F09 — P3, arrow-key text equivalents** | Source inspection: custom `key_cap.gd` directional triangles lack application-provided direction text/accessibility names; localized arrow labels already exist in `key_labels.gd`. | Retain graphics with localized semantic names or a coherent action-row instruction; avoid duplicate announcements. Inspect the accessibility tree and listen to all four directions/actions using target-platform screen readers, translations and changed keyboard layouts. A debug snapshot alone cannot qualify this. |
 
 **A11 F01 implementation update (2026-11-06):** New now switches to a separate device-default draft and UUID, preserves pending edits when switching profiles, and frees its draft slot only after successful Save. The real-store regression preserves both profiles even with equal names; Update, Duplicate, cancellation, failure/retry and calibration provenance are covered. [UI-15-GP-01-R1 evidence](../docs/research/controller-support-2026-10-14/README.md#new-profile-identity-2026-11-06-ui-15-gp-01-r1) records 57 new and 283 existing passing checks. Device-association ambiguity policy is unchanged; this is software verification, not physical-controller or native visual qualification.
+
+**A11 F02 implementation update (2026-11-06):** the screen stack restores a usable opener or an explicit active-screen fallback. Pause recovers focus when successful controller recovery hides its shortcut, and queued focus work preserves a newer valid selection. Keyboard and replacement-controller recovery retain the separate menu pad and never auto-resume. [UI-31-R1 evidence](../docs/research/menu-investigations/UI-31/README.md#successful-controller-recovery-focus-ui-31-r1-2026-11-06) records 72 new and 2,275 existing passing checks on an identified frozen snapshot; native device/visual qualification remains separate.
 
 **Prior-work reconciliation.** A11 reports reading this consolidation, UI-30, the subsequent menu delivery plan and current PR comments. R01 supplements UI-30 SC-8 preset placement/wording and the sky/cloud plan's unrelated-tab preservation requirement. Keep existing owners for broad typography, modal shells, overlay scaling and theme refresh. The graphically retained Home/Workshop captures predate the reviewed build and support design context only; they do not verify current visuals or establish new defects in every control state.
 
@@ -659,6 +690,10 @@ A7's shader work-package sequence is an additional source recommendation, not pr
 
 A12 separates three independently reviewable tasks: CF-05 geometric clearance/contact ownership/first-event search; CF-06 dimensional cross-product invariants and local-flow transfer before tuning; CF-07 accepted-state presentation access without unnecessary environmental queries. Preserve the current owning tracks and verify current-source disposition before applying historical proposals. CF-05's constructed accepted ticks do not measure occurrence rate; CF-06 requires the flight-logging baseline/candidate workflow for any actual physics repair; CF-07 needs real-scene integration before claiming user-visible gains.
 
+### A14 continuation follow-up
+
+A14's order is F10/F11 authored-input/name integrity; F13 actionable launch rejection; F14 complete departure ownership; F12/F15 storage-result reconciliation; then F16/paint interpretation. Keep feedback beside its action, shared theme/container layout with wrapping and a clear recovery action, and equivalent explanation through keyboard/controller focus and accessible properties. Every transition needs meaningful visible initial/return focus. Native visual, physical-input, assistive-technology and OS-window acceptance remain separate from headless node state.
+
 ### Incremental UI/UX follow-up and acceptance
 
 A13 recommends five focused changes: coordinate exit readiness/commitment (UI2-01/UI2-05); separate Settings save feedback and scoped display rollback (UI2-02/03); field-owned Conditions validation (UI2-04); hint/audio/radar consistency (UI2-06–08); then measure OBS-01 before optimizing. Its first priority is UI2-01 followed by paired Settings fixes. Current-source triage and owning tracks remain authoritative.
@@ -724,7 +759,7 @@ For loading, A13 notes early `load_threaded_get()` may block and exact-beta repe
 
 ### What is supplied here
 
-This directory contains thirteen source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains fourteen source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -741,6 +776,11 @@ This directory contains thirteen source Markdown files and this consolidated doc
 | A11 | `OpenRC_UI_UX_Audit_2026-11-06.pdf` (described as an 18-page complete review) and `OpenRC_UI_UX_Evidence_2026-11-06.zip` (fixtures, logs, settings differences, source identities, replay instructions and machine-readable findings). The pasted report preserves their external ChatGPT-library links; neither deliverable was supplied locally or inspected for this consolidation. |
 | A12 | `F4U-CORSAIR-NEW-FINDINGS-3751e35-2026-11-06.md` (approximately 5,000-word detailed handoff) and `F4U-CORSAIR-EVIDENCE-3751e35-2026-11-06.zip` (report, probes, raw measurements, checked logs, hashes and replay instructions). Only the pasted summary is supplied; its external ChatGPT-library artifacts were not downloaded or inspected for this consolidation. |
 | A13 | `OpenRC_UI_UX_Incremental_Audit_2026-11-06.pdf` (19-page report) and `OpenRC_UI_UX_Evidence_2026-11-06(1).zip` (probes/logs/hashes/reconstruction/prior-audit comparison). External ChatGPT-library links remain in the original; only the pasted summary is supplied here. Neither linked artifact was inspected or replayed. |
+| A14 | `OpenRC_UI_UX_Audit_Continuation_2026-11-06.pdf` (17 pages, seven findings, 36 project and 14 official Godot references) and `OpenRC_UI_UX_Continuation_Evidence_2026-11-06.zip` (scripts, six component runs, full-app transcript, diagnostics, source identities, reconstruction). Only pasted summary supplied; external ChatGPT-library deliverables remain linked in the original and were not inspected/reexecuted here. |
+
+### A14 evidence boundary
+
+A14 reports **six retained component runs** with required markers and zero engine errors/warnings. Its full-app run deliberately retains reproduced modal diagnostics and helicopter refusals, so do not describe the entire campaign as diagnostic-free. Production checkout remained unchanged during the review. Headless evidence establishes application state and node visibility, including a 1080p logical viewport; it does not establish native rendering, physical input, screen-reader output or OS window-manager behavior. Minimal statistics metadata, synthetic close invocation and custom-shaped paint IDs carry the narrower limits recorded above.
 
 ### A13 evidence boundary
 
@@ -805,7 +845,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files at intake. They identify the thirteen retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
+These hashes were calculated from the supplied files at intake. They identify the fourteen retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -822,6 +862,7 @@ These hashes were calculated from the supplied files at intake. They identify th
 | A11 — `ui-ux-accessibility-audit-2026-11-06.md` | `113ce2b6d4e9fd16f2335bb6ad32902a2c0e50b7f6f3adcc06e7bcad01c910b0` |
 | A12 — `f4u-corsair-collision-flaps-presentation-audit-3751e35.md` | `af7c91b4ffc2ca650f239f8d210822d0991466bce2f4c35f675f79f94f4fd21e` |
 | A13 — `ui-ux-round2-exit-settings-feedback-audit-3751e35.md` | `a9bfddbdf4ca67ed4c10fe3074ba0adac19f38030e600577fe4c6f65674a16d4` |
+| A14 — `ui-ux-workshop-launch-statistics-continuation-3751e35.md` | `f36ab0bb903987c67b1e0af67a7da861865bddd2e3e362336517ed6069afcbc8` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -839,3 +880,5 @@ These hashes were calculated from the supplied files at intake. They identify th
 [A12]: f4u-corsair-collision-flaps-presentation-audit-3751e35.md
 
 [A13]: ui-ux-round2-exit-settings-feedback-audit-3751e35.md
+
+[A14]: ui-ux-workshop-launch-statistics-continuation-3751e35.md

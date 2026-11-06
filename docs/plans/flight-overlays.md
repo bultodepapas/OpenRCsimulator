@@ -13,7 +13,7 @@ Home flights provide nine legacy overlays and seven player instruments on one `C
 | --- | --- | --- | --- |
 | O1 | Flight data | bottom left | airspeed, ground speed, height above ground, vertical speed, throttle, slant distance from the pilot's eye, flight time |
 | O2 | Transmitter | bottom right | selectable JETI DS-24 II or Radiolink T16D official frontal photo, simulated LCD and live gimbals (Mode 1/2), trim marks, input device, radio state and rate profile |
-| O3 | Warnings | top centre | FAILSAFE, RADIO SAFE, STALL, LOW, FAR, BATTERY LOW, EXPERIMENTAL; chips wrap within 640 px; hidden when empty |
+| O3 | Warnings | top centre | Prioritized glass alert rail with severity, short action text and overflow count; hidden when empty. Alerts include controller/radio loss, STALL, LOW, FAR, battery alarms, finite-fuel reserve/empty and optional training cues. |
 | O4 | Wind | top right | downwind arrow relative to the view; speed, "from" bearing and updraft on fixed lines |
 | O5 | Telemetry | right | α, β, pitch/bank angle, heading, load factor, engine rpm |
 | O6 | Diagnostics (developer) | top left | today's input panel and HUD text, unchanged |
@@ -48,6 +48,17 @@ Rules the implementation keeps:
 
 The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, and await pilot review.
 
+Pause → **Flight overlays → Alerts** controls details, maximum visible alerts (1/3/5; default 3), range
+reminders, energy advisories, status notices and optional flight training cues. Closing Warnings still hides
+the whole rail. Critical conditions bypass advisory-category switches; stronger battery/fuel/terrain alerts
+replace redundant reminders. The overflow count retains the presence of further active alerts.
+
+No usable fuel comes only from an accepted finite-fuel sample with zero usable mass. Training cues are off
+by default: rapid descent below −6 m/s, absolute bank above 75°, or absolute body G above 4 g. They require
+more than 10 m AGL and at least 3 m/s airspeed, with a 0.6 s onset dwell and 0.4 s clear grace in accepted
+simulation time. Reset, rewind and landing clear their history. These are coaching thresholds, not aircraft
+limits; missing/nonfinite readings do not invent cues. Existing urgent source warnings remain immediate.
+
 ## 2. Steps
 
 | ID | Work | Proof / status |
@@ -65,6 +76,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-07 | O4 Wind | arrow angle for view headings; calm hides the arrow / done |
 | HUD-08 | Height above ground and load factor | from existing public state; level n = 1, 60° turn n = 2, terrain AGL / done, no seam needed |
 | HUD-09 | O3 Warnings | one fixture per code, order, no STALL without a stall angle / done |
+| HUD-09-R1 | Glass alert rail, priority/noise controls, accepted fuel-empty warning and optional training cues | Focused checks and native 1080p review in the [HUD evidence](../research/flight-overlays/HUD-01-10/README.md#glass-flight-alerts-2026-11-06-hud-09-r1) |
 | HUD-10 | O5 Telemetry | live flight scene / done |
 | HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p and 1080p / done |
 | HUD-11-R1 | Visual review repairs: "-0°", wind jitter, warning wrap, dialog preview, hint and latency-marker placement | [review](../research/flight-overlays/HUD-01-10/README.md#visual-review-and-repairs-2026-10-13-hud-11-r1) / done |
@@ -171,9 +183,15 @@ unknown/mixed families retain a generic label. Low fuel uses the accepted warnin
 fuel has a separate message even when unusable fuel remains onboard. Missing/invalid readings remain explicit.
 Compact mode keeps a smaller tank. The existing frame, drag/close controls and appearance settings are reused.
 
-The fuel shader is an explicit exception to the original static instrument graphics: bank changes tilt its
-surface, while pitch/load changes excite bounded waves. This is stylized feedback, not physical tank slosh,
-pickup or starvation prediction. Accepted quantity and physics remain unchanged. Inputs arrive at 10 Hz;
+The fuel shader is an explicit exception to the original static instrument graphics. HUD-13-R14-R1 uses
+the body right/down projection of apparent gravity from accepted non-gravitational forces: negative-g inverted
+flight can move fuel to the roof, knife-edge side loads to a wall, and a positive-g roll can retain it at the
+bottom. Older snapshots without lateral force fall back to bank angle. An angular spring unwraps the ±180°
+boundary; near-zero projected g retains the last direction. Pitch, roll and load changes excite bounded waves.
+The full-circle surface preserves rectangular fill area, including side-on and inverted views. Translucent
+tinted liquid reveals the tank's internal ribs; the numeric quantity remains authoritative. This is a 2D
+presentation approximation, not physical tank slosh, pickup or starvation prediction. It omits tank-specific
+geometry and longitudinal/angular acceleration effects. Accepted quantity and physics remain unchanged. Inputs arrive at 10 Hz;
 the existing simulation shader clock animates between samples and freezes on pause. No widget frame callback,
 screen texture, wall clock or hidden sampling is added. Reset, rewind and reopening discard old motion.
 

@@ -691,3 +691,33 @@ Final runtime SHA-256:
 - `fuel_instrument.gd`: `5038ab857179c9a915584253cf5973e8ca7b331fa132b6ba19298a6b73514fd2`.
 - `fuel_liquid.gdshader`: `25b21fe9524182094f7423e3dd922005d37d9b308d57c8b36c0829fc457a7d03`.
 - `overlay_manager.gd`: `e76023fb0c67bff84990403d30e6e187d3eea16b2e8ffa89fad52a5f62574279`.
+
+### Inverted/knife-edge motion and translucency (2026-11-06, HUD-13-R14-R1)
+
+The user's follow-up exposed a limitation in the original sine-based slope: 180° returned to level and 90°
+could not place fuel against a side wall. The replacement uses a full-circle surface normal and an analytic
+rectangle-area quantile. The telemetry presenter forwards body-right specific force alongside the existing
+vertical load factor; the widget derives apparent down without modifying the solver. The existing fuel-feed
+model documents this force convention in `app/physics/glow/fuel_feed.gd`. Angular unwrapping avoids a discontinuity
+at ±180°. Alpha blending replaces the opaque gradient, exposing internal tank ribs beneath the tinted liquid.
+
+Native checked results: **69 headless / 105 rendered fuel checks, 44 telemetry, 153 player-widget and 21 production
+fuel checks**, all passed on the final candidate. Rendered coverage includes 24 combinations of amount and bank
+(0°, 45°, 90°, 135°, 180°, −90°), with 2% absolute pixel-area tolerance for rounded corners and antialiasing;
+the wall-transmission check distinguishes real alpha blending from an opaque tint. An initially broad meniscus
+failed that area bound and was narrowed before the final pass. Receipts are in `tmp/fuel-inverted-checks/`;
+reviewed 1920×1080 fixtures are in `tmp/fuel-inverted-preview-final-20261106/`.
+
+Live debug-bridge flight: Extra 300, `--fuel=0.37 --alt=500 --start=airborne --view=chase`, on the same Windows /
+Godot 4.8-beta2 / RTX 3090 / OpenGL Compatibility host. Control-driven watchpoints captured **87.58°** bank
+at tick 2897 (vertical load 0.200 g, right specific force −0.279 g) and **175.58°** inverted at tick 2973
+(−2.371 g vertical, −0.178 g right). The liquid visibly shifted toward the side and then roof while retaining
+the accepted remaining quantity. These are maneuver samples, not sustained trim or physical validation.
+Captures/logs: `tmp/debug-bridge/20261106-143117-47870/`, shots 002–004. Shutdown reported no crash or leaked objects.
+Some live HUD glyphs were partially missing in these captures despite correct label strings and no script
+diagnostics; the controlled widget fixtures are clear. Full-scene font readability is not established by this check.
+
+Final SHA-256: `fuel_instrument.gd` = `61e7ae3e7cd01ca10dac05eccdc761ad6fd4fdcc698fcba6ef05328a5ca20faa`;
+`fuel_liquid.gdshader` = `73fd41ae1dc3393b99b60a0a007cd16eba86e18f02821d36079b00c183adb91d`;
+`telemetry.gd` = `331493ce55f432091d8cafb0ff889f77c5a1ed618c1e5543179229fc97079237`.
+No images are added to Git. Full CI, other-GPU performance and physical slosh validation remain separate.

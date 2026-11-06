@@ -64,6 +64,9 @@ static func compute(state: PackedFloat64Array, wind_ned: PackedFloat64Array, air
 		bank_deg = rad_to_deg(euler[2]),
 		# Load factor: specific force along body −z over g; 1 in level flight, 1/cos φ in a steady level turn.
 		load_factor = -loads[2] / weight if weight > 0.0 else 0.0,
+		# Body-right non-gravitational specific force. The fuel display uses its negative
+		# with load_factor as apparent down in the tank's right/down cross-section.
+		specific_force_right_g = loads[1] / weight if weight > 0.0 else NAN,
 		throttle = float(ctx.get("throttle", 0.0)),
 		time_s = float(ctx.get("time_s", 0.0)),
 		wind_speed = wind_h,

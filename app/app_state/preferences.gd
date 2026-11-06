@@ -147,7 +147,7 @@ static func load_from(path: String) -> Dictionary:
 		prefs.weather_config = checked_weather.config.duplicate(true)
 	if cfg.has_section("hud"):
 		var hud := {}
-		for key: String in ["preset", "visible", "units", "stick_mode", "radio_model", "positions", "layout_locked", "widget_size", "widget_opacity", "widget_compact", "session_stats_scope"]:
+		for key: String in ["preset", "visible", "units", "stick_mode", "radio_model", "positions", "layout_locked", "widget_size", "widget_opacity", "widget_compact", "session_stats_scope"] + OverlaySettings.WARNING_DEFAULTS.keys():
 			if cfg.has_section_key("hud", key):
 				hud[key] = cfg.get_value("hud", key)
 		prefs.hud = OverlaySettings.validate(hud)
@@ -313,6 +313,9 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 		cfg.set_value("hud", "widget_compact", hud.widget_compact)
 	if hud.has("session_stats_scope"):
 		cfg.set_value("hud", "session_stats_scope", hud.session_stats_scope)
+	for key: String in OverlaySettings.WARNING_DEFAULTS:
+		if hud.has(key):
+			cfg.set_value("hud", key, hud[key])
 	var aircraft_ids: Array = liveries.keys()
 	aircraft_ids.sort()
 	for aircraft_id: String in aircraft_ids:

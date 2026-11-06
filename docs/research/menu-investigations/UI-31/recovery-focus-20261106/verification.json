@@ -1,0 +1,172 @@
+{
+  "step": "UI-31-R1",
+  "audit": "A11 F02",
+  "date": "2026-11-06",
+  "baseline_head": "3e652a879ab8e928fc7d0b23d8303ac5724c3be6",
+  "baseline_source_sha256": {
+    "app/ui/screen.gd": "d3e31b1158eed71bd3a0e46e546f5c6e4bfbadb1c08bf8247583b9b0340f5ae4",
+    "app/ui/screen_stack.gd": "098c224e6363a544addadfba859ba2d1210a807b7883dbcdd00792e4f70d85e3",
+    "app/ui/pause_menu.gd": "1f687e6675f95a2f0ef9b6d5fd34c0ab4d89a767e012950e536161e2edd19e5e"
+  },
+  "candidate_source_sha256": {
+    "app/ui/screen.gd": "7d5c46f0fe27d64e8d5b865eadd5d2bd103e8edc7c31ea381c014cf45ea45485",
+    "app/ui/screen_stack.gd": "e2065fe6ae21579546a38d9469ba3f94a67bbfc9e1d7c2ce747e83c414b43915",
+    "app/ui/pause_menu.gd": "18f066d6da3811496a4bff8ff5e2cfafcc963b83fe6386ab60a711216d7fa7d1",
+    "app/tests/test_controller_recovery_focus.gd": "e7a66011796011b93e48808dc814b659fba24a7b737e57a84ba83429045b7b85",
+    "app/tests/test_controller_recovery_focus.gd.uid": "20c8dccdee9cfc3d3f39988894cfdf58924112afcfafb12518af92a645f95680"
+  },
+  "isolated_test_uid_sha256": "2713b9eb93467ff13f160398d80ec0ba1e3c6ad30b0271def2178a6499739322",
+  "test_uid_note": "The UID text is identical; its generated line endings differ between root and isolated checkout.",
+  "tested_snapshot": {
+    "snapshot_base": "2e2e3492e",
+    "copied_shared_source_paths": [
+      "app/i18n/es.po",
+      "app/render/overlays/fuel_instrument.gd",
+      "app/render/overlays/fuel_liquid.gdshader",
+      "app/render/overlays/overlay_manager.gd",
+      "app/render/overlays/telemetry.gd",
+      "app/tests/test_controller_recovery_focus.gd",
+      "app/tests/test_fuel_instrument.gd",
+      "app/tests/test_overlay_telemetry.gd",
+      "app/ui/pause_menu.gd",
+      "app/ui/screen.gd",
+      "app/ui/screen_stack.gd"
+    ],
+    "overlay_override": false,
+    "sources": {
+      "app/i18n/es.po": "9724d135be3bab3e9c27360afde0c10c217ab6c411f29e9bec37035b72af5105",
+      "app/render/overlays/fuel_instrument.gd": "61e7ae3e7cd01ca10dac05eccdc761ad6fd4fdcc698fcba6ef05328a5ca20faa",
+      "app/render/overlays/fuel_liquid.gdshader": "73fd41ae1dc3393b99b60a0a007cd16eba86e18f02821d36079b00c183adb91d",
+      "app/render/overlays/overlay_manager.gd": "e76023fb0c67bff84990403d30e6e187d3eea16b2e8ffa89fad52a5f62574279",
+      "app/render/overlays/telemetry.gd": "331493ce55f432091d8cafb0ff889f77c5a1ed618c1e5543179229fc97079237",
+      "app/tests/test_controller_recovery_focus.gd": "e7a66011796011b93e48808dc814b659fba24a7b737e57a84ba83429045b7b85",
+      "app/tests/test_fuel_instrument.gd": "8d097b762e288f956d44317fdf9a11d5b79cf2b7b7803fd8ae160b3aaeda0806",
+      "app/tests/test_overlay_telemetry.gd": "d1b8e2862535ecc0c25df5f957c326578432600dc05421ec9d5cf405634319f4",
+      "app/ui/pause_menu.gd": "18f066d6da3811496a4bff8ff5e2cfafcc963b83fe6386ab60a711216d7fa7d1",
+      "app/ui/screen.gd": "7d5c46f0fe27d64e8d5b865eadd5d2bd103e8edc7c31ea381c014cf45ea45485",
+      "app/ui/screen_stack.gd": "e2065fe6ae21579546a38d9469ba3f94a67bbfc9e1d7c2ce747e83c414b43915"
+    },
+    "notes": "Frozen shared-source snapshot after concurrent fuel-widget parse correction; original overlay_manager restored, no fallback/feature exclusion in final checks."
+  },
+  "snapshot_patch": "tested-snapshot.patch",
+  "engine": ".tools/Godot_v4.8-beta2_win64_console.exe",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "platform": "Windows native headless; new production-route fixture viewport 1920x1080",
+  "initial_reproducer_checks": 39,
+  "initial_reproducer_failures": 16,
+  "new_regression_checks": 72,
+  "existing_focused_checks": 2275,
+  "checks": [
+    {
+      "label": "import",
+      "checks": 0,
+      "report": "checks/import/report.json",
+      "log": "checks/import/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 8
+    },
+    {
+      "label": "test_controller_pause_recovery",
+      "checks": 59,
+      "report": "checks/test_controller_pause_recovery/report.json",
+      "log": "checks/test_controller_pause_recovery/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_controller_preflight_calibration",
+      "checks": 102,
+      "report": "checks/test_controller_preflight_calibration/report.json",
+      "log": "checks/test_controller_preflight_calibration/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 1
+    },
+    {
+      "label": "test_controller_recovery_focus",
+      "checks": 72,
+      "report": "checks/test_controller_recovery_focus/report.json",
+      "log": "checks/test_controller_recovery_focus/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_ui_pause",
+      "checks": 94,
+      "report": "checks/test_ui_pause/report.json",
+      "log": "checks/test_ui_pause/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_ui_pause_responsive",
+      "checks": 1857,
+      "report": "checks/test_ui_pause_responsive/report.json",
+      "log": "checks/test_ui_pause_responsive/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_ui_quit",
+      "checks": 51,
+      "report": "checks/test_ui_quit/report.json",
+      "log": "checks/test_ui_quit/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_ui_recovery_dead_ends",
+      "checks": 26,
+      "report": "checks/test_ui_recovery_dead_ends/report.json",
+      "log": "checks/test_ui_recovery_dead_ends/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_ui_screen_stack",
+      "checks": 38,
+      "report": "checks/test_ui_screen_stack/report.json",
+      "log": "checks/test_ui_screen_stack/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_ui_settings_integration",
+      "checks": 48,
+      "report": "checks/test_ui_settings_integration/report.json",
+      "log": "checks/test_ui_settings_integration/engine.log",
+      "engine_errors": 0,
+      "engine_warnings": 0
+    }
+  ],
+  "prior_failures": [
+    {
+      "label": "baseline-recovery",
+      "report": "prior-failures/baseline-recovery/report.json",
+      "log": "prior-failures/baseline-recovery/engine.log",
+      "engine_errors": 0
+    },
+    {
+      "label": "test_controller_pause_recovery",
+      "report": "prior-failures/test_controller_pause_recovery/report.json",
+      "log": "prior-failures/test_controller_pause_recovery/engine.log",
+      "engine_errors": 59
+    },
+    {
+      "label": "test_ui_pause",
+      "report": "prior-failures/test_ui_pause/report.json",
+      "log": "prior-failures/test_ui_pause/engine.log",
+      "engine_errors": 128
+    }
+  ],
+  "scope": "Production AppRoot/Pause/Controls/Save recovery, Keyboard/replacement flight devices with a separate menu pad, both refresh timings; shared stack fallback/standalone close; lifecycle, no-restore, device isolation and paused-state preservation; eight existing UI/controller suites.",
+  "notes": [
+    "The import initially used the historical overlay manager to prepare resources; before final tests the current shared overlay manager and dirty app sources were copied into the frozen workspace. No overlay override remained in any final test.",
+    "Initial shared-tree Pause/recovery suites completed assertions but failed checked diagnostics due concurrent fuel_instrument.gd parse errors and resulting missing-frame accesses; they remain failed receipts.",
+    "The final frozen snapshot includes the corrected fuel-widget source; all final tests pass with zero engine errors. Root may contain newer unrelated overlay changes; the four focus code/test files match the tested snapshot byte for byte.",
+    "Preflight calibration emits one expected AUX-overlap warning."
+  ],
+  "limits": [
+    "Synthetic input and headless layout checks do not qualify physical controllers, native visual rendering or screen readers.",
+    "Focused software checks do not replace required CI."
+  ]
+}

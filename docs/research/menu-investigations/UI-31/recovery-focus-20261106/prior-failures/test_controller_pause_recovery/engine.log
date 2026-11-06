@@ -1,0 +1,502 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "x" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/overlays/fuel_instrument.gd:244)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:1164)
+       [1] start_flight (res://app_root.gd:934)
+       [2] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "y" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/overlays/fuel_instrument.gd:248)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:1164)
+       [1] start_flight (res://app_root.gd:934)
+       [2] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/overlays/overlay_manager.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:1164)
+       [1] start_flight (res://app_root.gd:934)
+       [2] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://main.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:1164)
+       [1] start_flight (res://app_root.gd:934)
+       [2] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [3] settle (res://tests/ui_driver.gd:55)
+ERROR: Failed to load script "res://main.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:50)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:1164)
+       [1] start_flight (res://app_root.gd:934)
+       [2] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+   at: _build (res://render/overlays/overlay_manager.gd:141)
+   GDScript backtrace (most recent call first):
+       [0] _build (res://render/overlays/overlay_manager.gd:141)
+       [1] _init (res://render/overlays/overlay_manager.gd:100)
+       [2] _build_world (res://main.gd:3092)
+       [3] _prepare_flight (res://main.gd:821)
+       [4] _ready (res://main.gd:466)
+       [5] start_flight (res://app_root.gd:1024)
+       [6] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [7] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: apply (res://render/overlays/overlay_manager.gd:300)
+   GDScript backtrace (most recent call first):
+       [0] apply (res://render/overlays/overlay_manager.gd:300)
+       [1] _init (res://render/overlays/overlay_manager.gd:101)
+       [2] _build_world (res://main.gd:3092)
+       [3] _prepare_flight (res://main.gd:821)
+       [4] _ready (res://main.gd:466)
+       [5] start_flight (res://app_root.gd:1024)
+       [6] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [7] settle (res://tests/ui_driver.gd:55)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _prepare_flight (res://main.gd:1053)
+       [11] _ready (res://main.gd:466)
+       [12] start_flight (res://app_root.gd:1024)
+       [13] _run (res://tests/test_controller_pause_recovery.gd:88)
+       [14] settle (res://tests/ui_driver.gd:55)
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+failsafe: Controller selected; check controls and continue.
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _request_flight_restart (res://app_root.gd:2912)
+       [16] _request_restart (res://main.gd:1998)
+       [17] _unhandled_input (res://main.gd:2088)
+       [18] tap (res://tests/ui_driver.gd:23)
+       [19] _run (res://tests/test_controller_pause_recovery.gd:117)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _request_flight_restart (res://app_root.gd:2912)
+       [16] _request_restart (res://main.gd:1998)
+       [17] _unhandled_input (res://main.gd:2088)
+       [18] tap (res://tests/ui_driver.gd:23)
+       [19] _run (res://tests/test_controller_pause_recovery.gd:117)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _request_flight_restart (res://app_root.gd:2912)
+       [16] _request_restart (res://main.gd:1998)
+       [17] _unhandled_input (res://main.gd:2088)
+       [18] tap (res://tests/ui_driver.gd:23)
+       [19] _run (res://tests/test_controller_pause_recovery.gd:117)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] <anonymous lambda> (res://ui/pause_menu.gd:152)
+       [16] tap (res://tests/ui_driver.gd:23)
+       [17] _run (res://tests/test_controller_pause_recovery.gd:141)
+       [18] tap (res://tests/ui_driver.gd:24)
+       [19] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _run (res://tests/test_controller_pause_recovery.gd:161)
+       [16] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _request_flight_restart (res://app_root.gd:2912)
+       [16] _request_restart (res://main.gd:1998)
+       [17] _run (res://tests/test_controller_pause_recovery.gd:170)
+       [18] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _run (res://tests/test_controller_pause_recovery.gd:180)
+       [16] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+failsafe: Controller selected; check controls and continue.
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _run (res://tests/test_controller_pause_recovery.gd:215)
+failsafe: Controller selected; check controls and continue.
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _run (res://tests/test_controller_pause_recovery.gd:229)
+failsafe: Controller lost. Select a controller or keyboard in Controls.
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:422)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.
+   at: reset_flight (res://render/overlays/overlay_manager.gd:236)
+   GDScript backtrace (most recent call first):
+       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)
+       [1] _on_resetting (res://main.gd:2820)
+       [2] <anonymous lambda> (res://sim/flight_session.gd:1142)
+       [3] _publish_committed_boundary (res://sim/simulation.gd:210)
+       [4] commit_prepared_reset (res://sim/simulation.gd:199)
+       [5] _commit_start_candidate (res://sim/flight_session.gd:1137)
+       [6] _apply_runway_start (res://sim/flight_session.gd:3786)
+       [7] _reset_selected_runway_start (res://sim/flight_session.gd:3734)
+       [8] _reset_impl (res://sim/flight_session.gd:3543)
+       [9] reset (res://sim/flight_session.gd:3508)
+       [10] _commit_restart_flight (res://app_root.gd:2930)
+       [11] _finish_exit_request (res://app_root.gd:3324)
+       [12] _advance_trace_exit (res://app_root.gd:3236)
+       [13] _begin_exit_request (res://app_root.gd:3121)
+       [14] restart_flight (res://app_root.gd:2919)
+       [15] _run (res://tests/test_controller_pause_recovery.gd:234)
+       [16] settle (res://tests/ui_driver.gd:55)
+failsafe: Controller selected; check controls and continue.
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+SCRIPT ERROR: Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.
+   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+   GDScript backtrace (most recent call first):
+       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)
+       [1] _process (res://main.gd:1428)
+Controller pause recovery: 59/59 checks passed

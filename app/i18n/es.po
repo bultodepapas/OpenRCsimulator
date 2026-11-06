@@ -1330,8 +1330,8 @@ msgstr "MASA COMB."
 msgid "Tank level · remaining fuel"
 msgstr "Nivel de combustible restante"
 
-msgid "Liquid follows bank, pitch and load. Quantity comes from the fuel tanks."
-msgstr "El líquido sigue el alabeo, cabeceo y carga. La cantidad proviene de los depósitos."
+msgid "Liquid responds to flight loads. Quantity comes from the fuel tanks."
+msgstr "El líquido responde a las cargas de vuelo. La cantidad proviene de los depósitos."
 
 msgid "TURBINE"
 msgstr "TURBINA"
@@ -8057,6 +8057,127 @@ msgstr "Matas de hierba, trébol y flores silvestres a ambos lados de la pista. 
 
 msgid "RC circuit"
 msgstr "Circuito RC"
+
+# HUD-09-R1: prioritized glass flight alerts.
+msgid "DANGER"
+msgstr "PELIGRO"
+
+msgid "CAUTION"
+msgstr "PRECAUCIÓN"
+
+msgid "INFO"
+msgstr "INFO"
+
+msgid "+%d MORE ALERTS"
+msgstr "+%d ALERTAS MÁS"
+
+msgid "Alerts"
+msgstr "Alertas"
+
+msgid "Flight alerts"
+msgstr "Alertas de vuelo"
+
+msgid "Critical alerts remain enabled while Warnings is on."
+msgstr "Las alertas críticas siguen activas mientras Avisos esté activado."
+
+msgid "Training cues are display-only and are not aircraft limits."
+msgstr "Los avisos de entrenamiento son orientativos y no representan límites del avión."
+
+msgid "Show alert details"
+msgstr "Mostrar detalles de las alertas"
+
+msgid "Maximum visible alerts"
+msgstr "Máximo de alertas visibles"
+
+msgid "Range reminders"
+msgstr "Avisos de distancia"
+
+msgid "Energy advisories"
+msgstr "Avisos de energía"
+
+msgid "Status notices"
+msgstr "Avisos de estado"
+
+msgid "Flight training cues"
+msgstr "Avisos de entrenamiento de vuelo"
+
+msgid "CONTROLLER LOST"
+msgstr "CONTROL DESCONECTADO"
+
+msgid "RADIO LOST"
+msgstr "RADIO DESCONECTADA"
+
+msgid "LOW ALTITUDE"
+msgstr "POCA ALTURA"
+
+msgid "FAR FROM PILOT"
+msgstr "LEJOS DEL PILOTO"
+
+msgid "POWER LIMITED"
+msgstr "POTENCIA LIMITADA"
+
+msgid "NO USABLE FUEL"
+msgstr "SIN COMBUSTIBLE UTILIZABLE"
+
+msgid "RAPID DESCENT"
+msgstr "DESCENSO RÁPIDO"
+
+msgid "HIGH G LOAD"
+msgstr "CARGA G ALTA"
+
+msgid "STEEP BANK"
+msgstr "ALABEO PRONUNCIADO"
+
+msgid "RADIO SAFE"
+msgstr "RADIO BLOQUEADA"
+
+msgid "Select controls to continue."
+msgstr "Selecciona los controles para continuar."
+
+msgid "Reconnect the radio to continue."
+msgstr "Reconecta la radio para continuar."
+
+msgid "Reduce angle of attack."
+msgstr "Reduce el ángulo de ataque."
+
+msgid "Fast sink near terrain."
+msgstr "Descenso rápido cerca del suelo."
+
+msgid "Come closer for a clearer view."
+msgstr "Acércate para ver mejor el avión."
+
+msgid "Land as soon as possible."
+msgstr "Aterriza lo antes posible."
+
+msgid "Prepare for an unpowered landing."
+msgstr "Prepárate para aterrizar sin motor."
+
+msgid "Land and let the pack cool."
+msgstr "Aterriza y deja enfriar la batería."
+
+msgid "Reserve reached. Plan to land."
+msgstr "Has llegado a la reserva. Prepara el aterrizaje."
+
+msgid "Estimated reserve reached. Plan to land."
+msgstr "Has llegado a la reserva estimada. Prepara el aterrizaje."
+
+msgid "Low energy. Plan to land."
+msgstr "Queda poca energía. Prepara el aterrizaje."
+
+msgid "Descending faster than 6 m/s."
+msgstr "Descenso superior a 6 m/s."
+
+msgid "Body G magnitude above 4 g."
+msgstr "Magnitud de carga G superior a 4 g."
+
+msgid "Bank angle beyond 75°."
+msgstr "Ángulo de alabeo superior a 75°."
+
+msgid "Lower throttle to arm."
+msgstr "Baja el acelerador para activar la radio."
+
+msgid "Flight model under development."
+msgstr "Modelo de vuelo en desarrollo."
 
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "El circuito de tierra para carros RC al norte de la pista, con saltos, curvas peraltadas y barreras. Es físico: las ruedas ruedan sobre su relieve y el avión puede chocar con él. Automático lo activa con una GPU dedicada y detalle de escena Alto o Extremo. Se aplica en el siguiente vuelo."

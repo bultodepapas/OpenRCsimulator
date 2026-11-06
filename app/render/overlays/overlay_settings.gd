@@ -18,6 +18,12 @@ const DEFAULT_WIDGET_OPACITY := 0.94
 const WIDGET_OPACITY_MIN := 0.80
 const WIDGET_OPACITY_MAX := 1.0
 const DEFAULT_WIDGET_COMPACT := false
+## Alert choices are optional so old [hud] preferences keep their exact shape.
+const WARNING_LIMITS := [1, 3, 5]
+const WARNING_DEFAULTS := {
+	warning_detail = true, warning_limit = 3, warning_navigation = true,
+	warning_energy = true, warning_status = true, warning_training = false,
+}
 const PRESET_ORDER := ["off", "pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "training"]
 const PRESETS := {
 	off = [],
@@ -69,6 +75,13 @@ static func validate(value: Variant) -> Dictionary:
 	var statistics_scope: Variant = value.get("session_stats_scope")
 	if typeof(statistics_scope) == TYPE_STRING and statistics_scope in ["all", "aircraft"]:
 		out.session_stats_scope = statistics_scope
+	for key: String in WARNING_DEFAULTS:
+		var option: Variant = value.get(key)
+		if key == "warning_limit":
+			if typeof(option) == TYPE_INT and option in WARNING_LIMITS:
+				out[key] = option
+		elif typeof(option) == TYPE_BOOL:
+			out[key] = option
 	# These are optional so legacy settings keep their exact shape. Validate them before a preset returns early.
 	var raw_positions: Variant = value.get("positions")
 	if typeof(raw_positions) == TYPE_DICTIONARY:

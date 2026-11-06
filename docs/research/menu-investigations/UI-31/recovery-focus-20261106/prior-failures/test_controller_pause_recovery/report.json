@@ -1,0 +1,261 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "45b9a30e-4eee-4b44-a2c9-2f791ba3c2c3",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_pause_recovery.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:28:05.638284+00:00",
+  "label": "test_controller_pause_recovery",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\checks\\test_controller_pause_recovery-wjntpzf7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\checks\\test_controller_pause_recovery-wjntpzf7\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 59,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Cannot infer the type of \"x\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (res://render/overlays/fuel_instrument.gd:244)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _create_flight (res://app_root.gd:1164)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 10,
+      "message": "Parse Error: Cannot infer the type of \"y\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (res://render/overlays/fuel_instrument.gd:248)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _create_flight (res://app_root.gd:1164)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 17,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://render/overlays/overlay_manager.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _create_flight (res://app_root.gd:1164)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 24,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://main.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _create_flight (res://app_root.gd:1164)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 31,
+      "message": "Failed to load script \"res://main.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _create_flight (res://app_root.gd:1164)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 38,
+      "message": "Invalid call. Nonexistent function 'new' in base 'GDScript'.",
+      "context": [
+        "   at: _build (res://render/overlays/overlay_manager.gd:141)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build (res://render/overlays/overlay_manager.gd:141)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 49,
+      "message": "Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: apply (res://render/overlays/overlay_manager.gd:300)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] apply (res://render/overlays/overlay_manager.gd:300)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 61,
+      "message": "Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: reset_flight (res://render/overlays/overlay_manager.gd:236)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 81,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 86,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 91,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 96,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 101,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 106,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 111,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 116,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 121,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 126,
+      "message": "Invalid access to property or key 'fuel' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: reset_flight (res://render/overlays/overlay_manager.gd:236)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] reset_flight (res://render/overlays/overlay_manager.gd:236)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 149,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 154,
+      "message": "Invalid access to property or key 'cruise_efficiency' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: refresh_numbers (res://render/overlays/overlay_manager.gd:420)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refresh_numbers (res://render/overlays/overlay_manager.gd:420)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 19.172,
+  "log_bytes": 32570,
+  "log_sha256": "dc03f8404603f4719a9b2ad78950cfab68a859d42849f104d9e6a99d47fa5bdd"
+}

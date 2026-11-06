@@ -12,6 +12,19 @@ uniform float tilt_velocity = 0.0;
 uniform float target_tilt = 0.0;
 uniform float wave_energy = 0.0;
 
+// Exact area quantile of a rectangle projected along a unit normal. Unlike a
+// slope/height graph this works through both knife edges and inverted flight.
+float surface_offset(vec2 down, vec2 extent, float amount) {
+	vec2 spans = abs(down) * extent;
+	float a = max(max(spans.x, spans.y), 0.0001);
+	float b = min(spans.x, spans.y);
+	float tail = min(amount, 1.0 - amount);
+	float distance = tail < b / (2.0 * a)
+		? a + b - sqrt(max(0.0, 8.0 * a * b * tail))
+		: a * (1.0 - 2.0 * tail);
+	return amount < 0.5 ? distance : -distance;
+}
+
 void fragment() {
 	vec2 half_size = rect_size * 0.5;
 	vec2 q = abs((UV - 0.5) * rect_size) - half_size + 8.0;
@@ -22,35 +35,41 @@ void fragment() {
 	// The render clock may trail the accepted tick by one interpolation step.
 	float dt = clamp(mod(sim_clock - sample_clock + 512.0, 1024.0) - 512.0, 0.0, 2.0);
 	float offset = tilt - target_tilt;
-	float slope = target_tilt + exp(-4.0 * dt) * (offset * cos(9.0 * dt)
+	float angle = target_tilt + exp(-4.0 * dt) * (offset * cos(9.0 * dt)
 		+ (tilt_velocity + 4.0 * offset) / 9.0 * sin(9.0 * dt));
+	vec2 down = vec2(sin(angle), cos(angle));
+	vec2 tangent = vec2(down.y, -down.x);
 	float energy = wave_energy * exp(-2.8 * dt);
-	// Whole cycles across the chamber have zero mean; taper near full/empty so waves cannot create fuel.
-	float clearance = clamp(min(fill, 1.0 - fill) / 0.34, 0.0, 1.0);
+	float clearance = clamp(min(fill, 1.0 - fill) / 0.15, 0.0, 1.0);
 	float phase = 6.28318530718 * fract(sim_clock * (704.0 / 1024.0));
-	float wave = energy * (0.024 * sin(UV.x * 6.28318530718 + phase)
-		+ 0.012 * sin(UV.x * 12.56637061436 - phase * 2.0));
-	float surface = 1.0 - clamp(fill, 0.0, 1.0) + clearance * (clamp(slope, -0.6, 0.6) * (UV.x - 0.5) + wave);
-	float edge = max(fwidth(UV.y), 0.002);
-	float depth = UV.y - surface;
+	vec2 point = (UV - 0.5) * rect_size;
+	float along = dot(point, tangent) / max(dot(abs(tangent), rect_size), 1.0) + 0.5;
+	float wave = clearance * energy * (2.4 * sin(along * 6.28318530718 + phase)
+		+ 1.2 * sin(along * 12.56637061436 - phase * 2.0));
+	float surface = surface_offset(down, half_size, clamp(fill, 0.0, 1.0));
+	float depth = dot(point, down) - surface - wave;
+	float edge = max(fwidth(depth), 0.6);
 	float wet = smoothstep(-edge, edge, depth);
 	if (fill <= 0.0) { wet = 0.0; }
 	if (fill >= 1.0) { wet = 1.0; }
-	vec3 dry_color = vec3(0.023, 0.037, 0.044);
-	vec3 fluid = liquid_color.rgb * mix(0.86, 0.26, smoothstep(0.0, 0.85, depth));
-	// A narrow bright meniscus and restrained moving light give the liquid depth.
-	float crest = exp(-abs(depth) * rect_size.y / 2.0);
-	float caustic = pow(0.5 + 0.5 * sin(UV.x * 18.0 + UV.y * 7.0 + phase), 6.0);
-	fluid += liquid_color.rgb * (0.06 * caustic * energy + 0.12 * pow(UV.y, 3.0));
-	vec3 color = mix(dry_color, fluid, wet);
-	if (fill > 0.0 && fill < 1.0) { color += mix(liquid_color.rgb, vec3(1.0), 0.55) * crest * 0.5; }
-	// Static glass highlights stay quiet when the aircraft is steady or paused.
-	float reflection = 1.0 - smoothstep(0.0, 0.085, abs(UV.x + UV.y * 0.14 - 0.18));
+	float optical_depth = fill >= 1.0 ? 1.0 : clamp(depth / max(dot(abs(down), rect_size), 1.0), 0.0, 1.0);
+	// Actual alpha blending transmits the inner tank ribs. Deeper fluid absorbs
+	// more light; a fine meniscus and doubled reflection suggest clear tinted liquid.
+	vec3 color = liquid_color.rgb * mix(0.8, 0.48, optical_depth);
+	float opacity = wet * mix(0.28, 0.57, sqrt(optical_depth));
+	float crest = fill > 0.0 && fill < 1.0 ? exp(-abs(depth) / 0.4) : 0.0;
+	color = mix(color, mix(liquid_color.rgb, vec3(1.0), 0.65), crest * 0.75);
+	opacity = max(opacity, crest * 0.85);
+	float reflection = 1.0 - smoothstep(0.0, 0.045, abs(UV.x + UV.y * 0.14 - 0.18));
+	float return_reflection = 1.0 - smoothstep(0.0, 0.018, abs(UV.x + UV.y * 0.14 - 0.28));
 	float rim = 1.0 - smoothstep(0.0, 1.7, -sdf);
-	color += vec3(0.55, 0.7, 0.76) * (reflection * 0.07 + rim * 0.22);
+	float glass = reflection * 0.08 + return_reflection * 0.025 + rim * 0.25;
+	color = mix(color, vec3(0.65, 0.8, 0.86), glass);
+	opacity = max(opacity, glass);
 	if (fill < 0.0) {
 		float hatch = step(0.82, fract((UV.x * rect_size.x + UV.y * rect_size.y) / 14.0));
-		color = dry_color + vec3(0.04) * hatch + vec3(0.1) * rim;
+		color = vec3(0.18);
+		opacity = hatch * 0.22 + rim * 0.3;
 	}
-	COLOR = vec4(color, mask);
+	COLOR = vec4(color, mask * opacity);
 }

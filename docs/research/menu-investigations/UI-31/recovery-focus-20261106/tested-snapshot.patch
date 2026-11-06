@@ -1,0 +1,443 @@
+diff --git a/app/i18n/es.po b/app/i18n/es.po
+index fe012e792..18f2fefaa 100644
+--- a/app/i18n/es.po
++++ b/app/i18n/es.po
+@@ -1330,8 +1330,8 @@ msgstr "MASA COMB."
+ msgid "Tank level · remaining fuel"
+ msgstr "Nivel de combustible restante"
+ 
+-msgid "Liquid follows bank, pitch and load. Quantity comes from the fuel tanks."
+-msgstr "El líquido sigue el alabeo, cabeceo y carga. La cantidad proviene de los depósitos."
++msgid "Liquid responds to flight loads. Quantity comes from the fuel tanks."
++msgstr "El líquido responde a las cargas de vuelo. La cantidad proviene de los depósitos."
+ 
+ msgid "TURBINE"
+ msgstr "TURBINA"
+diff --git a/app/render/overlays/fuel_instrument.gd b/app/render/overlays/fuel_instrument.gd
+index cc34ab926..19aab3924 100644
+--- a/app/render/overlays/fuel_instrument.gd
++++ b/app/render/overlays/fuel_instrument.gd
+@@ -18,6 +18,7 @@ var _velocity := 0.0
+ var _target := 0.0
+ var _energy := 0.0
+ var _pitch := 0.0
++var _bank := 0.0
+ var _load := 1.0
+ var _fill_key := -2.0
+ 
+@@ -38,7 +39,7 @@ func _init() -> void:
+ 	graphic.resized.connect(_resize_liquid)
+ 	visibility_changed.connect(_reset_motion)
+ 	minimum_size_changed.connect(_queue_content_fit)
+-	graphic.tooltip_text = tr("Liquid follows bank, pitch and load. Quantity comes from the fuel tanks.")
++	graphic.tooltip_text = tr("Liquid responds to flight loads. Quantity comes from the fuel tanks.")
+ 	subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ 	subtitle.max_lines_visible = 2
+ 	_apply_density()
+@@ -96,7 +97,7 @@ func refresh(t: Dictionary, system: String, peak: float, battery: Dictionary, fu
+ 		_reserve_estimated = estimated
+ 		_empty = empty
+ 		_liquid_material.set_shader_parameter("liquid_color", color)
+-		graphic.tooltip_text = tr("Liquid follows bank, pitch and load. Quantity comes from the fuel tanks.")
++		graphic.tooltip_text = tr("Liquid responds to flight loads. Quantity comes from the fuel tanks.")
+ 		if is_finite(reserve):
+ 			graphic.tooltip_text += "\n" + tr("Reserve: %d%% (%s)") % [roundi(reserve * 100.0), tr("estimated reserve") if estimated else tr("authored reserve")]
+ 		graphic.queue_redraw()
+@@ -182,7 +183,18 @@ func _update_motion(t: Dictionary, available: bool) -> void:
+ 	if not available or not is_finite(now) or not is_finite(bank) or not is_finite(pitch) or not is_finite(load_factor):
+ 		if _motion_time != -INF: _reset_motion()
+ 		return
+-	var target := -sin(deg_to_rad(bank)) * 0.48
++	# Full-circle angle from body down, toward body right. Accepted force telemetry
++	# distinguishes negative-g inverted flight from a positive-g roll or banked turn.
++	# Older/synthetic snapshots without lateral force retain an attitude-only fallback.
++	var target := deg_to_rad(bank)
++	if t.has("specific_force_right_g"):
++		var lateral := _numeric(t.specific_force_right_g)
++		if not is_finite(lateral):
++			_reset_motion()
++			return
++		var down := Vector2(-lateral, load_factor)
++		# Near zero projected g has no well-defined free surface; retain its last direction.
++		target = atan2(down.x, down.y) if down.length() >= 0.05 else _target
+ 	if not is_finite(_motion_time) or now < _motion_time or now - _motion_time > 0.5:
+ 		_tilt = target
+ 		_velocity = 0.0
+@@ -191,10 +203,13 @@ func _update_motion(t: Dictionary, available: bool) -> void:
+ 		return # Paused/repeated snapshot: no integration or new wave impulse.
+ 	else:
+ 		var dt := now - _motion_time
++		# Unwrap the target so crossing +180/-180 never spins the liquid the long way.
++		target = _target + wrapf(target - _target, -PI, PI)
+ 		var state := spring(_tilt, _velocity, _target, dt)
+ 		_tilt = state.x
+ 		_velocity = state.y
+-		_energy = minf(1.0, _energy * exp(-2.8 * dt) + absf(target - _target) * 1.8
++		_energy = minf(1.0, _energy * exp(-2.8 * dt) + absf(target - _target) * 0.4
++			+ absf(wrapf(bank - _bank, -180.0, 180.0)) / 150.0
+ 			+ absf(pitch - _pitch) / 100.0 + absf(load_factor - _load) * 0.12)
+ 		if absf(_tilt - target) < 0.0005 and absf(_velocity) < 0.002 and _energy < 0.002:
+ 			_tilt = target
+@@ -202,6 +217,7 @@ func _update_motion(t: Dictionary, available: bool) -> void:
+ 			_energy = 0.0
+ 	_target = target
+ 	_pitch = pitch
++	_bank = bank
+ 	_load = load_factor
+ 	_motion_time = now
+ 	_publish_motion()
+@@ -222,6 +238,15 @@ func _draw_instrument() -> void:
+ 	var h := graphic.size.y
+ 	var chamber := Rect2(1, 1, w - 34, h - 19)
+ 	graphic.draw_style_box(_tank_style, chamber)
++	# Inner ribs and witness lines remain visible through the translucent liquid.
++	var inner := Rect2(Vector2(7, 7), Vector2(w - 46, h - 31))
++	for i: int in [1, 2]:
++		var x := inner.position.x + inner.size.x * i / 3.0
++		graphic.draw_line(Vector2(x, inner.position.y + 5), Vector2(x, inner.end.y - 5), Color("a6bec8", 0.16), 3, true)
++		graphic.draw_line(Vector2(x + 2, inner.position.y + 5), Vector2(x + 2, inner.end.y - 5), Color("03090c", 0.65), 1, true)
++	for i: int in [1, 2, 3]:
++		var y := inner.position.y + inner.size.y * i / 4.0
++		graphic.draw_line(Vector2(inner.position.x + 5, y), Vector2(inner.end.x - 5, y), Color("a6bec8", 0.07), 1, true)
+ 	# Fixed graduation scale remains readable while the liquid surface moves.
+ 	for i in 11:
+ 		var y := 7.0 + (h - 31.0) * i / 10.0
+diff --git a/app/render/overlays/fuel_liquid.gdshader b/app/render/overlays/fuel_liquid.gdshader
+index e6f30ba2c..3b4386087 100644
+--- a/app/render/overlays/fuel_liquid.gdshader
++++ b/app/render/overlays/fuel_liquid.gdshader
+@@ -12,6 +12,19 @@ uniform float tilt_velocity = 0.0;
+ uniform float target_tilt = 0.0;
+ uniform float wave_energy = 0.0;
+ 
++// Exact area quantile of a rectangle projected along a unit normal. Unlike a
++// slope/height graph this works through both knife edges and inverted flight.
++float surface_offset(vec2 down, vec2 extent, float amount) {
++	vec2 spans = abs(down) * extent;
++	float a = max(max(spans.x, spans.y), 0.0001);
++	float b = min(spans.x, spans.y);
++	float tail = min(amount, 1.0 - amount);
++	float distance = tail < b / (2.0 * a)
++		? a + b - sqrt(max(0.0, 8.0 * a * b * tail))
++		: a * (1.0 - 2.0 * tail);
++	return amount < 0.5 ? distance : -distance;
++}
++
+ void fragment() {
+ 	vec2 half_size = rect_size * 0.5;
+ 	vec2 q = abs((UV - 0.5) * rect_size) - half_size + 8.0;
+@@ -22,35 +35,41 @@ void fragment() {
+ 	// The render clock may trail the accepted tick by one interpolation step.
+ 	float dt = clamp(mod(sim_clock - sample_clock + 512.0, 1024.0) - 512.0, 0.0, 2.0);
+ 	float offset = tilt - target_tilt;
+-	float slope = target_tilt + exp(-4.0 * dt) * (offset * cos(9.0 * dt)
++	float angle = target_tilt + exp(-4.0 * dt) * (offset * cos(9.0 * dt)
+ 		+ (tilt_velocity + 4.0 * offset) / 9.0 * sin(9.0 * dt));
++	vec2 down = vec2(sin(angle), cos(angle));
++	vec2 tangent = vec2(down.y, -down.x);
+ 	float energy = wave_energy * exp(-2.8 * dt);
+-	// Whole cycles across the chamber have zero mean; taper near full/empty so waves cannot create fuel.
+-	float clearance = clamp(min(fill, 1.0 - fill) / 0.34, 0.0, 1.0);
++	float clearance = clamp(min(fill, 1.0 - fill) / 0.15, 0.0, 1.0);
+ 	float phase = 6.28318530718 * fract(sim_clock * (704.0 / 1024.0));
+-	float wave = energy * (0.024 * sin(UV.x * 6.28318530718 + phase)
+-		+ 0.012 * sin(UV.x * 12.56637061436 - phase * 2.0));
+-	float surface = 1.0 - clamp(fill, 0.0, 1.0) + clearance * (clamp(slope, -0.6, 0.6) * (UV.x - 0.5) + wave);
+-	float edge = max(fwidth(UV.y), 0.002);
+-	float depth = UV.y - surface;
++	vec2 point = (UV - 0.5) * rect_size;
++	float along = dot(point, tangent) / max(dot(abs(tangent), rect_size), 1.0) + 0.5;
++	float wave = clearance * energy * (2.4 * sin(along * 6.28318530718 + phase)
++		+ 1.2 * sin(along * 12.56637061436 - phase * 2.0));
++	float surface = surface_offset(down, half_size, clamp(fill, 0.0, 1.0));
++	float depth = dot(point, down) - surface - wave;
++	float edge = max(fwidth(depth), 0.6);
+ 	float wet = smoothstep(-edge, edge, depth);
+ 	if (fill <= 0.0) { wet = 0.0; }
+ 	if (fill >= 1.0) { wet = 1.0; }
+-	vec3 dry_color = vec3(0.023, 0.037, 0.044);
+-	vec3 fluid = liquid_color.rgb * mix(0.86, 0.26, smoothstep(0.0, 0.85, depth));
+-	// A narrow bright meniscus and restrained moving light give the liquid depth.
+-	float crest = exp(-abs(depth) * rect_size.y / 2.0);
+-	float caustic = pow(0.5 + 0.5 * sin(UV.x * 18.0 + UV.y * 7.0 + phase), 6.0);
+-	fluid += liquid_color.rgb * (0.06 * caustic * energy + 0.12 * pow(UV.y, 3.0));
+-	vec3 color = mix(dry_color, fluid, wet);
+-	if (fill > 0.0 && fill < 1.0) { color += mix(liquid_color.rgb, vec3(1.0), 0.55) * crest * 0.5; }
+-	// Static glass highlights stay quiet when the aircraft is steady or paused.
+-	float reflection = 1.0 - smoothstep(0.0, 0.085, abs(UV.x + UV.y * 0.14 - 0.18));
++	float optical_depth = fill >= 1.0 ? 1.0 : clamp(depth / max(dot(abs(down), rect_size), 1.0), 0.0, 1.0);
++	// Actual alpha blending transmits the inner tank ribs. Deeper fluid absorbs
++	// more light; a fine meniscus and doubled reflection suggest clear tinted liquid.
++	vec3 color = liquid_color.rgb * mix(0.8, 0.48, optical_depth);
++	float opacity = wet * mix(0.28, 0.57, sqrt(optical_depth));
++	float crest = fill > 0.0 && fill < 1.0 ? exp(-abs(depth) / 0.4) : 0.0;
++	color = mix(color, mix(liquid_color.rgb, vec3(1.0), 0.65), crest * 0.75);
++	opacity = max(opacity, crest * 0.85);
++	float reflection = 1.0 - smoothstep(0.0, 0.045, abs(UV.x + UV.y * 0.14 - 0.18));
++	float return_reflection = 1.0 - smoothstep(0.0, 0.018, abs(UV.x + UV.y * 0.14 - 0.28));
+ 	float rim = 1.0 - smoothstep(0.0, 1.7, -sdf);
+-	color += vec3(0.55, 0.7, 0.76) * (reflection * 0.07 + rim * 0.22);
++	float glass = reflection * 0.08 + return_reflection * 0.025 + rim * 0.25;
++	color = mix(color, vec3(0.65, 0.8, 0.86), glass);
++	opacity = max(opacity, glass);
+ 	if (fill < 0.0) {
+ 		float hatch = step(0.82, fract((UV.x * rect_size.x + UV.y * rect_size.y) / 14.0));
+-		color = dry_color + vec3(0.04) * hatch + vec3(0.1) * rim;
++		color = vec3(0.18);
++		opacity = hatch * 0.22 + rim * 0.3;
+ 	}
+-	COLOR = vec4(color, mask);
++	COLOR = vec4(color, mask * opacity);
+ }
+diff --git a/app/render/overlays/telemetry.gd b/app/render/overlays/telemetry.gd
+index 249e49584..5807b6acf 100644
+--- a/app/render/overlays/telemetry.gd
++++ b/app/render/overlays/telemetry.gd
+@@ -64,6 +64,9 @@ static func compute(state: PackedFloat64Array, wind_ned: PackedFloat64Array, air
+ 		bank_deg = rad_to_deg(euler[2]),
+ 		# Load factor: specific force along body −z over g; 1 in level flight, 1/cos φ in a steady level turn.
+ 		load_factor = -loads[2] / weight if weight > 0.0 else 0.0,
++		# Body-right non-gravitational specific force. The fuel display uses its negative
++		# with load_factor as apparent down in the tank's right/down cross-section.
++		specific_force_right_g = loads[1] / weight if weight > 0.0 else NAN,
+ 		throttle = float(ctx.get("throttle", 0.0)),
+ 		time_s = float(ctx.get("time_s", 0.0)),
+ 		wind_speed = wind_h,
+diff --git a/app/tests/test_controller_recovery_focus.gd b/app/tests/test_controller_recovery_focus.gd
+index b0a370ff4..5d6fcc356 100644
+--- a/app/tests/test_controller_recovery_focus.gd
++++ b/app/tests/test_controller_recovery_focus.gd
+@@ -3,6 +3,7 @@ extends SceneTree
+ const UiDriver := preload("res://tests/ui_driver.gd")
+ const Screen := preload("res://ui/screen.gd")
+ const Stack := preload("res://ui/screen_stack.gd")
++const Help := preload("res://ui/help_screen.gd")
+ 
+ var checks := 0
+ var failures := 0
+@@ -166,6 +167,14 @@ func check_stack_fallbacks() -> void:
+ 	detached.close()
+ 	check("closing a detached screen preserves newer valid focus", newer.has_focus())
+ 	detached.free()
++	var help := Help.new(newer)
++	host.add_child(help)
++	await ui.settle()
++	check("standalone Help owns its Close button focus", help.close_button.has_focus())
++	help.close()
++	check("standalone Help returns its outgoing focus to the opener", newer.has_focus())
++	help.free()
++	await ui.settle()
+ 	stack.push("upper", Screen.new(), newer)
+ 	stack.pop(true, false)
+ 	check("explicit no-restore pop does not invoke fallback", root.gui_get_focus_owner() == null)
+diff --git a/app/tests/test_fuel_instrument.gd b/app/tests/test_fuel_instrument.gd
+index 508fe7877..c0b1aad75 100644
+--- a/app/tests/test_fuel_instrument.gd
++++ b/app/tests/test_fuel_instrument.gd
+@@ -27,6 +27,7 @@ func _initialize() -> void:
+ 	await _settle()
+ 	_test_data(widget)
+ 	_test_motion(widget)
++	_test_attitudes(widget)
+ 	await _test_geometry(widget)
+ 	await _test_visibility()
+ 	widget.queue_free()
+@@ -173,13 +174,13 @@ func _test_motion(widget: Control) -> void:
+ 		and widget._tilt == 0.0 and widget._velocity == 0.0 and widget._energy == 0.0)
+ 	_refresh(widget, sample, _telemetry(10.2, -70.0))
+ 	_check("first sample after same-time reset seeds the new pose", widget._motion_time == 10.2
+-		and widget._energy == 0.0 and is_equal_approx(widget._tilt, widget._target) and widget._tilt > 0.1)
++		and widget._energy == 0.0 and is_equal_approx(widget._tilt, widget._target) and widget._tilt < -0.1)
+ 	_refresh(widget, sample, _telemetry(9.0, 30.0))
+ 	_check("rewind reseeds instead of integrating backward", widget._motion_time == 9.0
+-		and is_equal_approx(widget._tilt, -0.24) and widget._velocity == 0.0 and widget._energy == 0.0)
++		and is_equal_approx(widget._tilt, PI / 6.0) and widget._velocity == 0.0 and widget._energy == 0.0)
+ 	_refresh(widget, sample, _telemetry(11.0, -30.0))
+ 	_check("long sample gap reseeds instead of integrating stale history", widget._motion_time == 11.0
+-		and is_equal_approx(widget._tilt, 0.24) and widget._velocity == 0.0 and widget._energy == 0.0)
++		and is_equal_approx(widget._tilt, -PI / 6.0) and widget._velocity == 0.0 and widget._energy == 0.0)
+ 	_refresh(widget, sample, _telemetry(11.1, NAN))
+ 	_check("unavailable motion clears the spring", not is_finite(widget._motion_time) and widget._energy == 0.0)
+ 	for field: String in ["time_s", "bank_deg", "pitch_deg", "load_factor"]:
+@@ -207,6 +208,31 @@ func _motion_signature(widget: Control) -> Array:
+ 		material.get_shader_parameter("wave_energy")]
+ 
+ 
++func _test_attitudes(widget: Control) -> void:
++	var fuel := _fuel("kerosene", 0.37)
++	for pose: Array in [[0.0, 0.0, 1.0, 0.0], [90.0, -1.0, 0.0, PI / 2.0],
++			[180.0, 0.0, -1.0, PI], [-90.0, 1.0, 0.0, -PI / 2.0], [180.0, 0.0, 1.0, 0.0]]:
++		widget.reset_flight()
++		var t := _telemetry(40.0, pose[0], 0.0, pose[2])
++		t.specific_force_right_g = pose[1]
++		_refresh(widget, fuel, t)
++		_check("apparent-down direction for bank %s / load %s" % [pose[0], pose[2]],
++			absf(wrapf(widget._target - pose[3], -PI, PI)) < 0.0001 and widget.value_label.text == "37")
++	widget.reset_flight()
++	_refresh(widget, fuel, _telemetry(41.0, 179.0))
++	var before: float = widget._target
++	_refresh(widget, fuel, _telemetry(41.1, -179.0))
++	_check("crossing inverted follows the short two-degree path", is_equal_approx(widget._target - before, deg_to_rad(2.0)))
++	var floating := _telemetry(41.2, 30.0, 0.0, 0.0)
++	floating.specific_force_right_g = 0.0
++	before = widget._target
++	_refresh(widget, fuel, floating)
++	_check("zero projected g retains the previous direction", widget._target == before)
++	floating.specific_force_right_g = NAN
++	_refresh(widget, fuel, floating)
++	_check("invalid force cannot leave stale motion", not is_finite(widget._motion_time))
++
++
+ func _test_geometry(widget: Control) -> void:
+ 	widget.set_appearance("normal", 0.94, false)
+ 	await _settle()
+@@ -267,7 +293,7 @@ func _rendered_fixture(requested_dir: String) -> void:
+ 	var output := requested_dir
+ 	if not output.is_absolute_path():
+ 		output = ProjectSettings.globalize_path("res://").path_join(output).simplify_path()
+-	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png"]:
++	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png", "attitudes.png"]:
+ 		if FileAccess.file_exists(output.path_join(filename)):
+ 			_check("fixture never overwrites a prior image", false, output.path_join(filename))
+ 			return
+@@ -313,8 +339,16 @@ func _rendered_fixture(requested_dir: String) -> void:
+ 	await RenderingServer.frame_post_draw
+ 	_check("Spanish compact fixture was saved", root.get_texture().get_image().save_png(output.path_join("compact_es.png")) == OK)
+ 	TranslationServer.set_locale("en")
+-	for widget: Control in widgets:
++	for i in widgets.size():
++		var widget: Control = widgets[i]
+ 		widget.set_appearance("normal", 0.94, false)
++		widget.title_label.text = TranslationServer.translate("Fuel tank").to_upper()
++		var restored := _fuel(families[i], 0.5 if i < 3 else 0.08)
++		if i == 3:
++			restored.low_fuel = true
++			restored.reserve_estimated = true
++		if i == 4: restored = {}
++		_refresh(widget, restored, _telemetry(20.0))
+ 	await _settle()
+ 
+ 	var tank: Control = widgets[0]
+@@ -349,12 +383,87 @@ func _rendered_fixture(requested_dir: String) -> void:
+ 		_refresh(tank, sample, _telemetry(30.0, 85.0))
+ 		var tilted: Image = await _tank_image(tank)
+ 		_check("tilt cannot change an endpoint fill %.0f" % fill, level.get_data() == tilted.get_data())
++	await _rendered_attitudes(tank, output)
+ 	for widget: Control in widgets:
+ 		widget.queue_free()
+ 	background.queue_free()
+ 	await process_frame
+ 
+ 
++func _rendered_attitudes(tank: Control, output: String) -> void:
++	var rows: Array = []
++	var poses := [["LEVEL", 0.0, 0.0, 1.0], ["RIGHT KNIFE EDGE", 90.0, -1.0, 0.0],
++		["INVERTED / NEGATIVE G", 180.0, 0.0, -1.0], ["LEFT KNIFE EDGE", -90.0, 1.0, 0.0],
++		["INVERTED / POSITIVE G", 180.0, 0.0, 1.0]]
++	for i in poses.size():
++		var widget := FuelInstrument.new()
++		_stage.add_child(widget)
++		widget.position = Vector2(20 + i * 370, 510)
++		var caption := Label.new()
++		caption.text = poses[i][0]
++		caption.position = Vector2(20 + i * 370, 475)
++		caption.add_theme_font_size_override("font_size", 14)
++		_stage.add_child(caption)
++		var t := _telemetry(50.0, poses[i][1], 0.0, poses[i][3])
++		t.specific_force_right_g = poses[i][2]
++		_refresh(widget, _fuel("gasoline", 0.37), t)
++		rows.append(widget)
++		rows.append(caption)
++	Clock.update(50.0)
++	await _settle()
++	await RenderingServer.frame_post_draw
++	_check("inverted and knife-edge board was saved", root.get_texture().get_image().save_png(output.path_join("attitudes.png")) == OK)
++
++	# Compare the rendered wet area against the same tank rendered dry. Boundary
++	# antialiasing and rounded corners allow 2% absolute pixel-area tolerance.
++	for angle: float in [0.0, 45.0, 90.0, 135.0, 180.0, -90.0]:
++		for amount: float in [0.15, 0.37, 0.5, 0.85]:
++			tank.reset_flight()
++			_refresh(tank, _fuel("glow", amount), _telemetry(60.0, angle))
++			Clock.update(60.0)
++			tank._liquid_material.set_shader_parameter("fill", 0.0)
++			var dry := await _tank_image(tank)
++			tank._liquid_material.set_shader_parameter("fill", 1.0)
++			var full := await _tank_image(tank)
++			tank._liquid_material.set_shader_parameter("fill", amount)
++			var filled := await _tank_image(tank)
++			var full_pixels := _different_pixels(dry, full)
++			var filled_pixels := _different_pixels(dry, filled)
++			var coverage := float(filled_pixels) / maxf(1.0, full_pixels)
++			_check("rendered amount %.0f%% preserved at bank %.0f" % [amount * 100, angle],
++				absf(coverage - amount) < 0.02, "coverage=%.4f" % coverage)
++
++	# The same submerged ribs/back wall must transmit through the fluid: opaque
++	# rendering would produce identical center pixels over white and black backplates.
++	tank.reset_flight()
++	_refresh(tank, _fuel("gasoline", 1.0), _telemetry(70.0))
++	Clock.update(70.0)
++	var original: Color = tank._tank_style.bg_color
++	tank._tank_style.bg_color = Color.WHITE
++	tank.graphic.queue_redraw()
++	var light := await _tank_image(tank)
++	tank._tank_style.bg_color = Color.BLACK
++	tank.graphic.queue_redraw()
++	var dark := await _tank_image(tank)
++	var point := Vector2i(light.get_width() / 2, light.get_height() / 2)
++	_check("liquid transmits the tank interior", light.get_pixelv(point).get_luminance() - dark.get_pixelv(point).get_luminance() > 0.25)
++	tank._tank_style.bg_color = original
++	tank.graphic.queue_redraw()
++	for item: Node in rows: item.queue_free()
++	await process_frame
++
++
++func _different_pixels(a: Image, b: Image) -> int:
++	var count := 0
++	for y in a.get_height():
++		for x in a.get_width():
++			var first := a.get_pixel(x, y)
++			var second := b.get_pixel(x, y)
++			if maxf(absf(first.r - second.r), maxf(absf(first.g - second.g), absf(first.b - second.b))) > 0.025:
++				count += 1
++	return count
++
++
+ func _tank_image(widget: Control) -> Image:
+ 	await process_frame
+ 	await RenderingServer.frame_post_draw
+diff --git a/app/tests/test_overlay_telemetry.gd b/app/tests/test_overlay_telemetry.gd
+index 34ecd6ff0..32a78a1e2 100644
+--- a/app/tests/test_overlay_telemetry.gd
++++ b/app/tests/test_overlay_telemetry.gd
+@@ -68,6 +68,15 @@ func _initialize() -> void:
+ 		{ last_loads = PackedFloat64Array([0.0, 0.0, -2.0 * MASS * G, 0.0, 0.0, 0.0]) })
+ 	_check("60° turn: load factor 2", _near(turn.load_factor, 2.0))
+ 	_check("60° turn: heading 090, bank 60°", _near(turn.heading_deg, 90.0, 1e-9) and _near(turn.bank_deg, 60.0, 1e-9))
++	_check("coordinated turn has no lateral specific force", _near(turn.specific_force_right_g, 0.0))
++	var knife := _telemetry(_state([0.0, 0.0, -30.0], [20.0, 0.0, 0.0], 0.0, 0.0, PI / 2.0), calm,
++		{last_loads = PackedFloat64Array([0.0, -MASS * G, 0.0, 0.0, 0.0, 0.0])})
++	_check("knife edge forwards body-right specific force with its sign", _near(knife.specific_force_right_g, -1.0)
++		and _near(knife.load_factor, 0.0))
++	var inverted := _telemetry(_state([0.0, 0.0, -30.0], [20.0, 0.0, 0.0], 0.0, 0.0, PI), calm,
++		{last_loads = PackedFloat64Array([0.0, 0.0, MASS * G, 0.0, 0.0, 0.0])})
++	_check("inverted negative g points apparent down toward tank roof", _near(inverted.load_factor, -1.0)
++		and _near(inverted.specific_force_right_g, 0.0))
+ 
+ 	# Height above ground follows the terrain under the aircraft.
+ 	var hill := _telemetry(_state([0.0, 0.0, -30.0], [15.0, 0.0, 0.0], 0.0, 0.0, 0.0), calm, { terrain_up = 12.5 })
+diff --git a/app/ui/screen.gd b/app/ui/screen.gd
+index 803d0d7f6..a01724e65 100644
+--- a/app/ui/screen.gd
++++ b/app/ui/screen.gd
+@@ -86,7 +86,9 @@ func close(restore_focus := true) -> void:
+ 	if restore_focus and can_focus(return_focus):
+ 		# The stack has detached this surface. Use the opener's live viewport,
+ 		# and preserve focus acquired by the returning screen during activation.
+-		if not can_focus(return_focus.get_viewport().gui_get_focus_owner()):
++		var focused := return_focus.get_viewport().gui_get_focus_owner()
++		# Standalone dialogs close before detaching; their own focus is outgoing.
++		if not can_focus(focused) or focused == self or is_ancestor_of(focused):
+ 			return_focus.grab_focus()
+ 	return_focus = null
+ 

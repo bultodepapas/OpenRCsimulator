@@ -12,6 +12,7 @@ const Transmitter := preload("res://render/overlays/transmitter.gd")
 const WindOverlay := preload("res://render/overlays/wind.gd")
 const TelemetryPanel := preload("res://render/overlays/telemetry_panel.gd")
 const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
+const AlertPolicy := preload("res://render/overlays/alert_policy.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
 const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
@@ -61,6 +62,8 @@ var battery_sensors: RefCounted = BatterySensors.new()
 var _since_text := INF
 var _last_telemetry := {}
 var _warning_codes := PackedStringArray()
+var _raw_warning_codes := PackedStringArray()
+var _alert_policy := AlertPolicy.new()
 var _has_battery := false
 var _battery_dock := Vector3(-1.0, -1.0, -1.0)
 var _fuel_warning_player: AudioStreamPlayer
@@ -231,6 +234,11 @@ func reset_flight() -> void:
 	flight_metrics.reset()
 	_battery_reading = {}
 	_fuel_state_known = false
+	_alert_policy.reset()
+	_raw_warning_codes = PackedStringArray()
+	_warning_codes = PackedStringArray()
+	frames.warnings.refresh(_warning_codes)
+	frames.warnings.visible = false
 	_since_text = INF
 	for id: String in PLAYER_POSITIONS:
 		frames[id].reset_flight()
@@ -280,6 +288,7 @@ func apply(value: Variant, announce := true) -> void:
 	var previous := settings
 	settings = next
 	_settings_applied = true
+	frames.warnings.configure(settings)
 	var visibility_changed: bool = first or previous.visible != settings.visible
 	var appearance_changed := first or ["widget_size", "widget_opacity", "widget_compact"].any(
 		func(key: String) -> bool: return previous.get(key) != settings.get(key))
@@ -293,7 +302,7 @@ func apply(value: Variant, announce := true) -> void:
 		for id: String in IDS:
 			var on: bool = settings.visible.has(id)
 			if id == "warnings":
-				frames[id].visible = on and not _warning_codes.is_empty()
+				frames[id].visible = on and not AlertPolicy.select_codes(_raw_warning_codes, settings).is_empty()
 			elif id == "battery":
 				frames[id].visible = on and _has_battery
 			else:
@@ -310,6 +319,14 @@ func apply(value: Variant, announce := true) -> void:
 	if visibility_changed: _dock_battery()
 	if visibility_changed or previous.units != settings.units or previous.stick_mode != settings.stick_mode or statistics_scope_changed:
 		_since_text = INF # changed readings/newly opened instruments refresh at once
+	if first or Settings.WARNING_DEFAULTS.keys().any(func(key: String) -> bool: return previous.get(key) != settings.get(key)):
+		_since_text = INF
+		if not settings.get("warning_training", false):
+			_alert_policy.reset()
+			for code: String in AlertPolicy.TRAINING:
+				var at := _raw_warning_codes.find(code)
+				if at >= 0: _raw_warning_codes.remove_at(at)
+	_refresh_warnings()
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
 
@@ -377,6 +394,13 @@ func set_radio_model(model: String) -> void:
 	apply(next)
 
 
+func set_warning_option(key: String, value: Variant) -> void:
+	if not Settings.WARNING_DEFAULTS.has(key): return
+	var next := settings.duplicate(true)
+	next[key] = value
+	apply(next)
+
+
 func unit_system() -> String:
 	return Units.resolve(settings.units, language)
 
@@ -416,6 +440,8 @@ func refresh_numbers(snap: Dictionary) -> void:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	_refresh_battery(snap.get("battery", {}), system)
+	_raw_warning_codes = _warning_codes.duplicate()
+	_raw_warning_codes.append_array(_alert_policy.update(snap, settings))
 	var cruise := {}
 	if visible and frames.cruise_efficiency.visible:
 		cruise = navigation_data.update(_last_telemetry, _battery_reading)
@@ -439,8 +465,15 @@ func refresh_numbers(snap: Dictionary) -> void:
 			var aircraft_id := statistics_aircraft_id if scope == "aircraft" else ""
 			var summary := _statistics_summary(aircraft_id, "session")
 			frames.session_stats.refresh_statistics(summary, tr("This aircraft") if scope == "aircraft" else tr("All aircraft"))
-	frames.warnings.visible = not _warning_codes.is_empty() and is_overlay_visible("warnings")
-	if visible and frames.warnings.visible:
+	_refresh_warnings()
+
+
+func _refresh_warnings() -> void:
+	_warning_codes = AlertPolicy.select_codes(_raw_warning_codes, settings)
+	var shown := is_overlay_visible("warnings") and not _warning_codes.is_empty()
+	frames.warnings.visible = shown
+	# Empty clears stale cards; reopening refreshes the latest accepted codes immediately.
+	if visible and (shown or _warning_codes.is_empty()):
 		frames.warnings.refresh(_warning_codes)
 
 

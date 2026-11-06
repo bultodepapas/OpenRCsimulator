@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "da8938b9-e057-43c8-a685-e630be3c81ea",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/controller-recovery-focus/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_controller_preflight_calibration.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:36:50.010655+00:00",
+  "label": "test_controller_preflight_calibration",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\isolated-checks\\test_controller_preflight_calibration-a8morrg1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\isolated-checks\\test_controller_preflight_calibration-a8morrg1\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:236)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.703,
+  "log_bytes": 577,
+  "log_sha256": "00da3881282b3a80735ba79abd711b65d9d71713c4b3aa14fb3c1f5cf2b3e96c"
+}

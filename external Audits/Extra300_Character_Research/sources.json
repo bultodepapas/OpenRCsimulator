@@ -1,0 +1,185 @@
+{
+  "researched_on": "2026-11-06",
+  "target": "Great Planes GPMA0236 .60 kit",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Great Planes Extra 300S .60 GPMA0236 instruction manual",
+      "author": "Great Planes",
+      "date": "2004, EXT6P03 V1.2",
+      "url": "https://pfmrc.eu/applications/core/interface/file/attachment.php?id=151092",
+      "kind": "manufacturer manual, public mirror",
+      "role": "Exact-kit setup and intended handling",
+      "prior_project_evidence": true,
+      "limits": [
+        "Setup recommendations are not measured response curves.",
+        "Travel is measured as linear surface displacement."
+      ]
+    },
+    {
+      "id": "S2",
+      "title": "Extra 300S .60 review",
+      "author": "Jack J. Joseph, RCM",
+      "date": "2000-04",
+      "url": "https://www.scribd.com/document/1001862894/Extra-300S-60-Oz10977-Review-RCM",
+      "kind": "original pilot review, public OCR mirror",
+      "role": "Specific .61FX build; conventional aerobatics and rudder demand",
+      "prior_project_evidence": true,
+      "limits": [
+        "Public OCR has ambiguous digits.",
+        "Review tank state not independently established.",
+        "Reviewer setup cannot be silently replaced by later manual defaults."
+      ]
+    },
+    {
+      "id": "S3",
+      "title": "GP EXTRA 300S 60",
+      "author": "Luv Bipes, rec.models.rc.air",
+      "date": "2000-02-24",
+      "url": "https://groups.google.com/g/rec.models.rc.air/c/3A8ySNRpGqE",
+      "kind": "first-person owner report",
+      "role": "Additional period evidence about installation-dependent vertical performance",
+      "prior_project_evidence": false,
+      "limits": [
+        "Single owner; no calibrated measurements.",
+        "The subsequent .40-model reply is excluded."
+      ]
+    },
+    {
+      "id": "S4",
+      "title": "3D Hobby Shop 47\" Extra 300 SHP",
+      "author": "Tim / av8tr",
+      "date": "2007-03-12 flight report",
+      "url": "https://www.rcuniverse.com/forum/3d-electric-flying-237/5458524-3d-hobby-shop-47%22-extra-300-shp.html",
+      "kind": "original build and pilot report",
+      "role": "A named precision/3D comparator",
+      "limits": [
+        "Four initial flights.",
+        "Commercial/promotional context.",
+        "Knife-edge coupling assessment explicitly limited by wind."
+      ]
+    },
+    {
+      "id": "S5",
+      "title": "SPORT FLYING THE 3D HOBBY SHOP EXTRA 300 SHP",
+      "author": "Doc Austin",
+      "date": "2008-04-11",
+      "url": "https://www.rcuniverse.com/forum/electric-aerobatic-sport-planes-144/7367733-sport-flying-3d-hobby-shop-extra-300-shp.html",
+      "kind": "original setup and pilot report",
+      "role": "Setup-dependent character within a design",
+      "limits": [
+        "Several variables changed.",
+        "Unblinded subjective comparison with promotional context."
+      ]
+    },
+    {
+      "id": "S6",
+      "title": "60-inch Extra 300 EXP manual with V2 addendum",
+      "author": "Extreme Flight",
+      "url": "https://extremeflightrc.com/cdn/shop/files/EF-60extra-V2_manual_b58079bb-afb0-434a-a4da-930f2d508ced.pdf?v=13810129977580418015",
+      "kind": "manufacturer manual",
+      "role": "Separate precision/3D/tumble settings and modified design",
+      "limits": [
+        "Original V1 setup section precedes V2 assembly addendum.",
+        "Manufacturer guidance, not independent calibrated flight data."
+      ]
+    },
+    {
+      "id": "S7",
+      "title": "Multiplex RR EXTRA 330SC Gernot Bruckmann Limited Edition",
+      "author": "Josh Bernstein, Model Aviation",
+      "date": "2017-06",
+      "url": "https://www.modelaviation.com/multiplex-extra-bruckmann-limited",
+      "kind": "original pilot review",
+      "role": "Named small foam 3D comparator; coupling after mixing",
+      "limits": [
+        "Specific battery, CG and rate setup.",
+        "Do not equate post-mix handling with bare-airframe coupling."
+      ]
+    },
+    {
+      "id": "S8",
+      "title": "FMS 2000mm Extra 330 PNP",
+      "author": "Josh Bernstein, Model Aviation",
+      "date": "2019-01",
+      "url": "https://www.modelaviation.com/fms-extra-s2000",
+      "kind": "original pilot review",
+      "role": "Large 3D comparator; loading alone insufficient",
+      "limits": [
+        "Different size, geometry and propulsion.",
+        "Electrical input watts are not thrust."
+      ]
+    },
+    {
+      "id": "S9",
+      "title": "E-flite Extra 300 1.3m manual",
+      "author": "Horizon Hobby / E-flite",
+      "url": "https://my.spektrumrc.com/ProdInfo/Files/EFL11550-75-Manual-EN.pdf",
+      "kind": "manufacturer manual",
+      "role": "Distinguishes SAFE Select from AS3X",
+      "limits": [
+        "Applies to this documented receiver/BNF configuration."
+      ]
+    },
+    {
+      "id": "S10",
+      "title": "Use of dynamically scaled models for studies of the high-angle-of-attack behavior of airplanes",
+      "author": "Joseph R. Chambers, NASA",
+      "date": "1988-07-18",
+      "url": "https://ntrs.nasa.gov/citations/19890029144",
+      "kind": "primary technical report abstract",
+      "role": "Scale/Reynolds limitations on stall/spin transfer",
+      "limits": [
+        "Methodological context, not Extra 300S flight data."
+      ]
+    },
+    {
+      "id": "S11",
+      "title": "GP Extra 300S 60 Build 2013, post 16",
+      "author": "J. Paul Saure",
+      "date": "2013-01-14",
+      "url": "https://www.rcuniverse.com/forum/kit-building-121/11359480-gp-extra-300s-60-build-2013-a.html?nojs=1",
+      "kind": "first-person owner report",
+      "role": "Additional same-kit handling evidence",
+      "prior_project_evidence": false,
+      "limits": [
+        "Saito 1.25 four-stroke and tail elevator servos; not the simulated .61FX installation.",
+        "Owner independence from all earlier sources not established.",
+        "No calibrated speed or angular-rate measurements."
+      ]
+    }
+  ],
+  "repositories": [
+    {
+      "id": "R1",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/external%20Audits/CONSOLIDATED-AUDITS.md",
+      "role": "Prior-audit cross-check",
+      "sha256": "772a484f0aad5f36241bca4b13c09437fdc1b00b43def686ebbe180abb7a55fa"
+    },
+    {
+      "id": "R2",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/docs/research/extra-300-realism/EX-14/README.md",
+      "role": "Existing realism evidence and limitations"
+    },
+    {
+      "id": "R3",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/data/aircraft/gp_extra_300s_60.json",
+      "role": "Frozen aircraft inputs"
+    },
+    {
+      "id": "R4",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/sim/flight_session.gd",
+      "role": "Rate profile and command path"
+    },
+    {
+      "id": "R5",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/app/input/commands.gd",
+      "role": "Expo and travel shaping"
+    },
+    {
+      "id": "R6",
+      "url": "https://github.com/bultodepapas/OpenRCsimulator/blob/8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd/docs/FLIGHT-LOGGING.md",
+      "role": "Existing recording/replay workflow"
+    }
+  ]
+}

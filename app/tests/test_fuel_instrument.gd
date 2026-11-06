@@ -27,6 +27,7 @@ func _initialize() -> void:
 	await _settle()
 	_test_data(widget)
 	_test_motion(widget)
+	_test_attitudes(widget)
 	await _test_geometry(widget)
 	await _test_visibility()
 	widget.queue_free()
@@ -173,13 +174,13 @@ func _test_motion(widget: Control) -> void:
 		and widget._tilt == 0.0 and widget._velocity == 0.0 and widget._energy == 0.0)
 	_refresh(widget, sample, _telemetry(10.2, -70.0))
 	_check("first sample after same-time reset seeds the new pose", widget._motion_time == 10.2
-		and widget._energy == 0.0 and is_equal_approx(widget._tilt, widget._target) and widget._tilt > 0.1)
+		and widget._energy == 0.0 and is_equal_approx(widget._tilt, widget._target) and widget._tilt < -0.1)
 	_refresh(widget, sample, _telemetry(9.0, 30.0))
 	_check("rewind reseeds instead of integrating backward", widget._motion_time == 9.0
-		and is_equal_approx(widget._tilt, -0.24) and widget._velocity == 0.0 and widget._energy == 0.0)
+		and is_equal_approx(widget._tilt, PI / 6.0) and widget._velocity == 0.0 and widget._energy == 0.0)
 	_refresh(widget, sample, _telemetry(11.0, -30.0))
 	_check("long sample gap reseeds instead of integrating stale history", widget._motion_time == 11.0
-		and is_equal_approx(widget._tilt, 0.24) and widget._velocity == 0.0 and widget._energy == 0.0)
+		and is_equal_approx(widget._tilt, -PI / 6.0) and widget._velocity == 0.0 and widget._energy == 0.0)
 	_refresh(widget, sample, _telemetry(11.1, NAN))
 	_check("unavailable motion clears the spring", not is_finite(widget._motion_time) and widget._energy == 0.0)
 	for field: String in ["time_s", "bank_deg", "pitch_deg", "load_factor"]:
@@ -205,6 +206,31 @@ func _motion_signature(widget: Control) -> Array:
 		material.get_shader_parameter("sample_clock"), material.get_shader_parameter("tilt"),
 		material.get_shader_parameter("tilt_velocity"), material.get_shader_parameter("target_tilt"),
 		material.get_shader_parameter("wave_energy")]
+
+
+func _test_attitudes(widget: Control) -> void:
+	var fuel := _fuel("kerosene", 0.37)
+	for pose: Array in [[0.0, 0.0, 1.0, 0.0], [90.0, -1.0, 0.0, PI / 2.0],
+			[180.0, 0.0, -1.0, PI], [-90.0, 1.0, 0.0, -PI / 2.0], [180.0, 0.0, 1.0, 0.0]]:
+		widget.reset_flight()
+		var t := _telemetry(40.0, pose[0], 0.0, pose[2])
+		t.specific_force_right_g = pose[1]
+		_refresh(widget, fuel, t)
+		_check("apparent-down direction for bank %s / load %s" % [pose[0], pose[2]],
+			absf(wrapf(widget._target - pose[3], -PI, PI)) < 0.0001 and widget.value_label.text == "37")
+	widget.reset_flight()
+	_refresh(widget, fuel, _telemetry(41.0, 179.0))
+	var before: float = widget._target
+	_refresh(widget, fuel, _telemetry(41.1, -179.0))
+	_check("crossing inverted follows the short two-degree path", is_equal_approx(widget._target - before, deg_to_rad(2.0)))
+	var floating := _telemetry(41.2, 30.0, 0.0, 0.0)
+	floating.specific_force_right_g = 0.0
+	before = widget._target
+	_refresh(widget, fuel, floating)
+	_check("zero projected g retains the previous direction", widget._target == before)
+	floating.specific_force_right_g = NAN
+	_refresh(widget, fuel, floating)
+	_check("invalid force cannot leave stale motion", not is_finite(widget._motion_time))
 
 
 func _test_geometry(widget: Control) -> void:
@@ -267,7 +293,7 @@ func _rendered_fixture(requested_dir: String) -> void:
 	var output := requested_dir
 	if not output.is_absolute_path():
 		output = ProjectSettings.globalize_path("res://").path_join(output).simplify_path()
-	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png"]:
+	for filename: String in ["board.png", "compact_es.png", "motion_before.png", "motion_after.png", "attitudes.png"]:
 		if FileAccess.file_exists(output.path_join(filename)):
 			_check("fixture never overwrites a prior image", false, output.path_join(filename))
 			return
@@ -313,8 +339,16 @@ func _rendered_fixture(requested_dir: String) -> void:
 	await RenderingServer.frame_post_draw
 	_check("Spanish compact fixture was saved", root.get_texture().get_image().save_png(output.path_join("compact_es.png")) == OK)
 	TranslationServer.set_locale("en")
-	for widget: Control in widgets:
+	for i in widgets.size():
+		var widget: Control = widgets[i]
 		widget.set_appearance("normal", 0.94, false)
+		widget.title_label.text = TranslationServer.translate("Fuel tank").to_upper()
+		var restored := _fuel(families[i], 0.5 if i < 3 else 0.08)
+		if i == 3:
+			restored.low_fuel = true
+			restored.reserve_estimated = true
+		if i == 4: restored = {}
+		_refresh(widget, restored, _telemetry(20.0))
 	await _settle()
 
 	var tank: Control = widgets[0]
@@ -349,10 +383,85 @@ func _rendered_fixture(requested_dir: String) -> void:
 		_refresh(tank, sample, _telemetry(30.0, 85.0))
 		var tilted: Image = await _tank_image(tank)
 		_check("tilt cannot change an endpoint fill %.0f" % fill, level.get_data() == tilted.get_data())
+	await _rendered_attitudes(tank, output)
 	for widget: Control in widgets:
 		widget.queue_free()
 	background.queue_free()
 	await process_frame
+
+
+func _rendered_attitudes(tank: Control, output: String) -> void:
+	var rows: Array = []
+	var poses := [["LEVEL", 0.0, 0.0, 1.0], ["RIGHT KNIFE EDGE", 90.0, -1.0, 0.0],
+		["INVERTED / NEGATIVE G", 180.0, 0.0, -1.0], ["LEFT KNIFE EDGE", -90.0, 1.0, 0.0],
+		["INVERTED / POSITIVE G", 180.0, 0.0, 1.0]]
+	for i in poses.size():
+		var widget := FuelInstrument.new()
+		_stage.add_child(widget)
+		widget.position = Vector2(20 + i * 370, 510)
+		var caption := Label.new()
+		caption.text = poses[i][0]
+		caption.position = Vector2(20 + i * 370, 475)
+		caption.add_theme_font_size_override("font_size", 14)
+		_stage.add_child(caption)
+		var t := _telemetry(50.0, poses[i][1], 0.0, poses[i][3])
+		t.specific_force_right_g = poses[i][2]
+		_refresh(widget, _fuel("gasoline", 0.37), t)
+		rows.append(widget)
+		rows.append(caption)
+	Clock.update(50.0)
+	await _settle()
+	await RenderingServer.frame_post_draw
+	_check("inverted and knife-edge board was saved", root.get_texture().get_image().save_png(output.path_join("attitudes.png")) == OK)
+
+	# Compare the rendered wet area against the same tank rendered dry. Boundary
+	# antialiasing and rounded corners allow 2% absolute pixel-area tolerance.
+	for angle: float in [0.0, 45.0, 90.0, 135.0, 180.0, -90.0]:
+		for amount: float in [0.15, 0.37, 0.5, 0.85]:
+			tank.reset_flight()
+			_refresh(tank, _fuel("glow", amount), _telemetry(60.0, angle))
+			Clock.update(60.0)
+			tank._liquid_material.set_shader_parameter("fill", 0.0)
+			var dry := await _tank_image(tank)
+			tank._liquid_material.set_shader_parameter("fill", 1.0)
+			var full := await _tank_image(tank)
+			tank._liquid_material.set_shader_parameter("fill", amount)
+			var filled := await _tank_image(tank)
+			var full_pixels := _different_pixels(dry, full)
+			var filled_pixels := _different_pixels(dry, filled)
+			var coverage := float(filled_pixels) / maxf(1.0, full_pixels)
+			_check("rendered amount %.0f%% preserved at bank %.0f" % [amount * 100, angle],
+				absf(coverage - amount) < 0.02, "coverage=%.4f" % coverage)
+
+	# The same submerged ribs/back wall must transmit through the fluid: opaque
+	# rendering would produce identical center pixels over white and black backplates.
+	tank.reset_flight()
+	_refresh(tank, _fuel("gasoline", 1.0), _telemetry(70.0))
+	Clock.update(70.0)
+	var original: Color = tank._tank_style.bg_color
+	tank._tank_style.bg_color = Color.WHITE
+	tank.graphic.queue_redraw()
+	var light := await _tank_image(tank)
+	tank._tank_style.bg_color = Color.BLACK
+	tank.graphic.queue_redraw()
+	var dark := await _tank_image(tank)
+	var point := Vector2i(light.get_width() / 2, light.get_height() / 2)
+	_check("liquid transmits the tank interior", light.get_pixelv(point).get_luminance() - dark.get_pixelv(point).get_luminance() > 0.25)
+	tank._tank_style.bg_color = original
+	tank.graphic.queue_redraw()
+	for item: Node in rows: item.queue_free()
+	await process_frame
+
+
+func _different_pixels(a: Image, b: Image) -> int:
+	var count := 0
+	for y in a.get_height():
+		for x in a.get_width():
+			var first := a.get_pixel(x, y)
+			var second := b.get_pixel(x, y)
+			if maxf(absf(first.r - second.r), maxf(absf(first.g - second.g), absf(first.b - second.b))) > 0.025:
+				count += 1
+	return count
 
 
 func _tank_image(widget: Control) -> Image:

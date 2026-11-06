@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d1c34424-05fd-4b69-8ae0-d9f8177fc7c9",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/controller-recovery-focus/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_settings_integration.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:37:44.002798+00:00",
+  "label": "test_ui_settings_integration",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\isolated-checks\\test_ui_settings_integration-9o4lxw6i\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\isolated-checks\\test_ui_settings_integration-9o4lxw6i\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "all Settings integration checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 19.281,
+  "log_bytes": 2814,
+  "log_sha256": "d2c9ad69204236ff95852c26801994d3beb610854bf72749673b6a82f3c70c4e"
+}

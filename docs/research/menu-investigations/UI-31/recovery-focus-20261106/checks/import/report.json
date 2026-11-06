@@ -1,0 +1,115 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "23d82055-e0be-4d48-9afa-98c94c3adc85",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--editor",
+    "--path",
+    "tmp/controller-recovery-focus/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T19:30:30.912350+00:00",
+  "label": "import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\isolated-checks\\import-etr_xocd\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\controller-recovery-focus\\isolated-checks\\import-etr_xocd\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 8
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2791,
+      "message": "OBJ: Ambient light for material 'Material.011' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2793,
+      "message": "OBJ: Ambient light for material 'Material.014' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2795,
+      "message": "OBJ: Ambient light for material 'Material.015' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2797,
+      "message": "OBJ: Ambient light for material 'Material.016' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)",
+        "[  80% ] reimport | Corn_4.obj"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2800,
+      "message": "OBJ: Ambient light for material 'DarkGreen2' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2802,
+      "message": "OBJ: Ambient light for material 'Green' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2804,
+      "message": "OBJ: Ambient light for material 'Yellow' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)",
+        "[  80% ] reimport | Wheat_4.obj"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 2807,
+      "message": "OBJ: Ambient light for material 'Yellow' is ignored in PBR",
+      "context": [
+        "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)",
+        "[  80% ] reimport | avanti_s.glb",
+        "[   0% ] import | Started Importar Escena (104 steps)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 205.313,
+  "log_bytes": 222583,
+  "log_sha256": "2dd754322c5cb916bcc05471a5a59447e07ac0859aa4bdfd1213d85a4cb557f6"
+}

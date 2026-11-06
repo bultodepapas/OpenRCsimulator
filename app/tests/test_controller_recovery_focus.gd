@@ -3,6 +3,7 @@ extends SceneTree
 const UiDriver := preload("res://tests/ui_driver.gd")
 const Screen := preload("res://ui/screen.gd")
 const Stack := preload("res://ui/screen_stack.gd")
+const Help := preload("res://ui/help_screen.gd")
 
 var checks := 0
 var failures := 0
@@ -166,6 +167,14 @@ func check_stack_fallbacks() -> void:
 	detached.close()
 	check("closing a detached screen preserves newer valid focus", newer.has_focus())
 	detached.free()
+	var help := Help.new(newer)
+	host.add_child(help)
+	await ui.settle()
+	check("standalone Help owns its Close button focus", help.close_button.has_focus())
+	help.close()
+	check("standalone Help returns its outgoing focus to the opener", newer.has_focus())
+	help.free()
+	await ui.settle()
 	stack.push("upper", Screen.new(), newer)
 	stack.pop(true, false)
 	check("explicit no-restore pop does not invoke fallback", root.gui_get_focus_owner() == null)

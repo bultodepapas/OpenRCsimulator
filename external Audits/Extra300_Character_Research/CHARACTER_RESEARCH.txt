@@ -1,0 +1,132 @@
+EXTRA 300S: FLIGHT CHARACTER AND SIMULATOR VALIDATION
+Research and mathematical interpretation — 2026-11-06
+
+Target: Great Planes Extra 300S .60 kit GPMA0236, 64-inch span.
+Repository snapshot: bultodepapas/OpenRCsimulator
+Commit: 8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd
+
+1. CONCLUSION
+
+The evidence supports a deliberate, precise conventional aerobatic character for this particular kit, with handling that depends strongly on balance, actual surface travel and propulsion. The later RC Extra designs surveyed here demonstrate a broader high-alpha/3D envelope. That comparison establishes useful distinctions; it does not establish transferable aerodynamic coefficients.
+
+For the simulator, define the target as a named aircraft build and setup. A plausible-looking Extra silhouette is insufficient to determine its mass distribution, stall development, rudder authority, actuator response or propeller wake. The practical objective is to reproduce a coherent set of maneuvers with one physically consistent configuration.
+
+This is a research extension, not another defect report. CONSOLIDATED-AUDITS.md and EX-14 were consulted before drawing recommendations. Existing Extra propulsion, wake, stall, snap and knife-edge limitations are prior work. No production files were changed, and no new simulator flight or real-aircraft experiment was performed.
+
+2. EVIDENCE MAP
+
+The primary evidence and its limits are recorded in sources.json.
+
+S1 — Manufacturer manual: intended setup and conventional aerobatics; balance and travel specifications are tied to an identified kit.
+S2 — Joseph's 2000 original flight review: one .61FX installation, conventional aerobatics and setup-dependent rudder demand.
+S3 — Additional February 2000 owner account: about 40 flights; OS .91 Surpass, APC 14x6, 20% nitro. This is an additional period source beyond the reviewed EX-14 manifest.
+S4 — Original 3DHS pilot report: a light, electric Extra 300 SHP with both precision and high-alpha behavior.
+S5 — Original 3DHS sport-setup account: changing setup changes the character even within one design.
+S6 — Extreme Flight manufacturer manual: deliberately modified Extra-derived geometry and distinct precision, 3D and tumble settings.
+S7 — Original Multiplex test: good knife-edge behavior was reported after applying mixes.
+S8 — Original FMS test: a large, powerful 3D Extra provides a useful counterexample to using wing loading as the sole classifier.
+S9 — E-flite manual: SAFE Select and AS3X state must be distinguished.
+S10 — NASA scaling discussion: geometry alone does not guarantee equivalent stall/spin behavior across scales.
+S11 — Additional 2013 same-kit owner report: recommended throws and mid-range CG; Saito 1.25 installation. It supports the conventional-aerobatic interpretation and cautions about heavy builds. No independent-owner count is claimed.
+
+Manufacturer guidance establishes intended use and prescribed setup. First-person reports establish what one pilot says happened to one build. They are not synchronized measurements of airspeed, surface deflection, inertia or angular rate. Some reports also have commercial or promotional context. Multiple copies of a review remain one observation.
+
+The older RCU reports summarized in EX-14 are retained as historical project evidence. Their live original thread was inaccessible in this pass, so its contents are not presented as newly independently verified testimony. Reports concerning the .40 kit, a .60 ARF, modified control surfaces or a different engine must retain those identities.
+
+3. THE CHARACTER TO AIM FOR
+
+For ordinary aerobatics, the useful design goal is repeatable response: trim can be established, small commands make small changes, and the pilot can place the aircraft in a line or attitude without unexplained cross-axis movement. Tracking should be evaluated through path error and corrective control effort. It should not be implemented by silently imposing a wings-level target.
+
+The slow-flight and aggressive-maneuver goals must be evaluated separately. A modest elevator command during deceleration and a rapid, large elevator/rudder input produce different angles of attack, sideslip and rates. Consequently, a soft loss of height in one test and a sharp snap in another are not inherently inconsistent. A simulator that uses one rotation count or one peak bank angle to score both will obscure the distinction.
+
+Likewise, a long flare and an approach requiring appreciable speed can coexist. Extra speed carries kinetic energy; lift and drag near the ground affect how quickly that energy is spent. Evaluate the airborne flare separately from touchdown and ground roll. Wheel friction cannot explain a discrepancy that occurs before contact.
+
+Knife-edge is especially diagnostic because it tests side force, its moment arm and cross-axis response. Record the rudder, aileron and elevator corrections needed at the actual airspeed. A pilot or transmitter can compensate coupling that remains present in the bare airframe.
+
+Vertical performance belongs to a complete engine/propeller/airframe configuration. Engine displacement, electric input watts and throttle-stick position are not direct measurements of installed thrust. A comparison should hold the propeller, RPM, mass and airspeed context explicitly.
+
+4. WHAT THE FAMILY COMPARISON CHANGES
+
+A later Extra designed for 3D can also track precisely in ordinary flight. These capabilities should not be put at opposite ends of a single 'stable versus agile' slider.
+
+A better representation has several independent dimensions:
+- Trim and static response.
+- Angular acceleration and damping.
+- Maximum control authority and actuator dynamics.
+- Cross-axis coupling.
+- Stall entry, hysteresis and recovery.
+- Power-dependent control authority and thrust.
+- Mass distribution and fuel/battery configuration.
+- Pilot input shaping, mixes and stabilization.
+
+The named comparisons in sources.json supply examples of these combinations. They do not imply a universal ranking of all Extras, or that a manufacturer name alone predicts handling. A changed receiver, side-force generator, battery position or surface linkage can alter the observed result without changing the model's product name.
+
+In particular, an unassisted simulated airframe should be compared with an unassisted physical configuration when identifying aerodynamic response. An assisted configuration remains a valid separate target; the feedback law then belongs in the test description.
+
+5. MATHEMATICS THAT MAKES THE RESEARCH USEFUL
+
+Control input:
+Let x be normalized stick position, r the travel fraction and e the expo parameter used by the simulator:
+    delta_command = delta_max * r * [(1-e)*x + e*x^3].
+At neutral, the slope is delta_max*r*(1-e). At full stick the command is delta_max*r. Expo changes local sensitivity without reducing the endpoint. The actual surface can still lag this demand through the actuator.
+
+Thus, equal stick movements do not imply equal aerodynamic excitation. Test both equal-stick response (pilot experience) and equal-surface response (airframe identification). A larger sport-profile endpoint must not be compensated by incorrectly reducing an aerodynamic derivative.
+
+Loading:
+For an idealized steady lift balance,
+    V_stall = sqrt(2*m*g / (rho*S*CLmax)).
+Holding S, rho and CLmax fixed gives V2/V1 = sqrt(m2/m1). This is a sensitivity relation, not a measurement of this kit's stall speed. It omits changes in CG, tail load, slipstream, Reynolds number and transient separation.
+
+The accompanying calculation script reads the frozen model data. Its inputs yield dry/full/quarter-tank masses of 3.515341/3.819548/3.591393 kg, with loadings of 24.000/26.077/24.519 oz/ft2. The fixed-CLmax full/dry speed ratio is 1.04237. Modeled normal/sport aileron travel is approximately +/-6.947/+/-17.601 degrees, a 2.53354 ratio. Idealized knife-edge force demand is abs(CY)=0.2632 at 22 m/s and 0.5662 at 15 m/s, using full mass and rho=1.225 kg/m3. These are calculations of the model, not physical measurements. The project's dry-mass interpretation of the review's ready-to-fly mass remains an assumption because the review's tank contents have not been independently established. Do not convert a reproducible model calculation into a claim about the real review aircraft.
+
+Energy and inertia:
+Translational energy is m*V^2/2; rotational energy about a principal axis is I*omega^2/2. Equal total mass does not imply equal inertia. Moving a battery, tank, engine or ballast changes both balance and moments of inertia. Pitch response, roll acceleration and recovery should therefore be checked after a mass-distribution change.
+
+Ordinary roll response:
+With Q = rho*V^2/2, a small-disturbance approximation at fixed V is
+    Ixx*dp/dt = Q*S*b*[Cl_delta_a*delta_a + Cl_p*p*b/(2*V)].
+It separates the steady normalized rate
+    p*b/(2*V) = -(Cl_delta_a/Cl_p)*delta_a
+from the time constant
+    tau = 2*Ixx*V / (Q*S*b^2*abs(Cl_p)).
+Two parameter combinations can produce similar eventual roll rates while producing different acceleration and stopping behavior. Measure the surface lag separately. This linear approximation is not a snap/spin model.
+
+Knife-edge demand:
+For the idealization of a level 90-degree bank with negligible other vertical force, abs(Y) approximately equals m*g. Expressing Y with wing reference area gives
+    abs(CY_required) = m*g/(Q*S).
+Halving airspeed quadruples this required coefficient. Propwash can change local control forces, and actual attitude may add vertical thrust or other components. This is a force-balance requirement, not proof of available side force or sustainable knife-edge.
+
+Scale:
+Re = V*c/nu helps describe the flow regime, while p*b/(2*V) makes roll rate comparisons explicit about size and speed. Neither quantity alone establishes similarity. A full-scale Extra's roll or spin numbers are not appropriate acceptance thresholds for this kit. The same caution applies to a differently designed large RC Extra.
+
+6. VALIDATION ORDER
+
+The detailed, unexecuted specifications are in flight_cards.json. They describe experiment design, not a ready-to-run Godot configuration.
+
+First, freeze identity and setup. Include repository commit, physics backend and timestep, aircraft/engine/propeller data hashes, fuel mass, CG datum, inertia, rates, expo, input device, actual surface travel, servo response, trim, weather and stabilization.
+
+Second, verify the command path. Compare raw stick, shaped demand and actual surface angle. Keep controller latency and camera conditions unchanged in pilot comparisons. Visual experience may affect a pilot's assessment, but it should not be used to disguise a force-model mismatch.
+
+Third, establish a repeatable trimmed baseline before applying small roll and elevator pulses. Record response onset, angular acceleration, peak and eventual rate, stopping time, overshoot and coupling.
+
+Fourth, compare slow-flight, knife-edge and landing behavior using matched entry states. Keep airspeed distinct from ground speed. Analyze both directions and power conditions when those changes distinguish possible causes.
+
+Fifth, test aggressive snaps and spins only with a clear classification. A rapidly descending rotating trajectory can be a spiral rather than a sustained stalled spin. Inspect angle of attack, speed trend, yaw/roll rates, altitude loss and recovery conditions together.
+
+Finally, reserve maneuvers and conditions that were not used for calibration. A change that fits one scripted roll but worsens inverted trim, knife-edge or the low-rate stall has not established a better aircraft model.
+
+7. WHAT REMAINS UNKNOWN
+
+This investigation did not establish calibrated stock-kit stall speed, roll-rate curves, spin rate, knife-edge mix, damping derivatives, measured inertia or installed .61FX thrust/RPM maps. It did not verify the original review's fuel state, and it did not resolve ambiguous aileron digits in its public OCR.
+
+The strongest next improvement is evidence quality: record a precisely identified configuration and use synchronized actual controls, attitude/rates, RPM and an airspeed estimate to discriminate causes. Additional unsupported decimal places would not improve confidence.
+
+The simulator's existing flight logging/replay and targeted flight-card facilities provide a practical foundation. Preserve a matched baseline command tape for causal software comparison, then obtain fresh trims and held-out maneuvers for practical behavior. Both are useful; they answer different questions.
+
+CONTENTS
+- This report: original interpretation and validation rationale.
+- sources.json: primary URLs, source identities and evidence limitations.
+- flight_cards.json: reusable experiment specifications, all marked unexecuted.
+- calculate_extra.py / extra_source_math.json: reproducible calculations from the pinned model, added separately.
+- README.txt: usage and scope.
+
