@@ -1136,3 +1136,30 @@ explicit eligibility failures. The campaign ended with no Godot or host-state
 helper remaining, and its owned temporary keepawake lease was stopped. Final
 three-by-30-minute product/release qualification, motion/readability and M2–M6
 hardware coverage remain open.
+
+
+**Solar support screen, 2026-11-06.** A single exact-zero early return in
+`sun_disc_profile` was tested against `cf430bbcd` as candidate `a1f32faee`.
+Each fresh source export verified all 9,416 manifest files. The active-flight
+screen used the same Native, Mobile/Metal, estimated 1920×1080, 4× MSAA workload,
+30 s warmup and 120 s measurement, in B1–C1–C2–B2 order.
+
+| Source | Run | Mean FPS | Wall p95 / p99 (ms) |
+| --- | ---: | ---: | ---: |
+| Original | 1 | 74.704 | 15.757 / 16.786 |
+| Candidate | 1 | 74.553 | 15.807 / 16.886 |
+| Candidate | 2 | 74.504 | 15.802 / 16.806 |
+| Original | 2 | 74.550 | 15.821 / 16.920 |
+
+The candidate mean was 0.13% lower, with no useful gain under the 5% screening
+rule. It was reverted (`36ce206fd`); the five-pair promotion campaign was not
+started. Every run passed its individual source, stream, clock and pacing
+checks; all five complete 6,000-tick state/input windows match. Two runs per
+source do not satisfy the three-run software campaign gate.
+
+Five separate 1920×1080 still pairs were byte-identical, including daylight and
+sunset. The day disc zoom is overexposed and the sunset disc is occluded, so
+these stills do not qualify disc-edge preservation or motion. The capture
+fixture's legacy report hard-codes Compatibility; the invocation and checked
+logs establish actual Mobile/Metal. Raw images stay outside Git. Source hashes,
+audits and the rejected screen are retained in the existing compact JSON.

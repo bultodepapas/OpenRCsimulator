@@ -2060,12 +2060,24 @@ func _ablation_window_focused() -> bool:
 	return DisplayServer.get_name() == "headless" or (get_viewport() != null and get_viewport().has_focus())
 
 
+func _ablation_freeze_refusal(session: Node) -> String:
+	if not is_instance_valid(session): return ""
+	if "radio" in session:
+		var radio: Variant = session.get("radio")
+		if is_instance_valid(radio) and "connected" in radio and bool(radio.connected):
+			return "cannot freeze ablation with a connected controller; disconnect it or use freeze=false"
+	if "pending_mode" in session and not str(session.get("pending_mode")).is_empty():
+		return "cannot freeze ablation while a helicopter mode change is pending; settle it or use freeze=false"
+	return ""
+
+
 ## Own a session hold rather than bypassing menu, controller and crash resume rules.
 func _begin_ablation_pause(session: Node) -> bool:
 	if not _ablation_pause.is_empty() or not is_instance_valid(session) or not session.has_method("hold") \
 			or not session.has_method("release") or not session.has_method("resume") \
 			or not ("sim" in session) or not is_instance_valid(session.sim) or not ("holds" in session):
 		return false
+	if not _ablation_freeze_refusal(session).is_empty(): return false
 	var token := "debug_render_ablation_%d" % get_instance_id()
 	if session.holds.has(token): return false
 	var sim: Node = session.sim
@@ -2100,6 +2112,12 @@ func _ablation_pause_valid() -> bool:
 		and not _ablation_pause.interrupted
 	if not valid: _ablation_pause.interrupted = true
 	return valid
+
+
+func _ablation_freeze_metadata(paused_at_start: bool) -> Dictionary:
+	return {paused_at_start = paused_at_start,
+		frozen = not _ablation_pause.is_empty() and _ablation_pause_valid(),
+		freeze_scope = "simulation only; camera and visuals may change"}
 
 
 func _finish_ablation_pause() -> Dictionary:
@@ -2150,9 +2168,11 @@ func _cmd_ablate(request: Dictionary) -> Dictionary:
 		return _fail("nothing to switch off%s" % (("; skipped: %s" % JSON.stringify(picked.skipped_reasons)) if not picked.skipped.is_empty() else ""))
 	var session := _flight_session()
 	var freeze_requested := _bool(request.get("freeze", true))
-	if freeze_requested and session != null and not _begin_ablation_pause(session):
-		return _fail("cannot acquire the flight's diagnostic pause hold")
-	var frozen := session != null and bool(session.sim.paused)
+	var paused_at_start := session != null and bool(session.sim.paused)
+	if freeze_requested and session != null:
+		var refusal := _ablation_freeze_refusal(session)
+		if not refusal.is_empty(): return _fail(refusal)
+		if not _begin_ablation_pause(session): return _fail("cannot acquire the flight's diagnostic pause hold")
 	_ablation_owned_measure = not _render.measuring
 	if _ablation_owned_measure: _render.set_measure(true)
 	var run := RenderProbe.Ablation.new(_render, picked.targets, clampi(numbers.warmup, 2, 240), clampi(numbers.frames, 5, 1200))
@@ -2168,7 +2188,8 @@ func _cmd_ablate(request: Dictionary) -> Dictionary:
 		if not run.advance():
 			return null
 		var out: Dictionary = run.result()
-		out.merge({root = _path(root), frozen = frozen, freeze_scope = "simulation only; camera and visuals may change",
+		out.merge(_ablation_freeze_metadata(paused_at_start))
+		out.merge({root = _path(root),
 			skipped = picked.skipped, skipped_reasons = picked.skipped_reasons, truncated = picked.truncated,
 			renderer = RenderingServer.get_current_rendering_method(), size = [get_viewport().size.x, get_viewport().size.y]})
 		return finish.call(_ok(out)),

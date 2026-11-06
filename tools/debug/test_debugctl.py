@@ -134,6 +134,7 @@ class DebugctlTests(unittest.TestCase):
                   "noise_ms": 0.055, "significance": "|saved| > 3 x noise", "warmup": 10, "frames": 60, "frozen": True,
                   "gpu_timing_status": "synthetic_valid", "gpu_ms_scope": "root_only_freshness_unverified",
                   "freeze_scope": "simulation only; camera and visuals may change",
+                  "paused_at_start": False,
                   "pause_restore": {"owned": True, "restored": False, "interrupted": True},
                   "skipped": ["@glow", "@half_res"], "skipped_reasons": {"@half_res": "non_bilinear_reconstruction"},
                   "rows": [{"name": "@msaa", "kind": "flag", "saved_gpu_ms": 0.254, "saved_pct": 17.6, "significant": True,
@@ -146,6 +147,7 @@ class DebugctlTests(unittest.TestCase):
         lines = self.show_output("ablate", result).splitlines()
         self.assertIn("baseline GPU root 1.7 ms", lines[0])
         self.assertIn("synthetic test data", lines[0])
+        self.assertIn("owned simulation freeze True; paused at start False", lines[0])
         self.assertIn("simulation only; camera and visuals may change", lines[0])
         self.assertIn("@msaa", lines[2])
         self.assertIn("*", lines[2])
@@ -170,8 +172,9 @@ class DebugctlTests(unittest.TestCase):
         self.assertIn("0.250", lines[2])
         self.assertIn("12.5", lines[2])
         self.assertIn("delayed, freshness unverified", lines[2])
-        self.assertIn("unavailable", lines[3])
-        self.assertIn("-0.125", lines[4])
+        self.assertIn("n/a", lines[3])
+        self.assertIn("n/a", lines[4])
+        self.assertNotIn("-0.125", lines[4])
         self.assertIn("mixed or unavailable readings", lines[4])
         self.assertNotIn("*", "\n".join(lines))
         self.assertNotIn("saving", "\n".join(lines).lower())
@@ -186,8 +189,50 @@ class DebugctlTests(unittest.TestCase):
         self.assertIn("0.250", text)
         self.assertIn("scope unknown", text)
         self.assertIn("legacy or unknown status", text)
+        self.assertIn("reported frozen True (ownership unknown)", text)
         self.assertNotIn("*", text)
         self.assertEqual(json.loads(self.show_output("ablate", legacy, raw_json=True)), legacy)
+
+    def test_ablate_null_and_legacy_mixed_phase_deltas_are_unavailable(self) -> None:
+        # One A-B-A baseline was unavailable (0), the target reported 4 and the other baseline 10.
+        # Older responses could average 0 and 10 into 5 and claim a 1 ms delta despite the missing phase.
+        row = {"name": "mixed-null", "baseline_gpu_ms": 5.0, "gpu_ms": 4.0,
+               "baseline_before_gpu_ms": 0.0, "baseline_after_gpu_ms": 10.0,
+               "baseline_before_gpu_timing_status": "unavailable_or_zero",
+               "target_gpu_timing_status": "unverified_freshness", "baseline_after_gpu_timing_status": "unverified_freshness",
+               "saved_gpu_ms": None, "saved_pct": None, "gpu_timing_status": "mixed_or_unavailable",
+               "significant": True, "saved_draw_calls": 2, "saved_primitives": 10,
+               "saved_cpu_ms": 0.3, "overridden": False}
+        result = {"baseline": {"gpu_ms": 5.0, "min_ms": 0.0, "max_ms": 10.0, "drift_ms": 10.0,
+                               "draw_calls": 20}, "noise_ms": 4.0, "frames": 60, "warmup": 10,
+                  "gpu_timing_status": "mixed_or_unavailable", "frozen": False, "paused_at_start": True,
+                  "rows": [row, dict(row, name="mixed-legacy", saved_gpu_ms=1.0, saved_pct=20.0),
+                           dict(row, name="unverified-null", gpu_timing_status="unverified_freshness")]}
+        lines = self.show_output("ablate", result).splitlines()
+        self.assertIn("owned simulation freeze False; paused at start True", lines[0])
+        self.assertIn("unavailable ms", lines[0])
+        self.assertIn("raw range unavailable, drift unavailable, noise unavailable", lines[0])
+        self.assertIn("20 draw calls", lines[0])
+        for line in lines[2:4]:
+            self.assertEqual(line.count("n/a"), 2)
+            self.assertIn("mixed or unavailable readings", line)
+            self.assertNotIn("1.000", line)
+            self.assertNotIn("20.0", line)
+            self.assertNotIn("*", line)
+        self.assertEqual(lines[4].count("n/a"), 2)
+        self.assertIn("delayed, freshness unverified", lines[4])
+        self.assertIn("before unavailable (unavailable or zero)", lines[2])
+        self.assertIn("target 4 (delayed, freshness unverified)", lines[2])
+        self.assertIn("after 10 (delayed, freshness unverified)", lines[2])
+        self.assertIn("2", lines[2])  # draw counters remain visible
+        self.assertEqual(json.loads(self.show_output("ablate", result, raw_json=True)), result)
+
+        # New producers identify baseline phases separately, even if a target phase makes the run mixed.
+        result["baseline"]["gpu_timing_status"] = "unverified_freshness"
+        result["noise_timing_status"] = "unverified_freshness"
+        header = self.show_output("ablate", result).splitlines()[0]
+        self.assertIn("baseline GPU reported (scope unknown) 5 ms (delayed, freshness unverified)", header)
+        self.assertIn("noise 4 ms", header)
 
     @staticmethod
     def render_result() -> dict:

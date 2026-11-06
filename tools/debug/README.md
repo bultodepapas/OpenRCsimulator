@@ -304,16 +304,21 @@ machine, renderer and view only.
   - Without `targets=`, it measures every flag, every top-level layer, and the children of any layer that holds a
     large share of the geometry. `targets=Field,airplane,@fog` (comma-separated or a JSON list) narrows it.
   - Measurement is interleaved A-B-A: baseline, target off, baseline, next target, …, baseline. Each raw delta is
-    compared with the mean of its adjacent baselines. The timestamps may be stale or unavailable, so a real-data
-    delta is not proof of a saving, ranking, statistical significance, or cancellation of drift. Only synthetic
-    test data can set `significant`; real rows report `false` and are not ranked by the unverified delta.
+    compared with the mean of its adjacent baselines. If any contributing phase has unavailable or mixed GPU
+    readings, `saved_gpu_ms` and `saved_pct` are `null` and the client shows `n/a`; other observations and counters
+    remain available. The timestamps may be stale, so a real-data delta is not proof of a saving, ranking,
+    statistical significance, or cancellation of drift. Only synthetic test data can set `significant`; real rows
+    report `false` and are not ranked by the unverified delta.
   - `overridden` means the app switched the target back on during its phase (for example a script that sets
     `visible` every frame). That row is not trustworthy.
-  - Each phase discards `warmup=10` frames, then keeps `frames=60`. With `freeze=true` the simulation is held; camera
-    and visual stability are not established by that hold. Target values are captured at phase start and restored
-    only if they still have the probe's off value, preserving intervening changes; freed targets cannot be restored.
-    Cleanup is attempted on completion, route change, timeout and disconnect. A later pause, focus loss, hold or
-    session change prevents automatic resumption.
+  - Each phase discards `warmup=10` frames, then keeps `frames=60`. With `freeze=true` the probe attempts to hold the
+    simulation, and refuses a hold if the flight's controller (radio or gamepad) is connected or a helicopter mode
+    change is pending.
+    `freeze=false` explicitly runs without a diagnostic hold. `paused_at_start` records the initial state; `frozen`
+    means an owned simulation hold stayed valid. Neither establishes camera or visual stability. Target values are
+    captured at phase start and restored only if they still have the probe's off value, preserving intervening
+    changes; freed targets cannot be restored. Cleanup is attempted on completion, route change, timeout and
+    disconnect. A later pause, focus loss, hold or session change prevents automatic resumption.
   - A target may also affect indirect work: hiding the aircraft can remove its projected-shadow silhouette pass.
     Use an external, synchronized GPU profiler and controlled repeated captures to establish causal costs.
 - **`viewmode name=<mode>`** sets the viewport's debug draw. `viewmode` without a name lists the modes. In

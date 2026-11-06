@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Probe := preload("res://debug/render_probe.gd")
+const Bridge := preload("res://debug/debug_bridge.gd")
 var failures := 0
 
 func check(label: String, condition: bool, detail: String = "") -> void:
@@ -26,7 +27,79 @@ class SyntheticProbe extends "res://debug/render_probe.gd":
             objects = 5, root_cpu_ms = 0.1, gpu_timing_status = status}
 
 
+class FakeRadio extends RefCounted:
+    var connected := false
+    var armed := true
+    var auxiliary_enabled := true
+
+
+class FakeRoundedProperty extends RefCounted:
+    var amount := 1.0:
+        set(value):
+            amount = float(PackedFloat32Array([value])[0])
+
+
+class FakeSim extends Node:
+    var paused := false
+    func set_paused(value: bool) -> void:
+        paused = value
+
+
+class FakeSession extends Node:
+    var sim := FakeSim.new()
+    var radio := FakeRadio.new()
+    var pending_mode := ""
+    var holds := {}
+    var crash := {}
+    var pause_reason := ""
+    var hold_calls := 0
+    func _init() -> void:
+        add_child(sim)
+    # Model the real hold side effects; a refusal must occur before any of them.
+    func hold(reason: String) -> void:
+        hold_calls += 1
+        pending_mode = ""
+        radio.auxiliary_enabled = false
+        if radio.connected: radio.armed = false
+        holds[reason] = true
+        sim.set_paused(true)
+    func release(reason: String) -> void:
+        holds.erase(reason)
+    func resume() -> void:
+        if holds.is_empty(): sim.set_paused(false)
+
+
+func check_ablation_freeze() -> void:
+    var bridge := Bridge.new() # Not added to the tree: never opens a debug TCP port.
+    var session := FakeSession.new()
+    session.radio.connected = true
+    check("connected controller refusal is explicit", "connected controller" in bridge._ablation_freeze_refusal(session))
+    check("connected controller is rejected before hold", not bridge._begin_ablation_pause(session) \
+        and session.hold_calls == 0 and session.radio.armed and session.radio.auxiliary_enabled \
+        and session.holds.is_empty() and not session.sim.paused)
+    session.radio.connected = false
+    session.pending_mode = "idle_up"
+    check("pending helicopter mode refusal is explicit", "mode change is pending" in bridge._ablation_freeze_refusal(session))
+    check("pending mode is rejected before hold", not bridge._begin_ablation_pause(session) \
+        and session.hold_calls == 0 and session.pending_mode == "idle_up" and session.radio.auxiliary_enabled \
+        and session.holds.is_empty() and not session.sim.paused)
+    session.pending_mode = ""
+    session.sim.set_paused(true)
+    var metadata: Dictionary = bridge._ablation_freeze_metadata(true)
+    session.sim.set_paused(false) # Another owner resumes during an unowned run.
+    var after_resume: Dictionary = bridge._ablation_freeze_metadata(true)
+    check("unowned paused start never claims a frozen run", metadata.paused_at_start and not metadata.frozen \
+        and after_resume.paused_at_start and not after_resume.frozen)
+    check("safe session can acquire an owned hold", bridge._begin_ablation_pause(session) and session.hold_calls == 1)
+    metadata = bridge._ablation_freeze_metadata(false)
+    check("owned valid hold reports frozen", not metadata.paused_at_start and metadata.frozen)
+    bridge._finish_ablation_pause()
+    bridge.free()
+    session.free()
+
+
 func _init() -> void:
+    check_ablation_freeze()
     var node := Node3D.new()
     var toggle: Dictionary = Probe._toggle("node", "layer", [[node, "visible"]], [false])
     node.visible = false # changed after target discovery, before its phase
@@ -61,6 +134,22 @@ func _init() -> void:
     missing.restore.call() # no invalid-instance script error
     check("freed target does not prevent restoring another binding", survivor.visible)
 
+    var rounded := FakeRoundedProperty.new()
+    var converted: Dictionary = Probe._toggle("rounded", "flag", [[rounded, "amount"]], [0.3])
+    converted.apply.call()
+    check("float32-converted setter readback remains owned", rounded.amount != 0.3 and converted.held.call())
+    converted.restore.call()
+    check("float32-converted property restores its original value", rounded.amount == 1.0)
+    var scale_viewport := SubViewport.new()
+    var near: Dictionary = Probe._toggle("scale", "flag", [[scale_viewport, "scaling_3d_scale"]], [0.5])
+    near.apply.call()
+    scale_viewport.scaling_3d_scale = 0.500001
+    var external_scale := scale_viewport.scaling_3d_scale
+    check("nearby external float is not owned", external_scale != 0.5 and not near.held.call())
+    near.restore.call()
+    check("nearby external float survives restore", scale_viewport.scaling_3d_scale == external_scale)
+    scale_viewport.free()
+
     var two := SyntheticProbe.new([1.0, 1.4, 2.0, 2.4, 3.0])
     var run := Probe.Ablation.new(two, [{name = "a", kind = "layer"}, {name = "b", kind = "layer"}], 2, 5)
     while not run.advance(): pass
@@ -88,13 +177,34 @@ func _init() -> void:
         var observed: Dictionary = trial.result()
         check("unverified timing cannot claim significance: " + status,
             not observed.rows[0].significant and observed.rows[0].gpu_timing_status == status)
+        check("GPU delta follows phase availability: " + status,
+            (observed.rows[0].saved_gpu_ms != null and observed.rows[0].saved_pct != null) if status == "unverified_freshness" \
+            else (observed.rows[0].saved_gpu_ms == null and observed.rows[0].saved_pct == null))
 
     var invalid := SyntheticProbe.new([2.0, 0.0, 2.0])
     var invalid_run := Probe.Ablation.new(invalid, [{name = "a", kind = "layer"}], 2, 5)
     while not invalid_run.advance(): pass
     var invalid_result: Dictionary = invalid_run.result()
     check("zero overrides even a synthetic-valid claim", not invalid_result.rows[0].significant \
-        and invalid_result.rows[0].gpu_timing_status == "mixed_or_unavailable")
+        and invalid_result.rows[0].gpu_timing_status == "mixed_or_unavailable" \
+        and invalid_result.rows[0].saved_gpu_ms == null and invalid_result.rows[0].saved_pct == null)
+
+    var mixed := SyntheticProbe.new([0.0, 4.0, 10.0])
+    var mixed_run := Probe.Ablation.new(mixed, [{name = "a", kind = "layer"}], 2, 5)
+    while not mixed_run.advance(): pass
+    var mixed_result: Dictionary = mixed_run.result()
+    var mixed_row: Dictionary = mixed_result.rows[0]
+    check("0/4/10 GPU phases cannot create a saving", mixed_row.saved_gpu_ms == null \
+        and mixed_row.saved_pct == null and not mixed_row.significant \
+        and mixed_row.gpu_timing_status == "mixed_or_unavailable", str(mixed_row))
+    check("invalid phase keeps raw observations and non-GPU counters", mixed_row.baseline_before_gpu_ms == 0.0 \
+        and mixed_row.gpu_ms == 4.0 and mixed_row.baseline_after_gpu_ms == 10.0 \
+        and mixed_row.saved_draw_calls == 0, str(mixed_row))
+    check("invalid aggregate baseline and noise have explicit status", \
+        mixed_result.baseline.gpu_timing_status == "mixed_or_unavailable" \
+        and mixed_result.noise_timing_status == "mixed_or_unavailable" \
+        and mixed_row.baseline_before_gpu_timing_status == "unavailable_or_zero" \
+        and mixed_row.baseline_after_gpu_timing_status == "synthetic_valid")
 
     var viewport := SubViewport.new()
     var root_probe := Probe.new(viewport)

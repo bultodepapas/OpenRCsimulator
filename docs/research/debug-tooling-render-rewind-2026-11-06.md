@@ -4,6 +4,16 @@ Scope: the next debug-bridge gaps after [PT1h-R8](debug-tooling-gaps-2026-10-24.
 the [Apple Silicon audit](desktop-delivery-investigations/DT-MAC-00-R4/README.md) names GPU work (ground, clouds) as
 the main frame cost. This is dated research. Current usage is in the [debug bridge guide](../../tools/debug/README.md#gpu-cost-and-rewind-pt1h-r9).
 
+**Later validity correction (2026-11-06).** The initial GPU totals, bottleneck
+verdicts and significant savings below are retained as historical diagnostic
+output, not accepted attribution. Root and SubViewport last readings were not
+synchronized; a SubViewport may not have drawn, and a median does not establish
+freshness. The current bridge keeps root and SubViewport observations separate,
+reports unknown bottlenecks, suppresses real-data significance and makes deltas
+unavailable when a contributing phase lacks valid readings. The
+[M1 follow-up](desktop-delivery-investigations/DT-MAC-00-R4/README.md) retains the
+controlled screen and functional validation of the repaired diagnostics.
+
 ## Gaps found
 
 | Gap | Evidence |

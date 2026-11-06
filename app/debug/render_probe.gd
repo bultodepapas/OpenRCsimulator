@@ -366,6 +366,7 @@ static func _toggle(target_name: String, kind: String, bindings: Array, off: Arr
 static func _apply_toggle(bindings: Array, off: Array, state: Dictionary) -> void:
 	if state.applied: return
 	state["values"] = []
+	state["applied_values"] = []
 	state.missing = false
 	state.changed = false
 	state.discovery_unchanged = true
@@ -374,38 +375,43 @@ static func _apply_toggle(bindings: Array, off: Array, state: Dictionary) -> voi
 		var object: Variant = reference.get_ref() if reference != null else null
 		if object == null:
 			state["values"].append(null)
+			state["applied_values"].append(null)
 			state.missing = true
 			continue
 		var before: Variant = object.get(bindings[i][1])
 		state["values"].append({value = before})
 		if not state.discovered[i] is Dictionary or not _same_value(before, state.discovered[i].value):
 			state.discovery_unchanged = false
-		state.changed = bool(state.changed) or not _same_value(before, off[i])
 		object.set(bindings[i][1], off[i])
+		var applied: Variant = object.get(bindings[i][1])
+		state["applied_values"].append({value = applied})
+		state.changed = bool(state.changed) or not _same_value(before, applied)
 	state.applied = true
 
 
-static func _restore_toggle(bindings: Array, off: Array, state: Dictionary) -> void:
+static func _restore_toggle(bindings: Array, _off: Array, state: Dictionary) -> void:
 	if not state.applied: return
 	for i in bindings.size():
 		var reference: Variant = bindings[i][0]
 		var object: Variant = reference.get_ref() if reference != null else null
-		if object != null and state["values"][i] is Dictionary and _same_value(object.get(bindings[i][1]), off[i]):
+		if object != null and state["values"][i] is Dictionary and state["applied_values"][i] is Dictionary \
+				and _same_value(object.get(bindings[i][1]), state["applied_values"][i].value):
 			object.set(bindings[i][1], state["values"][i].value)
 	state.applied = false
 
 
 static func _same_value(actual: Variant, expected: Variant) -> bool:
-	return is_equal_approx(actual, float(expected)) if actual is float else actual == expected
+	return actual == expected
 
 
 ## False if any sampled binding was freed, already off, or no longer holds the probe's value.
-static func _toggle_held(bindings: Array, off: Array, state: Dictionary) -> bool:
+static func _toggle_held(bindings: Array, _off: Array, state: Dictionary) -> bool:
 	if not state.applied or state.missing or not state.changed or not state.discovery_unchanged: return false
 	for i in bindings.size():
 		var reference: Variant = bindings[i][0]
 		var object: Variant = reference.get_ref() if reference != null else null
-		if object == null or not _same_value(object.get(bindings[i][1]), off[i]): return false
+		if object == null or not state["applied_values"][i] is Dictionary \
+				or not _same_value(object.get(bindings[i][1]), state["applied_values"][i].value): return false
 	return true
 
 
@@ -517,10 +523,13 @@ class Ablation extends RefCounted:
 	func result() -> Dictionary:
 		var baselines := PackedFloat64Array()
 		var steps := PackedFloat64Array()
+		var baseline_statuses := {}
 		for i in range(0, _rows.size(), 2):
 			baselines.append(_rows[i].gpu_ms)
+			baseline_statuses[_rows[i].gpu_timing_status] = true
 			if i >= 2:
 				steps.append(_rows[i].gpu_ms - _rows[i - 2].gpu_ms)
+		var baseline_status: String = baseline_statuses.keys()[0] if baseline_statuses.size() == 1 else "mixed_or_unavailable"
 		# Noise: the spread of the change between consecutive baselines, a difference of two medians like a saving.
 		var noise_ms: float = probe.robust_sd(steps) if steps.size() >= 3 else 0.0
 		if steps.size() > 0 and steps.size() < 3:
@@ -538,9 +547,14 @@ class Ablation extends RefCounted:
 				and after.gpu_timing_status == "synthetic_valid"
 			var timing_status: String = before.gpu_timing_status if before.gpu_timing_status == row.gpu_timing_status \
 				and row.gpu_timing_status == after.gpu_timing_status else "mixed_or_unavailable"
-			rows.append({name = row.name, kind = phases[i].kind, saved_gpu_ms = snappedf(saved, 0.001),
-				saved_pct = snappedf(100.0 * saved / base.gpu_ms, 0.1) if base.gpu_ms > 0.0 else 0.0,
+			var comparable: bool = timing_status in ["synthetic_valid", "unverified_freshness"]
+			rows.append({name = row.name, kind = phases[i].kind,
+				saved_gpu_ms = snappedf(saved, 0.001) if comparable else null,
+				saved_pct = snappedf(100.0 * saved / base.gpu_ms, 0.1) if comparable and base.gpu_ms > 0.0 else null,
 				gpu_ms = snappedf(row.gpu_ms, 0.001), baseline_gpu_ms = snappedf(base.gpu_ms, 0.001),
+				baseline_before_gpu_ms = snappedf(before.gpu_ms, 0.001), baseline_after_gpu_ms = snappedf(after.gpu_ms, 0.001),
+				baseline_before_gpu_timing_status = before.gpu_timing_status, target_gpu_timing_status = row.gpu_timing_status,
+				baseline_after_gpu_timing_status = after.gpu_timing_status,
 				gpu_timing_status = timing_status,
 				significant = synthetic and not row.overridden and absf(saved) > maxf(3.0 * noise_ms, 0.005),
 				saved_draw_calls = roundi(base.draw_calls - row.draw_calls),
@@ -555,8 +569,10 @@ class Ablation extends RefCounted:
 		for phase_row: Dictionary in _rows: statuses[phase_row.gpu_timing_status] = true
 		return {baseline = {gpu_ms = snappedf(probe.median(baselines), 0.001), min_ms = snappedf(sorted[0], 0.001),
 				max_ms = snappedf(sorted[sorted.size() - 1], 0.001), drift_ms = snappedf(baselines[baselines.size() - 1] - baselines[0], 0.001),
-				draw_calls = roundi(_rows[0].draw_calls), primitives = roundi(_rows[0].primitives)},
-			noise_ms = snappedf(noise_ms, 0.001), significance = "synthetic timing only; real timing freshness unverified",
+				draw_calls = roundi(_rows[0].draw_calls), primitives = roundi(_rows[0].primitives),
+				gpu_timing_status = baseline_status},
+			noise_ms = snappedf(noise_ms, 0.001), noise_timing_status = baseline_status,
+			significance = "synthetic timing only; real timing freshness unverified",
 			gpu_timing_status = statuses.keys()[0] if statuses.size() == 1 else "mixed_or_unavailable",
 			gpu_ms_scope = "root_only_freshness_unverified", warmup = warmup, frames = frames,
 			rows = rows}

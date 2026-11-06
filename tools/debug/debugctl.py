@@ -1269,14 +1269,23 @@ def print_ablation(result: dict) -> None:
     """Show raw A-B-A observations without treating unverified timings as GPU savings."""
     base = result["baseline"]
     status = result.get("gpu_timing_status")
+    base_status = base.get("gpu_timing_status", status)
+    noise_status = result.get("noise_timing_status", base_status)
     scope = "root" if result.get("gpu_ms_scope") == "root_only_freshness_unverified" else "reported (scope unknown)"
-    base_gpu = _gpu_reading(base.get("gpu_ms"))
-    range_text = f"{_gpu_reading(base.get('min_ms'))}..{_gpu_reading(base.get('max_ms'))}"
-    drift = _raw_number(base.get("drift_ms")) if base_gpu != "unavailable" else "unavailable"
-    noise = _raw_number(result.get("noise_ms")) if base_gpu != "unavailable" else "unavailable"
-    print(f"# baseline GPU {scope} {base_gpu} ms ({_gpu_status(status)}); {base['draw_calls']} draw calls; "
+    aggregate_available = base_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+    base_gpu = _gpu_reading(base.get("gpu_ms")) if aggregate_available else "unavailable"
+    if base_gpu == "unavailable":
+        range_text, drift, noise = "unavailable", "unavailable", "unavailable"
+    else:
+        range_text = f"{_gpu_reading(base.get('min_ms'))}..{_gpu_reading(base.get('max_ms'))}"
+        drift = _raw_number(base.get("drift_ms"))
+        noise = (_raw_number(result.get("noise_ms")) if noise_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                 else "unavailable")
+    freeze = (f"owned simulation freeze {result['frozen']}; paused at start {result['paused_at_start']}"
+              if "paused_at_start" in result else f"reported frozen {result['frozen']} (ownership unknown)")
+    print(f"# baseline GPU {scope} {base_gpu} ms ({_gpu_status(base_status)}); {base['draw_calls']} draw calls; "
           f"raw range {range_text}, drift {drift}, noise {noise} ms; "
-          f"{result['frames']} frames per phase after {result['warmup']}; simulation frozen {result['frozen']}"
+          f"{result['frames']} frames per phase after {result['warmup']}; {freeze}"
           + (f" ({result['freeze_scope']})" if result.get("freeze_scope") else ""))
     print(f"{'raw ms':>9} {'raw %':>6}  sig  {'draws':>6} {'prims':>9} {'cpu ms':>7}  target")
     for row in result["rows"]:
@@ -1285,15 +1294,29 @@ def print_ablation(result: dict) -> None:
         # Old responses omit per-phase readings. Their numeric delta can be inspected only as legacy data.
         phase = row.get("gpu_ms", baseline)
         available = (_gpu_reading(baseline) != "unavailable" and _gpu_reading(phase) != "unavailable"
-                     and row_status != "unavailable_or_zero")
-        delta = f"{row['saved_gpu_ms']:.3f}" if available and _finite_number(row.get("saved_gpu_ms")) else "unavailable"
-        percent = f"{row['saved_pct']:.1f}" if available and _finite_number(row.get("saved_pct")) else "n/a"
+                     and row_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                     and _finite_number(row.get("saved_gpu_ms")) and _finite_number(row.get("saved_pct")))
+        delta = f"{row['saved_gpu_ms']:.3f}" if available else "n/a"
+        percent = f"{row['saved_pct']:.1f}" if available else "n/a"
         flag = "*" if (status == "synthetic_valid" and row_status == "synthetic_valid"
-                       and row.get("significant") and not row.get("overridden")) else " "
+                       and available and row.get("significant") and not row.get("overridden")) else " "
         note = "  (app turned it back on: not trustworthy)" if row["overridden"] else ""
+        phases = ""
+        if all(key in row for key in ("baseline_before_gpu_ms", "gpu_ms", "baseline_after_gpu_ms",
+                                      "baseline_before_gpu_timing_status", "target_gpu_timing_status",
+                                      "baseline_after_gpu_timing_status")):
+            readings = []
+            for label, field, state_field in (("before", "baseline_before_gpu_ms", "baseline_before_gpu_timing_status"),
+                                              ("target", "gpu_ms", "target_gpu_timing_status"),
+                                              ("after", "baseline_after_gpu_ms", "baseline_after_gpu_timing_status")):
+                phase_status = row[state_field]
+                reading = (_gpu_reading(row[field]) if phase_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                           else "unavailable")
+                readings.append(f"{label} {reading} ({_gpu_status(phase_status)})")
+            phases = " [raw phase ms: " + ", ".join(readings) + "]"
         print(f"{delta:>9} {percent:>6}   {flag}  {row['saved_draw_calls']:>6} "
               f"{row['saved_primitives']:>9} {row['saved_cpu_ms']:>7.3f}  {row['name']} "
-              f"({_gpu_status(row_status)}){note}")
+              f"({_gpu_status(row_status)}){phases}{note}")
     if result.get("skipped"):
         reasons = result.get("skipped_reasons", {})
         print("# skipped: " + ", ".join(f"{name} ({reasons[name]})" if name in reasons else name
