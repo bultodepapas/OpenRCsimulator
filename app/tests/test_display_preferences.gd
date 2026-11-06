@@ -87,7 +87,17 @@ func _run() -> void:
 		_check("MSAA mode %d is accepted" % msaa_3d, DisplayPreferences.validate(candidate).ok)
 
 	var invalid_window_mode: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
-	_check("legacy reconstruction defaults to native", migrated.reconstruction == "native")
+	_check("legacy reconstruction defaults to auto", migrated.reconstruction == "auto")
+	# DT-MAC-07b: an unflagged old "native" was the only possible value and reads as auto; a flagged one is kept.
+	var old_native := ConfigFile.new()
+	old_native.set_value("meta", "schema", 1)
+	old_native.set_value("graphics", "reconstruction", "native")
+	_check("old native fixture saves", old_native.save(PREFS) == OK)
+	_check("unflagged native reads as auto", DisplayPreferences.load_from(PREFS).reconstruction == "auto")
+	var chosen := DisplayPreferences.DEFAULTS.duplicate(true)
+	chosen.reconstruction = "native"
+	_check("an explicit Native save is kept", DisplayPreferences.save_to(PREFS, chosen) == OK
+		and DisplayPreferences.load_from(PREFS).reconstruction == "native")
 	_check("legacy sharpening preserves engine default", migrated.fsr2_sharpness == 0.9)
 	for strength: float in [0.0, 0.35, 0.9, 1.0]:
 		var candidate := DisplayPreferences.DEFAULTS.duplicate(true)
@@ -180,7 +190,7 @@ func _run() -> void:
 	var future_load := DisplayPreferences.load_from(PREFS)
 	_check("future-schema settings remain readable but protected", not future_load.writable
 		and future_load.note.contains("newer version") and future_load.window_resolution == "1920x1080"
-		and future_load.max_fps == 120 and future_load.reconstruction == "native"
+		and future_load.max_fps == 120 and future_load.reconstruction == DisplayPreferences.DEFAULTS.reconstruction
 		and future_load.note.contains("invalid display values were replaced with defaults"))
 	_check("future-schema file cannot be overwritten", DisplayPreferences.save_to(PREFS, DisplayPreferences.DEFAULTS) == ERR_FILE_NO_PERMISSION)
 	var preserved := ConfigFile.new()

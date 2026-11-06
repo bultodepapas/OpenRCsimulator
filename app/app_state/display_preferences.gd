@@ -8,6 +8,9 @@ const ShadowSettings := preload("res://render/shadow_settings.gd")
 
 const DEFAULT_PATH := "user://display.cfg"
 const SCHEMA := 1
+## DT-MAC-07b: every save writes this flag. Without it, "native" is the old only-possible default and is read as
+## "auto" (behavior-identical except MetalFX Spatial on large Apple Silicon Metal outputs); with it, Native is kept.
+const RECONSTRUCTION_AUTO_KEY := "reconstruction_auto"
 const WINDOW_MODES: Array[String] = ["windowed", "borderless"]
 const WINDOW_RESOLUTIONS: Array[String] = [
 	"auto", "1280x720", "1280x800", "1600x900", "1920x1080", "1920x1200",
@@ -18,7 +21,7 @@ const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
 const NVIDIA_REFLEX_MODES: Array[String] = ["off", "on", "boost"]
 const RECONSTRUCTION_MODES: Array[String] = [
-	"native",
+	"auto", "native",
 	"fsr2_native", "fsr2_85", "fsr2_quality", "fsr2_balanced", "fsr2_performance",
 	"fsr3_native", "fsr3_85", "fsr3_quality", "fsr3_balanced", "fsr3_performance",
 	"dlss_native", "dlss_quality", "dlss_balanced", "dlss_performance",
@@ -40,7 +43,7 @@ const DEFAULTS := {
 	"max_fps": 0,
 	"vsync_mode": "enabled",
 	"msaa_3d": 2,
-	"reconstruction": "native",
+	"reconstruction": "auto", # DT-MAC-07b: MetalFX Spatial on large Metal outputs, else Native
 	"nvidia_reflex": "on",
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
@@ -163,6 +166,8 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.vsync_mode = cfg.get_value("graphics", "vsync_mode", DEFAULTS.vsync_mode)
 	raw.msaa_3d = cfg.get_value("graphics", "msaa_3d", DEFAULTS.msaa_3d)
 	raw.reconstruction = cfg.get_value("graphics", "reconstruction", DEFAULTS.reconstruction)
+	if raw.reconstruction == "native" and cfg.get_value("meta", RECONSTRUCTION_AUTO_KEY, false) != true:
+		raw.reconstruction = "auto"
 	raw.nvidia_reflex = cfg.get_value("graphics", "nvidia_reflex", DEFAULTS.nvidia_reflex)
 	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
@@ -225,6 +230,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "schema", SCHEMA)
+	cfg.set_value("meta", RECONSTRUCTION_AUTO_KEY, true)
 	cfg.set_value("display", "window_mode", checked.config.window_mode)
 	cfg.set_value("display", "window_resolution", checked.config.window_resolution)
 	cfg.set_value("display", "ui_scale", checked.config.ui_scale)

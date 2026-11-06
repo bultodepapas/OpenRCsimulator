@@ -166,8 +166,8 @@ func _run() -> void:
 	settings._draft.reconstruction = saved_reconstruction
 	Reconstruction.apply(root, settings._draft)
 	settings._sync_controls()
-	settings._reconstruction_picker.select(3)
-	settings._reconstruction_picker.item_selected.emit(3)
+	settings._reconstruction_picker.select(_reconstruction_index(settings, "fsr2_quality"))
+	settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "fsr2_quality"))
 	settings._fsr2_sharpness_slider.value = 0.35
 	_check("sharpening preview reaches viewport without saving", is_equal_approx(root.fsr_sharpness, 1.3)
 		and DisplayPreferences.load_from(PREFS + ".display").fsr2_sharpness == 0.9)
@@ -182,7 +182,7 @@ func _run() -> void:
 	settings._fsr2_sharpness_slider.drag_ended.emit(true)
 	_check("release applies the final sharpening preview", is_equal_approx(root.fsr_sharpness, 0.8))
 	_check("reconstruction preview starts recovery without saving", settings._trial_deadline_msec > Time.get_ticks_msec()
-		and DisplayPreferences.load_from(PREFS + ".display").reconstruction == "native")
+		and DisplayPreferences.load_from(PREFS + ".display").reconstruction == DisplayPreferences.DEFAULTS.reconstruction)
 	_check("FSR2 activates only when its provider is available and preserves saved MSAA choice", settings._draft.msaa_3d == 3
 		and root.scaling_3d_mode == int(fsr2_policy.scaling_3d_mode)
 		and root.msaa_3d == (Viewport.MSAA_DISABLED if fsr2_policy.temporal else Viewport.MSAA_8X))
@@ -291,8 +291,8 @@ func _run() -> void:
 				settings._show_category(category)
 				await ui.settle()
 				if category == 3:
-					settings._reconstruction_picker.select(2) # Custom 85% candidate, including captures.
-					settings._reconstruction_picker.item_selected.emit(2)
+					settings._reconstruction_picker.select(_reconstruction_index(settings, "fsr2_85")) # Custom 85% candidate, including captures.
+					settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "fsr2_85"))
 					settings._fsr2_sharpness_slider.value = 0.35
 					await ui.settle()
 					_check("sharpening slider has usable width", settings._fsr2_sharpness_slider.size.x >= 100.0)
@@ -329,8 +329,8 @@ func _run() -> void:
 	app.open_settings()
 	await ui.settle()
 	settings = app.screens.get_screen("settings")
-	settings._reconstruction_picker.select(3)
-	settings._reconstruction_picker.item_selected.emit(3)
+	settings._reconstruction_picker.select(_reconstruction_index(settings, "fsr2_quality"))
+	settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "fsr2_quality"))
 	settings._fsr2_sharpness_slider.value = 0.0
 	settings.keep_changes()
 	settings.close()
@@ -359,3 +359,11 @@ func _run() -> void:
 func _clean() -> void:
 	for suffix: String in ["", ".bad", ".display", ".display.bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
+
+
+## Select reconstruction options by value; list order is not part of the contract (DT-MAC-07b added "auto").
+func _reconstruction_index(settings: Node, mode: String) -> int:
+	for index: int in settings._reconstruction_picker.item_count:
+		if str(settings._reconstruction_picker.get_item_metadata(index)) == mode:
+			return index
+	return -1

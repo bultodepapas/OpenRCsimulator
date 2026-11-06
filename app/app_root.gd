@@ -1499,6 +1499,11 @@ func _refresh_screen_themes(node: Node) -> void:
 func _on_ui_window_resized() -> void:
 	var ui_window: Window = get_tree().root
 	var scale_state: Dictionary = UiScale.apply(ui_window)
+	# DT-MAC-07b: "auto" reconstruction depends on the output pixels (windowed versus fullscreen).
+	if display_preferences != null and str(display_preferences.config.get("reconstruction", "")) == Reconstruction.AUTO:
+		Reconstruction.apply(get_viewport(), display_preferences.config)
+		RendererGuard.observe_metalfx(get_tree(), renderer_guard_path,
+			str(Reconstruction.describe(get_viewport()).get("provider", "")) in Reconstruction.MetalFX.PROVIDERS)
 	if not _popup_realign_pending:
 		_popup_realign_pending = true
 		call_deferred("_realign_open_popups")
