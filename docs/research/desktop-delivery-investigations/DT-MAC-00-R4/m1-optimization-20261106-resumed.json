@@ -1,0 +1,1750 @@
+{
+  "format": "openrc-m1-optimization-resumed-v1",
+  "date": "2026-11-06",
+  "scope": "Research circuit; no product-route, package, hardware or pilot qualification.",
+  "hardware": {
+    "model": "MacBookAir10,1",
+    "cpu": "Apple M1",
+    "memory_bytes": 8589934592,
+    "os": "27.0.1",
+    "arch": "arm64",
+    "engine_version": "4.8.beta2.official.cafc17a19",
+    "engine_preflight_sha256": "2051c48febe532a5b156ffd8dd0c9381f74e40fde9177faff07a713851baba80",
+    "identity_limit": "Preflight is not continuous executable attestation."
+  },
+  "source": {
+    "git_commit": "096c21f176b3ad050e9b5236d3dea7b9de6cb868",
+    "digest": "6d059c99532ef7972339982881bf999cd9dbe299619e4a97dca71ceabdd1f682",
+    "all_receipt_maps_identical_unchanged": true,
+    "visible_app_and_fixture_paths": 4515,
+    "app_inventory_files": 4514,
+    "root_asset_inventory_files": 1642,
+    "all_inventory_git_matches": true,
+    "project_exceptions": [
+      "isolated name",
+      "multi-bounce disabled"
+    ],
+    "candidate_clock_link_creation": "prepare-clock.sh links to root/assets",
+    "candidate_clock_post_v3_link": {
+      "observed_utc": "2026-11-06T05:19:55.148940+00:00",
+      "is_symlink": true,
+      "matches": true
+    },
+    "link_limit": "No preflight readlink or continuous link identity.",
+    "excluded": "hidden import caches and continuous external-file attestation"
+  },
+  "common_configuration": {
+    "renderer": "mobile",
+    "driver": "metal",
+    "adapter": "Apple M1 (Apple7)",
+    "window_and_nominal_input": [
+      1920,
+      1080
+    ],
+    "msaa_samples": 4,
+    "cache_start_end": {
+      "ground": "ready",
+      "sky": "ready"
+    },
+    "density_bounds": "off",
+    "software_gates": [
+      "collection",
+      "health",
+      "checked",
+      "active_flight",
+      "pacing",
+      "individual"
+    ],
+    "max_fps": 0,
+    "raw_clock_mode": "aligned_raw_uptime",
+    "resource_required_coverage": "complete",
+    "stream_chunk_frames": 512,
+    "stream_max_bytes": 268435456,
+    "health_violations_zero_all_runs": true,
+    "cloud_generation_stable_all_runs": true,
+    "cloud_generation": 10
+  },
+  "campaigns": {
+    "baseline": {
+      "runs": 3,
+      "performance_pass": true,
+      "reasons": [],
+      "minimum_warmup_s": 30,
+      "minimum_sample_s": 120
+    },
+    "paced_soak1080": {
+      "runs": 1,
+      "performance_pass": false,
+      "reasons": [
+        "campaign has fewer than 3 runs"
+      ],
+      "minimum_warmup_s": 30,
+      "minimum_sample_s": 600
+    }
+  },
+  "runs": [
+    {
+      "id": "baseline/1",
+      "capture_id": "a0112b81-d703-4720-b97b-191451a7dac3",
+      "warmup_s": 30.002906,
+      "sample_s": 120.004085,
+      "frames": 8917,
+      "vsync": false,
+      "mode": "native",
+      "selected": "native",
+      "effective": "native",
+      "frame_ms": {
+        "max": 20.594,
+        "p50": 13.686,
+        "p95": 15.747,
+        "p99": 16.845
+      },
+      "simulation_wall_ratio": 1.0000080228437251,
+      "ticks": [
+        35957,
+        35957,
+        35957
+      ],
+      "gates_pass": true,
+      "warnings": [],
+      "rss_sample_bytes": [
+        917356544,
+        920895488,
+        923369472
+      ]
+    },
+    {
+      "id": "baseline/2",
+      "capture_id": "15afb7ff-a452-4a68-ae4d-2e2ada372dbe",
+      "warmup_s": 30.001452,
+      "sample_s": 120.002194,
+      "frames": 8927,
+      "vsync": false,
+      "mode": "native",
+      "selected": "native",
+      "effective": "native",
+      "frame_ms": {
+        "max": 19.379,
+        "p50": 13.582,
+        "p95": 15.817999999999998,
+        "p99": 16.842
+      },
+      "simulation_wall_ratio": 1.0000038420816435,
+      "ticks": [
+        35966,
+        35966,
+        35966
+      ],
+      "gates_pass": true,
+      "warnings": [
+        "19 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ],
+      "rss_sample_bytes": [
+        1037500416,
+        1041244160.0,
+        1043709952
+      ]
+    },
+    {
+      "id": "baseline/3",
+      "capture_id": "35bfe904-ccb6-42f0-84d5-34f653272a22",
+      "warmup_s": 30.013261,
+      "sample_s": 120.00001,
+      "frames": 8969,
+      "vsync": false,
+      "mode": "native",
+      "selected": "native",
+      "effective": "native",
+      "frame_ms": {
+        "max": 18.435,
+        "p50": 13.554,
+        "p95": 15.755999999999998,
+        "p99": 16.828
+      },
+      "simulation_wall_ratio": 1.0000127764941045,
+      "ticks": [
+        35986,
+        35986,
+        35986
+      ],
+      "gates_pass": true,
+      "warnings": [],
+      "rss_sample_bytes": [
+        972275712,
+        975929344,
+        978305024
+      ]
+    },
+    {
+      "id": "paced-soak1080/1",
+      "capture_id": "1000e19c-f8ae-40e0-884b-33d4cd4a4084",
+      "warmup_s": 30.011878,
+      "sample_s": 600.006903,
+      "frames": 36002,
+      "vsync": true,
+      "mode": "auto",
+      "selected": "native",
+      "effective": "native",
+      "frame_ms": {
+        "max": 23.628,
+        "p50": 16.66,
+        "p95": 17.145,
+        "p99": 17.352
+      },
+      "simulation_wall_ratio": 1.0000026294878792,
+      "ticks": [
+        151170,
+        151170,
+        151170
+      ],
+      "gates_pass": true,
+      "warnings": [],
+      "rss_sample_bytes": [
+        805404672,
+        874184704,
+        876036096
+      ]
+    }
+  ],
+  "soak_windows": {
+    "first_120s_frame_ms": {
+      "complete_intervals": 7200,
+      "p50_ms": 16.659,
+      "p95_ms": 17.149,
+      "p99_ms": 17.369,
+      "max_ms": 23.628,
+      "count_over_16_667ms": 3352
+    },
+    "last_120s_frame_ms": {
+      "complete_intervals": 7200,
+      "p50_ms": 16.659,
+      "p95_ms": 17.105,
+      "p99_ms": 17.321,
+      "max_ms": 21.702,
+      "count_over_16_667ms": 3398
+    },
+    "rss_full_sample": {
+      "sample_count": 591,
+      "min_bytes": 805404672,
+      "median_bytes": 874184704,
+      "max_bytes": 876036096,
+      "first_bytes": 862289920,
+      "last_bytes": 805519360
+    },
+    "rss_first_60s_median_bytes": 864747520,
+    "rss_last_60s_median_bytes": 805502976,
+    "rss_last_minus_first_median_bytes": -59244544,
+    "host_in_sample": {
+      "definitely_inside_sample_snapshot_count": 600,
+      "thermal": {
+        "nominal": 600
+      },
+      "low_power": {
+        "False": 600
+      },
+      "power_source": {
+        "ac": 600
+      },
+      "possibly_during_sample_event_count": 0
+    },
+    "helper_cpu_one_core_percent": 0.014751816539652232,
+    "runner_cpu_one_core_percent": 0.17323346188578953,
+    "method": "120 s nearest-rank whole-frame windows; RSS polls fully contained under raw-clock and poll-duration bounds; no observer-off comparison",
+    "rss_first_last_60s_sample_counts": [
+      59,
+      59
+    ]
+  },
+  "checkpoint_parity": {
+    "common_invariant_fields_equal": true,
+    "common_full_windows": [
+      {
+        "ticks": [
+          1,
+          6000
+        ],
+        "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+        "all_four_match": true
+      },
+      {
+        "ticks": [
+          6001,
+          12000
+        ],
+        "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+        "all_four_match": true
+      },
+      {
+        "ticks": [
+          12001,
+          18000
+        ],
+        "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+        "all_four_match": true
+      },
+      {
+        "ticks": [
+          18001,
+          24000
+        ],
+        "sha256": "8781f7ed56563e4024fa2893be428eb8c0229a6c751b932bb0ab1864c5713a18",
+        "all_four_match": true
+      },
+      {
+        "ticks": [
+          24001,
+          30000
+        ],
+        "sha256": "af8e8409907fbf150471d6efe99597f5f5d62eaa1fd58f83be24fbee53476a7e",
+        "all_four_match": true
+      }
+    ],
+    "baseline_full_window_counts": [
+      5,
+      5,
+      5
+    ],
+    "soak_full_window_count": 25,
+    "partial_tails_excluded": true,
+    "scope": "state/input/auxiliary/mode over matching windows; no rendering equivalence or realism claim"
+  },
+  "glare_abba": {
+    "order": [
+      "glare-base/1",
+      "glare-skip/1",
+      "glare-skip/2",
+      "glare-base/2"
+    ],
+    "runs": [
+      {
+        "id": "glare-base/1",
+        "capture_id": "16d1dccb-1be6-43b0-9077-a99ffc327738",
+        "p50_p95_p99_ms": [
+          13.313,
+          15.252999999999998,
+          16.72
+        ],
+        "printed_gpu_total_median_ms": 13.4415,
+        "printed_opaque_median_ms": 8.9586669921875,
+        "profile_blocks": 34,
+        "shutdown_warning": false
+      },
+      {
+        "id": "glare-skip/1",
+        "capture_id": "874e966a-073c-4834-95ca-f9b035d38429",
+        "p50_p95_p99_ms": [
+          13.02,
+          14.728,
+          15.725
+        ],
+        "printed_gpu_total_median_ms": 13.242999999999999,
+        "printed_opaque_median_ms": 8.87031907301683,
+        "profile_blocks": 34,
+        "shutdown_warning": true
+      },
+      {
+        "id": "glare-skip/2",
+        "capture_id": "e110ef11-e563-4199-b17f-4190c2154eeb",
+        "p50_p95_p99_ms": [
+          13.100000000000001,
+          14.932,
+          15.8
+        ],
+        "printed_gpu_total_median_ms": 13.7515,
+        "printed_opaque_median_ms": 8.93824827516234,
+        "profile_blocks": 34,
+        "shutdown_warning": false
+      },
+      {
+        "id": "glare-base/2",
+        "capture_id": "515d144e-6ca9-44e2-a800-a5bef4df1a63",
+        "p50_p95_p99_ms": [
+          13.229,
+          15.082999999999998,
+          16.589
+        ],
+        "printed_gpu_total_median_ms": 13.519,
+        "printed_opaque_median_ms": 8.9563277395148,
+        "profile_blocks": 34,
+        "shutdown_warning": true
+      }
+    ],
+    "environment": "OPENRC_SUN_GLARE=off",
+    "shader_start_readback": "sky.disc_cloud_occlusion=true on one material in each run; re-applied by fixture",
+    "source_comparison": {
+      "changed_file": "app/render/world/world.gd",
+      "base_sha256": "bc825b36f18a487732cef58d33e872f4af00b3c95924baa05d4e28c7f62da743",
+      "candidate_sha256": "6e3230af57436d60deecd69776e595f41200e2328f27dd6df3bfeebfc541b040",
+      "one_guard_reconstructed_from_git": true,
+      "scene_tree_absence_observed": false
+    },
+    "descriptive_comparison": {
+      "base_mean_p95_ms": 15.168,
+      "skip_mean_p95_ms": 14.83,
+      "qualified_speedup": false
+    },
+    "dry_baseline": {
+      "exit": "1",
+      "frames": 0,
+      "complete": false,
+      "has_health_receipt": false,
+      "expected_failure_observed": true,
+      "skip_dry_run_exists": false
+    },
+    "all_four": {
+      "warmup_s": 10,
+      "sample_s": 20,
+      "raw_clock_joins_pass": true,
+      "health_eligible": true,
+      "checked_eligible": false,
+      "source_unchanged": true,
+      "cache_stable": true,
+      "first_6000_checkpoint_match": true
+    },
+    "checked_refusal": "GPU profiling and the documented shader-parameter attribution override; duration and replicate minima also fail"
+  },
+  "shutdown_warnings": {
+    "message": "19 ObjectDB instances leaked at exit",
+    "captures": [
+      "screens-v2/baseline/2",
+      "screens-v2/gpu-profile/1",
+      "screens-v2/ground-off/1",
+      "screens-v2/sky-off/1",
+      "screens-v3/baseline/2",
+      "glare-base/2",
+      "glare-skip/1"
+    ],
+    "scan": "115 logs; seven captures, 21 copied log lines; no resource-still-in-use match",
+    "status": "Unresolved; not proof of an in-flight RSS leak.",
+    "warnings_as_errors": false
+  },
+  "limitations": [
+    "Physical presentation and in-between sampled states are unverified.",
+    "Perfetto marks optional process I/O unavailable; required channels and bounded joins pass.",
+    "Thermal nominal may be fallback; initial pressure and OS loss are unknown.",
+    "The paced soak is one run; no observer-off control exists.",
+    "Baseline 2 has an unresolved 19-ObjectDB exit warning."
+  ],
+  "raw_files": {
+    "root": "tmp/m1-optimization-20261106/evidence/tmp",
+    "sha256_pool": [
+      "363f27bba7ea9346319caadf3437f51d0ff8774cfb715f7ab3f24c3c223f6e06",
+      "821e69fdf92312e4e71ef3790f6a1a32bbf80f965c26e29240b36fa6798e5922",
+      "0ca22697705f7c6b88ccf8a0a57f8f470ad10cdb77e0a6a7b94423d78e3f9a22",
+      "4a1a116186a08d113a807fe07ed7b8872a4c6422ba777be040caad298429218a",
+      "55cd6a84e611c5123c2988b2ad8c82f6f17a3b531333f3e43e169e539b5b083a",
+      "77d1d9b883ad6790a6dee104e1711e3ca8c246bc1a3c92866ab0599e06a1da55",
+      "26d58a96ba8247c3d60f3aead22d45e4687d92036049f113cab8c80df6d062e0",
+      "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "fe45631a5e06c6275d3cef8c51f1a38f9486b68550f8ce67cf556736d713618e",
+      "41152686379fc9c5f068311588733186ca42fef5c44e0cbbec5617568216c436",
+      "089fffa05aec40bb43ed41b0ee6829d9e4cadead9ed4598bf9d5510b5b6b9925",
+      "8702a440813302d814352d4aeaa071387c0099461d6d4628606b2f16507b5bba",
+      "f66998ad1b59d423727a4935e731b0885d92b055482144c2dd8a3865a8988d43",
+      "afb8aa9981a4691b252f61d44c528bcd298b8ebb58409923cf3660ef47ea34b5",
+      "ac4622b4617ab3fd020b3212815dca47cc8648ef4ea0c7f740ef452bc2ca3f6e",
+      "ce955dd3f9c414b3e5315e65b0f05a45227ddb02d2cd1d6612a37a9b4b326349",
+      "a00c515fed090f6b2c9ac7c8ac3a6c2eff87bd0af7de74b2f33fee0d857afed0",
+      "2dbe781af9ed5525723645d88d90b3a58cd1de7e4072565dbc907b263674c0d5",
+      "f1a1af265f87f58a41453d55a96f96bb3d0fdff34b0d71d3237ab6d060a73706",
+      "ae1dbd51b373bd48ddaae99b57ee712e7bb26f37ff7a7e73e2f0b3376a81839d",
+      "6827dfab8bc55a6373e32689f6f58a283fd80c2ac3174df12cccd05f4569fb20",
+      "a17d014f423b3330039f123157d829a843248cb48910932c65347fc7930ae461",
+      "ff6c05a773aae28ebaa8e0c6b768201408f439b4667ae7798d16e1ddb662e31e",
+      "1a9267a568a01bebd28f1b8f334deb383e016205bcd19af78a28137a24900342",
+      "4c58cdaab7138719de2b8dc44a8c91039b4985fe010d74a48753918676d12f2d",
+      "d5608e41590b36aa49cef7fb40b28d7f61f1dcf60cde6a52cc4716588cd47bc9",
+      "7b128c6284da8528044b1592ae4ddc4b58e2c72c167fd070118aaa4a521510dc",
+      "ddc901e90e6db5ec55b61f0136cb074ddb3e21499b95b6d92f99dd095b33f241",
+      "ec0dbb9fc1beb8c0eead18feb420aff23afbe63ddb7817a5be2f173d673f2617",
+      "f283c9012360782ba1478836823795eb5db0a33ee1636c3fd96f56af662a8449",
+      "2ed39bbfc2abfaf1817dd743253d73fc1a7c0a7fa90e8736ff10eaa03a9b0dc6",
+      "75620e579a9921b4c06079c2602dd486af59ebb72b0eea6f7402b2cddca93c66",
+      "d913d95def769b3d4364d82b504a405adbd2cb77d5372822226f7e5f2c60503d",
+      "09fd70cd2655dd987c74a421d578ed822f7bb5a4a145dabc93de1818d9f07d2f",
+      "e93384a3e3dec6dda5bd4eca7f85f63426d531dd25414a7cd948bfee077cb789",
+      "9221997617693666d1bbb64b1bf63a967658564ed96db4f009ec01f045c4dd0f",
+      "ef583c5bae126dda1f6b61031f497b993c929c8a87f403e56caa14843a54ed28",
+      "b2b235861cd5aeb674058ae7d3e2da3ca8d5d0d7e07289d6955ff356c2a28991",
+      "1dde8f656c18c5f3fd311e1e7da56ab38386b6cb8c286084635d3dd1a0aca8ba",
+      "c63708f496d2e7a1b10b79a0f7c9611011fbb5d88fa43f5f5318d3a684ff0328",
+      "00096e436e6bee0f8e33fdc56b3780ee1a9a61a75e0f8cc11113852425b248f7",
+      "27f301e2fc09daed6cf3e600893e1f0b16b011c4ba68feded8276c75ddcf51b4",
+      "213a645dcdb287e9b84f7589cf3c0904bfecb74ab64aa3467a3ec44c58f3df9d",
+      "e00e55d4ee4530af15abd2407b1011187f51fbd37b533cc61361eca2fe5bd357",
+      "444171289bb5418bcdd13d36b0199fd5281451e744f293ea7f51f10e6259daf0",
+      "f8566e379b20d62d9ac671901ed57e40efa18e3d75aee746b3f144b8a8985d39",
+      "8f5efc346ee74f155106d2cf48d43ad37c4edca7694cab6478e5ea2e2c3191d1",
+      "858f5e108552acf5d305df2854ae9f70c937580da10fb61e80d158f704af93eb",
+      "8ad0ff4a53a2b7c965e724a43e25bd7d25ed77846fc872be7369c4485e1131aa",
+      "28b01dbe3667a66364c2ef69c50ac4ac7e4ff5cb2b966bd6d540540e67d2bfe0",
+      "c4bfc4ea88445c47356776a72d5600b880f8af7800249215d9b388ff066023f9",
+      "a32e2aa410029f341b8be88bf50f7c08d8aef1978b8f92c05b065ddcb2ed8d62",
+      "3f5667deaf1c02b44484e4e969d33c02da59777c859f66f41634c1f2a3ee02b0",
+      "3713d085cb9d06c4ffbe8735a5d6db7f14a7016ddef843908f96357f4aa324fd",
+      "3f05fb97d61e7239a31159d24c824e481300b4ad96a03cf4a9152782a5463f57",
+      "ed29dc60d5876ad2e0ded5b4ff254f68f747feba295c551b5480725747c348c6",
+      "9bc57b5bd25369b38d49e491c48a26a16b6a50dbf8495bb37acab4c5c64e7f9d",
+      "f20810cccb7fc79fb2d07250a664558171470f63e4696675f73326d2c00288eb",
+      "0cdb76fcbe63b478d75a3d0b09583811f80bb3d8c0cff13073cdda50b15a78ee",
+      "569ae60f8e728032da658208980dd03a42e3bc524f7f0c2fe133cf6ba204189a",
+      "61d439cb07e75654f54a1d069f2a2aa587e6728ae09bf8fa271cdb5f6dbb438c",
+      "9487adf19488199c92600aa2a7cba91929d84d4ac432e4c3d16da8c64a27179d",
+      "95812a14d4534391b6897a5bf50c001e22920a30d16468ed2ec9c6c3fd63411a",
+      "f5b22b258a753f4d35e1d8952b3294f1e9ff026c82219ecb42badd7fdfbaa802",
+      "407975e1fedf1ca9e622151a1b51ddde2dc8ae26158857c111063d9db69226ce",
+      "68c933082ca8babc534c843566d211d12393bd46169a4a57c8de827076ce2174",
+      "2bdfb3d09b00f764b573f5d1a5622f394207b560338f94f3ecbe2b365f664fa2",
+      "eb4c548b5e29fb8f5add9db135212562594ba4628020b47d4039ecc4590568bc",
+      "b75cc1b76ab86adf2c97bb3a341b33b18cc17727b709e0a82f6f647a900c0906",
+      "6bfd590771af6ba488e6ef028668a778fce2bf2cf591cbc1957360b5b2a2f61b",
+      "e5bba3f930df9a3d65abe9fd2817d49e84bc8f8ce83767204beebe54835ac84e",
+      "0c220dd68db2308ba02c0de38baee80cf3de59182a09d993527d7e63923dc2bf",
+      "17ac68e219db0119239be3c43cbd7aac5cb9547cdfd87464a34eed06670df275",
+      "d0482252498f7579be54112650eee406797d52134612f6ae5db869f7b56825da",
+      "b24d73f828f371a87fb880d06a5fd82bcc2443e66963ab9335150f2c3c2ff3c6",
+      "fb37e7c9846f7a05257fb05a7f8f13be3b2a823f79271971a223f72324390784",
+      "81059476fb48d1337cb65cf28f0d64a61a6e1e7e4cb123321af39c86ca17d594",
+      "2a5c5dcb31fd5a34dd8ae7975cce771bb95ca28097dcd6ba9e3f401bf2c8fdc3",
+      "1785e96b18a675a0c09a632a4a80c21eb6095b7b265c97a82135130057f057e3",
+      "51f2b6f132c957a8187a3e3c555d2eb830ec31c6fce4e2f01dd1a66c90ccc078",
+      "31ef379375514eb2eae98b7c668ad70b0ff334677c46ef79e558b374de8e0eed",
+      "0be0c073617dfa0f4909a4509905410ef5283d5780acf91606bff88c80656bf4",
+      "1b46eeeec15aa406b238f7ed1253df0b0c3b0ed4868aa6d8b015ee8861ca8f78",
+      "e560c9f1978fc2fdc27752e64fef33686569d7669c458af28688e2eefd282f1b",
+      "e9f11dcc9e1a08cb64da7346bdfa4f023c89ee8fa0b4f0041c9299895e6cf587",
+      "d9b55a06f9f2354ab1d82447e34457240c7d8f9e2e4aa574fa1ec568d46f4e5d",
+      "5a38295f3b4132240953a1952f8724fb4400140583ae561b4ea6a9303e0bede6",
+      "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "6d35315e76350d50662cb53f93b6f7fa42a35b927321a573108051c4193df204",
+      "972014739de90c907c66792b09931bdc2cb99a17d51a8fee939408e27e124ccb",
+      "f287b0e65e966289286a42d3c7c6394202ea37242a42fe7b8f32ddd44c7d808e"
+    ],
+    "indices_are_zero_based": true,
+    "hash_order": [
+      "frame_report",
+      "frame_stream",
+      "frame_log",
+      "health_receipt",
+      "checked_receipt",
+      "configuration",
+      "console",
+      "exit_status",
+      "host_stream",
+      "resources",
+      "host_overhead"
+    ],
+    "relative_path_patterns": [
+      "run-{n}.json",
+      "run-{n}.json.frames.jsonl",
+      "run-{n}.log",
+      "health-run-{n}.json",
+      "checked-run-{n}.json",
+      "configuration-{n}.json",
+      "console-{n}.log",
+      "exit-{n}.txt",
+      "checks-{n}/{check_dir}/host-state.jsonl",
+      "checks-{n}/{check_dir}/resources.json",
+      "checks-{n}/{check_dir}/host-overhead.json"
+    ],
+    "copy_equivalence": "Each checked engine.log equals frame_log; report.json equals checked_receipt (SHA-256).",
+    "cases": [
+      {
+        "case": "screens-v3/baseline",
+        "run": 1,
+        "check_dir": "baseline-pix3nwqq",
+        "sha256_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      {
+        "case": "screens-v3/baseline",
+        "run": 2,
+        "check_dir": "baseline-tc4276os",
+        "sha256_indices": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          7,
+          18,
+          19,
+          20
+        ]
+      },
+      {
+        "case": "screens-v3/baseline",
+        "run": 3,
+        "check_dir": "baseline-my1r669g",
+        "sha256_indices": [
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          7,
+          28,
+          29,
+          30
+        ]
+      },
+      {
+        "case": "screens-v3/paced-soak1080",
+        "run": 1,
+        "check_dir": "paced-soak1080-u06645g5",
+        "sha256_indices": [
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          7,
+          38,
+          39,
+          40
+        ]
+      },
+      {
+        "case": "glare-screens/glare-base",
+        "run": 1,
+        "check_dir": "glare-base-jpcrmzfi",
+        "sha256_indices": [
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          7,
+          48,
+          49,
+          50
+        ]
+      },
+      {
+        "case": "glare-screens/glare-skip",
+        "run": 1,
+        "check_dir": "glare-skip-btuh02pi",
+        "sha256_indices": [
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          7,
+          58,
+          59,
+          60
+        ]
+      },
+      {
+        "case": "glare-screens/glare-skip",
+        "run": 2,
+        "check_dir": "glare-skip-ls1_z8yi",
+        "sha256_indices": [
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          7,
+          68,
+          69,
+          70
+        ]
+      },
+      {
+        "case": "glare-screens/glare-base",
+        "run": 2,
+        "check_dir": "glare-base-cfc_rfi_",
+        "sha256_indices": [
+          71,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          7,
+          78,
+          79,
+          80
+        ]
+      },
+      {
+        "case": "glare-screens/glare-base-dry",
+        "run": 1,
+        "check_dir": "glare-base-dry-9w2k_v5h",
+        "sha256_indices": [
+          81,
+          82,
+          83,
+          null,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90
+        ]
+      }
+    ],
+    "support_root": "tmp/m1-optimization-20261106",
+    "support_files_sha256": {
+      "evidence/tmp/candidate-clock/source-verification.json": "839e5a2060131b6c0b91e96b3b5149e92567e0887678f1806281d79a8aaf9dad",
+      "evidence/tmp/candidate-fixed/source-verification.json": "ccb9df7710f3c0c3c55b5192b9e0dd4ffec6111c1fd0e5fb3da36a7e8054a851",
+      "evidence/tmp/candidate-research/research-preparation.json": "d3fa61cd53effc1dac4a0ed82ba962b72bbb524968e8fad5425538e3ec8cf9b6",
+      "evidence/tmp/asset-links-post-v3.json": "17d5c161489271ae0147eb12eeee75893d072f9e7400d610d4b035a9eed9862d",
+      "evidence/tmp/macos-host-build/build-receipt.txt": "8e84c9a5f46c97879f4a8374169be2ebd697e01c4602ce7d71904e20c2ba11a1",
+      "evidence/tmp/macos-preflight/macos-preflight-20261106T021546Z-c4405bfbfeab4a7ea9bbbecf12adcbfe.json": "1825f29fbd61e9a0c76a2814734224195a804c282973c145dc973be7f3a1661e",
+      "evidence/tmp/clock-checks/clock-import-opgz_xf9/engine.log": "1b54a523c92032d9a92b8d79853413a0eceb2046aa54d515d5a12c04514aa980",
+      "evidence/tmp/clock-checks/clock-import-opgz_xf9/report.json": "c4dd0f318c986398f5764c3a606f1e92252eb47ce2fe7e33dffb44ff824d5432",
+      "evidence/tmp/clock-checks/test_frame_diagnostics-6q8yfx_n/engine.log": "1ee0ef6f1e4bf3f223856d43ab220d5b7871c352d1e4013c766383314903e694",
+      "evidence/tmp/clock-checks/test_frame_diagnostics-6q8yfx_n/report.json": "321b22fdaca5a21ee126a1cebe64f8fdeb7b9804bbc22e26f23148872ee9b47a",
+      "evidence/tmp/clock-checks/test_frame_samples-xolrrqzl/engine.log": "589642266e667849568df3914a751eb6927718090f69afae8df198ab4c7b8013",
+      "evidence/tmp/clock-checks/test_frame_samples-xolrrqzl/report.json": "4c1507285df96cd5e43fc9781ad2fd30949e18380faa7849b85a16a5cbf99122",
+      "prepare-clock.sh": "a8b55de63261a95f6d01fdcb0d8ef72b895c3e4ef155665d4f21e1d033865343",
+      "prepare-clock.log": "e57b21d32eb888e3c99fb6d61fc219d81cb4597ce1dc7c8d00eb3c5d0666b116",
+      "verify-candidates.py": "eafa439e38786648cf9e49182723527f48f8550d29d668bfed58ebdddeda1429",
+      "candidate-identities.json": "a29a8a20034a6e3c3095f2ac24a1eff4f284b2154bbcd1cf7c3055732e4e98ad",
+      "screen-v3.py": "193fc37c4a48744bb76c7bc1f80c60dbc9493c3ed31c26e52a23c21b26cea68b",
+      "matrix-v3.sh": "5a46c1f57066d20e98aa5d956a939c8bdff44d273aa784770d3c59f2422f0b8e",
+      "matrix-v3.log": "4273bdc76b6995cb23e3de5a3fd200faf1f4dad515a65ef2b7028f47370cb0bf",
+      "evidence/tmp/glare-experiment.json": "cbce54d1538ab81435d8fbf3b89577a93678747c8d217e883c57a21ebceacdad",
+      "glare-experiment.sh": "6d619dbb72c62c041cc158be764c7f3851e96752b5687221c413f16e837d43e5",
+      "glare-experiment.log": "3de422af6ec956c99c4938800a8c253025e886317c7d584b612f7207ea7dbe37",
+      "glare-screen.py": "f763da6570b11c224bed25d56cc1b1583c36198fcf9a62a411e2e1ae89b6b8bf",
+      "stage-glare.py": "4523c2b7e1a928d1e13117ea24476a78fc6eae8ee0c080596d722541f9623253"
+    }
+  },
+  "clock_coverage": {
+    "clock": "darwin_mach_absolute_time, bounded endpoint intersections",
+    "all_four_whole_poll_joins_pass": true,
+    "minimum_resource_before_usec": 43393954,
+    "minimum_resource_after_usec": 5947195,
+    "minimum_host_ready_before_usec": 43385801,
+    "minimum_host_query_before_usec": 43385520,
+    "minimum_host_query_after_usec": 6838579,
+    "max_host_gap_usec": 1047031,
+    "max_resource_gap_usec": 1030248,
+    "host_own_complete": true,
+    "zero_local_drops_and_missed": true,
+    "sleep_delta_extremes_usec": [
+      -3,
+      2
+    ],
+    "optional_process_io": "unsupported; generic Perfetto output is partial; required resource channels complete",
+    "helper_sha256": "4b884cfe8d32261cd2cbec96f802f1b66798cb0a0a8b5a403cf74f7858bb02b4"
+  },
+  "product_followup": {
+    "source_base": "096c21f176b3ad050e9b5236d3dea7b9de6cb868",
+    "fullscreen_fix_commit": "44ce51b86",
+    "native_advanced_graphics": {
+      "checks": 163,
+      "failures": 0,
+      "engine_errors": 0,
+      "warnings": 0,
+      "complete_test_sentinel_required": true,
+      "process_exit": 0,
+      "identity": "fullscreen-guard-final/identity.json",
+      "scope": "Two guarded borderless assignments plus real renderer-confirmation fixture wait; not a native transition serialization guarantee."
+    },
+    "preliminary_guard_run": {
+      "process_exit": 0,
+      "full_test_complete": false,
+      "reason": "Renderer recovery during in-process shell recreation skipped final assertions; retained and excluded."
+    },
+    "native_product_route": {
+      "home_fly_resize_home_completed": true,
+      "flight_advanced_past_tick_240": true,
+      "window_sizes": [
+        [
+          1920,
+          1080
+        ],
+        [
+          2560,
+          1600
+        ],
+        [
+          1920,
+          1080
+        ]
+      ],
+      "selections": [
+        "native",
+        "metalfx_spatial_quality",
+        "native"
+      ],
+      "metalfx_execution": "unverified",
+      "msaa_samples": 4,
+      "vsync_mode": 1,
+      "retina_logical_canvas": [
+        1920,
+        1200
+      ],
+      "reported_screen_property": [
+        2880,
+        1800
+      ],
+      "scope": "Window/UI properties and stills only; no physical panel-pixel or moving-readability qualification.",
+      "preliminary_harness_failures": [
+        "Unconditionally waited for ticks while focus-loss Pause held the session.",
+        "Unconditionally pressed Resume although this run had auto-resumed."
+      ],
+      "original_eight_cycle_soak": "failed object growth +4 per cycle; zero errors; all failed runs preserved",
+      "shutdown": {
+        "process_exit": 0,
+        "crash": null,
+        "leaked_objects": 0
+      }
+    },
+    "weak_reference_diagnosis": {
+      "consumer_registry_before_after_prune": [
+        38,
+        2
+      ],
+      "objects_before_after_prune": [
+        5347,
+        5311
+      ],
+      "nodes": 900,
+      "resources": 1159,
+      "orphans": 0,
+      "smoke_census_fix_commit": "74d8903a6",
+      "scope": "Exact dead WeakRef count; not attribution of RSS growth. Generic soak and zero tolerance unchanged."
+    },
+    "nonverbose_twenty_cycle_soak": {
+      "warmup_cycles": 1,
+      "measured_cycles": 20,
+      "compared_cycles": 19,
+      "monotonically_growing_counters": 0,
+      "errors": 0,
+      "nodes": 900,
+      "resources": 1159,
+      "orphans": 0,
+      "rss_baseline_max_last_mib": [
+        1264.5,
+        1496.5,
+        1465.1
+      ],
+      "static_baseline_last_mib": [
+        347.4,
+        348.8
+      ],
+      "consumer_registry_before_after_final_prune": [
+        26,
+        2
+      ],
+      "objects_before_after_final_prune": [
+        5335,
+        5311
+      ],
+      "scope": "Normal periodic cloud pruning during the run; final manual census only. Late RSS decline is not a general plateau or leak-free guarantee."
+    },
+    "verbose_shutdown_diagnostic": {
+      "source_fixture_unchanged": true,
+      "audio_driver": "Dummy",
+      "warning_reproduced": true,
+      "leaked_objects": 19,
+      "types": "AudioStreamGeneratorPlayback, AudioStreamGenerator, AudioStreamMP3, AudioStreamPlaybackMP3, AudioStreamWAV, AudioStreamPlaybackWAV",
+      "scope": "No leaked Node types listed; driver and teardown controls evaluated separately."
+    },
+    "support_sha256": {
+      "evidence/tmp/product-native-settings/advanced-settings-7medj4nd/engine.log": "7e8ff54a329a1e798cb78bbdc9afe24afeba712dc50b2f789b4b9bb27439d08d",
+      "evidence/tmp/product-native-settings/advanced-settings-7medj4nd/report.json": "ce799cec30e1271b9476aa46d60ef2fdf1078fd0adc4e6fdee3a2d069aa26ec9",
+      "evidence/tmp/fullscreen-guard-checks/advanced-settings-waav0ztv/engine.log": "48aa6f170a222df1035ed2e0f5a05575e8334da310428f3d18bc413587810fbd",
+      "evidence/tmp/fullscreen-guard-checks/advanced-settings-waav0ztv/report.json": "841c89f3b239efc16f1ff606b54952ca8f0c322713913ada1db2f95890071c33",
+      "evidence/tmp/fullscreen-guard-checks/import-i3f_8cc2/engine.log": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4",
+      "evidence/tmp/fullscreen-guard-checks/import-i3f_8cc2/report.json": "b158b2cb652cb01abc152bc98ffb2c7a1da2571f4311e9656ec739300c2e5de8",
+      "evidence/tmp/fullscreen-guard-final-checks/advanced-settings-oz79zqbn/engine.log": "2070fcff89f6d139d85e58fbc5d870d5e251c68a4a2b7b4c38a5cbdc6a7a87c1",
+      "evidence/tmp/fullscreen-guard-final-checks/advanced-settings-oz79zqbn/report.json": "7b1aa3e81b248dcfa43a5b4b7cad7929965359633398818fdaef8f172d608349",
+      "evidence/tmp/fullscreen-guard-final-checks/import-7hs3l4ep/engine.log": "1b54a523c92032d9a92b8d79853413a0eceb2046aa54d515d5a12c04514aa980",
+      "evidence/tmp/fullscreen-guard-final-checks/import-7hs3l4ep/report.json": "28164748ada84990a1ab149694d75b3c7270511b061026d2cd8ae15446632b3d",
+      "evidence/tmp/product-live/native-ui/bridge.json": "530bfc605686f12b9326e50988394791bd6aee460ad3a7adbb2679a2ae80684e",
+      "evidence/tmp/product-live/native-ui/home-1080.jpg": "6c8675c4d7536829063c22846825ad94c2b47a6714e685a99d9fcb1d720e944d",
+      "evidence/tmp/product-live/native-ui/home-default.jpg": "5aad455c2f32c76f0f31656d4665faeaef4cf3283986d929f3df1bc28bcb595f",
+      "evidence/tmp/product-live/native-ui/launch.log": "046c675d62841948f6896930affba7b2014a4df84aa41108f05140ec1631b619",
+      "evidence/tmp/product-live/native-ui/stop.json": "4f127ad4f6cf26b41e1b53b72682b154750463f640fc584953494c4877917a50",
+      "evidence/tmp/product-live/native-ui-retry/bridge.json": "b3a56393e045a3c322dd0e9bd5885a768968441e362eb9810a0fb91beadfe8b4",
+      "evidence/tmp/product-live/native-ui-retry/home-1080.jpg": "6187f9a03cbe805ee5b2d15140a17be7e6bf60cef62b4167bce2733708fa37a0",
+      "evidence/tmp/product-live/native-ui-retry/home-default.jpg": "d31ca05c032338342a6bdf25ce4e879ee6dcdf6bc5c9e63c56c01b1a2779e79e",
+      "evidence/tmp/product-live/native-ui-retry/launch.log": "54e1e1ef04b46ee0a98e1f7aac44279de22af658c564f33a428730413b49d0da",
+      "evidence/tmp/product-live/native-ui-retry/stop.json": "ab7cb3cc1186297b7ff8ae19fa8dd51fef2510b92d83e0456b300d420e89368d",
+      "evidence/tmp/product-live/native-ui-complete/bridge.json": "d44adc3880db7bfb2bb8468d6cb3e9a73d77dc4c25419259971bcc09806a6c2e",
+      "evidence/tmp/product-live/native-ui-complete/flight-1080.jpg": "3af5833e05db80f13591155dd352e41624238b4a825c9ec1adfbd3396c10d71e",
+      "evidence/tmp/product-live/native-ui-complete/flight-restored-1080.jpg": "3af5833e05db80f13591155dd352e41624238b4a825c9ec1adfbd3396c10d71e",
+      "evidence/tmp/product-live/native-ui-complete/flight-retina.jpg": "edb584f5eeded3e718f1a717c2b21dd74f1e641104005c961c0c85d005b9ae89",
+      "evidence/tmp/product-live/native-ui-complete/home-1080.jpg": "7186498893a8bf440556148f8a2183612143ca5deef2f5ef41b9bcb3dff4fd08",
+      "evidence/tmp/product-live/native-ui-complete/home-default.jpg": "a51211b9078ea26023c3569b17c34710d5768c285eebeb73af6a379eb85a6bf1",
+      "evidence/tmp/product-live/native-ui-complete/launch.log": "9e7fa841c0c8b867b73e282054778efda827c0235e3c5e18f0c5b3820055c5e2",
+      "evidence/tmp/product-live/native-ui-complete/soak.log": "b57308d3b34e63bc5568cdcc4270449d565ca75a5b4918e10ffd8484a3da3d61",
+      "evidence/tmp/product-live/native-ui-complete/soak.txt": "5f8b5bba124bf3b5fc981aef59ec4350f670923c87f451960a94558790e042e9",
+      "evidence/tmp/product-live/native-ui-complete/stop.json": "4fef48db977a141d0a0c1e3c96a3a84ecf0352891260c91fb123b9bb979e89a9",
+      "evidence/tmp/product-live/registry-diagnostic/bridge.json": "36e2ec3a743df8d911ef1cdc20f7d27f2a5e91e51442be398c420c988b62159e",
+      "evidence/tmp/product-live/registry-diagnostic/launch.log": "dd106d2fcbc10d67985d5887ff2cbffc0ff46fad927629f0d79a0d3b39385cb8",
+      "evidence/tmp/product-live/registry-diagnostic/soak.log": "0c1e240383105b265013bbb299b058de4bc3a82f2cdce96ac832aac4c981d68f",
+      "evidence/tmp/product-live/registry-diagnostic/soak.txt": "5f8b5bba124bf3b5fc981aef59ec4350f670923c87f451960a94558790e042e9",
+      "evidence/tmp/product-live/registry-diagnostic/stop.json": "1695a72baa797cabf1091ddda5b491ddb04918318e1ac3861a42e8c690c6d4a0",
+      "evidence/tmp/product-live/registry-long/bridge.json": "2a47276f8fe485405a5b37fc0a84fb5765ddb7d2e6090131fdda6f2bfbd8e937",
+      "evidence/tmp/product-live/registry-long/launch.log": "4b92ff6603d43e1e667e65423ed678c08b4017b0910c84e697039cb527dbc2fd",
+      "evidence/tmp/product-live/registry-long/soak.log": "ab3b465033b33009fa06fe866fcb021cf7759c02cf8c40f97f0ca8c298d29d75",
+      "evidence/tmp/product-live/registry-long/soak.txt": "5f8b5bba124bf3b5fc981aef59ec4350f670923c87f451960a94558790e042e9",
+      "evidence/tmp/product-live/registry-long/stop.json": "7aa697b7aa546be63f08e7bf3842ca9564f22370a82305c0e45b11d5e9d64747",
+      "evidence/tmp/shutdown-diagnostics/baseline/checked-run-1.json": "cba15f00d5c8d2aadad6bdf809b1e481338b61483ac103ddcd314c2a6bd212d2",
+      "evidence/tmp/shutdown-diagnostics/baseline/checks-1/baseline-2bu8oiiz/engine.log": "793a46c7a960028bb4995d71ddf0c27a05bdf58af5f453e7582cf13dd7515967",
+      "evidence/tmp/shutdown-diagnostics/baseline/checks-1/baseline-2bu8oiiz/host-overhead.json": "54dd7967c0740647c0fa07968ca289383a2cfc7cc43315594ae58ce0e33a8901",
+      "evidence/tmp/shutdown-diagnostics/baseline/checks-1/baseline-2bu8oiiz/host-state.jsonl": "0655fccd3e8d32f8972918cbca06420deca45c81c97aa4321be85bae5087326e",
+      "evidence/tmp/shutdown-diagnostics/baseline/checks-1/baseline-2bu8oiiz/report.json": "cba15f00d5c8d2aadad6bdf809b1e481338b61483ac103ddcd314c2a6bd212d2",
+      "evidence/tmp/shutdown-diagnostics/baseline/checks-1/baseline-2bu8oiiz/resources.json": "cf37543666bb60bde51cf6cb4cd94803773327aa703e3a50fa16c1097e54910d",
+      "evidence/tmp/shutdown-diagnostics/baseline/configuration-1.json": "a8c1b4f919a20431cde52fb98eeab8f727dd25b8e01e1ce60c8375a3821ff062",
+      "evidence/tmp/shutdown-diagnostics/baseline/console-1.log": "e5d7f0fce37b7429065db530cc90307d8ce0f2d36bda5dc9c908abdce73887d5",
+      "evidence/tmp/shutdown-diagnostics/baseline/exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "evidence/tmp/shutdown-diagnostics/baseline/health-run-1.json": "11d9d255a42b91d058f6f71efd9d1a414aef2b612c3754af8f276618a006edcc",
+      "evidence/tmp/shutdown-diagnostics/baseline/run-1.json": "289b94e65f73a96d330ba45618e1f13f5c745c0bddb4383f5585fd71b7572883",
+      "evidence/tmp/shutdown-diagnostics/baseline/run-1.json.frames.jsonl": "b8c026943ce892b665c244e09ff9cfc047d98cb21da1f20ec0233c93d672beb6",
+      "evidence/tmp/shutdown-diagnostics/baseline/run-1.log": "793a46c7a960028bb4995d71ddf0c27a05bdf58af5f453e7582cf13dd7515967",
+      "evidence/tmp/fullscreen-guard/identity.json": "818ab7753564ea1c548542c16aa0dde153338f5cb82f2031d457d006caa079fe",
+      "evidence/tmp/fullscreen-guard-final/identity.json": "78035c5f80de124bc3210721409fcb517cab0b8148e13cdf5d28322bec504d32",
+      "evidence/tmp/audio-screens/dummy-immediate/checked-run-1.json": "ddddee28efd785a6f177eb6fe44867928092bd9de13d558fde4cab529db7a7c5",
+      "evidence/tmp/audio-screens/dummy-immediate/checks-1/dummy-immediate-bijaytb3/engine.log": "474221021e226ea769cbe7f4f0ffcd230446dbfe48637d4be71b15134952b385",
+      "evidence/tmp/audio-screens/dummy-immediate/checks-1/dummy-immediate-bijaytb3/host-overhead.json": "f168642a26fbd73b995f1b385c2048edb92fb938f8f30b1b7e4d5f9512cdb838",
+      "evidence/tmp/audio-screens/dummy-immediate/checks-1/dummy-immediate-bijaytb3/host-state.jsonl": "85d273b0a896e1019a611fd146bae36dd33c351419107548dd926e20b2ca75ac",
+      "evidence/tmp/audio-screens/dummy-immediate/checks-1/dummy-immediate-bijaytb3/report.json": "ddddee28efd785a6f177eb6fe44867928092bd9de13d558fde4cab529db7a7c5",
+      "evidence/tmp/audio-screens/dummy-immediate/checks-1/dummy-immediate-bijaytb3/resources.json": "730f6d7ca81923aa0e01d028115b0f6e69aa7b8a695be99dac468d7bcf907d72",
+      "evidence/tmp/audio-screens/dummy-immediate/configuration-1.json": "359d922a782c3b00df1c50d49045164acb4aa0b19ff1e0d07a7d7070b2066eb7",
+      "evidence/tmp/audio-screens/dummy-immediate/console-1.log": "f620ffd6315f9dee5336ea83816dc0c5b1a141b6849334ca181335e03b77e589",
+      "evidence/tmp/audio-screens/dummy-immediate/exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "evidence/tmp/audio-screens/dummy-immediate/health-run-1.json": "3c5e39c61d579c54522ff54557c52f88712f140aaed056d6aa30162e0f275420",
+      "evidence/tmp/audio-screens/dummy-immediate/run-1.json": "9d075e1a08787ed84fe5f3a7efeecd8d303709f57d01141e40e0f8c7640289ee",
+      "evidence/tmp/audio-screens/dummy-immediate/run-1.json.frames.jsonl": "afce1ca145425469057acdb36c9f3e070394ffe38577bc0f74edd9136af7dfc7",
+      "evidence/tmp/audio-screens/dummy-immediate/run-1.log": "474221021e226ea769cbe7f4f0ffcd230446dbfe48637d4be71b15134952b385",
+      "evidence/tmp/audio-screens/dummy-drain/checked-run-1.json": "186f4ba7f9ac0d7fe7e5ef1efd18fab802ea0e38147a9f0bdf489a9dcae9619e",
+      "evidence/tmp/audio-screens/dummy-drain/checks-1/dummy-drain-rpjfg8f9/engine.log": "ea2cc658d89fc627f0e31f0440ec30c800a27b1ab3dd11d05df3c78a94de85ad",
+      "evidence/tmp/audio-screens/dummy-drain/checks-1/dummy-drain-rpjfg8f9/host-overhead.json": "0249bf989d1a4f04b790403464bf1efdd2bd856eddd1543805b5acec0d40e61f",
+      "evidence/tmp/audio-screens/dummy-drain/checks-1/dummy-drain-rpjfg8f9/host-state.jsonl": "b7ad46a5cc22fd72caed23fbad15a73013d34405f046b81e2e6d12558d5bc7b8",
+      "evidence/tmp/audio-screens/dummy-drain/checks-1/dummy-drain-rpjfg8f9/report.json": "186f4ba7f9ac0d7fe7e5ef1efd18fab802ea0e38147a9f0bdf489a9dcae9619e",
+      "evidence/tmp/audio-screens/dummy-drain/checks-1/dummy-drain-rpjfg8f9/resources.json": "e79e7264d0cf89267833ff65924e04f2243bb4426c1aae1bd97b3fee293555a9",
+      "evidence/tmp/audio-screens/dummy-drain/configuration-1.json": "bcfd729b50b89ab451355b22d0b75e5544ed53ba41d35f89b6c663a200519963",
+      "evidence/tmp/audio-screens/dummy-drain/console-1.log": "2b3f8735a8e0c2cdf8dd427a8cdaf8dadcd9476809ee2fc36a4b2bdc2f5dc3b4",
+      "evidence/tmp/audio-screens/dummy-drain/exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "evidence/tmp/audio-screens/dummy-drain/health-run-1.json": "6fa46d03ca9085dbb42870d5bbbe72806a3f9db2a1669b4f87aa32335e3b5f19",
+      "evidence/tmp/audio-screens/dummy-drain/run-1.json": "fddaa1ba0263b0be2e74f65a239c85f18464ebddc2fab7942147d58e0ee50b83",
+      "evidence/tmp/audio-screens/dummy-drain/run-1.json.frames.jsonl": "c58e64d277b04e1af6ea362b019406e258802dcfa3321bc1c641d9d334708699",
+      "evidence/tmp/audio-screens/dummy-drain/run-1.log": "ea2cc658d89fc627f0e31f0440ec30c800a27b1ab3dd11d05df3c78a94de85ad",
+      "evidence/tmp/audio-screens/core-immediate/checked-run-1.json": "57edfc1c4f81ac8e5a75cf0340844b10031010020b0ece6446ac2dd40eb6ed14",
+      "evidence/tmp/audio-screens/core-immediate/checks-1/core-immediate-bc_zottm/engine.log": "fc10fc6dc3e5fdad8822af25c998bfbe8b65a826f335c0435754054a43736e9a",
+      "evidence/tmp/audio-screens/core-immediate/checks-1/core-immediate-bc_zottm/host-overhead.json": "99772c7170a64923fa5fb7e9aa8794fc53f805d16381d075319a4d5d6eecf9cc",
+      "evidence/tmp/audio-screens/core-immediate/checks-1/core-immediate-bc_zottm/host-state.jsonl": "99e2121dade38f8d8243544590fd160eba9e620994df007bd25462ab292f2d42",
+      "evidence/tmp/audio-screens/core-immediate/checks-1/core-immediate-bc_zottm/report.json": "57edfc1c4f81ac8e5a75cf0340844b10031010020b0ece6446ac2dd40eb6ed14",
+      "evidence/tmp/audio-screens/core-immediate/checks-1/core-immediate-bc_zottm/resources.json": "fe390c10009c2f648d4ca7a4d8721070b687da8c009fc9aed9681df234770430",
+      "evidence/tmp/audio-screens/core-immediate/configuration-1.json": "0721b01cf3f565a4d54b489b9f97012d0de8e9ecde8d75c1149ce0e836a24aca",
+      "evidence/tmp/audio-screens/core-immediate/console-1.log": "520e529acb8c4f66b0485aea6b152790bf147cb44a1f09bba3702e21a557ae20",
+      "evidence/tmp/audio-screens/core-immediate/exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "evidence/tmp/audio-screens/core-immediate/health-run-1.json": "4fd6b183f971fcac36716b2eda161ddcb6c1fa95a5b515bfbf5a3107ec8dac93",
+      "evidence/tmp/audio-screens/core-immediate/run-1.json": "ea000365a76f7d4ae2f3d1aaaaf578f434aaf3a24478875012caf447b44e9376",
+      "evidence/tmp/audio-screens/core-immediate/run-1.json.frames.jsonl": "ed2a1b70880eb2cf2d4e0c69dd69aed2d9634c3a9bf76c9712072bc142eff0fe",
+      "evidence/tmp/audio-screens/core-immediate/run-1.log": "fc10fc6dc3e5fdad8822af25c998bfbe8b65a826f335c0435754054a43736e9a",
+      "evidence/tmp/audio-screens/core-drain/checked-run-1.json": "003ec78fdcd10f239ec789a0aee671f40b2b46bd208c3f2170e8723d2eae4d76",
+      "evidence/tmp/audio-screens/core-drain/checks-1/core-drain-g_ixxw1m/engine.log": "b2691fa61e195200983b60d23fc030daf316527a39151b47ed42c90b7f482bd1",
+      "evidence/tmp/audio-screens/core-drain/checks-1/core-drain-g_ixxw1m/host-overhead.json": "e3e448932ff45549ceb4b347eb995bfa3596eca43e4c1fcd1cbd0eee2cde0f7a",
+      "evidence/tmp/audio-screens/core-drain/checks-1/core-drain-g_ixxw1m/host-state.jsonl": "ef54ceeb323ada818c0e0618a858cc7c1ad79bc8a0b76e6b22696e81f7d833e3",
+      "evidence/tmp/audio-screens/core-drain/checks-1/core-drain-g_ixxw1m/report.json": "003ec78fdcd10f239ec789a0aee671f40b2b46bd208c3f2170e8723d2eae4d76",
+      "evidence/tmp/audio-screens/core-drain/checks-1/core-drain-g_ixxw1m/resources.json": "04cf4eb75e3e0a0615391924cdaeb6d62cc407b39f141dd2feb1f714db13daa2",
+      "evidence/tmp/audio-screens/core-drain/configuration-1.json": "fa52f3bad340379595c933e5589615c386bbf5cb2b09ae90960ecb0e57280692",
+      "evidence/tmp/audio-screens/core-drain/console-1.log": "de8df48487d7974236d916e1a25133edfaac7354e0f641cac4e71474fbde084f",
+      "evidence/tmp/audio-screens/core-drain/exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "evidence/tmp/audio-screens/core-drain/health-run-1.json": "b86fcbfd4d233d9eb4ebd16e62b55786f31c890aa436233f3ce5eaf6a906c5df",
+      "evidence/tmp/audio-screens/core-drain/run-1.json": "da22cef6feb1545cbbd15a550ecda25c596337d18e2f979ba0c4058f5e99c558",
+      "evidence/tmp/audio-screens/core-drain/run-1.json.frames.jsonl": "b2a0ea6062ce37c0d4e87bd6825b3066dc7821ac1564ca6828f39180bbef86f7",
+      "evidence/tmp/audio-screens/core-drain/run-1.log": "b2691fa61e195200983b60d23fc030daf316527a39151b47ed42c90b7f482bd1",
+      "evidence/tmp/audio-teardown/manifest.json": "ef64f71a87231b674949faaaa895cd9b9ef2c511d74ae95146feeaae0479d9ca"
+    },
+    "audio_controls": {
+      "runs": [
+        {
+          "cell": "dummy-immediate",
+          "checked_ok": true,
+          "warnings": 1,
+          "leaked_instances": 19,
+          "teardown": []
+        },
+        {
+          "cell": "dummy-drain",
+          "checked_ok": true,
+          "warnings": 0,
+          "leaked_instances": 0,
+          "teardown": [
+            "SUSTAINED_AUDIO_RETIRE driver=Dummy tracked=12 pending=0 elapsed_usec=55941 timeout_usec=250000"
+          ]
+        },
+        {
+          "cell": "core-immediate",
+          "checked_ok": true,
+          "warnings": 0,
+          "leaked_instances": 0,
+          "teardown": []
+        },
+        {
+          "cell": "core-drain",
+          "checked_ok": true,
+          "warnings": 0,
+          "leaked_instances": 0,
+          "teardown": [
+            "SUSTAINED_AUDIO_RETIRE driver=CoreAudio tracked=11 pending=0 elapsed_usec=23477 timeout_usec=250000"
+          ]
+        }
+      ],
+      "warmup_seconds": 10,
+      "sample_seconds": 20,
+      "first_full_6000_tick_window_equal": true,
+      "production_fixture_fix_commit": "d89d3e39e",
+      "scope": "One run per driver/teardown cell; no performance or exhaustive audio ownership claim."
+    }
+  },
+  "final_candidate": {
+    "app_and_fixture_base_commit": "d89d3e39e1df049e14ecc535ec1567b6f4a4d5be",
+    "source_snapshot_verified_git_files": 9412,
+    "project_exceptions": [
+      "isolated name",
+      "startup multi-bounce disabled"
+    ],
+    "native_advanced_test_patch_commit": "bf4745d68",
+    "native_advanced_1080": {
+      "checks": 165,
+      "failed": 0
+    },
+    "native_advanced_2560x1600": {
+      "checks": 165,
+      "failed": 0
+    },
+    "native_dimensions": {
+      "output_size": [
+        2560,
+        1600
+      ],
+      "logical_canvas_size": [
+        1920,
+        1200
+      ],
+      "nominal_3d_size": [
+        1706,
+        1066
+      ],
+      "settings_text_assertion_passed": true,
+      "output_scope": "viewport_render_target_estimate_v1",
+      "nominal_scope": "scaled_viewport_estimate_not_sdk_execution",
+      "sdk_execution": "unverified"
+    },
+    "native_ui": {
+      "home_fly_pause_settings_resize_home_passed": true,
+      "soak_cycles": 8,
+      "growing_counters": 0,
+      "errors": 0,
+      "process_exit": 0,
+      "leaked_objects_at_exit": 0,
+      "retained_harness_refusal": "Settings was first opened directly from a manually paused flight without its Pause menu; retry used normal menu navigation."
+    },
+    "retained_initial_retina_test": {
+      "checks": 163,
+      "failed": 2,
+      "reason": "Obsolete Native-only Auto rollback expectations; corrected by test-only patch."
+    },
+    "headless_smoke_initial": {
+      "steps": 52,
+      "ok": false,
+      "failed": [
+        "scenario workshop_document_flow"
+      ],
+      "reason": "Enter submitted correctly; save refused because the task snapshot used normalized LF Git blobs instead of the CRLF checkout bytes bound by the descriptor. Direct Save reproduced the same exact-byte guard. No input-router defect was established.",
+      "process_exit": 0,
+      "leaked_objects_at_exit": 4,
+      "soak_cycles": 8,
+      "soak_growing_counters": 0
+    },
+    "support_sha256": {
+      "final-evidence/source-head.txt": "9f2a17434182912d2da0d5dc4ab3b2a6b6ea15f4be831ebf5c53ffaeee32bf15",
+      "final-evidence/source-manifest.json": "f66566662c040fe882e37ea60a623ed82dde1f052cdc519f914129049afe2f1d",
+      "final-evidence/tmp/auto-checks/advanced-1920x1080-69mqmi5f/engine.log": "a0f71cd2ce4c98648b6055031bf83ac756cdc23e9277e467dea1d9f7af349e98",
+      "final-evidence/tmp/auto-checks/advanced-1920x1080-69mqmi5f/report.json": "bbda11c2a2aaf5e9a950ae3e84765b9bbc0b3c43f1859372e40fadffc49d4798",
+      "final-evidence/tmp/auto-checks/advanced-2560x1600-95l9ki7w/engine.log": "4ba44dc67658aa2f39d86956fa5ef3499fdbad592831f703c80d148d0f7c257b",
+      "final-evidence/tmp/auto-checks/advanced-2560x1600-95l9ki7w/report.json": "a82684e72bd06cc51905d8bd0d58df51e7d4433fd5c233fff98b214386741529",
+      "final-evidence/tmp/auto-test-patch.json": "ba1ba3009a0fa244eeb5af8ee478f1b5ada6d5dbc8955f79142d2cd52e879246",
+      "final-evidence/tmp/checks/advanced-native-1080-t7c7bh4k/engine.log": "2070fcff89f6d139d85e58fbc5d870d5e251c68a4a2b7b4c38a5cbdc6a7a87c1",
+      "final-evidence/tmp/checks/advanced-native-1080-t7c7bh4k/report.json": "d5150e1a6d46cfdb782519bd29c7ebd4628f7e25e7942794e5dd28d0fa8b18e9",
+      "final-evidence/tmp/checks/advanced-native-retina-qkwtz_p9/engine.log": "c285fa16625ef5cac5b3f06592892fb0f8204053b3b512d699d03d4ab92d4d07",
+      "final-evidence/tmp/checks/advanced-native-retina-qkwtz_p9/report.json": "c528e3801020e8b7c3f5fa08dc79c01ef85a0696c602f5002376f00178ce7672",
+      "final-evidence/tmp/checks/import-buwu5ip4/engine.log": "a4ac594e200dea7b81486006f48bc7ef3ba72f5fff933c14e1f21e4d552fda13",
+      "final-evidence/tmp/checks/import-buwu5ip4/report.json": "9ec662a668ac035bd7071c9ca4af85653965416684922d2f5571174686d0a0f0",
+      "final-evidence/tmp/checks/test_reconstruction-axq13hr2/engine.log": "ca37b29ca7137740868e39a393384fe326d178dc9011bdf420246e7574beee3e",
+      "final-evidence/tmp/checks/test_reconstruction-axq13hr2/report.json": "77ae067305346db4a3dd3b1082995922ddeb6b03cdbc3bc6238add7910aee0aa",
+      "final-evidence/tmp/checks/test_settings_ui-y9i37sus/engine.log": "1b09b2205763d76d8c1ace22bf0c54bf6d62f4d696f7fac43d0eea85dd260a70",
+      "final-evidence/tmp/checks/test_settings_ui-y9i37sus/report.json": "77feee506e426512ce2bd781cb3389b0a5624863a649ec966474ce26d5695151",
+      "final-evidence/tmp/debug-bridge/20261106-011122-47870/engine.log": "f6775728463f09308aecac21343a32c7ac482c8fb5dabb5c7d70aa8cfb924fc4",
+      "final-evidence/tmp/debug-bridge/20261106-011122-47870/log.jsonl": "2b04550a3457c74226c3fcfc36ed24d705760c800b1e33befff8551559c8944d",
+      "final-evidence/tmp/debug-bridge/20261106-011122-47870/smoke-soak.txt": "e6c1b9f3f4a5e72d4640702d018aad0465f460dde9ace9b7b4f87aaa991e4da4",
+      "final-evidence/tmp/event-button-control.txt": "9cdcc17878b9eb49e91cba4e39faae7bbfb202d7363810bbe4884c2683e4aba2",
+      "final-evidence/tmp/event-control.txt": "7f0df0dcd18a42d92481fa9cea9be2142c1fab5210b62b9f78411a38a26d7fe3",
+      "final-evidence/tmp/final-screens/paced1080/checked-run-1.json": "df61882b79dc8981894f707cb9897f39787ee777dbb9a8337a51ba645916ee7a",
+      "final-evidence/tmp/final-screens/paced1080/checks-1/paced1080-98ala3jd/engine.log": "94b4ed736afb5e85bc7ba6ffac03ee51631bc1993d432d51334b360259e3b7c3",
+      "final-evidence/tmp/final-screens/paced1080/checks-1/paced1080-98ala3jd/host-overhead.json": "54625f0f265143f121af8929b0c12c9a9244674f987976422bbb907cbdc25a68",
+      "final-evidence/tmp/final-screens/paced1080/checks-1/paced1080-98ala3jd/host-state.jsonl": "f078f35f2a240e79adda68bf4b46563b7833aae44a3cc39dc70e918af0a782ba",
+      "final-evidence/tmp/final-screens/paced1080/checks-1/paced1080-98ala3jd/report.json": "df61882b79dc8981894f707cb9897f39787ee777dbb9a8337a51ba645916ee7a",
+      "final-evidence/tmp/final-screens/paced1080/checks-1/paced1080-98ala3jd/resources.json": "931eac2b950be284dba6e472f8b71f006dd81a852e4867b323b450e2ed080d19",
+      "final-evidence/tmp/final-screens/paced1080/configuration-1.json": "18f400c3971137c731c713836831a92ddba506b0878dd7cae4081d0603c6a019",
+      "final-evidence/tmp/final-screens/paced1080/console-1.log": "0905529b0a78160edc13717ac3df93acfdcd56c70960a996f22e4fa8d0a8a52d",
+      "final-evidence/tmp/final-screens/paced1080/exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "final-evidence/tmp/final-screens/paced1080/health-run-1.json": "d0fae22cf142816cc2f657a33a63af4426a67504ccc14ac8709b6f1f2385b22b",
+      "final-evidence/tmp/final-screens/paced1080/run-1.json": "58884895155b32bae44ef749a7fe924a77a5f91e7cf21fe8f3b6b41d14509f1f",
+      "final-evidence/tmp/final-screens/paced1080/run-1.json.frames.jsonl": "54e32206a914f629ae82aee63dbc48255e6a27765310c0d91a48f8b40576e36a",
+      "final-evidence/tmp/final-screens/paced1080/run-1.log": "94b4ed736afb5e85bc7ba6ffac03ee51631bc1993d432d51334b360259e3b7c3",
+      "final-evidence/tmp/native-isolation.json": "69422f7c2e019edbf8729c2613125403c8bd6e96c10de9b86af163c46c9175ea",
+      "final-evidence/tmp/native-ui/bridge.json": "6039da2f7d4193fba01eaf12bcc029f2652c6e389768b8ee88c2ef73603ec6d8",
+      "final-evidence/tmp/native-ui/flight-1080.jpg": "02b1e8c959a3e8481bf259aeafea86ab2d571ac51711d80920a06f07e8e565fd",
+      "final-evidence/tmp/native-ui/flight-retina.jpg": "65eea6bf3808f582eae3e3a8a2acdf8cdf5d46f576cf28e78537ef3ef50d4561",
+      "final-evidence/tmp/native-ui/home-1080.jpg": "9d2246eac639214d40815ae475324d46199a33c685acfe8b206243ba324d61a5",
+      "final-evidence/tmp/native-ui/home-default.jpg": "338f805d2ac5e51e83106c60da655a4d9df656df7fc3c02922bebd4f53144cc2",
+      "final-evidence/tmp/native-ui/launch.log": "2b68657ec694d60c722ceb6b077f6a216e1ee1f9ecf1c3fbe8f877dd5bcce9ba",
+      "final-evidence/tmp/native-ui/stop.json": "e049e6ce8cfe959501280cd7cf173479c244b4d9a0dd83b76fa848b56c27ea7b",
+      "final-evidence/tmp/native-ui-retry/bridge.json": "ba5ee5f1e317ca519db3dcb95f14990db3a75d10d4889853529cd279bcd7e4e0",
+      "final-evidence/tmp/native-ui-retry/flight-1080.jpg": "a29bd597608745b528f0d440c4cbec02da1e31d3954b58f2dfe3416546fb8527",
+      "final-evidence/tmp/native-ui-retry/flight-restored-1080.jpg": "00fe63227aa5893018846620c04aa8971a0f052ca8aeb17a69efd27db6d4ec94",
+      "final-evidence/tmp/native-ui-retry/flight-retina.jpg": "b3f850bba0196cb4da059c5a6996728443afb80ce73f87159d5830314586f735",
+      "final-evidence/tmp/native-ui-retry/home-1080.jpg": "87b3fda6e1b9d055777052d35070f83dda22507183154d4acd130fbb4ee4113a",
+      "final-evidence/tmp/native-ui-retry/home-default.jpg": "f3ef7b952cd1cf2c1cd3776ad3a9c407dfa8f72c5502698f6354bc7629009623",
+      "final-evidence/tmp/native-ui-retry/launch.log": "ba84c6a0b86368dedcb7c6c8ed293781bf0460489c4bb3387b17207acb6187d1",
+      "final-evidence/tmp/native-ui-retry/settings-retina.jpg": "46bd311af9e208b00d299c3a825e6cd5a43f7af2f67c8e49115dda3a1e9d25b9",
+      "final-evidence/tmp/native-ui-retry/soak.log": "f864ed10973268bdc8547126af296cc2f2bdc846faa8cb13d2d11efd7e8d5cf9",
+      "final-evidence/tmp/native-ui-retry/soak.txt": "e6c1b9f3f4a5e72d4640702d018aad0465f460dde9ace9b7b4f87aaa991e4da4",
+      "final-evidence/tmp/native-ui-retry/stop.json": "77e5095e9251451e802f1512bf649b40cd9b4af3f4d094c7c6cc11b26ac44168",
+      "final-evidence/tmp/workshop-control.txt": "8f2d1f453bd7e0090d6a508b68dba76bebf87d2a91e6a79b1eb9a8026f795bf6",
+      "final-evidence/tmp/workshop-events/bridge/control.log": "518155e7a506002591885b1cbb9538d992840470bd52555b2e1278ed49af0c38",
+      "final-evidence/tmp/workshop-events/bridge/exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "final-evidence/tmp/workshop-events/bridge/launch.log": "f55454d66d1b97cb6332a43febe6dd882e586af5e04f115e01e5e201dbe64264",
+      "final-evidence/tmp/workshop-events/bridge/stop.json": "418d867f5b408d724854e4b28b7e7cbe8ff44b35e6cc30582dd270f509f3a7be",
+      "final-evidence/tmp/workshop-events/identity.json": "9be357dc126c9deffb08e461470ba4dcf37e1b3a86f0e29d4275abf4f2afcf95",
+      "final-evidence/tmp/workshop-focus/bridge/control.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final-evidence/tmp/workshop-focus/bridge/launch.log": "73fe0d91c3afbc6e2bafa87ed37a2504f19694102417c5ac306f5c0714ab4df8",
+      "final-evidence/tmp/workshop-focus/bridge/stop.json": "2e890a41d8cf4bfad83e95b4d404e4a9a0921a5f1f95d9904bf3142f78c7bbc5",
+      "final-evidence/tmp/workshop-focus/bridge-retry/control.log": "9bc324118ed71d5630686d842d26f4779b44931dc96135402ca72164b84cf7f5",
+      "final-evidence/tmp/workshop-focus/bridge-retry/exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "final-evidence/tmp/workshop-focus/bridge-retry/launch.log": "cb4b92e6d878e40dce73784c8617aeccc9eda3696eea61473528e99899fab8f9",
+      "final-evidence/tmp/workshop-focus/bridge-retry/stop.json": "3c86f4bf80d90ec17c40f98ecd447cddd2735e711c15c48afef37a8097127632",
+      "final-evidence/tmp/workshop-focus/identity.json": "202fd00356885b5927f78bd08b829cda09691b25dca66f0da745a76cb198b058"
+    },
+    "paced_120s_audit": {
+      "format": "openrc-m1-final-paced-audit-v1",
+      "capture_id": "b1a19302-3c1d-4142-adcf-ae738a120e13",
+      "source_root": "tmp\\m1-optimization-20261106\\final-evidence\\tmp\\final-screens\\paced1080",
+      "software_gates": {
+        "collection": true,
+        "health": true,
+        "checked": true,
+        "active_flight": true,
+        "pacing": true,
+        "individual": true,
+        "campaign": false,
+        "campaign_reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "hardware_acceptance": "not claimed; this reducer evaluates report integrity and declared software pacing gates only"
+      },
+      "duration": {
+        "warmup_s": 30.000335,
+        "sample_s": 120.01414500000025,
+        "frames": 7201
+      },
+      "frame_metrics": {
+        "frame_ms": {
+          "max": 20.375,
+          "p50": 16.662,
+          "p95": 17.134,
+          "p99": 17.426000000000002
+        },
+        "max_frame_interval_usec": 20375,
+        "max_nonadvancing_interval_usec": 0,
+        "sample_simulation_span_s": 119.99583333333334,
+        "sample_simulation_ticks": 28799,
+        "sample_wall_span_excluding_first_interval_s": 119.997727,
+        "simulation_wall_ratio": 0.9999842191455288,
+        "tick_wall_ratio": 0.9999842191455288
+      },
+      "configuration": {
+        "adapter": "Apple M1 (Apple7)",
+        "backend": "mobile",
+        "driver": "metal",
+        "engine": "4.8-beta2 (official)",
+        "architecture": "arm64",
+        "window": "1920x1080",
+        "vsync": true,
+        "vsync_mode": 1,
+        "msaa_3d": 2,
+        "reconstruction": {
+          "requested": "auto",
+          "selected": "native",
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "scale": 1.0,
+          "output_size": [
+            1920,
+            1080
+          ],
+          "output_size_scope": "viewport_render_target_estimate_v1",
+          "logical_canvas_size": [
+            1920.0,
+            1080.0
+          ],
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution"
+        }
+      },
+      "cloud": {
+        "effective": {
+          "ground": "ready",
+          "sky": "ready"
+        },
+        "generation_start": {
+          "after_snapshot": 10,
+          "before_snapshot": 10,
+          "previous_frame": 10
+        },
+        "generation_end": {
+          "after_snapshot": 10,
+          "before_snapshot": 10
+        },
+        "stable": true,
+        "density_bound": "off"
+      },
+      "observation": {
+        "ticks": 35992,
+        "input_reads": 35992,
+        "observer_calls": 35992,
+        "violations": {
+          "contact": 0,
+          "crash": 0,
+          "fault": 0,
+          "focus_loss": 0,
+          "hold": 0,
+          "input_ownership": 0,
+          "nonfinite": 0,
+          "observation_overflow": 0,
+          "pause": 0,
+          "pilot_failure": 0,
+          "prop_strike": 0,
+          "tick_discontinuity": 0
+        }
+      },
+      "clock": {
+        "frame_offset": {
+          "lower_usec": 148952413749,
+          "upper_usec": 148952436672,
+          "offset_usec": 148952425210,
+          "uncertainty_usec": 11462,
+          "helper_sha256": "4b884cfe8d32261cd2cbec96f802f1b66798cb0a0a8b5a403cf74f7858bb02b4"
+        },
+        "resource_offset": {
+          "lower_usec": 148952278393,
+          "upper_usec": 148952278399,
+          "offset_usec": 148952278396,
+          "uncertainty_usec": 3
+        },
+        "full_poll_margins_usec": {
+          "resource_first_before_frame_usec": 43815132,
+          "resource_last_after_frame_usec": 5800792,
+          "host_ready_before_frame_usec": 43811529,
+          "host_first_snapshot_before_frame_usec": 43811237,
+          "host_last_snapshot_after_frame_usec": 6662316,
+          "host_end_after_frame_usec": 6662569
+        },
+        "resource_required_coverage": "complete",
+        "resource_samples": 168,
+        "resource_max_gap_usec": 1030124,
+        "host_coverage": "complete",
+        "host_snapshots": 172,
+        "host_max_gap_usec": 1048047,
+        "host_sleep_delta_usec": [
+          -2,
+          2
+        ],
+        "perfetto_partial": true,
+        "partial_reason": "optional I/O unsupported"
+      },
+      "in_sample": {
+        "capture_id": "b1a19302-3c1d-4142-adcf-ae738a120e13",
+        "definitely_in_sample_resource_count": 118,
+        "rss_bytes": {
+          "min": 1388445696,
+          "median": 1389248512.0,
+          "max": 1389379584
+        },
+        "system_available_memory_min_bytes": 2391064576,
+        "definitely_in_sample_host_count": 120,
+        "thermal": {
+          "nominal": 120
+        },
+        "power": {
+          "ac": 120
+        },
+        "low_power": {
+          "False": 120
+        },
+        "possibly_in_sample_events": 0,
+        "warnings": {
+          "error": 0,
+          "warning": 0
+        },
+        "fixture_sha256": "55ef49f71cb73868a83ef15d96d2496b3f49abce3259cdb9ddbe4e2d4a7aa4e7",
+        "input_sha256": "15cde7b99cc7cb1f45d8bcf2e4f9b079e752688216684aa87ab1045d9039b3a5",
+        "limits": [
+          "Only polls or queries wholly within the sample under the full raw offset bounds are counted.",
+          "RSS is sampled process resident memory, not GPU memory, and does not prove absence of leaks.",
+          "Thermal nominal may be fallback; initial memory pressure and OS event losses remain unknown."
+        ]
+      },
+      "source": {
+        "git_commit": "bf4745d687d1f4e996d6114a7630de3ab9c478a0",
+        "app_and_fixture_paths": 4515,
+        "git_visible_paths": 4515,
+        "missing_git": [],
+        "absent_in_capture": [],
+        "git_blob_exact_matches": 4514,
+        "mismatches": [
+          {
+            "path": "res://project.godot",
+            "git_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+            "capture_sha256": "5ca7fe69b7c9e52bbbfdddc45c115afb9b27e2c53606bbfeaf95b3eee9de62e9"
+          }
+        ],
+        "project": {
+          "git_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+          "reconstructed_sha256": "5ca7fe69b7c9e52bbbfdddc45c115afb9b27e2c53606bbfeaf95b3eee9de62e9",
+          "receipt_sha256": "5ca7fe69b7c9e52bbbfdddc45c115afb9b27e2c53606bbfeaf95b3eee9de62e9",
+          "isolation_before": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+          "isolation_after": "5ca7fe69b7c9e52bbbfdddc45c115afb9b27e2c53606bbfeaf95b3eee9de62e9",
+          "expected_exactly_two_changes": true
+        },
+        "test_patch": {
+          "git_before_sha256": "b28c6d97a8e6ce3acb08a06fd4b93565176114cfb4244eb8df060efba37604d7",
+          "git_after_sha256": "fea35811263b1779f37e126ec741e1eac7d84d2d231c08a196b80be9dab82ed2",
+          "capture_sha256": "fea35811263b1779f37e126ec741e1eac7d84d2d231c08a196b80be9dab82ed2",
+          "manifest_before": "b28c6d97a8e6ce3acb08a06fd4b93565176114cfb4244eb8df060efba37604d7",
+          "manifest_after": "fea35811263b1779f37e126ec741e1eac7d84d2d231c08a196b80be9dab82ed2",
+          "app_or_fixture_changed_paths": [
+            "app/tests/test_advanced_graphics_settings.gd"
+          ],
+          "verified": true
+        },
+        "source_unchanged": true,
+        "source_digest": "8311d311fe90e355e9251ca167652859dcdd23f32ebc24ed59158c0c33f9f1ac",
+        "source_digest_recomputed": "8311d311fe90e355e9251ca167652859dcdd23f32ebc24ed59158c0c33f9f1ac",
+        "limitations": [
+          "Source identity captures visible app paths and both fixture scripts, not hidden import caches or external assets.",
+          "Independent check compares recorded hashes to Git objects; it does not remotely rehash the running candidate."
+        ]
+      },
+      "checkpoints": {
+        "all_compatible": true,
+        "all_five_match_each_of_three_096_baselines": true,
+        "windows": [
+          {
+            "start": 1,
+            "end": 6000,
+            "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+            "match": true
+          },
+          {
+            "start": 6001,
+            "end": 12000,
+            "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+            "match": true
+          },
+          {
+            "start": 12001,
+            "end": 18000,
+            "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+            "match": true
+          },
+          {
+            "start": 18001,
+            "end": 24000,
+            "sha256": "8781f7ed56563e4024fa2893be428eb8c0229a6c751b932bb0ab1864c5713a18",
+            "match": true
+          },
+          {
+            "start": 24001,
+            "end": 30000,
+            "sha256": "af8e8409907fbf150471d6efe99597f5f5d62eaa1fd58f83be24fbee53476a7e",
+            "match": true
+          }
+        ],
+        "partial_tail_excluded": true
+      },
+      "audio": {
+        "log_line": "SUSTAINED_FLIGHT_AUDIO_TEARDOWN status=observed_released driver=Dummy tracked=11 pending=0 elapsed_usec=39416 timeout_usec=250000",
+        "checked_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "limitations": "Weak references cover currently exposed player playbacks, not all server-held objects. Non-verbose success is not a leak-free proof."
+      },
+      "raw_sha256": {
+        "checked-run-1.json": "df61882b79dc8981894f707cb9897f39787ee777dbb9a8337a51ba645916ee7a",
+        "checks-1/paced1080-98ala3jd/engine.log": "94b4ed736afb5e85bc7ba6ffac03ee51631bc1993d432d51334b360259e3b7c3",
+        "checks-1/paced1080-98ala3jd/host-overhead.json": "54625f0f265143f121af8929b0c12c9a9244674f987976422bbb907cbdc25a68",
+        "checks-1/paced1080-98ala3jd/host-state.jsonl": "f078f35f2a240e79adda68bf4b46563b7833aae44a3cc39dc70e918af0a782ba",
+        "checks-1/paced1080-98ala3jd/report.json": "df61882b79dc8981894f707cb9897f39787ee777dbb9a8337a51ba645916ee7a",
+        "checks-1/paced1080-98ala3jd/resources.json": "931eac2b950be284dba6e472f8b71f006dd81a852e4867b323b450e2ed080d19",
+        "configuration-1.json": "18f400c3971137c731c713836831a92ddba506b0878dd7cae4081d0603c6a019",
+        "console-1.log": "0905529b0a78160edc13717ac3df93acfdcd56c70960a996f22e4fa8d0a8a52d",
+        "exit-1.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "health-run-1.json": "d0fae22cf142816cc2f657a33a63af4426a67504ccc14ac8709b6f1f2385b22b",
+        "run-1.json": "58884895155b32bae44ef749a7fe924a77a5f91e7cf21fe8f3b6b41d14509f1f",
+        "run-1.json.frames.jsonl": "54e32206a914f629ae82aee63dbc48255e6a27765310c0d91a48f8b40576e36a",
+        "run-1.log": "94b4ed736afb5e85bc7ba6ffac03ee51631bc1993d432d51334b360259e3b7c3",
+        "tmp\\m1-optimization-20261106\\final-evidence\\tmp\\auto-test-patch.json": "ba1ba3009a0fa244eeb5af8ee478f1b5ada6d5dbc8955f79142d2cd52e879246",
+        "tmp\\m1-optimization-20261106\\final-evidence\\tmp\\native-isolation.json": "69422f7c2e019edbf8729c2613125403c8bd6e96c10de9b86af163c46c9175ea",
+        "tmp\\m1-optimization-20261106\\final-native-checks.sh": "0a78805870600de2d6e0ca1a9775d56a20ce4e585815f1eac6728a564a6d1548"
+      },
+      "limitations": [
+        "One repeat does not qualify a campaign, product route or hardware.",
+        "Output and nominal input are engine estimates, not proof of physical presented pixels.",
+        "Source identity excludes hidden imports and external author assets.",
+        "Frame/host/resource joins do not prove intermediate sampled values or observer-free performance.",
+        "The 096 baseline and final capture have different source and display policies and are not pooled."
+      ]
+    }
+  },
+  "linux_followup": {
+    "original_full_suite_877": "failed 60-second flight-loading deadline before remaining units/runtime",
+    "frozen_096_runtime_with_loading_timeout_patch": "failed E5a session 180-second deadline; no full integration pass",
+    "flight_loading_retry": {
+      "checks": 56,
+      "failed": 0,
+      "seconds": 64.67,
+      "bounded_deadline_fix_commit": "6b03dea96"
+    },
+    "e5a_isolated_retry": {
+      "checks": 116,
+      "failed": 0,
+      "seconds": 176.338,
+      "original_deadline_seconds": 180,
+      "bounded_deadline_fix_commit": "88b6fec51",
+      "new_deadline_seconds": 300
+    },
+    "e5b_separate_followup": {
+      "checks": 125,
+      "failed": 0,
+      "seconds": 81.19
+    },
+    "scope": "Separate diagnostics do not replace required final-candidate CI. No assertions, physics tolerances or goldens changed.",
+    "support_sha256": {
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/candidate.patch": "262f94d2d2d25c67c4807ba2accd12793b93be07c00db9d77bd992c87a4f0ecb",
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/checks.gd.log": "3ba7ef2b10c5c7451e246471afc30559e331fd52b04381ae4e84db02f1383e42",
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/generator.log": "30ee3f92b33bbe80c9196d8ef0744298d53f351ae2384034df27e0fbc9dbe816",
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/identity.txt": "a01aa011adffd4798c8dbc067742b57e25a8ebd8062373f5362858917d6266ef",
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/runtime.log": "ed90a3abe45b8c801ef6248ccd33aef932f0605bb0bf44d39336d99509690f8c",
+      "tmp/m1-followup-ci/runtime-failure-20261106-0600/status.txt": "3fd02e079792634a9b56f0cf50ff8e52863d129645e3b953ea4013d571122031",
+      "tmp/m1-followup-ci/e5a-retry-0602/exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "tmp/m1-followup-ci/e5a-retry-0602/finished-at.txt": "ea9e6a19199676eaed68547f368a65537bd48d06ea3ac1a92584804aa0dcbecb",
+      "tmp/m1-followup-ci/e5a-retry-0602/identity.txt": "ca00fa27d98e26b1d9053c4bc4800c6c318f7af2774b291e218637f8933f319c",
+      "tmp/m1-followup-ci/e5a-retry-0602/runner.log": "d818f9bc3a4b10d2dba06d5bf89038c1a489dff599219edef2b121d069a59aac",
+      "tmp/m1-followup-ci/e5a-retry-0602/session.report.json": "6ae174f866667974a7dc176d85fe80c42cf83a5b1d83d87ef475336d36b1f0c2",
+      "tmp/m1-followup-ci/e5a-retry-0602/session.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/m1-followup-ci/e5a-retry-0602/session.stdout.log": "ed1dda69654bb4b80e83d194e7fb63b97d28e42f16e71cfc78639ba55b060909",
+      "tmp/m1-followup-ci/e5a-retry-0602/source-after.patch": "262f94d2d2d25c67c4807ba2accd12793b93be07c00db9d77bd992c87a4f0ecb",
+      "tmp/m1-followup-ci/e5a-retry-0602/source-before.patch": "262f94d2d2d25c67c4807ba2accd12793b93be07c00db9d77bd992c87a4f0ecb",
+      "tmp/m1-followup-ci/e5b-followup-0607/exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "tmp/m1-followup-ci/e5b-followup-0607/finished-at.txt": "d7393e965f39b63eea247913e2ebc05e2b16eb25082af8ca3fb2c45e6089f1bc",
+      "tmp/m1-followup-ci/e5b-followup-0607/identity.txt": "27bef3186352c476cea7e65ee6f58c5acfac7137830ae936023e46959fbe5e80",
+      "tmp/m1-followup-ci/e5b-followup-0607/output.log": "f1e4176d3910608c6b085febdbb906724e8db972446bc9ca56f4d19687167cdf",
+      "tmp/m1-followup-ci/e5b-followup-0607/results/full.log": "4f8af7f0b548f7974316b379375d1b2921d59fbaf9fdd61b386b48ff70d42475",
+      "tmp/m1-followup-ci/e5b-followup-0607/results/verification.json": "7fd07b44da9fe586cff82a9df650483a3af14811c72fe016a46bba9327e84a36",
+      "tmp/m1-followup-ci/e5b-followup-0607/source-after.patch": "262f94d2d2d25c67c4807ba2accd12793b93be07c00db9d77bd992c87a4f0ecb",
+      "tmp/m1-followup-ci/e5b-followup-0607/source-before.patch": "262f94d2d2d25c67c4807ba2accd12793b93be07c00db9d77bd992c87a4f0ecb",
+      "tmp/m1-followup-ci/e5b-followup-0607/time.txt": "2758b4fed946e4c76cd0a82ecb30ea18cfc2f0150805cbc538457adca3a035bf"
+    }
+  },
+  "source_materialization_correction": {
+    "status": "Prior task snapshots are nonstock LF research inputs, not normal checkout/product qualification.",
+    "affected_workspaces": [
+      "/Users/gius/OpenRC-m1-work/m1-optimization-20261106",
+      "/Users/gius/OpenRC-m1-work/m1-optimization-20261106-final"
+    ],
+    "affected_results": "All v2, v3, glare, teardown and product/final checks recorded for those task snapshots. Raw receipts remain unchanged; their results apply only to their recorded bytes.",
+    "cause": "Task-only snapshot.py and snapshot-final.py materialized git cat-file blob bytes, bypassing committed .gitattributes checkout conversion.",
+    "not_affected": "The independent m1-20261105T153146Z campaign is not implicated by this finding.",
+    "ugly_stik_normalized_blob": {
+      "bytes": 62035,
+      "sha256": "3be5d217df554f1e335c3deecd2cf0887f06b9c935e6e373b75efd1eda2f6b0a"
+    },
+    "ugly_stik_required_checkout": {
+      "bytes": 63744,
+      "sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06"
+    },
+    "remedy": "Fresh COW workspace reconciled to git archive with core.autocrlf=false, core.eol=lf, tar.umask=0022; exact exported hashes, descriptor check and native validation required before qualification.",
+    "integrity_guard": "Preserved unchanged; no descriptor regeneration or data normalization accepted."
+  },
+  "corrected_checkout_validation": {
+    "commit": "bf4745d687d1f4e996d6114a7630de3ab9c478a0",
+    "workspace": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106-checkout",
+    "materialization": {
+      "method": "Pinned attribute-aware git archive, applied to a fresh APFS COW snapshot; all scoped files verified before isolation/import.",
+      "pins": {
+        "core.autocrlf": "false",
+        "core.eol": "lf",
+        "tar.umask": "0022",
+        "core.attributesFile": "empty task-local file",
+        "git_info_attributes": "absent or empty"
+      },
+      "attributes_sha256": "c1900807168141e8661dfdc585e5c82c76b1130177b5616c3352aa1d1606a9e2",
+      "export_manifest_sha256": "58f998d92812b4371aa07c46bad225e19760f9b9a41131c4d69c1e5fe9806276",
+      "files": 9412,
+      "converted_from_current_git_blob": 58,
+      "verification_complete": true,
+      "missing": 0,
+      "mismatched_or_extra": 0,
+      "excluded_generated_directories": [
+        "app/.godot"
+      ]
+    },
+    "isolation": {
+      "commit": "bf4745d687d1f4e996d6114a7630de3ab9c478a0",
+      "file": "app/project.godot",
+      "before_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+      "after_sha256": "de89add4a8aa38c6ef759c5020c924f8c1f4ed753df6954c779d6c3a2db4f0a4",
+      "changes": [
+        "isolated project name",
+        "startup multi-bounce disabled"
+      ]
+    },
+    "descriptor_check": {
+      "current": 11,
+      "changed": 0
+    },
+    "checked_runs": [
+      {
+        "label": "advanced-1920x1080",
+        "capture_id": "3d82b672-32d1-4b60-a209-4ad673f42f0f",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "advanced graphics:"
+        ],
+        "ok": true
+      },
+      {
+        "label": "advanced-2560x1600",
+        "capture_id": "f6415e02-06cd-431e-b34c-0537a0c8cf55",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [
+          "advanced graphics:"
+        ],
+        "ok": true
+      },
+      {
+        "label": "import",
+        "capture_id": "e59d8cdb-026d-4f53-82e5-9c874a253ae5",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [],
+        "ok": true
+      },
+      {
+        "label": "test_reconstruction",
+        "capture_id": "d642fb75-177d-4280-a2e2-9ebb86431658",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [],
+        "ok": true
+      },
+      {
+        "label": "test_settings_ui",
+        "capture_id": "8dbbaeb3-0342-43f1-aff7-bebc52dcc439",
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "required_text": [],
+        "ok": true
+      }
+    ],
+    "native_advanced_graphics": {
+      "1920x1080": {
+        "checks": 165,
+        "failed": 0
+      },
+      "2560x1600": {
+        "checks": 165,
+        "failed": 0
+      },
+      "terminal_summary_required": true
+    },
+    "native_ui": {
+      "home_fly_pause_settings_resize_home_passed": true,
+      "estimated_output_sizes": [
+        [
+          1920,
+          1080
+        ],
+        [
+          2560,
+          1600
+        ],
+        [
+          1920,
+          1080
+        ]
+      ],
+      "selections": [
+        "native",
+        "metalfx_spatial_quality",
+        "native"
+      ],
+      "retina_logical_canvas": [
+        1920,
+        1200
+      ],
+      "retina_nominal_input": [
+        1706,
+        1066
+      ],
+      "effective_metalfx": "unknown",
+      "settings_text_assertion": true,
+      "soak_cycles": 8,
+      "growing_counters": 0,
+      "errors": 0,
+      "stop": {
+        "stopped": true,
+        "pid": 85089,
+        "forced": false,
+        "launcher_exit_code": 0,
+        "crash": null,
+        "leaked_objects": 0
+      }
+    },
+    "headless_full_smoke": {
+      "ok": true,
+      "failed": [],
+      "steps": 52,
+      "hitches": 101,
+      "launcher_exit_code": 0,
+      "leaked_objects_at_exit": 0,
+      "out": "/Users/gius/OpenRC-m1-work/m1-optimization-20261106-checkout/tmp/debug-bridge/20261106-014955-47870",
+      "verbose": true,
+      "soak_cycles": 8,
+      "soak_growing_counters": 0,
+      "workshop_enter_saved_revision_1": true
+    },
+    "timing_scope": "Native UI and headless smoke are functional/lifecycle checks, not performance acceptance. The orchestration exited at an intentional task-glue hold before starting any benchmark.",
+    "support_sha256": {
+      "checkout-evidence/export-manifest.json": "58f998d92812b4371aa07c46bad225e19760f9b9a41131c4d69c1e5fe9806276",
+      "checkout-evidence/source-head.txt": "174c157c4f768949dc76aba5be612c0aa0d510efbace83bfafaf1e64f4c562b3",
+      "checkout-evidence/tmp/checks/advanced-1920x1080-z2mcbphd/engine.log": "faca0f0c90897ceb3e166464d5c750d14eea535d887540b3d4da10bed7e83c51",
+      "checkout-evidence/tmp/checks/advanced-1920x1080-z2mcbphd/report.json": "ecddeab4527464d0b2411c52c200e677da6f5517477591735eeba533f790121a",
+      "checkout-evidence/tmp/checks/advanced-2560x1600-e2ldbj75/engine.log": "4ba44dc67658aa2f39d86956fa5ef3499fdbad592831f703c80d148d0f7c257b",
+      "checkout-evidence/tmp/checks/advanced-2560x1600-e2ldbj75/report.json": "06c84853ce5f52f1394eb0809d4dda645f84aeac4c61286835677e19e9437bff",
+      "checkout-evidence/tmp/checks/import-c2orj63z/engine.log": "df87e97845d33e9de1693ca0896965b31a158e8da9c885f916dc5dc66d7c64b4",
+      "checkout-evidence/tmp/checks/import-c2orj63z/report.json": "8cafbef15632568e1cdd4c846d147dacef6813a079da2dcb912502bdfce9e363",
+      "checkout-evidence/tmp/checks/test_reconstruction-1xu55lb0/engine.log": "ca37b29ca7137740868e39a393384fe326d178dc9011bdf420246e7574beee3e",
+      "checkout-evidence/tmp/checks/test_reconstruction-1xu55lb0/report.json": "23acef7eaeb3480429940492d7cd5709eae4854a66d86563e5810269559bd55f",
+      "checkout-evidence/tmp/checks/test_settings_ui-uii0d7es/engine.log": "1b09b2205763d76d8c1ace22bf0c54bf6d62f4d696f7fac43d0eea85dd260a70",
+      "checkout-evidence/tmp/checks/test_settings_ui-uii0d7es/report.json": "c8e74dbfcb1dc77fb0f1966eaa5cc864048d4b1b4b26a0a8d5995591790ce96d",
+      "checkout-evidence/tmp/debug-bridge/20261106-014955-47870/engine.log": "533057328da58f10107658191f772cc30adc36302d57db79869693b1ca4eaddf",
+      "checkout-evidence/tmp/debug-bridge/20261106-014955-47870/log.jsonl": "457c2cc93446b0546bb8488e7243c00cba5c0810ecb09ebf79682bfd54c61807",
+      "checkout-evidence/tmp/debug-bridge/20261106-014955-47870/smoke-soak.txt": "e6c1b9f3f4a5e72d4640702d018aad0465f460dde9ace9b7b4f87aaa991e4da4",
+      "checkout-evidence/tmp/descriptors.log": "d12afa7c45ec7af607cf2208d23e1e643decd573f4b4969fe520969aec4a89a0",
+      "checkout-evidence/tmp/export-verification.json": "58aaf338be045190f5bd9a8c83e4d97261f4e6d0e690220801e4e739de4600da",
+      "checkout-evidence/tmp/macos-preflight/macos-preflight-20261106T064730Z-bcd76ace044442e095846ab9c52fa29e.json": "a68e2f6cb51c97d51d9cf23cb38a544ff0ecba589a720b2ccdc8c9b7ff3cd4fc",
+      "checkout-evidence/tmp/native-isolation.json": "5b2f81cd5a2da461b85a838c9b122da0eb53ab0d84e42f4dd6cc14cf4807ddda",
+      "checkout-evidence/tmp/native-ui/bridge.json": "65e99d7ab2043b4decc4fc533c1509dba6106f5e478d00b2f01ae4f81f38b2b4",
+      "checkout-evidence/tmp/native-ui/flight-1080.jpg": "e7c04d70accbf24c5b578b52b6d5719dbbfb9c45850dc60a279570c5b3774702",
+      "checkout-evidence/tmp/native-ui/flight-restored-1080.jpg": "4154ebc187a071523747855aa6a0b5bf302628f359c83fa939c31d8e68421372",
+      "checkout-evidence/tmp/native-ui/flight-retina.jpg": "bc951a6a77e4a037732c92630efe568d964fb90ed66ad4d8ac0a0727856b02e2",
+      "checkout-evidence/tmp/native-ui/home-1080.jpg": "dd80bd0a4452f54e32680a9ebd3366833127a84cc7d9a66fe389140feaef1b20",
+      "checkout-evidence/tmp/native-ui/home-default.jpg": "4c6d4c4d38fedc2934f83690aa71d0d5dafab308f266aa104baeea804f49cabf",
+      "checkout-evidence/tmp/native-ui/launch.log": "e73c3182d569874c7aa63bdcb94c77d1c75cdb363d776b279b668f8e88c7bf0a",
+      "checkout-evidence/tmp/native-ui/settings-retina.jpg": "aee409bfcd967ee5d5d15391dab1077e77d8e41ed182c7ffd95dda188bde3a12",
+      "checkout-evidence/tmp/native-ui/soak.log": "39e1b2c0ccad70a58f71122993abf0638dbbaa1a3465dae5f4a29fca061a5063",
+      "checkout-evidence/tmp/native-ui/soak.txt": "e6c1b9f3f4a5e72d4640702d018aad0465f460dde9ace9b7b4f87aaa991e4da4",
+      "checkout-evidence/tmp/native-ui/stop.json": "93eb5a34e3063178c39e65a3a9f8b499e2dfea4f32624f7f237d6678bd22c292",
+      "checkout-evidence/tmp/smoke.log": "2919467bf003b808e21542bce34b60a5aa1463eb93a49bb09907c522095ba2a6"
+    }
+  },
+  "all_mode_dimension_followup": {
+    "commit": "a1e6e66cb1a5983928c60cfe3904e20058819113",
+    "scope": "per_frame_viewport_estimate_v1",
+    "fix": "Observe window, logical canvas, output and nominal input estimates throughout every reconstruction mode; reject changing/mismatched or legacy unobserved receipts.",
+    "python_tests_passed": 76,
+    "checked_parse_passed": true,
+    "windows_headless_diagnostic": {
+      "ticks": 240,
+      "dimension_samples": 133,
+      "dimensions_stable": true,
+      "snapshot_matches_frame_report": true,
+      "output_size": [
+        64,
+        64
+      ],
+      "process_exit": 0,
+      "engine_diagnostics": 0,
+      "timing_evidence": false
+    },
+    "mac_performance_remeasurement": "Not started; Mac connectivity was lost before the committed overlay transfer. Native functional checks remain the verified bf checkout results.",
+    "support_sha256": {
+      "tmp/m1-followup-ci/dimension-checks/sustained-dimensions-parse-911uhbfp/engine.log": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "tmp/m1-followup-ci/dimension-checks/sustained-dimensions-parse-911uhbfp/report.json": "2de0c84e2c0ca654b2860af30529d65ed978b748e2699ec75b9837470d0df374",
+      "tmp/m1-followup-ci/dimension-diagnostic/checks/sustained-dimensions-diagnostic-vfq1u_53/engine.log": "b7a4234fa4bcba38564b77c45f764226634a1b243d71964a4e5ffa375324c0c0",
+      "tmp/m1-followup-ci/dimension-diagnostic/checks/sustained-dimensions-diagnostic-vfq1u_53/report.json": "69c06f57176e8b829e837336573f79b7486e4ac4a1ae925dab24f44a4a228314",
+      "tmp/m1-followup-ci/dimension-diagnostic/health.json": "fffce40ef8d53a2ee46c73356f05435df697b7ff44a539d7d55aa44a7d382369",
+      "tmp/m1-followup-ci/dimension-diagnostic/run.json": "8aa639d983761a04e316ccc7ef39267d5d6b317f3baf412fdf9229362bebbab4",
+      "tmp/m1-followup-ci/dimension-diagnostic/run.json.frames.jsonl": "f57f82b8acfda26a505a7a7515638ca8f17f9d6551b59021cba11345fafb703f"
+    }
+  }
+}

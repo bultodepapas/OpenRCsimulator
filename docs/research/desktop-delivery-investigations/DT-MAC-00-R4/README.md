@@ -670,7 +670,10 @@ Native work uses the shared MacBookAir10,1, Apple M1/8 GiB, macOS 27.0.1,
 Godot `4.8.beta2.official.cafc17a19`, Mobile/Metal, AC power and the built-in
 display. Existing credentials and campaigns remain intact. A new task directory
 uses APFS clones reconciled against 9,412 committed files; changed Git blobs were
-transferred and rehashed before the final checks. Research copies isolate the
+transferred and rehashed before the final checks. **Later correction:** this
+raw-blob method bypassed checkout EOL attributes. These results describe a
+nonstock LF snapshot; see the [materialization correction and rerun](#dt-mac-resumed-20261106).
+Research copies isolate the
 player's preferences and disable startup multi-bounce as documented by the
 research-copy tool. Actual frame-report output and nominal input sizes are kept
 separate from unmeasured physical drawable pixels. Raw logs, captures and scripts
@@ -822,3 +825,201 @@ qualification from this work. Use the same runtime capability/fallback rules,
 not generation-name presets or inferred speedups. Future comparisons must record
 the actual chip variant, GPU cores, RAM, cooling, power mode, OS and output size;
 the [master plan](../../../plans/apple-silicon-performance.md) owns that coverage.
+
+<a id="dt-mac-resumed-20261106"></a>
+## DT-MAC-02b / 03 resumed native evidence (2026-11-06)
+
+**Source materialization correction.** The task-only snapshot scripts used raw
+Git blobs instead of the checkout bytes required by `.gitattributes`. This
+applies to the preceding v2 matrix and the v3, diagnostic and final results
+below, in the `m1-optimization-20261106` and `-final` workspaces. They are retained
+as evidence for their exact **nonstock LF inputs**, not normal-checkout or
+product qualification. The independent `m1-20261105T153146Z` campaign is not
+implicated by this finding. Raw captures and earlier reports are unchanged.
+
+Workshop exposed the staging error: Enter and direct Save both reached the save
+handler, which correctly refused a descriptor/source hash mismatch. The Ugly
+Stik raw blob was 62,035 bytes; its required CRLF checkout is 63,744 bytes, whose
+SHA-256 matches the existing descriptor. No input-router defect was established,
+and neither the descriptor nor its integrity guard was changed. A fresh snapshot
+must use Git's attribute-aware export, verify materialized hashes and pass the
+descriptor check before repeating native acceptance.
+
+Connectivity returned after the preceding checkpoint. The [resumed evidence](m1-optimization-20261106-resumed.json)
+records the new capture identities, bounded joins and SHA-256 hashes for the raw
+files retained under ignored `tmp/m1-optimization-20261106/evidence/tmp/`.
+The run used the same MacBookAir10,1, M1/8 GiB and macOS 27.0.1, with Mobile/Metal
+and official Godot `4.8.beta2.official.cafc17a19`. Its earlier executable preflight
+hash does not attest the binary continuously. The research copy has an isolated
+project name and startup multi-bounce disabled. Its reported 1920×1080 window and
+nominal 3D size do not independently prove physical presentation pixels.
+
+| Capture | Repeats | Warmup / sample | VSync / reconstruction | p95 / p99 wall interval (ms) | Result |
+| --- | ---: | --- | --- | --- | --- |
+| Baseline | 3 | 30 s / 120 s | Off / Native | 15.747 / 16.845; 15.818 / 16.842; 15.756 / 16.828 | Three-run software gates pass |
+| Paced flight | 1 | 30 s / 600 s | Observed on / Auto selected Native | 17.145 / 17.352 | Individual gates pass; fewer than three runs |
+
+Both used 4× MSAA, classic noon sky, calm weather and the reference input/physics
+circuit. The observed ground and sky cache consumers remained ready with sampled
+generation 10; density bounds stayed off. A ready material is not a count of
+cache hits for every weather layer. These software pacing gates use p95 ≤18 ms,
+p99 ≤25 ms and simulation/wall ratio 0.99–1.01; they do not prove an on-glass
+60 Hz rate or qualify the normal product route. The paced sample's first and last
+120 s had p95 17.149 and 17.105 ms respectively; the corresponding p99 values
+were 17.369 and 17.321 ms. One ten-minute run is not a sustained campaign pass.
+
+All four fresh captures have matching frame and resource raw-uptime anchors.
+Conservative bounds place the complete first and last resource polls and host
+queries outside the entire frame sample. Host and required resource coverage
+pass in their own scopes; maximum gaps were 1.047 s and 1.030 s. Generic Perfetto
+output remains partial because optional process I/O counters are unsupported.
+The paced sample contains 600 definitely in-sample host snapshots: all report AC,
+nominal thermal state and Low Power Mode off. Nominal can be a fallback; initial
+memory pressure and OS-coalesced or lost events remain unknown. Sampled process
+RSS during that flight ranged from 768.1 to 835.5 MiB; first/last 60 s medians
+were 824.7 and 768.2 MiB. This does not identify the cause of the decrease or
+prove absence of a leak. The helper and runner averaged about 0.015% and 0.173%
+of one CPU core in their in-sample observations; no observer-off control measures
+their effect on frame timing.
+
+Each receipt's 4,515 visible app/fixture paths has the same unchanged source
+digest. Independent Git comparison matched the 4,514-file candidate app inventory
+and 1,642 root authoring assets, allowing only the two project settings above.
+The candidate asset link was explicitly created to that root and observed there
+after v3; no preflight readlink or continuous identity check was retained. Hidden
+import caches remain outside the inventory. All four captures match five complete
+6,000-tick state/input checkpoints through tick 30,000. The paced flight has 25
+complete windows; later windows have no baseline comparator, and partial tails
+are excluded. These hashes do not establish visual or physical equivalence.
+
+**Glare construction diagnostic.** A disposable source variant added one guard
+to skip constructing `SunGlare` when `OPENRC_SUN_GLARE=off`. Four short profiled
+captures ran base/skip/skip/base with the same forced sky disc-cloud-occlusion
+startup readback. Their wall p95 values were 15.253 / 14.728 / 14.932 / 15.083 ms;
+the two-per-role difference is not a qualified speedup. Printed GPU profile
+blocks include startup and are not aligned to measured frames. The fixture
+correctly refuses the profiling and shader override for performance acceptance;
+the source guard was not promoted as a default. Node absence and visual equivalence
+were not independently demonstrated. A lake-off base attempt failed closed at
+tick zero because the required lake identity was unavailable; no lake-off
+comparison was admitted.
+
+**Shutdown warning.** Baseline run 2 reports 19 ObjectDB instances leaked at
+exit. The checked runner retained one warning with warnings-as-errors disabled,
+so its software timing verdict still passes. The same warning also appears in
+four v2 and two glare diagnostic captures, across configurations. Object types
+and ownership are unresolved; the warning is not itself proof of an in-flight
+RSS leak. The compact evidence retains the log identities for a separate verbose
+reproduction. It does not assert a completed current product-route or full-suite gate.
+
+**Native display repair.** The product graphics test reproduced an AppKit abort
+while changing fullscreen: `NSWindowStyleMaskFullScreen cleared on a window
+outside of a full screen transition`. Godot's mode property changes before the
+native transition completes, and an unchanged borderless assignment can still
+rewrite the native style mask. `44ce51b86` guards the two redundant assignments.
+It also corrects the test's shell recreation: the real renderer responsiveness
+callback must clear pending markers before an intentional in-process teardown.
+Otherwise recovery can exit the test before its final assertions. The final
+native Mobile/Metal run required the terminal summary and passed all 163 checks,
+with zero errors/warnings and process exit 0. Windows headless passed 154 checks.
+This removes the reproduced redundant-write path; it does not introduce an
+AppKit transition-completion barrier or qualify every rapid mode sequence.
+
+**Product route and lifecycle census.** The native debug bridge exercised Home,
+active flight past tick 240, paused resizing 1080p → 2560×1600 → 1080p, and Home.
+Auto selected Native → Spatial Quality → Native with 4× MSAA and VSync enabled;
+MetalFX execution remained unverified. Stills were visually inspected and remain
+outside Git. The initial scripts incorrectly assumed either uninterrupted focus
+or an always-present Resume button; both refused attempts are retained. The
+completed route handles the actual visible Pause state.
+
+The following eight-cycle graphical soak found four extra objects per cycle.
+A same-process diagnostic isolated dead cloud-consumer WeakRefs: sweeping the
+registry changed 38 → 2 entries and 5,347 → 5,311 objects, with unchanged nodes,
+resources and orphans. Production already bounds this registry by pruning every
+64 registrations. `74d8903a6` settles it beside the existing atmosphere sweep in
+the smoke census; generic soak and its zero-growth tolerance remain unchanged.
+The regression still rejects growth in live objects. A separate non-verbose
+20-cycle run using ordinary periodic pruning reported no monotonically growing
+counters or errors; 900 nodes, 1,159 resources and zero orphans remained stable.
+RSS rose from 1,264.5 MiB at baseline to a 1,496.5 MiB maximum, then ended at
+1,465.1 MiB. This bounded observation does not establish a long-term plateau or
+attribute RSS to the WeakRefs. The retained native product sessions exited with
+code 0 and no reported leaked objects.
+
+A verbose frozen-fixture reproduction identified all 19 shutdown objects as
+audio streams/playbacks under the Dummy audio driver. The product route used
+CoreAudio and returned Home before quitting, so that comparison confounds driver
+and teardown order. A four-cell 10 s/20 s diagnostic compared Dummy/CoreAudio
+with immediate exit versus post-seal scene retirement. Dummy/immediate reproduced
+the 19 audio objects; the other three reported none. Both retirement cases
+observed their exposed playbacks released (12 in about 56 ms on Dummy; 11 in
+about 23 ms on CoreAudio). All four matched the first complete 6,000-tick window.
+These are teardown controls, not performance or general leak-free evidence;
+the original warning remains part of the timing evidence.
+
+**Final runtime check.** A separate APFS snapshot verified 9,412 Git files at
+`d89d3e39e`; its isolated project settings and later test-only `bf4745d68` patch
+have explicit hash receipts. The updated native graphics test passed 165 checks
+at each of 1920×1080 and 2560×1600. Its first Retina run had exposed two obsolete
+Native-only rollback expectations: the saved Auto policy correctly restores
+Spatial Quality there. The revised fixture checks the independent Auto choice,
+an explicit Native preview and restoration of the saved viewport/slider state.
+
+The final product route asserted a 2560×1600 estimated render target separately
+from its 1920×1200 logical canvas. Settings and receipts now agree on a nominal
+1706×1066 input at the actual two-thirds scale, using the pinned renderer's
+integer truncation. These are estimates, not observed SDK allocations; effective
+MetalFX execution remains unknown. Native Home/Fly/Settings/resizing and the
+settled eight-cycle graphical census passed, with process exit 0 and no reported
+leaked objects.
+
+A fresh final-source Auto/VSync circuit collected 120 seconds after a 30-second
+warmup: p50/p95/p99 were 16.662/17.134/17.426 ms, and simulation/wall ratio was
+0.9999842. Its individual software gates and conservative raw-clock coverage
+pass; one run does not pass the three-run campaign gate. All 4,515 visible source
+paths match `bf4745d68` after the two project exceptions, and all five complete
+6,000-tick windows match the earlier baselines. The post-seal audio teardown
+observed 11 exposed playbacks released in about 39 ms, with zero checked warnings.
+
+**Linux verification limits.** The original full-suite attempt stopped at the
+60-second flight-loading deadline. Its unchanged assertions later passed 56
+checks in about 65 seconds; `6b03dea96` assigns that scene suite the existing
+180-second transition allowance. The separate frozen runtime partition reached
+E5a but exceeded its 180-second session deadline. An idle-host retry passed all
+116 checks in 176.338 seconds, so `88b6fec51` gives only that session 300 seconds.
+The separately run E5b passed 125 checks in 81.19 seconds. These targeted passes
+do not turn either incomplete original run into a full gate; required CI owns
+complete final-candidate verification. No physics assertions or tolerances changed.
+
+**Corrected checkout rerun.** The fresh `m1-optimization-20261106-checkout`
+workspace uses the attribute-aware export of `bf4745d68`, with explicit
+`core.autocrlf=false`, `core.eol=lf`, `tar.umask=0022` and empty external attribute
+overrides. All 9,412 scoped files matched exported SHA-256, size and mode before
+isolation and import; 58 files require conversion from their normalized blobs.
+The export manifest and the two project-isolation changes have retained hashes.
+The unchanged descriptor checker reports 11 current Workshop descriptors.
+
+Checked import, reconstruction and Settings suites passed. Native Mobile/Metal
+advanced graphics passed all 165 checks at each of 1920×1080 and 2560×1600, with
+the terminal summary required and zero errors or warnings. The native bridge
+route asserted Home/Fly/Settings, 1080p → Retina → 1080p sizing and the matching
+Auto choices. Its eight-cycle settled census reported zero growing counters
+and errors; shutdown returned 0 with no reported leaked objects. The full
+headless smoke then passed all 52 steps, including Enter saving Workshop revision
+1, the seeded UI walk and eight-cycle census. Its shutdown also returned 0 with
+no leaked objects. The earlier failed save therefore required no product input
+or descriptor change. These are functional and bounded lifecycle results,
+not frame-pacing or physical-display qualification.
+
+**All-mode dimension observation.** Review found that the fixture previously
+sampled dimensions only for Auto: a Native window resize could remain falsely
+marked stable. `a1e6e66cb` records window, canvas, output and nominal input
+estimates per frame for every mode, and reconciles them with the sealed frame
+report. Legacy unobserved receipts remain readable but fail the current gate.
+The reducer passed 76 tests, including Native resize, letterbox, endpoint and
+legacy-receipt mutations. A checked beta2 parse and a 240-tick Windows headless
+diagnostic passed; its 133 observations matched the final receipt. That 64×64
+headless diagnostic is not native timing evidence. The M1 benchmark entrypoint
+was deliberately held before its first capture while this fix was prepared;
+native performance remeasurement is pending restored connectivity.

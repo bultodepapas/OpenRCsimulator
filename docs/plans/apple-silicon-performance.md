@@ -1,12 +1,31 @@
 # Apple Silicon optimization — master implementation plan
 
-Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Current repair baseline:** `096c21f17`; [native follow-up and limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-06b-r2--dt-mac-02b-r2-native-verification-2026-11-06). **Status:** bounded observer/shader optimizations and native measurement repairs implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
+Updated 2026-11-06 (R4 work order: [next campaign](#next-campaign-dt-mac-00-r4)) · **Owner:** DT/PT, with VQ/GDU, SF/FL, UI/AUD and vehicle owners at their existing boundaries. **Historical long-soak baseline:** `9de47723282b5c4126418b58ceeac273d66c3122`, with the common clock-instrumentation patch identified in dated evidence. **Current repair baseline:** `a1e6e66cb`; [resumed native checks and dated performance limits](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106). **Status:** bounded observer/shader optimizations, native measurement repairs, display recovery hardening and corrected Retina dimension reporting implemented. The historical three 30-minute M1 runs per role establish 17.6–23.2% higher sustained process-loop FPS for that named instrumented Metal circuit, not the later source. Whole-observer and full product/release qualification remain open.
 
 This plan and the [technical background](../APPLE-SILICON-TECHNICAL-BACKGROUND.md) are the two authoritative Apple optimization documents. The background contains implementation facts, research and limitations; this document contains the execution sequence and gates. Existing research remains dated evidence and tool READMEs remain command authorities. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) retains release ownership. No optimization or new platform support is authorized as completed by this plan.
 
 The objective is the maximum practical **sustained performance with readable aircraft and unchanged simulation contracts**. The product priority remains 1920×1080/60 Hz, then higher resolutions, then 720p compatibility. The available M1 has only its built-in 2560×1600 Retina panel, currently set to 1440×900 logical pixels; the user authorizes this native display for the M1 campaign. Record measured viewport, drawable and internal pixels separately. A built-in-display run can qualify that named M1 configuration but cannot establish 1080p output. Newer community Macs extend named coverage; they do not replace the M1 baseline. iOS has a separate prerequisite branch because the current repository has no iOS delivery path.
 
 The [completed technical soak](../research/desktop-delivery-investigations/DT-MAC-02/README.md#repeated-30-minute-metal-comparison) retains all six raw captures and exact identities. Final-five-minute gains were 15.1–22.6%; 73 shared state/input hash windows matched. The separate 60 Hz pacing target was not met.
+
+The initial resumed 2026-11-06 campaign used a task snapshot that incorrectly
+materialized normalized Git blobs instead of checkout bytes required by
+`.gitattributes`. Its three 120-second Native screens, ten-minute Auto/VSync
+sample and later native UI checks remain evidence only for those nonstock LF
+inputs; they do not qualify a normal checkout. The descriptor integrity guard
+correctly refused Workshop saves. The corrected export and rerun belong to the
+[dated evidence](../research/desktop-delivery-investigations/DT-MAC-00-R4/README.md#dt-mac-resumed-20261106).
+The window
+server reported a 2880×1800 screen property; this is not a new physical-panel
+measurement. Logical UI, estimated render-target and presentation pixels remain
+separate evidence.
+
+The attribute-aware `bf4745d68` checkout rerun passed descriptor checks, 165
+native graphics assertions at each target size, the Home/Fly/Settings resize
+route and the full 52-step debug smoke. `a1e6e66cb` additionally observes viewport
+dimensions in every benchmark mode; old unobserved receipts fail its current
+qualification gate. Native performance remeasurement with that fixture remains
+pending.
 
 ## 1. Priorities, invariants and decision rules
 

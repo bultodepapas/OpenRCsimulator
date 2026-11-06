@@ -110,7 +110,8 @@ mkdir "tmp/$M1_TASK"
 printf '%s\n' "$M1_COMMIT" > "tmp/$M1_TASK/source-head.txt"
 git status --short > "tmp/$M1_TASK/source-status.txt"
 m1ssh "mkdir -p /Users/gius/OpenRC-m1-work && mkdir '$M1_WORK'"
-git archive --format=tar "$M1_COMMIT" | m1ssh "tar -xf - -C '$M1_WORK'"
+git -c core.autocrlf=false -c core.eol=lf -c tar.umask=0022 \
+  archive --format=tar "$M1_COMMIT" | m1ssh "tar -xf - -C '$M1_WORK'"
 scp -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
   "tmp/$M1_TASK/source-head.txt" "$M1_HOST:$M1_WORK/source-head.txt"
 )
@@ -126,10 +127,14 @@ new task ID for a fresh attempt.
 When disk headroom is limited, an APFS copy-on-write clone (`cp -cR`) into a new
 task directory can avoid duplicating unchanged source bytes. This is separate
 storage from the old campaign, not a hard link. Reconcile every scoped source
-file against the intended commit, transfer differences, and record the complete
-verified manifest before import or checks. Remove extra files only in the new
-task-owned clone. A copied import cache still needs a checked import; a clone
-does not establish the new source identity by itself.
+file against an export using the same pinned settings and the intended commit's
+`.gitattributes`, transfer differences, and record the materialized file hashes
+in a complete manifest before import or checks. Raw Git blob bytes can differ
+from checkout bytes: stock aircraft data uses CRLF, and Workshop descriptors
+bind those exact bytes. Blob identity alone does not verify a usable snapshot.
+Remove extra files only in the new task-owned clone. A copied import cache still
+needs a checked import; a clone does not establish the new source identity by
+itself.
 
 The archive is a source snapshot, **not a historical Git checkout**. If the engine
 is missing, section 4 initializes local Git metadata solely so the existing getter
@@ -162,6 +167,7 @@ has no source commit. With a working engine, run the dependent checks together:
 ```bash
 (
 set -eu
+"$M1_PY" research/aircraft-editor/build_descriptors.py --check
 "$M1_PY" tools/godot/macos_preflight.py --godot "$OPENRC_GODOT"
 "$M1_PY" tools/graphics/prepare_research.py --dest tmp/research
 "$M1_PY" tools/godot/run_checked.py --out-dir tmp/checks --label m1-import \
