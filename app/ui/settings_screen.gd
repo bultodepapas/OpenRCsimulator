@@ -592,6 +592,11 @@ func _add_row(parent: Control, caption: String, input: Control) -> void:
 	input.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(input)
 	input.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
+	# The row's caption names its control for screen readers (AccessKit) and agents; a picker alone only shows
+	# its current value. Retranslated with the captions.
+	if "accessibility_name" in input:
+		input.set("accessibility_name", tr(caption))
+		_localized_controls.append({"control": input, "source": caption, "property": "accessibility_name"})
 	parent.add_child(row)
 	_rows.append(row)
 
@@ -1255,7 +1260,9 @@ func _refresh_translated_text() -> void:
 		_category_picker.set_item_text(index, tr(CATEGORIES[index]))
 	for entry: Dictionary in _localized_controls:
 		var control: Control = entry.control
-		if control is Button or control is Label:
+		if entry.has("property"):
+			control.set(entry.property, tr(str(entry.source)))
+		elif control is Button or control is Label:
 			control.text = tr(str(entry.source))
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))

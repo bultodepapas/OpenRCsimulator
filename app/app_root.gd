@@ -76,6 +76,7 @@ const RunwayMeadow := preload("res://scenery/runway_meadow.gd")
 const RcTrackOption := preload("res://scenery/rc_track_option.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const DebugBridge := preload("res://debug/debug_bridge.gd")
+const AccessibleLabels := preload("res://ui/accessible_labels.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
 const UiSurface := preload("res://ui/screen.gd")
@@ -251,6 +252,8 @@ func _ready() -> void:
 		diagnostic.output_path = options.path
 		add_child(diagnostic)
 		return
+	# PT1h-R12: labels name the value controls that follow them, on every route with UI (not the diagnostic one).
+	add_child(AccessibleLabels.new())
 	UiInput.isolate_joypads() # before any menu exists (UI-01b): radio sticks never move the focus
 	if user_args.has("--vehicle=mt8-bisonte") or user_args.has("--vehicle=monster-car-2"):
 		TranslationServer.set_locale("en")
@@ -608,9 +611,11 @@ func end_ground_vehicle() -> void:
 
 
 ## Applies a language at once and remembers it. A failed save keeps the language for this session and says so.
-func set_language(code: String) -> void:
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_language(code: String) -> bool:
 	if not Preferences.LANGUAGES.has(code):
-		return
+		return false
 	TranslationServer.set_locale(code)
 	preferences.language = code
 	var err := Preferences.save_to(preferences_path, preferences)
@@ -618,14 +623,17 @@ func set_language(code: String) -> void:
 		_menu_feedback(&"reject")
 	if home != null:
 		home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	return true # a failed save keeps the language for this session
 
 
 ## Shows another aircraft on Home (card and backdrop) and remembers it, like the language: a failed save keeps the
 ## choice for this session and says so.
-func set_aircraft(id: String) -> void:
-	if _loading_active: return
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_aircraft(id: String) -> bool:
+	if _loading_active: return false
 	if home == null or not Catalog.has(id):
-		return
+		return false
 	id = Catalog.canonical_id(id)
 	preferences.aircraft = id
 	home.set_aircraft(id) # shows the start remembered for this vehicle class (UI-32, UI-30 AS-7)
@@ -636,6 +644,7 @@ func set_aircraft(id: String) -> void:
 	if home_scene != null:
 		home_scene.request_aircraft(id, home.livery_id)
 	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+	return true
 
 
 ## F4U-16: the paint scheme of Home's aircraft. The default paint keeps no [liveries] entry.
@@ -732,17 +741,23 @@ func _on_home_preview_state(id: String, state: String, scene: Node3D) -> void:
 
 
 ## Preview the launch choice; only a successful Fly remembers it.
-func set_start_choice(choice: String) -> void:
-	if _loading_active: return
-	if home != null:
-		home.set_start_choice(choice)
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_start_choice(choice: String) -> bool:
+	if _loading_active or home == null:
+		return false
+	home.set_start_choice(choice)
+	# Home falls back for this aircraft and landscape (no runway, no hand launch, no pad): report it.
+	return str(home.start_choice) == choice
 
 
 ## Applies an FW preset immediately and clears any explicit lighting selection so the Home and flight agree.
-func set_time_of_day(preset: String) -> void:
-	if _loading_active: return
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_time_of_day(preset: String) -> bool:
+	if _loading_active: return false
 	if home == null or not Conditions.HOME_CHOICES.has(preset):
-		return
+		return false
 	preferences.time_of_day = preset
 	preferences.lighting_config = TimeOfDay.defaults()
 	preferences.lighting_invalid = false
@@ -752,6 +767,7 @@ func set_time_of_day(preset: String) -> void:
 	_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	return true
 
 
 ## FW-MOON-12: the saved moon choices, validated (an invalid value recovers to the real moon).
@@ -2828,15 +2844,19 @@ func _rebuild_home_scene() -> bool:
 
 
 ## Landscape changes create a fresh Home world; a running flight keeps its accepted field and contacts.
-func set_landscape(id: String) -> void:
-	if not screens.is_top("home") or flight != null or not Landscapes.has(id) or id == landscape_id:
-		return
+## Returns whether the requested value is now in effect: false for an unknown id, while loading, or when the
+## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
+func set_landscape(id: String) -> bool:
+	if id == landscape_id and Landscapes.has(id):
+		return true
+	if not screens.is_top("home") or flight != null or not Landscapes.has(id):
+		return false
 	var path: String = Landscapes.entry(id).field_path
 	var checked: Dictionary = FieldLoader.load_from(path)
 	if not checked.ok:
 		home.set_note("; ".join(checked.errors))
 		_menu_feedback(&"reject")
-		return
+		return false
 	var old_id: String = landscape_id
 	var old_path: String = field_path
 	landscape_id = id
@@ -2847,13 +2867,14 @@ func set_landscape(id: String) -> void:
 	elif not _rebuild_home_scene():
 		landscape_id = old_id
 		field_path = old_path
-		return
+		return false
 	home.runway_available = checked.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not checked.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)
 	home.reapply_start_preference()
 	preferences.landscape = id
 	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+	return true
 
 
 func close_weather() -> void:

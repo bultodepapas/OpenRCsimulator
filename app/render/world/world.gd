@@ -416,6 +416,7 @@ static func _build_environment_stage(context: Dictionary) -> void:
 		HighGraphics.configure_flow_sky(environment)
 	Exposure.set_value(environment.tonemap_exposure) # reset shader exposure when moving between FW and SDR snapshot worlds
 	world_environment.environment = environment
+	world_environment.name = "WorldEnvironment" # a stable path for tools and reports
 	parent.add_child(world_environment)
 	if LandscapeOptions.enabled():
 		SunGlare.attach(parent, environment)

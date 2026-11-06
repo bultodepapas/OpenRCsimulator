@@ -72,8 +72,10 @@ $ debugctl.py press text="Keep changes"
 - **`look`** lists, for every visible control of the top screen or dialog:
   - its **ref**;
   - its **role**: button, toggle, option, slider, number, text, tabs, list or progress;
-  - its **name**. A field takes the name of the label before it, so the OptionButton that shows "Automatic" is
-    named "Window resolution". A symbol-only button is named by its tooltip or its parent (`× (Close · Wind)`);
+  - its **name**: the app's accessible name, the one a screen reader announces. That is its `accessibility_name`, or
+    the Label that [`ui/accessible_labels.gd`](../../app/ui/accessible_labels.gd) links to it, else the label just
+    before it. The OptionButton that shows "Automatic" is therefore named "Window resolution". A symbol-only button
+    is named by its tooltip or its parent (`× (Close · Wind)`);
   - its **value** and **options**, and whether it is disabled or focused.
 
   `look` also gives the route, the screens, a one-line flight summary and **next steps** for this situation.
@@ -412,8 +414,9 @@ GDC 2013 talk.
   - The presentation resets as on a restart: camera history, smoke and particles. A running flight log stops, and
     an accident report is archived.
   - The flight stays paused (`pause=false` resumes it).
-  - The default `inputs=pilot` hands control back from the recorded throttle. `inputs=recorded` keeps the session's
-    replay contract, which holds the restored inputs and ignores the pilot.
+  - The default `inputs=pilot` hands control back through `FlightSession.hand_control_to_pilot()`: the recorded
+    throttle, centred sticks, still paused. `inputs=recorded` keeps the session's replay contract, which holds the
+    restored inputs and ignores the pilot.
 - **Attempts.** A reset of the simulation clock (restart, crash auto-restart) starts a new attempt. `attempt=previous`
   (or a number) with `seconds=` counts back from that attempt's last checkpoint, which is the moment before the
   crash. `rewind list=true` shows the attempts.

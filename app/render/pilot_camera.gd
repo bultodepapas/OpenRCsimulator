@@ -8,6 +8,7 @@ const Frames := preload("res://render/frames.gd")
 
 static func create(parent: Node, pilot: Dictionary = {}) -> Camera3D:
 	var camera := Camera3D.new()
+	camera.name = "PilotCamera" # a stable path for tools and reports, not @Camera3D@<n>
 	# Metadata belongs to this camera: independent scenes never share a mutable pilot position.
 	var station: Array = [pilot.get("north", 0.0), pilot.get("east", 0.0), pilot.get("down", 0.0)]
 	camera.set_meta("pilot_station", station)

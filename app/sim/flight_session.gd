@@ -5775,6 +5775,27 @@ func _configuration_for_weather(field: WeatherField) -> String:
 
 ## Restoring switches to recorded-input replay and stays paused. No raw radio state is deserialized.
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
+const CHECKPOINT_RESTORED_REASON := "checkpoint restored (recorded inputs)"
+
+
+## PT1h-R12 (game findings #9). restore_checkpoint() is a replay boundary: the session holds the recorded inputs and
+## ignores live input, which exact replays need. A player-facing "retry from here" (and the debug bridge's rewind and
+## bugitgo) hands control back with this. Pilot input resumes from the recorded throttle, so power does not jump, with
+## centred sticks; the flight stays paused until resume(). External drivers and invalid flights are refused.
+func hand_control_to_pilot() -> bool:
+	if _reject_reset_publication_reentry(): return false
+	if external_driver_enabled or not _flight_ready():
+		return false
+	var recorded_throttle: float = sim.inputs[3] if sim.inputs.size() >= 4 else commands.throttle
+	input_enabled = true
+	commands = Commands.neutral_commands()
+	commands.throttle = recorded_throttle
+	raw = Commands.neutral_raw()
+	if pause_reason == CHECKPOINT_RESTORED_REASON:
+		pause_reason = "checkpoint restored"
+	return true
+
+
 func restore_checkpoint(candidate: Dictionary) -> bool:
 	if _reject_reset_publication_reentry(): return false
 	var transaction := _begin_start_transaction()
@@ -6114,7 +6135,7 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 		crash = {}
 		_last_scenery_event = null
 		_last_lake_event = null
-		pause_reason = "checkpoint restored (recorded inputs)"
+		pause_reason = CHECKPOINT_RESTORED_REASON
 		_airframe_offset = restored_airframe_offset
 		_deflection_key = PackedFloat64Array()
 		scenery_damage_changed.emit()

@@ -7,30 +7,30 @@ audit. The tools and their evidence are in the [debug tooling note](debug-toolin
 120 Hz, Ugly Stik on Club field unless stated. They are short development screens, not hardware qualification.
 On Apple Silicon or other GPUs, re-measure with `render` and `ablate` before acting.
 
-**Status.** None of the game findings below is fixed in the game code; only the debug tooling was changed. The
-**Owner** column names the track best placed to decide.
+**Status.** The **Status** column is current; the [fix log](#fix-log-pt1h-r12) has the evidence for each fix. The
+**Owner** column names the track best placed to decide on what remains open.
 
 ## Summary
 
-| # | Finding | Kind | Severity | Owner |
-| --- | --- | --- | --- | --- |
-| 1 | Aircraft projected-shadow silhouette costs about 0.9 ms GPU per frame | Performance | High | Shadows / graphics |
-| 2 | The aircraft costs 280 draw calls and about 1.2 ms GPU | Performance | Medium | Aircraft visuals |
-| 3 | Desktop frames are CPU- or vsync-bound, not GPU-bound | Performance | Medium | Performance (PT) |
-| 4 | Half 3D resolution makes Compatibility slower on a fast GPU | Performance policy | Medium | Graphics settings |
-| 5 | Home → Fly builds the flight in one frame of 3.6–6 s | UX / performance | Medium | UI / loading |
-| 6 | A long stall when Home starts (one stale 971 ms GPU reading) | Performance | Low; needs a re-check | Graphics |
-| 7 | AppRoot setters ignore invalid values silently | Bug-prone API | Medium | App / UI |
-| 8 | Paired visual checkpoint refused in default flights | Limitation | Medium | Time of day (TOD) |
-| 9 | Session restore leaves the pilot without control | Contract trap | Medium | Flight session |
-| 10 | Scripts re-set `visible` every frame on some nodes | Hygiene / CPU | Low | Rendering |
-| 11 | Key 3D nodes have generated names (`@MeshInstance3D@263`) | Debuggability | Low | Rendering / main |
-| 12 | Almost no controls have accessible names | Accessibility | Medium | UI |
-| 13 | Shadow-pass counters read 0 in Compatibility | Engine reporting | Info | Graphics |
-| 14 | Wireframe and most debug views do nothing in Compatibility | Engine limitation | Info | Graphics |
-| 15 | Rendered airborne start opens on the launch menu | UX check | Low | UI |
-| 16 | Orphan nodes created at flight start | Hygiene | Low | Main / flight |
-| 17 | The bridge test used a fixed port that concurrent agents shared | Test bug | Fixed | Debug tooling |
+| # | Finding | Kind | Severity | Owner | Status |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Aircraft projected-shadow silhouette costs about 0.9 ms GPU per frame | Performance | High | Shadows / graphics | **Fixed** (PT1h-R12) |
+| 2 | The aircraft costs 280 draw calls and about 1.2 ms GPU | Performance | Medium | Aircraft visuals | Open: asset pipeline |
+| 3 | Desktop frames are CPU- or vsync-bound, not GPU-bound | Performance | Medium | Performance (PT) | Open: profile |
+| 4 | Half 3D resolution makes Compatibility slower on a fast GPU | Performance policy | Medium | Graphics settings | **Already handled** by the reconstruction policy |
+| 5 | Home → Fly builds the flight in one frame of 3.6–6 s | UX / performance | Medium | UI / loading | Open |
+| 6 | A long stall when Home starts (one stale 971 ms GPU reading) | Performance | Low; needs a re-check | Graphics | Open: re-check |
+| 7 | AppRoot setters ignore invalid values silently | Bug-prone API | Medium | App / UI | **Fixed** (PT1h-R12) |
+| 8 | Paired visual checkpoint refused in default flights | Limitation | Medium | Time of day (TOD) | Open |
+| 9 | Session restore leaves the pilot without control | Contract trap | Medium | Flight session | **Fixed** (PT1h-R12): explicit hand-back |
+| 10 | Scripts re-set `visible` every frame on some nodes | Hygiene / CPU | Low | Rendering | **Not a bug** (see #10) |
+| 11 | Key 3D nodes have generated names (`@MeshInstance3D@263`) | Debuggability | Low | Rendering / main | **Fixed** (PT1h-R12) |
+| 12 | Almost no controls have accessible names | Accessibility | Medium | UI | **Fixed** (PT1h-R12): an app-wide label rule, Settings, close buttons |
+| 13 | Shadow-pass counters read 0 in Compatibility | Engine reporting | Info | Graphics | Engine |
+| 14 | Wireframe and most debug views do nothing in Compatibility | Engine limitation | Info | Graphics | Engine |
+| 15 | Rendered airborne start opens on the launch menu | UX check | Low | UI | Open: design question |
+| 16 | Orphan nodes created at flight start | Hygiene | Low | Main / flight | **Verified by design**: no leak |
+| 17 | The bridge test used a fixed port that concurrent agents shared | Test bug | Fixed | Debug tooling | Fixed (PT1h-R11) |
 
 ## Performance
 
@@ -86,6 +86,11 @@ never move.
 - Optimizations for one platform do not transfer to the other.
 
 ### 4. Half 3D resolution costs 76 % more GPU on the Compatibility renderer here
+
+**Checked (PT1h-R12): already handled.** [reconstruction.gd](../../app/render/reconstruction.gd) (VQ-07d, DT-MAC-07b)
+chooses a reduced 3D scale automatically only for MetalFX Spatial on a Mac, and only when the 3D input stays
+1080p-class. Every other platform's `auto` is Native, scale 1.0. Reduced scales come only from an explicit FSR or
+DLSS choice. The measurement stays as evidence for that policy. The original note follows.
 
 **Evidence:**
 
@@ -170,6 +175,11 @@ the code.
 - Otherwise the first in-game use of restore will look broken.
 
 ### 10. Some nodes have `visible` set again every frame
+
+**Correction (PT1h-R12): not a bug.** Godot's `Node3D.set_visible` and `CanvasItem.set_visible` return at once when
+the value does not change. Re-assigning the same state sends no notification and has no measurable cost. The only
+real effect is that tools cannot hide these nodes, and `ablate` already flags them as `overridden`. The original
+note follows.
 
 **Evidence:** while `ablate` held them hidden, `SunGlare`, the aircraft projected-shadow mesh
 (`@MeshInstance3D@263`) and the flight `CanvasLayer`s came back on within the phase. The `overridden` flag marked
@@ -286,3 +296,123 @@ in new tests.
 - **Recovery after a nose-down input.** With pitch −0.8 and full throttle, the Ugly Stik flew an outside loop and
   kept flying, instead of diving in. With pitch −1, it crashed at 31.5 m/s. Plausible for that airframe; a pilot
   should judge it with a flight log, not this note.
+
+## Fix log (PT1h-R12)
+
+### #1 Projected-shadow silhouette
+
+[projected_shadow.gd](../../app/render/projected_shadow.gd) reuses the drawn mask while the change cannot show in
+the blurred shadow:
+
+- attitude and light direction within 0.25°;
+- blur within 2 mm;
+- the same bounds and scale.
+
+Tolerances are measured against the last drawn mask, so they cannot accumulate. The receiver still follows the
+aircraft and its blur on every frame. Before, an exact comparison redrew the 165,398-triangle, MSAA 4x silhouette on
+every flying frame. That included the blur, which changes with every millimetre of height.
+
+**Effect** (rendered app):
+
+| Flight phase | Masks redrawn |
+| --- | --- |
+| Hands-off flight | 2.3 % of frames |
+| First 4 s | 2.7 % |
+| Gentle climbing turn | 3.9 % |
+| Active roll | 85.5 %, as intended |
+
+The frame's median GPU time in steady flight went from 2.7–2.9 ms to 1.83 ms. A daylight screenshot at 3.9 m shows
+the silhouette following the pitched-down attitude.
+
+**Tests:** `test_projected_shadow.gd`, 47 checks, 5 new:
+
+- the reuse cosine matches the angle;
+- 0.1° steps are reused until the total from the drawn mask passes 0.25°;
+- a reused mask still moves and blurs;
+- a scale change always redraws.
+
+The shadow, field-shadow, ownership, cue, windsock and Home-preview suites pass: 374 checks.
+
+`redraw_count` stays on the node as a diagnostic.
+
+### #7 AppRoot setters
+
+`set_language`, `set_aircraft`, `set_start_choice`, `set_time_of_day` and `set_landscape` now return whether the
+requested value is in effect. `set_start_choice` returns false when Home falls back, for example to `airborne` for
+an aircraft that cannot hand-launch. UI signal callers ignore the value. No warning is logged, because some tests
+pass invalid values on purpose.
+
+### #9 Session restore and pilot control
+
+`FlightSession.hand_control_to_pilot()` is the explicit hand-back after `restore_checkpoint()`, whose replay contract
+is unchanged:
+
+- pilot input resumes from the recorded throttle, with centred sticks;
+- the flight stays paused until `resume()`;
+- external drivers are refused.
+
+The debug bridge's `rewind`, `checkpoint load` and `bugitgo` use it.
+
+**Tests:** `test_checkpoint.gd`, 104 checks, 12 new: three per aircraft, for the Ugly Stik, Extra, P-51 and Vantage.
+The restore pause reason, the refusal for an external driver, and the throttle, sticks, pause and untouched physics
+after the hand-back.
+
+### #10
+
+Corrected to "not a bug"; see the finding.
+
+### #11 Stable node names
+
+| Node | Created in |
+| --- | --- |
+| `PilotCamera` | `render/pilot_camera.gd` |
+| `Sun` | `render/atmosphere.gd` |
+| `WorldEnvironment` | `render/world/world.gd` |
+| `AircraftShadow` | `render/shadow.gd` |
+| `FlightSession` | `main.gd` |
+| `Smoke` | `main.gd` |
+
+### #12 Accessible names
+
+**App-wide rule.** [ui/accessible_labels.gd](../../app/ui/accessible_labels.gd), installed first in AppRoot:
+
+- A Label immediately before a value control in the same container labels it, through
+  `accessibility_labeled_by_nodes`. Value controls are option, range, text, list, and a check box without its own
+  text.
+- It applies to every node as it enters the tree, so screens and tabs built later are covered.
+- The link is to the Label node, so the name follows the Label's text after a language change.
+- Explicit names are never overridden.
+- Internal children, such as scroll bars, are skipped. The first version asked their index, which the checked
+  runner reported as 54 engine errors.
+
+**Explicit names.**
+
+- Settings rows also set their caption as `accessibility_name`, retranslated with the captions.
+- Overlay close buttons take their tooltip ("Close · Wind").
+
+The debug bridge's `look` reads the same link.
+
+**Tests:** `test_accessible_labels.gd`, 11 checks:
+
+- the first sweep, later rows and whole subtrees;
+- the name following a text change;
+- buttons, labelled check boxes, explicit names, missing or blank labels and non-container parents are left alone;
+- internal scroll bars;
+- disconnection.
+
+### #16 Orphan nodes at flight start
+
+**Verified as designed; no code change.** Home prepares the selected flight scene privately and attaches it after
+validation (UI-05-R3 in [DECISIONS](../DECISIONS.md)).
+
+Fresh rendered session:
+
+| Moment | Orphans | Other counters |
+| --- | --- | --- |
+| Three start frames | +176, +10, +73 (hitches of 167, 84 and 495 ms) | |
+| Flying, 6 s later | 0 | |
+| Back on Home | 0 | the same 924 nodes; +81 objects, +3 resources, +12.6 MiB |
+
+The remainder on Home is first-use caching: the fly/Home soak in `smoke` shows no growth after its warm-up cycle.
+The three start hitches belong to finding #5.
+

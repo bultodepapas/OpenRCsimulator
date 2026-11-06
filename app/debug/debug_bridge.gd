@@ -1647,8 +1647,10 @@ func _record_frame(now_us: int) -> void:
 	# long startup frames, and it adapts to slow renderers (llvmpipe frames are seconds long, and not hitches).
 	if _frame_count % 15 == 1 or _frame_ema_ms == 0.0:
 		_frame_ema_ms = _recent_median(mini(_frame_count - 1, 60))
+	# Before a typical time exists (the first frames after launch), the absolute threshold alone applies: a long
+	# start-up frame (first-use shader compilation) is a hitch too.
 	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
-	if _frame_ema_ms > 0.0 and ms > threshold:
+	if ms > threshold:
 		_hitch(ms, threshold, ticks, monitors)
 	_frame_monitors = monitors
 	_frame_log_seq = debug_log.last_seq()
@@ -2176,7 +2178,9 @@ func _cmd_rewind(request: Dictionary) -> Dictionary:
 ## A restored checkpoint is a replay boundary: the session holds the recorded inputs and ignores the pilot.
 ## inputs=pilot hands control back, starting from the recorded throttle (the keyboard ramps it slowly).
 func _after_restore(session: Node, had_input: Variant, mode: String, pause: bool) -> void:
-	if mode == "pilot" and had_input is bool:
+	if mode == "pilot" and had_input == true and session.has_method("hand_control_to_pilot"):
+		session.hand_control_to_pilot() # the session's own hand-back (game findings #9)
+	elif mode == "pilot" and had_input is bool:
 		session.set("input_enabled", had_input)
 		if str(session.get("pause_reason")).contains("recorded inputs"):
 			session.set("pause_reason", "debug restore (pilot inputs)") # resume() clears it
@@ -2300,6 +2304,12 @@ func _field(control: Control) -> String:
 	var own := str(control.get("accessibility_name")) if "accessibility_name" in control else ""
 	if not own.is_empty() and own != "<null>":
 		return own
+	# The app's own label link (ui/accessible_labels.gd): the name a screen reader announces.
+	var labelled_by: Variant = control.get("accessibility_labeled_by_nodes")
+	if labelled_by is Array and not labelled_by.is_empty():
+		var label := control.get_node_or_null(labelled_by[0])
+		if label is Label and not str(label.text).strip_edges().is_empty():
+			return str(label.text).strip_edges()
 	if control is BaseButton and not control is OptionButton and not _own_text(control).is_empty():
 		return "" # a button names itself; the label before it belongs to something else
 	var parent := control.get_parent()

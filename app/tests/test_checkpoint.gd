@@ -165,6 +165,18 @@ func replay_aircraft(id: String) -> void:
 	flight.ground_surfaces = PackedFloat64Array([1.0])
 	check(id + " changed ground configuration rejected", not flight.restore_checkpoint(cp) and matches_snapshot(flight.sim, expected))
 	flight.ground_surfaces = PackedFloat64Array()
+	# PT1h-R12: after a restore the session flies the recorded inputs; hand_control_to_pilot() gives control back.
+	check(id + " restore before hand-back", flight.restore_checkpoint(cp) and not flight.input_enabled
+		and flight.pause_reason == Flight.CHECKPOINT_RESTORED_REASON)
+	var recorded_throttle: float = flight.sim.inputs[3]
+	var state_before: PackedFloat64Array = flight.sim.state.duplicate()
+	flight.external_driver_enabled = true
+	check(id + " hand-back refused for an external driver", not flight.hand_control_to_pilot() and not flight.input_enabled)
+	flight.external_driver_enabled = false
+	check(id + " hand-back enables pilot input at the recorded throttle, still paused, physics untouched",
+		flight.hand_control_to_pilot() and flight.input_enabled and flight.commands.throttle == recorded_throttle
+		and flight.commands.roll == 0.0 and flight.sim.paused and flight.pause_reason == "checkpoint restored"
+		and flight.sim.state == state_before and flight.sim.inputs[3] == recorded_throttle)
 	var reloaded := flight.reload()
 	check(id + " reload resets sampled and discrete state", reloaded.begins_with("aircraft reloaded") and flight.sim.tick == 0 and flight.engine_running and flight.sim.aux[0] == flight.start.rpm)
 	flight.free()

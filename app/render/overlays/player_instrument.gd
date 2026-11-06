@@ -121,6 +121,7 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	visibility_changed.connect(_request_glass)
 	close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	close_button.tooltip_text = "%s %s" % [tr("Close"), title_label.text]
+	close_button.set("accessibility_name", close_button.tooltip_text) # a bare "×" names nothing
 	(body.get_parent() as VBoxContainer).add_theme_constant_override("separation", 8)
 	close_button.flat = false
 	close_button.add_theme_font_size_override("font_size", 18)

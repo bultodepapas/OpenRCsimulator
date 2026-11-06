@@ -917,6 +917,7 @@ static func environment(lighting: Dictionary = {}) -> Environment:
 ## The sun: a DirectionalLight3D shining from sun_direction(lighting); PSSM shadows only with engine_shadows (L3).
 static func create_sun(parent: Node, lighting: Dictionary = {}) -> DirectionalLight3D:
 	var sun: DirectionalLight3D = DirectionalLight3D.new()
+	sun.name = "Sun" # a stable path for tools and reports
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	sun.directional_shadow_max_distance = Spec.ATMOSPHERE.shadow_max_distance_m
 	update_sun(sun, lighting)

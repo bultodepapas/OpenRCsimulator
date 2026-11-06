@@ -28,6 +28,8 @@ var _desired_shown := false
 # The remaining frame inputs; basis/direction/frame already live in _last_signature.
 var _frame_bounds := AABB()
 var _frame_blur := 0.0
+## Masks drawn since setup (diagnostics: compare with frames elapsed to see how often the cache is reused).
+var redraw_count := 0
 
 
 ## The shape is captured at bind time. Propellers are omitted: a neutral blade
@@ -245,4 +247,5 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 		mask_material.set_shader_parameter("frame_center", center)
 		mask_material.set_shader_parameter("frame_size", frame.size.x)
 		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		redraw_count += 1
 		_last_signature = signature
