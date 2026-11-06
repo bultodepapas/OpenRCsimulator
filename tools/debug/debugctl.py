@@ -18,7 +18,7 @@ Drive the app (any bridge command; `help` asks the app for its list). Agents: st
 Observe and hunt bugs
   state | logs [--since N] [--level …] [--follow] [--summary] | frames | objects [baseline|diff=true]
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
-  render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    what the GPU spends the frame on
+  render | layers | ablate [targets=Field,@fog] | viewmode name=overdraw    inspect render-cost observations
   rewind arm=true | rewind seconds=2 [attempt=previous]                       go back in flight time and try again
   gizmos show=all | gizmos off=true                          flight-model lines: velocity, air, wind, forces, trail
   bugit [--note TEXT] [--out DIR] | bugitgo DIR [--resume]   a reproducible report folder / restore its exact flight
@@ -44,6 +44,7 @@ import csv
 import datetime
 import io
 import json
+import math
 import os
 import random
 import re
@@ -1270,20 +1271,89 @@ def format_look(result: dict) -> str:
     return "\n".join(out)
 
 
+def _finite_number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def _gpu_reading(value) -> str:
+    """Zero and invalid GPU timestamps do not establish a measurement."""
+    return f"{value:g}" if _finite_number(value) and value > 0 else "unavailable"
+
+
+def _raw_number(value) -> str:
+    return f"{value:g}" if _finite_number(value) else "unavailable"
+
+
+def _gpu_status(status) -> str:
+    if status == "unverified_freshness":
+        return "delayed, freshness unverified"
+    if status == "mixed_or_unavailable":
+        return "mixed or unavailable readings; freshness unverified"
+    if status == "unavailable_or_zero":
+        return "unavailable or zero"
+    if status == "synthetic_valid":
+        return "synthetic test data"
+    return "legacy or unknown status; freshness unverified"
+
+
 def print_ablation(result: dict) -> None:
-    """The ablate ranking: what each layer or feature costs on the GPU, most expensive first."""
+    """Show raw A-B-A observations without treating unverified timings as GPU savings."""
     base = result["baseline"]
-    print(f"# baseline GPU {base['gpu_ms']} ms (range {base['min_ms']}..{base['max_ms']}, drift {base['drift_ms']}), "
-          f"{base['draw_calls']} draw calls; noise {result['noise_ms']} ms ({result['significance']}); "
-          f"{result['frames']} frames per phase after {result['warmup']}; frozen {result['frozen']}")
-    print(f"{'saved ms':>9} {'%':>6}  sig  {'draws':>6} {'prims':>9} {'cpu ms':>7}  target")
+    status = result.get("gpu_timing_status")
+    base_status = base.get("gpu_timing_status", status)
+    noise_status = result.get("noise_timing_status", base_status)
+    scope = "root" if result.get("gpu_ms_scope") == "root_only_freshness_unverified" else "reported (scope unknown)"
+    aggregate_available = base_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+    base_gpu = _gpu_reading(base.get("gpu_ms")) if aggregate_available else "unavailable"
+    if base_gpu == "unavailable":
+        range_text, drift, noise = "unavailable", "unavailable", "unavailable"
+    else:
+        range_text = f"{_gpu_reading(base.get('min_ms'))}..{_gpu_reading(base.get('max_ms'))}"
+        drift = _raw_number(base.get("drift_ms"))
+        noise = (_raw_number(result.get("noise_ms")) if noise_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                 else "unavailable")
+    freeze = (f"owned simulation freeze {result['frozen']}; paused at start {result['paused_at_start']}"
+              if "paused_at_start" in result else f"reported frozen {result['frozen']} (ownership unknown)")
+    print(f"# baseline GPU {scope} {base_gpu} ms ({_gpu_status(base_status)}); {base['draw_calls']} draw calls; "
+          f"raw range {range_text}, drift {drift}, noise {noise} ms; "
+          f"{result['frames']} frames per phase after {result['warmup']}; {freeze}"
+          + (f" ({result['freeze_scope']})" if result.get("freeze_scope") else ""))
+    print(f"{'raw ms':>9} {'raw %':>6}  sig  {'draws':>6} {'prims':>9} {'cpu ms':>7}  target")
     for row in result["rows"]:
-        flag = "*" if row["significant"] else " "
+        row_status = row.get("gpu_timing_status")
+        baseline = row.get("baseline_gpu_ms", base.get("gpu_ms"))
+        # Old responses omit per-phase readings. Their numeric delta can be inspected only as legacy data.
+        phase = row.get("gpu_ms", baseline)
+        available = (_gpu_reading(baseline) != "unavailable" and _gpu_reading(phase) != "unavailable"
+                     and row_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                     and _finite_number(row.get("saved_gpu_ms")) and _finite_number(row.get("saved_pct")))
+        delta = f"{row['saved_gpu_ms']:.3f}" if available else "n/a"
+        percent = f"{row['saved_pct']:.1f}" if available else "n/a"
+        flag = "*" if (status == "synthetic_valid" and row_status == "synthetic_valid"
+                       and available and row.get("significant") and not row.get("overridden")) else " "
         note = "  (app turned it back on: not trustworthy)" if row["overridden"] else ""
-        print(f"{row['saved_gpu_ms']:>9.3f} {row['saved_pct']:>6.1f}   {flag}  {row['saved_draw_calls']:>6} "
-              f"{row['saved_primitives']:>9} {row['saved_cpu_ms']:>7.3f}  {row['name']}{note}")
+        phases = ""
+        if all(key in row for key in ("baseline_before_gpu_ms", "gpu_ms", "baseline_after_gpu_ms",
+                                      "baseline_before_gpu_timing_status", "target_gpu_timing_status",
+                                      "baseline_after_gpu_timing_status")):
+            readings = []
+            for label, field, state_field in (("before", "baseline_before_gpu_ms", "baseline_before_gpu_timing_status"),
+                                              ("target", "gpu_ms", "target_gpu_timing_status"),
+                                              ("after", "baseline_after_gpu_ms", "baseline_after_gpu_timing_status")):
+                phase_status = row[state_field]
+                reading = (_gpu_reading(row[field]) if phase_status not in ("unavailable_or_zero", "mixed_or_unavailable")
+                           else "unavailable")
+                readings.append(f"{label} {reading} ({_gpu_status(phase_status)})")
+            phases = " [raw phase ms: " + ", ".join(readings) + "]"
+        print(f"{delta:>9} {percent:>6}   {flag}  {row['saved_draw_calls']:>6} "
+              f"{row['saved_primitives']:>9} {row['saved_cpu_ms']:>7.3f}  {row['name']} "
+              f"({_gpu_status(row_status)}){phases}{note}")
     if result.get("skipped"):
-        print(f"# skipped (unknown, hidden or already off): {', '.join(result['skipped'])}")
+        reasons = result.get("skipped_reasons", {})
+        print("# skipped: " + ", ".join(f"{name} ({reasons[name]})" if name in reasons else name
+                                      for name in result["skipped"]))
+    if result.get("pause_restore"):
+        print(f"# pause restore: {json.dumps(result['pause_restore'], ensure_ascii=False)}")
 
 
 def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = False) -> None:
@@ -1309,11 +1379,16 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
               f"p99 {result['p99_ms']}, max {result['max_ms']} ms; {result['fps_mean']} fps, 1 % low {result['fps_1pct_low']} fps; "
               f"physics catch-up frames {result['physics_catch_up_frames']}; hitches {result['hitch_total']} "
               f"(> max({result['hitch_ms']} ms, {result['factor']}x typical {result['typical_ms']} ms))")
-        if "gpu" in result:
+        if isinstance(result.get("gpu"), dict):
             gpu = result["gpu"]
-            print(f"GPU ({gpu['note']}): p50 {gpu['p50_ms']}, p95 {gpu['p95_ms']}, p99 {gpu['p99_ms']}, max {gpu['max_ms']} ms")
+            print(f"GPU root ({_gpu_status(gpu.get('status', result.get('gpu_timing_status')))}): "
+                  f"p50 {_gpu_reading(gpu.get('p50_ms'))}, p95 {_gpu_reading(gpu.get('p95_ms'))}, "
+                  f"p99 {_gpu_reading(gpu.get('p99_ms'))}, max {_gpu_reading(gpu.get('max_ms'))} ms")
+        else:
+            print("GPU root: unavailable")
         for hitch in result["hitches"]:
-            causes = ", ".join(hitch["causes"]) or "no counter changed"
+            causes = ", ".join(f"{cause} [legacy claim; freshness unverified]" if cause.startswith("GPU-bound") else cause
+                               for cause in hitch["causes"]) or "no counter changed"
             print(f"  frame {hitch['frame']}: {hitch['ms']} ms, {hitch['physics_ticks']} ticks; {causes}; deltas {hitch['deltas']}")
             for text in hitch["log"][:3]:
                 print(f"      log: {text}")
@@ -1322,17 +1397,25 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
     elif command == "ablate" and not raw_json and isinstance(result, dict) and "rows" in result:
         print_ablation(result)
     elif command == "render" and not raw_json and isinstance(result, dict) and result.get("measuring"):
-        print(f"# {result['frames']} frames, {result['statistic']}: GPU {result['gpu_ms']} ms (root {result['root_gpu_ms']}, "
-              f"SubViewports {result['sub_gpu_ms']}; p95 {result['gpu_p95_ms']}), frame {result['frame_ms']} ms = {result['fps']} fps")
-        print(f"bound: {result['bound']}")
+        status = _gpu_status(result.get("gpu_timing_status"))
+        scope = "root" if result.get("gpu_ms_scope") == "root_only_freshness_unverified" else "reported (scope unknown)"
+        print(f"# {result['frames']} frames, {result['statistic']}: GPU {scope} {_gpu_reading(result.get('gpu_ms'))} ms "
+              f"(p95 {_gpu_reading(result.get('gpu_p95_ms'))}; {status}), frame {result['frame_ms']} ms = {result['fps']} fps")
+        if result.get("gpu_ms_scope") != "root_only_freshness_unverified":
+            print(f"root GPU reading: {_gpu_reading(result.get('root_gpu_ms'))} ms (freshness unverified)")
+        sub_note = ("not included in root; may not have drawn" if result.get("sub_gpu_ms_scope") ==
+                    "last_readings_unverified_may_not_have_drawn" else "legacy or unknown scope")
+        print(f"SubViewport last-reading sum: {_gpu_reading(result.get('sub_gpu_ms'))} ms "
+              f"(freshness unverified; {sub_note})")
+        print("bound: unknown (GPU timestamp freshness does not establish a bottleneck)")
         print(f"draw calls {result['draw_calls']:g} (shadow {result['shadow_draw_calls']:g}, canvas {result['canvas_draw_calls']:g}), "
-              f"objects {result['objects']:g}, primitives {result['primitives']:g}; GPU budget {result['gpu_budget_pct']}")
+              f"objects {result['objects']:g}, primitives {result['primitives']:g}; GPU budget unavailable")
         config = result["config"]
         print(f"{config['renderer']} on {config['adapter']}, {config['size'][0]}x{config['size'][1]}, vsync {config['vsync']}, "
               f"MSAA {config['msaa_3d']}, 3D scale {config['scaling_3d_scale']}, view {config['debug_draw']}")
         for row in result["viewports"]:
-            if row["gpu_ms"]:
-                print(f"  {row['gpu_ms']:>7.3f} ms  {row['size'][0]}x{row['size'][1]} {row['update']:<8} {row['path']}")
+            print(f"  {_gpu_reading(row.get('gpu_ms')):>11} ms  {row['size'][0]}x{row['size'][1]} "
+                  f"{row['update']:<8} {row['path']} ({_gpu_status(row.get('gpu_timing_status'))}; may not have drawn)")
     elif command == "layers" and not raw_json and isinstance(result, dict) and "layers" in result:
         print(f"# {result['root']} (depth {result['depth']}): geometry  multimesh  shadow  lights  path")
         for row in result["layers"]:

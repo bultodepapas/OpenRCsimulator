@@ -122,25 +122,189 @@ class DebugctlTests(unittest.TestCase):
             status = debugctl.main(list(argv))
         return status, out.getvalue(), err.getvalue()
 
-    def test_ablate_table_ranks_savings_and_flags_untrustworthy_rows(self) -> None:
+    def show_output(self, command: str, result: dict, raw_json: bool = False) -> str:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            debugctl.show(command, result, False, raw_json)
+        return out.getvalue()
+
+    def test_ablate_synthetic_significance_and_overrides(self) -> None:
         result = {"baseline": {"gpu_ms": 1.7, "min_ms": 1.3, "max_ms": 1.8, "drift_ms": 0.08, "draw_calls": 387,
                                "primitives": 318944},
                   "noise_ms": 0.055, "significance": "|saved| > 3 x noise", "warmup": 10, "frames": 60, "frozen": True,
-                  "skipped": ["@glow"],
+                  "gpu_timing_status": "synthetic_valid", "gpu_ms_scope": "root_only_freshness_unverified",
+                  "freeze_scope": "simulation only; camera and visuals may change",
+                  "paused_at_start": False,
+                  "pause_restore": {"owned": True, "restored": False, "interrupted": True},
+                  "skipped": ["@glow", "@half_res"], "skipped_reasons": {"@half_res": "non_bilinear_reconstruction"},
                   "rows": [{"name": "@msaa", "kind": "flag", "saved_gpu_ms": 0.254, "saved_pct": 17.6, "significant": True,
+                            "gpu_timing_status": "synthetic_valid",
                             "saved_draw_calls": 0, "saved_primitives": 0, "saved_cpu_ms": 0.0, "overridden": False},
                            {"name": "SunGlare", "kind": "layer", "saved_gpu_ms": -0.02, "saved_pct": -1.2,
+                            "gpu_timing_status": "synthetic_valid",
                             "significant": False, "saved_draw_calls": 0, "saved_primitives": 0, "saved_cpu_ms": 0.09,
                             "overridden": True}]}
-        out = io.StringIO()
-        with contextlib.redirect_stdout(out):
-            debugctl.show("ablate", result, False, False)
-        lines = out.getvalue().splitlines()
-        self.assertIn("baseline GPU 1.7 ms", lines[0])
+        lines = self.show_output("ablate", result).splitlines()
+        self.assertIn("baseline GPU root 1.7 ms", lines[0])
+        self.assertIn("synthetic test data", lines[0])
+        self.assertIn("owned simulation freeze True; paused at start False", lines[0])
+        self.assertIn("simulation only; camera and visuals may change", lines[0])
         self.assertIn("@msaa", lines[2])
         self.assertIn("*", lines[2])
         self.assertIn("not trustworthy", lines[3])
         self.assertIn("skipped", lines[4])
+        self.assertIn("@half_res (non_bilinear_reconstruction)", lines[4])
+        self.assertIn('"restored": false', lines[5])
+
+    def test_ablate_unverified_unavailable_and_legacy_deltas(self) -> None:
+        result = {"baseline": {"gpu_ms": 2.0, "draw_calls": 10}, "frames": 60, "warmup": 10, "frozen": True,
+                  "gpu_timing_status": "unverified_freshness", "gpu_ms_scope": "root_only_freshness_unverified",
+                  "rows": [{"name": "positive", "baseline_gpu_ms": 2.0, "gpu_ms": 1.75, "saved_gpu_ms": 0.25,
+                            "saved_pct": 12.5, "significant": True, "gpu_timing_status": "unverified_freshness",
+                            "saved_draw_calls": 1, "saved_primitives": 2, "saved_cpu_ms": 0.1, "overridden": False},
+                           {"name": "missing", "baseline_gpu_ms": 0.0, "gpu_ms": 0.0, "saved_gpu_ms": 0.0,
+                            "saved_pct": 0.0, "significant": True, "gpu_timing_status": "unavailable_or_zero",
+                            "saved_draw_calls": 0, "saved_primitives": 0, "saved_cpu_ms": 0.0, "overridden": False},
+                           {"name": "mixed", "baseline_gpu_ms": 2.0, "gpu_ms": 2.125, "saved_gpu_ms": -0.125,
+                            "saved_pct": -6.25, "significant": True, "gpu_timing_status": "mixed_or_unavailable",
+                            "saved_draw_calls": 0, "saved_primitives": 0, "saved_cpu_ms": 0.0, "overridden": False}]}
+        lines = self.show_output("ablate", result).splitlines()
+        self.assertIn("0.250", lines[2])
+        self.assertIn("12.5", lines[2])
+        self.assertIn("delayed, freshness unverified", lines[2])
+        self.assertIn("n/a", lines[3])
+        self.assertIn("n/a", lines[4])
+        self.assertNotIn("-0.125", lines[4])
+        self.assertIn("mixed or unavailable readings", lines[4])
+        self.assertNotIn("*", "\n".join(lines))
+        self.assertNotIn("saving", "\n".join(lines).lower())
+
+        legacy = dict(result, rows=[dict(result["rows"][0])])
+        legacy.pop("gpu_timing_status")
+        legacy.pop("gpu_ms_scope")
+        legacy["rows"][0].pop("gpu_timing_status")
+        legacy["rows"][0].pop("baseline_gpu_ms")
+        legacy["rows"][0].pop("gpu_ms")
+        text = self.show_output("ablate", legacy)
+        self.assertIn("0.250", text)
+        self.assertIn("scope unknown", text)
+        self.assertIn("legacy or unknown status", text)
+        self.assertIn("reported frozen True (ownership unknown)", text)
+        self.assertNotIn("*", text)
+        self.assertEqual(json.loads(self.show_output("ablate", legacy, raw_json=True)), legacy)
+
+    def test_ablate_null_and_legacy_mixed_phase_deltas_are_unavailable(self) -> None:
+        # One A-B-A baseline was unavailable (0), the target reported 4 and the other baseline 10.
+        # Older responses could average 0 and 10 into 5 and claim a 1 ms delta despite the missing phase.
+        row = {"name": "mixed-null", "baseline_gpu_ms": 5.0, "gpu_ms": 4.0,
+               "baseline_before_gpu_ms": 0.0, "baseline_after_gpu_ms": 10.0,
+               "baseline_before_gpu_timing_status": "unavailable_or_zero",
+               "target_gpu_timing_status": "unverified_freshness", "baseline_after_gpu_timing_status": "unverified_freshness",
+               "saved_gpu_ms": None, "saved_pct": None, "gpu_timing_status": "mixed_or_unavailable",
+               "significant": True, "saved_draw_calls": 2, "saved_primitives": 10,
+               "saved_cpu_ms": 0.3, "overridden": False}
+        result = {"baseline": {"gpu_ms": 5.0, "min_ms": 0.0, "max_ms": 10.0, "drift_ms": 10.0,
+                               "draw_calls": 20}, "noise_ms": 4.0, "frames": 60, "warmup": 10,
+                  "gpu_timing_status": "mixed_or_unavailable", "frozen": False, "paused_at_start": True,
+                  "rows": [row, dict(row, name="mixed-legacy", saved_gpu_ms=1.0, saved_pct=20.0),
+                           dict(row, name="unverified-null", gpu_timing_status="unverified_freshness")]}
+        lines = self.show_output("ablate", result).splitlines()
+        self.assertIn("owned simulation freeze False; paused at start True", lines[0])
+        self.assertIn("unavailable ms", lines[0])
+        self.assertIn("raw range unavailable, drift unavailable, noise unavailable", lines[0])
+        self.assertIn("20 draw calls", lines[0])
+        for line in lines[2:4]:
+            self.assertEqual(line.count("n/a"), 2)
+            self.assertIn("mixed or unavailable readings", line)
+            self.assertNotIn("1.000", line)
+            self.assertNotIn("20.0", line)
+            self.assertNotIn("*", line)
+        self.assertEqual(lines[4].count("n/a"), 2)
+        self.assertIn("delayed, freshness unverified", lines[4])
+        self.assertIn("before unavailable (unavailable or zero)", lines[2])
+        self.assertIn("target 4 (delayed, freshness unverified)", lines[2])
+        self.assertIn("after 10 (delayed, freshness unverified)", lines[2])
+        self.assertIn("2", lines[2])  # draw counters remain visible
+        self.assertEqual(json.loads(self.show_output("ablate", result, raw_json=True)), result)
+
+        # New producers identify baseline phases separately, even if a target phase makes the run mixed.
+        result["baseline"]["gpu_timing_status"] = "unverified_freshness"
+        result["noise_timing_status"] = "unverified_freshness"
+        header = self.show_output("ablate", result).splitlines()[0]
+        self.assertIn("baseline GPU reported (scope unknown) 5 ms (delayed, freshness unverified)", header)
+        self.assertIn("noise 4 ms", header)
+
+    @staticmethod
+    def render_result() -> dict:
+        return {"measuring": True, "frames": 30, "statistic": "median per frame", "gpu_ms": 2.1,
+                "root_gpu_ms": 2.1, "sub_gpu_ms": 0.4, "gpu_p95_ms": 2.5, "frame_ms": 16.7, "fps": 59.9,
+                "gpu_timing_status": "unverified_freshness", "gpu_ms_scope": "root_only_freshness_unverified",
+                "sub_gpu_ms_scope": "last_readings_unverified_may_not_have_drawn", "bound": "CPU: misleading",
+                "gpu_budget_status": "unavailable", "gpu_budget_pct": {"at_60fps": -1, "at_120fps": -1},
+                "draw_calls": 12, "shadow_draw_calls": 3, "canvas_draw_calls": 1, "objects": 6, "primitives": 100,
+                "config": {"renderer": "mobile", "adapter": "M1", "size": [1920, 1080], "vsync": "enabled",
+                           "msaa_3d": 0, "scaling_3d_scale": 1.0, "debug_draw": "disabled"},
+                "viewports": [{"gpu_ms": 0.4, "gpu_timing_status": "unverified_freshness", "size": [256, 256],
+                               "update": "once", "path": "shadow"},
+                              {"gpu_ms": 0.0, "gpu_timing_status": "unavailable_or_zero", "size": [64, 64],
+                               "update": "always", "path": "other"}]}
+
+    def test_render_exposes_raw_root_and_subviewport_without_claiming_budget(self) -> None:
+        result = self.render_result()
+        text = self.show_output("render", result)
+        self.assertIn("GPU root 2.1 ms", text)
+        self.assertIn("p95 2.5", text)
+        self.assertIn("SubViewport last-reading sum: 0.4 ms", text)
+        self.assertIn("not included in root; may not have drawn", text)
+        self.assertIn("delayed, freshness unverified", text)
+        self.assertIn("unavailable ms", text)
+        self.assertIn("bound: unknown", text)
+        self.assertIn("GPU budget unavailable", text)
+        self.assertNotIn("CPU: misleading", text)
+        self.assertNotIn("-1", text)
+        self.assertEqual(json.loads(self.show_output("render", result, raw_json=True)), result)
+
+    def test_render_invalid_and_legacy_timings_are_not_a_bottleneck(self) -> None:
+        result = self.render_result()
+        result.update(gpu_ms=0.0, root_gpu_ms=float("nan"), sub_gpu_ms=float("inf"), gpu_p95_ms=-1,
+                      gpu_timing_status="unavailable_or_zero")
+        result["viewports"][0]["gpu_ms"] = float("nan")
+        text = self.show_output("render", result)
+        self.assertIn("GPU root unavailable ms", text)
+        self.assertIn("SubViewport last-reading sum: unavailable ms", text)
+        self.assertIn("bound: unknown", text)
+        self.assertNotIn("nan", text.lower())
+        self.assertNotIn("inf", text.lower())
+        self.assertNotIn("CPU: misleading", text)
+
+        legacy = self.render_result()
+        legacy.update(gpu_ms=2.5, bound="frame cap: GPU headroom 14 ms")
+        for key in ("gpu_timing_status", "gpu_ms_scope", "sub_gpu_ms_scope", "gpu_budget_status"):
+            legacy.pop(key)
+        for row in legacy["viewports"]:
+            row.pop("gpu_timing_status")
+        text = self.show_output("render", legacy)
+        self.assertIn("GPU reported (scope unknown) 2.5 ms", text)
+        self.assertIn("root GPU reading: 2.1 ms", text)
+        self.assertIn("legacy or unknown", text)
+        self.assertNotIn("GPU headroom", text)
+
+    def test_frames_label_legacy_gpu_claims_and_unavailable_values(self) -> None:
+        result = {"frames": 10, "mean_ms": 16.0, "p50_ms": 16.0, "p95_ms": 17.0, "p99_ms": 17.0,
+                  "max_ms": 18.0, "fps_mean": 62.5, "fps_1pct_low": 55.5, "physics_catch_up_frames": 0,
+                  "hitch_total": 1, "hitch_ms": 50, "factor": 3, "typical_ms": 16,
+                  "gpu": {"p50_ms": 1.2, "p95_ms": 0.0, "p99_ms": float("inf"), "max_ms": -1},
+                  "hitches": [{"frame": 2, "ms": 60, "physics_ticks": 1, "causes": ["GPU-bound (50 ms GPU)"],
+                               "deltas": {}, "log": []}]}
+        text = self.show_output("frames", result)
+        self.assertIn("p50 1.2, p95 unavailable, p99 unavailable, max unavailable", text)
+        self.assertIn("legacy or unknown status", text)
+        self.assertIn("GPU-bound (50 ms GPU) [legacy claim; freshness unverified]", text)
+        result["gpu"]["status"] = "unverified_freshness"
+        self.assertIn("GPU root (delayed, freshness unverified)", self.show_output("frames", result))
+        result.pop("gpu")
+        result["gpu_timing_status"] = "unavailable_or_zero"
+        self.assertIn("GPU root: unavailable", self.show_output("frames", result))
 
     def test_bugit_report_summarizes_and_bugitgo_refuses_without_checkpoint(self) -> None:
         folder = Path(self.tmp.name) / "bugit"

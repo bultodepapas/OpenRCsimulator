@@ -1,6 +1,6 @@
 ---
 name: openrc-debug
-description: Launch, inspect and drive the running OpenRC simulator from the shell (no mouse) through its debug bridge or its MCP server (sim_* tools) — look (every control with a ref, name, value and options), choose any option by its field name, catalog/setup for aircraft, start, landscape and time of day, menus by label, keys and shortcuts, controller actions, sticks, pause/step, telemetry, screenshots, live logs, settings, UI crawl — and hunt stutter (frame hitches), leaks (object census, soak), physics bugs (tick watchpoints, rewind to before a crash, force/velocity/wind gizmos), reproducible bug reports (bugit/bugitgo), GPU cost (render, layer ablation, overdraw view), script CPU (profiler), UI bugs (seeded monkey) and GDScript compiler warnings. Use when a task needs the real running app rather than a test script.
+description: Launch, inspect and drive the running OpenRC simulator from the shell (no mouse) through its debug bridge or its MCP server (sim_* tools) — look (every control with a ref, name, value and options), choose any option by its field name, catalog/setup for aircraft, start, landscape and time of day, menus by label, keys and shortcuts, controller actions, sticks, pause/step, telemetry, screenshots, live logs, settings, UI crawl — and hunt stutter (frame hitches), leaks (object census, soak), physics bugs (tick watchpoints, rewind to before a crash, force/velocity/wind gizmos), reproducible bug reports (bugit/bugitgo), render diagnostics (GPU observations, ablation, overdraw view), script CPU (profiler), UI bugs (seeded monkey) and GDScript compiler warnings. Use when a task needs the real running app rather than a test script.
 ---
 
 # Drive the running app
@@ -31,8 +31,10 @@ $D stop
   failure or new engine error; `assert expr=`).
 - Stutter: `$D frames` (percentiles, hitches with causes). Leaks: `$D objects baseline=true` … `diff=true`, or
   `$D soak scenario.txt`. Physics bugs: `$D break expr="-s[2] < 1" wait=true`. Script CPU: `launch --script-profile`,
-  then `$D profile seconds=20`. GPU cost (rendered launch, not `--headless`): `$D render` (GPU/CPU ms, bound-by
-  verdict), `$D ablate` (what each layer or feature costs), `$D viewmode name=overdraw`. Go back in flight time:
+  then `$D profile seconds=20`. Render diagnostics (rendered launch, not `--headless`): `$D render` (raw root GPU
+  readings with unverified freshness, CPU time and draw counters), `$D ablate` (unverified timing deltas),
+  `$D viewmode name=overdraw`. Zero GPU readings are unavailable; separate SubViewport last readings may be stale
+  and are not included in the root reading. Go back in flight time:
   `$D rewind arm=true` before flying, `$D rewind seconds=2` after the event. See the physics: `$D gizmos show=all`.
   File a bug with its exact flight state: `$D bugit --note "…"`; reopen it with `$D bugitgo <folder>`. A long load frame: `launch --verbose`, then `$D timeline --hitch`. Random UI testing: `$D monkey --seed N --keys`. Compiler warnings:
   `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`.

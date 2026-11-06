@@ -3580,5 +3580,643 @@
       "review-evidence/tmp/campaign-finish.txt": "00f907cd8d98081d8b3e3b6a8678c46794e32c9d45e2f5d4b955fa1dfc45ce11",
       "review-evidence/tmp/caffeinate-finish-command.txt": "5f5c2f227dd9e695aeef8d36c255984bcb6d30a7381f68771d84c66bb700f232"
     }
+  },
+  "solar_support_screen": {
+    "format": "openrc-m1-solar-support-screen-v1",
+    "order": [
+      "B1",
+      "C1",
+      "C2",
+      "B2"
+    ],
+    "runs": [
+      {
+        "role": "baseline",
+        "run": 1,
+        "fps": 74.70410943847878,
+        "frame_ms": {
+          "max": 19.307000000000002,
+          "p50": 13.563,
+          "p95": 15.757,
+          "p99": 16.785999999999998
+        },
+        "full_checkpoints": [
+          {
+            "end_tick": 6000,
+            "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+            "start_tick": 1
+          },
+          {
+            "end_tick": 12000,
+            "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+            "start_tick": 6001
+          },
+          {
+            "end_tick": 18000,
+            "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+            "start_tick": 12001
+          },
+          {
+            "end_tick": 24000,
+            "sha256": "8781f7ed56563e4024fa2893be428eb8c0229a6c751b932bb0ab1864c5713a18",
+            "start_tick": 18001
+          },
+          {
+            "end_tick": 30000,
+            "sha256": "af8e8409907fbf150471d6efe99597f5f5d62eaa1fd58f83be24fbee53476a7e",
+            "start_tick": 24001
+          }
+        ]
+      },
+      {
+        "role": "baseline",
+        "run": 2,
+        "fps": 74.5501179103392,
+        "frame_ms": {
+          "max": 24.062,
+          "p50": 13.566,
+          "p95": 15.821000000000002,
+          "p99": 16.92
+        },
+        "full_checkpoints": [
+          {
+            "end_tick": 6000,
+            "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+            "start_tick": 1
+          },
+          {
+            "end_tick": 12000,
+            "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+            "start_tick": 6001
+          },
+          {
+            "end_tick": 18000,
+            "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+            "start_tick": 12001
+          },
+          {
+            "end_tick": 24000,
+            "sha256": "8781f7ed56563e4024fa2893be428eb8c0229a6c751b932bb0ab1864c5713a18",
+            "start_tick": 18001
+          },
+          {
+            "end_tick": 30000,
+            "sha256": "af8e8409907fbf150471d6efe99597f5f5d62eaa1fd58f83be24fbee53476a7e",
+            "start_tick": 24001
+          }
+        ]
+      },
+      {
+        "role": "candidate",
+        "run": 1,
+        "fps": 74.55308479616369,
+        "frame_ms": {
+          "max": 20.836000000000002,
+          "p50": 13.591000000000001,
+          "p95": 15.807000000000002,
+          "p99": 16.886000000000003
+        },
+        "full_checkpoints": [
+          {
+            "end_tick": 6000,
+            "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+            "start_tick": 1
+          },
+          {
+            "end_tick": 12000,
+            "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+            "start_tick": 6001
+          },
+          {
+            "end_tick": 18000,
+            "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+            "start_tick": 12001
+          },
+          {
+            "end_tick": 24000,
+            "sha256": "8781f7ed56563e4024fa2893be428eb8c0229a6c751b932bb0ab1864c5713a18",
+            "start_tick": 18001
+          },
+          {
+            "end_tick": 30000,
+            "sha256": "af8e8409907fbf150471d6efe99597f5f5d62eaa1fd58f83be24fbee53476a7e",
+            "start_tick": 24001
+          }
+        ]
+      },
+      {
+        "role": "candidate",
+        "run": 2,
+        "fps": 74.50383143931855,
+        "frame_ms": {
+          "max": 19.759999999999998,
+          "p50": 13.615,
+          "p95": 15.802,
+          "p99": 16.806
+        },
+        "full_checkpoints": [
+          {
+            "end_tick": 6000,
+            "sha256": "10be85e23501237da302e0abb3b676acfbda1c09b8e76d01dc71a994600a48cc",
+            "start_tick": 1
+          },
+          {
+            "end_tick": 12000,
+            "sha256": "7ec9d6e6a7dde8049f894890cf32b8fdb9f73ea70630dea1b38b6d4e2045a228",
+            "start_tick": 6001
+          },
+          {
+            "end_tick": 18000,
+            "sha256": "557e8f58fc03f96c4a6dbd73152d877124bda5c49cad18586cbeee15a27e81a2",
+            "start_tick": 12001
+          },
+          {
+            "end_tick": 24000,
+            "sha256": "8781f7ed56563e4024fa2893be428eb8c0229a6c751b932bb0ab1864c5713a18",
+            "start_tick": 18001
+          },
+          {
+            "end_tick": 30000,
+            "sha256": "af8e8409907fbf150471d6efe99597f5f5d62eaa1fd58f83be24fbee53476a7e",
+            "start_tick": 24001
+          }
+        ]
+      }
+    ],
+    "mean_fps": {
+      "baseline": 74.62711367440899,
+      "candidate": 74.52845811774111
+    },
+    "candidate_change_percent": -0.13219800660964065,
+    "full_checkpoint_windows_identical": true,
+    "visual": [
+      {
+        "case": "day-1\\captures\\glare_cloud.png",
+        "size": [
+          1920,
+          1080
+        ],
+        "decoded_identical": true,
+        "max_channel_difference": 0,
+        "baseline_sha256": "38767c840b2e8fa533a850eb48b5175829e571568239ebbfcfffe1716122ee21",
+        "candidate_sha256": "38767c840b2e8fa533a850eb48b5175829e571568239ebbfcfffe1716122ee21"
+      },
+      {
+        "case": "day-1\\captures\\glare_disc_zoom.png",
+        "size": [
+          1920,
+          1080
+        ],
+        "decoded_identical": true,
+        "max_channel_difference": 0,
+        "baseline_sha256": "a9021870b5ed81e0d7b72bbe0ce2ecb9dd41cb11f896e58ecab4b8b358fd781d",
+        "candidate_sha256": "a9021870b5ed81e0d7b72bbe0ce2ecb9dd41cb11f896e58ecab4b8b358fd781d"
+      },
+      {
+        "case": "day-1\\captures\\glare_side.png",
+        "size": [
+          1920,
+          1080
+        ],
+        "decoded_identical": true,
+        "max_channel_difference": 0,
+        "baseline_sha256": "03af28023d54d02e0110fab4f2dee59846efb0ca1460ba3515be232eca426f48",
+        "candidate_sha256": "03af28023d54d02e0110fab4f2dee59846efb0ca1460ba3515be232eca426f48"
+      },
+      {
+        "case": "day-1\\captures\\sun_alignment.png",
+        "size": [
+          1920,
+          1080
+        ],
+        "decoded_identical": true,
+        "max_channel_difference": 0,
+        "baseline_sha256": "9c0b70d4f224a84cb2d212a5f11b8664fc9c2e3f06dcf275f0a60ceafe4085c2",
+        "candidate_sha256": "9c0b70d4f224a84cb2d212a5f11b8664fc9c2e3f06dcf275f0a60ceafe4085c2"
+      },
+      {
+        "case": "sunset-1\\captures\\glare_disc_zoom.png",
+        "size": [
+          1920,
+          1080
+        ],
+        "decoded_identical": true,
+        "max_channel_difference": 0,
+        "baseline_sha256": "245e5659d021b106ba0d376c06f9f0585c8aac47c08c52206233a05562dcca30",
+        "candidate_sha256": "245e5659d021b106ba0d376c06f9f0585c8aac47c08c52206233a05562dcca30"
+      }
+    ],
+    "decision": "reject: no useful improvement; below 5 percent screen; not a promotion campaign",
+    "baseline_commit": "cf430bbcd78e6520356105beb01261a479b1ddc5",
+    "candidate_commit": "a1f32faeed6dbffc8fa6b59441bec0d061b778d6",
+    "revert_commit": "36ce206fd",
+    "workload": {
+      "engine": "4.8.beta2.official.cafc17a19",
+      "adapter": "Apple M1",
+      "backend": "Mobile/Metal",
+      "output_scope": "viewport_render_target_estimate_v1",
+      "output": [
+        1920,
+        1080
+      ],
+      "reconstruction": "native",
+      "msaa": "4x",
+      "vsync": false,
+      "warmup_s": 30,
+      "measured_s": 120
+    },
+    "sources": {
+      "baseline": {
+        "manifest_sha256": "482bedf1865530bca0450d84812040720bd7d9b0a9449979055cca1ef6c05188",
+        "file_count": 9416,
+        "commit": "cf430bbcd78e6520356105beb01261a479b1ddc5"
+      },
+      "candidate": {
+        "manifest_sha256": "50be795b0d1ec6a0b4bab579f9fa4265dcbdd2ecc0d569c2167aada76d5a0a3f",
+        "file_count": 9416,
+        "commit": "a1f32faeed6dbffc8fa6b59441bec0d061b778d6"
+      }
+    },
+    "audits": {
+      "baseline": {
+        "sha256": "c30a8a7a41af513ba7bbaed0e9d58654ecf089c1a11eb4d5f864364eb3a2385d",
+        "campaign_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "runs": [
+          {
+            "run": "1",
+            "capture_id": "fc3ee726-14a6-4cdf-bba2-145fc1ddd4a7",
+            "individual_pass": true,
+            "source_matches_export": true,
+            "source_mismatch_count": 0,
+            "clock_join": true,
+            "clock_errors": [],
+            "source_digest": "1185799b6d98c2ad965a0492d360ad62b0b6ab83c4619ffc1a350aeb02b4a557",
+            "frame_report_sha256": "856c50c11681005d83199dfbcffe2e1ded4c52085972212d103b7e1fd642ffc3",
+            "health_report_sha256": "28d5c69567f9ec1f91458734e77dffd5cfc671cf51705169c8a6969c8ff36346",
+            "checked_report_sha256": "d56393ab1d6307862e6a0dbe505f01563416f24d1481f9f4039bf150bbadb1e9",
+            "log_sha256": "bb322beeb79bb92577f4268903646cb25d164a0c2a1ae0fea28c7a953028c9bc"
+          },
+          {
+            "run": "2",
+            "capture_id": "ef260ed6-c631-440e-aba6-9afeb0ef965c",
+            "individual_pass": true,
+            "source_matches_export": true,
+            "source_mismatch_count": 0,
+            "clock_join": true,
+            "clock_errors": [],
+            "source_digest": "1185799b6d98c2ad965a0492d360ad62b0b6ab83c4619ffc1a350aeb02b4a557",
+            "frame_report_sha256": "2465ec85f610e5f0a4991f33db96fdfafece3d1734d361814d55102cb069f14d",
+            "health_report_sha256": "b3767dd6a645089891f020ce8647ee459e5c2951bc07531440e49ed8a7decd2f",
+            "checked_report_sha256": "c17ec44d5d80a5be6cb7deef3f20825cffdeaf5fec48a24e3e7f9fca3b9a7cc8",
+            "log_sha256": "f0d75c7f56e000bc20cfa2d9c6e2bb7d8706c2b23f4f3ff30ae9370806b692b4"
+          }
+        ]
+      },
+      "candidate": {
+        "sha256": "fc96cb49b5dd95efb5020cbfacaad517754770bb2372c02948c4ab42477ed11e",
+        "campaign_pass": false,
+        "reasons": [
+          "campaign has fewer than 3 runs"
+        ],
+        "runs": [
+          {
+            "run": "1",
+            "capture_id": "93115e61-8cb9-46c2-a34a-74b0fff21040",
+            "individual_pass": true,
+            "source_matches_export": true,
+            "source_mismatch_count": 0,
+            "clock_join": true,
+            "clock_errors": [],
+            "source_digest": "20c821329207ccaea0bd70b082a916c49269292a0baa80ec19393a7468302328",
+            "frame_report_sha256": "2e71f324772171baf720eaad08bdebcb530bb4209a0ebb5bc017a958eba0c50b",
+            "health_report_sha256": "6179fe7395fb39e7a903b011f1dc10533e17d764cbfb5ef6b9e0585e2306c417",
+            "checked_report_sha256": "6e17c0874c4622933dbd0dfa936716eb30debd26c79b1f67bec66cc08be79343",
+            "log_sha256": "0eafac44e6f7d6ee290c9c0f01c176e82484b30bb19f2566a4b94cd234aa0663"
+          },
+          {
+            "run": "2",
+            "capture_id": "778d528a-0db3-419e-88bc-d1173a65458c",
+            "individual_pass": true,
+            "source_matches_export": true,
+            "source_mismatch_count": 0,
+            "clock_join": true,
+            "clock_errors": [],
+            "source_digest": "20c821329207ccaea0bd70b082a916c49269292a0baa80ec19393a7468302328",
+            "frame_report_sha256": "fcee8819d332b55d057d8beae18ef1a6e660aa783751aa3c77c78bb3d57b0ea7",
+            "health_report_sha256": "c4bc86084e48f6e06a4aa0f7bbf7e5498f9d949301b8104a970d1e620fd037eb",
+            "checked_report_sha256": "0f18fb7d00e6ab746ef5ec0d44738e309fd6a1fbb7eb2dcaba2f24695f86ea8a",
+            "log_sha256": "7919fce41e5ff568bdf873544313f64d130366177214dde7bf13d8ca5ccd3d92"
+          }
+        ]
+      }
+    },
+    "visual_limits": [
+      "Five still pairs only; no motion, physical presentation or numeric GPU parity proof.",
+      "Disc-zoom day is overexposed and sunset is occluded; image equality does not qualify the disc edge.",
+      "Capture fixture report hard-codes gl_compatibility; actual invocation and checked log establish Mobile/Metal."
+    ],
+    "raw_evidence": {
+      "windows": "tmp/m1-render-attribution-20261106",
+      "mac_baseline": "/Users/gius/OpenRC-m1-work/m1-render-attribution-20261106",
+      "mac_candidate": "/Users/gius/OpenRC-m1-work/m1-sun-support-20261106"
+    },
+    "limits": [
+      "Early rejection screen: two runs per source, not the five-pair promotion campaign.",
+      "No default, physics, shader or future-chip performance claim is promoted."
+    ]
+  },
+  "gpu_diagnostic_integrity": {
+    "source_commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+    "export_manifest_sha256": "b1719e87d11d48832c03217e6c776097b36e25bdab67b6d468b254f7592b6e78",
+    "verification": {
+      "format": "openrc-git-export-verification-v1",
+      "root": "/Users/gius/OpenRC-m1-work/m1-diagnostic-integrity-20261106",
+      "manifest_sha256": "b1719e87d11d48832c03217e6c776097b36e25bdab67b6d468b254f7592b6e78",
+      "commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+      "complete": true,
+      "expected_files": 9420,
+      "found_files": 9420,
+      "issue_count": 0,
+      "issues": [],
+      "missing_count": 0,
+      "missing": [],
+      "ignored_generated_directories": [
+        "app/.godot"
+      ],
+      "scope": "point-in-time bytes and file modes; excluded generated directories are not attested"
+    },
+    "isolation": {
+      "commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+      "file": "app/project.godot",
+      "before_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+      "after_sha256": "b5148ba08ac372b1e0c46fe3299902f566dd37d8dc4060ed4a2531e07d04f150",
+      "changes": [
+        "isolated project name",
+        "startup multi-bounce disabled"
+      ]
+    },
+    "checks": [
+      {
+        "label": "import-gqji_5c0",
+        "ok": true,
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "assertions": 0,
+        "report_sha256": "32bf98f2e19ff468837bf47d46507e58b41c639e8cabcc8d4e68dfc7fdfe8b5e",
+        "engine_log_sha256": "ec037ed5372bc287f06d276f661dacb26a3cd854084e1e30d60bccec618c48d5"
+      },
+      {
+        "label": "test_debug_bridge-8fj4y33e",
+        "ok": true,
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 2
+        },
+        "assertions": 105,
+        "report_sha256": "246190089935dcba439eb75365f37a258df564985baff797e8b2e5ac446bf213",
+        "engine_log_sha256": "e2fda4e68f5a99848a9447357c7e26699213531d070d31fd33d914517d233325"
+      },
+      {
+        "label": "test_render_probe-_2gqw3_0",
+        "ok": true,
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "assertions": 34,
+        "report_sha256": "f93f7bd8906870bc4c35e48155bc75744c8eba69da5215e68126a10eb5c19b86",
+        "engine_log_sha256": "9918aba23aed746aae100c5bf9fab82b8579adaf0c6145d52ea131a4b17a68b5"
+      }
+    ],
+    "bridge_pass": {
+      "passed": true,
+      "source_commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+      "checks": [
+        "root-only unverified timing",
+        "active flight restored",
+        "pre-paused flight preserved",
+        "measurement enable restored",
+        "Native scale and MSAA restored",
+        "MetalFX half-scale refused",
+        "no engine errors"
+      ],
+      "limit": "Functional diagnostic; not performance acceptance or verified MetalFX execution"
+    },
+    "bridge_sha256": "e3709ec77bdd6f905683713667d54393ad9c69eda76f541f9a1f7d7581e584f9",
+    "exit": {
+      "stopped": true,
+      "pid": 89713,
+      "forced": false,
+      "launcher_exit_code": 0,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "client_tests": {
+      "platform": "native macOS ARM64",
+      "run": 60,
+      "failures": 0,
+      "skipped": 1,
+      "skip_reason": "requires Linux /proc"
+    },
+    "cleanup": "Fri Nov  6 15:32:47 UTC 2026\nStopped owned keepawake lease 89212; no Godot or task host collector remained.\nFilesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on\n/dev/disk3s5   228Gi   197Gi   3.4Gi    99%    2.1M   36M    6%   /System/Volumes/Data\nNow drawing from 'AC Power'\n -InternalBattery-0 (id=24576099)\t100%; charged; 0:00 remaining present: true\n",
+    "limits": [
+      "GPU values and ablation deltas are unverified last-read observations, not causal cost, rankings or frame-presentation evidence.",
+      "Native no-controller UI route passed; controller-neutral and pending-mode refusal are faithful unit controls, not physical controller acceptance.",
+      "Viewport measurement enablement is shared with other observers; do not run competing timing collectors.",
+      "MetalFX selected at Retina; effective SDK execution remains unknown.",
+      "Only sampled phase ownership is observed; changes between process callbacks remain unobservable.",
+      "No new renderer/MSAA/reconstruction default or M2-M6 qualification."
+    ],
+    "review": {
+      "peer_findings_fixed": 4,
+      "coderabbit_local": "auth status succeeded; review failed Git provider authentication; no local CodeRabbit review completed"
+    },
+    "windows_attempts": {
+      "initial_import": "four get_multiple_md5 file-access errors; retained, not a pass",
+      "merged_import": "clean rerun: zero errors/warnings",
+      "bridge": "earlier fixed-port collision and stale-snapshot assertion failures retained; final native bridge passed all 105 assertions"
+    },
+    "raw_evidence": "tmp/m1-render-attribution-20261106/diagnostic-evidence",
+    "selected_observations": [
+      {
+        "command": "render",
+        "args": {
+          "frames": 30
+        },
+        "result": {
+          "measuring": true,
+          "gpu_ms": 12.915000000000001,
+          "root_gpu_ms": 12.915000000000001,
+          "sub_gpu_ms": 0.851,
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "gpu_budget_status": "unavailable",
+          "bound": "unknown: GPU timestamp availability and freshness do not establish a frame bottleneck"
+        }
+      },
+      {
+        "command": "render",
+        "args": {
+          "measure": false
+        },
+        "result": {
+          "measuring": false
+        }
+      },
+      {
+        "command": "ablate",
+        "args": {
+          "targets": [
+            "@msaa",
+            "@half_res"
+          ],
+          "warmup": 5,
+          "frames": 30
+        },
+        "result": {
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "frozen": true,
+          "paused_at_start": false,
+          "pause_restore": {
+            "owned": true,
+            "restored": true,
+            "interrupted": false,
+            "paused": false
+          },
+          "skipped_reasons": {},
+          "rows": [
+            {
+              "name": "@msaa",
+              "gpu_ms": 12.127,
+              "saved_gpu_ms": -0.20800000000000002,
+              "saved_pct": -1.7000000000000002,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            },
+            {
+              "name": "@half_res",
+              "gpu_ms": 7.585,
+              "saved_gpu_ms": 4.319,
+              "saved_pct": 36.300000000000004,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            }
+          ]
+        }
+      },
+      {
+        "command": "render",
+        "args": {},
+        "result": {
+          "measuring": false
+        }
+      },
+      {
+        "command": "ablate",
+        "args": {
+          "targets": [
+            "@msaa"
+          ],
+          "warmup": 5,
+          "frames": 15
+        },
+        "result": {
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "frozen": true,
+          "paused_at_start": true,
+          "pause_restore": {
+            "owned": true,
+            "restored": true,
+            "interrupted": false,
+            "paused": true
+          },
+          "skipped_reasons": {},
+          "rows": [
+            {
+              "name": "@msaa",
+              "gpu_ms": 11.422,
+              "saved_gpu_ms": 0.908,
+              "saved_pct": 7.4,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            }
+          ]
+        }
+      },
+      {
+        "command": "render",
+        "args": {},
+        "result": {
+          "measuring": false
+        }
+      },
+      {
+        "command": "ablate",
+        "args": {
+          "targets": [
+            "@msaa",
+            "@half_res"
+          ],
+          "warmup": 5,
+          "frames": 15
+        },
+        "result": {
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "frozen": true,
+          "paused_at_start": true,
+          "pause_restore": {
+            "owned": true,
+            "restored": true,
+            "interrupted": false,
+            "paused": true
+          },
+          "skipped_reasons": {
+            "@half_res": "non_bilinear_reconstruction"
+          },
+          "rows": [
+            {
+              "name": "@msaa",
+              "gpu_ms": 15.206,
+              "saved_gpu_ms": 0.327,
+              "saved_pct": 2.1,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            }
+          ]
+        }
+      },
+      {
+        "command": "render",
+        "args": {
+          "measure": true,
+          "frames": 15
+        },
+        "result": {
+          "measuring": true,
+          "gpu_ms": 11.905,
+          "root_gpu_ms": 11.905,
+          "sub_gpu_ms": 0.854,
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "gpu_budget_status": "unavailable",
+          "bound": "unknown: GPU timestamp availability and freshness do not establish a frame bottleneck"
+        }
+      }
+    ]
   }
 }

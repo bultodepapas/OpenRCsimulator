@@ -69,6 +69,13 @@ class FakeSession extends Node:
 		if holds.is_empty():
 			sim.set_paused(false)
 
+	func hold(reason: String) -> void:
+		holds[reason] = true
+		sim.set_paused(true)
+
+	func release(reason: String) -> void:
+		holds.erase(reason)
+
 	# PT1h-R9 rewind seam: the real session's checkpoint boundary holds `simulation.inputs`, and a restore leaves
 	# the session on recorded inputs (input_enabled = false).
 	var input_enabled := true
@@ -183,6 +190,8 @@ func _run() -> void:
 	await _gizmo_math(flight.session)
 	await _agent_ui(ui)
 	_ablation_math()
+	_ablation_pause_ownership(bridge, flight.session)
+	_render_timing_status(bridge)
 	bridge.queue_free()
 	await process_frame
 	print("debug bridge: %d failed" % _failures if _failures > 0 else "all debug bridge checks passed")
@@ -840,7 +849,7 @@ class FakeProbe extends "res://debug/render_probe.gd":
 	func sample() -> Dictionary:
 		ticks += 1
 		return {gpu_ms = 2.0 + (0.5 if forest.visible else 0.0) + 0.01 * ticks, draw_calls = 10 if forest.visible else 7,
-			primitives = 100, objects = 5, root_cpu_ms = 0.1}
+			primitives = 100, objects = 5, root_cpu_ms = 0.1, gpu_timing_status = "synthetic_valid"}
 
 
 func _ablation_math() -> void:
@@ -889,6 +898,92 @@ func _free_port() -> int:
 			probe.stop()
 			return candidate
 	return 47911
+
+
+func _ablation_pause_ownership(bridge: Node, session: Node) -> void:
+	session.holds.clear()
+	session.sim.set_paused(false)
+	_check("ablation owns a session hold", bridge._begin_ablation_pause(session) and session.sim.paused \
+		and session.holds.size() == 1)
+	var restored: Dictionary = bridge._finish_ablation_pause()
+	_check("owned pause restores a running flight through resume", restored.restored and not session.sim.paused \
+		and session.holds.is_empty(), str(restored))
+	session.sim.set_paused(true)
+	bridge._begin_ablation_pause(session)
+	restored = bridge._finish_ablation_pause()
+	_check("an already paused flight stays paused", restored.restored and session.sim.paused, str(restored))
+	session.sim.set_paused(false)
+	bridge._begin_ablation_pause(session)
+	session.hold("menu")
+	_check("new hold invalidates ablation", not bridge._ablation_pause_valid())
+	restored = bridge._finish_ablation_pause()
+	_check("ablation does not resume across another hold", session.sim.paused and session.holds.has("menu") \
+		and restored.interrupted, str(restored))
+	session.release("menu")
+	session.sim.set_paused(false)
+	bridge._begin_ablation_pause(session)
+	bridge.notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
+	restored = bridge._finish_ablation_pause()
+	_check("focus loss prevents automatic resume", session.sim.paused and restored.interrupted, str(restored))
+	session.sim.set_paused(false)
+	bridge._begin_ablation_pause(session)
+	bridge._cmd_pause({})
+	restored = bridge._finish_ablation_pause()
+	_check("an independent pause request is preserved", session.sim.paused and restored.interrupted, str(restored))
+	session.sim.set_paused(false)
+	bridge._begin_ablation_pause(session)
+	var target := Node3D.new()
+	var probe := FakeProbe.new()
+	probe.forest = target
+	var run := RenderProbe.Ablation.new(probe, [probe._toggle("target", "layer", [[target, "visible"]], [false])], 2, 6)
+	for i in 8: run.advance() # first baseline ends and the target is switched off
+	bridge._ablation = run
+	_check("disconnect fixture has a live toggle", not target.visible)
+	bridge._pending.append({peer_id = 9999, job = {}, on_timeout = func() -> Dictionary:
+		return bridge._finish_ablation(run, {ok = false})})
+	bridge._forget_peer(9999)
+	_check("disconnect cleanup restores the toggle and owned hold", target.visible and bridge._ablation == null \
+		and not session.sim.paused and session.holds.is_empty())
+	target.free()
+
+
+class SummaryProbe extends "res://debug/render_probe.gd":
+	func _init() -> void:
+		super(null)
+	func set_measure(on: bool) -> void:
+		measuring = on
+	func config() -> Dictionary:
+		return {vsync = "disabled", refresh_hz = 60.0, max_fps = 0}
+	func viewport_rows() -> Array:
+		return []
+
+
+func _render_timing_status(bridge: Node) -> void:
+	var previous: Variant = bridge._render
+	bridge._render = SummaryProbe.new()
+	var sample := {gpu_ms = 0.0, root_gpu_ms = 0.0, sub_gpu_ms = 0.0, root_cpu_ms = 1.0, setup_cpu_ms = 0.0,
+		draw_calls = 1, shadow_draw_calls = 0, canvas_draw_calls = 0, primitives = 1, objects = 1,
+		gpu_timing_status = "unavailable_or_zero"}
+	var unavailable: Dictionary = bridge._render_summary([sample])
+	_check("zero GPU observations never produce a CPU/headroom verdict", unavailable.bound.begins_with("unknown") \
+		and unavailable.gpu_timing_status == "unavailable_or_zero" and unavailable.gpu_budget_status == "unavailable")
+	sample.gpu_ms = 3.0
+	sample.root_gpu_ms = 3.0
+	sample.gpu_timing_status = "unverified_freshness"
+	var positive: Dictionary = bridge._render_summary([sample])
+	_check("positive GPU observations remain raw and unverified", positive.gpu_ms == 3.0 \
+		and positive.gpu_timing_status == "unverified_freshness" and positive.bound.begins_with("unknown"))
+	var probe := FakeProbe.new()
+	probe.forest = Node3D.new()
+	var run := RenderProbe.Ablation.new(probe, [{name = "a", kind = "layer"}], 2, 6)
+	bridge._render.measuring = true
+	bridge._ablation = run
+	bridge._ablation_owned_measure = true
+	_check("measurement setting cannot change during ablation", not bridge._cmd_render({measure = true}).ok)
+	bridge._finish_ablation(run, {ok = false})
+	_check("ablation restores its previously disabled measurement", not bridge._render.measuring)
+	probe.forest.free()
+	bridge._render = previous
 
 
 func _call(payload: Dictionary) -> Dictionary:

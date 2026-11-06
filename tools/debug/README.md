@@ -37,7 +37,7 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
 | Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
 | Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --hitch`; `launch --script-profile` + `$D profile seconds=20` |
-| Find what the GPU spends a frame on | `$D render` (GPU/CPU ms, draw calls, bound-by verdict), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
+| Inspect render costs | `$D render` (raw GPU/CPU observations, draw calls), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
 | Go back before a crash and try again | `$D rewind arm=true` before flying, then `$D rewind seconds=2` (`attempt=previous` after an auto-restart) |
 | See the forces, velocities and wind on the aircraft | `$D gizmos show=all`, then `$D screenshot` |
 | File a reproducible bug report / reopen one | `$D bugit --note "…"`; `$D bugitgo <folder>` |
@@ -359,42 +359,46 @@ Research and the first Windows measurements: [debug tooling 2026-11-06](../../do
 These commands need a renderer: launch without `--headless`, on the target display and GPU. Results describe that
 machine, renderer and view only.
 
-- **`render [frames=30]`** answers "what bounds this frame?" in one read:
-  - the median GPU time of the root viewport and of every active SubViewport (render-to-texture work, such as the
-    projected-shadow silhouettes), with p95;
-  - root CPU render time, draw calls per pass (visible, shadow, canvas), objects and primitives;
-  - the wall frame time over the same frames, and a verdict: `GPU`, `frame cap` (vsync or `max_fps`, with the
-    remaining GPU headroom), `CPU`, or `idle` in low-processor mode;
-  - the render configuration: renderer, adapter, size, vsync, MSAA, 3D scale, environment features, lights and
-    their shadows, video memory.
-  - Medians matter: one stale readback after a long load frame reported 971 ms and moved a 60-frame mean to 20 ms.
-- **GPU time is always measured** when a renderer exists (two GPU timestamps per frame; `render measure=false`
-  stops it). `frames` then adds GPU p50/p95/p99/max for the root viewport, and a hitch names `GPU-bound` when the
-  latest GPU time is at least 75 % of the frame. That GPU reading can lag the frame by one or two frames.
+- **`render [frames=30]`** reports root CPU render time, draw calls per pass, objects, primitives, wall frame time
+  and render configuration. GPU timestamps are raw, delayed last readings: freshness and alignment to a sampled or
+  presented frame are unverified. Zero, non-finite or absent readings are unavailable. The response's
+  `gpu_timing_status` distinguishes unavailable, unverified and mixed readings; it does not establish a GPU/CPU
+  bottleneck or budget headroom.
+  - `gpu_ms` and `root_gpu_ms` are root-viewport observations (`gpu_ms_scope=root_only_freshness_unverified`).
+    `sub_gpu_ms` sums separate last SubViewport readings and is **not** included in `gpu_ms`. A SubViewport may
+    not have drawn for the sampled frame, so neither its last reading nor the sum is a per-frame cost.
+  - `render measure=false` stops timestamp collection. When positive readings exist, `frames` reports root GPU
+    percentiles as unverified last readings; a hitch's GPU reading is context, not a GPU-bound verdict.
+  - `--json` retains the bridge's raw values and status fields. Responses from older bridges have unknown timing and
+    scope semantics; the client labels them as legacy rather than upgrading them to the current contract.
 - **`layers [depth=2] [root=<path>]`** is a census of the 3D scene below the active camera's top Node3D: visible
   geometry instances, MultiMesh instances, shadow casters and lights per node.
-- **`ablate`** ranks what the GPU time is spent on, by elimination (Unreal's show flags and ProfileGPU, done with
-  Godot's own measurements):
+- **`ablate`** compares raw observations while switching one scene layer or feature off at a time:
   - It switches one target off, measures, restores it, and moves to the next. Targets are scene-root-relative node
     paths, or flags: `@shadows`, `@fog`, `@glow`, `@msaa`, `@half_res` (3D scale ×0.5: is the frame pixel-bound?),
-    `@subviewports`, `@canvas`.
+    `@subviewports`, `@canvas`. `@half_res` is skipped with reason `non_bilinear_reconstruction` when the viewport
+    uses a non-bilinear reconstruction mode; if it is the only target the command refuses with that reason.
+    It does not replace that mode or silently change the player's settings.
   - Without `targets=`, it measures every flag, every top-level layer, and the children of any layer that holds a
     large share of the geometry. `targets=Field,airplane,@fog` (comma-separated or a JSON list) narrows it.
-  - Measurement is interleaved A-B-A: baseline, target off, baseline, next target, …, baseline. Each target is
-    compared with the mean of the baselines before and after it, which cancels slow drift. On a lightly loaded
-    desktop GPU, clock changes moved the baseline 0.26 ms during one run, more than most of the effects measured.
-  - `noise_ms` is the robust spread between consecutive baselines. A row is `significant` (`*` in the table) when
-    its saving exceeds 3 × noise.
+  - Measurement is interleaved A-B-A: baseline, target off, baseline, next target, …, baseline. Each raw delta is
+    compared with the mean of its adjacent baselines. If any contributing phase has unavailable or mixed GPU
+    readings, `saved_gpu_ms` and `saved_pct` are `null` and the client shows `n/a`; other observations and counters
+    remain available. The timestamps may be stale, so a real-data delta is not proof of a saving, ranking,
+    statistical significance, or cancellation of drift. Only synthetic test data can set `significant`; real rows
+    report `false` and are not ranked by the unverified delta.
   - `overridden` means the app switched the target back on during its phase (for example a script that sets
     `visible` every frame). That row is not trustworthy.
-  - Each phase discards `warmup=10` frames, then keeps `frames=60`. A flight is paused for the run (`freeze=true`),
-    so the camera holds still. Everything is restored at the end, on a route change, on a timeout, or when the
-    client disconnects.
-  - About 30 s at 110 fps for 20 targets. Negative savings within the noise are noise. A real negative saving is a
-    finding: `@half_res` cost more than it saved in Compatibility on the RTX 3090, because the frame was not
-    pixel-bound.
-  - A switched-off target removes all of its cost, including indirect costs. Hiding the aircraft also removes its
-    projected-shadow silhouette pass.
+  - Each phase discards `warmup=10` frames, then keeps `frames=60`. With `freeze=true` the probe attempts to hold the
+    simulation, and refuses a hold if the flight's controller (radio or gamepad) is connected or a helicopter mode
+    change is pending.
+    `freeze=false` explicitly runs without a diagnostic hold. `paused_at_start` records the initial state; `frozen`
+    means an owned simulation hold stayed valid. Neither establishes camera or visual stability. Target values are
+    captured at phase start and restored only if they still have the probe's off value, preserving intervening
+    changes; freed targets cannot be restored. Cleanup is attempted on completion, route change, timeout and
+    disconnect. A later pause, focus loss, hold or session change prevents automatic resumption.
+  - A target may also affect indirect work: hiding the aircraft can remove its projected-shadow silhouette pass.
+    Use an external, synchronized GPU profiler and controlled repeated captures to establish causal costs.
 - **`viewmode name=<mode>`** sets the viewport's debug draw. `viewmode` without a name lists the modes. In
   Compatibility, `overdraw` and `unshaded` work. `wireframe` covers only meshes created after it was set, so set it
   on Home and then fly. Most other modes need Forward+ or Mobile. Use `viewmode name=normal` to return.
@@ -697,7 +701,7 @@ to the bridge on a stand-in AppRoot. It covers:
   requests. That caused the intermittent failures first blamed on load, including `blocked frame` and
   `old snapshot`.
 
-**Client tests.** These run in `research/test-tools.sh`, with 37 tests, mostly against a fake server. They cover:
+**Client tests.** These run in `research/test-tools.sh`, mostly against a fake server. They cover:
 
 - argument and JSON parsing, and quoted values that stay strings;
 - the token, exit codes, and the `ui` table with its short paths;
