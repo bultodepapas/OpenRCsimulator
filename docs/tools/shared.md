@@ -22,6 +22,20 @@ Choose checks by the behavior and contracts a change can affect, using the [task
 2. **On a stable candidate:** verify affected consumers and boundaries, including relevant replay, visual or device checks. Keep the source, data, engine and configuration identities with the result. Repeat a local check when its inputs change, it fails or its evidence remains inconclusive. Use a local full suite for broad shared changes, release preparation or when the required CI run cannot cover the candidate.
 3. **At the CI gate:** inspect the required jobs for the final source. Current CI runs the full app and visual suites in shadow mode even for documentation-only changes; [CI scope and rollout](../../tools/ci/README.md#current-ci-behavior) owns any future skip policy. A focused pass does not establish full-suite coverage. Fix failed required jobs before claiming automated verification complete.
 
+### Local impact examples
+
+These are starting points for **local development**, not path-only exemptions or substitutes for CI. Inspect imports, call sites, autoloads, resources and generated dependencies; add tests for every affected consumer. Run a new or changed test first, then the smallest relevant integration check. The [checked single-script runner](#one-godot-script) handles diagnostics; avoid direct Godot exit status as the only verdict.
+
+| Change and likely boundary | Start with existing checks | Escalate when |
+| --- | --- | --- |
+| Home/menu layout or text in `app/ui/home.gd` | `test_ui_home_layout.gd`, `test_ui_screen_stack.gd`; targeted native 1080p capture for visible layout changes | Screen navigation, global theme, accessibility, input routing or shared widgets also change: add affected UI suites and transitions |
+| Radio-calibration wizard (`app/input/rc_calibration.gd` or `app/ui/radio_calibration_setup.gd`) | `test_rc_calibration.gd`, `test_controller_preflight_calibration.gd` | Saved profiles, mappings or live flight-input paths change: add `test_controller_setup.gd`, `test_controller_integration.gd` and the [D6b calibration verifier](../TOOLS.md#radio-diagnostics); hardware observations stay separately pending |
+| Shared radio/controller processing (`app/input/rc_input.gd`, profiles or service) | `test_controller_conditioning.gd`, `test_controller_profile.gd`, `test_controller_integration.gd` | Flight controls, replay, failsafe or ground vehicles consume changed values: test those boundaries too; full suite if impact cannot be bounded |
+| Aircraft law, simulation kernel, physics or shared vehicle contract | Closest physics units, affected aircraft/runtime, deterministic flight/replay evidence | Shared kernel, numeric contracts or multiple vehicles change: run broad/full verification on the stable candidate, preserving golden/replay and native qualification gates |
+| Documentation without runtime/hashed/generated dependencies | Content, references and local links only | An evidence file is source input, a manifest hash or generated contract depends on it, or the dependency is uncertain: do not classify as docs-only |
+
+A focused check that passes is evidence for **that scope only**. Do not run unrelated physics suites for a cosmetic menu change, or substitute a UI-only check for radio mapping and safety boundaries. Do not downgrade assertions, accept missing test cases or silently skip failures to gain speed. Record the commands, scope rationale, changed source identity and pending checks with the change. CI's conservative shadow-mode full gate remains in force until [its rollout plan](../../docs/plans/release-ci-efficiency.md) is independently qualified.
+
 Flight-feel, controls and aircraft-physics tuning still require the [flight-log baseline and candidate workflow](physics.md#flight-log-and-replay). Generated data and new aircraft configurations retain their owning generator and acceptance checks. Full software checks do not establish physical or target-hardware qualification.
 
 ## Full app suite
