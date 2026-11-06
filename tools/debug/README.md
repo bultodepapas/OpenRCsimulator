@@ -8,7 +8,8 @@ one script, use the [checked runner](../godot/README.md) instead. Claude Code an
 
 Contents: [quick start](#quick-start) · [I want to…](#i-want-to) · [commands](#commands) ·
 [stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) ·
-[GPU cost and rewind](#gpu-cost-and-rewind-pt1h-r9) · [recipes](#recipes) ·
+[GPU cost and rewind](#gpu-cost-and-rewind-pt1h-r9) ·
+[flight gizmos and BugIt](#flight-gizmos-and-bugit-pt1h-r10) · [recipes](#recipes) ·
 [how it works and limits](#how-it-works-and-limits) · [performance](#performance) · [verification](#verification).
 `python3 tools/debug/debugctl.py --help` prints the client's commands; `debugctl.py help` asks a running app for its
 own list.
@@ -35,6 +36,8 @@ finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in
 | Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --hitch`; `launch --script-profile` + `$D profile seconds=20` |
 | Find what the GPU spends a frame on | `$D render` (GPU/CPU ms, draw calls, bound-by verdict), `$D layers`, `$D ablate`, `$D viewmode name=overdraw` |
 | Go back before a crash and try again | `$D rewind arm=true` before flying, then `$D rewind seconds=2` (`attempt=previous` after an auto-restart) |
+| See the forces, velocities and wind on the aircraft | `$D gizmos show=all`, then `$D screenshot` |
+| File a reproducible bug report / reopen one | `$D bugit --note "…"`; `$D bugitgo <folder>` |
 | Find a leak | `$D soak scenario.txt --cycles 5`, `$D objects baseline=true` then `$D objects diff=true` |
 | Find UI bugs | `$D crawl`, `$D monkey --steps 300 --seed 1 --keys` |
 | Reproduce a bug as a script | write `tmp/repro.txt` (one command per line), `$D run tmp/repro.txt --fail-on-error` |
@@ -119,6 +122,7 @@ Launch options:
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
 | Time | `pause`, `resume`, `step ticks=<n>`, `rewind arm=\|list=\|seconds=\|tick= [attempt=] [pause=] [inputs=pilot\|recorded]`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
+| Flight debugging | `gizmos [show=] [off=true] [auto_scale=] …`, `checkpoint action=save\|load path=`; client `bugit [--note] [--out]`, `bugitgo DIR [--resume]` |
 | Render cost | `render [frames=] [measure=]`, `layers [depth=] [root=]`, `ablate [targets=] [depth=] [frames=] [warmup=] [freeze=]`, `viewmode [name=]` |
 | Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames [window=] [hitch_ms=] [factor=] [reset=]`, `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
@@ -355,6 +359,72 @@ $D launch; $D fly start=airborne; $D close; $D resume
 $D render; $D ablate; $D viewmode name=overdraw; $D screenshot max_width=960; $D viewmode name=normal
 ```
 
+## Flight gizmos and BugIt (PT1h-R10)
+
+### Flight gizmos (PT1h-R10)
+
+`gizmos show=all` draws flight-model lines on the aircraft, in the style of X-Plane's flight-model display and the
+force gizmos of avian_fdm and Unreal's Chaos vehicles. Screenshots then show what the physics is doing. The overlay
+is read-only presentation: each frame it converts the session's committed state, loads and air data at the render
+boundary (`render/frames.gd`), like the RC truck's contact overlay.
+
+| Layer | Colour | Meaning |
+| --- | --- | --- |
+| `axes` | red, green, blue | body x forward, y right, z down |
+| `velocity` | white | inertial velocity (0.1 m per m/s) |
+| `air` | cyan | velocity through the air; its difference from `velocity` is the wind |
+| `wind` | blue | wind at the aircraft |
+| `forces` | yellow; orange; green; magenta | aerodynamic + propulsive force (1 m = the aircraft's weight); its component along the flight path (thrust − drag); its component across it (lift + side force); gravity |
+| `moments` | purple | body moment as an equivalent lever arm, 10 × \|M\| / (m·g) |
+| `trail` | white, fading | CG path over the last `trail_s=10` s; a restart or rewind starts a new path |
+| `label` | — | V, α, β, load factor, height and tick |
+
+- `show=forces,trail` picks layers. `gizmos off=true` removes the overlay. Settings stay in force across flights
+  until `off`.
+- The reply's `values` are this frame's numbers: airspeed, α, β, load factor, the forces along and across the
+  path, wind speed, height and `arrow_scale`.
+- `auto_scale=true` (the default) grows arrows with distance and zoom, so they stay readable from the pilot's
+  ground camera (×5.9 at about 150 m). Lengths are then multiplied by `arrow_scale`. The label is not scaled.
+  `force_m_per_g=`, `velocity_m_per_mps=`, `moment_gain=`, `trail_s=`, `axis_m=` and `thickness_m=` tune the
+  drawing.
+- Cost while shown: about 0.3–0.4 ms of main-thread time per frame with a 10 s trail. GL lines are one pixel wide,
+  so each arrow is drawn as five parallel copies; the trail is drawn as one.
+- Aircraft without the airplane's presentation estimate (`_current_pose`) are drawn at the tick state.
+- Not shown: per-surface forces. The kernel exposes only total loads; see the
+  [research note](../../docs/research/debug-tooling-render-rewind-2026-11-06.md#next-steps-not-built).
+
+### BugIt and BugItGo (PT1h-R10)
+
+After Unreal's `BugIt`/`BugItGo`: one command files a reproducible report, and another puts any running app back
+into that exact flight.
+
+- **`bugit [--note "what went wrong"] [--out DIR]`** writes `tmp/debug-bridge/bugit/<time>/`:
+  - `REPORT.md`, a short summary: source revision and changed files, engine, route, flight pose, frame and render
+    numbers, and the grouped errors and warnings;
+  - `report.json`, every reading: state, perf, frames, the problems summary, the last 200 log records, render,
+    objects, preferences, rewind, view, gizmo values and git status;
+  - `screenshot.jpg` (rendered sessions only);
+  - `checkpoint.json`, the session's exact flight checkpoint (in flight).
+  - Nothing is written into the repository.
+- **`bugitgo DIR [--resume]`** restores that state:
+  - it flies the same aircraft when needed and closes the launch menu;
+  - `checkpoint action=load` restores the exact state, paused, with pilot inputs;
+  - it sets the recorded camera view.
+  - The session refuses a checkpoint whose aircraft data, field or weather differ: the report then names the
+    configuration that must match. On Windows, a report taken at tick 799 was restored from Home in 2.6 s, and its
+    state hash was identical.
+- **`checkpoint action=save|load path=<absolute .json>`** is the bridge command underneath. A relative path is
+  refused, because it would land in the Godot project. `save` without a path writes to the run folder.
+- Use `bugit` when a bug shows up during any session, and attach the folder, not a description of how to get there.
+  For an exact replay of a whole flight, record a [flight log](../../docs/FLIGHT-LOGGING.md).
+
+```sh
+$D gizmos show=all; $D view name=chase; $D screenshot max_width=1280 format=jpg
+$D bugit --note "left wing drops at touchdown"   # prints the folder and the bugitgo line
+# later, in any running app:
+$D bugitgo tmp/debug-bridge/bugit/20261106-093916 --resume
+```
+
 ## Recipes
 
 These assume one session. When other agents share the machine, start each shell command with
@@ -506,7 +576,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 85 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 90 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -537,6 +607,12 @@ to the bridge on a stand-in AppRoot. It covers:
   `render`/`ablate` refused headless; `viewmode` modes; the `layers` census; and the A-B-A ablation against a fake
   probe with linear drift (exact 0.5 ms saving, inert target insignificant, overridden target flagged, everything
   restored, abort restores).
+- PT1h-R10: checkpoint files (relative path refused, save then load restores the tick paused with pilot inputs,
+  missing file refused); gizmo numbers against hand values (load factor, along-path force, wind, α), lines and
+  label drawn, nothing drawn when nothing is shown; the `gizmos` command's refusals and `off`.
+- Timing-sensitive: "the network thread answers … during a blocked frame" blocks the main thread for 800 ms and
+  needs the replies within 700 ms. On Windows it failed twice in about 20 runs, both times while a rendered app
+  was running or exiting on the same machine. Run the bridge test on an otherwise idle machine.
 
 **Client tests.** These run in `research/test-tools.sh`, with 37 tests, mostly against a fake server. They cover:
 

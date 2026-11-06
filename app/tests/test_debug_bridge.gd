@@ -23,6 +23,10 @@ class FakeSim extends Node:
 	var paused := false
 	var stop_at_tick := -1
 	var fault_reason := ""
+	var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
+	var mass := 2.5
+	var gravity := 9.81
+	var last_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var state := PackedFloat64Array([1.0, 2.0, -30.0, 12.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 	func dt() -> float:
@@ -71,9 +75,32 @@ class FakeSession extends Node:
 	func checkpoint() -> Dictionary:
 		return {simulation = {tick = sim.tick, inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.25]), state = sim.state.duplicate()}}
 
+	# PT1h-R10 file seam: the real session carries float64 bits through its own JSON format.
+	func checkpoint_json() -> String:
+		var snapshot := checkpoint()
+		snapshot.simulation.state = Array(snapshot.simulation.state)
+		snapshot.simulation.inputs = Array(snapshot.simulation.inputs)
+		return JSON.stringify(snapshot)
+
+	func restore_checkpoint_json(text: String) -> bool:
+		var parsed: Variant = JSON.parse_string(text)
+		if not parsed is Dictionary or not parsed.has("simulation"):
+			return false
+		parsed.simulation.tick = int(parsed.simulation.tick)
+		parsed.simulation.state = PackedFloat64Array(parsed.simulation.state)
+		parsed.simulation.inputs = PackedFloat64Array(parsed.simulation.inputs)
+		return restore_checkpoint(parsed)
+
+	func air_data(_s: PackedFloat64Array) -> Dictionary:
+		return {v_air = PackedFloat64Array([20.0, 0.0, 2.0]), V = sqrt(404.0), alpha = atan2(2.0, 20.0), beta = 0.0}
+
+	func wind_at(_t: float, _s: PackedFloat64Array) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0, 3.0, 0.0])
+
 	func restore_checkpoint(candidate: Dictionary) -> bool:
 		sim.tick = candidate.simulation.tick
 		sim.state = candidate.simulation.state.duplicate()
+		sim.inputs = candidate.simulation.inputs.duplicate()
 		input_enabled = false
 		restores += 1
 		return true
@@ -149,6 +176,8 @@ func _run() -> void:
 	await _hardening(flight.session)
 	await _gap_tools(bridge, flight.session)
 	await _render_and_rewind(bridge, app, flight.session)
+	await _checkpoint_files(flight.session)
+	await _gizmo_math(flight.session)
 	_ablation_math()
 	bridge.queue_free()
 	await process_frame
@@ -581,10 +610,12 @@ func _render_and_rewind(_bridge: Node, app: Node, session: Node) -> void:
 	var start: int = session.sim.tick
 	while session.sim.tick < start + 45:
 		await physics_frame
+	session.sim.set_paused(true) # a slow frame may run several ticks before the reply: count against the real span
 	var listed: Dictionary = await _call({cmd = "rewind", list = true})
 	var kept: int = listed.result.snapshots
+	var most: int = 2 + int((session.sim.tick - start) / 10.0)
 	_check("armed rewind stores one checkpoint every n ticks", armed.ok and armed.result.every_ticks == 10
-		and kept >= 4 and kept <= 6, str(listed))
+		and kept >= 4 and kept <= most, str([kept, most, listed]))
 	session.commands.throttle = 0.9
 	var target: int = start + 20
 	var rewound: Dictionary = await _call({cmd = "rewind", tick = target})
@@ -663,6 +694,59 @@ func _render_and_rewind(_bridge: Node, app: Node, session: Node) -> void:
 		and forest_row.size() == 1 and forest_row[0].geometry == 3 and forest_row[0].shadow_casters == 3
 		and not layers.result.layers.any(func(r: Dictionary) -> bool: return r.path == "Hidden"), str(layers).left(400))
 	scene.queue_free()
+
+
+## PT1h-R10: checkpoint files (bugit/bugitgo seam): save to an absolute path, load restores and hands control back.
+func _checkpoint_files(session: Node) -> void:
+	var relative: Dictionary = await _call({cmd = "checkpoint", action = "save", path = "checkpoint.json"})
+	_check("checkpoint refuses a relative path", not relative.ok and str(relative.error).contains("absolute"), str(relative))
+	var path := OS.get_user_data_dir().path_join("debug-bridge-test/checkpoint.json")
+	session.sim.set_paused(true)
+	var saved_tick: int = session.sim.tick
+	var saved: Dictionary = await _call({cmd = "checkpoint", action = "save", path = path})
+	session.sim.tick = saved_tick + 500
+	session.input_enabled = true
+	var loaded: Dictionary = await _call({cmd = "checkpoint", action = "load", path = path})
+	_check("checkpoint save then load restores the tick, paused, with pilot inputs", saved.ok and loaded.ok
+		and session.sim.tick == saved_tick and session.sim.paused and session.input_enabled
+		and FileAccess.file_exists(path), str([saved, loaded]).left(300))
+	var missing: Dictionary = await _call({cmd = "checkpoint", action = "load", path = path + ".none"})
+	_check("checkpoint load of a missing file is refused", not missing.ok and str(missing.error).contains("no checkpoint"))
+	DirAccess.remove_absolute(path)
+
+
+## The flight-model numbers against hand values: identity attitude, body air velocity (20, 0, 2) m/s, loads
+## (-2, 0, -30) N on 2.5 kg: load factor 30 / (2.5 · 9.81), the along-path force (F·v)/|v|, the wind speed.
+func _gizmo_math(session: Node) -> void:
+	var sim: Node = session.sim
+	var saved_state: PackedFloat64Array = sim.state.duplicate()
+	sim.state = PackedFloat64Array([0.0, 0.0, -30.0, 20.0, 0.0, 2.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	sim.last_loads = PackedFloat64Array([-2.0, 0.0, -30.0, 0.0, 0.5, 0.0])
+	var parent := Node3D.new()
+	root.add_child(parent)
+	var gizmos: Node3D = preload("res://debug/flight_gizmos.gd").new()
+	parent.add_child(gizmos)
+	gizmos.configure(["axes", "velocity", "air", "wind", "forces", "moments", "trail", "label"])
+	gizmos.update_from(session, {pos = Vector3(0, 30, 0), basis = Basis.IDENTITY})
+	var last: Dictionary = gizmos.last
+	var along := (-2.0 * 20.0 + -30.0 * 2.0) / sqrt(404.0)
+	_check("gizmos: load factor, along-path force and wind from the committed loads and air data",
+		is_equal_approx(last.load_factor, 30.0 / (2.5 * 9.81)) and absf(last.along_path_n - along) < 1.0e-4
+		and is_equal_approx(last.wind_mps, 3.0) and is_equal_approx(last.alpha_deg, rad_to_deg(atan2(2.0, 20.0))), str(last))
+	var mesh: ImmediateMesh = gizmos._lines
+	_check("gizmos: lines and the label are drawn", mesh.get_surface_count() == 1 and gizmos._label.visible
+		and gizmos._label.text.contains("n 1.22 g"), gizmos._label.text)
+	gizmos.configure([])
+	gizmos.update_from(session, {pos = Vector3(0, 30, 0), basis = Basis.IDENTITY})
+	_check("gizmos: nothing shown draws nothing", mesh.get_surface_count() == 0 and not gizmos._label.visible)
+	var none: Dictionary = await _call({cmd = "gizmos", show = "all"})
+	var bad: Dictionary = await _call({cmd = "gizmos", show = "smoke"})
+	var off: Dictionary = await _call({cmd = "gizmos", off = true})
+	_check("gizmos command: refused layers, a non-3D flight waits for the next flight, off clears",
+		none.ok and not none.result.flight and not bad.ok and off.ok, str([none, bad, off]).left(300))
+	parent.queue_free()
+	sim.state = saved_state
+	sim.last_loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 
 ## A fake probe whose GPU time is 2 ms + 0.5 ms while the forest is visible + a linear drift: the interleaved

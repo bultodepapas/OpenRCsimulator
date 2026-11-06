@@ -93,6 +93,35 @@ MSAA, fog and shadows were below the noise. A run while the pause menu covered t
 **`viewmode`:** in Compatibility, `overdraw` and `unshaded` change the picture. `wireframe` applies only to meshes
 created after it was enabled, which was verified by enabling it on Home and then flying.
 
+## Round 2 (same day): flight gizmos and BugIt (PT1h-R10)
+
+The aircraft had no physics overlay, while the RC truck has one (`vehicles/ground/contact_debug.gd`). Bug reports
+also had no way to carry an exact flight state.
+
+**Inspiration:**
+
+- X-Plane's flight-model lines: force vectors on the aircraft, cycled with a key
+  ([X-Plane Mobile help](https://x-plane.helpscoutdocs.com/article/83-x-plane-mobile-flight-model-lines),
+  [AVSIM discussion](https://www.avsim.com/forums/topic/385778-see-how-it-flies/)).
+- Unreal's [`BugIt`](https://dev.epicgames.com/documentation/unreal-engine/API/Runtime/Engine/GameFramework/UCheatManager/BugIt?application_version=5.4):
+  location and screenshot in one command, then `BugItGo` to return there.
+- The free [Debug Draw 3D](https://godotengine.org/asset-library/asset/edit/14507) addon was considered and not
+  adopted:
+  - it is a native GDExtension binary for each platform, an extra pinned dependency for Web and macOS;
+  - its listings disagree on the licence (MIT or AGPLv3);
+  - the repository already draws debug lines with `ImmediateMesh` in the truck overlay.
+
+**Measurements** (Windows, RTX 3090, 1080p, Ugly Stik):
+
+- The gizmo label agreed with the independent HUD: 26.3 m/s against 59 mph, 41.5 m against 136 ft.
+- In level flight, the aerodynamic + propulsive force was 1.02 g upward, and lift balanced gravity at n = 1.00 g.
+- The first version cost about 1 ms per frame and was unreadable from the pilot's ground camera: arrows about 1 m
+  long on an aircraft 150 m away, and a fixed-size label magnified by the zoomed field of view. The current version
+  takes about 0.3–0.4 ms. It draws the trail once instead of five times, caches the camera, scales arrows ×5.9 at
+  that range, and corrects the label size for the field of view.
+- `bugit` in flight wrote a report, a screenshot and a checkpoint. `home`, then `bugitgo`, restored tick 799 in
+  2.6 s, with the same state hash as before.
+
 ## Next steps (not built)
 
 - **Per-surface force vectors in 3D**: lift, drag and thrust per aerodynamic surface, with CG, wind and velocity, as
