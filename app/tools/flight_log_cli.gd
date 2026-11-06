@@ -41,7 +41,10 @@ static func recorded_stage_backend(header: Dictionary) -> Dictionary:
 	var identity: Variant = header.get("stage_backend", {backend = REFERENCE_STAGE_BACKEND})
 	if not _valid_stage_backend(identity):
 		return {ok = false, error = "Invalid recorded stage backend identity."}
-	if header.get("solver_identity_kind") == "macos-reference-bundle-v1" and identity.backend != REFERENCE_STAGE_BACKEND:
+	# A malformed kind (e.g. bool) is refused later by recorded_replay_identity(); `==` between
+	# unlike Variant types raises a script error, so compare only a String here.
+	var identity_kind: Variant = header.get("solver_identity_kind")
+	if identity_kind is String and identity_kind == "macos-reference-bundle-v1" and identity.backend != REFERENCE_STAGE_BACKEND:
 		return {ok = false, error = "Mac reference bundle cannot identify a native stage backend."}
 	var checkpoint: Variant = header.get("checkpoint")
 	if not checkpoint is Dictionary:

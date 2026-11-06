@@ -70,7 +70,11 @@ BENCHMARK_FORCED_OPTIONS = {
 BENCHMARK_INTERNAL_OPTIONS = frozenset({
     "frametimes", "frametimes-stream", "t", "warmup", "case", "sustained-receipt",
     "sustained-hash", "sustained-observation", "sustained-diagnostic-ticks",
+    "sustained-render-scale", "sustained-msaa", "sustained-reconstruction",
 })
+# DT-MAC-03b attribution sweep options consumed by the fixture (receipt scenario.render_override).
+BENCHMARK_RENDER_OVERRIDE_OPTIONS = {"sustained-render-scale": "scaling_3d_scale", "sustained-msaa": "msaa_3d",
+                                     "sustained-reconstruction": "reconstruction"}
 BENCHMARK_REJECTED_OPTIONS = frozenset({
     "quick-flight", "scripted", "trace", "capture", "visual_pose", "visual_distance", "visual_elevation",
     "visual_azimuth", "hide_airplane", "experimental-aircraft-data", "electric-demo", "weather-file", "wind-speed",
@@ -1112,7 +1116,7 @@ def benchmark_health(report_path: Path, report_bytes: bytes | None, report: dict
             "aircraft_id", "field_id", "seed", "start_choice", "trim_speed_m_s", "trim_throttle", "rate_profile",
             "weather", "stage_backend", "physics_hz", "control_update_ticks", "initial_checkpoint_sha256",
             "solver_identity", "input_enabled", "physics_enabled", "external_driver_enabled", "fixed_fps_diagnostic",
-            "observation_mode", "state_input_hashing",
+            "observation_mode", "state_input_hashing", "render_override",
             "collision_world_identity", "lake_identity", "checkpoint_configuration",
         )}, "arguments": [arg for arg in arguments if not arg.startswith(("--frametimes=", "--case="))]}
             if isinstance(receipt, dict) and not reasons else None),
@@ -1155,6 +1159,8 @@ def _benchmark_arguments_match(user: list[str], scenario: dict[str, Any], report
             or ("frametimes-stream" in requested and requested["frametimes-stream"] is not None)
             or "frametimes-stream" not in effective or effective["frametimes-stream"] is not None):
         return False
+    if not _render_override_matches(requested, scenario.get("render_override")):
+        return False
     for option, default, report_key in (("t", 1800.0, "sample_s"), ("warmup", 30.0, "warmup_s")):
         try:
             if option in requested and requested[option] is None:
@@ -1170,6 +1176,39 @@ def _benchmark_arguments_match(user: list[str], scenario: dict[str, Any], report
     ignore = BENCHMARK_INTERNAL_OPTIONS | BENCHMARK_FORCED_OPTIONS.keys()
     return ([raw for key, raw in user_order if key not in ignore]
             == [raw for key, raw in scene_order if key not in ignore])
+
+
+def _render_override_matches(requested: dict[str, str | None], recorded: Any) -> bool:
+    """The checked command and the fixture receipt must name the same sweep override."""
+    expected: dict[str, float | int] = {}
+    for option, field in BENCHMARK_RENDER_OVERRIDE_OPTIONS.items():
+        if option not in requested:
+            continue
+        raw = requested[option]
+        if field == "reconstruction":
+            if not isinstance(raw, str) or not raw:
+                return False
+            expected[field] = raw
+            continue
+        try:
+            expected[field] = float(raw) if field == "scaling_3d_scale" else int(raw)  # type: ignore[arg-type]
+        except (TypeError, ValueError, OverflowError):
+            return False
+    if not expected:
+        return recorded is None
+    if not isinstance(recorded, dict) or set(recorded) != set(expected):
+        return False
+    for field, value in expected.items():
+        actual = recorded[field]
+        if field == "reconstruction":
+            if actual != value:
+                return False
+        elif field == "msaa_3d":
+            if type(actual) is not int or actual != value:
+                return False
+        elif not _is_number(actual) or not _close(float(actual), float(value), tolerance=1e-9):
+            return False
+    return True
 
 
 def benchmark_checked_runner(report_path: Path, report: dict[str, Any], log_bytes: bytes | None,

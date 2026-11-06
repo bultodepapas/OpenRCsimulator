@@ -190,7 +190,8 @@ func _open_wizard(inverted: bool = false) -> void:
 	check("Calibrate opens its own screen above Controls", app.screens.is_top("radio_calibration"))
 	if not app.screens.is_top("radio_calibration"):
 		return
-	app.screens.top().read_axis = func(id: int, axis: int) -> float: return raw[axis] if id == 15 else NAN
+	# Report float32 like Input.get_joy_axis: exact doubles hid a Save failure on real radios.
+	app.screens.top().read_axis = func(id: int, axis: int) -> float: return PackedFloat32Array([raw[axis]])[0] if id == 15 else NAN
 	setup.axis_preview_provider = func(id: int, axis: int) -> float: return raw[axis] if id == 15 else NAN
 	await ui.settle()
 

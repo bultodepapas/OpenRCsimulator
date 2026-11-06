@@ -6,7 +6,7 @@ config_version=5
 config/name="OpenRC Simulator"
 ; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
 ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
-config/version="0.1.9"
+config/version="0.1.10"
 ; The lightweight brand entrance hands off to app_root, which owns route selection.
 run/main_scene="res://ui/startup.tscn"
 boot_splash/show_image=false
@@ -60,6 +60,10 @@ streamline/dlss_preset="K"
 ; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+; DT-MAC-05b: Apple Silicon runs Mobile on native Metal (≈1.4× Compatibility on an M1, and the only path to MetalFX).
+; `arm64` matches only the universal Mac package's Apple Silicon slice: OpenRC ships Linux/Windows x86_64 only, and
+; Intel or Rosetta Macs keep Compatibility. Godot falls back to OpenGL when the Metal context cannot be created.
+renderer/rendering_method.arm64="mobile"
 ; GDU-11h: Forward+ reads this before scripts run. Compatibility/Mobile ignore it.
 ; Product High uses Forward+; bare technical Forward+ launches also inherit this option.
 lights_and_shadows/multi_bounce_occlusion/enabled=true

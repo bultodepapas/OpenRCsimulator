@@ -1,3 +1,4 @@
+// Include after cloud_field.gdshaderinc and cloud_shadow_map.gdshaderinc.
 // L4c: bounded 2.5D optical-depth lighting of the existing fair-weather deck.
 // Artistic estimates in noise-cell units, not a physical cloud volume. MIT.
 // The shared cloud field remains the sole source of coverage and ground shadows.
@@ -6,9 +7,11 @@ vec3 cloud_relief(vec2 cells, float body, vec3 direction, vec3 light_direction,
 	// Three increasing light-path samples approximate occlusion through a rounded
 	// layer. A horizontal sun has a bounded path; zenith has no arbitrary azimuth.
 	vec2 ray = light_direction.xz / max(light_direction.y, 0.28);
-	float near_body = cloud_density(cells + ray * 0.10, seed, coverage, clustering);
-	float mid_body = cloud_density(cells + ray * 0.28, seed, coverage, clustering);
-	float far_body = cloud_density(cells + ray * 0.62, seed, coverage, clustering);
+	// DT-MAC-06b C5b: octaves 0-2 may come from the 16-bit noise tile, octaves 3-4 stay per pixel
+	// (cloud_shadow_map.gdshaderinc; exact cloud_density() when the tile is off). The silhouette stays exact.
+	float near_body = cloud_detail_density(cells + ray * 0.10, seed, coverage, clustering);
+	float mid_body = cloud_detail_density(cells + ray * 0.28, seed, coverage, clustering);
+	float far_body = cloud_detail_density(cells + ray * 0.62, seed, coverage, clustering);
 	float optical_depth = 0.65 * near_body + 0.45 * mid_body + 0.25 * far_body;
 	float transmission = exp(-1.6 * optical_depth);
 	// Ambient multiple-scattering floor keeps the aircraft background readable.

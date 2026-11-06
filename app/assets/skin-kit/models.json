@@ -81,8 +81,8 @@
       "display_name": "Turbo Lumber Evolution",
       "adapter": "procedural_skin",
       "template_kind": "neutral_six_view",
-      "stock_sha256": "be64bbfddee9db0681fa3d8d35ee9494ef19b8a737557d338f3ef357b5f0c39f",
-      "source_sha256": "47a48e03b366deec2a128c2107d00748ebf47d121b00a36df2ad01bf1d08a48b",
+      "stock_sha256": "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6",
+      "source_sha256": "2b192ce86156b46161b1e3102533addedd10bd4f2bbcd8f7c7fd2bfbe9a7c11e",
       "source_path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
       "kit": "res://assets/skin-kit/turbo-lumber-evolution.zip",
       "paints": [

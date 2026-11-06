@@ -65,13 +65,19 @@ static func describe() -> Dictionary:
 	}
 	return result
 
+## The project's Standard renderer for this host, including feature-tag overrides
+## (DT-MAC-05b: Mobile on Apple Silicon, Compatibility elsewhere). A CLI renderer does not change it.
+static func standard_rendering_method() -> String:
+	return str(ProjectSettings.get_setting_with_override("rendering/renderer/rendering_method"))
+
+
 static func restart_arguments(profile: String, editor_binary: bool, project_path: String) -> PackedStringArray:
 	if profile not in ["standard", "high"]:
 		return PackedStringArray()
 	var args := PackedStringArray()
 	if editor_binary:
 		args.append_array(["--path", project_path])
-	args.append_array(["--rendering-method", "forward_plus" if profile == "high" else "gl_compatibility"])
+	args.append_array(["--rendering-method", "forward_plus" if profile == "high" else standard_rendering_method()])
 	return args
 
 static func configure() -> void:
@@ -124,7 +130,8 @@ static func apply_sun(sun: DirectionalLight3D) -> void:
 	sun.set("shadow_contact_shadows_blur", 0.0)
 
 ## Only a flowing High world pays for dynamic radiance filtering. Frozen worlds
-## retain QUALITY; realtime filtering uses Godot's required 256-pixel cubemap.
+## retain Atmosphere.SKY_PROCESS_MODE (incremental importance sampling); realtime
+## filtering uses Godot's required 256-pixel cubemap.
 static func configure_flow_sky(env: Environment) -> void:
 	if not active() or env.sky == null:
 		return

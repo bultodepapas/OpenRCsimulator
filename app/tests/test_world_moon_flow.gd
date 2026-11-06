@@ -162,7 +162,7 @@ func _initialize() -> void:
 	_check("flow sky uses its renderer-specific radiance policy", World.radiance_unused(env) if not HighGraphics.active()
 		else env.reflected_light_source == Environment.REFLECTION_SOURCE_SKY and HighGraphics.supports_frame_sky(env))
 	_check("only flowing High uses realtime filtering", env.sky.process_mode ==
-		(Sky.PROCESS_MODE_REALTIME if HighGraphics.active() else Sky.PROCESS_MODE_QUALITY))
+		(Sky.PROCESS_MODE_REALTIME if HighGraphics.active() else Atmosphere.SKY_PROCESS_MODE))
 
 	# 4.5 s of flight at ×20 = three 30 s sky steps.
 	var frames := _play(mat, stars, 0.0, 4.5)
@@ -249,7 +249,8 @@ func _initialize() -> void:
 	# Frozen sessions never move.
 	var frozen := Node3D.new()
 	var frozen_world := World.build(frozen, field, Callable(), Conditions.resolve(PackedStringArray(["--date=2026-10-25", "--time=21:00"])))
-	_check("frozen world keeps quality radiance", frozen_world.environment.sky.process_mode == Sky.PROCESS_MODE_QUALITY)
+	_check("frozen world keeps importance-sampled radiance", frozen_world.environment.sky.process_mode == Atmosphere.SKY_PROCESS_MODE
+		and Atmosphere.SKY_PROCESS_MODE == Sky.PROCESS_MODE_INCREMENTAL)
 	_check("frozen time: no per-frame motion", not World.flow_frame(1.0) and not World.flow_frame(2.0))
 	frozen.free()
 	Atmosphere.state = {}

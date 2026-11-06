@@ -246,7 +246,10 @@ select static comparisons. The `pavilion` case includes the clubhouse and pit ar
 `--aa=msaa4|none|taa|fsr2_native` isolates antialiasing without changing player
 preferences. TAA and FSR2 require native High; unsupported requests fail instead
 of silently capturing a fallback. FSR2 Native uses the production reconstruction
-adapter at full resolution with sharpening off. Reports record the actual MSAA,
+adapter at full resolution with sharpening off. `--scale=native|bilinear67|metalfx_spatial_85|metalfx_spatial_quality`
+(DT-MAC-06b C1) lowers only the 3D input scale and keeps 4× MSAA. The MetalFX values
+need Mobile or Forward+ on Metal and `OPENRC_METALFX_TRIAL=1`; the tool refuses rather
+than capture a Native fallback under a MetalFX label. Reports record the actual MSAA,
 TAA, scaling, sharpness and mip-bias values. Stills allow 90 drawn settling frames;
 this is not a convergence or motion-quality guarantee. Compare contact on/off
 within each AA mode before attributing a change to either effect.

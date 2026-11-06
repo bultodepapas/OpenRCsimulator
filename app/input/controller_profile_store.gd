@@ -10,6 +10,9 @@ const LEGACY_PATH := "user://rc_calibration.cfg"
 const STORAGE_SECTION := "controller_profiles"
 const BACKUP_SUFFIX := ".rollback"
 const TEMP_SUFFIX := ".tmp"
+## ConfigFile text does not encode every float losslessly; see _storage_form(). Measured on
+## Godot 4.7.2–4.8-beta2, every value settles within two passes; the bound only fails closed.
+const STORAGE_FORM_PASS_LIMIT := 8
 
 var path: String
 var legacy_path: String
@@ -59,6 +62,11 @@ func save_profile(candidate: Variant) -> Dictionary:
 	var transaction := _write_transaction(profiles, bool(loaded.get("recovered_from_backup", false)))
 	if not transaction.ok:
 		return {"ok": false, "profile": {}, "error": transaction.error}
+	# Return the committed form, not the candidate, so the runtime applies exactly what reloads.
+	for stored: Dictionary in transaction.profiles:
+		if stored.profile_id == saved_profile.profile_id:
+			saved_profile = stored
+			break
 	return {"ok": true, "profile": saved_profile.duplicate(true), "error": "", "warning": transaction.warning}
 
 
@@ -201,7 +209,44 @@ func _read_file(target_path: String) -> Dictionary:
 	return {"ok": true, "missing": false, "profiles": profiles, "error": ""}
 
 
-func _write_transaction(profiles: Array, recovered_from_backup := false) -> Dictionary:
+## Returns the value storage will reload for `profiles`: the ConfigFile encode/parse fixed point.
+## Godot writes a float32-exact double (every Input.get_joy_axis reading) with float32 digits,
+## e.g. -0.999969482421875 as "-0.9999695", and its parser can miss the last bit of a 17-digit
+## value, so raw calibration endpoints never compare equal after a reload. Committing the
+## fixed point keeps memory, disk and the read-back check identical; the change is below
+## float32 resolution. Uses the same writer and parser as save() and load().
+func _storage_form(profiles: Array) -> Dictionary:
+	# A plain Array keeps the file text independent of whether the list came from load_all().
+	var untyped: Array = []
+	untyped.assign(profiles)
+	var current: Variant = untyped
+	for _pass in STORAGE_FORM_PASS_LIMIT:
+		var encoder := ConfigFile.new()
+		encoder.set_value(STORAGE_SECTION, "profiles", current)
+		var decoder := ConfigFile.new()
+		var parse_error: Error = decoder.parse(encoder.encode_to_text())
+		if parse_error != OK or not decoder.has_section_key(STORAGE_SECTION, "profiles"):
+			return {"ok": false, "profiles": [], "error": "Controller profiles could not be encoded for storage (%s)." % str(parse_error)}
+		var decoded: Variant = decoder.get_value(STORAGE_SECTION, "profiles")
+		if typeof(decoded) != TYPE_ARRAY:
+			return {"ok": false, "profiles": [], "error": "Controller profiles changed type when encoded for storage."}
+		# Array equality is type-strict and exact, the same test the read-back applies.
+		if decoded == current:
+			for stored: Variant in decoded:
+				var validation := ControllerProfile.validate(stored)
+				if not validation.ok:
+					return {"ok": false, "profiles": [], "error": "Controller profile is invalid in its stored form: " + "; ".join(validation.errors)}
+			return {"ok": true, "profiles": decoded, "error": ""}
+		current = decoded
+	return {"ok": false, "profiles": [], "error": "Controller profiles did not reach a stable stored form."}
+
+
+## Commits `profiles` in their storage form; on success returns that form as `profiles`.
+func _write_transaction(candidate_profiles: Array, recovered_from_backup := false) -> Dictionary:
+	var storage_form := _storage_form(candidate_profiles)
+	if not storage_form.ok:
+		return {"ok": false, "error": storage_form.error, "warning": ""}
+	var profiles: Array = storage_form.profiles
 	var parent_dir := ProjectSettings.globalize_path(path).get_base_dir()
 	var dir_error: Error = DirAccess.make_dir_recursive_absolute(parent_dir)
 	if dir_error != OK:
@@ -219,9 +264,12 @@ func _write_transaction(profiles: Array, recovered_from_backup := false) -> Dict
 	if write_error != OK:
 		return {"ok": false, "error": "Could not write temporary controller profiles (%s)." % str(write_error), "warning": ""}
 	var verify := _read_file(temporary)
-	if not verify.ok or verify.profiles != profiles:
+	if not verify.ok:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
-		return {"ok": false, "error": "Temporary controller profiles failed validation.", "warning": ""}
+		return {"ok": false, "error": "Temporary controller profiles failed validation: " + str(verify.error), "warning": ""}
+	if verify.profiles != profiles:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+		return {"ok": false, "error": "Temporary controller profiles did not read back identically.", "warning": ""}
 	var target_exists := FileAccess.file_exists(path)
 	var preserve_recovery_copy := recovered_from_backup and FileAccess.file_exists(backup)
 	if target_exists:
@@ -256,7 +304,7 @@ func _write_transaction(profiles: Array, recovered_from_backup := false) -> Dict
 		var clean_error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(backup))
 		if clean_error != OK:
 			warning = "Profiles were saved, but the rollback copy could not be removed (%s)." % str(clean_error)
-	return {"ok": true, "error": "", "warning": warning}
+	return {"ok": true, "error": "", "warning": warning, "profiles": profiles.duplicate(true)}
 
 
 func _association_matches(info: Dictionary, association: Dictionary) -> bool:

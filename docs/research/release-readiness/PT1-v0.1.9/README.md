@@ -1,6 +1,6 @@
 # PT1 — v0.1.9 preparation
 
-2026-10-28. Baseline: `962877662`. This local preparation pass repairs release checks; it does not qualify or publish a beta. The final integrated commit, CI, packages, native hardware and pilot acceptance remain separate gates. [Release notes](../../../releases/v0.1.9.md) own the candidate summary.
+2026-10-28. Baseline: `962877662`. This local preparation pass repairs release checks; it does not qualify or publish a beta. The final integrated commit, CI, packages, native hardware and pilot acceptance remain separate gates. [Release notes](../../../releases/v0.1.10.md) own the candidate summary.
 
 ## Repairs
 

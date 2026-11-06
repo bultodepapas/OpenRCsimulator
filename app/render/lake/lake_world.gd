@@ -66,6 +66,7 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 		bank_material.set_shader_parameter(parameter, ground_material.get_shader_parameter(parameter))
 	Terrain.mask_parameters(ground_material, lake)
 	ground_material.set_shader_parameter("lake_mask_mode", 1)
+	field_node.set_meta("ground_lake_cut", _cut_ground(field_node, ground_material, lake))
 	field_node.add_child(node)
 	node.add_child(LakePlants.build(lake))
 	field_node.set_meta("lake_context", lake.duplicate(true))
@@ -74,6 +75,37 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 	if ambience != null:
 		node.add_child(ambience)
 	return node
+
+
+## DT-MAC-06b D1: remove the validated bank polygon from every ground mesh drawn with the field's ground
+## material. The ground shader has no `discard`, which would disable hidden-surface removal on tile GPUs.
+## Returns the number of cut meshes; a failed cut is an error, never a silent overlap.
+static func _cut_ground(field_node: Node3D, ground_material: ShaderMaterial, lake: Dictionary) -> int:
+	var Horizon := preload("res://render/horizon.gd")
+	var polygon: PackedFloat64Array = lake.get("bank_ne_m", PackedFloat64Array())
+	var cut := 0
+	for found: Node in field_node.find_children("*", "MeshInstance3D", true, false):
+		var instance := found as MeshInstance3D
+		if instance.material_override != ground_material or instance.mesh == null:
+			continue
+		# Field-local transform of the mesh; the field root itself is the render frame.
+		var to_field := Transform3D.IDENTITY
+		var node: Node = instance
+		while node != field_node and node is Node3D:
+			to_field = (node as Node3D).transform * to_field
+			node = node.get_parent()
+		var to_mesh := to_field.affine_inverse()
+		var hole := PackedVector2Array()
+		for i in range(0, polygon.size(), 2):
+			var local := to_mesh * Vector3(polygon[i + 1], 0.0, -polygon[i])
+			hole.append(Vector2(local.x, local.z))
+		var mesh := Horizon.with_hole(instance.mesh, hole)
+		if mesh == null:
+			push_error("lake: cannot cut the bank polygon from ground mesh %s" % instance.name)
+			continue
+		instance.mesh = mesh
+		cut += 1
+	return cut
 
 
 static func ambience_player(field_node: Node) -> AudioStreamPlayer3D:

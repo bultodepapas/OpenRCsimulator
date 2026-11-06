@@ -133,6 +133,67 @@ func _test_attached_scene(field: Dictionary, lake: Dictionary) -> void:
 	_test_baked_depth_and_shelf(basin, lake, surface_result.rects)
 	_test_geometry_cache(lake, surface_result.rects, ground_material, lake_node, basin, water)
 	field_node.free()
+	_test_ground_cut(field, lake)
+
+
+## DT-MAC-06b D1: the ground shader has no discard; the bank polygon is cut from the production ground mesh.
+func _test_ground_cut(field: Dictionary, lake: Dictionary) -> void:
+	var Horizon := preload("res://render/horizon.gd")
+	var ground_material: ShaderMaterial = Ground.grass_material({})
+	var field_node := Node3D.new()
+	var ground := MeshInstance3D.new()
+	ground.name = "rough"
+	ground.mesh = Horizon.mesh()
+	ground.material_override = ground_material
+	ground.position = Vector3(3.0, -0.02, -7.0) # a non-origin placement exercises the field-to-mesh transform
+	field_node.add_child(ground)
+	var original: ArrayMesh = ground.mesh
+	var attached: Node3D = LakeWorld.attach(field_node, field, ground_material, lake, {}, false)
+	_check("one ground mesh receives the geometric lake cut",
+		attached != null and int(field_node.get_meta("ground_lake_cut", 0)) == 1 and ground.mesh != original)
+	var bank: PackedFloat64Array = lake.bank_ne_m
+	var hole := PackedVector2Array()
+	var hole_min := Vector2(INF, INF)
+	var hole_max := Vector2(-INF, -INF)
+	for i in range(0, bank.size(), 2):
+		var p := Vector2(bank[i + 1] - ground.position.x, -bank[i] - ground.position.z)
+		hole.append(p)
+		hole_min = hole_min.min(p)
+		hole_max = hole_max.max(p)
+	var hole_area := 0.0
+	for i: int in hole.size():
+		hole_area += hole[i].cross(hole[(i + 1) % hole.size()]) * 0.5
+	hole_area = absf(hole_area)
+	var before := _area_near(original, hole_min - Vector2.ONE * 300.0, hole_max + Vector2.ONE * 300.0, hole)
+	var after := _area_near(ground.mesh, hole_min - Vector2.ONE * 300.0, hole_max + Vector2.ONE * 300.0, hole)
+	_check("no ground triangle remains inside the bank polygon", after.inside == 0)
+	_check("cut removes exactly the bank area (no gap or overlap)",
+		absf((before.area - after.area) - hole_area) < hole_area * 1.0e-3)
+	_check("cut triangles keep the source winding", after.flipped == 0 and before.flipped == 0)
+	_check("ground shader no longer discards", not FileAccess.get_file_as_string("res://render/ground.gdshader").contains("discard;"))
+	field_node.free()
+
+
+func _area_near(mesh: Mesh, low: Vector2, high: Vector2, hole: PackedVector2Array) -> Dictionary:
+	var arrays: Array = mesh.surface_get_arrays(0)
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var area := 0.0
+	var inside := 0
+	var flipped := 0
+	for i in range(0, indices.size(), 3):
+		var a := Vector2(vertices[indices[i]].x, vertices[indices[i]].z)
+		var b := Vector2(vertices[indices[i + 1]].x, vertices[indices[i + 1]].z)
+		var c := Vector2(vertices[indices[i + 2]].x, vertices[indices[i + 2]].z)
+		var centroid := (a + b + c) / 3.0
+		if centroid.x < low.x or centroid.y < low.y or centroid.x > high.x or centroid.y > high.y:
+			continue
+		var signed := (b - a).cross(c - a) * 0.5
+		# Godot front faces are clockwise seen from above (+Y): a positive XZ cross product here.
+		if signed < 0.0: flipped += 1
+		area += absf(signed)
+		if Geometry2D.is_point_in_polygon(centroid, hole): inside += 1
+	return {area = area, inside = inside, flipped = flipped}
 
 
 func _test_geometry_cache(lake: Dictionary, surfaces: PackedFloat64Array,

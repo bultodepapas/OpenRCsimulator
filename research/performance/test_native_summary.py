@@ -1290,6 +1290,8 @@ class BenchmarkHealthTests(unittest.TestCase):
             "different warmup": lambda c: c.__setitem__(c.index("--warmup=0"), "--warmup=30"),
             "conflicting forced option": lambda c: c.append("--aircraft=other"),
             "scripted": lambda c: c.append("--scripted"),
+            "hidden geometry diagnostic": lambda c: c.append("--sustained-hide-shader=ground"),
+            "forced shader parameter diagnostic": lambda c: c.append("--sustained-shader-param=ground.anti_tiling=0"),
         }
         for name, mutate in mutations.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
@@ -1309,6 +1311,47 @@ class BenchmarkHealthTests(unittest.TestCase):
             check["command"].extend(["--sustained-observation=on", "--aircraft=jensen-das-ugly-stik-60"])
             check_path.write_text(json.dumps(check), encoding="utf-8")
             self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_render_override_sweep_must_match_checked_command(self):
+        def run(command_extra: list[str], recorded) -> dict:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                receipt["scenario"]["render_override"] = recorded
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                check["command"].extend(command_extra)
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                return summarize_run(path, SHORT_POLICY)
+
+        both = ["--sustained-render-scale=0.75", "--sustained-msaa=1"]
+        result = run(both, {"scaling_3d_scale": 0.75, "msaa_3d": 1})
+        self.assertTrue(result["performance_pass"])
+        self.assertEqual(result["benchmark_health"]["scenario"]["render_override"],
+                         {"scaling_3d_scale": 0.75, "msaa_3d": 1})
+        self.assertTrue(run(["--sustained-msaa=0"], {"msaa_3d": 0})["performance_pass"])
+        self.assertTrue(run(["--sustained-reconstruction=metalfx_spatial_quality"],
+                            {"reconstruction": "metalfx_spatial_quality"})["performance_pass"])
+        self.assertTrue(run([], None)["performance_pass"])
+        mismatches = {
+            "unrecorded override": (both, None),
+            "override without command": ([], {"scaling_3d_scale": 0.75, "msaa_3d": 1}),
+            "different scale": (both, {"scaling_3d_scale": 0.5, "msaa_3d": 1}),
+            "different msaa": (both, {"scaling_3d_scale": 0.75, "msaa_3d": 2}),
+            "missing field": (both, {"scaling_3d_scale": 0.75}),
+            "extra field": (["--sustained-msaa=1"], {"scaling_3d_scale": 1.0, "msaa_3d": 1}),
+            "float msaa": (["--sustained-msaa=1"], {"msaa_3d": 1.0}),
+            "malformed scale": (["--sustained-render-scale=fast"], {"scaling_3d_scale": 0.75}),
+            "bare msaa flag": (["--sustained-msaa"], {"msaa_3d": 0}),
+            "different reconstruction": (["--sustained-reconstruction=metalfx_spatial_85"],
+                                         {"reconstruction": "metalfx_spatial_quality"}),
+            "bare reconstruction flag": (["--sustained-reconstruction"], {"reconstruction": "native"}),
+        }
+        for name, (extra, recorded) in mismatches.items():
+            with self.subTest(name=name):
+                result = run(extra, recorded)
+                self.assertFalse(result["benchmark_checked_runner"]["eligible"])
+                self.assertFalse(result["performance_pass"])
 
     def test_each_violation_and_missing_counter_is_rejected(self):
         for key in sorted(BENCHMARK_VIOLATIONS):
@@ -1429,7 +1472,7 @@ class BenchmarkHealthTests(unittest.TestCase):
             self.assertEqual(result["workload_scope"], "direct-live-input")
 
     def test_campaign_refuses_mixed_workloads_or_benchmark_identities(self):
-        for difference in ("none", "live_input", "scenario", "arguments", "source"):
+        for difference in ("none", "live_input", "scenario", "arguments", "source", "render_override"):
             with self.subTest(difference=difference), tempfile.TemporaryDirectory() as temp_dir:
                 root = Path(temp_dir)
                 write_benchmark_run(root, "run-1")
@@ -1439,6 +1482,12 @@ class BenchmarkHealthTests(unittest.TestCase):
                     second, health_path, receipt = write_benchmark_run(root, "run-2")
                     if difference == "scenario":
                         receipt["scenario"]["trim_throttle"] = 0.3
+                    elif difference == "render_override":
+                        receipt["scenario"]["render_override"] = {"scaling_3d_scale": 0.5}
+                        checked_path = second.with_name("checked-" + second.name)
+                        checked = json.loads(checked_path.read_text())
+                        checked["command"].append("--sustained-render-scale=0.5")
+                        checked_path.write_text(json.dumps(checked), encoding="utf-8")
                     elif difference == "arguments":
                         receipt["scenario"]["arguments"][1] = "--scene_detail=low"
                         checked_path = second.with_name("checked-" + second.name)

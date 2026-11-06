@@ -33,7 +33,7 @@ func _initialize() -> void:
 		quit(2)
 		return
 	if parsed.help:
-		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N] [--contact-shadows profile|off|on] [--aa msaa4|none|taa|fsr2_native]")
+		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920|2560] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N] [--contact-shadows profile|off|on] [--aa msaa4|none|taa|fsr2_native] [--scale native|bilinear67|metalfx_spatial_85|metalfx_spatial_quality]")
 		quit()
 		return
 	_values = parsed.values
@@ -42,7 +42,7 @@ func _initialize() -> void:
 
 func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var values := {}
-	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows", "--aa"]
+	var allowed := ["--out", "--width", "--aircraft", "--hour", "--view", "--seconds", "--contact-shadows", "--aa", "--scale"]
 	allowed.append_array(SHADOW_ARGUMENTS.keys())
 	var i := 0
 	while i < raw.size():
@@ -100,6 +100,12 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 	var aa := str(values.get("--aa", "msaa4"))
 	if aa not in ["msaa4", "none", "taa", "fsr2_native"]:
 		return {ok = false, error = "--aa must be msaa4, none, taa or fsr2_native"}
+	# DT-MAC-06b C1: 3D input scale for Retina comparisons; MetalFX also needs OPENRC_METALFX_TRIAL=1 and Metal.
+	var scale := str(values.get("--scale", "native"))
+	if scale not in ["native", "bilinear67", "metalfx_spatial_85", "metalfx_spatial_quality"]:
+		return {ok = false, error = "--scale must be native, bilinear67, metalfx_spatial_85 or metalfx_spatial_quality"}
+	if scale != "native" and aa != "msaa4":
+		return {ok = false, error = "--scale comparisons keep the default 4x MSAA"}
 	if values.has("--seconds"):
 		if not str(values["--seconds"]).is_valid_float():
 			return {ok = false, error = "--seconds must be greater than zero"}
@@ -109,7 +115,7 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 		if view == "all":
 			return {ok = false, error = "--seconds profiling requires one named --view"}
 	return {ok = true, help = false, values = {out = str(values["--out"]), width = width,
-		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa, shadows = shadows}}
+		aircraft = aircraft, hour = float(values.get("--hour", "-1")), view = view, seconds = seconds, contact_shadows = contact_shadows, aa = aa, shadows = shadows, scale = scale}}
 
 
 func run() -> void:
@@ -155,6 +161,15 @@ func run() -> void:
 		if Reconstruction.describe(viewport).effective != "fsr2_native":
 			viewport.free()
 			_fail("FSR2 Native AA is unavailable; refusing a mislabeled fallback capture")
+			return
+	if _values.scale == "bilinear67":
+		viewport.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+		viewport.scaling_3d_scale = 2.0 / 3.0
+	elif _values.scale != "native":
+		Reconstruction.apply(viewport, {reconstruction = _values.scale, msaa_3d = Viewport.MSAA_4X})
+		if Reconstruction.describe(viewport).selected != _values.scale:
+			viewport.free()
+			_fail("%s is unavailable here (needs OPENRC_METALFX_TRIAL=1 and Metal); refusing a mislabeled capture" % _values.scale)
 			return
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(viewport)
@@ -241,7 +256,8 @@ func run() -> void:
 		"viewport": [size.x, size.y], "msaa_3d": viewport.msaa_3d, "offscreen": true,
 		"aa": {"requested": _values.aa, "use_taa": viewport.use_taa,
 			"scaling_3d_mode": viewport.scaling_3d_mode, "scaling_3d_scale": viewport.scaling_3d_scale,
-			"fsr_sharpness": viewport.fsr_sharpness, "texture_mipmap_bias": viewport.texture_mipmap_bias},
+			"fsr_sharpness": viewport.fsr_sharpness, "texture_mipmap_bias": viewport.texture_mipmap_bias,
+			"scale_requested": _values.scale, "reconstruction": Reconstruction.describe(viewport)},
 		"lighting": {"hour": _values.hour, "snapshot": lighting, "sun_azimuth_deg": sun_params.sun_azimuth_deg,
 			"sun_elevation_deg": sun_params.sun_elevation_deg, "sun_direction_render": _vec_array(Atmosphere.sun_direction(lighting)),
 			"sun_energy": Atmosphere.light_energy(lighting), "engine_shadows": Atmosphere.engine_shadows,

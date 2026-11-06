@@ -205,7 +205,7 @@ func _test_home_guards_refused(profile: String) -> void:
 func _test_restart_arguments(active_target: String) -> void:
 	var spaced_project := "C:/Program Files/OpenRC Simulator/build copy/app"
 	for profile: String in ["standard", "high"]:
-		var renderer := "forward_plus" if profile == "high" else "gl_compatibility"
+		var renderer := "forward_plus" if profile == "high" else HighGraphics.standard_rendering_method()
 		var packaged := HighGraphics.restart_arguments(profile, false, spaced_project)
 		var editor := HighGraphics.restart_arguments(profile, true, spaced_project)
 		_check("packaged %s restart selects its renderer" % profile,
@@ -217,6 +217,11 @@ func _test_restart_arguments(active_target: String) -> void:
 			if argument in ["--", "--script", "--trace", "--capture", "--quick-flight", "--aircraft"]:
 				has_technical_arg = true
 		_check("%s restart args contain no technical route arguments" % profile, not has_technical_arg)
+	# DT-MAC-05b: Standard is Mobile only on arm64 (Apple Silicon); every shipped x86_64 host keeps Compatibility.
+	_check("Standard renderer follows the arm64 project override",
+		HighGraphics.standard_rendering_method() == ("mobile" if OS.has_feature("arm64") else "gl_compatibility")
+		and str(ProjectSettings.get_setting("rendering/renderer/rendering_method")) == "gl_compatibility"
+		and str(ProjectSettings.get_setting("rendering/renderer/rendering_method.arm64")) == "mobile")
 	_check("unsupported restart profile has no arguments",
 		HighGraphics.restart_arguments("ultra", true, spaced_project).is_empty())
 	_check("restart preserves Home route rather than a direct technical route",

@@ -52,6 +52,17 @@ Use `--shadow-strength 0.6` only for a diagnostic enhanced-mode capture; the def
   --app app --godot "$(app/get-godot.sh)" --out /tmp/l15d-cloud-probe
 ```
 
+### Cloud-shadow tile agreement (DT-MAC-06b C2)
+
+`shadow_map_probe.gd` compares the periodic noise tile (`render/cloud_shadow_map.gd`, on by default with a renderer) with per-pixel `cloud_density()` on the GPU. It covers four cases: the default deck, a tile wrap, a clustered overcast and a full tile. It fails when the absolute density error exceeds 0.05 at any pixel or 0.003 on average. Linux needs a display; macOS runs natively:
+
+```sh
+xvfb-run -a -s "-screen 0 1280x720x24" "$(app/get-godot.sh)" --path app --audio-driver Dummy \
+  --script "$PWD/tools/atmosphere/shadow_map_probe.gd" -- --out=/abs/new/result.json
+```
+
+On macOS, add `--rendering-method mobile --rendering-driver metal` and omit `xvfb-run`. Probe uniforms are prefixed: `cloud_density()` reassigns a local `cluster`, which a same-named uniform captures on RenderingDevice backends. It also checks C5b `cloud_detail_density` (tile octaves 0–2 plus per-pixel octaves 3–4; ≤ 0.025 / 0.0015). A 3D mode renders a spatial quad with the exact density in R and the tile density in G, so 3D-stage sampling is checked independently of output encoding. This checks density agreement only; appearance, motion and performance need their own evidence.
+
 ## Distant storm-bank views (FW-83)
 
 `storm_bank_capture.gd` builds the production default field and World with the

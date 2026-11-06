@@ -5,6 +5,15 @@ extends SceneTree
 ## Optional: --warmup=<wall seconds> --t=<wall seconds> --sustained-hash.
 ## --sustained-observation=off is an ineligible observer-cost control.
 ## Headless fixed-fps diagnostics may add --sustained-diagnostic-ticks=<1..432000>.
+## DT-MAC-03b attribution sweeps may add --sustained-render-scale=<0.25..1> (bilinear
+## 3D scale), --sustained-msaa=<0..3> (Viewport.MSAA) and/or --sustained-reconstruction=<Reconstruction
+## mode> (MetalFX also needs OPENRC_METALFX_TRIAL=1; refusals fall back to Native); the receipt records them
+## as scenario.render_override, so such runs never compare with default captures.
+## --sustained-hide-shader=<name>[,<name>] hides geometry drawn with res://**/<name>.gdshader
+## (re-applied every 60 frames for streamed chunks). It removes visible work, so the
+## checked-runner reconciliation always refuses such runs: GPU attribution only.
+## --sustained-shader-param=<shader>.<param>=<number>[,...] forces a float/int/bool shader
+## parameter on every material of that shader, every frame (same refusal; attribution only).
 
 const Simulation := preload("res://sim/simulation.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
@@ -71,6 +80,12 @@ var capture_id := ""
 var diagnostic_ticks := 0
 var hashes_enabled := false
 var observation_enabled := true
+var render_override: Variant = null
+var hide_shaders: PackedStringArray = []
+var hidden_instances := {}
+var hide_scan_frames := 0
+var shader_params: Array[Dictionary] = []
+var param_materials: Array[ShaderMaterial] = []
 var failure := ""
 var sealed := false
 var seal_exit_code := -1
@@ -118,6 +133,9 @@ func _run() -> void:
 	diagnostic_ticks = parsed.diagnostic_ticks
 	hashes_enabled = parsed.hashes_enabled
 	observation_enabled = parsed.observation_enabled
+	render_override = parsed.render_override
+	hide_shaders = parsed.hide_shaders
+	shader_params = parsed.shader_params
 	if Engine.physics_ticks_per_second != PHYSICS_HZ or Engine.time_scale != 1.0:
 		_fail_start("requires the normal 240 Hz and time_scale=1")
 		return
@@ -159,7 +177,15 @@ func _run() -> void:
 	var scene_args: PackedStringArray = parsed.scene_args
 	scene_args.append("--case=" + ROUTE + "-" + source_digest)
 	TranslationServer.set_locale("en")
-	Reconstruction.apply(root, {reconstruction = "native", msaa_3d = Viewport.MSAA_4X})
+	var msaa: int = Viewport.MSAA_4X
+	if render_override is Dictionary and render_override.has("msaa_3d"): msaa = int(render_override.msaa_3d)
+	var reconstruction := "native"
+	if render_override is Dictionary and render_override.has("reconstruction"): reconstruction = str(render_override.reconstruction)
+	Reconstruction.apply(root, {reconstruction = reconstruction, msaa_3d = msaa})
+	# Native keeps bilinear scaling; only the input scale changes. Reconstruction's
+	# runtime guard re-applies only FSR/DLSS failures, so this stays for the flight.
+	if render_override is Dictionary and render_override.has("scaling_3d_scale"):
+		root.scaling_3d_scale = float(render_override.scaling_3d_scale)
 	scene = load("res://main.tscn").instantiate()
 	if scene == null:
 		_fail_start("cannot instantiate the production Main scene")
@@ -225,11 +251,35 @@ func _run() -> void:
 		engine_clock_scope = "engine fixed-fps flag is not exposed to scripts; verify checked-runner command",
 		observation_mode = "on" if observation_enabled else "off",
 		state_input_hashing = hashes_enabled,
-		settings_scope = "direct technical Main; native reconstruction, 4x MSAA; private accident archive",
+		settings_scope = "direct technical Main; native reconstruction, 4x MSAA; private accident archive"
+			if render_override == null else "direct technical Main; DT-MAC-03b render_override diagnostic; private accident archive",
+		render_override = render_override,
+		effective_render = {scaling_3d_mode = root.scaling_3d_mode, scaling_3d_scale = root.scaling_3d_scale,
+			msaa_3d = root.msaa_3d, reconstruction = Reconstruction.describe(root)},
 		accident_archive_path = scene.accident_archive_path, controller_profile_path = session.profiles_path}
 	if absf(float(session.start.V) - 15.0) > 1e-9:
 		_fail_start("reference Stik trim must be 15 m/s")
 		return
+	if not hide_shaders.is_empty():
+		_hide_shader_geometry(scene)
+		scenario["hidden_shader_geometry"] = {shaders = Array(hide_shaders), instances_at_start = hidden_instances.size()}
+	if not shader_params.is_empty():
+		_collect_param_materials(scene)
+		var before := []
+		for entry: Dictionary in shader_params:
+			for material: ShaderMaterial in param_materials:
+				if material.shader.resource_path.get_file().get_basename() == entry.shader:
+					before.append({target = entry.shader + "." + entry.parameter, value = material.get_shader_parameter(entry.parameter)})
+		_apply_shader_params()
+		var readback := []
+		for entry: Dictionary in shader_params:
+			var values := []
+			for material: ShaderMaterial in param_materials:
+				if material.shader.resource_path.get_file().get_basename() == entry.shader:
+					values.append(material.get_shader_parameter(entry.parameter))
+			readback.append({target = entry.shader + "." + entry.parameter, values = values})
+		scenario["forced_shader_parameters"] = {parameters = shader_params.duplicate(true),
+			materials_at_start = param_materials.size(), before_at_start = before, readback_at_start = readback}
 	if hashes_enabled: _new_checkpoint()
 	if observation_enabled and not _record_sample(0):
 		_fail_start("cannot record initial route health")
@@ -258,6 +308,9 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 	var requested_ticks := 0
 	var use_hash := false
 	var use_observation := true
+	var override := {}
+	var hide := PackedStringArray()
+	var params: Array[Dictionary] = []
 	for arg: String in arguments:
 		if not arg.begins_with("--"): return {ok = false, reason = "unexpected positional argument"}
 		var pair := arg.trim_prefix("--").split("=", true, 1)
@@ -291,6 +344,38 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 				warmup = value.to_float()
 			"frametimes-stream":
 				if pair.size() != 1: return {ok = false, reason = "--frametimes-stream is a flag"}
+			"sustained-render-scale":
+				if not value.is_valid_float() or not is_finite(value.to_float()) \
+						or value.to_float() < 0.25 or value.to_float() > 1.0:
+					return {ok = false, reason = "--sustained-render-scale requires 0.25..1"}
+				override.scaling_3d_scale = value.to_float()
+			"sustained-hide-shader":
+				var names := value.split(",", false)
+				if names.is_empty() or names.size() > 16:
+					return {ok = false, reason = "--sustained-hide-shader requires 1..16 shader names"}
+				for name: String in names:
+					if name.is_empty() or name.length() > 64 or not name.is_valid_ascii_identifier():
+						return {ok = false, reason = "--sustained-hide-shader names must be shader basenames"}
+				hide = names
+			"sustained-shader-param":
+				var entries := value.split(",", false)
+				if entries.is_empty() or entries.size() > 16:
+					return {ok = false, reason = "--sustained-shader-param requires 1..16 entries"}
+				for entry: String in entries:
+					var assignment := entry.split("=", false, 1)
+					var target := assignment[0].split(".", false, 1) if assignment.size() == 2 else PackedStringArray()
+					if target.size() != 2 or not target[0].is_valid_ascii_identifier() or not target[1].is_valid_ascii_identifier() \
+							or not assignment[1].is_valid_float() or not is_finite(assignment[1].to_float()):
+						return {ok = false, reason = "--sustained-shader-param entries are shader.param=number"}
+					params.append({shader = target[0], parameter = target[1], value = assignment[1].to_float()})
+			"sustained-reconstruction":
+				if not Reconstruction.MODE_PROVIDERS.has(value):
+					return {ok = false, reason = "--sustained-reconstruction requires a Reconstruction mode"}
+				override.reconstruction = value
+			"sustained-msaa":
+				if not value.is_valid_int() or value.to_int() < Viewport.MSAA_DISABLED or value.to_int() > Viewport.MSAA_8X:
+					return {ok = false, reason = "--sustained-msaa requires an integer 0..3"}
+				override.msaa_3d = value.to_int()
 			_: forwarded.append(arg)
 	if not path.is_absolute_path() or not receipt.is_absolute_path() or path == receipt \
 			or FileAccess.file_exists(path) or FileAccess.file_exists(path + ".frames.jsonl") \
@@ -310,7 +395,77 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 	forwarded.append("--t=" + str(duration))
 	forwarded.append("--warmup=" + str(warmup))
 	return {ok = true, frame_path = path, receipt_path = receipt, scene_args = forwarded,
-		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation}
+		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation,
+		render_override = override if not override.is_empty() else null, hide_shaders = hide,
+		shader_params = params}
+
+
+func _hide_shader_geometry(node: Node) -> void:
+	if node is GeometryInstance3D and node.visible and _uses_hidden_shader(node):
+		node.visible = false
+		hidden_instances[node.get_instance_id()] = true
+	for child: Node in node.get_children():
+		_hide_shader_geometry(child)
+
+
+func _uses_hidden_shader(instance: GeometryInstance3D) -> bool:
+	for material: Material in _materials_of(instance):
+		while material != null:
+			if material is ShaderMaterial and material.shader != null \
+					and material.shader.resource_path.get_file().get_basename() in hide_shaders:
+				return true
+			material = material.next_pass
+	return false
+
+
+func _collect_param_materials(node: Node) -> void:
+	var owned: Array[Material] = []
+	if node is GeometryInstance3D:
+		owned = _materials_of(node)
+	elif node is WorldEnvironment and node.environment != null and node.environment.sky != null:
+		owned = [node.environment.sky.sky_material] # e.g. sky.appearance_layer_count
+	if not owned.is_empty():
+		for material: Material in owned:
+			while material != null:
+				if material is ShaderMaterial and material.shader != null and not param_materials.has(material):
+					var name: String = material.shader.resource_path.get_file().get_basename()
+					for entry: Dictionary in shader_params:
+						if entry.shader == name:
+							param_materials.append(material)
+							break
+				material = material.next_pass
+	for child: Node in node.get_children():
+		_collect_param_materials(child)
+
+
+func _apply_shader_params() -> void:
+	for material: ShaderMaterial in param_materials:
+		var name: String = material.shader.resource_path.get_file().get_basename()
+		for entry: Dictionary in shader_params:
+			if entry.shader != name: continue
+			# Keep the declared type: Godot rejects a float written to an int or bool uniform.
+			var current: Variant = material.get_shader_parameter(entry.parameter)
+			var value: Variant = entry.value
+			if typeof(current) == TYPE_INT: value = int(entry.value)
+			elif typeof(current) == TYPE_BOOL: value = entry.value != 0.0
+			# Write only on change: a redundant sky write would refilter its radiance every frame.
+			if current != value:
+				material.set_shader_parameter(entry.parameter, value)
+
+
+func _materials_of(instance: GeometryInstance3D) -> Array[Material]:
+	var materials: Array[Material] = [instance.material_override, instance.material_overlay]
+	var mesh: Mesh = null
+	if instance is MeshInstance3D:
+		mesh = instance.mesh
+		for surface: int in instance.get_surface_override_material_count():
+			materials.append(instance.get_surface_override_material(surface))
+	elif instance is MultiMeshInstance3D and instance.multimesh != null:
+		mesh = instance.multimesh.mesh
+	if mesh != null:
+		for surface: int in mesh.get_surface_count():
+			materials.append(mesh.surface_get_material(surface))
+	return materials
 
 
 func _disable_live_events(node: Node) -> void:
@@ -404,6 +559,17 @@ func _update_checkpoint(tick: int, state: PackedFloat64Array, inputs: PackedFloa
 
 
 func _observe_frame() -> void:
+	if not shader_params.is_empty() and not sealed:
+		if hide_scan_frames % 60 == 0 and is_instance_valid(scene):
+			_collect_param_materials(scene)
+			scenario.forced_shader_parameters["materials_total"] = param_materials.size()
+		_apply_shader_params()
+		if hide_shaders.is_empty(): hide_scan_frames += 1
+	if not hide_shaders.is_empty() and not sealed:
+		hide_scan_frames += 1
+		if hide_scan_frames % 60 == 0 and is_instance_valid(scene):
+			_hide_shader_geometry(scene)
+			scenario.hidden_shader_geometry["instances_total"] = hidden_instances.size()
 	if not sealed:
 		if not is_instance_valid(scene) or scene.session == null:
 			_mark_failure("input_ownership", "flight scene disappeared")

@@ -467,6 +467,10 @@ class ManifestTests(unittest.TestCase):
         for previous, current in zip(self.names, names):
             (self.output / previous).rename(self.output / current)
         self.names = names
+        # The changed presets alter the worktree identity, so the Mac receipt is re-made for this snapshot.
+        (self.output / names[2]).unlink()
+        manifest.macos_reference_receipt.package_zip(self.output / "macos/OpenRC Simulator.zip",
+                                                     self.output / names[2], self.snapshot, self.root)
         self.report["archive"]["path"] = names[0]
         self.write_report()
         template = self.templates / "macos.zip"

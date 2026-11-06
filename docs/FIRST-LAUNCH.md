@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: current-source player guide. Last full guide review: 2026-10-20; release status updated 2026-11-03. [v0.1.9-beta.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.9-beta.1) is the published beta preview; [v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8) is the latest stable software release. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [beta release notes](releases/v0.1.9-beta.1.md). Current-source features may differ from the beta package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: current-source player guide. Last full guide review: 2026-10-20; release status updated 2026-11-04. [v0.1.10](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.10) is the latest published software release. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [release notes](releases/v0.1.10.md). Current-source features may differ from the release package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download the latest stable release, [v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8). Download a platform ZIP and `SHA256SUMS` from that release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download the latest release, [v0.1.10](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.10). Download a platform ZIP and `SHA256SUMS` from that release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
@@ -18,16 +18,16 @@ Download the latest stable release, [v0.1.8](https://github.com/bultodepapas/Ope
 | macOS Apple Silicon / Intel | Move `OpenRC Simulator.app` to Applications and open it |
 | Linux x86_64 | Run `chmod +x openrc-simulator.x86_64`, then `./openrc-simulator.x86_64`; requires OpenGL 3.3 graphics |
 
-Current-source Mac ZIPs also contain `OpenRC Simulator.app.openrc-reference-receipt`.
+The v0.1.10 Mac ZIP also contains `OpenRC Simulator.app.openrc-reference-receipt`.
 Move that file together with the app and keep it beside the app for flight-log
-recording and exact replay. This packaging change is separate from v0.1.8;
-downloaded/quarantined launch with the receipt still awaits native verification.
+recording and exact replay. Downloaded/quarantined launch with the receipt
+still awaits native verification.
 
 These test builds have no trusted developer signing/notarization. If macOS refuses an unidentified developer, Apple's [opening-app guidance](https://support.apple.com/en-us/102445) explains the Privacy & Security override. Windows may show a reputation warning; platform policy can prevent launch. Native-platform and graphics acceptance remain separate from package checks.
 
 ## 3. Fly
 
-Home selects the aircraft, landscape, language, launch, weather and lighting. Menus support keyboard/mouse and an explicitly selected gamepad; a radio controls only flight. English is the default. The v0.1.8 download also offers Spanish; current source offers the additional languages listed in the [README](../README.md#current-features). Valid settings are remembered.
+Home selects the aircraft, landscape, language, launch, weather and lighting. Menus support keyboard/mouse and an explicitly selected gamepad; a radio controls only flight. English is the default. The v0.1.10 download includes all nine interface languages listed in the [README](../README.md#current-features). Valid settings are remembered.
 
 **Fly** starts the airplane directly when its controls are ready; no extra **Continue** is needed. Unready or unavailable controls open Pause for recovery.
 

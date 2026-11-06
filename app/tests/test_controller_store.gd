@@ -9,6 +9,7 @@ const PROFILE_PATH := "user://controller_core_store_test.cfg"
 const CORRUPT_PATH := "user://controller_core_store_corrupt.cfg"
 const LEGACY_PATH := "user://controller_core_legacy_test.cfg"
 const DEVICE_KEY := "fake-guid|1209:4f54|Test EdgeTX"
+const PRECISION_PATH := "user://controller_core_precision_test.cfg"
 
 var checks := 0
 var failures := 0
@@ -33,6 +34,56 @@ func _remove_file(path: String) -> void:
 func _clean(path: String) -> void:
 	for suffix in ["", ".tmp", ".rollback"]:
 		_remove_file(path + suffix)
+
+
+## Input.get_joy_axis reports float32; GDScript widens it to a float32-exact double.
+static func _joy_reading(value: float) -> float:
+	return PackedFloat32Array([value])[0]
+
+
+## Field report (TX16S MKIII, 2026-11-04): Save after calibration failed with "Temporary
+## controller profiles failed validation" because raw endpoints do not survive ConfigFile text.
+func _check_hardware_precision() -> void:
+	_clean(PRECISION_PATH)
+	var store := Store.new(PRECISION_PATH, LEGACY_PATH)
+	var radio: Dictionary = Profile.defaults("radio", "radio_custom")
+	radio.name = "TX16S MKIII"
+	radio.association = {"guid": "03000000091200004f54000000000000", "vendor_id": 4617, "product_id": 20308}
+	var endpoints := {
+		"roll": [-32767.0 / 32768.0, 100.0 / 32767.0, 32766.0 / 32767.0],
+		"pitch": [-0.9969481490524, -0.0030518509475997, 0.99990844451429],
+		"yaw": [-0.6, 0.05, 0.6],
+		"throttle": [-1.0, -1.0, 32767.0 / 32768.0],
+	}
+	for channel: String in endpoints:
+		radio[channel].min = _joy_reading(endpoints[channel][0])
+		radio[channel].center = _joy_reading(endpoints[channel][1])
+		radio[channel].max = _joy_reading(endpoints[channel][2])
+	# A 17-digit double the Godot parser does not read back to the same bits.
+	radio.idle_threshold = 0.04606158635212256
+	check("hardware-precision radio fixture is valid", Profile.validate(radio).ok)
+	var saved := store.save_profile(radio)
+	check("float32 calibration endpoints save", saved.ok, str(saved.get("error", "")))
+	if not saved.ok:
+		return
+	var loaded := store.load_all()
+	check("saved profile is exactly what reloads", loaded.ok and loaded.profiles.size() == 1 and loaded.profiles[0] == saved.profile, str(loaded))
+	var faithful := true
+	for channel: String in endpoints:
+		for field: String in ["min", "center", "max"]:
+			faithful = faithful and absf(float(saved.profile[channel][field]) - float(radio[channel][field])) <= 1e-7
+	check("stored endpoints stay within float32 resolution of the readings", faithful)
+	check("stored profile keeps identity and integer fields", saved.profile.profile_id == radio.profile_id and saved.profile.roll.axis == radio.roll.axis and saved.profile.association == radio.association)
+	var bytes_before_resave: PackedByteArray = FileAccess.get_file_as_bytes(PRECISION_PATH)
+	var resaved := store.save_profile(saved.profile)
+	check("re-saving the stored profile is byte-stable", resaved.ok and resaved.profile == saved.profile and FileAccess.get_file_as_bytes(PRECISION_PATH) == bytes_before_resave)
+	check("rollback snapshot of hardware-precision data restores", store.restore_snapshot(loaded).ok and store.load_all().profiles == loaded.profiles)
+	var second: Dictionary = Profile.defaults("radio", "radio_custom")
+	second.roll.min = _joy_reading(-0.987654321)
+	var appended := store.save_profile(second)
+	var both := store.load_all()
+	check("adding a profile keeps the earlier hardware-precision profile", appended.ok and both.ok and both.profiles.size() == 2 and both.profiles[0] == saved.profile and both.profiles[1] == appended.profile)
+	check("no temporary or rollback file remains", not FileAccess.file_exists(PRECISION_PATH + Store.TEMP_SUFFIX) and not FileAccess.file_exists(PRECISION_PATH + Store.BACKUP_SUFFIX))
 
 
 func _initialize() -> void:
@@ -150,7 +201,9 @@ func _initialize() -> void:
 	var recovered := rollback_store.load_all()
 	check("valid rollback copy recovers unreadable primary", recovered.ok and recovered.get("recovered_from_backup", false) and recovered.profiles.size() == 1)
 
-	for path in [PROFILE_PATH, CORRUPT_PATH, LEGACY_PATH, "user://controller_core_import_not_saved.cfg", "user://controller_core_match_test.cfg", "user://controller_core_rollback_test.cfg", "user://controller_core_strong_match_test.cfg"]:
+	_check_hardware_precision()
+
+	for path in [PROFILE_PATH, CORRUPT_PATH, LEGACY_PATH, "user://controller_core_import_not_saved.cfg", "user://controller_core_match_test.cfg", "user://controller_core_rollback_test.cfg", "user://controller_core_strong_match_test.cfg", PRECISION_PATH]:
 		_clean(path)
 	print("Controller profile store: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

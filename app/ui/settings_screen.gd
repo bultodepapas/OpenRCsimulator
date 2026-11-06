@@ -1140,7 +1140,9 @@ func _reconstruction_unavailable_text(provider: String, reason: String) -> Strin
 			return tr("MetalFX Temporal returned to Native after a camera change. Select Native before retrying.")
 		if reason in ["metalfx_scale_out_of_range", "metalfx_invalid_scale_limits"]:
 			return tr("This MetalFX input scale is unavailable on the current device.")
-		return tr("MetalFX requires an explicitly enabled Metal trial on a supported Mac.")
+		if reason == "metalfx_trial_disabled": # DT-MAC-07a: only Temporal remains a trial
+			return tr("MetalFX requires an explicitly enabled Metal trial on a supported Mac.")
+		return tr("This reconstruction option is unavailable in the current graphics session.")
 	if reason == "engine_mode_missing":
 		return tr("The current game build does not offer %s reconstruction.") % str({
 			"fsr2": "FSR2", "fsr3": "FSR3", "dlss": "DLSS"}.get(provider, "this"))

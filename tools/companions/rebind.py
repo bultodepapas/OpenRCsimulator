@@ -110,8 +110,16 @@ def qualified_tapes(qualification: dict) -> tuple[Path, ...]:
     return tapes
 
 
-def build_baseline(workspace: Path, rev: str, directories: list[str]) -> Path:
-    """Current project with only the solver directories taken from the accepted revision."""
+## "full" also takes every other tracked app file and the replay tooling from the accepted revision.
+## Use it when current non-solver code calls solver API newer than the accepted revision, which stops
+## the default hybrid baseline compiling. It compares more than the solver, so identical tapes are
+## a stricter result; a difference may come from non-solver code and still needs requalification.
+FULL_BASELINE_PATHS = ("app", "tools/flight_log", "tools/release/macos_reference_receipt.py")
+
+
+def build_baseline(workspace: Path, rev: str, directories: list[str], scope: str = "solver") -> Path:
+    """Current project with the solver directories (or, for scope "full", every tracked app and replay
+    tooling file) taken from the accepted revision. The current import cache is reused."""
     base = workspace / "base"
     shutil.copytree(ROOT / "app", base / "app", symlinks=True, ignore=COPY_IGNORE)
     shutil.copytree(ROOT / "tools" / "flight_log", base / "tools" / "flight_log", symlinks=True)
@@ -120,9 +128,14 @@ def build_baseline(workspace: Path, rev: str, directories: list[str]) -> Path:
     shutil.copy2(ROOT / "tools" / "release" / "macos_reference_receipt.py", base / "tools" / "release")
     for directory in directories:
         shutil.rmtree(base / directory)
+    paths = list(directories)
+    if scope == "full":
+        paths = [path for path in FULL_BASELINE_PATHS
+                 if subprocess.run(["git", "cat-file", "-e", f"{rev}:{path}"], cwd=ROOT,
+                                   stderr=subprocess.DEVNULL).returncode == 0]
     archive = workspace / "base-solver.tar"
     with archive.open("wb") as handle:
-        result = subprocess.run(["git", "archive", rev, *directories], cwd=ROOT, stdout=handle, stderr=subprocess.PIPE)
+        result = subprocess.run(["git", "archive", rev, *paths], cwd=ROOT, stdout=handle, stderr=subprocess.PIPE)
     if result.returncode:
         raise SetupError(f"git archive {rev}: {result.stderr.decode(errors='replace').strip()}")
     with tarfile.open(archive) as tar:
@@ -189,14 +202,14 @@ def repin_profile(profile: Path, old: str, new: str) -> None:
 
 
 def compare(godot: str, qualification: dict, jobs: int, keep: bool,
-            workspace_root: Path | None = None) -> tuple[list[dict], str]:
+            workspace_root: Path | None = None, scope: str = "solver") -> tuple[list[dict], str]:
     accepted = qualification["accepted"]
     directories = qualification["solver_directories"]
     parent = (workspace_root if workspace_root is not None else ROOT / "tmp").resolve()
     parent.mkdir(parents=True, exist_ok=True)
     workspace = Path(tempfile.mkdtemp(prefix="companion-rebind-", dir=parent))
     try:
-        base = build_baseline(workspace, accepted["rev"], directories)
+        base = build_baseline(workspace, accepted["rev"], directories, scope)
         base_identity = solver_identity(godot, base / "app")
         if base_identity != accepted["solver_sha256"]:
             raise SetupError(f"accepted rev {accepted['rev'][:8]} reproduces {base_identity[:8]}, "
@@ -234,6 +247,9 @@ def main() -> int:
     parser.add_argument("--jobs", type=int, default=max(1, min(6, (os.cpu_count() or 2) // 2)))
     parser.add_argument("--report", type=Path, help="also write the full JSON report to this new file")
     parser.add_argument("--keep", action="store_true", help="keep the disposable project copies")
+    parser.add_argument("--baseline", choices=("solver", "full"), default="solver",
+                        help="accepted-revision content in the base copy: solver directories (default) or "
+                             "every tracked app file and the replay tooling")
     parser.add_argument("--workspace-root", type=Path,
                         help="parent for disposable project copies (default: repository tmp/)")
     args = parser.parse_args()
@@ -253,7 +269,8 @@ def main() -> int:
             return 0
         print(f"Solver identity changed: accepted {pinned[:8]} -> current {current[:8]}. "
               f"Replaying {len(qualification['tapes'])} tapes on both sides...", flush=True)
-        results, workspace = compare(godot, qualification, args.jobs, args.keep, args.workspace_root)
+        results, workspace = compare(godot, qualification, args.jobs, args.keep, args.workspace_root,
+                                     args.baseline)
     except (SetupError, OSError, KeyError, ValueError, subprocess.TimeoutExpired) as error:
         print(f"rebind: setup error: {error}", file=sys.stderr)
         return 2
@@ -271,8 +288,12 @@ def main() -> int:
               "head": git("rev-parse", "HEAD"), "solver_tree_committed": solver_tree_is_committed(
                   qualification["solver_directories"]), "changed_sources": changed_sources,
               "candidate_aircraft": qualification["candidate_aircraft"], "identical": identical, "tapes": results,
-              "method": "Candidate replays of the retained tapes on two disposable copies differing only in the "
-                        "solver directories (accepted rev vs current tree); CSV bytes compared.",
+              "baseline": args.baseline,
+              "method": ("Candidate replays of the retained tapes on two disposable copies differing only in the "
+                         "solver directories (accepted rev vs current tree); CSV bytes compared."
+                         if args.baseline == "solver" else
+                         "Candidate replays of the retained tapes on the accepted revision's tracked app and replay "
+                         "tooling vs the current tree; CSV bytes compared."),
               "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical "
                         "validation."}
     if args.keep:

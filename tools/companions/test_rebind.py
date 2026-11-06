@@ -85,7 +85,7 @@ class Workspace(unittest.TestCase):
             sentinel.write_text("preserve")
             created = []
 
-            def fail_build(workspace, _revision, _directories):
+            def fail_build(workspace, _revision, _directories, _scope="solver"):
                 self.assertEqual(workspace.parent, parent.resolve())
                 self.assertTrue(workspace.is_dir())
                 (workspace / "partial.txt").write_text("partial copy")

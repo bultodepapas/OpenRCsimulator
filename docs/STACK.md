@@ -9,7 +9,7 @@ Display development follows the [shared resolution policy](../AGENTS.md#display-
 | Layer | Implementation |
 | --- | --- |
 | Engine/language | Official Godot 4.8-beta2; GDScript. Owner-authorized adoption with [beta 2 verification](research/engine-upgrade/GDU-12/README.md); broader [platform/release gates](plans/godot-4.8-upgrade.md) remain open |
-| Rendering | Compatibility renderer (`gl_compatibility`); 1280×720 default viewport; 4× 3D MSAA |
+| Rendering | Compatibility renderer (`gl_compatibility`); Mobile on native Metal for Apple Silicon (`rendering_method.arm64`, with a [renderer guard](../app/app_state/renderer_guard.gd)); 1280×720 default viewport; 4× 3D MSAA |
 | Simulation | Shared float64 rigid-body kernel, RK4 and fixed 240 Hz ticks; Godot rigid-body nodes do not solve flight |
 | Aircraft data | Strict `openrc-aircraft v2` validation, unit-tagged quantities and derived mass/CG/inertia; v1 is an explicit historical path; [contract](AIRCRAFT_CONTRACT.md) |
 | Input and shell | Physical-keyboard controls and radio profiles with device calibration and throttle arming; Home, Settings, Help, pause and flight/vehicle activities |
