@@ -84,5 +84,32 @@ func _initialize() -> void:
 			await create_timer(0.02).timeout
 		_check("warning playback is released after overlay teardown", warning_playback_ref.get_ref() == null,
 			"AudioServer retained the playback after the bounded drain")
+	await _test_fuel_families()
 	print("overlay fuel flight: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)
+
+
+func _test_fuel_families() -> void:
+	var manager: CanvasLayer = OverlayManager.new({preset = "instruments"}, "en")
+	root.add_child(manager)
+	await process_frame
+	for entry: Array in [[GLOW, "glow"], ["res://data/aircraft/p51d_mustang_120.json", "gasoline"],
+			["res://data/aircraft/sebart_avanti_s_a200.json", "kerosene"]]:
+		var session: Node = Flight.new()
+		session.input_enabled = false
+		session.setup(entry[0])
+		session.reset()
+		var before: PackedFloat64Array = session.sim.continuous.duplicate()
+		var state_before: PackedFloat64Array = session.sim.state.duplicate()
+		var snap := OverlayManager.snapshot(session, {}, 2.0, false, 0.0)
+		manager.reset_flight()
+		manager.refresh_numbers(snap)
+		_check("production %s fuel selects its liquid appearance" % entry[1], manager.frames.fuel._family == entry[1])
+		_check("production %s retains the accepted fill and reserve" % entry[1],
+			is_equal_approx(manager.frames.fuel._fill_key, snap.mass_sample.fill_fraction)
+			and is_equal_approx(manager.frames.fuel._reserve, snap.mass_sample.reserve_fraction))
+		_check("production %s presentation does not modify flight state" % entry[1],
+			session.sim.continuous == before and session.sim.state == state_before)
+		session.free()
+	manager.queue_free()
+	await process_frame

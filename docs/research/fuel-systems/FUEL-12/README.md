@@ -117,6 +117,14 @@ otherwise identical solver sources. Both baseline groups have their own verified
 exact replays. The controlled before/at/after and multiple-opportunity cases also
 retain identical packed non-counter state and event records against V5.
 
+The final [native oracle](segmented-firing-20261106/native/oracle.json) passed
+**8,046/8,046 comparisons**, covering 1,344 stage states, 14 connected-boundary
+cases and four 12-tick exhaustion trajectories with 289 actual native stage
+calls. Its [checked receipt](segmented-firing-20261106/native/report.json) is
+complete with zero engine errors; the flight and lifecycle source hashes match
+the integrated candidate. The isolated build refreshed reference identities;
+the native binary is unchanged from R3 and was not installed in the root tree.
+
 These are bounded software and replay checks. They do not establish acoustic or
 physical realism, natural full-tank endurance, performance, complete CI or native
 installation qualification. Run the new scripts through the checked runner as

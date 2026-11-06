@@ -53,5 +53,31 @@
     "mean-cycle approximation, not physical spark timing",
     "no RK, inventory or mass correction for exact-zero feed-line timing",
     "focused verification, not complete CI/native installation or performance qualification"
-  ]
+  ],
+  "native_oracle": {
+    "report": "native/oracle.json",
+    "build_receipt": "native/build-receipt.json",
+    "checked_report": "native/report.json",
+    "engine_log": "native/engine.log",
+    "run_valid": true,
+    "verdict": "pass",
+    "total": {
+      "compared": 8046,
+      "identical": 8046,
+      "mismatched": 0
+    },
+    "stage_states": 1344,
+    "connected_boundary_cases": 14,
+    "exhaustion_trajectories": 4,
+    "exhaustion_ticks_each": 12,
+    "exhaustion_native_stage_calls": 289,
+    "binary_sha256": "3408536af14a6fe18bd56ee229e99516aae1f9fc2db79d38228eb758fdf80f78",
+    "source_identity": "Final integrated glow flight and lifecycle SHA-256 match both oracle reference snapshots.",
+    "artifacts_sha256": {
+      "oracle.json": "10db4504aaf25e4b075e580388ae21f83729685022818ca78bc687ad2f4979b1",
+      "build-receipt.json": "fd4be514a074252201c32fb3d16beb391ba2fcbfe32e9a9ecf4aa6e50c38cf3f",
+      "report.json": "05a9bda309e77bae8fdcefaa12e652440bab9a865de92aca6b3fe4faa4e496a6",
+      "engine.log": "23f9f458c18def1591b7d7a4fa145c8d9f96486f6f09df370c8180e62b8e4819"
+    }
+  }
 }

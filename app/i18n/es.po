@@ -1330,6 +1330,24 @@ msgstr "MASA COMB."
 msgid "Tank level · remaining fuel"
 msgstr "Nivel de combustible restante"
 
+msgid "Liquid follows bank, pitch and load. Quantity comes from the fuel tanks."
+msgstr "El líquido sigue el alabeo, cabeceo y carga. La cantidad proviene de los depósitos."
+
+msgid "TURBINE"
+msgstr "TURBINA"
+
+msgid "NITRO / GLOW"
+msgstr "NITRO / GLOW"
+
+msgid "GASOLINE"
+msgstr "GASOLINA"
+
+msgid "No usable fuel · land now"
+msgstr "Sin combustible útil · aterriza ya"
+
+msgid "Fuel telemetry unavailable"
+msgstr "Datos de combustible no disponibles"
+
 msgid "Estimated reserve · land soon"
 msgstr "Reserva estimada · aterriza pronto"
 

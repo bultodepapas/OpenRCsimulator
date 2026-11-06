@@ -18,6 +18,7 @@ const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
 const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
 const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
 const PlayerInstrument := preload("res://render/overlays/player_instrument.gd")
+const FuelInstrument := preload("res://render/overlays/fuel_instrument.gd")
 const ClassicInstrument := preload("res://render/overlays/classic_instrument.gd")
 const NavigationInstrument := preload("res://render/overlays/navigation_instrument.gd")
 const NavigationData := preload("res://render/overlays/navigation_data.gd")
@@ -136,6 +137,8 @@ func _build() -> void:
 		var widget: Control
 		if id == "session_stats":
 			widget = SessionStatistics.new()
+		elif id == "fuel":
+			widget = FuelInstrument.new()
 		elif id in Settings.NAVIGATION_IDS:
 			widget = NavigationInstrument.new(id)
 		elif id in Settings.TRAINING_IDS:
