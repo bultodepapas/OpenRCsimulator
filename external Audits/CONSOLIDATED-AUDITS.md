@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 and Corsair audits. **Read this document first.** It organizes nine distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The nine source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair and UI/UX accessibility audits. **Read this document first.** It organizes eleven distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The eleven source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A9 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A11 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -31,10 +31,12 @@ The labels A1–A9 identify source documents in this consolidation; they are not
 | A7 | [Apple Silicon and Metal Optimization Handoff][A7] | Dated 2026-11-06, America/Bogota. Combines historical `fc018b38` audit, shader/architecture experiments at `93ffbb101917dff86ecc2632f07e2e45c450a178`, and separate CPU/physics results at `3df2791`. Pinned Godot beta2, Linux x86-64, Python 3.12.14/NumPy 2.3.5; CPU screens, shader-language checks and headless camera-method checks, but no new native Metal GPU execution. Not the same mathematical lab as A2. |
 | A8 | [Extra 300 physics and optimization audit][A8] | Attached report dated 2026-11-06, reviewed `codex/m1-native-validation-20261106` at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`. Two Extra-specific physics consistency defects, three optimization opportunities and one visual defect. Pinned Linux Godot/headless probes; 13 reported successful checked receipts; no new production fixes, complete suite, native qualification, rendered flight or full replay campaign. |
 | A9 | [F4U Corsair physics and optimization audit][A9] | Experiments at `84f4657814c157f1556f965861c0ab8623f48d8e` on `codex/m1-native-validation-20261106`; report also checks subsequent `e72d878` and says it does not alter the responsible files. No report date stated; received 2026-11-06. One material rate-datum inconsistency, one smaller thrust-lookup defect, two optimization opportunities and two unpromoted candidates. Reported isolated diagnostics, not full flight/native/render qualification. |
+| A10 | [Extra 300 round-two trim and reload audit][A10] | Reviewed `8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd`; package dated 2026-11-06. Adds E300-07 trim-result RPM reuse and E300-08 stale propeller geometry after F5, excluding first-pass E300-01–06 and already-covered downwash reuse. Pinned Linux solver comparisons and actual headless app/debug-bridge F5 events; no full-startup, target-GPU or native performance qualification. |
+| A11 | [UI/UX, configuration integrity and accessibility audit][A11] | Dated 2026-11-06; reviewed `codex/m1-native-validation-20261106` at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`, Godot `4.8.beta2.official.cafc17a19`. Nine new findings F01–F09 and one reproduced case R01 in an existing design concern. Actual headless application, production-component and source evidence are separated; no fresh native visual, physical-controller, screen-reader or renderer qualification. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and nine source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and eleven source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -47,6 +49,8 @@ The folder contains this consolidated document and nine source reports. Source c
 | `NEW.MD` | [apple-silicon-metal-optimization-handoff-2026-11-06.md][A7] |
 | Attached `Pasted text.txt` (Extra 300 audit) | [extra-300-physics-optimization-audit-2026-11-06.md][A8] |
 | Attached `Pasted text.txt` (Corsair audit) | [f4u-corsair-physics-optimization-audit-84f4657.md][A9] |
+| Attached `Pasted text.txt` (Extra 300 round two) | [extra-300-round2-trim-reload-audit-8e5f2f0.md][A10] |
+| Attached `Pasted text.txt` (UI/UX audit) | [ui-ux-accessibility-audit-2026-11-06.md][A11] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -62,6 +66,8 @@ The folder contains this consolidated document and nine source reports. Source c
 
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
+| UI choices, focus and save outcomes | A11 prioritizes profile identity, session/default isolation, scoped weather presets and usable focus after successful controller recovery; also covers Help, editing-key conflicts, save feedback and accessibility. | Nine new findings plus one reproduction of an existing concern. Evidence ranges from actual headless app routes to source inspection; these are historical findings, not current-fix verification. |
+| Extra 300 trim finalization and F5 reload | A10 reports two redundant steady-RPM searches per bounded glow trim finalization (E300-07), and physical/visible propeller diameter divergence after accepted same-ID reload (E300-08). | Tested solver candidate with byte-identical results; actual headless F5-route state/transform witnesses. Separate from E300-03 stage-mass reuse and E300-06 blade handedness. No new aerodynamic calibration is justified by these findings. |
 | Corsair force/moment and thrust continuity | A9 reports CF-01 rate moments supplied about CG where ARP is required, and CF-02 a final-table thrust discontinuity from the extrapolation floor. | Scoped generator/runtime and accepted-tick witnesses. CF-01 is a Corsair recurrence related to earlier Stik datum work and A8's Extra finding, not another count of those same aircraft defects. |
 | Corsair work elimination | A9 isolates repeated retract-data validation within one build (CF-03) and repeated full-vector calculations in the offline VLM generator (CF-04). | Synthetic construction-component timing and byte-identical generated output, respectively; no measured aircraft-loading/FPS gain. Stationary-pose cache was slower; gasoline-result reuse had inconclusive timings. |
 | Extra 300 generator consistency | A8 reports E300-01 mixed CG/ARP moment conventions and E300-02 missing installed blade camber in generated crossflow tables; it recommends resolving both before retuning. | Production-code diagnostic witnesses at `e72d878`, not physical calibration or current-fix verification. These are distinct from A5's earlier documented force-arm conventions. |
@@ -91,6 +97,45 @@ A6 arrived later in this folder but reviews the **same commit as A2–A5**, not 
 - **Related mathematics:** A7's remaining-noise density bounds differ from A2 M03's relief-contribution budget. Its high-octave hash lattice differs from A2 M01's coarse-corner sharing. Solar LUT versus A2 M02 chord geometry are separate alternatives. A7 parcel/derivative screens overlap A2 M12/M05 conceptually but use distinct controls and result sets.
 
 ## 3. Correctness and measurement findings
+
+### UI/UX: configuration integrity, navigation and accessibility
+
+**Source: [A11][A11], reviewed `e72d878`.** A11's F01–F09 and R01 are local audit labels, distinct from A6 F1–F6 and A2 R01–R02. P1 denotes configuration integrity or continuity of control before a wider polished release; P2 denotes material usability/accessibility failures; P3 denotes a bounded quality improvement. These are the author's priorities, not assigned project step IDs.
+
+| Finding | Reported behavior and evidence | Proposed repair and acceptance boundary |
+| --- | --- | --- |
+| **A11 F01 — P1, New profile identity** | Production-component reproduction: selecting the `-1` New profile entry leaves the existing draft identity intact; saving a new name replaces that profile, leaving one entry with the original ID. Owners: `controller_setup.gd`, `controller_profile_store.gd`. | Make creation an explicit fresh-ID draft transition, or use a disabled placeholder plus Create action; distinguish Create, Duplicate and Update. Create/change/save/reload must retain both IDs and original mappings; cover Cancel, duplicate names and switching. Separate from existing unsaved-draft confirmation work. |
+| **A11 F02 — P1, recovery loses Pause focus** | Production Pause/Screen/ScreenStack/input components reproduce both timing orders: successful recovery hides the action captured as return-focus target, before or after restoration. D-pad Down/Accept, keyboard Down and Tab do not reacquire focus. Earlier recovery coverage kept the device lost. | Active keyboard/gamepad menus need a visible enabled target. Restore a valid opener or explicit fallback, and repair later hide events without stealing newer valid focus. Test actual recovery with a separate menu pad and Keyboard/replacement flight controller, both timings; Resume may gain focus but must never activate automatically. |
+| **A11 F03 — P1, Moon persistence scope** | Actual headless Natural Random → Pause → lighting → No moon → Apply writes normal `moon` from `real` to `off` despite `remember_lighting_selection=false`; reload retains `off`. Direct `--quick-flight` attempts to save a Moon-only preference dictionary and logs missing `language`; editor closes, flight stays paused, sentinel file remains unchanged. This is a script error, not a crash. Owners: AppRoot Moon/Apply paths and `Preferences.save_to()`. | Stage and validate Moon with all lighting fields under one route-aware persistence owner and save outcome. Check normal defaults survive Natural Random restart/end and direct-flight edits; direct flight must avoid normal preference access and errors. Moon being committed before later operations creates a source-level partial-transaction risk; a player-triggered failed-sky transaction was **not reproduced**. Rejected combined edits must remain atomic. |
+| **A11 R01 — P1, wind preset overwrites air** | WeatherDialog reproduction: Steady breeze changes custom 1,500 m / 35 °C to reference 0 m / 15 °C as it installs 3 m/s wind. Whole-preset `_set_fields()` replaces the base and atmosphere controls. This is a new counterexample within a known requirement, not a tenth new finding. | Scope and merge only owned fields. Wind-only presets must preserve custom and standard-column atmosphere through Apply/reload; Cancel preserves the draft. Hot and high, Cool dense air and Standard dry ISA column intentionally own atmosphere: retain and disclose their composite effect. Removing atmosphere from every preset would be incorrect. |
+| **A11 F04 — P2, gamepad Help scrolling** | Production-component checks at **1920×1080**: available scroll distance is 349 px at 100% text and 2,833 px at 200%; repeated selected-pad navigation leaves offset zero while keyboard End reaches bottom. The handler accepts only `InputEventKey`; the body has no focusable content to drive `follow_focus`. | Route selected/remapped-pad scrolling while the reading region is focused, or expose navigable controls. Retain device filtering against RC axes and direct Close/Back. Test every section in English/Spanish at both scales, repeat/limits/reopen/close, keyboard Home/End/Page keys and mouse wheel. Distinct from earlier Help organization and keyboard tests. |
+| **A11 F05 — P2, Back captures editing keys** | Component host uses the verbatim production AppRoot router, real LineEdit and action validator: default Backspace edits `123` to `12`; accepted Back→Backspace mapping cancels the modal instead. Early `_input` consumes it before GUI editing. Actual Conditions supports editable fields/cancellation, but the full saved-profile-to-Conditions route was **not executed**. | Let editors consume ordinary editing keys before remaining shortcuts, or guard focused editors. Test actual saved Backspace and printable-key mappings, typing/deletion, Back after editing, modifiers, capture, popups, recovery and controller Back. Relates to UI-30 SC-5 Escape/dirty-draft work but adds an editing-key conflict. |
+| **A11 F06 — P2, invisible language-save failure** | Actual paused app with newer-schema protected preferences loaded through the production loader: `writable=false`; choosing Español changes live locale to `es`, but Settings retains its translated immediate-save promise/generic preview, with no failure message. File is byte-identical and reload returns `en`. Fixture was installed during the isolated run, not by relaunching the whole app. | Report accepted/session-applied/saved outcomes to the active screen, not only Home. Explain failure in the selected language, give reason and Retry when possible; preserve newer-file protection. Test protected and unwritable destinations, unchanged file, and successful save clearing stale error. A specific missing-error route, not another broad transaction-model finding. |
+| **A11 F07 — P2, startup text scale and semantics** | Source inspection: startup reads language/reduced motion but not saved display `ui_scale`; BrandIntro uses viewport-fit custom drawing for status/Skip rather than semantic controls. No assistive-technology reproduction. | Keep branding, use lightweight semantic status/Skip and validated saved scale without importing the heavy application graph. Native acceptance: 100%/200%, English/Spanish/CJK, reduced motion on/off, loading/error announcements and keyboard/pad Skip. The skip event must not also activate Fly after handoff. |
+| **A11 F08 — P2, instrument explanations** | Source inspection: `overlays_dialog.gd` puts interpretation/availability descriptions in checkbox hover tooltips without visible focus-help. This is the instrument selector, separate from the prior aircraft-catalog tooltip issue. | Wrapped explanation follows focus and hover, with localized accessibility description where appropriate. A keyboard/pad user must discover purpose and limits of every instrument without a mouse, including 200% text. Actual assistive-technology output remains untested. |
+| **A11 F09 — P3, arrow-key text equivalents** | Source inspection: custom `key_cap.gd` directional triangles lack application-provided direction text/accessibility names; localized arrow labels already exist in `key_labels.gd`. | Retain graphics with localized semantic names or a coherent action-row instruction; avoid duplicate announcements. Inspect the accessibility tree and listen to all four directions/actions using target-platform screen readers, translations and changed keyboard layouts. A debug snapshot alone cannot qualify this. |
+
+**Prior-work reconciliation.** A11 reports reading this consolidation, UI-30, the subsequent menu delivery plan and current PR comments. R01 supplements UI-30 SC-8 preset placement/wording and the sky/cloud plan's unrelated-tab preservation requirement. Keep existing owners for broad typography, modal shells, overlay scaling and theme refresh. The graphically retained Home/Workshop captures predate the reviewed build and support design context only; they do not verify current visuals or establish new defects in every control state.
+
+### Extra round two: E300-08 F5 installation-geometry synchronization
+
+**Source: [A10][A10], reviewed `8e5f2f0`.** Startup applies the validated glow propeller diameter to the visual model. Successful F5 calls `session.reload()` and updates model CG, but omits that geometry setter even though the session rebuilds the physical collision disc. This is a developer reload-route correctness defect, distinct from A8's reversed blade handedness. E300-07's solver optimization is recorded in §6.
+
+A10 uses the actual Extra flight scene and real F5 events through the debug bridge in disposable data copies. The 12→13-inch counterexample changes both aircraft and glow-installation JSON coherently under the same aircraft ID; it is an accepted synthetic developer edit, not a shipped/calibrated 13-inch catalog option.
+
+| E300-08 operation | Accepted diameter / physical strike radius | Visual scale and outcome |
+| --- | --- | --- |
+| Stock launch and no-op F5 | 0.3048 m / 0.1524 m | 1.000000, consistent. |
+| Change aircraft diameter alone, then F5 | Previous accepted values retained | 1.000000; inconsistent installation correctly refused. |
+| Coherent 13-inch edit, then F5 | 0.3302 m / 0.1651 m | **1.000000, stale**, despite successful reload/trim. |
+| Fresh launch with the same 13-inch files | 0.3302 m / 0.1651 m | 1.083333, correct fresh initialization. |
+| Restore stock files in that flight, then F5 | 0.3048 m / 0.1524 m | **1.083333, stale** in the reverse direction. |
+
+The required absolute scale is accepted/authored diameter, here 13/12. After increasing diameter via F5, blur radius remains about 0.152428 m against physical radius 0.1651 m, a **12.67 mm** radial mismatch. Reverse reload leaves visible radius about 0.165131 m against physical 0.1524 m. The authored mesh tip's roughly 28 µm nominal overrun is much smaller; no boundary-strike flight was run to demonstrate a collision consequence.
+
+The existing `AirplaneBuilder.apply_propeller_diameter()` succeeds when invoked diagnostically and updates propeller/blur transforms. It computes from authored diameter, making repeated application idempotent. Diameter-only changes do not inherently require a blur rebuild: blur update copies the propeller global transform before its early return, while profile radius is local. A shared accepted-installation helper for startup and successful reload should refresh dependent extents and explicitly handle presentation failure after physical commit.
+
+Regression must exercise **actual F5**, including no-op/repeated reload, accepted diameter changes both ways, rejected installation mismatch, and physical disc/solid/blur transforms. A setter-only test misses the wiring error; the nominal installation test passed 17 checks without covering F5. A10's diagnostic setter call is not a production repair. Headless app runs retained landscape-resource UID fallback warnings, so this proves observed state/transform behavior, not rendered pixels or target-GPU acceptance.
 
 ### Corsair force/moment datum and thrust-lookup findings
 
@@ -213,6 +258,17 @@ This finding establishes a lifecycle/counter error within the report. It does no
 ## 4. Physics findings and model limitations
 
 These items must remain separate from the reported defects in §3.
+
+### Extra round-two observations and bounded controls
+
+**Source: [A10][A10].** These are not additional confirmed aerodynamic defects or permission to adopt the diagnostic substitutions.
+
+| Observation | Reported evidence | Interpretation |
+| --- | --- | --- |
+| Polar attachment versus induced-source retention | Constructed −20° angle of attack, 20 m/s: source weights all zero while active polar attachment is about 0.566–0.619. Replacing source weights with polar attachment diagnostically changes Fz by about 22.37 N. | Significant sensitivity, but no contract requires these quantities to match and no independent negative-angle evidence chooses the correct law. Clarify/validate the intended relationship before tuning. Distinct from A5's selector asymmetry. |
+| Maximum-station-speed roll-rate cusp | At 14° and 20 m/s, one-sided Fz derivatives approach −0.264606 and +0.264606 N/(rad/s); a fixture-specific control identifies max-speed normalization as the cause. | Continuous response can contain a first-order absolute-roll-rate term even when central difference at zero is zero. About 0.026 N at 0.1 rad/s in this fixture; no material handling/integration failure established, and no generic wake correction proposed. |
+| Finite-fuel controls | 23 checks across four offered fills, live mass/CG/inertia, starter prime/momentum, cut/restart replay and reset refueling. Independent fixed-datum inertia differs by at most about 5.56e−17 kg·m². | Bounded software checks, not long-flight/physical tank validation. A 16-tick cut/restart recording replays sampled arrays exactly. |
+| Excluded concerns | Rotating-shaft scenery behavior traces to a documented contact convention; apparent Workshop scaling issue is unreachable because finite-glow Extra refuses the operation. | Do not promote these to new defects. First-pass E300-01–06 and existing downwash-air reuse are explicitly excluded from the new-finding count. |
 
 A8 explicitly excludes earlier reverse-flow discontinuity, trim/failsafe concerns, airflow/cache opportunities, missing wing propwash and known knife-edge/hammerhead limits from its new-defect count. It reproduces a coasting-propeller strike omission but attributes that coverage to existing **GP-17**, rather than adding another discovery. A5's earlier “no new serious defect established” verdict remains scoped to that review; it does not rule out A8's different generator findings on a later revision.
 
@@ -462,7 +518,39 @@ CF-03's eight alternating pairs with four builds/batch report median batch means
 | Stationary gear-pose cache | 24,850 sampled transform/rest comparisons match, but stowed 37.08→45.74 µs/call, deployed 35.19→44.74, moving 41.75→86.28; every measured pair favors original. | Reject this guarded prototype. Source checks cost more than interpolation. Unchanged extension does not justify skipping `apply()`: restore sampled pose before adding suspension compression. Cheaper immutable-data design remains unmeasured. |
 | Legacy gasoline propeller-result reuse | Narrow handoff between propulsion/slipstream matches 291 load/refusal checks. Ten timing pairs split five/five, with changes from −9.91% to +22.53%. | Defer; no reliable speedup. Electric hub inflow is not interchangeable with legacy datum inflow, and shaft torque uses different floating-point operation order. Require suitable profiling and contract evidence before substitution. |
 
+### Extra round two: E300-07 trim-result RPM reuse
+
+**Source: [A10][A10].** The bounded glow level-trim solver already retains `x_rpm` corresponding to accepted Newton iterate `x`. Result construction nevertheless calls `_evaluate()` without that RPM and then `_rpm()` again, triggering two redundant steady searches. Glow equilibrium searches 128 RPM intervals plus engine-table knots, selects restoring roots and bisects them; this is materially more work than reusing the scalar. It is separate from Jacobian RPM reuse, A8 stage-mass reuse and A6 downwash-air reuse.
+
+The candidate passes optional RPM into `_result()` and final evaluation only on the bounded glow level path. Its invariant is `x_rpm = steadyRPM(x)`; rejected line-search trials retain their RPM locally, preserving the last accepted pair even for failed-trim diagnostic exits. Reported independent review covers all five affected result exits. Root selection, equations/tolerances and fallback for glide, legacy and electric propulsion remain unchanged.
+
+| E300-07 case | Original → candidate steady-RPM searches | Removed |
+| --- | --- | ---: |
+| Extra level trim at 22 m/s | 19 → 17 | 2 |
+| Half-power cruise search | 202 → 174 | 28 |
+| Excessive-idle refusal | 30 → 24 | 6 |
+| Stopped-engine glide | 0 → 0 | 0 |
+
+Half-power search performs 14 finalizations, removing 28 searches (13.86%) with exactly unchanged full-fuel/reference-atmosphere cruise output, including about 32.45912 m/s and 10,784.934 RPM. Work counts are distinct from timing improvements.
+
+| Warm, uncached solver calculation | Baseline median | Candidate median | Median paired reduction / consistency |
+| --- | ---: | ---: | --- |
+| Extra level trim, 22 m/s | 148.67 ms | 134.18 ms | 10.1%; candidate faster in 24/24 pairs. |
+| Extra half-power cruise search | 1,518.48 ms | 1,332.00 ms | 12.0%; faster in 17/24 pairs; paired-reduction IQR about −5.2% to +13.2%. |
+
+Pinned Linux Godot, uninstrumented variants, two warmup pairs then 24 measured alternating pairs per case, with other audit CPU work paused. Paired reductions are not ratios of independent medians. Exact removal of searches is stronger evidence than a fixed 12% gain. Existing launch-trim cache hits bypass the work; model/fuel/atmosphere changes requiring recomputation are relevant. Full startup, FPS, GPU and native-backend cost were not measured.
+
+A10 reports **87 audit checks**, including **34 byte-identical complete results** and unchanged input models; repository trim-integrity **731 checks** and cruise-trim **22 checks**; exact complete-result comparison on all **48 timing pairs**. Cases cover full/10% fuel, reference/hot-high atmospheres, speeds, half-power/warm starts, failed/invalid requests and glide, with legacy/electric/four-stroke controls. Patch applicability passed at `8e5f2f0`; it is a tested candidate, not a current production implementation claim.
+
+### UI/UX loading and frozen-intro profiling candidate
+
+**Source: [A11][A11].** Loading stages, cancellation, first-frame checkpoints and Home preparation already exist (`flight_loading.gd`, `flight_scene_load.gd`, `home_flight_preparation.gd`). Native evaluation should distinguish input-to-feedback latency, longest uninterrupted main-thread segment, genuinely rendered ready frame, cancellation acknowledgement/completion, and cold/warm conditions. Resource readiness, scene construction, world preparation and first usable drawing are separate milestones. Keep the dedicated worker until an alternative proves equivalent lifetime/cancellation and pinned-engine behavior; do not infer permission to move arbitrary active scene-tree operations onto a worker.
+
+A11 identifies one **unmeasured, low-priority** candidate: `BrandIntro.seek()` freezes playback while `_process()` still updates shader parameters and queues redraws. Stop frozen processing only with explicit invalidation, including a `status_text` setter/signal so loading/failure messages cannot become stale. No CPU/GPU/frame-time/battery improvement was measured. Preserve the owned Tween, temporary application-processing disable during handoff, and skip-input consumption boundary; this is distinct from measured physics/shader candidates above.
+
 ## 7. Follow-up order and acceptance evidence
+
+A10 proposes two independent follow-ups: integrate the bounded trim-result reuse with its accepted-iterate invariant and exact/refusal checks, and repair F5 geometry synchronization with public-route regression. Neither requires aerodynamic recalibration. Retain the separate A8 generator priorities and A10's unresolved aerodynamic observations; current-source disposition must precede applying historical candidate patches.
 
 For Corsair, A9 recommends: repair complete rate-force/moment datum derivation; define shared continuous thrust extrapolation; apply output-preserving offline VLM reuse; then qualify the synchronous retract-validation handoff. Use the [Corsair integration plan](../docs/F4U-PLAN.md) and [aircraft contract](../docs/AIRCRAFT_CONTRACT.md). Physics repairs intentionally change affected behavior and need regenerated data, explained expected results and flight qualification. Work-elimination candidates must preserve outputs/refusals. Keep reference-inventory and live-fuel CG separate; do not require parity with defective physics as the repair criterion.
 
@@ -492,6 +580,14 @@ Additional A1 proposals retained in this sequence:
 - **Presentation:** after GPU headroom, compare two-image and default three-image swapchain behavior where supported. Process FPS, GPU duration, input response, and on-glass frame intervals are separate measures.
 
 A7's shader work-package sequence is an additional source recommendation, not proof that it outranks A2's candidates on current hardware: recheck baseline/receipts and contact passivity; isolate the zero-contribution sky patch; test direct-analytic and C5b density bounds separately; test the high-octave lattice atlas; compare degree-five/six transmission polynomials with native `exp`; isolate integer/shared-power/pilot-distance changes; then consider the full-scene aircraft crop and native rate-map integration. O4 and guarded O5 retain their existing CPU entries. Larger engine work needs a captured limitation, minimal supported-path prototype and fallback. Native Mac baking/prewarm remains separate release work.
+
+### UI/UX follow-up and native acceptance
+
+A11 proposes: **preserve choices** (F01/F03/R01), **preserve control** (F02/F04/F05), **explain outcomes and meaning** (F06–F09), then complete native acceptance. Check both the player-visible state and stored data: a picker change does not prove saved identity, a bridge command does not prove error-free execution, and a returned screen does not prove usable focus.
+
+At **1080p first**, then higher resolutions and finally 720p fallback, inspect focus versus selection, hover/pressed stability, understandable disabled states, truthful pending/applied/saved/failed status, 200% text/long translations and bright/dark scenery/opaque mode. Use layout containers/theme variations rather than one-language text-width fixes. These are acceptance criteria, not newly reproduced defects. Native rendering, real devices and screen readers remain required; retained historical screenshots do not satisfy this gate.
+
+The end-to-end journey is launch with saved accessibility preferences → configure controller → edit conditions without disturbing unrelated settings → read all Help with that controller → start with responsive feedback → recover input while paused → edit session settings without changing normal defaults → restart/exit with truthful save status. Apply current-source triage before implementing historical recommendations.
 
 ### Rendering acceptance
 
@@ -538,7 +634,7 @@ Primary technical references, frozen source URLs, and derivations remain in [A1]
 
 ### What is supplied here
 
-This directory contains nine source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains eleven source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -551,6 +647,16 @@ This directory contains nine source Markdown files and this consolidated documen
 | A7 | `OpenRC_Apple_Silicon_Experimental_Kit_2026-11-05.zip` (66 entries) and `OpenRC_Mathematical_Optimization_Lab_2026-11-05.zip` (69 entries, manifest covering 68 payload files), plus the original Apple PDF and separate `OpenRCsimulator-math-audit-3df2791.txt`. These are reported artifacts, not supplied here. Neither shader ZIP contains the later CPU harness, and A7's math ZIP is distinct from A2's `OpenRC_Mathematical_Optimization_Kit.zip`. |
 | A8 | `Extra300_Audit_e72d878_2026-11-06.zip`, described as the full report, scripts, experimental patches, raw results and checked receipts. Only the pasted report was supplied here; its `sandbox:/workspace/...` link is an external-session artifact reference, not a local package. No archive or raw receipts were inspected for this integration. |
 | A9 | `F4U_Corsair_Audit_84f4657.txt` (complete report) and `F4U_Corsair_Evidence_84f4657.zip` (probes, isolated prototypes, raw measurements, checked receipts, hashes and replay helper). The supplied summary links external ChatGPT-library files; those linked artifacts were not supplied locally or inspected here. |
+| A10 | `Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip`, described as complete report, trim candidate/variant builder, probes, raw pairs, fixtures, F5 transcript/logs, checked receipts and invariant review. Only the pasted text was supplied; its sandbox link is an external-session artifact reference, not an available local ZIP. No package or raw run was inspected/reexecuted for this consolidation. |
+| A11 | `OpenRC_UI_UX_Audit_2026-11-06.pdf` (described as an 18-page complete review) and `OpenRC_UI_UX_Evidence_2026-11-06.zip` (fixtures, logs, settings differences, source identities, replay instructions and machine-readable findings). The pasted report preserves their external ChatGPT-library links; neither deliverable was supplied locally or inspected for this consolidation. |
+
+### A11 evidence boundary
+
+Only the supplied Markdown is integrated. A11 separates actual headless application reproductions (F03/F06), production-component mechanisms (F01/F02/F04/F05 and R01), and source-only accessibility findings (F07–F09). No fresh native graphical window, physical controller, screen reader or renderer benchmark was available; retained captures are historical. Full-route saved-profile editing, a failed-sky transaction, native visual/accessibility acceptance and frozen-intro performance remain unverified. No production source was modified by the review, and this consolidation neither reruns the fixtures nor establishes current repair status.
+
+### A10 evidence boundary
+
+A10's solver evidence consists of reported headless numeric/result comparisons and warm uncached timings, while its F5 evidence uses the actual application route through debug-bridge key events in headless runs with disclosed landscape UID fallback warnings. Keep those evidence classes distinct: the report does not establish rendered-pixel, target-device GPU, full-startup or native performance, long-flight replay or physical aircraft/tank validation. The short fuel replay and successful setter intervention do not broaden those limits. The original attachment is preserved verbatim.
 
 ### A9 verification boundary
 
@@ -599,7 +705,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files at intake. They identify the nine retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
+These hashes were calculated from the supplied files at intake. They identify the eleven retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -612,6 +718,8 @@ These hashes were calculated from the supplied files at intake. They identify th
 | A7 — `apple-silicon-metal-optimization-handoff-2026-11-06.md` | `1eb780371898d91a5afec6052be9289fd900101633251ea66919da680c0b8f1b` |
 | A8 — `extra-300-physics-optimization-audit-2026-11-06.md` | `af7109d1bf85e7bcdb1d3106b9aada79850e1c5f944ea9f0eb2f75f15ad326a0` |
 | A9 — `f4u-corsair-physics-optimization-audit-84f4657.md` | `4626555a8dc24e3f496d5be8b88dbd9048e049c9638a2e82163f78252e757cc7` |
+| A10 — `extra-300-round2-trim-reload-audit-8e5f2f0.md` | `1ae35fc0deb7d1b52b0308f4bf89534aec8930b65a5d942e4dea054b1255bf48` |
+| A11 — `ui-ux-accessibility-audit-2026-11-06.md` | `113ce2b6d4e9fd16f2335bb6ad32902a2c0e50b7f6f3adcc06e7bcad01c910b0` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -622,3 +730,6 @@ These hashes were calculated from the supplied files at intake. They identify th
 [A7]: apple-silicon-metal-optimization-handoff-2026-11-06.md
 [A8]: extra-300-physics-optimization-audit-2026-11-06.md
 [A9]: f4u-corsair-physics-optimization-audit-84f4657.md
+[A10]: extra-300-round2-trim-reload-audit-8e5f2f0.md
+
+[A11]: ui-ux-accessibility-audit-2026-11-06.md
