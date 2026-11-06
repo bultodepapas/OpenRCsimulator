@@ -1,8 +1,6 @@
-# PT1h-R9: render-cost attribution for the debug bridge. Measured GPU/CPU render time per viewport (root and every
-# active SubViewport), draw calls / objects / primitives per pass, the render configuration in one read, a layer
-# census of the 3D scene, viewport debug draw modes, and ablation: switch one layer or feature off for a few frames,
-# measure, restore, and rank what the frame's GPU time is spent on. The pattern follows Unreal's show flags and
-# ProfileGPU (attribution by elimination) using only Godot's RenderingServer measurements; no shader is edited.
+# PT1h-R9: render diagnostics for the debug bridge. Renderer timing readbacks can be unavailable or stale; the
+# probe reports their scope and does not infer a bottleneck. It also exposes pass counters, scene census, viewport
+# debug draw modes, and reversible per-target ablation; no shader is edited.
 # Guide: tools/debug/README.md#render-cost-pt1h-r9.
 extends RefCounted
 
@@ -52,7 +50,8 @@ func _enable(rid: RID) -> void:
 func root_gpu_ms() -> float:
 	if not measuring:
 		return -1.0
-	return RenderingServer.viewport_get_measured_render_time_gpu(viewport.get_viewport_rid())
+	var value := RenderingServer.viewport_get_measured_render_time_gpu(viewport.get_viewport_rid())
+	return value if is_finite(value) and value > 0.0 else -1.0
 
 
 func subviewports() -> Array[SubViewport]:
@@ -70,9 +69,14 @@ func subviewports() -> Array[SubViewport]:
 func sample() -> Dictionary:
 	var rid := viewport.get_viewport_rid()
 	var out := {gpu_ms = 0.0, root_gpu_ms = 0.0, root_cpu_ms = 0.0, sub_gpu_ms = 0.0, setup_cpu_ms = 0.0,
+		gpu_timing_status = "unavailable_or_zero", gpu_ms_scope = "root_only_freshness_unverified",
+		sub_gpu_ms_scope = "last_readings_unverified_may_not_have_drawn",
 		draw_calls = 0, primitives = 0, objects = 0, shadow_draw_calls = 0, canvas_draw_calls = 0}
 	if measuring:
-		out.root_gpu_ms = RenderingServer.viewport_get_measured_render_time_gpu(rid)
+		var root_gpu := root_gpu_ms()
+		if root_gpu > 0.0:
+			out.root_gpu_ms = root_gpu
+			out.gpu_timing_status = "unverified_freshness"
 		out.root_cpu_ms = RenderingServer.viewport_get_measured_render_time_cpu(rid)
 		out.setup_cpu_ms = RenderingServer.get_frame_setup_time_cpu()
 	out.gpu_ms = out.root_gpu_ms
@@ -93,8 +97,8 @@ func sample() -> Dictionary:
 			if not _measured.has(sub_rid):
 				_enable(sub_rid)
 			if sub.render_target_update_mode != SubViewport.UPDATE_DISABLED:
-				out.sub_gpu_ms += RenderingServer.viewport_get_measured_render_time_gpu(sub_rid)
-		out.gpu_ms += out.sub_gpu_ms
+				var sub_gpu := RenderingServer.viewport_get_measured_render_time_gpu(sub_rid)
+				if is_finite(sub_gpu) and sub_gpu > 0.0: out.sub_gpu_ms += sub_gpu
 	return out
 
 
@@ -103,9 +107,12 @@ func viewport_rows() -> Array:
 	var rows: Array = []
 	for sub: SubViewport in subviewports():
 		var rid := sub.get_viewport_rid()
+		var gpu: float = RenderingServer.viewport_get_measured_render_time_gpu(rid) if measuring else 0.0
+		var reported := measuring and is_finite(gpu) and gpu > 0.0
 		rows.append({path = str(viewport.get_path_to(sub)), size = [sub.size.x, sub.size.y],
 			update = ["disabled", "once", "when_visible", "when_parent_visible", "always"][sub.render_target_update_mode],
-			gpu_ms = snappedf(RenderingServer.viewport_get_measured_render_time_gpu(rid), 0.001) if measuring else null})
+			gpu_ms = snappedf(gpu, 0.001) if reported else null,
+			gpu_timing_status = "unverified_freshness" if reported else "unavailable_or_zero"})
 	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a.gpu_ms if a.gpu_ms != null else 0.0) > float(b.gpu_ms if b.gpu_ms != null else 0.0))
 	return rows
 
@@ -277,14 +284,18 @@ func ablation_targets(root: Node3D, names: Array, depth: int) -> Dictionary:
 					big[row.path] = true
 	var targets: Array = []
 	var skipped: Array = [] # unknown paths, hidden layers, features already off
+	var skipped_reasons := {}
 	for item: Variant in wanted:
 		var target_name := str(item)
 		var target := _flag_target(target_name) if FLAG_HELP.has(target_name) else _node_target(root, target_name)
 		if target.is_empty():
 			skipped.append(target_name)
+			skipped_reasons[target_name] = "non_bilinear_reconstruction" if target_name == "@half_res" \
+				and not _can_half_res(viewport.scaling_3d_mode) else "unknown_hidden_or_already_off"
 		else:
 			targets.append(target)
-	return {targets = targets.slice(0, MAX_TARGETS), skipped = skipped, truncated = targets.size() > MAX_TARGETS}
+	return {targets = targets.slice(0, MAX_TARGETS), skipped = skipped, skipped_reasons = skipped_reasons,
+		truncated = targets.size() > MAX_TARGETS}
 
 
 func _node_target(root: Node3D, path: String) -> Dictionary:
@@ -292,6 +303,10 @@ func _node_target(root: Node3D, path: String) -> Dictionary:
 	if not node is Node3D or not (node as Node3D).visible:
 		return {}
 	return _toggle(path, "layer", [[node, "visible"]], [false])
+
+
+static func _can_half_res(mode: int) -> bool:
+	return mode == Viewport.SCALING_3D_MODE_BILINEAR
 
 
 func _flag_target(flag: String) -> Dictionary:
@@ -314,8 +329,9 @@ func _flag_target(flag: String) -> Dictionary:
 				bindings.append([viewport, "msaa_3d"])
 				off.append(Viewport.MSAA_DISABLED)
 		"@half_res":
-			bindings.append([viewport, "scaling_3d_scale"])
-			off.append(viewport.scaling_3d_scale * 0.5)
+			if _can_half_res(viewport.scaling_3d_mode):
+				bindings.append([viewport, "scaling_3d_scale"])
+				off.append(viewport.scaling_3d_scale * 0.5)
 		"@subviewports":
 			for sub: SubViewport in subviewports():
 				if sub.render_target_update_mode != SubViewport.UPDATE_DISABLED:
@@ -332,30 +348,64 @@ func _flag_target(flag: String) -> Dictionary:
 	return _toggle(flag, "flag", bindings, off) if not bindings.is_empty() else {}
 
 
-## A target switches every [object, property] binding to its `off` value and back to the value it had now.
+## Capture the live values at phase start, not while constructing the target list.
+## Weak references let freed scene nodes be reported as unavailable without a script error.
 static func _toggle(target_name: String, kind: String, bindings: Array, off: Array) -> Dictionary:
-	var on: Array = bindings.map(func(binding: Array) -> Variant: return binding[0].get(binding[1]))
-	return {name = target_name, kind = kind, apply = _assign.bind(bindings, off), restore = _assign.bind(bindings, on),
-		held = _holds.bind(bindings, off)}
+	var references: Array = []
+	var discovered: Array = []
+	for binding: Array in bindings:
+		var object: Variant = binding[0]
+		references.append([weakref(object) if is_instance_valid(object) else null, binding[1]])
+		discovered.append({value = object.get(binding[1])} if is_instance_valid(object) else null)
+	var state := {values = [], discovered = discovered, applied = false, missing = false, changed = false,
+		discovery_unchanged = true}
+	return {name = target_name, kind = kind, apply = _apply_toggle.bind(references, off, state),
+		restore = _restore_toggle.bind(references, off, state), held = _toggle_held.bind(references, off, state)}
 
 
-static func _assign(bindings: Array, values: Array) -> void:
+static func _apply_toggle(bindings: Array, off: Array, state: Dictionary) -> void:
+	if state.applied: return
+	state["values"] = []
+	state.missing = false
+	state.changed = false
+	state.discovery_unchanged = true
 	for i in bindings.size():
-		var object: Object = bindings[i][0]
-		if is_instance_valid(object):
-			object.set(bindings[i][1], values[i])
-
-
-## Still switched off at the end of the phase (false: something in the app turned it back on, so the measured
-## saving is not trustworthy and the row says `overridden`).
-static func _holds(bindings: Array, values: Array) -> bool:
-	for i in bindings.size():
-		var object: Object = bindings[i][0]
-		if not is_instance_valid(object):
+		var reference: Variant = bindings[i][0]
+		var object: Variant = reference.get_ref() if reference != null else null
+		if object == null:
+			state["values"].append(null)
+			state.missing = true
 			continue
-		var now: Variant = object.get(bindings[i][1])
-		if (now is float and not is_equal_approx(now, float(values[i]))) or (not now is float and now != values[i]):
-			return false
+		var before: Variant = object.get(bindings[i][1])
+		state["values"].append({value = before})
+		if not state.discovered[i] is Dictionary or not _same_value(before, state.discovered[i].value):
+			state.discovery_unchanged = false
+		state.changed = bool(state.changed) or not _same_value(before, off[i])
+		object.set(bindings[i][1], off[i])
+	state.applied = true
+
+
+static func _restore_toggle(bindings: Array, off: Array, state: Dictionary) -> void:
+	if not state.applied: return
+	for i in bindings.size():
+		var reference: Variant = bindings[i][0]
+		var object: Variant = reference.get_ref() if reference != null else null
+		if object != null and state["values"][i] is Dictionary and _same_value(object.get(bindings[i][1]), off[i]):
+			object.set(bindings[i][1], state["values"][i].value)
+	state.applied = false
+
+
+static func _same_value(actual: Variant, expected: Variant) -> bool:
+	return is_equal_approx(actual, float(expected)) if actual is float else actual == expected
+
+
+## False if any sampled binding was freed, already off, or no longer holds the probe's value.
+static func _toggle_held(bindings: Array, off: Array, state: Dictionary) -> bool:
+	if not state.applied or state.missing or not state.changed or not state.discovery_unchanged: return false
+	for i in bindings.size():
+		var reference: Variant = bindings[i][0]
+		var object: Variant = reference.get_ref() if reference != null else null
+		if object == null or not _same_value(object.get(bindings[i][1]), off[i]): return false
 	return true
 
 
@@ -368,7 +418,7 @@ static func median(values: PackedFloat64Array) -> float:
 	return sorted[middle] if sorted.size() % 2 == 1 else (sorted[middle - 1] + sorted[middle]) / 2.0
 
 
-## 1.4826 x median absolute deviation: the standard deviation of normal noise, ignoring isolated stale readbacks.
+## 1.4826 x median absolute deviation; this summary cannot establish timestamp freshness.
 static func robust_sd(values: PackedFloat64Array) -> float:
 	var center := median(values)
 	var deviations := PackedFloat64Array()
@@ -378,8 +428,8 @@ static func robust_sd(values: PackedFloat64Array) -> float:
 
 
 ## Frame-by-frame measurement, interleaved A-B-A: baseline, target 1 off, baseline, target 2 off, ..., baseline.
-## Each target is compared with the mean of the baselines just before and after it, which cancels slow drift
-## (GPU clock changes on a lightly loaded desktop GPU, clouds moving). advance() runs once per frame and returns
+## Each target is compared with the mean of its adjacent baselines; even this cannot establish scene stability
+## or timing freshness. advance() runs once per frame and returns
 ## true when finished; result() ranks the targets. Each phase discards `warmup` frames (render-time readback lag,
 ## pipeline compilation after a toggle) and then keeps `frames` samples; a baseline keeps the same count.
 class Ablation extends RefCounted:
@@ -392,6 +442,7 @@ class Ablation extends RefCounted:
 	var _rows: Array = []
 	var _acc: Array = []
 	var _applied := {}
+	var _held_during := true
 
 	func _init(owner: RefCounted, targets: Array, warmup_frames: int, measure_frames: int) -> void:
 		probe = owner
@@ -408,6 +459,9 @@ class Ablation extends RefCounted:
 	func advance() -> bool:
 		if _index < 0:
 			_start(0)
+		var phase: Dictionary = phases[_index]
+		if phase.has("held") and not bool(phase.held.call()):
+			_held_during = false
 		_frame += 1
 		if _frame > warmup:
 			_acc.append(probe.sample())
@@ -424,6 +478,7 @@ class Ablation extends RefCounted:
 		_index = index
 		_frame = 0
 		_acc = []
+		_held_during = true
 		var phase: Dictionary = phases[index]
 		if phase.has("apply"):
 			phase.apply.call()
@@ -431,17 +486,24 @@ class Ablation extends RefCounted:
 
 	func _finish() -> void:
 		var phase: Dictionary = phases[_index]
-		var held := true
+		var held := _held_during
 		if phase.has("held"):
-			held = phase.held.call()
+			held = held and bool(phase.held.call())
 		if phase.has("restore"):
 			phase.restore.call()
 			_applied.erase(_index)
-		var row := {name = phase.name, kind = phase.kind, overridden = not held}
+		var statuses := {}
+		for sample: Dictionary in _acc:
+			var gpu: Variant = sample.get("gpu_ms")
+			var positive: bool = (gpu is float or gpu is int) and is_finite(float(gpu)) and float(gpu) > 0.0
+			statuses[str(sample.get("gpu_timing_status", "unverified_freshness")) if positive else "unavailable_or_zero"] = true
+		var row := {name = phase.name, kind = phase.kind, overridden = not held,
+			gpu_timing_status = statuses.keys()[0] if statuses.size() == 1 else "mixed_or_unavailable"}
 		for key: String in ["gpu_ms", "draw_calls", "primitives", "objects", "root_cpu_ms"]:
 			var values := PackedFloat64Array()
 			for sample: Dictionary in _acc:
-				values.append(float(sample[key]))
+				var value := float(sample[key])
+				values.append(value if is_finite(value) and value >= 0.0 else 0.0)
 			row[key] = probe.median(values)
 		_rows.append(row)
 
@@ -460,7 +522,9 @@ class Ablation extends RefCounted:
 			if i >= 2:
 				steps.append(_rows[i].gpu_ms - _rows[i - 2].gpu_ms)
 		# Noise: the spread of the change between consecutive baselines, a difference of two medians like a saving.
-		var noise_ms: float = probe.robust_sd(steps) if steps.size() >= 3 else absf(steps[0]) if steps.size() == 1 else 0.0
+		var noise_ms: float = probe.robust_sd(steps) if steps.size() >= 3 else 0.0
+		if steps.size() > 0 and steps.size() < 3:
+			for step: float in steps: noise_ms = maxf(noise_ms, absf(step))
 		var rows: Array = []
 		for i in range(1, _rows.size() - 1, 2):
 			var before: Dictionary = _rows[i - 1]
@@ -470,19 +534,29 @@ class Ablation extends RefCounted:
 			for key: String in ["gpu_ms", "draw_calls", "primitives", "objects", "root_cpu_ms"]:
 				base[key] = (float(before[key]) + float(after[key])) / 2.0
 			var saved: float = base.gpu_ms - row.gpu_ms
+			var synthetic: bool = before.gpu_timing_status == "synthetic_valid" and row.gpu_timing_status == "synthetic_valid" \
+				and after.gpu_timing_status == "synthetic_valid"
+			var timing_status: String = before.gpu_timing_status if before.gpu_timing_status == row.gpu_timing_status \
+				and row.gpu_timing_status == after.gpu_timing_status else "mixed_or_unavailable"
 			rows.append({name = row.name, kind = phases[i].kind, saved_gpu_ms = snappedf(saved, 0.001),
 				saved_pct = snappedf(100.0 * saved / base.gpu_ms, 0.1) if base.gpu_ms > 0.0 else 0.0,
 				gpu_ms = snappedf(row.gpu_ms, 0.001), baseline_gpu_ms = snappedf(base.gpu_ms, 0.001),
-				significant = absf(saved) > maxf(3.0 * noise_ms, 0.005),
+				gpu_timing_status = timing_status,
+				significant = synthetic and not row.overridden and absf(saved) > maxf(3.0 * noise_ms, 0.005),
 				saved_draw_calls = roundi(base.draw_calls - row.draw_calls),
 				saved_primitives = roundi(base.primitives - row.primitives),
 				saved_objects = roundi(base.objects - row.objects),
 				saved_cpu_ms = snappedf(base.root_cpu_ms - row.root_cpu_ms, 0.001), overridden = row.overridden})
-		rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.saved_gpu_ms > b.saved_gpu_ms)
+		if rows.all(func(row: Dictionary) -> bool: return row.gpu_timing_status == "synthetic_valid"):
+			rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.saved_gpu_ms > b.saved_gpu_ms)
 		var sorted := baselines.duplicate()
 		sorted.sort()
+		var statuses := {}
+		for phase_row: Dictionary in _rows: statuses[phase_row.gpu_timing_status] = true
 		return {baseline = {gpu_ms = snappedf(probe.median(baselines), 0.001), min_ms = snappedf(sorted[0], 0.001),
 				max_ms = snappedf(sorted[sorted.size() - 1], 0.001), drift_ms = snappedf(baselines[baselines.size() - 1] - baselines[0], 0.001),
 				draw_calls = roundi(_rows[0].draw_calls), primitives = roundi(_rows[0].primitives)},
-			noise_ms = snappedf(noise_ms, 0.001), significance = "|saved| > 3 x noise", warmup = warmup, frames = frames,
+			noise_ms = snappedf(noise_ms, 0.001), significance = "synthetic timing only; real timing freshness unverified",
+			gpu_timing_status = statuses.keys()[0] if statuses.size() == 1 else "mixed_or_unavailable",
+			gpu_ms_scope = "root_only_freshness_unverified", warmup = warmup, frames = frames,
 			rows = rows}

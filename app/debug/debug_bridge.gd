@@ -165,6 +165,8 @@ var realtime_factor := -1.0
 var _frame_gpu_ms := PackedFloat64Array()
 var _render: RenderProbe
 var _ablation: RenderProbe.Ablation
+var _ablation_pause := {}
+var _ablation_owned_measure := false
 var _rewind := RewindRing.new()
 
 
@@ -208,6 +210,10 @@ func _exit_tree() -> void:
 	if _ablation != null:
 		_ablation.abort()
 		_ablation = null
+	if _ablation_owned_measure and _render != null:
+		_render.set_measure(false)
+	_ablation_owned_measure = false
+	_finish_ablation_pause()
 	_restore_sticks()
 	_release_drive()
 	_net_mutex.lock()
@@ -216,6 +222,11 @@ func _exit_tree() -> void:
 	if _thread.is_started():
 		_thread.wait_to_finish() # its last pass sends queued replies (quit) and the remaining log lines
 	OS.remove_logger(debug_log)
+
+
+func _notification(what: int) -> void:
+	if what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT] and not _ablation_pause.is_empty():
+		_ablation_pause.interrupted = true
 
 
 func _process(_delta: float) -> void:
@@ -876,6 +887,7 @@ func _cmd_pause(_request: Dictionary) -> Dictionary:
 	var session := _flight_session()
 	if session == null:
 		return _fail("no flight (the RC truck pauses through its garage: press text=Garage)")
+	if not _ablation_pause.is_empty(): _ablation_pause.interrupted = true
 	session.sim.set_paused(true)
 	return _ok(_flight_state(session))
 
@@ -1649,17 +1661,16 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 		causes.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
 	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
 		causes.append("scene/resource construction")
-	# The newest measured GPU time can lag the frame by one or two frames (timestamp readback).
+	# A positive GPU readback is context only: freshness relative to this frame is unverified.
 	var gpu_ms: float = _render.root_gpu_ms() if _render != null else -1.0
-	if gpu_ms >= 0.0 and gpu_ms >= 0.75 * ms:
-		causes.append("GPU-bound (%.1f ms GPU)" % gpu_ms)
 	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
 		func(entry: Dictionary) -> String: return str(entry.text).left(160))
 	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
 		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
 		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
 		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01),
-		gpu_ms = snappedf(gpu_ms, 0.01) if gpu_ms >= 0.0 else null}
+		gpu_ms = snappedf(gpu_ms, 0.01) if gpu_ms >= 0.0 else null,
+		gpu_timing_status = "unverified_freshness" if gpu_ms >= 0.0 else "unavailable_or_zero"}
 	var session := _session()
 	if session != null:
 		record.tick = session.sim.tick
@@ -1716,7 +1727,9 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	if not gpu.is_empty():
 		gpu.sort()
 		out.gpu = {frames = gpu.size(), p50_ms = _percentile(gpu, 0.5), p95_ms = _percentile(gpu, 0.95),
-			p99_ms = _percentile(gpu, 0.99), max_ms = snappedf(gpu[gpu.size() - 1], 0.01), note = "root viewport; render shows SubViewports"}
+			p99_ms = _percentile(gpu, 0.99), max_ms = snappedf(gpu[gpu.size() - 1], 0.01),
+			status = "unverified_freshness", note = "root viewport last-read values; not synchronized to frame or presentation"}
+	out.gpu_timing_status = "unavailable_or_zero" if gpu.is_empty() else "unverified_freshness"
 	return _ok(out)
 
 
@@ -1958,6 +1971,8 @@ func _observe() -> void:
 # ---- render cost and rewind (PT1h-R9) --------------------------------------------------------------------------
 
 func _cmd_render(request: Dictionary) -> Dictionary:
+	if _ablation != null and request.has("measure"):
+		return _fail("cannot change GPU observations during an ablation")
 	if request.has("measure"):
 		_render.set_measure(_bool(request.measure))
 	if not RenderProbe.available():
@@ -1979,9 +1994,9 @@ func _cmd_render(request: Dictionary) -> Dictionary:
 		timeout_s = 60.0 + count / 10.0}
 
 
-## Means over the sampled frames, the frame's wall time over the same frames, and what bounds the frame rate.
+## Raw sample medians and wall time; GPU timestamp freshness and the bottleneck remain unverified.
 func _render_summary(samples: Array) -> Dictionary:
-	# Medians: one stale readback (a long startup or compilation frame) must not move the typical cost.
+	# A median reduces isolated outliers; it does not establish timestamp freshness.
 	var out := {measuring = true, frames = samples.size(), statistic = "median per frame"}
 	for key: String in ["gpu_ms", "root_gpu_ms", "sub_gpu_ms", "root_cpu_ms", "setup_cpu_ms", "draw_calls",
 			"shadow_draw_calls", "canvas_draw_calls", "primitives", "objects"]:
@@ -1999,22 +2014,16 @@ func _render_summary(samples: Array) -> Dictionary:
 	var frame_ms := RenderProbe.median(wall)
 	out.frame_ms = snappedf(frame_ms, 0.01)
 	out.fps = snappedf(1000.0 / frame_ms, 0.1) if frame_ms > 0.0 else 0.0
-	out.gpu_budget_pct = {at_60fps = snappedf(100.0 * out.gpu_ms / (1000.0 / 60.0), 0.1),
-		at_120fps = snappedf(100.0 * out.gpu_ms / (1000.0 / 120.0), 0.1)}
+	var statuses := {}
+	for sample: Dictionary in samples:
+		statuses[str(sample.get("gpu_timing_status", "unavailable_or_zero"))] = true
+	out.gpu_timing_status = statuses.keys()[0] if statuses.size() == 1 else "mixed_or_unavailable"
+	out.gpu_ms_scope = "root_only_freshness_unverified"
+	out.sub_gpu_ms_scope = "last_readings_unverified_may_not_have_drawn"
+	out.gpu_budget_pct = {at_60fps = -1.0, at_120fps = -1.0}
+	out.gpu_budget_status = "unavailable"
 	var config := _render.config()
-	var cap_ms := 0.0
-	if config.vsync != "disabled" and float(config.refresh_hz) > 0.0:
-		cap_ms = 1000.0 / float(config.refresh_hz)
-	if int(config.max_fps) > 0:
-		cap_ms = maxf(cap_ms, 1000.0 / float(config.max_fps))
-	if OS.low_processor_usage_mode:
-		out.bound = "idle: low-processor mode redraws only on change (frame time is not a cost here)"
-	elif out.gpu_ms >= 0.85 * frame_ms:
-		out.bound = "GPU: %.2f ms of a %.2f ms frame" % [out.gpu_ms, frame_ms]
-	elif cap_ms > 0.0 and frame_ms <= cap_ms * 1.1:
-		out.bound = "frame cap (vsync/max_fps %.2f ms): GPU headroom %.2f ms" % [cap_ms, cap_ms - out.gpu_ms]
-	else:
-		out.bound = "CPU: GPU busy %.2f of %.2f ms (see profile and frames)" % [out.gpu_ms, frame_ms]
+	out.bound = "unknown: GPU timestamp availability and freshness do not establish a frame bottleneck"
 	out.viewports = _render.viewport_rows().slice(0, 12)
 	out.config = config
 	return out
@@ -2040,6 +2049,79 @@ func _cmd_layers(request: Dictionary) -> Dictionary:
 		flags = RenderProbe.FLAG_HELP})
 
 
+func _ablation_window_focused() -> bool:
+	return DisplayServer.get_name() == "headless" or (get_viewport() != null and get_viewport().has_focus())
+
+
+## Own a session hold rather than bypassing menu, controller and crash resume rules.
+func _begin_ablation_pause(session: Node) -> bool:
+	if not _ablation_pause.is_empty() or not is_instance_valid(session) or not session.has_method("hold") \
+			or not session.has_method("release") or not session.has_method("resume") \
+			or not ("sim" in session) or not is_instance_valid(session.sim) or not ("holds" in session):
+		return false
+	var token := "debug_render_ablation_%d" % get_instance_id()
+	if session.holds.has(token): return false
+	var sim: Node = session.sim
+	var before_holds: Array = session.holds.keys()
+	before_holds.sort()
+	var context := {session = weakref(session), sim = weakref(sim), token = token,
+		was_paused = bool(sim.paused), holds = before_holds,
+		pause_reason = str(session.get("pause_reason")), crash = session.get("crash"),
+		interrupted = not _ablation_window_focused()}
+	if context.crash is Dictionary: context.crash = context.crash.duplicate(true)
+	session.hold(token)
+	if not session.holds.has(token) or not sim.paused:
+		if session.holds.has(token): session.release(token)
+		return false
+	_ablation_pause = context
+	return true
+
+
+func _ablation_pause_valid() -> bool:
+	if _ablation_pause.is_empty(): return true
+	var session: Variant = _ablation_pause.session.get_ref()
+	var sim: Variant = _ablation_pause.sim.get_ref()
+	if session == null or sim == null:
+		_ablation_pause.interrupted = true
+		return false
+	var holds: Array = session.holds.keys()
+	holds.erase(_ablation_pause.token)
+	holds.sort()
+	var valid: bool = session.sim == sim and sim.paused and session.holds.has(_ablation_pause.token) \
+		and holds == _ablation_pause.holds and str(session.get("pause_reason")) == _ablation_pause.pause_reason \
+		and session.get("crash") == _ablation_pause.crash and _ablation_window_focused() \
+		and not _ablation_pause.interrupted
+	if not valid: _ablation_pause.interrupted = true
+	return valid
+
+
+func _finish_ablation_pause() -> Dictionary:
+	if _ablation_pause.is_empty(): return {owned = false}
+	var valid := _ablation_pause_valid()
+	var context := _ablation_pause
+	_ablation_pause = {}
+	var session: Variant = context.session.get_ref()
+	var sim: Variant = context.sim.get_ref()
+	if session == null or sim == null: return {owned = true, restored = false, reason = "session freed"}
+	if session.holds.has(context.token): session.release(context.token)
+	if not context.was_paused and valid and sim.paused:
+		session.resume()
+	var restored: bool = bool(sim.paused) == bool(context.was_paused)
+	return {owned = true, restored = restored, interrupted = not valid, paused = bool(sim.paused)}
+
+
+func _finish_ablation(run: RenderProbe.Ablation, reply: Dictionary) -> Dictionary:
+	run.abort()
+	if _ablation == run:
+		_ablation = null
+		if _ablation_owned_measure: _render.set_measure(false)
+		_ablation_owned_measure = false
+	var pause_restore := _finish_ablation_pause()
+	if reply.get("ok", false) and reply.get("result") is Dictionary:
+		reply.result["pause_restore"] = pause_restore
+	return reply
+
+
 func _cmd_ablate(request: Dictionary) -> Dictionary:
 	if not RenderProbe.available():
 		return _fail("ablate needs a renderer: launch without --headless")
@@ -2048,8 +2130,6 @@ func _cmd_ablate(request: Dictionary) -> Dictionary:
 	var root := _render_root(request)
 	if root == null:
 		return _fail("no 3D scene: no active Camera3D (or root= is not a Node3D)")
-	if not _render.measuring:
-		_render.set_measure(true)
 	var raw: Variant = request.get("targets", [])
 	var names: Array = raw if raw is Array else Array(str(raw).split(",", false))
 	var numbers := {}
@@ -2060,37 +2140,33 @@ func _cmd_ablate(request: Dictionary) -> Dictionary:
 		numbers[key] = int(value)
 	var picked := _render.ablation_targets(root, names, clampi(numbers.depth, 1, 4))
 	if picked.targets.is_empty():
-		return _fail("nothing to switch off%s" % (("; unknown, hidden or already off: %s" % [picked.skipped]) if not picked.skipped.is_empty() else ""))
-	# A frozen flight keeps the camera still, so the frames being compared show the same picture.
+		return _fail("nothing to switch off%s" % (("; skipped: %s" % JSON.stringify(picked.skipped_reasons)) if not picked.skipped.is_empty() else ""))
 	var session := _flight_session()
-	var frozen: Node = null
-	if _bool(request.get("freeze", true)) and session != null and not session.sim.paused:
-		frozen = session.sim
-		frozen.set_paused(true)
-	var unfreeze := func() -> void:
-		if is_instance_valid(frozen):
-			frozen.set_paused(false)
+	var freeze_requested := _bool(request.get("freeze", true))
+	if freeze_requested and session != null and not _begin_ablation_pause(session):
+		return _fail("cannot acquire the flight's diagnostic pause hold")
+	var frozen := session != null and bool(session.sim.paused)
+	_ablation_owned_measure = not _render.measuring
+	if _ablation_owned_measure: _render.set_measure(true)
 	var run := RenderProbe.Ablation.new(_render, picked.targets, clampi(numbers.warmup, 2, 240), clampi(numbers.frames, 5, 1200))
 	_ablation = run
 	var route := _route()
 	debug_log.event("ablate: %d targets, about %d frames" % [picked.targets.size(), run.total_frames()], {route = route})
 	var finish := func(reply: Dictionary) -> Dictionary:
-		run.abort()
-		if _ablation == run:
-			_ablation = null
-		unfreeze.call()
-		return reply
+		return _finish_ablation(run, reply)
 	return {pending = func() -> Variant:
-		if _route() != route:
-			return finish.call(_fail("the route changed during the ablation; everything was restored"))
+		if _route() != route or not is_instance_valid(root) or not root.is_inside_tree() or not _ablation_pause_valid():
+			if not _ablation_pause.is_empty(): _ablation_pause.interrupted = true
+			return finish.call(_fail("route, scene or pause ownership changed; target restoration attempted"))
 		if not run.advance():
 			return null
 		var out: Dictionary = run.result()
-		out.merge({root = _path(root), frozen = frozen != null, skipped = picked.skipped, truncated = picked.truncated,
+		out.merge({root = _path(root), frozen = frozen, freeze_scope = "simulation only; camera and visuals may change",
+			skipped = picked.skipped, skipped_reasons = picked.skipped_reasons, truncated = picked.truncated,
 			renderer = RenderingServer.get_current_rendering_method(), size = [get_viewport().size.x, get_viewport().size.y]})
 		return finish.call(_ok(out)),
 		timeout_s = 120.0 + run.total_frames() / 5.0,
-		on_timeout = func() -> Dictionary: return finish.call(_fail("ablation timed out; everything was restored"))}
+		on_timeout = func() -> Dictionary: return finish.call(_fail("ablation timed out; target restoration attempted"))}
 
 
 func _cmd_viewmode(request: Dictionary) -> Dictionary:
