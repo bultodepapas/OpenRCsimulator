@@ -9,6 +9,7 @@ var _liquid_material: ShaderMaterial
 var _tank_style: StyleBoxFlat
 var _family := ""
 var _reserve := NAN
+var _reserve_estimated := false
 var _empty := false
 var _face_key: Array = []
 var _motion_time := -INF
@@ -85,14 +86,19 @@ func refresh(t: Dictionary, system: String, peak: float, battery: Dictionary, fu
 	if available and _fraction <= 0.0: empty = true
 	var color: Color = {"glow": Color("bc9cff"), "gasoline": Color("61ddbe")}.get(family, ACCENT)
 	if bool(fuel.get("low_fuel", false)) or empty: color = LOW_COLOR
-	var key := [family, reserve if is_finite(reserve) else null, empty, available, color, TranslationServer.get_locale()]
+	var estimated := bool(fuel.get("reserve_estimated", false))
+	var key := [family, reserve if is_finite(reserve) else null, estimated, empty, available, color, TranslationServer.get_locale()]
 	_graphic_color = color
 	if key != _face_key:
 		_face_key = key
 		_family = family
 		_reserve = reserve
+		_reserve_estimated = estimated
 		_empty = empty
 		_liquid_material.set_shader_parameter("liquid_color", color)
+		graphic.tooltip_text = tr("Liquid follows bank, pitch and load. Quantity comes from the fuel tanks.")
+		if is_finite(reserve):
+			graphic.tooltip_text += "\n" + tr("Reserve: %d%% (%s)") % [roundi(reserve * 100.0), tr("estimated reserve") if estimated else tr("authored reserve")]
 		graphic.queue_redraw()
 	var fill_value := _fraction if available else -1.0
 	if fill_value != _fill_key:
@@ -169,10 +175,10 @@ static func spring(position: float, velocity: float, target: float, dt: float) -
 
 
 func _update_motion(t: Dictionary, available: bool) -> void:
-	var now := float(t.get("time_s", NAN))
-	var bank := float(t.get("bank_deg", NAN))
-	var pitch := float(t.get("pitch_deg", NAN))
-	var load_factor := float(t.get("load_factor", NAN))
+	var now := _numeric(t.get("time_s"))
+	var bank := _numeric(t.get("bank_deg"))
+	var pitch := _numeric(t.get("pitch_deg"))
+	var load_factor := _numeric(t.get("load_factor"))
 	if not available or not is_finite(now) or not is_finite(bank) or not is_finite(pitch) or not is_finite(load_factor):
 		if _motion_time != -INF: _reset_motion()
 		return
@@ -231,4 +237,4 @@ func _draw_instrument() -> void:
 	graphic.draw_circle(Vector2(4, h - 4), 2.5, _graphic_color if is_finite(_fraction) else MUTED, true, -1, true)
 	_graphic_text(family_text, Vector2(12, h - 1), MUTED, 9)
 	if is_finite(_reserve):
-		_graphic_text("%s %d%%" % [tr("RESERVE"), roundi(_reserve * 100.0)], Vector2(w, h - 1), LOW_COLOR, 9, HORIZONTAL_ALIGNMENT_RIGHT)
+		_graphic_text("%s %s%d%%" % [tr("RESERVE"), "~" if _reserve_estimated else "", roundi(_reserve * 100.0)], Vector2(w, h - 1), LOW_COLOR, 9, HORIZONTAL_ALIGNMENT_RIGHT)

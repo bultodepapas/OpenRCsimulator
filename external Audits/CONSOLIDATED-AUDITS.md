@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair and UI/UX accessibility audits. **Read this document first.** It organizes eleven distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The eleven source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits. **Read this document first.** It organizes twelve distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The twelve source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A11 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A12 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -33,10 +33,11 @@ The labels A1–A11 identify source documents in this consolidation; they are no
 | A9 | [F4U Corsair physics and optimization audit][A9] | Experiments at `84f4657814c157f1556f965861c0ab8623f48d8e` on `codex/m1-native-validation-20261106`; report also checks subsequent `e72d878` and says it does not alter the responsible files. No report date stated; received 2026-11-06. One material rate-datum inconsistency, one smaller thrust-lookup defect, two optimization opportunities and two unpromoted candidates. Reported isolated diagnostics, not full flight/native/render qualification. |
 | A10 | [Extra 300 round-two trim and reload audit][A10] | Reviewed `8e5f2f0ba6aacd44efa1c4ac48c4023f181c47bd`; package dated 2026-11-06. Adds E300-07 trim-result RPM reuse and E300-08 stale propeller geometry after F5, excluding first-pass E300-01–06 and already-covered downwash reuse. Pinned Linux solver comparisons and actual headless app/debug-bridge F5 events; no full-startup, target-GPU or native performance qualification. |
 | A11 | [UI/UX, configuration integrity and accessibility audit][A11] | Dated 2026-11-06; reviewed `codex/m1-native-validation-20261106` at `e72d878b6b4a89209dfe1a992ba119921dcdd34c`, Godot `4.8.beta2.official.cafc17a19`. Nine new findings F01–F09 and one reproduced case R01 in an existing design concern. Actual headless application, production-component and source evidence are separated; no fresh native visual, physical-controller, screen-reader or renderer qualification. |
+| A12 | [Corsair collision, flap geometry and presentation handoff][A12] | Dated 2026-11-06; experiments at `3751e35e1cccf574c4446d21273a4d5ecaf80ddf`. Closing source comparison at `842339369a58e7320177a6caecf22a7dc012ec0f` found responsible files unchanged; that later revision was not the executed baseline. Adds CF-05–07, excluding A9 CF-01–04 after checking the A1–A11 ledger. Two correctness counterexamples and one measured presentation-component opportunity; no production modification or full-scene/native qualification. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and eleven source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and twelve source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -51,6 +52,7 @@ The folder contains this consolidated document and eleven source reports. Source
 | Attached `Pasted text.txt` (Corsair audit) | [f4u-corsair-physics-optimization-audit-84f4657.md][A9] |
 | Attached `Pasted text.txt` (Extra 300 round two) | [extra-300-round2-trim-reload-audit-8e5f2f0.md][A10] |
 | Attached `Pasted text.txt` (UI/UX audit) | [ui-ux-accessibility-audit-2026-11-06.md][A11] |
+| Attached `Pasted text.txt` (Corsair senior-developer handoff) | [f4u-corsair-collision-flaps-presentation-audit-3751e35.md][A12] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -66,6 +68,7 @@ The folder contains this consolidated document and eleven source reports. Source
 
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
+| Corsair continuous collision, flap transfer and presentation | A12 adds missed interior raised-track contacts (CF-05), an omitted local-flow projection in flap lift-reference transfer (CF-06), and discarded overspeed-advisory work in render flap reads (CF-07). | Accepted-tick counterexamples, production-load cross-product oracle and isolated presentation timing/parity, respectively. Separate from A9 CF-01–04; no occurrence-rate, physical-fidelity or FPS claim. |
 | UI choices, focus and save outcomes | A11 prioritizes profile identity, session/default isolation, scoped weather presets and usable focus after successful controller recovery; also covers Help, editing-key conflicts, save feedback and accessibility. | Nine new findings plus one reproduction of an existing concern. Evidence ranges from actual headless app routes to source inspection; these are historical findings, not current-fix verification. |
 | Extra 300 trim finalization and F5 reload | A10 reports two redundant steady-RPM searches per bounded glow trim finalization (E300-07), and physical/visible propeller diameter divergence after accepted same-ID reload (E300-08). | Tested solver candidate with byte-identical results; actual headless F5-route state/transform witnesses. Separate from E300-03 stage-mass reuse and E300-06 blade handedness. No new aerodynamic calibration is justified by these findings. |
 | Corsair force/moment and thrust continuity | A9 reports CF-01 rate moments supplied about CG where ARP is required, and CF-02 a final-table thrust discontinuity from the extrapolation floor. | Scoped generator/runtime and accepted-tick witnesses. CF-01 is a Corsair recurrence related to earlier Stik datum work and A8's Extra finding, not another count of those same aircraft defects. |
@@ -115,6 +118,8 @@ A6 arrived later in this folder but reviews the **same commit as A2–A5**, not 
 | **A11 F08 — P2, instrument explanations** | Source inspection: `overlays_dialog.gd` puts interpretation/availability descriptions in checkbox hover tooltips without visible focus-help. This is the instrument selector, separate from the prior aircraft-catalog tooltip issue. | Wrapped explanation follows focus and hover, with localized accessibility description where appropriate. A keyboard/pad user must discover purpose and limits of every instrument without a mouse, including 200% text. Actual assistive-technology output remains untested. |
 | **A11 F09 — P3, arrow-key text equivalents** | Source inspection: custom `key_cap.gd` directional triangles lack application-provided direction text/accessibility names; localized arrow labels already exist in `key_labels.gd`. | Retain graphics with localized semantic names or a coherent action-row instruction; avoid duplicate announcements. Inspect the accessibility tree and listen to all four directions/actions using target-platform screen readers, translations and changed keyboard layouts. A debug snapshot alone cannot qualify this. |
 
+**A11 F01 implementation update (2026-11-06):** New now switches to a separate device-default draft and UUID, preserves pending edits when switching profiles, and frees its draft slot only after successful Save. The real-store regression preserves both profiles even with equal names; Update, Duplicate, cancellation, failure/retry and calibration provenance are covered. [UI-15-GP-01-R1 evidence](../docs/research/controller-support-2026-10-14/README.md#new-profile-identity-2026-11-06-ui-15-gp-01-r1) records 57 new and 283 existing passing checks. Device-association ambiguity policy is unchanged; this is software verification, not physical-controller or native visual qualification.
+
 **Prior-work reconciliation.** A11 reports reading this consolidation, UI-30, the subsequent menu delivery plan and current PR comments. R01 supplements UI-30 SC-8 preset placement/wording and the sky/cloud plan's unrelated-tab preservation requirement. Keep existing owners for broad typography, modal shells, overlay scaling and theme refresh. The graphically retained Home/Workshop captures predate the reviewed build and support design context only; they do not verify current visuals or establish new defects in every control state.
 
 ### Extra round two: E300-08 F5 installation-geometry synchronization
@@ -136,6 +141,34 @@ The required absolute scale is accepted/authored diameter, here 13/12. After inc
 The existing `AirplaneBuilder.apply_propeller_diameter()` succeeds when invoked diagnostically and updates propeller/blur transforms. It computes from authored diameter, making repeated application idempotent. Diameter-only changes do not inherently require a blur rebuild: blur update copies the propeller global transform before its early return, while profile radius is local. A shared accepted-installation helper for startup and successful reload should refresh dependent extents and explicitly handle presentation failure after physical commit.
 
 Regression must exercise **actual F5**, including no-op/repeated reload, accepted diameter changes both ways, rejected installation mismatch, and physical disc/solid/blur transforms. A setter-only test misses the wiring error; the nominal installation test passed 17 checks without covering F5. A10's diagnostic setter call is not a production repair. Headless app runs retained landscape-resource UID fallback warnings, so this proves observed state/transform behavior, not rendered pixels or target-GPU acceptance.
+
+### Corsair second pass: CF-05 continuous contact and CF-06 flap transfer
+
+**Source: [A12][A12], executed `3751e35`.** The author prioritizes CF-05 highest for correctness in this pass. These findings are additional to A9 CF-01–04; CF-05 concerns collision search, not A6 F3's support/statistics discrepancy, and CF-06 concerns flap force-location translation, not CF-01's rate-moment datum.
+
+**CF-05 — endpoint admission misses raised-track crossings.** `flight_session.gd` skips a hull point when final `_rc_point_depth(candidate, hull, index) <= 0.0`; the depth helper also returns zero for points ending at/below flat-ground datum. An endpoint without penetration does not exclude an interior crossing. Both reported witnesses use valid constructed resets followed by real accepted ticks, the stock **23-point Corsair crash hull** and its right wingtip.
+
+| Witness | Reported result and discriminating control |
+| --- | --- |
+| Tabletop, endpoint below datum | Crossing of composed field/track surface at interpolated fraction **0.124858** is missed by the track detector; session publishes flat-ground collision at **0.966441** instead, **3.5066 ms** later at 240 Hz. |
+| Roller, both endpoints clear | Every hull point is clear at both endpoints, but the selected wingtip penetrates **0.932 mm** at sampled fraction **0.503**. The soft-contact tick is accepted without track impact and with an empty crash record. Making that interior pose the endpoint yields a collision, isolating the endpoint-admission failure. |
+
+Crossings use the resolver's position/shortest-nlerp interpolation, **not dense RK trajectory reconstruction**. The submillimetre witness proves a counterexample, not frequency in player flights. Separate continuous signed terrain clearance, raised-dirt contact ownership and first-event search/arbitration. Search potentially intersecting interior intervals even with two clear endpoints; extra bisection iterations cannot recover an excluded candidate. A12 describes conservative interval search and a possible clearance bound, not an implemented repair. Regress both witnesses, rotating poses, the existing **5 cm relief threshold**, competing contacts and rollback.
+
+**CF-06 — flap lift-reference transfer lacks direction projection.** Stock Corsair places incremental camber lift **0.075281 m aft** of the strip force point. For body displacement `dr=(-dx,0,0)` and incremental lift `dF=dL*(f2/Vp,0,-f0/Vp)`, the cross product requires `dMy=-dx*dL*(f0/Vp)`. Runtime `aero.gd` uses `-dx*dL`. Uniform flow at zero body rates reduces the missing factor to `cos(alpha)`; general repair must use **each station's actual local flow**, not one aircraft-wide angle.
+
+Production `Aero.loads` diagnostics use stock data, **23 m/s**, **1.225 kg/m³**, full **30° flaps**, zero rates and other controls neutral:
+
+| Angle of attack | Current offset contribution (N·m) | Cross-product transfer (N·m) | Current minus geometric (N·m) |
+| --- | ---: | ---: | ---: |
+| 0° | −14.616299 | −14.616299 | Approximately zero |
+| +12° | −13.403083 | −13.110194 | −0.292890 |
+| +20° | −18.482263 | −17.367646 | −1.114617 |
+| +30° | −14.342156 | −12.420671 | −1.921485 |
+
+A copied model changes only offset to zero; an independent oracle derives incremental lift from strip-force differences and applies the cross product. Other five wrench components remain numerically unchanged and clean-flap outputs are byte-identical between original/zero-offset models. This establishes internal force-location inconsistency, not real-Corsair error or a specific handling effect.
+
+The proposed narrow correction retains the optional `lift_reference_offset_m` guard and active-flap/nonzero-plane-speed branch, multiplying `lift_q_area * flap_delta_cl * offset` by `f0 / plane_speed`. Preserve separate thin-airfoil section couple and profile-drag moment. A12 describes controls for absent/zero offset, clean flaps, zero/reverse flow, angular rates, spatial wind and finite fuel. Review this physics correction independently before more flap-pitch tuning.
 
 ### Corsair force/moment datum and thrust-lookup findings
 
@@ -544,6 +577,19 @@ Pinned Linux Godot, uninstrumented variants, two warmup pairs then 24 measured a
 
 A10 reports **87 audit checks**, including **34 byte-identical complete results** and unchanged input models; repository trim-integrity **731 checks** and cruise-trim **22 checks**; exact complete-result comparison on all **48 timing pairs**. Cases cover full/10% fuel, reference/hot-high atmospheres, speeds, half-power/warm starts, failed/invalid requests and glide, with legacy/electric/four-stroke controls. Patch applicability passed at `8e5f2f0`; it is a tested candidate, not a current production implementation claim.
 
+### Corsair second pass: CF-07 angle-only flap presentation
+
+**Source: [A12][A12].** `main.gd` rendering consumes only `angle_deg` from `session.flap_state()`, which also calculates an overspeed advisory using airspeed/density. Spatial airspeed prepares the whole Corsair station-airflow structure. A successful full-status read uses **1 wind / 2 density queries** in legacy weather and **10 wind / 2 density queries** in spatial weather (datum, six wing stations, two tails, propeller), including stowed flaps. The angle-only candidate needs **zero of either query**.
+
+The prototype reads accepted actual flap fraction and live maximum angle without a persistent cache. A12 reports **268 parity checks** for invalid auxiliary values, input enabled/disabled, both weather modes, maximum-angle changes and folded-wing hinge transforms, plus a separate short-input fallback check.
+
+| Input-enabled presentation workload | Baseline median | Candidate median | Median paired reduction |
+| --- | ---: | ---: | ---: |
+| Legacy weather | 62.13 µs | 46.66 µs | 22.39% |
+| Spatial weather | 581.47 µs | 46.92 µs | 92.11% |
+
+Each workload has **eight alternating pairs**, **128 calls per batch**, candidate faster in all eight. The external report also retains disabled-input cases and raw batches; the supplied summary does not provide their values. Timings include control-surface/flap/fold updates in a **synthetic imported hierarchy**, excluding remaining rendering, GPU work and physics integration. These are component savings, **not FPS gains**. Use a small shared presentation accessor; HUD/control consumers needing full advisory status must keep it. Real Corsair GLB integration, lifecycle checks and matched full-scene profiling remain qualification work. This is distinct from CF-03 build-time validation and CF-04 offline VLM reuse.
+
 ### UI/UX loading and frozen-intro profiling candidate
 
 **Source: [A11][A11].** Loading stages, cancellation, first-frame checkpoints and Home preparation already exist (`flight_loading.gd`, `flight_scene_load.gd`, `home_flight_preparation.gd`). Native evaluation should distinguish input-to-feedback latency, longest uninterrupted main-thread segment, genuinely rendered ready frame, cancellation acknowledgement/completion, and cold/warm conditions. Resource readiness, scene construction, world preparation and first usable drawing are separate milestones. Keep the dedicated worker until an alternative proves equivalent lifetime/cancellation and pinned-engine behavior; do not infer permission to move arbitrary active scene-tree operations onto a worker.
@@ -582,6 +628,10 @@ Additional A1 proposals retained in this sequence:
 - **Presentation:** after GPU headroom, compare two-image and default three-image swapchain behavior where supported. Process FPS, GPU duration, input response, and on-glass frame intervals are separate measures.
 
 A7's shader work-package sequence is an additional source recommendation, not proof that it outranks A2's candidates on current hardware: recheck baseline/receipts and contact passivity; isolate the zero-contribution sky patch; test direct-analytic and C5b density bounds separately; test the high-octave lattice atlas; compare degree-five/six transmission polynomials with native `exp`; isolate integer/shared-power/pilot-distance changes; then consider the full-scene aircraft crop and native rate-map integration. O4 and guarded O5 retain their existing CPU entries. Larger engine work needs a captured limitation, minimal supported-path prototype and fallback. Native Mac baking/prewarm remains separate release work.
+
+### Corsair second-pass follow-up
+
+A12 separates three independently reviewable tasks: CF-05 geometric clearance/contact ownership/first-event search; CF-06 dimensional cross-product invariants and local-flow transfer before tuning; CF-07 accepted-state presentation access without unnecessary environmental queries. Preserve the current owning tracks and verify current-source disposition before applying historical proposals. CF-05's constructed accepted ticks do not measure occurrence rate; CF-06 requires the flight-logging baseline/candidate workflow for any actual physics repair; CF-07 needs real-scene integration before claiming user-visible gains.
 
 ### UI/UX follow-up and native acceptance
 
@@ -636,7 +686,7 @@ Primary technical references, frozen source URLs, and derivations remain in [A1]
 
 ### What is supplied here
 
-This directory contains eleven source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains twelve source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -651,6 +701,11 @@ This directory contains eleven source Markdown files and this consolidated docum
 | A9 | `F4U_Corsair_Audit_84f4657.txt` (complete report) and `F4U_Corsair_Evidence_84f4657.zip` (probes, isolated prototypes, raw measurements, checked receipts, hashes and replay helper). The supplied summary links external ChatGPT-library files; those linked artifacts were not supplied locally or inspected here. |
 | A10 | `Extra300_Audit_Round2_8e5f2f0_2026-11-06.zip`, described as complete report, trim candidate/variant builder, probes, raw pairs, fixtures, F5 transcript/logs, checked receipts and invariant review. Only the pasted text was supplied; its sandbox link is an external-session artifact reference, not an available local ZIP. No package or raw run was inspected/reexecuted for this consolidation. |
 | A11 | `OpenRC_UI_UX_Audit_2026-11-06.pdf` (described as an 18-page complete review) and `OpenRC_UI_UX_Evidence_2026-11-06.zip` (fixtures, logs, settings differences, source identities, replay instructions and machine-readable findings). The pasted report preserves their external ChatGPT-library links; neither deliverable was supplied locally or inspected for this consolidation. |
+| A12 | `F4U-CORSAIR-NEW-FINDINGS-3751e35-2026-11-06.md` (approximately 5,000-word detailed handoff) and `F4U-CORSAIR-EVIDENCE-3751e35-2026-11-06.zip` (report, probes, raw measurements, checked logs, hashes and replay instructions). Only the pasted summary is supplied; its external ChatGPT-library artifacts were not downloaded or inspected for this consolidation. |
+
+### A12 evidence boundary
+
+A12 reports **10 original successful checked-run receipts and seven fresh reconstruction receipts**, all complete with zero engine errors/warnings. Reconstruction covers import plus six diagnostics, **not another benchmark campaign**. These remain author-reported results; no raw receipts or full linked report were inspected or replayed here. The closing `8423393` source comparison does not move the executed baseline from `3751e35`. Bounded negative results (sampled flap-lift sweep and aerodynamic power screens) and unpromoted observations are mentioned without enough supplied detail to expand into findings. No production changes, physical Corsair validation, encounter-frequency estimate, complete rendering/FPS or native acceptance follow from this handoff.
 
 ### A11 evidence boundary
 
@@ -707,7 +762,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files at intake. They identify the eleven retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
+These hashes were calculated from the supplied files at intake. They identify the twelve retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -722,6 +777,7 @@ These hashes were calculated from the supplied files at intake. They identify th
 | A9 — `f4u-corsair-physics-optimization-audit-84f4657.md` | `4626555a8dc24e3f496d5be8b88dbd9048e049c9638a2e82163f78252e757cc7` |
 | A10 — `extra-300-round2-trim-reload-audit-8e5f2f0.md` | `1ae35fc0deb7d1b52b0308f4bf89534aec8930b65a5d942e4dea054b1255bf48` |
 | A11 — `ui-ux-accessibility-audit-2026-11-06.md` | `113ce2b6d4e9fd16f2335bb6ad32902a2c0e50b7f6f3adcc06e7bcad01c910b0` |
+| A12 — `f4u-corsair-collision-flaps-presentation-audit-3751e35.md` | `af7c91b4ffc2ca650f239f8d210822d0991466bce2f4c35f675f79f94f4fd21e` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -735,3 +791,5 @@ These hashes were calculated from the supplied files at intake. They identify th
 [A10]: extra-300-round2-trim-reload-audit-8e5f2f0.md
 
 [A11]: ui-ux-accessibility-audit-2026-11-06.md
+
+[A12]: f4u-corsair-collision-flaps-presentation-audit-3751e35.md

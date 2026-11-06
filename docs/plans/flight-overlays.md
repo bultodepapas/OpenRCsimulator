@@ -73,6 +73,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-13 | Player instruments, flight maximum, bounded dragging, persistent positions, lock/reset and independent switches/× | [Focused checks and native 1080p review](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13) / implemented |
 | HUD-13-R1 | Fuel, trims, engine, size/background/compact settings, crisp scaled text and cached drawing | [Verification](../research/flight-overlays/HUD-01-10/README.md#expanded-instruments-2026-10-24-hud-13-r1) / implemented |
 | HUD-13-R2 | Instrument visual polish: icon headers, drag grips, clear close targets, inset readings and refined gauges | [Verification](../research/flight-overlays/HUD-01-10/README.md#instrument-visual-polish-2026-10-24-hud-13-r2) / implemented |
+| HUD-13-R14 | Motion-reactive liquid fuel tank for turbine, glow and gasoline, with accepted reserve/usable-fuel states | [Verification](../research/flight-overlays/HUD-01-10/README.md#liquid-fuel-tank-2026-11-06-hud-13-r14) / implemented |
 
 ## 3. Decisions
 
@@ -163,6 +164,18 @@ tracks the appearance setting with contrast floors. Reused materials and cached 
 and update behavior; see the [focused verification](../research/flight-overlays/HUD-01-10/README.md#open-classic-dials-and-lower-titles-2026-10-31-hud-13-r13).
 
 The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
+
+HUD-13-R14 gives **Fuel tank** a glass chamber with a damped liquid surface, a fixed percentage scale and the
+accepted aggregate reserve marker. Amber identifies turbine/kerosene, violet glow/nitro and teal gasoline;
+unknown/mixed families retain a generic label. Low fuel uses the accepted warning flag, and depleted usable
+fuel has a separate message even when unusable fuel remains onboard. Missing/invalid readings remain explicit.
+Compact mode keeps a smaller tank. The existing frame, drag/close controls and appearance settings are reused.
+
+The fuel shader is an explicit exception to the original static instrument graphics: bank changes tilt its
+surface, while pitch/load changes excite bounded waves. This is stylized feedback, not physical tank slosh,
+pickup or starvation prediction. Accepted quantity and physics remain unchanged. Inputs arrive at 10 Hz;
+the existing simulation shader clock animates between samples and freezes on pause. No widget frame callback,
+screen texture, wall clock or hidden sampling is added. Reset, rewind and reopening discard old motion.
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
 

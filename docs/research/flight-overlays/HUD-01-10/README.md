@@ -655,3 +655,30 @@ crash or leaked objects. Receipts are `tmp/classic-r13-root/pointer-final-result
 A retry in `20261031-085401-47870` encountered a translation load error at `app/i18n/fr.po:8364` while that file
 was modified by concurrent work, and was stopped (no crash, nine exit-leak objects reported). End-to-end pointer release/close remains unverified by this
 additional run; the handler-level checks and earlier visual evidence above remain the bounded evidence.
+
+## Liquid fuel tank (2026-11-06, HUD-13-R14)
+
+The user requested a game-like fuel gauge with liquid responding to the aircraft. `fuel_instrument.gd` reuses
+the existing modern frame, licensed fuel icon, crystal material, typography and move/close controls. Its local
+canvas shader adds a shaded liquid chamber, meniscus and restrained glass reflection. It consumes the accepted
+fuel sample for quantity, reserve and family; it never writes to the session. The [overlay guide](../../../plans/flight-overlays.md)
+owns behavior and motion limits. Bank/pitch/load feedback is stylized, not physical slosh validation.
+
+Checked native Windows tests passed **153 player widget, 213 overlay manager, 21 production fuel integration
+and 17 existing redraw checks**. The production check now covers glow, gasoline and turbine fuel, accepted
+fill/reserve propagation and unchanged flight state. Receipts are in ignored `tmp/godot-checks/` under
+`fuel-widget-final-player-*`, `fuel-widget-manager-*`, `fuel-family-production-*` and `fuel-widget-redraw-*`.
+The redraw suite covers the shared base graphics; the dedicated liquid tests cover the new shader path.
+
+Native debug-bridge review used Godot **4.8-beta2**, Windows, RTX 3090 driver 617.42, OpenGL Compatibility,
+**1920×1080**. The turbine's All instruments view fits without overlap; a roll input changed the liquid target.
+Captures and engine log remain in `tmp/debug-bridge/20261106-140913-47870/`. Shutdown reported no crash or leaked
+objects. This is focused UI evidence, not complete CI, other-hardware performance or physical validation.
+No images are added to Git. A concurrent unrelated commit incorporated the initial implementation;
+source hashes below identify the final candidate independently of the moving branch.
+
+Final runtime SHA-256:
+
+- `fuel_instrument.gd`: `5038ab857179c9a915584253cf5973e8ca7b331fa132b6ba19298a6b73514fd2`.
+- `fuel_liquid.gdshader`: `25b21fe9524182094f7423e3dd922005d37d9b308d57c8b36c0829fc457a7d03`.
+- `overlay_manager.gd`: `e76023fb0c67bff84990403d30e6e187d3eea16b2e8ffa89fad52a5f62574279`.

@@ -38,7 +38,7 @@ void fragment() {
 	if (fill >= 1.0) { wet = 1.0; }
 	vec3 dry_color = vec3(0.023, 0.037, 0.044);
 	vec3 fluid = liquid_color.rgb * mix(0.86, 0.26, smoothstep(0.0, 0.85, depth));
-	// A second submerged wave and a narrow bright meniscus give the liquid depth.
+	// A narrow bright meniscus and restrained moving light give the liquid depth.
 	float crest = exp(-abs(depth) * rect_size.y / 2.0);
 	float caustic = pow(0.5 + 0.5 * sin(UV.x * 18.0 + UV.y * 7.0 + phase), 6.0);
 	fluid += liquid_color.rgb * (0.06 * caustic * energy + 0.12 * pow(UV.y, 3.0));

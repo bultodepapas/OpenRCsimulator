@@ -2,6 +2,38 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+## New profile identity (2026-11-06, UI-15-GP-01-R1)
+
+External audit A11 F01 remains reproducible at `842339369`: selecting **New
+profile** leaves the saved profile's UUID in the draft, so Save replaces it.
+The final regression against that source fails 28 of 57 assertions, with no
+engine errors. The failure is stored-data loss, not just a misleading selector.
+
+New now switches to a separate device-default draft with a fresh UUID. Its
+existing device context preserves pending names and mappings when switching
+between profiles. A successful Save moves the draft and calibration provenance
+to its saved-profile context and frees the New slot; a refused Save retains the
+draft for retry. Existing profiles still update by UUID, and Duplicate retains
+its separate identity and copied mappings. No profile schema or store policy
+changes are required.
+
+[Verification and source identities](profile-creation-20261106/verification.json)
+retain checked logs and the implementation diff. Pinned Godot 4.8-beta2 on Windows
+headless passed **57 new checks** using production ControllerSetup and the real
+ConfigFile store at a 1920×1080 viewport. They cover equal names, original-data
+preservation, fresh reload, cancellation, failed-save retry, successive creations,
+Update/Duplicate, capture cancellation, gamepad/radio/joystick/JETI defaults,
+initial unsaved drafts and calibration connection guards after context migration.
+The existing setup, setup-safety, transactional-save, store and full-app preflight
+calibration suites passed **283 checks**. All receipts are complete with zero
+engine errors; preflight calibration retains its expected AUX-overlap warning.
+The new test resource was also registered by a clean checked editor import.
+
+This verifies profile persistence and the affected software consumers, not
+physical controllers or native rendered interaction. Multiple saved profiles
+matching one device retain the existing ambiguity policy; these tests do not
+qualify automatic profile selection after restart. Required CI remains separate.
+
 ## Calibrated profile Save (2026-11-04, D6-GP-02-R1)
 
 A field report (RadioMaster TX16S MKIII) showed **Save** after calibration failing with

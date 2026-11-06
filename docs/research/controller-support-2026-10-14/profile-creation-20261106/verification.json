@@ -1,0 +1,110 @@
+{
+  "step": "UI-15-GP-01-R1",
+  "audit": "A11 F01",
+  "date": "2026-11-06",
+  "baseline_head": "842339369a58e7320177a6caecf22a7dc012ec0f",
+  "baseline_setup_sha256": "a608d5918be5282646f3e113e2259a331ea7d1daf7303bfe15de0e52e16fc810",
+  "candidate_source_sha256": {
+    "app/ui/controller_setup.gd": "f0ed03ec5b226472bade950315a7475e1c75417da3d39f212e43e6682033e3a2",
+    "app/tests/test_controller_profile_creation.gd": "efaed2a4af2207ca62143838bb81741d937702f5312bd07dfe9f6dc71fd0b8cd",
+    "app/tests/test_controller_profile_creation.gd.uid": "3bc4b6af51165065626551727502aa6117ea849645986de41051896e5bfb5228",
+    "app/input/controller_profile.gd": "8bc49d043abb493fb68a0ea6970c333f6e646b0ee333fedd1987c6bd4dc582c3",
+    "app/input/controller_profile_store.gd": "05f5bc22591f166c868fc93aac38d8ae4abb98fbbcc98889fc92b3b05b8f67bf",
+    "app/input/controller_service.gd": "36a932a145795112909e1e0bf04fe0eb75f6cad9b1e34b3ad52303f780700087",
+    "app/tests/test_controller_setup.gd": "8f2bce1176416978b4cf64d61c445b872a3745279348d8364967a34878424b00",
+    "app/tests/test_controller_setup_safety.gd": "757fe9f2897e202537ab4e321b6e9d4f8a87097de06444fd6dba30eee11d2174",
+    "app/tests/test_controller_settings_save.gd": "39460872a0a40fb863f881f399175b7281d9b08d9e4736d437f4b9720224d74e",
+    "app/tests/test_controller_store.gd": "39a10603652e727ac6603594172de0d1b99e1564852b423be1a6818bd0ccc04d",
+    "app/tests/test_controller_preflight_calibration.gd": "a6f06184f9aa4e13ae045b094efb09a7f0fb83c8d5d698a7418445782ab47adc"
+  },
+  "observed_head_at_evidence_capture": "077b8be1deb7ddb2ab1f9255988a0b9c521059e4",
+  "engine": ".tools/Godot_v4.8-beta2_win64_console.exe",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "platform": "Windows native headless; new component fixture viewport 1920x1080",
+  "new_regression_checks": 57,
+  "existing_focused_checks": 283,
+  "total_passing_checks": 340,
+  "baseline_expected_failed_checks": 28,
+  "checks": [
+    {
+      "label": "baseline-final-regression",
+      "report": "baseline-final-regression/report.json",
+      "log": "baseline-final-regression/engine.log",
+      "passed_checks": 0,
+      "expected_failure": true,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "register-test-resource",
+      "report": "register-test-resource/report.json",
+      "log": "register-test-resource/engine.log",
+      "passed_checks": 0,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_controller_preflight_calibration",
+      "report": "test_controller_preflight_calibration/report.json",
+      "log": "test_controller_preflight_calibration/engine.log",
+      "passed_checks": 102,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 1
+    },
+    {
+      "label": "test_controller_profile_creation",
+      "report": "test_controller_profile_creation/report.json",
+      "log": "test_controller_profile_creation/engine.log",
+      "passed_checks": 57,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_controller_settings_save",
+      "report": "test_controller_settings_save/report.json",
+      "log": "test_controller_settings_save/engine.log",
+      "passed_checks": 25,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_controller_setup",
+      "report": "test_controller_setup/report.json",
+      "log": "test_controller_setup/engine.log",
+      "passed_checks": 86,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_controller_setup_safety",
+      "report": "test_controller_setup_safety/report.json",
+      "log": "test_controller_setup_safety/engine.log",
+      "passed_checks": 25,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    },
+    {
+      "label": "test_controller_store",
+      "report": "test_controller_store/report.json",
+      "log": "test_controller_store/engine.log",
+      "passed_checks": 45,
+      "expected_failure": false,
+      "engine_errors": 0,
+      "engine_warnings": 0
+    }
+  ],
+  "baseline_method": "Same final regression, with Setup preload redirected to the saved pre-change controller_setup.gd outside app. No production source mutation.",
+  "verification_scope": "New/Update/Duplicate identity and real ConfigFile reload; draft switching, cancellation, failed-save retry, device defaults, capture cancellation, and calibration connection provenance; existing setup/save/store/preflight consumers.",
+  "limits": [
+    "Synthetic devices and headless UI signals; not physical controller or native visual qualification.",
+    "Multiple matching saved profiles still follow existing association ambiguity policy; no automatic startup-selection qualification.",
+    "Focused checks do not replace required CI."
+  ],
+  "warning": "Preflight calibration emits its expected warning when newly calibrated AETR axes consume an existing flap AUX binding."
+}

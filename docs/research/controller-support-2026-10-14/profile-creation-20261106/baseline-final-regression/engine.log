@@ -1,0 +1,31 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+FAIL New cancels active remapping
+FAIL New gets a distinct valid identity
+FAIL New uses device defaults rather than copying saved mappings
+FAIL New does not inherit the old association
+FAIL switching back restores unsaved original edits
+FAIL same name creates two profiles with distinct IDs
+FAIL original profile remains identical after New save
+FAIL saved New is selected as an existing profile
+FAIL New after a nonclosing Save starts a different draft
+FAIL Cancel closes without creating the pending third profile
+FAIL reload keeps both saved identities
+FAIL editing an existing profile updates rather than duplicates
+FAIL updating the new profile still preserves original
+FAIL Duplicate saves separately
+FAIL Duplicate leaves both source profiles intact
+FAIL New restores the initial device draft and edits
+FAIL reselecting New preserves the current draft
+FAIL New restores the initial device draft and edits
+FAIL reselecting New preserves the current draft
+FAIL New restores the initial device draft and edits
+FAIL reselecting New preserves the current draft
+FAIL New restores the initial device draft and edits
+FAIL reselecting New preserves the current draft
+FAIL New radio accepts calibration into its draft
+FAIL save context migration retains calibration connection guard
+FAIL same-context update retains calibration connection guard
+FAIL next New does not inherit stale calibration provenance
+FAIL radio creation still leaves original profile unchanged
+controller profile creation: 57 checks, 28 failed

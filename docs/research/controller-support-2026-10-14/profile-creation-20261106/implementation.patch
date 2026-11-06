@@ -1,0 +1,56 @@
+diff --git a/app/ui/controller_setup.gd b/app/ui/controller_setup.gd
+index 41eb7eed5..910be12d2 100644
+--- a/app/ui/controller_setup.gd
++++ b/app/ui/controller_setup.gd
+@@ -1343,6 +1343,11 @@ func _load_profile_for_device(device_id: int) -> void:
+ 			if str(candidate.get("profile_id", "")) == profile_id:
+ 				_switch_draft_profile(candidate, _profile_context_key(candidate))
+ 				return
++	_switch_draft_profile(_default_profile_for_device(device_id), "device:%d" % device_id)
++
++
++func _default_profile_for_device(device_id: int) -> Dictionary:
++	var device := _device_for_id(device_id)
+ 	var expected_kind := str(device.get("kind", "gamepad"))
+ 	var preset := "mode2" if expected_kind == "gamepad" else ("jeti_mode2" if _is_jeti_device(device) else "radio_custom")
+ 	var candidate_profile := ControllerProfile.defaults(expected_kind, preset)
+@@ -1350,7 +1355,7 @@ func _load_profile_for_device(device_id: int) -> void:
+ 		candidate_profile = ControllerProfile.defaults("gamepad", "mode2")
+ 	if expected_kind == "joystick":
+ 		candidate_profile["configured"] = false
+-	_switch_draft_profile(candidate_profile, "device:%d" % device_id)
++	return candidate_profile
+ 
+ 
+ func _profile_context_key(profile: Dictionary) -> String:
+@@ -1424,7 +1429,13 @@ func _update_profile_options() -> void:
+ 
+ func _on_profile_selected(index: int) -> void:
+ 	var profile_index := profile_picker.get_item_id(index)
+-	if profile_index >= 0 and profile_index < _profiles.size():
++	if profile_index == -1:
++		if _is_capture_active():
++			_cancel_capture()
++		# New and the initial device draft share one unsaved context. Returning
++		# here restores pending edits without borrowing a saved profile's UUID.
++		_switch_draft_profile(_default_profile_for_device(_draft_flight_device_id), "device:%d" % _draft_flight_device_id)
++	elif profile_index >= 0 and profile_index < _profiles.size():
+ 		if _is_capture_active():
+ 			_cancel_capture()
+ 		var profile: Dictionary = _profiles[profile_index]
+@@ -2416,6 +2427,15 @@ func _save_profile(close_on_success := true) -> bool:
+ 		return false
+ 	var saved: Dictionary = result.get("profile", candidate).duplicate(true)
+ 	_replace_saved_profile(saved)
++	var saved_context := _profile_context_key(saved)
++	if _draft_context_key != saved_context:
++		# A committed New draft is now an Update target. Free its device slot
++		# only after success so the next New cannot recover this saved UUID.
++		_drafts_by_context.erase(_draft_context_key)
++		if _calibration_origins.has(_draft_context_key):
++			_calibration_origins[saved_context] = _calibration_origins[_draft_context_key]
++			_calibration_origins.erase(_draft_context_key)
++		_draft_context_key = saved_context
+ 	_draft_profile = saved.duplicate(true)
+ 	_drafts_by_context[_draft_context_key] = saved.duplicate(true)
+ 	_refresh_devices()
