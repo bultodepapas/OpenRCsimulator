@@ -4,6 +4,11 @@ extends SceneTree
 
 const Atmosphere := preload("res://render/atmosphere.gd")
 const CloudShadowMap := preload("res://render/cloud_shadow_map.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const NearGrass := preload("res://render/near_grass.gd")
+const RcTrackField := preload("res://render/rc_track_field.gd")
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
+const ShadowProbe := preload("res://../tools/atmosphere/shadow_map_probe.gd")
 var checks := 0
 var failures := 0
 
@@ -32,7 +37,56 @@ func _tiles() -> Array[Node]:
 	return root.find_children("CloudShadowMap*", "SubViewport", false, false)
 
 
+func _test_probe_readbacks() -> void:
+	var probe := ShadowProbe.new()
+	var cases := [{mode = 0}, {mode = 1}, {mode = 2}, {mode = 3},
+		{mode = 0, corrupt_tile = true}, {mode = 1, corrupt_tile = true}]
+	var invalid_images: Array = [null, Image.new(), Image.create_empty(1, 1, false, Image.FORMAT_RGBA8)]
+	for index in invalid_images.size():
+		var canvas: Dictionary = probe._stats(invalid_images[index])
+		var spatial: Dictionary = probe._spatial_stats(invalid_images[index])
+		var rejected: bool = not canvas.valid and not spatial.valid
+		for test_case: Dictionary in cases:
+			rejected = rejected and not probe._canvas_passes(canvas, test_case) \
+				and not probe._spatial_passes(spatial, test_case)
+		check("missing, empty or wrong-size readback %d fails every probe mode" % index, rejected)
+
+	var image := Image.create_empty(ShadowProbe.SIZE, ShadowProbe.SIZE, false, Image.FORMAT_RGBAF)
+	image.fill(Color(0.2, 0.2, 0.5, 1.0))
+	var canvas: Dictionary = probe._stats(image)
+	check("valid canvas data keeps the ordinary agreement gate", canvas.valid
+		and probe._canvas_passes(canvas, {mode = 0}) and not probe._canvas_passes(canvas, {mode = 3}))
+	image.fill(Color(0.2, 0.2, 1.0, 1.0))
+	canvas = probe._stats(image)
+	check("valid canvas mismatch satisfies the blank-tile control", canvas.valid
+		and probe._canvas_passes(canvas, {mode = 0, corrupt_tile = true})
+		and not probe._canvas_passes(canvas, {mode = 0}))
+	probe._bounds = "three"
+	canvas = probe._stats(image)
+	check("valid canvas mutation satisfies the bounds control", canvas.valid
+		and probe._canvas_passes(canvas, {mode = 3}) and not probe._canvas_passes(canvas, {mode = 2}))
+	image.fill(Color(0.2, 0.2, 0.0, 1.0))
+	var spatial: Dictionary = probe._spatial_stats(image)
+	check("valid spatial and sky agreement passes without passing a control", spatial.valid
+		and probe._spatial_passes(spatial, {mode = 2}) and not probe._spatial_passes(spatial, {mode = 3}))
+	image.set_pixel(0, 0, Color(0.2, 0.2, 1.0, 1.0))
+	spatial = probe._spatial_stats(image)
+	check("valid spatial and sky mismatch satisfies the controls", spatial.valid
+		and probe._spatial_passes(spatial, {mode = 3})
+		and probe._spatial_passes(spatial, {mode = 0, corrupt_tile = true})
+		and not probe._spatial_passes(spatial, {mode = 0}))
+	canvas.max_abs = INF
+	spatial.error_signal = INF
+	check("nonfinite statistics cannot pass a negative control", not probe._canvas_passes(canvas, {mode = 3})
+		and not probe._spatial_passes(spatial, {mode = 3}))
+	image.set_pixel(0, 0, Color(NAN, 0.2, 0.0, 1.0))
+	check("a nonfinite pixel invalidates both readbacks", not probe._stats(image).valid
+		and not probe._spatial_stats(image).valid)
+	probe.free()
+
+
 func run() -> void:
+	_test_probe_readbacks()
 	var keys := [CloudShadowMap.ENVIRONMENT_KEY, CloudShadowMap.GROUND_ENVIRONMENT_KEY,
 		CloudShadowMap.SKY_ENVIRONMENT_KEY]
 	var previous := {}
@@ -60,6 +114,23 @@ func run() -> void:
 	var sky := Atmosphere.sky_material()
 	var surface := ground.duplicate() as ShaderMaterial
 	Atmosphere.track_shadow_material_copy(surface, ground)
+	# Exercise the actual final builder materials, including the circuit's second copy.
+	var field_result := FieldLoader.load_from()
+	var track_result := Track.load_default()
+	check("field and circuit fixtures load", field_result.ok and track_result.ok)
+	var near_root: Node3D = null
+	var track_root: Node3D = null
+	var built_near: ShaderMaterial = null
+	var built_track: ShaderMaterial = null
+	if field_result.ok and track_result.ok:
+		near_root = NearGrass.build(field_result.field, ground)
+		track_root = RcTrackField.build(field_result.field, track_result.track, {}, ground)
+		built_near = near_root.get_meta("lighting_material", null) as ShaderMaterial
+		if track_root != null:
+			built_track = track_root.get_meta("lighting_material", null) as ShaderMaterial
+	check("actual near-grass and circuit materials start analytic", built_near != null and built_track != null
+		and built_near.get_shader_parameter("cloud_shadow_map_enabled") != true
+		and built_track.get_shader_parameter("cloud_shadow_map_enabled") != true)
 	var seed: int = ground.get_shader_parameter(
 		"appearance_shadow_seed" if ground.get_shader_parameter("appearance_cloud_shadow") == true else "cloud_seed")
 	check("pending ground stays analytic", ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
@@ -86,6 +157,12 @@ func run() -> void:
 	check("a field surface copied before publication receives the ready tile",
 		surface.get_shader_parameter("cloud_shadow_map_enabled") == true
 		and surface.get_shader_parameter("cloud_shadow_map") == near.get_shader_parameter("cloud_shadow_map"))
+	check("actual near-grass material receives the ready tile", built_near != null
+		and built_near.get_shader_parameter("cloud_shadow_map_enabled") == true
+		and built_near.get_shader_parameter("cloud_shadow_map") == near.get_shader_parameter("cloud_shadow_map"))
+	check("final circuit material receives the ready tile", built_track != null
+		and built_track.get_shader_parameter("cloud_shadow_map_enabled") == true
+		and built_track.get_shader_parameter("cloud_shadow_map") == near.get_shader_parameter("cloud_shadow_map"))
 	check("an old completion cannot enable a material requesting a new seed",
 		ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
 	var after_warmup_bake := CloudShadowMap.diagnostics_generation()
@@ -117,6 +194,15 @@ func run() -> void:
 		and ground.get_shader_parameter("cloud_shadow_map") == null
 		and not CloudShadowMap._consumers.has(ground.get_instance_id())
 		and sky.get_shader_parameter("cloud_shadow_map_enabled") == true)
+	check("ground opt-out disables both built copies", built_near != null and built_track != null
+		and built_near.get_shader_parameter("cloud_shadow_map_enabled") == false
+		and built_near.get_shader_parameter("cloud_shadow_map") == null
+		and built_track.get_shader_parameter("cloud_shadow_map_enabled") == false
+		and built_track.get_shader_parameter("cloud_shadow_map") == null)
+	if near_root != null: near_root.free()
+	if track_root != null: track_root.free()
+	built_near = null
+	built_track = null
 	var untracked := ShaderMaterial.new()
 	untracked.shader = Atmosphere.GROUND_SHADER
 	untracked.set_shader_parameter("cloud_shadow_map_enabled", true)

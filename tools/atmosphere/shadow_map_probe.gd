@@ -129,20 +129,27 @@ func _spatial_case(case: Dictionary, sky_consumer: bool = false) -> Dictionary:
 	root.add_child(viewport)
 	for frame in 6: await process_frame
 	var image := viewport.get_texture().get_image()
+	var stats := _spatial_stats(image)
+	stats.name = ("sky_" if sky_consumer else "spatial_") + str(case.name)
+	viewport.queue_free()
+	return stats
+
+
+func _spatial_stats(image: Image) -> Dictionary:
+	var invalid := {valid = false, share_over_4 = -1.0, max_channel = -1.0, error_signal = -1.0}
+	if image == null or image.is_empty() or image.get_size() != Vector2i(SIZE, SIZE):
+		return invalid
 	var differing := 0
 	var max_channel := 0.0
 	var error_signal := 0.0
-	if image == null or image.is_empty():
-		viewport.queue_free()
-		return {name = case.name, share_over_4 = 1.0, max_channel = 1.0, error_signal = 1.0}
 	for y in image.get_height():
 		for x in image.get_width():
 			var c := image.get_pixel(x, y)
+			if not _finite_pixel(c): return invalid
 			max_channel = maxf(max_channel, absf(c.r - c.g))
 			error_signal = maxf(error_signal, c.b)
 			if absf(c.r - c.g) > 4.0 / 255.0: differing += 1
-	viewport.queue_free()
-	return {name = ("sky_" if sky_consumer else "spatial_") + str(case.name), share_over_4 = float(differing) / (image.get_width() * image.get_height()),
+	return {valid = true, share_over_4 = float(differing) / (image.get_width() * image.get_height()),
 		max_channel = max_channel, error_signal = error_signal}
 
 
@@ -246,12 +253,7 @@ func _run() -> void:
 		var image := viewport.get_texture().get_image()
 		var stats := _stats(image)
 		stats.name = case.name
-		var max_bound := DETAIL_MAX_ABS_BOUND if case.mode == 1 else MAX_ABS_BOUND
-		var mean_bound := DETAIL_MEAN_ABS_BOUND if case.mode == 1 else MEAN_ABS_BOUND
-		stats.passed = (stats.max_abs <= 0.0000002 if case.mode == 2 else
-			stats.max_abs <= max_bound and stats.mean_abs <= mean_bound and stats.direct_mean > 0.005)
-		if case.mode == 3: stats.passed = stats.max_abs >= 0.0000009
-		if case.get("corrupt_tile", false): stats.passed = stats.max_abs > max_bound
+		stats.passed = _canvas_passes(stats, case)
 		ok = ok and stats.passed
 		results.append(stats)
 		viewport.queue_free()
@@ -260,19 +262,13 @@ func _run() -> void:
 		var result: Dictionary = await _spatial_case(case)
 		# The shader tests the original linear density maximum before output encoding.
 		# Canvas checks above additionally enforce the original mean density bound.
-		result.passed = result.error_signal == 0.0
-		if case.mode == 2: result.passed = result.error_signal == 0.0 and result.max_channel == 0.0
-		if case.mode == 3: result.passed = result.error_signal > 0.9
-		if case.get("corrupt_tile", false): result.passed = result.error_signal > 0.9
+		result.passed = _spatial_passes(result, case)
 		ok = ok and result.passed
 		spatial.append(result)
 	var sky_cases := []
 	for case: Dictionary in all_cases:
 		var result: Dictionary = await _spatial_case(case, true)
-		result.passed = result.error_signal == 0.0
-		if case.mode == 2: result.passed = result.error_signal == 0.0 and result.max_channel == 0.0
-		if case.mode == 3: result.passed = result.error_signal > 0.9
-		if case.get("corrupt_tile", false): result.passed = result.error_signal > 0.9
+		result.passed = _spatial_passes(result, case)
 		ok = ok and result.passed
 		sky_cases.append(result)
 	ok = ok and _bindings_ok
@@ -303,8 +299,9 @@ func _run() -> void:
 
 
 func _stats(image: Image) -> Dictionary:
-	if image == null or image.is_empty():
-		return {max_abs = INF, mean_abs = INF, direct_mean = 0.0}
+	var invalid := {valid = false, max_abs = -1.0, mean_abs = -1.0, direct_mean = -1.0}
+	if image == null or image.is_empty() or image.get_size() != Vector2i(SIZE, SIZE):
+		return invalid
 	var max_abs := 0.0
 	var sum_abs := 0.0
 	var direct_sum := 0.0
@@ -312,8 +309,34 @@ func _stats(image: Image) -> Dictionary:
 	for y in image.get_height():
 		for x in image.get_width():
 			var c := image.get_pixel(x, y)
+			if not _finite_pixel(c): return invalid
 			var diff := c.b / 1000000.0 if _bounds != "off" else absf((c.b - 0.5) / 8.0)
 			max_abs = maxf(max_abs, diff)
 			sum_abs += diff
 			direct_sum += c.r
-	return {max_abs = max_abs, mean_abs = sum_abs / count, direct_mean = direct_sum / count}
+	return {valid = true, max_abs = max_abs, mean_abs = sum_abs / count, direct_mean = direct_sum / count}
+
+
+func _finite_pixel(pixel: Color) -> bool:
+	return is_finite(pixel.r) and is_finite(pixel.g) and is_finite(pixel.b) and is_finite(pixel.a)
+
+
+func _canvas_passes(stats: Dictionary, case: Dictionary) -> bool:
+	if not bool(stats.get("valid", false)) or not is_finite(float(stats.get("max_abs", NAN))) \
+			or not is_finite(float(stats.get("mean_abs", NAN))) or not is_finite(float(stats.get("direct_mean", NAN))):
+		return false
+	var max_bound := DETAIL_MAX_ABS_BOUND if case.mode == 1 else MAX_ABS_BOUND
+	var mean_bound := DETAIL_MEAN_ABS_BOUND if case.mode == 1 else MEAN_ABS_BOUND
+	if case.get("corrupt_tile", false): return stats.max_abs > max_bound
+	if case.mode == 3: return stats.max_abs >= 0.0000009
+	if case.mode == 2: return stats.max_abs <= 0.0000002
+	return stats.max_abs <= max_bound and stats.mean_abs <= mean_bound and stats.direct_mean > 0.005
+
+
+func _spatial_passes(stats: Dictionary, case: Dictionary) -> bool:
+	if not bool(stats.get("valid", false)) or not is_finite(float(stats.get("share_over_4", NAN))) \
+			or not is_finite(float(stats.get("max_channel", NAN))) or not is_finite(float(stats.get("error_signal", NAN))):
+		return false
+	if case.mode == 3 or case.get("corrupt_tile", false): return stats.error_signal > 0.9
+	if case.mode == 2: return stats.error_signal == 0.0 and stats.max_channel == 0.0
+	return stats.error_signal == 0.0

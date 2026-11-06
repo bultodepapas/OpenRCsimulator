@@ -71,7 +71,9 @@ diagnostics. This avoids interpreting Mobile's sRGB amplification as linear
 density error. It does not waive a visual gate.
 Blank-tile negative controls must fail agreement in both cache modes and all
 three shader stages, so a silently disabled cache cannot pass by comparing the
-analytic function to itself. Reports retain engine and source hashes.
+analytic function to itself. Every case also requires a complete, finite 512×512
+readback; missing, wrongly sized or nonfinite images fail even for negative
+controls. Reports retain per-case validity, engine and source hashes.
 
 ### Cache lifecycle and isolated experiments (DT-MAC-06b-R1)
 
