@@ -1,0 +1,241 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   calm retains custom editor and density
+FAIL calm applies exact atmosphere {  }
+FAIL calm applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   steady retains custom editor and density
+FAIL steady applies exact atmosphere {  }
+FAIL steady applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   crosswind retains custom editor and density
+FAIL crosswind applies exact atmosphere {  }
+FAIL crosswind applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   gusty retains custom editor and density
+FAIL gusty applies exact atmosphere {  }
+FAIL gusty applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   updraft retains custom editor and density
+FAIL updraft applies exact atmosphere {  }
+FAIL updraft applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   turbulent retains custom editor and density
+FAIL turbulent applies exact atmosphere {  }
+FAIL turbulent applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   gentle-practice retains custom editor and density
+FAIL gentle-practice applies exact atmosphere {  }
+FAIL gentle-practice applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-realistic-v1 retains custom editor and density
+FAIL spatial-realistic-v1 applies exact atmosphere {  }
+FAIL spatial-realistic-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-light-breeze-v1 retains custom editor and density
+FAIL spatial-light-breeze-v1 applies exact atmosphere {  }
+FAIL spatial-light-breeze-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-crosswind-v1 retains custom editor and density
+FAIL spatial-crosswind-v1 applies exact atmosphere {  }
+FAIL spatial-crosswind-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-gusty-v1 retains custom editor and density
+FAIL spatial-gusty-v1 applies exact atmosphere {  }
+FAIL spatial-gusty-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-shear-v1 retains custom editor and density
+FAIL spatial-shear-v1 applies exact atmosphere {  }
+FAIL spatial-shear-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-thermal-soaring-v2 retains custom editor and density
+FAIL spatial-thermal-soaring-v2 applies exact atmosphere {  }
+FAIL spatial-thermal-soaring-v2 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-strong-wind-v1 retains custom editor and density
+FAIL spatial-strong-wind-v1 applies exact atmosphere {  }
+FAIL spatial-strong-wind-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   calm retains standard_column editor and density
+FAIL calm applies exact atmosphere {  }
+FAIL calm applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   steady retains standard_column editor and density
+FAIL steady applies exact atmosphere {  }
+FAIL steady applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   crosswind retains standard_column editor and density
+FAIL crosswind applies exact atmosphere {  }
+FAIL crosswind applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   gusty retains standard_column editor and density
+FAIL gusty applies exact atmosphere {  }
+FAIL gusty applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   updraft retains standard_column editor and density
+FAIL updraft applies exact atmosphere {  }
+FAIL updraft applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   turbulent retains standard_column editor and density
+FAIL turbulent applies exact atmosphere {  }
+FAIL turbulent applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   gentle-practice retains standard_column editor and density
+FAIL gentle-practice applies exact atmosphere {  }
+FAIL gentle-practice applies authored wind without downgrading air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-realistic-v1 retains standard_column editor and density
+FAIL spatial-realistic-v1 applies exact atmosphere {  }
+FAIL spatial-realistic-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-light-breeze-v1 retains standard_column editor and density
+FAIL spatial-light-breeze-v1 applies exact atmosphere {  }
+FAIL spatial-light-breeze-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-crosswind-v1 retains standard_column editor and density
+FAIL spatial-crosswind-v1 applies exact atmosphere {  }
+FAIL spatial-crosswind-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-gusty-v1 retains standard_column editor and density
+FAIL spatial-gusty-v1 applies exact atmosphere {  }
+FAIL spatial-gusty-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-shear-v1 retains standard_column editor and density
+FAIL spatial-shear-v1 applies exact atmosphere {  }
+FAIL spatial-shear-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-thermal-soaring-v2 retains standard_column editor and density
+FAIL spatial-thermal-soaring-v2 applies exact atmosphere {  }
+FAIL spatial-thermal-soaring-v2 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+ok   spatial-strong-wind-v1 retains standard_column editor and density
+FAIL spatial-strong-wind-v1 applies exact atmosphere {  }
+FAIL spatial-strong-wind-v1 applies authored spatial wind 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL legacy wind preset does not add an atmosphere schema 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL legacy wind preset does not add an atmosphere schema 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL legacy wind preset does not add an atmosphere schema 
+ok   selector opens its real popup
+ok   popup commits requested selection
+FAIL legacy wind preset does not add an atmosphere schema 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL selector opens its real popup 
+FAIL popup commits requested selection 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL wind changes retain unapplied custom mode and numeric text 
+FAIL unapplied custom air survives repeated wind presets 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL selector opens its real popup 
+FAIL popup commits requested selection 
+FAIL invalid atmosphere text remains visible:  
+FAIL invalid air still blocks Apply after wind changes 
+FAIL visible Cancel remains usable for invalid air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL selector opens its real popup 
+FAIL popup commits requested selection 
+FAIL invalid atmosphere text remains visible: - 
+FAIL invalid air still blocks Apply after wind changes 
+FAIL visible Cancel remains usable for invalid air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL selector opens its real popup 
+FAIL popup commits requested selection 
+FAIL invalid atmosphere text remains visible: NaN 
+FAIL invalid air still blocks Apply after wind changes 
+FAIL visible Cancel remains usable for invalid air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL selector opens its real popup 
+FAIL popup commits requested selection 
+FAIL invalid atmosphere text remains visible: 46 
+FAIL invalid air still blocks Apply after wind changes 
+FAIL visible Cancel remains usable for invalid air 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL v5 to uniform keeps reference air and removes spatial law 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL uniform to spatial keeps reference air 
+ok   preset selection never mutates the caller config
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL v5 to uniform keeps custom air and removes spatial law 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL uniform to spatial keeps custom air 
+ok   preset selection never mutates the caller config
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL v5 to uniform keeps standard_column air and removes spatial law 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL uniform to spatial keeps standard_column air 
+ok   preset selection never mutates the caller config
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL composite picker visibly discloses atmosphere: hot-high 
+FAIL composite explicitly replaces all authored conditions: hot-high 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL composite picker visibly discloses atmosphere: cool-dense 
+FAIL composite explicitly replaces all authored conditions: cool-dense 
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL composite picker visibly discloses atmosphere: standard-column 
+FAIL composite explicitly replaces all authored conditions: standard-column 
+ok   isolated Home preferences save
+ok   selector opens its real popup
+FAIL popup commits requested selection 
+FAIL Home Apply persists wind plus pending air 
+WARNING: This control can't grab focus. Use set_focus_mode() and set_focus_behavior_recursive() to allow a control to get focus.
+   at: grab_focus (scene/gui/control.cpp:3111)
+   GDScript backtrace (most recent call first):
+       [0] _home_round_trip (res://tests/test_weather_preset_scope.gd:237)
+       [1] _apply (res://tests/test_weather_preset_scope.gd:102)
+       [2] tap (res://tests/ui_driver.gd:24)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'atmosphere_inputs' on a base object of type 'Nil'.
+   at: _home_round_trip (res://tests/test_weather_preset_scope.gd:240)
+   GDScript backtrace (most recent call first):
+       [0] _home_round_trip (res://tests/test_weather_preset_scope.gd:240)
+       [1] tap (res://tests/ui_driver.gd:24)
+       [2] settle (res://tests/ui_driver.gd:55)
+Weather preset scope: 225 checks, 144 failed

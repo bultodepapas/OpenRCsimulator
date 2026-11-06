@@ -37,3 +37,55 @@ Regression runs:
 | `test_ui_home_layout` | pass |
 
 **Limits.** Only the Home route is covered. Direct technical routes still use defaults and never read preferences.
+
+## Wind preset scope (UI-32-R1, 2026-11-06)
+
+External audit **A11 R01** reproduced a wind preset replacing custom air at
+1,500 m / 35 °C with reference air. Wind-only selections now replace wind,
+gusts and turbulence while retaining the atmosphere source values, mode,
+pending text and edit baselines. Invalid air remains visible and blocks Apply.
+This includes spatial wind transitions and the altitude-dependent standard
+column; untouched atmosphere values retain their source float64 precision.
+
+The catalog explicitly marks **Hot and high**, **Cool dense air** and
+**Standard dry ISA column** as composite presets. Their picker captions disclose
+**Wind + Atmosphere**, using existing translations. They replace both domains,
+including an unfinished atmosphere draft. The picker is labeled **Conditions**;
+a combination that differs from every complete authored preset reopens as
+**Custom**. CLI/scenario preset configurations and physics equations are unchanged.
+
+The production regression drives actual popup selection, text entry and
+Apply/Cancel controls. It covers every wind-only preset against custom and
+standard-column air, pending mode/value changes, invalid text, legacy schema
+preservation, spatial transitions, composite replacement and Home persistence.
+Both atmosphere modes survive Apply, preference reload and reopening; Cancel
+preserves the accepted in-memory configuration and exact preference-file bytes.
+Persistence checks compare against the serialized input actually loaded by Home.
+
+[Source identities and checked receipts](preset-scope-20261106/verification.json)
+retain the identical regression before (**98 failures / 258 checks**) and after
+(**258 passing checks**), with zero engine errors or warnings. The final focused
+selection passes **664 checks across seven suites**:
+
+| Suite | Passing checks |
+| --- | ---: |
+| `test_weather_preset_scope` | 258 |
+| `test_ui_weather` | 67 |
+| `test_ui_atmosphere` | 47 |
+| `test_ui_spatial_weather` | 64 |
+| `test_ui_preserved_choices` | 19 |
+| `test_spatial_wind_contract` | 176 |
+| `test_ui_weather_sliders` | 33 |
+
+The [tested snapshot](preset-scope-20261106/tested-snapshot.patch) reconstructs on
+`a9720f5a5ebb24dd37b3909c87f6741dae7a61f3`; the five integrated source/test/UID files
+match its recorded hashes. Three retained texture import-metadata differences
+belong only to the isolated test workspace. Earlier incomplete fixtures and
+failed attempts remain in the receipts, including the corrected popup-window
+input route, text replacement and persisted-value oracle. The CI unit roster
+discovers the new test. Independent Good Enemy source review prompted the column
+round-trip coverage and clearer composite scope.
+
+Windows Godot `4.8.beta2.official.cafc17a19`, headless; the new regression uses a
+1920×1080 logical viewport. This establishes software behavior, not native visual,
+hardware, physical or release qualification. Required full CI remains pending.

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3d46b1f8-6a7f-4f24-855a-1d9ba26fd680",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--editor",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T22:37:49.922526+00:00",
+  "label": "current-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\import\\current-import-64jddjd8\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\import\\current-import-64jddjd8\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 21.984,
+  "log_bytes": 3426,
+  "log_sha256": "3d7496f9b8ea3ad11949de5f1908211185f3ece9e4fb14eb3a5a028ad5906855"
+}

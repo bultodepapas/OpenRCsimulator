@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "79c4ebb3-bea1-47bf-8799-2037f9374743",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp\\workshop-presets\\workspace\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_spatial_weather.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T22:50:37.213348+00:00",
+  "label": "test_ui_spatial_weather",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\test_ui_spatial_weather-final\\test_ui_spatial_weather-i59yfr1d\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\test_ui_spatial_weather-final\\test_ui_spatial_weather-i59yfr1d\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Spatial weather UI: 64 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.453,
+  "log_bytes": 113,
+  "log_sha256": "6a240572235731c7e1d815727d9aca6b1d451f2ea8b1bc01a00a829bcee07a6d"
+}

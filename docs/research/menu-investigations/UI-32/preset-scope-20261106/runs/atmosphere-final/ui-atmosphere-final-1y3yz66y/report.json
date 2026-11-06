@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c8c6994c-0077-4494-b271-57c7190d5d53",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_atmosphere.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T22:47:58.557309+00:00",
+  "label": "ui-atmosphere-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\atmosphere-final\\ui-atmosphere-final-1y3yz66y\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\atmosphere-final\\ui-atmosphere-final-1y3yz66y\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "all UI atmosphere checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 25.75,
+  "log_bytes": 2882,
+  "log_sha256": "b6f7b6055d316080a67c6023cd405e97f26ae4c97fb896c02647c53eeae399b2"
+}

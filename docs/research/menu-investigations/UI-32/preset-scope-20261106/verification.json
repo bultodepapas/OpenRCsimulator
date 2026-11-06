@@ -1,0 +1,359 @@
+{
+  "step": "UI-32-R1",
+  "date": "2026-11-06",
+  "finding": "A11 R01",
+  "baseline_commit": "a9720f5a5ebb24dd37b3909c87f6741dae7a61f3",
+  "initial_head": "ece94f9ede8c90c92652ebce68196f81eded6c70",
+  "source": [
+    {
+      "path": "app/ui/weather_dialog.gd",
+      "sha256": "485d2fdbc9ca080a71c06a43f5e1bba0a29ee69ba824b7d836c8c8c1ee9c3657"
+    },
+    {
+      "path": "app/physics/wind_config.gd",
+      "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66"
+    },
+    {
+      "path": "app/tests/test_weather_preset_scope.gd",
+      "sha256": "f30273d7873e840418bc57d45ed21822303500677bb0a0cde37cb256553ce230"
+    },
+    {
+      "path": "app/tests/test_weather_preset_scope.gd.uid",
+      "sha256": "b50f508844931d9211a457862e1bab1fe0f64c4e5efcb034a609a36a9625d818"
+    },
+    {
+      "path": "app/tests/test_ui_atmosphere.gd",
+      "sha256": "21c3d388903efcd859f002106c84d6ebd67c3d049d00a6a35213f9239790569e"
+    }
+  ],
+  "reconstruction": {
+    "patch": "tested-snapshot.patch",
+    "sha256": "e84597244aab52a0e3214ec4babb54f959b823f88c387a6f167b9cfd224bbef5",
+    "git_apply_cached_check": true,
+    "note": "Three pre-existing scenery texture import-metadata differences belong to the frozen imported workspace only; not promoted to production."
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "platform": "Windows x86_64",
+    "renderer": "headless",
+    "new_regression_viewport": [
+      1920,
+      1080
+    ]
+  },
+  "baseline_regression": {
+    "checks": 258,
+    "failed": 98,
+    "suite": "baseline-accepted-oracle"
+  },
+  "final_suites": {
+    "candidate-persistence-oracle": 258,
+    "test_ui_weather-final": 67,
+    "atmosphere-final": 47,
+    "test_ui_spatial_weather-final": 64,
+    "test_ui_preserved_choices-final": 19,
+    "test_spatial_wind_contract": 176,
+    "test_ui_weather_sliders-final": 33
+  },
+  "passing_checks": 664,
+  "ci_roster_contains_new_test": true,
+  "review": "Source-read-only GOOD ENEMY review by Terra 6.1 Max; added standard-column Home round trip and explicit wind-plus-atmosphere captions. No engine or native validation performed by reviewer.",
+  "limits": [
+    "Focused headless software verification only; no native rendered or target-hardware qualification.",
+    "Required full CI, release gates and physical qualification not run.",
+    "Existing slider/atmosphere suites include historical fallback-size cases; these do not establish native 1080p qualification."
+  ],
+  "attempts": [
+    {
+      "suite": "atmosphere-final",
+      "report": "runs/atmosphere-final/ui-atmosphere-final-1y3yz66y/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b6f7b6055d316080a67c6023cd405e97f26ae4c97fb896c02647c53eeae399b2"
+    },
+    {
+      "suite": "baseline",
+      "report": "runs/baseline/preset-scope-before-v4hg92yq/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 1,
+        "warning": 1
+      },
+      "log_sha256": "d1e2e5a2c2e6b5d03221a2189c1e7038e99156f84b74cfde18ec125991a900a3"
+    },
+    {
+      "suite": "baseline-accepted-oracle",
+      "report": "runs/baseline-accepted-oracle/preset-scope-before-oi1yx_bp/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "99742767730829497bbfad816a124acf0df5edace0de096889417070327d7611"
+    },
+    {
+      "suite": "baseline-corrected-input",
+      "report": "runs/baseline-corrected-input/preset-scope-before-o9ctwxk1/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fdae66768989787bac676987f2c6ec162b643c833210a1f2be4fbb0b9048c4cc"
+    },
+    {
+      "suite": "baseline-final",
+      "report": "runs/baseline-final/preset-scope-before-hhv5p9ve/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "99742767730829497bbfad816a124acf0df5edace0de096889417070327d7611"
+    },
+    {
+      "suite": "baseline-popup-route",
+      "report": "runs/baseline-popup-route/preset-scope-before-p5vlzj1z/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "239771e48e7f92396d18cb546467d188079ef8f9c7cbc77ad11864b12afef004"
+    },
+    {
+      "suite": "candidate",
+      "report": "runs/candidate/preset-scope-after-j4n_n9us/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "log_sha256": "499c3edf0c2c6f93e341cbcb7b832186fa8ecdb7f40bbee61ba2b0da68b8c2ed"
+    },
+    {
+      "suite": "candidate-final",
+      "report": "runs/candidate-final/preset-scope-after-0atq6ywz/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5e8c28b3c3695454509b44836fef13a031a27cb8086b0f3b30db82c3330a842b"
+    },
+    {
+      "suite": "candidate-persistence-oracle",
+      "report": "runs/candidate-persistence-oracle/preset-scope-after-h_0l2smi/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "404a9b5a3f605040f9c50294dfa611fe641647e9ac21e9ab7827ffd116aacf4a"
+    },
+    {
+      "suite": "candidate-text-input",
+      "report": "runs/candidate-text-input/preset-scope-after-xxktm7qv/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "827781d5a031c5fdf5e05a807e45b5e530f21631a40768e4f97e3444c5780565"
+    },
+    {
+      "suite": "final-import",
+      "report": "runs/final-import/final-import-pjs9akge/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "99fc404ef47d6ea76cb1113a7ac6a2e1e0cccf020e993d58de9304b7d88c65c9"
+    },
+    {
+      "suite": "import",
+      "report": "runs/import/current-import-64jddjd8/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3d7496f9b8ea3ad11949de5f1908211185f3ece9e4fb14eb3a5a028ad5906855"
+    },
+    {
+      "suite": "parse-config",
+      "report": "runs/parse-config/parse-config-qf54dcgu/report.json",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "log_sha256": "ddff72579fc6e0bf53a77c783fc06e1a5310b956e40f850a82e5cf9c1704dd58"
+    },
+    {
+      "suite": "parse-config-isolated-name",
+      "report": "runs/parse-config-isolated-name/parse-config-sc26pk4o/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "suite": "parse-dialog",
+      "report": "runs/parse-dialog/parse-dialog-ycrgztao/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "suite": "parse-regression",
+      "report": "runs/parse-regression/parse-regression-ds7ifkp7/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "suite": "test_spatial_wind_contract",
+      "report": "runs/test_spatial_wind_contract/test_spatial_wind_contract-b2k34qst/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3971936f9bda8a95383cfd493df35805e91ac367186d0cc7cf6e9b220aed1064"
+    },
+    {
+      "suite": "test_ui_atmosphere",
+      "report": "runs/test_ui_atmosphere/test_ui_atmosphere-hjz9sf8y/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b6f7b6055d316080a67c6023cd405e97f26ae4c97fb896c02647c53eeae399b2"
+    },
+    {
+      "suite": "test_ui_preserved_choices",
+      "report": "runs/test_ui_preserved_choices/test_ui_preserved_choices-p8mr8y5k/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f915e6fdb970f8d3b2da0ca38cbcfd36dc48e1eac176499fc42976badb9d2349"
+    },
+    {
+      "suite": "test_ui_preserved_choices-final",
+      "report": "runs/test_ui_preserved_choices-final/test_ui_preserved_choices-xnfv7sux/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f915e6fdb970f8d3b2da0ca38cbcfd36dc48e1eac176499fc42976badb9d2349"
+    },
+    {
+      "suite": "test_ui_spatial_weather",
+      "report": "runs/test_ui_spatial_weather/test_ui_spatial_weather-3rxn87rt/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "6a240572235731c7e1d815727d9aca6b1d451f2ea8b1bc01a00a829bcee07a6d"
+    },
+    {
+      "suite": "test_ui_spatial_weather-final",
+      "report": "runs/test_ui_spatial_weather-final/test_ui_spatial_weather-i59yfr1d/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "6a240572235731c7e1d815727d9aca6b1d451f2ea8b1bc01a00a829bcee07a6d"
+    },
+    {
+      "suite": "test_ui_weather",
+      "report": "runs/test_ui_weather/test_ui_weather-ehpv17rq/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1cc3c510fb814d5011149ea102939980f1dec4a8853c27cbd9864dba0ade7e7b"
+    },
+    {
+      "suite": "test_ui_weather-final",
+      "report": "runs/test_ui_weather-final/test_ui_weather-87_c34xd/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1cc3c510fb814d5011149ea102939980f1dec4a8853c27cbd9864dba0ade7e7b"
+    },
+    {
+      "suite": "test_ui_weather_sliders",
+      "report": "runs/test_ui_weather_sliders/test_ui_weather_sliders-n813u1_b/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cc965f13b0a1570090632fcad66bb747d2f80707108cf409a8b0d47a521b27f1"
+    },
+    {
+      "suite": "test_ui_weather_sliders-final",
+      "report": "runs/test_ui_weather_sliders-final/test_ui_weather_sliders-vaxu1a0h/report.json",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cc965f13b0a1570090632fcad66bb747d2f80707108cf409a8b0d47a521b27f1"
+    }
+  ],
+  "integrated_head_observed": "099cb59e735fa84ad3e2c6662eb44903caf71522",
+  "intervening_commit_app_differences_from_tested_snapshot": [
+    "app/tests/test_alert_efficiency.gd.uid"
+  ]
+}

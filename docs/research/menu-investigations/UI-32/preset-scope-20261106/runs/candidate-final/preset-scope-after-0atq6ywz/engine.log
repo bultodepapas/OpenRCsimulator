@@ -1,0 +1,261 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   calm retains custom editor and density
+ok   calm applies exact atmosphere
+ok   calm applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   steady retains custom editor and density
+ok   steady applies exact atmosphere
+ok   steady applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   crosswind retains custom editor and density
+ok   crosswind applies exact atmosphere
+ok   crosswind applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   gusty retains custom editor and density
+ok   gusty applies exact atmosphere
+ok   gusty applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   updraft retains custom editor and density
+ok   updraft applies exact atmosphere
+ok   updraft applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   turbulent retains custom editor and density
+ok   turbulent applies exact atmosphere
+ok   turbulent applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   gentle-practice retains custom editor and density
+ok   gentle-practice applies exact atmosphere
+ok   gentle-practice applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-realistic-v1 retains custom editor and density
+ok   spatial-realistic-v1 applies exact atmosphere
+ok   spatial-realistic-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-light-breeze-v1 retains custom editor and density
+ok   spatial-light-breeze-v1 applies exact atmosphere
+ok   spatial-light-breeze-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-crosswind-v1 retains custom editor and density
+ok   spatial-crosswind-v1 applies exact atmosphere
+ok   spatial-crosswind-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-gusty-v1 retains custom editor and density
+ok   spatial-gusty-v1 applies exact atmosphere
+ok   spatial-gusty-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-shear-v1 retains custom editor and density
+ok   spatial-shear-v1 applies exact atmosphere
+ok   spatial-shear-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-thermal-soaring-v2 retains custom editor and density
+ok   spatial-thermal-soaring-v2 applies exact atmosphere
+ok   spatial-thermal-soaring-v2 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-strong-wind-v1 retains custom editor and density
+ok   spatial-strong-wind-v1 applies exact atmosphere
+ok   spatial-strong-wind-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   calm retains standard_column editor and density
+ok   calm applies exact atmosphere
+ok   calm applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   steady retains standard_column editor and density
+ok   steady applies exact atmosphere
+ok   steady applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   crosswind retains standard_column editor and density
+ok   crosswind applies exact atmosphere
+ok   crosswind applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   gusty retains standard_column editor and density
+ok   gusty applies exact atmosphere
+ok   gusty applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   updraft retains standard_column editor and density
+ok   updraft applies exact atmosphere
+ok   updraft applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   turbulent retains standard_column editor and density
+ok   turbulent applies exact atmosphere
+ok   turbulent applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   gentle-practice retains standard_column editor and density
+ok   gentle-practice applies exact atmosphere
+ok   gentle-practice applies authored wind without downgrading air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-realistic-v1 retains standard_column editor and density
+ok   spatial-realistic-v1 applies exact atmosphere
+ok   spatial-realistic-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-light-breeze-v1 retains standard_column editor and density
+ok   spatial-light-breeze-v1 applies exact atmosphere
+ok   spatial-light-breeze-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-crosswind-v1 retains standard_column editor and density
+ok   spatial-crosswind-v1 applies exact atmosphere
+ok   spatial-crosswind-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-gusty-v1 retains standard_column editor and density
+ok   spatial-gusty-v1 applies exact atmosphere
+ok   spatial-gusty-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-shear-v1 retains standard_column editor and density
+ok   spatial-shear-v1 applies exact atmosphere
+ok   spatial-shear-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-thermal-soaring-v2 retains standard_column editor and density
+ok   spatial-thermal-soaring-v2 applies exact atmosphere
+ok   spatial-thermal-soaring-v2 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   spatial-strong-wind-v1 retains standard_column editor and density
+ok   spatial-strong-wind-v1 applies exact atmosphere
+ok   spatial-strong-wind-v1 applies authored spatial wind
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   legacy wind preset does not add an atmosphere schema
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   legacy wind preset does not add an atmosphere schema
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   legacy wind preset does not add an atmosphere schema
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   legacy wind preset does not add an atmosphere schema
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   text entry replaces the selected field
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   wind changes retain unapplied custom mode and numeric text
+ok   unapplied custom air survives repeated wind presets
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   pending column mode and elevation survive a uniform wind preset
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   invalid atmosphere text remains visible: 
+ok   invalid air still blocks Apply after wind changes
+ok   visible Cancel remains usable for invalid air
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   invalid atmosphere text remains visible: -
+ok   invalid air still blocks Apply after wind changes
+ok   visible Cancel remains usable for invalid air
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   invalid atmosphere text remains visible: NaN
+ok   invalid air still blocks Apply after wind changes
+ok   visible Cancel remains usable for invalid air
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   invalid atmosphere text remains visible: 46
+ok   invalid air still blocks Apply after wind changes
+ok   visible Cancel remains usable for invalid air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   v5 to uniform keeps reference air and removes spatial law
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   uniform to spatial keeps reference air
+ok   preset selection never mutates the caller config
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   v5 to uniform keeps custom air and removes spatial law
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   uniform to spatial keeps custom air
+ok   preset selection never mutates the caller config
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   v5 to uniform keeps standard_column air and removes spatial law
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   uniform to spatial keeps standard_column air
+ok   preset selection never mutates the caller config
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   composite picker visibly discloses atmosphere: hot-high
+ok   composite explicitly replaces all authored conditions: hot-high
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   composite picker visibly discloses atmosphere: cool-dense
+ok   composite explicitly replaces all authored conditions: cool-dense
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   composite picker visibly discloses atmosphere: standard-column
+ok   composite explicitly replaces all authored conditions: standard-column
+ok   isolated Home preferences save
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+FAIL Home Apply persists wind plus pending custom air 
+ok   reopened Conditions restores saved air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   Cancel preserves accepted memory and exact preference bytes
+ok   isolated Home preferences save
+ok   text entry replaces the selected field
+ok   selector opens its real popup
+ok   popup commits requested selection
+FAIL Home Apply persists wind plus pending standard_column air 
+ok   reopened Conditions restores saved air
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   selector opens its real popup
+ok   popup commits requested selection
+ok   Cancel preserves accepted memory and exact preference bytes
+Weather preset scope: 258 checks, 2 failed

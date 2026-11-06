@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2bfa6619-065c-45ac-a3af-38ee5f5a20f7",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/workshop-presets/workspace/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_weather_preset_scope.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-06T22:43:21.322922+00:00",
+  "label": "preset-scope-after",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\candidate-text-input\\preset-scope-after-xxktm7qv\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\weather-preset-scope\\candidate-text-input\\preset-scope-after-xxktm7qv\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Weather preset scope: 241 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 17.703,
+  "log_bytes": 11461,
+  "log_sha256": "827781d5a031c5fdf5e05a807e45b5e530f21631a40768e4f97e3444c5780565"
+}
