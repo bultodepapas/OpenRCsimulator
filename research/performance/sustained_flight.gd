@@ -86,6 +86,7 @@ var hashes_enabled := false
 var observation_enabled := true
 var render_override: Variant = null
 var render_previous: Dictionary = {}
+var render_previous_process_frame := -1
 var render_observation: Dictionary = {}
 var cloud_previous_generation := -1
 var cloud_observation: Dictionary = {}
@@ -297,6 +298,7 @@ func _run() -> void:
 	observer.host = self
 	bounds_at_construction["bound"] = _bound_cloud_density()
 	render_previous = _render_snapshot()
+	render_previous_process_frame = Engine.get_process_frames()
 	CloudShadowMap.diagnostics() # synchronize settings and prune prior consumers before observation
 	cloud_previous_generation = CloudShadowMap.diagnostics_generation()
 	root.add_child(observer)
@@ -390,13 +392,8 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 					return {ok = false, reason = "--sustained-msaa requires an integer 0..3"}
 				override.msaa_3d = value.to_int()
 			_: forwarded.append(arg)
-	if not path.is_absolute_path() or not receipt.is_absolute_path() or path == receipt \
-			or FileAccess.file_exists(path) or FileAccess.file_exists(path + ".frames.jsonl") \
-			or FileAccess.file_exists(receipt) or FileAccess.file_exists(receipt + ".accident.json") \
-			or FileAccess.file_exists(receipt + ".controls.cfg"):
-		return {ok = false, reason = "new, distinct absolute frame and receipt paths are required"}
-	if not DirAccess.dir_exists_absolute(path.get_base_dir()) or not DirAccess.dir_exists_absolute(receipt.get_base_dir()):
-		return {ok = false, reason = "output directories must already exist"}
+	if not _safe_output_paths(path, receipt):
+		return {ok = false, reason = "new, distinct output paths outside the application tree and link-free existing directories are required"}
 	if not is_finite(duration) or duration <= 0.0 or duration > 1800.0 \
 			or not is_finite(warmup) or warmup < 0.0 or warmup > 300.0:
 		return {ok = false, reason = "duration must be (0,1800] and warmup [0,300] seconds"}
@@ -411,6 +408,44 @@ func _options(arguments: PackedStringArray) -> Dictionary:
 		diagnostic_ticks = requested_ticks, hashes_enabled = use_hash, observation_enabled = use_observation,
 		render_override = override if not override.is_empty() else null, hide_shaders = hide,
 		shader_params = params}
+
+
+## No output may enter the visible source inventory or alias a source through a
+## directory link. Refuse link-bearing roots rather than guessing real paths.
+func _safe_output_paths(frame: String, receipt: String) -> bool:
+	if not frame.is_absolute_path() or not receipt.is_absolute_path(): return false
+	var app := ProjectSettings.globalize_path("res://").replace("\\", "/").simplify_path().trim_suffix("/")
+	if not _unlinked_directory(app): return false
+	var unique := {}
+	for target: String in [frame, frame + ".frames.jsonl", receipt, receipt + ".accident.json", receipt + ".controls.cfg"]:
+		var raw := target.replace("\\", "/")
+		# Reject dot components before resolving: a link followed by '..' can
+		# refer to a different location than a lexically simplified path.
+		if raw != raw.simplify_path(): return false
+		var absolute := ProjectSettings.globalize_path(raw).replace("\\", "/")
+		if not absolute.is_absolute_path() or absolute != absolute.simplify_path(): return false
+		var key := absolute.to_lower()
+		if key == app.to_lower() or key.begins_with(app.to_lower() + "/") or unique.has(key): return false
+		unique[key] = true
+		var directory := absolute.get_base_dir()
+		if not _unlinked_directory(directory): return false
+		var parent := DirAccess.open(directory)
+		if parent == null or parent.is_link(absolute) or FileAccess.file_exists(absolute) \
+				or DirAccess.dir_exists_absolute(absolute): return false
+	return true
+
+
+func _unlinked_directory(directory: String) -> bool:
+	if not directory.is_absolute_path() or not DirAccess.dir_exists_absolute(directory): return false
+	var current := directory
+	while true:
+		var parent := current.get_base_dir()
+		if parent == current: return true
+		if parent.is_empty(): return false
+		var access := DirAccess.open(parent)
+		if access == null or access.is_link(current): return false
+		current = parent
+	return false
 
 
 func _hide_shader_geometry(node: Node) -> void:
@@ -695,6 +730,7 @@ func _render_snapshot() -> Dictionary:
 	if policy.requested == Reconstruction.AUTO and saved is Dictionary:
 		policy["auto_selected"] = saved.get("auto_selected")
 		policy["auto_output_size"] = saved.get("auto_output_size")
+		policy["auto_output_size_scope"] = saved.get("auto_output_size_scope")
 	policy["scaling_3d_mode"] = root.scaling_3d_mode
 	policy["scale"] = root.scaling_3d_scale
 	policy["msaa_3d"] = root.msaa_3d
@@ -718,22 +754,36 @@ func _render_snapshot() -> Dictionary:
 	return snapshot
 
 
-## The preceding process-frame observation brackets the first retained frame. Observe
-## every subsequent frame, including the synchronous final report/seal callback.
+## Track each retained frame and its preceding process-frame bracket. A deferred
+## diagnostic seal can re-observe the last retained frame; compare it but do not
+## count it as a new frame observation.
 func _observe_render(final := false) -> void:
 	var current := _render_snapshot()
+	var process_frame := Engine.get_process_frames()
 	var generation := CloudShadowMap.diagnostics_generation()
 	var bounds := CloudShaderVariants.diagnostics()
 	bounds["bound"] = _bound_cloud_density()
 	if is_instance_valid(scene) and scene._frametime_samples != null \
 			and int(scene._frametime_samples._actual_sample_start_usec) >= 0:
+		var retained_frames: int = scene._frametime_samples._wall_delta_s.size()
 		if render_observation.is_empty():
+			var bracketed := render_previous_process_frame == process_frame - 1 and not render_previous.is_empty()
 			render_observation = {start = render_previous.duplicate(true), end = current,
-				stable = render_previous == current, samples = 2}
+				stable = render_previous == current, samples = 2, observed_frame_count = retained_frames,
+				first_frame_bracketed = bracketed, contiguous = bracketed and retained_frames == 1,
+				seal_observed = final, seal_reuses_last_frame = false}
 		else:
 			render_observation.stable = bool(render_observation.stable) and current == render_observation.start
 			render_observation.end = current
-			render_observation.samples += 1
+			var previous_frames: int = render_observation.observed_frame_count
+			var next_frame := retained_frames == previous_frames + 1
+			var repeated_seal := final and retained_frames == previous_frames
+			render_observation.contiguous = bool(render_observation.contiguous) and (next_frame or repeated_seal)
+			if next_frame: render_observation.samples += 1
+			render_observation.observed_frame_count = retained_frames
+			if final:
+				render_observation.seal_observed = true
+				render_observation.seal_reuses_last_frame = repeated_seal
 		if cloud_observation.is_empty():
 			var cloud := CloudShadowMap.diagnostics()
 			var first_stable := cloud_previous_generation == generation and generation == int(cloud.generation)
@@ -764,6 +814,7 @@ func _observe_render(final := false) -> void:
 			cloud_observation.stable = bool(cloud_observation.stable) \
 				and generation == int(cloud.generation) and cloud == cloud_observation.start
 	render_previous = current
+	render_previous_process_frame = process_frame
 	cloud_previous_generation = CloudShadowMap.diagnostics_generation()
 
 

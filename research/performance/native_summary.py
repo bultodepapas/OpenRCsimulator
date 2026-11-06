@@ -1236,8 +1236,8 @@ def _canonical_cloud(snapshot: dict[str, Any]) -> dict[str, Any]:
             "effective": snapshot["effective"], "required_seeds": snapshot["required_seeds"],
             "consumers": {mode: sorted(snapshot["consumers"][mode], key=lambda row: (row["seed"], row["status"], row["enabled"]))
                           for mode in ("ground", "sky")},
-            "seeds": [{"seed": row["seed"], "status": row["status"]} for row in snapshot["seeds"]
-                      if row["seed"] in required]}
+            "seeds": sorted(({"seed": row["seed"], "status": row["status"]} for row in snapshot["seeds"]
+                             if row["seed"] in required), key=lambda row: row["seed"])}
 
 
 def _dimension_observation_scope(scenario: dict[str, Any]) -> str:
@@ -1296,8 +1296,16 @@ def _render_dimensions_match(snapshot: dict[str, Any], reported_policy: dict[str
 def _effective_render_matches(scenario: dict[str, Any], report: dict[str, Any]) -> bool:
     """Require the selected policy and viewport to agree throughout the measured sample."""
     observation = scenario.get("effective_render")
+    # The fixture samples the preceding process-frame bracket and each retained
+    # frame. A deferred seal can re-observe the final frame without adding one.
     if (not isinstance(observation, dict) or observation.get("stable") is not True
-            or not _is_int(observation.get("samples")) or observation["samples"] < 2):
+            or not _is_int(report.get("frames")) or report["frames"] < 1
+            or not _is_int(observation.get("samples")) or observation["samples"] != report["frames"] + 1
+            or not _is_int(observation.get("observed_frame_count"))
+            or observation["observed_frame_count"] != report["frames"]
+            or observation.get("first_frame_bracketed") is not True or observation.get("contiguous") is not True
+            or observation.get("seal_observed") is not True
+            or type(observation.get("seal_reuses_last_frame")) is not bool):
         return False
     start, end = observation.get("start"), observation.get("end")
     if not isinstance(start, dict) or start != end:
@@ -1325,10 +1333,11 @@ def _effective_render_matches(scenario: dict[str, Any], report: dict[str, Any]) 
         mode = policy.get("auto_selected")
         if mode not in ("native", "metalfx_spatial_85", "metalfx_spatial_quality"):
             return False
-        auto_size, window_size = policy.get("auto_output_size"), start.get("window_size_property")
+        auto_size = policy.get("auto_output_size")
         if (not isinstance(auto_size, list) or len(auto_size) != 2
                 or any(type(value) is not int or value <= 0 or not _is_number(value) for value in auto_size)
-                or window_size != auto_size):
+                or policy.get("auto_output_size_scope") != "viewport_render_target_estimate_v1"
+                or auto_size != start.get("output_size")):
             return False
     if mode not in BENCHMARK_RECONSTRUCTION:
         return False

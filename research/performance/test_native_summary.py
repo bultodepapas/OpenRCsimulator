@@ -5,6 +5,8 @@ import hashlib
 import contextlib
 import copy
 import io
+import os
+import subprocess
 import tempfile
 import unittest
 import uuid
@@ -240,7 +242,10 @@ def frame_dimensions(snapshot: dict) -> dict:
 def set_render_observation(receipt: dict, report: dict, scale: float = 1.0, msaa: int = 2) -> None:
     snapshot = render_snapshot(scale, msaa)
     receipt["scenario"]["effective_render"] = {
-        "start": copy.deepcopy(snapshot), "end": copy.deepcopy(snapshot), "stable": True, "samples": 4,
+        "start": copy.deepcopy(snapshot), "end": copy.deepcopy(snapshot), "stable": True,
+        "samples": report["frames"] + 1, "observed_frame_count": report["frames"],
+        "first_frame_bracketed": True, "contiguous": True, "seal_observed": True,
+        "seal_reuses_last_frame": False,
     }
     report["rendering_driver"] = snapshot["driver"]
     report["render_settings"] = {key: copy.deepcopy(snapshot[key])
@@ -254,10 +259,12 @@ def set_auto_native_observation(receipt: dict, report: dict, size: tuple[int, in
     observation = receipt["scenario"]["effective_render"]
     for endpoint in ("start", "end"):
         snapshot = observation[endpoint]
-        snapshot["reconstruction"].update(requested="auto", auto_selected="native", auto_output_size=list(size))
+        snapshot["reconstruction"].update(requested="auto", auto_selected="native", auto_output_size=list(size),
+                                          auto_output_size_scope="viewport_render_target_estimate_v1")
         set_snapshot_dimensions(snapshot, size)
     report["render_settings"]["reconstruction"].update(requested="auto", auto_selected="native",
-                                                       auto_output_size=list(size), **frame_dimensions(observation["start"]))
+        auto_output_size=list(size), auto_output_size_scope="viewport_render_target_estimate_v1",
+        **frame_dimensions(observation["start"]))
 
 
 def save_benchmark_report(path: Path, receipt: dict, report: dict) -> None:
@@ -1382,6 +1389,11 @@ class BenchmarkHealthTests(unittest.TestCase):
             "missing": lambda s: s.pop("effective_render"),
             "unobserved transition": lambda s: s["effective_render"].update(stable=False),
             "missing frame observation": lambda s: s["effective_render"].update(samples=1),
+            "unbracketed start": lambda s: s["effective_render"].update(first_frame_bracketed=False),
+            "skipped frame": lambda s: s["effective_render"].update(contiguous=False),
+            "wrong retained frame count": lambda s: s["effective_render"].update(observed_frame_count=3),
+            "missing seal observation": lambda s: s["effective_render"].update(seal_observed=False),
+            "missing seal provenance": lambda s: s["effective_render"].pop("seal_reuses_last_frame"),
             "changed scale": lambda s: s["effective_render"]["end"].update(scaling_3d_scale=0.5),
             "unexpected msaa": lambda s: [s["effective_render"][k].update(msaa_3d=0) for k in ("start", "end")],
             "boolean policy mode": lambda s: [s["effective_render"][k]["reconstruction"].update(
@@ -1434,6 +1446,106 @@ class BenchmarkHealthTests(unittest.TestCase):
             save_benchmark_report(path, receipt, report)
             health_path.write_text(json.dumps(receipt), encoding="utf-8")
             self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+    def test_render_observations_cover_each_frame_and_start_bracket(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            frame_count = json.loads(path.read_text())["frames"]
+            observation = receipt["scenario"]["effective_render"]
+            for count, valid in ((frame_count + 1, True), (2, False), (frame_count, False),
+                                 (frame_count + 2, False), (True, False), (5.0, False)):
+                with self.subTest(count=count):
+                    observation["samples"] = count
+                    health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                    self.assertEqual(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"], valid)
+            observation.update(samples=frame_count + 1, seal_reuses_last_frame=True)
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+            observation["end"]["output_size"] = [1280, 720]
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertFalse(summarize_run(path, SHORT_POLICY)["benchmark_health"]["eligible"])
+
+    def test_cloud_seed_record_order_does_not_change_campaign_identity(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            directory = Path(temp_dir)
+            for index in (1, 2):
+                path, health_path, receipt = write_benchmark_run(directory, f"run-{index}")
+                snapshot = cloud_snapshot("1")
+                for mode in ("ground", "sky"):
+                    snapshot["required_seeds"][mode] = [42, 43]
+                    snapshot["consumers"][mode].append({"seed": 43, "status": "ready", "enabled": True})
+                snapshot["seeds"].append({"seed": 43, "status": "ready", "attempts": 1, "failure": ""})
+                if index == 2:
+                    snapshot["seeds"].reverse()
+                set_cloud_observation(receipt, snapshot)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            campaign, status = summarize_directory(directory, directory / "summary.json", SHORT_POLICY)
+            self.assertEqual(status, 0)
+            self.assertTrue(campaign["benchmark_identity_consistent"])
+            for mode in ("ground", "sky"):
+                snapshot["required_seeds"][mode] = [42, 44]
+                snapshot["consumers"][mode][1]["seed"] = 44
+            next(row for row in snapshot["seeds"] if row["seed"] == 43)["seed"] = 44
+            set_cloud_observation(receipt, snapshot)
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            campaign, status = summarize_directory(directory, directory / "summary-different.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertFalse(campaign["benchmark_identity_consistent"])
+
+    def test_fixture_output_paths_do_not_enter_or_alias_the_application_tree(self):
+        godot = os.environ.get("OPENRC_SUSTAINED_TEST_GODOT")
+        if not godot:
+            self.skipTest("set OPENRC_SUSTAINED_TEST_GODOT to run the headless fixture path checks")
+        repo = Path(__file__).resolve().parents[2]
+        app = repo / "app"
+        tmp = repo / "tmp"
+        tmp.mkdir(exist_ok=True)
+        project = app / "project.godot"
+        before = hashlib.sha256(project.read_bytes()).hexdigest()
+        with tempfile.TemporaryDirectory(dir=tmp) as temp_dir:
+            directory = Path(temp_dir)
+            frame = (directory / "frame.json").as_posix()
+            health = (directory / "health.json").as_posix()
+            cases = [[frame, health, True],
+                     [(app / "new-frame.json").as_posix(), health, False],
+                     [frame, (app / "new-health.json").as_posix(), False],
+                     ["res://new-frame.json", health, False],
+                     [(directory / ".." / ".." / "app" / "new-frame.json").as_posix(), health, False],
+                     [project.as_posix(), health, False],
+                     [frame, frame + ".frames.jsonl", False]]
+            link = directory / "app-link"
+            try:
+                link.symlink_to(app, target_is_directory=True)
+            except OSError:
+                pass  # On Windows symlink creation may need a privilege.
+            else:
+                cases.extend([[(link / "new-frame.json").as_posix(), health, False],
+                              [frame, (link / "new-health.json").as_posix(), False]])
+            script = directory / "options-probe.gd"
+            script.write_text('''extends SceneTree
+func _init() -> void:
+    var args := OS.get_cmdline_user_args()
+    var fixture: Variant = load(args[0]).new()
+    var cases: Array = JSON.parse_string(args[1])
+    var results := []
+    for row: Array in cases:
+        var result: Dictionary = fixture._options(PackedStringArray(["--frametimes=" + row[0], "--sustained-receipt=" + row[1]]))
+        results.append(result.ok)
+    print("SUSTAINED_OPTIONS_TEST:", JSON.stringify(results))
+    fixture.free()
+    quit()
+''', encoding="utf-8")
+            completed = subprocess.run([godot, "--headless", "--path", str(app), "--script", str(script), "--",
+                                        (repo / "research/performance/sustained_flight.gd").as_posix(),
+                                        json.dumps(cases)], capture_output=True, text=True, timeout=30)
+            self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+            marker = "SUSTAINED_OPTIONS_TEST:"
+            lines = [line[len(marker):] for line in completed.stdout.splitlines() if line.startswith(marker)]
+            self.assertEqual(len(lines), 1, completed.stdout + completed.stderr)
+            self.assertEqual(json.loads(lines[0]), [case[2] for case in cases])
+        self.assertEqual(hashlib.sha256(project.read_bytes()).hexdigest(), before)
 
     def test_native_dimensions_are_observed_and_match_the_frame_report(self):
         def run(mutate=None) -> dict:
@@ -1596,13 +1708,26 @@ class BenchmarkHealthTests(unittest.TestCase):
         self.assertEqual(selected["reconstruction"]["auto_selected"], "native")
         self.assertEqual(selected["reconstruction"]["auto_output_size"], [1920, 1080])
         self.assertEqual(selected["window_size_property"], [1920, 1080])
+
+        def change_auto_selection(s: dict, r: dict, **values) -> None:
+            for endpoint in ("start", "end"):
+                s["effective_render"][endpoint]["reconstruction"].update(values)
+            r["render_settings"]["reconstruction"].update(values)
+
+        def remove_auto_scope(s: dict, r: dict) -> None:
+            for endpoint in ("start", "end"):
+                s["effective_render"][endpoint]["reconstruction"].pop("auto_output_size_scope")
+            r["render_settings"]["reconstruction"].pop("auto_output_size_scope")
+
         mutations = {
             "selected mode missing": lambda s, r: s["effective_render"]["start"]["reconstruction"].pop("auto_selected"),
             "selection not allowed": lambda s, r: [s["effective_render"][k]["reconstruction"].update(
                 auto_selected="fsr2_quality") for k in ("start", "end")],
             "window changed": lambda s, r: s["effective_render"]["end"].update(window_size_property=[1600, 900]),
-            "selection used different pixels": lambda s, r: [s["effective_render"][k].update(
-                window_size_property=[1600, 900]) for k in ("start", "end")],
+            "selection used different pixels": lambda s, r: change_auto_selection(s, r, auto_output_size=[1600, 900]),
+            "selection has no output scope": remove_auto_scope,
+            "selection claims physical pixels": lambda s, r: change_auto_selection(
+                s, r, auto_output_size_scope="physical_display"),
             "boolean size": lambda s, r: [s["effective_render"][k]["reconstruction"].update(
                 auto_output_size=[True, 1080]) for k in ("start", "end")],
             "frame report viewport differs": lambda s, r: r["render_settings"]["reconstruction"].update(
@@ -1643,6 +1768,16 @@ class BenchmarkHealthTests(unittest.TestCase):
                                                                **frame_dimensions(snapshot))
 
         self.assertTrue(run(corrected_canvas)["performance_pass"])
+
+        def letterboxed_canvas(s: dict, report: dict) -> None:
+            for endpoint in ("start", "end"):
+                snapshot = s["effective_render"][endpoint]
+                set_snapshot_dimensions(snapshot, (2560, 1600), visible=(1920, 1080), output=(1920, 1080))
+                snapshot["reconstruction"]["auto_output_size"] = [1920, 1080]
+            report["render_settings"]["reconstruction"].update(auto_output_size=[1920, 1080],
+                                                               **frame_dimensions(snapshot))
+
+        self.assertTrue(run(letterboxed_canvas)["performance_pass"])
         new_mutations = {
             "missing scope": lambda p: p.pop("output_size_scope"),
             "null scope": lambda p: p.update(output_size_scope=None),

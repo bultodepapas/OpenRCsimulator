@@ -352,6 +352,14 @@ seed 20261021. The production session retains automatic 240 Hz physics; the
 fixture does not reposition the aircraft or manually step the solver. It selects
 native reconstruction and 4x MSAA, redirects accident/controller files beside
 its receipt, and labels the route `benchmark-input-circuit`.
+Frame and receipt outputs and their sidecars must be fresh, distinct absolute
+paths outside `app/`, with existing directories and no `.` or `..` path
+components. The fixture refuses symbolic links or junctions in the project or
+output directory ancestry rather than assuming their targets; use real paths
+(for example `/private/tmp` instead of macOS `/tmp`). This prevents outputs from
+entering the visible source inventory. It is not a concurrent-filesystem guard.
+The optional Godot path regression in `test_native_summary.py` runs when
+`OPENRC_SUSTAINED_TEST_GODOT` names a Godot editor binary and the project has been imported.
 
 For the named M1 built-in-display campaign, after importing and freezing the
 source, authoring inputs and imported resources, use a fresh directory:
@@ -451,7 +459,10 @@ selects `Viewport.MSAA` (0 off, 1 2×, 2 4×, 3 8×). The receipt records them a
 `--rendering-driver` values matching the observed renderer. It checks requested
 reconstruction, provider, scale, MSAA and window/viewport dimensions against the
 frame report and observations from the frame before sampling through the seal,
-and refuses fallbacks or changes.
+and refuses fallbacks or changes. The receipt must show contiguous observations
+for every retained frame and a preceding process-frame bracket. A deferred seal
+can sample the last retained frame again; its state is compared without counting
+it as a new frame.
 An explicit temporal MSAA request must be zero. The current MetalFX policy reports
 execution as unknown, so it cannot meet effective-provider acceptance until an
 independent execution observation is available. Renderer policy and viewport
@@ -466,7 +477,8 @@ the scaled `nominal_3d_size`.
 
 The technical fixture still requests Native by default; it does not exercise the
 player's Auto default. To observe Auto explicitly, add `--sustained-reconstruction=auto`.
-The receipt records `auto_selected` and the window size used for that selection.
+The receipt records `auto_selected` and the scoped viewport output-size estimate
+used for that selection; the window size is recorded separately and can differ.
 All reconstruction modes record the window, visible canvas and output and nominal
 input estimates through the sample under `per_frame_viewport_estimate_v1`. The reducer
 accepts Auto selecting Native only when these records and the frame report agree.
@@ -475,9 +487,10 @@ New reconstruction reports distinguish `logical_canvas_size` from `output_size`
 with scope `viewport_render_target_estimate_v1`; CanvasItems scaling can make
 these differ. `nominal_3d_size` uses the pinned renderer's positive-size truncation
 and remains a scaled viewport estimate, not an SDK execution or allocation query.
-The reducer validates both sizes and their scopes. Older receipts remain readable
-but are unqualified for the current benchmark gate: their dimension scope is
-reported as `legacy_unobserved` or `legacy_auto_window_canvas_only`.
+The reducer validates both sizes and their scopes. Older receipts remain readable,
+but those missing per-frame dimensions, contiguous-coverage provenance or the Auto
+selection scope cannot satisfy the current gate.
+Missing dimensions are reported as `legacy_unobserved` or `legacy_auto_window_canvas_only`.
 Those size properties do not independently prove physical drawable or presentation
 pixels, and the fixture does not establish the normal Home/Fly preference path.
 
