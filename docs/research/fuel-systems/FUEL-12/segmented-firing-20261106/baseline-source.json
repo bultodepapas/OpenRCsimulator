@@ -1,0 +1,14 @@
+{
+  "root_head": "3751e35e1cccf574c4446d21273a4d5ecaf80ddf",
+  "baseline_sha256": {
+    "app/physics/glow/flight.gd": "cd0d3f5b8ec0586fb30577ca4bf21bc74c8c81e885f439e568603dfca25c2992",
+    "app/physics/glow/lifecycle.gd": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14",
+    "app/sim/trace.gd": "2674198c02157f9dda6fb9e7b408ae87c1444a62558bd897d9d4ebaea4ee4a37",
+    "app/tests/check_atmosphere_trace.py": "d536ff69cbc34dd0bfd9216808e64046214d346b0e6318542e46693dd7be033f",
+    "app/tests/check_trimmed_flight.py": "917d98a7c95a0fe9431e56fd0bbb81fb1c29fcfe5cf48134c7d5d49f77ae5fb9",
+    "app/tests/test_trace_acceptance.py": "1a715f2acb42fed5982468b635323d4eec09b1eb583d40a03aab17099de48783",
+    "app/tests/test_glow_trace.gd": "d1cd25317e5f7ae6a4f47299a74cdbf90879a5bf1a50eca46c5238f4190f6bac",
+    "app/tests/test_glow_session.gd": "97f6e167afb65b8b6e5b8f2fb99d60ecb362d89b9876296f1d0bb17245337f5a",
+    "research/glow-engines/packaged_smoke.py": "acf03fc4d2866c9128ee04e4d951bc80fc1bc249518f35da3e6ae9dbe6bd1f1f"
+  }
+}

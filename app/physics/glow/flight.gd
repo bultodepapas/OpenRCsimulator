@@ -27,7 +27,7 @@ const MODE_FEED_LINE := 2
 ## Fixed-point passes and tolerance for the initial needled fuel-transport seed (fuel_feed installations).
 const SEED_PASSES := 8
 const SEED_TOLERANCE := 1.0e-15
-const LAW := "glow-mean-cycle-connected-fuel-v5"
+const LAW := "glow-mean-cycle-segmented-firing-v6"
 const CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const EVALUATOR_META := &"_glow_prepared_evaluator"
@@ -415,7 +415,7 @@ static func _resource_events(owner: Node) -> Array:
 	return events
 
 static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float,
-		include_stage_coupling: bool = false) -> Dictionary:
+		include_stage_coupling: bool = false, connected_counter_sample: bool = false) -> Dictionary:
 	var prop: Dictionary=owner.aircraft.model.propulsion
 	var install: Dictionary=prop.glow
 	var state: Dictionary=unpack(values,install)
@@ -427,6 +427,10 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	# locate an exact boundary. Mass properties clamp to the physical boundary; the source
 	# mode continues to provide its pre-boundary flow until the event transition is accepted.
 	if state.fuel_kg<0.0: state.fuel_kg=1e-30
+	elif connected_counter_sample and mode in [MODE_MAIN_TANK,MODE_FEED_LINE] and state.fuel_kg==0.0:
+		# Observe the connected left limit for counters only. RK derivatives keep
+		# their existing law; raw inventory/mass and caller state remain untouched.
+		state.fuel_kg=_connected_trial_fuel(0.0)
 	if _injected_cut(owner):
 		state=Life.cut(state).state
 	elif not owner.engine_running: state.running=false
@@ -730,7 +734,19 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	if combined.size()<SIZE+RB.SIZE:
 		return PackedFloat64Array([NAN])
-	var bounded: Dictionary=ResourceStep.advance(combined,time_s,dt,derivative,first,_resource_events(owner))
+	# Only committed transitions are observed; rejected RK/root trials never
+	# publish counters. Discard this local ledger if any later part of the tick fails.
+	var transitions: Array[Dictionary]=[]
+	var resource_events: Array=_resource_events(owner)
+	for event: Dictionary in resource_events:
+		var transition: Callable=event.transition
+		event.transition=func(state: PackedFloat64Array,at: float) -> Dictionary:
+			var connected: PackedFloat64Array=state.duplicate()
+			var result: Dictionary=transition.call(state,at)
+			if result.get("ok",false):
+				transitions.append({before=connected,after=result.state.duplicate(),time_s=at})
+			return result
+	var bounded: Dictionary=ResourceStep.advance(combined,time_s,dt,derivative,first,resource_events)
 	if not bounded.ok: return PackedFloat64Array([NAN])
 	var values: PackedFloat64Array=bounded.state.slice(RB.SIZE)
 	var before: Dictionary=unpack(combined.slice(RB.SIZE),install)
@@ -755,6 +771,19 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 			values[0],endpoint.firing_fraction,0.0)
 	if not accepted.ok: return PackedFloat64Array([NAN])
 	var accepted_state: Dictionary=accepted.state
+	if not transitions.is_empty():
+		var counters: Dictionary={opportunity_count=int(before.opportunity_count),
+			fire_count=int(before.fire_count),firing_accumulator=float(before.firing_accumulator)}
+		var segment_start: PackedFloat64Array=combined
+		var segment_time: float=time_s
+		for transition: Dictionary in transitions:
+			if not _count_segment(owner,segment_start,transition.before,segment_time,transition.time_s,counters):
+				return PackedFloat64Array([NAN])
+			segment_start=transition.after
+			segment_time=transition.time_s
+		if not _count_segment(owner,segment_start,bounded.state,segment_time,time_s+dt,counters,endpoint):
+			return PackedFloat64Array([NAN])
+		for key: String in counters: accepted_state[key]=counters[key]
 	var terminal_fuel_reason: String=""
 	for event_value: Dictionary in bounded.events:
 		if str(event_value.get("type","")) in ["fuel_exhausted","fuel_starved"]:
@@ -782,6 +811,32 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 					break
 		events.append({"type":"glow_stopped","reason":stop_reason,"time_s":stopped_time})
 	return {"state":out,"events":events}
+
+## Each completed opportunity belongs to its closing (start, end] source-mode
+## interval, including a fuel-stop tie. Use that interval's endpoint fraction,
+## preserving the mean-cycle convention; do not project/wrap intermediate states.
+static func _count_segment(owner: Node, start: PackedFloat64Array, end: PackedFloat64Array,
+		start_time: float, end_time: float, counters: Dictionary, endpoint: Dictionary = {}) -> bool:
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	var cycle: float=install.profile.identity.cycle_revolutions
+	var phase_start: float=start[RB.SIZE+6]
+	var phase_end: float=end[RB.SIZE+6]
+	if floor((phase_start+Life.PHASE_TOLERANCE)/cycle)==floor((phase_end+Life.PHASE_TOLERANCE)/cycle):
+		return true
+	var probability: float=0.0
+	if start[RB.SIZE+7]==1.0 and int(start[RB.SIZE+SOURCE_MODE_INDEX])!=MODE_STARVED \
+			and owner.engine_running and not _injected_cut(owner):
+		var sample: Dictionary=endpoint if not endpoint.is_empty() else point(owner,
+			end.slice(0,RB.SIZE),end.slice(RB.SIZE),end_time,false,true)
+		if not sample.get("ok",false): return false
+		probability=float(sample.firing_fraction)
+	var counted: Dictionary=Life.count_opportunities(str(install.profile.family),phase_start,phase_end,
+		float(counters.firing_accumulator),probability,end_time-start_time)
+	if not counted.ok: return false
+	counters.opportunity_count+=int(counted.opportunity_delta)
+	counters.fire_count+=int(counted.fire_delta)
+	counters.firing_accumulator=counted.firing_accumulator
+	return true
 
 static func telemetry(owner: Node) -> Dictionary:
 	var values: PackedFloat64Array=owner.sim.continuous

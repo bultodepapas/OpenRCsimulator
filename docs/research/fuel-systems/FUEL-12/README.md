@@ -73,6 +73,57 @@ application. Reproduce with `research/native-kernel/run.py --script
 glow_stage_oracle.gd --states 48 --variant-states 1 --timing-rounds 0 --option
 ticks=1 --timeout 900 --godot <pinned Linux Godot>`, after an isolated build.
 
+## Accepted combustion counters (FUEL-12-R4, 2026-11-06)
+
+This repairs A4's lost pre-exhaustion fire against V5 baseline `3751e35e1`.
+`GlowFlight.step` records only committed resource transitions, then counts each
+raw phase interval after integration succeeds. The existing whole-tick lifecycle
+projection still owns phase wrapping and stop decisions. Only opportunity/fire
+counters and their accumulator are replaced. Trial evaluations cannot publish
+counters; a failed required counter sample rejects the whole Simulation tick.
+
+Intervals retain the existing `(start, end]` phase convention and `1e-12`
+revolution tolerance: an opportunity tied with fuel loss belongs to the closing
+connected interval. Each interval uses its endpoint firing fraction, not a
+physically resolved probability at each spark. Zero probability cannot consume a
+restored near-one accumulator as a fire. An observation-only availability sample
+also covers exact-zero total fuel with either a connected main tank or feed line;
+it leaves RK derivatives and physical inventory untouched. The separate zero-total
+feed-line derivative/timing limitation is not repaired here.
+
+The law is `glow-mean-cycle-segmented-firing-v6`; layout and historical V2–V5 trace
+readers remain compatible. V5 checkpoints are refused by normal restore. The
+[verification manifest](segmented-firing-20261106/verification.json) retains source
+identities, checked logs, baseline ORFLs, exact replay and candidate comparisons.
+
+Focused checks passed: **102 event-counter assertions**, **43 transition/rollback
+edge assertions**, and **1,405 existing lifecycle, prepared-evaluator, flight,
+fuel-boundary, trace, audio and session checks**. Both new scripts also passed in
+the integrated root tree. The focused Python V6 trace acceptance test covers
+current output, V4/V5 schema compatibility and malformed claims. The empty-line
+main-tank edge initially failed three assertions with zero engine errors; the
+connected-mode observation fix makes all 43 pass.
+
+Seven 32-tick baseline tapes replayed exactly before their candidate comparisons.
+Three public fill/reset witnesses retain the lost fire: 55AX **0→1**, FS64V
+**1→2**, and Extra **0→1**. Across their 33 rows, only `continuous_10`
+(fire count) differs; every other numeric CSV value is identical. Four additional
+exhaustion/full-fill control tapes have identical numeric rows throughout. All
+candidate reports are complete with `solver_changed=true`; the retained
+test-only CLI patch explicitly migrates the checkpoint law from V5 to V6 while
+preserving numeric initial state and input tape. The two V5 solver fingerprints
+differ because the root and isolated checkout have different line endings in
+otherwise identical solver sources. Both baseline groups have their own verified
+exact replays. The controlled before/at/after and multiple-opportunity cases also
+retain identical packed non-counter state and event records against V5.
+
+These are bounded software and replay checks. They do not establish acoustic or
+physical realism, natural full-tank endurance, performance, complete CI or native
+installation qualification. Run the new scripts through the checked runner as
+`res://tests/test_glow_event_counters.gd` and
+`res://tests/test_glow_counter_edges.gd`; exact invocations are retained in the
+checked reports.
+
 ## Implemented result
 
 Current finite Stiks and Extra use the versioned glow adapter. P-51 and Ventage consume their explicit gasoline/turbine stores. Every supported adapter updates mass, CG and inertia, preserves unusable residue, locates exhaustion and continues with its stopped-source law. A glow installation can additionally declare an identified pre-primed line and pickup plane; synthetic tests cover loss of access, finite line depletion and retained unreachable main fuel. Bundled aircraft retain line-free/main-only data until their owners have source-backed delivery geometry.

@@ -1,0 +1,46 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   edge fixture loads  []
+ok   fractional line has a valid resource reference
+ok   fractional line starts with valid main and line stores
+ok   zero-total line counter sample leaves packed inventory untouched
+ok   ordinary zero-total line stage is inactive
+ok   main segment endpoint probability is 5/32  got 0.15625, expected 0.15625 (tol 0.000000000001)
+ok   connected zero-total line probability is 27/32  got 0.84375, expected 0.84375 (tol 0.000000000001)
+ok   prepared fractional multi-source step accepted  { "state": [0.0, 0.0, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6000.0, 0.0, 360.0, 0.75, 0.4153303770496, 0.0, 0.1, 0.0, 4.0, 5.0, 2.0, 0.2, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "events": [{ &"type": "fuel_tank_unusable", &"time_s": 0.25, &"id": "main_tank_unusable", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0, &"main_fuel_residual_kg": 0.0 }, { &"type": "fuel_exhausted", &"time_s": 0.5, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "edge_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.5 }] }
+ok   prepared input remains immutable
+ok   prepared main to line to exhaustion order  ["fuel_tank_unusable", "fuel_exhausted", "glow_stopped"]
+ok   prepared five mechanical opportunities and two fires  [0.1, 0.0, 4.0, 5.0, 2.0, 0.2]
+ok   prepared carries the accumulator across both sources  got 0.2, expected 0.2 (tol 0.000000000001)
+ok   prepared stops after line reaches zero
+ok   fallback fractional multi-source step accepted  { "state": [0.0, 0.0, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6000.0, 0.0, 360.0, 0.75, 0.4153303770496, 0.0, 0.1, 0.0, 4.0, 5.0, 2.0, 0.2, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "events": [{ &"type": "fuel_tank_unusable", &"time_s": 0.25, &"id": "main_tank_unusable", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0, &"main_fuel_residual_kg": 0.0 }, { &"type": "fuel_exhausted", &"time_s": 0.5, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "edge_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.5 }] }
+ok   fallback input remains immutable
+ok   fallback main to line to exhaustion order  ["fuel_tank_unusable", "fuel_exhausted", "glow_stopped"]
+ok   fallback five mechanical opportunities and two fires  [0.1, 0.0, 4.0, 5.0, 2.0, 0.2]
+ok   fallback carries the accumulator across both sources  got 0.2, expected 0.2 (tol 0.000000000001)
+ok   fallback stops after line reaches zero
+ok   prepared and fallback results agree exactly
+ok   empty line with usable main fuel is an accepted state  [6000.0, 0.25, 390.0, 0.75, 0.4153303770496, 0.00020558640226, 0.1, 1.0, 0.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+ok   empty-line main RK sample retains its existing zero-fuel behavior
+ok   empty-line main counter sample sees the connected left limit  1.0
+ok   prepared empty-line main exhaustion is accepted
+ok   prepared preserves the pre-exhaustion fire with empty line  [0.6, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   fallback empty-line main exhaustion is accepted
+ok   fallback preserves the pre-exhaustion fire with empty line  [0.6, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   near-threshold case stops before an opportunity
+ok   stop retains the unspent accumulator
+ok   coast tick after stop is accepted
+ok   zero probability never awards a coast fire
+ok   coincident rotor and fuel boundaries are accepted  { "state": [0.0, 0.0, 0.0, 15.0, -0.0, 0.0, 1.0, 0.0, 0.0, 0.0, -0.0, -0.0, 0.0, 0.0, 0.0042846, 390.0, 0.75, 0.4153303770496, 0.0, 0.76666666666667, 0.0, 4.0, 1.0, 1.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "events": [{ &"type": "glow_rotor_stopped", &"time_s": 0.0025, &"id": "rotor_stop", &"surface_residual": -0.00000000000091, &"surface_unit": "rpm", &"time_error_bound_s": 0.0000000000005, &"rpm_residual": 0.0 }, { &"type": "fuel_exhausted", &"time_s": 0.0025, &"id": "main_tank_unusable", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0042846, &"main_fuel_residual_kg": 0.0042846 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.0025 }] }
+ok   rotor projection precedes fuel stop  ["glow_rotor_stopped", "fuel_exhausted", "glow_stopped"]
+ok   rotor/fuel tie counts the pre-stop chance once  [0.76666666666667, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   pickup loss and line drain accept while source is stopped  { "state": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0749805, 390.0, 0.0, 0.01504775541765, 0.0, 0.1, 0.0, 6.0, 6.0, 0.0, 0.9999999999995, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "events": [{ &"type": "fuel_pickup_lost", &"time_s": 0.2099454, &"id": "pickup_lost", &"surface_residual": -0.0, &"surface_unit": "m", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0749805, &"line_fuel_kg": 0.05 }, { &"type": "fuel_starved", &"time_s": 0.3099454, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_starved", &"resource": "feed_line", &"resource_id": "edge_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0749805 }] }
+ok   pickup loss precedes line starvation  ["fuel_pickup_lost", "fuel_starved"]
+ok   pickup transitions never relight the stopped source
+ok   resource step succeeds before counter observation
+ok   needed failed counter sample rejects the step
+ok   failed sample leaves its input untouched
+ok   rollback fixture installs and resets
+ok   counter sample failure faults the Simulation tick  step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion
+ok   failed tick preserves body, counters, clock, auxiliary state and events
+Glow counter edges: 43 checks, 0 failed

@@ -1,0 +1,109 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   res://data/aircraft/stik_glow_55ax_2t.json loads
+ok   fixture fires every available opportunity
+ok   glow_2t/before accepted
+ok   glow_2t/before input immutable
+ok   glow_2t/before preserves pre-stop fires  [0.3, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_2t/before counts all mechanical opportunities
+ok   glow_2t/before split/full fire count agrees
+ok   glow_2t/at accepted
+ok   glow_2t/at input immutable
+ok   glow_2t/at preserves pre-stop fires  [0.15, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_2t/at counts all mechanical opportunities
+ok   glow_2t/after accepted
+ok   glow_2t/after input immutable
+ok   glow_2t/after preserves pre-stop fires  [0.05, 0.0, 4.0, 1.0, 0.0, 0.0]
+ok   glow_2t/after counts all mechanical opportunities
+ok   glow_2t/multiple accepted
+ok   glow_2t/multiple input immutable
+ok   glow_2t/multiple preserves pre-stop fires  [0.9, 0.0, 4.0, 6.0, 5.0, 0.0]
+ok   glow_2t/multiple counts all mechanical opportunities
+ok   glow_2t/event-free accepted
+ok   glow_2t/event-free input immutable
+ok   glow_2t/event-free preserves pre-stop fires  [0.3, 1.0, 0.0, 1.0, 1.0, 0.0]
+ok   glow_2t/event-free counts all mechanical opportunities
+ok   fixture fires every available opportunity
+ok   glow_2t/before/fallback accepted
+ok   glow_2t/before/fallback input immutable
+ok   glow_2t/before/fallback preserves pre-stop fires  [0.3, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_2t/before/fallback counts all mechanical opportunities
+ok   glow_2t/before/fallback split/full fire count agrees
+ok   glow_2t/at/fallback accepted
+ok   glow_2t/at/fallback input immutable
+ok   glow_2t/at/fallback preserves pre-stop fires  [0.15, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_2t/at/fallback counts all mechanical opportunities
+ok   glow_2t/after/fallback accepted
+ok   glow_2t/after/fallback input immutable
+ok   glow_2t/after/fallback preserves pre-stop fires  [0.05, 0.0, 4.0, 1.0, 0.0, 0.0]
+ok   glow_2t/after/fallback counts all mechanical opportunities
+ok   glow_2t/multiple/fallback accepted
+ok   glow_2t/multiple/fallback input immutable
+ok   glow_2t/multiple/fallback preserves pre-stop fires  [0.9, 0.0, 4.0, 6.0, 5.0, 0.0]
+ok   glow_2t/multiple/fallback counts all mechanical opportunities
+ok   glow_2t/event-free/fallback accepted
+ok   glow_2t/event-free/fallback input immutable
+ok   glow_2t/event-free/fallback preserves pre-stop fires  [0.3, 1.0, 0.0, 1.0, 1.0, 0.0]
+ok   glow_2t/event-free/fallback counts all mechanical opportunities
+ok   res://data/aircraft/stik_glow_fs64v_4t.json loads
+ok   fixture fires every available opportunity
+ok   glow_4t/before accepted
+ok   glow_4t/before input immutable
+ok   glow_4t/before preserves pre-stop fires  [0.3, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_4t/before counts all mechanical opportunities
+ok   glow_4t/before split/full fire count agrees
+ok   glow_4t/at accepted
+ok   glow_4t/at input immutable
+ok   glow_4t/at preserves pre-stop fires  [0.15, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_4t/at counts all mechanical opportunities
+ok   glow_4t/after accepted
+ok   glow_4t/after input immutable
+ok   glow_4t/after preserves pre-stop fires  [0.05, 0.0, 4.0, 1.0, 0.0, 0.0]
+ok   glow_4t/after counts all mechanical opportunities
+ok   glow_4t/multiple accepted
+ok   glow_4t/multiple input immutable
+ok   glow_4t/multiple preserves pre-stop fires  [1.9, 0.0, 4.0, 3.0, 3.0, 0.0]
+ok   glow_4t/multiple counts all mechanical opportunities
+ok   glow_4t/event-free accepted
+ok   glow_4t/event-free input immutable
+ok   glow_4t/event-free preserves pre-stop fires  [0.3, 1.0, 0.0, 1.0, 1.0, 0.0]
+ok   glow_4t/event-free counts all mechanical opportunities
+ok   fixture fires every available opportunity
+ok   glow_4t/before/fallback accepted
+ok   glow_4t/before/fallback input immutable
+ok   glow_4t/before/fallback preserves pre-stop fires  [0.3, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_4t/before/fallback counts all mechanical opportunities
+ok   glow_4t/before/fallback split/full fire count agrees
+ok   glow_4t/at/fallback accepted
+ok   glow_4t/at/fallback input immutable
+ok   glow_4t/at/fallback preserves pre-stop fires  [0.15, 0.0, 4.0, 1.0, 1.0, 0.0]
+ok   glow_4t/at/fallback counts all mechanical opportunities
+ok   glow_4t/after/fallback accepted
+ok   glow_4t/after/fallback input immutable
+ok   glow_4t/after/fallback preserves pre-stop fires  [0.05, 0.0, 4.0, 1.0, 0.0, 0.0]
+ok   glow_4t/after/fallback counts all mechanical opportunities
+ok   glow_4t/multiple/fallback accepted
+ok   glow_4t/multiple/fallback input immutable
+ok   glow_4t/multiple/fallback preserves pre-stop fires  [1.9, 0.0, 4.0, 3.0, 3.0, 0.0]
+ok   glow_4t/multiple/fallback counts all mechanical opportunities
+ok   glow_4t/event-free/fallback accepted
+ok   glow_4t/event-free/fallback input immutable
+ok   glow_4t/event-free/fallback preserves pre-stop fires  [0.3, 1.0, 0.0, 1.0, 1.0, 0.0]
+ok   glow_4t/event-free/fallback counts all mechanical opportunities
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik_glow_55ax_2t public near-reserve fill
+ok   stik_glow_55ax_2t real flight retains pre-exhaustion fires  fires=1 reason=fuel_exhausted
+ok   stik_glow_55ax_2t restores new-law checkpoint
+ok   stik_glow_55ax_2t new-law counter replay is exact
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik_glow_fs64v_4t public near-reserve fill
+ok   stik_glow_fs64v_4t real flight retains pre-exhaustion fires  fires=2 reason=fuel_exhausted
+ok   stik_glow_fs64v_4t restores new-law checkpoint
+ok   stik_glow_fs64v_4t new-law counter replay is exact
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   gp_extra_300s_60 public near-reserve fill
+ok   gp_extra_300s_60 real flight retains pre-exhaustion fires  fires=1 reason=fuel_exhausted
+ok   gp_extra_300s_60 restores new-law checkpoint
+ok   gp_extra_300s_60 new-law counter replay is exact
+Glow event counters: 102 checks, 0 failed

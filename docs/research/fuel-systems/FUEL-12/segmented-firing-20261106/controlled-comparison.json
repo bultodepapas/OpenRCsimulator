@@ -1,0 +1,64 @@
+{
+  "glow_2t/after": {
+    "changed_combined_slots": [],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_2t/at": {
+    "changed_combined_slots": [
+      23
+    ],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_2t/before": {
+    "changed_combined_slots": [
+      23
+    ],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_2t/event-free": {
+    "changed_combined_slots": [],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_2t/multiple": {
+    "changed_combined_slots": [
+      23
+    ],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_4t/after": {
+    "changed_combined_slots": [],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_4t/at": {
+    "changed_combined_slots": [
+      23
+    ],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_4t/before": {
+    "changed_combined_slots": [
+      23
+    ],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_4t/event-free": {
+    "changed_combined_slots": [],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  },
+  "glow_4t/multiple": {
+    "changed_combined_slots": [
+      23
+    ],
+    "non_counter_state_bytes_identical": true,
+    "event_records_identical": true
+  }
+}

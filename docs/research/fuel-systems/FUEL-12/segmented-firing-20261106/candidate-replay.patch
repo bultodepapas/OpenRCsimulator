@@ -1,0 +1,12 @@
+--- app/tools/flight_log_cli.gd
++++ candidate_replay.gd
+@@ -414,6 +414,9 @@
+ 			# Open-loop counterfactual: identical body/internal initial state, candidate mass/configuration.
+ 			# Existing restore validates laws, wheel identities, typed layouts and admissibility.
+ 			checkpoint.configuration = candidate_checkpoint.configuration
++			# A4 experiment only: preserve numeric initial state, explicitly migrate the counter law.
++			if checkpoint.get("glow_law") == "glow-mean-cycle-connected-fuel-v5" and candidate_checkpoint.get("glow_law") == "glow-mean-cycle-segmented-firing-v6":
++				checkpoint.glow_law = candidate_checkpoint.glow_law
+ 			for key in ["mass", "inertia", "gravity"]:
+ 				checkpoint.simulation[key] = candidate_checkpoint.simulation[key]
+ 			# wheel_profiles.json gains rows when other aircraft are added. Adopt the candidate's file identity,

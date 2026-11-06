@@ -485,47 +485,23 @@ static func _accepted_validated(
 		return _fail("Mechanical phase moved backward")
 
 	var cycle_revolutions: float = 1.0 if model.family == "glow_2t" else 2.0
-	var phase_start: float = float(before.phase_revolutions)
-	var phase_end: float = float(candidate.phase_revolutions)
-	var start_turn: int = int(floor((phase_start + PHASE_TOLERANCE) / cycle_revolutions))
-	var end_turn: int = int(floor((phase_end + PHASE_TOLERANCE) / cycle_revolutions))
-	var opportunity_delta: int = end_turn - start_turn
-	if opportunity_delta < 0 or opportunity_delta > MAX_OPPORTUNITIES_PER_ACCEPT:
-		return _fail("Accepted phase crosses an unsupported number of opportunities; reduce the step")
+	var probability: float = firing_fraction if bool(before.running) and float(before.fuel_kg) > unusable_fuel_kg else 0.0
+	var counts: Dictionary = count_opportunities(str(model.family), float(before.phase_revolutions),
+		float(candidate.phase_revolutions), float(before.firing_accumulator), probability, dt)
+	if not counts.ok: return counts
 	var next: Dictionary = candidate.duplicate(true)
-	for key: String in ["running", "stop_reason", "opportunity_count", "fire_count", "firing_accumulator"]:
+	for key: String in ["running", "stop_reason"]:
 		next[key] = before[key]
 	next["servo_fraction"] = clampf(float(next.servo_fraction), 0.0, 1.0)
 	next["air_fraction"] = clampf(float(next.air_fraction), 0.0, 1.0)
-	next["phase_revolutions"] = fposmod(phase_end, cycle_revolutions)
-	var acc: float = float(before.firing_accumulator)
-	var opportunities: Array[Dictionary] = []
+	next["phase_revolutions"] = fposmod(float(candidate.phase_revolutions), cycle_revolutions)
+	next["opportunity_count"] = int(before.opportunity_count) + int(counts.opportunity_delta)
+	next["fire_count"] = int(before.fire_count) + int(counts.fire_delta)
+	next["firing_accumulator"] = counts.firing_accumulator
+	var opportunities: Array[Dictionary] = counts.opportunities
 	var event_list: Array[Dictionary] = []
-	var phase_delta: float = phase_end - phase_start
-	for offset: int in range(opportunity_delta):
-		var boundary: float = float(start_turn + offset + 1) * cycle_revolutions
-		var fraction_of_step: float = 1.0
-		if phase_delta > 0.0:
-			fraction_of_step = clampf((boundary - phase_start) / phase_delta, 0.0, 1.0)
-		var active_probability: float = firing_fraction if bool(before.running) and float(before.fuel_kg) > unusable_fuel_kg else 0.0
-		acc += active_probability
-		var fired: bool = acc >= 1.0 - FIRE_TOLERANCE
-		if fired:
-			acc = maxf(0.0, acc - 1.0)
-			next["fire_count"] = int(next.fire_count) + 1
-		var opportunity: Dictionary = {
-			"kind": "combustion_opportunity",
-			"family": model.family,
-			"cycle_revolutions": int(cycle_revolutions),
-			"time_s": dt * fraction_of_step,
-			"fraction_of_step": fraction_of_step,
-			"fired": fired,
-			"firing_fraction": active_probability,
-		}
-		opportunities.append(opportunity)
+	for opportunity: Dictionary in opportunities:
 		event_list.append(opportunity.duplicate(true))
-	next["firing_accumulator"] = acc
-	next["opportunity_count"] = int(before.opportunity_count) + opportunity_delta
 
 	if bool(before.running) and float(before.fuel_kg) <= unusable_fuel_kg:
 		next["running"] = false
@@ -559,6 +535,45 @@ static func _accepted_validated(
 		"events": event_list,
 		"opportunities": opportunities,
 	}
+
+
+## Counter-only acceptance of an unwrapped phase interval (start, end]. The
+## caller supplies its accepted interval's endpoint probability, not a spark-time model.
+## No phase wrapping or lifecycle stop decisions occur here.
+static func count_opportunities(family: String, phase_start: float, phase_end: float,
+		accumulator: float, probability: float, dt: float) -> Dictionary:
+	if family not in FAMILIES or not is_finite(phase_start) or not is_finite(phase_end) \
+			or phase_start < 0.0 or phase_end < phase_start - PHASE_TOLERANCE \
+			or not is_finite(accumulator) or accumulator < 0.0 or accumulator >= 1.0 \
+			or not is_finite(probability) or probability < 0.0 or probability > 1.0 \
+			or not is_finite(dt) or dt < 0.0:
+		return _fail("Accepted opportunity interval is malformed")
+	var cycle_revolutions: float = 1.0 if family == "glow_2t" else 2.0
+	var start_turn: int = int(floor((phase_start + PHASE_TOLERANCE) / cycle_revolutions))
+	var end_turn: int = int(floor((phase_end + PHASE_TOLERANCE) / cycle_revolutions))
+	var delta: int = end_turn - start_turn
+	if delta < 0 or delta > MAX_OPPORTUNITIES_PER_ACCEPT:
+		return _fail("Accepted phase crosses an unsupported number of opportunities; reduce the step")
+	var acc: float = accumulator
+	var fires: int = 0
+	var opportunities: Array[Dictionary] = []
+	var phase_delta: float = phase_end - phase_start
+	for offset: int in range(delta):
+		var boundary: float = float(start_turn + offset + 1) * cycle_revolutions
+		var fraction_of_step: float = 1.0
+		if phase_delta > 0.0:
+			fraction_of_step = clampf((boundary - phase_start) / phase_delta, 0.0, 1.0)
+		acc += probability
+		# A restored near-one remainder is not permission to fire a stopped source.
+		var fired: bool = probability > 0.0 and acc >= 1.0 - FIRE_TOLERANCE
+		if fired:
+			acc = maxf(0.0, acc - 1.0)
+			fires += 1
+		opportunities.append({"kind": "combustion_opportunity", "family": family,
+			"cycle_revolutions": int(cycle_revolutions), "time_s": dt * fraction_of_step,
+			"fraction_of_step": fraction_of_step, "fired": fired, "firing_fraction": probability})
+	return {ok = true, opportunity_delta = delta, fire_delta = fires,
+		firing_accumulator = acc, opportunities = opportunities}
 
 
 ## Starter rotation is owned by the caller. This command only opens the lifecycle

@@ -205,7 +205,7 @@ At J=0.5, stock coefficients are 28.6%/55.6% below the respective consistent res
 
 **F4 timing detail:** from `reserve + 1e-7 kg`, production versus connected-trial diagnostic exhaustion times are 1.763268/0.877741 ms (Stik 55AX), 1.373147/1.144313 ms (Stik FS64V), and 1.702545/0.847247 ms (Extra). Reported differences are 0.885527, 0.228833, and 0.855298 ms; displayed columns round independently. The roughly 5e−13 s event `time_error_bound_s` bounds the root bracket, not accuracy of a trajectory using the wrong trial law. Initial-flow estimates support the diagnosis but are not physical stopping-time measurements. This is separate from [A4's firing-counter finding](#glow-fuel-event-counter-defect).
 
-**F4 implementation update (2026-11-06):** the V5 glow law now uses a representable connected-trial successor in GDScript and C++, without adding fuel to physical inventory. The independent constant-flow regression locates 0.800 ms at 120/240/480 Hz; focused checks, baseline/candidate tapes and 8,046 identical native comparisons are retained in the [FUEL-12-R3 evidence](../docs/research/fuel-systems/FUEL-12/README.md#connected-main-tank-trials-fuel-12-r3-2026-11-06). Historical V4 traces remain readable; normal checkpoint restore requires the current law. A4's firing-counter defect remains separate and open. This is software verification, not full CI, complete native installation or physical qualification.
+**F4 implementation update (2026-11-06):** the V5 glow law now uses a representable connected-trial successor in GDScript and C++, without adding fuel to physical inventory. The independent constant-flow regression locates 0.800 ms at 120/240/480 Hz; focused checks, baseline/candidate tapes and 8,046 identical native comparisons are retained in the [FUEL-12-R3 evidence](../docs/research/fuel-systems/FUEL-12/README.md#connected-main-tank-trials-fuel-12-r3-2026-11-06). Historical V4 traces remain readable; normal checkpoint restore requires the current law. A4's separate firing-counter repair is recorded below. This is software verification, not full CI, complete native installation or physical qualification.
 
 ### F6 energy and reachability evidence
 
@@ -254,6 +254,8 @@ The cache default at A1 applies to every non-headless display server, including 
 - **Suggested correction:** account for opportunities on their accepted event segments, carry the deterministic accumulator, and define before/at/after-stop ordering. Preserve the accepted continuous solution and rollback; cover multiple opportunities and an event-free control.
 
 This finding establishes a lifecycle/counter error within the report. It does not establish incorrect shaft torque, fuel mass, trajectory, or audible waveform, and it excludes the separately known fuel-boundary-rounding issue. No natural full-tank exhaustion flight was run.
+
+**A4 implementation update (2026-11-06):** the V6 glow law counts committed source-mode intervals, carries the accumulator, assigns exact-boundary opportunities to the closing interval, and preserves atomic rollback. Public 55AX/FS64V/Extra fill/reset tapes retain one previously lost fire with every non-firing CSV value unchanged. The [FUEL-12-R4 evidence](../docs/research/fuel-systems/FUEL-12/README.md#accepted-combustion-counters-fuel-12-r4-2026-11-06) records before/at/after, fractional, feed-line, rotor/pickup, zero-probability and real Simulation rollback checks. Endpoint probability remains a mean-cycle approximation, not physical spark-time validation.
 
 ## 4. Physics findings and model limitations
 

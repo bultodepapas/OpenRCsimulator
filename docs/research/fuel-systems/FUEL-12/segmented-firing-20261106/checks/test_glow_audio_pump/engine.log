@@ -1,0 +1,27 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   a new revision keeps its accepted physical phase anchor
+ok   pump render snapshot excludes unrelated application data
+ok   unchanged telemetry revision drops stale physical phase counters
+ok   repeated telemetry advances oscillator through a 0.6 s main-thread stall — actual=0.300000 expected=0.300000
+ok   active AudioStreamGeneratorPlayback is available for the worker
+ok   pump starts a worker or reports its bounded synchronous fallback
+ok   pump refuses a duplicate start while its playback is active
+ok   worker fills the queue before the player resumes — status={ "running": true, "fallback": false, "primed": true, "queue_frames": 1102, "available_frames": 7089, "capacity_frames": 8191, "target_frames": 1102, "skips": 0, "rendered_blocks": 5, "rendered_frames": 1102, "published_revision": 1, "rendered_revision": 1, "phase_cycles": 0.66432350718156, "worker_error": "", "fallback_reason": "" }
+ok   generator queue stays within the 50 ms target
+ok   paused startup did not underrun — skips=0
+ok   telemetry accessor returns a detached producer snapshot
+ok   telemetry publication advances the producer revision
+ok   primed remains latched while the mixer consumes ordinary buffers
+INFO worker stall: driver=Dummy fallback=false elapsed=0.601s captured=0.557s rms=0.1908329 nonzero=13242 skips=16->64 latency=0.000s
+ok   dedicated PCM worker remains live through a 0.6 s main-thread stall — { "running": true, "fallback": false, "primed": true, "queue_frames": 1102, "available_frames": 7089, "capacity_frames": 8191, "target_frames": 1102, "skips": 64, "rendered_blocks": 45, "rendered_frames": 9918, "published_revision": 2, "rendered_revision": 2, "phase_cycles": 0.14731670448327, "worker_error": "", "fallback_reason": "" }
+ok   captured PCM during the stall is nonzero and audible — captured 0.557s, RMS 0.1908329, nonzero frames 13242
+N/A skip-free and native-duration qualification: Dummy driver is a smoke test only
+ok   paused playback stays primed without an underrun — skips=64->64
+ok   resumed playback retains a live primed pump — { "running": true, "fallback": false, "primed": true, "queue_frames": 1102, "available_frames": 7089, "capacity_frames": 8191, "target_frames": 1102, "skips": 72, "rendered_blocks": 51, "rendered_frames": 11276, "published_revision": 2, "rendered_revision": 2, "phase_cycles": 0.7166288737991, "worker_error": "", "fallback_reason": "" }
+ok   resumed playback produces audible PCM after the paused capture was drained — frames=4096 nonzero=2528 RMS=0.2053585 driver=Dummy
+ok   stop joins the worker before playback is stopped
+ok   player can create a fresh playback after a joined stop
+ok   pump starts cleanly again after stop and join
+ok   restarted pump primes without waiting on stale queue state
+22 checks, 0 failed
