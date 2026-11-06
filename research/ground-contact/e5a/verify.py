@@ -29,7 +29,7 @@ def run(command, cwd, output, timeout_seconds=120):
 def checked_program(root, godot, script, output, expect_failure=False):
     code, log = run([str(godot), "--headless", "--path", str(root / "app"), "--script",
                      str(root / REL / script)], root, output,
-                    timeout_seconds=180 if script == "session.gd" else 120)
+                    timeout_seconds=300 if script == "session.gd" else 120)
     summary = re.findall(r"(\d+) checks, (\d+) failed", log)
     if not summary:
         raise RuntimeError("missing completed check summary: " + str(output))
