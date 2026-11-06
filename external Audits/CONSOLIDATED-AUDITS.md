@@ -1,6 +1,6 @@
 # External audits — consolidated review
 
-Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits and continuations, the helicopter audit, and the Corsair flight-feel research plan. **Read this document first.** It organizes eighteen distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The eighteen source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
+Consolidated on **2026-11-06**, including the developer remediation, Apple Silicon/Metal handoffs, Extra 300 (both rounds), Corsair (both rounds) and UI/UX accessibility audits and continuations, the helicopter audit, and the Corsair flight-feel research plan. **Read this document first.** It organizes nineteen distinct source reports, merges overlapping recommendations, and preserves the distinction between reported defects, experimental optimizations, and model limitations. The nineteen source reports retain their original content under descriptive filenames in this directory; four byte-identical copies of A1 were removed.
 
 This is a synthesis of the supplied reports, not a new audit of the current working tree. Technical results below are attributed to their original source snapshots. No fix, performance gain, physical validation, or completed project gate is established by this consolidation. Current implementation status belongs to the [documentation map and owning tracks](../docs/README.md).
 
@@ -18,7 +18,7 @@ This is a synthesis of the supplied reports, not a new audit of the current work
 
 ## 1. Sources, duplicates, and chronology
 
-The labels A1–A18 identify source documents in this consolidation; they are not implementation step IDs.
+The labels A1–A19 identify source documents in this consolidation; they are not implementation step IDs.
 
 | Source | Original document | Scope and source identity |
 | --- | --- | --- |
@@ -40,10 +40,11 @@ The labels A1–A18 identify source documents in this consolidation; they are no
 | A16 | [Corsair flight-feel and realism research plan][A16] | Dated 2026-11-06; implementation references pinned to `3751e35e1cccf574c4446d21273a4d5ecaf80ddf`. Research-informed handling target, analytical sensitivities and development/validation plan, not a new defect audit or physical qualification. Prior CF findings are prerequisites; pilot accounts, manufacturer guidance, derived model values and proposed tests remain distinct. |
 | A17 | [Workshop pending-state and menu-flow audit][A17] | Dated 2026-11-06; frozen `3e652a879ab8e928fc7d0b23d8303ac5724c3be6`, historical A1–A12 ledger/prior UI reconciliation. Five findings UI3-01–05, a qualified Companions refresh case and an explicitly excluded synthetic statistics case. Headless component/running-app interaction state; no native visual, physical-controller, assistive-technology or GPU qualification. |
 | A18 | [Player journeys cognitive walkthrough][A18] | Dated 2026-11-06; reviewed `2e2e3492e67d30635cc4e727025581e2848cdf2e`. Seven imagined journeys with selected complete-app checks at verified 1920×1080 logical viewport, plus source-only routes. Inspection and wording/discoverability proposals, not participant research, seven new defects or native usability qualification. Existing concerns retain their owners. |
+| A19 | [Helicopter rotor, actuator and drivetrain research plan][A19] | Dated 2026-11-06; repository context through `d0b672b09663226ff8b8ac4f43eae8643c77a8c4`. Research synthesis with 27 selected primary references and nine proposed experiments in an external package; no experiments run or production changes in this pass. Extends existing rotorcraft literature and A15 boundaries; calculations, implementation references and future qualification are not new defects or assumed speedups. |
 
 ### Source names and duplicate removal
 
-The folder contains this consolidated document and eighteen source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
+The folder contains this consolidated document and nineteen source reports. Source contents are unchanged; only filenames were improved. The four numbered copies `Pasted markdown (1).md` through `Pasted markdown (4).md` were deleted after confirming their SHA-256 matched the retained Apple Silicon report. They contained no independent evidence.
 
 | Original filename | Retained filename |
 | --- | --- |
@@ -65,6 +66,7 @@ The folder contains this consolidated document and eighteen source reports. Sour
 | Attached `Pasted text.txt` (Corsair flight-feel research plan) | [f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md][A16] |
 | Attached `Pasted text.txt` (Workshop menu-flow audit) | [ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md][A17] |
 | Attached `Pasted text.txt` (player journeys walkthrough) | [ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md][A18] |
+| Attached `Pasted text.txt` (helicopter research plan) | [helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md][A19] |
 | `README.md` (consolidation) | `CONSOLIDATED-AUDITS.md` |
 
 ### Differences between snapshots
@@ -81,6 +83,7 @@ The folder contains this consolidated document and eighteen source reports. Sour
 | Topic | Consolidated conclusion | Evidence class |
 | --- | --- | --- |
 | Corsair continuous collision, flap transfer and presentation | A12 adds missed interior raised-track contacts (CF-05), an omitted local-flow projection in flap lift-reference transfer (CF-06), and discarded overspeed-advisory work in render flap reads (CF-07). | Accepted-tick counterexamples, production-load cross-product oracle and isolated presentation timing/parity, respectively. Separate from A9 CF-01–04; no occurrence-rate, physical-fidelity or FPS claim. |
+| Helicopter research and identification | A19 proposes independent rotor thrust/power, achieved-servo/linkage and drivetrain-energy benches around the existing kernel, then identification and justified model comparison. | Literature/tool research and analytical checks; nine experiments proposed, not executed. HX declared parameters are unvalidated, other simulators are references rather than realism rankings, and A15 optimization timings remain inconclusive. |
 | Predictable player journeys | A18 prioritizes truthful failure-setting lifetime/Restart wording, explicit save-before-calibration, shared effective launch summary and contextual startup guidance. It also retains successful detour/focus behavior. | Cognitive walkthrough: player thoughts are imagined; selected routes were exercised headlessly, other routes source-traced. No new numbered defect count or measured player confusion. |
 | Workshop pending edits and navigation | A17 reports missing Lighting draft recovery, outgoing Smoke buffers surviving Discard/load, refused navigation changing selection, disabled Cancel on invalid first edit and short-window focus loss. | UI3-01–05 are new report IDs; qualified Companions behavior used a status fixture. Preserve pending state during editing but clear it on committed authorized replacement; do not apply a blanket refresh reset. |
 | Corsair handling research and calibration | A16 proposes a precise, powerful giant RC Corsair with smooth ordinary flight and demanding approach energy/elevator management. Establish installation/input/fuel identity, resolve known defects and then identify controls, propulsion, drag and flap/elevator reserve. | Research target and analytical sensitivity, not new CF defects, measured speedup or established real-aircraft fidelity. Heavier forum builds and smaller Corsairs cannot directly calibrate the authored reference. |
@@ -489,6 +492,41 @@ At A16's snapshot, F4U uses the generic gasoline recorded bank with no radial re
 
 Numerical **`.orfl` replay does not replay audio or camera presentation**. Matched-trajectory audio comparison therefore needs an observer harness or explicitly developed presentation replay; existing replay alone cannot qualify it. No new audio recording, render comparison or performance gain was supplied here.
 
+### Helicopter research plan: A19 component evidence before complexity
+
+**Source: [A19][A19], repository context through `d0b672b`.** Develop independently testable rotor aerodynamics, achieved actuator motion and drivetrain energy around the existing kernel. Gavrilets, Johnson inflow/VRS, Walker–Tischler, ArduPilot and Rotorflight are existing foundations, not newly discovered sources. Additional datasets/methods are research proposals; no new H-series defects, executed experiment or physical HX qualification is claimed.
+
+**Rotor benchmark.** A19 proposes reproducing one geometry/operating condition set from Harris's NASA *Model Rotor Hover Performance at Low Reynolds Number*, using Appendix A tabulated data, separate fitting/held-out conditions and uncertainty-aware thrust/shaft-torque/power residuals. This validates a component method, **not HX parameters**. With area `A=pi*R²`, use `CT=T/(rho*A*(Omega*R)²)`, `CQ=Q/(rho*A*(Omega*R)²*R)` and `CP=P/(rho*A*(Omega*R)³)`; consistent `P=Q*Omega` implies `CP=CQ`. At zero RPM coefficients are undefined: retain dimensional forces/torques. Matching lift without power can misidentify droop, yaw reaction, collective/climb and power-off energy.
+
+Retain thrust-versus-collective at several RPM, torque-versus-collective, CP-versus-CT and residual/uncertainty plots. A separate NASA stand-download study motivates fixture tare and repeatability controls. Record RPM, collective, thrust, shaft torque, air conditions and electrical input **separately**; electrical input includes motor/ESC/transmission losses, not just aerodynamic power.
+
+| Scale estimate from declared, unvalidated HX configuration | A19 derived value |
+| --- | ---: |
+| Main tip speed | 153.94 m/s |
+| Main tip Reynolds number | About 575,000 |
+| Main Reynolds at 75% radius, ignoring inflow/forward speed | About 431,000 |
+| Tail tip Reynolds number | About 189,000 |
+
+These assume kinematic viscosity **1.5e−5 m²/s** and are not measurements. Main/tail section assumptions need not match. UIUC measured polars differ from coordinate files; XFOIL is proposed for attached/limited-separation exploration within a declared envelope, not deep-stall/reverse/unsteady qualification.
+
+**Aerodynamic candidate design.** Existing mean rotor, inflow, VRS/descent and ground effect should be extended only to explain measured residuals (collective transient, cross-axis response, tail authority, ground power, upright/inverted response). First build an **offline** blade-element candidate with explicit frames, rotation/inflow signs and valid polar coverage. For positive tangential flow, `phi=atan2(UP,UT)`, `alpha=theta−phi`, `dL/dD=0.5*rho*(UT²+UP²)*c*(CL/CD)*dr`, `dT=dL*cos(phi)−dD*sin(phi)` and `dQ=r*(dL*sin(phi)+dD*cos(phi))`. Integrate both force and torque; extra stations cannot repair an invalid wake closure or polar.
+
+For a future nondimensional inflow `lambda=vi/(Omega*R)`, fixed R and Omega>0 require `lambdadot=vidot/(Omega*R)−lambda*Omegadot/Omega`. Near zero RPM dimensional state is convenient. **Existing dimensional inflow is not a new defect.** NASA hingeless positive/negative-thrust damping evidence motivates separate head tests; TU Delft negative-thrust cambered axial-propeller results are methodological, not HX coefficients. Correct force sign, correct inverted response, air-driven shaft torque and realistic autorotation are four separate gates; the first does not establish the others.
+
+**Achieved actuator bench.** Proposed HX chain: pilot→FBL→mix/limits→achieved servo state→linkage→blade pitch→loads; preserve X-Cell's distinct effective-flybar surrogate. University of Minnesota instrumented hobby-servo research informs identification. An illustrative fitted law is `delta_dot=clip((delta_c−delta)/tau,−rmax,+rmax)` with travel limits and separately declared delay/sampling. Unsaturated held-target exact solution is `delta_c+(delta0−delta_c)*exp(−h/tau)`; rate-limited motion begins linear then exponential (full piecewise oracle described in external package). This is not a universal servo law.
+
+Within each integration stage, evaluate actuator derivative from stage servo state/held command, linkage from that state/azimuth and loads from stage state/airflow. The solver advances state; force evaluation must not advance servo or resample controller independently. Measure achieved angle, command, supply, load, direction and timestamps; seconds-per-60° does not identify phase, delay, backlash or loaded behavior. ArduPilot horn linearization is geometry-dependent, not universal.
+
+**Drivetrain energy bench.** Governor spool/active/hold recovery/bailout/RPM-loss states (Rotorflight reference) are distinct from clutch physics. For proposed ideal scalar lossless reduction g>0: rotor-side motor speed `v=omega_m/g`, equivalent `Je=g²*Jm`, torque `Qe=g*Qm`. With rotor-side connected inertia Jr and signed opposing aerodynamic torque Qa, define `s=Omega−v>=0`, transmitted `lambda>=0`, `s*lambda=0`, `Je*vdot=Qe−lambda`, `Jr*Omegadot=lambda−Qa`. Overrun opens clutch; equal-speed locking is admissible only with nonnegative transmission torque. Zero throttle alone is not an opening rule. Track `E=0.5*Je*v²+0.5*Jr*Omega²` against input/aero work, losses and modeled engagement. These bench equations do not replace full aircraft angular-momentum coupling. Qualify spin-up/equal-speed engagement/overrun/hold/recovery/stopping before autorotation, which additionally needs signed aero energy extraction, wake and tail-drive evidence.
+
+**Numerical sampling and contact.** Declared HX main/tail rates are **35.000/172.308 rev/s**, two-blade passage **70.000/344.615 Hz**; at 240 Hz there are **6.857/1.393 steps per revolution**, **3.429/0.696 per blade passage**. This does **not** show the averaged model is inaccurate: whole-step sampling, RK stages, controller bandwidth and state bandwidth differ. Blade-resolved tail loads would require explicit sampling/integration design. Compare 240/480/960 Hz with fixed controller/input clocks for solver studies, separate sampling experiments, converged smooth reference and wrench/trajectory/event-time/energy residuals.
+
+CVODE's grazing-root limitation (`g(t)=(t−t*)²` touches zero without sign change) illustrates why accurate integration does not prove conservative contact. Tight-Inclusion's supported point/triangle and edge/edge primitives are a method reference, not a direct guarantee for curved rotor motion/analytic terrain; bound geometry approximation, between-endpoint motion and floating error. Dense samples find counterexamples, not proof of clear space. This extends A15 H05's research direction without recounting it.
+
+**Identification and telemetry.** Identify mass/CG/inertia, servo response, linkage, rotor thrust/power, head/flapping, then closed-loop flight so FBL gains do not hide upstream errors. Walker–Tischler excitation sweeps/held-out doublets are an existing methodological foundation. Fit bounded parameters using residuals `(sim−measurement)/s_j`, with noise/tolerance-based channel scales and robust loss if justified; inspect sensitivity singular values after scaling residuals **and parameter coordinates**. Small residual does not prove identifiability. Reserve whole flights/conditions, not neighboring randomly split samples; weak parameter combinations need independent measurements, better excitation or uncertainty reporting.
+
+A19 notes recorder **`t_s` versus `loads_t_s`**, loads one step earlier after tick zero. Ignoring that at 240 Hz adds phase magnitude `360*f/240`, **30° at 20 Hz**. This is an analysis alignment requirement, **not a recorder defect**. Use demonstrated helicopter trace/checkpoint paths; this research did **not establish helicopter `.orfl` integration**. Preserve actual log times/firmware/injected references/filtering; servo commands are not measured position. Off-CG accelerometers include `omegadot×r + omega×(omega×r)`; do not fit sensor/frame mismatch into aero parameters.
+
 ## 5. Mathematical optimization register
 
 **Source: [A2][A2].** Preserve its original M01–M12 and R01–R02 experiment identifiers. Results in this section are analytical proofs under stated assumptions, source analysis, or portable numerical models. No candidate has a measured Apple-GPU speedup in this lab. Full derivations, coefficients, source links, and probe names remain in the original.
@@ -748,6 +786,22 @@ The prototype reads accepted actual flap fraction and live maximum angle without
 
 Each workload has **eight alternating pairs**, **128 calls per batch**, candidate faster in all eight. The external report also retains disabled-input cases and raw batches; the supplied summary does not provide their values. Timings include control-surface/flap/fold updates in a **synthetic imported hierarchy**, excluding remaining rendering, GPU work and physics integration. These are component savings, **not FPS gains**. Use a small shared presentation accessor; HUD/control consumers needing full advisory status must keep it. Real Corsair GLB integration, lifecycle checks and matched full-scene profiling remain qualification work. This is distinct from CF-03 build-time validation and CF-04 offline VLM reuse.
 
+### A19 research tools, kinematics and training proposals
+
+A19 proposes precalculating authoritative HX inspector geometry into a map from **achieved servo positions** to blade pitch. Compare withheld positions, combined inputs, travel limits and invalid/binding regions, then measure cost. AccuRC's documented tail mapping inspires the experiment, not an OpenRC speedup. Static kinematics must retain actuator dynamics and does not model elasticity/backlash/load effects.
+
+| Reference/tool | Proposed use and limit |
+| --- | --- |
+| HoverHere, inspected ODE at `494cf80` | State ownership, drivetrain/controller initialization, diagnostic vectors and physics/presentation separation. Shared literature means agreement is not independent physical evidence. Retain GPLv3 code and separately licensed asset terms if reused. |
+| FLOWUnsteady | Optional offline wake laboratory: reproduce documented case, study a specific question (such as tail wake exposure), establish convergence, then fit compact correction within supported envelope. Simulation table still needs aircraft evidence. Acoustic PSU-WOPWOP is a separate closed-source binary, not bundled. |
+| Project Chrono shaft clutch | Isolated asymmetric-torque constraint comparison; qualify solver, timestep, capacity and tolerances for bench. |
+| Python/NumPy/SciPy | Scaled bounded fitting, sensitivities, spectra, residual plots and convergence; tools do not establish identified parameters by themselves. |
+| UIUC/XFOIL; Rotorflight Blackbox/ArduPilot | Matched measured sections/scoped exploration; compatible real-flight identification logs with preserved frames/times/configuration. |
+| OpenRC trace/checkpoint/native-reference tools; Tight-Inclusion | Reproducible implementation checks and conservative-contact method research, within declared coverage. |
+| HELI-X/neXt/AccuRC official features | Instructor-controlled axes, recording/stick/orientation/energy feedback and component/kinematics inspection ideas. Product documentation is not an independent realism ranking. |
+
+Training proposals use visible assistance through actual control/actuator limits; position/heading RMS, time in hover region, minimum RPM, saturation time and energy loss under matched start/weather. Checkpoint repeatability requires controller/actuator/drivetrain/gust/sensor histories. Separate main/tail audio layers could follow accepted RPM/load/observer geometry with blade-passage harmonic references; recordings remain needed for perceptual accuracy. No new dependency, training mode, audio result or measured speedup is delivered by this research summary.
+
 ### Helicopter work-elimination candidates A15 O01–O02
 
 These source-local IDs are distinct from A6 O1–O6. **Neither candidate establishes a reliable speedup**, although sampled outputs match. Candidates exist only in the external audit package.
@@ -811,6 +865,12 @@ A12 separates three independently reviewable tasks: CF-05 geometric clearance/co
 A16 orders work as: identify reference installation/input/fuel/CG/observer baseline; resolve relevant known consistency defects; identify ordinary-flight response and energy; measure flap/elevator behavior; calibrate takeoff/landing contact; justify additional aerodynamic complexity; evaluate Moki audio; then experienced-pilot per-phase comparisons with telemetry and held-out cases. Its approximately 7,100-word linked plan describes **15 comparison cases** across controls, fuel/CG, trim, pitch/roll, rudder, glide/power, flap/stall/loaded turn, takeoff/landing/crosswind and pilot evaluation; only this summary is locally supplied, not the complete case protocols.
 
 Any complexity increase needs convergence evidence, for example **6/10/14 total wing strips**, comparing forces, moments and maneuvers against added cost. Follow repository baseline/exact replay/one-candidate workflow for actual physics tuning and regenerate aircraft data through its source pipeline. The proposed first investigation is a clearly identified baseline plus flap/approach/elevator comparison. **Matched real-aircraft evidence remains required for accuracy claims**; forum observations motivate tests but cannot determine unique drag, damping or stall laws. A16's checked mathematics and derived numbers are not physical validation or new implemented behavior.
+
+### A19 helicopter research sequence and gates
+
+A19 proposes **nine experiments** in the external package, organized into six work packages: (1) source-matched rotor thrust/power benchmark with held-out uncertainty/residuals; (2) achieved-servo/linkage bench with measurements/analytic checks/map errors; (3) two-speed/freewheel energy/momentum and stop-event convergence; (4) correctly aligned telemetry/identification with replayable inputs and uncertainty; (5) aerodynamic comparison improving held-out response within signed/low-speed envelope; (6) conservative contact, accepted-state parity, measured **1080p** performance and repeatable training. The complete experiment cards are not supplied locally.
+
+Measure stage evaluation, complete tick and paced rendered frame separately in ground and airborne workloads. A15's optimization timings remain inconclusive; A19 assumes no speedup. Prioritize rotor benchmark, achieved-servo bench and energy stand, preserving HX release gates and X-Cell separation. For helicopter evidence use established trace/checkpoint workflows and verify recording support before claiming `.orfl` replay; mathematical/model implementation checks do not establish matched HX physical fidelity.
 
 ### Helicopter follow-up and acceptance
 
@@ -895,7 +955,7 @@ For loading, A13 notes early `load_threaded_get()` may block and exact-beta repe
 
 ### What is supplied here
 
-This directory contains eighteen source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
+This directory contains nineteen source Markdown files and this consolidated document. The reports reference additional deliverables, but those deliverables are **not included in this directory**. Their reported results are retained as source claims; the raw experiments were not rerun or independently inspected for this consolidation.
 
 | Source | Referenced material outside this Markdown set |
 | --- | --- |
@@ -917,6 +977,11 @@ This directory contains eighteen source Markdown files and this consolidated doc
 | A16 | `F4U-CORSAIR-FLIGHT-FEEL-REALISM-PLAN-2026-11-06.md`, described as approximately 7,100 words with source research, derivations, code owners, development priorities, 15-case matrix and reproducible calculations. Only pasted summary supplied; external ChatGPT-library full plan was not inspected. Original accessible-source citations and inaccessible-forum limitations remain preserved. |
 | A17 | `OpenRC_Menu_Flow_Audit_3e652a8_2026-11-06.pdf` (12-page report) and `OpenRC_Menu_Flow_Evidence_3e652a8_2026-11-06.zip` (probes, checked logs, exact source identities, Godot research and running-app transcript). Only pasted summary supplied; linked ChatGPT-library artifacts were not inspected/replayed. |
 | A18 | `OpenRC_Player_Journeys_2026-11-06.pdf` (13-page walkthrough) and `OpenRC_Player_Journeys_Evidence_2026-11-06.zip` (application transcript/logs, final test-profile settings, source identities and reproduction guidance). Only pasted summary supplied; linked ChatGPT-library deliverables were not inspected/replayed. |
+| A19 | `OpenRC_Helicopter_Research_2026-11-06.zip`, described as full report, 27 selected primary references, nine proposed experiments, calculations and OpenRC file map. Only pasted summary supplied; external ChatGPT-library package and full experiment cards were not inspected/replayed. |
+
+### A19 evidence boundary
+
+This is literature/implementation research, with context checked through `d0b672b`, not an executed experimental campaign. Proposed experiments were not run and production source was unchanged. HX scale/frequency values derive from unvalidated configuration declarations and explicit assumptions; conditional identities and illustrative bench equations are not calibrated dynamics. Existing literature and A15 defects retain their original evidence; dimensional inflow and recorder timestamps are not new defects. Tool/product documentation provides scoped methods, not speedup or comparative realism proof. No native backend, physical HX, audio, 1080p performance or training acceptance is established. The consolidation preserves supplied claims without independently reopening external references or inspecting the archive.
 
 ### A18 evidence boundary
 
@@ -1001,7 +1066,7 @@ Failed/aborted attempts are explicitly excluded from accepted evidence: A3's ini
 
 ### Original-file SHA-256
 
-These hashes were calculated from the supplied files at intake. They identify the eighteen retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
+These hashes were calculated from the supplied files at intake. They identify the nineteen retained source reports, whose content is unchanged by renaming; they do not authenticate the external experiments. Git checkout may convert line endings: A1–A5 match their recorded hashes after CRLF→LF normalization; preserve intake hashes rather than rewriting provenance when checkout bytes differ only in line endings.
 
 | Source/files | SHA-256 |
 | --- | --- |
@@ -1023,6 +1088,7 @@ These hashes were calculated from the supplied files at intake. They identify th
 | A16 — `f4u-corsair-flight-feel-realism-research-plan-2026-11-06.md` | `28ddefeba585ccea0b512c06c19bad9d0b5e89382e6935075ab3a9c0d3db8e28` |
 | A17 — `ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md` | `0bf68e8259541a7fb9acb14c832b5bbb0ebebb73bc91c7870688b8d60f12df14` |
 | A18 — `ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md` | `fcea95473a9fc27add914878844739bd1c8271869f4533382d21f1586e22521a` |
+| A19 — `helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md` | `e7df416710fd4a9cbf4a952c8f829dc05dcb116e8cfa5ac8fc8edf4654a9d50c` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -1050,3 +1116,5 @@ These hashes were calculated from the supplied files at intake. They identify th
 [A17]: ui-ux-workshop-pending-state-menu-flow-audit-3e652a8.md
 
 [A18]: ui-ux-player-journeys-cognitive-walkthrough-2e2e349.md
+
+[A19]: helicopter-rotor-actuator-drivetrain-research-plan-d0b672b.md

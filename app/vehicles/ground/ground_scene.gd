@@ -34,9 +34,58 @@ const DamageView = preload("res://vehicles/ground/ground_damage_view.gd")
 const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
 const NitroExhaust = preload("res://vehicles/ground/nitro_exhaust.gd")
 
+
+## Adapts the scene's stopped/export-pending recording to the application exit guard.
+class DepartureRecorder extends RefCounted:
+	var _owner_ref: WeakRef
+
+	var recording: bool:
+		get:
+			var current := _session()
+			return is_instance_valid(current) and bool(current.get("recording"))
+	var recording_generation: int:
+		get:
+			var current := _session()
+			return int(current.get("recording_generation")) if is_instance_valid(current) else -1
+	var note: String:
+		get:
+			var owner := _owner()
+			if not is_instance_valid(owner):
+				return ""
+			var last_export: Dictionary = owner.get("_last_export")
+			return str(last_export.get("error", ""))
+
+	func _init(owner: Node) -> void:
+		_owner_ref = weakref(owner)
+
+	func _owner() -> Node:
+		return _owner_ref.get_ref() as Node if _owner_ref != null else null
+
+	func _session() -> Node:
+		var owner := _owner()
+		return owner.get("session") as Node if is_instance_valid(owner) else null
+
+	func has_unsaved_recording() -> bool:
+		var current := _session()
+		return is_instance_valid(current) and (bool(current.get("recording")) \
+			or bool(current.call("has_unexported_recording")))
+
+	func stop(_path := "") -> Error:
+		var owner := _owner()
+		if not is_instance_valid(owner):
+			return ERR_UNAVAILABLE
+		return OK if bool(owner.call("_finish_recording")) else ERR_CANT_CREATE
+
+	func discard_unsaved(expected_generation: int) -> bool:
+		var owner := _owner()
+		return is_instance_valid(owner) and bool(owner.call("_discard_departure_recording", expected_generation))
+
+
 signal home_requested
 var startup_error := ""
 var vehicle_id := VehicleCatalog.DEFAULT_ID
+## Set before entering the tree when AppRoot owns window-close and departure decisions.
+var departure_managed := false
 var _visual_adapter: Script
 var _vehicle_entry := {}
 var session: Node
@@ -89,6 +138,8 @@ var _previous := PackedFloat64Array()
 var _record_export_pending := false
 var _last_export := {}
 var _previous_auto_quit := true
+var _owns_auto_quit := false
+var _departure_recorder: DepartureRecorder
 var _contact_debug: MeshInstance3D
 var _render_road: Callable
 var _audio_was_paused := true
@@ -119,8 +170,10 @@ func _ready() -> void:
 	_presentation_context = World.presentation_context()
 	_initialize_driving_devices()
 	_connect_controller_registry()
-	_previous_auto_quit = get_tree().auto_accept_quit
-	get_tree().auto_accept_quit = false
+	if not departure_managed:
+		_previous_auto_quit = get_tree().auto_accept_quit
+		get_tree().auto_accept_quit = false
+		_owns_auto_quit = true
 	session = Session.new()
 	session.name = "GroundVehicleSession"
 	add_child(session)
@@ -636,8 +689,28 @@ func _process(delta: float) -> void:
 		_nitro_sound.observe(telemetry, _last_controls, session.paused, enable_audio)
 		_nitro_sound.refill()
 
+## One adapter is kept for the scene's lifetime so recovery can track its decisions.
+func get_departure_recorder() -> RefCounted:
+	if _departure_recorder == null:
+		_departure_recorder = DepartureRecorder.new(self)
+	return _departure_recorder
+
+
+## A cancelled departure leaves the car in the garage for an explicit, neutral resume.
+func begin_exit_guard() -> void:
+	if not is_instance_valid(session):
+		return
+	open_garage()
+	session.add_pause_hold("exit_guard")
+
+
+func end_exit_guard() -> void:
+	if is_instance_valid(session):
+		session.release_pause_hold("exit_guard")
+
+
 func open_garage() -> void:
-	if dashboard == null:
+	if not is_instance_valid(dashboard) or not is_instance_valid(session):
 		return
 	session.add_pause_hold("garage")
 	driver.sample({"blocked": true}, {})
@@ -732,8 +805,10 @@ func handle_action(action: String) -> void:
 		"record":
 			if session.recording:
 				_finish_recording()
-			elif not _record_export_pending:
+			elif not session.has_unexported_recording():
 				if session.start_recording():
+					_record_export_pending = false
+					_last_export = {}
 					dashboard.record_button.text = dashboard.words("Stop and save recording", "Detener y guardar grabación")
 				else:
 					dashboard.message("Recording could not start. Reset the run and try again.", "No se pudo iniciar la grabación. Reinicia el recorrido e inténtalo de nuevo.")
@@ -755,7 +830,7 @@ func handle_action(action: String) -> void:
 			else:
 				dashboard.message("State does not match this vehicle and course.", "El estado no corresponde a este vehículo y pista.")
 		"home":
-			if _finish_recording(): home_requested.emit()
+			if departure_managed or _finish_recording(): home_requested.emit()
 
 func _restore_checkpoint_file() -> bool:
 	var destination := ProjectSettings.globalize_path(checkpoint_path)
@@ -838,21 +913,44 @@ func _write_checkpoint_temp(path: String, contents: String) -> Error:
 	return error
 
 func _finish_recording() -> bool:
+	if not is_instance_valid(session):
+		return false
 	if session.recording:
 		session.stop_recording()
-		_record_export_pending = true
-	if not _record_export_pending:
+	if not session.has_unexported_recording():
+		_record_export_pending = false
+		_set_record_button_idle()
 		return true
+	_record_export_pending = true
 	var name := "%s-%d-%d" % [vehicle_id, int(Time.get_unix_time_from_system()), Time.get_ticks_msec()]
 	_last_export = session.export_recording(name)
 	if not _last_export.ok:
 		open_garage()
-		dashboard.message("Recording kept in memory: " + _last_export.error, "Grabación conservada en memoria: " + _last_export.error)
+		if is_instance_valid(dashboard):
+			dashboard.message("Recording kept in memory: " + _last_export.error, "Grabación conservada en memoria: " + _last_export.error)
 		return false
 	_record_export_pending = false
-	dashboard.record_button.text = dashboard.words("Record telemetry", "Grabar telemetría")
-	dashboard.message("Saved: " + _last_export.csv_path, "Guardado: " + _last_export.csv_path)
+	_set_record_button_idle()
+	if is_instance_valid(dashboard):
+		dashboard.message("Saved: " + _last_export.csv_path, "Guardado: " + _last_export.csv_path)
 	return true
+
+
+func _discard_departure_recording(expected_generation: int) -> bool:
+	if not is_instance_valid(session) or not session.discard_recording(expected_generation):
+		return false
+	_record_export_pending = false
+	_last_export = {}
+	_set_record_button_idle()
+	if is_instance_valid(dashboard):
+		dashboard.message("Recording discarded.", "Grabación descartada.")
+	return true
+
+
+func _set_record_button_idle() -> void:
+	if is_instance_valid(dashboard) and is_instance_valid(dashboard.record_button):
+		dashboard.record_button.text = dashboard.words("Record telemetry", "Grabar telemetría")
+
 
 func _on_recording_limit(_sample_count: int, _elapsed_seconds: float) -> void:
 	_record_export_pending = true
@@ -925,7 +1023,7 @@ func _event(event: Dictionary) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		if dashboard == null or _finish_recording(): get_tree().quit()
+		if not departure_managed and (dashboard == null or _finish_recording()): get_tree().quit()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		_focused = false
 		_shortcut_buttons.clear()
@@ -945,7 +1043,9 @@ func _exit_tree() -> void:
 	if Input.joy_connection_changed.is_connected(_native_connection_changed):
 		Input.joy_connection_changed.disconnect(_native_connection_changed)
 	UiInput.isolate_joypads()
-	get_tree().auto_accept_quit = _previous_auto_quit
+	if _owns_auto_quit:
+		get_tree().auto_accept_quit = _previous_auto_quit
+		_owns_auto_quit = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	if dashboard == null: return

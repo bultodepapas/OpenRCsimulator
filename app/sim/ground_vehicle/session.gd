@@ -91,6 +91,10 @@ var fault_reason := ""
 var pause_reason := "prepared"
 var run_valid := true
 var recording := false
+## Identifies each accepted recording for its entire lifetime, including after it stops.
+var recording_generation: int:
+	get:
+		return _recording_generation
 var frame_backlog_s := 0.0
 var slowdown_detected := false
 
@@ -124,6 +128,7 @@ var _recording_run_valid := true
 var _recording_limit_hit := false
 var _recorded_controls_sha256 := ""
 var _recording_exported := false
+var _recording_generation := 0
 var _suppress_signals := false
 var _damage = Damage.new()
 var _last_effective_controls: Dictionary = _neutral_controls()
@@ -999,6 +1004,7 @@ func start_recording() -> bool:
 		_record_sample_width = 0
 		_record_hull_contact_count = 0
 		return false
+	_recording_generation += 1
 	return true
 
 
@@ -1006,6 +1012,31 @@ func stop_recording() -> bool:
 	if not recording:
 		return false
 	_finish_recording()
+	return true
+
+
+## Stopped samples remain recoverable until an export or an explicit discard.
+func has_unexported_recording() -> bool:
+	return _has_unexported_recording()
+
+
+## A discard only applies to the stopped generation the caller explicitly chose.
+func discard_recording(expected_generation: int) -> bool:
+	if recording or expected_generation != _recording_generation or not _has_unexported_recording():
+		return false
+	_record_samples.clear()
+	_record_sample_width = 0
+	_record_hull_contact_count = 0
+	_recording_ticks = 0
+	_recording_start_tick = tick
+	_recording_end_tick = tick
+	_recording_events.clear()
+	_recording_run_valid = run_valid
+	_recording_limit_hit = false
+	_recorded_controls_sha256 = ""
+	_recording_exported = false
+	_recording_damage_start.clear()
+	_recording_damage_end.clear()
 	return true
 
 

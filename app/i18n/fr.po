@@ -9434,6 +9434,27 @@ msgstr "Plus de carburant utilisable · atterrissez maintenant"
 msgid "Fuel telemetry unavailable"
 msgstr "Télémétrie carburant indisponible"
 
+msgid "Alert motion"
+msgstr "Animation des alertes"
+
+msgid "Playful"
+msgstr "Ludique"
+
+msgid "Subtle"
+msgstr "Discrète"
+
+msgid "Reduced motion overrides this setting."
+msgstr "La réduction des mouvements prévaut sur ce réglage."
+
+msgid "Sound alerts"
+msgstr "Sons d'alerte"
+
+msgid "Alert volume"
+msgstr "Volume des alertes"
+
+msgid "Clear confirmation sound"
+msgstr "Son à la fin de l'alerte"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "DANGER"

@@ -8511,6 +8511,27 @@ msgstr "使用可能な燃料なし · すぐに着陸してください"
 msgid "Fuel telemetry unavailable"
 msgstr "燃料テレメトリーを利用できません"
 
+msgid "Alert motion"
+msgstr "アラートの動き"
+
+msgid "Playful"
+msgstr "にぎやか"
+
+msgid "Subtle"
+msgstr "控えめ"
+
+msgid "Reduced motion overrides this setting."
+msgstr "動きを減らす設定が優先されます。"
+
+msgid "Sound alerts"
+msgstr "アラート音"
+
+msgid "Alert volume"
+msgstr "アラートの音量"
+
+msgid "Clear confirmation sound"
+msgstr "アラート終了時の確認音"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "危険"

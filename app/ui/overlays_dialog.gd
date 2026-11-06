@@ -77,6 +77,9 @@ var widget_size_picker: OptionButton
 var widget_background_picker: OptionButton
 var session_scope_picker: OptionButton
 var warning_limit_picker: OptionButton
+var warning_motion_picker: OptionButton
+var warning_volume_slider: HSlider
+var warning_volume_value: Label
 var warning_switches := {}
 var switches := {}
 var done_button: Button
@@ -323,6 +326,17 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	_alert_switch(alerts_page, "warning_energy", tr("Energy advisories"))
 	_alert_switch(alerts_page, "warning_status", tr("Status notices"))
 	_alert_switch(alerts_page, "warning_training", tr("Flight training cues"))
+	warning_motion_picker = _picker(alerts_page, tr("Alert motion"), "WarningMotion")
+	warning_motion_picker.accessibility_name = tr("Alert motion")
+	warning_motion_picker.tooltip_text = tr("Reduced motion overrides this setting.")
+	for motion_label: String in ["Playful", "Subtle", "Off"]:
+		warning_motion_picker.add_item(tr(motion_label))
+	warning_motion_picker.item_selected.connect(func(index: int) -> void:
+		if not _syncing:
+			manager.set_warning_option("warning_motion", Settings.WARNING_MOTIONS[index]))
+	_alert_switch(alerts_page, "warning_sound", tr("Sound alerts"))
+	_warning_volume_row(alerts_page)
+	_alert_switch(alerts_page, "warning_clear_sound", tr("Clear confirmation sound"))
 	if flight != null and flight.has_method("set_latency_marker_enabled"):
 		latency_switch = CheckBox.new()
 		latency_switch.name = "LatencyMarker"
@@ -365,7 +379,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 func _ready() -> void:
 	_resize_layout()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
-		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker, widget_size_picker, widget_background_picker, session_scope_picker, warning_limit_picker]:
+		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker, widget_size_picker, widget_background_picker, session_scope_picker, warning_limit_picker, warning_motion_picker]:
 			picker.get_popup().force_native = true # as the time-of-day dialog: avoids embedded-popup teardown errors
 	preset_picker.grab_focus.call_deferred()
 
@@ -438,6 +452,10 @@ func _sync() -> void:
 	compact_switch.set_pressed_no_signal(bool(settings.get("widget_compact", Settings.DEFAULT_WIDGET_COMPACT)))
 	session_scope_picker.select(1 if settings.get("session_stats_scope", "all") == "aircraft" else 0)
 	warning_limit_picker.select(Settings.WARNING_LIMITS.find(int(settings.get("warning_limit", Settings.WARNING_DEFAULTS.warning_limit))))
+	warning_motion_picker.select(Settings.WARNING_MOTIONS.find(str(settings.get("warning_motion", Settings.WARNING_DEFAULTS.warning_motion))))
+	var volume := float(settings.get("warning_volume", Settings.WARNING_DEFAULTS.warning_volume))
+	warning_volume_slider.set_value_no_signal(volume)
+	warning_volume_value.text = "%d%%" % roundi(volume * 100.0)
 	for key: String in warning_switches:
 		warning_switches[key].set_pressed_no_signal(bool(settings.get(key, Settings.WARNING_DEFAULTS[key])))
 	for id: String in Settings.IDS:
@@ -460,6 +478,37 @@ func _alert_switch(column: VBoxContainer, key: String, label_text: String) -> vo
 			manager.set_warning_option(key, on))
 	column.add_child(box)
 	warning_switches[key] = box
+
+
+func _warning_volume_row(column: VBoxContainer) -> void:
+	var row := BoxContainer.new()
+	_picker_rows.append(row)
+	row.add_theme_constant_override("separation", 12)
+	column.add_child(row)
+	var title := Widgets.label(tr("Alert volume"), "SecondaryLabel", false, false)
+	title.custom_minimum_size.x = 220
+	row.add_child(title)
+	var value_row := HBoxContainer.new()
+	value_row.add_theme_constant_override("separation", 12)
+	value_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(value_row)
+	warning_volume_slider = HSlider.new()
+	warning_volume_slider.name = "WarningVolume"
+	warning_volume_slider.min_value = 0.0
+	warning_volume_slider.max_value = 1.0
+	warning_volume_slider.step = 0.01
+	warning_volume_slider.custom_minimum_size.x = 180.0
+	warning_volume_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	warning_volume_slider.accessibility_name = tr("Alert volume")
+	warning_volume_slider.tooltip_text = tr("Alert volume")
+	value_row.add_child(warning_volume_slider)
+	warning_volume_value = Widgets.label("", "SecondaryLabel", false, false)
+	warning_volume_value.custom_minimum_size.x = 52.0
+	value_row.add_child(warning_volume_value)
+	warning_volume_slider.value_changed.connect(func(value: float) -> void:
+		warning_volume_value.text = "%d%%" % roundi(value * 100.0)
+		if not _syncing:
+			manager.set_warning_option("warning_volume", value))
 
 
 func _nearest_opacity_index(opacity: float) -> int:

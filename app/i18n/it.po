@@ -9287,6 +9287,27 @@ msgstr "Carburante utilizzabile esaurito · atterra subito"
 msgid "Fuel telemetry unavailable"
 msgstr "Telemetria del carburante non disponibile"
 
+msgid "Alert motion"
+msgstr "Animazione degli avvisi"
+
+msgid "Playful"
+msgstr "Vivace"
+
+msgid "Subtle"
+msgstr "Discreta"
+
+msgid "Reduced motion overrides this setting."
+msgstr "La riduzione del movimento prevale su questa impostazione."
+
+msgid "Sound alerts"
+msgstr "Suoni degli avvisi"
+
+msgid "Alert volume"
+msgstr "Volume degli avvisi"
+
+msgid "Clear confirmation sound"
+msgstr "Suono alla fine dell'avviso"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "PERICOLO"

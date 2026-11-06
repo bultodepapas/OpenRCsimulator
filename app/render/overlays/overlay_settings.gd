@@ -20,9 +20,12 @@ const WIDGET_OPACITY_MAX := 1.0
 const DEFAULT_WIDGET_COMPACT := false
 ## Alert choices are optional so old [hud] preferences keep their exact shape.
 const WARNING_LIMITS := [1, 3, 5]
+const WARNING_MOTIONS := ["playful", "subtle", "off"]
 const WARNING_DEFAULTS := {
 	warning_detail = true, warning_limit = 3, warning_navigation = true,
 	warning_energy = true, warning_status = true, warning_training = false,
+	warning_motion = "playful", warning_sound = true, warning_volume = 0.55,
+	warning_clear_sound = true,
 }
 const PRESET_ORDER := ["off", "pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "training"]
 const PRESETS := {
@@ -77,10 +80,7 @@ static func validate(value: Variant) -> Dictionary:
 		out.session_stats_scope = statistics_scope
 	for key: String in WARNING_DEFAULTS:
 		var option: Variant = value.get(key)
-		if key == "warning_limit":
-			if typeof(option) == TYPE_INT and option in WARNING_LIMITS:
-				out[key] = option
-		elif typeof(option) == TYPE_BOOL:
+		if valid_warning_option(key, option):
 			out[key] = option
 	# These are optional so legacy settings keep their exact shape. Validate them before a preset returns early.
 	var raw_positions: Variant = value.get("positions")
@@ -110,6 +110,19 @@ static func validate(value: Variant) -> Dictionary:
 			if id in shown:
 				out.visible.append(id)
 	return out
+
+
+## Shared by loading and direct UI edits. Invalid edits must not replace accepted settings.
+static func valid_warning_option(key: String, value: Variant) -> bool:
+	if not WARNING_DEFAULTS.has(key): return false
+	match key:
+		"warning_limit":
+			return typeof(value) == TYPE_INT and value in WARNING_LIMITS
+		"warning_motion":
+			return typeof(value) == TYPE_STRING and value in WARNING_MOTIONS
+		"warning_volume":
+			return _is_finite_number(value) and float(value) >= 0.0 and float(value) <= 1.0
+	return typeof(value) == TYPE_BOOL
 
 
 ## The preset whose overlay set equals `ids`, or "custom".

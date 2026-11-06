@@ -9262,6 +9262,27 @@ msgstr "Доступное топливо исчерпано · садитесь
 msgid "Fuel telemetry unavailable"
 msgstr "Данные о топливе недоступны"
 
+msgid "Alert motion"
+msgstr "Анимация предупреждений"
+
+msgid "Playful"
+msgstr "Яркая"
+
+msgid "Subtle"
+msgstr "Сдержанная"
+
+msgid "Reduced motion overrides this setting."
+msgstr "Снижение анимации имеет приоритет над этой настройкой."
+
+msgid "Sound alerts"
+msgstr "Звуки предупреждений"
+
+msgid "Alert volume"
+msgstr "Громкость предупреждений"
+
+msgid "Clear confirmation sound"
+msgstr "Звук окончания предупреждения"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "ОПАСНОСТЬ"

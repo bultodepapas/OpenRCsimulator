@@ -8448,6 +8448,27 @@ msgstr "RC 赛道"
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "跑道北侧的 RC 赛车土路赛道，包含跳台、倾斜弯道和护栏。它是实体的：机轮会在起伏上滚动，机身也可能撞上它。自动模式在独立显卡且场景细节为高或极高时开启。下次飞行时生效。"
 
+msgid "Alert motion"
+msgstr "警报动效"
+
+msgid "Playful"
+msgstr "活泼"
+
+msgid "Subtle"
+msgstr "轻微"
+
+msgid "Reduced motion overrides this setting."
+msgstr "“减少动态效果”优先于此设置。"
+
+msgid "Sound alerts"
+msgstr "警报声音"
+
+msgid "Alert volume"
+msgstr "警报音量"
+
+msgid "Clear confirmation sound"
+msgstr "警报解除提示音"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "危险"

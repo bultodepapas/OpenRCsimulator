@@ -8058,6 +8058,27 @@ msgstr "Matas de hierba, trébol y flores silvestres a ambos lados de la pista. 
 msgid "RC circuit"
 msgstr "Circuito RC"
 
+msgid "Alert motion"
+msgstr "Animación de las alertas"
+
+msgid "Playful"
+msgstr "Animada"
+
+msgid "Subtle"
+msgstr "Sutil"
+
+msgid "Reduced motion overrides this setting."
+msgstr "El movimiento reducido prevalece sobre este ajuste."
+
+msgid "Sound alerts"
+msgstr "Sonidos de alerta"
+
+msgid "Alert volume"
+msgstr "Volumen de las alertas"
+
+msgid "Clear confirmation sound"
+msgstr "Sonido al finalizar la alerta"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "PELIGRO"

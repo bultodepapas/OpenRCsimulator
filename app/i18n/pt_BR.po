@@ -9289,6 +9289,27 @@ msgstr "Circuito RC"
 msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
 msgstr "O circuito de terra para carros RC ao norte da pista, com saltos, curvas inclinadas e barreiras. Ele é físico: as rodas rolam sobre o relevo e o avião pode colidir com ele. Automático o ativa com uma GPU dedicada e detalhe de cena Alto ou Extremo. Aplica-se no próximo voo."
 
+msgid "Alert motion"
+msgstr "Animação dos alertas"
+
+msgid "Playful"
+msgstr "Animada"
+
+msgid "Subtle"
+msgstr "Sutil"
+
+msgid "Reduced motion overrides this setting."
+msgstr "A redução de movimento tem prioridade sobre esta opção."
+
+msgid "Sound alerts"
+msgstr "Sons de alerta"
+
+msgid "Alert volume"
+msgstr "Volume dos alertas"
+
+msgid "Clear confirmation sound"
+msgstr "Som ao encerrar o alerta"
+
 # HUD-09-R1: prioritized glass flight alerts.
 msgid "DANGER"
 msgstr "PERIGO"
