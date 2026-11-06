@@ -28,6 +28,7 @@ const MAX_ROWS := 4096
 const MAX_DIAGNOSTIC_TICKS := 432000
 const CHECKPOINT_TICKS := 6000
 const DWELL_USEC := 2_500_000
+const AUDIO_RETIRE_TIMEOUT_USEC := 250_000
 const FORCED_OPTIONS := {"aircraft": "jensen-das-ugly-stik-60", "start": "airborne",
 	"rates": "full", "weather": "calm", "landscape": "club_field", "companions": "0",
 	"physics-backend": "gdscript_reference"}
@@ -878,7 +879,60 @@ func _write_receipt_and_exit() -> void:
 	file.close()
 	print("SUSTAINED_FLIGHT_COMPLETE complete=", valid, " timing=", timing_complete, " observer_off_control=", control_complete,
 		" ticks=", sealed_tick, " receipt=", receipt_path)
-	quit(0 if (valid or control_complete) and error == OK else 1)
+	var exit_code := 0 if (valid or control_complete) and error == OK else 1
+	if is_instance_valid(observer):
+		observer.set_process(false) # The receipt is sealed; do not finalize it again.
+	call_deferred("_retire_flight_and_quit", exit_code)
+
+
+## Observe currently exposed player playbacks without extending their lifetime.
+## A player may own other server-side playbacks, so this is not a leak census.
+func _collect_audio_playbacks(node: Node, playbacks: Array[WeakRef]) -> void:
+	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:
+		if bool(node.call("has_stream_playback")):
+			var playback: Variant = node.call("get_stream_playback")
+			if playback is AudioStreamPlayback:
+				playbacks.append(weakref(playback))
+	for child: Node in node.get_children():
+		_collect_audio_playbacks(child, playbacks)
+
+
+func _remaining_audio_playbacks(playbacks: Array[WeakRef]) -> int:
+	var remaining := 0
+	for playback: WeakRef in playbacks:
+		if playback.get_ref() != null:
+			remaining += 1
+	return remaining
+
+
+## Retire the flight only after its frame and health receipts are finalized.
+## The wall-time bound is checked once per process frame and can overshoot if
+## frame delivery stalls. Preserve the capture's original exit code.
+func _retire_flight_and_quit(exit_code: int) -> void:
+	var playbacks: Array[WeakRef] = []
+	if is_instance_valid(scene):
+		_collect_audio_playbacks(scene, playbacks)
+		if scene.get_parent() == root:
+			root.remove_child(scene) # Runs the production flight/audio exit hooks.
+		scene.queue_free()
+		scene = null
+	if is_instance_valid(observer):
+		observer.queue_free()
+		observer = null
+	var started := Time.get_ticks_usec()
+	await process_frame # Allow queued scene and observer frees even without playbacks.
+	var remaining := _remaining_audio_playbacks(playbacks)
+	while remaining > 0 and Time.get_ticks_usec() - started < AUDIO_RETIRE_TIMEOUT_USEC:
+		await process_frame
+		remaining = _remaining_audio_playbacks(playbacks)
+	var elapsed := Time.get_ticks_usec() - started
+	var status := "timeout" if remaining > 0 else "observed_released"
+	print("SUSTAINED_FLIGHT_AUDIO_TEARDOWN status=", status, " driver=", AudioServer.get_driver_name(),
+		" tracked=", playbacks.size(), " pending=", remaining, " elapsed_usec=", elapsed,
+		" timeout_usec=", AUDIO_RETIRE_TIMEOUT_USEC)
+	if remaining > 0:
+		push_warning("Sustained flight audio teardown timed out with %d observed playback(s) pending" % remaining)
+	quit(exit_code)
 
 
 func _fail_start(reason: String) -> void:

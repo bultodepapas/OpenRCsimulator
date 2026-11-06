@@ -389,6 +389,13 @@ focus, changed input/physics ownership and missing accepted ticks. The frame
 collector separately checks drawability and render progress. The fixture stays
 alive for at least 2.5 seconds after sealing the frame report so the 1 Hz resource
 sampler can bracket its endpoint; verify the actual clock alignment afterward.
+After writing the health receipt, the fixture detaches and frees the flight, then
+waits up to 250 ms (checked once per process frame) for weakly observed audio
+playbacks to retire. `SUSTAINED_FLIGHT_AUDIO_TEARDOWN` reports `observed_released`
+or `timeout`; a timeout also emits a warning. The observations cover at most the
+playback exposed by each player, not every server-owned object, and do not prove
+the process leak-free. Teardown follows timing and keeps the capture's exit code;
+an outer runner may separately treat warnings as errors.
 Predeclare the circuit envelope and inspect the retained 1 Hz trajectory over
 the measured interval. Endpoint health alone cannot establish the whole flight.
 
