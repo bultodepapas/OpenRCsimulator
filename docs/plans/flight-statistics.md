@@ -321,6 +321,8 @@ The full debug-bridge smoke also passed: 28 steps, seeded UI exploration, repeat
 
 UI-FS-08-R1 (2026-10-27) lowers the per-tick observer cost without changing any output: the adapter skips gear-compression terrain samples above the contact law's no-touch bound, and the detector decides speed medians and stability from natively sorted packed copies. Samples, events and snapshots are bytewise equal in paired real-session runs; `sample()` −30% in flight, `observe()` −65%. [Evidence](../research/flight-statistics/UI-FS-08-R1/README.md).
 
+UI-FS-08-R2 (2026-11-06) corrects external audit F3: the observer now uses the session's composed ground and maximum height, including the RC circuit, and follows accepted lake/track replacements. The earlier R1 equivalence evidence did not cover raised circuit terrain. [Regression and scope](../research/flight-statistics/UI-FS-08-R1/README.md#ui-fs-08-r2--composed-terrain-correction-2026-11-06); physics laws and stored historical statistics are unchanged.
+
 UI-FS-03 checkpoint scheduling (2026-11-01): a controlled pending writer reproduced a second automatic commit immediately after the first five-second checkpoint. Periodic requests now use the in-flight snapshot's time while it is pending; event, pause and retry requests remain independent, and another five simulated seconds during a long write still requests a follow-up. The checked lifecycle test passed 73 checks, including 17 controlled scheduler assertions and byte-identical observed/unobserved physics state and checkpoints; the writer test passed 18, storage passed 148, and counter resets passed 86. This establishes the scheduling behavior, not a measured frame-rate improvement or large-history qualification.
 
 ## 9. Risks and decisions
