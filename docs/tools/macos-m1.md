@@ -109,8 +109,16 @@ set -euo pipefail
 mkdir "tmp/$M1_TASK"
 printf '%s\n' "$M1_COMMIT" > "tmp/$M1_TASK/source-head.txt"
 git status --short > "tmp/$M1_TASK/source-status.txt"
+# info/attributes overrides committed rules; refuse it rather than changing the developer's configuration.
+M1_INFO_ATTRIBUTES="$(git rev-parse --git-path info/attributes)"
+if test -s "$M1_INFO_ATTRIBUTES"; then
+  echo "Nonempty info/attributes: use an isolated repository export." >&2
+  exit 1
+fi
+: > "tmp/$M1_TASK/empty-attributes"
 m1ssh "mkdir -p /Users/gius/OpenRC-m1-work && mkdir '$M1_WORK'"
-git -c core.autocrlf=false -c core.eol=lf -c tar.umask=0022 \
+GIT_ATTR_NOSYSTEM=1 git -c core.attributesFile="$PWD/tmp/$M1_TASK/empty-attributes" \
+  -c core.autocrlf=false -c core.eol=lf -c tar.umask=0022 \
   archive --format=tar "$M1_COMMIT" | m1ssh "tar -xf - -C '$M1_WORK'"
 scp -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
   "tmp/$M1_TASK/source-head.txt" "$M1_HOST:$M1_WORK/source-head.txt"
@@ -119,7 +127,8 @@ scp -i "$M1_KEY" -o IdentitiesOnly=yes -o BatchMode=yes -o UpdateHostKeys=no \
 
 This transfers tracked committed contents without ignored Linux `.godot`, `.tools`,
 virtual environments, credentials or capture outputs. It excludes uncommitted and
-untracked changes. For a dirty candidate, transfer only reviewed changes into
+untracked changes. Global and system attributes are disabled for this export;
+nonempty repository-local override attributes cause an early refusal. For a dirty candidate, transfer only reviewed changes into
 your new task directory and retain its diff and file hashes; identify the actual
 bytes tested. A failed transfer leaves a partial directory: inspect it and use a
 new task ID for a fresh attempt.
