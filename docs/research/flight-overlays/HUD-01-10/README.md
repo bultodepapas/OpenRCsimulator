@@ -974,3 +974,68 @@ Final SHA-256: `warnings_bar.gd` = `f033075500e0fc83e91d1b173a6e8a6bac404e80ae52
 `alert_audio.gd` = `a00c33753c72187977f46768727f3732a1df440e553f7e4a55ceab26856c133c`;
 `overlay_manager.gd` = `15ba9e53047ddb18dc640477dd092ab75ff0e305b182a0edd8fa981d023377fe`.
 Full CI, other renderers/hardware and perceptual audio preference remain unqualified by this focused pass.
+
+### Alert callback efficiency (2026-11-06, HUD-09-R4)
+
+The HUD-09-R3 candidate was preserved before optimization in
+`tmp/alert-efficiency-HUD09R4/reference/`, with `baseline-hashes.json`. Baseline warning/audio/manager hashes
+are the R3 hashes above. The [focused benchmark](../../../../research/flight-overlays/bench_alerts.gd) compares
+those five copied alert scripts against the candidate in one process; other app dependencies are shared.
+Only preload paths are rewritten in temporary reference copies. The original copies are checked against
+the independently retained manifest, and both source sets are checked again after measurement.
+
+The changes remove work after the rail has already settled: repeat cleanup performs no shader-uniform writes
+or card-pool scan. Styles are immutable and reused by severity/opacity; unchanged survivors keep their copy
+and style state. Each card still owns its mutable material. Sweep math is computed once per step and touches
+only active cards and an attached summary. A retiring summary can no longer be relit by a subsequent sweep.
+Selection is cached by a detached raw-code array and the four category flags. Accepted battery/fuel/training
+observers still run every sample. Audio validates mute/time/rewind before its stable-active fast path; empty
+input continues through clear timing, and the first retirement still stops playback immediately.
+
+Matched native result: Windows / Godot 4.8-beta2 / OpenGL Compatibility / RTX 3090 (driver 617.42), actual
+1920×1080 viewport. Three reference/candidate/candidate/reference rounds use 64 warmup calls, then eight
+32-call batches per group. Values below are medians of per-call **batch means**, excluding deferred layout,
+drawing, GPU completion and audio mixing; their recorded p95s are also batch-mean statistics. They are not
+frame times or whole-flight FPS. Shared-host background activity caused visible timing variation.
+
+| Alert callback workload | Reference µs/call | Candidate µs/call | Change |
+| --- | ---: | ---: | ---: |
+| Empty | 39.375 | 37.094 | −5.8% |
+| Three steady alerts | 49.125 | 37.313 | −24.0% |
+| Three alerts with sound disabled | 28.250 | 33.219 | +17.6%; inconclusive in this run |
+| Settled preview | 28.688 | 18.438 | −35.7% |
+| Disabled after warming a ten-card pool | 33.313 | 17.281 | −48.1% |
+| Repeated three/four-alert changes | 1051.344 | 871.313 | −17.1% |
+| Optical sweep update | 3.094 | 2.219 | −28.3% |
+
+The changing-rail row is a back-to-back stress workload, not normal 10 Hz flight usage. Native receipts and
+raw distributions: `tmp/alert-efficiency-HUD09R4/native-abba/`. The muted case had one paired round regress
+12.5% while two improved 17.8–19.1%; the aggregate was therefore not accepted as a reliable direction.
+One targeted repeat used `--only=muted_three --calls=512` to reduce short-batch noise. It measured
+**34.574 → 28.826 µs/call (−16.6%)**, with all three paired rounds improving 12.4–20.2%.
+That separate receipt is `native-muted-longer/`; both runs are retained. The callback savings are small
+absolute costs at the normal refresh rate and do not establish a full-game performance gain.
+
+The same native run compared **24 static image pairs** across English/Spanish, translucent/opaque glass,
+limits 1/3/5 and white/black backgrounds. Every pair was byte-identical. Captures also assert actual 1080p
+dimensions, visible populated cards/overflow, on-screen rectangles and pixels differing from the backdrop,
+so two blank frames cannot satisfy parity. The shader and animation durations were unchanged. No images
+were retained for passing pairs; the fixture saves diagnostic images only on a mismatch.
+
+**554 focused checks passed:** motion 42, audio 51, new efficiency boundaries 27, feedback 16, manager 222,
+settings 89, real-fuel path 25, policy 33 and rendered presentation 49. Coverage includes unchanged-code
+training dwell/clear, accepted pack alarms and real fuel exhaustion, repeated-empty all-clear timing, mutable
+input arrays, filtering, reset/rewind/pause/reopen, locale, accessibility after reuse, independent materials,
+opaque toggles and bounded style caches. The existing rendered contrast/transmission checks still pass.
+GOOD ENEMY review found no confirmed cache/lifecycle regression. Individual receipts use
+`tmp/alert-efficiency-HUD09R4/checks-{bar,enemy}/` and `tmp/godot-checks/alert-efficiency-*`.
+
+The repeated WASAPI fixture (`native-audio/`) still emits info/caution/danger/cleared, with 48 kHz stereo
+peak **0.2474**, RMS **0.00711** and **101568 nonzero samples**; Master mute again produces exact digital
+silence. Mixer capture does not establish speaker preference or output latency. `summary.json` retains the
+measurements, paired-round changes, check inventory and source identities. No assets/dependencies were added.
+
+Final SHA-256: `warnings_bar.gd` = `2e6bd011246bce7b466b1a6caad26c4f303062f49d872c39fcf59f4562706585`;
+`alert_audio.gd` = `a63f8eb55bb4b8514c2ef479d04c50d5d1d0f80f35b3a2e79a1a65cf1d87602b`;
+`overlay_manager.gd` = `986e3fdd3fc35181f0490731169f0ecf526d5234e0902da2ebde63cc29f8e546`.
+Full CI, whole-flight frame-time/memory budgets, other renderers and other hardware remain separate gates.

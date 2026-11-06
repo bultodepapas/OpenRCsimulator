@@ -216,7 +216,7 @@ func _atmosphere_flow() -> void:
 	dialog._on_preset_selected(8)
 	_check("Cool dense preset is appended after the existing six presets",
 		dialog._base_config == WeatherSettings.preset("cool-dense")
-		and dialog.preset_picker.get_item_text(8) == "Cool dense air")
+		and dialog.preset_picker.get_item_text(8) == "Cool dense air · Wind + Atmosphere")
 	await _apply(dialog)
 	_check("Cool dense preset commits", Preferences.load_from(PREFS).weather_config == WeatherSettings.preset("cool-dense"))
 

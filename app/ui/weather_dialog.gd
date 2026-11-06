@@ -156,7 +156,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 
 	var preset_row: HBoxContainer = HBoxContainer.new()
 	preset_row.add_theme_constant_override("separation", 12)
-	preset_row.add_child(_label("Wind preset", "SecondaryLabel"))
+	preset_row.add_child(_label("Conditions", "SecondaryLabel"))
 	preset_picker = OptionButton.new()
 	preset_picker.name = "WeatherPreset"
 	preset_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -353,7 +353,10 @@ func _fill_presets() -> void:
 	preset_picker.clear()
 	preset_picker.add_item(tr("Custom"))
 	for entry: Dictionary in WeatherSettings.presets():
-		preset_picker.add_item(tr(entry.label))
+		var caption: String = tr(entry.label)
+		if entry.get("changes_atmosphere", false):
+			caption += " · " + tr("Wind") + " + " + tr("Atmosphere")
+		preset_picker.add_item(caption)
 	preset_picker.select(mini(selected, preset_picker.item_count - 1))
 
 
@@ -469,7 +472,7 @@ func _update_scroll_height() -> void:
 		tab_scroll.custom_minimum_size.y = target_height
 
 
-func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
+func _set_fields(config: Dictionary, selected_preset: int = 0, replace_atmosphere: bool = true) -> void:
 	_setting_fields = true
 	_base_config = config.duplicate(true)
 	_initial_text.clear()
@@ -500,20 +503,21 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 	turbulence_enabled.set_pressed_no_signal(_initial_turbulence_enabled)
 	var source_format: String = String(_base_config.get("format", ""))
 	spatial_controls.set_source(_base_config.get("spatial_wind"), source_format == WeatherSettings.SPATIAL_FORMAT)
-	_atmosphere_source_config = _base_config.duplicate(true) if source_format in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT] \
-		else WeatherSettings.upgrade_atmosphere(_base_config)
-	_initial_atmosphere_mode = String(_atmosphere_source_config.get("atmosphere_mode", "reference"))
-	_atmosphere_touched = false
-	_initial_atmosphere_text.clear()
-	for key: String in ATMOSPHERE_EDITED_KEYS:
-		var atmosphere_text: String = _format_number(float(_atmosphere_source_config[key]))
-		var atmosphere_edit: LineEdit = atmosphere_inputs[key]
-		atmosphere_edit.text = atmosphere_text
-		_initial_atmosphere_text[key] = atmosphere_text
-		_sync_slider_from_text(atmosphere_sliders[key], atmosphere_text)
-	atmosphere_mode_picker.select(_atmosphere_mode_index(_initial_atmosphere_mode))
-	_update_atmosphere_controls()
-	_update_atmosphere_preview()
+	if replace_atmosphere:
+		_atmosphere_source_config = _base_config.duplicate(true) if source_format in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT] \
+			else WeatherSettings.upgrade_atmosphere(_base_config)
+		_initial_atmosphere_mode = String(_atmosphere_source_config.get("atmosphere_mode", "reference"))
+		_atmosphere_touched = false
+		_initial_atmosphere_text.clear()
+		for key: String in ATMOSPHERE_EDITED_KEYS:
+			var atmosphere_text: String = _format_number(float(_atmosphere_source_config[key]))
+			var atmosphere_edit: LineEdit = atmosphere_inputs[key]
+			atmosphere_edit.text = atmosphere_text
+			_initial_atmosphere_text[key] = atmosphere_text
+			_sync_slider_from_text(atmosphere_sliders[key], atmosphere_text)
+		atmosphere_mode_picker.select(_atmosphere_mode_index(_initial_atmosphere_mode))
+		_update_atmosphere_controls()
+		_update_atmosphere_preview()
 	if preset_picker != null:
 		preset_picker.select(selected_preset)
 	if error_label != null:
@@ -575,7 +579,25 @@ func _on_preset_selected(index: int) -> void:
 	var entries: Array[Dictionary] = WeatherSettings.presets()
 	var preset_index: int = index - 1
 	if preset_index >= 0 and preset_index < entries.size():
-		_set_fields(entries[preset_index].config, index)
+		var entry: Dictionary = entries[preset_index]
+		var replace_atmosphere: bool = entry.get("changes_atmosphere", false)
+		var config: Dictionary = entry.config if replace_atmosphere else _wind_preset_config(entry.config)
+		_set_fields(config, index, replace_atmosphere)
+
+
+## Merge only the accepted air into the new wind base; leave the live atmosphere
+## controls and their precision/dirty baselines intact, including invalid input.
+func _wind_preset_config(config: Dictionary) -> Dictionary:
+	var result: Dictionary = config.duplicate(true)
+	var source_format: String = _base_config.get("format", "")
+	if source_format in [WeatherSettings.COLUMN_FORMAT, WeatherSettings.SPATIAL_FORMAT]:
+		result = WeatherSettings.upgrade_column(result)
+	elif source_format == WeatherSettings.ATMOSPHERE_FORMAT:
+		result = WeatherSettings.upgrade_atmosphere(result)
+	if result.get("format") in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT, WeatherSettings.SPATIAL_FORMAT]:
+		for key: String in WeatherSettings.ATMOSPHERE_KEYS:
+			result[key] = _atmosphere_source_config[key]
+	return result
 
 
 func _on_field_changed(_text: String, _key: String) -> void:

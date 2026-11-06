@@ -182,6 +182,8 @@ static func validate(raw: Variant) -> Dictionary:
 
 
 ## Calm-first presets are authored practice settings, not measurements of a particular flying site.
+## Only entries marked changes_atmosphere replace air in the Conditions editor.
+## preset() still returns the complete authored weather for explicit CLI/scenario use.
 static func presets() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	out.append({ id = "calm", label = "Calm", config = defaults() })
@@ -197,12 +199,12 @@ static func presets() -> Array[Dictionary]:
 		"format": TURBULENCE_FORMAT, "speed_mps": 3.0, "from_deg": 270.0,
 		"turbulence_rms_mps": [0.6, 0.6, 0.4], "turbulence_tau_s": 2.0, "turbulence_seed": 20261009,
 	}) })
-	out.append({id = "hot-high", label = "Hot and high", config = upgrade_atmosphere(defaults(), {
+	out.append({id = "hot-high", changes_atmosphere = true, label = "Hot and high", config = upgrade_atmosphere(defaults(), {
 		atmosphere_mode = "custom", field_elevation_m = 1500.0, temperature_c = 35.0, relative_humidity_pct = 50.0})})
-	out.append({id = "cool-dense", label = "Cool dense air", config = upgrade_atmosphere(defaults(), {
+	out.append({id = "cool-dense", changes_atmosphere = true, label = "Cool dense air", config = upgrade_atmosphere(defaults(), {
 		atmosphere_mode = "custom", temperature_c = 5.0})})
 	out.append({id = "gentle-practice", label = "Gentle breeze", config = GENTLE_PRACTICE.duplicate(true)})
-	out.append({id = "standard-column", label = "Standard dry ISA column", config = upgrade_column(defaults(), {
+	out.append({id = "standard-column", changes_atmosphere = true, label = "Standard dry ISA column", config = upgrade_column(defaults(), {
 		atmosphere_mode = "standard_column", field_elevation_m = 0.0, temperature_c = 15.0,
 		qnh_hpa = 1013.25, relative_humidity_pct = 0.0})})
 	for entry: Dictionary in SpatialPresets.entries():

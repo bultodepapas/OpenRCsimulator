@@ -1,5 +1,6 @@
 ## HUD-09-R4: matched alert callback timing and optional rendered parity.
 ## --reference-dir=<R3 source copies> --out=<fresh absolute directory> [--render-check]
+## Optional --only=<scenario> --calls=<32..2048> isolate a noisy case with longer batches.
 ## CPU batches exclude deferred layout, drawing, GPU completion and audio mixing.
 extends SceneTree
 
@@ -10,13 +11,14 @@ var A := PackedStringArray(["stall", "far", "experimental"])
 var B := PackedStringArray(["stall", "low", "far", "experimental"])
 var POOL_A := PackedStringArray(["stall", "low", "battery_empty", "fuel_empty", "far"])
 var POOL_B := PackedStringArray(["controller_lost", "failsafe", "battery_hot", "battery", "experimental"])
-const CALLS := 32
 const BATCHES := 8
 const ROUNDS := 3
 
 var _out := ""
 var _reference := ""
 var _render_check := false
+var _only := ""
+var _calls := 32
 var _managers := {}
 var _sources := {}
 var _failed := false
@@ -28,10 +30,16 @@ func _initialize() -> void:
 		if arg.begins_with("--out="): _out = arg.trim_prefix("--out=")
 		elif arg.begins_with("--reference-dir="): _reference = arg.trim_prefix("--reference-dir=")
 		elif arg == "--render-check": _render_check = true
+		elif arg.begins_with("--only="): _only = arg.trim_prefix("--only=")
+		elif arg.begins_with("--calls="): _calls = int(arg.trim_prefix("--calls="))
 	_run.call_deferred()
 
 
 func _run() -> void:
+	if (not _only.is_empty() and _only not in CASES) or _calls < 32 or _calls > 2048:
+		printerr("Invalid --only or --calls option")
+		quit(1)
+		return
 	if not _out.is_absolute_path() or DirAccess.dir_exists_absolute(_out) or FileAccess.file_exists(_out) \
 			or not _reference.is_absolute_path() or not DirAccess.dir_exists_absolute(_reference):
 		printerr("Use --reference-dir=<source copies> --out=<fresh absolute directory>")
@@ -87,7 +95,7 @@ func _run() -> void:
 		_managers[variant] = manager
 	for frame in 6: await process_frame
 	var results := []
-	for scenario: String in CASES:
+	for scenario: String in (CASES if _only.is_empty() else [_only]):
 		var samples := {reference = [], candidate = []}
 		var groups := []
 		for round_index in ROUNDS:
@@ -100,8 +108,8 @@ func _run() -> void:
 				var group: Array = []
 				for batch in BATCHES:
 					var started := Time.get_ticks_usec()
-					for index in CALLS: _exercise(manager, scenario, snap, index)
-					var per_call := float(Time.get_ticks_usec() - started) / CALLS
+					for index in _calls: _exercise(manager, scenario, snap, index)
+					var per_call := float(Time.get_ticks_usec() - started) / _calls
 					samples[variant].append(per_call)
 					group.append(per_call)
 				groups.append({variant = variant, round = round_index, median_us = _percentile(group, 0.5)})
@@ -125,8 +133,8 @@ func _run() -> void:
 	var report := {ok = not _failed, engine = Engine.get_version_info(), platform = OS.get_name(),
 		display = DisplayServer.get_name(), adapter = RenderingServer.get_video_adapter_name(),
 		viewport = [root.size.x, root.size.y], sources = _sources, cpu = results, rendered_parity = parity,
-		calls_per_batch = CALLS, batches_per_group = BATCHES, abba_rounds = ROUNDS,
-		note = "Five-script comparison under shared current-app dependencies. Timings are 32-call batch means, including their p95; callback microbenchmark excludes deferred layout, drawing, GPU completion and audio mixing. Not whole-app history, flight FPS or hardware qualification."}
+		calls_per_batch = _calls, batches_per_group = BATCHES, abba_rounds = ROUNDS,
+		note = "Five-script comparison under shared current-app dependencies. Timings are per-call means of fixed batches (calls_per_batch), including their p95; callback microbenchmark excludes deferred layout, drawing, GPU completion and audio mixing. Not whole-app history, flight FPS or hardware qualification."}
 	var file := FileAccess.open(_out.path_join("report.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "\t") + "\n")
 	file.close()
@@ -171,7 +179,7 @@ func _snapshot(scenario: String) -> Dictionary:
 
 func _exercise(manager: CanvasLayer, scenario: String, snap: Dictionary, index: int) -> void:
 	if scenario == "optical_sweep":
-		manager.frames.warnings._reveal_light(float(index % CALLS) / float(CALLS - 1))
+		manager.frames.warnings._reveal_light(float(index % _calls) / float(_calls - 1))
 	else:
 		snap.telemetry.time_s += 0.1
 		if scenario == "changing_rail": snap.warnings = A if index % 2 == 0 else B
