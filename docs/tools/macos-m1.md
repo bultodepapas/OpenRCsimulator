@@ -42,7 +42,31 @@ public key on the Mac. The 2026-11-06 task created
 half stays on Windows. Use the command below only after the public half has been
 added to the Mac account's existing `~/.ssh/authorized_keys`. Preserve the Linux
 key and all existing authorized entries. A reachable SSH server does not prove
-that the new key is authorized.
+that the new key is authorized. This direct route was verified on 2026-11-06
+after owner enrollment and used for the current native checks.
+
+For a Windows client that does not yet trust this host, first obtain its ED25519
+host fingerprint from Terminal on the Mac, or through an already verified SSH
+session. This is the server's identity, separate from the login key above:
+
+```bash
+ssh-keygen -l -E sha256 -f /etc/ssh/ssh_host_ed25519_key.pub
+```
+
+Then make one interactive connection from Windows. Compare its displayed
+fingerprint with the trusted value before answering `yes`; stop on a mismatch.
+Confirmation adds the host key to the Windows user's `~/.ssh/known_hosts`.
+These options follow the [OpenSSH host-key policy](https://man.openbsd.org/ssh_config#StrictHostKeyChecking).
+
+```powershell
+ssh -i "$env:USERPROFILE/.ssh/openrc_m1_ed25519" -o IdentitiesOnly=yes `
+  -o HostKeyAlgorithms=ssh-ed25519 -o StrictHostKeyChecking=ask `
+  -o BatchMode=no -o UpdateHostKeys=no -o ConnectTimeout=15 `
+  gius@100.79.151.42 'uname -sm'
+```
+
+After both host trust and login-key enrollment are established, use the strict
+noninteractive command for automation:
 
 ```powershell
 ssh -i "$env:USERPROFILE/.ssh/openrc_m1_ed25519" -o IdentitiesOnly=yes `

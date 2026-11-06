@@ -1022,7 +1022,8 @@ legacy-receipt mutations. A checked beta2 parse and a 240-tick Windows headless
 diagnostic passed; its 133 observations matched the final receipt. That 64×64
 headless diagnostic is not native timing evidence. The M1 benchmark entrypoint
 was deliberately held before its first capture while this fix was prepared;
-native performance remeasurement is pending restored connectivity.
+native performance remeasurement was pending restored connectivity at that point.
+The direct-access rerun below now exercises the stricter final coverage gate.
 
 **PR review repairs.** `dd2c17a04` persists and reads back the complete MetalFX
 recovery marker before applying reconstruction, rearms changed configurations
@@ -1057,7 +1058,81 @@ short headless runs establish receipt behavior only. Legacy receipts without
 the coverage fields cannot satisfy the current gate.
 
 The compact JSON retains checked-run hashes, review thread identities and
-mutation outcomes. The last native M1 functional evidence remains the corrected
-`bf4745d68` checkout above; it does not validate these later commits. Direct SSH
-from Windows was requested after the Linux gateway became unavailable. A
-dedicated local key was created; native reruns await its public-key enrollment.
+mutation outcomes. The following direct-access rerun validates these later
+changes independently of the corrected `bf4745d68` checkout above.
+
+**Current direct-access native validation.** After the owner enrolled the
+dedicated Windows public key, direct SSH reached the M1 without the Linux
+gateway. Existing keys and earlier workspaces were preserved. A fresh APFS clone
+was reconciled with the attribute-aware `de19806bc` export: all 9,412 files
+matched SHA-256, size and mode before the two recorded project-isolation edits
+and import. External Git attribute overrides were disabled. Hidden generated
+import caches were excluded from that verification.
+
+Native Mobile/Metal passed 127 reconstruction, 40 renderer-guard, 59 cloud,
+52 lake and 14 helicopter-route assertions, plus 165 advanced graphics assertions
+at each of 1920×1080 and 2560×1600. The guard suite retained its one intentional
+write-failure warning. The bounds-off cloud probe passed all 30 finite readback
+cases across canvas, spatial and sky stages. Conservative density bounds remain
+off; this does not supersede their earlier failed Metal controls.
+
+All 11 Workshop descriptors were current. Home/Fly/Settings and the paused
+1080p → Retina → 1080p route passed, with Auto selecting Native → Spatial Quality
+→ Native. At Retina, the UI's 1920×1200 logical canvas remained distinct from
+the 2560×1600 estimated output and 1706×1066 nominal input. Actual MetalFX SDK
+execution remains unknown. The eight-cycle settled graphical census had zero
+growing counters or errors. The full headless debug smoke passed all 52 steps,
+including its eight-cycle census. Both sessions exited normally with no reported
+leaked objects. Stills were inspected and retained outside Git; they do not
+establish moving-aircraft readability or a sustained RSS plateau.
+
+**Current timing screens.** Ten fresh-process circuits used that same snapshot,
+30 seconds of warmup and 120 measured seconds, with frame/health hashing and
+1 Hz host/process collectors. Each visible-source inventory matches all 4,515
+expected app/fixture paths after the recorded isolation changes. Frame streams,
+contiguous dimension observations and conservative raw-clock joins pass. All
+ten match five complete 6,000-tick state/input windows; partial tails are excluded.
+The Native and paced groups independently pass their three-run software gates.
+
+| Estimated output / trial | Runs | Mean FPS | Wall p95 / p99 (ms) | Outcome |
+| --- | ---: | ---: | ---: | --- |
+| 1920×1080 Native, uncapped, 4× MSAA | 3 | 74.419–74.514 | 15.741–15.831 / 16.851–16.956 | Short campaign pass |
+| 1920×1080 Auto → Native, VSync, 4× MSAA | 3 | 59.994–60.003 | 17.127–17.135 / 17.314–17.336 | Short campaign pass |
+| 1920×1080 Native, uncapped, 2× MSAA | 1 | 77.725 | 15.159 / 16.417 | Single screen only |
+| 1920×1080 output, 960×540 nominal input, 4× MSAA | 1 | 147.366 | 8.561 / 10.333 | Single scale diagnostic |
+| 2560×1600 Native, uncapped, 4× MSAA | 1 | 42.020 | 27.613 / 29.550 | Valid capture; both pacing thresholds fail |
+| 2560×1600 Auto, uncapped, 4× MSAA | 1 | 60.194 | 20.003 / 21.318 | Unqualified provider execution; p95 also fails |
+
+The Auto Retina trial selected Spatial Quality at two-thirds scale, but effective
+MetalFX execution remained unknown. The reducer therefore rejects its health
+and checked-workload qualification; a valid stream is not proof of MetalFX
+execution or benefit. The single 2× MSAA screen is about 4.4% above the baseline
+median, below the 5% screening rule and without moving-readability acceptance.
+The half-scale screen is about 1.98× baseline FPS. These are unpaired short
+comparisons, not sustained speedups. Defaults remain unchanged by these screens.
+
+The largest paced interval was 37.586 ms in run 1; the other runs peaked at
+24.338 and 20.607 ms. Passing p95/p99 does not guarantee every frame. The retained
+event diagnosis found no abrupt drawable, object or draw-count change, but
+1 Hz host samples cannot identify its cause. All sampled host states reported
+nominal thermal state, AC and Low Power off. Initial memory pressure, OS event
+loss, whole-observer overhead and physical presentation remain unqualified.
+Plain-text aircraft inertia provenance warnings remain in the flight logs.
+
+**Separate profile diagnostic.** A 10 s/20 s `--gpu-profile` run and a short native
+CPU sample were explicitly rejected for performance acceptance. Across all 34
+printed GPU blocks, including startup/warmup/teardown, median total time was
+15.825 ms. The 33 opaque-pass entries had median 8.923 ms; canvas entries had
+median 2.622 ms. Blocks are not aligned to measured frames, and stage medians
+must not be added. The five-second warmup CPU sample recorded 102 of 255
+main-thread stacks waiting on `IOSurfaceSharedEvent`; stripped Godot symbols
+prevent deeper attribution. Together with scale sensitivity, this supports
+continued rendering investigation, but does not isolate GPU execution from
+presentation/synchronization cost or explain the paced outlier. No engine,
+physics, reconstruction or MSAA default was changed on this evidence.
+
+The existing compact JSON retains current audits, raw-file identities and
+explicit eligibility failures. The campaign ended with no Godot or host-state
+helper remaining, and its owned temporary keepawake lease was stopped. Final
+three-by-30-minute product/release qualification, motion/readability and M2–M6
+hardware coverage remain open.

@@ -28,8 +28,13 @@ qualification gate. `de19806bc` additionally requires contiguous observation
 coverage and correctly accounts for deferred seals; review repairs harden
 MetalFX marker persistence, letterboxed Auto selection, copied cloud materials
 and transactional lake startup. Focused Windows software and GPU checks passed.
-Native remeasurement of these later changes remains pending direct SSH key
-enrollment after the Linux gateway became unavailable.
+The direct Windows SSH route now works with the owner's enrolled dedicated key.
+The attribute-aware `de19806bc` snapshot passed native functional checks, both
+165-assertion graphics suites and the full 52-step smoke. Three 30 s/120 s runs
+each pass the current software pacing gates at an estimated 1920×1080 target:
+Native uncapped p95 is 15.741–15.831 ms; Auto/Native with VSync p95 is
+17.127–17.135 ms. These short technical circuits do not establish sustained
+product, moving-aircraft readability or physical presentation qualification.
 
 ## 1. Priorities, invariants and decision rules
 
@@ -72,7 +77,7 @@ The [R4 research refresh](../research/desktop-delivery-investigations/DT-MAC-00-
 
 | Order | Step | Work | Decision / exit |
 | --- | --- | --- | --- |
-| 0 | Prerequisite (owner) | Access restored through the existing `vscode-megatron` Linux SSH alias; preserve its M1 key. Follow the [M1 guide](../tools/macos-m1.md), check disk before transfer and use a fresh verified source snapshot. Optionally install full Xcode for `xctrace`, if disk allows. | Native preflight receipt on a fresh `/Users/gius/OpenRC-m1-work/<task-id>/` |
+| 0 | Prerequisite (owner) | Direct Windows SSH verified on 2026-11-06; preserve that dedicated key and the existing Linux key. Follow the [M1 guide](../tools/macos-m1.md), check disk before transfer and use a fresh verified source snapshot. Optionally install full Xcode for `xctrace`, if disk allows. | Native preflight receipt and all 9,412 exported files verified in the fresh review workspace |
 | 1 | DT-MAC-03b-a sweep | Current source on the repository's **4.8-beta2** pin; the beta1 round-6 numbers are not a baseline for it. First one default 30 s + 120 s screen, then the [sustained-fixture sweep options](../../research/performance/README.md#repeatable-active-flight-dt-mac-03): `--sustained-render-scale` 1.0 / 0.75 / 0.5 × `--sustained-msaa` 2 / 1 / 0 (4× / 2× / off). One 30 s warmup + 60 s screen each, Metal HUD log (`MTL_HUD_ENABLED=1 MTL_HUD_LOG_ENABLED=1`, plus encoder timing in a separate run) and `sample <pid> 10` for main-thread stacks. HUD runs are diagnostic only. | FPS(0.5)/FPS(1.0) ≥ 1.7 and HUD GPU time ≈ frame interval → **GPU track**. Ratio < 1.2 → **CPU track** (DT-MAC-04a/b). Otherwise both, CPU first. |
 | 2 | DT-MAC-03b-b hitches | Attribute the 120–160 ms maxima and >50 ms frames using pipeline-compilation monitors, frame diagnostics and `sample` during Home→Fly and first lake/sun views. | Hitch cause named per event class, or a discriminating follow-up measurement |
 | 3a | DT-MAC-06b GPU track | One candidate at a time, five-pair protocol: (i) Retina **1080p-class internal 3D**, scale 0.75 → 1920×1200 with native UI; (ii) MSAA 2× on Apple; (iii) price the S5/S6 pass costs with a diagnostic scene lacking water/sun-glare/afterimage materials, then replace only the cheapest consumer (sun-glare depth occlusion, afterimage mipmapped screen read). | ≥ 5 % workload gain and moving-readability acceptance. (i) must also pass the visual gate before becoming a Mac default proposal. |
