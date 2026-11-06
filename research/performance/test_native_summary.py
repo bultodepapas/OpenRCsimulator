@@ -259,8 +259,14 @@ def cloud_snapshot(global_mode: str = "0", ground: str = "", sky: str = "") -> d
 
 
 def set_cloud_observation(receipt: dict, snapshot: dict) -> None:
+    generation = snapshot["generation"]
     receipt["scenario"]["cloud_cache"] = {"start": copy.deepcopy(snapshot), "end": copy.deepcopy(snapshot),
-                                          "stable": True}
+                                          "stable": True, "first_change": None,
+                                          "initial_generations": {"previous_frame": generation,
+                                                                  "before_snapshot": generation,
+                                                                  "after_snapshot": generation},
+                                          "final_generations": {"before_snapshot": generation,
+                                                                "after_snapshot": generation}}
 
 
 def write_benchmark_run(directory: Path, name: str = "run-1") -> tuple[Path, Path, dict]:
@@ -1442,6 +1448,21 @@ class BenchmarkHealthTests(unittest.TestCase):
             receipt["scenario"]["cloud_cache"]["stable"] = False
             health_path.write_text(json.dumps(receipt), encoding="utf-8")
             self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+        observation_mutations = {
+            "missing start provenance": lambda c: c.pop("initial_generations"),
+            "missing end provenance": lambda c: c.pop("final_generations"),
+            "change before start snapshot": lambda c: c["initial_generations"].update(previous_frame=11),
+            "change during start snapshot": lambda c: c["initial_generations"].update(before_snapshot=11),
+            "change during final snapshot": lambda c: c["final_generations"].update(after_snapshot=13),
+            "recorded sample transition": lambda c: c.update(first_change={"phase": "sample"}),
+            "missing transition record": lambda c: c.pop("first_change"),
+        }
+        for name, mutate in observation_mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                mutate(receipt["scenario"]["cloud_cache"])
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
 
     def test_reconstruction_mode_uses_the_provider_enum_from_the_engine(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1538,6 +1559,24 @@ class BenchmarkHealthTests(unittest.TestCase):
         self.assertFalse(result["benchmark_health"]["eligible"])
         self.assertFalse(result["performance_pass"])
 
+    def test_auto_output_size_is_part_of_campaign_identity(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            directory = Path(temp_dir)
+            for index, size in enumerate(((1920, 1080), (2560, 1600)), 1):
+                path, health_path, receipt = write_benchmark_run(directory, f"run-{index}")
+                report = json.loads(path.read_text())
+                set_auto_native_observation(receipt, report, size)
+                save_benchmark_report(path, receipt, report)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                check["command"].append("--sustained-reconstruction=auto")
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+            summary, status = summarize_directory(directory, directory / "summary.json", SHORT_POLICY)
+            self.assertEqual(status, 1)
+            self.assertFalse(summary["benchmark_identity_consistent"])
+
     def test_cloud_density_selector_and_actual_shader_are_identity(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             path, health_path, receipt = write_benchmark_run(Path(temp_dir))
@@ -1600,6 +1639,31 @@ class BenchmarkHealthTests(unittest.TestCase):
             check["command"].extend(["--sustained-observation=on", "--aircraft=jensen-das-ugly-stik-60"])
             check_path.write_text(json.dumps(check), encoding="utf-8")
             self.assertTrue(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_workload_reconciliation_distinguishes_unavailable_from_mismatch(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+            receipt["scenario"]["cloud_cache"]["stable"] = False
+            health_path.write_text(json.dumps(receipt), encoding="utf-8")
+            result = summarize_run(path, SHORT_POLICY)
+            reasons = result["benchmark_checked_runner"]["reasons"]
+            self.assertFalse(result["benchmark_health"]["eligible"])
+            self.assertFalse(result["benchmark_checked_runner"]["eligible"])
+            self.assertIn("checked invocation workload reconciliation unavailable because benchmark health scenario is ineligible", reasons)
+            self.assertNotIn("checked invocation workload arguments do not match the benchmark scenario", reasons)
+            self.assertFalse(result["performance_pass"])
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path, _, _ = write_benchmark_run(Path(temp_dir))
+            check_path = path.with_name("checked-" + path.name)
+            check = json.loads(check_path.read_text())
+            check["command"][check["command"].index("--view=pilot")] = "--view=chase"
+            check_path.write_text(json.dumps(check), encoding="utf-8")
+            result = summarize_run(path, SHORT_POLICY)
+            self.assertTrue(result["benchmark_health"]["eligible"])
+            self.assertIn("checked invocation workload arguments do not match the benchmark scenario",
+                          result["benchmark_checked_runner"]["reasons"])
+            self.assertFalse(result["performance_pass"])
 
     def test_render_override_sweep_must_match_checked_command(self):
         def run(command_extra: list[str], recorded) -> dict:

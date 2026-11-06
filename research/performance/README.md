@@ -405,6 +405,9 @@ analytic baseline. `OPENRC_CLOUD_SHADOW_MAP_GROUND` and `_SKY` can independently
 override it with `0` or `1`. An unset global is admissible only when both paths
 have explicit overrides. The receipt records the raw settings, requested modes,
 live consumers, required seeds, sampled bake results and an interval change counter.
+It also records the counter before and after the first and final diagnostic snapshots,
+the preceding-frame counter and the first observed change, if any. The reducer
+requires these records for new acceptance; a missing record is not evidence of stability.
 Every enabled mode must have a live consumer whose tile is ready before the first
 sample and remains stable through the seal; pending, failed and analytic fallback
 states are ineligible for that enabled configuration. `ready` means a validated tile

@@ -78,7 +78,9 @@ func run() -> void:
 	CloudShadowMap.apply(ground, next_seed)
 	check("seed replacement advances diagnostics", CloudShadowMap.diagnostics_generation() > before_change)
 	check("replacement seed remains analytic while pending", ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	var before_publication := CloudShadowMap.diagnostics_generation()
 	CloudShadowMap._complete_bake(self, seed, _sample_image(seed), "")
+	check("a real publication advances the generation", CloudShadowMap.diagnostics_generation() > before_publication)
 	check("a validated first tile enables its current consumers", near.get_shader_parameter("cloud_shadow_map_enabled") == true
 		and sky.get_shader_parameter("cloud_shadow_map_enabled") == true)
 	check("a field surface copied before publication receives the ready tile",
@@ -86,6 +88,11 @@ func run() -> void:
 		and surface.get_shader_parameter("cloud_shadow_map") == near.get_shader_parameter("cloud_shadow_map"))
 	check("an old completion cannot enable a material requesting a new seed",
 		ground.get_shader_parameter("cloud_shadow_map_enabled") != true)
+	var after_warmup_bake := CloudShadowMap.diagnostics_generation()
+	var after_warmup_observation := CloudShadowMap.diagnostics()
+	check("observing an already counted warmup bake does not advance the generation",
+		after_warmup_observation.effective.sky == "ready"
+		and CloudShadowMap.diagnostics_generation() == after_warmup_bake)
 	CloudShadowMap._complete_bake(self, next_seed, _sample_image(next_seed), "")
 	var texture: Variant = ground.get_shader_parameter("cloud_shadow_map")
 	check("matching publication enables the replacement seed", ground.get_shader_parameter("cloud_shadow_map_enabled") == true

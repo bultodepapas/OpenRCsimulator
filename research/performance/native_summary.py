@@ -1162,6 +1162,14 @@ def _cloud_observations_valid(scenario: dict[str, Any]) -> bool:
     if (not isinstance(start, dict) or start != observed.get("end")
             or not _is_int(start.get("generation")) or start["generation"] < 0):
         return False
+    initial, final = observed.get("initial_generations"), observed.get("final_generations")
+    if (not isinstance(initial, dict) or not isinstance(final, dict)
+            or "first_change" not in observed or observed["first_change"] is not None
+            or any(type(initial.get(key)) is not int or initial[key] != start["generation"]
+                   for key in ("previous_frame", "before_snapshot", "after_snapshot"))
+            or any(type(final.get(key)) is not int or final[key] != start["generation"]
+                   for key in ("before_snapshot", "after_snapshot"))):
+        return False
     env, requested, effective = (start.get(key) for key in ("environment", "requested", "effective"))
     consumers, required, seeds = (start.get(key) for key in ("consumers", "required_seeds", "seeds"))
     if (not all(isinstance(value, dict) for value in (env, requested, effective, consumers, required))
@@ -1480,7 +1488,9 @@ def benchmark_checked_runner(report_path: Path, report: dict[str, Any], log_byte
             expected_health = (frame_directory + "/" if frame_directory else "") + "health-" + report_path.name
             if health_targets != [expected_health]:
                 reasons.append("checked invocation health output does not match the report")
-            if not isinstance(scenario, dict) or not _benchmark_arguments_match(user, scenario, report):
+            if not isinstance(scenario, dict):
+                reasons.append("checked invocation workload reconciliation unavailable because benchmark health scenario is ineligible")
+            elif not _benchmark_arguments_match(user, scenario, report):
                 reasons.append("checked invocation workload arguments do not match the benchmark scenario")
 
     return {

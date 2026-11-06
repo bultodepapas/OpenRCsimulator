@@ -732,11 +732,19 @@ func _observe_render(final := false) -> void:
 			render_observation.samples += 1
 		if cloud_observation.is_empty():
 			var cloud := CloudShadowMap.diagnostics()
+			var first_stable := cloud_previous_generation == generation and generation == int(cloud.generation)
 			cloud_observation = {start = cloud, end = {},
-				stable = cloud_previous_generation == generation and generation == int(cloud.generation)}
+				stable = first_stable,
+				initial_generations = {previous_frame = cloud_previous_generation, before_snapshot = generation,
+					after_snapshot = int(cloud.generation)},
+				first_change = null if first_stable else {phase = "sample_start", observed_usec = Time.get_ticks_usec(),
+					previous_frame = cloud_previous_generation, before_snapshot = generation, after_snapshot = int(cloud.generation)}}
 			bounds_observation = {start = bounds_at_construction.duplicate(true), end = bounds,
 				stable = bounds == bounds_at_construction}
 		else:
+			if generation != int(cloud_observation.start.generation) and cloud_observation.first_change == null:
+				cloud_observation.first_change = {phase = "sample", observed_usec = Time.get_ticks_usec(),
+					previous_frame = cloud_previous_generation, current = generation}
 			cloud_observation.stable = bool(cloud_observation.stable) \
 				and generation == int(cloud_observation.start.generation)
 			bounds_observation.stable = bool(bounds_observation.stable) and bounds == bounds_observation.start
@@ -744,6 +752,11 @@ func _observe_render(final := false) -> void:
 		if final:
 			var cloud := CloudShadowMap.diagnostics()
 			cloud_observation.end = cloud
+			cloud_observation["final_generations"] = {before_snapshot = generation, after_snapshot = int(cloud.generation)}
+			if (generation != int(cloud.generation) or cloud != cloud_observation.start) \
+					and cloud_observation.first_change == null:
+				cloud_observation.first_change = {phase = "seal_snapshot", observed_usec = Time.get_ticks_usec(),
+					before_snapshot = generation, after_snapshot = int(cloud.generation)}
 			cloud_observation.stable = bool(cloud_observation.stable) \
 				and generation == int(cloud.generation) and cloud == cloud_observation.start
 	render_previous = current

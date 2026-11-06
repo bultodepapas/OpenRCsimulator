@@ -203,6 +203,10 @@ static func _sync_consumer(id: int) -> void:
 	if status == "ready":
 		changed = _set_parameter(mat, "cloud_shadow_map_enabled", true) or changed
 	if changed:
+		# This transition is counted here. Remember it so the next diagnostic
+		# snapshot does not count the same internal publication a second time.
+		# A later mismatch in the actual material still becomes inconsistent.
+		entry.observed_status = status
 		_generation += 1
 
 
