@@ -452,6 +452,15 @@ For example, append `--sustained-render-scale=0.75 --sustained-msaa=1` after
 the fixture's other user options. A sweep is a screening diagnostic: the frame
 report's viewport size remains the output size, not the internal 3D size.
 
+The technical fixture still requests Native by default; it does not exercise the
+player's Auto default. To observe Auto explicitly, add `--sustained-reconstruction=auto`.
+The receipt records `auto_selected`, the window size used for that selection, the
+observed window-size property and visible rect through the sample. The reducer
+accepts Auto selecting Native only when these records and the frame report agree.
+Auto selecting MetalFX remains ineligible while execution is reported as unknown.
+Those size properties do not independently prove physical drawable or presentation
+pixels, and the fixture does not establish the normal Home/Fly preference path.
+
 Two further options remove or alter visible work for GPU attribution. With
 Godot's `--gpu-profile` engine flag, they price individual materials or stages.
 `--sustained-hide-shader=<name>[,...]` hides geometry drawn with

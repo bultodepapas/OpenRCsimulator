@@ -690,6 +690,9 @@ func _render_snapshot() -> Dictionary:
 	for key: String in ["requested", "requested_provider", "selected", "effective", "provider",
 			"effective_provider", "execution_status", "provider_available", "fallback", "fallback_reason", "temporal"]:
 		policy[key] = saved.get(key) if saved is Dictionary else null
+	if policy.requested == Reconstruction.AUTO and saved is Dictionary:
+		policy["auto_selected"] = saved.get("auto_selected")
+		policy["auto_output_size"] = saved.get("auto_output_size")
 	policy["scaling_3d_mode"] = root.scaling_3d_mode
 	policy["scale"] = root.scaling_3d_scale
 	policy["msaa_3d"] = root.msaa_3d
@@ -698,10 +701,17 @@ func _render_snapshot() -> Dictionary:
 		else "SCALING_3D_MODE_" + provider.to_upper()
 	var mode_id: Variant = ClassDB.class_get_integer_constant("Viewport", mode_constant) \
 		if ClassDB.class_has_integer_constant("Viewport", mode_constant) else null
-	return {backend = RenderingServer.get_current_rendering_method(),
+	var snapshot := {backend = RenderingServer.get_current_rendering_method(),
 		driver = RenderingServer.get_current_rendering_driver_name(), scaling_3d_mode = root.scaling_3d_mode,
 		scaling_3d_mode_constant = mode_constant, provider_mode_id = mode_id,
 		scaling_3d_scale = root.scaling_3d_scale, msaa_3d = root.msaa_3d, reconstruction = policy}
+	if policy.requested == Reconstruction.AUTO:
+		# Auto uses Window.size at apply time; keep that property and the visible rect
+		# separately. Neither measurement proves physical presentation pixels.
+		snapshot["window_size_property"] = [root.size.x, root.size.y]
+		var visible := root.get_visible_rect().size
+		snapshot["visible_rect_size"] = [visible.x, visible.y]
+	return snapshot
 
 
 ## The preceding process-frame observation brackets the first retained frame. Observe

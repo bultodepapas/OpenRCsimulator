@@ -1248,8 +1248,27 @@ def _effective_render_matches(scenario: dict[str, Any], report: dict[str, Any]) 
     if override is not None and not isinstance(override, dict):
         return False
     override = override or {}
-    mode = override.get("reconstruction", "native")
-    if not isinstance(mode, str) or mode not in BENCHMARK_RECONSTRUCTION:
+    requested_mode = override.get("reconstruction", "native")
+    if not isinstance(requested_mode, str):
+        return False
+    mode = requested_mode
+    if requested_mode == "auto":
+        mode = policy.get("auto_selected")
+        if mode not in ("native", "metalfx_spatial_85", "metalfx_spatial_quality"):
+            return False
+        auto_size, window_size = policy.get("auto_output_size"), start.get("window_size_property")
+        visible, reported_visible = start.get("visible_rect_size"), reported_policy.get("output_size")
+        if (not isinstance(auto_size, list) or len(auto_size) != 2
+                or any(type(value) is not int or value <= 0 for value in auto_size)
+                or window_size != auto_size
+                or not isinstance(window_size, list) or len(window_size) != 2
+                or any(type(value) is not int or value <= 0 for value in window_size)
+                or not isinstance(visible, list) or len(visible) != 2
+                or not isinstance(reported_visible, list) or len(reported_visible) != 2
+                or any(not _is_number(value) or value <= 0 for value in visible + reported_visible)
+                or any(not _close(a, b, tolerance=1e-6) for a, b in zip(visible, reported_visible))):
+            return False
+    if mode not in BENCHMARK_RECONSTRUCTION:
         return False
     provider, nominal_scale = BENCHMARK_RECONSTRUCTION[mode]
     temporal = provider not in ("native", "metalfx_spatial")
@@ -1275,7 +1294,7 @@ def _effective_render_matches(scenario: dict[str, Any], report: dict[str, Any]) 
             or not _close(start["scaling_3d_scale"], scale, tolerance=2e-6)
             or type(start.get("msaa_3d")) is not int or start["msaa_3d"] != expected_msaa):
         return False
-    if (policy.get("requested") != mode or policy.get("selected") != mode
+    if (policy.get("requested") != requested_mode or policy.get("selected") != mode
             or policy.get("effective") != mode or policy.get("requested_provider") != provider
             or policy.get("provider") != provider or policy.get("effective_provider") != provider
             or policy.get("provider_available") is not True or policy.get("fallback") is not False

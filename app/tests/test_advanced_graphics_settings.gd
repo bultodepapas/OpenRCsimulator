@@ -44,6 +44,7 @@ func _run() -> void:
 	var settings: CanvasLayer = app.screens.get_screen("settings")
 	var initial_size := root.size
 	var initial_position := root.position
+	await _test_auto_preview_resize(app, settings, initial_size)
 	settings._resolution_picker.select(1)
 	settings._resolution_picker.item_selected.emit(1)
 	await ui.settle()
@@ -355,6 +356,37 @@ func _run() -> void:
 	_clean()
 	print("advanced graphics: %d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+
+func _test_auto_preview_resize(app: Node, settings: CanvasLayer, initial_size: Vector2i) -> void:
+	# A resize during a display trial must preserve the active preview rather than the saved configuration.
+	settings._reconstruction_picker.select(_reconstruction_index(settings, "native"))
+	settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "native"))
+	root.size_changed.emit()
+	await ui.settle()
+	_check("saved Auto does not replace a Native preview on resize",
+		app.display_preferences.config.reconstruction == "auto" and settings._draft.reconstruction == "native"
+		and Reconstruction.describe(root).requested == "native"
+		and root.get_meta(Reconstruction.CONFIG_META).reconstruction == "native")
+	settings.keep_changes()
+	_check("Native preview is saved for the inverse resize case", app.display_preferences.config.reconstruction == "native")
+	settings._reconstruction_picker.select(_reconstruction_index(settings, "auto"))
+	settings._reconstruction_picker.item_selected.emit(_reconstruction_index(settings, "auto"))
+	if DisplayServer.get_name() == "headless":
+		root.size = Vector2i(1920, 1200) # cross an Auto threshold without requiring a particular desktop size
+	Reconstruction.auto_output_size = Vector2i.ZERO
+	root.size_changed.emit()
+	await ui.settle()
+	var receipt := Reconstruction.describe(root)
+	_check("saved Native does not prevent an Auto preview from recomputing on resize",
+		app.display_preferences.config.reconstruction == "native" and settings._draft.reconstruction == "auto"
+		and receipt.requested == "auto" and Reconstruction.auto_output_size == root.size
+		and receipt.auto_output_size == [root.size.x, root.size.y])
+	if DisplayServer.get_name() == "headless":
+		root.size = initial_size
+		await ui.settle()
+	settings.keep_changes() # restore the original default for the remaining graphics transaction tests
+
 
 func _clean() -> void:
 	for suffix: String in ["", ".bad", ".display", ".display.bad"]:

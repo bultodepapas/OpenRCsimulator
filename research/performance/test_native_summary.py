@@ -228,6 +228,18 @@ def set_render_observation(receipt: dict, report: dict, scale: float = 1.0, msaa
                                  for key in ("scaling_3d_mode", "scaling_3d_scale", "msaa_3d", "reconstruction")}
 
 
+def set_auto_native_observation(receipt: dict, report: dict, size: tuple[int, int] = (1920, 1080)) -> None:
+    set_render_observation(receipt, report)
+    receipt["scenario"]["render_override"] = {"reconstruction": "auto"}
+    observation = receipt["scenario"]["effective_render"]
+    for endpoint in ("start", "end"):
+        snapshot = observation[endpoint]
+        snapshot["reconstruction"].update(requested="auto", auto_selected="native", auto_output_size=list(size))
+        snapshot.update(window_size_property=list(size), visible_rect_size=list(size))
+    report["render_settings"]["reconstruction"].update(requested="auto", auto_selected="native",
+                                                       auto_output_size=list(size), output_size=list(size))
+
+
 def save_benchmark_report(path: Path, receipt: dict, report: dict) -> None:
     path.write_text(json.dumps(report), encoding="utf-8")
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -1462,6 +1474,69 @@ class BenchmarkHealthTests(unittest.TestCase):
                     scaling_3d_mode_constant="SCALING_3D_MODE_FSR", provider_mode_id=7)
             health_path.write_text(json.dumps(receipt), encoding="utf-8")
             self.assertFalse(summarize_run(path, SHORT_POLICY)["performance_pass"])
+
+    def test_auto_reconstruction_requires_selected_mode_and_output_identity(self):
+        def run(mutate=None) -> dict:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                path, health_path, receipt = write_benchmark_run(Path(temp_dir))
+                report = json.loads(path.read_text())
+                set_auto_native_observation(receipt, report)
+                if mutate is not None:
+                    mutate(receipt["scenario"], report)
+                save_benchmark_report(path, receipt, report)
+                health_path.write_text(json.dumps(receipt), encoding="utf-8")
+                check_path = path.with_name("checked-" + path.name)
+                check = json.loads(check_path.read_text())
+                check["command"].append("--sustained-reconstruction=auto")
+                check_path.write_text(json.dumps(check), encoding="utf-8")
+                return summarize_run(path, SHORT_POLICY)
+
+        result = run()
+        self.assertTrue(result["performance_pass"])
+        selected = result["benchmark_health"]["scenario"]["effective_render"]
+        self.assertEqual(selected["reconstruction"]["requested"], "auto")
+        self.assertEqual(selected["reconstruction"]["auto_selected"], "native")
+        self.assertEqual(selected["reconstruction"]["auto_output_size"], [1920, 1080])
+        self.assertEqual(selected["window_size_property"], [1920, 1080])
+        mutations = {
+            "selected mode missing": lambda s, r: s["effective_render"]["start"]["reconstruction"].pop("auto_selected"),
+            "selection not allowed": lambda s, r: [s["effective_render"][k]["reconstruction"].update(
+                auto_selected="fsr2_quality") for k in ("start", "end")],
+            "window changed": lambda s, r: s["effective_render"]["end"].update(window_size_property=[1600, 900]),
+            "selection used different pixels": lambda s, r: [s["effective_render"][k].update(
+                window_size_property=[1600, 900]) for k in ("start", "end")],
+            "boolean size": lambda s, r: [s["effective_render"][k]["reconstruction"].update(
+                auto_output_size=[True, 1080]) for k in ("start", "end")],
+            "frame report viewport differs": lambda s, r: r["render_settings"]["reconstruction"].update(
+                output_size=[1600, 900]),
+            "frame report choice differs": lambda s, r: r["render_settings"]["reconstruction"].update(
+                auto_selected="metalfx_spatial_quality"),
+            "reported fallback": lambda s, r: [s["effective_render"][k]["reconstruction"].update(
+                fallback=True, fallback_reason="unavailable") for k in ("start", "end")],
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name):
+                self.assertFalse(run(mutate)["performance_pass"])
+
+        def unverified_metalfx(s: dict, report: dict) -> None:
+            for endpoint in ("start", "end"):
+                snap = s["effective_render"][endpoint]
+                snap.update(backend="mobile", driver="metal", scaling_3d_mode=7,
+                            scaling_3d_mode_constant="SCALING_3D_MODE_METALFX_SPATIAL", provider_mode_id=7,
+                            scaling_3d_scale=2 / 3, window_size_property=[2560, 1600],
+                            visible_rect_size=[2560, 1600])
+                snap["reconstruction"].update(
+                    requested_provider="metalfx_spatial", auto_selected="metalfx_spatial_quality",
+                    auto_output_size=[2560, 1600], selected="metalfx_spatial_quality", effective="unknown",
+                    provider="metalfx_spatial", effective_provider="unknown", execution_status="unverified_trial",
+                    scaling_3d_mode=7, scale=2 / 3)
+            report.update(backend="mobile", rendering_driver="metal")
+            report["render_settings"].update(scaling_3d_mode=7, scaling_3d_scale=2 / 3,
+                reconstruction={**s["effective_render"]["end"]["reconstruction"], "output_size": [2560, 1600]})
+
+        result = run(unverified_metalfx)
+        self.assertFalse(result["benchmark_health"]["eligible"])
+        self.assertFalse(result["performance_pass"])
 
     def test_cloud_density_selector_and_actual_shader_are_identity(self):
         with tempfile.TemporaryDirectory() as temp_dir:
