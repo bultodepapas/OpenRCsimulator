@@ -458,6 +458,17 @@ the difference between sleep-inclusive `CLOCK_MONOTONIC_RAW` and raw uptime;
 more than 50 ms of possible change makes coverage partial. Host v1 retains its
 original UTC-drift rule and does not acquire new clock evidence retroactively.
 
+The frame collector accepts only the exact official Godot 4.8 beta1
+`4d10419cacd6d3009976e8f9fd3abd970fd58018` and beta2
+`cafc17a192acf67903910a68aeb3c076c0907a4b` metadata. Their
+[beta1](https://github.com/godotengine/godot/blob/4d10419cacd6d3009976e8f9fd3abd970fd58018/drivers/unix/os_unix.cpp)
+and [beta2](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/unix/os_unix.cpp)
+macOS tick implementations use the same Mach clock; Apple's
+[clock implementation](https://github.com/apple-oss-distributions/Libc/blob/main/gen/clock_gettime.c)
+maps `CLOCK_UPTIME_RAW` to that source. Version metadata is not binary attestation:
+retain the executable identity and preflight. A new native run must establish
+both raw anchors and their join; this change cannot repair earlier missing anchors.
+
 All streams share the runner capture ID. Compare helper readiness and endpoint,
 and first/last process-resource samples, to the entire actual frame capture
 interval using their bounded raw-offset intervals. `coverage=complete` describes the
