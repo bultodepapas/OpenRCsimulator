@@ -3849,154 +3849,11 @@
             "run": "1",
             "capture_id": "fc3ee726-14a6-4cdf-bba2-145fc1ddd4a7",
             "individual_pass": true,
-            "collection_valid": true,
-            "health_eligible": true,
-            "checked_eligible": true,
-            "active_flight": true,
-            "pacing": {
-              "p95_max_ms": 18.0,
-              "p95_pass": true,
-              "p99_max_ms": 25.0,
-              "p99_pass": true,
-              "pass": true,
-              "simulation_wall_ratio_max": 1.01,
-              "simulation_wall_ratio_min": 0.99,
-              "simulation_wall_ratio_pass": true
-            },
-            "metrics": {
-              "frame_ms": {
-                "max": 19.307000000000002,
-                "p50": 13.563,
-                "p95": 15.757,
-                "p99": 16.785999999999998
-              },
-              "max_frame_interval_usec": 19307,
-              "max_nonadvancing_interval_usec": 0,
-              "sample_simulation_span_s": 119.99583333333334,
-              "sample_simulation_ticks": 28799,
-              "sample_wall_span_excluding_first_interval_s": 119.992592,
-              "simulation_wall_ratio": 1.0000270127787,
-              "tick_wall_ratio": 1.0000270127787
-            },
-            "duration": {
-              "actual_warmup_s": 30.001775,
-              "eligible": true,
-              "minimum_sample_s": 120.0,
-              "minimum_warmup_s": 30.0,
-              "reasons": [],
-              "requested_sample_s": 120.0,
-              "requested_warmup_s": 30.0
-            },
-            "dimensions_stable_all_modes": true,
-            "dimensions_start": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "dimensions_end": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "reconstruction": {
-              "requested": "native",
-              "selected": "native",
-              "effective": "native",
-              "scale": 1.0
-            },
-            "source_digest": "1185799b6d98c2ad965a0492d360ad62b0b6ab83c4619ffc1a350aeb02b4a557",
             "source_matches_export": true,
-            "source_mismatches": [],
             "source_mismatch_count": 0,
             "clock_join": true,
             "clock_errors": [],
-            "clock_margins_usec": {
-              "resource_first_before_frame_usec": 47241940,
-              "resource_last_after_frame_usec": 6269686,
-              "host_ready_before_frame_usec": 47238300,
-              "host_first_snapshot_before_frame_usec": 47238030,
-              "host_last_snapshot_after_frame_usec": 6930541,
-              "host_end_after_frame_usec": 6930788
-            },
-            "host_coverage": "complete",
-            "resource_required_coverage": "complete",
-            "audio_log": [
-              "SUSTAINED_FLIGHT_AUDIO_TEARDOWN status=observed_released driver=Dummy tracked=11 pending=0 elapsed_usec=56103 timeout_usec=250000"
-            ],
-            "checked_counts": {
-              "error": 0,
-              "warning": 0
-            },
-            "prior_checkpoint_identity_differences": [],
-            "prior_full_window_comparison": [
-              {
-                "ticks": [
-                  1,
-                  6000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  6001,
-                  12000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  12001,
-                  18000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  18001,
-                  24000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  24001,
-                  30000
-                ],
-                "match": true
-              }
-            ],
+            "source_digest": "1185799b6d98c2ad965a0492d360ad62b0b6ab83c4619ffc1a350aeb02b4a557",
             "frame_report_sha256": "856c50c11681005d83199dfbcffe2e1ded4c52085972212d103b7e1fd642ffc3",
             "health_report_sha256": "28d5c69567f9ec1f91458734e77dffd5cfc671cf51705169c8a6969c8ff36346",
             "checked_report_sha256": "d56393ab1d6307862e6a0dbe505f01563416f24d1481f9f4039bf150bbadb1e9",
@@ -4006,154 +3863,11 @@
             "run": "2",
             "capture_id": "ef260ed6-c631-440e-aba6-9afeb0ef965c",
             "individual_pass": true,
-            "collection_valid": true,
-            "health_eligible": true,
-            "checked_eligible": true,
-            "active_flight": true,
-            "pacing": {
-              "p95_max_ms": 18.0,
-              "p95_pass": true,
-              "p99_max_ms": 25.0,
-              "p99_pass": true,
-              "pass": true,
-              "simulation_wall_ratio_max": 1.01,
-              "simulation_wall_ratio_min": 0.99,
-              "simulation_wall_ratio_pass": true
-            },
-            "metrics": {
-              "frame_ms": {
-                "max": 24.062,
-                "p50": 13.566,
-                "p95": 15.821000000000002,
-                "p99": 16.92
-              },
-              "max_frame_interval_usec": 24062,
-              "max_nonadvancing_interval_usec": 0,
-              "sample_simulation_span_s": 120.0,
-              "sample_simulation_ticks": 28800,
-              "sample_wall_span_excluding_first_interval_s": 119.999789,
-              "simulation_wall_ratio": 1.000001758336425,
-              "tick_wall_ratio": 1.000001758336425
-            },
-            "duration": {
-              "actual_warmup_s": 30.015291,
-              "eligible": true,
-              "minimum_sample_s": 120.0,
-              "minimum_warmup_s": 30.0,
-              "reasons": [],
-              "requested_sample_s": 120.0,
-              "requested_warmup_s": 30.0
-            },
-            "dimensions_stable_all_modes": true,
-            "dimensions_start": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "dimensions_end": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "reconstruction": {
-              "requested": "native",
-              "selected": "native",
-              "effective": "native",
-              "scale": 1.0
-            },
-            "source_digest": "1185799b6d98c2ad965a0492d360ad62b0b6ab83c4619ffc1a350aeb02b4a557",
             "source_matches_export": true,
-            "source_mismatches": [],
             "source_mismatch_count": 0,
             "clock_join": true,
             "clock_errors": [],
-            "clock_margins_usec": {
-              "resource_first_before_frame_usec": 43912607,
-              "resource_last_after_frame_usec": 6657273,
-              "host_ready_before_frame_usec": 43908911,
-              "host_first_snapshot_before_frame_usec": 43908643,
-              "host_last_snapshot_after_frame_usec": 7015059,
-              "host_end_after_frame_usec": 7015310
-            },
-            "host_coverage": "complete",
-            "resource_required_coverage": "complete",
-            "audio_log": [
-              "SUSTAINED_FLIGHT_AUDIO_TEARDOWN status=observed_released driver=Dummy tracked=11 pending=0 elapsed_usec=88726 timeout_usec=250000"
-            ],
-            "checked_counts": {
-              "error": 0,
-              "warning": 0
-            },
-            "prior_checkpoint_identity_differences": [],
-            "prior_full_window_comparison": [
-              {
-                "ticks": [
-                  1,
-                  6000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  6001,
-                  12000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  12001,
-                  18000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  18001,
-                  24000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  24001,
-                  30000
-                ],
-                "match": true
-              }
-            ],
+            "source_digest": "1185799b6d98c2ad965a0492d360ad62b0b6ab83c4619ffc1a350aeb02b4a557",
             "frame_report_sha256": "2465ec85f610e5f0a4991f33db96fdfafece3d1734d361814d55102cb069f14d",
             "health_report_sha256": "b3767dd6a645089891f020ce8647ee459e5c2951bc07531440e49ed8a7decd2f",
             "checked_report_sha256": "c17ec44d5d80a5be6cb7deef3f20825cffdeaf5fec48a24e3e7f9fca3b9a7cc8",
@@ -4172,154 +3886,11 @@
             "run": "1",
             "capture_id": "93115e61-8cb9-46c2-a34a-74b0fff21040",
             "individual_pass": true,
-            "collection_valid": true,
-            "health_eligible": true,
-            "checked_eligible": true,
-            "active_flight": true,
-            "pacing": {
-              "p95_max_ms": 18.0,
-              "p95_pass": true,
-              "p99_max_ms": 25.0,
-              "p99_pass": true,
-              "pass": true,
-              "simulation_wall_ratio_max": 1.01,
-              "simulation_wall_ratio_min": 0.99,
-              "simulation_wall_ratio_pass": true
-            },
-            "metrics": {
-              "frame_ms": {
-                "max": 20.836000000000002,
-                "p50": 13.591000000000001,
-                "p95": 15.807000000000002,
-                "p99": 16.886000000000003
-              },
-              "max_frame_interval_usec": 20836,
-              "max_nonadvancing_interval_usec": 0,
-              "sample_simulation_span_s": 119.99166666666666,
-              "sample_simulation_ticks": 28798,
-              "sample_wall_span_excluding_first_interval_s": 119.993376,
-              "simulation_wall_ratio": 0.9999857547692188,
-              "tick_wall_ratio": 0.9999857547692188
-            },
-            "duration": {
-              "actual_warmup_s": 30.001394,
-              "eligible": true,
-              "minimum_sample_s": 120.0,
-              "minimum_warmup_s": 30.0,
-              "reasons": [],
-              "requested_sample_s": 120.0,
-              "requested_warmup_s": 30.0
-            },
-            "dimensions_stable_all_modes": true,
-            "dimensions_start": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "dimensions_end": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "reconstruction": {
-              "requested": "native",
-              "selected": "native",
-              "effective": "native",
-              "scale": 1.0
-            },
-            "source_digest": "20c821329207ccaea0bd70b082a916c49269292a0baa80ec19393a7468302328",
             "source_matches_export": true,
-            "source_mismatches": [],
             "source_mismatch_count": 0,
             "clock_join": true,
             "clock_errors": [],
-            "clock_margins_usec": {
-              "resource_first_before_frame_usec": 47435266,
-              "resource_last_after_frame_usec": 6116180,
-              "host_ready_before_frame_usec": 47431919,
-              "host_first_snapshot_before_frame_usec": 47431655,
-              "host_last_snapshot_after_frame_usec": 6992476,
-              "host_end_after_frame_usec": 6992845
-            },
-            "host_coverage": "complete",
-            "resource_required_coverage": "complete",
-            "audio_log": [
-              "SUSTAINED_FLIGHT_AUDIO_TEARDOWN status=observed_released driver=Dummy tracked=11 pending=0 elapsed_usec=79584 timeout_usec=250000"
-            ],
-            "checked_counts": {
-              "error": 0,
-              "warning": 0
-            },
-            "prior_checkpoint_identity_differences": [],
-            "prior_full_window_comparison": [
-              {
-                "ticks": [
-                  1,
-                  6000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  6001,
-                  12000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  12001,
-                  18000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  18001,
-                  24000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  24001,
-                  30000
-                ],
-                "match": true
-              }
-            ],
+            "source_digest": "20c821329207ccaea0bd70b082a916c49269292a0baa80ec19393a7468302328",
             "frame_report_sha256": "2e71f324772171baf720eaad08bdebcb530bb4209a0ebb5bc017a958eba0c50b",
             "health_report_sha256": "6179fe7395fb39e7a903b011f1dc10533e17d764cbfb5ef6b9e0585e2306c417",
             "checked_report_sha256": "6e17c0874c4622933dbd0dfa936716eb30debd26c79b1f67bec66cc08be79343",
@@ -4329,154 +3900,11 @@
             "run": "2",
             "capture_id": "778d528a-0db3-419e-88bc-d1173a65458c",
             "individual_pass": true,
-            "collection_valid": true,
-            "health_eligible": true,
-            "checked_eligible": true,
-            "active_flight": true,
-            "pacing": {
-              "p95_max_ms": 18.0,
-              "p95_pass": true,
-              "p99_max_ms": 25.0,
-              "p99_pass": true,
-              "pass": true,
-              "simulation_wall_ratio_max": 1.01,
-              "simulation_wall_ratio_min": 0.99,
-              "simulation_wall_ratio_pass": true
-            },
-            "metrics": {
-              "frame_ms": {
-                "max": 19.759999999999998,
-                "p50": 13.615,
-                "p95": 15.802,
-                "p99": 16.806
-              },
-              "max_frame_interval_usec": 19760,
-              "max_nonadvancing_interval_usec": 0,
-              "sample_simulation_span_s": 119.99166666666667,
-              "sample_simulation_ticks": 28798,
-              "sample_wall_span_excluding_first_interval_s": 119.992294,
-              "simulation_wall_ratio": 0.9999947718864902,
-              "tick_wall_ratio": 0.9999947718864901
-            },
-            "duration": {
-              "actual_warmup_s": 30.006419,
-              "eligible": true,
-              "minimum_sample_s": 120.0,
-              "minimum_warmup_s": 30.0,
-              "reasons": [],
-              "requested_sample_s": 120.0,
-              "requested_warmup_s": 30.0
-            },
-            "dimensions_stable_all_modes": true,
-            "dimensions_start": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "dimensions_end": {
-              "window_size_property": [
-                1920,
-                1080
-              ],
-              "visible_rect_size": [
-                1920.0,
-                1080.0
-              ],
-              "output_size": [
-                1920,
-                1080
-              ],
-              "output_size_scope": "viewport_render_target_estimate_v1",
-              "nominal_3d_size": [
-                1920,
-                1080
-              ],
-              "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
-              "dimension_observation_scope": "per_frame_viewport_estimate_v1"
-            },
-            "reconstruction": {
-              "requested": "native",
-              "selected": "native",
-              "effective": "native",
-              "scale": 1.0
-            },
-            "source_digest": "20c821329207ccaea0bd70b082a916c49269292a0baa80ec19393a7468302328",
             "source_matches_export": true,
-            "source_mismatches": [],
             "source_mismatch_count": 0,
             "clock_join": true,
             "clock_errors": [],
-            "clock_margins_usec": {
-              "resource_first_before_frame_usec": 43088856,
-              "resource_last_after_frame_usec": 6345220,
-              "host_ready_before_frame_usec": 43085260,
-              "host_first_snapshot_before_frame_usec": 43084975,
-              "host_last_snapshot_after_frame_usec": 6876444,
-              "host_end_after_frame_usec": 6876769
-            },
-            "host_coverage": "complete",
-            "resource_required_coverage": "complete",
-            "audio_log": [
-              "SUSTAINED_FLIGHT_AUDIO_TEARDOWN status=observed_released driver=Dummy tracked=11 pending=0 elapsed_usec=28917 timeout_usec=250000"
-            ],
-            "checked_counts": {
-              "error": 0,
-              "warning": 0
-            },
-            "prior_checkpoint_identity_differences": [],
-            "prior_full_window_comparison": [
-              {
-                "ticks": [
-                  1,
-                  6000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  6001,
-                  12000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  12001,
-                  18000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  18001,
-                  24000
-                ],
-                "match": true
-              },
-              {
-                "ticks": [
-                  24001,
-                  30000
-                ],
-                "match": true
-              }
-            ],
+            "source_digest": "20c821329207ccaea0bd70b082a916c49269292a0baa80ec19393a7468302328",
             "frame_report_sha256": "fcee8819d332b55d057d8beae18ef1a6e660aa783751aa3c77c78bb3d57b0ea7",
             "health_report_sha256": "c4bc86084e48f6e06a4aa0f7bbf7e5498f9d949301b8104a970d1e620fd037eb",
             "checked_report_sha256": "0f18fb7d00e6ab746ef5ec0d44738e309fd6a1fbb7eb2dcaba2f24695f86ea8a",
@@ -4498,6 +3926,297 @@
     "limits": [
       "Early rejection screen: two runs per source, not the five-pair promotion campaign.",
       "No default, physics, shader or future-chip performance claim is promoted."
+    ]
+  },
+  "gpu_diagnostic_integrity": {
+    "source_commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+    "export_manifest_sha256": "b1719e87d11d48832c03217e6c776097b36e25bdab67b6d468b254f7592b6e78",
+    "verification": {
+      "format": "openrc-git-export-verification-v1",
+      "root": "/Users/gius/OpenRC-m1-work/m1-diagnostic-integrity-20261106",
+      "manifest_sha256": "b1719e87d11d48832c03217e6c776097b36e25bdab67b6d468b254f7592b6e78",
+      "commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+      "complete": true,
+      "expected_files": 9420,
+      "found_files": 9420,
+      "issue_count": 0,
+      "issues": [],
+      "missing_count": 0,
+      "missing": [],
+      "ignored_generated_directories": [
+        "app/.godot"
+      ],
+      "scope": "point-in-time bytes and file modes; excluded generated directories are not attested"
+    },
+    "isolation": {
+      "commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+      "file": "app/project.godot",
+      "before_sha256": "541e856bd48256fcefa80591758efde39ab5b8bfa8d079ee396862ec62836dd4",
+      "after_sha256": "b5148ba08ac372b1e0c46fe3299902f566dd37d8dc4060ed4a2531e07d04f150",
+      "changes": [
+        "isolated project name",
+        "startup multi-bounce disabled"
+      ]
+    },
+    "checks": [
+      {
+        "label": "import-gqji_5c0",
+        "ok": true,
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "assertions": 0,
+        "report_sha256": "32bf98f2e19ff468837bf47d46507e58b41c639e8cabcc8d4e68dfc7fdfe8b5e",
+        "engine_log_sha256": "ec037ed5372bc287f06d276f661dacb26a3cd854084e1e30d60bccec618c48d5"
+      },
+      {
+        "label": "test_debug_bridge-8fj4y33e",
+        "ok": true,
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 2
+        },
+        "assertions": 105,
+        "report_sha256": "246190089935dcba439eb75365f37a258df564985baff797e8b2e5ac446bf213",
+        "engine_log_sha256": "e2fda4e68f5a99848a9447357c7e26699213531d070d31fd33d914517d233325"
+      },
+      {
+        "label": "test_render_probe-_2gqw3_0",
+        "ok": true,
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "assertions": 34,
+        "report_sha256": "f93f7bd8906870bc4c35e48155bc75744c8eba69da5215e68126a10eb5c19b86",
+        "engine_log_sha256": "9918aba23aed746aae100c5bf9fab82b8579adaf0c6145d52ea131a4b17a68b5"
+      }
+    ],
+    "bridge_pass": {
+      "passed": true,
+      "source_commit": "f2084f3b8c8c5ebc9eef942d2fbae47a66ecf9e8",
+      "checks": [
+        "root-only unverified timing",
+        "active flight restored",
+        "pre-paused flight preserved",
+        "measurement enable restored",
+        "Native scale and MSAA restored",
+        "MetalFX half-scale refused",
+        "no engine errors"
+      ],
+      "limit": "Functional diagnostic; not performance acceptance or verified MetalFX execution"
+    },
+    "bridge_sha256": "e3709ec77bdd6f905683713667d54393ad9c69eda76f541f9a1f7d7581e584f9",
+    "exit": {
+      "stopped": true,
+      "pid": 89713,
+      "forced": false,
+      "launcher_exit_code": 0,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "client_tests": {
+      "platform": "native macOS ARM64",
+      "run": 60,
+      "failures": 0,
+      "skipped": 1,
+      "skip_reason": "requires Linux /proc"
+    },
+    "cleanup": "Fri Nov  6 15:32:47 UTC 2026\nStopped owned keepawake lease 89212; no Godot or task host collector remained.\nFilesystem      Size    Used   Avail Capacity iused ifree %iused  Mounted on\n/dev/disk3s5   228Gi   197Gi   3.4Gi    99%    2.1M   36M    6%   /System/Volumes/Data\nNow drawing from 'AC Power'\n -InternalBattery-0 (id=24576099)\t100%; charged; 0:00 remaining present: true\n",
+    "limits": [
+      "GPU values and ablation deltas are unverified last-read observations, not causal cost, rankings or frame-presentation evidence.",
+      "Native no-controller UI route passed; controller-neutral and pending-mode refusal are faithful unit controls, not physical controller acceptance.",
+      "Viewport measurement enablement is shared with other observers; do not run competing timing collectors.",
+      "MetalFX selected at Retina; effective SDK execution remains unknown.",
+      "Only sampled phase ownership is observed; changes between process callbacks remain unobservable.",
+      "No new renderer/MSAA/reconstruction default or M2-M6 qualification."
+    ],
+    "review": {
+      "peer_findings_fixed": 4,
+      "coderabbit_local": "auth status succeeded; review failed Git provider authentication; no local CodeRabbit review completed"
+    },
+    "windows_attempts": {
+      "initial_import": "four get_multiple_md5 file-access errors; retained, not a pass",
+      "merged_import": "clean rerun: zero errors/warnings",
+      "bridge": "earlier fixed-port collision and stale-snapshot assertion failures retained; final native bridge passed all 105 assertions"
+    },
+    "raw_evidence": "tmp/m1-render-attribution-20261106/diagnostic-evidence",
+    "selected_observations": [
+      {
+        "command": "render",
+        "args": {
+          "frames": 30
+        },
+        "result": {
+          "measuring": true,
+          "gpu_ms": 12.915000000000001,
+          "root_gpu_ms": 12.915000000000001,
+          "sub_gpu_ms": 0.851,
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "gpu_budget_status": "unavailable",
+          "bound": "unknown: GPU timestamp availability and freshness do not establish a frame bottleneck"
+        }
+      },
+      {
+        "command": "render",
+        "args": {
+          "measure": false
+        },
+        "result": {
+          "measuring": false
+        }
+      },
+      {
+        "command": "ablate",
+        "args": {
+          "targets": [
+            "@msaa",
+            "@half_res"
+          ],
+          "warmup": 5,
+          "frames": 30
+        },
+        "result": {
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "frozen": true,
+          "paused_at_start": false,
+          "pause_restore": {
+            "owned": true,
+            "restored": true,
+            "interrupted": false,
+            "paused": false
+          },
+          "skipped_reasons": {},
+          "rows": [
+            {
+              "name": "@msaa",
+              "gpu_ms": 12.127,
+              "saved_gpu_ms": -0.20800000000000002,
+              "saved_pct": -1.7000000000000002,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            },
+            {
+              "name": "@half_res",
+              "gpu_ms": 7.585,
+              "saved_gpu_ms": 4.319,
+              "saved_pct": 36.300000000000004,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            }
+          ]
+        }
+      },
+      {
+        "command": "render",
+        "args": {},
+        "result": {
+          "measuring": false
+        }
+      },
+      {
+        "command": "ablate",
+        "args": {
+          "targets": [
+            "@msaa"
+          ],
+          "warmup": 5,
+          "frames": 15
+        },
+        "result": {
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "frozen": true,
+          "paused_at_start": true,
+          "pause_restore": {
+            "owned": true,
+            "restored": true,
+            "interrupted": false,
+            "paused": true
+          },
+          "skipped_reasons": {},
+          "rows": [
+            {
+              "name": "@msaa",
+              "gpu_ms": 11.422,
+              "saved_gpu_ms": 0.908,
+              "saved_pct": 7.4,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            }
+          ]
+        }
+      },
+      {
+        "command": "render",
+        "args": {},
+        "result": {
+          "measuring": false
+        }
+      },
+      {
+        "command": "ablate",
+        "args": {
+          "targets": [
+            "@msaa",
+            "@half_res"
+          ],
+          "warmup": 5,
+          "frames": 15
+        },
+        "result": {
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "frozen": true,
+          "paused_at_start": true,
+          "pause_restore": {
+            "owned": true,
+            "restored": true,
+            "interrupted": false,
+            "paused": true
+          },
+          "skipped_reasons": {
+            "@half_res": "non_bilinear_reconstruction"
+          },
+          "rows": [
+            {
+              "name": "@msaa",
+              "gpu_ms": 15.206,
+              "saved_gpu_ms": 0.327,
+              "saved_pct": 2.1,
+              "gpu_timing_status": "unverified_freshness",
+              "significant": false,
+              "overridden": false
+            }
+          ]
+        }
+      },
+      {
+        "command": "render",
+        "args": {
+          "measure": true,
+          "frames": 15
+        },
+        "result": {
+          "measuring": true,
+          "gpu_ms": 11.905,
+          "root_gpu_ms": 11.905,
+          "sub_gpu_ms": 0.854,
+          "gpu_timing_status": "unverified_freshness",
+          "gpu_ms_scope": "root_only_freshness_unverified",
+          "gpu_budget_status": "unavailable",
+          "bound": "unknown: GPU timestamp availability and freshness do not establish a frame bottleneck"
+        }
+      }
     ]
   }
 }

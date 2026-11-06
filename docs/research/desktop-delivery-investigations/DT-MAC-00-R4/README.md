@@ -1163,3 +1163,34 @@ these stills do not qualify disc-edge preservation or motion. The capture
 fixture's legacy report hard-codes Compatibility; the invocation and checked
 logs establish actual Mobile/Metal. Raw images stay outside Git. Source hashes,
 audits and the rejected screen are retained in the existing compact JSON.
+
+
+**GPU diagnostic integrity follow-up.** `f2084f3b8` repairs the tools used to
+investigate the Mac renderer. Root and SubViewport last readings are separate;
+availability and freshness remain explicit. Invalid phases cannot produce a
+numeric saving, and real observations never imply a bottleneck or significant
+gain. The two-target noise case now has a conservative fallback. Ablation
+restores exact setter read-back values only while still owned, handles freed
+targets, preserves prior measurement enablement and uses a session pause hold.
+Focus loss or another pause prevents automatic resume. A connected flight
+controller or pending helicopter mode causes refusal before the hold can alter
+input state. Non-bilinear reconstruction refuses `@half_res`.
+
+A fresh M1 export verified all 9,420 manifest files before isolation/import.
+Native beta2 import passed with no errors or warnings; the probe passed 34
+assertions and the complete bridge passed 105. The bridge retained its two
+intentional logger warnings. All 60 Python client tests passed apart from the
+Linux `/proc` test skipped on macOS. The rendered Mobile/Metal route verified
+an active flight resumed, a pre-paused flight stayed paused, measurement enable,
+MSAA and Native scale restored, and Auto Retina's non-bilinear half-scale
+refusal. It ended normally with zero reported errors or leaked objects.
+
+These are functional checks, not performance acceptance. Positive GPU readings
+were observed and labelled unverified; the diagnostic deltas are not promoted
+as gains. No physical controller was used. Focus/controller/mode counterexamples
+are unit evidence, and effective MetalFX execution remains unknown. A peer
+review verified four corrected counterexamples; local CodeRabbit review failed
+provider authentication and supplied no completed review. The required hosted
+CI remains the merge gate. Raw receipts and failed preliminary Windows attempts
+are retained separately. The owned keepawake lease was stopped, no Godot or
+task host collector remained, and the Mac had 3.4 GiB free at cleanup.
