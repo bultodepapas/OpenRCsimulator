@@ -321,7 +321,7 @@ func _fuel() -> void:
 	crossing.mass_sample = _fuel_sample(true, true)
 	manager.refresh_numbers(crossing)
 	_check("crossing estimated reserve requests one warning and shows the chip",
-		requests.size() == 1 and requests[0].low_fuel and manager.get("_fuel_warning_player").playing and manager.frames.warnings.visible
+		requests.size() == 1 and requests[0].low_fuel and manager.alert_audio.audio_player().playing and manager.frames.warnings.visible
 		and WarningsBar.text_for(manager.frames.warnings.codes[0]) == "FUEL RESERVE · ESTIMATED")
 	manager.refresh_numbers(crossing)
 	_check("held-low samples do not repeat the audible warning", requests.size() == 1)
@@ -354,8 +354,8 @@ func _fuel() -> void:
 	manager.refresh_numbers(invalid)
 	_check("a later crossing after finite-state reinitialization still cues once", requests.size() == 3)
 	_check("alert uses existing reject cue on Master and follows global game volume",
-		manager.get("_fuel_warning_player").stream == Manager.FUEL_RESERVE_WARNING_STREAM
-		and manager.get("_fuel_warning_player").bus == &"Master")
+		manager.alert_audio.audio_player().stream == Manager.AlertAudio.STREAM_BY_CUE.caution
+		and manager.alert_audio.audio_player().bus == &"Master")
 	manager.queue_free()
 	await process_frame
 	TranslationServer.set_locale("es")

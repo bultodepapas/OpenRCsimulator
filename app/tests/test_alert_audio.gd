@@ -184,6 +184,7 @@ func _master_and_retirement(bus: int) -> void:
 	_observe(1, 1, ["stall"])
 	AudioServer.set_bus_mute(bus, true)
 	await process_frame
+	await process_frame # process_frame is emitted before nodes process the first frame
 	_check("Master mute stops a playing voice", not director.audio_player().playing)
 	_check("Master mute suppresses preview and events", not director.preview("info") and _observe(2, 2, ["stall"]) == "")
 	AudioServer.set_bus_mute(bus, false)
@@ -194,8 +195,9 @@ func _master_and_retirement(bus: int) -> void:
 		and _observe(4, 4, ["stall"]) == "")
 	var voice_ref: WeakRef = weakref(director.audio_player())
 	director.queue_free()
-	await process_frame
+	for i in 8: await process_frame
 	_check("freeing the director releases its only voice", voice_ref.get_ref() == null)
+	await create_timer(0.1).timeout # allow the mixer to release stopped OGG playbacks before exit
 
 
 func _check(label: String, passed: bool) -> void:

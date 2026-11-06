@@ -13,6 +13,7 @@ const WindOverlay := preload("res://render/overlays/wind.gd")
 const TelemetryPanel := preload("res://render/overlays/telemetry_panel.gd")
 const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
 const AlertPolicy := preload("res://render/overlays/alert_policy.gd")
+const AlertAudio := preload("res://render/overlays/alert_audio.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
 const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
@@ -27,7 +28,6 @@ const TrainingInstrument := preload("res://render/overlays/training_instrument.g
 const SessionStatistics := preload("res://render/overlays/session_statistics.gd")
 const FlightMetrics := preload("res://render/overlays/flight_metrics.gd")
 const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0), session_stats = Vector2(0.2, 0.2)}
-const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
 signal settings_changed(settings: Dictionary)
@@ -66,7 +66,7 @@ var _raw_warning_codes := PackedStringArray()
 var _alert_policy := AlertPolicy.new()
 var _has_battery := false
 var _battery_dock := Vector3(-1.0, -1.0, -1.0)
-var _fuel_warning_player: AudioStreamPlayer
+var alert_audio: Node
 var _fuel_state_known := false
 var _last_fuel_low := false
 var peak_airspeed := NAN
@@ -94,16 +94,14 @@ func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> 
 	_player_theme.default_font = ThemeDB.fallback_font.duplicate()
 	if _player_theme.default_font is FontFile:
 		(_player_theme.default_font as FontFile).multichannel_signed_distance_field = true
-	_fuel_warning_player = AudioStreamPlayer.new()
-	_fuel_warning_player.name = "FuelReserveWarning"
-	_fuel_warning_player.stream = FUEL_RESERVE_WARNING_STREAM
-	_fuel_warning_player.bus = &"Master"
-	_fuel_warning_player.volume_db = -12.0
-	add_child(_fuel_warning_player)
+	alert_audio = AlertAudio.new()
+	alert_audio.name = "AlertAudio"
+	add_child(alert_audio)
 	_build()
 	apply(initial, false)
 	visibility_changed.connect(func() -> void:
 		if visible: _since_text = INF
+		else: alert_audio.retire_playbacks()
 	)
 
 
@@ -133,6 +131,7 @@ func _build() -> void:
 	telemetry.offset_top -= TELEMETRY_RISE
 	telemetry.offset_bottom -= TELEMETRY_RISE
 	_place(WarningsBar.new(), Control.PRESET_CENTER_TOP)
+	frames.warnings.presentation_changed.connect(_sync_warning_visibility)
 	var controls := ControlsGuide.new()
 	_place(controls, Control.PRESET_TOP_LEFT)
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
@@ -237,7 +236,8 @@ func reset_flight() -> void:
 	_alert_policy.reset()
 	_raw_warning_codes = PackedStringArray()
 	_warning_codes = PackedStringArray()
-	frames.warnings.refresh(_warning_codes)
+	alert_audio.reset()
+	frames.warnings.clear_immediate()
 	frames.warnings.visible = false
 	_since_text = INF
 	for id: String in PLAYER_POSITIONS:
@@ -289,6 +289,7 @@ func apply(value: Variant, announce := true) -> void:
 	settings = next
 	_settings_applied = true
 	frames.warnings.configure(settings)
+	alert_audio.configure(settings)
 	var visibility_changed: bool = first or previous.visible != settings.visible
 	var appearance_changed := first or ["widget_size", "widget_opacity", "widget_compact"].any(
 		func(key: String) -> bool: return previous.get(key) != settings.get(key))
@@ -302,7 +303,7 @@ func apply(value: Variant, announce := true) -> void:
 		for id: String in IDS:
 			var on: bool = settings.visible.has(id)
 			if id == "warnings":
-				frames[id].visible = on and not AlertPolicy.select_codes(_raw_warning_codes, settings).is_empty()
+				continue # the rail also owns the short exit of a cleared card
 			elif id == "battery":
 				frames[id].visible = on and _has_battery
 			else:
@@ -326,7 +327,7 @@ func apply(value: Variant, announce := true) -> void:
 			for code: String in AlertPolicy.TRAINING:
 				var at := _raw_warning_codes.find(code)
 				if at >= 0: _raw_warning_codes.remove_at(at)
-	_refresh_warnings()
+	_refresh_warnings(false)
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
 
@@ -334,6 +335,7 @@ func apply(value: Variant, announce := true) -> void:
 ## Live preview for the pause-menu dialog: shown above the pause menu while `on`; back to the flight layer and hidden
 ## (the paused picture shows the airplane alone) when the dialog closes.
 func preview(on: bool) -> void:
+	alert_audio.retire_playbacks()
 	layer = PREVIEW_LAYER if on else FLIGHT_LAYER
 	visible = on
 
@@ -395,11 +397,7 @@ func set_radio_model(model: String) -> void:
 
 
 func set_warning_option(key: String, value: Variant) -> void:
-	if not Settings.WARNING_DEFAULTS.has(key): return
-	if key == "warning_limit":
-		if typeof(value) != TYPE_INT or value not in Settings.WARNING_LIMITS: return
-	elif typeof(value) != TYPE_BOOL:
-		return
+	if not Settings.valid_warning_option(key, value): return
 	if settings.get(key, Settings.WARNING_DEFAULTS[key]) == value: return
 	var next := settings.duplicate(true)
 	next[key] = value
@@ -471,15 +469,29 @@ func refresh_numbers(snap: Dictionary) -> void:
 			var summary := _statistics_summary(aircraft_id, "session")
 			frames.session_stats.refresh_statistics(summary, tr("This aircraft") if scope == "aircraft" else tr("All aircraft"))
 	_refresh_warnings()
+	# A lost controller/radio pauses the simulation itself; that new danger still deserves a cue.
+	var safety_pause := _warning_codes.has("failsafe") or _warning_codes.has("controller_lost")
+	var audible := visible and layer == FLIGHT_LAYER and is_overlay_visible("warnings") \
+		and (not bool(snap.get("paused", false)) or safety_pause)
+	alert_audio.observe(_warning_codes, sample_time, audible)
 
 
-func _refresh_warnings() -> void:
+func _refresh_warnings(animate := true) -> void:
 	_warning_codes = AlertPolicy.select_codes(_raw_warning_codes, settings)
-	var shown := is_overlay_visible("warnings") and not _warning_codes.is_empty()
-	frames.warnings.visible = shown
-	# Empty clears stale cards; reopening refreshes the latest accepted codes immediately.
-	if visible and (shown or _warning_codes.is_empty()):
-		frames.warnings.refresh(_warning_codes)
+	if not is_overlay_visible("warnings"):
+		frames.warnings.clear_immediate()
+		frames.warnings.visible = false
+		alert_audio.retire_playbacks()
+		return
+	# Make arrivals visible before starting their tween. Empty truth retains only a brief,
+	# inaccessible glass silhouette; the signal hides the rail after its final exit.
+	if not _warning_codes.is_empty(): frames.warnings.visible = true
+	frames.warnings.refresh(_warning_codes, animate and visible and layer == FLIGHT_LAYER)
+	_sync_warning_visibility()
+
+
+func _sync_warning_visibility() -> void:
+	frames.warnings.visible = is_overlay_visible("warnings") and frames.warnings.is_presenting()
 
 
 func _statistics_summary(aircraft_id: String, period: String) -> Dictionary:
@@ -589,8 +601,8 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 	}
 
 
-## One audible cue per above-to-reserve crossing. Initial low fuel is shown but silent; refuelling above the
-## threshold rearms the next crossing. The sample is accepted flight state, and Master carries user mute/volume.
+## Preserve the accepted above-to-reserve event for observers. The shared alert director
+## owns audio after category/visibility filtering, so this crossing never plays twice.
 func _update_fuel_warning(mass_sample: Dictionary, paused: bool) -> void:
 	if not mass_sample.get("ok", false) or not mass_sample.get("finite_fuel", false):
 		_fuel_state_known = false
@@ -600,7 +612,6 @@ func _update_fuel_warning(mass_sample: Dictionary, paused: bool) -> void:
 	if _fuel_state_known and not _last_fuel_low and low and not paused:
 		var accepted := mass_sample.duplicate(true)
 		fuel_reserve_warning_requested.emit(accepted)
-		_fuel_warning_player.play()
 	_fuel_state_known = true
 	_last_fuel_low = low
 

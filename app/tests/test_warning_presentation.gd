@@ -52,11 +52,13 @@ func _run() -> void:
 	_check("noninteractive descendants ignore pointer input", _ignores_pointer(warnings, warnings.close_button))
 	_check("unchanged sample reports shown", warnings.refresh(alerts.duplicate()))
 	_check("unchanged sample keeps card instances", warnings.chips.get_child(0).get_instance_id() == first_id)
-	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]))
+	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]), false)
 	await process_frame
 	await process_frame
 	_material_checks(warnings)
-	warnings.refresh(alerts)
+	warnings.refresh(alerts, false)
+	first = warnings.chips.get_child(0)
+	first_id = first.get_instance_id()
 	warnings.configure({"warning_limit": 1, "warning_detail": false})
 	_check("compact setting caps cards without dropping codes", warnings.codes == alerts
 		and _shown(warnings) == ["failsafe"] and not _label(first, "Detail").visible)
@@ -75,12 +77,13 @@ func _run() -> void:
 	warnings.configure({})
 	var well: PanelContainer = _label(first, "Headline").get_parent().get_parent()
 	_check("opaque preference applies to dark well", (well.get_theme_stylebox("panel") as StyleBoxFlat).bg_color.a == 1.0)
-	_check("clear removes cards and summary", not warnings.refresh(PackedStringArray())
+	_check("static clear removes cards and summary", not warnings.refresh(PackedStringArray(), false)
 		and warnings.codes.is_empty() and warnings.chips.get_child_count() == 0 and not warnings.summary.visible)
 	UiTheme.reduced_motion = true
 	warnings.refresh(PackedStringArray(["stall"]))
-	_check("pooled card returns without animation under reduced motion", warnings.chips.get_child(0).get_instance_id() == first_id
-		and warnings.get("_entrance") == null and is_equal_approx(warnings.modulate.a, 1.0))
+	first = warnings.chips.get_child(0)
+	_check("pooled card returns without animation under reduced motion", warnings.get("_entrance") == null
+		and first.get_node("Glass").position == Vector2.ZERO and is_equal_approx(warnings.modulate.a, 1.0))
 	UiTheme.reduced_motion = false
 	warnings.refresh(PackedStringArray(["stall", "far"]))
 	_check("new visible alert starts a bounded transition", warnings.get("_entrance") != null)
@@ -93,8 +96,9 @@ func _run() -> void:
 	var retired: Control = warnings.chips.get_child(2)
 	var retired_material: ShaderMaterial = retired.get_node("Glass/Face").material
 	warnings.configure({warning_limit = 1})
-	_check("a pooled card stops its light immediately when detached",
-		retired.get_parent() == null and retired_material.get_shader_parameter("energy") == 0.0
+	_check("a retiring card stops its light and hides stale copy immediately",
+		retired.get_parent() != warnings.chips and not _label(retired, "Headline").is_visible_in_tree()
+		and retired_material.get_shader_parameter("energy") == 0.0
 		and retired_material.get_shader_parameter("shine_progress") == -1.0)
 	warnings.configure({warning_limit = 3})
 	UiTheme.reduced_motion = true
@@ -119,6 +123,7 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	await process_frame
+	first = warnings.chips.get_child(0)
 	var action := _label(first, "Detail")
 	var badge := _label(first, "Severity")
 	_check("720p Spanish rail stays bounded and action lines fit", warnings.size.x <= WarningsBar.MAX_WIDTH + 0.5
@@ -178,7 +183,7 @@ func _rendered_materials(warnings: Control) -> void:
 	TranslationServer.set_locale("en")
 	UiTheme.opaque_panels = false
 	warnings.configure({warning_limit = 3, warning_detail = true})
-	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]))
+	warnings.refresh(PackedStringArray(["stall", "far", "experimental"]), false)
 	warnings._stop_entrance()
 	var backdrop := ColorRect.new()
 	backdrop.size = Vector2(1920, 1080)

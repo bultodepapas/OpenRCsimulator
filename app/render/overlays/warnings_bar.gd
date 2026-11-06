@@ -7,11 +7,18 @@ const AlertPolicy := preload("res://render/overlays/alert_policy.gd")
 const GLASS := preload("res://ui/shaders/crystal.gdshader")
 
 signal close_requested(id: String)
+## The final retiring silhouette ended; owners can hide the empty rail.
+signal presentation_changed
 
 const MAX_WIDTH := 640.0
 const CLOSE_WIDTH := 28.0
 const GAP := 6.0
 const LIMITS := [1, 3, 5]
+const MOTIONS := ["playful", "subtle", "off"]
+const MAX_ACTIVE := 5
+const MAX_GHOSTS := 5
+const ENTRY_TIME := 0.23
+const EXIT_TIME := 0.16
 const WELL := Color("#080B0A")
 const GLASS_ALPHA := 0.78
 const GLASS_TONES := {
@@ -32,11 +39,22 @@ var codes := PackedStringArray()
 
 var _column: VBoxContainer
 var _cards: Array[Dictionary] = []
+var _available: Array[Dictionary] = []
+var _active := {}
+var _ghosts: Array[Dictionary] = []
+var _ghost_layer: Node2D
 var _summary_card: Dictionary
 var _detail := true
 var _limit := 3
+var _motion := "playful"
 var _opaque := false
 var _entrance: Tween
+var _pending_positions := {}
+var _pending_entries := PackedStringArray()
+var _reflow_pending := false
+var _summary_reflow_pending := false
+var _summary_before := Vector2.ZERO
+var _summary_entry := false
 
 
 func _init() -> void:
@@ -49,11 +67,16 @@ func _init() -> void:
 	_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_column.add_theme_constant_override("separation", 4)
 	add_child(_column)
+	_column.sort_children.connect(_after_column_sort)
+	_ghost_layer = Node2D.new()
+	_ghost_layer.name = "Retiring"
+	add_child(_ghost_layer, false, Node.INTERNAL_MODE_BACK)
 	chips = VBoxContainer.new()
 	chips.name = "Chips"
 	chips.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chips.add_theme_constant_override("separation", 4)
 	_column.add_child(chips)
+	chips.sort_children.connect(_after_chip_sort)
 	_summary_card = _make_card("Summary")
 	summary = _summary_card.root
 	summary.visible = false
@@ -77,6 +100,7 @@ func _exit_tree() -> void:
 	if get_viewport().size_changed.is_connected(_resize_to_viewport):
 		get_viewport().size_changed.disconnect(_resize_to_viewport)
 	_stop_entrance()
+	_settle_motion()
 
 
 func _notification(what: int) -> void:
@@ -87,7 +111,7 @@ func _notification(what: int) -> void:
 			if is_instance_valid(node) and node.get_parent() == null:
 				node.free()
 	elif what == NOTIFICATION_TRANSLATION_CHANGED and chips != null:
-		_render_cards()
+		_render_cards(false, codes)
 
 
 ## Preserve the original public text mapping for consumers outside the rail.
@@ -112,27 +136,35 @@ static func text_for(code: String) -> String:
 
 ## Settings affect presentation only; the manager owns filtering and priority.
 func configure(settings: Dictionary) -> void:
-	if UiTheme.reduced_motion:
-		_stop_entrance()
 	var detail: Variant = settings.get("warning_detail", true)
 	var limit: Variant = settings.get("warning_limit", 3)
+	var motion: Variant = settings.get("warning_motion", "playful")
 	var next_detail: bool = detail if typeof(detail) == TYPE_BOOL else true
 	var next_limit: int = limit if typeof(limit) == TYPE_INT and limit in LIMITS else 3
-	if next_detail == _detail and next_limit == _limit and _opaque == UiTheme.opaque_panels:
+	var next_motion: String = motion if typeof(motion) == TYPE_STRING and motion in MOTIONS else "playful"
+	if UiTheme.reduced_motion or next_motion == "off" or next_motion != _motion:
+		_stop_entrance()
+		_settle_motion()
+	if next_detail == _detail and next_limit == _limit and next_motion == _motion and _opaque == UiTheme.opaque_panels:
 		return
 	_detail = next_detail
 	_limit = next_limit
+	_motion = next_motion
 	_opaque = UiTheme.opaque_panels
-	_render_cards()
+	_render_cards(_can_animate(), codes)
 
 
-## Inputs are already filtered and ordered. Repeated samples do not touch the node tree.
-func refresh(new_codes: PackedStringArray) -> bool:
+## Inputs are already filtered and ordered. Retiring silhouettes remain present briefly after the last alert clears.
+func refresh(new_codes: PackedStringArray, animate := true) -> bool:
 	if new_codes == codes:
-		return not codes.is_empty()
+		return is_presenting()
 	var previous := codes
 	codes = new_codes.duplicate()
-	_render_cards()
+	var animate_change := animate and _can_animate()
+	if not animate_change:
+		_stop_entrance()
+		_settle_motion()
+	_render_cards(animate_change, previous)
 	if codes.is_empty():
 		_stop_entrance()
 	var appeared := false
@@ -140,30 +172,78 @@ func refresh(new_codes: PackedStringArray) -> bool:
 		if not previous.has(codes[index]):
 			appeared = true
 			break
-	if appeared and is_visible_in_tree() and not UiTheme.reduced_motion:
+	if appeared and animate_change:
 		_start_entrance()
-	return not codes.is_empty()
+	return is_presenting()
 
 
-func _render_cards() -> void:
+## Public truth is `codes`; this also accounts for a fading, non-interactive silhouette.
+func is_presenting() -> bool:
+	return not codes.is_empty() or not _ghosts.is_empty()
+
+
+## Used by explicit hide/reset: no exit visuals remain and no deferred callback can resurrect them.
+func clear_immediate() -> void:
+	_stop_entrance()
+	_settle_motion()
+	codes = PackedStringArray()
+	for code: String in _active.keys():
+		_recycle(_active[code])
+	_active.clear()
+	summary.visible = false
+	_clear_light(_summary_card.material)
+	_reflow_pending = false
+	_summary_reflow_pending = false
+	_pending_positions.clear()
+	_pending_entries.clear()
+
+
+func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
 	var shown := mini(codes.size(), _limit)
-	while _cards.size() < shown:
-		_cards.append(_make_card("Warning"))
-	while chips.get_child_count() > shown:
-		var index := chips.get_child_count() - 1
-		_clear_light(_cards[index].material)
-		chips.remove_child(chips.get_child(index))
+	var desired := codes.slice(0, shown)
+	var had_summary := summary.get_parent() == _column and summary.visible
+	var summary_before: Vector2 = _summary_card.visual.global_position if had_summary and animate_change else Vector2.ZERO
+	var before := {}
+	var old_survivors := PackedStringArray()
+	if animate_change:
+		for node: Control in chips.get_children():
+			var old_code: String = node.get_meta("code", "")
+			if desired.has(old_code): old_survivors.append(old_code)
+		for code: String in _active:
+			var current: Dictionary = _active[code]
+			before[code] = current.visual.global_position
+		var new_survivors := PackedStringArray()
+		for code: String in desired:
+			if before.has(code): new_survivors.append(code)
+		# Crossing full-width cards would obscure urgent copy. Such swaps settle in place.
+		if old_survivors != new_survivors: before.clear()
+	for code: String in _active.keys():
+		if not desired.has(code):
+			var removed: Dictionary = _active[code]
+			_active.erase(code)
+			_retire(removed, animate_change)
+	var entries := PackedStringArray()
 	for index in shown:
-		var card: Dictionary = _cards[index]
-		if card.root.get_parent() == null:
-			chips.add_child(card.root)
 		var code := codes[index]
+		var card: Dictionary
+		if _active.has(code):
+			card = _active[code]
+		else:
+			card = _acquire(code)
+			_active[code] = card
+			chips.add_child(card.root)
+			if not previous.has(code): entries.append(code)
+		chips.move_child(card.root, index)
 		_update_card(card, AlertPolicy.severity(code), tr(AlertPolicy.title_for(code)),
 			tr(AlertPolicy.detail_for(code)) if _detail else "", code)
 	var remaining := codes.size() - shown
-	summary.visible = remaining > 0
-	if remaining <= 0: _clear_light(_summary_card.material)
+	if remaining <= 0 and summary.visible and summary.get_parent() == _column:
+		_retire(_summary_card, animate_change)
+	elif remaining <= 0:
+		_clear_light(_summary_card.material)
 	if remaining > 0:
+		_restore_summary()
+		summary.visible = true
 		var severity := "info"
 		var hidden_danger := PackedStringArray()
 		for index in range(shown, codes.size()):
@@ -176,6 +256,162 @@ func _render_cards() -> void:
 		# A cap never hides the identity of a critical condition, even in compact mode.
 		_update_card(_summary_card, severity, tr("+%d MORE ALERTS") % remaining,
 			" · ".join(hidden_danger), "")
+	if animate_change and not _active.is_empty():
+		_pending_positions = before
+		_pending_entries = entries
+		_reflow_pending = true
+		chips.queue_sort()
+	if animate_change and remaining > 0:
+		var new_hidden := false
+		for index in range(shown, codes.size()):
+			if not previous.has(codes[index]): new_hidden = true
+		_summary_reflow_pending = had_summary or new_hidden
+		_summary_before = summary_before
+		_summary_entry = not had_summary and new_hidden
+		if _summary_reflow_pending: _column.queue_sort()
+
+
+func _can_animate() -> bool:
+	return is_inside_tree() and is_visible_in_tree() and not UiTheme.reduced_motion and _motion != "off"
+
+
+func _acquire(code: String) -> Dictionary:
+	# A returning condition takes back its own retiring slot without leaving a ghost behind.
+	for ghost: Dictionary in _ghosts.duplicate():
+		if not ghost.is_summary and ghost.root.get_meta("code", "") == code:
+			_finish_ghost(ghost, false)
+			break
+	if _available.is_empty() and _cards.size() >= MAX_ACTIVE + MAX_GHOSTS:
+		for ghost: Dictionary in _ghosts.duplicate():
+			if not ghost.is_summary:
+				_finish_ghost(ghost, false)
+				break
+	if not _available.is_empty():
+		return _available.pop_back()
+	var card := _make_card("Warning")
+	_cards.append(card)
+	return card
+
+
+func _retire(card: Dictionary, animate_change: bool) -> void:
+	_cancel_card_motion(card)
+	_clear_light(card.material)
+	if not animate_change:
+		_recycle(card)
+		return
+	while _ghosts.size() >= MAX_GHOSTS:
+		_finish_ghost(_ghosts[0], false)
+	var root: Control = card.root
+	var origin := root.global_position
+	var extent := root.size
+	if root.get_parent() != null: root.get_parent().remove_child(root)
+	_ghost_layer.add_child(root)
+	root.position = _ghost_layer.to_local(origin)
+	root.size = extent
+	# Retired silhouettes never show stale warning text or severity badges.
+	card.row.visible = false
+	root.set("accessibility_name", "")
+	root.modulate = Color(0.72, 0.72, 0.72, 0.36)
+	_ghosts.append(card)
+	var tween := create_tween().set_parallel(true).set_ignore_time_scale().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	card.ghost_tween = tween
+	var distance := 6.0 if _motion == "subtle" else 12.0
+	tween.tween_property(card.visual, "position", card.visual.position + Vector2(distance, 0), EXIT_TIME)
+	tween.tween_property(root, "modulate:a", 0.0, EXIT_TIME)
+	tween.finished.connect(_finish_ghost.bind(card))
+
+
+func _finish_ghost(card: Dictionary, announce := true) -> void:
+	if not _ghosts.has(card): return
+	_ghosts.erase(card)
+	var tween: Tween = card.ghost_tween
+	if tween != null and tween.is_valid(): tween.kill()
+	card.ghost_tween = null
+	_recycle(card)
+	if announce and _ghosts.is_empty() and codes.is_empty():
+		presentation_changed.emit()
+
+
+func _recycle(card: Dictionary) -> void:
+	_cancel_card_motion(card)
+	var root: Control = card.root
+	if root.get_parent() != null: root.get_parent().remove_child(root)
+	card.visual.position = Vector2.ZERO
+	card.row.visible = true
+	root.modulate = Color.WHITE
+	_clear_light(card.material)
+	if card.is_summary:
+		root.visible = false
+		_column.add_child(root)
+	elif not _available.has(card):
+		_available.append(card)
+
+
+func _restore_summary() -> void:
+	if _ghosts.has(_summary_card): _finish_ghost(_summary_card, false)
+	if summary.get_parent() == null: _column.add_child(summary)
+
+
+func _after_chip_sort() -> void:
+	if not _reflow_pending: return
+	_reflow_pending = false
+	if not _can_animate():
+		_settle_motion()
+		return
+	for code: String in _active:
+		var card: Dictionary = _active[code]
+		var start := Vector2.ZERO
+		var entry := _pending_entries.has(code)
+		if _pending_positions.has(code):
+			start = Vector2(_pending_positions[code]) - card.root.global_position
+		elif entry:
+			start.x = 4.0 if _motion == "subtle" else 10.0
+		_move_card(card, start, entry)
+	_pending_positions.clear()
+	_pending_entries.clear()
+
+
+func _after_column_sort() -> void:
+	if not _summary_reflow_pending: return
+	_summary_reflow_pending = false
+	if not _can_animate() or summary.get_parent() != _column or not summary.visible: return
+	var start := Vector2.ZERO
+	if _summary_entry:
+		start.x = 4.0 if _motion == "subtle" else 10.0
+	else:
+		start = _summary_before - summary.global_position
+	_move_card(_summary_card, start, _summary_entry)
+
+
+func _move_card(card: Dictionary, start: Vector2, entry: bool) -> void:
+	_cancel_card_motion(card)
+	card.visual.position = start
+	if start.is_zero_approx(): return
+	var tween := create_tween().set_ignore_time_scale().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	card.motion_tween = tween
+	var transition := Tween.TRANS_BACK if entry and _motion == "playful" else Tween.TRANS_CUBIC
+	tween.tween_property(card.visual, "position", Vector2.ZERO, ENTRY_TIME).set_trans(transition).set_ease(Tween.EASE_OUT)
+
+
+func _cancel_card_motion(card: Dictionary) -> void:
+	var tween: Tween = card.motion_tween
+	if tween != null and tween.is_valid(): tween.kill()
+	card.motion_tween = null
+
+
+func _settle_motion() -> void:
+	_reflow_pending = false
+	_summary_reflow_pending = false
+	_pending_positions.clear()
+	_pending_entries.clear()
+	for card: Dictionary in _cards:
+		_cancel_card_motion(card)
+		card.visual.position = Vector2.ZERO
+	_cancel_card_motion(_summary_card)
+	_summary_card.visual.position = Vector2.ZERO
+	while not _ghosts.is_empty():
+		_finish_ghost(_ghosts[0], false)
 
 
 func _make_card(card_name: String) -> Dictionary:
@@ -191,7 +427,9 @@ func _make_card(card_name: String) -> Dictionary:
 	outer.content_margin_right = 9
 	outer.content_margin_top = 7
 	outer.content_margin_bottom = 7
-	card.add_theme_stylebox_override("panel", outer)
+	# The layout slot stays in the VBox. Its complete visual, including shadow,
+	# moves independently so the container never fights the motion tween.
+	card.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	var underlay := Node2D.new()
 	underlay.name = "Glass"
 	underlay.show_behind_parent = true
@@ -211,11 +449,17 @@ func _make_card(card_name: String) -> Dictionary:
 	glass.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	glass.material = material
 	underlay.add_child(glass)
-	card.resized.connect(_resize_glass.bind(card, glass, material))
+	var surface := PanelContainer.new()
+	surface.name = "Surface"
+	surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	surface.add_theme_stylebox_override("panel", outer)
+	underlay.add_child(surface)
+	card.resized.connect(_resize_glass.bind(card, glass, material, surface))
+	surface.minimum_size_changed.connect(_sync_card_minimum.bind(card, surface))
 	var row := HBoxContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_theme_constant_override("separation", 8)
-	card.add_child(row)
+	surface.add_child(row)
 	var badge := PanelContainer.new()
 	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge.custom_minimum_size.x = 76
@@ -242,8 +486,11 @@ func _make_card(card_name: String) -> Dictionary:
 	detail.name = "Detail"
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	copy.add_child(detail)
-	return {root = card, material = material, outer = outer, badge = badge, severity = severity,
-		well = well, headline = headline, detail = detail}
+	_sync_card_minimum(card, surface)
+	_resize_glass(card, glass, material, surface)
+	return {root = card, visual = underlay, surface = surface, row = row, material = material,
+		outer = outer, badge = badge, severity = severity, well = well, headline = headline, detail = detail,
+		motion_tween = null, ghost_tween = null, is_summary = card_name == "Summary"}
 
 
 func _update_card(card: Dictionary, level: String, title: String, detail: String, code: String) -> void:
@@ -284,8 +531,15 @@ func _well_style() -> StyleBoxFlat:
 	return style
 
 
-func _resize_glass(card: Control, glass: ColorRect, material: ShaderMaterial) -> void:
+func _sync_card_minimum(card: Control, surface: Control) -> void:
+	var minimum := surface.get_combined_minimum_size()
+	if not card.custom_minimum_size.is_equal_approx(minimum):
+		card.custom_minimum_size = minimum
+
+
+func _resize_glass(card: Control, glass: ColorRect, material: ShaderMaterial, surface: Control) -> void:
 	glass.size = card.size
+	surface.size = card.size
 	material.set_shader_parameter("rect_size", card.size)
 
 
@@ -298,14 +552,15 @@ func _resize_to_viewport() -> void:
 
 func _start_entrance() -> void:
 	_stop_entrance()
-	_entrance = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_entrance = create_tween().set_ignore_time_scale().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_entrance.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_entrance.tween_method(_reveal_light, 0.0, 1.0, 0.56)
 	_entrance.finished.connect(_stop_entrance)
 
 
 ## Animate the optical layer only. Text stays fully opaque, and no clock runs at rest.
 func _reveal_light(progress: float) -> void:
-	if UiTheme.reduced_motion or not is_visible_in_tree():
+	if not _can_animate():
 		_stop_entrance()
 		return
 	for card: Dictionary in _cards:
@@ -336,6 +591,7 @@ func _stop_entrance() -> void:
 func _visibility_changed() -> void:
 	if not is_visible_in_tree():
 		_stop_entrance()
+		_settle_motion()
 	elif _opaque != UiTheme.opaque_panels:
 		_opaque = UiTheme.opaque_panels
-		_render_cards()
+		_render_cards(false, codes)

@@ -4,7 +4,7 @@
 
 ## Name integrity (AE-09d-R2, 2026-11-06)
 
-[A14 F11](../../../../external%20Audits/CONSOLIDATED-AUDITS.md) identified silent truncation of valid imported names. `Store.MAX_NAME_LENGTH` now owns the existing 96-character format bound; storage, bundles, both editor name fields and recovery use it. The separate whitespace/control-character policies remain unchanged, and numeric recovery buffers retain their 64-character limit. No format version or immutable record is migrated.
+[A14 F11](../../../../external%20Audits/COMPLETED-AUDIT-WORK.md#implemented-corrections) identified silent truncation of valid imported names. `Store.MAX_NAME_LENGTH` now owns the existing 96-character format bound; storage, bundles, both editor name fields and recovery use it. The separate whitespace/control-character policies remain unchanged, and numeric recovery buffers retain their 64-character limit. No format version or immutable record is migrated.
 
 The initial 120-check fixture fails **48 assertions** on `f4c81eca4`, with zero engine errors. The final dedicated regression passes **153 checks**: ASCII names of 64/65/80/96 characters, 96-code-point names with emoji or combining accents, import, clean baseline, unrelated edit/revision, reload/export, real dialog-keyboard Save and Cancel, completed recovery debounce, reopened Restore, detached copy and export. Names are neither truncated nor normalized. The 97-character refusals leave the library/recovery unchanged; blank and space-padded raw draft names remain recoverable.
 
@@ -14,7 +14,7 @@ Five affected suites pass another **385 checks**: storage 151, bundle 28, draft 
 
 ## Preset integrity (AE-09d-R1, 2026-11-06)
 
-[A14 F10](../../../../external%20Audits/CONSOLIDATED-AUDITS.md) reproduced silent loss of measured components and unresolved numeric input when selecting a Starting preset. Presets now patch the current recipe within their declared supported fields and compile the proposal before publication. Measurements, tank capacity, individual surface overrides and presentation remain intact; incompatible combinations and pending fields are refused. Refusal preserves history and returns pending-field focus, including collapsed advanced controls. Direct master-travel edits retain their existing reset semantics.
+[A14 F10](../../../../external%20Audits/COMPLETED-AUDIT-WORK.md#implemented-corrections) reproduced silent loss of measured components and unresolved numeric input when selecting a Starting preset. Presets now patch the current recipe within their declared supported fields and compile the proposal before publication. Measurements, tank capacity, individual surface overrides and presentation remain intact; incompatible combinations and pending fields are refused. Refusal preserves history and returns pending-field focus, including collapsed advanced controls. Direct master-travel edits retain their existing reset semantics.
 
 The original source at `d0b672b09` fails 46 of the initial 84 regression assertions with zero engine errors. The final regression passes **88 checks**, including real keyboard popup selection and correction, measured-component compatibility, exact Undo/Redo, Save/reload and frozen trial payloads. Existing Workshop UI, measured-recipe, customization and recovery suites add **319 passing checks**. All five reports are complete with zero engine errors or warnings. An independent source review found no remaining blocking defect.
 

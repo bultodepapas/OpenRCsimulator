@@ -69,8 +69,8 @@ func _initialize() -> void:
 		_check("production crossing emits exactly one semantic cue carrying the accepted sample",
 			warnings.size() == 1 and warnings[0] == below.mass_sample)
 		_check("production path plays the existing warning asset on Master",
-			manager.get("_fuel_warning_player").playing and manager.get("_fuel_warning_player").bus == &"Master")
-	var warning_player: AudioStreamPlayer = manager.get("_fuel_warning_player")
+			manager.alert_audio.audio_player().playing and manager.alert_audio.audio_player().bus == &"Master")
+	var warning_player: AudioStreamPlayer = manager.alert_audio.audio_player()
 	var warning_playback: AudioStreamPlayback = warning_player.get_stream_playback()
 	var warning_playback_ref: WeakRef = weakref(warning_playback) if warning_playback != null else null
 	warning_playback = null

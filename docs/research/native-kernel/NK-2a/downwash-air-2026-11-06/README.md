@@ -1,7 +1,7 @@
 # NK-2a — Reuse downwash air within one pre-step
 
 2026-11-06. Implements external audit **A6 O4**, selected from the
-[consolidated audit](../../../../../external%20Audits/CONSOLIDATED-AUDITS.md#o4-measured-downwash-pre-step-candidate).
+[consolidated audit](../../../../../external%20Audits/COMPLETED-AUDIT-WORK.md#implemented-corrections).
 The bounded change removes duplicate air sampling without changing a physics law,
 integration order, state layout or arithmetic expression. Baseline source is the
 session at `e72d878b6`; [manifest](manifest.json) records exact source/engine hashes.
