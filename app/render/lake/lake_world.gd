@@ -112,7 +112,8 @@ static func _prepare_ground_cut(field_node: Node3D, ground_material: ShaderMater
 		var mesh := Horizon.with_hole(instance.mesh, hole)
 		if mesh == null:
 			return {ok = false, error = "cannot cut the bank polygon from ground mesh %s" % instance.name}
-		replacements.append({instance = instance, mesh = mesh})
+		if mesh != instance.mesh:
+			replacements.append({instance = instance, mesh = mesh})
 	return {ok = true, replacements = replacements}
 
 

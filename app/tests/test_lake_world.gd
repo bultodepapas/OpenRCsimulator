@@ -15,11 +15,9 @@ const Session := preload("res://sim/flight_session.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
 
-## Use a real refused shoreline cut at the ground activity's field-build boundary.
-class RefusedLakeActivity extends "res://vehicles/ground/ground_scene.gd":
-	var fixture_refused := false
-
-	func _build_airfield_field(_exclusions: Array) -> Node3D:
+## A real shoreline-cut refusal shared by both activity startup checks.
+class RefusedLakeField:
+	static func build(field: Dictionary) -> Dictionary:
 		var fixture := Node3D.new()
 		fixture.name = "Field"
 		var material: ShaderMaterial = preload("res://render/ground.gd").grass_material({})
@@ -39,9 +37,27 @@ class RefusedLakeActivity extends "res://vehicles/ground/ground_scene.gd":
 		var lake_result: Dictionary = preload("res://data/lake_loader.gd").load_from()
 		var attached: Node3D = preload("res://render/lake/lake_world.gd").attach(
 			fixture, field, material, lake_result.lake, {}, false)
-		fixture_refused = attached == null and ground.mesh == mesh \
+		var refused := attached == null and ground.mesh == mesh \
 			and str(fixture.get_meta("lake_error", "")).contains("refused_ground")
-		return fixture
+		return {field = fixture, refused = refused}
+
+
+class RefusedLakeActivity extends "res://vehicles/ground/ground_scene.gd":
+	var fixture_refused := false
+
+	func _build_airfield_field(_exclusions: Array) -> Node3D:
+		var built: Dictionary = RefusedLakeField.build(field)
+		fixture_refused = built.refused
+		return built.field
+
+
+class RefusedLakeHelicopter extends "res://helicopter_main.gd":
+	var fixture_refused := false
+
+	func _build_landscape_field(_snapshot: Dictionary) -> Node3D:
+		var built: Dictionary = RefusedLakeField.build(field)
+		fixture_refused = built.refused
+		return built.field
 
 
 var _checks := 0
@@ -93,6 +109,7 @@ func _run() -> void:
 
 	_test_attached_scene(field, lake)
 	_test_ground_activities()
+	_test_helicopter_lake_rejection()
 	_finish()
 
 
@@ -250,8 +267,17 @@ func _test_atomic_ground_failure(field: Dictionary, lake: Dictionary, cuttable: 
 	crossing.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, crossing_arrays)
 	var crossing_hole := PackedVector2Array([Vector2(4.0, 4.0), Vector2(8.0, 4.0),
 		Vector2(8.0, 8.0), Vector2(4.0, 8.0)])
+	var crossing_cut: Mesh = Horizon.with_hole(crossing, crossing_hole)
 	_check("unindexed triangle with an edge-crossing hole is cut",
-		Horizon.with_hole(crossing, crossing_hole) != null)
+		crossing_cut != null and crossing_cut != crossing)
+	var outside := PackedVector2Array([Vector2(20.0, 20.0), Vector2(30.0, 20.0),
+		Vector2(30.0, 30.0), Vector2(20.0, 30.0)])
+	_check("a disjoint bank leaves the original mesh unchanged", Horizon.with_hole(crossing, outside) == crossing)
+	var covering := PackedVector2Array([Vector2(-1.0, -1.0), Vector2(11.0, -1.0),
+		Vector2(11.0, 11.0), Vector2(-1.0, 11.0)])
+	var fully_cut: Mesh = Horizon.with_hole(crossing, covering)
+	_check("a fully covered ground mesh has no visible surface",
+		fully_cut != null and fully_cut != crossing and fully_cut.get_surface_count() == 0)
 	var material: ShaderMaterial = Ground.grass_material({})
 	material.set_shader_parameter("lake_mask_mode", 0)
 	material.set_shader_parameter("lake_bank_count", 7)
@@ -266,6 +292,12 @@ func _test_atomic_ground_failure(field: Dictionary, lake: Dictionary, cuttable: 
 	first.material_override = material
 	first.position = Vector3(3.0, -0.02, -7.0)
 	field_node.add_child(first)
+	var distant := MeshInstance3D.new()
+	distant.name = "disjoint_ground"
+	distant.mesh = crossing
+	distant.material_override = material
+	distant.position = Vector3(100000.0, 0.0, 0.0)
+	field_node.add_child(distant)
 	var second := MeshInstance3D.new()
 	second.name = "interior_hole"
 	second.mesh = enclosing
@@ -273,8 +305,8 @@ func _test_atomic_ground_failure(field: Dictionary, lake: Dictionary, cuttable: 
 	second.position = first.position
 	field_node.add_child(second)
 	var attached: Node3D = LakeWorld.attach(field_node, field, material, lake, {}, false)
-	_check("failed later cut preserves both original ground meshes",
-		attached == null and first.mesh == cuttable and second.mesh == enclosing)
+	_check("failed later cut preserves cuttable, disjoint and refused ground meshes",
+		attached == null and first.mesh == cuttable and distant.mesh == crossing and second.mesh == enclosing)
 	_check("failed cut publishes no lake scene, contact context or cut metadata",
 		field_node.get_node_or_null("Lake") == null and not field_node.has_meta("lake_context")
 		and not field_node.has_meta("lake_identity") and not field_node.has_meta("ground_lake_cut"))
@@ -288,11 +320,47 @@ func _test_atomic_ground_failure(field: Dictionary, lake: Dictionary, cuttable: 
 	_check_no_lake_hazard("refused ground cut", field_node.get_meta("lake_context", {}))
 	second.free()
 	var retried: Node3D = LakeWorld.attach(field_node, field, material, lake, {}, false)
-	_check("successful retry commits the cut and clears its earlier refusal",
-		retried != null and first.mesh != cuttable and not field_node.has_meta("lake_error")
+	_check("successful retry cuts only intersecting ground and clears its earlier refusal",
+		retried != null and first.mesh != cuttable and distant.mesh == crossing and not field_node.has_meta("lake_error")
 		and int(field_node.get_meta("ground_lake_cut", 0)) == 1
 		and field_node.get_meta("lake_context", {}).get("identity", "") == lake.identity)
 	field_node.free()
+	var distant_field := Node3D.new()
+	var distant_only := MeshInstance3D.new()
+	distant_only.mesh = crossing
+	distant_only.material_override = material
+	distant_only.position = Vector3(100000.0, 0.0, 0.0)
+	distant_field.add_child(distant_only)
+	var outside_lake: Node3D = LakeWorld.attach(distant_field, field, material, lake, {}, false)
+	_check("an entirely disjoint ground mesh permits lake attachment without a cut",
+		outside_lake != null and distant_only.mesh == crossing and not distant_field.has_meta("lake_error")
+		and int(distant_field.get_meta("ground_lake_cut", -1)) == 0
+		and distant_field.get_meta("lake_context", {}).get("identity", "") == lake.identity)
+	distant_field.free()
+	var bank_triangles := Geometry2D.triangulate_polygon(hole)
+	if bank_triangles.size() < 3:
+		_check("fixture bank can locate a fully covered triangle", false)
+		return
+	var center := (hole[bank_triangles[0]] + hole[bank_triangles[1]] + hole[bank_triangles[2]]) / 3.0
+	var small_arrays := []
+	small_arrays.resize(Mesh.ARRAY_MAX)
+	small_arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(center.x, 0.0, center.y),
+		Vector3(center.x + 0.1, 0.0, center.y), Vector3(center.x, 0.0, center.y + 0.1)])
+	small_arrays[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP])
+	var small_mesh := ArrayMesh.new()
+	small_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, small_arrays)
+	var covered_field := Node3D.new()
+	var covered_ground := MeshInstance3D.new()
+	covered_ground.mesh = small_mesh
+	covered_ground.material_override = material
+	covered_ground.position = Vector3(3.0, -0.02, -7.0)
+	covered_field.add_child(covered_ground)
+	var covered_lake: Node3D = LakeWorld.attach(covered_field, field, material, lake, {}, false)
+	_check("lake attachment removes fully covered ground without restoring its old triangles",
+		covered_lake != null and covered_ground.mesh != small_mesh and covered_ground.mesh.get_surface_count() == 0
+		and int(covered_field.get_meta("ground_lake_cut", 0)) == 1
+		and not covered_field.has_meta("lake_error"))
+	covered_field.free()
 
 
 func _test_ground_activities() -> void:
@@ -337,6 +405,18 @@ func _test_ground_activity_default() -> void:
 		and built != null and not built.has_meta("lake_error")
 		and int(built.get_meta("ground_lake_cut", 0)) > 0
 		and not (built.get_meta("lake_context", {}) as Dictionary).is_empty(), activity.startup_error)
+	activity.free()
+
+
+func _test_helicopter_lake_rejection() -> void:
+	var activity := RefusedLakeHelicopter.new()
+	activity.interactive_start = true
+	activity.set_user_args(PackedStringArray(["--soundscape=off"]))
+	root.add_child(activity)
+	_check("helicopter receives an actual refused lake cut", activity.fixture_refused)
+	_check("helicopter rejects the lake before creating a flight session",
+		activity.startup_error.contains("refused_ground") and activity.session == null
+		and activity._airplane.is_empty() and not activity.is_processing(), activity.startup_error)
 	activity.free()
 
 
