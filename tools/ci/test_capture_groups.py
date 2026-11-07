@@ -35,15 +35,15 @@ EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "c
 # Both Python entry points and Godot log their exact invocations after paths are
 # normalized. Stub output is only sufficient to exercise the shell's sequencing
 # and final manifest writer; it does not pretend to be rendered evidence.
-STUB = r'''#!/usr/bin/python3
+STUB = r'''
 import hashlib, json, os, pathlib, sys
 from pathlib import Path
-args = sys.argv[1:]
+name = Path(sys.argv[1]).name
+args = sys.argv[2:]
 env = os.environ
 root, app, out = env['FAKE_ROOT'], env['FAKE_APP'], env['FAKE_OUT']
 def normalize(value):
     return value.replace(out, 'OUT').replace(app, 'APP').replace(root, 'ROOT')
-name = Path(sys.argv[0]).name
 entry = [name] + args
 with open(env['FAKE_LOG'], 'a') as stream:
     stream.write(json.dumps([normalize(x) for x in entry]) + '\n')
@@ -52,7 +52,7 @@ if env.get('FAKE_FAIL') and any(env['FAKE_FAIL'] in a for a in args):
 if env.get('FAKE_MUTATE') and any(env['FAKE_MUTATE'] in a for a in args):
     Path(app, 'tests/capture_runner.py').write_text('changed during run')
 if name == 'python3' and args and Path(args[0]).name == 'capture_groups.py':
-    os.execv('/usr/bin/python3', ['/usr/bin/python3', *args])
+    os.execv(env['FAKE_TEST_PYTHON'], [env['FAKE_TEST_PYTHON'], *args])
 def write(path, data='{}'):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -129,10 +129,11 @@ class CaptureGroupsTests(unittest.TestCase):
         (self.root / "tools/scenery").mkdir(parents=True)
         self.bin = self.root / "bin"
         self.bin.mkdir()
+        stub = self.root / "fixture_stub.py"
+        stub.write_text(STUB, encoding="utf-8")
         for name in ("godot", "python3"):
-            path = self.bin / name
-            path.write_text(STUB)
-            path.chmod(0o755)
+            self.executable(self.bin / name,
+                            '#!/bin/sh\nexec "$FAKE_TEST_PYTHON" "$FAKE_STUB" "$0" "$@"\n')
         self.executable(self.bin / "xvfb-run", '#!/bin/bash\nshift\nif [[ "$1" == -s ]]; then shift 2; fi\nexec "$@"\n')
         self.executable(self.app / "get-godot.sh", '#!/bin/bash\nprintf "%s\\n" "$FAKE_ROOT/bin/godot"\n')
         self.executable(self.app / "tests/visual-env.sh", '#!/bin/bash\nprintf "%s\\n" "$FAKE_ROOT/bin/python3"\n')
@@ -142,6 +143,7 @@ class CaptureGroupsTests(unittest.TestCase):
         self.env = {key: value for key, value in os.environ.items() if not key.startswith(excluded)}
         self.env.update(PATH=f"{self.bin}:{os.environ['PATH']}", FAKE_ROOT=str(self.root),
                         FAKE_APP=str(self.app), FAKE_LOG=str(self.log),
+                        FAKE_TEST_PYTHON=sys.executable, FAKE_STUB=str(stub),
                         FAKE_VQ_CASES=json.dumps(receipts.VQ_CASES), FAKE_TREE_CASES=json.dumps(receipts.TREELINE_CASES))
         self.current = (ROOT / "app/capture.sh").read_text(encoding="utf-8")
 
@@ -258,6 +260,21 @@ assert capture_groups.TREELINE_CASES == [case.case_id for case in treeline_reada
 '''
         result = subprocess.run([sys.executable, '-c', code, str(ROOT)], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_stubs_and_receipt_helper_use_the_selected_interpreter(self):
+        self.prepare_receipts()
+        interpreter_log = self.bin / 'interpreter.log'
+        interpreter = self.bin / 'alternate-python'
+        self.executable(interpreter, '#!/bin/sh\nprintf "%s\\n" "$1" >> "$FAKE_INTERPRETER_LOG"\n'
+                        'exec "$FAKE_REAL_PYTHON" "$@"\n')
+        self.env.update(FAKE_TEST_PYTHON=str(interpreter), FAKE_REAL_PYTHON=sys.executable,
+                        FAKE_INTERPRETER_LOG=str(interpreter_log))
+        result, output, _ = self.run_capture(self.current, 'ui', run_id='alternate-interpreter')
+        self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+        self.assertTrue((output / receipts.RECEIPT).is_file())
+        invoked = [Path(path).resolve() for path in interpreter_log.read_text().splitlines()]
+        self.assertIn((self.root / 'fixture_stub.py').resolve(), invoked)
+        self.assertEqual(invoked.count((self.root / 'tools/ci/capture_groups.py').resolve()), 2)
 
     def prepare_receipts(self):
         for name in receipts.DIRECT_SOURCES:

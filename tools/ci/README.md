@@ -26,6 +26,22 @@ The `CI required` job independently recomputes the selection from the event and 
 
 The UID preflight checks tracked presence and nonempty regular files. It does not validate UID contents or uniqueness; fresh import and source-drift validation remain required.
 
+Linux dependency-install steps have 15-minute deadlines and bounded APT transport timeouts/retries. These cover setup separately from the longer app suites; a stalled package mirror cannot consume an app job's entire six-hour allowance. Test failures are not retried.
+
+### Installed RC native checks
+
+The Linux and Windows RC build jobs qualify the evaluator and publish same-run artifacts. The required `native-rc-runtime` matrix then installs that matching pair without rebuilding and exercises the production session guards and 180-tick reference/native trajectory on each host. It requires explicit completion markers from the native branches; a zero-exit optional skip fails this gate. Checked import, engine identity, logs and JUnit remain available in `rc-native-production-linux` and `rc-native-production-windows` for seven days. Export runs in parallel; publication still waits for the aggregate, including both matrix legs.
+
+The Windows builder and runtime checks use `app/get-godot.sh`, so editor version and archive/executable pins have one owner. Runtime cache paths match the corresponding producer's paths as well as its OS/architecture/key; GitHub's [cache version also includes paths](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#matching-a-cache-key).
+
+To run the installed-native checks locally after `research/rc-monster-truck/native/build.py --install-only` has accepted both platform receipts:
+
+```sh
+python3 tools/ci/check_rcv_native.py --godot "$(app/get-godot.sh)" --out-dir tmp/rcv-native-checks
+```
+
+Use a fresh output directory for every attempt. This proves the tested production integration on the executing host, not native hardware, controller or whole-package acceptance. Ordinary app shards keep their reference-only behavior when native libraries are absent.
+
 ## App phases and coverage
 
 The [shared app-suite guide](../../docs/tools/shared.md#full-app-suite) owns commands. Full/integration source checks call `check-sources.sh` once; its 17 generator commands include nine previously repeated in the same CI integration job. Independent oracle calls and real-engine diagnostic checks are distinct and remain required.

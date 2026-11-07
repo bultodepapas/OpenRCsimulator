@@ -152,7 +152,9 @@ def prepare_repository(root, version="v1.2.3-rc.2", native_digest="0" * 64):
     (root / "app/project.godot").write_text('config/version="1.2.3"\n')
     (root / "app/export_presets.cfg").write_text(
         '[preset.0]\nname="macOS"\nplatform="macOS"\n'
-        '[preset.0.options]\ncustom_template/release="res://.godot/export_templates/fixture.zip"\n')
+        '[preset.0.options]\ncustom_template/release="res://.godot/export_templates/fixture.zip"\n'
+        '[preset.1]\nname="Linux"\nplatform="Linux"\n[preset.1.options]\n'
+        '[preset.2]\nname="Windows"\nplatform="Windows Desktop"\n[preset.2.options]\n')
     (root / "app/get-godot.sh").write_text("ENGINE_VERSION=fixture.engine\n")
     (root / ".gitignore").write_text("/export with spaces/\n/.cache/\n/app/.godot/\n/app/native/kernel/package.json\n")
     for kind in ("kernel", "ground_vehicle"):
@@ -454,7 +456,9 @@ class ManifestTests(unittest.TestCase):
 
     def test_official_macos_template_is_bound_and_detects_drift(self):
         (self.root / "app/export_presets.cfg").write_text(
-            '[preset.0]\nname="macOS"\nplatform="macOS"\n[preset.0.options]\n')
+            '[preset.0]\nname="macOS"\nplatform="macOS"\n[preset.0.options]\n'
+            '[preset.1]\nname="Linux"\nplatform="Linux"\n[preset.1.options]\n'
+            '[preset.2]\nname="Windows"\nplatform="Windows Desktop"\n[preset.2.options]\n')
         env = dict(self.env, GITHUB_REF="refs/heads/main", OPENRC_BUILD_DIRTY="1",
                    OPENRC_BUILD_DESCRIBE=self.env["OPENRC_BUILD_DESCRIBE"] + "-dirty")
         captured = manifest.capture(self.root, self.editor, self.templates, env)
@@ -497,40 +501,72 @@ class ManifestTests(unittest.TestCase):
         self.assertTrue(result["source"]["dirty"])
         self.assertEqual(result["source"]["channel"], "development")
 
+    def test_capture_rejects_selected_linux_or_windows_custom_template(self):
+        presets = self.root / "app/export_presets.cfg"
+        original = presets.read_text()
+        env = dict(self.env, GITHUB_REF="refs/heads/main", OPENRC_BUILD_DIRTY="1",
+                   OPENRC_BUILD_DESCRIBE="v1.2.3-rc.2-dirty")
+        for index, name in ((1, "Linux"), (2, "Windows")):
+            with self.subTest(platform=name):
+                presets.write_text(original.replace(f"[preset.{index}.options]\n",
+                    f'[preset.{index}.options]\ncustom_template/release="res://.godot/custom-template"\n'))
+                with self.assertRaisesRegex(ValueError, f"custom {name} release templates are not supported"):
+                    manifest.capture(self.root, self.editor, self.templates, env)
+
 
 class TemplateSelectionTests(unittest.TestCase):
-    def test_current_application_uses_the_official_macos_release_template(self):
+    def test_current_application_uses_official_desktop_release_templates(self):
         templates = Path("/template-fixture")
-        self.assertEqual(manifest.macos_template_inputs(REPO, templates),
+        self.assertEqual(manifest.desktop_template_inputs(REPO, templates),
                          {manifest.MACOS_OFFICIAL: templates / "macos.zip"})
 
-    def test_macos_preset_selection_rejects_ambiguous_or_unsafe_custom_paths(self):
+    def test_desktop_presets_reject_ambiguous_or_untracked_template_inputs(self):
         with tempfile.TemporaryDirectory(prefix="openrc template selection ") as directory:
             root = Path(directory)
             (root / "app").mkdir()
             presets = root / "app/export_presets.cfg"
             templates = root / "templates"
-            default = '[preset.0]\nname="macOS"\nplatform="macOS"\n[preset.0.options]\n'
+            mac = '[preset.0]\nname="macOS"\nplatform="macOS"\n[preset.0.options]\n'
+            linux = '[preset.1]\nname="Linux"\nplatform="Linux"\n[preset.1.options]\n'
+            windows = '[preset.2]\nname="Windows"\nplatform="Windows Desktop"\n[preset.2.options]\n'
+            default = mac + linux + windows
             presets.write_text(default)
-            self.assertEqual(manifest.macos_template_inputs(root, templates),
+            self.assertEqual(manifest.desktop_template_inputs(root, templates),
                              {manifest.MACOS_OFFICIAL: templates / "macos.zip"})
-            presets.write_text(default + 'custom_template/release=""\n')
-            self.assertEqual(manifest.macos_template_inputs(root, templates),
+            presets.write_text(default.replace('.options]\n', '.options]\ncustom_template/release=""\n'))
+            self.assertEqual(manifest.desktop_template_inputs(root, templates),
                              {manifest.MACOS_OFFICIAL: templates / "macos.zip"})
-            presets.write_text('[preset.1]\nname="Windows"\nplatform="Windows Desktop"\n'
-                               '[preset.1.options]\ncustom_template/release="C:/windows.exe"\n' + default)
-            self.assertEqual(manifest.macos_template_inputs(root, templates),
-                             {manifest.MACOS_OFFICIAL: templates / "macos.zip"})
-            for invalid in (default + 'custom_template/release="/outside.zip"\n',
-                            default + 'custom_template/release="res://.godot/export_templates/../../outside.zip"\n',
-                            default + 'custom_template/release=42\n',
-                            default + 'custom_template/release="a"\ncustom_template/release="b"\n',
-                            default + '[preset.2]\nname="macOS"\nplatform="macOS"\n',
-                            default.replace('platform="macOS"', 'platform="Linux"'),
-                            '[preset.1]\nname="Windows"\nplatform="Windows Desktop"\n'):
-                presets.write_text(invalid)
-                with self.subTest(presets=invalid), self.assertRaises(ValueError):
-                    manifest.macos_template_inputs(root, templates)
+            custom = default.replace('[preset.0.options]\n',
+                '[preset.0.options]\ncustom_template/release="res://.godot/export_templates/mac.zip"\n')
+            presets.write_text(custom)
+            self.assertEqual(manifest.desktop_template_inputs(root, templates), {
+                "template/macos-derived.zip": root / "app/.godot/export_templates/mac.zip",
+                "template/macos-derived.receipt.json": root / "app/.godot/export_templates/mac.zip.receipt.json",
+            })
+            invalid = [linux + windows, mac + windows, mac + linux]
+            for index, name, platform_name in ((0, "macOS", "macOS"), (1, "Linux", "Linux"),
+                                                (2, "Windows", "Windows Desktop")):
+                header = f"[preset.{index}.options]\n"
+                invalid.extend((
+                    default + f'[preset.{index + 3}]\nname="{name}"\nplatform="{platform_name}"\n',
+                    default.replace(f'name="{name}"', 'name=42'),
+                    default.replace(f'platform="{platform_name}"', 'platform=42', 1),
+                    default.replace(f'platform="{platform_name}"', 'platform="Other"', 1),
+                    default.replace(header, header + 'custom_template/release=42\n'),
+                    default.replace(header, header + 'custom_template/release="a"\ncustom_template/release="b"\n'),
+                ))
+                if name != "macOS":
+                    invalid.append(default.replace(header, header + 'custom_template/release="res://.godot/custom"\n'))
+            invalid.extend((
+                default.replace('[preset.0.options]\n', '[preset.0.options]\ncustom_template/release="/outside.zip"\n'),
+                default.replace('[preset.0.options]\n', '[preset.0.options]\ncustom_template/release="res://.godot/export_templates/../../outside.zip"\n'),
+                default + '[preset.03]\nname="Linux"\nplatform="Linux"\n',
+                '[DEFAULT]\ncustom_template/release="other"\n' + default,
+            ))
+            for configuration in invalid:
+                presets.write_text(configuration)
+                with self.subTest(presets=configuration), self.assertRaises(ValueError):
+                    manifest.desktop_template_inputs(root, templates)
 
 
 class TimestampValidationTests(unittest.TestCase):

@@ -146,7 +146,11 @@ jobs:
             index=$((index + 1))
           done
           "$found" || { echo 'fixed-brake test missing' >&2; exit 1; }
-      - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
+      - name: Install app and display dependencies
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
@@ -177,7 +181,8 @@ jobs:
           echo "$RUNNER_TEMP/generator-venv/bin" >> "$GITHUB_PATH"
       - name: Release fixture inspection tools
         if: matrix.part == 'integration'
-        run: sudo apt-get install -y binutils zip g++
+        timeout-minutes: 15
+        run: sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y binutils zip g++
       - name: Offline measurement and validation tool regressions
         if: matrix.part == 'integration'
         run: |
@@ -249,7 +254,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
+      - name: Install RC native build dependencies
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
@@ -284,9 +293,10 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Install native build and Godot dependencies
+        timeout-minutes: 15
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-13 g++-13 binutils python3-venv libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y gcc-13 g++-13 binutils python3-venv libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
           mkdir -p "$RUNNER_TEMP/nk3-toolchain" tmp/nk3-ci
           ln -s "$(command -v gcc-13)" "$RUNNER_TEMP/nk3-toolchain/gcc"
           ln -s "$(command -v g++-13)" "$RUNNER_TEMP/nk3-toolchain/g++"
@@ -439,7 +449,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
+      - name: Install visual dependencies
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
@@ -473,30 +487,18 @@ jobs:
     runs-on: windows-2025-vs2026
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - name: Download pinned Godot Windows console editor
-        shell: pwsh
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            .tools/Godot_v*_win64*.exe
+            .tools/Godot_v*_win64.exe.sha512
+            .tools/Godot_v*_win64.exe.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Resolve pinned Godot Windows console editor
+        shell: bash
         run: |
-          $archive = Join-Path $env:RUNNER_TEMP 'Godot_v4.8-beta2_win64.exe.zip'
-          $destination = Join-Path $env:RUNNER_TEMP 'godot-4.8-beta2'
-          Invoke-WebRequest `
-            -Uri 'https://github.com/godotengine/godot-builds/releases/download/4.8-beta2/Godot_v4.8-beta2_win64.exe.zip' `
-            -OutFile $archive
-          $expected = '23d6dc2561f95cf296ca88c18d843867dffe978ac23608e3e4eb3fd67c0745cf48a259d51c83650f47e9e42f23154e0f907a6a162ea6b0e47dddbb3d88aa4579'
-          $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA512).Hash.ToLowerInvariant()
-          if ($actual -ne $expected) {
-            throw "Godot Windows archive SHA-512 mismatch: expected $expected, got $actual."
-          }
-          Expand-Archive -LiteralPath $archive -DestinationPath $destination -Force
-          $godot = Get-ChildItem -LiteralPath $destination -Filter 'Godot_v4.8-beta2_win64_console.exe' -File -Recurse |
-            Select-Object -First 1 -ExpandProperty FullName
-          if (-not $godot) {
-            throw 'Pinned Godot Windows console executable was not present in the verified archive.'
-          }
-          $version = (& $godot --version).Trim()
-          if ($LASTEXITCODE -ne 0 -or $version -ne '4.8.beta2.official.cafc17a19') {
-            throw "Unexpected Godot Windows version: $version"
-          }
-          Add-Content -LiteralPath $env:GITHUB_ENV -Value "GODOT_WINDOWS_EXE=$godot"
+          godot="$(app/get-godot.sh)"
+          echo "GODOT_WINDOWS_EXE=$(cygpath -w "$godot")" >> "$GITHUB_ENV"
       - name: Build, load, float64-check and compare the native Windows evaluator
         shell: pwsh
         run: |
@@ -540,20 +542,80 @@ jobs:
             .tools/native-ground-vehicle/build-receipt.windows.json
             .tools/native-ground-vehicle/parity-windows-latest.log
 
+  native-rc-runtime:
+    name: RC native production checks (${{ matrix.platform }})
+    needs: [scope, native-linux, native-windows]
+    if: needs.scope.outputs.app == 'true'
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {platform: linux, runner: ubuntu-24.04, python: python3, executables: linux.x86_64, archive: linux.x86_64}
+          - {platform: windows, runner: windows-2025-vs2026, python: python, executables: 'win64*.exe', archive: win64.exe}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Install Linux runtime dependencies
+        if: runner.os == 'Linux'
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            .tools/Godot_v*_${{ matrix.executables }}
+            .tools/Godot_v*_${{ matrix.archive }}.sha512
+            .tools/Godot_v*_${{ matrix.archive }}.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: rc-native-linux
+          path: .tools/native-ground-vehicle
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: rc-native-windows
+          path: .tools/native-ground-vehicle
+      - name: Install the matching qualified pair without rebuilding
+        run: |
+          cp .tools/native-ground-vehicle/godot-cpp/LICENSE.md .tools/native-ground-vehicle/LICENSE.godot-cpp.md
+          ${{ matrix.python }} research/rc-monster-truck/native/build.py --install-only
+      - name: Require installed-native session guards and trajectory comparison
+        id: native_checks
+        run: ${{ matrix.python }} tools/ci/check_rcv_native.py --godot "$(app/get-godot.sh)" --out-dir tmp/rcv-native-checks
+      - name: Summarize native production diagnostics
+        if: always() && steps.native_checks.outcome != 'skipped'
+        run: ${{ matrix.python }} tools/godot/summarize.py tmp/rcv-native-checks --junit tmp/rcv-native-checks/results.xml
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && steps.native_checks.outcome != 'skipped'
+        with:
+          name: rc-native-production-${{ matrix.platform }}
+          path: tmp/rcv-native-checks/
+          if-no-files-found: error
+          retention-days: 7
+
   # PT1: release builds. On main (which also warms the template cache: tag runs can only restore caches made on the
   # default branch), on v* tags, and by hand. Fails if an export errors, the exported Linux binary does not fly the
   # trimmed-flight check, or the macOS bundle is not universal and ad-hoc signed (app/export.sh).
   export:
     name: Release builds (Windows, Linux, macOS)
     if: needs.scope.outputs.export == 'true'
-    # Package in parallel with app/visual checks; publication below still requires every check.
+    # Package in parallel with app/visual/RC runtime checks; publication requires every check.
     needs: [scope, native-linux, native-windows, native-kernel-linux]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0 # full history and tags: git describe names the packages and the build (UI-04a)
-      - run: sudo apt-get update && sudo apt-get install -y zip binutils libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
+      - name: Install export dependencies
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y zip binutils libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: |
@@ -636,7 +698,7 @@ jobs:
   required:
     name: CI required
     if: always()
-    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, export]
+    needs: [scope, three, site, app, visuals, native-linux, native-windows, native-kernel-linux, native-rc-runtime, export]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0

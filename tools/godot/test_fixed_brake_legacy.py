@@ -62,6 +62,15 @@ class ComparisonTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "candidate full value differs"):
             gate.check_comparison(reference, candidate)
 
+    def test_full_values_preserve_types_and_signed_zero_even_with_a_stale_digest(self) -> None:
+        aircraft = "gp-extra-300s-60"
+        for old, new in ((True, 1), (1, 1.0), (0.0, -0.0)):
+            reference, candidate = copy.deepcopy(self.reference), copy.deepcopy(self.reference)
+            reference["outputs"][aircraft]["checkpoint_value"]["test"] = old
+            candidate["outputs"][aircraft]["checkpoint_value"]["test"] = new
+            with self.subTest(old=old, new=new), self.assertRaisesRegex(ValueError, "candidate full value differs"):
+                gate.check_comparison(reference, candidate)
+
     def test_bad_host_missing_aircraft_and_missing_values_fail(self) -> None:
         for mutation in ("host", "engine", "physics_hz", "missing_aircraft", "missing_full_value", "bad_digest", "old_owner"):
             capture = copy.deepcopy(self.reference)

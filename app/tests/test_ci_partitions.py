@@ -111,10 +111,8 @@ exit 0
         repository = Path(__file__).resolve().parents[2]
         workflow = (repository / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         start = workflow.index("      - name: Fetch fixed-brake historical source commits\n")
-        # The release-note step may move to a separate preflight; bound the
-        # fetch script at whichever following step is present first.
-        markers = ("      - name: Tagged releases require their own notes", "      - run: sudo apt-get update")
-        end = min(workflow.index(marker, start) for marker in markers if marker in workflow[start:])
+        # Bound the shell at the next step, independently of setup-step names.
+        end = workflow.index("\n      - ", start + 1)
         script = textwrap.dedent(workflow[start:end].split("        run: |\n", 1)[1])
         fake_bin = self.root.parent / "fake-bin"
         fake_bin.mkdir()
