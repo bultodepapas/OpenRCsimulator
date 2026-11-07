@@ -81,8 +81,18 @@ static func merge_detail(source: ArrayMesh, prefix: String) -> ArrayMesh:
 		var albedo: Image = null
 		if material != null:
 			base = material.albedo_color.srgb_to_linear()
-			metallic = material.metallic * _mean_channel(material.metallic_texture, material.metallic_texture_channel)
-			roughness = material.roughness * _mean_channel(material.roughness_texture, material.roughness_texture_channel)
+			# Baked PCT maps are immutable during this synchronous merge. Their ORM
+			# commonly supplies both properties; read its small mip once per material.
+			var metallic_texture := material.metallic_texture
+			if metallic_texture != null and metallic_texture == material.roughness_texture \
+					and metallic_texture is PortableCompressedTexture2D:
+				var means := _shared_channel_means(metallic_texture,
+					material.metallic_texture_channel, material.roughness_texture_channel)
+				metallic = material.metallic * means[0]
+				roughness = material.roughness * means[1]
+			else:
+				metallic = material.metallic * _mean_channel(material.metallic_texture, material.metallic_texture_channel)
+				roughness = material.roughness * _mean_channel(material.roughness_texture, material.roughness_texture_channel)
 			albedo = _small_mip(material.albedo_texture, ALBEDO_MIP_PX)
 			if material.cull_mode == BaseMaterial3D.CULL_DISABLED:
 				cull = BaseMaterial3D.CULL_DISABLED
@@ -150,6 +160,21 @@ static func _small_mip(texture: Texture2D, max_px: int) -> Image:
 ## Mean of one channel over an 8 px mip; 1.0 (the scalar alone) without a texture.
 static func _mean_channel(texture: Texture2D, channel: BaseMaterial3D.TextureChannel) -> float:
 	var image := _small_mip(texture, 8)
+	return _mean_image_channel(image, channel)
+
+
+## The image is scoped to this call, so even non-mipmapped inputs are released
+## before the albedo read. A failed first read preserves the independent second
+## read: an unavailable metallic map must not suppress a valid roughness map.
+static func _shared_channel_means(texture: Texture2D, metallic_channel: BaseMaterial3D.TextureChannel,
+		roughness_channel: BaseMaterial3D.TextureChannel) -> Array[float]:
+	var image := _small_mip(texture, 8)
+	if image == null:
+		return [1.0, _mean_channel(texture, roughness_channel)]
+	return [_mean_image_channel(image, metallic_channel), _mean_image_channel(image, roughness_channel)]
+
+
+static func _mean_image_channel(image: Image, channel: BaseMaterial3D.TextureChannel) -> float:
 	if image == null:
 		return 1.0
 	var total := 0.0
