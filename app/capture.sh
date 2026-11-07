@@ -89,7 +89,7 @@ CAPTURE_NAMES=()
 # this is cheap insurance for machines with other core counts (CI runners); 1 thread costs ~5 s per run.
 export LP_NUM_THREADS="${LP_NUM_THREADS:-1}"
 COUNTERS="$CAPTURES/landscape-counters.txt"
-: > "$COUNTERS"
+if includes core; then : > "$COUNTERS"; fi # only core renders counted views
 # VQ-01a: reference captures run the legacy atmosphere fixture. Production field cases use the real app.
 shot() { # shot <file suffix> <user args...>
   local name="capture$1" out="$CAPTURES/capture$1.png"; shift
@@ -233,6 +233,18 @@ record_check quality:aircraft-lights
 # L5: both interactive error routes must show a usable error instead of starting an invalid field.
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFailureRoutes.test_interactive_routes_show_a_focused_localized_error_panel
 record_check quality:field-failures
+# CI-09: these pixel suites skip under headless unit runs; render them at 1920x1080 and require their completion lines.
+for suite in "skin_patterns:Lighting skin patterns: " "segment_filter:Lighting segment filter: "; do
+  xvfb-run -a -s "-screen 0 1920x1080x24" python3 "$HERE/../tools/godot/run_checked.py" --timeout 300 \
+    --out-dir "$CAPTURES/lighting-pixels" --label "lighting-${suite%%:*}" \
+    --require-text "${suite#*:}" --require-text " checks, 0 failed" -- \
+    "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy --resolution 1920x1080 \
+    --script "res://tests/test_lighting_${suite%%:*}.gd"
+  # The literal markers above cannot reject "0 checks"; require a nonzero assertion count.
+  grep -qE "^${suite#*:}[1-9][0-9]* checks, 0 failed" "$CAPTURES/lighting-pixels/lighting-${suite%%:*}-"*/engine.log \
+    || { echo "lighting pixels ${suite%%:*}: no nonzero completion line" >&2; exit 1; }
+done
+record_check quality:lighting-pixels
 finish_phase
 fi
 if includes terrain-atmosphere; then

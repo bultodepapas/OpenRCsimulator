@@ -751,7 +751,11 @@ static func sprite(name: String, color: Color, position: Vector3, size_m: float,
 ## meshes, materials or full triangle buffers survive in this result.
 static func prepare_layout(root: Node3D) -> Dictionary:
 	var all: AABB = bounds(root).all
-	var geometry := _geometry_arrays(root)
+	return layout_from_geometry(_geometry_arrays(root), all, not (root.get_meta("light_anchors", {}) as Dictionary).has("landing"))
+
+
+## Pure value geometry: safe for an owned Home worker, never touches Nodes or GPU resources.
+static func layout_from_geometry(geometry: Dictionary, all: AABB, needs_landing: bool) -> Dictionary:
 	var points: PackedVector3Array = geometry.points
 	var half := span_half(points)
 	if points.is_empty() or not all.is_finite() or not is_finite(half) or half <= 0.00001:
@@ -761,7 +765,7 @@ static func prepare_layout(root: Node3D) -> Dictionary:
 	var left := tip(points, half, -1.0)
 	var right := tip(points, half, 1.0)
 	var landing := Vector3.ZERO
-	if not (root.get_meta("light_anchors", {}) as Dictionary).has("landing"):
+	if needs_landing:
 		var piece := wing_piece(tris, -LANDING_SPAN * half)
 		landing = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z)) if piece.is_empty() else Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
 	return {bounds = all, skins = skins, left = left, right = right, belly = belly_line(tris, all), landing = landing}

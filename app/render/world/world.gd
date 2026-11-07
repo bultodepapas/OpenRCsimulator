@@ -26,6 +26,7 @@ const AirfieldLighting := preload("res://render/landscape_upgrade/airfield_light
 const SceneryLayer := preload("res://scenery/scenery.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 const StormBank := preload("res://render/weather/storm_bank.gd")
+const WaterMaterial := preload("res://render/lake/water_material.gd")
 
 ## The club switches its field lights on at dusk (FW-31…34): sun below this elevation in time-of-day mode.
 const FIELD_LIGHTS_BELOW_SUN_DEG := 3.0
@@ -410,6 +411,7 @@ static func _build_environment_stage(context: Dictionary) -> void:
 		Exposure.set_value(Atmosphere.state.exposure)
 	var world_environment := OwnedWorldEnvironment.new()
 	var environment := Atmosphere.environment(lighting)
+	environment.set_meta("fw_static_sky_radiance_size", environment.sky.radiance_size)
 	# Bind identity, not a strong resource reference or a later replacement of the owner's property.
 	world_environment.release_flow = _release_flow_environment.bind(environment.get_instance_id())
 	if flowing:
@@ -498,8 +500,10 @@ static func _build_sky_stage(context: Dictionary) -> void:
 	var stars: Node3D = null
 	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG):
 		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg), Atmosphere.cloud_state_snapshot()) # FW-24
+		stars.set_meta("fw_equatorial_basis", Stars.equatorial_basis(float(Atmosphere.state.lst_deg), float(conditions.when.latitude_deg)))
 		parent.add_child(stars)
 		environment.set_meta("fw_star_field", weakref(stars))
+		environment.set_meta("fw_cached_stars", weakref(stars))
 		Stars.set_distant_cloud_order(stars, storm_bank.visible)
 	var lights_node: Node3D = null
 	if not lights.is_empty():
@@ -596,6 +600,262 @@ static func _build_result(context: Dictionary) -> Dictionary:
 		night_options = _night_options.duplicate(),
 		construction_spans = (context.construction_spans as Dictionary).duplicate(),
 	}
+
+
+## Refresh one active world's appearance without rebuilding its field or aircraft. A custom field builder
+## passes its own Field node, since the historical build result deliberately reports field = null for callbacks.
+## All validation and scenery-shadow preparation precedes publication; this function never yields.
+static func refresh_presentation(parent: Node, field_node: Node3D, world: Dictionary, conditions: Dictionary = {},
+		lighting: Dictionary = {}, night_options: Dictionary = {}, sky: Dictionary = {}) -> Dictionary:
+	var owner: WorldEnvironment = world.get("world_environment") as WorldEnvironment
+	var environment: Environment = world.get("environment") as Environment
+	var sun: DirectionalLight3D = world.get("sun") as DirectionalLight3D
+	if not is_instance_valid(parent) or parent.is_queued_for_deletion() \
+			or not is_instance_valid(field_node) or field_node.get_parent() != parent \
+			or not is_instance_valid(owner) or owner.get_parent() != parent or owner.environment != environment \
+			or not is_instance_valid(environment) or environment.sky == null \
+			or not environment.sky.sky_material is ShaderMaterial \
+			or not is_instance_valid(sun) or sun.get_parent() != parent \
+			or _resolve_context_ref(_night_owner) != parent:
+		return {ok = false, error = "world is not the active scene owner"}
+	if not _flow.is_empty() and (_flow.get("environment") != environment or _flow.get("sun") != sun):
+		return {ok = false, error = "another world owns time flow"}
+	if not _live.is_empty() and (_resolve_context_ref(_live.get("environment")) != environment \
+			or _resolve_context_ref(_live.get("parent")) != parent):
+		return {ok = false, error = "another world owns the live sky"}
+	if not _refresh_field_valid(field_node) or not _refresh_lighting_valid(lighting):
+		return {ok = false, error = "invalid field or lighting snapshot"}
+	if not _refresh_night_options_valid(night_options):
+		return {ok = false, error = "invalid night options"}
+	var checked_sky: Dictionary = {}
+	if not sky.is_empty():
+		checked_sky = Atmosphere.SkyConfig.validate(sky)
+		if not checked_sky.ok:
+			return {ok = false, error = "invalid sky appearance"}
+	var selected_conditions: Dictionary = {time_of_day = false} if not lighting.is_empty() else \
+		(Conditions.resolve() if conditions.is_empty() else conditions.duplicate(true))
+	if not _refresh_conditions_valid(selected_conditions):
+		return {ok = false, error = "invalid world conditions"}
+
+	var selected_moon := MoonConfig.resolve()
+	var base_when: Dictionary = {}
+	var candidate_state: Dictionary = {}
+	var flowing := false
+	if selected_conditions.time_of_day:
+		base_when = selected_conditions.when.duplicate()
+		selected_conditions.when = MoonConfig.apply_phase(base_when, selected_moon)
+		selected_conditions.moon = selected_moon.duplicate()
+		candidate_state = SkyState.state(Ephemeris.sky(selected_conditions.when), selected_moon)
+		flowing = float(selected_conditions.get("time_scale", 0.0)) > 0.0
+		if flowing:
+			candidate_state.tonemapper = "agx" if float(candidate_state.sun_elevation_deg) < FLOW_AGX_BELOW_SUN_DEG else "aces"
+
+	# Scenery preparation reads Atmosphere.state, but constructs detached meshes and changes no field nodes.
+	# Restore the old state before any possible rejection; no other code can observe the temporary value.
+	var previous_state: Dictionary = Atmosphere.state
+	Atmosphere.state = candidate_state
+	var scenery: Dictionary = SceneryLayer.prepare_lighting(field_node, lighting)
+	Atmosphere.state = previous_state
+	if not bool(scenery.get("ok", false)):
+		return {ok = false, error = "could not prepare scenery lighting"}
+
+	var star_ref: Variant = null
+	if environment.has_meta("fw_cached_stars"):
+		star_ref = environment.get_meta("fw_cached_stars")
+	elif environment.has_meta("fw_star_field"):
+		star_ref = environment.get_meta("fw_star_field")
+	var stars: Node3D = _resolve_context_ref(star_ref) as Node3D
+	if stars != null and (stars.get_parent() != parent or not stars.has_meta("fw_equatorial_basis")):
+		return {ok = false, error = "cached stars no longer belong to this world"}
+	var appearance_before := _capture_refresh_appearance()
+	if not checked_sky.is_empty() and not Atmosphere.configure_appearance(checked_sky.config):
+		return {ok = false, error = "could not prepare sky appearance"}
+	var needs_stars := not candidate_state.is_empty() and \
+		(flowing or float(candidate_state.sun_elevation_deg) < STARS_BELOW_SUN_DEG)
+	var new_stars: Node3D = null
+	if needs_stars and stars == null:
+		stars = Stars.build(candidate_state, float(selected_conditions.when.latitude_deg), Atmosphere.cloud_state_snapshot())
+		stars.set_meta("fw_equatorial_basis", Stars.equatorial_basis(float(candidate_state.lst_deg), float(selected_conditions.when.latitude_deg)))
+		new_stars = stars
+
+	# FieldBuilder's regular change test compares only explicit snapshots; two FW presets both use {}.
+	# Force this prepared commit so its scenery, materials and projected shadows follow candidate_state too.
+	Atmosphere.state = candidate_state
+	var prepared := {ok = true, changed = true, lighting = lighting.duplicate(true), scenery = scenery}
+	if not FieldBuilder.commit_lighting(field_node, prepared):
+		Atmosphere.state = previous_state
+		_restore_refresh_appearance(appearance_before)
+		if new_stars != null:
+			new_stars.free()
+		return {ok = false, error = "field changed during lighting preparation"}
+
+	_moon_config = selected_moon
+	_base_when = base_when
+	_live = {}
+	_night_options = resolve_night_options(night_options)
+	_night_profile = str(_night_options.field_lighting)
+	_adapt_clock = -1.0
+	environment.sky.process_mode = Atmosphere.SKY_PROCESS_MODE
+	environment.sky.radiance_size = int(environment.get_meta("fw_static_sky_radiance_size", Sky.RADIANCE_SIZE_256))
+	if flowing:
+		HighGraphics.configure_flow_sky(environment)
+	# FW uses a color ambient source; switching back to a sky source must also restore the fresh Environment's color.
+	environment.ambient_light_color = Environment.new().ambient_light_color
+	Atmosphere.update_environment(environment, lighting)
+	Atmosphere.update_sun(sun, lighting)
+	Exposure.set_value(environment.tonemap_exposure)
+	if new_stars != null:
+		parent.add_child(new_stars)
+		environment.set_meta("fw_cached_stars", weakref(new_stars))
+	if stars != null:
+		stars.visible = needs_stars
+		if needs_stars:
+			var reference_basis: Basis = stars.get_meta("fw_equatorial_basis")
+			stars.basis = Stars.equatorial_basis(float(candidate_state.lst_deg), float(selected_conditions.when.latitude_deg)) * reference_basis.inverse()
+			environment.set_meta("fw_star_field", weakref(stars))
+			Stars.update_cloud_appearance(stars, Atmosphere.cloud_state_snapshot())
+		elif environment.has_meta("fw_star_field"):
+			environment.remove_meta("fw_star_field")
+	elif environment.has_meta("fw_star_field"):
+		environment.remove_meta("fw_star_field")
+
+	var helper: Variant = _resolve_context_ref(_night_helper)
+	var fire: Variant = _resolve_context_ref(_night_fire)
+	var local_gain := SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0
+	if helper != null:
+		helper.bind_environment(environment, null, local_gain)
+	if fire != null:
+		fire.configure(bool(_night_options.campfire), environment, local_gain)
+	set_night_options(_night_profile, bool(_night_options.campfire), str(_night_options.field_activation))
+	refresh_weather_appearance(environment, 0.0)
+	# Water is built with its own haze adapter. Refresh probes after a sky or lighting edit.
+	for probe: Node in field_node.find_children("*", "ReflectionProbe", true, false):
+		if probe.has_method("request_refresh"):
+			var water: Variant = probe.get("water_material")
+			if water is ShaderMaterial:
+				WaterMaterial.update_lighting(water, lighting)
+			probe.request_refresh()
+	if selected_conditions.time_of_day:
+		_live = {environment = weakref(environment), sun = weakref(sun), parent = weakref(parent),
+			when = selected_conditions.when.duplicate()}
+	var replacement_flow := {}
+	if flowing:
+		var lights_node: Node3D = parent.get_node_or_null("FieldLights") as Node3D
+		replacement_flow = {when = selected_conditions.when.duplicate(), time_scale = float(selected_conditions.time_scale), step = 0,
+			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
+			materials = haze_materials(parent), tonemapper = candidate_state.tonemapper,
+			start_lst = float(candidate_state.lst_deg), latitude = float(selected_conditions.when.latitude_deg),
+			upgraded_lights = helper != null, airfield_lighting = helper,
+			stars_initial_basis = stars.basis if stars != null else Basis.IDENTITY}
+	_replace_flow(replacement_flow)
+	var result := world.duplicate()
+	result.merge({ok = true, field = field_node, conditions = selected_conditions, sky = candidate_state,
+		night_options = _night_options.duplicate()}, true)
+	return result
+
+
+static func _refresh_field_valid(field_node: Node3D) -> bool:
+	if not field_node.has_meta("lighting_materials") or not field_node.has_meta("lighting_snapshot"):
+		return false
+	var materials: Variant = field_node.get_meta("lighting_materials")
+	if not materials is Array or not field_node.get_meta("lighting_snapshot") is Dictionary:
+		return false
+	for material: Variant in materials:
+		if not material is ShaderMaterial or not is_instance_valid(material) or material.shader == null:
+			return false
+	var cues: MeshInstance3D = field_node.get_node_or_null("FlightCueShadows") as MeshInstance3D
+	if cues != null and (cues.mesh == null or (cues.mesh.get_surface_count() > 0 \
+			and not cues.mesh.surface_get_material(0) is StandardMaterial3D)):
+		return false
+	return true
+
+
+static func _refresh_lighting_valid(lighting: Dictionary) -> bool:
+	if lighting.is_empty():
+		return true
+	for key: String in Spec.ATMOSPHERE:
+		if not lighting.has(key):
+			return false
+		var expected: Variant = Spec.ATMOSPHERE[key]
+		var value: Variant = lighting[key]
+		if typeof(expected) in [TYPE_INT, TYPE_FLOAT]:
+			if not _finite_number(value):
+				return false
+		elif typeof(value) != typeof(expected):
+			return false
+		elif value is Color:
+			var colour: Color = value
+			if not is_finite(colour.r) or not is_finite(colour.g) or not is_finite(colour.b) or not is_finite(colour.a):
+				return false
+		elif value is Vector2 and not (value as Vector2).is_finite():
+			return false
+	for key: String in ["shadow_strength", "disc_elevation_deg", "sun_disc", "lobe_k", "lobe_height"]:
+		if lighting.has(key) and not _finite_number(lighting[key]):
+			return false
+	for key: String in ["lobe_lin", "lobe_dir", "moon_dir", "moon_lin", "moon_sun_dir"]:
+		if lighting.has(key) and (not lighting[key] is Vector3 or not (lighting[key] as Vector3).is_finite()):
+			return false
+	if lighting.has("solar"):
+		var solar: Variant = lighting.solar
+		if not solar is Dictionary or not _finite_number(solar.get("elevation_deg")):
+			return false
+	return true
+
+
+static func _refresh_night_options_valid(options: Dictionary) -> bool:
+	return options.is_empty() or (str(options.get("field_lighting", "club")) in ["club", "airfield", "off"] \
+		and str(options.get("field_activation", "auto")) in ["auto", "on", "off"] \
+		and options.get("campfire", false) is bool)
+
+
+static func _refresh_conditions_valid(conditions: Dictionary) -> bool:
+	if not conditions.get("time_of_day") is bool:
+		return false
+	if not conditions.time_of_day:
+		return true
+	var when: Variant = conditions.get("when")
+	if not when is Dictionary:
+		return false
+	for key: String in ["year", "month", "day", "hour", "utc_offset_h", "latitude_deg", "longitude_deg"]:
+		if not _finite_number(when.get(key)):
+			return false
+	if not _finite_number(conditions.get("time_scale", 0.0)) or float(conditions.get("time_scale", 0.0)) < 0.0:
+		return false
+	return float(when.month) >= 1.0 and float(when.month) <= 12.0 and float(when.day) >= 1.0 \
+		and float(when.day) <= 31.0 and absf(float(when.latitude_deg)) <= 90.0 \
+		and absf(float(when.longitude_deg)) <= 180.0
+
+
+## configure_appearance() validates before publishing, but a stale scenery candidate may still reject.
+## Preserve the active world's full cloud state and derived caches on that rejection.
+static func _capture_refresh_appearance() -> Dictionary:
+	return {selection = Atmosphere._appearance_selection.duplicate(true), profile = Atmosphere._appearance_profile.duplicate(true),
+		appearance = Atmosphere._appearance.duplicate(true), enabled = Atmosphere._appearance_enabled,
+		transport = Atmosphere._cloud_transport.duplicate(true), time = Atmosphere._last_cloud_sim_time,
+		offsets = Atmosphere._last_cloud_offsets.duplicate(true), offsets_valid = Atmosphere._last_cloud_offsets_valid,
+		arrays = Atmosphere._cloud_arrays_cache.duplicate(true), arrays_offsets = Atmosphere._cloud_arrays_cache_offsets.duplicate(true),
+		arrays_valid = Atmosphere._cloud_arrays_cache_valid, offset = Atmosphere.last_cloud_offset,
+		registered = Atmosphere._cloud_registered}
+
+
+static func _restore_refresh_appearance(saved: Dictionary) -> void:
+	Atmosphere._appearance_selection = saved.selection
+	Atmosphere._appearance_profile = saved.profile
+	Atmosphere._appearance = saved.appearance
+	Atmosphere._appearance_enabled = saved.enabled
+	Atmosphere._cloud_transport = saved.transport
+	Atmosphere._last_cloud_sim_time = saved.time
+	Atmosphere._last_cloud_offsets = saved.offsets
+	Atmosphere._last_cloud_offsets_valid = saved.offsets_valid
+	Atmosphere._cloud_arrays_cache = saved.arrays
+	Atmosphere._cloud_arrays_cache_offsets = saved.arrays_offsets
+	Atmosphere._cloud_arrays_cache_valid = saved.arrays_valid
+	if saved.registered:
+		Atmosphere._set_cloud_offset(saved.offset)
+	elif Atmosphere._cloud_registered:
+		RenderingServer.global_shader_parameter_remove(&"cloud_drift_offset")
+		Atmosphere._cloud_registered = false
+		Atmosphere.last_cloud_offset = saved.offset
 
 
 static func _record_construction_span(context: Dictionary, name: String, started_usec: int) -> void:
@@ -1099,7 +1359,8 @@ static func _turn_stars(lst_deg: float) -> bool:
 	if _flow.stars == null or not is_instance_valid(_flow.stars):
 		return false
 	var lat: float = _flow.latitude
-	(_flow.stars as Node3D).basis = Stars.equatorial_basis(lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse()
+	(_flow.stars as Node3D).basis = Stars.equatorial_basis(lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse() \
+		* (_flow.get("stars_initial_basis", Basis.IDENTITY) as Basis)
 	return true
 
 

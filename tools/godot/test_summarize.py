@@ -44,6 +44,21 @@ class SummaryTests(unittest.TestCase):
         self.assertIn("<value> & argument", xml.find(".//failure").text)
         self.assertEqual(xml.find(".//error").attrib["type"], "timeout")
 
+    def test_declared_skip_is_reported_as_skipped_not_passed(self):
+        self.run_code("print('Lighting skin pixels SKIPPED: native renderer required at 1920x1080.')")
+        self.run_code("print('mentions SKIPPED without the declared form')")
+        self.run_code("import sys; print('Pixels SKIPPED: but failed'); sys.exit(1)")
+        items = collect_runs(self.collection)
+        output = self.root / "results.xml"
+        write_junit(output, items)
+        xml = ET.parse(output).getroot()
+        self.assertEqual((xml.attrib["tests"], xml.attrib["skipped"], xml.attrib["failures"]), ("3", "1", "1"))
+        skipped = xml.findall(".//skipped")
+        self.assertEqual(len(skipped), 1)
+        self.assertIn("native renderer required", skipped[0].attrib["message"])
+        # A failed invocation stays a failure even if it also printed a skip line.
+        self.assertEqual(sum(bool(item["skipped"]) for item in items if not item["ok"]), 0)
+
     def test_relocated_artifact_does_not_follow_original_paths(self):
         report = self.run_code("print('ok')")
         relocated = self.root / "downloaded"

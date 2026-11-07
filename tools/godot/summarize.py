@@ -20,6 +20,8 @@ REASONS = {"passed", "process_exit", "engine_error", "warning", "missing_require
            "timeout", "log_limit", "runner_error", "launch_error", "interrupted"}
 CAPTURE_ERRORS = {"invalid_report", "timeout", "log_limit", "runner_error", "launch_error", "interrupted"}
 MAX_REPORT_BYTES = 256 * 1024
+# A passing script that prints this declared token did not qualify its contract (e.g. headless pixel suites).
+DECLARED_SKIP = re.compile(r"^[ \t]*(\S[^\r\n]{0,200}? SKIPPED: [^\r\n]{0,300})\r?$", re.M)  # CRLF on Windows
 XML_UNSAFE = re.compile(r"[^\x09\x0a\x0d\x20-\ud7ff\ue000-\ufffd\U00010000-\U0010ffff]")
 HINTS = {
     "engine_error": "Inspect the first engine diagnostic and its source location.",
@@ -37,7 +39,7 @@ HINTS = {
 
 def read_run(directory: Path, max_log_bytes: int) -> dict:
     item = {"name": directory.name, "directory": directory.name, "reason": "invalid_report",
-            "ok": False, "time": 0.0, "detail": "", "diagnostics": []}
+            "ok": False, "time": 0.0, "detail": "", "diagnostics": [], "skipped": ""}
     try:
         report_path, log = directory / "report.json", directory / "engine.log"
         if (directory.is_symlink() or report_path.is_symlink() or log.is_symlink()
@@ -82,14 +84,22 @@ def read_run(directory: Path, max_log_bytes: int) -> dict:
             raise ValueError("missing/invalid log hash; regenerate older reports with the current runner")
         digest = hashlib.sha256()
         read_bytes = 0
+        skip, tail = None, b""
         with log.open("rb") as stream:
             while block := stream.read(65536):
                 read_bytes += len(block)
                 if read_bytes > max_log_bytes or read_bytes > size:
                     raise ValueError("log exceeds its declared size or reader limit")
                 digest.update(block)
+                if skip is None and b" SKIPPED: " in tail + block:
+                    skip = True
+                tail = block[-9:]
         if read_bytes != size or digest.hexdigest() != expected_hash:
             raise ValueError("log size/hash mismatch; evidence changed or is incomplete")
+        if skip:
+            # Rare path: re-read only logs containing the token to extract the declared line.
+            match = DECLARED_SKIP.search(log.read_bytes().decode("utf-8", "replace"))
+            skip = match.group(1) if match else None
         scanned = inspect_log(log, required, max_chars=read_bytes)
         if counts != scanned["counts"] or report.get("missing_required_text") != scanned["missing_required_text"]:
             raise ValueError("log diagnostics/completion disagree with report")
@@ -121,7 +131,8 @@ def read_run(directory: Path, max_log_bytes: int) -> dict:
         if scanned["missing_required_text"]:
             detail += f"\nMissing completion text: {scanned['missing_required_text']}"
         item.update(name=label, reason=report["reason"], ok=report["ok"], time=elapsed,
-                    detail=detail, diagnostics=scanned["diagnostics"][:3])
+                    detail=detail, diagnostics=scanned["diagnostics"][:3],
+                    skipped=skip if report["ok"] and skip else "")
     except (OSError, ValueError, TypeError, OverflowError, RecursionError) as error:
         item["detail"] = str(error)[:2000]
     return item
@@ -176,8 +187,9 @@ def write_junit(path: Path, items: list[dict]) -> None:
     duration = sum(item['time'] for item in items)
     if not math.isfinite(duration):
         raise ValueError("aggregate elapsed duration is not finite")
+    skipped = sum(bool(item.get("skipped")) for item in items)
     suite = ET.Element("testsuite", name="OpenRC checked Godot invocations", tests=str(len(items)),
-                       failures=str(failures), errors=str(errors), skipped="0",
+                       failures=str(failures), errors=str(errors), skipped=str(skipped),
                        time=f"{duration:.6f}")
     for item in items:
         case = ET.SubElement(suite, "testcase", classname="OpenRC.GodotCommand",
@@ -187,6 +199,9 @@ def write_junit(path: Path, items: list[dict]) -> None:
             tag = "error" if item["reason"] in CAPTURE_ERRORS else "failure"
             node = ET.SubElement(case, tag, type=item["reason"], message=HINTS[item["reason"]])
             node.text = XML_UNSAFE.sub("\ufffd", detail_text(item))
+        elif item.get("skipped"):
+            ET.SubElement(case, "skipped", message=XML_UNSAFE.sub("\ufffd", item["skipped"]))
+            ET.SubElement(case, "system-out").text = XML_UNSAFE.sub("\ufffd", detail_text(item))
         else:
             ET.SubElement(case, "system-out").text = XML_UNSAFE.sub("\ufffd", detail_text(item))
     # Exclusive creation preserves earlier evidence and never follows an existing symlink.
@@ -213,7 +228,11 @@ def main() -> int:
         print(f"Diagnostic summary refused: {error}", file=sys.stderr)
         return 2
     failed = [item for item in items if not item["ok"]]
-    print(f"{len(items)} invocations: {len(items) - len(failed)} passed, {len(failed)} failed or invalid.")
+    skipped = [item for item in items if item.get("skipped")]
+    print(f"{len(items)} invocations: {len(items) - len(failed) - len(skipped)} passed, "
+          f"{len(skipped)} declared skips, {len(failed)} failed or invalid.")
+    for item in skipped[:20]:
+        print(f"skipped (not qualified here): {item['name']} — {item['skipped']}")
     for item in failed[:20]:
         print(f"\n{item['name']} [{item['reason']}]\n{detail_text(item)}")
     if len(failed) > 20:

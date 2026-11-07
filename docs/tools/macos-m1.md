@@ -1,12 +1,96 @@
-# Shared M1 Mac: developer and agent access
+# Shared M1 Macs: developer and agent access
 
-Use this guide to connect from Linux, prepare a native task workspace, run Godot
+Use this guide to select a host, prepare a native task workspace, run Godot
 checks and retrieve evidence. DT/PT owns this operating guide; the
 [Apple plan](../plans/apple-silicon-performance.md) owns acceptance and the
 [dated M1 evidence](../research/desktop-delivery-investigations/DT-MAC-02/README.md)
 owns measurements. Historical inventory below was checked on **2026-11-03**;
 the Windows-through-Linux route and reusable beta2 engine were rechecked on
 **2026-11-06**.
+
+## Select the Mac first
+
+These are separate machines, accounts and SSH identities. Sections 1–6 below
+describe **ANGELA_AIR**, the original remote Mac; do not run their hard-coded
+`/Users/gius` paths on ANGEL.
+
+| Host | Verified route | Account | Client credential |
+| --- | --- | --- | --- |
+| ANGELA_AIR, original remote M1 | Tailscale `100.79.151.42` | `gius` | Original Linux key or Windows `~/.ssh/openrc_m1_ed25519`; section 1 |
+| ANGEL, Gius's second test M1 | DEVIL LAN, `ssh angel` / `ssh angel-lan`; `Gs-MacBook-Air.local`, observed `192.168.80.27` | `g` | Existing Windows `~/.ssh/devil_automation_ed25519` |
+
+### ANGEL: Windows access and native setup
+
+Rechecked **2026-11-07** from DEVIL. The existing aliases use
+`IdentitiesOnly yes`, `StrictHostKeyChecking yes`, agent forwarding disabled
+and `~/.ssh/angel_known_hosts`. No key was regenerated, copied to the Mac or
+added to Git. Retain the private key in `C:\Users\bulto\.ssh`; preserve the
+existing public authorization and known-host entries.
+
+- Client public fingerprint: `SHA256:1SbbL8B31iPgP1JvON/j81ioZQmpYcQLWR1H+6hezoA`.
+- Server ED25519 fingerprint: `SHA256:P5MpdEMrTX7R9/QYfcms6d1WfaxkCruIH5sG0Bq6ts4`.
+  Initial acceptance on November 6 was TOFU, not out-of-band verification.
+- Live host: MacBookAir10,1, Apple M1, 8 GiB, native `arm64`, macOS
+  `27.0` / `26A5425a`; on AC, about 154 GiB free before setup.
+
+From Windows PowerShell:
+
+```powershell
+ssh -o BatchMode=yes -o ConnectTimeout=15 -o UpdateHostKeys=no angel `
+  'id -un; hostname; uname -sm; sw_vers -productVersion; pmset -g batt'
+```
+
+| Setup resource | ANGEL path / status |
+| --- | --- |
+| Reusable native Python | `/Users/g/OpenRC-m1-tools/venv-3.12.16/bin/python`; CPython 3.12.16 ARM64, psutil 7.2.2 |
+| Bootstrap provenance | uv 0.13.7 official ARM64 archive and SHA-256 retained under `/Users/g/OpenRC-m1-tools/bootstrap-20261107/`; user-only installation, shell profiles unchanged |
+| Initial frozen source | `/Users/g/OpenRC-m1-work/angel-setup-20261107`; commit `997e212784dbf873a7b054ddbbc68e7905495adf` in `source-head.txt` |
+| Native editor | `.tools/Godot_v4.8-beta2_macos.arm64/Godot.app/Contents/MacOS/Godot` inside that workspace; `4.8.beta2.official.cafc17a19` |
+| Editor provenance | Official ZIP checked against the getter's SHA-512, manually extracted with its signed ARM64 bundle intact; exact version, `codesign --verify --deep --strict` and bundle-file manifest checked. After Apple tools were installed, the unmodified getter validated/reused that cache; path retained in `tmp/verified-engine.txt` |
+| Apple developer tools | Owner completed the `xcode-select --install` dialog. Verified Git `2.54.0 (Apple Git-157)`, Apple clang `21.0.0`, active `/Library/Developer/CommandLineTools` and its `MacOSX.sdk`; native compilation itself is untested |
+| Local receipts | `D:\OpenRCsimulator-evidence\angel-setup-20261107` on DEVIL, outside Git |
+
+Use a new `/Users/g/OpenRC-m1-work/<task-id>/` for each future candidate.
+On Windows, create the pinned source archive with `git archive --output=...`
+and transfer it with `scp`; avoid a binary archive pipeline through Windows
+PowerShell. Apply section 3's attribute/space checks, preserve the source commit,
+and compare archive hashes before extraction. Reuse the verified engine above
+for focused checked runs rather than downloading another copy.
+
+The initial source archive is 7,338,792,960 bytes, SHA-256
+`cb7561ed9d4f51eecacf8fb4f8bfd5793052a9e1169cba909af28bf38eeb4952`.
+Checked native setup on November 7:
+
+| Check | Retained result under the Mac workspace |
+| --- | --- |
+| Inventory after Apple tools installation | `tmp/macos-preflight/macos-preflight-20261107T113255Z-56a9f9c9f71942e7a68285986b1ac9aa.json`; complete, native ARM64 Python, no Rosetta |
+| Authoring identities and isolated copy | 11 Workshop descriptors current; `tmp/research/research-preparation.json`, complete. Git metadata is null because preparation preceded local `git init`; `source-head.txt` identifies the archived source, which has no historical Git commit |
+| Checked import | `tmp/checks/angel-import-48mvom4m/`; `ok` and `complete`, zero errors, eight OBJ ambient-material/PBR warnings |
+| Focused frame collector test | `tmp/checks/angel-frame-tests-0xlpode_/`; `ok` and `complete`, **161 checks, zero failures**, zero errors/warnings |
+
+To repeat that focused check, enter `ssh angel` and run in the Mac shell:
+
+```bash
+cd /Users/g/OpenRC-m1-work/angel-setup-20261107 || exit 1
+M1_PY=/Users/g/OpenRC-m1-tools/venv-3.12.16/bin/python
+OPENRC_GODOT="$(cat tmp/verified-engine.txt)"
+"$M1_PY" tools/godot/run_checked.py --out-dir tmp/checks \
+  --label angel-frame-tests --timeout 90 --require-text '0 failed' -- \
+  "$OPENRC_GODOT" --headless --path tmp/research/app --audio-driver Dummy \
+  --script res://tests/test_frame_samples.gd
+```
+
+The checked runner creates a fresh result directory. Use the explicit managed
+Python; it was reinstalled at the same pin after Apple tools became available
+to complete its library install-name setup. These are headless source checks;
+the full suite, native compilation, GUI, GPU/performance and release gates
+still need their own evidence. No task-owned Godot process remains running.
+The original Mac's built-in-display exception below does not apply to ANGEL;
+use the repository's 1920×1080 priority for future rendered qualification.
+
+Bootstrap references checked November 7: [uv installation](https://docs.astral.sh/uv/getting-started/installation/),
+[managed Python versions](https://docs.astral.sh/uv/concepts/python-versions/)
+and [Apple Command Line Tools](https://developer.apple.com/documentation/xcode/installing-the-command-line-tools).
 
 ## 1. Connect from Linux
 

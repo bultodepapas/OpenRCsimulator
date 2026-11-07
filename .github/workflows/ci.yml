@@ -447,6 +447,7 @@ jobs:
     if: needs.scope.outputs.app == 'true'
     name: Godot visual captures
     runs-on: ubuntu-24.04
+    timeout-minutes: 240 # Observed 1h45m–2h48m; fail a hang well before the six-hour default.
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Install visual dependencies
@@ -474,11 +475,135 @@ jobs:
           else
             echo 'Visual phase timings unavailable; capture did not produce the report.'
           fi
+      # Shadow-only steps inside the required job: their failure must never fail the visual gate.
+      - name: Inventory full outputs for the visual group shadow comparison
+        if: github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
+        continue-on-error: true
+        run: |
+          mkdir -p "$RUNNER_TEMP/visual-shadow"
+          python3 tools/ci/capture_groups.py inventory --repo . --root app/captures --group all \
+            --godot "$(app/get-godot.sh)" --visual-python "$(app/tests/visual-env.sh)" \
+            --out "$RUNNER_TEMP/visual-shadow/inventory.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
+        continue-on-error: true
+        with:
+          name: visual-shadow-full
+          path: ${{ runner.temp }}/visual-shadow/inventory.json
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always() # Preserve diagnostics when a capture gate fails.
         with:
           name: captures-app
-          path: app/captures/*
+          # The L9c checkers' mutated project copies (~0.9 GB of project files each; their hidden .godot
+          # imports were never uploaded) are regenerated from source. Their logs, renders and summaries
+          # stay outside these trees and are still uploaded.
+          path: |
+            app/captures/*
+            !app/captures/l9c/disabled-surface-app/**
+            !app/captures/l9c/unfiltered-stripe-app/**
+            !app/captures/l9c/stripes/raw-app/**
+
+  # PT1-CI-03 shadow evidence, not a gate: run the seven capture groups on separate runners and
+  # compare every output with the unchanged full job above. `CI required` does not depend on these
+  # jobs, and continue-on-error keeps a shadow difference from marking the run failed. Main/manual only.
+  visual-groups:
+    needs: scope
+    if: needs.scope.outputs.app == 'true' && github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
+    name: Visual group shadow (${{ matrix.group }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [core, ui, quality, terrain-atmosphere, ground, vegetation, scenario]
+    env:
+      GROUP: ${{ matrix.group }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Install visual dependencies
+        timeout-minutes: 15
+        run: |
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y xvfb libgl1-mesa-dri libxcursor1 libxinerama1 libxrandr2 libxi6 libxkbcommon0 libfontconfig1 python3-venv
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            .tools/Godot_v*_linux.x86_64
+            .tools/Godot_v*_linux.x86_64.sha512
+            .tools/Godot_v*_linux.x86_64.zip
+          key: godot-editor-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('app/get-godot.sh') }}
+      - name: Capture one group with a source-bound receipt
+        run: app/capture.sh --group "$GROUP" --out "$RUNNER_TEMP/capture-group" --run-id "gh-$GITHUB_RUN_ID"
+      - name: Inventory group outputs
+        run: |
+          mkdir -p "$RUNNER_TEMP/visual-shadow"
+          cp "$RUNNER_TEMP/capture-group/capture-group-receipt.json" "$RUNNER_TEMP/visual-shadow/"
+          python3 tools/ci/capture_groups.py inventory --repo . --root "$RUNNER_TEMP/capture-group" --group "$GROUP" \
+            --run-id "gh-$GITHUB_RUN_ID" --godot "$(app/get-godot.sh)" \
+            --visual-python "$(app/tests/visual-env.sh)" --out "$RUNNER_TEMP/visual-shadow/inventory.json"
+      - name: Report group phase timings
+        if: always()
+        run: |
+          if [[ -f "$RUNNER_TEMP/capture-group/timings.tsv" ]]; then
+            { printf '### %s group timings\n\n```text\n' "$GROUP"; cat "$RUNNER_TEMP/capture-group/timings.tsv"; printf '```\n'; } \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: visual-shadow-${{ matrix.group }}
+          path: ${{ runner.temp }}/visual-shadow/
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() # Group outputs for diagnosing a reported difference.
+        with:
+          name: visual-group-${{ matrix.group }}
+          include-hidden-files: true # receipt start and milestone records
+          path: |
+            ${{ runner.temp }}/capture-group/
+            !${{ runner.temp }}/capture-group/.capture-profile/**
+            !${{ runner.temp }}/capture-group/l9c/disabled-surface-app/**
+            !${{ runner.temp }}/capture-group/l9c/unfiltered-stripe-app/**
+            !${{ runner.temp }}/capture-group/l9c/stripes/raw-app/**
+          if-no-files-found: ignore
+          retention-days: 5
+
+  visual-shadow:
+    needs: [scope, visuals, visual-groups]
+    if: ${{ !cancelled() && needs.scope.outputs.app == 'true' && github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/') }}
+    name: Visual group shadow comparison
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          sparse-checkout: tools/ci
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: visual-shadow-*
+          path: tmp/visual-shadow
+      - name: Compare every group output with the full visual run
+        run: |
+          set -o pipefail
+          groups=()
+          for group in core ui quality terrain-atmosphere ground vegetation scenario; do
+            if [[ -d "tmp/visual-shadow/visual-shadow-$group" ]]; then groups+=("tmp/visual-shadow/visual-shadow-$group"); fi
+          done
+          if (( ${#groups[@]} == 0 )); then echo 'No group shadow evidence was produced.' | tee -a "$GITHUB_STEP_SUMMARY"; exit 1; fi
+          python3 tools/ci/capture_groups.py compare --run-id "gh-$GITHUB_RUN_ID" \
+            --expect-commit "$GITHUB_SHA" --full tmp/visual-shadow/visual-shadow-full/inventory.json \
+            --out tmp/visual-shadow-comparison.json --groups "${groups[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: visual-shadow-comparison
+          path: tmp/visual-shadow-comparison.json
+          if-no-files-found: ignore
+          retention-days: 30
 
   native-windows:
     needs: scope

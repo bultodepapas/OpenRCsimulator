@@ -5,6 +5,8 @@ The caller supplies a fresh run ID to each group, then independently supplies
 that same ID, the expected commit and the engine/interpreter to ``reduce``.
 This checks completed shell milestones and intact artifacts. It does not
 establish rendered equivalence, individual assertion counts, or GPU quality.
+``inventory`` and ``compare`` record hosted shadow evidence: whether separately
+run groups reproduce the unchanged full run's outputs. They never qualify production.
 """
 from __future__ import annotations
 
@@ -25,7 +27,7 @@ CHECKS = ".capture-checks"
 GROUP_CHECKS = {
     "core": ["sun-alignment", "shots", "landscape", "readability", "trace", "trace-check"],
     "ui": ["captures"],
-    "quality": ["tests", "cases", "aircraft-lights", "field-failures"],
+    "quality": ["tests", "cases", "aircraft-lights", "field-failures", "lighting-pixels"],
     "terrain-atmosphere": ["tree-review", "horizon", "phase6", "cloud-probe"],
     "ground": ["surfaces", "stripe-tests", "stripes", "windsock", "pilot-station",
                "flightline-barrier", "contact-shadows"],
@@ -47,6 +49,8 @@ DIRECT_SOURCES = (
     "app/tests/visual_quality_cases.py", "app/tests/capture_aircraft_lights.gd",
     "app/tests/test_field_failures.py", "app/tests/test_treeline_readability.py",
     "app/tests/treeline_readability.py", "tools/ci/capture_groups.py",
+    "app/tests/test_lighting_skin_patterns.gd", "app/tests/test_lighting_segment_filter.gd",
+    "tools/godot/run_checked.py",
     "tools/trees/check_review.py", "tools/trees/check_wind.py",
     "tools/terrain/check_horizon.py", "tools/atmosphere/check_phase6.py",
     "tools/atmosphere/check_cloud_probe.py", "tools/ground/check_surfaces.py",
@@ -420,6 +424,244 @@ def reduce_groups(args) -> None:
                               "engine_sha256": engine, "config": config, "groups": groups})
 
 
+# Shadow equivalence: hosted group jobs and the unchanged full job each publish a
+# small inventory; ``compare`` checks every output against the full run.
+INVENTORY = "inventory.json"
+BOOKKEEPING = {START, CHECKS, RECEIPT, "timings.tsv", ".gdignore", ".capture.lock", "run-manifest.json"}
+TEXT_SUFFIXES = {".json", ".txt", ".csv", ".log", ".tsv", ".html", ".md", ".xml", ".svg"}
+IMAGE_SUFFIXES = {".png", ".exr", ".jpg", ".jpeg", ".webp"}
+LOG_SUFFIXES = {".log", ".html"}
+MAX_NORMALIZED_BYTES = 16 * 1024 * 1024
+MAX_LISTED = 200
+# Volatility model. Every rule is declared here and reported; a hosted run that still differs
+# identifies new volatile outputs to examine, never to silently ignore.
+SKIPPED_PARTS = {".godot", ".capture-profile", "__pycache__"}
+VOLATILE_TREES = ("l9c/disabled-surface-app", "l9c/unfiltered-stripe-app", "l9c/stripes/raw-app",
+                  "scenario/history")
+VOLATILE_KEYS = {"created_utc", "started_utc", "finished_utc", "checked_utc", "resumed_utc",
+                 "capture_id", "elapsed_seconds", "wall_elapsed_seconds", "log_sha256", "log_bytes"}
+CHECKED_RUN = re.compile(r"-[a-z0-9_]{8}$")  # tempfile.mkdtemp suffix used by run_checked.py
+
+
+def canonical_sha256(value) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, allow_nan=False).encode()).hexdigest()
+
+
+def cpu_model() -> str:
+    try:
+        for line in Path("/proc/cpuinfo").read_text(encoding="utf-8", errors="replace").splitlines():
+            if line.startswith("model name"):
+                return line.split(":", 1)[1].strip()
+    except OSError:
+        pass
+    return platform.processor() or "unknown"
+
+
+def read_timings(root: Path) -> list[list]:
+    path = root / "timings.tsv"
+    if not path.is_file():
+        return []
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines()[1:]:
+        parts = line.split("\t")
+        if len(parts) == 3 and parts[1].isdigit():
+            rows.append([parts[0], int(parts[1]), parts[2]])
+    return rows
+
+
+def excluded_output(relative: str) -> bool:
+    """Declared non-evidence trees: import caches/profiles, regenerable mutation copies, dated history."""
+    parts = relative.split("/")
+    return (relative in BOOKKEEPING or bool(set(parts) & SKIPPED_PARTS)
+            or any(relative == tree or relative.startswith(tree + "/") for tree in VOLATILE_TREES))
+
+
+def strip_volatile(value, markers: list[str]):
+    if isinstance(value, dict):
+        return {k: strip_volatile(v, markers) for k, v in value.items() if k not in VOLATILE_KEYS}
+    if isinstance(value, list):
+        return [strip_volatile(v, markers) for v in value]
+    if isinstance(value, str):
+        for marker in markers:
+            value = value.replace(marker, "<CAPTURES>")
+        return value
+    return value
+
+
+def normalized_sha256(path: Path, markers: list[str]) -> str | None:
+    data = path.read_bytes()
+    if path.suffix.lower() == ".json":
+        try:
+            # Recorded run clocks/IDs and log digests are not rendered evidence.
+            value = strip_volatile(json.loads(data), markers)
+            return canonical_sha256(value)
+        except (ValueError, UnicodeDecodeError, RecursionError):
+            pass
+    normalized = data
+    for marker in markers:
+        normalized = normalized.replace(os.fsencode(marker), b"<CAPTURES>")
+    return hashlib.sha256(normalized).hexdigest() if normalized != data else None
+
+
+def tree_inventory(root: Path) -> dict:
+    """Hash every evidence output under a stable logical path.
+
+    Checked-runner directories (``<label>-<mkdtemp suffix>`` holding report.json and
+    engine.log) drop their random suffix; text outputs also get a normalized hash.
+    """
+    resolved = root.resolve()
+    markers = sorted({str(root.absolute()), str(resolved)}, key=len, reverse=True)
+    files, logical = {}, {"": ""}
+    for directory, dirs, names in os.walk(resolved, followlinks=False):
+        parent = Path(directory)
+        raw_parent = parent.relative_to(resolved).as_posix() if parent != resolved else ""
+        for name in list(dirs):
+            child = parent / name
+            raw = f"{raw_parent}/{name}" if raw_parent else name
+            if child.is_symlink():
+                fail("symlink in capture output")
+            if excluded_output(raw):
+                dirs.remove(name)
+                continue
+            if CHECKED_RUN.search(name) and (child / "report.json").is_file() and (child / "engine.log").is_file():
+                name = CHECKED_RUN.sub("", name)
+            logical[raw] = f"{logical[raw_parent]}/{name}" if logical[raw_parent] else name
+        for name in names:
+            path = parent / name
+            raw = f"{raw_parent}/{name}" if raw_parent else name
+            if excluded_output(raw) or path.is_symlink():
+                continue
+            relative = f"{logical[raw_parent]}/{name}" if logical[raw_parent] else name
+            if relative in files:  # two checked runs share a label: keep both under raw paths
+                relative = raw
+            entry = {"sha256": digest(path), "bytes": path.stat().st_size}
+            if raw != relative:
+                entry["path"] = raw
+            if path.suffix.lower() in TEXT_SUFFIXES and entry["bytes"] <= MAX_NORMALIZED_BYTES:
+                normalized = normalized_sha256(path, markers)
+                if normalized:
+                    entry["normalized_sha256"] = normalized
+            files[relative] = entry
+    return dict(sorted(files.items()))
+
+
+def inventory(args) -> None:
+    if args.group != "all":
+        valid_run_id(args.run_id)
+    source = source_identity(args.repo)
+    atomic_new_json(args.out, {
+        "format": "openrc-capture-inventory v1", "group": args.group,
+        "run_id": args.run_id if args.group != "all" else None,
+        "commit": source["commit"], "clean": not source["changes"],
+        "source_sha256": canonical_sha256(source), "engine_sha256": digest(args.godot),
+        "visual_python_sha256": digest(args.visual_python), "config": configuration(),
+        "cpu": cpu_model(), "timings": read_timings(args.root), "files": tree_inventory(args.root)})
+
+
+def kind_of(path: str) -> str:
+    suffix = Path(path).suffix.lower()
+    return "image" if suffix in IMAGE_SUFFIXES else "log" if suffix in LOG_SUFFIXES else "data"
+
+
+def compare_groups(args) -> int:
+    errors = []
+    full = read_json(args.full)
+    if not isinstance(full, dict) or full.get("format") != "openrc-capture-inventory v1" or full.get("group") != "all":
+        fail("full inventory has an unsupported format")
+    if full.get("commit") != args.expect_commit or full.get("clean") is not True:
+        errors.append("full capture did not run on the clean expected commit")
+    groups, receipts = {}, {}
+    for directory in args.groups:
+        receipt, inv = read_json(local_file(directory, RECEIPT)), read_json(local_file(directory, INVENTORY))
+        start = receipt.get("start") if isinstance(receipt, dict) else None
+        group = start.get("group") if isinstance(start, dict) else None
+        if group not in GROUP_CHECKS or group in groups:
+            fail(f"unexpected or duplicated group in {directory}")
+        groups[group], receipts[group] = inv, receipt
+        source = start.get("source", {})
+        checks = {
+            "receipt did not pass": receipt.get("format") == "openrc-experimental-capture-group v1"
+                                     and receipt.get("status") == "passed",
+            "wrong run ID": start.get("run_id") == args.run_id and inv.get("run_id") == args.run_id,
+            "source is not the clean expected commit": source.get("commit") == args.expect_commit
+                                                      and source.get("changes") == [],
+            "source inputs differ from the full run": canonical_sha256(source) == full.get("source_sha256")
+                                                     == inv.get("source_sha256"),
+            "engine differs from the full run": start.get("engine_sha256") == full.get("engine_sha256")
+                                                == inv.get("engine_sha256"),
+            "visual interpreter differs from the full run": receipt.get("visual_python_sha256")
+                                                            == full.get("visual_python_sha256")
+                                                            == inv.get("visual_python_sha256"),
+            "capture configuration differs from the full run": same_json(start.get("config"), full.get("config"))
+                                                               and same_json(inv.get("config"), full.get("config")),
+            "inventory does not match its receipt": inv.get("group") == group and isinstance(inv.get("files"), dict)
+                and {k: v for k, v in receipt.get("outputs", {}).items() if not excluded_output(k)}
+                == {v.get("path", k): v.get("sha256") for k, v in inv["files"].items()},
+        }
+        errors += [f"{group}: {message}" for message, ok in checks.items() if not ok]
+    missing = sorted(set(GROUP_CHECKS) - set(groups))
+    if missing:
+        errors.append(f"missing groups: {missing}")
+    owner, overlaps = {}, []
+    for group in sorted(groups):
+        for path in groups[group].get("files", {}):
+            if path in owner:
+                overlaps.append(f"{path} ({owner[path]}, {group})")
+            else:
+                owner[path] = group
+    full_files = full.get("files", {})
+    counts = {kind: {"identical": 0, "normalized": 0, "different": 0} for kind in ("image", "data", "log")}
+    different = {kind: [] for kind in counts}
+    for path in sorted(set(owner) & set(full_files)):
+        left, right = full_files[path], groups[owner[path]]["files"][path]
+        kind = kind_of(path)
+        if left["sha256"] == right["sha256"]:
+            counts[kind]["identical"] += 1
+        elif left.get("normalized_sha256", left["sha256"]) == right.get("normalized_sha256", right["sha256"]):
+            counts[kind]["normalized"] += 1
+        else:
+            counts[kind]["different"] += 1
+            # llvmpipe JIT output can depend on host CPU features: mark such differences.
+            host = "" if groups[owner[path]].get("cpu") == full.get("cpu") else " [different CPU]"
+            different[kind].append(f"{owner[path]}: {path}{host}")
+    missing_from_groups = sorted(set(full_files) - set(owner))
+    extra_in_groups = sorted(f"{owner[path]}: {path}" for path in set(owner) - set(full_files))
+    group_seconds = {g: sum(row[1] for row in inv.get("timings", [])) for g, inv in sorted(groups.items())}
+    equivalent = (not errors and not overlaps and not missing_from_groups and not extra_in_groups
+                  and not different["image"] and not different["data"])
+    report = {
+        "format": "openrc-capture-shadow-comparison v1", "production_qualified": False,
+        "equivalent": equivalent, "run_id": args.run_id, "commit": args.expect_commit,
+        "errors": errors, "overlaps": overlaps[:MAX_LISTED],
+        "missing_from_groups": missing_from_groups[:MAX_LISTED], "extra_in_groups": extra_in_groups[:MAX_LISTED],
+        "counts": counts, "different": {k: v[:MAX_LISTED] for k, v in different.items()},
+        "cpu": {"full": full.get("cpu"), **{g: inv.get("cpu") for g, inv in sorted(groups.items())}},
+        "cpu_mismatch_groups": sorted(g for g, inv in groups.items() if inv.get("cpu") != full.get("cpu")),
+        "volatility_model": {"skipped_parts": sorted(SKIPPED_PARTS), "volatile_trees": list(VOLATILE_TREES),
+                             "volatile_json_keys": sorted(VOLATILE_KEYS)},
+        "timings_seconds": {"full": sum(row[1] for row in full.get("timings", [])), "groups": group_seconds,
+                            "slowest_group": max(group_seconds.values(), default=0)},
+    }
+    atomic_new_json(args.out, report)
+    lines = [f"### Visual group shadow comparison: {'equivalent' if equivalent else 'NOT equivalent'}", "",
+             "Shadow evidence only (`production_qualified: false`); the full visual job remains the gate.", "",
+             "| Kind | Identical | Path-normalized | Different |", "| --- | ---: | ---: | ---: |"]
+    lines += [f"| {k} | {c['identical']} | {c['normalized']} | {c['different']} |" for k, c in counts.items()]
+    lines += ["", f"Full run {report['timings_seconds']['full']} s; slowest group "
+              f"{report['timings_seconds']['slowest_group']} s (capture phases only, excluding job setup).",
+              f"Groups on a different CPU model than the full run: {report['cpu_mismatch_groups'] or 'none'}."]
+    for label, values in (("Errors", errors), ("Overlapping outputs", overlaps),
+                          ("Missing from groups", missing_from_groups), ("Only in groups", extra_in_groups),
+                          ("Different images", different["image"]), ("Different data", different["data"]),
+                          ("Different logs (informational)", different["log"])):
+        if values:
+            lines += ["", f"**{label}** ({len(values)}):", *[f"- `{v}`" for v in values[:20]]]
+            if len(values) > 20:
+                lines.append(f"- … {len(values) - 20} more in the comparison report")
+    print("\n".join(lines))
+    return 0 if equivalent else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -440,12 +682,29 @@ def main() -> int:
     p.add_argument("--visual-python", type=Path, required=True)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--parts", type=Path, nargs="+", required=True)
+    p = sub.add_parser("inventory", help="hash one completed full or group capture tree")
+    p.add_argument("--repo", type=Path, required=True)
+    p.add_argument("--root", type=Path, required=True)
+    p.add_argument("--group", choices=["all", *GROUP_CHECKS], required=True)
+    p.add_argument("--run-id", default="")
+    p.add_argument("--godot", type=Path, required=True)
+    p.add_argument("--visual-python", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("compare", help="compare seven group receipts/inventories with the full inventory")
+    p.add_argument("--run-id", required=True)
+    p.add_argument("--expect-commit", required=True)
+    p.add_argument("--full", type=Path, required=True)
+    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--groups", type=Path, nargs="+", required=True)
     args = parser.parse_args()
     try:
-        {"begin": begin, "finish": finish, "reduce": reduce_groups}[args.command](args)
-    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+        if args.command == "compare":
+            valid_run_id(args.run_id)
+            return compare_groups(args)
+        {"begin": begin, "finish": finish, "reduce": reduce_groups, "inventory": inventory}[args.command](args)
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, subprocess.SubprocessError) as error:
         print(f"experimental capture groups: {error}", file=sys.stderr)
-        return 1
+        return 2 if args.command == "compare" else 1
     return 0
 
 

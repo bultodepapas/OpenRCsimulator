@@ -253,6 +253,11 @@ are ignored; run evidence must be in immediate subdirectories.
 JUnit counts **commands**, including imports and parse checks, not GDScript
 assertions. A passing collection cannot prove that every intended suite was
 launched; the shell/CI exit status remains authoritative for suite completion.
+A passing script that prints a declared `<subject> SKIPPED: <reason>` line (for
+example, the 1920×1080 lighting pixel suites under `--headless`) is reported as a
+JUnit `<skipped>` case and counted separately; it never qualifies the skipped
+contract. Its exit verdict is unchanged, and a failed invocation stays a failure.
+Those two pixel suites run display-backed in the `quality` capture group.
 Do not mix old runs into a new collection or use wrapper duration as a physics/GPU
 performance measurement. This is a consistency check on trusted local artifacts;
 someone editing both metadata and evidence can forge a verdict. The explicit

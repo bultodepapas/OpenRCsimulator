@@ -1,6 +1,6 @@
 # External audits — implemented work
 
-Reviewed **2026-11-06**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
+Reviewed **2026-11-07**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
@@ -11,6 +11,13 @@ Each finding row includes an **Original report** link; implementation evidence r
 | A27 CI-01 | Removed stale WarningsBar.DANGER test references; AlertPolicy.severity preserves all five danger/caution expectations. | [467250304](https://github.com/bultodepapas/OpenRCsimulator/commit/4672503047c86d8bf9e12203209f3c96942ad3bb), inspected patch; commit records 407 checked battery/layout assertions and related warning suites. This is a later test repair, not a gameplay battery defect or full-CI proof; no rerun during consolidation. | [A27 original][A27] |
 | A27 CI-02 | Disposable historical brake reference overlays exactly two pinned v4 identity declarations to required v6; original goldens and candidate numerical outputs remain untouched/exact. | [0a7e236ad](https://github.com/bultodepapas/OpenRCsimulator/commit/0a7e236adf44e9225afdb3dbb8e92a159ae2b3a5) and [gate contract](../tools/godot/README.md#fixed-brake-legacy-gate-gp-12): 12 Python negative controls, 16 beta1 goldens and 258 candidate checks reported on Windows. Historical dynamics retained; not general v4/v6 fuel-event equivalence. Downstream/full CI remains a gate. | [A27 original][A27] |
 | A27 CI-03; A17/A24 companion pin | Later 181d7ca638285f24c1ec9e5089ed07b35b7ea418 updates stale solver pins with retained-tape evidence. | [Rebind receipt](../docs/research/ai-companions/AFC-02/rebinds/2026-11-06-880d1911-to-84cac259.json): audit reports nine tapes × 2,881 rows with matching baseline/candidate CSV hashes. Not exact replay, general requalification or physical validation; later full CI was still pending at the audit closing check. | [A17 original][A17], [A24 original][A24], [A27 original][A27] |
+| A27 CI-01/02/03 full CI | Complete required CI at the repaired source. | Hosted runs [42322395902](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/42322395902) (`b21c07896`) and [42333181434](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/42333181434) (`997e21278`): `CI required` succeeded, including all eight unit shards, integration and visuals (checked 2026-11-07 via the Actions API). Software CI only; the CI-02/03 scope limits above still apply. | [A27 original][A27] |
+| A27 CI-04 | Linux/Windows `native-rc-runtime` matrix installs the same run's RC native pair and requires native session-guard and 180-tick trajectory markers; required by `CI required`. | [b21c07896](https://github.com/bultodepapas/OpenRCsimulator/commit/b21c0789649b856217d82faa112c190d34389a21); both platforms passed in the two runs above (9–11 min each). Implementation report: fixtures reject zero-exit skips, diagnostics, failed imports and changed editors. Not packaged-app or controller qualification. | [A27 original][A27] |
+| A27 CI-05 | Each 30/60/144 FPS invocation must emit exactly one 64-hex state and flight digest before comparison. | b21c07896 `tools/ci/fixed_fps_digest.py`; implementation report: 24 injected missing/malformed/duplicate/unequal cases fail through the real shell blocks. | [A27 original][A27] |
+| A27 CI-06 | An empty converted human-texture set records a failure before returning. | b21c07896; implementation report: 172 population checks passed in pinned Godot, all 11 variants. | [A27 original][A27] |
+| A27 CI-07 | 15-minute deadlines and bounded APT transport timeouts/retries on Linux dependency setup. | b21c07896 workflow. A stalled-mirror negative control was not run on hosted runners. | [A27 original][A27] |
+| A27 CI-08 | Capture fixtures and receipt helpers use the selected interpreter throughout. | b21c07896; implementation report: 90 orchestration tests passed hosted. | [A27 original][A27] |
+| A27 CI-10 | One named/platformed preset per desktop target; nonempty Linux/Windows custom release templates rejected until their inputs are captured. | b21c07896 `tools/release/manifest.py`; implementation report: 27 release-manifest and 35 export-identity fixtures. macOS derived-template handling unchanged. | [A27 original][A27] |
 | A17 UI3-01 (pending model values) | Zone/effects drafts, color validity and brightness debounce survive unrelated history/recovery; incompatible history refuses before stack mutation. | [AE-09d-R3](../docs/research/aircraft-editor/AE-08b-09/README.md#pending-lighting-edits-ae-09d-r3-2026-11-06): 33 baseline failures; 84 dedicated / 1,275 focused checks pass. Unsubmitted numeric text remains in the pending queue; native/full CI separate. | [A17 original][A17] |
 | A17 UI3-02 (saved builds) | Successful named-build replacement clears outgoing presentation buffers; canceled/failed named loads retain the outgoing draft and recovery identity. | [AE-09d-R3](../docs/research/aircraft-editor/AE-08b-09/README.md#pending-lighting-edits-ae-09d-r3-2026-11-06): actual Discard/Cancel dialogs and stored digests checked. Damaged catalog-source failure remains a source-derived follow-up. | [A17 original][A17] |
 | A17 UI3-04 | Invalid first color enables visible Cancel while Apply remains disabled. | [AE-09d-R3](../docs/research/aircraft-editor/AE-08b-09/README.md#pending-lighting-edits-ae-09d-r3-2026-11-06): visible Cancel activated before and after history/recovery. | [A17 original][A17] |
@@ -136,7 +143,7 @@ These are original failure descriptions for implemented items, not the active qu
 
 ## Source provenance
 
-This registry is provenance, **not a claim that all source findings are completed**. Twenty-nine originals are unchanged. Four historical byte-identical A1 copies were removed previously. Full calculations, negative results and external deliverable links remain in the originals; external ZIP/PDF files were not inspected merely by consolidating their summaries.
+This registry is provenance, **not a claim that all source findings are completed**. Thirty original audit summaries are unchanged. Four historical byte-identical A1 copies were removed previously. Full calculations, negative results and external deliverable links remain in the originals; external ZIP/PDF files were not inspected merely by consolidating their summaries.
 
 | Source | Original | Snapshot and scope |
 | --- | --- | --- |
@@ -169,6 +176,7 @@ This registry is provenance, **not a claim that all source findings are complete
 | A27 | [CI audit — validation coverage, orchestration and release evidence][A27] | Frozen `347905cafed505cad758107f2790fab2b018e4c6`, closing 2026-11-07 00:23 UTC (2026-11-06 19:23 America/Bogota); reports CI-01–10, including later companion repair 181d7ca6. Historical run/API/artifact/source review and focused local probes, not full Godot/native rebuild/export/target-device validation. External PDF/ZIP uninspected here. Local Git history additionally establishes later CI-01/02 source repairs; no live CI status claim. |
 | A28 | [Apple Silicon follow-up — Stik samples, audio, cloud readback and lens ghosts][A28] | Reviewed `181d7ca638285f24c1ec9e5089ed07b35b7ea418`; pinned beta2 Linux Godot/float32 CPU probes. Five techniques, three reported probes (28 Stik checks/20 comparisons, ten audio cases, nine ghost grids). Cloud and ghost refine existing investigations; no production changes or native Mac performance/power campaign. External ZIP uninspected during consolidation. |
 | A29 | [Seeded wind — joint statistics, aerodynamic cusp and timestep diagnostics][A29] | Executed `181d7ca638285f24c1ec9e5089ed07b35b7ea418`, relevant files reportedly unchanged through `420c259`. 283 reported assertions plus independent 25 kernel controls/six joint-load conditions. Extends A10/A23/F12 and A25; no new independent serious bug, production modification or physical validation. Sandbox deliverables unavailable locally and uninspected. |
+| A30 | [Code and simulation audit — recording, controls and audio][A30]; [full Page snapshot][A30-full] | Reviewed b21c0789649b856217d82faa112c190d34389a21. Five runtime findings N01–N05; three qualified follow-ups. Summary preserved byte-for-byte; full report preserves all 93 Page block texts/order under its title, read 2026-11-07. One audit with two documents. [Live Page](https://chatgpt.com/space/page_a837fc1e69288191af414d4270f9b32e) unchanged; external ZIP uninspected. |
 
 ### Original-file SHA-256
 
@@ -205,6 +213,8 @@ Intake hashes are unchanged. Git may normalize CRLF/LF; accept raw or canonical-
 | A27 — `ci-validation-coverage-release-audit-347905c.md` | `fd66fe8694cf4ca67cfe8b5435ef658bf478d36050497312dbba0de1b0f3aab7` |
 | A28 — `apple-silicon-stik-audio-cloud-ghost-optimization-probes-181d7ca.md` | `a71375d5ea6fe69e27b064d31107de0340c0f612b99d82d70c8a904340e9d77d` |
 | A29 — `seeded-wind-joint-statistics-cusp-timestep-review-181d7ca.md` | `545a031f0b186935020687bebe96301fe0068d4bd9ef8fb04d27590f93984d8f` |
+| A30 — `code-simulation-recording-controls-audio-audit-b21c078.md` | `427faabc3fba4ee52ae1951a4c7d983084adfbe05b9a54c936de99f471291853` |
+| A30-full — `code-simulation-audit-b21c078-full-report.md` | `7633a84557698f08260b7d1f60dabeac068457cdffa06b88ea46a3d536dd9cfa` |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -235,3 +245,5 @@ Intake hashes are unchanged. Git may normalize CRLF/LF; accept raw or canonical-
 [A27]: ci-validation-coverage-release-audit-347905c.md
 [A28]: apple-silicon-stik-audio-cloud-ghost-optimization-probes-181d7ca.md
 [A29]: seeded-wind-joint-statistics-cusp-timestep-review-181d7ca.md
+[A30]: code-simulation-recording-controls-audio-audit-b21c078.md
+[A30-full]: code-simulation-audit-b21c078-full-report.md

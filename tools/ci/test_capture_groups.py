@@ -26,7 +26,7 @@ EXPECTED_IMAGES += ["field/capture-land-top.png"]
 EXPECTED_IMAGES += [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
 EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "compare_captures.py",
                      "check_trimmed_flight.py", "test_visual_quality_cases.py", "visual_quality_cases.py",
-                     "test_field_failures.py", "check_review.py", "check_horizon.py", "check_phase6.py",
+                     "test_field_failures.py", "run_checked.py", "run_checked.py", "check_review.py", "check_horizon.py", "check_phase6.py",
                      "check_cloud_probe.py", "check_surfaces.py", "test_stripes.py", "check_stripes.py",
                      "check_windsock.py", "check_windsock.py", "check_windsock.py", "check_windsock.py",
                      "check_grass.py", "check_grass_seam.py", "check_wind.py", "test_treeline_readability.py",
@@ -76,7 +76,11 @@ elif args and args[0] == '-':
 elif args:
     script = Path(args[0]).name
     target = opt('--out')
-    if script == 'capture_runner.py':
+    if script == 'run_checked.py':
+        run = Path(opt('--out-dir')) / (opt('--label') + '-abcd1234')
+        write(run / 'engine.log', opt('--require-text') + env.get('FAKE_PIXEL_CHECKS', '9') + ' checks, 0 failed\n')
+        write(run / 'report.json', '{"format": "openrc-godot-check v1"}')
+    elif script == 'capture_runner.py':
         path = Path(target)
         write(path, 'synthetic image')
         write(path.with_suffix('.json'), json.dumps({'image': path.name, 'capture_scene': opt('--scene'),
@@ -117,6 +121,53 @@ elif args:
             write(latest / 'sync.json', '[{"ok": true}]')
             write(latest / 'report.html', '<html>synthetic</html>')
 '''
+
+
+class InventoryVolatilityTests(unittest.TestCase):
+    """Declared volatile outputs normalize; real content changes never do."""
+
+    def tree(self, root, *, started, suffix, value=1.0):
+        files = {
+            f'lighting-pixels/lighting-skin_patterns-{suffix}/report.json':
+                json.dumps({'format': 'openrc-godot-check v1', 'capture_id': started, 'started_utc': started,
+                            'cwd': str(root), 'log_sha256': started, 'reason': 'passed'}),
+            f'lighting-pixels/lighting-skin_patterns-{suffix}/engine.log': 'Lighting skin patterns: 9 checks, 0 failed\n',
+            'vq01b/visual-quality-run-manifest.json': json.dumps({'created_utc': started, 'metric': value}),
+            'capture.png': 'image bytes',
+            'l9c/disabled-surface-app/project.godot': started,
+            'l9c/stripes/raw-app/render/ground.gdshader': started,
+            'scenario/history/' + started.replace(':', '') + '/frame.png': started,
+            'scenario/latest/sync.json': '[{"ok": true}]',
+            'l11a/candidate/.godot/editor/filesystem_cache10': started,
+            'timings.tsv': started,
+        }
+        for name, content in files.items():
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding='utf-8')
+        return receipts.tree_inventory(root)
+
+    def test_volatile_paths_keys_and_trees_are_declared_and_normalized(self):
+        with tempfile.TemporaryDirectory() as left_dir, tempfile.TemporaryDirectory() as right_dir:
+            left = self.tree(Path(left_dir), started='2026-11-07T01:00:00', suffix='ab12cd_9')
+            right = self.tree(Path(right_dir), started='2026-11-07T03:30:00', suffix='zz99xx00')
+            self.assertEqual(set(left), set(right))
+            self.assertEqual(sorted(left), ['capture.png', 'lighting-pixels/lighting-skin_patterns/engine.log',
+                                            'lighting-pixels/lighting-skin_patterns/report.json',
+                                            'scenario/latest/sync.json', 'vq01b/visual-quality-run-manifest.json'])
+            self.assertEqual(left['lighting-pixels/lighting-skin_patterns/report.json']['path'],
+                             'lighting-pixels/lighting-skin_patterns-ab12cd_9/report.json')
+            for name in left:
+                self.assertEqual(left[name].get('normalized_sha256', left[name]['sha256']),
+                                 right[name].get('normalized_sha256', right[name]['sha256']), name)
+            for name in receipts.VOLATILE_TREES:
+                self.assertTrue(receipts.excluded_output(name + '/x'))
+        with tempfile.TemporaryDirectory() as left_dir, tempfile.TemporaryDirectory() as right_dir:
+            left = self.tree(Path(left_dir), started='t', suffix='ab12cd34', value=1.0)
+            right = self.tree(Path(right_dir), started='t', suffix='ab12cd34', value=1.5)
+            name = 'vq01b/visual-quality-run-manifest.json'
+            self.assertNotEqual(left[name].get('normalized_sha256', left[name]['sha256']),
+                                right[name].get('normalized_sha256', right[name]['sha256']))
 
 
 @unittest.skipIf(os.name == 'nt', 'requires Linux or WSL shell utilities')
@@ -214,6 +265,13 @@ class CaptureGroupsTests(unittest.TestCase):
         self.assertFalse((output / 'run-manifest.json').exists())
         self.assertIn('ground\t', (output / 'timings.tsv').read_text())
         self.assertIn('fail (12)', (output / 'timings.tsv').read_text())
+
+    def test_pixel_suite_with_zero_checks_fails_the_quality_group(self):
+        self.env['FAKE_PIXEL_CHECKS'] = '0'
+        result, output, _ = self.run_capture(self.current, 'quality')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('no nonzero completion line', result.stderr)
+        self.assertIn('fail (1)', (output / 'timings.tsv').read_text())
 
     def test_failed_full_setup_clears_old_complete_marker(self):
         self.executable(self.app / 'capture.sh', self.current)
@@ -468,6 +526,97 @@ assert capture_groups.TREELINE_CASES == [case.case_id for case in treeline_reada
         self.assertFalse(reserved.exists())
         final = self.reduce(parts, commit, results / 'restored.json')
         self.assertEqual(final.returncode, 0, final.stderr)
+
+    def inventory(self, root, output, group='all', run_id=''):
+        return subprocess.run([sys.executable, str(self.root / 'tools/ci/capture_groups.py'), 'inventory',
+            '--repo', str(self.root), '--root', str(root), '--group', group, '--run-id', run_id,
+            '--godot', str(self.bin / 'godot'), '--visual-python', str(self.bin / 'python3'),
+            '--out', str(output)], capture_output=True, text=True)
+
+    def compare(self, full, groups, output, commit, run_id='shadow-1'):
+        return subprocess.run([sys.executable, str(self.root / 'tools/ci/capture_groups.py'), 'compare',
+            '--run-id', run_id, '--expect-commit', commit, '--full', str(full), '--out', str(output),
+            '--groups', *map(str, groups)], capture_output=True, text=True)
+
+    def test_shadow_groups_compare_every_output_with_the_full_run(self):
+        commit = self.prepare_receipts()
+        results = self.root / 'results'
+        full, full_out, _ = self.run_capture(self.current)
+        self.assertEqual(full.returncode, 0, full.stderr + full.stdout)
+        result = self.inventory(full_out, results / 'full.json')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('landscape-counters.txt', json.loads((results / 'full.json').read_text())['files'])
+        shadows = []
+        for group in GROUPS:
+            run, output, _ = self.run_capture(self.current, group, run_id='shadow-1')
+            self.assertEqual(run.returncode, 0, f'{group}: {run.stderr}{run.stdout}')
+            shadow = results / group
+            shadow.mkdir(parents=True)
+            shutil.copyfile(output / receipts.RECEIPT, shadow / receipts.RECEIPT)
+            result = self.inventory(output, shadow / receipts.INVENTORY, group, 'shadow-1')
+            self.assertEqual(result.returncode, 0, result.stderr)
+            shadows.append(shadow)
+        self.assertNotIn('landscape-counters.txt',
+                         json.loads((results / 'ui' / receipts.INVENTORY).read_text())['files'])
+
+        accepted = self.compare(results / 'full.json', shadows, results / 'accepted.json', commit)
+        self.assertEqual(accepted.returncode, 0, accepted.stdout + accepted.stderr)
+        report = json.loads((results / 'accepted.json').read_text())
+        self.assertIs(report['equivalent'], True)
+        self.assertIs(report['production_qualified'], False)
+        self.assertGreater(report['counts']['log']['normalized'], 0, 'absolute output paths must normalize')
+        self.assertEqual(sum(c['different'] for c in report['counts'].values()), 0)
+
+        def rejected(label, groups=shadows, commit=commit, run_id='shadow-1', code=1, contains=None):
+            destination = results / f'{label}.json'
+            result = self.compare(results / 'full.json', groups, destination, commit, run_id)
+            self.assertEqual(result.returncode, code, f'{label}: {result.stdout}{result.stderr}')
+            if contains:
+                self.assertIn(contains, result.stdout + result.stderr, label)
+            return json.loads(destination.read_text()) if destination.exists() else None
+
+        self.assertIn("missing groups: ['scenario']", rejected('missing', shadows[:-1])['errors'])
+        rejected('duplicate', shadows + [shadows[0]], code=2, contains='duplicated group')
+        rejected('wrong-commit', commit='0' * 40, contains='clean expected commit')
+        rejected('stale-run', run_id='shadow-2', contains='wrong run ID')
+
+        core = shadows[0] / receipts.INVENTORY
+        original = core.read_text()
+        data = json.loads(original)
+        data['files']['capture.png']['sha256'] = '0' * 64
+        core.write_text(json.dumps(data))
+        rejected('inventory-tampered', contains='inventory does not match its receipt')
+        # A coherent receipt/inventory with different bytes is a rendered difference, not a structural error.
+        receipt_path = shadows[0] / receipts.RECEIPT
+        original_receipt = receipt_path.read_text()
+        receipt = json.loads(original_receipt)
+        receipt['outputs']['capture.png'] = '0' * 64
+        receipt_path.write_text(json.dumps(receipt))
+        drift = rejected('image-drift', contains='core: capture.png')
+        self.assertEqual(drift['errors'], [])
+        self.assertEqual(drift['different']['image'], ['core: capture.png'])
+        receipt_path.write_text(original_receipt)
+        core.write_text(original)
+        # Logs are diagnostic only: a differing log is listed but does not break equivalence.
+        data = json.loads(original)
+        log_name = next(name for name in data['files'] if name.endswith('.log'))
+        data['files'][log_name] = {'sha256': '1' * 64, 'bytes': 1}
+        receipt['outputs'] = {**json.loads(original_receipt)['outputs'], log_name: '1' * 64}
+        core.write_text(json.dumps(data))
+        receipt_path.write_text(json.dumps(receipt))
+        logs = self.compare(results / 'full.json', shadows, results / 'log-drift.json', commit)
+        self.assertEqual(logs.returncode, 0, logs.stdout + logs.stderr)
+        self.assertEqual(json.loads((results / 'log-drift.json').read_text())['different']['log'],
+                         [f'core: {log_name}'])
+        receipt_path.write_text(original_receipt)
+        core.write_text(original)
+        dropped = json.loads(original)
+        del dropped['files']['capture.png']
+        receipt['outputs'] = {k: v for k, v in json.loads(original_receipt)['outputs'].items() if k != 'capture.png'}
+        core.write_text(json.dumps(dropped))
+        receipt_path.write_text(json.dumps(receipt))
+        self.assertEqual(rejected('missing-output', contains='Missing from groups')['missing_from_groups'],
+                         ['capture.png'])
 
     def test_failed_checker_or_source_drift_never_emits_receipt(self):
         self.prepare_receipts()

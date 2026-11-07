@@ -6,6 +6,14 @@ The [Apple Silicon plan](../../../plans/apple-silicon-performance.md) owns statu
 and remaining acceptance. The [preceding research](../DT-MAC-00-R2/README.md) owns
 the dated primary references and pinned-engine audit.
 
+## Native menu latency diagnosis (2026-11-07)
+
+[ANGEL menu measurements](menu-latency-2026-11-07.md) reproduce 1.23–1.61 s
+Home time-selection stalls and an 898 ms first Corsair-preview stall. Native
+phase timings locate synchronous world/aircraft reconstruction on the main
+thread; the report separates that from the test display's 30 Hz pacing and
+unverified GPU observations. This is diagnosis, not an implemented repair.
+
 ## DT-MAC-02e / 03 active-flight campaign preparation (2026-11-03)
 
 Source baseline `9de47723282b5c4126418b58ceeac273d66c3122`. The M1 comparison

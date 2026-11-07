@@ -60,15 +60,12 @@ static func collect(model: Node3D, min_height: float = -INF) -> Dictionary:
 			append_above(vertices, faces, min_height)
 	if vertices.is_empty():
 		return {}
-	var box := AABB(vertices[0], Vector3.ZERO)
-	for point in vertices:
-		box = box.expand(point)
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	var merged := ArrayMesh.new()
 	merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return {mesh = merged, bounds = box, triangles = vertices.size() / 3}
+	return {mesh = merged, bounds = merged.get_aabb(), triangles = vertices.size() / 3}
 
 
 ## Append ordered runs of accepted triangles to an independent destination.

@@ -172,7 +172,7 @@
         },
         {
           "path": "res://render/world/aircraft_lights.gd",
-          "sha256": "abb75f55a40583d0bb4842073f7f6dde91c452c366fa6a88f7751f9b6803aee4"
+          "sha256": "deddeed684377a97b419d29a211bbc27f1a54779f3fe8cd673a3961901d9ac3a"
         },
         {
           "path": "res://render/world/engine_srgb.gdshaderinc",
@@ -195,7 +195,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "2327c728aef4c9b5fe596f31632e2af60697b665d1f6a79e4c87b87beb2f691a"
+      "slots_sha256": "1ffd3353d2f06d6165fe1b77a7dd2eabdafbb77ae982e1be3d318ce1a5512df8"
     }
   ]
 }
