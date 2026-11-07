@@ -140,3 +140,11 @@ Headless regression runs, Godot 4.7.2, on the integrated source, all passing:
 | `test_ui_time_of_day_pause` | 44 ok |
 
 **Limits.** These are synthetic-device and headless checks. Calibration with a physical radio, Windows focus behaviour and native captures of the card remain to be verified with hardware.
+
+## Manual CSV generations and controller continuity (UI-31-R3, 2026-11-07)
+
+A30 N01/N02: both manual recorders reserve each automatic destination with atomic directory creation, write a staged complete CSV and then publish within that owned directory. Existing saves and clock rollback cannot select a previously published automatic path. Explicit-path overwrite remains deliberate. Failed generations retain their rows; T must save them successfully before replacement, or recovery must discard the matching generation. The operational export GUI smoke/card now recognize nested saves as well as legacy flat CSVs.
+
+A30 N03 keeps restart/rate latch history for unchanged device generation and binding. New selections, remaps, reconnects and focus-loss recovery require an OFF observation before arming. Nonfinite axis samples cannot manufacture a release. A11 F05 gives editors and binding capture their ordinary keys before Back/Pause shortcuts, including generated native ui_cancel mappings and deferred remap races. Default Escape, popup handling and controller Back remain separate navigation paths. Shared focus eligibility now honors recursive disablement during departure guards; Stay restores a usable Pause target even when restart began before its first focus callback.
+
+Recorder checks cover concurrent reservations, fixed/rolled-back clocks, staged write/publication failure, retries, stale generations, both production T handlers and the real fixed-wing Quit → Stay → Resume → T route. The dedicated controller test uses production Controls/ScreenStack and saved mappings. Exact results and source identities are in the [checked evidence index](../UI-32/audit-20261107-checks.json). The helicopter exit dialog, physical controllers and macOS/Linux filesystem concurrency remain separate acceptance work. The [companion rebind](../../ai-companions/AFC-02/rebinds/2026-11-07-84cac259-to-fccb428e.json) compares nine retained 2,881-row tapes; it is not physical validation or exact-replay qualification.

@@ -89,3 +89,13 @@ round-trip coverage and clearer composite scope.
 Windows Godot `4.8.beta2.official.cafc17a19`, headless; the new regression uses a
 1920×1080 logical viewport. This establishes software behavior, not native visual,
 hardware, physical or release qualification. Required full CI remains pending.
+
+## Audit preservation fixes (UI-32-R2, 2026-11-07)
+
+A11 F03 and A21 §1 now share a staged visual transaction. Moon, sky, lighting and night options validate before publication; normal flights save one complete preference outcome. Direct flights and Natural Random remain temporary. Workshop inherits the complete night context and its originating save scope; return restores the retained world's Moon/date context. A24 §6 rotates frozen stars from their fixed build-time equatorial basis, without accumulating deltas.
+
+UI2-02/03 separate save feedback from the display deadline and restore only the declared display-test keys on expiry. Other drafts remain editable and unsaved; explicit Revert/Close still discards the complete draft. A11 F06 reports language-save failure and a retryable/protected reason on the active Interface page. Its messages follow the selected language and do not consume the fixed action area at 200% text.
+
+A11 F04 scrolls Help using the selected/remapped pad, with bounded repeat, release/device filtering and a route to Close. UI2-06 credits the keyboard hint only during visible, unpaused, advancing simulation time. WNEW-01 preserves independent upper wind, exact gust amplitudes on timing edits and the authored direction on intensity edits; equivalent display text does not replace full precision. WNEW-05 changes thermal-domain admission to the affine endpoint bound; the field law and sampling arithmetic remain unchanged.
+
+The [checked evidence index](audit-20261107-checks.json) identifies the tested source and accepted scripts. Coverage includes rejected combined edits, injected preparation/commit refusal, normal/direct/Random/trial routes, protected/unwritable language saves, retry, both Help locales/scales, thermal boundary neighbors and lifetime sample parity. Native Windows Compatibility spot checks used actual 1920×1080 output at 100%/200%; screenshots remain under ignored `tmp/`. This is bounded rendered/software evidence, not physical-pad, screen-reader, macOS/Metal, full-CI or performance qualification. Recorder/controller evidence is in [UI-31](../UI-31/README.md); Workshop and statistics retain their own evidence homes.

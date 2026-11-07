@@ -24,7 +24,7 @@ Copy hashes from the exported smoke report only when the pilot flies that exact 
 
 Select the Ugly Stik, default field and **Start: runway (experimental)**. Begin with hands off at idle. Use the radio that will be evaluated; leave scenery and camera settings recorded as found. Save the trace and any screen/radio video for every attempt, including resets and unsuccessful landings.
 
-After Fly starts the flight, press **T once** to start a trace. Fly or taxi, then press **T again** to stop and save it under `user://traces/trace-*.csv`. Record the saved file path with the attempt. Keep one trace per attempt where possible; each file carries the launch selection and recording-start snapshot. Do not use a trace from an earlier flight to describe a later build.
+After Fly starts the flight, press **T once** to start a trace. Fly or taxi, then press **T again** to stop and save it under `user://traces/trace-<timestamp>[-N]/trace.csv`. Each automatic save reserves its own directory. Record the exact saved path with the attempt; older flat CSV files remain readable. Keep one trace per attempt where possible; each file carries the launch selection and recording-start snapshot. Do not use a trace from an earlier flight to describe a later build.
 
 | Phase | Attempt / trace path | What happened |
 | --- | --- | --- |

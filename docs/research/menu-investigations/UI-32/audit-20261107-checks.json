@@ -1,0 +1,1762 @@
+{
+  "format": "openrc-audit-remediation-checks v1",
+  "date": "2026-11-07",
+  "baseline": "ee00e0ea1ea3db385b20cb955cbddb6cd9bc2341",
+  "source_head": "6b6f0b7274c22aaed1afa14c67b4db055841d55b",
+  "context": "Existing Home/preview edits were preserved; concurrent commit 28e5ebdee includes those edits and the initial lighting/settings audit changes. Manifest identifies actual app bytes after the final recovery-focus fix.",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "platform": "Windows x86_64",
+  "default_test_mode": "headless, Dummy audio",
+  "selection": "Latest passing checked invocation per script/mode from this task, restricted to the shared production app. Raw receipts/logs remain local under ignored tmp; completion strings and log hashes are retained here. This is scoped verification, not a complete CI suite. Some independent consumer checks predate later unrelated edits; affected recovery/input routes were rerun after their final changes. The manifest is the final reviewed source identity, not a claim that every historical invocation captured all those hashes at launch.",
+  "accepted_scripts": [
+    {
+      "script": "res://main.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-lead-parse2/main-parse-oka7uqas/report.json",
+      "started_utc": "2026-11-07T22:27:49.620424+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://main.gd",
+        "--check-only"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://sim/recorder.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-recording-parse1/recorder-ks305qy5/report.json",
+      "started_utc": "2026-11-07T22:35:12.768618+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/recorder.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://sim/rotorcraft_recorder.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-recording-parse2/rotorcraft-cuunsd3j/report.json",
+      "started_utc": "2026-11-07T22:35:13.017410+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/rotorcraft_recorder.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://statistics/fixed_wing_adapter.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-statistics-parse-adapter/adapter-oezl4u61/report.json",
+      "started_utc": "2026-11-07T22:45:58.444821+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://statistics/fixed_wing_adapter.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://statistics/service.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-statistics-parse-service/service-pbjgbh5g/report.json",
+      "started_utc": "2026-11-07T22:45:58.448481+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://statistics/service.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://tests/test_balanced_thermal_field.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-thermal/thermal-pzum_mjc/report.json",
+      "started_utc": "2026-11-07T22:27:49.614271+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_balanced_thermal_field.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4e31d108e3d8ee37463c37d5747dc4ab9408d12782e2175265e377d17f3e80c8",
+      "reported_checks": 73,
+      "completion": [
+        "balanced thermal field: 73 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_companions_profiles.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-companion/profiles-hplz97nj/report.json",
+      "started_utc": "2026-11-07T23:12:06.947353+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c799bdf4c7dc927420cd0dfb8bc94b2e04a5d09fae10aef30ab89abf89950ce2",
+      "reported_checks": 44,
+      "completion": [
+        "AFC-02 companion profile validation: 44 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-controller-edges-16/controller-edges-qqhzlt6l/report.json",
+      "started_utc": "2026-11-07T22:56:36.983495+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_edge_continuity.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2b5c499f05d8d11ffa05448b33d7ed8b83124acca4e6d5261581abf7218d3096",
+      "reported_checks": 42,
+      "completion": [
+        "controller edge continuity: 42 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_controller_integration.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-controllers/integration-dfudf1fk/report.json",
+      "started_utc": "2026-11-07T23:04:59.993590+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_integration.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "006769237aae717ebebca7ca2d22fdf752aa5162f21f243feba4e4fb52451705",
+      "reported_checks": 27,
+      "completion": [
+        "Controller integration: 27/27 checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_controller_menu.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-shell3/controller-menu-kvyjp2jm/report.json",
+      "started_utc": "2026-11-07T23:00:45.304715+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_menu.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "24242b6fa844888d0dbdd25dd36b4ad0efb2dcf3b3ef753f04441b91574b8773",
+      "reported_checks": 55,
+      "completion": [
+        "Controller menu: 55/55 checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_controller_rates.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-controller-rates-3/controller-rates-659ln4b6/report.json",
+      "started_utc": "2026-11-07T22:53:12.517587+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_rates.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "401c1551347d2cccd635b238139e74f4a2d0d6687d1a4a975773c8bcdddd1aea",
+      "reported_checks": 67,
+      "completion": [
+        "controller rates: 67 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_controller_recovery_focus.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-recovery/focus-vg07vq06/report.json",
+      "started_utc": "2026-11-07T22:58:54.260291+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_recovery_focus.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fd13b370eaf0ffc14966e27c1ada486b8b57d13a619310ffad0ee5f1d4553aa8",
+      "reported_checks": 75,
+      "completion": [
+        "controller recovery focus: 75 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_damage_flight_events.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-damage/damage-_4moidui/report.json",
+      "started_utc": "2026-11-07T22:47:21.435600+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_damage_flight_events.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d8be5cc407c127ad684d7c8357224d8c6bc452434fa60e3bf71ee2a508adb2ab",
+      "reported_checks": 197,
+      "completion": [
+        "Damage flight events: 197 checks, 0 failed; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/damage-flight-events-3292386"
+      ]
+    },
+    {
+      "script": "res://tests/test_first_flight_hint_exposure.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-hint2/exposure-h5o65f7p/report.json",
+      "started_utc": "2026-11-07T22:31:01.701908+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_first_flight_hint_exposure.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f082fee2f68d780d613ec42559ff21c4505f2a23e73cae5c7b5fffed7d59f09a",
+      "reported_checks": 7,
+      "completion": [
+        "Hint exposure: 7 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_first_flight_hint_report_layout.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-hint-layout/layout-oskkmcuq/report.json",
+      "started_utc": "2026-11-07T22:50:42.156100+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_first_flight_hint_report_layout.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "41b3892d837b22862cb7804840e129ff1c0c7a6758b9a9e00fab8ca7c2b8bdb1",
+      "reported_checks": 198,
+      "completion": [
+        "first-flight/report layout: 198 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_flight_statistics_eligibility.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-focused3/eligibility-qcsz_ulr/report.json",
+      "started_utc": "2026-11-07T22:49:06.684043+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_eligibility.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e3749735e6975b3ae01df36d76954fe02cdfa767182eef308b1a7633d3ae1604",
+      "reported_checks": 35,
+      "completion": [
+        "ok   failed save leaves sampling active",
+        "Statistics eligibility: 35 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_flight_statistics_lifecycle.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-lifecycle/lifecycle-d9rz5yu1/report.json",
+      "started_utc": "2026-11-07T22:47:21.432601+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_lifecycle.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3b9b84e42df93e84e94f24024f726357929ee64fd0904970cd9e91ced47382cb",
+      "reported_checks": 74,
+      "completion": [
+        "Flight statistics lifecycle: 74 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_flight_statistics_terrain.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-terrain/terrain-bhinp0a_/report.json",
+      "started_utc": "2026-11-07T22:47:21.435600+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_terrain.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "82e0c1ed22a20f5c25a5c902322b39a4be8707c1f76c3860c7fbc6ff3988f723",
+      "reported_checks": 82,
+      "completion": [
+        "Statistics terrain: 82 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_flight_statistics_writer.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-writer/writer-0tzd4910/report.json",
+      "started_utc": "2026-11-07T22:49:06.688149+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_writer.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f00f9ae619659fd9c111d6ea7b9aa2f6248b2f6c9ba44a21a66e94dacb81c3de",
+      "reported_checks": 18,
+      "completion": [
+        "Flight statistics writer: 18 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ground_accidents.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-accidents/accidents-kf410a_g/report.json",
+      "started_utc": "2026-11-07T22:47:21.433600+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_accidents.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3517997b6e06c6304e224a0ca1cf009b894e4520a4c46923fa8f9bfe277f68c6",
+      "reported_checks": 68,
+      "completion": [
+        "GP-14 accidents: 68 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_heli_session.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-recording-heli-session1/heli-session-l0chvb6d/report.json",
+      "started_utc": "2026-11-07T22:39:29.575118+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_session.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "75ba48be5ec0ccb016b2e3121f67615a7a828224123ce2f4506cb41efa777723",
+      "reported_checks": 42,
+      "completion": [
+        "HELI-16 generated preset/session: 42 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_heli_state_audit.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-recording-heli-state1/heli-8xxfhsl_/report.json",
+      "started_utc": "2026-11-07T22:38:20.898368+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_state_audit.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2fa896c71a3906f6af301a63ce04ae49883ef5750c977ed127ae03c720ac71b4",
+      "reported_checks": 50,
+      "completion": [
+        "HELI state audit: 50 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_intended_hull_support_session.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-hull/hull-bbqnna07/report.json",
+      "started_utc": "2026-11-07T22:47:21.431601+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_intended_hull_support_session.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "423d1a3e79a316c5354eb75875e8fe6a741085415c0224c8f479711e06811b5b",
+      "reported_checks": 53,
+      "completion": [
+        "Intended hull support sessions: 53 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_lighting_sequence_ui.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-sequence-4mbictx8/report.json",
+      "started_utc": "2026-11-07T22:52:53.535927+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_lighting_sequence_ui.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7bbb4ae2788dc72b667dc5f96a2caa1352ba4f9521e89efd252cc80f53be342b",
+      "reported_checks": 39,
+      "completion": [
+        "FW-RGB-09 sequence UI: 39 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_manual_trace_integrity.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-generations/integrity-wgjd3t24/report.json",
+      "started_utc": "2026-11-07T23:04:59.993590+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_manual_trace_integrity.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "7b16e3f677381141de6584fd7661112aa2487bbd4ef14f2d9fb8aaddabe07d48",
+      "reported_checks": 54,
+      "completion": [
+        "ok   Resume then T preserves failed rows",
+        "Manual trace integrity: 54 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_settings_ui.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-settings/settings-cxagyfv7/report.json",
+      "started_utc": "2026-11-07T23:04:59.993590+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_settings_ui.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ce731fbe7edb31a252f10f4690ec4569c50a6dc4b2462e22aeb5955baa6b9023",
+      "reported_checks": 76,
+      "completion": [
+        "ok   failed display Keep shows its save error",
+        "all Settings checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_time_of_day_edit.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-recording-tod2/tod-ndwegpb5/report.json",
+      "started_utc": "2026-11-07T22:39:29.571116+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_time_of_day_edit.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "57870bbc7cb112dc5b86e5a1b065d6ed6128a8c95197b4c74ba5e149d1e3cd1e",
+      "reported_checks": 64,
+      "completion": [
+        "TOD-08b Main lighting edit: 64 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_trace_departure_generations.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-recording-generations1/generations-24uqnair/report.json",
+      "started_utc": "2026-11-07T22:37:24.464520+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_departure_generations.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "15df6699fc013b0b3f028fac6cc2d95e1844c016f08d341345dd909748cd8718",
+      "reported_checks": 27,
+      "completion": [
+        "ok   failed explicit retry retains pending and data",
+        "Trace departure generations: 27 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_trace_metadata.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-recording-metadata1/metadata-3w1va6w7/report.json",
+      "started_utc": "2026-11-07T22:38:20.888846+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_metadata.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0d46f4dd327a79733c7e9a866d4fcfbe725444c880c3201614cf6495c975f1e0",
+      "reported_checks": 457,
+      "completion": [
+        "C7-R2 / DATA-3: 457 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_help.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-help2/help-ppqns5wj/report.json",
+      "started_utc": "2026-11-07T22:41:45.736162+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_help.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fad688fe5ed840316257da3bbcdd0701d56521248a8c57f6ff3bde5987abbe06",
+      "reported_checks": 70,
+      "completion": [
+        "all UI help checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_natural_random.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-lighting2/random-1gg116u0/report.json",
+      "started_utc": "2026-11-07T22:32:19.966142+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_natural_random.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1f8b9c0a17574287c2ab404ec74e2899be6337e539da8853cc06a90193b34b02",
+      "reported_checks": 30,
+      "completion": [
+        "NR UI: 30 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_screen_stack.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-shell/stack-jrcnzq76/report.json",
+      "started_utc": "2026-11-07T22:59:25.046592+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_screen_stack.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ee640ccc800419e9750cd753c2657ace18ab4a44eb0a0387a4a75f10ede73794",
+      "reported_checks": 38,
+      "completion": [
+        "all UI screen stack checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_settings_integration.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-shell/settings-integration-b8oobws5/report.json",
+      "started_utc": "2026-11-07T22:59:25.046592+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_settings_integration.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fec87c717230fca8a026c78f7fe12d6ac23c07b5f765c0c9ec9e35d6f5060039",
+      "reported_checks": 51,
+      "completion": [
+        "ok   failed Keep sounds an error and leaves the preview unsaved",
+        "all Settings integration checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_spatial_weather.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-weather/spatial-ui-q6w58p9u/report.json",
+      "started_utc": "2026-11-07T23:03:04.286290+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_spatial_weather.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a88075fd2a8ce2bc7003149716814d0cc7a6b3d1c6194dfd33e956b4d4ab381a",
+      "reported_checks": 78,
+      "completion": [
+        "Spatial weather UI: 78 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_statistics.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-statistics-ui/ui-4vggwn19/report.json",
+      "started_utc": "2026-11-07T22:49:06.701187+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_statistics.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d16548e0f8b1619b38441ea85141fe9343355a492971dc2f46abb205d8470030",
+      "reported_checks": 73,
+      "completion": [
+        "73 checks, 0 failed",
+        "statistics UI history refresh checks complete"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_time_of_day_pause.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-lighting2/paused-ui-7wnympk3/report.json",
+      "started_utc": "2026-11-07T22:32:19.969774+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_time_of_day_pause.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "61b2ced460786709ec393efa1b54ff5229536d3f39a98f2eb008d199f295fbd9",
+      "reported_checks": 45,
+      "completion": [
+        "all TOD-08b pause UI checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_wind_trace.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-recording-wind1/wind-bkfttawm/report.json",
+      "started_utc": "2026-11-07T22:37:24.463515+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_trace.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1083d45b74afe3395f3b90da02ec314322f854b5e2b787d5e24d84cd31567a6b",
+      "reported_checks": 31,
+      "completion": [
+        "wind trace: 31 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_document_flow.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-docflow-p_l68bdr/report.json",
+      "started_utc": "2026-11-07T22:52:53.531922+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_document_flow.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "61ff9419bc4428033841f2d4809f118e51b08894ff90a082dc3c24139296c97a",
+      "reported_checks": 23,
+      "completion": [
+        "ok   Cancel after failed stale Save restores the original name and full recipe",
+        "Workshop document flow: 23 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_drafts.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-drafts-dm81phia/report.json",
+      "started_utc": "2026-11-07T22:52:53.530340+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_drafts.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "744eeab147d6216625eb24781cfac6346f06fd9399310b3110cae2a1f2566b7e",
+      "reported_checks": 108,
+      "completion": [
+        "108 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_integration.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-lighting/workshop-context-4d73gveu/report.json",
+      "started_utc": "2026-11-07T22:31:01.699392+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f49c85b0e98d349933ebcabf991492a17803a9db0ddb8b57cf2c50c82b0d0261",
+      "reported_checks": 41,
+      "completion": [
+        "ok   failed candidate startup preserves adapted exposure",
+        "Workshop integration: 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_lighting.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-focus-lighting-xwwu8c1g/report.json",
+      "started_utc": "2026-11-07T22:58:01.705339+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_lighting.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ecb10b7fef7ecb7f2ec33a304d55f712118e80e3b728217be2295d779589caab",
+      "reported_checks": 272,
+      "completion": [
+        "Workshop lighting checks: 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_lighting_capabilities.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/workshop-capabilities-tcy4tnyl/report.json",
+      "started_utc": "2026-11-07T22:47:56.464394+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_lighting_capabilities.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ef5458b844a0932270aa7f01c7b72ecff471fd09c32a5d0af7b57f0e3117c227",
+      "reported_checks": 16,
+      "completion": [
+        "Workshop lighting capabilities: 16 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_lighting_drafts.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-focus-regression-77v3n6k9/report.json",
+      "started_utc": "2026-11-07T22:58:01.705339+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_lighting_drafts.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "319e69d65e430dc5386eed53c7d19bb07b3517fbec9e4ab096894ad1877109dd",
+      "reported_checks": 268,
+      "completion": [
+        "ok   failed load retains the outgoing field and recovery",
+        "Lighting drafts: 268 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_recovery_ui.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-recovery-cg2c_gjy/report.json",
+      "started_utc": "2026-11-07T22:52:53.538928+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_recovery_ui.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "785d102391135c92a2f2aa9cb3430aa0fc7c27d6cdf6d59f3214321d13b22852",
+      "reported_checks": 75,
+      "completion": [
+        "ok   failed restore cannot replace stored text with fallback UI values",
+        "Workshop recovery UI: 75 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_ui.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-workshop-run1/checks/final-ui-g00zadaj/report.json",
+      "started_utc": "2026-11-07T22:52:53.537928+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_ui.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ce60b65fe62dcb7b4e59af44d032e02415137a0b6682d7e25fa2bf87210cadd0",
+      "reported_checks": 151,
+      "completion": [
+        "ok   failed save leaves pending decision and full draft",
+        "Workshop UI: 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_world_moon_flow.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-final-world/moon-flow-ez67zdqu/report.json",
+      "started_utc": "2026-11-07T23:12:06.947353+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_world_moon_flow.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5b1dc729ab4405819ad6550ab7acaf5bd79e7d0a6759c5f7b36f65b966b420f1",
+      "reported_checks": 33,
+      "completion": [
+        "33 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_world_moon_star_edit.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-world/moon-stars-j9jtdw60/report.json",
+      "started_utc": "2026-11-07T22:28:16.564044+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_world_moon_star_edit.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ea1b707878a1658768fb123df4cf21f6bde963824427cf5ebbb6148f582293a4",
+      "reported_checks": 5,
+      "completion": [
+        "Moon star edit: 5 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_world_presentation_context.gd",
+      "parse_only": false,
+      "report": "tmp/audit-20261107-lead-world/context-lbdw0xzg/report.json",
+      "started_utc": "2026-11-07T22:28:31.905968+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_world_presentation_context.gd"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c6725950c4d3c14917c14f898ebff4c4c2a9e72b6f829a7753fca49d423296ea",
+      "reported_checks": 38,
+      "completion": [
+        "world presentation context checks=38 failures=0"
+      ]
+    },
+    {
+      "script": "res://ui/first_flight_hint.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-lead-parse3/hint-el4e7738/report.json",
+      "started_utc": "2026-11-07T22:30:40.424415+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://ui/first_flight_hint.gd",
+        "--check-only"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://ui/help_screen.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-lead-parse4/help-_3qppsv2/report.json",
+      "started_utc": "2026-11-07T22:36:05.714705+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://ui/help_screen.gd",
+        "--check-only"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    },
+    {
+      "script": "res://ui/settings_screen.gd",
+      "parse_only": true,
+      "report": "tmp/audit-20261107-lead-parse6/settings-4wne5ji_/report.json",
+      "started_utc": "2026-11-07T22:44:38.803805+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://ui/settings_screen.gd",
+        "--check-only"
+      ],
+      "ok": true,
+      "complete": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "reported_checks": null,
+      "completion": []
+    }
+  ],
+  "test_script_count": 43,
+  "reported_checks_total": 3370,
+  "diagnostic_attempts_not_acceptance": [
+    {
+      "report": "tmp/audit-20261107-controller-edges-14/controller-edges-ipf5sb5n/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-15/controller-edges-bnw3eoe7/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "engine_error",
+      "diagnostics": {
+        "error": 1,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-2/controller-edges-cc3iia02/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-3/controller-edges-wlyx8dhx/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-4/controller-edges-3tiogni1/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "engine_error",
+      "diagnostics": {
+        "error": 1,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-5/controller-edges-awcrsq5l/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-6/controller-edges-lag0kci3/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-7/controller-edges-059ta2ck/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-8/controller-edges-w8tinssk/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-edges-9/controller-edges-h4rl0s54/report.json",
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-menu-1/controller-menu-dhaqux5d/report.json",
+      "script": "res://tests/test_controller_menu.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 1,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-menu-2/controller-menu-u61fxhf1/report.json",
+      "script": "res://tests/test_controller_menu.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-menu-3/controller-menu-gufw1jiw/report.json",
+      "script": "res://tests/test_controller_menu.gd",
+      "reason": "timeout",
+      "diagnostics": {
+        "error": 1,
+        "warning": 2
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-controller-rates-before/controller-rates-before-5oginr10/report.json",
+      "script": "res://tests/test_controller_rates.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-final-shell2/controller-menu-ipaxs84j/report.json",
+      "script": "res://tests/test_controller_menu.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 2,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-lead-help/help-vfik_zt4/report.json",
+      "script": "res://tests/test_ui_help.gd",
+      "reason": "missing_required_text",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-lead-hint/exposure-dvikimks/report.json",
+      "script": "res://tests/test_first_flight_hint_exposure.gd",
+      "reason": "timeout",
+      "diagnostics": {
+        "error": 4,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-lead-lighting/paused-ui-majil5v_/report.json",
+      "script": "res://tests/test_ui_time_of_day_pause.gd",
+      "reason": "engine_error",
+      "diagnostics": {
+        "error": 4,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-lead-lighting/random-af_93n4e/report.json",
+      "script": "res://tests/test_ui_natural_random.gd",
+      "reason": "engine_error",
+      "diagnostics": {
+        "error": 4,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-lead-parse1/main-parse-qaw77yud/report.json",
+      "script": "res://main.gd",
+      "reason": "engine_error",
+      "diagnostics": {
+        "error": 366,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-lead-settings1/settings-5hyu0jwp/report.json",
+      "script": "res://tests/test_settings_ui.gd",
+      "reason": "engine_error",
+      "diagnostics": {
+        "error": 412,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-recording-tod1/tod-o4hlfsn2/report.json",
+      "script": "res://tests/test_time_of_day_edit.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-thermal-baseline/inward-drift-ohyud8lx/report.json",
+      "script": "res://tests/test_balanced_thermal_field.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 12,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-workshop-run1/checks/shared-lighting-vztfqjy6/report.json",
+      "script": "res://tests/test_workshop_lighting.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "tmp/audit-20261107-workshop-run1/checks/shared-regression-final-xuvc5gmk/report.json",
+      "script": "res://tests/test_workshop_lighting_drafts.gd",
+      "reason": "process_exit",
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "source_sha256": {
+    "app/app_root.gd": "d00e55b0d1b7a1227575ac752a4a885858b19911762c8ab382050660af86b09f",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "14f654b223ed7b245008cff0902a2ccf11ef719a3a1461e7d3d9cac7196fa833",
+    "app/i18n/de.po": "04933584ca53adb59f19bcbe76eb5b78a8e5bc05cb775e8e1b3ab82c5d7a3ced",
+    "app/i18n/es.po": "408d3d705be9dfffef1381c229ecf54cf0135d45bde5e9fceb1e7f4f80167eb1",
+    "app/i18n/fr.po": "202b60f670dc7e3fe41ce2b09846076f2e2388821cbbc75d4ae25f443d872866",
+    "app/i18n/it.po": "118c7dbb844fa0f5601d5a47d18da08ff1c263612aaf05ecbf528ea7546e64fc",
+    "app/i18n/ja.po": "b0db422df491025dca9ec452b1954cedb90604e7e327bbc8a7dab1ee0796dd63",
+    "app/i18n/pt_BR.po": "ed3cb0db1ce37e42def66bc378f41ba5f0055ffe4931d581d6d7311833f342ea",
+    "app/i18n/ru.po": "aed3c8864c09096e5fbfd7f195c83fb0a1f3b12030b6d29fd067a1efbf9b75e0",
+    "app/i18n/zh_Hans.po": "a0648dc91206a3029db6dc2fc9994aa6aa0a2bc164f9516c103c4075ca53ff11",
+    "app/main.gd": "8acc147213cf320bab65eff4bb86d4fd3b3abbbf750b417f31224cb4a9cb1c0a",
+    "app/physics/wind_thermal_field.gd": "b370bb9493b0f36119b6344781296525c0e188f18a8a1377e1321ddf0253f7e6",
+    "app/render/atmosphere.gd": "953c6151c13de0a7d28f8b46735abf0327bd1573666fa2eb86d48245cd02b36c",
+    "app/render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+    "app/render/world/world.gd": "bc42a719122ac0f24c58c2513a296b29c3339e1afd93fd9b552ee2f1689201c8",
+    "app/sim/manual_trace_save.gd": "b97eac186c3f10eb86be8f49d512d1f436ca83ce17ef87a029177fac3b31d592",
+    "app/sim/manual_trace_save.gd.uid": "4465c72032e0d6fb352002a6b9d82d4c39492eb80af2847fb75a9868a54a1d66",
+    "app/sim/recorder.gd": "3be5e15433f14dfbe6542a67cd196ca4d11d9b8c8843cf84bcabf0926b244bfd",
+    "app/sim/rotorcraft_recorder.gd": "2f762c1a2bacfc448b769bee495de28032d1c4d36a85a488595c7101a1e13b90",
+    "app/statistics/fixed_wing_adapter.gd": "e60907de5345a107f0dd9009df92d428ad5972245b77e176acc00d428903df15",
+    "app/statistics/service.gd": "96a004bfefe96521d9dd10e9f4a70b1f7daa0b0b58f25da8edc27f1f28c72b0a",
+    "app/tests/test_balanced_thermal_field.gd": "403423b2e96859df995242e9c00e9b83b9cf97a9dd56618ace75bc92a79e0764",
+    "app/tests/test_controller_edge_continuity.gd": "9a3a2d2223ca50a8c00950957ecc505a2da14bca58dc77f2abf0de39ae9a99ec",
+    "app/tests/test_controller_edge_continuity.gd.uid": "3199c4b590181218bb531b0cab441b9a4e6cb82b8f70f5c4f1a3d5a203422935",
+    "app/tests/test_controller_menu.gd": "b4c6fbb924d9d94d5f861a8f1afed43a80f0561bb0eaae5599aa054d90562584",
+    "app/tests/test_controller_rates.gd": "12d207af88e20620167da71d10be2dc4c892b6b6b5de330eec4ad2304c476a44",
+    "app/tests/test_controller_recovery_focus.gd": "0a846b12c1f5a1739b1a773f34c19b5fb021d111656f00ae0d368d5000b47fe6",
+    "app/tests/test_first_flight_hint_exposure.gd": "1d7a36f8d5ba8977307bd9a75c1bde5ff3dd97dd98efd27b12de808a57fb74e8",
+    "app/tests/test_first_flight_hint_exposure.gd.uid": "da0f0cd61f3eb49a6cbb23c6ea3db60157904562db4065daf415fb3270d77979",
+    "app/tests/test_first_flight_hint_report_layout.gd": "44d5f11915b71d938781f8934b66298ae9a3c35a7ecf6bebd2d0b16540c9550f",
+    "app/tests/test_flight_statistics_eligibility.gd": "0b315543e54a9e9871e49b60ab9cdaa1a2b0980eb3571d8501f12764f0906630",
+    "app/tests/test_flight_statistics_eligibility.gd.uid": "609c8983c3f52674884c3bdb5c4038ca2fba7cbc1a97cdfb93c3af882f8b88f3",
+    "app/tests/test_home_preview_geometry.gd": "a747c770e5ab27b1e2f54fb74e66fd891af9025c0b9a73faeffb6129c274d931",
+    "app/tests/test_home_preview_geometry.gd.uid": "9d22d15a92dd39327fd193e990f0bc245a749246561428f7cfced9eaf8d4e853",
+    "app/tests/test_manual_trace_integrity.gd": "e905820f6f0f5616658818a1411cea7a67c63baf4f1fb9133be11db1f8dad626",
+    "app/tests/test_manual_trace_integrity.gd.uid": "1039f00da0ca7d0135b3cc83975e1c73f590fd43b6d8f9267b98655a4d155795",
+    "app/tests/test_settings_ui.gd": "eb70179d9c59b010f840dfef7e343d988e6d7d950e2175df3846530864fb706a",
+    "app/tests/test_time_of_day_edit.gd": "b8a64c1058aca957027bd61c0d246b5e07c3ee1ed4ba05038b57f179c4592f41",
+    "app/tests/test_trace_departure_generations.gd": "6ba757c186ad719f74578bb6952e35ce636583027af18f8e1e9a13c87c966c8f",
+    "app/tests/test_trace_metadata.gd": "9ccac6dc4811a6e20d975d29d533c54f9085704072ab5d6adf64c66a7a290c07",
+    "app/tests/test_ui_help.gd": "8bda110b15a59462d87b7431fb41e040148d69ea9fb1d4a595196bf503935e36",
+    "app/tests/test_ui_natural_random.gd": "6278204cb09ace00ea7c5e463817935edcf494d50a630a8bb1ef5421950b8415",
+    "app/tests/test_ui_settings_integration.gd": "a5a6ec206080a096d61ee2dee1660b656531819ccd6f54b132f009418d16bfbf",
+    "app/tests/test_ui_spatial_weather.gd": "21057e22ef883f5cc39da15fa7eb6a6644eb5537e2308761dabdc456b9615f5f",
+    "app/tests/test_ui_time_of_day_pause.gd": "b75b70d00fef47fe07fec6d114c52a4db4218454ecfc5db8e92cc0183c8fd176",
+    "app/tests/test_wind_trace.gd": "c796865d0cc0961f2647392e0ac51d098c9b54de366147e0da3a40a08891134c",
+    "app/tests/test_workshop_integration.gd": "53549606d0923f352ed993dbe7f4459efcd1556b35d42682c476aa8323d2ea37",
+    "app/tests/test_workshop_lighting_drafts.gd": "7766f21a3ec41dca08393c7ababc1c33d185d4d96c65086a5414ee905db7ead6",
+    "app/tests/test_world_moon_star_edit.gd": "6c82539951c9ec1b8c1ecba74c8d96b0c1ed8c71343a239f74c39701e5c9664b",
+    "app/tests/test_world_moon_star_edit.gd.uid": "393efed206ee6f8f20154903adab9052f7620105f152a3ef5df4fff6321e4ac9",
+    "app/tests/test_world_presentation_context.gd": "f011d44fc7e91a69620e23ba1bbe9e04eebd8d848cde00c47e7067fcc3b07ef9",
+    "app/tests/test_world_presentation_refresh.gd.uid": "c520a7f2117cf2b59b7fa3550bf925c17e2661acaa55b38b6d5490e4b07582ff",
+    "app/ui/first_flight_hint.gd": "279480a6b2601851dd1349cee3162f86a0a035f5c1dcbfdb75b28fe804f7d627",
+    "app/ui/help_screen.gd": "5223a29673ea0a20aaa8208bd2c93da5d114924186cdd955cb1b28938d68218e",
+    "app/ui/home_preview_geometry.gd": "6a9c1cd02bd0ec2f0971d9121b761d076e6144ff9af3b1e2aad1d22bb40fa7be",
+    "app/ui/home_preview_geometry.gd.uid": "ea08616a0d264150fbcccb19e249f265279f194c4178f6ca8780456d80a54a9f",
+    "app/ui/home_scene.gd": "ba6f56e796987759504fafeb16ec394f699e5f7853ce6d764307244e757e8fff",
+    "app/ui/screen.gd": "807c4bf6ae54d6d073cf80ed28e7d5561154edbb3c409bc318887e06f6308b79",
+    "app/ui/settings_screen.gd": "f93110e89dec893809a8cac2f02f848722c0dea659ea3a675f22fa5be8d0469a",
+    "app/ui/spatial_weather_controls.gd": "15d35a843fe59ded2eb6670669216eaa6c2583d8f81fc985abbb2eac42d22164",
+    "app/ui/ui_input.gd": "f10dfd005675f0a9cd34ac1c5f55758207094fb18de51f835e85915ef63d6d12",
+    "app/ui/workshop.gd": "a72ec7617f2bed8dca96a3af91da1a96f0a4ed3fff169b756f3baf121c2e221b",
+    "app/ui/workshop_lighting.gd": "63bfb635a9730f0a99d25f155047de2d84ff306afc0b4c9ac13d7649ec1f13a4",
+    "app/workshop/lighting_editor_state.gd": "6733e01df40edfc6df9eac564a62b2821d2254d38ac9f9f3895e571fdfc1c1d8",
+    "docs/research/menu-investigations/UI-06c/export_gui_smoke.py": "8fb5065b207a644435550e1bafc506e2ca22f9db7c4bdafc156678854a0d7868"
+  },
+  "native_spot_checks": {
+    "display": "Windows",
+    "renderer": "gl_compatibility",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "actual_output": [
+      1920,
+      1080
+    ],
+    "text_scales": [
+      1.0,
+      2.0
+    ],
+    "locales": [
+      "en",
+      "es"
+    ],
+    "scope": "Settings display-save error/countdown, narrowed expiry retaining game volume, Spanish language-save failure, scrolling back to Language; final language status rect 746x317 fits the 752x407 body. Captures precede the recovery-focus-only follow-up; Settings source bytes are unchanged.",
+    "settings_source_sha256": "f93110e89dec893809a8cac2f02f848722c0dea659ea3a675f22fa5be8d0469a",
+    "images_retained_locally_only": [
+      {
+        "local_path": "tmp/debug-bridge/20261107-174128-9087/shots/shot-34624-002.jpg",
+        "sha256": "bc2d6039b86f9f731c543df82b8c9fc3cec079c0f7259acdefeca66dc281c41b",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "local_path": "tmp/debug-bridge/20261107-174128-9087/shots/shot-34624-004.jpg",
+        "sha256": "f32072d154a994dff7182f1325dbbffba65161c6811ff5e01f200b5818f7613d",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "local_path": "tmp/debug-bridge/20261107-175326-9087/shots/shot-29628-001.jpg",
+        "sha256": "dfb481774cfe5b62241873ca90db8882f49d0c55ae03933fd6783afb65185fe9",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "local_path": "tmp/debug-bridge/20261107-175326-9087/shots/shot-29628-002.jpg",
+        "sha256": "600eade0d6ba0f230057d1289e2f6af7a0135263d7c40cdaaa47c6f07ff09c25",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "normal_shutdown_exit_leaks": 0,
+    "performance_qualified": false
+  },
+  "companion_rebind": "docs/research/ai-companions/AFC-02/rebinds/2026-11-07-84cac259-to-fccb428e.json",
+  "python_checks": [
+    {
+      "command": "python tools/companions/test_rebind.py",
+      "checks": 13,
+      "result": "passed"
+    },
+    {
+      "scope": "export_gui_smoke.find_traces absent/legacy-flat/nested-published with unpublished stage and directory controls",
+      "checks": 3,
+      "result": "passed"
+    }
+  ],
+  "independent_review": "Good Enemy reviewed other authors; recorder/statistics implementer independently challenged controller changes. First-assignment, nonfinite edge, Pause editing-key, same-frame remap, pending-field focus, hint double, trace-discovery and exit-focus counterexamples were resolved with focused checks.",
+  "limits": [
+    "The remaining audit queue still contains software work, research and qualification; this delivery does not close the whole audit program.",
+    "Required full app/visual CI has not qualified these local commits.",
+    "Physical controllers, screen-reader output and broader native interaction remain untested.",
+    "macOS/Metal, Linux/macOS CSV concurrency, helicopter exit-dialog native flow and sustained performance remain unqualified.",
+    "The changed thermal source requires a refreshed source-bound NK-3 build/oracle; old receipts safely select reference. Newly admitted inward tracks are not qualified by the old companion tapes.",
+    "Software parity and native UI spot checks do not establish physical flight realism."
+  ],
+  "engine_sha512": {
+    "Godot_v4.8-beta2_win64.exe": "e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55",
+    "Godot_v4.8-beta2_win64_console.exe": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea"
+  }
+}

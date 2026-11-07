@@ -190,7 +190,12 @@ def wait_for_screen_change(before, timeout_s: float = 45.0):
 
 
 def find_traces(trace_dir: Path) -> list[Path]:
-    return sorted(trace_dir.glob("*.csv"), key=lambda item: item.stat().st_mtime_ns) if trace_dir.exists() else []
+    if not trace_dir.exists():
+        return []
+    return sorted(
+        (item for item in trace_dir.rglob("*.csv") if item.is_file()),
+        key=lambda item: item.stat().st_mtime_ns,
+    )
 
 
 def wait_for_trace(trace_dir: Path, previous: set[Path], timeout_s: float = 10.0) -> Path:
