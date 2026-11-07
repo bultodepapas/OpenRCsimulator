@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 """Known statics, differential/Monte Carlo uncertainty and CLI failure contracts."""
 import copy
+import contextlib
 import hashlib
 import importlib.util
+import io
 import json
 import math
 import os
 from pathlib import Path
 import random
+import stat
 import statistics
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 SCRIPT = Path(os.environ.get("OPENRC_WEIGHING_REDUCER", HERE / "reduce.py"))
@@ -227,6 +231,10 @@ class WeighingTests(unittest.TestCase):
             second = self.cli(src)
             self.assertEqual(second.returncode, 0, second.stderr)
             self.assertEqual(first, second.stdout)
+            out.write_bytes(b"previous report")
+            replaced = self.cli(src, "--output", out)
+            self.assertEqual(replaced.returncode, 0, replaced.stderr)
+            self.assertEqual(out.read_bytes(), first)
             doc = json.loads(first)
             self.assertEqual(doc["input_sha256"], hashlib.sha256(raw).hexdigest())
             self.assertEqual(doc["reducer_sha256"], hashlib.sha256(SCRIPT.read_bytes()).hexdigest())
@@ -242,7 +250,14 @@ class WeighingTests(unittest.TestCase):
             raw = src.read_bytes()
             alias = Path(tmp) / "alias.json"
             alias.hardlink_to(src)
-            for output in (src, alias, Path(tmp) / "missing" / "report.json"):
+            outputs = [src, alias, Path(tmp) / "missing" / "report.json"]
+            symlink = Path(tmp) / "link.json"
+            try:
+                symlink.symlink_to(src)
+                outputs.append(symlink)
+            except (OSError, NotImplementedError):
+                pass  # Some Windows configurations do not allow symlink creation.
+            for output in outputs:
                 result = self.cli(src, "--output", output)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertNotIn(b"Traceback", result.stderr)
@@ -255,6 +270,82 @@ class WeighingTests(unittest.TestCase):
                 self.assertEqual(out.read_text(), "preserve")
                 self.assertNotIn(b"Traceback", result.stderr)
             self.assertNotEqual(self.cli(Path(tmp) / "absent.json").returncode, 0)
+
+    def test_cli_reducer_aliases_preserve_source(self):
+        # Use disposable copies: an unguarded reducer would overwrite itself.
+        for link_type in ("direct", "hardlink", "symlink"):
+            with self.subTest(link_type=link_type), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                src, reducer, output = root / "input.json", root / "reduce.py", root / "output.json"
+                src.write_bytes((HERE / "example.synthetic.json").read_bytes())
+                original = SCRIPT.read_bytes()
+                reducer.write_bytes(original)
+                if link_type == "direct":
+                    output = reducer
+                else:
+                    try:
+                        if link_type == "hardlink":
+                            output.hardlink_to(reducer)
+                        else:
+                            output.symlink_to(reducer)
+                    except (OSError, NotImplementedError):
+                        continue
+                result = subprocess.run([sys.executable, str(reducer), str(src), "--output", str(output)],
+                                        capture_output=True, timeout=10)
+                self.assertNotEqual(result.returncode, 0, result.stderr)
+                self.assertIn(b"aliases", result.stderr)
+                self.assertEqual(reducer.read_bytes(), original)
+
+    def test_cli_failed_output_preserves_report_and_cleans_temporary_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src, out = root / "input.json", root / "report.json"
+            src.write_bytes((HERE / "example.synthetic.json").read_bytes())
+            for operation in ("chmod", "fsync", "replace"):
+                with self.subTest(operation=operation):
+                    out.write_bytes(b"previous report")
+                    before = set(root.iterdir())
+                    with patch.object(sys, "argv", [str(SCRIPT), str(src), "--output", str(out)]), \
+                            patch.object(os, operation, side_effect=OSError("injected write failure")), \
+                            contextlib.redirect_stderr(io.StringIO()):
+                        result = r.main()
+                    self.assertEqual(result, 1)
+                    self.assertEqual(out.read_bytes(), b"previous report")
+                    self.assertEqual(set(root.iterdir()), before)
+
+    def test_cli_serialization_failure_preserves_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src, out = root / "input.json", root / "report.json"
+            src.write_bytes((HERE / "example.synthetic.json").read_bytes())
+            out.write_bytes(b"previous report")
+            before = set(root.iterdir())
+            with patch.object(sys, "argv", [str(SCRIPT), str(src), "--output", str(out)]), \
+                    patch.object(r, "report", side_effect=ValueError("injected serialization failure")), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                result = r.main()
+            self.assertEqual(result, 1)
+            self.assertEqual(out.read_bytes(), b"previous report")
+            self.assertEqual(set(root.iterdir()), before)
+
+    def test_cli_preserves_symlink_and_existing_target_mode(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            src, target, link = root / "input.json", root / "report.json", root / "report-link.json"
+            src.write_bytes((HERE / "example.synthetic.json").read_bytes())
+            target.write_bytes(b"previous report")
+            if os.name == "posix":
+                target.chmod(0o640)
+            try:
+                link.symlink_to(target)
+            except (OSError, NotImplementedError):
+                self.skipTest("symbolic links unavailable")
+            result = self.cli(src, "--output", link)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(link.is_symlink())
+            self.assertEqual(target.read_bytes(), self.cli(src).stdout)
+            if os.name == "posix":
+                self.assertEqual(stat.S_IMODE(target.stat().st_mode), 0o640)
 
 
 if __name__ == "__main__":

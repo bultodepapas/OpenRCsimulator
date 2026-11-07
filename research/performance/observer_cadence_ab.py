@@ -3,13 +3,16 @@
 
 One debug-bridge session (OPENRC_APP_DIR selects a frozen app copy) flies the app_cpu_per_sim.py
 scenario, then switches every presentation-cadence gate between the listed modes (0 = per tick)
-in rounds of fixed windows, rotating the order each round. Each window reports main-thread CPU and
-rendered frames per simulated second. Alternating inside one process cancels most of the drift
-that separate launches see on a shared host; a saturated main thread still trades CPU for frames.
+in rounds of fixed windows. Reversals balance pairwise order and rotations balance positions over a
+complete cycle, using the same schedule as observer_cadence_bench.py. Each window reports main-thread
+CPU and process frames per simulated second. Drift between windows can remain; a saturated main
+thread still trades CPU for frames.
 Usage: observer_cadence_ab.py <out.jsonl> airborne|runway <modes,…> [rounds=4] [window_s=8]
        [settle_s=2] [max_fps=60] [time_scale=0.5]
 Research-only; see research/performance/README.md#observer-cadence-vq-01c-r1."""
 import json, os, subprocess, sys, time
+
+from observer_cadence_bench import role_order
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 D = [sys.executable, f"{REPO}/tools/debug/debugctl.py"]
@@ -53,9 +56,10 @@ def sample(port, pid, seconds):
             "height_m": round(top1["flight"]["height_m"], 1)}
 
 
-def main():
-    path, scenario, modes = sys.argv[1], sys.argv[2], [int(m) for m in sys.argv[3].split(",")]
-    rounds, window, settle, max_fps, scale = (sys.argv[4:9] + ["4", "8", "2", "60", "0.5"][len(sys.argv[4:9]):])
+def main(argv=None):
+    args = sys.argv[1:] if argv is None else argv
+    path, scenario, modes = args[0], args[1], [int(m) for m in args[2].split(",")]
+    rounds, window, settle, max_fps, scale = (args[3:8] + ["4", "8", "2", "60", "0.5"][len(args[3:8]):])
     rounds, window, settle, max_fps, scale = int(rounds), float(window), float(settle), int(max_fps), float(scale)
     app_dir = os.environ.get("OPENRC_APP_DIR", "")
     launch = json.loads(ctl(0, "launch", "--headless", *(["--app", app_dir] if app_dir else [])).splitlines()[-1])
@@ -74,10 +78,7 @@ def main():
             raise SystemExit("scenario: airborne|runway")
         time.sleep(10)
         for r in range(rounds):
-            order = modes[r % len(modes):] + modes[:r % len(modes)]
-            if r % 2:
-                order.reverse()
-            for mode in order:
+            for mode in role_order(modes, r):
                 readback = set_mode(port, mode)
                 time.sleep(settle)
                 row = sample(port, pid, window)
@@ -90,4 +91,5 @@ def main():
         ctl(port, "stop")
 
 
-main()
+if __name__ == "__main__":
+    main()

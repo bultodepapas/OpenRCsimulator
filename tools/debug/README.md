@@ -108,6 +108,9 @@ any other bridge command.
 - `sim_launch` points that server at its own session.
 
 The server uses MCP over stdio, the standard library and `debugctl.py`, and nothing else.
+Malformed request envelopes, parameter containers and decoder-limit failures produce protocol errors without
+ending the session. Tool calls validate the declared argument names, required fields, types and enumerated
+choices before acting. Tool failures, including a nonzero `sim_stop`, return `isError: true` with the diagnostic.
 
 ```sh
 claude mcp add openrc-sim -- python3 tools/debug/mcp_server.py   # Claude Code; .mcp.json also declares it

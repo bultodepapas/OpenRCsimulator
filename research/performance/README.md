@@ -1162,4 +1162,17 @@ python3 research/performance/observer_cadence_bench.py tmp/ab-snap-<base>/app tm
   tmp/cadence-airborne.jsonl airborne 3 1,2,3,4
 ```
 
+`observer_cadence_ab.py` switches cadence modes within one headless flight on Linux, sampling
+main-thread CPU from procfs. It uses the same order schedule: two modes alternate each round;
+three or more modes balance positions and pairwise order over `2 × mode count` rounds. A partial
+cycle does not guarantee position balance. Each window keeps its mode, one-based round, gate
+readback and launch settings in an appended JSON row. Use `OPENRC_APP_DIR` to select a frozen app
+copy and a new output path to keep campaigns separate. The measurements describe this headless
+workload; changing the schedule does not establish a performance improvement.
+
+```sh
+OPENRC_APP_DIR=tmp/ab-snap-candidate/app \
+  python3 research/performance/observer_cadence_ab.py tmp/cadence-windows.jsonl airborne 0,1 4
+```
+
 [Retained audio observer comparison](../../docs/research/visual-quality-implementation/VQ-01c/observer-cadence-2026-10-27/audio-pair.json).

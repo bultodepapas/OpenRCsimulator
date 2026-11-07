@@ -12,7 +12,7 @@ python3 research/validation/weighing/test_reduce.py
 python3 research/validation/weighing/check_mutations.py
 ```
 
-Use `--output /tmp/weighing-result.json` to save a report. Invalid input exits nonzero before opening the output; input/output aliases are refused. Reports include the complete parsed input, exact input-byte and reducer SHA-256 hashes, derived values, standard uncertainties, covariance, individual error contributions and limitations. Output is deterministic for identical input and reducer bytes. Keep the original input alongside the report: parsed JSON does not preserve byte formatting.
+Use `--output /tmp/weighing-result.json` to save a report. Invalid input or an unsuccessful report write exits nonzero and preserves an existing output. Output aliases to the input or reducer, including symbolic and hard links, are refused. A successful report atomically replaces the destination; choose a new name to retain earlier reports. An output symlink continues to point to the replaced target. Existing target permission bits are retained where supported; a new report uses private temporary-file permissions (normally `0600` on POSIX). Replacement creates a new file, so other hard links to the previous report keep their old contents. Reports include the complete parsed input, exact input-byte and reducer SHA-256 hashes, derived values, standard uncertainties, covariance, individual error contributions and limitations. Output is deterministic for identical input and reducer bytes. Keep the original input alongside the report: parsed JSON does not preserve byte formatting.
 
 ## Field procedure and input contract
 

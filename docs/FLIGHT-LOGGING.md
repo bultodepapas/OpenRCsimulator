@@ -229,6 +229,9 @@ numerical divergence, per-channel differences and separate position, velocity,
 angular-rate and attitude errors. Quaternion comparisons account for `q` and `-q`
 representing the same attitude. Summaries include duration, ranges and RMS values.
 They do not assign realism scores or universal pass/fail thresholds.
+Indexed CSV columns must identify distinct, contiguous numeric slots: alternative decimal spellings remain
+accepted, but two names for the same slot are refused. Every admitted `mode_*` column retains int64 parsing.
+Summary reduction makes one streaming pass; altitude and `down_m` share the same RMS because their signs differ.
 
 ## Plot with an existing free tool
 

@@ -81,7 +81,8 @@ REQUIRED_COLUMNS = (
 )
 OPTIONAL_COLUMNS = frozenset(("cmd_gear_down", "cmd_wheel_brake"))
 INDEXED_COLUMN_FAMILIES = {"aux_": 4, "continuous_": 0, "mode_": 0}
-INTEGER_COLUMN_PATTERNS = (re.compile(r"mode_[0-9]+\Z"),)
+# Match the same decimal suffixes admitted by _validate_header, including aliases.
+INTEGER_COLUMN_PATTERNS = (re.compile(r"mode_\d+\Z"),)
 INTEGER_TEXT = re.compile(r"-?[0-9]+\Z")
 
 POSITION_COLUMNS = ("north_m", "east_m", "down_m")
@@ -172,6 +173,8 @@ def _validate_header(header: Sequence[str], path: Path) -> tuple[str, ...]:
                     f"{path}: {prefix} columns must be contiguous from {first_index}"
                 )
             indices.append(index)
+        if len(set(indices)) != len(indices):
+            raise FlightLogError(f"{path}: {prefix} columns contain duplicate numeric indices")
         expected_count = max(indices) - first_index + 1
         if min(indices) != first_index or len(indices) != expected_count:
             raise FlightLogError(
@@ -391,12 +394,8 @@ def summarize_csv(path: Path | str) -> dict[str, Any]:
             max(abs(float(rates[name].minimum)), abs(float(rates[name].maximum)))
             for name in RATE_COLUMNS
         )
-        altitude_rms = _Rms()
-        # The RMS of altitude requires signed per-row values, so make a second
-        # streaming pass rather than keeping the trajectory in memory.
-        with FlightCsvReader(source) as altitude_reader:
-            for row in altitude_reader:
-                altitude_rms.add(-float(row["down_m"]))
+        # Altitude is -down; _Rms uses magnitudes, so the existing accumulator
+        # has exactly the same operations and result without a second CSV pass.
         return {
             "status": "ok",
             "source": source.name,
@@ -410,7 +409,7 @@ def summarize_csv(path: Path | str) -> dict[str, Any]:
             "altitude_m": {
                 "min": -float(down.maximum),
                 "max": -float(down.minimum),
-                "rms": altitude_rms.value(),
+                "rms": down.rms.value(),
             },
             "angular_rates_radps": {
                 "max_abs": angular_rate_peak,

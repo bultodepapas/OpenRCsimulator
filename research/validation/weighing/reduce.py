@@ -4,8 +4,11 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
+import stat
 import sys
+import tempfile
 
 FORMAT = "openrc-weighing v1"
 KINDS = ("measured", "estimated", "derived", "manual", "synthetic")
@@ -171,18 +174,49 @@ def report(raw):
     return json.dumps(result, indent=2, allow_nan=False) + "\n"
 
 
+def refuse_alias(output, inputs):
+    for path in inputs:
+        if (output.resolve() == path.resolve()
+                or (output.exists() and path.exists() and output.samefile(path))):
+            raise ValueError("output aliases the input or reducer")
+
+
+def atomic_write(path, contents):
+    # Preserve the established behavior of following a destination symlink.
+    target = path.resolve()
+    try:
+        mode = stat.S_IMODE(target.stat().st_mode)
+    except FileNotFoundError:
+        mode = None
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n",
+                                         dir=target.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(contents)
+            stream.flush()
+            if mode is not None:
+                os.chmod(temporary, mode)
+            os.fsync(stream.fileno())
+        os.replace(temporary, target)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path)
     parser.add_argument("--output", type=Path, help="write JSON report (default: stdout)")
     args = parser.parse_args()
     try:
-        if args.output and (args.output.resolve() == args.input.resolve()
-                            or (args.output.exists() and args.output.samefile(args.input))):
-            raise ValueError("output must not overwrite the input")
+        inputs = (args.input, Path(__file__))
+        if args.output:
+            refuse_alias(args.output, inputs)
         rendered = report(args.input.read_bytes())
         if args.output:
-            args.output.write_text(rendered, encoding="utf-8")
+            refuse_alias(args.output, inputs)
+            atomic_write(args.output, rendered)
         else:
             sys.stdout.write(rendered)
     except (OSError, ValueError, OverflowError, RecursionError) as exc:
