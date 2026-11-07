@@ -40,7 +40,7 @@ func _run() -> void:
 	_check("complete selected list is retained", warnings.codes == alerts)
 	_check("default cap displays three in supplied order", _shown(warnings) == ["failsafe", "stall", "low"])
 	_check("overflow is separate and marks its strongest severity", warnings.summary.visible
-		and _label(warnings.summary, "Headline").text == "+3 MORE ALERTS"
+		and _label(warnings.summary, "Headline").text == "ALERTS +3"
 		and _label(warnings.summary, "Severity").text == "CAUTION")
 	var first: Control = warnings.chips.get_child(0)
 	var first_id := first.get_instance_id()
@@ -62,7 +62,7 @@ func _run() -> void:
 	warnings.configure({"warning_limit": 1, "warning_detail": false})
 	_check("compact setting caps cards without dropping codes", warnings.codes == alerts
 		and _shown(warnings) == ["failsafe"] and not _label(first, "Detail").visible)
-	_check("compact overflow names all hidden dangers", _label(warnings.summary, "Headline").text == "+5 MORE ALERTS"
+	_check("compact overflow names all hidden dangers", _label(warnings.summary, "Headline").text == "ALERTS +5"
 		and _label(warnings.summary, "Severity").text == "DANGER"
 		and _label(warnings.summary, "Detail").text == "STALL · LOW ALTITUDE"
 		and _label(warnings.summary, "Detail").visible)
@@ -70,6 +70,7 @@ func _run() -> void:
 	_check("larger cap reuses cards and retains overflow", _shown(warnings) == Array(alerts.slice(0, 5))
 		and warnings.chips.get_child(0).get_instance_id() == first_id and warnings.summary.visible
 		and _label(first, "Detail").visible)
+	_check("one hidden alert uses the same count-neutral label", _label(warnings.summary, "Headline").text == "ALERTS +1")
 	warnings.configure({"warning_limit": 2, "warning_detail": "invalid"})
 	_check("invalid settings fall back to three detailed cards", warnings.chips.get_child_count() == 3
 		and _label(first, "Detail").visible)

@@ -280,7 +280,7 @@ func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
 			elif candidate == "caution" and severity != "danger":
 				severity = "caution"
 		# A cap never hides the identity of a critical condition, even in compact mode.
-		_update_card(_summary_card, severity, tr("+%d MORE ALERTS") % remaining,
+		_update_card(_summary_card, severity, "%s +%d" % [tr("Alerts").to_upper(), remaining],
 			" · ".join(hidden_danger), "")
 	if animate_change and not _active.is_empty():
 		_pending_positions = before
