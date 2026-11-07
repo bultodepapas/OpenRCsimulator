@@ -6,9 +6,19 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const Soundscape := preload("res://audio/soundscape.gd")
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
+const Field := preload("res://data/field_loader.gd")
+const Wheels := preload("res://physics/ground_wheels.gd")
+const M := preload("res://physics/math3d.gd")
+const Lake := preload("res://data/lake_loader.gd")
 
 class AudioSessionStub extends Node:
 	var sim := {"tick": 0}
+
+
+class LegacyContactSession extends FlightSession:
+	func wheel_count() -> int:
+		return 0
 
 
 class AudioFlightStub extends Node3D:
@@ -57,12 +67,84 @@ func _initialize() -> void:
 func _run() -> void:
 	_test_surface_selection()
 	_test_real_session_snapshot()
+	_test_circuit_snapshot()
+	_test_legacy_circuit_snapshot()
 	_test_contact_audio_state_machine()
 	_test_flight_audio_skips_paused_contact_snapshot()
 	_test_helicopter_audio_skips_paused_contact_snapshot()
 	_test_reattachment()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_circuit_snapshot() -> void:
+	var session := FlightSession.new()
+	session.input_enabled = false
+	session.setup()
+	var field := Field.load_from()
+	var circuit := Track.load_default()
+	var lake := Lake.load_from()
+	_check("audio circuit fixtures load", field.ok and circuit.ok and lake.ok and session.set_field(field.field)
+		and session.set_lake_context(lake.lake)
+		and session.set_rc_track(circuit.track))
+	var gear: Dictionary = session.current_landing_gear()
+	# Accepted endpoint witnesses: deck, approach ramp, bank/edge, off-track and lake.
+	for fixture: Array in [[39.0, -4.0, -0.755], [37.0, -4.0, -0.55],
+			[45.0, 19.4, -0.75], [-60.0, 0.0, -0.25], [110.0, 125.0, -0.25]]:
+		var state := RB.make_state(PackedFloat64Array(fixture), PackedFloat64Array([0.3, 0.0, 0.2]),
+			M.q_from_euler(0.0, 0.0, 0.0), PackedFloat64Array([0.0, 0.0, 0.0]))
+		session.sim.state = state
+		var before := var_to_bytes(session.checkpoint())
+		var rows := GroundModel.snapshot_contacts(session, {})
+		var anchors: PackedFloat64Array = session.sim.aux.slice(4, 4 + session.anchor_count() * Ground.ANCHOR_STRIDE)
+		var speeds: PackedFloat64Array = session.sim.continuous.slice(session.wheel_index(), session.wheel_index() + session.wheel_count())
+		var evaluation := Ground.evaluate(state, gear, session.sim.aux[3], session.ground_surfaces,
+			anchors, speeds, 0.0, true, session._lake, circuit.track)
+		_check("circuit audio preserves accepted endpoint " + str(fixture), before == var_to_bytes(session.checkpoint()))
+		_check("circuit audio has every wheel " + str(fixture), rows.size() == gear.contacts.size())
+		for index: int in rows.size():
+			var frame := Wheels.frame(state, gear.contacts[index], session.sim.aux[3],
+				session.ground_surfaces, PackedFloat64Array(), true, session._lake, circuit.track)
+			var expected_load: float = evaluation.wheels[index].normal_load if index < evaluation.wheels.size() else 0.0
+			_check("audio matches circuit compression and normal load", absf(rows[index].compression_m - frame.compression) < 1e-12
+				and absf(rows[index].normal_force_n - expected_load) < 1e-10,
+				str({pose = fixture, row = rows[index], compression = frame.compression, load = expected_load}))
+			_check("audio matches circuit normal", rows[index].surface_normal.distance_to(
+				Vector3(frame.normal[1], -frame.normal[2], -frame.normal[0])) < 1e-7)
+	# The shortcut must include raised dirt even when flat-field reach says clear.
+	session.sim.state[RB.POS + 2] = -(float(gear.reach) + GroundModel.FAR_MARGIN_M + 0.3)
+	_check("circuit height belongs to the conservative far bound", not GroundModel.wheels_clear_of_ground(session))
+	_check("circuit can be removed before ticking", session.set_rc_track({}))
+	_check("plain field retains its far shortcut", GroundModel.wheels_clear_of_ground(session))
+	session.free()
+
+
+func _test_legacy_circuit_snapshot() -> void:
+	var session := LegacyContactSession.new()
+	session.input_enabled = false
+	session.setup()
+	var track: Dictionary = Track.load_default().track
+	_check("legacy audio fixture installs circuit", session.set_field(Field.load_from().field)
+		and session.set_rc_track(track) and session.wheel_count() == 0)
+	var state := RB.make_state(PackedFloat64Array([39.0, -4.0, -0.755]), PackedFloat64Array([0.3, 0.0, 0.2]),
+		M.q_from_euler(0.0, 0.0, 0.0), PackedFloat64Array([0.0, 0.0, 0.0]))
+	var gear: Dictionary = session.current_landing_gear()
+	for installed: Dictionary in [track, {}]:
+		_check("legacy audio circuit selection accepts", session.set_rc_track(installed))
+		session.sim.state = state
+		var rows := GroundModel.snapshot_contacts(session, {})
+		for index: int in gear.contacts.size():
+			var one := gear.duplicate()
+			one.contacts = [gear.contacts[index]]
+			var anchor: PackedFloat64Array = session.sim.aux.slice(4 + index * Ground.ANCHOR_STRIDE, 4 + (index + 1) * Ground.ANCHOR_STRIDE)
+			var expected := Ground.loads(state, one, session.sim.aux[3], session.ground_surfaces,
+				anchor, PackedFloat64Array(), 0.0, {}, installed)
+			var frame := Wheels.frame(state, gear.contacts[index], session.sim.aux[3], session.ground_surfaces,
+				PackedFloat64Array(), true, {}, installed)
+			var force := expected.slice(0, 3) if expected.size() == 6 else PackedFloat64Array([0.0, 0.0, 0.0])
+			_check("legacy audio preserves its own load law with circuit on/off", absf(rows[index].normal_force_n
+				- maxf(0.0, M.dot(force, frame.normal))) < 1e-10 and absf(rows[index].compression_m - frame.compression) < 1e-12)
+	session.free()
 
 
 func _test_surface_selection() -> void:

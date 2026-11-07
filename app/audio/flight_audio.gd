@@ -149,7 +149,8 @@ func _on_accepted_mechanical_tick(_tick: int, _time: float, _state: PackedFloat6
 		if _mechanical_cadence.on_tick(_tick):
 			_observe_mechanical_endpoint()
 		# A wheel airborne at the last observation may load on this tick: keep its touchdown cue exact.
-		# Every deferral is shorter than TOUCHDOWN_MIN_AIRBORNE_S, so a grounded wheel cannot cue unseen.
+		# Deferred liftoff observations accrue only a conservative airborne age;
+		# tick-clock continuity alone never backdates a wheel's liftoff.
 		var near_touchdown: bool = _ground_cadence.every_frames > 0 and _accepted_ground_mode \
 			and is_instance_valid(ground_audio) and ground_audio.touchdown_possible() \
 			and not GroundAudioModel.wheels_clear_of_ground(_mechanical_session)

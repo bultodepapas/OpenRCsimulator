@@ -68,8 +68,9 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 	var tick: int = snapshot.tick
 	var rate: float = snapshot.tick_rate
 	if tick == _accepted_tick and rate == _accepted_rate and not snapshot.paused: return true
-	# VQ-01c-R1: `since_tick` declares that the caller saw every tick since that observation, so the
-	# endpoint continues history across the whole interval. Without it, only the next tick does.
+	# `since_tick` attests clock continuity, not unobserved wheel state. Airborne
+	# onset across a gap receives only the current tick; a previously airborne
+	# wheel may continue its interval under the caller's near-ground tick gate.
 	var since: int = int(snapshot.since_tick) if snapshot.has("since_tick") else tick - 1
 	var discontinuity := since < 0 or since != _accepted_tick or tick <= since \
 		or (tick - since > 1 and float(tick - since) > MAX_ACCEPTED_INTERVAL_S * rate) or rate != _accepted_rate
@@ -86,7 +87,7 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 			surface = supplied.surface, roll_enabled = supplied.get("roll_enabled", true)}
 		detached_contacts.append(contact)
 		var observed := Motion.advance(contact, _accepted_states.get(contact.id, {}),
-			0.0 if seed_only else float(tick - since) / rate, seed_only, not seed_only)
+			0.0 if seed_only else float(tick - since) / rate, seed_only, not seed_only, 1.0 / rate)
 		next_states[contact.id] = observed.state
 		if observed.impact_approach >= 0.0:
 			_accepted_observed += 1
@@ -104,8 +105,9 @@ func observe_accepted(snapshot: Dictionary) -> bool:
 	return true
 
 
-## VQ-01c-R1: a cue can fire only when a wheel that was airborne at the last observation loads, so a
-## caller may defer observations while every wheel is grounded (or none can load, see GroundAudioModel).
+## A caller may defer observations while every wheel is grounded or no wheel
+## can load (see GroundAudioModel). Liftoff age is then a conservative lower
+## estimate; the two deferred boundaries can omit at most two cadence gaps.
 func touchdown_possible() -> bool:
 	if _accepted_states.is_empty():
 		return true

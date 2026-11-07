@@ -13,6 +13,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 
 var checks := 0
 var failed := 0
@@ -43,7 +44,9 @@ func check(label: String, passed: bool, detail := "") -> void:
 func _run() -> void:
 	_helper_contract()
 	_ground_interval_contract()
+	_short_hop_matrix()
 	await _flight_audio_drop()
+	await _flight_audio_drop(true)
 	_wheel_phase()
 	Cadence.override_every_frames = -1
 	print("Presentation cadence: %d checks, %d failed" % [checks, failed])
@@ -127,7 +130,81 @@ func _ground_interval_contract() -> void:
 	g.free()
 
 
-func _drop_session() -> Node:
+## A frame receipt observes the tick clock, not wheel state throughout a gap.
+## Deferred observations may conservatively miss near-threshold hops; they must
+## never promote a hop that the exact per-tick contact observer rejects.
+func _hop(frames: int, fps: int, phase: int, airborne_ticks: int, far: bool) -> Dictionary:
+	var audio := GroundAudio.new()
+	audio.set_accepted_tick_observation(true)
+	var cadence := Cadence.new(frames, 240.0)
+	var frame_clock := phase
+	var takeoff := 4
+	var landing := takeoff + airborne_ticks
+	var airborne_age := 0.0
+	for tick: int in range(landing + 1):
+		var airborne := tick >= takeoff and tick < landing
+		var force_now: bool = audio.touchdown_possible() and (not far or not airborne)
+		var observe := cadence.on_tick(tick, force_now)
+		frame_clock += fps
+		if frame_clock >= 240:
+			frame_clock -= 240
+			observe = cadence.take(tick) or observe
+		if observe:
+			if tick == landing and not audio.get("_accepted_states").is_empty():
+				airborne_age = audio.get("_accepted_states").main_left.airborne_s
+			audio.observe_accepted({tick = tick, tick_rate = 240.0, paused = false,
+				contacts = [_row(0.0 if airborne else 20.0, 1.0)], since_tick = cadence.since_tick})
+	var result := {events = audio.get("_accepted_events").duplicate(true), age = airborne_age,
+		cooldown = audio.get("_accepted_states").main_left.cooldown_s}
+	audio.free()
+	return result
+
+
+func _short_hop_matrix() -> void:
+	for frames: int in range(5):
+		for fps: int in [30, 60, 144]:
+			for phase: int in [0, 59, 119, 179, 239]:
+				for duration: int in [31, 33, 34, 35, 36, 60, 84]:
+					for far: bool in [false, true]:
+						var exact := _hop(0, fps, phase, duration, far)
+						var candidate := _hop(frames, fps, phase, duration, far)
+						var label := str([frames, fps, phase, duration, far])
+						check("short hop cannot acquire a false cue " + label,
+							candidate.events.is_empty() or candidate.events == exact.events)
+						check("ineligible hop cannot acquire debounce " + label,
+							not exact.events.is_empty() or candidate.cooldown == 0.0)
+						# Two deferred boundaries may each omit at most one cadence gap.
+						check("airborne age is a bounded lower estimate " + label,
+							candidate.age <= exact.age + 1e-12 and exact.age - candidate.age <= 2.0 * Cadence.MAX_INTERVAL_S + 1e-12)
+						if frames == 0 or duration == 84:
+							check("per-tick and sufficiently long hops retain their cue " + label,
+								candidate.events == exact.events)
+	var witness := _hop(1, 30, 0, 31, false)
+	check("audit ticks 4 through 34 produce neither impact nor debounce", witness.events.is_empty() and witness.cooldown == 0.0)
+	var audio := GroundAudio.new()
+	audio.set_accepted_tick_observation(true)
+	audio.observe_accepted({tick = 0, tick_rate = 240.0, paused = false, contacts = [_row(20.0, 1.0)]})
+	audio.observe_accepted({tick = 4, tick_rate = 240.0, paused = false, contacts = [_row(1.01, 1.0)], since_tick = 0})
+	check("grounded hysteresis survives a deferred interval above force_off", audio.get("_accepted_states").main_left.grounded)
+	audio.observe_accepted({tick = 8, tick_rate = 240.0, paused = false, contacts = [_row(0.99, 1.0)], since_tick = 4})
+	check("hysteretic liftoff credits one proven tick", is_equal_approx(audio.get("_accepted_states").main_left.airborne_s, 1.0 / 240.0))
+	for tick: int in range(9, 46):
+		audio.observe_accepted({tick = tick, tick_rate = 240.0, paused = false, contacts = [_row(1.01, 1.0)], since_tick = tick - 1})
+	check("airborne hysteresis stays airborne below force_on", not audio.get("_accepted_states").main_left.grounded)
+	audio.observe_accepted({tick = 46, tick_rate = 240.0, paused = false, contacts = [_row(3.0, 1.0)], since_tick = 45})
+	check("qualified hysteretic landing cues once", audio.get("_accepted_events").size() == 1)
+	audio.observe_accepted({tick = 50, tick_rate = 240.0, paused = false, contacts = [_row(0.0, 1.0)], since_tick = 46})
+	check("cooldown ages full gap while onset ages one tick", is_equal_approx(audio.get("_accepted_states").main_left.cooldown_s,
+		GroundAudio.TOUCHDOWN_DEBOUNCE_S - 4.0 / 240.0) and is_equal_approx(audio.get("_accepted_states").main_left.airborne_s, 1.0 / 240.0))
+	audio.observe_accepted({tick = 50, tick_rate = 240.0, paused = true, contacts = []})
+	check("pause clears pending cues and onset uncertainty", audio.get("_accepted_events").is_empty() and audio.get("_accepted_states").is_empty())
+	audio.observe_accepted({tick = 0, tick_rate = 240.0, paused = false, contacts = [_row(20.0, 1.0)], since_tick = -1})
+	check("rewind silently seeds a loaded contact", audio.get("_accepted_events").is_empty()
+		and audio.get("_accepted_states").main_left.airborne_s == 0.0 and audio.get("_accepted_states").main_left.cooldown_s == 0.0)
+	audio.free()
+
+
+func _drop_session(on_track := false) -> Node:
 	var f: Node = Session.new()
 	f.input_enabled = false
 	f.crash_auto_restart = false
@@ -136,14 +213,20 @@ func _drop_session() -> Node:
 	f.set_physics_process(false)
 	f.soft_hull_contacts = true
 	f.engine_running = false
+	if on_track:
+		check("drop installs field and circuit", f.set_field(FieldLoader.load_from().field)
+			and f.set_rc_track(Track.load_default().track))
 	var s: PackedFloat64Array = f.sim.state.duplicate()
+	if on_track:
+		s[RB.POS] = 39.0
+		s[RB.POS + 1] = -4.0
 	for i in 3:
 		s[RB.VEL + i] = 0.0
 		s[RB.RATE + i] = 0.0
-	s[RB.VEL] = 3.0
+	s[RB.VEL] = 0.3 if on_track else 3.0
 	s[RB.VEL + 2] = 0.2
 	for i in 4: s[RB.ATT + i] = 1.0 if i == 0 else 0.0
-	var compression: PackedFloat64Array = Ground.compressions(s, f.current_landing_gear())
+	var compression: PackedFloat64Array = Ground.compressions(s, f.current_landing_gear(), f.ground_surfaces, f._lake, f._rc_track)
 	var maximum := -INF
 	for x: float in compression: maximum = maxf(maximum, x)
 	s[RB.POS + 2] += -0.4 - maximum
@@ -169,10 +252,11 @@ func _cues(audio: Node) -> Array:
 
 
 ## Real 0.4 m Stik drop: a per-tick rig and a per-frame rig (frames every 4 ticks, 60 fps) on one session.
-func _flight_audio_drop() -> void:
+func _flight_audio_drop(on_track := false) -> void:
 	root.audio_listener_enable_3d = true
-	var session := _drop_session()
-	var reference := _drop_session()
+	var session := _drop_session(on_track)
+	var reference := _drop_session(on_track)
+	var initial: Dictionary = session.checkpoint()
 	check("drop sessions admitted identically", session.is_flyable()
 		and var_to_bytes(session.checkpoint()) == var_to_bytes(reference.checkpoint()))
 	var owner := Owner.new()
@@ -220,6 +304,19 @@ func _flight_audio_drop() -> void:
 		"%d %d %d" % [ground.accepted_tick(), session.sim.tick, int(ground.get("_last_tick"))])
 	check("the primed rig continues history into its first interval",
 		held.mechanical_audio.diagnostics().accepted_discontinuities == 0)
+	if on_track:
+		check("circuit rewind restores exact physics", session.restore_checkpoint(initial) and reference.restore_checkpoint(initial)
+			and var_to_bytes(session.checkpoint()) == var_to_bytes(reference.checkpoint()))
+		check("rewind clears prior touchdown histories", _cues(per_tick).is_empty() and _cues(per_frame).is_empty())
+		session.sim.set_paused(false)
+		reference.sim.set_paused(false)
+		for tick: int in 240:
+			session.sim.step()
+			reference.sim.step()
+			if (tick + 1) % 4 == 0: per_frame._observe_due_endpoints()
+		check("circuit replay has the same per-tick touchdown history", not _cues(per_tick).is_empty()
+			and var_to_bytes(_cues(per_tick)) == var_to_bytes(_cues(per_frame)))
+		check("circuit replay observation stays read-only", var_to_bytes(session.checkpoint()) == var_to_bytes(reference.checkpoint()))
 	for audio: Node in [per_tick, per_frame, held]:
 		audio.free()
 	owner.free()

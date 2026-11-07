@@ -10,8 +10,9 @@ extends RefCounted
 const DEFAULT_EVERY_FRAMES := 1
 const MAX_EVERY_FRAMES := 4
 ## Longest deferral. It bounds added audio latency at a slow frame rate, keeps windsock and
-## field-people motion inside their 0.5 s catch-up gap, and stays below ground audio's 0.14 s
-## minimum airborne time, so a grounded wheel cannot complete an unseen hop and cue.
+## field-people motion inside their 0.5 s catch-up gap. Ground audio separately
+## treats unobserved liftoff time conservatively; clock continuity does not
+## establish continuous wheel contact or airborne state.
 const MAX_INTERVAL_S := 0.1
 const ARGUMENT := "--presentation-cadence="
 const ENVIRONMENT_KEY := "OPENRC_PRESENTATION_CADENCE"

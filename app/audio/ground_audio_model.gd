@@ -39,6 +39,8 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var ground_surfaces: PackedFloat64Array = session.get("ground_surfaces")	
 	var lake_value: Variant = session.get("_lake")
 	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
+	var track_value: Variant = session.get("_rc_track")
+	var track: Dictionary = track_value if track_value is Dictionary else {}
 	var steer: float = auxiliary[3]
 	var wheel_count: int = int(session.call("wheel_count")) if session.has_method("wheel_count") else 0
 	var wheel_index: int = int(session.call("wheel_index")) if session.has_method("wheel_index") else 0
@@ -56,11 +58,11 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 	var reference_load: float = maxf(1.0, float(sim.mass) * float(sim.gravity) / float(gear_contacts.size()))
 	# Well clear of the ground, every wheel is unloaded and the cues only age their airborne state, so skip the
 	# wheel frames, contact law and material queries. Rows resume in full FAR_HORIZON_S before any wheel can load.
-	if _clear_of_ground(state, gear, ground_surfaces):
+	if _clear_of_ground(state, gear, ground_surfaces, track):
 		return _unloaded_rows(gear_contacts, state, attitude, base_velocity, body_rate, reference_load)
 	var wheel_evaluation: Dictionary = {}
 	if wheel_count > 0:
-		wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake)
+		wheel_evaluation = Ground.evaluate(state, gear, steer, ground_surfaces, anchors, speeds, brake, true, lake, track)
 	var wheel_diagnostics: Array = wheel_evaluation.get("wheels", [])
 	var environment := session.get("environment") as RefCounted
 	var time_s: float = sim.time()
@@ -68,7 +70,7 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 		var contact: Dictionary = gear_contacts[index]
 		if not contact.has("position"):
 			continue
-		var frame: Dictionary = Wheels.frame(state, contact, steer, ground_surfaces, PackedFloat64Array(), true, lake)
+		var frame: Dictionary = Wheels.frame(state, contact, steer, ground_surfaces, PackedFloat64Array(), true, lake, track)
 		var arm: PackedFloat64Array = contact.position
 		var body_point_velocity: PackedFloat64Array = M.add(base_velocity, M.cross(body_rate, arm))
 		var point_velocity: PackedFloat64Array = M.q_rotate(attitude, body_point_velocity)
@@ -92,7 +94,7 @@ static func snapshot_contacts(session: Node, _field: Dictionary) -> Array[Dictio
 			var one_anchor := PackedFloat64Array()
 			if anchors_count > index:
 				one_anchor = anchors.slice(index * Ground.ANCHOR_STRIDE, (index + 1) * Ground.ANCHOR_STRIDE)
-			var loads: PackedFloat64Array = Ground.loads(state, single_gear, steer, ground_surfaces, one_anchor, PackedFloat64Array(), brake, lake)
+			var loads: PackedFloat64Array = Ground.loads(state, single_gear, steer, ground_surfaces, one_anchor, PackedFloat64Array(), brake, lake, track)
 			if loads.size() == 6:
 				force_ned = M.q_rotate(attitude, M.v3(loads[0], loads[1], loads[2]))
 		var normal_force: float = maxf(0.0, M.dot(force_ned, normal))
@@ -134,12 +136,15 @@ static func wheels_clear_of_ground(session: Node) -> bool:
 	var gear: Dictionary = session.call("current_landing_gear", sim.aux)
 	if gear.get("contacts", []).is_empty():
 		return false
-	return _clear_of_ground(sim.state, gear, session.get("ground_surfaces"))
+	var track_value: Variant = session.get("_rc_track")
+	var track: Dictionary = track_value if track_value is Dictionary else {}
+	return _clear_of_ground(sim.state, gear, session.get("ground_surfaces"), track)
 
 
-static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground_surfaces: PackedFloat64Array) -> bool:
+static func _clear_of_ground(state: PackedFloat64Array, gear: Dictionary, ground_surfaces: PackedFloat64Array,
+		track: Dictionary = {}) -> bool:
 	return Terrain.is_valid_surface_table(ground_surfaces) and -state[RB.POS + 2] > float(gear.get("reach", INF)) \
-		+ Terrain.max_height_validated(ground_surfaces) + FAR_MARGIN_M \
+		+ Terrain.max_height_validated(ground_surfaces) + Wheels.Track.max_height_m(track) + FAR_MARGIN_M \
 		+ FAR_HORIZON_S * M.norm(M.v3(state[RB.VEL], state[RB.VEL + 1], state[RB.VEL + 2]))
 
 
