@@ -334,9 +334,11 @@ static func _validate_cells(cells: Array[Dictionary], identity: Dictionary, doma
 			errors.append("cells[%d].top_agl_m exceeds domain.max_height_agl_m" % index)
 		if radius > 0.5 * top:
 			errors.append("cells[%d].radius_m must not exceed half its top_agl_m" % index)
-		if absf(float(center[0])) + absf(float(drift[0])) * duration + 5.0 * radius > float(domain.half_extent_north_m):
+		# The absolute value of an affine center reaches its maximum at an
+		# endpoint, including inward drift and tracks that cross the origin.
+		if maxf(absf(float(center[0])), absf(float(center[0]) + float(drift[0]) * duration)) + 5.0 * radius > float(domain.half_extent_north_m):
 			errors.append("cells[%d] radial support and drift exceed the north domain" % index)
-		if absf(float(center[1])) + absf(float(drift[1])) * duration + 5.0 * radius > float(domain.half_extent_east_m):
+		if maxf(absf(float(center[1])), absf(float(center[1]) + float(drift[1]) * duration)) + 5.0 * radius > float(domain.half_extent_east_m):
 			errors.append("cells[%d] radial support and drift exceed the east domain" % index)
 	var max_overlap := 0
 	var max_peak_sum := 0.0

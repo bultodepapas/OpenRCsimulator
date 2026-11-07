@@ -288,6 +288,40 @@ func _invalid_samples() -> void:
 	_check("time after agenda domain fails closed", not field.sample_world(PackedFloat64Array([0.0, 0.0, -1.0]), 86400.1).ok)
 
 
+func _drift_domain_endpoints() -> void:
+	for drift: Array in [[-2.0, -2.0], [0.0, 0.0], [-2.0, 0.0], [0.0, -2.0]]:
+		var config := _agenda([_cell({center_ne_m = [600.0, 600.0], drift_ne_mps = drift, duration_s = 360.0, radius_m = 35.0})])
+		config.domain.half_extent_north_m = 1000.0
+		config.domain.half_extent_east_m = 1000.0
+		var bounded := Thermal.build(config)
+		_check("contained affine drift is admitted: %s" % str(drift), bounded.ok)
+		if not bounded.ok:
+			continue
+		var large := config.duplicate(true)
+		large.domain.half_extent_north_m = 10000.0
+		large.domain.half_extent_east_m = 10000.0
+		var control := Thermal.build(large)
+		var exact := true
+		for age: int in 361:
+			var position := PackedFloat64Array([620.0 + drift[0] * age, 600.0 + drift[1] * age, -150.0])
+			exact = exact and var_to_bytes(bounded.field.sample_world(position, 100.0 + age)) \
+				== var_to_bytes(control.field.sample_world(position, 100.0 + age))
+		_check("domain admission preserves every lifetime sample byte: %s" % str(drift), exact)
+	for axis: int in 2:
+		var config := _agenda([_cell({center_ne_m = [600.0, 600.0], drift_ne_mps = [-2.0, -2.0], duration_s = 360.0, radius_m = 35.0})])
+		config.domain.half_extent_north_m = 775.0
+		config.domain.half_extent_east_m = 775.0
+		var key: String = "half_extent_north_m" if axis == 0 else "half_extent_east_m"
+		_check("exact affine support boundary accepted on axis %d" % axis, Thermal.resolve(config).ok)
+		config.domain[key] = 775.0 - pow(2.0, -43.0)
+		_check("adjacent smaller domain refused on axis %d" % axis, not Thermal.resolve(config).ok)
+		config.domain[key] = 775.0 + pow(2.0, -43.0)
+		_check("adjacent larger domain accepted on axis %d" % axis, Thermal.resolve(config).ok)
+		config.domain[key] = 1000.0
+		config.cells[0].drift_ne_mps[axis] = 2.0
+		_check("outward support remains refused on axis %d" % axis, not Thermal.resolve(config).ok)
+
+
 func _initialize() -> void:
 	_schema_identity_and_input_safety()
 	_analytic_velocity_oracles()
@@ -295,5 +329,6 @@ func _initialize() -> void:
 	_complete_flux_divergence_and_bounds()
 	_radial_support_continuity()
 	_invalid_samples()
+	_drift_domain_endpoints()
 	print("balanced thermal field: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
