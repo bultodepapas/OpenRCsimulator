@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "OpenRC Simulator | Simulador RC de voo gratuito e de código aberto",
-    "description": "Baixe o OpenRC Simulator, um simulador RC de voo gratuito e de código aberto para Windows, Linux e macOS. Explore o aeromodelismo nesta prévia beta do simulador para desktop."
+    "description": "Baixe o OpenRC Simulator, um simulador RC de voo gratuito e de código aberto para Windows, Linux e macOS. Explore o aeromodelismo nesta versão alfa inicial do simulador para desktop."
   },
   "translations": {
     "actualModel": "RENDERS DO MODELO DO PROJETO",
@@ -30,12 +30,12 @@
     "assetModelsSub": "Fontes, geradores e articulação",
     "audioLink": "Áudio ↗",
     "backTop": "Voltar ao topo ↑",
-    "candidateIntro": "v0.1.10 · Windows / Linux / macOS. Esta prévia beta inclui modelos de aeronaves e veículos terrestres que ainda são experimentais.",
-    "candidateKicker": "PRÉVIA BETA · v0.1.10",
+    "candidateIntro": "v0.2.0 · Windows / Linux / macOS. Esta versão alfa inicial inclui modelos de aeronaves e veículos terrestres que ainda são experimentais.",
+    "candidateKicker": "ALFA INICIAL · v0.2.0",
     "candidateLimitsNote": "A avaliação independente de algumas aeronaves experimentais continua em aberto:",
-    "candidateRelease": "Notas da versão v0.1.10 ↗",
+    "candidateRelease": "Notas da versão v0.2.0 ↗",
     "candidateStikLimit": "A verificação do limite de derrapagem lateral do Stik a 240 Hz continua em aberto; é uma estimativa de limite.",
-    "candidateTitle": "A v0.1.10 está disponível",
+    "candidateTitle": "A v0.2.0 está disponível",
     "candidateYawLimit": "A comparação do amortecimento de guinada do R02 continua em aberto; é uma comparação entre modelos, não uma medição física.",
     "capture": "CAPTURA DO SIMULADOR · GODOT",
     "chatgptRole": "Apoio ao desenvolvimento de código aberto",
@@ -61,7 +61,7 @@
     "devActiveCopy": "Aeronaves, motores, terreno, controles, helicóptero e veículos RC experimentais. O código-fonte atual continua evoluindo.",
     "devActiveTitle": "Teste e aprimore.",
     "devAvailable": "DISPONÍVEL",
-    "devAvailableCopy": "Prévia beta para desktop. Consulte as notas da versão para conhecer o conteúdo do pacote.",
+    "devAvailableCopy": "Versão alfa inicial para desktop. Consulte as notas da versão para conhecer o conteúdo do pacote.",
     "devAvailableTitle": "Baixe e voe.",
     "devChanges": "Mudanças no projeto ↗",
     "devDownload": "Ir para downloads ↑",
@@ -75,7 +75,7 @@
     "downloadHeading": "Menos assistir.<br>Mais voar.",
     "downloadIntro": "Baixe, extraia o ZIP e inicie.<br>Não é preciso instalar o Godot.",
     "downloadKicker": "02 / SUA PRÓXIMA DECOLAGEM",
-    "downloadNote": "Prévia beta v0.1.10. Os arquivos ZIP não têm instalador nem assinatura do arquivo; o app para macOS tem assinatura ad hoc, mas não é notarizado.<br>Os modelos de aeronaves e veículos terrestres continuam experimentais e precisam de medições independentes e avaliação de pilotos.",
+    "downloadNote": "Versão alfa inicial v0.2.0. Os arquivos ZIP não têm instalador nem assinatura do arquivo; o app para macOS tem assinatura ad hoc, mas não é notarizado.<br>Os modelos de aeronaves e veículos terrestres continuam experimentais e precisam de medições independentes e avaliação de pilotos.",
     "droneNote": "EM PESQUISA: corrida FPV. Um drone pilotável e um modo de corrida ainda não estão disponíveis.",
     "electricLink": "Propulsão elétrica ↗",
     "evidenceBody": "O contrato openrc-aircraft v2 exige unidades, tipo de evidência e fonte. Configurações inválidas não podem voar. Geometria e dados físicos são gerados novamente a partir de suas fontes.",
@@ -118,7 +118,7 @@
     "hangarIntro": "Cinco aviões e um helicóptero experimental.<br>Escolha um modelo e explore-o de todos os ângulos.",
     "hangarKicker": "01 / O HANGAR",
     "helicopterTab": "Helicóptero",
-    "heroCopy": "Um simulador RC de voo gratuito e de código aberto.<br>Para Windows, Linux e macOS. Prévia beta.",
+    "heroCopy": "Um simulador RC de voo gratuito e de código aberto.<br>Para Windows, Linux e macOS. Versão alfa inicial.",
     "heroCta": "Baixar",
     "heroEyebrow": "AEROMODELISMO · CÓDIGO ABERTO",
     "heroHeading": "O campo de voo<br>está aberto.",
@@ -179,7 +179,7 @@
     "propTitle": "Quatro formas de gerar potência",
     "radioCopy": "Transmissor USB, gamepad ou teclado. Calibração salva, armamento do acelerador e proteção contra perda de conexão.",
     "radioHeading": "Seus controles, no circuito.",
-    "releaseHighlights": "v0.1.10 adiciona a asa voadora MoonRunner X99, um campo mais natural com aves, pessoas e plantas de prado, prática de compensação e falhas de treino, nove idiomas na interface, física mais rápida no Linux e mais fluidez no Mac. O comportamento de voo ainda precisa de avaliação no mundo real.",
+    "releaseHighlights": "A v0.2.0 traz um indicador de combustível animado, alertas de voo configuráveis, correções nos controles e no Workshop e recuperação do renderizador no Apple Silicon. Os modelos continuam experimentais e exigem medições e avaliação de pilotos.",
     "releaseNotes": "Notas da versão ↗",
     "renderNote": "MODELO DO SIMULADOR · VISTA DE ESTÚDIO",
     "replayCopy": "Registros de voo, reprodução exata e exportação CSV para estudar o comportamento da aeronave com as mesmas entradas gravadas.",
@@ -196,7 +196,7 @@
     "sonicmodellStatus": "A permissão se limita ao uso acordado. Integração pendente.",
     "source": "Explore o código-fonte",
     "sourceKicker": "IMPLEMENTADO NO CÓDIGO-FONTE ATUAL",
-    "sourceNote": "CATÁLOGO DO CÓDIGO-FONTE ATUAL. Os modelos são experimentais e ainda precisam de medições e avaliação de pilotos. O download v0.1.10 é uma versão própria e pode ser diferente do código-fonte atual.",
+    "sourceNote": "CATÁLOGO DO CÓDIGO-FONTE ATUAL. Os modelos são experimentais e ainda precisam de medições e avaliação de pilotos. O download v0.2.0 é uma versão própria e pode ser diferente do código-fonte atual.",
     "span": "Envergadura",
     "spinAngle": "Ângulo da câmera",
     "spinHint": "Arraste para explorar · Use o controle deslizante para mudar o ângulo.",
@@ -226,7 +226,7 @@
     "worldDetail3": "A água não simula flutuabilidade; a ruptura estrutural da aeronave durante o voo não está implementada.",
     "worldLink": "Mundo e cenário ↗",
     "worldTitle": "Um campo que você pode ver e ouvir",
-    "gameLanguages": "A versão atual do código oferece nove idiomas para a interface do simulador: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. O download v0.1.10 inclui os nove.",
+    "gameLanguages": "A versão atual do código oferece nove idiomas para a interface do simulador: <bdi dir=\"ltr\">English · Español · 简体中文 · Português (Brasil) · Deutsch · Français · Italiano · Русский · 日本語</bdi>. O download v0.2.0 inclui os nove.",
     "donateHero": "Doar",
     "donateKicker": "PRÓXIMO PASSO / STEAM",
     "donateHeading": "Ajude a levar o OpenRC ao Steam.",
@@ -334,7 +334,7 @@
     "cockpitAlt": "Close da cabine do Vantage Jet",
     "wingAlt": "Asa do Vantage Jet e junção com a fuselagem",
     "tailAlt": "Deriva e estabilizadores do Vantage Jet",
-    "releaseStage": "PRÉVIA BETA",
+    "releaseStage": "ALFA INICIAL",
     "modelStudy": "APRESENTAÇÃO DE AERONAVES / OPENRC"
   }
 }
