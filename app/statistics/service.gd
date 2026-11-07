@@ -122,7 +122,7 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	_suspended = false
 	data.clean_exit = false
 	adapter = load("res://statistics/fixed_wing_adapter.gd").new()
-	adapter.configure(session, aircraft_id, Callable(self, "_observe"))
+	adapter.configure(session, aircraft_id, Callable(self, "_observe"), Callable(self, "_may_observe"))
 	# Session receipt generations are local counters. Persisted event identity uses
 	# this service's globally unique activity namespace, including fresh sessions.
 	adapter.profile.generation_id = _generation
@@ -137,8 +137,12 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	_flush_requested = true
 
 
+func _may_observe() -> bool:
+	return not _suspended and not _branch and detector != null
+
+
 func _observe(sample: Dictionary) -> void:
-	if _suspended or _branch or detector == null:
+	if not _may_observe():
 		return
 	_ingest(detector.observe(sample))
 	var bucket: int = int(sample.get("tick", 0)) / 24
@@ -322,7 +326,7 @@ func _lifecycle(receipt: Dictionary) -> void:
 			data.records.append(restart)
 		_branch = false
 		_generation = _uuid()
-		adapter.configure(_session, _aircraft_id, Callable(self, "_observe"))
+		adapter.configure(_session, _aircraft_id, Callable(self, "_observe"), Callable(self, "_may_observe"))
 		adapter.profile.generation_id = _generation
 		_metadata.config_hash = str(_session.aircraft.get("input_identity", {}).get("sha256", ""))
 		_set_event_identity()
@@ -341,7 +345,7 @@ func suspend_activity() -> void:
 
 func resume_activity() -> void:
 	_suspended = false
-	if adapter != null and not _branch:
+	if adapter != null:
 		adapter.attach()
 
 

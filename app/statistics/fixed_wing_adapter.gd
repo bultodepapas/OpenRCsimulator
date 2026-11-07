@@ -8,12 +8,14 @@ const Terrain = preload("res://physics/ground_terrain.gd")
 var profile: Dictionary = {}
 var session: Node
 var _consumer: Callable
+var _eligible: Callable
 var _attached := false
 
 
-func configure(owner: Node, aircraft_id: String, consumer: Callable) -> void:
+func configure(owner: Node, aircraft_id: String, consumer: Callable, eligible: Callable = Callable()) -> void:
 	session = owner
 	_consumer = consumer
+	_eligible = eligible
 	profile = load("res://statistics/profiles.gd").resolve(aircraft_id, session.aircraft.model, session.contact_contract())
 	profile.initial_tick = int(session.sim.tick)
 	profile.generation_id = str(session.statistics_generation)
@@ -39,14 +41,20 @@ func _stepped(_tick: int, _time: float, _state: PackedFloat64Array, _loads: Pack
 		_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	# Simulation.reset also publishes stepped at tick zero. It is not an accepted
 	# physics interval; only the session's later committed receipt changes generation.
-	if _tick == 0: return
+	if _tick == 0 or not _may_sample(): return
 	_consumer.call(sample())
 
 
 func _contacts() -> void:
 	# A terminal guard may fire without a new accepted tick. The detector deduplicates its clock.
-	if not session.crash.is_empty():
+	if not session.crash.is_empty() and _may_sample():
 		_consumer.call(sample())
+
+
+func _may_sample() -> bool:
+	# Unconfigured eligibility preserves standalone sampling clients; a freed
+	# service cannot authorize observations through a stale callable.
+	return _eligible.is_null() or (_eligible.is_valid() and bool(_eligible.call()))
 
 
 func sample() -> Dictionary:
