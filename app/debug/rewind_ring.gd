@@ -16,7 +16,9 @@ var capture_usec := 0.0 # smoothed cost of one checkpoint
 var _entries: Array[Dictionary] = [] # {attempt, tick, time_s, height_m, speed_mps, snapshot}
 var _attempt := 0
 var _session_id := 0
+var _session_ref: WeakRef
 var _last_tick := -1
+var _restoring := false
 
 
 func arm(every: int, keep: int) -> void:
@@ -29,6 +31,8 @@ func arm(every: int, keep: int) -> void:
 
 func disarm() -> void:
 	armed = false
+	_unbind_session()
+	_session_id = 0
 	clear()
 
 
@@ -37,6 +41,7 @@ func clear() -> void:
 	_attempt = 0
 	_last_tick = -1
 	refused = 0
+	capture_usec = 0.0
 
 
 func size() -> int:
@@ -52,8 +57,12 @@ func capture(session: Node) -> void:
 	if not armed or session == null or not is_instance_valid(session):
 		return
 	if session.get_instance_id() != _session_id:
+		_unbind_session()
 		clear() # another flight: its checkpoints would be refused by the configuration fingerprint anyway
 		_session_id = session.get_instance_id()
+		_session_ref = weakref(session)
+		if session.has_signal("resetting") and not session.is_connected("resetting", _on_session_resetting):
+			session.connect("resetting", _on_session_resetting)
 	var sim: Node = session.sim
 	if sim.paused:
 		return
@@ -78,6 +87,22 @@ func capture(session: Node) -> void:
 		speed_mps = sqrt(state[3] * state[3] + state[4] * state[4] + state[5] * state[5]), snapshot = snapshot})
 	while _entries.size() > capacity:
 		_entries.pop_front()
+
+
+## Accepted start/restore/configuration boundary, including equal or increasing ticks.
+## Several boundaries before the next observation still represent one unsampled attempt.
+func _on_session_resetting() -> void:
+	if armed and not _restoring and _last_tick >= 0:
+		_attempt += 1
+		_last_tick = -1
+
+
+func _unbind_session() -> void:
+	if _session_ref != null:
+		var previous: Object = _session_ref.get_ref()
+		if previous != null and previous.has_signal("resetting") and previous.is_connected("resetting", _on_session_resetting):
+			previous.disconnect("resetting", _on_session_resetting)
+	_session_ref = null
 
 
 func _newest(of_attempt: int) -> Dictionary:
@@ -142,7 +167,12 @@ func find(request: Dictionary, now_tick: int, dt: float) -> Dictionary:
 
 ## Restore `entry` and cut the timeline after it. Returns the session's verdict.
 func restore(session: Node, entry: Dictionary) -> bool:
-	if not session.restore_checkpoint(entry.snapshot):
+	if session == null or not is_instance_valid(session) or session.get_instance_id() != _session_id:
+		return false
+	_restoring = true
+	var restored: bool = session.restore_checkpoint(entry.snapshot)
+	_restoring = false
+	if not restored:
 		return false
 	var at_attempt := int(entry.attempt)
 	var at_tick := int(entry.tick)

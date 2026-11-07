@@ -51,6 +51,22 @@ Each finding row includes an **Original report** link; implementation evidence r
 
 The broader debug discovery run had one unchanged process-liveness test failure in this environment's mismatched process-ID/procfs namespaces; it is not reported as green. [Verification details and limits](../docs/research/release-readiness/PT1h-R13/verification.json) remain authoritative for this candidate.
 
+## PT1h-R14 internal debug candidate
+
+[PT1h-R14](../docs/research/release-readiness/PT1h-R14/README.md) reviews the internal debug tools at `9db50cfc70904e262247d97e1c368f7c499ff23d`. These are new consumer/tool findings, not repeated claims for the already merged GPU/ablation work or the PT1h-R13 MCP fixes. Implementation is in the review candidate; full-app, native Windows, rendered and exact-candidate CI gates remain separate.
+
+| New finding group | Implemented behavior | Verified boundary |
+| --- | --- | --- |
+| D01 — checkpoint files | Exact-byte staged UTF-8 publication; previous file survives a short write; preserve destination-link meaning and Unix mode; Windows recovery copy/rollback path. | Real Linux file-size limit and normal/Unicode/long-name/mode/link controls. Windows rollback, ACLs and power-loss durability unqualified. |
+| D02/D03 — concurrent sessions and cleanup | Persistent cross-process claim lock; protect all live outputs and unpublished live launches. | Concurrent and process-death fixtures, multiple live runs, partial publication; Windows locking simulated. |
+| D04 — step completion and ownership | Exact target required; per-job reply; fault/reset/replacement/ownership refusal; deadline/disconnect cleanup; transient step stops excluded from saved/rewind checkpoints. | 24 dedicated fake-session assertions, plus existing bridge success paths. Long steps deliberately leave rewind capture gaps. |
+| D05/D06/D07 — command admission | Discard already dropped peers' queued commands; enforce complete/partial line byte limit; finite numeric conversion and bounded tick/retention conversion. | Real TCP boundary, deterministic queue seam, finite/overflow/range controls; included in 26 contract assertions. |
+| D08/D09/D12 — temporal/visual/log observers | Accepted resets define attempts/trails even at equal/forward ticks; retention includes both endpoints; unavailable values are null; no empty/nonfinite arrows; log cursor overflow refused. | 36 observer assertions and contract span tests; no full flight or visual qualification. |
+| D10/D11 — reproduction/locale | Monkey saves attempted-action trails on bridge loss; scenario/cleanup/soak reads are explicitly UTF-8. | Fake TCP disconnects at multiple stages and actual scenario under simulated CP1252. |
+| D13 — compiler-report integrity | Refuse source/baseline/report aliases; compare pre-refresh warning keys; stage UTF-8 outputs; clean only owned snapshots. | 10 methods covering aliases, refresh, write failures, locale, permissions and concurrent-output ownership. Synthetic collector; D14 listener identity remains open. |
+
+The three new GDScript suites pass 86 assertions; the existing bridge and render-probe suites pass 114 and 34 in the explicitly documented isolated fixture. The bridge suite intentionally emits two logger warnings. Python discovery runs 89 methods: 88 pass, with the one unchanged PID/procfs namespace failure retained. No full Python pass is claimed. [Exact evidence and source identities](../docs/research/release-readiness/PT1h-R14/verification.json) distinguish baseline witnesses, candidate checks and fixture limits. No whole original audit is marked closed.
+
 ## Rendering and measurement implementation
 
 These delivered changes supersede corresponding A1 implementation requests; target qualification remains in the pending queue.

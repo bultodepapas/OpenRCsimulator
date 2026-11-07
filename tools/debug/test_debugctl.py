@@ -616,6 +616,45 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual((status, err), (0, ""))
         self.assertEqual(self.bridge.requests[-1]["note"], "stdin")
 
+    def test_scenarios_cleanup_and_soak_read_utf8_with_a_non_utf8_locale(self) -> None:
+        import builtins
+        script = Path(self.tmp.name) / "scenario.txt"
+        script.write_text('ping note="1920 × 1080"\n', encoding="utf-8")
+        script.with_suffix(".cleanup").write_text('ping note="Statistics · Pilot total"\n', encoding="utf-8")
+        real_path_open = Path.open
+
+        def simulated_builtin_open(file, mode="r", encoding=None, **kwargs):
+            return builtins.open(file, mode=mode, encoding=encoding or "cp1252", **kwargs)
+
+        def simulated_path_open(path, mode="r", buffering=-1, encoding=None, errors=None, newline=None):
+            if "b" not in mode and encoding in (None, "locale"):
+                encoding = "cp1252"
+            return real_path_open(path, mode=mode, buffering=buffering, encoding=encoding,
+                                  errors=errors, newline=newline)
+
+        with patch.object(debugctl, "open", simulated_builtin_open, create=True), \
+                patch.object(Path, "open", simulated_path_open):
+            status, _, err = self.run_cli("run", str(script))
+        self.assertEqual((status, err), (0, ""))
+        self.assertEqual([r["note"] for r in self.bridge.requests], ["1920 × 1080", "Statistics · Pilot total"])
+
+        seen = []
+        def result(command, args=None, **_kwargs):
+            if command == "ping":
+                if args:
+                    seen.append(args["note"])
+                return {"log_seq": 0}
+            if command == "objects":
+                return {"totals": {"nodes": 0, "orphans": 0, "resources": 0, "static_memory_mib": 0}}
+            if command == "logs":
+                return {"records": []}
+            return {}
+
+        with patch.object(Path, "open", simulated_path_open), patch.object(debugctl, "result_of", side_effect=result):
+            status, _, err = self.run_cli("soak", str(script), "--cycles", "1", "--warmup", "0")
+        self.assertEqual((status, err), (0, ""))
+        self.assertEqual(seen, ["1920 × 1080"])
+
     def test_watch_streams_csv_in_chunks(self) -> None:
         target = Path(self.tmp.name) / "watch.csv"
         status, out, _ = self.run_cli("watch", "--every", "6", "--count", "13", "--csv", str(target), "height=-s[2]")
@@ -659,6 +698,38 @@ class DebugctlTests(unittest.TestCase):
             self.assertEqual(sorted(p.name for p in debugctl.RUNS.iterdir()), ["notes", "run-2", "run-3"])
         finally:
             debugctl.RUNS = saved
+
+    def test_clean_protects_every_live_run_and_defers_for_an_unpublished_launch(self) -> None:
+        runs = Path(self.tmp.name) / "runs"
+        runs.mkdir()
+        debugctl.SESSIONS.mkdir()
+        live_runs = []
+        for number in (40001, 40002):
+            run = runs / f"run-{number}"
+            run.mkdir()
+            (run / "launch.json").write_text("{}")
+            session = {"port": number, "pid": number, "launcher_pid": number, "out": str(run)}
+            (debugctl.SESSIONS / f"{number}.json").write_text(json.dumps(session))
+            live_runs.append(run)
+        debugctl.CURRENT.write_text(json.dumps(session))
+        old = runs / "old"
+        old.mkdir()
+        (old / "launch.json").write_text("{}")
+        stale = debugctl.SESSIONS / "40003.json"
+        stale.write_text(json.dumps({"port": 40003, "launcher_pid": 40003}))
+        pending = debugctl.SESSIONS / "40004.json"
+        pending.write_text(json.dumps({"port": 40004, "launcher_pid": 40004, "claimed": True}))
+        with patch.object(debugctl, "RUNS", runs), patch.object(debugctl, "alive", side_effect=lambda p: p in (40001, 40002, 40004)):
+            status, out, _ = self.run_cli("clean", "--keep", "0")
+            self.assertEqual((status, json.loads(out)["removed"], json.loads(out)["stale_sessions"]), (0, 0, 1))
+            self.assertTrue(old.exists())  # an unpublished launch could be preparing this folder
+            self.assertTrue(all(run.exists() for run in live_runs))
+            self.assertFalse(stale.exists())
+            pending.unlink()  # the in-progress claim has ended
+            status, out, _ = self.run_cli("clean", "--keep", "0")
+            self.assertEqual((status, json.loads(out)["removed"]), (0, 1))
+            self.assertFalse(old.exists())
+            self.assertTrue(all(run.exists() for run in live_runs))
 
     def test_short_paths_drop_the_scope_and_generated_segments(self) -> None:
         path = "AppRoot/Settings/@Control@91/@CenterContainer@93/@VBoxContainer@95/@GridContainer@98/DisplayCategory"
@@ -733,6 +804,73 @@ class DebugctlTests(unittest.TestCase):
         for line in runs[0]:
             debugctl.split_line(line)  # every generated line reads back
 
+    def test_monkey_keeps_its_trail_when_the_bridge_disconnects(self) -> None:
+        # Real TCP responses, including disconnects before and after an action. A healthy
+        # bridge is the positive control for the report and its replayable trail.
+        for stage in (None, "shortcuts", "initial_ping", "route_ping", "ui", "action_ping", "close", "logs", "frames", "state"):
+            with self.subTest(stage=stage):
+                listener = socket.create_server(("127.0.0.1", 0))
+                number = listener.getsockname()[1]
+                seen = []
+                failures = []
+
+                def serve():
+                    try:
+                        while True:
+                            try:
+                                conn, _ = listener.accept()
+                            except OSError:
+                                return
+                            with conn, conn.makefile("rb") as stream:
+                                request = json.loads(stream.readline())
+                                command = request["cmd"]
+                                seen.append(command)
+                                ping_stage = {1: "initial_ping", 2: "route_ping", 3: "action_ping"}.get(seen.count("ping"))
+                                if (command == "ping" and stage == ping_stage) or stage == command:
+                                    listener.shutdown(socket.SHUT_RDWR)
+                                    listener.close()
+                                    return
+                                results = {
+                                    "ping": {"log_seq": 0, "route": "home", "frame": 1},
+                                    "shortcuts": {"shortcuts": []},
+                                    "ui": {"scope": "AppRoot/Home", "controls": []},
+                                    "close": {}, "logs": {"records": []},
+                                    "frames": {"hitches": []}, "state": {"route": "home"},
+                                }
+                                reply = {"id": request["id"], "ok": True, "result": results[command]}
+                                conn.sendall((json.dumps(reply) + "\n").encode())
+                    except Exception as error:
+                        failures.append(error)
+
+                thread = threading.Thread(target=serve, daemon=True)
+                thread.start()
+                target = Path(self.tmp.name) / f"monkey-{stage}.txt"
+                try:
+                    with patch.dict(os.environ, {"OPENRC_DEBUG_BRIDGE": str(number)}):
+                        args = ["monkey", "--steps", "1", "--seed", "9", "--out", str(target)]
+                        status, out, err = self.run_cli(*(args + (["--keys"] if stage == "shortcuts" else [])))
+                finally:
+                    with contextlib.suppress(OSError):
+                        listener.shutdown(socket.SHUT_RDWR)
+                    listener.close()
+                    thread.join(5)
+                self.assertFalse(thread.is_alive())
+                self.assertEqual(failures, [])
+                self.assertEqual(err, "")
+                report = json.loads(out)
+                self.assertTrue(target.exists())
+                self.assertEqual(report["trail"], str(target))
+                if stage is None:
+                    self.assertEqual(status, 0)
+                    self.assertIsNone(report["failure"])
+                    self.assertEqual(report["route"], "home")
+                else:
+                    self.assertEqual(status, 2)  # the CLI reserves 2 for connection failures
+                    self.assertIn("stopped answering", report["failure"])
+                    self.assertIsNone(report["route"])
+                self.assertEqual("\nclose\n" in target.read_text(),
+                                 stage not in ("shortcuts", "initial_ping", "route_ping", "ui", "action_ping"))
+
     def test_port_claims_are_exclusive_and_stale_claims_are_taken_over(self) -> None:
         with socket.create_server(("127.0.0.1", 0)) as unused:
             free = unused.getsockname()[1]
@@ -742,6 +880,220 @@ class DebugctlTests(unittest.TestCase):
         claim.write_text(json.dumps({"port": free, "launcher_pid": 999999999, "pid": 999999998}))
         self.assertEqual(debugctl.reserve_port(free), free)  # its processes are gone: taken over
         self.assertIsNone(debugctl.reserve_port(self.bridge.port))  # something already listens there
+
+    def test_concurrent_claim_waits_for_initial_claim_contents(self) -> None:
+        with socket.create_server(("127.0.0.1", 0)) as unused:
+            free = unused.getsockname()[1]
+        opened, resume, waiting = threading.Event(), threading.Event(), threading.Event()
+        real_open, real_lock = debugctl.os.open, debugctl._session_claim_lock
+        answers, failures = {}, []
+
+        def intercepted(path, flags, mode=0o777):
+            fd = real_open(path, flags, mode)
+            if threading.current_thread().name == "first" and str(path).endswith(f"{free}.json"):
+                opened.set()
+                if not resume.wait(5):
+                    raise RuntimeError("first claim was not released")
+            return fd
+
+        @contextlib.contextmanager
+        def marked_lock():
+            if threading.current_thread().name == "second":
+                waiting.set()
+            with real_lock():
+                yield
+
+        def reserve(name):
+            try:
+                answers[name] = debugctl.reserve_port(free)
+            except Exception as error:
+                failures.append(error)
+
+        with patch.object(debugctl.os, "open", side_effect=intercepted), \
+                patch.object(debugctl, "_session_claim_lock", marked_lock), \
+                patch.object(debugctl, "alive", side_effect=lambda p: p == os.getpid()):
+            first = threading.Thread(target=reserve, args=("first",), name="first", daemon=True)
+            second = threading.Thread(target=reserve, args=("second",), name="second", daemon=True)
+            first.start()
+            try:
+                self.assertTrue(opened.wait(5))
+                second.start()
+                self.assertTrue(waiting.wait(5))
+            finally:
+                resume.set()
+                first.join(5)
+                if second.ident is not None:
+                    second.join(5)
+        self.assertFalse(first.is_alive() or second.is_alive())
+        self.assertEqual(failures, [])
+        self.assertEqual(answers, {"first": free, "second": None})
+        self.assertEqual(debugctl.session_for(free)["launcher_pid"], os.getpid())
+
+    def test_windows_claim_lock_uses_the_same_byte_and_unlocks(self) -> None:
+        msvcrt = SimpleNamespace(LK_LOCK=1, LK_UNLCK=0, locking=Mock())
+        with patch.object(debugctl.os, "name", "nt"), patch.dict(sys.modules, {"msvcrt": msvcrt}):
+            with debugctl._session_claim_lock():
+                self.assertEqual(msvcrt.locking.call_count, 1)
+        self.assertEqual(msvcrt.locking.call_count, 2)
+        acquired, released = msvcrt.locking.call_args_list
+        self.assertEqual(acquired.args[0], released.args[0])
+        self.assertEqual((acquired.args[1:], released.args[1:]), ((msvcrt.LK_LOCK, 1), (msvcrt.LK_UNLCK, 1)))
+        msvcrt.locking.reset_mock(side_effect=True)
+        msvcrt.locking.side_effect = OSError("lock unavailable")
+        with patch.object(debugctl.os, "name", "nt"), patch.dict(sys.modules, {"msvcrt": msvcrt}):
+            with self.assertRaisesRegex(OSError, "lock unavailable"):
+                with debugctl._session_claim_lock():
+                    self.fail("a failed lock must not enter the protected section")
+        self.assertEqual(msvcrt.locking.call_count, 1)
+
+    def test_claim_lock_and_incomplete_claim_recover_after_process_exit(self) -> None:
+        import subprocess
+        with socket.create_server(("127.0.0.1", 0)) as unused:
+            free = unused.getsockname()[1]
+        code = (
+            "import sys\n"
+            "from pathlib import Path\n"
+            "sys.path.insert(0, sys.argv[1])\n"
+            "import debugctl\n"
+            "debugctl.SESSIONS = Path(sys.argv[2])\n"
+            "with debugctl._session_claim_lock():\n"
+            "    (debugctl.SESSIONS / (sys.argv[3] + '.json')).write_text('')\n"
+            "    print('locked', flush=True)\n"
+            "    sys.stdin.read()\n"
+        )
+        child = subprocess.Popen([sys.executable, "-c", code, str(Path(debugctl.__file__).parent),
+                                  str(debugctl.SESSIONS), str(free)],
+                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        ready, lines = threading.Event(), []
+        def read_ready():
+            lines.append(child.stdout.readline())
+            ready.set()
+        reader = threading.Thread(target=read_ready, daemon=True)
+        reader.start()
+        try:
+            self.assertTrue(ready.wait(5), "child did not acquire the claim lock")
+            self.assertEqual(lines, ["locked\n"])
+            self.assertEqual((debugctl.SESSIONS / f"{free}.json").read_text(), "")
+            child.kill()
+            child.wait(timeout=5)
+            self.assertEqual(debugctl.reserve_port(free), free)
+            self.assertEqual(debugctl.session_for(free)["launcher_pid"], os.getpid())
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.communicate(timeout=5)
+            reader.join(5)
+
+    def test_clean_waits_for_session_replacement_before_removing_a_live_run(self) -> None:
+        runs = Path(self.tmp.name) / "runs"
+        run = runs / "live"
+        run.mkdir(parents=True)
+        (run / "launch.json").write_text("{}")
+        claim = debugctl.SESSIONS / "40001.json"
+        session = {"port": 40001, "pid": 40001, "launcher_pid": 40001, "out": str(run)}
+        debugctl.write_private(claim, session)
+        opened, resume, waiting = threading.Event(), threading.Event(), threading.Event()
+        real_open, real_lock = debugctl.os.open, debugctl._session_claim_lock
+        failures = []
+
+        def intercepted(path, flags, mode=0o777):
+            fd = real_open(path, flags, mode)
+            if threading.current_thread().name == "writer" and Path(path) == claim:
+                opened.set()
+                if not resume.wait(5):
+                    raise RuntimeError("session replacement was not released")
+            return fd
+
+        @contextlib.contextmanager
+        def marked_lock():
+            if threading.current_thread().name == "cleaner":
+                waiting.set()
+            with real_lock():
+                yield
+
+        def writer():
+            try:
+                debugctl.write_private(claim, session)
+            except Exception as error:
+                failures.append(error)
+
+        def cleaner():
+            try:
+                with contextlib.redirect_stdout(io.StringIO()):
+                    debugctl.clean(["--keep", "0"])
+            except Exception as error:
+                failures.append(error)
+
+        with patch.object(debugctl, "RUNS", runs), patch.object(debugctl.os, "open", side_effect=intercepted), \
+                patch.object(debugctl, "_session_claim_lock", marked_lock), \
+                patch.object(debugctl, "alive", side_effect=lambda p: p == 40001):
+            first = threading.Thread(target=writer, name="writer", daemon=True)
+            second = threading.Thread(target=cleaner, name="cleaner", daemon=True)
+            first.start()
+            try:
+                self.assertTrue(opened.wait(5))
+                second.start()
+                self.assertTrue(waiting.wait(5))
+            finally:
+                resume.set()
+                first.join(5)
+                if second.ident is not None:
+                    second.join(5)
+        self.assertFalse(first.is_alive() or second.is_alive())
+        self.assertEqual(failures, [])
+        self.assertTrue(run.exists())
+        self.assertEqual(debugctl.session_for(40001), session)
+
+    def test_forgetting_a_session_cannot_erase_a_concurrent_new_pointer(self) -> None:
+        old = {"port": 40001, "launcher_pid": 100}
+        new = {"port": 40002, "launcher_pid": 200}
+        debugctl.write_private(debugctl.SESSIONS / "40001.json", old)
+        debugctl.write_private(debugctl.CURRENT, old)
+        seen, resume, waiting = threading.Event(), threading.Event(), threading.Event()
+        real_pointer, real_lock = debugctl.current_pointer, debugctl._session_claim_lock
+        failures = []
+
+        def pointer():
+            value = real_pointer()
+            if threading.current_thread().name == "forgetter":
+                seen.set()
+                if not resume.wait(5):
+                    raise RuntimeError("forgetting the session was not released")
+            return value
+
+        @contextlib.contextmanager
+        def marked_lock():
+            if threading.current_thread().name == "pointer-writer":
+                waiting.set()
+            with real_lock():
+                yield
+
+        def run(function):
+            try:
+                function()
+            except Exception as error:
+                failures.append(error)
+
+        with patch.object(debugctl, "current_pointer", side_effect=pointer), \
+                patch.object(debugctl, "_session_claim_lock", marked_lock):
+            first = threading.Thread(target=run, args=(lambda: debugctl.forget_session(40001, 100),),
+                                     name="forgetter", daemon=True)
+            second = threading.Thread(target=run, args=(lambda: debugctl.write_private(debugctl.CURRENT, new),),
+                                      name="pointer-writer", daemon=True)
+            first.start()
+            try:
+                self.assertTrue(seen.wait(5))
+                second.start()
+                self.assertTrue(waiting.wait(5))
+            finally:
+                resume.set()
+                first.join(5)
+                if second.ident is not None:
+                    second.join(5)
+        self.assertFalse(first.is_alive() or second.is_alive())
+        self.assertEqual(failures, [])
+        self.assertFalse((debugctl.SESSIONS / "40001.json").exists())
+        self.assertEqual(debugctl.current_pointer(), new)
 
     def test_commands_follow_the_session_of_their_port(self) -> None:
         debugctl.SESSIONS.mkdir(parents=True)

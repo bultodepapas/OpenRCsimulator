@@ -19,8 +19,10 @@ import os
 import re
 import shutil
 import socket
+import stat
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -116,6 +118,81 @@ def diagnostic_finding(relative: str, item: dict) -> dict:
             "code": code, "message": text[prefix.end():].lstrip(" :").strip() if prefix else text}
 
 
+def aliases(first: Path, second: Path) -> bool:
+    return (first.resolve() == second.resolve()
+            or (first.exists() and second.exists() and first.samefile(second)))
+
+
+def validate_outputs(reports: list[Path], baseline: Path | None, baseline_out: Path | None) -> None:
+    """Refuse source and baseline aliases, including existing hard links and symlinks."""
+    destinations = reports + ([baseline_out] if baseline_out is not None else [])
+    for report in reports:
+        for protected in (baseline, baseline_out):
+            if protected is not None and aliases(report, protected):
+                raise ValueError(f"report {report} aliases a baseline")
+    repo = REPO.resolve()
+    for destination in destinations:
+        target = destination.resolve()
+        if target.is_relative_to(repo) and target.suffix.lower() == ".gd":
+            raise ValueError(f"output {destination} aliases a repository GDScript source")
+        for protected in (Path(__file__), REPO / "app" / "project.godot"):
+            if aliases(destination, protected):
+                raise ValueError(f"output {destination} aliases a source or project file")
+    identities = {}
+    for destination in destinations:
+        try:
+            information = destination.stat()
+        except FileNotFoundError:
+            continue
+        identities[(information.st_dev, information.st_ino)] = destination
+    if not identities:
+        return
+
+    def onerror(error):
+        raise error
+
+    # Existing destinations may be hard links with arbitrary names. Inspect all
+    # repository scripts, including those outside the selected scan. Scratch and
+    # editor caches are not repository sources.
+    for root, dirs, names in os.walk(REPO, onerror=onerror):
+        dirs[:] = [name for name in dirs if name not in (".git", ".godot")
+                   and not (Path(root) == REPO and name == "tmp")]
+        for name in names:
+            if not name.lower().endswith(".gd"):
+                continue
+            source = Path(root) / name
+            try:
+                information = source.stat()
+            except FileNotFoundError:  # a dangling source symlink has no hard-link identity
+                continue
+            destination = identities.get((information.st_dev, information.st_ino))
+            if destination is not None:
+                raise ValueError(f"output {destination} aliases repository source {source}")
+
+
+def atomic_write(path: Path, contents: str) -> None:
+    """Publish a completed UTF-8 file, following destination symlinks as before."""
+    target = path.resolve()
+    try:
+        mode = stat.S_IMODE(target.stat().st_mode)
+    except FileNotFoundError:
+        mode = None
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n",
+                                         dir=target.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(contents)
+            stream.flush()
+            if mode is not None:
+                os.chmod(temporary, mode)
+            os.fsync(stream.fileno())
+        os.replace(temporary, target)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def collect(app: Path, files: list[str], port: int, timeout: float, log: Path) -> list[dict]:
     godot = os.environ.get("OPENRC_GODOT") or subprocess.run([str(REPO / "app" / "get-godot.sh")], check=True,
                                                             capture_output=True, text=True).stdout.strip()
@@ -162,8 +239,22 @@ def main(argv: list[str]) -> int:
     patterns = [argv[i + 1] for i, arg in enumerate(argv) if arg == "--files"]
     stamp = time.strftime("%Y%m%d-%H%M%S")
     out = REPO / "tmp" / "gdscript-warnings" / stamp
-    out.mkdir(parents=True, exist_ok=False)
+    baseline = Path(option("--baseline")) if option("--baseline") else None
+    baseline_out = Path(option("--write-baseline")) if option("--write-baseline") else None
+    report_out = Path(option("--out")) if option("--out") else None
+    reports = [out / "report.json"] + ([report_out] if report_out is not None else [])
+    owned_out = False
     try:
+        known = None
+        if baseline is not None:
+            prior = json.loads(baseline.read_text(encoding="utf-8"))
+            if not isinstance(prior, dict) or not isinstance(prior.get("keys"), list) or not all(
+                    isinstance(value, str) for value in prior["keys"]):
+                raise ValueError("baseline must contain a list of warning keys")
+            known = set(prior["keys"])
+        validate_outputs(reports, baseline, baseline_out)
+        out.mkdir(parents=True, exist_ok=False)
+        owned_out = True
         app = REPO / "app" if "--in-place" in argv else snapshot(out)
         files = scripts(app, patterns)
         if not files:
@@ -171,11 +262,11 @@ def main(argv: list[str]) -> int:
             return 2
         started = time.monotonic()
         findings = collect(app, files, int(option("--port", "6011")), float(option("--timeout", "300")), out / "editor.log")
-    except (OSError, RuntimeError, TimeoutError, ConnectionError, subprocess.CalledProcessError) as error:
+    except (OSError, ValueError, RuntimeError, TimeoutError, ConnectionError, subprocess.CalledProcessError) as error:
         print(f"gdscript_warnings: {error}; see {out}", file=sys.stderr)
         return 2
     finally:
-        if "--in-place" not in argv and "--keep-snapshot" not in argv:
+        if owned_out and "--in-place" not in argv and "--keep-snapshot" not in argv:
             shutil.rmtree(out / "snapshot", ignore_errors=True)
     report = {"format": "openrc-gdscript-diagnostics v1", "scripts": len(files), "seconds": round(time.monotonic() - started, 1),
               "findings": findings}
@@ -183,26 +274,29 @@ def main(argv: list[str]) -> int:
     for finding in findings:
         by_code[finding["code"]] = by_code.get(finding["code"], 0) + 1
     report["by_code"] = dict(sorted(by_code.items(), key=lambda item: -item[1]))
-    (out / "report.json").write_text(json.dumps(report, indent=1) + "\n")
-    if option("--out"):
-        Path(option("--out")).write_text(json.dumps(report, indent=1) + "\n")
-    if option("--write-baseline"):
-        keys = sorted({key(f) for f in findings if f["severity"] == "warning"})
-        Path(option("--write-baseline")).write_text(json.dumps({"format": "openrc-gdscript-warning-baseline v1",
-                                                                "keys": keys}, indent=1, ensure_ascii=False) + "\n")
     errors = [f for f in findings if f["severity"] in ("error", "tool")]
-    new = findings if not option("--baseline") else []
-    if option("--baseline"):
-        known = set(json.loads(Path(option("--baseline")).read_text())["keys"])
-        new = [f for f in findings if f["severity"] == "warning" and key(f) not in known]
+    new = findings if known is None else [f for f in findings if f["severity"] == "warning" and key(f) not in known]
+    try:
+        report_text = json.dumps(report, indent=1) + "\n"
+        keys = sorted({key(f) for f in findings if f["severity"] == "warning"})
+        baseline_text = json.dumps({"format": "openrc-gdscript-warning-baseline v1", "keys": keys},
+                                   indent=1, ensure_ascii=False) + "\n"
+        validate_outputs(reports, baseline, baseline_out)
+        for destination in reports:
+            atomic_write(destination, report_text)
+        if baseline_out is not None:
+            atomic_write(baseline_out, baseline_text)
+    except (OSError, ValueError, TypeError, RecursionError) as error:
+        print(f"gdscript_warnings: {error}; see {out}", file=sys.stderr)
+        return 2
     for code, count in report["by_code"].items():
         print(f"{count:>6} {code}")
     for finding in (errors + [f for f in new if f not in errors])[:200]:
         print(f"{finding['severity'].upper():<8} app/{finding['file']}:{finding['line']} ({finding['code']}) {finding['message']}")
-    label = "new warnings" if option("--baseline") else "warnings"
+    label = "new warnings" if known is not None else "warnings"
     print(f"# {len(files)} scripts in {report['seconds']} s: {len(errors)} errors, "
-          f"{len(new) if option('--baseline') else sum(f['severity'] == 'warning' for f in findings)} {label}; report {out / 'report.json'}")
-    return 1 if errors or (option("--baseline") and new) else 0
+          f"{len(new) if known is not None else sum(f['severity'] == 'warning' for f in findings)} {label}; report {out / 'report.json'}")
+    return 1 if errors or (known is not None and new) else 0
 
 
 if __name__ == "__main__":

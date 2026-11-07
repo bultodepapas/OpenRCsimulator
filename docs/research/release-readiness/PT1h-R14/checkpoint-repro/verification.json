@@ -1,0 +1,600 @@
+{
+  "baseline": {
+    "format": "openrc-checkpoint-repro-v1",
+    "expected_behavior": "vulnerable",
+    "checkout_head": "9db50cfc70904e262247d97e1c368f7c499ff23d",
+    "bridge_sha256": "ac85e099cfa4c46cc3516d68da327d8b4b0f2710fe3a2dabd0fa94225f21d9c5",
+    "godot_version": "4.8.beta2.official.cafc17a19",
+    "godot_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+    "limitations": [
+      "fake session; source-only isolated project",
+      "no native Windows runtime"
+    ],
+    "scenarios": {
+      "limited": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 64,
+          "error": "",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "limited"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0644"
+        },
+        "checked_report": "checked/checkpoint-repro-limited-13b9c01a-qfwuwu81/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "normal": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "normal"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0644"
+        },
+        "checked_report": "checked/checkpoint-repro-normal-46063f5d-mpbcwehk/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "long": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "long"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0644"
+        },
+        "checked_report": "checked/checkpoint-repro-long-d7c4fd5d-082p0p3z/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "mode": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "mode"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0600"
+        },
+        "checked_report": "checked/checkpoint-repro-mode-5bee13e2-cpn_62bk/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "symlink": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "symlink"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0600",
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked/checkpoint-repro-symlink-c49c2202-qwzl8ris/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "relative-chain": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "relative-chain"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0600",
+          "link_target_is_original": false,
+          "target_temporaries": [],
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked/checkpoint-repro-relative-chain-70c86730-bpocr6xz/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "directory-link-parent": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "directory-link-parent"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0600",
+          "link_target_is_original": false,
+          "target_temporaries": [],
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked/checkpoint-repro-directory-link-parent-d4660e32-qrlwm4em/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "dangling": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 308,
+          "save_ok": true,
+          "scenario": "dangling"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0644",
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked/checkpoint-repro-dangling-7d7d027b-7h9l6_7a/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "cycle": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 0,
+          "error": "cannot write /workspace/scratch/d39ddb354086/OpenRCsimulator/tmp/internal-debug-review/enemy/published-checkpoint-baseline-missing/checkpoint-project-b7g4qr8q/cycle/checkpoint.json: Can't open file",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "cycle"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": null,
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked/checkpoint-repro-cycle-fdda0c1f-odkze01v/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "missing-intermediate": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 0,
+          "error": "cannot write /workspace/scratch/d39ddb354086/OpenRCsimulator/tmp/internal-debug-review/enemy/published-checkpoint-baseline-missing/checkpoint-project-b7g4qr8q/missing-intermediate/checkpoint.json: File not found",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "missing-intermediate"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": null,
+          "link_target_is_original": true,
+          "target_temporaries": []
+        },
+        "checked_report": "checked/checkpoint-repro-missing-intermediate-8a1041cb-51avc039/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      }
+    },
+    "passed": true
+  },
+  "candidate": {
+    "format": "openrc-checkpoint-repro-v1",
+    "expected_behavior": "fixed",
+    "checkout_head": "9db50cfc70904e262247d97e1c368f7c499ff23d",
+    "bridge_sha256": "4d1aabf560a5676d6130e86874ce4ade1e38eeb4f2f4a17b4d376fb44cc6a364",
+    "godot_version": "4.8.beta2.official.cafc17a19",
+    "godot_sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+    "limitations": [
+      "fake session; source-only isolated project",
+      "no native Windows runtime"
+    ],
+    "scenarios": {
+      "limited": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 29,
+          "error": "checkpoint write was incomplete; existing checkpoint preserved: /workspace/scratch/d39ddb354086/OpenRCsimulator/tmp/internal-debug-review/enemy/published-checkpoint-retained-final/checkpoint-project-zqsu94fv/limited/checkpoint.json",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": true,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "limited"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0644"
+        },
+        "checked_report": "checked/checkpoint-repro-limited-19377cd6-rkd0lgs8/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "normal": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "normal"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0644"
+        },
+        "checked_report": "checked/checkpoint-repro-normal-30f83f11-6u3205pq/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "long": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "long"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0644"
+        },
+        "checked_report": "checked/checkpoint-repro-long-f93bf937-76xuzz71/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "mode": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "mode"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0600"
+        },
+        "checked_report": "checked/checkpoint-repro-mode-9c29a7da-c07n3hyw/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "symlink": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "symlink"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0600",
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked/checkpoint-repro-symlink-928b5c30-y51qm5lt/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "relative-chain": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "relative-chain"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0600",
+          "link_target_is_original": false,
+          "target_temporaries": [],
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked/checkpoint-repro-relative-chain-1727d972-d211pv2m/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "directory-link-parent": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "directory-link-parent"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0600",
+          "link_target_is_original": false,
+          "target_temporaries": [],
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked/checkpoint-repro-directory-link-parent-431155ad-f8rpx_xo/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "dangling": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "dangling"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0644",
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked/checkpoint-repro-dangling-20a5741f-_ko5iprj/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "cycle": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 0,
+          "error": "checkpoint destination has cyclic or too many links",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "cycle"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": null,
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked/checkpoint-repro-cycle-662f6ef5-6bkg9jxa/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "missing-intermediate": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 0,
+          "error": "cannot traverse checkpoint destination parent from a missing directory or file: /workspace/scratch/d39ddb354086/OpenRCsimulator/tmp/internal-debug-review/enemy/published-checkpoint-retained-final/checkpoint-project-zqsu94fv/missing-component",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "missing-intermediate"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": null,
+          "link_target_is_original": true,
+          "target_temporaries": []
+        },
+        "checked_report": "checked/checkpoint-repro-missing-intermediate-71bcfa89-2wsofzdi/report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      }
+    },
+    "passed": true
+  }
+}
