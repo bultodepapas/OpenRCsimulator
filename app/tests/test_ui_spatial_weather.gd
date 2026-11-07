@@ -6,6 +6,9 @@ const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
 const SpatialPresets := preload("res://physics/wind_spatial_presets.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const SpatialControls := preload("res://ui/spatial_weather_controls.gd")
+const Preferences := preload("res://app_state/preferences.gd")
+const SpatialField := preload("res://physics/wind_spatial_field.gd")
 
 var _checks := 0
 var _failures := 0
@@ -26,12 +29,59 @@ func _run() -> void:
 	await _check_preset_contracts()
 	await _check_legacy_and_apply()
 	await _check_gust_projection()
+	await _check_independent_weather_patch()
 	await _check_thermal_preset()
 	await _check_v2_horizon_minimum()
 	await _check_stored_spatial_and_disable()
 	await _check_validation_cancel_and_locale()
+	await _check_persisted_patch_route()
 	print("Spatial weather UI: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _check_persisted_patch_route() -> void:
+	TranslationServer.set_locale("en")
+	var path := "user://test_spatial_audit_preferences.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var fixture := Preferences.DEFAULTS.duplicate(true)
+	fixture.check_updates = false
+	fixture.time_of_day = "day"
+	fixture.weather_config = WeatherConfig.preset("spatial-light-breeze-v1")
+	var source: Dictionary = fixture.weather_config.spatial_wind
+	source.profile.free_air_wind_ned_mps = [-4.0, 0.0, 0.0]
+	source.gusts.events = [{id = "persisted", start_s = 6.0, duration_s = 4.0, amplitude_ned_mps = [-0.123456, 0.0, 0.0]}]
+	_check("independent weather persistence fixture saves", Preferences.save_to(path, fixture) == OK)
+	var before := FileAccess.get_file_as_bytes(path)
+	var app: Node = load("res://app_root.tscn").instantiate()
+	app.user_args = PackedStringArray()
+	app.preferences_path = path
+	root.add_child(app)
+	await ui.settle()
+	app.open_weather()
+	await ui.settle()
+	app.weather_dialog.spatial_controls._field_inputs.gust_duration_s.text = "5"
+	await ui.tap(KEY_ESCAPE)
+	_check("Conditions Cancel preserves the persisted independent field", app.weather_dialog == null
+		and FileAccess.get_file_as_bytes(path) == before)
+	app.open_weather()
+	await ui.settle()
+	app.weather_dialog.spatial_controls._field_inputs.gust_duration_s.text = "5"
+	app.weather_dialog.spatial_controls._field_inputs.roughness_length_m.text = "0.02"
+	app.weather_dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var saved: Dictionary = Preferences.load_from(path).weather_config.spatial_wind
+	_check("actual Conditions Apply persists only the represented edits", app.weather_dialog == null
+		and saved.profile.roughness_length_m == 0.02 and saved.gusts.events[0].duration_s == 5.0)
+	_check("persisted reload retains exact independent vectors", saved.profile.free_air_wind_ned_mps == source.profile.free_air_wind_ned_mps
+		and saved.gusts.events[0].amplitude_ned_mps == source.gusts.events[0].amplitude_ned_mps)
+	var reference: Dictionary = SpatialField.build(source)
+	var candidate: Dictionary = SpatialField.build(saved)
+	var position := PackedFloat64Array([0.0, 0.0, -100.0])
+	_check("reloaded upper-wind provider samples retain exact bytes", reference.ok and candidate.ok
+		and var_to_bytes(reference.field.sample_world(position, 0.0)) == var_to_bytes(candidate.field.sample_world(position, 0.0)))
+	await ui.close_app(app)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
 func _check_preset_contracts() -> void:
@@ -204,6 +254,47 @@ func _check_gust_projection() -> void:
 		and float(events[0].get("duration_s", -1.0)) == 4.0,
 		"edited=%s resolved=%s" % [str(edited.errors), str(validated_edit.errors)])
 	dialog.queue_free()
+	await ui.settle()
+
+
+func _check_independent_weather_patch() -> void:
+	var source: Dictionary = WeatherConfig.preset("spatial-light-breeze-v1").spatial_wind.duplicate(true)
+	source.profile.free_air_wind_ned_mps = [-4.0, 0.0, 0.0]
+	source.gusts.events = [{id = "transverse", start_s = 6.0, duration_s = 4.0, amplitude_ned_mps = [-0.123456, 0.0, 0.0]}]
+	var controls := SpatialControls.new(source, true)
+	root.add_child(controls)
+	await ui.settle()
+	var baseline := controls.read_draft()
+	_check("independent weather fixture is admitted", baseline.ok and SpatialConfig.resolve(source).ok)
+	controls._field_inputs.gust_intensity_mps.text = "0.1200"
+	_check("equivalent displayed intensity text retains full authored precision", controls.read_draft().spatial_wind == source)
+	controls._field_inputs.gust_duration_s.text = "5"
+	controls._field_inputs.roughness_length_m.text = "0.02"
+	var timing := controls.read_draft()
+	_check("roughness edits preserve independently authored upper wind", timing.ok
+		and timing.spatial_wind.profile.free_air_wind_ned_mps == source.profile.free_air_wind_ned_mps)
+	_check("timing edits preserve exact gust direction and precision", timing.spatial_wind.gusts.events[0].amplitude_ned_mps
+		== source.gusts.events[0].amplitude_ned_mps and timing.spatial_wind.gusts.events[0].duration_s == 5.0)
+	controls.set_source(timing.spatial_wind, true)
+	controls._field_inputs.gust_start_s.text = "7"
+	_check("reopened timing edits retain the high precision amplitude", controls.read_draft().spatial_wind.gusts.events[0].amplitude_ned_mps
+		== source.gusts.events[0].amplitude_ned_mps)
+	controls._field_inputs.gust_intensity_mps.text = "0.5"
+	var magnitude := controls.read_draft()
+	_check("intensity edits scale the existing gust direction", magnitude.ok
+		and magnitude.spatial_wind.gusts.events[0].amplitude_ned_mps == [-0.5, 0.0, 0.0])
+	controls._field_inputs.gust_intensity_mps.text = "0"
+	_check("explicit zero intensity removes the gust", controls.read_draft().spatial_wind.gusts.events.is_empty())
+	var calm := source.duplicate(true)
+	calm.gusts.events = []
+	controls.set_source(calm, true)
+	controls._field_inputs.gust_duration_s.text = "5"
+	_check("timing alone does not create a gust in an empty agenda", controls.read_draft().spatial_wind.gusts.events.is_empty())
+	controls._field_inputs.gust_intensity_mps.text = "0.5"
+	var enabled := controls.read_draft()
+	_check("new gust without a prior direction uses the displayed reference direction", enabled.ok
+		and SpatialConfig.resolve(enabled.spatial_wind).ok and enabled.spatial_wind.gusts.events.size() == 1)
+	controls.queue_free()
 	await ui.settle()
 
 

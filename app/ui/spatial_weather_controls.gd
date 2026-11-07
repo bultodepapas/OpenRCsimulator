@@ -71,6 +71,7 @@ var _field_inputs: Dictionary = {}
 var _field_labels: Dictionary = {}
 var _source_spatial: Dictionary = {}
 var _initial_text: Dictionary = {}
+var _initial_values: Dictionary = {}
 var _setting_fields := false
 var _spatial_enabled := false
 var _selected_preset_id := ""
@@ -154,6 +155,7 @@ func set_source(raw_spatial: Variant, enabled: bool, preset_id := "") -> void:
 	else:
 		_source_spatial = SpatialConfig.defaults()
 	_initial_text.clear()
+	_initial_values.clear()
 	_setting_fields = true
 	_spatial_enabled = enabled
 	enable_check.set_pressed_no_signal(enabled)
@@ -213,18 +215,15 @@ func read_draft() -> Dictionary:
 	var domain: Dictionary = spatial.domain
 	var gusts: Dictionary = spatial.gusts
 	var turbulence: Dictionary = spatial.turbulence
-	var profile_changed := false
 	for key: String in ["reference_speed_mps", "reference_from_deg", "reference_height_agl_m", "roughness_length_m"]:
-		if _field_inputs[key].text != String(_initial_text[key]):
+		if _field_changed(key):
 			profile[key] = values[key]
-			profile_changed = true
-	if profile_changed:
-		profile.free_air_wind_ned_mps = _free_air_vector(profile)
-	if _field_inputs["turbulence_rms_mps"].text != String(_initial_text["turbulence_rms_mps"]):
+	# Upper wind is independently authored; these controls own only the reference profile.
+	if _field_changed("turbulence_rms_mps"):
 		turbulence.rms_mps = values.turbulence_rms_mps
-	if _field_inputs["seed_u32"].text != String(_initial_text["seed_u32"]):
+	if _field_changed("seed_u32"):
 		identity.seed_u32 = int(values.seed_u32)
-	if _field_inputs["time_horizon_s"].text != String(_initial_text["time_horizon_s"]):
+	if _field_changed("time_horizon_s"):
 		domain.time_horizon_s = values.time_horizon_s
 		var thermal_field: Variant = spatial.get("thermal_field")
 		if thermal_field is Dictionary:
@@ -235,26 +234,38 @@ func read_draft() -> Dictionary:
 
 	var gust_edited := false
 	for key: String in ["gust_intensity_mps", "gust_start_s", "gust_duration_s"]:
-		gust_edited = gust_edited or _field_inputs[key].text != String(_initial_text[key])
+		gust_edited = gust_edited or _field_changed(key)
 	if gust_edited:
-		if float(values.gust_intensity_mps) == 0.0:
+		var intensity_edited := _field_changed("gust_intensity_mps")
+		if intensity_edited and float(values.gust_intensity_mps) == 0.0:
 			gusts.events = []
 		else:
 			var events: Variant = gusts.get("events", [])
 			if typeof(events) != TYPE_ARRAY:
 				return _failure("gust agenda must be an array")
-			var gust_vector := _wind_vector(float(values.gust_intensity_mps), float(values.reference_from_deg))
-			if absf(gust_vector[0]) > 2.5 or absf(gust_vector[1]) > 2.5:
-				return _failure("gust components must each stay within 2.5 m/s")
-			var event_id := "dialog_gust_1"
-			if events.size() == 1 and events[0] is Dictionary and events[0].has("id"):
-				event_id = str(events[0].id)
-			gusts.events = [{
-				"id": event_id,
-				"start_s": values.gust_start_s,
-				"duration_s": values.gust_duration_s,
-				"amplitude_ned_mps": gust_vector,
-			}]
+			var raw_vector: Variant = events[0].get("amplitude_ned_mps", []) \
+				if not events.is_empty() and events[0] is Dictionary else []
+			var gust_vector: Array = raw_vector.duplicate() if raw_vector is Array and raw_vector.size() == 3 else []
+			if intensity_edited:
+				var old_magnitude := float(_first_event_view(_source_spatial).intensity)
+				if old_magnitude > 0.0 and gust_vector.size() == 3:
+					var ratio := float(values.gust_intensity_mps) / old_magnitude
+					gust_vector = [float(gust_vector[0]) * ratio, float(gust_vector[1]) * ratio, float(gust_vector[2]) * ratio]
+				else:
+					# With no existing direction, a newly enabled gust uses the shown reference direction.
+					gust_vector = _wind_vector(float(values.gust_intensity_mps), float(values.reference_from_deg))
+			if not gust_vector.is_empty():
+				if absf(gust_vector[0]) > 2.5 or absf(gust_vector[1]) > 2.5:
+					return _failure("gust components must each stay within 2.5 m/s")
+				var event_id := "dialog_gust_1"
+				if events.size() == 1 and events[0] is Dictionary and events[0].has("id"):
+					event_id = str(events[0].id)
+				gusts.events = [{
+					"id": event_id,
+					"start_s": values.gust_start_s,
+					"duration_s": values.gust_duration_s,
+					"amplitude_ned_mps": gust_vector,
+				}]
 	if not _agenda_fits_horizon(gusts.get("events", []), float(values.time_horizon_s)):
 		return _failure("gust agenda must be finite and end inside the selected time horizon")
 	if not _thermal_agenda_fits_horizon(spatial.get("thermal_field"), float(values.time_horizon_s)):
@@ -466,6 +477,12 @@ func _set_field_text(key: String, raw_value: Variant) -> void:
 	var edit: LineEdit = _field_inputs[key]
 	edit.text = text
 	_initial_text[key] = text
+	_initial_values[key] = raw_value
+
+
+func _field_changed(key: String) -> bool:
+	var text: String = _field_inputs[key].text.strip_edges()
+	return not text.is_valid_float() or text.to_float() != String(_initial_text[key]).to_float()
 
 
 func _read_field(key: String) -> Dictionary:
@@ -483,7 +500,7 @@ func _read_field(key: String) -> Dictionary:
 	var number := text.to_float()
 	if not is_finite(number) or number < float(spec.minimum) or number > float(spec.maximum):
 		return {"ok": false, "error": "%s is outside its finite allowed range" % key}
-	return {"ok": true, "value": number}
+	return {"ok": true, "value": _initial_values[key] if not _field_changed(key) else number}
 
 
 func _first_event_view(spatial: Dictionary) -> Dictionary:
