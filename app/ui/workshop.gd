@@ -356,7 +356,7 @@ func set_aircraft(id: String, discard_changes := false) -> void:
 	if discard_changes:
 		_replace_aircraft(id)
 	else:
-		request_navigation("Open another aircraft", _replace_aircraft.bind(id))
+		request_navigation("Open another aircraft", _replace_aircraft.bind(id), Callable(), null, true)
 
 
 func _build_ui() -> void:
@@ -991,7 +991,35 @@ func _build_delete_dialog() -> void:
 	_library_dialog.add_child(_delete_dialog)
 
 
-func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
+func _load_catalog_aircraft(id: String, preserve_recipe: bool, commit_replacement := false) -> bool:
+	var entry := Catalog.entry(id)
+	var rejected_rotorcraft := not entry.is_empty() and Catalog.is_rotorcraft(id)
+	if entry.is_empty() or rejected_rotorcraft:
+		entry = Catalog.entry(Catalog.DEFAULT_ID)
+		id = Catalog.DEFAULT_ID
+	var path := str(entry.get("data", ""))
+	var source_bytes := PackedByteArray()
+	var next_base: Dictionary = {}
+	if not path.is_empty():
+		source_bytes = _catalog_source_bytes(path)
+		if source_bytes.is_empty():
+			set_note("Aircraft source bytes could not be read.")
+			return false
+		var parser := JSON.new()
+		if parser.parse(source_bytes.get_string_from_utf8()) != OK or not parser.data is Dictionary:
+			set_note("Aircraft source is not a valid JSON object.")
+			return false
+		next_base = (parser.data as Dictionary).duplicate(true)
+		var validation: Dictionary = AircraftData.validate_and_derive(next_base.duplicate(true))
+		if not bool(validation.get("ok", false)):
+			set_note(_messages(validation.get("errors", []), "Aircraft data could not be validated."))
+			return false
+	elif str(entry.get("status", "")) != Catalog.PREVIEW:
+		set_note("This catalog entry has no flight data.")
+		return false
+	# Preserve recovery and every outgoing buffer until the target has passed admission.
+	if commit_replacement:
+		commit_navigation()
 	_workshop_descriptor.clear()
 	_base_summary.clear()
 	_base_model.clear()
@@ -999,17 +1027,11 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_saved_variant_revision = 0
 	_saved_compiler_version = ""
 	_variant_dependencies.clear()
-	var entry := Catalog.entry(id)
-	var rejected_rotorcraft := not entry.is_empty() and Catalog.is_rotorcraft(id)
-	if entry.is_empty() or rejected_rotorcraft:
-		entry = Catalog.entry(Catalog.DEFAULT_ID)
-		id = Catalog.DEFAULT_ID
 	_base_id = str(entry.get("id", Catalog.DEFAULT_ID))
 	_select_base(_base_id)
 	_capabilities = {"scale": false, "weight": false, "power": false, "controls": false}
 	_update_capabilities()
 	_selected_variant_id = ""
-	var path := str(entry.get("data", ""))
 	if path.is_empty():
 		_base = {}
 		_base_bytes = PackedByteArray()
@@ -1018,35 +1040,8 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 			_preview.set_aircraft(_base_id, 1.0)
 		set_note("This aircraft is a visual preview and has no flight data.")
 		_update_aircraft_description(entry)
-		return
-	var source_bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
-	if source_bytes.is_empty():
-		_base = {}
-		_base_bytes = PackedByteArray()
-		_compiled = {"ok": false, "errors": ["Aircraft source bytes could not be read."]}
-		if is_instance_valid(_preview):
-			_preview.set_aircraft(_base_id, 1.0)
-		_update_aircraft_description(entry)
-		return
-	var parser := JSON.new()
-	if parser.parse(source_bytes.get_string_from_utf8()) != OK or not parser.data is Dictionary:
-		_base = {}
-		_base_bytes = PackedByteArray()
-		_compiled = {"ok": false, "errors": ["Aircraft source is not a valid JSON object."]}
-		if is_instance_valid(_preview):
-			_preview.set_aircraft(_base_id, 1.0)
-		_update_aircraft_description(entry)
-		return
-	_base = (parser.data as Dictionary).duplicate(true)
-	var validation: Dictionary = AircraftData.validate_and_derive(_base.duplicate(true))
-	if not bool(validation.get("ok", false)):
-		_base = {}
-		_base_bytes = PackedByteArray()
-		_compiled = {"ok": false, "errors": validation.get("errors", ["Aircraft data could not be validated."])}
-		if is_instance_valid(_preview):
-			_preview.set_aircraft(_base_id, 1.0)
-		_update_aircraft_description(entry)
-		return
+		return true
+	_base = next_base
 	_base_bytes = source_bytes
 	_refresh_base_summary()
 	if not preserve_recipe:
@@ -1065,6 +1060,11 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_compile_recipe()
 	if rejected_rotorcraft:
 		set_note("The fixed-wing Workshop cannot load a rotorcraft.")
+	return true
+
+
+func _catalog_source_bytes(path: String) -> PackedByteArray:
+	return FileAccess.get_file_as_bytes(path)
 
 
 func _update_aircraft_description(entry: Dictionary) -> void:
@@ -2220,7 +2220,7 @@ func _build_library() -> void:
 	open_stock.pressed.connect(func() -> void:
 		var target := str(_base_selector.get_item_metadata(_base_selector.selected))
 		_close_library()
-		request_navigation(tr("Open another aircraft") + " · " + str(Catalog.entry(target).get("name", target)), _replace_aircraft.bind(target), _return_to_library.bind(_base_selector)))
+		request_navigation(tr("Open another aircraft") + " · " + str(Catalog.entry(target).get("name", target)), _replace_aircraft.bind(target), _return_to_library.bind(_base_selector), null, true))
 	stock.add_child(open_stock)
 	_aircraft_summary_label = _label("", "SecondaryLabel", true)
 	_aircraft_status_label = _label("", "SecondaryLabel", true)
@@ -2394,12 +2394,14 @@ func _show_name_dialog(as_copy: bool) -> void:
 
 
 func _replace_aircraft(id: String) -> void:
+	if not _load_catalog_aircraft(id, false, true):
+		_select_base(_base_id)
+		return
 	_selected_variant_id = ""
 	_variant_selector.select(0)
 	_variant_name.clear()
 	_invalid_fields.clear()
 	_pending_numbers.clear()
-	_load_catalog_aircraft(id, false)
 	_sync_controls()
 	_sync_variant_actions()
 	_mark_baseline()
@@ -2422,6 +2424,7 @@ func _set_page(page: String) -> void:
 	if not _page_nodes.has(page): return
 	var previous_focus: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	if _active_page != page and _active_page == "lighting" and _page_nodes.lighting.has_pending_edit():
+		_sync_page_selection()
 		set_note("Apply or cancel the lighting edit before leaving this page.")
 		var pending: Control = _page_nodes.lighting.pending_control()
 		if pending != null:
@@ -2430,17 +2433,23 @@ func _set_page(page: String) -> void:
 		return
 	_active_page = page
 	_reset_button.visible = page != "compare"
-	_page_selector.select(PAGE_IDS.find(page))
+	_sync_page_selection()
 	_compact_view = false
 	for id: String in _page_nodes:
 		_page_nodes[id].visible = id == page
-		_page_buttons[id].set_pressed_no_signal(id == page)
 	_body_scroll.scroll_vertical = 0
 	_resize_layout()
 	if previous_focus != null and _screen.is_ancestor_of(previous_focus) and not previous_focus.is_visible_in_tree():
 		var navigation: Control = _page_selector if _compact else _page_buttons[page]
 		navigation.grab_focus()
 	_schedule_recovery()
+
+
+func _sync_page_selection() -> void:
+	_page_selector.select(PAGE_IDS.find(_active_page))
+	# set_pressed_no_signal does not unpress the other members of a group.
+	for id: String in _page_buttons:
+		_page_buttons[id].set_pressed_no_signal(id == _active_page)
 
 
 func _toggle_compact_view() -> void:

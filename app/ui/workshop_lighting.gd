@@ -75,6 +75,9 @@ var _zone_hex_fields: Array[LineEdit] = []
 var _effects_draft: Array[Dictionary] = []
 var _effects_pending := false
 var _effects_controls_by_anchor: Dictionary = {}
+var _number_texts: Dictionary = {}
+var _number_guarded_keys: Dictionary = {}
+var _last_number_key := ""
 
 
 func _ready() -> void:
@@ -305,6 +308,7 @@ func _build_zone_controls() -> void:
 	_period.custom_minimum_size.x = 112
 	_period.get_line_edit().expand_to_text_length = true
 	_period.value_changed.connect(_on_period_changed)
+	_bind_number(_period, "period")
 	period_row.add_child(_period)
 	_zone_section.add_child(period_row)
 	_period_readout = Label.new()
@@ -338,6 +342,7 @@ func _build_zone_controls() -> void:
 	_reactive_gain.step = 0.05
 	_reactive_gain.get_line_edit().expand_to_text_length = true
 	_reactive_gain.value_changed.connect(_on_reactive_gain_changed)
+	_bind_number(_reactive_gain, "gain")
 	reactive_gain_row.add_child(_reactive_gain)
 	_zone_section.add_child(reactive_gain_row)
 	_reactive_hint = Label.new()
@@ -416,6 +421,8 @@ func configure(bindings: Dictionary, presentation: Dictionary) -> void:
 	_zone_text_invalid = false
 	_effects_pending = false
 	_effects_draft.clear()
+	if not _number_texts.is_empty(): _guard_number_callbacks()
+	_number_texts.clear()
 	_syncing = true
 	_sync_simple_controls()
 	_rebuild_zone_selector(saved_zone)
@@ -437,10 +444,12 @@ func get_editor_state() -> Dictionary:
 		"color_text": _zone_hex_fields.map(func(field: LineEdit) -> String: return field.text),
 		"sequence": _sequence_editor.get_editor_state(),
 	}
-	if _zone_pending or _zone_text_pending or _effects_pending or _brightness_pending:
+	if not _number_texts.is_empty():
+		state["numbers"] = _number_texts.duplicate(true)
+	if _zone_pending or _zone_text_pending or _effects_pending or _brightness_pending or not _number_texts.is_empty():
 		state["draft"] = {
-			"zone": _zone_draft.duplicate(true) if _zone_pending or _zone_text_pending else {},
-			"effects": _effects_draft.duplicate(true) if _effects_pending else [],
+			"zone": _zone_draft.duplicate(true) if _zone_pending or _zone_text_pending or _has_number_domain(false) else {},
+			"effects": _effects_draft.duplicate(true) if _effects_pending or _has_number_domain(true) else [],
 			"brightness": _brightness.value if _brightness_pending else null,
 			"color_pending": _zone_text_pending,
 		}
@@ -500,6 +509,10 @@ func restore_editor_state(state: Dictionary) -> bool:
 			_effects_draft.append(effect.duplicate(true))
 		_effects_pending = _effects_draft != _profile.get("effects", [])
 	_rebuild_effect_controls(not effects.is_empty())
+	_number_texts = state.get("numbers", {}).duplicate(true)
+	_last_number_key = str(_number_texts.keys().back()) if not _number_texts.is_empty() else ""
+	for key: String in _number_texts:
+		_restore_number_text(key)
 	_syncing = false
 	for index in mini(state.color_text.size(), _zone_hex_fields.size()):
 		var text_value := str(state.color_text[index])
@@ -519,6 +532,7 @@ func restore_editor_state(state: Dictionary) -> bool:
 		# Resume the usual bounded debounce, never an orphaned pending flag.
 		_brightness_timer.start()
 	_refresh_zone_pending()
+	_refresh_effect_pending()
 	_emit_validity()
 	return true
 
@@ -534,10 +548,17 @@ func _sequence_pending() -> bool:
 func pending_control() -> Control:
 	if _sequence_pending():
 		return _sequence_editor.pending_control()
+	for key: String in _number_texts:
+		if not _number_value(key).ok:
+			var spin := _number_control(key)
+			if spin != null: return spin.get_line_edit()
 	if _zone_text_invalid and not _zone_hex_fields.is_empty():
 		for field: LineEdit in _zone_hex_fields:
 			if not _valid_hex(field.text):
 				return field
+	if _number_texts.has(_last_number_key):
+		var spin := _number_control(_last_number_key)
+		if spin != null: return spin.get_line_edit()
 	if _brightness_pending:
 		return _brightness
 	return _zone_apply if _zone_pending else (_effects_apply if _effects_pending else null)
@@ -548,6 +569,8 @@ func cancel_pending_edit() -> bool:
 		return false
 	_sequence_editor.cancel_pending_edit()
 	_brightness_timer.stop()
+	_guard_number_callbacks()
+	_number_texts.clear()
 	_brightness_pending = false
 	_zone_draft.clear()
 	_zone_pending = false
@@ -997,6 +1020,7 @@ func _on_pattern_selected(index: int) -> void:
 
 
 func _on_period_changed(value: float) -> void:
+	if _ignore_number_callback("period"): return
 	if _syncing or _zone_draft.is_empty():
 		return
 	if _brightness_pending or _effects_pending or _sequence_pending():
@@ -1051,6 +1075,7 @@ func _on_reactive_source_selected(index: int) -> void:
 
 
 func _on_reactive_gain_changed(value: float) -> void:
+	if _ignore_number_callback("gain"): return
 	if _syncing or _zone_draft.is_empty():
 		return
 	if _brightness_pending or _effects_pending or _sequence_pending():
@@ -1077,16 +1102,20 @@ func _sequence_available_for_zone(zone_id: String) -> bool:
 func _refresh_zone_pending() -> void:
 	if _zone_draft.is_empty():
 		return
-	_zone_pending = _zone_draft != _zone_for_id(_selected_zone_id) or _zone_text_pending
-	_zone_apply.disabled = not _zone_pending or _zone_text_invalid
+	_zone_pending = _zone_draft != _zone_for_id(_selected_zone_id) or _zone_text_pending or _has_number_domain(false)
+	_zone_apply.disabled = not _zone_pending or _zone_text_invalid or not _numbers_valid(false)
 	_zone_cancel.disabled = not _zone_pending
 	_zone_selector.disabled = has_pending_edit() or _zone_selector.item_count == 0
 	_emit_validity()
 
 
 func _apply_zone() -> void:
-	if not _zone_pending or _zone_text_invalid or _brightness_pending or _effects_pending or _sequence_pending():
+	if not _zone_pending or _zone_text_invalid or not _numbers_valid(false) or _brightness_pending or _effects_pending or _sequence_pending():
 		return
+	if _number_texts.has("period"):
+		_zone_draft.pattern.period_ticks = roundi(float(_number_value("period").value) * 240.0)
+	if _number_texts.has("gain"):
+		_zone_draft.reactive.gain = float(_number_value("gain").value)
 	var next := _profile.duplicate(true)
 	var zones: Array = next.get("zones", []).duplicate(true)
 	var replaced := false
@@ -1121,6 +1150,8 @@ func _apply_zone() -> void:
 	_zone_pending = false
 	_zone_text_pending = false
 	_zone_text_invalid = false
+	_guard_number_callbacks()
+	_number_texts.clear()
 	_commit_lighting(checked.profile)
 	_set_status(tr("Zone changes applied to the draft."))
 	_emit_validity()
@@ -1189,8 +1220,16 @@ func _reset_selected_zone() -> void:
 
 
 func _apply_effects() -> void:
-	if not _effects_pending or _brightness_pending or _zone_pending or _zone_text_pending or _sequence_pending():
+	if not _effects_pending or not _numbers_valid(true) or _brightness_pending or _zone_pending or _zone_text_pending or _sequence_pending():
 		return
+	for key: String in _number_texts:
+		if not key.begins_with("effect/"): continue
+		var parts := key.split("/")
+		for effect: Dictionary in _effects_draft:
+			if effect.anchor_id == parts[1]:
+				var value := float(_number_value(key).value)
+				if parts[2] == "intensity": effect.intensity = value
+				else: effect.lifetime_ticks = clampi(roundi(value * 240.0), 12, 480)
 	var next := _profile.duplicate(true)
 	next.effects = _effects_draft.duplicate(true)
 	var enabled_effects: Dictionary = {}
@@ -1211,12 +1250,16 @@ func _apply_effects() -> void:
 		_set_status(_first_error(checked.get("errors", [])))
 		return
 	_effects_pending = false
+	_guard_number_callbacks()
+	_number_texts.clear()
 	_commit_lighting(checked.profile)
 	_set_status(tr("Effect changes applied to the draft."))
 	_emit_validity()
 
 
 func _cancel_effects() -> void:
+	_guard_number_callbacks()
+	_number_texts.clear()
 	_effects_pending = false
 	_effects_draft.clear()
 	_syncing = true
@@ -1281,7 +1324,10 @@ func _rebuild_effect_controls(keep_draft: bool = false) -> void:
 		intensity.step = 0.05
 		intensity.get_line_edit().expand_to_text_length = true
 		intensity.value = float(entry.get("intensity", 0.0))
-		intensity.value_changed.connect(func(value: float) -> void: _set_effect_value(anchor, "intensity", value))
+		var intensity_key := "effect/%s/intensity" % anchor
+		intensity.value_changed.connect(func(value: float) -> void:
+			if not _ignore_number_callback(intensity_key): _set_effect_value(anchor, "intensity", value))
+		_bind_number(intensity, intensity_key)
 		intensity_row.add_child(intensity)
 		row.add_child(intensity_row)
 		var lifetime_row := HBoxContainer.new()
@@ -1297,9 +1343,11 @@ func _rebuild_effect_controls(keep_draft: bool = false) -> void:
 		lifetime.suffix = tr(" s")
 		lifetime.get_line_edit().expand_to_text_length = true
 		lifetime.value = float(entry.get("lifetime_ticks", 96)) / 240.0
+		var lifetime_key := "effect/%s/lifetime" % anchor
 		lifetime.value_changed.connect(func(value: float) -> void:
-			_set_effect_value(anchor, "lifetime_ticks", clampi(roundi(value * 240.0), 12, 480))
+			if not _ignore_number_callback(lifetime_key): _set_effect_value(anchor, "lifetime_ticks", clampi(roundi(value * 240.0), 12, 480))
 		)
+		_bind_number(lifetime, lifetime_key)
 		lifetime_row.add_child(lifetime)
 		row.add_child(lifetime_row)
 		_effects_controls.add_child(row)
@@ -1333,10 +1381,7 @@ func _set_effect_value(anchor_id: String, key: String, value: Variant) -> void:
 	for index in _effects_draft.size():
 		if str(_effects_draft[index].get("anchor_id", "")) == anchor_id:
 			_effects_draft[index][key] = value
-			_effects_pending = _effects_draft != _profile.get("effects", [])
-			_effects_apply.disabled = not _effects_pending
-			_effects_cancel.disabled = not _effects_pending
-			_emit_validity()
+			_refresh_effect_pending()
 			return
 
 
@@ -1354,6 +1399,127 @@ func _restore_effect_value(anchor_id: String, key: String) -> void:
 			"intensity": controls.intensity.set_value_no_signal(float(entry.get("intensity", 0.0)))
 			"lifetime_ticks": controls.lifetime.set_value_no_signal(float(entry.get("lifetime_ticks", 96)) / 240.0)
 		return
+
+
+func _bind_number(spin: SpinBox, key: String) -> void:
+	var field := spin.get_line_edit()
+	field.max_length = 64
+	field.text_changed.connect(func(value: String) -> void: _number_changed(key, value))
+	field.focus_entered.connect(func() -> void:
+		if _number_texts.has(key): _last_number_key = key)
+	spin.draw.connect(func() -> void:
+		if _number_texts.has(key): _restore_number_text.call_deferred(key))
+	# SpinBox submits and ends editing through deferred native callbacks. Reassert
+	# our pending text after those callbacks, including equal/invalid submissions.
+	field.text_submitted.connect(func(_value: String) -> void: _restore_number_text.call_deferred(key))
+	field.editing_toggled.connect(func(_editing: bool) -> void: _restore_number_text.call_deferred(key))
+
+
+func _number_control(key: String) -> SpinBox:
+	if key == "period": return _period
+	if key == "gain": return _reactive_gain
+	var parts := key.split("/")
+	if parts.size() != 3 or parts[0] != "effect": return null
+	return _effects_controls_by_anchor.get(parts[1], {}).get(parts[2])
+
+
+func _has_number_domain(effects: bool) -> bool:
+	for key: String in _number_texts:
+		if key.begins_with("effect/") == effects: return true
+	return false
+
+
+func _number_changed(key: String, value: String) -> void:
+	if _syncing or _number_guarded_keys.has(key): return
+	var effect := key.begins_with("effect/")
+	if _brightness_pending or _sequence_pending() or (effect and (_zone_pending or _zone_text_pending)) \
+			or (not effect and _effects_pending):
+		_restore_number_text.call_deferred(key, true)
+		_set_status(tr("Apply or cancel the current lighting edit first."))
+		return
+	_number_texts[key] = value
+	_last_number_key = key
+	if effect: _refresh_effect_pending()
+	else: _refresh_zone_pending()
+
+
+func _number_value(key: String) -> Dictionary:
+	var spin := _number_control(key)
+	if spin == null or not _number_texts.has(key): return {"ok": false}
+	var raw := str(_number_texts[key]).strip_edges()
+	if raw.is_empty(): return {"ok": false}
+	# Avoid asking the engine parser to convert an exponent beyond float64.
+	var exponent := RegEx.new()
+	exponent.compile("(?i)[0-9]e[+-]?([0-9]{3,})")
+	for found: RegExMatch in exponent.search_all(raw):
+		if int(found.get_string(1)) > 308: return {"ok": false}
+	var expression := Expression.new()
+	var localized := TranslationServer.parse_number(raw.replace(";", ","), TranslationServer.get_locale())
+	if expression.parse(localized) != OK:
+		localized = TranslationServer.parse_number(raw, TranslationServer.get_locale())
+		if expression.parse(localized) != OK: return {"ok": false}
+	var result: Variant = expression.execute([], null, false, true)
+	if expression.has_execute_failed() or typeof(result) not in [TYPE_INT, TYPE_FLOAT]: return {"ok": false}
+	var number := float(result)
+	if not is_finite(number) or number < spin.min_value or number > spin.max_value: return {"ok": false}
+	return {"ok": true, "value": clampf(snappedf(number, spin.step), spin.min_value, spin.max_value)}
+
+
+func _numbers_valid(effects: bool) -> bool:
+	for key: String in _number_texts:
+		if key.begins_with("effect/") == effects and not _number_value(key).ok: return false
+	return true
+
+
+func _refresh_effect_pending() -> void:
+	_effects_pending = _effects_draft != _profile.get("effects", []) or _has_number_domain(true)
+	_effects_apply.disabled = not _effects_pending or not _numbers_valid(true)
+	_effects_cancel.disabled = not _effects_pending
+	_emit_validity()
+
+
+func _ignore_number_callback(key: String) -> bool:
+	if not _number_guarded_keys.has(key) and not _number_texts.has(key): return false
+	_restore_number_text.call_deferred(key)
+	return true
+
+
+func _guard_number_callbacks() -> void:
+	if _number_texts.is_empty(): return
+	for key: String in _number_texts: _number_guarded_keys[key] = true
+	_finish_number_guard.call_deferred()
+
+
+func _finish_number_guard() -> void:
+	for key: String in _number_guarded_keys:
+		_restore_number_text(key, true)
+	_number_guarded_keys.clear()
+
+
+func _restore_number_text(key: String, force := false) -> void:
+	var spin := _number_control(key)
+	if spin == null: return
+	var value := spin.value
+	if key == "period" and not _zone_draft.is_empty(): value = float(_zone_draft.pattern.period_ticks) / 240.0
+	elif key == "gain" and not _zone_draft.is_empty(): value = float(_zone_draft.reactive.gain)
+	elif key.begins_with("effect/"):
+		var parts := key.split("/")
+		for effect: Dictionary in _effects_draft:
+			if effect.anchor_id == parts[1]:
+				value = float(effect.intensity) if parts[2] == "intensity" else float(effect.lifetime_ticks) / 240.0
+				break
+	if not is_equal_approx(spin.value, value): spin.set_value_no_signal(value)
+	var field := spin.get_line_edit()
+	var target := str(_number_texts[key]) if _number_texts.has(key) else str(value)
+	if (_number_texts.has(key) or force or _number_guarded_keys.has(key)) and field.text != target:
+		var caret := field.caret_column
+		var selection_start: int = field.get_selection_from_column() if field.has_selection() else -1
+		var selection_end: int = field.get_selection_to_column() if field.has_selection() else -1
+		var all_selected: bool = selection_start == 0 and selection_end == field.text.length()
+		field.text = target
+		field.caret_column = mini(caret, target.length())
+		if all_selected: field.select_all()
+		elif selection_start >= 0: field.select(mini(selection_start, target.length()), mini(selection_end, target.length()))
 
 
 func _zone_for_id(zone_id: String) -> Dictionary:

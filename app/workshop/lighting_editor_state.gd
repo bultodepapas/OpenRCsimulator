@@ -5,7 +5,7 @@ extends RefCounted
 const Profile := preload("res://render/lighting/lighting_profile.gd")
 const Sequence := preload("res://workshop/lighting_sequence.gd")
 const REQUIRED := ["zone", "zones_open", "effects_open", "color_text"]
-const OPTIONAL := ["sequence", "draft"]
+const OPTIONAL := ["sequence", "draft", "numbers"]
 const DRAFT_KEYS := ["zone", "effects", "brightness", "color_pending"]
 
 
@@ -22,6 +22,24 @@ static func validate(raw: Variant) -> Dictionary:
 			return _failure("Lighting editor recovery color text is malformed.")
 	if raw.has("sequence") and not Sequence.validate_editor_state(raw.sequence).ok:
 		return _failure("Lighting sequence recovery has malformed or unsupported fields.")
+	if raw.has("numbers"):
+		if not raw.numbers is Dictionary or raw.numbers.size() > 2 + 2 * Profile.MAX_EFFECTS:
+			return _failure("Lighting numeric recovery is malformed.")
+		var zone_numbers := false
+		var effect_numbers := false
+		for key: Variant in raw.numbers:
+			if not key is String or not _text(raw.numbers[key], 64):
+				return _failure("Lighting numeric recovery text is malformed.")
+			var parts: PackedStringArray = key.split("/")
+			if key not in ["period", "gain"] and not (parts.size() == 3 and parts[0] == "effect" \
+					and parts[1] in Profile.EFFECT_ANCHOR_IDS and parts[2] in ["intensity", "lifetime"]):
+				return _failure("Lighting numeric recovery field is unsupported.")
+			if not raw.has("draft"):
+				return _failure("Lighting numeric recovery has no draft.")
+			if key.begins_with("effect/"): effect_numbers = true
+			else: zone_numbers = true
+		if zone_numbers and effect_numbers:
+			return _failure("Lighting numeric recovery mixes exclusive edits.")
 	if raw.has("draft"):
 		var draft: Variant = raw.draft
 		if not _keys(draft, DRAFT_KEYS, []) or not draft.zone is Dictionary \
@@ -43,6 +61,15 @@ static func validate(raw: Variant) -> Dictionary:
 		Profile._normalize_effects(draft.effects, errors)
 		if not errors.is_empty():
 			return {"ok": false, "errors": errors}
+		for key: String in raw.get("numbers", {}):
+			if key in ["period", "gain"] and draft.zone.is_empty():
+				return _failure("Lighting numeric recovery has no zone.")
+			if key == "gain" and draft.zone.reactive.source == "none":
+				return _failure("Lighting numeric response has no source.")
+			if key.begins_with("effect/"):
+				var anchor := key.split("/")[1]
+				if not draft.effects.any(func(effect: Dictionary) -> bool: return effect.anchor_id == anchor):
+					return _failure("Lighting numeric recovery has no matching effect.")
 	# Profile normalization canonicalizes steady/sequence patterns. Do not replace
 	# a pending period, palette or other control value with that accepted form.
 	return {"ok": true, "value": raw.duplicate(true), "errors": []}
