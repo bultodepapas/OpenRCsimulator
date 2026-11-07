@@ -34,7 +34,7 @@ func _run() -> void:
 	var initial_bytes: PackedByteArray = var_to_bytes(initial_checkpoint)
 	var initial_surfaces: PackedFloat64Array = session.ground_surfaces.duplicate()
 	var initial_start: PackedFloat64Array = session._start.duplicate()
-	check("checkpoint v4 records field, obstacles, start and power identity", initial_checkpoint.get("format", "") == "openrc-helicopter-checkpoint v4" and initial_checkpoint.ground_surfaces.to_byte_array() == initial_surfaces.to_byte_array() and initial_checkpoint.start_position.to_byte_array() == initial_start.to_byte_array() and initial_checkpoint.has("power") and initial_checkpoint.has("shaft_phase") and initial_checkpoint.has("collision_world_identity"))
+	check("checkpoint v6 records field, obstacles, start, power and heading law", initial_checkpoint.get("format", "") == Session.CHECKPOINT_FORMAT and initial_checkpoint.get("heading_memory_law") == Session.HEADING_MEMORY_LAW and initial_checkpoint.ground_surfaces.to_byte_array() == initial_surfaces.to_byte_array() and initial_checkpoint.start_position.to_byte_array() == initial_start.to_byte_array() and initial_checkpoint.has("power") and initial_checkpoint.has("shaft_phase") and initial_checkpoint.has("collision_world_identity"))
 
 	var failed_setup_weather: Dictionary = session.weather_configuration()
 	session.aircraft_path = "res://data/aircraft/__heli_state_audit_missing__.json"
@@ -61,7 +61,18 @@ func _run() -> void:
 	check("foreign obstacle inventory is rejected atomically", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
 	bad = saved.duplicate(true)
 	bad.format = "openrc-helicopter-checkpoint v3"
-	check("historical contact boundary cannot replay as v4", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
+	check("historical contact boundary cannot replay as v6", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
+	for format: String in ["openrc-helicopter-checkpoint v4", "openrc-helicopter-checkpoint v5"]:
+		bad = saved.duplicate(true)
+		bad.format = format
+		var rejected: Dictionary = session.restore_checkpoint(bad)
+		check("earlier heading law is refused atomically: " + format, not rejected.ok and str(rejected.errors).contains("heading-memory law") and var_to_bytes(session.checkpoint()) == unchanged)
+	bad = saved.duplicate(true)
+	bad.heading_memory_law = "foreign-heading-law"
+	check("foreign heading law is refused atomically", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
+	bad = saved.duplicate(true)
+	bad.erase("heading_memory_law")
+	check("missing heading law is refused atomically", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
 	bad = saved.duplicate(true)
 	bad.format = "openrc-helicopter-checkpoint v1"
 	bad.erase("ground_surfaces")

@@ -160,7 +160,8 @@ func _checkpoint_restore(native: Node, reference: Node, start: String) -> void:
 	_steps(native, reference, 12, start + " initial tape")
 	var native_checkpoint: Dictionary = native.checkpoint()
 	var reference_checkpoint: Dictionary = reference.checkpoint()
-	check(start + " reference checkpoint is historical v4", reference_checkpoint.get("format") == Session.CHECKPOINT_FORMAT \
+	check(start + " reference checkpoint identifies the heading law", reference_checkpoint.get("format") == Session.CHECKPOINT_FORMAT \
+		and reference_checkpoint.get("heading_memory_law") == Session.HEADING_MEMORY_LAW \
 		and not reference_checkpoint.has("stage_backend"))
 	check(start + " native checkpoint identifies backend", native_checkpoint.get("format") == Session.NATIVE_CHECKPOINT_FORMAT \
 		and native_checkpoint.get("stage_backend") == native.stage_backend_identity() \
@@ -173,6 +174,14 @@ func _checkpoint_restore(native: Node, reference: Node, start: String) -> void:
 	var before_reference := _physical(reference)
 	var helper: RefCounted = native._native_stage
 	var malformed: Dictionary = native_checkpoint.duplicate(true)
+	malformed.erase("heading_memory_law")
+	check(start + " native checkpoint without a heading law refuses atomically", not native.restore_checkpoint(malformed).get("ok", false) \
+		and _physical(native) == before_native and native._native_stage == helper)
+	malformed = native_checkpoint.duplicate(true)
+	malformed.heading_memory_law = "foreign-law"
+	check(start + " native checkpoint with a foreign heading law refuses atomically", not native.restore_checkpoint(malformed).get("ok", false) \
+		and _physical(native) == before_native and native._native_stage == helper)
+	malformed = native_checkpoint.duplicate(true)
 	malformed.stage_backend.binary_sha256 = "0".repeat(64) if native_checkpoint.stage_backend.binary_sha256 != "0".repeat(64) else "1".repeat(64)
 	check(start + " foreign native receipt refuses atomically", not native.restore_checkpoint(malformed).get("ok", false) \
 		and _physical(native) == before_native and native._native_stage == helper and helper.owns_stage(native))
@@ -209,6 +218,67 @@ func _native_lifecycle(start: String) -> void:
 	_steps(native, reference, 8, start + " post-reset tape")
 	native.free()
 	reference.free()
+
+
+func _native_stopped_heading() -> void:
+	for sign_value: float in [-1.0, 1.0]:
+		var native := _session(NativeStage.BACKEND_NATIVE, "ground")
+		var reference := _session(NativeStage.BACKEND_REFERENCE, "ground")
+		if native._native_stage == null:
+			check("stopped heading native stage present", false)
+			native.free()
+			reference.free()
+			continue
+		var same := true
+		var covered := true
+		var ran := 0
+		var previous: Dictionary = native._native_stage.stage_stats()
+		for i: int in 721:
+			var yaw: float = sign_value if i < 720 else 0.0
+			for session: Node in [native, reference]:
+				session.commands.yaw = yaw
+				session.sim.inputs[2] = yaw
+				session.sim.step()
+			if not native.is_flyable() or not reference.is_flyable() or native._native_stage == null: break
+			var stats: Dictionary = native._native_stage.stage_stats()
+			covered = covered and int(stats.get("stage_calls", 0)) - int(previous.get("stage_calls", 0)) >= 4 \
+				and int(stats.get("context_calls", 0)) - int(previous.get("context_calls", 0)) >= 1
+			previous = stats
+			same = same and _physical(native) == _physical(reference)
+			ran += 1
+		check("stopped heading native/reference accepted tape " + str(sign_value), ran == 721 and same and covered, \
+			"%d/721; %s / %s" % [ran, native.sim.fault_reason, reference.sim.fault_reason])
+		if ran != 721 or native._native_stage == null:
+			native.free()
+			reference.free()
+			continue
+		var native_controls: Dictionary = native.telemetry().controls
+		var reference_controls: Dictionary = reference.telemetry().controls
+		check("stopped heading native/reference centered target " + str(sign_value), \
+			absf(native_controls.heading_error_rad) < 1e-10 and absf(native_controls.target_yaw_rate_rad_s) < 1e-10 \
+			and native_controls == reference_controls)
+		var armed: bool = true
+		for session: Node in [native, reference]:
+			armed = session.toggle_motor_arm() and session.set_drive_hold(false) and armed
+		var transition := false
+		same = true
+		covered = true
+		previous = native._native_stage.stage_stats()
+		for _i: int in 200:
+			var old_omega: float = native.sim.continuous[0]
+			native.sim.step()
+			reference.sim.step()
+			if not native.is_flyable() or not reference.is_flyable() or native._native_stage == null: break
+			var stats: Dictionary = native._native_stage.stage_stats()
+			covered = covered and int(stats.get("stage_calls", 0)) - int(previous.get("stage_calls", 0)) >= 4 \
+				and int(stats.get("context_calls", 0)) - int(previous.get("context_calls", 0)) >= 1
+			previous = stats
+			same = same and _physical(native) == _physical(reference)
+			if old_omega == 0.0 and native.sim.continuous[0] > 0.0: transition = true
+		check("first spool interval native/reference parity " + str(sign_value), armed and transition and same and covered \
+			and native.is_flyable() and reference.is_flyable())
+		native.free()
+		reference.free()
 
 
 func _transitions() -> void:
@@ -529,6 +599,7 @@ func _run() -> void:
 	if native_available:
 		_native_lifecycle("airborne")
 		_native_lifecycle("ground")
+		_native_stopped_heading()
 		_transitions()
 		_guard()
 	else:

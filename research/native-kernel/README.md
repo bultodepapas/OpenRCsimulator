@@ -63,8 +63,8 @@ surface/lake/soft-contact setters reprepare at a boundary. Per-tick comparisons 
 changes before stale coefficients can run; they do not serialize, hash or decode the model each tick.
 
 Native checkpoints use an outer `openrc-flight-checkpoint v14` envelope carrying the backend and library identity.
-Helicopter native checkpoints use `openrc-helicopter-checkpoint v5`, retaining the v4 physical fields and adding the backend identity.
-Reference checkpoint formats/hashes stay unchanged. Exact replay requires that identity; explicit candidate
+Helicopter native checkpoints use `openrc-helicopter-checkpoint v7`, retaining the v6 physical fields and heading-memory law and adding the backend identity; v1–v5 are explicitly refused after the stopped-rotor heading correction.
+Fixed-wing reference checkpoint formats/hashes stay unchanged. Exact replay requires that identity; explicit candidate
 replay may use reference and reports `solver_changed`. A backend change during recording leaves an incomplete
 diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).
 

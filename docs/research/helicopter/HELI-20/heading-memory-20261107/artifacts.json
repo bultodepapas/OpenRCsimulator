@@ -1,0 +1,110 @@
+{
+  "format": "openrc-helicopter-heading-artifacts v1",
+  "baseline_commit": "7e25fb5a3",
+  "artifacts": [
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/positive.tape",
+      "sha256": "6ad283db1d67b4dd925534070b30d0604eeaf60af4759549d427dad761c154b2",
+      "uncompressed_sha256": "6ad283db1d67b4dd925534070b30d0604eeaf60af4759549d427dad761c154b2",
+      "bytes": 96428
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/positive.csv.gz",
+      "sha256": "2e23700f1e926c551d74619d5811a79491925f34f507c42049d593e5d22f023d",
+      "uncompressed_sha256": "71e1e9ac0368ea4eb92cb1f1925181f3dc5cd17070ecd690291ad515bdc8ab35",
+      "bytes": 558691
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/negative.tape",
+      "sha256": "a1ec388f10ca21f746761364f478fe1d2e83550fcaf14c0a21e0255f755ef4ec",
+      "uncompressed_sha256": "a1ec388f10ca21f746761364f478fe1d2e83550fcaf14c0a21e0255f755ef4ec",
+      "bytes": 96428
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/negative.csv.gz",
+      "sha256": "dc4c08aaefc0acc1c807b864f15e8d36e68ed89336e47568321b98e953790989",
+      "uncompressed_sha256": "d5e73b9fcc5133ba907a76b21ebcbd249408ed64b0358e4bf69d162e7ab2a3ff",
+      "bytes": 560459
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/witness.json",
+      "sha256": "b15b6d76c00ecad3db794c7c845f73f3c529cdb23337a8857843a4e0c311ef0c",
+      "uncompressed_sha256": "b15b6d76c00ecad3db794c7c845f73f3c529cdb23337a8857843a4e0c311ef0c",
+      "bytes": 1132
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/healthy.json.gz",
+      "sha256": "51fde9d029f2ba5aba016b9130520781ea7663a52cfa513566c019176ac7b615",
+      "uncompressed_sha256": "ecd12890bff26b2ef7e6106fc83ba1728a356c3d25a519afc9e80f1face92aac",
+      "bytes": 156876
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/candidate/positive.tape",
+      "sha256": "90bb301ea158973f78a07a1a0d48ab81c1a3b7ad5ae52b491c2510a62fe91c48",
+      "uncompressed_sha256": "90bb301ea158973f78a07a1a0d48ab81c1a3b7ad5ae52b491c2510a62fe91c48",
+      "bytes": 96580
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/candidate/positive.csv.gz",
+      "sha256": "dc96066b01529f358138ac80307c69c3f69923a95254f419376b72c7a5f6c30f",
+      "uncompressed_sha256": "6236181e4cb9e8ddeab3240e2530d6759963ded664279d7cb6ab28eff826d6b1",
+      "bytes": 559322
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/candidate/negative.tape",
+      "sha256": "461704253216babe1a47861e620db46d57c69df133a2a91203b0fa05791575f3",
+      "uncompressed_sha256": "461704253216babe1a47861e620db46d57c69df133a2a91203b0fa05791575f3",
+      "bytes": 96580
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/candidate/negative.csv.gz",
+      "sha256": "edbe88009c13f609a1b29fafa3a36be075299b951ff15a242416431b686aa569",
+      "uncompressed_sha256": "81141b8661b6f5379f9c0598d286709da265fdefc513dcc9c9cb6c1e167b21b1",
+      "bytes": 560042
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/candidate/witness.json",
+      "sha256": "872230166f2bce7a4c3cadefcd9ccb310f7028eb55e48d99041c11ff4e806f43",
+      "uncompressed_sha256": "872230166f2bce7a4c3cadefcd9ccb310f7028eb55e48d99041c11ff4e806f43",
+      "bytes": 1103
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/candidate/healthy.json.gz",
+      "sha256": "5ef2f5d5cbf3b2b925ebf50743a2bab0c3d82c5a023c048f23e293a3d68f8dd4",
+      "uncompressed_sha256": "ffcf099b0abd2cd3e800159ab15da0244c6d364030c9da297ef80ef1a1b444db",
+      "bytes": 156876
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/comparison.json",
+      "sha256": "d6007d868755bf850403a9e32afdf6b4c8f88951d8618608dc7eb631bc126517",
+      "uncompressed_sha256": "d6007d868755bf850403a9e32afdf6b4c8f88951d8618608dc7eb631bc126517",
+      "bytes": 941
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/witness.gd",
+      "sha256": "d7223d5b249c9e499023a88bcb06dda62bafbf52228d92eecbab698b385855b8",
+      "uncompressed_sha256": "d7223d5b249c9e499023a88bcb06dda62bafbf52228d92eecbab698b385855b8",
+      "bytes": 4084
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/witness-candidate.gd",
+      "sha256": "98ed5d7e0ea3e213f49b64e00fff5e415e105979d31476bbf112b69d2dd62b67",
+      "uncompressed_sha256": "98ed5d7e0ea3e213f49b64e00fff5e415e105979d31476bbf112b69d2dd62b67",
+      "bytes": 4136
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/compare.gd",
+      "sha256": "7ee4d5e968160979b7a5ca183f344c055ff009f0a3c3288c95bb4dc8307b0111",
+      "uncompressed_sha256": "7ee4d5e968160979b7a5ca183f344c055ff009f0a3c3288c95bb4dc8307b0111",
+      "bytes": 1997
+    },
+    {
+      "path": "docs/research/helicopter/HELI-20/heading-memory-20261107/baseline/session.gd.gz",
+      "sha256": "bf981a6c2aebd1ed01febeaedcacc3c970ef4d758aa414afc1ce0593ccc903fa",
+      "uncompressed_sha256": "a2e40f81a88a1c7d032385f87d4deee3a636c71a11a83fe0b594c36b6bbf56ec",
+      "bytes": 54466
+    }
+  ],
+  "scope": "CSV and Variant checkpoints; each witness replays its own midpoint under its own law. Comparator checks saved input identity and restore compatibility, not saved-tape replay.",
+  "rerun": "Captured scripts retain their original fixed scratch paths. Use separate exact-law checkouts; preserve this evidence before rerunning in tmp."
+}

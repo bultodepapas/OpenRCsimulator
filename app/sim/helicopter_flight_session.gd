@@ -5,6 +5,7 @@ const VehicleModel = preload("res://sim/vehicle_model.gd")
 const Data = preload("res://physics/rotorcraft_data.gd")
 const ControllerProfile = preload("res://input/controller_profile.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
+const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const Hover = preload("res://physics/rotorcraft/trim.gd")
 const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
 const ImpactDetector = preload("res://physics/rotorcraft/impact_detector.gd")
@@ -85,8 +86,11 @@ var _hover: Dictionary = {}
 var _trim: Dictionary = {}
 var _ready_to_fly: bool = false
 var _stage_failure: String = ""
-const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v4"
-const NATIVE_CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v5"
+## The stopped-rotor tracking policy changes accepted controller state; older
+## checkpoints cannot claim exact continuation under this law.
+const HEADING_MEMORY_LAW: String = "stopped-rotor-loaded-skid-tracking-v1"
+const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v6"
+const NATIVE_CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v7"
 var _stage_backend_requested: String = NativeStage.BACKEND_REFERENCE
 var _backend_selection_locked: bool = false
 var _native_stage: RefCounted = null
@@ -238,9 +242,9 @@ func _init() -> void:
  vehicle.input_size=4
  vehicle.aux_size=1
  vehicle.continuous_size=Flight.STATE_SIZE-13 # hover layout; reset() redeclares a ground start
- vehicle.identity={"vehicle":"rotorcraft","state_layout":Flight.STATE_LAYOUT}
+ vehicle.identity={"vehicle":"rotorcraft","state_layout":Flight.STATE_LAYOUT,"heading_memory_law":HEADING_MEMORY_LAW}
  vehicle.stage=_stage
- vehicle.step_policy=StepAdapter.step
+ vehicle.step_policy=_step_with_heading_tracking
  vehicle.block_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
  if not sim.set_model(vehicle): push_error("Cannot install the rotorcraft vehicle model")
  sim.faulted.connect(func(reason: String) -> void:
@@ -249,6 +253,35 @@ func _init() -> void:
    if not native_failure.is_empty(): _stage_failure=native_failure
   pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
  sim.stepped.connect(_on_stepped)
+
+
+## The stopped tail law supplies exactly zero rotor thrust at the beginning of
+## this interval. Reconcile only a successfully integrated, loaded-skid endpoint;
+## rotating/coasting rotors retain their original heading and yaw control law.
+## The first zero-to-spooling interval is included. This detached candidate is
+## validated and committed by Simulation, so failed ticks cannot change memory.
+func _step_with_heading_tracking(state: PackedFloat64Array,t: float,dt: float,f: Callable,first: PackedFloat64Array) -> Variant:
+ var result: Variant=StepAdapter.step(state,t,dt,f,first)
+ if not result is Dictionary or state.size() not in [19,27] or state[13]!=0.0 \
+ or aircraft.context.electronics_model.law!=Electronics.TRAINER_LAW: return result
+ var endpoint: Variant=result.get("state")
+ if not endpoint is PackedFloat64Array or endpoint.size()!=state.size(): return result
+ var body: PackedFloat64Array=endpoint.slice(0,RB.SIZE)
+ if not Sim.state_is_valid(body): return result
+ var bristles: PackedFloat64Array=endpoint.slice(19) if endpoint.size()==27 else PackedFloat64Array()
+ var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,true,bristles)
+ if not contact.get("ok",false): return PackedFloat64Array()
+ var loaded: bool=false
+ for normal_force: float in contact.normal_forces_n:
+  if normal_force>0.0:
+   loaded=true
+   break
+ if not loaded: return result
+ var attitude: PackedFloat64Array=M.q_normalized(body.slice(RB.ATT,RB.ATT+4))
+ endpoint[17]=M.q_to_euler(attitude)[0]
+ endpoint[18]=0.0
+ result.state=endpoint
+ return result
 
 func setup(path: String=aircraft_path,selected_id: String="") -> bool:
  if _native_transition_reentry(): return false
@@ -846,7 +879,7 @@ func telemetry() -> Dictionary:
  var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(sim.time(),state.slice(0,RB.SIZE)),false,PackedFloat64Array(),_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,sim.time()))
  return out
 func trace_meta() -> Dictionary:
- var metadata: Dictionary={aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
+ var metadata: Dictionary={aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",heading_memory_law=HEADING_MEMORY_LAW,lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
  var backend: Dictionary=stage_backend_identity()
  if backend.backend==NativeStage.BACKEND_NATIVE: metadata.stage_backend=backend
  return metadata
@@ -860,7 +893,7 @@ func checkpoint() -> Dictionary:
  var saved_simulation: Dictionary=sim.checkpoint()
  if saved_simulation.is_empty() or not Lifecycle.valid(power,sim.time()) or (not power.armed and not zero_drive_hold) or not _simulation_configuration_matches(saved_simulation) \
  or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold,power): return {}
- var result: Dictionary={format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
+ var result: Dictionary={format=CHECKPOINT_FORMAT,heading_memory_law=HEADING_MEMORY_LAW,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
  var backend: Dictionary=stage_backend_identity()
  if backend.backend==NativeStage.BACKEND_NATIVE:
   result.format=NATIVE_CHECKPOINT_FORMAT
@@ -911,11 +944,13 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   return {ok=false,errors=["Reset the selected start before restoring a helicopter checkpoint."]}
  if not candidate is Dictionary:
   return {ok=false,errors=["malformed helicopter checkpoint"]}
+ if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2","openrc-helicopter-checkpoint v3","openrc-helicopter-checkpoint v4","openrc-helicopter-checkpoint v5"]:
+  return {ok=false,errors=["Helicopter checkpoint %s uses an earlier contact or heading-memory law; regenerate with v6/v7" % candidate.format]}
  if _native_stage!=null and not _native_stage.configuration_matches(self):
   return {ok=false,errors=["native helicopter configuration changed; reset required"]}
  var recorded_backend: Dictionary=NativeStage.reference_identity()
  if candidate.get("format")==NATIVE_CHECKPOINT_FORMAT:
-  if candidate.size()!=17 or not candidate.get("stage_backend") is Dictionary or candidate.stage_backend.get("backend")!=NativeStage.BACKEND_NATIVE:
+  if candidate.size()!=18 or not candidate.get("stage_backend") is Dictionary or candidate.stage_backend.get("backend")!=NativeStage.BACKEND_NATIVE:
    return {ok=false,errors=["malformed native helicopter checkpoint"]}
   recorded_backend=candidate.stage_backend.duplicate(true)
   candidate=candidate.duplicate(true)
@@ -925,10 +960,10 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   return {ok=false,errors=["unexpected helicopter checkpoint backend"]}
  if recorded_backend!=stage_backend_identity():
   return {ok=false,errors=["helicopter checkpoint stage backend differs from this session"]}
- if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2","openrc-helicopter-checkpoint v3"]:
-  return {ok=false,errors=["Helicopter checkpoint v1/v2/v3 lacks the current contact boundary; regenerate with v4"]}
- if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=16 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase","collision_world_identity"]):
+ if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=17 or not candidate.has_all(["format","heading_memory_law","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase","collision_world_identity"]):
   return {ok=false,errors=["malformed or unsupported helicopter checkpoint"]}
+ if candidate.heading_memory_law!=HEADING_MEMORY_LAW:
+  return {ok=false,errors=["helicopter checkpoint heading-memory law differs from this session"]}
  if typeof(candidate.collision_world_identity)!=TYPE_STRING or candidate.collision_world_identity!=str(_collision_world.get("identity","")):
   return {ok=false,errors=["helicopter checkpoint obstacle inventory mismatch"]}
  if not aircraft.get("ok",false) or candidate.aircraft_sha256!=aircraft.input_identity.sha256 or candidate.weather!=weather_configuration() or candidate.trim!=_trim:

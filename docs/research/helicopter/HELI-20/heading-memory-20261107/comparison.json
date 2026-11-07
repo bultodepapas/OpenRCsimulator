@@ -1,0 +1,30 @@
+{
+	"cases": {
+		"negative": {
+			"input_bytes_identical": true,
+			"new_format": "openrc-helicopter-checkpoint v6",
+			"new_law": "stopped-rotor-loaded-skid-tracking-v1",
+			"new_restore": true,
+			"ok": true,
+			"old_format": "openrc-helicopter-checkpoint v4",
+			"old_refusal": [
+				"Helicopter checkpoint openrc-helicopter-checkpoint v4 uses an earlier contact or heading-memory law; regenerate with v6/v7"
+			],
+			"ticks": 780
+		},
+		"positive": {
+			"input_bytes_identical": true,
+			"new_format": "openrc-helicopter-checkpoint v6",
+			"new_law": "stopped-rotor-loaded-skid-tracking-v1",
+			"new_restore": true,
+			"ok": true,
+			"old_format": "openrc-helicopter-checkpoint v4",
+			"old_refusal": [
+				"Helicopter checkpoint openrc-helicopter-checkpoint v4 uses an earlier contact or heading-memory law; regenerate with v6/v7"
+			],
+			"ticks": 780
+		}
+	},
+	"format": "helicopter baseline/candidate tape comparison v1",
+	"ok": true
+}
