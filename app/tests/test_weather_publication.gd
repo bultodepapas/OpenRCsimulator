@@ -44,10 +44,12 @@ func _run() -> void:
 	quit(1 if failed else 0)
 func _parity() -> void:
 	# Complete 25-endpoint traces captured before GP-14h; see its evidence cohort. Exact traces are
-	# per-platform diagnostics (H9): the checkout's line endings enter the fuel-registry identity in
-	# checkpoint.configuration, and turbulence rounds differently per platform math library.
+	# per-platform diagnostics (H9): the fuel-registry byte identity enters checkpoint.configuration,
+	# and turbulence rounds differently per platform math library. Windows expectations were rebound
+	# to the repository's pinned LF registry after an isolated CRLF baseline reproduced all four old
+	# hashes and the baseline/candidate LF traces matched (UI-32-R3, 2026-11-07). No flight values changed.
 	var expected_by_platform: Dictionary = {
-		"Windows": {"calm": "e28993adf8aeae616a072f7698fc86d40adaa19961b821cb8254417662df0bab", "cool-dense": "96471c89616b64a915298690f87a938d1891fc55e743419261742457732ef442", "gusty": "3c04da05216e7f9541e005cfb39223a33a30262da8966b6a1c70b25cea8ee4d3", "turbulent": "718475cbac36aab485517d82e6fb948f95a70f5bf961d527acb814cc6991f6eb"},
+		"Windows": {"calm": "8072e03be9140ae4bee356cbc542e5234cee296e4fbc98e39ee1b92b044cf614", "cool-dense": "40f99b65feb6fe4f135f955be8a48b43fa3aafa6b6bc7825333909e0b740145b", "gusty": "070a11e18e96887a7fdda12a2b767fc29cf9feafe5b4abff5b6a195abbc7028a", "turbulent": "c85277a69c5fa0a8caabc9fc463ca47747d14d273f5d1cb6e4066388f123a952"},
 		"Linux": {"calm": "8072e03be9140ae4bee356cbc542e5234cee296e4fbc98e39ee1b92b044cf614", "cool-dense": "40f99b65feb6fe4f135f955be8a48b43fa3aafa6b6bc7825333909e0b740145b", "gusty": "070a11e18e96887a7fdda12a2b767fc29cf9feafe5b4abff5b6a195abbc7028a", "turbulent": "243c9b2fb59b973444a0293de38bdfd87c7004eb86e6e683d79a9dab22ecca4a"},
 	}
 	var expected: Dictionary = expected_by_platform.get(OS.get_name(), {})
