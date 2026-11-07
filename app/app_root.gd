@@ -209,6 +209,8 @@ var controllers: Node
 var _controller_action_edges: Dictionary = {}
 var _controller_restart_edges: Dictionary = {}
 var _controller_rate_edges: Dictionary = {}
+var _controller_edge_identities: Dictionary = {}
+var _controller_edge_require_off: Dictionary = {}
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
@@ -330,7 +332,7 @@ func _ready() -> void:
 		controllers.store = ControllerService.Store.new(preferences_path + ".controllers", preferences_path + ".legacy_rc")
 	controllers.ui_selection_changed.connect(_controller_ui_changed)
 	controllers.flight_selection_changed.connect(_update_controller_home)
-	controllers.flight_selection_changed.connect(_clear_controller_actions)
+	controllers.flight_selection_changed.connect(func() -> void: _clear_controller_actions(false))
 	controllers.registry.devices_changed.connect(_update_controller_home)
 	controllers.continuity_lost.connect(func() -> void:
 		_clear_controller_actions()
@@ -638,6 +640,9 @@ func set_language(code: String) -> bool:
 	TranslationServer.set_locale(code)
 	preferences.language = code
 	var err := Preferences.save_to(preferences_path, preferences)
+	var active_settings: Node = screens.get_screen("settings") if screens != null else null
+	if active_settings != null:
+		active_settings.set_language_save_outcome(err, not bool(preferences.get("writable", true)))
 	if err != OK:
 		_menu_feedback(&"reject")
 	if home != null:
@@ -1652,7 +1657,11 @@ func _restore_calibration_controls_focus(setup: Node) -> void:
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:
 	if controllers != null and id >= 0:
 		if flight_context:
-			var capabilities: Dictionary = flight.controller_capabilities() if flight != null and flight.has_method("controller_capabilities") else {}
+			var capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES
+			if flight != null and flight.has_method("controller_capabilities"):
+				capabilities = flight.controller_capabilities()
+			elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
+				capabilities = ControllerActions.HELICOPTER_CAPABILITIES
 			return ControllerActions.effective_bindings(controllers.profile_for_device(id), capabilities)
 		return ControllerActions.effective_bindings(controllers.profile_for_device(id))
 	return ControllerActions.default_bindings()
@@ -1663,16 +1672,88 @@ func _controller_ui_changed(id: int) -> void:
 		ground_vehicle._refresh_controller_ui()
 		return
 	UiInput.set_gamepad(id, _controller_bindings(id))
-	_clear_controller_actions()
+	_clear_controller_actions(false)
 	_update_controller_home()
 	_update_controller_button_prompts()
 
 
-func _clear_controller_actions(clear_rate_edges := true) -> void:
+func _clear_controller_actions(require_off := true) -> void:
 	_controller_action_edges.clear()
-	_controller_restart_edges.clear()
-	if clear_rate_edges: _controller_rate_edges.clear()
 	_release_controller_holds()
+	if controllers == null:
+		return
+	var id: int = controllers.registry.selected_device_id("flight")
+	var bindings := _controller_bindings(id, true)
+	for action: String in ["restart_flight", "rates_toggle"]:
+		var binding: Dictionary = bindings.get(action, {"type": "unbound"})
+		_sync_controller_edge_identity(action, id, binding)
+		if require_off and id >= 0 and binding.get("type", "unbound") != "unbound":
+			_controller_edge_require_off[action] = true
+			_controller_edges_for(action).clear()
+
+
+## The two edge-triggered flight actions keep their history through unrelated UI
+## changes. A new mapping or connection cannot inherit the old source's history.
+func _sync_controller_edge_identity(action: String, id: int, binding: Dictionary) -> void:
+	var identity := {"device": id, "generation": controllers.registry.connection_generation(id),
+		"binding": binding.duplicate(true)}
+	if not _controller_edge_identities.has(action):
+		_controller_edge_identities[action] = identity
+		_controller_edge_require_off[action] = id >= 0 and binding.get("type", "unbound") != "unbound"
+		return
+	if _controller_edge_identities[action] != identity:
+		_controller_edge_identities[action] = identity
+		_controller_edges_for(action).clear()
+		_controller_edge_require_off[action] = id >= 0 and binding.get("type", "unbound") != "unbound"
+
+
+func _controller_edges_for(action: String) -> Dictionary:
+	return _controller_restart_edges if action == "restart_flight" else _controller_rate_edges
+
+
+## An unrelated event, a nonfinite axis value, or threshold jitter is not an OFF
+## observation. Direction reversal is OFF for the opposite signed assignment.
+func _controller_binding_observed_off(event: InputEvent, id: int, binding: Dictionary, action: String) -> bool:
+	match str(binding.get("type", "")):
+		"button":
+			return event is InputEventJoypadButton and event.device == id \
+				and event.button_index == int(binding.get("button", -1)) and not event.pressed
+		"axis":
+			if not event is InputEventJoypadMotion or event.device != id \
+					or event.axis != int(binding.get("axis", -1)) or not is_finite(event.axis_value):
+				return false
+			var only_binding := {action: binding}
+			return ControllerActions.resolve_event(event, only_binding, id, "flight",
+				PackedStringArray([action])).is_empty()
+		"key":
+			if not event is InputEventKey or event.pressed:
+				return false
+			var physical := int(binding.get("physical_keycode", 0))
+			return event.physical_keycode == physical if physical != 0 else event.keycode == int(binding.get("keycode", 0))
+	return false
+
+
+func _controller_edge_transition(event: InputEvent, action: String, id: int, binding: Dictionary) -> Dictionary:
+	_sync_controller_edge_identity(action, id, binding)
+	if event is InputEventJoypadMotion and not is_finite(event.axis_value):
+		return {"actions": PackedStringArray(), "previous": PackedStringArray()}
+	var source := ControllerActions.event_source(event)
+	if source.is_empty(): return {"actions": PackedStringArray(), "previous": PackedStringArray()}
+	var edges := _controller_edges_for(action)
+	var only_binding := {action: binding}
+	var previous: PackedStringArray = edges.get(source, PackedStringArray())
+	if bool(_controller_edge_require_off.get(action, false)):
+		# Treat a blocked assignment as active until its own OFF is observed.
+		var held := PackedStringArray([action])
+		var actions := ControllerActions.resolve_event(event, only_binding, id, "flight", held)
+		if _controller_binding_observed_off(event, id, binding, action):
+			_controller_edge_require_off[action] = false
+			edges.erase(source)
+		return {"actions": actions, "previous": held}
+	var actions := ControllerActions.resolve_event(event, only_binding, id, "flight", previous)
+	if actions.is_empty(): edges.erase(source)
+	else: edges[source] = actions
+	return {"actions": actions, "previous": previous}
 
 
 func _release_controller_holds() -> void:
@@ -1713,6 +1794,14 @@ func _input(event: InputEvent) -> void:
 	if controllers == null: return
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
 	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
+	# The same saved Back key may also be installed in native ui_cancel. Keep it
+	# available to the editor for this event, including repeats, then restore it.
+	if event is InputEventKey and not _exit_request_active and screens.top() != null and _focused_editor_consumes_key(event) \
+			and event.keycode != KEY_ESCAPE and event.physical_keycode != KEY_ESCAPE:
+		var ui_id: int = controllers.registry.selected_device_id("ui")
+		var back: Dictionary = _controller_bindings(ui_id).get("back", {})
+		if ControllerActions.matches_binding(back, event, ui_id) and UiInput.suspend_generated_cancel_key():
+			UiInput.restore_generated_cancel_key.call_deferred()
 	if event is InputEventKey and event.echo: return
 	# Both observers need releases, including opposite directions of a shared axis.
 	var restart_handled := _route_controller_restart(event)
@@ -1747,6 +1836,7 @@ func _input(event: InputEvent) -> void:
 		# A held Back/Accept button cannot become an aircraft command when a menu closes.
 		if event is InputEventJoypadButton and not previous.is_empty(): continue
 		if in_menu:
+			if action in ["back", "pause"] and (_focused_editor_consumes_key(event) or _controller_capture_owns(event)): continue
 			if action == "calibrate" and (screens.is_top("home") or screens.is_top("pause")):
 				open_controls()
 				get_viewport().set_input_as_handled()
@@ -1766,18 +1856,36 @@ func _input(event: InputEvent) -> void:
 			return
 
 
+## Editable text keeps its editing keys, including user-remapped Back keys and
+## modifiers. Escape remains the deliberate way to leave the current screen.
+func _focused_editor_consumes_key(event: InputEvent) -> bool:
+	if not event is InputEventKey:
+		return false
+	var focused := get_viewport().gui_get_focus_owner()
+	if event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE:
+		return focused is LineEdit and focused.editable and focused.is_editing()
+	return (focused is LineEdit and focused.editable) or (focused is TextEdit and focused.editable)
+
+
+func _controller_capture_owns(event: InputEvent) -> bool:
+	if not screens.is_top("controls"):
+		return false
+	var setup: Node = screens.top()
+	if not setup.has_method("_is_capture_active") or not setup._is_capture_active():
+		return false
+	return event is InputEventKey or ((event is InputEventJoypadButton or event is InputEventJoypadMotion) \
+		and event.device == int(setup.get("_capturing_device_id")))
+
+
 ## Observe rate controls even while another device owns menus. Held buttons/axes must
 ## return OFF before selecting a new rate after closing a menu or calibration.
 func _route_controller_rates(event: InputEvent) -> bool:
 	var id: int = controllers.registry.selected_device_id("flight")
 	if id < 0: return false
-	var source := ControllerActions.event_source(event)
-	if source.is_empty(): return false
-	var previous: PackedStringArray = _controller_rate_edges.get(source, PackedStringArray())
 	var binding: Dictionary = _controller_bindings(id, true).get("rates_toggle", {"type": "unbound"})
-	var actions := ControllerActions.resolve_event(event, {"rates_toggle": binding}, id, "flight", previous)
-	if actions.is_empty(): _controller_rate_edges.erase(source)
-	else: _controller_rate_edges[source] = actions
+	var transition := _controller_edge_transition(event, "rates_toggle", id, binding)
+	var previous: PackedStringArray = transition.previous
+	var actions: PackedStringArray = transition.actions
 	if actions.is_empty() or flight == null or flight.session == null: return false
 	if _exit_request_active or screens.top() != null or flight.session.calibration != null: return false
 	if flight.has_method("accident_menu_active") and flight.accident_menu_active(): return false
@@ -1790,13 +1898,10 @@ func _route_controller_rates(event: InputEvent) -> bool:
 func _route_controller_restart(event: InputEvent) -> bool:
 	var id: int = controllers.registry.selected_device_id("flight")
 	if id < 0: return false
-	var source := ControllerActions.event_source(event)
-	if source.is_empty(): return false
-	var previous: PackedStringArray = _controller_restart_edges.get(source, PackedStringArray())
 	var binding: Dictionary = _controller_bindings(id, true).get("restart_flight", {"type": "unbound"})
-	var actions := ControllerActions.resolve_event(event, {"restart_flight": binding}, id, "flight", previous)
-	if actions.is_empty(): _controller_restart_edges.erase(source)
-	else: _controller_restart_edges[source] = actions
+	var transition := _controller_edge_transition(event, "restart_flight", id, binding)
+	var previous: PackedStringArray = transition.previous
+	var actions: PackedStringArray = transition.actions
 	if actions.is_empty() or flight == null or flight.session == null: return false
 	if _exit_request_active or screens.top() != null or flight.session.calibration != null: return false
 	if previous.is_empty():
@@ -3493,8 +3598,14 @@ func _clear_exit_request(restore_running := true) -> void:
 	_exit_request_recorder_index = 0
 	_exit_request_editors.clear()
 	_exit_authorized_editors.clear()
-	if restore_running and is_instance_valid(focus) and focus.is_inside_tree() and focus.is_visible_in_tree():
-		focus.grab_focus()
+	if restore_running:
+		if not ScreenStack.Screen.can_focus(get_viewport().gui_get_focus_owner()) and ScreenStack.Screen.can_focus(focus):
+			focus.grab_focus()
+		# An immediate restart can open Pause and enter recovery before its first
+		# focus callback runs. Restore the active surface after releasing the guard.
+		var surface: Control = ScreenStack._surface(screens.top()) if screens.top() != null else null
+		if surface != null and surface.has_method("ensure_focus"):
+			surface.call_deferred("ensure_focus")
 
 
 func _has_property(object: Object, property_name: String) -> bool:

@@ -4,6 +4,8 @@
 # identity of UI-04a. While open it swallows every key the GUI leaves (like the pause menu). English source strings.
 extends CanvasLayer
 
+const MenuInput := preload("res://ui/ui_input.gd")
+
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
@@ -144,7 +146,47 @@ func _notification(what: int) -> void:
 		about_label.text = about_text(BuildInfo.current())
 
 
+var _scroll_direction := 0
+var _scroll_repeat_s := 0.0
+var _scroll_source := ""
+var _scroll_device := -1
+
+
+func _process(delta: float) -> void:
+	if not _help_scroll.has_focus() or not _help_scroll.is_visible_in_tree() or _scroll_device != MenuInput.selected_gamepad_id():
+		_scroll_direction = 0
+		return
+	if _scroll_direction == 0:
+		return
+	_scroll_repeat_s -= minf(delta, 0.25)
+	while _scroll_repeat_s <= 0.0:
+		_help_scroll.get_v_scroll_bar().value += _scroll_direction * 40
+		_scroll_repeat_s += 0.08
+
+
 func _scroll_input(event: InputEvent) -> void:
+	if event is InputEventJoypadButton or event is InputEventJoypadMotion:
+		if MenuInput.selected_gamepad_id() < 0 or event.device != MenuInput.selected_gamepad_id():
+			return
+		if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
+			_scroll_direction = 0
+			close_button.grab_focus()
+			_help_scroll.accept_event()
+			return
+		var source := "%d:%s:%d" % [event.device, "button" if event is InputEventJoypadButton else "axis",
+			event.button_index if event is InputEventJoypadButton else event.axis]
+		var direction := 1 if event.is_action_pressed("ui_down") else (-1 if event.is_action_pressed("ui_up") else 0)
+		if direction == 0:
+			if source == _scroll_source:
+				_scroll_direction = 0
+			return
+		_scroll_direction = direction
+		_scroll_device = event.device
+		_scroll_source = source
+		_scroll_repeat_s = 0.35
+		_help_scroll.get_v_scroll_bar().value += direction * 40
+		_help_scroll.accept_event()
+		return
 	if not event is InputEventKey or not event.pressed: return
 	var bar := _help_scroll.get_v_scroll_bar()
 	var page := maxf(48, _help_scroll.size.y * 0.8)

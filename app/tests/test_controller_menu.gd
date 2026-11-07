@@ -1,5 +1,6 @@
 extends SceneTree
 const UiDriver := preload("res://tests/ui_driver.gd")
+const Screen := preload("res://ui/screen.gd")
 const PREFS := "user://test_controller_menu.cfg"
 var failures := 0
 var checks := 0
@@ -20,6 +21,17 @@ func button(index: JoyButton, device := 15) -> void:
 		event.pressed = pressed
 		Input.parse_input_event(event)
 	await ui.settle()
+
+
+func observe_flight_switches_off(device := 15) -> void:
+	# Synthetic devices have no real polling; supply the OFF observations that
+	# a changed flight-device assignment now requires before firing either edge.
+	for index: JoyButton in [JOY_BUTTON_LEFT_STICK, JOY_BUTTON_BACK]:
+		var event := InputEventJoypadButton.new()
+		event.device = device
+		event.button_index = index
+		event.pressed = false
+		app._input(event)
 
 func _initialize() -> void: _run.call_deferred()
 
@@ -64,6 +76,7 @@ func _run() -> void:
 	setup.save_button.grab_focus()
 	await button(JOY_BUTTON_A)
 	check("one Save stores and activates the selected controller", app.controllers.registry.selected_device_id("flight") == 15 and app.controllers.store.load_all().profiles.size() == 1)
+	observe_flight_switches_off()
 	check("Save returns to Home without launching and restores focus", app.screens.is_top("home") and app.flight == null and root.gui_get_focus_owner() == app.home.controls_button)
 	check("Home launch displays selected controller glyph", app.home.fly_button.icon != null)
 	app.home.fly_button.grab_focus()
@@ -82,6 +95,7 @@ func _run() -> void:
 	app.pause_menu.continue_button.grab_focus()
 	await button(JOY_BUTTON_A)
 	check("A Continue resumes only after arming", app.pause_menu == null and not session.sim.paused)
+	observe_flight_switches_off() # aircraft capabilities make its rate binding live at flight admission
 	var old_view: String = app.flight._rig.view
 	await button(JOY_BUTTON_Y, 14)
 	check("other controller cannot change camera", app.flight._rig.view == old_view)
@@ -118,12 +132,31 @@ func _run() -> void:
 	held_restart.device = 15
 	held_restart.button_index = JOY_BUTTON_BACK
 	held_restart.pressed = true
+	var tick_before_restart: int = session.sim.tick
 	app._input(held_restart)
-	check("controller button restart resumes without Continue", app.pause_menu == null and not session.sim.paused)
+	check("controller button restart resets and resumes without Continue", tick_before_restart > 0 and session.sim.tick == 0 and app.pause_menu == null and not session.sim.paused)
 	await create_timer(0.1).timeout
 	var restart_tick: int = session.sim.tick
 	app._input(held_restart)
 	check("holding restart cannot reset the resumed flight again", app.pause_menu == null and session.sim.tick == restart_tick and restart_tick > 0)
+	held_restart.pressed = false
+	app._input(held_restart)
+	var real_recorder: RefCounted = app.flight.recorder
+	var failing_recorder := FailingRecorder.new()
+	app.flight.recorder = failing_recorder
+	var tick_before_refused: int = session.sim.tick
+	held_restart.pressed = true
+	app._input(held_restart)
+	await ui.settle() # trace recovery publishes its dialog after the prior native window releases
+	check("controller restart honors the recording recovery guard", failing_recorder.stop_calls == 1 \
+		and app._trace_recovery_dialog != null and app._exit_request_active and session.sim.tick == tick_before_refused)
+	app._on_trace_recovery_action(&"stay")
+	await ui.settle()
+	check("Stay after immediate restart leaves a focused paused action", app.screens.is_top("pause")
+		and session.sim.paused and Screen.can_focus(root.gui_get_focus_owner()))
+	app.flight.recorder = real_recorder
+	app.continue_flight()
+	await ui.settle()
 	held_restart.pressed = false
 	app._input(held_restart)
 	await button(JOY_BUTTON_START)
@@ -177,6 +210,7 @@ func _run() -> void:
 
 func _test_helicopter_flow() -> void:
 	app.controllers.select_devices(15, 15)
+	observe_flight_switches_off()
 	app.set_aircraft("xcell-60-research")
 	app.home.start_choice = "runway"
 	app.open_controls()
@@ -227,3 +261,14 @@ func _test_helicopter_flow() -> void:
 	check("Pause helicopter settings retain aircraft context", setup._action_bindings.helicopter_hold.get("button", -1) == JOY_BUTTON_B and setup._action_bindings.flaps_cycle.type == "unbound")
 	setup.request_close()
 	app.end_flight()
+
+
+class FailingRecorder extends RefCounted:
+	var recording := true
+	var stop_calls := 0
+	var note := ""
+	func stop(_path := "") -> Error:
+		stop_calls += 1
+		recording = false
+		note = "trace save failed: error %d" % ERR_CANT_CREATE
+		return ERR_CANT_CREATE

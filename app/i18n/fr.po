@@ -9603,3 +9603,15 @@ msgstr "Paramètres d’affichage restaurés. Les autres modifications ne sont p
 
 msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
 msgstr "Appliqué à ce vol et à ses redémarrages. Les réglages de vol par défaut restent inchangés."
+
+msgid "Language applied for this session, but it could not be saved (error %d)."
+msgstr "La langue est appliquée à cette session, mais n’a pas pu être enregistrée (erreur %d)."
+
+msgid "This settings file is protected from overwrite."
+msgstr "Ce fichier de paramètres est protégé contre l’écrasement."
+
+msgid "Check that the settings folder is writable, then retry."
+msgstr "Vérifiez que le dossier des paramètres est accessible en écriture, puis réessayez."
+
+msgid "Retry"
+msgstr "Réessayer"

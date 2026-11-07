@@ -8629,3 +8629,15 @@ msgstr "显示设置已恢复。其他更改尚未保存。"
 
 msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
 msgstr "已应用于本次飞行及其重新开始。默认飞行设置未更改。"
+
+msgid "Language applied for this session, but it could not be saved (error %d)."
+msgstr "语言已应用于本次会话，但无法保存（错误 %d）。"
+
+msgid "This settings file is protected from overwrite."
+msgstr "此设置文件受保护，无法覆盖。"
+
+msgid "Check that the settings folder is writable, then retry."
+msgstr "请确认设置文件夹可写入，然后重试。"
+
+msgid "Retry"
+msgstr "重试"

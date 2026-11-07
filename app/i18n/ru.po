@@ -9431,3 +9431,15 @@ msgstr "Настройки экрана восстановлены. Осталь
 
 msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
 msgstr "Применено к этому полёту и его перезапускам. Настройки полёта по умолчанию не изменены."
+
+msgid "Language applied for this session, but it could not be saved (error %d)."
+msgstr "Язык применён к текущему сеансу, но сохранить его не удалось (ошибка %d)."
+
+msgid "This settings file is protected from overwrite."
+msgstr "Этот файл настроек защищён от перезаписи."
+
+msgid "Check that the settings folder is writable, then retry."
+msgstr "Проверьте доступ на запись в папку настроек и повторите попытку."
+
+msgid "Retry"
+msgstr "Повторить"

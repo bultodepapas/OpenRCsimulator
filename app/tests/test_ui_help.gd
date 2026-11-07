@@ -11,6 +11,8 @@ const Reference := preload("res://ui/controls_reference.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const UiInput := preload("res://ui/ui_input.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 const PREFS := "user://test_ui_help_settings.cfg"
 
 var _failures := 0
@@ -46,6 +48,63 @@ func _label_texts(n: Node) -> PackedStringArray:
 	return out
 
 
+func _check_gamepad_scrolling() -> void:
+	root.size = Vector2i(1920, 1080)
+	for locale: String in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		for scale: float in [1.0, 2.0]:
+			UiTheme.text_scale = scale
+			UiInput.set_gamepad(UiDriver.FAKE_DEVICE, {navigate_down = {type = "button", button = JOY_BUTTON_Y}})
+			var help := HelpScreen.new()
+			root.add_child(help)
+			help.set_process(false)
+			await ui.settle()
+			help._help_scroll.grab_focus()
+			await ui.settle()
+			var bar := help._help_scroll.get_v_scroll_bar()
+			var foreign := InputEventJoypadMotion.new()
+			foreign.device = UiDriver.FAKE_DEVICE + 1
+			foreign.axis = JOY_AXIS_LEFT_Y
+			foreign.axis_value = 1.0
+			Input.parse_input_event(foreign)
+			await ui.settle()
+			_check("%s %.0f%% foreign radio cannot scroll Help" % [locale, scale * 100.0], bar.value == 0.0)
+			var press := InputEventJoypadButton.new()
+			press.device = UiDriver.FAKE_DEVICE
+			press.button_index = JOY_BUTTON_Y
+			press.pressed = true
+			Input.parse_input_event(press)
+			await ui.settle()
+			_check("%s %.0f%% remapped pad scrolls while reading stays focused" % [locale, scale * 100.0],
+				bar.value > 0.0 and help._help_scroll.has_focus())
+			for repeat: int in 100:
+				help._process(0.1)
+			_check("%s %.0f%% held pad reaches the final Help section" % [locale, scale * 100.0], bar.value == bar.max_value - bar.page)
+			press.pressed = false
+			Input.parse_input_event(press)
+			await ui.settle()
+			help._process(0.5)
+			_check("Help release stops repeated scrolling", help._scroll_direction == 0)
+			await ui.tap(KEY_HOME)
+			_check("keyboard Home remains available in Help", bar.value == 0.0)
+			await ui.tap(KEY_END)
+			_check("keyboard End remains available in Help", bar.value == bar.max_value - bar.page)
+			await ui.joy_axis(JOY_AXIS_LEFT_Y, -1.0)
+			for repeat: int in 100:
+				help._process(0.1)
+			_check("selected stick reaches the beginning of Help", bar.value == 0.0)
+			await ui.joy_axis(JOY_AXIS_LEFT_Y, 0.0)
+			await ui.joy_axis(JOY_AXIS_LEFT_X, 1.0)
+			_check("selected pad has a direct route from reading to Close", help.close_button.has_focus())
+			await ui.joy_axis(JOY_AXIS_LEFT_X, 0.0)
+			help.free()
+			await process_frame
+	UiInput.isolate_joypads()
+	UiTheme.text_scale = 1.0
+	TranslationServer.set_locale("en")
+	root.size = Vector2i(1280, 720)
+
+
 func _run() -> void:
 	root.size = Vector2i(1280, 720) # headless Window otherwise defaults to 64×64
 	await process_frame
@@ -61,6 +120,7 @@ func _run() -> void:
 	TranslationServer.set_locale("es")
 	_check("named keys are translated", KeyLabels.label(KEY_ENTER) == "Intro" and KeyLabels.label(KEY_UP) == "Flecha arriba")
 	TranslationServer.set_locale("en")
+	await _check_gamepad_scrolling()
 
 	# Help from Home.
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))

@@ -109,6 +109,10 @@ var _master_slider: HSlider
 var _master_value: Label
 var _test_sound_button: Button
 var _status: Label
+var _language_status: Label
+var _language_retry: Button
+var _language_save_error: int = OK
+var _language_save_protected := false
 var _keep_button: Button
 var _revert_button: Button
 
@@ -501,6 +505,15 @@ func _build() -> void:
 	_status.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_layout_shell.add_child(_status)
+	_language_status = Widgets.label("", "SecondaryLabel", true)
+	_language_status.name = "LanguageSaveStatus"
+	_language_status.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_language_status.visible = false
+	interface_page.add_child(_language_status)
+	_language_retry = _button("Retry", "QuietButton", "RetryLanguageSave")
+	_language_retry.visible = false
+	_language_retry.pressed.connect(func() -> void: language_changed.emit(_language))
+	interface_page.add_child(_language_retry)
 	var actions := Widgets.button_row()
 	_revert_button = _button("Revert", "", "Revert")
 	_revert_button.pressed.connect(_revert)
@@ -935,6 +948,28 @@ func _language_selected(index: int) -> void:
 	language_changed.emit(_language)
 
 
+func set_language_save_outcome(error: int, protected_file := false) -> void:
+	_language_save_error = error
+	_language_save_protected = protected_file
+	if error == OK and _language_retry.has_focus() and _language_picker.is_visible_in_tree():
+		_language_picker.grab_focus()
+	_refresh_language_save_text()
+	if error != OK and _language_status.is_visible_in_tree():
+		_scroll.ensure_control_visible.call_deferred(_language_status)
+
+
+func _refresh_language_save_text() -> void:
+	_language_status.visible = _language_save_error != OK
+	_language_retry.visible = _language_save_error != OK
+	_language_retry.disabled = _language_save_protected
+	if _language_save_error != OK:
+		_language_status.text = tr("Language applied for this session, but it could not be saved (error %d).") % _language_save_error
+		_language_status.text += " " + (tr("This settings file is protected from overwrite.") if _language_save_protected \
+			else tr("Check that the settings folder is writable, then retry."))
+	else:
+		_language_status.text = ""
+
+
 func _on_presentation_option_changed() -> void:
 	_emit_presentation()
 	_refresh_shadow_info()
@@ -1044,6 +1079,7 @@ func _sync_controls() -> void:
 	_volume_slider.set_value_no_signal(float(_draft.menu_volume))
 	_master_slider.set_value_no_signal(float(_draft.get("master_volume", 1.0)))
 	_refresh_volume_text()
+	_refresh_language_save_text()
 	_sync_action_buttons()
 
 
@@ -1313,6 +1349,7 @@ func _refresh_translated_text() -> void:
 	if _status != null:
 		_refresh_status_text()
 	_refresh_volume_text()
+	_refresh_language_save_text()
 
 
 func _set_localized_tooltip(control: Control, source: String) -> void:

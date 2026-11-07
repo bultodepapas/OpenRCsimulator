@@ -162,6 +162,18 @@ func check_stack_fallbacks() -> void:
 	newer.grab_focus()
 	lower.ensure_focus()
 	check("fallback preserves an existing valid selection", newer.has_focus())
+	var fallback_calls := [0]
+	lower.focus_fallback = func() -> void:
+		fallback_calls[0] += 1
+		fallback.grab_focus()
+	lower.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+	lower.ensure_focus()
+	check("exit-held recursive focus is not a usable opener", not Screen.can_focus(newer) and not Screen.can_focus(fallback))
+	check("exit-held screen does not invoke its focus fallback", fallback_calls[0] == 0 and root.gui_get_focus_owner() == null)
+	lower.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED
+	lower.ensure_focus()
+	check("released exit hold restores a usable fallback", fallback_calls[0] == 1 and fallback.has_focus())
+	newer.grab_focus()
 	var detached := Screen.new()
 	detached.return_focus = fallback
 	detached.close()

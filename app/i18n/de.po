@@ -9574,3 +9574,15 @@ msgstr "Anzeigeeinstellungen wiederhergestellt. Die übrigen Änderungen sind no
 
 msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
 msgstr "Gilt für diesen Flug und seine Neustarts. Die Flugvorgaben bleiben unverändert."
+
+msgid "Language applied for this session, but it could not be saved (error %d)."
+msgstr "Die Sprache gilt für diese Sitzung, konnte aber nicht gespeichert werden (Fehler %d)."
+
+msgid "This settings file is protected from overwrite."
+msgstr "Diese Einstellungsdatei ist gegen Überschreiben geschützt."
+
+msgid "Check that the settings folder is writable, then retry."
+msgstr "Prüfe, ob der Einstellungsordner beschreibbar ist, und versuche es erneut."
+
+msgid "Retry"
+msgstr "Erneut versuchen"

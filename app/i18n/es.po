@@ -8224,3 +8224,15 @@ msgstr "Configuración de pantalla restaurada. Los demás cambios siguen sin gua
 
 msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
 msgstr "Aplicado a este vuelo y sus reinicios. Los valores predeterminados de vuelo no han cambiado."
+
+msgid "Language applied for this session, but it could not be saved (error %d)."
+msgstr "El idioma se aplicó a esta sesión, pero no se pudo guardar (error %d)."
+
+msgid "This settings file is protected from overwrite."
+msgstr "Este archivo de configuración está protegido contra sobrescritura."
+
+msgid "Check that the settings folder is writable, then retry."
+msgstr "Comprueba que se pueda escribir en la carpeta de configuración y vuelve a intentarlo."
+
+msgid "Retry"
+msgstr "Reintentar"

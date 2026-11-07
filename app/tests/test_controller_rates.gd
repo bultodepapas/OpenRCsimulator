@@ -135,6 +135,8 @@ func _test_routing_and_shaping() -> void:
 	root.add_child(shell)
 	shell.set_process(false)
 	check("actual airplane advertises available rates", flight.controller_capabilities().rates)
+	shell._input(button(JOY_BUTTON_LEFT_STICK, false))
+	shell._input(button(JOY_BUTTON_BACK, false))
 	var state_before: PackedFloat64Array = session.sim.state.duplicate()
 	var aux_before: PackedFloat64Array = session.sim.aux.duplicate()
 	shell._input(button(JOY_BUTTON_LEFT_STICK, true, 8))
@@ -168,11 +170,13 @@ func _test_routing_and_shaping() -> void:
 	shell._clear_controller_actions()
 	shell._input(button(JOY_BUTTON_LEFT_STICK))
 	check("joystick has no inferred L3 toggle in the real router", session.rate_profile == "sport")
+	shell._input(button(25, false)) # a new binding must first be observed OFF
 	shell._input(button(25))
 	check("explicit joystick button switches to Normal", session.rate_profile == "normal")
 	shell._input(button(25, false))
 	service.profile.actions.rates_toggle = {type = "axis", axis = 9, sign = 1, threshold = 0.65}
 	shell._clear_controller_actions()
+	shell._input(motion(0.0))
 	for value in [0.66, 0.64, 0.66]:
 		shell._input(motion(value))
 	check("axis activation and jitter create one rate switch", session.rate_profile == "sport")
@@ -210,6 +214,7 @@ func _test_routing_and_shaping() -> void:
 	check("opposite directions of an unused axis can select rates and restart", Actions.validate_profile_bindings(service.profile).ok)
 	shell._clear_controller_actions()
 	session.rate_profile = "sport"
+	shell._input(motion(0.0))
 	shell._input(motion(0.8))
 	check("positive axis direction selects Normal before shared-axis restart", session.rate_profile == "normal")
 	shell._input(motion(-0.8))
@@ -224,6 +229,7 @@ func _test_routing_and_shaping() -> void:
 	check("opposite axis directions can select rates and hold throttle cut", Actions.validate_profile_bindings(service.profile).ok)
 	shell._clear_controller_actions()
 	session.rate_profile = "sport"
+	shell._input(motion(0.0))
 	shell._input(motion(-0.8))
 	check("negative axis direction holds throttle cut without changing rates", session.controller_cut_held and session.rate_profile == "sport")
 	shell._input(motion(0.8))

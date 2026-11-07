@@ -17,6 +17,8 @@ const LAYER := 5 # above the flight's HUD, below the pause menu (which dims it)
 var duration_s := 10.0
 var _session: Node
 var _flown := 0.0
+var _last_sim_time := 0.0
+var _exposed_last_frame := false
 var _finished := false
 var _vehicle_type := Reference.AIRPLANE
 var _card: PanelContainer
@@ -27,6 +29,7 @@ func _init(session: Node, vehicle_type: String = Reference.AIRPLANE) -> void:
 	name = "FirstFlightHint"
 	layer = LAYER
 	_session = session
+	_last_sim_time = float(_session.sim.time())
 	_vehicle_type = Reference.ROTORCRAFT if vehicle_type == Reference.ROTORCRAFT else Reference.AIRPLANE
 	var screen := Control.new()
 	screen.theme = UiTheme.build()
@@ -88,14 +91,18 @@ func _layout_card() -> void:
 	_card.offset_bottom = -(gutter * 2.0 + action_height)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if _finished:
 		return
 	# This card describes keyboard flight. A selected/lost controller owns those
 	# channels until keyboard recovery is explicitly chosen in Controls.
 	visible = not _session.radio.connected and not bool(_session.get("_controller_lost"))
-	if not _session.sim.paused:
-		_flown += delta
+	var now := float(_session.sim.time())
+	var exposed: bool = visible and _card.is_visible_in_tree() and not _session.sim.paused
+	if exposed and _exposed_last_frame:
+		_flown += maxf(0.0, now - _last_sim_time)
+	_last_sim_time = now
+	_exposed_last_frame = exposed
 	if _flown >= duration_s:
 		finish()
 

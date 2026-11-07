@@ -8680,3 +8680,15 @@ msgstr "表示設定を元に戻しました。他の変更はまだ保存され
 
 msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
 msgstr "このフライトとその再スタートに適用しました。フライトの既定設定は変更されません。"
+
+msgid "Language applied for this session, but it could not be saved (error %d)."
+msgstr "このセッションに言語を適用しましたが、保存できませんでした（エラー %d）。"
+
+msgid "This settings file is protected from overwrite."
+msgstr "この設定ファイルは上書きから保護されています。"
+
+msgid "Check that the settings folder is writable, then retry."
+msgstr "設定フォルダーに書き込めることを確認して、再試行してください。"
+
+msgid "Retry"
+msgstr "再試行"

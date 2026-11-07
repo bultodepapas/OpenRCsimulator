@@ -332,6 +332,7 @@ func _run() -> void:
 	_check("nested Help keeps ticks held", app.screens.is_top("help") and session.sim.tick == held_tick
 		and session.holds.has("menu") and session.sim.paused)
 	await ui.tap(KEY_ESCAPE)
+	await _language_save_feedback(settings, held_tick)
 
 	await ui.tap(KEY_ESCAPE) # Settings closes to Pause; it must not resume the flight.
 	await ui.settle()
@@ -350,6 +351,49 @@ func _run() -> void:
 	_clean_preferences()
 	print("all Settings integration checks passed" if _failures == 0 else "%d Settings integration checks failed" % _failures)
 	quit(0 if _failures == 0 else 1)
+
+
+func _language_save_feedback(settings: CanvasLayer, held_tick: int) -> void:
+	var original := FileAccess.get_file_as_bytes(PREFS)
+	var cfg := ConfigFile.new()
+	cfg.load(PREFS)
+	cfg.set_value("meta", "schema", 99)
+	cfg.save(PREFS)
+	app.preferences = Preferences.load_from(PREFS)
+	var protected_bytes := FileAccess.get_file_as_bytes(PREFS)
+	for index: int in [0, 1]:
+		settings._language_picker.select(index)
+		settings._language_picker.item_selected.emit(index)
+	await ui.settle()
+	_check("protected language save reports the session outcome on the active paused Settings in Spanish",
+		app.screens.is_top("settings") and TranslationServer.get_locale() == "es"
+		and settings._language_status.is_visible_in_tree()
+		and settings._language_status.text.begins_with("El idioma se aplicó a esta sesión")
+		and settings._language_retry.disabled and FileAccess.get_file_as_bytes(PREFS) == protected_bytes)
+	var restored := FileAccess.open(PREFS, FileAccess.WRITE)
+	restored.store_buffer(original)
+	restored.close()
+	app.preferences = Preferences.load_from(PREFS)
+	var blocked_path := PREFS + ".blocked"
+	var blocker := FileAccess.open(blocked_path, FileAccess.WRITE)
+	blocker.store_string("unwritable parent fixture")
+	blocker.close()
+	app.preferences_path = blocked_path + "/settings.cfg"
+	for index: int in [0, 1]:
+		settings._language_picker.select(index)
+		settings._language_picker.item_selected.emit(index)
+	await ui.settle()
+	_check("unwritable language save offers Retry and preserves the file", settings._language_status.is_visible_in_tree()
+		and settings._language_status.text.contains("carpeta de configuración") and not settings._language_retry.disabled
+		and FileAccess.get_file_as_bytes(PREFS) == original)
+	app.preferences_path = PREFS
+	settings._language_retry.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("successful language Retry clears its stale error without releasing Pause", not settings._language_status.visible
+		and not settings._language_retry.visible and Preferences.load_from(PREFS).language == "es"
+		and app.flight.session.sim.paused and app.flight.session.sim.tick == held_tick)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(blocked_path))
 
 
 func _wait(seconds: float) -> void:

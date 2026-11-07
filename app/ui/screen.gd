@@ -94,7 +94,8 @@ func close(restore_focus := true) -> void:
 
 
 func ensure_focus() -> void:
-	if not _active or not is_inside_tree() or not is_visible_in_tree() or is_queued_for_deletion():
+	if not _active or not is_inside_tree() or not is_visible_in_tree() or is_queued_for_deletion() \
+			or focus_behavior_recursive == Control.FOCUS_BEHAVIOR_DISABLED:
 		return
 	if can_focus(get_viewport().gui_get_focus_owner()):
 		return
@@ -105,7 +106,7 @@ func ensure_focus() -> void:
 static func can_focus(control: Variant) -> bool:
 	return is_instance_valid(control) and control is Control and control.is_inside_tree() \
 		and not control.is_queued_for_deletion() and control.is_visible_in_tree() \
-		and control.focus_mode != Control.FOCUS_NONE \
+		and control.get_focus_mode_with_override() != Control.FOCUS_NONE \
 		and (not control is BaseButton or not control.disabled)
 
 

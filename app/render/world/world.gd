@@ -189,6 +189,14 @@ static func restore_presentation_context(context: Variant) -> bool:
 	var restored_live: Variant = context.get("live", _live)
 	if not restored_moon.ok or not restored_session is Dictionary or not restored_when is Dictionary or not restored_live is Dictionary:
 		return false
+	if not restored_session.is_empty() and not MoonConfig.validate(restored_session).ok:
+		return false
+	if not restored_live.is_empty():
+		for key: String in ["environment", "sun", "parent"]:
+			if not restored_live.get(key) is WeakRef:
+				return false
+		if not restored_live.get("when", {}) is Dictionary:
+			return false
 
 	_moon_config = restored_moon.config.duplicate(true)
 	MoonConfig.session_config = restored_session.duplicate(true)

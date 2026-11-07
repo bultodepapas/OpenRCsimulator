@@ -5,6 +5,7 @@ extends RefCounted
 static var _selected_gamepad_id := -1
 static var _original_action_deadzones: Dictionary = {}
 static var _generated_key_events: Dictionary = {}
+static var _suspended_cancel_keys: Array[InputEvent] = []
 
 
 ## Erases joypad events from ui_* actions. Keyboard and mouse navigation remain untouched.
@@ -53,6 +54,28 @@ static func set_gamepad(device_id: int, bindings: Dictionary = {}) -> int:
 
 static func selected_gamepad_id() -> int:
 	return _selected_gamepad_id
+
+
+## A custom Back key also lives in ui_cancel for native popups. Temporarily remove
+## only our generated keys while a focused editor handles that same key; otherwise
+## native LineEdit/TextEdit treats a printable character as Cancel before inserting.
+static func suspend_generated_cancel_key() -> bool:
+	if not InputMap.has_action("ui_cancel"):
+		return false
+	for event: InputEvent in _generated_key_events.get("ui_cancel", []):
+		if event is InputEventKey and InputMap.action_has_event("ui_cancel", event):
+			if not _suspended_cancel_keys.has(event): _suspended_cancel_keys.append(event)
+			InputMap.action_erase_event("ui_cancel", event)
+	return not _suspended_cancel_keys.is_empty()
+
+
+static func restore_generated_cancel_key() -> void:
+	if InputMap.has_action("ui_cancel"):
+		for event: InputEvent in _suspended_cancel_keys:
+			# A device/profile change can replace this mapping before the deferred restore.
+			if _generated_key_events.get("ui_cancel", []).has(event) and not InputMap.action_has_event("ui_cancel", event):
+				InputMap.action_add_event("ui_cancel", event)
+	_suspended_cancel_keys.clear()
 
 
 ## Joypad UI bindings, with device IDs included for selected-device isolation checks.

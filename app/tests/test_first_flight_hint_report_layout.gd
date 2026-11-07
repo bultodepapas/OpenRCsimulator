@@ -7,9 +7,15 @@ const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 
 
+class FakeClock extends RefCounted:
+	var paused := false
+	func time() -> float:
+		return 0.0
+
+
 class FakeFlight extends Node:
 	var radio := {connected = false}
-	var sim := {paused = false}
+	var sim := FakeClock.new()
 	var _controller_lost := false
 
 
