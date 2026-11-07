@@ -6109,6 +6109,9 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 	_shaft_pending_reset = false
 	_airframe_offset = restored_airframe_offset
 	_deflection_key = PackedFloat64Array()
+	# Backend admission reads this cache as well as the staged aux layout. Stage
+	# both atomically; the start transaction restores the old cache on refusal.
+	_turbulence_aux_index = expected_aux - 7 if turbulent else -1
 	_prepare_stage_backend(float(snapshot.tick) * float(snapshot.dt), str(recorded_backend.backend))
 	if recorded_backend != stage_backend_identity():
 		return false

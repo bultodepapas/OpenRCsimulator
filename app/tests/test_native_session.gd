@@ -13,6 +13,26 @@ const Weather := preload("res://physics/wind_config.gd")
 const VisualCheckpoint := preload("res://app_state/visual_checkpoint.gd")
 const VisualTimeline := preload("res://environment/visual_timeline.gd")
 const VisualConfig := preload("res://environment/time_of_day_config.gd")
+const WeatherAdapter := preload("res://sim/native/weather_adapter.gd")
+
+
+class RestoreProbe extends Flight:
+	var inspect_restore := false
+	var refuse_prepared_backend := false
+	var preparations: Array[Dictionary] = []
+
+	func stage_backend_identity() -> Dictionary:
+		if refuse_prepared_backend and not preparations.is_empty():
+			return {backend = "deliberate-test-preparation-refusal"}
+		return super.stage_backend_identity()
+
+	func _prepare_stage_backend(time_now := NAN, backend := "") -> void:
+		if inspect_restore:
+			var provider := WeatherAdapter.provider_identity(self)
+			preparations.append({index = _turbulence_aux_index,
+				expected = turbulence_index() if _weather.has_turbulence() else -1,
+				provider_ok = provider.ok, reason = provider.get("reason", "")})
+		super._prepare_stage_backend(time_now, backend)
 
 const STIK := "jensen-das-ugly-stik-60"
 const P51 := "p51d-mustang-120"
@@ -39,8 +59,8 @@ func _initialize() -> void:
 	call_deferred("run_all")
 
 
-func runway(mode: String, id := STIK) -> Node:
-	var session: Node = Flight.new()
+func runway(mode: String, id := STIK, probe := false) -> Node:
+	var session: Node = RestoreProbe.new() if probe else Flight.new()
 	session.input_enabled = true
 	session.crash_auto_restart = false
 	session.soft_hull_contacts = true
@@ -436,6 +456,110 @@ func weather_lifecycle(expect_native: bool) -> void:
 	session.free()
 
 
+## Restore between two v2 layouts, rather than the historical calm-v1 refusal.
+## Probe the production adapter at the exact prepare boundary even without a native library.
+func weather_layout_restore(backend: String) -> void:
+	var steady: Dictionary = Weather.preset("turbulent")
+	steady.turbulence_rms_mps = [0.0, 0.0, 0.0]
+	steady.speed_mps = 3.0
+	var configs := {"steady-v2": steady, "turbulent": Weather.preset("turbulent")}
+	for source_weather: String in ["steady-v2", "turbulent"]:
+		for saved_tick: int in [0, 37]:
+			var source := runway(backend)
+			var probing := backend == NativeStage.BACKEND_REFERENCE
+			var target := runway(backend, STIK, probing)
+			var other := "turbulent" if source_weather == "steady-v2" else "steady-v2"
+			check("layout source selection", source.setup_weather(configs[source_weather]))
+			check("layout target selection", target.setup_weather(configs[other]))
+			source.reset()
+			target.reset()
+			check("layout fixtures use the requested backend", source.stage_backend_identity().backend == backend
+				and target.stage_backend_identity().backend == backend)
+			for tick: int in saved_tick: source.sim.step()
+			var snapshot: Dictionary = source.checkpoint()
+			check("layout snapshot is v2 weather", not snapshot.is_empty()
+				and snapshot.weather_config.format == Weather.TURBULENCE_FORMAT)
+			if probing:
+				var original_cache: int = target._turbulence_aux_index
+				var original_bytes := physical(target)
+				var original_checkpoint := var_to_bytes(target.checkpoint())
+				target.inspect_restore = true
+				target.refuse_prepared_backend = true
+				check("layout restore refuses after candidate preparation", not target.restore_checkpoint(snapshot)
+					and target.preparations.size() == 1 and target.preparations[0].index != original_cache)
+				target.refuse_prepared_backend = false
+				check("layout refusal restores bytes and cache", physical(target) == original_bytes
+					and target._turbulence_aux_index == original_cache
+					and var_to_bytes(target.checkpoint()) == original_checkpoint)
+				target.sim.step()
+				check("original reference owner advances after layout rollback", target.sim.tick == 1
+					and target.sim.fault_reason.is_empty())
+				target.preparations.clear()
+			if probing: target.inspect_restore = true
+			var restored: bool = target.restore_checkpoint(snapshot)
+			var label := "%s %s tick %d" % [backend, source_weather, saved_tick]
+			if probing:
+				check(label + " stages the candidate cache before preparation", target.preparations.size() == 1
+					and target.preparations[0].index == target.preparations[0].expected
+					and target.preparations[0].provider_ok, str(target.preparations))
+			check(label + " restores exact backend and bytes", restored
+				and source.stage_backend_identity() == target.stage_backend_identity()
+				and physical(source) == physical(target), str(target.stage_backend_status()))
+			if restored:
+				# Includes the next OU interval/RNG update and the next native guard.
+				for tick: int in 8:
+					source.sim.step()
+					target.sim.step()
+					check(label + " continues tick " + str(tick), physical(source) == physical(target)
+						and target.sim.fault_reason.is_empty())
+			source.free()
+			target.free()
+
+
+## Late native refusal on an explicit same-width model contract. The first
+## kernel validation sees the original helper; the final validation must see a
+## freshly staged helper before rejecting. No live provider is made invalid.
+func weather_native_restore_refusal() -> void:
+	var session := runway(NativeStage.BACKEND_NATIVE)
+	check("native refusal fixture selects OU weather", session.setup_weather(Weather.preset("turbulent")))
+	session.reset()
+	var model: RefCounted = session.sim.model
+	model.aux_size = session.sim.aux.size()
+	model.continuous_size = session.sim.continuous.size()
+	model.modes_size = session.sim.modes.size()
+	model.state_layout_identity = "native-weather-restore-refusal-v1"
+	var original := [null]
+	var reject := [false]
+	var rejected_after_prepare := [false]
+	model.state_validator = func(_frame: Dictionary, _context: Dictionary) -> bool:
+		if reject[0] and session._native_stage != original[0]:
+			rejected_after_prepare[0] = session._native_stage != null
+			return false
+		return true
+	session._prepare_stage_backend()
+	original[0] = session._native_stage
+	check("native refusal fixture resets explicit layout", session.sim.reset(session.sim.state.duplicate()))
+	for tick: int in 8: session.sim.step()
+	var snapshot: Dictionary = session.checkpoint()
+	var before := physical(session)
+	var saved := var_to_bytes(snapshot)
+	var stage: Callable = model.stage
+	var cache: int = session._turbulence_aux_index
+	reject[0] = true
+	var restored: bool = session.restore_checkpoint(snapshot)
+	reject[0] = false
+	check("native restore rejects only after fresh helper preparation", not snapshot.is_empty()
+		and not restored and rejected_after_prepare[0])
+	check("native restore refusal retains exact owner, guard and bytes", session._native_stage == original[0]
+		and model.stage == stage and session._turbulence_aux_index == cache
+		and original[0].owns_stage(session) and original[0].configuration_matches(session)
+		and physical(session) == before and var_to_bytes(session.checkpoint()) == saved)
+	session.sim.step()
+	check("native original owner advances after late refusal", session.sim.tick == 9
+		and session.sim.fault_reason.is_empty() and session.stage_backend_identity().backend == NativeStage.BACKEND_NATIVE)
+	session.free()
+
+
 func run_all() -> void:
 	var loaded_field: Dictionary = FieldLoader.load_from()
 	var loaded_lake: Dictionary = LakeLoader.load_from()
@@ -482,6 +606,10 @@ func run_all() -> void:
 			stale_mutation()
 			old_helper()
 	weather_lifecycle(prepared.ok)
+	weather_layout_restore(NativeStage.BACKEND_REFERENCE)
+	if prepared.ok:
+		weather_layout_restore(NativeStage.BACKEND_NATIVE)
+		weather_native_restore_refusal()
 	publication_guard(prepared.ok)
 	var liquid := runway(NativeStage.BACKEND_NATIVE, P51)
 	check("finite-liquid aircraft uses the available backend", liquid.stage_backend_identity().backend ==
