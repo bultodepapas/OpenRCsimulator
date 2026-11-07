@@ -11,6 +11,8 @@ signal close_requested(id: String)
 signal presentation_changed
 
 const MAX_WIDTH := 640.0
+## A five-card rail with wrapped overflow and a centered battery need about 1037 px for a 12 px gap.
+const COMPACT_VIEWPORT_HEIGHT := 1040.0
 const CLOSE_WIDTH := 28.0
 const GAP := 6.0
 const LIMITS := [1, 3, 5]
@@ -46,6 +48,7 @@ var _ghost_layer: Node2D
 var _summary_card: Dictionary
 var _detail := true
 var _limit := 3
+var _compact_viewport := false
 var _motion := "playful"
 var _opaque := false
 var _entrance: Tween
@@ -182,7 +185,7 @@ func refresh(new_codes: PackedStringArray, animate := true) -> bool:
 	if codes.is_empty():
 		_stop_entrance()
 	var appeared := false
-	for index in mini(codes.size(), _limit):
+	for index in mini(codes.size(), _visible_limit()):
 		if not previous.has(codes[index]):
 			appeared = true
 			break
@@ -216,7 +219,7 @@ func clear_immediate() -> void:
 
 
 func _render_cards(animate_change: bool, previous: PackedStringArray) -> void:
-	var shown := mini(codes.size(), _limit)
+	var shown := mini(codes.size(), _visible_limit())
 	var desired := codes.slice(0, shown)
 	_insertion_floor = -1
 	if animate_change:
@@ -492,8 +495,8 @@ func _make_card(card_name: String) -> Dictionary:
 	outer.shadow_size = 5
 	outer.content_margin_left = 9
 	outer.content_margin_right = 9
-	outer.content_margin_top = 7
-	outer.content_margin_bottom = 7
+	outer.content_margin_top = 5 if _compact_viewport else 7
+	outer.content_margin_bottom = 5 if _compact_viewport else 7
 	# The layout slot stays in the VBox. Its complete visual, including shadow,
 	# moves independently so the container never fights the motion tween.
 	card.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
@@ -637,11 +640,29 @@ func _resize_glass(card: Control, glass: ColorRect, material: ShaderMaterial, su
 	material.set_shader_parameter("rect_size", card.size)
 
 
+## The requested limit is a maximum; keep overflow and every hidden danger name on short screens.
+func _visible_limit() -> int:
+	return mini(_limit, 3) if _compact_viewport else _limit
+
+
 func _resize_to_viewport() -> void:
-	var width := minf(MAX_WIDTH, maxf(0.0, get_viewport_rect().size.x - 24.0))
-	if is_equal_approx(custom_minimum_size.x, width): return
-	custom_minimum_size.x = width
-	reset_size()
+	var viewport := get_viewport_rect().size
+	var width := minf(MAX_WIDTH, maxf(0.0, viewport.x - 24.0))
+	var compact := viewport.y < COMPACT_VIEWPORT_HEIGHT
+	var changed := compact != _compact_viewport
+	_compact_viewport = compact
+	if not is_equal_approx(custom_minimum_size.x, width):
+		custom_minimum_size.x = width
+		reset_size()
+	if changed:
+		var was_presenting := is_presenting()
+		for card: Dictionary in _cards + [_summary_card]:
+			card.outer.content_margin_top = 5 if compact else 7
+			card.outer.content_margin_bottom = 5 if compact else 7
+		_stop_entrance()
+		_settle_motion()
+		_render_cards(false, codes)
+		if was_presenting and not is_presenting(): presentation_changed.emit()
 
 
 func _start_entrance() -> void:

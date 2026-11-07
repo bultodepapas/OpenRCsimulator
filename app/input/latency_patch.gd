@@ -3,6 +3,7 @@
 extends CanvasLayer
 
 const Frame := preload("res://render/overlays/overlay_frame.gd")
+const AlertRail := preload("res://render/overlays/warnings_bar.gd")
 signal closed
 
 const INACTIVE: Color = Color(0.4, 0.4, 0.4)
@@ -96,7 +97,33 @@ func _ready() -> void:
 	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	explanation.add_theme_font_size_override("font_size", 13)
 	stack.add_child(explanation)
+	if left_side:
+		get_viewport().size_changed.connect(_layout_left)
+		_layout_left.call_deferred()
 	_sync_processing()
+
+
+## Reserve the warning rail's horizontal lane without moving the camera target as alerts change.
+func _layout_left() -> void:
+	var panel := get_child(0) as Control
+	var viewport := get_viewport().get_visible_rect().size
+	var rail_width := minf(AlertRail.MAX_WIDTH, maxf(0.0, viewport.x - 24.0))
+	var rail_left := (viewport.x - rail_width) * 0.5
+	var right := 332.0 + maxf(panel.size.x, panel.get_combined_minimum_size().x)
+	if right <= rail_left:
+		panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+		panel.grow_vertical = Control.GROW_DIRECTION_END
+		panel.offset_left = 332
+		panel.offset_right = 332
+		panel.offset_top = 180
+		panel.offset_bottom = 180
+	else:
+		panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+		panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		panel.offset_left = 332
+		panel.offset_right = 332
+		panel.offset_top = -12
+		panel.offset_bottom = -12
 
 
 ## Hidden/closed targets do no work. Revealing samples again before the next drawn frame.

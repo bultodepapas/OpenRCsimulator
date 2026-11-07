@@ -496,6 +496,9 @@ func _refresh_warnings(animate := true) -> void:
 		frames.warnings.visible = false
 		alert_audio.retire_playbacks()
 		return
+	# Keep selection and audio observations current without redrawing a hidden layer.
+	if not visible:
+		return
 	# Make arrivals visible before starting their tween. Empty truth retains only a brief,
 	# inaccessible glass silhouette; the signal hides the rail after its final exit.
 	if not _warning_codes.is_empty(): frames.warnings.visible = true

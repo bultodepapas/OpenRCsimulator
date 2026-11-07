@@ -12,6 +12,7 @@ const Manager := preload("res://render/overlays/overlay_manager.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
 const Telemetry := preload("res://render/overlays/telemetry.gd")
 const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
+const AlertPolicy := preload("res://render/overlays/alert_policy.gd")
 const Frame := preload("res://render/overlays/overlay_frame.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const LatencyPatch := preload("res://input/latency_patch.gd")
@@ -48,6 +49,7 @@ func _run() -> void:
 	_settings_and_texts()
 	await _panel()
 	await _layout()
+	await _resize_warning_exit()
 	await _warnings_in_flight()
 	await _hidden_presentation()
 	print("overlay battery: %d checks, %d failed" % [_count, _failures])
@@ -90,6 +92,7 @@ func _hidden_presentation() -> void:
 	manager.refresh_numbers(next)
 	_check("hidden layer skips battery, transmitter and warning presentation", panel.values.pack_v.text == old_voltage and manager.frames.transmitter.footer.text == old_footer and manager.frames.warnings.codes == old_codes)
 	_check("hidden layer still samples charge and peak speed", manager._battery_reading.used_mah_raw > 0.0 and manager.peak_airspeed == 55.0)
+	_check("hidden warnings retain current selection without redrawing", manager._warning_codes == PackedStringArray(["stall"]) and manager.frames.warnings.codes == old_codes)
 	_check("hidden detailed battery does not export histories", manager._battery_reading.history_v.is_empty())
 	manager.visible = true
 	_check("showing layer requests immediate refresh", is_inf(manager._since_text))
@@ -297,8 +300,8 @@ func _other_alarms() -> void:
 		Array(Telemetry.battery_warnings(_ecm(), every)) == ["battery_empty", "battery_critical", "battery_lvc", "battery_hot"])
 	_check("80 % used alone: BATTERY LOW (caution)", Array(Telemetry.battery_warnings(_ecm(), ["used_capacity"])) == ["battery"])
 	_check("empty, critical and LVC are danger chips; low and hot are caution",
-		["battery_empty", "battery_critical", "battery_lvc"].all(func(c: String) -> bool: return c in WarningsBar.DANGER)
-		and not "battery" in WarningsBar.DANGER and not "battery_hot" in WarningsBar.DANGER)
+		["battery_empty", "battery_critical", "battery_lvc"].all(func(c: String) -> bool: return AlertPolicy.severity(c) == "danger")
+		and AlertPolicy.severity("battery") == "caution" and AlertPolicy.severity("battery_hot") == "caution")
 	_check("battery codes go before EXPERIMENTAL and replace stale ones",
 		Array(Telemetry.with_battery_warnings(PackedStringArray(["stall", "battery", "experimental"]), PackedStringArray(["battery_lvc"])))
 		== ["stall", "battery_lvc", "experimental"])
@@ -512,7 +515,7 @@ func _layout() -> void:
 		root.add_child(manager)
 		var panel: Control = manager.frames.battery
 		var snap := _snapshot(_ecm({ time_s = 5.0, esc_state = "hard_cut" }), PackedStringArray(["stall", "far"]))
-		for size: Vector2i in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
+		for size: Vector2i in [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 900), Vector2i(1600, 999), Vector2i(1600, 1000), Vector2i(1280, 1024), Vector2i(1600, 1039), Vector2i(1600, 1040), Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]:
 			root.size = size
 			for preset: String in ["pilot", "full"]:
 				manager.set_preset(preset)
@@ -523,6 +526,71 @@ func _layout() -> void:
 				var marker: Rect2 = (patch.get_child(0) as Control).get_global_rect()
 				_check("%s %s %dx%d: O9 shown, no overlap (latency marker included)" % [language, preset, size.x, size.y],
 					panel.visible and _layout_ok(manager, Vector2(size), { latency = marker }), _rects(manager, { latency = marker }))
+				var square_before: Rect2 = patch.marker.get_global_rect()
+				var every := PackedStringArray(["controller_lost", "stall", "low", "far", "fuel_empty"])
+				manager.refresh_numbers(_snapshot(_ecm({ time_s = 5.1, cell_voltage_min_v = 3.2, esc_state = "hard_cut" }), every))
+				var busy := _snapshot(_ecm({ time_s = 7.2, cell_voltage_min_v = 3.2, esc_state = "hard_cut" }), every)
+				manager.refresh_numbers(busy)
+				await process_frame
+				await process_frame
+				var rail: Rect2 = manager.frames.warnings.get_global_rect()
+				var marker_after: Rect2 = (patch.get_child(0) as Control).get_global_rect()
+				_check("%s %s %dx%d: alert growth leaves the camera square fixed and clear" % [language, preset, size.x, size.y],
+					patch.marker.get_global_rect() == square_before and square_before.size == Vector2(192, 192)
+					and not rail.intersects(marker_after), "%s; %s" % [rail, marker_after])
+				manager.set_warning_option("warning_limit", 5)
+				manager.refresh_numbers(busy)
+				await process_frame
+				await process_frame
+				rail = manager.frames.warnings.get_global_rect()
+				marker_after = (patch.get_child(0) as Control).get_global_rect()
+				_check("%s %s %dx%d: maximum alert rail remains clear of the fixed marker" % [language, preset, size.x, size.y],
+					patch.marker.get_global_rect() == square_before and _layout_ok(manager, Vector2(size), { latency = marker_after }), _rects(manager, { latency = marker_after }))
+				print("overlay layout %s %s %dx%d: rail %s; marker %s; square %s" % [language, preset, size.x, size.y, rail, marker_after, patch.marker.get_global_rect()])
+				var expected_cards := 3 if size.y < 1040 else 5
+				var bar: Control = manager.frames.warnings
+				var summary_detail := bar.summary.find_child("Detail", true, false) as Label
+				var hidden_dangers_named := true
+				for code: String in bar.codes.slice(expected_cards):
+					if AlertPolicy.severity(code) == "danger":
+						hidden_dangers_named = hidden_dangers_named and summary_detail.text.contains(tr(AlertPolicy.title_for(code)))
+				var summary_fits := summary_detail.size.y + 0.5 >= summary_detail.get_theme_font("font").get_height(
+					summary_detail.get_theme_font_size("font_size")) * summary_detail.get_line_count()
+				_check("%s %dx%d: requested cap survives responsive layout and hidden dangers are readable" % [language, size.x, size.y],
+					manager.settings.warning_limit == 5 and bar.chips.get_child_count() == expected_cards
+					and bar.summary.visible and bar.codes.size() > expected_cards and hidden_dangers_named and summary_fits)
+				_check("%s %dx%d: all compatible controller and battery dangers remain selected" % [language, size.x, size.y],
+					Array(bar.codes) == ["controller_lost", "stall", "low", "battery_critical", "battery_lvc", "fuel_empty", "far"], str(bar.codes))
+				var alternate := _snapshot(_ecm({ time_s = 7.3, exhausted = true }),
+					PackedStringArray(["failsafe", "stall", "low", "fuel_empty", "far"]))
+				manager.refresh_numbers(alternate)
+				await process_frame
+				await process_frame
+				marker_after = (patch.get_child(0) as Control).get_global_rect()
+				var alternate_dangers_named := true
+				for code: String in bar.codes.slice(expected_cards):
+					if AlertPolicy.severity(code) == "danger":
+						alternate_dangers_named = alternate_dangers_named and summary_detail.visible \
+							and summary_detail.text.contains(tr(AlertPolicy.title_for(code))) \
+							and summary_detail.size.y + 0.5 >= summary_detail.get_theme_font("font").get_height(
+								summary_detail.get_theme_font_size("font_size")) * summary_detail.get_line_count()
+				_check("%s %s %dx%d: alternate failsafe and empty-battery dangers stay selected and clear" % [language, preset, size.x, size.y],
+					Array(bar.codes) == ["failsafe", "stall", "low", "battery_empty", "fuel_empty", "far"] and alternate_dangers_named
+					and patch.marker.get_global_rect() == square_before and _layout_ok(manager, Vector2(size), { latency = marker_after }),
+					"%s; %s" % [bar.codes, _rects(manager, { latency = marker_after })])
+				manager.set_warning_option("warning_limit", 3)
+		manager.set_warning_option("warning_limit", 5)
+		manager.refresh_numbers(_snapshot(_ecm({ time_s = 5.2, esc_state = "hard_cut" }),
+			PackedStringArray(["failsafe", "stall", "low", "far", "fuel_empty"])))
+		for resize: Vector2i in [Vector2i(1280, 720), Vector2i(1600, 1039), Vector2i(1600, 1040), Vector2i(1920, 1080), Vector2i(1280, 720)]:
+			root.size = resize
+			await process_frame
+			await process_frame
+			var expected_cards := 3 if resize.y < 1040 else 5
+			_check("%s resize to %dx%d recomputes the visible warning cap" % [language, resize.x, resize.y],
+				manager.settings.warning_limit == 5 and manager.frames.warnings.chips.get_child_count() == expected_cards
+				and manager.frames.warnings.summary.visible)
+		manager.set_warning_option("warning_limit", 3)
 		root.size = Vector2i(640, 480)
 		for preset: String in ["pilot", "full"]:
 			manager.set_preset(preset)
@@ -549,6 +617,28 @@ func _layout() -> void:
 	await process_frame
 
 
+func _resize_warning_exit() -> void:
+	root.size = Vector2i(1920, 1080)
+	await process_frame
+	var manager := Manager.new({}, "en")
+	root.add_child(manager)
+	var cues: Array[String] = []
+	manager.alert_audio.cue_requested.connect(func(cue: String, code: String) -> void: cues.append(cue + ":" + code))
+	manager.refresh_numbers(_snapshot({}))
+	manager.refresh_numbers(_snapshot({}, PackedStringArray(["stall"])))
+	await process_frame
+	manager.refresh_numbers(_snapshot({}))
+	var bar: Control = manager.frames.warnings
+	_check("cleared warning keeps its exit silhouette briefly", bar.visible and bar.codes.is_empty() and bar.is_presenting())
+	var cue_count := cues.size()
+	root.size = Vector2i(1280, 720)
+	await process_frame
+	_check("resizing retires the last silhouette and hides the rail silently",
+		bar.codes.is_empty() and not bar.is_presenting() and not bar.visible and cues.size() == cue_count)
+	manager.queue_free()
+	await process_frame
+
+
 ## The warnings bar during a sag: BATTERY LOW only after the 2 s hold, then LVC, from the sensor alarms.
 func _warnings_in_flight() -> void:
 	var manager: CanvasLayer = Manager.new({}, "en")
@@ -563,9 +653,16 @@ func _warnings_in_flight() -> void:
 	_check("BATTERY LOW appears at 3.0 s for a sag from 1.0 s (a stale snapshot code is replaced)", first_low == 30, str(first_low))
 	manager.set_overlay_visible("battery", false)
 	manager.refresh_numbers(_snapshot(_ecm({ time_s = 6.0, cell_voltage_min_v = 3.45, esc_state = "soft_cut" })))
-	_check("with O9 closed the alarms still reach the warnings", Array(manager.frames.warnings.codes) == ["battery_lvc", "battery"],
-		str(manager.frames.warnings.codes))
-	_check("caution and danger chips are shown", manager.frames.warnings.visible and manager.frames.warnings.chips.get_child_count() == 2)
+	_check("with O9 closed LVC is shown and the lower cell alarm remains sampled",
+		Array(manager.frames.warnings.codes) == ["battery_lvc"] and manager._battery_reading.alarms.has("cell_warning")
+		and manager._battery_reading.alarms.has("lvc"), str(manager.frames.warnings.codes))
+	manager.refresh_numbers(_snapshot(_ecm({ time_s = 6.1, cell_voltage_min_v = 3.45, esc_state = "soft_cut", temperature_k = 334.0 })))
+	var levels: Array[String] = []
+	for chip: Node in manager.frames.warnings.chips.get_children():
+		var label := chip.find_child("Severity", true, false) as Label
+		if label != null: levels.append(label.text)
+	_check("LVC danger and hot battery caution cards are shown", manager.frames.warnings.visible
+		and Array(manager.frames.warnings.codes) == ["battery_lvc", "battery_hot"] and levels == ["DANGER", "CAUTION"], str(levels))
 	manager.queue_free()
 	await process_frame
 
