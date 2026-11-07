@@ -22,8 +22,16 @@ const FLIGHT_FINE_EXTENT_M := 0.3
 # The authored road-contact AABBs are the authority. Cache fitted visual meshes
 # by exact dimensions and orientation; the source UVs and PBR maps stay intact.
 static var _fitted_barriers: Dictionary = {}
-## Dirt meshes by caller key (flight: circuit, field surfaces and lake identities plus grid); reused across flights.
+## Dirt meshes by caller key (flight: circuit, field surfaces and lake identities plus grid).
+## The cache owns at most two meshes and at most 4 MiB of their uncompressed source-geometry
+## proxy. This is not a measurement or hard limit of renderer/driver memory. Live scenes own
+## their meshes independently. Only synchronous main-thread builders access the cache.
+const SURFACE_CACHE_MAX_ENTRIES := 2
+const SURFACE_CACHE_MAX_GEOMETRY_BYTES := 4 * 1024 * 1024
+const SURFACE_CACHE_MAX_KEY_CHARS := 128
 static var _surface_cache: Dictionary = {}
+static var _surface_cache_order: Array[String] = [] # least recent first
+static var _surface_cache_geometry_bytes := 0
 
 
 ## `options`: {profile = "flight"} selects the airplane-field build (coarser grid, merged paint, instanced
@@ -39,11 +47,7 @@ static func build(course: Dictionary, road: Callable, ground_material: ShaderMat
 	var flight := str(options.get("profile", "")) == "flight"
 	var step := float(options.get("grid_step_m", FLIGHT_GRID_STEP_M if flight else GRID_STEP_M))
 	var cache_key := str(options.get("cache_key", ""))
-	var mesh: ArrayMesh = _surface_cache.get(cache_key) if not cache_key.is_empty() else null
-	if mesh == null:
-		mesh = _dirt_mesh(track, road, step)
-		if mesh != null and not cache_key.is_empty():
-			_surface_cache[cache_key] = mesh
+	var mesh := _dirt_mesh_for_key(track, road, step, cache_key)
 	if mesh != null:
 		var material := ShaderMaterial.new()
 		material.shader = GRAVEL_SHADER
@@ -80,8 +84,67 @@ static func build(course: Dictionary, road: Callable, ground_material: ShaderMat
 	return root
 
 
+## Release only this cache's references; meshes still used by scenes remain valid.
+static func clear_surface_cache() -> void:
+	_surface_cache.clear()
+	_surface_cache_order.clear()
+	_surface_cache_geometry_bytes = 0
+
+
+static func _dirt_mesh_for_key(track: Dictionary, road: Callable, step: float, cache_key: String) -> ArrayMesh:
+	var cacheable_key := not cache_key.is_empty() and cache_key.length() <= SURFACE_CACHE_MAX_KEY_CHARS
+	if cacheable_key and _surface_cache.has(cache_key):
+		_surface_cache_order.erase(cache_key)
+		_surface_cache_order.append(cache_key)
+		return _surface_cache[cache_key].mesh as ArrayMesh
+	return _dirt_mesh(track, road, step, cache_key if cacheable_key else "")
+
+
+## Count the generated input arrays before upload. The source has float32 position/normal
+## (12 bytes each), Color (16), and int32 indices (4). Godot may pack those differently and
+## drivers can add allocations. Unexpected source attributes are not cached; if the builder
+## gains blend shapes or LODs, update this accounting before retaining them too.
+static func _source_geometry_bytes(arrays: Array) -> int:
+	if arrays.size() != Mesh.ARRAY_MAX:
+		return -1
+	for index in arrays.size():
+		if index not in [Mesh.ARRAY_VERTEX, Mesh.ARRAY_NORMAL, Mesh.ARRAY_COLOR, Mesh.ARRAY_INDEX] \
+				and arrays[index] != null:
+			return -1
+	if not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array \
+			or not arrays[Mesh.ARRAY_NORMAL] is PackedVector3Array \
+			or not arrays[Mesh.ARRAY_COLOR] is PackedColorArray \
+			or not arrays[Mesh.ARRAY_INDEX] is PackedInt32Array:
+		return -1
+	var vertices: int = arrays[Mesh.ARRAY_VERTEX].size()
+	var indices: int = arrays[Mesh.ARRAY_INDEX].size()
+	if vertices <= 0 or indices <= 0 or arrays[Mesh.ARRAY_NORMAL].size() != vertices \
+			or arrays[Mesh.ARRAY_COLOR].size() != vertices:
+		return -1
+	return 40 * vertices + 4 * indices
+
+
+static func _retain_surface(key: String, mesh: ArrayMesh, geometry_bytes: int) -> void:
+	if key.is_empty() or key.length() > SURFACE_CACHE_MAX_KEY_CHARS or mesh == null:
+		return
+	if geometry_bytes < 0 or geometry_bytes > SURFACE_CACHE_MAX_GEOMETRY_BYTES:
+		return
+	if _surface_cache.has(key):
+		_surface_cache_geometry_bytes -= int(_surface_cache[key].geometry_bytes)
+		_surface_cache.erase(key)
+		_surface_cache_order.erase(key)
+	while _surface_cache_order.size() >= SURFACE_CACHE_MAX_ENTRIES \
+			or _surface_cache_geometry_bytes + geometry_bytes > SURFACE_CACHE_MAX_GEOMETRY_BYTES:
+		var oldest: String = _surface_cache_order.pop_front()
+		_surface_cache_geometry_bytes -= int(_surface_cache[oldest].geometry_bytes)
+		_surface_cache.erase(oldest)
+	_surface_cache[key] = {mesh = mesh, geometry_bytes = geometry_bytes}
+	_surface_cache_order.append(key)
+	_surface_cache_geometry_bytes += geometry_bytes
+
+
 ## Only covered grid points become vertices, so the buffer holds no unused rows and the AABB is the dirt's own.
-static func _dirt_mesh(track: Dictionary, road: Callable, step: float) -> ArrayMesh:
+static func _dirt_mesh(track: Dictionary, road: Callable, step: float, cache_key: String = "") -> ArrayMesh:
 	var bounds := _bounds(track)
 	var norths := _coordinates(bounds.north_min_m, bounds.north_max_m, step)
 	var easts := _coordinates(bounds.east_min_m, bounds.east_max_m, step)
@@ -126,8 +189,11 @@ static func _dirt_mesh(track: Dictionary, road: Callable, step: float) -> ArrayM
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	arrays[Mesh.ARRAY_COLOR] = colors
 	arrays[Mesh.ARRAY_INDEX] = indices
+	var geometry_bytes := _source_geometry_bytes(arrays) if not cache_key.is_empty() else -1
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	if not cache_key.is_empty():
+		_retain_surface(cache_key, mesh, geometry_bytes)
 	return mesh
 
 
