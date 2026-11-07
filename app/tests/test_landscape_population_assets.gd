@@ -191,10 +191,9 @@ func _test_shared_human_textures() -> void:
 	var all_paths: Array[Dictionary] = []
 	for asset: String in Population.human_assets():
 		var paths := _human_texture_paths(asset)
-		if paths.is_empty():
-			print("skip shared-texture audit; pose asset is not staged yet: ", asset)
-			return
 		_check("%s resolves shared shader textures" % asset, not paths.is_empty())
+		if paths.is_empty():
+			continue
 		all_paths.append(paths)
 	if all_paths.size() != Population.human_assets().size():
 		_check("standing, sitting, and pilot assets share PBR textures", false, "missing human texture set")

@@ -202,7 +202,11 @@ def check_comparison(reference: dict, candidate: dict) -> None:
             require(reference["outputs"][aircraft][key] == candidate["outputs"][aircraft][key],
                     "candidate differs: " + aircraft + " " + key)
         for key in ("checkpoint_value", "metadata_value", "csv_value"):
-            require(reference["outputs"][aircraft][key] == candidate["outputs"][aircraft][key],
+            # Python equality conflates true/1, 1/1.0 and positive/negative zero.
+            # Supplement the raw Godot digests with type-sensitive full values.
+            expected = json.dumps(reference["outputs"][aircraft][key], sort_keys=True, allow_nan=False)
+            actual = json.dumps(candidate["outputs"][aircraft][key], sort_keys=True, allow_nan=False)
+            require(expected == actual,
                     "candidate full value differs: " + aircraft + " " + key)
 
 

@@ -705,6 +705,8 @@ func _test_native_backend_switch_guards() -> void:
 	if str(VehicleDynamics.backend_identity().get("backend", "")) != VehicleDynamics.BACKEND_NATIVE:
 		print("SKIP native Session backend-switch guard: pinned native backend is not staged")
 		return
+	var checks_before := checks
+	var failures_before := failures
 	var session = Session.new()
 	var prepared: bool = session.prepare_default()
 	var armed: bool = prepared and session.tick_once(_neutral())
@@ -732,6 +734,8 @@ func _test_native_backend_switch_guards() -> void:
 	_check("automatic native backend selection is restored after guard checks",
 		native_restored and str(VehicleDynamics.backend_identity().get("backend", "")) == VehicleDynamics.BACKEND_NATIVE)
 	session.free()
+	if failures == failures_before and checks == checks_before + 6:
+		print("RCV_NATIVE_SESSION_GUARDS verdict=pass")
 
 
 func _arrays_equal(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:

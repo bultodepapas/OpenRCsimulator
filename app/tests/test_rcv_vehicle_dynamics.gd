@@ -337,6 +337,8 @@ func _test_backend_trajectory_equivalence(start: PackedFloat64Array, model: Dict
 	if str(automatic_identity.get("backend", "")) != Vehicle.BACKEND_NATIVE:
 		print("SKIP native/reference trajectory comparison: pinned native backend is not staged")
 		return
+	var checks_before := _checks
+	var failures_before := _failures
 	var reference_selected := Vehicle.set_backend_override_for_tests(Vehicle.BACKEND_GDSCRIPT_REFERENCE)
 	var reference_identity := Vehicle.backend_identity()
 	var reference_states: Array[PackedFloat64Array] = []
@@ -386,6 +388,8 @@ func _test_backend_trajectory_equivalence(start: PackedFloat64Array, model: Dict
 		reference_states.size() == 180 and native_state.size() == Vehicle.STATE_SIZE
 		and is_finite(maximum_state_delta) and maximum_state_delta < 2.0e-6,
 		"max state delta %.9f; native source %s" % [maximum_state_delta, str(native_identity.get("source_sha256", ""))])
+	if _failures == failures_before and _checks == checks_before + 2:
+		print("RCV_NATIVE_TRAJECTORY verdict=pass")
 
 
 func _test_drivetrain(start: PackedFloat64Array, model: Dictionary, flat: Callable) -> void:

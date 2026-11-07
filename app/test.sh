@@ -617,28 +617,30 @@ expected_failure frametimes-write-failure 1 "Cannot write frame-time report '" \
   -- --frametimes="$HERE" --warmup=0 --t=0.01
 
 echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
-HASHES=""
+HASHES=()
 for fps in 30 60 144; do
   out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd 2>&1)"
   echo "$out" | grep -E "ticks=|ERROR"
   if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "engine error at $fps fps"; exit 1; fi
-  HASHES="$HASHES $(echo "$out" | sed -n 's/.*state_sha256=\([0-9a-f]*\).*/\1/p')"
+  digest="$(printf '%s\n' "$out" | python3 "$HERE/../tools/ci/fixed_fps_digest.py" state_sha256 "$fps")"
+  HASHES+=("$digest")
 done
-if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $HASHES | tr -d ' ')" ]; then
-  echo "final state depends on the rendering frame rate:$HASHES"; exit 1
+if [[ "${HASHES[0]}" != "${HASHES[1]}" || "${HASHES[0]}" != "${HASHES[2]}" ]]; then
+  echo "final state depends on the rendering frame rate: ${HASHES[*]}"; exit 1
 fi
 echo "identical"
 
 echo "== TT-08: Lumber coupled electric flight is identical at 30/60/144 fps"
-HASHES=""
+HASHES=()
 for fps in 30 60 144; do
   out="$(run --fixed-fps "$fps" --script res://tests/run_fixed_step.gd -- --aircraft=turbo-lumber-evolution 2>&1)"
   echo "$out" | grep -E "ticks=|ERROR"
   if echo "$out" | grep -qE "^(SCRIPT )?ERROR:"; then echo "Lumber engine error at $fps fps"; exit 1; fi
-  HASHES="$HASHES $(echo "$out" | sed -n 's/^flight_sha256=\([0-9a-f]*\)$/\1/p')"
+  digest="$(printf '%s\n' "$out" | python3 "$HERE/../tools/ci/fixed_fps_digest.py" flight_sha256 "$fps")"
+  HASHES+=("$digest")
 done
-if [ "$(echo $HASHES | tr ' ' '\n' | sort -u | wc -l)" -ne 1 ] || [ -z "$(echo $HASHES | tr -d ' ')" ]; then
-  echo "Lumber complete checkpoint depends on the rendering frame rate:$HASHES"; exit 1
+if [[ "${HASHES[0]}" != "${HASHES[1]}" || "${HASHES[0]}" != "${HASHES[2]}" ]]; then
+  echo "Lumber complete checkpoint depends on the rendering frame rate: ${HASHES[*]}"; exit 1
 fi
 echo "identical Lumber complete checkpoints"
 

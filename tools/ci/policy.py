@@ -20,7 +20,7 @@ SHA = re.compile(r"[0-9a-f]{40}\Z")
 SAFE_DOCS = frozenset({"docs/README.md", "docs/TOOLS.md",
                        "docs/DESKTOP-DELIVERY-PLAN.md", "CONTRIBUTING.md", "AGENTS.md",
                        "docs/plans/release-ci-efficiency.md"})
-PRODUCTION = ("app", "visuals", "native-linux", "native-windows", "native-kernel-linux")
+PRODUCTION = ("app", "visuals", "native-linux", "native-windows", "native-kernel-linux", "native-rc-runtime")
 JOBS = (*PRODUCTION, "three", "site", "export")
 
 

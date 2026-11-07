@@ -164,23 +164,39 @@ def source_identity(root, env):
             "worktree_sha256": worktree_sha}
 
 
-def macos_template_inputs(root, templates):
-    """Identify the macOS preset's actual release template without accepting ambiguous settings."""
+def desktop_template_inputs(root, templates):
+    """Validate all selected desktop templates and identify the macOS input."""
     config = configparser.ConfigParser(interpolation=None, delimiters=("=",), strict=True)
+    config.optionxform = str
     try:
         config.read_string((root / "app/export_presets.cfg").read_text(encoding="utf-8"))
-        presets = [section for section in config.sections() if re.fullmatch(r"preset\.\d+", section)
-                   and json.loads(config.get(section, "name", fallback='""')) == "macOS"]
-        require(len(presets) == 1, "expected exactly one macOS export preset")
-        preset = presets[0]
-        require(json.loads(config.get(preset, "platform", fallback='""')) == "macOS",
-                "macOS export preset has the wrong platform")
-        options = preset + ".options"
-        setting = config.get(options, "custom_template/release", fallback='""')
-        custom = json.loads(setting)
+        require(not config.defaults(), "export preset defaults are unsupported")
+        expected = {"Linux": "Linux", "Windows": "Windows Desktop", "macOS": "macOS"}
+        presets = {name: [] for name in expected}
+        for section in config.sections():
+            if not re.fullmatch(r"preset\.\d+", section):
+                continue
+            number = section.removeprefix("preset.")
+            require(number == str(int(number)), "noncanonical export preset index")
+            name = json.loads(config.get(section, "name", fallback='""'))
+            require(isinstance(name, str), "export preset name must be a string")
+            if name in presets:
+                presets[name].append(section)
+        custom_templates = {}
+        for name, platform_name in expected.items():
+            require(len(presets[name]) == 1, f"expected exactly one {name} export preset")
+            preset = presets[name][0]
+            platform_value = json.loads(config.get(preset, "platform", fallback='""'))
+            require(isinstance(platform_value, str) and platform_value == platform_name,
+                    f"{name} export preset has the wrong platform")
+            setting = config.get(preset + ".options", "custom_template/release", fallback='""')
+            custom_templates[name] = json.loads(setting)
+            require(isinstance(custom_templates[name], str), f"{name} release template must be a string")
+        for name in ("Linux", "Windows"):
+            require(not custom_templates[name], f"custom {name} release templates are not supported")
+        custom = custom_templates["macOS"]
     except (configparser.Error, json.JSONDecodeError) as error:
         raise ValueError(f"invalid export preset configuration: {error}") from error
-    require(isinstance(custom, str), "macOS release template must be a string")
     if not custom:
         return {MACOS_OFFICIAL: templates / "macos.zip"}
     require(custom.startswith("res://") and len(custom) > len("res://"),
@@ -197,7 +213,7 @@ def capture(root, editor, templates, env=None):
     source = source_identity(root, env)
     paths = {name: root / name for name in SOURCE_INPUTS}
     paths.update({"template/" + name: templates / name for name in TEMPLATES})
-    paths.update(macos_template_inputs(root, templates))
+    paths.update(desktop_template_inputs(root, templates))
     paths["editor"] = editor
     for tool in ("zip", "readelf"):
         executable = shutil.which(tool)
