@@ -1,0 +1,221 @@
+{
+  "evidence_scope": "entry-point scheduling with fake bridge; no performance measurement",
+  "source": "/workspace/scratch/d39ddb354086/OpenRCsimulator/research/performance/observer_cadence_ab.py",
+  "cases": [
+    {
+      "modes": [
+        0
+      ],
+      "rounds": 2,
+      "rows": 2,
+      "orders": [
+        [
+          0
+        ],
+        [
+          0
+        ]
+      ],
+      "positions_by_mode": [
+        [
+          2
+        ]
+      ],
+      "launches": 1,
+      "stops": 1
+    },
+    {
+      "modes": [
+        0,
+        1
+      ],
+      "rounds": 4,
+      "rows": 8,
+      "orders": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "positions_by_mode": [
+        [
+          4,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "launches": 1,
+      "stops": 1
+    },
+    {
+      "modes": [
+        0,
+        1,
+        2
+      ],
+      "rounds": 6,
+      "rows": 18,
+      "orders": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          2,
+          1
+        ],
+        [
+          2,
+          0,
+          1
+        ],
+        [
+          2,
+          1,
+          0
+        ],
+        [
+          1,
+          2,
+          0
+        ],
+        [
+          1,
+          0,
+          2
+        ]
+      ],
+      "positions_by_mode": [
+        [
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          2,
+          2
+        ],
+        [
+          2,
+          2,
+          2
+        ]
+      ],
+      "launches": 1,
+      "stops": 1
+    },
+    {
+      "modes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "rounds": 8,
+      "rows": 32,
+      "orders": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          0,
+          3,
+          2,
+          1
+        ],
+        [
+          2,
+          3,
+          0,
+          1
+        ],
+        [
+          2,
+          1,
+          0,
+          3
+        ],
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          0,
+          3,
+          2,
+          1
+        ],
+        [
+          2,
+          3,
+          0,
+          1
+        ],
+        [
+          2,
+          1,
+          0,
+          3
+        ]
+      ],
+      "positions_by_mode": [
+        [
+          4,
+          0,
+          4,
+          0
+        ],
+        [
+          0,
+          4,
+          0,
+          4
+        ],
+        [
+          4,
+          0,
+          4,
+          0
+        ],
+        [
+          0,
+          4,
+          0,
+          4
+        ]
+      ],
+      "launches": 1,
+      "stops": 1
+    }
+  ],
+  "source_identity": {
+    "role": "baseline",
+    "repository_path": "research/performance/observer_cadence_ab.py",
+    "baseline_commit": "997e212784dbf873a7b054ddbbc68e7905495adf",
+    "sha256": "44d79e3ad8dff5c56cf3f272f4d479c53503442e07a8b088c6ce5b20d4f51a19",
+    "identity_recording": "Derived retrospectively from the pinned baseline or final candidate; association with execution is corroborated by the recorded edit/execution sequence, not captured by the original harness."
+  }
+}

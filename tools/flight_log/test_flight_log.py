@@ -209,6 +209,47 @@ class FlightLogCsvTests(unittest.TestCase):
         self.assertIn("aux_ columns must be contiguous from 4", stderr.getvalue())
         self.assertNotIn("Traceback", stderr.getvalue())
 
+    def test_numeric_index_aliases_cannot_hide_missing_columns(self) -> None:
+        for prefix, start in flight_log.INDEXED_COLUMN_FAMILIES.items():
+            for alias in (f"0{start}", str(start).translate(str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩"))):
+                with self.subTest(prefix=prefix, alias=alias):
+                    header = (*flight_log.REQUIRED_COLUMNS, f"{prefix}{start}",
+                              f"{prefix}{alias}", f"{prefix}{start + 2}")
+                    with self.assertRaisesRegex(flight_log.FlightLogError, "duplicate.*index|duplicate.*indices"):
+                        flight_log._validate_header(header, Path("aliased.csv"))
+
+    def test_decimal_mode_aliases_retain_int64_values_and_validation(self) -> None:
+        for mode in ("mode_0", "mode_00", "mode_٠", "mode_" + "0" * 5000):
+            source = self.directory / "mode-alias.csv"
+            fields = [*flight_log.REQUIRED_COLUMNS, mode]
+            for value in (flight_log.INT64_MIN, flight_log.INT64_MAX, "1.5", flight_log.INT64_MAX + 1):
+                with self.subTest(mode=mode[:20], value=value):
+                    row = {name: 0 for name in fields}
+                    row.update(qw=1)
+                    row[mode] = value
+                    with source.open("w", encoding="utf-8", newline="") as stream:
+                        writer = csv.DictWriter(stream, fieldnames=fields)
+                        writer.writeheader()
+                        writer.writerow(row)
+                    if isinstance(value, int) and flight_log.INT64_MIN <= value <= flight_log.INT64_MAX:
+                        result = flight_log.summarize_csv(source)["columns"][mode]
+                        self.assertIs(type(result["min"]), int)
+                        self.assertEqual(result["min"], value)
+                        self.assertEqual(result["max"], value)
+                    else:
+                        with self.assertRaisesRegex(flight_log.FlightLogError, "int64"):
+                            flight_log.summarize_csv(source)
+
+    def test_altitude_rms_matches_down_coordinate_for_extreme_signed_values(self) -> None:
+        source = self.directory / "signed-heights.csv"
+        for values in ((-3.0, 4.0), (0.0, -0.0), (1e308, -1e308), (1e-300, -1e-300)):
+            with self.subTest(values=values):
+                write_csv(source, [sample_row(tick, down_m=value) for tick, value in enumerate(values)])
+                result = flight_log.summarize_csv(source)
+                expected = math.hypot(*values) / math.sqrt(len(values))
+                self.assertTrue(math.isclose(result["altitude_m"]["rms"], expected, rel_tol=1e-15))
+                self.assertEqual(result["altitude_m"]["rms"], result["columns"]["down_m"]["rms"])
+
     def test_duplicate_headers_nonfinite_values_and_truncated_rows_fail(self) -> None:
         duplicate = self.directory / "duplicate.csv"
         duplicate.write_text(",".join(HEADER + ["tick"]) + "\n", encoding="utf-8")

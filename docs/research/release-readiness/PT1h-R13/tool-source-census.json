@@ -1,0 +1,208 @@
+{
+  "tracked_blobs": 47278,
+  "tracked_source_files": 5861,
+  "source_definition": {
+    "extensions": {
+      ".py": "Python",
+      ".pyi": "Python stub",
+      ".gd": "GDScript",
+      ".gdshader": "Godot shader",
+      ".sh": "Shell",
+      ".bash": "Shell",
+      ".ps1": "PowerShell",
+      ".psm1": "PowerShell",
+      ".bat": "Windows batch",
+      ".cmd": "Windows batch",
+      ".js": "JavaScript",
+      ".mjs": "JavaScript",
+      ".cjs": "JavaScript",
+      ".ts": "TypeScript",
+      ".tsx": "TypeScript JSX",
+      ".jsx": "JavaScript JSX",
+      ".c": "C",
+      ".cc": "C++",
+      ".cpp": "C++",
+      ".cxx": "C++",
+      ".h": "C/C++ header",
+      ".hpp": "C++ header",
+      ".hxx": "C++ header",
+      ".rs": "Rust",
+      ".swift": "Swift",
+      ".mm": "Objective-C++",
+      ".lua": "Lua",
+      ".rb": "Ruby",
+      ".go": "Go"
+    },
+    "special_names": {
+      "SConstruct": "Python build",
+      "SConscript": "Python build",
+      "Makefile": "Make",
+      "CMakeLists.txt": "CMake"
+    }
+  },
+  "source_by_language": {
+    "C++": 9,
+    "C++ header": 56,
+    "C/C++ header": 1,
+    "GDScript": 3995,
+    "Godot shader": 79,
+    "JavaScript": 20,
+    "PowerShell": 12,
+    "Python": 1583,
+    "Shell": 96,
+    "TypeScript": 10
+  },
+  "tracked_blobs_by_top_directory": {
+    "(root files)": 15,
+    ".agents": 278,
+    ".claude": 273,
+    ".github": 3,
+    ".vscode": 1,
+    "app": 4589,
+    "assets": 1642,
+    "docs": 36837,
+    "external Audits": 239,
+    "prototypes": 22,
+    "research": 2785,
+    "site": 115,
+    "tools": 479
+  },
+  "source_categories": {
+    "application_regression_source_not_individually_indexed": {
+      "count": 924,
+      "by_language": {
+        "GDScript": 906,
+        "Python": 18
+      },
+      "example_paths": [
+        "app/tests/test_accessible_labels.gd",
+        "app/tests/test_accident_integration.gd",
+        "app/tests/test_accident_report.gd",
+        "app/tests/test_accident_settlement.gd",
+        "app/tests/test_advanced_graphics_settings.gd"
+      ]
+    },
+    "application_runtime_source_not_individually_indexed": {
+      "count": 706,
+      "by_language": {
+        "GDScript": 640,
+        "Godot shader": 66
+      },
+      "example_paths": [
+        "app/ai/companions/agent.gd",
+        "app/ai/companions/airspace.gd",
+        "app/ai/companions/circuit_controller.gd",
+        "app/ai/companions/config.gd",
+        "app/ai/companions/fleet_record.gd"
+      ]
+    },
+    "detailed_tool_inventory": {
+      "count": 1858,
+      "by_language": {
+        "C++": 8,
+        "C++ header": 56,
+        "C/C++ header": 1,
+        "GDScript": 844,
+        "Godot shader": 2,
+        "JavaScript": 5,
+        "PowerShell": 6,
+        "Python": 900,
+        "Shell": 36
+      },
+      "example_paths": [
+        "app/addons/aircraft_contract/export_plugin.gd",
+        "app/addons/aircraft_contract/plugin.gd",
+        "app/addons/build_info/export_plugin.gd",
+        "app/addons/build_info/plugin.gd",
+        "app/addons/native_kernel/export_plugin.gd"
+      ]
+    },
+    "documentation_and_retained_reproduction_source": {
+      "count": 1927,
+      "by_language": {
+        "C++": 1,
+        "GDScript": 1583,
+        "Godot shader": 10,
+        "JavaScript": 2,
+        "PowerShell": 6,
+        "Python": 303,
+        "Shell": 22
+      },
+      "example_paths": [
+        "docs/research/ai-companions/AFC-00-R2/sources/native_performance_report.py",
+        "docs/research/ai-companions/AFC-00-R4/sources/native_performance_probe.gd",
+        "docs/research/ai-companions/AFC-00-R4/sources/native_performance_report.py",
+        "docs/research/ai-companions/AFC-00-R4/sources/run_checked.py",
+        "docs/research/ai-companions/AFC-00-R5/checks/observation-abba-20261021/reduce_abba.py"
+      ]
+    },
+    "external_audit_source": {
+      "count": 28,
+      "by_language": {
+        "GDScript": 19,
+        "Python": 9
+      },
+      "example_paths": [
+        "external Audits/Extra300_All_Files_2026-11-06/01_Audit_Round1/Extra300_Audit/probes/aero/test_reference_witness.gd",
+        "external Audits/Extra300_All_Files_2026-11-06/01_Audit_Round1/Extra300_Audit/probes/dynamics/compare_stage_logs.py",
+        "external Audits/Extra300_All_Files_2026-11-06/01_Audit_Round1/Extra300_Audit/probes/dynamics/probe_mass_reuse.gd",
+        "external Audits/Extra300_All_Files_2026-11-06/01_Audit_Round1/Extra300_Audit/probes/dynamics/probe_stage_parity.gd",
+        "external Audits/Extra300_All_Files_2026-11-06/01_Audit_Round1/Extra300_Audit/probes/model/bench_index.gd"
+      ]
+    },
+    "other_source": {
+      "count": 1,
+      "by_language": {
+        "Godot shader": 1
+      },
+      "example_paths": [
+        "assets/landscape/lake/water-source/boujie_water.gdshader"
+      ]
+    },
+    "prototype_source": {
+      "count": 12,
+      "by_language": {
+        "JavaScript": 2,
+        "TypeScript": 10
+      },
+      "example_paths": [
+        "prototypes/stage0/three/capture.mjs",
+        "prototypes/stage0/three/e2e.mjs",
+        "prototypes/stage0/three/src/input/commands.ts",
+        "prototypes/stage0/three/src/input/keyboard.ts",
+        "prototypes/stage0/three/src/main.ts"
+      ]
+    },
+    "retained_asset_delivery_source": {
+      "count": 394,
+      "by_language": {
+        "GDScript": 3,
+        "Python": 353,
+        "Shell": 38
+      },
+      "example_paths": [
+        "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/scripts/bind_interiors19.py",
+        "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/scripts/blueangels_views13.py",
+        "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/scripts/build_blueangels13.py",
+        "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/scripts/build_blueangels_interiors13.py",
+        "assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/scripts/build_gear_atlas.py"
+      ]
+    },
+    "site_runtime_or_vendored_source_not_individually_indexed": {
+      "count": 11,
+      "by_language": {
+        "JavaScript": 11
+      },
+      "example_paths": [
+        "site/assets/vendor/model-viewer-4.4.0.min.js",
+        "site/assets/vendor/web-vitals-6.2.3.attribution.js",
+        "site/cinema.js",
+        "site/content.js",
+        "site/details.js"
+      ]
+    }
+  },
+  "all_source_categories_sum": 5861,
+  "detailed_workflow_config_count": 1,
+  "excluded_corpus_note": "Documentation/reproduction sources, asset delivery copies, prototype files, runtime source and normal application tests are counted without copying each retained script into the detailed tool inventory."
+}

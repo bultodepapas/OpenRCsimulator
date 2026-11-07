@@ -108,6 +108,9 @@ any other bridge command.
 - `sim_launch` points that server at its own session.
 
 The server uses MCP over stdio, the standard library and `debugctl.py`, and nothing else.
+Malformed request envelopes, parameter containers and decoder-limit failures produce protocol errors without
+ending the session. Tool calls validate the declared argument names, required fields, types and enumerated
+choices before acting. Tool failures, including a nonzero `sim_stop`, return `isError: true` with the diagnostic.
 
 ```sh
 claude mcp add openrc-sim -- python3 tools/debug/mcp_server.py   # Claude Code; .mcp.json also declares it
@@ -194,7 +197,7 @@ Launch options:
 
 | Area | Commands |
 | --- | --- |
-| Session | `launch`, `status`, `ready`, `stop [--force]`, `ping`, `quit`, `clean [--keep N]` (old run folders hold about 11 MB of shader cache each; never removes the live one) |
+| Session | `launch`, `status`, `ready`, `stop [--force]`, `ping`, `quit`, `clean [--keep N]` (protects every tracked live run, including concurrent launches) |
 | Routes | `fly aircraft=<id> start=<runway\|airborne\|…>` (from Home), `home`, `restart`; truck: `call node=AppRoot method=start_ground_vehicle args=["mt8-bisonte"]`, then `press text=drive` |
 | Menus and settings | `look [all=true]`, `choose ref=\|field=\|text= value=`, `catalog`, `setup aircraft= start= landscape= time_of_day= language=`, `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
@@ -230,6 +233,23 @@ Notes on the commands:
   their tick.
 
 ## Hunting stutter, leaks and bugs (PT1h-R8)
+
+### Completion and recovery contracts
+
+- `step ticks=N` succeeds only when that request reaches its exact target. An early pause, fault, reset,
+  replaced simulation or changed stop boundary returns a failure with `progress` (`start_tick`, `target_tick`,
+  `tick`; an unavailable current tick is `null`). Timeout or disconnect cancels the owned step and releases its
+  stop. A pre-existing `stop_at_tick` is refused. A completed reply retains its own result if another step starts.
+- Session claim changes use one persistent OS lock per sessions directory. Do not delete `.claims.lock` while
+  clients run; all cooperating clients must use this version. `clean` preserves every live run and defers run
+  deletion while a live launch has not published its output directory.
+- Scenario, `.cleanup` and soak files are UTF-8. A `monkey` connection failure still writes its attempted-action
+  trail and prints its path; exit status 2 distinguishes connection failure from a detected application error (1).
+  A disconnected command may have reached the application, so the trail records the attempted action.
+- Requests allow at most 1 MiB before the newline, whether delivered whole or in fragments. Numeric strings
+  must convert to finite numbers. Queued commands from a peer already reported disconnected are discarded.
+
+### Choosing a diagnostic
 
 Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-gaps-2026-10-24.md):
 
@@ -312,6 +332,10 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - `--baseline tools/debug/gdscript_warnings_baseline.json` fails only on warnings that are not in the baseline.
     The baseline is keyed by file, code and message, without line numbers.
   - `--write-baseline` refreshes the baseline after a reviewed change. `--files 'debug/*.gd'` narrows the run.
+    If comparison and refresh use the same path, the verdict still compares against its old keys. Outputs are
+    UTF-8 and staged per file; source/project and report/baseline aliases are refused before launching the editor.
+    Concurrent scans must use separate free `--port` values: proving that diagnostics came from the launched
+    editor remains [open D14](../../docs/research/release-readiness/PT1h-R14/README.md#prioritized-findings).
 
 ```sh
 python3 tools/debug/gdscript_warnings.py --files 'debug/*.gd'          # one area, ~30 s
@@ -421,10 +445,16 @@ GDC 2013 talk.
   - The default `inputs=pilot` hands control back through `FlightSession.hand_control_to_pilot()`: the recorded
     throttle, centred sticks, still paused. `inputs=recorded` keeps the session's replay contract, which holds the
     restored inputs and ignores the pilot.
-- **Attempts.** A reset of the simulation clock (restart, crash auto-restart) starts a new attempt. `attempt=previous`
+- **Attempts.** An accepted session reset or external restore starts a new attempt, including equal or increasing
+  ticks. Repeated boundaries before another observation coalesce. `attempt=previous`
   (or a number) with `seconds=` counts back from that attempt's last checkpoint, which is the moment before the
   crash. `rewind list=true` shows the attempts.
 - **The timeline is cut.** Restoring drops the later checkpoints of that attempt and every later attempt.
+- **Retention.** The cadence is rounded to physics ticks. The ring keeps
+  `ceil(keep_s * physics_hz / every_ticks) + 1` snapshots, capped at 100,000. The extra endpoint is necessary to
+  span the requested duration; the cap can shorten it. Inspect the returned cadence, capacity and attempts.
+  A paused flight and an active `step` do not capture: the latter owns a temporary stop boundary that must not
+  enter a resumable checkpoint. A long step therefore leaves a history gap.
 - **Limits.** It is a debugging tool, not evidence: pilot input after a rewind enters at frame boundaries. Exact,
   shareable replays use [flight logs](../../docs/FLIGHT-LOGGING.md). The checkpoint covers the player's aircraft
   only (no companions fleet). `rewind arm=false` frees the ring.
@@ -466,6 +496,13 @@ boundary (`render/frames.gd`), like the RC truck's contact overlay.
   until `off`.
 - The reply's `values` are this frame's numbers: airspeed, α, β, load factor, the forces along and across the
   path, wind speed, height and `arrow_scale`.
+- Missing or nonfinite wind reports `wind_mps=null`, with no wind arrow; actual calm remains zero. Unavailable
+  air data reports `airspeed_mps`, `alpha_deg`, `beta_deg`, `along_path_n` and `across_path_n` as `null`, omits their
+  arrows and labels air data unavailable. Valid total force and gravity remain visible. Invalid poses clear stale
+  values, and zero-length arrows create no empty mesh surface. Accepted resets/restores clear the trail.
+- Load timing differs from air data: `Simulation.last_loads` is the previous step's RK4 k1 evaluation; air data
+  uses the accepted state, and the display uses the current render pose. These are last-step diagnostics, not
+  simultaneous endpoint force measurements. The overlay does not reevaluate or change the physics.
 - `auto_scale=true` (the default) grows arrows with distance and zoom, so they stay readable from the pilot's
   ground camera (×5.9 at about 150 m). Lengths are then multiplied by `arrow_scale`. The label is not scaled.
   `force_m_per_g=`, `velocity_m_per_mps=`, `moment_gain=`, `trail_s=`, `axis_m=` and `thickness_m=` tune the
@@ -498,6 +535,13 @@ into that exact flight.
     state hash was identical.
 - **`checkpoint action=save|load path=<absolute .json>`** is the bridge command underneath. A relative path is
   refused, because it would land in the Godot project. `save` without a path writes to the run folder.
+- Saves write a short-named sibling and compare its exact UTF-8 bytes before publication; `bytes` counts encoded
+  bytes. Existing destination symlinks continue to address their targets, and Unix mode bits are preserved.
+  Cyclic/unresolvable links are refused. A short write preserves the prior checkpoint. An active step refuses save/load.
+  Unix uses same-directory replacement. The pinned engine's Windows rename first removes an existing target,
+  so the bridge keeps a verified recovery copy until publication succeeds and attempts rollback on failure.
+  A failed rollback reports the recovery path; successful publication with failed backup cleanup returns
+  `recovery_copy`. This is not a crash-durability guarantee. Windows rollback still needs native qualification.
 - Use `bugit` when a bug shows up during any session, and attach the folder, not a description of how to get there.
   For an exact replay of a whole flight, record a [flight log](../../docs/FLIGHT-LOGGING.md).
 
@@ -659,7 +703,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 101 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 114 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -700,6 +744,14 @@ to the bridge on a stand-in AppRoot. It covers:
   another agent on the same Windows machine (two loopback listeners may share a port there) answered some
   requests. That caused the intermittent failures first blamed on load, including `blocked frame` and
   `old snapshot`.
+
+**Additional contract regressions (PT1h-R14).** `test_debug_bridge_contracts.gd` checks framing over loopback TCP,
+finite numbers, dropped requests, retained time span and checkpoint output. `test_debug_step.gd` checks job ownership,
+completion and cancellation. `test_debug_observers.gd` checks reset boundaries, unavailable data, geometry and log
+cursors. Run each through the checked runner, as above; `app/test.sh` discovers them automatically. The
+[internal-debug review](../../docs/research/release-readiness/PT1h-R14/README.md) records exact source identities,
+fixture boundaries and the separate file-size-limit reproduction. Tests with stand-in sessions do not qualify
+full flight, rendering or physical behavior.
 
 **Client tests.** These run in `research/test-tools.sh`, mostly against a fake server. They cover:
 

@@ -1,0 +1,831 @@
+{
+  "format": "openrc-internal-debug-tool-inventory v1",
+  "base_commit": "9db50cfc70904e262247d97e1c368f7c499ff23d",
+  "source_identity_status": "Final candidate file hashes refreshed after all source edits and focused verification; these do not imply full application/native/CI qualification.",
+  "scope": "Curated internal debug-tool families and exhaustive current app/debug and tools/debug source/UID/scenario inventories, plus focused tests and selected callers.",
+  "verification_note": "This inventory maps functionality and identities. A separate verification receipt must establish which checks ran on the final candidate; no target performance, native-rendering or physical-validation claim follows.",
+  "families": [
+    {
+      "id": "bridge",
+      "purpose": "Drive and inspect a running simulator through an opt-in local debugging protocol.",
+      "users": [
+        "developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "app/debug/debug_bridge.gd",
+        "OPENRC_DEBUG_BRIDGE",
+        "debugctl.py <command>"
+      ],
+      "inputs": [
+        "newline-delimited JSON requests, command arguments and optional token",
+        "live app/session/UI state"
+      ],
+      "outputs": [
+        "JSON replies and state snapshots",
+        "events and pending command results"
+      ],
+      "dependencies": [
+        "Godot debug build",
+        "loopback TCP and main-thread command processing",
+        "app and simulation nodes"
+      ],
+      "callers": [
+        "app/app_root.gd",
+        "tools/debug/debugctl.py",
+        "tools/debug/mcp_server.py"
+      ],
+      "limits": [
+        "Debug bridge is not active unless requested; release templates do not listen.",
+        "Responses and tests have their declared state, rendering and hardware boundaries."
+      ],
+      "review_depth": "Command inventory and selected protocol, stepping, checkpoint and integration-source review; consult separate verification for execution.",
+      "command_count": 58,
+      "commands": [
+        "help",
+        "look",
+        "choose",
+        "catalog",
+        "setup",
+        "ping",
+        "state",
+        "fly",
+        "home",
+        "restart",
+        "view",
+        "record",
+        "perf",
+        "frames",
+        "break",
+        "objects",
+        "profile",
+        "render",
+        "layers",
+        "ablate",
+        "viewmode",
+        "gizmos",
+        "checkpoint",
+        "rewind",
+        "sample",
+        "assert",
+        "find",
+        "get",
+        "set",
+        "call",
+        "logs",
+        "ui",
+        "open",
+        "close",
+        "control",
+        "shortcuts",
+        "prefs",
+        "methods",
+        "mouse",
+        "press",
+        "focus",
+        "type",
+        "select",
+        "set_value",
+        "key",
+        "action",
+        "sticks",
+        "drive",
+        "pause",
+        "resume",
+        "step",
+        "time_scale",
+        "window",
+        "wait",
+        "screenshot",
+        "eval",
+        "nodes",
+        "quit"
+      ]
+    },
+    {
+      "id": "client_session",
+      "purpose": "Launch, address and stop owned sessions and make bridge commands usable from a shell.",
+      "users": [
+        "developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "python3 tools/debug/debugctl.py launch",
+        "debugctl.py status",
+        "debugctl.py stop",
+        "debugctl.py <bridge-command>"
+      ],
+      "inputs": [
+        "CLI arguments, environment, session port/token and bridge replies"
+      ],
+      "outputs": [
+        "command results and exit status",
+        "per-session metadata, engine/log files and optional screenshots"
+      ],
+      "dependencies": [
+        "Python standard library",
+        "pinned Godot or an explicitly selected compatible executable",
+        "OS process and networking APIs"
+      ],
+      "callers": [
+        "developer shell",
+        "tools/debug/mcp_server.py",
+        "client run/smoke/soak/monkey workflows"
+      ],
+      "limits": [
+        "A separate client cannot always report a launcher exit code.",
+        "Profiles, process IDs and platform isolation have platform-specific limits."
+      ],
+      "review_depth": "Entrypoints and ownership contracts inspected; separate focused Python regression evidence."
+    },
+    {
+      "id": "automation_scenarios",
+      "purpose": "Replay scripts, perform a smoke pass, sample repeat routes, and explore UI paths with a seeded walk.",
+      "users": [
+        "developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "debugctl.py run",
+        "debugctl.py smoke",
+        "debugctl.py soak",
+        "debugctl.py monkey"
+      ],
+      "inputs": [
+        "command scripts and optional sibling cleanup scripts",
+        "seeds, cycle counts and options"
+      ],
+      "outputs": [
+        "command outcomes and verdicts",
+        "monkey replay trail and soak observations"
+      ],
+      "dependencies": [
+        "debugctl.py",
+        "running bridge/session",
+        "22 scenario .txt files and 3 sibling .cleanup files"
+      ],
+      "callers": [
+        "developer shell",
+        "smoke orchestrator"
+      ],
+      "limits": [
+        "run/smoke execute sibling cleanup; soak executes its lines directly.",
+        "A generated walk or a partial suite does not establish native usability or complete coverage."
+      ],
+      "review_depth": "Scenario and cleanup inventory; orchestration contracts and selected regression paths reviewed.",
+      "scenario_count": 22,
+      "cleanup_count": 3
+    },
+    {
+      "id": "mcp",
+      "purpose": "Expose typed simulator operations to coding agents over MCP.",
+      "users": [
+        "coding agent"
+      ],
+      "entrypoints": [
+        "python3 tools/debug/mcp_server.py",
+        "sim_command"
+      ],
+      "inputs": [
+        "newline-delimited JSON-RPC requests and declared tool arguments"
+      ],
+      "outputs": [
+        "MCP result or protocol error; actions can return a fresh UI snapshot"
+      ],
+      "dependencies": [
+        "Python standard library",
+        "debugctl.py",
+        "debug bridge and an appropriate session"
+      ],
+      "callers": [
+        "MCP client or agent"
+      ],
+      "limits": [
+        "The advertised surface is a wrapper around the bridge, not an independent simulator.",
+        "Schema/protocol checks do not establish rendered or hardware behavior."
+      ],
+      "review_depth": "Tool schemas, dispatch and protocol boundaries reviewed; existing Python regression coverage."
+    },
+    {
+      "id": "log_profile",
+      "purpose": "Capture numbered engine messages and events and retain profiling lines separately.",
+      "users": [
+        "developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "app/debug/debug_log.gd",
+        "logs",
+        "profile",
+        "debugctl.py logs",
+        "debugctl.py timeline"
+      ],
+      "inputs": [
+        "Godot Logger callbacks",
+        "bridge events",
+        "sequence cursor, filters and time window"
+      ],
+      "outputs": [
+        "bounded main record ring, counts and dropped count",
+        "separate profile entries and grouped bridge summaries"
+      ],
+      "dependencies": [
+        "Godot Logger and Mutex",
+        "debug bridge"
+      ],
+      "callers": [
+        "debug_bridge.gd",
+        "debugctl.py"
+      ],
+      "limits": [
+        "Record history can be evicted.",
+        "Profile entry count is bounded but individual profile-message size is not; arbitrary truncation would lose multiline records."
+      ],
+      "review_depth": "Source review and focused fake/logger tests for cursor overflow, filters, ring eviction and multiline profile control."
+    },
+    {
+      "id": "render_ablation",
+      "purpose": "Inspect scene layers and raw render observations; compare reversible diagnostic feature changes.",
+      "users": [
+        "graphics developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "app/debug/render_probe.gd",
+        "render",
+        "layers",
+        "ablate",
+        "viewmode"
+      ],
+      "inputs": [
+        "live viewport and scene nodes",
+        "target names, frame windows and optional diagnostic freeze"
+      ],
+      "outputs": [
+        "per-viewport observations and scene counts",
+        "ablation comparisons and restoration status"
+      ],
+      "dependencies": [
+        "Godot RenderingServer",
+        "rendered session for timing and ablation",
+        "bridge"
+      ],
+      "callers": [
+        "debug_bridge.gd",
+        "debugctl.py"
+      ],
+      "limits": [
+        "GPU last-readings can be stale or unavailable and are not synchronized per-frame costs or bottleneck proof.",
+        "Headless execution does not qualify rendered or native GPU behavior."
+      ],
+      "review_depth": "Source and documented contract review; isolated controls do not establish target-GPU performance."
+    },
+    {
+      "id": "rewind",
+      "purpose": "Keep a bounded history of flight checkpoints for temporal debugging.",
+      "users": [
+        "flight developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "app/debug/rewind_ring.gd",
+        "rewind arm=true",
+        "rewind tick=<t>",
+        "rewind seconds=<s>"
+      ],
+      "inputs": [
+        "session checkpoint snapshots, physics ticks and accepted reset notifications",
+        "cadence, retention and requested attempt/time"
+      ],
+      "outputs": [
+        "attempt summaries, selected checkpoint and restore outcome"
+      ],
+      "dependencies": [
+        "FlightSession checkpoint/restore and reset lifecycle",
+        "debug bridge"
+      ],
+      "callers": [
+        "debug_bridge.gd",
+        "debugctl.py"
+      ],
+      "limits": [
+        "This is debugging history, not a shareable exact full-flight replay.",
+        "Checkpoint coverage excludes companion fleet; capture is suppressed while a debug step owns a temporary stop."
+      ],
+      "review_depth": "Direct source and focused fake-session boundary tests; full production-session and hardware qualification remain separate."
+    },
+    {
+      "id": "gizmos",
+      "purpose": "Visualize committed state and diagnostic loads without feeding back into physics.",
+      "users": [
+        "flight developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "app/debug/flight_gizmos.gd",
+        "gizmos show=<layers>"
+      ],
+      "inputs": [
+        "render pose, simulation state and last loads",
+        "session air/wind, trail history and layer settings"
+      ],
+      "outputs": [
+        "rendered arrows, label and trail",
+        "values dictionary"
+      ],
+      "dependencies": [
+        "render/frames.gd coordinate mapping",
+        "Godot ImmediateMesh",
+        "debug bridge and flight session"
+      ],
+      "callers": [
+        "debug_bridge.gd",
+        "debugctl.py"
+      ],
+      "limits": [
+        "Unavailable wind or air-dependent values are null and corresponding arrows are omitted.",
+        "Last loads are the latest step k1 values while air data and rendered pose can be from a later boundary.",
+        "Headless checks do not establish rendered readability."
+      ],
+      "review_depth": "Source math/lifecycle review and focused fake-session controls, including finite, nonfinite and zero-vector cases."
+    },
+    {
+      "id": "checkpoint_bugit",
+      "purpose": "Save a flight checkpoint and collect or reopen a reproducible debug report.",
+      "users": [
+        "developer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "checkpoint action=save|load",
+        "debugctl.py bugit",
+        "debugctl.py bugitgo"
+      ],
+      "inputs": [
+        "absolute checkpoint path and session checkpoint",
+        "optional report directory, note and camera/session state"
+      ],
+      "outputs": [
+        "checkpoint JSON carrier",
+        "report folder and optional screenshot",
+        "restore outcome"
+      ],
+      "dependencies": [
+        "FlightSession checkpoint serialization/compatibility",
+        "debug bridge",
+        "debugctl.py"
+      ],
+      "callers": [
+        "debugctl.py",
+        "MCP sim_bugit",
+        "developer shell"
+      ],
+      "limits": [
+        "Saving during an active step is refused; compatibility and restore may be refused.",
+        "Screenshot needs rendering; a checkpoint is not a full-flight replay or companion-fleet capture."
+      ],
+      "review_depth": "Source and focused file/step-boundary review; platform-specific durability and full live restoration are separate."
+    },
+    {
+      "id": "gdscript_warnings",
+      "purpose": "Collect Godot compiler and language-server diagnostics and compare warning keys with a baseline.",
+      "users": [
+        "developer",
+        "CI maintainer"
+      ],
+      "entrypoints": [
+        "python3 tools/debug/gdscript_warnings.py --files <pattern>",
+        "--baseline",
+        "--out",
+        "--write-baseline"
+      ],
+      "inputs": [
+        "application script snapshot and selected patterns",
+        "optional warning baseline and output locations"
+      ],
+      "outputs": [
+        "diagnostic JSON report, optional new baseline and exit status",
+        "editor log"
+      ],
+      "dependencies": [
+        "Python standard library",
+        "pinned Godot editor and language server",
+        "tools/debug/gdscript_warnings_baseline.json"
+      ],
+      "callers": [
+        "developer shell",
+        "tools/debug/test_gdscript_warnings.py"
+      ],
+      "limits": [
+        "A warning baseline is not a proof of no bugs; snapshot, aliases and output-failure contracts require their own checks.",
+        "The current source identity is preliminary while work is in progress."
+      ],
+      "review_depth": "Current entrypoint and output-boundary inspection; separate focused test receipts."
+    },
+    {
+      "id": "checked_runner",
+      "purpose": "Run a Godot command under a deadline and reject logged engine/script/shader errors even on exit zero.",
+      "users": [
+        "developer",
+        "CI maintainer",
+        "coding agent"
+      ],
+      "entrypoints": [
+        "python3 tools/godot/run_checked.py",
+        "python3 tools/godot/summarize.py"
+      ],
+      "inputs": [
+        "Godot argv, timeout, optional completion markers and diagnostic policies",
+        "checked invocation collection for summary"
+      ],
+      "outputs": [
+        "engine.log and report.json",
+        "optional JUnit summary and nonzero failure status"
+      ],
+      "dependencies": [
+        "Python standard library",
+        "Godot executable; optional resource dependencies for optional resource sampling"
+      ],
+      "callers": [
+        "app/test.sh",
+        "focused developer checks",
+        "debug-tool regressions"
+      ],
+      "limits": [
+        "A complete log is not necessarily a passing verdict; required text establishes only the named marker.",
+        "Headless results do not qualify renderer, physical device or aircraft realism."
+      ],
+      "review_depth": "Runner contract and diagnostic matching inspected; the broader runner family is shared infrastructure."
+    },
+    {
+      "id": "focused_tests",
+      "purpose": "Verify debug protocol, client, observer and step contracts with targeted fixtures.",
+      "users": [
+        "developer",
+        "CI maintainer"
+      ],
+      "entrypoints": [
+        "app/tests/test_debug_bridge.gd",
+        "app/tests/test_debug_bridge_contracts.gd",
+        "app/tests/test_debug_observers.gd",
+        "app/tests/test_debug_step.gd",
+        "tools/debug/test_debugctl.py",
+        "tools/debug/test_mcp_server.py",
+        "tools/debug/test_gdscript_warnings.py"
+      ],
+      "inputs": [
+        "fake nodes, loopback/fake transport and bounded filesystem fixtures"
+      ],
+      "outputs": [
+        "assertion outcomes and checked-runner receipts"
+      ],
+      "dependencies": [
+        "pinned Godot for GDScript tests",
+        "Python standard library for Python tests",
+        "relevant script/resource dependencies"
+      ],
+      "callers": [
+        "app/test.sh",
+        "research/test-tools.sh",
+        "focused checked-runner calls"
+      ],
+      "limits": [
+        "Fixture success is not a complete app, release, native or physical qualification.",
+        "Final source identity and the required CI gate must be checked independently."
+      ],
+      "review_depth": "Focused tests inventoried; direct observer and step fixtures executed on a candidate, with broader integration evidence owned separately."
+    }
+  ],
+  "source_files": [
+    {
+      "path": "app/app_root.gd",
+      "sha256": "4d7bf9c5ca62396a8bb82f7224429602997cdb4ecb0810ef32f1fcd10e83d6dc",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "app/debug/debug_bridge.gd",
+      "sha256": "4d1aabf560a5676d6130e86874ce4ade1e38eeb4f2f4a17b4d376fb44cc6a364",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/debug_bridge.gd.uid",
+      "sha256": "2c22280ae9ecc4248815aa381997be7d30c2a3776912b4fbd0b4bb840f50e9d9",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/debug_log.gd",
+      "sha256": "12823f0f904ad7d2b4b9f6c70401e6b5b68dff0c9cf60e525984b85b5f60d587",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/debug_log.gd.uid",
+      "sha256": "712898cbab76049b527b21dfe9ebdd65b2514bde562e97c48f852ef9724a5691",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/flight_gizmos.gd",
+      "sha256": "3eaf6fddecaced7d3f7f90cd7f3f86db3c878b5e5ae07c9ab80891a86f237831",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/flight_gizmos.gd.uid",
+      "sha256": "9691feea1bd0409d1a70a05d6dfdb0389b865fe416ded07993009bce8d842c35",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/render_probe.gd",
+      "sha256": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/render_probe.gd.uid",
+      "sha256": "1c50a9b1cc12a5116379416852999b68e5804f4913a5427bb57a48fd5c99610d",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/rewind_ring.gd",
+      "sha256": "b6ceda17f9214f3484409cc5f61e0da121085951867467379cccd9f3493f2cee",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/debug/rewind_ring.gd.uid",
+      "sha256": "41d9c39342f76be5f0aa82ff37693f0e10a7d5cb4852511920c156189b667da1",
+      "category": "bridge_component_or_uid"
+    },
+    {
+      "path": "app/render/frames.gd",
+      "sha256": "668ca6ce8cf1ffedb75b60c3f9de8f164b19bcd93391578c51b993dcc799cdf8",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "87dda14a5cafe24109eaf751211ba6acb44cc9e5c0bdf56685444dfe3b1d0441",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "sha256": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "app/test.sh",
+      "sha256": "50d894ccda73750c94cb764615026f83550746242af12fed938189fe248aef95",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "app/tests/test_debug_bridge.gd",
+      "sha256": "754530e9bb747b4cbb59f3bbf11464132ec94273de5e5f291489bdcc5d577d3f",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_bridge.gd.uid",
+      "sha256": "fb4bbca44749bd61e69d4bcf8240eaa68b5c2e1b80359eda8a971afb553d9824",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_bridge_contracts.gd",
+      "sha256": "f71ce00fe9d0fa8de3d4c8ed7845dc108683be67f5493d3f2b7c739920a5137e",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_bridge_contracts.gd.uid",
+      "sha256": "e023f6758d5e9f8b9766452b9627f48878e77be079d622c2d8f65c2312df2671",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_observers.gd",
+      "sha256": "799f33d4d3781cac1c3f9ffb70eaaea01a3cceac681fc8e158ed977c2958c8d0",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_observers.gd.uid",
+      "sha256": "70d99320e589b4f23adb7fcae140f65fd4938282e6234bd42fcbd107e4a6b181",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_step.gd",
+      "sha256": "67380437963b077bb7cf1982955f379159b3a5905d1f7b2dbdc49a93450efbe3",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "app/tests/test_debug_step.gd.uid",
+      "sha256": "b3ad3239d726c582a57f6b5737161d04f7fad58538723ebd5cd78279be3e8872",
+      "category": "focused_godot_test_or_uid"
+    },
+    {
+      "path": "docs/research/debug-tooling-gaps-2026-10-24.md",
+      "sha256": "340259d35a7cfbdf82d37fd59bd174781633eb1990a3fdcfde6a155a7ac784d7",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "docs/research/debug-tooling-render-rewind-2026-11-06.md",
+      "sha256": "ac8057cc5c295b69a3e5f2c55edc248823c457af3beea5e177ed431e525a7d4c",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "docs/tools/README.md",
+      "sha256": "46a1df1ab4d43831fed7c7084be64fd5ed1012aa2bba1032f4a05d38ac3abd68",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "docs/tools/shared.md",
+      "sha256": "f13fb15bd03658362e92e7ab8f49d747b9d39d8ffe604211b8ac184a1917b46d",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "research/test-tools.sh",
+      "sha256": "25bb3b7fbf0116f02861bd09f4e9109327b2f02ed9bcc07fe88919dd77be8e97",
+      "category": "consumer_workflow_or_reference"
+    },
+    {
+      "path": "tools/debug/README.md",
+      "sha256": "a9a10ef119423975c3ba036cfa37091b8e8f2162d8778fcb3aab5b15b1cc7ef7",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/debugctl.py",
+      "sha256": "5e239a87829c01880465eac72d9df407634ef19e47d14cd5940a60b56d1c8062",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/gdscript_warnings.py",
+      "sha256": "6226d576e48ef200c182db738e2257f02b741f02fb5686ec3e9bb8a18db3a32c",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/gdscript_warnings_baseline.json",
+      "sha256": "f8b587c2f18e050193558fe68b2ce93b26a99a7e6952d4b6a8dba2c884c2ca60",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/mcp_server.py",
+      "sha256": "eefef161f7f5f068792a3a0b416c5c5562da2e1279633109e8eaa568c9f85850",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/scenarios/birds_setting.txt",
+      "sha256": "1a35c3570a87bb3617aaad49d7234cb3063a69a644f06e908d22ee317f5dea12",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/calibration_disconnect_focus.cleanup",
+      "sha256": "0da8182e4f9b74f0fccadf65211ade4da03dd38592d0c7237b729a813ac543e3",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/calibration_disconnect_focus.txt",
+      "sha256": "c94ba14edbbda376005261f50644b0ef0a8796594c92c040c580fb7633db2a8f",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/controller_capture_scroll.txt",
+      "sha256": "48a62d53cca5cc8e701b383ceb75014cfabd86362c12e6454d0457bcbd1ba2ca",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/controller_field_errors.txt",
+      "sha256": "e8bf79e4f81fe4ee85480717153508a6ba8bf49597e9ac9d28f6c00d34486b5d",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/controller_preflight_calibration.txt",
+      "sha256": "3d052bbdcc5c7164acc796b194fd9c112227a79b9ba9450405a007a013b1682b",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/corsair_gallery.txt",
+      "sha256": "1b5484dd0b09a6a615224bfec4dc8da4ec82fc59417123fbc6721630c9f28414",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/corsair_paint.txt",
+      "sha256": "92bf439e5afe30f809d94a9f75dca54b135d8fe8daf7cbe38d145095c5db02e6",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/flight_statistics.txt",
+      "sha256": "949a2cf9730228285e0b2f366ca1500520d7feebd921d283ba37324c007ab587",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/fly_restart_home.txt",
+      "sha256": "102db186cb0f880ec91675a18e895acf573b4a19e2bce9c4a3123ba2a8d8f5ce",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/helicopter_arm.txt",
+      "sha256": "8d050f4fbb6455997c3dbbebe2cf95d1bcc5fda32aa80478e74597ece5373a73",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/home_ambience_cancel.cleanup",
+      "sha256": "d1d6f643f8fd2d6f1bd4aa17ced4d5bfb430af184691fc0d41fa0d40e741f864",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/home_ambience_cancel.txt",
+      "sha256": "ea5e13abd437c119dd8fa7b8b6831548c757c987e2a8dc5a37d799eb0140d135",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/menu_focus_retention.txt",
+      "sha256": "be39155c6c41da76b3a2b71f30fdd51fc31b413759f676c92a1fb1e00b21877d",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/moonrunner_x99_hand_launch.txt",
+      "sha256": "5fc52841b4400f2eb790bde489479f0998c4058d011969a78d93cadab84c7abc",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/settings_revert.txt",
+      "sha256": "28754cd6b569032558a417f27842c922124fba983dc2b8e60f512f12f25413c4",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/truck_drive.txt",
+      "sha256": "b5ed618c1b6017b6cc6e998b7480dd62e56251020abc51f8a0f224a7f8275843",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/widget_presets.txt",
+      "sha256": "415eec030c5dd5b2cad4dad783ccbc6f216e37b869b10bdf9cdb3566a78cd3b9",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_discard_keyboard.txt",
+      "sha256": "878f2411953cd05a9b79a64b71a43d152ef988406717fb3fbca889f0decb1ce3",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_document_flow.txt",
+      "sha256": "fbc69c1e053044b743dcbff717e4b6f86bc2d0d71ae2f87755beafb19b767940",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_empty_recovery.cleanup",
+      "sha256": "043527efe9d7c27ffb3d39a59e6dd44f3992dd372eeaf79e155bb301724f2168",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_empty_recovery.txt",
+      "sha256": "d6ae0f9ceeefb9d4061921d51aaf731c81084a41578c1a118c4c58eb3e060197",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_lighting_palette_focus.txt",
+      "sha256": "cc953fb320d2abf1075688339494ad61afdc36b219b075c2010751a2c69f2e3b",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_numeric_commits.txt",
+      "sha256": "824bc4532b0843b0a6c6da4dd086c1d1a591567c7ae32467af937dbddf02245b",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/scenarios/workshop_surface_controls.txt",
+      "sha256": "19ef3a206cb6fe176338a57003df19c7bad36eb93232c916676d6a86e50edc41",
+      "category": "scenario_or_cleanup"
+    },
+    {
+      "path": "tools/debug/test_debugctl.py",
+      "sha256": "68ddf43a55fbad9939fb63c53811ac5d99150be1487deacc7dd823d588b57714",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/test_gdscript_warnings.py",
+      "sha256": "2e43e9f507a883c67ea5b425997c6614a42bf9a8d07287f8201e2b77a6b358c9",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/debug/test_mcp_server.py",
+      "sha256": "605b5c3da93e6cd7a7ec86a6687fe15625cde0446d3649268791dbb7fe483d15",
+      "category": "debug_client_server_scanner_test_or_guide"
+    },
+    {
+      "path": "tools/godot/README.md",
+      "sha256": "978d6c8ab0d889793f20f653802d6db1f717f380512033ee2c78f374e7c8ae55",
+      "category": "shared_checked_runner_or_test"
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "sha256": "1c8b87768676455185f4582c19a3c416779dc7f6aad9efb262f331655c4d2283",
+      "category": "shared_checked_runner_or_test"
+    },
+    {
+      "path": "tools/godot/summarize.py",
+      "sha256": "f6b2dfbebbc2caccea71f95d17d2919d5e2b8248426f669d3f5335a9de030c4c",
+      "category": "shared_checked_runner_or_test"
+    },
+    {
+      "path": "tools/godot/test_run_checked.py",
+      "sha256": "7888b3f95a4fa85f73c1bae54299e3a58d51829340ecee570f6a498ef4918d12",
+      "category": "shared_checked_runner_or_test"
+    },
+    {
+      "path": "tools/godot/test_summarize.py",
+      "sha256": "f43f063a69838eaa56836e1dcb0ee78cbc8a07abf54cf5d3628aacab5bfed135",
+      "category": "shared_checked_runner_or_test"
+    }
+  ]
+}

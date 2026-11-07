@@ -1,6 +1,6 @@
 # External audits — implemented work
 
-Reviewed **2026-11-06**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
+Reviewed **2026-11-07**. The [pending queue](CONSOLIDATED-AUDITS.md) owns remaining actions. Implemented means the documented software scope, not unrestricted native, physical or release qualification. Original reports and their historical claims remain unchanged. Historical classifications did not rerun runtime tests; new implementation entries link their own fresh verification receipts.
 
 Each finding row includes an **Original report** link; implementation evidence remains separate from its originating audit.
 
@@ -8,6 +8,12 @@ Each finding row includes an **Original report** link; implementation evidence r
 
 | Source / ID | Delivered behavior | Evidence / limits | Original report |
 | --- | --- | --- | --- |
+| A27 CI-04 | Installed matching RC native production phases now require backend/checkpoint/replay and driven/steered/braked trajectory completion on Linux and Windows. | Already merged [b21c078](https://github.com/bultodepapas/OpenRCsimulator/commit/b21c0789649b856217d82faa112c190d34389a21); both native-runtime jobs pass in [baseline run 42333181434](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/42333181434). Not physical or target-GPU qualification. | [A27 original][A27] |
+| A27 CI-05 | Fixed-FPS comparison requires all three associated, valid, unique SHA-256 records before comparing exact identities. | b21c078 source repair; exact newer baseline run above passes. No new implementation is claimed by PT1h-R13. | [A27 original][A27] |
+| A27 CI-06 | Declared shipped variants refuse an empty converted-texture set. | b21c078 source repair; exact newer baseline run above passes. This is validation admission, not evidence of a previously shipped visual defect. | [A27 original][A27] |
+| A27 CI-07 | Dependency installation has bounded setup and transport retries/timeouts. | b21c078 source repair; exact newer baseline run above completes. Historical network cause and cancellation initiator remain unestablished. | [A27 original][A27] |
+| A27 CI-08 | Capture/reducer fixture uses one Python interpreter identity. | b21c078 source repair; exact newer baseline run above passes. Production identity mismatch refusal remains intentional. | [A27 original][A27] |
+| A27 CI-10 | Unsupported custom desktop export templates are explicitly refused instead of silently recording official-template identity. | b21c078 source repair; exact newer baseline run above passes. This does not add support for arbitrary custom templates. | [A27 original][A27] |
 | A27 CI-01 | Removed stale WarningsBar.DANGER test references; AlertPolicy.severity preserves all five danger/caution expectations. | [467250304](https://github.com/bultodepapas/OpenRCsimulator/commit/4672503047c86d8bf9e12203209f3c96942ad3bb), inspected patch; commit records 407 checked battery/layout assertions and related warning suites. This is a later test repair, not a gameplay battery defect or full-CI proof; no rerun during consolidation. | [A27 original][A27] |
 | A27 CI-02 | Disposable historical brake reference overlays exactly two pinned v4 identity declarations to required v6; original goldens and candidate numerical outputs remain untouched/exact. | [0a7e236ad](https://github.com/bultodepapas/OpenRCsimulator/commit/0a7e236adf44e9225afdb3dbb8e92a159ae2b3a5) and [gate contract](../tools/godot/README.md#fixed-brake-legacy-gate-gp-12): 12 Python negative controls, 16 beta1 goldens and 258 candidate checks reported on Windows. Historical dynamics retained; not general v4/v6 fuel-event equivalence. Downstream/full CI remains a gate. | [A27 original][A27] |
 | A27 CI-03; A17/A24 companion pin | Later 181d7ca638285f24c1ec9e5089ed07b35b7ea418 updates stale solver pins with retained-tape evidence. | [Rebind receipt](../docs/research/ai-companions/AFC-02/rebinds/2026-11-06-880d1911-to-84cac259.json): audit reports nine tapes × 2,881 rows with matching baseline/candidate CSV hashes. Not exact replay, general requalification or physical validation; later full CI was still pending at the audit closing check. | [A17 original][A17], [A24 original][A24], [A27 original][A27] |
@@ -29,6 +35,37 @@ Each finding row includes an **Original report** link; implementation evidence r
 | A4 firing counter | Counts committed source-mode intervals, preserving boundary fires and rollback. | [FUEL-12-R4](../docs/research/fuel-systems/FUEL-12/README.md#accepted-combustion-counters-fuel-12-r4-2026-11-06): 102 event + 43 edge + 1,405 existing checks and tapes. Mean-cycle/zero-total feed derivative limits remain. | [A4 original][A4] |
 | A6 F5 | CLI normalizes absent empty continuous-state block. | [Commit 84f465781](https://github.com/bultodepapas/OpenRCsimulator/commit/84f4657814c157f1556f965861c0ab8623f48d8e) includes implementation and regression. Passing receipt not established by this review; qualification remains pending. | [A6 original][A6] |
 | A6 O4 | Same-pre-step downwash air reuse with subclass compatibility guard. | [NK-2a evidence](../docs/research/native-kernel/NK-2a/downwash-air-2026-11-06/README.md): 342 dedicated / 1,801 total checks, four goldens and three identical candidate CSVs. Native/full-app qualification remains open. | [A6 original][A6] |
+
+## PT1h-R13 tool candidate
+
+[PT1h-R13](../docs/research/release-readiness/PT1h-R13/README.md) starts at `997e212784dbf873a7b054ddbbc68e7905495adf`. The changes below are implemented in this review candidate with **76 passing focused test methods** and retained source hashes. They are not yet qualified by candidate full CI, a full export, live Godot/Blender runs, target hardware or physical measurement. The successful baseline CI cited above predates these edits. T06/T07 remain in the pending queue; no whole original audit is marked closed.
+
+| Finding | Implemented behavior | Verification boundary |
+| --- | --- | --- |
+| T01 — new weighing-output preservation | Refuse input/source aliases and publish a fully written, flushed staged report with atomic replacement; preserve existing permissions and symlink-target behavior. | 19 reducer tests, failure injections and actual 64-byte file-size limit; prior report survives failure. Single-file publication, not directory-fsync/power-loss durability. |
+| T02 — new MCP request/argument robustness | Validate request shape/IDs and the advertised flat tool schemas before dispatch; malformed JSON limits and escaped Unicode cannot terminate the tested persistent transport. | 14 MCP test methods include these boundaries, follow-on ping and strict UTF-8 output; no live simulator. |
+| T03 — new MCP stop status | A nonzero underlying stop result becomes an error with exit/diagnostic context. | Included in the same 14-method MCP suite; controlled statuses 0/1/2. No force-kill policy change. |
+| T04 — new flight-log indexing/type consistency | Detect duplicate numeric mode indices while preserving established leading-zero/Unicode aliases; all accepted mode columns use signed int64 parsing. | 35 flight-log methods include index gaps, alias collisions, int64 boundaries and malformed numeric values. |
+| T05 — surviving cadence duplicate | Same-session A/B tool shares the already repaired fresh-process role-order function; complete 2N-round cycles balance positions. | Eight cadence methods, actual Python entrypoint with fake bridge, N=1–4 and cleanup cases. No GPU/timing campaign and no confirmed reintroduction. |
+| T08 — exact one-pass summary improvement | Reuse down-axis RMS for altitude instead of reparsing the CSV, using RMS(-d)=RMS(d). | Reader construction drops from two to one; 24 canonical finite fixtures / 2,587 rows give byte-identical complete serialized summaries. Both versions remain O(rows × columns); no wall-time claim. |
+
+The broader debug discovery run had one unchanged process-liveness test failure in this environment's mismatched process-ID/procfs namespaces; it is not reported as green. [Verification details and limits](../docs/research/release-readiness/PT1h-R13/verification.json) remain authoritative for this candidate.
+
+## PT1h-R14 internal debug candidate
+
+[PT1h-R14](../docs/research/release-readiness/PT1h-R14/README.md) reviews the internal debug tools at `9db50cfc70904e262247d97e1c368f7c499ff23d`. These are new consumer/tool findings, not repeated claims for the already merged GPU/ablation work or the PT1h-R13 MCP fixes. Implementation is in the review candidate; full-app, native Windows, rendered and exact-candidate CI gates remain separate.
+
+| New finding group | Implemented behavior | Verified boundary |
+| --- | --- | --- |
+| D01 — checkpoint files | Exact-byte staged UTF-8 publication; previous file survives a short write; preserve destination-link meaning and Unix mode; Windows recovery copy/rollback path. | Real Linux file-size limit and normal/Unicode/long-name/mode/link controls. Windows rollback, ACLs and power-loss durability unqualified. |
+| D02/D03 — concurrent sessions and cleanup | Persistent cross-process claim lock; protect all live outputs and unpublished live launches. | Concurrent and process-death fixtures, multiple live runs, partial publication; Windows locking simulated. |
+| D04 — step completion and ownership | Exact target required; per-job reply; fault/reset/replacement/ownership refusal; deadline/disconnect cleanup; transient step stops excluded from saved/rewind checkpoints. | 24 dedicated fake-session assertions, plus existing bridge success paths. Long steps deliberately leave rewind capture gaps. |
+| D05/D06/D07 — command admission | Discard already dropped peers' queued commands; enforce complete/partial line byte limit; finite numeric conversion and bounded tick/retention conversion. | Real TCP boundary, deterministic queue seam, finite/overflow/range controls; included in 26 contract assertions. |
+| D08/D09/D12 — temporal/visual/log observers | Accepted resets define attempts/trails even at equal/forward ticks; retention includes both endpoints; unavailable values are null; no empty/nonfinite arrows; log cursor overflow refused. | 36 observer assertions and contract span tests; no full flight or visual qualification. |
+| D10/D11 — reproduction/locale | Monkey saves attempted-action trails on bridge loss; scenario/cleanup/soak reads are explicitly UTF-8. | Fake TCP disconnects at multiple stages and actual scenario under simulated CP1252. |
+| D13 — compiler-report integrity | Refuse source/baseline/report aliases; compare pre-refresh warning keys; stage UTF-8 outputs; clean only owned snapshots. | 10 methods covering aliases, refresh, write failures, locale, permissions and concurrent-output ownership. Synthetic collector; D14 listener identity remains open. |
+
+The three new GDScript suites pass 86 assertions; the existing bridge and render-probe suites pass 114 and 34 in the explicitly documented isolated fixture. The bridge suite intentionally emits two logger warnings. Python discovery runs 89 methods: 88 pass, with the one unchanged PID/procfs namespace failure retained. No full Python pass is claimed. [Exact evidence and source identities](../docs/research/release-readiness/PT1h-R14/verification.json) distinguish baseline witnesses, candidate checks and fixture limits. No whole original audit is marked closed.
 
 ## Rendering and measurement implementation
 

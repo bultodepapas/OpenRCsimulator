@@ -148,6 +148,7 @@ var _sticks_original: Callable
 var _sticks_reader: Callable
 var _step_sim: Node
 var _step_target := -1
+var _step_job := {} # each pending reply owns its result, even if another step starts before it is delivered
 var out_dir := ""
 var _samples: Array[Dictionary] = []
 var _watch := {}
@@ -222,6 +223,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_finish_step(true, "bridge stopped")
 	if _ablation != null:
 		_ablation.abort()
 		_ablation = null
@@ -254,10 +256,14 @@ func _process(_delta: float) -> void:
 	_dropped = []
 	var active := Time.get_ticks_msec() - _last_request_ms < SNAPSHOT_IDLE_MS
 	_net_mutex.unlock()
+	var discarded := {}
 	for peer_id: int in dropped:
+		discarded[peer_id] = true
 		_forget_peer(peer_id)
 	var handlers_started := Time.get_ticks_usec()
 	for item: Dictionary in inbox:
+		if discarded.has(item.peer_id):
+			continue # queued work from an already disconnected peer must not reacquire cleaned-up state
 		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
@@ -332,6 +338,9 @@ func _read_client(peer_id: int) -> void:
 		if newline < 0:
 			if client.buffer.size() > MAX_LINE_BYTES:
 				_close_with(peer_id, {ok = false, error = "request line exceeds %d bytes" % MAX_LINE_BYTES})
+			return
+		if newline > MAX_LINE_BYTES:
+			_close_with(peer_id, {ok = false, error = "request line exceeds %d bytes" % MAX_LINE_BYTES})
 			return
 		var line: String = client.buffer.slice(0, newline).get_string_from_utf8().strip_edges()
 		client.buffer = client.buffer.slice(newline + 1)
@@ -482,7 +491,7 @@ func _physics_process(_delta: float) -> void:
 	# Before the session samples input and the simulation steps: a step or drive ends exactly at its tick.
 	_finish_step()
 	_check_breaks()
-	if _rewind.armed:
+	if _rewind.armed and _step_target < 0:
 		_rewind.capture(_flight_session()) # after a watchpoint's pause: a paused tick is not stored
 	_expire_drive()
 	_collect_samples()
@@ -936,35 +945,79 @@ func _cmd_step(request: Dictionary) -> Dictionary:
 		return _fail("pause first: step advances a paused flight")
 	if _step_target >= 0:
 		return _fail("a step is already running")
+	if not session.sim.fault_reason.is_empty():
+		return _fail("cannot step a faulted simulation: %s" % session.sim.fault_reason)
+	if int(session.sim.stop_at_tick) >= 0:
+		return _fail("the simulation already owns a stop_at_tick boundary (%d)" % session.sim.stop_at_tick)
 	var requested_ticks: Variant = _number(request.get("ticks", 1))
 	if requested_ticks == null:
 		return _fail("ticks must be a number")
-	var ticks := clampi(int(requested_ticks), 1, 240 * 600)
+	var ticks := int(clampf(requested_ticks, 1.0, 240.0 * 600.0))
+	var start_tick := int(session.sim.tick)
+	if start_tick > 9223372036854775807 - ticks:
+		return _fail("step target exceeds the simulation tick range")
 	_step_sim = session.sim
-	_step_target = int(session.sim.tick) + ticks
+	_step_target = start_tick + ticks
+	var job := {session = session, start_tick = start_tick, target_tick = _step_target, result = null, interrupted = false}
+	_step_job = job
+	if session.has_signal("resetting"):
+		session.connect("resetting", _on_step_resetting)
 	session.sim.stop_at_tick = _step_target
 	session.sim.set_paused(false)
-	var sim: Node = session.sim
 	return {pending = func() -> Variant:
-		if _step_target >= 0 and is_instance_valid(sim) and not sim.fault_reason.is_empty():
-			_finish_step(true)
-		if _step_target >= 0:
-			return null
-		return _ok(_flight_state(session)) if is_instance_valid(session) else _fail("flight ended"),
+		if job.result == null:
+			_finish_step()
+		return job.result,
+		on_timeout = func() -> Dictionary:
+			if job.result == null:
+				_finish_step(true, "step cancelled (timeout or disconnect)")
+			return job.result,
 		timeout_s = 60.0 + ticks / 240.0}
 
 
-func _finish_step(force := false) -> void:
+func _on_step_resetting() -> void:
+	# Reset publication guards simulation mutations. Resolve cancellation after that boundary returns.
+	if not _step_job.is_empty():
+		_step_job.interrupted = true
+
+
+func _finish_step(force := false, reason := "step cancelled") -> void:
 	if _step_target < 0:
 		return
-	if not is_instance_valid(_step_sim):
-		_step_target = -1
+	var valid: bool = is_instance_valid(_step_sim) and is_instance_valid(_step_job.session) \
+		and _flight_session() == _step_job.session and _step_job.session.sim == _step_sim
+	var tick := int(_step_sim.tick) if is_instance_valid(_step_sim) else -1
+	var fault := str(_step_sim.fault_reason) if is_instance_valid(_step_sim) else ""
+	var owns_stop: bool = is_instance_valid(_step_sim) and _step_sim.stop_at_tick == _step_target
+	if not force and valid and owns_stop and not _step_job.interrupted \
+			and tick < _step_target and not _step_sim.paused and fault.is_empty():
 		return
-	if force or int(_step_sim.tick) >= _step_target or _step_sim.paused:
+	if owns_stop:
 		_step_sim.set_paused(true)
-		if _step_sim.stop_at_tick == _step_target:
-			_step_sim.stop_at_tick = -1
-		_step_target = -1
+		_step_sim.stop_at_tick = -1
+	if is_instance_valid(_step_job.session) and _step_job.session.has_signal("resetting") \
+			and _step_job.session.is_connected("resetting", _on_step_resetting):
+		_step_job.session.disconnect("resetting", _on_step_resetting)
+	if not force and valid and owns_stop and not _step_job.interrupted and tick == _step_target and fault.is_empty():
+		_step_job.result = _ok(_flight_state(_step_job.session).duplicate(true))
+	else:
+		if not valid:
+			reason = "flight or simulation ended or changed"
+		elif _step_job.interrupted:
+			reason = "flight reset during step"
+		elif not owns_stop:
+			reason = "simulation stop boundary changed during step"
+		elif not fault.is_empty():
+			reason = "simulation fault: " + fault
+		elif not force:
+			reason = "simulation paused early" if tick < _step_target else "simulation passed the requested tick"
+		_step_job.result = _fail("%s; tick %s, requested %d -> %d" % [reason,
+			str(tick) if is_instance_valid(_step_sim) else "unavailable", int(_step_job.start_tick), _step_target])
+		_step_job.result.progress = {start_tick = _step_job.start_tick, target_tick = _step_target,
+			tick = tick if is_instance_valid(_step_sim) else null}
+	_step_target = -1
+	_step_sim = null
+	_step_job = {}
 
 
 func _cmd_time_scale(request: Dictionary) -> Dictionary:
@@ -2243,8 +2296,13 @@ func _cmd_rewind(request: Dictionary) -> Dictionary:
 			var keep_value: Variant = _number(request.get("keep_s", 60.0))
 			if every_value == null or keep_value == null or every_value <= 0.0 or keep_value <= 0.0:
 				return _fail("every_s and keep_s must be positive numbers")
-			var every_ticks := maxi(1, roundi(every_value * Engine.physics_ticks_per_second))
-			_rewind.arm(every_ticks, ceili(keep_value * Engine.physics_ticks_per_second / every_ticks))
+			var interval_ticks: float = every_value * Engine.physics_ticks_per_second
+			if not is_finite(interval_ticks) or interval_ticks >= 9223372036854775807.0:
+				return _fail("every_s exceeds the simulation tick range")
+			var every_ticks := maxi(1, roundi(interval_ticks))
+			# N samples span N-1 intervals. The extra endpoint retains the full requested duration.
+			# Apply the existing memory cap before integer conversion, including very large finite keep_s.
+			_rewind.arm(every_ticks, ceili(minf(keep_value * Engine.physics_ticks_per_second / every_ticks, 99999.0)) + 1)
 		else:
 			_rewind.disarm()
 		return _ok(_rewind.summary())
@@ -2307,17 +2365,17 @@ func _cmd_checkpoint(request: Dictionary) -> Dictionary:
 		return _fail("give an absolute path= (a relative one would land in the Godot project)")
 	match action:
 		"save":
+			if _step_target >= 0:
+				return _fail("a step is running; wait for completion before saving its checkpoint")
 			var text: String = session.checkpoint_json()
 			if text.is_empty() or text == "{}":
 				return _fail("the session cannot checkpoint now (not ready, crash transition, or an unsupported state)")
-			DirAccess.make_dir_recursive_absolute(path.get_base_dir())
-			var file := FileAccess.open(path, FileAccess.WRITE)
-			if file == null:
-				return _fail("cannot write %s: %s" % [path, error_string(FileAccess.get_open_error())])
-			file.store_string(text)
-			file.close()
-			return _ok({path = path, bytes = text.length(), tick = session.sim.tick, time_s = session.sim.time(),
-				aircraft = app.flight.get("aircraft_id") if app.get("flight") != null else null})
+			var bytes := text.to_utf8_buffer()
+			var written := _write_checkpoint_file(path, bytes)
+			if not written.ok:
+				return written
+			return _ok(written.result.merged({path = path, bytes = bytes.size(), tick = session.sim.tick,
+				time_s = session.sim.time(), aircraft = app.flight.get("aircraft_id") if app.get("flight") != null else null}))
 		"load":
 			if _step_target >= 0:
 				return _fail("a step is running")
@@ -2333,6 +2391,123 @@ func _cmd_checkpoint(request: Dictionary) -> Dictionary:
 			debug_log.event("checkpoint loaded at tick %d" % session.sim.tick, {path = path})
 			return _settle(1, {loaded = path, flight = _flight_state(session)})
 	return _fail("action must be save or load")
+
+
+## Write and verify a sibling before publishing. A successful store/flush is not sufficient: the engine can
+## report OK after a short OS write. Godot's Windows rename removes an existing destination first, so keep a
+## verified recovery copy there until publication succeeds; Unix uses same-directory atomic replacement.
+static func _write_checkpoint_file(path: String, bytes: PackedByteArray) -> Dictionary:
+	var resolved := _checkpoint_destination(path)
+	if not resolved.ok:
+		return resolved
+	path = resolved.result
+	if DirAccess.dir_exists_absolute(path):
+		return _fail("checkpoint path is a directory: %s" % path)
+	var previous_mode := -1
+	if OS.get_name() != "Windows" and FileAccess.file_exists(path):
+		previous_mode = FileAccess.get_unix_permissions(path)
+		if previous_mode < 0:
+			return _fail("cannot read existing checkpoint permissions: %s" % path)
+	var mkdir_error := OK if DirAccess.dir_exists_absolute(path.get_base_dir()) \
+		else DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	if mkdir_error != OK:
+		return _fail("cannot create checkpoint directory: %s" % error_string(mkdir_error))
+	var temporary := ""
+	for attempt in 8:
+		var candidate := path.get_base_dir().path_join(".checkpoint-" + Crypto.new().generate_random_bytes(16).hex_encode())
+		if not FileAccess.file_exists(candidate) and not DirAccess.dir_exists_absolute(candidate):
+			temporary = candidate
+			break
+	if temporary.is_empty():
+		return _fail("cannot reserve a checkpoint temporary file")
+	var file := FileAccess.open(temporary, FileAccess.WRITE)
+	if file == null:
+		return _fail("cannot stage checkpoint: %s" % error_string(FileAccess.get_open_error()))
+	file.store_buffer(bytes)
+	file.close()
+	if not _checkpoint_bytes_match(temporary, bytes):
+		DirAccess.remove_absolute(temporary)
+		return _fail("checkpoint write was incomplete; existing checkpoint preserved: %s" % path)
+	if previous_mode >= 0 and FileAccess.set_unix_permissions(temporary, previous_mode) != OK:
+		DirAccess.remove_absolute(temporary)
+		return _fail("cannot preserve existing checkpoint permissions: %s" % path)
+	var backup := ""
+	if OS.get_name() == "Windows" and FileAccess.file_exists(path):
+		backup = temporary + ".previous"
+		var original := FileAccess.open(path, FileAccess.READ)
+		if original == null:
+			DirAccess.remove_absolute(temporary)
+			return _fail("cannot read existing checkpoint for recovery: %s" % path)
+		var previous := original.get_buffer(original.get_length())
+		var complete := previous.size() == original.get_length()
+		original.close()
+		if not complete or DirAccess.copy_absolute(path, backup) != OK or not _checkpoint_bytes_match(backup, previous):
+			DirAccess.remove_absolute(temporary)
+			if FileAccess.file_exists(backup):
+				DirAccess.remove_absolute(backup)
+			return _fail("cannot preserve existing checkpoint for recovery: %s" % path)
+	var publish_error := DirAccess.rename_absolute(temporary, path)
+	if publish_error != OK:
+		DirAccess.remove_absolute(temporary)
+		if not backup.is_empty() and DirAccess.rename_absolute(backup, path) != OK:
+			return _fail("checkpoint publication failed; recover the previous file from %s" % backup)
+		return _fail("cannot publish checkpoint; existing checkpoint preserved: %s" % error_string(publish_error))
+	if not backup.is_empty() and DirAccess.remove_absolute(backup) != OK:
+		return _ok({recovery_copy = backup})
+	return _ok({})
+
+
+## Resolve components in filesystem order: directory links must be followed before a later '..'. Godot's
+## DirAccess Unix methods simplify paths lexically, whereas FileAccess follows the OS path; publishing through
+## an unresolved directory link/.. could otherwise address a different file than the verified staging write.
+static func _checkpoint_destination(path: String, remaining_links := 64) -> Dictionary:
+	if remaining_links <= 0:
+		return _fail("checkpoint destination has cyclic or too many links")
+	path = path.replace("\\", "/")
+	var parts := path.split("/", false)
+	var current := ""
+	if path.begins_with("//") and parts.size() >= 2:
+		current = "//" + parts[0] + "/" + parts[1] + "/"
+		parts = parts.slice(2)
+	elif path.begins_with("/"):
+		current = "/"
+	elif parts.size() > 0 and parts[0].ends_with(":"):
+		current = parts[0] + "/"
+		parts = parts.slice(1)
+	else:
+		return _fail("checkpoint needs an absolute filesystem path")
+	var anchor := current
+	for index in parts.size():
+		var component := parts[index]
+		if component == ".":
+			continue
+		if component == "..":
+			if not DirAccess.dir_exists_absolute(current):
+				return _fail("cannot traverse checkpoint destination parent from a missing directory or file: %s" % current)
+			current = current.get_base_dir() if current != anchor else anchor
+			if current.length() < anchor.length():
+				current = anchor
+			continue
+		var directory := DirAccess.open(current)
+		if directory != null and directory.is_link(component):
+			var target := directory.read_link(component)
+			if target.is_empty():
+				return _fail("cannot resolve checkpoint destination link: %s" % current.path_join(component))
+			var next := target if target.is_absolute_path() else current.path_join(target)
+			if index + 1 < parts.size():
+				next = next.path_join("/".join(parts.slice(index + 1)))
+			return _checkpoint_destination(next, remaining_links - 1)
+		current = current.path_join(component)
+	return _ok(current)
+
+
+static func _checkpoint_bytes_match(path: String, expected: PackedByteArray) -> bool:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return false
+	var matches := file.get_length() == expected.size() and file.get_buffer(expected.size()) == expected
+	file.close()
+	return matches
 
 
 func _cmd_gizmos(request: Dictionary) -> Dictionary:
@@ -2979,7 +3154,8 @@ static func _number(value: Variant) -> Variant:
 			return null
 		return float(value)
 	if value is String and value.is_valid_float():
-		return value.to_float()
+		var parsed: float = value.to_float()
+		return parsed if is_finite(parsed) else null
 	return null
 
 

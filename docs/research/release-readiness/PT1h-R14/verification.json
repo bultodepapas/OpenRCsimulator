@@ -1,0 +1,405 @@
+{
+  "format": "openrc-internal-debug-review-verification v1",
+  "review_date": "2026-11-07",
+  "baseline_commit": "9db50cfc70904e262247d97e1c368f7c499ff23d",
+  "candidate_identity": "SHA-256 of final runtime/test sources; published follow-up commit is their Git identity",
+  "source_sha256": {
+    "app/debug/debug_bridge.gd": "4d1aabf560a5676d6130e86874ce4ade1e38eeb4f2f4a17b4d376fb44cc6a364",
+    "app/debug/debug_log.gd": "12823f0f904ad7d2b4b9f6c70401e6b5b68dff0c9cf60e525984b85b5f60d587",
+    "app/debug/flight_gizmos.gd": "3eaf6fddecaced7d3f7f90cd7f3f86db3c878b5e5ae07c9ab80891a86f237831",
+    "app/debug/rewind_ring.gd": "b6ceda17f9214f3484409cc5f61e0da121085951867467379cccd9f3493f2cee",
+    "app/debug/render_probe.gd": "67325f9924f00f001f57fc135a38ac65b6b0164eb887b09f8c1f840982ff0938",
+    "app/tests/test_debug_bridge_contracts.gd": "f71ce00fe9d0fa8de3d4c8ed7845dc108683be67f5493d3f2b7c739920a5137e",
+    "app/tests/test_debug_step.gd": "67380437963b077bb7cf1982955f379159b3a5905d1f7b2dbdc49a93450efbe3",
+    "app/tests/test_debug_observers.gd": "799f33d4d3781cac1c3f9ffb70eaaea01a3cceac681fc8e158ed977c2958c8d0",
+    "app/tests/test_debug_bridge.gd": "754530e9bb747b4cbb59f3bbf11464132ec94273de5e5f291489bdcc5d577d3f",
+    "app/tests/test_render_probe.gd": "39318ca0f10741d9367b3453a4a11012139fed42782187550c94cfabd5fd6c97",
+    "tools/debug/debugctl.py": "5e239a87829c01880465eac72d9df407634ef19e47d14cd5940a60b56d1c8062",
+    "tools/debug/test_debugctl.py": "68ddf43a55fbad9939fb63c53811ac5d99150be1487deacc7dd823d588b57714",
+    "tools/debug/gdscript_warnings.py": "6226d576e48ef200c182db738e2257f02b741f02fb5686ec3e9bb8a18db3a32c",
+    "tools/debug/test_gdscript_warnings.py": "2e43e9f507a883c67ea5b425997c6614a42bf9a8d07287f8201e2b77a6b358c9",
+    "tools/debug/mcp_server.py": "eefef161f7f5f068792a3a0b416c5c5562da2e1279633109e8eaa568c9f85850",
+    "tools/debug/test_mcp_server.py": "605b5c3da93e6cd7a7ec86a6687fe15625cde0446d3649268791dbb7fe483d15",
+    "tools/godot/run_checked.py": "1c8b87768676455185f4582c19a3c416779dc7f6aad9efb262f331655c4d2283",
+    "docs/research/release-readiness/PT1h-R14/checkpoint-repro/run.py": "2da35f263e95c2b72263cfa25f6aa182937f5d10582b2e90862873397125929a",
+    "docs/research/release-readiness/PT1h-R14/checkpoint-repro/checkpoint_probe.gd": "4fef4825d94e9f4ffdbf2ed1e6a7fc585d5407c2762cad4fbc56dfba69124a1b",
+    "docs/research/release-readiness/PT1h-R14/lsp-listener-repro.py": "9b9c32b2535242cc1452776ad4c0f94a40d3a93558c40c3bd40d35cf44a6953b"
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha512": "428dca05774fb1b163d13a362bb00d0eb82a447634bf717d24fca9944d9f10e75a8bca30222b648ec87da7125339895d8c6985de0a8767b4df5a44d00de35dc9"
+  },
+  "fixture_scope": {
+    "real_debug_sources": true,
+    "full_application": false,
+    "substitutions": {
+      "app/landscapes/catalog.gd": "extends RefCounted; DEFAULT_ID=club_field; ids=[club_field]; has(id) matches club_field",
+      "app/app_state/preferences.gd": "extends RefCounted; LANGUAGES={en:English}"
+    },
+    "project_config": "Production input/physics settings retained; asset-dependent autoload, internationalization and editor plugins removed in disposable project.",
+    "broad_bridge_extra_seam": "Seed Catalog._ground_start_cache for every ID with {runway:true,hand_launch:false}; real catalog membership retained. Does not qualify aircraft start support."
+  },
+  "godot_checked_runs": {
+    "test_debug_bridge_contracts": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/root/app",
+        "--script",
+        "res://tests/test_debug_bridge_contracts.gd"
+      ],
+      "started_utc": "2026-11-07T13:23:38.888328+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "26 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.543919,
+      "log_bytes": 2202,
+      "log_sha256": "9e1f229ee61d3422d623810c3133eb5e64d47b4eefe433097890df0f8ab026e6",
+      "receipt_path": "tmp/internal-debug-review/root/final-test_debug_bridge_contracts/godot-bk44mgob/report.json",
+      "assertions_ok": 26,
+      "assertions_failed": 0
+    },
+    "test_debug_step": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/root/app",
+        "--script",
+        "res://tests/test_debug_step.gd"
+      ],
+      "started_utc": "2026-11-07T13:23:39.471192+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "DEBUG_STEP 24 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.443877,
+      "log_bytes": 1288,
+      "log_sha256": "22b62ed5d4772b66795204ad4bf5ea710c4246dbabd77f14def7c334668cf8fb",
+      "receipt_path": "tmp/internal-debug-review/root/final-test_debug_step/godot-lxpdntid/report.json",
+      "assertions_ok": 24,
+      "assertions_failed": 0
+    },
+    "test_debug_observers": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/root/app",
+        "--script",
+        "res://tests/test_debug_observers.gd"
+      ],
+      "started_utc": "2026-11-07T13:23:39.958171+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "36 checks, 0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.262818,
+      "log_bytes": 1714,
+      "log_sha256": "3b8f202631986b7a5af71119721920f49f254caf56f911ae9de1840e3651569a",
+      "receipt_path": "tmp/internal-debug-review/root/final-test_debug_observers/godot-5e3mscis/report.json",
+      "assertions_ok": 36,
+      "assertions_failed": 0
+    },
+    "test_render_probe": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/root/app",
+        "--script",
+        "res://tests/test_render_probe.gd"
+      ],
+      "started_utc": "2026-11-07T13:23:40.265307+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "render probe checks passed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.444352,
+      "log_bytes": 1754,
+      "log_sha256": "9918aba23aed746aae100c5bf9fab82b8579adaf0c6145d52ea131a4b17a68b5",
+      "receipt_path": "tmp/internal-debug-review/root/final-test_render_probe/godot-7lj0iv13/report.json",
+      "assertions_ok": 34,
+      "assertions_failed": 0
+    },
+    "bridge_isolated_suite": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/root/app",
+        "--script",
+        "res://bridge_isolated_suite.gd"
+      ],
+      "started_utc": "2026-11-07T13:23:40.753605+00:00",
+      "warnings_as_errors": false,
+      "required_text": [
+        "all debug bridge checks passed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 8,
+          "message": "bridge-test warning",
+          "context": [
+            "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "     GDScript backtrace (most recent call first):",
+            "         [0] _protocol (res://tests/test_debug_bridge.gd:214)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 86,
+          "message": "gap-test kept warning",
+          "context": [
+            "     at: push_warning (core/variant/variant_utility.cpp:1034)",
+            "     GDScript backtrace (most recent call first):",
+            "         [0] _gap_tools (res://tests/test_debug_bridge.gd:586)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.4954,
+      "log_bytes": 202137,
+      "log_sha256": "c9db581d5382da36dfc21799d1f9502c84ba1381addc36ef5f2a4259256ea51d",
+      "receipt_path": "tmp/internal-debug-review/root/final-bridge_isolated_suite/godot-ohhvd84x/report.json",
+      "assertions_ok": 114,
+      "assertions_failed": 0
+    }
+  },
+  "python_discovery": {
+    "command": "python3 -m unittest discover -s tools/debug -p 'test_*.py' -v",
+    "tests": 89,
+    "passed": 88,
+    "failed": 1,
+    "suite_green": false,
+    "client": {
+      "tests": 65,
+      "passed": 64,
+      "failed": 1
+    },
+    "warning_scanner": {
+      "tests": 10,
+      "passed": 10
+    },
+    "mcp": {
+      "tests": 14,
+      "passed": 14
+    },
+    "failure": "test_debugctl.DebugctlTests.test_an_unreaped_exited_child_is_not_alive",
+    "classification": "Previously documented unchanged PID/procfs namespace mismatch; test neither weakened nor skipped.",
+    "log_sha256": "cd4a1fac6accce97601035b58587ab48f59b5edda686ab452d92b8b7eddbe621"
+  },
+  "baseline_controls": {
+    "bridge_contracts": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/root/baseline-app",
+        "--script",
+        "res://tests/test_debug_bridge_contracts.gd"
+      ],
+      "started_utc": "2026-11-07T13:03:42.979230+00:00",
+      "warnings_as_errors": true,
+      "required_text": [
+        "26 checks, 0 failures"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [
+        "26 checks, 0 failures"
+      ],
+      "reason": "process_exit",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 0.544335,
+      "log_bytes": 2486,
+      "log_sha256": "864d024875ebaf7a8018ea1b5d2064237f51fecacdd203eb5229e60d52e026a7",
+      "receipt_path": "tmp/internal-debug-review/root/contracts-baseline/godot-3py0nn8f/report.json",
+      "assertions_ok": 13,
+      "assertions_failed": 13
+    },
+    "observer": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/internal-debug-review/observers/baseline",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_observers.gd"
+      ],
+      "counts": {
+        "error": 5,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 23,
+          "message": "Vector3 cannot be normalized, the elements must be finite. Making (0, 0, 0) as a fallback.",
+          "context": [
+            "     at: normalize (./core/math/vector3.h:549)",
+            "     GDScript backtrace (most recent call first):",
+            "         [0] _arrow (res://debug/flight_gizmos.gd:197)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 34,
+          "message": "No vertices were added, surface can't be created.",
+          "context": [
+            "   at: surface_end (scene/resources/immediate_mesh.cpp:153)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] update_from (res://debug/flight_gizmos.gd:141)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 40,
+          "message": "No vertices were added, surface can't be created.",
+          "context": [
+            "   at: surface_end (scene/resources/immediate_mesh.cpp:153)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] update_from (res://debug/flight_gizmos.gd:141)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 47,
+          "message": "No vertices were added, surface can't be created.",
+          "context": [
+            "   at: surface_end (scene/resources/immediate_mesh.cpp:153)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] update_from (res://debug/flight_gizmos.gd:141)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 53,
+          "message": "No vertices were added, surface can't be created.",
+          "context": [
+            "   at: surface_end (scene/resources/immediate_mesh.cpp:153)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] update_from (res://debug/flight_gizmos.gd:141)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 60,
+          "message": "No vertices were added, surface can't be created.",
+          "context": [
+            "   at: surface_end (scene/resources/immediate_mesh.cpp:153)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] update_from (res://debug/flight_gizmos.gd:141)"
+          ]
+        }
+      ],
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "log_sha256": "24a4aa336a51c7e31f5f483b4ddd5fcf328ff80d91c8762adc1289ba147fb9da",
+      "assertions_failed": 18,
+      "receipt_path": "tmp/internal-debug-review/observers/checks/observers-final-baseline-2ivwh03y/report.json"
+    }
+  },
+  "checkpoint_receipt": "checkpoint-repro/verification.json",
+  "checkpoint_cases": 10,
+  "unfixed_lsp_witness": {
+    "foreign_server_methods": [
+      "initialize",
+      "initialized",
+      "textDocument/didOpen",
+      "textDocument/didClose"
+    ],
+    "launched_editor_exit_status": 9,
+    "launched_editor_polled": 0,
+    "findings": [],
+    "server_errors": []
+  },
+  "limitations": [
+    "No native Windows runtime/rollback/locking pass",
+    "No full app/reset/weather/flight or rendered 1080p campaign",
+    "No target performance or physical-validation claim",
+    "No power-loss/ACL/ownership/concurrent-external-writer guarantee",
+    "Required candidate full CI separate and unobserved at local verification"
+  ],
+  "verification_commands": [
+    "Python py_compile on changed Python sources/tests and retained reproducers",
+    "git diff --check"
+  ],
+  "documentation_links": {
+    "checked_local_links": 449,
+    "errors": []
+  }
+}

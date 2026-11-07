@@ -1,0 +1,97 @@
+{
+  "format": "openrc-tool-review-evidence v1",
+  "baseline_commit": "997e212784dbf873a7b054ddbbc68e7905495adf",
+  "review_date": "2026-11-07",
+  "date_timezone": "America/Bogota",
+  "python": "3.12.14",
+  "source_sha256": {
+    "tools/debug/mcp_server.py": "eefef161f7f5f068792a3a0b416c5c5562da2e1279633109e8eaa568c9f85850",
+    "tools/debug/test_mcp_server.py": "605b5c3da93e6cd7a7ec86a6687fe15625cde0446d3649268791dbb7fe483d15",
+    "tools/flight_log/flight_log.py": "216dcd600ca0dbe4e9effae83a76b54c6ee5349e88dc11da3186ead2c2eac17e",
+    "tools/flight_log/test_flight_log.py": "39a7b8412abb587be28eef4cf96cc22fac5074fc4ac02847fc9e85bb9e308bb1",
+    "research/performance/observer_cadence_ab.py": "9c83df479ac91b2402eaf45ff81e07b25806276d135838fe0c9d18eaee32ceba",
+    "research/performance/observer_cadence_bench.py": "cfb2a605770da1e4000cea3155258d0a361d002d5ca679453aea312be6c5ede0",
+    "research/performance/test_observer_cadence_bench.py": "f7df0af02ff528fbf0d9fa869f5e852889f7550183c8b8d1e7c779501f7a9f96",
+    "research/validation/weighing/reduce.py": "f02b5892eec6849d337c17982f525d7ffa8653faf84764cef6c468686e5c2d28",
+    "research/validation/weighing/test_reduce.py": "a0e31dcde413c88242aa6f92c60c83d5650f4efdbb8a61ca7425e61345509ef3"
+  },
+  "focused_suites": [
+    {
+      "command": "python3 -m unittest discover -s tools/debug -p test_mcp_server.py",
+      "tests": 14,
+      "status": "passed",
+      "scope": "stdio protocol, malformed inputs, argument contracts, stubbed bridge/stop; no live simulator"
+    },
+    {
+      "command": "python3 -m unittest discover -s tools/flight_log -p test_flight_log.py",
+      "tests": 35,
+      "status": "passed",
+      "scope": "offline CSV reducers, debrief and stubbed CLI contracts; no Godot flight replay"
+    },
+    {
+      "command": "python3 research/performance/test_observer_cadence_bench.py",
+      "tests": 8,
+      "status": "passed",
+      "scope": "real Python scheduling entrypoints with mocked bridge and samples; no timing campaign"
+    },
+    {
+      "command": "python3 research/validation/weighing/test_reduce.py",
+      "tests": 19,
+      "status": "passed",
+      "scope": "disposable copy with exact pinned synthetic fixture; analytic, Monte Carlo and output preservation"
+    }
+  ],
+  "focused_test_total": 76,
+  "extra_checks": {
+    "weighing_mutations_detected": 4,
+    "weighing_fixture_git_blob": "826531ee518c299eb73fef3e9ce2b716801ad2fa",
+    "weighing_RLIMIT_FSIZE_bytes": 64,
+    "weighing_existing_output_preserved_after_failure": true,
+    "diff_check": "passed",
+    "summary_parity_replay": {
+      "cases": 24,
+      "rows": 2587,
+      "status": "passed",
+      "baseline_readers": 2,
+      "candidate_readers": 1,
+      "scope": "Retained exact CSV inputs replayed; all recorded complete-report digests match. No wall-time measurement."
+    },
+    "changed_markdown_link_check": {
+      "files": 9,
+      "links_examined": 1038,
+      "errors": 0,
+      "scope": "Existing check_docs parsing/anchor functions over candidate working files and pinned tracked tree; no network link liveness claim."
+    }
+  },
+  "broader_debug_run": {
+    "tests": 70,
+    "failures": 1,
+    "failed_test": "test_debugctl.DebugctlTests.test_an_unreaped_exited_child_is_not_alive",
+    "classification": "environment-dependent; unchanged code",
+    "observed_namespace_witness": {
+      "os_getpid": 5,
+      "proc_self_resolves_to": "/proc/10433",
+      "child_pid": 6,
+      "proc_child_comm": "caas-prefix-tra",
+      "child_wait_exit": 0
+    },
+    "scope": "This sandbox presents process IDs and procfs from different namespaces; do not treat the full debug suite as passing."
+  },
+  "baseline_ci": {
+    "run_id": 42333181434,
+    "head_sha": "997e212784dbf873a7b054ddbbc68e7905495adf",
+    "conclusion": "success",
+    "successful_jobs": 20,
+    "intentionally_skipped_jobs": 1,
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/42333181434"
+  },
+  "candidate_full_ci": "not yet observed",
+  "not_performed": [
+    "full application suite",
+    "full export",
+    "live Godot or Blender workflows",
+    "target GPU or native device qualification",
+    "physical validation",
+    "wall-time performance campaign"
+  ]
+}
