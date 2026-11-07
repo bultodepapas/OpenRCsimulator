@@ -32,12 +32,95 @@ HINTS = {
     "launch_error": "Check the executable path, dependencies and permissions.",
     "interrupted": "The invocation was interrupted; rerun into a fresh collection.",
     "invalid_report": "Evidence is missing, inconsistent or unsupported; retain it and rerun into a fresh collection.",
+    "skipped": "Pixel assertions did not run; a display-backed run is required.",
 }
+
+# These scripts deliberately exit successfully before their pixel assertions in a
+# headless run. Keep their skip and completion evidence distinct from parse checks.
+PIXEL_CONTRACTS = {
+    "res://tests/test_lighting_segment_filter.gd": (
+        b"Lighting segment pixels SKIPPED: native rendering required at 1920x1080.",
+        rb"Lighting segment filter: (0|[1-9][0-9]*) checks, (0|[1-9][0-9]*) failed",
+        12,
+    ),
+    "res://tests/test_lighting_skin_patterns.gd": (
+        b"Lighting skin pixels SKIPPED: native renderer required at 1920x1080.",
+        rb"Lighting skin patterns: (0|[1-9][0-9]*) checks, (0|[1-9][0-9]*) failed",
+        13,
+    ),
+}
+
+
+def pixel_skip(log: Path, command: list[str], size: int, sha256: str) -> str:
+    """Validate one lighting execution's whole-line evidence, or exempt a parse."""
+    # Arguments following the Godot user-argument delimiter are not engine flags.
+    engine_args = command[:command.index("--")] if "--" in command else command
+    if "--script" not in engine_args or engine_args.index("--script") + 1 >= len(engine_args):
+        return ""
+    script = engine_args[engine_args.index("--script") + 1]
+    if script not in PIXEL_CONTRACTS or "--check-only" in engine_args:
+        return ""
+    expected, _, minimum = PIXEL_CONTRACTS[script]
+    skips = {marker: name for name, (marker, _, _) in PIXEL_CONTRACTS.items()}
+    completions = [(name, re.compile(pattern)) for name, (_, pattern, _) in PIXEL_CONTRACTS.items()]
+    completion_prefixes = (b"Lighting segment filter:", b"Lighting skin patterns:")
+    skip_prefixes = (b"Lighting segment pixels SKIPPED:", b"Lighting skin pixels SKIPPED:")
+    outcome = ""
+    reported_checks = 0
+    successful_checks = 0
+    continuation = False
+    read_bytes = 0
+    digest = hashlib.sha256()
+    with log.open("rb") as stream:
+        while fragment := stream.readline(65536):
+            read_bytes += len(fragment)
+            if read_bytes > size:
+                raise ValueError("log changed during skip inspection")
+            digest.update(fragment)
+            # A marker is short and must occupy a complete line; do not treat a
+            # continuation fragment of a long line as a standalone marker.
+            if not continuation and (fragment.endswith(b"\n") or len(fragment) < 65536):
+                line = fragment.removesuffix(b"\n").removesuffix(b"\r")
+                if line.startswith(skip_prefixes) and line not in skips:
+                    raise ValueError("malformed lighting skip marker")
+                if line in skips:
+                    if outcome or skips[line] != script:
+                        raise ValueError("duplicate, contradictory or mismatched lighting marker")
+                    outcome = "skipped"
+                completion_found = False
+                for name, pattern in completions:
+                    match = pattern.fullmatch(line)
+                    if match:
+                        completion_found = True
+                        if outcome or name != script:
+                            raise ValueError("duplicate, contradictory or mismatched lighting marker")
+                        reported_checks = int(match.group(1))
+                        if reported_checks < minimum or match.group(2) != b"0":
+                            raise ValueError("lighting completion has too few checks or failures")
+                        outcome = "completed"
+                if line.startswith(completion_prefixes) and not completion_found:
+                    raise ValueError("malformed lighting completion marker")
+                if line.startswith(b"FAIL "):
+                    raise ValueError("lighting output contains a failed assertion")
+                if line.startswith(b"ok   "):
+                    if outcome:
+                        raise ValueError("lighting assertion appears after terminal marker")
+                    successful_checks += 1
+            continuation = not fragment.endswith(b"\n")
+    if read_bytes != size or digest.hexdigest() != sha256:
+        raise ValueError("log changed during skip inspection")
+    if outcome == "skipped":
+        if successful_checks:
+            raise ValueError("lighting skip contradicts assertion output")
+        return expected.decode("ascii")
+    if outcome != "completed" or successful_checks != reported_checks:
+        raise ValueError("lighting execution lacks matching complete assertion evidence")
+    return ""
 
 
 def read_run(directory: Path, max_log_bytes: int) -> dict:
     item = {"name": directory.name, "directory": directory.name, "reason": "invalid_report",
-            "ok": False, "time": 0.0, "detail": "", "diagnostics": []}
+            "ok": False, "skipped": False, "time": 0.0, "detail": "", "diagnostics": []}
     try:
         report_path, log = directory / "report.json", directory / "engine.log"
         if (directory.is_symlink() or report_path.is_symlink() or log.is_symlink()
@@ -120,7 +203,11 @@ def read_run(directory: Path, max_log_bytes: int) -> dict:
         detail += f"errors={counts['error']}; warnings={counts['warning']}\n{str(report.get('detail', ''))[:2000]}"
         if scanned["missing_required_text"]:
             detail += f"\nMissing completion text: {scanned['missing_required_text']}"
-        item.update(name=label, reason=report["reason"], ok=report["ok"], time=elapsed,
+        skip = pixel_skip(log, command, size, expected_hash) if report["ok"] else ""
+        if skip:
+            detail += f"\n{skip}"
+        item.update(name=label, reason="skipped" if skip else report["reason"], ok=report["ok"],
+                    skipped=bool(skip), time=elapsed,
                     detail=detail, diagnostics=scanned["diagnostics"][:3])
     except (OSError, ValueError, TypeError, OverflowError, RecursionError) as error:
         item["detail"] = str(error)[:2000]
@@ -173,11 +260,12 @@ def write_junit(path: Path, items: list[dict]) -> None:
         raise ValueError("cannot publish an empty invocation collection")
     failures = sum(not item["ok"] and item["reason"] not in CAPTURE_ERRORS for item in items)
     errors = sum(item["reason"] in CAPTURE_ERRORS for item in items)
+    skipped = sum(item["skipped"] for item in items)
     duration = sum(item['time'] for item in items)
     if not math.isfinite(duration):
         raise ValueError("aggregate elapsed duration is not finite")
     suite = ET.Element("testsuite", name="OpenRC checked Godot invocations", tests=str(len(items)),
-                       failures=str(failures), errors=str(errors), skipped="0",
+                       failures=str(failures), errors=str(errors), skipped=str(skipped),
                        time=f"{duration:.6f}")
     for item in items:
         case = ET.SubElement(suite, "testcase", classname="OpenRC.GodotCommand",
@@ -186,6 +274,9 @@ def write_junit(path: Path, items: list[dict]) -> None:
         if not item["ok"]:
             tag = "error" if item["reason"] in CAPTURE_ERRORS else "failure"
             node = ET.SubElement(case, tag, type=item["reason"], message=HINTS[item["reason"]])
+            node.text = XML_UNSAFE.sub("\ufffd", detail_text(item))
+        elif item["skipped"]:
+            node = ET.SubElement(case, "skipped", message=HINTS["skipped"])
             node.text = XML_UNSAFE.sub("\ufffd", detail_text(item))
         else:
             ET.SubElement(case, "system-out").text = XML_UNSAFE.sub("\ufffd", detail_text(item))
@@ -213,7 +304,13 @@ def main() -> int:
         print(f"Diagnostic summary refused: {error}", file=sys.stderr)
         return 2
     failed = [item for item in items if not item["ok"]]
-    print(f"{len(items)} invocations: {len(items) - len(failed)} passed, {len(failed)} failed or invalid.")
+    skipped = [item for item in items if item["skipped"]]
+    print(f"{len(items)} invocations: {len(items) - len(failed) - len(skipped)} passed, "
+          f"{len(skipped)} skipped, {len(failed)} failed or invalid.")
+    for item in skipped[:20]:
+        print(f"\n{item['name']} [skipped]\n{detail_text(item)}")
+    if len(skipped) > 20:
+        print(f"{len(skipped) - 20} additional skips; see the JUnit file and per-run reports.")
     for item in failed[:20]:
         print(f"\n{item['name']} [{item['reason']}]\n{detail_text(item)}")
     if len(failed) > 20:

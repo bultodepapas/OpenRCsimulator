@@ -115,14 +115,35 @@ echo "== export output: $DIST"
 mkdir -- "$DIST/linux" "$DIST/windows" "$DIST/macos"
 GODOT="$("$HERE/get-godot.sh")"
 TEMPLATE_DIR="$("$HERE/get-templates.sh")"
-run() { timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
 LOG="$(mktemp)"
 PACK_PROBE="$(mktemp -d)"
 HOST_PROBE="$(mktemp -d)"
+mkdir -p "$ROOT/tmp"
+NK3_EVIDENCE="$(mktemp -d "$ROOT/tmp/nk3-export-XXXXXXXX")"
+run_checked() {
+  local label="$1" budget="$2"
+  shift 2
+  python3 "$ROOT/tools/godot/run_checked.py" --timeout "$budget" --out-dir "$NK3_EVIDENCE/checks" \
+    --label "$label" "$@"
+}
+require_completion_line() {
+  python3 - "$LOG" "$1" <<'PYCOMPLETION'
+from pathlib import Path
+import re
+import sys
+
+log, marker = sys.argv[1:]
+ansi = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
+lines = Path(log).read_text(encoding="utf-8").splitlines()
+count = sum(ansi.sub("", line) == marker for line in lines)
+if count != 1:
+    raise SystemExit(f"expected exactly one complete marker line {marker!r}; found {count}")
+PYCOMPLETION
+}
 
 echo "== import (a fresh clone has no .godot cache)"
-run --import > "$LOG" 2>&1 || { cat "$LOG"; exit 1; }
-if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error while importing"; exit 1; fi
+run_checked export-import 600 -- "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$LOG" 2>&1 \
+  || { cat "$LOG"; echo "engine error while importing"; exit 1; }
 echo "== capture source, tool and native receipt identities before export"
 python3 "$ROOT/tools/release/manifest.py" capture --root "$ROOT" --editor "$GODOT" \
   --templates "$TEMPLATE_DIR" --output "$DIST/.release-inputs.json"
@@ -136,8 +157,8 @@ for preset in Linux Windows macOS; do
     macOS) out="$DIST/macos/OpenRC Simulator.zip" ;;
   esac
   echo "== export $preset"
-  run --export-release "$preset" "$out" > "$LOG" 2>&1 || { cat "$LOG"; echo "export $preset failed"; exit 1; }
-  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error while exporting $preset"; exit 1; fi
+  run_checked "export-$preset" 600 -- "$GODOT" --headless --path "$HERE" --audio-driver Dummy \
+    --export-release "$preset" "$out" > "$LOG" 2>&1 || { cat "$LOG"; echo "export $preset failed"; exit 1; }
   [ -s "$out" ] || { echo "export $preset produced no file"; exit 1; }
   if [[ "$preset" == Linux ]]; then
     echo "== stage verified NK-3 sidecars for the exact exported executable"
@@ -240,8 +261,6 @@ cmp -s "$GODOT" "$HOST_GODOT" || { echo "host editor staging changed the pinned 
 cmp -s "$DIST/linux/libopenrc_ground_vehicle.so" "$HOST_SIDECAR" || { echo "host native sidecar staging changed the exported binary"; exit 1; }
 echo "host editor $(sha256sum "$HOST_GODOT" | cut -d ' ' -f1); Linux sidecar $(sha256sum "$HOST_SIDECAR" | cut -d ' ' -f1)"
 
-mkdir -p "$ROOT/tmp"
-NK3_EVIDENCE="$(mktemp -d "$ROOT/tmp/nk3-export-XXXXXXXX")"
 mkdir -p "$NK3_EVIDENCE/user-data"
 LINUX_EXE="$DIST/linux/openrc-simulator.x86_64"
 echo "== NK-3: qualify the exact exported Linux executable"
@@ -322,6 +341,20 @@ python3 "$HERE/tests/check_build_versions.py" "$DIST/windows/OpenRC Simulator.ex
 echo "== default field and compiled loader are present in all three packs (empty-project smoke)"
 # Do not use --path app: that would mask a missing JSON with the loose source file.
 FIELD_SHA="$(sha256sum "$HERE/data/fields/default.json" | cut -d ' ' -f1)"
+FIELD_COMPLETION="$(python3 - "$HERE/data/fields/default.json" <<'PYFIELD'
+import json
+from pathlib import Path
+import sys
+
+try:
+    positions = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))["objects"][0]["positions"]["value"]
+    if not isinstance(positions, list) or not positions:
+        raise ValueError("default field has no tree positions")
+except (OSError, ValueError, KeyError, IndexError, TypeError) as error:
+    raise SystemExit(f"cannot determine default field completion marker: {error}")
+print(f"Pack tree catalog, imported atlas, license and {len(positions)}-tree field validated")
+PYFIELD
+)"
 python3 - "$DIST/macos/OpenRC Simulator.zip" "$PACK_PROBE/macos.pck" <<'PYPACK'
 import pathlib, sys, zipfile
 with zipfile.ZipFile(sys.argv[1]) as archive:
@@ -330,26 +363,52 @@ with zipfile.ZipFile(sys.argv[1]) as archive:
     pathlib.Path(sys.argv[2]).write_bytes(archive.read(packs[0]))
 PYPACK
 for pack in "$DIST/linux/openrc-simulator.x86_64" "$DIST/windows/OpenRC Simulator.exe" "$PACK_PROBE/macos.pck"; do
-  timeout 60 "$GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
+  pack_label="$(basename "$pack")"
+  run_checked "export-field-$pack_label" 60 --require-text "$FIELD_COMPLETION" -- \
+    "$GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
     --script "$HERE/tests/check_field_pack.gd" -- "$pack" "$FIELD_SHA" > "$LOG" 2>&1 \
     || { cat "$LOG"; echo "field pack check failed: $pack"; exit 1; }
-  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
+  require_completion_line "$FIELD_COMPLETION" >> "$LOG" 2>&1 \
+    || { cat "$LOG"; echo "field pack check failed: $pack"; exit 1; }
   cat "$LOG"
   echo "host-side resource check on Linux editor; this does not execute the target OS binary: $pack"
-  timeout 60 "$HOST_GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
+  run_checked "export-rotorcraft-$pack_label" 60 \
+    --require-text "Rotorcraft package smoke: 8 checks, 0 failures" -- \
+    "$HOST_GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
     --main-pack "$pack" --script "$ROOT/research/aircraft-standardization/rotorcraft_package_smoke.gd" > "$LOG" 2>&1 \
     || { cat "$LOG"; echo "rotorcraft pack check failed: $pack"; exit 1; }
-  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
+  require_completion_line "Rotorcraft package smoke: 8 checks, 0 failures" >> "$LOG" 2>&1 \
+    || { cat "$LOG"; echo "rotorcraft pack check failed: $pack"; exit 1; }
   cat "$LOG"
 done
 
 echo "== exported Linux pack selects its exact host-native implementation from an empty project"
-timeout 60 "$HOST_GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
+run_checked export-native-package 60 --require-text "R11_NATIVE_PACKAGE_SMOKE " \
+  --require-text '"passed":true' -- "$HOST_GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
   --main-pack "$DIST/linux/openrc-simulator.x86_64" \
   --script "$HERE/tests/check_native_pack.gd" > "$LOG" 2>&1 \
   || { cat "$LOG"; echo "native package identity check failed"; exit 1; }
-if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
 cat "$LOG"
+python3 - "$LOG" <<'PYNATIVE'
+import json
+from pathlib import Path
+import re
+import sys
+
+prefix = "R11_NATIVE_PACKAGE_SMOKE "
+lines = (re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", line) for line in
+         Path(sys.argv[1]).read_text(encoding="utf-8").splitlines())
+reports = [line.removeprefix(prefix) for line in lines if line.startswith(prefix)]
+try:
+    if len(reports) != 1:
+        raise ValueError("expected exactly one native package report")
+    report = json.loads(reports[0])
+    if not isinstance(report, dict) or report.get("format") != "openrc-r11-host-native-package-smoke-v1" \
+            or report.get("passed") is not True:
+        raise ValueError("native package report is not a successful host-native result")
+except (ValueError, TypeError) as error:
+    raise SystemExit(f"native package identity check failed: {error}")
+PYNATIVE
 
 echo "== packages"
 # Include exporter-managed GDExtension libraries beside the executable, preserving their relative paths.

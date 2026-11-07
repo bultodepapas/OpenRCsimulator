@@ -56,6 +56,22 @@ A full local run obtains unit-script parse/compilation coverage from each requir
 
 Visual group diagnostics, experimental receipts/reduction and `timings.tsv` are documented in [graphics tools](../../docs/tools/graphics.md#visual-capture-suite). CI prints available phase timings to the job log and step summary after the capture command, including on failure, so inspecting durations does not require downloading the complete image artifact. An absent report is identified explicitly. Opt-in `--run-id` receipts let `capture_groups.py` verify seven matching groups and their outputs; the result explicitly remains unqualified for production. CI continues to run the full capture command until rendered equivalence and complete coverage are established.
 
+### Capture artifact reconstruction
+
+After a successful full capture, `capture_project_evidence.py` compares the two unfiltered ground-shader mutation projects. If every upload-eligible relative path, size, SHA-256 and mode agrees, `captures-app` stores `l9c/unfiltered-stripe-app` once and supplies `capture-project-copy.json` plus a standalone `restore-capture-project.py`. Restore the second independent project after extracting the artifact:
+
+```sh
+python3 /path/to/extracted-captures/restore-capture-project.py restore
+```
+
+The helper verifies the complete retained file set, creates fresh copies and publishes `l9c/stripes/raw-app` only after reconstruction matches. It refuses an existing destination, changed source bytes or inconsistent metadata. A failed copy leaves no partial destination and can be retried. POSIX modes are restored where supported; Windows verifies paths and bytes without requiring Unix permission semantics. The helper does not rerun a capture or establish rendering qualification.
+
+For another Godot import or render, use a disposable copy of the matching source checkout and recorded mutation. The existing upload excludes hidden files, including source `.gdignore` controls: importing an extracted project without those controls can discover additional assets. Reconstruction preserves the archived file set; the source checkout supplies the complete import inputs.
+
+Original projects remain unchanged on the CI runner. All renders, distinct shader mutations, comparisons, negative controls and logs still execute and remain in the artifact. Dotfiles/import caches and empty directories follow the existing artifact action's exclusions. Missing, different or unsupported project trees keep the full original upload. A failed/cancelled capture also keeps that path. Only this optional storage preparation tolerates failure; its raw step `outcome` and completed evidence output control the two mutually exclusive uploads. Test failures and upload failures remain failures. The source trees must be quiescent after the successful capture; this is not an atomic filesystem snapshot.
+
+This removes duplicate artifact content when equivalence is observed, with no render/import scheduling change. Hosted compressed-size, upload-time and workflow-time savings require a completed hosted run; source-tree reconstruction alone does not establish post-import equality or a measured speedup.
+
 ## Verification and remaining rollout
 
 ```sh
