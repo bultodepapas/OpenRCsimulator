@@ -197,6 +197,7 @@ func _initialize() -> void:
 		session.sim.step()
 		_check("metadata snapshot remains at recording start", recorder.trace.meta == snapshot)
 		recorder.recording = false
+		_check("discard the metadata fixture before the next aircraft", recorder.discard_unsaved(recorder.recording_generation))
 
 	# Remove opt-ins while retaining the P-51 ID: dispatch must follow configuration.
 	session.aircraft_path = Catalog.entry("p51d-mustang-120").data

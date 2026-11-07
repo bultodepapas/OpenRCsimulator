@@ -37,6 +37,7 @@ class MemoryRecorder extends "res://sim/recorder.gd":
 		recording = false
 		stops += 1
 		if path.is_empty():
+			_unsaved = false # This double reports the in-memory save as successful.
 			return OK
 		return super.stop(path)
 
@@ -184,6 +185,7 @@ func _run() -> void:
 		and _sample_rows(flight.recorder.trace.to_csv()) == baseline_samples)
 
 	# A fresh recording starts with the selected context and the full history already in its CSV header.
+	_check("finish the prior recording before starting another", flight.recorder.stop() == OK)
 	flight.recorder.start(flight._trace_meta())
 	var started_context: Variant = JSON.parse_string(str(flight.recorder.trace.meta.get("visual_context", "")))
 	var normalized_started_config: Dictionary = Config.validate(started_context.get("config", {})).config if typeof(started_context) == TYPE_DICTIONARY else {}

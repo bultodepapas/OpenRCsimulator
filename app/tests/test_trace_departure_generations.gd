@@ -199,7 +199,7 @@ func _real_generations() -> void:
 	check("real recorder starts increment the generation", airplane.recording_generation == 1 and helicopter.recording_generation == 1)
 	airplane.start({})
 	helicopter.start({})
-	check("starting again changes generation even on the same object", airplane.recording_generation == 2 and helicopter.recording_generation == 2)
+	check("active generations cannot be replaced", airplane.recording_generation == 1 and helicopter.recording_generation == 1)
 	airplane.detach()
 	helicopter.detach()
 	sim.free()

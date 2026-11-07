@@ -1,5 +1,6 @@
 # HELI-16: complete rotorcraft telemetry; no airplane engine/servo column aliases.
 extends RefCounted
+const ManualTraceSave=preload("res://sim/manual_trace_save.gd")
 class FlightRows extends RefCounted:
  const COLUMNS: Array[String]=["tick","t_s","loads_t_s","north_m","east_m","down_m","u_m_s","v_m_s","w_m_s","qw","qx","qy","qz","p_rad_s","q_rad_s","r_rad_s","main_omega_rad_s","a1_rad","b1_rad","vi_m_s","heading_ref_rad","yaw_integrator_rad","Fx_n","Fy_n","Fz_n","Mx_nm","My_nm","Mz_nm","cmd_roll","cmd_pitch","cmd_yaw","cmd_collective","motor_armed","drive_hold","idle_up","drive_scale","main_phase_rad","tail_phase_rad","skid0_z_n_m","skid0_z_e_m","skid1_z_n_m","skid1_z_e_m","skid2_z_n_m","skid2_z_e_m","skid3_z_n_m","skid3_z_e_m"]
  var meta: Dictionary={}
@@ -47,6 +48,7 @@ var recording: bool=false
 ## Monotonic identity for each new manual recording, independent of saved trace data.
 var recording_generation: int=0
 var note: String=""
+var _unsaved: bool=false
 var _recording_error: String=""
 var _sim: Node
 var _controls: Callable
@@ -55,12 +57,19 @@ func _init(sim: Node,controls: Callable=Callable()) -> void:
  _controls=controls
  sim.stepped.connect(_record)
 func start(meta: Dictionary) -> void:
+ if recording:
+  note="recording already in progress"
+  return
+ if _unsaved and stop()!=OK:
+  note+=" (T retries; exit to discard)"
+  return
  recording_generation+=1
  _recording_error=""
  trace.clear()
  trace.meta=meta.duplicate(true)
  trace.meta["dt_s"]=_sim.dt()
  recording=true
+ _unsaved=true
  _record(_sim.tick,_sim.time(),_sim.state,_sim.last_loads,_sim.inputs,_sim.aux)
 func stop(path: String="") -> Error:
  recording=false
@@ -72,11 +81,26 @@ func stop(path: String="") -> Error:
   note="helicopter trace rejected: no valid samples"
   print(note)
   return ERR_INVALID_DATA
- if path.is_empty(): path="user://traces/helicopter-%s.csv"%Time.get_datetime_string_from_system(true).replace(":","-")
- var error: Error=trace.save(path)
+ var error: Error
+ if path.is_empty():
+  var result: Dictionary=_save_automatic()
+  error=result.error
+  path=result.path
+ else:
+  error=trace.save(path)
+ if error==OK: _unsaved=false
  note="helicopter trace saved: %s (%d rows)"%[path,trace.row_count()] if error==OK else "helicopter trace save failed: %d"%error
  print(note)
  return error
+func _save_automatic() -> Dictionary: return ManualTraceSave.save(trace,"helicopter")
+func has_unsaved_recording() -> bool: return _unsaved
+func discard_unsaved(expected_generation: int) -> bool:
+ if recording or not _unsaved or expected_generation!=recording_generation: return false
+ trace.clear()
+ _unsaved=false
+ _recording_error=""
+ note="helicopter trace discarded"
+ return true
 func detach() -> void:
  recording=false
  if _sim.stepped.is_connected(_record): _sim.stepped.disconnect(_record)

@@ -30,6 +30,7 @@ func _initialize() -> void:
 		and recorder.trace.meta.wheel_state_model == "relative-wheel-rim-speed-rk4-v1"
 		and recorder.trace.columns() == Trace.COLUMNS)
 	recorder.recording = false
+	check("discard the calm fixture before replacement", recorder.discard_unsaved(recorder.recording_generation))
 	session.reset()
 	check("gust weather config accepted", session.setup_weather(Config.preset("gusty")))
 	session.reset()
@@ -61,6 +62,7 @@ func _initialize() -> void:
 	check("k1 TAS uses previous state/previous time", recorder.trace.value(row, "loads_tas_mps") == session.air_data(session.sim.previous, load_time).V)
 	check("gust state and load samples differ", wind != load_wind)
 	recorder.recording = false
+	check("discard the gust fixture before replacement", recorder.discard_unsaved(recorder.recording_generation))
 	# Mid-flight T starts from the observed preceding state, not an inferred first-row body velocity.
 	recorder.start(session.trace_meta())
 	check("first mid-flight row reconstructs k1 correctly", absf(recorder.trace.value(0, "loads_tas_mps") - session.air_data(session.sim.previous, load_time).V) < 1e-12)
