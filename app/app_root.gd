@@ -14,6 +14,7 @@ const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
+const HomePreviewGeometry := preload("res://ui/home_preview_geometry.gd")
 const FlightLoading := preload("res://ui/flight_loading.gd")
 const FlightSceneLoad := preload("res://ui/flight_scene_load.gd")
 const HomeFlightPreparation := preload("res://ui/home_flight_preparation.gd")
@@ -144,6 +145,7 @@ var home: Control:
 		return screens.get_screen("home") as Control
 var home_scene: Node3D
 var _home_preview_resources: Node
+var _home_preview_geometry: Node
 ## Advance one selected flight after Home draws. Technical/headless routes keep preparation disabled.
 ## Modes remain available to the loading probe for matched comparisons.
 var home_flight_prefetch_mode := "off" if DisplayServer.get_name() == "headless" else "scene_trim"
@@ -387,7 +389,7 @@ func _tick_home_flight_preparation() -> void:
 		_home_flight_preparation.delay_msec = maxi(0, home_flight_prefetch_delay_msec)
 		if eligible:
 			_home_flight_preparation.observe_home(home)
-			_home_flight_preparation.tick(true, home_scene.preview_pending,
+			_home_flight_preparation.tick(true, home_scene.preview_pending or home_scene.presentation_pending,
 				Catalog.data_for(home.aircraft_id, home.battery_mode) if not Catalog.is_rotorcraft(home.aircraft_id) else "", home.aircraft_id)
 	home_flight_preparation = _home_flight_preparation.snapshot()
 	home_flight_preparation.trim_cache = FlightSession.launch_trim_cache_stats()
@@ -746,6 +748,13 @@ func _connect_home_preview(scene: Node3D) -> void:
 		_home_preview_resources = HomePreviewResources.new()
 		add_child(_home_preview_resources)
 	scene.preview_resources = _home_preview_resources
+	if not is_instance_valid(_home_preview_geometry):
+		_home_preview_geometry = HomePreviewGeometry.new()
+		add_child(_home_preview_geometry)
+	scene.preview_geometry = _home_preview_geometry
+	scene.presentation_refresh_failed.connect(func() -> void:
+		if scene == home_scene and home != null:
+			home.set_note(tr("Could not update Home lighting; the previous view remains active.")))
 	scene.preview_state_changed.connect(_on_home_preview_state.bind(scene))
 	if home != null: home.set_preview_state("ready")
 
@@ -793,8 +802,8 @@ func _moon_config_from_preferences() -> Dictionary:
 	return checked.config if checked.ok else MoonConfig.defaults()
 
 
-## FW-MOON-13: apply and save moon choices from the Conditions or pause dialogs. The live scene (flight or Home)
-## changes in place; the session and preferences keep them for the next world. Returns false when refused.
+## Publish a validated Moon choice. The route owner saves the complete visual
+## draft once, after admission; this helper never accesses player preferences.
 func _apply_moon_config(raw: Variant) -> bool:
 	var checked: Dictionary = MoonConfig.validate(raw)
 	if not checked.ok:
@@ -802,11 +811,6 @@ func _apply_moon_config(raw: Variant) -> bool:
 		return false
 	MoonConfig.session_config = checked.config.duplicate()
 	World.set_moon_config(checked.config)
-	if checked.config != _moon_config_from_preferences():
-		preferences.moon_config = checked.config.duplicate()
-		var err: Error = Preferences.save_to(preferences_path, preferences)
-		if err != OK:
-			push_warning("Could not save moon choices (error %d)" % err)
 	return true
 
 
@@ -2164,10 +2168,14 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.weather_config = selected_weather.duplicate(true)
 	candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 	candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
+	candidate.night_options = _night_options_from_preferences()
+	candidate.remember_lighting_selection = has_home
 	if previous != null:
 		candidate.weather_config = previous.weather_config.duplicate(true)
 		candidate.lighting_config = previous.lighting_config.duplicate(true)
 		candidate.sky_config = previous.sky_config.duplicate(true)
+		candidate.night_options = previous.night_options.duplicate(true)
+		candidate.remember_lighting_selection = previous.remember_lighting_selection
 	candidate.overlays_enabled = true
 	candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
 	# Direct technical launches can open Workshop without the Home display-preference service.
@@ -2445,65 +2453,29 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 	if not flight.session.sim.paused:
 		time_of_day_dialog.show_apply_error(["pause the flight before editing lighting"])
 		return
-	_apply_moon_config(time_of_day_dialog.applied_moon_config) # FW-MOON-13: visual only, applied in place
-	var sky_result: Dictionary = flight.prepare_sky_edit(time_of_day_dialog.applied_sky_config)
-	if not sky_result.ok:
-		time_of_day_dialog.show_apply_error(sky_result.errors)
-		return
-	var night_result: Dictionary = Preferences.validate_night_options(time_of_day_dialog.applied_night_options)
-	if not night_result.get("ok", false):
-		time_of_day_dialog.show_apply_error(night_result.get("errors", []))
-		return
-	if time_of_day_dialog.night_only:
-		if not _apply_flight_night_options(night_result.options):
-			time_of_day_dialog.show_apply_error(["could not apply field lighting"])
-			return
-		if not flight.apply_sky_config(sky_result.config).ok:
-			time_of_day_dialog.show_apply_error(["could not apply sky"])
-			return
-		if has_home and flight.remember_lighting_selection:
-			var night_changed: bool = _night_options_from_preferences() != night_result.options
-			night_changed = night_changed or preferences.get("sky_config", SkyConfig.defaults()) != sky_result.config
-			preferences.sky_config = sky_result.config
-			preferences.night_field_lighting = night_result.options.field_lighting
-			preferences.night_campfire = night_result.options.campfire
-			preferences.night_field_activation = night_result.options.field_activation
-			if night_changed:
-				var save_error: Error = Preferences.save_to(preferences_path, preferences)
-				_settings_note = "" if save_error == OK else tr("Could not save settings (error %d).") % save_error
-				pause_menu.set_note(_settings_note)
-		close_time_of_day()
-		return
-	var result: Dictionary = flight.apply_lighting_config(raw)
+	var result: Dictionary = flight.apply_visual_conditions(raw, time_of_day_dialog.applied_sky_config,
+		time_of_day_dialog.applied_night_options, time_of_day_dialog.applied_moon_config, time_of_day_dialog.night_only)
 	if not result.get("ok", false):
 		time_of_day_dialog.show_apply_error(result.get("errors", []))
 		return
-	var sky_applied: Dictionary = flight.apply_sky_config(sky_result.config)
-	if not sky_applied.ok:
-		time_of_day_dialog.show_apply_error(sky_applied.errors)
-		return
-	if not _apply_flight_night_options(night_result.options):
-		time_of_day_dialog.show_apply_error(["could not apply field lighting"])
-		return
 	if has_home and flight.remember_lighting_selection:
-		var applied_config: Dictionary = flight.lighting_config.duplicate(true)
-		var night_changed: bool = _night_options_from_preferences() != night_result.options
-		var save_selection: bool = bool(result.get("changed", false)) \
-			or preferences.get("lighting_config", TimeOfDay.defaults()) != applied_config \
-			or bool(preferences.get("lighting_invalid", false)) or night_changed
-		save_selection = save_selection or preferences.get("sky_config", SkyConfig.defaults()) != sky_result.config
-		preferences.sky_config = sky_result.config
-		preferences.lighting_config = applied_config
-		preferences.lighting_invalid = false
-		preferences.time_of_day = "day"
-		preferences.night_field_lighting = night_result.options.field_lighting
-		preferences.night_campfire = night_result.options.campfire
-		preferences.night_field_activation = night_result.options.field_activation
-		Conditions.session_preset = "day"
-		if save_selection:
+		var before := preferences.duplicate(true)
+		preferences.moon_config = time_of_day_dialog.applied_moon_config.duplicate(true)
+		preferences.sky_config = flight.sky_config.duplicate(true)
+		preferences.night_field_lighting = flight.night_options.field_lighting
+		preferences.night_campfire = flight.night_options.campfire
+		preferences.night_field_activation = flight.night_options.field_activation
+		if not time_of_day_dialog.night_only:
+			preferences.lighting_config = flight.lighting_config.duplicate(true)
+			preferences.lighting_invalid = false
+			preferences.time_of_day = "day"
+			Conditions.session_preset = "day"
+		if preferences != before:
 			var err: Error = Preferences.save_to(preferences_path, preferences)
 			_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 			pause_menu.set_note(_settings_note)
+	else:
+		pause_menu.set_note(tr("Applied to this flight and its restarts. Flight defaults are unchanged."))
 	close_time_of_day()
 
 
@@ -2789,7 +2761,9 @@ func _on_weather_applied(raw: Dictionary) -> void:
 		return
 	if weather_dialog == null:
 		return
-	_apply_moon_config(weather_dialog.get("applied_moon_config")) # FW-MOON-13: before any Home rebuild below
+	var checked_moon: Dictionary = MoonConfig.validate(weather_dialog.get("applied_moon_config"))
+	if not checked_moon.ok:
+		return
 	var lighting_raw: Variant = weather_dialog.get("applied_lighting_config")
 	var checked_lighting: Dictionary = TimeOfDay.validate(lighting_raw)
 	if not checked_lighting.get("ok", false):
@@ -2806,6 +2780,9 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	var checked_sky: Dictionary = SkyConfig.validate(weather_dialog.get("applied_sky_config"))
 	if not checked_sky.ok:
 		return
+	var moon_changed: bool = _moon_config_from_preferences() != checked_moon.config
+	_apply_moon_config(checked_moon.config)
+	preferences.moon_config = checked_moon.config.duplicate(true)
 	var sky_changed: bool = preferences.get("sky_config", SkyConfig.defaults()) != checked_sky.config
 	preferences.sky_config = checked_sky.config
 	var night_changed: bool = _night_options_from_preferences() != checked_night.options
@@ -2824,7 +2801,7 @@ func _on_weather_applied(raw: Dictionary) -> void:
 		home.set_sky_config(preferences.sky_config)
 		if lighting_changed:
 			home.set_time_of_day("day")
-	if lighting_changed or night_changed or sky_changed:
+	if lighting_changed or night_changed or sky_changed or moon_changed:
 		_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
@@ -2876,6 +2853,9 @@ func _rebuild_home_scene() -> bool:
 	if home_scene == null:
 		return false
 	var previous: Node3D = home_scene
+	if previous.can_refresh_presentation(field_path, landscape_id):
+		if previous.refresh_presentation(preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults())):
+			return true
 	previous.retain_resources_on_exit = is_instance_valid(_home_flight_preparation)
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)

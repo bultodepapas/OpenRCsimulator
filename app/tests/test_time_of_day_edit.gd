@@ -7,6 +7,10 @@ const Timeline = preload("res://environment/visual_timeline.gd")
 const WeatherConfig = preload("res://physics/wind_config.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
+const MoonConfig = preload("res://environment/moon_config.gd")
+const SkyConfig = preload("res://environment/sky_appearance_config.gd")
+const Preferences = preload("res://app_state/preferences.gd")
+const World = preload("res://render/world/world.gd")
 
 
 class TestFlight extends Main:
@@ -120,6 +124,7 @@ func _run() -> void:
 	flight.refuse_lighting_preparation = false
 
 	var baseline_samples: String = _sample_rows(flight.recorder.trace.to_csv())
+	_combined_edit_refusals(flight, first_config)
 	var baseline_physics: PackedByteArray = var_to_bytes(flight.session.checkpoint())
 	var baseline_input: Dictionary = _input_snapshot(flight)
 	var baseline_prop_phase: PackedByteArray = var_to_bytes(flight._prop_angle)
@@ -314,6 +319,33 @@ func _physical_headers(csv: String) -> String:
 				and not line.begins_with("# visual_timeline: "):
 			physical.append(line)
 	return "\n".join(physical)
+
+
+func _combined_edit_refusals(flight: TestFlight, config: Dictionary) -> void:
+	var sky := SkyConfig.defaults()
+	sky.seed += 1
+	var night := Preferences.NIGHT_DEFAULTS.duplicate(true)
+	night.campfire = true
+	var moon := MoonConfig.defaults()
+	moon.moon = "off"
+	var before := _combined_snapshot(flight)
+	for invalid_part: String in ["lighting", "sky", "night", "moon", "preparation", "commit"]:
+		flight.refuse_lighting_preparation = invalid_part == "preparation"
+		flight.refuse_lighting_commit = invalid_part == "commit"
+		var result := flight.apply_visual_conditions({} if invalid_part == "lighting" else config,
+			{} if invalid_part == "sky" else sky, {} if invalid_part == "night" else night,
+			{} if invalid_part == "moon" else moon)
+		_check("combined %s refusal preserves all visual, physical and recording state" % invalid_part,
+			not result.ok and _combined_snapshot(flight) == before, str(result))
+	flight.refuse_lighting_preparation = false
+	flight.refuse_lighting_commit = false
+
+
+func _combined_snapshot(flight: TestFlight) -> Dictionary:
+	return {flight = _observed(flight), sky = flight.sky_config.duplicate(true), night = flight.night_options.duplicate(true),
+		moon = World.moon_config(), moon_session = MoonConfig.session_config.duplicate(true),
+		appearance = Atmosphere.appearance_config(), transport = Atmosphere.cloud_transport_checkpoint(),
+		sky_edits = flight._sky_edits.duplicate(true)}
 
 
 func _check_weather_csv_case(case_id: String, weather_id: String, aircraft: String = "jensen-das-ugly-stik-60",

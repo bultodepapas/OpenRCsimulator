@@ -35,6 +35,7 @@ const DISPLAY_TEST_SECONDS := 15
 const Languages := preload("res://i18n/languages.gd")
 const InterfaceFont := preload("res://i18n/fonts.gd")
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
+const DISPLAY_TRIAL_KEYS: Array[String] = ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]
 
 var display_preferences: DisplayPreferences
 var window_close_managed := false # AppRoot owns save/recovery decisions before closing this route.
@@ -43,6 +44,9 @@ var _saved: Dictionary
 var _draft: Dictionary
 var _language := "en"
 var _trial_deadline_msec := 0
+var _trial_baseline: Dictionary = {}
+var _trial_remaining_seconds := 0
+var _save_error: int = OK
 var _status_state := "instructions"
 var _status_value := 0
 var _layout_panel: PanelContainer
@@ -133,11 +137,11 @@ func _process(delta: float) -> void:
 		return
 	var remaining_msec: int = _trial_deadline_msec - Time.get_ticks_msec()
 	if remaining_msec <= 0:
-		_revert()
+		_expire_display_trial()
 		_set_status("expired")
 		return
-	var remaining_seconds := int(ceil(float(remaining_msec) / 1000.0))
-	_set_status("trial", remaining_seconds)
+	_trial_remaining_seconds = int(ceil(float(remaining_msec) / 1000.0))
+	_refresh_status_text()
 
 
 func _notification(what: int) -> void:
@@ -740,12 +744,15 @@ func _fsr2_sharpness_drag_ended(changed: bool) -> void:
 
 func _on_graphics_option_changed() -> void:
 	var changed := false
-	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "reconstruction", "fsr2_sharpness", "nvidia_reflex"]:
+	for key: String in DISPLAY_TRIAL_KEYS:
 		changed = changed or _draft[key] != _saved[key]
 	if not changed:
 		_trial_deadline_msec = 0
+		_trial_baseline.clear()
 	elif _trial_deadline_msec == 0:
+		_trial_baseline = _saved.duplicate(true)
 		_trial_deadline_msec = Time.get_ticks_msec() + DISPLAY_TEST_SECONDS * 1000
+		_trial_remaining_seconds = DISPLAY_TEST_SECONDS
 		_set_status("trial", DISPLAY_TEST_SECONDS)
 	_emit_presentation()
 	if not changed:
@@ -951,6 +958,7 @@ func keep_changes() -> void:
 		return
 	_saved = _draft.duplicate(true)
 	_trial_deadline_msec = 0
+	_trial_baseline.clear()
 	_set_status("saved")
 	_sync_action_buttons()
 	presentation_committed.emit()
@@ -959,6 +967,7 @@ func keep_changes() -> void:
 
 func _revert() -> void:
 	_trial_deadline_msec = 0
+	_trial_baseline.clear()
 	_draft = _saved.duplicate(true)
 	_emit_presentation(_saved)
 	presentation_reverted.emit()
@@ -966,6 +975,21 @@ func _revert() -> void:
 	call_deferred("_refresh_shared_theme")
 	_sync_controls()
 	_set_status("reverted")
+	feedback_requested.emit(&"cancel")
+
+
+func _expire_display_trial() -> void:
+	# The safety timer owns only display-test keys. Sound/accessibility edits
+	# remain in the draft until Keep, explicit Revert or Close resolves them.
+	for key: String in DISPLAY_TRIAL_KEYS:
+		_draft[key] = _trial_baseline.get(key, _saved[key])
+	_trial_deadline_msec = 0
+	_trial_baseline.clear()
+	_emit_presentation()
+	presentation_reverted.emit()
+	_refresh_graphics_info.call_deferred()
+	call_deferred("_refresh_shared_theme")
+	_sync_controls()
 	feedback_requested.emit(&"cancel")
 
 
@@ -1185,7 +1209,7 @@ func _sync_action_buttons() -> void:
 	_revert_button.disabled = not dirty
 	if not dirty and focus_was_on_action:
 		_grab_settings_focus(_close_button)
-	if dirty and _trial_deadline_msec <= 0 and _status_state in ["saved", "reverted", "expired"]:
+	if dirty and _trial_deadline_msec <= 0 and _status_state in ["saved", "reverted"]:
 		_set_status("instructions")
 	elif _status_state == "instructions":
 		_refresh_status_text() # the instructions say whether there is anything to keep
@@ -1315,6 +1339,10 @@ func _button(source: String, variation := "", node_name := "") -> Button:
 func _set_status(state: String, value := 0) -> void:
 	_status_state = state
 	_status_value = value
+	if state == "save_error":
+		_save_error = value
+	elif state in ["saved", "reverted"]:
+		_save_error = OK
 	_refresh_status_text()
 
 
@@ -1322,14 +1350,18 @@ func _refresh_status_text() -> void:
 	if _status == null:
 		return
 	match _status_state:
-		"trial": _status.text = tr("Keep the display test within %d seconds.") % int(_status_value)
-		"expired": _status.text = tr("Display test expired. Saved settings restored.")
+		"trial", "save_error": _status.text = ""
+		"expired": _status.text = tr("Display settings restored. Your other changes are still unsaved.") if _draft != _saved \
+			else tr("Display test expired. Saved settings restored.")
 		"saved": _status.text = tr("Settings saved.")
 		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
-		"save_error": _status.text = tr("Could not save settings (error %d).") % int(_status_value)
 		# UI-36 (UI-30 SC-1): one transaction, stated plainly; Keep changes is the only commit.
 		_: _status.text = tr("Unsaved preview: Keep changes saves it, Close discards it.") if _draft != _saved \
 			else tr("Changes preview at once. Keep changes saves them; Close discards them.")
+	if _save_error != OK:
+		_status.text = (tr("Could not save settings (error %d).") % _save_error) + ("\n" + _status.text if not _status.text.is_empty() else "")
+	if _trial_deadline_msec > 0:
+		_status.text += ("\n" if not _status.text.is_empty() else "") + tr("Keep the display test within %d seconds.") % _trial_remaining_seconds
 
 
 func _select_metadata(picker: OptionButton, value: Variant) -> void:

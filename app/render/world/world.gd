@@ -138,6 +138,10 @@ static func presentation_context() -> Dictionary:
 		"adapt_clock": _adapt_clock,
 		"adapt_log": _adapt_log,
 		"flow": _capture_flow_context(),
+		"moon_config": _moon_config.duplicate(true),
+		"moon_session": MoonConfig.session_config.duplicate(true),
+		"base_when": _base_when.duplicate(true),
+		"live": _live.duplicate(true),
 		"atmosphere_state": Atmosphere.state.duplicate(true),
 		"exposure": Exposure.last,
 		"shader_clock": {"clock": ShaderClock.last_clock, "wind": ShaderClock.last_wind},
@@ -179,7 +183,17 @@ static func restore_presentation_context(context: Variant) -> bool:
 	if is_nan(ground_light) or is_inf(ground_light) or is_nan(adapt_clock) or is_inf(adapt_clock) \
 			or is_nan(adapt_log) or is_inf(adapt_log):
 		return false
+	var restored_moon := MoonConfig.validate(context.get("moon_config", _moon_config))
+	var restored_session: Variant = context.get("moon_session", MoonConfig.session_config)
+	var restored_when: Variant = context.get("base_when", _base_when)
+	var restored_live: Variant = context.get("live", _live)
+	if not restored_moon.ok or not restored_session is Dictionary or not restored_when is Dictionary or not restored_live is Dictionary:
+		return false
 
+	_moon_config = restored_moon.config.duplicate(true)
+	MoonConfig.session_config = restored_session.duplicate(true)
+	_base_when = restored_when.duplicate(true)
+	_live = restored_live.duplicate(true)
 	_night_profile = profile
 	_night_options = options.duplicate(true)
 	_night_owner = _weak_context_ref(context.get("night_owner"))
@@ -1395,6 +1409,12 @@ static func set_moon_config(config: Dictionary) -> bool:
 	var state := SkyState.state(Ephemeris.sky(when), _moon_config)
 	state.tonemapper = tonemapper
 	Atmosphere.state = state
+	# Star vertices stay in their build-time equatorial basis. Recompute from
+	# that fixed reference after a phase/date edit, including frozen worlds.
+	var stars: Node3D = _resolve_context_ref(env.get_meta("fw_star_field", null)) as Node3D
+	if stars != null and stars.has_meta("fw_equatorial_basis"):
+		stars.basis = Stars.equatorial_basis(float(state.lst_deg), float(when.latitude_deg)) \
+			* (stars.get_meta("fw_equatorial_basis") as Basis).inverse()
 	Atmosphere.apply_state_to_sky(env.sky.sky_material)
 	Atmosphere.apply_state_to_environment(env)
 	Atmosphere.update_sun(sun)

@@ -9597,3 +9597,9 @@ msgstr "Impossible de sauvegarder l’enregistrement (erreur %d). Réessayez, ab
 
 msgid "Discard recording and continue"
 msgstr "Abandonner l’enregistrement et continuer"
+
+msgid "Display settings restored. Your other changes are still unsaved."
+msgstr "Paramètres d’affichage restaurés. Les autres modifications ne sont pas encore enregistrées."
+
+msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
+msgstr "Appliqué à ce vol et à ses redémarrages. Les réglages de vol par défaut restent inchangés."

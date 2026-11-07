@@ -11,6 +11,8 @@ const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const Preferences := preload("res://app_state/preferences.gd")
+const World := preload("res://render/world/world.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -29,6 +31,11 @@ func _run() -> void:
 	host.preferences_path = "user://test_workshop_integration.cfg"
 	if FileAccess.file_exists(host.preferences_path):
 		DirAccess.remove_absolute(host.preferences_path)
+	var normal := Preferences.DEFAULTS.duplicate(true)
+	normal.night_campfire = true
+	normal.night_field_lighting = "airfield"
+	normal.night_field_activation = "on"
+	check("prepare complete night presentation", Preferences.save_to(host.preferences_path, normal) == OK)
 	root.add_child(host)
 	var ui := Driver.new(self)
 	await ui.settle()
@@ -60,6 +67,8 @@ func _run() -> void:
 	if host.flight != null:
 		var flight: Node = host.flight
 		var session: Node = flight.session
+		check("Home trial inherits untouched night options", flight.night_options == {
+			field_lighting = "airfield", campfire = true, field_activation = "on"})
 		session.physics_enabled = false
 		session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 		check("trial has distinct physical identity", session.aircraft.model.id != Catalog.DEFAULT_ID)
@@ -141,6 +150,8 @@ func _run() -> void:
 		original.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 		host.open_pause()
 		check("paused original accepts an independent sky", original.apply_sky_config(SkyConfig.for_preset("broken")).ok)
+		original.remember_lighting_selection = false # Natural Random's temporary save scope.
+		original.set_night_options("off", true, "off")
 		original._env.tonemap_exposure = 2.7
 		Exposure.set_value(2.7)
 		host.open_workshop()
@@ -169,8 +180,20 @@ func _run() -> void:
 		check("trial starts without the Home display-preference service", host.flight != original
 			and host.flight.startup_error.is_empty())
 		if host.flight != original:
+			check("trial inherits the temporary save scope and full night context", not host.flight.remember_lighting_selection
+				and host.flight.night_options == original.night_options)
+			var saved_before: PackedByteArray = FileAccess.get_file_as_bytes(host.preferences_path)
+			var moon_before: Dictionary = World.moon_config()
 			host.open_pause()
-			check("trial can choose its own sky", host.flight.apply_sky_config(SkyConfig.for_preset("clear")).ok)
+			host.open_time_of_day()
+			host.time_of_day_dialog.applied_sky_config = SkyConfig.for_preset("clear")
+			host.time_of_day_dialog.applied_night_options = host.flight.night_options.duplicate(true)
+			var trial_moon := moon_before.duplicate(true)
+			trial_moon.moon = "off"
+			host.time_of_day_dialog.applied_moon_config = trial_moon
+			host._on_time_of_day_applied(host.flight.lighting_config.duplicate(true))
+			check("trial can choose its own sky without changing normal defaults", host.flight.sky_config.preset == "clear"
+				and FileAccess.get_file_as_bytes(host.preferences_path) == saved_before)
 			host.end_flight()
 			check("trial return preserves adapted exposure", is_equal_approx(original._env.tonemap_exposure, retained_exposure) and is_equal_approx(Exposure.last, retained_exposure))
 			await ui.settle()
@@ -178,6 +201,7 @@ func _run() -> void:
 			check("original tick and state preserved", original.session.sim.tick == checkpoint.tick and original.session.sim.state == checkpoint.state)
 			check("previous flight remains paused", original.session.sim.paused)
 			check("return restores original sky presentation", original.sky_config.preset == "broken" and Atmosphere.appearance_config().preset == "broken")
+			check("return restores the retained Moon context", World.moon_config() == moon_before)
 			check("Pause editor draft preserved", host.screens.top() == editor_from_pause)
 	await ui.close_app(host)
 	DirAccess.remove_absolute("user://test_workshop_integration.cfg")

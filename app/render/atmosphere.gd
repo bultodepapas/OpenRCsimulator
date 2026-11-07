@@ -108,17 +108,26 @@ static func _uses_flow_state(lighting: Dictionary = {}) -> bool:
 ## Validate and install one visual preset without touching the flight/weather configuration.
 ## `mean_wind_ned` is the deterministic session mean, never the instantaneous turbulence sample.
 static func configure_appearance(selection: Dictionary, mean_wind_ned: Array = [0.0, 0.0, 0.0], anchor_time_s := 0.0) -> bool:
-	if not is_finite(anchor_time_s) or anchor_time_s < 0.0 or mean_wind_ned.size() != 3:
+	var prepared := prepare_appearance(selection, mean_wind_ned, anchor_time_s)
+	if not prepared.ok:
 		return false
+	commit_appearance(prepared)
+	return true
+
+
+## Prepare every fallible part before a combined visual edit publishes any scene state.
+static func prepare_appearance(selection: Dictionary, mean_wind_ned: Array = [0.0, 0.0, 0.0], anchor_time_s := 0.0) -> Dictionary:
+	if not is_finite(anchor_time_s) or anchor_time_s < 0.0 or mean_wind_ned.size() != 3:
+		return {ok = false}
 	for component: Variant in mean_wind_ned:
 		if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)) or absf(float(component)) > 1000.0:
-			return false
+			return {ok = false}
 	var checked: Dictionary = SkyConfig.validate(selection)
 	if not checked.get("ok", false):
-		return false
+		return {ok = false}
 	var resolved: Dictionary = SkyAppearance.resolve(checked.profile, checked.config)
 	if resolved.is_empty():
-		return false
+		return {ok = false}
 	var prior_offsets := [Vector2.ZERO] if anchor_time_s == 0.0 else _cloud_offsets_at(anchor_time_s)
 	if prior_offsets.is_empty():
 		prior_offsets.append(_legacy_cloud_offset_at(anchor_time_s))
@@ -126,17 +135,22 @@ static func configure_appearance(selection: Dictionary, mean_wind_ned: Array = [
 		float(Spec.ATMOSPHERE.cloud_update_s), Spec.ATMOSPHERE.cloud_drift_cells_per_s, prior_offsets,
 		float(Spec.ATMOSPHERE.cloud_deck_m) / maxf(float(Spec.ATMOSPHERE.cloud_scale), 1.0e-6))
 	if transport.is_empty():
-		return false
-	_appearance_selection = checked.config.duplicate(true)
-	_appearance_profile = checked.profile.duplicate(true)
-	_appearance = resolved.duplicate(true)
-	_appearance_enabled = not bool(resolved.legacy)
-	_cloud_transport = transport
-	_last_cloud_sim_time = anchor_time_s
+		return {ok = false}
+	return {ok = true, config = checked.config.duplicate(true), profile = checked.profile.duplicate(true),
+		appearance = resolved.duplicate(true), transport = transport, time = anchor_time_s}
+
+
+## Only accepts a successful prepare_appearance receipt, synchronously owned by its caller.
+static func commit_appearance(prepared: Dictionary) -> void:
+	_appearance_selection = prepared.config
+	_appearance_profile = prepared.profile
+	_appearance = prepared.appearance
+	_appearance_enabled = not bool(_appearance.legacy)
+	_cloud_transport = prepared.transport
+	_last_cloud_sim_time = prepared.time
 	_invalidate_cloud_derived_cache()
-	if anchor_time_s == 0.0:
+	if prepared.time == 0.0:
 		_set_cloud_offset(Vector2.ZERO)
-	return true
 
 
 static func appearance_config() -> Dictionary:

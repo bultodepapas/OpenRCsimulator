@@ -86,7 +86,8 @@ func busy() -> bool:
 
 ## No queue of model snapshots: callers wait with only their latest intent.
 func request(snapshot: Dictionary, callback: Callable) -> bool:
-	if busy() or snapshot.is_empty():
+	if busy() or not snapshot.get("surfaces") is Array \
+			or not snapshot.get("bounds") is AABB or not snapshot.get("needs_landing") is bool:
 		return false
 	_callback = callback
 	_thread = Thread.new()
@@ -118,7 +119,7 @@ static func compute(snapshot: Dictionary) -> Dictionary:
 	return {layout = layout, worker_usec = Time.get_ticks_usec() - started}
 
 func _process(_delta: float) -> void:
-	var result: Dictionary
+	var result: Variant
 	if _thread != null:
 		if _thread.is_alive():
 			return
@@ -133,6 +134,8 @@ func _process(_delta: float) -> void:
 	var callback := _callback
 	_callback = Callable()
 	completed_jobs += 1
+	if not result is Dictionary:
+		result = {}
 	last_worker_usec = int(result.get("worker_usec", 0))
 	set_process(false)
 	if callback.is_valid():

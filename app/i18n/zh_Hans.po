@@ -8623,3 +8623,9 @@ msgstr "无法保存记录（错误 %d）。请重试保存、丢弃此记录并
 
 msgid "Discard recording and continue"
 msgstr "丢弃记录并继续"
+
+msgid "Display settings restored. Your other changes are still unsaved."
+msgstr "显示设置已恢复。其他更改尚未保存。"
+
+msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
+msgstr "已应用于本次飞行及其重新开始。默认飞行设置未更改。"

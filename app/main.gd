@@ -53,6 +53,7 @@ const NativeQualification := preload("res://tools/native_qualification.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
 const ScenarioConfig := preload("res://scenarios/scenario_config.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
 const FlightAudio = preload("res://audio/flight_audio.gd")
@@ -2571,6 +2572,60 @@ func _update_storm(clock_s: float, paused: bool) -> void:
 
 ## Apply a visual-only edit while paused. Never restore physical state or change live input ownership.
 func apply_lighting_config(raw: Variant) -> Dictionary:
+	var prepared := _prepare_lighting_edit(raw)
+	if not prepared.ok or not prepared.changed:
+		return prepared
+	if not _commit_lighting(prepared.staged, prepared.config):
+		return {ok = false, changed = false, errors = ["visual scene changed during lighting edit"]}
+	_publish_lighting_edit(prepared)
+	return {ok = true, changed = true, errors = []}
+
+
+## Stage the complete Pause draft before the first scene mutation. After the
+## field commit succeeds all remaining operations publish already validated data.
+func apply_visual_conditions(raw: Variant, sky_raw: Variant, night_raw: Variant, moon_raw: Variant, night_only := false) -> Dictionary:
+	var sky := prepare_sky_edit(sky_raw)
+	if not sky.ok:
+		return sky
+	var night := Preferences.validate_night_options(night_raw)
+	if not night.ok:
+		return night
+	var moon := MoonConfig.validate(moon_raw)
+	if not moon.ok:
+		return moon
+	var lighting := {ok = true, changed = false}
+	if not night_only:
+		lighting = _prepare_lighting_edit(raw)
+		if not lighting.ok:
+			return lighting
+	var sky_changed: bool = sky.config != sky_config
+	var night_changed: bool = night.options != night_options
+	var moon_changed: bool = moon.config != World.moon_config()
+	if not lighting.changed and not sky_changed and not night_changed and not moon_changed:
+		return {ok = true, changed = false, errors = []}
+	var appearance := {}
+	if sky_changed:
+		appearance = Atmosphere.prepare_appearance(sky.config, SkyConfig.mean_wind_ned(session.weather_configuration()), session.sim.time())
+		if not appearance.ok:
+			return {ok = false, errors = ["could not prepare cloud appearance"]}
+	if lighting.changed and not _commit_lighting(lighting.staged, lighting.config):
+		return {ok = false, errors = ["visual scene changed during lighting edit"]}
+	if sky_changed:
+		Atmosphere.commit_appearance(appearance)
+		sky_config = sky.config.duplicate(true)
+		_sky_edits.append({tick = session.sim.tick, config = sky_config.duplicate(true), transport = Atmosphere.cloud_transport_checkpoint()})
+	set_night_options(night.options.field_lighting, night.options.campfire, night.options.field_activation)
+	MoonConfig.session_config = moon.config.duplicate(true)
+	World.set_moon_config(moon.config)
+	_refresh_sky()
+	if recorder != null and recorder.recording and sky_changed:
+		recorder.trace.meta.sky_context = JSON.stringify(_sky_context(), "", true, true)
+	if lighting.changed:
+		_publish_lighting_edit(lighting)
+	return {ok = true, changed = true, errors = []}
+
+
+func _prepare_lighting_edit(raw: Variant) -> Dictionary:
 	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
 		return {ok = false, changed = false, errors = ["lighting edit requires a ready production flight"]}
 	if not session.sim.paused:
@@ -2593,15 +2648,18 @@ func apply_lighting_config(raw: Variant) -> Dictionary:
 		return {ok = false, changed = false, errors = ["could not prepare lighting"]}
 	# Prepare the prior context without publishing it until the scene update succeeds.
 	var initial_context: String = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
-	if not _commit_lighting(staged, checked.config):
-		return {ok = false, changed = false, errors = ["visual scene changed during lighting edit"]}
+	return {ok = true, changed = true, config = checked.config, staged = staged,
+		timeline = edited.timeline, scenario = next_scenario, initial_context = initial_context, errors = []}
+
+
+func _publish_lighting_edit(prepared: Dictionary) -> void:
 	if recorder.recording and not recorder.trace.meta.has("visual_context"):
-		recorder.trace.meta.visual_context = initial_context
-	_visual_timeline = edited.timeline
+		recorder.trace.meta.visual_context = prepared.initial_context
+	_visual_timeline = prepared.timeline
 	if recorder.recording:
 		recorder.trace.meta.visual_timeline = JSON.stringify(_visual_timeline, "", true, true)
 	if not flight_scenario.is_empty():
-		flight_scenario = next_scenario
+		flight_scenario = prepared.scenario
 		_note = tr("Custom from Natural Random")
 		if recorder.recording:
 			# Preserve the trace's initial scenario; append edits at their physical tick boundary.
@@ -2610,7 +2668,6 @@ func apply_lighting_config(raw: Variant) -> Dictionary:
 			recorder.trace.meta.flight_scenario_edits = JSON.stringify(edits, "", true, true)
 		scenario_changed.emit(flight_scenario.duplicate(true))
 	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
-	return {ok = true, changed = true, errors = []}
 
 
 ## TOD-09b: publish in place; no await or physical-session mutation here.

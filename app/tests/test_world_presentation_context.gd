@@ -6,6 +6,7 @@ const Conditions := preload("res://render/world/conditions.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
 
 var _checks := 0
 var _failures := 0
@@ -48,6 +49,7 @@ func _run() -> void:
 	var previous_shader_clock := ShaderClock.last_clock
 	var previous_shader_wind := ShaderClock.last_wind
 	var context: Dictionary = World.presentation_context()
+	var previous_when := World.shown_when()
 	_check("retained flow context stores weak environment and sun references",
 		context.flow.get("environment") is WeakRef and context.flow.get("sun") is WeakRef)
 	_check("retained flow world has the expected scene-owned objects",
@@ -64,12 +66,18 @@ func _run() -> void:
 	_check("trial world replaced the active state", not Atmosphere.state.is_empty() and str(Atmosphere.state) != str(previous_state))
 	_check("trial flow points to trial environment before teardown", World._flow.get("environment") == trial_built.environment)
 	World.update(trial_built.environment, 4.5, Vector3(2.0, 0.0, 0.0))
+	var trial_moon := MoonConfig.defaults()
+	trial_moon.moon = "off"
+	MoonConfig.session_config = trial_moon.duplicate(true)
+	World.set_moon_config(trial_moon)
 	trial_owner.free()
 	trial_built.clear()
 	_check("trial owner has been freed", not is_instance_valid(trial_owner))
 
 	var restored := World.restore_presentation_context(context)
 	_check("retained presentation context restores", restored)
+	_check("Moon selection and date return to the retained world", World.moon_config() == context.moon_config
+		and MoonConfig.session_config == context.moon_session and World.shown_when() == previous_when)
 	_check("flow hour returns to retained world's step", is_equal_approx(World.flow_hour(), previous_hour))
 	_check("atmosphere state returns to retained world", str(Atmosphere.state) == str(previous_state))
 	_check("global exposure returns to retained world", is_equal_approx(Exposure.last, previous_exposure))

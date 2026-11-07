@@ -23,6 +23,8 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Presentation := preload("res://ui/home_presentation.gd")
+const PreviewGeometry := preload("res://ui/home_preview_geometry.gd")
+const Conditions := preload("res://render/world/conditions.gd")
 
 ## Render-only parked presentation. Contact points come from the visual wheels/skids;
 ## the simulator's start state and aircraft configuration remain independent.
@@ -46,6 +48,17 @@ var _preview_order: Array[String] = []
 
 signal preview_state_changed(id: String, state: String)
 var preview_resources: Node
+var preview_geometry: Node
+var presentation_pending := false
+var _presentation_generation := 0
+var _preview_failed := false
+var _pending_presentation: Dictionary = {}
+var _source_field_path := ""
+var _source_field_hash := ""
+var _source_landscape := ""
+var _world: Dictionary = {}
+var _preview_candidate: Node3D
+signal presentation_refresh_failed
 var preview_pending := false
 var requested_aircraft := ""
 ## F4U-16: the requested preview's paint scheme; "" is the default paint (AirplaneBuilder.resolve_livery).
@@ -62,6 +75,8 @@ var _presentation: Dictionary = {}
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
 func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID, livery := "") -> void:
 	name = "HomeScene"
+	_source_field_path = field_path
+	_source_landscape = landscape_id
 	if not Landscapes.has(landscape_id):
 		field_errors = PackedStringArray(["Unknown landscape: " + landscape_id])
 		return
@@ -83,6 +98,7 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	if not loaded_field.ok:
 		return
 	field = loaded_field.field
+	_source_field_hash = FileAccess.get_sha256(field_path)
 	var checked_sky: Dictionary = SkyConfig.validate(SkyConfig.defaults() if selected_sky.is_empty() else selected_sky)
 	if not checked_sky.ok:
 		field_errors = PackedStringArray(checked_sky.errors)
@@ -91,7 +107,9 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	Atmosphere.configure_appearance(sky_config)
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	var build_field := func() -> void: add_child(Landscapes.build(landscape_id, field, snapshot))
-	_environment = World.build(self, field, build_field, {}, snapshot, night_options).environment
+	_world = World.build(self, field, build_field, {}, snapshot, night_options)
+	_world.field = get_node_or_null("Field")
+	_environment = _world.environment
 
 	_shadow = Shadow.create(self)
 	requested_livery = livery
@@ -144,6 +162,7 @@ func show_aircraft(id: String, livery := "") -> bool:
 	airplane = built
 	if not retained:
 		_preview_models[key] = built
+	if airplane.root.get_parent() == null:
 		add_child(airplane.root)
 	airplane.root.show()
 	airplane.root.process_mode = Node.PROCESS_MODE_INHERIT
@@ -199,7 +218,7 @@ func _update_aircraft_lights() -> void:
 			World.aircraft_local_seconds(lighting_config, CLOCK))
 	else:
 		var geometry: Dictionary = _preview_geometry[_preview_order.back()]
-		var layout: Dictionary = {}
+		var layout: Dictionary = geometry.get("light_layout", {})
 		var layout_key := ""
 		if airplane.root.get_node_or_null("NightKit") == null:
 			layout_key = _light_layout_key(airplane)
@@ -209,6 +228,8 @@ func _update_aircraft_lights() -> void:
 						layout = cached.get("light_layout", {})
 						break
 		kit = World.dress_aircraft(airplane.root, lighting_config, _lighting, CLOCK, layout)
+		if kit != null:
+			geometry.light_layout = kit.get_meta("geometry_layout")
 		if kit != null and not layout_key.is_empty():
 			# Share only compact measurements, bounded by the existing three previews.
 			geometry.light_layout_key = layout_key
@@ -241,10 +262,13 @@ func request_aircraft(id: String, livery := "") -> void:
 	_preview_generation += 1
 	requested_aircraft = id
 	requested_livery = livery
+	_preview_failed = false
+	_discard_preview_candidate()
 	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, false)
 	if _preview_models.has(_preview_key(id, livery)):
 		preview_pending = false
-		preview_state_changed.emit(id, "ready" if show_aircraft(id, livery) else "failed")
+		_preview_failed = not show_aircraft(id, livery)
+		_publish_preview_state()
 		return
 	preview_pending = true
 	preview_state_changed.emit(id, "loading")
@@ -276,9 +300,12 @@ func _current_preview(id: String, livery: String, generation: int) -> bool:
 
 func _preview_resource_ready(ok: bool, id: String, livery: String, generation: int) -> void:
 	if not _current_preview(id, livery, generation): return
-	var shown := ok and show_aircraft(id, livery)
-	preview_pending = false
-	preview_state_changed.emit(id, "ready" if shown else "failed")
+	if not ok:
+		_finish_preview(false)
+	elif not is_instance_valid(preview_geometry):
+		_finish_preview(show_aircraft(id, livery))
+	else:
+		_build_requested_preview(id, livery, generation)
 
 
 var retain_resources_on_exit := false
@@ -287,18 +314,215 @@ var retain_resources_on_exit := false
 ## Loading owns the next scene. Invalidate callbacks before they can block its first feedback frame.
 func suspend_preview() -> void:
 	_preview_generation += 1
+	_presentation_generation += 1
+	_discard_preview_candidate()
+	if is_instance_valid(preview_geometry): preview_geometry.cancel_for(self)
 	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, false)
 
 
 func resume_preview() -> void:
 	if preview_pending: request_aircraft.call_deferred(requested_aircraft, requested_livery)
+	if presentation_pending and not _pending_presentation.is_empty():
+		_presentation_generation += 1
+		_apply_pending_presentation.call_deferred(_presentation_generation)
 
 
 func _exit_tree() -> void:
 	_preview_generation += 1
+	_presentation_generation += 1
+	_discard_preview_candidate()
+	if is_instance_valid(preview_geometry): preview_geometry.cancel_for(self)
 	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, not retain_resources_on_exit)
 
 
 func _enter_tree() -> void:
 	# Ground-vehicle/failed-flight routes may temporarily detach the same Home.
-	if preview_pending: request_aircraft.call_deferred(requested_aircraft, requested_livery)
+	resume_preview()
+
+
+func _publish_preview_state() -> void:
+	var id: String = requested_aircraft if not requested_aircraft.is_empty() else str(airplane.get("aircraft_id", ""))
+	preview_state_changed.emit(id, "loading" if preview_pending or presentation_pending else ("failed" if _preview_failed else "ready"))
+
+
+func _finish_preview(shown: bool) -> void:
+	preview_pending = false
+	_preview_failed = not shown
+	_publish_preview_state()
+
+
+func _release_candidate(candidate: Variant) -> void:
+	if not is_instance_valid(candidate): return
+	if _preview_candidate == candidate: _preview_candidate = null
+	(candidate as Node).queue_free()
+
+
+func _discard_preview_candidate() -> void:
+	_release_candidate(_preview_candidate)
+	_preview_candidate = null
+
+
+## Build an accepted model on main; yield between preparation phases. Only
+## immutable numeric fitting runs on the root-owned worker.
+func _build_requested_preview(id: String, livery: String, generation: int) -> void:
+	while preview_geometry.busy():
+		await get_tree().process_frame
+		if not _current_preview(id, livery, generation): return
+	var built: Dictionary = AirplaneBuilder.build(id, NAN, {}, livery)
+	if built.is_empty():
+		_finish_preview(false)
+		return
+	_preview_candidate = built.root
+	var current := func() -> bool: return _current_preview(id, livery, generation) and is_instance_valid(built.get("root"))
+	await get_tree().process_frame
+	if not current.call():
+		_release_candidate(built.get("root"))
+		return
+	var presentation: Dictionary = Presentation.prepare(built)
+	var basis := Frames.attitude_to_render(deg_to_rad(PARKED_YAW_DEG), 0.0, 0.0) * (presentation.alignment as Basis)
+	built.root.transform = Transform3D(basis, _parking_position(presentation.lift))
+	if Catalog.is_rotorcraft(id):
+		var pivot: Node3D = built.get("main_rotor_pivot") as Node3D
+		if pivot != null: pivot.rotation.z = PROP_ANGLE
+	else:
+		built.propeller.rotation.z = float(presentation.get("propeller_angle", PROP_ANGLE))
+	await get_tree().process_frame
+	if not current.call():
+		_release_candidate(built.get("root"))
+		return
+	presentation.bounds = Presentation.mesh_bounds(built.root, built.root)
+	var geometry := {presentation = presentation, extent = Shadow.model_extent(built.root), shape = ProjectedShadow.collect(built.root)}
+	if Catalog.is_rotorcraft(id): HeliNightLights.attach(built)
+	if not Catalog.is_rotorcraft(id) and _needs_night_layout(lighting_config, Conditions.resolve()):
+		var layout: Dictionary = await _prepare_light_layout(built.root, current)
+		if not current.call():
+			_release_candidate(built.get("root"))
+			return
+		if layout.is_empty():
+			_release_candidate(built.get("root"))
+			_finish_preview(false)
+			return
+		geometry.light_layout = layout
+	if not current.call():
+		_release_candidate(built.get("root"))
+		return
+	var key := _preview_key(id, livery)
+	_preview_models[key] = built
+	_preview_geometry[key] = geometry
+	_preview_candidate = null
+	_finish_preview(show_aircraft(id, livery))
+
+
+func _prepare_light_layout(model: Node3D, current: Callable) -> Dictionary:
+	while preview_geometry.busy():
+		await get_tree().process_frame
+		if not current.call() or not is_instance_valid(model): return {}
+	var snapshot := PreviewGeometry.Snapshot.new(model)
+	while not snapshot.advance():
+		await get_tree().process_frame
+		if not current.call() or not is_instance_valid(model): return {}
+	if snapshot.failed or not current.call(): return {}
+	while preview_geometry.busy():
+		await get_tree().process_frame
+		if not current.call(): return {}
+	var completion := {done = false, layout = {}}
+	var receive := func(layout: Dictionary) -> void:
+		completion.layout = layout
+		completion.done = true
+	if not preview_geometry.request(snapshot.data, receive): return {}
+	while not completion.done:
+		await get_tree().process_frame
+		if not current.call(): return {}
+	return completion.layout
+
+
+## Evaluate the target policy without publishing any global atmosphere/flow.
+func _needs_night_layout(config: Dictionary, conditions: Dictionary) -> bool:
+	var light := World.AircraftLightState.new()
+	var local_seconds := NAN
+	var elevation := 45.0
+	if config.get("mode", "legacy") != "legacy":
+		local_seconds = float(config.local_seconds)
+		elevation = float(TimeOfDayLighting.snapshot(config).solar.elevation_deg)
+	elif bool(conditions.get("time_of_day", false)):
+		var when: Dictionary = World.MoonConfig.apply_phase(conditions.when, World.MoonConfig.resolve())
+		when.hour = float(when.hour) + CLOCK * float(conditions.get("time_scale", 0.0)) / 3600.0
+		local_seconds = fposmod(float(when.hour) * 3600.0, 86400.0)
+		elevation = float(World.Ephemeris.sky(when).sun.elevation_deg)
+	light.update(local_seconds, 1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	return light.active_mode != "off"
+
+
+func can_refresh_presentation(field_path: String, landscape_id: String) -> bool:
+	return field_path == _source_field_path and landscape_id == _source_landscape \
+		and FileAccess.file_exists(field_path) and FileAccess.get_sha256(field_path) == _source_field_hash
+
+
+## Keep independent preview and world intents. A reversal invalidates fitting,
+## not another aircraft's resource request or pending/error indication.
+func refresh_presentation(selected_lighting: Dictionary, selected_night: Dictionary, selected_sky: Dictionary) -> bool:
+	var light: Dictionary = LightingConfig.validate(selected_lighting)
+	var night: Dictionary = Preferences.validate_night_options(selected_night)
+	var sky: Dictionary = SkyConfig.validate(selected_sky)
+	if not light.ok or not night.ok or not sky.ok: return false
+	_presentation_generation += 1
+	_pending_presentation = {config = light.config, night = night.options, sky = sky.config, conditions = Conditions.resolve()}
+	if not is_instance_valid(preview_geometry) or not _presentation_needs_layout():
+		return _commit_presentation(_presentation_generation)
+	presentation_pending = true
+	_publish_preview_state()
+	_apply_pending_presentation(_presentation_generation)
+	return true
+
+
+func _presentation_needs_layout() -> bool:
+	if airplane.is_empty() or Catalog.is_rotorcraft(str(airplane.get("aircraft_id", ""))): return false
+	if airplane.root.get_node_or_null("NightKit") != null: return false
+	var geometry: Dictionary = _preview_geometry[_preview_order.back()]
+	return not geometry.has("light_layout") and _needs_night_layout(_pending_presentation.config, _pending_presentation.conditions)
+
+
+func _apply_pending_presentation(generation: int) -> void:
+	var current := func() -> bool:
+		return is_inside_tree() and not is_queued_for_deletion() and generation == _presentation_generation
+	while current.call() and _presentation_needs_layout():
+		var key: String = _preview_order.back()
+		var model: Node3D = airplane.root
+		var layout: Dictionary = await _prepare_light_layout(model, current)
+		if not current.call(): return
+		if is_instance_valid(model) and _preview_models.has(key) and _preview_models[key].root == model and not layout.is_empty():
+			_preview_geometry[key].light_layout = layout
+		elif not is_instance_valid(model) or airplane.root != model:
+			continue
+		elif layout.is_empty():
+			presentation_pending = false
+			_pending_presentation.clear()
+			_publish_preview_state()
+			presentation_refresh_failed.emit()
+			return
+	if current.call() and not _commit_presentation(generation):
+		presentation_refresh_failed.emit()
+
+
+func _commit_presentation(generation: int) -> bool:
+	if generation != _presentation_generation or _pending_presentation.is_empty(): return false
+	var request: Dictionary = _pending_presentation
+	var snapshot: Dictionary = TimeOfDayLighting.snapshot(request.config) if request.config.get("mode", "legacy") != "legacy" else {}
+	var result: Dictionary = World.refresh_presentation(self, get_node_or_null("Field"), _world,
+		request.conditions, snapshot, request.night, request.sky)
+	presentation_pending = false
+	_pending_presentation = {}
+	if not result.get("ok", false):
+		_publish_preview_state()
+		return false
+	_world = result
+	_environment = result.environment
+	lighting_config = request.config
+	night_options = request.night
+	sky_config = request.sky
+	_lighting = TimeOfDayLighting.snapshot(lighting_config)
+	# Reapply the selected cached model's shadow and emission at the same still clock.
+	if not airplane.is_empty():
+		show_aircraft(str(airplane.aircraft_id), requested_livery if str(airplane.aircraft_id) == requested_aircraft else str(airplane.get("livery", "")))
+	_publish_preview_state()
+	return true

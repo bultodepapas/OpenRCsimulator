@@ -8674,3 +8674,9 @@ msgstr "記録を保存できませんでした（エラー %d）。保存を再
 
 msgid "Discard recording and continue"
 msgstr "記録を破棄して続行"
+
+msgid "Display settings restored. Your other changes are still unsaved."
+msgstr "表示設定を元に戻しました。他の変更はまだ保存されていません。"
+
+msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
+msgstr "このフライトとその再スタートに適用しました。フライトの既定設定は変更されません。"

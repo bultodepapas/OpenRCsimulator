@@ -159,6 +159,9 @@ func _run() -> void:
 	var edited: Dictionary = accepted.lighting_config.duplicate(true)
 	edited.local_seconds = 40000 if edited.local_seconds != 40000 else 42000
 	flight.recorder.start(flight._trace_meta())
+	var moon_edit: Dictionary = app.time_of_day_dialog.applied_moon_config.duplicate(true)
+	moon_edit.moon = "off"
+	app.time_of_day_dialog.applied_moon_config = moon_edit
 	app._on_time_of_day_applied(edited)
 	check("pause lighting edit becomes a customized scenario", flight.flight_scenario.provenance == "customized"
 		and flight.flight_scenario.parent_identity == accepted.identity and flight.lighting_config == edited

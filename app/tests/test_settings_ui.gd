@@ -296,10 +296,55 @@ func _run() -> void:
 		and DisplayPreferences.load_from(PREFS).window_mode == "windowed"
 		and not DisplayPreferences.load_from(PREFS).opaque_panels)
 	settings.queue_free()
+	await _display_trial_recovery(store, test_viewport)
 	test_viewport.queue_free()
 	await process_frame
 	ScreenTheme.text_scale = 1.0
 	_clean()
+
+
+func _display_trial_recovery(store: DisplayPreferences, viewport: SubViewport) -> void:
+	var settings := SettingsScreen.new(store, "en")
+	viewport.add_child(settings)
+	await process_frame
+	var saved := store.config.duplicate(true)
+	settings._master_volume_changed(0.4)
+	settings._opaque_toggled(true)
+	settings._window_mode_selected(1)
+	var deadline: int = settings._trial_deadline_msec
+	store.writable = false
+	settings.keep_changes()
+	var error_text: String = tr("Could not save settings (error %d).") % ERR_FILE_NO_PERMISSION
+	_check("failed display Keep shows its save error", settings._status.text.contains(error_text))
+	settings._process(0.0)
+	await process_frame
+	_check("countdown frames retain save error and safety deadline", settings._status.text.contains(error_text)
+		and settings._status.text.contains(tr("Keep the display test within %d seconds.") % settings._trial_remaining_seconds)
+		and settings._trial_deadline_msec == deadline)
+	settings._scale_selected(2)
+	settings._fps_picker.select(2)
+	settings._fps_picker.item_selected.emit(2)
+	_check("further display tests retain the first safety deadline", settings._trial_deadline_msec == deadline)
+	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
+	settings._process(0.0)
+	_check("expiry restores only declared display keys", settings._draft.window_mode == saved.window_mode
+		and settings._draft.max_fps == saved.max_fps and settings._draft.master_volume == 0.4
+		and settings._draft.opaque_panels and settings._draft.ui_scale == 1.5
+		and not settings._keep_button.disabled and store.config == saved)
+	_check("expiry explains restored display and retains the save error", settings._status.text.contains(error_text)
+		and settings._status.text.contains(tr("Display settings restored. Your other changes are still unsaved.")))
+	store.writable = true
+	settings.keep_changes()
+	settings._process(0.0)
+	_check("retry saves retained drafts and clears stale error", not settings._status.text.contains(error_text)
+		and settings._draft == settings._saved and store.config.master_volume == 0.4 and store.config.opaque_panels)
+	settings._master_volume_changed(0.2)
+	settings._window_mode_selected(1)
+	settings._revert()
+	_check("explicit Revert still discards the whole draft", settings._draft == settings._saved
+		and settings._trial_deadline_msec == 0)
+	settings.queue_free()
+	await process_frame
 
 
 func _write(contents: String) -> void:

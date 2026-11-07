@@ -8218,3 +8218,9 @@ msgstr "No se pudo guardar la grabación (error %d). Reintenta guardarla, descar
 
 msgid "Discard recording and continue"
 msgstr "Descartar grabación y continuar"
+
+msgid "Display settings restored. Your other changes are still unsaved."
+msgstr "Configuración de pantalla restaurada. Los demás cambios siguen sin guardarse."
+
+msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
+msgstr "Aplicado a este vuelo y sus reinicios. Los valores predeterminados de vuelo no han cambiado."

@@ -65,7 +65,14 @@ static func collect(model: Node3D, min_height: float = -INF) -> Dictionary:
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	var merged := ArrayMesh.new()
 	merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return {mesh = merged, bounds = merged.get_aabb(), triangles = vertices.size() / 3}
+	# The engine computes nondegenerate bounds in native code, but pads flat
+	# surfaces to 1e-5 m. Preserve exact collection bounds for those fixtures.
+	var box := merged.get_aabb()
+	if not box.is_finite() or minf(box.size.x, minf(box.size.y, box.size.z)) <= 0.00001:
+		box = AABB(vertices[0], Vector3.ZERO)
+		for point in vertices:
+			box = box.expand(point)
+	return {mesh = merged, bounds = box, triangles = vertices.size() / 3}
 
 
 ## Append ordered runs of accepted triangles to an independent destination.

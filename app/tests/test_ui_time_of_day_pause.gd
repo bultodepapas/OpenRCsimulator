@@ -200,6 +200,7 @@ func _interactive_pause_edit() -> void:
 	field_picker.select(1)
 	activation_picker.select(1)
 	campfire_picker.select(1)
+	controls.moon_picker.select(2)
 	for tab_index: int in 16:
 		await ui.tap(KEY_TAB)
 		if ui.focus_name() == "Apply":
@@ -220,6 +221,7 @@ func _interactive_pause_edit() -> void:
 		and session.commands == initial_commands)
 	_check("interactive Apply saves the configured start light", Preferences.load_from(PREFS).lighting_config == night_draft,
 		str(Preferences.load_from(PREFS).lighting_config))
+	_check("Moon shares the complete visual preference transaction", Preferences.load_from(PREFS).moon_config.moon == "off")
 	_check("interactive Apply persists field lighting and campfire choices",
 		Preferences.load_from(PREFS).night_field_lighting == "airfield"
 		and Preferences.load_from(PREFS).night_campfire == true
@@ -260,6 +262,7 @@ func _direct_route_never_touches_preferences() -> void:
 	var dialog: CanvasLayer = app.time_of_day_dialog
 	var controls: VBoxContainer = dialog.get("controls") as VBoxContainer
 	var noon: Dictionary = _select_preset(controls, 3)
+	controls.moon_picker.select(2)
 	var apply_button: Button = dialog.get("apply_button") as Button
 	apply_button.grab_focus()
 	await ui.tap(KEY_ENTER)

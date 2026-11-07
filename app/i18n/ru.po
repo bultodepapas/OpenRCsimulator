@@ -9425,3 +9425,9 @@ msgstr "Не удалось сохранить запись (ошибка %d). �
 
 msgid "Discard recording and continue"
 msgstr "Удалить запись и продолжить"
+
+msgid "Display settings restored. Your other changes are still unsaved."
+msgstr "Настройки экрана восстановлены. Остальные изменения ещё не сохранены."
+
+msgid "Applied to this flight and its restarts. Flight defaults are unchanged."
+msgstr "Применено к этому полёту и его перезапускам. Настройки полёта по умолчанию не изменены."
