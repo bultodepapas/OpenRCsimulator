@@ -1,9 +1,9 @@
 """GP-12 strict historical golden and same-host fixed-brake regression gate.
 
 The reconstructed R3 owner must first reproduce every original OS golden under
-the historical engine with the original CRLF fuel registry. Then the same source
-runs under the current engine with only the two pinned candidate input identities
-overlaid, and every output is compared without normalization.
+the historical engine with the original CRLF fuel registry. Then the reference
+runs under the current engine with the two pinned candidate input identities and
+a strictly derived glow-law identity overlay. Outputs are not normalized.
 """
 from __future__ import annotations
 
@@ -34,6 +34,19 @@ AVANTI_OLD = "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1"
 AVANTI_CURRENT = "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd"
 SESSION_OLD = "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864"
 TRACE_OLD = "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e"
+TRACE_LAW_OVERLAY = "9e52848c5c6831dab8993a6b638ab953f5bf680eb22059ec3f328dd1717ff65b"
+GLOW_FLIGHT_OLD_LF = "37b5e2d58ffb3615a8aabcaceb26db4408835135723200d07fb5f6b4dd8b60a0"
+GLOW_FLIGHT_LAW_OVERLAY_LF = "28262e121121cb50b4db3fef22304f5139a9d166d47795c5b80a83d9fd0ec0c6"
+GLOW_FLIGHT_PATH = "physics/glow/flight.gd"
+TRACE_PATH = "sim/trace.gd"
+GLOW_LAW_OLD = b"glow-mean-cycle-carburettor-v4"
+GLOW_LAW_CURRENT = b"glow-mean-cycle-segmented-firing-v6"
+REFERENCE_LAW_DECLARATIONS = {
+    GLOW_FLIGHT_PATH: (b'const LAW := "' + GLOW_LAW_OLD + b'"',
+                       b'const LAW := "' + GLOW_LAW_CURRENT + b'"'),
+    TRACE_PATH: (b'const GLOW_LAW_V4: String = "' + GLOW_LAW_OLD + b'"',
+                 b'const GLOW_LAW_V4: String = "' + GLOW_LAW_CURRENT + b'"'),
+}
 CARB_R3 = "16d8065ae5ce49d1d79d8d6f14ea3f7e613983587b5b00eeb0f357e536505505"
 FROZEN_FIXTURE = "61b27a375e3d29808b2f84a0e69dfaa4057a6b0c58b3e1abe8a1c62bd31dc9bd"
 CAPTURE_SOURCE = "ea3918c0661db3a497d1149c057875890f7b44af1d462f8d5172800ecd33c85b"
@@ -96,13 +109,53 @@ def check_input_bytes(fuel: bytes, avanti: bytes) -> None:
     require(sha(avanti) in {AVANTI_OLD, AVANTI_CURRENT}, "candidate Avanti is not a pinned identity")
 
 
-def check_reference_inputs(project: Path, fuel: bytes, avanti: bytes) -> None:
+def check_candidate_glow_law(data: bytes) -> None:
+    declarations = re.findall(rb"(?m)^[ \t]*const[ \t]+LAW[ \t]*(?::[^=\r\n]*)?=[^\r\n]*", data)
+    require(declarations == [REFERENCE_LAW_DECLARATIONS[GLOW_FLIGHT_PATH][1]],
+            "candidate glow LAW declaration differs from the supported v6 identity")
+
+
+def replace_once(data: bytes, before: bytes, after: bytes, path: str) -> bytes:
+    require(data.count(before) == 1, "reference glow-law declaration missing or duplicated: " + path)
+    return data.replace(before, after, 1)
+
+
+def reference_law_overlay(project: Path) -> dict[str, bytes]:
+    """Derive the only allowed edits from independently pinned original bytes."""
+    pins = pin_paths()
+    require(set(REFERENCE_LAW_DECLARATIONS).issubset(pins), "reference glow-law source pins missing")
+    overlay = {}
+    for path, (before, after) in REFERENCE_LAW_DECLARATIONS.items():
+        original = (project / path).read_bytes()
+        lf = original.replace(b"\r\n", b"\n")
+        require(pins[path] in {sha(original), sha(lf), sha(lf.replace(b"\n", b"\r\n"))},
+                "reference input changed before glow-law overlay: " + path)
+        patched = replace_once(original, before, after, path)
+        if path == GLOW_FLIGHT_PATH:
+            require(sha(lf) == GLOW_FLIGHT_OLD_LF and sha(patched.replace(b"\r\n", b"\n")) == GLOW_FLIGHT_LAW_OVERLAY_LF,
+                    "reference glow flight overlay identity differs")
+        else:
+            require(sha(original) == TRACE_OLD and sha(patched) == TRACE_LAW_OVERLAY,
+                    "reference trace overlay identity differs")
+        overlay[path] = patched
+    return overlay
+
+
+def check_reference_inputs(project: Path, fuel: bytes, avanti: bytes,
+                           law_overlay: dict[str, bytes] | None = None) -> None:
     require((project / "data/fuels/openrc-fuel-registry.json").read_bytes() == fuel, "reference fuel changed")
     require((project / "data/aircraft/sebart_avanti_s_a200.json").read_bytes() == avanti, "reference Avanti changed")
     require(sha((project / "project.godot").read_bytes().replace(b"\r\n", b"\n")) == REFERENCE_PROJECT,
             "reference project settings changed")
-    for path, digest in pin_paths().items():
+    pins = pin_paths()
+    if law_overlay is not None:
+        require(set(law_overlay) == set(REFERENCE_LAW_DECLARATIONS) and set(law_overlay).issubset(pins),
+                "reference glow-law overlay set differs")
+    for path, digest in pins.items():
         data = (project / path).read_bytes()
+        if law_overlay is not None and path in law_overlay:
+            require(data == law_overlay[path], "reference glow-law overlay changed: " + path)
+            continue
         if path == "data/aircraft/sebart_avanti_s_a200.json":
             continue
         if path == "physics/glow/carburetor.gd":
@@ -112,7 +165,8 @@ def check_reference_inputs(project: Path, fuel: bytes, avanti: bytes) -> None:
         require(digest in {sha(data), sha(lf), sha(lf.replace(b"\n", b"\r\n"))}, "reference input changed: " + path)
 
 
-def load_capture(path: Path, fixture: dict, reference: bool, engine: str) -> dict:
+def load_capture(path: Path, fixture: dict, reference: bool, engine: str,
+                 reference_trace_sha: str = TRACE_OLD) -> dict:
     capture = json.loads(path.read_text(encoding="utf-8"))
     require(capture.get("format") == "openrc-fixed-brake-legacy-capture v1", "invalid capture format")
     require(capture.get("engine") == engine and capture.get("physics_hz") == fixture["physics_hz"], "engine or physics rate differs")
@@ -125,7 +179,7 @@ def load_capture(path: Path, fixture: dict, reference: bool, engine: str) -> dic
         require(isinstance(row.get("checkpoint_value"), dict) and isinstance(row.get("metadata_value"), dict)
                 and isinstance(row.get("csv_value"), str) and bool(row["csv_value"]), "missing full values for " + aircraft)
     if reference:
-        require(capture.get("session_sha256") == SESSION_OLD and capture.get("trace_sha256") == TRACE_OLD,
+        require(capture.get("session_sha256") == SESSION_OLD and capture.get("trace_sha256") == reference_trace_sha,
                 "historical owner identity differs")
     return capture
 
@@ -206,6 +260,10 @@ def run(repo: Path, project: Path, godot: Path, historical_godot: Path, out: Pat
     candidate_avanti = (project / avanti_path).read_bytes()
     check_input_bytes(candidate_fuel, candidate_avanti)
     candidate_sources = candidate_manifest(project)
+    candidate_glow_flight = (project / GLOW_FLIGHT_PATH).read_bytes()
+    require(sha(candidate_glow_flight) == candidate_sources[GLOW_FLIGHT_PATH],
+            "candidate glow source changed during inventory")
+    check_candidate_glow_law(candidate_glow_flight)
     out.mkdir(parents=True, exist_ok=True)
     scratch.mkdir(parents=True, exist_ok=True)
     require(out.resolve() != scratch.resolve() and out.resolve() not in scratch.resolve().parents
@@ -262,18 +320,35 @@ def run(repo: Path, project: Path, godot: Path, historical_godot: Path, out: Pat
     # the current engine before constructing the current-engine oracle.
     checked(godot, ref / "app", out, "fixed-brake-current-reference-import", ["--import"], timeout=1200, extra_env=run_env)
     check_reference_inputs(ref / "app", historical_fuel, historical_avanti)
+    # Only after the historical goldens and original reference checks pass,
+    # derive exact declaration-only substitutions from the pinned old files.
+    # This matches metadata identity, not the v6 fuel-event implementation.
+    law_overlay = reference_law_overlay(ref / "app")
+    overlay_identities = {
+        path: {"original_sha256": file_sha(ref / "app" / path), "patched_sha256": sha(patched)}
+        for path, patched in law_overlay.items()
+    }
+    for path, patched in law_overlay.items():
+        (ref / "app" / path).write_bytes(patched)
     (ref / "app" / fuel_path).write_bytes(candidate_fuel)
     (ref / "app" / avanti_path).write_bytes(candidate_avanti)
+    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay)
+    (run_dir / "glow-law-overlay.json").write_text(json.dumps({
+        "candidate_law": GLOW_LAW_CURRENT.decode("ascii"),
+        "reference": overlay_identities,
+        "scope": "identity declarations only; historical glow dynamics retained",
+    }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     matched_path, candidate_path = run_dir / "matched-reference.json", run_dir / "candidate.json"
     checked(godot, ref / "app", out, "fixed-brake-matched-reference", ["--script", str(CAPTURE), "--", "--out=" + str(matched_path)], extra_env=run_env)
     checked(godot, project, out, "fixed-brake-candidate-capture", ["--script", str(CAPTURE), "--", "--out=" + str(candidate_path)], extra_env=run_env)
-    matched = load_capture(matched_path, fixture, True, CURRENT_CAPTURE_ENGINE)
+    matched = load_capture(matched_path, fixture, True, CURRENT_CAPTURE_ENGINE, TRACE_LAW_OVERLAY)
     candidate = load_capture(candidate_path, fixture, False, CURRENT_CAPTURE_ENGINE)
-    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti)
+    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay)
     check_comparison(matched, candidate)
     checked(godot, project, out, "fixed-brake-input", ["--script", "res://tests/test_fixed_gear_brake_input.gd"],
             timeout=180, extra_env={**run_env, "OPENRC_FIXED_BRAKE_REFERENCE": str(matched_path)},
             required_text=("Fixed brake candidate:", "0 failed"))
+    check_reference_inputs(ref / "app", candidate_fuel, candidate_avanti, law_overlay)
     require(candidate_manifest(project) == candidate_sources, "candidate inputs changed during the comparison")
     require(check_engine(historical_godot, True) == historical_engine and check_engine(godot, False) == current_engine,
             "engine identity changed during the comparison")

@@ -38,11 +38,18 @@ python3 tools/godot/fixed_brake_legacy.py --godot "$(app/get-godot.sh)" --out-di
 
 The runner reconstructs the pinned pre-brake R3 owner and requires all 16
 original goldens for the current OS using the verified historical beta1 editor.
-It then imports the same source with the current beta2 editor and compares all
-four candidate outputs exactly against a same-host beta2 reference with only
-the pinned fuel and Avanti input identities matched. Engine metadata is checked
-as captured; no numerical values are normalized. The original goldens are not
-rewritten, and the two runs do not claim cross-engine equivalence.
+It then imports the verified source with the current beta2 editor and compares all
+four candidate outputs exactly against a same-host beta2 reference. The disposable
+reference matches the pinned fuel and Avanti inputs and changes only the historical
+glow flight `LAW` and trace `GLOW_LAW_V4` declarations from the v4 identity to the
+candidate's required v6 identity. Each substitution must occur exactly once;
+original pins and derived overlay bytes are checked before and after capture, and
+the reference trace has a separately pinned overlay hash. `glow-law-overlay.json`
+records both source hashes. Godot computes the resulting checkpoint and trace
+metadata; no candidate outputs or numerical values are normalized. The original
+goldens are not rewritten, and the two runs do not claim cross-engine equivalence.
+The overlay retains historical glow dynamics; it does not establish equivalence of
+the v4 and v6 fuel-event behavior.
 
 The historical editor is obtained automatically in `.tools/` on Linux and
 Windows x86-64 when absent, with the official archive, executable hashes and
