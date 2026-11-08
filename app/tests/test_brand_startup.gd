@@ -2,9 +2,11 @@ extends SceneTree
 
 const Startup := preload("res://ui/startup.gd")
 const Intro := preload("res://ui/brand_intro.gd")
+const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const PREFS := "user://test_brand_startup.cfg"
 const SceneLoad := preload("res://ui/flight_scene_load.gd")
 var failures := 0
+var checks := 0
 var handoff_policy: Array[bool] = []
 
 
@@ -35,6 +37,8 @@ class TestStartup extends "res://ui/startup.gd":
 	var failure_count := 0
 	func _animate_requested() -> bool:
 		return true
+	func _presentation_settings_path() -> String:
+		return PREFS
 	func _presentation_frame() -> Signal:
 		return _owned_frame(get_tree().process_frame) # explicit seam; production waits for actual post_draw
 	func _new_startup_scene_load() -> Node:
@@ -57,6 +61,7 @@ func _initialize() -> void:
 
 
 func check(label: String, passed: bool) -> void:
+	checks += 1
 	if passed:
 		print("ok  ", label)
 	else:
@@ -80,9 +85,14 @@ func _wait_started(gate: LoadGate) -> bool:
 func _fixture(process_mode := Node.PROCESS_MODE_INHERIT) -> TestStartup:
 	var startup := TestStartup.new()
 	startup.gate = LoadGate.new()
-	var source := Node.new()
+	var source := Control.new()
 	source.name = "StartupTestApp"
 	source.process_mode = process_mode
+	var fly := Button.new()
+	fly.name = "Fly"
+	fly.text = "Fly"
+	source.add_child(fly)
+	fly.owner = source
 	startup.gate.result = PackedScene.new()
 	startup.gate.result.pack(source)
 	source.free()
@@ -195,7 +205,9 @@ func _loader_checks() -> void:
 	root.add_child(startup)
 	await _frames()
 	check("thread-start failure retains the startup error state", startup.failure_count == 1 and startup._scene_job == null
-		and startup.intro.status_text == "Unable to load. Please restart.")
+		and startup.intro.status_text == "Unable to load. Please restart."
+		and startup.intro.status_label.accessibility_live == 2 and startup.intro.skip_button.disabled
+		and root.gui_get_focus_owner() == startup.intro.status_label)
 	startup.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	check("failed startup remains closable", startup.quit_count == 1)
 	startup.free()
@@ -213,6 +225,258 @@ func _loader_checks() -> void:
 	startup.free()
 	await _frames()
 	root.child_entered_tree.disconnect(_on_child_entered)
+
+
+func _scale_checks() -> void:
+	var display := ConfigFile.new()
+	display.set_value("meta", "schema", 1)
+	display.set_value("accessibility", "reduced_motion", true)
+	for value: Variant in [1, 1.05, 1.5, 2.0, 0.95, 2.05, 1.03, "2", true, NAN, INF, -INF]:
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.ui_scale = value
+		var checked: Dictionary = DisplayPreferences.validate(candidate)
+		var expected: float = float(value) if checked.ok else 1.0
+		check("lightweight scale matches display validator: %s" % str(value),
+			is_equal_approx(Startup._validated_ui_scale(value), expected))
+	for value: Variant in [1.0, 1.05, 1.5, 2.0, 0.95, 2.05, 1.03, "2", true]:
+		display.set_value("display", "ui_scale", value)
+		display.save(PREFS + ".display")
+		var before := FileAccess.get_sha256(PREFS + ".display")
+		var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
+		candidate.ui_scale = value
+		var checked: Dictionary = DisplayPreferences.validate(candidate)
+		var expected: float = float(value) if checked.ok else 1.0
+		var presentation: Dictionary = Startup.read_presentation(PREFS)
+		check("saved scale is validated independently: %s" % str(value),
+			is_equal_approx(presentation.ui_scale, expected) and presentation.reduced_motion)
+		check("startup never rewrites display file: %s" % str(value),
+			before == FileAccess.get_sha256(PREFS + ".display"))
+	display.set_value("meta", "schema", 9)
+	display.set_value("display", "ui_scale", 2.0)
+	display.save(PREFS + ".display")
+	var future_hash := FileAccess.get_sha256(PREFS + ".display")
+	var future: Dictionary = Startup.read_presentation(PREFS)
+	check("future display schema reads valid fields without rewriting", future.ui_scale == 2.0
+		and future.reduced_motion and future_hash == FileAccess.get_sha256(PREFS + ".display"))
+	display.set_value("meta", "schema", 0)
+	display.save(PREFS + ".display")
+	var invalid_schema: Dictionary = Startup.read_presentation(PREFS)
+	check("invalid display schema ignores scale and reduced motion", invalid_schema.ui_scale == 1.0
+		and not invalid_schema.reduced_motion)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + ".display"))
+
+
+func _semantic_checks() -> void:
+	for locale: String in ["en", "es", "zh_Hans"]:
+		TranslationServer.set_locale(locale)
+		for scale: float in [1.0, 2.0]:
+			root.size = Vector2i(1920, 1080)
+			var intro := Intro.new()
+			intro.text_scale = scale
+			root.add_child(intro)
+			await _frames()
+			var label: Label = intro.status_label
+			var button: Button = intro.skip_button
+			var prefix := "%s %.0f%%" % [locale, scale * 100.0]
+			check(prefix + " exposes localized polite status and semantic Skip", label != null and button != null
+				and label.text == TranslationServer.translate("Loading…") and label.accessibility_name == label.text
+				and label.accessibility_live == 1 and button.accessibility_name == TranslationServer.translate("Skip intro")
+				and button.focus_mode == Control.FOCUS_ALL and not button.disabled)
+			check(prefix + " scales text and keeps footer inside 1080p", label.get_theme_font_size("font_size") == roundi(18.0 * scale)
+				and root.get_visible_rect().encloses(label.get_global_rect())
+				and root.get_visible_rect().encloses(button.get_global_rect())
+				and not label.get_global_rect().intersects(button.get_global_rect()))
+			var activations := [0]
+			intro.skip_requested.connect(func() -> void: activations[0] += 1)
+			button.pressed.emit()
+			check(prefix + " semantic button activation emits Skip", activations[0] == 1)
+			intro.status_text = "Preparing home…"
+			check(prefix + " preparing status updates accessible name", label.text == TranslationServer.translate("Preparing home…")
+				and label.accessibility_name == label.text and label.accessibility_live == 1)
+			intro.status_text = "Unable to load. Please restart."
+			check(prefix + " failure is assertive and disables misleading Skip", label.text == TranslationServer.translate("Unable to load. Please restart.")
+				and label.accessibility_name == label.text and label.accessibility_live == 2 and button.disabled
+				and root.gui_get_focus_owner() == label)
+			await _frames()
+			check(prefix + " failure text remains visible within the viewport", root.get_visible_rect().encloses(label.get_global_rect())
+				and label.get_visible_line_count() == label.get_line_count())
+			intro.self_modulate = Color(1.0, 1.0, 1.0, 0.0)
+			intro.seek(2.0)
+			check(prefix + " trailer hides footer but preserves logo child", intro._footer.modulate.a == 0.0
+				and intro._mark.modulate.a == 1.0)
+			root.remove_child(intro)
+			intro.free()
+			await _frames(1)
+	TranslationServer.set_locale("en")
+
+
+func _skip_event(kind: String, down: bool) -> InputEvent:
+	if kind in ["enter", "space", "unrelated"]:
+		var event := InputEventKey.new()
+		var code: Key = KEY_ENTER if kind == "enter" else (KEY_SPACE if kind == "space" else KEY_X)
+		event.keycode = code
+		event.physical_keycode = code
+		event.pressed = down
+		return event
+	if kind == "pad":
+		var event := InputEventJoypadButton.new()
+		event.device = 15
+		event.button_index = JOY_BUTTON_A
+		event.pressed = down
+		return event
+	if kind == "touch":
+		var event := InputEventScreenTouch.new()
+		event.index = 7
+		event.position = Vector2(50, 50)
+		event.pressed = down
+		return event
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.position = Vector2(50, 50)
+	event.global_position = event.position
+	event.pressed = down
+	return event
+
+
+func _input_handoff_checks() -> void:
+	for kind: String in ["enter", "space", "pad", "mouse", "touch", "focus-loss", "disconnect", "accepted-quit"]:
+		var startup := _fixture(Node.PROCESS_MODE_PAUSABLE)
+		root.add_child(startup)
+		startup._reduced_motion = true
+		var started := await _wait_started(startup.gate)
+		var actual_kind := "pad" if kind == "disconnect" else ("enter" if kind in ["focus-loss", "accepted-quit"] else kind)
+		Input.parse_input_event(_skip_event(actual_kind, true))
+		await _frames()
+		check(kind + " Skip input is captured", started and startup._skip and not startup._held_skip_inputs.is_empty())
+		startup.gate.release.post()
+		var app: Node
+		for _frame in 600:
+			app = root.get_node_or_null("StartupTestApp")
+			if app != null:
+				break
+			await process_frame
+		check(kind + " creates paused handoff", app != null and app.process_mode == Node.PROCESS_MODE_DISABLED)
+		if app == null:
+			startup.free()
+			continue
+		var fly: Button = app.get_node("Fly")
+		var hits := [0]
+		fly.pressed.connect(func() -> void: hits[0] += 1)
+		fly.grab_focus()
+		await create_timer(0.22).timeout
+		check(kind + " held Skip keeps visible intro and Home disabled", is_instance_valid(startup)
+			and is_equal_approx(startup.intro.modulate.a, 1.0) and app.process_mode == Node.PROCESS_MODE_DISABLED and hits[0] == 0)
+		if kind == "accepted-quit":
+			app.set_script(HandoffQuitState)
+			startup.free()
+			check("held-input cleanup respects an accepted quit", app.process_mode == Node.PROCESS_MODE_DISABLED)
+			Input.parse_input_event(_skip_event(actual_kind, false))
+			app.free()
+			await _frames()
+			continue
+		if kind == "focus-loss":
+			startup.notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
+			check("focus loss clears lost release latch", startup._held_skip_inputs.is_empty())
+		elif kind == "disconnect":
+			startup._joy_connection_changed(15, false)
+			check("controller disconnect clears lost release latch", startup._held_skip_inputs.is_empty())
+		else:
+			Input.parse_input_event(_skip_event(actual_kind, false))
+		await create_timer(0.25).timeout
+		check(kind + " release completes without activating Fly", not is_instance_valid(startup)
+			and app.process_mode == Node.PROCESS_MODE_PAUSABLE and hits[0] == 0)
+		if kind in ["focus-loss", "disconnect"]:
+			Input.parse_input_event(_skip_event(actual_kind, false))
+		app.free()
+		await _frames()
+	var natural := _fixture()
+	root.add_child(natural)
+	natural._reduced_motion = true
+	await _wait_started(natural.gate)
+	Input.parse_input_event(_skip_event("unrelated", true))
+	await _frames()
+	check("unrelated held key does not latch Skip", not natural._skip and natural._held_skip_inputs.is_empty())
+	natural.intro.seek(Intro.DURATION)
+	natural.gate.release.post()
+	await create_timer(0.25).timeout
+	var app: Node = root.get_node_or_null("StartupTestApp")
+	check("natural handoff does not wait for an unrelated key", app != null and not is_instance_valid(natural))
+	Input.parse_input_event(_skip_event("unrelated", false))
+	if app != null:
+		app.free()
+	await _frames()
+	var semantic := _fixture()
+	root.add_child(semantic)
+	await _wait_started(semantic.gate)
+	semantic.intro.skip_button.pressed.emit()
+	check("semantic action reaches startup without a physical event", semantic._skip and semantic._held_skip_inputs.is_empty())
+	semantic.gate.release.post()
+	semantic.free()
+	await _frames()
+
+
+func _saved_startup_checks() -> void:
+	root.size = Vector2i(1920, 1080)
+	for locale: String in ["en", "es", "zh_Hans"]:
+		for scale: float in [1.0, 2.0]:
+			for reduced: bool in [false, true]:
+				var cfg := ConfigFile.new()
+				cfg.set_value("meta", "schema", 1)
+				cfg.set_value("ui", "language", locale)
+				cfg.save(PREFS)
+				var display := ConfigFile.new()
+				display.set_value("meta", "schema", 1)
+				display.set_value("display", "ui_scale", scale)
+				display.set_value("accessibility", "reduced_motion", reduced)
+				display.save(PREFS + ".display")
+				var prefs_hash := FileAccess.get_sha256(PREFS)
+				var display_hash := FileAccess.get_sha256(PREFS + ".display")
+				var startup := _fixture()
+				root.add_child(startup)
+				check("saved %s %.0f%% reduced=%s reaches startup" % [locale, scale * 100.0, reduced],
+					startup.intro.text_scale == scale and startup._reduced_motion == reduced
+					and startup.intro.status_label.text == TranslationServer.translate("Loading…")
+					and (not reduced or (not startup.intro.playing and startup.intro.elapsed == Intro.DURATION))
+					and prefs_hash == FileAccess.get_sha256(PREFS) and display_hash == FileAccess.get_sha256(PREFS + ".display"))
+				startup.free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + ".display"))
+	TranslationServer.set_locale("en")
+
+
+func _late_press_checks() -> void:
+	var startup := _fixture(Node.PROCESS_MODE_PAUSABLE)
+	root.add_child(startup)
+	startup._reduced_motion = true
+	await _wait_started(startup.gate)
+	startup.intro.skip_button.pressed.emit()
+	startup.gate.release.post()
+	var app: Node
+	for _frame in 600:
+		app = root.get_node_or_null("StartupTestApp")
+		if app != null:
+			break
+		await process_frame
+	check("late-Skip fixture starts handoff", app != null)
+	if app == null:
+		startup.free()
+		return
+	var fly: Button = app.get_node("Fly")
+	var hits := [0]
+	fly.pressed.connect(func() -> void: hits[0] += 1)
+	fly.grab_focus()
+	await create_timer(0.04).timeout
+	Input.parse_input_event(_skip_event("space", true))
+	await create_timer(0.22).timeout
+	check("Skip pressed during fade restores visible held intro", is_instance_valid(startup)
+		and not startup._held_skip_inputs.is_empty() and is_equal_approx(startup.intro.modulate.a, 1.0)
+		and app.process_mode == Node.PROCESS_MODE_DISABLED and hits[0] == 0)
+	Input.parse_input_event(_skip_event("space", false))
+	await create_timer(0.25).timeout
+	check("late Skip release completes without activating Fly", not is_instance_valid(startup)
+		and app.process_mode == Node.PROCESS_MODE_PAUSABLE and hits[0] == 0)
+	app.free()
+	await _frames()
 
 
 func _run() -> void:
@@ -282,7 +546,7 @@ func _run() -> void:
 	check("malformed values use defaults", choices.language == "en" and not choices.reduced_motion)
 	DirAccess.remove_absolute(PREFS)
 	DirAccess.remove_absolute(PREFS + ".display")
-	check("missing preferences use defaults", Startup.read_presentation(PREFS) == {"language": "en", "reduced_motion": false})
+	check("missing preferences use defaults", Startup.read_presentation(PREFS) == {"language": "en", "reduced_motion": false, "ui_scale": 1.0})
 	var intro := Intro.new()
 	root.add_child(intro)
 	for resolution in [Vector2i(1920, 1080), Vector2i(3840, 2160), Vector2i(1280, 720)]:
@@ -296,6 +560,12 @@ func _run() -> void:
 	intro.queue_free()
 	await process_frame
 	check("presentation nodes released", weak.get_ref() == null)
+	await _scale_checks()
+	await _saved_startup_checks()
+	await _semantic_checks()
+	await _input_handoff_checks()
+	await _late_press_checks()
 	await _loader_checks()
+	print("Brand startup detail: %d checks, %d failed" % [checks, failures])
 	print("Brand startup: %d failed" % failures)
 	quit(1 if failures else 0)

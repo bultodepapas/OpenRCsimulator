@@ -13,6 +13,7 @@ var _requested := false
 var _committing := false
 var _failed := false
 var _skip := false
+var _held_skip_inputs: Dictionary = {}
 var _reduced_motion := false
 var _scene_job: Node
 var _packed_scene: PackedScene
@@ -34,7 +35,8 @@ func _ready() -> void:
 	_auto_accept_quit_before = _quit_tree.auto_accept_quit
 	_owns_quit_policy = true
 	_quit_tree.auto_accept_quit = false
-	var presentation := read_presentation("user://settings.cfg")
+	Input.joy_connection_changed.connect(_joy_connection_changed)
+	var presentation := read_presentation(_presentation_settings_path())
 	TranslationServer.set_locale(presentation.language)
 	_reduced_motion = presentation.reduced_motion
 	_overlay = CanvasLayer.new()
@@ -42,6 +44,8 @@ func _ready() -> void:
 	add_child(_overlay)
 	intro = Intro.new()
 	intro.name = "BrandIntro"
+	intro.text_scale = presentation.ui_scale
+	intro.skip_requested.connect(_request_skip)
 	_overlay.add_child(intro)
 	if _reduced_motion:
 		intro.seek(Intro.DURATION)
@@ -79,15 +83,36 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if intro == null or _closing:
 		return
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode in [KEY_ESCAPE, KEY_ENTER, KEY_SPACE]:
-			_skip = true
-	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_skip = true
-	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_A:
-		_skip = true
+	if event is InputEventKey:
+		var code: Key = event.keycode if event.keycode in [KEY_ESCAPE, KEY_ENTER, KEY_KP_ENTER, KEY_SPACE] else event.physical_keycode
+		if code in [KEY_ESCAPE, KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]:
+			_track_skip_input("key:%d" % code, event.pressed, event.echo)
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		_track_skip_input("mouse:left", event.pressed)
+	elif event is InputEventJoypadButton and event.button_index == JOY_BUTTON_A:
+		_track_skip_input("joy:%d" % event.device, event.pressed)
+	elif event is InputEventScreenTouch:
+		_track_skip_input("touch:%d" % event.index, event.pressed)
 	# No skip event can activate a newly focused Home button during the transition.
 	get_viewport().set_input_as_handled()
+
+
+func _request_skip() -> void:
+	if not _closing and not _failed:
+		_skip = true
+
+
+func _track_skip_input(id: String, pressed: bool, echo := false) -> void:
+	if pressed and not echo and not _failed:
+		_held_skip_inputs[id] = true
+		_request_skip()
+	elif not pressed:
+		_held_skip_inputs.erase(id)
+
+
+func _joy_connection_changed(device: int, connected: bool) -> void:
+	if not connected:
+		_held_skip_inputs.erase("joy:%d" % device)
 
 
 func _commit() -> void:
@@ -111,15 +136,31 @@ func _commit() -> void:
 	app.process_mode = Node.PROCESS_MODE_DISABLED
 	await _presentation_frame()
 	await _owned_frame(get_tree().process_frame)
-	var fade := create_tween()
-	fade.tween_property(intro, "modulate:a", 0.0, 0.15 if _reduced_motion else 0.65).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	await fade.finished
+	while true:
+		# Keep the resolved mark visible until Skip is released; Home stays disabled.
+		while not _held_skip_inputs.is_empty() and not _closing and is_inside_tree():
+			await _owned_frame(get_tree().process_frame)
+		if _closing or not is_inside_tree():
+			return
+		var fade := create_tween()
+		fade.tween_property(intro, "modulate:a", 0.0, 0.15 if _reduced_motion else 0.65).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		await fade.finished
+		if _closing or not is_inside_tree():
+			return
+		if _held_skip_inputs.is_empty():
+			break
+		# A new Skip press during the fade must also finish before Home receives input.
+		intro.modulate.a = 1.0
 	_release_handoff_pause()
 	queue_free()
 
 
 func _animate_requested() -> bool:
 	return should_animate(DisplayServer.get_name(), OS.get_cmdline_user_args())
+
+
+func _presentation_settings_path() -> String:
+	return "user://settings.cfg"
 
 
 func _presentation_frame() -> Signal:
@@ -143,6 +184,9 @@ func _new_startup_scene_load() -> Node:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST and _owns_quit_policy:
 		_drain_and_quit()
+	elif what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+		# A release sent to another app will not arrive here.
+		_held_skip_inputs.clear()
 
 
 func _drain_and_quit() -> void:
@@ -203,10 +247,10 @@ static func should_animate(display: String, args: PackedStringArray) -> bool:
 	return display != "headless" and args.is_empty()
 
 
-## Read only the two presentation keys before the shell loads. Never migrate/write settings here.
+## Read only presentation keys before the shell loads. Never migrate/write settings here.
 ## Paths/keys mirror Preferences and AppRoot's display companion file without their preload graph.
 static func read_presentation(path: String) -> Dictionary:
-	var result := {"language": "en", "reduced_motion": false}
+	var result := {"language": "en", "reduced_motion": false, "ui_scale": 1.0}
 	var cfg := ConfigFile.new()
 	if cfg.load(path) == OK:
 		var schema: Variant = cfg.get_value("meta", "schema", -1)
@@ -217,6 +261,17 @@ static func read_presentation(path: String) -> Dictionary:
 	if display.load(path + ".display") == OK:
 		var schema: Variant = display.get_value("meta", "schema", -1)
 		var reduced: Variant = display.get_value("accessibility", "reduced_motion", false)
-		if typeof(schema) == TYPE_INT and schema >= 1 and typeof(reduced) == TYPE_BOOL:
-			result.reduced_motion = reduced
+		if typeof(schema) == TYPE_INT and schema >= 1:
+			if typeof(reduced) == TYPE_BOOL:
+				result.reduced_motion = reduced
+			result.ui_scale = _validated_ui_scale(display.get_value("display", "ui_scale", 1.0))
 	return result
+
+
+## Mirrors DisplayPreferences without loading its camera/shadow dependencies.
+static func _validated_ui_scale(scale: Variant) -> float:
+	if typeof(scale) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(scale)) \
+			and float(scale) >= 1.0 and float(scale) <= 2.0 \
+			and is_equal_approx((float(scale) - 1.0) * 20.0, round((float(scale) - 1.0) * 20.0)):
+		return float(scale)
+	return 1.0
