@@ -1,0 +1,722 @@
+{
+  "format": "openrc-audit-ui32-r7-v1",
+  "date": "2026-11-08",
+  "generated_utc": "2026-11-08T14:04:58.047767+00:00",
+  "baseline_commit": "ef4136720ecec2147ab0970fe71e7f0ceceda421",
+  "implementation_commits": [
+    "2663c80afc8a4982360d8c40e8fd837629d97ecc",
+    "064ef1bfdbd90130d5619be028e586244324c5e4"
+  ],
+  "final_verification_commit": "18b13193b44d4d37057ab121a18040e46d001940",
+  "parallel_integration": "A concurrent commit retained the audit changes and documentation; merge 18b13193b added independent Home/render lifecycle work. The eleven affected suites and native 1080p confirmation were repeated on that merged snapshot.",
+  "source_identity_method": "SHA-256 of actual tested Windows working-tree bytes; Git text normalization may differ.",
+  "owned_app_sources": [
+    {
+      "path": "app/app_root.gd",
+      "sha256": "15322522ca13fcda57424ca5be6b6d30e23ff803ea583e70f7170b5b0e8c26e5"
+    },
+    {
+      "path": "app/ui/startup.gd",
+      "sha256": "d3eadf85806ecf3647a9c9f848615022e317eef3c64bae812c043e913cb10509"
+    },
+    {
+      "path": "app/ui/brand_intro.gd",
+      "sha256": "afc2fe487a7aac35584603f31626811ea8febd9c5a4ee4ebf24ea70e03411ea6"
+    },
+    {
+      "path": "app/ui/controller_setup.gd",
+      "sha256": "f279816b3ed264a1f2317c5a69eca36bc81ea5331aed5ac359c6255bada68f59"
+    },
+    {
+      "path": "app/ui/pause_menu.gd",
+      "sha256": "48810644eb3ff31a0bf399fe7fa6186c0988da0ae8d6798fa5635f543aff0b01"
+    },
+    {
+      "path": "app/tests/test_brand_startup.gd",
+      "sha256": "2040b59b6e16a0a399c300dce08931c817f11280023c00c3c5c737215f750271"
+    },
+    {
+      "path": "app/tests/test_controller_calibration_disclosure.gd",
+      "sha256": "012252a1e7c9c121b35a9254d4c109f92bd063c24b8d6c35bac09b37e809c689"
+    },
+    {
+      "path": "app/tests/test_controller_calibration_disclosure.gd.uid",
+      "sha256": "168d1d7cfbe7ee3627bfcce005d709af7e148dd0d5434bc39e3012c1a69ce992"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "57019635c2b003b6687ce60b7fe9515a4d28dbf1e4b05479ecbec415db1e0eca"
+    },
+    {
+      "path": "app/i18n/zh_Hans.po",
+      "sha256": "ebab0a46a8979d1965f5b7959fa7e3a6defd56c526d80f6cae1187505ad6a7db"
+    },
+    {
+      "path": "app/i18n/pt_BR.po",
+      "sha256": "27fe4ff18cbd79332481dae86a747baa921f20c88e0f5909abe10e26ade34996"
+    },
+    {
+      "path": "app/i18n/de.po",
+      "sha256": "a9f848c0a4454c494cd934d64a0316b84a42a727ae1c64cef930878c8f43dd57"
+    },
+    {
+      "path": "app/i18n/fr.po",
+      "sha256": "a196682b2c9fccec26d6e9c96cb64b1129fba27c7fd88d3c9b718e6bd3071a7e"
+    },
+    {
+      "path": "app/i18n/it.po",
+      "sha256": "3795c75ed410d2963a0697fb2ec9897dd96bae751b384bf6e1c5077bffa6f9b2"
+    },
+    {
+      "path": "app/i18n/ru.po",
+      "sha256": "426dc5263cb2a9ebf52b18c3f46198a22f411a3d46870dbcc0259ec08815aef8"
+    },
+    {
+      "path": "app/i18n/ja.po",
+      "sha256": "3eb87ad4f7b80c2226456ddae3bc59094cbb7c4659f8cc5b1c3916c947ca5db7"
+    }
+  ],
+  "supporting_dependencies": [
+    {
+      "path": "app/tests/ui_driver.gd",
+      "sha256": "869b936c4153e6ef82c45c111ae7dbef61d18cac22bc4fb5adfc3767aeb55360"
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "sha256": "54f39ea311e40a96cee8e0c645142ed4b9363b602375adabf08a83f56ff0d2c4"
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "sha256": "834fb490dff650e4e1d20f4bfa8286209b2f77d0830594144218fce2b3384a38"
+    },
+    {
+      "path": "app/i18n/fonts.gd",
+      "sha256": "ca097f4ce7237d559e0c803bc205601c22b2b6079646f37eb4017960ae411665"
+    },
+    {
+      "path": "tools/trailer/capture_brand.gd",
+      "sha256": "2bb7a42bccd83bda3c0182cfaeaa33d852d414832e1b09f727f4cce1039c9c49"
+    },
+    {
+      "path": "app/assets/branding/logo-segments.svg",
+      "sha256": "1eb85fa5d12d88e743d7b2cca8d2fa1f37fb7a808367f5c0b30404098726738e"
+    }
+  ],
+  "dedicated_checks": {
+    "startup": 182,
+    "controller_disclosure": 85,
+    "total": 267
+  },
+  "checked_on_merged_candidate": [
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/import-gm3asqwn/report.json",
+      "sha256": "c3c0c248d72a6f19b384fe21f3570c3c21516ccc07e1389e46ab1aab5ec8e067",
+      "scope": "merged candidate; checked import",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "8f06d64b01dc7f7deee8ea98762988f4a442857aad047515653be7f3f36a77d2",
+      "elapsed_seconds": 6.282
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_brand_startup-bbgudf8f/report.json",
+      "sha256": "596a6da783a83d0a377cf5927ca7758638bf5e99dc638d67f4f087290966b099",
+      "scope": "merged candidate; test_brand_startup-bbgudf8f",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d1f39ecc6712af07d33e6ce4a9c8ed76b096d431863c2c86d01bb34f8616256d",
+      "elapsed_seconds": 7.344
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_controller_calibration_disclosure-2neba3g6/report.json",
+      "sha256": "3b54ec25f95b28a59f7092a7a5f616b20278ecfd164b1662c744c98895b9dad5",
+      "scope": "merged candidate; test_controller_calibration_disclosure-2neba3g6",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "9780f048acd11fa7ad381f35a1d1e2606a9ce9e82963fbd5b82ef019a72458f1",
+      "elapsed_seconds": 27.906
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_controller_capture_scroll-yqvkdlsd/report.json",
+      "sha256": "9a06e3c89edfaa98108dbc6e603dcc9a1d9944275bebab79c30a8e779b6d9490",
+      "scope": "merged candidate; test_controller_capture_scroll-yqvkdlsd",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "691d99e0eba1469c17cd709b226a23d441d9b92ec3b2f3625d09909803e7ba15",
+      "elapsed_seconds": 20.687
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_controller_preflight_calibration-y5_e3wnv/report.json",
+      "sha256": "bb5a113f6703e620742d118fbc4488303efd0b64b90a3829c0927942a13c4903",
+      "scope": "merged candidate; test_controller_preflight_calibration-y5_e3wnv",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 1
+      },
+      "log_sha256": "00da3881282b3a80735ba79abd711b65d9d71713c4b3aa14fb3c1f5cf2b3e96c",
+      "elapsed_seconds": 16.047
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_controller_sections-3lxrm5tf/report.json",
+      "sha256": "6adeed3a79f06565aaade83bc166f4362048ffdf748fae383f110c372cdd93bb",
+      "scope": "merged candidate; test_controller_sections-3lxrm5tf",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3e61669b5be9d1c1fa273e04d5fd78bf90d60463ae42331b2545cb6cbdc4ba02",
+      "elapsed_seconds": 2.922
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_main_startup_cleanup-ask91uru/report.json",
+      "sha256": "0bbc7b7797fb4be549993ee28f99db58d116ed13b293897c63dc5bad7b402288",
+      "scope": "merged candidate; test_main_startup_cleanup-ask91uru",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b06f7104365eb0a8fed4788145c3fb79954bc67b27ad1110d167f733a6d26cd5",
+      "elapsed_seconds": 23.031
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_main_startup_overlap-zs62ijzk/report.json",
+      "sha256": "11b3d24d0316984823d9ffe2c067d33a5d0004a6e6f94ea77e77afd0b4dff17d",
+      "scope": "merged candidate; test_main_startup_overlap-zs62ijzk",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a661effb63f8d8d40e20d5504d53b8112243a90068465bcd835e2ccf63f9922a",
+      "elapsed_seconds": 23.297
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_ui_home_rebuild-nrdn6ck_/report.json",
+      "sha256": "348b95236081f3ee143599fbeaa2fc6554287870c464d9ff4c3f531a68b429cd",
+      "scope": "merged candidate; test_ui_home_rebuild-nrdn6ck_",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d0cdafe317635fb62469b6bbfdbf0df53bbd6e9251ad11069cbfe166064ca908",
+      "elapsed_seconds": 26.344
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_ui_language-g0mvedt7/report.json",
+      "sha256": "95f80443993178f86d483dd6816683b08118698aba914b2c5cc1dd7979c0137b",
+      "scope": "merged candidate; test_ui_language-g0mvedt7",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "79cf072d77c5e61d0a22dbec96593d64ca71807a6a1cdf4f0762726ba87466ec",
+      "elapsed_seconds": 40.937
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_ui_preview_requests-qqc34c4z/report.json",
+      "sha256": "7ec67e1a042c40c2725fb637275a67f6c61fe2345d9a94df089b022621ed78dc",
+      "scope": "merged candidate; test_ui_preview_requests-qqc34c4z",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ebba6e920695330834ce989cd7515ab46aa935b903785d44644e3339233114e2",
+      "elapsed_seconds": 30.125
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/merged-checks/test_ui_screen_stack-z3p8sq7j/report.json",
+      "sha256": "7310a25725dba677f16d691eabccdf2ac79e93459604b99662561a39b4a109d9",
+      "scope": "merged candidate; test_ui_screen_stack-z3p8sq7j",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4e480b41e2187596ea7c9c88cc2cb40c5ffc9b08236d43d1d088a6d4b418c974",
+      "elapsed_seconds": 40.641
+    }
+  ],
+  "intentional_warning": "The preflight calibration conflict fixture emits one overlapping-flaps-AUX warning. All merged receipts have zero engine errors; the other merged receipts have zero warnings.",
+  "additional_pre_merge_consumers": [
+    {
+      "path": "tmp/audit7-20261108-controller/final-checks/test_controller_setup-nkhpaiun/report.json",
+      "sha256": "72fbdfa179c6cee04eacf9816acc5d8f8122bca3ebea1d95d76398cb9b524c26",
+      "scope": "before final focus-only change and parallel merge; see owner index for exact source bytes",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "abeb1fe17b774ce33c3360fc13495d08a322c346fad8a763cbc7eea2af2b6cde",
+      "elapsed_seconds": 9.11
+    },
+    {
+      "path": "tmp/audit7-20261108-controller/final-checks/test_controller_settings_save-xisidrju/report.json",
+      "sha256": "949a605d713a1ebad003a132afe89975acd74a70065d00e4a2d68b962687976f",
+      "scope": "before final focus-only change and parallel merge; see owner index for exact source bytes",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0f8281f81536babea08df62d2a0ded058a5c18a6ea36ab3ade730e32493136cd",
+      "elapsed_seconds": 1.031
+    },
+    {
+      "path": "tmp/audit7-20261108-controller/final-checks/test_controller_pause_recovery-j9s7vvuk/report.json",
+      "sha256": "655b7e8080fc4c5f981381b28f3cb3015893a357a79dca75849c35189a54a50f",
+      "scope": "before final focus-only change and parallel merge; see owner index for exact source bytes",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fdbda5432c401e4b700505e2e0000e3cbe47f4e107a93103d0a5188b083e8030",
+      "elapsed_seconds": 23.703
+    }
+  ],
+  "earlier_owner_indices": [
+    {
+      "path": "tmp/audit7-20261108-startup/final-evidence-index.json",
+      "sha256": "2efebd3b6b1a3d8c41d8e4eb2e1e7bd82fffc08d349e631fa308367ab7dbc6c8"
+    },
+    {
+      "path": "tmp/audit7-20261108-controller/final-evidence-index.json",
+      "sha256": "5526f5fa925072a73a66c957c423837f55edfa4d48d84e3f0de0a70ad52c3d69"
+    }
+  ],
+  "earlier_index_limit": "These indices describe the earlier 176/78-check candidates. Final source hashes and merged 182/85-check receipts above supersede their final-source/final-test fields. Retained baselines and counterexamples remain relevant.",
+  "negative_controls": [
+    {
+      "path": "tmp/audit7-20261108-startup/baseline/baseline-9e8ay70u/report.json",
+      "observation": "Passing probe reproduces absent saved scale and absent semantic controls."
+    },
+    {
+      "path": "tmp/audit7-20261108-startup/focus-final/baseline/focus-baseline-cnimgmyq/report.json",
+      "observation": "Four early-error focus assertions fail before the final guard."
+    },
+    {
+      "path": "tmp/audit7-20261108-controller/baseline-checks/baseline-axudwomx/report.json",
+      "observation": "Passing probe reproduces different Home/flight save lifetimes behind the same action label."
+    },
+    {
+      "path": "tmp/audit7-20261108-controller/checks/locale-witness-9_5sobat/report.json",
+      "observation": "Pre-fix refusal note fails its live-language-switch assertion."
+    },
+    {
+      "path": "tmp/audit7-20261108-controller/checks/known-radio-edge-zcjta736/report.json",
+      "observation": "Unsafe exploratory known-radio type override reproduced the menu-admission gap; all new override state was removed."
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/shots/controller-es200-flight-focus.png",
+      "observation": "Rejected: focused action bottom 802, explanation top 812, scroll bottom 802."
+    },
+    {
+      "path": "tmp/audit7-20261108-parent/shots/fresh-brand-ja-200.png",
+      "observation": "Rejected: deferred initial focus moved onto disabled Skip; final fresh capture retains error focus."
+    }
+  ],
+  "native": {
+    "engine": "4.8.beta2.official.cafc17a19",
+    "renderer": "Compatibility / OpenGL 3.3.0 NVIDIA 617.42",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "engine_console": {
+      "path": ".tools/Godot_v4.8-beta2_win64_console.exe",
+      "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+    },
+    "primary_final_window": {
+      "window": [
+        1920,
+        1080
+      ],
+      "viewport": [
+        1920,
+        1080
+      ],
+      "mode": 0,
+      "screen": [
+        3840,
+        2160
+      ],
+      "display": "Windows"
+    },
+    "final_observations": {
+      "tick": 0,
+      "flight_role": 18,
+      "menu_role": 20,
+      "roll_axis": 4,
+      "status": "Calibración cancelada. Los ajustes del controlador siguen activos. Se conservan los ajustes guardados antes de calibrar.\nBaja el acelerador para armar. Si la asignación no es correcta, abre Controles y calibra la radio seleccionada."
+    },
+    "accepted_captures": [
+      {
+        "path": "tmp/audit7-20261108-parent/shots/brand-en-100.png",
+        "sha256": "7838fe8032d6f15d97b852aa1711f8e386c5bb5eb822d97ce6797d4d5e8600ec",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale": 1,
+        "scope": "seek after Home, Loading, elapsed 2.0; before early-error focus guard"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/brand-en-200.png",
+        "sha256": "d90cf8f0c09dc5123a32d9931e1245e26036bdceca052aadef70c25eafe75fe4",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale": 2,
+        "scope": "seek after Home, Preparing home, elapsed 4.8; before early-error focus guard"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/brand-es-100.png",
+        "sha256": "e32328f4cb214d1e3ec0f2acc60be2d7a6eb86e4d7979fac86ba4d0923c376f6",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale": 1,
+        "scope": "seek after Home, Loading, elapsed 2.0; before early-error focus guard"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/brand-es-200.png",
+        "sha256": "4fc0c62c633714e39a05c488f8c3d2fa48fab38f9c814bca72b5b5977910a42b",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale": 2,
+        "scope": "seek after Home, error, elapsed 4.8; before early-error focus guard"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/brand-ja-100.png",
+        "sha256": "baa6e6eabe5ca1f13548839bfca05bc388b335612fbcf4c012aeed749c36772a",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "ja",
+        "text_scale": 1,
+        "scope": "seek after Home, Loading, elapsed 4.8; before early-error focus guard"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/brand-ja-200.png",
+        "sha256": "fcd5c53435efa653881ebe3d2588084f8d5a5582f8a340a518cbfea739cf5e9c",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "ja",
+        "text_scale": 2,
+        "scope": "seek after Home, error, elapsed 4.8; before early-error focus guard"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/fresh-brand-ja-200-focus-final.png",
+        "sha256": "fcd5c53435efa653881ebe3d2588084f8d5a5582f8a340a518cbfea739cf5e9c",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "ja",
+        "text_scale": 2,
+        "scope": "fresh isolated Intro with final early-error focus guard; forced status, not a real load failure"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/controller-en100-prerequisite.png",
+        "sha256": "df73539cf6bb0b5fbda47a3d0c431f4c49485349c64a1079c7b1650046d9189b",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale": 1,
+        "scope": "before focus-only change and merge; unknown device prerequisite"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/controller-en100-home-scope.png",
+        "sha256": "22eb27fe3046d9529c56214b25f59ef137063ffcf20ef8c8b5ad0f28a391e182",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale": 1,
+        "scope": "before focus-only change and merge; draft-only Home calibration"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/controller-en100-flight-scope.png",
+        "sha256": "e8160d372feb8120d226823889cb2abc693d8f6a0eb1139334a8afef8d5c60ee",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale": 1,
+        "scope": "before focus-only change and merge; save-before-calibration disclosure"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/controller-en100-cancelled.png",
+        "sha256": "4b3c36f965e7a49c2d927a64903cfac993f4a72f819a265423e158473cc852b0",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale": 1,
+        "scope": "before focus-only change and merge; saved roll axis 4 and separate roles retained"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/controller-es200-flight-focus-merged1080.png",
+        "sha256": "b580a60d7528b49613f8fb850af6c5b7cfae1f30b2e0fecb7b87b04627290edc",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale": 2,
+        "scope": "merged candidate; actual Tab focuses action with full explanation visible"
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/shots/controller-es200-cancelled-merged1080.png",
+        "sha256": "0fbc3a5e5f12f9162edf2296df1ca13f2085152ce3d632207692e5a07dd11684",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale": 2,
+        "scope": "merged candidate; Enter starts calibration, Escape cancels, saved mapping and roles retained"
+      }
+    ],
+    "commands": {
+      "path": "tmp/audit7-20261108-parent/native-commands.jsonl",
+      "sha256": "085718b4f521c47e8eaaacff11d61dd1caab23dc8f3690e209627bd3ab2c4dbf"
+    },
+    "isolated_intro_fixture": {
+      "path": "tmp/audit7-20261108-startup/capture_isolated.gd",
+      "sha256": "4c5406913996b24f36ca5a8164bd75fb986121583d579ee3b299dcd3d9500c4e"
+    },
+    "isolated_intro_checked": {
+      "path": "tmp/audit7-20261108-parent/checks/isolated-ja200-focus-final-ee505f3u/report.json",
+      "sha256": "28e04e3ad6f5bdad065a33340336a0c43dea28cf4add8b54a69b67f3365dbcc7",
+      "scope": "final Intro early-error focus; isolated native fixture, before parallel merge",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a8a0bb462a0b84eddeec03a8656d7416aff57e9359d54db5e962bb09d4bf5a3c",
+      "elapsed_seconds": 1.469
+    },
+    "seek_capture_driver": {
+      "path": "tmp/audit7-20261108-parent/capture_startup.py",
+      "sha256": "4d393b5f9c7a372333c2caea8fe03bd1d5411b4d34bfb0f3263b36e53db9fe78"
+    },
+    "retained_profile": {
+      "path": "tmp/audit7-20261108-parent/native-controller-final/profile/Godot/app_userdata/OpenRC Simulator/controller_profiles.cfg",
+      "sha256": "d47398a511f62c3fcb371b1473bb2b5f0380d6e008c7ad2f818ad5b5c957ee16"
+    },
+    "final_logs": {
+      "path": "tmp/audit7-20261108-parent/native-merged-1080-logs.json",
+      "sha256": "4aace709ee0b8c1510ca755157323459815b8e46bf29e3f1f0f045737241a790"
+    },
+    "stopped_sessions": [
+      {
+        "path": "tmp/audit7-20261108-parent/native-controller-focus-candidate-stop.json",
+        "sha256": "042e861fcc627ed887700c6b30224a09ac399d35a1b0641b3d460868dd7cf71b",
+        "result": {
+          "stopped": true,
+          "pid": 42656,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/native-controller-superseded-stop.json",
+        "sha256": "8c2f938d350c3c74acfe765c0d3663bfc0982d5088554329c779c43e17e50e18",
+        "result": {
+          "stopped": true,
+          "pid": 47004,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/native-focus-final-stop.json",
+        "sha256": "91b0ed0e0be8a7340cc75b318caa1126ff4dcce62753588e6fd99184f6591271",
+        "result": {
+          "stopped": true,
+          "pid": 48476,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/native-merged-1080-stop.json",
+        "sha256": "e6b3d7ee0d5d9cde247aee8a3ba53915f6038877c1b695104fdc43178148079f",
+        "result": {
+          "stopped": true,
+          "pid": 24548,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/native-merged-stop.json",
+        "sha256": "62fee3e112756cbf2427e3f5da1935cbeefe753a53356d210ea693a1bf6a69da",
+        "result": {
+          "stopped": true,
+          "pid": 25468,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      },
+      {
+        "path": "tmp/audit7-20261108-parent/native-startup-stop.json",
+        "sha256": "a843faa122fbc4c7fe9796642805ad1b8e182a402da42424f9d39b036bd3bbee",
+        "result": {
+          "stopped": true,
+          "pid": 37468,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      }
+    ],
+    "source_versions": {
+      "earlier_intro": "8ae9f2766fc9847824be09cd9c20832b88da4d07188bf33b034e0702c698a054",
+      "earlier_setup": "ad43de50a4ddd15a88916d1e7f3dea054d983b87d1a8597c7f29c91a488fd4d2",
+      "final_intro": "afc2fe487a7aac35584603f31626811ea8febd9c5a4ee4ebf24ea70e03411ea6",
+      "final_setup": "f279816b3ed264a1f2317c5a69eca36bc81ea5331aed5ac359c6255bada68f59"
+    },
+    "viewer_discriminator": {
+      "observation": "Apparent missing white logo pieces were an image-viewer artifact; retained comparable PNG regions are byte-identical. A later stale image display was resolved by forwarding the PNG data URL with image/png instead of the returned application/octet-stream MIME; file bytes were unchanged.",
+      "images": [
+        "brand-en-200",
+        "brand-es-200",
+        "brand-ja-100",
+        "brand-ja-200"
+      ],
+      "regions": [
+        {
+          "region": [
+            300,
+            340,
+            1610,
+            640
+          ],
+          "identical_rgb_sha256": "7b96ce4e7c499c39bb64379b5004b9ed34f116b9aa728799c490f9cd39368f8a"
+        },
+        {
+          "region": [
+            680,
+            730,
+            1250,
+            770
+          ],
+          "identical_rgb_sha256": "b92f97f0591d0b88f1247ebcb39906ff0c2a6943561a43008061b0193610f685"
+        }
+      ]
+    },
+    "excluded_from_1080p": "An intervening merged run used a 3840x2160 fullscreen viewport and downsampled screenshots. Files ending -merged.png are not 1080p acceptance; the final -merged1080.png pair comes from the verified 1920x1080 window."
+  },
+  "localization": {
+    "sources": [
+      "Using an RC transmitter? Choose a radio profile before calibrating.",
+      "Choose radio profile",
+      "Save controller settings and calibrate",
+      "The profile is saved and device selections are applied before calibration. Cancelling keeps them.",
+      "Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it.",
+      "Saved profiles persist. Device selections apply for this app session; startup selects devices automatically.",
+      "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept.",
+      "Profile saved and device selections applied, but calibration could not start.",
+      "Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.",
+      "This controller is recognized as a gamepad. Radio calibration requires a supported radio profile.",
+      "Radio calibration requires a supported radio profile."
+    ],
+    "locales": [
+      "es",
+      "zh_Hans",
+      "pt_BR",
+      "de",
+      "fr",
+      "it",
+      "ru",
+      "ja"
+    ],
+    "entries": 88
+  },
+  "document_links": {
+    "method": "existing tools/ci/check_docs.py link/anchor parser against working tree; new local links only",
+    "documents": [
+      "docs/FIRST-LAUNCH.md",
+      "docs/MENU-PLAN.md",
+      "docs/learnings/runtime-and-delivery.md",
+      "docs/research/menu-investigations/UI-32/README.md",
+      "external Audits/COMPLETED-AUDIT-WORK.md",
+      "external Audits/CONSOLIDATED-AUDITS.md"
+    ],
+    "checked": 13,
+    "errors": []
+  },
+  "ci_partition_discovery": {
+    "path": "tmp/audit7-20261108-parent/ci-partitions.log",
+    "sha256": "3fa5bc44bda4336384a36a0a6677b6bdbbb41d5d7dbb665dec827e1a2e3a9f34",
+    "tests": 14
+  },
+  "limits": [
+    "Native Intro captures use the production seek seam or an isolated Intro with forced status; full native saved-preference loading/input matrix remains open.",
+    "Injected registry observations and synthetic key/pad events do not qualify physical controllers or actual assistive-technology announcements.",
+    "Inherited saved-Radio-profile/menu admission for SDL-known gamepads remains separately queued; the new chooser does not expand type eligibility.",
+    "No full required CI, release/export, macOS/Metal, performance, participant-comprehension or physical-flight qualification was run.",
+    "The scoped change does not edit simulation/physics, accepted aircraft data, solver pins or golden flights."
+  ]
+}
