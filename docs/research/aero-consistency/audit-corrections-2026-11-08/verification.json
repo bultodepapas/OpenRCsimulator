@@ -1268,6 +1268,7 @@
   "companion_requalification": "../../ai-companions/AFC-02-R5/source-requalification-2026-11-08/manifest.json",
   "date": "2026-11-08",
   "format": "openrc-audit-verification-index v1",
+  "fresh_checkout": "fresh-checkout.json",
   "integrated_source_rev": "174abfd02",
   "native_component_manifest": "native/manifest.json",
   "negative_outcomes": "Earlier timeout/import failures remain failures; the first complete brake attempt rejected concurrent UI source drift, and the clean retry passed. Changed-solver old checkpoint replay is a refusal, not a pass.",

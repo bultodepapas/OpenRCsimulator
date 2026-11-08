@@ -1,0 +1,118 @@
+{
+  "format": "openrc-audit-fresh-checkout v1",
+  "created_utc": "2026-11-08T17:02:27.232954+00:00",
+  "ok": true,
+  "rev": "98a73b70e6f82f4d223e093a5ad08db87f2af57c",
+  "qualified_solver_rev": "d571d67adcc64d7a723568912048707853de75ec",
+  "method": {
+    "clone": "git clone --shared --no-checkout C:/DEVELOPMENT/OpenRCsimulator tmp/audit-fresh-20261108",
+    "checkout": "fresh detached sparse working tree; immutable Git objects shared with source repository",
+    "core_autocrlf": "false",
+    "sparse_paths": [
+      "app/ai/companions",
+      "app/data/ai/companions/aircraft",
+      "app/data/aircraft",
+      "app/failures",
+      "app/physics",
+      "app/sim",
+      "docs/research/aero-consistency/audit-corrections-2026-11-08",
+      "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08",
+      "tools/companions"
+    ],
+    "git_version": "git version 2.52.0.windows.1",
+    "python_version": "3.11.9"
+  },
+  "scope": "Fresh Git checkout, source/profile identities, retained artifact bytes, actual gzip materialization and cleanup. No engine import, flight replay, native installation, package, hardware or full CI run in this clone.",
+  "solver_and_stik_git_blobs_equal_qualified_rev": true,
+  "normalized_solver_sha256": "b9a90735f035eef47d362e0fefbc82cef189a65c182826dcec3e5d662e7e9c30",
+  "aircraft_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "controller_utf8_lf_hashes_match": true,
+  "gzip_tapes": [
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-ai.orfl.gz",
+      "stored_sha256": "6530bf0715ae440f394747944f2d4bbf8ebcd74f3ba4284676ab5777eb30f748",
+      "orfl_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+      "stored_bytes": 969460,
+      "orfl_bytes": 7073368
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-player-coupled.orfl.gz",
+      "stored_sha256": "bb1d604945b6439217ba740cad67f77086574ed264083d2c548fa7408aab0f13",
+      "orfl_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+      "stored_bytes": 606305,
+      "orfl_bytes": 7073368
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-player-exogenous.orfl.gz",
+      "stored_sha256": "e6c72f34b123fc5f346f670fef9011a26da1464ad7cc8f7182a62510f801bbdb",
+      "orfl_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+      "stored_bytes": 606347,
+      "orfl_bytes": 7073412
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-ai.orfl.gz",
+      "stored_sha256": "daf871bc8e5c1c95ef651c5ba0f59e7bdd97c5cd4a418c9151a5d10b96675543",
+      "orfl_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+      "stored_bytes": 973197,
+      "orfl_bytes": 7073372
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-player-coupled.orfl.gz",
+      "stored_sha256": "5c731435844c63040183a636e740bbe110d4fbe24cd640ae78cbd3cb0f8abf9a",
+      "orfl_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+      "stored_bytes": 611094,
+      "orfl_bytes": 7073368
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-player-exogenous.orfl.gz",
+      "stored_sha256": "430fd976950df54b0addf10867a8ea39571300fefb3869af98ea92d8bdd92401",
+      "orfl_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+      "stored_bytes": 611125,
+      "orfl_bytes": 7073408
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-ai.orfl.gz",
+      "stored_sha256": "f487702aa244117f6552dcb3052ad55cada3f8b5197e379c85e82da51b9d789b",
+      "orfl_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+      "stored_bytes": 959575,
+      "orfl_bytes": 7073376
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-peer.orfl.gz",
+      "stored_sha256": "09bc3b855fd5cbccd7635eb000dfe0c52edd9d4e661bccc36d1ae51ee17d1c18",
+      "orfl_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+      "stored_bytes": 605923,
+      "orfl_bytes": 7073376
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-player.orfl.gz",
+      "stored_sha256": "677e5e446f5087b954df0c95b2bd956d01c1031a6cb5ed2a12705cce37961189",
+      "orfl_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+      "stored_bytes": 606024,
+      "orfl_bytes": 7073380
+    }
+  ],
+  "materialized_files_cleaned": true,
+  "artifact_manifests": [
+    {
+      "path": "docs/research/aero-consistency/audit-corrections-2026-11-08/native/manifest.json",
+      "sha256": "f4b76b72a9f594046dbbf630e0143cc7e953fe5801d8f4be09fd4f6d1509bb38",
+      "verified_artifacts": 11
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/manifest.json",
+      "sha256": "4986760fb9b8052b39518268a8383449b18d0404dfd2601cf006663682388e62",
+      "verified_artifacts": 107
+    }
+  ],
+  "flight_manifest_sha256": "ae957a57fa54521956d2e018734cc710d5ab31fd999903de9e7ea1d53424f59f",
+  "flight_payloads_verified": [
+    "corsair-baseline.orfl.gz",
+    "corsair-candidate-aircraft.json.gz",
+    "corsair-candidate.csv.gz",
+    "extra-baseline.orfl.gz",
+    "extra-candidate-aircraft.json.gz",
+    "extra-candidate.csv.gz"
+  ],
+  "fresh_working_tree_clean": true
+}
