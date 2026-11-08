@@ -1,0 +1,22 @@
+{
+	"accepted_physics_bytes_identical_before_switch": true,
+	"candidate_session_sha256": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9",
+	"engine": "4.8-beta2 (official)",
+	"first": {
+		"message": "Mode changes pitch 11.7 to 11.1 deg. Press mode again to apply.",
+		"mode": "normal",
+		"pending": "idle_up",
+		"tick": 372
+	},
+	"format": "helicopter-mode candidate baseline-input replay v1",
+	"input_sha256": "326f8a9d9122baf1211cfd9f51bd1a55c230f61f3fe58eb11335268dbc68e664",
+	"ok": true,
+	"second": {
+		"message": "Mode changes pitch -2.5 to -12.6 deg. Press mode again to apply.",
+		"mode": "normal",
+		"pending": "idle_up",
+		"tick": 832
+	},
+	"third_confirmed": true,
+	"ticks": 832
+}

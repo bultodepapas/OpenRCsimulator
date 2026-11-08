@@ -1,0 +1,28 @@
+{
+	"electronics_sha256": "0f9be04b3b9593c0342fc5fa5f5eb54a92bda23daf8f705bcff5cad5b0e6e27e",
+	"engine": "4.8-beta2 (official)",
+	"exact_replay": true,
+	"first": {
+		"from_deg": 11.7227164883766,
+		"message": "Mode changes pitch 11.7 to 11.1 deg. Press mode again to apply.",
+		"mode": "normal",
+		"pending": "idle_up",
+		"stick": 0.9416666666666639,
+		"tick": 372,
+		"to_deg": 11.134479818708929
+	},
+	"format": "helicopter-mode stale confirmation baseline v1",
+	"ok": true,
+	"second": {
+		"from_deg": -2.521014298575623,
+		"message": "",
+		"mode": "idle_up",
+		"pending": "",
+		"stick": 0.0,
+		"tick": 832,
+		"to_deg": -12.60507149287811
+	},
+	"session_sha256": "72aa18d706076be050ac87438761e2f90dc16c3bf239f200ed3674be96858909",
+	"tape_sha256": "326f8a9d9122baf1211cfd9f51bd1a55c230f61f3fe58eb11335268dbc68e664",
+	"ticks": 832
+}

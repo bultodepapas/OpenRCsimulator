@@ -1,0 +1,1472 @@
+{
+  "format": "openrc-audit-remediation-checks v3",
+  "local_date": "2026-11-07",
+  "timezone": "America/Bogota",
+  "baseline": "4b8e9c0ffe3d1f247ab169d1cb084f7eeeff7575",
+  "source_head": "3b232a5f601847931f1b80bdc5d494cccc1607c4",
+  "integrated_parallel_head": "187182d3c",
+  "tested_checkout": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": {
+    "windows": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "linux": "34d0599a1f17acc76583610969878065d1b1701615af77271e32201351b9c564"
+  },
+  "source_manifest_sha256": {
+    "app/app_root.gd": "a1c7b3a5eb86493944f8cac835e65a5ab719f5afe7b2aa91f205afbe15b91156",
+    "app/app_state/aircraft_catalog.gd": "eec6a281efcc9476adc0ae1b880e3aa92ca6cccf1640be83f2e1b2a22a35350a",
+    "app/app_state/native_package.gd": "9e1526f2d41efcccc0db9420b906786d481be5141e93e850d074d15871968e0e",
+    "app/capture.sh": "7635387799bf0c8ba5bd8ad0f8cfa315fe0b3430651c506c5f7ff356fdf2d20b",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "39a33aa9ff4ef38754b08a632bf50298d8c3f655a921d42f93101bf0f505fe75",
+    "app/data/aircraft/battery/moonrunner_x99_6s_pack.json": "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0",
+    "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
+    "app/data/aircraft/f4u_corsair_250.json": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+    "app/data/aircraft/gp_extra_300s_60.json": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+    "app/data/aircraft/hx700_electric_3d_experimental.json": "b1d07c3c8a5e9e196f218fa3f049fb084f286dd262ac1aa317408311ecfb115a",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+    "app/data/aircraft/moonrunner_x99.json": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+    "app/data/aircraft/p51d_mustang_120.json": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "66d13e8d7d3a44d371f26d75f5e08fbd75b1088430de7a4fabbc852a4c2ca298",
+    "app/data/aircraft/stik_glow_61fx_2t.json": "babf709c6f8eda13af2bcb8dfc2753b98ae82aafaef048dee45610eeb799d458",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+    "app/data/aircraft/turbo_lumber_evolution.json": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+    "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+    "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json": "d291e8222c4664b44179e04c60efa8a14f372bb211f51c78856d1c7420c86633",
+    "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09",
+    "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json": "c930ba3bf6283b03b4e2d99471b73e6994670ad2a6322d6ed46701b7acbd5cf9",
+    "app/data/field_loader.gd": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234",
+    "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "app/data/fields/lake.json": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+    "app/data/fuels/openrc-fuel-registry.json": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+    "app/data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+    "app/data/glow/os_fs_64v_candidate.json": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39",
+    "app/data/glow/os_max_55ax_candidate.json": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258",
+    "app/data/glow/os_max_61fx_candidate.json": "5e6fec165cf5b5a122a9dc1672436dac5004714cc3534cb075e94aad86ef4df4",
+    "app/data/glow/os_max_61fx_installed_candidate.json": "462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e",
+    "app/data/glow/profile_contract.json": "124d81955d6944833ae651e101351c9cbf6146c552540ec9cf27cc6975bf8c38",
+    "app/data/glow/stik_55ax_2t.json": "0da0ff8f8dcaf8e877009819916a2c84f62863afafc130f4b4b0811a5aa0814d",
+    "app/data/glow/stik_61fx_2t.json": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+    "app/data/glow/stik_fs64v_4t.json": "d143392e35da1149c58d06e9f5b45afeaaba0140f2fba52efd3367d4a940657e",
+    "app/data/lake_loader.gd": "751d7854d4140c131b9cf63cee9a8b1f17810464a9daecceee8df9b8f55a738d",
+    "app/export.sh": "8e6c55aa558428e9b520d110915d2d7e45aa03a9085ed4411cddb8ffab0b42fd",
+    "app/i18n/de.po": "e145eb8ca12aacd4e918d8f4c10995f2f295e650d58bcbaf5825c697c9daa477",
+    "app/i18n/es.po": "de4e04685da8a61475505dce584632d03b6667182d16a96b1783d52705d01fa7",
+    "app/i18n/fr.po": "f756638fdb422b6797a4e9443899e52709525105012810ec6690df023aae1c67",
+    "app/i18n/it.po": "0b76f6322bcc5854bb86191a61c8732780f7b507aa2895e3a6f9012aa2bf678c",
+    "app/i18n/ja.po": "bf88b254bbf029efa374826cc277339b129d82fb77b9f99f65f3b9275878784d",
+    "app/i18n/pt_BR.po": "404aef6a4b45af2d9ad3ca7fa51030774cafe91414d02bb1b2051a6fe1100433",
+    "app/i18n/ru.po": "9cd41f5672d7bbdb489882998de11c75e3330dbc076381e8aa7e98836648c08b",
+    "app/i18n/zh_Hans.po": "08d41b9d94c147e0d8e66d3e610122b4429e2f4925dbb81f67244e054ca56fbf",
+    "app/physics/aero.gd": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+    "app/physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+    "app/physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+    "app/physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+    "app/physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+    "app/physics/battery/esc_supervisor.gd": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+    "app/physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+    "app/physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+    "app/physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+    "app/physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+    "app/physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+    "app/physics/event_step.gd": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+    "app/physics/fixed_datum_body.gd": "df186bd36a6b60c01a82ca8aa52943600929219e43ba5d411bf9997da90bc34d",
+    "app/physics/flaps.gd": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d",
+    "app/physics/glow/carburetor.gd": "bd22ef5070be76512470119563861f0fde2d7acf7f19451d9bf590d45cca024e",
+    "app/physics/glow/flight.gd": "85c1b6dc8f7a536819bd0a6e8459f5caa1cabb405b57f47a8081215418b87eee",
+    "app/physics/glow/four_stroke.gd": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+    "app/physics/glow/fuel_feed.gd": "17194b2f01644a6e1eb202d23314f444f6146c3be1b3f462c165dcbcc9bc62df",
+    "app/physics/glow/fuel_mass.gd": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+    "app/physics/glow/installation.gd": "be0856c2d590cec7d994b3c2aa69addb3b4a4c5d74f2dc3365c2179f7f56aa99",
+    "app/physics/glow/lifecycle.gd": "4b50bae6534554af9764df6ba06fba327d7b6f4bd6a4144f29db0bd9b01ec4d9",
+    "app/physics/glow/operating_point.gd": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d",
+    "app/physics/glow/profile.gd": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524",
+    "app/physics/glow/propeller.gd": "86828a6bb4fbf52777d328d300a56eeb1632b596b577bb1cf0676df3b586b97d",
+    "app/physics/glow/source.gd": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+    "app/physics/glow/thermal.gd": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8",
+    "app/physics/glow/two_stroke.gd": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+    "app/physics/glow/vibration.gd": "e7e2c6b5b9b87cf42fd2138274f6382c7ec6c42389e54624132bb74bd144e9b5",
+    "app/physics/ground_contact.gd": "5565fb7c613915575e14700df18f8bb2606a18db879548da13083f6eb7aa6873",
+    "app/physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+    "app/physics/ground_support.gd": "f4669cbf30ceadc2f6ed2c77360f5cb5fd08a6b04348b0d2a9945a8e250a054d",
+    "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+    "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+    "app/physics/ground_wheels.gd": "cb064a3865971e8abcba46929c3ede716273e21c9b032c23592a4edb44dba7f8",
+    "app/physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+    "app/physics/integrator.gd": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde",
+    "app/physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+    "app/physics/liquid_fuel.gd": "68a1a1a5fb65cc8c4ab5c7ccfbe094dc393dabf71e7cae4561e1700bebb7068f",
+    "app/physics/mass_inventory.gd": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292",
+    "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+    "app/physics/propulsion.gd": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+    "app/physics/retractable_gear.gd": "7f59cdbf82ae6e744d59fb16f33f49ddf33b3e3ef228c2d2c6d541376bb828e8",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/rotor_coupling.gd": "b59b371f1191e99cc78bcfdb5a4d4b52ff9e87fe26cfcda983f2621cc1f09ec8",
+    "app/physics/rotorcraft/aerodynamic_stage.gd": "14f95f87e9b6320be081a616ade24820c10dd3087f03aaccc5179d88d4b078a7",
+    "app/physics/rotorcraft/airframe.gd": "7bb1bad8f99d8e9e1741536b8a31d62ac9d2affa474c1cf0394fe20542b4a9f6",
+    "app/physics/rotorcraft/drive.gd": "d039c9fde7624e4808bf62237cfef6f6ebb225d2177224cffba5f1e2b24098e9",
+    "app/physics/rotorcraft/dynamic_inflow.gd": "5ba1a1722f1f8c51df0b40d9c538cb602c865b00f2d9cf6173a86b2ae0daa2fc",
+    "app/physics/rotorcraft/electronics.gd": "0f9be04b3b9593c0342fc5fa5f5eb54a92bda23daf8f705bcff5cad5b0e6e27e",
+    "app/physics/rotorcraft/flight_dynamics.gd": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23",
+    "app/physics/rotorcraft/geared_coupling.gd": "9a298f0f65b64ed620d18e2e296d5f9679af2d7e6028bdea80f7211bf562dad2",
+    "app/physics/rotorcraft/ground_start.gd": "1822c74a19e589844e25755029f46de946fbef8265a201122da13ee5a5591f1b",
+    "app/physics/rotorcraft/hx700_flex_bench.gd": "d7a7a78bf9a6fa1334050bb3a6238fde929862ac373bde88b5e77477ecb246df",
+    "app/physics/rotorcraft/impact_detector.gd": "6d86495352a3389c7ab5ceb65368469e792e354e7b0034fc8d330c2a93cb67f8",
+    "app/physics/rotorcraft/inflow.gd": "85289be30fe94c07a4ba10f3725c4d18581cab3d5d24fcecd92a1bd517725224",
+    "app/physics/rotorcraft/lifecycle.gd": "bd3315b0e5255623997660a90b487b0df414a12a8eb8a27ce73ea24f536b526b",
+    "app/physics/rotorcraft/main_rotor.gd": "e3447d0d73529806d4a4e82af63703d5b7cc5c08fb0abc0da624504c03908658",
+    "app/physics/rotorcraft/main_rotor_stage.gd": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc",
+    "app/physics/rotorcraft/performance_context.gd": "4cc05a8f4f2390920cae51af47cd3eb454e35986dee9663f06cbc44f863e117a",
+    "app/physics/rotorcraft/simulation_step_adapter.gd": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+    "app/physics/rotorcraft/skid_contact.gd": "3101654efe3ea6f88fa1280ad12a1ff7a8f5379932149b4934878dba269d2f6a",
+    "app/physics/rotorcraft/swash.gd": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246",
+    "app/physics/rotorcraft/tail_rotor.gd": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81",
+    "app/physics/rotorcraft/trim.gd": "575506c05ac4d097705afcfbcdc76309191f90c382872605f3a870046fb27e0d",
+    "app/physics/rotorcraft_data.gd": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2",
+    "app/physics/slipstream.gd": "ffdf117cc8ff0d83ba248b70703fbed3228ff110a95ce4adf2644d82bb815931",
+    "app/physics/swirl_loads.gd": "5017f323f1fb0a99c6d731eee582bd47c262cc45fed4067b99b80697e59002bc",
+    "app/physics/turbine.gd": "39cdb286bcdb124ae5c4d885760d85f588fbedf207ad0f62da8f3a822bfbdee7",
+    "app/physics/wash_transport.gd": "5cfae8de20432d66f2d5629716b1cf96cd3425dae083e362e4d3c415546f6e8a",
+    "app/physics/wheel_profiles.gd": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748",
+    "app/physics/wind_aircraft_flow.gd": "0ef03aedf2f199c6ebf7190e3c1d7b051978cbb74eb5b36ad45b3c2f97c0a36d",
+    "app/physics/wind_config.gd": "9188873ed19b078940d685d3c8619d23685131b55770ef148dd70ec36e1c39c4",
+    "app/physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+    "app/physics/wind_spatial_config.gd": "f97238ea0d26b52c039adb3fe374b77c7e4ec8fe49d114b29e3a43aaa9d0f2fe",
+    "app/physics/wind_spatial_field.gd": "cb582f333225900998ad1bdb3319de201257a7176ffed1bafb1ce847c733ef04",
+    "app/physics/wind_spatial_presets.gd": "e09f317ff2ce074d72c06a67b494b454e6fbbd3ad2a3bff011578f8ee0860650",
+    "app/physics/wind_thermal_field.gd": "3905638182f276f9c7d848ff351ee7a6c387078a09eeaba2a004b23b11ad6f2e",
+    "app/physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+    "app/physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+    "app/sim/aircraft_propulsion_runtime.gd": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444",
+    "app/sim/environment.gd": "7e173120c75f9d2bade1251106a5d72ad2900fca94370b8f2fedc5d74cb71ab6",
+    "app/sim/flight_session.gd": "8a3d1150f3e60313fb4731cdd6edd77d63214e226e0045c45b861a581682683b",
+    "app/sim/fuel_sample.gd": "ae2d2be8085e5738519d4dcbdb6511fcf30325cb34874211dd17ad5d5eb15fdc",
+    "app/sim/helicopter_flight_session.gd": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9",
+    "app/sim/liquid_fuel_flight.gd": "26397c12a5af6ccf45c442c796c397be9ff6068be293f0e92bc71fc257cc2e53",
+    "app/sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+    "app/sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+    "app/sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+    "app/sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+    "app/sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+    "app/sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+    "app/sim/native/prescribed_stage_adapter.gd": "73e65b27e5c5b77aac8107f1bebcf726bf6f37a3fcd82caba8dfdd078df4a735",
+    "app/sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+    "app/sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+    "app/sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+    "app/sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+    "app/sim/vehicle_model.gd": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+    "app/tests/test_export_identity.py": "999d505fab6a3144568a6f2672082c48456a62a9ade7beb685408d8d4e080ee3",
+    "app/tests/test_heli_mode_confirmation.gd": "4d4c0201cbdbc1948741273cabeeeb2dd0347fb8bd36d9c868d3d98c386f0023",
+    "app/tests/test_heli_mode_confirmation.gd.uid": "3d792f5d7d92d4c4534c98e1589b055343492c08c35ac063c579109caa0a7fe0",
+    "app/tests/test_heli_weather_admission.gd": "69679f20de46f15f59ebfc6f12bff1916efd172c0c706de530096bbb4b030261",
+    "app/tests/test_heli_weather_admission.gd.uid": "88f8ea05a378fb6ae560c4fc1ec09eaa562e7bed09094a786ee99f6ef62c3ef4",
+    "app/tests/test_home_launch_conditions.gd": "eac6b34405355d652392f561e051b0752cb5077da88d4bdad98de9a8246f58e6",
+    "app/tests/test_home_launch_conditions.gd.uid": "61e467fd75b0d289ecd29c033308713b114987a077c4e4b5f5eb39a9194700d7",
+    "app/tests/test_ui_home.gd": "df140433c6c6ed54fd6ea3b735fd2a5f1bfbeecf6613240702f581b279bf5c6d",
+    "app/tests/test_ui_home_layout.gd": "5f38c6707a1cd11780e46f46f2ce5dafe34fb51e0a1be77b2e622c54cf341f94",
+    "app/tests/test_workshop_experiments.gd": "5769e57d32d49656a9a4a3cb081fb0553e3c7d6c993e1988a7f09c75ac2c1529",
+    "app/tests/test_workshop_library_unavailable.gd": "4bf33f51121bec67ef73c66024f033252505fc33f2529683af69c0c8adf5ff11",
+    "app/tests/test_workshop_library_unavailable.gd.uid": "f47708135712d224155a0daaaf1742e0f5f57ad67589935e9a2b3eb37ee4b12f",
+    "app/ui/home.gd": "4e6d6adc4c5f4819dab88634203f2a7b4d91d4b6d4ff07e61d2fbef2c5b72907",
+    "app/ui/workshop.gd": "d34ee3df54640f0744bc93b3a35aeb2af18d57d9daaae30e5a414bacd5589eb2",
+    "app/workshop/store.gd": "39689ae553b8d492b85048fa1885cccf4e9b8fdbc36578c39389d12dc4b2ae1f",
+    "research/native-kernel/build.py": "a7216b06960abcbfebf786e8925db11ffefb0263ca81b7880c860b67f65e6bb7",
+    "research/native-kernel/run.py": "00e25de327d945017086f7cb62185a6e1e070e7a00eb544438d9051805c75271",
+    "tools/companions/rebind.py": "4fee9c7217e239a8d98250a283992e8828123b71be2ed40646fee8ed2ddbd86b",
+    "tools/godot/run_checked.py": "da13ccb71f90ed82f63243eae021a0284d0128885127d829e89f8759c41ce01a"
+  },
+  "selection": [
+    "A14 F12",
+    "A14 F13",
+    "A15 H04"
+  ],
+  "accepted_scripts": [
+    {
+      "script": "res://tests/test_home_launch_conditions.gd",
+      "label": "home-primary-bounds",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-primary-bounds-ki2jr0dq\\report.json",
+      "report_sha256": "cdebec5a4145d487ec91c6b073b8f125a06f6681f2a0a296702d921e4f9c0106",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-primary-bounds-ki2jr0dq\\engine.log",
+      "log_sha256": "5526efe8785a12984612161e8fe723724b9aa0d2be9a2a62feacc906fac4333b",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 17.921,
+      "printed_ok_lines": 75,
+      "summary": [
+        "Home launch conditions: 75 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_home.gd",
+      "label": "home-consumer-effective",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-consumer-effective-fik3bh1_\\report.json",
+      "report_sha256": "e59f025ea2c51c27836f70627c990121347b2adb0c7c15fefdc6cb2b770e7f29",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-consumer-effective-fik3bh1_\\engine.log",
+      "log_sha256": "53c67b0b09410495aa7d4063100b42c103c6ef899ee83d80ea8db684e515be1b",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 31.875,
+      "printed_ok_lines": 346,
+      "summary": [
+        "all UI home checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_home_layout.gd",
+      "label": "home-layout-effective",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-layout-effective-7s8hku5q\\report.json",
+      "report_sha256": "4ba059dc733ad73148f4bdb14fa3504fef172e1dcf15a4b2679c465628932cfc",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-layout-effective-7s8hku5q\\engine.log",
+      "log_sha256": "ae2c2da1286ecc8418790be34552b214bd431158c6f22b5eb09e4d63333314c2",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 50.328,
+      "printed_ok_lines": 3564,
+      "summary": [
+        "all UI home layout checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_ui_language.gd",
+      "label": "language",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\language-fackn_51\\report.json",
+      "report_sha256": "37368e89cfcb23e33b10aa9673449e1fdd016b138c8d0529dd0464478bbdcca0",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\language-fackn_51\\engine.log",
+      "log_sha256": "bb9c8df5d0499f1154bbc740dc03bf25bd1e56959dd024604abad9e4c65af7aa",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 41.36,
+      "printed_ok_lines": 104,
+      "summary": [
+        "all UI language checks passed"
+      ]
+    },
+    {
+      "script": "res://tests/test_flight_loading.gd",
+      "label": "flight-loading",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\flight-loading-omu58oww\\report.json",
+      "report_sha256": "cece3d69e16e11895ef04b3e331a0e528b0e697d03be4f368d21db3ebd9725cd",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\flight-loading-omu58oww\\engine.log",
+      "log_sha256": "0786b2e5f0faf24b41f2c87032bd8def1b373ad5ecec8b6e2bcbdbed11ba755e",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 47.047,
+      "printed_ok_lines": 56,
+      "summary": [
+        "Flight loading: 56 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_heli_mode_confirmation.gd",
+      "label": "linux-mode-confirmation",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\linux-mode-confirmation-cvr3zb3t\\report.json",
+      "report_sha256": "e5ede193909feb7a5cf6a91783602ec26697676f99bd2408adea980d2f4dcc6f",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\linux-mode-confirmation-cvr3zb3t\\engine.log",
+      "log_sha256": "27ef1a28481daa5f3759151c679d2398ae6dd209fbaca04895aebd0f4802dd3f",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 46.086088,
+      "printed_ok_lines": 0,
+      "summary": [
+        "HELI H04 mode confirmation: 81 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_native_helicopter_session.gd",
+      "label": "native-helicopter-session",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\native-helicopter-session-t41kmtrq\\report.json",
+      "report_sha256": "252f3779432fa72400cb7edacf8c20955fb45cba88d231d159812c5f8aead043",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\native-helicopter-session-t41kmtrq\\engine.log",
+      "log_sha256": "e34109a538136753fa987d74225cea1499b39d2e2f69d6ef8cd8c09c300773b2",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 72.005952,
+      "printed_ok_lines": 0,
+      "summary": [
+        "NK3_NATIVE_HELICOPTER_NATIVE verdict=pass",
+        "NK-3 helicopter native session: 264 checks, 0 failures, native exercised=true"
+      ]
+    },
+    {
+      "script": "res://tests/test_native_session.gd",
+      "label": "native-session",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\native-session-rnm789rm\\report.json",
+      "report_sha256": "3e49f4a40eb1a2dcc6fc1982bd36cf3756b2d2af5a11f4fa7a72f4a0307c85c5",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\native-session-rnm789rm\\engine.log",
+      "log_sha256": "5aabd107dc9f2f35978bb4713c53bcd884b9c9f9358ece8f885bf42788a45e1f",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 212.086056,
+      "printed_ok_lines": 0,
+      "summary": [
+        "NK3_NATIVE_SESSION checks=343 failures=0",
+        "NK3_NATIVE_SESSION_NATIVE verdict=pass"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_library_unavailable.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\matrix-cleanup\\godot-z1z0idqy\\report.json",
+      "report_sha256": "580a3f3c2e4976f797f606c57b538f701cbc819b1b31c4727507605e82f27993",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\matrix-cleanup\\godot-z1z0idqy\\engine.log",
+      "log_sha256": "f49a00ad344d94b3e4e6bc38a487b8e54211c2d77c0f69bc51df20dc5f92fc0b",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.609,
+      "printed_ok_lines": 44,
+      "summary": [
+        "Workshop unavailable builds: 44 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_store.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_store\\godot-jeh0hs2c\\report.json",
+      "report_sha256": "600bbf23ade2581212a768a059baf40f8afba3a39b29bfb17bc31272f48e1a08",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_store\\godot-jeh0hs2c\\engine.log",
+      "log_sha256": "4b1c52d00e2a0f723061c3ed1e9fcc1be08a1854bb772bd61d5309862944075f",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.75,
+      "printed_ok_lines": 0,
+      "summary": [
+        "151 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_store_interruptions.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_store_interruptions\\godot-8sfaxg4n\\report.json",
+      "report_sha256": "7451d1512074cf4847fd99f8119a2143baab518913ee92762dfdcedef14fc6e2",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_store_interruptions\\godot-8sfaxg4n\\engine.log",
+      "log_sha256": "b3131babeb7b6ec474682f935bf3a0d62d1c50d76eec14240870d911135848dd",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 29.609,
+      "printed_ok_lines": 0,
+      "summary": [
+        "Workshop store interruptions: 35 cases, 806 checks, 0 failed (process_cuts=false)"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_ui.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\workshop-ui-final\\godot-4yecccnj\\report.json",
+      "report_sha256": "dc453b0c3e0e1594785bf23df3e76b2ca4ead0033675219e06ff5ed903441cad",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\workshop-ui-final\\godot-4yecccnj\\engine.log",
+      "log_sha256": "ce60b65fe62dcb7b4e59af44d032e02415137a0b6682d7e25fa2bf87210cadd0",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 25.891,
+      "printed_ok_lines": 151,
+      "summary": []
+    },
+    {
+      "script": "res://tests/test_workshop_library_preferences.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_library_preferences\\godot-cakx6hg5\\report.json",
+      "report_sha256": "44de91b82b0391ed8ea7058821867981129c5a80266c7463e06271ac6fcb919a",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_library_preferences\\godot-cakx6hg5\\engine.log",
+      "log_sha256": "a2cef4f8a9898e8baeaabe35ef91b1b995232476f913eb1f2a293e64f3318a83",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.765,
+      "printed_ok_lines": 0,
+      "summary": [
+        "Workshop library preferences: 67 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_document_flow.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_document_flow\\godot-8xz5rjur\\report.json",
+      "report_sha256": "da767385c4b3353634486962cf8a4685e0aaea4d0e18ff954ef45d8024b917a2",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_document_flow\\godot-8xz5rjur\\engine.log",
+      "log_sha256": "61ff9419bc4428033841f2d4809f118e51b08894ff90a082dc3c24139296c97a",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.672,
+      "printed_ok_lines": 23,
+      "summary": [
+        "Workshop document flow: 23 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_workshop_customization.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_customization\\godot-n9nr48tw\\report.json",
+      "report_sha256": "ba56d213c54d243223b716d095b2ff88ee23c356ed046ca859bc5a3d1b286ea3",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_customization\\godot-n9nr48tw\\engine.log",
+      "log_sha256": "f4a556669019e6473e158cb49cb67c6abc0dbbc8a06b1e94a335be5cc097f398",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.313,
+      "printed_ok_lines": 54,
+      "summary": []
+    },
+    {
+      "script": "res://tests/test_workshop_name_integrity.gd",
+      "label": "godot",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_name_integrity\\godot-w0vkyx2_\\report.json",
+      "report_sha256": "cb0b82806776495fbc64bbb3e85c38045c2bc385709ad79156b9bda81a04d85e",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-build-listing\\consumers\\test_workshop_name_integrity\\godot-w0vkyx2_\\engine.log",
+      "log_sha256": "cb8b855ee0f6f75cc44e45db5bfa3af99ce87fdfefe583009eebe38c6297054c",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 35.078,
+      "printed_ok_lines": 153,
+      "summary": [
+        "Workshop name integrity: 153 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_heli_weather_admission.gd",
+      "label": "weather-freeze",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\weather-freeze\\weather-freeze-0t601el6\\report.json",
+      "report_sha256": "2f66adb2d0d00402da6c6cccddabf6f64193d9758fc7f627d7779d4b08cd00ca",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\weather-freeze\\weather-freeze-0t601el6\\engine.log",
+      "log_sha256": "dfe79f3ee51a1b6fe35bbef157a34e91c20ae2b8057c1fee238637e2043788db",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.5,
+      "printed_ok_lines": 0,
+      "summary": [
+        "HELI F13 weather admission: 50 checks, 0 failures"
+      ]
+    },
+    {
+      "script": "res://tests/test_heli_control_actions.gd",
+      "label": "control-actions-freeze",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\control-actions-freeze\\control-actions-freeze-85caogct\\report.json",
+      "report_sha256": "f52a94ff32b4a49d96ea607bae3093bfe40039322448bae2c37bb17bbd08e3a5",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\control-actions-freeze\\control-actions-freeze-85caogct\\engine.log",
+      "log_sha256": "6f0f1a200256a3e991b23880d5761968b620bee57194be820595ced4e89903df",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.953,
+      "printed_ok_lines": 0,
+      "summary": [
+        "HELI-20 controller actions: 40 checks, 0 failed"
+      ]
+    },
+    {
+      "script": "res://tests/test_heli_state_audit.gd",
+      "label": "state-audit-final",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\state-audit-final\\state-audit-final-sr4evw1i\\report.json",
+      "report_sha256": "b6e36545226520382bd54c9ad4734864ea4073ce2264e1408106b69eb4fbe7fc",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\state-audit-final\\state-audit-final-sr4evw1i\\engine.log",
+      "log_sha256": "b162f3b7c2c198bc59b165da022ff219294d7d74fcadd22319e61449970b9545",
+      "complete": true,
+      "ok": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.203,
+      "printed_ok_lines": 0,
+      "summary": [
+        "HELI state audit: 54 checks, 0 failed"
+      ]
+    }
+  ],
+  "accepted_imports": [
+    {
+      "label": "import-catalogs-retry",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\import-catalogs-retry-319tqp8j\\report.json",
+      "sha256": "90e1b8faa141f87954e2fdad0c6a5a9cbe69399573016cf8b292411edd8e6901"
+    },
+    {
+      "label": "worktree-import-retry",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\worktree-import-retry-0lslawza\\report.json",
+      "sha256": "e52152ca40521369cc2735d2764fe671dfd4d3da06431d38d5b8aad46bc38bb4"
+    }
+  ],
+  "other_runs": [
+    {
+      "label": "home-consumer",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-consumer-1rz6ixnk\\report.json",
+      "sha256": "34e3f97b9302b20d8b7576c3ea4de9664a97d0e8583f3b24b54faf63f8e79661",
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "home-layout",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\home-layout-cke8k89b\\report.json",
+      "sha256": "d6a21f517bf1361288b66f9d798324c92e4f643b7abce59abe08cbb45608ef5b",
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "import-catalogs",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\import-catalogs-36tw6uss\\report.json",
+      "sha256": "8810e7b0831efabf55ddefcca3b7e735abb714ed90ea78f9b640beb070febe80",
+      "reason": "engine_error",
+      "counts": {
+        "error": 3,
+        "warning": 0
+      }
+    },
+    {
+      "label": "launch-conditions-parse-2",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\launch-conditions-parse-2-hssy9ohw\\report.json",
+      "sha256": "7ccf06d91c24b26f22fd8118df9733844f913d04b4f3dfcb5ebbc1994b6edc53",
+      "reason": "engine_error",
+      "counts": {
+        "error": 4,
+        "warning": 0
+      }
+    },
+    {
+      "label": "launch-conditions-parse",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\launch-conditions-parse-5te_s8rs\\report.json",
+      "sha256": "bc0810b3d913721b02b60f77ab497671402b0b0d4905c4f9b9855a9c96c410c2",
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      }
+    },
+    {
+      "label": "worktree-import",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\checks\\worktree-import-2yw3t1kj\\report.json",
+      "sha256": "ef6a38df3eae64f3f8b5a65b859e1cda56d2f67e4b2fe182f3447dd9a6440094",
+      "reason": "engine_error",
+      "counts": {
+        "error": 1,
+        "warning": 0
+      }
+    },
+    {
+      "label": "weather-test",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-heli-mode\\weather-test-draft-1\\weather-test-m2fnodca\\report.json",
+      "sha256": "5de14a43e479c85696669d12ea78f299be822ab603b93fa78a4d8b1eaab91f75",
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "native": {
+    "platform": "Linux x86_64, WSL",
+    "receipt": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\app\\native\\kernel\\build-receipt.json",
+    "receipt_sha256": "045fa03a9ba3f7070a34b288ad90cae5a56a8d074fa991b18e1076b0e26f474d",
+    "binary_sha256": "3b6a614d82fb1851028e79840e0867ce71109e0a757e34f2714202bb43ef0c1e",
+    "reference_sources": 130,
+    "verification": {
+      "electric": {
+        "compared": 32010,
+        "results": "electric-20261108T015207767840Z.json",
+        "results_sha256": "a831dc8920ee6adafd7e09e14e13f7a33c45b662ac55c6693feed753164d9b5b",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\electric-20261108T015207767840Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 32010,
+          "identical": 32010,
+          "mismatched": 0
+        }
+      },
+      "electric_stage": {
+        "compared": 66988,
+        "results": "electric-stage-20261108T015403292311Z.json",
+        "results_sha256": "bfa146c7e4f15bdab53cfd194078b7e8011cfc3463846a7cec1b6eff257d5f33",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\electric-stage-20261108T015403292311Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 66988,
+          "identical": 66988,
+          "mismatched": 0
+        }
+      },
+      "gear": {
+        "compared": 35452,
+        "results": "gear-20261108T015316771300Z.json",
+        "results_sha256": "a436057319bf67d029815342946c55317e06050085a1c7741a1bf952d7489df7",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\gear-20261108T015316771300Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 35452,
+          "identical": 35452,
+          "mismatched": 0
+        }
+      },
+      "glow": {
+        "compared": 49606,
+        "results": "glow-20261108T015236330305Z.json",
+        "results_sha256": "a1c0666f2c040ae756a10dce7d142438caedde7cce01366e435c8eee99333307",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\glow-20261108T015236330305Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 49606,
+          "identical": 49606,
+          "mismatched": 0
+        }
+      },
+      "glow_stage": {
+        "compared": 79781,
+        "results": "glow-stage-20261108T015450678935Z.json",
+        "results_sha256": "4808e883ee1d55d74be21d1302c11a2a894eb7f29f3567fdffef1603d432d8a9",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\glow-stage-20261108T015450678935Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 79781,
+          "identical": 79781,
+          "mismatched": 0
+        }
+      },
+      "helicopter": {
+        "compared": 50336,
+        "results": "helicopter-20261108T015350732054Z.json",
+        "results_sha256": "d06bd87cdcef1e16ea597f43139f4f7ccb5b4669443609619eed28674514eb0a",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\helicopter-20261108T015350732054Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 50336,
+          "identical": 50336,
+          "mismatched": 0
+        }
+      },
+      "helicopter_stage": {
+        "compared": 61281,
+        "results": "helicopter-stage-20261108T015507972092Z.json",
+        "results_sha256": "25321ec4281570d82307c8b41aad03218c9de9d1a19815341cd9071e1ba429a6",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\helicopter-stage-20261108T015507972092Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 61281,
+          "identical": 61281,
+          "mismatched": 0
+        }
+      },
+      "legacy_ground": {
+        "compared": 14806,
+        "results": "legacy-ground-20261108T015623675813Z.json",
+        "results_sha256": "ac1fa91da4df93940788e14543eb0263b3a20aa92f2a1c47bcf69de1359ccabe",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\legacy-ground-20261108T015623675813Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 14806,
+          "identical": 14806,
+          "mismatched": 0
+        }
+      },
+      "liquid": {
+        "compared": 15572,
+        "results": "liquid-20261108T015230471488Z.json",
+        "results_sha256": "38a7d194f61536b75b5c953a8a045712c4a0c4ce27573b9bd5b0bf89e990164a",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\liquid-20261108T015230471488Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 15572,
+          "identical": 15572,
+          "mismatched": 0
+        }
+      },
+      "liquid_stage": {
+        "compared": 64136,
+        "results": "liquid-stage-20261108T015419669355Z.json",
+        "results_sha256": "fd68f3cb2a357cfcbcce8cc5ee532f8f7a54c300fdb6c7edf8b2803451939d2a",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\liquid-stage-20261108T015419669355Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 64136,
+          "identical": 64136,
+          "mismatched": 0
+        }
+      },
+      "negative_control": {
+        "compared": 128664,
+        "results": "stage_mutant-20261108T015114399321Z.json",
+        "results_sha256": "0cab460bd7807f0c664ebb381046c0b82753ffd69a2fffa71407b323405bbcf9",
+        "verdict": "fail",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\stage_mutant-20261108T015114399321Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 128664,
+          "identical": 100359,
+          "mismatched": 28305
+        }
+      },
+      "prescribed_stage": {
+        "compared": 49571,
+        "results": "prescribed-stage-20261108T015610329270Z.json",
+        "results_sha256": "c57293d5b5727ff11e590242aa3d63e4f299e581e841e57dd39db5bbcee6273f",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\prescribed-stage-20261108T015610329270Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 49571,
+          "identical": 49571,
+          "mismatched": 0
+        }
+      },
+      "propeller": {
+        "compared": 41958,
+        "results": "propeller-20261108T015150670987Z.json",
+        "results_sha256": "fb65abb2c4a7645d4e8c3cbc1015f4d7d031e92506088c73298dd88aa94266df",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\propeller-20261108T015150670987Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 41958,
+          "identical": 41958,
+          "mismatched": 0
+        }
+      },
+      "stage_oracle": {
+        "compared": 128664,
+        "results": "stage-20261108T015114399850Z.json",
+        "results_sha256": "3f3b4f31fd2aff684ff880bcf122d1b5e51774d3736edf5d81dbf43965acd606",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\stage-20261108T015114399850Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 128664,
+          "identical": 128664,
+          "mismatched": 0
+        }
+      },
+      "trajectory": {
+        "compared": 21771,
+        "results": "trajectory-20261108T015150670405Z.json",
+        "results_sha256": "bae71efa05dbcfbcb4acec3da3a09d222b610805d0a06006ba297aae9e264b16",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\trajectory-20261108T015150670405Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 21771,
+          "identical": 21771,
+          "mismatched": 0
+        }
+      },
+      "wake": {
+        "compared": 19138,
+        "results": "wake-20261108T015251937162Z.json",
+        "results_sha256": "b96d382d7a7f8ea2acf9b78c7a90b21958db4284e303bbf901ee4b588be11d8e",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\wake-20261108T015251937162Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 19138,
+          "identical": 19138,
+          "mismatched": 0
+        }
+      },
+      "wake_spatial": {
+        "compared": 20204,
+        "results": "wake-spatial-20261108T015258745515Z.json",
+        "results_sha256": "054e7ddbbbe024d3d6abfc9a182e1a5a873bb670540b28d24f3a39138ecb92e2",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\wake-spatial-20261108T015258745515Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 20204,
+          "identical": 20204,
+          "mismatched": 0
+        }
+      },
+      "weather": {
+        "compared": 21549,
+        "results": "weather-20261108T015326221154Z.json",
+        "results_sha256": "2879bc8c3d2a5521c26ae455a38440817cf9f713ca404add14403dd7f6974744",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\weather-20261108T015326221154Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 21549,
+          "identical": 21549,
+          "mismatched": 0
+        }
+      },
+      "weather_stage": {
+        "compared": 59340,
+        "results": "weather-stage-20261108T015541465680Z.json",
+        "results_sha256": "624ce4ece6e32665990acdcdf1154f76150585848a7f48e2a0c9134e2d52fd4a",
+        "verdict": "pass",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator-audit-r4-20261107\\tmp\\native-kernel\\weather-stage-20261108T015541465680Z.json",
+        "run_valid": true,
+        "total": {
+          "compared": 59340,
+          "identical": 59340,
+          "mismatched": 0
+        }
+      }
+    },
+    "install_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-install-final.log",
+    "commands": [
+      {
+        "label": "build",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/build.py",
+          "--jobs",
+          "2"
+        ],
+        "exit": 0,
+        "elapsed_s": 34.7955687046051
+      },
+      {
+        "label": "build-mutant",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/build.py",
+          "--jobs",
+          "2",
+          "--mutant"
+        ],
+        "exit": 0,
+        "elapsed_s": 82.52108263969421
+      },
+      {
+        "label": "stage_oracle",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "stage_oracle.gd",
+          "--states",
+          "12000"
+        ],
+        "exit": 0,
+        "elapsed_s": 36.441338539123535
+      },
+      {
+        "label": "negative_control",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "stage_oracle.gd",
+          "--mutant",
+          "--states",
+          "12000"
+        ],
+        "exit": 0,
+        "elapsed_s": 36.4392945766449
+      },
+      {
+        "label": "trajectory",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "trajectory.gd",
+          "--option",
+          "ticks=960",
+          "--option",
+          "skip-timing=true"
+        ],
+        "exit": 0,
+        "elapsed_s": 45.46524930000305
+      },
+      {
+        "label": "propeller",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "propeller_oracle.gd",
+          "--states",
+          "1200"
+        ],
+        "exit": 0,
+        "elapsed_s": 16.95708441734314
+      },
+      {
+        "label": "electric",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "electric_oracle.gd",
+          "--states",
+          "1000"
+        ],
+        "exit": 0,
+        "elapsed_s": 22.63925075531006
+      },
+      {
+        "label": "liquid",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "liquid_oracle.gd",
+          "--states",
+          "1000"
+        ],
+        "exit": 0,
+        "elapsed_s": 21.310718536376953
+      },
+      {
+        "label": "glow",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "glow_oracle.gd",
+          "--states",
+          "1000"
+        ],
+        "exit": 0,
+        "elapsed_s": 22.41374182701111
+      },
+      {
+        "label": "wake",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "wake_oracle.gd",
+          "--states",
+          "1000"
+        ],
+        "exit": 0,
+        "elapsed_s": 24.766829013824463
+      },
+      {
+        "label": "wake_spatial",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "wake_spatial_oracle.gd",
+          "--states",
+          "1200"
+        ],
+        "exit": 0,
+        "elapsed_s": 27.18676471710205
+      },
+      {
+        "label": "gear",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "gear_oracle.gd",
+          "--states",
+          "1000"
+        ],
+        "exit": 0,
+        "elapsed_s": 46.662028789520264
+      },
+      {
+        "label": "weather",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "weather_oracle.gd",
+          "--states",
+          "12000"
+        ],
+        "exit": 0,
+        "elapsed_s": 24.779579877853394
+      },
+      {
+        "label": "helicopter",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "helicopter_oracle.gd",
+          "--states",
+          "10000"
+        ],
+        "exit": 0,
+        "elapsed_s": 28.842162132263184
+      },
+      {
+        "label": "electric_stage",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "electric_stage_oracle.gd",
+          "--states",
+          "500",
+          "--option",
+          "ticks=64"
+        ],
+        "exit": 0,
+        "elapsed_s": 47.43233323097229
+      },
+      {
+        "label": "liquid_stage",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "liquid_stage_oracle.gd",
+          "--states",
+          "500",
+          "--option",
+          "ticks=64"
+        ],
+        "exit": 0,
+        "elapsed_s": 48.341126680374146
+      },
+      {
+        "label": "glow_stage",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "glow_stage_oracle.gd",
+          "--states",
+          "500",
+          "--option",
+          "ticks=64"
+        ],
+        "exit": 0,
+        "elapsed_s": 79.71716499328613
+      },
+      {
+        "label": "helicopter_stage",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "helicopter_stage_oracle.gd",
+          "--states",
+          "715",
+          "--option",
+          "ticks=64"
+        ],
+        "exit": 0,
+        "elapsed_s": 33.56610608100891
+      },
+      {
+        "label": "weather_stage",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "weather_stage_oracle.gd",
+          "--states",
+          "12000",
+          "--option",
+          "ticks=64",
+          "--option",
+          "include-spatial=true"
+        ],
+        "exit": 0,
+        "elapsed_s": 42.150142192840576
+      },
+      {
+        "label": "prescribed_stage",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "prescribed_stage_oracle.gd",
+          "--states",
+          "250",
+          "--option",
+          "ticks=64"
+        ],
+        "exit": 0,
+        "elapsed_s": 47.82388138771057
+      },
+      {
+        "label": "legacy_ground",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/run.py",
+          "--godot",
+          "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+          "--script",
+          "legacy_ground_oracle.gd",
+          "--states",
+          "1200",
+          "--option",
+          "ticks=64"
+        ],
+        "exit": 0,
+        "elapsed_s": 39.8641459941864
+      },
+      {
+        "label": "install",
+        "command": [
+          "/usr/bin/python3",
+          "research/native-kernel/build.py",
+          "--install-app"
+        ],
+        "exit": 1,
+        "elapsed_s": 0.7892212867736816
+      }
+    ],
+    "installed_final": true,
+    "limits": "Bound to this checkout byte manifest; not an installation in another checkout, a fleet rerun, release or timing qualification. Initial install refusal was the absent local pinned editor; final installation verified identical editor bytes."
+  },
+  "helicopter_evidence": {
+    "baseline": {
+      "electronics_sha256": "0f9be04b3b9593c0342fc5fa5f5eb54a92bda23daf8f705bcff5cad5b0e6e27e",
+      "engine": "4.8-beta2 (official)",
+      "exact_replay": true,
+      "first": {
+        "from_deg": 11.7227164883766,
+        "message": "Mode changes pitch 11.7 to 11.1 deg. Press mode again to apply.",
+        "mode": "normal",
+        "pending": "idle_up",
+        "stick": 0.9416666666666639,
+        "tick": 372,
+        "to_deg": 11.134479818708929
+      },
+      "format": "helicopter-mode stale confirmation baseline v1",
+      "ok": true,
+      "second": {
+        "from_deg": -2.521014298575623,
+        "message": "",
+        "mode": "idle_up",
+        "pending": "",
+        "stick": 0.0,
+        "tick": 832,
+        "to_deg": -12.60507149287811
+      },
+      "session_sha256": "72aa18d706076be050ac87438761e2f90dc16c3bf239f200ed3674be96858909",
+      "tape_sha256": "326f8a9d9122baf1211cfd9f51bd1a55c230f61f3fe58eb11335268dbc68e664",
+      "ticks": 832
+    },
+    "candidate": {
+      "accepted_physics_bytes_identical_before_switch": true,
+      "candidate_session_sha256": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9",
+      "engine": "4.8-beta2 (official)",
+      "first": {
+        "message": "Mode changes pitch 11.7 to 11.1 deg. Press mode again to apply.",
+        "mode": "normal",
+        "pending": "idle_up",
+        "tick": 372
+      },
+      "format": "helicopter-mode candidate baseline-input replay v1",
+      "input_sha256": "326f8a9d9122baf1211cfd9f51bd1a55c230f61f3fe58eb11335268dbc68e664",
+      "ok": true,
+      "second": {
+        "message": "Mode changes pitch -2.5 to -12.6 deg. Press mode again to apply.",
+        "mode": "normal",
+        "pending": "idle_up",
+        "tick": 832
+      },
+      "third_confirmed": true,
+      "ticks": 832
+    },
+    "retained_sha256": {
+      "docs\\research\\helicopter\\HELI-20\\mode-consent-20261107\\baseline.json": "64c4c081d88442e45a889440176728515df81980def58548591146a7cba00f5e",
+      "docs\\research\\helicopter\\HELI-20\\mode-consent-20261107\\baseline.tape.gz": "a852d79196142c12bfe804ae6f0265633bc8a58affb3e1add598406586e1ee15",
+      "docs\\research\\helicopter\\HELI-20\\mode-consent-20261107\\baseline_repro.gd": "a13631dd8a0248d88dbcfedb3b5934aa59c5613300732904bf3be2e0801ec2a4",
+      "docs\\research\\helicopter\\HELI-20\\mode-consent-20261107\\candidate.json": "ac4a9b73f53cdd8dcc21ab27daf3b25f7184e3f7712c3065e77a88e7e9cd32b1",
+      "docs\\research\\helicopter\\HELI-20\\mode-consent-20261107\\candidate_replay.gd": "7567703e9e38fcd3f4a4afd2c5026d71b2057981c8d356338c6eacdcf15db6c5"
+    },
+    "draw_boundary": "Stored current message and recomputed effect; no render-epoch acknowledgement before another action."
+  },
+  "companion_rebind": {
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-07-227a93a6-to-d48b5ea3.json",
+    "sha256": "ca18e2c92b259acfd2f3a2c22da9b4cc458b904c56e2b37022475a5435d5e0b3",
+    "identical": true,
+    "rows_per_tape": 2881,
+    "tapes": 9
+  },
+  "python_checks": {
+    "command": "bash tools/ci/check-local.sh quick",
+    "exit": 0,
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\quick-canonical.log",
+    "sha256": "fb21066290b794b2c5d3d9a0cf43c116017bd891cb276d4aefcc2c1193dd7f9a",
+    "limits": "Partial CI. Windows shell files were temporarily restored to canonical Git LF bytes for WSL execution; no shell source change committed. The initial CRLF invocation refused before tests."
+  },
+  "native_visual": {
+    "platform": "Windows Compatibility, NVIDIA RTX3090, driver617.42",
+    "captures": [
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-001.png",
+        "sha256": "422450dd5b5e2e6a552a3c4f42027759c90c504773e63ccd67f12015becdd265",
+        "finding": "F13",
+        "locale": "en",
+        "text_scale": 2.0,
+        "page": "Flight",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-002.png",
+        "sha256": "8bdff1ba9c9c47642edf751a6dec40a95e120d0d80d970eba6b50dec876f462c",
+        "finding": "F13",
+        "locale": "en",
+        "text_scale": 2.0,
+        "page": "Aircraft",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-003.png",
+        "sha256": "d5743d2633d3e1c7eba7d9ddcbb1fef21e54d73abbca1fbf8f0ab5a11c7e2a1d",
+        "finding": "F13",
+        "locale": "es",
+        "text_scale": 2.0,
+        "page": "Aircraft",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-004.png",
+        "sha256": "a2cc22ba754a95e5db2df7d7ba04d5bb0fc094cd00cb8971f778c36102c213ca",
+        "finding": "F13",
+        "locale": "es",
+        "text_scale": 2.0,
+        "page": "Flight",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-005.png",
+        "sha256": "6d28271ae3ee324efd4a8b20075328f4c525865808837cebe975d1503e2eae3d",
+        "finding": "F13",
+        "locale": "es",
+        "text_scale": 1.0,
+        "page": "Flight",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-006.png",
+        "sha256": "f290c678a35bdb1bb19c7e5b5f8027084e8755b37a64c9f97ed21a330405b3ae",
+        "finding": "F13",
+        "locale": "es",
+        "text_scale": 1.0,
+        "page": "Aircraft",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-007.png",
+        "sha256": "73f83b9c881ba3038b5972991764d1f4fc32ebb6589cbc3a232846071c46a51a",
+        "finding": "F13",
+        "locale": "en",
+        "text_scale": 1.0,
+        "page": "Aircraft",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\native-ui-final\\shots\\shot-49304-008.png",
+        "sha256": "af6883b65ac4aff6c7d7adb9a202fbc25d25ed2f3664a8379b6761b3b04a3502",
+        "finding": "F13",
+        "locale": "en",
+        "text_scale": 1.0,
+        "page": "Flight",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\workshop-native-ui\\shots\\shot-48104-001.png",
+        "sha256": "6a243989093cd40336311ee52551383834b7b2be1922ea971d05f206f378eb6f",
+        "finding": "F12",
+        "scene": "mixed library",
+        "locale": "en",
+        "text_scale": 1.0,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\workshop-native-ui\\shots\\shot-48104-002.png",
+        "sha256": "9856c221bdbeed614c6e9c2a47a242c49501ca55bcbe6e282debbe098cd1e3d0",
+        "finding": "F12",
+        "scene": "unavailable selection and Details",
+        "locale": "en",
+        "text_scale": 1.0,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\workshop-native-ui\\shots\\shot-48104-003.png",
+        "sha256": "85ea5f008011c86846d99b07b5e0346c50505e3268c93e3aaec58ae2c091f031",
+        "finding": "F12",
+        "scene": "Favorites diagnostic",
+        "locale": "en",
+        "text_scale": 1.0,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\workshop-native-ui\\shots\\shot-48104-004.png",
+        "sha256": "bc8e0249ace527d81c015c4c7f8075b0054f3eb3256b09e1558ca3ae6394aa5e",
+        "finding": "H04",
+        "scene": "H04 collective preview",
+        "locale": "en",
+        "text_scale": 1.0,
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\workshop-native-ui\\shots\\shot-48104-006.png",
+        "sha256": "0c67fa2de6b262ada441f1c13920d6224e9065feb2d3bdf1dbd473d52dc0f758",
+        "finding": "H04",
+        "scene": "H04 clipped cyclic preview",
+        "locale": "en",
+        "text_scale": 1.0,
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "review": "Independent Good Enemy source and final F13 capture review; parent inspected Workshop and clipped-cyclic HUD captures.",
+    "limits": "Bounded spot checks. Aircraft detail card extends below viewport at200 percent, separately unqualified. No physical-device, AT or timing claim. Earlier200 percent Flight clipping was fixed and those shots excluded. One intermediate app exited without engine error or an observed OS exit status; final Workshop/HUD app stopped without forced exit, crash or leaks."
+  },
+  "limitations": [
+    "Required full CI and release/export qualification remain pending.",
+    "Physical controllers, AT, macOS/Metal and participant usability not qualified.",
+    "No equations, flight laws, checkpoint formats or golden flights changed.",
+    "Powered-but-blocked H01 remains open.",
+    "Technical filesystem/parser diagnostics remain English.",
+    "Two historical Home layout fixtures now use the real AppRoot effective weather resolver; bounds/focus assertions unchanged."
+  ],
+  "integrity": {
+    "source_hashes": 161,
+    "accepted_scripts": 19,
+    "native_prerequisites": 19,
+    "native_captures_at_1920x1080": 13,
+    "retained_tape_hash_and_replay_reports": true,
+    "owning_document_links": 3,
+    "git_diff_check": "passed"
+  }
+}
