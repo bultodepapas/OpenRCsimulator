@@ -121,6 +121,7 @@ var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
 var failure_summary_label: Label
+var failure_launch_notice: Label
 var trim_practice_button: Button
 var trim_practice_summary_label: Label
 var companions_button: Button
@@ -678,6 +679,11 @@ func _init() -> void:
 	review_conditions_button.visible = false
 	review_conditions_button.pressed.connect(func() -> void: weather_requested.emit(review_conditions_button))
 	primary_actions.add_child(review_conditions_button)
+	failure_launch_notice = _label("", "SecondaryLabel", false)
+	failure_launch_notice.name = "FailureLaunchNotice"
+	failure_launch_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	failure_launch_notice.visible = false
+	primary_actions.add_child(failure_launch_notice)
 	fly_button = _button("FLY", "CompactPrimaryButton")
 	fly_button.name = "Fly"
 	fly_button.custom_minimum_size.y = 56
@@ -929,6 +935,7 @@ func _select_page(index: int) -> void:
 	fly_button.visible = selected != 3
 	ground_vehicle_button.visible = selected == 3
 	_fly_caption.visible = selected == 1 or selected == 2
+	_update_failure_summary()
 	_update_launch_admission()
 	_apply_responsive_layout()
 	_update_catalog_detail_visibility()
@@ -997,7 +1004,7 @@ func _apply_responsive_layout() -> void:
 	var header_top := 14.0 if compact else 20.0
 	# Enlarged translations must leave room for the selected page on compact windows.
 	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (
-		compact or _pages[1].visible or launch_warning.visible or note_label.visible))
+		compact or _pages[1].visible or launch_warning.visible or note_label.visible or failure_launch_notice.visible))
 	if _livery_row != null:
 		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
 		if _livery_row.get_parent() != paint_parent:
@@ -1665,10 +1672,17 @@ func set_companion_config(raw: Variant) -> Dictionary:
 func _update_failure_summary() -> void:
 	if failure_summary_label == null:
 		return
+	var probability := clampi(int(failure_config.get("probability_percent", 0)), 0, 100)
+	if failure_launch_notice != null:
+		var was_visible := failure_launch_notice.visible
+		failure_launch_notice.text = tr("Failure practice: %d%%") % probability
+		failure_launch_notice.visible = probability > 0 and not Catalog.is_rotorcraft(aircraft_id) \
+			and Catalog.can_fly(aircraft_id) and fly_button.visible
+		if was_visible != failure_launch_notice.visible and is_node_ready():
+			_apply_responsive_layout.call_deferred()
 	if Catalog.is_rotorcraft(aircraft_id):
 		failure_summary_label.text = tr("Next flight failures: Airplanes only")
 		return
-	var probability := clampi(int(failure_config.get("probability_percent", 0)), 0, 100)
 	var customized := not FailureConfig.uses_default_selection(failure_config)
 	if probability == 0:
 		failure_summary_label.text = tr("Next flight failures: Off")

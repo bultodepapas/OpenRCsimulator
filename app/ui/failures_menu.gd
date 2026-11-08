@@ -73,7 +73,7 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	var shell := VBoxContainer.new()
 	shell.add_theme_constant_override("separation", 12)
 	settings_card.add_child(shell)
-	var title := Widgets.label("FAILURES · NEXT FLIGHT", "TitleLabel", true)
+	var title := Widgets.label("Failure practice", "TitleLabel", true)
 	shell.add_child(title)
 	var scroll := ScrollContainer.new()
 	scroll.name = "FailureSettingsScroll"
@@ -87,12 +87,22 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	column.add_theme_constant_override("separation", 12)
 	scroll.add_child(column)
 	var probability_title := Widgets.label("Probability of failure per flight", "SectionLabel")
-	column.add_child(probability_title)
-	var next_flight_only := Widgets.label(
-		"Probability and failure type apply to the next flight only; changing them never rerolls the current flight.",
+	var lifetime_hint := Widgets.label(
+		"These settings apply to new ordinary airplane flights until you change them.",
 		"SecondaryLabel", true,
 	)
-	column.add_child(next_flight_only)
+	lifetime_hint.name = "FailureSettingsLifetime"
+	column.add_child(lifetime_hint)
+	var restart_hint := Widgets.label(
+		"Restart repeats the current failure setup and never rerolls the current flight. Start a new flight from Home to use changed settings.",
+		"SecondaryLabel", true,
+	)
+	restart_hint.name = "FailureSettingsRestart"
+	column.add_child(restart_hint)
+	column.add_child(Widgets.label(
+		"Natural Random does not use these saved failure settings. Helicopters are excluded.", "SecondaryLabel", true,
+	))
+	column.add_child(probability_title)
 	var probability_row := HBoxContainer.new()
 	probability_row.add_theme_constant_override("separation", 12)
 	probability_slider = HSlider.new()
@@ -204,7 +214,7 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 func _ready() -> void:
 	_resize_layout()
 	if current_flight_settings:
-		notice_hint_label.text = tr("Applying changes updates notices in this flight. Probability and catastrophic settings apply to the next flight.")
+		notice_hint_label.text = tr("Applying changes updates notices in this flight immediately. The other settings apply to new ordinary airplane flights.")
 	apply_button.grab_focus.call_deferred()
 
 

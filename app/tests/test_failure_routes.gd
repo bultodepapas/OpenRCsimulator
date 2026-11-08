@@ -212,7 +212,7 @@ func _run() -> void:
 	_check("Pause failure card fits the 1280×720 viewport", _card_fits_viewport(menu), _card_bounds_detail(menu))
 	_check("Pause explains current-flight and next-flight setting scopes",
 		menu.current_flight_settings and "Applying changes updates notices in this flight" in menu.notice_hint_label.text
-		and "apply to the next flight" in menu.notice_hint_label.text)
+		and "apply to new ordinary airplane flights" in menu.notice_hint_label.text)
 	menu.probability_spin.value = 64.0
 	menu.catastrophic_check.button_pressed = false
 	menu.notify_check.button_pressed = false
@@ -239,6 +239,20 @@ func _run() -> void:
 		}).config and not main.failure_notifications and main.failure_config.probability_percent == 100
 		and main.failure_config.include_catastrophic)
 	_check("pause summary updates after Apply", "64%" in app.pause_menu.failure_config_label.text)
+	var current_draw: Dictionary = main.session.failure_status()
+	var current_seed: int = main.failure_seed
+	app.restart_flight()
+	await ui.settle()
+	app.open_pause()
+	await ui.settle()
+	var restarted_draw: Dictionary = main.session.failure_status()
+	_check("Restart retains accepted probability and resolved seed after future settings change",
+		main.failure_config.probability_percent == 100 and main.failure_seed == current_seed)
+	_check("Restart repeats the current resolved event, onset and parameters",
+		restarted_draw.get("event_id") == current_draw.get("event_id")
+		and restarted_draw.get("onset_airborne_ticks") == current_draw.get("onset_airborne_ticks")
+		and restarted_draw.get("parameters") == current_draw.get("parameters"))
+	_check("Restart retains the updated immediate notification choice", not main.failure_notifications)
 	app.end_flight()
 	await ui.settle()
 	_check("End returns to Home with applied next-flight preference", app.flight == null
