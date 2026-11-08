@@ -2766,21 +2766,7 @@ func _refresh_companions_dialog_status() -> void:
 	if companions_dialog == null or flight == null:
 		return
 	var dialog := companions_dialog as CompanionsDialog
-	var draft := {
-		"enabled": dialog.enabled_check.button_pressed,
-		"count": dialog.count_picker.get_selected_id(),
-		"seed": dialog.seed_edit.text,
-		"save_as_default": dialog.save_default_check.button_pressed,
-	}
-	var config := _flight_companion_config()
-	var status := _companion_status()
-	dialog.configure(config, status)
-	dialog.enabled_check.button_pressed = bool(draft.enabled)
-	dialog.count_picker.select(clampi(int(draft.count), 1, 3) - 1)
-	dialog.seed_edit.text = str(draft.seed)
-	if dialog.save_default_check.visible:
-		dialog.save_default_check.button_pressed = bool(draft.save_as_default)
-		dialog.save_as_default = bool(draft.save_as_default)
+	dialog.refresh_status(_companion_status())
 
 
 ## Inspect the accepted model in Pause (including Workshop variants), or validate

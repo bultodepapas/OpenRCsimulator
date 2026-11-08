@@ -28,6 +28,7 @@ var _screen: Control
 var _body_scroll: ScrollContainer
 var _in_flight := false
 var _active_count := 0
+var _requested_count := 1
 var save_as_default := false
 
 
@@ -55,17 +56,30 @@ func _focus_initial() -> void:
 
 func configure(config: Dictionary, status: Dictionary = {}) -> void:
 	var requested_count := clampi(int(config.get("count", 1)), 1, 3)
+	_requested_count = requested_count
 	enabled_check.button_pressed = bool(config.get("enabled", false))
 	count_picker.select(requested_count - 1)
 	seed_edit.text = str(config.get("seed", 0))
 	volume_slider.value = 100.0 * float(config.get("engine_volume", 1.0))
 	labels_check.button_pressed = bool(config.get("show_labels", false))
 	label_distance.value = float(config.get("label_distance_m", 250.0))
+	var in_flight := bool(status.get("in_flight", false))
+	save_default_check.visible = in_flight
+	save_default_check.focus_mode = Control.FOCUS_ALL if in_flight else Control.FOCUS_NONE
+	save_default_check.button_pressed = bool(status.get("save_as_default", false)) if in_flight else false
+	save_as_default = save_default_check.button_pressed
+	set_error("")
+	refresh_status(status)
+
+
+## Status can change while the player is editing, without reinitializing the draft.
+func refresh_status(status: Dictionary) -> void:
+	var remove_had_focus := is_inside_tree() and remove_button.has_focus()
 	_in_flight = bool(status.get("in_flight", false))
 	_active_count = maxi(0, _status_integer(status, "active", "active_count", 0))
 	var airborne := maxi(0, _status_integer(status, "airborne", "airborne_count", 0))
-	var requested := maxi(0, _status_integer(status, "requested", "requested_count", requested_count))
-	status_label.text = tr("Traffic: %d airborne / %d active / %d requested") % [airborne, _active_count, requested]
+	_requested_count = maxi(0, _status_integer(status, "requested", "requested_count", _requested_count))
+	status_label.text = tr("Traffic: %d airborne / %d active / %d requested") % [airborne, _active_count, _requested_count]
 	if _in_flight:
 		status_label.text += "\n" + tr("Flight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions.")
 		var stopped := int(status.get("faulted", 0)) + int(status.get("crashed", 0))
@@ -74,15 +88,12 @@ func configure(config: Dictionary, status: Dictionary = {}) -> void:
 		if not str(status.get("error", "")).is_empty():
 			status_label.text += "\n" + str(status.error)
 	status_label.visible = _in_flight
-	save_default_check.visible = _in_flight
-	save_default_check.focus_mode = Control.FOCUS_ALL if _in_flight else Control.FOCUS_NONE
-	save_default_check.button_pressed = bool(status.get("save_as_default", false)) if _in_flight else false
-	save_as_default = save_default_check.button_pressed
 	remove_button.visible = _in_flight and _active_count > 0
 	remove_button.focus_mode = Control.FOCUS_ALL if remove_button.visible else Control.FOCUS_NONE
-	set_error("")
 	if is_inside_tree():
 		_sync_focus_order()
+		if remove_had_focus and not remove_button.visible:
+			cancel_button.grab_focus()
 
 
 func set_error(message: String) -> void:
