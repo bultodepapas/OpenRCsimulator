@@ -71,11 +71,7 @@ An immutable accepted-tick contact observation could carry environment/geometry 
 
 Source: [A8][A8].
 
-| Pending item | Action and acceptance boundary | Original report |
-| --- | --- | --- |
-| **E300-06 — Visual blade handedness opposes spin** | Correct leading edge, camber and pitch geometry together, preserving physical rotation conventions and stable nodes/hinges. Inspect stopped appearance, rotation, blur and strikes. Headless geometric witness establishes a presentation inconsistency, not an error in physical shaft/thrust signs or rendered visual acceptance. | [A8 original][A8] |
-
-E300-01/02 and the Extra/glow E300-08 reload correction are implemented in the [completed ledger](COMPLETED-AUDIT-WORK.md#implemented-corrections). Native/physical/rendered acceptance remains separate below.
+E300-01/02, the Extra/glow E300-08 reload correction and E300-06 visual propeller handedness are implemented in the [completed ledger](COMPLETED-AUDIT-WORK.md#implemented-corrections). The [E300-06 receipt](../docs/research/extra-300-realism/README.md#visual-propeller-handedness-e300-06-2026-11-08) includes actual-mesh and 1080p native review. Strict repeated-frame capture equality fails in both baseline and candidate; broader native/physical/rendered acceptance remains separate below.
 
 ### Corsair
 

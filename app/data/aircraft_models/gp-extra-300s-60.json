@@ -149,7 +149,7 @@
     },
     {
       "path": "res://aircraft/extra_300s_model.gd",
-      "sha256": "b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51",
+      "sha256": "d25ee55300eae2ec66846279b3dc957c777d3edbfb70842d31c1cfb1e6e5edb4",
       "hash_mode": "lf_text",
       "role": "builder"
     }

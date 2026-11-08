@@ -456,7 +456,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "gp-extra-300s-60",
-      "model_manifest_sha256": "2a2f1cc898cb8ac3a9f96e8d6331cd80db8f8f95ecdb0956aa9caffa75f25371",
+      "model_manifest_sha256": "d4b159f69bdbbbd06b6c3ea7fd4e0be1e6cb37b56ac935edf479765f28f73076",
       "paint_slots": [
         {
           "id": "body",
@@ -825,7 +825,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "8593a57a16319484dc153c10bf0ad90f6b0dc33daa10bc66aa1ffbd353cf21e0"
+      "slots_sha256": "b383b94445e551b49221be3aa3d703d82e398ffe9f3f53fe577dbe472e589e91"
     },
     {
       "format": "openrc-aircraft-customization-bindings",

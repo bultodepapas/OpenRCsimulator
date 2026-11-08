@@ -7,7 +7,7 @@ extends RefCounted
 const Geometry := preload("res://aircraft/extra_300s_geometry.gd")
 const Finish := preload("res://aircraft/extra_300s_finish.gd")
 const D: Dictionary = Geometry.DATA
-const VISUAL_REVISION := "gp-extra-300s-60-ex06-installation"
+const VISUAL_REVISION := "gp-extra-300s-60-e300-06-propeller"
 const RED := Color("c4182a") # = appearance.json colors.red (verify_extra checks it)
 const WHITE := Color("f1efe8")
 const GLASS := Color("1c2733")
@@ -659,7 +659,8 @@ static func _table(rows: Array, x: float) -> float:
 
 
 # One blade along +X in the propeller frame (shaft along Z, flight toward -Z). Sections twist to atan(P / 2 pi r);
-# the flat face looks aft and the cambered face forward, the leading edge leads toward +Y. Sections bunch toward
+# the flat face looks aft and the cambered face forward. Positive glow RPM rotates about -Z, so the +X blade's
+# leading edge leads toward -Y. Sections bunch toward
 # the tip so the planform closes round.
 static func _blade_mesh() -> ArrayMesh:
 	var p: Dictionary = D.propeller
@@ -673,8 +674,8 @@ static func _blade_mesh() -> ArrayMesh:
 		var chord := _table(p.blade.chord_fraction_of_radius, x) * tip
 		var thickness := _table(p.blade.thickness_fraction_of_chord, x) * chord
 		var beta := atan(float(p.pitch) / (TAU * r))
-		var along := Vector3(0, cos(beta), -sin(beta)) # trailing edge -> leading edge
-		var face := Vector3(0, -sin(beta), -cos(beta)) # forward (cambered) face normal
+		var along := Vector3(0, -cos(beta), -sin(beta)) # trailing edge -> leading edge
+		var face := Vector3(0, sin(beta), -cos(beta)) # forward (cambered) face normal
 		var ring: Array[Vector3] = []
 		for k in 21:
 			var s := float(k) / 20.0 # 0 leading edge ... 1 trailing edge, then back along the flat face

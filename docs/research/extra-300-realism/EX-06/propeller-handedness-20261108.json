@@ -1,0 +1,1245 @@
+{
+  "format": "openrc-extra-propeller-audit v1",
+  "date": "2026-11-08",
+  "finding": "A8 E300-06",
+  "dispatch_revision": "75299d686",
+  "baseline_render_revision": "36d08d0e3a48f8867c65843b89a5632e2964d477",
+  "baseline_builder_lf_sha256": "b4a6d5b4784985b042c3ac59bdaf422d0c8ab5007b70b39a113124f6e82d6c51",
+  "editor_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "sources_lf_sha256": {
+    "app/aircraft/extra_300s_model.gd": "d25ee55300eae2ec66846279b3dc957c777d3edbfb70842d31c1cfb1e6e5edb4",
+    "app/tests/test_extra_propeller_handedness.gd": "d576f48328582d814ca087b118dba757b39db24b67a86b6d3033743574bbf364",
+    "app/data/aircraft_models/gp-extra-300s-60.json": "d4b159f69bdbbbd06b6c3ea7fd4e0be1e6cb37b56ac935edf479765f28f73076",
+    "app/data/workshop/gp-extra-300s-60.json": "3d38b88c258bd3a2031c50249e8fbafa7931d10d2e3671486fed798fbd01aaa0",
+    "app/data/aircraft_customization.json": "b09a4c5a46d728b8621f69676093439c0645015c98fb0da92fd9d1514e85064c",
+    "app/data/aircraft/gp_extra_300s_60.json": "053da46fe81f7818c0f1c7a266b16afea35c07626a96ae42b512e29c86acfaa9",
+    "app/aircraft/extra_300s_geometry.gd": "4ea01c5ba8f546224faeb4f1a3a3ad5b6e3cf7848acf7a19b06a0587275c6f42",
+    "app/render/airplane.gd": "b3fcf8948fa97ca625ff01a78fa9c283a56903b5db973b7a8705f11e068d0ecf",
+    "app/render/propeller_blur.gd": "a2a7fba326cb70dc230519d087e22d7337bee97cdaf996f9441e513ba54b6894",
+    "app/tests/capture_propeller_blur.gd": "afd614ecc8f8b86bf9623633bdba7fa67ccb4aaef389520a4f88ed9f1943c1fa",
+    "app/aircraft/inspect_extra.gd": "4ec90382bb215f97963ae3cae7f8b2ca690c710b9109c695486aad418241d037"
+  },
+  "negative_control": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "4ddc9df6-cd38-4628-9ea7-63216879780b",
+    "command": [
+      ".tools/Godot_v4.8-beta2_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/test_extra_propeller_handedness.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-11-08T20:26:27.140045+00:00",
+    "label": "handedness-negative-control",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\handedness-negative-control-4ci8dskh\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\handedness-negative-control-4ci8dskh\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "process_exit",
+    "detail": "",
+    "exit_code": 1,
+    "ok": false,
+    "elapsed_seconds": 3.953,
+    "log_bytes": 8669,
+    "log_sha256": "08f9322f74729eb334d8cfb7b486616610b2c092709212d90c75737b228f6b26",
+    "retained_summary": [
+      "FAIL station 2 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.000659560",
+      "FAIL station 2 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.000659560",
+      "FAIL station 2 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.000659560",
+      "FAIL station 2 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.000659560",
+      "FAIL station 2 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.000659560",
+      "FAIL station 2 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.000659560",
+      "FAIL station 3 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.001058015",
+      "FAIL station 3 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.001058015",
+      "FAIL station 3 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.001058015",
+      "FAIL station 3 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.001058015",
+      "FAIL station 3 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.001058015",
+      "FAIL station 3 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.001058015",
+      "FAIL station 4 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.001388735",
+      "FAIL station 4 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.001388735",
+      "FAIL station 4 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.001388735",
+      "FAIL station 4 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.001388735",
+      "FAIL station 4 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.001388735",
+      "FAIL station 4 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.001388735",
+      "FAIL station 5 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.001716055",
+      "FAIL station 5 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.001716055",
+      "FAIL station 5 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.001716055",
+      "FAIL station 5 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.001716055",
+      "FAIL station 5 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.001716055",
+      "FAIL station 5 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.001716055",
+      "FAIL station 6 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002037461",
+      "FAIL station 6 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002037461",
+      "FAIL station 6 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002037461",
+      "FAIL station 6 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002037461",
+      "FAIL station 6 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002037461",
+      "FAIL station 6 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002037461",
+      "FAIL station 7 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002194186",
+      "FAIL station 7 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002194186",
+      "FAIL station 7 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002194186",
+      "FAIL station 7 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002194186",
+      "FAIL station 7 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002194186",
+      "FAIL station 7 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002194186",
+      "FAIL station 8 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002284171",
+      "FAIL station 8 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002284171",
+      "FAIL station 8 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002284171",
+      "FAIL station 8 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002284170",
+      "FAIL station 8 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002284171",
+      "FAIL station 8 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002284171",
+      "FAIL station 9 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002339190",
+      "FAIL station 9 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002339190",
+      "FAIL station 9 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002339190",
+      "FAIL station 9 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002339190",
+      "FAIL station 9 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002339191",
+      "FAIL station 9 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002339191",
+      "FAIL station 10 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002365664",
+      "FAIL station 10 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002365664",
+      "FAIL station 10 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002365665",
+      "FAIL station 10 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002365665",
+      "FAIL station 10 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002365665",
+      "FAIL station 10 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002365665",
+      "FAIL station 11 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002260010",
+      "FAIL station 11 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002260011",
+      "FAIL station 11 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002260011",
+      "FAIL station 11 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002260011",
+      "FAIL station 11 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002260011",
+      "FAIL station 11 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002260011",
+      "FAIL station 12 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.002092805",
+      "FAIL station 12 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.002092805",
+      "FAIL station 12 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.002092805",
+      "FAIL station 12 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.002092805",
+      "FAIL station 12 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.002092805",
+      "FAIL station 12 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.002092806",
+      "FAIL station 13 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.001925567",
+      "FAIL station 13 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.001925568",
+      "FAIL station 13 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.001925568",
+      "FAIL station 13 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.001925568",
+      "FAIL station 13 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.001925568",
+      "FAIL station 13 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.001925568",
+      "FAIL station 14 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.001770510",
+      "FAIL station 14 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.001770510",
+      "FAIL station 14 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.001770510",
+      "FAIL station 14 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.001770510",
+      "FAIL station 14 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.001770510",
+      "FAIL station 14 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.001770510",
+      "FAIL station 15 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.001362822",
+      "FAIL station 15 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.001362822",
+      "FAIL station 15 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.001362823",
+      "FAIL station 15 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.001362822",
+      "FAIL station 15 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.001362822",
+      "FAIL station 15 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.001362823",
+      "FAIL station 16 blade_a phase 0.00 meets LE first; reversed sign fails alignment=-0.000994665",
+      "FAIL station 16 blade_b phase 0.00 meets LE first; reversed sign fails alignment=-0.000994665",
+      "FAIL station 16 blade_a phase 0.37 meets LE first; reversed sign fails alignment=-0.000994665",
+      "FAIL station 16 blade_b phase 0.37 meets LE first; reversed sign fails alignment=-0.000994665",
+      "FAIL station 16 blade_a phase 1.81 meets LE first; reversed sign fails alignment=-0.000994665",
+      "FAIL station 16 blade_b phase 1.81 meets LE first; reversed sign fails alignment=-0.000994665",
+      "Extra propeller handedness: 141 checks, 90 failures; minimum LE-motion alignment -0.002365665"
+    ]
+  },
+  "passing_headless_checks": [
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "03f2655f-acaa-4492-868d-fcb92695b07d",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_extra_propeller_handedness.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:26:52.879026+00:00",
+      "label": "handedness-candidate",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\handedness-candidate-o1a1yacn\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\handedness-candidate-o1a1yacn\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "141 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.5,
+      "log_bytes": 165,
+      "log_sha256": "96bc5bb772d7f75903398d80442449df1530f9e80a812c9e8ca55df45024d93e",
+      "retained_summary": [
+        "Extra propeller handedness: 141 checks, 0 failures; minimum LE-motion alignment 0.000659560"
+      ]
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "fbca22af-3038-42c8-8439-7a84e1d9f292",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_extra_installation.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:27:17.150684+00:00",
+      "label": "installation",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\installation-jswtjkga\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\installation-jswtjkga\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.594,
+      "log_bytes": 1235,
+      "log_sha256": "70b91517271a14bbeb008dac66d0cda4973e727d94cc1d7f46b8d1451b024861",
+      "retained_summary": [
+        "ok   Extra v2 file, wheel profile and model validate []",
+        "ok   dry tank balance at manual/plan station within 1 micrometre x=0.108800019 m",
+        "ok   full finite-glow reference mass matches tank capacity and registry density 0.3042066 kg",
+        "ok   loaded mass equals complete component inventory ",
+        "ok   loaded CG equals inventory on all axes ",
+        "ok   fuel forward of dry CG moves loaded balance forward ",
+        "ok   loaded balance is explicitly derived ",
+        "ok   plan right/down thrust is active in body FRD ",
+        "ok   actual visual shaft matches physical shaft max error 2.011632349585568e-08",
+        "ok   actual visual hub matches physical CG-relative arm max error 4.6839421846689433e-07 m",
+        "ok   selected 12x6 visual installation ",
+        "ok   shaft-frame propeller wrench and r-cross-F minus shaft torque at [0.0, 0.0, 0.0] ",
+        "ok   power produces right/down force and left torque reaction ",
+        "ok   shaft-frame propeller wrench and r-cross-F minus shaft torque at [17.0, 1.0, -2.0] ",
+        "ok   power produces right/down force and left torque reaction ",
+        "ok   rotor angular momentum follows the installed shaft ",
+        "ok   stopped propeller retains finite flow loads and zero rotor momentum ",
+        "17 checks, 0 failed"
+      ]
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "5988c688-6555-4239-8bef-03d747478c49",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_propeller_blur.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:31:30.570734+00:00",
+      "label": "propeller-blur-contract",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\propeller-blur-contract-dfc_dwlk\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\propeller-blur-contract-dfc_dwlk\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 97.515,
+      "log_bytes": 112,
+      "log_sha256": "381d8080f9db5ee5db99061115a256961aac4e97a26089494cfaaad4c2b7c995",
+      "retained_summary": [
+        "propeller blur: 154 checks, 0 failures"
+      ]
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e67962af-356b-4eba-aaa0-69c35d98dab4",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://aircraft/verify_extra.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:38:53.649062+00:00",
+      "label": "visual-contract-recovered",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\visual-contract-recovered-ju2pvhph\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\visual-contract-recovered-ju2pvhph\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 14.328,
+      "log_bytes": 372,
+      "log_sha256": "f47f9a1da1d2c277f5625bd8d0c782e4b61556ed5635e89760ea368a4d4a2bde",
+      "retained_summary": [
+        "clearance: min gap 1.75 mm at manual throws { &\"aileron\": 17.6006649098975, &\"elevator\": 23.92194317248, &\"rudder\": 30.0260709855021 }; rudder limited to 43.0 deg by the elevator relief",
+        "extra preview: 32 meshes, 19502 triangles, extent 1.624 x 0.552 x 1.386 m",
+        "verify_extra: 123 checks, 0 failures"
+      ]
+    },
+    {
+      "format": "openrc-godot-check v1",
+      "capture_id": "16ca6c6c-df03-44eb-8506-77c24819ae85",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_prop_strike.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:39:55.506353+00:00",
+      "label": "propeller-strike",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\propeller-strike-mytj80vh\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\propeller-strike-mytj80vh\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 27.063,
+      "log_bytes": 3987,
+      "log_sha256": "5c157559867e3b3b22a60e4c78c3f5bbfc351f824241eeb27b0e88698297ec42",
+      "retained_summary": [
+        "ok   the disc sits at the thrust hub (body FRD)",
+        "ok   level: the lowest blade tip is one radius below the hub  -0.9",
+        "ok   nose straight down: the whole rim is at hub depth  -0.6",
+        "ok   a turbine has no propeller disc",
+        "ok   jensen-das-ugly-stik-60 runway start solves",
+        "ok   jensen-das-ugly-stik-60 propeller clears the runway at rest  0.066 m",
+        "ok   jensen-das-ugly-stik-60 full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   stik-glow-61fx-2t runway start solves",
+        "ok   stik-glow-61fx-2t propeller clears the runway at rest  0.062 m",
+        "ok   stik-glow-61fx-2t runway starter succeeds",
+        "ok   stik-glow-61fx-2t full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   stik-glow-55ax-2t runway start solves",
+        "ok   stik-glow-55ax-2t propeller clears the runway at rest  0.064 m",
+        "ok   stik-glow-55ax-2t runway starter succeeds",
+        "ok   stik-glow-55ax-2t full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   stik-glow-fs64v-4t runway start solves",
+        "ok   stik-glow-fs64v-4t propeller clears the runway at rest  0.044 m",
+        "ok   stik-glow-fs64v-4t runway starter succeeds",
+        "ok   stik-glow-fs64v-4t full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   gp-extra-300s-60 runway start solves",
+        "ok   gp-extra-300s-60 propeller clears the runway at rest  0.146 m",
+        "ok   gp-extra-300s-60 runway starter succeeds",
+        "ok   gp-extra-300s-60 full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   p51d-mustang-120 runway start solves",
+        "ok   p51d-mustang-120 propeller clears the runway at rest  0.294 m",
+        "ok   p51d-mustang-120 full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   f4u-corsair-250 runway start solves",
+        "ok   f4u-corsair-250 propeller clears the runway at rest  0.261 m",
+        "ok   f4u-corsair-250 full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   sebart-avanti-s-a200-p100rx runway start solves",
+        "ok   sebart-avanti-s-a200-p100rx propeller clears the runway at rest  inf m",
+        "ok   sebart-avanti-s-a200-p100rx full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   turbo-lumber-evolution runway start solves",
+        "ok   turbo-lumber-evolution propeller clears the runway at rest  0.137 m",
+        "ok   turbo-lumber-evolution full-throttle takeoff run does not strike the propeller  strike -, crash -",
+        "ok   a nose-over at full power strikes the propeller  tick 89",
+        "ok   the strike records its rpm and place",
+        "ok   the strike stops the engine  rpm 0",
+        "ok   a prop strike alone is not a crash",
+        "ok   a prop strike repeats exactly",
+        "ok   the legacy route never registers a prop strike",
+        "41 checks, 0 failed"
+      ]
+    }
+  ],
+  "passing_headless_assertions": 476,
+  "base_generator_checks": {
+    "models": "7 families current",
+    "customization": "7 families current",
+    "workshop": "11 descriptors current",
+    "overlay_scope": "Full CLI overlay checks were blocked by concurrent Stik 6S source-proof/bindings work; base generate(root, True) owner functions and Workshop CLI passed."
+  },
+  "detail_capture": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "0e774cc6-f73e-4b74-8e49-77635cfd73e2",
+    "command": [
+      ".tools/Godot_v4.8-beta2_win64_console.exe",
+      "--path",
+      "app",
+      "--resolution",
+      "1920x1080",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://aircraft/inspect_extra.gd",
+      "--",
+      "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit2-20261108-extra/render-details",
+      "--suite=detail",
+      "--size=1920x1080"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-11-08T20:38:38.806735+00:00",
+    "label": "details-1080p",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\details-1080p-tsn77wbo\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\details-1080p-tsn77wbo\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 7.438,
+    "log_bytes": 2399,
+    "log_sha256": "4af37df9c20eb753cad00120d82898c6f3b6962d524f55f0824f0f623f70b116",
+    "retained_summary": []
+  },
+  "front_capture_runs": {
+    "baseline": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "4bbc4ad3-8007-497a-b4b4-9c8af7104b63",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/audit-20261108-freshclone/app",
+        "--resolution",
+        "1920x1080",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_propeller_blur.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit2-20261108-extra/render-baseline-front-cached",
+        "--aircraft=gp-extra-300s-60",
+        "--view=front",
+        "--rpm=0,300,600,1200,2400,6000"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:38:21.901432+00:00",
+      "label": "blur-baseline-front-cached-1080p",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\blur-baseline-front-cached-1080p-zebqei7_\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\blur-baseline-front-cached-1080p-zebqei7_\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 7.234,
+      "log_bytes": 1429,
+      "log_sha256": "14aef65e94dbe121aed46f56bbb1f70061d7ab374b188779d42c880f4a561da6",
+      "retained_summary": [
+        "ok   attached at 0 rpm is byte-identical: pristine vs attached+update(0)",
+        "ok   hidden propeller hides the disc: disc visible=false blur=0.00",
+        "ok   blade change falls with speed: 0.4137 at 0 rpm -> 0.0323 at 6000 rpm",
+        "ok   disc changes pixels outside the blade silhouette: 214077 pixels at 6000 rpm",
+        "ok   reattachment reapplies blade visibility: same RPM after detach/reattach",
+        "FAIL repeated frame is byte-identical: two frames at 6000 rpm; retained repeat-a/b PNGs",
+        "ok   destroyed source leaves no propeller ghost: retired observer vs explicitly hidden observer"
+      ]
+    },
+    "candidate": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "4daa4746-1d97-4c69-972c-656aa8b6e1dd",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--resolution",
+        "1920x1080",
+        "--rendering-driver",
+        "opengl3",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_propeller_blur.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit2-20261108-extra/render-front",
+        "--aircraft=gp-extra-300s-60",
+        "--view=front",
+        "--rpm=0,300,600,1200,2400,6000"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:27:45.145659+00:00",
+      "label": "blur-front-1080p",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\blur-front-1080p-6fy1yqgn\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\blur-front-1080p-6fy1yqgn\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 8.047,
+      "log_bytes": 1413,
+      "log_sha256": "17f656fd42d8ed093b22970999f6cb67768d0015a51e537031de918aff25c6ef",
+      "retained_summary": [
+        "ok   attached at 0 rpm is byte-identical: pristine vs attached+update(0)",
+        "ok   hidden propeller hides the disc: disc visible=false blur=0.00",
+        "ok   blade change falls with speed: 0.4026 at 0 rpm -> 0.0319 at 6000 rpm",
+        "ok   disc changes pixels outside the blade silhouette: 213323 pixels at 6000 rpm",
+        "ok   reattachment reapplies blade visibility: same RPM after detach/reattach",
+        "FAIL repeated frame is byte-identical: two frames at 6000 rpm; retained repeat-a/b PNGs",
+        "ok   destroyed source leaves no propeller ghost: retired observer vs explicitly hidden observer"
+      ]
+    }
+  },
+  "front_capture_metadata": {
+    "baseline": {
+      "aircraft": "gp-extra-300s-60",
+      "blade_angle_deg": 25.0,
+      "captured_utc": "2026-11-08T20:38:28",
+      "checks": [
+        {
+          "check": "attached at 0 rpm is byte-identical",
+          "detail": "pristine vs attached+update(0)",
+          "ok": true
+        },
+        {
+          "check": "hidden propeller hides the disc",
+          "detail": "disc visible=false blur=0.00",
+          "ok": true
+        },
+        {
+          "check": "blade change falls with speed",
+          "detail": "0.4137 at 0 rpm -> 0.0323 at 6000 rpm",
+          "ok": true
+        },
+        {
+          "check": "disc changes pixels outside the blade silhouette",
+          "detail": "214077 pixels at 6000 rpm",
+          "ok": true
+        },
+        {
+          "check": "reattachment reapplies blade visibility",
+          "detail": "same RPM after detach/reattach",
+          "ok": true
+        },
+        {
+          "check": "repeated frame is byte-identical",
+          "detail": "two frames at 6000 rpm; retained repeat-a/b PNGs",
+          "ok": false
+        },
+        {
+          "check": "destroyed source leaves no propeller ghost",
+          "detail": "retired observer vs explicitly hidden observer",
+          "ok": true
+        }
+      ],
+      "format": "openrc-propeller-blur-capture v1",
+      "images": [
+        {
+          "blur": 0.0,
+          "changed_outside_blades": 0,
+          "image": "gp-extra-300s-60-front-rpm0.png",
+          "mask_pixels": 29640,
+          "mean_change_on_blades": 0.413720425556666,
+          "rpm": 0.0,
+          "sha256": "b9816a2ba54f198c7aa4c126e9e101d767b9d601257fb72aa2da484586536b42"
+        },
+        {
+          "blur": 0.0,
+          "changed_outside_blades": 0,
+          "image": "gp-extra-300s-60-front-rpm300.png",
+          "mask_pixels": 29640,
+          "mean_change_on_blades": 0.413720425556666,
+          "rpm": 300.0,
+          "sha256": "b9816a2ba54f198c7aa4c126e9e101d767b9d601257fb72aa2da484586536b42"
+        },
+        {
+          "blur": 0.126200274348422,
+          "changed_outside_blades": 0,
+          "image": "gp-extra-300s-60-front-rpm600.png",
+          "mask_pixels": 29640,
+          "mean_change_on_blades": 0.36103010185091,
+          "rpm": 600.0,
+          "sha256": "1c7aee42e8669d5dbe750063cdf2667c8df130b927aec1308b76116ba1ee5460"
+        },
+        {
+          "blur": 0.873799725651577,
+          "changed_outside_blades": 180490,
+          "image": "gp-extra-300s-60-front-rpm1200.png",
+          "mask_pixels": 29640,
+          "mean_change_on_blades": 0.0765415894264091,
+          "rpm": 1200.0,
+          "sha256": "565dcdcd95a6a9eef1d38a72273b50067b77b8400ce71b5d0cb99208ab3bfded"
+        },
+        {
+          "blur": 1.0,
+          "changed_outside_blades": 214077,
+          "image": "gp-extra-300s-60-front-rpm2400.png",
+          "mask_pixels": 29640,
+          "mean_change_on_blades": 0.0322700712964312,
+          "rpm": 2400.0,
+          "sha256": "e98be60114b643ec1582ccf67495f20870a39f2bb791fd445feca5dfa4911fef"
+        },
+        {
+          "blur": 1.0,
+          "changed_outside_blades": 214077,
+          "image": "gp-extra-300s-60-front-rpm6000.png",
+          "mask_pixels": 29640,
+          "mean_change_on_blades": 0.0322700712964312,
+          "rpm": 6000.0,
+          "sha256": "ef388bb4a9d197c37aad272d063f31d56398d1f218ea5c3946385113e283c686"
+        }
+      ],
+      "msaa_3d": 2,
+      "ok": false,
+      "process_id": 81276,
+      "profile": {
+        "blades": 2,
+        "coverage": [
+          0.0,
+          0.0,
+          0.183333333333333,
+          0.2,
+          0.191666666666667,
+          0.183333333333333,
+          0.175,
+          0.166666666666667,
+          0.166666666666667,
+          0.158333333333333,
+          0.158333333333333,
+          0.158333333333333,
+          0.141666666666667,
+          0.141666666666667,
+          0.133333333333333,
+          0.125,
+          0.116666666666667,
+          0.116666666666667,
+          0.108333333333333,
+          0.108333333333333,
+          0.1,
+          0.0916666666666667,
+          0.0916666666666667,
+          0.0833333333333333,
+          0.075,
+          0.075,
+          0.0666666666666667,
+          0.0666666666666667,
+          0.0666666666666667,
+          0.0583333333333333,
+          0.05,
+          0.05,
+          0.0416666666666667,
+          0.0416666666666667,
+          0.0416666666666667,
+          0.025
+        ],
+        "hub_radius_m": 0.0,
+        "inner_radius_m": 0.0325000025331974,
+        "plane_z_m": 0.00013913477979886,
+        "radius_m": 0.15242825448513
+      },
+      "region_px": [
+        566.884704589844,
+        145.186080932617,
+        770.519836425781,
+        769.242492675781
+      ],
+      "renderer": {
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "api": "3.3.0 NVIDIA 617.42",
+        "driver": "opengl3",
+        "godot": "4.8-beta2 (official)",
+        "method": "gl_compatibility"
+      },
+      "repeat_images": [
+        {
+          "image": "gp-extra-300s-60-front-repeat-a.png",
+          "sha256": "fa9fdb5c3dd9f0f1f4f13d1a6d81643ceeedf74263e1ca00ea95b950ed36bbc8"
+        },
+        {
+          "image": "gp-extra-300s-60-front-repeat-b.png",
+          "sha256": "dc7ff04e53668e4adca81c3d7aa83e019f3983c2b922003f7b191e262918fd58"
+        }
+      ],
+      "source_sha256": {
+        "blur": "a2a7fba326cb70dc230519d087e22d7337bee97cdaf996f9441e513ba54b6894",
+        "capture": "afd614ecc8f8b86bf9623633bdba7fa67ccb4aaef389520a4f88ed9f1943c1fa"
+      },
+      "view": "front",
+      "viewport": [
+        1920,
+        1080
+      ]
+    },
+    "candidate": {
+      "aircraft": "gp-extra-300s-60",
+      "blade_angle_deg": 25.0,
+      "captured_utc": "2026-11-08T20:27:52",
+      "checks": [
+        {
+          "check": "attached at 0 rpm is byte-identical",
+          "detail": "pristine vs attached+update(0)",
+          "ok": true
+        },
+        {
+          "check": "hidden propeller hides the disc",
+          "detail": "disc visible=false blur=0.00",
+          "ok": true
+        },
+        {
+          "check": "blade change falls with speed",
+          "detail": "0.4026 at 0 rpm -> 0.0319 at 6000 rpm",
+          "ok": true
+        },
+        {
+          "check": "disc changes pixels outside the blade silhouette",
+          "detail": "213323 pixels at 6000 rpm",
+          "ok": true
+        },
+        {
+          "check": "reattachment reapplies blade visibility",
+          "detail": "same RPM after detach/reattach",
+          "ok": true
+        },
+        {
+          "check": "repeated frame is byte-identical",
+          "detail": "two frames at 6000 rpm; retained repeat-a/b PNGs",
+          "ok": false
+        },
+        {
+          "check": "destroyed source leaves no propeller ghost",
+          "detail": "retired observer vs explicitly hidden observer",
+          "ok": true
+        }
+      ],
+      "format": "openrc-propeller-blur-capture v1",
+      "images": [
+        {
+          "blur": 0.0,
+          "changed_outside_blades": 0,
+          "image": "gp-extra-300s-60-front-rpm0.png",
+          "mask_pixels": 29961,
+          "mean_change_on_blades": 0.402611375675464,
+          "rpm": 0.0,
+          "sha256": "5657ddab9771d87cffc63c82c139ba57c1d3d6a8c94f63f82093bf0291507f2d"
+        },
+        {
+          "blur": 0.0,
+          "changed_outside_blades": 0,
+          "image": "gp-extra-300s-60-front-rpm300.png",
+          "mask_pixels": 29961,
+          "mean_change_on_blades": 0.402611375675464,
+          "rpm": 300.0,
+          "sha256": "5657ddab9771d87cffc63c82c139ba57c1d3d6a8c94f63f82093bf0291507f2d"
+        },
+        {
+          "blur": 0.126200274348422,
+          "changed_outside_blades": 0,
+          "image": "gp-extra-300s-60-front-rpm600.png",
+          "mask_pixels": 29961,
+          "mean_change_on_blades": 0.351372607819355,
+          "rpm": 600.0,
+          "sha256": "0ae88bb1429fc8a97ad46490684e022087769b28250df7920bb5f5ac88f60711"
+        },
+        {
+          "blur": 0.873799725651577,
+          "changed_outside_blades": 179787,
+          "image": "gp-extra-300s-60-front-rpm1200.png",
+          "mask_pixels": 29961,
+          "mean_change_on_blades": 0.0748829656583049,
+          "rpm": 1200.0,
+          "sha256": "8f7f9a56392a74f6c3a9b26e1a8ffc57155e3d690c002a1fe486de90ffdfab85"
+        },
+        {
+          "blur": 1.0,
+          "changed_outside_blades": 213323,
+          "image": "gp-extra-300s-60-front-rpm2400.png",
+          "mask_pixels": 29961,
+          "mean_change_on_blades": 0.031888250390836,
+          "rpm": 2400.0,
+          "sha256": "f0deecb636e3e04d7a433d2a355a49469d18736eee8e9a63275b34dfa3201968"
+        },
+        {
+          "blur": 1.0,
+          "changed_outside_blades": 213323,
+          "image": "gp-extra-300s-60-front-rpm6000.png",
+          "mask_pixels": 29961,
+          "mean_change_on_blades": 0.0318882067611767,
+          "rpm": 6000.0,
+          "sha256": "dc4362e1518ba71a73ccb4b2922ae03f4153287dd5b311836c9a156dde00c8a9"
+        }
+      ],
+      "msaa_3d": 2,
+      "ok": false,
+      "process_id": 62652,
+      "profile": {
+        "blades": 2,
+        "coverage": [
+          0.0,
+          0.0,
+          0.183333333333333,
+          0.2,
+          0.191666666666667,
+          0.183333333333333,
+          0.175,
+          0.166666666666667,
+          0.166666666666667,
+          0.158333333333333,
+          0.158333333333333,
+          0.158333333333333,
+          0.141666666666667,
+          0.141666666666667,
+          0.133333333333333,
+          0.125,
+          0.116666666666667,
+          0.116666666666667,
+          0.108333333333333,
+          0.108333333333333,
+          0.1,
+          0.0916666666666667,
+          0.0916666666666667,
+          0.0833333333333333,
+          0.075,
+          0.075,
+          0.0666666666666667,
+          0.0666666666666667,
+          0.0666666666666667,
+          0.0583333333333333,
+          0.05,
+          0.05,
+          0.0416666666666667,
+          0.0416666666666667,
+          0.0416666666666667,
+          0.025
+        ],
+        "hub_radius_m": 0.0,
+        "inner_radius_m": 0.0325000025331974,
+        "plane_z_m": 0.00013913477979886,
+        "radius_m": 0.15242825448513
+      },
+      "region_px": [
+        566.884704589844,
+        145.186080932617,
+        770.519836425781,
+        769.242492675781
+      ],
+      "renderer": {
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "api": "3.3.0 NVIDIA 617.42",
+        "driver": "opengl3",
+        "godot": "4.8-beta2 (official)",
+        "method": "gl_compatibility"
+      },
+      "repeat_images": [
+        {
+          "image": "gp-extra-300s-60-front-repeat-a.png",
+          "sha256": "0d606b19b78f3078fe72e6534fb47ee149e229e5f1621256c3c1b41efd322ba4"
+        },
+        {
+          "image": "gp-extra-300s-60-front-repeat-b.png",
+          "sha256": "53165a8ecc9e0efd066f9f0a8b3f8046b18dc6bf12f7476baaf23b1eca10c55b"
+        }
+      ],
+      "source_sha256": {
+        "blur": "a2a7fba326cb70dc230519d087e22d7337bee97cdaf996f9441e513ba54b6894",
+        "capture": "aeb1d68f1a996af615703f8e49e0892c8707dc15caf672c8c01af3d049e04b3c"
+      },
+      "view": "front",
+      "viewport": [
+        1920,
+        1080
+      ]
+    }
+  },
+  "image_identities_not_committed": [
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-after-reattach.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "c8b2d3c26235db6714d9ee6ce074048221b9f2b71916c6b65da3f7f73553502d"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-before-reattach.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b0077e4dd6aec333efcf095e470a8eaa5545b965b61073d9670fa220ffa52775"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-empty-reference.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "48570ddbe278b95f65b277f7bb68d42c4aadeb219dff8166c5cf8c204786a366"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-noprop.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b51240bef8aa3ac16fecdda37f1271309431c2c1d53610280a75da2835f7d184"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-pristine.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b9816a2ba54f198c7aa4c126e9e101d767b9d601257fb72aa2da484586536b42"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-repeat-a.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "fa9fdb5c3dd9f0f1f4f13d1a6d81643ceeedf74263e1ca00ea95b950ed36bbc8"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-repeat-b.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "dc7ff04e53668e4adca81c3d7aa83e019f3983c2b922003f7b191e262918fd58"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm0-attached.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b9816a2ba54f198c7aa4c126e9e101d767b9d601257fb72aa2da484586536b42"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm0.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b9816a2ba54f198c7aa4c126e9e101d767b9d601257fb72aa2da484586536b42"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm1200.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "565dcdcd95a6a9eef1d38a72273b50067b77b8400ce71b5d0cb99208ab3bfded"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm2400.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "e98be60114b643ec1582ccf67495f20870a39f2bb791fd445feca5dfa4911fef"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm300.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b9816a2ba54f198c7aa4c126e9e101d767b9d601257fb72aa2da484586536b42"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm600.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "1c7aee42e8669d5dbe750063cdf2667c8df130b927aec1308b76116ba1ee5460"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-rpm6000.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "ef388bb4a9d197c37aad272d063f31d56398d1f218ea5c3946385113e283c686"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-baseline-front-cached/gp-extra-300s-60-front-source-retired.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "48570ddbe278b95f65b277f7bb68d42c4aadeb219dff8166c5cf8c204786a366"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-after-reattach.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "3cbeb9002d022de8d7b3285388daa077b6df7cd2420827c1c61518733c58c43c"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-before-reattach.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "6014d52c68e8f619ccfa6af812e1d8c1686f36c23db6ac5616c246b91cd7d6c1"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-empty-reference.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "48570ddbe278b95f65b277f7bb68d42c4aadeb219dff8166c5cf8c204786a366"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-noprop.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b51240bef8aa3ac16fecdda37f1271309431c2c1d53610280a75da2835f7d184"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-pristine.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "5657ddab9771d87cffc63c82c139ba57c1d3d6a8c94f63f82093bf0291507f2d"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-repeat-a.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "0d606b19b78f3078fe72e6534fb47ee149e229e5f1621256c3c1b41efd322ba4"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-repeat-b.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "53165a8ecc9e0efd066f9f0a8b3f8046b18dc6bf12f7476baaf23b1eca10c55b"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm0-attached.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "5657ddab9771d87cffc63c82c139ba57c1d3d6a8c94f63f82093bf0291507f2d"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm0.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "5657ddab9771d87cffc63c82c139ba57c1d3d6a8c94f63f82093bf0291507f2d"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm1200.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "8f7f9a56392a74f6c3a9b26e1a8ffc57155e3d690c002a1fe486de90ffdfab85"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm2400.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "f0deecb636e3e04d7a433d2a355a49469d18736eee8e9a63275b34dfa3201968"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm300.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "5657ddab9771d87cffc63c82c139ba57c1d3d6a8c94f63f82093bf0291507f2d"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm600.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "0ae88bb1429fc8a97ad46490684e022087769b28250df7920bb5f5ac88f60711"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-rpm6000.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "dc4362e1518ba71a73ccb4b2922ae03f4153287dd5b311836c9a156dde00c8a9"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-front/gp-extra-300s-60-front-source-retired.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "48570ddbe278b95f65b277f7bb68d42c4aadeb219dff8166c5cf8c204786a366"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_aileron_hinge_edge_on.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "77d0055459a7a6fec5aa6ff7a11576744b539980407f86aba40b7fec18e6d272"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_aileron_inboard_gap.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "f990d3c98f2f09f3f3a739b1b84009d94a3daa6b6c3d32081c87d3482fe45f22"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_aileron_right_full.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "ddaebe661769cfb85e82f5ac9436535f428ba5685f709893f94bf2596ab3caae"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_aileron_right_opposite.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "70d7422f57418c02398be8ef8d76b96aa5856340eb4983b1cc9249bba245af40"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_canopy_left.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "8882658b4d7994cb553e081a28d6d8110006d922358506656a2c1f4eacd18b57"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_canopy_rear.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "9b40364985d97f5677dc844601053236e42b66cbaced2a7f8a4cbb4573a5105b"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_cowl_chin_below.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "6ace5ba17cb94e848d0397a29774cdd9077f2f9a30cd5096f0b013abd8fe9a88"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_cowl_spinner_front_left.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "42f1eac2a2d06904a2b7990e5744c37f5f24e0dead96af21163c04f18d924560"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_elevator_notch_top_full.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "7146880c6365a0a2e8a243fd82d211acc17e4bf44c610389aa9a548ae73801ae"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_fin_root_side.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "bbedecff7bc04bc77f39ed7ac84e0c58adde3d5d9d495d868fe8ed2e2f9163c6"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_main_gear_front.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "53d73ac061c6bd9b02a56faa21523509171b91b78e9065ea977bf5e99ab29b38"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_main_gear_side.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "5a4b2f02aab70c364740aa9c7a958bfcfd16dbe96b39f4158b25eb3ab5013829"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_spinner_prop_side.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "3d6eec2977b14c859b64ae17b60b44ee3f9c8738ebccb9e32a33807f4f83af8c"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_tail_below_tailwheel.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "811d4150983a498556e3d8c96729b781b3a7f5c2d96b5280d358c5f7eefbfcf2"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_tail_left_rear.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "1594d020e93c223ef5171bd09a49cab8b2bc552ebb829f5a4b66ece0aea0ff42"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_tail_left_rear_full.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "0946ccfc9a5edf3c6663e382416cdbf859d1a3a9e90bbc61c04286d433bab214"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_wing_root_below_left.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "414cb4db9e7fdcfb104daa190bbcbe59950d8477c81bfacb478dda666d69c0ea"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_wing_root_top_left.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "11ff53e2edd38af27e7383f1ba534bd128e3b57c7cc73ed59e5032b112a39072"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_wing_root_trailing_edge.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "8574aed8d92697d372a26c3ee81e0586ade6dc706627c7042a6bdfab880fddc9"
+    },
+    {
+      "path": "tmp/audit2-20261108-extra/render-details/detail_wing_tip_right.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "f22e34581c8a68807a6cbff74301219ee79a2aff860ed7253190497c22616a72"
+    }
+  ],
+  "limits": [
+    "Strict repeated-frame byte equality failed in both baseline and candidate on this native GPU; each passed the other six capture checks. This is not a fully green capture suite.",
+    "Baseline reused seven pinned-editor imported cache products from the working project; this comparison is not fresh-import qualification.",
+    "Two failed baseline setup attempts and a timed-out fresh import are excluded; a too-broad temporary sparse checkout filled C:, then its source-delivery copies were removed and space recovered.",
+    "The first visual-contract run timed out during disk/host pressure; the unchanged recovered run passed 123 checks.",
+    "Images remain in ignored tmp; retained hashes identify the inspected 1080p captures. No FPS, package, other-platform or physical qualification is claimed.",
+    "The loft retains about 0.18 percent of area whose smooth shading normals disagree with triangle normals; the regression detects overall winding inversion and does not certify perfect inherited shading."
+  ]
+}
