@@ -51,7 +51,17 @@ func _ready() -> void:
 	resized.connect(_on_resized)
 	_layout_footer()
 	_refresh()
-	skip_button.grab_focus.call_deferred()
+	_focus_initial.call_deferred()
+
+
+func _focus_initial() -> void:
+	if not is_inside_tree():
+		return
+	if skip_button.disabled:
+		if status_label.focus_mode != Control.FOCUS_NONE:
+			status_label.grab_focus()
+	else:
+		skip_button.grab_focus()
 
 
 func _process(delta: float) -> void:

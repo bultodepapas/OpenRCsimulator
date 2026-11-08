@@ -9853,3 +9853,36 @@ msgstr "Lauf wiederhergestellt. Zum Fortfahren Enter drücken."
 
 msgid "Restore was not completed."
 msgstr "Wiederherstellung nicht abgeschlossen."
+
+msgid "Using an RC transmitter? Choose a radio profile before calibrating."
+msgstr "Verwendest du einen RC-Sender? Wähle vor dem Kalibrieren ein Senderprofil."
+
+msgid "Choose radio profile"
+msgstr "Senderprofil wählen"
+
+msgid "Save controller settings and calibrate"
+msgstr "Controller-Einstellungen speichern und kalibrieren"
+
+msgid "The profile is saved and device selections are applied before calibration. Cancelling keeps them."
+msgstr "Vor der Kalibrierung wird das Profil gespeichert und die Geräteauswahl angewendet. Abbrechen behält diese Änderungen bei."
+
+msgid "Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it."
+msgstr "Die Kalibrierung ändert nur den Entwurf. Abbrechen lässt den Entwurf unverändert; Speichern wendet ihn an."
+
+msgid "Saved profiles persist. Device selections apply for this app session; startup selects devices automatically."
+msgstr "Gespeicherte Profile bleiben erhalten. Die Geräteauswahl gilt für diese Sitzung; beim Start werden Geräte automatisch ausgewählt."
+
+msgid "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept."
+msgstr "Kalibrierung abgebrochen. Deine Controller-Einstellungen bleiben aktiv. Vor der Kalibrierung gespeicherte Einstellungen bleiben erhalten."
+
+msgid "Profile saved and device selections applied, but calibration could not start."
+msgstr "Das Profil wurde gespeichert und die Geräteauswahl angewendet, aber die Kalibrierung konnte nicht starten."
+
+msgid "Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "Wähle das Flugprofil für diesen Controller. Das Gamepad beginnt in Modus 2; der Sender verwendet ein eigenes Profil. Die Kalibrierung startet nie automatisch."
+
+msgid "This controller is recognized as a gamepad. Radio calibration requires a supported radio profile."
+msgstr "Dieser Controller wird als Gamepad erkannt. Die Senderkalibrierung erfordert ein unterstütztes Senderprofil."
+
+msgid "Radio calibration requires a supported radio profile."
+msgstr "Die Senderkalibrierung erfordert ein unterstütztes Senderprofil."

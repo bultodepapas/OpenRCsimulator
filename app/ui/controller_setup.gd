@@ -54,6 +54,11 @@ var preview_label: Label
 var status_label: Label
 var save_button: Button
 var calibrate_button: Button
+var choose_radio_profile_button: Button
+var calibration_prerequisite: Label
+var calibration_scope_help: Label
+var device_lifetime_help: Label
+var calibration_saves_first := false
 var legacy_import_button: Button
 var legacy_picker: OptionButton
 var legacy_help_label: Label
@@ -326,6 +331,9 @@ func _build() -> void:
 	_add_field(roles, "Flight controller", flight_device_picker)
 	_add_field(roles, "Menu controller", ui_device_picker)
 	page.add_child(_label("Use a gamepad for menus. Keyboard and mouse are always available.", "SecondaryLabel", true))
+	device_lifetime_help = _label("Saved profiles persist. Device selections apply for this app session; startup selects devices automatically.", "SecondaryLabel", true)
+	device_lifetime_help.name = "ControllerDeviceLifetime"
+	page.add_child(device_lifetime_help)
 
 	var role_actions := HFlowContainer.new()
 	role_actions.add_theme_constant_override("separation", 8)
@@ -335,11 +343,30 @@ func _build() -> void:
 	legacy_import_button.pressed.connect(_import_legacy_profiles)
 	role_actions.add_child(legacy_import_button)
 	calibrate_button = _button("Calibrate selected radio")
+	calibrate_button.name = "CalibrateSelectedRadio"
+	calibrate_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	calibrate_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	calibrate_button.visible = false
 	calibrate_button.disabled = true
 	calibrate_button.pressed.connect(func() -> void: calibration_requested.emit())
-	role_actions.add_child(calibrate_button)
+	calibrate_button.focus_entered.connect(_queue_mapping_focus_visibility)
 	page.add_child(role_actions)
+	page.add_child(calibrate_button)
+	calibration_prerequisite = _label("Using an RC transmitter? Choose a radio profile before calibrating.", "SecondaryLabel", true)
+	calibration_prerequisite.name = "RadioCalibrationPrerequisite"
+	calibration_prerequisite.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	calibration_prerequisite.visible = false
+	page.add_child(calibration_prerequisite)
+	choose_radio_profile_button = _button("Choose radio profile", "", "ChooseRadioProfile")
+	choose_radio_profile_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	choose_radio_profile_button.visible = false
+	choose_radio_profile_button.pressed.connect(_choose_radio_profile)
+	page.add_child(choose_radio_profile_button)
+	calibration_scope_help = _label("", "SecondaryLabel", true)
+	calibration_scope_help.name = "CalibrationScopeHelp"
+	calibration_scope_help.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	calibration_scope_help.visible = false
+	page.add_child(calibration_scope_help)
 	legacy_picker = _option("Legacy profile")
 	legacy_picker.visible = false
 	legacy_picker.item_selected.connect(_on_legacy_selected)
@@ -940,6 +967,19 @@ func _keep_mapping_focus_visible() -> void:
 	var focused := get_viewport().gui_get_focus_owner()
 	if focused == null or not focused.is_visible_in_tree():
 		return
+	if _selected_section == "devices" and focused == calibrate_button and calibration_scope_help.is_visible_in_tree():
+		var scroll := _section_body.get_parent() as ScrollContainer
+		var area := scroll.get_global_rect()
+		var action := calibrate_button.get_global_rect()
+		var explanation := calibration_scope_help.get_global_rect()
+		if explanation.end.y - action.position.y <= area.size.y:
+			var shift := 0.0
+			if explanation.end.y > area.end.y: shift = explanation.end.y - area.end.y
+			elif action.position.y < area.position.y: shift = action.position.y - area.position.y
+			if shift != 0.0: scroll.scroll_vertical += int(ceil(shift))
+		else:
+			scroll.ensure_control_visible(focused)
+		return
 	# Capture/status text can resize the viewport without changing focus.
 	# Follow the current mapping control, never a stale capture target. Navigation
 	# can also move into the scroll body when the available height changes.
@@ -948,6 +988,33 @@ func _keep_mapping_focus_visible() -> void:
 		or (_selected_section == "axes" and _section_pages.axes.is_ancestor_of(focused)) \
 		or (_section_navigation.get_parent() == _section_body and _section_navigation.is_ancestor_of(focused)):
 		(_section_body.get_parent() as ScrollContainer).ensure_control_visible(focused)
+
+
+## Expose the existing radio prerequisite without choosing or saving a profile.
+func update_calibration_controls(available: bool, can_choose_radio: bool, connected_nonradio: bool) -> void:
+	var hiding_choice := choose_radio_profile_button.visible and not can_choose_radio and choose_radio_profile_button.has_focus()
+	calibrate_button.visible = available
+	calibrate_button.disabled = not available
+	calibrate_button.text = tr("Save controller settings and calibrate") if calibration_saves_first else tr("Calibrate selected radio")
+	calibrate_button.tooltip_text = calibrate_button.text
+	calibration_prerequisite.visible = connected_nonradio
+	if can_choose_radio:
+		calibration_prerequisite.text = tr("Using an RC transmitter? Choose a radio profile before calibrating.")
+	elif bool(_device_for_id(_draft_flight_device_id).get("known", false)) and str(_device_for_id(_draft_flight_device_id).get("kind", "")) == "gamepad":
+		calibration_prerequisite.text = tr("This controller is recognized as a gamepad. Radio calibration requires a supported radio profile.")
+	else:
+		calibration_prerequisite.text = tr("Radio calibration requires a supported radio profile.")
+	choose_radio_profile_button.visible = can_choose_radio
+	calibration_scope_help.visible = available
+	calibration_scope_help.text = tr("The profile is saved and device selections are applied before calibration. Cancelling keeps them.") if calibration_saves_first else tr("Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it.")
+	if hiding_choice and is_inside_tree() and flight_device_picker.is_visible_in_tree():
+		flight_device_picker.grab_focus()
+
+
+func _choose_radio_profile() -> void:
+	if not choose_radio_profile_button.visible: return
+	select_section("profile")
+	if profile_kind_picker.is_visible_in_tree(): profile_kind_picker.grab_focus()
 
 
 ## Switching sections changes presentation only; all fields share the same draft.
@@ -1062,6 +1129,7 @@ func _notification(what: int) -> void:
 	_update_profile_options()
 	_update_glyph_family_picker()
 	_update_profile_kind_picker()
+	update_calibration_controls(calibrate_button.visible, choose_radio_profile_button.visible, calibration_prerequisite.visible)
 	_update_preset_options()
 	_update_aux_controls()
 	_update_action_controls()
@@ -1452,7 +1520,7 @@ func _update_profile_kind_picker() -> void:
 		_profile_kind_label.visible = can_choose_kind
 	if _profile_kind_help_label != null:
 		_profile_kind_help_label.visible = can_choose_kind
-		_profile_kind_help_label.text = tr("Choose the flight profile for this unknown controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.")
+		_profile_kind_help_label.text = tr("Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.")
 	if not can_choose_kind:
 		return
 	profile_kind_picker.clear()

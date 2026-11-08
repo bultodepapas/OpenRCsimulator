@@ -1,6 +1,6 @@
 # External audits — pending work
 
-Updated **2026-11-07**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). The 30 original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
+Updated **2026-11-08**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). The 30 original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
@@ -27,7 +27,6 @@ Source: [A11][A11].
 
 | Pending item | Action and acceptance boundary | Original report |
 | --- | --- | --- |
-| **A11 F07 — P2, startup text scale and semantics** | Keep branding, use lightweight semantic status/Skip and validated saved scale without importing the heavy application graph. Native acceptance: 100%/200%, English/Spanish/CJK, reduced motion on/off, loading/error announcements and keyboard/pad Skip. The skip event must not also activate Fly after handoff. | [A11 original][A11] |
 | **A11 F08 — P2, instrument explanations** | Wrapped explanation follows focus and hover, with localized accessibility description where appropriate. A keyboard/pad user must discover purpose and limits of every instrument without a mouse, including 200% text. Actual assistive-technology output remains untested. | [A11 original][A11] |
 | **A11 F09 — P3, arrow-key text equivalents** | Retain graphics with localized semantic names or a coherent action-row instruction; avoid duplicate announcements. Inspect the accessibility tree and listen to all four directions/actions using target-platform screen readers, translations and changed keyboard layouts. A debug snapshot alone cannot qualify this. | [A11 original][A11] |
 
@@ -68,7 +67,8 @@ An immutable accepted-tick contact observation could carry environment/geometry 
 ### Related work without a new defect count
 
 - **A14 paint observations:** recognizable same-label cards, explained incompatible-skin fallback, localized actionable errors and practical inventory recovery. Real package/upgrade cases remain unverified; preserve existing legacy exception. Original reports: [A14][A14].
-- **A18 player journeys:** disclose save-before-calibration; show resolved aircraft/field/start beside Fly; add state/vehicle startup guidance and radio-profile prerequisites. Failure-setting lifetime/Restart copy and the enabled-practice reminder are implemented in the completed ledger. Use existing owners and resolver, not duplicate rules/tutorials. These are cognitive-walkthrough hypotheses, not a participant study or seven defects. Original reports: [A18][A18].
+- **A18 player journeys:** show resolved aircraft/field/start beside Fly and add state/vehicle startup guidance. Save-before-calibration disclosure, supported radio-profile prerequisites, failure-setting lifetime/Restart copy and the enabled-practice reminder are implemented in the completed ledger. Use existing owners and resolver, not duplicate rules/tutorials. These are cognitive-walkthrough hypotheses, not a participant study or seven defects. Original reports: [A18][A18].
+- **Controller profile admission follow-up:** R7 review traced an inherited saved-Radio-profile route for an SDL-known gamepad while menu eligibility still follows its observed gamepad classification. The new prerequisite action excludes that reclassification. Investigate coordinated Save, active-role and automatic-selection admission before supporting it; this is a source-derived follow-up, not a physical-controller incident or an additional source-assigned defect. [R7 scope and evidence](../docs/research/menu-investigations/UI-32/README.md#startup-and-calibration-disclosure-ui-32-r7-2026-11-08).
 
 ## Aircraft and helicopter correctness
 
@@ -288,6 +288,7 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 
 | Implemented or historical area | Pending gate | Original report |
 | --- | --- | --- |
+| A11 F07; A18 §2/§3 | [R7 software and presentation evidence](../docs/research/menu-investigations/UI-32/README.md#startup-and-calibration-disclosure-ui-32-r7-2026-11-08) does not complete the saved-preference native startup matrix, pre-handoff physical keyboard/pad Skip, target screen-reader announcements, physical-radio calibration or participant comprehension. Required CI and other desktop platforms remain separate. | [A11 original][A11], [A18 original][A18] |
 | 2026-11-07 preservation repairs | [Implemented software and checked evidence](COMPLETED-AUDIT-WORK.md#implemented-corrections) cover scoped lighting/settings, Workshop numeric/catalog/navigation, manual CSV/controller continuity, weather editing/admission, frozen stars and statistics eligibility. Complete required CI, physical controllers/AT and broader native/platform qualification remain open. The fresh source-bound NK-3 stock cohort now passes all 19 required numerical/mutation gates and 343 fixed-wing/264 helicopter native-session checks. New custom-weather admission domains and broader platform/physical qualification remain separate. Mac complete-session timings remain unmeasured. | [A11][A11], [A13][A13], [A17][A17], [A21][A21], [A22][A22], [A24][A24], [A30][A30] |
 | A11 F01/F02; A6 F2 | Physical transmitter/controller and native visual qualification beyond software regressions. | [A11 original][A11], [A6 original][A6] |
 | A14 F10/F11 | Native interaction/visual acceptance and applicable required CI; retain localization/coverage limits without reopening repaired data loss. | [A14 original][A14] |

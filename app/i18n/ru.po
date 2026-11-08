@@ -9710,3 +9710,36 @@ msgstr "Заезд восстановлен. Нажмите Enter, чтобы п
 
 msgid "Restore was not completed."
 msgstr "Восстановление не завершено."
+
+msgid "Using an RC transmitter? Choose a radio profile before calibrating."
+msgstr "Используете RC-передатчик? Перед калибровкой выберите профиль передатчика."
+
+msgid "Choose radio profile"
+msgstr "Выбрать профиль передатчика"
+
+msgid "Save controller settings and calibrate"
+msgstr "Сохранить настройки контроллера и калибровать"
+
+msgid "The profile is saved and device selections are applied before calibration. Cancelling keeps them."
+msgstr "Перед калибровкой профиль сохраняется и применяются выбранные устройства. При отмене эти изменения сохраняются."
+
+msgid "Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it."
+msgstr "Калибровка изменяет только черновик. При отмене калибровки черновик не меняется; кнопка «Сохранить» применяет его."
+
+msgid "Saved profiles persist. Device selections apply for this app session; startup selects devices automatically."
+msgstr "Сохранённые профили остаются. Выбор устройств действует в текущем сеансе; при запуске устройства выбираются автоматически."
+
+msgid "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept."
+msgstr "Калибровка отменена. Настройки контроллера остаются активными. Настройки, сохранённые до калибровки, сохраняются."
+
+msgid "Profile saved and device selections applied, but calibration could not start."
+msgstr "Профиль сохранён и выбор устройств применён, но не удалось начать калибровку."
+
+msgid "Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "Выберите профиль полёта для этого контроллера. Геймпад изначально использует Режим 2; передатчик использует пользовательский профиль. Калибровка никогда не запускается автоматически."
+
+msgid "This controller is recognized as a gamepad. Radio calibration requires a supported radio profile."
+msgstr "Этот контроллер распознан как геймпад. Для калибровки передатчика требуется поддерживаемый профиль передатчика."
+
+msgid "Radio calibration requires a supported radio profile."
+msgstr "Для калибровки передатчика требуется поддерживаемый профиль передатчика."

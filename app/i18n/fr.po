@@ -9882,3 +9882,36 @@ msgstr "Parcours restauré. Appuyez sur Entrée pour continuer."
 
 msgid "Restore was not completed."
 msgstr "La restauration n’a pas été effectuée."
+
+msgid "Using an RC transmitter? Choose a radio profile before calibrating."
+msgstr "Vous utilisez une radiocommande RC ? Choisissez un profil radio avant de calibrer."
+
+msgid "Choose radio profile"
+msgstr "Choisir un profil radio"
+
+msgid "Save controller settings and calibrate"
+msgstr "Enregistrer les réglages du contrôleur et calibrer"
+
+msgid "The profile is saved and device selections are applied before calibration. Cancelling keeps them."
+msgstr "Le profil est enregistré et la sélection des périphériques est appliquée avant le calibrage. Annuler conserve ces modifications."
+
+msgid "Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it."
+msgstr "Le calibrage ne modifie que le brouillon. Annuler le calibrage laisse le brouillon intact ; Enregistrer l’applique."
+
+msgid "Saved profiles persist. Device selections apply for this app session; startup selects devices automatically."
+msgstr "Les profils enregistrés sont conservés. La sélection des périphériques vaut pour cette session ; au démarrage, ils sont sélectionnés automatiquement."
+
+msgid "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept."
+msgstr "Calibrage annulé. Vos réglages du contrôleur restent actifs. Les réglages enregistrés avant le calibrage sont conservés."
+
+msgid "Profile saved and device selections applied, but calibration could not start."
+msgstr "Le profil a été enregistré et la sélection des périphériques appliquée, mais le calibrage n’a pas pu démarrer."
+
+msgid "Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "Choisissez le profil de vol pour ce contrôleur. La manette utilise initialement le Mode 2 ; la radio utilise un profil personnalisé. Le calibrage ne démarre jamais automatiquement."
+
+msgid "This controller is recognized as a gamepad. Radio calibration requires a supported radio profile."
+msgstr "Ce contrôleur est reconnu comme une manette. Le calibrage radio nécessite un profil radio pris en charge."
+
+msgid "Radio calibration requires a supported radio profile."
+msgstr "Le calibrage radio nécessite un profil radio pris en charge."

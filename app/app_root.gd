@@ -1588,6 +1588,7 @@ func open_controls(from: Control = null) -> void:
 		return
 	_clear_controller_actions(false)
 	var setup := ControllerSetup.new()
+	setup.calibration_saves_first = flight != null
 	setup.save_and_apply = controllers.save_settings_from_setup
 	var capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES
 	if flight != null and flight.has_method("controller_capabilities"):
@@ -1608,7 +1609,11 @@ func open_controls(from: Control = null) -> void:
 		screens.pop()
 		if screens.is_top("settings"): screens.get_screen("settings").close()
 		if screens.is_top("pause"): _close_pause()
-		if not flight.session.start_calibration(): open_pause())
+		if not flight.session.start_calibration():
+			open_pause()
+			if pause_menu != null:
+				pause_menu.set_localized_note("Profile saved and device selections applied, but calibration could not start.")
+				pause_menu.note_label.get_parent().move_child(pause_menu.note_label, pause_menu.status_label.get_index() + 1))
 	setup.profile_saved.connect(func(profile: Dictionary) -> void:
 		if ground_vehicle != null: ground_vehicle.apply_controller_selection(controllers.registry.selected_device_id("flight"))
 		_update_controller_calibration_button(setup)
@@ -1621,8 +1626,13 @@ func open_controls(from: Control = null) -> void:
 func _update_controller_calibration_button(setup: Node) -> void:
 	var device: Dictionary = controllers.registry.device_for_id(setup.selected_flight_device_id())
 	var available: bool = bool(device.get("connected", false)) and setup.current_profile().get("kind", "") == "radio"
-	setup.calibrate_button.visible = available
-	setup.calibrate_button.disabled = not available
+	var connected_nonradio: bool = bool(device.get("connected", false)) \
+		and setup.current_profile().get("kind", "") != "radio"
+	# Known gamepad observations already qualify for menu ownership; do not expose
+	# new radio reclassification until that shared input policy is reconciled.
+	var can_choose_radio: bool = connected_nonradio and (not bool(device.get("known", false)) \
+		 or str(device.get("kind", "")) == "joystick")
+	setup.update_calibration_controls(available, can_choose_radio, connected_nonradio)
 
 
 ## Home calibration edits only the setup draft; its existing Save commits both device roles.

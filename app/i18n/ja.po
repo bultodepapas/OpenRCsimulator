@@ -8959,3 +8959,36 @@ msgstr "走行を復元しました。Enter で続行します。"
 
 msgid "Restore was not completed."
 msgstr "復元は完了しませんでした。"
+
+msgid "Using an RC transmitter? Choose a radio profile before calibrating."
+msgstr "RC 送信機を使用しますか？校正前に送信機プロファイルを選択してください。"
+
+msgid "Choose radio profile"
+msgstr "送信機プロファイルを選択"
+
+msgid "Save controller settings and calibrate"
+msgstr "コントローラー設定を保存して校正"
+
+msgid "The profile is saved and device selections are applied before calibration. Cancelling keeps them."
+msgstr "校正前にプロファイルが保存され、選択したデバイスが適用されます。キャンセルしてもこれらの変更は保持されます。"
+
+msgid "Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it."
+msgstr "校正は下書きのみを変更します。校正をキャンセルしても下書きは変わりません。「保存」で適用されます。"
+
+msgid "Saved profiles persist. Device selections apply for this app session; startup selects devices automatically."
+msgstr "保存したプロファイルは保持されます。デバイスの選択は今回のセッション中のみ有効です。起動時には自動選択されます。"
+
+msgid "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept."
+msgstr "校正をキャンセルしました。コントローラー設定は有効なままです。校正前に保存した設定は保持されます。"
+
+msgid "Profile saved and device selections applied, but calibration could not start."
+msgstr "プロファイルを保存し、選択したデバイスを適用しましたが、校正を開始できませんでした。"
+
+msgid "Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "このコントローラーの飛行プロファイルを選択してください。ゲームパッドはモード 2、送信機はカスタムプロファイルを使用します。校正は自動では始まりません。"
+
+msgid "This controller is recognized as a gamepad. Radio calibration requires a supported radio profile."
+msgstr "このコントローラーはゲームパッドとして認識されています。送信機の校正には対応する送信機プロファイルが必要です。"
+
+msgid "Radio calibration requires a supported radio profile."
+msgstr "送信機の校正には対応する送信機プロファイルが必要です。"

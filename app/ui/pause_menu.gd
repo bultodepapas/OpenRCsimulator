@@ -63,6 +63,7 @@ var collective_control := false
 var failure_config_label: Label
 var failure_summary_label: Label
 var note_label: Label
+var _note_translation_key := ""
 var _session: Node
 var _failure_config: Dictionary = {}
 var _failure_notifications_enabled := true
@@ -488,7 +489,7 @@ func status_text(session: Node) -> String:
 func calibration_result_text(session: Node) -> String:
 	var reason := str(session.get("pause_reason"))
 	if reason == "calibration cancelled":
-		return tr("Radio calibration cancelled; the previous profile stays.")
+		return tr("Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept.")
 	if reason == "radio calibrated" or reason.begins_with("Radio calibrated."):
 		return tr("Radio calibrated and saved.")
 	if reason.begins_with("radio calibrated, NOT saved"):
@@ -520,7 +521,7 @@ func _session_status_text(session: Node) -> String:
 		"radio disconnected":
 			return tr("The radio was disconnected: engine at idle, sticks centred. Resume flies with the keyboard, or plug the radio back in.")
 		"calibration cancelled":
-			return tr("Radio calibration cancelled; the previous profile stays.")
+			return tr("Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept.")
 	return session.pause_reason
 
 
@@ -532,8 +533,20 @@ func set_identity(text: String) -> void:
 
 ## A message under the buttons (e.g. a trace that could not be saved); "" hides it.
 func set_note(text: String) -> void:
+	_note_translation_key = ""
 	note_label.text = text
 	note_label.visible = text != ""
+
+
+func set_localized_note(message_key: String) -> void:
+	_note_translation_key = message_key
+	note_label.text = tr(message_key)
+	note_label.visible = not message_key.is_empty()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and not _note_translation_key.is_empty():
+		note_label.text = tr(_note_translation_key)
 
 
 func _button(text: String, variation: String, node_name: String) -> Button:

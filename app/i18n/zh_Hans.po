@@ -8908,3 +8908,36 @@ msgstr "已恢复行驶记录。按 Enter 继续。"
 
 msgid "Restore was not completed."
 msgstr "恢复未完成。"
+
+msgid "Using an RC transmitter? Choose a radio profile before calibrating."
+msgstr "使用 RC 遥控器？请先选择遥控器配置，再进行校准。"
+
+msgid "Choose radio profile"
+msgstr "选择遥控器配置"
+
+msgid "Save controller settings and calibrate"
+msgstr "保存控制器设置并校准"
+
+msgid "The profile is saved and device selections are applied before calibration. Cancelling keeps them."
+msgstr "校准前会保存配置并应用所选设备。取消校准也会保留这些更改。"
+
+msgid "Calibration changes only the draft. Cancelling calibration leaves the draft unchanged; Save applies it."
+msgstr "校准仅修改草稿。取消校准不会改变草稿；保存后才会应用。"
+
+msgid "Saved profiles persist. Device selections apply for this app session; startup selects devices automatically."
+msgstr "已保存的配置会保留。设备选择仅在本次应用会话内有效；启动时会自动选择设备。"
+
+msgid "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept."
+msgstr "校准已取消。控制器设置仍然有效。校准前保存的设置会保留。"
+
+msgid "Profile saved and device selections applied, but calibration could not start."
+msgstr "配置已保存，所选设备已应用，但无法开始校准。"
+
+msgid "Choose the flight profile for this controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "请选择此控制器的飞行配置。手柄默认使用模式 2；遥控器使用自定义配置。校准不会自动开始。"
+
+msgid "This controller is recognized as a gamepad. Radio calibration requires a supported radio profile."
+msgstr "此控制器被识别为手柄。遥控器校准需要受支持的遥控器配置。"
+
+msgid "Radio calibration requires a supported radio profile."
+msgstr "遥控器校准需要受支持的遥控器配置。"

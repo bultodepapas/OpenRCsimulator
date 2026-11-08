@@ -479,6 +479,35 @@ func _late_press_checks() -> void:
 	await _frames()
 
 
+func _initial_error_focus_checks() -> void:
+	for locale: String in ["en", "ja"]:
+		TranslationServer.set_locale(locale)
+		for timing: String in ["before add", "immediately after add"]:
+			var intro := Intro.new()
+			if timing == "before add":
+				intro.status_text = "Unable to load. Please restart."
+			root.add_child(intro)
+			if timing == "immediately after add":
+				intro.status_text = "Unable to load. Please restart."
+			await _frames()
+			check("%s initial error %s retains status focus after deferred call" % [locale, timing],
+				intro.skip_button.disabled and intro.status_label.accessibility_live == 2
+				and intro.status_label.accessibility_name == TranslationServer.translate("Unable to load. Please restart.")
+				and root.gui_get_focus_owner() == intro.status_label)
+			root.remove_child(intro)
+			intro.free()
+			await _frames(1)
+		var loading := Intro.new()
+		root.add_child(loading)
+		await _frames()
+		check("%s normal initial focus remains on enabled Skip" % locale,
+			not loading.skip_button.disabled and root.gui_get_focus_owner() == loading.skip_button)
+		root.remove_child(loading)
+		loading.free()
+		await _frames(1)
+	TranslationServer.set_locale("en")
+
+
 func _run() -> void:
 	check("interactive launch animates", Startup.should_animate("Windows", PackedStringArray()))
 	check("headless launch bypasses intro", not Startup.should_animate("headless", PackedStringArray()))
@@ -563,6 +592,7 @@ func _run() -> void:
 	await _scale_checks()
 	await _saved_startup_checks()
 	await _semantic_checks()
+	await _initial_error_focus_checks()
 	await _input_handoff_checks()
 	await _late_press_checks()
 	await _loader_checks()
