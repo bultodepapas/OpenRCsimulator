@@ -980,6 +980,94 @@
         "log_bytes": 123,
         "log_sha256": "8d6662e41f9f20af4c877a003ae21f4b46b6c2574c882ab9f1248fa457a6a62e"
       }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/i18n-catalog-import-qw7py4ug/report.json",
+      "receipt_sha256": "fb475011202699ef011a35fdfb2b90541469911049181ce64ca61253ae3c876c",
+      "observed_last_nonempty_line": "\u001b[0m",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6aafda3a-8468-430d-bc01-fac47462d731",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--editor",
+          "--import"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:42:08.033555+00:00",
+        "label": "i18n-catalog-import",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\i18n-catalog-import-qw7py4ug\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\i18n-catalog-import-qw7py4ug\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 8.938,
+        "log_bytes": 3414,
+        "log_sha256": "f3d14a6a34976fe4de279ffbb31b6ee11cb4e42b1bd1f8499a39276a2c09efa1"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/i18n-language-inventory-vwhd0b9z/report.json",
+      "receipt_sha256": "9cf8b7e77733eba5e4a703f6f73381faaec2bf0e94cda25183a55c9c5a3960ea",
+      "observed_last_nonempty_line": "all UI language checks passed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "47ef54c5-9000-4ac3-9d48-1546c24ea69c",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_language.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:42:32.900356+00:00",
+        "label": "i18n-language-inventory",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\i18n-language-inventory-vwhd0b9z\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\i18n-language-inventory-vwhd0b9z\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all UI language checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 32.953,
+        "log_bytes": 5403,
+        "log_sha256": "c949867af3b223d580f774a68243af4ace305d9a26ec5f2e952526423e144390"
+      }
     }
   ],
   "failed_run_interpretation": {
@@ -1012,5 +1100,36 @@
     "actual native backend qualification for candidate",
     "required full CI coverage",
     "physical aircraft validation and HX-700 release gates"
-  ]
+  ],
+  "localization": {
+    "source": "Collective unavailable",
+    "translations": {
+      "es": "Paso colectivo no disponible",
+      "zh_Hans": "总距数据不可用",
+      "pt_BR": "Passo coletivo indisponível",
+      "de": "Kollektivpitch nicht verfügbar",
+      "fr": "Pas collectif indisponible",
+      "it": "Passo collettivo non disponibile",
+      "ru": "Общий шаг недоступен",
+      "ja": "コレクティブピッチ表示不可"
+    },
+    "candidate_worktree_source_sha256": {
+      "app/i18n/es.po": "e3d3f659027ef46539c3e2421c5841dacf4c98bda884a38d0b74d24f2cbc9a33",
+      "app/i18n/zh_Hans.po": "1181d555f3810d3178b56b335195cad1bf447bf0b98f8aaf5aa36ec37910b24a",
+      "app/i18n/pt_BR.po": "ec30ce092de50e262e0354b99c76395866c3c9725625b82c2b44ea622094a5d2",
+      "app/i18n/de.po": "b4ec99563767b772d025ec1cf40f65af6d24c85be6c16efe208e5420e1076b3e",
+      "app/i18n/fr.po": "a43ae9fb3cfee0bae814037c1512a224a9b2e96848073b3a7bd0052bfd09eb37",
+      "app/i18n/it.po": "cc9fcd7961ead48b62e7f8cf5c61304c847dfa9f4863f22aada96243b2b02ceb",
+      "app/i18n/ru.po": "76dbd885be427c4fdee31ace8a186a192710b4e326995dc9ba7a1e86303da138",
+      "app/i18n/ja.po": "b5665ce1c559887542bf342f83d6a402afa61318bd3bdb8dbbe6bf2d40a8a05f",
+      "app/tests/test_ui_language.gd": "6c4b2fc6a75a3a6d1ffd7074d5d06e8c54482b36ca5b44342e6c2a2390630ebf",
+      "app/i18n/languages.gd": "731ffbc1054d4caf9f11b26dacbb2a2cbb4923bebc62bb80da8806212c47f18c",
+      "app/i18n/fonts.gd": "ca097f4ce7237d559e0c803bc205601c22b2b6079646f37eb4017960ae411665"
+    },
+    "identity_limit": "Eight catalog edits were uncommitted relative to the candidate commit when this inventory ran; hashes identify their exact Windows worktree bytes, not a new whole-tree commit.",
+    "profile_local_ignored": "tmp/audit-20261108-rotor-domain/i18n-profile",
+    "import": "One checked shared-project import was serialized before inventory; no other import was launched by this work.",
+    "inventory": "The checked existing UI language suite passed with all eight catalogs covering 2786 Spanish source messages, format and configured glyph checks, and the full completion marker.",
+    "limit": "The check does not independently certify translation wording or a translated 1080p HUD render."
+  }
 }

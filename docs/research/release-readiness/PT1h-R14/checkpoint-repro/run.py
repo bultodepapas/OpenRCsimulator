@@ -92,6 +92,12 @@ def matches(observation: dict, filesystem: dict, expected: str) -> bool:
                 and not observation.get("save_ok") and observation.get("original_preserved")
                 and filesystem.get("recovery_matches_original") and filesystem.get("recovery_count") == 1
                 and len(observation.get("other_files", [])) == 1)
+    if os.name == "nt" and observation.get("scenario") == "dangling":
+        # Godot's Windows read_link requires an existing target. Refuse without
+        # replacing the link or writing to a guessed destination.
+        return (not observation.get("save_ok") and filesystem.get("is_symlink")
+                and observation.get("other_files") == [] and filesystem.get("target_temporaries") == []
+                and observation.get("actual_bytes") == 0)
     if (not observation.get("original_setup_ok") or observation.get("other_files") != []
             or filesystem.get("target_temporaries", []) != []):
         return False
@@ -105,6 +111,10 @@ def matches(observation: dict, filesystem: dict, expected: str) -> bool:
         return (not observation.get("save_ok") and filesystem.get("is_symlink")
                 and filesystem.get("second_link_is_symlink"))
     if observation.get("scenario") == "missing-intermediate":
+        if os.name == "nt":
+            return (observation.get("save_ok") and observation.get("exact_new_content")
+                    and observation.get("reload_ok") and filesystem.get("is_symlink")
+                    and not filesystem.get("link_target_is_original"))
         return (not observation.get("save_ok") and filesystem.get("is_symlink")
                 and filesystem.get("link_target_is_original"))
     common = (observation.get("save_ok") and observation.get("exact_new_content")
@@ -172,27 +182,29 @@ def main() -> int:
                 if scenario == "relative-chain":
                     second_link = work / "relative-chain-next"
                     second_link.symlink_to(link_target.name)
-                    target.symlink_to("../" + second_link.name)
+                    target.symlink_to(Path("..") / second_link.name)
                 else:
-                    target.symlink_to(link_target if scenario == "symlink" else "../" + link_target.name)
+                    target.symlink_to(link_target if scenario == "symlink" else Path("..") / link_target.name)
             elif scenario == "directory-link-parent":
                 nested = work / "directory-link-real/nested"
                 nested.mkdir(parents=True)
-                link_target = nested.parent / "state.json"
+                # Windows normalizes '..' in the relative link target before
+                # traversal; POSIX follows the directory link first.
+                link_target = (work if os.name == "nt" else nested.parent) / "state.json"
                 link_target.write_text(ORIGINAL, encoding="utf-8")
                 link_target.chmod(0o600)
                 second_link = work / "directory-link"
-                second_link.symlink_to("directory-link-real/nested", target_is_directory=True)
-                target.symlink_to("../directory-link/../state.json")
+                second_link.symlink_to(Path("directory-link-real/nested"), target_is_directory=True)
+                target.symlink_to(Path("../directory-link/../state.json"))
             elif scenario == "missing-intermediate":
                 link_target = work / "state.json"
                 link_target.write_text(ORIGINAL, encoding="utf-8")
                 link_target.chmod(0o600)
-                target.symlink_to("../missing-component/../state.json")
+                target.symlink_to(Path("../missing-component/../state.json"))
             elif scenario == "cycle":
                 second_link = work / "cycle-next"
-                target.symlink_to("../" + second_link.name)
-                second_link.symlink_to("cycle/checkpoint.json")
+                target.symlink_to(Path("..") / second_link.name)
+                second_link.symlink_to(Path("cycle/checkpoint.json"))
             else:
                 target.write_text(ORIGINAL, encoding="utf-8")
                 if scenario == "mode":

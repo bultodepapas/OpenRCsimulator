@@ -1,0 +1,505 @@
+{
+  "format": "openrc-internal-debug-native-verification v1",
+  "review_date": "2026-11-08",
+  "starting_head": "41ce5af6f",
+  "receipt_head": "2465abc4b2def4cc9d6e3a175f4196a2b755236c",
+  "reused_commits": [
+    "644f4e7370fc4d0cb4efe254b25cebd4ea329b70",
+    "9db50cfc70904e262247d97e1c368f7c499ff23d (MCP files only)"
+  ],
+  "identity_note": "Shared HEAD advanced during work. Current debug sources identified below; unrelated changes preserved. Historical verification.json remains historical.",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "source_sha256": {
+    "app/debug/debug_bridge.gd": "7d07ead94758316dd1d85b450ed474a15c650e917f33a4412d506244e6f4160e",
+    "app/debug/debug_log.gd": "682f25bcfceef4cc58ff74a0808f436278cef773b640a70344d3ee6e20c7d81d",
+    "app/debug/flight_gizmos.gd": "f3fa7729551b93e2b1131816502e5abfd1873d90655c6e6ca271d6ef2b0c70d0",
+    "app/debug/rewind_ring.gd": "154746cf6f76de0f3df474345f24765ed7558892c17b81309a2866929803493f",
+    "app/debug/render_probe.gd": "d08c796711286a50455d4378dc312bc60025547624c1ec6f35e618eaf024c35d",
+    "app/tests/test_debug_bridge_contracts.gd": "cddc20f3affb712b7dc65864e65d09d54b30636a4a67410b58d2ef7e7e113d3a",
+    "app/tests/test_debug_step.gd": "723fe9ec40df5cf2cdc186fb61aa25627b134c36ab409d238a9f41aee7f135a2",
+    "app/tests/test_debug_observers.gd": "a7a50e61152754810a3e317c2bb212f89b87e1dc0ae42ac126c092cfa0979f35",
+    "app/tests/test_debug_bridge.gd": "51430a2a7d995bcbce45d7e630b079d6aa34de98155e3a56f90cfbe268e6466b",
+    "app/tests/test_render_probe.gd": "c8948caf9805c854026af8165ed66276b5bc2270b1e2cf80903004df8acaefd9",
+    "tools/debug/debugctl.py": "d16f8382dd8e6fd08fdb4be80bb9cc427ff4e01945197722d9461b7c721dfea2",
+    "tools/debug/test_debugctl.py": "b638d99454bddedf69e4c4b1139564e90502b073a115f1acfd0c518511ab3c55",
+    "tools/debug/gdscript_warnings.py": "f623a2e3624c968b0d487ced22ee656ba5cf9105df50da2786b7fa8095d1a232",
+    "tools/debug/test_gdscript_warnings.py": "4a08f81e5bd9dc9db600833cfae3bb93ac7cd5476618d9470950c01906e28cd5",
+    "tools/debug/mcp_server.py": "2389a37d46ff5c4521a4b64e9ed9ad1ed99293159298e3712f7ff805ab16a978",
+    "tools/debug/test_mcp_server.py": "f9ea20e28a0c648f18ef58d6e2f17762ec0014221b6f5f120c9ff1200328aa12",
+    "docs/research/release-readiness/PT1h-R14/checkpoint-repro/run.py": "139804d36f6b384fc1d765a120a4bf3df8c99452dac1177e828eb6029c7a984b",
+    "docs/research/release-readiness/PT1h-R14/checkpoint-repro/checkpoint_probe.gd": "9dc26763ea6b1607af08b701932b95c016a5b1b966666f58966519442c1df75e"
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "verified_resolver": "C:/Program Files/Git/bin/bash.exe app/get-godot.sh",
+    "console_sha512": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+    "editor_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2"
+  },
+  "python_checks": {
+    "windows": {
+      "methods": 102,
+      "passed": 101,
+      "skipped": 1,
+      "skip": "Linux /proc zombie test",
+      "log": "tmp/debug-review-windows-tests-20261108/python-final.log",
+      "log_sha256": "15335d82b8f2ddeeae6660c20e74d09e76f04b9bf8a8e2c039136a16ff2cc222",
+      "command": "python -m unittest discover -s tools/debug -p test_*.py -v"
+    },
+    "wsl_linux": {
+      "methods": 102,
+      "passed": 101,
+      "skipped": 1,
+      "skip": "native Windows owner-death test",
+      "log": "tmp/debug-review-20261108/python-wsl-final.log",
+      "log_sha256": "60ec5a51a2d4e7eba7ae772476c9703f93e69bcf76d56a78419dbe8497db2f1b",
+      "command": "wsl.exe -d Ubuntu --exec python3 -m unittest discover -s /mnt/c/DEVELOPMENT/OpenRCsimulator/tools/debug -p test_*.py -v"
+    }
+  },
+  "godot_checks": {
+    "test_debug_bridge_contracts.gd": {
+      "assertions": 26,
+      "checked_report": "tmp/debug-review-20261108/godot-final/test_debug_bridge_contracts.gd-4sl1cffp/report.json",
+      "log_sha256": "21f245c07fab4ddbb9bf8d224ac7ec4380d3d6a22a07b79f846d7f96f26e1420",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_bridge_contracts.gd"
+      ],
+      "scope": "provisioned app; fake sessions where authored by the existing tests; no catalog/preference replacements"
+    },
+    "test_debug_step.gd": {
+      "assertions": 24,
+      "checked_report": "tmp/debug-review-20261108/godot-final/test_debug_step.gd-mpsigv9g/report.json",
+      "log_sha256": "6e4a46a9ac43a246ff2aeff0b32a8879d0a783d0618a95c7a772ae6a7e016dfc",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_step.gd"
+      ],
+      "scope": "provisioned app; fake sessions where authored by the existing tests; no catalog/preference replacements"
+    },
+    "test_debug_observers.gd": {
+      "assertions": 36,
+      "checked_report": "tmp/debug-review-20261108/godot/test_debug_observers.gd-j8ust25r/report.json",
+      "log_sha256": "2c3a4de74de15f0278eefa0b1a6aab885b631d863d04b4138ee1bcdff7e04bdd",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_observers.gd"
+      ],
+      "scope": "provisioned app; fake sessions where authored by the existing tests; no catalog/preference replacements"
+    },
+    "test_debug_bridge.gd": {
+      "assertions": 114,
+      "checked_report": "tmp/debug-review-20261108/godot-final/test_debug_bridge.gd-8hy_9fgh/report.json",
+      "log_sha256": "041233d79220ad9fcd36356fbd2285ec3afeaea39525af168794cbfa90c5e0d3",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_debug_bridge.gd"
+      ],
+      "scope": "provisioned app; fake sessions where authored by the existing tests; no catalog/preference replacements"
+    },
+    "test_render_probe.gd": {
+      "assertions": 34,
+      "checked_report": "tmp/debug-review-20261108/godot/test_render_probe.gd-hmoryepm/report.json",
+      "log_sha256": "d7b2a1c28f0e36905e49a8a73a5200348c5e8e228cf0beec1f3bd7b9b6e62207",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_render_probe.gd"
+      ],
+      "scope": "provisioned app; fake sessions where authored by the existing tests; no catalog/preference replacements"
+    }
+  },
+  "native_scanner": {
+    "identity": {
+      "editor_pid": 26500,
+      "executable": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64.exe",
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-review-20261108\\native-scanner-final\\app",
+      "server": [
+        "127.0.0.1",
+        58751
+      ],
+      "client": [
+        "127.0.0.1",
+        58768
+      ],
+      "ownership": "os-established-connection",
+      "scripts": 1,
+      "complete": true
+    },
+    "findings": [
+      {
+        "file": "sample.gd",
+        "line": 3,
+        "severity": "warning",
+        "code": "UNUSED_VARIABLE",
+        "message": "The local variable \"unused_value\" is declared but never used in the block. If this is intended, prefix it with an underscore: \"_unused_value\"."
+      }
+    ],
+    "log_sha256": "efad6d6a373a3c495cb278ccf97af4fa4a81ce01297c3e8258aa89555ddad916",
+    "scope": "Minimal isolated compiler project, not an application warning sweep"
+  },
+  "windows_checkpoint": {
+    "format": "openrc-checkpoint-repro-v1",
+    "expected_behavior": "fixed",
+    "checkout_head": "2465abc4b2def4cc9d6e3a175f4196a2b755236c",
+    "bridge_sha256": "7d07ead94758316dd1d85b450ed474a15c650e917f33a4412d506244e6f4160e",
+    "godot_version": "4.8.beta2.official.cafc17a19",
+    "godot_sha512": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+    "platform": "Windows-10-10.0.26100-SP0",
+    "limitations": [
+      "fake session; source-only isolated project",
+      "no power-loss or ACL qualification"
+    ],
+    "scenarios": {
+      "normal": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "normal"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0666"
+        },
+        "checked_report": "checked\\checkpoint-repro-normal-ad8eb6e9-lhgmabh2\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "symlink": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "symlink"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0666",
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked\\checkpoint-repro-symlink-f819b0f4-jb5iyc19\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "relative-chain": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "relative-chain"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0666",
+          "link_target_is_original": false,
+          "target_temporaries": [],
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked\\checkpoint-repro-relative-chain-c54080b5-3aa818sn\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "directory-link-parent": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "directory-link-parent"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0666",
+          "link_target_is_original": false,
+          "target_temporaries": [],
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked\\checkpoint-repro-directory-link-parent-d286b7db-0ewnqnlq\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "dangling": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 0,
+          "error": "cannot resolve checkpoint destination link (missing target, cycle or access denied): C:/DEVELOPMENT/OpenRCsimulator/tmp/debug-review-20261108/checkpoint-accepted/checkpoint-project-tec8taik/dangling/checkpoint.json",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "dangling"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": null,
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked\\checkpoint-repro-dangling-4862bf0d-sd8kru6e\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "cycle": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 0,
+          "error": "cannot resolve checkpoint destination link (missing target, cycle or access denied): C:/DEVELOPMENT/OpenRCsimulator/tmp/debug-review-20261108/checkpoint-accepted/checkpoint-project-tec8taik/cycle/checkpoint.json",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "cycle"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": null,
+          "second_link_is_symlink": true
+        },
+        "checked_report": "checked\\checkpoint-repro-cycle-9958bdff-13a7tq5t\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "missing-intermediate": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 316,
+          "error": "",
+          "exact_new_content": true,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": false,
+          "original_setup_ok": true,
+          "other_files": [],
+          "reload_ok": true,
+          "reported_bytes": 316,
+          "save_ok": true,
+          "scenario": "missing-intermediate"
+        },
+        "filesystem": {
+          "is_symlink": true,
+          "mode": "0666",
+          "link_target_is_original": false,
+          "target_temporaries": []
+        },
+        "checked_report": "checked\\checkpoint-repro-missing-intermediate-56729ddd-enr5ihu1\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      "sharing": {
+        "passed": true,
+        "observation": {
+          "actual_bytes": 29,
+          "error": "checkpoint publication failed; recover the previous file from C:/DEVELOPMENT/OpenRCsimulator/tmp/debug-review-20261108/checkpoint-accepted/checkpoint-project-tec8taik/sharing/.checkpoint-ac4611688e4ed8ab4899d8a39b4c9760.previous",
+          "exact_new_content": false,
+          "expected_characters": 308,
+          "expected_utf8_bytes": 316,
+          "original_preserved": true,
+          "original_setup_ok": true,
+          "other_files": [
+            ".checkpoint-ac4611688e4ed8ab4899d8a39b4c9760.previous"
+          ],
+          "reload_ok": false,
+          "reported_bytes": null,
+          "save_ok": false,
+          "scenario": "sharing"
+        },
+        "filesystem": {
+          "is_symlink": false,
+          "mode": "0666",
+          "recovery_count": 1,
+          "recovery_matches_original": true
+        },
+        "checked_report": "checked\\checkpoint-repro-sharing-d3496e43-bnv3x_ek\\report.json",
+        "checked_ok": true,
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        }
+      }
+    },
+    "not_applicable": [
+      "POSIX RLIMIT_FSIZE and permission bits",
+      "POSIX long-name case"
+    ],
+    "passed": true
+  },
+  "headless_smoke": {
+    "observation": {
+      "ok": true,
+      "failed": [],
+      "steps": 52,
+      "hitches": 121,
+      "launcher_exit_code": 0,
+      "leaked_objects_at_exit": 0,
+      "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\20261108-143937-47870"
+    },
+    "log_sha256": "e2cec95a89681dbbc2f25516acbdb25eb85148cd5ac140d8cfdabea027aac9f1",
+    "qualification": "Shared-tree observation before final claim-lock and Windows link refinements; unrelated app edits occurred concurrently. Not final whole-project qualification."
+  },
+  "prior_candidate_ci": {
+    "commit": "644f4e7370fc4d0cb4efe254b25cebd4ea329b70",
+    "url": "https://github.com/bultodepapas/OpenRCsimulator/actions/runs/42377286844",
+    "status": "completed",
+    "conclusion": "success",
+    "scope": "Historical candidate only; additional changes require CI"
+  },
+  "initial_attempts": [
+    "Initial Windows client fixture failed WSAENOTCONN on shutdown of listener; fixed without weakening disconnect assertions.",
+    "First Godot contracts invocation used the wrong completion-marker text; 26 assertions ran but checked verdict failed. Corrected marker runs passed.",
+    "Scanner test refinements corrected alias validation ordering and remaining-deadline inventory timeout handling.",
+    "Initial native checkpoint fixture used forward-slash link payloads and POSIX parent expectations; these were corrected to native Windows link creation and OS destination semantics."
+  ],
+  "limits": [
+    "macOS connection ownership not executed",
+    "Windows dangling checkpoint symlink is safely refused",
+    "Windows network-share symlink targets refused; direct UNC unqualified",
+    "sharing fixture does not force failure after destination removal or prove rollback then",
+    "no power-loss, ACL or ownership preservation qualification",
+    "no rendered 1080p, physical-device or final-source CI qualification",
+    "no FPS or physical-validation claim"
+  ],
+  "documentation_check": {
+    "checked": 523,
+    "errors": [],
+    "scope": [
+      "tools/debug/README.md",
+      "docs/research/release-readiness/PT1h-R14/README.md",
+      "docs/research/release-readiness/PT1h-R14/checkpoint-repro/README.md",
+      "external Audits/COMPLETED-AUDIT-WORK.md",
+      "external Audits/CONSOLIDATED-AUDITS.md"
+    ],
+    "checker": "tools/ci/check_docs.py parser/check_target with read-only working-tree adapter"
+  },
+  "static_checks": {
+    "python_compilation": "passed for modified Python production files and checkpoint runner",
+    "git_diff_check": "passed",
+    "source_manifest_rechecked": "18 hashes match after verification"
+  }
+}

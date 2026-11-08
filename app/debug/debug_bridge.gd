@@ -2493,6 +2493,12 @@ static func _checkpoint_destination(path: String, remaining_links := 64) -> Dict
 			var target := directory.read_link(component)
 			if target.is_empty():
 				return _fail("cannot resolve checkpoint destination link: %s" % current.path_join(component))
+			# Windows read_link follows the target; on failure the pinned engine returns
+			# the original extended path, not the link contents. Do not recurse on it.
+			if OS.get_name() == "Windows" and target.replace("\\", "/").begins_with("//?/"):
+				return _fail("cannot resolve checkpoint destination link (missing target, cycle or access denied): %s" % current.path_join(component))
+			if OS.get_name() == "Windows" and target.replace("\\", "/").to_upper().begins_with("UNC/"):
+				return _fail("checkpoint links to network shares are unsupported; use the absolute network path directly")
 			var next := target if target.is_absolute_path() else current.path_join(target)
 			if index + 1 < parts.size():
 				next = next.path_join("/".join(parts.slice(index + 1)))

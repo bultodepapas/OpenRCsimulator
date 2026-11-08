@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import contextlib
 import csv
+import errno
 import random
 import io
 import tempfile
@@ -938,21 +939,37 @@ class DebugctlTests(unittest.TestCase):
         self.assertEqual(debugctl.session_for(free)["launcher_pid"], os.getpid())
 
     def test_windows_claim_lock_uses_the_same_byte_and_unlocks(self) -> None:
-        msvcrt = SimpleNamespace(LK_LOCK=1, LK_UNLCK=0, locking=Mock())
-        with patch.object(debugctl.os, "name", "nt"), patch.dict(sys.modules, {"msvcrt": msvcrt}):
+        positions, attempts = [], 0
+        msvcrt = SimpleNamespace(LK_NBLCK=1, LK_UNLCK=0)
+
+        def locking(fd, mode, length):
+            nonlocal attempts
+            positions.append(os.lseek(fd, 0, os.SEEK_CUR))
+            if mode == msvcrt.LK_NBLCK:
+                attempts += 1
+                if attempts <= 12:
+                    os.lseek(fd, 1, os.SEEK_SET)  # each retry must seek back to byte zero
+                    raise OSError(errno.EACCES, "locked")
+
+        msvcrt.locking = Mock(side_effect=locking)
+        with patch.object(debugctl.os, "name", "nt"), patch.dict(sys.modules, {"msvcrt": msvcrt}), \
+                patch.object(debugctl.time, "sleep") as sleep:
             with debugctl._session_claim_lock():
-                self.assertEqual(msvcrt.locking.call_count, 1)
-        self.assertEqual(msvcrt.locking.call_count, 2)
-        acquired, released = msvcrt.locking.call_args_list
+                self.assertEqual(msvcrt.locking.call_count, 13)
+        self.assertEqual(sleep.call_count, 12)  # contention may outlast LK_LOCK's ten attempts
+        self.assertEqual(positions, [0] * 14)
+        acquired, released = msvcrt.locking.call_args_list[-2:]
         self.assertEqual(acquired.args[0], released.args[0])
-        self.assertEqual((acquired.args[1:], released.args[1:]), ((msvcrt.LK_LOCK, 1), (msvcrt.LK_UNLCK, 1)))
+        self.assertEqual((acquired.args[1:], released.args[1:]), ((msvcrt.LK_NBLCK, 1), (msvcrt.LK_UNLCK, 1)))
         msvcrt.locking.reset_mock(side_effect=True)
-        msvcrt.locking.side_effect = OSError("lock unavailable")
-        with patch.object(debugctl.os, "name", "nt"), patch.dict(sys.modules, {"msvcrt": msvcrt}):
+        msvcrt.locking.side_effect = OSError(errno.EBADF, "lock unavailable")
+        with patch.object(debugctl.os, "name", "nt"), patch.dict(sys.modules, {"msvcrt": msvcrt}), \
+                patch.object(debugctl.time, "sleep") as sleep:
             with self.assertRaisesRegex(OSError, "lock unavailable"):
                 with debugctl._session_claim_lock():
                     self.fail("a failed lock must not enter the protected section")
         self.assertEqual(msvcrt.locking.call_count, 1)
+        sleep.assert_not_called()  # non-contention errors remain visible
 
     def test_claim_lock_and_incomplete_claim_recover_after_process_exit(self) -> None:
         import subprocess
@@ -991,6 +1008,86 @@ class DebugctlTests(unittest.TestCase):
                 child.kill()
             child.communicate(timeout=5)
             reader.join(5)
+
+    @unittest.skipUnless(os.name == "nt", "needs native Windows locking")
+    def test_windows_contender_recovers_when_lock_owner_is_killed(self) -> None:
+        import subprocess
+
+        setup = (
+            "import sys\n"
+            "from pathlib import Path\n"
+            "sys.path.insert(0, sys.argv[1])\n"
+            "import debugctl\n"
+            "debugctl.SESSIONS = Path(sys.argv[2])\n"
+        )
+        owner_code = setup + (
+            "with debugctl._session_claim_lock():\n"
+            "    print('locked', flush=True)\n"
+            "    sys.stdin.read()\n"
+        )
+        waiter_code = setup + (
+            "import msvcrt\n"
+            "real_locking = msvcrt.locking\n"
+            "reported = False\n"
+            "def report_contention(fd, mode, length):\n"
+            "    global reported\n"
+            "    try:\n"
+            "        return real_locking(fd, mode, length)\n"
+            "    except OSError as error:\n"
+            "        if mode == msvcrt.LK_NBLCK and not reported:\n"
+            "            print('contended:' + str(error.errno), flush=True)\n"
+            "            reported = True\n"
+            "        raise\n"
+            "msvcrt.locking = report_contention\n"
+            "with debugctl._session_claim_lock():\n"
+            "    print('acquired', flush=True)\n"
+        )
+        module_dir = str(Path(debugctl.__file__).parent)
+        events = {name: threading.Event() for name in ("locked", "contended", "acquired")}
+        lines, children, readers = [], [], []
+
+        def start(code, stdin):
+            child = subprocess.Popen([sys.executable, "-c", code, module_dir, str(debugctl.SESSIONS)],
+                                     stdin=stdin, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            children.append(child)
+
+            def read_lines():
+                for line in child.stdout:
+                    message = line.rstrip("\r\n")
+                    lines.append((child.pid, message))
+                    event = events.get(message.partition(":")[0])
+                    if event:
+                        event.set()
+
+            reader = threading.Thread(target=read_lines, daemon=True)
+            readers.append(reader)
+            reader.start()
+            return child
+
+        try:
+            owner = start(owner_code, subprocess.PIPE)
+            self.assertTrue(events["locked"].wait(10), "owner did not acquire the lock")
+            waiter = start(waiter_code, subprocess.DEVNULL)
+            self.assertTrue(events["contended"].wait(10), "waiter did not encounter the held lock")
+            self.assertIn((waiter.pid, f"contended:{errno.EACCES}"), lines)
+            self.assertFalse(events["acquired"].is_set())
+            self.assertIsNone(waiter.poll())
+            owner.kill()  # OS cleanup, without releasing the context manager
+            owner.wait(timeout=5)
+            self.assertTrue(events["acquired"].wait(5), "waiter did not recover the abandoned lock")
+            self.assertEqual(waiter.wait(timeout=5), 0)
+        finally:
+            for child in children:
+                if child.poll() is None:
+                    with contextlib.suppress(OSError):
+                        child.kill()
+                child.wait(timeout=5)
+            for reader in readers:
+                reader.join(5)
+            for child in children:
+                for stream in (child.stdin, child.stdout, child.stderr):
+                    if stream:
+                        stream.close()
 
     def test_clean_waits_for_session_replacement_before_removing_a_live_run(self) -> None:
         runs = Path(self.tmp.name) / "runs"

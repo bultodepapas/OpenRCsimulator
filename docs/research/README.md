@@ -51,6 +51,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 ### RC airship
 
 - [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.
+- [Twenty-four follow-up investigations and decisions](../plans/rc-airship.md#13-twenty-four-follow-up-investigations-and-resulting-decisions), 2026-11-08: [I01–08 physics/identification](rc-airship/investigations-physics-2026-11-08.md), [I09–16 propulsion/controls](rc-airship/investigations-propulsion-controls-2026-11-08.md), and [I17–24 integration/numerics](rc-airship/investigations-integration-2026-11-08.md). Each records evidence, a concrete plan change, an acceptance check and remaining limits; no matching-model physical tests were available.
 
 ### Cinematic trailer
 
@@ -183,6 +184,8 @@ Use the [flight-model audit](flight-model-robustness-audit.md), [repair implemen
 | Integrity checks | [C7-R2 trace metadata](trace-integrity/C7-R2/README.md), [D4-R2 trim integrity](trim-integrity/D4-R2/README.md), [DATA-3 input identity](aircraft-validation/DATA-3/README.md) |
 
 ### Ugly Stik
+
+The [two-variant migration plan](../plans/ugly-stik-two-variants.md) proposes a canonical MAX-61FX test reference and one electric 6S aircraft. The [2026-11-08 motor selection](propulsion/ugly-stik-6s-selection-2026-11-08.md) compares manufacturer sources and records the initial Scorpion candidate; runtime migration and physical validation remain pending.
 
 Start with the [current model guide and remaining acceptance](../UGLY-STIK-PLAN.md) and [authoring/capture pipeline](../../assets/aircraft/ugly-stik-60/README.md). Dated evidence includes the [source and local-reference map](ugly-stik-resources.md), [model investigations](ugly-stik-investigations/README.md), [v4 delivery](ugly-stik-model-v4.md), [engine v5](ugly-stik-engine-v5.md) and [US-V09…12 finish/feedback passes](ugly-stik-finish-v6.md). Visual and authoring work is indexed under [visual investigations](ugly-stik-visual-investigations/README.md) and [tooling investigations](ugly-stik-tooling-investigations/README.md).
 

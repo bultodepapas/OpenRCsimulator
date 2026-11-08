@@ -53,9 +53,10 @@ func _initialize() -> void:
 	bridge.app = app
 	var original_ok := scenario in ["dangling", "cycle", "missing-intermediate"] or FileAccess.get_file_as_string(path) == ORIGINAL
 	var reply: Dictionary = bridge._cmd_checkpoint({action = "save", path = path})
-	var actual := PackedByteArray() if scenario in ["cycle", "missing-intermediate"] else FileAccess.get_file_as_bytes(path)
+	var unreadable := scenario == "cycle" or (scenario == "missing-intermediate" and OS.get_name() != "Windows")
+	var actual := PackedByteArray() if unreadable else FileAccess.get_file_as_bytes(path)
 	var reloaded := false
-	if scenario not in ["limited", "cycle", "missing-intermediate"]:
+	if scenario != "limited" and not unreadable:
 		var result: Dictionary = bridge._cmd_checkpoint({action = "load", path = path})
 		reloaded = result.has("pending") and app.flight.session.restored == CONTENT
 	var directory := DirAccess.open(path.get_base_dir())

@@ -2,6 +2,11 @@
 
 Reviewed **2026-11-07**. Baseline: [`9db50cfc70904e262247d97e1c368f7c499ff23d`](https://github.com/bultodepapas/OpenRCsimulator/commit/9db50cfc70904e262247d97e1c368f7c499ff23d), the preceding tool-review candidate in [draft PR #10](https://github.com/bultodepapas/OpenRCsimulator/pull/10). This review focuses on the internal debug stack, its consumers and failure recovery. It changes no simulation equations, aircraft data, engine pins or golden flights.
 
+**2026-11-08 follow-up:** the repairs were integrated into the native working checkout and D14 was repaired. See
+[native integration and current limits](#native-windows-integration-and-d14-follow-up-2026-11-08).
+The original review, inventory and `verification.json` below describe the historical `644f4e7` candidate;
+their source hashes and open-item statuses are not current-checkout receipts.
+
 ## Outcome and review boundary
 
 Thirteen newly established defect groups have focused repairs. One additional warning-scanner listener-ownership defect is demonstrated with a competing synthetic server and remains unimplemented. The principal improvements are truthful command completion, preservation of diagnostic files and reproduction trails, isolated concurrent sessions, and correct unavailable-data reporting.
@@ -131,3 +136,49 @@ Effort estimates below are engineering planning estimates, not measured completi
 | **6** | Optional circular rewind storage and a lifecycle contract matrix | Debug developers with large history settings; benchmark append/lookup at default and maximum capacity, preserve chronological ordering/attempt cuts, and test reset boundaries in samples/watchpoints before changing them. | Removes O(N) front shifting if measurements justify it. Roughly 1–3 days; state/attempt invariants create moderate maintenance cost. Current sample/watchpoint issues are hypotheses, not verified defects here. |
 
 The next integration step is to qualify these changes in the full provisioned application and required CI, then merge the reviewed candidate. Repeating old GPU rankings, creating a second profiler UI or retuning physics would not address the demonstrated failures.
+
+## Native Windows integration and D14 follow-up (2026-11-08)
+
+The starting checkout was `41ce5af6f`, which lacked the `644f4e7` debug repairs and PT1h-R13 MCP fixes. Their focused
+debug patches were reused; unrelated PT1h-R13 work was not imported. Concurrent work advanced HEAD to `4bda2e454`
+during verification. [Native receipts](verification-native.json) bind the debug sources by SHA-256 and distinguish
+the shared-tree smoke observation from a stable whole-project qualification. Unrelated edits were preserved.
+The historical candidate's [CI run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/42377286844) now
+reports success; that does not qualify these additional changes.
+
+D14 now requires OS evidence that the exact accepted TCP connection belongs to the launched editor before any
+source text is sent. Each scan selects an ephemeral port, refuses occupied explicit ports, monitors the editor
+through bounded reads and completion, rejects failed initialization and missing diagnostics, and closes/reaps its
+resources. Windows uses the real editor executable beside its console wrapper and matches encoded drive-letter
+URIs. Unavailable ownership evidence fails closed. The historical `lsp-listener-repro.py` belongs to the original
+candidate; current regressions live in `tools/debug/test_gdscript_warnings.py`.
+
+Independent Good Enemy review also established that incomplete scans could erase warning baselines, filtered
+refreshes could drop unrelated keys, and Windows `LK_LOCK` could exhaust its ten-attempt wait. Baselines now survive
+tool/compiler failures and retain unselected file keys; claim locking retries only contention errors until ownership
+is available. The Windows monkey fixture closes listening sockets without an invalid `shutdown` and proves each
+intended disconnect phase occurred. The checkpoint resolver reports unresolved Windows links directly rather than
+recursing on the engine's failed `read_link` return value.
+
+| Verification | Result and scope |
+| --- | --- |
+| Native Windows Python discovery | 102 methods: 101 pass, one existing Linux `/proc` test skipped. Includes real TCP ownership, foreign listener refusal before source transmission, delayed/failed startup, mid-scan exit, incomplete frames, initialization failure, URI and baseline controls. |
+| WSL/Linux Python discovery | 102 methods: 101 pass, one native-Windows-only lock test skipped. The formerly failing zombie-process test passes here. |
+| Native Godot debug suites | Bridge contracts 26, step lifecycle 24, observers 36, broad bridge 114 and render probe 34 assertions pass (234 total). Actual provisioned project, no catalog/preference substitutions; two intentional logger warnings in the broad suite. Final checkpoint change rechecked with the 26-contract suite. |
+| Native compiler collection | Pinned Godot 4.8 beta2, minimal isolated project: expected `UNUSED_VARIABLE` received, accepted connection owned by the launched editor, identity receipt retained. |
+| Real Windows checkpoint filesystem | Eight cases pass: normal Unicode replacement, absolute link, relative link chain, directory-link parent, dangling-link refusal, cycle refusal, Windows missing-component normalization and a real sharing violation. The sharing case preserves original and recovery bytes. |
+| Native claim locking | A real contender observes EACCES while another process holds the lock and acquires it after the owner is killed. Twelve retries and propagation of non-contention failures are tested separately; the real contention run does not wait ten seconds. |
+| Full debug smoke | 52 stages pass, zero reported engine errors, zero leaked objects at shutdown. Headless shared-tree observation; concurrent unrelated edits and later lock/link refinements prevent treating it as final whole-project qualification. |
+
+Native Windows link tests require symlink privileges. Windows resolves `..` in relative link targets before
+traversal; POSIX follows the preceding directory link. The fixture checks each platform's actual destination.
+The pinned Windows engine cannot resolve a dangling link's target through `read_link`; save safely refuses that
+case. Its [implementation](https://github.com/godotengine/godot/blob/cafc17a192acf67903910a68aeb3c076c0907a4b/drivers/windows/dir_access_windows.cpp#L489)
+also motivates the explicit failure check.
+Links whose resolved target is a network share are refused because the pinned engine returns an ambiguous
+`UNC/...` form; this prevents treating that target as a local relative path. Direct UNC paths remain unqualified.
+
+Remaining qualification: native macOS ownership inventory, Windows rollback after an already removed destination,
+power loss/ACL/UNC behavior, rendered 1080p inspection, physical controllers and required CI for the final source.
+Profiler byte budgeting, offline BugIt recovery and measured rewind-storage optimization remain optional follow-ups;
+no FPS improvement or physical validation is claimed.

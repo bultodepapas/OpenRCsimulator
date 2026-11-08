@@ -42,6 +42,7 @@ from __future__ import annotations
 import contextlib
 import csv
 import datetime
+import errno
 import io
 import json
 import math
@@ -82,8 +83,17 @@ def _session_claim_lock():
     with (SESSIONS / ".claims.lock").open("a+b") as guard:
         if os.name == "nt":
             import msvcrt
-            guard.seek(0)
-            msvcrt.locking(guard.fileno(), msvcrt.LK_LOCK, 1)
+            # LK_LOCK gives up after ten attempts; match flock's blocking
+            # behavior by retrying only an actual lock violation.
+            while True:
+                guard.seek(0)
+                try:
+                    msvcrt.locking(guard.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as error:
+                    if error.errno != errno.EACCES:
+                        raise
+                    time.sleep(0.1)
             try:
                 yield
             finally:

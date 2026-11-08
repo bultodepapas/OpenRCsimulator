@@ -2,7 +2,7 @@
 
 **Status: proposal, 2026-11-08. No airship runtime is implemented by this work.** User requirement: a generic radio-controlled blimp, 5 metres long; the user will provide its 3D model. Other dimensions, mass and hardware are not yet specified. This is a non-rigid helium airship unless the delivery establishes otherwise; the word “Zeppelin” does not imply a rigid historical airship or a wing-supported airplane.
 
-Owner/prefix: proposed **RC airship, BL-00…18**. This document owns implementation scope and gates. The [dated physics investigation](../research/rc-airship/physics-2026-11-08.md) owns the scientific sources, derivations and applicability limits. Shared contracts remain with SF, AS, M5, EL/BAT, GP/CR, input/UI, FL, CAM/AUD and the asset pipeline.
+Owner/prefix: **RC airship, BL-00…18**, registered in the ownership index. This document owns implementation scope and gates. The [initial physics investigation](../research/rc-airship/physics-2026-11-08.md) retains its original scientific sources and limits. The follow-up investigations in §13 examine 24 distinct decisions and amend this plan. Shared contracts remain with SF, AS, M5, EL/BAT, GP/CR, input/UI, FL, CAM/AUD and the asset pipeline.
 
 ## 1. Recommended outcome and scope
 
@@ -22,7 +22,7 @@ Audit baseline: `41ce5af6f4a148b4ea101b08883fd4e03878bb07`, checked 2026-11-08. 
 | --- | --- | --- |
 | [Simulation](../../app/sim/simulation.gd), [VehicleModel](../../app/sim/vehicle_model.gd) | One installed model; pure stage callbacks; fixed 240 Hz RK4; transactional validation, events, checkpoints and publication | Add an airship adapter, not vehicle branches in the kernel or a parallel Godot rigid-body flight solver. |
 | [RigidBody](../../app/physics/rigid_body.gd) | 13 float64 values: NED position, body FRD ground velocity, body-to-NED quaternion, body rates; ordinary law uses scalar mass and 3×3 inertia | The ordinary force-only route cannot represent a general coupled 6×6 added-mass system. |
-| `VehicleModel.stage`, `Simulation._joint` | Joint evaluator can return a complete `body_derivative[13]`; requires a nonempty continuous block | Use real motor/servo/energy states and a model-owned coupled solve. This is a usable interface, not existing airship qualification. The replacement derivative owns kinematics and gravity too. |
+| `VehicleModel.stage`, `Simulation.step` joint evaluation | Joint evaluator can return a complete `body_derivative[13]`; requires a nonempty continuous block | Use real motor/servo/energy states and a model-owned coupled solve. This is a usable interface, not existing airship qualification. The replacement derivative owns kinematics and gravity too. |
 | [Helicopter session](../../app/sim/helicopter_flight_session.gd), [ground session](../../app/sim/ground_vehicle/session.gd) | Specialized readers, state layouts and session adapters already install the shared model | Follow this separation; do not force airship data through the fixed-wing loader. |
 | [Environment](../../app/sim/environment.gd), [weather reference](../WIND-ATMOSPHERE-REFERENCE.md) | Stage-position/time wind, thermodynamic atmosphere and ground queries; no shared wind-acceleration/gradient interface | Reuse density and calm/steady wind first. Unsteady and spatial added-mass coupling needs a separate derivation and interface decision. |
 | [Aircraft catalog](../../app/app_state/aircraft_catalog.gd), [AppRoot](../../app/app_root.gd), [airplane presentation](../../app/render/airplane.gd) | Several branches treat non-rotorcraft entries as fixed-wing | An entry alone is insufficient. Add explicit airship routing and audit Home, preview, launch, camera, help and asset consumers. |
@@ -55,11 +55,15 @@ For a generic design, the team may author a self-consistent estimated inventory 
 
 An illustrative prolate ellipsoid has `V = π L D² / 6`. With **L = 5 m**, D = 1.5 m gives about **5.89 m³**, whereas D = 2.0 m gives **10.47 m³**. At the illustrative dry reference densities 1.225 kg/m³ air and 0.169 kg/m³ helium, the available mass allowance for everything except helium is about **6.22 kg** versus **11.06 kg**. These are geometry/gas calculations, not payload specifications or chosen simulator parameters; subtract envelope, equipment and ballast to obtain payload allowance. The actual hull need not be ellipsoidal.
 
+I01/I02 show that uncertainty must enter admission and calibration: for an illustrative 5×1.8 m ellipsoid, diameter uncertainty of ±0.1 m changes volume by approximately −10.8%/+11.4%. At 20 °C/one atmosphere, an illustrative 95% helium/5% air mixture loses about 0.44 kg of support allowance compared with pure helium in that volume; 50% ambient humidity changes displaced-air mass by about 45 g. These are sensitivity examples, not selected fill conditions. Retain shape, gas-composition, atmospheric and mass uncertainties together and declare which errors matter against the intended small net lift.
+
 Published products confirm that “5 m” is insufficient identification: [TCH's envelope](https://www.tchofficial.com/product/rc-blimp-envelope-5m-with-dual-layer-nylon/) lists 2 m width and 10.5 m³, but this is an envelope specification, not a complete aircraft inventory. The [RC-Zeppelin 5 m page](https://www.rc-zeppelin.com/5m-indoor-RC-Blimp.html) currently conflicts with itself: prose gives 10–11 m³, while its table gives about 6.5 m³, and payload ranges also differ. Do not blend or adopt these values. They are comparison leads, not calibration data.
 
 ### Proposed hardware choice, pending the supplied model
 
 The preferred starting topology is **two electric main propellers on a common pitch-vectoring axis plus a reversible lateral tail thruster**, if the model supports it. It offers powered climb/descent and low-speed yaw without assuming useful fin authority. This arrangement is described in the [RC-Zeppelin operating manual](https://www.rc-zeppelin.com/manuals.html). It is a proposal, not a user-confirmed specification.
+
+Specify actual axle travel and independent motor control before promising backward flight or separate yaw/heave commands. With positive thrust, vector travel limited to ±90° reaches vertical but never rearward axial thrust; reversal needs a larger qualified travel range or a reversible drive. Publish the per-actuator wrench and achievable-force/moment set, with zero-thrust singularities and saturation priorities (I09).
 
 Other legitimate layouts are twin independently driven fixed propellers plus a vertical thruster, or forward propulsion with elevator/rudder controls. The [Tichuan manual, pp. 4–6](https://www.tch-offical.com/wp-content/uploads/2024/02/2m_rc_blimp-manual_2016.pdf) illustrates separately oriented thrust functions. Each layout needs its own control allocation, state identity and admission tests; do not ship all variants before one works. ArduPilot's [Blimp documentation](https://ardupilot.org/blimp/docs/getting-started.html) concerns a flapping-fin platform and does not supply a ready-made propeller-airship physics model.
 
@@ -91,9 +95,11 @@ Use `B = rho_air * g * V_displaced` in newtons. In NED, buoyancy is `[0, 0, -B]`
 
 Total physical mass includes gas, envelope, equipment, payload and ballast. When gas is already in total mass, do not also use `(rho_air-rho_He)*g*V` as the applied buoyancy force: that subtracts its weight twice. Added mass is neither weight nor extra displaced volume. A uniform ambient density approximation evaluates at the declared representative point; a future density-volume integration is a separate fidelity choice.
 
-For the first release, hold gas mass, envelope shape/volume, inventory and inertia fixed during a flight; admit a shared **uniform atmosphere** with constant density, pressure and temperature for that run. This also keeps the density-dependent added-mass matrix constant. Changing the setup atmosphere requires a new admitted model/reset. Altitude-dependent density and added mass require the corresponding momentum/property-derivative terms or an explicitly bounded approximation at BL-14; sampling density alone does not qualify that law. Do not recompute gas mass from ambient density every tick. A flexible, partially filled envelope and a full taut constant-volume envelope have different thermodynamic behavior. Later expansion/leak laws must enforce a consistent equation of state, pressure/shape limits, venting and mass-property changes together.
+For the first release, hold gas mass, envelope shape/volume, inventory and inertia fixed during a flight; admit a shared **uniform atmosphere approximation** with fixed representative density and thermodynamic pressure/temperature inputs. Retain the implicit hydrostatic pressure gradient that produces `B=rho*V*g`; “uniform” must not mean a physically gradient-free static pressure field. This keeps the density-dependent added-mass matrix constant. Changing the setup atmosphere requires a new admitted model/reset. Altitude-dependent density and added mass require the corresponding momentum/property-derivative terms or an explicitly bounded approximation at BL-14; sampling density alone does not qualify that law. Do not recompute gas mass from ambient density every tick. A flexible, partially filled envelope and a full taut constant-volume envelope have different thermodynamic behavior. Later expansion/leak laws must enforce a consistent equation of state, pressure/shape limits, venting and mass-property changes together.
 
 Place CB from displaced envelope volume and CG from mass inventory. Model the gondola as rigidly attached initially. Whole-vehicle restoring oscillation is already present in 6DOF; a separately swinging gondola requires another articulated model and evidence. Longitudinal ballast affects pitch trim, lateral ballast affects roll trim, and ballast quantity affects rise/sink.
+
+Fit translation and attitude together during restoring-motion tests. A freely translating blimp and one constrained at CB have different effective pitch inertia; one pendulum period cannot uniquely identify rigid inertia, added inertia, damping and CB–CG separation. Record constraints, track the measurement datum, and use independent mass/ballast observations plus held-out releases (I03/I08).
 
 ### Added mass and the coupled 6DOF solve
 
@@ -116,6 +122,8 @@ Assess reuse of [generalized_coordinates.gd](../../app/physics/generalized_coord
 
 A spheroid potential-flow estimate is an acceptable **estimated starting law**, with analytic limits and uncertainty. It is not measured drag, nor a substitute for the actual hull shape. The physics investigation owns the primary derivations and comparable RC experiments.
 
+Begin the numerical laboratory before the supplied model arrives. Use analytical sphere/spheroid fixtures, not a replacement visual asset. For an ideal rigid sphere in unbounded inviscid incompressible fluid, translation has `m_A=0.5*rho*V`; centered horizontal force with drag/contact off and no rotation gives `a=F/(m+m_A)`. The installed hull remains a separate configuration. Include nonzero three-axis rotation in datum-shift tests and compare the same physical point, kinetic energy and wrench power. For a constant world velocity boost applied to craft and wind, compare air-relative motion and appropriately translated world trajectories; rotating body-frame velocity derivatives need not be equal. See I22 for the explicit invariants and scope.
+
 ### Hull, fins and local flow
 
 For a station at body offset `r`, evaluate local flow using stage attitude/position:
@@ -130,6 +138,8 @@ Begin with a smooth dimensional hull law for axial/transverse drag and angular d
 
 Fins use local dynamic pressure, deflection, aspect ratio and applicable low-Re coefficients. Fixed fins stabilize only where their flow permits; an elevator is not a vertical thruster. Propwash can provide authority only to the surfaces actually immersed in it. Avoid duplicating body moments already represented by the added-mass/potential-flow law. Large sideslip and reverse flight must either have a qualified model or a visible operating-domain limit.
 
+Declare component-specific Reynolds domains and moment decomposition before choosing coefficients. With illustrative kinematic viscosity `1.5e-5 m²/s` and speeds 0.5–3 m/s, a 5 m hull has length-based Reynolds number about 0.17–1.0 million; a 0.3 m fin chord has about 10,000–60,000. The whole vehicle cannot be assigned one generic “low-Re” polar. Record hull surface roughness/seams and installation effects. For each hull-moment source, state whether it includes ideal Munk moment or is a residual, and test its combination with the added-mass law explicitly (I05/I06).
+
 ### Propulsion, energy and actuator state
 
 Represent each installed motor with stable ID, hub, direction, rotation sense, propeller map, command domain and applicable lag/RPM state. `F_i = T_i*d_i`; moment is `r_i × F_i` plus documented shaft reaction. Vector direction comes from actual servo angle. Include rate/travel limits, neutral/deadband, saturation and asymmetric response when supported by data.
@@ -138,6 +148,10 @@ Reverse requires actual reversible ESC/motor behavior or mechanically vectored t
 
 Reuse EL/BAT laws only for admitted hardware/regimes. Several motors on one pack share voltage/current and depletion; do not allocate a full independent pack to each motor. Calibrate thrust/current at matched propeller, voltage and inflow. Use a documented simple power map where full electromechanical data are absent, with explicit evidence status. No implied regenerative charging during reverse/braking. Battery energy falls while battery mass remains constant in this approximation. Depletion, cutoff, servo behavior and asymmetric motor failure must be deterministic events with matching replay state.
 
+Freeze the shared electrical-bus formulation and its failure behavior before selecting the integrator/event policy: at an RK stage all motors must use a mutually consistent pack voltage and combined load. Define how repeated ESC/motor boundaries compose with pack cutoff and contact substeps; the current kernel does not combine an arbitrary custom step policy with requested substeps greater than one. Reverse/windmilling and moving-axis momentum require explicit installed-law admission, not sign-flipping forward maps or reusing a fixed-axis qualification. I09–I16 supply the detailed hardware/reuse decisions.
+
+The existing ordinary propeller path is not a signed-RPM four-quadrant model, and the pack ECM solves one-quadrant single-motor motoring. A UIUC point with negative thrust but positive shaft power does not establish reverse rotation or regeneration. State the usable forward/reverse/stopped/windmilling branches separately. For vector servos, no-load transit speed and stall torque are different operating points; do not combine them into a continuous-load rating. Existing prescribed-angle and rotor-system utilities need a coordinated partition of carrier inertia, changing rotor momentum, shaft reaction and servo load before an airship coupling is qualified (I10–I13).
+
 ### Wind and atmosphere
 
 Begin with calm and constant uniform wind using the existing environment. A freely drifting blimp can have nonzero ground velocity and zero air-relative velocity. This is a key acceptance case.
@@ -145,6 +159,8 @@ Begin with calm and constant uniform wind using the existing environment. A free
 Before admitting gusts/shear/spatial turbulence, derive the added-mass response to relative acceleration, ambient pressure-gradient/displaced-fluid acceleration and spatial transport. Distinguish the derivative along the vehicle trajectory from the fluid material acceleration. Merely replacing `v` with `v-wind` in drag is not complete unsteady-fluid physics. Decide with M5 whether to add pure analytic wind derivatives to the shared environment or a bounded, documented numerical derivative adapter; never use last-frame observer differences or extra RNG draws.
 
 Pin wind-law/version/seed/domain and any sampled turbulence interpolation state in checkpoints. Verify stage-time/stage-position sampling and rollback. Strong existing weather presets are not automatically suitable for a 5 m blimp. First launch must select an explicit admitted airship preset; do not silently modify global weather preferences. Indoor HVAC, wall/ceiling flow and outdoor terrain shelter remain unsupported until modeled; visual walls do not block the physical wind field.
+
+Before admitting accelerating uniform wind, use a neutral ideal sphere moving with the fluid as an independent limiting case: physical mass `m=rho*V` and added mass `0.5*rho*V` imply `(m+0.5*rho*V)*a_body=(rho*V+0.5*rho*V)*a_air`, hence `a_body=a_air`. Omitting displaced-fluid acceleration predicts only one third of the acceleration. This future BL-14 equation check does not admit spatial shear or establish measured gust behavior (I07/I22).
 
 ## 6. Data, state, sessions and product integration
 
@@ -181,6 +197,8 @@ Start with manual actuator control. Define semantic roles such as main thrust, v
 
 Signed reversible thrust uses centered neutral; unidirectional throttle uses minimum neutral. Arming must check the correct neutral condition for every energized channel and valid calibration. Check keyboard, gamepad and radio pathways, axis inversion, trim/expo ownership, deadband, reconnect, focus loss and mode changes. Do not apply transmitter mixing or expo twice. A controller profile change needs fresh input-pipeline evidence, not merely open-loop physics replay.
 
+The current radio path arms absolute throttle near its low endpoint. Therefore simply mapping its output with `signed=2*throttle-1` is unsafe for a centered reversible installation: the existing arming endpoint becomes full reverse. BL-10 must introduce an explicit semantic neutral/arming policy, coordinate transmitter and simulator mixing, and test all channels together. Real ESC signal-loss behavior and simulator ownership/focus/reconnect behavior are different contracts; identify both rather than assuming motor cutoff guarantees a latched safe restart.
+
 Provide airborne release and a reset action first. Show selected ballast/lift balance before release. Do not invoke fixed-wing runway trim or hand-launch speed. A positive-buoyancy blimp cannot stay on the ground without a real restraint; a “parked” menu display is presentation, not a physical equilibrium. A later ground start needs valid support/hold-down conditions and release semantics.
 
 HUD priorities: altitude/clearance, vertical speed, ground speed, air-relative speed when useful, heading, wind, battery, armed state and control authority. Developer diagnostics add buoyancy minus weight, CG/CB, per-motor commands/actual thrust, vector angle, force/moment breakdown and law/evidence identity. Avoid an airplane stall indicator. Say “experimental physics” and identify disabled weather/features without exposing developer internals in routine controls.
@@ -204,9 +222,13 @@ Materials should preserve envelope curvature, seams and surface finish without h
 
 Use existing audio infrastructure and properly licensed free motor/propeller recordings where suitable. Multiple motors have independent RPM/load sources and spatial positions; no combustion loop. Include qualified servo/contact sounds only when supported. Verify pause, reset, power cutoff, rapid reversal and distance attenuation; a floating vehicle may be quiet but is not generically silent. Keep raw captures and unnecessary images out of Git.
 
+The current airplane model manifest is not a generic multi-motor manifest: it has airplane datum selectors and one `bindings.rotor`. Resolve its versioned extension or a dedicated airship adapter before asset binding; do not invent a wing datum or central propeller. The camera rig similarly scales from a single span. Define a conservative visual bound/target for the long hull, test self-occlusion and near-plane clearance, and review orientation broadside and nose/tail-on with auto-zoom recorded. I20/I21 give the contract and projection checks.
+
 ## 9. Ground contact, obstacles and optional fidelity
 
 The physics laboratory may start above the field without landing support. Before a public experimental route, a conservative swept proxy must detect terrain/obstacles and enter a deterministic terminal/pause state rather than pass through them. This early collision behavior must be labeled; it is not compliant-envelope landing physics. Water entry can similarly terminate as unsupported until qualified.
+
+Existing hull-crossing reconstruction is explicitly not general continuous collision detection or RK dense output. Test a thin-obstacle/rotating-envelope case where both accepted tick endpoints are clear but the intervening motion intersects. Define a conservative sweep/subdivision bound and refusal behavior for motion beyond it; reusing point probes alone does not prove a 5 m inflated hull's clearance (I15).
 
 Subsequent landing support should distinguish gondola/skids from the envelope. Use reusable field queries with airship-owned contact locations and a bounded dissipative response. Test unloaded contact, static support for a slightly heavy configuration, lifting away, grazing, sideways impacts, slopes and limited penetration at 240 Hz. Check ground-relative contact velocity; added mass is not an automatic multiplier for material strength. Do not reuse tire friction, wheel suspension or rigid-airplane crash thresholds for fabric.
 
@@ -217,6 +239,8 @@ Conditional fidelity: moving gondola/mass; gas leakage and temperature; envelope
 ## 10. Recording, measurements and validation
 
 Implement airship recording/replay before tuning the first playable candidate. Reuse container/checksum/bounded-writer utilities where compatible, with versioned dispatch and airship-specific checkpoints/control roles. Preserve source/configuration/engine/backend/environment identity, continuous/discrete states, events, markers and complete termination. Define exact replay and an explicit compatible candidate path; changed topology/layout is not silently accepted as a parameter experiment.
+
+Extend or preserve complete source-identity coverage: existing source fingerprints walk `physics`, `sim` and `failures`, so moving force-relevant mixing to an activity folder can omit it. Mark sample boundaries explicitly: accepted tick-end body/actuator state and interval-start RK4 k1 loads are not simultaneous endpoint measurements. Current stage/integration receipts are not general recorder feeds; any additional observation needs pure bounded sampling or a designed accepted-state transport. Measure maximum-layout storage and observer cost, and test byte/packet/disk termination; a one-hour tick ceiling does not guarantee one-hour recording capacity. See I19/I23.
 
 Once qualified, follow [flight-log discipline](../FLIGHT-LOGGING.md): keep a complete baseline, verify exact replay, then compare one candidate with the same tick/input tape. Check `complete` and `solver_changed`; recovered prefixes and candidate runs are not exact equivalence. Existing fixed-wing CLI commands do not become airship commands until the adapter is implemented. Preserve raw observations separately from simulated output and separate fitting maneuvers from held-out validation.
 
@@ -268,8 +292,8 @@ Every step is independently reviewable and records its proof under the owning ev
 | --- | --- | --- |
 | BL-00 | Repository/source investigation, generic 5 m scope, risks and ownership | This plan and dated research; configuration questions explicitly retained. Planning delivered. |
 | BL-01 | Intake supplied model/license; distinguish overall/envelope length, dimensions, parts and control hardware | Immutable source manifest, dimension/pivot inventory, chosen generic configuration and documented evidence gaps. No runtime claim. |
-| BL-02 | Freeze airship schema, datum, law/domain, state/control IDs, units, mass/volume inventory; coordinate AS/SF/M5/BAT | Written specification and rejection fixtures; viable lift/mass budget. |
-| BL-03 | Early coupled-derivative spike through VehicleModel using genuine actuator state; calm/steady flow | Known-answer 6×6 solve, gravity/kinematic and zero-added-mass checks; existing sessions remain unchanged. Resolve seam risk before large integration. |
+| BL-02 | Specify schema, datum, law/domain and layout using analytical fixtures now; freeze installed state/control IDs, mass/volume/topology after BL-01; coordinate AS/SF/M5/BAT | Laboratory spec/rejection fixtures can precede delivery; installed configuration needs a viable lift/authority/energy budget and declared uncertainty. |
+| BL-03 | Early coupled-derivative spike through VehicleModel with an explicitly modeled actuator state; laboratory calm/steady-flow fixtures need no delivered mesh | Sphere/spheroid known answers, rotating datum/boost invariance, gravity/kinematic and zero-added-mass checks; resolve seam risk before installed integration. |
 | BL-04 | Pure buoyancy, inventory/CB/CG and restoring dynamics | Hydrostatic, attitude and ballast checks; source-driven generation. Depends BL-02/03. |
 | BL-05 | Hull/fin aero and added-mass baseline with explicit overlap accounting | Zero/reverse/crossflow, damping/stability and convergence evidence. Depends BL-04. |
 | BL-06 | Chosen thrusters, vector/fin actuators, mixer and EL/BAT integration | Thrust/torque/lag/energy/authority tests and state/event coverage. Independent asset preparation may proceed from BL-01. |
@@ -286,7 +310,19 @@ Every step is independently reviewable and records its proof under the owning ev
 | BL-17 | Stable-candidate regression, target-host 1080p performance and package/native-platform checks | Required CI plus relevant device/GPU/export acceptance; labels accurately describe open physical gates. Native solver work only under SF policy if measured need exists. |
 | BL-18 | Update player/authoring guides and evidence; consolidate completed plan at completion | Operational guide, source/generator references and retained gates; no duplicate permanent status documents. |
 
-Critical path: **configuration → coupled dynamics → complete session/replay → visuals/controls/collision → playable experimental gate → measured qualification**. Art import can run alongside physics after intake; controls must wait for topology, and tuning must wait for replay. Schedule estimation should follow BL-01…03 because asset quality, hardware choice and the coupled-law spike dominate uncertainty; a precise date before those steps would be unreliable.
+Two paths can start independently: **analytical specification/fixtures → coupled-law qualification**, and **delivered model intake → installed geometry/topology/inventory**. They join at installed-model admission, followed by complete session/replay, visuals/controls/collision and the first playable experimental gate. Tuning waits for replay and configuration identity. Schedule estimation should follow BL-01…03 because asset quality, hardware choice and the coupled-law spike dominate uncertainty; a precise date before those steps would be unreliable.
+
+```mermaid
+flowchart LR
+  A[Analytical fixtures and law specification] --> B[Coupled dynamics and numerical checks]
+  C[Supplied model and source intake] --> D[Installed geometry, hardware and inventory]
+  B --> E[Admitted installed vehicle]
+  D --> E
+  E --> F[Session and complete replay]
+  F --> G[Controls, visuals and conservative collisions]
+  G --> H[Playable experimental gate]
+  H --> I[Measured validation and admitted wind expansion]
+```
 
 ## 12. Risks and decisions to close
 
@@ -304,4 +340,49 @@ Critical path: **configuration → coupled dynamics → complete session/replay 
 
 Open configuration choices are diameter/shape, envelope versus total 5 m, installed propulsion/control layout, mass/ballast/battery inventory, environment intent and supplied model structure/license. These do not prevent planning or an explicitly estimated generic prototype. They do prevent claiming a particular real aircraft's behavior or final performance before the corresponding evidence exists.
 
-This task delivers documentation only. No simulation tests, rendered asset checks, flight measurements or performance qualification are claimed by the plan itself.
+## 13. Twenty-four follow-up investigations and resulting decisions
+
+Completed 2026-11-08. Each investigation records its question, actual method/evidence, finding, plan change, discriminating acceptance and remaining limit. This is completed research and planning; the implementation and physical gates remain open. Evidence is in three reports:
+
+- [I01–I08: physics, atmosphere and identification](../research/rc-airship/investigations-physics-2026-11-08.md).
+- [I09–I16: propulsion, controls, contact and operating envelope](../research/rc-airship/investigations-propulsion-controls-2026-11-08.md).
+- [I17–I24: simulator contracts, assets, numerics and delivery](../research/rc-airship/investigations-integration-2026-11-08.md).
+
+Priority **P0** means a decision/check needed before the first admitted playable installation, **P1** before the corresponding expanded/physical claim, and **P2** conditional fidelity only. An investigation can establish an early restriction while leaving an advanced feature conditional. These priorities do not assert that hardware evidence already exists.
+
+| ID | Distinct investigation and finding | Decision added to the plan | Priority / step |
+| --- | --- | --- | --- |
+| I01 | Geometry uncertainty: the same maximum bounds can hide different volume/CB; illustrative ±0.1 m diameter around 1.8 m changes volume by roughly 11% | Envelope-only cross-section/closed-proxy volume, CB and correlated uncertainty in the lift budget | P0, BL-01/02 |
+| I02 | Gas/fill/atmosphere: sealed fixed volume and compliant expansion have different laws; purity/humidity matter near neutral lift | Named fill regime/composition, property-domain bounds, conserved gas and implicit hydrostatic gradient; dynamic regime transitions later | P0, BL-02/04; P2, BL-16 |
+| I03 | Restoring oscillation: free translation changes the pitch mode; a constrained pendulum period is not free-air inertia | Joint translation/attitude fit, known ballast offsets, stated constraints and held-out releases | P0 design, BL-04; P1 measurement, BL-13 |
+| I04 | Added-mass source/equation check: a datum shift generates translation/rotation coupling; manufactured energy agrees at both datums | Full matrix/wrench/velocity congruence, scaled conditioning and reference-origin tests | P0, BL-03 |
+| I05 | Reynolds applicability: hull, fin chord and blade section occupy different regimes | Component-specific local Reynolds ranges, roughness and extrapolation admission | P0, BL-02/05/06 |
+| I06 | Hull moment bookkeeping: Munk moment may already be included in a total empirical load | Declare total/residual moments and avoid duplicate potential-flow terms; local fin-flow/reverse checks | P0, BL-05 |
+| I07 | Accelerating air: wind velocity alone omits displaced-fluid forcing; fluid and vehicle derivative paths differ | Calm/steady initial domain; neutral-sphere acceleration oracle and pure derivative/gradient contract before gust/shear | P0 restriction; P1, BL-14 |
+| I08 | Identifiability: scaling effective mass, thrust and drag together can preserve the same trajectory | Independent thrust/mass/ballast anchors, experiment observability check and held-out data; use applicable free datasets | P0 design, BL-02/08; P1, BL-13 |
+| I09 | Propulsion topology: available wrench is coupled and depends on thrust/vector angle; ±90° does not create reverse axial thrust | Per-actuator wrench, bounded allocation and failure/saturation/zero-thrust authority checks | P0, BL-02/06 |
+| I10 | Propeller quadrants: measured negative thrust is not evidence for reverse rotation, windmilling or charging | Signed speed/inflow/torque/power conventions and separately admitted forward/reverse/stopped branches | P0, BL-06 |
+| I11 | Vector mechanics: changing rotor momentum can load the servo/body; stall torque and no-load speed cannot be combined | Moving-mass/rotor/servo partition, no double inertia/reaction and a loaded-sweep/energy test or bounded omission | P0, BL-02/06 |
+| I12 | Shared battery: independent single-motor solves give inconsistent bus voltage/capacity | One simultaneous stage bus/load solution and one pack state; one-motor reduction, permutation and energy checks | P0, BL-06 |
+| I13 | ESC behavior: aircraft controllers have different neutral, reverse, timing, signal-loss and cutoff semantics | Select/version a hardware or explicitly estimated state machine; define timer/event priorities and recovery | P0, BL-02/06/10 |
+| I14 | RC ownership: legacy low-throttle arming mapped to centered reverse can authorize full reverse; USB does not necessarily expose RF loss | Vehicle neutral/arming policy, named roles, capability-aware failsafe and explicit reconnect rearm | P0, BL-10 |
+| I15 | Contact/tether: current hull crossing is not general CCD; point probes do not bound a long rotating envelope | Swept full-hull admission and endpoint-clear/intermediate-hit case; fabric support and unilateral tether remain separate | P0, BL-11; P1/P2, BL-15 |
+| I16 | Outdoor authority: drag/power and vertical trim compete; a force-only wind threshold omits moment, stability and reserve | Directional force/moment/energy feasibility with separate drift, return and station-keeping claims | P0 claim limits; P1, BL-13/14 |
+| I17 | Application admission: family assumptions affect preload, fleets, Help, failure/companion options and restart as well as launch | Explicit family/capability matrix with positive admission and unknown/unsupported refusal cases | P0, BL-02/10 |
+| I18 | Loader reuse: current aircraft reader adds wheel profiles and stable-airplane coefficient constraints | Dedicated closed airship loader with shared quantity discipline, independent admissibility and exact one-read source hash | P0, BL-02 |
+| I19 | Replay observations: physics fingerprints cover selected directories; k1 loads and endpoint state have different timestamps | Identify authoritative mixer/law code, command semantics and all state; label observation boundaries and forbid trial-stage cache leakage | P0, BL-08 |
+| I20 | Import contract: valid glTF does not ensure unique names or fit singular-rotor/airplane-datum manifests | Versioned multi-instance presentation design or dedicated adapter, signed transform/landmark checks, independent physics inventory | P0, BL-02/09 |
+| I21 | Camera/readability: one span cannot capture all long-hull clearance and apparent-size needs | Declared visual bounds/target, self-occlusion and near-plane review, 1080p nose/tail/broadside captures with auto-zoom identity | P0, BL-09/12 |
+| I22 | Numerical oracle: finite matrices do not prove correct datum/body transport; event policy/substeps have composition limits | Sphere known answer, rotating datum/boost invariance, smooth/event refinement and actuator/contact time-scale admission | P0, BL-03/06/07 |
+| I23 | Resource qualification: wrong-vehicle fallback/batch averages can mislead; storage ceiling does not guarantee an hour | Explicit airship workload identity, actual per-tick latency and serialized-size/observer budgets; complete limit-stop tests | P0, BL-08/12; P1 target hardware, BL-17 |
+| I24 | Work sequencing/fidelity: supplied art need not block analytical law checks; feature breadth can make validation unbounded | Parallel lab/intake paths, applicability/error ledger, scoped first playable gate and evidence-driven advanced fidelity | P0, BL-02/03/12; P2, BL-16 |
+
+### Required gate artifacts after the investigations
+
+Before installed-model coding, BL-02 produces a compact **applicability ledger** for each subsystem: admitted regime, reference datum/units, parameter provenance/uncertainty, available controls, omitted effect and the observation/threshold that would require more fidelity. It also produces the capability matrix, dimensional lift/authority/energy budget, supported state/event layout and presentation-contract choice. Analytical fixtures and the independent BL-03 equation checks can proceed while those installed values await the model.
+
+For outdoor scope, calculate force **and moment** equilibrium with thrust-versus-inflow, sustained energy and trim, then establish stability/recovery and reserve. Distinguish drift, return and ground-position hold. Manufacturer wind advice with inconsistent configuration context is not a rating for this blimp. A neutral/light/heavy power-loss card and an exhausted-authority case must be included before outdoor handling claims. Constant-force calculations do not admit gust/shear behavior.
+
+The research inspected sources around `4bda2e4540fc07ebe8eb63d35072fd5aead39cbe`; the repository advanced to `2465abc4b2def4cc9d6e3a175f4196a2b755236c` during the work. A scoped comparison found no committed changes between them to the integration source paths examined. Reports retain their actual source/access identities; later implementation must recheck changed consumers.
+
+This task delivers documentation and analytical investigation only. No simulation tests, rendered asset checks, flight measurements or performance qualification are claimed by these reports or this plan.

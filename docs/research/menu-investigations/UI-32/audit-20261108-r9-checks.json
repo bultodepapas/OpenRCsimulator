@@ -1,0 +1,442 @@
+{
+  "format": "openrc-ui32-audit-r9 v1",
+  "recorded_utc": "2026-11-08T19:44:12.588020+00:00",
+  "initial_head": "939ab5df4de4fc615b1051d2b1e4cba51a423b27",
+  "observed_head": "4bda2e4540fc07ebe8eb63d35072fd5aead39cbe",
+  "scope": [
+    "A17 UI3-05",
+    "A18 effective-start loading identity",
+    "visible cancellation focus owner"
+  ],
+  "sources": [
+    {
+      "path": "app/app_root.gd",
+      "sha256": "db427788fced805a05e9dd745a236d011b6a8169615a48bc5c5a1eb016728812"
+    },
+    {
+      "path": "app/ui/home.gd",
+      "sha256": "d169fabddb72c35b8e755fbdafca9022a84841a54657e03e139daba42fbaea4d"
+    },
+    {
+      "path": "app/ui/workshop_preview.gd",
+      "sha256": "c719d1b45757e397d89d5a7bbb0cc8a75f124e0f5963af2987c3000b78b9a2c4"
+    },
+    {
+      "path": "app/tests/test_loading_start_label.gd",
+      "sha256": "c364209a5b1e39e558e19e6b866622b902f19362f355ca3adc8b33f96f84fd58"
+    },
+    {
+      "path": "app/tests/test_workshop_preview_focus.gd",
+      "sha256": "bf24bc7d0aad5f788dc8b0183c0401e0c60ae0e33af5e3fb4b2542029ebe9bee"
+    }
+  ],
+  "checks": [
+    {
+      "path": "tmp/audit-20261108-ui-recovery/checks/preview-focus-pad-popup-1mk_35_9/report.json",
+      "sha256": "f2367868f9b676ad9af5693e6202523abe3b501eb7b6ffc10dfb3301ce283e58",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e994c6e0-8e7e-47e7-9ada-ed98f39505c5",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\test_workshop_preview_focus.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:21:41.208945+00:00",
+        "label": "preview-focus-pad-popup",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\preview-focus-pad-popup-1mk_35_9\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\preview-focus-pad-popup-1mk_35_9\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Workshop preview focus: 37 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 17.297,
+        "log_bytes": 1766,
+        "log_sha256": "b567973124c3df588ea90c421f2400e8b6b98a7b5e9ea89f66a9383a6710576a"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-ui-recovery/checks/loading-label-home-focus-xhae_onq/report.json",
+      "sha256": "dd9d21d3341f86af1e57af25cab89f9cb3d7869295aab15a0536858e644118e1",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "dca17331-eae2-47e0-ad97-36f5dece1145",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\test_loading_start_label.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:25:22.539422+00:00",
+        "label": "loading-label-home-focus",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\loading-label-home-focus-xhae_onq\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\loading-label-home-focus-xhae_onq\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "Loading start label: 45 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 26.172,
+        "log_bytes": 3265,
+        "log_sha256": "7f829a1f89d12270242570d4e661f7a05dc22d428d083db639eead71569ebb59"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-ui-consumers/flight-loading-n4_lbc_s/report.json",
+      "sha256": "2b2a9a02afa27859c7fad9b2f14694e114c13899fb54475c7b983b23118091e6",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a61f80d0-8923-4b4e-bb06-aaab7db36d46",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_loading.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:39:12.421930+00:00",
+        "label": "flight-loading",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-consumers\\flight-loading-n4_lbc_s\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-consumers\\flight-loading-n4_lbc_s\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 48.906,
+        "log_bytes": 4830,
+        "log_sha256": "3f0f0f6113b42718ccec97ad8e04f3c5bb8d20367dc125ec5a10bc4a977e66ac"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-ui-consumers/flight-loading-surface-3flzs4af/report.json",
+      "sha256": "b95f6f6d44c098a2f014beb27fa652044f3227526d3fa43de144134ab6748710",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e50ec444-e464-4ede-b4c7-342de3d2904b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_loading_surface.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:39:12.421930+00:00",
+        "label": "flight-loading-surface",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-consumers\\flight-loading-surface-3flzs4af\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-consumers\\flight-loading-surface-3flzs4af\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "all flight loading surface checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.703,
+        "log_bytes": 971,
+        "log_sha256": "3fdd4e5f3505f8e3864f7e7ddbfcfd7b5148f49b4d0d21942c8cebd673a95047"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-ui-consumers/ui-screen-stack-final-yi4pbnsr/report.json",
+      "sha256": "a68cf073690dd3ba2f21b8d3d742463d7cdff56487bd2704da113cff2b590b25",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b06c2246-e2a2-4ad1-bb7d-0709aa934ee8",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_screen_stack.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:40:22.642222+00:00",
+        "label": "ui-screen-stack-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-consumers\\ui-screen-stack-final-yi4pbnsr\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-consumers\\ui-screen-stack-final-yi4pbnsr\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "all UI screen stack checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 31.265,
+        "log_bytes": 3278,
+        "log_sha256": "4e480b41e2187596ea7c9c88cc2cb40c5ffc9b08236d43d1d088a6d4b418c974"
+      }
+    }
+  ],
+  "native": {
+    "platform": "Windows x86_64",
+    "renderer": "gl_compatibility / NVIDIA RTX 3090",
+    "primary": "1920x1080 actual window/viewport",
+    "captures": [
+      {
+        "path": "tmp/audit-20261108-ui-recovery/preview-1080.png",
+        "sha256": "05cef5e0303113edbdaa56860624688e4c0e4601ce11e90c06f1e56bdc63c1bc",
+        "width": 1920,
+        "height": 1080,
+        "retention": "ignored local artifact; no image committed"
+      },
+      {
+        "path": "tmp/audit-20261108-ui-recovery/preview-390.png",
+        "sha256": "62d41c2d73b55a6b9155bec72b3a211c0e7e3604ddb0653fa09fd4d9eb63f2d5",
+        "width": 1000,
+        "height": 390,
+        "retention": "ignored local artifact; no image committed"
+      },
+      {
+        "path": "tmp/audit-20261108-ui-recovery/preview-400.png",
+        "sha256": "5de5ece9d494cb4f7a7b179b0099a584da4011a808dd46089e65c8d2e4340118",
+        "width": 1000,
+        "height": 400,
+        "retention": "ignored local artifact; no image committed"
+      },
+      {
+        "path": "tmp/audit-20261108-ui-recovery/loading-hover-1080.png",
+        "sha256": "1525b591c7142bc86710109d64a74b411ac0a813d9f2c5d790ad6e16d7d83730",
+        "width": 1920,
+        "height": 1080,
+        "retention": "ignored local artifact; no image committed"
+      }
+    ]
+  },
+  "excluded_or_inherited": [
+    {
+      "path": "tmp/audit-20261108-ui-recovery/checks/home-launch-conditions-5qs61ua0/report.json",
+      "sha256": "dfb015bc9b074a5e5cca8bfff711c43ee7a698b2e8287bac025aabbe53807d5d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6013cd62-868c-4202-8921-5957e971e5b1",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_home_launch_conditions.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:28:25.799648+00:00",
+        "label": "home-launch-conditions",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\home-launch-conditions-5qs61ua0\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\home-launch-conditions-5qs61ua0\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failures"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [
+          "0 failures"
+        ],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 31.391,
+        "log_bytes": 3880,
+        "log_sha256": "472d568e04af1261a2f0cab8a074ccd64346c324a6663d86919b2c4e28a63f45"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-ui-recovery/checks/home-layout-old-home-fdjqasow/report.json",
+      "sha256": "eeac4944779b8cca54bbe9127518b5607a9bdf8a27c752e7e0cf021b1f6dbc60",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b111911f-2cdd-4d53-919d-b00826df8c62",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\test_home_conditions_baseline.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:30:37.941003+00:00",
+        "label": "home-layout-old-home",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\home-layout-old-home-fdjqasow\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\home-layout-old-home-fdjqasow\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 16.406,
+        "log_bytes": 3880,
+        "log_sha256": "472d568e04af1261a2f0cab8a074ccd64346c324a6663d86919b2c4e28a63f45"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-ui-recovery/checks/loading-label-first-nfap1i67/report.json",
+      "sha256": "bf5f1a734a834476376fc9fead37e8de352a49c1fdc6b8f1a3170bdfe3e88e6e",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4ab2ca05-e8ba-4236-b4a6-965e9d66429c",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\test_loading_start_label.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:23:16.861009+00:00",
+        "label": "loading-label-first",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\loading-label-first-nfap1i67\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ui-recovery\\checks\\loading-label-first-nfap1i67\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Loading start label: 43 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 45,
+            "message": "This control can't grab focus. Use set_focus_mode() and set_focus_behavior_recursive() to allow a control to get focus.",
+            "context": [
+              "   at: grab_focus (scene/gui/control.cpp:3111)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] reject_start (res://ui/home.gd:1521)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 28.156,
+        "log_bytes": 3716,
+        "log_sha256": "e3c5b76027f9cbc09e176b9fbe472292e2c84fc159f6d2650885a09a8d9e1068"
+      }
+    }
+  ],
+  "limits": [
+    "Two inherited 200% Aircraft-page viewport assertions fail with both candidate and baseline Home source under current dependencies.",
+    "Synthetic keyboard/pad checks do not qualify physical controllers or assistive technology.",
+    "No participant comprehension, performance, other-platform, release or full required CI qualification.",
+    "Concurrent unrelated debug/airship work excluded; listed source bytes do not claim a clean HEAD."
+  ]
+}

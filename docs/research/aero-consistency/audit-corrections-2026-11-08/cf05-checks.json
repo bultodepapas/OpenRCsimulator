@@ -1,0 +1,1449 @@
+{
+  "format": "openrc-cf05-audit-correction v1",
+  "recorded_utc": "2026-11-08T19:49:17.385640+00:00",
+  "initial_head": "939ab5df4de4fc615b1051d2b1e4cba51a423b27",
+  "observed_head": "2465abc4b2def4cc9d6e3a175f4196a2b755236c",
+  "source_identity_note": "Concurrent integration commits include unrelated work; these exact source bytes and receipts define scope. Earlier checks predate later hardening and are not claims that every intermediate source passed.",
+  "sources": [
+    {
+      "path": "app/physics/ground_vehicle/airfield_track.gd",
+      "sha256": "47b2ee2377021f80bc7e61cb489c415433d8765d5a7d5a6fadff56fb8dc32d5a"
+    },
+    {
+      "path": "app/physics/rc_track_crossing.gd",
+      "sha256": "1e6c7eab68572789712e1e6f08814019cb27df1463baf0d7a5fa8824adead9b5"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "0a3d155258ad5e1d43211a753193a1668dffba1add2d9356ad4aec4a9e54eca9"
+    },
+    {
+      "path": "app/tests/test_rc_track_crossing.gd",
+      "sha256": "3c8921df551e04794bdcd78a2fc5ca14d067cebd2e1405e44854a317fb2425c2"
+    },
+    {
+      "path": "app/tests/test_rc_track_flight.gd",
+      "sha256": "19766abbb79a81f20b391bee78705a883aa24af01c4c3ca1fd107326f1b0e7b6"
+    }
+  ],
+  "checked": [
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-source-final-8xh7nxen/report.json",
+      "sha256": "0da7b55c84297efd78529504a315bfc03555263535dfcd2b5005691022bc7f5d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2c81f9b1-3013-4037-8c8c-56cadc5ed9c4",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:42:52.362035+00:00",
+        "label": "rc-track-crossing-source-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-source-final-8xh7nxen\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-source-final-8xh7nxen\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "CF-05 track crossing: 60 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.453,
+        "log_bytes": 730,
+        "log_sha256": "ae68ec6d2e256d1d4631a729a13707f4fccc575fc75ab420ad3c7d17460c6b6c"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-existing-stable-hp2_0tzf/report.json",
+      "sha256": "75a3a1d4f072ff3416d1b38324aa9b3c8d238fd2f5e751f20d96794ebe28af5b",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ab40712f-a681-4a7f-b610-8ee3ff29686b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_flight.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:45:02.814798+00:00",
+        "label": "rc-track-existing-stable",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-existing-stable-hp2_0tzf\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-existing-stable-hp2_0tzf\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "60 RC circuit flight checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 14.968,
+        "log_bytes": 3362,
+        "log_sha256": "6e77ed4bfbdd833fb8ab9fd63450cc672645eae48a040d894f5ef7f3bb3d72f1"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/lake-session-f5cqjb8m/report.json",
+      "sha256": "25a42b08b6984b13fb7b162949567efedf585323470cc1cfadd73bfa7435a100",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "98ca558c-d743-46d7-8ce4-07518a69b307",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_lake_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:36:37.226150+00:00",
+        "label": "lake-session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\lake-session-f5cqjb8m\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\lake-session-f5cqjb8m\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "lake session checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.969,
+        "log_bytes": 2888,
+        "log_sha256": "68adc8a6a382b03f1977202fe8859b8da5ce9e800e686cec2d62b2b2898292a3"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/scenery-damage-session-zgvz3uzl/report.json",
+      "sha256": "27bf03a81360d02170c9a91dbf5db2b3af297a0ffeeb9d44e32fed2aef927bdb",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c6f0a2df-1edb-4385-8e7b-e2acfc129509",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_scenery_damage_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:36:37.225149+00:00",
+        "label": "scenery-damage-session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\scenery-damage-session-zgvz3uzl\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\scenery-damage-session-zgvz3uzl\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.969,
+        "log_bytes": 4090,
+        "log_sha256": "2d570cd1b9c4c0187f9a88a1b95a22a4ac771077d9a029db1415d34098e3f6a4"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-baseline-checks/flight-log-baseline-akhpxa1m/report.json",
+      "sha256": "1e3f72557712aa1c4cedcd9c1f2e9d46ed74d13874133bf4a3554d3762e955c1",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4506b89a-180e-4357-9111-ba32409f9bd8",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log.gd",
+          "--",
+          "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-baseline-tapes"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:18:36.963423+00:00",
+        "label": "flight-log-baseline",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-baseline-checks\\flight-log-baseline-akhpxa1m\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-baseline-checks\\flight-log-baseline-akhpxa1m\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "failures;"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 15.281,
+        "log_bytes": 6648,
+        "log_sha256": "d0c1f40f500cc38023e9723b4ec8cd036c238316077443bb8ae5effda02855c1"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-final-checks/flight-log-final-rczuod9u/report.json",
+      "sha256": "11b2570db8c019fec470fed7ef4cad47d9f6e2ee207dcf1be355c0d2aee3c43e",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "465ad638-2941-46f1-a7da-947612b655e6",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log.gd",
+          "--",
+          "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-final-tapes"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:45:57.682248+00:00",
+        "label": "flight-log-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final-checks\\flight-log-final-rczuod9u\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final-checks\\flight-log-final-rczuod9u\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "FL-04 flight logs: 3305 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 18.953,
+        "log_bytes": 6528,
+        "log_sha256": "c2a754fe652723cabf5ae9aaae0d4a1466a994a9b7e71037a7048c8cfae3cf83"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-final-checks/rcv-airfield-track-final-8_o_vdup/report.json",
+      "sha256": "6208bf1a39a8a35682a9d55fad0f401aeb3d152dd141959354bebe3b78cff6f5",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "afdd9b8d-b6b2-4313-9d92-036287d48944",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_airfield_track.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:46:57.781461+00:00",
+        "label": "rcv-airfield-track-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final-checks\\rcv-airfield-track-final-8_o_vdup\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final-checks\\rcv-airfield-track-final-8_o_vdup\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "RCV airfield track: 19 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 66.641,
+        "log_bytes": 2081,
+        "log_sha256": "7ccb7ea9ad3240d5a9cde55c32ac12c3abd19b2c6dd375f416204476b3049e8c"
+      }
+    }
+  ],
+  "reviewer_witness_receipts": [
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-lake-containment-o4hr_9xz/report.json",
+      "sha256": "b7c82e2697a7fb7e8443600fe13a33eaa81e6c5d59eec5fb592e5f28a5fce0ce",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "30e0e130-7153-4e8f-b997-639e48e325d4",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:35:35.905292+00:00",
+        "label": "good-enemy-lake-containment",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-lake-containment-o4hr_9xz\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-lake-containment-o4hr_9xz\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.985,
+        "log_bytes": 3135,
+        "log_sha256": "9e78e60aa922ad4d99fca55918add5afc2b260c7e3e0e7fe0ad0d62c77df0f9f"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-lake-edge-fixed-n0z1x9cb/report.json",
+      "sha256": "c3e3328218e2680deaa704b4c6c53395709ecdc661e0ebf49e4ce00281e8ab8d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6ab7216b-e3f8-4086-ae28-5193e73fbf1e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:37:53.332632+00:00",
+        "label": "good-enemy-lake-edge-fixed",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-lake-edge-fixed-n0z1x9cb\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-lake-edge-fixed-n0z1x9cb\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.407,
+        "log_bytes": 3380,
+        "log_sha256": "8e1449c9083cd8343b060c1e5fb85958e244b7b0111bd1d28d4506b477a76680"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-lake-edge-fm2q_2lt/report.json",
+      "sha256": "e105aa9a9f9cbbb98f7323bc93d7dd267eb6a72c6928328abbd8344f11b68c5a",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c5165f8a-fea6-4b34-8643-025b80ae0442",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:37:10.214255+00:00",
+        "label": "good-enemy-lake-edge",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-lake-edge-fm2q_2lt\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-lake-edge-fm2q_2lt\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.203,
+        "log_bytes": 3433,
+        "log_sha256": "059b692b464daadf3665562654064fe9e43f56011792390a3283cf3ab389a856"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-local-envelope-dicb_vr4/report.json",
+      "sha256": "da11a413881d19ac82c26fe0783b017149a62c5d6f1a27515d5fe0bf9db7dc4c",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "221674e6-75f6-4116-b348-2af564a60079",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:31:17.599965+00:00",
+        "label": "good-enemy-local-envelope",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-local-envelope-dicb_vr4\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-local-envelope-dicb_vr4\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.594,
+        "log_bytes": 2761,
+        "log_sha256": "8b41e65db3f8d5a8320214733d9175ed00bf19fa4cb277da2636396ee72eb7ec"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-local-envelope2-53s_6m8f/report.json",
+      "sha256": "5eb98d89c21cb735254814486944e0645f72f5d382899e43e257d75af5a2b205",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d890b3ce-90dc-4e85-9fe8-3f6a3d2a1a39",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:34:38.164877+00:00",
+        "label": "good-enemy-local-envelope2",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-local-envelope2-53s_6m8f\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-local-envelope2-53s_6m8f\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.704,
+        "log_bytes": 2907,
+        "log_sha256": "7c9037248fd2b2351c43a08f14b7a28797c8f31c0d7cff2cebcf62747baf3ae1"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-track-240hz-5bab3mt0/report.json",
+      "sha256": "77eaff99accd795e46d6c8cce174b1b645b391f2cf025a1ff6dac01a6484556f",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c48658bb-aae0-4727-b2d6-a7053c5f155e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:25:45.698061+00:00",
+        "label": "good-enemy-track-240hz",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-track-240hz-5bab3mt0\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-track-240hz-5bab3mt0\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.766,
+        "log_bytes": 1126,
+        "log_sha256": "2fd00aca01c286ec63ef1d83d4e4f666f7992383cd7144ef87a87ea842a6fb6e"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-good-enemy/checks/good-enemy-track-44qb8ifu/report.json",
+      "sha256": "26af96ad8f8dfff99bd025015e152f2777978b2140eb55f9161efabe3dc05e67",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b68ae39f-b5af-4bd9-98c2-999af4e54fc8",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-good-enemy/probe.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:25:15.215951+00:00",
+        "label": "good-enemy-track",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-track-44qb8ifu\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-good-enemy\\checks\\good-enemy-track-44qb8ifu\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "GOOD_ENEMY_PROBE_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.109,
+        "log_bytes": 492,
+        "log_sha256": "2d5d3ca58ad3886c27e0f1494c3892807a67f1e2ea930d370a1b37b680699c31"
+      }
+    }
+  ],
+  "rejected_attempt_receipts": [
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-2iouv6p8/report.json",
+      "sha256": "a2e56ab3816127f53381b279614d4c7eb2e8f8d40abb60d7f055f86cd81b54be",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "34d1923f-ba69-4163-a2aa-02f79371bdfb",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:33:18.881268+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-2iouv6p8\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-2iouv6p8\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.391,
+        "log_bytes": 576,
+        "log_sha256": "7ac9aa6bfa20e55a84c3cb72f03ee57c3db01588a102fd9c76c8fda7dd2b18ac"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-4i194nyc/report.json",
+      "sha256": "0bc2a793dec15bc0da80456e5c5f6d8993fc593f05109bcba2ea9bd0fe1239cd",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7703cf38-9ccb-477c-bab0-7c310e28cadb",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:33:08.565543+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-4i194nyc\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-4i194nyc\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 2,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 3,
+            "message": "Parse Error: The member \"raw\" already exists in parent class res://sim/flight_session.gd.",
+            "context": [
+              "   at: GDScript::reload (res://tests/test_rc_track_crossing.gd:19)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 5,
+            "message": "Failed to load script \"res://tests/test_rc_track_crossing.gd\" with error \"Parse error\".",
+            "context": [
+              "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+            ]
+          }
+        ],
+        "missing_required_text": [
+          "CF-05 track crossing:"
+        ],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.937,
+        "log_bytes": 405,
+        "log_sha256": "be01a7d92a200095e6b0472ec4fa0e0c0eab7fc9289ed878dc11122a270002cc"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-4t97iq1m/report.json",
+      "sha256": "203e6cd5cd9743df5c9e8fb8d2521e1c26e95eff89977b626dcbac00139bc588",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5129bd4f-3a53-4d9e-91b2-01d8e280e059",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:31:58.056012+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-4t97iq1m\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-4t97iq1m\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.203,
+        "log_bytes": 609,
+        "log_sha256": "09845f22e51e7fb8b26cee482d6b89a0379789d09e041db7db27ff6063da162c"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-55hnvy3u/report.json",
+      "sha256": "6fff0f51a4c23691227f16ce3fabf434efce25416eda40edf9865171d654a798",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f51e589e-1eed-4cfc-af9c-7105bd59eac1",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:26:55.196382+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-55hnvy3u\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-55hnvy3u\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.562,
+        "log_bytes": 669,
+        "log_sha256": "76ba1df3e225d5dbc73a00bac3550487d28c583b4e1584d6f14e6eb07c497df1"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-bd_nldfe/report.json",
+      "sha256": "c17153ec218b505070b12644f0545b7ab7b019ba8c851ac4a4df2ecca78fed86",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "cbb874d6-38a7-448d-9379-67a519bee95f",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:33:34.753349+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-bd_nldfe\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-bd_nldfe\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.875,
+        "log_bytes": 691,
+        "log_sha256": "ef76b8c2dcf6828e8a036e268e5424539f757b90102c954dbe191653b0c4eac1"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-h77va5i9/report.json",
+      "sha256": "568f20982fa4a3da4e00c285cccad28a231894d29d486be9d872f5a3b577343f",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4666dcb5-e546-41bd-ba94-a383c6a79f9b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:27:21.183114+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-h77va5i9\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-h77va5i9\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 10.312,
+        "log_bytes": 835,
+        "log_sha256": "d93f0c13c0fc552aa451b83febbd2a74cdc93fc98e1da51223f49c47f34f15f7"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-sf4yb1qo/report.json",
+      "sha256": "de119dc31e2fc25b65fab92255ccc262d6d019bc3e86a61201ecddd6ca701b40",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "36a1f319-5f3c-4a1c-93d2-9c5c5c475063",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:25:38.407873+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-sf4yb1qo\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-sf4yb1qo\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 2,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 3,
+            "message": "Parse Error: Cannot infer the type of \"accepted_before\" variable because the value doesn't have a set type.",
+            "context": [
+              "   at: GDScript::reload (res://tests/test_rc_track_crossing.gd:162)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 5,
+            "message": "Failed to load script \"res://tests/test_rc_track_crossing.gd\" with error \"Parse error\".",
+            "context": [
+              "   at: load (modules/gdscript/gdscript_resource_format.cpp:50)"
+            ]
+          }
+        ],
+        "missing_required_text": [
+          "CF-05 track crossing:"
+        ],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.5,
+        "log_bytes": 424,
+        "log_sha256": "78530e9f38267be38e289b261462c3cd43df345d4b285f6657f516c6d8ad2e5c"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-crossing-sobk3spi/report.json",
+      "sha256": "7c6270518f139dd90b1449aa8399ea0de876bf73bb6703bdbd39f82ddb5a9da5",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "58555b45-a3c6-4d25-a7b9-f15c5f50e897",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_crossing.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:32:28.752282+00:00",
+        "label": "rc-track-crossing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-sobk3spi\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-crossing-sobk3spi\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "CF-05 track crossing:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 5.141,
+        "log_bytes": 727,
+        "log_sha256": "c7c45085bd27e2b42df8a7937f9c6a111454e51d141e9db5f5bd2dc73cf75bdf"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rc-track-existing-s18etnxi/report.json",
+      "sha256": "76bb3b63e30e2ba553949685c8bfae4377cdb4b59c6158a15f6e2bbd2cec48a3",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ad07bb4a-f626-4595-8dc6-e3cc9ff62c62",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rc_track_flight.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:21:50.870334+00:00",
+        "label": "rc-track-existing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-existing-s18etnxi\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rc-track-existing-s18etnxi\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 10.016,
+        "log_bytes": 3432,
+        "log_sha256": "6220838e3d4bab91ac8734207302b9b9e5bbe18fbb2f9130a40c19b3846437fb"
+      }
+    },
+    {
+      "path": "tmp/audit-20261108-track-checks/rcv-airfield-track-tiv4k3um/report.json",
+      "sha256": "0bd65491ccf812174aad6b20bc2e95e1b939e9d51f46350e55b3c562a5faad35",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "99ab31cd-def5-4e4c-b963-6931048e6e6e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_airfield_track.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:37:11.657457+00:00",
+        "label": "rcv-airfield-track",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rcv-airfield-track-tiv4k3um\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-track-checks\\rcv-airfield-track-tiv4k3um\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [
+          "0 failed"
+        ],
+        "reason": "missing_required_text",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 49.375,
+        "log_bytes": 2081,
+        "log_sha256": "02223df4bf85cd013e74972d4c853bf862cd72d150e6ae20760ba89df3fa08d4"
+      }
+    }
+  ],
+  "retained_flight_artifacts": [
+    {
+      "path": "docs/research/aero-consistency/audit-corrections-2026-11-08/cf05-baseline-extra.orfl.gz",
+      "stored_sha256": "ccd532409794af6e0755c9522ea0cd0f2e3087e302fbd087f66b061581672755",
+      "uncompressed_sha256": "a102241db0a0392075b7cc58ee0e8e0230ae6edb190fb78438b16987f84b2b55",
+      "uncompressed_bytes": 324832
+    },
+    {
+      "path": "docs/research/aero-consistency/audit-corrections-2026-11-08/cf05-baseline-extra.csv.gz",
+      "stored_sha256": "734afe8d1f674ee6e9567f5013c4f4f5049b03bd88b20033a0d02cde7e80b06c",
+      "uncompressed_sha256": "1898daf9de41d8620de82f8639dc0c8cda6608db00ab637ecacfea5b01b6b769",
+      "uncompressed_bytes": 301567
+    }
+  ],
+  "candidate_replay": {
+    "baseline_build": {
+      "commit": "",
+      "commit_date": "",
+      "describe": "",
+      "dirty": false,
+      "godot": "4.8-beta2 (official)",
+      "label": "",
+      "parsed": {
+        "after": 0,
+        "base": "0.2.0",
+        "dirty": false,
+        "prerelease": "",
+        "semver": "0.2.0",
+        "sha": "",
+        "tag": ""
+      },
+      "source": "development",
+      "version": "0.2.0"
+    },
+    "baseline_solver_identity_kind": "source-tree-v1",
+    "baseline_solver_sha256": "b4ff1dac13270d48b8d94b7fc1c5f721f77e7a995b32be5be47286141b1e5776",
+    "baseline_stage_backend": {
+      "backend": "gdscript_reference"
+    },
+    "candidate": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\gp_extra_300s_60.json",
+    "candidate_identity": {
+      "format": "openrc-aircraft v2",
+      "sha256": "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc"
+    },
+    "comparison_method": "Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation.",
+    "complete": true,
+    "current_solver_identity_kind": "source-tree-v1",
+    "current_solver_sha256": "1d698bcd9f05a10435bd182a6db532e1476c37a826c48bef854201f642935f83",
+    "current_stage_backend": {
+      "backend": "gdscript_reference"
+    },
+    "dt_s": 0.004166666666666667,
+    "error": "",
+    "events": [
+      {
+        "detail": "roll reversal",
+        "kind": "marker",
+        "tick": 56
+      },
+      {
+        "detail": "checkpoint restored (recorded inputs)",
+        "kind": "resume",
+        "tick": 61
+      },
+      {
+        "detail": "stopped",
+        "kind": "stop",
+        "tick": 260
+      }
+    ],
+    "events_omitted": 0,
+    "final_tick": 260,
+    "first_tick": 0,
+    "format": "openrc-flight-log-report v1",
+    "metadata": {
+      "aero_loads_law": "section-plane-source-weighted-wake-velocity-v3",
+      "aero_model": "section-plane-source-weighted-wake-velocity-v3 with bounded attached oracle",
+      "aircraft": "gp-extra-300s-60 (res://data/aircraft/gp_extra_300s_60.json)",
+      "aircraft_input_format": "openrc-aircraft v2",
+      "aircraft_input_hash_convention": "sha256 of exact aircraft input file bytes",
+      "aircraft_input_sha256": "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc",
+      "aircraft_semantic_hash_convention": "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
+      "aircraft_semantic_sha256": "9e25198e19ccd36a8326587f98bcc434f450b43f1aca2835e6bb3e2cc938cc90",
+      "aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
+      "configuration": "rcm-weighed-dry-manual-p43-plus-full-finite-glow-tank-v3",
+      "continuous_layout": "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line); wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
+      "created_utc": "2026-11-08T19:18:42",
+      "dt_s": 0.004166666666666667,
+      "engine": "Godot 4.8-beta2 (official)",
+      "engine_rpm_semantics": "propeller shaft rpm",
+      "frames": "world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]",
+      "fuel_mass_policy": "finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG",
+      "glow_family": "glow_2t",
+      "glow_feed_line_inventory_id": "",
+      "glow_fuel_registry_sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+      "glow_fuel_tank_id": "main_tank",
+      "glow_identity": "{\"format\":\"openrc-glow-installation v2\",\"profile\":{\"format\":\"openrc-glow-engine v1\",\"sha256\":\"462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e\"},\"sha256\":\"84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8\"}",
+      "glow_recording_start": "{\"above_recommended_rpm\":false,\"actual_mixture\":1.15,\"admission\":0.3982080113791385,\"air_charge_kg_cycle\":2.756440519354361e-06,\"air_fraction\":0.07289735825504105,\"air_target\":0.07289735825504105,\"blade_count\":2.0,\"brake_power_w\":163.40608734956,\"burned_fuel_kg_s\":6.0862793712120586e-05,\"chemical_power_w\":1129.2293413417294,\"commanded_throttle\":0.244399517808185,\"cycle_frequency_hz\":124.54735697638795,\"cycle_revolutions\":1,\"cycle_work_j\":1.487745557757455,\"delivered_fuel_kg_s\":0.00011800330920253932,\"family\":\"glow_2t\",\"feed_line_fuel_kg\":0.0,\"fire_count\":0,\"firing_accumulator\":0.0,\"firing_fraction\":1.0,\"firing_frequency_hz\":124.54735697638795,\"fuel_density_kg_m3\":856.9200000000001,\"fuel_feed_factor\":1.0,\"fuel_input_power_w\":1747.4396355431484,\"fuel_kg\":0.30420660000000005,\"fuel_source_mode\":1,\"fuel_target_kg_s\":0.00011800330920253932,\"fuel_transport_kg_s\":0.00011800330920253932,\"fuel_volume_m3\":0.000355,\"hub_air_velocity_body_m_s\":[21.95439454068343,0.2700252914200505,1.3898369307235963],\"indicated_power_w\":185.29477707205314,\"indicated_torque_nm\":0.23678205958010784,\"line_fuel_kg\":0.0,\"main_fuel_kg\":0.30420660000000005,\"mass_properties\":{\"cg_body_m\":[0.0,0.0,0.0],\"inertia\":[0.16869219449345865,0.3142051836426869,0.457345281725135,0.0,-0.015726765645230102,0.0],\"inertia_origin\":[0.16869219449345865,0.3142051836426869,0.457345281725135,0.0,-0.015726765645230102,0.0],\"inverse\":[5.9470216574143056,3.18263368034436,2.193563974914426,0.0,0.20450066859872573,0.0],\"mass_kg\":3.819547600000001,\"ok\":true},\"mechanical_loss_w\":20.007231270894497,\"mechanical_torque_nm\":0.025566578301210213,\"message\":\"\",\"mixture_command\":1.15,\"ok\":true,\"opportunity_count\":0,\"opportunity_frequency_hz\":124.54735697638795,\"phase_revolutions\":0.0,\"profile_identity\":{\"cycle_revolutions\":1,\"id\":\"os_max_61fx_installed_candidate\",\"input_sha256\":\"462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e\",\"manufacturer\":\"O.S. Engines\",\"model\":\"MAX-61FX (muffler-installed)\",\"status\":\"candidate\"},\"propeller\":{\"dissipation_w\":49.88198442354992,\"ok\":true,\"shaft_power_w\":163.40608734956015,\"thrust_n\":5.169176889058923,\"thrust_power_w\":113.5241029260102,\"torque_nm\":0.20881122782813438},\"propeller_work_j\":0.0,\"pumping_loss_w\":1.8814584515986374,\"pumping_torque_nm\":0.0024042534507634395,\"recommended_max_rpm\":15833.333333333334,\"rpm\":7472.841418583277,\"running\":true,\"servo_fraction\":0.244399517808185,\"shaft_torque_nm\":0.2088112278281342,\"shaft_work_j\":0.0,\"source_vibration\":{\"alpha_rad_s2\":0.0,\"constant_speed_assumption\":true,\"cycle_revolutions\":1,\"errors\":[],\"family\":\"glow_2t\",\"firing_order\":1.0,\"mean_successful_fire_rate_hz\":124.54735697638795,\"ok\":true,\"omega_rad_s\":782.5541234020917,\"opportunity_frequency_hz\":124.54735697638795,\"order_1x_force_cosine_n\":-92.62413210310946,\"order_1x_force_peak_n\":92.62413210310946,\"order_1x_force_sine_n\":0.0,\"order_2x_force_cosine_n\":-27.025826641653573,\"order_2x_force_peak_n\":27.025826641653573,\"order_2x_force_sine_n\":0.0,\"phase_rad\":0.0,\"source_force_n\":-119.08816984685501},\"stop_reason\":\"\",\"temperature_k\":390.0,\"throttle_opening\":0.07289735825504105,\"thrust_work_j\":0.0,\"total_fuel_kg\":0.30420660000000005,\"unburned_chemical_power_w\":618.210294201419,\"unburned_fuel_kg_s\":5.7140515490418735e-05,\"valve_loss_w\":0.0,\"valve_torque_nm\":0.0}",
+      "gravity_mps2": 9.80665,
+      "ground": "3 profiled spring-damper gear contacts on flat 0 m dry-pavement fixture; per-contact wheel radius and inertia, steering, continuous relative wheel spin; brakes off (no brake command exposed)",
+      "ground_effect_model": "image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)",
+      "inertia_kgm2": "Jxx Jyy Jzz Jxy Jxz Jyz = 0.16869219449346 0.31420518364269 0.45734528172514 0.0 -0.01572676564523 0.0",
+      "launch_aux": "[]",
+      "launch_choice": "unknown",
+      "launch_continuous": "[]",
+      "launch_engine_running": "unknown",
+      "launch_error": "",
+      "launch_field_id": "",
+      "launch_ground_anchors": "[]",
+      "launch_kind": "checkpoint_restore",
+      "launch_state": "[]",
+      "launch_trim_throttle": "unknown",
+      "loads": "Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction",
+      "mass_contact_law": "fixed-datum-live-mass-contact-linear-fuel-v1",
+      "mass_kg": 3.819547600000001,
+      "mass_reference": "mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum",
+      "metadata_schema": "openrc-flight-meta v10",
+      "propulsion_features": "{\"propeller_normal_force\":true,\"propeller_pfactor\":true,\"rotor_gyroscopic_coupling\":true,\"turbine_ram_flow\":false,\"turbine_ram_jet\":false}",
+      "propulsion_model": "glow-mean-cycle-segmented-firing-v6",
+      "propwash_model": "tail-slipstream-increment-v1",
+      "recording_start_aux": "[7472.841418583277,0.0022762322551436683,0.08238040779946397,-0.01909844774572855]",
+      "recording_start_continuous": "[7472.841418583277,0.30420660000000005,390.0,0.244399517808185,0.07289735825504105,0.00011800330920253932,0.0,1.0,0.0,0.0,0.0,0.0,1.15,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0]",
+      "recording_start_engine_running": "true",
+      "recording_start_previous_state": "[60.0,-40.0,-30.0,24.923199681216854,0.4906115269517233,2.7116812589042856,0.7067535286350747,-0.02234837268954455,0.022348372689544555,0.7067535286350746,0.0,0.0,0.0]",
+      "recording_start_rng_state": "4854362591652544791",
+      "recording_start_tick": 0,
+      "recording_start_turbulence": "[-0.22058623553167248,0.04638708540606056,1.1316369189242184,-0.22058623553167248,0.04638708540606056,1.1316369189242184,0.0]",
+      "rotor_coupling": "relative-spin-locked-inertia-reaction-v1",
+      "runway_fallback": "none",
+      "runway_start_status": "not_attempted",
+      "scenario": "checkpoint replay (original launch unknown)",
+      "selected_start_choice": "unknown",
+      "shaft_integrator": "coupled-rk4",
+      "state_layout": "[\"north_m\",\"east_m\",\"down_m\",\"u_mps\",\"v_mps\",\"w_mps\",\"qw\",\"qx\",\"qy\",\"qz\",\"p_radps\",\"q_radps\",\"r_radps\"]",
+      "state_timing": "body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage",
+      "turbulence_aux_index": 14,
+      "turbulence_interval": "linear interpolation between exact OU tick samples; wall time tau; independent NED axes",
+      "wake_state_unit": "m/s (equal-area mean of section Vp*CL)",
+      "weather_config": "{\"format\":\"openrc-weather v2\",\"from_deg\":270.0,\"gust_delay_s\":2.0,\"gust_duration_s\":4.0,\"gust_mps\":0.0,\"gust_period_s\":12.0,\"gust_up_mps\":0.0,\"speed_mps\":3.0,\"turbulence_rms_mps\":[0.6,0.6,0.4],\"turbulence_seed\":20261009,\"turbulence_tau_s\":2.0}",
+      "weather_evidence": "user-selected/authored practice conditions; not measured meteorology",
+      "weather_model": "uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1",
+      "weather_timing": "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0",
+      "wheel_brakes": "[{\"availability\":\"none\",\"contact\":\"main_left\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"main_right\",\"max_torque_nm\":0.0},{\"availability\":\"none\",\"contact\":\"tail\",\"max_torque_nm\":0.0}]",
+      "wheel_profile_hash_convention": "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes",
+      "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+      "wheel_profile_sha256": "72c9d754277eed6a6db76894c76fd16e860e5b71569928d3f9d1bbbeb3ab6d97",
+      "wheel_profile_status": "applied",
+      "wheel_rolling_law": "wheel-positive-terrain-excess-v2",
+      "wheel_state_layout": "[{\"contact\":\"main_left\",\"index\":19,\"unit\":\"m/s rim speed\"},{\"contact\":\"main_right\",\"index\":20,\"unit\":\"m/s rim speed\"},{\"contact\":\"tail\",\"index\":21,\"unit\":\"m/s rim speed\"}]",
+      "wheel_state_model": "relative-wheel-rim-speed-rk4-v1",
+      "wing_polar_model": "tabulated-wing-v1 (experimental finite-wing strip reference); spanwise stall progression g = 1.0"
+    },
+    "mode": "candidate",
+    "observer_usec": 25123,
+    "peak_buffer_rows": 199,
+    "recovery_reason": "",
+    "rows": 261,
+    "solver_changed": true,
+    "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-baseline-tapes\\gp_extra_300s_60.orfl",
+    "source_sha256": "a102241db0a0392075b7cc58ee0e8e0230ae6edb190fb78438b16987f84b2b55",
+    "status": "ok"
+  },
+  "csv_comparison": {
+    "byte_identical": true,
+    "rows": 261,
+    "baseline_sha256": "1898daf9de41d8620de82f8639dc0c8cda6608db00ab637ecacfea5b01b6b769",
+    "candidate_sha256": "1898daf9de41d8620de82f8639dc0c8cda6608db00ab637ecacfea5b01b6b769",
+    "note": "Same preserved 260-tick input tape; source-solver change is explicitly reported. No circuit installed on this unaffected-domain control. Baseline exact replay ran in the 3305-check baseline suite."
+  },
+  "companion_rebind": {
+    "format": "openrc-ai-solver-rebind v1",
+    "date": "2026-11-08",
+    "accepted_before": {
+      "solver_sha256": "b9a90735f035eef47d362e0fefbc82cef189a65c182826dcec3e5d662e7e9c30",
+      "rev": "d571d67adcc64d7a723568912048707853de75ec"
+    },
+    "current_solver_sha256": "c4a7d8932834cef7ebf11f42b588fd491999fe18ebc66f3aa5c47ded1c8bb80d",
+    "head": "4bda2e4540fc07ebe8eb63d35072fd5aead39cbe",
+    "solver_tree_committed": true,
+    "changed_sources": [
+      "app/physics/ground_vehicle/airfield_track.gd",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "app/physics/rc_track_crossing.gd",
+      "app/physics/rc_track_crossing.gd.uid",
+      "app/physics/rotorcraft/main_rotor.gd",
+      "app/physics/rotorcraft/trim.gd",
+      "app/sim/flight_session.gd"
+    ],
+    "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+    "identical": true,
+    "tapes": [
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-ai.orfl.gz",
+        "orfl_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+        "rows": 2881,
+        "base_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+        "head_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "6530bf0715ae440f394747944f2d4bbf8ebcd74f3ba4284676ab5777eb30f748",
+        "base_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+        "head_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-coupled.orfl.gz",
+        "orfl_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+        "rows": 2881,
+        "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+        "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "bb1d604945b6439217ba740cad67f77086574ed264083d2c548fa7408aab0f13",
+        "base_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+        "head_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-exogenous.orfl.gz",
+        "orfl_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+        "rows": 2881,
+        "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+        "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "e6c72f34b123fc5f346f670fef9011a26da1464ad7cc8f7182a62510f801bbdb",
+        "base_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+        "head_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-ai.orfl.gz",
+        "orfl_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+        "rows": 2881,
+        "base_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+        "head_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "daf871bc8e5c1c95ef651c5ba0f59e7bdd97c5cd4a418c9151a5d10b96675543",
+        "base_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+        "head_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-coupled.orfl.gz",
+        "orfl_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+        "rows": 2881,
+        "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+        "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "5c731435844c63040183a636e740bbe110d4fbe24cd640ae78cbd3cb0f8abf9a",
+        "base_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+        "head_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-exogenous.orfl.gz",
+        "orfl_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+        "rows": 2881,
+        "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+        "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "430fd976950df54b0addf10867a8ea39571300fefb3869af98ea92d8bdd92401",
+        "base_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+        "head_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-ai.orfl.gz",
+        "orfl_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+        "rows": 2881,
+        "base_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+        "head_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "f487702aa244117f6552dcb3052ad55cada3f8b5197e379c85e82da51b9d789b",
+        "base_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+        "head_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-peer.orfl.gz",
+        "orfl_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+        "rows": 2881,
+        "base_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+        "head_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "09bc3b855fd5cbccd7635eb000dfe0c52edd9d4e661bccc36d1ae51ee17d1c18",
+        "base_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+        "head_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b"
+      },
+      {
+        "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-player.orfl.gz",
+        "orfl_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+        "rows": 2881,
+        "base_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+        "head_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+        "identical": true,
+        "tape_encoding": "gzip",
+        "stored_sha256": "677e5e446f5087b954df0c95b2bd956d01c1031a6cb5ed2a12705cce37961189",
+        "base_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+        "head_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d"
+      }
+    ],
+    "baseline": "solver",
+    "method": "Candidate replays of the retained tapes on two disposable copies differing only in the solver directories (accepted rev vs current tree); CSV bytes compared.",
+    "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
+  },
+  "limits": [
+    "Pose interpolation is not RK dense output or mesh CCD.",
+    "Constructed production tick retains stock Corsair geometry/callbacks; it is not exact reconstruction of the unavailable external witness package.",
+    "Budget exhaustion/tangency or pathological custom-bank ambiguity can refuse.",
+    "Synthetic Club-table one-point near-clear probes reached about 12 ms under concurrent Windows development; no target-host/full-scene performance qualification.",
+    "Actual NK-3 installation/package, required full CI, physical flight and native rendered contact acceptance remain separate.",
+    "Full old source reconstruction is not retained for this baseline; exact replay was checked before source changes and its complete ORFL remains retained."
+  ]
+}

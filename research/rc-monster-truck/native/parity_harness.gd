@@ -6,6 +6,7 @@ const CourseData := preload("res://physics/ground_vehicle/course.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
+const M := preload("res://physics/math3d.gd")
 const ABS_TOLERANCE := 2.0e-8
 const REL_TOLERANCE := 2.0e-10
 const FLOAT_OUTPUTS := [
@@ -60,6 +61,7 @@ func _initialize() -> void:
 	_run_case("rest_no_energy", resting, model, VehicleDynamics.DEFAULT_CONTROLS, road, batch, false, true)
 	_run_randomized(resting, model, road, batch)
 	_run_brake_distribution(resting, model, road, batch)
+	_run_f6_capped_stage(model)
 	_run_invalids(resting, model, batch)
 	_run_external_generalized_loads(resting, scenarios[1], model, road, batch)
 	_run_lake_terrain_parity()
@@ -75,6 +77,92 @@ func _initialize() -> void:
 func _make_single_road(course: Dictionary) -> Callable:
 	return func(north_m: float, east_m: float) -> Dictionary:
 		return CourseData.sample(course, north_m, east_m)
+
+
+## A recorded RK stage from the combined-slip/reversal tape. The active solve
+## reaches the 128-sweep cap; matching it is not a convergence certificate.
+func _run_f6_capped_stage(model: Dictionary) -> void:
+	var state := PackedFloat64Array([
+		3.417120931483279, 3.5441496998559354, -0.1744362836253973,
+		-0.6526442328765553, 0.5767135684966855, -0.04414370134656126,
+		-0.9191832620101235, -0.021073600963705825, -0.0035584107475456267, 0.39324974641831756,
+		-0.10792166355159949, 0.19910042889414767, 2.4017060907898555,
+		0.002529102064044129, 0.0161515908493412, 0.010550814199604656, 0.024335358274888745,
+		-0.03121326543996618, -0.04125901981255227, 0.025139583864608205, 0.013119425146725108,
+		-0.015337429555794292, -0.03920527831867781, -0.2642905195273369, -8.54502620959071,
+		154.26054725906732, 179.28205565491402, 110.87810561710083, 145.9268221460802,
+		-0.2356222418949193, 0.0001340823828043567])
+	var controls := {"brake": 1.0, "reverse": false, "steering": -0.45, "throttle": 0.0}
+	var flat := func(_north: float, _east: float) -> Dictionary:
+		return {"height_m": 0.0, "normal_ned": PackedFloat64Array([0.0, 0.0, -1.0]), "mu": 0.9, "rolling": 1.0}
+	var flat_batch := func(coords: PackedFloat64Array) -> Dictionary:
+		var samples := PackedFloat64Array()
+		for _index in range(0, coords.size(), 2):
+			samples.append_array(PackedFloat64Array([0.0, 0.0, 0.0, -1.0, 0.9, 1.0]))
+		return {"ok": true, "error": "", "samples": samples}
+	var reference: Dictionary = VehicleDynamics._evaluate(state, model, controls, flat, false, true)
+	var candidate: Dictionary = _native.evaluate(state, model, controls, flat_batch, false, true)
+	_checks += 1
+	if not reference.get("ok", false) or not candidate.get("ok", false) \
+			or int(reference.get("friction_sweeps_used", 0)) != 128 \
+			or int(candidate.get("friction_sweeps_used", 0)) != 128:
+		_fail("F6 capped-stage fixture did not reach the cap in both solvers")
+		return
+	_run_case("f6_capped_stage", state, model, controls, flat, flat_batch, false, true)
+	_run_case("f6_capped_stage_fixed", state, model, controls, flat, flat_batch, false, false)
+	for pair in [["reference", reference], ["native", candidate]]:
+		_checks += 1
+		if not _f6_passive_capped_state(state, model, controls, pair[1]):
+			_fail("F6 capped-stage %s violates tire/brake passivity or force budget" % pair[0])
+
+
+## Reconstruct contact velocity and power from accepted force arrays, using
+## production corner geometry but not the solver's slip or projection helpers.
+func _f6_passive_capped_state(state: PackedFloat64Array, model: Dictionary, controls: Dictionary, result: Dictionary) -> bool:
+	var q := M.q_normalized(PackedFloat64Array([state[6], state[7], state[8], state[9]]))
+	var velocity := PackedFloat64Array([state[3], state[4], state[5]])
+	var body_rate := PackedFloat64Array([state[10], state[11], state[12]])
+	var angle := state[VehicleDynamics.STEER]
+	var steer_rate := state[VehicleDynamics.STEER_RATE]
+	var frequency: float = model.steer_servo_natural_frequency_rad_s
+	var steer_acceleration: float = frequency * frequency * (float(controls.steering) * float(model.max_steer_angle_rad) - angle) \
+		- 2.0 * float(model.steer_servo_damping_ratio) * frequency * steer_rate
+	var geometry: Dictionary = VehicleDynamics._corner_geometry(state, model, angle, steer_rate, steer_acceleration)
+	if not geometry.get("ok", false): return false
+	var normal := PackedFloat64Array([0.0, 0.0, -1.0])
+	var rho := M.q_rotate(M.q_conj(q), M.scale(normal, -float(model.tire_radius_m)))
+	var worst_tire := 0.0
+	var worst_brake := 0.0
+	for corner in 4:
+		var r: PackedFloat64Array = geometry.hub_position_body[corner]
+		var r_prime: PackedFloat64Array = geometry.hub_position_derivative_body[corner]
+		var axis: PackedFloat64Array = geometry.spin_axis_body[corner]
+		var hub := M.add(velocity, M.add(M.cross(body_rate, r), M.scale(r_prime, state[VehicleDynamics.TRAVEL_RATE + corner])))
+		var left_angle := -angle if corner < 2 else 0.0
+		var left_rate := -steer_rate if corner < 2 else 0.0
+		var omega := M.add(body_rate, M.add(PackedFloat64Array([0.0, 0.0, -left_rate]),
+			M.scale(axis, state[VehicleDynamics.WHEEL_SPIN + corner])))
+		var contact_velocity := M.q_rotate(q, M.add(hub, M.cross(omega, rho)))
+		var forward := M.q_rotate(q, PackedFloat64Array([M.cos_(left_angle), -M.sin_(left_angle), 0.0]))
+		forward = M.sub(forward, M.scale(normal, M.dot(forward, normal)))
+		forward = M.scale(forward, 1.0 / M.norm(forward))
+		var lateral := M.cross(forward, normal)
+		lateral = M.scale(lateral, 1.0 / M.norm(lateral))
+		var fx: float = result.wheel_longitudinal_force_n[corner]
+		var fy: float = result.wheel_lateral_force_n[corner]
+		var px := fx * M.dot(contact_velocity, forward)
+		var py := fy * M.dot(contact_velocity, lateral)
+		var tire_power := px + py
+		var brake_power: float = result.wheel_brake_torque_n_m[corner] * state[VehicleDynamics.WHEEL_SPIN + corner]
+		var limit: float = 0.9 * float(model.tire_friction_scale) * result.wheel_load_n[corner]
+		worst_tire = maxf(worst_tire, tire_power)
+		worst_brake = maxf(worst_brake, brake_power)
+		if tire_power > 1.0e-10 * maxf(1.0, absf(px) + absf(py)) \
+				or brake_power > 1.0e-10 * maxf(1.0, absf(brake_power)) \
+				or sqrt(fx * fx + fy * fy) > limit + 1.0e-8:
+			return false
+	print("F6 capped-stage max positive tire/brake W: ", [worst_tire, worst_brake])
+	return true
 
 
 func _make_batch_road(course: Dictionary) -> Callable:
