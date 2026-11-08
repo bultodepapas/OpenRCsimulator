@@ -9676,3 +9676,96 @@ msgstr "Turbulenz ist für Drehflügler nicht qualifiziert; Windstille, stetigen
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "Zyklisch vorwärts/rechts %.1f / %.1f auf %.1f / %.1f Grad."
+
+msgid "Failure practice enabled"
+msgstr "Fehlertraining aktiviert"
+
+msgid "Airborne seconds"
+msgstr "Sekunden in der Luft"
+
+msgid "Launch scenario"
+msgstr "Startszenario"
+
+msgid "Scenario seed"
+msgstr "Szenario-Seed"
+
+msgid "Weather recipe"
+msgstr "Wetterrezept"
+
+msgid "Local time at launch"
+msgstr "Ortszeit beim Start"
+
+msgid "Wind at launch"
+msgstr "Wind beim Start"
+
+msgid "%s from %d°"
+msgstr "%s aus %d°"
+
+msgid "Ordinary flight"
+msgstr "Normaler Flug"
+
+msgid "Enabled"
+msgstr "Aktiviert"
+
+msgid "Failure seed"
+msgstr "Fehler-Seed"
+
+msgid "Excluded failure types"
+msgstr "Ausgeschlossene Fehlerarten"
+
+msgid "Recorded failures"
+msgstr "Aufgezeichnete Fehler"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "Kein Fehlerereignis aufgezeichnet; ob eines auftrat, ist unbekannt."
+
+msgid "Recorded failure"
+msgstr "Aufgezeichneter Fehler"
+
+msgid "%s · tick %d"
+msgstr "%s · Schritt %d"
+
+msgid "Practice settings at launch"
+msgstr "Trainingseinstellungen beim Start"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "Löschung erfasst. Die Bereinigung ist unvollständig; der verbleibende Verlauf ist schreibgeschützt."
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "Löschung erfasst. Die Bereinigung ist unvollständig; der Verlauf ist vorübergehend nicht verfügbar."
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "Die Löschung konnte nicht abgeschlossen werden. Dein Verlauf ist unverändert."
+
+msgid "Start location"
+msgstr "Startpunkt"
+
+msgid "Keep current run"
+msgstr "Aktuellen Lauf behalten"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "Aktueller Start: %s. Ein Neustart beendet diesen Lauf; Aufzeichnungen werden vorher gespeichert."
+
+msgid "Restart at %s"
+msgstr "Bei %s neu starten"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "Der Startpunkt konnte nicht geändert werden. Der aktuelle Lauf bleibt erhalten."
+
+msgid "Camera: %s · C"
+msgstr "Kamera: %s · C"
+
+msgid "Pilot stand"
+msgstr "Fahrerstand"
+
+msgid "Circuit overview"
+msgstr "Streckenübersicht"
+
+msgid "Used when you select Drive."
+msgstr "Wird bei Auswahl von Drive verwendet."
+
+msgid "Overview is active in the garage and while driving."
+msgstr "Die Übersicht ist in der Garage und während der Fahrt aktiv."
+
+msgid "Return to Chase"
+msgstr "Zur Verfolgung zurückkehren"

@@ -12,6 +12,9 @@ signal changed
 ## share this service's classifier; they must not instantiate parallel timers.
 signal flight_events_accepted(events: Array)
 var note := ""
+## `delete_history` remains a bool; this receipt distinguishes refusal from
+## a committed deletion whose durable cleanup needs recovery.
+var last_delete_outcome: Dictionary = {status = "none", note = "", available = false, revision = -1}
 var revision: int = 0
 var data: Dictionary = {}
 var store: RefCounted
@@ -43,6 +46,12 @@ var _durable_tick := 0
 var _save_error := ""
 var _available := true
 var _opened_read_only := false
+var _deletion_session_close_needed := false
+var _failure_seen_generation := ""
+var _pending_failure: Dictionary = {}
+var _last_closed_generation := ""
+var _last_closed_record_id := ""
+var _last_closed_tick := -1
 
 
 func setup(path: String = "user://flight_statistics", save: bool = true) -> bool:
@@ -117,6 +126,7 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	_aircraft_name = aircraft_name
 	_metadata = metadata.duplicate(true)
 	_generation = _uuid()
+	_clear_failure_observation()
 	_last_operation = -1
 	_branch = false
 	_suspended = false
@@ -131,6 +141,7 @@ func begin_activity(session: Node, aircraft_id: String, aircraft_name: String, m
 	detector.configure(adapter.profile, session.start_choice != "runway")
 	_session.statistics_lifecycle.connect(_lifecycle)
 	_session.sim.paused_changed.connect(_paused)
+	_attach_failure_observer()
 	adapter.attach()
 	_last_flush_time = float(session.sim.time())
 	_mark_dirty()
@@ -141,10 +152,80 @@ func _may_observe() -> bool:
 	return not _suspended and not _branch and detector != null
 
 
+func _clear_failure_observation() -> void:
+	_failure_seen_generation = ""
+	_pending_failure = {}
+	_last_closed_generation = ""
+	_last_closed_record_id = ""
+	_last_closed_tick = -1
+
+
+func _attach_failure_observer() -> void:
+	if is_instance_valid(_session) and _session.has_signal("failure_changed") \
+			and not _session.is_connected("failure_changed", _failure_changed):
+		_session.connect("failure_changed", _failure_changed)
+
+
+func _detach_failure_observer() -> void:
+	if is_instance_valid(_session) and _session.has_signal("failure_changed") \
+			and _session.is_connected("failure_changed", _failure_changed):
+		_session.disconnect("failure_changed", _failure_changed)
+
+
+## Only a committed session notification is evidence of an actual failure.
+## This signal precedes the statistics stepped observer; a same-tick contact
+## may already have closed its record, or flight admission may still be pending.
+func _failure_changed() -> void:
+	if not _may_observe() or not is_instance_valid(_session) or not _session.has_method("failure_status") \
+			or _generation.is_empty() or _failure_seen_generation == _generation:
+		return
+	var owner: Node = _session
+	var generation: String = _generation
+	var status: Variant = owner.failure_status()
+	if not _may_observe() or _session != owner or _generation != generation or not status is Dictionary \
+			or typeof(status.get("active")) != TYPE_BOOL or not status.active \
+			or typeof(status.get("activation_tick")) != TYPE_INT \
+			or int(status.activation_tick) <= 0 or int(status.activation_tick) != owner.sim.tick \
+			or typeof(status.get("event_id")) != TYPE_STRING or not StoreSchema._safe_id(status.event_id):
+		return
+	var event := {type = "failure_activated", failure_id = status.event_id, tick = status.activation_tick,
+		source = "accepted_failure_signal_v1"}
+	_failure_seen_generation = generation
+	if _last_closed_generation == generation and _last_closed_tick == int(status.activation_tick):
+		for index: int in range(data.records.size() - 1, -1, -1):
+			if str(data.records[index].get("id", "")) == _last_closed_record_id:
+				var record: Dictionary = data.records[index].duplicate(true)
+				_append_record_event(record, event)
+				data.records[index] = record
+				_mark_dirty()
+				_flush_requested = true
+				return
+		# Never attach this tick's event to a subsequently opened flight.
+		return
+	if not _active_record.is_empty():
+		_append_event(event)
+		_upsert(_active_record)
+		_mark_dirty()
+		_flush_requested = true
+		return
+	if str(detector.get("_phase")) != "terminal":
+		_pending_failure = {generation = generation, event = event}
+
+
+## Existing records own detached metadata. Only future records lose provenance.
+func invalidate_launch_context(scenario_only: bool = false) -> void:
+	_metadata.erase("scenario")
+	if not scenario_only:
+		for key: String in ["launch_context_format", "failure_config", "failure_seed"]:
+			_metadata.erase(key)
+
+
 func _observe(sample: Dictionary) -> void:
 	if not _may_observe():
 		return
 	_ingest(detector.observe(sample))
+	if not _pending_failure.is_empty() and str(detector.get("_phase")) == "terminal":
+		_pending_failure = {}
 	var bucket: int = int(sample.get("tick", 0)) / 24
 	if bucket != _query_bucket:
 		_query_cache.clear()
@@ -183,7 +264,19 @@ func _ingest(events: Array) -> void:
 				_active_record.rules_version = Rules.VERSION
 				_active_record.start_kind = event.get("start_kind", "takeoff")
 				_active_record.metadata.events = []
+				var admitted_failure: Dictionary = {}
+				if not _pending_failure.is_empty():
+					var start_tick: int = int(detector.get("_first_unsupported_tick"))
+					if _pending_failure.generation == _generation and start_tick >= 0 \
+							and int(_pending_failure.event.tick) >= start_tick \
+							and int(_pending_failure.event.tick) <= int(event.get("tick", -1)):
+						admitted_failure = _pending_failure.event
+					_pending_failure = {}
+				if not admitted_failure.is_empty() and int(admitted_failure.tick) < int(event.get("tick", -1)):
+					_append_event(admitted_failure)
 				_append_event(event)
+				if not admitted_failure.is_empty() and int(admitted_failure.tick) == int(event.get("tick", -1)):
+					_append_event(admitted_failure)
 				_update_active()
 			"landing":
 				_append_event(event)
@@ -214,6 +307,9 @@ func _ingest(events: Array) -> void:
 					_active_record.end_seq = _next_sequence()
 					_active_record.ended_utc = _utc()
 					_upsert(_active_record)
+					_last_closed_generation = _generation
+					_last_closed_record_id = str(_active_record.id)
+					_last_closed_tick = int(event.get("tick", -1))
 					_active_record = {}
 			"crash":
 				_append_event(event)
@@ -255,27 +351,31 @@ func _append_semantic_event(event: Dictionary) -> void:
 func _append_event(event: Dictionary) -> void:
 	if _active_record.is_empty():
 		return
-	var timeline: Array = _active_record.metadata.get("events", [])
+	_append_record_event(_active_record, event)
+
+
+func _append_record_event(record: Dictionary, event: Dictionary) -> void:
+	var timeline: Array = record.metadata.get("events", [])
 	# Bounded event detail: aggregate counters continue after the detail limit.
 	if timeline.size() >= 128:
-		_active_record.metadata.events_omitted = int(_active_record.metadata.get("events_omitted", 0)) + 1
+		record.metadata.events_omitted = int(record.metadata.get("events_omitted", 0)) + 1
 		return
 	var entry: Dictionary = {}
 	for key: String in ["type", "kind", "outcome", "reason", "tick", "first_contact_tick", "start_kind",
-			"accident_id", "event_id", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements", "law_identity", "contact_ids", "component_ids", "physical_evidence"]:
+			"accident_id", "event_id", "failure_id", "source", "rules_version", "terminal", "ground", "contact_episode_id", "revision", "measurements", "law_identity", "contact_ids", "component_ids", "physical_evidence"]:
 		if event.has(key): entry[key] = event[key]
 	# Shared semantic detail contains longer identities and measurements. Preserve
 	# the existing store's byte contract as well as the 128-event count limit.
-	var candidate: Dictionary = _active_record.metadata.duplicate(true)
+	var candidate: Dictionary = record.metadata.duplicate(true)
 	var expanded: Array = timeline.duplicate(true)
 	expanded.append(entry.duplicate(true))
 	candidate.events = expanded
 	candidate.events_omitted = int(candidate.get("events_omitted", 0))
 	if var_to_bytes(candidate).size() > StoreSchema.MAX_METADATA_BYTES - 256:
-		_active_record.metadata.events_omitted = int(_active_record.metadata.get("events_omitted", 0)) + 1
+		record.metadata.events_omitted = int(record.metadata.get("events_omitted", 0)) + 1
 		return
 	timeline.append(entry)
-	_active_record.metadata.events = timeline
+	record.metadata.events = timeline
 
 
 func _update_active() -> void:
@@ -317,6 +417,8 @@ func _lifecycle(receipt: Dictionary) -> void:
 	if cause == "checkpoint_restore":
 		_ingest(detector.end("interrupted"))
 		_branch = true
+		_clear_failure_observation()
+		invalidate_launch_context()
 		note = "Checkpoint experiment: flight statistics are not recorded until Restart."
 	else:
 		if not _branch:
@@ -326,6 +428,7 @@ func _lifecycle(receipt: Dictionary) -> void:
 			data.records.append(restart)
 		_branch = false
 		_generation = _uuid()
+		_clear_failure_observation()
 		adapter.configure(_session, _aircraft_id, Callable(self, "_observe"), Callable(self, "_may_observe"))
 		adapter.profile.generation_id = _generation
 		_metadata.config_hash = str(_session.aircraft.get("input_identity", {}).get("sha256", ""))
@@ -337,6 +440,7 @@ func _lifecycle(receipt: Dictionary) -> void:
 
 
 func suspend_activity() -> void:
+	_detach_failure_observer()
 	if adapter != null:
 		adapter.detach()
 	_suspended = true
@@ -345,6 +449,7 @@ func suspend_activity() -> void:
 
 func resume_activity() -> void:
 	_suspended = false
+	_attach_failure_observer()
 	if adapter != null:
 		adapter.attach()
 
@@ -354,11 +459,38 @@ func end_activity(reason: String = "abandoned", discard_unsaved: bool = false, c
 	if detector == null:
 		if close_session and not discard_unsaved:
 			# A store opened read-only never began a session here; its existing history belongs to another writer.
-			if _opened_read_only and persistent and not store.writable and not _dirty:
-				return true
+			# A clean idle store can also become read-only after a deletion receipt;
+			# there is no unsaved flight to write while deletion recovery is pending.
+			var deletion_read_only: bool = str(last_delete_outcome.get("status", "none")) != "none"
+			if (_opened_read_only or deletion_read_only) and persistent and not store.writable and not _dirty:
+				if _opened_read_only:
+					return true
+				if data.is_empty() and _deletion_session_close_needed:
+					note = "Statistics session could not be closed while deletion survivors are unavailable."
+					return false
+				if data.is_empty() or str(data.get("current_session", "")).is_empty() \
+						or bool(data.get("clean_exit", true)):
+					return true
+				if str(last_delete_outcome.get("status", "none")) not in ["committed_pending", "completed"]:
+					note = store.note if not store.note.is_empty() else "Statistics session could not be closed while the store is read-only."
+					return false
+				# A real retained session still needs a durable close. Retry the same
+				# fenced recovery used on reopen; never silently resume it as a new session.
+				if not store.recover_pending_deletion():
+					note = store.note if not store.note.is_empty() else "Statistics session could not be closed while deletion recovery is pending."
+					return false
+				data = store.data.duplicate(true)
+				_available = true
+				note = store.note
+				revision += 1
+				last_delete_outcome = {status = "completed", note = note, available = true, revision = revision}
+				_query_cache.clear()
+				_summary_cache.clear()
+				changed.emit()
 			var previous_idle_data: Dictionary = data.duplicate(true)
 			_close_session_record()
 			if flush(false):
+				_deletion_session_close_needed = false
 				return true
 			# Cancel must leave this still-running session open, even with no active flight.
 			data = previous_idle_data
@@ -369,6 +501,8 @@ func end_activity(reason: String = "abandoned", discard_unsaved: bool = false, c
 	var previous_data: Dictionary = data.duplicate(true)
 	var previous_record: Dictionary = _active_record.duplicate(true)
 	var previous_detector: Dictionary = detector.snapshot()
+	var previous_failure := {seen = _failure_seen_generation, pending = _pending_failure.duplicate(true),
+		closed_generation = _last_closed_generation, closed_id = _last_closed_record_id, closed_tick = _last_closed_tick}
 	if detector != null:
 		_ingest(detector.end(reason))
 	data.active_context = {}
@@ -378,11 +512,17 @@ func end_activity(reason: String = "abandoned", discard_unsaved: bool = false, c
 		data = previous_data
 		_active_record = previous_record
 		detector.restore(previous_detector)
+		_failure_seen_generation = previous_failure.seen
+		_pending_failure = previous_failure.pending
+		_last_closed_generation = previous_failure.closed_generation
+		_last_closed_record_id = previous_failure.closed_id
+		_last_closed_tick = previous_failure.closed_tick
 		_query_cache.clear()
 		_summary_cache.clear()
 		return false
 	if adapter != null:
 		adapter.detach()
+	_detach_failure_observer()
 	if is_instance_valid(_session):
 		if _session.statistics_lifecycle.is_connected(_lifecycle):
 			_session.statistics_lifecycle.disconnect(_lifecycle)
@@ -392,6 +532,7 @@ func end_activity(reason: String = "abandoned", discard_unsaved: bool = false, c
 	adapter = null
 	detector = null
 	_active_record = {}
+	_clear_failure_observation()
 	data.active_context = {}
 	_query_cache.clear()
 	_summary_cache.clear()
@@ -470,7 +611,7 @@ func _finish_write() -> void:
 func flush(capture_context: bool = true) -> bool:
 	_finish_write()
 	if data.is_empty():
-		return true
+		return _available
 	_update_active()
 	if capture_context: _capture_context()
 	var ok: bool = not persistent or store.commit(data)
@@ -539,6 +680,8 @@ func aircraft_choices() -> Array:
 	var choices: Array = []
 	var seen: Dictionary = {}
 	for record: Dictionary in data.get("records", []):
+		if str(record.get("kind", "")) == "gap":
+			continue
 		var id: String = str(record.get("aircraft_id", ""))
 		var related: PackedStringArray = AircraftIdentity.related(id)
 		var display_name: String = str(record.get("aircraft_name", id))
@@ -558,7 +701,8 @@ func aircraft_choices() -> Array:
 
 
 func can_manage() -> bool:
-	return _session == null and not _dirty and (not persistent or store.writable)
+	return _available and _session == null and not _dirty and (_writer == null or not _writer.pending()) \
+		and (not persistent or store.writable)
 
 
 func reset_counters(scope: String, aircraft_id: String = "") -> bool:
@@ -579,21 +723,45 @@ func reset_counters(scope: String, aircraft_id: String = "") -> bool:
 
 
 func delete_history(aircraft_id: String = "") -> bool:
+	# The writer owns store.data until its thread has joined; it must not race
+	# the deletion fence with a snapshot captured before that fence.
+	_finish_write()
 	if not can_manage():
+		revision += 1
+		last_delete_outcome = {status = "refused", note = note, available = _available, revision = revision}
+		_query_cache.clear()
+		_summary_cache.clear()
+		changed.emit()
 		return false
 	if not persistent:
 		# Sandbox UI exercises the same deletion reducer through an isolated temporary store in tests.
 		note = "History management is unavailable in this temporary session."
+		revision += 1
+		last_delete_outcome = {status = "refused", note = note, available = _available, revision = revision}
+		_query_cache.clear()
+		_summary_cache.clear()
+		changed.emit()
 		return false
-	if not store.delete_history(aircraft_id):
-		note = store.note
-		return false
-	data = store.data.duplicate(true)
+	var had_open_session: bool = not str(data.get("current_session", "")).is_empty() and not bool(data.get("clean_exit", true))
+	var succeeded: bool = store.delete_history(aircraft_id)
+	last_delete_outcome = store.last_delete_outcome.duplicate(true)
+	note = store.note
+	if str(last_delete_outcome.get("status", "refused")) != "refused":
+		_deletion_session_close_needed = not aircraft_id.is_empty() and had_open_session
+		data = store.data.duplicate(true)
+		_available = bool(last_delete_outcome.get("available", false)) and not data.is_empty()
+		_dirty = false
+		_flush_requested = false
+		_retry_after_msec = 0
+	elif not store.writable:
+		# Admission required a clean ledger, so no unsaved observation is lost.
+		_flush_requested = false
 	_query_cache.clear()
 	_summary_cache.clear()
 	revision += 1
+	last_delete_outcome["revision"] = revision
 	changed.emit()
-	return true
+	return succeeded
 
 
 func finish(discard_unsaved: bool = false) -> bool:

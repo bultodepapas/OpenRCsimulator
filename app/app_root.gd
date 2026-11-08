@@ -51,6 +51,7 @@ const Atmosphere := preload("res://render/atmosphere.gd")
 const World := preload("res://render/world/world.gd")
 const FailureConfig := preload("res://failures/config.gd")
 const FailureCatalog := preload("res://failures/catalog.gd")
+const StatisticsRecordView := preload("res://statistics/record_view.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const FailureMenu := preload("res://ui/failures_menu.gd")
 const OutOfTrim := preload("res://sim/out_of_trim.gd")
@@ -2013,6 +2014,10 @@ func _prepare_random_briefing(scenario: Dictionary) -> void:
 func _on_scenario_changed(scenario: Dictionary) -> void:
 	if not scenario.is_empty():
 		last_random_scenario = scenario.duplicate(true)
+	# Existing flight records retain their admission snapshot; a later restart
+	# cannot inherit a scenario whose accepted conditions have since changed.
+	if statistics_service != null and statistics_service.has_method("invalidate_launch_context"):
+		statistics_service.call("invalidate_launch_context", true)
 
 
 func _on_overlay_settings_changed(settings: Dictionary) -> void:
@@ -2432,8 +2437,15 @@ func _attach_statistics(scene: Node) -> void:
 	var id: String = str(scene.aircraft_id)
 	var metadata: Dictionary = {field_id = landscape_id,
 		config_hash = str(scene.session.aircraft.get("input_identity", {}).get("sha256", "")),
-		scenario = scene.flight_scenario.duplicate(true),
-		failure_config = preferences.get("failure_config", {}).duplicate(true)}
+		scenario = scene.flight_scenario.duplicate(true)}
+	# This is the accepted scene after startup and scenario binding, never current preferences.
+	var checked: Dictionary = FailureConfig.validate(scene.get("failure_config"))
+	var seed: Variant = scene.get("failure_seed")
+	var model: Variant = scene.session.aircraft.get("model", null)
+	if checked.ok and typeof(seed) == TYPE_INT and int(seed) >= 0 and int(seed) <= 4294967295 and model is Dictionary:
+		metadata.launch_context_format = StatisticsRecordView.CONTEXT_FORMAT
+		metadata.failure_config = FailureCatalog.request_for_model(checked.config, model)
+		metadata.failure_seed = int(seed)
 	statistics_service.begin_activity(scene.session, id, str(Catalog.entry(id).get("name", id)), metadata)
 	if scene.get("_overlays") != null:
 		scene._overlays.statistics_service = statistics_service

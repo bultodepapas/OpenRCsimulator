@@ -8326,3 +8326,96 @@ msgstr "La integración de turbulencia no está validada para helicópteros; eli
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "Cíclico adelante/derecha %.1f / %.1f a %.1f / %.1f grados."
+
+msgid "Failure practice enabled"
+msgstr "Práctica de fallas activada"
+
+msgid "Airborne seconds"
+msgstr "Segundos en el aire"
+
+msgid "Launch scenario"
+msgstr "Escenario al iniciar"
+
+msgid "Scenario seed"
+msgstr "Semilla del escenario"
+
+msgid "Weather recipe"
+msgstr "Receta meteorológica"
+
+msgid "Local time at launch"
+msgstr "Hora local al iniciar"
+
+msgid "Wind at launch"
+msgstr "Viento al iniciar"
+
+msgid "%s from %d°"
+msgstr "%s desde %d°"
+
+msgid "Ordinary flight"
+msgstr "Vuelo normal"
+
+msgid "Enabled"
+msgstr "Activado"
+
+msgid "Failure seed"
+msgstr "Semilla de fallas"
+
+msgid "Excluded failure types"
+msgstr "Tipos de falla excluidos"
+
+msgid "Recorded failures"
+msgstr "Fallas registradas"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "No se registró ningún evento de falla; se desconoce si ocurrió alguno."
+
+msgid "Recorded failure"
+msgstr "Falla registrada"
+
+msgid "%s · tick %d"
+msgstr "%s · paso %d"
+
+msgid "Practice settings at launch"
+msgstr "Ajustes de práctica al iniciar"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "El borrado quedó registrado. La limpieza está incompleta; el historial restante es de solo lectura."
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "El borrado quedó registrado. La limpieza está incompleta; el historial no está disponible temporalmente."
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "No se pudo completar el borrado. Tu historial no cambió."
+
+msgid "Start location"
+msgstr "Lugar de inicio"
+
+msgid "Keep current run"
+msgstr "Conservar recorrido actual"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "Inicio actual: %s. Reiniciar termina este recorrido; primero se guardan las grabaciones."
+
+msgid "Restart at %s"
+msgstr "Reiniciar en %s"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "No se pudo cambiar el inicio. Se conservó el recorrido actual."
+
+msgid "Camera: %s · C"
+msgstr "Cámara: %s · C"
+
+msgid "Pilot stand"
+msgstr "Puesto del piloto"
+
+msgid "Circuit overview"
+msgstr "Vista del circuito"
+
+msgid "Used when you select Drive."
+msgstr "Se usa al seleccionar Conducir."
+
+msgid "Overview is active in the garage and while driving."
+msgstr "La vista general está activa en el garaje y al conducir."
+
+msgid "Return to Chase"
+msgstr "Volver a Seguimiento"

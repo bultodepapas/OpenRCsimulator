@@ -8,6 +8,11 @@ const ResetDialog := preload("res://ui/statistics_reset_dialog.gd")
 const Units := preload("res://render/overlays/units.gd")
 const AircraftIdentity := preload("res://statistics/aircraft_identity.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const RecordView := preload("res://statistics/record_view.gd")
+const FailureCatalog := preload("res://failures/catalog.gd")
+const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const RECIPE_LABELS := {"calm_air": "Calm air", "gentle_breeze": "Gentle breeze", "lively_afternoon": "Lively breeze", "windy_day": "Windy day"}
+const ONSET_LABELS := {"early": "Early (20–60 s)", "standard": "Standard (20–120 s)", "late": "Late (60–240 s)"}
 
 signal back_requested
 
@@ -55,6 +60,8 @@ var _more_open := false
 var _history_open := false
 var _history_rendered := false
 var _refreshing := false
+var _data_available := true
+var _last_delete_revision := -1
 var _active_dialog: ConfirmationDialog
 
 
@@ -80,6 +87,7 @@ func configure(statistics_service: Object, initial_aircraft: String = "", unit_s
 	if is_instance_valid(_service) and _service.has_signal("changed") and _service.is_connected("changed", _refresh):
 		_service.disconnect("changed", _refresh)
 	_service = statistics_service
+	_last_delete_revision = int(_last_delete_outcome().get("revision", -1))
 	if is_instance_valid(_service) and _service.has_signal("changed"):
 		_service.connect("changed", _refresh, CONNECT_DEFERRED)
 	_unit_system = Units.resolve(unit_system, TranslationServer.get_locale())
@@ -283,7 +291,7 @@ func _resize_layout() -> void:
 		child.custom_minimum_size.x = 0 if stacked else minf(220.0, (available.x - 80.0) / 3.0)
 
 
-func _build_aircraft_choices() -> void:
+func _build_aircraft_choices(preserve_unseen := true) -> void:
 	if _scope_picker == null:
 		return
 	_scope_picker.clear()
@@ -304,10 +312,13 @@ func _build_aircraft_choices() -> void:
 				_aircraft_names.append(display_name)
 				_scope_picker.add_item(display_name)
 	if not _selected_aircraft.is_empty() and _matching_scope(_selected_aircraft).is_empty():
-		_aircraft_ids.append(_selected_aircraft)
-		var display_name := _display_aircraft_name(_selected_aircraft, _selected_aircraft)
-		_aircraft_names.append(display_name)
-		_scope_picker.add_item(display_name)
+		if preserve_unseen:
+			_aircraft_ids.append(_selected_aircraft)
+			var display_name := _display_aircraft_name(_selected_aircraft, _selected_aircraft)
+			_aircraft_names.append(display_name)
+			_scope_picker.add_item(display_name)
+		else:
+			_selected_aircraft = ""
 	_select_aircraft(_selected_aircraft)
 
 
@@ -355,7 +366,8 @@ func _on_history_toggled(open: bool) -> void:
 	_history_box.visible = open
 	_history_button.text = tr("Hide flight history") if open else tr("Flight history")
 	if open:
-		_render_history()
+		if _data_available: _render_history()
+		else: _clear_unavailable_history()
 
 
 func _refresh() -> void:
@@ -367,17 +379,70 @@ func _refresh() -> void:
 		_stats = result if result is Dictionary else {}
 	else:
 		_stats = {}
-	var history_value: Variant = _stats.get("history", [])
-	_history = _newest_first_history(history_value if history_value is Array else [])
+	var was_available := _data_available
+	var deletion := _last_delete_outcome()
+	var receipt_revision := int(deletion.get("revision", -1))
+	var new_deletion: bool = receipt_revision >= 0 and receipt_revision != _last_delete_revision
+	if receipt_revision >= 0: _last_delete_revision = receipt_revision
+	_data_available = bool(_stats.get("available", true))
+	if not _data_available:
+		_history = []
+		_expanded_history_ids.clear()
+		_clear_unavailable_history()
+		_selected_aircraft = ""
+		_aircraft_ids = [""]
+		_aircraft_names = [tr("All aircraft")]
+		_scope_picker.clear()
+		_scope_picker.add_item(tr("All aircraft"))
+		_scope_picker.select(0)
+		_scope_picker.disabled = true
+	else:
+		_scope_picker.disabled = false
+		var deletion_status := str(deletion.get("status", ""))
+		if not was_available or (new_deletion and deletion_status in ["completed", "committed_pending"]):
+			var previous_aircraft := _selected_aircraft
+			_build_aircraft_choices(false)
+			if previous_aircraft != _selected_aircraft and _service != null and _service.has_method("query"):
+				var refreshed: Variant = _service.call("query", _selected_aircraft, _period)
+				_stats = refreshed if refreshed is Dictionary else {}
+		var history_value: Variant = _stats.get("history", [])
+		_history = _newest_first_history(history_value if history_value is Array else [])
 	if _period_picker != null:
 		_period_picker.select(PERIODS.find(_period))
 	_update_summary()
 	if _more_open:
 		_fill_more_statistics()
-	if _history_open:
+	if _history_open and _data_available:
 		_render_history()
 	_refresh_manage_controls()
 	_refreshing = false
+
+
+func _last_delete_outcome() -> Dictionary:
+	if _service == null: return {}
+	for property: Dictionary in _service.get_property_list():
+		if str(property.get("name", "")) == "last_delete_outcome":
+			var value: Variant = _service.get("last_delete_outcome")
+			return value if value is Dictionary else {}
+	return {}
+
+
+func _clear_unavailable_history() -> void:
+	if _history_rows == null: return
+	var focus := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var restore_focus: bool = focus != null and _history_rows.is_ancestor_of(focus)
+	for child: Node in _history_rows.get_children():
+		_history_rows.remove_child(child)
+		child.queue_free()
+	_history_rows.add_child(Widgets.label(tr("Statistics unavailable"), "SecondaryLabel", true, false))
+	_history_page = 0
+	_history_page_label.text = tr("Statistics unavailable")
+	_previous_page.disabled = true
+	_next_page.disabled = true
+	_rendered_history.clear()
+	_rendered_history_context.clear()
+	_history_rendered = false
+	if restore_focus: _history_button.grab_focus()
 
 
 func _update_summary() -> void:
@@ -475,6 +540,7 @@ func _add_detail(parent: VBoxContainer, caption: String, value: String) -> void:
 	row.add_child(name_label)
 	if not value.is_empty():
 		var value_label := Widgets.label(value, "BodyLabel", true, false)
+		value_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		row.add_child(value_label)
 	parent.add_child(row)
@@ -616,12 +682,17 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	var aircraft := _display_aircraft_name(record_aircraft_id,
 		str(record.get("aircraft_name", record.get("aircraft_id", _selected_aircraft_name()))))
 	var title_parts: PackedStringArray = [date, aircraft]
+	var context := RecordView.from_record(record) if record_kind == "flight" else {}
 	if record_kind == "flight":
 		title_parts.append(_duration(_number(record.get("airborne_seconds", NAN))))
+		if context.scenario_kind == "natural_random": title_parts.append(tr("Natural Random"))
+		if context.practice_known and int(context.practice.probability_percent) > 0: title_parts.append(tr("Failure practice enabled"))
 	title_parts.append(outcome)
 	var toggle := Widgets.button(" · ".join(title_parts), "QuietButton", "HistoryRow%d" % index)
 	toggle.set_meta("statistics_history_id", record_id)
 	toggle.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	toggle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	toggle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	toggle.toggle_mode = true
 	row.add_child(toggle)
 	var detail := VBoxContainer.new()
@@ -638,6 +709,7 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 		_add_detail(detail, breakdown, "")
 		_add_detail(detail, tr("Max valid airspeed (TAS)"), _speed(record.get("max_tas_mps", NAN)))
 		_add_detail(detail, tr("Coverage"), _coverage_text(record))
+		_add_flight_context(detail, record, context)
 	elif record_kind == "crash" and metadata.has("ground"):
 		_add_detail(detail, tr("Crash context"), tr("On ground") if bool(metadata.ground) else tr("In flight"))
 	elif record_kind == "restart" and not reason.is_empty():
@@ -650,10 +722,9 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 	var ended := ended_utc if not ended_utc.is_empty() else str(record.get("ended_at", ""))
 	if not ended.is_empty():
 		_add_detail(detail, tr("Ended (UTC)") if not ended_utc.is_empty() else tr("Ended"), ended)
-	var scenario := str(record.get("scenario", ""))
-	if not scenario.is_empty(): _add_detail(detail, tr("Scenario"), tr(scenario))
 	var events := _history_events(record)
 	for event: Variant in events:
+		if event is Dictionary and str(event.get("type", "")) == "failure_activated": continue
 		var event_text := _history_event_text(event)
 		if not event_text.is_empty():
 			_add_detail(detail, tr("Events"), event_text)
@@ -670,6 +741,48 @@ func _history_row(record: Dictionary, index: int) -> VBoxContainer:
 				_expanded_history_ids.erase(record_id)
 	)
 	return row
+
+
+func _add_flight_context(detail: VBoxContainer, record: Dictionary, context: Dictionary) -> void:
+	var seconds := _number(record.get("airborne_seconds", NAN))
+	if seconds >= 0.0: _add_detail(detail, tr("Airborne seconds"), JSON.stringify(seconds, "", true, true))
+	match str(context.scenario_kind):
+		"natural_random":
+			var scenario: Dictionary = context.scenario
+			var title := "Custom from Natural Random" if scenario.provenance == "customized" else "Natural Random"
+			_add_detail(detail, tr("Launch scenario"), tr(title))
+			_add_detail(detail, tr("Scenario seed"), str(scenario.seed))
+			_add_detail(detail, tr("Weather recipe"), tr(str(RECIPE_LABELS.get(scenario.recipe_id, scenario.recipe_id))))
+			_add_detail(detail, tr("Local time at launch"), TimeOfDay.format_time(int(scenario.lighting_config.local_seconds)))
+			_add_detail(detail, tr("Wind at launch"), tr("%s from %d°") % [_speed(scenario.weather_config.speed_mps), roundi(float(scenario.weather_config.from_deg))])
+		"ordinary": _add_detail(detail, tr("Launch scenario"), tr("Ordinary flight"))
+		_: _add_detail(detail, tr("Launch scenario"), tr("Unknown"))
+	_add_detail(detail, tr("Practice settings at launch"), "")
+	if bool(context.practice_known):
+		var practice: Dictionary = context.practice
+		var enabled: bool = int(practice.probability_percent) > 0
+		_add_detail(detail, tr("Failure practice"), tr("Enabled") if enabled else tr("Disabled"))
+		_add_detail(detail, tr("Probability of failure per flight"), "%d%%" % int(practice.probability_percent))
+		if enabled: _add_detail(detail, tr("Failure seed"), str(context.practice_seed))
+		_add_detail(detail, tr("Severity"), tr(str(practice.severity).capitalize()))
+		_add_detail(detail, tr("When a failure can start"), tr(str(ONSET_LABELS.get(practice.onset, practice.onset))))
+		_add_detail(detail, tr("Include catastrophic failures"), tr("On") if practice.include_catastrophic else tr("Off"))
+		_add_detail(detail, tr("Notify when a failure occurs"), tr("On") if practice.notify else tr("Off"))
+		var exclusions := PackedStringArray()
+		for id: String in practice.excluded_ids:
+			var definition: Dictionary = FailureCatalog.definition(id)
+			exclusions.append(tr(str(definition.get("label", id))))
+		_add_detail(detail, tr("Excluded failure types"), tr("None") if exclusions.is_empty() else ", ".join(exclusions))
+	else:
+		_add_detail(detail, tr("Failure practice"), tr("Unknown"))
+	var failures: Array = context.failure_events
+	if failures.is_empty():
+		_add_detail(detail, tr("Recorded failures"), tr("No failure event recorded; occurrence is unknown."))
+	else:
+		for event: Dictionary in failures:
+			var definition: Dictionary = FailureCatalog.definition(str(event.failure_id))
+			var label := tr(str(definition.get("label", event.failure_id)))
+			_add_detail(detail, tr("Recorded failure"), tr("%s · tick %d") % [label, int(event.tick)])
 
 
 func _history_record_label(kind: String, outcome: String, metadata: Dictionary, reason: String) -> String:
@@ -754,7 +867,7 @@ func _set_history_page(page: int) -> void:
 func _refresh_manage_controls() -> void:
 	if _session_reset_button == null:
 		return
-	var can_manage := _service != null and _service.has_method("can_manage") and bool(_service.call("can_manage"))
+	var can_manage := _data_available and _service != null and _service.has_method("can_manage") and bool(_service.call("can_manage"))
 	var has_aircraft := not _selected_aircraft.is_empty()
 	for button: Button in [_session_reset_button, _pilot_reset_button, _pilot_delete_button]:
 		button.disabled = not can_manage
@@ -776,27 +889,40 @@ func _open_delete(aircraft_id: String) -> void:
 
 
 func _open_management_dialog(action: String, scope: String, aircraft_id: String, period: String) -> void:
-	if _service == null or not _service.has_method("can_manage") or not bool(_service.call("can_manage")):
+	if not _data_available or _service == null or not _service.has_method("can_manage") or not bool(_service.call("can_manage")):
 		_refresh_manage_controls()
 		return
 	var preview: Dictionary = _service.call("query", aircraft_id, period)
+	var opener: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	_active_dialog = ResetDialog.new()
 	_active_dialog.theme = _screen.theme
 	add_child(_active_dialog)
 	_active_dialog.connect("operation_completed", func(_succeeded: bool) -> void:
 		_active_dialog.queue_free()
 		_active_dialog = null
-		_build_aircraft_choices()
+		_build_aircraft_choices(action != "delete")
 		_refresh()
+		_restore_management_focus.call_deferred(opener)
 	)
 	_active_dialog.connect("operation_cancelled", func() -> void:
 		if is_instance_valid(_active_dialog):
 			_active_dialog.queue_free()
 		_active_dialog = null
+		_restore_management_focus.call_deferred(opener)
 	)
 	_active_dialog.call("configure", _service, action, scope, aircraft_id, period, preview,
 		_aircraft_name_for_id(aircraft_id))
 	_active_dialog.popup_centered()
+
+
+func _restore_management_focus(opener: Control) -> void:
+	if not is_inside_tree(): return
+	if is_instance_valid(opener) and opener.is_visible_in_tree() \
+			and opener.get_focus_mode_with_override() != Control.FOCUS_NONE \
+			and not (opener is BaseButton and opener.disabled):
+		opener.grab_focus()
+	elif is_instance_valid(_history_button) and _history_button.is_visible_in_tree() and not _history_button.disabled:
+		_history_button.grab_focus()
 
 
 func _request_back() -> void:

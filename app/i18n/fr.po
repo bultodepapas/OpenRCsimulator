@@ -9705,3 +9705,96 @@ msgstr "L’intégration des turbulences n’est pas qualifiée pour les hélico
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "Cyclique avant/droite %.1f / %.1f vers %.1f / %.1f degrés."
+
+msgid "Failure practice enabled"
+msgstr "Entraînement aux pannes activé"
+
+msgid "Airborne seconds"
+msgstr "Secondes en vol"
+
+msgid "Launch scenario"
+msgstr "Scénario au départ"
+
+msgid "Scenario seed"
+msgstr "Graine du scénario"
+
+msgid "Weather recipe"
+msgstr "Recette météo"
+
+msgid "Local time at launch"
+msgstr "Heure locale au départ"
+
+msgid "Wind at launch"
+msgstr "Vent au départ"
+
+msgid "%s from %d°"
+msgstr "%s depuis %d°"
+
+msgid "Ordinary flight"
+msgstr "Vol ordinaire"
+
+msgid "Enabled"
+msgstr "Activé"
+
+msgid "Failure seed"
+msgstr "Graine des pannes"
+
+msgid "Excluded failure types"
+msgstr "Types de panne exclus"
+
+msgid "Recorded failures"
+msgstr "Pannes enregistrées"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "Aucune panne enregistrée ; on ignore si une panne s’est produite."
+
+msgid "Recorded failure"
+msgstr "Panne enregistrée"
+
+msgid "%s · tick %d"
+msgstr "%s · pas %d"
+
+msgid "Practice settings at launch"
+msgstr "Réglages d’entraînement au départ"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "Suppression enregistrée. Le nettoyage est incomplet ; l’historique restant est en lecture seule."
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "Suppression enregistrée. Le nettoyage est incomplet ; l’historique est temporairement indisponible."
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "La suppression n’a pas pu être terminée. Votre historique est inchangé."
+
+msgid "Start location"
+msgstr "Lieu de départ"
+
+msgid "Keep current run"
+msgstr "Conserver le parcours actuel"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "Départ actuel : %s. Redémarrer termine ce parcours ; les enregistrements sont d’abord sauvegardés."
+
+msgid "Restart at %s"
+msgstr "Redémarrer à %s"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "Le départ n’a pas pu être modifié. Le parcours actuel est conservé."
+
+msgid "Camera: %s · C"
+msgstr "Caméra : %s · C"
+
+msgid "Pilot stand"
+msgstr "Poste du pilote"
+
+msgid "Circuit overview"
+msgstr "Vue du circuit"
+
+msgid "Used when you select Drive."
+msgstr "Utilisée lorsque vous sélectionnez Drive."
+
+msgid "Overview is active in the garage and while driving."
+msgstr "La vue d’ensemble est active au garage et pendant la conduite."
+
+msgid "Return to Chase"
+msgstr "Revenir au suivi"

@@ -9533,3 +9533,96 @@ msgstr "Интеграция турбулентности не проверен�
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "Циклический шаг вперёд/вправо с %.1f / %.1f до %.1f / %.1f град."
+
+msgid "Failure practice enabled"
+msgstr "Тренировка отказов включена"
+
+msgid "Airborne seconds"
+msgstr "Секунды в воздухе"
+
+msgid "Launch scenario"
+msgstr "Сценарий при запуске"
+
+msgid "Scenario seed"
+msgstr "Зерно сценария"
+
+msgid "Weather recipe"
+msgstr "Рецепт погоды"
+
+msgid "Local time at launch"
+msgstr "Местное время при запуске"
+
+msgid "Wind at launch"
+msgstr "Ветер при запуске"
+
+msgid "%s from %d°"
+msgstr "%s с направления %d°"
+
+msgid "Ordinary flight"
+msgstr "Обычный полёт"
+
+msgid "Enabled"
+msgstr "Включено"
+
+msgid "Failure seed"
+msgstr "Зерно отказов"
+
+msgid "Excluded failure types"
+msgstr "Исключённые типы отказов"
+
+msgid "Recorded failures"
+msgstr "Записанные отказы"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "События отказа не записаны; неизвестно, происходил ли отказ."
+
+msgid "Recorded failure"
+msgstr "Записанный отказ"
+
+msgid "%s · tick %d"
+msgstr "%s · такт %d"
+
+msgid "Practice settings at launch"
+msgstr "Настройки тренировки при запуске"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "Удаление записано. Очистка не завершена; оставшаяся история доступна только для чтения."
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "Удаление записано. Очистка не завершена; история временно недоступна."
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "Не удалось завершить удаление. История не изменена."
+
+msgid "Start location"
+msgstr "Место старта"
+
+msgid "Keep current run"
+msgstr "Сохранить текущий заезд"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "Текущий старт: %s. Перезапуск завершит заезд; записи будут сохранены заранее."
+
+msgid "Restart at %s"
+msgstr "Начать заново: %s"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "Не удалось изменить старт. Текущий заезд сохранён."
+
+msgid "Camera: %s · C"
+msgstr "Камера: %s · C"
+
+msgid "Pilot stand"
+msgstr "Место пилота"
+
+msgid "Circuit overview"
+msgstr "Обзор трассы"
+
+msgid "Used when you select Drive."
+msgstr "Используется после выбора Drive."
+
+msgid "Overview is active in the garage and while driving."
+msgstr "Обзор активен в гараже и во время езды."
+
+msgid "Return to Chase"
+msgstr "Вернуться к следованию"

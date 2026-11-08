@@ -27,6 +27,8 @@ var data: Dictionary = {}
 var note: String = ""
 var writable: bool = false
 var interruption_hook: Callable = Callable()
+## `delete_history` retains its bool API; this receipt identifies the commit boundary.
+var last_delete_outcome: Dictionary = {status = "none", note = "", available = false}
 
 var _root_uri: String = ""
 var _root_path: String = ""
@@ -45,6 +47,7 @@ func open(root: String = DEFAULT_ROOT) -> bool:
 	data = {}
 	note = ""
 	writable = false
+	last_delete_outcome = {status = "none", note = "", available = false}
 	_current_slot = ""
 	_fence = {}
 	_root_uri = root.strip_edges()
@@ -168,6 +171,9 @@ func commit(candidate: Dictionary) -> bool:
 	if not bool(validation.get("ok", false)):
 		note = "Statistics update was rejected after generation assignment: " + "; ".join(validation.get("errors", PackedStringArray()))
 		return false
+	if not _fence.is_empty() and not _snapshot_satisfies_fence(committed, _fence):
+		note = "Statistics update would restore deleted history and was refused."
+		return false
 	var target_slot: String = SLOT_A if _current_slot == SLOT_B or _current_slot.is_empty() else SLOT_B
 	var target_path: String = _root_path.path_join(target_slot)
 	var temp_path: String = _root_path.path_join(NORMAL_TEMP)
@@ -205,13 +211,13 @@ func commit(candidate: Dictionary) -> bool:
 func delete_history(aircraft_id: String = "") -> bool:
 	if not writable or not _owns_lock:
 		note = "Statistics store is read-only; history was not changed."
-		return false
+		return _delete_result("refused", false)
 	if data.is_empty() or _has_active_activity(data):
 		note = "History can only be deleted when no statistics activity is active."
-		return false
+		return _delete_result("refused", false)
 	if not aircraft_id.is_empty() and not _schema._safe_id(aircraft_id):
 		note = "Aircraft history scope is invalid."
-		return false
+		return _delete_result("refused", false)
 	var candidate: Dictionary = _schema.canonicalize(data.duplicate(true))
 	var removed_any: bool = false
 	var candidate_records: Array = []
@@ -237,32 +243,33 @@ func delete_history(aircraft_id: String = "") -> bool:
 		candidate.records = candidate_records
 		if not removed_any:
 			note = "No retained statistics records match this aircraft."
-			return true
+			return _delete_result("completed", true)
 	if not removed_any and aircraft_id.is_empty():
 		note = "Statistics history is already empty."
-		return true
+		return _delete_result("completed", true)
 	var next_generation: int = int(data.generation) + 1
 	if next_generation > _schema.MAX_SEQUENCE:
 		note = "Statistics generation limit reached; history was not changed."
-		return false
+		return _delete_result("refused", false)
 	candidate.generation = next_generation
 	var validation: Dictionary = _schema.validate(candidate)
 	if not bool(validation.get("ok", false)):
 		note = "History deletion candidate is invalid: " + "; ".join(validation.get("errors", PackedStringArray()))
-		return false
+		return _delete_result("refused", false)
 	var prepared_path: String = _root_path.path_join(PREPARED_DELETE)
 	var prepared_result: Dictionary = _write_snapshot_file(prepared_path, candidate)
 	if not bool(prepared_result.get("ok", false)):
 		note = "Survivor history could not be prepared; previous statistics remain usable."
-		return false
+		return _delete_result("refused", false)
 	if _interrupt("after_delete_prepare_write"):
-		return false
+		return _delete_result("refused", false)
 	var prepared_readback: Dictionary = _read_snapshot_file(prepared_path)
-	if not bool(prepared_readback.get("ok", false)) or not _snapshot_satisfies_deletion(prepared_readback.data, targets, int(data.sequence)):
+	if not bool(prepared_readback.get("ok", false)) or not _snapshot_satisfies_deletion(prepared_readback.data, targets, int(data.sequence)) \
+			or not _same_snapshot(prepared_readback.data, candidate):
 		note = "Prepared survivor history failed validation; previous statistics remain usable."
-		return false
+		return _delete_result("refused", false)
 	if _interrupt("after_delete_prepare_readback"):
-		return false
+		return _delete_result("refused", false)
 	var receipt: Dictionary = {
 		"revision": _next_fence_revision(),
 		"required_generation": next_generation,
@@ -273,40 +280,94 @@ func delete_history(aircraft_id: String = "") -> bool:
 	}
 	if not _write_fence(receipt):
 		note = "Deletion fence could not be committed; previous statistics remain usable."
-		return false
+		return _delete_result("refused", false)
 	_fence = receipt.duplicate(true)
+	# The read-back candidate is the first verified state allowed past the fence.
+	# On failure below, reread durable survivors before exposing anything to callers.
+	candidate = prepared_readback.data.duplicate(true)
+	data = candidate.duplicate(true)
 	if _interrupt("after_deletion_fence_publish"):
 		writable = false
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	if not _publish_deletion_to_both_slots(candidate):
 		writable = false
 		note = "History deletion is committed; forward cleanup will resume when the store reopens."
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	data = candidate
 	_current_slot = SLOT_A
 	if _interrupt("after_delete_second_snapshot_publish"):
 		writable = false
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	if _interrupt("before_delete_purge"):
 		writable = false
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	if not _purge_pre_fence_copies():
 		writable = false
 		note = "History was removed from statistics; local backup cleanup is pending."
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	if _interrupt("after_delete_purge"):
 		writable = false
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	receipt.revision = int(receipt.revision) + 1
 	receipt.phase = "purge_complete"
 	if not _write_fence(receipt):
+		writable = false
 		note = "History was removed; deletion receipt cleanup is pending."
-		return false
+		return _delete_result("committed_pending", false, candidate)
 	_fence = receipt.duplicate(true)
 	if _interrupt("after_deletion_fence_complete"):
 		writable = false
-		return false
+		return _delete_result("completed", false, candidate)
 	note = ""
+	return _delete_result("completed", true)
+
+
+func _delete_result(status: String, succeeded: bool, expected: Dictionary = {}) -> bool:
+	if status in ["committed_pending", "completed"] and not succeeded:
+		writable = false
+		var snapshots: Dictionary = _read_snapshots()
+		var safe: Dictionary = {}
+		if snapshots.get("future", {}).is_empty() and not expected.is_empty():
+			for entry: Dictionary in snapshots.get("entries", []):
+				if _snapshot_satisfies_fence(entry.data, _fence) and _same_snapshot(entry.data, expected):
+					safe = entry
+					break
+			if safe.is_empty():
+				var prepared: Dictionary = _read_snapshot_file(_root_path.path_join(PREPARED_DELETE))
+				if bool(prepared.get("ok", false)) and _snapshot_satisfies_fence(prepared.data, _fence) and _same_snapshot(prepared.data, expected):
+					safe = prepared
+		data = safe.data.duplicate(true) if not safe.is_empty() else {}
+		if data.is_empty():
+			note = "History deletion is committed but its survivor snapshot is unavailable. Deleted history remains hidden pending repair."
+	last_delete_outcome = {status = status, note = note, available = not data.is_empty()}
+	return succeeded
+
+
+func _same_snapshot(first: Dictionary, second: Dictionary) -> bool:
+	return var_to_bytes(_schema.canonicalize(first)) == var_to_bytes(_schema.canonicalize(second))
+
+
+## Retry the existing forward-recovery path while this writer still owns the
+## lock. Only the exact survivor already verified by this process is eligible.
+func recover_pending_deletion() -> bool:
+	if not _owns_lock or _fence.is_empty() or data.is_empty():
+		return false
+	var expected: Dictionary = data.duplicate(true)
+	var snapshots: Dictionary = _read_snapshots()
+	if not snapshots.get("future", {}).is_empty():
+		return false
+	var eligible: Array = []
+	for entry: Dictionary in snapshots.get("entries", []):
+		if _snapshot_satisfies_fence(entry.data, _fence) and _same_snapshot(entry.data, expected):
+			eligible.append(entry)
+	if eligible.is_empty():
+		var prepared: Dictionary = _read_snapshot_file(_root_path.path_join(PREPARED_DELETE))
+		if not bool(prepared.get("ok", false)) or not _snapshot_satisfies_fence(prepared.data, _fence) \
+				or not _same_snapshot(prepared.data, expected):
+			return false
+	if not _recover_deletion(eligible):
+		return false
+	last_delete_outcome = {status = "completed", note = note, available = true}
 	return true
 
 
@@ -603,17 +664,16 @@ func _publish_deletion_to_both_slots(snapshot: Dictionary) -> bool:
 	return true
 
 
-func _write_snapshot_slot(slot: String, snapshot: Dictionary, label: String) -> bool:
-	var temp_path: String = _root_path.path_join(PREPARED_DELETE if label.begins_with("delete") or label == "delete_recovery" else NORMAL_TEMP)
+func _write_snapshot_slot(slot: String, snapshot: Dictionary, _label: String) -> bool:
+	# The verified prepared survivor is the recovery source until both slots
+	# are durable. Never truncate it while publishing or recovering a slot.
+	var temp_path: String = _root_path.path_join("snapshot_recovery.tmp")
 	var target_path: String = _root_path.path_join(slot)
-	# Use a separate recovery temp after the original prepared file has been consumed.
-	if label == "delete_second" or label == "delete_recovery":
-		temp_path = _root_path.path_join("snapshot_recovery.tmp")
 	var write_result: Dictionary = _write_snapshot_file(temp_path, snapshot)
 	if not bool(write_result.get("ok", false)):
 		return false
 	var readback: Dictionary = _read_snapshot_file(temp_path)
-	if not bool(readback.get("ok", false)) or not _snapshot_satisfies_fence(readback.data, _fence):
+	if not bool(readback.get("ok", false)) or not _snapshot_satisfies_fence(readback.data, _fence) or not _same_snapshot(readback.data, snapshot):
 		return false
 	if FileAccess.file_exists(target_path) and DirAccess.remove_absolute(target_path) != OK:
 		return false
@@ -687,7 +747,7 @@ func _write_fence(receipt: Dictionary) -> bool:
 	if write_error != OK:
 		return false
 	var readback: Dictionary = _read_fence_file(temp_path)
-	if not bool(readback.get("ok", false)) or int(readback.receipt.revision) != int(receipt.revision):
+	if not bool(readback.get("ok", false)) or not _same_snapshot(readback.receipt, receipt):
 		return false
 	var target_name: String = FENCE_A if int(receipt.revision) % 2 == 1 else FENCE_B
 	var target_path: String = _root_path.path_join(target_name)

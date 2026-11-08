@@ -8782,3 +8782,96 @@ msgstr "回転翼機の乱流との連成は未検証です。無風、定常風
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "サイクリック前/右 %.1f / %.1f 度から %.1f / %.1f 度へ。"
+
+msgid "Failure practice enabled"
+msgstr "故障練習が有効"
+
+msgid "Airborne seconds"
+msgstr "飛行時間（秒）"
+
+msgid "Launch scenario"
+msgstr "開始時のシナリオ"
+
+msgid "Scenario seed"
+msgstr "シナリオのシード"
+
+msgid "Weather recipe"
+msgstr "天候レシピ"
+
+msgid "Local time at launch"
+msgstr "開始時の現地時刻"
+
+msgid "Wind at launch"
+msgstr "開始時の風"
+
+msgid "%s from %d°"
+msgstr "%s（%d°から）"
+
+msgid "Ordinary flight"
+msgstr "通常飛行"
+
+msgid "Enabled"
+msgstr "有効"
+
+msgid "Failure seed"
+msgstr "故障のシード"
+
+msgid "Excluded failure types"
+msgstr "除外した故障の種類"
+
+msgid "Recorded failures"
+msgstr "記録された故障"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "故障イベントの記録はありません。発生の有無は不明です。"
+
+msgid "Recorded failure"
+msgstr "記録された故障"
+
+msgid "%s · tick %d"
+msgstr "%s · ティック %d"
+
+msgid "Practice settings at launch"
+msgstr "開始時の練習設定"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "削除を記録しました。クリーンアップは未完了で、残りの履歴は読み取り専用です。"
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "削除を記録しました。クリーンアップは未完了で、履歴を一時的に利用できません。"
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "削除を完了できませんでした。履歴は変更されていません。"
+
+msgid "Start location"
+msgstr "開始地点"
+
+msgid "Keep current run"
+msgstr "現在の走行を続ける"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "現在の開始地点：%s。再開始するとこの走行が終了します。先に記録を保存します。"
+
+msgid "Restart at %s"
+msgstr "%sから再開始"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "開始地点を変更できませんでした。現在の走行は保持されています。"
+
+msgid "Camera: %s · C"
+msgstr "カメラ：%s · C"
+
+msgid "Pilot stand"
+msgstr "操縦者の位置"
+
+msgid "Circuit overview"
+msgstr "コース全景"
+
+msgid "Used when you select Drive."
+msgstr "Driveを選択すると使用します。"
+
+msgid "Overview is active in the garage and while driving."
+msgstr "全景表示はガレージ内でも走行中でも有効です。"
+
+msgid "Return to Chase"
+msgstr "追従に戻る"

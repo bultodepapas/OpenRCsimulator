@@ -9558,3 +9558,96 @@ msgstr "L’integrazione della turbolenza non è validata per gli elicotteri; sc
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "Ciclico avanti/destra da %.1f / %.1f a %.1f / %.1f gradi."
+
+msgid "Failure practice enabled"
+msgstr "Pratica dei guasti attivata"
+
+msgid "Airborne seconds"
+msgstr "Secondi in volo"
+
+msgid "Launch scenario"
+msgstr "Scenario alla partenza"
+
+msgid "Scenario seed"
+msgstr "Seed dello scenario"
+
+msgid "Weather recipe"
+msgstr "Ricetta meteo"
+
+msgid "Local time at launch"
+msgstr "Ora locale alla partenza"
+
+msgid "Wind at launch"
+msgstr "Vento alla partenza"
+
+msgid "%s from %d°"
+msgstr "%s da %d°"
+
+msgid "Ordinary flight"
+msgstr "Volo ordinario"
+
+msgid "Enabled"
+msgstr "Attivato"
+
+msgid "Failure seed"
+msgstr "Seed dei guasti"
+
+msgid "Excluded failure types"
+msgstr "Tipi di guasto esclusi"
+
+msgid "Recorded failures"
+msgstr "Guasti registrati"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "Nessun evento di guasto registrato; non è noto se si sia verificato."
+
+msgid "Recorded failure"
+msgstr "Guasto registrato"
+
+msgid "%s · tick %d"
+msgstr "%s · passo %d"
+
+msgid "Practice settings at launch"
+msgstr "Impostazioni di pratica alla partenza"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "Eliminazione registrata. La pulizia è incompleta; la cronologia rimanente è di sola lettura."
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "Eliminazione registrata. La pulizia è incompleta; la cronologia è temporaneamente non disponibile."
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "Impossibile completare l’eliminazione. La cronologia non è cambiata."
+
+msgid "Start location"
+msgstr "Punto di partenza"
+
+msgid "Keep current run"
+msgstr "Mantieni la sessione attuale"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "Partenza attuale: %s. Il riavvio termina questa sessione; prima vengono salvate le registrazioni."
+
+msgid "Restart at %s"
+msgstr "Riavvia da %s"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "Impossibile cambiare la partenza. La sessione attuale è stata mantenuta."
+
+msgid "Camera: %s · C"
+msgstr "Telecamera: %s · C"
+
+msgid "Pilot stand"
+msgstr "Postazione pilota"
+
+msgid "Circuit overview"
+msgstr "Panoramica del circuito"
+
+msgid "Used when you select Drive."
+msgstr "Usata quando selezioni Drive."
+
+msgid "Overview is active in the garage and while driving."
+msgstr "La panoramica è attiva nel garage e durante la guida."
+
+msgid "Return to Chase"
+msgstr "Torna all’inseguimento"

@@ -131,8 +131,8 @@ func _refresh_text() -> void:
 
 
 func _on_confirmed() -> void:
-	if not _ready_to_commit or _service == null or not _service.has_method("can_manage") \
-			or not bool(_service.call("can_manage")):
+	if not _ready_to_commit: return
+	if _service == null or not _service.has_method("can_manage") or not bool(_service.call("can_manage")):
 		status_label.text = _service_note(tr("Counters and history cannot be changed right now."))
 		return
 	var latest: Dictionary = _service.call("query", _aircraft_id, _period)
@@ -154,13 +154,35 @@ func _on_confirmed() -> void:
 		succeeded = bool(_service.call("delete_history", _aircraft_id))
 	else:
 		succeeded = bool(_service.call("reset_counters", _scope, _aircraft_id))
+	var outcome := _delete_outcome() if _action == "delete" else {}
+	var status := str(outcome.get("status", ""))
+	if _action == "delete" and status in ["refused", "committed_pending", "completed"]:
+		succeeded = status == "completed"
 	if succeeded:
 		_ready_to_commit = false
 		operation_completed.emit(true)
 		hide()
 		return
-	status_label.text = _service_note(tr("The change could not be saved. Your statistics are still available."))
+	if status == "committed_pending":
+		_ready_to_commit = false
+		get_ok_button().disabled = true
+		scope_check.disabled = true
+		get_cancel_button().text = tr("Close")
+		status_label.text = tr("Deletion recorded. Cleanup is incomplete; remaining history is read-only.") if bool(outcome.get("available", false)) else tr("Deletion recorded. Cleanup is incomplete; history is temporarily unavailable.")
+	elif status == "refused":
+		status_label.text = tr("Deletion could not be completed. Your history is unchanged.")
+	else:
+		status_label.text = _service_note(tr("The change could not be saved. Your statistics are still available."))
 	get_cancel_button().grab_focus.call_deferred()
+
+
+func _delete_outcome() -> Dictionary:
+	if _service == null: return {}
+	for property: Dictionary in _service.get_property_list():
+		if str(property.get("name", "")) == "last_delete_outcome":
+			var value: Variant = _service.get("last_delete_outcome")
+			return value if value is Dictionary else {}
+	return {}
 
 
 func _on_cancelled() -> void:

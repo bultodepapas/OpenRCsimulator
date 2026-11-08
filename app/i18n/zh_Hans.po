@@ -8731,3 +8731,96 @@ msgstr "旋翼机的湍流集成尚未通过验证；请选择无风、稳定风
 
 msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
 msgstr "周期变距前/右由 %.1f / %.1f 变为 %.1f / %.1f 度。"
+
+msgid "Failure practice enabled"
+msgstr "故障练习已启用"
+
+msgid "Airborne seconds"
+msgstr "空中时间（秒）"
+
+msgid "Launch scenario"
+msgstr "启动时的场景"
+
+msgid "Scenario seed"
+msgstr "场景种子"
+
+msgid "Weather recipe"
+msgstr "天气方案"
+
+msgid "Local time at launch"
+msgstr "启动时的当地时间"
+
+msgid "Wind at launch"
+msgstr "启动时的风"
+
+msgid "%s from %d°"
+msgstr "%s，来自 %d°"
+
+msgid "Ordinary flight"
+msgstr "普通飞行"
+
+msgid "Enabled"
+msgstr "已启用"
+
+msgid "Failure seed"
+msgstr "故障种子"
+
+msgid "Excluded failure types"
+msgstr "排除的故障类型"
+
+msgid "Recorded failures"
+msgstr "已记录的故障"
+
+msgid "No failure event recorded; occurrence is unknown."
+msgstr "未记录故障事件；是否发生故障未知。"
+
+msgid "Recorded failure"
+msgstr "已记录的故障"
+
+msgid "%s · tick %d"
+msgstr "%s · 时刻步 %d"
+
+msgid "Practice settings at launch"
+msgstr "启动时的练习设置"
+
+msgid "Deletion recorded. Cleanup is incomplete; remaining history is read-only."
+msgstr "已记录删除操作。清理尚未完成；剩余历史记录为只读。"
+
+msgid "Deletion recorded. Cleanup is incomplete; history is temporarily unavailable."
+msgstr "已记录删除操作。清理尚未完成；历史记录暂时不可用。"
+
+msgid "Deletion could not be completed. Your history is unchanged."
+msgstr "无法完成删除操作。历史记录未更改。"
+
+msgid "Start location"
+msgstr "起点"
+
+msgid "Keep current run"
+msgstr "保留当前行驶"
+
+msgid "Current start: %s. Restart ends this run; recordings are saved first."
+msgstr "当前起点：%s。重新开始将结束本次行驶；会先保存录制。"
+
+msgid "Restart at %s"
+msgstr "从%s重新开始"
+
+msgid "Start could not be changed. Current run kept."
+msgstr "无法更改起点。已保留当前行驶。"
+
+msgid "Camera: %s · C"
+msgstr "相机：%s · C"
+
+msgid "Pilot stand"
+msgstr "驾驶员视点"
+
+msgid "Circuit overview"
+msgstr "赛道全景"
+
+msgid "Used when you select Drive."
+msgstr "选择 Drive 后使用此视角。"
+
+msgid "Overview is active in the garage and while driving."
+msgstr "全景视角在车库内和行驶时均生效。"
+
+msgid "Return to Chase"
+msgstr "返回跟随视角"
