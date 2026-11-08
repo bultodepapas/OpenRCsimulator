@@ -1468,5 +1468,83 @@
     "retained_tape_hash_and_replay_reports": true,
     "owning_document_links": 3,
     "git_diff_check": "passed"
+  },
+  "main_integration": {
+    "head": "6548ecffe01d81735c7c13dfc7bc9760b065fbb2",
+    "checked_import_and_new_suites": [
+      {
+        "label": "integrated-import",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\integrated-checks\\integrated-import-l3ghuq4q\\report.json",
+        "report_sha256": "e7b7a5721b9b263efeb109dc308d81f1a3468bd55c27a26e54dc9fe1d198bb9c",
+        "log_sha256": "c49862a4386a434f10d7d029ba5091bc223f085d1bc02f0bea1a7f47b20a790b",
+        "ok": true,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "label": "integrated-test_heli_mode_confirmation",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\integrated-checks\\integrated-test_heli_mode_confirmation-cv0d17ag\\report.json",
+        "report_sha256": "0a5f7d78213adb3ed12571734e7963d859eca358a13788b7da4fffcb9b0297ac",
+        "log_sha256": "fa3f2e9a47a651b79e52c953534e2f97f73d6cb361f4336ef52f232b3f51ac37",
+        "ok": true,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "label": "integrated-test_heli_weather_admission",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\integrated-checks\\integrated-test_heli_weather_admission-w5c6egem\\report.json",
+        "report_sha256": "61a7bffbdd593ef795f6f46b7f34360d04d9d1cebe80ad9085faedfd752be693",
+        "log_sha256": "dfe79f3ee51a1b6fe35bbef157a34e91c20ae2b8057c1fee238637e2043788db",
+        "ok": true,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "label": "integrated-test_home_launch_conditions",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\integrated-checks\\integrated-test_home_launch_conditions-rp9capwd\\report.json",
+        "report_sha256": "d56d09693c9ce977f28f91d61c38e02480b39edf74119055ea245f8e872b2921",
+        "log_sha256": "5694fc14372eaeb37623b51f07a263aff3f21436a82c6b95b4e567d88d5d7d27",
+        "ok": true,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        }
+      },
+      {
+        "label": "integrated-test_workshop_library_unavailable",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit4-20261107-parent\\integrated-checks\\integrated-test_workshop_library_unavailable-gpejo9ce\\report.json",
+        "report_sha256": "5f224d8ca2064d6bbacca1c4ec74f3e41ac230a30187d0df414d9aa9f6721d2b",
+        "log_sha256": "f49a00ad344d94b3e4e6bc38a487b8e54211c2d77c0f69bc51df20dc5f92fc0b",
+        "ok": true,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        }
+      }
+    ],
+    "focused_assertions": 250,
+    "source_sha256": {
+      "app\\sim\\helicopter_flight_session.gd": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9",
+      "app\\ui\\home.gd": "4e6d6adc4c5f4819dab88634203f2a7b4d91d4b6d4ff07e61d2fbef2c5b72907",
+      "app\\app_root.gd": "0587869c6b39f745b7c823c4973e1a6bfebf81775268c0a3452cbb071d6ab293",
+      "app\\ui\\workshop.gd": "d34ee3df54640f0744bc93b3a35aeb2af18d57d9daaae30e5a414bacd5589eb2",
+      "app\\workshop\\store.gd": "39689ae553b8d492b85048fa1885cccf4e9b8fdbc36578c39389d12dc4b2ae1f",
+      "app\\tests\\test_heli_mode_confirmation.gd": "4d4c0201cbdbc1948741273cabeeeb2dd0347fb8bd36d9c868d3d98c386f0023",
+      "app\\tests\\test_heli_weather_admission.gd": "69679f20de46f15f59ebfc6f12bff1916efd172c0c706de530096bbb4b030261",
+      "app\\tests\\test_home_launch_conditions.gd": "0dcaaa282c4d2e153939a93be5d6c593f4092f2c82a775754f89af5845dbe043",
+      "app\\tests\\test_workshop_library_unavailable.gd": "22cc11c8e688c073aa2dea2a3ceb2aa888a1144b56713ac58b303d557180fa46"
+    },
+    "native_installation": "Qualified Linux installation and byte manifest remain in the isolated tested checkout. Main received source and catalog imports; no ignored native receipt was copied across differing checkout bytes."
   }
 }
