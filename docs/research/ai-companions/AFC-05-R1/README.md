@@ -91,3 +91,26 @@ translation coverage, keyboard scrolling, viewport containment and return focus.
 draft parse, import and full shell logs. Its three existing tree-material warnings
 and aircraft-inertia advisories are preserved. This headless 1280×720 run does
 not replace native captures or the full scaling matrix.
+
+## AFC-05-R2 — Remove preserves the draft, 2026-11-07
+
+The baseline reproduced the reset with one admitted companion: Remove cleared the
+roster but replaced pending volume, label visibility and distance values and lost
+focus. Status refresh now leaves the whole draft, raw editor text and validation
+feedback intact. Removing a focused action transfers focus to Cancel. Apply still
+commits the draft; Cancel discards it while the immediate removal remains in effect.
+
+The checked Windows headless regression passed 37 checks with real admitted Home
+and direct-flight rosters, including resource and observer release, focus, Cancel,
+refused and accepted Apply, and unchanged paused player and companion state during
+status refresh. The 44-check profile gate passed without an identity override or
+pin changes. Existing dialog, layout and shell checks passed 19, 276 and 49 checks;
+the shell fixture uses an in-process qualification override and is not the admission
+proof. English and Spanish 1080p bounds were checked headlessly. Independent native
+Windows Compatibility/RTX 3090 review at actual 1920×1080 covers English 100% and
+Spanish 200% before/after removal. Visible draft values and Cancel focus remain
+readable; bridge inspection separately confirms the raw seed, distance and
+unchanged paused tick where the scroll position hides them. This is bounded
+presentation evidence, not physical-device, AT, performance or full-CI qualification.
+[Shared check evidence](../../menu-investigations/UI-32/audit-20261107-r6-checks.json)
+records the source identities and receipts.

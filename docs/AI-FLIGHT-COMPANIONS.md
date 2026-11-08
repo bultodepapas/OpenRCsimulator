@@ -53,7 +53,8 @@ checkout of this snapshot and packaged exports remain open.
    flight unless **Save these settings as the default** is selected.
 5. **Remove companions now** immediately clears their sessions, models and audio.
    Restart brings back the configured roster. To keep them off, disable and Apply.
-   Cancel discards the dialog draft.
+   The status updates without replacing unapplied settings. If Remove had focus,
+   focus moves to Cancel. Cancel discards the dialog draft.
 
 Home and Pause Help include these controls and their current limits in English
 and Spanish.
@@ -294,7 +295,8 @@ Run focused tests through `tools/godot/run_checked.py`:
 `test_companions_pilot.gd`, `test_companions_manager.gd`,
 `test_companions_encounters.gd`, `test_companions_clearance.gd`, `test_companions_traffic_index.gd`, `test_companions_trajectory.gd`,
 `test_companions_profiles.gd`, `test_companions_airspace.gd`, `test_companions_lifecycle.gd`,
-`test_companions_record.gd`, `test_companions_dialog.gd`, `test_companions_presentation.gd`, `test_companions_layout.gd`,
+`test_companions_record.gd`, `test_companions_dialog.gd`, `test_companions_draft_refresh.gd`,
+`test_companions_presentation.gd`, `test_companions_layout.gd`,
 and `test_companions_shell.gd`.
 The long qualification matrix lives outside the regular unit suite in
 `research/ai-companions/pilot_probe.gd`. The same directory contains a two-minute

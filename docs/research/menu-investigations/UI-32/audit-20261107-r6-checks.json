@@ -1,0 +1,890 @@
+{
+  "format": "openrc-audit-remediation-checks v5",
+  "local_date": "2026-11-07",
+  "timezone": "America/Bogota",
+  "baseline": "249dd41c14426c1625b8110003a79c008f90b3ba",
+  "tested_checkout": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "scope": [
+    "A21 section2 Garage restore UX",
+    "A17 qualified Companions draft refresh",
+    "A18 section4 failure-practice scope/reminder"
+  ],
+  "implementation_commits": {
+    "companions": "d74209f453c19ebbceb5b57d6efa019a35937c02",
+    "garage": "c2b663bcd6c15dbf1d301c59c4ddc78dfefc8cd0",
+    "practice": "f5413cc7661d129cc56513fdd3cee47d8d156dfd"
+  },
+  "source_sha256": {
+    "app/app_root.gd": "41ecc2236881ec70b8bf2298101e292a7f57a95a445938066a131540d11e09e8",
+    "app/i18n/de.po": "e72ca43a6bfbdbb85d6958f828c0b8a7ea69846ab0fa8282b48cc24e930e455c",
+    "app/i18n/es.po": "15da341444bb8ad470a1e7be01f4c1be3325e48c4a06ff40033a01ad23277632",
+    "app/i18n/fr.po": "799df641da7ebfcce4683052bd8b7fb0dcc676faa919a51f1daad76149fb4e4a",
+    "app/i18n/it.po": "f6b9473dd5196eb57c43e59b469284d54634c2ca28d9f50cee57822c1c792d85",
+    "app/i18n/ja.po": "824f551b8ba88c6299a2012e0177c0e56fef1d6758bc56bcf117f9431d4f41a3",
+    "app/i18n/pt_BR.po": "00820bd28ff5aa606a10b6910699b099a3561db0ce49cc675ae1a9cd3e7f2063",
+    "app/i18n/ru.po": "44bba7fe487e85c16f94e9b9bff7b141456eaeb2921b986342ea94c7f38183e0",
+    "app/i18n/zh_Hans.po": "5a6f98bf001e57cf5a4a647d939f3e65928c3ce2247a6e0d4bee01a757f88538",
+    "app/tests/test_companions_draft_refresh.gd": "9f083f5b7c51bd8a253dc2d995d33994bc8f33503ed05b73c78f69517184a1ae",
+    "app/tests/test_companions_draft_refresh.gd.uid": "3ee7a706c8bb5e17604acc7e206c7e81881eb5e40de895b7bc3c1142d06d016a",
+    "app/tests/test_failure_routes.gd": "b8ac8b7ce3790a0393c2fdd73c9a742ebc17154994bd2b4534c77b2c51c10a6e",
+    "app/tests/test_failure_scope_ui.gd": "bb5b3fbd3c7c2807d5a890ee260a65f18c69800fcd982c96fe09fc959882e8f0",
+    "app/tests/test_failure_scope_ui.gd.uid": "70b04ea9fbe18f4f28629ab8497820bee461471d519d2b3f42324a07c292e614",
+    "app/tests/test_rcv_checkpoint_review.gd": "a0f9d772c1f95a7b6cb10f0d9210dd175b88a12ac8b77235e2b737c322570069",
+    "app/tests/test_rcv_checkpoint_review.gd.uid": "199c2d830b36d887a6c5690840cf3fd41f799733541d5c7685236cb24d875109",
+    "app/ui/companions_dialog.gd": "24c43664e4ee2ccffee578512536d456322fdf031b9b4d379bfe2d5e0aae1795",
+    "app/ui/failures_menu.gd": "4c3df4219e8bea4f2a73e16a8fd5fbc21e6a44d3c53a5a4b663bcf285495330d",
+    "app/ui/home.gd": "be08e5bb867f6a8d7b4046800ecb7a9425aa0a30d88bf66c0c5841132f9c2b13",
+    "app/vehicles/ground/checkpoint_review.gd": "b204ca72b81c9b19208ca82dca6dd6545e20125f98ec782d1ef725a5bbe77ac8",
+    "app/vehicles/ground/checkpoint_review.gd.uid": "782416bae52d3ecd87a3dadd5f9e448dff10ccc91e055787dfbe2a95d910cc4e",
+    "app/vehicles/ground/ground_dashboard.gd": "de8987c2df56b0dbae24eb808cca4eff5ccb048d4192733e3f782f1d0cebca94",
+    "app/vehicles/ground/ground_scene.gd": "2293f11364eed8500818f225274f02f00e1bcbe410dd29f2c29c8ec522323197"
+  },
+  "checked_runs": [
+    {
+      "role": "dedicated Garage review",
+      "assertions": 93,
+      "report": "tmp/audit6-20261107-garage/checks/review-focus-final-kby9yf5t/report.json",
+      "report_sha256": "5f8ddfa3dc0db12debe6f159f847479dc438562e975339493409596dab32c4c4",
+      "log_sha256": "490ecfffe402800455d4ba8ce167f73708053bce890cd1149a48b89fcf12db6e",
+      "started_utc": "2026-11-08T03:37:17.468607+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_checkpoint_review.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "RCV checkpoint review: 93 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "dedicated real-roster draft preservation",
+      "assertions": 37,
+      "report": "tmp/audit6-20261107-companions/consumers/new-k6u8ow7t/report.json",
+      "report_sha256": "ce978732c5a2389687fdf4feb0b1bfd0d6923f25e0682539f88bdb227687c331",
+      "log_sha256": "2b3eb36b8f3fb7bf728782a51ca5d18ec763bbd3e43233fc71c9bde0e53bd455",
+      "started_utc": "2026-11-08T03:15:56.317387+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_draft_refresh.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   direct status refresh keeps hidden default and draft",
+        "ok   direct real Remove retains hidden default and draft",
+        "companions draft refresh: 37 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "dedicated failure scope/layout",
+      "assertions": 140,
+      "report": "tmp/audit6-20261107-parent/checks/failure-scope-keyboard-final-6syh_m9t/report.json",
+      "report_sha256": "06ac1148f01d5abd83bd3b55191b67f462994fcb8e9f7ee4b98780563491acb9",
+      "log_sha256": "153a0c2968a479ba88d1f65765f61dd188cf742bcb50d231322825b9c5de9616",
+      "started_utc": "2026-11-08T03:33:15.081514+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_failure_scope_ui.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "Failure scope UI: 140 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing actual profile admission",
+      "assertions": 44,
+      "report": "tmp/audit6-20261107-companions/profile-baseline/profiles-vas5zqbj/report.json",
+      "report_sha256": "bf85e40ca939399d35c65dfa508bf026d31d34c559915a6edbb0645f34767561",
+      "log_sha256": "c799bdf4c7dc927420cd0dfb8bc94b2e04a5d09fae10aef30ab89abf89950ce2",
+      "started_utc": "2026-11-08T03:07:50.649899+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   unknown aircraft IDs are refused without fallback",
+        "ok   returned profile dictionaries are detached from later loads",
+        "AFC-02 companion profile validation: 44 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing companion dialog",
+      "assertions": 19,
+      "report": "tmp/audit6-20261107-companions/consumers/dialog-5q6_3gov/report.json",
+      "report_sha256": "935e23e6575529c372dd00083b75ea9575975776c15d2e20c732bcc6836a6b2a",
+      "log_sha256": "e7b3332cc6969b74498641767d2b688821f3b4514e95e683b994c7d9cdbd808b",
+      "started_utc": "2026-11-08T03:15:56.337080+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_dialog.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   Remove emits the immediate removal request",
+        "ok   the dialog leaves its preferences path untouched",
+        "Companions dialog: 0 failed"
+      ]
+    },
+    {
+      "role": "existing companion layout",
+      "assertions": 276,
+      "report": "tmp/audit6-20261107-companions/consumers/layout-en736uum/report.json",
+      "report_sha256": "e7860b0fd3e737b2b9c7ae5f20396876cd7ec53df7d89c05842476c2c84011e0",
+      "log_sha256": "d1c958fd88fcd50032c2f7f219446685273d80e650584c42f51cca2e806f818a",
+      "started_utc": "2026-11-08T03:15:56.333568+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_layout.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "companion layout: 276 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing companion shell (fixture qualification override)",
+      "assertions": 49,
+      "report": "tmp/audit6-20261107-companions/consumers/shell-q7chds9g/report.json",
+      "report_sha256": "b692d66d56b05e322613b19622fc7b5c599580c919a28722c866f0f74db1dad6",
+      "log_sha256": "9db1b6693e6e6a1e207d721dfbca07147bec3d65598ba64498475f56b1668c66",
+      "started_utc": "2026-11-08T03:15:56.355669+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_shell.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   Restart rebuilds the companion without reusing its capture directory",
+        "ok   capture directory is never saved in Home preferences",
+        "Companions shell: 0 failed"
+      ]
+    },
+    {
+      "role": "existing Garage start intent",
+      "assertions": 50,
+      "report": "tmp/audit6-20261107-garage/consumers/test_rcv_start_intent-5a0ewd68/report.json",
+      "report_sha256": "312a01a766a3a2da239c7c542fed74d85d67e89bdbe266d7ba55103caf96ce63",
+      "log_sha256": "b02c901c7b7b873bcd3021f3bb54ed6175d33f7386f1ab1ec357ef1c30822371",
+      "started_utc": "2026-11-08T03:22:07.430007+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_start_intent.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   unselected pad cannot cancel pending start",
+        "ok   selected gamepad Back cancels only destination",
+        "RCV start intent: 50 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing RCV activity",
+      "assertions": 24,
+      "report": "tmp/audit6-20261107-garage/consumers/test_rcv_activity-dzyyt87p/report.json",
+      "report_sha256": "467c172320fbd2b64f2abb3a94b8e4045378e693829b6466dd8a4b4a9c2ddd2a",
+      "log_sha256": "9c4495ca808974a01d2f5ffc7127cdc3c291b62411851874247012fedc5f196c",
+      "started_utc": "2026-11-08T03:22:07.431008+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_activity.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "",
+        "RCV activity jump: takeoff={ \"type\": \"jump\", \"tick\": 584, \"time_s\": 2.43333333333333, \"speed_m_per_s\": 4.72666582493348 } landing={ \"type\": \"landing\", \"tick\": 604, \"time_s\": 2.51666666666667, \"speed_m_per_s\": 4.74021570740366 } peak_speed=4.88231627324784 airtime=0.08333333333333 contact_count=2 upright=0.98956059874908 air_feedback=true landed_feedback=true hud=17.1 km/h  ·  2.5 s  ·  Asphalt",
+        "RCV activity: 24 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing RCV nitro activity",
+      "assertions": 99,
+      "report": "tmp/audit6-20261107-garage/consumers/test_rcv_nitro_activity-5otcxx1a/report.json",
+      "report_sha256": "46d540b1ce1d6d84cbeb13cee6fc0a3d0de5b285bc598288b9af2ec37dd60d37",
+      "log_sha256": "d6721d1fde12a2cc59c1e5ac3bb048a267ac6a8760acf229f54c08091ce9ed23",
+      "started_utc": "2026-11-08T03:22:07.437085+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_nitro_activity.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "RCV nitro activity: 99 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing ground departure",
+      "assertions": 25,
+      "report": "tmp/audit6-20261107-garage/consumers/test_ground_departure-trvklpbq/report.json",
+      "report_sha256": "39ab906bfa419732e1baf880b3c607c9d5ea34aad4e739d094f14e8f20cacadb",
+      "log_sha256": "fcf168cd99d6aa17c18ae54c4dc2268eb54db3d0b2e0c0c2e6b2efc76673f8aa",
+      "started_utc": "2026-11-08T03:22:07.433516+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_departure.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "Ground departure: 25 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing checkpoint save/recovery audit",
+      "assertions": 40,
+      "report": "tmp/audit6-20261107-garage/consumers/test_rcv_activity_audit-yx029eu7/report.json",
+      "report_sha256": "d6b06f9afc99880c02340e62f51fbe4337d46303f1ea6f473043edfd4689aa62",
+      "log_sha256": "7b78e6f66bc9d0e75a9a93e336f10bde2de1a85bd85706ee50a46385ad06672f",
+      "started_utc": "2026-11-08T03:26:00.997583+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_activity_audit.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "RCV activity audit: 40 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing Home",
+      "assertions": null,
+      "report": "tmp/audit6-20261107-parent/checks/home-consumer-r2seeaqk/report.json",
+      "report_sha256": "bce8c422d30ce0484906ae6c017de79416afe52283ce6fd2247137ecbacb1c28",
+      "log_sha256": "53c67b0b09410495aa7d4063100b42c103c6ef899ee83d80ea8db684e515be1b",
+      "started_utc": "2026-11-08T03:13:46.626549+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_home.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   Restart returns the helicopter to the pad with motor disarmed",
+        "ok   End flight returns to Home with the research helicopter selected",
+        "all UI home checks passed"
+      ]
+    },
+    {
+      "role": "existing nine-language Home layout",
+      "assertions": null,
+      "report": "tmp/audit6-20261107-parent/checks/home-layout-consumer-56ucf255/report.json",
+      "report_sha256": "40eb335867826d4cf8f45467e3f2af122d0745343247feef6d74be906b84c1bd",
+      "log_sha256": "ae2c2da1286ecc8418790be34552b214bd431158c6f22b5eb09e4d63333314c2",
+      "started_utc": "2026-11-08T03:15:54.427546+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_home_layout.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   ja xcell-60-research 720p 200%: utility labels fit without clipping or ellipses",
+        "worst 720p overflow: 84 px (ru moonrunner-x99 720p)",
+        "all UI home layout checks passed"
+      ]
+    },
+    {
+      "role": "existing launch feedback",
+      "assertions": 75,
+      "report": "tmp/audit6-20261107-parent/checks/launch-feedback-consumer-hncudtea/report.json",
+      "report_sha256": "d43160a8ba92ec4b6ccb4bc35dd83a5a0cba0d4e3d760a7eaef7c06204bdfd3d",
+      "log_sha256": "5694fc14372eaeb37623b51f07a263aff3f21436a82c6b95b4e567d88d5d7d27",
+      "started_utc": "2026-11-08T03:15:54.427546+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_home_launch_conditions.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   candidate cancellation returns without failure wording",
+        "ok   Random cancellation keeps briefing usable",
+        "Home launch conditions: 75 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing standalone failure UI",
+      "assertions": null,
+      "report": "tmp/audit6-20261107-parent/checks/failure-ui-final-jl0c2fx0/report.json",
+      "report_sha256": "0b4d2c965d0e9ae39cf98fad0a1dfba4e34cb137f09d5e7dd7dd5c8d75f77da7",
+      "log_sha256": "3d381cdcad763b4d3671eb1f2be320078898103e931a9fb7d40419d5208ae0d3",
+      "started_utc": "2026-11-08T03:36:45.447872+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_failure_ui.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "ok   Pause incident summary includes label and hint",
+        "ok   Pause hides current incident when notices are disabled",
+        "all standalone failure UI checks passed"
+      ]
+    },
+    {
+      "role": "existing real Home/Pause route, including three new Restart checks",
+      "assertions": 61,
+      "report": "tmp/audit6-20261107-parent/checks/failure-routes-final-fvc78cj1/report.json",
+      "report_sha256": "8a969400c5a01c91dce9c5af791367d5f64beab947c6ac07bdf1434390a05429",
+      "log_sha256": "d253e0b73a88356ea3c5142ba5c2c06bf779aaa2e5f6189f85d9afeb60c6a233",
+      "started_utc": "2026-11-08T03:36:51.432331+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_failure_routes.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage: Linux x86_64 only\",\"requested\":\"native\"}",
+        "ok   next Home flight gets the updated failure plan on a new Main instance",
+        "all failure UI checks passed"
+      ]
+    },
+    {
+      "role": "existing UI language, isolated after import",
+      "assertions": null,
+      "report": "tmp/audit6-20261107-parent/checks/language-isolated-final-dp6im4lu/report.json",
+      "report_sha256": "b720aa581e170648af35f5f6f7748a6f1fac91fd26c174ffe98dc461d2728382",
+      "log_sha256": "a7c8abfed7d776b0dfe18dc1e65546dc677a7899862a7797e5a746005f672f94",
+      "started_utc": "2026-11-08T03:26:53.625031+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_language.gd"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage: Linux x86_64 only\",\"requested\":\"native\"}",
+        "ok   direct flight ignores a saved Spanish preference and leaves the file alone",
+        "all UI language checks passed"
+      ]
+    },
+    {
+      "role": "final candidate import",
+      "assertions": null,
+      "report": "tmp/audit6-20261107-parent/checks/import-candidate-final-4964hd16/report.json",
+      "report_sha256": "b584428ecad5561d130c64d3ebda518e26f8aa0e27e72e3409500c1edf8a7174",
+      "log_sha256": "15b9daa3ede1b0620dea58ac45c16e2960b1107c93cc23e2d167a0cdc95148a8",
+      "started_utc": "2026-11-08T03:38:10.503102+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "completion_tail": [
+        "[  83% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Diseño del editor listo.\u001b[39m\u001b[0m",
+        "\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m",
+        "\u001b[0m"
+      ]
+    }
+  ],
+  "dedicated_assertions": 270,
+  "source_alignment": [
+    "Each assigned path had one writer. Source froze before selected scoped checks and native review.",
+    "Early Garage consumers predate only the notice/review layout adjustments; exact dashboard hashes are retained in its per-track index. Final93 exercises the new layout and model/file/recording contracts.",
+    "Companion and Home native captures precede the final Garage-only reveal corrections; their component sources did not change. The final Garage native process loaded the complete frozen candidate.",
+    "Checked reports do not embed source hashes; current file bytes and the separately announced freeze identities are recorded here.",
+    {
+      "path": "app/tests/test_rcv_checkpoint_review.gd",
+      "tested_sha256": "0e30a8973c3ae7db962f669c0ebbfb210927fa7b90ec7ec85c3b8f59127fef7d",
+      "current_sha256": "a0f9d772c1f95a7b6cb10f0d9210dd175b88a12ac8b77235e2b737c322570069",
+      "change": "Removed a tab from blank line140; all lines equal after rstrip. No runtime/source behavior change."
+    }
+  ],
+  "per_track_indexes": [
+    {
+      "path": "tmp/audit6-20261107-companions/final-evidence-index.json",
+      "sha256": "f50a1f01a2e715787b1ce745d1a3548fbdea44d52440c0a065205a36742b9714"
+    },
+    {
+      "path": "tmp/audit6-20261107-garage/final-evidence-index.json",
+      "sha256": "e9fda8a30299ce239bd0bab8b8048a3364296a114f87c5dbcf359ce60bc95619"
+    }
+  ],
+  "baselines": {
+    "companions": "Actual unoverridden admitted roster: volume35/labelsOn/distance600 reset to100/Off/250 after removal; paused player unchanged, focus lost.",
+    "garage": "Production-airfield Gravity0.50 save/default-scene refusal matched missing/corrupt-save wording; bytes/state preserved and matching setup restored. Baseline malformed JSON emitted an engine parse error and is a rejected checked run, not a passing gate.",
+    "practice": {
+      "script": "tmp/audit6-20261107-parent/failure_baseline.gd",
+      "report": "tmp/audit6-20261107-parent/checks/failure-baseline-ta_oy8oa/report.json",
+      "witness": "Home Flight hid the enabled100% summary; dialog stated next-flight-only."
+    }
+  },
+  "ci_partition_discovery": {
+    "command": "wsl -e bash -lc 'cd /mnt/c/DEVELOPMENT/OpenRCsimulator && python3 app/tests/test_ci_partitions.py'",
+    "tests": 14,
+    "passed": true,
+    "log": "tmp/audit6-20261107-parent/ci-partitions.log",
+    "sha256": "726a4b990dbdd71f7a6f8f000c806855d2714baad878cea4c3e0de0859d9b25f",
+    "limit": "Fake-engine discovery/orchestration fixture, not full production CI."
+  },
+  "native": {
+    "platform": "Windows x86-64",
+    "renderer": "Compatibility OpenGL3.3",
+    "gpu": "NVIDIA GeForce RTX3090",
+    "driver": "617.42",
+    "captures": [
+      {
+        "path": "tmp/debug-bridge/20261107-222218-47880/shots/shot-28712-001.png",
+        "sha256": "ba82868b249a355be5db3d29789cf2a1295bf6c8c29795798d02853d271ece9c",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "admitted companion before/after Remove; preservation and Cancel focus",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222218-47880/shots/shot-28712-002.png",
+        "sha256": "0ecd997fc40977c17e3f9e1da194b0d676f65f225f0d908ecbb66c83418430b8",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "admitted companion before/after Remove; preservation and Cancel focus",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-004.png",
+        "sha256": "ac2826d8ecc7791dd8bfd54babc13756159d20f326f6b9322c4cd5859c4b4c94",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 200,
+        "subject": "practice dialog",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-005.png",
+        "sha256": "06e5306f1649102b4971128e94ae7cfbea0d98b7c5df1cf1e1e802adbae11e78",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 200,
+        "subject": "enabled Home reminder",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-006.png",
+        "sha256": "553d50e5e7950efb4b1897ecb1ce6fc1f81af76615f680cfb6a661660f83488b",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "enabled Home reminder",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-007.png",
+        "sha256": "47a1dcb0e091e8dacbaed56d50d948b3a8e5d8528553cbe625cf99cd4df8c905",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "practice dialog",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-008.png",
+        "sha256": "2547e94b88a4a750bda705a8a68cddb5a4bc4e5b10cbd1c2f6cb437f46454549",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "enabled Home reminder",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-009.png",
+        "sha256": "58f5f957383cb0668895dbdd9e76fe3fd773c14c530407c4047301e63acbcc4b",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "practice dialog",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-010.png",
+        "sha256": "d653c2c19549ce501a782e4e4b5160b0d89039a94f86c734fc6bc3cf01461de0",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "enabled Home reminder",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-011.png",
+        "sha256": "daa6aca593153cc4bdac35ced60e1b12b8580eac6e08dcf045b216511aaf9d73",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "practice dialog",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-017.png",
+        "sha256": "5c50346d88b0edbb305a47740bc4c84341a3a11d20570d911f8650a146be78fc",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "real Up key reveals selected aircraft from Fly",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-018.png",
+        "sha256": "2c95996a45625c954d140b489934a952ea54b6c523915e821d6473c56b3428d8",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "admitted companion before Remove",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-222619-47881/shots/shot-48356-019.png",
+        "sha256": "9694d29901f28480ef143b6df0ca6c269c206a90cc467dba0503cdd4701e274a",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "companion removed, draft preserved and Cancel focused",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-223818-47882/shots/shot-43136-001.png",
+        "sha256": "c22f75ccf7bff65b23719c57e3dacb909f3bfc8ef0376be8e4954f2024457265",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "mismatch feedback",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-223818-47882/shots/shot-43136-002.png",
+        "sha256": "fdf6f856c07b068cb7b3ac272772c7e2bfa147821f77f1f010e780aebee7e56e",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "saved setup with visible Close",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-223818-47882/shots/shot-43136-003.png",
+        "sha256": "ebf1fbc547c0e0f4afd650e6db3b5d9c333a564d5a9ba2901a0c0e91cc74581c",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "saved setup EN100",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-223818-47882/shots/shot-43136-004.png",
+        "sha256": "8488e2c4231d93f1b33fda5276cb157ea0c38fb443533ad10df9c36b920ca994",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "effective lab Apply/restart",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-223818-47882/shots/shot-43136-005.png",
+        "sha256": "e7d94898cd1835e098298c3003829775f6d4d31f0807f5e4445c6ba4593a7a79",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "matching Restore feedback",
+        "review": "parent plus independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-223818-47882/shots/shot-43136-006.png",
+        "sha256": "05f931836712bd3b712b07b5eff1808955cf4aaaaffdfee539ddf1b28fb6ba83",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "restored in-memory source",
+        "review": "parent plus independent Good Enemy"
+      }
+    ],
+    "sessions": [
+      {
+        "directory": "tmp/debug-bridge/20261107-222218-47880",
+        "pid": 28712,
+        "stop": "explicit debug-bridge stop; crash null and leaked_objects0"
+      },
+      {
+        "directory": "tmp/debug-bridge/20261107-222619-47881",
+        "pid": 48356,
+        "stop": "explicit debug-bridge stop; crash null and leaked_objects0"
+      },
+      {
+        "directory": "tmp/debug-bridge/20261107-223818-47882",
+        "pid": 43136,
+        "stop": "explicit debug-bridge stop; crash null and leaked_objects0"
+      }
+    ],
+    "companion_observations": [
+      {
+        "locale": "en",
+        "scale": 100,
+        "tick": 54,
+        "active_before": 1,
+        "active_after": 0,
+        "volume": 35,
+        "labels": true,
+        "distance_m": 600,
+        "raw_seed": "draft-seed",
+        "save_default": true
+      },
+      {
+        "locale": "es",
+        "scale": 200,
+        "tick": 64,
+        "active_before": 1,
+        "active_after": 0,
+        "volume": 35,
+        "labels": true,
+        "distance_m": 600,
+        "raw_seed": "semilla-pe",
+        "save_default": false
+      }
+    ],
+    "companion_limits": "Scrolled pixels show subsets of controls. Bridge inspection separately confirms hidden raw seed/distance/status; no bypass or pin changes admitted these real rosters.",
+    "garage_observation": {
+      "flow": "Gravity0.50 lab Apply/save/Home/default reopen; mismatched Restore; read-only Review; manually matching Apply then accepted Restore",
+      "checkpoint_sha256_before_and_after": "80d1c78106e9c036dd246f8c23c67f7eb3ffc9eb457bbf800c0512b5a22352bb",
+      "experiment_after": {
+        "gravity_scale": 0.5,
+        "grip_scale": 1.0,
+        "spring_scale": 1.0,
+        "damper_scale": 1.0,
+        "ballast_kg": 0.0,
+        "ballast_height_m": 0.15
+      }
+    }
+  },
+  "rejected_or_superseded": [
+    "Earlier Garage one-line reveal and offscreen focus variants are not accepted final review evidence; native screenshot middle/015 and two deliberate negative controls motivated the final93.",
+    "Initial translated practice test compared raw auto-translated Label.text to rendered Spanish. Corrected to atr(text), then final140 passed with imported catalogs and real keyboard reveal.",
+    "First language-final overlapped an import. Selected language-isolated-final ran afterward against quiescent resources.",
+    "Early bridge ref/field lookups were refused without mutation; current look/ref bindings were used for the completed journeys."
+  ],
+  "limits": [
+    "Full required CI, release/export, physical devices, assistive technology, participant studies and physical validation remain open.",
+    "Whole-file checkpoint parsing/validation is intentionally uncapped by the existing tape format and was not memory/latency-qualified.",
+    "At200%, some page/review content requires scrolling. Existing mixed localization and legacy fixed-size Garage controls are not fully qualified by these focused captures.",
+    "No simulation/physics sources, source pins, generated aircraft data or golden flights changed. Native images are presentation evidence, not performance or physical flight evidence."
+  ],
+  "documentation_links": {
+    "new_local_links": 12,
+    "errors": 0,
+    "method": "existing tools/ci/check_docs.py link/anchor parser against working tree; new local links only",
+    "receipt": "tmp/audit6-20261107-parent/document-links.json",
+    "receipt_sha256": "741ca5633d9af31758d1791c89ed281664bed2bab11cdb87246f7de7e8e85222"
+  }
+}

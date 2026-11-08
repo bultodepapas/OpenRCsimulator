@@ -45,7 +45,6 @@ Source: [A17][A17].
 
 | Pending item | Observation, action and acceptance boundary | Original report |
 | --- | --- | --- |
-| **A21 §2 — Garage Restore explanation and recovery** | Bisonte MT8 Gravity 0.50 save refused after Home/default reopen; reapplying the matching experiment restored successfully, and refusal preserved the saved bytes. An empty slot produced the same mismatch message. Retain model/course/vehicle/solver compatibility checks; distinguish absent, incompatible and unreadable saves, expose validated saved experiment metadata and offer Review saved setup or supported Apply setup and restore. Explain lab Apply as a restart with the effective setting; this is recovery UX, not checkpoint corruption. | [A21 original][A21] |
 | **A21 §5 — Inspect omitted alerts (design evaluation)** | Source-only: cap one with STALL and LOW retains both selected codes, but the overflow panel has no direct expansion/focus target. Existing Pause → Flight overlays → Alerts limit/preview is a workaround. Evaluate a deliberately paused, focusable active-alert list through the existing screen stack and selected menu device; preserve saved cap, priority/category policy and flight input, disclose snapshot versus live status, and restore focus/return predictably. Intentional cap/overflow/whole-rail close are not new defects; consider Hide warning panel wording. | [A21 original][A21] |
 
 Remaining source-only orientation follow-up:
@@ -68,9 +67,8 @@ An immutable accepted-tick contact observation could carry environment/geometry 
 
 ### Related work without a new defect count
 
-- **A17 Companions:** separate status refresh from draft initialization, preserving volume/labels/distance. Original used a solo-flight active-count fixture because enabled profile admission failed; verify real active traffic before closure. Original reports: [A17][A17].
 - **A14 paint observations:** recognizable same-label cards, explained incompatible-skin fallback, localized actionable errors and practical inventory recovery. Real package/upgrade cases remain unverified; preserve existing legacy exception. Original reports: [A14][A14].
-- **A18 player journeys:** correct failure-setting lifetime/Restart copy and show practice near Fly; disclose save-before-calibration; show resolved aircraft/field/start beside Fly; add state/vehicle startup guidance and radio-profile prerequisites. Use existing owners and resolver, not duplicate rules/tutorials. These are cognitive-walkthrough hypotheses, not a participant study or seven defects. Original reports: [A18][A18].
+- **A18 player journeys:** disclose save-before-calibration; show resolved aircraft/field/start beside Fly; add state/vehicle startup guidance and radio-profile prerequisites. Failure-setting lifetime/Restart copy and the enabled-practice reminder are implemented in the completed ledger. Use existing owners and resolver, not duplicate rules/tutorials. These are cognitive-walkthrough hypotheses, not a participant study or seven defects. Original reports: [A18][A18].
 
 ## Aircraft and helicopter correctness
 

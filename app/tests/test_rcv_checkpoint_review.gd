@@ -137,7 +137,7 @@ func run() -> void:
 	c.free()
 	var bad := parsed.duplicate(true)
 	bad.tick = -1
-	
+
 	# Use a fresh prepared scene to hash crafted malformed candidates.
 	var d := make_activity(folder.path_join("invalid.json"))
 	await settle()
