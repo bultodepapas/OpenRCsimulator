@@ -17,6 +17,8 @@ var _trend := PackedFloat32Array()
 var _history_time := -INF
 var _efficiency := NAN
 var _electric := false
+var _cardinal_margin_key: Array = []
+var _cardinal_margin := 17.0
 
 
 func _init(instrument_id: String) -> void:
@@ -40,6 +42,13 @@ func _apply_density() -> void:
 	graphic.custom_minimum_size.y = (150 if _compact else 190) if id == "pilot_radar" else ((120 if _compact else 156) if id == "wind_track" else (60 if _compact else 82))
 	_separator.hide()
 	if _face != null: _face.queue_redraw()
+
+
+func _notification(what: int) -> void:
+	if what in [NOTIFICATION_TRANSLATION_CHANGED, NOTIFICATION_THEME_CHANGED] and is_instance_valid(_face):
+		_cardinal_margin_key.clear()
+		_face.queue_redraw()
+		if is_instance_valid(graphic): graphic.queue_redraw()
 
 
 func reset_flight() -> void:
@@ -91,12 +100,12 @@ func refresh_navigation(t: Dictionary, system: String, battery: Dictionary, effi
 		"pilot_radar": fields = [_north, _east, _heading, t.get("height_agl")]
 		"wind_track": fields = [_heading, _drift, t.get("ground_course_deg"), t.get("headwind_mps"), t.get("crosswind_mps"), is_finite(float(t.get("ground_speed", NAN))), float(t.get("ground_speed", NAN)) < 1.0]
 		_: fields = [_efficiency, _electric, efficiency.get("status"), battery.get("power_w"), t.get("ground_speed")]
-	var key: Array = [system, TranslationServer.get_locale()]
+	var key: Array = [system, TranslationServer.get_locale(), UiTheme.text_scale]
 	for field: Variant in fields:
 		key.append(null if field == null or (field is float and not is_finite(field)) else field)
 	if key == _view_key and not history_changed: return
-	var chart_changed: bool = history_changed or _view_key.is_empty() or _view_key[0] != key[0] or _view_key[1] != key[1]
-	if _face != null and (_view_key.is_empty() or _view_key[1] != key[1]): _face.queue_redraw()
+	var chart_changed: bool = history_changed or _view_key.is_empty() or _view_key[0] != key[0] or _view_key[1] != key[1] or _view_key[2] != key[2]
+	if _face != null and (_view_key.is_empty() or _view_key[1] != key[1] or _view_key[2] != key[2]): _face.queue_redraw()
 	_view_key = key
 	_system = system
 	match id:
@@ -142,7 +151,18 @@ static func radar_range(distance: float) -> float:
 
 
 func _geometry() -> Vector3:
-	return Vector3(graphic.size.x / 2.0, graphic.size.y / 2.0, minf(graphic.size.x, graphic.size.y) / 2.0 - 17.0)
+	var margin := 17.0
+	if id == "pilot_radar":
+		var font := get_theme_default_font()
+		var size := _face_font_size()
+		var key := [font.get_instance_id(), size, TranslationServer.get_locale()]
+		if key != _cardinal_margin_key:
+			_cardinal_margin = maxf(17.0, maxf(font.get_ascent(size) + 5.0, font.get_descent(size) + 14.0))
+			for label: String in _cardinal_labels():
+				_cardinal_margin = maxf(_cardinal_margin, 10.0 + font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x / 2.0)
+			_cardinal_margin_key = key
+		margin = _cardinal_margin
+	return Vector3(graphic.size.x / 2.0, graphic.size.y / 2.0, minf(graphic.size.x, graphic.size.y) / 2.0 - margin)
 
 
 func _draw_face() -> void:
@@ -163,10 +183,10 @@ func _draw_face() -> void:
 	_face.draw_line(c - Vector2(r - 10, 0), c + Vector2(r - 10, 0), Color(TRACK, 0.5), 1)
 	_face.draw_line(c - Vector2(0, r - 10), c + Vector2(0, r - 10), Color(TRACK, 0.5), 1)
 	if id == "pilot_radar":
-		_face_text("N", c + Vector2(0, -r - 5), ACCENT)
-		_face_text("E", c + Vector2(r + 10, 4), MUTED)
-		_face_text("S", c + Vector2(0, r + 14), MUTED)
-		_face_text("W", c + Vector2(-r - 10, 4), MUTED)
+		var cardinals := _cardinal_labels()
+		var points := _radar_cardinal_points(c, r)
+		for index: int in 4:
+			_face_text(cardinals[index], points[index], ACCENT if index == 0 else MUTED)
 	else:
 		_face_text(tr("NOSE"), c + Vector2(0, -r - 5), INK)
 		_face.draw_line(c, c - Vector2(0, r - 8), INK, 2, true)
@@ -175,8 +195,21 @@ func _draw_face() -> void:
 
 func _face_text(value: String, point: Vector2, color: Color) -> void:
 	var font := get_theme_default_font()
-	var width := font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
-	_face.draw_string(font, point - Vector2(width / 2, 0), value, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, color)
+	_face.draw_string(font, _face_text_origin(value, point, font), value, HORIZONTAL_ALIGNMENT_LEFT, -1, _face_font_size(), color)
+
+
+func _face_font_size() -> int:
+	return maxi(11, roundi(11.0 * clampf(UiTheme.text_scale, 1.0, 2.0))) if id == "pilot_radar" else 11
+
+
+func _radar_cardinal_points(center: Vector2, radius: float) -> PackedVector2Array:
+	return PackedVector2Array([center + Vector2(0, -radius - 5), center + Vector2(radius + 10, 4),
+		center + Vector2(0, radius + 14), center + Vector2(-radius - 10, 4)])
+
+
+func _face_text_origin(value: String, point: Vector2, font: Font) -> Vector2:
+	var width := font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, _face_font_size()).x
+	return point - Vector2(width / 2, 0)
 
 
 func _draw_instrument() -> void:

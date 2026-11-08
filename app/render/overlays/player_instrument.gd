@@ -700,10 +700,11 @@ func _draw_instrument() -> void:
 			for i in 36:
 				var direction := Vector2(sin(i * TAU / 36), -cos(i * TAU / 36))
 				graphic.draw_line(c + direction * (r - (7 if i % 9 == 0 else 3)), c + direction * r, ACCENT if i == 0 else (MUTED if i % 9 == 0 else TRACK), 1, true)
-			_graphic_text(tr("N"), c + Vector2(0, -r - 5), ACCENT, 10, HORIZONTAL_ALIGNMENT_CENTER)
-			_graphic_text(tr("E"), c + Vector2(r + 12, 4), MUTED, 10, HORIZONTAL_ALIGNMENT_CENTER)
-			_graphic_text(tr("S"), c + Vector2(0, r + 14), MUTED, 10, HORIZONTAL_ALIGNMENT_CENTER)
-			_graphic_text(tr("W"), c + Vector2(-r - 12, 4), MUTED, 10, HORIZONTAL_ALIGNMENT_CENTER)
+			var cardinals := _cardinal_labels()
+			_graphic_text(cardinals[0], c + Vector2(0, -r - 5), ACCENT, 10, HORIZONTAL_ALIGNMENT_CENTER)
+			_graphic_text(cardinals[1], c + Vector2(r + 12, 4), MUTED, 10, HORIZONTAL_ALIGNMENT_CENTER)
+			_graphic_text(cardinals[2], c + Vector2(0, r + 14), MUTED, 10, HORIZONTAL_ALIGNMENT_CENTER)
+			_graphic_text(cardinals[3], c + Vector2(-r - 12, 4), MUTED, 10, HORIZONTAL_ALIGNMENT_CENTER)
 			if is_finite(_wind_from):
 				var dir := Vector2(sin(deg_to_rad(_wind_from)), -cos(deg_to_rad(_wind_from)))
 				var side := Vector2(-dir.y, dir.x)
@@ -713,6 +714,10 @@ func _draw_instrument() -> void:
 				graphic.draw_circle(c, 3, INK, true, -1, true)
 			else:
 				graphic.draw_circle(c, 3, MUTED)
+
+
+func _cardinal_labels() -> PackedStringArray:
+	return PackedStringArray([tr("N"), tr("E"), tr("S"), tr("W")])
 
 
 func _graphic_text(value: String, point: Vector2, color: Color, font_size: int, align := HORIZONTAL_ALIGNMENT_LEFT) -> void:

@@ -4,6 +4,7 @@ const Settings := preload("res://render/overlays/overlay_settings.gd")
 const Manager := preload("res://render/overlays/overlay_manager.gd")
 const Dialog := preload("res://ui/overlays_dialog.gd")
 const Instrument := preload("res://render/overlays/player_instrument.gd")
+const NavigationInstrument := preload("res://render/overlays/navigation_instrument.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const DEFAULT_PLAYER_POSITIONS := {
 	"speed": Vector2(0, 1), "height": Vector2(1, 1), "power": Vector2(0, 0), "weather": Vector2(1, 0),
@@ -40,10 +41,97 @@ func _run() -> void:
 	_test_energy(manager)
 	await _test_zero_speed_graph(manager)
 	await _test_extended_instruments(manager)
+	await _test_cardinal_locales()
 	await _test_widget_interaction(manager)
 	await _test_responsive_layout(manager)
 	await _test_dialog(manager)
 	manager.queue_free()
+	await process_frame
+
+
+func _test_cardinal_locales() -> void:
+	var radar := NavigationInstrument.new("pilot_radar")
+	var weather := Instrument.new("weather", "Wind conditions", "weather")
+	root.add_child(radar)
+	root.add_child(weather)
+	var draws := [0]
+	var foreground_draws := [0]
+	radar._face.draw.connect(func() -> void: draws[0] += 1)
+	radar.graphic.draw.connect(func() -> void: foreground_draws[0] += 1)
+	await process_frame
+	await process_frame
+	_check("initial English radar cardinals are drawn", draws[0] > 0 and radar._cardinal_labels() == PackedStringArray(["N", "E", "S", "W"]))
+	var cases := {
+		"en": PackedStringArray(["N", "E", "S", "W"]),
+		"es": PackedStringArray(["N", "E", "S", "O"]),
+		"de": PackedStringArray(["N", "O", "S", "W"]),
+		"ja": PackedStringArray(["北", "東", "南", "西"]),
+	}
+	for locale: String in ["es", "de", "ja", "en"]:
+		var before: int = draws[0]
+		TranslationServer.set_locale(locale)
+		await process_frame
+		await process_frame
+		_check("radar and weather share localized cardinals: " + locale,
+			radar._cardinal_labels() == cases[locale] and weather._cardinal_labels() == cases[locale])
+		_check("locale change redraws the cached radar face: " + locale, draws[0] > before)
+		var font := radar.get_theme_default_font()
+		for text_scale: float in [1.0, 2.0]:
+			var previous_scale: float = UiTheme.text_scale
+			var before_scale: int = draws[0]
+			UiTheme.text_scale = text_scale
+			radar.refresh_navigation({"heading_deg": 135.0, "pilot_north_m": 10.0, "pilot_east_m": 20.0}, "metric", {}, {})
+			await process_frame
+			await process_frame
+			if previous_scale != text_scale:
+				_check("text-scale change redraws radar face", draws[0] > before_scale)
+			var size: int = radar._face_font_size()
+			var geometry: Vector3 = radar._geometry()
+			var points: PackedVector2Array = radar._radar_cardinal_points(Vector2(geometry.x, geometry.y), geometry.z)
+			var within := true
+			var centered := true
+			var bounds := []
+			for index: int in 4:
+				var label: String = radar._cardinal_labels()[index]
+				var width: float = font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+				var origin: Vector2 = radar._face_text_origin(label, points[index], font)
+				bounds.append([label, origin, width, font.get_ascent(size), font.get_descent(size)])
+				within = within and width > 0.0 and origin.x >= 0.0 and origin.x + width <= radar.graphic.size.x \
+					and origin.y - font.get_ascent(size) >= 0.0 and origin.y + font.get_descent(size) <= radar.graphic.size.y
+				centered = centered and is_equal_approx(origin.x + width / 2.0, points[index].x)
+			_check("cardinal glyph bounds and centering: %s at %.0f%%" % [locale, text_scale * 100.0], within and centered, "graphics=%s geometry=%s bounds=%s" % [radar.graphic.size, geometry, bounds])
+			_check("cardinal font follows text scale: %.0f%%" % (text_scale * 100.0), size == roundi(11.0 * text_scale))
+		if locale == "ja":
+			var japanese_font: Font = load("res://assets/fonts/NotoSansCJKjp-Regular.otf")
+			var glyphs_present := true
+			for label: String in radar._cardinal_labels(): glyphs_present = glyphs_present and japanese_font.has_char(label.unicode_at(0))
+			_check("Japanese cardinal glyphs exist in the active fallback", japanese_font in ThemeDB.fallback_font.fallbacks and glyphs_present)
+	UiTheme.text_scale = 1.0
+	radar.refresh_navigation({"heading_deg": 135.0, "pilot_north_m": 10.0, "pilot_east_m": 20.0}, "metric", {}, {})
+	await process_frame
+	await process_frame
+	var before_theme: int = draws[0]
+	var before_foreground: int = foreground_draws[0]
+	var before_geometry: Vector3 = radar._geometry()
+	var larger := Theme.new()
+	var taller_font := FontVariation.new()
+	taller_font.base_font = radar.get_theme_default_font()
+	taller_font.spacing_top = 24
+	taller_font.spacing_bottom = 12
+	larger.default_font = taller_font
+	larger.default_font_size = 24
+	radar.theme = larger
+	await process_frame
+	await process_frame
+	_check("font/theme changes redraw both radar layers", draws[0] > before_theme and foreground_draws[0] > before_foreground)
+	_check("different font metrics update shared radar geometry", radar._geometry().z != before_geometry.z)
+	radar.set_appearance("large", 1.0, false)
+	_check("large overlay scales the cardinal drawing", radar.scale.x > 1.0 and radar.scale.y > 1.0)
+	radar.refresh_navigation({"heading_deg": 135.0, "pilot_north_m": 10.0, "pilot_east_m": 20.0}, "metric", {}, {})
+	_check("localized face retains heading and range geometry", is_equal_approx(radar._heading, 135.0) and radar._north == 10.0 and radar._east == 20.0)
+	radar.free()
+	weather.free()
+	TranslationServer.set_locale("en")
 	await process_frame
 
 
