@@ -8692,3 +8692,42 @@ msgstr "設定フォルダーに書き込めることを確認して、再試行
 
 msgid "Retry"
 msgstr "再試行"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "%s から %s までの有限数を入力してください。"
+
+msgid "Enter a value within the shown limits."
+msgstr "表示された範囲内の値を入力してください。"
+
+msgid "Enter digits only, from %s to %s."
+msgstr "%s から %s までの数字のみを入力してください。"
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "2000年から2100年までの有効な日付を入力してください。"
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "UTCオフセットを-720分から840分の間で入力してください。"
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "緯度を-90度から90度の間で入力してください。"
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "経度を-180度から180度の間で入力してください。"
+
+msgid "Enter a non-empty value."
+msgstr "空でない値を入力してください。"
+
+msgid "Gust period must be at least its duration."
+msgstr "突風の周期は継続時間以上にしてください。"
+
+msgid "The gust must end within the time horizon."
+msgstr "突風は時間範囲内に終了する必要があります。"
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "サーマル場は時間範囲内に収まる必要があります。"
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "突風の各成分は2.5 m/s以内にしてください。"
+
+msgid "Check this setting."
+msgstr "この設定を確認してください。"

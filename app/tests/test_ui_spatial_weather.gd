@@ -425,7 +425,8 @@ func _check_validation_cancel_and_locale() -> void:
 	dialog._on_apply()
 	_check("malformed spatial response fails closed with an inline error",
 		_applied_count == 0 and dialog.error_label.visible
-		and dialog.error_label.text == "Check the spatial wind values against their displayed limits.")
+		and dialog._diagnostic.tab == 0 and dialog._diagnostic.field == "reference_speed_mps"
+		and dialog.error_label.text.contains("Reference speed") and not dialog._diagnostic.reason.is_empty())
 	dialog._on_cancel()
 	_check("Cancel discards the spatial draft", _cancel_count == 1 and _applied_count == 0)
 	TranslationServer.set_locale("es")

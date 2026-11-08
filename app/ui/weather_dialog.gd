@@ -3,6 +3,7 @@ extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const FieldDiagnostic := preload("res://ui/field_diagnostic.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const SpatialWeatherControls := preload("res://ui/spatial_weather_controls.gd")
@@ -118,6 +119,9 @@ var _focus_order: Array[Control] = []
 var _setting_fields: bool = false
 var _scroll_update_queued: bool = false
 var _compact_chrome: bool = false
+var _diagnostic: Dictionary = {}
+var _inline_error: Label
+var _diagnostic_generation := 0
 
 
 func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null, initial_sky_config: Variant = null) -> void:
@@ -342,7 +346,7 @@ func _notification(what: int) -> void:
 		_update_atmosphere_preview()
 		_update_spatial_mode_controls()
 		if error_label.visible:
-			_show_error()
+			_render_diagnostic()
 		_schedule_scroll_height_update()
 
 
@@ -755,10 +759,14 @@ func _rms_inputs_have_energy() -> bool:
 
 
 func _on_apply() -> void:
+	var issue := _first_invalid_field()
+	if not issue.is_empty():
+		_show_diagnostic(issue)
+		return
 	var sky_result: Dictionary = sky_controls.call("read_draft")
 	if not sky_result.ok:
-		error_label.text = tr("Check the sky and cloud motion settings.")
-		_set_error_visible(true)
+		_show_diagnostic(_issue(4, str(sky_result.get("field", "sky")), sky_result.get("control", sky_controls.motion_picker),
+			str(sky_result.get("label", "Sky & clouds")), str(sky_result.get("code", "invalid"))))
 		return
 	var lighting_result: Dictionary = time_of_day_controls.call("read_draft")
 	if not lighting_result.get("ok", false):
@@ -766,11 +774,22 @@ func _on_apply() -> void:
 		return
 	var night_result: Dictionary = time_of_day_controls.call("read_night_options")
 	if not night_result.get("ok", false):
-		_show_error()
+		var control: Control = time_of_day_controls.field_lighting_picker
+		var field := "field_lighting"
+		var label := "Field lighting"
+		if time_of_day_controls.field_activation_picker.selected < 0:
+			control = time_of_day_controls.field_activation_picker
+			field = "field_activation"
+			label = "Field light activation"
+		elif time_of_day_controls.campfire_picker.selected < 0:
+			control = time_of_day_controls.campfire_picker
+			field = "campfire"
+			label = "Campfire"
+		_show_diagnostic(_issue(3, field, control, label, "invalid"))
 		return
 	var moon_result: Dictionary = time_of_day_controls.call("read_moon_config")
 	if not moon_result.get("ok", false):
-		_show_error()
+		_show_diagnostic(_issue(3, "moon", time_of_day_controls.moon_picker, "Moon", "invalid"))
 		return
 	var spatial_enabled: bool = spatial_controls.spatial_enabled()
 	var spatial_result: Dictionary = spatial_controls.read_draft()
@@ -899,6 +918,168 @@ func _on_cancel() -> void:
 	cancelled.emit()
 
 
+func _issue(tab: int, field: String, control: Control, label: String, code: String, bounds: Array = []) -> Dictionary:
+	return {"tab": tab, "field": field, "control": control, "label": label, "code": code, "bounds": bounds}
+
+
+func _first_invalid_field() -> Dictionary:
+	var spatial: bool = spatial_controls.spatial_enabled()
+	if not spatial:
+		for key: String in EDITED_KEYS:
+			var edit: LineEdit = field_inputs[key]
+			var spec: Dictionary = SLIDER_SPECS[key]
+			if not edit.text.is_valid_float() or not is_finite(edit.text.to_float()) \
+					or edit.text.to_float() < float(spec.min) or edit.text.to_float() > float(spec.max):
+				return _issue(0, key, edit, FIELD_LABELS[key], "number", [spec.min, spec.max])
+		if field_inputs.gust_period_s.text.to_float() < field_inputs.gust_duration_s.text.to_float():
+			return _issue(0, "gust_period_s", field_inputs.gust_period_s, FIELD_LABELS.gust_period_s, "gust_period")
+	else:
+		var spatial_result: Dictionary = spatial_controls.read_draft()
+		if not spatial_result.ok:
+			var field := str(spatial_result.get("field", ""))
+			var spec: Dictionary = SpatialWeatherControls.FIELDS.get(field, {})
+			var control: Control = spatial_result.get("control")
+			if control == null: control = spatial_controls.enable_check
+			return _issue(0, field, control, str(spatial_result.get("label", "Spatial wind")), str(spatial_result.get("code", "invalid")),
+				[spec.minimum, spec.maximum] if spec.has("minimum") else [])
+	if not spatial:
+		for key: String in TURBULENCE_EDITED_KEYS:
+			var edit: LineEdit = turbulence_inputs[key]
+			if key == "seed":
+				if not _contains_ascii_digits(edit.text) or int(edit.text) > 4294967295:
+					return _issue(1, key, edit, TURBULENCE_LABELS[key], "seed")
+			else:
+				var spec: Dictionary = SLIDER_SPECS[key]
+				if not edit.text.is_valid_float() or not is_finite(edit.text.to_float()) \
+						or edit.text.to_float() < float(spec.min) or edit.text.to_float() > float(spec.max):
+					return _issue(1, key, edit, TURBULENCE_LABELS[key], "number", [spec.min, spec.max])
+	var mode := _selected_atmosphere_mode()
+	for key: String in ATMOSPHERE_EDITED_KEYS:
+		if not (mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")): continue
+		var edit: LineEdit = atmosphere_inputs[key]
+		var spec: Dictionary = SLIDER_SPECS[key]
+		if not edit.text.is_valid_float() or not is_finite(edit.text.to_float()) \
+				or edit.text.to_float() < float(spec.min) or edit.text.to_float() > float(spec.max):
+			return _issue(2, key, edit, ATMOSPHERE_LABELS[key], "number", [spec.min, spec.max])
+	var time_result: Dictionary = time_of_day_controls.read_draft()
+	if not time_result.ok:
+		return _issue(3, str(time_result.get("field", "time")), time_result.get("control", time_of_day_controls.mode_picker),
+			str(time_result.get("label", "Time of day")), str(time_result.get("code", "invalid")))
+	var night_result: Dictionary = time_of_day_controls.read_night_options()
+	if not night_result.ok:
+		var control: OptionButton = time_of_day_controls.field_lighting_picker
+		var field := "field_lighting"
+		var label := "Field lighting"
+		if time_of_day_controls.field_activation_picker.selected < 0:
+			control = time_of_day_controls.field_activation_picker
+			field = "field_activation"
+			label = "Field light activation"
+		elif time_of_day_controls.campfire_picker.selected < 0:
+			control = time_of_day_controls.campfire_picker
+			field = "campfire"
+			label = "Campfire"
+		return _issue(3, field, control, label, "invalid")
+	if not time_of_day_controls.read_moon_config().ok:
+		return _issue(3, "moon", time_of_day_controls.moon_picker, "Moon", "invalid")
+	var sky_result: Dictionary = sky_controls.numeric_error()
+	if not sky_result.is_empty():
+		var control: Control = sky_result.control
+		var spin := control.get_parent() as SpinBox
+		return _issue(4, str(sky_result.field), control, str(sky_result.label), "number", [spin.min_value, spin.max_value])
+	return {}
+
+
+func _show_diagnostic(issue: Dictionary) -> void:
+	_diagnostic = issue
+	_diagnostic_generation += 1
+	var target: Control = issue.control
+	if is_instance_valid(_inline_error): _inline_error.hide()
+	_inline_error = FieldDiagnostic.find(target)
+	if target is LineEdit:
+		var on_edit := _on_diagnostic_edited.bind(target)
+		if not target.text_changed.is_connected(on_edit): target.text_changed.connect(on_edit)
+	elif target is OptionButton:
+		var on_select := _on_diagnostic_selected.bind(target)
+		if not target.item_selected.is_connected(on_select): target.item_selected.connect(on_select)
+	if issue.tab == 0 and spatial_controls.spatial_enabled() and str(issue.field) in SpatialWeatherControls.ADVANCED_KEYS:
+		spatial_controls.advanced_check.set_pressed_no_signal(true)
+		spatial_controls._on_advanced_toggled(true)
+	if issue.tab == 3 and target in [time_of_day_controls.date_input, time_of_day_controls.offset_input,
+			time_of_day_controls.latitude_input, time_of_day_controls.longitude_input, time_of_day_controls.location_input]:
+		time_of_day_controls.advanced_toggle.set_pressed_no_signal(true)
+		time_of_day_controls._on_advanced_toggled(true)
+	tab_bar.current_tab = int(issue.tab)
+	_render_diagnostic()
+	_set_error_visible(true)
+	_focus_diagnostic.call_deferred(_diagnostic_generation, target)
+
+
+func _focus_diagnostic(generation: int, target: Control) -> void:
+	if not is_inside_tree(): return
+	get_tree().process_frame.connect(_focus_diagnostic_after_frame.bind(generation, target), CONNECT_ONE_SHOT)
+
+
+func _focus_diagnostic_after_frame(generation: int, target: Control) -> void:
+	if not is_inside_tree(): return
+	get_tree().process_frame.connect(_focus_diagnostic_after_layout.bind(generation, target), CONNECT_ONE_SHOT)
+
+
+func _focus_diagnostic_after_layout(generation: int, target: Control) -> void:
+	if generation != _diagnostic_generation or not is_instance_valid(target) or not target.is_visible_in_tree(): return
+	var current := _first_invalid_field()
+	if current.is_empty():
+		_set_error_visible(false)
+		return
+	if current.tab != _diagnostic.tab or current.field != _diagnostic.field: return
+	if int(_diagnostic.tab) == 4: sky_controls.restore_raw_number(str(_diagnostic.field))
+	target.grab_focus()
+	_reveal_diagnostic(generation, target, 3)
+
+
+func _reveal_diagnostic(generation: int, target: Control, remaining: int) -> void:
+	if generation != _diagnostic_generation or not is_instance_valid(target) \
+			or not target.is_visible_in_tree() or get_viewport().gui_get_focus_owner() != target:
+		return
+	var field: Control = _inline_error.get_parent() if is_instance_valid(_inline_error) else target
+	tab_scroll.ensure_control_visible(field)
+	# Wrapped explanations can change the dialog height over the next layout passes.
+	if remaining > 0:
+		get_tree().process_frame.connect(_reveal_diagnostic.bind(generation, target, remaining - 1), CONNECT_ONE_SHOT)
+
+
+func _render_diagnostic() -> void:
+	if _diagnostic.is_empty(): return
+	var reason := "Check this setting."
+	match str(_diagnostic.code):
+		"number", "range":
+			var bounds: Array = _diagnostic.get("bounds", [])
+			if bounds.size() == 2: reason = tr("Enter a finite number from %s to %s.") % [str(bounds[0]), str(bounds[1])]
+			else: reason = tr("Enter a value within the shown limits.")
+		"seed", "integer":
+			var bounds: Array = _diagnostic.get("bounds", [])
+			if bounds.size() == 2: reason = tr("Enter digits only, from %s to %s.") % [str(int(bounds[0])), str(int(bounds[1]))]
+			else: reason = tr("Enter digits only, from %s to %s.") % ["0", "4294967295"]
+		"time": reason = tr("Enter a local time as HH:MM or HH:MM:SS.")
+		"date": reason = tr("Enter a valid date from 2000 to 2100.")
+		"offset": reason = tr("Enter a UTC offset from -720 to 840 minutes.")
+		"latitude": reason = tr("Enter latitude from -90 to 90 degrees.")
+		"longitude": reason = tr("Enter longitude from -180 to 180 degrees.")
+		"required": reason = tr("Enter a non-empty value.")
+		"gust_period": reason = tr("Gust period must be at least its duration.")
+		"gust_horizon": reason = tr("The gust must end within the time horizon.")
+		"thermal_horizon": reason = tr("The thermal field must fit within the time horizon.")
+		"gust_components": reason = tr("Gust components must stay within 2.5 m/s.")
+		_: reason = tr(reason)
+	_diagnostic["reason"] = reason
+	var field_name := tr(str(_diagnostic.label))
+	if is_instance_valid(_inline_error):
+		_inline_error.text = reason
+		_inline_error.show()
+		error_label.text = field_name
+	else:
+		error_label.text = field_name + ": " + reason
+
+
 func _show_error() -> void:
 	var message: String = TIME_ERROR_TEXT if tab_container.current_tab == 3 else \
 		(ATMOSPHERE_ERROR_TEXT if tab_container.current_tab == 2 else \
@@ -907,7 +1088,24 @@ func _show_error() -> void:
 	_set_error_visible(true)
 
 
+func _on_diagnostic_edited(_text: String, target: Control) -> void:
+	if not _diagnostic.is_empty() and _diagnostic.control == target:
+		_set_error_visible(false)
+
+
+func _on_diagnostic_selected(_index: int, target: Control) -> void:
+	if _diagnostic.is_empty() or _diagnostic.control != target: return
+	var current := _first_invalid_field()
+	if current.is_empty() or current.tab != _diagnostic.tab or current.field != _diagnostic.field:
+		_set_error_visible(false)
+
+
 func _set_error_visible(visible: bool) -> void:
+	if not visible:
+		_diagnostic_generation += 1
+		_diagnostic.clear()
+		if is_instance_valid(_inline_error): _inline_error.hide()
+		_inline_error = null
 	if error_label.visible == visible:
 		return
 	error_label.visible = visible
@@ -1028,7 +1226,7 @@ func _add_number_field(grid: GridContainer, key: String, label_text: String, inp
 		unit.custom_minimum_size = Vector2(44.0, 0.0)
 		unit.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		values.add_child(unit)
-	grid.add_child(values)
+	grid.add_child(FieldDiagnostic.wrap(values))
 
 
 func _style_slider(slider: HSlider) -> void:

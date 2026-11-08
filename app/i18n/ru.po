@@ -9443,3 +9443,42 @@ msgstr "Проверьте доступ на запись в папку наст
 
 msgid "Retry"
 msgstr "Повторить"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "Введите конечное число от %s до %s."
+
+msgid "Enter a value within the shown limits."
+msgstr "Введите значение в указанных пределах."
+
+msgid "Enter digits only, from %s to %s."
+msgstr "Введите только цифры, от %s до %s."
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "Введите допустимую дату с 2000 по 2100 год."
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "Введите смещение UTC от -720 до 840 минут."
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "Введите широту от -90 до 90 градусов."
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "Введите долготу от -180 до 180 градусов."
+
+msgid "Enter a non-empty value."
+msgstr "Введите непустое значение."
+
+msgid "Gust period must be at least its duration."
+msgstr "Период порыва должен быть не меньше его длительности."
+
+msgid "The gust must end within the time horizon."
+msgstr "Порыв должен закончиться в пределах временного горизонта."
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "Термическое поле должно укладываться во временной горизонт."
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "Компоненты порыва не должны превышать 2,5 м/с."
+
+msgid "Check this setting."
+msgstr "Проверьте этот параметр."

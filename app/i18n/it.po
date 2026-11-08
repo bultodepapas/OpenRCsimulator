@@ -9468,3 +9468,42 @@ msgstr "Verifica che la cartella delle impostazioni sia scrivibile, poi riprova.
 
 msgid "Retry"
 msgstr "Riprova"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "Inserisci un numero finito da %s a %s."
+
+msgid "Enter a value within the shown limits."
+msgstr "Inserisci un valore entro i limiti indicati."
+
+msgid "Enter digits only, from %s to %s."
+msgstr "Inserisci solo cifre, da %s a %s."
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "Inserisci una data valida tra il 2000 e il 2100."
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "Inserisci uno scarto UTC da -720 a 840 minuti."
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "Inserisci una latitudine da -90 a 90 gradi."
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "Inserisci una longitudine da -180 a 180 gradi."
+
+msgid "Enter a non-empty value."
+msgstr "Inserisci un valore non vuoto."
+
+msgid "Gust period must be at least its duration."
+msgstr "Il periodo della raffica deve essere almeno pari alla sua durata."
+
+msgid "The gust must end within the time horizon."
+msgstr "La raffica deve terminare entro l’orizzonte temporale."
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "Il campo termico deve rientrare nell’orizzonte temporale."
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "Le componenti della raffica devono rimanere entro 2,5 m/s."
+
+msgid "Check this setting."
+msgstr "Controlla questa impostazione."

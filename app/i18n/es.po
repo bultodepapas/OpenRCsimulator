@@ -8236,3 +8236,42 @@ msgstr "Comprueba que se pueda escribir en la carpeta de configuración y vuelve
 
 msgid "Retry"
 msgstr "Reintentar"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "Introduzca un número finito entre %s y %s."
+
+msgid "Enter a value within the shown limits."
+msgstr "Introduzca un valor dentro de los límites indicados."
+
+msgid "Enter digits only, from %s to %s."
+msgstr "Introduzca solo dígitos, entre %s y %s."
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "Introduzca una fecha válida entre 2000 y 2100."
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "Introduzca un desfase UTC entre -720 y 840 minutos."
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "Introduzca una latitud entre -90 y 90 grados."
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "Introduzca una longitud entre -180 y 180 grados."
+
+msgid "Enter a non-empty value."
+msgstr "Introduzca un valor que no esté vacío."
+
+msgid "Gust period must be at least its duration."
+msgstr "El período de la ráfaga debe ser al menos igual a su duración."
+
+msgid "The gust must end within the time horizon."
+msgstr "La ráfaga debe terminar dentro del horizonte temporal."
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "El campo térmico debe caber dentro del horizonte temporal."
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "Las componentes de la ráfaga no deben superar 2,5 m/s."
+
+msgid "Check this setting."
+msgstr "Revise este ajuste."

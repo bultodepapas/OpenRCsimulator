@@ -2,6 +2,7 @@
 extends VBoxContainer
 
 const Widgets := preload("res://ui/widgets.gd")
+const FieldDiagnostic := preload("res://ui/field_diagnostic.gd")
 const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
 const SpatialPresets := preload("res://physics/wind_spatial_presets.gd")
 
@@ -194,19 +195,16 @@ func read_draft() -> Dictionary:
 	if not _spatial_enabled:
 		return {"ok": true, "enabled": false, "spatial_wind": {}, "errors": PackedStringArray()}
 	var values: Dictionary = {}
-	var errors := PackedStringArray()
 	for key: String in FIELDS:
 		var parsed: Dictionary = _read_field(key)
 		if not parsed.ok:
-			errors.append(str(parsed.error))
+			return _failure(str(parsed.error), key, str(parsed.get("code", "number")))
 		else:
 			values[key] = parsed.value
-	if not errors.is_empty():
-		return _failure(str(errors[0]))
 	if _source_spatial.has("thermal_field") and float(values.time_horizon_s) < 120.0:
-		return _failure(THERMAL_HORIZON_ERROR)
+		return _failure(THERMAL_HORIZON_ERROR, "time_horizon_s", "thermal_horizon")
 	if float(values.gust_start_s) + float(values.gust_duration_s) > float(values.time_horizon_s):
-		return _failure("gust end must be inside the selected time horizon")
+		return _failure("gust end must be inside the selected time horizon", "gust_duration_s", "gust_horizon")
 
 	var spatial: Dictionary = _source_spatial.duplicate(true)
 	_ensure_sections(spatial)
@@ -256,7 +254,7 @@ func read_draft() -> Dictionary:
 					gust_vector = _wind_vector(float(values.gust_intensity_mps), float(values.reference_from_deg))
 			if not gust_vector.is_empty():
 				if absf(gust_vector[0]) > 2.5 or absf(gust_vector[1]) > 2.5:
-					return _failure("gust components must each stay within 2.5 m/s")
+					return _failure("gust components must each stay within 2.5 m/s", "gust_intensity_mps", "gust_components")
 				var event_id := "dialog_gust_1"
 				if events.size() == 1 and events[0] is Dictionary and events[0].has("id"):
 					event_id = str(events[0].id)
@@ -267,9 +265,9 @@ func read_draft() -> Dictionary:
 					"amplitude_ned_mps": gust_vector,
 				}]
 	if not _agenda_fits_horizon(gusts.get("events", []), float(values.time_horizon_s)):
-		return _failure("gust agenda must be finite and end inside the selected time horizon")
+		return _failure("gust agenda must be finite and end inside the selected time horizon", "time_horizon_s", "gust_horizon")
 	if not _thermal_agenda_fits_horizon(spatial.get("thermal_field"), float(values.time_horizon_s)):
-		return _failure("thermal agenda must be finite and end inside the selected time horizon")
+		return _failure("thermal agenda must be finite and end inside the selected time horizon", "time_horizon_s", "thermal_horizon")
 	return {"ok": true, "enabled": true, "spatial_wind": spatial, "errors": PackedStringArray()}
 
 
@@ -467,7 +465,7 @@ func _add_field(grid: GridContainer, key: String) -> void:
 		unit_label.name = key + "Unit"
 		unit_label.custom_minimum_size.x = 38.0
 		values.add_child(unit_label)
-	grid.add_child(values)
+	grid.add_child(FieldDiagnostic.wrap(values))
 
 
 func _set_field_text(key: String, raw_value: Variant) -> void:
@@ -490,16 +488,16 @@ func _read_field(key: String) -> Dictionary:
 	var spec: Dictionary = FIELDS[key]
 	if bool(spec.get("integer", false)):
 		if not _digits_only(text) or text.length() > 10:
-			return {"ok": false, "error": "%s must contain digits only" % key}
+			return {"ok": false, "error": "%s must contain digits only" % key, "code": "integer"}
 		var integer := int(text)
 		if integer < int(spec.minimum) or integer > int(spec.maximum):
-			return {"ok": false, "error": "%s is outside its allowed range" % key}
+			return {"ok": false, "error": "%s is outside its allowed range" % key, "code": "range"}
 		return {"ok": true, "value": integer}
 	if not text.is_valid_float():
-		return {"ok": false, "error": "%s must be a finite number" % key}
+		return {"ok": false, "error": "%s must be a finite number" % key, "code": "number"}
 	var number := text.to_float()
 	if not is_finite(number) or number < float(spec.minimum) or number > float(spec.maximum):
-		return {"ok": false, "error": "%s is outside its finite allowed range" % key}
+		return {"ok": false, "error": "%s is outside its finite allowed range" % key, "code": "range"}
 	return {"ok": true, "value": _initial_values[key] if not _field_changed(key) else number}
 
 
@@ -626,10 +624,11 @@ func _digits_only(text: String) -> bool:
 	return true
 
 
-func _failure(message: String) -> Dictionary:
+func _failure(message: String, field: String = "", code: String = "invalid") -> Dictionary:
 	_status_message = message
 	_refresh_texts()
-	return {"ok": false, "enabled": true, "spatial_wind": {}, "errors": PackedStringArray([message])}
+	return {"ok": false, "enabled": true, "spatial_wind": {}, "errors": PackedStringArray([message]),
+		"field": field, "code": code, "control": _field_inputs.get(field), "label": str(FIELDS.get(field, {}).get("label", "Spatial wind"))}
 
 
 static func _format_derived_gust_intensity(value: float) -> String:

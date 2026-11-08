@@ -9586,3 +9586,42 @@ msgstr "Prüfe, ob der Einstellungsordner beschreibbar ist, und versuche es erne
 
 msgid "Retry"
 msgstr "Erneut versuchen"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "Geben Sie eine endliche Zahl von %s bis %s ein."
+
+msgid "Enter a value within the shown limits."
+msgstr "Geben Sie einen Wert innerhalb der angezeigten Grenzen ein."
+
+msgid "Enter digits only, from %s to %s."
+msgstr "Geben Sie nur Ziffern von %s bis %s ein."
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "Geben Sie ein gültiges Datum von 2000 bis 2100 ein."
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "Geben Sie einen UTC-Versatz von -720 bis 840 Minuten ein."
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "Geben Sie einen Breitengrad von -90 bis 90 Grad ein."
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "Geben Sie einen Längengrad von -180 bis 180 Grad ein."
+
+msgid "Enter a non-empty value."
+msgstr "Geben Sie einen Wert ein."
+
+msgid "Gust period must be at least its duration."
+msgstr "Die Böenperiode muss mindestens so lang wie ihre Dauer sein."
+
+msgid "The gust must end within the time horizon."
+msgstr "Die Böe muss innerhalb des Zeithorizonts enden."
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "Das Thermikfeld muss innerhalb des Zeithorizonts liegen."
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "Die Böenkomponenten dürfen 2,5 m/s nicht überschreiten."
+
+msgid "Check this setting."
+msgstr "Prüfen Sie diese Einstellung."

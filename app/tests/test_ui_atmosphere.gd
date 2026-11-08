@@ -7,8 +7,8 @@ const WeatherSettings := preload("res://physics/wind_config.gd")
 const CruiseTrim := preload("res://physics/cruise_trim.gd")
 const Session := preload("res://sim/flight_session.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
-const ATMOSPHERE_ERROR_TEXT: String = "Check field elevation, temperature, QNH and humidity against the displayed limits."
-const WEATHER_ERROR_TEXT: String = "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
+const NUMBER_REASON: String = "Enter a finite number from %s to %s."
+const INTEGER_REASON: String = "Enter digits only, from %s to %s."
 
 const PREFS: String = "user://test_ui_atmosphere_settings.cfg"
 
@@ -126,16 +126,20 @@ func _atmosphere_flow() -> void:
 	dialog.field_inputs["speed_mps"].text = "16"
 	dialog._on_field_changed("16", "speed_mps")
 	await _apply(dialog)
-	_check("wind validation keeps its existing message",
-		dialog.error_label.visible and dialog.error_label.text == tr(WEATHER_ERROR_TEXT), dialog.error_label.text)
+	_check("wind validation reports its owning field and reason",
+		dialog.error_label.visible and dialog._diagnostic.tab == 0 and dialog._diagnostic.field == "speed_mps"
+		and dialog._diagnostic.code == "number" and dialog._inline_error.visible
+		and dialog._inline_error.text == tr(NUMBER_REASON) % ["0.0", "15.0"], dialog.error_label.text)
 	dialog.field_inputs["speed_mps"].text = dialog._initial_text["speed_mps"]
 	dialog._on_field_changed(dialog.field_inputs["speed_mps"].text, "speed_mps")
 	dialog.tab_container.current_tab = 1
 	dialog.turbulence_inputs["seed"].text = "not-a-seed"
 	dialog._on_turbulence_field_changed("not-a-seed", "seed")
 	await _apply(dialog)
-	_check("turbulence validation keeps its existing message",
-		dialog.error_label.visible and dialog.error_label.text == tr(WEATHER_ERROR_TEXT), dialog.error_label.text)
+	_check("turbulence validation reports its owning field and reason",
+		dialog.error_label.visible and dialog._diagnostic.tab == 1 and dialog._diagnostic.field == "seed"
+		and dialog._diagnostic.code == "seed" and dialog._inline_error.visible
+		and dialog._inline_error.text == tr(INTEGER_REASON) % ["0", "4294967295"], dialog.error_label.text)
 	dialog.turbulence_inputs["seed"].text = dialog._initial_turbulence_text["seed"]
 	dialog._on_turbulence_field_changed(dialog.turbulence_inputs["seed"].text, "seed")
 	dialog.tab_container.current_tab = 2
@@ -148,7 +152,9 @@ func _atmosphere_flow() -> void:
 	dialog.atmosphere_inputs["relative_humidity_pct"].text = "65.5"
 	await _apply(dialog)
 	_check("out-of-range atmosphere input stays in the draft", dialog.error_label.visible
-		and dialog.error_label.text == tr(ATMOSPHERE_ERROR_TEXT)
+		and dialog._diagnostic.tab == 2 and dialog._diagnostic.field == "temperature_c"
+		and dialog._diagnostic.code == "number" and dialog._inline_error.visible
+		and dialog._inline_error.text == tr(NUMBER_REASON) % ["-20.0", "45.0"]
 		and app.weather_dialog == dialog and Preferences.load_from(PREFS).weather_config == original)
 	dialog.atmosphere_inputs["temperature_c"].text = "32.25"
 	dialog._on_atmosphere_field_changed("32.25", "temperature_c")
@@ -353,10 +359,15 @@ func _localization() -> void:
 	await _apply(dialog)
 	_check("Spanish atmosphere validation uses field-specific copy",
 		dialog.error_label.visible
-		and dialog.error_label.text == TranslationServer.translate(ATMOSPHERE_ERROR_TEXT)
-		and dialog.error_label.text == "Revisa la elevación, temperatura, QNH y humedad según los límites indicados.",
-		dialog.error_label.text)
+		and dialog._diagnostic.tab == 2 and dialog._diagnostic.field == "temperature_c"
+		and dialog._diagnostic.code == "number" and dialog._inline_error.visible
+		and dialog._inline_error.text == "Introduzca un número finito entre -20.0 y 45.0.",
+		dialog._inline_error.text)
 	await ui.tap(KEY_ESCAPE)
+	_check("first Escape ends the focused field edit", app.weather_dialog == dialog
+		and not dialog.atmosphere_inputs["temperature_c"].is_editing())
+	await ui.tap(KEY_ESCAPE)
+	_check("second Escape cancels Conditions", app.weather_dialog == null)
 	app.open_help(null)
 	await ui.settle()
 	var scroll: ScrollContainer = app.help._help_scroll

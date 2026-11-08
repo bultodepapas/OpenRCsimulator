@@ -3,6 +3,7 @@ extends VBoxContainer
 
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const FieldDiagnostic := preload("res://ui/field_diagnostic.gd")
 signal focus_order_changed
 signal night_requested
 
@@ -24,6 +25,8 @@ var _aloft: VBoxContainer
 var _storm: VBoxContainer
 var _description: Label
 var _changing := false
+var _raw_numbers: Dictionary = {}
+var _number_input_frame: Dictionary = {}
 
 
 func _init(initial: Variant = null) -> void:
@@ -83,8 +86,16 @@ func _init(initial: Variant = null) -> void:
 	add_child(_aloft)
 	speed_input = _number(_aloft, "Wind aloft speed (m/s)", 0.0, 50.0, 0.1)
 	direction_input = _number(_aloft, "Wind aloft direction FROM (°)", 0.0, 359.0, 1.0)
-	speed_input.value_changed.connect(func(value: float) -> void: draft.wind_aloft_speed_mps = value)
-	direction_input.value_changed.connect(func(value: float) -> void: draft.wind_aloft_from_deg = value)
+	speed_input.get_line_edit().max_length = 64
+	direction_input.get_line_edit().max_length = 64
+	speed_input.get_line_edit().text_changed.connect(_on_number_text.bind("speed"))
+	direction_input.get_line_edit().text_changed.connect(_on_number_text.bind("direction"))
+	for key: String in ["speed", "direction"]:
+		var spin: SpinBox = speed_input if key == "speed" else direction_input
+		spin.value_changed.connect(_on_number_changed.bind(key))
+		spin.get_line_edit().editing_toggled.connect(func(_editing: bool) -> void: restore_raw_number.call_deferred(key))
+		spin.draw.connect(func() -> void:
+			if _raw_numbers.has(key): restore_raw_number.call_deferred(key))
 	add_child(Widgets.label("Still freezes cloud movement. Flight wind and storm flashes have separate controls.", "SecondaryLabel", true))
 	_storm = VBoxContainer.new()
 	_storm.add_theme_constant_override("separation", 10)
@@ -113,6 +124,22 @@ func _ready() -> void:
 	_update_responsive_layout.call_deferred()
 
 
+func _input(event: InputEvent) -> void:
+	for key: String in _raw_numbers:
+		var spin: SpinBox = speed_input if key == "speed" else direction_input
+		if not spin.is_visible_in_tree(): continue
+		if event is InputEventMouseButton and event.pressed:
+			var pointer: InputEventMouseButton = event
+			if pointer.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN] and spin.get_global_rect().has_point(pointer.position):
+				_number_input_frame[key] = Engine.get_process_frames()
+			elif pointer.button_index == MOUSE_BUTTON_LEFT and spin.get_global_rect().has_point(pointer.position) \
+					and not spin.get_line_edit().get_global_rect().has_point(pointer.position):
+				_number_input_frame[key] = Engine.get_process_frames()
+		elif event is InputEventKey and event.pressed and not event.echo and spin.get_line_edit().has_focus() \
+				and event.keycode in [KEY_UP, KEY_DOWN]:
+			_number_input_frame[key] = Engine.get_process_frames()
+
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh()
@@ -133,9 +160,83 @@ func select_preset(id: String) -> void:
 	_refresh()
 
 
+func numeric_error() -> Dictionary:
+	if draft.motion == "aloft":
+		for key: String in ["speed", "direction"]:
+			if not _raw_numbers.has(key): continue
+			var spin: SpinBox = speed_input if key == "speed" else direction_input
+			if not _parse_number(key).ok:
+				return {"ok": false, "errors": ["invalid aloft wind"], "field": key, "control": spin.get_line_edit(),
+					"label": "Wind aloft speed (m/s)" if key == "speed" else "Wind aloft direction FROM (°)", "code": "range"}
+	return {}
+
+
+func _parse_number(key: String) -> Dictionary:
+	var spin: SpinBox = speed_input if key == "speed" else direction_input
+	var text := str(_raw_numbers.get(key, "")).strip_edges()
+	var exponent := RegEx.new()
+	exponent.compile("(?i)[0-9]e[+-]?([0-9]{3,})")
+	for found: RegExMatch in exponent.search_all(text):
+		if int(found.get_string(1)) > 308: return {"ok": false}
+	var expression := Expression.new()
+	if text.is_empty() or expression.parse(TranslationServer.parse_number(text.replace(";", ","), TranslationServer.get_locale())) != OK:
+		return {"ok": false}
+	var value: Variant = expression.execute([], null, false, true)
+	if expression.has_execute_failed() or typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)) \
+			or float(value) < spin.min_value or float(value) > spin.max_value:
+		return {"ok": false}
+	return {"ok": true, "value": clampf(snappedf(float(value), spin.step), spin.min_value, spin.max_value)}
+
+
+func _on_number_text(text: String, key: String) -> void:
+	_raw_numbers[key] = text
+	var parsed := _parse_number(key)
+	if parsed.ok:
+		var spin: SpinBox = speed_input if key == "speed" else direction_input
+		spin.set_value_no_signal(float(parsed.value))
+
+
+func restore_raw_number(key: String) -> void:
+	if _raw_numbers.has(key):
+		var spin: SpinBox = speed_input if key == "speed" else direction_input
+		var field := spin.get_line_edit()
+		var value := str(_raw_numbers[key])
+		if field.text != value:
+			var caret := field.caret_column
+			var selection_start: int = field.get_selection_from_column() if field.has_selection() else -1
+			var selection_end: int = field.get_selection_to_column() if field.has_selection() else -1
+			var all_selected: bool = selection_start == 0 and selection_end == field.text.length()
+			field.text = value
+			field.caret_column = mini(caret, value.length())
+			if all_selected: field.select_all()
+			elif selection_start >= 0: field.select(mini(selection_start, value.length()), mini(selection_end, value.length()))
+
+
+func _on_number_changed(value: float, key: String) -> void:
+	if _changing: return
+	if _raw_numbers.has(key):
+		var spin: SpinBox = speed_input if key == "speed" else direction_input
+		var parsed := _parse_number(key)
+		var deliberate: bool = int(_number_input_frame.get(key, -1)) == Engine.get_process_frames()
+		if (not parsed.ok and not deliberate) or (parsed.ok and is_equal_approx(value, float(parsed.value))):
+			spin.set_value_no_signal(float(parsed.value) if parsed.ok else float(draft.wind_aloft_speed_mps if key == "speed" else draft.wind_aloft_from_deg))
+			restore_raw_number.call_deferred(key)
+			return
+		_raw_numbers.erase(key)
+	if key == "speed": draft.wind_aloft_speed_mps = value
+	else: draft.wind_aloft_from_deg = value
+
+
 func read_draft() -> Dictionary:
+	var error := numeric_error()
+	if not error.is_empty(): return error
+	var typed: Array = _raw_numbers.keys()
+	for key: String in _raw_numbers: restore_raw_number(key)
+	_raw_numbers.clear()
 	speed_input.apply()
 	direction_input.apply()
+	if "speed" in typed: draft.wind_aloft_speed_mps = speed_input.value
+	if "direction" in typed: draft.wind_aloft_from_deg = direction_input.value
 	return SkyConfig.validate(draft)
 
 
@@ -223,7 +324,7 @@ func _number(parent: VBoxContainer, label_text: String, minimum: float, maximum:
 	input.step = increment
 	input.custom_minimum_size.x = 150.0
 	row.add_child(input)
-	parent.add_child(row)
+	parent.add_child(FieldDiagnostic.wrap(row))
 	return input
 
 

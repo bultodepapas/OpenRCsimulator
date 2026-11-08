@@ -9615,3 +9615,42 @@ msgstr "Vérifiez que le dossier des paramètres est accessible en écriture, pu
 
 msgid "Retry"
 msgstr "Réessayer"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "Saisissez un nombre fini entre %s et %s."
+
+msgid "Enter a value within the shown limits."
+msgstr "Saisissez une valeur dans les limites indiquées."
+
+msgid "Enter digits only, from %s to %s."
+msgstr "Saisissez uniquement des chiffres, de %s à %s."
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "Saisissez une date valide entre 2000 et 2100."
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "Saisissez un décalage UTC de -720 à 840 minutes."
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "Saisissez une latitude de -90 à 90 degrés."
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "Saisissez une longitude de -180 à 180 degrés."
+
+msgid "Enter a non-empty value."
+msgstr "Saisissez une valeur non vide."
+
+msgid "Gust period must be at least its duration."
+msgstr "La période de rafale doit être au moins égale à sa durée."
+
+msgid "The gust must end within the time horizon."
+msgstr "La rafale doit se terminer dans l’horizon temporel."
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "Le champ thermique doit tenir dans l’horizon temporel."
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "Les composantes de la rafale doivent rester sous 2,5 m/s."
+
+msgid "Check this setting."
+msgstr "Vérifiez ce réglage."

@@ -8641,3 +8641,42 @@ msgstr "请确认设置文件夹可写入，然后重试。"
 
 msgid "Retry"
 msgstr "重试"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "请输入 %s 到 %s 之间的有限数字。"
+
+msgid "Enter a value within the shown limits."
+msgstr "请输入显示范围内的值。"
+
+msgid "Enter digits only, from %s to %s."
+msgstr "请只输入数字，范围为 %s 到 %s。"
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "请输入 2000 年至 2100 年之间的有效日期。"
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "请输入 -720 至 840 分钟的 UTC 偏移。"
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "请输入 -90 至 90 度的纬度。"
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "请输入 -180 至 180 度的经度。"
+
+msgid "Enter a non-empty value."
+msgstr "请输入非空值。"
+
+msgid "Gust period must be at least its duration."
+msgstr "阵风周期必须不短于其持续时间。"
+
+msgid "The gust must end within the time horizon."
+msgstr "阵风必须在时间范围内结束。"
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "热气流场必须处于时间范围内。"
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "阵风各分量不得超过 2.5 米/秒。"
+
+msgid "Check this setting."
+msgstr "请检查此设置。"

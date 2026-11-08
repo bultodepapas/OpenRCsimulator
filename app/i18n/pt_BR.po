@@ -9482,3 +9482,42 @@ msgstr "Verifique se é possível gravar na pasta de configurações e tente nov
 
 msgid "Retry"
 msgstr "Tentar novamente"
+
+msgid "Enter a finite number from %s to %s."
+msgstr "Digite um número finito de %s a %s."
+
+msgid "Enter a value within the shown limits."
+msgstr "Digite um valor dentro dos limites exibidos."
+
+msgid "Enter digits only, from %s to %s."
+msgstr "Digite apenas algarismos, de %s a %s."
+
+msgid "Enter a valid date from 2000 to 2100."
+msgstr "Digite uma data válida entre 2000 e 2100."
+
+msgid "Enter a UTC offset from -720 to 840 minutes."
+msgstr "Digite um deslocamento UTC de -720 a 840 minutos."
+
+msgid "Enter latitude from -90 to 90 degrees."
+msgstr "Digite uma latitude de -90 a 90 graus."
+
+msgid "Enter longitude from -180 to 180 degrees."
+msgstr "Digite uma longitude de -180 a 180 graus."
+
+msgid "Enter a non-empty value."
+msgstr "Digite um valor não vazio."
+
+msgid "Gust period must be at least its duration."
+msgstr "O período da rajada deve ser pelo menos igual à sua duração."
+
+msgid "The gust must end within the time horizon."
+msgstr "A rajada deve terminar dentro do horizonte de tempo."
+
+msgid "The thermal field must fit within the time horizon."
+msgstr "O campo térmico deve caber no horizonte de tempo."
+
+msgid "Gust components must stay within 2.5 m/s."
+msgstr "Os componentes da rajada devem ficar dentro de 2,5 m/s."
+
+msgid "Check this setting."
+msgstr "Verifique esta configuração."

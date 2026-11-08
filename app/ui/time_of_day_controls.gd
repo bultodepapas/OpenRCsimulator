@@ -1,6 +1,7 @@
 # Time-of-day draft controls for WeatherDialog. This is visual-only configuration; it never touches weather.
 extends VBoxContainer
 
+const FieldDiagnostic := preload("res://ui/field_diagnostic.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const Solar := preload("res://environment/solar_position.gd")
 const Preferences := preload("res://app_state/preferences.gd")
@@ -150,7 +151,7 @@ func _build_controls() -> void:
 	time_input.max_length = 8
 	time_input.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	time_controls.add_child(time_input)
-	_time_row.add_child(time_controls)
+	_time_row.add_child(FieldDiagnostic.wrap(time_controls))
 
 	time_note = _label("Date, time and UTC offset are explicit. The selected time stays fixed during flight; OS time is not used.", "SecondaryLabel", true)
 	time_note.name = "TimeOfDayNote"
@@ -192,7 +193,7 @@ func _build_controls() -> void:
 	field_lighting_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	field_lighting_picker.fit_to_longest_item = false
 	field_lighting_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	field_lighting_row.add_child(field_lighting_picker)
+	field_lighting_row.add_child(FieldDiagnostic.wrap(field_lighting_picker))
 	_responsive_grids.append(field_lighting_row)
 	add_child(field_lighting_row)
 
@@ -203,7 +204,7 @@ func _build_controls() -> void:
 	field_activation_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	field_activation_picker.fit_to_longest_item = false
 	field_activation_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	field_activation_row.add_child(field_activation_picker)
+	field_activation_row.add_child(FieldDiagnostic.wrap(field_activation_picker))
 	_responsive_grids.append(field_activation_row)
 	add_child(field_activation_row)
 
@@ -214,7 +215,7 @@ func _build_controls() -> void:
 	campfire_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	campfire_picker.fit_to_longest_item = false
 	campfire_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	campfire_row.add_child(campfire_picker)
+	campfire_row.add_child(FieldDiagnostic.wrap(campfire_picker))
 	_responsive_grids.append(campfire_row)
 	add_child(campfire_row)
 
@@ -255,7 +256,7 @@ func _moon_choice(label_text: String, row_name: String, picker_name: String) -> 
 	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	picker.fit_to_longest_item = false
 	picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-	row.add_child(picker)
+	row.add_child(FieldDiagnostic.wrap(picker))
 	_responsive_grids.append(row)
 	add_child(row)
 	return picker
@@ -295,7 +296,7 @@ func _add_text_field(label_text: String, field_name: String, width: float, max_l
 	edit.custom_minimum_size.x = width
 	edit.max_length = max_length
 	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	advanced_grid.add_child(edit)
+	advanced_grid.add_child(FieldDiagnostic.wrap(edit))
 	return edit
 
 
@@ -493,16 +494,37 @@ func read_draft() -> Dictionary:
 	raw["mode"] = "astronomical" if astronomical else "legacy"
 	if astronomical:
 		var seconds: int = TimeOfDay.parse_time(time_input.text)
-		if seconds < 0 or not offset_input.text.is_valid_int() or not latitude_input.text.is_valid_float() \
-			or not longitude_input.text.is_valid_float():
-			return {"ok": false, "config": raw, "errors": ["invalid time or location"]}
+		if seconds < 0: return _field_failure(raw, "local_seconds", time_input, "Local time", "time")
+		if not offset_input.text.is_valid_int(): return _field_failure(raw, "utc_offset_minutes", offset_input, "UTC offset (minutes)", "offset")
+		if not latitude_input.text.is_valid_float(): return _field_failure(raw, "latitude_deg", latitude_input, "Latitude (degrees)", "latitude")
+		if not longitude_input.text.is_valid_float(): return _field_failure(raw, "longitude_deg", longitude_input, "Longitude (degrees)", "longitude")
 		raw["local_seconds"] = seconds
 		raw["date"] = date_input.text.strip_edges()
 		raw["utc_offset_minutes"] = int(offset_input.text)
 		raw["latitude_deg"] = _latitude_form_value if latitude_input.text == _latitude_form_text else latitude_input.text.to_float()
 		raw["longitude_deg"] = _longitude_form_value if longitude_input.text == _longitude_form_text else longitude_input.text.to_float()
 		raw["location_name"] = location_input.text.strip_edges()
-	return TimeOfDay.validate(raw)
+	var result: Dictionary = TimeOfDay.validate(raw)
+	if not result.ok:
+		var fields := {
+			"date": [date_input, "Date (YYYY-MM-DD)", "date"],
+			"local_seconds": [time_input, "Local time", "time"],
+			"utc_offset_minutes": [offset_input, "UTC offset (minutes)", "offset"],
+			"latitude_deg": [latitude_input, "Latitude (degrees)", "latitude"],
+			"longitude_deg": [longitude_input, "Longitude (degrees)", "longitude"],
+			"location_name": [location_input, "Location name", "required"],
+		}
+		for message: String in result.errors:
+			for key: String in fields:
+				if message.begins_with(key + " "):
+					var field: Array = fields[key]
+					result.merge({"field": key, "control": field[0], "label": field[1], "code": field[2]})
+					return result
+	return result
+
+
+func _field_failure(raw: Dictionary, field: String, control: Control, label: String, code: String) -> Dictionary:
+	return {"ok": false, "config": raw, "errors": ["invalid " + field], "field": field, "control": control, "label": label, "code": code}
 
 
 ## The field profile and campfire are separate, validated presentation choices.
