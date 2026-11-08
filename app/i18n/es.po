@@ -8275,3 +8275,54 @@ msgstr "Las componentes de la ráfaga no deben superar 2,5 m/s."
 
 msgid "Check this setting."
 msgstr "Revise este ajuste."
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "No se pudieron leer las variantes guardadas. Tus archivos se conservaron."
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "No se pudo abrir 1 variante guardada. Tus archivos se conservaron."
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "No se pudieron abrir %d variantes guardadas. Tus archivos se conservaron."
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "Algunas variantes se abrieron desde la copia de seguridad. Revísalas antes de guardar."
+
+msgid "Saved build unavailable · %s"
+msgstr "Variante guardada no disponible · %s"
+
+msgid "Recovered from backup"
+msgstr "Recuperada de la copia de seguridad"
+
+msgid "Use Details to inspect this saved build."
+msgstr "Usa Detalles para inspeccionar esta variante guardada."
+
+msgid "No readable builds match these filters."
+msgstr "Ninguna variante legible coincide con estos filtros."
+
+msgid "Saved-build location:"
+msgstr "Ubicación de variantes guardadas:"
+
+msgid "Saved build %s:"
+msgstr "Variante guardada %s:"
+
+msgid "Recovered build %s:"
+msgstr "Variante recuperada %s:"
+
+msgid "Review Conditions"
+msgstr "Revisar condiciones"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "Cambio de modo no disponible. Revisa los controles e inténtalo de nuevo."
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "El tiempo espacial no está validado para helicópteros. Elige un preajuste de tiempo uniforme."
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "La integración de atmósfera vertical no está validada para helicópteros; elige condiciones de referencia o uniformes del campo."
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "La integración de turbulencia no está validada para helicópteros; elige calma, viento constante o ráfagas."
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "Cíclico adelante/derecha %.1f / %.1f a %.1f / %.1f grados."

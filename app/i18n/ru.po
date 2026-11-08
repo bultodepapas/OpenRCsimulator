@@ -9482,3 +9482,54 @@ msgstr "Компоненты порыва не должны превышать 2
 
 msgid "Check this setting."
 msgstr "Проверьте этот параметр."
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "Не удалось прочитать сохранённые модели. Файлы сохранены."
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "Не удалось открыть 1 сохранённую модель. Файлы сохранены."
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "Не удалось открыть сохранённые модели: %d. Файлы сохранены."
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "Некоторые модели открыты из резервной копии. Проверьте их перед сохранением."
+
+msgid "Saved build unavailable · %s"
+msgstr "Сохранённая модель недоступна · %s"
+
+msgid "Recovered from backup"
+msgstr "Восстановлено из копии"
+
+msgid "Use Details to inspect this saved build."
+msgstr "Откройте «Подробнее», чтобы проверить эту модель."
+
+msgid "No readable builds match these filters."
+msgstr "Нет доступных для чтения моделей, подходящих под эти фильтры."
+
+msgid "Saved-build location:"
+msgstr "Расположение сохранённых моделей:"
+
+msgid "Saved build %s:"
+msgstr "Сохранённая модель %s:"
+
+msgid "Recovered build %s:"
+msgstr "Восстановленная модель %s:"
+
+msgid "Review Conditions"
+msgstr "Проверить условия"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "Смена режима недоступна. Проверьте управление и повторите попытку."
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "Пространственная погода не проверена для вертолётов. Выберите однородные погодные условия."
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "Интеграция вертикальной атмосферы не проверена для вертолётов; выберите эталонные или однородные условия поля."
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "Интеграция турбулентности не проверена для вертолётов; выберите штиль, постоянный ветер или порывы."
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "Циклический шаг вперёд/вправо с %.1f / %.1f до %.1f / %.1f град."

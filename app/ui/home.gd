@@ -136,6 +136,10 @@ var control_label: Label
 var controller_prompt_label: Label
 var keys_legend: GridContainer
 var note_label: Label
+var launch_warning: Label
+var review_conditions_button: Button
+var _launch_note_key := ""
+var _launch_note_reason := ""
 var previous_button: Button
 var next_button: Button
 var aircraft_count_label: Label
@@ -189,6 +193,7 @@ var _detail_note_label: Label
 
 
 func _init() -> void:
+	focus_fallback = _focus_launch_action
 	name = "Home"
 	kind = Kind.SIDEBAR
 	theme = UiTheme.build() # keep this theme local to Home and its CanvasLayers
@@ -414,7 +419,6 @@ func _init() -> void:
 	note_label.name = "HomeNotice"
 	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_label.visible = false
-	flight_page.add_child(note_label)
 	var disclosure_row := HBoxContainer.new()
 	disclosure_row.name = "FlightDetailsDisclosure"
 	disclosure_row.add_theme_constant_override("separation", 4)
@@ -661,6 +665,19 @@ func _init() -> void:
 	primary_actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	primary_actions.add_theme_constant_override("separation", 0)
 	_left_layout.add_child(primary_actions)
+	primary_actions.add_child(note_label)
+	launch_warning = _label("", "SecondaryLabel", false)
+	launch_warning.name = "LaunchConditionsNotice"
+	launch_warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	launch_warning.visible = false
+	primary_actions.add_child(launch_warning)
+	review_conditions_button = _button("Review Conditions", "QuietButton")
+	review_conditions_button.name = "ReviewLaunchConditions"
+	review_conditions_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	review_conditions_button.custom_minimum_size.y = 38
+	review_conditions_button.visible = false
+	review_conditions_button.pressed.connect(func() -> void: weather_requested.emit(review_conditions_button))
+	primary_actions.add_child(review_conditions_button)
 	fly_button = _button("FLY", "CompactPrimaryButton")
 	fly_button.name = "Fly"
 	fly_button.custom_minimum_size.y = 56
@@ -889,7 +906,7 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_update_texts()
 	# Keyboard focus starts on Fly and remains usable when the selected aircraft is preview-only.
-	(fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
+	(review_conditions_button if review_conditions_button.visible else fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
 	set_process(true)
 
 
@@ -912,6 +929,7 @@ func _select_page(index: int) -> void:
 	fly_button.visible = selected != 3
 	ground_vehicle_button.visible = selected == 3
 	_fly_caption.visible = selected == 1 or selected == 2
+	_update_launch_admission()
 	_apply_responsive_layout()
 	_update_catalog_detail_visibility()
 	_update_livery_row()
@@ -919,7 +937,7 @@ func _select_page(index: int) -> void:
 		_schedule_selected_aircraft_reveal()
 	# Focus stays on the selected destination's content; it never skips into another section.
 	if is_inside_tree():
-		var primary_action: Control = ground_vehicle_button if selected == 3 else fly_button
+		var primary_action: Control = ground_vehicle_button if selected == 3 else review_conditions_button if review_conditions_button.visible else fly_button
 		var action_previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
 		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
@@ -978,7 +996,8 @@ func _apply_responsive_layout() -> void:
 		rail_width = 340.0
 	var header_top := 14.0 if compact else 20.0
 	# Enlarged translations must leave room for the selected page on compact windows.
-	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (compact or _pages[1].visible))
+	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (
+		compact or _pages[1].visible or launch_warning.visible or note_label.visible))
 	if _livery_row != null:
 		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
 		if _livery_row.get_parent() != paint_parent:
@@ -986,6 +1005,8 @@ func _apply_responsive_layout() -> void:
 			paint_parent.move_child(_livery_row, 2 if paint_parent == _pages[1] else _scroll.get_index())
 		_update_livery_row()
 	if navigation_in_scroll != _navigation_in_scroll:
+		var focused := get_viewport().gui_get_focus_owner()
+		var restore_navigation_focus := is_instance_valid(focused) and _navigation.is_ancestor_of(focused)
 		if navigation_in_scroll:
 			_left_layout.remove_child(_navigation)
 			_page_host.add_child(_navigation)
@@ -995,6 +1016,8 @@ func _apply_responsive_layout() -> void:
 			_left_layout.add_child(_navigation)
 			_left_layout.move_child(_navigation, 0)
 		_navigation_in_scroll = navigation_in_scroll
+		if restore_navigation_focus:
+			focused.grab_focus()
 		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button, ground_vehicle_choice]
 		for index in _page_buttons.size():
 			_page_buttons[index].focus_neighbor_bottom = _page_buttons[index].get_path_to(first_page_controls[index])
@@ -1176,6 +1199,8 @@ func _statistics_time(seconds: float) -> String:
 
 func set_aircraft(id: String) -> void:
 	id = Catalog.canonical_id(id)
+	if id != aircraft_id:
+		_clear_launch_note()
 	_refresh_statistics_summary(id)
 	var focused_catalog_index := -1
 	for index in _catalog_buttons.size():
@@ -1436,8 +1461,11 @@ func set_weather_config(raw: Variant) -> void:
 	var previous := weather_config
 	var checked := WeatherSettings.validate(raw)
 	weather_config = checked.config.duplicate(true) if checked.ok else WeatherSettings.defaults()
+	if weather_config != previous:
+		_clear_launch_note()
 	if is_node_ready():
 		_update_weather_text()
+		_update_launch_admission()
 	if weather_config != previous:
 		launch_setup_changed.emit()
 
@@ -1470,7 +1498,50 @@ func reject_start(message: String) -> void:
 	fly_button.text = "FLY"
 	set_aircraft(aircraft_id)
 	set_note(message)
-	fly_button.grab_focus()
+	_launch_note_key = message
+	(review_conditions_button if review_conditions_button.visible else fly_button).grab_focus()
+
+
+func refuse_conditions() -> void:
+	_fly_sent = false
+	fly_button.text = "FLY"
+	_clear_launch_note()
+	set_aircraft(aircraft_id)
+	_focus_launch_action()
+
+
+## Cancellation is a completed player decision, separate from startup failure.
+func cancel_start() -> void:
+	reject_start("")
+	_launch_note_key = "Flight preparation cancelled."
+	_refresh_launch_note()
+
+
+func fail_start(reason: String) -> void:
+	reject_start("")
+	_launch_note_key = "Could not start flight: %s"
+	_launch_note_reason = reason
+	_refresh_launch_note()
+
+
+func _refresh_launch_note() -> void:
+	if _launch_note_key.is_empty():
+		return
+	note_label.text = tr(_launch_note_key) % tr(_launch_note_reason) if _launch_note_key == "Could not start flight: %s" else tr(_launch_note_key)
+	note_label.visible = true
+
+
+func _clear_launch_note() -> void:
+	if not _launch_note_key.is_empty():
+		set_note("")
+
+
+## A dialog may hide its own invoking action by correcting the launch conditions.
+func _focus_launch_action() -> void:
+	for action: Control in [review_conditions_button, fly_button, ground_vehicle_button, next_button, _page_buttons[0]]:
+		if can_focus(action):
+			action.grab_focus()
+			return
 
 
 func _notification(what: int) -> void:
@@ -1516,8 +1587,12 @@ func _fill_legend(mapper := Callable()) -> void:
 
 ## A one-line message under the buttons (e.g. a settings file that could not be saved); "" hides it.
 func set_note(text: String) -> void:
+	_launch_note_key = ""
+	_launch_note_reason = ""
 	note_label.text = text
 	note_label.visible = text != ""
+	if is_node_ready():
+		_apply_responsive_layout.call_deferred()
 
 
 ## Displays the explicitly selected flight and menu devices. Empty names mean keyboard/no controller.
@@ -1663,6 +1738,7 @@ static func next_language(code: String) -> String:
 
 
 func _update_texts() -> void:
+	_refresh_launch_note()
 	language_button.text = tr("Language: %s") % Preferences.LANGUAGES[current_language()]
 	var aircraft_position := Catalog.ids().find(aircraft_id) + 1
 	aircraft_count_label.text = "%d / %d" % [aircraft_position, Catalog.ids().size()]
@@ -1678,6 +1754,7 @@ func _update_texts() -> void:
 	previous_button.tooltip_text = tr("Previous aircraft")
 	next_button.tooltip_text = tr("Next aircraft")
 	_update_weather_text()
+	_update_launch_admission()
 	_update_failure_summary()
 	_update_trim_practice_summary()
 	_update_companions_text()
@@ -1808,11 +1885,46 @@ func _update_control() -> void:
 func _on_fly() -> void:
 	if _fly_sent or not Catalog.can_fly(aircraft_id):
 		return
+	if not _update_launch_admission():
+		review_conditions_button.grab_focus()
+		return
 	_fly_sent = true
 	fly_button.disabled = true
 	# AppRoot owns the opaque acknowledgement and its post-draw barrier.
 	fly_button.text = "Preparing flight…"
 	fly_requested.emit()
+
+
+## Use the session's admission rule on Home's effective configuration; flight startup
+## still performs its own authoritative setup and can fail for other reasons.
+func _update_launch_admission() -> bool:
+	if launch_warning == null or fly_button == null:
+		return true
+	var error := ""
+	if Catalog.is_rotorcraft(aircraft_id):
+		var session_script: Script = load("res://sim/helicopter_flight_session.gd")
+		var admission: Dictionary = session_script.validate_weather_selection(weather_config)
+		error = str(admission.error)
+	var showing_fly := fly_button.visible
+	var warning_was_visible := launch_warning.visible
+	var fly_had_focus := fly_button.has_focus()
+	launch_warning.text = tr(error) if not error.is_empty() else ""
+	launch_warning.visible = showing_fly and not error.is_empty()
+	review_conditions_button.visible = launch_warning.visible
+	fly_button.disabled = _fly_sent or not Catalog.can_fly(aircraft_id) or not error.is_empty()
+	fly_button.focus_mode = Control.FOCUS_NONE if fly_button.disabled else Control.FOCUS_ALL
+	if review_conditions_button.visible:
+		review_conditions_button.focus_neighbor_top = review_conditions_button.get_path_to(start_button if _pages[0].visible else _page_buttons[1] if _pages[1].visible else _page_buttons[2])
+		review_conditions_button.focus_neighbor_bottom = review_conditions_button.get_path_to(controls_button)
+		if fly_had_focus:
+			review_conditions_button.grab_focus()
+	var primary_action: Control = review_conditions_button if review_conditions_button.visible else fly_button if showing_fly else ground_vehicle_button
+	for utility: Control in [controls_button, help_button, quit_button]:
+		utility.focus_neighbor_top = utility.get_path_to(primary_action)
+	start_button.focus_neighbor_bottom = start_button.get_path_to(primary_action)
+	if warning_was_visible != launch_warning.visible and is_node_ready():
+		_apply_responsive_layout.call_deferred()
+	return error.is_empty()
 
 
 static func _label(text: String, variation: String, translate := true) -> Label:

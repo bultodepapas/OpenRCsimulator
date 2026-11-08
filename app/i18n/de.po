@@ -9625,3 +9625,54 @@ msgstr "Die Böenkomponenten dürfen 2,5 m/s nicht überschreiten."
 
 msgid "Check this setting."
 msgstr "Prüfen Sie diese Einstellung."
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "Gespeicherte Modelle konnten nicht gelesen werden. Deine Dateien blieben erhalten."
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "1 gespeichertes Modell konnte nicht geöffnet werden. Deine Dateien blieben erhalten."
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "%d gespeicherte Modelle konnten nicht geöffnet werden. Deine Dateien blieben erhalten."
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "Einige Modelle wurden aus einer Sicherung geöffnet. Prüfe sie vor dem Speichern."
+
+msgid "Saved build unavailable · %s"
+msgstr "Gespeichertes Modell nicht verfügbar · %s"
+
+msgid "Recovered from backup"
+msgstr "Aus Sicherung wiederhergestellt"
+
+msgid "Use Details to inspect this saved build."
+msgstr "Prüfe dieses Modell über Details."
+
+msgid "No readable builds match these filters."
+msgstr "Kein lesbares Modell entspricht diesen Filtern."
+
+msgid "Saved-build location:"
+msgstr "Speicherort der Modelle:"
+
+msgid "Saved build %s:"
+msgstr "Gespeichertes Modell %s:"
+
+msgid "Recovered build %s:"
+msgstr "Wiederhergestelltes Modell %s:"
+
+msgid "Review Conditions"
+msgstr "Bedingungen prüfen"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "Moduswechsel nicht verfügbar. Steuerung prüfen und erneut versuchen."
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "Räumliches Wetter ist für Drehflügler nicht qualifiziert. Ein einheitliches Wetterprofil wählen."
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "Die vertikale Atmosphäre ist für Drehflügler nicht qualifiziert; Referenzbedingungen oder einheitliche Platzbedingungen wählen."
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "Turbulenz ist für Drehflügler nicht qualifiziert; Windstille, stetigen Wind oder Böen wählen."
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "Zyklisch vorwärts/rechts %.1f / %.1f auf %.1f / %.1f Grad."

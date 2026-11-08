@@ -282,6 +282,9 @@ func _run() -> void:
 	for locale in ["en", "es"]:
 		TranslationServer.set_locale(locale)
 		for aircraft in Catalog.ids():
+			# Mirror AppRoot's effective selection; the saved airplane turbulence is not
+			# itself a valid helicopter launch config. Refused layouts have their own test.
+			home.set_weather_config(AppRoot.weather_for_aircraft(aircraft, app.preferences.weather_config))
 			home.set_aircraft(aircraft)
 			for frame in 4: await process_frame
 			_check("flight page fits %s / %s without scrolling" % [aircraft, locale], not scroll.get_v_scroll_bar().visible

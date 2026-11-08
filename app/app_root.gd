@@ -882,6 +882,13 @@ func start_flight(request: Dictionary = {}) -> void:
 	if not has_home and not is_random:
 		route_aircraft_id = aircraft_argument(user_args)
 	var helicopter_route: bool = Catalog.is_rotorcraft(route_aircraft_id)
+	if has_home and helicopter_route:
+		var helicopter_session: Script = load("res://sim/helicopter_flight_session.gd")
+		var admission: Dictionary = helicopter_session.validate_weather_selection(weather_for_aircraft(route_aircraft_id, chosen_weather))
+		if not admission.ok:
+			departing_home.refuse_conditions()
+			_menu_feedback(&"reject")
+			return
 	var launch_livery := AirplaneBuilder.resolve_livery(route_aircraft_id,
 		str(launch_preferences.get("liveries", {}).get(route_aircraft_id, ""))) if has_home else ""
 	var failure_config_for_flight: Dictionary = FailureConfig.defaults()
@@ -948,7 +955,7 @@ func start_flight(request: Dictionary = {}) -> void:
 			_cancel_loading_before_candidate(departing_home)
 			return
 		if not resource_ready:
-			_cancel_loading_before_candidate(departing_home, tr("Flight scene could not be loaded."))
+			_cancel_loading_before_candidate(departing_home, "Flight scene could not be loaded.")
 			return
 	# Build before removing Home so a missing or unusable route resource cannot strand the shell.
 	if _home_scene_preparation_busy():
@@ -960,14 +967,14 @@ func start_flight(request: Dictionary = {}) -> void:
 	var candidate_flight: Node = _create_flight(route_aircraft_id)
 	if candidate_flight == null:
 		if staged:
-			_cancel_loading_before_candidate(departing_home, tr("Flight scene could not be created."))
+			_cancel_loading_before_candidate(departing_home, "Flight scene could not be created.")
 			return
-		var reason := tr("Flight scene could not be created.")
+		var reason := "Flight scene could not be created."
 		var route_path := flight_script_path_for_aircraft(route_aircraft_id)
 		if is_random:
-			natural_random_screen.show_error(tr("Could not start flight: %s") % reason)
+			natural_random_screen.show_error(tr("Could not start flight: %s") % tr(reason))
 		elif has_home and departing_home != null:
-			departing_home.reject_start(tr("Could not start flight: %s") % reason)
+			departing_home.fail_start(reason)
 		else:
 			printerr("Flight start refused: %s (%s)" % [reason, route_path])
 			get_tree().quit(ERR_CANT_CREATE)
@@ -1052,14 +1059,14 @@ func start_flight(request: Dictionary = {}) -> void:
 		await flight.startup_finished
 	if staged and not _loading_cancelled and flight.startup_error.is_empty() \
 			and (flight.session == null or not flight.session.is_flyable()):
-		flight.startup_error = tr("Flight preparation did not produce a valid session.")
+		flight.startup_error = "Flight preparation did not produce a valid session."
 	if staged and not _loading_cancelled and flight.startup_error.is_empty():
 		if flight.session != null:
 			flight.session.hold("loading")
 		flight.process_mode = Node.PROCESS_MODE_INHERIT
 		await _flight_loading_checkpoint("Finishing flight")
 	if staged and _loading_cancelled:
-		flight.startup_error = tr("Flight preparation cancelled.")
+		flight.startup_error = "Flight preparation cancelled."
 	if is_random and flight.startup_error.is_empty():
 		var accepted: Dictionary = flight.bind_scenario(request)
 		if not accepted.ok:
@@ -1080,14 +1087,17 @@ func start_flight(request: Dictionary = {}) -> void:
 		Conditions.session_preset = departing_home.time_of_day
 		_rebuild_home_scene()
 		# Keep the launch failure visible even if restoring the backdrop also fails.
-		departing_home.reject_start(tr("Could not start flight: %s") % reason)
+		if staged and _loading_cancelled:
+			departing_home.cancel_start()
+		else:
+			departing_home.fail_start(reason)
 		if is_random:
 			screens.push("natural_random", departing_random, departing_home.natural_random_button, false)
 			if staged and _loading_cancelled:
 				departing_random.set_busy(false)
 				departing_random.fly_button.grab_focus.call_deferred()
 			else:
-				departing_random.show_error(tr("Could not start flight: %s") % reason)
+				departing_random.show_error(tr("Could not start flight: %s") % tr(reason))
 		_menu_feedback(&"back" if staged and _loading_cancelled else &"reject")
 		if staged: _finish_flight_loading("cancelled" if _loading_cancelled else "failed")
 		return
@@ -1338,8 +1348,8 @@ func _cancel_loading_before_candidate(departing_home: Control, error := "") -> v
 		home_scene.retain_resources_on_exit = false
 		home_scene.resume_preview()
 	_remove_flight_loading_screen()
-	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % error
-	departing_home.reject_start(note)
+	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % tr(error)
+	departing_home.cancel_start() if error.is_empty() else departing_home.fail_start(error)
 	if natural_random_screen != null:
 		if error.is_empty():
 			natural_random_screen.set_busy(false)
@@ -2305,7 +2315,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 			home_scene.camera.make_current()
 			_workshop_home_detached = false
 			_rebuild_home_scene()
-		editor.set_note(tr("Could not start flight: %s") % reason)
+		editor.set_note(tr("Could not start flight: %s") % tr(reason))
 		_menu_feedback(&"reject")
 		return
 	_workshop_previous_flight = previous

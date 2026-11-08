@@ -8680,3 +8680,54 @@ msgstr "阵风各分量不得超过 2.5 米/秒。"
 
 msgid "Check this setting."
 msgstr "请检查此设置。"
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "无法读取已保存的机型。文件已保留。"
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "无法打开 1 个已保存的机型。文件已保留。"
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "无法打开 %d 个已保存的机型。文件已保留。"
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "部分机型已从备份打开。请在保存前检查。"
+
+msgid "Saved build unavailable · %s"
+msgstr "已保存的机型不可用 · %s"
+
+msgid "Recovered from backup"
+msgstr "从备份恢复"
+
+msgid "Use Details to inspect this saved build."
+msgstr "使用“详情”检查此已保存的机型。"
+
+msgid "No readable builds match these filters."
+msgstr "没有可读取的机型符合这些筛选条件。"
+
+msgid "Saved-build location:"
+msgstr "已保存机型的位置："
+
+msgid "Saved build %s:"
+msgstr "已保存的机型 %s："
+
+msgid "Recovered build %s:"
+msgstr "已恢复的机型 %s："
+
+msgid "Review Conditions"
+msgstr "检查条件"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "无法切换模式。请检查控制设置后重试。"
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "旋翼机尚未通过空间天气验证。请选择均匀天气预设。"
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "旋翼机的垂直大气集成尚未通过验证；请选择参考或均匀场地条件。"
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "旋翼机的湍流集成尚未通过验证；请选择无风、稳定风或阵风。"
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "周期变距前/右由 %.1f / %.1f 变为 %.1f / %.1f 度。"

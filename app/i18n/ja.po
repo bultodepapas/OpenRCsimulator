@@ -8731,3 +8731,54 @@ msgstr "突風の各成分は2.5 m/s以内にしてください。"
 
 msgid "Check this setting."
 msgstr "この設定を確認してください。"
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "保存済みの機体を読み取れませんでした。ファイルは保持されています。"
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "保存済みの機体を1件開けませんでした。ファイルは保持されています。"
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "保存済みの機体を%d件開けませんでした。ファイルは保持されています。"
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "一部の機体をバックアップから開きました。保存する前に確認してください。"
+
+msgid "Saved build unavailable · %s"
+msgstr "保存済みの機体を利用できません · %s"
+
+msgid "Recovered from backup"
+msgstr "バックアップから復元"
+
+msgid "Use Details to inspect this saved build."
+msgstr "詳細でこの保存済み機体を確認してください。"
+
+msgid "No readable builds match these filters."
+msgstr "この条件に一致する読み取り可能な機体はありません。"
+
+msgid "Saved-build location:"
+msgstr "保存済み機体の場所:"
+
+msgid "Saved build %s:"
+msgstr "保存済み機体 %s:"
+
+msgid "Recovered build %s:"
+msgstr "復元した機体 %s:"
+
+msgid "Review Conditions"
+msgstr "飛行条件を確認"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "モードを変更できません。操作設定を確認して再試行してください。"
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "回転翼機の空間天候は未検証です。均一な天候プリセットを選択してください。"
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "回転翼機の鉛直大気との連成は未検証です。基準条件または飛行場全体で均一な条件を選択してください。"
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "回転翼機の乱流との連成は未検証です。無風、定常風、または突風を選択してください。"
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "サイクリック前/右 %.1f / %.1f 度から %.1f / %.1f 度へ。"

@@ -9654,3 +9654,54 @@ msgstr "Les composantes de la rafale doivent rester sous 2,5 m/s."
 
 msgid "Check this setting."
 msgstr "Vérifiez ce réglage."
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "Impossible de lire les modèles enregistrés. Vos fichiers ont été conservés."
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "Impossible d’ouvrir 1 modèle enregistré. Vos fichiers ont été conservés."
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "Impossible d’ouvrir %d modèles enregistrés. Vos fichiers ont été conservés."
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "Certains modèles ont été ouverts depuis une sauvegarde. Vérifiez-les avant d’enregistrer."
+
+msgid "Saved build unavailable · %s"
+msgstr "Modèle enregistré indisponible · %s"
+
+msgid "Recovered from backup"
+msgstr "Récupéré depuis une sauvegarde"
+
+msgid "Use Details to inspect this saved build."
+msgstr "Utilisez Détails pour examiner ce modèle enregistré."
+
+msgid "No readable builds match these filters."
+msgstr "Aucun modèle lisible ne correspond à ces filtres."
+
+msgid "Saved-build location:"
+msgstr "Emplacement des modèles enregistrés :"
+
+msgid "Saved build %s:"
+msgstr "Modèle enregistré %s :"
+
+msgid "Recovered build %s:"
+msgstr "Modèle récupéré %s :"
+
+msgid "Review Conditions"
+msgstr "Revoir les conditions"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "Changement de mode indisponible. Vérifiez les commandes et réessayez."
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "La météo spatiale n’est pas qualifiée pour les hélicoptères. Choisissez un préréglage uniforme."
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "L’intégration de l’atmosphère verticale n’est pas qualifiée pour les hélicoptères ; choisissez les conditions de référence ou uniformes du terrain."
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "L’intégration des turbulences n’est pas qualifiée pour les hélicoptères ; choisissez un temps calme, un vent constant ou des rafales."
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "Cyclique avant/droite %.1f / %.1f vers %.1f / %.1f degrés."

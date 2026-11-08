@@ -9521,3 +9521,54 @@ msgstr "Os componentes da rajada devem ficar dentro de 2,5 m/s."
 
 msgid "Check this setting."
 msgstr "Verifique esta configuração."
+
+msgid "Saved builds could not be read. Your files were kept."
+msgstr "Não foi possível ler os modelos salvos. Seus arquivos foram preservados."
+
+msgid "1 saved build could not be opened. Your files were kept."
+msgstr "Não foi possível abrir 1 modelo salvo. Seus arquivos foram preservados."
+
+msgid "%d saved builds could not be opened. Your files were kept."
+msgstr "Não foi possível abrir %d modelos salvos. Seus arquivos foram preservados."
+
+msgid "Some saved builds were opened from backup. Review them before saving."
+msgstr "Alguns modelos foram abertos do backup. Revise-os antes de salvar."
+
+msgid "Saved build unavailable · %s"
+msgstr "Modelo salvo indisponível · %s"
+
+msgid "Recovered from backup"
+msgstr "Recuperado do backup"
+
+msgid "Use Details to inspect this saved build."
+msgstr "Use Detalhes para examinar este modelo salvo."
+
+msgid "No readable builds match these filters."
+msgstr "Nenhum modelo legível corresponde a estes filtros."
+
+msgid "Saved-build location:"
+msgstr "Local dos modelos salvos:"
+
+msgid "Saved build %s:"
+msgstr "Modelo salvo %s:"
+
+msgid "Recovered build %s:"
+msgstr "Modelo recuperado %s:"
+
+msgid "Review Conditions"
+msgstr "Revisar condições"
+
+msgid "Mode change unavailable. Check controls and try again."
+msgstr "Mudança de modo indisponível. Verifique os controles e tente novamente."
+
+msgid "Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
+msgstr "O clima espacial não foi validado para helicópteros. Escolha uma predefinição de clima uniforme."
+
+msgid "Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+msgstr "A integração da atmosfera vertical não foi validada para helicópteros; escolha condições de referência ou uniformes do campo."
+
+msgid "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+msgstr "A integração de turbulência não foi validada para helicópteros; escolha calmaria, vento constante ou rajadas."
+
+msgid "Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg."
+msgstr "Cíclico à frente/direita %.1f / %.1f para %.1f / %.1f graus."
