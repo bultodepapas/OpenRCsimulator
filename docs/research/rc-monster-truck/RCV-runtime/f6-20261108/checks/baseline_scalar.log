@@ -1,0 +1,22 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok reference backend selected
+FAIL scalar positive-slip tire cannot accelerate slip { "ok": true, "x": 1.0, "y": 0.0, "sweeps": 2 }
+FAIL scalar negative-slip tire cannot accelerate slip { "ok": true, "x": -1.0, "y": 0.0, "sweeps": 2 }
+FAIL positive-spin brake cannot add work { "ok": true, "torque": 1.0, "sweeps": 2 }
+FAIL negative-spin brake cannot add work { "ok": true, "torque": -1.0, "sweeps": 2 }
+ok zero spin keeps either static brake reaction
+ok zero slip keeps two-dimensional static tire reaction
+FAIL combined slip uses anisotropic mobility-metric diameter { "ok": true, "x": 1.0, "y": 2.0, "sweeps": 2 }
+FAIL combined reaction allows a positive individual component but no net work 
+FAIL active diameter respects the force circle { "ok": true, "x": 0.15080963451391, "y": 0.13136382354648, "sweeps": 2 }
+ok zero normal/grip permits no tangent force
+FAIL nonzero tire slip keeps its sign constraint: positive tiny 
+FAIL nonzero spin keeps its sign constraint: positive tiny 
+FAIL nonzero tire slip keeps its sign constraint: negative tiny 
+FAIL nonzero spin keeps its sign constraint: negative tiny 
+FAIL nonzero tire slip keeps its sign constraint: positive subnormal 
+FAIL nonzero spin keeps its sign constraint: positive subnormal 
+FAIL nonzero tire slip keeps its sign constraint: negative subnormal 
+FAIL nonzero spin keeps its sign constraint: negative subnormal 
+F6 scalar witness: 19 checks, 15 failures

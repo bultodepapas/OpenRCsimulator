@@ -12,6 +12,8 @@ The numerical core stores simulation values as IEEE-754 `double`; it does not us
 
 Session also binds the GDScript integration source or exported bytecode artifact, since native force evaluation does not replace the GDScript RK orchestration. The [2026-10-15 audit](../../../docs/research/rc-monster-truck/RCV-audit-2026-10-15/native/README.md) records Windows/Linux v5 builds, 733 evaluator parity checks per platform and exact lake-sampler parity. Those and the earlier release-package results below remain dated evidence for their original solver.
 
+The [v6 passivity evidence](../../../docs/research/rc-monster-truck/RCV-runtime/README.md#tire-and-brake-passivity-rcv-09-r3--a6-f6-2026-11-08) records the isolated Windows evaluator build and its scope.
+
 The [RCV-09-R2 handling revision](../../../docs/research/rc-monster-truck/RCV-handling/README.md) adds mobility-metric friction-circle projection, a 128-sweep cap with adaptive update tolerances, cached mobility blocks, corrected hub slip-angle telemetry and optional fixed axle brake allocation. Cap exhaustion remains a bounded result, not a convergence certificate.
 
 ## Pinned build tools

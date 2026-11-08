@@ -1,0 +1,18 @@
+{
+  "binary_sha256": "7d6d7eb6bc4ab97938108b3ecaa859f1042ef830ffac8b5585b0f7ba6f67ab95",
+  "engine_debug_build": true,
+  "extension_target": "template_release",
+  "godot_version": "4.8.beta2.official.cafc17a19",
+  "platform": "windows",
+  "source_sha256": "b97dfc62b0c32d2e61086d3210e923bdce1873ff60566739514444a82a1ce242",
+  "toolchain_sha256": "d62bc286c98e29467227213fae74e9634bdb258c02e6bbfcfdfcc05570ba6832"
+}
+
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+F6 capped-stage max positive tire/brake W: [0.0, 0.0]
+F6 capped-stage max positive tire/brake W: [0.0, 0.0]
+OPENRC_NATIVE_LAKE_PARITY points=669 channels=2676 bit_exact=2676 max_abs_error=0.0
+OPENRC_NATIVE_LAKE_PROFILE points=669 rounds=3 gdscript_ms_per_sample=0.11292675635277 native_ms_per_sample=0.01525959143 speedup=7.40037876314243 check=-10120.7657219458
+OPENRC_NATIVE_EVAL_PROFILE engine_debug=true extension_target=template_release gdscript_ms=1.4426 native_ms=0.1976 speedup=7.30x iterations=50
+OPENRC_NATIVE_PARITY_OK checks=744

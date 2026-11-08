@@ -1,0 +1,22 @@
+{
+  "abi_version": 1,
+  "architecture": "x86_64",
+  "backend": "native",
+  "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+  "binary_sha256": "7d6d7eb6bc4ab97938108b3ecaa859f1042ef830ffac8b5585b0f7ba6f67ab95",
+  "exception_flags": [
+    "/EHsc"
+  ],
+  "floating_point_flags": [
+    "/fp:strict"
+  ],
+  "platform": "windows",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v6",
+  "source_sha256": "b97dfc62b0c32d2e61086d3210e923bdce1873ff60566739514444a82a1ce242",
+  "toolchain": {
+    "compiler_toolset": "14.51.36231",
+    "sdk_version": "10.0.26100.0",
+    "visual_studio_version": "18.9.12128.139"
+  },
+  "toolchain_sha256": "d62bc286c98e29467227213fae74e9634bdb258c02e6bbfcfdfcc05570ba6832"
+}

@@ -1,0 +1,14 @@
+{
+  "baseline_csv_sha256": "232820c889b1a6df74cfa6af9b1e9c17b9c691302b9345b536c63ec7f6ff9f34",
+  "candidate_csv_sha256": "46760d3e4528711730ecb84fe965e3dc83ceb0d81f6a2fe41a63b13963684eb7",
+  "complete": true,
+  "first_state_divergence_tick": 361,
+  "max_attitude_difference_deg": 6.84725767841399,
+  "max_body_velocity_difference_mps": 1.051859909711853,
+  "max_position_difference_m": 0.11760720188809755,
+  "max_wheel_spin_difference_radps": 47.63403095300835,
+  "note": "One open-loop control tape on the estimated practice course; not an exact cross-solver replay or physical validation.",
+  "same_recorded_controls": true,
+  "samples": 841,
+  "solver_changed": true
+}

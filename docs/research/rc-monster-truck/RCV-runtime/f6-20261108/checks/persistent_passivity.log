@@ -1,0 +1,36 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok reference backend selected
+ok scalar positive-slip tire cannot accelerate slip
+ok scalar negative-slip tire cannot accelerate slip
+ok positive-spin brake cannot add work
+ok negative-spin brake cannot add work
+ok zero spin keeps either static brake reaction
+ok zero slip keeps two-dimensional static tire reaction
+ok combined slip uses anisotropic mobility-metric diameter
+ok combined reaction allows a positive individual component but no net work
+ok active diameter respects the force circle
+ok zero normal/grip permits no tangent force
+ok nonzero tire slip keeps its sign constraint: positive tiny
+ok nonzero spin keeps its sign constraint: positive tiny
+ok nonzero tire slip keeps its sign constraint: negative tiny
+ok nonzero spin keeps its sign constraint: negative tiny
+ok nonzero tire slip keeps its sign constraint: positive subnormal
+ok nonzero spin keeps its sign constraint: positive subnormal
+ok nonzero tire slip keeps its sign constraint: negative subnormal
+ok nonzero spin keeps its sign constraint: negative subnormal
+ok stock vehicle loaded
+ok flat-road stock initialized
+ok stock driven witness is passive at every tire
+ok stock energy derivative accounts for motor, rolling and passive tires
+F6 RK stage work 240/480 Hz: [-363.88075682842, -235.824273189528, -363.690102287243, -236.042046200752] max positive tire/brake W: [0.00000000000002, 0.0, 0.00000000000003, 0.0] capped stages: [0, 0]
+ok all 240 Hz RK stages are individually passive
+ok all 480 Hz RK stages are individually passive
+F6 combined/reverse RK work and cap: [-648.866992263942, -60.0910424306703, 0.0, 0.0, 37, 128]
+ok combined-slip reversal and drive/brake overlap stay passive at every stage
+ok instrumented stage path matches production steps
+F6 2.25 s 240/480 Hz: max position delta 0.00036922667304 m; max body velocity delta 0.00028753643493 m/s
+ok refinement retains the same driving regime
+ok airborne wheel braking stays passive with no tire load
+ok load reacquisition restores passive tire contact
+RCV passivity: 30 checks, 0 failures

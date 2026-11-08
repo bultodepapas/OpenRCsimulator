@@ -1,0 +1,239 @@
+{
+	"control_layout": [
+		"throttle",
+		"steering",
+		"brake",
+		"reverse_flag"
+	],
+	"control_tape_sha256": "d3140729f269ab8200c3a7b6c454c728b7665d38d2c1f506fab05a5fcb7c03cc",
+	"corner_order": [
+		"FL",
+		"FR",
+		"RL",
+		"RR"
+	],
+	"course_identity": {
+		"format": "openrc-ground-course",
+		"id": "mt8-practice-course-estimate-v1",
+		"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+		"version": "1"
+	},
+	"damage_state_layout": [
+		"body_front_damage_fraction",
+		"body_rear_damage_fraction",
+		"body_left_damage_fraction",
+		"body_right_damage_fraction",
+		"body_bottom_damage_fraction",
+		"suspension_damage_fl_fraction",
+		"suspension_damage_fr_fraction",
+		"suspension_damage_rl_fraction",
+		"suspension_damage_rr_fraction",
+		"drive_damage_fraction",
+		"hull_contact_active_flag",
+		"wall_contact_active_flag",
+		"hull_episode_energy_j",
+		"wall_episode_energy_j",
+		"bottoming_latched_fl_flag",
+		"bottoming_latched_fr_flag",
+		"bottoming_latched_rl_flag",
+		"bottoming_latched_rr_flag",
+		"last_impact_energy_j"
+	],
+	"dt_s": 0.004166666666666667,
+	"end_tick": 840,
+	"events": [
+		{
+			"speed_m_per_s": 0.4223438334713871,
+			"tick": 11,
+			"time_s": 0.04583333333333333,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 7.909153566643919,
+			"tick": 383,
+			"time_s": 1.5958333333333332,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 7.82870330643489,
+			"tick": 410,
+			"time_s": 1.7083333333333333,
+			"type": "landing"
+		},
+		{
+			"distance_m": 1.998283917107993,
+			"end_speed_m_per_s": 6.730616622219419,
+			"end_tick": 421,
+			"initial_speed_m_per_s": 8.461989968545842,
+			"start_tick": 360,
+			"time_s": 1.7541666666666667,
+			"type": "braking_distance"
+		},
+		{
+			"speed_m_per_s": 7.444873312814042,
+			"tick": 424,
+			"time_s": 1.7666666666666666,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 7.542993410390995,
+			"tick": 462,
+			"time_s": 1.925,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.404280922178971,
+			"tick": 609,
+			"time_s": 2.5375,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.4055478735962,
+			"tick": 656,
+			"time_s": 2.7333333333333334,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.049577090804362,
+			"tick": 665,
+			"time_s": 2.7708333333333335,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.043475457689029,
+			"tick": 668,
+			"time_s": 2.783333333333333,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 9.992502027062388,
+			"tick": 675,
+			"time_s": 2.8125,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 9.999221680505181,
+			"tick": 689,
+			"time_s": 2.870833333333333,
+			"type": "landing"
+		}
+	],
+	"final_damage_f64_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+	"fixed_hz": 240,
+	"format": "openrc-ground-vehicle-recording v4",
+	"hull_probe_count": 6,
+	"initial_damage_f64_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+	"model_identity": {
+		"format": "openrc-ground-vehicle",
+		"id": "mt8-bisonte-electric-4wd-estimate-v1",
+		"sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96",
+		"version": "1"
+	},
+	"recorded_samples_sha256": "8f326a8eb72fcaf8f25744cb67747db357d977799984932f612ca250c4f82224",
+	"recorded_tick_count": 840,
+	"recording_limit_hit": false,
+	"recording_limit_seconds": 600.0,
+	"run_valid": true,
+	"sample_count": 841,
+	"sample_layout": {
+		"controls_offset": 1,
+		"state_offset": 5,
+		"telemetry_fields": [
+			"speed_m_per_s",
+			"forward_speed_m_per_s",
+			"wheel_load_n[4]",
+			"wheel_longitudinal_force_n[4]",
+			"wheel_lateral_force_n[4]",
+			"wheel_brake_torque_n_m[4]",
+			"wheel_slip_ratio[4]",
+			"wheel_slip_angle_rad[4]",
+			"wheel_slip_speed_m_per_s[4]",
+			"wheel_in_contact[4]",
+			"hull_in_contact[N]",
+			"airborne",
+			"suspension_travel_m[4]",
+			"suspension_force_n[4]",
+			"total_energy_j",
+			"damage.body_damage",
+			"damage.suspension_damage",
+			"damage.drive_scale",
+			"damage.last_impact_energy_j",
+			"applied_controls[4]",
+			"environment.body_submersion",
+			"environment.water_depth_m",
+			"environment.buoyancy_n",
+			"environment.drag_power_w",
+			"environment.power_w",
+			"environment.wheel_submersion[4]",
+			"environment.wheel_water_height_m[4]",
+			"environment.wheel_depth_m[4]",
+			"environment.wheel_mud[4]"
+		],
+		"telemetry_offset": 36,
+		"tick_offset": 0
+	},
+	"sample_width": 115,
+	"solver_identity": {
+		"backend_identity": {
+			"abi_version": 1,
+			"backend": "gdscript_reference",
+			"backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+			"binary_sha256": "",
+			"implementation_artifact_kind": "gdscript_source",
+			"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+			"source_sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf",
+			"toolchain_sha256": ""
+		},
+		"damage_version": 2,
+		"engine_version": "4.8-beta2 (official)",
+		"environment_artifact": {
+			"kind": "gdscript_source",
+			"sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+		},
+		"environment_version": "openrc-rcv-environment-v1",
+		"fixed_hz": 240,
+		"integration_artifact": {
+			"kind": "gdscript_source",
+			"sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf"
+		},
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+		"substeps_per_tick": 1
+	},
+	"spawn_id": "start",
+	"start_tick": 0,
+	"state_layout": [
+		"north_m",
+		"east_m",
+		"down_m",
+		"u_m_per_s",
+		"v_m_per_s",
+		"w_m_per_s",
+		"qw",
+		"qx",
+		"qy",
+		"qz",
+		"p_rad_per_s",
+		"q_rad_per_s",
+		"r_rad_per_s",
+		"travel_fl_m",
+		"travel_fr_m",
+		"travel_rl_m",
+		"travel_rr_m",
+		"travel_rate_fl_m_per_s",
+		"travel_rate_fr_m_per_s",
+		"travel_rate_rl_m_per_s",
+		"travel_rate_rr_m_per_s",
+		"wheel_spin_fl_rad_per_s",
+		"wheel_spin_fr_rad_per_s",
+		"wheel_spin_rl_rad_per_s",
+		"wheel_spin_rr_rad_per_s",
+		"wheel_angle_fl_rad",
+		"wheel_angle_fr_rad",
+		"wheel_angle_rl_rad",
+		"wheel_angle_rr_rad",
+		"steer_angle_rad",
+		"steer_rate_rad_per_s"
+	],
+	"vehicle_id": "mt8-bisonte",
+	"version": 4
+}

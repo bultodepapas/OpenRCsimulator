@@ -1,0 +1,8 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok reference backend selected
+ok Nitro session prepares
+ok Nitro checkpoint binds v6 and restores unchanged
+ok self-hashed simulated v5 Nitro identity is refused atomically
+ok legacy identity without backend cannot bypass v5 refusal
+Nitro F6 identity: 5 checks, 0 failures

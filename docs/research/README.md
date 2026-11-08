@@ -185,7 +185,7 @@ Use the [flight-model audit](flight-model-robustness-audit.md), [repair implemen
 
 ### Ugly Stik
 
-The [two-variant migration plan](../plans/ugly-stik-two-variants.md) proposes a canonical MAX-61FX test reference and one electric 6S aircraft. The [2026-11-08 motor selection](propulsion/ugly-stik-6s-selection-2026-11-08.md) compares manufacturer sources and records the initial Scorpion candidate; runtime migration and physical validation remain pending.
+The [two-variant integration plan](../plans/ugly-stik-two-variants.md) preserves the existing basic Ugly Stik and its tests unchanged, adds one electric 6S stock choice, and retains hidden glow configurations as technical fixtures. The [2026-11-08 motor selection](propulsion/ugly-stik-6s-selection-2026-11-08.md) compares manufacturer sources and records the initial Scorpion candidate; implementation and physical validation remain pending.
 
 Start with the [current model guide and remaining acceptance](../UGLY-STIK-PLAN.md) and [authoring/capture pipeline](../../assets/aircraft/ugly-stik-60/README.md). Dated evidence includes the [source and local-reference map](ugly-stik-resources.md), [model investigations](ugly-stik-investigations/README.md), [v4 delivery](ugly-stik-model-v4.md), [engine v5](ugly-stik-engine-v5.md) and [US-V09…12 finish/feedback passes](ugly-stik-finish-v6.md). Visual and authoring work is indexed under [visual investigations](ugly-stik-visual-investigations/README.md) and [tooling investigations](ugly-stik-tooling-investigations/README.md).
 

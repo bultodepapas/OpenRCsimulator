@@ -4,6 +4,8 @@
 
 Execution and acceptance belong to the [two-variant plan](../../plans/ugly-stik-two-variants.md). Repository inspection: `41ce5af6f4a148b4ea101b08883fd4e03878bb07`, with unrelated working-tree changes present. No simulator or hardware measurements were performed for this note.
 
+The plan's second review preserves the existing basic aircraft, ID and tests unchanged; it does not promote the separate finite-fuel 61FX configuration to default. This motor-selection evidence concerns only the added electrical installation.
+
 ## Selection
 
 Use **Scorpion SII-4020-540KV + APC Thin Electric 13x8E + 6S 4000 mAh LiPo** as the first electric conversion candidate. Specify an airplane ESC rated for 6S and at least 80 A; pin its exact revision, mass, BEC and configuration before generating the installation. These are design choices pending the plan's current, fit and flight gates.

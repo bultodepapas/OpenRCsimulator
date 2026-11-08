@@ -338,6 +338,50 @@
         "log_bytes": 2081,
         "log_sha256": "7ccb7ea9ad3240d5a9cde55c32ac12c3abd19b2c6dd375f416204476b3049e8c"
       }
+    },
+    {
+      "path": "tmp/audit-20261108-final-checks/companions-profiles-final-2xzw6i5t/report.json",
+      "sha256": "31a4c95c2f48193e0ebf2b2caa974ea3ff9c6bfe74099dc6bed6c49c784bfcbb",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "3c0a9930-2b8f-47a8-87aa-bb43d14f46fe",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_companions_profiles.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:49:18.009480+00:00",
+        "label": "companions-profiles-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final-checks\\companions-profiles-final-2xzw6i5t\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final-checks\\companions-profiles-final-2xzw6i5t\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": true,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 6.953,
+        "log_bytes": 2635,
+        "log_sha256": "c799bdf4c7dc927420cd0dfb8bc94b2e04a5d09fae10aef30ab89abf89950ce2"
+      }
     }
   ],
   "reviewer_witness_receipts": [

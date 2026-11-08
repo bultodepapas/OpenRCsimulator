@@ -1,0 +1,133 @@
+{
+	"checkpoint_sha256": "71a888fceb42dde629750470de191398352ff98be4f7b6d1d8972b0600bb6e28",
+	"complete": true,
+	"events": [
+		{
+			"speed_m_per_s": 0.4223438334713871,
+			"tick": 11,
+			"time_s": 0.04583333333333333,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 7.909153566643919,
+			"tick": 383,
+			"time_s": 1.5958333333333332,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 7.82870330643489,
+			"tick": 410,
+			"time_s": 1.7083333333333333,
+			"type": "landing"
+		},
+		{
+			"distance_m": 1.998283917107993,
+			"end_speed_m_per_s": 6.730616622219419,
+			"end_tick": 421,
+			"initial_speed_m_per_s": 8.461989968545842,
+			"start_tick": 360,
+			"time_s": 1.7541666666666667,
+			"type": "braking_distance"
+		},
+		{
+			"speed_m_per_s": 7.444873312814042,
+			"tick": 424,
+			"time_s": 1.7666666666666666,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 7.542993410390995,
+			"tick": 462,
+			"time_s": 1.925,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.404280922178971,
+			"tick": 609,
+			"time_s": 2.5375,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.4055478735962,
+			"tick": 656,
+			"time_s": 2.7333333333333334,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.049577090804362,
+			"tick": 665,
+			"time_s": 2.7708333333333335,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.043475457689029,
+			"tick": 668,
+			"time_s": 2.783333333333333,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 9.992502027062388,
+			"tick": 675,
+			"time_s": 2.8125,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 9.999221680505181,
+			"tick": 689,
+			"time_s": 2.870833333333333,
+			"type": "landing"
+		}
+	],
+	"exact_replay": true,
+	"identities": {
+		"course": {
+			"format": "openrc-ground-course",
+			"id": "mt8-practice-course-estimate-v1",
+			"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+			"version": "1"
+		},
+		"model": {
+			"format": "openrc-ground-vehicle",
+			"id": "mt8-bisonte-electric-4wd-estimate-v1",
+			"sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96",
+			"version": "1"
+		},
+		"vehicle_id": "mt8-bisonte"
+	},
+	"phases": [
+		[
+			0,
+			360,
+			"drive"
+		],
+		[
+			360,
+			420,
+			"brake"
+		],
+		[
+			420,
+			660,
+			"drive"
+		],
+		[
+			660,
+			840,
+			"brake"
+		]
+	],
+	"samples": 841,
+	"solver_identity": {
+		"abi_version": 1,
+		"backend": "gdscript_reference",
+		"backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+		"binary_sha256": "",
+		"implementation_artifact_kind": "gdscript_source",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+		"source_sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf",
+		"toolchain_sha256": ""
+	},
+	"state_sha256": "82ae7f76f4c58b7efd4c8f8f2cbe970df0967dff0a99152304076d7aec21d9c8",
+	"tape_sha256": "46c41c0b353afa63d6ecb1de9382c3fafcc5ac7528bc36fc1a50fe7a43d228cb",
+	"ticks": 840
+}

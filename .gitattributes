@@ -274,3 +274,7 @@
 /assets/aircraft/f4u-corsair-250/gear-samples.json text eol=lf
 /assets/aircraft/f4u-corsair-250/wing-fold-r59.json text eol=lf
 /assets/aircraft/f4u-corsair-250/mechanisms-r59.json text eol=lf
+
+# F6 binds exact source witnesses, recorder metadata and checked logs.
+/docs/research/rc-monster-truck/RCV-runtime/f6-20261108/** -text whitespace=cr-at-eol
+/docs/research/rc-monster-truck/RCV-runtime/f6-20261108/**/*.log -whitespace

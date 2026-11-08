@@ -1,0 +1,421 @@
+{
+  "baseline": {
+    "git_commit": "41ce5af6f4a148b4ea101b08883fd4e03878bb07",
+    "native_header_sha256_windows_crlf": "e48b3163f201887dd3b0c2b59bba95f0ee36f75ab64ef841f11dca8695e29933",
+    "reference_source_sha256_windows_crlf": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5"
+  },
+  "candidate": {
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v6",
+    "source_sha256": {
+      "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "3f9b23f811d84b3d796c7db125fa8ad7e8dff613a16ae2bf40d5cc0ae9695bed",
+      "app/sim/ground_vehicle/session.gd": "806561b3750eff200a774b39110edce639a0e623b50955a000d0fb0955e85d35",
+      "app/test.sh": "bb715f72d5b9962999bdd6b72dadbfdab59f8ac4d078ce1cd85627fb9b69106e",
+      "app/tests/test_nitro_dynamics.gd": "22fc924189a5d462d988d4cfed21087df26289f7075d88431ec418ef1a22dd0c",
+      "app/tests/test_rcv_handling.gd": "f094dd10da607212bd7cf4683a326ee3c29a3dd8006517f73336322bba07a81d",
+      "app/tests/test_rcv_nitro_f6_identity.gd": "c1a1f1bb5518f9dfea6fd34cb0089171d4282cce10b317724399cd5d1eb94351",
+      "app/tests/test_rcv_nitro_session.gd": "7556e3929b1d30ba23040a426a6d8515c8edf9eb6d8aec14f81f48849e85bc7f",
+      "app/tests/test_rcv_passivity.gd": "0d03927732aa5913d1c1e16f8056806f4cdb51cf0ec8f26ae43f18f7eb1822e1",
+      "app/tests/test_rcv_vehicle_dynamics.gd": "ac1754a87e716709283f65cdc21bcb20c70bcabcf7f4a4572861cf6ff44dfa40",
+      "research/rc-monster-truck/native/build.py": "24fa196acb65c08c51a9f4a36741888d909c118aa8446d8691a6720e5207cf8e",
+      "research/rc-monster-truck/native/parity_harness.gd": "f6ed47bd0a29200de976ddec2dc2e8444b77fae219a5d78ab9ce060888dcd69a",
+      "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp": "d353113b2299291cf52cc3defdc9acf9a30059199b825d6719b6ab2bff0ad93c",
+      "research/rc-monster-truck/native/src/ground_vehicle_native.cpp": "d0fb345efde3fed8139db43de90ffae1cdd6e732ba65d5998f1d0cbc462ccc10",
+      "research/rc-monster-truck/native/toolchain-lock.json": "c7725ac532015098d21b2a8f0cede353ac4ee4465f2520ee228f32303eff438d"
+    }
+  },
+  "checks": {
+    "baseline_replay": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ground-passivity\\capture_rcv_baseline.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 17.016,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/baseline_replay.log",
+      "log_sha256": "35e85708b12faaee4bef4acc1bc1f21bfc4400325a57f1d9a8e3cd9f9863a8e8",
+      "marker": "F6 baseline: 840 ticks, 841 samples, exact replay",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "baseline_scalar": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "tmp/audit-20261108-ground-passivity/scalar-control/baseline",
+        "--script",
+        "res://witness.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 0.453,
+      "error_count": 0,
+      "expected_process_success": false,
+      "log": "checks/baseline_scalar.log",
+      "log_sha256": "49e53a744e19ceda60ddf30b6aeeae4c70d8b98eb71f830625938410e2ee64d8",
+      "marker": "F6 scalar witness: 19 checks, 15 failures",
+      "process_exit": 1,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "binary64_subnormal": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ground-passivity\\subnormal_probe.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 0.5,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/binary64_subnormal.log",
+      "log_sha256": "88023ab9e3cfcd1b48a034fd0b12daddd44e0743b7830a5d7e57db2d5e9e48d0",
+      "marker": "F64_SUBNORMAL decoded_nonzero=true positive=true negative=true scaled_nonzero=true",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "candidate_replay": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-ground-passivity\\capture_rcv_candidate.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 12.641,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/candidate_replay.log",
+      "log_sha256": "b5d2bc7d2e8b67bb16181076bb0d8f5b55c6e0065f3563953280dd2757bc9dd1",
+      "marker": "F6 candidate: 840 ticks, same tape, old checkpoint refused, self-replay exact",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "candidate_scalar": {
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--path",
+        "tmp/audit-20261108-ground-passivity/scalar-control/candidate",
+        "--script",
+        "res://witness.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 0.422,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/candidate_scalar.log",
+      "log_sha256": "a24422ae4a657c01f225bb40b1276f26af6194d227ec2a57edece390214aeb08",
+      "marker": "F6 scalar witness: 19 checks, 0 failures",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "handling": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_handling.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 50.266,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/handling.log",
+      "log_sha256": "a7137547fecfcb1559973b2b512d52b5b542343d4c6d09fa9d1fe0fd086057b0",
+      "marker": "RCV handling: 21/21 checks passed",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": false
+    },
+    "nitro_dynamics": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_nitro_dynamics.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 33.781,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/nitro_dynamics.log",
+      "log_sha256": "750c50c71cfb40706f017b154508a6446d46b68652edfaac265a80d334d4fd71",
+      "marker": "Nitro dynamics: 30 checks, 0 failed",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": false
+    },
+    "nitro_identity": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_nitro_f6_identity.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 3.875,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/nitro_identity.log",
+      "log_sha256": "2104b3a199ce6d265d2f6da3c5b12b29511766b2d010abaf477ac6159349bb6e",
+      "marker": "Nitro F6 identity: 5 checks, 0 failures",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "nitro_session": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_nitro_session.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 17.031,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/nitro_session.log",
+      "log_sha256": "c1f43dae3cdadb27276187efed44e98add0fd2f9ef832e286179779add3f3850",
+      "marker": "RCV Nitro session: 28 checks, 0 failed",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": false
+    },
+    "persistent_passivity": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_passivity.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 37.781,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/persistent_passivity.log",
+      "log_sha256": "d350961f9f85e0c2bc143d001187c254c1d8bfdaa21e115c448386cf20b071ba",
+      "marker": "RCV passivity: 30 checks, 0 failures",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": true
+    },
+    "vehicle_dynamics": {
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_vehicle_dynamics.gd"
+      ],
+      "complete": true,
+      "elapsed_seconds": 28.469,
+      "error_count": 0,
+      "expected_process_success": true,
+      "log": "checks/vehicle_dynamics.log",
+      "log_sha256": "c966fd6306296fcc0ac808861ff43557df685f31c1852543a778ff7a46cb2414",
+      "marker": "RCV-05 vehicle dynamics: 53 checks, 0 failures",
+      "process_exit": 0,
+      "warning_count": 0,
+      "warnings_as_errors": false
+    }
+  },
+  "date": "2026-11-08",
+  "engine": {
+    "executable_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "version": "4.8.beta2.official.cafc17a19"
+  },
+  "files": {
+    "baseline-checkpoint.json.gz": {
+      "bytes": 2781,
+      "sha256": "f1047bb20b30dd0610036ec851310d8f5d79cbc77a3931751c714e6aa0e404a6",
+      "uncompressed_bytes": 65607,
+      "uncompressed_sha256": "4b23e0184b1a0370a7bf3b6f940c23f57c5fcf84014dc5377ed9f8fcf1795d18"
+    },
+    "baseline-recording.json": {
+      "bytes": 6265,
+      "sha256": "f44c06388b9415fb1ce5ace24e4ccb6e2562f71433623fdb6b768a6ff627f955"
+    },
+    "baseline-replay.json": {
+      "bytes": 2841,
+      "sha256": "fea4992e3a71d1b315e55e6d998422cd2facdec10f650fdf8a6c9940dfb37fae"
+    },
+    "baseline.csv.gz": {
+      "bytes": 450856,
+      "sha256": "6c39d93db8e45abde075671450975bc3785bdc35946fbdd8405f751d88c5bd9a",
+      "uncompressed_bytes": 1810329,
+      "uncompressed_sha256": "232820c889b1a6df74cfa6af9b1e9c17b9c691302b9345b536c63ec7f6ff9f34"
+    },
+    "candidate-checkpoint.json.gz": {
+      "bytes": 2808,
+      "sha256": "b4590c62a56a53098f8adb6cf3a9ce6b97fa24d695172181af7724ed0a3b899b",
+      "uncompressed_bytes": 65652,
+      "uncompressed_sha256": "02eba09b7c128b53b9ca645b4057bb92706016cee4b2a3af86714ce1716f802e"
+    },
+    "candidate-recording.json": {
+      "bytes": 6305,
+      "sha256": "48768de93df83e6427f23f5d327d685fdef58b76f33fb947b6641e8e8c406553"
+    },
+    "candidate-replay.json": {
+      "bytes": 3760,
+      "sha256": "734b406044919ba65b62ec4d5608d66bb4a36d9b44df50e216305de352e32216"
+    },
+    "candidate.csv.gz": {
+      "bytes": 462221,
+      "sha256": "628ae3a36100732739a7ccc5d060ebff2e0767bb13995a4e0b7d9901439b1844",
+      "uncompressed_bytes": 1813553,
+      "uncompressed_sha256": "46760d3e4528711730ecb84fe965e3dc83ceb0d81f6a2fe41a63b13963684eb7"
+    },
+    "capture_rcv_baseline.gd": {
+      "bytes": 3511,
+      "sha256": "566f0f1da92f2c4943e5a8c9ca6b4b423c101b41ac050d86aa8d330ad393812c"
+    },
+    "capture_rcv_candidate.gd": {
+      "bytes": 4552,
+      "sha256": "d2827fe0bb3fe51badf547bcd8416983d90ca0e5162cff07e68d60d4efa32608"
+    },
+    "checks/baseline_replay.log": {
+      "bytes": 123,
+      "sha256": "35e85708b12faaee4bef4acc1bc1f21bfc4400325a57f1d9a8e3cd9f9863a8e8"
+    },
+    "checks/baseline_scalar.log": {
+      "bytes": 1516,
+      "sha256": "49e53a744e19ceda60ddf30b6aeeae4c70d8b98eb71f830625938410e2ee64d8"
+    },
+    "checks/binary64_subnormal.log": {
+      "bytes": 156,
+      "sha256": "88023ab9e3cfcd1b48a034fd0b12daddd44e0743b7830a5d7e57db2d5e9e48d0"
+    },
+    "checks/candidate_replay.log": {
+      "bytes": 151,
+      "sha256": "b5d2bc7d2e8b67bb16181076bb0d8f5b55c6e0065f3563953280dd2757bc9dd1"
+    },
+    "checks/candidate_scalar.log": {
+      "bytes": 1170,
+      "sha256": "a24422ae4a657c01f225bb40b1276f26af6194d227ec2a57edece390214aeb08"
+    },
+    "checks/handling.log": {
+      "bytes": 2052,
+      "sha256": "a7137547fecfcb1559973b2b512d52b5b542343d4c6d09fa9d1fe0fd086057b0"
+    },
+    "checks/native-windows-build.log": {
+      "bytes": 13106,
+      "sha256": "43c5bb0f9523770e406b2662ee09fd70410eec90ef04274b3741fcf585abf5e8"
+    },
+    "checks/native-windows-parity.log": {
+      "bytes": 1045,
+      "sha256": "79428ed1a0535349e8d13c5fb07349bed9b76db63389c38bb05f9a321cfd4314"
+    },
+    "checks/nitro_dynamics.log": {
+      "bytes": 2836,
+      "sha256": "750c50c71cfb40706f017b154508a6446d46b68652edfaac265a80d334d4fd71"
+    },
+    "checks/nitro_identity.log": {
+      "bytes": 351,
+      "sha256": "2104b3a199ce6d265d2f6da3c5b12b29511766b2d010abaf477ac6159349bb6e"
+    },
+    "checks/nitro_session.log": {
+      "bytes": 112,
+      "sha256": "c1f43dae3cdadb27276187efed44e98add0fd2f9ef832e286179779add3f3850"
+    },
+    "checks/persistent_passivity.log": {
+      "bytes": 2143,
+      "sha256": "d350961f9f85e0c2bc143d001187c254c1d8bfdaa21e115c448386cf20b071ba"
+    },
+    "checks/vehicle_dynamics.log": {
+      "bytes": 5767,
+      "sha256": "c966fd6306296fcc0ac808861ff43557df685f31c1852543a778ff7a46cb2414"
+    },
+    "compare_rcv_recordings.py": {
+      "bytes": 3382,
+      "sha256": "7c85f7f0a4e47f9450508248ad4a2aa09dbaae1fa7bfb5f99bbf08370c8d81b3"
+    },
+    "native-windows-build-receipt.json": {
+      "bytes": 743,
+      "sha256": "48ffb6aa83c7f650f720aa1044a5450d31ec0f0df29f3e6f1e3d4c0fd2691a10"
+    },
+    "same-tape-comparison.json": {
+      "bytes": 687,
+      "sha256": "94c84c9926a34cff572bea9efa672f1ef82b24d4a8c004d6e679989b0c61a6d4"
+    },
+    "scalar-witness.gd": {
+      "bytes": 11349,
+      "sha256": "2b56f1f1816397935f4385a72999aabf03ba2d07647074172aa2489208be95f7"
+    }
+  },
+  "format": "openrc-f6-checked-evidence-v1",
+  "native_windows": {
+    "build_log": "checks/native-windows-build.log",
+    "build_receipt": "native-windows-build-receipt.json",
+    "parity_log": "checks/native-windows-parity.log",
+    "parity_marker": "OPENRC_NATIVE_PARITY_OK checks=744",
+    "scope": "isolated research DLL; evaluator and capped-stage parity, no installed/package or other-platform result"
+  },
+  "notes": [
+    "CSV and checkpoint files use deterministic gzip mtime=0; checkpoints retain the packed binary64 control tapes.",
+    "The baseline scalar run intentionally exits 1; its fifteen witness failures expose the old law. The same source passes nineteen on the candidate.",
+    "The persistent regression runs separately and reports thirty checks. Nitro legacy identity is simulated and self-hashed, not an actual historical Nitro checkpoint.",
+    "Run commands and local paths record the execution environment; pinned Godot executable and isolated scratch snapshots are not included.",
+    "Time measurements on a shared host are not performance qualification."
+  ],
+  "same_tape_sha256": "46c41c0b353afa63d6ecb1de9382c3fafcc5ac7528bc36fc1a50fe7a43d228cb",
+  "scope": "A6 F6 tire/brake instantaneous passivity; reference same-tape and Windows native evaluator parity; not physical or release qualification",
+  "stage_scope": {
+    "cap_is_convergence_proof": false,
+    "capped_at_128_sweeps": 37,
+    "combined_stages": 3360,
+    "max_positive_brake_watts_flat_240_480_hz": 0.0,
+    "max_positive_tire_watts_flat_240_480_hz": 3e-14,
+    "power_oracle": "reconstructed wheel contact velocity and relative spin from final applied forces, using production corner geometry; RK stage weights",
+    "tolerance": "1e-10 * max(1, abs(Fx*sx) + abs(Fy*sy)) W"
+  }
+}

@@ -1,0 +1,140 @@
+{
+	"baseline_solver": {
+		"backend_identity": {
+			"abi_version": 1.0,
+			"backend": "gdscript_reference",
+			"backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+			"binary_sha256": "",
+			"implementation_artifact_kind": "gdscript_source",
+			"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+			"source_sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf",
+			"toolchain_sha256": ""
+		},
+		"damage_version": 2.0,
+		"engine_version": "4.8-beta2 (official)",
+		"environment_artifact": {
+			"kind": "gdscript_source",
+			"sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+		},
+		"environment_version": "openrc-rcv-environment-v1",
+		"fixed_hz": 240.0,
+		"integration_artifact": {
+			"kind": "gdscript_source",
+			"sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf"
+		},
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+		"substeps_per_tick": 1.0
+	},
+	"candidate_self_replay": true,
+	"candidate_solver": {
+		"abi_version": 1,
+		"backend": "gdscript_reference",
+		"backend_version": "openrc-ground-vehicle-dynamics-rk4-v6",
+		"binary_sha256": "",
+		"implementation_artifact_kind": "gdscript_source",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v6",
+		"source_sha256": "3f9b23f811d84b3d796c7db125fa8ad7e8dff613a16ae2bf40d5cc0ae9695bed",
+		"toolchain_sha256": ""
+	},
+	"checkpoint_sha256": "cd45dcb237541ca61babe1d17bfebc1066edc86b4c5bd77feeced70d5fcd6965",
+	"complete": true,
+	"events": [
+		{
+			"speed_m_per_s": 0.4223438334713871,
+			"tick": 11,
+			"time_s": 0.04583333333333333,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 7.9360306672985645,
+			"tick": 383,
+			"time_s": 1.5958333333333332,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 7.838710528759977,
+			"tick": 412,
+			"time_s": 1.7166666666666666,
+			"type": "landing"
+		},
+		{
+			"distance_m": 2.007200295925567,
+			"end_speed_m_per_s": 6.844243556993421,
+			"end_tick": 421,
+			"initial_speed_m_per_s": 8.461989968545842,
+			"start_tick": 360,
+			"time_s": 1.7541666666666667,
+			"type": "braking_distance"
+		},
+		{
+			"speed_m_per_s": 7.476242937376737,
+			"tick": 424,
+			"time_s": 1.7666666666666666,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 7.562826959743785,
+			"tick": 460,
+			"time_s": 1.9166666666666667,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.436493923190369,
+			"tick": 608,
+			"time_s": 2.533333333333333,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.43659358124653,
+			"tick": 655,
+			"time_s": 2.7291666666666665,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.146664827772407,
+			"tick": 664,
+			"time_s": 2.7666666666666666,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.142627061590339,
+			"tick": 667,
+			"time_s": 2.779166666666667,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 10.109146332513465,
+			"tick": 674,
+			"time_s": 2.808333333333333,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 10.094171934376345,
+			"tick": 689,
+			"time_s": 2.870833333333333,
+			"type": "landing"
+		}
+	],
+	"identities": {
+		"course": {
+			"format": "openrc-ground-course",
+			"id": "mt8-practice-course-estimate-v1",
+			"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+			"version": "1"
+		},
+		"model": {
+			"format": "openrc-ground-vehicle",
+			"id": "mt8-bisonte-electric-4wd-estimate-v1",
+			"sha256": "795dd4cbadc57d4a176f853c95d22e78c141ecf96435a331b9cc199ca05c9a96",
+			"version": "1"
+		},
+		"vehicle_id": "mt8-bisonte"
+	},
+	"old_checkpoint_refused": true,
+	"same_tape": true,
+	"samples": 841,
+	"solver_changed": true,
+	"state_sha256": "bd59e9d38dff279188c45b9e8dffdbcd8affd30a81671eb8ee5bfb2a49235fe2",
+	"tape_sha256": "46c41c0b353afa63d6ecb1de9382c3fafcc5ac7528bc36fc1a50fe7a43d228cb",
+	"ticks": 840
+}
