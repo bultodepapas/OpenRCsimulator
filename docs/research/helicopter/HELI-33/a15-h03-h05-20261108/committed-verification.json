@@ -1,0 +1,1503 @@
+{
+  "format": "openrc-helicopter-committed-verification v1",
+  "date": "2026-11-08",
+  "helicopter_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+  "integrated_commit": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+  "integrated_solver": {
+    "solver_sha256": "1ebf4fdf347aa9e9c68e3a147a920fdcfa1f519cdf7f100af9ca8acc51ee456b",
+    "rev": "84a0d98d1e1ffaae4950532e653390f5a9abe590"
+  },
+  "solver_source_gd_count": 178,
+  "solver_source_lf_sha256": {
+    "app/failures/catalog.gd": "b5c34361a12f96316a1d89e98bcbf8b1b24f95aba978c9a1fa57089c99ace1d1",
+    "app/failures/config.gd": "623744e56e34cb123513938468b4273aee6a5c5d47e61f36b663ce0f5a3d1938",
+    "app/failures/runtime.gd": "df461263e03b1eaf8ba6bbeaad8240d441bdcf9af40499dcdbfac27541f86614",
+    "app/physics/aero.gd": "72042b7b51698ccec5d25bc22093df5610fe6f7e4b147e29b32d06fa2f734576",
+    "app/physics/air_data.gd": "1a654768ab8871f83f4fdf4df1b5732fc94750283fd5d6fc1b4e066526637b50",
+    "app/physics/aircraft_contact_contract.gd": "ca8e621e6c438358b5ac0895dd211d596c5445dbf7b3c5e4c7b859d1189e4d6b",
+    "app/physics/aircraft_contract.gd": "379746e005fa50a9f488552c4e34f531578a84c616ee35313e5aa85170315278",
+    "app/physics/aircraft_data.gd": "3f8879f6c6f87b87956bffda19d0fb89e40463695025508b01aae4dbae48455f",
+    "app/physics/aircraft_ground_accuracy.gd": "b440d01a315f18aeb228a1bcb6eec06dde1ef2a9ba494a9168bf0089cd501dc6",
+    "app/physics/aircraft_ground_battery.gd": "928dd024a55b13987e4fd7aaf1e007be45b8815694c33842db9c9244738b2fbd",
+    "app/physics/aircraft_ground_damage.gd": "912581560817138ef5686108653773a3b3dbb13401021e31d9eec6f886c9be1f",
+    "app/physics/aircraft_ground_dynamics.gd": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d",
+    "app/physics/aircraft_ground_electric.gd": "1f08b77d0666007daa6296f4cec3b1d95eb53139a3d977d90de8946783708bdd",
+    "app/physics/aircraft_ground_impulse.gd": "2c32b7c91a3f9afdaf1865fcb9c9b2d6a9e78bf2ae3ad366040b44cc9b1ead3d",
+    "app/physics/aircraft_ground_profile.gd": "b51fa509a7c9685444f3cdf9cf27ed864dd6a1c25f38ab2eb5a54c324f790af2",
+    "app/physics/aircraft_ground_source.gd": "7f0a95021be7405eaaed7314e1861e463fbf14bfb677f2b62acd06b2019dce0e",
+    "app/physics/aircraft_ground_stage.gd": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056",
+    "app/physics/aircraft_ground_step.gd": "7142280d140cad06cf3ea1faa4e4b8ec612dc4b9588eb49abe6e0c603124c6b4",
+    "app/physics/aircraft_ground_traction.gd": "f4d70f954442eee6339bb9a3be5e841e1b797ec063df58c34c199c40e51a7883",
+    "app/physics/aircraft_ground_unloaded.gd": "60217139cd64b4d576d9a8a7d434881b94dcd2897c2d909e7ac97d0407de8d4b",
+    "app/physics/aircraft_modules.gd": "b6601333e649e5a3bba4a0b5640c34a73d2d26d63b6e2b6022455d94f37370d5",
+    "app/physics/atmosphere.gd": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+    "app/physics/battery/battery_data.gd": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+    "app/physics/battery/esc_supervisor.gd": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+    "app/physics/battery/pack_ecm.gd": "ff5dd20f3c2ac83e747a12126198d29e4f7dc4bc35fd35f2ee23a0fe60ae89d9",
+    "app/physics/contact_assembly_resolution.gd": "27d6b5a9cbe07ff6372652d34944b695f6f24e6da3e530a557ee3881d84e422f",
+    "app/physics/contact_assembly_strategy.gd": "40a4594da5369ee78d32be55fc6651275ace827e813c5069f785af4dffa0f9f4",
+    "app/physics/contact_capacity.gd": "c39caa313d8fde14842f81b1b3daa04ed30172a06ed2dacacd04e5cd54b3bc01",
+    "app/physics/control_actuators.gd": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988",
+    "app/physics/control_surfaces.gd": "8c0054a2abe900225d0e0fafa7b3df3586e9d1de0e6dca5457be11635a0dd447",
+    "app/physics/cruise_trim.gd": "1efe9c4772551532dcf2c833a3ed19a79c88bd0c9ffd8323f84e9f6de11b3e0f",
+    "app/physics/dynamics.gd": "d16ca37b4f6bfd29af4afb6481b90f11daf7712dbd0f51bf310d50dae0a0330f",
+    "app/physics/effective_mass.gd": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+    "app/physics/electric_battery_step.gd": "abc7c83fa52b01120e9baaefef453564f5044b18a198127c3c5b2134f7472409",
+    "app/physics/electric_motor.gd": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+    "app/physics/electric_stop.gd": "b77284044eb4f890d8f83b5b282a12e0f36272b11ecd596d2b9512d1ae6b24ab",
+    "app/physics/electric_supply.gd": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+    "app/physics/event_bracket.gd": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+    "app/physics/event_step.gd": "92a5a1ed9d0505efb6b0db4397543a923b6088f22cdf2155c84ca56559141cc3",
+    "app/physics/fixed_datum_body.gd": "bb0c9ec1238acbbe4b786db4e54ae61a647658b3656f36257a7de7824d715e1e",
+    "app/physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+    "app/physics/flight_modes.gd": "e7c24d4992a301e68e268c2efd3943508c0a7c1128bf5ef01de01cf636804743",
+    "app/physics/fuel_properties.gd": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+    "app/physics/gear_damage.gd": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900",
+    "app/physics/generalized_coordinates.gd": "dfc38f8a268930683538b182c4c3d07c3aca48bec16bd2ea6bd4aeb4cbaef47d",
+    "app/physics/glow/carburetor.gd": "2f172faf92565467067df370293052d2ac253c4d68631e597c9986d58dc42e8a",
+    "app/physics/glow/flight.gd": "9f05a9b8803ff98c833b79e962085340d03887a1c0c0d7ff6b923aeba1dde7a6",
+    "app/physics/glow/four_stroke.gd": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+    "app/physics/glow/fuel_feed.gd": "d90e14139fcfc98dd724f7c97f2e5c6d403db59ed935477cd1dc0cd4e81d8101",
+    "app/physics/glow/fuel_mass.gd": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+    "app/physics/glow/installation.gd": "743669589c65ac083aa32f5bccf899ef5039f2f9476f943786cec59b28f59593",
+    "app/physics/glow/lifecycle.gd": "33de28dbacca94864b5307f9f0d290f452adb613676a6c51ff8885f12fafcfb7",
+    "app/physics/glow/operating_point.gd": "fe8f7718eaae59cb17279cb3b4fc2d4072e7e80e2e84376d0250ef55d7f45e7b",
+    "app/physics/glow/profile.gd": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+    "app/physics/glow/propeller.gd": "24b7dfb2803b4e546891bcccbc5aa549fdc1352ea46152280ddcb1999618215e",
+    "app/physics/glow/source.gd": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+    "app/physics/glow/thermal.gd": "597c51aec355366decafe6d70668f61156ca77f69330b72f554a34b98bb48e65",
+    "app/physics/glow/two_stroke.gd": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+    "app/physics/glow/vibration.gd": "9634f0fbb70a6e092f6f8e5a514b1d9c0d77f971e4fa61ea98bdab52db7515a5",
+    "app/physics/ground_contact.gd": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+    "app/physics/ground_effect.gd": "62fc76291c36c3899e65660b216ebf22aff5fa54516d7544be88f1ec8d1f9e3a",
+    "app/physics/ground_start.gd": "951fe85a58faa16e8b9f6e65f3a8a2ef31e286147fd12452b2c42e8795e7508b",
+    "app/physics/ground_support.gd": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e",
+    "app/physics/ground_surfaces.gd": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+    "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "app/physics/ground_traction.gd": "8a36fcd35c3eb3d4e33bf45b9129134af86b43a2d6958ff3a60a97ea7f894649",
+    "app/physics/ground_vehicle/airfield_course.gd": "5164d012df12ddd0579a54ab8c71419c7a856bc443aacbe5a0d9684350f7e746",
+    "app/physics/ground_vehicle/airfield_track.gd": "8e7098ab347384eef95340f4e6a884930b8e4e5a3f6e48feff488e0c7061a0e2",
+    "app/physics/ground_vehicle/course.gd": "e2b47e8f339311647342c25018e71093f1cf200071a2d92d4396974a2dc7747e",
+    "app/physics/ground_vehicle/four_corner.gd": "1c5107890b587bbea988534cd50f3515545c9faec88b46c70bb9813adcb3ca6f",
+    "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+    "app/physics/ground_vehicle/quarter_car.gd": "8ff27ae9d66f50f2b6f60b6532f01d27944037a8fa54ff5d951e8e81d8ba37ad",
+    "app/physics/ground_vehicle/support_bench_data.gd": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+    "app/physics/ground_vehicle/suspension_bench_data.gd": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+    "app/physics/ground_vehicle/vehicle_damage.gd": "f1a939c74c39df847b6c5c9bc26b51aa85c052d3baef8bd8e22a3844c8f2a319",
+    "app/physics/ground_vehicle/vehicle_data.gd": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "6b4dfc1a90e44a2153771d98d052cc20af4d06a1b4b6e9e174027a392aaffb46",
+    "app/physics/ground_vehicle/vehicle_environment.gd": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+    "app/physics/ground_wheels.gd": "fa2c2473b26ee093d0e4fef2c1b232877751e9564ebce5725d0f5eb368099d87",
+    "app/physics/hull_contact.gd": "95c4b969ef54daa2d14ff2846d55dc55447790fe0e8aef6e2b290966b5029c67",
+    "app/physics/hull_crossing.gd": "6492dfdf6255047fdf45882ba6c881769ac55542ff1b09447db045bf3e8d4d8a",
+    "app/physics/impact_snapshot.gd": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+    "app/physics/integrator.gd": "6bac447d3744c59813c3fabc567e0edc21f24680138a12ea317a441e1a5de11d",
+    "app/physics/intended_hull_support.gd": "c4e9c16ddb9a99a383799bc96df3b051f86a695ac9b44e418171e4be67780819",
+    "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "app/physics/linearize.gd": "a0b3713eee03b27ab9f1ddfa0a87c3cc73e7c6ae32645a627db5fcd29e185fde",
+    "app/physics/liquid_fuel.gd": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+    "app/physics/mass_inventory.gd": "1fa317ae0258b4d48e1d6e14396b3e3adc6b29e31e1082ec6a0565b20bf1366d",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/physics/multirotor/airframe.gd": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+    "app/physics/multirotor/plant.gd": "c11a5900c02d311fd8222917123ebcdae931bff25bf861d8a5a1969f4b8a0ce4",
+    "app/physics/multirotor/powertrain.gd": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+    "app/physics/multirotor/rotor.gd": "9210aaf70c8a85d15b378da5594131331e957f20d68741d10f3e7997894abb0e",
+    "app/physics/normal_compliance.gd": "7fdda97336cffec821a420d0666e6f8eb530ae77c628e767b212b1d31590d785",
+    "app/physics/normal_contact_admission.gd": "95f40d4dfc7a7ba671254fb020b25ca8b257445ddc8cc9bb51eedc7628805673",
+    "app/physics/physical_identity.gd": "af80165c937ea486858265da2c6d560d534319c399dbf8d2326c49547c83f628",
+    "app/physics/propulsion.gd": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f",
+    "app/physics/rc_track_crossing.gd": "1e6c7eab68572789712e1e6f08814019cb27df1463baf0d7a5fa8824adead9b5",
+    "app/physics/resource_event_step.gd": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+    "app/physics/retractable_gear.gd": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/rotor_coupling.gd": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330",
+    "app/physics/rotorcraft/aerodynamic_stage.gd": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+    "app/physics/rotorcraft/airframe.gd": "67864cefa926575ad0440e9e8177f4f064dd8a7607bb31f6a6fe1f421ed8bc83",
+    "app/physics/rotorcraft/drive.gd": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+    "app/physics/rotorcraft/dynamic_inflow.gd": "13dd83f694efd62a2ad0a844c9527b6473c5cc127de91b3dd2af205566d5fb14",
+    "app/physics/rotorcraft/electronics.gd": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+    "app/physics/rotorcraft/flight_dynamics.gd": "23ac5de0861022db862d834a6abced6e424245561509c92444ca1157eeb03303",
+    "app/physics/rotorcraft/geared_coupling.gd": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+    "app/physics/rotorcraft/ground_start.gd": "02cd992c5ffc8ca631c26d7f2df5140aa5af7c3e9b7ab7f77e420dc9e5f78eb6",
+    "app/physics/rotorcraft/hx700_flex_bench.gd": "eac6e89ddd3bedd2aae0502a41588664e0d3f69f34431ba062dad7575f0b35c6",
+    "app/physics/rotorcraft/impact_detector.gd": "5e9eb9676e34e62da0617c490733dc6abb398ec764688c8853f1a1f83a32f0a7",
+    "app/physics/rotorcraft/inflow.gd": "9bb479612409de4cbd38d8ab3916ea0a89577a4411fd6ede29c2bad3530e7f9d",
+    "app/physics/rotorcraft/lifecycle.gd": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+    "app/physics/rotorcraft/main_rotor.gd": "273f33105a9494cd4c78f0f16dfad548051f1ba65902d89ab763b87932af9df9",
+    "app/physics/rotorcraft/main_rotor_stage.gd": "e41258cfd75488672b91a719c7b89e209c5a2ac5e0397f407b45b88ba40490bf",
+    "app/physics/rotorcraft/performance_context.gd": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+    "app/physics/rotorcraft/rotor_disc_terrain.gd": "e5c4528aae83fa42c5ce0a4aa931c871740f584849de40b738c7353922a52f2c",
+    "app/physics/rotorcraft/simulation_step_adapter.gd": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c",
+    "app/physics/rotorcraft/skid_contact.gd": "5cc5593d2ffb8336511e1fb7576e2e28c798b6e725b530322a837ab2d3539598",
+    "app/physics/rotorcraft/swash.gd": "f2d60b93cb08f7a85c9a77cf393212dc09c85eda60732faaef677243606cb923",
+    "app/physics/rotorcraft/tail_rotor.gd": "121569733794dd56fc8bafc65add22bb57a7f81ca5db804e1e3c19618f23db2d",
+    "app/physics/rotorcraft/trim.gd": "f97dd407d05bc37966e2fb25a088eae3d2a7d8418b049710ded2cdf5dc7ea9b9",
+    "app/physics/rotorcraft_data.gd": "f2e43bfce0728c5ab622d19ed7a3b499390b91a114bd659da8615577878d49ba",
+    "app/physics/slipstream.gd": "aa33272176a6f622136539ed367ebf309300d981a8272823e1fcb90f4551be19",
+    "app/physics/swirl_loads.gd": "930ee14099f8dd273bf60a7417f67320d4903b944601eaf67ffc0348fca1a0b0",
+    "app/physics/trim.gd": "a4d6be9967aa047464a11b00dcfbd24d7ca9822f98086ecf18460bff4dae8ea8",
+    "app/physics/turbine.gd": "a4a7ae297adb894423b052021075da37d1667c2c2ba40afb370c792b1be093b0",
+    "app/physics/wash_transport.gd": "e71e2ffa272a81a1591900a506b0a9ce1234e9949ac8787d34ab1e19139b5606",
+    "app/physics/wheel_coupling.gd": "da6e39d0109f56963194e4609a7d3d4f8c40cb2db1db4058c5b1aca59c9e9e0f",
+    "app/physics/wheel_geometry.gd": "219c9654f8cab79bfeb518c0994117eb7387857f9d0f02f03e6c1a573ac5d60b",
+    "app/physics/wheel_profiles.gd": "7cc4f860c23b5127bba1959a85d7dde601378cfa98284fa3b3579f75dabee26d",
+    "app/physics/wind_aircraft_flow.gd": "0328fc032c902d959da37d8c72f926785af554b1cea86ef34aa0ed883bc90386",
+    "app/physics/wind_config.gd": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66",
+    "app/physics/wind_field.gd": "dbf50f0a45cbe55a3e225a4a162001a271f6df25de95adc2d7665500425ea776",
+    "app/physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+    "app/physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+    "app/physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+    "app/physics/wind_thermal_field.gd": "b370bb9493b0f36119b6344781296525c0e188f18a8a1377e1321ddf0253f7e6",
+    "app/physics/wind_turbulence.gd": "f8723c0855ce1410defa302904b876731ff8b17f5329d5e38d60f496007b3fd0",
+    "app/physics/wing_polar.gd": "5ad827fb1726a935a49c3adb6691dd4a7f652996d5f11e053eaebe6752cf79ff",
+    "app/sim/aircraft_contact_events.gd": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90",
+    "app/sim/aircraft_propulsion_runtime.gd": "f1df9fba77eb400d1db8ffa0a96cc84758f1c67e08aa2d0a677b38d8205bec75",
+    "app/sim/checkpoint_json.gd": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc",
+    "app/sim/electric_contact_step.gd": "ef6bf63bd3babd77e44b11deb4e06070885bbdc6c3a7a3913b8e315955213b76",
+    "app/sim/environment.gd": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1",
+    "app/sim/flight_log.gd": "da4b11c58f44be4d8d3d80dc83f676ea5a8452b507f01db7ac99c9b89f096eb4",
+    "app/sim/flight_session.gd": "9b93be96e64e7c8ff425a177fb1590c9032d1de6b2bd6f536fb6a7d836a098cc",
+    "app/sim/fuel_sample.gd": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd",
+    "app/sim/ground_vehicle/session.gd": "784394997afc55a14b2ccd92ded2f274600f8401d031aaa32f291a09fb98aad9",
+    "app/sim/helicopter_flight_session.gd": "ca68adedc2f4f852d26b982237fec9ff17d17fb27b64493131b29c487743ae23",
+    "app/sim/lake_collision.gd": "8a171fe64bde3fcc85e09390d0f59a353a2bcd83f4bcffa680cee95197c4549a",
+    "app/sim/landing_maneuver.gd": "26a32bba1383b3ccbc2e536f4e626d2f23c6b17ee7cfa4c4000d1c491bc660d3",
+    "app/sim/launch_trim_cache.gd": "b0a76fdaf01b6789bb8bb1ac6125f4a637aab18deab7ef2dbf2a4f0c357cbf67",
+    "app/sim/launch_trim_job.gd": "4479b311a4f0dbf28ff2bf485828df9c73bbf76b89f42c6f79aac880e7651e4d",
+    "app/sim/liquid_fuel_flight.gd": "5339079d8466b7ca8a1af966cd2a76b1a32286bea9f408f01d4cd31cee0861ad",
+    "app/sim/maneuvers.gd": "36a8345e73dbe827e57e0c7eae11beaa969a80e1258a95ccf6ab69298fe556a3",
+    "app/sim/manual_trace_save.gd": "b97eac186c3f10eb86be8f49d512d1f436ca83ce17ef87a029177fac3b31d592",
+    "app/sim/native/electric_stage_adapter.gd": "a638bb9bef5c89471f506501cee63caa6e260c342684c79fd2546cc4cc7cd26a",
+    "app/sim/native/glow_stage_adapter.gd": "e4dc07e614397da51c2a5d3b5b40a1c12f91452ce07a27b55f614d2f3eb14de4",
+    "app/sim/native/helicopter_stage_adapter.gd": "e440ba22a367253d0de442ae71732a3f7fe90c863827c1ee94596e9da93d88e5",
+    "app/sim/native/liquid_stage_adapter.gd": "0b0148d04a04618aa8c1b20aaa5def923595393d79ecadba5063ab9a100ce9a9",
+    "app/sim/native/native_configuration.gd": "9b0b71b0c4df55f8533ac3af148e8ab2012cf8f0f6dd41559f07a5b27aa99002",
+    "app/sim/native/native_weather.gd": "eded9afe6d0258312cd28938d1ec94d6877cf5c744d0bfd858d646dbfa8a6ffb",
+    "app/sim/native/prescribed_stage_adapter.gd": "eab402d540664b2dc5d7322a8b408258951430aa1ac2fa8e3c449a3207248e01",
+    "app/sim/native/stage_config.gd": "deb493de719d099cbccf4b6404e69b5d73c07f8e0b62905c99af5564ea4d32c3",
+    "app/sim/native/weather_adapter.gd": "ef2d01d39e743a8dbe26b9dd1b1ff451462a46aaf7f96a473e9633afd1526636",
+    "app/sim/native_stage.gd": "8176596bedfd061f270fea067ea2137a2668da3ae8f74575bcc8a6ac6caf5ac7",
+    "app/sim/out_of_trim.gd": "ca55dce74f837ee3562037182beba0c1b31a53789b58b1a94f62dc289a0b2378",
+    "app/sim/recorder.gd": "c0f38a8dee39ed3d1d39565cd0f55dc0e02de005a2896409c2f913d47b759d33",
+    "app/sim/rotorcraft_recorder.gd": "4c2e89e81d6d7ec35661fb2af92fddcd0985ee1274db0fa14485115666dcee47",
+    "app/sim/scenarios.gd": "0e70abc105875b9b7ac930ac61e8b51f29147f9175299b0f239c64b1526f8d1b",
+    "app/sim/scenery_collision.gd": "ec18f2004bba5af3680c4f4f5497c05a95e25665e49aa045fd749fc2c6b00316",
+    "app/sim/scenery_damage.gd": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+    "app/sim/scripted.gd": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+    "app/sim/simulation.gd": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92",
+    "app/sim/trace.gd": "8f14e934d0a1ffa8431b65c0f31b0f62c2df14b4919f407be0dccd27a1ceb114",
+    "app/sim/vehicle_model.gd": "e065d8b8b52c223c0260ac3da3976fd528755d5052d8245ae070cccd4b287174"
+  },
+  "original_evidence_checkout_sha256": {
+    "baseline-negative.csv.gz": "edbe88009c13f609a1b29fafa3a36be075299b951ff15a242416431b686aa569",
+    "baseline-negative.tape.gz": "e78c57e7c6b9c52ba9e4c10406e8048859d8c20ef53ca51ec0f4da8679316aad",
+    "baseline-positive.csv.gz": "dc96066b01529f358138ac80307c69c3f69923a95254f419376b72c7a5f6c30f",
+    "baseline-positive.tape.gz": "24bf32878adeb17bcd2ba548b20d4290a255a8ef80724cc8d377d8b2ee89bd94",
+    "baseline-witness.gd": "6cf4d8b96c2d86c72b67eaf249b5a0724c9d11bbd9df7a2ebbe08a75c49ed7e4",
+    "baseline-witness.json": "45e92a1118ae3ad765f1533d4ee026b1925aaab59d174049a1223db62a40bec5",
+    "candidate-negative.csv.gz": "1c51ecd3065e5c7a4e2d1140249998c9a4c9b6f93e8f57dd122043150018821c",
+    "candidate-negative.tape.gz": "c2fc56fcfbcb6622e5f173c4ea3b2217acde0b7522a8e3d3e411773ed7f11996",
+    "candidate-positive.csv.gz": "5115bca9c2eef4bbbf03dff011a5fa5963f19d94aab6e6928b9f61e6a406d190",
+    "candidate-positive.tape.gz": "8c5c4b6d8526b753579ab7cc0d17e44485013974d6a9c97bc90e124000ac3e94",
+    "candidate-witness.gd": "bb54ace9aace7b1d0c52a0df21333817b6c9d6c761b10d64d5e857bb1d975d4a",
+    "candidate-witness.json": "7e84a87902b42fbf3e6e85b2d1cf0620c7f81a7edb5d35d958f79b46398af8a3",
+    "evidence.json": "bf001a7ce24a5a027f7bdb7bb0bc663328228a6ec6cf5125b8ddac3e1a236299",
+    "checks/baseline-witness/engine.log": "d1d69f8d7d0c4b5cd930b91b7844cf83c47db0439521020c5faa05fb1313413d",
+    "checks/baseline-witness/report.json": "a57660d5f8174af860a54e58a1438dc5a3937911f9f04f7119478d626724c8e1",
+    "checks/candidate-witness/engine.log": "ebf6c1d8ba7838dac5f79547d3ae7b0cce2ab6b219eee387fdfe3195c8d53e76",
+    "checks/candidate-witness/report.json": "a86d0e625f68ceecc25d6449f9b68a8f83621a30b205b56164684eb5b24c1d57",
+    "checks/crash-presentation/engine.log": "6265fc4f3efcd5b13ffdef25328f1ba1f201776dc7f64d6feef1939644b98f04",
+    "checks/crash-presentation/report.json": "698382ca9fcd00d43e26b97d465f6dbdef66a807c6a03665b54bc017fca68038",
+    "checks/crash-relaunch/engine.log": "3c29eb2b1eac7a705d3c6b8bd1c4509de3343e77f6156d30b6895300c59e736e",
+    "checks/crash-relaunch/report.json": "1fa5d8784357f0da1c0e70dfd6b4c78c527c39c74eb69f905cd8cc07b4b4d01e",
+    "checks/detector/engine.log": "8968e6dea796561967fea36ef843a06212bb3c024c1c10b4660715aac895888f",
+    "checks/detector/report.json": "daaf419f8f4751a88c46939fb23a907d02a348534b6957af528659bc0821eaa6",
+    "checks/disc-helper/engine.log": "31b46371f68482e5e6a27d19ce3e96076f21efd3c8897eed956223d684402920",
+    "checks/disc-helper/report.json": "ac9af4fe3b05e76e01b6f072dac163bdac761ed155cf9424cfed80f69cbbb2f3",
+    "checks/ground-audio/engine.log": "af1f2a9e3f5f770a1f4129040b0ec033ddc1e4f68cae0a6a8754ac6cba37693e",
+    "checks/ground-audio/report.json": "2499a0777356a2d760157b5cf0d7cd8be5eda2d12f5376da1df2341854e276f5",
+    "checks/ground-heading/engine.log": "db98faace58f3213529c21d816ff8f23ee6a40b798ee3b6d343aeef41dd52954",
+    "checks/ground-heading/report.json": "a3a2090300ac99b51a80cd8a1381dd078d7f2e2e12d84d2b6d646f65bc21b207",
+    "checks/ground-session/engine.log": "aff6041b643beee5e2da3c58dcff62bac7c1678aa0c111c68cbfc868a4dc85ed",
+    "checks/ground-session/report.json": "b516c2726a1dc18c55856f322ad1dab56ad0a10931a3ff32477162bdbe45aa1b",
+    "checks/ground-start/engine.log": "fe7ccc78950e8167475faccbd2627ab855986cc2f4ad4022fcecb361fa42d71e",
+    "checks/ground-start/report.json": "7903727f51d877d0bef78151ad8c201a4f2c093841c85da1cf71464fe945a611",
+    "checks/import/engine.log": "5deddaefb567be1c50c76d25cfd083590fb6aa15c8e5fadf23a8b4b2b4969c0d",
+    "checks/import/report.json": "d8420a3f3daa9056c87422aaa7e826a6da9284ce77b7dd4134f8b2cf2d13e77c",
+    "checks/native-route/engine.log": "84c528806667aafe664064529cdfe2b9658f2c5dcc8dd50e09369877975a5703",
+    "checks/native-route/report.json": "74b30b1a4ee07f971136563d78a1e16bf7c3337842687a931973a6d79677419e",
+    "checks/render-audit/engine.log": "d705105755b7380a9228a5916f2382147115ca41ba8151836659dbc911db016d",
+    "checks/render-audit/report.json": "4992d711c5786bdd43e30a678e42d5568ca9f91ed6094bd2ce388b1f9a4c4c53",
+    "checks/session/engine.log": "70e166878d3a591ac5aa85704348929e42cb4704e13088eae28c02473d2e1489",
+    "checks/session/report.json": "18e3b80722a258cbb2361a011f073a6191834bee80f708831e3b6bb945280e2e",
+    "checks/state-audit/engine.log": "b162f3b7c2c198bc59b165da022ff219294d7d74fcadd22319e61449970b9545",
+    "checks/state-audit/report.json": "4b20f83384fb39db201a33dd50d19510af75b0662af9b8668d29b6a5604b6a4b"
+  },
+  "checks": {
+    "committed-heli-session": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "dce2deb8-98ce-4c6a-85b0-bfc773b256c7",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_helicopter_lake_context.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:11:39.719605+00:00",
+        "label": "committed-heli-session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-heli-session-2hyjzwty\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-heli-session-2hyjzwty\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "51 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 20
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 3,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 5,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 7,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 9,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 11,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 13,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 15,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #0, invalid UID: 'uid://ceccb1fhvivic' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 17,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #1, invalid UID: 'uid://b2f0kwgbbdwrx' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 19,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #2, invalid UID: 'uid://bidrbsaqpe7qm' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 21,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #0, invalid UID: 'uid://evjekoub1440' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 23,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #1, invalid UID: 'uid://mye2l0shsys8' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 25,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #2, invalid UID: 'uid://5kpwlliokgi7' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 27,
+            "message": "'res://assets/landscape/track-signage/billboardLow.glb': In external resource #0, invalid UID: 'uid://bvud7rv1a8csw' - using text path instead: 'res://assets/landscape/track-signage/billboardLow_tankcoBanner.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 29,
+            "message": "'res://assets/landscape/track-signage/flagCheckersSmall.glb': In external resource #0, invalid UID: 'uid://5j2rslf7pya2' - using text path instead: 'res://assets/landscape/track-signage/flagCheckersSmall_checkers.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 31,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #0, invalid UID: 'uid://ksupolg0hkv4' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_black_2k.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 33,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #1, invalid UID: 'uid://b1e878ji6al25' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_yellow_2k.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 35,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #2, invalid UID: 'uid://b5kdfr8b1urwq' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_tape.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 37,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #0, invalid UID: 'uid://6kqgvvcx1es' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 39,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #1, invalid UID: 'uid://bm4w2byum6xkg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 41,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #2, invalid UID: 'uid://clxon5aklcxcg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)",
+              "HELI lake context: 51 checks, 0 failed"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 14.016,
+        "log_bytes": 6251,
+        "log_sha256": "09c4ea021548d68ac38b891f8fbc2dd1cd5edc9a923e4f6b557a518cc0d8c799"
+      },
+      "retained_log": "committed-checks/committed-heli-session.log.gz",
+      "gzip_sha256": "5461a32e6280965308ead3088004a58744382d9316bdbe96350cd38960c9b90f"
+    },
+    "committed-heli-detector": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "66a0af32-a0f1-4340-b384-843bdbabd8ea",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_heli_impact_detector.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:11:39.734774+00:00",
+        "label": "committed-heli-detector",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-heli-detector-w0zlybgi\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-heli-detector-w0zlybgi\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "32 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.125,
+        "log_bytes": 115,
+        "log_sha256": "8968e6dea796561967fea36ef843a06212bb3c024c1c10b4660715aac895888f"
+      },
+      "retained_log": "committed-checks/committed-heli-detector.log.gz",
+      "gzip_sha256": "47555cde8fa7e679859436a9b8857caf12041f4fbec70c2b1fa86f887d01f2ba"
+    },
+    "committed-disc-helper": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e6a09ee7-3e40-4011-92ce-4beab5a39129",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_rotor_disc_terrain.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:12:55.072385+00:00",
+        "label": "committed-disc-helper",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-disc-helper-d187lcbt\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-disc-helper-d187lcbt\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "30 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 6.437,
+        "log_bytes": 117,
+        "log_sha256": "31b46371f68482e5e6a27d19ce3e96076f21efd3c8897eed956223d684402920"
+      },
+      "retained_log": "committed-checks/committed-disc-helper.log.gz",
+      "gzip_sha256": "fd49714a7f4635639223a1f24b7f160f2f6e2d291e27a836909f859bf5318e30"
+    },
+    "committed-ground-heading-marker": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2b71b567-a69f-485b-b1e3-f8ca51523237",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_heli_ground_heading.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:14:32.325026+00:00",
+        "label": "committed-ground-heading-marker",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-ground-heading-marker-fb1jqobm\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-ground-heading-marker-fb1jqobm\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "73 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 29.579,
+        "log_bytes": 127,
+        "log_sha256": "db98faace58f3213529c21d816ff8f23ee6a40b798ee3b6d343aeef41dd52954"
+      },
+      "retained_log": "committed-checks/committed-ground-heading-marker.log.gz",
+      "gzip_sha256": "7cf5ea9fc9c01a9e3a4c7a533495ea2fd22e4cee2a4998cd241cbe1d7db547bf"
+    },
+    "committed-ground-session": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "94be4fc7-e383-4a04-b521-c7bbd7a655cc",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_heli_ground_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:17:18.637032+00:00",
+        "label": "committed-ground-session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-ground-session-oa37tagq\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-ground-session-oa37tagq\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "56 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 85.562,
+        "log_bytes": 445,
+        "log_sha256": "aff6041b643beee5e2da3c58dcff62bac7c1678aa0c111c68cbfc868a4dc85ed"
+      },
+      "retained_log": "committed-checks/committed-ground-session.log.gz",
+      "gzip_sha256": "b6bb08363c97e96ca839173a7a6610fa43aae614cffd99bda31e2abaa7a412ff"
+    },
+    "committed-native-route": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2a4aa40f-4c22-4631-8bef-84a2f88dce86",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_native_helicopter_route.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:15:20.455947+00:00",
+        "label": "committed-native-route",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-native-route-y4gtk1rf\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-native-route-y4gtk1rf\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "21 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 161
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 3,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 5,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 7,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 9,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 11,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 13,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 15,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #0, invalid UID: 'uid://ceccb1fhvivic' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 17,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #1, invalid UID: 'uid://b2f0kwgbbdwrx' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 19,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #2, invalid UID: 'uid://bidrbsaqpe7qm' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 21,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #0, invalid UID: 'uid://evjekoub1440' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 23,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #1, invalid UID: 'uid://mye2l0shsys8' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 25,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #2, invalid UID: 'uid://5kpwlliokgi7' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 27,
+            "message": "'res://assets/landscape/track-signage/billboardLow.glb': In external resource #0, invalid UID: 'uid://bvud7rv1a8csw' - using text path instead: 'res://assets/landscape/track-signage/billboardLow_tankcoBanner.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 29,
+            "message": "'res://assets/landscape/track-signage/flagCheckersSmall.glb': In external resource #0, invalid UID: 'uid://5j2rslf7pya2' - using text path instead: 'res://assets/landscape/track-signage/flagCheckersSmall_checkers.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 31,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #0, invalid UID: 'uid://ksupolg0hkv4' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_black_2k.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 33,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #1, invalid UID: 'uid://b1e878ji6al25' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_yellow_2k.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 35,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #2, invalid UID: 'uid://b5kdfr8b1urwq' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_tape.png'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 37,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #0, invalid UID: 'uid://6kqgvvcx1es' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_diff_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 39,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #1, invalid UID: 'uid://bm4w2byum6xkg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_arm_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ]
+          },
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 41,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #2, invalid UID: 'uid://clxon5aklcxcg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_nor_gl_1k.jpg'.",
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)",
+              "Helicopter startup refused: --physics-backend must be native or gdscript_reference"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 21.422,
+        "log_bytes": 165892,
+        "log_sha256": "411aa3bf4dc98d6b75f215e8ce4a49549e3b1085b2b9b2e70189b99e30e7e5b4"
+      },
+      "retained_log": "committed-checks/committed-native-route.log.gz",
+      "gzip_sha256": "f59ca0bc616b5f44c85144d981e35718cd06eb04d709cd43a4187ef85c89cee8"
+    },
+    "committed-yaw": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "71fadaad-a780-434f-aa9d-a18cdef7c12c",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit2-20261108-final/committed-yaw-witness.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:13:59.210887+00:00",
+        "label": "committed-yaw",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-yaw-mvswowrl\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-yaw-mvswowrl\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H01 CANDIDATE: true"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 10.079,
+        "log_bytes": 460,
+        "log_sha256": "6f681c35e56a2c42a11f16c7d00cd4a6854cefd863477938f9daed11cb8e22e7"
+      },
+      "retained_log": "committed-checks/committed-yaw.log.gz",
+      "gzip_sha256": "6da0dcfeb51fdc27b072b646939ec0f379441ca5b6e3d127e1676b82a15e6eaf"
+    },
+    "committed-companion-profile": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "751d4743-be9b-4ca1-bc68-f3429085e667",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_companions_profiles.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:16:50.017229+00:00",
+        "label": "committed-companion-profile",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-companion-profile-akotb5h3\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-companion-profile-akotb5h3\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 6.875,
+        "log_bytes": 2635,
+        "log_sha256": "c799bdf4c7dc927420cd0dfb8bc94b2e04a5d09fae10aef30ab89abf89950ce2"
+      },
+      "retained_log": "committed-checks/committed-companion-profile.log.gz",
+      "gzip_sha256": "9d22e216c249cd9d1feec9d64ad4c9115bf98bf5ea5bc04d25c4734d81fbff14"
+    },
+    "committed-flight-log": {
+      "source_commit": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c3bf6a25-04cf-4da1-a202-6a5e37def972",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_flight_log.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:17:18.637032+00:00",
+        "label": "committed-flight-log",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-flight-log-g4p4vpab\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\committed-flight-log-g4p4vpab\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 20.594,
+        "log_bytes": 7208,
+        "log_sha256": "7c5bf0855f96834d443906669c9dc1081716f08125f93c577f6f4bd5428dd1cf"
+      },
+      "retained_log": "committed-checks/committed-flight-log.log.gz",
+      "gzip_sha256": "7f1291b80a7ced95ee93d1ba759d2fc4e53db0cc342e75df93536a77b95be9ed"
+    },
+    "integrated-companion-profile": {
+      "source_commit": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ded7b68c-f82c-43a3-ab8d-33a5edf617a5",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_companions_profiles.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:24:56.956043+00:00",
+        "label": "integrated-companion-profile",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-companion-profile-id1024o5\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-companion-profile-id1024o5\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "44 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 6.032,
+        "log_bytes": 2635,
+        "log_sha256": "c799bdf4c7dc927420cd0dfb8bc94b2e04a5d09fae10aef30ab89abf89950ce2"
+      },
+      "retained_log": "committed-checks/integrated-companion-profile.log.gz",
+      "gzip_sha256": "9d22e216c249cd9d1feec9d64ad4c9115bf98bf5ea5bc04d25c4734d81fbff14"
+    },
+    "integrated-flight-log": {
+      "source_commit": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d6318ee1-0148-4513-87ee-98aad8bed84b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_flight_log.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:24:27.086219+00:00",
+        "label": "integrated-flight-log",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-flight-log-jt86ktd1\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-flight-log-jt86ktd1\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 13.563,
+        "log_bytes": 7208,
+        "log_sha256": "d419664ba4f9078666b0879ea5f9737f3f995e63597e6e41a12a98dcdf5cb28e"
+      },
+      "retained_log": "committed-checks/integrated-flight-log.log.gz",
+      "gzip_sha256": "96403aa241157967407f6f307d240990e3ea3b7e7c98a84bfce2bd663dfc94f5"
+    },
+    "integrated-electric-contact-marker": {
+      "source_commit": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "425deb7d-28f6-4e44-b88d-ca37e1be241a",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_electric_contact_step.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:24:56.956043+00:00",
+        "label": "integrated-electric-contact-marker",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-electric-contact-marker-rhkzw7r0\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-electric-contact-marker-rhkzw7r0\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "ELECTRIC_CONTACT_STEP_TEST 12 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.5,
+        "log_bytes": 122,
+        "log_sha256": "93b7895460780811663ef1a4361cdeabdb356642f38ce149d21a7edfa6075a80"
+      },
+      "retained_log": "committed-checks/integrated-electric-contact-marker.log.gz",
+      "gzip_sha256": "8516edf489a6906e6811a365c493382fc41766df5b414a38857274d390555ddf"
+    },
+    "integrated-native-route": {
+      "source_commit": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "265e8273-761e-41c3-90be-05eb76d0e705",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+          "--script",
+          "res://tests/test_native_helicopter_route.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T21:24:56.959038+00:00",
+        "label": "integrated-native-route",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-native-route-544_r9mt\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-final\\integrated-native-route-544_r9mt\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "21 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 19.485,
+        "log_bytes": 1912,
+        "log_sha256": "84c528806667aafe664064529cdfe2b9658f2c5dcc8dd50e09369877975a5703"
+      },
+      "retained_log": "committed-checks/integrated-native-route.log.gz",
+      "gzip_sha256": "d3a8610b172ab748a2b0d3a60d2588437c70131246387d514165133a219482f8"
+    }
+  },
+  "companion_rebinds": [
+    {
+      "format": "openrc-ai-solver-rebind v1",
+      "date": "2026-11-08",
+      "accepted_before": {
+        "solver_sha256": "c4a7d8932834cef7ebf11f42b588fd491999fe18ebc66f3aa5c47ded1c8bb80d",
+        "rev": "4bda2e4540fc07ebe8eb63d35072fd5aead39cbe"
+      },
+      "current_solver_sha256": "4b9ae89855ce9f916949134feee232d1601fb306b2b886aba5bde0ecc7a85a0e",
+      "head": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "solver_tree_committed": true,
+      "changed_sources": [
+        "app/physics/rotorcraft/impact_detector.gd",
+        "app/physics/rotorcraft/rotor_disc_terrain.gd",
+        "app/physics/rotorcraft/rotor_disc_terrain.gd.uid",
+        "app/physics/rotorcraft/skid_contact.gd",
+        "app/sim/helicopter_flight_session.gd",
+        "app/sim/native/helicopter_stage_adapter.gd",
+        "app/sim/native/native_configuration.gd",
+        "app/sim/trace.gd"
+      ],
+      "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "identical": true,
+      "tapes": [
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-ai.orfl.gz",
+          "orfl_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+          "rows": 2881,
+          "base_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+          "head_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "6530bf0715ae440f394747944f2d4bbf8ebcd74f3ba4284676ab5777eb30f748",
+          "base_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+          "head_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-coupled.orfl.gz",
+          "orfl_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+          "rows": 2881,
+          "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "bb1d604945b6439217ba740cad67f77086574ed264083d2c548fa7408aab0f13",
+          "base_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+          "head_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-exogenous.orfl.gz",
+          "orfl_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+          "rows": 2881,
+          "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "e6c72f34b123fc5f346f670fef9011a26da1464ad7cc8f7182a62510f801bbdb",
+          "base_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+          "head_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-ai.orfl.gz",
+          "orfl_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+          "rows": 2881,
+          "base_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+          "head_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "daf871bc8e5c1c95ef651c5ba0f59e7bdd97c5cd4a418c9151a5d10b96675543",
+          "base_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+          "head_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-coupled.orfl.gz",
+          "orfl_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+          "rows": 2881,
+          "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "5c731435844c63040183a636e740bbe110d4fbe24cd640ae78cbd3cb0f8abf9a",
+          "base_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+          "head_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-exogenous.orfl.gz",
+          "orfl_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+          "rows": 2881,
+          "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "430fd976950df54b0addf10867a8ea39571300fefb3869af98ea92d8bdd92401",
+          "base_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+          "head_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-ai.orfl.gz",
+          "orfl_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+          "rows": 2881,
+          "base_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+          "head_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "f487702aa244117f6552dcb3052ad55cada3f8b5197e379c85e82da51b9d789b",
+          "base_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+          "head_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-peer.orfl.gz",
+          "orfl_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+          "rows": 2881,
+          "base_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+          "head_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "09bc3b855fd5cbccd7635eb000dfe0c52edd9d4e661bccc36d1ae51ee17d1c18",
+          "base_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+          "head_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-player.orfl.gz",
+          "orfl_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+          "rows": 2881,
+          "base_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+          "head_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "677e5e446f5087b954df0c95b2bd956d01c1031a6cb5ed2a12705cce37961189",
+          "base_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+          "head_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d"
+        }
+      ],
+      "baseline": "full",
+      "method": "Candidate replays of the retained tapes on the accepted revision's tracked app and replay tooling vs the current tree; CSV bytes compared.",
+      "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
+    },
+    {
+      "format": "openrc-ai-solver-rebind v1",
+      "date": "2026-11-08",
+      "accepted_before": {
+        "solver_sha256": "4b9ae89855ce9f916949134feee232d1601fb306b2b886aba5bde0ecc7a85a0e",
+        "rev": "0b3de74768cdeaf93b827eed99a21b4d63595682"
+      },
+      "current_solver_sha256": "1ebf4fdf347aa9e9c68e3a147a920fdcfa1f519cdf7f100af9ca8acc51ee456b",
+      "head": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "solver_tree_committed": true,
+      "changed_sources": [
+        "app/sim/electric_contact_step.gd",
+        "app/sim/electric_contact_step.gd.uid",
+        "app/sim/flight_session.gd"
+      ],
+      "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "identical": true,
+      "tapes": [
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-ai.orfl.gz",
+          "orfl_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+          "rows": 2881,
+          "base_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+          "head_csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "6530bf0715ae440f394747944f2d4bbf8ebcd74f3ba4284676ab5777eb30f748",
+          "base_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+          "head_replay_source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-coupled.orfl.gz",
+          "orfl_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+          "rows": 2881,
+          "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "bb1d604945b6439217ba740cad67f77086574ed264083d2c548fa7408aab0f13",
+          "base_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+          "head_replay_source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-player-exogenous.orfl.gz",
+          "orfl_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+          "rows": 2881,
+          "base_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "head_csv_sha256": "6d114b59a93194e0517229dbeee9d42922df8c99642e2f4d8bb0ddcead8fc60f",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "e6c72f34b123fc5f346f670fef9011a26da1464ad7cc8f7182a62510f801bbdb",
+          "base_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+          "head_replay_source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-ai.orfl.gz",
+          "orfl_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+          "rows": 2881,
+          "base_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+          "head_csv_sha256": "4f42407e714b00012a141200397e987c9bd33e8a930b5a543997c611bd027b33",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "daf871bc8e5c1c95ef651c5ba0f59e7bdd97c5cd4a418c9151a5d10b96675543",
+          "base_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+          "head_replay_source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-coupled.orfl.gz",
+          "orfl_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+          "rows": 2881,
+          "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "5c731435844c63040183a636e740bbe110d4fbe24cd640ae78cbd3cb0f8abf9a",
+          "base_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+          "head_replay_source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261021-crossing-left-player-exogenous.orfl.gz",
+          "orfl_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+          "rows": 2881,
+          "base_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "head_csv_sha256": "6da453b62b02ff5818a9b2968ec20d843eccd78da4f71de72e54fcf413157eb4",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "430fd976950df54b0addf10867a8ea39571300fefb3869af98ea92d8bdd92401",
+          "base_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+          "head_replay_source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-ai.orfl.gz",
+          "orfl_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+          "rows": 2881,
+          "base_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+          "head_csv_sha256": "51a31ad4a2838dc5ad387dafe318d1a3a375f60376bcdba2ac91dd12a913f9da",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "f487702aa244117f6552dcb3052ad55cada3f8b5197e379c85e82da51b9d789b",
+          "base_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+          "head_replay_source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-peer.orfl.gz",
+          "orfl_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+          "rows": 2881,
+          "base_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+          "head_csv_sha256": "27138fbae16909c4a4fd362bdaf1236db8f22a8ab03000a09a7f8bb604190261",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "09bc3b855fd5cbccd7635eb000dfe0c52edd9d4e661bccc36d1ae51ee17d1c18",
+          "base_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+          "head_replay_source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b"
+        },
+        {
+          "tape": "docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\parallel-two-threats-player.orfl.gz",
+          "orfl_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+          "rows": 2881,
+          "base_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+          "head_csv_sha256": "85ed958d7101f0db25e4f83f9cd31fd3e2e4e2726b5f2eba3c5c626234f04ebc",
+          "identical": true,
+          "tape_encoding": "gzip",
+          "stored_sha256": "677e5e446f5087b954df0c95b2bd956d01c1031a6cb5ed2a12705cce37961189",
+          "base_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+          "head_replay_source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d"
+        }
+      ],
+      "baseline": "full",
+      "method": "Candidate replays of the retained tapes on the accepted revision's tracked app and replay tooling vs the current tree; CSV bytes compared.",
+      "limits": "Parity on these tapes only; not exact replay, not a new qualification, not physical validation."
+    }
+  ],
+  "committed_yaw": {
+    "cases": {
+      "negative": {
+        "complete": true,
+        "csv_saved": true,
+        "csv_sha256": "fd4f319e5fc2dfde42e636ea695c13033233942937e8ffcd0b9e41b2b6dad63c",
+        "error_rad": 0.0,
+        "exact_replay": true,
+        "heading_rad": 1.5707963267948963,
+        "heading_reference_rad": 1.5707963267948963,
+        "tape_sha256": "89e3d4ed0785a39b346d58a5cb58984c11801e6c764afd1e33bc38d83dd8cadb",
+        "target_rad_s": 0.0,
+        "ticks": 780
+      },
+      "positive": {
+        "complete": true,
+        "csv_saved": true,
+        "csv_sha256": "c16a14f88aca19b2090921bfd674ffb0a62dc574286f48a294be149111f44cdc",
+        "error_rad": 0.0,
+        "exact_replay": true,
+        "heading_rad": 1.5707963267948963,
+        "heading_reference_rad": 1.5707963267948963,
+        "tape_sha256": "986ca392c5effd3c571ede861975fbde2c58dfee762f7fa52665c8840fc4397d",
+        "target_rad_s": 0.0,
+        "ticks": 780
+      }
+    },
+    "electronics_sha256": "0f9be04b3b9593c0342fc5fa5f5eb54a92bda23daf8f705bcff5cad5b0e6e27e",
+    "engine": "4.8-beta2 (official)",
+    "format": "helicopter heading candidate v1",
+    "ok": true,
+    "session_sha256": "6ca9fb8687cebc7fc58fb45fda2d10dfc582df6321376ec34081b6a79712f00b"
+  },
+  "committed_yaw_rows": {
+    "positive": {
+      "rows_including_header": 782,
+      "input_and_telemetry_rows_equal": true,
+      "sha256": "c2a59caf8f760a2fe88f85a31dd49177991ebcccdf2c0d1689fa7d7d39d0c13b"
+    },
+    "negative": {
+      "rows_including_header": 782,
+      "input_and_telemetry_rows_equal": true,
+      "sha256": "104e30ab03b7e06d39a592e6cfc7d360ba7721c64e1cd8e088ffc7140f76ef81"
+    }
+  },
+  "committed_yaw_artifacts_equal": {
+    "positive": {
+      "csv": true,
+      "tape": true
+    },
+    "negative": {
+      "csv": true,
+      "tape": true
+    }
+  },
+  "witness_derivation": {
+    "source": "candidate-witness.gd",
+    "change": "Only the OUTPUT directory constant was replaced with a new private D: directory.",
+    "derived_script_sha256": "0409bb31bfb45d111b053fddf82b30c93cf89451b7e8260147c29bdb32ef1c66"
+  },
+  "excluded_worktree_solver_paths": [
+    "app/sim/recorder.gd",
+    "app/sim/rotorcraft_recorder.gd",
+    "app/sim/trace.gd",
+    "app/sim/trace_chunk_store.gd",
+    "app/sim/trace_chunk_store.gd.uid"
+  ],
+  "limits": [
+    "The 0b3de7476 checkout excludes unrelated KEY_T recording and solver-buffer work. Its complete candidate yaw CSV/tape bytes match the retained working-tree candidate artifacts.",
+    "The later concurrent finite-battery commit was integrated separately; companion tapes, flight-log, contact-step, profile and route gates were rerun at that revision.",
+    "These source-build checks reused pinned-editor imported assets and class caches; they do not establish a fresh import, export or package qualification.",
+    "Initial isolated scene checks emitted UID fallback warnings because the import UID cache was absent. The integrated route check reused that cache and passed without those warnings. No Godot errors were accepted.",
+    "Qualification binds committed source, not the excluded concurrent working-tree solver edits listed here.",
+    "Full required CI, actual Linux native helicopter execution, native lake support, physical validation, over-water inflow and entirely unsampled legacy contacts remain outside this evidence."
+  ]
+}
