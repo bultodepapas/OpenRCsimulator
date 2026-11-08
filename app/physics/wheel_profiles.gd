@@ -4,6 +4,10 @@ extends RefCounted
 
 const FORMAT := "openrc-wheel-profiles v1"
 const DEFAULT_PATH := "res://data/ground/wheel_profiles.json"
+# These aircraft retain the exact donor wheels; preserve existing registry/save bytes.
+const PROFILE_ALIASES := {
+	"stik-electric-6s": "jensen-das-ugly-stik-60",
+}
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 const QUANTITIES := {
 	"wheel_radius": ["m", 0.005, 0.5],
@@ -45,8 +49,11 @@ static func _apply(model: Dictionary, path: String, selected_profile: String) ->
 	var aircraft_id := str(model.get("id", ""))
 	var gear: Dictionary = model.get("landing_gear", {})
 	var profile_key: String = aircraft_id if selected_profile.is_empty() else selected_profile
+	var aliased := path == DEFAULT_PATH and PROFILE_ALIASES.has(profile_key)
+	if aliased:
+		profile_key = str(PROFILE_ALIASES[profile_key])
 	var has_profile: bool = profiles.has(profile_key)
-	if not selected_profile.is_empty() and not has_profile:
+	if (aliased or not selected_profile.is_empty()) and not has_profile:
 		return _failure("explicit wheel profile '%s' is missing" % profile_key)
 	if gear.is_empty():
 		if has_profile:
