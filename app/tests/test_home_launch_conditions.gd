@@ -7,6 +7,9 @@ const Preferences = preload("res://app_state/preferences.gd")
 const UiTheme = preload("res://ui/ui_theme.gd")
 const Driver = preload("res://tests/ui_driver.gd")
 const PREFS = "user://test_home_launch_conditions.cfg"
+# Seed 4 selects Timber, whose cancelled preview exercises material teardown.
+const RANDOM_SEED = 4
+const RANDOM_AIRCRAFT = "turbo-lumber-evolution"
 class Candidate extends Node:
 	signal startup_finished
 	var startup_error := ""
@@ -99,6 +102,7 @@ func run() -> void:
 	app.home_flight_prefetch_mode = "off"
 	app.flight_loading_enabled = true
 	app.window_focus_probe = func() -> bool: return true
+	app.random_seed_source = func() -> int: return RANDOM_SEED
 	root.add_child(app)
 	root.size = Vector2i(1920,1080)
 	await frames(8)
@@ -132,6 +136,7 @@ func run() -> void:
 		if random_route:
 			app.open_natural_random()
 			await frames()
+			check("seeded Random cancellation covers Timber preview",str(app.natural_random_screen._scenario.get("aircraft_id","")) == RANDOM_AIRCRAFT)
 		if random_route:
 			app.natural_random_screen._on_fly()
 		else:

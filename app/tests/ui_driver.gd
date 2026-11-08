@@ -55,6 +55,16 @@ func settle() -> void:
 	await _tree.process_frame
 
 
+## Wait for an observable asynchronous boundary, without assuming a worker's frame count.
+func wait_until(predicate: Callable, timeout_msec := 10000) -> bool:
+	var deadline: int = Time.get_ticks_msec() + timeout_msec
+	while Time.get_ticks_msec() < deadline:
+		if predicate.call():
+			return true
+		await _tree.process_frame
+	return bool(predicate.call())
+
+
 func _release_audio_players(node: Node) -> void:
 	if node is AudioStreamPlayer3D:
 		var player_3d: AudioStreamPlayer3D = node as AudioStreamPlayer3D

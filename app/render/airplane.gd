@@ -168,12 +168,14 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 				radius_m = float(anchor.radius_m), kind = str(anchor.kind), pump = bool(anchor.get("pump", false))})
 	if family == TIMBER_ID:
 		TimberVisualDetails.apply(airplane.root)
+		_retain_surface_override_materials(airplane.root)
 		TimberVisualLighting.apply(airplane.root)
 	if custom_livery:
 		var skin_spec := CustomSkin.kit(id)
 		if manifest.asset.get("kind") == "procedural" or skin_spec.get("adapter", "") == "procedural_skin":
 			var adapter: Script = load("res://aircraft/procedural_skin.gd")
 			var prepared: Dictionary = adapter.prepare(family, airplane.root)
+			if family == TIMBER_ID: _retain_surface_override_materials(airplane.root)
 			if not prepared.get("ok", false):
 				airplane.root.free()
 				push_warning("Custom paint mapping: " + str(prepared.get("errors", [])))
@@ -181,6 +183,7 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		var skin_hash := CustomSkin.base_identity(id)
 		airplane.root.set_meta("skin_base_sha256", skin_hash)
 		var paint: Dictionary = CustomSkin.apply(id, livery_id, skin_hash, airplane.root)
+		if family == TIMBER_ID: _retain_surface_override_materials(airplane.root)
 		if not paint.get("ok", false):
 			airplane.root.free()
 			push_warning("Custom aircraft paint: " + str(paint.get("errors", [])))
@@ -188,6 +191,23 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		airplane.custom_skin = {id = paint.id, label = paint.label, sha256 = paint.sha256}
 	_accepted_datums[id] = Vector2(float(manifest.datum.model_z_le), float(manifest.datum.model_y_thrust))
 	return airplane
+
+
+## MeshInstance3D releases its surface overrides before its rendering instance
+## is freed. Keep the same resources on each mesh through that teardown, also
+## when a wreck reparents the mesh. Paint stages may replace overrides, so add
+## those without dropping prior ones until the mesh itself is released.
+static func _retain_surface_override_materials(model: Node3D) -> void:
+	var nodes: Array[Node] = model.find_children("*", "MeshInstance3D", true, false)
+	if model is MeshInstance3D: nodes.push_front(model)
+	for node: Node in nodes:
+		var mesh := node as MeshInstance3D
+		if mesh.mesh == null: continue
+		var retained: Array = mesh.get_meta("_timber_override_materials", [])
+		for surface in mesh.mesh.get_surface_count():
+			var material := mesh.get_surface_override_material(surface)
+			if material != null and not retained.has(material): retained.append(material)
+		if not retained.is_empty(): mesh.set_meta("_timber_override_materials", retained)
 
 
 ## F4U-16: the selectable liveries of an aircraft's visual family as [{id, label}], default first; empty when the family

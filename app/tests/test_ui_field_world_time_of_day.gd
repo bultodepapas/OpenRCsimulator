@@ -29,7 +29,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	root.size = Vector2i(1280, 720)
+	root.size = Vector2i(1920, 1080)
 	_preference_cases()
 	await _home_and_flight()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -91,15 +91,18 @@ func _home_and_flight() -> void:
 	app.set("preferences_path", PREFS)
 	root.add_child(app)
 	await ui.settle()
-	root.size = Vector2i(1280, 720)
+	root.size = Vector2i(1920, 1080)
 	await ui.settle()
+	_check("Home uses the primary 1920x1080 viewport", root.size == Vector2i(1920, 1080)
+		and root.get_visible_rect().size == Vector2(1920, 1080))
 	var home: Control = app.get("home")
 	var button: Button = home.get("time_button")
 	_check("Home shows the saved compact choice", button.text == "Time of day\nNew moon", button.text)
 	_check("Home backdrop receives the saved field-lighting profile and campfire",
 		app.home_scene.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "auto"})
-	_check("the backdrop is night: stars and field lights", app.home_scene.get_node_or_null("Stars") != null
-		and app.home_scene.get_node_or_null("FieldLights") != null)
+	var night_stars: Node3D = app.home_scene.get_node_or_null("Stars")
+	_check("the backdrop is night: visible stars and field lights", night_stars != null
+		and night_stars.is_visible_in_tree() and app.home_scene.get_node_or_null("FieldLights") != null)
 
 	var time_reachable := await _tab_until("TimeOfDay")
 	_check("time-of-day action is keyboard reachable", time_reachable, ui.focus_name())
@@ -111,7 +114,12 @@ func _home_and_flight() -> void:
 	await ui.tap(KEY_ENTER) # next choice after night_dark wraps to day
 	_check("the button advances and wraps to day",
 		home.get("time_of_day") == "day" and button.text == "Time of day\nDay", button.text)
-	_check("day backdrop: calibrated fixed sun, no stars", Atmosphere.state.is_empty() and app.home_scene.get_node_or_null("Stars") == null)
+	var day_ready: bool = await ui.wait_until(func() -> bool:
+		return is_instance_valid(app.home_scene) and not app.home_scene.presentation_pending and not app.home_scene.preview_pending)
+	_check("day presentation reaches its asynchronous completion boundary", day_ready)
+	var cached_stars: Node3D = app.home_scene.get_node_or_null("Stars")
+	_check("day backdrop: calibrated fixed sun, no visible stars", Atmosphere.state.is_empty()
+		and (cached_stars == null or not cached_stars.is_visible_in_tree()))
 	_check("one backdrop, drawn under the menu", app.get_children().filter(func(n: Node) -> bool: return n.name == "HomeScene").size() == 1
 		and app.home_scene.get_index() < home.get_index())
 	_check("Home keeps the keyboard focus", button.has_focus())
