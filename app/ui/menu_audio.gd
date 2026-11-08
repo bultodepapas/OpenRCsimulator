@@ -284,8 +284,9 @@ func _connect_control(control: Control, screen: Control) -> bool:
 	if _observed_controls.has(control_id):
 		return false
 	var connections: Array[Dictionary] = []
-	if control.focus_mode != Control.FOCUS_NONE:
-		_connect_control_signal(control, &"focus_entered", &"_on_control_focused", screen, connections)
+	# A hidden tab can temporarily set FOCUS_NONE before it is observed. Subscribe
+	# once, then check the live focus policy when a deliberate move happens.
+	_connect_control_signal(control, &"focus_entered", &"_on_control_focused", screen, connections)
 	var pointer_target := control is BaseButton or control is Range
 	if pointer_target and control.mouse_filter != Control.MOUSE_FILTER_IGNORE:
 		_connect_control_signal(control, &"mouse_entered", &"_on_control_hovered", screen, connections)
@@ -332,6 +333,8 @@ func _is_excluded(node: Node, screen: Control) -> bool:
 
 
 func _on_control_focused(control: Control, screen: Control) -> void:
+	if control.get_focus_mode_with_override() == Control.FOCUS_NONE:
+		return
 	if _current_input_frame != Engine.get_process_frames() or _current_input_kind != &"navigation":
 		return
 	_play_automatic(&"focus", control, screen, NAVIGATION_DEBOUNCE_MS)

@@ -4,6 +4,8 @@
 extends SceneTree
 
 const MenuAudioService := preload("res://ui/menu_audio.gd")
+const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
+const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 
 var _failures: int = 0
 var _top_surface: Control
@@ -242,12 +244,75 @@ func _run() -> void:
 	_check("weak playback observations expire after mixer retirement", retired.all(func(playback: WeakRef) -> bool: return playback.get_ref() == null))
 	host.queue_free()
 	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown
+	await _hidden_overlay_focus()
+
+
+func _hidden_overlay_focus() -> void:
+	var host := Node.new()
+	root.add_child(host)
+	var manager: CanvasLayer = OverlayManager.new({}, "en")
+	root.add_child(manager)
+	var dialog: CanvasLayer = OverlaysDialog.new(manager)
+	root.add_child(dialog)
+	await process_frame
+	await process_frame
+	_top_surface = dialog._screen
+	var service := MenuAudioService.attach(host, Callable(self, "_surface"))
+	service.set_volume(0.0)
+	var classic: Control = dialog.switches.airspeed_dial
+	_check("Classic controls start hidden and unfocusable", not classic.is_visible_in_tree() and classic.focus_mode == Control.FOCUS_NONE)
+	service.observe(dialog._screen)
+	var structural_count: int = dialog._screen.find_children("*", "Control", true, false).size() + 1
+	_check("focus observations remain bounded by the control tree", service._observed_controls.size() <= structural_count
+		and service._observed_controls.values().all(func(observed: Dictionary) -> bool: return observed.connections.size() <= 7))
+	dialog.tab_bar.current_tab = 1
+	await process_frame
+	await process_frame
+	classic.grab_focus()
+	_check("automatic focus after revealing Classic is silent", service.cue_count(&"focus") == 0)
+	dialog.tab_bar.grab_focus()
+	var navigation := InputEventAction.new()
+	navigation.action = &"ui_down"
+	navigation.pressed = true
+	service._input(navigation)
+	classic.grab_focus()
+	_check("deliberate navigation to initially hidden Classic requests one cue", service.cue_count(&"focus") == 1)
+	for _index: int in 2:
+		dialog.tab_bar.current_tab = 0
+		await process_frame
+		dialog.tab_bar.current_tab = 1
+		await process_frame
+		await create_timer(0.18).timeout
+		_check("re-observing switched tabs creates no duplicate bindings", service.observe(dialog._screen) == 0)
+		dialog.tab_bar.grab_focus()
+		var before: int = service.cue_count(&"focus")
+		service._input(navigation)
+		classic.grab_focus()
+		_check("repeated tab switch requests exactly one focus cue", service.cue_count(&"focus") == before + 1)
+	dialog.tab_bar.current_tab = 0
+	await process_frame
+	var before: int = service.cue_count(&"focus")
+	service._input(navigation)
+	classic.focus_entered.emit()
+	_check("hidden unfocusable Classic cannot request a focus cue", service.cue_count(&"focus") == before)
+	dialog.tab_bar.current_tab = 1
+	await process_frame
+	dialog._screen.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
+	before = service.cue_count(&"focus")
+	service._input(navigation)
+	classic.focus_entered.emit()
+	_check("recursive focus disable prevents a focus cue", service.cue_count(&"focus") == before)
+	dialog._screen.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED
+	dialog.free()
+	manager.free()
+	host.free()
+	await process_frame
 
 
 func _check_dynamic_controls(service: MenuAudio, screen_a: Control, screen_b: Control) -> void:
+	service.observe(screen_b)
 	var controls_before: int = service._observed_controls.size()
 	var debounce_before: int = service._last_automatic_ms.size()
-	service.observe(screen_b)
 	var button := Button.new()
 	screen_a.add_child(button)
 	await process_frame
