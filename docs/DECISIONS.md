@@ -166,6 +166,8 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 **AUD-15.** Use licensed recordings where their source fit is identified, superseding the early generated-only choice; retain the phase-aware glow fallback and bounded playback. Accepted physical RPM, source state and contact observations drive sound rather than cosmetic animation or a separate simulated engine. Source fit, listening and target-driver latency remain separate acceptance questions. [Audio guide](AUDIO-PLAN.md), [recorded-source decisions](research/audio/AUD-15/sources.md).
 
+**GP-19-N05 (2026-11-07).** Retain deferred endpoint sampling with conservative touchdown eligibility: a clock-continuity receipt cannot establish the wheel's unobserved liftoff time. This accepts bounded missed threshold-near cues while avoiding fabricated airborne age and keeping observation outside integration. A qualified immutable per-tick contact receipt is the condition for revisiting exact transition timing. The [current audio contract](AUDIO-PLAN.md) owns the uncertainty bound; [correction evidence](research/audio/AUD-15/validation.md#accepted-contact-corrections-gp-19-n0405-2026-11-07) distinguishes classification from listening and performance qualification.
+
 ## Runtime and delivery
 
 ### Native controls own interaction; styling follows a shared shell

@@ -589,6 +589,12 @@ the returned packed array or dictionary.
 - Seeded random states, not exhaustive. Flaps, tailless elevons, the wing polar, slipstream and spatial
   (station-delta) air are refused, not ported.
 
+## Restored OU layout (NK-3-WNEW-02, 2026-11-07)
+
+The fixed-wing restore transaction stages `_turbulence_aux_index` with candidate aux, modes and weather before native backend preparation. A production-adapter probe first reproduced both stale-cache directions. The actual Linux native session then passes 343 checks, including steady-v2↔OU restores at ticks 0 and 37 and eight byte-identical continuation ticks covering the next OU interval/RNG update. Strict backend identity is retained. Reference probes verify cross-width cache rollback; a supported same-width native model validator refuses only after seeing a freshly prepared helper, then verifies the original helper, configuration guard, complete checkpoint and next native tick after rollback.
+
+All 19 documented component/stage/trajectory/mutation gates pass on the refreshed source-bound library before installation. The native helicopter session separately passes 264 checks with `native exercised=true`. [Checked run and source identities](../../menu-investigations/UI-32/audit-20261107-r3-checks.json) retain the initial invalid-provider refusal fixture and its replacement, plus the incomplete first session attempt. The invalid-provider fixture could not establish healthy-owner rollback; the passing fixture preserves the live provider. Windows reference/fallback coverage is recorded separately. These runs establish bounded numerical behavior, not timing, macOS/Metal, new custom-weather domain or physical qualification.
+
 ## Reproduce
 
 ```bash
