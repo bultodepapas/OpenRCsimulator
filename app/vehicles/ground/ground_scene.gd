@@ -151,6 +151,11 @@ var _keyboard_neutral_gate := false
 var _source_controller_registry: RefCounted
 var _last_controls := {}
 var _shortcut_buttons := {}
+var _pending_spawn_id := ""
+var _run_was_driven := false
+var _initial_spawn_state := PackedByteArray()
+var _initial_spawn_damage := PackedByteArray()
+var _initial_spawn_events: Array = []
 
 func _ready() -> void:
 	name = "GroundVehicleActivity"
@@ -266,8 +271,8 @@ func _ready() -> void:
 	dashboard.controller_selected.connect(select_driving_device)
 	dashboard.mode_selected.connect(_select_mode)
 	dashboard.experiment_requested.connect(_experiment)
-	dashboard.spawn_selected.connect(func(id: String):
-		if _finish_recording() and session.reset(id): _after_reset())
+	dashboard.spawn_selected.connect(_select_spawn)
+	_capture_initial_spawn()
 	session.event_added.connect(_event)
 	session.faulted.connect(func(reason: String):
 		open_garage()
@@ -283,6 +288,59 @@ func _ready() -> void:
 	_capture_initial_controller_selection()
 	_refresh_controller_ui()
 	_process(0.0)
+	_update_camera_status()
+
+
+func _capture_initial_spawn() -> void:
+	_initial_spawn_state = session.state_snapshot().to_byte_array()
+	_initial_spawn_damage = session.damage_snapshot().to_byte_array()
+	_initial_spawn_events = session.event_tape_snapshot()
+	_run_was_driven = false
+
+
+func _can_choose_initial_spawn() -> bool:
+	return not _run_was_driven and session.tick == 0 and session.run_valid \
+		and not session.recording and not session.has_unexported_recording() and session.recording_generation == 0 \
+		and session.control_tape_snapshot().is_empty() and session.recovery_actions_snapshot().is_empty() \
+		and session.event_tape_snapshot() == _initial_spawn_events \
+		and session.state_snapshot().to_byte_array() == _initial_spawn_state \
+		and session.damage_snapshot().to_byte_array() == _initial_spawn_damage
+
+
+func _select_spawn(id: String) -> void:
+	if _departure_guard_active or not dashboard.menu_visible or not session.paused or not dashboard.spawn_ids.has(id):
+		return
+	if id == session.spawn_id:
+		_clear_spawn_proposal()
+	elif _can_choose_initial_spawn():
+		if session.reset(id):
+			_after_reset()
+		else:
+			dashboard.select_spawn(session.spawn_id)
+	else:
+		_pending_spawn_id = id
+		dashboard.set_spawn_proposal(session.spawn_id, id)
+
+
+func _clear_spawn_proposal() -> void:
+	_pending_spawn_id = ""
+	if is_instance_valid(dashboard) and dashboard.is_node_ready():
+		dashboard.set_spawn_proposal(session.spawn_id)
+
+
+func _restart_at_spawn() -> void:
+	if _pending_spawn_id.is_empty() or not dashboard.menu_visible or not session.paused:
+		return
+	if not _finish_recording():
+		return
+	if session.reset(_pending_spawn_id):
+		_after_reset()
+	else:
+		dashboard.message(tr("Start could not be changed. Current run kept."), tr("Start could not be changed. Current run kept."))
+
+
+func _update_camera_status() -> void:
+	dashboard.update_camera(camera_rig.mode)
 
 
 ## Driving owns a local selection. Aircraft profiles and menu preferences survive
@@ -771,6 +829,8 @@ func handle_action(action: String) -> void:
 				return
 			session.release_pause_hold("garage")
 			if session.resume():
+				_clear_spawn_proposal()
+				_run_was_driven = true
 				dashboard.set_menu(false)
 				camera_rig.reset()
 				if mode == 1:
@@ -783,6 +843,8 @@ func handle_action(action: String) -> void:
 		"reset":
 			if not _finish_recording(): return
 			if session.reset(): _after_reset()
+		"restart_at_spawn": _restart_at_spawn()
+		"cancel_spawn": _clear_spawn_proposal()
 		"engine_start", "engine_stop", "refuel":
 			if not _finish_recording(): return
 			var service := action.trim_prefix("engine_")
@@ -801,14 +863,17 @@ func handle_action(action: String) -> void:
 		"recover":
 			if session.manual_recovery():
 				_after_reset()
+				_run_was_driven = true
 				dashboard.message("Recovered and repaired. This run is marked as assisted.", "Recuperado y reparado. Esta prueba queda marcada como asistida.")
 		"camera":
 			camera_rig.mode = (camera_rig.mode + 1) % (4 if _course.has("track") else 3)
 			camera_rig.reset()
+			_update_camera_status()
 		"track_view":
 			if _course.has("track"):
 				camera_rig.mode = 0 if camera_rig.mode == 3 else 3
 				camera_rig.reset()
+				_update_camera_status()
 		"body":
 			var shown: bool = not visual.nodes.Body.visible
 			for body_node: Node3D in visual.get("body_nodes", [visual.nodes.Body]):
@@ -852,6 +917,7 @@ func handle_action(action: String) -> void:
 			var restored: bool = session.restore_checkpoint(_checkpoint) if not _checkpoint.is_empty() else _restore_checkpoint_file()
 			if restored:
 				_after_reset()
+				_run_was_driven = true
 				dashboard.message("Saved state restored. Press Enter to continue.", "Estado restaurado. Pulsa Enter para continuar.")
 			else:
 				dashboard.message("State does not match this vehicle and course.", "El estado no corresponde a este vehículo y pista.")
@@ -991,6 +1057,8 @@ func _on_recording_interrupted(reason: String, _sample_count: int) -> void:
 	dashboard.message("Recording interrupted; data kept: " + reason, "Grabación interrumpida; datos conservados: " + reason)
 
 func _after_reset() -> void:
+	_clear_spawn_proposal()
+	_capture_initial_spawn()
 	_snapshot = session.state_snapshot()
 	if _vehicle_entry.get("nitro", false): visual["engine_phase_rad"] = 0.0
 	_previous = _snapshot.duplicate()
@@ -1008,6 +1076,7 @@ func _after_reset() -> void:
 	dashboard.select_spawn(session.spawn_id)
 	if camera_rig.mode == 3: camera_rig.mode = 0
 	camera_rig.reset()
+	_update_camera_status()
 	open_garage()
 
 func _select_mode(index: int) -> void:
@@ -1082,8 +1151,19 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _departure_guard_active and not event is InputEventJoypadButton: return
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
-			KEY_ESCAPE: handle_action("menu")
-			KEY_ENTER: handle_action("resume")
+			KEY_ESCAPE:
+				if dashboard.menu_visible and not _pending_spawn_id.is_empty():
+					_clear_spawn_proposal()
+				else:
+					handle_action("menu")
+			KEY_ENTER:
+				# Native buttons finish ui_accept on release. Do not hide their
+				# garage on the unhandled press before that release arrives.
+				var focused := get_viewport().gui_get_focus_owner()
+				if dashboard.menu_visible and is_instance_valid(focused) \
+						and focused.is_visible_in_tree() and dashboard.root_control.is_ancestor_of(focused):
+					return
+				handle_action("resume")
 			KEY_C: handle_action("camera")
 			KEY_L: handle_action("lights")
 			KEY_K: handle_action("aux_lights")
@@ -1104,6 +1184,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		var action := ""
 		if event.button_index == JOY_BUTTON_START:
 			action = "resume" if dashboard.menu_visible else "menu"
+		elif dashboard.menu_visible and not _pending_spawn_id.is_empty() and event.is_action_pressed("ui_cancel"):
+			action = "cancel_spawn"
 		elif not dashboard.menu_visible and _accept_driving_controller_button(event.device):
 			if event.button_index == JOY_BUTTON_BACK: action = "reset"
 			elif event.button_index == JOY_BUTTON_X: action = "camera"

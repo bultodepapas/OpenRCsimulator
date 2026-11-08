@@ -37,6 +37,16 @@ var _menu_button: Button
 var record_button: Button
 var modes: OptionButton
 var locations: OptionButton
+var restart_at_button: Button
+var keep_run_button: Button
+var spawn_proposal: VBoxContainer
+var spawn_notice: Label
+var camera_button: Button
+var camera_status: Label
+var overview_button: Button
+var _camera_mode := 0
+var _accepted_spawn := "start"
+var _pending_spawn := ""
 var airfield := false
 var track_available := false
 var lake_available := false
@@ -158,6 +168,8 @@ func _ready() -> void:
 	resume_button.theme_type_variation = "PrimaryButton"
 	header.add_child(resume_button)
 	modes = OptionButton.new()
+	modes.fit_to_longest_item = false
+	modes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	modes.add_item(words("Free drive", "Conducción libre"), 0)
 	if not airfield:
 		modes.add_item(words("Jump practice", "Práctica de saltos"), 1)
@@ -165,6 +177,10 @@ func _ready() -> void:
 	modes.item_selected.connect(func(index: int): mode_selected.emit(modes.get_item_id(index)))
 	column.add_child(modes)
 	locations = OptionButton.new()
+	locations.fit_to_longest_item = false
+	locations.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	locations.name = "GroundStartChoice"
+	locations.accessibility_name = tr("Start location")
 	spawn_ids = ["start", "runway_end"] if airfield else ["start", "jump_start", "bump_lane", "grass", "gravel", "slippery"]
 	var location_titles := [words("Runway center", "Centro de pista"), words("Runway end", "Extremo de pista")] if airfield else [words("Start line", "Salida"), words("Jump approach", "Entrada al salto"), words("Bump lane", "Carril de baches"), words("Grass", "Césped"), words("Gravel", "Grava"), words("Low-grip pad", "Pista deslizante")]
 	if track_available:
@@ -177,13 +193,37 @@ func _ready() -> void:
 		locations.add_item(title)
 	locations.item_selected.connect(func(index: int): spawn_selected.emit(spawn_ids[index]))
 	column.add_child(locations)
+	spawn_proposal = VBoxContainer.new()
+	spawn_proposal.name = "PendingGroundStart"
+	spawn_proposal.visible = false
+	column.add_child(spawn_proposal)
+	spawn_notice = _label("", 14)
+	spawn_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	spawn_proposal.add_child(spawn_notice)
+	restart_at_button = _button("", "restart_at_spawn")
+	restart_at_button.name = "RestartAtGroundStart"
+	restart_at_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	spawn_proposal.add_child(restart_at_button)
+	keep_run_button = _button(tr("Keep current run"), "cancel_spawn")
+	keep_run_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	keep_run_button.name = "KeepCurrentGroundRun"
+	spawn_proposal.add_child(keep_run_button)
 	var row := HBoxContainer.new()
 	row.add_child(_button(words("Reset", "Reiniciar"), "reset"))
 	row.add_child(_button(words("Recover · R", "Recuperar · R"), "recover"))
 	column.add_child(row)
-	column.add_child(_button(words("Camera · C", "Cámara · C"), "camera"))
+	camera_button = _button("", "camera")
+	camera_button.name = "GroundCamera"
+	camera_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(camera_button)
+	camera_status = _label("", 14)
+	camera_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(camera_status)
 	if track_available:
-		column.add_child(_button(words("Circuit overview", "Vista del circuito"), "track_view"))
+		overview_button = _button("", "track_view")
+		overview_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		column.add_child(overview_button)
+	update_camera(0)
 	var toggles := HBoxContainer.new()
 	toggles.add_child(_button(words("Body", "Carrocería"), "body"))
 	toggles.add_child(_button(words("Contacts", "Contactos"), "contacts"))
@@ -364,6 +404,41 @@ func _focus_resume() -> void:
 func select_spawn(id: String) -> void:
 	var index := spawn_ids.find(id)
 	if index >= 0: locations.select(index)
+
+
+func set_spawn_proposal(current: String, pending: String = "") -> void:
+	_accepted_spawn = current
+	_pending_spawn = pending
+	var focused := root_control.get_viewport().gui_get_focus_owner()
+	var hiding_focused_action := pending.is_empty() and is_instance_valid(focused) and spawn_proposal.is_ancestor_of(focused)
+	spawn_proposal.visible = not pending.is_empty()
+	if pending.is_empty():
+		select_spawn(current)
+	else:
+		select_spawn(pending)
+		var current_index := spawn_ids.find(current)
+		var pending_index := spawn_ids.find(pending)
+		spawn_notice.text = tr("Current start: %s. Restart ends this run; recordings are saved first.") % locations.get_item_text(current_index)
+		restart_at_button.text = tr("Restart at %s") % locations.get_item_text(pending_index)
+	if hiding_focused_action:
+		locations.grab_focus()
+
+
+func update_camera(selected: int) -> void:
+	_camera_mode = selected
+	var names := [tr("Chase"), tr("Pilot stand"), tr("Orbit"), tr("Circuit overview")]
+	camera_button.text = tr("Camera: %s · C") % names[selected]
+	camera_status.text = tr("Used when you select Drive.") if selected != 3 else tr("Overview is active in the garage and while driving.")
+	if overview_button != null:
+		overview_button.text = tr("Return to Chase") if selected == 3 else tr("Circuit overview")
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		keep_run_button.text = tr("Keep current run")
+		locations.accessibility_name = tr("Start location")
+		set_spawn_proposal(_accepted_spawn, _pending_spawn)
+		update_camera(_camera_mode)
 
 func message(english: String, spanish: String) -> void:
 	toast.text = words(english, spanish)
