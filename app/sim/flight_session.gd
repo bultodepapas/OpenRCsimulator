@@ -4814,8 +4814,22 @@ func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivati
 		first: PackedFloat64Array) -> Variant:
 	var result: Dictionary
 	if battery_is_dynamic():
-		result = BatteryStep.advance(combined, at, dt, derivative, first,
-			RB.SIZE + _rotor_index(), RB.SIZE + _rotor_index() + 1, _project_electric_stop)
+		# The finite-source policy owns this entire outer tick. Resolve the same
+		# contact refinement as the kernel's event/RK path within the policy,
+		# keeping the sampled ESC limit fixed until the accepted outer endpoint.
+		var count: int = 1
+		if aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
+			count = Ground.substeps(combined.slice(0, RB.SIZE), current_landing_gear(), dt, ground_surfaces, _rc_track)
+		if count < 1 or count > Sim.MAX_SUBSTEPS:
+			return PackedFloat64Array([NAN])
+		if count == 1:
+			# Preserve the established airborne and one-piece behavior exactly.
+			result = BatteryStep.advance(combined, at, dt, derivative, first,
+				RB.SIZE + _rotor_index(), RB.SIZE + _rotor_index() + 1, _project_electric_stop)
+		else:
+			var contact_step := preload("res://sim/electric_contact_step.gd")
+			result = contact_step.advance(combined, at, dt, derivative, first,
+				RB.SIZE + _rotor_index(), RB.SIZE + _rotor_index() + 1, _project_electric_stop, count)
 		if result.get("ok", false) and battery_is_pack():
 			result.state = _supervise_pack(result.state, dt)
 	else:
@@ -4967,6 +4981,12 @@ func _substep_stage_context_is_valid(stage_context: Dictionary) -> bool:
 
 func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float,
 		preview: Dictionary) -> int:
+	# The dynamic electric step policy owns contact subdivision itself and still
+	# returns one atomic outer tick. The fixed-bus event and other policies keep
+	# the kernel's existing refinement/rejection contract.
+	if battery_is_dynamic() and sim != null and sim.model != null \
+			and sim.model.step_policy == Callable(self, "_electric_step"):
+		return 1
 	var count: int = 1
 	if aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
 		count = Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces, _rc_track)
