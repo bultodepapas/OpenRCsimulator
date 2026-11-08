@@ -28,6 +28,9 @@ class ExportIdentity(unittest.TestCase):
         source = Path(__file__).parents[1] / "export.sh"
         (self.app / "export.sh").write_text(source.read_text(encoding="utf-8"),
                                              encoding="utf-8", newline="\n")
+        runner = self.root / "tools/godot/run_checked.py"
+        runner.parent.mkdir(parents=True)
+        shutil.copyfile(Path(__file__).resolve().parents[2] / "tools/godot/run_checked.py", runner)
         (self.app / "project.godot").write_text('config/version="1.2.3"\n', encoding="utf-8")
         scripts = {
             "get-godot.sh": '#!/usr/bin/env bash\nprintf "%s/fake-engine.sh\\n" "$(cd "$(dirname "$0")" && pwd)"\n',
@@ -397,7 +400,13 @@ exit 23
         result = self.export()
         self.assertEqual(result.returncode, 1, result.stdout)
         output = self.output_path(result)
-        self.assertEqual((output / "export-failure.log").read_text(), "fake engine exited 23\n")
+        failure_log = (output / "export-failure.log").read_text()
+        self.assertIn("fake engine exited 23\n", failure_log)
+        self.assertIn("Godot check failed: process_exit (process exit 23)", failure_log)
+        raw_logs = list((self.root / "tmp").glob("nk3-export-*/checks/export-import-*/engine.log"))
+        self.assertEqual(len(raw_logs), 1)
+        self.assertEqual(raw_logs[0].read_bytes(), b"fake engine exited 23\n")
+        self.assertIn(f"report: {raw_logs[0].parent / 'report.json'}", failure_log)
         status = (output / "export-source-status.txt").read_text()
         tracked_section, untracked_section = status.split("== untracked app paths (excluding ignored; names only) ==\n")
         self.assertIn("tracked-note.txt\n", tracked_section)
@@ -441,6 +450,278 @@ exit 23
         output = self.output_path(result)
         self.assertTrue((output / "export-source-status.txt").is_file())
         self.assertFalse((output / "export-failure.log").exists())
+
+
+@unittest.skipUnless(sys.platform.startswith("linux"), "export shell checks require a Linux host")
+class ExportDiagnostics(unittest.TestCase):
+    """Exercise the real export sections with checked fake-engine processes."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="openrc export diagnostics ")
+        self.addCleanup(self.temp.cleanup)
+        self.repo = Path(__file__).resolve().parents[2]
+        self.source = (self.repo / "app/export.sh").read_text(encoding="utf-8")
+        self.counter = itertools.count()
+
+    def run_section(self, section, phase="", target="", mode="", short_timeout=False):
+        root = Path(self.temp.name) / f"case-{next(self.counter)}"
+        app = root / "app"
+        dist = root / "dist"
+        for directory in (app / "data/fields", dist / "linux", dist / "windows", dist / "macos",
+                          root / "tools/godot", root / "fake-bin", root / "evidence"):
+            directory.mkdir(parents=True, exist_ok=True)
+        if mode == "bad_runner_output":
+            # The real checked runner will reject a file where its output directory should be.
+            (root / "evidence/checks").write_text("not a directory", encoding="utf-8")
+        (app / "data/fields/default.json").write_text(json.dumps({
+            "objects": [{"positions": {"value": [[0, 0, 0], [1, 1, 1], [2, 2, 2]]}}],
+        }), encoding="utf-8")
+        (dist / "linux/openrc-simulator.x86_64").write_bytes(b"linux fixture")
+        (dist / "windows/OpenRC Simulator.exe").write_bytes(b"windows fixture")
+        with zipfile.ZipFile(dist / "macos/OpenRC Simulator.zip", "w") as archive:
+            archive.writestr("OpenRC Simulator.app/Contents/Resources/game.pck", b"macOS fixture")
+        shutil.copyfile(self.repo / "tools/godot/run_checked.py", root / "tools/godot/run_checked.py")
+        python = root / "fake-bin/python3"
+        python.write_text(
+            '#!/usr/bin/env bash\n'
+            'case "$1" in */tools/release/manifest.py|*/research/native-kernel/package.py) exit 0 ;; esac\n'
+            f'exec {shlex.quote(sys.executable)} "$@"\n', encoding="utf-8")
+        python.chmod(0o755)
+        engine = root / "fake-engine.py"
+        engine.write_text('''#!/usr/bin/env python3
+import json
+import os
+from pathlib import Path
+import sys
+import time
+
+args = sys.argv[1:]
+def platform(path):
+    if path.endswith("openrc-simulator.x86_64"):
+        return "Linux"
+    if path.endswith("OpenRC Simulator.exe"):
+        return "Windows"
+    return "macOS"
+
+if "--import" in args:
+    phase, target = "import", ""
+elif "--export-release" in args:
+    index = args.index("--export-release")
+    phase, target = "export", args[index + 1]
+    Path(args[index + 2]).write_bytes(b"nonempty fixture export")
+else:
+    script = Path(args[args.index("--script") + 1]).name
+    phase = {"check_field_pack.gd": "field", "rotorcraft_package_smoke.gd": "rotorcraft",
+             "check_native_pack.gd": "native"}[script]
+    target = platform(args[-2] if phase == "field" else args[args.index("--main-pack") + 1])
+
+with Path(os.environ["PROBE_CALLS"]).open("a", encoding="utf-8") as stream:
+    stream.write(f"{phase}:{target}\\n")
+selected = phase == os.environ["PROBE_PHASE"] and target == os.environ["PROBE_TARGET"]
+mode = os.environ["PROBE_MODE"] if selected else ""
+if mode == "timeout":
+    print("fixture before timeout", flush=True)
+    time.sleep(4)
+if mode == "overflow":
+    sys.stdout.buffer.write(b"x" * (8 * 1024 * 1024 + 1024))
+    sys.stdout.buffer.flush()
+    sys.exit(0)
+diagnostics = {
+    "bare": "ERROR: fixture diagnostic",
+    "plain": "SCRIPT ERROR: fixture diagnostic",
+    "shader": "SHADER ERROR: fixture diagnostic",
+    "indented": "    SCRIPT ERROR: fixture diagnostic",
+    "ansi": "\\x1b[31mSCRIPT ERROR: fixture diagnostic\\x1b[0m",
+}
+if mode in diagnostics:
+    print(diagnostics[mode])
+if mode == "warning":
+    print("WARNING: expected fixture warning")
+if mode == "missing":
+    print("fixture stopped before its completion marker")
+    sys.exit(0)
+if phase in ("field", "rotorcraft"):
+    if phase == "field":
+        count = 2 if mode == "wrong_count" else 3
+        marker = f"Pack tree catalog, imported atlas, license and {count}-tree field validated"
+    else:
+        count = 0 if mode == "zero_checks" else 7 if mode == "wrong_count" else 8
+        marker = f"Rotorcraft package smoke: {count} checks, 0 failures"
+    if mode == "prefixed":
+        marker = "did not reach: " + marker
+    elif mode == "suffixed":
+        marker += " (not completed)"
+    elif mode == "colored":
+        marker = "\\x1b[32m" + marker + "\\x1b[0m"
+    print(marker)
+    if mode == "duplicate":
+        print(marker)
+elif phase == "native":
+    passed = mode not in ("false_native", "spoof_native")
+    schema = "wrong" if mode == "wrong_format" else "openrc-r11-host-native-package-smoke-v1"
+    line = "R11_NATIVE_PACKAGE_SMOKE " + json.dumps({"format": schema, "passed": passed}, separators=(",", ":"))
+    print(line)
+    if mode == "spoof_native":
+        print('{"passed":true}')
+    if mode == "duplicate_native":
+        print(line)
+else:
+    print(f"fixture {phase} completed")
+sys.exit(23 if mode == "nonzero" else 0)
+''', encoding="utf-8")
+        engine.chmod(0o755)
+        cleanup = self.source.split("cleanup() {\n", 1)[1].split("\n}\ntrap cleanup EXIT\n", 1)[0]
+        checked = self.source.split("run_checked() {\n", 1)[1].split("\n}\n", 1)[0]
+        completion = self.source.split("require_completion_line() {\n", 1)[1].split("\n}\n", 1)[0]
+        if short_timeout:
+            # Keep the actual checked runner; shorten the budget only in this disposable fixture.
+            checked = checked.replace('--timeout "$budget"', '--timeout 2')
+        if section == "export":
+            block = self.source.split('echo "== import (a fresh clone has no .godot cache)"\n', 1)[1]
+            block = 'echo "== import (a fresh clone has no .godot cache)"\n' + block.split(
+                '\necho "== native package artifacts:', 1)[0]
+        else:
+            block = self.source.split('echo "== default field and compiled loader', 1)[1]
+            block = 'echo "== default field and compiled loader' + block.split('\necho "== packages"\n', 1)[0]
+        handoff = self.source.split('# CI consumes only this successful run;', 1)[1]
+        handoff = handoff.split("\n", 1)[1]
+        shell = root / "exercise.sh"
+        variables = {
+            "ROOT": root, "HERE": app, "DIST": dist, "GODOT": engine, "HOST_GODOT": engine,
+            "NK3_EVIDENCE": root / "evidence", "TEMPLATE_DIR": root / "templates", "VERSION": "v1.2.3",
+        }
+        setup = "\n".join(f"{name}={shlex.quote(str(value))}" for name, value in variables.items())
+        shell.write_text(
+            '#!/usr/bin/env bash\nset -euo pipefail\n' + setup + '\n'
+            'LOG="$(mktemp)"\nPACK_PROBE="$(mktemp -d)"\nHOST_PROBE="$(mktemp -d)"\n'
+            'cleanup() {\n' + cleanup + '\n}\ntrap cleanup EXIT\n'
+            'run_checked() {\n' + checked + '\n}\n'
+            'require_completion_line() {\n' + completion + '\n}\n' + block + '\n' + handoff,
+            encoding="utf-8")
+        handoff_file = root / "github-output"
+        handoff_file.write_text("other_step=unchanged\n", encoding="utf-8")
+        env = {**os.environ, "PATH": str(root / "fake-bin") + os.pathsep + os.environ["PATH"],
+               "PROBE_CALLS": str(root / "calls"), "PROBE_PHASE": phase, "PROBE_TARGET": target,
+               "PROBE_MODE": mode, "GITHUB_OUTPUT": str(handoff_file)}
+        result = subprocess.run(["bash", str(shell)], cwd=root, env=env, text=True,
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+        return result, root, handoff_file
+
+    def assert_failed(self, result, root, handoff):
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(handoff.read_text(), "other_step=unchanged\n")
+        self.assertTrue((root / "dist/export-failure.log").is_file(), result.stdout)
+        self.assertTrue((root / "dist/export-source-status.txt").is_file(), result.stdout)
+        return (root / "dist/export-failure.log").read_text(encoding="utf-8")
+
+    def test_clean_and_warning_only_sections_complete(self):
+        for section, phase, target in (("export", "import", ""), ("smoke", "field", "Windows")):
+            for mode in ("", "warning"):
+                with self.subTest(section=section, mode=mode):
+                    result, root, handoff = self.run_section(section, phase, target, mode)
+                    self.assertEqual(result.returncode, 0, result.stdout)
+                    self.assertIn("package_dir=", handoff.read_text())
+                    self.assertFalse((root / "dist/export-failure.log").exists())
+                    reports = list((root / "evidence/checks").rglob("report.json"))
+                    self.assertEqual(len(reports), 4 if section == "export" else 7)
+                    self.assertTrue(all(json.loads(path.read_text())["ok"] for path in reports))
+                    if mode == "warning":
+                        self.assertEqual(sum(json.loads(path.read_text())["counts"]["warning"]
+                                             for path in reports), 1)
+
+    def test_zero_exit_engine_diagnostics_fail_every_branch(self):
+        branches = [("export", "import", "")]
+        branches += [("export", "export", target) for target in ("Linux", "Windows", "macOS")]
+        branches += [("smoke", "field", "Linux"), ("smoke", "rotorcraft", "Windows"),
+                     ("smoke", "native", "Linux")]
+        for section, phase, target in branches:
+            for mode in ("bare", "plain", "shader", "indented", "ansi"):
+                with self.subTest(phase=phase, target=target, mode=mode):
+                    result, root, handoff = self.run_section(section, phase, target, mode)
+                    log = self.assert_failed(result, root, handoff)
+                    self.assertIn("ERROR: fixture diagnostic", log)
+                    self.assertIn("Godot check failed: engine_error", log)
+
+    def test_each_platform_smoke_requires_its_terminal_marker(self):
+        branches = [(phase, target) for phase in ("field", "rotorcraft")
+                    for target in ("Linux", "Windows", "macOS")]
+        branches.append(("native", "Linux"))
+        for phase, target in branches:
+            with self.subTest(phase=phase, target=target):
+                result, root, handoff = self.run_section("smoke", phase, target, "missing")
+                log = self.assert_failed(result, root, handoff)
+                self.assertIn("fixture stopped before its completion marker", log)
+                self.assertIn("missing_required_text", result.stdout)
+                calls = (root / "calls").read_text().splitlines()
+                self.assertEqual(calls[-1], f"{phase}:{target}")
+
+    def test_completion_requires_expected_counts_and_successful_native_report(self):
+        controls = (("field", "wrong_count"), ("rotorcraft", "zero_checks"),
+                    ("rotorcraft", "wrong_count"), ("native", "false_native"),
+                    ("native", "spoof_native"), ("native", "wrong_format"),
+                    ("native", "duplicate_native"))
+        for phase, mode in controls:
+            with self.subTest(phase=phase, mode=mode):
+                result, root, handoff = self.run_section("smoke", phase, "Linux", mode)
+                log = self.assert_failed(result, root, handoff)
+                self.assertTrue(log, result.stdout)
+                if mode in ("spoof_native", "wrong_format", "duplicate_native"):
+                    self.assertIn("native package identity check failed", result.stdout)
+
+    def test_completion_marker_must_be_one_whole_line(self):
+        labels = {"Linux": "openrc-simulator.x86_64", "Windows": "OpenRC Simulator.exe", "macOS": "macos.pck"}
+        for phase in ("field", "rotorcraft"):
+            for mode, target in (("prefixed", "Linux"), ("suffixed", "Windows"), ("duplicate", "macOS")):
+                with self.subTest(phase=phase, mode=mode, target=target):
+                    result, root, handoff = self.run_section("smoke", phase, target, mode)
+                    log = self.assert_failed(result, root, handoff)
+                    self.assertIn("expected exactly one complete marker line", log)
+                    self.assertIn("found 2" if mode == "duplicate" else "found 0", log)
+                    self.assertEqual((root / "calls").read_text().splitlines()[-1], f"{phase}:{target}")
+                    reports = [json.loads(path.read_text()) for path in (root / "evidence/checks").rglob("report.json")]
+                    matches = [item for item in reports if item["label"] == f"export-{phase}-{labels[target]}"]
+                    self.assertEqual(len(matches), 1)
+                    self.assertTrue(matches[0]["ok"], "the substring-only runner check must pass this control")
+
+    def test_colorized_completion_marker_is_accepted(self):
+        for phase in ("field", "rotorcraft"):
+            with self.subTest(phase=phase):
+                result, _root, handoff = self.run_section("smoke", phase, "Windows", "colored")
+                self.assertEqual(result.returncode, 0, result.stdout)
+                self.assertIn("package_dir=", handoff.read_text())
+
+    def test_nonzero_and_timeout_fail_and_keep_the_partial_log(self):
+        branches = (("export", "import", ""), ("export", "export", "Windows"),
+                    ("smoke", "field", "macOS"), ("smoke", "rotorcraft", "Windows"),
+                    ("smoke", "native", "Linux"))
+        for section, phase, target in branches:
+            for mode in ("nonzero", "timeout"):
+                with self.subTest(phase=phase, target=target, mode=mode):
+                    result, root, handoff = self.run_section(section, phase, target, mode, short_timeout=True)
+                    log = self.assert_failed(result, root, handoff)
+                    self.assertIn("Godot check failed: " + ("timeout" if mode == "timeout" else "process_exit"), log)
+                    if mode == "timeout":
+                        self.assertIn("fixture before timeout", log)
+
+    def test_runner_configuration_error_is_retained_without_launching_engine(self):
+        result, root, handoff = self.run_section("export", "import", "", "bad_runner_output")
+        log = self.assert_failed(result, root, handoff)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("Godot check configuration/output error:", log)
+        self.assertIn("evidence/checks", log)
+        self.assertFalse((root / "calls").exists())
+
+    def test_output_limit_fails_without_losing_the_bounded_log(self):
+        result, root, handoff = self.run_section("export", "import", "", "overflow")
+        log = self.assert_failed(result, root, handoff)
+        self.assertIn("Godot check failed: log_limit", log)
+        raw_logs = list((root / "evidence/checks").rglob("engine.log"))
+        self.assertEqual(len(raw_logs), 1)
+        raw = raw_logs[0].read_bytes()
+        self.assertEqual(raw, b"x" * (8 * 1024 * 1024))
+        self.assertIn(raw.decode("ascii"), log)
+        self.assertGreater(len(log), len(raw))
+        self.assertLessEqual(len(log) - len(raw), 4096)
 
 
 @unittest.skipUnless(sys.platform.startswith("linux"), "package shell checks require a Linux host")

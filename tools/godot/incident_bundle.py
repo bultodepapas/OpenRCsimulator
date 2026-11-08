@@ -668,7 +668,10 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
         issue("capture_id_mismatch", "one or more attachments cannot be tied to report.json capture_id",
               "capture_id")
 
-    run_ok = bool(run_evidence["evidence_valid"] and run_evidence["ok"])
+    skipped = bool(run_evidence["evidence_valid"] and run_evidence["reason"] == "skipped")
+    run_ok = bool(run_evidence["evidence_valid"] and run_evidence["ok"] and not skipped)
+    run_evidence["ok"] = run_ok
+    run_evidence["status"] = "skipped" if skipped else "passed" if run_ok else "failed_or_invalid"
     manifest = {
         "format": FORMAT,
         "version": 1,
@@ -743,7 +746,9 @@ def main(argv: list[str] | None = None) -> int:
         return 2
 
     included = sum(1 for attachment in manifest["attachments"] if attachment["included"])
-    print(f"incident bundle: {manifest['bundle_status']}; run {'passed' if manifest['run_ok'] else 'failed or invalid'}; "
+    run_status = ("passed" if manifest["run_ok"] else "skipped (unqualified)"
+                  if manifest["run"]["status"] == "skipped" else "failed or invalid")
+    print(f"incident bundle: {manifest['bundle_status']}; run {run_status}; "
           f"{included} attachments; output {args.out}")
     for issue in manifest["issues"][:5]:
         print(f"  {issue['code']}: {issue['message']}", file=sys.stderr)

@@ -108,11 +108,14 @@ def changed_paths(root: Path, event: str, ref: str, sha: str,
                 part in {"", ".", ".."} for part in name.split("/")):
             raise ValueError("invalid Git diff entry")
         old_mode, new_mode, status = match.groups()
-        regular_changes &= status in {"A", "M"} and new_mode == "100644" and old_mode in {"000000", "100644"}
+        regular_changes &= (
+            status in {"A", "M"} and new_mode == "100644" and old_mode in {"000000", "100644"}
+        ) or (status == "M" and old_mode == new_mode == "100755")
         paths.append(name)
     if len(paths) != len(set(paths)):
         raise ValueError("duplicate Git diff entry")
-    reason = "changed paths" if regular_changes else "deletion or non-regular change requires full checks"
+    reason = "changed paths" if regular_changes else (
+        "deletion, mode change, executable addition or non-regular change requires full checks")
     return base, head, sorted(paths), reason
 
 

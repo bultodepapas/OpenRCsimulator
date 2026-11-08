@@ -239,40 +239,46 @@ func _test_recipe_and_fixed_tape(frozen: Dictionary) -> void:
 
 func _test_catalog_fixed_tape() -> void:
 	var entries: Array = Catalog.airplane_flyable_entries()
-	_check("catalog-wide launch cases cover all ten airplane defaults", entries.size() == 10,
+	_check("catalog-wide launch cases cover at least ten airplane defaults", entries.size() >= 10,
 		"airplane default count: %d" % entries.size())
+	var modes: Array[String] = ["level", "glide"]
+	var seen_ids: Dictionary = {}
 	var accepted_runs: int = 0
-	var unsupported_runs: int = 0
 	for entry_value: Variant in entries:
+		_check("catalog launch entry is a dictionary", entry_value is Dictionary)
 		if not entry_value is Dictionary:
 			continue
 		var entry: Dictionary = entry_value
 		var aircraft_id: String = str(entry.get("id", ""))
+		var unique_id: bool = typeof(entry.get("id", null)) == TYPE_STRING \
+			and not aircraft_id.is_empty() and not seen_ids.has(aircraft_id)
+		_check("catalog launch entry has a unique nonempty id", unique_id, aircraft_id)
+		if not unique_id:
+			continue
+		seen_ids[aircraft_id] = true
 		var base_path: String = str(entry.get("data", ""))
 		var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(base_path)
+		_check("catalog default aircraft source is available for " + aircraft_id, not base_bytes.is_empty(), base_path)
 		if base_bytes.is_empty():
-			unsupported_runs += 2
-			print("UNSUPPORTED ", aircraft_id, ": default aircraft source is unavailable")
 			continue
 		var frozen: Dictionary = Trial.freeze({"base_id": aircraft_id, "base_bytes": base_bytes, "recipe": {}})
+		_check("catalog default Trial freezes for " + aircraft_id, bool(frozen.get("ok", false)),
+			str(frozen.get("errors", [])))
 		if not frozen.get("ok", false):
-			unsupported_runs += 2
-			print("UNSUPPORTED ", aircraft_id, ": frozen default Trial refused: ", str(frozen.get("errors", [])))
 			continue
 		var frozen_model: Dictionary = frozen.get("data", {}).get("model", {})
 		var expected_speed: float = float(frozen_model.get("start_speed", NAN))
-		if not is_finite(expected_speed) or expected_speed < 1.0 or expected_speed > 100.0:
-			unsupported_runs += 2
-			print("UNSUPPORTED ", aircraft_id, ": frozen default model has no bounded start_speed")
+		var bounded_speed: bool = is_finite(expected_speed) and expected_speed >= 1.0 and expected_speed <= 100.0
+		_check("catalog default start speed is bounded for " + aircraft_id, bounded_speed, str(expected_speed))
+		if not bounded_speed:
 			continue
-		for mode: String in ["level", "glide"]:
+		for mode: String in modes:
 			var recipe: Dictionary = _flight_recipe(60, expected_speed, mode, 30.0, 0.0)
 			var run: Dictionary = Experiments.run_fixed_tape(frozen, recipe)
 			var label: String = "%s %s" % [aircraft_id, mode]
+			_check("catalog fixed-tape run is accepted for " + label, bool(run.get("ok", false)),
+				str(run.get("errors", [])))
 			if not run.get("ok", false):
-				unsupported_runs += 1
-				print("UNSUPPORTED ", label, ": ", str(run.get("errors", [])))
-				_check("catalog refusal is explicit for " + label, not str(run.get("errors", [])).is_empty())
 				continue
 			accepted_runs += 1
 			var result: Dictionary = run.result
@@ -305,7 +311,10 @@ func _test_catalog_fixed_tape() -> void:
 					checkpoint_off and not accepted_start.get("engine_running", true)
 					and not accepted_start.get("propulsion_source_running", true),
 					"checkpoint_off=%s accepted_start=%s" % [checkpoint_off, accepted_start])
-	print("Catalog fixed-tape conformance: %d accepted runs, %d explicit unsupported runs" % [accepted_runs, unsupported_runs])
+	var expected_runs: int = entries.size() * modes.size()
+	_check("every catalog airplane accepts both fixed-tape starts", accepted_runs == expected_runs,
+		"accepted %d of %d runs" % [accepted_runs, expected_runs])
+	print("Catalog fixed-tape conformance: %d accepted runs, %d expected" % [accepted_runs, expected_runs])
 
 
 func _flight_recipe(ticks: int, speed_mps: float = 15.0, mode: String = "level",

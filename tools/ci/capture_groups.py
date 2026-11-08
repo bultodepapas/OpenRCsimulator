@@ -50,7 +50,7 @@ DIRECT_SOURCES = (
     "app/tests/test_field_failures.py", "app/tests/test_treeline_readability.py",
     "app/tests/treeline_readability.py", "tools/ci/capture_groups.py",
     "app/tests/test_lighting_skin_patterns.gd", "app/tests/test_lighting_segment_filter.gd",
-    "tools/godot/run_checked.py",
+    "tools/godot/run_checked.py", "tools/godot/summarize.py",
     "tools/trees/check_review.py", "tools/trees/check_wind.py",
     "tools/terrain/check_horizon.py", "tools/atmosphere/check_phase6.py",
     "tools/atmosphere/check_cloud_probe.py", "tools/ground/check_surfaces.py",
@@ -493,7 +493,22 @@ def normalized_sha256(path: Path, markers: list[str]) -> str | None:
     if path.suffix.lower() == ".json":
         try:
             # Recorded run clocks/IDs and log digests are not rendered evidence.
-            value = strip_volatile(json.loads(data), markers)
+            value = json.loads(data)
+            own_output_paths = None
+            if (isinstance(value, dict) and value.get("format") == "openrc-godot-check v1"
+                    and path.name == "report.json" and CHECKED_RUN.search(path.parent.name)):
+                # Only normalize paths that name this checked invocation's own
+                # files. An unexpected report-supplied path remains a difference.
+                own_output_paths = {}
+                for key, filename in (("log", "engine.log"), ("report", "report.json")):
+                    own_output_paths[key] = value.get(key) == str(path.with_name(filename))
+                    if own_output_paths[key]:
+                        value[key] = filename
+            value = strip_volatile(value, markers)
+            if own_output_paths is not None:
+                # Keep independently derived validity outside report-supplied
+                # data, so a literal normalization token cannot impersonate it.
+                value = {"report": value, "own_output_paths": own_output_paths}
             return canonical_sha256(value)
         except (ValueError, UnicodeDecodeError, RecursionError):
             pass
@@ -638,7 +653,9 @@ def compare_groups(args) -> int:
         "cpu": {"full": full.get("cpu"), **{g: inv.get("cpu") for g, inv in sorted(groups.items())}},
         "cpu_mismatch_groups": sorted(g for g, inv in groups.items() if inv.get("cpu") != full.get("cpu")),
         "volatility_model": {"skipped_parts": sorted(SKIPPED_PARTS), "volatile_trees": list(VOLATILE_TREES),
-                             "volatile_json_keys": sorted(VOLATILE_KEYS)},
+                             "volatile_json_keys": sorted(VOLATILE_KEYS),
+                             "checked_report_paths": {"log": "engine.log", "report": "report.json"},
+                             "checked_report_path_validation": "exact own file paths; validity retained"},
         "timings_seconds": {"full": sum(row[1] for row in full.get("timings", [])), "groups": group_seconds,
                             "slowest_group": max(group_seconds.values(), default=0)},
     }

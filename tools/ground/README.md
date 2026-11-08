@@ -121,7 +121,7 @@ The L9c-R1 stripe reference check separates expected camera motion from sampling
 "$(app/tests/visual-env.sh)" tools/ground/check_stripes.py --app app --godot "$(app/get-godot.sh)" --out /tmp/l9c-stripes
 ```
 
-It subtracts `stripe_amp=0` images, compares native output with an independent raw-wave reference rendered at 16× resolution, and subtracts the reference's expected half-pixel motion. The improvement at 100/300 m must exceed twice the measured 8×/16× reference disagreement. A nearby threshold view must retain its stripe detail. Independent native repeats must match exactly; both a raw-wave control and a no-stripes control must fail acceptance.
+It subtracts `stripe_amp=0` images, compares native output with an independent raw-wave reference rendered at 16× resolution, and subtracts the reference's expected half-pixel motion. The improvement at 100/300 m must exceed twice the measured 8×/16× reference disagreement. A nearby threshold view must retain its stripe detail. Independent native repeats must match exactly; both a raw-wave control and a no-stripes control must fail acceptance. A further control erases only the threshold residual while retaining the passing oblique views; it must fail specifically at the nearby-detail check and uses the existing captures.
 
 The club field caps the normal stripe amplitude at `0.026` through `stripe_amp`; setting that uniform to zero still removes the stripes for this ablation.
 
