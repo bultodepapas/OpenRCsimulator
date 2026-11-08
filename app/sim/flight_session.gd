@@ -3223,6 +3223,11 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 			ground_fraction = ground_hit.crossing.fraction if ground_hit.crossing != null and ground_hit.crossing.available else 0.0
 	# RC-TRACK: the circuit's raised dirt is solid ground for the hull. Flat ground and scenery keep same-tick ties.
 	var dirt: Dictionary = _rc_track_hit(previous, candidate, next_tick)
+	if not dirt.ok:
+		return PackedFloat64Array()
+	if _rc_track_order_unresolved(dirt, ground_fraction) or (scenery_hit != null \
+			and _rc_track_order_unresolved(dirt, scenery_hit.time_fraction)):
+		return PackedFloat64Array()
 	if dirt.impact != null and float(dirt.fraction) < ground_fraction - SceneryCollision.FRACTION_TIE \
 			and (scenery_hit == null or float(dirt.fraction) < scenery_hit.time_fraction - SceneryCollision.FRACTION_TIE):
 		_last_scenery_event = null
@@ -3307,6 +3312,10 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 		winner_fraction = ground_fraction
 	# RC-TRACK: the raised dirt wins only strictly earlier contacts; every legacy tie keeps its winner.
 	var dirt: Dictionary = _rc_track_hit(previous, candidate, next_tick)
+	if not dirt.ok:
+		return PackedFloat64Array()
+	if _rc_track_order_unresolved(dirt, winner_fraction):
+		return PackedFloat64Array()
 	if dirt.impact != null and float(dirt.fraction) < winner_fraction - SceneryCollision.FRACTION_TIE:
 		_last_scenery_event = null
 		_last_lake_event = null
@@ -3370,14 +3379,14 @@ func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) ->
 
 
 ## RC-TRACK: first hull point, by sweep fraction, inside the circuit's raised dirt at least RC_RELIEF_MIN_M high.
-## The exact float64 surface the wheels roll on (airfield_track.gd); the crossing is bisected along the same pose
-## interpolation as scenery contacts. Thinner dirt stays with the flat-datum hull laws. {impact = null} when clear.
+## The composed wheel surface, searched with conservative interval bounds along the same
+## pose interpolation as scenery contacts. Thin dirt stays with the flat datum; unresolved ticks refuse.
 const RC_RELIEF_MIN_M := 0.05
-const RC_RELIEF_BISECTIONS := 24
+const RcTrackCrossing := preload("res://physics/rc_track_crossing.gd")
 
 
 func _rc_track_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array, next_tick: int) -> Dictionary:
-	var none := {impact = null, fraction = INF, state = PackedFloat64Array()}
+	var none := {ok = true, impact = null, fraction = INF, state = PackedFloat64Array()}
 	if _rc_track.is_empty() or not aircraft.get("ok", false):
 		return none
 	var hull: PackedFloat64Array = aircraft.model.crash_hull
@@ -3385,45 +3394,32 @@ func _rc_track_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array, 
 	for at: int in range(0, hull.size(), 3):
 		reach = maxf(reach, M.norm(hull.slice(at, at + 3)))
 	# Whole-tick gates: below the circuit's height bound and over its footprint, padded by the hull radius.
-	if minf(-previous[RB.POS + 2], -candidate[RB.POS + 2]) > RcTrack.max_height_m(_rc_track) + reach:
+	if minf(-previous[RB.POS + 2], -candidate[RB.POS + 2]) > RcTrack.max_height_m(_rc_track) + GroundTerrain.max_height_validated(ground_surfaces) + reach:
 		return none
 	var bounds: PackedFloat64Array = RcTrack.bounds_ne(_rc_track)
 	if maxf(previous[RB.POS], candidate[RB.POS]) < bounds[0] - reach or minf(previous[RB.POS], candidate[RB.POS]) > bounds[1] + reach \
 			or maxf(previous[RB.POS + 1], candidate[RB.POS + 1]) < bounds[2] - reach \
 			or minf(previous[RB.POS + 1], candidate[RB.POS + 1]) > bounds[3] + reach:
 		return none
-	var best_index := -1
-	var best_fraction := INF
-	for index: int in hull.size() / 3:
-		if _rc_point_depth(candidate, hull, index) <= 0.0:
-			continue
-		var low := 0.0
-		var high := 1.0
-		if _rc_point_depth(previous, hull, index) > 0.0:
-			high = 0.0
-		else:
-			for _step: int in RC_RELIEF_BISECTIONS:
-				var middle := 0.5 * (low + high)
-				if _rc_point_depth(SceneryCollision.state_at_fraction(previous, candidate, middle), hull, index) > 0.0:
-					high = middle
-				else:
-					low = middle
-		if high < best_fraction:
-			best_fraction = high
-			best_index = index
+	var crossing_result: Dictionary = RcTrackCrossing.first(previous, candidate, hull, _rc_track,
+		ground_surfaces, RC_RELIEF_MIN_M, _lake)
+	if not crossing_result.ok:
+		return {ok = false, impact = null, fraction = INF, state = PackedFloat64Array()}
+	var best_index: int = crossing_result.index
+	var best_fraction: float = crossing_result.fraction
 	if best_index < 0:
 		return none
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, best_fraction)
 	var impact: ImpactSnapshot.Snapshot = ImpactSnapshot.hull_point(state, next_tick, hull, best_index)
 	var point: PackedFloat64Array = M.add(RB._slice3(state, RB.POS), M.q_rotate(RB._att(state), hull.slice(3 * best_index, 3 * best_index + 3)))
-	var terrain: PackedFloat64Array = RcTrack.composed(GroundTerrain.sample_validated(point[0], point[1], ground_surfaces),
+	var terrain: PackedFloat64Array = RcTrack.composed(GroundTerrain.sample_validated(point[0], point[1], ground_surfaces, _lake),
 		_rc_track, point[0], point[1])
 	if impact.has_kinematics:
 		impact.normal_ned = GroundTerrain.normal_from_up_slopes(terrain[1], terrain[2])
 	var crossing := ImpactSnapshot.HullCrossing.Result.new()
 	crossing.available = true
 	crossing.reason = "crossing_estimated"
-	crossing.method = "rc-track-surface-bisection-v1"
+	crossing.method = RcTrackCrossing.LAW
 	crossing.fraction = best_fraction
 	crossing.point_index = best_index
 	crossing.position_ned = RB._slice3(state, RB.POS)
@@ -3431,23 +3427,17 @@ func _rc_track_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array, 
 	crossing.point_ned = point
 	impact.crossing = crossing
 	impact.detected_state = state.duplicate()
-	return {impact = impact, fraction = best_fraction, state = state}
+	return {ok = true, impact = impact, fraction = best_fraction, state = state,
+		uncertainty = crossing_result.uncertainty}
 
 
-## Depth (m, > 0 inside) of one hull point below the circuit's raised dirt; 0 or less when clear,
-## on thin dirt, or at or below the flat datum (the existing ground laws own that contact).
-func _rc_point_depth(s: PackedFloat64Array, hull: PackedFloat64Array, index: int) -> float:
-	if s.is_empty():
-		return 0.0
-	var point: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), hull.slice(3 * index, 3 * index + 3)))
-	var up: float = -point[2]
-	if up <= 0.0:
-		return 0.0
-	var relief: float = float(RcTrack.sample(_rc_track, point[0], point[1]).height_m)
-	if relief < RC_RELIEF_MIN_M:
-		return 0.0
-	return relief - up
-
+## Do not arbitrate a rounded upper contact estimate as if its true order were known.
+## Exact simultaneous contacts still use the existing legacy winner policy.
+func _rc_track_order_unresolved(dirt: Dictionary, other_fraction: float) -> bool:
+	return dirt.impact != null and is_finite(other_fraction) \
+		and float(dirt.get("uncertainty", 0.0)) > SceneryCollision.FRACTION_TIE \
+		and other_fraction >= float(dirt.fraction) - float(dirt.uncertainty) - SceneryCollision.FRACTION_TIE \
+		and other_fraction <= float(dirt.fraction) + SceneryCollision.FRACTION_TIE
 
 func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int) -> Dictionary:
@@ -5393,6 +5383,7 @@ func trace_meta() -> Dictionary:
 	if not _rc_track.is_empty():
 		metadata.rc_track_model = "openrc-rc-track-wheel-terrain v1"
 		metadata.rc_track_identity = RcTrack.identity(_rc_track)
+		metadata.rc_track_contact_law = RcTrackCrossing.LAW
 	if not _lake.is_empty():
 		metadata.lake_terrain_model = "bounded-lake-terrain-and-terminal-water-contact-v1"
 		metadata.lake_id = str(_lake.id)
@@ -5787,6 +5778,7 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append("lake-geometry:" + _lake_identity())
 	if not _rc_track.is_empty():
 		parts.append("rc-track:" + RcTrack.identity(_rc_track))
+		parts.append(RcTrackCrossing.LAW)
 	config_hash.update(var_to_bytes(parts))
 	return config_hash.finish().hex_encode()
 

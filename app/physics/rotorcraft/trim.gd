@@ -4,6 +4,7 @@ extends RefCounted
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
+const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const MAX_ITERATIONS: int = 60
 const STATE_SIZE: int = 19
 
@@ -31,6 +32,12 @@ static func solve_hover(context: Dictionary, yaw: float,
 		ground_height_up_m = float(options.ground_height_up_m)
 	if not _input_valid(context, flight_mode, yaw, position_ned, wind_ned_m_s, initial_guess, tolerance):
 		return _failure("invalid hover-trim arguments", 0)
+	# The returned trim uses attitude references for the trainer law. The FBL
+	# body-rate controller rejects those references, so convergence alone cannot
+	# establish a consumable result for it. Refuse until that controller has a
+	# separately defined and round-tripped trim contract.
+	if context.electronics_model.get("law") == Electronics.BODY_RATE_LAW:
+		return _failure("hover trim does not support the body-rate controller", 0)
 	var x: PackedFloat64Array = initial_guess.duplicate()
 	var evaluated: Dictionary = _evaluate(x, context, flight_mode, yaw, position_ned, wind_ned_m_s, ground_height_up_m)
 	if not evaluated.ok:

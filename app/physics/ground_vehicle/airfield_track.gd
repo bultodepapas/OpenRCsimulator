@@ -169,7 +169,7 @@ static func identity(track: Dictionary) -> String:
 
 
 ## Returns additive elevation and its exact partial derivatives, plus the dirt coverage mask.
-static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
+static func sample(track: Dictionary, north: float, east: float, unclipped: bool = false) -> Dictionary:
 	if track.is_empty():
 		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var n := north - float(track.center_north_m)
@@ -178,7 +178,9 @@ static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 	var radius := float(track.radius_m)
 	var half := float(track.lane_width_m) * 0.5
 	var shoulder := float(track.shoulder_m)
-	if absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m):
+	# The uncut, nonnegative sum is an upper envelope even for custom features
+	# truncated by this footprint. Swept bounds must not assume that cut is continuous.
+	if not unclipped and (absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m)):
 		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var excess_e := e - clampf(e, -length, length)
 	var distance := sqrt(n * n + excess_e * excess_e)
@@ -283,6 +285,20 @@ static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 			de += h * along_slope * cross[0]
 			if cross[0] > 0.0: feature = str(ramp.id)
 	return {"height_m": height, "dn": dn, "de": de, "coverage": coverage, "feature_id": feature}
+
+
+## Global Lipschitz bound of the uncut height sum, for validated definitions.
+## Smoothstep has derivative at most 1.5; product factors and coverage are in [0,1].
+## Max-selection of the three coverage masks preserves their largest bound.
+static func height_gradient_bound(track: Dictionary) -> float:
+	if track.is_empty(): return 0.0
+	var shoulder: float = float(track.shoulder_m)
+	var bound: float = float(track.pad_height_m) * 3.0 / shoulder
+	bound += float(track.bank_height_m) * (1.5 / float(track.lane_width_m) + 1.5 / shoulder + 1.5 / 3.5)
+	for group in ["ramps", "rollers"]:
+		for ramp: Dictionary in track[group]:
+			bound += float(ramp.height_m) * 1.5 * (1.0 / shoulder + maxf(1.0 / float(ramp.approach_m), 1.0 / float(ramp.descent_m)))
+	return bound
 
 static func nearby_walls(track: Dictionary, north: float, east: float) -> Array:
 	var result: Array = []

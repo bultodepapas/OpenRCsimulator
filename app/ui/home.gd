@@ -1518,7 +1518,9 @@ func reject_start(message: String) -> void:
 	set_aircraft(aircraft_id)
 	set_note(message)
 	_launch_note_key = message
-	(review_conditions_button if review_conditions_button.visible else fly_button).grab_focus()
+	var action: Control = review_conditions_button if review_conditions_button.visible else fly_button
+	if can_focus(action):
+		action.grab_focus()
 
 
 func refuse_conditions() -> void:

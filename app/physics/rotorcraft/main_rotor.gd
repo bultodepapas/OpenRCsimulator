@@ -224,6 +224,67 @@ static func low_rpm_transition(model: Dictionary, crossflow_m_s: float) -> Packe
 	return PackedFloat64Array([0.5 * upper, upper])
 
 
+## Inspect the transition without evaluating either aerodynamic member. The
+## velocity must be air-relative at the hub, in body FRD (CG-relative airflow
+## alone omits the body-rate cross hub-arm contribution). This is a diagnostic,
+## not an admission check: the reported μ² < 2 bound is algebraic, and the
+## source's μ < 0.15 indicator is not a validated aircraft operating envelope.
+## A small positive pole factor can still yield very large flap derivatives.
+static func domain_diagnostics(model: Dictionary, omega: float,
+		hub_air_velocity: PackedFloat64Array) -> Dictionary:
+	if not _prepared(model) or not is_finite(omega) or omega < 0.0 or not _vector(hub_air_velocity):
+		return {"ok": false}
+	var crossflow: float = sqrt(hub_air_velocity[0] * hub_air_velocity[0]
+		+ hub_air_velocity[1] * hub_air_velocity[1])
+	if not is_finite(crossflow):
+		return {"ok": false}
+	var transition: PackedFloat64Array = low_rpm_transition(model, crossflow)
+	var result: Dictionary = {
+		"ok": true, "hub_air_velocity_body_frd_m_s": hub_air_velocity.duplicate(),
+		"hub_crossflow_m_s": crossflow, "head_speed_rad_s": omega,
+		"rotor_radius_m": model.rotor_radius_m,
+		"transition_lower_rad_s": transition[0], "transition_upper_rad_s": transition[1],
+		"standard_algebraic_mu_squared_limit": 2.0,
+		"source_identified_mu_indicator_limit": 0.15,
+		"standard_member_required": false, "standard_weight": 0.0,
+		"regime": "inactive", "tip_speed_m_s": 0.0,
+		"mu_squared": null, "mu_z": null, "pole_factor": null,
+		"standard_algebraic_mu_valid": null, "mu_below_source_indicator": false,
+	}
+	if omega == 0.0:
+		return result
+	result.regime = "startup_only"
+	if omega > transition[0]:
+		result.standard_member_required = true
+		if omega < transition[1]:
+			result.regime = "blend"
+			var blend: float = (omega - transition[0]) / (transition[1] - transition[0])
+			blend = clampf(blend, 0.0, 1.0)
+			var low_weight: float = 1.0 - blend * blend * (3.0 - 2.0 * blend)
+			result.standard_weight = 1.0 - low_weight
+		else:
+			result.regime = "standard"
+			result.standard_weight = 1.0
+	var tip: float = omega * model.rotor_radius_m
+	result.tip_speed_m_s = tip if is_finite(tip) else null
+	# A finite input can underflow/overflow when converted to ratios. Preserve
+	# that fact as null instead of presenting an infinite ratio as evidence.
+	if not is_finite(tip) or tip <= 0.0:
+		return result
+	var mu_x: float = hub_air_velocity[0] / tip
+	var mu_y: float = hub_air_velocity[1] / tip
+	var mu_z: float = hub_air_velocity[2] / tip
+	var mu2: float = mu_x * mu_x + mu_y * mu_y
+	if is_finite(mu_z):
+		result.mu_z = mu_z
+	if is_finite(mu_x) and is_finite(mu_y) and is_finite(mu2):
+		result.mu_squared = mu2
+		result.pole_factor = 1.0 - 0.5 * mu2
+		result.standard_algebraic_mu_valid = mu2 < 2.0
+		result.mu_below_source_indicator = sqrt(mu2) < 0.15
+	return result
+
+
 static func low_rpm_estimate_active(model: Dictionary, omega: float,
 		hub_air_velocity: PackedFloat64Array) -> bool:
 	if omega <= 0.0 or hub_air_velocity.size() != 3:

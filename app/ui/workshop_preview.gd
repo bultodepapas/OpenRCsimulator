@@ -891,6 +891,13 @@ func _apply_preview_layout() -> void:
 	var compact_controls := UiTheme.text_scale >= 1.5
 	if _layout_initialized and compact == _compact_layout and short == _short_layout and popup_camera == _popup_camera and compact_controls == _compact_controls and is_equal_approx(size.x, _layout_width):
 		return
+	# Capture focus before hiding the outgoing controls; hiding them clears it.
+	var focused: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	var camera_focus_target: Control = null
+	if popup_camera and _inline_camera_buttons.has(focused):
+		camera_focus_target = _camera_menu_button
+	elif not popup_camera and focused == _camera_menu_button:
+		camera_focus_target = _inline_camera_buttons[0]
 	_layout_initialized = true
 	_compact_layout = compact
 	_short_layout = short
@@ -943,6 +950,8 @@ func _apply_preview_layout() -> void:
 	_layout_compact_notice()
 	if is_instance_valid(_camera_menu):
 		_camera_menu.hide()
+	if is_instance_valid(camera_focus_target) and camera_focus_target.is_visible_in_tree():
+		camera_focus_target.grab_focus()
 
 
 func _toolbar_top_offset(compact: bool) -> float:

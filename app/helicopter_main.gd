@@ -71,6 +71,9 @@ var _hud: Label
 var _capture: bool=false
 var _rotor_state: Dictionary={}
 var _rotor_state_previous: Dictionary={}
+var _collective_telemetry_valid: bool=false
+var _collective_telemetry_stick: float=0.0
+var _collective_telemetry_mode: String=""
 var _rotor_phase_previous := PackedFloat64Array([0.0, 0.0])
 var _rotor_phase_current := PackedFloat64Array([0.0, 0.0])
 var _rotor_omega_previous := PackedFloat64Array([0.0, 0.0])
@@ -279,7 +282,7 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  var speed: float=sqrt(s[3]*s[3]+s[4]*s[4]+s[5]*s[5])
  _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+tr("X-Cell reference physics · HX-700 visual")+"\n"
  _hud.text+=tr("Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm")%[-s[2],speed,session.sim.aux[0],session.aircraft.context.drive_model.governor_target_main_rad_s*60.0/(2.0*PI)]+"\n"
- _hud.text+=tr("Collective %.1f deg (stick %.0f%%) · %s · %s")%[session.collective_pitch()*180.0/PI,session.commands.throttle*100.0,session.flight_mode,tr(session.power_phase())]+"\n"
+ _hud.text+=_collective_hud_line()+"\n"
  if session.radio.connected:
   _hud.text+=controller_controls_text()+"\n"
  else:
@@ -312,6 +315,7 @@ func _on_session_resetting() -> void:
  World.flow_to(0.0)
  if recorder!=null and recorder.recording: recorder.stop()
  _rotor_phase_rebase_pending=true
+ _collective_telemetry_valid=false
  _aftermath_paused=false
  if _crash_presentation!=null: _crash_presentation.reset()
  if _rig!=null: _rig.reset() # CAM-26: a restarted flight starts the chase settled, as on the airplane route
@@ -319,7 +323,9 @@ func _on_session_resetting() -> void:
  if _rotors!=null: _rotors.visible=true
 
 func _on_sim_stepped(tick: int,t: float,body: PackedFloat64Array,_loads: PackedFloat64Array,inputs: PackedFloat64Array,_aux: PackedFloat64Array) -> void:
- if session==null or session.sim.continuous.size() not in [6,14] or body.size()!=13: return
+ if session==null or session.sim.continuous.size() not in [6,14] or body.size()!=13 or inputs.size()!=4:
+  _collective_telemetry_valid=false
+  return
  var omega: PackedFloat64Array=_rotor_shaft_speeds(session.sim.continuous)
  var rebase: bool=tick==0 or _rotor_phase_rebase_pending or tick!=_rotor_phase_tick+1
  var previous_telemetry: Dictionary=_rotor_state.duplicate()
@@ -339,7 +345,9 @@ func _on_sim_stepped(tick: int,t: float,body: PackedFloat64Array,_loads: PackedF
  _rotor_state_previous=_rotor_state.duplicate() if rebase else previous_telemetry
 
 func _ensure_rotor_phase_current() -> void:
- if session==null or session.sim.state.size()!=13 or session.sim.continuous.size() not in [6,14]: return
+ if session==null or session.sim.state.size()!=13 or session.sim.continuous.size() not in [6,14] or session.sim.inputs.size()!=4:
+  _collective_telemetry_valid=false
+  return
  if _rotor_phase_rebase_pending or _rotor_phase_tick!=session.sim.tick:
   _rotor_phase_previous=session.shaft_phase.duplicate()
   _rotor_phase_current=session.shaft_phase.duplicate()
@@ -377,13 +385,26 @@ func _cache_presentation_telemetry(body: PackedFloat64Array,continuous: PackedFl
  state.append_array(continuous.slice(0,6))
  var sticks: PackedFloat64Array=PackedFloat64Array([-inputs[1],inputs[0],inputs[2],2.0*inputs[3]-1.0])
  var controls: Dictionary=Electronics.fast_evaluate(context.electronics_model,state,sticks,session.flight_mode,session.trainer_enabled,session._trim)
- var collective: float=float(controls.get("collective_75_rad",0.0)) if controls.get("ok",false) else 0.0
+ var collective: float=float(controls.get("collective_75_rad",NAN)) if controls.get("ok",false) else NAN
+ _collective_telemetry_valid=is_finite(collective)
+ _collective_telemetry_stick=inputs[3]
+ _collective_telemetry_mode=session.flight_mode
+ # Keep the existing visual fallback, while the HUD reports unavailable rather
+ # than presenting that fallback as an accepted control output.
+ if not _collective_telemetry_valid: collective=0.0
  _rotor_state={
   "omega_rad_s":continuous[0]*float(context.main_model.rotation_sense),
   "tail_omega_rad_s":continuous[0]*float(context.tail_model.tail_to_main_speed_ratio)*float(context.tail_model.rotation_sense),
   "a1":continuous[1],"b1":continuous[2],"collective":collective,
  }
  _rotor_envelope_flags=main_rotor_envelope_flags(body,continuous,context,session.wind_at(t))
+
+## Display the accepted endpoint and its sampled stick/mode, not interpolated
+## rotor animation or a new, unsaturated collective-curve request.
+func _collective_hud_line() -> String:
+ if not _collective_telemetry_valid:
+  return tr("Collective unavailable")+" · "+session.flight_mode+" · "+tr(session.power_phase())
+ return tr("Collective %.1f deg (stick %.0f%%) · %s · %s")%[float(_rotor_state.collective)*180.0/PI,_collective_telemetry_stick*100.0,_collective_telemetry_mode,tr(session.power_phase())]
 
 static func main_rotor_envelope_flags(body: PackedFloat64Array,continuous: PackedFloat64Array,context: Dictionary,wind_ned: PackedFloat64Array) -> Dictionary:
  var flags: Dictionary={

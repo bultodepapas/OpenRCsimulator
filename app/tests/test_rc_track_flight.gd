@@ -128,7 +128,7 @@ func _test_hull_contact(field: Dictionary, track: Dictionary) -> void:
 	session.aircraft.model.landing_gear = {}
 	session._prop_disc = {}
 	_check("collision fixture installs the circuit", session.set_rc_track(track))
-	var deck := Track.sample(track, 39.0, -4.0)
+	var deck := {height_m = session.environment.ground(39.0, -4.0)[0]}
 	var previous := _state([39.0, -4.0, -1.0], [0.0, 0.0, 0.0])
 	var candidate := _state([39.0, -4.0, -0.3], [0.0, 0.0, 0.0])
 	var hit: Dictionary = session._rc_track_hit(previous, candidate, 1)
@@ -136,7 +136,7 @@ func _test_hull_contact(field: Dictionary, track: Dictionary) -> void:
 	_check("hull point meets the deck at the swept crossing", hit.impact != null
 		and absf(float(hit.fraction) - expected) < 1.0e-6, "fraction %s expected %.6f" % [str(hit.fraction), expected])
 	_check("impact carries the circuit normal and crossing", hit.impact != null and hit.impact.crossing.available
-		and hit.impact.crossing.method == "rc-track-surface-bisection-v1" and hit.impact.has_kinematics)
+		and hit.impact.crossing.method == Session.RcTrackCrossing.LAW and hit.impact.has_kinematics)
 	var pad_previous := _state([25.0, -10.0, -0.5], [0.0, 0.0, 0.0])
 	var pad_candidate := _state([25.0, -10.0, -0.01], [0.0, 0.0, 0.0])
 	_check("thin access-lane pad is not a relief obstacle", session._rc_track_hit(pad_previous, pad_candidate, 1).impact == null
