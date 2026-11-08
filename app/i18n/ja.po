@@ -8875,3 +8875,87 @@ msgstr "全景表示はガレージ内でも走行中でも有効です。"
 
 msgid "Return to Chase"
 msgstr "追従に戻る"
+
+msgid "Failure practice: %d%%"
+msgstr "故障練習: %d%%"
+
+msgid "These settings apply to new ordinary airplane flights until you change them."
+msgstr "設定を変更するまで、新しく開始する通常の飛行機フライトに適用されます。"
+
+msgid "Restart repeats the current failure setup and never rerolls the current flight. Start a new flight from Home to use changed settings."
+msgstr "再スタートでは現在の故障設定を繰り返し、再抽選は行いません。変更した設定を使うには、ホームから新しいフライトを開始してください。"
+
+msgid "Natural Random does not use these saved failure settings. Helicopters are excluded."
+msgstr "Natural Random はこの保存済みの故障設定を使用しません。ヘリコプターは対象外です。"
+
+msgid "Applying changes updates notices in this flight immediately. The other settings apply to new ordinary airplane flights."
+msgstr "変更を適用すると、このフライトの通知はすぐに更新されます。その他の設定は、新しく開始する通常の飛行機フライトに適用されます。"
+
+msgid "Review saved setup"
+msgstr "保存した設定を確認"
+
+msgid "Close review"
+msgstr "確認を閉じる"
+
+msgid "No saved run was found."
+msgstr "保存された走行がありません。"
+
+msgid "The saved run could not be read. Existing files were kept."
+msgstr "保存された走行を読み込めません。既存のファイルは保持されました。"
+
+msgid "The saved run needs a different vehicle, course, solver, or experiment. Review the saved setup."
+msgstr "保存された走行には別の車両、コース、ソルバー、または実験設定が必要です。保存設定を確認してください。"
+
+msgid "This saved run matches the current setup."
+msgstr "この保存走行は現在の設定と一致します。"
+
+msgid "Source: saved state in memory"
+msgstr "参照元：メモリ内の保存状態"
+
+msgid "Source: checkpoint file"
+msgstr "参照元：チェックポイントファイル"
+
+msgid "Source: recovery backup"
+msgstr "参照元：復旧用バックアップ"
+
+msgid "Vehicle: %s"
+msgstr "車両：%s"
+
+msgid "Course: %s"
+msgstr "コース：%s"
+
+msgid "Practice course"
+msgstr "練習コース"
+
+msgid "Default experiment"
+msgstr "既定の実験"
+
+msgid "Adjust Physics lab to match, apply, then try Restore. Slider steps may limit exact matches."
+msgstr "物理ラボを合わせて適用し、復元をお試しください。スライダーの刻みにより完全に一致できない場合があります。"
+
+msgid "Saved setup details could not be verified."
+msgstr "保存設定の詳細を確認できませんでした。"
+
+msgid "Gravity %s · Grip %s"
+msgstr "重力 %s · グリップ %s"
+
+msgid "Springs %s · Damping %s"
+msgstr "ばね %s · 減衰 %s"
+
+msgid "Ballast %s kg · Height %s m"
+msgstr "バラスト %s kg · 高さ %s m"
+
+msgid "Experiment was not applied."
+msgstr "実験は適用されませんでした。"
+
+msgid "Experiment applied. Run restarted."
+msgstr "実験を適用しました。走行を再開しました。"
+
+msgid "Saved run restored from a recovery backup. Press Enter to continue."
+msgstr "復旧用バックアップから走行を復元しました。Enter で続行します。"
+
+msgid "Saved run restored. Press Enter to continue."
+msgstr "走行を復元しました。Enter で続行します。"
+
+msgid "Restore was not completed."
+msgstr "復元は完了しませんでした。"

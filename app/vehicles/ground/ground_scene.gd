@@ -7,6 +7,7 @@ const Registry = preload("res://input/controller_registry.gd")
 const UiInput = preload("res://ui/ui_input.gd")
 const VehicleCatalog = preload("res://vehicles/ground/vehicle_catalog.gd")
 const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
+const CheckpointReview = preload("res://vehicles/ground/checkpoint_review.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const CourseView = preload("res://vehicles/ground/course_view.gd")
 const TrackView = preload("res://vehicles/ground/airfield_track_view.gd")
@@ -907,48 +908,50 @@ func handle_action(action: String) -> void:
 				_finish_recording()
 		"save":
 			if _save_checkpoint():
+				if dashboard.checkpoint_notice.visible:
+					dashboard.show_checkpoint_inspection(CheckpointReview.inspect(session, _checkpoint, checkpoint_path))
 				dashboard.message("State saved in " + checkpoint_path, "Estado guardado en " + checkpoint_path)
 			elif not _checkpoint_backup_path.is_empty():
 				dashboard.message("Save failed. Previous file kept at: " + _checkpoint_backup_path, "Falló el guardado. Archivo anterior conservado en: " + _checkpoint_backup_path)
 			else:
 				dashboard.message("Could not save state. Previous save kept.", "No se pudo guardar el estado. Se conservó el guardado anterior.")
+		"review_checkpoint":
+			dashboard.show_checkpoint_inspection(CheckpointReview.inspect(session, _checkpoint, checkpoint_path), true)
+		"close_checkpoint_review": dashboard.close_checkpoint_review()
 		"restore":
+			# Inspect again at the action boundary; review never changes the recorder or cache.
+			var info: Dictionary = CheckpointReview.inspect(session, _checkpoint, checkpoint_path)
+			dashboard.show_checkpoint_inspection(info)
+			if info.get("status") != "compatible": return
 			if not _finish_recording(): return
-			var restored: bool = session.restore_checkpoint(_checkpoint) if not _checkpoint.is_empty() else _restore_checkpoint_file()
-			if restored:
+			if _commit_checkpoint(info):
 				_after_reset()
 				_run_was_driven = true
-				dashboard.message("Saved state restored. Press Enter to continue.", "Estado restaurado. Pulsa Enter para continuar.")
+				var message := tr("Saved run restored from a recovery backup. Press Enter to continue.") if info.get("source") == "backup" else tr("Saved run restored. Press Enter to continue.")
+				dashboard.message(message, message)
 			else:
-				dashboard.message("State does not match this vehicle and course.", "El estado no corresponde a este vehículo y pista.")
+				dashboard.show_checkpoint_inspection({"status": "refused"})
 		"home":
 			if departure_managed or _finish_recording(): home_requested.emit()
 
 func _restore_checkpoint_file() -> bool:
-	var destination := ProjectSettings.globalize_path(checkpoint_path)
-	var candidates: Array[String] = [destination]
-	var backups: Array[String] = []
-	if not DirAccess.dir_exists_absolute(destination.get_base_dir()): return false
-	var prefix := destination.get_file() + ".tmp-"
-	for name in DirAccess.get_files_at(destination.get_base_dir()):
-		if name.begins_with(prefix) and name.ends_with(".previous"):
-			backups.append(destination.get_base_dir().path_join(name))
-	backups.sort_custom(func(a: String, b: String) -> bool:
-		var a_time := FileAccess.get_modified_time(a)
-		var b_time := FileAccess.get_modified_time(b)
-		return a > b if a_time == b_time else a_time > b_time)
-	candidates.append_array(backups)
-	for path in candidates:
-		if not FileAccess.file_exists(path): continue
-		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-		if not parsed is Dictionary or not session.restore_checkpoint(parsed): continue
-		_checkpoint = parsed
-		if path != destination:
+	var info: Dictionary = CheckpointReview.inspect(session, {}, checkpoint_path)
+	return info.get("status") == "compatible" and _commit_checkpoint(info)
+
+
+func _commit_checkpoint(info: Dictionary) -> bool:
+	var candidate: Dictionary = info.get("candidate", {})
+	if not session.restore_checkpoint(candidate): return false
+	if info.get("source") != "memory":
+		_checkpoint = candidate.duplicate(true)
+		if info.get("source") == "backup":
+			var path: String = info.get("path", "")
+			var destination := ProjectSettings.globalize_path(checkpoint_path)
 			_checkpoint_backup_path = path
 			if not FileAccess.file_exists(destination) and _move_checkpoint_file(path, destination) == OK:
 				_checkpoint_backup_path = ""
-		return true
-	return false
+	return true
+
 
 ## Commit both disk and cache only after a complete, verified sibling-temp write.
 ## This handles reported I/O failure; it does not promise power-loss durability.
@@ -1088,10 +1091,16 @@ func _select_mode(index: int) -> void:
 		dashboard.message("Record the same route before and after changing one parameter.", "Graba la misma ruta antes y después de cambiar un parámetro.")
 
 func _experiment(knobs: Dictionary) -> void:
+	if _departure_guard_active: return
+	dashboard.show_lab_result()
 	if not _finish_recording(): return
 	if session.set_experiment(knobs):
 		_after_reset()
-		dashboard.message("Experiment applied. Mass, inertia and source identity updated.", "Experimento aplicado. Masa, inercia e identidad actualizadas.")
+		dashboard.show_lab_result(session._vehicle_result.get("experiment", {}))
+		var message := tr("Experiment applied. Run restarted.")
+		dashboard.message(message, message)
+		if dashboard.checkpoint_notice.visible:
+			dashboard.show_checkpoint_inspection(CheckpointReview.inspect(session, _checkpoint, checkpoint_path))
 	else:
 		dashboard.message(session.load_error, session.load_error)
 
@@ -1152,7 +1161,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.physical_keycode:
 			KEY_ESCAPE:
-				if dashboard.menu_visible and not _pending_spawn_id.is_empty():
+				if dashboard.menu_visible and dashboard.checkpoint_review.visible:
+					dashboard.close_checkpoint_review()
+				elif dashboard.menu_visible and not _pending_spawn_id.is_empty():
 					_clear_spawn_proposal()
 				else:
 					handle_action("menu")
@@ -1184,6 +1195,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		var action := ""
 		if event.button_index == JOY_BUTTON_START:
 			action = "resume" if dashboard.menu_visible else "menu"
+		elif dashboard.menu_visible and dashboard.checkpoint_review.visible and event.is_action_pressed("ui_cancel"):
+			action = "close_checkpoint_review"
 		elif dashboard.menu_visible and not _pending_spawn_id.is_empty() and event.is_action_pressed("ui_cancel"):
 			action = "cancel_spawn"
 		elif not dashboard.menu_visible and _accept_driving_controller_button(event.device):

@@ -9665,3 +9665,87 @@ msgstr "A visão geral fica ativa na garagem e ao dirigir."
 
 msgid "Return to Chase"
 msgstr "Voltar ao seguimento"
+
+msgid "Failure practice: %d%%"
+msgstr "Prática de falhas: %d%%"
+
+msgid "These settings apply to new ordinary airplane flights until you change them."
+msgstr "Estas configurações se aplicam aos novos voos normais de avião até você alterá-las."
+
+msgid "Restart repeats the current failure setup and never rerolls the current flight. Start a new flight from Home to use changed settings."
+msgstr "Reiniciar repete a configuração de falhas atual sem fazer outro sorteio. Inicie um novo voo pela tela inicial para usar as configurações alteradas."
+
+msgid "Natural Random does not use these saved failure settings. Helicopters are excluded."
+msgstr "Aleatório natural não usa estas configurações de falhas salvas. Helicópteros estão excluídos."
+
+msgid "Applying changes updates notices in this flight immediately. The other settings apply to new ordinary airplane flights."
+msgstr "Aplicar alterações atualiza os avisos deste voo imediatamente. As demais configurações se aplicam a novos voos normais de avião."
+
+msgid "Review saved setup"
+msgstr "Revisar configuração salva"
+
+msgid "Close review"
+msgstr "Fechar revisão"
+
+msgid "No saved run was found."
+msgstr "Nenhuma corrida salva foi encontrada."
+
+msgid "The saved run could not be read. Existing files were kept."
+msgstr "Não foi possível ler a corrida salva. Os arquivos existentes foram mantidos."
+
+msgid "The saved run needs a different vehicle, course, solver, or experiment. Review the saved setup."
+msgstr "A corrida salva exige outro veículo, pista, solucionador ou experimento. Revise a configuração salva."
+
+msgid "This saved run matches the current setup."
+msgstr "Esta corrida salva corresponde à configuração atual."
+
+msgid "Source: saved state in memory"
+msgstr "Origem: estado salvo na memória"
+
+msgid "Source: checkpoint file"
+msgstr "Origem: arquivo de estado"
+
+msgid "Source: recovery backup"
+msgstr "Origem: cópia de recuperação"
+
+msgid "Vehicle: %s"
+msgstr "Veículo: %s"
+
+msgid "Course: %s"
+msgstr "Pista: %s"
+
+msgid "Practice course"
+msgstr "Pista de prática"
+
+msgid "Default experiment"
+msgstr "Experimento padrão"
+
+msgid "Adjust Physics lab to match, apply, then try Restore. Slider steps may limit exact matches."
+msgstr "Ajuste o laboratório de física, aplique e tente Restaurar. O passo dos controles pode impedir uma correspondência exata."
+
+msgid "Saved setup details could not be verified."
+msgstr "Não foi possível verificar os detalhes da configuração salva."
+
+msgid "Gravity %s · Grip %s"
+msgstr "Gravidade %s · Aderência %s"
+
+msgid "Springs %s · Damping %s"
+msgstr "Molas %s · Amortecimento %s"
+
+msgid "Ballast %s kg · Height %s m"
+msgstr "Lastro %s kg · Altura %s m"
+
+msgid "Experiment was not applied."
+msgstr "O experimento não foi aplicado."
+
+msgid "Experiment applied. Run restarted."
+msgstr "Experimento aplicado. Corrida reiniciada."
+
+msgid "Saved run restored from a recovery backup. Press Enter to continue."
+msgstr "Corrida restaurada de uma cópia de recuperação. Pressione Enter para continuar."
+
+msgid "Saved run restored. Press Enter to continue."
+msgstr "Corrida restaurada. Pressione Enter para continuar."
+
+msgid "Restore was not completed."
+msgstr "A restauração não foi concluída."

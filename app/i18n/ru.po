@@ -9626,3 +9626,87 @@ msgstr "Обзор активен в гараже и во время езды."
 
 msgid "Return to Chase"
 msgstr "Вернуться к следованию"
+
+msgid "Failure practice: %d%%"
+msgstr "Тренировка отказов: %d%%"
+
+msgid "These settings apply to new ordinary airplane flights until you change them."
+msgstr "Эти настройки применяются к новым обычным полётам на самолётах, пока вы их не измените."
+
+msgid "Restart repeats the current failure setup and never rerolls the current flight. Start a new flight from Home to use changed settings."
+msgstr "Перезапуск повторяет текущий набор отказов без новой случайной выборки. Чтобы использовать изменённые настройки, начните новый полёт с главного экрана."
+
+msgid "Natural Random does not use these saved failure settings. Helicopters are excluded."
+msgstr "Режим Natural Random не использует эти сохранённые настройки отказов. Вертолёты исключены."
+
+msgid "Applying changes updates notices in this flight immediately. The other settings apply to new ordinary airplane flights."
+msgstr "Применение сразу обновляет уведомления в текущем полёте. Остальные настройки действуют для новых обычных полётов на самолётах."
+
+msgid "Review saved setup"
+msgstr "Просмотреть сохранённые настройки"
+
+msgid "Close review"
+msgstr "Закрыть просмотр"
+
+msgid "No saved run was found."
+msgstr "Сохранённый заезд не найден."
+
+msgid "The saved run could not be read. Existing files were kept."
+msgstr "Не удалось прочитать сохранённый заезд. Файлы сохранены."
+
+msgid "The saved run needs a different vehicle, course, solver, or experiment. Review the saved setup."
+msgstr "Для сохранённого заезда требуется другой автомобиль, трасса, решатель или эксперимент. Просмотрите настройки."
+
+msgid "This saved run matches the current setup."
+msgstr "Сохранённый заезд соответствует текущим настройкам."
+
+msgid "Source: saved state in memory"
+msgstr "Источник: сохранённое состояние в памяти"
+
+msgid "Source: checkpoint file"
+msgstr "Источник: файл контрольной точки"
+
+msgid "Source: recovery backup"
+msgstr "Источник: резервная копия"
+
+msgid "Vehicle: %s"
+msgstr "Автомобиль: %s"
+
+msgid "Course: %s"
+msgstr "Трасса: %s"
+
+msgid "Practice course"
+msgstr "Учебная трасса"
+
+msgid "Default experiment"
+msgstr "Эксперимент по умолчанию"
+
+msgid "Adjust Physics lab to match, apply, then try Restore. Slider steps may limit exact matches."
+msgstr "Настройте физическую лабораторию, примените изменения и попробуйте восстановить. Шаг ползунков может помешать точному совпадению."
+
+msgid "Saved setup details could not be verified."
+msgstr "Не удалось проверить сохранённые настройки."
+
+msgid "Gravity %s · Grip %s"
+msgstr "Гравитация %s · Сцепление %s"
+
+msgid "Springs %s · Damping %s"
+msgstr "Пружины %s · Демпфирование %s"
+
+msgid "Ballast %s kg · Height %s m"
+msgstr "Балласт %s кг · Высота %s м"
+
+msgid "Experiment was not applied."
+msgstr "Эксперимент не применён."
+
+msgid "Experiment applied. Run restarted."
+msgstr "Эксперимент применён. Заезд перезапущен."
+
+msgid "Saved run restored from a recovery backup. Press Enter to continue."
+msgstr "Заезд восстановлен из резервной копии. Нажмите Enter, чтобы продолжить."
+
+msgid "Saved run restored. Press Enter to continue."
+msgstr "Заезд восстановлен. Нажмите Enter, чтобы продолжить."
+
+msgid "Restore was not completed."
+msgstr "Восстановление не завершено."

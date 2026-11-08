@@ -35,6 +35,14 @@ var _controller_ids: Array[int] = []
 var _using_gamepad := false
 var _menu_button: Button
 var record_button: Button
+var checkpoint_notice: Label
+var menu_scroll: ScrollContainer
+var checkpoint_review_button: Button
+var restore_button: Button
+var checkpoint_review: VBoxContainer
+var checkpoint_details: Label
+var close_checkpoint_button: Button
+var lab_result: Label
 var modes: OptionButton
 var locations: OptionButton
 var restart_at_button: Button
@@ -107,6 +115,7 @@ func _ready() -> void:
 	panel_style.content_margin_bottom = 18
 	panel.add_theme_stylebox_override("panel", panel_style)
 	panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	panel.offset_left = -358
 	panel.offset_top = 78
 	panel.offset_bottom = -178
@@ -120,6 +129,7 @@ func _ready() -> void:
 	header.add_theme_constant_override("separation", 8)
 	layout.add_child(header)
 	var scroll := ScrollContainer.new()
+	menu_scroll = scroll
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
@@ -241,8 +251,31 @@ func _ready() -> void:
 	column.add_child(record_button)
 	var saves := HBoxContainer.new()
 	saves.add_child(_button(words("Save state", "Guardar estado"), "save"))
-	saves.add_child(_button(words("Restore", "Restaurar"), "restore"))
+	restore_button = _button(words("Restore", "Restaurar"), "restore")
+	restore_button.name = "RestoreGroundCheckpoint"
+	saves.add_child(restore_button)
 	column.add_child(saves)
+	checkpoint_notice = _label("", int(round(15.0 * UiTheme.text_scale)))
+	checkpoint_notice.name = "GroundCheckpointNotice"
+	checkpoint_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	checkpoint_notice.visible = false
+	column.add_child(checkpoint_notice)
+	checkpoint_review_button = _button(tr("Review saved setup"), "review_checkpoint")
+	checkpoint_review_button.name = "ReviewGroundCheckpoint"
+	checkpoint_review_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	checkpoint_review_button.add_theme_font_size_override("font_size", int(round(15.0 * UiTheme.text_scale)))
+	column.add_child(checkpoint_review_button)
+	checkpoint_review = VBoxContainer.new()
+	checkpoint_review.name = "GroundCheckpointReview"
+	checkpoint_review.visible = false
+	column.add_child(checkpoint_review)
+	checkpoint_details = _label("", int(round(15.0 * UiTheme.text_scale)))
+	checkpoint_details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	close_checkpoint_button = _button(tr("Close review"), "close_checkpoint_review")
+	close_checkpoint_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	close_checkpoint_button.add_theme_font_size_override("font_size", int(round(15.0 * UiTheme.text_scale)))
+	checkpoint_review.add_child(close_checkpoint_button)
+	checkpoint_review.add_child(checkpoint_details)
 	lab = VBoxContainer.new()
 	lab.visible = false
 	column.add_child(lab)
@@ -260,6 +293,10 @@ func _ready() -> void:
 			knobs[key] = sliders[key].value
 		experiment_requested.emit(knobs))
 	lab.add_child(apply)
+	lab_result = _label("", int(round(15.0 * UiTheme.text_scale)))
+	lab_result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lab_result.visible = false
+	lab.add_child(lab_result)
 	# Experiments belong next to the mode and reset controls, ahead of utilities.
 	column.move_child(lab, row.get_index() + 1)
 	column.add_child(_button(words("Return to Home", "Volver al inicio"), "home"))
@@ -442,6 +479,100 @@ func _notification(what: int) -> void:
 
 func message(english: String, spanish: String) -> void:
 	toast.text = words(english, spanish)
+
+## Only values validated against the active vehicle and course are shown as saved settings.
+func show_checkpoint_inspection(info: Dictionary, reveal: bool = false) -> void:
+	match str(info.get("status", "unreadable")):
+		"absent": checkpoint_notice.text = tr("No saved run was found.")
+		"unreadable": checkpoint_notice.text = tr("The saved run could not be read. Existing files were kept.")
+		"incompatible": checkpoint_notice.text = tr("The saved run needs a different vehicle, course, solver, or experiment. Review the saved setup.")
+		"compatible": checkpoint_notice.text = tr("This saved run matches the current setup.")
+		"refused": checkpoint_notice.text = tr("Restore was not completed.")
+	checkpoint_notice.visible = true
+	if not reveal and restore_button.has_focus(): _reveal_checkpoint_notice.call_deferred()
+	if reveal or checkpoint_review.visible:
+		checkpoint_review.visible = true
+		var lines: Array[String] = []
+		match str(info.get("source", "")):
+			"memory": lines.append(tr("Source: saved state in memory"))
+			"primary": lines.append(tr("Source: checkpoint file"))
+			"backup": lines.append(tr("Source: recovery backup"))
+		if info.get("validated", false):
+			lines.append(tr("Vehicle: %s") % vehicle_name)
+			lines.append(tr("Course: %s") % (tr("Airfield") if airfield else tr("Practice course")))
+			var experiment: Dictionary = info.get("experiment", {})
+			if experiment.is_empty():
+				lines.append(tr("Default experiment"))
+			else:
+				lines.append_array(_experiment_lines(experiment))
+			if info.get("status") == "incompatible":
+				lines.append(tr("Adjust Physics lab to match, apply, then try Restore. Slider steps may limit exact matches."))
+		else:
+			lines.append(tr("Saved setup details could not be verified."))
+		checkpoint_details.text = "\n".join(lines)
+		if reveal:
+			var focused := root_control.get_viewport().gui_get_focus_owner()
+			if focused == checkpoint_review_button:
+				close_checkpoint_button.grab_focus()
+				focused = close_checkpoint_button
+			_reveal_checkpoint_start.call_deferred(focused)
+
+
+func _reveal_checkpoint_notice() -> void:
+	if not is_inside_tree(): return
+	await get_tree().process_frame
+	if not is_inside_tree() or not checkpoint_notice.visible or not restore_button.has_focus(): return
+	var viewport_rect := menu_scroll.get_global_rect()
+	var notice_rect := checkpoint_notice.get_global_rect()
+	var visible_height := minf(notice_rect.size.y, viewport_rect.size.y)
+	var hidden := notice_rect.position.y + visible_height - viewport_rect.end.y
+	if hidden > 0.0: menu_scroll.scroll_vertical += int(ceil(hidden))
+
+
+func _reveal_checkpoint_start(expected_focus: Control) -> void:
+	if not is_inside_tree(): return
+	await get_tree().process_frame
+	if not is_inside_tree() or not checkpoint_review.visible \
+			or root_control.get_viewport().gui_get_focus_owner() != expected_focus: return
+	var viewport_rect := menu_scroll.get_global_rect()
+	var review_rect := checkpoint_review.get_global_rect()
+	var shift := 0.0
+	if review_rect.size.y > viewport_rect.size.y:
+		# A long review starts at the top; the remaining details and Close stay scrollable.
+		shift = review_rect.position.y - viewport_rect.position.y
+	elif review_rect.end.y > viewport_rect.end.y:
+		shift = review_rect.end.y - viewport_rect.end.y
+	elif review_rect.position.y < viewport_rect.position.y:
+		shift = review_rect.position.y - viewport_rect.position.y
+	if shift != 0.0: menu_scroll.scroll_vertical += int(ceil(shift))
+
+
+func close_checkpoint_review() -> void:
+	checkpoint_review.visible = false
+	if checkpoint_review_button.is_visible_in_tree(): checkpoint_review_button.grab_focus()
+
+
+func _experiment_lines(settings: Dictionary) -> Array[String]:
+	var lines: Array[String] = []
+	lines.append(tr("Gravity %s · Grip %s") % [_exact_number(settings.gravity_scale), _exact_number(settings.grip_scale)])
+	lines.append(tr("Springs %s · Damping %s") % [_exact_number(settings.spring_scale), _exact_number(settings.damper_scale)])
+	lines.append(tr("Ballast %s kg · Height %s m") % [_exact_number(settings.ballast_kg), _exact_number(settings.ballast_height_m)])
+	return lines
+
+
+func _exact_number(value: Variant) -> String:
+	return JSON.stringify(float(value), "", true, true)
+
+
+func show_lab_result(settings: Dictionary = {}) -> void:
+	lab_result.visible = true
+	if settings.is_empty():
+		lab_result.text = tr("Experiment was not applied.")
+	else:
+		var lines := _experiment_lines(settings)
+		lines.push_front(tr("Experiment applied. Run restarted."))
+		lab_result.text = "\n".join(lines)
+
 
 func update_lights(enabled: bool, auxiliary: bool = false, neon: bool = true) -> void:
 	if headlights_button == null: return

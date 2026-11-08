@@ -8824,3 +8824,87 @@ msgstr "全景视角在车库内和行驶时均生效。"
 
 msgid "Return to Chase"
 msgstr "返回跟随视角"
+
+msgid "Failure practice: %d%%"
+msgstr "故障练习：%d%%"
+
+msgid "These settings apply to new ordinary airplane flights until you change them."
+msgstr "这些设置会应用于新开始的普通飞机飞行，直到您更改设置。"
+
+msgid "Restart repeats the current failure setup and never rerolls the current flight. Start a new flight from Home to use changed settings."
+msgstr "重新开始会重复当前的故障配置，不会重新随机抽取。要使用更改后的设置，请从主页开始新的飞行。"
+
+msgid "Natural Random does not use these saved failure settings. Helicopters are excluded."
+msgstr "自然随机模式不使用这些已保存的故障设置。直升机不适用。"
+
+msgid "Applying changes updates notices in this flight immediately. The other settings apply to new ordinary airplane flights."
+msgstr "应用更改会立即更新当前飞行的通知。其他设置应用于新开始的普通飞机飞行。"
+
+msgid "Review saved setup"
+msgstr "查看已保存的设置"
+
+msgid "Close review"
+msgstr "关闭查看"
+
+msgid "No saved run was found."
+msgstr "未找到已保存的行驶记录。"
+
+msgid "The saved run could not be read. Existing files were kept."
+msgstr "无法读取保存的行驶记录。现有文件已保留。"
+
+msgid "The saved run needs a different vehicle, course, solver, or experiment. Review the saved setup."
+msgstr "保存的记录需要不同的车辆、赛道、求解器或实验设置。请查看已保存的设置。"
+
+msgid "This saved run matches the current setup."
+msgstr "此记录与当前设置相匹配。"
+
+msgid "Source: saved state in memory"
+msgstr "来源：内存中的保存状态"
+
+msgid "Source: checkpoint file"
+msgstr "来源：检查点文件"
+
+msgid "Source: recovery backup"
+msgstr "来源：恢复备份"
+
+msgid "Vehicle: %s"
+msgstr "车辆：%s"
+
+msgid "Course: %s"
+msgstr "赛道：%s"
+
+msgid "Practice course"
+msgstr "练习赛道"
+
+msgid "Default experiment"
+msgstr "默认实验"
+
+msgid "Adjust Physics lab to match, apply, then try Restore. Slider steps may limit exact matches."
+msgstr "在物理实验室中调整并应用，然后尝试恢复。滑块步长可能无法精确匹配。"
+
+msgid "Saved setup details could not be verified."
+msgstr "无法验证保存的设置详情。"
+
+msgid "Gravity %s · Grip %s"
+msgstr "重力 %s · 抓地力 %s"
+
+msgid "Springs %s · Damping %s"
+msgstr "弹簧 %s · 阻尼 %s"
+
+msgid "Ballast %s kg · Height %s m"
+msgstr "配重 %s 千克 · 高度 %s 米"
+
+msgid "Experiment was not applied."
+msgstr "实验未应用。"
+
+msgid "Experiment applied. Run restarted."
+msgstr "实验已应用。行驶已重新开始。"
+
+msgid "Saved run restored from a recovery backup. Press Enter to continue."
+msgstr "已从恢复备份还原行驶记录。按 Enter 继续。"
+
+msgid "Saved run restored. Press Enter to continue."
+msgstr "已恢复行驶记录。按 Enter 继续。"
+
+msgid "Restore was not completed."
+msgstr "恢复未完成。"
