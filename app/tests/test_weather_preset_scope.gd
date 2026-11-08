@@ -16,6 +16,10 @@ var ui: RefCounted
 
 
 func _initialize() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
 	ui = UiDriver.new(self)
 	TranslationServer.set_locale("en")
 	root.size = Vector2i(1920, 1080)
@@ -190,7 +194,23 @@ func _pending_edits() -> void:
 			and dialog.atmosphere_preview.text.contains("unavailable"))
 		await _apply(dialog)
 		_check("invalid air still blocks Apply after wind changes", _result.is_empty() and dialog.error_label.visible)
+		# Apply moves focus to the invalid field after deferred layout. Wait for that
+		# transition before a player can move on to Cancel.
+		var invalid_edit: LineEdit = dialog.atmosphere_inputs["temperature_c"]
+		var diagnostic_focused: bool = await ui.wait_until(
+			func() -> bool: return root.gui_get_focus_owner() == invalid_edit, 5000)
+		_check("invalid air diagnostic focuses the unchanged field", diagnostic_focused
+			and invalid_edit.is_visible_in_tree() and invalid_edit.text == invalid,
+			"focus=%s text=%s" % [ui.focus_name(), invalid_edit.text])
+		var viewport_rect: Rect2 = root.get_visible_rect()
+		var cancel_rect: Rect2 = dialog.cancel_button.get_global_rect()
+		_check("Cancel is visible and enabled at 1080p", root.size == Vector2i(1920, 1080)
+			and viewport_rect.size == Vector2(1920, 1080) and cancel_rect.has_area()
+			and viewport_rect.encloses(cancel_rect) and dialog.cancel_button.is_visible_in_tree()
+			and not dialog.cancel_button.disabled,
+			"window=%s viewport=%s cancel=%s" % [root.size, viewport_rect, cancel_rect])
 		dialog.cancel_button.grab_focus()
+		_check("Cancel receives keyboard focus", root.gui_get_focus_owner() == dialog.cancel_button, ui.focus_name())
 		await ui.tap(KEY_ENTER)
 		_check("visible Cancel remains usable for invalid air", _cancelled and _result.is_empty())
 		await _close(dialog)
