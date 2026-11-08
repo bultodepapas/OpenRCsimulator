@@ -6,6 +6,7 @@
 extends SceneTree
 
 const Home := preload("res://ui/home.gd")
+const AppRoot := preload("res://app_root.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
@@ -95,7 +96,7 @@ func _measure(id: String, defaults: bool, window: Vector2, text_scale := 1.0) ->
 	home.set_anchors_preset(Control.PRESET_FULL_RECT)
 	home.set_aircraft(id)
 	if defaults:
-		home.set_weather_config(Preferences.DEFAULTS.weather_config)
+		home.set_weather_config(AppRoot.weather_for_aircraft(id, Preferences.DEFAULTS.weather_config))
 		home.set_time_of_day(Preferences.DEFAULTS.time_of_day)
 		home.set_start_choice(Preferences.DEFAULTS.start_choice)
 	frame.add_child(home)
