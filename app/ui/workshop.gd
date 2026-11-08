@@ -103,10 +103,19 @@ var _favorite_button: Button
 var _favorites_only: CheckButton
 var _build_search: LineEdit
 var _favorites: Array = []
-var _unavailable_favorite_ids: Array[String] = []
+var _unavailable_variant_ids: Array[String] = []
 var _favorites_hint: Label
 var _favorites_ok := true
 var _library_summaries: Array[Dictionary] = []
+var _library_unavailable: Array = []
+var _library_recovered: Array = []
+var _library_scan_errors := PackedStringArray()
+var _library_scan_ok := true
+var _library_scan_status: Label
+var _library_scan_details: Label
+var _library_scan_actions: HFlowContainer
+var _library_retry_button: Button
+var _library_details_button: Button
 var _thumbnail: Node
 var _thumbnail_image: TextureRect
 var _thumbnail_note: Label
@@ -664,6 +673,28 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_favorites_hint = _label("Unavailable favorites remain listed under Favorites only and can be removed.", "SecondaryLabel", true)
 	_favorites_hint.visible = false
 	content.add_child(_favorites_hint)
+	_library_scan_status = _label("", "ErrorLabel", true)
+	_library_scan_status.name = "SavedBuildScanStatus"
+	_library_scan_status.visible = false
+	content.add_child(_library_scan_status)
+	_library_scan_actions = HFlowContainer.new()
+	_library_scan_actions.name = "SavedBuildScanActions"
+	_library_scan_actions.add_theme_constant_override("h_separation", 8)
+	_library_scan_actions.add_theme_constant_override("v_separation", 8)
+	_library_scan_actions.visible = false
+	_library_retry_button = _button("Retry", "", "RetryBuildScan")
+	_library_retry_button.pressed.connect(_retry_library_scan)
+	_library_scan_actions.add_child(_library_retry_button)
+	_library_details_button = _button("Details", "", "BuildScanDetailsButton")
+	_library_details_button.toggle_mode = true
+	_library_details_button.toggled.connect(func(pressed: bool) -> void: _library_scan_details.visible = pressed)
+	_library_scan_actions.add_child(_library_details_button)
+	content.add_child(_library_scan_actions)
+	_library_scan_details = _label("", "SecondaryLabel", true)
+	_library_scan_details.name = "SavedBuildScanDetails"
+	_library_scan_details.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_library_scan_details.visible = false
+	content.add_child(_library_scan_details)
 	_variant_selector = OptionButton.new()
 	_variant_selector.fit_to_longest_item = false
 	_variant_selector.clip_text = true
@@ -1091,48 +1122,67 @@ func _refresh_variants(reload := true) -> void:
 	var preferences := LibraryPreferences.load_state(variants_root)
 	_favorites_ok = preferences.ok
 	_favorites = preferences.favorites if preferences.ok else []
-	_unavailable_favorite_ids.clear()
+	_unavailable_variant_ids.clear()
 	_variant_selector.clear()
 	_variant_selector.add_item(tr("Choose a saved build…"))
 	_variant_selector.set_item_metadata(0, "")
 	if reload:
+		var scan := _scan_variant_library()
+		_library_scan_ok = scan.ok
+		_library_scan_errors = scan.errors
+		_library_unavailable = scan.unavailable
+		_library_recovered = scan.recovered
 		_library_summaries.clear()
-		for variant: Dictionary in Store.list_variants(variants_root):
-			_library_summaries.append({id = variant.get("id", ""), name = variant.get("name", ""), base_id = variant.get("base_id", ""), revision = variant.get("revision", 0)})
+		for variant: Dictionary in scan.variants:
+			_library_summaries.append({id = variant.get("id", ""), name = variant.get("name", ""), base_id = variant.get("base_id", ""), revision = variant.get("revision", 0), recovered = variant.get("recovered_from_manifest_backup", false)})
 	var known_ids: Array[String] = []
 	for variant: Dictionary in _library_summaries: known_ids.append(str(variant.id))
+	for failure: Dictionary in _library_unavailable: known_ids.append(str(failure.id))
 	var titles := PackedStringArray()
 	var rows: Array[Dictionary] = []
 	for variant: Dictionary in _library_summaries:
 		var variant_id := str(variant.get("id", ""))
-		if variant_id == "":
-			continue
+		if variant_id == "": continue
 		var source_name := str(Catalog.entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
 		if _favorites_only.button_pressed and variant_id not in _favorites: continue
 		var current := tr("Current") + " · " if variant_id == _saved_variant_id else ""
 		if variant_id in _favorites: current = tr("Favorite") + " · " + current
+		if bool(variant.get("recovered", false)): current += tr("Recovered from backup") + " · "
 		titles.append(str(variant.get("name", "")) + " " + source_name)
 		rows.append({id = variant_id, missing = false, title = current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0))})
+	for failure: Dictionary in _library_unavailable:
+		var failed_id := str(failure.id)
+		if _favorites_only.button_pressed and failed_id not in _favorites: continue
+		var failed_title := tr("Saved build unavailable · %s") % failed_id
+		if failed_id in _favorites: failed_title = tr("Favorite") + " · " + failed_title
+		titles.append(failed_title + " " + failed_id)
+		rows.append({id = failed_id, missing = true, unreadable = true, title = failed_title})
 	var missing_count := 0
-	for favorite_id: String in _favorites:
-		if favorite_id in known_ids: continue
-		missing_count += 1
-		if not _favorites_only.button_pressed: continue
-		var missing_title := tr("Unavailable favorite %d") % missing_count
-		titles.append(missing_title)
-		rows.append({id = favorite_id, missing = true, title = missing_title})
+	if _library_scan_ok:
+		for favorite_id: String in _favorites:
+			if favorite_id in known_ids: continue
+			missing_count += 1
+			if not _favorites_only.button_pressed: continue
+			var missing_title := tr("Unavailable favorite %d") % missing_count
+			titles.append(missing_title)
+			rows.append({id = favorite_id, missing = true, unreadable = false, title = missing_title})
 	for row_index in LibrarySearch.matching_indices(_build_search.text, titles):
 		var row: Dictionary = rows[row_index]
 		_variant_selector.add_item(row.title)
 		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, row.id)
 		if row.missing:
-			_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
-			_unavailable_favorite_ids.append(row.id)
+			_variant_selector.set_item_tooltip(_variant_selector.item_count - 1,
+				tr("Use Details to inspect this saved build.") + "\n" + str(row.id) if row.unreadable else tr("Restore this saved build or remove its favorite."))
+			_unavailable_variant_ids.append(row.id)
 	_favorites_hint.visible = missing_count > 0
 	var no_results := _variant_selector.item_count == 1
 	_variant_selector.disabled = no_results
-	_library_empty.visible = no_results
-	_library_empty.text = tr("No saved builds match these filters. Clear the search or turn off Favorites only.") if not _build_search.text.is_empty() or _favorites_only.button_pressed else tr("No saved builds yet. Save the current build to add it here.")
+	var filtering := not _build_search.text.is_empty() or _favorites_only.button_pressed
+	_library_empty.visible = no_results and _library_scan_ok and (filtering or _library_unavailable.is_empty())
+	if filtering:
+		_library_empty.text = tr("No readable builds match these filters.") if not _library_unavailable.is_empty() else tr("No saved builds match these filters. Clear the search or turn off Favorites only.")
+	else:
+		_library_empty.text = tr("No saved builds yet. Save the current build to add it here.")
 	_variant_selector.select(0)
 	_selected_variant_id = ""
 	for index in range(1, _variant_selector.item_count):
@@ -1140,13 +1190,53 @@ func _refresh_variants(reload := true) -> void:
 			_variant_selector.select(index)
 			_selected_variant_id = selected
 			break
+	_sync_library_diagnostics()
 	_sync_variant_actions()
 	if not preferences.ok: set_note("Favorites could not be read; existing metadata was preserved.")
 
 
+func _scan_variant_library() -> Dictionary:
+	return Store.scan_variants(variants_root)
+
+
+func _sync_library_diagnostics() -> void:
+	var messages := PackedStringArray()
+	if not _library_scan_ok:
+		messages.append(tr("Saved builds could not be read. Your files were kept."))
+	elif _library_unavailable.size() == 1:
+		messages.append(tr("1 saved build could not be opened. Your files were kept."))
+	elif not _library_unavailable.is_empty():
+		messages.append(tr("%d saved builds could not be opened. Your files were kept.") % _library_unavailable.size())
+	if not _library_recovered.is_empty():
+		messages.append(tr("Some saved builds were opened from backup. Review them before saving."))
+	_library_scan_status.text = "\n".join(messages)
+	_library_scan_status.visible = not messages.is_empty()
+	_library_scan_actions.visible = _library_scan_status.visible
+	var detail := PackedStringArray()
+	if not _library_scan_errors.is_empty():
+		detail.append(tr("Saved-build location:"))
+		for error: String in _library_scan_errors: detail.append(error)
+	for entry: Dictionary in _library_unavailable:
+		detail.append(tr("Saved build %s:") % str(entry.id))
+		for error: String in entry.errors: detail.append(error)
+	for entry: Dictionary in _library_recovered:
+		detail.append(tr("Recovered build %s:") % str(entry.id))
+		for warning: String in entry.errors: detail.append(warning)
+	_library_scan_details.text = "\n".join(detail)
+	if not _library_scan_status.visible: _library_details_button.set_pressed_no_signal(false)
+	_library_scan_details.visible = _library_scan_status.visible and _library_details_button.button_pressed
+
+
+func _retry_library_scan() -> void:
+	_refresh_variants()
+	if _library_scan_actions.visible: _library_retry_button.grab_focus()
+	elif not _variant_selector.disabled: _variant_selector.grab_focus()
+	else: _build_search.grab_focus()
+
+
 func _sync_variant_actions() -> void:
 	var available := _selected_variant_id != ""
-	var source_available := available and _selected_variant_id not in _unavailable_favorite_ids
+	var source_available := available and _selected_variant_id not in _unavailable_variant_ids
 	_load_button.disabled = not source_available
 	_delete_button.disabled = not source_available
 	_export_button.disabled = not source_available
@@ -1228,7 +1318,7 @@ func _apply_measured_recipe(recipe: Dictionary) -> void:
 
 
 func _refresh_thumbnail() -> void:
-	if not is_instance_valid(_thumbnail) or not _library_dialog.visible or _selected_variant_id.is_empty() or _selected_variant_id in _unavailable_favorite_ids:
+	if not is_instance_valid(_thumbnail) or not _library_dialog.visible or _selected_variant_id.is_empty() or _selected_variant_id in _unavailable_variant_ids:
 		_cancel_thumbnail()
 		return
 	var revision := 0
@@ -2409,7 +2499,7 @@ func _replace_aircraft(id: String) -> void:
 
 
 func _load_selected_variant() -> void:
-	if _selected_variant_id.is_empty(): return
+	if _selected_variant_id.is_empty() or _selected_variant_id in _unavailable_variant_ids: return
 	var target := _selected_variant_id
 	var target_name := ""
 	for summary: Dictionary in _library_summaries:

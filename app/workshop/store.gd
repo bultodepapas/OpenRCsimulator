@@ -110,22 +110,77 @@ class FirstSaveStagingGuard extends RefCounted:
 				push_warning("First-save temporary data was retained: " + "; ".join(result.errors))
 
 
+## Compatibility view for callers that only consume readable variants.
 static func list_variants(root: String = DEFAULT_ROOT) -> Array:
+	return scan_variants(root).variants
+
+
+## Read-only scan: a successful enumeration may still contain unavailable records.
+static func scan_variants(root: String = DEFAULT_ROOT) -> Dictionary:
+	return _scan_variants(root)
+
+
+## The private opener allows a denied-open witness without changing OS permissions.
+static func _scan_variants(root: String, open_root: Callable = Callable()) -> Dictionary:
 	var root_result: Dictionary = _resolve_root(root)
-	if not bool(root_result["ok"]):
-		return []
-	var root_path: String = root_result["path"]
-	if not DirAccess.dir_exists_absolute(root_path):
-		return []
-	var names: PackedStringArray = _directory_names(root_path, true)
+	if not root_result.ok:
+		return {"ok": false, "variants": [], "unavailable": [], "recovered": [], "errors": root_result.errors}
+	var root_path: String = root_result.path
+	var directory: DirAccess = open_root.call(root_path) if open_root.is_valid() else DirAccess.open(root_path)
+	if directory == null:
+		var open_error: Error = ERR_CANT_OPEN if open_root.is_valid() else DirAccess.get_open_error()
+		if _uncreated_root(root_path):
+			return {"ok": true, "variants": [], "unavailable": [], "recovered": [], "errors": PackedStringArray()}
+		return {"ok": false, "variants": [], "unavailable": [], "recovered": [],
+			"errors": PackedStringArray(["Could not open the saved-build location (%s)." % error_string(open_error)])}
+	var list_error := directory.list_dir_begin()
+	if list_error != OK:
+		return {"ok": false, "variants": [], "unavailable": [], "recovered": [],
+			"errors": PackedStringArray(["Could not enumerate the saved-build location (%s)." % error_string(list_error)])}
 	var variants: Array = []
-	for entry: String in names:
-		if not _valid_uuid(entry):
+	var unavailable: Array = []
+	var recovered: Array = []
+	while true:
+		var entry := directory.get_next()
+		if entry.is_empty(): break
+		if not _valid_uuid(entry): continue
+		if not directory.current_is_dir():
+			unavailable.append({"id": entry, "errors": PackedStringArray(["Saved build entry is not a directory."])})
 			continue
-		var result: Dictionary = _load_from_directory(root_path.path_join(entry), entry)
-		if bool(result["ok"]):
-			variants.append(result["variant"])
-	return variants
+		var result := _load_from_directory(root_path.path_join(entry), entry)
+		if result.ok:
+			variants.append(result.variant)
+			if result.variant.get("recovered_from_manifest_backup", false):
+				recovered.append({"id": entry, "errors": result.errors})
+		else:
+			unavailable.append({"id": entry, "errors": result.errors})
+	directory.list_dir_end()
+	return {"ok": true, "variants": variants, "unavailable": unavailable, "recovered": recovered, "errors": PackedStringArray()}
+
+
+## A missing path is empty only when a readable ancestor proves a component absent.
+## A root occupied by a file, or an inaccessible existing ancestor, is a failure.
+static func _uncreated_root(root_path: String) -> bool:
+	var user_path := ProjectSettings.globalize_path("user://").replace("\\", "/").trim_suffix("/")
+	var candidate := root_path.trim_suffix("/")
+	while candidate != user_path:
+		var parent_path := candidate.get_base_dir()
+		if parent_path == candidate: return false
+		var parent := DirAccess.open(parent_path)
+		if parent == null:
+			candidate = parent_path
+			continue
+		if parent.list_dir_begin() != OK: return false
+		var found := false
+		while true:
+			var entry := parent.get_next()
+			if entry.is_empty(): break
+			if entry == candidate.get_file() or (OS.get_name() in ["Windows", "macOS"] and entry.nocasecmp_to(candidate.get_file()) == 0):
+				found = true
+				break
+		parent.list_dir_end()
+		return not found
+	return false
 
 
 static func save_variant(
