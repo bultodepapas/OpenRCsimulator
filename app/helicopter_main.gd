@@ -21,6 +21,7 @@ const CameraSettings = preload("res://render/camera/camera_settings.gd")
 const Magnifier = preload("res://render/camera/magnifier.gd")
 const CameraCollision = preload("res://render/camera/camera_collision.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
+const LakeSurface = preload("res://physics/lake_surface.gd")
 const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
@@ -143,6 +144,9 @@ func _ready() -> void:
  var selected: Dictionary=Catalog.entry(aircraft_id)
  if not Catalog.is_rotorcraft(aircraft_id) or not Catalog.can_fly(aircraft_id): _refuse("This helicopter has no qualified playable configuration."); return
  if not session.setup(str(selected.data),aircraft_id) or not session.set_field(field): _refuse(session.start_error+session.surface_error); return
+ var published_lake: Variant=_field_node.get_meta("lake_context",{})
+ if not published_lake is Dictionary or not session.set_lake_context(published_lake):
+  _refuse("Lake configuration refused: published terrain context is invalid."); return
  var obstacles: Dictionary=Landscapes.collision_world(landscape_id,field)
  if not obstacles.ok or not session.set_collision_world(obstacles.world):
   _refuse("Helicopter obstacle inventory refused: "+"; ".join(obstacles.errors)); return
@@ -308,7 +312,11 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  elif not recorder.note.is_empty(): _hud.text+="\n"+recorder.note
 
 func _ground_height(x: float,z: float) -> float:
- return Terrain.sample(-z,x,session.ground_surfaces)[0]
+ var height: float=session.environment.ground(-z,x)[0]
+ var lake: Dictionary=session.environment.lake
+ if not lake.is_empty() and LakeSurface.shore_distance_validated(lake,-z,x)>=0.0:
+  height=maxf(height,-float(lake.water_level_down_m)+float(lake.wave_bounds.max_amplitude_m))
+ return height
 
 func _on_session_resetting() -> void:
  if _night_kit!=null: _night_kit.set_mode("auto")

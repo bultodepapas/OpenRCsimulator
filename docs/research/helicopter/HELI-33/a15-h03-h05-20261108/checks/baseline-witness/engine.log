@@ -1,0 +1,7 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+helicopter trace saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit2-20261108-h03/baseline/positive.csv (781 rows)
+HELI H01 positive complete=true replay=true heading_error=0.0 target=0.0
+helicopter trace saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit2-20261108-h03/baseline/negative.csv (781 rows)
+HELI H01 negative complete=true replay=true heading_error=0.0 target=0.0
+HELI H01 CANDIDATE: true

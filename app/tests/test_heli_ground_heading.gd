@@ -2,6 +2,7 @@ extends SceneTree
 const Session := preload("res://sim/helicopter_flight_session.gd")
 const StepAdapter := preload("res://physics/rotorcraft/simulation_step_adapter.gd")
 const Skids := preload("res://physics/rotorcraft/skid_contact.gd")
+const Detector := preload("res://physics/rotorcraft/impact_detector.gd")
 const Field := preload("res://data/field_loader.gd")
 const Data := preload("res://physics/rotorcraft_data.gd")
 const M := preload("res://physics/math3d.gd")
@@ -91,8 +92,10 @@ func _body_rate_law(session: Node) -> void:
  check("body-rate research fixture loads",body_rate.ok)
  if not body_rate.ok: return
  var original: Dictionary=session.aircraft
+ var original_geometry: Dictionary=session._impact_geometry
  session.aircraft=original.duplicate()
  session.aircraft.context=body_rate.context
+ session._impact_geometry=Detector.prepare(body_rate.context,session.aircraft.skids)
  var ground: PackedFloat64Array=_frame(session)
  ground[17]=4.0
  ground[18]=.2
@@ -100,6 +103,7 @@ func _body_rate_law(session: Node) -> void:
  slope.resize(ground.size())
  _comparison(session,ground,slope,false,"separate body-rate law")
  session.aircraft=original
+ session._impact_geometry=original_geometry
 
 func _synthetic_boundaries(session: Node) -> void:
  var base: PackedFloat64Array=_frame(session)

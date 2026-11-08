@@ -1,0 +1,96 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   surface classifier keeps runway precedence inside mown grass
+ok   surface classifier maps mown areas to grass
+ok   surface classifier maps rough/outside ground to gravel
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   airborne start is well above landing-gear reach in the flat test field
+ok   real FlightSession snapshot returns one row per installed contact — rows=3 contacts=3
+ok   contact rows expose world-space point forces and velocities
+ok   snapshot leaves accepted state, aux and continuous arrays unchanged
+ok   spawn snapshot does not invent wheel loading in the airborne start — normal forces=[0.0, 0.0, 0.0]
+ok   airborne audio fallback leaves nested landing gear data unchanged
+ok   loaded audio snapshot reports force at a gear contact
+ok   loaded audio snapshot leaves nested landing gear data unchanged
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   audio circuit fixtures load
+ok   circuit audio preserves accepted endpoint [39.0, -4.0, -0.755]
+ok   circuit audio has every wheel [39.0, -4.0, -0.755]
+ok   audio matches circuit compression and normal load — { &"pose": [39.0, -4.0, -0.755], &"row": { &"id": "main_left", &"position": (-4.18, 0.501692, -38.89439), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (-0.050604, 10.48252, 0.80777), &"surface_normal": (0.010264, 0.999782, 0.018157), &"normal_force_n": 10.4943886861425, &"reference_load_n": 9.4100106864801, &"compression_m": 0.01191764341364, &"approach_speed_mps": 0.20540367604867, &"rolling_speed_mps": 0.29631927811309, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.01191764341364, &"load": 10.4943886861425 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [39.0, -4.0, -0.755], &"row": { &"id": "main_right", &"position": (-3.82, 0.501692, -38.89439), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.009131, 10.99466, 0.858544), &"surface_normal": (-0.001764, 0.999797, 0.020074), &"normal_force_n": 11.0096471438086, &"reference_load_n": 9.4100106864801, &"compression_m": 0.01281855653183, &"approach_speed_mps": 0.20598147774109, &"rolling_speed_mps": 0.29592483209285, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.01281855653183, &"load": 11.0096471438086 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [39.0, -4.0, -0.755], &"row": { &"id": "nose", &"position": (-4.0, 0.504867, -39.24567), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.005724, 9.814855, 0.766805), &"surface_normal": (0.02846, 0.999325, 0.023209), &"normal_force_n": 9.82619383925948, &"reference_load_n": 9.4100106864801, &"compression_m": 0.01457621385286, &"approach_speed_mps": 0.20682786327287, &"rolling_speed_mps": 0.29531037712544, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.01457621385286, &"load": 9.82619383925949 }
+ok   audio matches circuit normal
+ok   circuit audio preserves accepted endpoint [37.0, -4.0, -0.55]
+ok   circuit audio has every wheel [37.0, -4.0, -0.55]
+ok   audio matches circuit compression and normal load — { &"pose": [37.0, -4.0, -0.55], &"row": { &"id": "main_left", &"position": (-4.18, 0.296692, -36.89439), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (-0.248752, 12.75568, 10.82802), &"surface_normal": (0.02343, 0.847052, 0.530993), &"normal_force_n": 16.548500485571, &"reference_load_n": 9.4100106864801, &"compression_m": 0.01863308135964, &"approach_speed_mps": 0.3287083292566, &"rolling_speed_mps": 0.14805490095203, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.01863308135964, &"load": 16.548500485571 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [37.0, -4.0, -0.55], &"row": { &"id": "main_right", &"position": (-3.82, 0.296692, -36.89439), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (-0.06463, 10.85245, 9.271964), &"surface_normal": (0.007097, 0.846393, 0.532512), &"normal_force_n": 14.1224113938998, &"reference_load_n": 9.4100106864801, &"compression_m": 0.01429002444116, &"approach_speed_mps": 0.32903213477689, &"rolling_speed_mps": 0.14742809162343, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.01429002444116, &"load": 14.1224113938998 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [37.0, -4.0, -0.55], &"row": { &"id": "nose", &"position": (-4.0, 0.299867, -37.24567), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.031621, 79.95711, 29.78118), &"surface_normal": (0.019822, 0.954196, 0.298524), &"normal_force_n": 85.1857974040138, &"reference_load_n": 9.4100106864801, &"compression_m": 0.18308921881607, &"approach_speed_mps": 0.28039643181474, &"rolling_speed_mps": 0.22665205322858, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.18308921881607, &"load": 85.1857974040138 }
+ok   audio matches circuit normal
+ok   circuit audio preserves accepted endpoint [45.0, 19.4, -0.75]
+ok   circuit audio has every wheel [45.0, 19.4, -0.75]
+ok   audio matches circuit compression and normal load — { &"pose": [45.0, 19.4, -0.75], &"row": { &"id": "main_left", &"position": (19.22, 0.496692, -44.89439), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (11.08825, 203.2884, 9.219991), &"surface_normal": (-0.120732, 0.992673, 0.00499), &"normal_force_n": 200.506134095432, &"reference_load_n": 9.4100106864801, &"compression_m": 0.35140276472666, &"approach_speed_mps": 0.20003149723138, &"rolling_speed_mps": 0.29900558034773, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.35140276472666, &"load": 200.506134095432 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [45.0, 19.4, -0.75], &"row": { &"id": "main_right", &"position": (19.58, 0.496692, -44.89439), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (2.792696, 219.6977, 7.45036), &"surface_normal": (-0.027201, 0.999606, -0.006969), &"normal_force_n": 219.483172543584, &"reference_load_n": 9.4100106864801, &"compression_m": 0.38536344429412, &"approach_speed_mps": 0.1978303085417, &"rolling_speed_mps": 0.30138608463482, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.38536344429412, &"load": 219.483172543584 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [45.0, 19.4, -0.75], &"row": { &"id": "nose", &"position": (19.4, 0.499867, -45.24567), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (7.563868, 168.289, 12.03109), &"surface_normal": (-0.06675, 0.997314, 0.030148), &"normal_force_n": 167.694867348563, &"reference_load_n": 9.4100106864801, &"compression_m": 0.37330567991204, &"approach_speed_mps": 0.20850716286466, &"rolling_speed_mps": 0.29375311547468, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.37330567991204, &"load": 167.694867348563 }
+ok   audio matches circuit normal
+ok   circuit audio preserves accepted endpoint [-60.0, 0.0, -0.25]
+ok   circuit audio has every wheel [-60.0, 0.0, -0.25]
+ok   audio matches circuit compression and normal load — { &"pose": [-60.0, 0.0, -0.25], &"row": { &"id": "main_left", &"position": (-0.18, -0.003308, 60.10561), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.001213, 1.271221, 0.594775), &"surface_normal": (-0.013528, 0.999856, 0.010217), &"normal_force_n": 1.27709857402798, &"reference_load_n": 9.4100106864801, &"compression_m": 0.00092603139272, &"approach_speed_mps": 0.20303648134445, &"rolling_speed_mps": 0.29794104490392, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.00092603139272, &"load": 1.27709857402798 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [-60.0, 0.0, -0.25], &"row": { &"id": "main_right", &"position": (0.18, -0.003308, 60.10561), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.005095, 7.009665, 2.349171), &"surface_normal": (-0.010735, 0.999924, 0.006122), &"normal_force_n": 7.02345683798845, &"reference_load_n": 9.4100106864801, &"compression_m": 0.00634109630423, &"approach_speed_mps": 0.20182131104456, &"rolling_speed_mps": 0.29877005960823, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.00634109630423, &"load": 7.02345683798845 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [-60.0, 0.0, -0.25], &"row": { &"id": "nose", &"position": (0.0, -0.000133, 59.75433), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.040455, 4.007141, 1.367858), &"surface_normal": (-0.02931, 0.999545, -0.007098), &"normal_force_n": 3.99442380047311, &"reference_load_n": 9.4100106864801, &"compression_m": 0.00414793385551, &"approach_speed_mps": 0.19777960238848, &"rolling_speed_mps": 0.30136618974158, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": true, &"roll_enabled": true }, &"compression": 0.00414793385551, &"load": 3.99442380047311 }
+ok   audio matches circuit normal
+ok   circuit audio preserves accepted endpoint [110.0, 125.0, -0.25]
+ok   circuit audio has every wheel [110.0, 125.0, -0.25]
+ok   audio matches circuit compression and normal load — { &"pose": [110.0, 125.0, -0.25], &"row": { &"id": "main_left", &"position": (124.82, -0.003308, -109.8944), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.0, 0.0, 0.0), &"surface_normal": (0.0, 1.0, 0.0), &"normal_force_n": 0.0, &"reference_load_n": 9.4100106864801, &"compression_m": -5.44669162403535, &"approach_speed_mps": 0.2, &"rolling_speed_mps": 0.3, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": false, &"roll_enabled": true }, &"compression": -5.44669162403535, &"load": 0.0 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [110.0, 125.0, -0.25], &"row": { &"id": "main_right", &"position": (125.18, -0.003308, -109.8944), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.0, 0.0, 0.0), &"surface_normal": (0.0, 1.0, 0.0), &"normal_force_n": 0.0, &"reference_load_n": 9.4100106864801, &"compression_m": -5.44669162403535, &"approach_speed_mps": 0.2, &"rolling_speed_mps": 0.3, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": false, &"roll_enabled": true }, &"compression": -5.44669162403535, &"load": 0.0 }
+ok   audio matches circuit normal
+ok   audio matches circuit compression and normal load — { &"pose": [110.0, 125.0, -0.25], &"row": { &"id": "nose", &"position": (125.0, -0.000133, -110.2457), &"velocity_mps": (0.0, -0.2, -0.3), &"force_n": (0.0, 0.0, 0.0), &"surface_normal": (0.0, 1.0, 0.0), &"normal_force_n": 0.0, &"reference_load_n": 9.4100106864801, &"compression_m": -5.44986662403535, &"approach_speed_mps": 0.2, &"rolling_speed_mps": 0.29999345838256, &"rim_speed_mps": 0.0, &"surface": "hard", &"material_id": "unspecified", &"material_resolved": false, &"surface_audio_fallback": true, &"surface_region_id": "", &"grounded": false, &"roll_enabled": true }, &"compression": -5.44986662403535, &"load": 0.0 }
+ok   audio matches circuit normal
+ok   circuit height belongs to the conservative far bound
+ok   circuit can be removed before ticking
+ok   plain field retains its far shortcut
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   legacy audio fixture installs circuit
+ok   legacy audio circuit selection accepts
+ok   legacy audio preserves its own load law with circuit on/off
+ok   legacy audio preserves its own load law with circuit on/off
+ok   legacy audio preserves its own load law with circuit on/off
+ok   legacy audio circuit selection accepts
+ok   legacy audio preserves its own load law with circuit on/off
+ok   legacy audio preserves its own load law with circuit on/off
+ok   legacy audio preserves its own load law with circuit on/off
+ok   spawn on loaded gear seeds the contact without a phantom touchdown
+ok   parked gear is silent at zero wheel speed
+ok   loaded taxi speed starts a spatial hard-surface roll layer
+ok   roll source is positioned at its gear point before playback
+ok   ground audio uses the common manual path law without Godot double attenuation
+ok   walking-speed taxi retains an audible roll envelope
+ok   faster rolling grows smoothly above the taxi level
+ok   mown terrain crossfades to the grass recording
+ok   airborne-to-loaded contact creates one touchdown impact
+ok   touchdown is emitted at the individual nose gear point
+ok   brief taxi chatter cannot retrigger the touchdown one-shot
+ok   an earlier dive cannot turn a later settled contact into a hard touchdown
+ok   a gentle skid touchdown emits an impact
+ok   skids never emit wheel rolling even with lateral speed
+ok   reset re-seeds loaded contacts without replaying their spawn impact
+ok   repeated render snapshots do not age airborne time into a touchdown
+ok   resuming into contact re-seeds without a paused-frame touchdown
+ok   per-contact voice pool remains bounded
+ok   FlightAudio skips contact snapshot while paused
+ok   FlightAudio refreshes contacts after resume
+ok   HelicopterAudio skips skid snapshots throughout pause — calls=0
+ok   HelicopterAudio continues the ground-audio pause fade
+ok   HelicopterAudio refreshes skid contacts immediately after resume
+ok   HelicopterAudio resumes the ground-audio fade
+ok   reattachment seeds contact instead of replaying a landing during detachment
+ok   a new landing after reattachment still emits its impact
+90 checks, 0 failed

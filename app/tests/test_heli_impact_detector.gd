@@ -130,8 +130,64 @@ func _run() -> void:
 
 	_test_rotor_and_rollover(context, skids, surfaces, rest, phase)
 	_test_rotor_scenery(context, skids, surfaces, rest)
+	_test_a15_disc_integration(context, skids)
+	_test_sampled_competitor_uncertainty(context, skids)
 	print("HELI impact detector: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+func _test_a15_disc_integration(context: Dictionary, skids: Dictionary) -> void:
+	# Reconstructed A15 tick: the end flap is the declared disc axis over the
+	# interpolated collision pose; a witness must lie in the actual disc.
+	var initial := PackedFloat64Array([200.0, 200.274, -0.245, 0.0, 0.0, -1.68,
+		0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var endpoint := PackedFloat64Array([200.00000000290902, 200.27400734997218, -0.23787687888699313,
+		-6.232500111808289e-06, -0.00349406132642931, -1.7395374679499014,
+		1.6010461213943333e-05, 0.9999999998156428, 1.032508455176577e-05, -2.402523881449241e-06,
+		-0.016653583080729308, -0.0027559710992543004, -0.009734793896632723])
+	var continuous := PackedFloat64Array([167.0, -0.0001905803869617313, -0.005736219462627656, 0.0, 0.0, 0.0])
+	var rough := PackedFloat64Array([-INF, INF, -INF, INF, 0.8, 7.5])
+	var outcome: Dictionary = Detector.evaluate(initial, endpoint, continuous, context, skids, rough,
+		PackedFloat64Array([0.0, 0.0]), {}, Detector.prepare(context, skids))
+	var hit: Dictionary = outcome.get("impact", {})
+	var witness_ok := false
+	if not hit.is_empty() and str(hit.get("component", "")) == "main_rotor":
+		var point: PackedFloat64Array = hit.point_world_ned
+		var terrain: PackedFloat64Array = Terrain.sample(point[0], point[1], rough)
+		witness_ok = point[2] + terrain[0] > 0.0 and hit.get("disc_onset_interval", false) \
+			and float(hit.get("time_fraction_uncertainty", INF)) <= 1.0 / 65536.0
+	_check("A15 swept main disc reports a bounded actual witness", outcome.get("ok", false) and witness_ok, str(outcome))
+
+
+func _test_sampled_competitor_uncertainty(context: Dictionary, skids: Dictionary) -> void:
+	# This rough-terrain path has three sign crossings inside one sample interval.
+	# Bisection locates the last one and cannot prove earlier portions clear.
+	var x0 := -4.20086600998148
+	var reference_down := -0.004238962700285035
+	var slope := -0.0038645593194162184
+	var a_n := x0 - 0.020
+	var b_n := x0 + 0.025
+	var a := PackedFloat64Array([a_n, 0.0, reference_down - slope * (a_n - x0),
+		0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var b: PackedFloat64Array = a.duplicate()
+	b[0] = b_n; b[2] = reference_down - slope * (b_n - x0)
+	var rough := PackedFloat64Array([-INF, INF, -INF, INF, 0.8, 7.5])
+	var safe_rotors: Dictionary = context.duplicate(true)
+	safe_rotors.main_model.hub_z_m = -100.0
+	safe_rotors.tail_model.hub_height_above_cg_m = 100.0
+	var probes: Array[Dictionary] = [{"point": M.v3(0.0, 0.0, 0.0), "component": "fuselage",
+		"part": "fixture", "threshold_m": 0.0, "method": "fixture_probe"}]
+	var event: Dictionary = Detector._terrain_contact(a, b, PackedFloat64Array([0,0,0,0,0,0]),
+		safe_rotors, skids, rough, PackedFloat64Array([0,0]), probes, 1, PackedFloat64Array([0,0]),
+		Terrain.max_height_validated(rough))
+	var earlier_n: float = lerpf(a_n, b_n, 0.25)
+	var earlier_down: float = reference_down - slope * (earlier_n - x0)
+	var earlier_depth: float = earlier_down + Terrain.sample(earlier_n, 0.0, rough)[0]
+	var disc := {"time_fraction": 0.3, "time_fraction_uncertainty": 1.0e-5, "disc_onset_interval": true}
+	_check("sampled probe preserves uncertainty for earlier hidden crossings", not event.is_empty()
+		and earlier_depth > 0.0 and float(event.time_fraction) > 0.7
+		and float(event.time_fraction_uncertainty) == float(event.time_fraction)
+		and not Detector._arbitrate(event, disc).get("ok", true), str(event))
 
 
 func _test_rotor_and_rollover(context: Dictionary, skids: Dictionary, surfaces: PackedFloat64Array,
@@ -149,12 +205,38 @@ func _test_rotor_and_rollover(context: Dictionary, skids: Dictionary, surfaces: 
 	var main_speed: float = main_continuous[0] * float(main_context.main_model.rotation_sense)
 	var main_support: Dictionary = Detector._measure_rotor(main_reference, main_continuous,
 		main_context.main_model, true, phase, surfaces, main_speed, max_height)
-	var main_bracket: Array[PackedFloat64Array] = _contact_bracket(main_reference, float(main_support.depth_m))
+	# A bounded search reports a penetration witness, not the deepest point.
+	# For this 90-degree pitch, a rotor radius supplies the exact flat-pad support.
+	var hub := M.v3(main_context.main_model.hub_x_m, main_context.main_model.hub_y_m, main_context.main_model.hub_z_m)
+	var hub_world: PackedFloat64Array = M.q_rotate(main_reference.slice(6, 10), hub)
+	var main_previous: PackedFloat64Array = main_reference.duplicate()
+	main_previous[2] = -hub_world[2] - float(main_context.main_model.rotor_radius_m) - 0.002
+	var main_current: PackedFloat64Array = main_previous.duplicate()
+	main_current[2] += 0.004
+	var main_bracket: Array[PackedFloat64Array] = [main_previous, main_current]
 	var main_result: Dictionary = _evaluate(main_bracket[0], main_bracket[1], main_context, skids,
 		surfaces, main_continuous, phase, main_prepared)
 	_check("full rotating main-disc contact is detected", bool(main_result.get("ok", false))
 		and str(main_result.get("impact", {}).get("component", "")) == "main_rotor",
-		"support=%s impact=%s" % [str(main_support), str(main_result.get("impact", {}))])
+		"support=%s result=%s" % [str(main_support), str(main_result)])
+	var tiny: PackedFloat64Array = base.duplicate()
+	var tiny_q: PackedFloat64Array = M.q_from_euler(0.0, 1.0e-8, 0.0)
+	_set_attitude(tiny, tiny_q)
+	var tiny_hub: PackedFloat64Array = M.q_rotate(tiny_q, hub)
+	tiny[2] = -tiny_hub[2] - float(main_context.main_model.rotor_radius_m) * 0.5e-8
+	var tiny_measure: Dictionary = Detector._measure_rotor(tiny, main_continuous, main_context.main_model,
+		true, phase, PackedFloat64Array(), main_speed, 0.0)
+	_check("stationary fast-disc gate retains sub-ulp axis tilt penetration",
+		tiny_measure.get("ok", false) and float(tiny_measure.get("depth_m", -INF)) > 0.0, str(tiny_measure))
+	var tangent_context: Dictionary = main_context.duplicate(true)
+	tangent_context.main_model.hub_z_m = -0.2
+	var tangent: PackedFloat64Array = base.duplicate()
+	_set_attitude(tangent, M.q_from_euler(0.0, 0.0, 0.0))
+	tangent[2] = 0.2
+	var immediate: Dictionary = Detector.evaluate(tangent, tangent, main_continuous, tangent_context,
+		skids, PackedFloat64Array(), phase, {}, Detector.prepare(tangent_context, skids))
+	_check("proven time-zero body impact wins over unresolved tangent disc", immediate.get("ok", false)
+		and not immediate.impact.is_empty() and immediate.impact.time_fraction == 0.0, str(immediate))
 
 	var tail_context: Dictionary = context.duplicate(true)
 	var tail_prepared: Dictionary = Detector.prepare(tail_context, skids)
@@ -169,13 +251,15 @@ func _test_rotor_and_rollover(context: Dictionary, skids: Dictionary, surfaces: 
 		tail_context.tail_model, false, phase, surfaces, tail_speed, max_height)
 	var tail_previous: PackedFloat64Array = tail_reference.duplicate()
 	var tail_current: PackedFloat64Array = tail_reference.duplicate()
-	tail_current[2] += 0.15
+	# Stop just after the independently expected tail-disc crossing, before the
+	# nearby body probes reach terrain; later competing onsets are unresolved.
+	tail_current[2] += 0.10
 	tail_current[5] = 2.5
 	var tail_result: Dictionary = _evaluate(tail_previous, tail_current, tail_context, skids,
 		surfaces, tail_continuous, phase, tail_prepared)
 	_check("rotating tail-disc contact is detected", bool(tail_result.get("ok", false))
 		and str(tail_result.get("impact", {}).get("component", "")) == "tail_rotor",
-		"support=%s impact=%s" % [str(tail_support), str(tail_result.get("impact", {}))])
+		"support=%s result=%s" % [str(tail_support), str(tail_result)])
 
 	var rollover_context: Dictionary = context.duplicate(true)
 	rollover_context.main_model.rotor_radius_m = 0.001
@@ -248,6 +332,28 @@ func _test_rotor_scenery(context: Dictionary, skids: Dictionary, surfaces: Packe
 			and high_impact.get("rotor_angular_gap_bound_m", 0.0) > 0.0
 			and high_impact.get("rotor_clearance_padding_m", 0.0) >= high_impact.rotor_angular_gap_bound_m,
 			str(high_impact))
+	var moving_start: PackedFloat64Array = state.duplicate()
+	moving_start[0] = 4.8; moving_start[3] = 2.0
+	var moving_end: PackedFloat64Array = moving_start.duplicate()
+	moving_end[0] = 5.0
+	var interval_world: Dictionary = _capsule_world(PackedFloat64Array([
+		5.0 + float(scene_context.main_model.rotor_radius_m) - 0.05, 5.0, -12.0]), "interval_fence")
+	var speeds := PackedFloat64Array([168.0, 168.0 * float(scene_context.tail_model.tail_to_main_speed_ratio)])
+	var incumbent := {"time_fraction": 0.1, "time_fraction_uncertainty": 0.01, "disc_onset_interval": true}
+	var sampled: Dictionary = Detector._first_rotor_scenery_contact(moving_start, moving_end,
+		high_continuous, scene_context, phase, interval_world, prepared, 2, speeds, incumbent)
+	var control: Dictionary = Detector._first_rotor_scenery_contact(moving_start, moving_end,
+		high_continuous, scene_context, phase, interval_world, prepared, 2, speeds, {})
+	_check("rotor scenery interval after disc witness is still examined",
+		not sampled.is_empty() and not control.is_empty() and sampled.time_fraction == 0.5
+		and sampled.time_fraction_uncertainty == 0.5 and not Detector._arbitrate(incumbent, sampled).get("ok", true), str(sampled))
+	var later_world: Dictionary = _capsule_world(PackedFloat64Array([
+		5.0 + float(scene_context.main_model.rotor_radius_m) - 0.025, 5.0, -12.0]), "later_interval_fence")
+	var later: Dictionary = Detector._first_rotor_scenery_contact(moving_start, moving_end,
+		high_continuous, scene_context, phase, later_world, prepared, 4, speeds, incumbent)
+	_check("later sampled scenery uncertainty reaches tick start", not later.is_empty()
+		and later.time_fraction == 0.75 and later.time_fraction_uncertainty == 0.75
+		and not Detector._arbitrate(incumbent, later).get("ok", true), str(later))
 
 	var slow_world: Dictionary = _capsule_world(PackedFloat64Array([
 		rotor_center[0], rotor_center[1] - radius * 0.8, rotor_center[2],

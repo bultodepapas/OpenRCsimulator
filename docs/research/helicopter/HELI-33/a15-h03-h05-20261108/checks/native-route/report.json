@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "17c53829-27b3-47a3-aa48-2c70a7e8b45f",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_native_helicopter_route.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T21:01:27.311806+00:00",
+  "label": "native-route-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\native-route-final-owdyelq4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\native-route-final-owdyelq4\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 27.64,
+  "log_bytes": 1912,
+  "log_sha256": "84c528806667aafe664064529cdfe2b9658f2c5dcc8dd50e09369877975a5703"
+}

@@ -82,7 +82,7 @@ func contact_snapshot() -> Array:
 	var state: PackedFloat64Array = session.sim.state
 	var continuous: PackedFloat64Array = session.sim.continuous
 	var result: Dictionary = Skids.evaluate(state, session.aircraft.skids, session.ground_surfaces, true,
-		continuous.slice(6) if continuous.size() == 14 else PackedFloat64Array())
+		continuous.slice(6) if continuous.size() == 14 else PackedFloat64Array(), session.lake_context())
 	var contacts: Array = []
 	if not bool(result.get("ok", false)):
 		return contacts
@@ -92,7 +92,7 @@ func contact_snapshot() -> Array:
 		var arm: PackedFloat64Array = points.slice(index * 3, index * 3 + 3)
 		var position: PackedFloat64Array = M.add(state.slice(0, 3), M.q_rotate(q, arm))
 		var velocity: PackedFloat64Array = M.q_rotate(q, M.add(state.slice(3, 6), M.cross(state.slice(10, 13), arm)))
-		var terrain: PackedFloat64Array = Terrain.sample_validated(position[0], position[1], session.ground_surfaces)
+		var terrain: PackedFloat64Array = session.environment.ground(position[0], position[1])
 		var approach: float = (velocity[2] + terrain[1] * velocity[0] + terrain[2] * velocity[1]) / sqrt(1.0 + terrain[1] * terrain[1] + terrain[2] * terrain[2])
 		var material: String = GroundAudioModel.surface_name(flight.field, position[0], position[1])
 		var force: float = float(result.normal_forces_n[index])

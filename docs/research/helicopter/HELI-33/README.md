@@ -10,9 +10,19 @@ Before changes, `healthy_tape.gd` recorded every accepted body, continuous state
 
 The existing deterministic ground-cycle pilot also completed 84.920833 simulated seconds: startup, liftoff, hover, landing, hold and shutdown. Baseline peak altitude was 1.193706 m, peak horizontal displacement 1.498511 m, touchdown downward speed 0.017077 m/s, and final shaft speed zero. `baseline-cycle.json` retains its controls and accepted samples.
 
+## A15 H03/H05 terrain and disc checks — 2026-11-08
+
+The successful scene attachment now supplies its validated lake to the helicopter session. Skid support, terminal contact, ground-effect solid height, camera, aftermath and ground audio use that context. The existing inflow law is not qualified over water. Water contact is unsupported and a conservative part/shoreline/wave bound can refuse a nearby dry tick. Overlapping ground starts are refused before reset publication; native helicopter stages fall back to the reference when a lake is installed. No flotation is modeled.
+
+The fast-rotor terrain search bounds the declared disc across the interpolated pose. Its contact is an actual penetrating witness with a bounded onset interval; unresolved search budget or competing intervals refuse the candidate before the built-in session publishes it. Detected legacy sampled competitors use tick start as their conservative lower bound. Entirely unsampled body, slow-rotor and scenery contacts remain possible; this is not exact blade phase, elastic response or a global physical collision proof.
+
+The [evidence manifest](a15-h03-h05-20261108/evidence.json) records source/data and engine hashes, complete checked logs and paired recorder artifacts. The `75299d686` baseline and candidate each completed 780 dry stopped-skid yaw ticks per sign and replayed their own midpoint exactly. For each sign all 781 input/telemetry CSV rows match, excluding changed metadata. The changed contact/checkpoint law intentionally refuses the older checkpoint. Helicopter tapes and CSVs are retained in the manifest's directory; fixed-wing ORFL does not replay them.
+
+On Windows with Godot 4.8-beta2 headless, the checked candidate passed the 51-check lake/session suite, 32-check detector suite and 30-check disc helper suite. They cover the stock bank and inverted-disc audit witnesses, custom/disabled lakes, normals and support, ground effect, camera/audio, restart/checkpoint identity, unsupported-water and stale-geometry rollback, multiple sampled crossings, scenery competition and ambiguous-order refusal. The 56-check ground session and 73-check stopped-rotor heading tests also passed. The heading fixture now rebuilds its prepared impact geometry when temporarily substituting the separate HX body-rate context; stale geometry is independently rejected in the session suite. Additional checked ground-start, audio, presentation, render, checkpoint and production-route results are in the manifest. These are software checks; Windows did not execute the Linux-only native stage, and no new rendered, pilot or physical validation is claimed.
+
 ## Design and evidence limits
 
-- Continuous flight forces, skid coefficients, rotor equations and source geometry are unchanged. The terminal detector reads float64 accepted states. Godot rigid bodies and particles are disposable aftermath presentation.
+- The original terminal-only slice left continuous flight forces, skid coefficients, rotor equations and source geometry unchanged. H03 now supplies composed terrain to the existing laws as described above. The terminal detector reads float64 state; Godot rigid bodies and particles are disposable aftermath presentation.
 - Contact proxies derived from the supplied HX-700 visual are estimates for the surrogate. They are not measured X-Cell hull geometry or strength limits. The legacy 40 mm skid terminal threshold is retained.
 - Rigid-body point effective mass is distinct from rotor spin energy. Presentation severity and part-release choices are provisional; they do not identify real material failure thresholds.
 - Existing named mesh parts, crash textures and sound samples are reused. No generated aircraft geometry or authored physics JSON is edited.
@@ -20,7 +30,7 @@ The existing deterministic ground-cycle pilot also completed 84.920833 simulated
 
 ## Implemented behavior
 
-The session produces one terminal report with aircraft component and obstacle identity, time fraction, world/body contact point, normal, point and CG velocities, effective mass, normal energy and rotor speeds. It cuts drive, latches hold and freezes accepted flight state. Invalid detector inputs produce a diagnostic stop, not wreckage. Checkpoint v4 binds obstacle identity and refuses older contact-boundary versions.
+The session produces one terminal report with aircraft component and obstacle identity, time fraction, world/body contact point, normal, point and CG velocities, effective mass, normal energy and rotor speeds. It cuts drive, latches hold and freezes accepted flight state. Invalid detector inputs produce a diagnostic stop, not wreckage. The original checkpoint v4 introduced obstacle identity; current v8/v9 checkpoints additionally bind the H03/H05 contact law and lake identity, as specified in the [helicopter guide](../../../HELICOPTER.md).
 
 Terrain checks distinguish four skids, the canopy/fuselage bounds, sampled tail boom, fin and both rotors. At |shaft speed| ≥20 rad/s, scenery checks cover the disc with 32 diameter segments. Their explicit inflation is `R*sin(pi/64) + blade_chord/2 + 0.025 m`; the current main rotor totals 0.092027 m. This can report contact early. Slow/stopped blades use a finite diameter/chord at tick-end phase, not a full circle. Exact within-tick shaft-phase windows, elastic blades and measured structural failure remain open.
 
@@ -69,7 +79,7 @@ The bright line in the severe frame is the source `Servo_Cola_y_Varilla` pushrod
 
 ## Performance
 
-The detector now rejects clear terrain points before allocating transformed vectors, bounds the complete rotor's vertical extent, and shares one spatial-bin query between hull and rotor scenery checks. The prepared hull reach is revalidated before using it to exclude obstacles.
+The following measurements belong to the original detector and do not qualify the H03/H05 bounded search. That detector rejected clear terrain points before allocating transformed vectors and shared one spatial-bin query between hull and rotor scenery checks. Its rotor rejection is corrected by H05 above. The prepared hull reach is revalidated before using it to exclude obstacles.
 
 The retained native microprofile uses 100 warm-up ticks and 500 samples per case. With the production obstacle world, direct detector p50/p95 changed from 1918/2460 to 897/991 microseconds on the ground and from 1532/2644 to 410/465 microseconds airborne. The empty-world airborne case regressed from 134/194 to 313/350 microseconds. These single-run CPU measurements do not establish a frame-rate or release budget. [Performance evidence](checks/performance/RESULTS.md) retains all cases, source copies, raw timings, hashes and limitations.
 
@@ -79,9 +89,9 @@ The retained native microprofile uses 100 warm-up ticks and 500 samples per case
 
 [Godot 4.7 CPUParticles3D documentation](https://docs.godotengine.org/en/4.7/classes/class_cpuparticles3d.html) defines `restart()` for emitter reuse and `speed_scale = 0` for pause. [Godot RigidBody3D](https://docs.godotengine.org/en/4.7/classes/class_rigidbody3d.html) documents the presentation body's velocity, freeze and contact interface.
 
-## Reproduction
+## Historical reproduction
 
-From the repository root, using the pinned native Godot 4.7.2 build:
+The original 2026-10-14 campaign used Godot 4.7.2. Its historical commands were:
 
 ```powershell
 python research/helicopter/crashes/verify.py

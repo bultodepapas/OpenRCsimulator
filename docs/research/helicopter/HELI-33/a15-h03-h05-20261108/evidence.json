@@ -1,0 +1,297 @@
+{
+  "artifacts": {
+    "baseline-negative.csv.gz": {
+      "gzip_sha256": "edbe88009c13f609a1b29fafa3a36be075299b951ff15a242416431b686aa569",
+      "source_bytes": 560042,
+      "source_sha256": "81141b8661b6f5379f9c0598d286709da265fdefc513dcc9c9cb6c1e167b21b1"
+    },
+    "baseline-negative.tape.gz": {
+      "gzip_sha256": "e78c57e7c6b9c52ba9e4c10406e8048859d8c20ef53ca51ec0f4da8679316aad",
+      "source_bytes": 96580,
+      "source_sha256": "461704253216babe1a47861e620db46d57c69df133a2a91203b0fa05791575f3"
+    },
+    "baseline-positive.csv.gz": {
+      "gzip_sha256": "dc96066b01529f358138ac80307c69c3f69923a95254f419376b72c7a5f6c30f",
+      "source_bytes": 559322,
+      "source_sha256": "6236181e4cb9e8ddeab3240e2530d6759963ded664279d7cb6ab28eff826d6b1"
+    },
+    "baseline-positive.tape.gz": {
+      "gzip_sha256": "24bf32878adeb17bcd2ba548b20d4290a255a8ef80724cc8d377d8b2ee89bd94",
+      "source_bytes": 96580,
+      "source_sha256": "90bb301ea158973f78a07a1a0d48ab81c1a3b7ad5ae52b491c2510a62fe91c48"
+    },
+    "candidate-negative.csv.gz": {
+      "gzip_sha256": "1c51ecd3065e5c7a4e2d1140249998c9a4c9b6f93e8f57dd122043150018821c",
+      "source_bytes": 560119,
+      "source_sha256": "fd4f319e5fc2dfde42e636ea695c13033233942937e8ffcd0b9e41b2b6dad63c"
+    },
+    "candidate-negative.tape.gz": {
+      "gzip_sha256": "c2fc56fcfbcb6622e5f173c4ea3b2217acde0b7522a8e3d3e411773ed7f11996",
+      "source_bytes": 96780,
+      "source_sha256": "89e3d4ed0785a39b346d58a5cb58984c11801e6c764afd1e33bc38d83dd8cadb"
+    },
+    "candidate-positive.csv.gz": {
+      "gzip_sha256": "5115bca9c2eef4bbbf03dff011a5fa5963f19d94aab6e6928b9f61e6a406d190",
+      "source_bytes": 559399,
+      "source_sha256": "c16a14f88aca19b2090921bfd674ffb0a62dc574286f48a294be149111f44cdc"
+    },
+    "candidate-positive.tape.gz": {
+      "gzip_sha256": "8c5c4b6d8526b753579ab7cc0d17e44485013974d6a9c97bc90e124000ac3e94",
+      "source_bytes": 96780,
+      "source_sha256": "986ca392c5effd3c571ede861975fbde2c58dfee762f7fa52665c8840fc4397d"
+    }
+  },
+  "baseline_git_blob_note": "Git object bytes use repository line endings; actual baseline session/electronics working-tree hashes are in baseline-witness.json.",
+  "baseline_git_blob_sha256": {
+    "app/audio/helicopter_audio.gd": "0f616e5e8d5e0e23a84eb4cf983b88cc21e3524633b44be38b0f1fd79d97454d",
+    "app/data/aircraft/xcell_60_research.json": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "app/data/fields/default.json": "14a1f6c9f52b126de347be945ce9c734d6a05ac1ff0ea79a2a9cde8a8c39fedd",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "app/helicopter_main.gd": "53eb77094b3b45364eef3e237cadf6e5e4a0fb346240820f628183497d61227e",
+    "app/input/commands.gd": "6d8bac6ec73254b87a25f8aa11613a918bd7c2fbdc05cd405c9b6a2c2433b0c5",
+    "app/input/controller_profile.gd": "949f94ddda6ff8f28790f0fb5b55ab6e17d35837e94a9c5c0aa4b7705568028a",
+    "app/input/rc_input.gd": "159462a1cec552535ca1a95b471f77a80e8138cd35c1a7b4b258deb8896ff41e",
+    "app/physics/ground_contact.gd": "19784e88b2d4b0f8e4164a5d8a82c3d6774f9cb169ba7bd97f1ab1af687fb6b6",
+    "app/physics/ground_surfaces.gd": "0bc7f3638920841a294690c81b5b19d90bfb14431bf6f7788e6f2ac708758128",
+    "app/physics/ground_terrain.gd": "3703ba2ed59d77b710b9b83e1b1991c878255072f1f0ac7adabd345697b96a97",
+    "app/physics/lake_surface.gd": "89d6b91689429181f4147bea607dd04a67e2f5edd88b439359bf72579120a19f",
+    "app/physics/math3d.gd": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832",
+    "app/physics/rigid_body.gd": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+    "app/physics/rotorcraft/aerodynamic_stage.gd": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+    "app/physics/rotorcraft/airframe.gd": "67864cefa926575ad0440e9e8177f4f064dd8a7607bb31f6a6fe1f421ed8bc83",
+    "app/physics/rotorcraft/drive.gd": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+    "app/physics/rotorcraft/dynamic_inflow.gd": "13dd83f694efd62a2ad0a844c9527b6473c5cc127de91b3dd2af205566d5fb14",
+    "app/physics/rotorcraft/electronics.gd": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+    "app/physics/rotorcraft/flight_dynamics.gd": "23ac5de0861022db862d834a6abced6e424245561509c92444ca1157eeb03303",
+    "app/physics/rotorcraft/geared_coupling.gd": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+    "app/physics/rotorcraft/ground_start.gd": "02cd992c5ffc8ca631c26d7f2df5140aa5af7c3e9b7ab7f77e420dc9e5f78eb6",
+    "app/physics/rotorcraft/hx700_flex_bench.gd": "eac6e89ddd3bedd2aae0502a41588664e0d3f69f34431ba062dad7575f0b35c6",
+    "app/physics/rotorcraft/impact_detector.gd": "f70e6e2084abdadb45c3ef0de8a66a43dd15f8535e0bd44d90db554fa6477f1a",
+    "app/physics/rotorcraft/inflow.gd": "9bb479612409de4cbd38d8ab3916ea0a89577a4411fd6ede29c2bad3530e7f9d",
+    "app/physics/rotorcraft/lifecycle.gd": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+    "app/physics/rotorcraft/main_rotor.gd": "273f33105a9494cd4c78f0f16dfad548051f1ba65902d89ab763b87932af9df9",
+    "app/physics/rotorcraft/main_rotor_stage.gd": "e41258cfd75488672b91a719c7b89e209c5a2ac5e0397f407b45b88ba40490bf",
+    "app/physics/rotorcraft/performance_context.gd": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+    "app/physics/rotorcraft/simulation_step_adapter.gd": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c",
+    "app/physics/rotorcraft/skid_contact.gd": "71ad40c66db4b04b9f4c14cee2faabc99c8f7332ecb49b53b2a4f02660607ff8",
+    "app/physics/rotorcraft/swash.gd": "f2d60b93cb08f7a85c9a77cf393212dc09c85eda60732faaef677243606cb923",
+    "app/physics/rotorcraft/tail_rotor.gd": "121569733794dd56fc8bafc65add22bb57a7f81ca5db804e1e3c19618f23db2d",
+    "app/physics/rotorcraft/trim.gd": "f97dd407d05bc37966e2fb25a088eae3d2a7d8418b049710ded2cdf5dc7ea9b9",
+    "app/physics/rotorcraft_data.gd": "f2e43bfce0728c5ab622d19ed7a3b499390b91a114bd659da8615577878d49ba",
+    "app/sim/environment.gd": "e1bea3c5e9bf78edb552c26f91f9ff5235313a2735e81a6d847fa778d0973fd1",
+    "app/sim/helicopter_flight_session.gd": "bb5c78b69607489b3b4ccac247d1c3037eafcf3f7b700f76e30eeac12424d349",
+    "app/sim/native/helicopter_stage_adapter.gd": "c0e84ce78fcf930fa2ef58b7a24fe31fe6efa59150cc0d5d2ff3cf74ff862e1e",
+    "app/sim/native/native_configuration.gd": "1d293aa952636e76d30b855b6f8733acfa3f22c5b847cb91311fc801c508a928",
+    "app/sim/rotorcraft_recorder.gd": "4c2e89e81d6d7ec35661fb2af92fddcd0985ee1274db0fa14485115666dcee47",
+    "app/sim/simulation.gd": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92",
+    "app/sim/vehicle_model.gd": "e065d8b8b52c223c0260ac3da3976fd528755d5052d8245ae070cccd4b287174",
+    "app/tests/test_heli_ground_heading.gd": "e72df2f16d2ca616e4bb1a711758a2bd0e6ad143d56fd8473d7d3f5b443c37d8",
+    "app/tests/test_heli_impact_detector.gd": "221e3df22fe70ce6271cd7f988cd245a4921996db48973395eb593d7b1043a17",
+    "app/tests/test_native_helicopter_route.gd": "b4734412f8c0fd17c4d9413b2a49375b5f162ea962e26e0d90f06709bca3a4e1"
+  },
+  "baseline_git_commit": "75299d686",
+  "candidate_source_note": "Hashes are actual working-tree bytes, including concurrent unrelated recorder/main changes; the 41 simulation/data files were unchanged across the final candidate recording.",
+  "candidate_worktree_source_sha256": {
+    "app/audio/helicopter_audio.gd": "d3aa9626e99906c994ae78d923f34e6566707c9126e7d09c2c996d6d68060885",
+    "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "app/helicopter_main.gd": "d2703661d04690d19c35e5d172f4ba80f830bdb1da73f5b9bbac89b3956b1eeb",
+    "app/input/commands.gd": "4e8de330e95d0c4f4b5f9202ffc186db2cc9f20ef6c3a75ae1b6a70bce258315",
+    "app/input/controller_profile.gd": "8bc49d043abb493fb68a0ea6970c333f6e646b0ee333fedd1987c6bd4dc582c3",
+    "app/input/rc_input.gd": "717381a659492ed9cd6cf00f16e0d3042bd4fc947a8e6f31b80de2b174b1ced9",
+    "app/physics/ground_contact.gd": "5565fb7c613915575e14700df18f8bb2606a18db879548da13083f6eb7aa6873",
+    "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e",
+    "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+    "app/physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+    "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/rotorcraft/aerodynamic_stage.gd": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+    "app/physics/rotorcraft/airframe.gd": "7bb1bad8f99d8e9e1741536b8a31d62ac9d2affa474c1cf0394fe20542b4a9f6",
+    "app/physics/rotorcraft/drive.gd": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+    "app/physics/rotorcraft/dynamic_inflow.gd": "5ba1a1722f1f8c51df0b40d9c538cb602c865b00f2d9cf6173a86b2ae0daa2fc",
+    "app/physics/rotorcraft/electronics.gd": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+    "app/physics/rotorcraft/flight_dynamics.gd": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23",
+    "app/physics/rotorcraft/geared_coupling.gd": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+    "app/physics/rotorcraft/ground_start.gd": "1822c74a19e589844e25755029f46de946fbef8265a201122da13ee5a5591f1b",
+    "app/physics/rotorcraft/hx700_flex_bench.gd": "d7a7a78bf9a6fa1334050bb3a6238fde929862ac373bde88b5e77477ecb246df",
+    "app/physics/rotorcraft/impact_detector.gd": "15110a0b473b4bd638b6ff5db3857762cfc736bd6a51068fc001e17d2255a5fe",
+    "app/physics/rotorcraft/inflow.gd": "85289be30fe94c07a4ba10f3725c4d18581cab3d5d24fcecd92a1bd517725224",
+    "app/physics/rotorcraft/lifecycle.gd": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+    "app/physics/rotorcraft/main_rotor.gd": "e864cada369d6586e1af90154123e17f0223f844e2b8b2bf5b435b94ad82cca9",
+    "app/physics/rotorcraft/main_rotor_stage.gd": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc",
+    "app/physics/rotorcraft/performance_context.gd": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+    "app/physics/rotorcraft/rotor_disc_terrain.gd": "e5c4528aae83fa42c5ce0a4aa931c871740f584849de40b738c7353922a52f2c",
+    "app/physics/rotorcraft/simulation_step_adapter.gd": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+    "app/physics/rotorcraft/skid_contact.gd": "6c7c5d27c7b1f78f7e65fcf732bd7970bd8241833d7c2e93ba78ae421f368964",
+    "app/physics/rotorcraft/swash.gd": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246",
+    "app/physics/rotorcraft/tail_rotor.gd": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81",
+    "app/physics/rotorcraft/trim.gd": "7aa9ef1e507df8c94b743fbf0f642d923d4b7c5457a5afd32be5ab8971634c8e",
+    "app/physics/rotorcraft_data.gd": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2",
+    "app/sim/environment.gd": "7e173120c75f9d2bade1251106a5d72ad2900fca94370b8f2fedc5d74cb71ab6",
+    "app/sim/helicopter_flight_session.gd": "6ca9fb8687cebc7fc58fb45fda2d10dfc582df6321376ec34081b6a79712f00b",
+    "app/sim/native/helicopter_stage_adapter.gd": "10a2dc01b998b8b1788dfaefd5a14cef1e1360387115b294956c4e25a44b7de1",
+    "app/sim/native/native_configuration.gd": "dcc18920388dbdf5b847ed92e662923af72f6e061782ab6aa35ce79e47b0cf56",
+    "app/sim/rotorcraft_recorder.gd": "b4b912b494a9344d9c19b8719349e00690dc3c3d6aafa9df6946d4dcd74fc52b",
+    "app/sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+    "app/sim/vehicle_model.gd": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2",
+    "app/tests/test_heli_ground_heading.gd": "aaf9d5292f83e21de070ed9f725c7d8680783f4bed54fb70ebf18c2bdce3c560",
+    "app/tests/test_heli_impact_detector.gd": "27484f4cc86356dcb979a4b601282da3e7b9a39b7b8921f2b801569537e4767f",
+    "app/tests/test_helicopter_lake_context.gd": "32e422021995c304143ca168014415b6058741e3b1ae69276ce5ddca8269daba",
+    "app/tests/test_native_helicopter_route.gd": "5827168747f22497972637ecd88cd90f1f95ad87cb31800e93a60a2d2c169719",
+    "app/tests/test_rotor_disc_terrain.gd": "7a0e22c87b4bc7b457cc73c521ea367cf7f7ef1f1662c05104ad79abcdcf0b14"
+  },
+  "checks": {
+    "baseline-witness": {
+      "complete": true,
+      "log": "checks/baseline-witness/engine.log",
+      "log_sha256": "d1d69f8d7d0c4b5cd930b91b7844cf83c47db0439521020c5faa05fb1313413d",
+      "marker": "HELI H01 CANDIDATE: true",
+      "ok": true,
+      "report": "checks/baseline-witness/report.json"
+    },
+    "candidate-witness": {
+      "complete": true,
+      "log": "checks/candidate-witness/engine.log",
+      "log_sha256": "ebf6c1d8ba7838dac5f79547d3ae7b0cce2ab6b219eee387fdfe3195c8d53e76",
+      "marker": "HELI H01 CANDIDATE: true",
+      "ok": true,
+      "report": "checks/candidate-witness/report.json"
+    },
+    "crash-presentation": {
+      "complete": true,
+      "log": "checks/crash-presentation/engine.log",
+      "log_sha256": "6265fc4f3efcd5b13ffdef25328f1ba1f201776dc7f64d6feef1939644b98f04",
+      "marker": "HELI-33 crash presentation: 44 checks, 0 failed",
+      "ok": true,
+      "report": "checks/crash-presentation/report.json"
+    },
+    "crash-relaunch": {
+      "complete": true,
+      "log": "checks/crash-relaunch/engine.log",
+      "log_sha256": "3c29eb2b1eac7a705d3c6b8bd1c4509de3343e77f6156d30b6895300c59e736e",
+      "marker": "HELI-33 crash relaunch: 66 checks, 0 failed",
+      "ok": true,
+      "report": "checks/crash-relaunch/report.json"
+    },
+    "detector": {
+      "complete": true,
+      "log": "checks/detector/engine.log",
+      "log_sha256": "8968e6dea796561967fea36ef843a06212bb3c024c1c10b4660715aac895888f",
+      "marker": "HELI impact detector: 32 checks, 0 failed",
+      "ok": true,
+      "report": "checks/detector/report.json"
+    },
+    "disc-helper": {
+      "complete": true,
+      "log": "checks/disc-helper/engine.log",
+      "log_sha256": "31b46371f68482e5e6a27d19ce3e96076f21efd3c8897eed956223d684402920",
+      "marker": "H05 rotor disc terrain: 30 checks, 0 failed",
+      "ok": true,
+      "report": "checks/disc-helper/report.json"
+    },
+    "ground-audio": {
+      "complete": true,
+      "log": "checks/ground-audio/engine.log",
+      "log_sha256": "af1f2a9e3f5f770a1f4129040b0ec033ddc1e4f68cae0a6a8754ac6cba37693e",
+      "marker": "90 checks, 0 failed",
+      "ok": true,
+      "report": "checks/ground-audio/report.json"
+    },
+    "ground-heading": {
+      "complete": true,
+      "log": "checks/ground-heading/engine.log",
+      "log_sha256": "db98faace58f3213529c21d816ff8f23ee6a40b798ee3b6d343aeef41dd52954",
+      "marker": "HELI H01 stopped-rotor heading: 73 checks, 0 failures",
+      "ok": true,
+      "report": "checks/ground-heading/report.json"
+    },
+    "ground-session": {
+      "complete": true,
+      "log": "checks/ground-session/engine.log",
+      "log_sha256": "aff6041b643beee5e2da3c58dcff62bac7c1678aa0c111c68cbfc868a4dc85ed",
+      "marker": "HELI-20 ground session: 56 checks, 0 failed",
+      "ok": true,
+      "report": "checks/ground-session/report.json"
+    },
+    "ground-start": {
+      "complete": true,
+      "log": "checks/ground-start/engine.log",
+      "log_sha256": "fe7ccc78950e8167475faccbd2627ab855986cc2f4ad4022fcecb361fa42d71e",
+      "marker": "14 checks, 0 failed",
+      "ok": true,
+      "report": "checks/ground-start/report.json"
+    },
+    "import": {
+      "complete": true,
+      "log": "checks/import/engine.log",
+      "log_sha256": "5deddaefb567be1c50c76d25cfd083590fb6aa15c8e5fadf23a8b4b2b4969c0d",
+      "marker": null,
+      "ok": true,
+      "report": "checks/import/report.json"
+    },
+    "native-route": {
+      "complete": true,
+      "log": "checks/native-route/engine.log",
+      "log_sha256": "84c528806667aafe664064529cdfe2b9658f2c5dcc8dd50e09369877975a5703",
+      "marker": "NK-3 helicopter activity backend: 21 checks, 0 failures",
+      "ok": true,
+      "report": "checks/native-route/report.json"
+    },
+    "render-audit": {
+      "complete": true,
+      "log": "checks/render-audit/engine.log",
+      "log_sha256": "d705105755b7380a9228a5916f2382147115ca41ba8151836659dbc911db016d",
+      "marker": "32 checks, 0 failed",
+      "ok": true,
+      "report": "checks/render-audit/report.json"
+    },
+    "session": {
+      "complete": true,
+      "log": "checks/session/engine.log",
+      "log_sha256": "70e166878d3a591ac5aa85704348929e42cb4704e13088eae28c02473d2e1489",
+      "marker": "HELI lake context: 51 checks, 0 failed",
+      "ok": true,
+      "report": "checks/session/report.json"
+    },
+    "state-audit": {
+      "complete": true,
+      "log": "checks/state-audit/engine.log",
+      "log_sha256": "b162f3b7c2c198bc59b165da022ff219294d7d74fcadd22319e61449970b9545",
+      "marker": "HELI state audit: 54 checks, 0 failed",
+      "ok": true,
+      "report": "checks/state-audit/report.json"
+    }
+  },
+  "complete": true,
+  "date": "2026-11-08",
+  "flight_rows": {
+    "negative": {
+      "input_and_telemetry_rows_equal": true,
+      "rows_including_header": 782,
+      "sha256": "104e30ab03b7e06d39a592e6cfc7d360ba7721c64e1cd8e088ffc7140f76ef81"
+    },
+    "positive": {
+      "input_and_telemetry_rows_equal": true,
+      "rows_including_header": 782,
+      "sha256": "c2a59caf8f760a2fe88f85a31dd49177991ebcccdf2c0d1689fa7d7d39d0c13b"
+    }
+  },
+  "format": "openrc-heli-h03-h05-evidence-v1",
+  "godot_console_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "godot_gui_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+  "godot_version": "4.8-beta2 official cafc17a19",
+  "limitations": [
+    "Separate baseline and candidate checkpoint replays are exact; old checkpoints are intentionally refused by the new contact law. The CSV comparison excludes metadata comments.",
+    "The dry yaw tape uses 780 accepted ticks per sign and does not validate physical handling or lake flight.",
+    "The full-disc terrain bound is for the declared interpolated proxy; entirely unsampled legacy body, slow-rotor and scenery contacts remain possible.",
+    "Water contact is unsupported and conservative bounds can refuse nearby dry positions; over-water ground effect is unqualified.",
+    "The native helicopter stage is refused with any lake. Windows did not execute the Linux-only native stage, and this evidence is not target-hardware or rendered qualification."
+  ],
+  "platform": "Windows, headless, Dummy audio",
+  "solver_changed": true
+}

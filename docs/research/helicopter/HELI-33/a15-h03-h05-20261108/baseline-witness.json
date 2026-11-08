@@ -1,0 +1,33 @@
+{
+  "cases": {
+    "negative": {
+      "complete": true,
+      "csv_saved": true,
+      "csv_sha256": "81141b8661b6f5379f9c0598d286709da265fdefc513dcc9c9cb6c1e167b21b1",
+      "error_rad": 0.0,
+      "exact_replay": true,
+      "heading_rad": 1.5707963267948963,
+      "heading_reference_rad": 1.5707963267948963,
+      "tape_sha256": "461704253216babe1a47861e620db46d57c69df133a2a91203b0fa05791575f3",
+      "target_rad_s": 0.0,
+      "ticks": 780
+    },
+    "positive": {
+      "complete": true,
+      "csv_saved": true,
+      "csv_sha256": "6236181e4cb9e8ddeab3240e2530d6759963ded664279d7cb6ab28eff826d6b1",
+      "error_rad": 0.0,
+      "exact_replay": true,
+      "heading_rad": 1.5707963267948963,
+      "heading_reference_rad": 1.5707963267948963,
+      "tape_sha256": "90bb301ea158973f78a07a1a0d48ab81c1a3b7ad5ae52b491c2510a62fe91c48",
+      "target_rad_s": 0.0,
+      "ticks": 780
+    }
+  },
+  "electronics_sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+  "engine": "4.8-beta2 (official)",
+  "format": "helicopter heading candidate v1",
+  "ok": true,
+  "session_sha256": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9"
+}

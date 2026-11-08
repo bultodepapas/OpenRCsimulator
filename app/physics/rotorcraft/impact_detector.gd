@@ -4,9 +4,11 @@ extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 const GroundContact := preload("res://physics/ground_contact.gd")
 const EffectiveMass := preload("res://physics/effective_mass.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
+const DiscTerrain := preload("res://physics/rotorcraft/rotor_disc_terrain.gd")
 
 const SKID_TERMINAL_TRAVEL_M := 0.04
 const SWEEP_SPACING_M := 0.05
@@ -65,8 +67,10 @@ static func prepare(context: Dictionary, skids: Dictionary) -> Dictionary:
 static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array,
 		continuous: PackedFloat64Array, context: Dictionary, skids: Dictionary,
 		surfaces: PackedFloat64Array, phase: PackedFloat64Array = PackedFloat64Array(),
-		world: Dictionary = {}, prepared: Dictionary = {}) -> Dictionary:
+		world: Dictionary = {}, prepared: Dictionary = {}, lake: Dictionary = {}) -> Dictionary:
 	var invalid: String = _input_error(previous_body, body, continuous, context, skids, surfaces, phase, world)
+	if not lake.is_empty() and not LakeSurface.is_valid_definition(lake):
+		return {"ok": false, "impact": {}, "error": "lake terrain is malformed"}
 	if not invalid.is_empty():
 		return {"ok": false, "impact": {}, "error": invalid}
 	if prepared.is_empty():
@@ -88,7 +92,7 @@ static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array
 	var best: Dictionary = {}
 	if bool(sweep.terrain_possible):
 		best = _terrain_contact(previous_body, body, continuous, context, skids,
-			surfaces, phase, probes, int(sweep.steps), rotor_speeds, max_height)
+			surfaces, phase, probes, int(sweep.steps), rotor_speeds, max_height, lake)
 		if not best.is_empty() and not bool(best.get("ok", true)):
 			return {"ok": false, "impact": {}, "error": str(best.get("error", "terrain sampling failed"))}
 	if not world.is_empty():
@@ -98,13 +102,15 @@ static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array
 		if not body_candidates.is_empty():
 			var scenery: Dictionary = _first_scenery_contact(previous_body, body, world, context, prepared,
 				rotor_speeds, best)
-			if not scenery.is_empty() and float(scenery.time_fraction) < float(best.get("time_fraction", INF)):
-				best = scenery
+			best = _arbitrate(best, scenery)
+			if not bool(best.get("ok", true)):
+				return {"ok": false, "impact": {}, "error": str(best.error)}
 		if not rotor_candidates.is_empty():
 			var rotor_scenery: Dictionary = _first_rotor_scenery_contact(previous_body, body, continuous,
 				context, phase, world, prepared, int(sweep.steps), rotor_speeds, best, rotor_candidates)
-			if not rotor_scenery.is_empty() and float(rotor_scenery.time_fraction) < float(best.get("time_fraction", INF)):
-				best = rotor_scenery
+			best = _arbitrate(best, rotor_scenery)
+			if not bool(best.get("ok", true)):
+				return {"ok": false, "impact": {}, "error": str(best.error)}
 	return {"ok": true, "impact": best, "error": ""}
 
 
@@ -178,10 +184,12 @@ static func _prepared_error(prepared: Dictionary, context: Dictionary, skids: Di
 		return "prepared impact hull reach does not match its probes"
 	var expected_max_reach: float = maxf(hull_reach,
 		M.norm(M.v3(float(context.main_model.hub_x_m), float(context.main_model.hub_y_m),
-			float(context.main_model.hub_z_m))) + float(context.main_model.rotor_radius_m))
+			float(context.main_model.hub_z_m))) + float(context.main_model.rotor_radius_m) \
+			+ 0.5 * maxf(0.0, float(context.main_model.get("blade_chord_m", 0.0))))
 	expected_max_reach = maxf(expected_max_reach,
 		M.norm(M.v3(-float(context.tail_model.hub_distance_aft_m), 0.0,
-			-float(context.tail_model.hub_height_above_cg_m))) + float(context.tail_model.tail_rotor_radius_m))
+			-float(context.tail_model.hub_height_above_cg_m))) + float(context.tail_model.tail_rotor_radius_m) \
+			+ 0.5 * maxf(0.0, float(context.tail_model.get("blade_chord_m", 0.0))))
 	if not is_equal_approx(expected_max_reach, float(prepared.max_reach_m)):
 		return "prepared impact maximum reach does not match its geometry"
 	return ""
@@ -282,9 +290,9 @@ static func _maximum_reach(probes: Array[Dictionary], main: Dictionary, tail: Di
 	var reach: float = 0.0
 	for probe: Dictionary in probes:
 		reach = maxf(reach, M.norm(probe.point))
-	reach = maxf(reach, M.norm(M.v3(main.hub_x_m, main.hub_y_m, main.hub_z_m)) + main.rotor_radius_m)
+	reach = maxf(reach, M.norm(M.v3(main.hub_x_m, main.hub_y_m, main.hub_z_m)) + main.rotor_radius_m + 0.5 * maxf(0.0, float(main.get("blade_chord_m", 0.0))))
 	reach = maxf(reach, M.norm(M.v3(-tail.hub_distance_aft_m, 0.0, -tail.hub_height_above_cg_m))
-		+ tail.tail_rotor_radius_m)
+		+ tail.tail_rotor_radius_m + 0.5 * maxf(0.0, float(tail.get("blade_chord_m", 0.0))))
 	return reach
 
 
@@ -313,16 +321,19 @@ static func _sweep_plan(previous: PackedFloat64Array, current: PackedFloat64Arra
 static func _terrain_contact(previous: PackedFloat64Array, current: PackedFloat64Array,
 		continuous: PackedFloat64Array, context: Dictionary, skids: Dictionary,
 		surfaces: PackedFloat64Array, phase: PackedFloat64Array, probes: Array[Dictionary],
-		steps: int, rotor_speeds: PackedFloat64Array, max_height: float) -> Dictionary:
+		steps: int, rotor_speeds: PackedFloat64Array, max_height: float, lake: Dictionary = {}) -> Dictionary:
 	var best: Dictionary = {}
 	var main_state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, 0.0)
+	var fast_main: bool = absf(rotor_speeds[0]) >= FULL_DISC_SPEED_RAD_S
+	var fast_tail: bool = absf(rotor_speeds[1]) >= FULL_DISC_SPEED_RAD_S
+	var skipped := {"ok": true, "depth_m": -INF}
 	var old_probe_measures: Array[Dictionary] = []
 	for probe: Dictionary in probes:
-		old_probe_measures.append(_measure_body_probe(main_state, probe, surfaces, max_height))
-	var old_main: Dictionary = _measure_rotor(main_state, continuous, context.main_model, true,
-		phase, surfaces, rotor_speeds[0], max_height)
-	var old_tail: Dictionary = _measure_rotor(main_state, continuous, context.tail_model, false,
-		phase, surfaces, rotor_speeds[1], max_height)
+		old_probe_measures.append(_measure_body_probe(main_state, probe, surfaces, max_height, lake))
+	var old_main: Dictionary = skipped if fast_main else _measure_rotor(main_state, continuous, context.main_model, true,
+		phase, surfaces, rotor_speeds[0], max_height, lake)
+	var old_tail: Dictionary = skipped if fast_tail else _measure_rotor(main_state, continuous, context.tail_model, false,
+		phase, surfaces, rotor_speeds[1], max_height, lake)
 	if not bool(old_main.get("ok", false)) or not bool(old_tail.get("ok", false)):
 		return {"ok": false, "error": "rotor terrain sample failed at the start of the body sweep"}
 	for step: int in range(steps + 1):
@@ -332,7 +343,7 @@ static func _terrain_contact(previous: PackedFloat64Array, current: PackedFloat6
 		var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, fraction)
 		for probe_index: int in probes.size():
 			var probe: Dictionary = probes[probe_index]
-			var measured: Dictionary = _measure_body_probe(state, probe, surfaces, max_height)
+			var measured: Dictionary = _measure_body_probe(state, probe, surfaces, max_height, lake)
 			if not bool(measured.get("ok", false)):
 				return {"ok": false, "error": str(measured.get("error", "terrain probe failed"))}
 			var old_depth: float = float(old_probe_measures[probe_index].depth_m)
@@ -340,53 +351,70 @@ static func _terrain_contact(previous: PackedFloat64Array, current: PackedFloat6
 					float(probe.threshold_m)):
 				var previous_fraction: float = fraction - 1.0 / float(steps)
 				var at: float = previous_fraction if old_depth > float(probe.threshold_m) else _refine_probe(previous, current, probe, surfaces,
-					max_height, previous_fraction, fraction)
+					max_height, previous_fraction, fraction, lake)
 				var contact_state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, at)
-				var contact: Dictionary = _measure_body_probe(contact_state, probe, surfaces, max_height)
+				var contact: Dictionary = _measure_body_probe(contact_state, probe, surfaces, max_height, lake)
 				var event: Dictionary = _make_terrain_impact(contact_state, contact, probe, at,
 					context, rotor_speeds, {})
-				if _precedes(event, best):
-					best = event
+				# A sign bracket refines one crossing but cannot exclude earlier
+				# enter/exit crossings in this or previous sampling intervals.
+				event["time_fraction_uncertainty"] = at
+				best = _arbitrate(best, event)
+				if not bool(best.get("ok", true)): return best
 			old_probe_measures[probe_index] = measured
-		var main_measure: Dictionary = _measure_rotor(state, continuous, context.main_model, true,
-			phase, surfaces, rotor_speeds[0], max_height)
+		var main_measure: Dictionary = skipped if fast_main else _measure_rotor(state, continuous, context.main_model, true,
+			phase, surfaces, rotor_speeds[0], max_height, lake)
 		if not bool(main_measure.get("ok", false)):
 			return {"ok": false, "error": str(main_measure.get("error", "main rotor terrain sample failed"))}
 		var old_main_depth: float = float(old_main.depth_m)
 		if _crossed_limit(old_main_depth, float(main_measure.depth_m), 0.0):
 			var previous_fraction: float = fraction - 1.0 / float(steps)
 			var at: float = previous_fraction if old_main_depth > 0.0 else _refine_rotor(previous, current, continuous, context.main_model, true,
-				phase, surfaces, rotor_speeds[0], max_height, previous_fraction, fraction)
+				phase, surfaces, rotor_speeds[0], max_height, previous_fraction, fraction, lake)
 			var contact_state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, at)
 			var contact: Dictionary = _measure_rotor(contact_state, continuous, context.main_model, true,
-				phase, surfaces, rotor_speeds[0], max_height)
+				phase, surfaces, rotor_speeds[0], max_height, lake)
 			var event: Dictionary = _make_terrain_impact(contact_state, contact, {}, at,
 				context, rotor_speeds, contact.get("rotor", {}))
-			if _precedes(event, best):
-				best = event
+			event["time_fraction_uncertainty"] = at
+			best = _arbitrate(best, event)
+			if not bool(best.get("ok", true)): return best
 		old_main = main_measure
-		var tail_measure: Dictionary = _measure_rotor(state, continuous, context.tail_model, false,
-			phase, surfaces, rotor_speeds[1], max_height)
+		var tail_measure: Dictionary = skipped if fast_tail else _measure_rotor(state, continuous, context.tail_model, false,
+			phase, surfaces, rotor_speeds[1], max_height, lake)
 		if not bool(tail_measure.get("ok", false)):
 			return {"ok": false, "error": str(tail_measure.get("error", "tail rotor terrain sample failed"))}
 		var old_tail_depth: float = float(old_tail.depth_m)
 		if _crossed_limit(old_tail_depth, float(tail_measure.depth_m), 0.0):
 			var previous_fraction: float = fraction - 1.0 / float(steps)
 			var at: float = previous_fraction if old_tail_depth > 0.0 else _refine_rotor(previous, current, continuous, context.tail_model, false,
-				phase, surfaces, rotor_speeds[1], max_height, previous_fraction, fraction)
+				phase, surfaces, rotor_speeds[1], max_height, previous_fraction, fraction, lake)
 			var contact_state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, at)
 			var contact: Dictionary = _measure_rotor(contact_state, continuous, context.tail_model, false,
-				phase, surfaces, rotor_speeds[1], max_height)
+				phase, surfaces, rotor_speeds[1], max_height, lake)
 			var event: Dictionary = _make_terrain_impact(contact_state, contact, {}, at,
 				context, rotor_speeds, contact.get("rotor", {}))
-			if _precedes(event, best):
-				best = event
+			event["time_fraction_uncertainty"] = at
+			best = _arbitrate(best, event)
+			if not bool(best.get("ok", true)): return best
 		old_tail = tail_measure
+	for main_rotor: bool in [true, false]:
+		if not best.is_empty() and float(best.get("time_fraction", INF)) == 0.0 \
+				and float(best.get("time_fraction_uncertainty", 0.0)) == 0.0:
+			return best # no later contact can precede this exact event
+		if not (fast_main if main_rotor else fast_tail): continue
+		var stop: float = minf(1.0, float(best.get("time_fraction", 1.0)))
+		var event: Dictionary = _first_disc_terrain(previous, current, continuous,
+			context.main_model if main_rotor else context.tail_model, main_rotor,
+			surfaces, max_height, lake, context, rotor_speeds, stop)
+		if not bool(event.get("ok", true)): return event
+		best = _arbitrate(best, event)
+		if not bool(best.get("ok", true)): return best
 	return best
 
 
 static func _measure_body_probe(state: PackedFloat64Array, probe: Dictionary,
-		surfaces: PackedFloat64Array, max_height: float) -> Dictionary:
+		surfaces: PackedFloat64Array, max_height: float, lake: Dictionary = {}) -> Dictionary:
 	var down: float = _point_down_without_allocation(state, probe.point)
 	if down + max_height <= float(probe.threshold_m):
 		return {"ok": true, "possible": false, "depth_m": -INF}
@@ -394,7 +422,49 @@ static func _measure_body_probe(state: PackedFloat64Array, probe: Dictionary,
 	var position: PackedFloat64Array = state.slice(RB.POS, RB.POS + 3)
 	var offset: PackedFloat64Array = M.q_rotate(q, probe.point)
 	var point: PackedFloat64Array = M.add(position, offset)
-	return _terrain_sample(point, probe.point, surfaces, max_height, float(probe.threshold_m))
+	return _terrain_sample(point, probe.point, surfaces, max_height, float(probe.threshold_m), lake)
+
+
+## H05: search the complete swept fast-rotor disc. A hit is an actual witness;
+## its onset can precede that witness by the returned bounded fraction interval.
+static func _first_disc_terrain(previous: PackedFloat64Array, current: PackedFloat64Array,
+		continuous: PackedFloat64Array, model: Dictionary, main_rotor: bool,
+		surfaces: PackedFloat64Array, max_height: float, lake: Dictionary,
+		context: Dictionary, rotor_speeds: PackedFloat64Array, stop: float = 1.0) -> Dictionary:
+	var hub: PackedFloat64Array
+	var axis: PackedFloat64Array
+	var radius: float
+	var component: String
+	if main_rotor:
+		hub = M.v3(model.hub_x_m, model.hub_y_m, model.hub_z_m)
+		axis = M.v3(-M.sin_(continuous[1]), M.sin_(continuous[2]), -M.cos_(continuous[1]) * M.cos_(continuous[2]))
+		radius = float(model.rotor_radius_m)
+		component = "main_rotor"
+	else:
+		hub = M.v3(-model.hub_distance_aft_m, 0.0, -model.hub_height_above_cg_m)
+		axis = M.v3(0.0, 1.0, 0.0)
+		radius = float(model.tail_rotor_radius_m)
+		component = "tail_rotor"
+	axis = M.scale(axis, 1.0 / M.norm(axis))
+	var found: Dictionary = DiscTerrain.first(previous, current, hub, axis, radius, surfaces, lake, stop)
+	if not bool(found.get("ok", false)): return found
+	if not is_finite(float(found.fraction)): return {}
+	var fraction: float = float(found.fraction)
+	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, fraction)
+	var measured: Dictionary = _terrain_sample(found.point_world_ned, found.point_body_frd,
+		surfaces, max_height, 0.0, lake)
+	if not bool(measured.get("ok", false)): return measured
+	measured["method"] = DiscTerrain.LAW
+	measured["component"] = component
+	measured["rotating_envelope"] = true
+	var rotor := {"point": found.point_body_frd, "rotor_axis_body": axis, "hub_body": hub,
+		"rotor_arm_body": M.sub(found.point_body_frd, hub), "component": component,
+		"speed_ratio": 1.0 if main_rotor else float(model.tail_to_main_speed_ratio)}
+	var event: Dictionary = _make_terrain_impact(state, measured, {}, fraction, context, rotor_speeds, rotor)
+	event["time_fraction_uncertainty"] = float(found.uncertainty)
+	event["time_fraction_lower_bound"] = maxf(0.0, fraction - float(found.uncertainty))
+	event["disc_onset_interval"] = true
+	return event
 
 
 static func _point_down_without_allocation(state: PackedFloat64Array, body_point: PackedFloat64Array) -> float:
@@ -411,7 +481,7 @@ static func _point_down_without_allocation(state: PackedFloat64Array, body_point
 
 static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64Array,
 		model: Dictionary, main_rotor: bool, phase: PackedFloat64Array,
-		surfaces: PackedFloat64Array, signed_omega: float, max_height: float) -> Dictionary:
+		surfaces: PackedFloat64Array, signed_omega: float, max_height: float, lake: Dictionary = {}) -> Dictionary:
 	var q: PackedFloat64Array = state.slice(RB.ATT, RB.ATT + 4)
 	var hub: PackedFloat64Array
 	var axis_body: PackedFloat64Array
@@ -434,11 +504,18 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 		component = "tail_rotor"
 	axis_body = M.scale(axis_body, 1.0 / M.norm(axis_body))
 	var center: PackedFloat64Array = M.add(state.slice(RB.POS, RB.POS + 3), M.q_rotate(q, hub))
-	var axis_down: float = _point_down_without_allocation(state, axis_body) - state[RB.POS + 2]
-	axis_down = clampf(axis_down, -1.0, 1.0)
+	var reference: PackedFloat64Array = M.v3(1.0, 0.0, 0.0)
+	var basis_u: PackedFloat64Array = M.sub(reference, M.scale(axis_body, M.dot(reference, axis_body)))
+	if M.norm(basis_u) <= GEOMETRY_EPSILON:
+		reference = M.v3(0.0, 0.0, 1.0)
+		basis_u = M.sub(reference, M.scale(axis_body, M.dot(reference, axis_body)))
+	basis_u = M.scale(basis_u, 1.0 / M.norm(basis_u))
+	var basis_v: PackedFloat64Array = M.cross(axis_body, basis_u)
+	var world_u: PackedFloat64Array = M.q_rotate(q, basis_u)
+	var world_v: PackedFloat64Array = M.q_rotate(q, basis_v)
 	var blade_half_chord: float = maxf(chord * 0.5, 0.0)
 	var vertical_support_m: float = (radius + blade_half_chord) \
-		* sqrt(maxf(0.0, 1.0 - axis_down * axis_down))
+		* sqrt(world_u[2] * world_u[2] + world_v[2] * world_v[2])
 	# The whole blade, including stopped-rotor chord, lies inside this vertical support bound.
 	# max_height bounds every accepted terrain surface, so safely elevated rotors need no point samples.
 	if center[2] + vertical_support_m + max_height <= -1.0e-12:
@@ -451,47 +528,20 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 			"rotating_envelope": absf(signed_omega) >= FULL_DISC_SPEED_RAD_S,
 			"rotor_phase_model": "phase_at_tick_end; no_intra_tick_phase_interpolation"}
 	if absf(signed_omega) >= FULL_DISC_SPEED_RAD_S:
-		method = "analytic_rotating_disc_local_support_v1"
-		var down: PackedFloat64Array = M.v3(0.0, 0.0, 1.0)
-		var candidate: PackedFloat64Array = center.duplicate()
-		var terrain: PackedFloat64Array = PackedFloat64Array()
-		var radial_world: PackedFloat64Array = M.v3(0.0, 0.0, 0.0)
-		for iteration: int in 4:
-			var support_extent_down: float = radius if iteration == 0 else 0.0
-			if candidate[2] + support_extent_down + max_height <= 0.0:
-				return {"ok": true, "possible": false, "depth_m": -INF,
-					"point_world_ned": candidate, "point_body_frd": hub,
-					"component": component, "method": method, "rotating_envelope": true}
-			terrain = Terrain.sample_validated(candidate[0], candidate[1], surfaces)
-			if terrain.size() != 3 or not _finite(terrain):
-				return {"ok": false, "error": "terrain sampling failed at rotor support point"}
-			var ground_down: PackedFloat64Array = M.v3(terrain[1], terrain[2], 1.0)
-			ground_down = M.scale(ground_down, 1.0 / M.norm(ground_down))
-			var axis_world: PackedFloat64Array = M.q_rotate(q, axis_body)
-			var projection: PackedFloat64Array = M.sub(ground_down,
-				M.scale(axis_world, M.dot(ground_down, axis_world)))
-			var projection_norm: float = M.norm(projection)
-			radial_world = M.v3(0.0, 0.0, 0.0)
-			if projection_norm > GEOMETRY_EPSILON:
-				radial_world = M.scale(projection, radius / projection_norm)
-			candidate = M.add(center, radial_world)
-		var point_body: PackedFloat64Array = M.add(hub, M.q_rotate(M.q_conj(q), radial_world))
-		var result: Dictionary = _terrain_sample(candidate, point_body, surfaces, max_height)
-		result["method"] = method
-		result["component"] = component
-		result["rotor"] = {"point": point_body, "rotor_axis_body": axis_body, "hub_body": hub,
-			"rotor_arm_body": M.sub(point_body, hub), "component": component,
+		var found: Dictionary = DiscTerrain.first(state, state, hub, axis_body, radius, surfaces, lake, 0.0)
+		if not bool(found.get("ok", false)): return found
+		if not is_finite(float(found.fraction)):
+			return {"ok": true, "possible": false, "depth_m": -INF}
+		var measured: Dictionary = _terrain_sample(found.point_world_ned, found.point_body_frd,
+			surfaces, max_height, 0.0, lake)
+		measured["method"] = DiscTerrain.LAW
+		measured["component"] = component
+		measured["rotor"] = {"point": found.point_body_frd, "rotor_axis_body": axis_body,
+			"hub_body": hub, "rotor_arm_body": M.sub(found.point_body_frd, hub), "component": component,
 			"speed_ratio": 1.0 if main_rotor else float(model.tail_to_main_speed_ratio)}
-		result["rotating_envelope"] = true
-		return result
+		measured["rotating_envelope"] = true
+		return measured
 	method = "finite_two_blade_chord_at_tick_end_proxy_v1"
-	var reference: PackedFloat64Array = M.v3(1.0, 0.0, 0.0)
-	var basis_u: PackedFloat64Array = M.sub(reference, M.scale(axis_body, M.dot(reference, axis_body)))
-	if M.norm(basis_u) <= GEOMETRY_EPSILON:
-		reference = M.v3(0.0, 0.0, 1.0)
-		basis_u = M.sub(reference, M.scale(axis_body, M.dot(reference, axis_body)))
-	basis_u = M.scale(basis_u, 1.0 / M.norm(basis_u))
-	var basis_v: PackedFloat64Array = M.cross(axis_body, basis_u)
 	var angle: float = phase[rotor_index] if phase.size() == 2 else 0.0
 	var best: Dictionary = {}
 	for blade: int in 2:
@@ -507,7 +557,7 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 				if _point_down_without_allocation(state, point_body) + max_height <= 0.0:
 					continue
 				var point_world: PackedFloat64Array = M.add(state.slice(RB.POS, RB.POS + 3), M.q_rotate(q, point_body))
-				var measured: Dictionary = _terrain_sample(point_world, point_body, surfaces, max_height)
+				var measured: Dictionary = _terrain_sample(point_world, point_body, surfaces, max_height, 0.0, lake)
 				if not bool(measured.get("ok", true)):
 					return measured
 				measured["method"] = method
@@ -526,11 +576,11 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 
 
 static func _terrain_sample(point_world: PackedFloat64Array, point_body: PackedFloat64Array,
-		surfaces: PackedFloat64Array, max_height: float, threshold: float = 0.0) -> Dictionary:
+		surfaces: PackedFloat64Array, max_height: float, threshold: float = 0.0, lake: Dictionary = {}) -> Dictionary:
 	if point_world[2] + max_height <= threshold:
 		return {"ok": true, "possible": false, "depth_m": -INF,
 			"point_world_ned": point_world, "point_body_frd": point_body}
-	var terrain: PackedFloat64Array = Terrain.sample_validated(point_world[0], point_world[1], surfaces)
+	var terrain: PackedFloat64Array = Terrain.sample_validated(point_world[0], point_world[1], surfaces, lake)
 	if terrain.size() != 3 or not _finite(terrain):
 		return {"ok": false, "error": "terrain sample is invalid at a candidate contact point"}
 	var normal: PackedFloat64Array = M.v3(-terrain[1], -terrain[2], -1.0)
@@ -561,11 +611,11 @@ static func _crossed_limit(old_depth: float, new_depth: float, limit: float) -> 
 
 
 static func _refine_probe(previous: PackedFloat64Array, current: PackedFloat64Array,
-		probe: Dictionary, surfaces: PackedFloat64Array, max_height: float, low: float, high: float) -> float:
+		probe: Dictionary, surfaces: PackedFloat64Array, max_height: float, low: float, high: float, lake: Dictionary = {}) -> float:
 	for _iteration: int in SWEEP_REFINE_STEPS:
 		var middle: float = 0.5 * (low + high)
 		var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, middle)
-		var measured: Dictionary = _measure_body_probe(state, probe, surfaces, max_height)
+		var measured: Dictionary = _measure_body_probe(state, probe, surfaces, max_height, lake)
 		if float(measured.depth_m) > float(probe.threshold_m):
 			high = middle
 		else:
@@ -576,12 +626,12 @@ static func _refine_probe(previous: PackedFloat64Array, current: PackedFloat64Ar
 static func _refine_rotor(previous: PackedFloat64Array, current: PackedFloat64Array,
 		continuous: PackedFloat64Array, model: Dictionary, main_rotor: bool,
 		phase: PackedFloat64Array, surfaces: PackedFloat64Array, signed_omega: float, max_height: float,
-		low: float, high: float) -> float:
+		low: float, high: float, lake: Dictionary = {}) -> float:
 	for _iteration: int in SWEEP_REFINE_STEPS:
 		var middle: float = 0.5 * (low + high)
 		var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, middle)
 		var measured: Dictionary = _measure_rotor(state, continuous, model, main_rotor,
-			phase, surfaces, signed_omega, max_height)
+			phase, surfaces, signed_omega, max_height, lake)
 		if float(measured.depth_m) > 0.0:
 			high = middle
 		else:
@@ -678,7 +728,8 @@ static func _first_scenery_contact(previous: PackedFloat64Array, current: Packed
 	for event: SceneryCollision.Event in events:
 		if event == null or not event.terminal or not event.has_kinematics:
 			continue
-		if float(event.time_fraction) >= float(terrain_best.get("time_fraction", INF)):
+		if not bool(terrain_best.get("disc_onset_interval", false)) \
+				and float(event.time_fraction) >= float(terrain_best.get("time_fraction", INF)):
 			continue
 		var contact_state: PackedFloat64Array = event.contact_state()
 		var q: PackedFloat64Array = contact_state.slice(RB.ATT, RB.ATT + 4)
@@ -705,7 +756,7 @@ static func _first_scenery_contact(previous: PackedFloat64Array, current: Packed
 			"obstacle_part": event.obstacle_part,
 			"aircraft_part": str(aircraft_probe.get("part", "")),
 			"main_omega_rad_s": rotor_speeds[0], "tail_omega_rad_s": rotor_speeds[1],
-			"time_fraction": event.time_fraction, "penetration_m": 0.0,
+			"time_fraction": event.time_fraction, "time_fraction_uncertainty": event.time_fraction, "penetration_m": 0.0,
 			"contact_method": "swept_static_scenery_proxy_v1", "estimated_proxy": true,
 			"conservative_envelope": false}
 	return {}
@@ -809,7 +860,9 @@ static func _first_rotor_scenery_contact(previous: PackedFloat64Array, current: 
 	var sample_steps: int = 0 if _same_packed(previous, current) else steps
 	for step: int in range(sample_steps + 1):
 		var fraction: float = 0.0 if sample_steps == 0 else float(step) / float(sample_steps)
-		if fraction >= float(incumbent.get("time_fraction", INF)) \
+		var preceding_sample: float = 0.0 if sample_steps == 0 else maxf(0.0, fraction - 1.0 / float(sample_steps))
+		if (not bool(incumbent.get("disc_onset_interval", false)) \
+				and preceding_sample >= float(incumbent.get("time_fraction", INF))) \
 			or fraction > float(best.get("time_fraction", INF)):
 			break
 		var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, current, fraction)
@@ -838,6 +891,7 @@ static func _first_rotor_scenery_contact(previous: PackedFloat64Array, current: 
 						continue
 					var event: Dictionary = _make_rotor_scenery_impact(state, descriptor, spoke,
 						proxy, hit, context, rotor_speeds, fraction)
+					if not event.is_empty(): event["time_fraction_uncertainty"] = fraction
 					if not event.is_empty() and _precedes(event, best):
 						best = event
 	return best
@@ -972,6 +1026,25 @@ static func _reason_for(component: String) -> String:
 static func _precedes(candidate: Dictionary, incumbent: Dictionary) -> bool:
 	return not candidate.is_empty() and (incumbent.is_empty()
 		or float(candidate.get("time_fraction", INF)) < float(incumbent.get("time_fraction", INF)))
+
+
+## A disc witness is an upper bound on onset. Never order overlapping onset
+## intervals as if the witness time were exact. Exact ties retain the existing
+## first-candidate priority; otherwise an ambiguous tick is refused atomically.
+static func _arbitrate(incumbent: Dictionary, candidate: Dictionary) -> Dictionary:
+	if not bool(incumbent.get("ok", true)): return incumbent
+	if not bool(candidate.get("ok", true)): return candidate
+	if incumbent.is_empty(): return candidate
+	if candidate.is_empty(): return incumbent
+	if not bool(incumbent.get("disc_onset_interval", false)) and not bool(candidate.get("disc_onset_interval", false)):
+		return candidate if _precedes(candidate, incumbent) else incumbent
+	var a: float = float(incumbent.get("time_fraction", INF))
+	var b: float = float(candidate.get("time_fraction", INF))
+	var a_low: float = a - float(incumbent.get("time_fraction_uncertainty", 0.0))
+	var b_low: float = b - float(candidate.get("time_fraction_uncertainty", 0.0))
+	if a <= b_low: return incumbent
+	if b <= a_low: return candidate
+	return {"ok": false, "error": "rotor contact onset overlaps a competing impact; ordering is unresolved"}
 
 
 static func _finite_number(value: Variant) -> bool:

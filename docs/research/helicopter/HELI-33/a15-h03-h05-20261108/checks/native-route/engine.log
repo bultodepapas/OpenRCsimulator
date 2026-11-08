@@ -1,0 +1,16 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+Helicopter startup refused: --physics-backend must be native or gdscript_reference
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native helicopter terrain does not support lakes; using gdscript_reference","requested":"native"}
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native helicopter terrain does not support lakes; using gdscript_reference","requested":"native"}
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"","requested":"gdscript_reference"}
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native helicopter terrain does not support lakes; using gdscript_reference","requested":"native"}
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"","requested":"gdscript_reference"}
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+NK-3 helicopter activity backend: 21 checks, 0 failures

@@ -47,6 +47,8 @@ static func tick(session: Node, inputs: PackedFloat64Array) -> Dictionary:
 
 
 static func prepare(session: Node, native: Object) -> Dictionary:
+	if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
+		return {ok = false, error = "native helicopter terrain does not support lakes"}
 	var weather := weather_snapshot(session)
 	if weather.is_empty(): return {ok = false, error = "helicopter weather provider differs from the supported session"}
 	return native.prepare_heli_stage(snapshot(session), weather)
@@ -64,6 +66,9 @@ static func install(session: Node, native: Object) -> Dictionary:
 		return {ok = false, error = "helicopter model stage is not the built-in session evaluator"}
 	var context_state := {ok = true}
 	var wrapped := func(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> Variant:
+		if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
+			context_state.ok = false
+			return PackedFloat64Array()
 		var next: Variant = previous_pre_tick.call(aux, inputs, dt) if previous_pre_tick.is_valid() else aux
 		if next is PackedFloat64Array and next.size() == aux.size():
 			context_state.ok = bool(context_state.ok) and native.set_heli_tick_context(tick(session, inputs))

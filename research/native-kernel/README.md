@@ -23,7 +23,7 @@ The coupled electric sources belong to Turbo Lumber and X8.
 | --- | --- |
 | Ten fixed-wing catalog aircraft, default battery and ideal variants; representative tested Workshop variants | Prepared flaps, wing polars, elevons, propeller axes; capability-based admission after exact oracles, not exhaustive user-authored model qualification |
 | Legacy, coupled electric, finite glow two/four-stroke, liquid combustion and turbine | Same-stage shaft/source rates, batteries, live fuel mass, events and stop projections |
-| X-Cell helicopter | Prepared controls, drive, rotors, skid memory, body derivative; independent vehicle gates |
+| X-Cell helicopter | Prepared controls, drive, rotors, skid memory, body derivative on dry terrain; independent vehicle gates |
 | Admitted weather configurations | Stage-time gusts/OU, vertical atmosphere, spatial profiles/modes/thermals and local point flow |
 | Supported start/contact and flight lifecycle | Retractable gear, soft contacts, transported wake, failures, resets, rollback and exact replay |
 | Default delivery | Source-bound fleet qualification, separately classified refusals and terminals, package/replay checks and paired measurements |
@@ -40,6 +40,12 @@ The existing helicopter reference rejects spatial/OU/column weather, and its hot
 
 Shared pre-tick/discrete supervision may remain GDScript under the existing kernel contract. Continuous laws
 claimed as native must execute in C++; matching reference fallbacks cannot establish native coverage.
+
+Helicopter native admission requires an empty published lake context. The session and both direct preparation
+paths refuse lake terrain; a successful stock Club lake attachment therefore selects the reference evaluator.
+The [H03/H05 correction](../../docs/research/helicopter/HELI-33/README.md) carries composed bank/bed terrain
+through the reference consumers and defines the unsupported-water policy. The historical fleet evidence
+above predates this admission boundary; reference fallback does not establish native lake coverage.
 
 ## Normal-flight backend selection
 
@@ -63,7 +69,9 @@ surface/lake/soft-contact setters reprepare at a boundary. Per-tick comparisons 
 changes before stale coefficients can run; they do not serialize, hash or decode the model each tick.
 
 Native checkpoints use an outer `openrc-flight-checkpoint v14` envelope carrying the backend and library identity.
-Helicopter native checkpoints use `openrc-helicopter-checkpoint v7`, retaining the v6 physical fields and heading-memory law and adding the backend identity; v1–v5 are explicitly refused after the stopped-rotor heading correction.
+Helicopter native checkpoints use `openrc-helicopter-checkpoint v9`, retaining the reference v8 physical fields,
+heading-memory law, contact law and lake identity, and adding the backend identity. Versions v1–v7 are explicitly
+refused after the composed-terrain and conservative rotor-disc contact correction.
 Fixed-wing reference checkpoint formats/hashes stay unchanged. Exact replay requires that identity; explicit candidate
 replay may use reference and reports `solver_changed`. A backend change during recording leaves an incomplete
 diagnostic prefix. See [flight logging](../../docs/FLIGHT-LOGGING.md).

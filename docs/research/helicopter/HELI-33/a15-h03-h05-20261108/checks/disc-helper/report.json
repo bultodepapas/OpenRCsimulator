@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2d588315-394e-4e45-aca1-4da90ffbd5d2",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_rotor_disc_terrain.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T20:49:01.694573+00:00",
+  "label": "h05-pad-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h05\\h05-pad-final-zot49mnf\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h05\\h05-pad-final-zot49mnf\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "H05 rotor disc terrain: 30 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.078,
+  "log_bytes": 117,
+  "log_sha256": "31b46371f68482e5e6a27d19ce3e96076f21efd3c8897eed956223d684402920"
+}

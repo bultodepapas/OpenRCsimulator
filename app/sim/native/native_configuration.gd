@@ -108,6 +108,8 @@ static func prepare(session: Node, builder: Callable) -> Dictionary:
 ## Rotorcraft provide separate prepared helicopter and weather inputs. Their
 ## reference stage and lifecycle/layout are distinct from fixed-wing sessions.
 static func prepare_helicopter(session: Node) -> Dictionary:
+	if not is_instance_valid(session.environment) or not session.environment.lake.is_empty():
+		return {ok = false, reason = "native helicopter terrain does not support lakes"}
 	var weather: Dictionary = NativeWeather.prepare_helicopter(session)
 	if not weather.get("ok", false):
 		return {ok = false, reason = str(weather.get("reason", "helicopter weather refused"))}

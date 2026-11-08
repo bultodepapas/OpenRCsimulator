@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a2b7f93a-c324-46cf-baeb-cce11e3b6a31",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_ground_start.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T21:01:27.249915+00:00",
+  "label": "ground-start",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\ground-start-lzxer1re\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\ground-start-lzxer1re\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.203,
+  "log_bytes": 93,
+  "log_sha256": "fe7ccc78950e8167475faccbd2627ab855986cc2f4ad4022fcecb361fa42d71e"
+}

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "448686d3-da8f-4bea-ac4d-6e40116c5065",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_ground_heading.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T21:00:27.344106+00:00",
+  "label": "ground-heading-ordered",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\ground-heading-ordered-nk6s_ola\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\ground-heading-ordered-nk6s_ola\\report.json",
+  "timeout_seconds": 480.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 30.125,
+  "log_bytes": 127,
+  "log_sha256": "db98faace58f3213529c21d816ff8f23ee6a40b798ee3b6d343aeef41dd52954"
+}

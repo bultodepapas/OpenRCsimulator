@@ -78,6 +78,7 @@ var _phase_omega := PackedFloat64Array([0.0,0.0])
 var _field: Dictionary = {}
 var _collision_world: Dictionary = {}
 var _impact_geometry: Dictionary = {}
+var _pending_impact: Dictionary = {}
 var _ground_start: Dictionary = {}
 var _weather: WeatherField:
  get:
@@ -150,7 +151,7 @@ func _native_transition_reentry() -> bool:
 ## but cannot change while a committed reset or restore is being published.
 const _NATIVE_PUBLICATION_FIELDS := ["aircraft","aircraft_path","_hover","_trim","commands","raw",
  "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","_mode_confirmation","start_choice","_start","_field",
- "environment","ground_surfaces","_weather","_collision_world","_impact_geometry","_ground_start",
+ "environment","ground_surfaces","_weather","_collision_world","_impact_geometry","_pending_impact","_ground_start",
  "startup_collective","shaft_phase","_phase_omega","crash","_ready_to_fly",
  "_controller_cut_held","_controller_lost","_native_stage","_native_previous_pre_tick",
  "_stage_backend_requested","_backend_selection_locked"]
@@ -255,6 +256,7 @@ func _init() -> void:
  vehicle.block_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
  if not sim.set_model(vehicle): push_error("Cannot install the rotorcraft vehicle model")
  sim.faulted.connect(func(reason: String) -> void:
+  _pending_impact={}
   if _native_stage!=null:
    var native_failure: String=_native_stage.last_failure()
    if not native_failure.is_empty(): _stage_failure=native_failure
@@ -270,30 +272,40 @@ func _init() -> void:
 ## The first zero-to-spooling interval is included. This detached candidate is
 ## validated and committed by Simulation, so failed ticks cannot change memory.
 func _step_with_heading_tracking(state: PackedFloat64Array,t: float,dt: float,f: Callable,first: PackedFloat64Array) -> Variant:
+ _pending_impact={}
  var result: Variant=StepAdapter.step(state,t,dt,f,first)
  if result is Dictionary and result.get("state") is PackedFloat64Array \
  and _water_contact_possible(state,result.state):
   _stage_failure="Helicopter water contact is unsupported; the candidate tick was refused."
   return PackedFloat64Array()
- if not result is Dictionary or state.size() not in [19,27] or state[13]!=0.0 \
- or aircraft.context.electronics_model.law!=Electronics.TRAINER_LAW: return result
+ if not result is Dictionary or state.size() not in [19,27]: return result
  var endpoint: Variant=result.get("state")
  if not endpoint is PackedFloat64Array or endpoint.size()!=state.size(): return result
  var body: PackedFloat64Array=endpoint.slice(0,RB.SIZE)
  if not Sim.state_is_valid(body): return result
- var bristles: PackedFloat64Array=endpoint.slice(19) if endpoint.size()==27 else PackedFloat64Array()
- var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,true,bristles,environment.lake)
- if not contact.get("ok",false): return PackedFloat64Array()
- var loaded: bool=false
- for normal_force: float in contact.normal_forces_n:
-  if normal_force>0.0:
-   loaded=true
-   break
- if not loaded: return result
- var attitude: PackedFloat64Array=M.q_normalized(body.slice(RB.ATT,RB.ATT+4))
- endpoint[17]=M.q_to_euler(attitude)[0]
- endpoint[18]=0.0
- result.state=endpoint
+ if state[13]==0.0 and aircraft.context.electronics_model.law==Electronics.TRAINER_LAW:
+  var bristles: PackedFloat64Array=endpoint.slice(19) if endpoint.size()==27 else PackedFloat64Array()
+  var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,true,bristles,environment.lake)
+  if not contact.get("ok",false): return PackedFloat64Array()
+  var loaded: bool=false
+  for normal_force: float in contact.normal_forces_n:
+   if normal_force>0.0:
+    loaded=true
+    break
+  if loaded:
+   var attitude: PackedFloat64Array=M.q_normalized(body.slice(RB.ATT,RB.ATT+4))
+   endpoint[17]=M.q_to_euler(attitude)[0]
+   endpoint[18]=0.0
+   result.state=endpoint
+ var continuous: PackedFloat64Array=endpoint.slice(RB.SIZE)
+ var omega:=PackedFloat64Array([continuous[0]*aircraft.context.main_model.rotation_sense,continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
+ var phase: PackedFloat64Array=shaft_phase.duplicate()
+ for index: int in 2: phase[index]+=.5*(_phase_omega[index]+omega[index])*dt
+ var detected: Dictionary=ImpactDetector.evaluate(state.slice(0,RB.SIZE),body,continuous,aircraft.context,aircraft.skids,ground_surfaces,phase,_collision_world,_impact_geometry,environment.lake)
+ if not detected.get("ok",false):
+  _stage_failure="Contact detection refused: "+str(detected.get("error","invalid input"))
+  return PackedFloat64Array()
+ _pending_impact={tick=sim.tick+1,body=body.duplicate(),continuous=continuous.duplicate(),phase=phase.duplicate(),impact=detected.impact.duplicate(true)}
  return result
 
 func setup(path: String=aircraft_path,selected_id: String="") -> bool:
@@ -410,31 +422,108 @@ func set_lake_context(normalized_lake: Dictionary) -> bool:
 func lake_context() -> Dictionary:
  return environment.lake.duplicate(true)
 
-## Whole-aircraft sphere swept through the shoreline AABB. Contact with water is
-## unsupported; this deliberately rejects a conservative volume, including the
-## maximum authored wave height, instead of inventing flotation or bed support.
+## Contact with water is unsupported. Bound each hull part and rotor by a swept
+## sphere and compare with the actual shoreline, including the maximum wave.
+## Bounding spheres may refuse nearby dry points; they never produce flotation.
 func _water_contact_possible(previous: PackedFloat64Array,current: PackedFloat64Array) -> bool:
  if environment.lake.is_empty(): return false
- if previous.size()<3 or current.size()<3 or not _impact_geometry.get("ok",false): return true
- var reach: float=float(_impact_geometry.max_reach_m)
- reach+=0.5*maxf(float(aircraft.context.main_model.get("blade_chord_m",0.0)),float(aircraft.context.tail_model.get("blade_chord_m",0.0)))
+ if previous.size()<13 or current.size()<13 or not _impact_geometry.get("ok",false) \
+ or not LakeSurface.is_valid_definition(environment.lake): return true
  var lake: Dictionary=environment.lake
- if maxf(previous[2],current[2])+reach < float(lake.water_level_down_m)-float(lake.wave_bounds.max_amplitude_m): return false
+ var overall_reach: float=float(_impact_geometry.max_reach_m)+0.5*maxf(0.0, \
+  maxf(float(aircraft.context.main_model.get("blade_chord_m",0.0)),float(aircraft.context.tail_model.get("blade_chord_m",0.0))))
+ overall_reach+=1.0e-6 # include polygon edge tolerance and rounding in this clear-only gate
+ if maxf(previous[2],current[2])+overall_reach<float(lake.water_level_down_m)-float(lake.wave_bounds.max_amplitude_m): return false
  var polygon: PackedFloat64Array=lake.shoreline_ne_m
- var north_min: float=INF
- var north_max: float=-INF
- var east_min: float=INF
- var east_max: float=-INF
+ var bounds:=PackedFloat64Array([INF,-INF,INF,-INF])
  for index: int in range(0,polygon.size(),2):
-  north_min=minf(north_min,polygon[index]); north_max=maxf(north_max,polygon[index])
-  east_min=minf(east_min,polygon[index+1]); east_max=maxf(east_max,polygon[index+1])
- return maxf(previous[0],current[0])+reach>=north_min and minf(previous[0],current[0])-reach<=north_max \
- and maxf(previous[1],current[1])+reach>=east_min and minf(previous[1],current[1])-reach<=east_max
+  bounds[0]=minf(bounds[0],polygon[index]); bounds[1]=maxf(bounds[1],polygon[index])
+  bounds[2]=minf(bounds[2],polygon[index+1]); bounds[3]=maxf(bounds[3],polygon[index+1])
+ if maxf(previous[0],current[0])+overall_reach<bounds[0] or minf(previous[0],current[0])-overall_reach>bounds[1] \
+ or maxf(previous[1],current[1])+overall_reach<bounds[2] or minf(previous[1],current[1])-overall_reach>bounds[3]: return false
+ var q0: PackedFloat64Array=M.q_normalized(previous.slice(6,10))
+ var q1: PackedFloat64Array=M.q_normalized(current.slice(6,10))
+ var dot: float=absf(q0[0]*q1[0]+q0[1]*q1[1]+q0[2]*q1[2]+q0[3]*q1[3])
+ var angle: float=2.0*M.acos_(clampf(dot,-1.0,1.0))
+ var groups: Dictionary={}
+ for probe: Dictionary in _impact_geometry.probes:
+  var part: String=str(probe.part)
+  if not groups.has(part): groups[part]=[]
+  groups[part].append(probe.point)
+ for points: Array in groups.values():
+  var low:=PackedFloat64Array([INF,INF,INF])
+  var high:=PackedFloat64Array([-INF,-INF,-INF])
+  for point: PackedFloat64Array in points:
+   for axis: int in 3:
+    low[axis]=minf(low[axis],point[axis]); high[axis]=maxf(high[axis],point[axis])
+  var center: PackedFloat64Array=M.scale(M.add(low,high),0.5)
+  var radius: float=M.norm(M.sub(high,low))*0.5
+  if _water_group_possible(previous,current,q0,q1,center,radius,angle,lake): return true
+ var main: Dictionary=aircraft.context.main_model
+ var tail: Dictionary=aircraft.context.tail_model
+ var main_center: PackedFloat64Array=M.v3(main.hub_x_m,main.hub_y_m,main.hub_z_m)
+ var tail_center: PackedFloat64Array=M.v3(-tail.hub_distance_aft_m,0.0,-tail.hub_height_above_cg_m)
+ var main_radius: float=float(main.rotor_radius_m)+0.5*maxf(0.0,float(main.get("blade_chord_m",0.0)))
+ var tail_radius: float=float(tail.tail_rotor_radius_m)+0.5*maxf(0.0,float(tail.get("blade_chord_m",0.0)))
+ return _water_group_possible(previous,current,q0,q1,main_center,main_radius,angle,lake) \
+ or _water_group_possible(previous,current,q0,q1,tail_center,tail_radius,angle,lake)
+
+func _water_group_possible(previous: PackedFloat64Array,current: PackedFloat64Array,q0: PackedFloat64Array,
+ q1: PackedFloat64Array,arm: PackedFloat64Array,radius: float,angle: float,lake: Dictionary) -> bool:
+ var a: PackedFloat64Array=M.add(previous.slice(0,3),M.q_rotate(q0,arm))
+ var b: PackedFloat64Array=M.add(current.slice(0,3),M.q_rotate(q1,arm))
+ # The entire rotated center path stays within this margin of its endpoint chord.
+ var margin: float=radius+2.0*M.norm(arm)*M.sin_(angle*0.5)+1.0e-6
+ if maxf(a[2],b[2])+margin<float(lake.water_level_down_m)-float(lake.wave_bounds.max_amplitude_m): return false
+ return _water_near_segment(lake.shoreline_ne_m,a,b,margin)
+
+func _water_near_segment(polygon: PackedFloat64Array,a: PackedFloat64Array,b: PackedFloat64Array,margin: float) -> bool:
+ if LakeSurface.shore_distance_validated(environment.lake,a[0],a[1])>=0.0 \
+ or LakeSurface.shore_distance_validated(environment.lake,b[0],b[1])>=0.0: return true
+ var limit: float=margin*margin
+ for index: int in range(0,polygon.size(),2):
+  var next: int=(index+2)%polygon.size()
+  var cn: float=polygon[index]
+  var ce: float=polygon[index+1]
+  var dn: float=polygon[next]
+  var de: float=polygon[next+1]
+  if _segments_intersect_ne(a[0],a[1],b[0],b[1],cn,ce,dn,de): return true
+  var distance: float=minf(minf(_point_segment_distance_sq(a[0],a[1],cn,ce,dn,de),_point_segment_distance_sq(b[0],b[1],cn,ce,dn,de)), \
+   minf(_point_segment_distance_sq(cn,ce,a[0],a[1],b[0],b[1]),_point_segment_distance_sq(dn,de,a[0],a[1],b[0],b[1])))
+  if not is_finite(distance) or distance<=limit: return true
+ return false
+
+static func _point_segment_distance_sq(n: float,e: float,an: float,ae: float,bn: float,be: float) -> float:
+ var dn: float=bn-an
+ var de: float=be-ae
+ var length: float=dn*dn+de*de
+ if not is_finite(length): return NAN
+ var t: float=clampf(((n-an)*dn+(e-ae)*de)/length,0.0,1.0) if length>0.0 else 0.0
+ return (n-an-t*dn)*(n-an-t*dn)+(e-ae-t*de)*(e-ae-t*de)
+
+static func _segments_intersect_ne(an: float,ae: float,bn: float,be: float,cn: float,ce: float,dn: float,de: float) -> bool:
+ var ab_c: float=(bn-an)*(ce-ae)-(be-ae)*(cn-an)
+ var ab_d: float=(bn-an)*(de-ae)-(be-ae)*(dn-an)
+ var cd_a: float=(dn-cn)*(ae-ce)-(de-ce)*(an-cn)
+ var cd_b: float=(dn-cn)*(be-ce)-(de-ce)*(bn-cn)
+ if not is_finite(ab_c) or not is_finite(ab_d) or not is_finite(cd_a) or not is_finite(cd_b): return true
+ return ((ab_c<=0.0 and ab_d>=0.0) or (ab_c>=0.0 and ab_d<=0.0)) \
+ and ((cd_a<=0.0 and cd_b>=0.0) or (cd_a>=0.0 and cd_b<=0.0)) \
+ and maxf(minf(an,bn),minf(cn,dn))<=minf(maxf(an,bn),maxf(cn,dn)) \
+ and maxf(minf(ae,be),minf(ce,de))<=minf(maxf(ae,be),maxf(ce,de))
 
 ## GroundStart solves only the dry horizontal pad. Refuse a changed support
 ## before reset publishes anything; ordinary pads outside the bank stay exact.
 func _lake_pad_supported() -> bool:
- if environment.lake.is_empty() or start_choice!="ground" or not aircraft.get("ok",false): return true
+ if environment.lake.is_empty(): return true
+ if not _lake_identity_valid(): return false
+ if not aircraft.get("ok",false): return true
+ if start_choice!="ground":
+  var reach: float=float(_impact_geometry.max_reach_m)+0.5*maxf(0.0, \
+   maxf(float(aircraft.context.main_model.get("blade_chord_m",0.0)),float(aircraft.context.tail_model.get("blade_chord_m",0.0))))
+  if _start[2]+reach>=float(environment.lake.water_level_down_m)-float(environment.lake.wave_bounds.max_amplitude_m) \
+  and _water_near_segment(environment.lake.shoreline_ne_m,_start,_start,reach): return false
+  return true
  var candidate: Dictionary=GroundStart.resolve(_field,aircraft)
  if not candidate.get("ok",false): return true # let the ordinary start error report this
  var state: PackedFloat64Array=candidate.state
@@ -512,14 +601,14 @@ func set_start_choice(choice: String) -> bool:
 
 const _NATIVE_RESET_FIELDS := ["_ready_to_fly","_stage_failure","_hover","_trim","commands","raw",
  "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","_mode_confirmation","shaft_phase","_phase_omega",
- "crash","_ground_start","startup_collective","calibration","_native_stage","_native_previous_pre_tick",
+ "crash","_ground_start","_pending_impact","startup_collective","calibration","_native_stage","_native_previous_pre_tick",
  "stage_backend_error","pause_reason"]
 
 
 func reset() -> bool:
  if _native_transition_reentry(): return false
  if not _lake_pad_supported():
-  start_error="Ground start refused: lake geometry overlaps the qualified dry rotorpad."
+  start_error="Helicopter start refused: unsupported water or lake geometry overlaps the qualified dry rotorpad."
   return false
  if _stage_backend_requested!=NativeStage.BACKEND_NATIVE:
   return _reset_impl(false)
@@ -609,6 +698,7 @@ func _reset_impl(transactional: bool) -> bool:
  _clear_mode_confirmation()
  shaft_phase=PackedFloat64Array([0.0,0.0])
  _phase_omega=PackedFloat64Array([0.0,0.0])
+ _pending_impact={}
  crash={}
  sim.inputs=PackedFloat64Array([0,0,0,commands.throttle])
  # SF-02: six rotor states in hover; a ground start adds four N/E elastic skid-friction pairs. Declared per start, fixed for the run.
@@ -724,16 +814,20 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   if _tick>0:
    for i: int in 2: shaft_phase[i]+=.5*(_phase_omega[i]+omega[i])*sim.dt()
   _phase_omega=omega
- if not _ready_to_fly or body.is_empty() or not crash.is_empty(): return
- var detected: Dictionary=ImpactDetector.evaluate(sim.previous,body,sim.continuous,aircraft.context,aircraft.skids,ground_surfaces,shaft_phase,_collision_world,_impact_geometry,environment.lake)
- if not detected.ok:
-  # Invalid detection input is a diagnostic stop, never a manufactured impact.
+ if not _ready_to_fly or body.is_empty() or not crash.is_empty() or _tick==0 or _tick!=sim.tick: return
+ if _pending_impact.get("tick",-1)!=_tick or not _pending_impact.get("body") is PackedFloat64Array \
+ or not _pending_impact.get("continuous") is PackedFloat64Array or not _pending_impact.get("phase") is PackedFloat64Array \
+ or _pending_impact.body.to_byte_array()!=body.to_byte_array() \
+ or _pending_impact.continuous.to_byte_array()!=sim.continuous.to_byte_array() \
+ or _pending_impact.phase.to_byte_array()!=shaft_phase.to_byte_array():
   _ready_to_fly=false
-  pause_reason="Contact detection refused: "+str(detected.get("error","invalid input"))
+  pause_reason="Contact detection refused: accepted state differs from its preflight."
   sim.set_paused(true)
   return
- if not detected.impact.is_empty():
-  crash=detected.impact.duplicate(true)
+ var detected: Dictionary=_pending_impact.impact
+ _pending_impact={}
+ if not detected.is_empty():
+  crash=detected.duplicate(true)
   crash.tick=sim.tick
   crash.time_s=sim.time()
   crash.shaft_phase=shaft_phase.duplicate()
@@ -1147,6 +1241,8 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
  if not candidate.simulation is Dictionary or not sim.can_restore_checkpoint(candidate.simulation,1,0) or not _simulation_configuration_matches(candidate.simulation):
   return {ok=false,errors=["invalid saved simulation"]}
  var saved: Dictionary=candidate.simulation
+ if _water_contact_possible(saved.state,saved.state):
+  return {ok=false,errors=["helicopter checkpoint is in unsupported water contact"]}
  if not Lifecycle.valid(candidate.power,saved.tick*saved.dt) or candidate.start_choice!=start_choice or candidate.pad!=_field.get("rotorcraft_pad",{}):
   return {ok=false,errors=["helicopter start or power lifecycle mismatch"]}
  if not candidate.shaft_phase is PackedFloat64Array or candidate.shaft_phase.size()!=2:
@@ -1188,6 +1284,7 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   _clear_mode_confirmation()
   shaft_phase=candidate.shaft_phase.duplicate()
   _phase_omega=PackedFloat64Array([saved.continuous[0]*aircraft.context.main_model.rotation_sense,saved.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
+  _pending_impact={}
   crash={}
   _ready_to_fly=true
   start_error=""
@@ -1219,6 +1316,7 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
  _clear_mode_confirmation()
  shaft_phase=candidate.shaft_phase.duplicate()
  _phase_omega=PackedFloat64Array([sim.continuous[0]*aircraft.context.main_model.rotation_sense,sim.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
+ _pending_impact={}
  crash={}
  _ready_to_fly=true
  start_error=""

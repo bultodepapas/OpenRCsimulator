@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0836aec5-3986-47e2-a104-4c57cdcfc321",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_heli_ground_session.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T21:00:27.344106+00:00",
+  "label": "ground-session-ordered",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\ground-session-ordered-9oafwhu5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-h03\\checks\\ground-session-ordered-9oafwhu5\\report.json",
+  "timeout_seconds": 480.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 85.906,
+  "log_bytes": 445,
+  "log_sha256": "aff6041b643beee5e2da3c58dcff62bac7c1678aa0c111c68cbfc868a4dc85ed"
+}

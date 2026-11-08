@@ -1241,5 +1241,49 @@
     "The first visual-contract run timed out during disk/host pressure; the unchanged recovered run passed 123 checks.",
     "Images remain in ignored tmp; retained hashes identify the inspected 1080p captures. No FPS, package, other-platform or physical qualification is claimed.",
     "The loft retains about 0.18 percent of area whose smooth shading normals disagree with triangle normals; the regression detects overall winding inversion and does not certify perfect inherited shading."
-  ]
+  ],
+  "committed_checkout_check": {
+    "revision": "704a1f0f57b00f99ad393da62152f598c74254bd",
+    "assertions": 141,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "2657740a-9815-47e1-803c-5580c3c80c40",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:/OpenRCsimulator-evidence/audit2-20261108-qual/app",
+        "--script",
+        "res://tests/test_extra_propeller_handedness.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T20:52:34.426829+00:00",
+      "label": "committed-checkout-handedness",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\committed-checkout-handedness-gbtfcaj9\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-20261108-extra\\committed-checkout-handedness-gbtfcaj9\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "141 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.875,
+      "log_bytes": 165,
+      "log_sha256": "96bc5bb772d7f75903398d80442449df1530f9e80a812c9e8ca55df45024d93e"
+    },
+    "import_scope": "same seven pinned-editor imported products; no fresh-import claim"
+  },
+  "editor_companion_executable_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2"
 }
