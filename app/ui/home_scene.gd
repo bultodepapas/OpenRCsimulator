@@ -47,6 +47,9 @@ var _preview_geometry: Dictionary = {}
 var _preview_order: Array[String] = []
 
 signal preview_state_changed(id: String, state: String)
+# Await a Home-owned signal so removing or freeing this scene cannot leave a
+# coroutine connected to the longer-lived SceneTree.
+signal _preview_frame
 var preview_resources: Node
 var preview_geometry: Node
 var presentation_pending := false
@@ -283,9 +286,9 @@ func _prepare_preview(id: String, livery: String, generation: int) -> void:
 	if not is_inside_tree(): return
 	# process_frame precedes node processing, so two boundaries guarantee one
 	# opportunity to render the new card even for requests made during input.
-	await get_tree().process_frame
+	await _preview_frame
 	if not _current_preview(id, livery, generation): return
-	await get_tree().process_frame
+	await _preview_frame
 	if not _current_preview(id, livery, generation): return
 	if is_instance_valid(preview_resources):
 		var path: String = preview_resources.path_for(id) if livery.is_empty() else preview_resources.path_for(id, livery)
@@ -330,14 +333,25 @@ func resume_preview() -> void:
 func _exit_tree() -> void:
 	_preview_generation += 1
 	_presentation_generation += 1
+	# Wake nested waits while this script still exists. Their generation checks
+	# reject the old work before the relay is disconnected, even when processing
+	# is disabled or the scene is freed immediately after detachment.
+	_preview_frame.emit()
+	if get_tree().process_frame.is_connected(_relay_preview_frame):
+		get_tree().process_frame.disconnect(_relay_preview_frame)
 	_discard_preview_candidate()
 	if is_instance_valid(preview_geometry): preview_geometry.cancel_for(self)
 	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, not retain_resources_on_exit)
 
 
 func _enter_tree() -> void:
+	get_tree().process_frame.connect(_relay_preview_frame)
 	# Ground-vehicle/failed-flight routes may temporarily detach the same Home.
 	resume_preview()
+
+
+func _relay_preview_frame() -> void:
+	_preview_frame.emit()
 
 
 func _publish_preview_state() -> void:
@@ -366,7 +380,7 @@ func _discard_preview_candidate() -> void:
 ## immutable numeric fitting runs on the root-owned worker.
 func _build_requested_preview(id: String, livery: String, generation: int) -> void:
 	while preview_geometry.busy():
-		await get_tree().process_frame
+		await _preview_frame
 		if not _current_preview(id, livery, generation): return
 	var built: Dictionary = AirplaneBuilder.build(id, NAN, {}, livery)
 	if built.is_empty():
@@ -374,7 +388,7 @@ func _build_requested_preview(id: String, livery: String, generation: int) -> vo
 		return
 	_preview_candidate = built.root
 	var current := func() -> bool: return _current_preview(id, livery, generation) and is_instance_valid(built.get("root"))
-	await get_tree().process_frame
+	await _preview_frame
 	if not current.call():
 		_release_candidate(built.get("root"))
 		return
@@ -386,7 +400,7 @@ func _build_requested_preview(id: String, livery: String, generation: int) -> vo
 		if pivot != null: pivot.rotation.z = PROP_ANGLE
 	else:
 		built.propeller.rotation.z = float(presentation.get("propeller_angle", PROP_ANGLE))
-	await get_tree().process_frame
+	await _preview_frame
 	if not current.call():
 		_release_candidate(built.get("root"))
 		return
@@ -415,23 +429,26 @@ func _build_requested_preview(id: String, livery: String, generation: int) -> vo
 
 func _prepare_light_layout(model: Node3D, current: Callable) -> Dictionary:
 	while preview_geometry.busy():
-		await get_tree().process_frame
+		await _preview_frame
 		if not current.call() or not is_instance_valid(model): return {}
 	var snapshot := PreviewGeometry.Snapshot.new(model)
 	while not snapshot.advance():
-		await get_tree().process_frame
+		await _preview_frame
 		if not current.call() or not is_instance_valid(model): return {}
 	if snapshot.failed or not current.call(): return {}
 	while preview_geometry.busy():
-		await get_tree().process_frame
+		await _preview_frame
 		if not current.call(): return {}
 	var completion := {done = false, layout = {}}
 	var receive := func(layout: Dictionary) -> void:
+		# Bind the callback to Home so cancel_for(self) can suppress it while the
+		# broker still drains its worker, and reject a superseded result.
+		if not is_inside_tree() or not current.call(): return
 		completion.layout = layout
 		completion.done = true
 	if not preview_geometry.request(snapshot.data, receive): return {}
 	while not completion.done:
-		await get_tree().process_frame
+		await _preview_frame
 		if not current.call(): return {}
 	return completion.layout
 
