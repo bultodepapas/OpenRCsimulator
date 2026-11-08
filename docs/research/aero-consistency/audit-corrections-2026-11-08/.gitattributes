@@ -1,3 +1,5 @@
 # Keep the evidence manifest and compressed originals byte-stable across checkouts.
 flight-evidence.json text eol=lf
 *.gz -text
+*.json text eol=lf
+*.txt text eol=lf

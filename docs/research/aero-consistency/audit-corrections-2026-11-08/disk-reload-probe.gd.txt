@@ -1,0 +1,68 @@
+extends "res://tests/test_reload_geometry.gd"
+
+
+func _run() -> void:
+	# This probe writes generated fixture JSON and must never target the working app.
+	if not FileAccess.file_exists("res://../fixture.txt") or FileAccess.get_file_as_string("res://../fixture.txt") != "Disposable F5 disk reload fixture; source text/data copied, immutable assets hardlinked.\n":
+		printerr("Refusing disk reload mutation outside its disposable fixture")
+		quit(2)
+		return
+	var main: Node = MainScene.instantiate()
+	main.set_user_args(PackedStringArray(["--physics-backend=gdscript_reference", "--soundscape=off", "--scenery=off", "--birds=off", "--crash-effects=off"]))
+	main.set("aircraft_id", "gp-extra-300s-60")
+	main.set("start_choice", "airborne")
+	main.set("interactive_start", true)
+	main.set("accident_reports_enabled", false)
+	root.add_child(main)
+	var deadline: int = Time.get_ticks_msec() + 45000
+	while not main.get("startup_complete") and str(main.get("startup_error")).is_empty() and Time.get_ticks_msec() < deadline:
+		await process_frame
+	_check("disk fixture starts actual Extra", bool(main.get("startup_complete")), str(main.get("startup_error")))
+	if not main.get("startup_complete"):
+		await _finish(main)
+		return
+	var session: Node = main.get("session")
+	main.set_process(false)
+	session.set_physics_process(false)
+	session.sim.set_physics_process(false)
+	session.input_enabled = false
+	var aircraft_bytes := FileAccess.get_file_as_bytes(AIRCRAFT)
+	var installation_bytes := FileAccess.get_file_as_bytes(INSTALLATION)
+	var raw: Dictionary = JSON.parse_string(aircraft_bytes.get_string_from_utf8())
+	var install: Dictionary = JSON.parse_string(installation_bytes.get_string_from_utf8())
+	var stock_diameter: float = raw.propulsion.propeller.diameter.value
+	_check("disk fixture uses actual file loader", session.get("_frozen_aircraft").is_empty() and session.aircraft_path == AIRCRAFT)
+	var orbit: RefCounted = main.get("_rig").orbit
+	orbit.distance = 7.25
+	orbit.set("_distance", 6.75)
+	for diameter: float in [stock_diameter, stock_diameter, stock_diameter * 13.0 / 12.0, stock_diameter * 13.0 / 12.0, stock_diameter, stock_diameter]:
+		raw.propulsion.propeller.diameter.value = diameter
+		install.propeller.diameter_m.value = diameter
+		_write_fixture(AIRCRAFT, raw)
+		_write_fixture(INSTALLATION, install)
+		await _tap_f5()
+		_check("on-disk coherent F5 accepted", str(main.get("_note")).begins_with("aircraft reloaded:"), str(main.get("_note")))
+		_check("accepted physical installation has file diameter", session.aircraft.model.propulsion.glow.propeller.diameter_m == diameter)
+		_check_geometry(main, diameter, "disk F5")
+		_check("disk F5 preserves camera zoom/interpolation", orbit.distance == 7.25 and orbit.get("_distance") == 6.75)
+	var before: Dictionary = session.checkpoint()
+	raw.propulsion.propeller.diameter.value = stock_diameter * 13.0 / 12.0
+	_write_fixture(AIRCRAFT, raw)
+	await _tap_f5()
+	_check("actual file loader rejects one-sided installation mismatch", str(main.get("_note")).contains("diameters disagree"), str(main.get("_note")))
+	_check("rejected disk F5 preserves complete checkpoint", var_to_bytes(session.checkpoint()) == var_to_bytes(before))
+	_check_geometry(main, stock_diameter, "rejected disk F5")
+	_check("rejected disk F5 preserves camera", orbit.distance == 7.25 and orbit.get("_distance") == 6.75)
+	var output := FileAccess.open(AIRCRAFT, FileAccess.WRITE)
+	output.store_buffer(aircraft_bytes)
+	output.close()
+	output = FileAccess.open(INSTALLATION, FileAccess.WRITE)
+	output.store_buffer(installation_bytes)
+	output.close()
+	await _finish(main)
+
+
+func _write_fixture(path: String, raw: Dictionary) -> void:
+	var output := FileAccess.open(path, FileAccess.WRITE)
+	output.store_string(JSON.stringify(raw, "  "))
+	output.close()

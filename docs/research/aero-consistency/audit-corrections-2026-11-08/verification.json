@@ -1,0 +1,1314 @@
+{
+  "baseline_rev": "8ebb252acc341a5a1fc047e6bb931fabdb17b148",
+  "brake_scope": "All 16 original beta1 goldens remain immutable; beta2 matched-reference data/identity overlay retains historical equations. Exact equality is confined to captured neutral no-brake states and three continuation ticks.",
+  "checked_runs": [
+    {
+      "checked_report": {
+        "capture_id": "1d71b3c5-92ac-4675-b607-2203bde3f220",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_generator_rate_datums.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 40.078,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "aircraft-rate-joins",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\aircraft-rate-joins-6grx3n1w\\engine.log",
+        "log_bytes": 94,
+        "log_sha256": "77210139a95c9c2a64e7d9361f8c9c5029fc3d302dd41051a697c42cf81783c2",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\aircraft-rate-joins-6grx3n1w\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T14:35:21.799795+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-generators-20261108/aircraft-rate-joins-6grx3n1w/report.json",
+      "source_receipt_sha256": "f3a7d633101e4e7ae93d990a7afd1356686279f9596a27afb669c2805d707958"
+    },
+    {
+      "checked_report": {
+        "capture_id": "f9642f40-8b13-4b0d-a45c-87c7252becd4",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_extra_installation.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 74.594,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "extra-installation",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\extra-installation-08c_mlcy\\engine.log",
+        "log_bytes": 1235,
+        "log_sha256": "70b91517271a14bbeb008dac66d0cda4973e727d94cc1d7f46b8d1451b024861",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\extra-installation-08c_mlcy\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T14:38:50.917436+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-generators-20261108/extra-installation-08c_mlcy/report.json",
+      "source_receipt_sha256": "5a3b858438b39f821f1372b6f2bd77d60339b28bf662f00c9edb65e8eea611b2"
+    },
+    {
+      "checked_report": {
+        "capture_id": "a54bfe2f-38e0-4954-a336-266047aed4a8",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_economy_catalog.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 40.797,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "test_economy_catalog.gd",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\test_economy_catalog.gd-oqhhdlvu\\engine.log",
+        "log_bytes": 93,
+        "log_sha256": "2dd96c977480ba3902847be0bc453a73d7b5b6a97856cff5f0ffa2facccef080",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\test_economy_catalog.gd-oqhhdlvu\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T14:42:51.016686+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-generators-20261108/test_economy_catalog.gd-oqhhdlvu/report.json",
+      "source_receipt_sha256": "177a55a6d5a5929c9993665734bfe9af81d5b9f4ea4202d2790b9204c7432310"
+    },
+    {
+      "checked_report": {
+        "capture_id": "a2f7fba5-6b50-4989-a25c-184c3b7363e2",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_descriptor.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 34.063,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "test_workshop_descriptor.gd",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\test_workshop_descriptor.gd-srsb3uka\\engine.log",
+        "log_bytes": 94,
+        "log_sha256": "7b22ae78ada79ca807290ce7c55354a12670ed880092eb80788f3e202b281e7f",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-generators-20261108\\test_workshop_descriptor.gd-srsb3uka\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T14:43:40.057166+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-generators-20261108/test_workshop_descriptor.gd-srsb3uka/report.json",
+      "source_receipt_sha256": "92e3c3a47c20904b839a69c4d5d0f17dec1f6f5e9685695e1cbdbe061b687e48"
+    },
+    {
+      "checked_report": {
+        "capture_id": "42874671-3eed-443b-a7b8-37c9b306b7fd",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_aero_prop_checkpoint_laws.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 3.844,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "checkpoint-laws-production",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\checkpoint-laws-production-afj59ytp\\engine.log",
+        "log_bytes": 219,
+        "log_sha256": "37eda3e720a782459ff9fb3c2825a212001c9ff0991446a56a5ca66cf8308a8c",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\checkpoint-laws-production-afj59ytp\\report.json",
+        "required_text": [
+          "Aero and lookup checkpoint laws: 8 checks, 0 failed"
+        ],
+        "started_utc": "2026-11-08T15:50:10.223840+00:00",
+        "timeout_seconds": 60.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-corsair-runtime-20261108/checks/checkpoint-laws-production-afj59ytp/report.json",
+      "source_receipt_sha256": "d83068753f3b46ed340588396bc1fd6f407effb7ccac925ce684c66835a9f4ce"
+    },
+    {
+      "checked_report": {
+        "capture_id": "bb983337-5212-4cde-8562-00ac5adac2cb",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/test_flap_offset.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 48.375,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "flap-public-final-draft",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\flap-public-final-draft-5t0zhbgw\\engine.log",
+        "log_bytes": 117,
+        "log_sha256": "17355d80fad721f22beaae6d7d44457bf4fa8f63331da0c0930d3318c638b7d3",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\flap-public-final-draft-5t0zhbgw\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T14:42:47.181604+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-corsair-runtime-20261108/checks/flap-public-final-draft-5t0zhbgw/report.json",
+      "source_receipt_sha256": "bda36a11a53f04249486e33ed32bcc9084256a7734bed46b34a62f98e8dce128"
+    },
+    {
+      "checked_report": {
+        "capture_id": "03b6ea3b-7d1e-4a47-81bf-94a48abaf4bc",
+        "command": [
+          ".tools/Godot_v4.8-beta2_linux.x86_64",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_stage.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 22.069508,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "native-stale-fallback",
+        "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/checks/native-stale-fallback-w10lx1gm/engine.log",
+        "log_bytes": 331,
+        "log_sha256": "f56d70f82ea938ac38d47f1e40752df79d34db4924f5cd63e7df464f0adf112d",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/checks/native-stale-fallback-w10lx1gm/report.json",
+        "required_text": [
+          "Native stage:"
+        ],
+        "started_utc": "2026-11-08T15:50:22.600694+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-corsair-runtime-20261108/checks/native-stale-fallback-w10lx1gm/report.json",
+      "source_receipt_sha256": "effd0745c89de79636ddbfe50c20a8acb44d861f44f0372ab64859ac8295f08b"
+    },
+    {
+      "checked_report": {
+        "capture_id": "dbcbed1e-73cf-4052-831b-08dcde8867e4",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_propeller_table_continuity.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 4.657,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "prop-table-production",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\prop-table-production-u0v3hzgi\\engine.log",
+        "log_bytes": 349,
+        "log_sha256": "c812c0773c00c2056f1c6974857e0b1a54bd49abb3e3445879538ad1b77b016b",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\prop-table-production-u0v3hzgi\\report.json",
+        "required_text": [
+          "Propeller table continuity: 49 checks, 0 failed"
+        ],
+        "started_utc": "2026-11-08T15:50:00.155730+00:00",
+        "timeout_seconds": 60.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-corsair-runtime-20261108/checks/prop-table-production-u0v3hzgi/report.json",
+      "source_receipt_sha256": "52b8c0c925f3b9c636b2d615936ec5b45bd09038ba2b7c6c8ae04208d45ae41e"
+    },
+    {
+      "checked_report": {
+        "capture_id": "be034962-3b19-41d2-8363-c493bb86eea1",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_propulsion_scalar.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 4.968,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "propulsion-scalar-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\propulsion-scalar-final-f761ee1m\\engine.log",
+        "log_bytes": 1179,
+        "log_sha256": "a3e61739981fea8f127ff4c6a53833c5c584082c58e18674a51ff9f37b6e3e78",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\propulsion-scalar-final-f761ee1m\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T16:03:45.618969+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-corsair-runtime-20261108/checks/propulsion-scalar-final-f761ee1m/report.json",
+      "source_receipt_sha256": "cbb0fc39e1a26e8eb7bf8d13444549ce989760160b2659725c60b28876fa5361"
+    },
+    {
+      "checked_report": {
+        "capture_id": "775d3def-4f79-45b8-a8a5-ac72358402d6",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "tmp/audit-reload-20261108/disk-fixture/app",
+          "--audio-driver",
+          "Dummy",
+          "--log-file",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-reload-20261108/disk-fixture-direct.log",
+          "--script",
+          "res://tests/probe_disk_reload.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 120
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 3,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 5,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 7,
+            "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 9,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 11,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 13,
+            "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 15,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #0, invalid UID: 'uid://ceccb1fhvivic' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_diff_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 17,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #1, invalid UID: 'uid://b2f0kwgbbdwrx' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_arm_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 19,
+            "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #2, invalid UID: 'uid://bidrbsaqpe7qm' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_nor_gl_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 21,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #0, invalid UID: 'uid://evjekoub1440' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_diff_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 23,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #1, invalid UID: 'uid://mye2l0shsys8' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_arm_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 25,
+            "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #2, invalid UID: 'uid://5kpwlliokgi7' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_nor_gl_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 27,
+            "message": "'res://assets/landscape/track-signage/billboardLow.glb': In external resource #0, invalid UID: 'uid://bvud7rv1a8csw' - using text path instead: 'res://assets/landscape/track-signage/billboardLow_tankcoBanner.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 29,
+            "message": "'res://assets/landscape/track-signage/flagCheckersSmall.glb': In external resource #0, invalid UID: 'uid://5j2rslf7pya2' - using text path instead: 'res://assets/landscape/track-signage/flagCheckersSmall_checkers.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 31,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #0, invalid UID: 'uid://ksupolg0hkv4' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_black_2k.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 33,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #1, invalid UID: 'uid://b1e878ji6al25' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_yellow_2k.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 35,
+            "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #2, invalid UID: 'uid://b5kdfr8b1urwq' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_tape.png'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 37,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #0, invalid UID: 'uid://6kqgvvcx1es' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_diff_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 39,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #1, invalid UID: 'uid://bm4w2byum6xkg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_arm_1k.jpg'.",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: open (core/io/resource_format_binary.cpp:1015)"
+            ],
+            "kind": "WARNING",
+            "line": 41,
+            "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #2, invalid UID: 'uid://clxon5aklcxcg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_nor_gl_1k.jpg'.",
+            "severity": "warning"
+          }
+        ],
+        "elapsed_seconds": 20.579,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "actual-disk-f5-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\actual-disk-f5-final-bkf7t36u\\engine.log",
+        "log_bytes": 133830,
+        "log_sha256": "c1d29492cf1f427d0331695df214691c5f6995a731b61d77fa78361e82656acd",
+        "max_log_bytes": 200000,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\actual-disk-f5-final-bkf7t36u\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T15:45:56.787815+00:00",
+        "timeout_seconds": 150.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/actual-disk-f5-final-bkf7t36u/report.json",
+      "source_receipt_sha256": "3f84889c6704fb8e5b4fe2a9138813384f95df34be6dce86087bb79c5eecb996"
+    },
+    {
+      "checked_report": {
+        "capture_id": "ebe26de7-95b1-4067-9c3d-5c9da2758332",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/research/aero/d11g/derive_rate_derivatives.gd",
+          "--",
+          "--json",
+          "--report-file",
+          "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-reload-20261108/d11g-v3-report.json"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 1.703,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "d11g-current-law",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\d11g-current-law-dkjlkpaa\\engine.log",
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\d11g-current-law-dkjlkpaa\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T14:27:06.677761+00:00",
+        "timeout_seconds": 90.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/d11g-current-law-dkjlkpaa/report.json",
+      "source_receipt_sha256": "e66e3e3dc3e579a3e6a7bef5408ea76bdcbb671b4b07cb8b731911829ba74815"
+    },
+    {
+      "checked_report": {
+        "capture_id": "bfb5f43f-6a69-4855-ae7c-d8f3bd661055",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--check-only",
+          "--script",
+          "res://ui/overlays_dialog.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 0.484,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "overlays-parse-integration",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\overlays-parse-integration-obcjhryl\\engine.log",
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\overlays-parse-integration-obcjhryl\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T15:36:14.392654+00:00",
+        "timeout_seconds": 60.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/overlays-parse-integration-obcjhryl/report.json",
+      "source_receipt_sha256": "bb0e5b8514791635b2546f6dd053a3b7812bf0eb28d17cc101a01dcf09fe8574"
+    },
+    {
+      "checked_report": {
+        "capture_id": "c9e5984e-44f0-4bef-81fb-5abf6d4a9e33",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_reload_geometry.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 11.609,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "reload-geometry",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\reload-geometry-r9dzwijf\\engine.log",
+        "log_bytes": 9440,
+        "log_sha256": "f6f436cfb8f765b6297ecbe6ca81172f328fc02a1985203d4d05ebbd72a635dd",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\reload-geometry-r9dzwijf\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T14:23:09.450888+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/reload-geometry-r9dzwijf/report.json",
+      "source_receipt_sha256": "b3747f762fec5ece505b8051c63ebbf883b8fe76cd2c3de6e28898c2011afc23"
+    },
+    {
+      "checked_report": {
+        "capture_id": "9dfac787-d19c-49b0-83ce-6b65d3885ac3",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--quiet",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--editor",
+          "--import"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 6.859,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "source-uid-import",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\source-uid-import-9uuvf6nl\\engine.log",
+        "log_bytes": 0,
+        "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "max_log_bytes": 500000,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\source-uid-import-9uuvf6nl\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T15:47:56.919165+00:00",
+        "timeout_seconds": 150.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/source-uid-import-9uuvf6nl/report.json",
+      "source_receipt_sha256": "2015fffd635e01522d1c43bfb65ada17e8ac7cf5c99c8e4717f81d0ea8f4be2f"
+    },
+    {
+      "checked_report": {
+        "capture_id": "d152f1f0-822c-4967-bf4c-3abc877f580d",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\release-readiness\\PT1-v0.1.9\\capture_fixed_brake_values.gd",
+          "--",
+          "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\candidate.json"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 3.546,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-candidate-capture",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-candidate-capture-aedxth98\\engine.log",
+        "log_bytes": 705,
+        "log_sha256": "ecdacf01932ce1dd73ed62f5f4400fb5ef962df646014707d2415d53747255ca",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-candidate-capture-aedxth98\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T16:00:13.363370+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-candidate-capture-aedxth98/report.json",
+      "source_receipt_sha256": "ef7d06baaaf252e6b32c36105b42c6a936df6e4898b8ebb5f367b909847922f1"
+    },
+    {
+      "checked_report": {
+        "capture_id": "50f064e7-1f66-4a41-b2f6-be7349951021",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\reference\\app",
+          "--audio-driver",
+          "Dummy",
+          "--import"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 4.968,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-current-reference-import",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-current-reference-import-e7n59cek\\engine.log",
+        "log_bytes": 1091,
+        "log_sha256": "efad6d6a373a3c495cb278ccf97af4fa4a81ce01297c3e8258aa89555ddad916",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-current-reference-import-e7n59cek\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T16:00:04.816958+00:00",
+        "timeout_seconds": 1200.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-current-reference-import-e7n59cek/report.json",
+      "source_receipt_sha256": "ae7d894b020cf4c6cd3b4c697f3c453884282e594e07a7e4c507b648ccfea5a3"
+    },
+    {
+      "checked_report": {
+        "capture_id": "77ea132f-6476-41aa-9451-d345756f5593",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\reference\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\release-readiness\\PT1-v0.1.9\\capture_fixed_brake_values.gd",
+          "--",
+          "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\historical-goldens.json"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 3.453,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-historical-goldens",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-historical-goldens-22nsqxhj\\engine.log",
+        "log_bytes": 714,
+        "log_sha256": "6c34abf23bd811351a04e60296bc46aa35987a6499db2706a87bdef733401010",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-historical-goldens-22nsqxhj\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T16:00:01.208184+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-historical-goldens-22nsqxhj/report.json",
+      "source_receipt_sha256": "54acb4a192e3350745914fb1eee95b56896d7223af4f7c7bc9095cbe2d315587"
+    },
+    {
+      "checked_report": {
+        "capture_id": "4f6a7321-e3dd-440a-88d9-bf318b76e268",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_fixed_gear_brake_input.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 8.532,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-input",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-input-1dir2e4_\\engine.log",
+        "log_bytes": 2195,
+        "log_sha256": "9459d4f2eb8ee1fd5663af45862de0904a34d717353e93f2a6dd59e112681ee6",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-input-1dir2e4_\\report.json",
+        "required_text": [
+          "Fixed brake candidate:",
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T16:00:17.078182+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-input-1dir2e4_/report.json",
+      "source_receipt_sha256": "051767fba66ef2cc4357b7ae43081b9176056ee9ce24f75c28d5d6add5ab9d3d"
+    },
+    {
+      "checked_report": {
+        "capture_id": "62058194-d261-478f-ae36-97096ffb2da0",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\reference\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\release-readiness\\PT1-v0.1.9\\capture_fixed_brake_values.gd",
+          "--",
+          "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\matched-reference.json"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 3.172,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-matched-reference",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-matched-reference-t9vw_2kk\\engine.log",
+        "log_bytes": 713,
+        "log_sha256": "ed63e2f6766ba57cfbc8eca3279298e2318b0fdb8c6ddf862235a7df609ba32b",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-matched-reference-t9vw_2kk\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T16:00:10.098622+00:00",
+        "timeout_seconds": 180.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-matched-reference-t9vw_2kk/report.json",
+      "source_receipt_sha256": "956960575fceba31a459ce3a00e3b7b3ea29d7d6e85af37c6c5acefa0cc5ac61"
+    },
+    {
+      "checked_report": {
+        "capture_id": "7a2a8b99-2cbb-40ca-b39b-d2e36688f599",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\reference\\app",
+          "--audio-driver",
+          "Dummy",
+          "--import"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 8
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)",
+              "[  80% ] reimport | Corn_4.obj"
+            ],
+            "kind": "WARNING",
+            "line": 2687,
+            "message": "OBJ: Ambient light for material 'Yellow' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+            ],
+            "kind": "WARNING",
+            "line": 2690,
+            "message": "OBJ: Ambient light for material 'DarkGreen2' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+            ],
+            "kind": "WARNING",
+            "line": 2692,
+            "message": "OBJ: Ambient light for material 'Green' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)",
+              "[  80% ] reimport | reed.obj"
+            ],
+            "kind": "WARNING",
+            "line": 2694,
+            "message": "OBJ: Ambient light for material 'Yellow' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+            ],
+            "kind": "WARNING",
+            "line": 2697,
+            "message": "OBJ: Ambient light for material 'Material.011' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+            ],
+            "kind": "WARNING",
+            "line": 2699,
+            "message": "OBJ: Ambient light for material 'Material.014' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)"
+            ],
+            "kind": "WARNING",
+            "line": 2701,
+            "message": "OBJ: Ambient light for material 'Material.015' is ignored in PBR",
+            "severity": "warning"
+          },
+          {
+            "context": [
+              "   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)",
+              "[  80% ] reimport | f4u_corsair_carbon.glb",
+              "[   0% ] import | Started Importar Escena (104 steps)"
+            ],
+            "kind": "WARNING",
+            "line": 2703,
+            "message": "OBJ: Ambient light for material 'Material.016' is ignored in PBR",
+            "severity": "warning"
+          }
+        ],
+        "elapsed_seconds": 192.515,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-reference-bootstrap",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-reference-bootstrap-d_ecf7w0\\engine.log",
+        "log_bytes": 215492,
+        "log_sha256": "77afbdc5690ccedc70fd170696091a885cde1381d467ba9218504493dd1e4d61",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-reference-bootstrap-d_ecf7w0\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T15:56:43.639111+00:00",
+        "timeout_seconds": 1200.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-reference-bootstrap-d_ecf7w0/report.json",
+      "source_receipt_sha256": "b8c70335e4872a96d61d80b65ee9bdd6cbba2a02bc2ba88b7b02af44819ff11b"
+    },
+    {
+      "checked_report": {
+        "capture_id": "19dd9241-00f1-4474-be9d-3d34a7481f34",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta1_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\scratch-retry\\fixed-brake-bh7cvdel\\reference\\app",
+          "--audio-driver",
+          "Dummy",
+          "--import"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 4.781,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "fixed-brake-reference-import",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-reference-import-ttj0tx25\\engine.log",
+        "log_bytes": 1091,
+        "log_sha256": "92d9fd0f512a1880ae3dc3448c4024971056526224d4d604a59b6e62c22027e5",
+        "max_log_bytes": 8388608,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-brake-gate-20261108\\receipts-retry\\fixed-brake-reference-import-ttj0tx25\\report.json",
+        "required_text": [],
+        "started_utc": "2026-11-08T15:59:56.260248+00:00",
+        "timeout_seconds": 1200.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-brake-gate-20261108/receipts-retry/fixed-brake-reference-import-ttj0tx25/report.json",
+      "source_receipt_sha256": "e189352e5e2fccb6e7c7a7869b8dac219c933352e49175bdfb4dcd45202a9e71"
+    },
+    {
+      "checked_report": {
+        "capture_id": "9c0a38ce-a1d7-4ea8-bc8d-51a11595b95b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_extra_handling.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 30.375,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "extra-handling-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\extra-handling-final-oqo91toa\\engine.log",
+        "log_bytes": 1873,
+        "log_sha256": "d00f4dacd2f6cc563a6fa79d4a658bf79ed6c36e46db8268782f49a40d8aac94",
+        "max_log_bytes": 1000000,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\extra-handling-final-oqo91toa\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T16:46:02.831247+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/extra-handling-final-oqo91toa/report.json",
+      "source_receipt_sha256": "b61c4724b45edc1988493e8108e7836316c44b2221cd7c2b1718abf9e186007a"
+    },
+    {
+      "checked_report": {
+        "capture_id": "cc7cb700-2b0f-4635-b9c8-3a06d5cdc94e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_extra_runway.gd"
+        ],
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "detail": "",
+        "diagnostics": [],
+        "elapsed_seconds": 22.047,
+        "exit_code": 0,
+        "format": "openrc-godot-check v1",
+        "label": "extra-runway-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\extra-runway-final-gz39yxbd\\engine.log",
+        "log_bytes": 2020,
+        "log_sha256": "bdce5ab85b78eaeba01de6c878c85a9cba67547b04c8a470f0470b4fd5bd5262",
+        "max_log_bytes": 1000000,
+        "missing_required_text": [],
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\extra-runway-final-gz39yxbd\\report.json",
+        "required_text": [
+          "0 failed"
+        ],
+        "started_utc": "2026-11-08T16:47:59.391734+00:00",
+        "timeout_seconds": 120.0,
+        "warnings_as_errors": false
+      },
+      "source_receipt": "tmp/audit-reload-20261108/extra-runway-final-gz39yxbd/report.json",
+      "source_receipt_sha256": "5bd29e91a11934128d088e4dd230f8d5fd385061dacd184e5c70f8f6fbbc00e3"
+    }
+  ],
+  "companion_requalification": "../../ai-companions/AFC-02-R5/source-requalification-2026-11-08/manifest.json",
+  "date": "2026-11-08",
+  "format": "openrc-audit-verification-index v1",
+  "integrated_source_rev": "174abfd02",
+  "native_component_manifest": "native/manifest.json",
+  "negative_outcomes": "Earlier timeout/import failures remain failures; the first complete brake attempt rejected concurrent UI source drift, and the clean retry passed. Changed-solver old checkpoint replay is a refusal, not a pass.",
+  "python_suites": [
+    {
+      "command": "python -m unittest discover -s app/tests -p test_trace_acceptance.py -v",
+      "engine": "4.8.beta2.official.cafc17a19",
+      "log_sha256": "ef8c2ef8dbad59754821775f55143db7ad88bd748f0d06e507c3d7cf97c8f075",
+      "ok": true,
+      "platform": "Windows x86-64",
+      "tests": 20
+    },
+    {
+      "command": "python3 -m unittest discover -s tools/ci -p test_phases.py -v",
+      "log_sha256": "43cf08d780c76eacdf1175126e2c8c797d2c28caa4e3038df1df2b0a3e3f2d46",
+      "ok": true,
+      "platform": "WSL/Linux",
+      "source_phase_note": "Includes checked parsing of the companion identity helper; all 11 phase tests reran after adding that source hook.",
+      "tests": 11
+    },
+    {
+      "command": "python -B -m unittest discover -s tools/companions -p test_rebind.py",
+      "log_sha256": "920d63988bdfb2e7ef9ef53e307f31840e5d62bacce255210a56a3f6535b7491",
+      "ok": true,
+      "platform": "Windows x86-64",
+      "tests": 37,
+      "scope": "Offline and fake engine/replay fixtures; no qualification acceptance. Same source hashes as the WSL run."
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tools/companions -p test_rebind.py",
+      "log_sha256": "d57844b5920ca83071df79d6984da85a99f22ac5c7b0e0217ef36337c9cd6200",
+      "ok": true,
+      "platform": "WSL/Linux",
+      "tests": 37,
+      "source_sha256": {
+        "tools/companions/rebind.py": "b0fe07d61678caa7d69ab5f14fb7df1d158ea5dfb3552f95f0f06dfc9cfbee3d",
+        "tools/companions/solver_identity.gd": "422778b9e52a3c67d90b1460be995e2b677efa3327cd7a6096423196a4a81091",
+        "tools/companions/test_rebind.py": "4b55fbee817bb93780fa2cd92c59b6fdcf5bf7ba228e7315708ea510f8a95ce7"
+      },
+      "scope": "Offline and fake engine/replay fixtures; no qualification acceptance."
+    }
+  ],
+  "scope": "Feature software checks and strict brake migration; not full app/visual CI, aircraft calibration or release qualification"
+}

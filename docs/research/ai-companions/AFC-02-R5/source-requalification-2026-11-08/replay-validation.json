@@ -1,0 +1,122 @@
+{
+  "ok": true,
+  "replays": [
+    {
+      "tape": "parallel-two-threats-ai.orfl",
+      "ok": true,
+      "source_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "parallel-two-threats-peer.orfl",
+      "ok": true,
+      "source_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "parallel-two-threats-player.orfl",
+      "ok": true,
+      "source_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "seed-20261020-crossing-right-ai.orfl",
+      "ok": true,
+      "source_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "seed-20261020-crossing-right-player-coupled.orfl",
+      "ok": true,
+      "source_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "seed-20261020-crossing-right-player-exogenous.orfl",
+      "ok": true,
+      "source_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "seed-20261021-crossing-left-ai.orfl",
+      "ok": true,
+      "source_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "seed-20261021-crossing-left-player-coupled.orfl",
+      "ok": true,
+      "source_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "tape": "seed-20261021-crossing-left-player-exogenous.orfl",
+      "ok": true,
+      "source_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+      "solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+      "rows": 2881,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "surveys": {
+    "crossings": {
+      "cases": 2,
+      "state_command_identical": true,
+      "exogenous_identical": true,
+      "complete": true,
+      "deterministic": true,
+      "separation_gate_passed_for_all_cases": true
+    },
+    "parallel": {
+      "cases": 7,
+      "state_command_identical": true,
+      "exogenous_identical": true,
+      "complete": true,
+      "deterministic": true,
+      "separation_gate_passed_for_all_cases": false
+    }
+  }
+}

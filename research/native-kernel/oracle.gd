@@ -742,6 +742,11 @@ func _check_aero(context: Dictionary) -> void:
 		cases.append({name = id, model = loaded.model, states = _variant_states})
 	for case: Dictionary in cases:
 		var model: Dictionary = case.model
+		var zero_flap_offset: Dictionary = {}
+		if model.get("flaps", {}).has("lift_reference_offset_m") \
+				and model.surfaces.get("tailless", {}).get("station_x", PackedFloat64Array()).is_empty():
+			zero_flap_offset = model.duplicate(true)
+			zero_flap_offset.flaps.lift_reference_offset_m = 0.0
 		var prepared: Dictionary = _native.prepare_aero(model)
 		if not prepared.ok:
 			_failures.append("prepare_aero %s failed: %s" % [case.name, prepared.error])
@@ -772,12 +777,29 @@ func _check_aero(context: Dictionary) -> void:
 				_native.aero_component(3, s, input.wind, input.rho, da, downwash, ground_up), native_args)
 			_compare("global_loads", Aero._global_loads(s, air, d, model, input.rho, downwash, ge),
 				_native.aero_component(4, s, input.wind, input.rho, da, downwash, ground_up), native_args)
-			_compare("local_loads", Aero._local_loads(s, air, d, model, input.rho, downwash, null, ge),
-				_native.aero_component(5, s, input.wind, input.rho, da, downwash, ground_up), native_args)
+			var local_reference: PackedFloat64Array = Aero._local_loads(s, air, d, model, input.rho, downwash, null, ge)
+			_compare("local_loads", local_reference, _native.aero_component(5, s, input.wind, input.rho, da, downwash, ground_up), native_args)
 			_compare("wing_wake_velocity", PackedFloat64Array([Aero._wing_lift_coefficient_with(s, air, d, model, ge, true)]),
 				_native.aero_component(6, s, input.wind, input.rho, da, downwash, ground_up), native_args)
 			var group: String = "aero_" + str(case.name)
 			_tally(group, "states")
+			if not zero_flap_offset.is_empty() and is_finite(float(d.get("flap", 0.0))) and float(d.get("flap", 0.0)) != 0.0:
+				# The compared native load must include a material offset at an oblique strip.
+				var zero_loads: PackedFloat64Array = Aero._local_loads(s, air, d, zero_flap_offset, input.rho, downwash, null, ge)
+				if is_finite(local_reference[4]) and is_finite(zero_loads[4]) and absf(local_reference[4] - zero_loads[4]) > 1e-12:
+					var flow: Dictionary = Aero._wing_flow(s, air, d, model)
+					var ys: PackedFloat64Array = model.envelope.station_ys
+					var arp: PackedFloat64Array = model.reference.arp_le
+					var cg: PackedFloat64Array = model.cg_le
+					var ax: float = -(arp[0] - cg[0]) + 0.0
+					var ay: float = arp[1] - cg[1]
+					for station in ys.size():
+						var vp: float = flow.speeds[station]
+						var f2: float = air.v_air[2] + (s[RB.RATE] * (ay + ys[station]) - s[RB.RATE + 1] * ax)
+						if is_finite(vp) and is_finite(f2) and is_finite(flow.flap_shifts[station]) \
+								and flow.flap_shifts[station] != 0.0 and vp > 0.0 and absf(f2) > 0.01 * vp:
+							_tally(group, "flap_offset_oblique_witness")
+							break
 			if input.get("malformed", false): _tally(group, "malformed")
 			_tally(group, "blend_zero" if blend == 0.0 else ("blend_one" if blend == 1.0 else ("blend_partial" if is_finite(blend) else "blend_nan")))
 			if not ge.is_empty(): _tally(group, "ground_effect_active")

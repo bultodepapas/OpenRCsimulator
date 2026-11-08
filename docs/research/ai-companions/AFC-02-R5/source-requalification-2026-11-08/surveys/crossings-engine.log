@@ -1,0 +1,26 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-ai.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-player-coupled.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-ai.orfl (2880 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-player-coupled.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-player-exogenous.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-player-exogenous.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-ai.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-player-coupled.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-ai.orfl (2880 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-player-coupled.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-player-exogenous.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-player-exogenous.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+COMPANION ENCOUNTER SURVEY REPORT C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/report.json
+COMPANION ENCOUNTER SURVEY LOGS {"seed-20261020-crossing-right":{"ai":{"path":"C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-ai.orfl","rows_written":2881,"sha256":"b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c","stop_error":0,"verified":true},"player":{"path":"C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-player-coupled.orfl","rows_written":2881,"sha256":"7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f","stop_error":0,"verified":true}},"seed-20261020-crossing-right-exogenous":{"player-exogenous":{"path":"C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261020-crossing-right-player-exogenous.orfl","rows_written":2881,"sha256":"a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0","stop_error":0,"verified":true}},"seed-20261021-crossing-left":{"ai":{"path":"C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-ai.orfl","rows_written":2881,"sha256":"52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6","stop_error":0,"verified":true},"player":{"path":"C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-player-coupled.orfl","rows_written":2881,"sha256":"92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb","stop_error":0,"verified":true}},"seed-20261021-crossing-left-exogenous":{"player-exogenous":{"path":"C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/companion-qualification/crossings/seed-20261021-crossing-left-player-exogenous.orfl","rows_written":2881,"sha256":"b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11","stop_error":0,"verified":true}}}
+COMPANION ENCOUNTER SURVEY VALID_RUNS true DETERMINISTIC_REPEAT true SEPARATION_GATES true
+COMPANION ENCOUNTER SURVEY COMPLETE

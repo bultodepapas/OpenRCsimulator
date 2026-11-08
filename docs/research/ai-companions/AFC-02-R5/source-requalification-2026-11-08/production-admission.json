@@ -1,0 +1,61 @@
+{
+  "format": "openrc-companion-production-admission-check v1",
+  "engine": "4.8-beta2 (official)",
+  "platform": "Windows",
+  "display": "headless",
+  "launch_args": [
+    "--quick-flight",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--weather=calm",
+    "--companions=3",
+    "--companions-seed=20261020"
+  ],
+  "isolated_profile": true,
+  "test_solver_override": false,
+  "route": "flight",
+  "player_tick": 3383,
+  "player_fault": "",
+  "player_crashed": false,
+  "companions": {
+    "requested": 3,
+    "active": 3,
+    "airborne": 3,
+    "faulted": 0,
+    "crashed": 0,
+    "ticks": 3383,
+    "seed": 20261020,
+    "error": ""
+  },
+  "profile": {
+    "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+    "normalized_solver_sha256": "b9a90735f035eef47d362e0fefbc82cef189a65c182826dcec3e5d662e7e9c30",
+    "raw_solver_sha256": "a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2",
+    "engine_version": "4.8.beta2.official.cafc17a19",
+    "aircraft_profile_sha256": "ea8f93a6acae0814de324542b94cd8502c8e10dab0c63fc81b6a74a3946bb36e"
+  },
+  "backend": {
+    "requested": "native",
+    "identity": {
+      "backend": "gdscript_reference"
+    },
+    "reason": "native stage: Linux x86_64 only"
+  },
+  "shutdown": {
+    "stopped": true,
+    "forced": false,
+    "launcher_exit_code": null,
+    "crash": null,
+    "leaked_objects": 0
+  },
+  "log_counts": {
+    "info": 6,
+    "event": 6
+  },
+  "ok": true,
+  "engine_log_sha256": "6ca411aa83eb2357f895e2ee8e0f0df7a93941ef67401016bdb61586dc7d4d09",
+  "engine_diagnostics": {
+    "error": 0,
+    "warning": 0
+  },
+  "shutdown_guard": true
+}

@@ -2,6 +2,8 @@
 """AFC-02-R3: offline checks of tools/companions/rebind.py (no Godot; behaviour parity is checked by the tool)."""
 from __future__ import annotations
 
+import gzip
+import hashlib
 import json
 import subprocess
 import sys
@@ -152,6 +154,481 @@ class EngineAndTapeGuards(unittest.TestCase):
                 self.assertTrue(any(str(arg).endswith("stale.orfl") for arg in execute.call_args_list[1].args[0]))
                 compare.assert_not_called()
             self.assertEqual(json.loads(profile.read_text())["solver"]["sha256"], OLD)
+
+
+class GzipTapeTransport(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.workspace = self.root / "workspace"
+        self.data = b"ORFL0001" + bytes(range(128)) * 3
+        self.root_patch = patch.object(rebind, "ROOT", self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
+
+    def gzip_fixture(self, name: str = "one.orfl.gz", raw: bytes | None = None,
+                     stored: bytes | None = None) -> dict:
+        content = self.data if raw is None else raw
+        encoded = gzip.compress(content, mtime=0) if stored is None else stored
+        path = self.root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(encoded)
+        return {"tapes": [name], "tape_identities": {name: {
+            "orfl_sha256": hashlib.sha256(content).hexdigest(),
+            "stored_sha256": hashlib.sha256(encoded).hexdigest(),
+        }}}
+
+    def no_temporary_tapes(self) -> None:
+        if self.workspace.exists():
+            self.assertFalse(list(self.workspace.glob("companion-rebind-tapes-*")))
+
+    def test_raw_path_is_unchanged_and_does_not_create_a_workspace(self) -> None:
+        path = self.root / "raw.orfl"
+        path.write_bytes(self.data)
+        with rebind.materialized_tapes({"tapes": ["raw.orfl"]}, self.workspace) as tapes:
+            self.assertEqual(tapes[0].path, path.resolve())
+            self.assertEqual(tapes[0].source, path)
+            self.assertFalse(tapes[0].compressed)
+            self.assertFalse(self.workspace.exists())
+        self.assertEqual(path.read_bytes(), self.data)
+
+    def test_gzip_materialization_preserves_exact_bytes_and_lifetime(self) -> None:
+        qualification = self.gzip_fixture()
+        with rebind.materialized_tapes(qualification, self.workspace) as tapes:
+            tape = tapes[0]
+            self.assertTrue(tape.compressed)
+            self.assertEqual(tape.path.suffix, ".orfl")
+            self.assertNotEqual(tape.path, tape.source)
+            self.assertTrue(tape.path.is_file())
+            self.assertEqual(tape.path.read_bytes(), self.data)
+            self.assertEqual(tape.orfl_sha256, hashlib.sha256(self.data).hexdigest())
+            rebind._check_materialized_tapes(tapes)
+            materialized = tape.path
+        self.assertFalse(materialized.exists())
+        self.no_temporary_tapes()
+
+    def test_failure_inside_context_always_cleans_the_expansion(self) -> None:
+        qualification = self.gzip_fixture()
+        with self.assertRaisesRegex(RuntimeError, "fixture"):
+            with rebind.materialized_tapes(qualification, self.workspace) as tapes:
+                self.assertTrue(tapes[0].path.is_file())
+                raise RuntimeError("fixture")
+        self.no_temporary_tapes()
+
+    def test_missing_malformed_and_unexpected_identities_are_refused(self) -> None:
+        good = self.gzip_fixture()
+        name = good["tapes"][0]
+        identity = good["tape_identities"][name]
+        variants = [None, {}, {name: {}}, {name: {"orfl_sha256": identity["orfl_sha256"]}},
+                    {name: {**identity, "extra": "unverified"}},
+                    {name: {**identity, "stored_sha256": "not-a-digest"}},
+                    {name: identity, "unexpected.orfl.gz": identity}]
+        for identities in variants:
+            with self.subTest(identities=identities), self.assertRaises(rebind.SetupError):
+                with rebind.materialized_tapes({"tapes": [name], "tape_identities": identities}, self.workspace):
+                    self.fail("invalid identities were accepted")
+        self.no_temporary_tapes()
+
+    def test_suffix_content_mismatch_is_refused_in_both_directions(self) -> None:
+        qualification = self.gzip_fixture()
+        (self.root / "one.orfl.gz").write_bytes(self.data)
+        with self.assertRaisesRegex(rebind.SetupError, "suffix and gzip content"):
+            with rebind.materialized_tapes(qualification, self.workspace):
+                pass
+        (self.root / "raw.orfl").write_bytes(gzip.compress(self.data, mtime=0))
+        with self.assertRaisesRegex(rebind.SetupError, "suffix and gzip content"):
+            with rebind.materialized_tapes({"tapes": ["raw.orfl"]}, self.workspace):
+                pass
+        (self.root / "wrong.gz").write_bytes(gzip.compress(self.data, mtime=0))
+        with self.assertRaisesRegex(rebind.SetupError, "must use .orfl.gz"):
+            with rebind.materialized_tapes({"tapes": ["wrong.gz"]}, self.workspace):
+                pass
+        self.no_temporary_tapes()
+
+    def test_bad_crc_and_truncated_trailer_are_refused(self) -> None:
+        original = gzip.compress(self.data, mtime=0)
+        crc = bytearray(original)
+        crc[-8] ^= 1
+        for damaged in (bytes(crc), original[:-4], original + b"garbage"):
+            qualification = self.gzip_fixture(stored=damaged)
+            with self.subTest(stored=damaged), \
+                    self.assertRaisesRegex(rebind.SetupError, "invalid or incomplete gzip"):
+                with rebind.materialized_tapes(qualification, self.workspace):
+                    pass
+            self.no_temporary_tapes()
+
+    def test_stored_and_raw_hash_mismatches_are_refused(self) -> None:
+        for key in ("stored_sha256", "orfl_sha256"):
+            qualification = self.gzip_fixture()
+            qualification["tape_identities"]["one.orfl.gz"][key] = "0" * 64
+            with self.subTest(key=key), self.assertRaisesRegex(rebind.SetupError, "SHA-256 differs"):
+                with rebind.materialized_tapes(qualification, self.workspace):
+                    pass
+            self.no_temporary_tapes()
+
+    def test_invalid_materialized_orfl_header_is_refused(self) -> None:
+        qualification = self.gzip_fixture(raw=b"NOTORFL1" + self.data)
+        with self.assertRaisesRegex(rebind.SetupError, "invalid ORFL magic"):
+            with rebind.materialized_tapes(qualification, self.workspace):
+                pass
+        self.no_temporary_tapes()
+
+    def test_bound_matches_reader_and_is_enforced_while_streaming(self) -> None:
+        self.assertEqual(rebind.MAX_MATERIALIZED_BYTES, (512 + 2 * 16) * 1024 * 1024)
+        qualification = self.gzip_fixture()
+        with patch.object(rebind, "MAX_MATERIALIZED_BYTES", len(self.data)):
+            with rebind.materialized_tapes(qualification, self.workspace) as tapes:
+                self.assertEqual(tapes[0].path.read_bytes(), self.data)
+        with patch.object(rebind, "MAX_MATERIALIZED_BYTES", len(self.data) - 1), \
+                self.assertRaisesRegex(rebind.SetupError, "decompressed tape exceeds"):
+            with rebind.materialized_tapes(qualification, self.workspace):
+                pass
+        self.no_temporary_tapes()
+
+    def test_logical_output_name_collisions_are_refused(self) -> None:
+        qualification = self.gzip_fixture("one/Flight.orfl.gz")
+        raw = self.root / "two/flight.orfl"
+        raw.parent.mkdir(parents=True)
+        raw.write_bytes(self.data)
+        qualification["tapes"].append("two/flight.orfl")
+        with self.assertRaisesRegex(rebind.SetupError, "duplicate tape output name"):
+            with rebind.materialized_tapes(qualification, self.workspace):
+                pass
+        self.no_temporary_tapes()
+
+    def test_raw_only_names_keep_existing_qualification_behavior(self) -> None:
+        for name in ("one/flight.orfl", "two/flight.orfl"):
+            path = self.root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(self.data)
+        paths = rebind.qualified_tapes({"tapes": ["one/flight.orfl", "two/flight.orfl"]})
+        self.assertEqual(paths, ((self.root / "one/flight.orfl").resolve(),
+                                 (self.root / "two/flight.orfl").resolve()))
+
+    def test_unchanged_solver_inspects_materialized_tape_before_cleanup(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(profile="profile.json", accepted={"solver_sha256": OLD})
+        (self.root / "profile.json").write_text(json.dumps({"solver": {"sha256": OLD}}), encoding="utf-8")
+        qual_path = self.root / "qualification.json"
+        qual_path.write_text(json.dumps(qualification), encoding="utf-8")
+        inspected = []
+
+        def inspect(_godot, _app, tapes, expected):
+            inspected.extend(tapes)
+            self.assertEqual(len(tapes), 1)
+            self.assertEqual(tapes[0].read_bytes(), self.data)
+            self.assertEqual(tapes[0].suffix, ".orfl")
+            self.assertEqual(expected, {str(tapes[0]): hashlib.sha256(self.data).hexdigest()})
+            return OLD
+
+        with patch.object(rebind, "QUALIFICATION", qual_path), patch.object(rebind, "validate_engine"), \
+                patch.object(rebind, "solver_identity", side_effect=inspect), patch.object(rebind, "compare") as compare, \
+                patch.object(sys, "argv", ["rebind.py", "--godot", "godot", "--workspace-root", str(self.workspace)]):
+            self.assertEqual(rebind.main(), 0)
+            compare.assert_not_called()
+        self.assertEqual(len(inspected), 1)
+        self.assertFalse(inspected[0].exists())
+        self.no_temporary_tapes()
+
+    def test_invalid_compressed_identity_never_reaches_engine_inspection(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification["tape_identities"]["one.orfl.gz"]["orfl_sha256"] = "0" * 64
+        qualification.update(profile="profile.json", accepted={"solver_sha256": OLD})
+        (self.root / "profile.json").write_text(json.dumps({"solver": {"sha256": OLD}}), encoding="utf-8")
+        qual_path = self.root / "qualification.json"
+        qual_path.write_text(json.dumps(qualification), encoding="utf-8")
+        with patch.object(rebind, "QUALIFICATION", qual_path), patch.object(rebind, "validate_engine"), \
+                patch.object(rebind, "solver_identity") as inspect, patch.object(rebind, "compare") as compare, \
+                patch.object(sys, "argv", ["rebind.py", "--godot", "godot", "--workspace-root", str(self.workspace)]):
+            self.assertEqual(rebind.main(), 2)
+            inspect.assert_not_called()
+            compare.assert_not_called()
+        self.no_temporary_tapes()
+
+    def test_engine_inspection_refusal_cleans_materialized_tape(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(profile="profile.json", accepted={"solver_sha256": OLD})
+        (self.root / "profile.json").write_text(json.dumps({"solver": {"sha256": OLD}}), encoding="utf-8")
+        qual_path = self.root / "qualification.json"
+        qual_path.write_text(json.dumps(qualification), encoding="utf-8")
+
+        def refuse(_godot, _app, tapes, _expected):
+            self.assertTrue(tapes[0].is_file())
+            raise rebind.SetupError("fixture stale source/engine")
+
+        with patch.object(rebind, "QUALIFICATION", qual_path), patch.object(rebind, "validate_engine"), \
+                patch.object(rebind, "solver_identity", side_effect=refuse), patch.object(rebind, "compare") as compare, \
+                patch.object(sys, "argv", ["rebind.py", "--godot", "godot", "--workspace-root", str(self.workspace)]):
+            self.assertEqual(rebind.main(), 2)
+            compare.assert_not_called()
+        self.no_temporary_tapes()
+
+    def test_inspection_hash_required_only_for_compressed_tape_callers(self) -> None:
+        tape = self.root / "materialized.orfl"
+        tape.write_bytes(self.data)
+        digest = hashlib.sha256(self.data).hexdigest()
+        common = {"ok": True, "sha256": OLD, "inspected_tapes": 1}
+        legacy = subprocess.CompletedProcess([], 0, "SOLVER_IDENTITY " + json.dumps(common) + "\n", "")
+        with patch.object(rebind, "run", return_value=legacy):
+            self.assertEqual(rebind.solver_identity("godot", self.root, (tape,)), OLD)
+            with self.assertRaisesRegex(rebind.SetupError, "did not report per-tape"):
+                rebind.solver_identity("godot", self.root, (tape,), {str(tape): digest})
+        empty = subprocess.CompletedProcess([], 0, "SOLVER_IDENTITY " + json.dumps(
+            {"ok": True, "sha256": OLD, "inspected_tapes": 0}) + "\n", "")
+        with patch.object(rebind, "run", return_value=empty):
+            self.assertEqual(rebind.solver_identity("godot", self.root), OLD)
+        with patch.object(rebind, "run") as child, \
+                self.assertRaisesRegex(rebind.SetupError, "not among requested tapes"):
+            rebind.solver_identity("godot", self.root, (tape,), {"unexpected.orfl": digest})
+        child.assert_not_called()
+        for value in ({}, {str(tape): "g" * 64}, {str(tape): "0" * 64}, {str(tape): None}):
+            response = {**common, "inspected_tape_sha256": value}
+            child = subprocess.CompletedProcess([], 0, "SOLVER_IDENTITY " + json.dumps(response) + "\n", "")
+            with self.subTest(value=value), patch.object(rebind, "run", return_value=child), \
+                    self.assertRaisesRegex(rebind.SetupError, "inspection tape SHA-256 missing or differs"):
+                rebind.solver_identity("godot", self.root, (tape,), {str(tape): digest})
+        response = {**common, "inspected_tape_sha256": {str(tape): digest}}
+        child = subprocess.CompletedProcess([], 0, "SOLVER_IDENTITY " + json.dumps(response) + "\n", "")
+        with patch.object(rebind, "run", return_value=child):
+            self.assertEqual(rebind.solver_identity("godot", self.root, (tape,), {str(tape): digest}), OLD)
+
+    def test_inspection_substitute_restored_before_parent_check_is_refused(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(profile="profile.json", accepted={"solver_sha256": OLD})
+        (self.root / "profile.json").write_text(json.dumps({"solver": {"sha256": OLD}}), encoding="utf-8")
+        qual_path = self.root / "qualification.json"
+        qual_path.write_text(json.dumps(qualification), encoding="utf-8")
+        inspected = []
+
+        def fake_inspector(command, **_kwargs):
+            path = Path(next(arg.removeprefix("--tape=") for arg in command if arg.startswith("--tape=")))
+            original = path.read_bytes()
+            self.assertEqual(original, self.data)
+            path.write_bytes(b"ORFL0001substitute")
+            digest = rebind.sha256_file(path)
+            path.write_bytes(original)
+            inspected.append(path)
+            result = {"ok": True, "sha256": OLD, "inspected_tapes": 1,
+                      "inspected_tape_sha256": {str(path): digest}}
+            return subprocess.CompletedProcess(command, 0, "SOLVER_IDENTITY " + json.dumps(result) + "\n", "")
+
+        with patch.object(rebind, "QUALIFICATION", qual_path), patch.object(rebind, "validate_engine"), \
+                patch.object(rebind, "run", side_effect=fake_inspector), patch.object(rebind, "compare") as compare, \
+                patch.object(sys, "argv", ["rebind.py", "--godot", "godot", "--workspace-root", str(self.workspace)]):
+            self.assertEqual(rebind.main(), 2)
+            compare.assert_not_called()
+        self.assertEqual(len(inspected), 1)
+        self.assertFalse(inspected[0].exists())
+        self.no_temporary_tapes()
+
+    def test_compare_replays_same_materialized_bytes_and_reports_both_hashes(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(accepted={"rev": "fixture", "solver_sha256": OLD}, solver_directories=[],
+                             candidate_aircraft="candidate.json")
+        seen = []
+
+        def replay(_godot, project, tape, _candidate, output):
+            seen.append((project, tape))
+            self.assertTrue(tape.is_file())
+            self.assertEqual(tape.read_bytes(), self.data)
+            output.mkdir(parents=True, exist_ok=True)
+            csv = output / "flight.csv"
+            csv.write_text("tick,value\n0,1\n", encoding="utf-8")
+            return {"csv": csv, "csv_sha256": rebind.sha256_file(csv), "rows": 1,
+                    "source_sha256": rebind.sha256_file(tape)}
+
+        with patch.object(rebind, "build_baseline", side_effect=lambda workspace, *_args: workspace / "base"), \
+                patch.object(rebind, "solver_identity", return_value=OLD), patch.object(rebind, "replay", side_effect=replay):
+            results, workspace = rebind.compare("godot", qualification, 2, False, self.workspace)
+        self.assertEqual(len(seen), 2)
+        self.assertEqual(seen[0][1], seen[1][1])
+        self.assertFalse(seen[0][1].exists())
+        self.assertFalse(Path(workspace).exists())
+        self.assertEqual(results[0]["tape"], "one.orfl.gz")
+        self.assertEqual(results[0]["tape_encoding"], "gzip")
+        self.assertEqual(results[0]["orfl_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.assertEqual(results[0]["stored_sha256"], qualification["tape_identities"]["one.orfl.gz"]["stored_sha256"])
+        self.assertEqual(results[0]["base_replay_source_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.assertEqual(results[0]["head_replay_source_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.assertTrue(results[0]["identical"])
+        self.no_temporary_tapes()
+
+    def test_each_child_must_report_the_matching_raw_digest(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(accepted={"rev": "fixture", "solver_sha256": OLD}, solver_directories=[],
+                             candidate_aircraft="candidate.json")
+        for bad_side in ("base", "head"):
+            for invalid in (None, "", 12, "g" * 64, "0" * 64):
+                def replay(_godot, _project, tape, _candidate, output):
+                    output.mkdir(parents=True, exist_ok=True)
+                    csv = output / "flight.csv"
+                    csv.write_text("tick\n0\n", encoding="utf-8")
+                    value = invalid if output.parent.name == bad_side else rebind.sha256_file(tape)
+                    result = {"csv": csv, "csv_sha256": rebind.sha256_file(csv), "rows": 1}
+                    if value is not None:
+                        result["source_sha256"] = value
+                    return result
+
+                with self.subTest(side=bad_side, value=invalid), \
+                        patch.object(rebind, "build_baseline", side_effect=lambda workspace, *_args: workspace / "base"), \
+                        patch.object(rebind, "solver_identity", return_value=OLD), \
+                        patch.object(rebind, "replay", side_effect=replay), \
+                        self.assertRaisesRegex(rebind.SetupError, bad_side + " replay source SHA-256 missing or differs"):
+                    rebind.compare("godot", qualification, 1, False, self.workspace)
+                self.no_temporary_tapes()
+
+    def test_matching_csvs_refuse_child_hashes_from_temporarily_substituted_tape(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(accepted={"rev": "fixture", "solver_sha256": OLD}, solver_directories=[],
+                             candidate_aircraft="candidate.json")
+        child_csvs = []
+        reported = []
+        checks = []
+        original_check = rebind._check_materialized_tapes
+
+        def fake_child(command, **_kwargs):
+            tape = Path(command[3])
+            output = Path(command[-1])
+            original = tape.read_bytes()
+            self.assertEqual(original, self.data)
+            tape.write_bytes(b"ORFL0001substitute")
+            source_sha256 = rebind.sha256_file(tape)
+            tape.write_bytes(original)  # restored before the parent's post-replay check
+            output.mkdir(parents=True, exist_ok=True)
+            csv = output / "flight.csv"
+            csv.write_text("tick,value\n0,1\n", encoding="utf-8")
+            (output / "replay.json").write_text(json.dumps({"complete": True, "source_sha256": source_sha256}),
+                                                encoding="utf-8")
+            child_csvs.append(rebind.sha256_file(csv))
+            reported.append(source_sha256)
+            return subprocess.CompletedProcess(command, 0, "", "")
+
+        def record_check(tapes):
+            original_check(tapes)
+            checks.append(rebind.sha256_file(tapes[0].path))
+
+        with patch.object(rebind, "build_baseline", side_effect=lambda workspace, *_args: workspace / "base"), \
+                patch.object(rebind, "solver_identity", return_value=OLD), \
+                patch.object(rebind, "run", side_effect=fake_child), \
+                patch.object(rebind, "_check_materialized_tapes", side_effect=record_check), \
+                self.assertRaisesRegex(rebind.SetupError, "base replay source SHA-256 missing or differs"):
+            rebind.compare("godot", qualification, 1, False, self.workspace)
+        expected = hashlib.sha256(self.data).hexdigest()
+        self.assertEqual(len(child_csvs), 2)
+        self.assertEqual(child_csvs[0], child_csvs[1])
+        self.assertEqual(len(reported), 2)
+        self.assertTrue(all(value != expected for value in reported))
+        self.assertEqual(checks, [expected, expected])  # both parent checks saw the restored file
+        self.no_temporary_tapes()
+
+    def test_changed_materialization_is_refused_and_cleaned(self) -> None:
+        qualification = self.gzip_fixture()
+        with self.assertRaisesRegex(rebind.SetupError, "materialized ORFL changed"):
+            with rebind.materialized_tapes(qualification, self.workspace) as tapes:
+                tapes[0].path.write_bytes(self.data + b"changed")
+                rebind._check_materialized_tapes(tapes)
+        self.no_temporary_tapes()
+
+    def test_keep_retains_project_workspace_but_not_expanded_tape(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(accepted={"rev": "fixture", "solver_sha256": OLD}, solver_directories=[],
+                             candidate_aircraft="candidate.json")
+
+        def replay(_godot, _project, tape, _candidate, output):
+            self.assertEqual(tape.read_bytes(), self.data)
+            output.mkdir(parents=True, exist_ok=True)
+            csv = output / "flight.csv"
+            csv.write_text("tick\n0\n", encoding="utf-8")
+            return {"csv": csv, "csv_sha256": rebind.sha256_file(csv), "rows": 1,
+                    "source_sha256": rebind.sha256_file(tape)}
+
+        with patch.object(rebind, "build_baseline", side_effect=lambda workspace, *_args: workspace / "base"), \
+                patch.object(rebind, "solver_identity", return_value=OLD), patch.object(rebind, "replay", side_effect=replay):
+            results, workspace = rebind.compare("godot", qualification, 1, True, self.workspace)
+        self.assertTrue(results[0]["identical"])
+        self.assertTrue(Path(workspace).is_dir())
+        self.no_temporary_tapes()
+
+    def test_full_changed_solver_flow_keeps_tape_alive_and_reports_identities(self) -> None:
+        qualification = self.gzip_fixture()
+        qualification.update(profile="profile.json", accepted={"rev": "fixture", "solver_sha256": OLD},
+                             solver_directories=[], candidate_aircraft="candidate.json")
+        (self.root / "profile.json").write_text(json.dumps({"solver": {"sha256": OLD}}), encoding="utf-8")
+        qual_path = self.root / "qualification.json"
+        qual_path.write_text(json.dumps(qualification), encoding="utf-8")
+        report = self.root / "result.json"
+        inspected = []
+        replayed = []
+
+        def identity(_godot, _app, tapes=(), expected=None):
+            if tapes:
+                inspected.extend(tapes)
+                self.assertEqual(tapes[0].read_bytes(), self.data)
+                self.assertEqual(expected, {str(tapes[0]): hashlib.sha256(self.data).hexdigest()})
+                return NEW
+            self.assertTrue(inspected[0].is_file())
+            return OLD
+
+        def replay(_godot, _project, tape, _candidate, output):
+            self.assertEqual(tape, inspected[0])
+            self.assertEqual(tape.read_bytes(), self.data)
+            replayed.append(tape)
+            output.mkdir(parents=True, exist_ok=True)
+            csv = output / "flight.csv"
+            csv.write_text("tick\n0\n", encoding="utf-8")
+            return {"csv": csv, "csv_sha256": rebind.sha256_file(csv), "rows": 1,
+                    "source_sha256": rebind.sha256_file(tape)}
+
+        def fake_git(*args):
+            return "c" * 40 if args[:2] == ("rev-parse", "HEAD") else ""
+
+        with patch.object(rebind, "QUALIFICATION", qual_path), patch.object(rebind, "validate_engine"), \
+                patch.object(rebind, "build_baseline", side_effect=lambda workspace, *_args: workspace / "base"), \
+                patch.object(rebind, "solver_identity", side_effect=identity), \
+                patch.object(rebind, "replay", side_effect=replay), patch.object(rebind, "git", side_effect=fake_git), \
+                patch.object(rebind, "solver_tree_is_committed", return_value=True), \
+                patch.object(sys, "argv", ["rebind.py", "--godot", "godot", "--jobs", "2", "--report", str(report),
+                                           "--workspace-root", str(self.workspace)]):
+            self.assertEqual(rebind.main(), 0)
+        self.assertEqual(len(replayed), 2)
+        self.assertFalse(inspected[0].exists())
+        receipt = json.loads(report.read_text(encoding="utf-8"))
+        self.assertTrue(receipt["identical"])
+        self.assertEqual(receipt["tapes"][0]["orfl_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.assertEqual(receipt["tapes"][0]["stored_sha256"], qualification["tape_identities"]["one.orfl.gz"]["stored_sha256"])
+        self.assertEqual(receipt["tapes"][0]["tape_encoding"], "gzip")
+        self.assertEqual(receipt["tapes"][0]["base_replay_source_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.assertEqual(receipt["tapes"][0]["head_replay_source_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.no_temporary_tapes()
+
+    def test_compare_keeps_legacy_raw_receipt_schema(self) -> None:
+        raw = self.root / "raw.orfl"
+        raw.write_bytes(self.data)
+        qualification = {"tapes": ["raw.orfl"], "accepted": {"rev": "fixture", "solver_sha256": OLD},
+                         "solver_directories": [], "candidate_aircraft": "candidate.json"}
+
+        def replay(_godot, _project, tape, _candidate, output):
+            self.assertEqual(tape, raw.resolve())
+            output.mkdir(parents=True, exist_ok=True)
+            csv = output / "flight.csv"
+            csv.write_text("tick\n0\n", encoding="utf-8")
+            return {"csv": csv, "csv_sha256": rebind.sha256_file(csv), "rows": 1}
+
+        with patch.object(rebind, "build_baseline", side_effect=lambda workspace, *_args: workspace / "base"), \
+                patch.object(rebind, "solver_identity", return_value=OLD), patch.object(rebind, "replay", side_effect=replay):
+            results, _workspace = rebind.compare("godot", qualification, 1, False, self.workspace)
+        self.assertEqual(set(results[0]), {"tape", "orfl_sha256", "rows", "base_csv_sha256", "head_csv_sha256", "identical"})
+        self.assertEqual(results[0]["orfl_sha256"], hashlib.sha256(self.data).hexdigest())
+        self.assertEqual(raw.read_bytes(), self.data)
+
+    def test_changed_stored_gzip_is_refused(self) -> None:
+        qualification = self.gzip_fixture()
+        with self.assertRaisesRegex(rebind.SetupError, "compressed tape or materialized ORFL changed"):
+            with rebind.materialized_tapes(qualification, self.workspace) as tapes:
+                tapes[0].source.write_bytes(tapes[0].source.read_bytes() + b"changed")
+                rebind._check_materialized_tapes(tapes)
+        self.no_temporary_tapes()
 
 
 class CheckedInQualification(unittest.TestCase):

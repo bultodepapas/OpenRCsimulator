@@ -8,19 +8,57 @@
     "app/failures"
   ],
   "accepted": {
-    "solver_sha256": "d48b5ea32b31c3c27e1dab3f33794d37d26f28ff08f771c4d10142d9f426af8d",
-    "rev": "9807b48a2e9a97a50cbc718f14b188e5c846f7c4"
+    "solver_sha256": "b9a90735f035eef47d362e0fefbc82cef189a65c182826dcec3e5d662e7e9c30",
+    "rev": "d571d67adcc64d7a723568912048707853de75ec"
   },
   "tapes": [
-    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261020-crossing-right-ai.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261020-crossing-right-player-coupled.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261020-crossing-right-player-exogenous.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261021-crossing-left-ai.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261021-crossing-left-player-coupled.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/seed-20261021-crossing-left-player-exogenous.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-ai.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-peer.orfl",
-    "docs/research/ai-companions/AFC-02-R5/tapes/parallel-two-threats-player.orfl"
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-ai.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-player-coupled.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-player-exogenous.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-ai.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-player-coupled.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-player-exogenous.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-ai.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-peer.orfl.gz",
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-player.orfl.gz"
   ],
-  "receipts": "docs/research/ai-companions/AFC-02/rebinds"
+  "receipts": "docs/research/ai-companions/AFC-02/rebinds",
+  "tape_identities": {
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-ai.orfl.gz": {
+      "orfl_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+      "stored_sha256": "6530bf0715ae440f394747944f2d4bbf8ebcd74f3ba4284676ab5777eb30f748"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-player-coupled.orfl.gz": {
+      "orfl_sha256": "7d81bc9c59b6b0c5bac6876a0fef1e3921980b5e3574abbd5d17c67cfde7827f",
+      "stored_sha256": "bb1d604945b6439217ba740cad67f77086574ed264083d2c548fa7408aab0f13"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-player-exogenous.orfl.gz": {
+      "orfl_sha256": "a027c0c3a467ae7e6d30bdde28be61a7002a42946f73c5c06693f26fc4a1c9e0",
+      "stored_sha256": "e6c72f34b123fc5f346f670fef9011a26da1464ad7cc8f7182a62510f801bbdb"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-ai.orfl.gz": {
+      "orfl_sha256": "52a465b632989b3299b1c0ff3917d4f075b1d58632a7ab847d98b2e28cf072b6",
+      "stored_sha256": "daf871bc8e5c1c95ef651c5ba0f59e7bdd97c5cd4a418c9151a5d10b96675543"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-player-coupled.orfl.gz": {
+      "orfl_sha256": "92417a4b513b66f657c57179a9ae4f38386ceadbc41b1f397f4158fb2eaf06bb",
+      "stored_sha256": "5c731435844c63040183a636e740bbe110d4fbe24cd640ae78cbd3cb0f8abf9a"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261021-crossing-left-player-exogenous.orfl.gz": {
+      "orfl_sha256": "b501c204a4b0008697b92c996865d83984611e87e66849c84a8e38af82db6f11",
+      "stored_sha256": "430fd976950df54b0addf10867a8ea39571300fefb3869af98ea92d8bdd92401"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-ai.orfl.gz": {
+      "orfl_sha256": "f5dc7a8722d55f10e11270b1751b0e88f46a6796a9e937c478a5319ffef534e0",
+      "stored_sha256": "f487702aa244117f6552dcb3052ad55cada3f8b5197e379c85e82da51b9d789b"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-peer.orfl.gz": {
+      "orfl_sha256": "ee34da201dc920bcc260d9dbe7014c745484f1b7a64fcd27397f61c73b354d1b",
+      "stored_sha256": "09bc3b855fd5cbccd7635eb000dfe0c52edd9d4e661bccc36d1ae51ee17d1c18"
+    },
+    "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/parallel-two-threats-player.orfl.gz": {
+      "orfl_sha256": "e77b7dfa4dec47c7613f8da6d0129b039c4f03803647b3dd1df6e0268fb68d5d",
+      "stored_sha256": "677e5e446f5087b954df0c95b2bd956d01c1031a6cb5ed2a12705cce37961189"
+    }
+  }
 }

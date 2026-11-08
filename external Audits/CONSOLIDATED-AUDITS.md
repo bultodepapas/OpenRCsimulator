@@ -82,20 +82,15 @@ Source: [A8][A8].
 
 | Pending item | Action and acceptance boundary | Original report |
 | --- | --- | --- |
-| **E300-01 — Mixed moment reference points** | Correct the owning generator's force/moment reference invariants and regenerate through its pipeline. Do not globally replace CG arms: rotational-inflow arms and moment arms have different roles. This is a contract inconsistency, not A5's unproven polygon-centroid/pressure-center alternative. | [A8 original][A8] |
-| **E300-02 — Camber omitted from crossflow derivation** | Reuse one installation-to-section adapter, retain optional-field defaults, and regenerate aircraft data/dependent identities. Add an independent table-to-installed-section invariant; comparing loads against the same shipped tables cannot detect this error. The consistent method is not independently calibrated propeller data. | [A8 original][A8] |
 | **E300-06 — Visual blade handedness opposes spin** | Correct leading edge, camber and pitch geometry together, preserving physical rotation conventions and stable nodes/hinges. Inspect stopped appearance, rotation, blur and strikes. Headless geometric witness establishes a presentation inconsistency, not an error in physical shaft/thrust signs or rendered visual acceptance. | [A8 original][A8] |
 
-**E300-08 — F5 geometry synchronization:** apply accepted installation diameter/CG consistently on reload; exercise actual F5 no-op/repeated, accepted diameter changes both ways and rejected mismatch, comparing physical disc/solid/blur transforms. Setter-only tests miss the wiring. [A10][A10]
+E300-01/02 and the Extra/glow E300-08 reload correction are implemented in the [completed ledger](COMPLETED-AUDIT-WORK.md#implemented-corrections). Native/physical/rendered acceptance remains separate below.
 
 ### Corsair
 
 | Pending item | Action and acceptance boundary | Original report |
 | --- | --- | --- |
-| CF-01 | Correct rate-moment CG/ARP convention in generator, with one runtime force transfer; independent invariant before retuning. | [A9 original][A9] |
-| CF-02 | Remove final-table thrust extrapolation-floor discontinuity; cover knot continuity and refusal/domain controls. | [A9 original][A9] |
 | CF-05 | Conservative raised-track first-contact search must consider interior crossings with two clear endpoints. Retain tabletop/roller witnesses, rotation, relief threshold, competing events and rollback; more bisection cannot repair skipped admission. | [A12 original][A12] |
-| CF-06 | Include actual station-flow projection in flap lift-reference cross product; preserve optional/zero-flow branches and separate section/drag couples. Resolve before flap-pitch calibration. | [A12 original][A12] |
 
 Sources: [A9][A9], [A12][A12]. Constructed contacts establish counterexamples, not encounter frequency or physical-aircraft fidelity. CF-03/04/07 are performance work below.
 
@@ -287,6 +282,7 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 
 | Implemented or historical area | Pending gate | Original report |
 | --- | --- | --- |
+| E300-01/02/08; CF-01/02/06 | [Implemented software scope and retained flight evidence](../docs/research/aero-consistency/audit-corrections-2026-11-08.md): independent generator/runtime invariants, versioned checkpoint refusal, actual disk-backed F5, flight/runway consumers, strict historical brake comparisons and rebuilt native component parity. Stik companions are requalified within the existing R5 scope. Native installation/fleet/package qualification, required CI, physical measurements and native 1080p visual/strike acceptance remain separate. Old source-bound native binaries refuse and fall back safely; the changed-solver historical checkpoint refusal is not a successful tape comparison. | [A8][A8], [A9][A9], [A10][A10], [A12][A12] |
 | A11 F07; A18 §2/§3 | [R7 software and presentation evidence](../docs/research/menu-investigations/UI-32/README.md#startup-and-calibration-disclosure-ui-32-r7-2026-11-08) does not complete the saved-preference native startup matrix, pre-handoff physical keyboard/pad Skip, target screen-reader announcements, physical-radio calibration or participant comprehension. Required CI and other desktop platforms remain separate. | [A11 original][A11], [A18 original][A18] |
 | A11 F08/F09; A18 §5 caption | [R8 evidence](../docs/research/menu-investigations/UI-32/README.md#instrument-help-and-launch-summary-ui-32-r8-2026-11-08) covers software focus/remaps/overflow, actual 1080p presentation and four translated Windows UI Automation arrow names. It does not qualify screen-reader speech, physical pads/radios, changed OS keyboard layouts, other desktop platforms or participant comprehension. Required CI remains separate. | [A11 original][A11], [A18 original][A18] |
 | 2026-11-07 preservation repairs | [Implemented software and checked evidence](COMPLETED-AUDIT-WORK.md#implemented-corrections) cover scoped lighting/settings, Workshop numeric/catalog/navigation, manual CSV/controller continuity, weather editing/admission, frozen stars and statistics eligibility. Complete required CI, physical controllers/AT and broader native/platform qualification remain open. The fresh source-bound NK-3 stock cohort now passes all 19 required numerical/mutation gates and 343 fixed-wing/264 helicopter native-session checks. New custom-weather admission domains and broader platform/physical qualification remain separate. Mac complete-session timings remain unmeasured. | [A11][A11], [A13][A13], [A17][A17], [A21][A21], [A22][A22], [A24][A24], [A30][A30] |

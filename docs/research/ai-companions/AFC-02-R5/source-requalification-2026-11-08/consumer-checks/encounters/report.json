@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5996f774-4436-4857-b2b0-7186851a091f",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_encounters.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T16:34:24.908395+00:00",
+  "label": "companion-suite-encounters-promoted",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\companion-suite-encounters-promoted-imbvqs7t\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\companion-suite-encounters-promoted-imbvqs7t\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companion encounters:",
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.579,
+  "log_bytes": 116,
+  "log_sha256": "bc7ba6897cf47d0ff58d704203be412bf3f1d585e3603d5e2a4d554e4470a4b5"
+}

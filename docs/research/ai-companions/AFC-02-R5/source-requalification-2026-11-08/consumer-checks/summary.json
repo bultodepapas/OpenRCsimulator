@@ -1,0 +1,162 @@
+{
+  "format": "openrc-companion-consumer-checks v1",
+  "profile_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "normalized_solver_sha256": "b9a90735f035eef47d362e0fefbc82cef189a65c182826dcec3e5d662e7e9c30",
+  "all_passed": true,
+  "groups": [
+    {
+      "test": "profiles",
+      "report": "consumer-checks/profiles/report.json",
+      "engine_log": "consumer-checks/profiles/engine.log",
+      "elapsed_seconds": 5.297,
+      "ok": true
+    },
+    {
+      "test": "config",
+      "report": "consumer-checks/config/report.json",
+      "engine_log": "consumer-checks/config/engine.log",
+      "elapsed_seconds": 0.578,
+      "ok": true
+    },
+    {
+      "test": "session",
+      "report": "consumer-checks/session/report.json",
+      "engine_log": "consumer-checks/session/engine.log",
+      "elapsed_seconds": 3.922,
+      "ok": true
+    },
+    {
+      "test": "session_failures",
+      "report": "consumer-checks/session_failures/report.json",
+      "engine_log": "consumer-checks/session_failures/engine.log",
+      "elapsed_seconds": 9.36,
+      "ok": true
+    },
+    {
+      "test": "pilot",
+      "report": "consumer-checks/pilot/report.json",
+      "engine_log": "consumer-checks/pilot/engine.log",
+      "elapsed_seconds": 0.578,
+      "ok": true
+    },
+    {
+      "test": "manager",
+      "report": "consumer-checks/manager/report.json",
+      "engine_log": "consumer-checks/manager/engine.log",
+      "elapsed_seconds": 19.0,
+      "ok": true
+    },
+    {
+      "test": "encounters",
+      "report": "consumer-checks/encounters/report.json",
+      "engine_log": "consumer-checks/encounters/engine.log",
+      "elapsed_seconds": 0.579,
+      "ok": true
+    },
+    {
+      "test": "clearance",
+      "report": "consumer-checks/clearance/report.json",
+      "engine_log": "consumer-checks/clearance/engine.log",
+      "elapsed_seconds": 0.578,
+      "ok": true
+    },
+    {
+      "test": "traffic_index",
+      "report": "consumer-checks/traffic_index/report.json",
+      "engine_log": "consumer-checks/traffic_index/engine.log",
+      "elapsed_seconds": 1.579,
+      "ok": true
+    },
+    {
+      "test": "trajectory",
+      "report": "consumer-checks/trajectory/report.json",
+      "engine_log": "consumer-checks/trajectory/engine.log",
+      "elapsed_seconds": 3.359,
+      "ok": true
+    },
+    {
+      "test": "airspace",
+      "report": "consumer-checks/airspace/report.json",
+      "engine_log": "consumer-checks/airspace/engine.log",
+      "elapsed_seconds": 3.453,
+      "ok": true
+    },
+    {
+      "test": "lifecycle",
+      "report": "consumer-checks/lifecycle/report.json",
+      "engine_log": "consumer-checks/lifecycle/engine.log",
+      "elapsed_seconds": 50.203,
+      "ok": true
+    },
+    {
+      "test": "record",
+      "report": "consumer-checks/record/report.json",
+      "engine_log": "consumer-checks/record/engine.log",
+      "elapsed_seconds": 18.922,
+      "ok": true
+    },
+    {
+      "test": "dialog",
+      "report": "consumer-checks/dialog/report.json",
+      "engine_log": "consumer-checks/dialog/engine.log",
+      "elapsed_seconds": 0.766,
+      "ok": true
+    },
+    {
+      "test": "draft_refresh",
+      "report": "consumer-checks/draft_refresh/report.json",
+      "engine_log": "consumer-checks/draft_refresh/engine.log",
+      "elapsed_seconds": 18.0,
+      "ok": true
+    },
+    {
+      "test": "presentation",
+      "report": "consumer-checks/presentation/report.json",
+      "engine_log": "consumer-checks/presentation/engine.log",
+      "elapsed_seconds": 4.64,
+      "ok": true
+    },
+    {
+      "test": "layout",
+      "report": "consumer-checks/layout/report.json",
+      "engine_log": "consumer-checks/layout/engine.log",
+      "elapsed_seconds": 2.89,
+      "ok": true
+    },
+    {
+      "test": "shell",
+      "report": "consumer-checks/shell/report.json",
+      "engine_log": "consumer-checks/shell/engine.log",
+      "elapsed_seconds": 23.11,
+      "ok": true
+    },
+    {
+      "test": "observation",
+      "report": "consumer-checks/observation/report.json",
+      "engine_log": "consumer-checks/observation/engine.log",
+      "elapsed_seconds": 12.25,
+      "ok": true
+    },
+    {
+      "test": "render_interpolation",
+      "report": "consumer-checks/render_interpolation/report.json",
+      "engine_log": "consumer-checks/render_interpolation/engine.log",
+      "elapsed_seconds": 6.406,
+      "ok": true
+    },
+    {
+      "test": "terrain_traffic",
+      "report": "consumer-checks/terrain_traffic/report.json",
+      "engine_log": "consumer-checks/terrain_traffic/engine.log",
+      "elapsed_seconds": 0.594,
+      "ok": true
+    },
+    {
+      "test": "traffic_lifecycle",
+      "report": "consumer-checks/traffic_lifecycle/report.json",
+      "engine_log": "consumer-checks/traffic_lifecycle/engine.log",
+      "elapsed_seconds": 4.187,
+      "ok": true
+    }
+  ]
+}

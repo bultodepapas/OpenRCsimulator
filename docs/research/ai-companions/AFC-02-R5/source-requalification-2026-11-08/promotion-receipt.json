@@ -1,0 +1,10 @@
+{
+  "accepted_rev": "d571d67adcc64d7a723568912048707853de75ec",
+  "solver_sha256": "b9a90735f035eef47d362e0fefbc82cef189a65c182826dcec3e5d662e7e9c30",
+  "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+  "tape_count": 9,
+  "profile_before_sha256": "0b038b5f232dfc50ad79cc417435e8bece4783408b2bb8a5a9052adc24cd1988",
+  "profile_after_sha256": "ea8f93a6acae0814de324542b94cd8502c8e10dab0c63fc81b6a74a3946bb36e",
+  "qualification_before_sha256": "de9d103d43d9aa610ab00b938132f3d60291744a62e8912052f9a3a19d7f958f",
+  "qualification_after_sha256": "257c1f01a5a07b12dc6fdc3e00b5efb024c480b466f2b9a1a41ec4980a47cb0d"
+}

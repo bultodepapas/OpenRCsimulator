@@ -17,17 +17,22 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import contextlib
 import csv
+from dataclasses import dataclass
 import datetime
+import gzip
 import hashlib
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tarfile
 import tempfile
+import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -36,10 +41,28 @@ IDENTITY_SCRIPT = ROOT / "tools" / "companions" / "solver_identity.gd"
 RECEIPT_FORMAT = "openrc-ai-solver-rebind v1"
 COPY_IGNORE = shutil.ignore_patterns("captures")
 DIFF_COLUMNS_REPORTED = 5
+# FlightLogCli.inspect admits the recorder's 512 MiB plus two 16 MiB packets.
+MAX_MATERIALIZED_BYTES = (512 + 2 * 16) * 1024 * 1024
+COPY_BLOCK_BYTES = 1024 * 1024
+GZIP_MAGIC = b"\x1f\x8b"
+ORFL_MAGIC = b"ORFL0001"
 
 
 class SetupError(RuntimeError):
     """The comparison could not run; nothing about behaviour is known."""
+
+
+@dataclass(frozen=True)
+class PreparedTape:
+    source: Path
+    path: Path
+    logical_name: str
+    orfl_sha256: str = ""
+    stored_sha256: str = ""
+
+    @property
+    def compressed(self) -> bool:
+        return bool(self.stored_sha256)
 
 
 def run(command: list[str], cwd: Path = ROOT, timeout: int = 600) -> subprocess.CompletedProcess:
@@ -69,7 +92,13 @@ def default_godot() -> str:
     return result.stdout.strip().splitlines()[-1]
 
 
-def solver_identity(godot: str, app: Path, tapes: tuple[Path, ...] = ()) -> str:
+def solver_identity(godot: str, app: Path, tapes: tuple[Path, ...] = (),
+                    expected_tape_sha256: dict[str, str] | None = None) -> str:
+    if expected_tape_sha256 and not set(expected_tape_sha256).issubset({str(tape) for tape in tapes}):
+        raise SetupError("expected inspected tape identity is not among requested tapes")
+    if expected_tape_sha256 and any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", value)
+                                    for value in expected_tape_sha256.values()):
+        raise SetupError("expected inspected tape SHA-256 is malformed")
     command = [godot, "--headless", "--path", str(app), "--audio-driver", "Dummy", "--script", str(IDENTITY_SCRIPT)]
     if tapes:
         command += ["--", *(f"--tape={tape}" for tape in tapes)]
@@ -78,6 +107,15 @@ def solver_identity(godot: str, app: Path, tapes: tuple[Path, ...] = ()) -> str:
         if line.startswith("SOLVER_IDENTITY "):
             identity = json.loads(line.removeprefix("SOLVER_IDENTITY "))
             if result.returncode == 0 and identity.get("ok") and identity.get("inspected_tapes", 0) == len(tapes):
+                if expected_tape_sha256:
+                    inspected = identity.get("inspected_tape_sha256")
+                    if not isinstance(inspected, dict):
+                        raise SetupError("solver inspection did not report per-tape SHA-256 identities")
+                    for path, expected in expected_tape_sha256.items():
+                        actual = inspected.get(path)
+                        if not isinstance(actual, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", actual) \
+                                or actual.lower() != expected.lower():
+                            raise SetupError(f"solver inspection tape SHA-256 missing or differs: {path}")
                 return str(identity["sha256"])
             raise SetupError(f"solver identity unavailable in {app}: {identity.get('errors')}")
     raise SetupError(f"no solver identity from {app}:\n{result.stdout[-2000:]}{result.stderr[-2000:]}")
@@ -107,7 +145,96 @@ def qualified_tapes(qualification: dict) -> tuple[Path, ...]:
     missing = [str(tape) for tape in tapes if not tape.is_file()]
     if missing:
         raise SetupError(f"missing tapes: {missing}")
+    identities = qualification.get("tape_identities", {})
+    if not isinstance(identities, dict):
+        raise SetupError("tape_identities must be an object")
+    compressed = {name for name in entries if name.lower().endswith(".orfl.gz")}
+    if set(identities) != compressed:
+        raise SetupError("tape_identities must name exactly the compressed tapes")
+    for name, identity in identities.items():
+        if not isinstance(identity, dict) or set(identity) != {"orfl_sha256", "stored_sha256"} \
+                or any(not isinstance(identity[key], str) or not re.fullmatch(r"[0-9a-fA-F]{64}", identity[key])
+                       for key in ("orfl_sha256", "stored_sha256")):
+            raise SetupError(f"invalid raw or stored tape identity: {name}")
+    names: dict[str, bool] = {}
+    for name, tape in zip(entries, tapes):
+        declared_name = Path(name).name
+        lower = declared_name.lower()
+        is_gzip = name in compressed
+        if lower.endswith(".gz") and not is_gzip:
+            raise SetupError(f"compressed tape must use .orfl.gz: {name}")
+        with tape.open("rb") as source:
+            magic = source.read(2)
+        if (magic == GZIP_MAGIC) != is_gzip:
+            raise SetupError(f"tape suffix and gzip content disagree: {name}")
+        # Both forms produce the same .orfl basename and comparison directory.
+        logical = Path(declared_name[:-3]).stem if is_gzip else Path(declared_name).stem
+        folded = logical.casefold()
+        if not logical or (folded in names and (is_gzip or names[folded])):
+            raise SetupError(f"duplicate tape output name: {logical}")
+        names[folded] = names.get(folded, False) or is_gzip
     return tapes
+
+
+def _materialize_gzip(source: Path, destination: Path, identity: dict) -> PreparedTape:
+    stored_expected = identity["stored_sha256"].lower()
+    raw_expected = identity["orfl_sha256"].lower()
+    if sha256_file(source) != stored_expected:
+        raise SetupError(f"stored tape SHA-256 differs: {source}")
+    digest = hashlib.sha256()
+    size = 0
+    try:
+        with source.open("rb") as stored, gzip.GzipFile(fileobj=stored, mode="rb") as packed, \
+                destination.open("xb") as output:
+            while True:
+                block = packed.read(min(COPY_BLOCK_BYTES, MAX_MATERIALIZED_BYTES - size + 1))
+                if not block:
+                    break  # Reading through EOF verifies the gzip trailer and CRC.
+                size += len(block)
+                if size > MAX_MATERIALIZED_BYTES:
+                    raise SetupError(f"decompressed tape exceeds {MAX_MATERIALIZED_BYTES} bytes: {source}")
+                digest.update(block)
+                output.write(block)
+    except (OSError, EOFError, zlib.error) as error:
+        raise SetupError(f"invalid or incomplete gzip tape {source}: {error}") from error
+    if sha256_file(source) != stored_expected:
+        raise SetupError(f"stored tape changed while materializing: {source}")
+    if digest.hexdigest() != raw_expected or sha256_file(destination) != raw_expected:
+        raise SetupError(f"materialized ORFL SHA-256 differs: {source}")
+    with destination.open("rb") as raw:
+        if raw.read(len(ORFL_MAGIC)) != ORFL_MAGIC:
+            raise SetupError(f"materialized tape has invalid ORFL magic: {source}")
+    return PreparedTape(source, destination, destination.stem, raw_expected, stored_expected)
+
+
+@contextlib.contextmanager
+def materialized_tapes(qualification: dict, workspace_root: Path | None = None):
+    """Keep gzip expansions private and alive through inspection and both replays."""
+    sources = qualified_tapes(qualification)
+    entries = qualification["tapes"]
+    if not any(name.lower().endswith(".orfl.gz") for name in entries):
+        yield tuple(PreparedTape(ROOT / name, source, Path(name).stem) for name, source in zip(entries, sources))
+        return
+    parent = (workspace_root if workspace_root is not None else ROOT / "tmp").resolve()
+    parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="companion-rebind-tapes-", dir=parent) as temporary:
+        directory = Path(temporary)
+        prepared = []
+        for name, resolved in zip(entries, sources):
+            source = ROOT / name
+            if name.lower().endswith(".orfl.gz"):
+                prepared.append(_materialize_gzip(source, directory / Path(name).name[:-3],
+                                                  qualification["tape_identities"][name]))
+            else:
+                prepared.append(PreparedTape(source, resolved, Path(name).stem))
+        yield tuple(prepared)
+
+
+def _check_materialized_tapes(tapes: tuple[PreparedTape, ...]) -> None:
+    for tape in tapes:
+        if tape.compressed and (sha256_file(tape.path) != tape.orfl_sha256
+                                or sha256_file(tape.source) != tape.stored_sha256):
+            raise SetupError(f"compressed tape or materialized ORFL changed: {tape.source}")
 
 
 ## "full" also takes every other tracked app file and the replay tooling from the accepted revision.
@@ -154,7 +281,10 @@ def replay(godot: str, project: Path, tape: Path, candidate: str, out: Path) -> 
         log = (out / "godot.log").read_text(errors="replace") if (out / "godot.log").is_file() else ""
         detail = (result.stdout + result.stderr + log).strip().splitlines()
         raise SetupError(f"replay of {tape.name} in {project.name} failed: {' | '.join(detail[-4:])}")
-    return {"csv": csv_path, "csv_sha256": sha256_file(csv_path), "rows": sum(1 for _ in csv_path.open()) - 1}
+    with csv_path.open() as csv_file:
+        rows = sum(1 for _ in csv_file) - 1
+    return {"csv": csv_path, "csv_sha256": sha256_file(csv_path), "rows": rows,
+            "source_sha256": report.get("source_sha256")}
 
 
 def csv_difference(base_csv: Path, head_csv: Path) -> dict:
@@ -202,7 +332,8 @@ def repin_profile(profile: Path, old: str, new: str) -> None:
 
 
 def compare(godot: str, qualification: dict, jobs: int, keep: bool,
-            workspace_root: Path | None = None, scope: str = "solver") -> tuple[list[dict], str]:
+            workspace_root: Path | None = None, scope: str = "solver",
+            prepared_tapes: tuple[PreparedTape, ...] | None = None) -> tuple[list[dict], str]:
     accepted = qualification["accepted"]
     directories = qualification["solver_directories"]
     parent = (workspace_root if workspace_root is not None else ROOT / "tmp").resolve()
@@ -214,27 +345,42 @@ def compare(godot: str, qualification: dict, jobs: int, keep: bool,
         if base_identity != accepted["solver_sha256"]:
             raise SetupError(f"accepted rev {accepted['rev'][:8]} reproduces {base_identity[:8]}, "
                              f"not the accepted {accepted['solver_sha256'][:8]}; fix qualification.json")
-        tapes = [ROOT / tape for tape in qualification["tapes"]]
-        missing = [str(tape) for tape in tapes if not tape.is_file()]
-        if missing:
-            raise SetupError(f"missing tapes: {missing}")
-        work = {(side, tape): (project, workspace / side / tape.stem)
-                for tape in tapes for side, project in (("base", base), ("head", ROOT))}
-        with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
-            futures = {key: pool.submit(replay, godot, project, key[1], qualification["candidate_aircraft"], out)
-                       for key, (project, out) in work.items()}
-            outputs = {key: future.result() for key, future in futures.items()}
-        results = []
-        for tape in tapes:
-            base_out, head_out = outputs[("base", tape)], outputs[("head", tape)]
-            identical = base_out["csv_sha256"] == head_out["csv_sha256"]
-            entry = {"tape": str(tape.relative_to(ROOT)), "orfl_sha256": sha256_file(tape),
-                     "rows": head_out["rows"], "base_csv_sha256": base_out["csv_sha256"],
-                     "head_csv_sha256": head_out["csv_sha256"], "identical": identical}
-            if not identical:
-                entry["difference"] = csv_difference(base_out["csv"], head_out["csv"])
-            results.append(entry)
-        return results, str(workspace)
+        with contextlib.ExitStack() as stack:
+            tapes = prepared_tapes if prepared_tapes is not None else stack.enter_context(
+                materialized_tapes(qualification, workspace_root))
+            _check_materialized_tapes(tapes)
+            work = {(side, tape): (project, workspace / side / tape.logical_name)
+                    for tape in tapes for side, project in (("base", base), ("head", ROOT))}
+            with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as pool:
+                futures = {key: pool.submit(replay, godot, project, key[1].path,
+                                            qualification["candidate_aircraft"], out)
+                           for key, (project, out) in work.items()}
+                outputs = {key: future.result() for key, future in futures.items()}
+            _check_materialized_tapes(tapes)
+            results = []
+            for tape in tapes:
+                base_out, head_out = outputs[("base", tape)], outputs[("head", tape)]
+                if tape.compressed:
+                    for side, child in (("base", base_out), ("head", head_out)):
+                        reported = child.get("source_sha256")
+                        if not isinstance(reported, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", reported) \
+                                or reported.lower() != tape.orfl_sha256:
+                            raise SetupError(f"{side} replay source SHA-256 missing or differs: {tape.source}")
+                identical = base_out["csv_sha256"] == head_out["csv_sha256"]
+                raw_sha256 = sha256_file(tape.path)
+                if tape.compressed and raw_sha256 != tape.orfl_sha256:
+                    raise SetupError(f"materialized ORFL changed: {tape.source}")
+                entry = {"tape": str(tape.source.relative_to(ROOT)), "orfl_sha256": raw_sha256,
+                         "rows": head_out["rows"], "base_csv_sha256": base_out["csv_sha256"],
+                         "head_csv_sha256": head_out["csv_sha256"], "identical": identical}
+                if tape.compressed:
+                    entry.update(tape_encoding="gzip", stored_sha256=tape.stored_sha256,
+                                 base_replay_source_sha256=base_out["source_sha256"],
+                                 head_replay_source_sha256=head_out["source_sha256"])
+                if not identical:
+                    entry["difference"] = csv_difference(base_out["csv"], head_out["csv"])
+                results.append(entry)
+            return results, str(workspace)
     finally:
         if not keep:
             shutil.rmtree(workspace, ignore_errors=True)
@@ -262,15 +408,24 @@ def main() -> int:
             raise SetupError(f"profile pins {pinned[:8]} but qualification.json accepts "
                              f"{qualification['accepted']['solver_sha256'][:8]}; they must agree")
         validate_engine(godot, profile)
-        tapes = qualified_tapes(qualification)
-        current = solver_identity(godot, ROOT / "app", tapes)
-        if current == pinned:
-            print(f"Companion qualification is current ({current[:8]}); nothing to re-bind.")
-            return 0
-        print(f"Solver identity changed: accepted {pinned[:8]} -> current {current[:8]}. "
-              f"Replaying {len(qualification['tapes'])} tapes on both sides...", flush=True)
-        results, workspace = compare(godot, qualification, args.jobs, args.keep, args.workspace_root,
-                                     args.baseline)
+        with materialized_tapes(qualification, args.workspace_root) as tapes:
+            paths = tuple(tape.path for tape in tapes)
+            expected = {str(tape.path): tape.orfl_sha256 for tape in tapes if tape.compressed}
+            current = solver_identity(godot, ROOT / "app", paths, expected) if expected else \
+                solver_identity(godot, ROOT / "app", paths)
+            _check_materialized_tapes(tapes)
+            for tape in tapes:
+                if tape.compressed:
+                    print(f"  inspected {tape.source.relative_to(ROOT)}: stored_sha256={tape.stored_sha256} "
+                          f"orfl_sha256={tape.orfl_sha256}")
+            if current == pinned:
+                print(f"Companion qualification is current ({current[:8]}); nothing to re-bind.")
+                return 0
+            print(f"Solver identity changed: accepted {pinned[:8]} -> current {current[:8]}. "
+                  f"Replaying {len(qualification['tapes'])} tapes on both sides...", flush=True)
+            results, workspace = compare(godot, qualification, args.jobs, args.keep, args.workspace_root,
+                                         args.baseline, tapes)
+            _check_materialized_tapes(tapes)
     except (SetupError, OSError, KeyError, ValueError, subprocess.TimeoutExpired) as error:
         print(f"rebind: setup error: {error}", file=sys.stderr)
         return 2

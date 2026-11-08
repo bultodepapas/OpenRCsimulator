@@ -47,13 +47,18 @@ func _checks() -> void:
 			if not flow.ok or not got.ok:
 				continue
 			var velocity: PackedFloat64Array = flow.velocity_body
+			var thrust_torque: PackedFloat64Array = Propulsion.thrust_torque(velocity, rpm, prop, input.rho)
 			_compare("propeller_velocity", velocity, got.velocity, [id, i])
-			_compare("propeller_thrust_torque", Propulsion.thrust_torque(velocity, rpm, prop, input.rho), got.thrust_torque, [id, i])
+			_compare("propeller_thrust_torque", thrust_torque, got.thrust_torque, [id, i])
 			_compare("propeller_loads", Propulsion.loads(velocity, rpm, prop, input.rho), got.loads, [id, i])
 			_compare("propeller_rotor", Dynamics.rotor_momentum(loaded.model, rpm), got.rotor_momentum, [id, i])
 			_compare("propeller_normal", Propulsion.normal_force(velocity, rpm, prop, input.rho), got.normal_force, [id, i])
 			_compare("propeller_pfactor", Propulsion.pfactor_moment(velocity, rpm, prop, input.rho), got.pfactor_moment, [id, i])
 			_tally("propeller_" + id, "states")
+			# Record actual comparisons on the continuation where the previous floor jumped.
+			var ct: PackedFloat64Array = prop.ct
+			if rpm >= Propulsion.STOPPED_RPM and ct[-1] < Propulsion.CT_FLOOR and thrust_torque[2] > ct[-2]:
+				_tally("propeller_" + id, "below_floor_ct_continuation")
 		var malformed: Dictionary = geometry.duplicate(true)
 		malformed.axis = PackedFloat64Array([1.0, 0.0])
 		if _native.prepare_propeller(malformed).ok:

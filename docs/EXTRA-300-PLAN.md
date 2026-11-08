@@ -12,6 +12,7 @@ The [aircraft data](../app/data/aircraft/gp_extra_300s_60.json) selects `finite_
 | Generated aircraft assumptions | [EX-05 derivation](../research/extra-300/ex05/derivation.md); source is `ex05/derive_physics.py` |
 | Shared engine/propeller and fuel behavior | [Glow guide](GLOW-ENGINES.md), [61FX dossier](research/glow-engines/NITRO-61FX/README.md), [fuel standard](FUEL-SYSTEM.md) |
 | Dated results and comparison tools | [Realism audit](research/extra-300-realism/README.md), [EX-06/08 probes](../research/extra-300/ex06/README.md) |
+| Moment/crossflow consistency and accepted F5 geometry | [2026-11-08 audit corrections and retained tapes](research/aero-consistency/audit-corrections-2026-11-08.md) |
 | Real-model flight targets, sources and the EX-14 pass | [EX-14 evidence](research/extra-300-realism/EX-14/README.md), [source manifest](research/extra-300-realism/EX-14/sources.json) |
 
 Use the [aircraft contract](AIRCRAFT_CONTRACT.md), [player controls](FIRST-LAUNCH.md) and [flight logging workflow](FLIGHT-LOGGING.md). EX owns its sources, builder, generator, tests and research; shared physics/NITRO/fuel/input/crash/export boundaries stay with their [registered owners](README.md#tracks-plans-and-step-ids). Regenerate dependent data and model/Workshop bindings; never edit generated output.

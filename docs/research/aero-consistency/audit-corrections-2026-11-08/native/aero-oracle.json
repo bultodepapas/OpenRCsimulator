@@ -1,0 +1,600 @@
+{
+	"components": {
+		"aero_loads": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"air_compute": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"global_loads": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"ground_effect_factors": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"literals": {
+			"class_mismatch": 0,
+			"count": 138,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 138,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"local_flow_weight": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"local_loads": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"math_shim": {
+			"class_mismatch": 0,
+			"count": 290206,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 290206,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"surface_table_validity": {
+			"class_mismatch": 0,
+			"count": 315,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 315,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"terrain_no_lake": {
+			"class_mismatch": 0,
+			"count": 1000,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 1000,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"terrain_with_lake": {
+			"class_mismatch": 0,
+			"count": 1000,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 1000,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"timing_inputs": {
+			"class_mismatch": 0,
+			"count": 6,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 6,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"wheels_compressions": {
+			"class_mismatch": 0,
+			"count": 2300,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 2300,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"wheels_derivative": {
+			"class_mismatch": 0,
+			"count": 2300,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 2300,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"wheels_loads": {
+			"class_mismatch": 0,
+			"count": 2300,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 2300,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		},
+		"wing_wake_velocity": {
+			"class_mismatch": 0,
+			"count": 7500,
+			"examples": [],
+			"finite_ulp": 0,
+			"identical": 7500,
+			"max_ulp": 0,
+			"nan_bits": 0,
+			"shape": 0,
+			"zero_sign": 0
+		}
+	},
+	"coverage": {
+		"aero_f4u-corsair-250": {
+			"blend_nan": 1,
+			"blend_one": 279,
+			"blend_partial": 51,
+			"blend_zero": 169,
+			"downwash_lag": 319,
+			"flap_offset_oblique_witness": 432,
+			"ground_effect_active": 268,
+			"malformed": 21,
+			"nonfinite_reference": 15,
+			"states": 500
+		},
+		"aero_gp-extra-300s-60": {
+			"blend_nan": 4,
+			"blend_one": 304,
+			"blend_partial": 39,
+			"blend_zero": 153,
+			"downwash_lag": 330,
+			"ground_effect_active": 200,
+			"malformed": 24,
+			"nonfinite_reference": 12,
+			"states": 500
+		},
+		"aero_moonrunner-x99": {
+			"blend_nan": 1,
+			"blend_one": 262,
+			"blend_partial": 23,
+			"blend_zero": 214,
+			"malformed": 10,
+			"nonfinite_reference": 5,
+			"states": 500
+		},
+		"aero_p51d-mustang-120": {
+			"blend_nan": 2,
+			"blend_one": 267,
+			"blend_partial": 36,
+			"blend_zero": 195,
+			"downwash_lag": 312,
+			"flap_offset_oblique_witness": 416,
+			"ground_effect_active": 255,
+			"malformed": 21,
+			"nonfinite_reference": 16,
+			"states": 500
+		},
+		"aero_sebart-avanti-s-a200-p100rx": {
+			"blend_nan": 3,
+			"blend_one": 279,
+			"blend_partial": 51,
+			"blend_zero": 167,
+			"downwash_lag": 327,
+			"malformed": 29,
+			"nonfinite_reference": 17,
+			"states": 500
+		},
+		"aero_stik": {
+			"blend_nan": 8,
+			"blend_one": 518,
+			"blend_partial": 59,
+			"blend_zero": 415,
+			"downwash_lag": 647,
+			"ground_effect_active": 343,
+			"malformed": 37,
+			"nonfinite_reference": 19,
+			"states": 1000
+		},
+		"aero_stik-glow-55ax-2t": {
+			"blend_nan": 1,
+			"blend_one": 282,
+			"blend_partial": 26,
+			"blend_zero": 191,
+			"downwash_lag": 330,
+			"ground_effect_active": 182,
+			"malformed": 21,
+			"nonfinite_reference": 5,
+			"states": 500
+		},
+		"aero_stik-glow-61fx-2t": {
+			"blend_nan": 3,
+			"blend_one": 270,
+			"blend_partial": 24,
+			"blend_zero": 203,
+			"downwash_lag": 322,
+			"ground_effect_active": 209,
+			"malformed": 23,
+			"nonfinite_reference": 8,
+			"states": 500
+		},
+		"aero_stik-glow-fs64v-4t": {
+			"blend_nan": 2,
+			"blend_one": 272,
+			"blend_partial": 22,
+			"blend_zero": 204,
+			"downwash_lag": 336,
+			"ground_effect_active": 176,
+			"malformed": 20,
+			"nonfinite_reference": 9,
+			"states": 500
+		},
+		"aero_turbo-lumber-evolution": {
+			"blend_nan": 5,
+			"blend_one": 277,
+			"blend_partial": 28,
+			"blend_zero": 190,
+			"downwash_lag": 333,
+			"malformed": 28,
+			"nonfinite_reference": 12,
+			"states": 500
+		},
+		"aero_variant_legacy_horizontal": {
+			"blend_nan": 3,
+			"blend_one": 274,
+			"blend_partial": 57,
+			"blend_zero": 166,
+			"malformed": 20,
+			"nonfinite_reference": 9,
+			"states": 500
+		},
+		"aero_variant_no_ground_effect": {
+			"blend_nan": 3,
+			"blend_one": 264,
+			"blend_partial": 28,
+			"blend_zero": 205,
+			"downwash_lag": 328,
+			"malformed": 19,
+			"nonfinite_reference": 5,
+			"states": 500
+		},
+		"aero_variant_twist_cm_body_side": {
+			"blend_nan": 2,
+			"blend_one": 252,
+			"blend_partial": 41,
+			"blend_zero": 205,
+			"downwash_lag": 314,
+			"ground_effect_active": 169,
+			"malformed": 16,
+			"nonfinite_reference": 6,
+			"states": 500
+		},
+		"aero_variant_uncoupled": {
+			"blend_nan": 3,
+			"blend_one": 271,
+			"blend_partial": 26,
+			"blend_zero": 200,
+			"downwash_lag": 344,
+			"ground_effect_active": 175,
+			"malformed": 27,
+			"nonfinite_reference": 9,
+			"states": 500
+		},
+		"terrain": {
+			"lake_covered": 227
+		},
+		"wheels_flat_no_lake": {
+			"loaded_states": 304,
+			"malformed": 52,
+			"states": 500
+		},
+		"wheels_invalid_lake": {
+			"malformed": 8,
+			"states": 100
+		},
+		"wheels_invalid_table": {
+			"malformed": 8,
+			"states": 100
+		},
+		"wheels_no_gear": {
+			"malformed": 15,
+			"states": 100
+		},
+		"wheels_stik": {
+			"braking_wheels": 2,
+			"lake_covered_wheels": 365,
+			"loaded_states": 605,
+			"loaded_wheels": 1418,
+			"malformed": 93,
+			"states": 1000,
+			"stuck_wheels": 276,
+			"surface_row_0": 481,
+			"surface_row_12": 822,
+			"surface_row_18": 4,
+			"surface_row_6": 111
+		},
+		"wheels_variant_brakes_steer_defaults": {
+			"braking_wheels": 516,
+			"lake_covered_wheels": 182,
+			"loaded_states": 295,
+			"loaded_wheels": 731,
+			"malformed": 43,
+			"states": 500,
+			"stuck_wheels": 136,
+			"surface_row_0": 219,
+			"surface_row_12": 443,
+			"surface_row_18": 7,
+			"surface_row_6": 62
+		}
+	},
+	"engine": "4.8-beta2 (official)",
+	"failures": [],
+	"format": "openrc-nk3-oracle v1",
+	"identity": {
+		"abi": 2,
+		"abi_version": 2,
+		"aero_law": "section-plane-source-weighted-wake-velocity-v3",
+		"backend": "native",
+		"backend_version": "openrc-native-kernel-stage-v2",
+		"rolling_law": "wheel-positive-terrain-excess-v2",
+		"state_size": 13
+	},
+	"law_identity": {
+		"aero_native": "section-plane-source-weighted-wake-velocity-v3",
+		"aero_reference": "section-plane-source-weighted-wake-velocity-v3",
+		"rolling_native": "wheel-positive-terrain-excess-v2",
+		"rolling_reference": "wheel-positive-terrain-excess-v2"
+	},
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"refusals": {
+		"aero_empty_envelope": {
+			"error": "pure-oracle model (empty envelope) not ported",
+			"refused": true
+		},
+		"aero_flaps": {
+			"error": "missing station_coverage",
+			"refused": true
+		},
+		"aero_tailless": {
+			"error": "missing station_x",
+			"refused": true
+		},
+		"aero_unknown_surface_key": {
+			"error": "unsupported key surfaces.future_term",
+			"refused": true
+		},
+		"aero_wing_polar": {
+			"error": "missing cd0",
+			"refused": true
+		},
+		"gear_unknown_contact_key": {
+			"error": "unsupported key landing_gear.contacts[].future_tyre_term",
+			"refused": true
+		}
+	},
+	"seed": 20261027,
+	"self_test": {
+		"detected": [
+			true,
+			true,
+			true,
+			true
+		],
+		"passed": true
+	},
+	"session": {
+		"aircraft": "jensen-das-ugly-stik-60",
+		"brake_input_index": -1,
+		"data_sha256": "0e9469abf35f5a2cf40a7fcc4ed1e914df5d5527ddf501352e331d6e7079b737",
+		"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+		"rest_state": "PackedFloat64Array(15.000511958955906, -46.992196780051415, -0.23363490880613308, 0, 0, 0, 0.7068950577803322, 0.011610629770041393, -0.01475534046159757, 0.7070691978087762, 0, 0, 0)",
+		"retractable": false,
+		"surfaces": "PackedFloat64Array(9, 21, -50, 50, 0.8, 2.5, 3, 9, -3, 3, 0.7, 0.5, -20000, 20000, -20000, 20000, 0.7, 7.5, inf_neg, inf, inf_neg, inf, 0.7, 7.5)"
+	},
+	"sources": {
+		"res://app_state/native_package.gd": "9e1526f2d41efcccc0db9420b906786d481be5141e93e850d074d15871968e0e",
+		"res://data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+		"res://physics/aero.gd": "582d7584c151f604b8d2d224ab55f78abae56c20fb868ac8aaf94654ea390b62",
+		"res://physics/air_data.gd": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361",
+		"res://physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+		"res://physics/atmosphere.gd": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+		"res://physics/battery/battery_data.gd": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+		"res://physics/battery/pack_ecm.gd": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c",
+		"res://physics/dynamics.gd": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592",
+		"res://physics/electric_motor.gd": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+		"res://physics/electric_supply.gd": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+		"res://physics/flaps.gd": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+		"res://physics/ground_contact.gd": "5565fb7c613915575e14700df18f8bb2606a18db879548da13083f6eb7aa6873",
+		"res://physics/ground_effect.gd": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3",
+		"res://physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+		"res://physics/ground_wheels.gd": "cb064a3865971e8abcba46929c3ede716273e21c9b032c23592a4edb44dba7f8",
+		"res://physics/hull_contact.gd": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380",
+		"res://physics/lake_surface.gd": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245",
+		"res://physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+		"res://physics/propulsion.gd": "755babcf96cc351964b8f9fa0bd596580a6608899454fc14b965ec029e556cf6",
+		"res://physics/wind_config.gd": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66",
+		"res://physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+		"res://physics/wind_spatial_config.gd": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d",
+		"res://physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+		"res://physics/wind_spatial_presets.gd": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72",
+		"res://physics/wind_thermal_field.gd": "b370bb9493b0f36119b6344781296525c0e188f18a8a1377e1321ddf0253f7e6",
+		"res://physics/wind_turbulence.gd": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c",
+		"res://physics/wing_polar.gd": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3",
+		"res://sim/environment.gd": "7e173120c75f9d2bade1251106a5d72ad2900fca94370b8f2fedc5d74cb71ab6",
+		"res://sim/flight_session.gd": "11b0005449368ef4ac6f91ddb7e4caf7a560c7f27776b705731ef1bc4803a6f8",
+		"res://sim/native/electric_stage_adapter.gd": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e",
+		"res://sim/native/glow_stage_adapter.gd": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622",
+		"res://sim/native/helicopter_stage_adapter.gd": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5",
+		"res://sim/native/liquid_stage_adapter.gd": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5",
+		"res://sim/native/native_configuration.gd": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db",
+		"res://sim/native/native_weather.gd": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd",
+		"res://sim/native/stage_config.gd": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437",
+		"res://sim/native/weather_adapter.gd": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921",
+		"res://sim/native_stage.gd": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb",
+		"res://sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff"
+	},
+	"states": 1000,
+	"timing": {
+		"aero_cruise_15mps_out_of_ground_effect": {
+			"calls_per_round": 1000,
+			"native_binding_us": 1.039,
+			"native_kernel_us": 0.77771092,
+			"native_rounds_us": [
+				1.039
+			],
+			"reference_rounds_us": [
+				43.095
+			],
+			"reference_us": 43.095,
+			"rounds": 1,
+			"speedup_binding": 41.47738209817132,
+			"speedup_kernel": 55.412620411707735
+		},
+		"aero_cruise_15mps_out_of_ground_effect_regime": {
+			"blend": 0.0,
+			"ground_effect": false
+		},
+		"aero_post_stall_local_strips": {
+			"calls_per_round": 1000,
+			"native_binding_us": 1.111,
+			"native_kernel_us": 0.7540359,
+			"native_rounds_us": [
+				1.111
+			],
+			"reference_rounds_us": [
+				46.086
+			],
+			"reference_us": 46.086,
+			"rounds": 1,
+			"speedup_binding": 41.48154815481548,
+			"speedup_kernel": 61.11910586750578
+		},
+		"aero_post_stall_local_strips_regime": {
+			"blend": 1.0,
+			"ground_effect": false
+		},
+		"aero_runway_rest_ground_effect": {
+			"calls_per_round": 1000,
+			"native_binding_us": 1.128,
+			"native_kernel_us": 1.0352358899999998,
+			"native_rounds_us": [
+				1.128
+			],
+			"reference_rounds_us": [
+				70.213
+			],
+			"reference_us": 70.213,
+			"rounds": 1,
+			"speedup_binding": 62.24556737588652,
+			"speedup_kernel": 67.82318955344564
+		},
+		"aero_runway_rest_ground_effect_regime": {
+			"blend": 0.0,
+			"ground_effect": true
+		},
+		"aero_takeoff_12mps_ground_effect": {
+			"calls_per_round": 1000,
+			"native_binding_us": 1.556,
+			"native_kernel_us": 1.25063609,
+			"native_rounds_us": [
+				1.556
+			],
+			"reference_rounds_us": [
+				73.299
+			],
+			"reference_us": 73.299,
+			"rounds": 1,
+			"speedup_binding": 47.107326478149105,
+			"speedup_kernel": 58.6093753299571
+		},
+		"aero_takeoff_12mps_ground_effect_regime": {
+			"blend": 0.0,
+			"ground_effect": true
+		},
+		"terrain_sample_runway": {
+			"calls_per_round": 5000,
+			"native_binding_us": 0.2854,
+			"native_kernel_us": null,
+			"native_rounds_us": [
+				0.2854
+			],
+			"reference_rounds_us": [
+				4.9544
+			],
+			"reference_us": 4.9544,
+			"rounds": 1,
+			"speedup_binding": 17.359495444989488,
+			"speedup_kernel": null
+		},
+		"wheels_evaluate_runway_rest": {
+			"calls_per_round": 2000,
+			"native_binding_us": 1.16,
+			"native_kernel_us": 0.447761285,
+			"native_rounds_us": [
+				1.16
+			],
+			"reference_rounds_us": [
+				63.116
+			],
+			"reference_us": 63.116,
+			"rounds": 1,
+			"speedup_binding": 54.41034482758621,
+			"speedup_kernel": 140.95903802848878
+		}
+	},
+	"total": {
+		"compared": 352065,
+		"identical": 352065,
+		"mismatched": 0
+	},
+	"variant_states": 500,
+	"verdict": "pass",
+	"wall_ms": 4942
+}

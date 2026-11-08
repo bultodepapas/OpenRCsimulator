@@ -1,0 +1,69 @@
+{
+  "format": "openrc-native-component-evidence v1",
+  "binary_sha256": "c6eb48ae0ea8e565b8d72d257f73630177515d423a6798d8b3ffde80caa5119e",
+  "aero_compared": 352065,
+  "aero_identical": 352065,
+  "corsair_flap_offset_witnesses": 432,
+  "p51_flap_offset_witnesses": 416,
+  "propeller_compared": 34994,
+  "propeller_identical": 34994,
+  "corsair_below_floor_ct_witnesses": 69,
+  "stale_fallback_checks": 83,
+  "artifacts": [
+    {
+      "path": ".gitattributes",
+      "bytes": 72,
+      "sha256": "f3f980a27df333df25cd27c25c3ed59cfa63dc8c9a79487b0a926ee218826a85"
+    },
+    {
+      "path": "aero-checked.json",
+      "bytes": 2163,
+      "sha256": "473113e709c83e6a086c13771575cc1d523a05e1b5da1495b1d1f3d5fc5ce186"
+    },
+    {
+      "path": "aero-oracle.json",
+      "bytes": 16337,
+      "sha256": "f4a6ebe572bcc10017b721ffa75aade00995bd90a0a9c1a00f03d3527b6deb18"
+    },
+    {
+      "path": "development-build.json",
+      "bytes": 8530,
+      "sha256": "4929bc829781eaac03ad5af62d72acb9b62c77c72f19d7c409e3e55f25a8f588"
+    },
+    {
+      "path": "inputs-after.json",
+      "bytes": 22585,
+      "sha256": "48e5ec08008802094bfce54dcd0d4e83c5672d636e2d30c2205a8ed5b9f89b18"
+    },
+    {
+      "path": "inputs-before.json",
+      "bytes": 22554,
+      "sha256": "338be4079e1ad458005735f4e0389280033730074777db430f53dc95e8f512ba"
+    },
+    {
+      "path": "installed-native-hashes.json",
+      "bytes": 1647,
+      "sha256": "3bc5f7807e9b997b44d535c9c1cfd2454b341b252170925863745447df05e0a1"
+    },
+    {
+      "path": "propeller-checked.json",
+      "bytes": 1605,
+      "sha256": "21b6e561a4326264936770c8713a2847bb3ea0a0968c41e4ab9b08d19a375bf1"
+    },
+    {
+      "path": "propeller-oracle.json",
+      "bytes": 7876,
+      "sha256": "def21abb4d632cdb7bb3a6eab278944a1af5dad7e0573293c9c33fecb70e6b25"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1682,
+      "sha256": "0ea78e6b592484e28408948efab0681bc2b32c06049f4d8cfa5fa27cade093ec"
+    },
+    {
+      "path": "stale-fallback-checked.json",
+      "bytes": 1179,
+      "sha256": "effd0745c89de79636ddbfe50c20a8acb44d861f44f0372ab64859ac8295f08b"
+    }
+  ]
+}

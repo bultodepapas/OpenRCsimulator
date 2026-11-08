@@ -34,6 +34,30 @@ G="$(app/get-godot.sh)"; P="$PWD/research/ai-companions/encounter_probe.gd"
 
 The current tapes were recorded on Godot 4.8-beta2 ([AFC-02-R5](../../docs/research/ai-companions/AFC-02-R5/README.md)). The tool checks the selected editor against the profile's exact build and inspects every retained tape for completeness and the recorded engine before accepting an unchanged solver or attempting a re-bind.
 
+## Compressed qualification tapes
+
+The `tapes` list may contain raw `.orfl` paths or gzip-compressed `.orfl.gz` paths, relative to the repository root. Raw entries need no new metadata and continue to use the original files. Each compressed entry requires both exact SHA-256 identities in a top-level `tape_identities` object, keyed by the same path string:
+
+```json
+{
+  "tapes": ["docs/research/ai-companions/example.orfl.gz"],
+  "tape_identities": {
+    "docs/research/ai-companions/example.orfl.gz": {
+      "orfl_sha256": "<SHA-256 of the original uncompressed ORFL>",
+      "stored_sha256": "<SHA-256 of the stored gzip file>"
+    }
+  }
+}
+```
+
+Replace the placeholders with 64 hexadecimal characters. `tape_identities` names exactly the compressed entries; missing, malformed or unexpected entries are refused. For deterministic storage, `gzip -n -c original.orfl > original.orfl.gz` retains the original and omits variable filename/time metadata. Pin binary evidence bytes across checkouts, and retain the original ORFL hash from its recording and replay reports.
+
+The tool streams each gzip into a fresh private temporary directory, checks the gzip trailer and CRC, verifies both hashes and the ORFL magic, then passes the exact uncompressed bytes to the existing engine inspection and replay paths. Its decompressed limit is **544 MiB per compressed tape**: the [flight-log reader](../../app/tools/flight_log_cli.gd) permits the recorder's 512 MiB plus two 16 MiB packets. This transport limit does not change raw-file admission or validate the flight itself. Suffix/content mismatches, compressed output names that collide with another tape, corruption and excess size stop the run. It rechecks both identities after inspection and replay. The extracted files remain available throughout both replays and are removed on completion or failure, including with `--keep`; only the disposable project copies are retained by that flag.
+
+Comparison receipts keep `orfl_sha256` as the uncompressed ORFL hash. Compressed entries additionally report `tape_encoding: gzip`, `stored_sha256` and the source hash reported by each replay child. Both child hashes must match the declared original, even when the two CSVs match. No replay output is normalized. Compression does not replace the existing engine, complete-log, source, replay or qualification gates.
+
+The identity inspector hashes each tape before and after inspection and reports its path and hash; gzip entries must match their declared original hash. Each replay child also reports a source hash during startup. These checks do not lock files or prove that a concurrently modified file stayed unchanged throughout a child process.
+
 Use `--workspace-root D:/OpenRCsimulator-evidence/rebind` when the repository drive lacks space for the project copy. Each run creates its own directory there; `--keep` retains it for inspection.
 
 | Exit | Meaning |

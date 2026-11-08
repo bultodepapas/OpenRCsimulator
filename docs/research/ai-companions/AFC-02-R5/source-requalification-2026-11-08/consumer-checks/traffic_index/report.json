@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "33803030-0b83-428b-a6bc-866741a93f89",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_traffic_index.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-08T16:34:26.281198+00:00",
+  "label": "companion-suite-traffic_index-promoted",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\companion-suite-traffic_index-promoted-h_cnc3eu\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-corsair-runtime-20261108\\checks\\companion-suite-traffic_index-promoted-h_cnc3eu\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "traffic index:",
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.579,
+  "log_bytes": 148,
+  "log_sha256": "266b40b675a15785c33372ee3507e0d486d33abf84921ca8250a120edadb8f2b"
+}

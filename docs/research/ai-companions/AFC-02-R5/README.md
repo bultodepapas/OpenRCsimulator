@@ -1,5 +1,7 @@
 # AFC-02-R5: companion qualification on Godot 4.8 beta2
 
+The [2026-11-08 source requalification](source-requalification-2026-11-08/README.md) retains the current-law matrix, nine fresh exact-replay tapes, source/profile promotion and production-admission checks. It preserves this campaign's existing scope and limitations. The original beta2 campaign below remains dated evidence.
+
 2026-11-01. The existing airborne Ugly Stik circuit scope was checked on official
 Windows Godot `4.8.beta2.official.cafc17a19`; no activity, aircraft, weather or
 roster scope was expanded. The beta1 evidence remains at [GDU-03](../../engine-upgrade/GDU-03/companions/README.md)

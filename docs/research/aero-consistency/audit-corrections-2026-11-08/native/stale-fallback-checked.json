@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "03b6ea3b-7d1e-4a47-81bf-94a48abaf4bc",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_native_stage.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-08T15:50:22.600694+00:00",
+  "label": "native-stale-fallback",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/checks/native-stale-fallback-w10lx1gm/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/audit-corsair-runtime-20261108/checks/native-stale-fallback-w10lx1gm/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Native stage:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 22.069508,
+  "log_bytes": 331,
+  "log_sha256": "f56d70f82ea938ac38d47f1e40752df79d34db4924f5cd63e7df464f0adf112d"
+}

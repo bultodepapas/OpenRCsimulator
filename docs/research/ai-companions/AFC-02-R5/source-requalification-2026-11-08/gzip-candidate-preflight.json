@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "tape": "docs/research/ai-companions/AFC-02-R5/source-requalification-2026-11-08/tapes/seed-20261020-crossing-right-ai.orfl.gz",
+  "pinned_raw_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+  "reported_raw_sha256": "b734623a56d7281552fe97d75eebef0cb89c51321714d99a552e8a2145c6680c",
+  "rows": 2881,
+  "solver_changed": false,
+  "diagnostics": {
+    "error": 0,
+    "warning": 0
+  },
+  "temporary_removed": true,
+  "csv_sha256": "bd8f713290f95e6c649a4ce31aa834cf4399d470bbc17464ce851173ea6d3ac0"
+}

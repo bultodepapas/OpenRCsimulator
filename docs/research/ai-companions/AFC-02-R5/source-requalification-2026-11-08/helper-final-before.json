@@ -1,0 +1,30 @@
+[
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\companions\\solver_identity.gd",
+    "Hash": "422778B9E52A3C67D90B1460BE995E2B677EFA3327CD7A6096423196A4A81091"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\companions\\rebind.py",
+    "Hash": "B0FE07D61678CAA7D69AB5F14FB7DF1D158EA5DFB3552F95F0F06DFC9CFBEE3D"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\companions\\test_rebind.py",
+    "Hash": "4B55FBEE817BB93780FA2CD92C59B6FDCF5BF7BA228E7315708EA510F8A95CE7"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\companions\\README.md",
+    "Hash": "B00F160C10B7E9ADC654F4758E7D8B23BF6BA629EF8001903A4F3BD72AAEFBC2"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+    "Hash": "DA13CCB71F90ED82F63243EAE021A0284D0128885127D829E89F8759C41CE01A"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "Hash": "1A470886FC810B81A61E01BAD7678E38989F1C94CF8E9733BFD1026224B3F42B"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02-R5\\source-requalification-2026-11-08\\tapes\\seed-20261020-crossing-right-ai.orfl.gz",
+    "Hash": "6530BF0715AE440F394747944F2D4BBF8EBCD74F3BA4284676AB5777EB30F748"
+  }
+]

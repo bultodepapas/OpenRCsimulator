@@ -1,0 +1,37 @@
+{
+  "receipt": "45d4ec5ff9138aebe495882db61f8be55e68a08c488429d4b577860f85ad9305",
+  "binary": "d053ee5ba9ce4611aff930bd7b80e4f5862014cd73f7afce54a4c6673f977203",
+  "receipt_binary": "d053ee5ba9ce4611aff930bd7b80e4f5862014cd73f7afce54a4c6673f977203",
+  "sources": [
+    {
+      "path": "app/physics/aero.gd",
+      "receipt_sha256": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449",
+      "current_sha256": "582d7584c151f604b8d2d224ab55f78abae56c20fb868ac8aaf94654ea390b62",
+      "matches": false
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "receipt_sha256": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18",
+      "current_sha256": "755babcf96cc351964b8f9fa0bd596580a6608899454fc14b965ec029e556cf6",
+      "matches": false
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "receipt_sha256": "8a3d1150f3e60313fb4731cdd6edd77d63214e226e0045c45b861a581682683b",
+      "current_sha256": "11b0005449368ef4ac6f91ddb7e4caf7a560c7f27776b705731ef1bc4803a6f8",
+      "matches": false
+    },
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "receipt_sha256": "ba1f8c4321ee5121e7f8cf7b2ed71cdb57046cecca5e7e47e2502d277c28df06",
+      "current_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+      "matches": false
+    },
+    {
+      "path": "app/data/aircraft/f4u_corsair_250.json",
+      "receipt_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+      "current_sha256": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10",
+      "matches": false
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "checked_report": {
+    "capture_id": "775d3def-4f79-45b8-a8a5-ac72358402d6",
+    "command": [
+      ".tools/Godot_v4.8-beta2_win64_console.exe",
+      "--headless",
+      "--path",
+      "tmp/audit-reload-20261108/disk-fixture/app",
+      "--audio-driver",
+      "Dummy",
+      "--log-file",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-reload-20261108/disk-fixture-direct.log",
+      "--script",
+      "res://tests/probe_disk_reload.gd"
+    ],
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 120
+    },
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "detail": "",
+    "diagnostics": [
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 3,
+        "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 5,
+        "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 7,
+        "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 9,
+        "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 11,
+        "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 13,
+        "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 15,
+        "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #0, invalid UID: 'uid://ceccb1fhvivic' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_diff_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 17,
+        "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #1, invalid UID: 'uid://b2f0kwgbbdwrx' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_arm_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 19,
+        "message": "'res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb': In external resource #2, invalid UID: 'uid://bidrbsaqpe7qm' - using text path instead: 'res://assets/landscape/track-barrier/concrete-road-barrier-lod2_concrete_road_barrier_nor_gl_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 21,
+        "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #0, invalid UID: 'uid://evjekoub1440' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_diff_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 23,
+        "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #1, invalid UID: 'uid://mye2l0shsys8' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_arm_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 25,
+        "message": "'res://assets/landscape/track-tyre/old-tyre-1k.glb': In external resource #2, invalid UID: 'uid://5kpwlliokgi7' - using text path instead: 'res://assets/landscape/track-tyre/old-tyre-1k_old_tyre_nor_gl_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 27,
+        "message": "'res://assets/landscape/track-signage/billboardLow.glb': In external resource #0, invalid UID: 'uid://bvud7rv1a8csw' - using text path instead: 'res://assets/landscape/track-signage/billboardLow_tankcoBanner.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 29,
+        "message": "'res://assets/landscape/track-signage/flagCheckersSmall.glb': In external resource #0, invalid UID: 'uid://5j2rslf7pya2' - using text path instead: 'res://assets/landscape/track-signage/flagCheckersSmall_checkers.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 31,
+        "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #0, invalid UID: 'uid://ksupolg0hkv4' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_black_2k.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 33,
+        "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #1, invalid UID: 'uid://b1e878ji6al25' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_yellow_2k.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 35,
+        "message": "'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb': In external resource #2, invalid UID: 'uid://b5kdfr8b1urwq' - using text path instead: 'res://assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts_tape.png'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 37,
+        "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #0, invalid UID: 'uid://6kqgvvcx1es' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_diff_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 39,
+        "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #1, invalid UID: 'uid://bm4w2byum6xkg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_arm_1k.jpg'.",
+        "severity": "warning"
+      },
+      {
+        "context": [
+          "   at: open (core/io/resource_format_binary.cpp:1015)"
+        ],
+        "kind": "WARNING",
+        "line": 41,
+        "message": "'res://assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf': In external resource #2, invalid UID: 'uid://clxon5aklcxcg' - using text path instead: 'res://assets/landscape/track-timing-cabinet/textures/utility_box_01_nor_gl_1k.jpg'.",
+        "severity": "warning"
+      }
+    ],
+    "elapsed_seconds": 20.579,
+    "exit_code": 0,
+    "format": "openrc-godot-check v1",
+    "label": "actual-disk-f5-final",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\actual-disk-f5-final-bkf7t36u\\engine.log",
+    "log_bytes": 133830,
+    "log_sha256": "c1d29492cf1f427d0331695df214691c5f6995a731b61d77fa78361e82656acd",
+    "max_log_bytes": 200000,
+    "missing_required_text": [],
+    "ok": true,
+    "process_exit": 0,
+    "reason": "passed",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-reload-20261108\\actual-disk-f5-final-bkf7t36u\\report.json",
+    "required_text": [
+      "0 failed"
+    ],
+    "started_utc": "2026-11-08T15:45:56.787815+00:00",
+    "timeout_seconds": 150.0,
+    "warnings_as_errors": false
+  },
+  "checks": 79,
+  "date": "2026-11-08",
+  "executed_probe_sha256": "b7bc30e8f6e28b207f3c04bd2f23a4a438073735dfb4da647959e28b5ff7e5c6",
+  "format": "openrc-disk-reload-check v1",
+  "limits": [
+    "Headless transforms only; 120 copied-resource UID path-fallback warnings",
+    "No native visual, strike, controller or physical qualification"
+  ],
+  "reproduction": [
+    "Create a new disposable sibling app/ copy with its own imported cache; link or copy the same adjacent assets/ source",
+    "Import using the pinned editor; preserve the working repository and its generated files",
+    "Write the exact fixture.txt marker expected by the retained guard in the copied app parent",
+    "Copy disk-reload-probe.gd.txt into the disposable app/tests/probe_disk_reload.gd",
+    "Run tools/godot/run_checked.py --require-text \"0 failed\" -- <pinned-editor> --headless --path <disposable-app> --audio-driver Dummy --script res://tests/probe_disk_reload.gd"
+  ],
+  "retained_probe_change": "A marker-file refusal guard was added before any writes after the checked run. Remaining probe body is unchanged.",
+  "retained_probe_sha256": "fa65325b2ee29b773e77cd3b85293a76006e64d91870500d36863eba22f75478",
+  "source_sha256": {
+    "data/aircraft/gp_extra_300s_60.json": "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc",
+    "data/glow/extra_61fx_2t.json": "84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8",
+    "main.gd": "9f1beef69f6e0bd0c8ffc10040177ed02d2e2e787afabbe9eeb5f466bd428a23",
+    "physics/aero.gd": "582d7584c151f604b8d2d224ab55f78abae56c20fb868ac8aaf94654ea390b62",
+    "physics/aircraft_data.gd": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872",
+    "physics/glow/installation.gd": "be0856c2d590cec7d994b3c2aa69addb3b4a4c5d74f2dc3365c2179f7f56aa99",
+    "physics/propulsion.gd": "755babcf96cc351964b8f9fa0bd596580a6608899454fc14b965ec029e556cf6",
+    "render/airplane.gd": "834fb490dff650e4e1d20f4bfa8286209b2f77d0830594144218fce2b3384a38",
+    "render/frames.gd": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9",
+    "render/propeller_blur.gd": "a2a7fba326cb70dc230519d087e22d7337bee97cdaf996f9441e513ba54b6894",
+    "render/shadow.gd": "3b9ff8afa86aae7daed4fe3ff28828218e188cc9c9770e81691138ebd5960e67",
+    "sim/flight_session.gd": "11b0005449368ef4ac6f91ddb7e4caf7a560c7f27776b705731ef1bc4803a6f8",
+    "tests/test_reload_geometry.gd": "05f0156a3147638a726ab576f443dec47baae8be6fd1d17b2af193a1233cf3d9"
+  }
+}

@@ -1,0 +1,4 @@
+* whitespace=cr-at-eol
+.gitattributes -text
+*.md -text
+*.json -text

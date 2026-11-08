@@ -1,0 +1,8 @@
+* whitespace=cr-at-eol
+.gitattributes -text
+*.md -text
+*.json -text
+*.csv -text
+*.log -text
+*.log -whitespace
+*.orfl.gz -text
