@@ -828,8 +828,7 @@ static func _gradient_rect(rect_name: String, vertical: bool) -> TextureRect:
 
 func _update_catalog_texts() -> void:
 	_update_catalog_detail()
-	if _fly_caption != null:
-		_fly_caption.text = tr("Next flight: %s") % tr(Catalog.short_name(aircraft_id))
+	_update_launch_caption()
 	var selected_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
 	for index in _catalog_ids.size():
 		var id: String = _catalog_ids[index]
@@ -839,6 +838,16 @@ func _update_catalog_texts() -> void:
 		item.text = "%s\n%s" % [tr(Catalog.short_name(id)), capability]
 		item.tooltip_text = "%s\n%s\n%s" % [tr(entry.name), tr(entry.summary), tr(entry.status_note)]
 		item.set_pressed_no_signal(id == selected_id)
+
+
+
+## Preview the exact Home fields consumed by ordinary Fly; compatibility stays in _show_start_choice.
+func _update_launch_caption() -> void:
+	if _fly_caption == null or start_button == null:
+		return
+	_fly_caption.text = "%s\n%s · %s" % [
+		tr("Next flight: %s") % _aircraft_display_name(),
+		tr(Landscapes.entry(landscape_id).name), start_button.text]
 
 
 ## UI-34b (UI-30 AS-9, SP-7): the catalog's one-line name; the full name stays in the tooltip and the details card.
@@ -1004,7 +1013,7 @@ func _apply_responsive_layout() -> void:
 	var header_top := 14.0 if compact else 20.0
 	# Enlarged translations must leave room for the selected page on compact windows.
 	var navigation_in_scroll := viewport_size.y < 720.0 or (large_text and (
-		compact or _pages[1].visible or launch_warning.visible or note_label.visible or failure_launch_notice.visible))
+		compact or _fly_caption.visible or launch_warning.visible or note_label.visible or failure_launch_notice.visible))
 	if _livery_row != null:
 		var paint_parent: Node = _pages[1] if navigation_in_scroll or large_text else _left_layout
 		if _livery_row.get_parent() != paint_parent:
@@ -1317,6 +1326,7 @@ func _show_start_choice(choice: String) -> void:
 		if not rotorcraft_pad_available:
 			start_button.tooltip_text = tr("This landscape supports airborne starts only.")
 		limits_label.text = tr("Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective.")
+		_update_launch_caption()
 		if start_choice != previous:
 			launch_setup_changed.emit()
 		return
@@ -1334,6 +1344,7 @@ func _show_start_choice(choice: String) -> void:
 		else "Thrown by hand into the wind at full throttle, trimmed for level flight at 50% throttle." \
 		if start_choice == FlightSession.START_HAND_LAUNCH else "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 	start_button.tooltip_text = tr(limits_label.text)
+	_update_launch_caption()
 	if start_choice != previous:
 		launch_setup_changed.emit()
 
@@ -1342,6 +1353,7 @@ func set_landscape(id: String) -> void:
 	landscape_id = id if Landscapes.has(id) else Landscapes.DEFAULT_ID
 	landscape_button.text = tr("Landscape: %s") % tr(Landscapes.entry(landscape_id).name)
 	landscape_button.tooltip_text = tr("Choose the landscape for your next flight.")
+	_update_launch_caption()
 	_update_companions_text()
 	if natural_random_button != null:
 		_update_landscape_activities()

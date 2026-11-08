@@ -44,7 +44,7 @@ Use a fresh output directory for every attempt. This proves the tested productio
 
 ## App phases and coverage
 
-The [shared app-suite guide](../../docs/tools/shared.md#full-app-suite) owns commands. Full/integration source checks call `check-sources.sh` once; its 17 generator commands include nine previously repeated in the same CI integration job. Independent oracle calls and real-engine diagnostic checks are distinct and remain required.
+The [shared app-suite guide](../../docs/tools/shared.md#full-app-suite) owns commands. Full/integration source checks call `check-sources.sh` once; its 17 generator commands include nine previously repeated in the same CI integration job. The same gate also runs the independent Extra/Corsair moment-reference and installed-section invariants. Independent oracle calls and real-engine diagnostic checks are distinct and remain required.
 
 Six helicopter reference tests now execute once in a full run: inflow, dynamic inflow, main rotor, tail rotor, airframe and aerodynamic stage. The unit runner supplies the five independent JSON oracles, retaining both ordinary assertions and reference comparisons in the same invocation. Their Python reference tests and generator freshness checks remain in the source phase. Standalone `integration`/`integration-source` retain the six runtime comparisons; only `all` and CI integration paired with all required unit shards omit those repeated calls.
 

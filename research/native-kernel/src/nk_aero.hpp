@@ -2,7 +2,7 @@
 // operation by operation: app/physics/air_data.gd compute, app/physics/ground_effect.gd factors/law and
 // app/physics/aero.gd loads (_global_loads, _local_loads, _wing_flow, local_flow_weight,
 // _wing_lift_coefficient_with, _tail_surface_from_flow, _surface_with_flow, _tail_curve, downwash_angle).
-// Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v2". Flaps, tailless elevons and the tabulated wing
+// Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v3". Flaps, tailless elevons and the tabulated wing
 // polar and optional station-delta raw evaluations are included for qualification; production admission remains
 // the decoder's responsibility.
 #pragma once
@@ -849,7 +849,7 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 			const R lift_q_area = lift_q * plane_speed * plane_speed * station_area;
 			R flap_couple = lift_q_area * chord_i * flap_delta_cl * m.flaps.thin_airfoil_moment_per_cl;
 			if (m.flaps.has_lift_reference_offset_m) {
-				flap_couple -= lift_q_area * flap_delta_cl * m.flaps.lift_reference_offset_m;
+				flap_couple -= lift_q_area * flap_delta_cl * m.flaps.lift_reference_offset_m * (f0 / plane_speed);
 			}
 			const R flap_center = m.flaps.hinge_fraction + 0.5 * m.flaps.chord_fraction * cos_(d.flap);
 			const R arm_x = -(flap_center - 0.25) * chord_i;

@@ -9743,3 +9743,33 @@ msgstr "Этот контроллер распознан как геймпад. 
 
 msgid "Radio calibration requires a supported radio profile."
 msgstr "Для калибровки передатчика требуется поддерживаемый профиль передатчика."
+
+msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
+msgstr "Воздушная и путевая скорость, высота, вертикальная скорость, газ, расстояние до пилота и время полёта. Топливо отображается только при наличии корректных данных об ограниченном запасе."
+
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
+msgstr "Показывает отклонения стиков и триммеров, выбранный вид передатчика и его состояние. Расположение стиков соответствует выбранному режиму."
+
+msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
+msgstr "Активные предупреждения о полёте и передатчике по приоритету с рекомендациями. Заданный предел числа предупреждений может скрывать дополнительные сообщения."
+
+msgid "Wind speed, direction it comes from and vertical airflow. The arrow points downwind relative to the view; calm or missing wind has no arrow."
+msgstr "Скорость ветра, направление, откуда он дует, и вертикальный поток. Стрелка указывает по ветру относительно вида; при штиле или отсутствии данных стрелки нет."
+
+msgid "Angle of attack, sideslip, pitch, bank, heading, flight load and engine RPM. Dashes appear when telemetry is missing."
+msgstr "Угол атаки, скольжение, тангаж, крен, курс, полётная нагрузка и обороты двигателя. При отсутствии телеметрии отображаются прочерки."
+
+msgid "Developer input and flight diagnostics, including available battery data. Contents depend on the current flight."
+msgstr "Диагностика ввода и полёта для разработки, включая доступные данные аккумулятора. Содержимое зависит от текущего полёта."
+
+msgid "Developer frame-rate, frame-time and physics-step measurements for the current session."
+msgstr "Измерения частоты и времени кадров и шага физики для разработки в текущем сеансе."
+
+msgid "Keyboard and selected-controller commands and equipment availability. Available actions depend on the aircraft and bindings."
+msgstr "Команды клавиатуры и выбранного контроллера и доступность оборудования. Доступные действия зависят от модели и назначений."
+
+msgid "Flight-pack sensor readings, including voltage and estimated remaining charge. Shown only for aircraft with a dynamic battery; detail expands with Telemetry."
+msgstr "Показания датчиков полётного аккумулятора, включая напряжение и оценку оставшегося заряда. Отображаются только у моделей с динамическим аккумулятором; Телеметрия раскрывает подробности."
+
+msgid "Focus the description to scroll with arrows or %s / %s."
+msgstr "Переведите фокус на описание для прокрутки стрелками или %s / %s."

@@ -61,7 +61,7 @@ constexpr const char *kBackend = "native";
 constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v2";
 constexpr int kAbi = 2;
 // Law identities the port mirrors; the oracle compares them with the loaded GDScript constants.
-constexpr const char *kAeroLaw = "section-plane-source-weighted-wake-velocity-v2";
+constexpr const char *kAeroLaw = "section-plane-source-weighted-wake-velocity-v3";
 constexpr const char *kRollingLaw = "wheel-positive-terrain-excess-v2";
 
 struct Decoder {

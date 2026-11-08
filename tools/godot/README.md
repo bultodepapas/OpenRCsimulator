@@ -38,18 +38,22 @@ python3 tools/godot/fixed_brake_legacy.py --godot "$(app/get-godot.sh)" --out-di
 
 The runner reconstructs the pinned pre-brake R3 owner and requires all 16
 original goldens for the current OS using the verified historical beta1 editor.
-It then imports the verified source with the current beta2 editor and compares all
-four candidate outputs exactly against a same-host beta2 reference. The disposable
-reference matches the pinned fuel and Avanti inputs and changes only the historical
-glow flight `LAW` and trace `GLOW_LAW_V4` declarations from the v4 identity to the
-candidate's required v6 identity. Each substitution must occur exactly once;
-original pins and derived overlay bytes are checked before and after capture, and
-the reference trace has a separately pinned overlay hash. `glow-law-overlay.json`
-records both source hashes. Godot computes the resulting checkpoint and trace
-metadata; no candidate outputs or numerical values are normalized. The original
-goldens are not rewritten, and the two runs do not claim cross-engine equivalence.
-The overlay retains historical glow dynamics; it does not establish equivalence of
-the v4 and v6 fuel-event behavior.
+It then imports the verified source with the current beta2 editor and compares the
+candidate against a same-host beta2 reference. Only after the original golden run,
+the disposable reference matches pinned fuel, Avanti, Extra, and Stik input bytes.
+Exact-once edits update the glow flight and trace law declarations, the aero loads
+law declaration, and the propulsion coefficient declaration and non-turbine
+configuration identity. The reference retains its historical numerical equations.
+Original pins and derived overlay bytes are checked before and after capture;
+`reference-overlays.json` records the original and derived byte hashes. The trace
+and session overlays also have independently pinned hashes.
+
+For each of four aircraft, Godot produces the checkpoint, metadata, CSV, and
+three-tick state digests; the runner also compares the complete captured initial
+checkpoint, metadata, and CSV values with type-sensitive equality. Values are not
+normalized and original goldens are not rewritten. This demonstrates exactness for
+the captured no-brake states and ticks only; it establishes neither cross-engine
+equivalence nor general equivalence of the historical and current laws.
 
 The historical editor is obtained automatically in `.tools/` on Linux and
 Windows x86-64 when absent, with the official archive, executable hashes and

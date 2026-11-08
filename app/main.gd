@@ -89,6 +89,7 @@ const LatencyPatch = preload("res://input/latency_patch.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
 const WATER_CHECKPOINT_FORMAT := "openrc-visual-water-checkpoint v1"
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_render", "payload_sha256"]
+const INSTALLATION_GEOMETRY_HOLD := "accepted propeller geometry could not be displayed"
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -878,28 +879,16 @@ func _prepare_flight() -> void:
 	startup_preparation_metrics.workers_after = FlightSession.launch_trim_cache_stats().staged_workers_started
 	if not await _startup_stage("Preparing flight model"):
 		return
-	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
-	# each time also handles installation-profile reloads that retain the same aircraft ID.
-	if session.aircraft.get("ok", false):
-		var loaded_model: Dictionary = session.aircraft.model
-		var propulsion: Dictionary = loaded_model.get("propulsion", {})
-		var glow: Dictionary = propulsion.get("glow", {})
-		if not glow.is_empty():
-			var glow_propeller: Dictionary = glow.get("propeller", {})
-			var diameter_m: float = float(glow_propeller.get("diameter_m", NAN))
-			if not AirplaneBuilder.apply_propeller_diameter(_airplane, diameter_m):
-				push_error("render/airplane.gd: validated glow model has no applicable propeller diameter")
-				session.free()
-				session = null
-				set_process(false)
-				set_process_unhandled_input(false)
-				get_tree().quit(ERR_INVALID_DATA)
-				return
-			_extent = Shadow.model_extent(_airplane.root)
-			Shadow.bind_model(_shadow, _airplane.root)
-			_rig.set_span(_extent.x)
-		elif startup_checkpoint.is_valid():
-			Shadow.bind_model(_shadow, _airplane.root)
+	if not _sync_accepted_installation_geometry(true):
+		push_error("render/airplane.gd: validated glow model has no applicable propeller diameter")
+		session.free()
+		session = null
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_DATA)
+		return
+	if session.aircraft.get("ok", false) and session.aircraft.model.propulsion.get("glow", {}).is_empty() and startup_checkpoint.is_valid():
+		Shadow.bind_model(_shadow, _airplane.root)
 	# D6e-R5: sport gives keyboard/gamepad full roll travel with normal pitch/yaw.
 	# --rates selects the high/low starting profile; radios retain transmitter rates.
 	var rates := str(args.get("rates", "sport"))
@@ -1428,6 +1417,27 @@ func _process(delta: float) -> void:
 		if _overlays.tick(dt):
 			_overlays.refresh_numbers(_overlay_snapshot())
 		_overlays.refresh_sticks(OverlayManager.sticks(session) if not _scripted and _visual_pose.is_empty() else {})
+
+
+## Read only the accepted installation after startup or F5. Absolute scaling also
+## makes a refused/no-op reload preserve the accepted geometry without parsing status text.
+func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
+	if not session.aircraft.get("ok", false):
+		return true
+	var glow: Dictionary = session.aircraft.model.propulsion.get("glow", {})
+	if glow.is_empty():
+		return true
+	var diameter_m: float = float(glow.get("propeller", {}).get("diameter_m", NAN))
+	var changed: bool = float(_airplane.get("propeller_diameter_m", NAN)) != diameter_m
+	if not AirplaneBuilder.apply_propeller_diameter(_airplane, diameter_m):
+		return false
+	if not changed and not force_refresh:
+		return true
+	_extent = Shadow.model_extent(_airplane.root)
+	Shadow.bind_model(_shadow, _airplane.root)
+	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
+		_rig.set_span(_extent.x)
+	return true
 
 
 func _update_cg_model() -> void:
@@ -2137,6 +2147,14 @@ func _unhandled_input(event: InputEvent) -> void:
 					_overlays.cycle_preset()
 			KEY_F5:
 				_note = session.reload() if _experimental_aircraft_path.is_empty() else "Experimental polar is fixed for this flight; restart the application to load another file."
+				if not _sync_accepted_installation_geometry():
+					# The physical reload already committed. Keep it accepted and pause
+					# explicitly instead of presenting a stale collision/visual pairing.
+					session.hold(INSTALLATION_GEOMETRY_HOLD)
+					session.pause_reason = INSTALLATION_GEOMETRY_HOLD
+					_note += "; " + session.pause_reason + "; simulation paused"
+				else:
+					session.release(INSTALLATION_GEOMETRY_HOLD)
 				_update_cg_model()
 				print(_note)
 

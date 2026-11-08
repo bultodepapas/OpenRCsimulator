@@ -53,6 +53,15 @@ class ComparisonTests(unittest.TestCase):
                 with self.subTest(aircraft=aircraft, field=field), self.assertRaises(ValueError):
                     gate.check_comparison(self.reference, changed)
 
+    def test_one_bit_digest_change_including_three_tick_state_fails(self) -> None:
+        for field in gate.FIELDS:
+            changed = copy.deepcopy(self.reference)
+            row = changed["outputs"]["gp-extra-300s-60"]
+            digest = row[field]
+            row[field] = format(int(digest[0], 16) ^ 1, "x") + digest[1:]
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "candidate differs"):
+                gate.check_comparison(self.reference, changed)
+
     def test_candidate_numeric_drift_is_not_normalized(self) -> None:
         reference = copy.deepcopy(self.reference)
         aircraft = "gp-extra-300s-60"
@@ -100,28 +109,71 @@ class ComparisonTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             gate.check_comparison(self.reference, current)
 
-    def test_matched_capture_requires_the_overlay_trace_identity(self) -> None:
+    def test_matched_capture_requires_both_overlay_owner_identities(self) -> None:
         current = copy.deepcopy(self.reference)
         current["engine"] = gate.CURRENT_CAPTURE_ENGINE
         current["trace_sha256"] = gate.TRACE_LAW_OVERLAY
+        current["session_sha256"] = gate.SESSION_IDENTITY_OVERLAY
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "capture.json"
             path.write_text(json.dumps(current), encoding="utf-8")
-            gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE, gate.TRACE_LAW_OVERLAY)
+            gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE,
+                              gate.TRACE_LAW_OVERLAY, gate.SESSION_IDENTITY_OVERLAY)
             with self.assertRaises(ValueError):
                 gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE)
             current["trace_sha256"] = gate.TRACE_OLD
             path.write_text(json.dumps(current), encoding="utf-8")
             with self.assertRaises(ValueError):
-                gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE, gate.TRACE_LAW_OVERLAY)
+                gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE,
+                                  gate.TRACE_LAW_OVERLAY, gate.SESSION_IDENTITY_OVERLAY)
+            current["trace_sha256"] = gate.TRACE_LAW_OVERLAY
+            current["session_sha256"] = gate.SESSION_OLD
+            path.write_text(json.dumps(current), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                gate.load_capture(path, self.fixture, True, gate.CURRENT_CAPTURE_ENGINE,
+                                  gate.TRACE_LAW_OVERLAY, gate.SESSION_IDENTITY_OVERLAY)
 
-    def test_unpinned_fuel_or_avanti_content_fails(self) -> None:
+    def test_one_bit_change_to_any_candidate_input_fails(self) -> None:
         fuel = (gate.ROOT / "app/data/fuels/openrc-fuel-registry.json").read_bytes()
         avanti = (gate.ROOT / "app/data/aircraft/sebart_avanti_s_a200.json").read_bytes()
-        gate.check_input_bytes(fuel, avanti)
-        for fuel_case, avanti_case in ((fuel + b" ", avanti), (fuel, avanti + b" ")):
-            with self.assertRaises(ValueError):
-                gate.check_input_bytes(fuel_case, avanti_case)
+        extra = (gate.ROOT / "app" / gate.EXTRA_PATH).read_bytes()
+        stik = (gate.ROOT / "app" / gate.STIK_PATH).read_bytes()
+        inputs = [fuel, avanti, extra, stik]
+        gate.check_input_bytes(*inputs)
+        for index in range(len(inputs)):
+            changed = inputs.copy()
+            changed[index] = bytes([changed[index][0] ^ 1]) + changed[index][1:]
+            with self.subTest(index=index), self.assertRaises(ValueError):
+                gate.check_input_bytes(*changed)
+
+    def test_candidate_physics_markers_must_each_occur_once(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory)
+            for path, markers in gate.CANDIDATE_IDENTITY_MARKERS.items():
+                target = project / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"\n".join(markers))
+            gate.check_candidate_physics_identity(project)
+            for path, markers in gate.CANDIDATE_IDENTITY_MARKERS.items():
+                target = project / path
+                original = target.read_bytes()
+                for marker in markers:
+                    for changed in (original.replace(marker, b"missing", 1), original + b"\n" + marker):
+                        target.write_bytes(changed)
+                        with self.subTest(path=path, marker=marker, changed=changed), self.assertRaises(ValueError):
+                            gate.check_candidate_physics_identity(project)
+                    target.write_bytes(original)
+            for path in (gate.AERO_PATH, gate.PROPULSION_PATH):
+                target = project / path
+                original = target.read_bytes()
+                declaration = gate.CANDIDATE_IDENTITY_MARKERS[path][0]
+                name = b"LOADS_LAW" if path == gate.AERO_PATH else b"COEFFICIENT_LAW"
+                for changed in (original.replace(declaration, b"# " + declaration, 1),
+                                original + b'\nconst ' + name + b' := "wrong"'):
+                    target.write_bytes(changed)
+                    with self.subTest(path=path, changed=changed), self.assertRaises(ValueError):
+                        gate.check_candidate_physics_identity(project)
+                target.write_bytes(original)
 
     def test_candidate_inventory_tracks_current_paths_and_detects_drift(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -216,6 +268,105 @@ class ReferenceLawOverlayTests(unittest.TestCase):
             target.write_bytes(saved)
         with self.assertRaisesRegex(ValueError, "overlay set"):
             gate.check_reference_inputs(self.project, self.fuel, self.avanti, {gate.TRACE_PATH: overlay[gate.TRACE_PATH]})
+        changed = dict(overlay)
+        changed[gate.TRACE_PATH] += b"changed"
+        (self.project / gate.TRACE_PATH).write_bytes(changed[gate.TRACE_PATH])
+        with self.assertRaisesRegex(ValueError, "overlay identity"):
+            gate.check_reference_inputs(self.project, self.fuel, self.avanti, changed)
+
+
+class ReferenceIdentityOverlayTests(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.project = Path(temporary.name)
+        self.originals = {
+            path: b"# pinned reference\n" + before + b"\n# retained code\n"
+            for path, (before, _) in gate.REFERENCE_IDENTITY_EDITS.items()
+        }
+        self.originals.update({gate.EXTRA_PATH: b"old extra", gate.STIK_PATH: b"old stik",
+                               "sim/other.gd": b"another pinned source"})
+        self.fuel, self.avanti = b"fuel", b"avanti"
+        self.data_overlay = {gate.EXTRA_PATH: b"current extra", gate.STIK_PATH: b"current stik"}
+        files = {**self.originals, "data/fuels/openrc-fuel-registry.json": self.fuel,
+                 "data/aircraft/sebart_avanti_s_a200.json": self.avanti, "project.godot": b"project\n"}
+        for path, contents in files.items():
+            target = self.project / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(contents)
+        self.hashes = {
+            path: (gate.sha(self.originals[path]), gate.sha(self.originals[path].replace(before, after)))
+            for path, (before, after) in gate.REFERENCE_IDENTITY_EDITS.items()
+        }
+        self.pins = {path: gate.sha(data) for path, data in self.originals.items()}
+        patches = {
+            "pin_paths": mock.Mock(return_value=self.pins),
+            "REFERENCE_PROJECT": gate.sha(files["project.godot"]),
+            "REFERENCE_IDENTITY_HASHES": self.hashes,
+            "SESSION_IDENTITY_OVERLAY": self.hashes[gate.SESSION_PATH][1],
+            "EXTRA_CURRENT": gate.sha(self.data_overlay[gate.EXTRA_PATH]),
+            "STIK_CURRENT": gate.sha(self.data_overlay[gate.STIK_PATH]),
+        }
+        for name, value in patches.items():
+            patcher = mock.patch.object(gate, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def test_exact_identity_edits_retain_all_other_bytes(self) -> None:
+        overlay = gate.reference_identity_overlay(self.project)
+        for path, (before, after) in gate.REFERENCE_IDENTITY_EDITS.items():
+            self.assertEqual(overlay[path], self.originals[path].replace(before, after, 1))
+
+    def test_each_missing_or_duplicate_identity_anchor_fails(self) -> None:
+        for path, (before, _) in gate.REFERENCE_IDENTITY_EDITS.items():
+            target = self.project / path
+            original = self.originals[path]
+            for changed in (original.replace(before, b"missing", 1), original + before):
+                target.write_bytes(changed)
+                self.pins[path] = gate.sha(changed)
+                self.hashes[path] = (gate.sha(changed), self.hashes[path][1])
+                with self.subTest(path=path, changed=changed), self.assertRaisesRegex(ValueError, "missing or duplicated"):
+                    gate.reference_identity_overlay(self.project)
+            target.write_bytes(original)
+            self.pins[path] = gate.sha(original)
+            self.hashes[path] = (gate.sha(original), self.hashes[path][1])
+
+    def test_changed_reference_and_wrong_derived_pin_fail(self) -> None:
+        for path in gate.REFERENCE_IDENTITY_EDITS:
+            target = self.project / path
+            original = target.read_bytes()
+            target.write_bytes(original + b"changed")
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, "identity input changed"):
+                gate.reference_identity_overlay(self.project)
+            target.write_bytes(original)
+        path = gate.AERO_PATH
+        old_hashes = self.hashes[path]
+        self.hashes[path] = (old_hashes[0], "0" * 64)
+        with self.assertRaisesRegex(ValueError, "identity overlay differs"):
+            gate.reference_identity_overlay(self.project)
+
+    def test_overlays_and_remaining_reference_are_checked_after_capture(self) -> None:
+        identity = gate.reference_identity_overlay(self.project)
+        for path, contents in {**identity, **self.data_overlay}.items():
+            (self.project / path).write_bytes(contents)
+        gate.check_reference_inputs(self.project, self.fuel, self.avanti, None, identity, self.data_overlay)
+        for path in self.originals:
+            target = self.project / path
+            saved = target.read_bytes()
+            target.write_bytes(saved + b"changed")
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                gate.check_reference_inputs(self.project, self.fuel, self.avanti, None, identity, self.data_overlay)
+            target.write_bytes(saved)
+        for overlay, name in ((identity, "identity"), (self.data_overlay, "aircraft")):
+            path = next(iter(overlay))
+            changed = dict(overlay)
+            changed[path] += b"changed"
+            (self.project / path).write_bytes(changed[path])
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, "overlay identity"):
+                gate.check_reference_inputs(self.project, self.fuel, self.avanti, None,
+                                            changed if name == "identity" else identity,
+                                            changed if name == "aircraft" else self.data_overlay)
+            (self.project / path).write_bytes(overlay[path])
 
 
 if __name__ == "__main__":

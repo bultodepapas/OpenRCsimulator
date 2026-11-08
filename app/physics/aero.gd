@@ -18,7 +18,7 @@ const Flaps := preload("res://physics/flaps.gd")
 
 ## Equal-area elements per wing side (numerical resolution, not an aircraft parameter).
 const WING_STATIONS_PER_SIDE := 3
-const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v2"
+const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v3"
 const WAKE_STATE_UNIT := "m/s (equal-area mean of section Vp*CL)"
 ## Experimental unwashed ambient-gradient bridge; not a saved weather or aircraft law.
 const SPATIAL_LOADS_LAW := "matched-unwashed-station-delta-v1"
@@ -612,7 +612,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			# P51-11a (optional): camber lift acts at the wing section's own quarter chord, this far aft of the strip force
 			# point (the wing-body ARP); absent = no added term.
 			if flap_model.has("lift_reference_offset_m"):
-				flap_couple -= lift_q_area * flap_delta_cl * float(flap_model.lift_reference_offset_m)
+				flap_couple -= lift_q_area * flap_delta_cl * float(flap_model.lift_reference_offset_m) * (f0 / plane_speed)
 			# Estimated incremental profile/hinge drag acts at the panel centre;
 			# account for its chordwise and deflected-z arms separately.
 			var flap_center := float(flap_model.hinge_fraction) + 0.5 * float(flap_model.chord_fraction) * M.cos_(flap_angle)

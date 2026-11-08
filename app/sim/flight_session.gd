@@ -5738,6 +5738,9 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(Aero.LOADS_LAW + "; " + Aero.WAKE_STATE_UNIT)
 	if Turbine.is_turbine(aircraft.model.propulsion):
 		parts.append(Turbine.LOADS_LAW)
+	else:
+		# Propeller Ct/Cp, engine power and optional crossflow tables share this continuation.
+		parts.append(Propulsion.COEFFICIENT_LAW)
 	if gear_is_retractable():
 		parts.append(RetractableGear.LAW + "; inputs=6; aux=extension,accepted_down_target; airborne_up,runway_down")
 	if not gear_is_retractable() and wheel_brake_available():

@@ -11,6 +11,8 @@ python3 assets/aircraft/p51d-mustang-120/build_geometry.py --check
 python3 assets/aircraft/p51d-mustang-120/compile_geometry.py --check
 python3 research/extra-300/ex14/ground_effect_vlm.py --check
 python3 research/extra-300/ex05/derive_physics.py --check
+python3 research/extra-300/ex05/test_physics_invariants.py
+python3 research/f4u-corsair/F4U-07/test_physics_invariants.py
 python3 research/p51/p51-05/derive_physics.py --check
 python3 research/timber/tt01/manifest.py --check
 python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check

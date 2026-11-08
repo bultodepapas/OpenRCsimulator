@@ -103,7 +103,7 @@ Engine and propeller: peak torque 13.97 N·m from the Moki manual's static point
 | lateral | Clb low-wing interference (1/rad) | 0.03122 | DATCOM, destabilizing for a low wing root |
 | lateral | Clb wing at CL_ref (1/rad) | -0.01355 | DATCOM Clb/CL for an unswept AR 5.4 wing (estimated, as the P-51) |
 | lateral | wing-body Clb (1/rad) | -0.1022 | carried by aero.surfaces.wing_body_cl_beta (D10-R5) |
-| lateral | steady pb/2V at full aileron (rad) | 0.07795 | check: NACA RM A7C05 full-size 0.064 at the full-size throw (not recovered); this is the RC high-rate throw of 13.5 deg |
+| lateral | steady pb/2V at full aileron (rad) | 0.07787 | check: NACA RM A7C05 full-size 0.064 at the full-size throw (not recovered); this is the RC high-rate throw of 13.5 deg |
 | drag | gear drag area (m2) | 0.0176 | gear-down item x1.1, carried by the retractable-gear module, not CD0 |
 | drag | CD0 | 0.02868 | gear UP; skin friction (30 % laminar on surfaces) x Raymer form factors, radial-cowl fuselage x1.15, cooling flow, x1.1 excrescences: wing 0.0116 m2, tails 0.0035 m2, fuselage and radial cowl 0.0144 m2, gear down: wheels, struts, doors 0.0160 m2, engine cooling through the open cowl, exhausts 0.0080 m2 |
 | drag | Oswald e | 0.75 | estimated as the P-51; the inviscid VLM of the gull planform gives 1.021 |
@@ -129,7 +129,7 @@ Engine and propeller: peak torque 13.97 N·m from the Moki manual's static point
 | --- | --- | --- |
 | CL0 | 0.20005 | derived |
 | CLa | 4.056 | derived |
-| CLq | 5.5106 | derived |
+| CLq | 5.3281 | derived |
 | CLde | 0.37784 | derived |
 | CLda_each | 0.23371 | derived |
 | CD0 | 0.028676 | derived |
@@ -143,19 +143,19 @@ Engine and propeller: peak torque 13.97 N·m from the Moki manual's static point
 | CYr | 0.15295 | derived |
 | CYdr | 0.12449 | derived |
 | Clb | -0.12858 | derived |
-| Clp | -0.55115 | derived |
-| Clr | 0.13392 | derived |
+| Clp | -0.55173 | derived |
+| Clr | 0.13575 | derived |
 | Clda_right | -0.090872 | derived |
 | Clda_left | 0.090872 | derived |
 | Cldr | 0.018577 | derived |
 | Cm0 | -0.007576 | derived |
 | Cma | -1.0898 | derived |
-| Cmq | -10.193 | derived |
+| Cmq | -10.956 | derived |
 | Cmde | -1.073 | derived |
 | Cmda_each | -0.076202 | derived |
 | Cnb | 0.052019 | derived |
-| Cnp | -0.035469 | derived |
-| Cnr | -0.093768 | derived |
+| Cnp | -0.034173 | derived |
+| Cnr | -0.097858 | derived |
 | Cnda_right | 0.012314 | derived |
 | Cnda_left | -0.012314 | derived |
 | Cndr | -0.057268 | derived |

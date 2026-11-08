@@ -29,7 +29,7 @@ struct PropModel {
 	std::vector<double> pfactor_moment;
 };
 
-// propulsion.gd coefficient: piecewise-linear [J0, v0, J1, v1, ...], engine lerpf, floored extrapolation.
+// propulsion.gd coefficient: piecewise-linear table and table-aware extrapolation floor.
 inline R prop_coefficient(const std::vector<double> &table, R J, R floor_value) {
 	const int n = static_cast<int>(table.size()) / 2;
 	if (J.v <= table[0]) {
@@ -45,7 +45,7 @@ inline R prop_coefficient(const std::vector<double> &table, R J, R floor_value) 
 	const R ja = table[2 * n - 4];
 	const R jb = table[2 * n - 2];
 	const R slope = (R(table[2 * n - 1]) - table[2 * n - 3]) / (jb - ja);
-	return maxf(floor_value, table[2 * n - 1] + slope * (J - jb));
+	return maxf(minf(floor_value, table[2 * n - 1]), table[2 * n - 1] + slope * (J - jb));
 }
 
 struct PropAir {

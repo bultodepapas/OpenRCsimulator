@@ -247,9 +247,9 @@ func _provenance(about_cg: Dictionary, rounded: Dictionary) -> Dictionary:
 	var cmq_arp := _format_significant(float(rounded.Cmq), 4)
 	var cnr_arp := _format_significant(float(rounded.Cnr), 4)
 	return {
-		"Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=%s and CLq=%s; ARP Cmq=%s includes the CLq lift arm. Model-derived, not measured or physically validated." % [cmq_cg, clq_cg, cmq_arp],
-		"CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=%s. Model-derived, not measured or physically validated." % clq_cg,
-		"Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=%s; ARP Cnr=%s includes the CYr side-force arm. Model-derived, not measured or physically validated." % [cnr_cg, cnr_arp],
+		"Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current %s local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=%s and CLq=%s; ARP Cmq=%s includes the CLq lift arm. Model-derived, not measured or physically validated." % [Aero.LOADS_LAW, cmq_cg, clq_cg, cmq_arp],
+		"CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current %s local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=%s. Model-derived, not measured or physically validated." % [Aero.LOADS_LAW, clq_cg],
+		"Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current %s local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=%s; ARP Cnr=%s includes the CYr side-force arm. Model-derived, not measured or physically validated." % [Aero.LOADS_LAW, cnr_cg, cnr_arp],
 	}
 
 

@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+        "expected_source_sha256": "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc",
         "lines": [
           {
             "id": "engine_main",
@@ -1027,7 +1027,7 @@
       ],
       "notes": "F4U-11-R3 double price pass: parts-only reference subtotal $7,113.88 = twelve servo proxies $1,067.88 + cowl $262 + horizontal surfaces $454 + vertical surfaces $241 + whole-engine package proxy $4,610 + pneumatic-system proxy $479. Kit and unmatched offers remain unattached candidates. Partial purchase references are neither a complete-build amount nor an accident repair bill; no automatic engine/air-system loss or calibrated failure probability is claimed.",
       "dossier": {
-        "expected_source_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+        "expected_source_sha256": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10",
         "lines": [
           {
             "id": "engine_moki_s250",

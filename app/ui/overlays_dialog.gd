@@ -5,6 +5,8 @@ extends CanvasLayer
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
+const UiInput := preload("res://ui/ui_input.gd")
+const KeyLabels := preload("res://ui/key_labels.gd")
 
 signal closed
 
@@ -61,7 +63,19 @@ const DESCRIPTIONS := {
 	flight_summary = "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial.",
 	session_stats = "This session's successful landings, crashes and restarts. Choose All aircraft or This aircraft. The service keeps recording when the widget is hidden.",
 }
+const LEGACY_DESCRIPTIONS := {
+	flight = "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data.",
+	transmitter = "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode.",
+	warnings = "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings.",
+	wind = "Wind speed, direction it comes from and vertical airflow. The arrow points downwind relative to the view; calm or missing wind has no arrow.",
+	telemetry = "Angle of attack, sideslip, pitch, bank, heading, flight load and engine RPM. Dashes appear when telemetry is missing.",
+	diagnostics = "Developer input and flight diagnostics, including available battery data. Contents depend on the current flight.",
+	performance = "Developer frame-rate, frame-time and physics-step measurements for the current session.",
+	controls = "Keyboard and selected-controller commands and equipment availability. Available actions depend on the aircraft and bindings.",
+	battery = "Flight-pack sensor readings, including voltage and estimated remaining charge. Shown only for aircraft with a dynamic battery; detail expands with Telemetry.",
+}
 const COMMON_WIDGET_HELP := "Unlocked: drag the header to move; double-click to restore its position. × closes; this switch reopens. Appearance applies to all widgets."
+const HELP_SCROLL_HINT := "Focus the description to scroll with arrows or %s / %s."
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", training = "Training", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
 const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
@@ -100,6 +114,14 @@ var training_action: Button
 var tab_bar: TabBar
 var _scroll: ScrollContainer
 var _pages: Array[VBoxContainer] = []
+var instrument_help: Label
+var _help_scroll: ScrollContainer
+var _help_hint: Label
+var _help_layout_pending := false
+var _help_id := ""
+var _hovered_instrument := ""
+var _scroll_input_generation := 0
+var _manual_scroll_after_focus := false
 
 
 func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
@@ -158,6 +180,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_scroll.follow_focus = true
 	_scroll.focus_mode = Control.FOCUS_ALL
+	_scroll.get_v_scroll_bar().gui_input.connect(_scrollbar_input)
 	shell.add_child(_scroll)
 	var pages := VBoxContainer.new()
 	pages.name = "OverlaysPages"
@@ -294,8 +317,11 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 		var box := InstrumentSwitch.new()
 		box.name = id.capitalize().replace(" ", "")
 		box.text = tr(NAMES[id])
-		if id in Settings.PLAYER_IDS:
-			box.tooltip_text = "%s\n\n%s" % [tr(DESCRIPTIONS[id]), tr(COMMON_WIDGET_HELP)]
+		_set_instrument_description(box, id)
+		box.focus_entered.connect(_instrument_focused.bind(id))
+		box.focus_exited.connect(_instrument_focus_exited.bind(id))
+		box.mouse_entered.connect(_instrument_hovered.bind(id))
+		box.mouse_exited.connect(_instrument_unhovered.bind(id))
 		box.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		box.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -363,6 +389,34 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 		if not _syncing:
 			manager.set_stick_mode(index + 1))
 
+	# Keep the last focused row clear of the scroll viewport's clipped edge.
+	var scroll_end := Control.new()
+	scroll_end.custom_minimum_size.y = 12.0
+	pages.add_child(scroll_end)
+
+	_help_hint = Widgets.label(_help_scroll_hint(), "SecondaryLabel", true, false)
+	_help_hint.name = "InstrumentHelpHint"
+	_help_hint.visible = false
+	_help_hint.resized.connect(_queue_help_layout)
+	shell.add_child(_help_hint)
+	_help_scroll = ScrollContainer.new()
+	_help_scroll.name = "InstrumentHelpScroll"
+	_help_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_help_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_help_scroll.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	_help_scroll.focus_mode = Control.FOCUS_NONE
+	_help_scroll.gui_input.connect(_help_region_input)
+	_help_scroll.focus_exited.connect(_help_focus_exited)
+	_help_scroll.visible = false
+	shell.add_child(_help_scroll)
+	instrument_help = Widgets.label("", "SecondaryLabel", true, false)
+	instrument_help.name = "InstrumentHelp"
+	instrument_help.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	instrument_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	instrument_help.visible = false
+	instrument_help.resized.connect(_queue_help_layout)
+	_help_scroll.add_child(instrument_help)
+
 	var actions := Widgets.button_row()
 	done_button = Widgets.button(tr("Done"), "PrimaryButton", "Done")
 	done_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -398,9 +452,9 @@ func _resize_layout() -> void:
 	_training_grid.columns = 1 if stacked else 2
 	for row in _picker_rows:
 		row.vertical = stacked
-	# At large text sizes, short windows need the preset and units inside the
-	# scrolling body. Keep the title, tabs and Done reachable without shrinking text.
-	var scroll_header := stacked and available.y < 800.0
+	# Large text on short windows, or while help is open, puts these choices in
+	# the scrolling body so the focused switch and explanation can remain visible.
+	var scroll_header := stacked and (available.y < 800.0 or (_help_scroll != null and _help_scroll.visible))
 	var header_parent: Node = _scroll.get_child(0) if scroll_header else dialog_panel.get_child(0)
 	var header_rows: Array[BoxContainer] = [preset_picker.get_parent(), units_picker.get_parent()]
 	var focused := get_viewport().gui_get_focus_owner()
@@ -415,11 +469,14 @@ func _resize_layout() -> void:
 		# Larger text retains native tab scrolling.
 		tab_bar.add_theme_font_size_override("font_size", roundi(22 * preload("res://ui/ui_theme.gd").text_scale))
 		tab_bar.ensure_tab_visible(tab_bar.current_tab)
+	_queue_help_layout()
 
 
 func _on_tab_changed(index: int) -> void:
 	if index < 0 or index >= _pages.size():
 		return
+	_hovered_instrument = ""
+	_clear_instrument_help()
 	var focused: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	for page_index in _pages.size():
 		var active := page_index == index
@@ -428,6 +485,273 @@ func _on_tab_changed(index: int) -> void:
 	_scroll.scroll_vertical = 0
 	if focused != null and not focused.is_visible_in_tree():
 		tab_bar.grab_focus()
+
+
+func _description(id: String) -> String:
+	return tr(str(DESCRIPTIONS.get(id, LEGACY_DESCRIPTIONS.get(id, ""))))
+
+
+func _set_instrument_description(box: CheckBox, id: String) -> void:
+	var description := _description(id)
+	box.accessibility_description = description
+	box.tooltip_text = "%s\n\n%s" % [description, tr(COMMON_WIDGET_HELP)] if id in Settings.PLAYER_IDS else description
+
+
+func _instrument_focused(id: String) -> void:
+	_manual_scroll_after_focus = false
+	_show_instrument_help(id)
+
+
+func _queue_instrument_reveal(id: String) -> void:
+	if not _manual_scroll_after_focus:
+		_reveal_instrument.call_deferred(id, _scroll_input_generation)
+
+
+func _reveal_instrument(id: String, generation: int, phase := 0) -> void:
+	if not is_inside_tree() or generation != _scroll_input_generation or not switches.has(id):
+		return
+	var box: Control = switches[id]
+	if not box.has_focus() or not box.is_visible_in_tree():
+		return
+	# Wrapping can resize the viewport over subsequent frames. Object-bound
+	# one-shot callbacks disconnect if the dialog closes during this sequence.
+	if phase < 3:
+		if phase == 2:
+			_scroll.ensure_control_visible(box)
+		var callback := _reveal_instrument.bind(id, generation, phase + 1)
+		if not get_tree().process_frame.is_connected(callback):
+			get_tree().process_frame.connect(callback, CONNECT_ONE_SHOT)
+		return
+	var row := box.get_global_rect()
+	var area := _scroll.get_global_rect()
+	if row.end.y > area.end.y:
+		_scroll.scroll_vertical += ceili(row.end.y - area.end.y) + 2
+	elif row.position.y < area.position.y:
+		_scroll.scroll_vertical -= ceili(area.position.y - row.position.y) + 2
+
+
+func _instrument_focus_exited(id: String) -> void:
+	_resolve_instrument_focus.call_deferred(id)
+
+
+func _help_focus_exited() -> void:
+	if not _help_id.is_empty():
+		_resolve_instrument_focus.call_deferred(_help_id)
+		_queue_help_layout()
+
+
+func _resolve_instrument_focus(id: String) -> void:
+	if not is_inside_tree() or id.is_empty() or _help_id != id:
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == switches.get(id) or focused == _help_scroll:
+		return
+	if not _hovered_instrument.is_empty():
+		_show_instrument_help(_hovered_instrument)
+	else:
+		_clear_instrument_help()
+
+
+func _instrument_hovered(id: String) -> void:
+	_hovered_instrument = id
+	_show_instrument_help(id)
+
+
+func _instrument_unhovered(id: String) -> void:
+	if _hovered_instrument == id:
+		_hovered_instrument = ""
+	if _help_id != id or not is_inside_tree():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == _help_scroll:
+		return
+	for candidate: String in switches:
+		if focused == switches[candidate] and focused.is_visible_in_tree():
+			_show_instrument_help(candidate)
+			return
+	_clear_instrument_help()
+
+
+func _show_instrument_help(id: String) -> void:
+	if instrument_help == null or not switches.has(id):
+		return
+	var box: CheckBox = switches[id]
+	if not box.is_visible_in_tree():
+		return
+	var changed := _help_id != id
+	if changed and switches.has(_help_id):
+		switches[_help_id].accessibility_description = _description(_help_id)
+	_help_id = id
+	instrument_help.text = "%s: %s" % [box.text, _description(id)]
+	_help_scroll.accessibility_name = box.text
+	_help_scroll.accessibility_description = _description(id)
+	var was_visible := instrument_help.visible
+	instrument_help.visible = true
+	_help_scroll.visible = true
+	if changed:
+		_help_scroll.scroll_vertical = 0
+	if not was_visible:
+		_resize_layout.call_deferred()
+	_queue_help_layout()
+	if is_inside_tree():
+		var focused := get_viewport().gui_get_focus_owner()
+		for candidate: String in switches:
+			if focused == switches[candidate] and focused.is_visible_in_tree():
+				_queue_instrument_reveal(candidate)
+				break
+
+
+func _clear_instrument_help() -> void:
+	if switches.has(_help_id):
+		switches[_help_id].accessibility_description = _description(_help_id)
+	_help_id = ""
+	if instrument_help != null:
+		var was_visible := instrument_help.visible
+		instrument_help.text = ""
+		instrument_help.visible = false
+		_help_scroll.visible = false
+		_help_hint.visible = false
+		_configure_help_navigation(false)
+		if was_visible:
+			_resize_layout.call_deferred()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_help_hint.text = _help_scroll_hint()
+		for id: String in switches:
+			var box: CheckBox = switches[id]
+			box.text = tr(NAMES[id])
+			_set_instrument_description(box, id)
+		if not _help_id.is_empty():
+			_show_instrument_help(_help_id)
+
+
+func _input(event: InputEvent) -> void:
+	if not is_inside_tree() or not _screen.is_visible_in_tree():
+		return
+	if event is InputEventPanGesture or event is InputEventScreenDrag \
+			or (event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]):
+		if _scroll.get_global_rect().has_point(event.position):
+			_note_manual_scroll()
+
+
+func _scrollbar_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton or event is InputEventScreenDrag \
+			or (event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0):
+		_note_manual_scroll()
+
+
+func _note_manual_scroll() -> void:
+	_scroll_input_generation += 1
+	_manual_scroll_after_focus = true
+
+
+func _queue_help_layout() -> void:
+	if not _help_layout_pending:
+		_help_layout_pending = true
+		_update_help_layout.call_deferred()
+
+
+func _update_help_layout() -> void:
+	_help_layout_pending = false
+	if not is_inside_tree() or _help_scroll == null or not _help_scroll.visible:
+		return
+	var shell: VBoxContainer = dialog_panel.get_child(0)
+	var spacing := shell.get_theme_constant("separation")
+	var fixed := dialog_panel.get_theme_stylebox("panel").get_minimum_size().y
+	var fixed_count := 0
+	for child: Node in shell.get_children():
+		if child is Control and child.visible and child != _help_scroll and child != _help_hint:
+			fixed += child.get_combined_minimum_size().y
+			fixed_count += 1
+	# One separator for each visible fixed child when the help area is present.
+	fixed += spacing * fixed_count
+	var available := maxf(0.0, _screen.size.y - 32.0 - fixed)
+	var natural := instrument_help.get_combined_minimum_size().y
+	var overflow := natural > available
+	_help_hint.visible = overflow
+	_configure_help_navigation(overflow)
+	if overflow:
+		available = maxf(0.0, available - _help_hint.get_combined_minimum_size().y - spacing)
+	var height := minf(natural, available)
+	if not is_equal_approx(_help_scroll.custom_minimum_size.y, height):
+		_help_scroll.custom_minimum_size.y = height
+	if not _help_id.is_empty() and switches.has(_help_id):
+		var box: CheckBox = switches[_help_id]
+		box.accessibility_description = _description(_help_id) + (" " + _help_scroll_hint() if overflow else "")
+		_help_scroll.accessibility_description = box.accessibility_description
+
+
+func _help_scroll_hint() -> String:
+	return tr(HELP_SCROLL_HINT) % [KeyLabels.label(KEY_PAGEUP), KeyLabels.label(KEY_PAGEDOWN)]
+
+
+func _help_can_scroll() -> bool:
+	if _help_scroll == null or not _help_scroll.is_visible_in_tree():
+		return false
+	var bar := _help_scroll.get_v_scroll_bar()
+	return bar.max_value > bar.page
+
+
+func _scroll_help(direction: int) -> void:
+	var bar := _help_scroll.get_v_scroll_bar()
+	bar.value += direction * maxf(48.0, _help_scroll.size.y * 0.8)
+
+
+## GUI input runs after the shell's saved Pause/Back bindings have had priority.
+func _help_region_input(event: InputEvent) -> void:
+	if not _help_scroll.has_focus() or not _help_can_scroll():
+		return
+	for action: String in ["ui_accept", "ui_cancel", "ui_left", "ui_right", "ui_focus_next", "ui_focus_prev"]:
+		if event.is_action(action):
+			return
+	var direction := 0
+	var from_keyboard: bool = event is InputEventKey and event.pressed
+	var from_selected_pad: bool = (event is InputEventJoypadButton or event is InputEventJoypadMotion) \
+			and UiInput.selected_gamepad_id() >= 0 and event.device == UiInput.selected_gamepad_id()
+	if from_keyboard or from_selected_pad:
+		if event.is_action_pressed("ui_up"): direction = -1
+		elif event.is_action_pressed("ui_down"): direction = 1
+		elif from_keyboard:
+			if event.keycode == KEY_PAGEUP or event.physical_keycode == KEY_PAGEUP: direction = -1
+			elif event.keycode == KEY_PAGEDOWN or event.physical_keycode == KEY_PAGEDOWN: direction = 1
+	if direction != 0:
+		_scroll_help(direction)
+		_help_scroll.accept_event()
+
+
+func _configure_help_navigation(overflow: bool) -> void:
+	var focused_help := is_inside_tree() and _help_scroll.has_focus()
+	# Restore the previous explicit neighbors before asking Godot for the
+	# automatically selected ones. A two-column grid keeps its ordinary routing.
+	for id: String in switches:
+		var box: CheckBox = switches[id]
+		if not box.has_meta("help_original_right_neighbor"):
+			box.set_meta("help_original_right_neighbor", box.focus_neighbor_right)
+		box.focus_neighbor_right = box.get_meta("help_original_right_neighbor")
+	if overflow and not focused_help:
+		# Exclude the help area itself while looking for an existing implicit
+		# neighbor. Never steal Right from another control, including outside a grid.
+		_help_scroll.focus_mode = Control.FOCUS_NONE
+		for id: String in switches:
+			var box: CheckBox = switches[id]
+			var grid := box.get_parent() as GridContainer
+			var original: NodePath = box.get_meta("help_original_right_neighbor")
+			if box.is_visible_in_tree() and (grid == null or grid.columns == 1) \
+					and original.is_empty() and box.find_valid_focus_neighbor(SIDE_RIGHT) == null:
+				box.focus_neighbor_right = box.get_path_to(_help_scroll)
+		_help_scroll.focus_mode = Control.FOCUS_ALL
+	elif not overflow:
+		_help_scroll.focus_mode = Control.FOCUS_NONE
+	if overflow and switches.has(_help_id):
+		_help_scroll.focus_neighbor_left = _help_scroll.get_path_to(switches[_help_id])
+	elif focused_help:
+		var previous: Control = switches.get(_help_id)
+		if previous != null and previous.is_visible_in_tree():
+			previous.grab_focus()
+		else:
+			tab_bar.grab_focus()
 
 
 func _set_page_focusability(node: Node, active: bool) -> void:

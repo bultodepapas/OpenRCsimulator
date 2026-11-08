@@ -36,6 +36,13 @@ GENERATORS = [
     "research/skywalker-x8/X8-02/compile_model.py",
     "research/skywalker-x8/X8-06/derive_physics.py",
 ]
+INVARIANTS = [
+    "research/extra-300/ex05/test_physics_invariants.py",
+    "research/f4u-corsair/F4U-07/test_physics_invariants.py",
+]
+SOURCE_COMMANDS = ([(path, "--check") for path in GENERATORS[:8]]
+                   + [(path,) for path in INVARIANTS]
+                   + [(path, "--check") for path in GENERATORS[8:]])
 
 
 class PhaseRouting(unittest.TestCase):
@@ -337,6 +344,11 @@ class GeneratorContract(unittest.TestCase):
                 self.assertEqual(shared.count("python3 " + generator + " --check"), 1)
                 self.assertNotIn(generator, app)
 
+        for invariant in INVARIANTS:
+            with self.subTest(invariant=invariant):
+                self.assertEqual(shared.count("python3 " + invariant + "\n"), 1)
+                self.assertNotIn(invariant, app)
+
     def test_every_original_ci_generator_runs_once_and_failure_stops(self):
         with tempfile.TemporaryDirectory(prefix="openrc-generators-") as temporary:
             root = Path(temporary)
@@ -351,15 +363,15 @@ class GeneratorContract(unittest.TestCase):
             env = os.environ.copy()
             env.update(PATH=str(fake_bin) + os.pathsep + env["PATH"], GEN_LOG=str(root / "calls"))
             bash = os.environ.get("OPENRC_TEST_BASH", "bash")
-            for index in range(-1, len(GENERATORS)):
+            for index in range(-1, len(SOURCE_COMMANDS)):
                 (root / "calls").unlink(missing_ok=True)
-                env["GEN_FAIL"] = GENERATORS[index] if index >= 0 else ""
+                env["GEN_FAIL"] = SOURCE_COMMANDS[index][0] if index >= 0 else ""
                 result = subprocess.run([bash, str(root / "tools/ci/check-sources.sh")], env=env,
                                         capture_output=True, text=True, timeout=20)
                 self.assertEqual(result.returncode == 0, index == -1, result.stdout + result.stderr)
                 calls = (root / "calls").read_text().splitlines()
-                stop = len(GENERATORS) if index == -1 else index + 1
-                self.assertEqual(calls, [name + " --check" for name in GENERATORS[:stop]])
+                stop = len(SOURCE_COMMANDS) if index == -1 else index + 1
+                self.assertEqual(calls, [" ".join(command) for command in SOURCE_COMMANDS[:stop]])
 
 
 if __name__ == "__main__":

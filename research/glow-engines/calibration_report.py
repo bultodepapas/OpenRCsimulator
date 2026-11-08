@@ -52,6 +52,19 @@ def qvalue(group: dict[str, Any], key: str) -> Any:
     return group[key]["value"]
 
 
+def section_from_installation(prop: dict[str, Any]) -> dict[str, float]:
+    """Map installation quantities to the annular surrogate, retaining optional defaults."""
+    section = {
+        "lift_slope_per_rad": float(qvalue(prop, "lift_slope")),
+        "cd0": float(qvalue(prop, "cd0")),
+        "induced_drag": float(qvalue(prop, "induced_drag")),
+        "blades": float(qvalue(prop, "blades")),
+    }
+    if "zero_lift_angle_rad" in prop:
+        section["zero_lift_angle_rad"] = float(qvalue(prop, "zero_lift_angle_rad"))
+    return section
+
+
 def installation_inputs(configuration_id: str) -> dict[str, Any]:
     """Read generated installation coefficients and their source identity."""
     if configuration_id not in INSTALLATIONS:
@@ -74,13 +87,7 @@ def installation_inputs(configuration_id: str) -> dict[str, Any]:
             "chord_m": float(qvalue(prop, "chord_m")),
             "blades": float(qvalue(prop, "blades")),
         },
-        "section": {
-            "lift_slope_per_rad": float(qvalue(prop, "lift_slope")),
-            "cd0": float(qvalue(prop, "cd0")),
-            "induced_drag": float(qvalue(prop, "induced_drag")),
-            "blades": float(qvalue(prop, "blades")),
-            **({"zero_lift_angle_rad": float(qvalue(prop, "zero_lift_angle_rad"))} if "zero_lift_angle_rad" in prop else {}),
-        },
+        "section": section_from_installation(prop),
         "legacy_static_rpm_reference": float(qvalue(
             aircraft["propulsion"]["engine"], "max_rpm_static"
         )),

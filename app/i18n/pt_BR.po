@@ -9782,3 +9782,33 @@ msgstr "Este controle é reconhecido como gamepad. A calibração de rádio exig
 
 msgid "Radio calibration requires a supported radio profile."
 msgstr "A calibração de rádio exige um perfil de rádio compatível."
+
+msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
+msgstr "Velocidade do ar, velocidade em relação ao solo, altura, velocidade vertical, acelerador, distância ao piloto e tempo de voo. O combustível só aparece com dados válidos de combustível finito."
+
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
+msgstr "Mostra os comandos dos sticks e trims, a aparência do rádio selecionado e seu estado. A disposição dos sticks segue o modo escolhido."
+
+msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
+msgstr "Avisos ativos de voo e rádio, ordenados por prioridade, com ações sugeridas. O limite de alertas configurado pode ocultar outros avisos."
+
+msgid "Wind speed, direction it comes from and vertical airflow. The arrow points downwind relative to the view; calm or missing wind has no arrow."
+msgstr "Velocidade do vento, direção de origem e fluxo vertical. A seta aponta a favor do vento em relação à vista; não aparece em calmaria ou sem dados de vento."
+
+msgid "Angle of attack, sideslip, pitch, bank, heading, flight load and engine RPM. Dashes appear when telemetry is missing."
+msgstr "Ângulo de ataque, derrapagem, arfagem, rolagem, rumo, carga de voo e RPM do motor. Traços aparecem quando faltam dados de telemetria."
+
+msgid "Developer input and flight diagnostics, including available battery data. Contents depend on the current flight."
+msgstr "Diagnóstico de entrada e voo para desenvolvimento, incluindo os dados de bateria disponíveis. O conteúdo depende do voo atual."
+
+msgid "Developer frame-rate, frame-time and physics-step measurements for the current session."
+msgstr "Medições de taxa e tempo de quadros e passo da física da sessão atual para desenvolvimento."
+
+msgid "Keyboard and selected-controller commands and equipment availability. Available actions depend on the aircraft and bindings."
+msgstr "Comandos do teclado e do controle selecionado e disponibilidade dos equipamentos. As ações disponíveis dependem da aeronave e dos vínculos."
+
+msgid "Flight-pack sensor readings, including voltage and estimated remaining charge. Shown only for aircraft with a dynamic battery; detail expands with Telemetry."
+msgstr "Leituras dos sensores da bateria de voo, incluindo tensão e carga restante estimada. Só aparece em aeronaves com bateria dinâmica; Telemetria expande os detalhes."
+
+msgid "Focus the description to scroll with arrows or %s / %s."
+msgstr "Foque a descrição para rolar com as setas ou %s / %s."

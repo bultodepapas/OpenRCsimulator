@@ -377,18 +377,27 @@ Cnb_B = note("lateral", "Cnb body, omitted (1/rad)", -0.001 * 1.4 * 57.3 * (0.6 
 dihedral_low = note("lateral", "Clb low-wing interference (1/rad)", 1.2 * math.sqrt(AR) * (-z_w / b) * (2 * fus_d / b),
                     "DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b), destabilizing for a low wing")
 Clb_wing = note("lateral", "Clb wing at CL_ref (1/rad)", -0.034 * CL_ref, "DATCOM Clb/CL ~ -0.0006/deg for an unswept AR 5.5 taper 0.5 wing (estimated)")
-Clb = Clb_wing + dihedral_low + CYb_v * z_v / b
-Clp = -(CLa_w / 12) * (1 + 3 * lam) / (1 + lam) - eta_h * (CLa_h / 12) * (Sh / S) * (bh / b) ** 2 * (1 + 3 * lh_) / (1 + lh_) + 2 * CYb_v * (z_v / b) ** 2
-Clr = CL_ref / 4 - 2 * l_v * z_v / b ** 2 * CYb_v
-Cnp = -CL_ref / 8 - 2 * l_v * z_v / b ** 2 * CYb_v
-Cnr = -0.25 * 0.035 + 2 * (l_v / b) ** 2 * CYb_v - 0.02
+Clb = Clb_wing + dihedral_low + CYb_v * (fin_cy - arp_y) / b
+# Rate-induced flow is set by the full-tank reference CG, not by the moment datum.
+# Form the reference-CG moments first, including empirical wing/body terms, then
+# transfer each complete force/moment pair to the ARP at alpha=beta=0.
+Clp_cg = -(CLa_w / 12) * (1 + 3 * lam) / (1 + lam) - eta_h * (CLa_h / 12) * (Sh / S) * (bh / b) ** 2 * (1 + 3 * lh_) / (1 + lh_) + 2 * CYb_v * (z_v / b) ** 2
+Clr_cg = CL_ref / 4 - 2 * l_v * z_v / b ** 2 * CYb_v
+Cnp_cg = -CL_ref / 8 - 2 * l_v * z_v / b ** 2 * CYb_v
+Cnr_cg = -0.25 * 0.035 + 2 * (l_v / b) ** 2 * CYb_v - 0.02
 CYp = 2 * CYb_v * z_v / b
 CYr = -2 * CYb_v * l_v / b
+dx_arp_cg, dz_arp_cg = cg_model_z - x_arp, cg_model_y - arp_y  # body FRD ARP minus reference CG
+Clp = Clp_cg + dz_arp_cg * CYp / b
+Clr = Clr_cg + dz_arp_cg * CYr / b
+Cnp = Cnp_cg - dx_arp_cg * CYp / b
+Cnr = Cnr_cg - dx_arp_cg * CYr / b
 K_adv = 0.15
 Cnda = -2 * K_adv * CL_ref * Clda  # right aileron TE down: drag on the right wing, nose right (adverse yaw)
 tail_q = CLa_h * eta_h * Sh / S  # pitch rate and alpha-dot change the tail angle directly: no downwash factor
-CLq = 2 * tail_q * l_h / c_ref + (0.5 + 2 * (cg_model_z - x_ac_w) / mac) * CLa_w * mac / c_ref
-Cmq = -2 * tail_q * (xh_ac - cg_model_z) ** 2 / c_ref ** 2 * 1.1
+CLq = 2 * tail_q * (xh_ac - cg_model_z) / c_ref + (0.5 + 2 * (cg_model_z - x_ac_w) / mac) * CLa_w * mac / c_ref
+Cmq_cg = -2 * tail_q * (xh_ac - cg_model_z) ** 2 / c_ref ** 2 * 1.1
+Cmq = Cmq_cg - dx_arp_cg * CLq / c_ref
 CLadot = 2 * tail_q * l_h / c_ref * deps
 th_a = math.acos(2 * cf_a - 1)
 cp_frac = note("aero", "aileron lift-increment centre (chord fraction)", 0.25 + 0.5 * math.sin(th_a) * (1 - math.cos(th_a)) / (2 * (math.pi - th_a + math.sin(th_a))),
@@ -501,10 +510,11 @@ note("propulsion", "propeller hub offset from loaded CG (LE frame)", prop_hub_of
 GLOW_DIR = ROOT / "research" / "glow-engines"
 if str(GLOW_DIR) not in sys.path:
     sys.path.insert(0, str(GLOW_DIR))
-from calibration_report import annular_prop_performance  # noqa: E402
+from calibration_report import annular_prop_performance, section_from_installation  # noqa: E402
 INSTALLATION = "app/data/glow/extra_61fx_2t.json"
-gp = {k: v["value"] for k, v in json.load(open(ROOT / INSTALLATION))["propeller"].items()}
-section = {"lift_slope_per_rad": gp["lift_slope"], "cd0": gp["cd0"], "induced_drag": gp["induced_drag"], "blades": gp["blades"]}
+installed_propeller = json.loads((ROOT / INSTALLATION).read_text(encoding="utf-8"))["propeller"]
+gp = {k: v["value"] for k, v in installed_propeller.items()}
+section = section_from_installation(installed_propeller)
 D_p, N_REF = gp["diameter_m"], 12000.0  # Ct of the no-induction surrogate does not depend on rpm at fixed J
 n_ref = N_REF / 60.0
 sigma = note("propulsion", "solidity of the Glow propeller surrogate", gp["blades"] * gp["chord_m"] * 0.8 * (D_p / 2) / (math.pi * (D_p / 2) ** 2),
@@ -581,7 +591,7 @@ coefficients = {
     "CL0": coeff(CL0, "1", "derived", "symmetric wing at 0 deg; stab -0.5 deg"),
     "CLa": coeff(CLa, "1/rad", "derived", "Helmbold wing + downwashed tail"),
     "CLadot": coeff(CLadot, "1/rad", "derived", "2 eta CLa_h Sh/S l_h/c deps/dalpha"),
-    "CLq": coeff(CLq, "1/rad", "derived", "tail volume + DATCOM wing term"),
+    "CLq": coeff(CLq, "1/rad", "derived", "tail rotational inflow about full-tank reference CG + DATCOM wing term"),
     "CLde": coeff(CLde, "1/rad", "derived", "tail slope x elevator effectiveness"),
     "CLda_each": coeff(CLda_each, "1/rad", "derived", "strip theory over the aileron span"),
     "CD0": coeff(CD0, "1", "derived", "component drag build-up at 16 m/s, see derivation.md"),
@@ -594,20 +604,20 @@ coefficients = {
     "CYp": coeff(CYp, "1/rad", "derived", "fin above the CG"),
     "CYr": coeff(CYr, "1/rad", "derived", "fin behind the CG"),
     "CYdr": coeff(CYdr, "1/rad", "derived", "fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"),
-    "Clb": coeff(Clb, "1/rad", "derived", "wing at CL_ref + low-wing interference + fin"),
-    "Clp": coeff(Clp, "1/rad", "derived", "strip theory with taper + stab + fin"),
-    "Clr": coeff(Clr, "1/rad", "derived", "CL_ref/4 + fin"),
+    "Clb": coeff(Clb, "1/rad", "derived", "wing at CL_ref + low-wing interference + fin moment about ARP"),
+    "Clp": coeff(Clp, "1/rad", "derived", "strip theory with taper + stab + fin at reference CG, transferred with CYp to ARP"),
+    "Clr": coeff(Clr, "1/rad", "derived", "CL_ref/4 + fin at reference CG, transferred with CYr to ARP"),
     "Clda_right": coeff(Clda, "1/rad", "derived", "strip theory"),
     "Clda_left": coeff(-Clda, "1/rad", "derived", "strip theory"),
     "Cldr": coeff(Cldr, "1/rad", "derived", "rudder side force x fin height above the ARP"),
     "Cm0": coeff(Cm0, "1", "derived", "tail incidence about the ARP (wing-body ac)"),
     "Cma": coeff(Cma, "1/rad", "derived", "tail about the wing-body ac; the CG transfer gives the static margin"),
-    "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"),
+    "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about full-tank reference CG x1.1 for wing/fuselage, transferred with CLq to ARP"),
     "Cmde": coeff(Cmde, "1/rad", "derived", "elevator lift x tail arm from the ARP"),
     "Cmda_each": coeff(Cmda, "1/rad", "derived", "aileron lift increment at its thin-airfoil centre, arm from the ARP"),
     "Cnb": coeff(Cnb, "1/rad", "derived", "fin only (v1 contract: equals the vertical surface)"),
-    "Cnp": coeff(Cnp, "1/rad", "derived", "-CL_ref/8 + fin"),
-    "Cnr": coeff(Cnr, "1/rad", "derived", "fin + wing profile drag + fuselage (-0.02 estimated)"),
+    "Cnp": coeff(Cnp, "1/rad", "derived", "-CL_ref/8 + fin at reference CG, transferred with CYp to ARP"),
+    "Cnr": coeff(Cnr, "1/rad", "derived", "fin + wing profile drag + fuselage at reference CG, transferred with CYr to ARP"),
     "Cnda_right": coeff(Cnda, "1/rad", "derived", "adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.5, taper 0.5)"),
     "Cnda_left": coeff(-Cnda, "1/rad", "derived", "adverse yaw"),
     "Cndr": coeff(Cndr, "1/rad", "derived", "rudder side force x fin arm from the ARP (must equal the vertical surface)"),

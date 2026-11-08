@@ -8941,3 +8941,33 @@ msgstr "此控制器被识别为手柄。遥控器校准需要受支持的遥控
 
 msgid "Radio calibration requires a supported radio profile."
 msgstr "遥控器校准需要受支持的遥控器配置。"
+
+msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
+msgstr "空速、地速、高度、垂直速度、油门、距飞手距离和飞行时间。仅在有限燃油数据有效时显示燃油。"
+
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
+msgstr "显示摇杆和微调输入、所选遥控器外观及状态。摇杆布局遵循所选模式。"
+
+msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
+msgstr "按优先级显示当前飞行和遥控器警告及建议操作。设置的警报数量上限可能隐藏其他警告。"
+
+msgid "Wind speed, direction it comes from and vertical airflow. The arrow points downwind relative to the view; calm or missing wind has no arrow."
+msgstr "风速、风的来向和垂直气流。箭头相对于当前视角指向下风方向；无风或缺少风数据时不显示箭头。"
+
+msgid "Angle of attack, sideslip, pitch, bank, heading, flight load and engine RPM. Dashes appear when telemetry is missing."
+msgstr "迎角、侧滑角、俯仰角、横滚角、航向、飞行载荷和发动机转速。缺少遥测数据时显示短横线。"
+
+msgid "Developer input and flight diagnostics, including available battery data. Contents depend on the current flight."
+msgstr "供开发使用的输入和飞行诊断，包括可用的电池数据。内容取决于当前飞行。"
+
+msgid "Developer frame-rate, frame-time and physics-step measurements for the current session."
+msgstr "供开发使用的当前会话帧率、帧时间和物理步长测量。"
+
+msgid "Keyboard and selected-controller commands and equipment availability. Available actions depend on the aircraft and bindings."
+msgstr "键盘和所选控制器的命令及设备可用性。可用操作取决于机型和按键绑定。"
+
+msgid "Flight-pack sensor readings, including voltage and estimated remaining charge. Shown only for aircraft with a dynamic battery; detail expands with Telemetry."
+msgstr "飞行电池传感器读数，包括电压和估计剩余电量。仅在具有动态电池模型的机型上显示；启用遥测可展开详细信息。"
+
+msgid "Focus the description to scroll with arrows or %s / %s."
+msgstr "将焦点移到说明后，可使用方向键或 %s / %s 滚动。"

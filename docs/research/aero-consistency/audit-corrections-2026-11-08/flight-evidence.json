@@ -1,0 +1,1157 @@
+{
+  "artifact_format": "Each .gz is gzip level 9, empty filename, mtime 0. Hashes bind original and compressed bytes.",
+  "baseline": {
+    "engine": {
+      "console_executable_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+      "platform": "Windows x86-64",
+      "version": "4.8.beta2.official.cafc17a19"
+    },
+    "git_commit": "8ebb252acc341a5a1fc047e6bb931fabdb17b148",
+    "git_status_note": "At recording, unrelated UI/keycap files were dirty; the solver source fingerprint below binds actual physics, sim and failures bytes.",
+    "line_endings_note": "A fresh checkout alone may not match the recorded mixed line endings. Restore each named mode and verify every hash and the aggregate before replay.",
+    "solver_identity_kind": "source-tree-v1",
+    "solver_sha256": "3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762",
+    "source_files": [
+      {
+        "line_endings": "crlf",
+        "path": "app/failures/catalog.gd",
+        "sha256": "12eb882653379f6c8bbdb663a9cebd0ca7a1761ad78098d5cea44d90a75012db"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/failures/config.gd",
+        "sha256": "0b6ebb85d4e45edc439aeb4ae7e9655393d5c21866c95c484c333af4a2e4c720"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/failures/runtime.gd",
+        "sha256": "73e8c492144ba3a2ec6d154b07173c07bbc9bb18e46fdde400c2df6cfff7d0c2"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aero.gd",
+        "sha256": "65ed27963f2f86ff3710e77e877dd1e4cb0efa025ef5b064c3eb60fb0b996449"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/air_data.gd",
+        "sha256": "88d81227be27ee4ceeb695f30e24b2208b7a8d22463840d85fba68df06e02361"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_contact_contract.gd",
+        "sha256": "853dd541e179b393f36abb08501ff3431a1c6ecf35ac8eac7254325516e52b12"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_contract.gd",
+        "sha256": "42f9c2e62877591f166d12e925dfb2f8578cba0d15ec8ac674a0fed36a228718"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_data.gd",
+        "sha256": "a10f1ac1a967c6c392b9b12cbb6046fcb5814eb0b814b784f86112a55e770872"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_ground_accuracy.gd",
+        "sha256": "8aefb92b1ae8441ab4d883b61c447e7d7864cb830a98ae2c82258cd0a0d5424a"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/aircraft_ground_battery.gd",
+        "sha256": "928dd024a55b13987e4fd7aaf1e007be45b8815694c33842db9c9244738b2fbd"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_ground_damage.gd",
+        "sha256": "3424b5edeb019d5a177a32774bb1436950ef92a619198ad1767b30253831f9b1"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/aircraft_ground_dynamics.gd",
+        "sha256": "d3e155c2777d0a7c26244be583f0558f01d28a35af4e508b3e06cc3001d2f61d"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/aircraft_ground_electric.gd",
+        "sha256": "1f08b77d0666007daa6296f4cec3b1d95eb53139a3d977d90de8946783708bdd"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_ground_impulse.gd",
+        "sha256": "5bacc4e47b74db1a7d30428a0d570d53330d4c8c0d80ce93b40953b9b27063ce"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_ground_profile.gd",
+        "sha256": "74bf7e19489666e05e6533e8ea5ef97a43b9ceb52ff8de3e33d55ac68a13d9ba"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/aircraft_ground_source.gd",
+        "sha256": "7f0a95021be7405eaaed7314e1861e463fbf14bfb677f2b62acd06b2019dce0e"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/aircraft_ground_stage.gd",
+        "sha256": "65954ed8076ea07b0c32920f98b47a68dfbef2ffb42e9d50493d43ceb0c32056"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/aircraft_ground_step.gd",
+        "sha256": "7142280d140cad06cf3ea1faa4e4b8ec612dc4b9588eb49abe6e0c603124c6b4"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_ground_traction.gd",
+        "sha256": "35f6cdd39e1877c5c7d53e9347d08c805caa334fa56be0dbb0ea00057e972e99"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_ground_unloaded.gd",
+        "sha256": "3547701c3a478072135bd36fbe40d53d975388d34266e5c02f5bb189de2ede42"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/aircraft_modules.gd",
+        "sha256": "99a08a559ea1fa27d807c1d8b15bc0106b58d5143c12b4a54110040762a0b23d"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/atmosphere.gd",
+        "sha256": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/battery/battery_data.gd",
+        "sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/battery/esc_supervisor.gd",
+        "sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/battery/pack_ecm.gd",
+        "sha256": "212187bf6a4665280a657bed62b2b1fa866a49e6ae104213f56c30aad7a51a4c"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/contact_assembly_resolution.gd",
+        "sha256": "f041f46f443e595aa799a1aece81d4cfd43b07432df6dbdb2889b2df3b9b5658"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/contact_assembly_strategy.gd",
+        "sha256": "4135dcbf6879a54bfc7120fb0d01c91b84581bca7a9205bd9d13432fe2f4257c"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/contact_capacity.gd",
+        "sha256": "04e21a45cdaae1deadda324bb2967a430a4de030a96a622b1f2341eb39538755"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/control_actuators.gd",
+        "sha256": "1eed4b39dbd194ef26f55295250e6187023d562c1a788df9a0bae31d80b62988"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/control_surfaces.gd",
+        "sha256": "5e159ee1ebb98112e7399ef4f9ba68b30a7ea9cb5055989fbab55332c6a5edb3"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/cruise_trim.gd",
+        "sha256": "ff1a1d986e4c098eb2f57bed8735fb58b65d59d3e33462339d455ce6b3b24083"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/dynamics.gd",
+        "sha256": "769ec77b3d1013da33dfac21b3a74440fd08d60c48c08a93567de0d61e2b4592"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/effective_mass.gd",
+        "sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/electric_battery_step.gd",
+        "sha256": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/electric_motor.gd",
+        "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/electric_stop.gd",
+        "sha256": "24fb4cdaccb1b34c1e76e4ee4bff75581ae231ccd643b4989d2b52db29a1bf7b"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/electric_supply.gd",
+        "sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/event_bracket.gd",
+        "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/event_step.gd",
+        "sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/fixed_datum_body.gd",
+        "sha256": "df186bd36a6b60c01a82ca8aa52943600929219e43ba5d411bf9997da90bc34d"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/flaps.gd",
+        "sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/flight_modes.gd",
+        "sha256": "17cca8970cde01870a5f2606c0d794a51e6d3c8f47246532a6e407cb2645d7df"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/fuel_properties.gd",
+        "sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/gear_damage.gd",
+        "sha256": "8aa2cc1e966967ef191dfdad1d597253cecabefb741a3234158b081c258e5900"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/generalized_coordinates.gd",
+        "sha256": "8f626b6aa7874e83ed4169d834e3a3bb7fe513660f11b18fa9be2f865bd01665"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/carburetor.gd",
+        "sha256": "bd22ef5070be76512470119563861f0fde2d7acf7f19451d9bf590d45cca024e"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/flight.gd",
+        "sha256": "85c1b6dc8f7a536819bd0a6e8459f5caa1cabb405b57f47a8081215418b87eee"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/four_stroke.gd",
+        "sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/fuel_feed.gd",
+        "sha256": "17194b2f01644a6e1eb202d23314f444f6146c3be1b3f462c165dcbcc9bc62df"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/fuel_mass.gd",
+        "sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/installation.gd",
+        "sha256": "be0856c2d590cec7d994b3c2aa69addb3b4a4c5d74f2dc3365c2179f7f56aa99"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/lifecycle.gd",
+        "sha256": "4b50bae6534554af9764df6ba06fba327d7b6f4bd6a4144f29db0bd9b01ec4d9"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/operating_point.gd",
+        "sha256": "107fe300480853bb7c7007cfaa9eee82938feb02335cc5b68bc5aef31351933d"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/glow/profile.gd",
+        "sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/propeller.gd",
+        "sha256": "86828a6bb4fbf52777d328d300a56eeb1632b596b577bb1cf0676df3b586b97d"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/source.gd",
+        "sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/thermal.gd",
+        "sha256": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/two_stroke.gd",
+        "sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/glow/vibration.gd",
+        "sha256": "e7e2c6b5b9b87cf42fd2138274f6382c7ec6c42389e54624132bb74bd144e9b5"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_contact.gd",
+        "sha256": "5565fb7c613915575e14700df18f8bb2606a18db879548da13083f6eb7aa6873"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_effect.gd",
+        "sha256": "e4c4c86033811649491343cca1aa6363ec02d045a1cd2ded40ac13b3f0541dd3"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_start.gd",
+        "sha256": "698f5600d7f62b287df36c57f506d5b0b21c113f30b69f9189668dbacd148f36"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/ground_support.gd",
+        "sha256": "c2e1b42f05f3cef25a7ed2a908acd672878c81557611393c005c4621a993dd9e"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_surfaces.gd",
+        "sha256": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_terrain.gd",
+        "sha256": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_traction.gd",
+        "sha256": "7d90dad10aa0aa3556c86946fde1e68bbe994d011ccf7c1ad2d9aab8e51ef93a"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_vehicle/airfield_course.gd",
+        "sha256": "e45338d437c76228c887c6557a9b91f957f3fd261405ae01b4ce085846579545"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_vehicle/airfield_track.gd",
+        "sha256": "ebc72a16c0a549291c873b12439982f90704554247447bb490dadd738d7b6856"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_vehicle/course.gd",
+        "sha256": "9df352cd279a3c1a4a7b094314367bb92b4d263e045ebe15a553317595013e3d"
+      },
+      {
+        "line_endings": "lf_last_crlf",
+        "path": "app/physics/ground_vehicle/four_corner.gd",
+        "sha256": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/ground_vehicle/nitro_dynamics.gd",
+        "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+      },
+      {
+        "line_endings": "lf_last_crlf",
+        "path": "app/physics/ground_vehicle/quarter_car.gd",
+        "sha256": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/ground_vehicle/support_bench_data.gd",
+        "sha256": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/ground_vehicle/suspension_bench_data.gd",
+        "sha256": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_vehicle/vehicle_damage.gd",
+        "sha256": "6e5546e9ce613ac6119114e8fa368fd88080d045da264095dc38406ad64d542c"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/ground_vehicle/vehicle_data.gd",
+        "sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+        "sha256": "0cf8806ded96b3397d75f1456b06710f71a051a504792234eb7e5ca8449cedbf"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/ground_vehicle/vehicle_environment.gd",
+        "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/ground_wheels.gd",
+        "sha256": "cb064a3865971e8abcba46929c3ede716273e21c9b032c23592a4edb44dba7f8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/hull_contact.gd",
+        "sha256": "e964af826d62fd47d1b669669400be85cb2e52b946be0859123c3e596b266380"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/hull_crossing.gd",
+        "sha256": "5940bb3cf5014431cc3abf40253752b4787624c4a369237fe46f19253a360618"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/impact_snapshot.gd",
+        "sha256": "606c9f7ab59974f548504abfc302804bb47e673c82a3e5560258371c0b2f0807"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/integrator.gd",
+        "sha256": "69d75732b95b2307a276d468ff5989be1db34755de98c1aac56f8b1808368cde"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/intended_hull_support.gd",
+        "sha256": "93205c21d68a435044a6bb85eac94b530922521dff060f47f41dd6b2fc331798"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/lake_surface.gd",
+        "sha256": "a78e20ea259479e6e9a479f568b1fa902e1cf79bed50fc0b77d1810e007ff245"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/linearize.gd",
+        "sha256": "7a632b15d1fee083e7c65f50c3998e36e84835a9df1786a4e76fae1b3f3a0556"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/liquid_fuel.gd",
+        "sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/mass_inventory.gd",
+        "sha256": "5496a55e9e0dd7f13f469bf68674f84e390084f8c13ec36a4e9aabd40fc71292"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/math3d.gd",
+        "sha256": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/multirotor/airframe.gd",
+        "sha256": "15c3e15747a45e971796f67f8d0a17548f5e925788e67e9250bc7b65aa9893bf"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/multirotor/plant.gd",
+        "sha256": "f6d2f37e22e1301291e6152cd1767d314822bd64cd4be430938523ffe6e97065"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/multirotor/powertrain.gd",
+        "sha256": "57906c99708bf8cf03f967efafaebf23141d60510d9580b0ef23728a31444125"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/multirotor/rotor.gd",
+        "sha256": "3108ccf6793870f6756c017b83647868a685ac1037c28307284bd2c8f48492a6"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/normal_compliance.gd",
+        "sha256": "2afd1691065aaeb8ddb7652096376e14e163425030f55182085659d85f3a56ba"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/normal_contact_admission.gd",
+        "sha256": "2ab6f6e1b5838ab6d44c89b5a2d62a27da53e3a578a608db8b59b36915a6d7d9"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/physical_identity.gd",
+        "sha256": "a4c66a6153126767786666ace8f4834c456fa497f302e2bdfa79c9f9cf0206b8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/propulsion.gd",
+        "sha256": "db058a49fd586a723e5c8d693843bdecfbf642fc749843b00ccee45263f32d18"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/resource_event_step.gd",
+        "sha256": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/retractable_gear.gd",
+        "sha256": "3a08b68085e2aab67dca9a591bf7bdb3d85d51a209353e1d96415af1576123a4"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rigid_body.gd",
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotor_coupling.gd",
+        "sha256": "fa52e266fe523f7d9eae6aaaf20f0f72cf0efad07978d6bbddd8df5b6f623330"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotorcraft/aerodynamic_stage.gd",
+        "sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/airframe.gd",
+        "sha256": "7bb1bad8f99d8e9e1741536b8a31d62ac9d2affa474c1cf0394fe20542b4a9f6"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotorcraft/drive.gd",
+        "sha256": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/dynamic_inflow.gd",
+        "sha256": "5ba1a1722f1f8c51df0b40d9c538cb602c865b00f2d9cf6173a86b2ae0daa2fc"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotorcraft/electronics.gd",
+        "sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/flight_dynamics.gd",
+        "sha256": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotorcraft/geared_coupling.gd",
+        "sha256": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/ground_start.gd",
+        "sha256": "1822c74a19e589844e25755029f46de946fbef8265a201122da13ee5a5591f1b"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/hx700_flex_bench.gd",
+        "sha256": "d7a7a78bf9a6fa1334050bb3a6238fde929862ac373bde88b5e77477ecb246df"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/impact_detector.gd",
+        "sha256": "6d86495352a3389c7ab5ceb65368469e792e354e7b0034fc8d330c2a93cb67f8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/inflow.gd",
+        "sha256": "85289be30fe94c07a4ba10f3725c4d18581cab3d5d24fcecd92a1bd517725224"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotorcraft/lifecycle.gd",
+        "sha256": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/main_rotor.gd",
+        "sha256": "e3447d0d73529806d4a4e82af63703d5b7cc5c08fb0abc0da624504c03908658"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/main_rotor_stage.gd",
+        "sha256": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/rotorcraft/performance_context.gd",
+        "sha256": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/simulation_step_adapter.gd",
+        "sha256": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/skid_contact.gd",
+        "sha256": "3101654efe3ea6f88fa1280ad12a1ff7a8f5379932149b4934878dba269d2f6a"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/swash.gd",
+        "sha256": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/tail_rotor.gd",
+        "sha256": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft/trim.gd",
+        "sha256": "575506c05ac4d097705afcfbcdc76309191f90c382872605f3a870046fb27e0d"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/rotorcraft_data.gd",
+        "sha256": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/slipstream.gd",
+        "sha256": "ffdf117cc8ff0d83ba248b70703fbed3228ff110a95ce4adf2644d82bb815931"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/swirl_loads.gd",
+        "sha256": "5017f323f1fb0a99c6d731eee582bd47c262cc45fed4067b99b80697e59002bc"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/trim.gd",
+        "sha256": "a4d6be9967aa047464a11b00dcfbd24d7ca9822f98086ecf18460bff4dae8ea8"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/turbine.gd",
+        "sha256": "39cdb286bcdb124ae5c4d885760d85f588fbedf207ad0f62da8f3a822bfbdee7"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wash_transport.gd",
+        "sha256": "5cfae8de20432d66f2d5629716b1cf96cd3425dae083e362e4d3c415546f6e8a"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/wheel_coupling.gd",
+        "sha256": "da6e39d0109f56963194e4609a7d3d4f8c40cb2db1db4058c5b1aca59c9e9e0f"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wheel_geometry.gd",
+        "sha256": "f983a09dffd363121a232c211eb7a4f983d363e2b606535ed89961e50b7b8409"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wheel_profiles.gd",
+        "sha256": "883f06263426f1b4f25556b00d7402d3013e70a33bef10c35a43be228f4a1748"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wind_aircraft_flow.gd",
+        "sha256": "0ef03aedf2f199c6ebf7190e3c1d7b051978cbb74eb5b36ad45b3c2f97c0a36d"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/wind_config.gd",
+        "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wind_field.gd",
+        "sha256": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/wind_spatial_config.gd",
+        "sha256": "f7a05dc2990092aa9558e941249d50eee7b5c7d33a4e6b583c474fd3218d534d"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/wind_spatial_field.gd",
+        "sha256": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/wind_spatial_presets.gd",
+        "sha256": "82b5388be121f8538e529f7227d0b22fbceb5cee4b80f7a98046a6cf19667a72"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/physics/wind_thermal_field.gd",
+        "sha256": "b370bb9493b0f36119b6344781296525c0e188f18a8a1377e1321ddf0253f7e6"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wind_turbulence.gd",
+        "sha256": "1ce2ba5dbe9094870e87ef1083dec3ec61d24381baaa97860ac79d11c046569c"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/physics/wing_polar.gd",
+        "sha256": "b67b2a4120c71cc6f32d732fa52dd56f911a950e354cdd8c3874a246e7f36bb3"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/sim/aircraft_contact_events.gd",
+        "sha256": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/aircraft_propulsion_runtime.gd",
+        "sha256": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/sim/checkpoint_json.gd",
+        "sha256": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/environment.gd",
+        "sha256": "7e173120c75f9d2bade1251106a5d72ad2900fca94370b8f2fedc5d74cb71ab6"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/flight_log.gd",
+        "sha256": "b7f086ef6a749ed0ef3329d4e6aac95db8a045ccc7d7f55590931d3ea92e12e5"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/flight_session.gd",
+        "sha256": "8a3d1150f3e60313fb4731cdd6edd77d63214e226e0045c45b861a581682683b"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/sim/fuel_sample.gd",
+        "sha256": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/ground_vehicle/session.gd",
+        "sha256": "806561b3750eff200a774b39110edce639a0e623b50955a000d0fb0955e85d35"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/helicopter_flight_session.gd",
+        "sha256": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/lake_collision.gd",
+        "sha256": "0fbf142df2f555b5d592e9ef794812cae5664b84dcddee8708208b41669d1160"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/landing_maneuver.gd",
+        "sha256": "362704e372087f095467191c61b69e6f99a6f55430285c9d636e4958286fc771"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/launch_trim_cache.gd",
+        "sha256": "32b7d075cfe19178d27a8bcb56867fd637bdbd5b7555e71c22cdebbbe4499a81"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/launch_trim_job.gd",
+        "sha256": "c70f0588ef32ba6f1bf47afd5220f97eebfe972fa1f9dfdc8f60d471ae25f058"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/liquid_fuel_flight.gd",
+        "sha256": "26397c12a5af6ccf45c442c796c397be9ff6068be293f0e92bc71fc257cc2e53"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/maneuvers.gd",
+        "sha256": "95c4b3b1df7482b9f5422945d043fec9c6ac0082e3154c214a62d5b92bc94f43"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/sim/manual_trace_save.gd",
+        "sha256": "b97eac186c3f10eb86be8f49d512d1f436ca83ce17ef87a029177fac3b31d592"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/electric_stage_adapter.gd",
+        "sha256": "4b653336c56e734e7d88533bcb353a076fefb3b511217734414809392e12491e"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/glow_stage_adapter.gd",
+        "sha256": "1e64f1c99fd719596dd549c91702b3980bc21dd5e9a980025d519e876a6b1622"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/helicopter_stage_adapter.gd",
+        "sha256": "23af0b81af2ffa4ca7cf16cf8ef04bbc8a4391447a16e483f7fcf205910cfad5"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/liquid_stage_adapter.gd",
+        "sha256": "c0dbd0f51c5b39f37a201a040490298db730e86c5a82cab90bd570a428ec4ce5"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/native_configuration.gd",
+        "sha256": "118b4f599eb86bc05d5218e8c434eac58204c9afe4650ba6fdd1d320143b47db"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/native_weather.gd",
+        "sha256": "a7924ba7359483fc893c37fcf0b6b346d6b0673c7c9b8a48f44726fac04b97fd"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/prescribed_stage_adapter.gd",
+        "sha256": "73e65b27e5c5b77aac8107f1bebcf726bf6f37a3fcd82caba8dfdd078df4a735"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/stage_config.gd",
+        "sha256": "d201c6eb5f257c00decdb2cca4529c8667d768b88d5b6f0aea36f56a4105c437"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native/weather_adapter.gd",
+        "sha256": "893608e8d386ee26868ef602439b8ea260240b66e770a8075c7a7ee320087921"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/native_stage.gd",
+        "sha256": "d9a303155da9903726f3568797b66f63ea03b14e4a0a06f50e648e1a5f9a0abb"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/out_of_trim.gd",
+        "sha256": "e9128de2f3f2c235961cfead2a1f6fb8f6c88e37d72a3582abcdbd5723bccf3a"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/recorder.gd",
+        "sha256": "3be5e15433f14dfbe6542a67cd196ca4d11d9b8c8843cf84bcabf0926b244bfd"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/rotorcraft_recorder.gd",
+        "sha256": "2f762c1a2bacfc448b769bee495de28032d1c4d36a85a488595c7101a1e13b90"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/scenarios.gd",
+        "sha256": "108aa31bb9625049c5fca24b49fd5a7cb0b84ac8a00720e9dba21280e8812f13"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/scenery_collision.gd",
+        "sha256": "31c5e37d12c297eced801e0608e74cb8a3e068212a594f044bdffc143dd9456a"
+      },
+      {
+        "line_endings": "lf",
+        "path": "app/sim/scenery_damage.gd",
+        "sha256": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/scripted.gd",
+        "sha256": "540537392f683002b43172314fe0596e8be9d38829584a3796f9f3e47fcd1801"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/simulation.gd",
+        "sha256": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/trace.gd",
+        "sha256": "32956063ee5ed78e432e4c5ef9f3bc4afffe1da29f4772e5724eca6b2eb6f2c0"
+      },
+      {
+        "line_endings": "crlf",
+        "path": "app/sim/vehicle_model.gd",
+        "sha256": "5768ec1eec6b74e763b53b22de65cbf17ec878b1ca39e3f92acc8ab1bd5054e2"
+      }
+    ],
+    "source_identity_algorithm": "Sort paths; SHA-256 the concatenation of each UTF-8 res:// path and exact file bytes, recursively for app/physics, app/sim and app/failures .gd files.",
+    "stage_backend": "gdscript_reference"
+  },
+  "date": "2026-11-08",
+  "format": "openrc-audit-flight-evidence v1",
+  "interpretation": "Software consistency evidence. Aircraft-data candidates are open-loop and are not physical validation or pilot handling qualification.",
+  "records": {
+    "corsair": {
+      "aircraft_only_candidate_replay": {
+        "engine_log": {
+          "original_path": "tmp/audit-corsair-runtime-20261108/data-candidate/godot.log",
+          "original_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\r\n\r\nFlight log candidate: 361 rows verified.\r\n",
+          "sha256_original_utf8": "5477ebff7516ab7b7327cacd05de44d3b2f5c273bda714453e20ec96dc06653f"
+        },
+        "report": {
+          "original_path": "tmp/audit-corsair-runtime-20261108/data-candidate/replay.json",
+          "original_utf8": "{\n\t\"baseline_build\": {\n\t\t\"commit\": \"\",\n\t\t\"commit_date\": \"\",\n\t\t\"describe\": \"\",\n\t\t\"dirty\": false,\n\t\t\"godot\": \"4.8-beta2 (official)\",\n\t\t\"label\": \"\",\n\t\t\"parsed\": {\n\t\t\t\"after\": 0,\n\t\t\t\"base\": \"0.2.0\",\n\t\t\t\"dirty\": false,\n\t\t\t\"prerelease\": \"\",\n\t\t\t\"semver\": \"0.2.0\",\n\t\t\t\"sha\": \"\",\n\t\t\t\"tag\": \"\"\n\t\t},\n\t\t\"source\": \"development\",\n\t\t\"version\": \"0.2.0\"\n\t},\n\t\"baseline_solver_identity_kind\": \"source-tree-v1\",\n\t\"baseline_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"baseline_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"candidate\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\app\\\\data\\\\aircraft\\\\f4u_corsair_250.json\",\n\t\"candidate_identity\": {\n\t\t\"format\": \"openrc-aircraft v2\",\n\t\t\"sha256\": \"52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10\"\n\t},\n\t\"comparison_method\": \"Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation.\",\n\t\"complete\": true,\n\t\"current_solver_identity_kind\": \"source-tree-v1\",\n\t\"current_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"current_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"dt_s\": 0.004166666666666667,\n\t\"error\": \"\",\n\t\"events\": [\n\t\t{\n\t\t\t\"detail\": \"baseline\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 855\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 855\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"flap_step\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 1215\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"flap_response\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 1215\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"stopped by debug bridge\",\n\t\t\t\"kind\": \"stop\",\n\t\t\t\"tick\": 1215\n\t\t}\n\t],\n\t\"events_omitted\": 0,\n\t\"final_tick\": 1215,\n\t\"first_tick\": 855,\n\t\"format\": \"openrc-flight-log-report v1\",\n\t\"metadata\": {\n\t\t\"aero_loads_law\": \"section-plane-source-weighted-wake-velocity-v2\",\n\t\t\"aero_model\": \"section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle\",\n\t\t\"aircraft\": \"f4u-corsair-250 (res://data/aircraft/f4u_corsair_250.json)\",\n\t\t\"aircraft_input_format\": \"openrc-aircraft v2\",\n\t\t\"aircraft_input_hash_convention\": \"sha256 of exact aircraft input file bytes\",\n\t\t\"aircraft_input_sha256\": \"dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673\",\n\t\t\"aircraft_semantic_hash_convention\": \"sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes\",\n\t\t\"aircraft_semantic_sha256\": \"0289713a9c0b63b73d594689472a8ba71825072b8fdf1e1508408219fdb34cfa\",\n\t\t\"aux_layout\": \"[\\\"engine_rpm\\\",\\\"srv_roll\\\",\\\"srv_pitch\\\",\\\"srv_yaw\\\"]\",\n\t\t\"collision_world_identity\": \"4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f\",\n\t\t\"configuration\": \"virtual-balanced-reference-v2-empty-tank\",\n\t\t\"continuous_layout\": \"axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail; base propulsion/wheels; usable fuel kg; source latch 0/1\",\n\t\t\"created_utc\": \"2026-11-08T14:18:44\",\n\t\t\"dt_s\": 0.004166666666666667,\n\t\t\"engine\": \"Godot 4.8-beta2 (official)\",\n\t\t\"engine_rpm_semantics\": \"propeller shaft rpm\",\n\t\t\"flap_aux_index\": 16,\n\t\t\"flap_base_metadata_schema\": \"openrc-flight-meta v8\",\n\t\t\"flap_input_index\": 6,\n\t\t\"flap_law\": \"controls.flaps.hinged_trailing_edge.v1\",\n\t\t\"flap_max_angle_deg\": 30.0,\n\t\t\"flap_trace_schema\": \"openrc-flap-trace v1\",\n\t\t\"frames\": \"world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]\",\n\t\t\"fuel_capacity_kg\": 0.7478536585365853,\n\t\t\"fuel_consumption_law\": \"gasoline_bsfc_v1\",\n\t\t\"fuel_mass_policy\": \"finite single store; co-moving efflux; fixed authored reference datum\",\n\t\t\"fuel_start_fill\": 1.0,\n\t\t\"fuel_start_fill_known\": true,\n\t\t\"fuel_state_index\": 4,\n\t\t\"fuel_store_id\": \"main_tank\",\n\t\t\"fuel_unusable_kg\": 0.007478536585365853,\n\t\t\"gear_aux_index\": 14,\n\t\t\"gear_law\": \"retractable-point-gear-v1\",\n\t\t\"gear_trace_schema\": \"openrc-gear-trace v1\",\n\t\t\"gravity_mps2\": 9.80665,\n\t\t\"ground\": \"retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock\",\n\t\t\"ground_effect_model\": \"image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)\",\n\t\t\"hull_contact_model\": \"soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground\",\n\t\t\"hull_lake_normal_model\": \"positive-down-bank-gradient-normal-v2\",\n\t\t\"inertia_kgm2\": \"Jxx Jyy Jzz Jxy Jxz Jyz = 4.02926991740707 6.65630872440302 9.79922944098077 0.0 -0.20199360591056 0.0\",\n\t\t\"input_layout\": \"[\\\"roll\\\",\\\"pitch\\\",\\\"yaw\\\",\\\"throttle\\\",\\\"gear_down\\\",\\\"wheel_brake\\\",\\\"flaps\\\"]\",\n\t\t\"lake_id\": \"near_runway\",\n\t\t\"lake_identity\": \"bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa\",\n\t\t\"lake_terrain_model\": \"bounded-lake-terrain-and-terminal-water-contact-v1\",\n\t\t\"launch_aux\": \"[4542.259194385202,0.049784076614177844,-0.14687891929176145,-0.015292747690510288]\",\n\t\t\"launch_choice\": \"airborne\",\n\t\t\"launch_continuous\": \"[4542.259194385202,0.0,0.0,0.0,0.7403751219512194,1.0]\",\n\t\t\"launch_engine_running\": \"true\",\n\t\t\"launch_error\": \"\",\n\t\t\"launch_field_id\": \"\",\n\t\t\"launch_ground_anchors\": \"[]\",\n\t\t\"launch_kind\": \"trimmed_airborne\",\n\t\t\"launch_state\": \"[60.0,-40.0,-30.0,47.64607578961792,0.5452854370825487,-1.254365745643577,0.7070422166680845,0.009555304761308305,-0.009555304761308307,0.7070422166680844,0.0,0.0,0.0]\",\n\t\t\"launch_trim_throttle\": \"0.5\",\n\t\t\"liquid_fuel_model\": \"single-store-finite-liquid-fixed-datum-v1\",\n\t\t\"liquid_fuel_schema\": \"openrc-liquid-fuel v1\",\n\t\t\"loads\": \"Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction\",\n\t\t\"mass_contact_law\": \"fixed-datum-live-mass-contact-linear-fuel-v1\",\n\t\t\"mass_kg\": 21.500000999999997,\n\t\t\"mass_reference\": \"mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum\",\n\t\t\"metadata_schema\": \"openrc-flight-meta v9\",\n\t\t\"propulsion_features\": \"{\\\"propeller_normal_force\\\":true,\\\"propeller_pfactor\\\":true,\\\"rotor_gyroscopic_coupling\\\":true,\\\"turbine_ram_flow\\\":false,\\\"turbine_ram_jet\\\":false}\",\n\t\t\"propulsion_model\": \"propeller-shaft-coupled-rk4-v1\",\n\t\t\"propwash_model\": \"tail-slipstream-increment-v1\",\n\t\t\"recording_start_aux\": \"[4544.80295094868,0.049784076614177844,-0.14687891929176145,-0.015292747690510288]\",\n\t\t\"recording_start_continuous\": \"[4544.80295094868,0.0,0.0,0.0,0.7382639620826098,1.0]\",\n\t\t\"recording_start_engine_running\": \"true\",\n\t\t\"recording_start_flap\": 0.0,\n\t\t\"recording_start_gear\": \"[0.0,0.0]\",\n\t\t\"recording_start_previous_state\": \"[58.071304780333186,129.4764016466098,-30.059968614305287,47.59440620655325,0.35891210968463705,-1.2949046321374091,0.7056999538490667,0.01018457812657349,-0.008836313916631344,0.7083825019452243,0.0049682715849910224,0.0024298925754995975,-0.007761615670768176]\",\n\t\t\"recording_start_rng_state\": \"-576459135923622615\",\n\t\t\"recording_start_tick\": 855,\n\t\t\"recording_start_turbulence\": \"[0.13338250425382384,-0.20476266356657702,0.01566763353591749,0.13298944136236715,-0.18983398804320792,0.019206453643871933,3.558333333333333]\",\n\t\t\"rotor_coupling\": \"relative-spin-locked-inertia-reaction-v1\",\n\t\t\"runway_fallback\": \"none\",\n\t\t\"runway_start_status\": \"not_attempted\",\n\t\t\"scenario\": \"trimmed level flight (engine running) across view at 49.3 m/s (D5: six-axis trim, trim relative to moving air)\",\n\t\t\"scenery_collision_model\": \"openrc-swept-landscape-contact v1\",\n\t\t\"selected_start_choice\": \"airborne\",\n\t\t\"shaft_integrator\": \"coupled-rk4\",\n\t\t\"state_layout\": \"[\\\"north_m\\\",\\\"east_m\\\",\\\"down_m\\\",\\\"u_mps\\\",\\\"v_mps\\\",\\\"w_mps\\\",\\\"qw\\\",\\\"qx\\\",\\\"qy\\\",\\\"qz\\\",\\\"p_radps\\\",\\\"q_radps\\\",\\\"r_radps\\\"]\",\n\t\t\"state_timing\": \"body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage\",\n\t\t\"turbulence_aux_index\": 17,\n\t\t\"turbulence_interval\": \"linear interpolation between exact OU tick samples; wall time tau; independent NED axes\",\n\t\t\"wake_state_unit\": \"m/s (equal-area mean of section Vp*CL)\",\n\t\t\"weather_config\": \"{\\\"format\\\":\\\"openrc-weather v2\\\",\\\"from_deg\\\":90.0,\\\"gust_delay_s\\\":3.0,\\\"gust_duration_s\\\":4.0,\\\"gust_mps\\\":0.6,\\\"gust_period_s\\\":14.0,\\\"gust_up_mps\\\":0.15,\\\"speed_mps\\\":1.5,\\\"turbulence_rms_mps\\\":[0.15,0.15,0.08],\\\"turbulence_seed\\\":20261011,\\\"turbulence_tau_s\\\":3.0}\",\n\t\t\"weather_evidence\": \"user-selected/authored practice conditions; not measured meteorology\",\n\t\t\"weather_model\": \"uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1\",\n\t\t\"weather_timing\": \"wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0\",\n\t\t\"wheel_brakes\": \"[{\\\"availability\\\":\\\"available\\\",\\\"contact\\\":\\\"main_left\\\",\\\"max_torque_nm\\\":2.0},{\\\"availability\\\":\\\"available\\\",\\\"contact\\\":\\\"main_right\\\",\\\"max_torque_nm\\\":2.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"tail\\\",\\\"max_torque_nm\\\":0.0}]\",\n\t\t\"wheel_profile_hash_convention\": \"profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes\",\n\t\t\"wheel_profile_input_sha256\": \"58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665\",\n\t\t\"wheel_profile_sha256\": \"ef594e9e4d0ce4c195eadb336df84096c96a646c13e72f8c1a2e6191e6404f08\",\n\t\t\"wheel_profile_status\": \"applied\",\n\t\t\"wheel_rolling_law\": \"wheel-positive-terrain-excess-v2\",\n\t\t\"wheel_state_layout\": \"[{\\\"contact\\\":\\\"main_left\\\",\\\"index\\\":1,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"main_right\\\",\\\"index\\\":2,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"tail\\\",\\\"index\\\":3,\\\"unit\\\":\\\"m/s rim speed\\\"}]\",\n\t\t\"wheel_state_model\": \"relative-wheel-rim-speed-rk4-v1\",\n\t\t\"wing_polar_model\": \"legacy attached-to-flat-plate blend\"\n\t},\n\t\"mode\": \"candidate\",\n\t\"observer_usec\": 79862,\n\t\"peak_buffer_rows\": 240,\n\t\"recovery_reason\": \"\",\n\t\"rows\": 361,\n\t\"solver_changed\": false,\n\t\"source\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\tmp\\\\audit-corsair-runtime-20261108\\\\baseline.orfl\",\n\t\"source_sha256\": \"9ed5778f49b282b52038105e95db2214ba4aed9a5bb1c25743c15df749a92149\",\n\t\"status\": \"ok\"\n}\n",
+          "sha256_original_utf8": "b5a850b70944208368817718923472ad09698e665f53613514d8a739b1d68f81"
+        }
+      },
+      "artifacts": {
+        "baseline_tape": {
+          "file": "corsair-baseline.orfl.gz",
+          "gzip_bytes": 518741,
+          "gzip_mtime": 0,
+          "gzip_sha256": "4f4c5b9908c461f1be7ae25acedded25e5c02306e5722a48cf19f97c406334e6",
+          "original_bytes": 5166312,
+          "original_path": "tmp/audit-corsair-runtime-20261108/baseline.orfl",
+          "original_sha256": "9ed5778f49b282b52038105e95db2214ba4aed9a5bb1c25743c15df749a92149"
+        },
+        "candidate_aircraft": {
+          "file": "corsair-candidate-aircraft.json.gz",
+          "gzip_bytes": 16404,
+          "gzip_mtime": 0,
+          "gzip_sha256": "2f012a44cc995ec62b23f61beca80ee129be94b64d20119812fe091ec5e80e6e",
+          "original_bytes": 106965,
+          "original_path": "tmp/audit-generators-20261108/f4u-candidate.json",
+          "original_sha256": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10"
+        },
+        "candidate_csv": {
+          "file": "corsair-candidate.csv.gz",
+          "gzip_bytes": 125056,
+          "gzip_mtime": 0,
+          "gzip_sha256": "d9318870dd7b0121bdb5cc4f2f3853416b6c1f49df5f17c9b0268eb8043b9081",
+          "original_bytes": 398680,
+          "original_path": "tmp/audit-corsair-runtime-20261108/data-candidate/flight.csv",
+          "original_sha256": "025b1083abdb9f0e3d98bddc12f5ca26bd47c76bcd604ce75ef2838bd3073f89"
+        }
+      },
+      "baseline_aircraft_sha256": "dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673",
+      "baseline_csv": {
+        "note": "Regenerate by exact replay; not stored redundantly.",
+        "original_path": "tmp/audit-corsair-runtime-20261108/baseline-exact/flight.csv",
+        "sha256": "8ca0498986adae95ead4998e061699cc55c15ea8f213a6c85456741be4b1f2a0"
+      },
+      "candidate_aircraft_sha256": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10",
+      "command_tape_check": {
+        "matched_columns": [
+          "tick",
+          "t_s",
+          "cmd_roll",
+          "cmd_pitch",
+          "cmd_yaw",
+          "cmd_throttle",
+          "cmd_gear_down",
+          "cmd_wheel_brake",
+          "cmd_flaps"
+        ],
+        "mismatched_rows": 0,
+        "note": "Checked exact CSV text values for timestamps, ticks, and every baseline cmd_ column.",
+        "row_count": 361
+      },
+      "comparison": {
+        "original_path": "tmp/audit-corsair-runtime-20261108/data-comparison.json",
+        "original_utf8": "{\n  \"base\": \"flight.csv\",\n  \"candidate\": \"flight.csv\",\n  \"differences\": {\n    \"angular_rate_radps\": {\n      \"components\": {\n        \"p_radps\": {\n          \"max_abs\": 0.0002961365397360868,\n          \"rmse\": 0.0001498666973621737\n        },\n        \"q_radps\": {\n          \"max_abs\": 0.00013002550115778647,\n          \"rmse\": 7.552632474421007e-05\n        },\n        \"r_radps\": {\n          \"max_abs\": 0.0002413121275204981,\n          \"rmse\": 9.86316906056982e-05\n        }\n      },\n      \"max_abs\": 0.0002961365397360868,\n      \"max_at\": {\n        \"component\": \"p_radps\",\n        \"t_s\": 4.795833333333333,\n        \"tick\": 1151\n      },\n      \"rmse\": 0.00011238692554348631,\n      \"unit\": \"rad/s\"\n    },\n    \"position_m\": {\n      \"components\": {\n        \"down_m\": {\n          \"max_abs\": 0.0026392198199509664,\n          \"rmse\": 0.001114813068553384\n        },\n        \"east_m\": {\n          \"max_abs\": 0.00022112889669756441,\n          \"rmse\": 8.386557964217841e-05\n        },\n        \"north_m\": {\n          \"max_abs\": 6.656909113189613e-05,\n          \"rmse\": 2.61843427799907e-05\n        }\n      },\n      \"max_abs\": 0.0026392198199509664,\n      \"max_at\": {\n        \"component\": \"down_m\",\n        \"t_s\": 5.0625,\n        \"tick\": 1215\n      },\n      \"rmse\": 0.0006456333410104507,\n      \"unit\": \"m\"\n    },\n    \"quaternion_angle_rad\": {\n      \"max_abs\": 0.00012742457780166497,\n      \"max_at\": {\n        \"t_s\": 5.0625,\n        \"tick\": 1215\n      },\n      \"rmse\": 6.211067944319809e-05,\n      \"unit\": \"rad\"\n    },\n    \"velocity_mps\": {\n      \"components\": {\n        \"u_mps\": {\n          \"max_abs\": 0.00043711241559662994,\n          \"rmse\": 0.00019235914753222772\n        },\n        \"v_mps\": {\n          \"max_abs\": 0.001849470647777962,\n          \"rmse\": 0.0009169209810988557\n        },\n        \"w_mps\": {\n          \"max_abs\": 0.00041696570931026855,\n          \"rmse\": 0.0002714497894961533\n        }\n      },\n      \"max_abs\": 0.001849470647777962,\n      \"max_at\": {\n        \"component\": \"v_mps\",\n        \"t_s\": 4.770833333333333,\n        \"tick\": 1145\n      },\n      \"rmse\": 0.0005631551341729674,\n      \"unit\": \"m/s\"\n    }\n  },\n  \"first_divergence\": {\n    \"metrics\": [\n      \"position_m\",\n      \"velocity_mps\",\n      \"angular_rate_radps\",\n      \"quaternion_angle_rad\"\n    ],\n    \"t_s\": 3.5666666666666664,\n    \"tick\": 856\n  },\n  \"rows\": 361,\n  \"status\": \"ok\",\n  \"tick\": {\n    \"first\": 855,\n    \"last\": 1215\n  },\n  \"time_s\": {\n    \"duration\": 1.5,\n    \"first\": 3.5625,\n    \"last\": 5.0625\n  }\n}\n",
+        "sha256_original_utf8": "5a975c36d65420ffddc83d7fcd5d1c8e2475f561742786d9c388a0d1605b2322"
+      },
+      "exact_baseline_replay": {
+        "engine_log": {
+          "original_path": "tmp/audit-corsair-runtime-20261108/baseline-exact/godot.log",
+          "original_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\r\n\r\nFlight log exact: 361 rows verified.\r\n",
+          "sha256_original_utf8": "7cdd72b9b7a7c9a701704a216e80702a7c9daba5ad11aa7d8db3bc4685f3c643"
+        },
+        "report": {
+          "original_path": "tmp/audit-corsair-runtime-20261108/baseline-exact/replay.json",
+          "original_utf8": "{\n\t\"baseline_build\": {\n\t\t\"commit\": \"\",\n\t\t\"commit_date\": \"\",\n\t\t\"describe\": \"\",\n\t\t\"dirty\": false,\n\t\t\"godot\": \"4.8-beta2 (official)\",\n\t\t\"label\": \"\",\n\t\t\"parsed\": {\n\t\t\t\"after\": 0,\n\t\t\t\"base\": \"0.2.0\",\n\t\t\t\"dirty\": false,\n\t\t\t\"prerelease\": \"\",\n\t\t\t\"semver\": \"0.2.0\",\n\t\t\t\"sha\": \"\",\n\t\t\t\"tag\": \"\"\n\t\t},\n\t\t\"source\": \"development\",\n\t\t\"version\": \"0.2.0\"\n\t},\n\t\"baseline_solver_identity_kind\": \"source-tree-v1\",\n\t\"baseline_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"baseline_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"candidate\": \"\",\n\t\"candidate_identity\": {\n\t\t\"format\": \"openrc-aircraft v2\",\n\t\t\"sha256\": \"dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673\"\n\t},\n\t\"comparison_method\": \"Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver.\",\n\t\"complete\": true,\n\t\"current_solver_identity_kind\": \"source-tree-v1\",\n\t\"current_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"current_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"dt_s\": 0.004166666666666667,\n\t\"error\": \"\",\n\t\"events\": [\n\t\t{\n\t\t\t\"detail\": \"baseline\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 855\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 855\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"flap_step\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 1215\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"flap_response\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 1215\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"stopped by debug bridge\",\n\t\t\t\"kind\": \"stop\",\n\t\t\t\"tick\": 1215\n\t\t}\n\t],\n\t\"events_omitted\": 0,\n\t\"final_tick\": 1215,\n\t\"first_tick\": 855,\n\t\"format\": \"openrc-flight-log-report v1\",\n\t\"metadata\": {\n\t\t\"aero_loads_law\": \"section-plane-source-weighted-wake-velocity-v2\",\n\t\t\"aero_model\": \"section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle\",\n\t\t\"aircraft\": \"f4u-corsair-250 (res://data/aircraft/f4u_corsair_250.json)\",\n\t\t\"aircraft_input_format\": \"openrc-aircraft v2\",\n\t\t\"aircraft_input_hash_convention\": \"sha256 of exact aircraft input file bytes\",\n\t\t\"aircraft_input_sha256\": \"dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673\",\n\t\t\"aircraft_semantic_hash_convention\": \"sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes\",\n\t\t\"aircraft_semantic_sha256\": \"0289713a9c0b63b73d594689472a8ba71825072b8fdf1e1508408219fdb34cfa\",\n\t\t\"aux_layout\": \"[\\\"engine_rpm\\\",\\\"srv_roll\\\",\\\"srv_pitch\\\",\\\"srv_yaw\\\"]\",\n\t\t\"collision_world_identity\": \"4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f\",\n\t\t\"configuration\": \"virtual-balanced-reference-v2-empty-tank\",\n\t\t\"continuous_layout\": \"axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail; base propulsion/wheels; usable fuel kg; source latch 0/1\",\n\t\t\"created_utc\": \"2026-11-08T14:18:44\",\n\t\t\"dt_s\": 0.004166666666666667,\n\t\t\"engine\": \"Godot 4.8-beta2 (official)\",\n\t\t\"engine_rpm_semantics\": \"propeller shaft rpm\",\n\t\t\"flap_aux_index\": 16,\n\t\t\"flap_base_metadata_schema\": \"openrc-flight-meta v8\",\n\t\t\"flap_input_index\": 6,\n\t\t\"flap_law\": \"controls.flaps.hinged_trailing_edge.v1\",\n\t\t\"flap_max_angle_deg\": 30.0,\n\t\t\"flap_trace_schema\": \"openrc-flap-trace v1\",\n\t\t\"frames\": \"world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]\",\n\t\t\"fuel_capacity_kg\": 0.7478536585365853,\n\t\t\"fuel_consumption_law\": \"gasoline_bsfc_v1\",\n\t\t\"fuel_mass_policy\": \"finite single store; co-moving efflux; fixed authored reference datum\",\n\t\t\"fuel_start_fill\": 1.0,\n\t\t\"fuel_start_fill_known\": true,\n\t\t\"fuel_state_index\": 4,\n\t\t\"fuel_store_id\": \"main_tank\",\n\t\t\"fuel_unusable_kg\": 0.007478536585365853,\n\t\t\"gear_aux_index\": 14,\n\t\t\"gear_law\": \"retractable-point-gear-v1\",\n\t\t\"gear_trace_schema\": \"openrc-gear-trace v1\",\n\t\t\"gravity_mps2\": 9.80665,\n\t\t\"ground\": \"retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock\",\n\t\t\"ground_effect_model\": \"image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)\",\n\t\t\"hull_contact_model\": \"soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground\",\n\t\t\"hull_lake_normal_model\": \"positive-down-bank-gradient-normal-v2\",\n\t\t\"inertia_kgm2\": \"Jxx Jyy Jzz Jxy Jxz Jyz = 4.02926991740707 6.65630872440302 9.79922944098077 0.0 -0.20199360591056 0.0\",\n\t\t\"input_layout\": \"[\\\"roll\\\",\\\"pitch\\\",\\\"yaw\\\",\\\"throttle\\\",\\\"gear_down\\\",\\\"wheel_brake\\\",\\\"flaps\\\"]\",\n\t\t\"lake_id\": \"near_runway\",\n\t\t\"lake_identity\": \"bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa\",\n\t\t\"lake_terrain_model\": \"bounded-lake-terrain-and-terminal-water-contact-v1\",\n\t\t\"launch_aux\": \"[4542.259194385202,0.049784076614177844,-0.14687891929176145,-0.015292747690510288]\",\n\t\t\"launch_choice\": \"airborne\",\n\t\t\"launch_continuous\": \"[4542.259194385202,0.0,0.0,0.0,0.7403751219512194,1.0]\",\n\t\t\"launch_engine_running\": \"true\",\n\t\t\"launch_error\": \"\",\n\t\t\"launch_field_id\": \"\",\n\t\t\"launch_ground_anchors\": \"[]\",\n\t\t\"launch_kind\": \"trimmed_airborne\",\n\t\t\"launch_state\": \"[60.0,-40.0,-30.0,47.64607578961792,0.5452854370825487,-1.254365745643577,0.7070422166680845,0.009555304761308305,-0.009555304761308307,0.7070422166680844,0.0,0.0,0.0]\",\n\t\t\"launch_trim_throttle\": \"0.5\",\n\t\t\"liquid_fuel_model\": \"single-store-finite-liquid-fixed-datum-v1\",\n\t\t\"liquid_fuel_schema\": \"openrc-liquid-fuel v1\",\n\t\t\"loads\": \"Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction\",\n\t\t\"mass_contact_law\": \"fixed-datum-live-mass-contact-linear-fuel-v1\",\n\t\t\"mass_kg\": 21.500000999999997,\n\t\t\"mass_reference\": \"mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum\",\n\t\t\"metadata_schema\": \"openrc-flight-meta v9\",\n\t\t\"propulsion_features\": \"{\\\"propeller_normal_force\\\":true,\\\"propeller_pfactor\\\":true,\\\"rotor_gyroscopic_coupling\\\":true,\\\"turbine_ram_flow\\\":false,\\\"turbine_ram_jet\\\":false}\",\n\t\t\"propulsion_model\": \"propeller-shaft-coupled-rk4-v1\",\n\t\t\"propwash_model\": \"tail-slipstream-increment-v1\",\n\t\t\"recording_start_aux\": \"[4544.80295094868,0.049784076614177844,-0.14687891929176145,-0.015292747690510288]\",\n\t\t\"recording_start_continuous\": \"[4544.80295094868,0.0,0.0,0.0,0.7382639620826098,1.0]\",\n\t\t\"recording_start_engine_running\": \"true\",\n\t\t\"recording_start_flap\": 0.0,\n\t\t\"recording_start_gear\": \"[0.0,0.0]\",\n\t\t\"recording_start_previous_state\": \"[58.071304780333186,129.4764016466098,-30.059968614305287,47.59440620655325,0.35891210968463705,-1.2949046321374091,0.7056999538490667,0.01018457812657349,-0.008836313916631344,0.7083825019452243,0.0049682715849910224,0.0024298925754995975,-0.007761615670768176]\",\n\t\t\"recording_start_rng_state\": \"-576459135923622615\",\n\t\t\"recording_start_tick\": 855,\n\t\t\"recording_start_turbulence\": \"[0.13338250425382384,-0.20476266356657702,0.01566763353591749,0.13298944136236715,-0.18983398804320792,0.019206453643871933,3.558333333333333]\",\n\t\t\"rotor_coupling\": \"relative-spin-locked-inertia-reaction-v1\",\n\t\t\"runway_fallback\": \"none\",\n\t\t\"runway_start_status\": \"not_attempted\",\n\t\t\"scenario\": \"trimmed level flight (engine running) across view at 49.3 m/s (D5: six-axis trim, trim relative to moving air)\",\n\t\t\"scenery_collision_model\": \"openrc-swept-landscape-contact v1\",\n\t\t\"selected_start_choice\": \"airborne\",\n\t\t\"shaft_integrator\": \"coupled-rk4\",\n\t\t\"state_layout\": \"[\\\"north_m\\\",\\\"east_m\\\",\\\"down_m\\\",\\\"u_mps\\\",\\\"v_mps\\\",\\\"w_mps\\\",\\\"qw\\\",\\\"qx\\\",\\\"qy\\\",\\\"qz\\\",\\\"p_radps\\\",\\\"q_radps\\\",\\\"r_radps\\\"]\",\n\t\t\"state_timing\": \"body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage\",\n\t\t\"turbulence_aux_index\": 17,\n\t\t\"turbulence_interval\": \"linear interpolation between exact OU tick samples; wall time tau; independent NED axes\",\n\t\t\"wake_state_unit\": \"m/s (equal-area mean of section Vp*CL)\",\n\t\t\"weather_config\": \"{\\\"format\\\":\\\"openrc-weather v2\\\",\\\"from_deg\\\":90.0,\\\"gust_delay_s\\\":3.0,\\\"gust_duration_s\\\":4.0,\\\"gust_mps\\\":0.6,\\\"gust_period_s\\\":14.0,\\\"gust_up_mps\\\":0.15,\\\"speed_mps\\\":1.5,\\\"turbulence_rms_mps\\\":[0.15,0.15,0.08],\\\"turbulence_seed\\\":20261011,\\\"turbulence_tau_s\\\":3.0}\",\n\t\t\"weather_evidence\": \"user-selected/authored practice conditions; not measured meteorology\",\n\t\t\"weather_model\": \"uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1\",\n\t\t\"weather_timing\": \"wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0\",\n\t\t\"wheel_brakes\": \"[{\\\"availability\\\":\\\"available\\\",\\\"contact\\\":\\\"main_left\\\",\\\"max_torque_nm\\\":2.0},{\\\"availability\\\":\\\"available\\\",\\\"contact\\\":\\\"main_right\\\",\\\"max_torque_nm\\\":2.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"tail\\\",\\\"max_torque_nm\\\":0.0}]\",\n\t\t\"wheel_profile_hash_convention\": \"profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes\",\n\t\t\"wheel_profile_input_sha256\": \"58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665\",\n\t\t\"wheel_profile_sha256\": \"ef594e9e4d0ce4c195eadb336df84096c96a646c13e72f8c1a2e6191e6404f08\",\n\t\t\"wheel_profile_status\": \"applied\",\n\t\t\"wheel_rolling_law\": \"wheel-positive-terrain-excess-v2\",\n\t\t\"wheel_state_layout\": \"[{\\\"contact\\\":\\\"main_left\\\",\\\"index\\\":1,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"main_right\\\",\\\"index\\\":2,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"tail\\\",\\\"index\\\":3,\\\"unit\\\":\\\"m/s rim speed\\\"}]\",\n\t\t\"wheel_state_model\": \"relative-wheel-rim-speed-rk4-v1\",\n\t\t\"wing_polar_model\": \"legacy attached-to-flat-plate blend\"\n\t},\n\t\"mode\": \"exact\",\n\t\"observer_usec\": 79862,\n\t\"peak_buffer_rows\": 240,\n\t\"recovery_reason\": \"\",\n\t\"rows\": 361,\n\t\"solver_changed\": false,\n\t\"source\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\tmp\\\\audit-corsair-runtime-20261108\\\\baseline.orfl\",\n\t\"source_sha256\": \"9ed5778f49b282b52038105e95db2214ba4aed9a5bb1c25743c15df749a92149\",\n\t\"status\": \"ok\"\n}\n",
+          "sha256_original_utf8": "e48f3ba60b06ba64888047ee2fad58592ccad3164b78185a86208b00083f6bf9"
+        }
+      }
+    },
+    "extra": {
+      "aircraft_only_candidate_replay": {
+        "engine_log": {
+          "original_path": "tmp/audit-generators-20261108/extra-candidate-replay/godot.log",
+          "original_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\r\n\r\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\r\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\r\nFlight log candidate: 481 rows verified.\r\n",
+          "sha256_original_utf8": "4c5241eaf0fc6d26b1a76e2b47321552b99128312c25f43f45d5bab47fbd99ce"
+        },
+        "report": {
+          "original_path": "tmp/audit-generators-20261108/extra-candidate-replay/replay.json",
+          "original_utf8": "{\n\t\"baseline_build\": {\n\t\t\"commit\": \"\",\n\t\t\"commit_date\": \"\",\n\t\t\"describe\": \"\",\n\t\t\"dirty\": false,\n\t\t\"godot\": \"4.8-beta2 (official)\",\n\t\t\"label\": \"\",\n\t\t\"parsed\": {\n\t\t\t\"after\": 0,\n\t\t\t\"base\": \"0.2.0\",\n\t\t\t\"dirty\": false,\n\t\t\t\"prerelease\": \"\",\n\t\t\t\"semver\": \"0.2.0\",\n\t\t\t\"sha\": \"\",\n\t\t\t\"tag\": \"\"\n\t\t},\n\t\t\"source\": \"development\",\n\t\t\"version\": \"0.2.0\"\n\t},\n\t\"baseline_solver_identity_kind\": \"source-tree-v1\",\n\t\"baseline_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"baseline_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"candidate\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\tmp\\\\audit-generators-20261108\\\\extra-candidate.json\",\n\t\"candidate_identity\": {\n\t\t\"format\": \"openrc-aircraft v2\",\n\t\t\"sha256\": \"0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc\"\n\t},\n\t\"comparison_method\": \"Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation.\",\n\t\"complete\": true,\n\t\"current_solver_identity_kind\": \"source-tree-v1\",\n\t\"current_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"current_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"dt_s\": 0.004166666666666667,\n\t\"error\": \"\",\n\t\"events\": [\n\t\t{\n\t\t\t\"detail\": \"debug bridge marker\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 168\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 168\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 648\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"debug bridge marker\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 648\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"stopped by debug bridge\",\n\t\t\t\"kind\": \"stop\",\n\t\t\t\"tick\": 648\n\t\t}\n\t],\n\t\"events_omitted\": 0,\n\t\"final_tick\": 648,\n\t\"first_tick\": 168,\n\t\"format\": \"openrc-flight-log-report v1\",\n\t\"metadata\": {\n\t\t\"aero_loads_law\": \"section-plane-source-weighted-wake-velocity-v2\",\n\t\t\"aero_model\": \"section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle\",\n\t\t\"aircraft\": \"gp-extra-300s-60 (res://data/aircraft/gp_extra_300s_60.json)\",\n\t\t\"aircraft_input_format\": \"openrc-aircraft v2\",\n\t\t\"aircraft_input_hash_convention\": \"sha256 of exact aircraft input file bytes\",\n\t\t\"aircraft_input_sha256\": \"6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75\",\n\t\t\"aircraft_semantic_hash_convention\": \"sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes\",\n\t\t\"aircraft_semantic_sha256\": \"0d35c3d49d60ce540afe7791692d1070a11dc5f355c7036271a8f33639ea5bef\",\n\t\t\"aux_layout\": \"[\\\"engine_rpm\\\",\\\"srv_roll\\\",\\\"srv_pitch\\\",\\\"srv_yaw\\\"]\",\n\t\t\"collision_world_identity\": \"4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f\",\n\t\t\"configuration\": \"rcm-weighed-dry-manual-p43-plus-full-finite-glow-tank-v3\",\n\t\t\"continuous_layout\": \"rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line); wheel rim speeds in m/s, landing-gear contact order, appended continuous tail\",\n\t\t\"created_utc\": \"2026-11-08T14:19:24\",\n\t\t\"dt_s\": 0.004166666666666667,\n\t\t\"engine\": \"Godot 4.8-beta2 (official)\",\n\t\t\"engine_rpm_semantics\": \"propeller shaft rpm\",\n\t\t\"frames\": \"world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]\",\n\t\t\"fuel_mass_policy\": \"finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG\",\n\t\t\"glow_family\": \"glow_2t\",\n\t\t\"glow_feed_line_inventory_id\": \"\",\n\t\t\"glow_fuel_registry_sha256\": \"6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043\",\n\t\t\"glow_fuel_tank_id\": \"main_tank\",\n\t\t\"glow_identity\": \"{\\\"format\\\":\\\"openrc-glow-installation v2\\\",\\\"profile\\\":{\\\"format\\\":\\\"openrc-glow-engine v1\\\",\\\"sha256\\\":\\\"462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e\\\"},\\\"sha256\\\":\\\"84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8\\\"}\",\n\t\t\"glow_recording_start\": \"{\\\"above_recommended_rpm\\\":false,\\\"actual_mixture\\\":1.149851726182349,\\\"admission\\\":0.6196453266674665,\\\"air_charge_kg_cycle\\\":4.737694180475804e-06,\\\"air_fraction\\\":0.17766578727170163,\\\"air_target\\\":0.17766578727170163,\\\"blade_count\\\":2.0,\\\"brake_power_w\\\":462.325420553575,\\\"burned_fuel_kg_s\\\":0.00015127065811410025,\\\"chemical_power_w\\\":2806.6287333848986,\\\"commanded_throttle\\\":0.4999999932828849,\\\"cycle_frequency_hz\\\":180.1057244876397,\\\"cycle_revolutions\\\":1,\\\"cycle_work_j\\\":2.806455424831599,\\\"delivered_fuel_kg_s\\\":0.00028675685371295606,\\\"family\\\":\\\"glow_2t\\\",\\\"feed_line_fuel_kg\\\":0.0,\\\"fire_count\\\":125,\\\"firing_accumulator\\\":0.0,\\\"firing_fraction\\\":1.0,\\\"firing_frequency_hz\\\":180.1057244876397,\\\"fuel_density_kg_m3\\\":856.9200000000001,\\\"fuel_feed_factor\\\":1.0,\\\"fuel_input_power_w\\\":4246.408811142772,\\\"fuel_kg\\\":0.30400591692360474,\\\"fuel_source_mode\\\":1,\\\"fuel_target_kg_s\\\":0.00028679383111836356,\\\"fuel_transport_kg_s\\\":0.00028675685371295606,\\\"fuel_volume_m3\\\":0.0003547658088545077,\\\"hub_air_velocity_body_m_s\\\":[32.61387388761168,0.37814197495452045,0.9715806911099372],\\\"indicated_power_w\\\":505.4586875315618,\\\"indicated_torque_nm\\\":0.4466612534290141,\\\"line_fuel_kg\\\":0.0,\\\"main_fuel_kg\\\":0.30400591692360474,\\\"mass_properties\\\":{\\\"cg_body_m\\\":[-6.954022948077987e-06,0.0,1.2650295749249984e-06],\\\"inertia\\\":[0.16869197211919934,0.31420127580485563,0.45734145494723005,0.0,-0.015727405125401814,0.0],\\\"inertia_origin\\\":[0.16869197212531145,0.3142012759956654,0.4573414551319277,0.0,-0.01572740509180285,0.0],\\\"inverse\\\":[5.94703123767189,3.182673263940153,2.193582971508912,0.0,0.20451102465460433,0.0],\\\"mass_kg\\\":3.8193469169236054,\\\"ok\\\":true},\\\"mechanical_loss_w\\\":37.33849614732517,\\\"mechanical_torque_nm\\\":0.032995099108425734,\\\"message\\\":\\\"\\\",\\\"mixture_command\\\":1.15,\\\"ok\\\":true,\\\"opportunity_count\\\":125,\\\"opportunity_frequency_hz\\\":180.1057244876397,\\\"phase_revolutions\\\":0.8687702988472352,\\\"profile_identity\\\":{\\\"cycle_revolutions\\\":1,\\\"id\\\":\\\"os_max_61fx_installed_candidate\\\",\\\"input_sha256\\\":\\\"462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e\\\",\\\"manufacturer\\\":\\\"O.S. Engines\\\",\\\"model\\\":\\\"MAX-61FX (muffler-installed)\\\",\\\"status\\\":\\\"candidate\\\"},\\\"propeller\\\":{\\\"dissipation_w\\\":141.68202637172175,\\\"ok\\\":true,\\\"shaft_power_w\\\":460.653722006988,\\\"thrust_n\\\":9.780075714301017,\\\"thrust_power_w\\\":318.97169563526626,\\\"torque_nm\\\":0.4070682212886767},\\\"propeller_work_j\\\":322.6219002086644,\\\"pumping_loss_w\\\":5.794770830661513,\\\"pumping_torque_nm\\\":0.0051206946609173515,\\\"recommended_max_rpm\\\":15833.333333333334,\\\"rpm\\\":10806.343469258381,\\\"running\\\":true,\\\"servo_fraction\\\":0.4999999932828849,\\\"shaft_torque_nm\\\":0.408545459659671,\\\"shaft_work_j\\\":323.5089063623264,\\\"source_vibration\\\":{\\\"alpha_rad_s2\\\":0.0,\\\"constant_speed_assumption\\\":true,\\\"cycle_revolutions\\\":1,\\\"errors\\\":[],\\\"family\\\":\\\"glow_2t\\\",\\\"firing_order\\\":1.0,\\\"mean_successful_fire_rate_hz\\\":180.1057244876397,\\\"ok\\\":true,\\\"omega_rad_s\\\":1131.6376418396724,\\\"opportunity_frequency_hz\\\":180.1057244876397,\\\"order_1x_force_cosine_n\\\":-193.6913175548038,\\\"order_1x_force_peak_n\\\":193.6913175548038,\\\"order_1x_force_sine_n\\\":0.0,\\\"order_2x_force_cosine_n\\\":-56.515163504067715,\\\"order_2x_force_peak_n\\\":56.515163504067715,\\\"order_2x_force_sine_n\\\":0.0,\\\"phase_rad\\\":5.458644777030966,\\\"source_force_n\\\":-128.2704553197007},\\\"stop_reason\\\":\\\"\\\",\\\"temperature_k\\\":389.2434987544369,\\\"throttle_opening\\\":0.17766578727170163,\\\"thrust_work_j\\\":223.4790427832377,\\\"total_fuel_kg\\\":0.30400591692360474,\\\"unburned_chemical_power_w\\\":1439.7800777578732,\\\"unburned_fuel_kg_s\\\":0.0001354861955988558,\\\"valve_loss_w\\\":0.0,\\\"valve_torque_nm\\\":0.0}\",\n\t\t\"gravity_mps2\": 9.80665,\n\t\t\"ground\": \"3 profiled spring-damper gear contacts; deterministic bounded grass relief (GP-01, at most 7 mm), terrain-normal projection, field-scaled friction and wheel-radius-corrected rolling resistance; steering and continuous relative wheel spin; brakes off (no brake command exposed); field 'default'\",\n\t\t\"ground_effect_model\": \"image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)\",\n\t\t\"hull_contact_model\": \"soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground\",\n\t\t\"hull_lake_normal_model\": \"positive-down-bank-gradient-normal-v2\",\n\t\t\"inertia_kgm2\": \"Jxx Jyy Jzz Jxy Jxz Jyz = 0.16869219449346 0.31420518364269 0.45734528172514 0.0 -0.01572676564523 0.0\",\n\t\t\"lake_id\": \"near_runway\",\n\t\t\"lake_identity\": \"bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa\",\n\t\t\"lake_terrain_model\": \"bounded-lake-terrain-and-terminal-water-contact-v1\",\n\t\t\"launch_aux\": \"[10784.934065682719,0.001427217563724188,0.026746458770545704,-0.016872944807053376]\",\n\t\t\"launch_choice\": \"airborne\",\n\t\t\"launch_continuous\": \"[10784.934065682719,0.30420660000000005,390.0,0.4999999932828849,0.17766578727170163,0.0002866830051427754,0.0,1.0,0.0,0.0,0.0,0.0,1.15,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0]\",\n\t\t\"launch_engine_running\": \"true\",\n\t\t\"launch_error\": \"\",\n\t\t\"launch_field_id\": \"\",\n\t\t\"launch_ground_anchors\": \"[]\",\n\t\t\"launch_kind\": \"trimmed_airborne\",\n\t\t\"launch_state\": \"[60.0,-40.0,-30.0,30.765433595456656,0.40942644577034143,0.9401254814358406,0.7070301018055234,-0.010413219524781152,0.010413219524781154,0.7070301018055233,0.0,0.0,0.0]\",\n\t\t\"launch_trim_throttle\": \"0.5\",\n\t\t\"loads\": \"Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction\",\n\t\t\"mass_contact_law\": \"fixed-datum-live-mass-contact-linear-fuel-v1\",\n\t\t\"mass_kg\": 3.819547600000001,\n\t\t\"mass_reference\": \"mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum\",\n\t\t\"metadata_schema\": \"openrc-flight-meta v10\",\n\t\t\"propulsion_features\": \"{\\\"propeller_normal_force\\\":true,\\\"propeller_pfactor\\\":true,\\\"rotor_gyroscopic_coupling\\\":true,\\\"turbine_ram_flow\\\":false,\\\"turbine_ram_jet\\\":false}\",\n\t\t\"propulsion_model\": \"glow-mean-cycle-segmented-firing-v6\",\n\t\t\"propwash_model\": \"tail-slipstream-increment-v1\",\n\t\t\"recording_start_aux\": \"[10806.343469258381,0.001427217563724188,0.026746458770545704,-0.016872944807053376]\",\n\t\t\"recording_start_continuous\": \"[10806.343469258381,0.30400591692360474,389.2434987544369,0.4999999932828849,0.17766578727170163,0.00028675685371295606,0.8687702988472352,1.0,0.0,125.0,125.0,0.0,1.15,323.5089063623264,322.6219002086644,223.4790427832377,1964.0305584019898,0.0,1.0,0.0,0.0,0.0]\",\n\t\t\"recording_start_engine_running\": \"true\",\n\t\t\"recording_start_previous_state\": \"[59.71371907558212,-18.58356059897775,-29.979173714763345,30.749342374498898,0.5540316499782958,0.9140395907108012,0.7086846875660434,-0.010685949024043562,0.010262015775680313,0.7053697719176055,-0.00025932675788455117,0.0012322695938524323,-0.0010244259508513942]\",\n\t\t\"recording_start_rng_state\": \"8719974191365111793\",\n\t\t\"recording_start_tick\": 168,\n\t\t\"recording_start_turbulence\": \"[-0.1796283340261968,-0.3595484544057107,-0.005487961548925761,-0.18435863225875165,-0.36480231162924914,-0.003536180013691455,0.6958333333333333]\",\n\t\t\"rotor_coupling\": \"relative-spin-locked-inertia-reaction-v1\",\n\t\t\"runway_fallback\": \"none\",\n\t\t\"runway_start_status\": \"not_attempted\",\n\t\t\"scenario\": \"trimmed level flight (engine running) across view at 32.5 m/s (D5: six-axis trim, trim relative to moving air)\",\n\t\t\"scenery_collision_model\": \"openrc-swept-landscape-contact v1\",\n\t\t\"selected_start_choice\": \"airborne\",\n\t\t\"shaft_integrator\": \"coupled-rk4\",\n\t\t\"state_layout\": \"[\\\"north_m\\\",\\\"east_m\\\",\\\"down_m\\\",\\\"u_mps\\\",\\\"v_mps\\\",\\\"w_mps\\\",\\\"qw\\\",\\\"qx\\\",\\\"qy\\\",\\\"qz\\\",\\\"p_radps\\\",\\\"q_radps\\\",\\\"r_radps\\\"]\",\n\t\t\"state_timing\": \"body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage\",\n\t\t\"turbulence_aux_index\": 14,\n\t\t\"turbulence_interval\": \"linear interpolation between exact OU tick samples; wall time tau; independent NED axes\",\n\t\t\"wake_state_unit\": \"m/s (equal-area mean of section Vp*CL)\",\n\t\t\"weather_config\": \"{\\\"format\\\":\\\"openrc-weather v2\\\",\\\"from_deg\\\":90.0,\\\"gust_delay_s\\\":3.0,\\\"gust_duration_s\\\":4.0,\\\"gust_mps\\\":0.6,\\\"gust_period_s\\\":14.0,\\\"gust_up_mps\\\":0.15,\\\"speed_mps\\\":1.5,\\\"turbulence_rms_mps\\\":[0.15,0.15,0.08],\\\"turbulence_seed\\\":20261011,\\\"turbulence_tau_s\\\":3.0}\",\n\t\t\"weather_evidence\": \"user-selected/authored practice conditions; not measured meteorology\",\n\t\t\"weather_model\": \"uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1\",\n\t\t\"weather_timing\": \"wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0\",\n\t\t\"wheel_brakes\": \"[{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"main_left\\\",\\\"max_torque_nm\\\":0.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"main_right\\\",\\\"max_torque_nm\\\":0.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"tail\\\",\\\"max_torque_nm\\\":0.0}]\",\n\t\t\"wheel_profile_hash_convention\": \"profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes\",\n\t\t\"wheel_profile_input_sha256\": \"58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665\",\n\t\t\"wheel_profile_sha256\": \"72c9d754277eed6a6db76894c76fd16e860e5b71569928d3f9d1bbbeb3ab6d97\",\n\t\t\"wheel_profile_status\": \"applied\",\n\t\t\"wheel_rolling_law\": \"wheel-positive-terrain-excess-v2\",\n\t\t\"wheel_state_layout\": \"[{\\\"contact\\\":\\\"main_left\\\",\\\"index\\\":19,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"main_right\\\",\\\"index\\\":20,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"tail\\\",\\\"index\\\":21,\\\"unit\\\":\\\"m/s rim speed\\\"}]\",\n\t\t\"wheel_state_model\": \"relative-wheel-rim-speed-rk4-v1\",\n\t\t\"wing_polar_model\": \"tabulated-wing-v1 (experimental finite-wing strip reference); spanwise stall progression g = 1.0\"\n\t},\n\t\"mode\": \"candidate\",\n\t\"observer_usec\": 60889,\n\t\"peak_buffer_rows\": 240,\n\t\"recovery_reason\": \"\",\n\t\"rows\": 481,\n\t\"solver_changed\": false,\n\t\"source\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\tmp\\\\audit-generators-20261108\\\\extra-baseline.orfl\",\n\t\"source_sha256\": \"ac9232ce683ec1750129b2cfbc76a1c40d80c106d4c8f0b79f58b9526bbe83ba\",\n\t\"status\": \"ok\"\n}\n",
+          "sha256_original_utf8": "0b3fb3f14ef93072f82b3082df1f8c59fce0016d03689d69d7cfa95788dd0403"
+        }
+      },
+      "artifacts": {
+        "baseline_tape": {
+          "file": "extra-baseline.orfl.gz",
+          "gzip_bytes": 581526,
+          "gzip_mtime": 0,
+          "gzip_sha256": "e31ef2a98a5828c575e52ea1cea096dab054550b45bbef217f7bf8f518711941",
+          "original_bytes": 5330996,
+          "original_path": "tmp/audit-generators-20261108/extra-baseline.orfl",
+          "original_sha256": "ac9232ce683ec1750129b2cfbc76a1c40d80c106d4c8f0b79f58b9526bbe83ba"
+        },
+        "candidate_aircraft": {
+          "file": "extra-candidate-aircraft.json.gz",
+          "gzip_bytes": 13089,
+          "gzip_mtime": 0,
+          "gzip_sha256": "139f8e81faab1b85d04ef5b36adf2eacc03bbcdbf1f8308169adab220aa107c2",
+          "original_bytes": 72101,
+          "original_path": "tmp/audit-generators-20261108/extra-candidate.json",
+          "original_sha256": "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc"
+        },
+        "candidate_csv": {
+          "file": "extra-candidate.csv.gz",
+          "gzip_bytes": 196113,
+          "gzip_mtime": 0,
+          "gzip_sha256": "d7368a77d838d24a3133ce574f2be57dac1d25e3225ccfdbcbb76410afea9df5",
+          "original_bytes": 622840,
+          "original_path": "tmp/audit-generators-20261108/extra-candidate-replay/flight.csv",
+          "original_sha256": "293839a5dd2b0ce81f64c8f6cd0aa27b470c88ef721b582011167d9aa1a29667"
+        }
+      },
+      "baseline_aircraft_sha256": "6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75",
+      "baseline_csv": {
+        "note": "Regenerate by exact replay; not stored redundantly.",
+        "original_path": "tmp/audit-generators-20261108/extra-baseline-exact/flight.csv",
+        "sha256": "10f93acd4a73320772ed6419befa7413da722d9d7a84a3e79e1405ac0bad6d33"
+      },
+      "baseline_export_vs_exact_comparison": {
+        "original_path": "tmp/audit-generators-20261108/extra-baseline-exact-comparison.json",
+        "original_utf8": "{\n  \"base\": \"flight.csv\",\n  \"candidate\": \"flight.csv\",\n  \"differences\": {\n    \"angular_rate_radps\": {\n      \"components\": {\n        \"p_radps\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        },\n        \"q_radps\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        },\n        \"r_radps\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        }\n      },\n      \"max_abs\": 0.0,\n      \"rmse\": 0.0,\n      \"unit\": \"rad/s\"\n    },\n    \"position_m\": {\n      \"components\": {\n        \"down_m\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        },\n        \"east_m\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        },\n        \"north_m\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        }\n      },\n      \"max_abs\": 0.0,\n      \"rmse\": 0.0,\n      \"unit\": \"m\"\n    },\n    \"quaternion_angle_rad\": {\n      \"max_abs\": 0.0,\n      \"rmse\": 0.0,\n      \"unit\": \"rad\"\n    },\n    \"velocity_mps\": {\n      \"components\": {\n        \"u_mps\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        },\n        \"v_mps\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        },\n        \"w_mps\": {\n          \"max_abs\": 0.0,\n          \"rmse\": 0.0\n        }\n      },\n      \"max_abs\": 0.0,\n      \"rmse\": 0.0,\n      \"unit\": \"m/s\"\n    }\n  },\n  \"first_divergence\": null,\n  \"rows\": 481,\n  \"status\": \"ok\",\n  \"tick\": {\n    \"first\": 168,\n    \"last\": 648\n  },\n  \"time_s\": {\n    \"duration\": 2.0,\n    \"first\": 0.7,\n    \"last\": 2.7\n  }\n}\n",
+        "sha256_original_utf8": "91fb5cfba59b133b32a9f606efa17d02dde8389c3e8ed42245d5a4dc8b606e64"
+      },
+      "candidate_aircraft_sha256": "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc",
+      "command_tape_check": {
+        "matched_columns": [
+          "tick",
+          "t_s",
+          "cmd_roll",
+          "cmd_pitch",
+          "cmd_yaw",
+          "cmd_throttle"
+        ],
+        "mismatched_rows": 0,
+        "note": "Checked exact CSV text values for timestamps, ticks, and every baseline cmd_ column.",
+        "row_count": 481
+      },
+      "comparison": {
+        "original_path": "tmp/audit-generators-20261108/extra-candidate-comparison.json",
+        "original_utf8": "{\n  \"base\": \"flight.csv\",\n  \"candidate\": \"flight.csv\",\n  \"differences\": {\n    \"angular_rate_radps\": {\n      \"components\": {\n        \"p_radps\": {\n          \"max_abs\": 0.00546938507687806,\n          \"rmse\": 0.004869489265879855\n        },\n        \"q_radps\": {\n          \"max_abs\": 0.003120301186224257,\n          \"rmse\": 0.002473755690365877\n        },\n        \"r_radps\": {\n          \"max_abs\": 0.0028763171210020276,\n          \"rmse\": 0.00158931964233914\n        }\n      },\n      \"max_abs\": 0.00546938507687806,\n      \"max_at\": {\n        \"component\": \"p_radps\",\n        \"t_s\": 2.283333333333333,\n        \"tick\": 548\n      },\n      \"rmse\": 0.003284170613293493,\n      \"unit\": \"rad/s\"\n    },\n    \"position_m\": {\n      \"components\": {\n        \"down_m\": {\n          \"max_abs\": 0.15430052602718547,\n          \"rmse\": 0.06843904073037604\n        },\n        \"east_m\": {\n          \"max_abs\": 0.028814253202895657,\n          \"rmse\": 0.011093750414784925\n        },\n        \"north_m\": {\n          \"max_abs\": 0.04842504539571024,\n          \"rmse\": 0.017457936899173014\n        }\n      },\n      \"max_abs\": 0.15430052602718547,\n      \"max_at\": {\n        \"component\": \"down_m\",\n        \"t_s\": 2.7,\n        \"tick\": 648\n      },\n      \"rmse\": 0.041278538229670536,\n      \"unit\": \"m\"\n    },\n    \"quaternion_angle_rad\": {\n      \"max_abs\": 0.011191590008820019,\n      \"max_at\": {\n        \"t_s\": 2.7,\n        \"tick\": 648\n      },\n      \"rmse\": 0.0063631688099770765,\n      \"unit\": \"rad\"\n    },\n    \"velocity_mps\": {\n      \"components\": {\n        \"u_mps\": {\n          \"max_abs\": 0.04126842022299115,\n          \"rmse\": 0.01910070928026707\n        },\n        \"v_mps\": {\n          \"max_abs\": 0.007871031243130655,\n          \"rmse\": 0.004397783971298528\n        },\n        \"w_mps\": {\n          \"max_abs\": 0.005883019600396944,\n          \"rmse\": 0.0031344274722366018\n        }\n      },\n      \"max_abs\": 0.04126842022299115,\n      \"max_at\": {\n        \"component\": \"u_mps\",\n        \"t_s\": 2.7,\n        \"tick\": 648\n      },\n      \"rmse\": 0.011460108121162473,\n      \"unit\": \"m/s\"\n    }\n  },\n  \"first_divergence\": {\n    \"metrics\": [\n      \"position_m\",\n      \"velocity_mps\",\n      \"angular_rate_radps\",\n      \"quaternion_angle_rad\"\n    ],\n    \"t_s\": 0.7041666666666666,\n    \"tick\": 169\n  },\n  \"rows\": 481,\n  \"status\": \"ok\",\n  \"tick\": {\n    \"first\": 168,\n    \"last\": 648\n  },\n  \"time_s\": {\n    \"duration\": 2.0,\n    \"first\": 0.7,\n    \"last\": 2.7\n  }\n}\n",
+        "sha256_original_utf8": "ef460d2aa25b0e36d845f028981497c15d28f65acb53fe0541abb5277a4c62b8"
+      },
+      "exact_baseline_replay": {
+        "engine_log": {
+          "original_path": "tmp/audit-generators-20261108/extra-baseline-exact/godot.log",
+          "original_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\r\n\r\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\r\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\r\nFlight log exact: 481 rows verified.\r\n",
+          "sha256_original_utf8": "899a43c37dc0b695caa860c1275fde8a83e921b4fea88ca508c15db0d5b95991"
+        },
+        "report": {
+          "original_path": "tmp/audit-generators-20261108/extra-baseline-exact/replay.json",
+          "original_utf8": "{\n\t\"baseline_build\": {\n\t\t\"commit\": \"\",\n\t\t\"commit_date\": \"\",\n\t\t\"describe\": \"\",\n\t\t\"dirty\": false,\n\t\t\"godot\": \"4.8-beta2 (official)\",\n\t\t\"label\": \"\",\n\t\t\"parsed\": {\n\t\t\t\"after\": 0,\n\t\t\t\"base\": \"0.2.0\",\n\t\t\t\"dirty\": false,\n\t\t\t\"prerelease\": \"\",\n\t\t\t\"semver\": \"0.2.0\",\n\t\t\t\"sha\": \"\",\n\t\t\t\"tag\": \"\"\n\t\t},\n\t\t\"source\": \"development\",\n\t\t\"version\": \"0.2.0\"\n\t},\n\t\"baseline_solver_identity_kind\": \"source-tree-v1\",\n\t\"baseline_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"baseline_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"candidate\": \"\",\n\t\"candidate_identity\": {\n\t\t\"format\": \"openrc-aircraft v2\",\n\t\t\"sha256\": \"6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75\"\n\t},\n\t\"comparison_method\": \"Byte-exact comparison of every recorded numeric physics/air sample on the recorded solver.\",\n\t\"complete\": true,\n\t\"current_solver_identity_kind\": \"source-tree-v1\",\n\t\"current_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"current_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"dt_s\": 0.004166666666666667,\n\t\"error\": \"\",\n\t\"events\": [\n\t\t{\n\t\t\t\"detail\": \"debug bridge marker\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 168\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 168\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 648\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"debug bridge marker\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 648\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"stopped by debug bridge\",\n\t\t\t\"kind\": \"stop\",\n\t\t\t\"tick\": 648\n\t\t}\n\t],\n\t\"events_omitted\": 0,\n\t\"final_tick\": 648,\n\t\"first_tick\": 168,\n\t\"format\": \"openrc-flight-log-report v1\",\n\t\"metadata\": {\n\t\t\"aero_loads_law\": \"section-plane-source-weighted-wake-velocity-v2\",\n\t\t\"aero_model\": \"section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle\",\n\t\t\"aircraft\": \"gp-extra-300s-60 (res://data/aircraft/gp_extra_300s_60.json)\",\n\t\t\"aircraft_input_format\": \"openrc-aircraft v2\",\n\t\t\"aircraft_input_hash_convention\": \"sha256 of exact aircraft input file bytes\",\n\t\t\"aircraft_input_sha256\": \"6619e1fc29ce5ab9b297cbd41c2efe4ac2270fbd1602ee202397de0d011ebf75\",\n\t\t\"aircraft_semantic_hash_convention\": \"sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes\",\n\t\t\"aircraft_semantic_sha256\": \"0d35c3d49d60ce540afe7791692d1070a11dc5f355c7036271a8f33639ea5bef\",\n\t\t\"aux_layout\": \"[\\\"engine_rpm\\\",\\\"srv_roll\\\",\\\"srv_pitch\\\",\\\"srv_yaw\\\"]\",\n\t\t\"collision_world_identity\": \"4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f\",\n\t\t\"configuration\": \"rcm-weighed-dry-manual-p43-plus-full-finite-glow-tank-v3\",\n\t\t\"continuous_layout\": \"rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line); wheel rim speeds in m/s, landing-gear contact order, appended continuous tail\",\n\t\t\"created_utc\": \"2026-11-08T14:19:24\",\n\t\t\"dt_s\": 0.004166666666666667,\n\t\t\"engine\": \"Godot 4.8-beta2 (official)\",\n\t\t\"engine_rpm_semantics\": \"propeller shaft rpm\",\n\t\t\"frames\": \"world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]\",\n\t\t\"fuel_mass_policy\": \"finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG\",\n\t\t\"glow_family\": \"glow_2t\",\n\t\t\"glow_feed_line_inventory_id\": \"\",\n\t\t\"glow_fuel_registry_sha256\": \"6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043\",\n\t\t\"glow_fuel_tank_id\": \"main_tank\",\n\t\t\"glow_identity\": \"{\\\"format\\\":\\\"openrc-glow-installation v2\\\",\\\"profile\\\":{\\\"format\\\":\\\"openrc-glow-engine v1\\\",\\\"sha256\\\":\\\"462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e\\\"},\\\"sha256\\\":\\\"84092d0a8ac934426a2b30ef7cb193a596593c365083ddfacca5656bda6c66a8\\\"}\",\n\t\t\"glow_recording_start\": \"{\\\"above_recommended_rpm\\\":false,\\\"actual_mixture\\\":1.149851726182349,\\\"admission\\\":0.6196453266674665,\\\"air_charge_kg_cycle\\\":4.737694180475804e-06,\\\"air_fraction\\\":0.17766578727170163,\\\"air_target\\\":0.17766578727170163,\\\"blade_count\\\":2.0,\\\"brake_power_w\\\":462.325420553575,\\\"burned_fuel_kg_s\\\":0.00015127065811410025,\\\"chemical_power_w\\\":2806.6287333848986,\\\"commanded_throttle\\\":0.4999999932828849,\\\"cycle_frequency_hz\\\":180.1057244876397,\\\"cycle_revolutions\\\":1,\\\"cycle_work_j\\\":2.806455424831599,\\\"delivered_fuel_kg_s\\\":0.00028675685371295606,\\\"family\\\":\\\"glow_2t\\\",\\\"feed_line_fuel_kg\\\":0.0,\\\"fire_count\\\":125,\\\"firing_accumulator\\\":0.0,\\\"firing_fraction\\\":1.0,\\\"firing_frequency_hz\\\":180.1057244876397,\\\"fuel_density_kg_m3\\\":856.9200000000001,\\\"fuel_feed_factor\\\":1.0,\\\"fuel_input_power_w\\\":4246.408811142772,\\\"fuel_kg\\\":0.30400591692360474,\\\"fuel_source_mode\\\":1,\\\"fuel_target_kg_s\\\":0.00028679383111836356,\\\"fuel_transport_kg_s\\\":0.00028675685371295606,\\\"fuel_volume_m3\\\":0.0003547658088545077,\\\"hub_air_velocity_body_m_s\\\":[32.61387388761168,0.37814197495452045,0.9715806911099372],\\\"indicated_power_w\\\":505.4586875315618,\\\"indicated_torque_nm\\\":0.4466612534290141,\\\"line_fuel_kg\\\":0.0,\\\"main_fuel_kg\\\":0.30400591692360474,\\\"mass_properties\\\":{\\\"cg_body_m\\\":[-6.954022948077987e-06,0.0,1.2650295749249984e-06],\\\"inertia\\\":[0.16869197211919934,0.31420127580485563,0.45734145494723005,0.0,-0.015727405125401814,0.0],\\\"inertia_origin\\\":[0.16869197212531145,0.3142012759956654,0.4573414551319277,0.0,-0.01572740509180285,0.0],\\\"inverse\\\":[5.94703123767189,3.182673263940153,2.193582971508912,0.0,0.20451102465460433,0.0],\\\"mass_kg\\\":3.8193469169236054,\\\"ok\\\":true},\\\"mechanical_loss_w\\\":37.33849614732517,\\\"mechanical_torque_nm\\\":0.032995099108425734,\\\"message\\\":\\\"\\\",\\\"mixture_command\\\":1.15,\\\"ok\\\":true,\\\"opportunity_count\\\":125,\\\"opportunity_frequency_hz\\\":180.1057244876397,\\\"phase_revolutions\\\":0.8687702988472352,\\\"profile_identity\\\":{\\\"cycle_revolutions\\\":1,\\\"id\\\":\\\"os_max_61fx_installed_candidate\\\",\\\"input_sha256\\\":\\\"462f70e1c9b85d9e04f110a4e493c0ecb1e93a5bb7f9b1a88555a7bdf547606e\\\",\\\"manufacturer\\\":\\\"O.S. Engines\\\",\\\"model\\\":\\\"MAX-61FX (muffler-installed)\\\",\\\"status\\\":\\\"candidate\\\"},\\\"propeller\\\":{\\\"dissipation_w\\\":141.68202637172175,\\\"ok\\\":true,\\\"shaft_power_w\\\":460.653722006988,\\\"thrust_n\\\":9.780075714301017,\\\"thrust_power_w\\\":318.97169563526626,\\\"torque_nm\\\":0.4070682212886767},\\\"propeller_work_j\\\":322.6219002086644,\\\"pumping_loss_w\\\":5.794770830661513,\\\"pumping_torque_nm\\\":0.0051206946609173515,\\\"recommended_max_rpm\\\":15833.333333333334,\\\"rpm\\\":10806.343469258381,\\\"running\\\":true,\\\"servo_fraction\\\":0.4999999932828849,\\\"shaft_torque_nm\\\":0.408545459659671,\\\"shaft_work_j\\\":323.5089063623264,\\\"source_vibration\\\":{\\\"alpha_rad_s2\\\":0.0,\\\"constant_speed_assumption\\\":true,\\\"cycle_revolutions\\\":1,\\\"errors\\\":[],\\\"family\\\":\\\"glow_2t\\\",\\\"firing_order\\\":1.0,\\\"mean_successful_fire_rate_hz\\\":180.1057244876397,\\\"ok\\\":true,\\\"omega_rad_s\\\":1131.6376418396724,\\\"opportunity_frequency_hz\\\":180.1057244876397,\\\"order_1x_force_cosine_n\\\":-193.6913175548038,\\\"order_1x_force_peak_n\\\":193.6913175548038,\\\"order_1x_force_sine_n\\\":0.0,\\\"order_2x_force_cosine_n\\\":-56.515163504067715,\\\"order_2x_force_peak_n\\\":56.515163504067715,\\\"order_2x_force_sine_n\\\":0.0,\\\"phase_rad\\\":5.458644777030966,\\\"source_force_n\\\":-128.2704553197007},\\\"stop_reason\\\":\\\"\\\",\\\"temperature_k\\\":389.2434987544369,\\\"throttle_opening\\\":0.17766578727170163,\\\"thrust_work_j\\\":223.4790427832377,\\\"total_fuel_kg\\\":0.30400591692360474,\\\"unburned_chemical_power_w\\\":1439.7800777578732,\\\"unburned_fuel_kg_s\\\":0.0001354861955988558,\\\"valve_loss_w\\\":0.0,\\\"valve_torque_nm\\\":0.0}\",\n\t\t\"gravity_mps2\": 9.80665,\n\t\t\"ground\": \"3 profiled spring-damper gear contacts; deterministic bounded grass relief (GP-01, at most 7 mm), terrain-normal projection, field-scaled friction and wheel-radius-corrected rolling resistance; steering and continuous relative wheel spin; brakes off (no brake command exposed); field 'default'\",\n\t\t\"ground_effect_model\": \"image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)\",\n\t\t\"hull_contact_model\": \"soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground\",\n\t\t\"hull_lake_normal_model\": \"positive-down-bank-gradient-normal-v2\",\n\t\t\"inertia_kgm2\": \"Jxx Jyy Jzz Jxy Jxz Jyz = 0.16869219449346 0.31420518364269 0.45734528172514 0.0 -0.01572676564523 0.0\",\n\t\t\"lake_id\": \"near_runway\",\n\t\t\"lake_identity\": \"bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa\",\n\t\t\"lake_terrain_model\": \"bounded-lake-terrain-and-terminal-water-contact-v1\",\n\t\t\"launch_aux\": \"[10784.934065682719,0.001427217563724188,0.026746458770545704,-0.016872944807053376]\",\n\t\t\"launch_choice\": \"airborne\",\n\t\t\"launch_continuous\": \"[10784.934065682719,0.30420660000000005,390.0,0.4999999932828849,0.17766578727170163,0.0002866830051427754,0.0,1.0,0.0,0.0,0.0,0.0,1.15,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0]\",\n\t\t\"launch_engine_running\": \"true\",\n\t\t\"launch_error\": \"\",\n\t\t\"launch_field_id\": \"\",\n\t\t\"launch_ground_anchors\": \"[]\",\n\t\t\"launch_kind\": \"trimmed_airborne\",\n\t\t\"launch_state\": \"[60.0,-40.0,-30.0,30.765433595456656,0.40942644577034143,0.9401254814358406,0.7070301018055234,-0.010413219524781152,0.010413219524781154,0.7070301018055233,0.0,0.0,0.0]\",\n\t\t\"launch_trim_throttle\": \"0.5\",\n\t\t\"loads\": \"Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction\",\n\t\t\"mass_contact_law\": \"fixed-datum-live-mass-contact-linear-fuel-v1\",\n\t\t\"mass_kg\": 3.819547600000001,\n\t\t\"mass_reference\": \"mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum\",\n\t\t\"metadata_schema\": \"openrc-flight-meta v10\",\n\t\t\"propulsion_features\": \"{\\\"propeller_normal_force\\\":true,\\\"propeller_pfactor\\\":true,\\\"rotor_gyroscopic_coupling\\\":true,\\\"turbine_ram_flow\\\":false,\\\"turbine_ram_jet\\\":false}\",\n\t\t\"propulsion_model\": \"glow-mean-cycle-segmented-firing-v6\",\n\t\t\"propwash_model\": \"tail-slipstream-increment-v1\",\n\t\t\"recording_start_aux\": \"[10806.343469258381,0.001427217563724188,0.026746458770545704,-0.016872944807053376]\",\n\t\t\"recording_start_continuous\": \"[10806.343469258381,0.30400591692360474,389.2434987544369,0.4999999932828849,0.17766578727170163,0.00028675685371295606,0.8687702988472352,1.0,0.0,125.0,125.0,0.0,1.15,323.5089063623264,322.6219002086644,223.4790427832377,1964.0305584019898,0.0,1.0,0.0,0.0,0.0]\",\n\t\t\"recording_start_engine_running\": \"true\",\n\t\t\"recording_start_previous_state\": \"[59.71371907558212,-18.58356059897775,-29.979173714763345,30.749342374498898,0.5540316499782958,0.9140395907108012,0.7086846875660434,-0.010685949024043562,0.010262015775680313,0.7053697719176055,-0.00025932675788455117,0.0012322695938524323,-0.0010244259508513942]\",\n\t\t\"recording_start_rng_state\": \"8719974191365111793\",\n\t\t\"recording_start_tick\": 168,\n\t\t\"recording_start_turbulence\": \"[-0.1796283340261968,-0.3595484544057107,-0.005487961548925761,-0.18435863225875165,-0.36480231162924914,-0.003536180013691455,0.6958333333333333]\",\n\t\t\"rotor_coupling\": \"relative-spin-locked-inertia-reaction-v1\",\n\t\t\"runway_fallback\": \"none\",\n\t\t\"runway_start_status\": \"not_attempted\",\n\t\t\"scenario\": \"trimmed level flight (engine running) across view at 32.5 m/s (D5: six-axis trim, trim relative to moving air)\",\n\t\t\"scenery_collision_model\": \"openrc-swept-landscape-contact v1\",\n\t\t\"selected_start_choice\": \"airborne\",\n\t\t\"shaft_integrator\": \"coupled-rk4\",\n\t\t\"state_layout\": \"[\\\"north_m\\\",\\\"east_m\\\",\\\"down_m\\\",\\\"u_mps\\\",\\\"v_mps\\\",\\\"w_mps\\\",\\\"qw\\\",\\\"qx\\\",\\\"qy\\\",\\\"qz\\\",\\\"p_radps\\\",\\\"q_radps\\\",\\\"r_radps\\\"]\",\n\t\t\"state_timing\": \"body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage\",\n\t\t\"turbulence_aux_index\": 14,\n\t\t\"turbulence_interval\": \"linear interpolation between exact OU tick samples; wall time tau; independent NED axes\",\n\t\t\"wake_state_unit\": \"m/s (equal-area mean of section Vp*CL)\",\n\t\t\"weather_config\": \"{\\\"format\\\":\\\"openrc-weather v2\\\",\\\"from_deg\\\":90.0,\\\"gust_delay_s\\\":3.0,\\\"gust_duration_s\\\":4.0,\\\"gust_mps\\\":0.6,\\\"gust_period_s\\\":14.0,\\\"gust_up_mps\\\":0.15,\\\"speed_mps\\\":1.5,\\\"turbulence_rms_mps\\\":[0.15,0.15,0.08],\\\"turbulence_seed\\\":20261011,\\\"turbulence_tau_s\\\":3.0}\",\n\t\t\"weather_evidence\": \"user-selected/authored practice conditions; not measured meteorology\",\n\t\t\"weather_model\": \"uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1\",\n\t\t\"weather_timing\": \"wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0\",\n\t\t\"wheel_brakes\": \"[{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"main_left\\\",\\\"max_torque_nm\\\":0.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"main_right\\\",\\\"max_torque_nm\\\":0.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"tail\\\",\\\"max_torque_nm\\\":0.0}]\",\n\t\t\"wheel_profile_hash_convention\": \"profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes\",\n\t\t\"wheel_profile_input_sha256\": \"58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665\",\n\t\t\"wheel_profile_sha256\": \"72c9d754277eed6a6db76894c76fd16e860e5b71569928d3f9d1bbbeb3ab6d97\",\n\t\t\"wheel_profile_status\": \"applied\",\n\t\t\"wheel_rolling_law\": \"wheel-positive-terrain-excess-v2\",\n\t\t\"wheel_state_layout\": \"[{\\\"contact\\\":\\\"main_left\\\",\\\"index\\\":19,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"main_right\\\",\\\"index\\\":20,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"tail\\\",\\\"index\\\":21,\\\"unit\\\":\\\"m/s rim speed\\\"}]\",\n\t\t\"wheel_state_model\": \"relative-wheel-rim-speed-rk4-v1\",\n\t\t\"wing_polar_model\": \"tabulated-wing-v1 (experimental finite-wing strip reference); spanwise stall progression g = 1.0\"\n\t},\n\t\"mode\": \"exact\",\n\t\"observer_usec\": 60889,\n\t\"peak_buffer_rows\": 240,\n\t\"recovery_reason\": \"\",\n\t\"rows\": 481,\n\t\"solver_changed\": false,\n\t\"source\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\tmp\\\\audit-generators-20261108\\\\extra-baseline.orfl\",\n\t\"source_sha256\": \"ac9232ce683ec1750129b2cfbc76a1c40d80c106d4c8f0b79f58b9526bbe83ba\",\n\t\"status\": \"ok\"\n}\n",
+          "sha256_original_utf8": "0ecf31052ed541733fb1e3ac97f6f1b9273b9a8b263bec0071b247a043f6cd9e"
+        }
+      }
+    }
+  },
+  "reproduction": {
+    "acceptance": "Check each replay report has status=ok, complete=true and solver_changed=false. Exact replay must be mode=exact; candidate replay is open loop. Compare generated candidate CSV hashes with retained original hashes and inspect comparison JSON. The different-solver refusal is not a successful replay.",
+    "commands_from_disposable_baseline": [
+      "python \"$Baseline/tools/godot/run_checked.py\" --timeout 1200 -- \"$GodotWindows\" --headless --path \"$Baseline/app\" --audio-driver Dummy --import",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" export \"$Baseline/tmp/flight-evidence/extra-baseline.orfl\" --godot \"$GodotWindows\" --out \"$Baseline/tmp/flight-evidence/extra-export\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" replay \"$Baseline/tmp/flight-evidence/extra-baseline.orfl\" --godot \"$GodotWindows\" --out \"$Baseline/tmp/flight-evidence/extra-exact\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" replay \"$Baseline/tmp/flight-evidence/extra-baseline.orfl\" --candidate \"$Baseline/tmp/flight-evidence/extra-candidate-aircraft.json\" --godot \"$GodotWindows\" --out \"$Baseline/tmp/flight-evidence/extra-candidate\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" compare \"$Baseline/tmp/flight-evidence/extra-exact/flight.csv\" \"$Baseline/tmp/flight-evidence/extra-candidate.csv\" --out \"$Baseline/tmp/flight-evidence/extra-comparison.json\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" export \"$Baseline/tmp/flight-evidence/corsair-baseline.orfl\" --godot \"$GodotWindows\" --out \"$Baseline/tmp/flight-evidence/corsair-export\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" replay \"$Baseline/tmp/flight-evidence/corsair-baseline.orfl\" --godot \"$GodotWindows\" --out \"$Baseline/tmp/flight-evidence/corsair-exact\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" replay \"$Baseline/tmp/flight-evidence/corsair-baseline.orfl\" --candidate \"$Baseline/tmp/flight-evidence/corsair-candidate-aircraft.json\" --godot \"$GodotWindows\" --out \"$Baseline/tmp/flight-evidence/corsair-candidate\"",
+      "python \"$Baseline/tools/flight_log/flight_log.py\" compare \"$Baseline/tmp/flight-evidence/corsair-exact/flight.csv\" \"$Baseline/tmp/flight-evidence/corsair-candidate.csv\" --out \"$Baseline/tmp/flight-evidence/corsair-comparison.json\""
+    ],
+    "commands_powershell_prepare": [
+      "$Evidence = (Resolve-Path 'docs/research/aero-consistency/audit-corrections-2026-11-08').Path",
+      "$Baseline = Join-Path (Resolve-Path .).Path 'tmp/aero-evidence-baseline-8ebb252'",
+      "$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path",
+      "if ((Get-FileHash -Algorithm SHA256 $GodotWindows).Hash.ToLowerInvariant() -ne '1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b') { throw 'Wrong Godot executable bytes' }",
+      "git -c core.autocrlf=false worktree add --detach $Baseline 8ebb252acc341a5a1fc047e6bb931fabdb17b148",
+      "New-Item -ItemType Directory -Path (Join-Path $Baseline 'tmp/flight-evidence') | Out-Null",
+      "$Manifest = Get-Content -Raw -LiteralPath (Join-Path $Evidence 'flight-evidence.json') | ConvertFrom-Json",
+      "$RestoreSource = $Manifest.reproduction.restore_source_bytes_python_lines -join \"`n\"",
+      "python -c $RestoreSource (Join-Path $Evidence 'flight-evidence.json') $Baseline",
+      "if ($LASTEXITCODE -ne 0) { throw 'Baseline solver source verification failed' }",
+      "$Unpack = $Manifest.reproduction.decompress_python_lines -join \"`n\"",
+      "python -c $Unpack $Evidence (Join-Path $Baseline 'tmp/flight-evidence')",
+      "if ($LASTEXITCODE -ne 0) { throw 'Evidence decompression or digest verification failed' }"
+    ],
+    "commands_powershell_verify_csv": [
+      "if ((Get-FileHash -Algorithm SHA256 (Join-Path $Baseline 'tmp/flight-evidence/extra-exact/flight.csv')).Hash.ToLowerInvariant() -ne $Manifest.records.extra.baseline_csv.sha256) { throw 'extra exact baseline CSV differs' }",
+      "if ((Get-FileHash -Algorithm SHA256 (Join-Path $Baseline 'tmp/flight-evidence/extra-candidate/flight.csv')).Hash.ToLowerInvariant() -ne $Manifest.records.extra.artifacts.candidate_csv.original_sha256) { throw 'extra candidate replay CSV differs' }",
+      "if ((Get-FileHash -Algorithm SHA256 (Join-Path $Baseline 'tmp/flight-evidence/corsair-exact/flight.csv')).Hash.ToLowerInvariant() -ne $Manifest.records.corsair.baseline_csv.sha256) { throw 'corsair exact baseline CSV differs' }",
+      "if ((Get-FileHash -Algorithm SHA256 (Join-Path $Baseline 'tmp/flight-evidence/corsair-candidate/flight.csv')).Hash.ToLowerInvariant() -ne $Manifest.records.corsair.artifacts.candidate_csv.original_sha256) { throw 'corsair candidate replay CSV differs' }"
+    ],
+    "decompress_invocation": "Join decompress_python_lines with newline into a script string, then run: python -c <script-string> <Evidence> <Baseline>/tmp/flight-evidence.",
+    "decompress_python_lines": [
+      "import gzip,hashlib,json,pathlib,sys",
+      "evidence=pathlib.Path(sys.argv[1]); destination=pathlib.Path(sys.argv[2])",
+      "m=json.loads((evidence/\"flight-evidence.json\").read_text(encoding=\"utf-8\"))",
+      "for case in m[\"records\"].values():",
+      "    for item in case[\"artifacts\"].values():",
+      "        packed=(evidence/item[\"file\"]).read_bytes(); assert hashlib.sha256(packed).hexdigest()==item[\"gzip_sha256\"]",
+      "        raw=gzip.decompress(packed); assert hashlib.sha256(raw).hexdigest()==item[\"original_sha256\"]",
+      "        target=destination/item[\"file\"].removesuffix(\".gz\"); assert not target.exists(); target.write_bytes(raw)",
+      "print(\"retained artifacts verified and decompressed\")"
+    ],
+    "preconditions": [
+      "Use an isolated disposable worktree at the baseline commit, the same Windows x86-64 engine executable and a fresh output directory.",
+      "Paths in captured receipts are historical locations, not portable inputs. Verify all retained gzip and original SHA-256 digests before use.",
+      "The candidate aircraft records are retained because they were passed to the historical solver; do not overwrite the baseline checkout aircraft data."
+    ],
+    "restore_invocation": "Join restore_source_bytes_python_lines with newline into a script string, then run: python -c <script-string> <Evidence>/flight-evidence.json <Baseline>. This writes only the disposable worktree.",
+    "restore_source_bytes_python_lines": [
+      "import hashlib,json,pathlib,sys",
+      "manifest=json.loads(pathlib.Path(sys.argv[1]).read_text(encoding=\"utf-8\"))",
+      "root=pathlib.Path(sys.argv[2])",
+      "entries=manifest[\"baseline\"][\"source_files\"]",
+      "expected={item[\"path\"] for item in entries}",
+      "actual={p.relative_to(root).as_posix() for d in (\"app/physics\",\"app/sim\",\"app/failures\") for p in (root/d).rglob(\"*.gd\")}",
+      "assert expected == actual, \"baseline solver file set differs\"",
+      "for item in entries:",
+      "    path=root/item[\"path\"]; data=path.read_bytes().replace(b\"\\r\\n\",b\"\\n\")",
+      "    mode=item[\"line_endings\"]",
+      "    if mode == \"crlf\": data=data.replace(b\"\\n\",b\"\\r\\n\")",
+      "    elif mode == \"lf_last_crlf\":",
+      "        assert data.endswith(b\"\\n\"); data=data[:-1]+b\"\\r\\n\"",
+      "    else: assert mode == \"lf\"",
+      "    assert hashlib.sha256(data).hexdigest() == item[\"sha256\"], item[\"path\"]",
+      "    path.write_bytes(data)",
+      "h=hashlib.sha256()",
+      "for item in sorted(entries,key=lambda x:x[\"path\"]):",
+      "    h.update((\"res://\"+item[\"path\"][len(\"app/\"):]).encode(\"utf-8\")); h.update((root/item[\"path\"]).read_bytes())",
+      "assert h.hexdigest() == manifest[\"baseline\"][\"solver_sha256\"], \"baseline solver identity differs\"",
+      "print(\"baseline solver identity verified:\",h.hexdigest())"
+    ]
+  },
+  "solver_law_refusal": {
+    "classification": "expected incompatibility refusal; no candidate solver comparison was produced",
+    "complete_field_note": "complete=true describes the source recording, not a successful replay.",
+    "engine_log": {
+      "original_path": "tmp/audit-corsair-runtime-20261108/solver-candidate/godot.log",
+      "original_utf8": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\r\n\r\nRecorded configuration/checkpoint is incompatible with the selected aircraft or solver.\r\n",
+      "sha256_original_utf8": "b714414ef1e6cfd9df53ee8f789670a76f5d27654b0ed074a49afec82bfb3ed6"
+    },
+    "report": {
+      "original_path": "tmp/audit-corsair-runtime-20261108/solver-candidate/replay.json",
+      "original_utf8": "{\n\t\"baseline_build\": {\n\t\t\"commit\": \"\",\n\t\t\"commit_date\": \"\",\n\t\t\"describe\": \"\",\n\t\t\"dirty\": false,\n\t\t\"godot\": \"4.8-beta2 (official)\",\n\t\t\"label\": \"\",\n\t\t\"parsed\": {\n\t\t\t\"after\": 0,\n\t\t\t\"base\": \"0.2.0\",\n\t\t\t\"dirty\": false,\n\t\t\t\"prerelease\": \"\",\n\t\t\t\"semver\": \"0.2.0\",\n\t\t\t\"sha\": \"\",\n\t\t\t\"tag\": \"\"\n\t\t},\n\t\t\"source\": \"development\",\n\t\t\"version\": \"0.2.0\"\n\t},\n\t\"baseline_solver_identity_kind\": \"source-tree-v1\",\n\t\"baseline_solver_sha256\": \"3e545c5950025577f8a9e5f196493ec4b28d578466c3231a366feaca81b1e762\",\n\t\"baseline_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"complete\": true,\n\t\"current_solver_identity_kind\": \"source-tree-v1\",\n\t\"current_solver_sha256\": \"a5d06fdd6161e4dcc61b911cd6c42bf34edf7e9df697d662a5d9def9894c8bb2\",\n\t\"current_stage_backend\": {\n\t\t\"backend\": \"gdscript_reference\"\n\t},\n\t\"dt_s\": 0.004166666666666667,\n\t\"error\": \"Recorded configuration/checkpoint is incompatible with the selected aircraft or solver.\",\n\t\"events\": [\n\t\t{\n\t\t\t\"detail\": \"baseline\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 855\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 855\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"flap_step\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"resume\",\n\t\t\t\"tick\": 975\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"\",\n\t\t\t\"kind\": \"pause\",\n\t\t\t\"tick\": 1215\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"flap_response\",\n\t\t\t\"kind\": \"marker\",\n\t\t\t\"tick\": 1215\n\t\t},\n\t\t{\n\t\t\t\"detail\": \"stopped by debug bridge\",\n\t\t\t\"kind\": \"stop\",\n\t\t\t\"tick\": 1215\n\t\t}\n\t],\n\t\"events_omitted\": 0,\n\t\"final_tick\": 1215,\n\t\"first_tick\": 855,\n\t\"format\": \"openrc-flight-log-report v1\",\n\t\"metadata\": {\n\t\t\"aero_loads_law\": \"section-plane-source-weighted-wake-velocity-v2\",\n\t\t\"aero_model\": \"section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle\",\n\t\t\"aircraft\": \"f4u-corsair-250 (res://data/aircraft/f4u_corsair_250.json)\",\n\t\t\"aircraft_input_format\": \"openrc-aircraft v2\",\n\t\t\"aircraft_input_hash_convention\": \"sha256 of exact aircraft input file bytes\",\n\t\t\"aircraft_input_sha256\": \"dafa51ce6e133e31a50deb16de3d456fab93e3593e1c11ba2896b2b95d00f673\",\n\t\t\"aircraft_semantic_hash_convention\": \"sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes\",\n\t\t\"aircraft_semantic_sha256\": \"0289713a9c0b63b73d594689472a8ba71825072b8fdf1e1508408219fdb34cfa\",\n\t\t\"aux_layout\": \"[\\\"engine_rpm\\\",\\\"srv_roll\\\",\\\"srv_pitch\\\",\\\"srv_yaw\\\"]\",\n\t\t\"collision_world_identity\": \"4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f\",\n\t\t\"configuration\": \"virtual-balanced-reference-v2-empty-tank\",\n\t\t\"continuous_layout\": \"axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail; base propulsion/wheels; usable fuel kg; source latch 0/1\",\n\t\t\"created_utc\": \"2026-11-08T14:18:44\",\n\t\t\"dt_s\": 0.004166666666666667,\n\t\t\"engine\": \"Godot 4.8-beta2 (official)\",\n\t\t\"engine_rpm_semantics\": \"propeller shaft rpm\",\n\t\t\"flap_aux_index\": 16,\n\t\t\"flap_base_metadata_schema\": \"openrc-flight-meta v8\",\n\t\t\"flap_input_index\": 6,\n\t\t\"flap_law\": \"controls.flaps.hinged_trailing_edge.v1\",\n\t\t\"flap_max_angle_deg\": 30.0,\n\t\t\"flap_trace_schema\": \"openrc-flap-trace v1\",\n\t\t\"frames\": \"world NED (north, east, down); body FRD (forward, right, down); quaternion body->NED [w,x,y,z]\",\n\t\t\"fuel_capacity_kg\": 0.7478536585365853,\n\t\t\"fuel_consumption_law\": \"gasoline_bsfc_v1\",\n\t\t\"fuel_mass_policy\": \"finite single store; co-moving efflux; fixed authored reference datum\",\n\t\t\"fuel_start_fill\": 1.0,\n\t\t\"fuel_start_fill_known\": true,\n\t\t\"fuel_state_index\": 4,\n\t\t\"fuel_store_id\": \"main_tank\",\n\t\t\"fuel_unusable_kg\": 0.007478536585365853,\n\t\t\"gear_aux_index\": 14,\n\t\t\"gear_law\": \"retractable-point-gear-v1\",\n\t\t\"gear_trace_schema\": \"openrc-gear-trace v1\",\n\t\t\"gravity_mps2\": 9.80665,\n\t\t\"ground\": \"retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock\",\n\t\t\"ground_effect_model\": \"image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above 2.0 spans)\",\n\t\t\"hull_contact_model\": \"soft-hull-spring-friction-v2 omega=60.0 zeta=0.7 onset_m=0.004 mu=field-airframe-friction(default 0.4) friction_rate_max=120.0-shared slip_reg_min_mps=0.01 terminal_j_per_kg=2.5 crash_depth_m=0.08 prop_strike_min_rpm=300.0 flat-ground\",\n\t\t\"hull_lake_normal_model\": \"positive-down-bank-gradient-normal-v2\",\n\t\t\"inertia_kgm2\": \"Jxx Jyy Jzz Jxy Jxz Jyz = 4.02926991740707 6.65630872440302 9.79922944098077 0.0 -0.20199360591056 0.0\",\n\t\t\"input_layout\": \"[\\\"roll\\\",\\\"pitch\\\",\\\"yaw\\\",\\\"throttle\\\",\\\"gear_down\\\",\\\"wheel_brake\\\",\\\"flaps\\\"]\",\n\t\t\"lake_id\": \"near_runway\",\n\t\t\"lake_identity\": \"bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa\",\n\t\t\"lake_terrain_model\": \"bounded-lake-terrain-and-terminal-water-contact-v1\",\n\t\t\"launch_aux\": \"[4542.259194385202,0.049784076614177844,-0.14687891929176145,-0.015292747690510288]\",\n\t\t\"launch_choice\": \"airborne\",\n\t\t\"launch_continuous\": \"[4542.259194385202,0.0,0.0,0.0,0.7403751219512194,1.0]\",\n\t\t\"launch_engine_running\": \"true\",\n\t\t\"launch_error\": \"\",\n\t\t\"launch_field_id\": \"\",\n\t\t\"launch_ground_anchors\": \"[]\",\n\t\t\"launch_kind\": \"trimmed_airborne\",\n\t\t\"launch_state\": \"[60.0,-40.0,-30.0,47.64607578961792,0.5452854370825487,-1.254365745643577,0.7070422166680845,0.009555304761308305,-0.009555304761308307,0.7070422166680844,0.0,0.0,0.0]\",\n\t\t\"launch_trim_throttle\": \"0.5\",\n\t\t\"liquid_fuel_model\": \"single-store-finite-liquid-fixed-datum-v1\",\n\t\t\"liquid_fuel_schema\": \"openrc-liquid-fuel v1\",\n\t\t\"loads\": \"Fx..Mz: body-axis loads excluding gravity; k1 at previous body/continuous endpoint and current sampled servos; includes relative-spin reaction\",\n\t\t\"mass_contact_law\": \"fixed-datum-live-mass-contact-linear-fuel-v1\",\n\t\t\"mass_kg\": 21.500000999999997,\n\t\t\"mass_reference\": \"mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum\",\n\t\t\"metadata_schema\": \"openrc-flight-meta v9\",\n\t\t\"propulsion_features\": \"{\\\"propeller_normal_force\\\":true,\\\"propeller_pfactor\\\":true,\\\"rotor_gyroscopic_coupling\\\":true,\\\"turbine_ram_flow\\\":false,\\\"turbine_ram_jet\\\":false}\",\n\t\t\"propulsion_model\": \"propeller-shaft-coupled-rk4-v1\",\n\t\t\"propwash_model\": \"tail-slipstream-increment-v1\",\n\t\t\"recording_start_aux\": \"[4544.80295094868,0.049784076614177844,-0.14687891929176145,-0.015292747690510288]\",\n\t\t\"recording_start_continuous\": \"[4544.80295094868,0.0,0.0,0.0,0.7382639620826098,1.0]\",\n\t\t\"recording_start_engine_running\": \"true\",\n\t\t\"recording_start_flap\": 0.0,\n\t\t\"recording_start_gear\": \"[0.0,0.0]\",\n\t\t\"recording_start_previous_state\": \"[58.071304780333186,129.4764016466098,-30.059968614305287,47.59440620655325,0.35891210968463705,-1.2949046321374091,0.7056999538490667,0.01018457812657349,-0.008836313916631344,0.7083825019452243,0.0049682715849910224,0.0024298925754995975,-0.007761615670768176]\",\n\t\t\"recording_start_rng_state\": \"-576459135923622615\",\n\t\t\"recording_start_tick\": 855,\n\t\t\"recording_start_turbulence\": \"[0.13338250425382384,-0.20476266356657702,0.01566763353591749,0.13298944136236715,-0.18983398804320792,0.019206453643871933,3.558333333333333]\",\n\t\t\"rotor_coupling\": \"relative-spin-locked-inertia-reaction-v1\",\n\t\t\"runway_fallback\": \"none\",\n\t\t\"runway_start_status\": \"not_attempted\",\n\t\t\"scenario\": \"trimmed level flight (engine running) across view at 49.3 m/s (D5: six-axis trim, trim relative to moving air)\",\n\t\t\"scenery_collision_model\": \"openrc-swept-landscape-contact v1\",\n\t\t\"selected_start_choice\": \"airborne\",\n\t\t\"shaft_integrator\": \"coupled-rk4\",\n\t\t\"state_layout\": \"[\\\"north_m\\\",\\\"east_m\\\",\\\"down_m\\\",\\\"u_mps\\\",\\\"v_mps\\\",\\\"w_mps\\\",\\\"qw\\\",\\\"qx\\\",\\\"qy\\\",\\\"qz\\\",\\\"p_radps\\\",\\\"q_radps\\\",\\\"r_radps\\\"]\",\n\t\t\"state_timing\": \"body, continuous shaft RPM and mirrored aux at tick k; servos advance before RK4; shaft RPM/inflow/gyro/reaction evaluated at each stage\",\n\t\t\"turbulence_aux_index\": 17,\n\t\t\"turbulence_interval\": \"linear interpolation between exact OU tick samples; wall time tau; independent NED axes\",\n\t\t\"wake_state_unit\": \"m/s (equal-area mean of section Vp*CL)\",\n\t\t\"weather_config\": \"{\\\"format\\\":\\\"openrc-weather v2\\\",\\\"from_deg\\\":90.0,\\\"gust_delay_s\\\":3.0,\\\"gust_duration_s\\\":4.0,\\\"gust_mps\\\":0.6,\\\"gust_period_s\\\":14.0,\\\"gust_up_mps\\\":0.15,\\\"speed_mps\\\":1.5,\\\"turbulence_rms_mps\\\":[0.15,0.15,0.08],\\\"turbulence_seed\\\":20261011,\\\"turbulence_tau_s\\\":3.0}\",\n\t\t\"weather_evidence\": \"user-selected/authored practice conditions; not measured meteorology\",\n\t\t\"weather_model\": \"uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1\",\n\t\t\"weather_timing\": \"wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0\",\n\t\t\"wheel_brakes\": \"[{\\\"availability\\\":\\\"available\\\",\\\"contact\\\":\\\"main_left\\\",\\\"max_torque_nm\\\":2.0},{\\\"availability\\\":\\\"available\\\",\\\"contact\\\":\\\"main_right\\\",\\\"max_torque_nm\\\":2.0},{\\\"availability\\\":\\\"none\\\",\\\"contact\\\":\\\"tail\\\",\\\"max_torque_nm\\\":0.0}]\",\n\t\t\"wheel_profile_hash_convention\": \"profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes\",\n\t\t\"wheel_profile_input_sha256\": \"58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665\",\n\t\t\"wheel_profile_sha256\": \"ef594e9e4d0ce4c195eadb336df84096c96a646c13e72f8c1a2e6191e6404f08\",\n\t\t\"wheel_profile_status\": \"applied\",\n\t\t\"wheel_rolling_law\": \"wheel-positive-terrain-excess-v2\",\n\t\t\"wheel_state_layout\": \"[{\\\"contact\\\":\\\"main_left\\\",\\\"index\\\":1,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"main_right\\\",\\\"index\\\":2,\\\"unit\\\":\\\"m/s rim speed\\\"},{\\\"contact\\\":\\\"tail\\\",\\\"index\\\":3,\\\"unit\\\":\\\"m/s rim speed\\\"}]\",\n\t\t\"wheel_state_model\": \"relative-wheel-rim-speed-rk4-v1\",\n\t\t\"wing_polar_model\": \"legacy attached-to-flat-plate blend\"\n\t},\n\t\"observer_usec\": 79862,\n\t\"peak_buffer_rows\": 240,\n\t\"recovery_reason\": \"\",\n\t\"rows\": 361,\n\t\"solver_changed\": true,\n\t\"source\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\tmp\\\\audit-corsair-runtime-20261108\\\\baseline.orfl\",\n\t\"source_sha256\": \"9ed5778f49b282b52038105e95db2214ba4aed9a5bb1c25743c15df749a92149\",\n\t\"status\": \"error\"\n}\n",
+      "sha256_original_utf8": "d454ebbe10e3d54806eda4b4c26cc5b728a6307fb2327069c94b58d44832e379"
+    }
+  }
+}

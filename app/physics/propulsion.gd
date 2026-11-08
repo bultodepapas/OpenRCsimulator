@@ -26,9 +26,11 @@ const ELECTRIC_INFLOW_LAW := "electric-propeller-local-hub-inflow-v1"
 ## Experimental stage Air key: complete local hub/intake relative velocity in body FRD.
 ## It already includes omega × r and must not pass through a second point-velocity transform.
 const STAGE_PROPULSION_AIR_KEY := "propulsion_air_body"
-## Beyond the table, coefficients extrapolate linearly but never below these floors (windmilling).
+## Extrapolation floors, limited by the authored last value so the table remains continuous.
 const CT_FLOOR := -0.1
 const CP_FLOOR := 0.0
+## Included in propeller-session checkpoint identity; also used by power and crossflow tables.
+const COEFFICIENT_LAW := "piecewise-linear-table-aware-floor-v1"
 ## Shaft balance: the rpm search bracket's top, as a multiple of the power curve's last rpm row.
 const SHAFT_RPM_CEILING := 1.6
 ## Numerical torque-balance tolerance (N·m absolute, relative above 1 N·m); not a physical accuracy claim.
@@ -41,7 +43,7 @@ const ELECTRIC_ROOT_TORQUE_TOL := 1e-10
 
 
 ## Piecewise-linear table [J0, v0, J1, v1, …]. J < 0 (flying backwards) uses the J = 0 value;
-## beyond the last row, linear extrapolation from the last two rows, floored at `floor_value`.
+## Beyond the last row, extrapolate linearly with the lower of `floor_value` and the last value as floor.
 static func coefficient(table: PackedFloat64Array, J: float, floor_value: float) -> float:
 	var n := table.size() / 2
 	if J <= table[0]:
@@ -54,7 +56,7 @@ static func coefficient(table: PackedFloat64Array, J: float, floor_value: float)
 	var ja := table[2 * n - 4]
 	var jb := table[2 * n - 2]
 	var slope := (table[2 * n - 1] - table[2 * n - 3]) / (jb - ja)
-	return maxf(floor_value, table[2 * n - 1] + slope * (J - jb))
+	return maxf(minf(floor_value, table[2 * n - 1]), table[2 * n - 1] + slope * (J - jb))
 
 
 ## Throttle (0…1) → target rpm between idle and the static maximum (D5 lag model).

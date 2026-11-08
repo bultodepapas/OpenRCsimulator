@@ -8992,3 +8992,33 @@ msgstr "このコントローラーはゲームパッドとして認識されて
 
 msgid "Radio calibration requires a supported radio profile."
 msgstr "送信機の校正には対応する送信機プロファイルが必要です。"
+
+msgid "Airspeed, ground speed, height, vertical speed, throttle, pilot distance and flight time. Fuel appears only with valid finite-fuel data."
+msgstr "対気速度、対地速度、高度、垂直速度、スロットル、操縦者からの距離、飛行時間。燃料は有限燃料データが有効な場合のみ表示されます。"
+
+msgid "Shows stick and trim inputs, selected radio appearance and radio status. Stick layout follows the chosen mode."
+msgstr "スティックとトリムの入力、選択した送信機の外観と状態を表示します。スティック配置は選択したモードに従います。"
+
+msgid "Active flight and radio warnings, ordered by priority, with suggested actions. The configured alert limit can hide additional warnings."
+msgstr "現在の飛行と送信機の警告を優先順に表示し、推奨操作を示します。設定した警告数の上限により、他の警告が隠れる場合があります。"
+
+msgid "Wind speed, direction it comes from and vertical airflow. The arrow points downwind relative to the view; calm or missing wind has no arrow."
+msgstr "風速、風が吹いてくる方向、垂直気流。矢印は現在の視点に対して風下を指します。無風時や風データがない場合は表示されません。"
+
+msgid "Angle of attack, sideslip, pitch, bank, heading, flight load and engine RPM. Dashes appear when telemetry is missing."
+msgstr "迎角、横滑り、ピッチ、バンク、方位、飛行荷重、エンジン回転数。テレメトリーがない場合はダッシュを表示します。"
+
+msgid "Developer input and flight diagnostics, including available battery data. Contents depend on the current flight."
+msgstr "利用可能なバッテリーデータを含む、開発用の入力と飛行の診断。内容は現在の飛行によって異なります。"
+
+msgid "Developer frame-rate, frame-time and physics-step measurements for the current session."
+msgstr "現在のセッションのフレームレート、フレーム時間、物理ステップの開発用測定値。"
+
+msgid "Keyboard and selected-controller commands and equipment availability. Available actions depend on the aircraft and bindings."
+msgstr "キーボードと選択したコントローラーの操作、装備の利用可否。利用可能な操作は機体と割り当てによって異なります。"
+
+msgid "Flight-pack sensor readings, including voltage and estimated remaining charge. Shown only for aircraft with a dynamic battery; detail expands with Telemetry."
+msgstr "電圧や推定残量などの飛行用バッテリーセンサーの測定値。動的バッテリーモデルを持つ機体のみ表示されます。テレメトリーを有効にすると詳細を表示します。"
+
+msgid "Focus the description to scroll with arrows or %s / %s."
+msgstr "説明にフォーカスすると、矢印キーまたは %s / %s でスクロールできます。"

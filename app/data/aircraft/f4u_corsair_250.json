@@ -1462,10 +1462,10 @@
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: Helmbold x cos2(gull) + downwashed tail (VLM downwash)"
       },
       "CLq": {
-        "value": 5.510631,
+        "value": 5.328113,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail volume + DATCOM wing term"
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail rotational inflow about half-tank reference CG + DATCOM wing term"
       },
       "CLde": {
         "value": 0.377842,
@@ -1546,16 +1546,16 @@
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + wing-body (gull strip dihedral, low-wing interference, CL term; rule: fin + wing_body_cl_beta)"
       },
       "Clp": {
-        "value": -0.551153,
+        "value": -0.551733,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/f4u-corsair/F4U-07/derive_physics.py: strip theory on the measured chord + stab + fin"
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: strip theory on measured chord + stab + fin at reference CG, transferred with CYp to ARP"
       },
       "Clr": {
-        "value": 0.133924,
+        "value": 0.135752,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/f4u-corsair/F4U-07/derive_physics.py: CL_ref/4 + fin"
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: CL_ref/4 + fin at reference CG, transferred with CYr to ARP"
       },
       "Clda_right": {
         "value": -0.090872,
@@ -1588,10 +1588,10 @@
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail about the wing-body ac"
       },
       "Cmq": {
-        "value": -10.193066,
+        "value": -10.956254,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail damping about the CG x1.1"
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail damping about half-tank reference CG x1.1, transferred with CLq to ARP"
       },
       "Cmde": {
         "value": -1.073046,
@@ -1612,16 +1612,16 @@
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + DATCOM body (rule: fin + body_cn_beta)"
       },
       "Cnp": {
-        "value": -0.035469,
+        "value": -0.034173,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/f4u-corsair/F4U-07/derive_physics.py: -CL_ref/8 + fin"
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: -CL_ref/8 + fin at reference CG, transferred with CYp to ARP"
       },
       "Cnr": {
-        "value": -0.093768,
+        "value": -0.097858,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + wing profile drag + fuselage"
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + wing profile drag + fuselage at reference CG, transferred with CYr to ARP"
       },
       "Cnda_right": {
         "value": 0.012314,

@@ -76,6 +76,18 @@ class TraceAcceptance(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn('720 ticks', result.stdout)
 
+    def test_current_and_historical_section_laws(self):
+        for version in (2, 3):
+            with self.subTest(version=version):
+                value = f'section-plane-source-weighted-wake-velocity-v{version} with bounded attached oracle'
+                metadata = [f'# aero_model: {value}' if line.startswith('# aero_model: ') else line
+                            for line in self.meta]
+                result = self.checker(meta=metadata)
+                self.assertEqual(result.returncode, 0, result.stderr)
+        metadata = ['# aero_model: section-plane-source-weighted-wake-velocity-v999 with bounded attached oracle'
+                    if line.startswith('# aero_model: ') else line for line in self.meta]
+        self.rejected(meta=metadata, diagnostic='unsupported aero_model')
+
     def test_checkpoint_wheel_state_keeps_unknown_launch_explicit(self):
         metadata = dict(line[2:].split(': ', 1) for line in self.meta)
         check_coupled_metadata(metadata)

@@ -84,7 +84,7 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | propulsion | propeller hub (model right, up, aft m) | 0.0001396, -3.491e-05, -0.3747 | geometry.json propeller child transformed by the visual thrust_frame pivot/rotation (default YXZ) |
 | propulsion | propeller hub offset from loaded CG (LE frame) | -0.3632, 0.0001396, 0.02404 | transformed propeller hub [x_aft,y_right,z_up] minus the derived loaded inventory CG |
 | propulsion | solidity of the Glow propeller surrogate | 0.05167 | B c (0.8 R) / (pi R^2): 2 constant-chord blades over its 0.2-1.0 R annuli (app/data/glow/extra_61fx_2t.json) |
-| propulsion | C_N, C_M at J 0.3 and 0.5 (per rad) | 0.001884, 0.002999, 0.004456, 0.002978 | x rho n2 D4 and x rho n2 D5 |
+| propulsion | C_N, C_M at J 0.3 and 0.5 (per rad) | 0.002474, 0.005058, 0.006239, 0.006713 | x rho n2 D4 and x rho n2 D5 |
 | slipstream | fin piece above the fuselage top: root height, span, chords (m), area (m2) | 0.04726, 0.2358, 0.2573, 0.1082, 0.04369 | fuselage top at the fin ac up to the fin tip; LE/TE lines of the fin polygon |
 | slipstream | rudder piece below the fuselage top: bottom height, span, chords (m), area (m2) | -0.02875, 0.06255, 0.1225, 0.1181, 0.007696 | rudder behind the tail post, from the mid-height of its slanted bottom edge to the fuselage top line at the post; polygon area |
 | ground effect | induced c, e; tail c, e (VLM fit) | 17.16, 1.215, 19.19, 1.332 | EX-14e image-method VLM of this planform, faded runtime law; ARP 0.216 m above the main-wheel contact in a level attitude (x 0.133) |
@@ -96,7 +96,7 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | --- | --- | --- |
 | CL0 | -0.005905 | derived |
 | CLa | 4.4506 | derived |
-| CLq | 5.6659 | derived |
+| CLq | 5.6175 | derived |
 | CLde | 0.41482 | derived |
 | CLda_each | 0.53882 | derived |
 | CD0 | 0.030042 | derived |
@@ -109,20 +109,20 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | CYp | -0.065341 | derived |
 | CYr | 0.32869 | derived |
 | CYdr | 0.24259 | derived |
-| Clb | -0.028539 | derived |
-| Clp | -0.59687 | derived |
-| Clr | 0.096048 | derived |
+| Clb | -0.034748 | derived |
+| Clp | -0.59801 | derived |
+| Clr | 0.1018 | derived |
 | Clda_right | -0.16977 | derived |
 | Clda_left | 0.16977 | derived |
 | Cldr | 0.02656 | derived |
 | Cm0 | 0.015019 | derived |
 | Cma | -0.90621 | derived |
-| Cmq | -9.3608 | derived |
+| Cmq | -9.5618 | derived |
 | Cmde | -1.0551 | derived |
 | Cmda_each | -0.10207 | derived |
 | Cnb | 0.16666 | derived |
-| Cnp | -0.002664 | derived |
-| Cnr | -0.18087 | derived |
+| Cnp | -0.002239 | derived |
+| Cnr | -0.18301 | derived |
 | Cnda_right | 0.013406 | derived |
 | Cnda_left | -0.013406 | derived |
 | Cndr | -0.11385 | derived |

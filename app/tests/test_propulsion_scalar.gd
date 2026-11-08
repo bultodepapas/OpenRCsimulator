@@ -5,8 +5,25 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Air := preload("res://physics/air_data.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Reference := preload("res://tests/propulsion_reference.gd")
+const M := preload("res://physics/math3d.gd")
 
 const CASES_PER_AIRCRAFT := 5000
+
+
+# H14's historical lookup intentionally differs beyond a final value below its floor.
+# Keep this frozen vector oracle on the domain where the old and current laws agree;
+# test_propeller_table_continuity.gd independently checks the changed continuation.
+func _historical_lookup_domain(v: PackedFloat64Array, rpm: float, prop: Dictionary) -> bool:
+	if rpm < Propulsion.STOPPED_RPM or Propulsion.source_kind(prop) == "turbine":
+		return true
+	var along: float = v[0] if not prop.has("axis") else M.dot(v, prop.axis)
+	var j: float = maxf(along, 0.0) / (rpm / 60.0 * float(prop.diameter))
+	for pair in [["ct", Propulsion.CT_FLOOR], ["cp", minf(Propulsion.CP_FLOOR, float(prop.get("cp_min", 0.0)))],
+			["normal_force", 0.0], ["pfactor_moment", 0.0]]:
+		var table: PackedFloat64Array = prop.get(pair[0], PackedFloat64Array())
+		if not table.is_empty() and j > table[table.size() - 2] and table[table.size() - 1] < float(pair[1]):
+			return false
+	return true
 
 
 func _initialize() -> void:
@@ -18,6 +35,7 @@ func _initialize() -> void:
 	var tilted_crossflow := 0
 	var still_air := 0
 	var stopped := 0
+	var changed_continuation := 0
 	for id in Catalog.airplane_flyable_ids(): # TT-06: previews carry no data file
 		var flight := Flight.new()
 		flight.setup(Catalog.entry(id).data)
@@ -42,6 +60,9 @@ func _initialize() -> void:
 			if rpm < Propulsion.STOPPED_RPM:
 				stopped += 1
 			var rho := Air.RHO_SEA_LEVEL * rng.randf_range(0.8, 1.05)
+			if not _historical_lookup_domain(v, rpm, prop):
+				changed_continuation += 1
+				continue
 			var expected: PackedFloat64Array = Reference.loads(v, rpm, prop, rho)
 			var actual: PackedFloat64Array = Propulsion.loads(v, rpm, prop, rho)
 			checks += 1
@@ -66,6 +87,6 @@ func _initialize() -> void:
 		failures += 1
 		printerr("FAIL coverage: %d tilted (%d with crossflow), %d still air, %d stopped"
 			% [tilted, tilted_crossflow, still_air, stopped])
-	print("H14 propulsion: %d byte-exact comparisons (%d tilted-shaft, %d with crossflow, %d still air, %d stopped), %d failed"
-		% [checks, tilted, tilted_crossflow, still_air, stopped, failures])
+	print("H14 propulsion: %d byte-exact comparisons (%d tilted-shaft, %d with crossflow, %d still air, %d stopped); %d changed-continuation cases excluded, %d failed"
+		% [checks, tilted, tilted_crossflow, still_air, stopped, changed_continuation, failures])
 	quit(1 if failures else 0)
