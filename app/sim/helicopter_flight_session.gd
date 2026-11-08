@@ -70,6 +70,7 @@ var start_choice: String = "airborne"
 var power: Dictionary = Lifecycle.initial(true)
 var startup_collective: float = 0.0
 var pending_mode: String = ""
+var _mode_confirmation: Dictionary = {}
 var shaft_phase := PackedFloat64Array([0.0,0.0])
 var _phase_omega := PackedFloat64Array([0.0,0.0])
 var _field: Dictionary = {}
@@ -145,7 +146,7 @@ func _native_transition_reentry() -> bool:
 ## owns drive, controls and source configuration, which observers may inspect
 ## but cannot change while a committed reset or restore is being published.
 const _NATIVE_PUBLICATION_FIELDS := ["aircraft","aircraft_path","_hover","_trim","commands","raw",
- "flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","_start","_field",
+ "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","_mode_confirmation","start_choice","_start","_field",
  "environment","ground_surfaces","_weather","_collision_world","_impact_geometry","_ground_start",
  "startup_collective","shaft_phase","_phase_omega","crash","_ready_to_fly",
  "_controller_cut_held","_controller_lost","_native_stage","_native_previous_pre_tick",
@@ -252,6 +253,8 @@ func _init() -> void:
    var native_failure: String=_native_stage.last_failure()
    if not native_failure.is_empty(): _stage_failure=native_failure
   pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
+ sim.paused_changed.connect(func(value: bool) -> void:
+  if value: _clear_mode_confirmation())
  sim.stepped.connect(_on_stepped)
 
 
@@ -375,17 +378,25 @@ func set_field(field: Dictionary) -> bool:
   pause_reason="Field changed; reset helicopter before continuing."
  return true
 
+## Read-only admission shared by the session and helicopter launch preflight.
+## The returned field is detached; callers do not mutate session weather here.
+static func validate_weather_selection(settings: Variant) -> Dictionary:
+ var result: Dictionary=WeatherField.build(settings)
+ if not result.ok:
+  return {ok=false,code="invalid",error="; ".join(result.errors),field=null}
+ if result.field.is_spatial():
+  return {ok=false,code="spatial",error="Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset.",field=null}
+ if result.field.has_vertical_atmosphere():
+  return {ok=false,code="vertical",error="Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions.",field=null}
+ if result.field.has_turbulence():
+  return {ok=false,code="turbulence",error="Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts.",field=null}
+ return {ok=true,code="ok",error="",field=result.field}
+
 func setup_weather(settings: Variant) -> bool:
  if _native_transition_reentry(): return false
- var result: Dictionary=WeatherField.build(settings)
- if result.ok and result.field.is_spatial():
-  weather_error="Spatial weather is not qualified for rotorcraft. Choose a uniform weather preset."
-  return false
- if result.ok and result.field.has_vertical_atmosphere():
-  weather_error="Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
-  return false
- if not result.ok or result.field.has_turbulence():
-  weather_error="; ".join(result.errors) if not result.ok else "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
+ var result: Dictionary=validate_weather_selection(settings)
+ if not result.ok:
+  weather_error=result.error
   return false
  if sim.tick>0:
   weather_error="Weather changes require a new helicopter flight."
@@ -430,7 +441,7 @@ func set_start_choice(choice: String) -> bool:
  return true
 
 const _NATIVE_RESET_FIELDS := ["_ready_to_fly","_stage_failure","_hover","_trim","commands","raw",
- "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","shaft_phase","_phase_omega",
+ "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","_mode_confirmation","shaft_phase","_phase_omega",
  "crash","_ground_start","startup_collective","calibration","_native_stage","_native_previous_pre_tick",
  "stage_backend_error","pause_reason"]
 
@@ -522,7 +533,7 @@ func _reset_impl(transactional: bool) -> bool:
  trainer_enabled=true
  zero_drive_hold=start_choice=="ground"
  power=Lifecycle.initial(start_choice!="ground")
- pending_mode=""
+ _clear_mode_confirmation()
  shaft_phase=PackedFloat64Array([0.0,0.0])
  _phase_omega=PackedFloat64Array([0.0,0.0])
  crash={}
@@ -659,7 +670,7 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   # Preserve accepted body/shaft state for evidence; cut drive at the terminal boundary.
   power.armed=false
   zero_drive_hold=true
-  pending_mode=""
+  _clear_mode_confirmation()
   radio.set_auxiliary_enabled(false)
   sim.set_paused(true)
 
@@ -686,19 +697,21 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
   if not connected and radio.connected and id==radio.device_id: controller_disconnected()
   return
  if connected and not radio.connected:
+  _clear_mode_confirmation()
   var info: Dictionary=device_info.call(id)
   radio.connect_device(id,info,RcCalibration.load_profile(profiles_path,RcInput.key_for(id,info)))
   if radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
   sim.set_paused(true)
   pause_reason="Gamepad connected: P resumes the hover collective." if radio.is_rate_throttle() else "Radio: lower collective to arm, return it to %.0f%% for hover, then P."%(commands.throttle*100.0)
  elif not connected and radio.connected and id==radio.device_id:
+  _clear_mode_confirmation()
   radio.disconnect_device()
   cancel_calibration()
   sim.set_paused(true)
   pause_reason="radio disconnected"
 
 func hold(reason: String) -> void:
- pending_mode=""
+ _clear_mode_confirmation()
  radio.set_auxiliary_enabled(false)
  if external_controller_selection and not holds.has(reason) and radio.connected: radio.require_neutral(true)
  holds[reason]=true
@@ -714,10 +727,12 @@ func cancel_calibration() -> void:
  if _native_transition_reentry(): return
  _cancel_calibration_internal()
 func _cancel_calibration_internal() -> void:
+ _clear_mode_confirmation()
  if calibration!=null: calibration=null; pause_reason="calibration cancelled"
 func start_calibration() -> bool:
  if _native_transition_reentry(): return false
  if not radio.connected or radio.profile.get("kind","")!="radio": return false
+ _clear_mode_confirmation()
  calibration=RcCalibration.new(radio.profile)
  radio.set_auxiliary_enabled(false)
  sim.set_paused(true)
@@ -741,6 +756,7 @@ func controller_profile_rejection(profile: Dictionary) -> String:
 
 func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:
  if _native_transition_reentry(): return false
+ _clear_mode_confirmation()
  if id<0:
   calibration=null
   radio.disconnect_device()
@@ -770,7 +786,7 @@ func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_in
 
 func controller_disconnected() -> void:
  if _native_transition_reentry(): return
- pending_mode=""
+ _clear_mode_confirmation()
  radio.disconnect_device()
  calibration=null
  _controller_lost=true
@@ -779,7 +795,7 @@ func controller_disconnected() -> void:
 
 func controller_focus_lost() -> void:
  if _native_transition_reentry(): return
- pending_mode=""
+ _clear_mode_confirmation()
  if external_controller_selection and radio.connected:
   radio.set_auxiliary_enabled(false)
   radio.require_neutral(true,true)
@@ -808,7 +824,7 @@ func toggle_motor_arm() -> bool:
  if power.armed:
   power.armed=false
   zero_drive_hold=true
-  pending_mode=""
+  _clear_mode_confirmation()
   return true
  if not is_flyable() or not holds.is_empty() or sim.paused or calibration!=null or _controller_lost \
  or (radio.connected and not radio.armed):
@@ -818,6 +834,7 @@ func toggle_motor_arm() -> bool:
  or absf(commands.roll)>.05 or absf(commands.pitch)>.05 or absf(commands.yaw)>.05:
   pause_reason="Arm: hold ON, cyclic/yaw centered, collective within 1 degree of zero pitch."
   return false
+ _clear_mode_confirmation()
  power.armed=true
  power.spool_start_s=sim.time()
  pause_reason="Armed in hold. Release hold to start the rotor."
@@ -827,7 +844,7 @@ func set_drive_hold(enabled: bool) -> bool:
  if _native_transition_reentry(): return false
  if enabled:
   zero_drive_hold=true
-  pending_mode=""
+  _clear_mode_confirmation()
   return true
  if _controller_cut_held:
   pause_reason="Release throttle cut before releasing rotor hold."
@@ -840,6 +857,7 @@ func set_drive_hold(enabled: bool) -> bool:
   return false
  if zero_drive_hold:
   power.spool_start_s=sim.time()
+ _clear_mode_confirmation()
  zero_drive_hold=false
  pause_reason="Soft start: wait for governed RPM, then raise collective."
  return true
@@ -850,17 +868,76 @@ func set_controller_cut(enabled: bool) -> void:
  _controller_cut_held=enabled
  if enabled: set_drive_hold(true)
 
+func _clear_mode_confirmation() -> void:
+ if not _mode_confirmation.is_empty() and pause_reason==_mode_confirmation.get("message",null):
+  pause_reason=""
+ pending_mode=""
+ _mode_confirmation={}
+
+
+## Sample the same postmix output the flight equations consume. The radio's
+## latest conditioned axes can be newer than the last physics sample; reading
+## them does not move the physical or virtual collective.
+func _mode_change_preview(next: String) -> Dictionary:
+ if not Sim.state_is_valid(sim.state) or sim.continuous.size() not in [6,14]: return {}
+ var controls: Dictionary=radio.sticks() if radio.connected else commands.duplicate(true)
+ for key: String in ["roll","pitch","yaw","throttle"]:
+  var value: Variant=controls.get(key)
+  if typeof(value) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(float(value)): return {}
+ var state: PackedFloat64Array=sim.state.duplicate()
+ state.append_array(sim.continuous.slice(0,6))
+ var sticks:=PackedFloat64Array([-controls.pitch,controls.roll,controls.yaw,2.0*controls.throttle-1.0])
+ var model: Dictionary=aircraft.context.electronics_model
+ var old_output: Dictionary=Electronics.fast_evaluate(model,state,sticks,flight_mode,trainer_enabled,_trim)
+ var new_output: Dictionary=Electronics.fast_evaluate(model,state,sticks,next,trainer_enabled,_trim)
+ if not old_output.get("ok",false) or not new_output.get("ok",false): return {}
+ var old_pitch: float=float(old_output.get("collective_75_rad",NAN))
+ var new_pitch: float=float(new_output.get("collective_75_rad",NAN))
+ if not is_finite(old_pitch) or not is_finite(new_pitch): return {}
+ var old_degrees: float=rad_to_deg(old_pitch)
+ var new_degrees: float=rad_to_deg(new_pitch)
+ var source: Dictionary={kind="radio",device=radio.device_id,profile=radio.profile.duplicate(true)} if radio.connected else {kind="keyboard"}
+ var identity: Dictionary={source_mode=flight_mode,target_mode=next,input_source=source,trainer=trainer_enabled,
+  old_pitch="%.1f"%old_degrees,new_pitch="%.1f"%new_degrees,
+  old_saturated=old_output.servo_travel_limited,new_saturated=new_output.servo_travel_limited}
+ var message: String=tr("Mode changes pitch %.1f to %.1f deg. Press mode again to apply.")%[old_degrees,new_degrees]
+ if old_output.servo_travel_limited or new_output.servo_travel_limited:
+  var old_forward: float=rad_to_deg(float(old_output.cyclic_forward_rad))
+  var old_right: float=rad_to_deg(float(old_output.cyclic_right_rad))
+  var new_forward: float=rad_to_deg(float(new_output.cyclic_forward_rad))
+  var new_right: float=rad_to_deg(float(new_output.cyclic_right_rad))
+  if not is_finite(old_forward) or not is_finite(old_right) or not is_finite(new_forward) or not is_finite(new_right): return {}
+  identity["cyclic"]=["%.1f"%old_forward,"%.1f"%old_right,"%.1f"%new_forward,"%.1f"%new_right]
+  message+="\n"+tr("Cyclic forward/right %.1f / %.1f to %.1f / %.1f deg.")%[old_forward,old_right,new_forward,new_right]
+ return {identity=identity,input_sample=controls.duplicate(true),old_pitch=old_pitch,new_pitch=new_pitch,
+  message=message}
+
+
 func request_flight_mode() -> bool:
  if _native_transition_reentry(): return false
+ if not is_flyable() or sim.paused or not holds.is_empty() or calibration!=null or _controller_lost:
+  _clear_mode_confirmation()
+  return false
+ if radio.connected and (not radio.armed or not radio.input_error.is_empty() or not radio.profile_error.is_empty() or radio.profile!=radio._profile_snapshot):
+  _clear_mode_confirmation()
+  pause_reason=tr("Mode change unavailable. Check controls and try again.")
+  return false
  var next: String="idle_up" if flight_mode=="normal" else "normal"
- var old_pitch: float=collective_pitch()
- var new_pitch: float=collective_pitch(next)
- if pending_mode!=next and absf(new_pitch-old_pitch)>.5*PI/180.0:
+ var preview: Dictionary=_mode_change_preview(next)
+ if preview.is_empty():
+  _clear_mode_confirmation()
+  pause_reason=tr("Mode change unavailable. Check controls and try again.")
+  return false
+ var has_pending: bool=not pending_mode.is_empty() and not _mode_confirmation.is_empty()
+ var confirmed: bool=has_pending and pending_mode==next and _mode_confirmation.identity==preview.identity \
+  and _mode_confirmation.message==preview.message and pause_reason==_mode_confirmation.message
+ if (has_pending and not confirmed) or (not has_pending and absf(preview.new_pitch-preview.old_pitch)>.5*PI/180.0):
   pending_mode=next
-  pause_reason=tr("Mode changes pitch %.1f to %.1f deg. Press mode again to apply.")%[old_pitch*180.0/PI,new_pitch*180.0/PI]
+  _mode_confirmation=preview
+  pause_reason=preview.message
   return false
  flight_mode=next
- pending_mode=""
+ _clear_mode_confirmation()
  pause_reason=""
  return true
 
@@ -1023,7 +1100,7 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   trainer_enabled=candidate.trainer_enabled
   zero_drive_hold=candidate.zero_drive_hold
   power=candidate.power.duplicate()
-  pending_mode=""
+  _clear_mode_confirmation()
   shaft_phase=candidate.shaft_phase.duplicate()
   _phase_omega=PackedFloat64Array([saved.continuous[0]*aircraft.context.main_model.rotation_sense,saved.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
   crash={}
@@ -1054,7 +1131,7 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
  trainer_enabled=candidate.trainer_enabled
  zero_drive_hold=candidate.zero_drive_hold
  power=candidate.power.duplicate()
- pending_mode=""
+ _clear_mode_confirmation()
  shaft_phase=candidate.shaft_phase.duplicate()
  _phase_omega=PackedFloat64Array([sim.continuous[0]*aircraft.context.main_model.rotation_sense,sim.continuous[0]*aircraft.context.tail_model.tail_to_main_speed_ratio*aircraft.context.tail_model.rotation_sense])
  crash={}
