@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """GPU-independent regression checks for L9c measurements and import recovery."""
+from io import BytesIO
 from pathlib import Path
 import subprocess
 import tempfile
@@ -7,8 +8,68 @@ import unittest
 from unittest.mock import patch
 
 import numpy as np
+from PIL import Image
+import check_stripes as stripes
 from check_stripes import errors, mask_for, SIZE, verify_projection
 from check_surfaces import checked_run, import_mutation_project, parse_args
+
+
+class StripeLinearRgbTests(unittest.TestCase):
+    @staticmethod
+    def legacy_conversion(pixels):
+        values = pixels.astype(np.float32) / 255.0
+        return np.where(values <= 0.04045, values / 12.92, ((values + 0.055) / 1.055) ** 2.4)
+
+    def assert_exact_conversion(self, pixels):
+        with np.errstate(invalid="ignore"):
+            expected = self.legacy_conversion(pixels)
+            actual = stripes.linear_rgb(pixels)
+        self.assertIs(type(actual), type(expected))
+        self.assertEqual(actual.shape, expected.shape)
+        self.assertEqual(actual.dtype, expected.dtype)
+        np.testing.assert_array_equal(actual.view(np.uint32), expected.view(np.uint32))
+
+    def test_all_uint8_values_and_array_layouts(self):
+        values = np.arange(256, dtype=np.uint8)
+        for pixels in (values, values[::-1], values[::3], np.array(127, dtype=np.uint8),
+                       np.asfortranarray(values.reshape(16, 16))):
+            with self.subTest(shape=pixels.shape, strides=pixels.strides):
+                self.assert_exact_conversion(pixels)
+
+    def test_png_rgb_conversion_and_downsampling_match_exactly(self):
+        rgb = (np.arange(768, dtype=np.uint16) % 256).astype(np.uint8).reshape(16, 16, 3)
+        stream = BytesIO()
+        Image.fromarray(rgb).save(stream, format="PNG")
+        stream.seek(0)
+        with Image.open(stream) as image:
+            pixels = np.asarray(image.convert("RGB"))
+        for channel in range(3):
+            np.testing.assert_array_equal(np.unique(pixels[:, :, channel]), np.arange(256, dtype=np.uint8))
+        self.assert_exact_conversion(pixels)
+        actual = stripes.linear_rgb(pixels).reshape(4, 4, 4, 4, 3).mean(axis=(1, 3))
+        expected = self.legacy_conversion(pixels).reshape(4, 4, 4, 4, 3).mean(axis=(1, 3))
+        np.testing.assert_array_equal(actual.view(np.uint32), expected.view(np.uint32))
+
+    def test_non_uint8_and_array_subclass_retain_formula_behavior(self):
+        class ByteArray(np.ndarray):
+            pass
+
+        cases = (np.array([0, 128, 256, 65535], dtype=np.uint16),
+                 np.array([-5.0, 0.5, 100.0, 255.0, 256.0], dtype=np.float32),
+                 np.arange(256, dtype=np.uint8).view(ByteArray))
+        for pixels in cases:
+            with self.subTest(dtype=pixels.dtype, array_type=type(pixels).__name__):
+                self.assert_exact_conversion(pixels)
+
+    def test_uint8_results_cannot_change_later_conversions(self):
+        for pixels in (np.array([128, 128], dtype=np.uint8), np.array(128, dtype=np.uint8)):
+            with self.subTest(shape=pixels.shape):
+                first = stripes.linear_rgb(pixels)
+                second = stripes.linear_rgb(pixels)
+                expected = second.copy()
+                first.flat[0] = -1.0
+                np.testing.assert_array_equal(second, expected)
+                np.testing.assert_array_equal(stripes.linear_rgb(pixels), expected)
 
 
 class StripeMeasurementTests(unittest.TestCase):
@@ -50,6 +111,64 @@ class StripeMeasurementTests(unittest.TestCase):
         enlarged["eye_render"] = [0, 1.001, 0]
         with self.assertRaisesRegex(RuntimeError, "camera mismatch"):
             verify_projection(native, other, 4)
+
+
+class StripeAcceptanceTests(unittest.TestCase):
+    def setUp(self):
+        self.shape = (SIZE[1], SIZE[0], 3)
+        self.metadata = {"projected_runway_core": [[100, 10], [200, 10], [200, 50], [100, 50]]}
+        self.filtered = self.captures((0.2, 0.4))
+        self.reference16 = self.captures((0.2, 0.4))
+        self.reference8 = self.captures((0.21, 0.39))
+        self.raw = self.captures((0.3, 0.3))
+
+    def captures(self, values):
+        return {(view, shift): (np.full(self.shape, values[index]), self.metadata)
+                for view in stripes.VIEWS for index, shift in enumerate(stripes.SHIFTS)}
+
+    def erase_threshold(self):
+        result = dict(self.filtered)
+        for shift in stripes.SHIFTS:
+            key = ("runway_threshold", shift)
+            result[key] = (np.zeros_like(self.filtered[key][0]), self.filtered[key][1])
+        return result
+
+    def test_passing_filtered_and_threshold_only_erasure(self):
+        report = stripes.assess(self.filtered, self.raw, self.reference8, self.reference16)
+        self.assertEqual(set(report), stripes.VIEWS)
+        with self.assertRaisesRegex(stripes.NearbyStripeDetailError, "nearby stripes were erased"):
+            stripes.assess(self.erase_threshold(), self.raw, self.reference8, self.reference16)
+
+    def test_nearby_detail_keeps_reference_disagreement_margin(self):
+        weak = dict(self.filtered)
+        for shift in stripes.SHIFTS:
+            key = ("runway_threshold", shift)
+            pixels, metadata = self.filtered[key]
+            weak[key] = (pixels * 0.03, metadata)
+        # A small retained signal improves over zero, but not by twice the reference disagreement.
+        with self.assertRaises(stripes.NearbyStripeDetailError):
+            stripes.assess(weak, self.raw, self.reference8, self.reference16)
+
+    def test_negative_controls_reach_the_specific_nearby_detail_failure(self):
+        rejected = stripes.verify_negative_controls(self.filtered, self.raw, self.reference8, self.reference16)
+        self.assertEqual(set(rejected), {"raw", "no_stripes", "threshold_no_stripes"})
+        self.assertIn("runway_oblique_", rejected["no_stripes"])
+        self.assertEqual(rejected["threshold_no_stripes"], "nearby stripes were erased instead of filtered")
+
+    def test_nearby_control_rejects_an_unrelated_failure(self):
+        real_assess = stripes.assess
+
+        def unrelated_failure(candidate, raw, reference8, reference16):
+            nearby_erased = all(not np.any(candidate["runway_threshold", shift][0]) for shift in stripes.SHIFTS)
+            obliques_intact = all(np.array_equal(candidate[view, shift][0], self.filtered[view, shift][0])
+                                  for view in stripes.VIEWS if view != "runway_threshold" for shift in stripes.SHIFTS)
+            if nearby_erased and obliques_intact:
+                raise RuntimeError("unrelated failure")
+            return real_assess(candidate, raw, reference8, reference16)
+
+        with patch("check_stripes.assess", side_effect=unrelated_failure):
+            with self.assertRaisesRegex(RuntimeError, "unexpected reason: unrelated failure"):
+                stripes.verify_negative_controls(self.filtered, self.raw, self.reference8, self.reference16)
 
 
 class MutationImportRetryTests(unittest.TestCase):

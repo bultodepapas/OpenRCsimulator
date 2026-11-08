@@ -31,8 +31,11 @@ class IncidentBundleTests(unittest.TestCase):
         self.runs = self.root / "runs"
         self.runs.mkdir()
 
-    def make_run(self, code: str = "print('checked run')") -> tuple[Path, dict]:
-        checked = run_checked([sys.executable, "-c", code], self.runs, timeout=5)
+    def make_run(self, code: str = "print('checked run')", *, script: str | None = None) -> tuple[Path, dict]:
+        command = [sys.executable, "-c", code]
+        if script is not None:
+            command += ["--script", script]
+        checked = run_checked(command, self.runs, timeout=5)
         return Path(checked["report"]).parent, checked
 
     @staticmethod
@@ -161,6 +164,7 @@ class IncidentBundleTests(unittest.TestCase):
             self.assertEqual(archive.read("flight-log.orfl"), flight_log.read_bytes())
         self.assertTrue(manifest["bundle_complete"])
         self.assertTrue(manifest["run_ok"])
+        self.assertEqual(manifest["run"]["status"], "passed")
         self.assertEqual(manifest["run"]["capture_identity"], "verified")
         self.assertEqual(manifest["source_metadata"]["note"], "repro on startup")
         by_role = {attachment["role"]: attachment for attachment in manifest["attachments"]}
@@ -329,6 +333,45 @@ class IncidentBundleTests(unittest.TestCase):
         self.assertFalse(manifest["run_ok"])
         self.assertTrue(manifest["run"]["evidence_valid"])
         self.assertEqual(manifest["run"]["reason"], "engine_error")
+        self.assertEqual(manifest["run"]["status"], "failed_or_invalid")
+
+    def test_lighting_skip_is_valid_evidence_but_not_a_pass(self):
+        message = "Lighting segment pixels SKIPPED: native rendering required at 1920x1080."
+        run_dir, checked = self.make_run(f"print({message!r})",
+                                         script="res://tests/test_lighting_segment_filter.gd")
+        self.assertTrue(checked["ok"])
+        output = self.root / "skip.zip"
+        code, stdout, stderr = self.invoke(run_dir, output)
+        self.assertEqual(code, 0, stderr)
+        self.assertIn("incident bundle: complete; run skipped (unqualified)", stdout)
+        self.assertNotIn("run passed", stdout)
+        manifest, archive = self.unzip_manifest(output)
+        with archive:
+            self.assertIn(message, archive.read("engine.log").decode())
+        self.assertTrue(manifest["bundle_complete"])
+        self.assertTrue(manifest["run"]["evidence_valid"])
+        self.assertFalse(manifest["run_ok"])
+        self.assertFalse(manifest["run"]["ok"])
+        self.assertEqual(manifest["run"]["reason"], "skipped")
+        self.assertEqual(manifest["run"]["status"], "skipped")
+        self.assertEqual(manifest["run"]["declared_reason"], "passed")
+
+    def test_lighting_success_without_completion_evidence_is_invalid(self):
+        run_dir, checked = self.make_run("print('startup only')",
+                                         script="res://tests/test_lighting_skin_patterns.gd")
+        self.assertTrue(checked["ok"])
+        output = self.root / "missing-completion.zip"
+        code, stdout, stderr = self.invoke(run_dir, output)
+        self.assertEqual(code, 1, stderr)
+        self.assertIn("run failed or invalid", stdout)
+        manifest, archive = self.unzip_manifest(output)
+        with archive:
+            self.assertIn("startup only", archive.read("engine.log").decode())
+        self.assertFalse(manifest["bundle_complete"])
+        self.assertFalse(manifest["run_ok"])
+        self.assertFalse(manifest["run"]["evidence_valid"])
+        self.assertEqual(manifest["run"]["reason"], "invalid_report")
+        self.assertEqual(manifest["run"]["status"], "failed_or_invalid")
 
     def test_tampered_log_is_retained_and_marks_bundle_partial(self):
         run_dir, _checked = self.make_run()

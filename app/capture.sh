@@ -244,6 +244,9 @@ for suite in "skin_patterns:Lighting skin patterns: " "segment_filter:Lighting s
   grep -qE "^${suite#*:}[1-9][0-9]* checks, 0 failed" "$CAPTURES/lighting-pixels/lighting-${suite%%:*}-"*/engine.log \
     || { echo "lighting pixels ${suite%%:*}: no nonzero completion line" >&2; exit 1; }
 done
+# Validate the complete assertion roster and reject duplicate/contradictory
+# terminal markers before this display-backed contract can count as complete.
+python3 "$HERE/../tools/godot/summarize.py" "$CAPTURES/lighting-pixels"
 record_check quality:lighting-pixels
 finish_phase
 fi

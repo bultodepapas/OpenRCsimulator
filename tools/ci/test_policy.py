@@ -90,11 +90,14 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(deleted["paths"], ["AGENTS.md"])
         self.assertTrue(all(deleted["recommended"].values()))
 
-        self.base = self.git("rev-parse", "HEAD")
-        self.commit("docs/TOOLS.md", "tool guide")
+        self.base = self.commit("docs/TOOLS.md", "tool guide")
         self.git("update-index", "--chmod=+x", "docs/TOOLS.md")
         self.git("commit", "-qm", "executable guide")
+        raw = self.git("diff", "--raw", "-z", self.base, "HEAD").split("\0")
+        self.assertEqual(raw[0].split()[:2], [":100644", "100755"])
+        self.assertEqual(raw[0].split()[-1], "M")
         self.assertTrue(all(self.receipt()["recommended"].values()))
+        self.assertIn("mode change, executable addition", self.receipt()["reason"])
 
     def test_safe_document_replaced_by_symlink_forces_full_union(self):
         self.base = self.commit("docs/TOOLS.md", "regular guide")
@@ -103,6 +106,106 @@ class PolicyTests(unittest.TestCase):
         self.git("update-index", "--cacheinfo", f"120000,{result.stdout.decode().strip()},docs/TOOLS.md")
         self.git("commit", "-qm", "symlink guide")
         self.assertTrue(all(self.receipt()["recommended"].values()))
+
+    def executable_base(self, path):
+        # Index modes make the fixture portable to hosts without executable bits.
+        # Preserve the explicit mode when commit() stages the next content edit.
+        self.git("config", "core.fileMode", "false")
+        self.commit(path, "before")
+        self.git("update-index", "--chmod=+x", path)
+        self.git("commit", "-qm", "existing executable")
+        self.base = self.git("rev-parse", "HEAD")
+
+    def test_executable_content_change_uses_path_scope_and_keeps_shadow_gates(self):
+        for path, expected in (
+                ("prototypes/stage0/three/build.sh", dict(production=False, prototype=True, site=False)),
+                ("site/build.sh", dict(production=False, prototype=False, site=True)),
+                ("app/export.sh", dict(production=True, prototype=True, site=True))):
+            with self.subTest(path=path):
+                self.executable_base(path)
+                sha = self.commit(path, "after")
+                raw = self.git("diff", "--raw", "-z", self.base, sha).split("\0")
+                self.assertEqual(raw[0].split()[:2], [":100755", "100755"])
+                self.assertEqual(raw[0].split()[-1], "M")
+                self.assertEqual(raw[1:], [path, ""])
+                receipt = self.receipt(sha)
+                self.assertEqual(receipt["reason"], "changed paths")
+                self.assertEqual(receipt["recommended"], expected)
+                self.assertEqual(receipt["paths"], [path])
+                for job in (*policy.PRODUCTION, "three", "export"):
+                    self.assertTrue(receipt["required"][job], job)
+                self.assertEqual(receipt["required"]["site"], expected["site"])
+                self.validate(receipt)
+                for field, value in (("base", sha), ("reason", "empty comparison"),
+                                     ("required", {**receipt["required"], "app": False})):
+                    changed = copy.deepcopy(receipt)
+                    changed[field] = value
+                    with self.subTest(field=field), self.assertRaises(ValueError):
+                        self.validate(changed)
+
+    def test_added_executable_and_removed_executable_mode_keep_full_scope(self):
+        path = "prototypes/stage0/three/build.sh"
+        self.git("config", "core.fileMode", "false")
+        file = self.root / path
+        file.parent.mkdir(parents=True)
+        file.write_text("build", encoding="utf-8")
+        self.git("add", "--", path)
+        self.git("update-index", "--chmod=+x", path)
+        self.git("commit", "-qm", "added executable")
+        self.assertTrue(all(self.receipt()["recommended"].values()))
+        self.assertIn("mode change, executable addition", self.receipt()["reason"])
+        self.base = self.git("rev-parse", "HEAD")
+        self.git("update-index", "--chmod=-x", path)
+        self.git("commit", "-qm", "removed executable mode")
+        self.assertTrue(all(self.receipt()["recommended"].values()))
+        self.assertIn("mode change, executable addition", self.receipt()["reason"])
+
+    def test_executable_replaced_by_gitlink_keeps_full_scope(self):
+        path = "prototypes/stage0/three/build.sh"
+        self.executable_base(path)
+        self.git("update-index", "--cacheinfo", f"160000,{self.base},{path}")
+        self.git("commit", "-qm", "gitlink replaces executable")
+        self.assertTrue(all(self.receipt()["recommended"].values()))
+
+    def test_later_executable_change_cannot_override_earlier_deletion(self):
+        deleted = "docs/TOOLS.md"
+        executable = "prototypes/stage0/three/build.sh"
+        self.commit(deleted, "guide")
+        self.executable_base(executable)
+        self.git("rm", "--", deleted)
+        sha = self.commit(executable, "after")
+        raw = self.git("diff", "--raw", "-z", self.base, sha).split("\0")
+        self.assertEqual(raw[1::2], [deleted, executable])
+        self.assertEqual(raw[0].split()[-1], "D")
+        self.assertEqual(raw[2].split()[:2], [":100755", "100755"])
+        self.assertEqual(raw[2].split()[-1], "M")
+        self.assertTrue(all(self.receipt(sha)["recommended"].values()))
+
+    def test_pr_executable_content_change_recomputes_against_merge_parents(self):
+        path = "prototypes/stage0/three/build.sh"
+        self.executable_base(path)
+        original = self.git("branch", "--show-current")
+        self.git("checkout", "-qb", "fixture-executable")
+        head = self.commit(path, "after")
+        self.git("checkout", "-q", original)
+        self.git("merge", "--no-ff", "-qm", "fixture merge", "fixture-executable")
+        merge = self.git("rev-parse", "HEAD")
+        payload = {"number": 1, "pull_request": {"base": {"sha": self.base}, "head": {"sha": head}}}
+        receipt = self.receipt(merge, event="pull_request", ref="refs/pull/1/merge", payload=payload)
+        self.assertEqual(receipt["reason"], "changed paths")
+        self.assertEqual(receipt["recommended"], dict(production=False, prototype=True, site=False))
+        self.assertTrue(all(receipt["required"][job] for job in (*policy.PRODUCTION, "three")))
+        self.assertFalse(receipt["required"]["export"])
+        self.assertFalse(receipt["required"]["site"])
+        needs = {name: {"result": "success"} for name in ("scope", *policy.JOBS)}
+        needs["site"]["result"] = needs["export"]["result"] = "skipped"
+        policy.verify(receipt, needs, self.root, merge, "pull_request", "refs/pull/1/merge", payload)
+        for field, value in (("head", merge), ("base", head),
+                             ("required", {**receipt["required"], "visuals": False})):
+            changed = copy.deepcopy(receipt)
+            changed[field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                policy.validate(changed, self.root, merge, "pull_request", "refs/pull/1/merge", payload)
 
     def test_nul_delimited_spaces_and_unicode(self):
         self.commit("site/archivo con espacio ñ.txt", "content")
@@ -192,7 +295,9 @@ class PolicyTests(unittest.TestCase):
         sha = self.commit("docs/TOOLS.md", "docs")
         real = policy.git
         for raw in ("not a raw diff\0doc\0", ":100644 100644 a b M\0../escape\0",
-                    ":100644 100644 a b M\0docs/TOOLS.md"):
+                    ":100644 100644 a b M\0docs/TOOLS.md",
+                    ":100755 100755 a b M\0../escape\0",
+                    ":100755 100755 a b M\0docs/TOOLS.md"):
             def broken(root, *args):
                 return raw if args[0] == "diff" else real(root, *args)
             with self.subTest(raw=raw), patch.object(policy, "git", broken), self.assertRaises(ValueError):

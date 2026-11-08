@@ -492,18 +492,27 @@ jobs:
           path: ${{ runner.temp }}/visual-shadow/inventory.json
           if-no-files-found: error
           retention-days: 14
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: always() # Preserve diagnostics when a capture gate fails.
+      - name: Prepare identical mutation-project evidence
+        id: capture_project_evidence
+        # Only a completed capture has stopped all its project writers. On any
+        # failure, keep the original full diagnostic upload below.
+        timeout-minutes: 5
+        continue-on-error: true # Optional storage only; capture and uploads remain strict.
+        run: python3 tools/ci/capture_project_evidence.py prepare --captures app/captures --github-output "$GITHUB_OUTPUT"
+      - name: Upload captures with verified project reconstruction
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && steps.capture_project_evidence.outcome == 'success' && steps.capture_project_evidence.outputs.equivalent == 'true'
         with:
           name: captures-app
-          # The L9c checkers' mutated project copies (~0.9 GB of project files each; their hidden .godot
-          # imports were never uploaded) are regenerated from source. Their logs, renders and summaries
-          # stay outside these trees and are still uploaded.
           path: |
             app/captures/*
-            !app/captures/l9c/disabled-surface-app/**
-            !app/captures/l9c/unfiltered-stripe-app/**
             !app/captures/l9c/stripes/raw-app/**
+      - name: Upload complete captures and failure evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && (steps.capture_project_evidence.outcome != 'success' || steps.capture_project_evidence.outputs.equivalent != 'true')
+        with:
+          name: captures-app
+          path: app/captures/*
 
   # PT1-CI-03 shadow evidence, not a gate: run the seven capture groups on separate runners and
   # compare every output with the unchanged full job above. `CI required` does not depend on these

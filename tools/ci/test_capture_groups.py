@@ -26,7 +26,7 @@ EXPECTED_IMAGES += ["field/capture-land-top.png"]
 EXPECTED_IMAGES += [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
 EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "compare_captures.py",
                      "check_trimmed_flight.py", "test_visual_quality_cases.py", "visual_quality_cases.py",
-                     "test_field_failures.py", "run_checked.py", "run_checked.py", "check_review.py", "check_horizon.py", "check_phase6.py",
+                     "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "check_review.py", "check_horizon.py", "check_phase6.py",
                      "check_cloud_probe.py", "check_surfaces.py", "test_stripes.py", "check_stripes.py",
                      "check_windsock.py", "check_windsock.py", "check_windsock.py", "check_windsock.py",
                      "check_grass.py", "check_grass_seam.py", "check_wind.py", "test_treeline_readability.py",
@@ -51,7 +51,7 @@ if env.get('FAKE_FAIL') and any(env['FAKE_FAIL'] in a for a in args):
     sys.exit(12)
 if env.get('FAKE_MUTATE') and any(env['FAKE_MUTATE'] in a for a in args):
     Path(app, 'tests/capture_runner.py').write_text('changed during run')
-if name == 'python3' and args and Path(args[0]).name == 'capture_groups.py':
+if name == 'python3' and args and Path(args[0]).name in ('capture_groups.py', 'summarize.py'):
     os.execv(env['FAKE_TEST_PYTHON'], [env['FAKE_TEST_PYTHON'], *args])
 def write(path, data='{}'):
     path = Path(path)
@@ -77,9 +77,17 @@ elif args:
     script = Path(args[0]).name
     target = opt('--out')
     if script == 'run_checked.py':
-        run = Path(opt('--out-dir')) / (opt('--label') + '-abcd1234')
-        write(run / 'engine.log', opt('--require-text') + env.get('FAKE_PIXEL_CHECKS', '9') + ' checks, 0 failed\n')
-        write(run / 'report.json', '{"format": "openrc-godot-check v1"}')
+        sys.path.insert(0, str(Path(root) / 'tools/godot'))
+        from run_checked import run_checked
+        count = int(env.get('FAKE_PIXEL_CHECKS', '13' if 'skin_patterns' in opt('--label') else '12'))
+        terminal = opt('--require-text') + str(count) + ' checks, 0 failed'
+        output = '\n'.join(f'ok   fixture assertion {index}' for index in range(count)) + '\n' + terminal
+        if env.get('FAKE_PIXEL_DUPLICATE'):
+            output += '\n' + terminal
+        required = [args[index + 1] for index, value in enumerate(args) if value == '--require-text']
+        report = run_checked([sys.executable, '-c', f'print({output!r})', '--script', opt('--script')],
+                             Path(opt('--out-dir')), required=required, label=opt('--label'))
+        sys.exit(report['exit_code'])
     elif script == 'capture_runner.py':
         path = Path(target)
         write(path, 'synthetic image')
@@ -130,7 +138,9 @@ class InventoryVolatilityTests(unittest.TestCase):
         files = {
             f'lighting-pixels/lighting-skin_patterns-{suffix}/report.json':
                 json.dumps({'format': 'openrc-godot-check v1', 'capture_id': started, 'started_utc': started,
-                            'cwd': str(root), 'log_sha256': started, 'reason': 'passed'}),
+                            'cwd': str(root), 'log_sha256': started, 'reason': 'passed',
+                            'log': str(root / f'lighting-pixels/lighting-skin_patterns-{suffix}/engine.log'),
+                            'report': str(root / f'lighting-pixels/lighting-skin_patterns-{suffix}/report.json')}),
             f'lighting-pixels/lighting-skin_patterns-{suffix}/engine.log': 'Lighting skin patterns: 9 checks, 0 failed\n',
             'vq01b/visual-quality-run-manifest.json': json.dumps({'created_utc': started, 'metric': value}),
             'capture.png': 'image bytes',
@@ -169,6 +179,20 @@ class InventoryVolatilityTests(unittest.TestCase):
             self.assertNotEqual(left[name].get('normalized_sha256', left[name]['sha256']),
                                 right[name].get('normalized_sha256', right[name]['sha256']))
 
+    def test_unexpected_checked_report_path_remains_a_difference(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            original = self.tree(root, started='time', suffix='ab12cd_9')
+            name = 'lighting-pixels/lighting-skin_patterns/report.json'
+            path = root / original[name]['path']
+            report = json.loads(path.read_text())
+            for unexpected in (str(root / 'unrelated.log'), '<CHECKED_RUN>/engine.log', 'engine.log'):
+                with self.subTest(unexpected=unexpected):
+                    report['log'] = unexpected
+                    path.write_text(json.dumps(report))
+                    changed = receipts.tree_inventory(root)
+                    self.assertNotEqual(original[name]['normalized_sha256'], changed[name]['normalized_sha256'])
+
 
 @unittest.skipIf(os.name == 'nt', 'requires Linux or WSL shell utilities')
 class CaptureGroupsTests(unittest.TestCase):
@@ -178,6 +202,10 @@ class CaptureGroupsTests(unittest.TestCase):
         self.app = self.root / "app"
         (self.app / "tests").mkdir(parents=True)
         (self.root / "tools/scenery").mkdir(parents=True)
+        godot_tools = self.root / "tools/godot"
+        godot_tools.mkdir()
+        for name in ('run_checked.py', 'summarize.py'):
+            shutil.copy2(ROOT / 'tools/godot' / name, godot_tools / name)
         self.bin = self.root / "bin"
         self.bin.mkdir()
         stub = self.root / "fixture_stub.py"
@@ -272,6 +300,18 @@ class CaptureGroupsTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('no nonzero completion line', result.stderr)
         self.assertIn('fail (1)', (output / 'timings.tsv').read_text())
+
+    def test_incomplete_or_duplicate_pixel_completion_fails_the_quality_group(self):
+        for extra in ({'FAKE_PIXEL_CHECKS': '1'}, {'FAKE_PIXEL_DUPLICATE': '1'}):
+            with self.subTest(extra=extra):
+                self.env.update(extra)
+                result, output, _ = self.run_capture(self.current, 'quality')
+                for key in extra:
+                    del self.env[key]
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('failed or invalid', result.stdout)
+                self.assertIn('fail (1)', (output / 'timings.tsv').read_text())
+                self.assertFalse((output / 'run-manifest.json').exists())
 
     def test_failed_full_setup_clears_old_complete_marker(self):
         self.executable(self.app / 'capture.sh', self.current)

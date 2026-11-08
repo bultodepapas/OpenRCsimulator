@@ -23,9 +23,25 @@ SHIFTS = (0.0, 0.5)
 REFERENCE_MARGIN = 2.0
 
 
-def linear_rgb(pixels: np.ndarray) -> np.ndarray:
+class NearbyStripeDetailError(RuntimeError):
+    """The nearby view did not retain enough stripe detail."""
+
+
+def _linear_rgb_formula(pixels: np.ndarray) -> np.ndarray:
     values = pixels.astype(np.float32) / 255.0
     return np.where(values <= 0.04045, values / 12.92, ((values + 0.055) / 1.055) ** 2.4)
+
+
+# The PNG decoder supplies 8-bit channels. Build the table with the unchanged
+# float32 expression so every possible byte retains its existing conversion.
+_LINEAR_RGB_UINT8 = _linear_rgb_formula(np.arange(256, dtype=np.uint8))
+_LINEAR_RGB_UINT8.flags.writeable = False
+
+
+def linear_rgb(pixels: np.ndarray) -> np.ndarray:
+    if type(pixels) is np.ndarray and pixels.dtype == np.uint8:
+        return np.asarray(_LINEAR_RGB_UINT8[pixels])
+    return _linear_rgb_formula(pixels)
 
 
 def rms(values: np.ndarray) -> float:
@@ -118,9 +134,28 @@ def assess(filtered: dict, raw: dict, reference8: dict, reference16: dict) -> di
         if view == "runway_threshold":
             metric = "spatial_rms_linear_rgb"
             if not measured["filtered"][metric] + REFERENCE_MARGIN * measured["reference_disagreement"][metric] < measured["no_stripes"][metric]:
-                raise RuntimeError("nearby stripes were erased instead of filtered")
+                raise NearbyStripeDetailError("nearby stripes were erased instead of filtered")
         report[view] = measured
     return report
+
+
+def verify_negative_controls(filtered: dict, raw: dict, reference8: dict, reference16: dict) -> dict[str, str]:
+    no_stripes = {key: (np.zeros_like(pixels), metadata) for key, (pixels, metadata) in filtered.items()}
+    # Leave the passing oblique views intact so only the nearby detail gate can reject this control.
+    threshold_no_stripes = {key: no_stripes[key] if key[0] == "runway_threshold" else value
+                            for key, value in filtered.items()}
+    controls = {"raw": raw, "no_stripes": no_stripes, "threshold_no_stripes": threshold_no_stripes}
+    rejected = {}
+    for name, control in controls.items():
+        try:
+            assess(control, raw, reference8, reference16)
+        except RuntimeError as exc:
+            if name == "threshold_no_stripes" and not isinstance(exc, NearbyStripeDetailError):
+                raise RuntimeError(f"nearby stripe control rejected for an unexpected reason: {exc}") from exc
+            rejected[name] = str(exc)
+        else:
+            raise RuntimeError(f"negative control escaped acceptance: {name}")
+    return rejected
 
 
 def verify_projection(native: dict, other: dict, scale: int) -> None:
@@ -172,17 +207,7 @@ def main() -> int:
     if manifests["filtered"] != manifests["repeat"]:
         raise RuntimeError("independent repeat images or render metadata differ")
     metrics = assess(records["filtered"], records["raw"], records["reference8"], records["reference16"])
-    # The same acceptance function must reject both raw aliasing and removed detail.
-    controls = {"raw": records["raw"], "no_stripes": {
-        key: (np.zeros_like(pixels), metadata) for key, (pixels, metadata) in records["filtered"].items()}}
-    rejected = {}
-    for name, control in controls.items():
-        try:
-            assess(control, records["raw"], records["reference8"], records["reference16"])
-        except RuntimeError as exc:
-            rejected[name] = str(exc)
-        else:
-            raise RuntimeError(f"negative control escaped acceptance: {name}")
+    rejected = verify_negative_controls(records["filtered"], records["raw"], records["reference8"], records["reference16"])
     sources = [app / "render/ground.gdshader", CAPTURE_SCRIPT, Path(__file__).resolve()]
     summary = {"format": "openrc-l9c-stripe-reference v1", "complete": True,
                "scope": "stripe-only error against a 16x reference, separated from measured 8x/16x disagreement; not proven convergence or perceptual shimmer closure",

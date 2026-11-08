@@ -240,9 +240,11 @@ are never followed. Reports created before `log_sha256` was added must be regene
 An empty collection is refused. JUnit output is exclusively created, never replaced.
 Choose another XML filename when repeating a summary.
 
-The console prints totals and the first 20 failures with next actions and source
-context. XML includes every invocation. Exit 0 means all retained invocations
-passed, 1 means a failed/invalid invocation, and 2 means invalid configuration,
+The console prints passed, skipped and failed totals, the first 20 skips, and the
+first 20 failures with next actions and source context. XML includes every
+invocation. Exit 0 means no retained invocation failed or was invalid; a skipped
+invocation is not a pass.
+Exit 1 means a failed/invalid invocation, and 2 means invalid configuration,
 empty/missing collection or output failure. Limits: `--max-runs` defaults to 10,000
 (hard maximum); `--max-log-bytes` defaults to 64 MiB per log;
 `--max-total-log-bytes` defaults to 512 MiB per collection. Metadata is capped at
@@ -257,7 +259,20 @@ A passing script that prints a declared `<subject> SKIPPED: <reason>` line (for
 example, the 1920×1080 lighting pixel suites under `--headless`) is reported as a
 JUnit `<skipped>` case and counted separately; it never qualifies the skipped
 contract. Its exit verdict is unchanged, and a failed invocation stays a failure.
-Those two pixel suites run display-backed in the `quality` capture group.
+For the two lighting pixel scripts, a successful invocation must have exactly one
+matching headless skip message or one terminal zero-failure completion with at
+least 12 segment or 13 skin checks and a matching number of successful assertion
+lines. The minimum allows counts to grow; it does not prove the assertions are
+meaningful. Missing, inconsistent, duplicate or contradictory evidence is
+invalid. A genuine engine `--check-only` invocation is a parse check and is
+exempt. Headless skips appear in the console and JUnit; a checked-runner failure,
+including a missing required completion marker, is never converted into a skip.
+The unit roster still records command execution, not pixel assertions. These
+reports do not qualify display-backed 1920×1080 rendering or a native GPU. Those
+two pixel suites run display-backed in the `quality` capture group; CI-09 remains
+open until those rendered checks and their negative controls are qualified. The
+capture group validates its checked pixel collection with this same summarizer
+before publishing the lighting milestone.
 Do not mix old runs into a new collection or use wrapper duration as a physics/GPU
 performance measurement. This is a consistency check on trusted local artifacts;
 someone editing both metadata and evidence can forge a verdict. The explicit
@@ -507,6 +522,10 @@ only Python's standard library and never launch the game:
 python tools/godot/incident_bundle.py RUN_DIR --frames tmp/incident-frames.json --out tmp/incident.zip --note "Describe the trigger and expected behavior"
 python tools/godot/perfetto_export.py --frames tmp/incident-frames.json --resources RUN_DIR/resources.json --out tmp/timeline.json
 ```
+
+An incident bundle can be complete even when its captured run was skipped. For a
+verified lighting pixel skip, `run.status` is `skipped` and `run_ok` is false;
+the console identifies the run as skipped and unqualified.
 
 Open `timeline.json` in [Perfetto](https://ui.perfetto.dev/) with **Open trace file**.
 Frame slices represent wall intervals, including waiting; counter names include
