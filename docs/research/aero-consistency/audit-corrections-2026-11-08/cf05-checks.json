@@ -1489,5 +1489,20 @@
     "Synthetic Club-table one-point near-clear probes reached about 12 ms under concurrent Windows development; no target-host/full-scene performance qualification.",
     "Actual NK-3 installation/package, required full CI, physical flight and native rendered contact acceptance remain separate.",
     "Full old source reconstruction is not retained for this baseline; exact replay was checked before source changes and its complete ORFL remains retained."
-  ]
+  ],
+  "fresh_checkout": {
+    "tested_commit": "36d08d0e3a48f8867c65843b89a5632e2964d477",
+    "recorded_utc": "2026-11-08T20:03:57.044219+00:00",
+    "clone": "tmp/audit-20261108-freshclone",
+    "shared_git_objects": true,
+    "sparse_checkout": true,
+    "solver_source_count": 176,
+    "normalized_solver_sha256": "c4a7d8932834cef7ebf11f42b588fd491999fe18ebc66f3aa5c47ded1c8bb80d",
+    "profile_pin_matches": true,
+    "f6_exact_artifact_hashes_verified": 27,
+    "cf05_stored_and_uncompressed_hashes_verified": 2,
+    "new_test_uid_paths_present": true,
+    "runtime_or_package_checks_performed": false,
+    "limit": "Offline source/transport checks in a new sparse checkout; Git objects are shared. No engine import, flight replay or package qualification ran in the clone."
+  }
 }
