@@ -1,10 +1,12 @@
 # Flight statistics
 
-Current-source feature, 2026-10-25. This guide describes the implementation; the [design and remaining acceptance gates](plans/flight-statistics.md) retain the UI-FS requirements and test matrix. Statistics are local to this installation's pilot profile, with no login or cloud synchronization.
+Current-source feature, updated 2026-11-07. This guide describes the implementation; the [design and remaining acceptance gates](plans/flight-statistics.md) retain the UI-FS requirements and test matrix. Statistics are local to this installation's pilot profile, with no login or cloud synchronization.
 
 ## Using statistics
 
 Open **Home → Statistics · Pilot total**, **Aircraft → Aircraft statistics**, or **Pause → Statistics**. Choose All aircraft or a recorded aircraft, then This session, Lifetime history, or Since counter reset. The first cards show airborne time, completed flights and successful landings. More statistics and history expand separately, with the newest records first.
+
+Expanded flight details show the exact stored airborne seconds, validated launch scenario and seed, and failure-practice settings captured at admission. Practice settings describe the start of the flight; they do not assert that a failure occurred. Accepted failure activations appear separately as recorded events. Absence of a recorded event does not establish that no failure occurred, especially when detail was omitted. Older failure settings without accepted-context provenance remain unknown; a complete older Natural Random scenario is shown only when its identity agrees with the record. Later scenario edits or checkpoint restoration prevent stale launch context from being attributed to a subsequent restarted flight.
 
 Successful landings include confirmed touch-and-goes and full stops. A touch-and-go does not complete the flight. Touchdown success uses successful and failed resolved contact episodes; unknown contacts are excluded. The adjacent clean-stop fraction and crash count explain why a high touchdown rate can coexist with an eventual crash. An air start starts a flight but earns no takeoff credit.
 
@@ -36,6 +38,8 @@ Management is available from Home while no flight is active. Session reset opens
 
 History deletion is a separate operation, with a scope/count/date preview, a deletion acknowledgement and Cancel initially focused. Aircraft deletion leaves other aircraft records intact and adds continuity gaps so deleting a crash cannot manufacture a streak. Pilot deletion removes all retained flight history. Preferences, aircraft files, Workshop builds, radio profiles and `.orfl` recordings remain untouched.
 
+A refused deletion leaves history unchanged. A committed deletion with cleanup pending cannot be submitted again: verified surviving history remains visible read-only, or history is explicitly unavailable if no safe survivor can be read. A completed deletion publishes the verified result. The screen, cached queries and HUD summaries refresh together; reopening the store attempts forward recovery without restoring deleted history.
+
 ## Storage and implementation boundaries
 
 `app/statistics/service.gd` is owned by AppRoot rather than a flight scene. It connects and disconnects the adapter, owns the local session, assembles bounded event details and exposes reducer queries. HUD summaries cache event aggregates and add current-flight scalar deltas; they do not copy history every rendered update.
@@ -50,7 +54,7 @@ Implementation bounds: 100,000 ledger records, 10,000 sessions, a 64 MiB snapsho
 
 ## Verification and remaining qualification
 
-Focused checks cover pure flight detection, scoped formulas, reset isolation, snapshot corruption, future schemas, writer contention, deletion fencing, background writes, lifecycle rollback/recovery, exact physics-state noninterference and repeated attachment. UI tests cover scope/period filters, paged history, safe confirmations and the optional HUD. Final run counts and integration evidence belong in the [implementation phases](plans/flight-statistics.md#8-implementation-phases).
+Focused checks cover pure flight detection, scoped formulas, reset isolation, snapshot corruption, future schemas, writer contention, deletion fencing, background writes, lifecycle rollback/recovery, exact physics-state noninterference and repeated attachment. UI tests cover scope/period filters, paged history, safe confirmations and the optional HUD. The 2026-11-07 [deletion](research/flight-statistics/UI-FS-08-R1/README.md#ui-fs-03-r1--deletion-commit-and-recovery-2026-11-07) and [history-context](research/flight-statistics/UI-FS-08-R1/README.md#ui-fs-06-r1--admission-context-and-history-2026-11-07) evidence records the current targeted checks and remaining qualification. Earlier implementation evidence remains in the [implementation phases](plans/flight-statistics.md#8-implementation-phases).
 
 Large-history performance is **not qualified**. On the development Windows host (Ryzen 9 5900X, Godot 4.8-beta1), five 10,000-record synchronous commits took 3.118–5.802 seconds, p50 3.764 seconds and nearest-rank p95/p99 5.802 seconds. This motivated the background automatic writer. Explicit final saves, resets/deletion, initial reads and full-history queries still do work proportional to retained history; they do not meet the plan's 2 ms stall gate. Incremental indexing/pagination and asynchronous management transactions remain necessary before claiming A10 at that size.
 

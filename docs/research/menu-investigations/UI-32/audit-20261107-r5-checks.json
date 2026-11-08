@@ -1,0 +1,1019 @@
+{
+  "format": "openrc-audit-remediation-checks v4",
+  "local_date": "2026-11-07",
+  "timezone": "America/Bogota",
+  "baseline": "8e26773de7ff3ac65e1fd861e718830bab4331d6",
+  "tested_checkout": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "scope": [
+    "A14 F15",
+    "A14 F16",
+    "A21 section 3",
+    "A21 section 4"
+  ],
+  "source_sha256": {
+    "app/app_root.gd": "297db9dbb5a908a0e3297a7e7c2531fc2b01a26bba4d8dc06ba40e2edb759579",
+    "app/i18n/de.po": "743366d023acba1d7a28217d8f6bf2f4a72dc271a3d5156505bc8bb06d96ddd9",
+    "app/i18n/es.po": "aab577c0716025983918dc8b7fa37372da28a27411d7adf5e99fb19fc4a375bc",
+    "app/i18n/fr.po": "888be6d9d274cf17b155b2d15272f54ab374b3fef7be79479cdd3c42521a6985",
+    "app/i18n/it.po": "d8a670b618c0e8be013bf6a1fc95db08fc61cc546cb945e045a8564f20368588",
+    "app/i18n/ja.po": "9ae48e3515a96b9486d93587fedcceb095b9e8d3a6d0f3c2bf98133d0462756a",
+    "app/i18n/pt_BR.po": "c5279575caf96d380263e6c71034d43aabe1ffb27e52cc8913a6115194de37e7",
+    "app/i18n/ru.po": "ee915337ff78f0546cb3afef638b8f7457d6b4778ab3de40a4d3a465552e0e10",
+    "app/i18n/zh_Hans.po": "da21df0a2540e9bf87749201b3811bbcbdc87f4be6dabea80aca8990792df70d",
+    "app/statistics/record_view.gd": "88dc9654d97f5e88e87cdbd9c382ce4750d435b283de49dee441371bccf45634",
+    "app/statistics/record_view.gd.uid": "3c09c3874cf45fec2e269a0b1805ada796542cc8855682c687c9146d1ba313c8",
+    "app/statistics/service.gd": "801f922c1db0e477be80f76a771d0f7b8d2894cab063b2a9b0cfefd335952214",
+    "app/statistics/store.gd": "aa6dfc882e8a798f9b2f76254184c6d9f3b4790b5111eb4e1479ee34033d22c9",
+    "app/tests/test_rcv_start_intent.gd": "13976f5b6911e2b24bd6377dd87f9faf6ea5e96b97571839e10e76d06b0b4c9e",
+    "app/tests/test_rcv_start_intent.gd.uid": "8597c2f1bd8a9c00eb531cc9023b4102c4abb9e8cc272d4c6c2c621abe53dc14",
+    "app/tests/test_statistics_context.gd": "38f381a14dfd5736ca8c410aed3a8c4786bf832c6be5e87c8c221eac5cb24f08",
+    "app/tests/test_statistics_context.gd.uid": "6e2fd34b8740fed8ab80ab954d4d2850bc970507913fb344e2d1b925475efbee",
+    "app/tests/test_statistics_delete_commit.gd": "8cfed746f95143822a0fbcec8d5ea67da9f4f167dac9bac2db0b530287cb9571",
+    "app/tests/test_statistics_delete_commit.gd.uid": "e6386bf7fedcfaff16913e88ac702d51ebe391b1acdc58f193f33621756d8656",
+    "app/tests/test_statistics_delete_ui.gd": "ccef3386a95ce0d4a657a994a5f96bba091ddd0fc8ff8d20802c5ace0dfc8240",
+    "app/tests/test_statistics_delete_ui.gd.uid": "388fb14734a8d6ac0fb4bc38758c08c0b37e9b31b119cd18eee5828e0b8bfe76",
+    "app/tests/test_statistics_detail_layout.gd": "8319adccaa7da99c032b75741a827eb6bf86ba8ebd7ade472fcd11bde099ca30",
+    "app/tests/test_statistics_detail_layout.gd.uid": "ca0e126fbabfd9531213239a7070ab601de5301b3363c3981a41ac1317e527eb",
+    "app/tests/test_statistics_failure_events.gd": "3ed88982311c132ce6bb1a162c1b45b4eb1487d80eb01a430a5c6946a695efc3",
+    "app/tests/test_statistics_failure_events.gd.uid": "2ffcc9a1a08536a9ecdeaa2a5eaea753d02aca665edef52ba7968b6db5afbf82",
+    "app/ui/statistics_reset_dialog.gd": "a3dbc529b2a6947f4d1efb913a3802714ba7c6441854a1206c14e5cfc5a3af10",
+    "app/ui/statistics_screen.gd": "cae4a7362c3b8a8ac326ee349b7cde28515389995095a0c6133b1e7425d7d62f",
+    "app/vehicles/ground/ground_dashboard.gd": "928e23b742578fe897f4d1c4fb5aed22c97d07ef7d3b6e97d87e4e58ddf0cab8",
+    "app/vehicles/ground/ground_scene.gd": "13758d38fbc0ba75888df1b3fb0f949a09120cf88142d80f95dbd6315afa53a3"
+  },
+  "checked_runs": [
+    {
+      "role": "dedicated deletion",
+      "assertions": 207,
+      "report": "tmp/audit5-20261107-delete/delete-final/delete-final-r4pazi1y/report.json",
+      "report_sha256": "123cceeb9e20d89a646d8e9bfccbf26ba84826894c634000fb6945d700c99a0c",
+      "log_sha256": "171dc6836241c4df8b3d91d2d6f2a05cdda2a69670cdd51f45434a11349533a6",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.651888+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_statistics_delete_commit.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "F15 deletion boundary: 207 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "dedicated accepted failures",
+      "assertions": 38,
+      "report": "tmp/audit5-20261107-delete/failure-final/failure-final-flx608ok/report.json",
+      "report_sha256": "fb265533cedb327875d634ad5e71ef094a2c9cf86643e0c632d073bdab94bbcf",
+      "log_sha256": "f7b8517174f155ea2397e52f35bd952306e079e394ce42c3e14ae12cf61d6424",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.650375+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_statistics_failure_events.gd"
+      ],
+      "completion_tail": [
+        "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value",
+        "F16 accepted failure events: 38 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "dedicated context",
+      "assertions": 35,
+      "report": "tmp/audit5-20261107-context/layout-consumers/test_statistics_context/godot-n15jzgag/report.json",
+      "report_sha256": "e3a317e7870825258b2a4bf49b41c4e5640effef2839491f3dc8b286392d6882",
+      "log_sha256": "201b99d377ea1dbc3658fce20477a81f8ec5edf83b734f172fd47a50a4e8f9bd",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:52:11.682969+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_statistics_context.gd"
+      ],
+      "completion_tail": [
+        "ok   actual checkpoint restore clears scenario and future launch context",
+        "ok   new recorded flight after restore and Restart keeps launch context unknown",
+        "Statistics context: 35 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "dedicated deletion UI",
+      "assertions": 27,
+      "report": "tmp/audit5-20261107-context/layout-consumers/test_statistics_delete_ui/godot-3l93rmyd/report.json",
+      "report_sha256": "3fe3a024b4acc4171e2ba0c110d2ba7186e341d0678d85c2ff5145d6e81ad662",
+      "log_sha256": "759c0dbc2ec9c57745ce6ea3052ec7bc8a4f6055df2b2184d9b190ba47741279",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:52:37.019710+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_statistics_delete_ui.gd"
+      ],
+      "completion_tail": [
+        "ok   real pending Close returns visible focus",
+        "ok   real deletion fixture is removed within its verified root",
+        "Statistics deletion UI: 27 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "dedicated detail layout",
+      "assertions": 61,
+      "report": "tmp/audit5-20261107-context/layout-wrap-1/godot-qbbven0h/report.json",
+      "report_sha256": "01ff2442db87576aa9ffac72d5a118609aba931baeeb12a1bb1a39bea054f8e8",
+      "log_sha256": "de948ffabe5e60b70e8c4886040eb28fe9866dafc871d3ef3278a022d345c905",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:51:32.326001+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit5-20261107-context/test_statistics_detail_layout.gd"
+      ],
+      "completion_tail": [
+        "ok   es 200% long detail start is reachable",
+        "ok   es 200% long detail end is reachable",
+        "Statistics detail layout: 61 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "dedicated Garage intent",
+      "assertions": 50,
+      "report": "tmp/audit5-20261107-garage/checks/start-intent-translated-_mk1yhg_/report.json",
+      "report_sha256": "5124f58883a9966663a9db0f692d9c9b89ae8383b52ef2a60c0c97bf604da5f4",
+      "log_sha256": "b02c901c7b7b873bcd3021f3bb54ed6175d33f7386f1ab1ec357ef1c30822371",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:39:59.789825+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_start_intent.gd"
+      ],
+      "completion_tail": [
+        "ok   unselected pad cannot cancel pending start",
+        "ok   selected gamepad Back cancels only destination",
+        "RCV start intent: 50 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing Store",
+      "assertions": 148,
+      "report": "tmp/audit5-20261107-delete/store-consumer/store-consumer-a_ch1f5k/report.json",
+      "report_sha256": "6d5dc3d196ff50732b2e1669f612b885f3c28ce24a50e63f6789cc35d27df2fa",
+      "log_sha256": "93d7d045c2b333e104bd38772e3d1adda957c6e80b2847c73a8b1f36955d4ae9",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.567060+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_store.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "148 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing resets",
+      "assertions": 86,
+      "report": "tmp/audit5-20261107-delete/reset-consumer/reset-consumer-0o3nh30c/report.json",
+      "report_sha256": "03c3a90667fd23ec28e2088b0732354c40cee4c803098ead0cc055b7ef8d2ef9",
+      "log_sha256": "d1d8517ea12738677c03dfd766dda9b76adbed09557cc0874041f50e60444db1",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.565551+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_resets.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "86 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing writer",
+      "assertions": 18,
+      "report": "tmp/audit5-20261107-delete/writer-consumer/writer-consumer-ffzcngp0/report.json",
+      "report_sha256": "e34a978acbffeee484d07418a6f1034b6bf9df4378622ba4b7d3ff0c0ec8310b",
+      "log_sha256": "f00f9ae619659fd9c111d6ea7b9aa2f6248b2f6c9ba44a21a66e94dacb81c3de",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.598336+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_writer.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "Flight statistics writer: 18 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing lifecycle",
+      "assertions": 74,
+      "report": "tmp/audit5-20261107-delete/lifecycle-consumer/lifecycle-consumer-nufgh5qm/report.json",
+      "report_sha256": "4281487ea203efd584bddd67e1d25b277dc07e81b07ebd9765835cd057c477e1",
+      "log_sha256": "3b9b84e42df93e84e94f24024f726357929ee64fd0904970cd9e91ced47382cb",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.600344+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_lifecycle.gd"
+      ],
+      "completion_tail": [
+        "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value",
+        "Flight statistics lifecycle: 74 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing eligibility/noninterference",
+      "assertions": 35,
+      "report": "tmp/audit5-20261107-delete/eligibility-consumer/eligibility-consumer-_kh7_t_y/report.json",
+      "report_sha256": "f1e0de71ff8d181acdf105584044b3695fd601e9192d5de3e5a7c9f81fd49ddd",
+      "log_sha256": "2ab86bcd3e6f5aeb95e5b3f3fce2f0261d8b9af5296ded720c63bf483590c91b",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.630466+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_eligibility.gd"
+      ],
+      "completion_tail": [
+        "ok   resume reattaches and samples",
+        "ok   end detaches cleanly",
+        "Statistics eligibility: 35 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing detector",
+      "assertions": 173,
+      "report": "tmp/audit5-20261107-delete/detector-consumer/detector-consumer-b6ps90ot/report.json",
+      "report_sha256": "65d8875a40a94ea19ec786086570cf3ed75b81a650cbc6b0520f8439449b1a90",
+      "log_sha256": "51fd6e8f22158635b1432c5e3d80ddd3c3ea30a1bbaddcf2642dc9054fbf8c3b",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:41:26.626424+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_statistics_detector.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "173 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing Statistics UI",
+      "assertions": 73,
+      "report": "tmp/audit5-20261107-context/layout-consumers/test_ui_statistics/godot-g6h7bw72/report.json",
+      "report_sha256": "7338f485918ebc0893f3b987512eb78a597f18ee8cd80e33ac93a46b9a222342",
+      "log_sha256": "d16548e0f8b1619b38441ea85141fe9343355a492971dc2f46abb205d8470030",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:52:06.222512+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_statistics.gd"
+      ],
+      "completion_tail": [
+        "ok   an aircraft with no history uses its catalog name",
+        "73 checks, 0 failed",
+        "statistics UI history refresh checks complete"
+      ]
+    },
+    {
+      "role": "existing ground departure",
+      "assertions": 25,
+      "report": "tmp/audit5-20261107-garage/checks/test_ground_departure-u75mn6u3/report.json",
+      "report_sha256": "7142d40eb92c521e41c197188d67d1de663364d04fc440f04681ad04952c1097",
+      "log_sha256": "fcf168cd99d6aa17c18ae54c4dc2268eb54db3d0b2e0c0c2e6b2efc76673f8aa",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:28:08.743131+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_departure.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "Ground departure: 25 checks, 0 failed"
+      ]
+    },
+    {
+      "role": "existing Garage menu",
+      "assertions": 27,
+      "report": "tmp/audit5-20261107-garage/checks/menu-consumer-8bd_ynjl/report.json",
+      "report_sha256": "4ea9f3659cdf7b3abcc5f11577768bb1f21439c5eaa0ee8b8d1306df73993251",
+      "log_sha256": "1a13d1b0e90089fe8717ff8354435e22da91682e73c81fb571432ced0530a0eb",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:39:59.787818+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_menu.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "RCV menu: 27 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing RCV activity",
+      "assertions": 24,
+      "report": "tmp/audit5-20261107-parent/checks/final-test_rcv_activity-gnvedml8/report.json",
+      "report_sha256": "94245f4b4f9f38ec77db79332a10c7dc547bd9285ea323d6e9f1cea099454c81",
+      "log_sha256": "9c4495ca808974a01d2f5ffc7127cdc3c291b62411851874247012fedc5f196c",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:46:11.943844+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_activity.gd"
+      ],
+      "completion_tail": [
+        "",
+        "RCV activity jump: takeoff={ \"type\": \"jump\", \"tick\": 584, \"time_s\": 2.43333333333333, \"speed_m_per_s\": 4.72666582493348 } landing={ \"type\": \"landing\", \"tick\": 604, \"time_s\": 2.51666666666667, \"speed_m_per_s\": 4.74021570740366 } peak_speed=4.88231627324784 airtime=0.08333333333333 contact_count=2 upright=0.98956059874908 air_feedback=true landed_feedback=true hud=17.1 km/h  ·  2.5 s  ·  Asphalt",
+        "RCV activity: 24 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing nitro activity",
+      "assertions": 99,
+      "report": "tmp/audit5-20261107-parent/checks/final-test_rcv_nitro_activity-qnk1doe1/report.json",
+      "report_sha256": "a43701d8708e8a5a8a9a609029a6b0ed82aadb393e66de533d1d3554f11a2442",
+      "log_sha256": "d6721d1fde12a2cc59c1e5ac3bb048a267ac6a8760acf229f54c08091ce9ed23",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:46:11.955881+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_nitro_activity.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "RCV nitro activity: 99 checks, 0 failures"
+      ]
+    },
+    {
+      "role": "existing car controller",
+      "assertions": 43,
+      "report": "tmp/audit5-20261107-parent/checks/final-test_controller_car-s63f7zo6/report.json",
+      "report_sha256": "41c19ce48dfd0d9255ffafd2c6a64bfc59f64c256a68763cce365360e853c3c5",
+      "log_sha256": "7d589ee52af80435ebebcc7940f874f8fca2345838d79e57d2cb7790e5310094",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:46:11.941818+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_car.gd"
+      ],
+      "completion_tail": [
+        "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+        "",
+        "Car controller audit: 43/43 checks passed"
+      ]
+    },
+    {
+      "role": "existing UI language/catalogs",
+      "assertions": null,
+      "report": "tmp/audit5-20261107-parent/checks/language-catalogs-m6neduwz/report.json",
+      "report_sha256": "f931286af891703fcddb146d3eeaa676190de75f4e387429d028c527e568c8a3",
+      "log_sha256": "6775aee9055e37000093825e05c19745bf27c60f45e90e21cb705de460220a23",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:39:59.789825+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_language.gd"
+      ],
+      "completion_tail": [
+        "physics backend: {\"identity\":{\"backend\":\"gdscript_reference\"},\"reason\":\"native stage: Linux x86_64 only\",\"requested\":\"native\"}",
+        "ok   direct flight ignores a saved Spanish preference and leaves the file alone",
+        "all UI language checks passed"
+      ]
+    },
+    {
+      "role": "final coordinated import",
+      "assertions": null,
+      "report": "tmp/audit5-20261107-parent/checks/import-layout-final-afuaxiyg/report.json",
+      "report_sha256": "2b9ae5249f5c3f5dbfe8bf37d37ea52e9d08fce32ee279629329e039bd84b22b",
+      "log_sha256": "ae8dd43c0ca15adee653237ea3d15d3646ab77cd12cca003436ad5d882862f70",
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "started_utc": "2026-11-08T02:53:39.471767+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "completion_tail": [
+        "[  83% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Diseño del editor listo.\u001b[39m\u001b[0m",
+        "\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m",
+        "\u001b[0m"
+      ]
+    }
+  ],
+  "dedicated_assertions": 418,
+  "source_alignment": "One writer per assigned path; source frozen before final affected checks and native recaptures. Reports do not embed source hashes; frozen hashes and current bytes are recorded separately. Some consumer reports predate unrelated presentation edits; final UI consumers and import follow the last layout edit.",
+  "baseline_evidence": {
+    "deletion": {
+      "interpretation": "Passed means the four intended baseline defect/control observations reproduced, not that baseline product behavior was correct.",
+      "checked_run": {
+        "directory": "tmp/audit5-20261107-delete/baseline/baseline-2c94zl5r",
+        "verdict": "passed",
+        "ok": true,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "started_utc": "2026-11-08T02:16:38.131522+00:00",
+        "log_sha256_verified": true
+      },
+      "results": "tmp/audit5-20261107-delete/baseline.json",
+      "reproducer": "tmp/audit5-20261107-delete/baseline_repro.gd",
+      "reproducer_sha256": "969c0a387e2f6c0469b1281ad66110f712d53f97e6a1ce7f8f3b6f6463013be4",
+      "baseline_store_sha256": "3846d92b732baffd3db109f01a85e24f78329d7b13bfdf2078b2b9c9814ad761",
+      "baseline_service_sha256": "96a004bfefe96521d9dd10e9f4a70b1f7daa0b0b58f25da8edc27f1f28c72b0a",
+      "cases": [
+        {
+          "stage": "after_delete_prepare_readback",
+          "scope": "stock:a",
+          "fence": false,
+          "cached_after": 1,
+          "summary_after": 1,
+          "uncached_after": 2,
+          "signal_count": 0,
+          "can_manage": false,
+          "writable_after": false,
+          "stale_flush_accepted": false,
+          "resurrected_in_process": false,
+          "reopened_a": 1,
+          "reopened_b": 1
+        },
+        {
+          "stage": "after_deletion_fence_publish",
+          "scope": "stock:a",
+          "fence": true,
+          "cached_after": 1,
+          "summary_after": 1,
+          "uncached_after": 2,
+          "signal_count": 0,
+          "can_manage": false,
+          "writable_after": false,
+          "stale_flush_accepted": false,
+          "resurrected_in_process": false,
+          "reopened_a": 0,
+          "reopened_b": 1
+        },
+        {
+          "stage": "after_delete_first_snapshot_publish",
+          "scope": "stock:a",
+          "fence": true,
+          "cached_after": 1,
+          "summary_after": 1,
+          "uncached_after": 2,
+          "signal_count": 0,
+          "can_manage": false,
+          "writable_after": false,
+          "stale_flush_accepted": false,
+          "resurrected_in_process": false,
+          "reopened_a": 0,
+          "reopened_b": 1
+        },
+        {
+          "stage": "final_fence_write",
+          "scope": "",
+          "fence": true,
+          "cached_after": 1,
+          "summary_after": 1,
+          "uncached_after": 2,
+          "signal_count": 0,
+          "can_manage": true,
+          "writable_after": true,
+          "stale_flush_accepted": true,
+          "resurrected_in_process": true,
+          "reopened_a": 0,
+          "reopened_b": 0
+        }
+      ]
+    },
+    "garage": {
+      "report": "tmp/audit5-20261107-garage/checks/baseline-x6n9v7zu/report.json",
+      "witness": "tick14->0, tape56->0, track_rollers; camera modes changed with same paused pose"
+    },
+    "layout": {
+      "directory": "tmp/audit5-20261107-context/layout-baseline",
+      "witness": "53 checks, 52 failed; value width1pixel and long ES200 row forced viewport overflow"
+    }
+  },
+  "ci_partition_discovery": {
+    "command": "wsl -e bash -lc 'cd /mnt/c/DEVELOPMENT/OpenRCsimulator && python3 app/tests/test_ci_partitions.py'",
+    "log": "tmp/audit5-20261107-parent/ci-partitions.log",
+    "log_sha256": "364f040124e8633cf31db028f26fb0e525895c58eecbabbbc490bb109b454528",
+    "tests": 14,
+    "passed": true,
+    "limit": "Runner-discovery fixture only, not production full CI. Initial Windows-Python attempt could not run Linux shell/path fixtures; WSL rerun passed."
+  },
+  "native": {
+    "platform": "Windows x86-64",
+    "renderer": "Compatibility OpenGL3.3",
+    "gpu": "NVIDIA GeForce RTX3090",
+    "driver": "617.42",
+    "captures": [
+      {
+        "path": "tmp/audit5-20261107-parent/native-ui/shots/shot-47484-005.png",
+        "sha256": "419d8e4794ac0f3a0fd1e0d7ce30cbbeceda81ccec9e7ad3f5f5fcccfe0a398a",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "Garage pending start",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/audit5-20261107-parent/native-ui/shots/shot-47484-006.png",
+        "sha256": "38fa919d912d1ee13bee6d3f4435e3d687a73a11ff1285c97a5318d5178d4bfd",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "Garage Pilot stand",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/audit5-20261107-parent/native-ui/shots/shot-47484-007.png",
+        "sha256": "d472e404d7f5bbda84b42ca2b825132f647f70dfbc7f734bb1d9aed58497e478",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "Garage overview and Return to Chase",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/audit5-20261107-parent/native-ui/shots/shot-47484-008.png",
+        "sha256": "27ed5a78a79ddc367c2ad7a067c28a4f5ba7c380211c44f9b5b927722026033e",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "Garage explicit restart",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-001.png",
+        "sha256": "872cd1c4d89344f37626febbcffe92bd79d1178376abd6d622f7ade6498b53de",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "Random context upper",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-002.png",
+        "sha256": "94a97a0888d8197fc09c7abd043fdd51768b8761124e92f10931cb238f88d37c",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "Random practice and accepted-event fixture",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-003.png",
+        "sha256": "393a87cec8846a92bcb34d4abb6b79809e294292d9f504404d40c9edfba01ef8",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "ordinary 42 seconds disabled practice",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-004.png",
+        "sha256": "a0042bdbfcd3c8f5944be0ed5e5769791f2022f2d67fd17987484f7ab8b9209d",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 100,
+        "subject": "legacy unknown context",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-005.png",
+        "sha256": "e28f196e9e10c173a08f8327a3dd63f6cb22b7c86d448fc4930639f3f8980da5",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 200,
+        "subject": "expanded history scroll position",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-006.png",
+        "sha256": "37049204c84fa69459921a2434784434d4fb56a52fc765c7335db12b5bdf2d62",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 200,
+        "subject": "expanded history scroll position",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215356-47871/shots/shot-37080-007.png",
+        "sha256": "53ce8d7e55a173a35eddc966e973aa1e44bce7615021ac65e2dd1ede709f8814",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "en",
+        "text_scale_percent": 200,
+        "subject": "expanded history scroll position",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-004.png",
+        "sha256": "2474ac78af2224c16016d248404552c7d6fd82be3e023ea4d47d2e5ead7420ed",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "expanded Random history scroll position",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-005.png",
+        "sha256": "eb57e000a9ad033bbaa41172e3d9fc382c6d67c2350586a493835fad57622953",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "expanded Random history scroll position",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-006.png",
+        "sha256": "57e85b4d2bccf2728bdd9b723f22c83486eb5bc6141d3f12f209f64940a74e2b",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 200,
+        "subject": "expanded Random history scroll position",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-007.png",
+        "sha256": "78192a906f53768b3cbde4e5e79a7cf9469da30abc75df56d40a84bfe46b4bc9",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "Random context upper",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-008.png",
+        "sha256": "316c3869d7bb8bbf3e87f2af44daf428b9bef88eec6f5d076e030e3032f41034",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "Random practice and accepted-event fixture",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-009.png",
+        "sha256": "7afae507eb2b96fba0a47d65275a3ba21b0487969e1ad6ece5fbf8bfbe8120fc",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "ordinary 42 seconds disabled practice",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-010.png",
+        "sha256": "bd37920726b12c668579e1223ff2a0d20e6dfe785034ee44e65076e0fedac253",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "legacy unknown context",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-011.png",
+        "sha256": "3c3649756c9b6d3f73233628ec5dad5da51ec122386848012436272210d9dbe6",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "completed scoped deletion",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-012.png",
+        "sha256": "8dce378901f674f3c5846a5bfd292d46c178b9447cf69ffc1c3f2417b490a6a2",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "real OS-lock committed-pending deletion",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-013.png",
+        "sha256": "7b8d44c8297e4c180eeba9a7e2ab0215c16ddc994198b92f7f3f589b7fe5a9f4",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "Garage pending start Pilot stand",
+        "review": "parent and independent Good Enemy"
+      },
+      {
+        "path": "tmp/debug-bridge/20261107-215650-47872/shots/shot-5132-014.png",
+        "sha256": "426487962f78ad1f1af1d617129ee8dcd5cb760b5587afbdd2c3bfb0410e4931",
+        "pixels": [
+          1920,
+          1080
+        ],
+        "locale": "es",
+        "text_scale_percent": 100,
+        "subject": "Garage overview Return to Chase",
+        "review": "parent and independent Good Enemy"
+      }
+    ],
+    "fixture": {
+      "kind": "synthetic schema-valid Store snapshots, not flown history",
+      "generator": "tmp/audit5-20261107-context/make_native_fixture.gd",
+      "generator_sha256": "4742d11a535c5e1e8c44a906c68c53794480b3a9e028481c16484386a42d5d42",
+      "snapshots": {
+        "snapshot_a.bin": "ad613d0a6cd760b0d8c7aae559a7461cf9cafa82383856ef62afcceed0c5ea72",
+        "snapshot_b.bin": "b7b3930b8faf08ead39f6b5dcd77babec61b00068448adf0501a6e5e0c9d9b5b"
+      }
+    },
+    "deletion_fault": {
+      "method": "System.IO.File.Open final profile deletion_fence_b.bin with FileAccess.Read/FileShare.Read; OS denies replacement",
+      "lock_session": 32209,
+      "release": "explicit newline; AUDIT_FENCE_FINAL_LOCK_RELEASED, process exit0",
+      "normal_outcome": {
+        "status": "completed",
+        "available": true,
+        "revision": 1,
+        "retained_flights": 2
+      },
+      "pending_outcome": {
+        "status": "committed_pending",
+        "available": true,
+        "revision": 2,
+        "retained_flights": 0
+      },
+      "ui": "Close focused, confirm/ack disabled; rows, choices and management match zero retained flights"
+    },
+    "garage": {
+      "en_ticks": "26 before and after browsing/Keep; explicit Restart0",
+      "es_tick": 25,
+      "es_control_tape_values_before_selection": 100,
+      "es_control_tape_values_after_selection": 100,
+      "es_control_tape_values_after_escape": 100
+    },
+    "sessions": [
+      {
+        "directory": "tmp/audit5-20261107-parent/native-ui",
+        "pid": 47484,
+        "stop": "bridge stop, crash null, leaked_objects0"
+      },
+      {
+        "directory": "tmp/debug-bridge/20261107-215356-47871",
+        "pid": 37080,
+        "stop": "unexpected exit between commands; status reported crash null/leaked_objects0 and no engine diagnostics, cause not established; profile records retained on relaunch"
+      },
+      {
+        "directory": "tmp/debug-bridge/20261107-215650-47872",
+        "pid": 5132,
+        "stop": "bridge stop, crash null, leaked_objects0"
+      }
+    ]
+  },
+  "rejected_or_limited_attempts": [
+    "native-ui 001/002: collapsed detail columns, superseded by final fix",
+    "native-ui003/004 and port47872 screenshots001..003:1920x1078, excluded from1080p acceptance",
+    "earlier failed draft tests and stale parse-only reports remain under ignored audit5 directories; final selected receipts above",
+    "two early live control_tape property probes used a nonexistent property; corrected public control_tape_snapshot() used for final journey"
+  ],
+  "limits": [
+    "Required hosted full CI and release/export not run for this candidate.",
+    "No simulation/physics sources, native kernels, aircraft data, solver identities or golden tapes changed; no physics tuning or native evaluator requalification claimed.",
+    "Real4800tick failure activation and checkpoint equality are covered by the dedicated test; same-tick terminal closure is synthetic.",
+    "Native history is a synthetic three-record fixture. No physical flight, controller, assistive technology, power-loss or participant qualification.",
+    "Native1080p bounded layout review does not establish formal contrast, performance, macOS/Metal, larger resolutions or complete localization. Existing English labels/technical notes and Spanish Off=Ninguno remain."
+  ],
+  "independent_statistics_index": {
+    "path": "tmp/audit5-20261107-delete/final-evidence-index.json",
+    "sha256": "ce3c684ce61a0f5c80dc7e2aa43e9150a2a54b37c6ebec1f666dce4ad33ff92d"
+  },
+  "implementation_commits": {
+    "statistics": "9a290afe5526b4e5d74cffc0ef0340e2c6314437",
+    "garage": "cda8f99c6bde596628fe606d5649da552d26e326"
+  },
+  "documentation_links": {
+    "method": "existing tools/ci/check_docs.py link/anchor parser against working tree; new local links only",
+    "new_local_links": 16,
+    "errors": 0,
+    "receipt": "tmp/audit5-20261107-parent/document-links.json",
+    "receipt_sha256": "0353a2cf92013d19dd41c93c8b452bd4e5157855142ecb0d9718e522929a585d"
+  }
+}

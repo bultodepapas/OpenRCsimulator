@@ -97,6 +97,14 @@ Windows used the pinned MSVC/SDK and `/fp:strict`; the DLL depends only on `KERN
 
 Integration caught and fixed two real export/checkpoint defects: an empty control tape tried to update a hashing context with an empty buffer at tick zero, and reference-backend identity initially assumed readable `.gd` source existed in a compiled export. The fixes preserve SHA-256 of empty input and identify `.gd` source versus `.gdc` remapped bytecode explicitly. Native sessions also refuse a live backend change or a checkpoint from a different binary/source/toolchain identity.
 
+## Staged start and camera feedback (RCV-20/18-R1, 2026-11-07)
+
+A21 §3 reproduced at baseline `8e26773de`: selecting Rollers reset tick 14 to zero and cleared 56 control-tape values. The scene now stages a destination once a run has been driven, recorded, restored, recovered or otherwise changed. Restart saves the recording before reset; export/reset refusal retains the run and proposal. Keep, Back and Drive preserve the accepted run. Only an untouched initial state retains immediate selection. A21 §4 now names Chase, Pilot stand, Orbit or Circuit overview, explains when the choice applies, and labels overview's return to Chase.
+
+The dedicated checked regression passes **50 checks**, including actual Enter press/release, selected/foreign pad actions, recording failure/retry, recovery/restored tick zero, nitro service changes, exact state/tape preservation and English/Spanish bounds. Activity (24), nitro activity (99), controller (43), departure (25) and menu (27) consumers pass. Native Windows Compatibility/RTX 3090 captures at actual 1920×1080 in English/Spanish at 100% were independently inspected. In the Spanish native journey, tick 25 and all 100 tape values survived selection and Esc; explicit Restart in the English journey returned tick 26 to zero. [Source identities and retained evidence](../../menu-investigations/UI-32/audit-20261107-r5-checks.json).
+
+No kernel, contact, powertrain or camera equations changed. Synthetic gamepad routing does not qualify physical devices. Native captures establish bounded presentation, not performance, full CI, assistive technology or participant usability. The remaining vehicle gates below are unchanged.
+
 ## Remaining qualification
 
 Masses, inertias, tire/contact laws, suspension, motor/brakes and surface coefficients are estimates. Finite tire footprints, vertical curb/sidewall contact, differential/electrical models, calibrated sound, real radio acceptance and user playtests remain beyond this experimental delivery. The 500 µs target, long-run frame pacing, remaining platform exports and the global application release gate remain open. The playable local implementation and retained software checks do not close these physical or release gates.

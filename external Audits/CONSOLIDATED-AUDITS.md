@@ -31,15 +31,6 @@ Source: [A11][A11].
 | **A11 F08 — P2, instrument explanations** | Wrapped explanation follows focus and hover, with localized accessibility description where appropriate. A keyboard/pad user must discover purpose and limits of every instrument without a mouse, including 200% text. Actual assistive-technology output remains untested. | [A11 original][A11] |
 | **A11 F09 — P3, arrow-key text equivalents** | Retain graphics with localized semantic names or a coherent action-row instruction; avoid duplicate announcements. Inspect the accessibility tree and listen to all four directions/actions using target-platform screen readers, translations and changed keyboard layouts. A debug snapshot alone cannot qualify this. | [A11 original][A11] |
 
-### Workshop, launch and history
-
-Source: [A14][A14].
-
-| Pending item | Action and acceptance boundary | Original report |
-| --- | --- | --- |
-| **A14 F15 — P2, deletion durable but screen stale** | Distinguish refused-before-commit, committed/cleanup-pending and completed. After commitment publish verified survivors and invalidate queries, or explicitly make history unavailable until safe forward recovery. Update actions with data. Screen/counters/cached and uncached queries/HUD must agree with durable state or explicitly report unavailability; choose error wording from established commitment state. | [A14 original][A14] |
-| **A14 F16 — P2, flight context missing or misattributed** | Schema-aware record-to-view adapter and capture effective accepted configuration at admission. Show scenario/practice context, expanded seed/settings, actual failure events separately from enabled practice and exact airborne seconds. The 42-second fixture shown only as `<1 min` is a smaller extension, not another major finding. Unknown/unreliable legacy context stays unknown. Test ordinary/Random, enabled/disabled practice, deliberately mismatched preferences, legacy/translation and real store round-trip. | [A14 original][A14] |
-
 ### Pending presentation edits and navigation
 
 Source: [A17][A17].
@@ -55,8 +46,6 @@ Source: [A17][A17].
 | Pending item | Observation, action and acceptance boundary | Original report |
 | --- | --- | --- |
 | **A21 §2 — Garage Restore explanation and recovery** | Bisonte MT8 Gravity 0.50 save refused after Home/default reopen; reapplying the matching experiment restored successfully, and refusal preserved the saved bytes. An empty slot produced the same mismatch message. Retain model/course/vehicle/solver compatibility checks; distinguish absent, incompatible and unreadable saves, expose validated saved experiment metadata and offer Review saved setup or supported Apply setup and restore. Explain lab Apply as a restart with the effective setting; this is recovery UX, not checkpoint corruption. | [A21 original][A21] |
-| **A21 §3 — Start selection immediately replaces the run** | Selecting Circuit · Rollers reset tick 14 to 0, cleared 56 in-memory control-tape values and moved the car while the garage stayed paused. Stage a pending destination and provide an explicit Restart at… action with the consequence; preserve browsing/Back once meaningful run state exists, with an initial-run fast path where appropriate. This brief logical-state check does not prove telemetry-recording loss. Preserve recording finalization; do not reopen the earlier garage quit issue. | [A21 original][A21] |
-| **A21 §4 — Selected driving camera lacks feedback** | Modes 1 and 2 changed while the paused transform and Camera · C label stayed unchanged; Circuit overview changed the transform. The garage orbit composition can be intentional. Show the selected driving camera and when it applies, or provide a suitable preview. Overview currently returns to Chase; a Return to previous camera promise requires retaining that choice. Native framing, transitions and controller experience remain untested. | [A21 original][A21] |
 | **A21 §5 — Inspect omitted alerts (design evaluation)** | Source-only: cap one with STALL and LOW retains both selected codes, but the overflow panel has no direct expansion/focus target. Existing Pause → Flight overlays → Alerts limit/preview is a workaround. Evaluate a deliberately paused, focusable active-alert list through the existing screen stack and selected menu device; preserve saved cap, priority/category policy and flight input, disclose snapshot versus live status, and restore focus/return predictably. Intentional cap/overflow/whole-rail close are not new defects; consider Hide warning panel wording. | [A21 original][A21] |
 
 Remaining source-only orientation follow-up:
