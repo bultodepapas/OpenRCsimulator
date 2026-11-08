@@ -83,10 +83,36 @@ func delta(a: PackedFloat64Array, b: PackedFloat64Array) -> PackedFloat64Array:
 
 
 func near_array(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
+	if a.size() != 6 or b.size() != 6:
+		return false
 	for i in 6:
+		if not is_finite(a[i]) or not is_finite(b[i]):
+			return false
 		if absf(a[i] - b[i]) > 1.0e-8 * maxf(1.0, absf(b[i])):
 			return false
 	return true
+
+
+func comparison_controls() -> void:
+	var reference := PackedFloat64Array([0.0, -1.0, 2.0, -3.0, 4.0, -5.0])
+	check("wrench comparison accepts equal finite components", near_array(reference, reference))
+	var close := reference.duplicate()
+	close[4] += 1.0e-9
+	check("wrench comparison accepts finite roundoff", near_array(close, reference))
+	close[4] += 1.0e-4
+	check("wrench comparison rejects finite disagreement", not near_array(close, reference))
+	for size in [0, 5, 7]:
+		var malformed := reference.duplicate()
+		malformed.resize(size)
+		check("wrench comparison rejects actual size %d" % size, not near_array(malformed, reference))
+		check("wrench comparison rejects reference size %d" % size, not near_array(reference, malformed))
+	for value: float in [NAN, INF, -INF]:
+		for axis in 6:
+			var invalid := reference.duplicate()
+			invalid[axis] = value
+			check("wrench comparison rejects actual %s at %d" % [value, axis], not near_array(invalid, reference))
+			check("wrench comparison rejects reference %s at %d" % [value, axis], not near_array(reference, invalid))
+			check("wrench comparison rejects matching invalid %s at %d" % [value, axis], not near_array(invalid, invalid))
 
 
 func flow_weight(model: Dictionary, alpha: float, rates: Array) -> float:
@@ -143,6 +169,7 @@ func transition_check(model: Dictionary, path: String, rates: Array) -> void:
 
 
 func _initialize() -> void:
+	comparison_controls()
 	for path: String in PATHS:
 		var loaded: Dictionary = Data.load_file(path)
 		check(path.get_file() + " production admission", loaded.get("ok", false), str(loaded.get("errors", [])))

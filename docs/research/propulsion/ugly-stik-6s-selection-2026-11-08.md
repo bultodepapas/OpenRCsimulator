@@ -8,7 +8,7 @@ The plan's second review preserves the existing basic aircraft, ID and tests unc
 
 ## Selection
 
-Use **Scorpion SII-4020-540KV + APC Thin Electric 13x8E + 6S 4000 mAh LiPo** as the first electric conversion candidate. Specify an airplane ESC rated for 6S and at least 80 A; pin its exact revision, mass, BEC and configuration before generating the installation. These are design choices pending the plan's current, fit and flight gates.
+Use **Scorpion SII-4020-540KV + APC Thin Electric 13x8E + 6S 4000 mAh LiPo** as the first electric conversion candidate. The final planning pass selects the pack and ESC references below; actual fit, current and flight qualification remain pending.
 
 Scorpion recommends this motor for 60–64-inch aerobatic aircraft on 6S, with 3500–4000 mAh packs. Its current product page gives 540 rpm/V, 288 g, 85 A maximum continuous current and 1850 W maximum continuous power. The page was available and marked in stock when checked; this is not a local availability or purchasing commitment. [Manufacturer product and specifications](https://www.scorpionsystem.com/catalog/aeroplane/motors_1/sii-40/SII_4020-540/).
 
@@ -44,10 +44,18 @@ A 13-inch propeller has a 0.1651 m radius; 16 and 17 inches require 0.2032 and 0
 
 The [APC LP13080E product](https://www.apcprop.com/product/13x8e/) identifies the actual thin-electric prop and dimensions. APC also provides downloadable geometry and performance resources. Its [performance-data guide](https://www.apcprop.com/technical-information/performance-data/) explicitly describes those performance files as computational predictions. Preserve file versions, hashes and provenance; do not label them as wind-tunnel measurements or use a single static thrust point as a complete in-flight `Ct/Cp` map.
 
+## Pack and ESC reference selected during final planning review
+
+Use **Gens ace G-tech GEA406S60X9GT**, 6S 4000 mAh, XT90, as the installation reference. The manufacturer lists approximately **606 g** and **162 × 45 × 37 mm**, with a 60C label. Preserve the approximate nature of those specifications; neither that label nor the advertised capacity supplies a measured resistance/discharge model. Use those dimensions for the bay study and source the physical inventory mass from this exact SKU. [Manufacturer product](https://gensace.de/products/gea406s60x9gt), checked 2026-11-08.
+
+Use **Scorpion Tribunus III 06-80A ESC SBEC** as the hardware reference, not the older non-III unit. Published specifications include 80 A continuous, 11–26.1 V operation, approximately 70 g without connectors, a 32.0 × 52.2 × 20.3 mm body and adjustable 5.1–12.1 V BEC output. Add connectors/wiring mass separately and verify receiver/servo voltage before selecting a BEC setpoint. Its actual firmware behavior is not the simulator's ideal ESC law. [Manufacturer specification](https://www.scorpionsystem.com/catalog/speed_controllers/tribunus_esc/tribunus_III_esc/III_06_80/), checked 2026-11-08.
+
+The existing BAT generator has 6S 2200/5000 mAh class packs, but no 4000 mAh record. Add one sourced installation record using the existing cell-template pipeline; keep its electrical parameters explicitly estimated until matched measurements exist. Override mass, box and their provenance from the selected SKU instead of inheriting Timber-scaled dimensions. Never rename an estimated cell curve into a measured Gens ace characterization. Keep existing cell fits and pack bytes unchanged.
+
 ## Inputs still needed
 
-- Exact 6S 4000 mAh pack SKU/revision, mass, dimensions, connector and installation. Use ordinary LiPo: 22.2 V nominal and 25.2 V fully charged. A C-rating alone cannot identify internal resistance or guarantee delivered power.
-- Selected ESC revision, electrical/BEC limits and receiver/servo voltage compatibility. The manufacturer's [Tribunus 06-80A guide](https://www.scorpionsystem.com/files/download/Tribunus06-80.pdf) is a possible historical reference, not proof that later Tribunus revisions behave identically.
+- Verify the selected pack's installation/lead routing, build revision and physical measurements when available. Use ordinary LiPo: 22.2 V nominal and 25.2 V fully charged; characterize sag separately from nameplate specifications.
+- Match the selected III-series ESC's firmware/configuration and receiver/servo voltage. The older [Tribunus 06-80A guide](https://www.scorpionsystem.com/files/download/Tribunus06-80.pdf) is historical and must not supply unverified settings for the III-series reference.
 - Mount, adapter, propeller/rotor inertia, wiring, cooling, battery restraint and service access; measured or explicitly estimated mass, CG and inertia.
 - Matched current/RPM/thrust checks across voltage and throttle, with separate fit and held-out cases. The selected 13x8E point cannot serve both purposes. Source data can support an experimental model before a physical Jensen conversion exists; it cannot close independent physical validation.
 - A pack discharge model with voltage sag, depletion and cutoff. Reuse the [BAT pipeline](../../../research/battery/README.md), identifying class estimates honestly until matched pack data exists.

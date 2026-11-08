@@ -26,6 +26,8 @@ const NativeStage = preload("res://sim/native_stage.gd")
 const NativeWeather = preload("res://sim/native/native_weather.gd")
 const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
+const LakeSurface = preload("res://physics/lake_surface.gd")
+const LakeLoader = preload("res://data/lake_loader.gd")
 signal resetting
 var sim: Node = Sim.new()
 var aircraft: Dictionary = {ok=false}
@@ -90,8 +92,9 @@ var _stage_failure: String = ""
 ## The stopped-rotor tracking policy changes accepted controller state; older
 ## checkpoints cannot claim exact continuation under this law.
 const HEADING_MEMORY_LAW: String = "stopped-rotor-loaded-skid-tracking-v1"
-const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v6"
-const NATIVE_CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v7"
+const CONTACT_LAW: String = "composed-lake-unsupported-water-disc-v1"
+const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v8"
+const NATIVE_CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v9"
 var _stage_backend_requested: String = NativeStage.BACKEND_REFERENCE
 var _backend_selection_locked: bool = false
 var _native_stage: RefCounted = null
@@ -201,6 +204,9 @@ func _prepare_stage_backend(time_now: float) -> void:
  _detach_stage_backend()
  stage_backend_error=""
  if _stage_backend_requested!=NativeStage.BACKEND_NATIVE or not _ready_to_fly: return
+ if not environment.lake.is_empty():
+  stage_backend_error="native helicopter terrain does not support lakes; using gdscript_reference"
+  return
  var previous: Callable=sim.model.pre_tick
  _native_previous_pre_tick=previous
  sim.model.pre_tick=Callable(self,"_kernel_pre_step")
@@ -224,7 +230,7 @@ func _prepare_stage_backend(time_now: float) -> void:
 ## Tick controls and lifecycle are sampled once; native RK stages query only
 ## their prepared weather and the immutable state handed over at this boundary.
 func _kernel_pre_step(aux: PackedFloat64Array,inputs: PackedFloat64Array,dt: float) -> PackedFloat64Array:
- if _native_stage==null or not _native_stage.configuration_matches(self):
+ if _native_stage==null or not environment.lake.is_empty() or not _native_stage.configuration_matches(self):
   stage_backend_error="native prepared configuration changed; reset required"
   return PackedFloat64Array()
  var next: Variant=_native_previous_pre_tick.call(aux,inputs,dt) if _native_previous_pre_tick.is_valid() else aux
@@ -243,7 +249,7 @@ func _init() -> void:
  vehicle.input_size=4
  vehicle.aux_size=1
  vehicle.continuous_size=Flight.STATE_SIZE-13 # hover layout; reset() redeclares a ground start
- vehicle.identity={"vehicle":"rotorcraft","state_layout":Flight.STATE_LAYOUT,"heading_memory_law":HEADING_MEMORY_LAW}
+ vehicle.identity={"vehicle":"rotorcraft","state_layout":Flight.STATE_LAYOUT,"heading_memory_law":HEADING_MEMORY_LAW,"contact_law":CONTACT_LAW}
  vehicle.stage=_stage
  vehicle.step_policy=_step_with_heading_tracking
  vehicle.block_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
@@ -265,6 +271,10 @@ func _init() -> void:
 ## validated and committed by Simulation, so failed ticks cannot change memory.
 func _step_with_heading_tracking(state: PackedFloat64Array,t: float,dt: float,f: Callable,first: PackedFloat64Array) -> Variant:
  var result: Variant=StepAdapter.step(state,t,dt,f,first)
+ if result is Dictionary and result.get("state") is PackedFloat64Array \
+ and _water_contact_possible(state,result.state):
+  _stage_failure="Helicopter water contact is unsupported; the candidate tick was refused."
+  return PackedFloat64Array()
  if not result is Dictionary or state.size() not in [19,27] or state[13]!=0.0 \
  or aircraft.context.electronics_model.law!=Electronics.TRAINER_LAW: return result
  var endpoint: Variant=result.get("state")
@@ -272,7 +282,7 @@ func _step_with_heading_tracking(state: PackedFloat64Array,t: float,dt: float,f:
  var body: PackedFloat64Array=endpoint.slice(0,RB.SIZE)
  if not Sim.state_is_valid(body): return result
  var bristles: PackedFloat64Array=endpoint.slice(19) if endpoint.size()==27 else PackedFloat64Array()
- var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,true,bristles)
+ var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,true,bristles,environment.lake)
  if not contact.get("ok",false): return PackedFloat64Array()
  var loaded: bool=false
  for normal_force: float in contact.normal_forces_n:
@@ -378,6 +388,66 @@ func set_field(field: Dictionary) -> bool:
   pause_reason="Field changed; reset helicopter before continuing."
  return true
 
+## Adopt only the scene's published, normalized lake; never retain caller-owned geometry.
+func set_lake_context(normalized_lake: Dictionary) -> bool:
+ if _native_transition_reentry(): return false
+ var next: Dictionary={}
+ if not normalized_lake.is_empty():
+  if not LakeSurface.is_valid_definition(normalized_lake): return false
+  var identity: String=LakeLoader.identity(normalized_lake)
+  if identity.is_empty() or identity!=str(normalized_lake.get("identity","")): return false
+  next=normalized_lake.duplicate(true)
+ var changed: bool=str(next.get("identity",""))!=str(environment.lake.get("identity",""))
+ if sim.tick>0 and changed: return false
+ if changed: _stage_backend_pending()
+ environment.lake=next
+ if changed and _ready_to_fly:
+  _ready_to_fly=false
+  sim.set_paused(true)
+  pause_reason="Lake configuration changed; reset helicopter before continuing."
+ return true
+
+func lake_context() -> Dictionary:
+ return environment.lake.duplicate(true)
+
+## Whole-aircraft sphere swept through the shoreline AABB. Contact with water is
+## unsupported; this deliberately rejects a conservative volume, including the
+## maximum authored wave height, instead of inventing flotation or bed support.
+func _water_contact_possible(previous: PackedFloat64Array,current: PackedFloat64Array) -> bool:
+ if environment.lake.is_empty(): return false
+ if previous.size()<3 or current.size()<3 or not _impact_geometry.get("ok",false): return true
+ var reach: float=float(_impact_geometry.max_reach_m)
+ reach+=0.5*maxf(float(aircraft.context.main_model.get("blade_chord_m",0.0)),float(aircraft.context.tail_model.get("blade_chord_m",0.0)))
+ var lake: Dictionary=environment.lake
+ if maxf(previous[2],current[2])+reach < float(lake.water_level_down_m)-float(lake.wave_bounds.max_amplitude_m): return false
+ var polygon: PackedFloat64Array=lake.shoreline_ne_m
+ var north_min: float=INF
+ var north_max: float=-INF
+ var east_min: float=INF
+ var east_max: float=-INF
+ for index: int in range(0,polygon.size(),2):
+  north_min=minf(north_min,polygon[index]); north_max=maxf(north_max,polygon[index])
+  east_min=minf(east_min,polygon[index+1]); east_max=maxf(east_max,polygon[index+1])
+ return maxf(previous[0],current[0])+reach>=north_min and minf(previous[0],current[0])-reach<=north_max \
+ and maxf(previous[1],current[1])+reach>=east_min and minf(previous[1],current[1])-reach<=east_max
+
+## GroundStart solves only the dry horizontal pad. Refuse a changed support
+## before reset publishes anything; ordinary pads outside the bank stay exact.
+func _lake_pad_supported() -> bool:
+ if environment.lake.is_empty() or start_choice!="ground" or not aircraft.get("ok",false): return true
+ var candidate: Dictionary=GroundStart.resolve(_field,aircraft)
+ if not candidate.get("ok",false): return true # let the ordinary start error report this
+ var state: PackedFloat64Array=candidate.state
+ if _water_contact_possible(state,state): return false
+ var q: PackedFloat64Array=state.slice(6,10)
+ var points: PackedFloat64Array=aircraft.skids.points_body_frd_m
+ for index: int in range(0,12,3):
+  var offset: PackedFloat64Array=M.q_rotate(q,points.slice(index,index+3))
+  var n: float=state[0]+offset[0]
+  var e: float=state[1]+offset[1]
+  if Terrain.sample_validated(n,e,ground_surfaces).to_byte_array()!=environment.ground(n,e).to_byte_array(): return false
+ return true
+
 ## Read-only admission shared by the session and helicopter launch preflight.
 ## The returned field is detached; callers do not mutate session weather here.
 static func validate_weather_selection(settings: Variant) -> Dictionary:
@@ -448,6 +518,9 @@ const _NATIVE_RESET_FIELDS := ["_ready_to_fly","_stage_failure","_hover","_trim"
 
 func reset() -> bool:
  if _native_transition_reentry(): return false
+ if not _lake_pad_supported():
+  start_error="Ground start refused: lake geometry overlaps the qualified dry rotorpad."
+  return false
  if _stage_backend_requested!=NativeStage.BACKEND_NATIVE:
   return _reset_impl(false)
  var kernel: Dictionary=sim._capture_endpoint_guard()
@@ -511,7 +584,7 @@ func _reset_impl(transactional: bool) -> bool:
   else:
    solved={ok=false,message=_ground_start.get("reason","") if not _ground_start.ok else pickup.reason}
  else:
-  var ground: float=environment.terrain(_start[0],_start[1])[0]
+  var ground: float=environment.ground(_start[0],_start[1])[0]
   # Match trim to the same terrain sample used by each live RK stage, including hub offset.
   for iteration: int in 5:
    solved=Hover.solve_hover(aircraft.context,0.0,_start,environment.wind_world(_start,0.0),{"ground_height_up_m":ground})
@@ -574,7 +647,10 @@ func _reset_impl(transactional: bool) -> bool:
 func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) -> Dictionary:
  var state: PackedFloat64Array=body.duplicate()
  state.append_array(continuous.slice(0,6))
- var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,false,continuous.slice(6) if continuous.size()==14 else PackedFloat64Array())
+ if _water_contact_possible(body,body):
+  _stage_failure="Helicopter water contact is unsupported; the candidate stage was refused."
+  return {}
+ var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,false,continuous.slice(6) if continuous.size()==14 else PackedFloat64Array(),environment.lake)
  if not contact.ok: return {}
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
  var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(t,state.slice(0,RB.SIZE)),false,contact.loads,_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,t))
@@ -594,11 +670,11 @@ func _hub_offset(state: PackedFloat64Array) -> PackedFloat64Array:
 
 func _ground_under_hub(state: PackedFloat64Array) -> float:
  var offset: PackedFloat64Array=_hub_offset(state)
- return environment.terrain(state[0]+offset[0],state[1]+offset[1])[0]
+ return environment.ground(state[0]+offset[0],state[1]+offset[1])[0]
 
 func _height_over_radius(state: PackedFloat64Array) -> float:
  var offset: PackedFloat64Array=_hub_offset(state)
- var ground: float=environment.terrain(state[0]+offset[0],state[1]+offset[1])[0]
+ var ground: float=environment.ground(state[0]+offset[0],state[1]+offset[1])[0]
  return (-state[2]-offset[2]-ground)/aircraft.context.main_model.rotor_radius_m
 
 func _ready() -> void:
@@ -649,7 +725,7 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
    for i: int in 2: shaft_phase[i]+=.5*(_phase_omega[i]+omega[i])*sim.dt()
   _phase_omega=omega
  if not _ready_to_fly or body.is_empty() or not crash.is_empty(): return
- var detected: Dictionary=ImpactDetector.evaluate(sim.previous,body,sim.continuous,aircraft.context,aircraft.skids,ground_surfaces,shaft_phase,_collision_world,_impact_geometry)
+ var detected: Dictionary=ImpactDetector.evaluate(sim.previous,body,sim.continuous,aircraft.context,aircraft.skids,ground_surfaces,shaft_phase,_collision_world,_impact_geometry,environment.lake)
  if not detected.ok:
   # Invalid detection input is a diagnostic stop, never a manufactured impact.
   _ready_to_fly=false
@@ -662,7 +738,7 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   crash.time_s=sim.time()
   crash.shaft_phase=shaft_phase.duplicate()
   var point: PackedFloat64Array=crash.point_world_ned
-  var terrain: PackedFloat64Array=environment.terrain(point[0],point[1])
+  var terrain: PackedFloat64Array=environment.ground(point[0],point[1])
   crash.ground_point_world_ned=PackedFloat64Array([point[0],point[1],-terrain[0]])
   var up: PackedFloat64Array=PackedFloat64Array([-terrain[1],-terrain[2],-1.0])
   crash.ground_normal_world_ned=M.scale(up,1.0/M.norm(up))
@@ -957,25 +1033,31 @@ func telemetry() -> Dictionary:
  return out
 func trace_meta() -> Dictionary:
  var metadata: Dictionary={aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-rotorcraft-v2",heading_memory_law=HEADING_MEMORY_LAW,lifecycle_law=Lifecycle.LAW,power_at_record_start=power.duplicate(),control_reference=_trim.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}),continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator"+(",skid0_z_n,skid0_z_e,skid1_z_n,skid1_z_e,skid2_z_n,skid2_z_e,skid3_z_n,skid3_z_e" if start_choice=="ground" else ""),qualification=aircraft.qualification,weather=weather_configuration()}
+ metadata.contact_law=CONTACT_LAW
+ metadata.lake_identity=str(environment.lake.get("identity",""))
  var backend: Dictionary=stage_backend_identity()
  if backend.backend==NativeStage.BACKEND_NATIVE: metadata.stage_backend=backend
  return metadata
 func checkpoint() -> Dictionary:
  if _native_stage!=null and not _native_stage.configuration_matches(self): return {}
  if not _ready_to_fly or not aircraft.get("ok",false) or not crash.is_empty() \
- or not Terrain.is_valid_surface_table(ground_surfaces) or _start.size()!=3:
+ or not Terrain.is_valid_surface_table(ground_surfaces) or not _lake_identity_valid() or _start.size()!=3:
   return {}
  for value: float in _start:
   if not is_finite(value): return {}
  var saved_simulation: Dictionary=sim.checkpoint()
  if saved_simulation.is_empty() or not Lifecycle.valid(power,sim.time()) or (not power.armed and not zero_drive_hold) or not _simulation_configuration_matches(saved_simulation) \
  or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold,power): return {}
- var result: Dictionary={format=CHECKPOINT_FORMAT,heading_memory_law=HEADING_MEMORY_LAW,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
+ var result: Dictionary={format=CHECKPOINT_FORMAT,contact_law=CONTACT_LAW,lake_identity=str(environment.lake.get("identity","")),heading_memory_law=HEADING_MEMORY_LAW,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
  var backend: Dictionary=stage_backend_identity()
  if backend.backend==NativeStage.BACKEND_NATIVE:
   result.format=NATIVE_CHECKPOINT_FORMAT
   result.stage_backend=backend
  return result
+
+func _lake_identity_valid() -> bool:
+ return environment.lake.is_empty() or (LakeSurface.is_valid_definition(environment.lake) \
+  and LakeLoader.identity(environment.lake)==str(environment.lake.get("identity","")))
 
 func _simulation_configuration_matches(saved: Dictionary) -> bool:
  if not aircraft.get("ok",false) or not saved.has_all(["mass","gravity","inertia","aux","continuous"]): return false
@@ -1021,13 +1103,13 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   return {ok=false,errors=["Reset the selected start before restoring a helicopter checkpoint."]}
  if not candidate is Dictionary:
   return {ok=false,errors=["malformed helicopter checkpoint"]}
- if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2","openrc-helicopter-checkpoint v3","openrc-helicopter-checkpoint v4","openrc-helicopter-checkpoint v5"]:
-  return {ok=false,errors=["Helicopter checkpoint %s uses an earlier contact or heading-memory law; regenerate with v6/v7" % candidate.format]}
+ if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2","openrc-helicopter-checkpoint v3","openrc-helicopter-checkpoint v4","openrc-helicopter-checkpoint v5","openrc-helicopter-checkpoint v6","openrc-helicopter-checkpoint v7"]:
+  return {ok=false,errors=["Helicopter checkpoint %s uses an earlier contact or heading-memory law; regenerate with v8/v9" % candidate.format]}
  if _native_stage!=null and not _native_stage.configuration_matches(self):
   return {ok=false,errors=["native helicopter configuration changed; reset required"]}
  var recorded_backend: Dictionary=NativeStage.reference_identity()
  if candidate.get("format")==NATIVE_CHECKPOINT_FORMAT:
-  if candidate.size()!=18 or not candidate.get("stage_backend") is Dictionary or candidate.stage_backend.get("backend")!=NativeStage.BACKEND_NATIVE:
+  if candidate.size()!=20 or not candidate.get("stage_backend") is Dictionary or candidate.stage_backend.get("backend")!=NativeStage.BACKEND_NATIVE:
    return {ok=false,errors=["malformed native helicopter checkpoint"]}
   recorded_backend=candidate.stage_backend.duplicate(true)
   candidate=candidate.duplicate(true)
@@ -1037,8 +1119,11 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   return {ok=false,errors=["unexpected helicopter checkpoint backend"]}
  if recorded_backend!=stage_backend_identity():
   return {ok=false,errors=["helicopter checkpoint stage backend differs from this session"]}
- if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=17 or not candidate.has_all(["format","heading_memory_law","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase","collision_world_identity"]):
+ if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=19 or not candidate.has_all(["format","contact_law","lake_identity","heading_memory_law","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase","collision_world_identity"]):
   return {ok=false,errors=["malformed or unsupported helicopter checkpoint"]}
+ if candidate.contact_law!=CONTACT_LAW or typeof(candidate.lake_identity)!=TYPE_STRING \
+ or not _lake_identity_valid() or candidate.lake_identity!=str(environment.lake.get("identity","")):
+  return {ok=false,errors=["helicopter checkpoint terrain or contact law mismatch"]}
  if candidate.heading_memory_law!=HEADING_MEMORY_LAW:
   return {ok=false,errors=["helicopter checkpoint heading-memory law differs from this session"]}
  if typeof(candidate.collision_world_identity)!=TYPE_STRING or candidate.collision_world_identity!=str(_collision_world.get("identity","")):

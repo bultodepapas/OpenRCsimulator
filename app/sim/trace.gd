@@ -1611,9 +1611,10 @@ func is_continuous() -> bool:
 	return true
 
 
-func to_csv() -> String:
+## Header construction is shared by the in-memory API and bounded disk export.
+func _csv_header() -> PackedStringArray:
 	if _invalid_weather or (_liquid_trace and (_liquid_identity.is_empty() or row_count() == 0)):
-		return ""
+		return PackedStringArray()
 	var lines := PackedStringArray()
 	var base_trace_format: String = _base_trace_format()
 	var complete_base_trace_format: String = "openrc-trace v13" if _pack else "openrc-trace v12" if _flaps else base_trace_format
@@ -1658,13 +1659,24 @@ func to_csv() -> String:
 		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if (_weather != null or _continuous_turbine or _glow or _flaps) and key == "dt_s" else str(written_meta[key])
 		lines.append("# %s: %s" % [key, encoded])
 	lines.append(",".join(_columns))
+	return lines
+
+
+func _csv_row(r: int) -> String:
 	var n := _columns.size()
+	var cells := PackedStringArray()
+	cells.append(str(int(_rows[r * n])))
+	for c in range(1, n):
+		cells.append("%.9f" % _rows[r * n + c])
+	return ",".join(cells)
+
+
+func to_csv() -> String:
+	var lines := _csv_header()
+	if lines.is_empty():
+		return ""
 	for r in row_count():
-		var cells := PackedStringArray()
-		cells.append(str(int(_rows[r * n])))
-		for c in range(1, n):
-			cells.append("%.9f" % _rows[r * n + c])
-		lines.append(",".join(cells))
+		lines.append(_csv_row(r))
 	return "\n".join(lines) + "\n"
 
 
@@ -1691,11 +1703,9 @@ func _base_trace_format() -> String:
 
 
 func save(path: String) -> Error:
-	if _invalid_weather:
-		return ERR_INVALID_DATA
 	# An empty CSV (a liquid trace without identity or rows) is not a trace: never write it as one.
-	var csv := to_csv()
-	if csv.is_empty():
+	var header := _csv_header()
+	if header.is_empty():
 		return ERR_INVALID_DATA
 	var dir_error := DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	if dir_error != OK and dir_error != ERR_ALREADY_EXISTS:
@@ -1703,7 +1713,27 @@ func save(path: String) -> Error:
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
 		return FileAccess.get_open_error()
-	var written := f.store_string(csv)
+	var written := f.store_string("\n".join(header) + "\n")
+	# Bound row formatting independently of recording duration. Header metadata and
+	# retained Float64 rows have separate lifetimes; this is not a recording cap.
+	# Batch small rows to avoid one file call per tick. One oversized row is allowed.
+	const BATCH_CHARACTERS := 65536
+	var batch := PackedStringArray()
+	var characters := 0
+	for r in row_count():
+		if not written:
+			break
+		var line := _csv_row(r)
+		if characters > 0 and characters + line.length() + 1 > BATCH_CHARACTERS:
+			written = f.store_string("\n".join(batch) + "\n")
+			batch.clear()
+			characters = 0
+			if not written:
+				break
+		batch.append(line)
+		characters += line.length() + 1
+	if written and not batch.is_empty():
+		written = f.store_string("\n".join(batch) + "\n")
 	f.flush()
 	var write_error := f.get_error()
 	f.close()

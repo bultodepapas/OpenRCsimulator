@@ -1,6 +1,6 @@
 # External audits — pending work
 
-Updated **2026-11-08**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). The 30 original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
+Updated **2026-11-08**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). The 31 original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
@@ -149,6 +149,21 @@ A6 O4 is implemented and listed only under remaining qualification, not as an un
 | **A24 §2 — F10 synchronous whole-bundle identity checks** | Qualifying packaged Mac reference-recording start/stop traverse/hash every regular bundle file including PCK inline, approximately 2B bytes per pair; other/refused routes differ. Unchanged production helper with synthetic 16/64/256 MiB PCKs on Linux gave medians 65.061/261.906/1248.429 ms (three validations each), stable identities and refusal of same-size mutation. Not a cold-cache study or Mac prediction; recorder observer_usec omits boundary cost. Measure actual ARM64 release first-use/repeated frame intervals, ticks, simulation/wall ratio, input/I/O and status. Candidate bounded asynchronous admission/finalization must retain both byte checks: fresh main-thread checkpoint after admission, frozen final tick/events/checkpoint/writer at stop, serialized repeat/restart/exit/cancel/failure and stale-job isolation. Owned file work may move off-thread; scene/session access stays on main. Background contention still needs full-frame validation. A26 §2G reinforces bounded worker ownership and generation-checked publication; this remains the same recording-boundary issue. Distinct from row serialization/flush stalls. | [A24 original][A24], [A26 original][A26] |
 | **A24 §4 — Same-observation wheel-result reuse** | Staged supported three-wheel Stik/Club pose at 0.24 m invokes compression then collapse; source establishes six wheel-terrain samples where three could be shared. No candidate parity or timing exists. After targeted cost measurement, use a ground-owner result for compressions and collapse within one observation. Preserve invalid-lake behavior, strict greater-than travel test, clear-air sentinel, short-circuit order, gear/terrain/track identity and overridden session methods; avoid cross-tick caching. This is not another report of A6 F3 terrain omission. | [A24 original][A24] |
 | **A24 §5 — Below-horizon star shader work** | Existing 5,080-star MultiMesh already batches submissions; cloud-density work already skips below-horizon stars. Candidate skips only extinction/phase/scintillation before their zero horizon factor for bounded finite inputs. Preserve center/vertex/normal work and reconverge before engine projection: no top-level vertex return in pinned Mobile template. Keep exact horizon on original path, with geometry/blending/depth/alpha/clock unchanged. Roughly half the centers in sampled orientations is geometric opportunity, not GPU savings. Compile and compare Mobile/Metal and Compatibility images at horizon/twilight, classic/layered clouds, motion/pause/rewind; measure draw and complete frame. Whole-field daylight hiding changes visual policy and needs separate validation. | [A24 original][A24] |
+
+### A31 RAM and GPU memory
+
+[A31][A31] describes the 2026-11-07 snapshot, regenerated 2026-11-08. Its two code-only
+patches were absent from the current tree and have now been ported with their tests;
+bounded row-text CSV export is also implemented. See the
+[current reconciliation and Windows evidence](../docs/research/memory-2026-11-08.md).
+The failed-save/new-T loss warning is already covered by A30's generation-aware recovery.
+
+| Remaining work | Implementation and acceptance boundary | Original report |
+| --- | --- | --- |
+| **P1 — Manual telemetry storage** | C7 / HELI-16: live Float64 rows and visual metadata still grow with duration. Use schema-aware bounded chunks, one owned writer, durable spool and explicit backpressure/incomplete recovery. Preserve every accepted row, metadata and retry/exit contracts; do not silently truncate or clear retained rows. The 65,536-character export batches solve formatted-copy amplification only. | [A31 original][A31] |
+| **P1 experiment — Monster Car 2 maps** | Extends A26 §2F and VQ-02a / DT-MAC-04d: trial platform-correct VRAM compression on the three full-resolution 4096² maps with mips intact. Require actual runtime formats/fallback, native 1080p paint/emission/PBR quality, transition/pressure and packaged evidence. Conditional ~256 MiB logical RD payload is not observed VRAM. | [A31 original][A31] |
+| **P2 — Ground input tape and checkpoints** | RCV: versioned segmented tape or bounded spool must retain exact replay and recovery. No ring truncation presented as equivalent history. | [A31 original][A31] |
+| **P3 hypothesis — Natural Random source cache** | Reproduce stamped-key growth or same-size/same-time stale identity on disposable data before compacting/bounding entries. Uncached launch validation remains the mismatch gate. A28 CPU sample/audio/cloud and A26 preload/native pressure work retain their existing owners. | [A31 original][A31] |
 
 ### A26 Apple Silicon research applications
 
@@ -347,6 +362,7 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 | A28 | [Apple Silicon follow-up — Stik samples, audio, cloud readback and lens ghosts][A28] |
 | A29 | [Seeded wind — joint statistics, aerodynamic cusp and timestep diagnostics][A29] |
 | A30 | [Code and simulation audit — recording, controls and audio][A30]; [full Page snapshot][A30-full] |
+| A31 | [RAM and GPU memory review — 2026-11-07, regenerated 2026-11-08][A31] |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -379,3 +395,4 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 [A29]: seeded-wind-joint-statistics-cusp-timestep-review-181d7ca.md
 [A30]: code-simulation-recording-controls-audio-audit-b21c078.md
 [A30-full]: code-simulation-audit-b21c078-full-report.md
+[A31]: ram-and-gpu-memory-review-2026-11-07.md

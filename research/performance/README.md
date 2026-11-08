@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`trace_export_probe.gd` saves 120,001 synthetic fixed-wing telemetry rows through
+the production exporter. The [C7 / RCV-43 / SC-09-R2 memory follow-up](../../docs/research/memory-2026-11-08.md)
+records the baseline source, commands, exact CSV digest, allocator counters and
+limitations. It is an export component witness, not a flight, FPS or GPU benchmark.
+
 `field_validation_probe.gd` compares complete field validation and file loading
 with explicit source/data snapshots and a no-tree control. Its [DT-11a / L6b report](../../docs/research/visual-quality-implementation/VQ-01c/loading/field-validation/README.md)
 retains normalized-data/diagnostic parity, paired CPU batches, immutable-input

@@ -3,6 +3,7 @@ extends RefCounted
 const M = preload("res://physics/math3d.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
 const GroundContact = preload("res://physics/ground_contact.gd")
+const LakeSurface = preload("res://physics/lake_surface.gd")
 ## Unloaded bristles lose their stored strain without applying adhesive force. This 0.2 s
 ## decay time is a numerical contact-memory proxy, not a measured skid property.
 const UNLOADED_BRISTLE_DECAY_TIME_PROXY_S := 0.2
@@ -13,12 +14,13 @@ const ROTORPAD_ROLLING_FACTOR := 0.5
 const CONTACT_FORCE_EPSILON_N := 1.0e-8
 
 static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: PackedFloat64Array,
-  diagnostics: bool = false, bristles: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
+  diagnostics: bool = false, bristles: PackedFloat64Array = PackedFloat64Array(), lake: Dictionary = {}) -> Dictionary:
  var loads: PackedFloat64Array = PackedFloat64Array([0,0,0,0,0,0])
  var normal_forces: PackedFloat64Array = PackedFloat64Array()
  var compressions: PackedFloat64Array = PackedFloat64Array()
  var bristle_derivative: PackedFloat64Array = PackedFloat64Array()
  var bristle_force_world: PackedFloat64Array = PackedFloat64Array()
+ if not lake.is_empty() and not LakeSurface.is_valid_definition(lake): return {ok=false}
  var has_bristles: bool = not bristles.is_empty()
  if has_bristles and bristles.size() != 8: return {ok=false}
  if has_bristles:
@@ -48,7 +50,8 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
  for i: int in range(0,12,3):
   var arm: PackedFloat64Array = points.slice(i,i+3)
   var offset: PackedFloat64Array = M.q_rotate(q,arm)
-  var terrain: PackedFloat64Array = Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],surfaces)
+  var terrain: PackedFloat64Array = Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],surfaces,lake)
+  if terrain.size()!=3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]): return {ok=false}
   var norm: float = sqrt(1.0+terrain[1]*terrain[1]+terrain[2]*terrain[2])
   var up: PackedFloat64Array = M.v3(-terrain[1]/norm,-terrain[2]/norm,-1.0/norm)
   var normal: PackedFloat64Array = M.q_rotate(inverse,up)
@@ -68,7 +71,7 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
   if diagnostics: normal_forces[point_index] = force_n
   var world_north: float = state[0] + offset[0]
   var world_east: float = state[1] + offset[1]
-  var flat_rotorpad: bool = has_bristles and _is_flat_rotorpad(surfaces, world_north, world_east, terrain)
+  var flat_rotorpad: bool = has_bristles and _is_flat_rotorpad(surfaces, world_north, world_east, terrain, lake)
   var tangent_force_body := PackedFloat64Array([0.0, 0.0, 0.0])
   if flat_rotorpad and force_n > CONTACT_FORCE_EPSILON_N:
    var surface_index: int = GroundContact.surface_at(surfaces, world_north, world_east)
@@ -130,12 +133,13 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
 
 
 static func _is_flat_rotorpad(surfaces: PackedFloat64Array, north: float, east: float,
-		terrain: PackedFloat64Array) -> bool:
+		terrain: PackedFloat64Array, lake: Dictionary = {}) -> bool:
  if surfaces.is_empty() or terrain.size() != 3:
   return false
  var surface_index: int = GroundContact.surface_at(surfaces, north, east)
  return surface_index >= 0 and surface_index + 5 < surfaces.size() \
   and surfaces[surface_index + 5] == ROTORPAD_ROLLING_FACTOR \
+  and (lake.is_empty() or absf(terrain[0]) <= 1.0e-12) \
   and absf(terrain[1]) <= 1.0e-12 and absf(terrain[2]) <= 1.0e-12
 
 
