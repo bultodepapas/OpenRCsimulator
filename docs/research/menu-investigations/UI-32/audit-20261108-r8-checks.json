@@ -1,0 +1,635 @@
+{
+  "format": "openrc-ui32-audit-r8 v1",
+  "recorded_utc": "2026-11-08T16:06:16.387470+00:00",
+  "source_baseline": "8ebb252acc341a5a1fc047e6bb931fabdb17b148",
+  "main_integration_head": "174abfd0237b58e87558e2a22125c3fbf3687ecd",
+  "candidate": "tmp/audit8-candidate; detached baseline plus listed UI/test/catalog bytes; baseline assets/aircraft metadata restored before accepted Root/flight checks",
+  "scope": [
+    "A11 F08 instrument explanations",
+    "A11 F09 semantic arrow keycaps",
+    "A18 section 5 Aircraft/Practice ordinary Fly caption"
+  ],
+  "sources": [
+    {
+      "path": "app/ui/home.gd",
+      "sha256": "55b7b89383d1e7e17320422cd7e96c8e836bc5033d4392c96e1ea48f1b2a0384"
+    },
+    {
+      "path": "app/ui/key_cap.gd",
+      "sha256": "3991e93bbe270339dd856edda4af7f28226391a0662ac0b9eeb255ec18c43b8c"
+    },
+    {
+      "path": "app/ui/overlays_dialog.gd",
+      "sha256": "5c12081e9281b32dd262c4f1f5b58a4d1ff61a4ccbac19d4c26d90802b4e3c43"
+    },
+    {
+      "path": "app/tests/test_home_launch_summary.gd",
+      "sha256": "212b330f36211c075e65106715db31afdb9f839e13b49a65da7fcfb3c36ee96d"
+    },
+    {
+      "path": "app/tests/test_home_launch_summary.gd.uid",
+      "sha256": "50c818d635eb37cd34f5da490447f52db512c4f7a7e856eec7c3ca512cba3613"
+    },
+    {
+      "path": "app/tests/test_keycap_semantics.gd",
+      "sha256": "b68bbed1b87629723cb935b6fadcc0c9406e3aca454c89b4e2bea1ae7db400f4"
+    },
+    {
+      "path": "app/tests/test_keycap_semantics.gd.uid",
+      "sha256": "e602443170c94fb0128c50615b4511d1e83faebca9a97a764bc549ade56b835f"
+    },
+    {
+      "path": "app/tests/test_instrument_focus_help.gd",
+      "sha256": "300a57722873899365fe540f748e411d030213ed3c721db5487c05d493e536be"
+    },
+    {
+      "path": "app/tests/test_instrument_focus_help.gd.uid",
+      "sha256": "a9c51d25bdb6f2d0d3191677d0deceb6f1b09c2394d0003b51a7ee7175031da6"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "379e2152fddcf221473d7c5b063ca705f3007694e2a66fe637179ceb862e4f3e"
+    },
+    {
+      "path": "app/i18n/zh_Hans.po",
+      "sha256": "8a9bb11ac4a1bb2bbd2347a64966493c6fc4d16dfb6a5db7f54173adaaa2a326"
+    },
+    {
+      "path": "app/i18n/pt_BR.po",
+      "sha256": "9c62b1103753caae67a1e7f1d7f97434593214264497e7f7d93b89f3c6474ca4"
+    },
+    {
+      "path": "app/i18n/de.po",
+      "sha256": "8cce7f95e8883f0d1e0ce4cf8a50cbee5cef7a893bed6859c3d4d03f36542683"
+    },
+    {
+      "path": "app/i18n/fr.po",
+      "sha256": "be40537a6bca4a4cbe655b23a77f7762c582f1a9b21bd723f226391238c6a49b"
+    },
+    {
+      "path": "app/i18n/it.po",
+      "sha256": "74e12b94b6f889a8a4bcb31b4066cdf0f6b9772457c8aa721ec3d6ea19f25bce"
+    },
+    {
+      "path": "app/i18n/ru.po",
+      "sha256": "b8f0ac29e5517c9b943a0511c3315b5863e35a97983264649899e481fff84860"
+    },
+    {
+      "path": "app/i18n/ja.po",
+      "sha256": "a4dc4940cc13b9f5dae6f534aadad9b590b6ef35c36f5776e2e07c52de7eb8ef"
+    }
+  ],
+  "dedicated_checks": {
+    "home": 109,
+    "keycaps": 91,
+    "instruments": 466,
+    "total": 666
+  },
+  "isolated_checks": [
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_home_launch_summary-final-3_8ph04y/report.json",
+      "sha256": "668aa28393bce7c7e50227f4f6e6646e5a5ca02befc034db4d2ff11e8106c32c",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "c307f99ce2f920e1de8613cf1de9416d216b7074df24e4aeaca908f7b72b23ed",
+      "elapsed_seconds": 25.922
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_keycap_semantics-native-final-yjbfttk6/report.json",
+      "sha256": "557ef379adb4e06c6b30a87042f96a3b117033f74b82c966569995c49698cb7d",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "1f7a50155760b0589d1dcf058e4c6e45711685d44b2f2c468cb39df600ab7b3c",
+      "elapsed_seconds": 0.937
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_instrument_focus_help-final-i76mhofn/report.json",
+      "sha256": "fab36328364d7d16c7388ebad75502ffef292bc28ffe4c48088c088168dea6b2",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "bc8cfbb6916452f7d6dca6dff8fb021bb397533ab481ffd3bc1d083eb5dfbaad",
+      "elapsed_seconds": 58.704
+    }
+  ],
+  "main_integration_checks": [
+    {
+      "path": "tmp/audit8-20261108-parent/integration-checks/test_home_launch_summary-jvs95ihk/report.json",
+      "sha256": "6f281df181db14f16bd6140926be9a34f205eeed56e2ea483dd14387f943e32b",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "c307f99ce2f920e1de8613cf1de9416d216b7074df24e4aeaca908f7b72b23ed",
+      "elapsed_seconds": 24.953
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/integration-checks/test_keycap_semantics-2i5252ut/report.json",
+      "sha256": "2b2f6fc0bfc9b5fc2d672aa72d627c0054bc66a000c1c881630c67c9013cc8dd",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "1f7a50155760b0589d1dcf058e4c6e45711685d44b2f2c468cb39df600ab7b3c",
+      "elapsed_seconds": 1.156
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/integration-checks/test_instrument_focus_help-mc9tdy05/report.json",
+      "sha256": "540146b3ba59351e59b233b4494a2b711906223985d1b1f5104d9340dd05b0be",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "bc8cfbb6916452f7d6dca6dff8fb021bb397533ab481ffd3bc1d083eb5dfbaad",
+      "elapsed_seconds": 56.453
+    }
+  ],
+  "baseline_witnesses": [
+    {
+      "path": "tmp/audit8-20261108-parent/checks/summary-baseline-kc_r2fwx/report.json",
+      "sha256": "83af8719bcd32e9da883297b8b9e7fd108f040d66c4b5c6928600440c57139f5"
+    },
+    {
+      "path": "tmp/audit8-20261108-keycaps/checks/baseline-9fmjny8b/report.json",
+      "sha256": "1087c5e4f64f940c4bfcb3c082dc78330a2efb2298e61ddfd6064f5369c6ba39"
+    },
+    {
+      "path": "tmp/audit8-20261108-instruments/baseline/overlay-xquqml07/report.json",
+      "sha256": "3641dad7a9f765f701ef01cd4dfa47a321df3f0e9f35b3ddfcdb16027eff7cd1"
+    }
+  ],
+  "baseline_scope": "Pre-edit witnesses: 64/97 summary assertions and 4/9 keycap assertions failed as expected; instrument inspection lacked visible/accessibility descriptions. These are negative controls, not accepted checks.",
+  "import": {
+    "path": "tmp/audit8-20261108-parent/checks/isolated-import-resume-r8bnxxjs/report.json",
+    "sha256": "0e3441eaa926ae740f754ea8ecd19ba452764e1be9ed5787739374c2ebdc86b7",
+    "complete": true,
+    "ok": true,
+    "diagnostics": {
+      "error": 0,
+      "warning": 0
+    },
+    "reason": "passed",
+    "log_sha256": "482f4506b03631d03fbf826b075718f282a7df9b18dae2b03d3e1eccbe4c55b2",
+    "elapsed_seconds": 65.188
+  },
+  "affected_consumers": [
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_ui_home_layout-agmfbz09/report.json",
+      "sha256": "7f2f58fb2dd6ac141a88829a1708ead43ff4729e3af5266c1456e280bb9f1a7a",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "ae2c2da1286ecc8418790be34552b214bd431158c6f22b5eb09e4d63333314c2",
+      "elapsed_seconds": 58.187
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_ui_home_start_layout-izqc_e57/report.json",
+      "sha256": "111f3393cf2b00b5fd11e7b74cf8a0865ae5b97930450cb1b48e01c3a97b5a64",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "a90f4757cb5d859ef2446410635015f79ba504168e80ca152105c09d36328cc6",
+      "elapsed_seconds": 7.328
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_home_launch_setup-vxbxbaof/report.json",
+      "sha256": "aa1b00dc3dd8f1ebe962618b88873686e8d20c4d401e87aa4cd23a60b2b470d9",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "03c0bb493dd0861e8d850807d6d7ccd8168179510b0cb946c32b2444f8e8bd8c",
+      "elapsed_seconds": 6.25
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_failure_scope_ui-o9zephwk/report.json",
+      "sha256": "c4dc3b7c7862c66231891d946bd93ac4644a7f083dcafc5e82b685392e838b06",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "153a0c2968a479ba88d1f65765f61dd188cf742bcb50d231322825b9c5de9616",
+      "elapsed_seconds": 13.891
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_ui_home_legend-g8tih244/report.json",
+      "sha256": "b67961f341c84050e5f29c0ddf0d9982439054ac4ae834e4c049cb855cbd544a",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "c909f78a7fbb9ea341b3eae7a6e096518d76485b789588185f84a3cc043bb985",
+      "elapsed_seconds": 7.578
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_overlay_manager-dko7bcdh/report.json",
+      "sha256": "33778b5c19b57d35f7c455347b843e83adcd134436d519ddf9fb5242a55ca5f2",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "747e93d9725220f11f24cb692a0df81118596e26bc0539945b51686ad39ec728",
+      "elapsed_seconds": 23.468
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_ui_language-631aezcn/report.json",
+      "sha256": "d6bd0db5e74ea5ea9f63f5f94068a940436918077387b01fdd7ede6e870198b7",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "6f6d2c9388c7ee65c713d9cbc8b5653a97289f28f2c00628243092a04a0e9202",
+      "elapsed_seconds": 39.375
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_ui_help-final-n6xheagi/report.json",
+      "sha256": "cdb1e689d3b6ec21ae4e3beaa465e6cae5aad765c45275c96deb92507b2453df",
+      "complete": true,
+      "ok": true,
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "fad688fe5ed840316257da3bbcdd0701d56521248a8c57f6ff3bde5987abbe06",
+      "elapsed_seconds": 34.61
+    }
+  ],
+  "documentation_links": {
+    "path": "tmp/audit8-20261108-parent/document-links.json",
+    "sha256": "8bb4cbc247a336fe4f4c79028a226795c5d569c1ab43ce7bf3e57fbcc5b75e32"
+  },
+  "consumer_source_limits": "Home/layout consumers preceded the final keycap static-text value fix. Their layout/physical-key behavior is unchanged; final native tree and 91-check keycap suite verify the value fix. Overlay manager/language final checks use candidate 2; full CI is not run.",
+  "native": {
+    "platform": "Windows",
+    "renderer": "Compatibility OpenGL 3.3",
+    "gpu": "NVIDIA RTX 3090",
+    "display": "3840x2160 monitor; captured window and viewport 1920x1080, windowed",
+    "engine": "4.8.beta2.official.cafc17a19",
+    "engine_accessibility": "always; accesskit default driver",
+    "launcher": {
+      "path": "tmp/audit8-20261108-parent/native-launcher-identity.json",
+      "sha256": "ba32f95cb6e8980fb609223444b398a0c033f9fd6665eeb3dcbb868ee1a06114"
+    },
+    "engine_logs": [
+      {
+        "path": "tmp/audit8-20261108-parent/native/engine.log",
+        "sha256": "aa3bdc75a766148cc5bcf3886c3d9d37f584eb395a0b0545b9d1c7bdbf180cac"
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-final/engine.log",
+        "sha256": "2e56c1177e067f89d697e4f46b6a05e254e94aebf510b827b616f89680f5acdc"
+      }
+    ],
+    "window_receipts": [
+      {
+        "path": "tmp/audit8-20261108-parent/native-window.json",
+        "sha256": "fd57f05667d17349b74f2391d887e402b425afd9392ad13dd313c0da805d1b8d"
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-final-window.json",
+        "sha256": "1d08212d3221a4229242c82d0f122eed27772c54e89a54fae0392f2325944705"
+      }
+    ],
+    "instrument_matrices": [
+      {
+        "path": "tmp/audit8-20261108-parent/native-instruments-en-100.json",
+        "sha256": "1b106dd2bdcaf08c42de5bc611c038512ab1392e74496913b546667e226ebad8",
+        "focused_switches": 28,
+        "unchanged_tick": 53
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-instruments-en-200.json",
+        "sha256": "c423961362889a492563d5356a09a5d98089b653a9d451259f01d0d9f129ebf5",
+        "focused_switches": 28,
+        "unchanged_tick": 0
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-instruments-es-200.json",
+        "sha256": "20f5a9477445c93ff5dbbf94893a255c6d73a980c3b0544a5be3c774d1b98786",
+        "focused_switches": 28,
+        "unchanged_tick": 0
+      }
+    ],
+    "help_uia_trees": [
+      {
+        "path": "tmp/audit8-20261108-parent/native-uia-help-en-final.json",
+        "sha256": "5c2d4f8bf8418c0b0057b707599c5486f3b22ec0ba1973be29e8683e7c4ecde7",
+        "help_direction_names": [
+          "Left arrow",
+          "Right arrow",
+          "Up arrow",
+          "Down arrow"
+        ],
+        "each_occurs_once_in_help": true
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-uia-help-es-live-final.json",
+        "sha256": "27dab33056dd891f9ec69544cc509032de62c7ca3864833b9801328bd4b4fba1",
+        "help_direction_names": [
+          "Flecha izquierda",
+          "Flecha derecha",
+          "Flecha arriba",
+          "Flecha abajo"
+        ],
+        "each_occurs_once_in_help": true
+      }
+    ],
+    "captures": [
+      {
+        "path": "tmp/audit8-20261108-parent/home-en100.png",
+        "sha256": "76e5fde69a7e833382da5c7389bb6f9a6e552fb442d018ba55077d095ed0d680",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/home-es200.png",
+        "sha256": "7de258aa697eaa918721f1fb58c7a3b25e5cf01d12880e93a53ac333a73be114",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/home-heli-practice-es200.png",
+        "sha256": "e2e2f41484aa92c86d9a09b03c8f6840b89ebb0222a47c714673e1a590b30c44",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/help-es100-final.png",
+        "sha256": "d9f9ffcff7c8e00066f7366d0ded44c93ba56d985c853edb5a8089931c041031",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-100-speed.png",
+        "sha256": "5b10e382b36e125075350ed0a48f39f1c92ad6df45dd66176b20da0425b5484d",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-100-glide.png",
+        "sha256": "43bf60de33b7b4dfda1707f7ac9dcc4dea8d7f70bcbd11c42403b60a22a284be",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-100-warnings.png",
+        "sha256": "440a8cf6c6ae9313b92655727440be2000316d7ea9a849bc46c08feed4f1c13d",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-100-flight.png",
+        "sha256": "3c009654ecd7da3cca13fe9e3a3a2c24298f1638a298f30c1068434419620c09",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-200-speed.png",
+        "sha256": "7af8788c2fc1dd56de90d9fb36d2272c7f7ca338c9a9c18af5f9995fcf37cff5",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-200-glide.png",
+        "sha256": "b97f3c9b516954a113b24dca19cc997851fa8a5ba0fd6a16e91d511bf3bc560d",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-200-warnings.png",
+        "sha256": "1b984bd829b631ee80f7dd34b89c83cf6d6bc391e7d628c60a7cc013cbd87ad9",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-en-200-flight.png",
+        "sha256": "77ea67911b22c6b492b62d08d390ac01c0dfe08891514d22692eabf4a0e8b564",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-es-200-speed.png",
+        "sha256": "1b1420b3dd96c2870bbcc9f7dca07254e3ee1b70aeb9c4349dc27d3a0181fea1",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-es-200-glide.png",
+        "sha256": "2cacb63eb02a5fd8b268c3fdf127a44a90c691e162f347d062b768bebc9c573b",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-es-200-warnings.png",
+        "sha256": "65b7f0c062261f2836fa2bf094e3bb58e0bcfc5e39fe6018366993f72289d9a8",
+        "pixels": [
+          1920,
+          1080
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/instrument-es-200-flight.png",
+        "sha256": "681edd9b6a2b28fbed23d911428a8f01f6d9f64d17cffe41e0af47d4d708d8d1",
+        "pixels": [
+          1920,
+          1080
+        ]
+      }
+    ],
+    "stops": [
+      {
+        "path": "tmp/audit8-20261108-parent/native-stop.json",
+        "sha256": "91a4c60bc5029ba59850748cda43ab6054b4be001f892bac3b86c27ff41ecc9d",
+        "result": {
+          "stopped": true,
+          "pid": 13512,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-final-stop.json",
+        "sha256": "ee4523d06255b5f349cd991673c4f110fac64faef4a9b2a9315488783d89ba10",
+        "result": {
+          "stopped": true,
+          "pid": 42848,
+          "forced": false,
+          "launcher_exit_code": null,
+          "crash": null,
+          "leaked_objects": 0
+        }
+      }
+    ],
+    "log_checks": [
+      {
+        "path": "tmp/audit8-20261108-parent/native-logs.json",
+        "sha256": "d693e9c36384d91ede46cd2f6e1908622f14c8db733fb1b0bab761c2e92f7782",
+        "warnings_and_errors": [
+          {
+            "level": "warning",
+            "text": "This control can't grab focus. Use set_focus_mode() and set_focus_behavior_recursive() to allow a control to get focus.",
+            "script": "res://debug/debug_bridge.gd:1091 in _cmd_eval",
+            "count": 1,
+            "first_seq": 757,
+            "first_frame": 29354,
+            "last_seq": 757,
+            "last_frame": 29354
+          }
+        ]
+      },
+      {
+        "path": "tmp/audit8-20261108-parent/native-final-logs.json",
+        "sha256": "2b928f267adba9fd0e14bc4b2471b419ba375d858ee88b831b08f05450093111",
+        "warnings_and_errors": []
+      }
+    ]
+  },
+  "excluded_attempts": [
+    {
+      "path": "tmp/audit8-20261108-parent/checks/isolated-import-rx577mx4/report.json",
+      "sha256": "61dddd767b99e2f8b14458ba451aa0411201d6c844bd0ae94792d778af562123",
+      "complete": false,
+      "ok": false,
+      "diagnostics": {
+        "error": 0,
+        "warning": 8
+      },
+      "reason": "timeout",
+      "log_sha256": "88ee945efe314420207501081898ae7e8753db77ea2218fe2b6055a93fba940e",
+      "elapsed_seconds": 240.297
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_home_launch_summary-36yf8gdi/report.json",
+      "sha256": "9deeafddfa298a93ae40db33b8ac00aa8483406400159e46f6773177aa03f448",
+      "complete": false,
+      "ok": false,
+      "diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "reason": "timeout",
+      "log_sha256": "b5ba236316168df86f3136f6188bf9304a549875be434a097384b97c0fa88054",
+      "elapsed_seconds": 180.219
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_ui_help-kt3x_q5c/report.json",
+      "sha256": "f5905c8fc2591a1211b55b242913f893371042b18bf80903e1a8cf23631cf881",
+      "complete": false,
+      "ok": false,
+      "diagnostics": {
+        "error": 4,
+        "warning": 0
+      },
+      "reason": "timeout",
+      "log_sha256": "d6a4e9a3b85d99c0f8f63cd6a93855cdacf79fa5008975f5254eeddf0619529a",
+      "elapsed_seconds": 240.265
+    },
+    {
+      "path": "tmp/audit8-20261108-parent/checks/test_instrument_focus_help-83doq60v/report.json",
+      "sha256": "9fc314917d003a422c78ef320f5c15594b6cf6a2d05bb2c1af8b9e38e552d58a",
+      "complete": true,
+      "ok": false,
+      "diagnostics": {
+        "error": 3,
+        "warning": 0
+      },
+      "reason": "process_exit",
+      "log_sha256": "1640d65a608fb39ad14e7c0a9d12bf81651cc82f63ed04d4c5f1ed4210170dce",
+      "elapsed_seconds": 31.859
+    }
+  ],
+  "excluded_attempt_notes": [
+    "First fresh import timed out at 240 seconds and retained eight existing OBJ/PBR ambient warnings; resumed import completed without diagnostics.",
+    "First Root/Help runs lacked sibling authoring metadata in the app-only sparse checkout. Metadata was restored from the same baseline; the Home test also stopped reading app.home while loading retains it privately.",
+    "Instrument candidate 1 had three freed-coroutine engine errors and a StringName-key profile fixture refusal; candidate 2 uses object-bound callbacks and valid string-key storage.",
+    "Initial native keycap name-only implementation produced four blank Windows static-text nodes; final keycaps publish translated values. First immediate Spanish UIA snapshot was stale English; later live Spanish tree is accepted.",
+    "First native instrument helper used an ambiguous conditional expression and attempted to focus a hidden switch, producing one engine warning; corrected section lookup then completed all three matrices."
+  ],
+  "limits": [
+    "Screen-reader speech not tested",
+    "Physical pads/radios and changed native keyboard layouts not tested",
+    "Other platforms and required full CI/release not qualified",
+    "No performance or participant validation",
+    "Some inherited dialog chrome remains English on live locale change",
+    "Helicopter loading labels remain generic Runway/Airborne",
+    "Concurrent physics/data edits are outside this UI acceptance scope"
+  ],
+  "review": "Independent Good Enemy source, source-identity, checked-receipt, native-tree and scoped capture review found no further blocker."
+}

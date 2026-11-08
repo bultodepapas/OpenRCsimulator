@@ -13,6 +13,23 @@ var failures := 0
 var ui: RefCounted
 
 
+# AccessibilityServer has no value getter. Record the calls at the server boundary;
+# native accessibility-tree inspection still checks that the platform exposes them.
+class AccessibilityRecorder extends RefCounted:
+	var role := -1
+	var value := ""
+	var role_calls := 0
+	var value_calls := 0
+
+	func update_set_role(_element: RID, new_role: int) -> void:
+		role_calls += 1
+		role = new_role
+
+	func update_set_value(_element: RID, new_value: String) -> void:
+		value_calls += 1
+		value = new_value
+
+
 func _check(ok: bool, message: String, detail := "") -> void:
 	checks += 1
 	if not ok:
@@ -74,6 +91,11 @@ func _run() -> void:
 		for i: int in keys.size():
 			_check(caps[i].accessibility_name == names[locale][i], "%s %s translated direction" % [locale, directions[i]],
 				str(caps[i].accessibility_name))
+			var recorder := AccessibilityRecorder.new()
+			caps[i].call("_update_arrow_accessibility", RID(), recorder)
+			_check(recorder.role_calls == 1 and recorder.role == AccessibilityServer.ROLE_STATIC_TEXT
+				and recorder.value_calls == 1 and recorder.value == names[locale][i],
+				"%s %s static text publishes its translated value" % [locale, directions[i]], recorder.value)
 			_check(caps[i].get_child(0).direction == directions[i], "%s %s retains drawing" % [locale, directions[i]])
 	for cap: PanelContainer in caps:
 		cap.free()

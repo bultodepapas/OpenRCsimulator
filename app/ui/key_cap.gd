@@ -50,7 +50,7 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_ACCESSIBILITY_UPDATE and _arrow_keycap:
 		var element := get_accessibility_element()
 		if element.is_valid():
-			AccessibilityServer.update_set_role(element, AccessibilityServer.ROLE_STATIC_TEXT)
+			_update_arrow_accessibility(element, AccessibilityServer)
 	elif what == NOTIFICATION_TRANSLATION_CHANGED:
 		if _arrow_keycap:
 			queue_accessibility_update()
@@ -58,6 +58,12 @@ func _notification(what: int) -> void:
 			_refresh_physical_label()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		_refresh_physical_label()
+
+
+func _update_arrow_accessibility(element: RID, server: Object) -> void:
+	# Like Godot's Label, publish static text as a value as well as the Control name.
+	server.update_set_role(element, AccessibilityServer.ROLE_STATIC_TEXT)
+	server.update_set_value(element, accessibility_name)
 
 
 func _refresh_physical_label() -> void:
