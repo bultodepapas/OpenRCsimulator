@@ -6,6 +6,7 @@ const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 const Terrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 const Pose := preload("res://sim/scenery_collision.gd")
 const LAW := "rc-track-composed-interval-v2"
 const FRACTION_TOLERANCE := 5.960464477539063e-8 # Existing 24-bisection timing resolution.
@@ -46,18 +47,20 @@ static func first(previous: PackedFloat64Array, current: PackedFloat64Array,
 	var minimum_norm: float = sqrt(minf(norm_a, norm_b) * 0.5) * (1.0 - ROUNDING)
 	if minimum_norm <= 0.0 or not is_finite(minimum_norm): return {ok = false}
 	var angular_bound: float = 2.0 * sqrt(difference_squared) / minimum_norm
-	var translation_bound: float = M.norm(M.sub(RB._slice3(current, RB.POS), RB._slice3(previous, RB.POS)))
-	var track_gradient := Track.height_gradient_bound(track)
+	var translation: PackedFloat64Array = M.sub(RB._slice3(current, RB.POS), RB._slice3(previous, RB.POS))
+	var horizontal_translation: float = sqrt(translation[0] * translation[0] + translation[1] * translation[1])
+	var vertical_translation: float = absf(translation[2])
 	var terrain_gradient := _terrain_gradient_bound(surfaces)
-	if not is_finite(angular_bound + translation_bound + track_gradient + terrain_gradient): return {ok = false}
+	if not is_finite(angular_bound + horizontal_translation + vertical_translation + terrain_gradient): return {ok = false}
 	var best: Dictionary = none
 	var lower_bound := INF
 	var work := {remaining = budget}
 	for index: int in hull.size() / 3:
 		var point := hull.slice(3 * index, 3 * index + 3)
-		var speed_bound := translation_bound + angular_bound * M.norm(point)
+		var horizontal_bound := horizontal_translation + angular_bound * M.norm(point)
+		var vertical_bound := vertical_translation + angular_bound * M.norm(point)
 		var found := _point_first(previous, current, point, track, surfaces, minimum_relief,
-			speed_bound, track_gradient, terrain_gradient, float(best.fraction), lake, work)
+			horizontal_bound, vertical_bound, terrain_gradient, float(best.fraction), lake, work)
 		if not found.ok: return {ok = false}
 		lower_bound = minf(lower_bound, float(found.fraction) - float(found.uncertainty))
 		if float(found.fraction) < float(best.fraction):
@@ -68,7 +71,7 @@ static func first(previous: PackedFloat64Array, current: PackedFloat64Array,
 
 static func _point_first(previous: PackedFloat64Array, current: PackedFloat64Array,
 		body_point: PackedFloat64Array, track: Dictionary, surfaces: PackedFloat64Array,
-		minimum_relief: float, speed_bound: float, track_gradient: float,
+		minimum_relief: float, horizontal_bound: float, vertical_bound: float,
 		terrain_gradient: float, stop: float, lake: Dictionary, work: Dictionary) -> Dictionary:
 	work.remaining -= 1
 	if int(work.remaining) < 0: return {ok = false}
@@ -89,6 +92,9 @@ static func _point_first(previous: PackedFloat64Array, current: PackedFloat64Arr
 		var low: float = interval[0]
 		var high: float = minf(interval[1], best)
 		if low >= best: continue
+		if is_finite(best) and best - low <= FRACTION_TOLERANCE:
+			earliest_uncertain = minf(earliest_uncertain, low)
+			continue # An observed hit already bounds this entire unresolved time window.
 		var middle: float = low + (high - low) * 0.5
 		var state := Pose.state_at_fraction(previous, current, middle)
 		if state.is_empty(): return {ok = false}
@@ -98,10 +104,10 @@ static func _point_first(previous: PackedFloat64Array, current: PackedFloat64Arr
 		var base: float = Terrain.sample_validated(point[0], point[1], surfaces, lake)[0]
 		var dry_base: float = Terrain.sample_validated(point[0], point[1], surfaces)[0]
 		var depth: float = relief + base - up
-		var envelope: float = float(Track.sample(track, point[0], point[1], true).height_m)
-		var radius: float = speed_bound * (high - low) * 0.5
+		var radius: float = horizontal_bound * (high - low) * 0.5
+		var vertical_radius: float = vertical_bound * (high - low) * 0.5
 		# Rounding allowance scales with world/geometry magnitude, not tick duration.
-		var error: float = ROUNDING * maxf(1.0, M.norm(point) + absf(envelope) + radius)
+		var error: float = ROUNDING * maxf(1.0, M.norm(point) + radius)
 		# Public sample's clipping planes are exact zero-support bounds, even
 		# when an authored custom feature extends beyond that footprint.
 		var east_limit: float = float(track.half_straight_m) + float(track.radius_m) \
@@ -112,7 +118,7 @@ static func _point_first(previous: PackedFloat64Array, current: PackedFloat64Arr
 				or point[0] + radius + error < float(track.access.north_min_m) - float(track.shoulder_m) \
 				or point[0] - radius - error > north_limit:
 			continue
-		var height_upper: float = envelope + track_gradient * radius + error
+		var height_upper: float = Track.height_upper_bound(track, point[0], point[1], radius + error) + error
 		if not is_finite(depth + height_upper + radius): return {ok = false}
 		# Each predicate is independently bounded: clear geometry, thin relief,
 		# and the flat-datum owner's half-space. Two clear endpoints prove nothing.
@@ -120,9 +126,19 @@ static func _point_first(previous: PackedFloat64Array, current: PackedFloat64Arr
 		# max(dry,0) is an upper envelope; it does not assume finite-difference
 		# lake slopes bound a bank. Potential unresolved bank intervals refuse.
 		var base_upper: float = dry_base if lake.is_empty() else maxf(dry_base, 0.0)
-		if speed_bound == 0.0 and (depth <= 0.0 or relief < minimum_relief or up <= 0.0): continue
-		if height_upper < minimum_relief or up + radius + error <= 0.0 \
-				or height_upper + base_upper + terrain_gradient * radius - up + radius + error <= 0.0:
+		base_upper += terrain_gradient * radius
+		if not lake.is_empty():
+			var water_distance: float = LakeSurface.shore_distance_validated(lake, point[0], point[1])
+			if water_distance > radius + error + LakeSurface.EDGE_EPSILON_M:
+				var bed: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, point[0], point[1])
+				# Boundary distance is 1-Lipschitz. The extra edge tolerance
+				# excludes the sampler's sign-flip band, proving this interval
+				# lies in BOTH polygons; admission alone does not prove nesting.
+				if bool(bed.get("covered", false)) and float(bed.get("signed_bank_distance_m", -INF)) > radius + error + LakeSurface.EDGE_EPSILON_M:
+					base_upper = -float(lake.water_level_down_m) - minf(0.0, float(lake.bed_profile[0].depth_m))
+		if horizontal_bound == 0.0 and vertical_bound == 0.0 and (depth <= 0.0 or relief < minimum_relief or up <= 0.0): continue
+		if height_upper < minimum_relief or up + vertical_radius + error <= 0.0 \
+				or height_upper + base_upper - up + vertical_radius + error <= 0.0:
 			continue
 		if depth > 0.0 and relief >= minimum_relief and up > 0.0:
 			best = middle

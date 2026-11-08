@@ -4173,6 +4173,9 @@ msgstr "ELICOTTERO RC · ADDESTRATORE SPERIMENTALE"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "Quota %.2f m  Velocità %.2f m/s  Rotore %.0f / %.0f rpm"
 
+msgid "Collective unavailable"
+msgstr "Passo collettivo non disponibile"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "Passo collettivo %.1f deg (stick %.0f%%) · %s · %s"
 

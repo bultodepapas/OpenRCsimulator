@@ -2,7 +2,7 @@
   "schema_version": 1,
   "native_abi_version": 1,
   "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
-  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v6",
   "godot": {
     "version": "4.8.beta2.official.cafc17a19",
     "extension_api": "4.7"

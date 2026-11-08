@@ -37,6 +37,7 @@ var _mesh := MeshInstance3D.new()
 var _label := Label3D.new()
 var _trail := PackedVector3Array()
 var _trail_ticks := PackedInt64Array()
+var _trail_session: WeakRef
 var last := {} # the numbers drawn this frame (gizmos returns them)
 
 
@@ -71,15 +72,19 @@ func configure(layers: Array) -> void:
 	if not shown.has("trail"):
 		_trail.clear()
 		_trail_ticks.clear()
+		_unbind_trail_session()
 
 
 ## One frame. `pose` is what the renderer drew ({pos, basis}); everything else is the committed tick.
 func update_from(session: Node, pose: Dictionary) -> void:
 	_lines.clear_surfaces()
 	_label.visible = false
+	if shown.has("trail"):
+		_bind_trail_session(session)
 	var sim: Node = session.sim
 	var s: PackedFloat64Array = sim.state
 	if s.size() < 13 or pose.is_empty():
+		last.clear()
 		return
 	var origin: Vector3 = pose.pos
 	var basis: Basis = pose.basis
@@ -91,44 +96,51 @@ func update_from(session: Node, pose: Dictionary) -> void:
 	var air: Dictionary = session.air_data(s) if session.has_method("air_data") else {}
 	var wind_ned: PackedFloat64Array = session.wind_at(sim.time(), s) if session.has_method("wind_at") else PackedFloat64Array()
 	var force := _body(basis, loads, 0)
-	var v_air := _body(basis, air.get("v_air", PackedFloat64Array([0.0, 0.0, 0.0])), 0)
+	var air_body: Variant = air.get("v_air")
+	var air_available: bool = air_body is PackedFloat64Array and air_body.size() >= 3
+	var v_air := _body(basis, air_body, 0) if air_available else Vector3.ZERO
+	air_available = air_available and v_air.is_finite() and _finite_number(air.get("V")) \
+		and _finite_number(air.get("alpha")) and _finite_number(air.get("beta"))
 	var velocity := _body(basis, s, 3)
-	var wind := Frames.ned_to_render([wind_ned[0], wind_ned[1], wind_ned[2]]) if wind_ned.size() >= 3 else Vector3.ZERO
-	if not wind.is_finite():
-		wind = Vector3.ZERO # NAN while the weather resets
-	var path_dir := v_air.normalized() if v_air.length() > 0.5 else basis * Vector3.FORWARD
+	var wind_available := wind_ned.size() >= 3
+	var wind := Frames.ned_to_render([wind_ned[0], wind_ned[1], wind_ned[2]]) if wind_available else Vector3.ZERO
+	wind_available = wind_available and wind.is_finite()
+	if not wind_available:
+		wind = Vector3.ZERO # Keep invalid weather out of rendering; it is not calm.
+	var wind_speed: Variant = wind.length() if wind_available else null
+	var path_dir := (v_air.normalized() if v_air.length() > 0.5 else basis * Vector3.FORWARD) if air_available else Vector3.ZERO
 	var along := path_dir * force.dot(path_dir)
 	var across := force - along
-	last = {tick = sim.tick, airspeed_mps = air.get("V", 0.0), alpha_deg = rad_to_deg(air.get("alpha", 0.0)),
-		beta_deg = rad_to_deg(air.get("beta", 0.0)), load_factor = -loads[2] / weight if weight > 0.0 else 0.0,
-		force_n = [force.x, force.y, force.z], along_path_n = force.dot(path_dir), across_path_n = across.length(),
-		wind_mps = wind.length(), height_m = -s[2], arrow_scale = _scale, frame = "render (x east, y up, z south)"}
+	var airspeed: Variant = air.V if air_available else null
+	var alpha: Variant = rad_to_deg(air.alpha) if air_available else null
+	var beta: Variant = rad_to_deg(air.beta) if air_available else null
+	var along_force: Variant = force.dot(path_dir) if air_available else null
+	var across_force: Variant = across.length() if air_available else null
+	last = {tick = sim.tick, airspeed_mps = airspeed, alpha_deg = alpha,
+		beta_deg = beta, load_factor = -loads[2] / weight if weight > 0.0 else 0.0,
+		force_n = [force.x, force.y, force.z], along_path_n = along_force, across_path_n = across_force,
+		wind_mps = wind_speed, height_m = -s[2], arrow_scale = _scale, frame = "render (x east, y up, z south)"}
 	_lines.surface_begin(Mesh.PRIMITIVE_LINES)
 	var drew := false
 	if shown.has("axes"):
-		_arrow(origin, basis * Vector3(0, 0, -axis_m), COLORS.x)
-		_arrow(origin, basis * Vector3(axis_m, 0, 0), COLORS.y)
-		_arrow(origin, basis * Vector3(0, -axis_m, 0), COLORS.z)
-		drew = true
+		drew = _arrow(origin, basis * Vector3(0, 0, -axis_m), COLORS.x) or drew
+		drew = _arrow(origin, basis * Vector3(axis_m, 0, 0), COLORS.y) or drew
+		drew = _arrow(origin, basis * Vector3(0, -axis_m, 0), COLORS.z) or drew
 	if shown.has("velocity"):
-		_arrow(origin, velocity * velocity_m_per_mps, COLORS.velocity)
-		drew = true
-	if shown.has("air"):
-		_arrow(origin, v_air * velocity_m_per_mps, COLORS.air)
-		drew = true
-	if shown.has("wind") and wind.length() > 1.0e-3:
-		_arrow(origin, wind * velocity_m_per_mps, COLORS.wind)
-		drew = true
+		drew = _arrow(origin, velocity * velocity_m_per_mps, COLORS.velocity) or drew
+	if shown.has("air") and air_available:
+		drew = _arrow(origin, v_air * velocity_m_per_mps, COLORS.air) or drew
+	if shown.has("wind") and wind_available and wind.length() > 1.0e-3:
+		drew = _arrow(origin, wind * velocity_m_per_mps, COLORS.wind) or drew
 	if shown.has("forces") and weight > 0.0:
 		var scale := force_m_per_g / weight
-		_arrow(origin, force * scale, COLORS.force)
-		_arrow(origin, along * scale, COLORS.along)
-		_arrow(origin, across * scale, COLORS.across)
-		_arrow(origin, Vector3(0, -weight, 0) * scale, COLORS.gravity)
-		drew = true
+		drew = _arrow(origin, force * scale, COLORS.force) or drew
+		if air_available:
+			drew = _arrow(origin, along * scale, COLORS.along) or drew
+			drew = _arrow(origin, across * scale, COLORS.across) or drew
+		drew = _arrow(origin, Vector3(0, -weight, 0) * scale, COLORS.gravity) or drew
 	if shown.has("moments") and weight > 0.0:
-		_arrow(origin, _body(basis, loads, 3) * (moment_gain / weight), COLORS.moment)
-		drew = true
+		drew = _arrow(origin, _body(basis, loads, 3) * (moment_gain / weight), COLORS.moment) or drew
 	if shown.has("trail"):
 		_record_trail(origin, int(sim.tick), 1.0 / sim.dt())
 		_thick = false # hundreds of segments: one copy each keeps the frame cost low
@@ -147,8 +159,13 @@ func update_from(session: Node, pose: Dictionary) -> void:
 		var camera := _camera
 		# fixed_size keeps a constant size at a 75° field of view; a zoomed camera would magnify it.
 		_label.pixel_size = 0.0009 * (tan(deg_to_rad(camera.fov) / 2.0) / tan(deg_to_rad(37.5)) if camera != null else 1.0)
-		_label.text = "V %.1f m/s  α %.1f°  β %.1f°\nn %.2f g  h %.1f m  tick %d" % [last.airspeed_mps, last.alpha_deg,
-			last.beta_deg, last.load_factor, last.height_m, last.tick]
+		var air_label := "V %.1f m/s  α %.1f°  β %.1f°" % [last.airspeed_mps, last.alpha_deg, last.beta_deg] \
+			if air_available else "Air data unavailable"
+		_label.text = "%s\nn %.2f g  h %.1f m  tick %d" % [air_label, last.load_factor, last.height_m, last.tick]
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (value is int or value is float) and is_finite(float(value))
 
 
 ## A body-axis (FRD) vector at `offset` of a packed array, in render world axes.
@@ -156,6 +173,35 @@ static func _body(basis: Basis, values: PackedFloat64Array, offset: int) -> Vect
 	if values.size() < offset + 3:
 		return Vector3.ZERO
 	return basis * Frames.ned_to_render([values[offset], values[offset + 1], values[offset + 2]])
+
+
+func _bind_trail_session(session: Node) -> void:
+	var previous: Object = _trail_session.get_ref() if _trail_session != null else null
+	if previous == session:
+		return
+	_unbind_trail_session()
+	_reset_trail()
+	_trail_session = weakref(session)
+	if session.has_signal("resetting") and not session.is_connected("resetting", _reset_trail):
+		session.connect("resetting", _reset_trail)
+
+
+func _unbind_trail_session() -> void:
+	if _trail_session != null:
+		var previous: Object = _trail_session.get_ref()
+		if previous != null and previous.has_signal("resetting") and previous.is_connected("resetting", _reset_trail):
+			previous.disconnect("resetting", _reset_trail)
+	_trail_session = null
+
+
+func _reset_trail() -> void:
+	_trail.clear()
+	_trail_ticks.clear()
+
+
+func _exit_tree() -> void:
+	_unbind_trail_session()
+	_reset_trail()
 
 
 func _record_trail(point: Vector3, tick: int, ticks_per_s: float) -> void:
@@ -183,11 +229,11 @@ func _view_scale(origin: Vector3) -> float:
 	return maxf(1.0, distance * tan(deg_to_rad(camera.fov) / 2.0) / (8.0 * tan(deg_to_rad(30.0))))
 
 
-func _arrow(from: Vector3, unscaled: Vector3, color: Color) -> void:
+func _arrow(from: Vector3, unscaled: Vector3, color: Color) -> bool:
 	var vector := unscaled * _scale
 	var length := vector.length()
 	if length < 1.0e-4:
-		return
+		return false
 	var tip := from + vector
 	_segment(from, tip, color)
 	var direction := vector / length
@@ -198,6 +244,7 @@ func _arrow(from: Vector3, unscaled: Vector3, color: Color) -> void:
 	var head := minf(0.15 * _scale, 0.25 * length)
 	for sign: float in [-1.0, 1.0]:
 		_segment(tip, tip - direction * head + side * head * 0.5 * sign, color)
+	return true
 
 
 func _segment(a: Vector3, b: Vector3, color: Color) -> void:

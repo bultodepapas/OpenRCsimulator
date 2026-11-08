@@ -39,7 +39,7 @@ const STEER_RATE := 30
 const STATE_SIZE := 31
 const CORNER_COUNT := 4
 const GENERALIZED_SIZE := 14
-const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v5"
+const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v6"
 const SUBSTEPS_PER_TICK := 1
 const WALL_MAX_INTEGRATION_STEP_S := 1.0 / 120.0
 const FRICTION_SWEEPS := 128
@@ -1816,6 +1816,11 @@ static func _solve_tangent_friction(
 				var delta_brake := (target_brake - current_brake) / brake_mobility
 				var brake_limit := maxf(0.0, float(contact["mu_load"]))
 				var trial_brake := clampf(forces[i0] + delta_brake, -brake_limit, brake_limit)
+				# A brake can hold either reaction at rest, but cannot power a spinning wheel.
+				if brake_slip[0] > 0.0:
+					trial_brake = minf(trial_brake, 0.0)
+				elif brake_slip[0] < 0.0:
+					trial_brake = maxf(trial_brake, 0.0)
 				delta_brake = trial_brake - forces[i0]
 				max_brake_torque_delta = maxf(max_brake_torque_delta, absf(delta_brake))
 				forces[i0] = trial_brake
@@ -1845,7 +1850,8 @@ static func _solve_tangent_friction(
 			var trial_long := forces[i0] + delta_long
 			var trial_lateral := forces[i1] + delta_lateral
 			var force_limit := maxf(0.0, float(contact["mu_load"]))
-			var projected := _project_friction_circle(w00, w01, w10, w11, trial_long, trial_lateral, force_limit)
+			var projected := _project_passive_tire(w00, w01, w10, w11, trial_long, trial_lateral,
+				force_limit, slip[0], slip[1])
 			trial_long = projected[0]
 			trial_lateral = projected[1]
 			delta_long = trial_long - forces[i0]
@@ -1865,6 +1871,33 @@ static func _solve_tangent_friction(
 				and max_brake_torque_delta <= BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M:
 			break
 	return {"ok": true, "acceleration": acceleration, "sweeps_used": sweeps_used}
+
+
+## Project onto the intersection of the friction circle and F dot slip <= 0.
+## If the circle solution supplies energy, its nearest feasible point in the
+## mobility metric lies on the diameter perpendicular to slip. Use the original
+## free force for that metric projection; independent axis clamps are too strict.
+static func _project_passive_tire(
+	w00: float, w01: float, w10: float, w11: float,
+	free_x: float, free_y: float, limit: float, slip_x: float, slip_y: float,
+) -> PackedFloat64Array:
+	var circle := _project_friction_circle(w00, w01, w10, w11, free_x, free_y, limit)
+	# Scale first so nonzero tiny slip remains distinguishable from exact rest.
+	var scale := maxf(absf(slip_x), absf(slip_y))
+	if scale == 0.0:
+		return circle
+	var sx := slip_x / scale
+	var sy := slip_y / scale
+	if circle[0] * sx + circle[1] * sy <= 0.0:
+		return circle
+	var length := sqrt(sx * sx + sy * sy)
+	var ex := -sy / length
+	var ey := sx / length
+	var b0 := w00 * free_x + w01 * free_y
+	var b1 := w10 * free_x + w11 * free_y
+	var denominator := ex * (w00 * ex + w01 * ey) + ey * (w10 * ex + w11 * ey)
+	var magnitude := clampf((ex * b0 + ey * b1) / denominator, -limit, limit)
+	return PackedFloat64Array([magnitude * ex, magnitude * ey])
 
 
 ## Minimize .5*f'W*f - (W*free_force)'f subject to |f| <= limit.

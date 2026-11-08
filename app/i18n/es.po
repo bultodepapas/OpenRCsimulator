@@ -3611,6 +3611,9 @@ msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "Altura %.2f m  Velocidad %.2f m/s  Rotor %.0f / %.0f rpm"
 
 #. HELI-20 ground lifecycle
+msgid "Collective unavailable"
+msgstr "Paso colectivo no disponible"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "Colectivo %.1f grados (mando %.0f%%) · %s · %s"
 

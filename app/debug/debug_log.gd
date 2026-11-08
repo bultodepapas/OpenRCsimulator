@@ -72,6 +72,9 @@ func _append(record: Dictionary) -> void:
 func since(after: int, limit: int, levels: PackedStringArray = PackedStringArray()) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	_mutex.lock()
+	if limit <= 0 or after >= _next_seq - 1:
+		_mutex.unlock()
+		return out
 	var seq := maxi(after + 1, _next_seq - _count)
 	while seq < _next_seq and out.size() < limit:
 		var record: Dictionary = _ring[(seq - 1) % CAPACITY]

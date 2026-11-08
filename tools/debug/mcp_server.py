@@ -15,6 +15,7 @@ import base64
 import contextlib
 import io
 import json
+import math
 import os
 import sys
 import time
@@ -88,10 +89,38 @@ TOOLS = [
      "frames, render, ablate, rewind, gizmos, break, sample, eval, ...).",
      "inputSchema": _schema({"command": {"type": "string"}, "args": {"type": "object"}}, ["command"])},
 ]
+TOOL_BY_NAME = {tool["name"]: tool for tool in TOOLS}
 
 
 class ToolError(Exception):
     pass
+
+
+def _check_arguments(tool: dict, args: dict) -> None:
+    """Enforce the flat type/required/enum contracts declared by this server."""
+    schema = tool["inputSchema"]
+    properties = schema["properties"]
+    missing = set(schema.get("required", ())) - args.keys()
+    if missing:
+        raise ToolError("missing required arguments: " + ", ".join(sorted(missing)))
+    unexpected = args.keys() - properties.keys()
+    if unexpected:
+        raise ToolError("unknown arguments: " + ", ".join(sorted(unexpected)))
+    for key, value in args.items():
+        declaration = properties[key]
+        expected = declaration["type"]
+        choices = expected if isinstance(expected, list) else [expected]
+        matches = {
+            "string": isinstance(value, str),
+            "boolean": type(value) is bool,
+            "object": isinstance(value, dict),
+            "number": type(value) is int or (type(value) is float and math.isfinite(value)),
+            "integer": type(value) is int or (type(value) is float and math.isfinite(value) and value.is_integer()),
+        }
+        if not any(matches[choice] for choice in choices):
+            raise ToolError(f"{key} must be " + " or ".join(choices))
+        if "enum" in declaration and value not in declaration["enum"]:
+            raise ToolError(f"{key} must be one of: " + ", ".join(map(str, declaration["enum"])))
 
 
 def _bridge(command: str, args: dict | None = None, timeout: float = 600.0):
@@ -146,6 +175,8 @@ def call_tool(name: str, args: dict) -> list[dict]:
         return _then_look(printed.strip().splitlines()[-1] if printed.strip() else "launched")
     if name == "sim_stop":
         status, printed = _captured(debugctl.stop, [])
+        if status != 0:
+            raise ToolError(f"stop failed (exit {status}): " + printed.strip()[-2000:])
         return [_text(printed.strip() or f"stop exited {status}")]
     if name == "sim_look":
         return [_text(debugctl.format_look(_bridge("look", {"all": bool(args.get("all"))})))]
@@ -202,13 +233,27 @@ def call_tool(name: str, args: dict) -> list[dict]:
     raise KeyError(name)
 
 
-def handle(message: dict) -> dict | None:
+def _rpc_error(message_id: str | int | None, code: int, detail: str) -> dict:
+    return {"jsonrpc": "2.0", "id": message_id, "error": {"code": code, "message": detail}}
+
+
+def handle(message: object) -> dict | None:
     """One JSON-RPC message in, the reply out (None for notifications)."""
+    if not isinstance(message, dict):
+        return _rpc_error(None, -32600, "request must be an object")
+    message_id = message.get("id")
+    valid_id = type(message_id) in (str, int)  # MCP excludes null, bool and fractional IDs.
+    if message.get("jsonrpc") != "2.0" or not isinstance(message.get("method"), str):
+        return _rpc_error(message_id if valid_id else None, -32600, "invalid JSON-RPC request")
+    if "id" in message and not valid_id:
+        return _rpc_error(None, -32600, "request id must be a string or integer")
     method = message.get("method")
     if "id" not in message:
         return None  # notifications/initialized, cancellations: nothing to answer
     reply = {"jsonrpc": "2.0", "id": message["id"]}
-    params = message.get("params") or {}
+    params = message.get("params", {})
+    if not isinstance(params, dict):
+        return _rpc_error(message_id, -32602, "params must be an object")
     if method == "initialize":
         asked = params.get("protocolVersion")
         reply["result"] = {"protocolVersion": asked if asked in PROTOCOLS else PROTOCOLS[0],
@@ -220,11 +265,17 @@ def handle(message: dict) -> dict | None:
         reply["result"] = {"tools": TOOLS}
     elif method == "tools/call":
         name = params.get("name", "")
-        if name not in {tool["name"] for tool in TOOLS}:
+        if not isinstance(name, str):
+            return _rpc_error(message_id, -32602, "tool name must be a string")
+        if name not in TOOL_BY_NAME:
             reply["error"] = {"code": -32602, "message": f"unknown tool {name}"}
             return reply
+        arguments = params.get("arguments", {})
+        if not isinstance(arguments, dict):
+            return _rpc_error(message_id, -32602, "tool arguments must be an object")
         try:
-            reply["result"] = {"content": call_tool(name, params.get("arguments") or {}), "isError": False}
+            _check_arguments(TOOL_BY_NAME[name], arguments)
+            reply["result"] = {"content": call_tool(name, arguments), "isError": False}
         except ToolError as error:
             reply["result"] = {"content": [_text(str(error))], "isError": True}
         except Exception as error:  # a tool bug must not end the server
@@ -241,14 +292,16 @@ def serve(stdin=sys.stdin, stdout=sys.stdout) -> None:
             continue
         try:
             message = json.loads(line)
-        except json.JSONDecodeError:
+        except (ValueError, RecursionError):
             stdout.write(json.dumps({"jsonrpc": "2.0", "id": None,
                                      "error": {"code": -32700, "message": "parse error"}}) + "\n")
             stdout.flush()
             continue
-        reply = handle(message) if isinstance(message, dict) else None
+        reply = handle(message)
         if reply is not None:
-            stdout.write(json.dumps(reply, ensure_ascii=False) + "\n")
+            # JSON escaping also keeps an accepted escaped surrogate from
+            # raising UnicodeEncodeError on the strict UTF-8 stdio stream.
+            stdout.write(json.dumps(reply, ensure_ascii=True) + "\n")
             stdout.flush()
 
 

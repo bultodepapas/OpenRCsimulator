@@ -4068,6 +4068,9 @@ msgstr "ВЕРТОЛЁТ RC · ЭКСПЕРИМЕНТАЛЬНЫЙ ТРЕНЕР"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "Высота %.2f м  Скорость %.2f м/с  Ротор %.0f / %.0f об/мин"
 
+msgid "Collective unavailable"
+msgstr "Общий шаг недоступен"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "Общий шаг %.1f deg (стик %.0f%%) · %s · %s"
 

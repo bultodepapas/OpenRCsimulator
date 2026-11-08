@@ -4220,6 +4220,9 @@ msgstr "RC-HELIKOPTER · EXPERIMENTELLER FORSCHUNGSTRAINER"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "Höhe %.2f m  Geschwindigkeit %.2f m/s  Rotordrehzahl %.0f / %.0f rpm"
 
+msgid "Collective unavailable"
+msgstr "Kollektivpitch nicht verfügbar"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "Kollektivpitch %.1f deg (Knüppel %.0f%%) · %s · %s"
 

@@ -576,6 +576,24 @@ inline std::array<double, 2> project_friction_circle(double w00, double w01, dou
 	return {(a11 * b0 - w01 * b1) / determinant, (a00 * b1 - w10 * b0) / determinant};
 }
 
+// Mobility-metric projection onto the circle intersected with F dot slip <= 0.
+// An active passivity boundary is the diameter perpendicular to slip.
+inline std::array<double, 2> project_passive_tire(double w00, double w01, double w10, double w11,
+		double free_x, double free_y, double limit, double slip_x, double slip_y) {
+	const auto circle = project_friction_circle(w00, w01, w10, w11, free_x, free_y, limit);
+	const double scale = maxf(std::abs(slip_x), std::abs(slip_y));
+	if (scale == 0.0) return circle;
+	const double sx = slip_x / scale, sy = slip_y / scale;
+	if (circle[0] * sx + circle[1] * sy <= 0.0) return circle;
+	const double length = std::sqrt(sx * sx + sy * sy);
+	const double ex = -sy / length, ey = sx / length;
+	const double b0 = w00 * free_x + w01 * free_y;
+	const double b1 = w10 * free_x + w11 * free_y;
+	const double denominator = ex * (w00 * ex + w01 * ey) + ey * (w10 * ex + w11 * ey);
+	const double magnitude = clampf((ex * b0 + ey * b1) / denominator, -limit, limit);
+	return {magnitude * ex, magnitude * ey};
+}
+
 inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 		const std::array<Contact, kMaximumContacts> &contacts, std::size_t contact_count,
 		bool adaptive, EvalResult &result, std::string &error) {
@@ -636,7 +654,9 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 				const double target_brake = -contact.slip[0] / brake_tau;
 				double delta_brake = (target_brake - current_brake) / brake_mobility;
 				const double brake_limit = maxf(0.0, contact.mu_load);
-				const double trial_brake = clampf(forces[i0] + delta_brake, -brake_limit, brake_limit);
+				double trial_brake = clampf(forces[i0] + delta_brake, -brake_limit, brake_limit);
+				if (contact.slip[0] > 0.0) trial_brake = minf(trial_brake, 0.0);
+				else if (contact.slip[0] < 0.0) trial_brake = maxf(trial_brake, 0.0);
 				delta_brake = trial_brake - forces[i0];
 				max_brake_torque_delta = maxf(max_brake_torque_delta, std::abs(delta_brake));
 				forces[i0] = trial_brake;
@@ -660,7 +680,8 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 			double trial_long = forces[i0] + delta_long;
 			double trial_lateral = forces[i1] + delta_lateral;
 			const double force_limit = maxf(0.0, contact.mu_load);
-			const auto projected = project_friction_circle(w00, w01, w10, w11, trial_long, trial_lateral, force_limit);
+			const auto projected = project_passive_tire(w00, w01, w10, w11, trial_long, trial_lateral,
+				force_limit, contact.slip[0], contact.slip[1]);
 			trial_long = projected[0];
 			trial_lateral = projected[1];
 			delta_long = trial_long - forces[i0];

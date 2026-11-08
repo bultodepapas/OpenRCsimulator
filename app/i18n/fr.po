@@ -4231,6 +4231,9 @@ msgstr "HÉLICOPTÈRE RC · ENTRAÎNEUR DE RECHERCHE EXPÉRIMENTAL"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "Altitude %.2f m  Vitesse %.2f m/s  Rotor %.0f / %.0f rpm"
 
+msgid "Collective unavailable"
+msgstr "Pas collectif indisponible"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "Pas collectif %.1f deg (manche %.0f%%) · %s · %s"
 

@@ -4186,6 +4186,9 @@ msgstr "HELICÓPTERO RC · TREINADOR EXPERIMENTAL DE PESQUISA"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "Altitude %.2f m  Velocidade %.2f m/s  Rotor %.0f / %.0f rpm"
 
+msgid "Collective unavailable"
+msgstr "Passo coletivo indisponível"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "Passo coletivo %.1f deg (alavanca %.0f%%) · %s · %s"
 

@@ -96,6 +96,12 @@ python research/helicopter/audit/measure.py --godot .tools/Godot_v4.7.2-stable_w
 
 The new articulated Blender revision still passes its unchanged neutral compiler/admission checks: 108 bindings, nine rods and preserved GLB/profile hashes. [HELI-25c](../HELI-25c/README.md) remains authoritative for material-bake defects and package admission. Physical servo lag/rate states, signed moving frames/operating travel, exact rotor phase replay and the separate electric HX-700 configuration are required before articulated flight activation. The audit does not replace those gates with decorative motion.
 
+## Body-rate trim refusal (HELI-18-H07, 2026-11-08)
+
+The hover solver's returned trim contains trainer attitude-reference keys, which the HX-700 laboratory body-rate electronics intentionally refuses. The solver now rejects that unsupported controller explicitly, before solving and without returning a trim or state. Ordinary malformed-input refusal is retained. This is an API boundary; the laboratory HX-700 remains unavailable as a playable flight model and its existing release gates remain open.
+
+The new contract test's pre-change run failed its single assertion requiring body-rate refusal; that log does not retain the full solver result. After the change, all 70 checks pass. The trainer's normal and idle-up results each round-trip with neutral cyclic plus the returned trim in both direct and trainer modes: aerodynamic wrench, control angles, shaft/flap/inflow derivatives and a following 240 Hz integration step are checked. Existing hover-trim, FBL profile, ground-session and generated-session suites pass 62, 37, 56 and 42 checks. The [checked evidence index](../HELI-20/audit-20261108-checks.json) preserves the baseline failure, full receipts, selected source hashes and limits. Actual-native backend parity, required full CI and physical validation remain separate gates.
+
 ## Remaining acceptance
 
 The [2026-10-14 ground-start and aerobatic 3D audit](ground-3d-audit-2026-10-14.md) records the pre-implementation verification, low-RPM/event and controller reproductions, field-placement analysis and per-tick cost evidence. The subsequent [HELI-20 implementation](../HELI-20/README.md) enables the ground trainer, contact memory, lifecycle and authoritative phase replay; it adds a separate laboratory-only FBL profile. [Plan §14.8](../../../plans/helicopter.md#148-implementation-status--2026-10-14) owns delivered scope and remaining implementation gates. The dated audit's earlier failures are not current operating instructions.

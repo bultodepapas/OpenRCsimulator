@@ -3854,6 +3854,9 @@ msgstr "RCヘリコプター · 実験用トレーナー"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "高度 %.2f m  速度 %.2f m/s  ローター %.0f / %.0f rpm"
 
+msgid "Collective unavailable"
+msgstr "コレクティブピッチ表示不可"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "コレクティブピッチ %.1f deg（スティック %.0f%%）· %s · %s"
 

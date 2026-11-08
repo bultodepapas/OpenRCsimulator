@@ -30,7 +30,7 @@ func _initialize() -> void:
 	var identity: Dictionary = _native.backend_identity()
 	if identity.get("backend") != "native" or int(identity.get("abi_version", 0)) != 1 \
 			or identity.get("backend_version") != "openrc-ground-vehicle-native-evaluate-v3" \
-			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v5" \
+			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v6" \
 			or str(identity.get("source_sha256", "")).length() != 64 \
 			or str(identity.get("toolchain_sha256", "")).length() != 64 \
 			or str(identity.get("binary_sha256", "")).length() != 64:
@@ -151,6 +151,24 @@ func _scenarios(resting: PackedFloat64Array) -> Array[Dictionary]:
 	slope[11] = -0.18
 	cases.append({"name": "bump_nonflat_velocity", "state": slope,
 		"controls": {"throttle": 0.35, "steering": 0.52, "brake": 0.12, "reverse": false}})
+	# F6: admitted states that previously allowed contact or brake to supply work.
+	var f6_drive := resting.duplicate()
+	f6_drive[3] = 5.0
+	for corner in 4:
+		f6_drive[21 + corner] = 30.0
+	cases.append({"name": "f6_powered_longitudinal_slip", "state": f6_drive,
+		"controls": {"throttle": 1.0, "steering": 0.0, "brake": 0.0, "reverse": false}})
+	var f6_combined := f6_drive.duplicate()
+	f6_combined[4] = 1.3
+	f6_combined[12] = 0.35
+	f6_combined[29] = 0.1
+	cases.append({"name": "f6_combined_slip", "state": f6_combined,
+		"controls": {"throttle": 1.0, "steering": 0.2, "brake": 0.35, "reverse": false}})
+	var f6_reverse := f6_combined.duplicate()
+	for corner in 4:
+		f6_reverse[21 + corner] = -30.0
+	cases.append({"name": "f6_brake_reverse_spin", "state": f6_reverse,
+		"controls": {"throttle": 1.0, "steering": -0.2, "brake": 0.6, "reverse": false}})
 	return cases
 
 

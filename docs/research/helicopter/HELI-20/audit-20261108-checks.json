@@ -1,0 +1,1016 @@
+{
+  "format": "openrc-helicopter-audit-check-index-v1",
+  "date": "2026-11-08",
+  "scope": "H02 diagnostic characterization, H06 endpoint HUD, H07 unsupported FBL hover-trim refusal; software evidence only",
+  "identity": {
+    "baseline_commit": "939ab5df4de4fc615b1051d2b1e4cba51a423b27",
+    "candidate_commit_containing_selected_paths": "41ce5af6f4a148b4ea101b08883fd4e03878bb07",
+    "candidate_identity_limit": "Checks ran against working files while parallel tracks shared the checkout; not a frozen whole-tree receipt. Selected candidate bytes were hashed after checks and match this commit after CRLF normalization. The H07 negative control ran before the trim edit, with the baseline trim blob identified separately.",
+    "baseline_trim_git_blob_content_sha256": "ccd75406d018f8136e0a6f4bacc57b4d9a77559a97b5db555d9159563fe028d3",
+    "source_manifest_scope": "Selected task sources, fixtures and relevant direct consumers; this is not a hash of every dependency or the complete tree.",
+    "source_sha256": {
+      "app/physics/rotorcraft/main_rotor.gd": {
+        "windows_worktree_sha256": "e864cada369d6586e1af90154123e17f0223f844e2b8b2bf5b435b94ad82cca9",
+        "git_blob_content_sha256": "273f33105a9494cd4c78f0f16dfad548051f1ba65902d89ab763b87932af9df9"
+      },
+      "app/physics/rotorcraft/trim.gd": {
+        "windows_worktree_sha256": "7aa9ef1e507df8c94b743fbf0f642d923d4b7c5457a5afd32be5ab8971634c8e",
+        "git_blob_content_sha256": "f97dd407d05bc37966e2fb25a088eae3d2a7d8418b049710ded2cdf5dc7ea9b9"
+      },
+      "app/helicopter_main.gd": {
+        "windows_worktree_sha256": "5d16645872e9aad5682567d9da208d70ad192766c1ef8dfc2d57e00e97dd9ead",
+        "git_blob_content_sha256": "53eb77094b3b45364eef3e237cadf6e5e4a0fb346240820f628183497d61227e"
+      },
+      "app/tests/test_heli_rotor_domain.gd": {
+        "windows_worktree_sha256": "f972fc26398f8258b9f11d0162a32ac74bf64e307f7c3227f5cbe325c1e51e08",
+        "git_blob_content_sha256": "f972fc26398f8258b9f11d0162a32ac74bf64e307f7c3227f5cbe325c1e51e08"
+      },
+      "app/tests/test_heli_trim_contract.gd": {
+        "windows_worktree_sha256": "20513fd994966abab013fa47096f08a36ca1f5b22a8222d74d2a3b189f5f02f3",
+        "git_blob_content_sha256": "20513fd994966abab013fa47096f08a36ca1f5b22a8222d74d2a3b189f5f02f3"
+      },
+      "app/tests/test_heli_collective_hud.gd": {
+        "windows_worktree_sha256": "6448d54ae5bedab70c79f91e7e4522f71c0326253397a2ec1313876b524e60a0",
+        "git_blob_content_sha256": "6448d54ae5bedab70c79f91e7e4522f71c0326253397a2ec1313876b524e60a0"
+      },
+      "app/data/aircraft/xcell_60_research.json": {
+        "windows_worktree_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+        "git_blob_content_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f"
+      },
+      "app/data/aircraft/hx700_electric_3d_experimental.json": {
+        "windows_worktree_sha256": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+        "git_blob_content_sha256": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e"
+      },
+      "app/sim/helicopter_flight_session.gd": {
+        "windows_worktree_sha256": "683f44f0b1ea09f62e5255168b031372fc79d2d819fc3f4180709d28c9ea6cd9",
+        "git_blob_content_sha256": "bb5c78b69607489b3b4ccac247d1c3037eafcf3f7b700f76e30eeac12424d349"
+      },
+      "app/sim/simulation.gd": {
+        "windows_worktree_sha256": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+        "git_blob_content_sha256": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92"
+      },
+      "app/physics/rotorcraft/flight_dynamics.gd": {
+        "windows_worktree_sha256": "6c8c5d5b5a91d401df1a1023a0c3826374a7e4430c3d00ef7737f4b4daf2af23",
+        "git_blob_content_sha256": "23ac5de0861022db862d834a6abced6e424245561509c92444ca1157eeb03303"
+      },
+      "app/physics/rotorcraft/electronics.gd": {
+        "windows_worktree_sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+        "git_blob_content_sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f"
+      },
+      "app/physics/rotorcraft/swash.gd": {
+        "windows_worktree_sha256": "8eb592c3908d30bd7ba2f700660b5487756c546c717e7d69cace47c1a6fc0246",
+        "git_blob_content_sha256": "f2d60b93cb08f7a85c9a77cf393212dc09c85eda60732faaef677243606cb923"
+      },
+      "app/physics/rotorcraft/tail_rotor.gd": {
+        "windows_worktree_sha256": "b8e08d7461914b3ce337a485bb44e6d830ae05309f32004b88b7ecc1c41d6c81",
+        "git_blob_content_sha256": "121569733794dd56fc8bafc65add22bb57a7f81ca5db804e1e3c19618f23db2d"
+      },
+      "app/physics/rotorcraft/aerodynamic_stage.gd": {
+        "windows_worktree_sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+        "git_blob_content_sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd"
+      },
+      "app/physics/rotorcraft/main_rotor_stage.gd": {
+        "windows_worktree_sha256": "d6bcc6661dc4a2f777d908bc7e44777b0b0b2be6819f0dd3fd0b6c3d52216dbc",
+        "git_blob_content_sha256": "e41258cfd75488672b91a719c7b89e209c5a2ac5e0397f407b45b88ba40490bf"
+      },
+      "app/physics/rotorcraft_data.gd": {
+        "windows_worktree_sha256": "372c5c58e7b87a07b9d4c1d6addb13cff873cf657871c5f63e04f7ae38365cf2",
+        "git_blob_content_sha256": "f2e43bfce0728c5ab622d19ed7a3b499390b91a114bd659da8615577878d49ba"
+      },
+      "app/data/field_loader.gd": {
+        "windows_worktree_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "git_blob_content_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+      },
+      "app/app_root.gd": {
+        "windows_worktree_sha256": "db427788fced805a05e9dd745a236d011b6a8169615a48bc5c5a1eb016728812",
+        "git_blob_content_sha256": "00aa4ac853a5cb79df2d7793a97b6761cc2cd8edba4eb3d1e9af14e6b62d5cb3"
+      },
+      "app/tests/test_heli_main_rotor.gd": {
+        "windows_worktree_sha256": "289a22b27273514bf542553a1e78b8f091958b0f911a58cab70afc357685a8af",
+        "git_blob_content_sha256": "289a22b27273514bf542553a1e78b8f091958b0f911a58cab70afc357685a8af"
+      },
+      "app/tests/test_heli_startup_kernel.gd": {
+        "windows_worktree_sha256": "88c73c41036a08cd169e1083d299d90a9fe9f736a966065d744890c3401a59ec",
+        "git_blob_content_sha256": "9b4b5ea49f0c3e6c3076b6fa273683d36123d16b7d9ec799738e24df9bcd18b6"
+      },
+      "app/tests/test_heli_trim.gd": {
+        "windows_worktree_sha256": "0afc7a8dd4ee1272cf2f8f707487f347bc102531c563f588fd09a180ec3bd78e",
+        "git_blob_content_sha256": "0afc7a8dd4ee1272cf2f8f707487f347bc102531c563f588fd09a180ec3bd78e"
+      },
+      "app/tests/test_heli_3d_controller.gd": {
+        "windows_worktree_sha256": "cd96294525982e013c3fe353943fdca7e36e22c88080ac93e174a27b51556782",
+        "git_blob_content_sha256": "cd96294525982e013c3fe353943fdca7e36e22c88080ac93e174a27b51556782"
+      },
+      "app/tests/test_heli_ground_session.gd": {
+        "windows_worktree_sha256": "87d9fcd6f96294b3d33038d6ff56b5950a5e7db2f658ce03211ace6aef0272b0",
+        "git_blob_content_sha256": "b91ad7dc541c653f821d3f9066bf7343b6523089e2363130ad20d98b32007d1c"
+      },
+      "app/tests/test_heli_session.gd": {
+        "windows_worktree_sha256": "5600172bb2bf1d282bc8cdb718773057d400ca47056539c402efc5b33ca3b347",
+        "git_blob_content_sha256": "5600172bb2bf1d282bc8cdb718773057d400ca47056539c402efc5b33ca3b347"
+      },
+      "app/tests/test_heli_render_audit.gd": {
+        "windows_worktree_sha256": "af87c91187f673a34004a2851b7c4bbf8a62fd1537d8f4dd924a5f32402dbaa2",
+        "git_blob_content_sha256": "af87c91187f673a34004a2851b7c4bbf8a62fd1537d8f4dd924a5f32402dbaa2"
+      },
+      "app/tests/test_heli_mode_confirmation.gd": {
+        "windows_worktree_sha256": "4d4c0201cbdbc1948741273cabeeeb2dd0347fb8bd36d9c868d3d98c386f0023",
+        "git_blob_content_sha256": "9b51f6e407bc8beddad9b03a08c43aa799165d5a77638a8c5e3eb75ed97b56a1"
+      },
+      "app/tests/test_heli_control_actions.gd": {
+        "windows_worktree_sha256": "d99056daca839d1be1688dd0128596cc8c70785672d7987e3cad768f14879bfa",
+        "git_blob_content_sha256": "cd1aafc472945c5ec344b37975e0a9406ba33e80418b0dabbe579a2107d15828"
+      },
+      "tools/godot/run_checked.py": {
+        "windows_worktree_sha256": "da13ccb71f90ed82f63243eae021a0284d0128885127d829e89f8759c41ce01a",
+        "git_blob_content_sha256": "1c8b87768676455185f4582c19a3c416779dc7f6aad9efb262f331655c4d2283"
+      }
+    },
+    "godot_executable_local_ignored": ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "godot_executable_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "engine": "Godot 4.8.beta2.official.cafc17a19 Windows console"
+  },
+  "resource_import": {
+    "receipt_path_local_ignored": "tmp/audit-20261108-import/audit-import-l5ydh0s4/report.json",
+    "receipt_sha256": "55d7740ce80e850d3c89b53fbd538819ced84df371acd2af8b7cd21709fc5ac9",
+    "receipt": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b5f95561-15fa-464b-94b4-508f71ab498f",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-08T19:16:31.068428+00:00",
+      "label": "audit-import",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-import\\audit-import-l5ydh0s4\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-import\\audit-import-l5ydh0s4\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 7.047,
+      "log_bytes": 1773,
+      "log_sha256": "25e01596747dfcdabcd998df82694b826c8f21c7ceb9ceeeff4d6bbbcfa5252a"
+    }
+  },
+  "checked_runs": [
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/collective-hud-parse-wjk1agsa/report.json",
+      "receipt_sha256": "24e6ac34d7e20d5c49313d5194f805c95c7191fe7d00c7254e5489cd94a43b2b",
+      "observed_last_nonempty_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f9379f54-b482-418b-893c-c8d3fd497142",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--check-only",
+          "--script",
+          "../tmp/audit-20261108-rotor-domain/test_heli_collective_hud.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:25:27.030864+00:00",
+        "label": "collective-hud-parse",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\collective-hud-parse-wjk1agsa\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\collective-hud-parse-wjk1agsa\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.329,
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/collective-hud-ub8ox2m1/report.json",
+      "receipt_sha256": "e37c93a0760e85fb1c8c98e7631a5bed5511cd2dac055ac8b95c67981fff8828",
+      "observed_last_nonempty_line": "HELI H06 collective HUD: 74 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "98a9a1c8-b12c-4577-9afe-b3a94348802e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_collective_hud.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:25:43.271125+00:00",
+        "label": "collective-hud",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\collective-hud-ub8ox2m1\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\collective-hud-ub8ox2m1\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H06 collective HUD:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.734,
+        "log_bytes": 118,
+        "log_sha256": "177d5004bb8a02b2c7af1fadf2398f84976cab7d142f9d9dcbe63390c808a68e"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-control-actions-5nt09z14/report.json",
+      "receipt_sha256": "9bd64bf680159545a85d16d4fbaaf9b96099dca8f160a351e583af0bbbc302a2",
+      "observed_last_nonempty_line": "HELI-20 controller actions: 40 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7686d8dc-d464-4fc9-8211-69f38637e9f6",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_control_actions.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:26:01.639062+00:00",
+        "label": "heli-control-actions",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-control-actions-5nt09z14\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-control-actions-5nt09z14\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.437,
+        "log_bytes": 121,
+        "log_sha256": "6f0f1a200256a3e991b23880d5761968b620bee57194be820595ced4e89903df"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-fbl-controller-aqhqs_t_/report.json",
+      "receipt_sha256": "877fce4aeb3049c441fd56ee93c81d8551d45c59cce342207c88b0140df0743b",
+      "observed_last_nonempty_line": "HELI-15b/36a FBL profile: 37 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "263d03bd-add4-412a-8817-d61016951261",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_3d_controller.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:22:38.037729+00:00",
+        "label": "heli-fbl-controller",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-fbl-controller-aqhqs_t_\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-fbl-controller-aqhqs_t_\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.25,
+        "log_bytes": 119,
+        "log_sha256": "65ebbe060ed460a92e5be5a8e40763931b6edfa14a9f39e0227af908312c9fb3"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-ground-session-tjyts5v4/report.json",
+      "receipt_sha256": "32e691e3928c29c4dfd91dda4040b2155022cce840856843d3aa2eb5f66a4559",
+      "observed_last_nonempty_line": "HELI-20 ground session: 56 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c712289d-51c0-4665-90ef-c9ffb07e97fb",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_ground_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:22:38.043332+00:00",
+        "label": "heli-ground-session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-ground-session-tjyts5v4\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-ground-session-tjyts5v4\\report.json",
+        "timeout_seconds": 150.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 69.438,
+        "log_bytes": 445,
+        "log_sha256": "aff6041b643beee5e2da3c58dcff62bac7c1678aa0c111c68cbfc868a4dc85ed"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-mode-confirmation-correct-marker-dnn194y1/report.json",
+      "receipt_sha256": "43239d2a347399f618ea9aca8420862205cdd4310997ec9e044cd5867b11f357",
+      "observed_last_nonempty_line": "HELI H04 mode confirmation: 81 checks, 0 failures",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "53b5dfe1-027e-4a88-9421-dd9687f5306b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_mode_confirmation.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:26:29.900809+00:00",
+        "label": "heli-mode-confirmation-correct-marker",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-mode-confirmation-correct-marker-dnn194y1\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-mode-confirmation-correct-marker-dnn194y1\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H04 mode confirmation: 81 checks, 0 failures"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.625,
+        "log_bytes": 123,
+        "log_sha256": "fa3f2e9a47a651b79e52c953534e2f97f73d6cb361f4336ef52f232b3f51ac37"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-mode-confirmation-ldmf4w4_/report.json",
+      "receipt_sha256": "5fa61c3d8a2b5d8853422ccde41a6f23c1b9a0d7ed7a18b01f68c968dc1bc12e",
+      "observed_last_nonempty_line": "HELI H04 mode confirmation: 81 checks, 0 failures",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5e54b988-fad5-4840-942f-82624dac32bf",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_mode_confirmation.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:26:01.642584+00:00",
+        "label": "heli-mode-confirmation",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-mode-confirmation-ldmf4w4_\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-mode-confirmation-ldmf4w4_\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [
+          "0 failed"
+        ],
+        "reason": "missing_required_text",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 7.828,
+        "log_bytes": 123,
+        "log_sha256": "fa3f2e9a47a651b79e52c953534e2f97f73d6cb361f4336ef52f232b3f51ac37"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-render-audit-3r0fypdc/report.json",
+      "receipt_sha256": "8fb6c44ffe07139f19a63b4803b7f1cde4d86f4dfcee9890efbad56ca5f0d729",
+      "observed_last_nonempty_line": "32 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a53fe52b-c748-46a9-a696-e870535e5f1b",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_render_audit.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:26:01.641583+00:00",
+        "label": "heli-render-audit",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-render-audit-3r0fypdc\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-render-audit-3r0fypdc\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.937,
+        "log_bytes": 2225,
+        "log_sha256": "d705105755b7380a9228a5916f2382147115ca41ba8151836659dbc911db016d"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-session-a5h08x1p/report.json",
+      "receipt_sha256": "6fd7801fd2b49d73316cdb386f021075eae207af417d7761150e6f60eb53c5e0",
+      "observed_last_nonempty_line": "HELI-16 generated preset/session: 42 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "842a805d-31a0-4b93-8e9e-00f718e84c79",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:27:12.149298+00:00",
+        "label": "heli-session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-session-a5h08x1p\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-session-a5h08x1p\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 39.969,
+        "log_bytes": 190,
+        "log_sha256": "75ba48be5ec0ccb016b2e3121f67615a7a828224123ce2f4506cb41efa777723"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/heli-trim-v7ehxvrc/report.json",
+      "receipt_sha256": "4c204f6289c880eccef2e9e94f2491dab7849eaa1e6bcbe48b3a8e5b6a64b4da",
+      "observed_last_nonempty_line": "HELI-18 airborne hover trim: 62 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d1de923d-3ec6-40dd-9b17-5a4c36df18e6",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_trim.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:22:38.020072+00:00",
+        "label": "heli-trim",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-trim-v7ehxvrc\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\heli-trim-v7ehxvrc\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.187,
+        "log_bytes": 275,
+        "log_sha256": "8a8af1a4513b80d381fc2cbad81bc7c265be575f4078d98251c18f6c7935e42c"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/main-rotor-_aav17p9/report.json",
+      "receipt_sha256": "fae114de624546f4bd62f9028a19dabfeeec2d33a0615f27db2503db299e81de",
+      "observed_last_nonempty_line": "HELI-05 main rotor: 65 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1796f707-ab03-493d-b3a7-cebe130cea45",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_main_rotor.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:20:33.235634+00:00",
+        "label": "main-rotor",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\main-rotor-_aav17p9\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\main-rotor-_aav17p9\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.609,
+        "log_bytes": 113,
+        "log_sha256": "46658b527c7c975235724ae7e90bfe43e567245a09e41d5638a8b7fae1a1eca1"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/rotor-domain-h7su4dav/report.json",
+      "receipt_sha256": "dc22b22c512a1a4248200dc48be587ddffeafab1b002b846efb0883ef6073211",
+      "observed_last_nonempty_line": "HELI H02 rotor domain diagnostics: 78 checks, 2 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c177c49d-76d0-41a6-a8b1-3cd657394233",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_rotor_domain.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:19:56.521209+00:00",
+        "label": "rotor-domain",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\rotor-domain-h7su4dav\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\rotor-domain-h7su4dav\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H02 rotor domain diagnostics:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.687,
+        "log_bytes": 269,
+        "log_sha256": "bb4084f5eaba3ee9e9680a1ae6316416a4db3eb1ebfcbe0a3df8b560ce8e4d69"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/rotor-domain-parse-ooh179s7/report.json",
+      "receipt_sha256": "dfab26ec45975761dbf819287c454ed6b1de3b3b539565fde043fc39d863fff6",
+      "observed_last_nonempty_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "831600fc-0199-4a96-a13c-bd35e1a0abe5",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--check-only",
+          "--script",
+          "../tmp/audit-20261108-rotor-domain/test_heli_rotor_domain.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:19:46.482528+00:00",
+        "label": "rotor-domain-parse",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\rotor-domain-parse-ooh179s7\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\rotor-domain-parse-ooh179s7\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.625,
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/rotor-domain-w1pu3zp_/report.json",
+      "receipt_sha256": "a1e582daf0492c0ad80085f80f95036151ef58f4006c7d17f9855b166d2e91a6",
+      "observed_last_nonempty_line": "HELI H02 rotor domain diagnostics: 104 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6142a5b3-e0e4-41db-8aea-1b335af2c124",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_rotor_domain.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:20:33.231577+00:00",
+        "label": "rotor-domain",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\rotor-domain-w1pu3zp_\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\rotor-domain-w1pu3zp_\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H02 rotor domain diagnostics: 104 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.703,
+        "log_bytes": 129,
+        "log_sha256": "5cc6642a4dcd229ac27ea159d80db15cb56b48b03e3247dda22e1d9b60ffa8e0"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/startup-kernel-1njv347j/report.json",
+      "receipt_sha256": "2f4c8456151e1848963bf5e00d9b630a3ec43d09c5a710da79022cef510398de",
+      "observed_last_nonempty_line": "HELI low-RPM/startup kernel: 62 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "792ea215-cc9e-47f6-9dd5-26932181914d",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_startup_kernel.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:20:33.233101+00:00",
+        "label": "startup-kernel",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\startup-kernel-1njv347j\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\startup-kernel-1njv347j\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.781,
+        "log_bytes": 122,
+        "log_sha256": "ae1c3806393ca9897626ea8bd726c62bdeab0303e7a41ff2c05d0311fcb89f81"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/trim-contract-baseline-oqudag8v/report.json",
+      "receipt_sha256": "eeceea59e591d2a5e004d81d21741d6eb8eb6294751705bd456f24989c05ee5c",
+      "observed_last_nonempty_line": "HELI H07 hover trim contract: 70 checks, 1 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "3df20989-29f7-414a-83bd-6c65d4853b59",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "../tmp/audit-20261108-rotor-domain/test_heli_trim_contract.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:22:06.905371+00:00",
+        "label": "trim-contract-baseline",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\trim-contract-baseline-oqudag8v\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\trim-contract-baseline-oqudag8v\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H07 hover trim contract:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.704,
+        "log_bytes": 189,
+        "log_sha256": "e923ea992eacf88ed83047af3a23dc65aa47dd03fbcd08cfd026382123cf0164"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/trim-contract-parse-bu_ismvv/report.json",
+      "receipt_sha256": "e9426cbd0c9eb05dc1d9f32d0eb27506fcf0e96d8738829f9c4431e27fadc650",
+      "observed_last_nonempty_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "bb4b8ff2-d24b-4dbf-8a46-d3ed92f65ba4",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--check-only",
+          "--script",
+          "../tmp/audit-20261108-rotor-domain/test_heli_trim_contract.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:22:21.261355+00:00",
+        "label": "trim-contract-parse",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\trim-contract-parse-bu_ismvv\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\trim-contract-parse-bu_ismvv\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.609,
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+      }
+    },
+    {
+      "receipt_path_local_ignored": "tmp/audit-20261108-rotor-domain/checks/trim-contract-ppn8a05t/report.json",
+      "receipt_sha256": "c63f7dc88dcfdca47d94994160102ac5ae76b26e59c9e45da91e12aab82b7e06",
+      "observed_last_nonempty_line": "HELI H07 hover trim contract: 70 checks, 0 failed",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c8a42103-fa50-40c0-8336-cfd46d168292",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_trim_contract.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-08T19:22:38.029178+00:00",
+        "label": "trim-contract",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\trim-contract-ppn8a05t\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-rotor-domain\\checks\\trim-contract-ppn8a05t\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H07 hover trim contract: 70 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.032,
+        "log_bytes": 123,
+        "log_sha256": "8d6662e41f9f20af4c877a003ae21f4b46b6c2574c882ab9f1248fa457a6a62e"
+      }
+    }
+  ],
+  "failed_run_interpretation": {
+    "trim-contract-baseline-oqudag8v": "Expected negative control before trim change: unsupported HX body-rate solve incorrectly returned success; 70 checks, one failed.",
+    "rotor-domain-h7su4dav": "Intermediate test-draft failure: two sign-reflection assertions ignored another flap contribution. The corrected test isolates the axial contribution; no rotor equation changed.",
+    "heli-mode-confirmation-ldmf4w4_": "Runner required the wrong literal 0 failed while the script printed 0 failures; rerun with the actual full marker passed."
+  },
+  "rendered_spot_check": {
+    "kind": "Windows native application process; helicopter physics backend gdscript_reference (native kernel unavailable on Windows)",
+    "viewport_pixels": [
+      1920,
+      1080
+    ],
+    "renderer": "gl_compatibility, OpenGL 3.3.0 NVIDIA 617.42, NVIDIA GeForce RTX 3090",
+    "fixture": "Club field, X-Cell ground start, disarmed, normal mode, direct cyclic, roll +1, pitch -1, throttle 100%; debug bridge injected sticks",
+    "observed": "Screenshot 002 shows Collective 6.9 deg (stick 100%); screenshot 001 shows the neutral ground session. Visually readable and unclipped in these captures.",
+    "other_observation": "The isolated debug-profile UI displayed Could not save settings (error 30); cause not investigated or attributed to these changes.",
+    "stop": "Bridge stop reported stopped=true, forced=false, crash=null, leaked_objects=0; launcher_exit_code was null.",
+    "artifacts_local_ignored_sha256": {
+      "tmp/debug-bridge/20261108-142823-47870/launch.json": "6b0ed4180418924db9c7ff8fc4ed58bc91c000c4be349197e2c814195b64348b",
+      "tmp/debug-bridge/20261108-142823-47870/engine.log": "37d7e35688806f5dc04a43a0348e147601ca9efec322005fd6d675ae9e19aa30",
+      "tmp/debug-bridge/20261108-142823-47870/log.jsonl": "54474471f03d1d230a1e9f0f0635de3b0bf8186aa4fbaee97652850778cc8546",
+      "tmp/debug-bridge/20261108-142823-47870/shots/shot-48732-001.png": "94f2da1bbb444c9f96f0996bbeccc3959c1a263d4e475f86358ba78f29984b8e",
+      "tmp/debug-bridge/20261108-142823-47870/shots/shot-48732-002.png": "4d495820ecf046978fc2cfebd2181ef6c8fb62ffa10fbebaef7d049912dd3f7d"
+    },
+    "limit": "Spot inspection, not physical-flight, actual-native-kernel parity, 1080p performance or release qualification."
+  },
+  "pending": [
+    "H02 supported main/tail overlap or explicit combined-weather/start admission, finite/refusal/stop/rollback and native/reference equivalence",
+    "actual native backend qualification for candidate",
+    "required full CI coverage",
+    "physical aircraft validation and HX-700 release gates"
+  ]
+}

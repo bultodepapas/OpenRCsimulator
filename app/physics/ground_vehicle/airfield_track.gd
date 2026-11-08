@@ -169,7 +169,7 @@ static func identity(track: Dictionary) -> String:
 
 
 ## Returns additive elevation and its exact partial derivatives, plus the dirt coverage mask.
-static func sample(track: Dictionary, north: float, east: float, unclipped: bool = false) -> Dictionary:
+static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 	if track.is_empty():
 		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var n := north - float(track.center_north_m)
@@ -178,9 +178,7 @@ static func sample(track: Dictionary, north: float, east: float, unclipped: bool
 	var radius := float(track.radius_m)
 	var half := float(track.lane_width_m) * 0.5
 	var shoulder := float(track.shoulder_m)
-	# The uncut, nonnegative sum is an upper envelope even for custom features
-	# truncated by this footprint. Swept bounds must not assume that cut is continuous.
-	if not unclipped and (absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m)):
+	if absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m):
 		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var excess_e := e - clampf(e, -length, length)
 	var distance := sqrt(n * n + excess_e * excess_e)
@@ -287,18 +285,51 @@ static func sample(track: Dictionary, north: float, east: float, unclipped: bool
 	return {"height_m": height, "dn": dn, "de": de, "coverage": coverage, "feature_id": feature}
 
 
-## Global Lipschitz bound of the uncut height sum, for validated definitions.
-## Smoothstep has derivative at most 1.5; product factors and coverage are in [0,1].
-## Max-selection of the three coverage masks preserves their largest bound.
-static func height_gradient_bound(track: Dictionary) -> float:
+## Conservative height envelope over a north/east square. Interval extrema of
+## the nonnegative factors bound their products even when their maxima differ.
+## Flat decks stay exact; a global slope bound becomes costly near grazing.
+## Footprint clipping can only reduce this uncut sum, including custom features.
+static func height_upper_bound(track: Dictionary, north: float, east: float, reach: float) -> float:
 	if track.is_empty(): return 0.0
+	var n: float = north - float(track.center_north_m)
+	var e: float = east - float(track.center_east_m)
+	var length: float = float(track.half_straight_m)
+	var radius: float = float(track.radius_m)
+	var half: float = float(track.lane_width_m) * 0.5
 	var shoulder: float = float(track.shoulder_m)
-	var bound: float = float(track.pad_height_m) * 3.0 / shoulder
-	bound += float(track.bank_height_m) * (1.5 / float(track.lane_width_m) + 1.5 / shoulder + 1.5 / 3.5)
+	if absf(e) - reach > length + radius + half + shoulder \
+			or north + reach < float(track.access.north_min_m) - shoulder \
+			or n - reach > radius + half + shoulder:
+		return 0.0
+	var minimum_n: float = maxf(0.0, absf(n) - reach)
+	var minimum_e: float = maxf(0.0, absf(e) - reach - length)
+	var maximum_n: float = absf(n) + reach
+	var maximum_e: float = maxf(0.0, absf(e) + reach - length)
+	var distance_low: float = sqrt(minimum_n * minimum_n + minimum_e * minimum_e)
+	var distance_high: float = sqrt(maximum_n * maximum_n + maximum_e * maximum_e)
+	var lateral_distance: float = maxf(0.0, maxf(distance_low - radius, radius - distance_high))
+	var strip: float = _band(lateral_distance, half, shoulder)[0]
+	var technical: float = _band(maxf(0.0, absf(n) - reach), float(track.technical_width_m) * 0.5, shoulder)[0] \
+		* _band(maxf(0.0, absf(e) - reach), length + radius, shoulder)[0]
+	var access: Dictionary = track.access
+	var access_n: float = north - (float(access.north_min_m) + float(access.north_max_m)) * 0.5
+	var access_e: float = east - float(access.east_m)
+	var access_upper: float = _band(maxf(0.0, absf(access_n) - reach), (float(access.north_max_m) - float(access.north_min_m)) * 0.5, shoulder)[0] \
+		* _band(maxf(0.0, absf(access_e) - reach), float(access.width_m) * 0.5, shoulder)[0]
+	var height: float = float(track.pad_height_m) * maxf(strip, maxf(technical, access_upper))
+	var across: float = clampf((distance_high - radius + half) / (2.0 * half), 0.0, 1.0)
+	var turn: float = clampf((absf(e) + reach - (length - 2.0)) / 3.5, 0.0, 1.0)
+	height += float(track.bank_height_m) * (across * across * (3.0 - 2.0 * across)) \
+		* (turn * turn * (3.0 - 2.0 * turn)) * strip
 	for group in ["ramps", "rollers"]:
 		for ramp: Dictionary in track[group]:
-			bound += float(ramp.height_m) * 1.5 * (1.0 / shoulder + maxf(1.0 / float(ramp.approach_m), 1.0 / float(ramp.descent_m)))
-	return bound
+			var offset: float = east - float(ramp.east_m)
+			var nearest: float = signf(offset) * maxf(0.0, absf(offset) - reach)
+			var along: float = _ramp(nearest, float(ramp.approach_m), float(ramp.deck_m), float(ramp.descent_m))[0]
+			if along == 0.0: continue
+			var cross: float = _band(maxf(0.0, absf(north - float(ramp.north_m)) - reach), float(ramp.width_m) * 0.5, shoulder)[0]
+			height += float(ramp.height_m) * along * cross
+	return height
 
 static func nearby_walls(track: Dictionary, north: float, east: float) -> Array:
 	var result: Array = []

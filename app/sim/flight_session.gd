@@ -3225,8 +3225,10 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 	var dirt: Dictionary = _rc_track_hit(previous, candidate, next_tick)
 	if not dirt.ok:
 		return PackedFloat64Array()
-	if _rc_track_order_unresolved(dirt, ground_fraction) or (scenery_hit != null \
-			and _rc_track_order_unresolved(dirt, scenery_hit.time_fraction)):
+	var legacy_fraction: float = ground_fraction
+	if scenery_hit != null and scenery_hit.time_fraction < ground_fraction - SceneryCollision.FRACTION_TIE:
+		legacy_fraction = scenery_hit.time_fraction
+	if _rc_track_order_unresolved(dirt, legacy_fraction):
 		return PackedFloat64Array()
 	if dirt.impact != null and float(dirt.fraction) < ground_fraction - SceneryCollision.FRACTION_TIE \
 			and (scenery_hit == null or float(dirt.fraction) < scenery_hit.time_fraction - SceneryCollision.FRACTION_TIE):
@@ -3435,9 +3437,9 @@ func _rc_track_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array, 
 ## Exact simultaneous contacts still use the existing legacy winner policy.
 func _rc_track_order_unresolved(dirt: Dictionary, other_fraction: float) -> bool:
 	return dirt.impact != null and is_finite(other_fraction) \
-		and float(dirt.get("uncertainty", 0.0)) > SceneryCollision.FRACTION_TIE \
-		and other_fraction >= float(dirt.fraction) - float(dirt.uncertainty) - SceneryCollision.FRACTION_TIE \
-		and other_fraction <= float(dirt.fraction) + SceneryCollision.FRACTION_TIE
+		and float(dirt.get("uncertainty", 0.0)) > 0.0 \
+		and float(dirt.fraction) - float(dirt.uncertainty) < other_fraction - SceneryCollision.FRACTION_TIE \
+		and float(dirt.fraction) >= other_fraction - SceneryCollision.FRACTION_TIE
 
 func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		next_tick: int) -> Dictionary:

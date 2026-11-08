@@ -3752,6 +3752,9 @@ msgstr "RC 直升机 · 实验性研究训练器"
 msgid "Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm"
 msgstr "高度 %.2f m  速度 %.2f m/s  旋翼 %.0f / %.0f rpm"
 
+msgid "Collective unavailable"
+msgstr "总距数据不可用"
+
 msgid "Collective %.1f deg (stick %.0f%%) · %s · %s"
 msgstr "总距 %.1f 度（摇杆 %.0f%%）· %s · %s"
 

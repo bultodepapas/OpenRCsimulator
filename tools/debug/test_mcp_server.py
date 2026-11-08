@@ -78,6 +78,131 @@ class McpServerTests(unittest.TestCase):
         self.assertEqual(lines[1], {"jsonrpc": "2.0", "id": 7, "result": {}})
         self.assertEqual(len(lines), 2)
 
+    def test_malformed_params_do_not_end_the_stream_or_invoke_tools(self) -> None:
+        invalid = [
+            {"method": "initialize", "params": value}
+            for value in (True, 1, "params", [], [1], None)
+        ] + [
+            {"method": "tools/call", "params": value}
+            for value in (True, [], [1], None)
+        ] + [
+            {"method": "tools/call", "params": {"name": value}}
+            for value in ([], {}, True, 1, None)
+        ] + [
+            {"method": "tools/call", "params": {"name": "sim_stop", "arguments": value}}
+            for value in (True, [], [1], "arguments", None)
+        ]
+        for request in invalid:
+            with self.subTest(request=request), patch.object(mcp_server, "call_tool") as call:
+                request = {"jsonrpc": "2.0", "id": 1, **request}
+                ping = {"jsonrpc": "2.0", "id": "after", "method": "ping"}
+                stdout = io.StringIO()
+                mcp_server.serve(io.StringIO(json.dumps(request) + "\n" + json.dumps(ping) + "\n"), stdout)
+                replies = [json.loads(line) for line in stdout.getvalue().splitlines()]
+                self.assertEqual(replies[0]["id"], 1)
+                self.assertEqual(replies[0]["error"]["code"], -32602)
+                self.assertEqual(replies[1], {"jsonrpc": "2.0", "id": "after", "result": {}})
+                call.assert_not_called()
+
+    def test_invalid_envelopes_are_reported_and_following_ping_is_served(self) -> None:
+        invalid = [None, True, [], 7, "request", {},
+                   {"jsonrpc": "1.0", "id": 1, "method": "ping"},
+                   {"jsonrpc": "2.0", "id": 1, "method": []}]
+        invalid += [{"jsonrpc": "2.0", "id": value, "method": "ping"}
+                    for value in (None, True, [], {}, 1.5)]
+        for request in invalid:
+            with self.subTest(request=request):
+                stdout = io.StringIO()
+                mcp_server.serve(io.StringIO(json.dumps(request) + '\n{"jsonrpc":"2.0","id":2,"method":"ping"}\n'), stdout)
+                replies = [json.loads(line) for line in stdout.getvalue().splitlines()]
+                self.assertEqual(replies[0]["error"]["code"], -32600)
+                self.assertEqual(replies[1], {"jsonrpc": "2.0", "id": 2, "result": {}})
+
+    def test_notifications_remain_silent_even_with_invalid_params(self) -> None:
+        with patch.object(mcp_server, "call_tool") as call:
+            self.assertIsNone(mcp_server.handle({"jsonrpc": "2.0", "method": "tools/call", "params": True}))
+            self.assertIsNone(mcp_server.handle({"jsonrpc": "2.0", "method": "tools/call",
+                                               "params": {"name": "sim_stop"}}))
+            call.assert_not_called()
+
+    def test_stop_failure_is_a_tool_error_with_its_diagnostic(self) -> None:
+        for status in (1, 2):
+            def stop(_argv):
+                print("simulator is still running", file=sys.stderr)
+                return status
+            with self.subTest(status=status), patch.object(debugctl, "stop", stop):
+                result = self.rpc("tools/call", {"name": "sim_stop"})["result"]
+                self.assertTrue(result["isError"])
+                self.assertIn("simulator is still running", result["content"][0]["text"])
+
+    def test_stop_success_and_empty_failure_output(self) -> None:
+        with patch.object(debugctl, "stop", return_value=0):
+            self.assertFalse(self.rpc("tools/call", {"name": "sim_stop"})["result"]["isError"])
+        with patch.object(debugctl, "stop", return_value=2):
+            result = self.rpc("tools/call", {"name": "sim_stop"})["result"]
+            self.assertTrue(result["isError"])
+            self.assertIn("2", result["content"][0]["text"])
+
+    def test_declared_argument_contracts_are_checked_before_actions(self) -> None:
+        cases = [
+            ("sim_launch", {"headless": "false"}, "headless"),
+            ("sim_stop", {"unexpected": True}, "unexpected"),
+            ("sim_choose", {"ref": "e9"}, "value"),
+            ("sim_sticks", {"throttle": True}, "throttle"),
+            ("sim_sticks", {"roll": float("inf")}, "roll"),
+            ("sim_screenshot", {"max_width": 3.5}, "max_width"),
+            ("sim_setup", {"start": "unknown"}, "start"),
+            ("sim_command", {"command": "look", "args": []}, "args"),
+        ]
+        for name, arguments, diagnostic in cases:
+            with self.subTest(name=name, arguments=arguments), patch.object(mcp_server, "call_tool") as call:
+                result = self.rpc("tools/call", {"name": name, "arguments": arguments})["result"]
+                self.assertTrue(result["isError"])
+                self.assertIn(diagnostic, result["content"][0]["text"])
+                call.assert_not_called()
+
+    def test_valid_argument_types_and_aliases_reach_the_tool_unchanged(self) -> None:
+        cases = [
+            ("sim_launch", {"headless": False}),
+            ("sim_choose", {"ref": "e9", "value": False}),
+            ("sim_choose", {"ref": "e9", "value": 0.25}),
+            ("sim_choose", {"ref": "e9", "value": "1920 × 1080"}),
+            ("sim_screenshot", {"max_width": 1280.0}),
+            ("sim_setup", {"start": "hand_launch"}),
+            ("sim_command", {"command": "look", "args": {"all": True}}),
+        ]
+        for name, arguments in cases:
+            with self.subTest(name=name, arguments=arguments), patch.object(mcp_server, "call_tool", return_value=[]) as call:
+                result = self.rpc("tools/call", {"name": name, "arguments": arguments})["result"]
+                self.assertFalse(result["isError"])
+                call.assert_called_once_with(name, arguments)
+
+    def test_decoder_limits_do_not_end_the_stream(self) -> None:
+        saved_limit = sys.get_int_max_str_digits()
+        try:
+            sys.set_int_max_str_digits(4300)
+            invalid = ['{"jsonrpc":"2.0","id":' + "9" * 5000 + ',"method":"ping"}',
+                       "[" * 10000 + "0" + "]" * 10000]
+            for request in invalid:
+                with self.subTest(prefix=request[:30]):
+                    stdout = io.StringIO()
+                    mcp_server.serve(io.StringIO(request + '\n{"jsonrpc":"2.0","id":2,"method":"ping"}\n'), stdout)
+                    replies = [json.loads(line) for line in stdout.getvalue().splitlines()]
+                    self.assertEqual(replies[0]["error"]["code"], -32700)
+                    self.assertEqual(replies[1], {"jsonrpc": "2.0", "id": 2, "result": {}})
+        finally:
+            sys.set_int_max_str_digits(saved_limit)
+
+    def test_utf8_stdio_preserves_unicode_and_survives_escaped_surrogates(self) -> None:
+        request = {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "\ud800"}}
+        ping = {"jsonrpc": "2.0", "id": "Español × 日本語", "method": "ping"}
+        stream = io.BytesIO()
+        stdout = io.TextIOWrapper(stream, encoding="utf-8", errors="strict")
+        mcp_server.serve(io.StringIO(json.dumps(request) + "\n" + json.dumps(ping) + "\n"), stdout)
+        replies = [json.loads(line) for line in stream.getvalue().decode("utf-8").splitlines()]
+        self.assertEqual(replies[0]["error"]["code"], -32602)
+        self.assertEqual(replies[1], {"jsonrpc": "2.0", "id": ping["id"], "result": {}})
+
 
 if __name__ == "__main__":
     unittest.main()

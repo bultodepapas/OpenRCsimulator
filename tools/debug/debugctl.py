@@ -71,11 +71,45 @@ class Refused(Exception):
     """The bridge answered ok=false."""
 
 
-def session_for(port_number: int) -> dict:
+@contextlib.contextmanager
+def _session_claim_lock():
+    """Serialize claim creation, replacement, stale takeover and cleanup across clients.
+
+    The lock file is persistent: removing it would let another client lock a different inode.
+    The OS releases the lock if a client exits, so a later client can recover a stale claim.
+    """
+    SESSIONS.mkdir(parents=True, exist_ok=True)
+    with (SESSIONS / ".claims.lock").open("a+b") as guard:
+        if os.name == "nt":
+            import msvcrt
+            guard.seek(0)
+            msvcrt.locking(guard.fileno(), msvcrt.LK_LOCK, 1)
+            try:
+                yield
+            finally:
+                guard.seek(0)
+                msvcrt.locking(guard.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(guard.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(guard.fileno(), fcntl.LOCK_UN)
+
+
+def _session_for_unlocked(port_number: int) -> dict:
     try:
         return json.loads((SESSIONS / f"{port_number}.json").read_text())
     except (OSError, ValueError):
         return {}
+
+
+def session_for(port_number: int) -> dict:
+    if not SESSIONS.exists():
+        return {}
+    with _session_claim_lock():
+        return _session_for_unlocked(port_number)
 
 
 def current_session() -> dict:
@@ -395,23 +429,23 @@ def launch(argv: list[str]) -> int:
 def reserve_port(explicit: int | None) -> int | None:
     """Claim a port for a new session with an exclusive file create, so two agents launching at the same moment
     never share one. A stale claim (its processes are gone) is taken over."""
-    SESSIONS.mkdir(parents=True, exist_ok=True)
     candidates = [explicit] if explicit else [DEFAULT_PORT] + [free_port() for _ in range(5)]
-    for candidate in candidates:
-        claim = SESSIONS / f"{candidate}.json"
-        holder = session_for(candidate)
-        if holder and (alive(holder.get("pid")) or alive(holder.get("launcher_pid"))):
-            continue
-        claim.unlink(missing_ok=True)
-        try:
-            descriptor = os.open(claim, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        except FileExistsError:
-            continue  # another agent claimed it a moment ago
-        with os.fdopen(descriptor, "w") as handle:
-            handle.write(json.dumps({"port": candidate, "launcher_pid": os.getpid(), "claimed": True}) + "\n")
-        if port_free(candidate):
-            return candidate
-        claim.unlink(missing_ok=True)  # something else listens there
+    with _session_claim_lock():
+        for candidate in candidates:
+            claim = SESSIONS / f"{candidate}.json"
+            holder = _session_for_unlocked(candidate)
+            if holder and (alive(holder.get("pid")) or alive(holder.get("launcher_pid"))):
+                continue
+            claim.unlink(missing_ok=True)
+            try:
+                descriptor = os.open(claim, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            except FileExistsError:
+                continue
+            with os.fdopen(descriptor, "w") as handle:
+                handle.write(json.dumps({"port": candidate, "launcher_pid": os.getpid(), "claimed": True}) + "\n")
+            if port_free(candidate):
+                return candidate
+            claim.unlink(missing_ok=True)  # something else listens there
     return None
 
 
@@ -442,23 +476,26 @@ def refuse_ambiguous() -> bool:
 
 def forget_session(port_number: int, launcher_pid: int | None = None) -> None:
     """Remove a session's files, only if they still describe that launch (another agent may own the port now)."""
-    claim = SESSIONS / f"{port_number}.json"
-    holder = session_for(port_number)
-    if launcher_pid is None or holder.get("launcher_pid") in (launcher_pid, None):
-        claim.unlink(missing_ok=True)
-    pointer = current_pointer()
-    if pointer.get("port") == port_number and (launcher_pid is None or pointer.get("launcher_pid") == launcher_pid):
-        CURRENT.unlink(missing_ok=True)
+    with _session_claim_lock():
+        claim = SESSIONS / f"{port_number}.json"
+        holder = _session_for_unlocked(port_number)
+        if launcher_pid is None or holder.get("launcher_pid") in (launcher_pid, None):
+            claim.unlink(missing_ok=True)
+        pointer = current_pointer()
+        if pointer.get("port") == port_number and (launcher_pid is None or pointer.get("launcher_pid") == launcher_pid):
+            CURRENT.unlink(missing_ok=True)
 
 
 def write_private(path: Path, value: dict) -> None:
     """The session file holds the token: readable by this user only."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(descriptor, "w") as handle:
-        handle.write(json.dumps(value, indent=2) + "\n")
-    if os.name != "nt":
-        os.chmod(path, 0o600)
+    lock = _session_claim_lock() if path.parent == SESSIONS or path == CURRENT else contextlib.nullcontext()
+    with lock:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(descriptor, "w") as handle:
+            handle.write(json.dumps(value, indent=2) + "\n")
+        if os.name != "nt":
+            os.chmod(path, 0o600)
 
 
 def kill_group(pid: int | None) -> None:
@@ -485,20 +522,33 @@ def tail(path: Path, lines: int = 15) -> None:
 
 def clean(argv: list[str]) -> int:
     keep = int(argv[argv.index("--keep") + 1]) if "--keep" in argv else 3
-    live = current_session().get("out") if alive(current_session().get("pid")) else None
-    runs = sorted((p for p in RUNS.glob("*") if p.is_dir() and p != SESSIONS), key=lambda p: p.stat().st_mtime, reverse=True)
-    removed = 0
-    for run in runs[keep:]:
-        if str(run) == live or not (run / "launch.json").exists():
-            continue  # only folders this tool created, and never the running session's
-        shutil.rmtree(run)
-        removed += 1
-    stale = 0
-    for claim in SESSIONS.glob("*.json") if SESSIONS.exists() else []:
-        holder = session_for(int(claim.stem)) if claim.stem.isdigit() else {}
-        if not (alive(holder.get("pid")) or alive(holder.get("launcher_pid"))):
-            claim.unlink(missing_ok=True)
-            stale += 1
+    removed, stale = 0, 0
+    with _session_claim_lock():
+        live_outs = set()
+        pending = False
+        holders = [current_pointer()]
+        for claim in SESSIONS.glob("*.json"):
+            if not claim.stem.isdigit():
+                continue
+            holder = _session_for_unlocked(int(claim.stem))
+            if alive(holder.get("pid")) or alive(holder.get("launcher_pid")):
+                holders.append(holder)
+            else:
+                claim.unlink(missing_ok=True)
+                stale += 1
+        for holder in holders:
+            if alive(holder.get("pid")) or alive(holder.get("launcher_pid")):
+                if holder.get("out"):
+                    live_outs.add(Path(holder["out"]).resolve())
+                else:
+                    pending = True  # a launch has claimed a port but has not published its output yet
+        runs = sorted((p for p in RUNS.glob("*") if p.is_dir() and p != SESSIONS),
+                      key=lambda p: p.stat().st_mtime, reverse=True)
+        for run in runs[keep:]:
+            if pending or run.resolve() in live_outs or not (run / "launch.json").exists():
+                continue  # only folders this tool created, never a live or not-yet-identified run
+            shutil.rmtree(run)
+            removed += 1
     print(json.dumps({"removed": removed, "kept": len(runs) - removed, "stale_sessions": stale}))
     return 0
 
@@ -854,7 +904,7 @@ def run_script(argv: list[str]) -> int:
     if len(files) != 1:
         print("run needs exactly one file (or - for stdin)", file=sys.stderr)
         return 2
-    source = sys.stdin if files[0] == "-" else open(files[0])
+    source = sys.stdin if files[0] == "-" else open(files[0], encoding="utf-8")
     cleanup = Path(files[0]).with_suffix(".cleanup") if files[0] != "-" else None
     if cleanup == Path(files[0]):
         cleanup = None  # Executing a cleanup file directly must not execute it twice.
@@ -890,7 +940,7 @@ def run_script(argv: list[str]) -> int:
 def _run_cleanup(path: Path, fail_on_error: bool) -> int:
     """Attempt each cleanup command even if an earlier command or log check failed."""
     try:
-        source = path.open()
+        source = path.open(encoding="utf-8")
     except FileNotFoundError:
         return 0
     except OSError as error:
@@ -940,7 +990,8 @@ def soak(argv: list[str]) -> int:
         return 2
     option = lambda name, default: int(argv[argv.index(name) + 1]) if name in argv else default  # noqa: E731
     cycles, warmup, tolerance = option("--cycles", 5), option("--warmup", 1), option("--tolerance", 0)
-    lines = [l for l in Path(files[0]).read_text().splitlines() if l.strip() and not l.lstrip().startswith("#")]
+    lines = [l for l in Path(files[0]).read_text(encoding="utf-8").splitlines()
+             if l.strip() and not l.lstrip().startswith("#")]
     since = result_of("ping")["log_seq"]
     history: list[dict] = []
     for cycle in range(warmup + cycles):
@@ -1027,49 +1078,74 @@ def monkey(argv: list[str]) -> int:
     out = Path(option("--out", str(RUNS / f"monkey-{seed}.txt")))
     rng = random.Random(seed)
     keys = []
-    if "--keys" in argv:
-        table = result_of("shortcuts")
-        keys = [k for row in table["shortcuts"] for k in row["keys"] if k not in ("Escape", "F10")]
     trail = [f"# debugctl.py monkey --seed {seed}: replay with debugctl.py run {out.name}"]
-    since = result_of("ping")["log_seq"]
     started_at: list[tuple[int, str]] = []  # (frame when the action was sent, action)
     visited: set[str] = set()
-    route = result_of("ping")["route"]
-    failure = None
+    failure, failure_status, connected = None, 0, True
+    try:
+        if "--keys" in argv:
+            table = result_of("shortcuts")
+            keys = [k for row in table["shortcuts"] for k in row["keys"] if k not in ("Escape", "F10")]
+        since = result_of("ping")["log_seq"]
+        route = result_of("ping")["route"]
+    except OSError as error:
+        failure = f"the app stopped answering before the first step ({error})"
+        failure_status, connected = 2, False
     for step in range(steps):
-        listing = result_of("ui")
-        controls = [c for c in listing["controls"] if monkey_allowed(c)]
-        visited.add(f"{route}:{short_path(listing['scope'] or '/root', '')}")
-        line = monkey_action(rng, controls, keys)
-        trail.append(line)
-        ping = result_of("ping")
-        started_at.append((ping["frame"], line))
-        route = ping["route"]
+        if failure:
+            break
         try:
-            execute_quiet(line)
-        except (Refused, ValueError) as error:
-            # A refused action changed nothing: comment it out so a replay follows the same path.
-            trail[-1] = f"# refused: {trail[-1]}  ({error})"
+            listing = result_of("ui")
+            controls = [c for c in listing["controls"] if monkey_allowed(c)]
+            visited.add(f"{route}:{short_path(listing['scope'] or '/root', '')}")
+            line = monkey_action(rng, controls, keys)
+            ping = result_of("ping")
+            route = ping["route"]
+            trail.append(line)
+            started_at.append((ping["frame"], line))
+            try:
+                execute_quiet(line)
+            except (Refused, ValueError) as error:
+                # A refused action changed nothing: comment it out so a replay follows the same path.
+                trail[-1] = f"# refused: {trail[-1]}  ({error})"
+            errors = new_errors(since)
         except OSError as error:
             failure = f"step {step + 1}: the app stopped answering ({error})"
+            failure_status, connected = 2, False
             break
-        errors = new_errors(since)
         if errors:
             failure = f"step {step + 1}: new errors: " + " | ".join(format_record(r) for r in errors[:3])
+            failure_status = 1
             break
-    slow = slow_actions(started_at)
+    try:
+        slow = slow_actions(started_at) if connected else {}
+    except (OSError, Refused) as error:
+        slow = {}
+        connected = not isinstance(error, OSError)
+        if failure is None:
+            failure = (f"the app stopped answering while reading frame hitches ({error})" if not connected
+                       else f"the bridge refused the frame hitches request ({error})")
+            failure_status = 2 if not connected else 1
     for action, frames_ms in slow.items():
         trail.append(f"# slow: {action} -> {', '.join(f'{ms:.0f} ms' for ms in frames_ms)}")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(trail) + "\n", encoding="utf-8")
     for action, frames_ms in sorted(slow.items(), key=lambda item: -max(item[1]))[:10]:
         print(f"slow after {action}: {', '.join(f'{ms:.0f} ms' for ms in frames_ms)}")
+    final_route = None
+    if connected:
+        try:
+            final_route = result_of("state")["route"]
+        except (OSError, Refused) as error:
+            if failure is None:
+                failure = (f"the app stopped answering while reading its final state ({error})" if isinstance(error, OSError)
+                           else f"the bridge refused the final state request ({error})")
+                failure_status = 2 if isinstance(error, OSError) else 1
     print(json.dumps({"seed": seed, "steps": len([l for l in trail if not l.startswith("#")]),
                       "refused": len([l for l in trail if l.startswith("# refused")]), "failure": failure,
-                      "visited": sorted(visited),
-                      "route": result_of("state")["route"] if failure is None or "answering" not in failure else None,
+                      "visited": sorted(visited), "route": final_route,
                       "trail": str(out)}))
-    return 1 if failure else 0
+    return failure_status
 
 
 def monkey_action(rng: random.Random, controls: list, keys: list) -> str:

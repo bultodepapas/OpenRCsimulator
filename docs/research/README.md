@@ -48,6 +48,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Entry points per track
 
+### RC airship
+
+- [Five-metre RC blimp physics, 2026-11-08](rc-airship/physics-2026-11-08.md): primary-source research on buoyancy, gas and mass accounting, coupled added mass, wind, hull/fin loads, controls and measurement. The [BL implementation plan](../plans/rc-airship.md) maps the current simulator boundaries and staged acceptance; no airship runtime or physical validation is claimed.
+
 ### Cinematic trailer
 
 [TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](cinematic-trailer/production-2026-10-17.md) records the first delivery and source identities; [revision 6](cinematic-trailer/revision-6-2026-10-17.md) removes the abrupt ending reset for a 58-second cut, retaining the cinematic feature titles, MONSTER CAR 2 jump, twilight Lumber, two Extra rolls, formation opening and continuous score. The [production plan](../plans/cinematic-trailer.md) retains creative targets and remaining release gates.
