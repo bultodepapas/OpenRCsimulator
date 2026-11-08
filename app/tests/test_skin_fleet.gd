@@ -3,6 +3,7 @@ extends SceneTree
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Skins := preload("res://aircraft/custom_skin.gd")
 const Builder := preload("res://render/airplane.gd")
+const TIMBER := "turbo-lumber-evolution"
 var checks := 0
 var failures := 0
 var paths: Array[String] = []
@@ -60,6 +61,7 @@ func _run() -> void:
 		check(id + " resolves after import", Builder.resolve_livery(id, imported.id) == imported.id)
 		var stock := Builder.build(id)
 		var painted := Builder.build(id, NAN, {}, imported.id)
+		var painted_material: WeakRef
 		check(id + " builds stock and custom", not stock.is_empty() and not painted.is_empty())
 		if not stock.is_empty() and not painted.is_empty():
 			root.add_child(stock.root)
@@ -74,9 +76,19 @@ func _run() -> void:
 					same_asset_identity = painted.root.get_meta("asset_sha256") == stock.root.get_meta("asset_sha256")
 				check(id + " preserves stock asset identity", same_asset_identity)
 			_compare(id, stock.root, painted.root, spec)
-		if painted.get("root") is Node: _free_children_first(painted.root)
-		if stock.get("root") is Node: _free_children_first(stock.root)
+			if id == TIMBER:
+				painted_material = _timber_paint_ref(painted.root)
+		if painted.get("root") is Node:
+			if id == TIMBER: painted.root.free()
+			else: _free_children_first(painted.root)
+		if stock.get("root") is Node:
+			if id == TIMBER: stock.root.free()
+			else: _free_children_first(stock.root)
+		if id == TIMBER:
+			check("Timber custom paint is released with its model", painted_material != null and painted_material.get_ref() == null)
 		await process_frame
+	if ids.has(TIMBER):
+		_test_timber_material_lifetime()
 	for id: String in packages:
 		var other := "moonrunner-x99" if id != "moonrunner-x99" else "xcell-60-research"
 		check(id + " rejects wrong family", not Skins.import_file(packages[id], other).get("ok", false))
@@ -90,9 +102,60 @@ func _run() -> void:
 	quit(1 if failures else 0)
 
 
+func _timber_paint_ref(model: Node3D) -> WeakRef:
+	for node: Node in model.find_children("*", "MeshInstance3D", true, false):
+		var mesh := node as MeshInstance3D
+		if mesh.mesh == null: continue
+		for surface in mesh.mesh.get_surface_count():
+			var material := mesh.get_surface_override_material(surface)
+			if material != null and material.resource_name.begins_with("openrc-paint-"):
+				check("Timber custom paint is retained by its mesh", (mesh.get_meta("_timber_override_materials", []) as Array).has(material))
+				return weakref(material)
+	check("Timber custom paint exists", false)
+	return null
+
+
+func _guarded_overrides(mesh: MeshInstance3D) -> bool:
+	var retained: Array = mesh.get_meta("_timber_override_materials", [])
+	for surface in mesh.mesh.get_surface_count():
+		var material := mesh.get_surface_override_material(surface)
+		if material != null and not retained.has(material): return false
+	return true
+
+
+func _test_timber_material_lifetime() -> void:
+	# Warm and rebuild without a renderer flush: the second complete tree used to
+	# release its tailwheel overrides before the dirty instances were retired.
+	var first: Dictionary = Builder.build(TIMBER)
+	var second: Dictionary = Builder.build(TIMBER)
+	var original_wheel := first.root.find_child("tailwheel", true, false) as MeshInstance3D
+	var second_wheel := second.root.find_child("tailwheel", true, false) as MeshInstance3D
+	check("Timber builds two distinct guarded tailwheels", original_wheel != null and second_wheel != null
+		and second_wheel.mesh.get_surface_count() >= 2 and _guarded_overrides(second_wheel)
+		and original_wheel.get_surface_override_material(0) != second_wheel.get_surface_override_material(0))
+	var second_model: WeakRef = weakref(second.root)
+	var second_material: WeakRef = weakref(second_wheel.get_surface_override_material(0))
+	second.root.free()
+	second.clear()
+	check("whole Timber model releases its own material", second_model.get_ref() == null and second_material.get_ref() == null)
+	# Wrecks duplicate/reparent pieces. The guard must follow the mesh and its
+	# actual overrides, then release the material after the last piece dies.
+	var copy := first.root.duplicate() as Node3D
+	var copied_wheel := copy.find_child("tailwheel", true, false) as MeshInstance3D
+	var copied_material: WeakRef = weakref(copied_wheel.get_surface_override_material(0))
+	check("duplicated Timber mesh retains its active overrides", _guarded_overrides(copied_wheel))
+	first.root.free()
+	first.clear()
+	check("copied Timber material survives the source", copied_material.get_ref() != null)
+	copied_wheel.get_parent().remove_child(copied_wheel)
+	copy.free()
+	check("detached Timber wheel retains its material", copied_material.get_ref() != null and is_instance_valid(copied_wheel))
+	copied_wheel.free()
+	check("detached Timber material is released", copied_material.get_ref() == null)
+
+
 func _free_children_first(node: Node) -> void:
-	# Two detailed Timber assemblies can expose freed material RIDs in Godot's
-	# dummy renderer during whole-subtree destruction. Dispose children first.
+	# Preserve the existing children-first fallback for other aircraft.
 	for child: Node in node.get_children(): _free_children_first(child)
 	node.free()
 
