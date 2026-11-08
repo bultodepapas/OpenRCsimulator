@@ -11,12 +11,12 @@ import subprocess
 VIEWS = [f'az{az:03d}-el{el:02d}' for az in (0, 90, 180, 270) for el in (0, 10)] + ['gap030', 'gap210', 'overhead', 'engine-shadow-audit']
 
 
-def checked_run(command, log, env):
+def checked_run(command, log, env, *, timeout_seconds=120):
     with log.open('w') as output:
-        result = subprocess.run(['timeout', '--kill-after=5', '120', *command], stdout=output, stderr=subprocess.STDOUT, env=env)
+        result = subprocess.run(['timeout', '--kill-after=5', str(timeout_seconds), *command], stdout=output, stderr=subprocess.STDOUT, env=env)
     text = re.sub(r'\x1b\[[0-9;]*m', '', log.read_text())
     if result.returncode or re.search(r'^\s*(?:(?:SCRIPT|SHADER)\s+)?ERROR:', text, re.M):
-        raise RuntimeError(f'L6b engine check failed: {log}')
+        raise RuntimeError(f'L6b engine check failed (exit {result.returncode}, deadline {timeout_seconds}s): {log}')
 
 
 def verify(folder):
@@ -54,7 +54,10 @@ def main():
         folder.mkdir(exist_ok=True)
         for filename in ['review.json', 'hash-probe.png', *(f'{v}.png' for v in VIEWS)]:
             (folder / filename).unlink(missing_ok=True)
-        checked_run([*command, '--script', str(Path(__file__).with_name('review.gd')), '--', str(folder)], out / f'repeat-{repeat}.log', env)
+        # Standalone groups can spend the 120-second default making steady
+        # progress through the views before reaching the final shadow/hash probe.
+        checked_run([*command, '--script', str(Path(__file__).with_name('review.gd')), '--', str(folder)],
+                    out / f'repeat-{repeat}.log', env, timeout_seconds=300)
         reports.append(verify(folder))
     assert reports[0] == reports[1], 'GPU review reports differ'
     for filename in ['hash-probe.png', *(f'{v}.png' for v in VIEWS)]:

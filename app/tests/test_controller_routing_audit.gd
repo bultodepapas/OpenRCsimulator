@@ -9,7 +9,7 @@ var checks := 0
 class RestartShell extends Shell:
 	var restarts := 0
 	func open_pause() -> void: pass
-	func restart_flight() -> void: restarts += 1
+	func _request_flight_restart() -> void: restarts += 1
 
 class FakeSession extends Node:
 	var calibration: Variant = null
@@ -119,6 +119,10 @@ func _initialize() -> void:
 	shell._input(equipment)
 	check("A cycles flaps after release and a new press", flight.received == ["flaps_cycle"])
 	equipment.button_index = JOY_BUTTON_BACK
+	check("new restart mapping waits for its own OFF", shell._route_controller_restart(equipment) and shell.restarts == 0)
+	equipment.pressed = false
+	shell._route_controller_restart(equipment)
+	equipment.pressed = true
 	check("default restart is handled by flight owner", shell._route_controller_restart(equipment) and shell.restarts == 1)
 	check("held restart cannot repeat", shell._route_controller_restart(equipment) and shell.restarts == 1)
 	equipment.pressed = false
@@ -131,6 +135,10 @@ func _initialize() -> void:
 	var motion := InputEventJoypadMotion.new()
 	motion.device = 1
 	motion.axis = 9
+	motion.axis_value = 0.8
+	check("new radio mapping cannot inherit an armed edge", shell._route_controller_restart(motion) and shell.restarts == 1)
+	motion.axis_value = 0.0
+	shell._route_controller_restart(motion)
 	for value in [0.7, 0.64, 0.66]:
 		motion.axis_value = value
 		shell._route_controller_restart(motion)
