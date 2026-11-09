@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a7d21772-3e2e-46ef-aa06-aa81dd045021",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-baseline\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\baseline_witness.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T14:43:12.663749+00:00",
+  "label": "stable-baseline-witness2",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-baseline-witness2-h6uhnuyp\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-baseline-witness2-h6uhnuyp\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "FUEL_ZERO_BASELINE_COMPLETE=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.812,
+  "log_bytes": 437,
+  "log_sha256": "993bdedf199ba410bb1b09e7d13f66eed72eb4552062e298b15bd4346ba80407"
+}

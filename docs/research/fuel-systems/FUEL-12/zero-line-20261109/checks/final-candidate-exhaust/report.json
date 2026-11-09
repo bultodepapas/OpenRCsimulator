@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f4cb99f0-fd1e-486f-b786-63c29912a353",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/candidate_replay.gd",
+    "--",
+    "--log=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/55ax-exhaust.orfl",
+    "--csv=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/candidate-55ax-exhaust.csv",
+    "--report=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/candidate-55ax-exhaust.json",
+    "--replay",
+    "--candidate=C:/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/stik_glow_55ax_2t.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T14:45:46.250204+00:00",
+  "label": "stable-candidate-ok-55ax-exhaust",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-candidate-ok-55ax-exhaust-52_j69zn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-candidate-ok-55ax-exhaust-52_j69zn\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Flight log candidate:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.625,
+  "log_bytes": 258,
+  "log_sha256": "dd5b96efe21ce2abe71cc8d0ed6e5c42aeed8a5b8aa800992eb8e93008cbbb4a"
+}

@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok candidate differs from recorded pre-fix source
+ok current source hash accepted
+ok pre-fix mirrored source refused
+ok empty mirrored-source roster refused
+ok current backend and ABI admitted
+ok wrong backend version refused
+ok wrong ABI refused
+SOURCE_VERSION_GUARDS checks=7 failures=0

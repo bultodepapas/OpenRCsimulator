@@ -118,6 +118,10 @@ inline GlowStageTrial glow_stage_prepare(const GlowStageModel &model, const Prop
 			model.has_line, model.line_capacity_kg);
 	if (!mass.ok) return out;
 	const double mode = std::trunc(values[18].v);
+	if ((mode == 1.0 || mode == 2.0) && state.fuel_kg.v == 0.0) {
+		// The connected left limit remains active at zero until the event commits.
+		state.fuel_kg = glow_connected_trial_fuel(0.0);
+	}
 	if (mode == 1.0 && !model.has_line && mass.main_fuel_kg.v <= model.unusable_kg.v) {
 		// Connected left limit while locating the residue boundary.
 		state.fuel_kg = glow_connected_trial_fuel(model.unusable_kg);

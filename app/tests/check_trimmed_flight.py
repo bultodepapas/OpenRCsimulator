@@ -58,7 +58,8 @@ GLOW_LAWS = ('glow-mean-cycle-finite-tank-hub-inflow-v2',
              'glow-mean-cycle-finite-tank-line-pickup-v3',
              'glow-mean-cycle-carburettor-v4',
              'glow-mean-cycle-connected-fuel-v5',
-             'glow-mean-cycle-segmented-firing-v6')
+             'glow-mean-cycle-segmented-firing-v6',
+             'glow-mean-cycle-zero-line-trial-v7')
 GEAR_LAW = 'retractable-point-gear-v1'
 GEAR_TRACE_SCHEMA = 'openrc-gear-trace v1'
 GEAR_INPUT_LAYOUT = ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake']

@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2a433cc4-9b2f-43bc-a2d2-c2ad04f22251",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-baseline/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-baseline/app/tools/flight_log_cli.gd",
+    "--",
+    "--log=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/55ax-exhaust.orfl",
+    "--csv=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/exact-final-55ax-exhaust/flight.csv",
+    "--report=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/exact-final-55ax-exhaust/replay.json",
+    "--replay"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T14:45:30.677205+00:00",
+  "label": "stable-exact-ok-55ax-exhaust",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-exact-ok-55ax-exhaust-cmkzbbh4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\stable-exact-ok-55ax-exhaust-cmkzbbh4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Flight log exact:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.531,
+  "log_bytes": 254,
+  "log_sha256": "1bf278192d5e91010cc0fa60757ca5d2b4b3df957304ef4c26e8333b83896b66"
+}

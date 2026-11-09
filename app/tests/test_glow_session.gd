@@ -40,6 +40,8 @@ func _initialize():
 		check(id+" pre-connected-fuel law checkpoint rejected",not f.restore_checkpoint(legacy_law))
 		legacy_law.glow_law="glow-mean-cycle-connected-fuel-v5"
 		check(id+" pre-segmented-firing law checkpoint rejected",not f.restore_checkpoint(legacy_law))
+		legacy_law.glow_law="glow-mean-cycle-segmented-firing-v6"
+		check(id+" pre-zero-line-trial law checkpoint rejected",not f.restore_checkpoint(legacy_law))
 		var observed: Dictionary=f.glow_state()
 		check(id+" source vibration is a constant-speed inertial estimate",observed.source_vibration.ok
 			and observed.source_vibration.constant_speed_assumption and observed.source_vibration.order_1x_force_peak_n>0.

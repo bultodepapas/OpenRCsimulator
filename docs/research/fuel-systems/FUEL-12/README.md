@@ -132,6 +132,51 @@ installation qualification. Run the new scripts through the checked runner as
 `res://tests/test_glow_counter_edges.gd`; exact invocations are retained in the
 checked reports.
 
+## Exact-zero connected trials (FUEL-12-R5 / A4/A6, 2026-11-09)
+
+Current-source reproduction found that a connected feed-line RK sample delivered
+zero fuel/chemical-power derivative at exactly zero total fuel, while adjacent
+positive and negative trials remained active. The production adapter now uses
+the connected left limit at exact zero until the resource transition commits,
+for main and line modes in reference and native evaluation. The sentinel belongs
+only to the detached lifecycle input: packed state and physical mass, CG and
+inertia remain at their clamped inventory boundary. Stopped, starved, owner-cut
+and injected-cut controls stay inactive. Firing-counter ownership is unchanged.
+
+The numerical law is `glow-mean-cycle-zero-line-trial-v7`. Old V6 checkpoints
+refuse continuation under the new law; historical V6 traces remain readable.
+Current trace, acceptance and packaged-smoke consumers identify V7 explicitly.
+No generated aircraft data or golden flight was changed. Bundled installations
+remain line-free; the affected line-equipped fixtures are synthetic supported
+contract cases, not evidence of a stock flight incident.
+
+The [source-bound evidence](zero-line-20261109/evidence.json) retains the baseline
+witness and failing regression, final checked receipts and replay artifacts.
+Reference checks pass 81 zero-boundary, 41 counter-edge, 102 event-counter, 159
+connected-trial, 110 flight-physics, 52 lifecycle, 580 prepared, 294 trace, 152
+session and 54 resource-step assertions, plus current/historical Python trace
+acceptance. Analytic constant-flow cases exercise exact-zero RK stages and event
+order at 240/480/960 Hz. Their baseline event time already met its bracket; the
+observed defect is derivative discontinuity, not a demonstrated general timing
+error or spark-probability correction.
+
+Two retained 32-tick stock tapes from committed `c8d5cfbe5` exact-replay their
+baselines with `solver_changed=false`; a 179-file source manifest verifies their
+normalized Git blobs and exact checkout bytes. Candidate replay reports `complete=true` and
+`solver_changed=true`, preserving all 33 CSV rows byte-for-byte for full-fill and
+exhaustion controls. The candidate comparison uses a retained research-only
+V6-to-V7 checkpoint overlay; normal production restore still rejects V6. This
+does not qualify a feed-line flight or prove exact cross-law solver equivalence.
+
+An isolated WSL/Linux x86-64 native build passes **8,190/8,190 exact comparisons**,
+including 48 synthetic line stage/mass cases and four event-locator trajectories.
+These cover main/line/starved and cut states, both zero signs, adjacent positive/
+negative masses, feed on/off, transition ordering and mismatched-snapshot refusal.
+The checked process completed without engine errors and retained source/binary
+identities. No library was installed in the shared app; old source-bound receipts
+continue to refuse and fall back. Native installation/fleet/package, complete CI,
+target cost, broader convergence and physical qualification remain open.
+
 ## Implemented result
 
 Current finite Stiks and Extra use the versioned glow adapter. P-51 and Ventage consume their explicit gasoline/turbine stores. Every supported adapter updates mass, CG and inertia, preserves unusable residue, locates exhaustion and continues with its stopped-source law. A glow installation can additionally declare an identified pre-primed line and pickup plane; synthetic tests cover loss of access, finite line depletion and retained unreachable main fuel. Bundled aircraft retain line-free/main-only data until their owners have source-backed delivery geometry.

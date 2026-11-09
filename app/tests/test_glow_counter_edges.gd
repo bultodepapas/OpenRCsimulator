@@ -94,11 +94,9 @@ func _fractional_line(source: Dictionary) -> void:
 	at_line[Flight.SOURCE_MODE_INDEX] = float(Flight.MODE_FEED_LINE)
 	var saved_line: PackedByteArray = at_line.to_byte_array()
 	var ordinary: Dictionary = Flight.point(owner, body, at_line, 0.5)
-	var connected: Dictionary = Flight.point(owner, body, at_line, 0.5, false, true)
-	_check("zero-total line counter sample leaves packed inventory untouched", at_line.to_byte_array() == saved_line)
-	_check("ordinary zero-total line stage is inactive", ordinary.get("ok", false) and ordinary.firing_fraction == 0.0)
+	_check("zero-total line sample leaves packed inventory untouched", at_line.to_byte_array() == saved_line)
 	_near("main segment endpoint probability is 5/32", float(main_point.get("firing_fraction", NAN)), 0.15625, 1.0e-12)
-	_near("connected zero-total line probability is 27/32", float(connected.get("firing_fraction", NAN)), 0.84375, 1.0e-12)
+	_near("connected zero-total line probability is 27/32", float(ordinary.get("firing_fraction", NAN)), 0.84375, 1.0e-12)
 	var start: PackedFloat64Array = body.duplicate()
 	start.append_array(values)
 	var original: PackedByteArray = start.to_byte_array()
@@ -155,12 +153,9 @@ func _empty_line_main_exhaustion(source: Dictionary) -> void:
 	boundary[1] = 0.0
 	boundary[6] = 1.1
 	var ordinary: Dictionary = Flight.point(owner, body, boundary, 0.25)
-	var connected: Dictionary = Flight.point(owner, body, boundary, 0.25, false, true)
-	_check("empty-line main RK sample retains its existing zero-fuel behavior",
-		ordinary.get("ok", false) and ordinary.firing_fraction == 0.0)
-	_check("empty-line main counter sample sees the connected left limit",
-		connected.get("ok", false) and connected.firing_fraction == 1.0,
-		str(connected.get("firing_fraction", NAN)))
+	_check("empty-line main RK sample sees the connected left limit",
+		ordinary.get("ok", false) and ordinary.firing_fraction == 1.0,
+		str(ordinary.get("firing_fraction", NAN)))
 	var start: PackedFloat64Array = body.duplicate()
 	start.append_array(values)
 	var rate: Callable = func(state: PackedFloat64Array, _at: float) -> PackedFloat64Array:

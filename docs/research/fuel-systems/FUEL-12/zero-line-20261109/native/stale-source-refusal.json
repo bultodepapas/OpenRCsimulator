@@ -1,0 +1,26 @@
+{
+  "command": [
+    "wsl.exe",
+    "-d",
+    "Ubuntu",
+    "--",
+    "python3",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/native-kernel/run.py",
+    "--script",
+    "glow_stage_oracle.gd",
+    "--states",
+    "1",
+    "--variant-states",
+    "1",
+    "--timing-rounds",
+    "0",
+    "--option",
+    "ticks=1"
+  ],
+  "process_exit": 1,
+  "stdout": "",
+  "stderr": "Current mirrored sources differ from the selected build receipt; rebuild/reinstall first.\n",
+  "expected_refusal": true,
+  "stale_build_receipt_sha256": "b853193efe9ebbbc4e598182c0ef0f790c544380fd5e0947ed0dce527581cf5a",
+  "scope": "Research runner rejected an existing source-stale receipt before launching the oracle. This does not test installed native runtime loading."
+}

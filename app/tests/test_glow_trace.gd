@@ -86,7 +86,7 @@ func _test_live_glow_traces() -> void:
 			str(trace.columns()))
 		_check("" + family + " metadata preserves cycle family", trace.meta.glow_family == family
 			and trace.meta.metadata_schema == "openrc-flight-meta v10"
-			and trace.meta.propulsion_model == Trace.GLOW_LAW_V6
+			and trace.meta.propulsion_model == Trace.GLOW_LAW_V7
 			and trace.meta.continuous_layout == Trace.GLOW_CONTINUOUS_LAYOUT_V4
 				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if session.wheel_count() > 0 else ""))
 		if not trace_ready:
@@ -194,11 +194,11 @@ func _test_legacy_glow_trace(session: Node) -> void:
 
 
 func _test_v4_glow_trace(session: Node) -> void:
-	# V6 preserves the V4/V5 layout. This exercises reading old metadata and samples,
+	# V7 preserves the V4/V5/V6 layout. This exercises reading old metadata and samples,
 	# independently of the stricter checkpoint/replay law identity.
 	var sample: Dictionary = session.mass_properties().duplicate(true)
 	sample.law = Trace.GLOW_LAW_V4
-	for law: String in [Trace.GLOW_LAW_V4, Trace.GLOW_LAW_V5, ""]:
+	for law: String in [Trace.GLOW_LAW_V4, Trace.GLOW_LAW_V5, Trace.GLOW_LAW_V6, ""]:
 		sample.law = law
 		var historical := Trace.new()
 		historical.meta = session.trace_meta().duplicate(true)
@@ -206,8 +206,8 @@ func _test_v4_glow_trace(session: Node) -> void:
 		historical.meta.propulsion_model = law
 		historical.record(session.sim.tick, session.sim.time(), session.sim.state, session.sim.last_loads,
 			session.sim.inputs, session.sim.aux, session.sim.continuous, sample)
-		_check("historical V4/V5 schemas remains readable; empty law is refused",
-			(historical.row_count() == 1 and not historical.to_csv().is_empty()) if law in [Trace.GLOW_LAW_V4, Trace.GLOW_LAW_V5]
+		_check("historical V4/V5/V6 schemas remain readable; empty law is refused",
+			(historical.row_count() == 1 and not historical.to_csv().is_empty()) if law in [Trace.GLOW_LAW_V4, Trace.GLOW_LAW_V5, Trace.GLOW_LAW_V6]
 			else historical.row_count() == 0 and historical.to_csv().is_empty(),
 			"law=%s rows=%d invalid=%s" % [law, historical.row_count(), historical._invalid_weather])
 

@@ -1,0 +1,17 @@
+--- app/tools/flight_log_cli.gd
++++ scratch/candidate_replay.gd
+@@ -414,6 +414,9 @@
+ 			# Open-loop counterfactual: identical body/internal initial state, candidate mass/configuration.
+ 			# Existing restore validates laws, wheel identities, typed layouts and admissibility.
+ 			checkpoint.configuration = candidate_checkpoint.configuration
++			# Test-only replay: explicitly migrate V6 to V7 while retaining the numeric input tape.
++			if checkpoint.get("glow_law") == "glow-mean-cycle-segmented-firing-v6" and candidate_checkpoint.get("glow_law") == "glow-mean-cycle-zero-line-trial-v7":
++				checkpoint.glow_law = candidate_checkpoint.glow_law
+ 			for key in ["mass", "inertia", "gravity"]:
+ 				checkpoint.simulation[key] = candidate_checkpoint.simulation[key]
+ 			# wheel_profiles.json gains rows when other aircraft are added. Adopt the candidate's file identity,
+@@ -555,3 +558,4 @@
+ 	else: print("Flight log %s: %d rows verified." % [report.mode, report.rows])
+ 	_completed = true
+ 	quit(0 if error.is_empty() else 1)
++

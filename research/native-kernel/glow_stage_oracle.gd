@@ -6,6 +6,7 @@ extends "stage_oracle.gd"
 const GlowAdapter := preload("res://sim/native/glow_stage_adapter.gd")
 const GlowWeather := preload("res://physics/wind_config.gd")
 const GlowFlight := preload("res://physics/glow/flight.gd")
+const GlowInventory := preload("res://physics/mass_inventory.gd")
 
 const GLOW_AIRCRAFT := ["stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60"]
 
@@ -40,7 +41,7 @@ func _checks() -> void:
 	if _states < 1 or ticks < 1:
 		_failures.append("glow stage states and ticks must be positive")
 		return
-	_report.glow_stage = {cases = [], trajectories = [], connected_boundaries = []}
+	_report.glow_stage = {cases = [], trajectories = [], connected_boundaries = [], line_boundaries = [], line_transitions = []}
 	var scenarios: Array[Dictionary] = []
 	for label: String in ["calm", "gusty", "turbulent", "hot-high", "standard-column",
 			"spatial-gusty-v1", "spatial-thermal-soaring-v2"]:
@@ -63,6 +64,7 @@ func _checks() -> void:
 			_check_glow_stage(id, scenario, _states)
 		if id == "stik-glow-55ax-2t":
 			_check_glow_connected_boundaries(id, scenarios[0])
+			_check_glow_line_boundaries(id, scenarios[0])
 		_check_glow_trajectory(id, scenarios[[0, 2, 3, 6][index]], ticks)
 		for event_kind: String in ["exhaustion", "overheat", "stall", "cut_restart"]:
 			_check_glow_trajectory(id, scenarios[0], maxi(12, ticks), event_kind)
@@ -267,6 +269,163 @@ func _check_glow_connected_boundaries(id: String, scenario: Dictionary) -> void:
 			_report.glow_stage.connected_boundaries.append({name = label, finite = finite, source_ok = source_ok,
 				feed_active = feed_active, native_stage_calls = native_calls})
 	session.free()
+
+
+## Installed aircraft do not yet carry a feed line. Construct the same admitted
+## two-store resource as the flight tests, without altering an aircraft file.
+func _line_fixture(session: Node, with_feed: bool) -> bool:
+	var model: Dictionary = session.aircraft.model.duplicate(true)
+	var install: Dictionary = model.propulsion.glow
+	if not with_feed: install.erase("fuel_feed")
+	install.unusable_fuel_kg = 0.0
+	var reference := 0.05
+	var capacity := 0.08
+	var center := PackedFloat64Array([0.0, 0.0, 0.0])
+	var size := PackedFloat64Array([0.08, 0.02, 0.02])
+	var liquid_id := "native_oracle_feed_line_liquid"
+	var store: Dictionary = {id = liquid_id, fuel = str(install.fuel_tank.fuel), family = "glow",
+		density_kg_m3 = float(install.profile.fuel.density_kg_m3), capacity_kg = capacity,
+		unusable_kg = 0.0, reserve_kg = 0.0, reserve_estimated = false, kind = "feed_line"}
+	install.feed_line = {id = "native_oracle_feed_line", liquid_inventory_id = liquid_id,
+		reference_mass_kg = reference, capacity_kg = capacity,
+		capacity_m3 = capacity / float(install.profile.fuel.density_kg_m3), family = "glow",
+		fuel = str(install.fuel_tank.fuel), density_kg_m3 = float(install.profile.fuel.density_kg_m3),
+		position = center, size = size, sample_store = store}
+	install.total_capacity_kg = float(install.capacity_fuel_kg) + capacity
+	install.total_reference_fuel_kg = float(install.reference_fuel_kg) + reference
+	model.mass_kg += reference
+	var tensor: PackedFloat64Array = GlowInventory.rectangular_box_per_kg(center, size)
+	for index: int in 6: model.inertia[index] += reference * tensor[index]
+	install.mass_reference = GlowFlight._prepare_resources(install, model)
+	if not install.mass_reference.get("ok", false): return false
+	session.aircraft.model = model
+	return true
+
+
+func _line_mass_values(point: Dictionary) -> PackedFloat64Array:
+	var values := PackedFloat64Array([point.mass_kg])
+	for field: String in ["cg_body_m", "inertia", "inverse", "inertia_origin"]:
+		values.append_array(point[field])
+	return values
+
+
+## Compare live native stages at all four connected left limits, including
+## signed zero, against the reference; stopping and a cut must remain inactive.
+func _check_glow_line_boundaries(id: String, scenario: Dictionary) -> void:
+	var session := _glow_session(id, scenario.config)
+	if session == null: return
+	var original: Dictionary = session.aircraft.model
+	var negative_zero: float = _from_bits(PackedInt64Array([-9223372036854775808]))[0]
+	var amounts: Array[Dictionary] = [
+		{name = "positive_zero", fuel = 0.0}, {name = "negative_zero", fuel = negative_zero},
+		{name = "positive_epsilon", fuel = 1.0e-12}, {name = "negative_epsilon", fuel = -1.0e-12}]
+	for with_feed: bool in [false, true]:
+		session.aircraft.model = original
+		if not _line_fixture(session, with_feed):
+			_failures.append("line-boundary fixture resource preparation failed")
+			continue
+		var config: Dictionary = GlowAdapter.config_for(session)
+		var mutated: Dictionary = config.duplicate(true)
+		mutated.glow_snapshot.store.line_capacity_kg += 0.001
+		if _native.prepare_stage(mutated).get("ok", true) or not _native.stage(session.sim.state,
+				session.sim.continuous, session.sim.time()).is_empty():
+			_failures.append("line-boundary mismatched native snapshot was admitted or retained")
+		var prepared: Dictionary = _native.prepare_stage(config)
+		var mass_prepared: Dictionary = _native.prepare_glow(config.glow_snapshot)
+		if not prepared.get("ok", false) or not mass_prepared.get("ok", false):
+			_failures.append("line-boundary native prepare refused: %s / %s" % [prepared, mass_prepared])
+			continue
+		for mode: int in [GlowFlight.MODE_MAIN_TANK, GlowFlight.MODE_FEED_LINE, GlowFlight.MODE_STARVED]:
+			for item: Dictionary in amounts:
+				for cut: bool in [false, true]:
+					var running: bool = mode != GlowFlight.MODE_STARVED
+					session.engine_running = not cut
+					if not GlowAdapter.set_context(session, _native, session.sim.aux, session.sim.inputs, session.sim.time()):
+						_failures.append("line-boundary native context refused")
+						continue
+					var values: PackedFloat64Array = session.sim.continuous.duplicate()
+					values[1] = float(item.fuel)
+					values[GlowFlight.LINE_FUEL_INDEX] = float(item.fuel) if mode == GlowFlight.MODE_FEED_LINE else 0.0
+					values[GlowFlight.SOURCE_MODE_INDEX] = float(mode)
+					values[7] = 1.0 if running else 0.0
+					var saved: PackedByteArray = values.to_byte_array()
+					var body: PackedFloat64Array = session.sim.state.duplicate()
+					var calls: int = int(_native.stage_stats().get("stage_calls", 0))
+					var reference: Dictionary = GlowFlight.evaluate(body, values, session.sim.time(), session)
+					var native: Dictionary = _native.stage(body, values, session.sim.time())
+					calls = int(_native.stage_stats().get("stage_calls", 0)) - calls
+					var label := "%s/feed=%s/mode=%d/%s/cut=%s" % [id, with_feed, mode, item.name, cut]
+					_compare("glow_line_boundary_stage", var_to_bytes(reference), var_to_bytes(native), [label, values])
+					var finite: bool = _glow_finite_stage(reference, values.size()) and _glow_finite_stage(native, values.size())
+					var active: bool = running and not cut
+					var source_ok: bool = finite and (native.derivative[1] < 0.0 and native.derivative[16] > 0.0 if active \
+						else native.derivative[1] == 0.0 and native.derivative[16] == 0.0)
+					var line_ok: bool = finite and native.derivative[GlowFlight.LINE_FUEL_INDEX] == \
+						(native.derivative[1] if mode == GlowFlight.MODE_FEED_LINE else 0.0)
+					var mass: Dictionary = GlowFlight._stage_mass_context(session, values)
+					var native_mass: Dictionary = _native.glow_mass_component(PackedFloat64Array([
+						mass.get("main_fuel_kg", NAN), mass.get("line_fuel_kg", NAN)]))
+					var mass_ok: bool = mass.get("ok", false) and native_mass.get("ok", false) \
+						and (float(item.fuel) > 0.0 or float(mass.total_fuel_kg) == 0.0)
+					if mass_ok:
+						mass_ok = _compare("glow_line_boundary_mass", _line_mass_values(mass.properties), native_mass.values, [label, values])
+					if not finite or not source_ok or not line_ok or not mass_ok or calls != 1 or values.to_byte_array() != saved:
+						_failures.append("line-boundary failed %s finite=%s source=%s line=%s mass=%s calls=%d" %
+							[label, finite, source_ok, line_ok, mass_ok, calls])
+					_report.glow_stage.line_boundaries.append({name = label, finite = finite, source_ok = source_ok,
+						line_ok = line_ok, mass_ok = mass_ok, native_stage_calls = calls})
+		_check_glow_line_transition(session, with_feed)
+	session.free()
+
+
+func _line_derivative(session: Node, body_and_values: PackedFloat64Array, at: float, native: bool) -> PackedFloat64Array:
+	var body: PackedFloat64Array = body_and_values.slice(0, RB.SIZE)
+	var values: PackedFloat64Array = body_and_values.slice(RB.SIZE)
+	var stage: Dictionary = _native.stage(body, values, at) if native else GlowFlight.evaluate(body, values, at, session)
+	if not _glow_finite_stage(stage, values.size()): return PackedFloat64Array([NAN])
+	var derivative: PackedFloat64Array = stage.body_derivative.duplicate()
+	derivative.append_array(stage.derivative)
+	return derivative
+
+
+## The accepted event locator and counter policy remain the GDScript owner;
+## compare its full result while its derivative is supplied by each backend.
+func _check_glow_line_transition(session: Node, with_feed: bool) -> void:
+	session.engine_running = true
+	if not GlowAdapter.set_context(session, _native, session.sim.aux, session.sim.inputs, session.sim.time()):
+		_failures.append("line-transition native context refused")
+		return
+	for main_first: bool in [false, true]:
+		var values: PackedFloat64Array = session.sim.continuous.duplicate()
+		values[1] = 2.0e-7 if main_first else 1.0e-7
+		values[GlowFlight.LINE_FUEL_INDEX] = 1.0e-7
+		values[GlowFlight.SOURCE_MODE_INDEX] = float(GlowFlight.MODE_MAIN_TANK if main_first else GlowFlight.MODE_FEED_LINE)
+		values[7] = 1.0
+		var state: PackedFloat64Array = session.sim.state.duplicate()
+		state.append_array(values)
+		var reference_derivative := func(s: PackedFloat64Array, at: float) -> PackedFloat64Array:
+			return _line_derivative(session, s, at, false)
+		var native_derivative := func(s: PackedFloat64Array, at: float) -> PackedFloat64Array:
+			return _line_derivative(session, s, at, true)
+		var at: float = session.sim.time()
+		var before_calls: int = int(_native.stage_stats().get("stage_calls", 0))
+		var reference: Variant = GlowFlight.step(state, at, session.sim.dt(), reference_derivative,
+			reference_derivative.call(state, at), session)
+		var native: Variant = GlowFlight.step(state, at, session.sim.dt(), native_derivative,
+			native_derivative.call(state, at), session)
+		var calls: int = int(_native.stage_stats().get("stage_calls", 0)) - before_calls
+		var label := "feed=%s/main_first=%s" % [with_feed, main_first]
+		var matched: bool = _compare("glow_line_transition", var_to_bytes(reference), var_to_bytes(native), [label, state])
+		var events: Array = reference.get("events", []) if reference is Dictionary else []
+		var names: Array[String] = []
+		for event: Dictionary in events: names.append(str(event.get("type", "")))
+		var located: bool = names.has("fuel_exhausted") and names.has("glow_stopped") \
+			and (not main_first or names.has("fuel_tank_unusable"))
+		if not matched or not located or calls < 4:
+			_failures.append("line-transition failed %s matched=%s located=%s calls=%d events=%s" %
+				[label, matched, located, calls, names])
+		_report.glow_stage.line_transitions.append({name = label, matched = matched, located = located,
+			events = names, native_stage_calls = calls})
 
 
 func _compare_glow_stage(reference: Dictionary, native: Dictionary, inputs: Array) -> void:

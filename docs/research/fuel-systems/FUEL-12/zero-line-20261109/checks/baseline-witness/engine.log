@@ -1,0 +1,7 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+WITNESS mass=0.000000000001 ok=true fuel_rate=-0.00020558640226 chemical_w=1923.71078892518 firing=1.0
+WITNESS mass=0.0 ok=true fuel_rate=0.0 chemical_w=0.0 firing=0.0
+WITNESS mass=-0.000000000001 ok=true fuel_rate=-0.00020558640226 chemical_w=1923.71078892518 firing=1.0
+WITNESS stopped/cut=0.0/0.0 baseline_bug_observed=true
+FUEL_ZERO_BASELINE_COMPLETE=true

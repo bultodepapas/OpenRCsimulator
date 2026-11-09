@@ -1,0 +1,84 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   synthetic fixture source loads
+ok   feed=false prepared=false mode=1 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 }
+ok   feed=false prepared=false mode=1 trial does not alter input
+ok   feed=false prepared=false mode=1 RK derivative uses same connected source
+ok   feed=false prepared=false mode=1 physical inventory stays empty
+ok   feed=false prepared=false mode=1 negative zero has the same connected rate
+ok   feed=false prepared=false mode=1 owner cut stays inactive
+ok   feed=false prepared=false mode=1 stopped source stays inactive
+ok   feed=false prepared=false mode=1 injected power cut stays inactive
+ok   feed=false prepared=false mode=2 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 }
+ok   feed=false prepared=false mode=2 trial does not alter input
+ok   feed=false prepared=false mode=2 RK derivative uses same connected source
+ok   feed=false prepared=false mode=2 physical inventory stays empty
+ok   feed=false prepared=false mode=2 negative zero has the same connected rate
+ok   feed=false prepared=false mode=2 owner cut stays inactive
+ok   feed=false prepared=false mode=2 stopped source stays inactive
+ok   feed=false prepared=false mode=2 injected power cut stays inactive
+ok   committed starved state stays inactive
+ok   feed=false prepared=true mode=1 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 }
+ok   feed=false prepared=true mode=1 trial does not alter input
+ok   feed=false prepared=true mode=1 RK derivative uses same connected source
+ok   feed=false prepared=true mode=1 physical inventory stays empty
+ok   feed=false prepared=true mode=1 negative zero has the same connected rate
+ok   feed=false prepared=true mode=1 owner cut stays inactive
+ok   feed=false prepared=true mode=1 stopped source stays inactive
+ok   feed=false prepared=true mode=1 injected power cut stays inactive
+ok   feed=false prepared=true mode=2 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00020558640226, "temperature_k": -0.36079109518021, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.0, "phase_revolutions": 100.0 }
+ok   feed=false prepared=true mode=2 trial does not alter input
+ok   feed=false prepared=true mode=2 RK derivative uses same connected source
+ok   feed=false prepared=true mode=2 physical inventory stays empty
+ok   feed=false prepared=true mode=2 negative zero has the same connected rate
+ok   feed=false prepared=true mode=2 owner cut stays inactive
+ok   feed=false prepared=true mode=2 stopped source stays inactive
+ok   feed=false prepared=true mode=2 injected power cut stays inactive
+ok   committed starved state stays inactive
+ok   feed=true prepared=false mode=1 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": -0.000035207735, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": -0.000035207735, "phase_revolutions": 100.0 }
+ok   feed=true prepared=false mode=1 trial does not alter input
+ok   feed=true prepared=false mode=1 RK derivative uses same connected source
+ok   feed=true prepared=false mode=1 physical inventory stays empty
+ok   feed=true prepared=false mode=1 negative zero has the same connected rate
+ok   feed=true prepared=false mode=1 owner cut stays inactive
+ok   feed=true prepared=false mode=1 stopped source stays inactive
+ok   feed=true prepared=false mode=1 injected power cut stays inactive
+ok   feed=true prepared=false mode=2 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.00005854398311, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.00005854398311, "phase_revolutions": 100.0 }
+ok   feed=true prepared=false mode=2 trial does not alter input
+ok   feed=true prepared=false mode=2 RK derivative uses same connected source
+ok   feed=true prepared=false mode=2 physical inventory stays empty
+ok   feed=true prepared=false mode=2 negative zero has the same connected rate
+ok   feed=true prepared=false mode=2 owner cut stays inactive
+ok   feed=true prepared=false mode=2 stopped source stays inactive
+ok   feed=true prepared=false mode=2 injected power cut stays inactive
+ok   committed starved state stays inactive
+ok   feed=true prepared=true mode=1 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": -0.000035207735, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": -0.000035207735, "phase_revolutions": 100.0 }
+ok   feed=true prepared=true mode=1 trial does not alter input
+ok   feed=true prepared=true mode=1 RK derivative uses same connected source
+ok   feed=true prepared=true mode=1 physical inventory stays empty
+ok   feed=true prepared=true mode=1 negative zero has the same connected rate
+ok   feed=true prepared=true mode=1 owner cut stays inactive
+ok   feed=true prepared=true mode=1 stopped source stays inactive
+ok   feed=true prepared=true mode=1 injected power cut stays inactive
+ok   feed=true prepared=true mode=2 zero fuel has connected negative-trial source  zero={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.00005854398311, "phase_revolutions": 100.0 } negative={ "fuel_kg": -0.00019856112429, "temperature_k": -0.37025091538904, "servo_fraction": 0.0, "air_fraction": 0.0, "fuel_transport_kg_s": 0.00005854398311, "phase_revolutions": 100.0 }
+ok   feed=true prepared=true mode=2 trial does not alter input
+ok   feed=true prepared=true mode=2 RK derivative uses same connected source
+ok   feed=true prepared=true mode=2 physical inventory stays empty
+ok   feed=true prepared=true mode=2 negative zero has the same connected rate
+ok   feed=true prepared=true mode=2 owner cut stays inactive
+ok   feed=true prepared=true mode=2 stopped source stays inactive
+ok   feed=true prepared=true mode=2 injected power cut stays inactive
+ok   committed starved state stays inactive
+ok   240 Hz connected depletion accepts with an exact-zero RK trial  { "state": [0.0, 0.0, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6000.0, 0.0, 390.0, 0.75, 0.4153303770496, 0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.15, 0.00084082504718, 0.0, 0.0, 4.00773081122264, 0.0, 0.0], "events": [{ &"type": "fuel_exhausted", &"time_s": 0.00208333333383, &"id": "feed_line_empty", &"surface_residual": -0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "edge_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.00208333333383 }] }
+ok   240 Hz constant flow analytic depletion time  got 0.00208333333383, expected 0.00208333333333 (tol 0.00000000002)
+ok   240 Hz pre-boundary chemical work  got 4.00773081122264, expected 4.00773081122264 (tol 0.0000001)
+ok   240 Hz depletion commits line empty then stop  ["fuel_exhausted", "glow_stopped"]
+ok   480 Hz connected depletion accepts with an exact-zero RK trial  { "state": [0.0, 0.0, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6000.0, 0.0, 390.0, 0.75, 0.4153303770496, 0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.15, 0.00042041252371, 0.0, 0.0, 2.00386540609225, 0.0, 0.0], "events": [{ &"type": "fuel_exhausted", &"time_s": 0.00104166666717, &"id": "feed_line_empty", &"surface_residual": -0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "edge_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.00104166666717 }] }
+ok   480 Hz constant flow analytic depletion time  got 0.00104166666717, expected 0.00104166666667 (tol 0.00000000002)
+ok   480 Hz pre-boundary chemical work  got 2.00386540609225, expected 2.00386540609225 (tol 0.0000001)
+ok   480 Hz depletion commits line empty then stop  ["fuel_exhausted", "glow_stopped"]
+ok   960 Hz connected depletion accepts with an exact-zero RK trial  { "state": [0.0, 0.0, 0.0, 15.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6000.0, 0.0, 390.0, 0.75, 0.4153303770496, 0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.15, 0.00021020626197, 0.0, 0.0, 1.00193270352705, 0.0, 0.0], "events": [{ &"type": "fuel_exhausted", &"time_s": 0.00052083333383, &"id": "feed_line_empty", &"surface_residual": -0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "edge_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.00052083333383 }] }
+ok   960 Hz constant flow analytic depletion time  got 0.00052083333383, expected 0.00052083333333 (tol 0.00000000002)
+ok   960 Hz pre-boundary chemical work  got 1.00193270352705, expected 1.00193270352705 (tol 0.0000001)
+ok   960 Hz depletion commits line empty then stop  ["fuel_exhausted", "glow_stopped"]
+Glow zero line trial: 81 checks, 0 failed

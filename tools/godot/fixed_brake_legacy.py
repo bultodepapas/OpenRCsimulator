@@ -48,7 +48,7 @@ SESSION_PATH = "sim/flight_session.gd"
 EXTRA_PATH = "data/aircraft/gp_extra_300s_60.json"
 STIK_PATH = "data/aircraft/jensen_ugly_stik_60.json"
 GLOW_LAW_OLD = b"glow-mean-cycle-carburettor-v4"
-GLOW_LAW_CURRENT = b"glow-mean-cycle-segmented-firing-v6"
+GLOW_LAW_CURRENT = b"glow-mean-cycle-zero-line-trial-v7"
 REFERENCE_LAW_DECLARATIONS = {
     GLOW_FLIGHT_PATH: (b'const LAW := "' + GLOW_LAW_OLD + b'"',
                        b'const LAW := "' + GLOW_LAW_CURRENT + b'"'),
@@ -157,7 +157,7 @@ def check_input_bytes(fuel: bytes, avanti: bytes, extra: bytes, stik: bytes) -> 
 def check_candidate_glow_law(data: bytes) -> None:
     declarations = re.findall(rb"(?m)^[ \t]*const[ \t]+LAW[ \t]*(?::[^=\r\n]*)?=[^\r\n]*", data)
     require(declarations == [REFERENCE_LAW_DECLARATIONS[GLOW_FLIGHT_PATH][1]],
-            "candidate glow LAW declaration differs from the supported v6 identity")
+            "candidate glow LAW declaration differs from the supported v7 identity")
 
 
 def check_candidate_physics_identity(project: Path) -> None:

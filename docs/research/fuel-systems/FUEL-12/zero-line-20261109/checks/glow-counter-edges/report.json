@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9f2a9d54-e697-4cd9-a6f9-43dbc00002e8",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_glow_counter_edges.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T14:22:58.579197+00:00",
+  "label": "test_glow_counter_edges",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\test_glow_counter_edges-4twwyt9m\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-fuel-zero-20261109\\test_glow_counter_edges-4twwyt9m\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Glow counter edges:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.297,
+  "log_bytes": 6529,
+  "log_sha256": "fdfb18ed8d7b59b5c8181bd3379d71a947b9d92cac37c45bee0bb1b80a5a47d6"
+}

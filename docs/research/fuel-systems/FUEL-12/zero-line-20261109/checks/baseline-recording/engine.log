@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/55ax-exhaust.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/55ax-exhaust.orfl (32 ticks)
+55ax-exhaust baseline ticks=32
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/55ax-control.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-fuel-zero-20261109/stable-flights-accepted/55ax-control.orfl (32 ticks)
+55ax-control baseline ticks=32
+GLOW_BASELINES_COMPLETE=true

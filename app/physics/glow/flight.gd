@@ -27,7 +27,7 @@ const MODE_FEED_LINE := 2
 ## Fixed-point passes and tolerance for the initial needled fuel-transport seed (fuel_feed installations).
 const SEED_PASSES := 8
 const SEED_TOLERANCE := 1.0e-15
-const LAW := "glow-mean-cycle-segmented-firing-v6"
+const LAW := "glow-mean-cycle-zero-line-trial-v7"
 const CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const EVALUATOR_META := &"_glow_prepared_evaluator"
@@ -415,7 +415,7 @@ static func _resource_events(owner: Node) -> Array:
 	return events
 
 static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float,
-		include_stage_coupling: bool = false, connected_counter_sample: bool = false) -> Dictionary:
+		include_stage_coupling: bool = false) -> Dictionary:
 	var prop: Dictionary=owner.aircraft.model.propulsion
 	var install: Dictionary=prop.glow
 	var state: Dictionary=unpack(values,install)
@@ -427,9 +427,9 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	# locate an exact boundary. Mass properties clamp to the physical boundary; the source
 	# mode continues to provide its pre-boundary flow until the event transition is accepted.
 	if state.fuel_kg<0.0: state.fuel_kg=1e-30
-	elif connected_counter_sample and mode in [MODE_MAIN_TANK,MODE_FEED_LINE] and state.fuel_kg==0.0:
-		# Observe the connected left limit for counters only. RK derivatives keep
-		# their existing law; raw inventory/mass and caller state remain untouched.
+	elif mode in [MODE_MAIN_TANK,MODE_FEED_LINE] and state.fuel_kg==0.0:
+		# Keep the connected left limit through RK and counter samples until the
+		# event transition commits. Raw inventory and mass remain untouched.
 		state.fuel_kg=_connected_trial_fuel(0.0)
 	if _injected_cut(owner):
 		state=Life.cut(state).state
@@ -827,7 +827,7 @@ static func _count_segment(owner: Node, start: PackedFloat64Array, end: PackedFl
 	if start[RB.SIZE+7]==1.0 and int(start[RB.SIZE+SOURCE_MODE_INDEX])!=MODE_STARVED \
 			and owner.engine_running and not _injected_cut(owner):
 		var sample: Dictionary=endpoint if not endpoint.is_empty() else point(owner,
-			end.slice(0,RB.SIZE),end.slice(RB.SIZE),end_time,false,true)
+			end.slice(0,RB.SIZE),end.slice(RB.SIZE),end_time)
 		if not sample.get("ok",false): return false
 		probability=float(sample.firing_fraction)
 	var counted: Dictionary=Life.count_opportunities(str(install.profile.family),phase_start,phase_end,
