@@ -3,7 +3,7 @@ extends SceneTree
 const Incident := preload("res://economy/incident.gd")
 const RepairDetails := preload("res://economy/repair_details.gd")
 
-const COMPONENT_ID := "covered_airframe_and_installation_hardware"
+const COMPONENT_ID := "airframe_wing"
 const REPAIR_EVIDENCE := "Inspected a measured film patch; structure intact. Synthetic test fixture."
 
 var _checks := 0

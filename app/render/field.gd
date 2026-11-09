@@ -278,7 +278,7 @@ static func _advance_build(context: _BuildContext) -> void:
 					break
 			if Scenery.build_finished(context.scenery_build):
 				var attached_scenery: Node3D = Scenery.take_build(context.scenery_build)
-				if str(context.field.get("id", "")) == "default" and not bool(context.scenery_options.get("file_explicit", false)):
+				if WornGroundMaterial.enabled() and str(context.field.get("id", "")) == "default" and not bool(context.scenery_options.get("file_explicit", false)):
 					WornGroundMaterial.bind(attached_scenery, context.grass)
 				context.result.add_child(attached_scenery)
 				context.scenery_build = null

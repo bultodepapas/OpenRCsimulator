@@ -1,7 +1,10 @@
 extends RefCounted
 ## Pure deterministic candidate costing. It never decides what was damaged.
 
+const RepairDetails = preload("res://economy/repair_details.gd")
+
 const DOSSIER_FORMAT := "openrc-aircraft-economics v1"
+const FINANCIAL_DOSSIER_FORMAT := "openrc-aircraft-economics v2"
 const INSPECTION_FORMAT := "openrc-repair-inspection v1"
 const RECIPES_FORMAT := "openrc-repair-recipes v1"
 const PLAN_FORMAT := "openrc-repair-plan v1"
@@ -269,6 +272,158 @@ static func select_option(plan_value: Dictionary, component_id: String, option_i
 	}
 
 
+## Reconciles explicitly selected compatible repairs. Material packages are
+## shared only when their complete identity and price match. Labor is shared
+## only for explicit, evidenced complete-work groups; an additional setup
+## group retains each component's own work. Otherwise each task retains its time.
+## `incurred_fees_minor` is a separately deduplicated incident-wide amount.
+static func aggregate_selections(selections: Array, shared_labor_groups: Array = [],
+		incurred_fees_minor: Variant = 0) -> Dictionary:
+	if selections.is_empty() or selections.size() > 64 or shared_labor_groups.size() > 64:
+		return _aggregate_failure("repair selections or labor groups exceed their supported bounds")
+	if incurred_fees_minor != null and not _is_minor(incurred_fees_minor):
+		return _aggregate_failure("incurred fees must be null or bounded integer cents")
+	var components: Dictionary = {}
+	var materials: Dictionary = {}
+	var basis := ""
+	var mode := ""
+	for value: Variant in selections:
+		if not value is Dictionary or not bool(value.get("ok", false)) or not value.get("decision") is Dictionary or not value.get("provenance") is Dictionary:
+			return _aggregate_failure("each selection must be a confirmed repair choice")
+		var selection: Dictionary = value
+		var decision: Dictionary = selection.decision
+		var provenance: Dictionary = selection.provenance
+		var component_id: Variant = provenance.get("component_id")
+		if not _is_text(component_id) or String(component_id).length() > 128 or components.has(component_id) or decision.get("disposition") != "repair":
+			return _aggregate_failure("repair component IDs must be unique and explicit")
+		if selection.get("costing_basis") not in COSTING_BASES or selection.get("labor_mode") not in LABOR_MODES or provenance.get("costing_basis") != selection.get("costing_basis") or provenance.get("labor_mode") != selection.get("labor_mode"):
+			return _aggregate_failure("repair basis and labor mode must match their provenance")
+		if basis.is_empty():
+			basis = selection.costing_basis
+			mode = selection.labor_mode
+		elif basis != selection.costing_basis or mode != selection.labor_mode:
+			return _aggregate_failure("combined repairs require one explicit costing basis and labor mode")
+		var detail: Dictionary = RepairDetails._normalize_materials(provenance, basis)
+		if not detail.has("materials") or not _is_minor(decision.get("repair_minor")) or not _is_minor(provenance.get("repair_minor")):
+			return _aggregate_failure("repair material or labor evidence is incomplete")
+		var selected_amount: Variant = _bounded_add(int(detail.selected_material_minor), int(detail.labor_minor))
+		if selected_amount == null or selected_amount != decision.repair_minor or selected_amount != provenance.repair_minor:
+			return _aggregate_failure("repair selection does not reconcile to its material and labor evidence")
+		components[component_id] = detail
+		for material: Dictionary in detail.materials:
+			var id: String = material.material_id
+			if not materials.has(id):
+				materials[id] = {"material_id": id, "unit": material.unit,
+					"package_units": material.package_units, "package_price_minor": material.package_price_minor,
+					"source": material.source, "required_units": 0}
+			var group: Dictionary = materials[id]
+			if group.unit != material.unit or group.package_units != material.package_units or group.package_price_minor != material.package_price_minor or group.source != material.source:
+				return _aggregate_failure("shared material IDs have inconsistent package identity, price or source")
+			if int(material.required_units) > MAX_MEASURE_UNITS - int(group.required_units):
+				return _aggregate_failure("shared material quantity exceeds the supported range")
+			group.required_units += int(material.required_units)
+
+	var material_ids: Array = materials.keys()
+	material_ids.sort()
+	var material_rows: Array = []
+	var cash_materials: int = 0
+	var consumed_materials: int = 0
+	for id: Variant in material_ids:
+		var group: Dictionary = materials[id]
+		var count: int = int((int(group.required_units) + int(group.package_units) - 1) / int(group.package_units))
+		var cash := _multiply_minor(int(group.package_price_minor), count)
+		var consumed: Variant = _multiply_divide_ceil(int(group.package_price_minor), int(group.required_units), int(group.package_units))
+		if not cash.ok or consumed == null:
+			return _aggregate_failure("combined material amount exceeds the supported range")
+		var next_cash: Variant = _bounded_add(cash_materials, int(cash.value))
+		var next_consumed: Variant = _bounded_add(consumed_materials, int(consumed))
+		if next_cash == null or next_consumed == null:
+			return _aggregate_failure("combined material total exceeds the supported range")
+		cash_materials = int(next_cash)
+		consumed_materials = int(next_consumed)
+		group["package_count"] = count
+		group["purchase_minor"] = cash.value
+		group["consumption_minor"] = consumed
+		material_rows.append(group)
+
+	var labor_total: int = 0
+	var labor_rows: Array = []
+	var grouped: Dictionary = {}
+	var referenced: Dictionary = {}
+	var group_ids: Dictionary = {}
+	for group_value: Variant in shared_labor_groups:
+		if not group_value is Dictionary or group_value.size() != 6 or not group_value.has_all(["id", "component_ids", "labor_minutes", "scope", "basis", "evidence"]):
+			return _aggregate_failure("shared labor groups require scope, basis, evidence, ID, components and minutes")
+		var group: Dictionary = group_value
+		if not _is_text(group.id) or String(group.id).length() > 128 or String(group.id).begins_with("component:") or group_ids.has(group.id) or not group.component_ids is Array or group.component_ids.size() < 2 or group.component_ids.size() > selections.size() or typeof(group.labor_minutes) != TYPE_INT or int(group.labor_minutes) < 0 or int(group.labor_minutes) > MAX_LABOR_MINUTES or group.scope not in ["shared_complete_work", "additional_setup"] or group.basis not in ["inspection", "scenario_assumption"] or not _is_text(group.evidence) or String(group.evidence).length() > 2048:
+			return _aggregate_failure("shared labor group is malformed or out of bounds")
+		group_ids[group.id] = true
+		var rate: Variant = null
+		var source: Variant = null
+		for component_id: Variant in group.component_ids:
+			if typeof(component_id) != TYPE_STRING or not components.has(component_id) or referenced.has(component_id):
+				return _aggregate_failure("shared labor group has an unknown or repeated component")
+			referenced[component_id] = true
+			var detail: Dictionary = components[component_id]
+			if group.scope == "shared_complete_work":
+				if int(group.labor_minutes) == 0 and int(detail.labor_minutes) > 0:
+					return _aggregate_failure("zero combined labor cannot erase positive component work")
+				grouped[component_id] = true
+			if rate == null:
+				rate = detail.labor_rate_minor_per_hour
+				source = detail.labor_source
+			elif rate != detail.labor_rate_minor_per_hour or source != detail.labor_source:
+				return _aggregate_failure("shared labor group rates or source evidence differ")
+		var amount: Variant = _multiply_divide_ceil(int(rate), int(group.labor_minutes), 60)
+		var next_total: Variant = _bounded_add(labor_total, int(amount)) if amount != null else null
+		if next_total == null:
+			return _aggregate_failure("shared labor exceeds the supported amount")
+		labor_total = int(next_total)
+		var ids: Array = group.component_ids.duplicate()
+		ids.sort()
+		labor_rows.append({"id": group.id, "component_ids": ids, "labor_minutes": group.labor_minutes,
+			"scope": group.scope, "basis": group.basis, "evidence": group.evidence,
+			"labor_rate_minor_per_hour": rate, "labor_minor": amount, "source": source})
+	var component_ids: Array = components.keys()
+	component_ids.sort()
+	for id: Variant in component_ids:
+		if grouped.has(id):
+			continue
+		var detail: Dictionary = components[id]
+		var next_total: Variant = _bounded_add(labor_total, int(detail.labor_minor))
+		if next_total == null:
+			return _aggregate_failure("labor total exceeds the supported amount")
+		labor_total = int(next_total)
+		labor_rows.append({"id": "component:%s" % id, "component_ids": [id], "labor_minutes": detail.labor_minutes,
+			"labor_rate_minor_per_hour": detail.labor_rate_minor_per_hour,
+			"labor_minor": detail.labor_minor, "source": detail.labor_source})
+	labor_rows.sort_custom(func(left: Dictionary, right: Dictionary) -> bool: return String(left.id) < String(right.id))
+	var cash_total: Variant = _bounded_add(cash_materials, labor_total)
+	var consumption_total: Variant = _bounded_add(consumed_materials, labor_total)
+	if cash_total == null or consumption_total == null:
+		return _aggregate_failure("combined repair exceeds the supported amount")
+	if incurred_fees_minor != null:
+		cash_total = _bounded_add(int(cash_total), int(incurred_fees_minor))
+		consumption_total = _bounded_add(int(consumption_total), int(incurred_fees_minor))
+		if cash_total == null or consumption_total == null:
+			return _aggregate_failure("repair plus incurred fees exceeds the supported amount")
+	else:
+		cash_total = null
+		consumption_total = null
+	return {"ok": true, "complete": incurred_fees_minor != null, "costing_basis": basis,
+		"rounding_policy": "v1_ceiling_per_material_and_labor_group",
+		"labor_mode": mode, "materials": material_rows, "labor_groups": labor_rows,
+		"material_purchase_minor": cash_materials, "material_consumption_minor": consumed_materials,
+		"labor_minor": labor_total, "incurred_fees_minor": incurred_fees_minor,
+		"cash_total_minor": cash_total, "consumption_total_minor": consumption_total,
+		"total_minor": cash_total if basis == "cash" else consumption_total,
+		"errors": [], "unresolved": [] if incurred_fees_minor != null else ["incurred fees are unknown"]}
+
+
+static func _aggregate_failure(message: String) -> Dictionary:
+	return {"ok": false, "complete": false, "total_minor": null, "errors": [message], "unresolved": []}
+
+
 static func _selection_provenance(component: Dictionary, option: Dictionary,
 		costing_basis: String, amount: Variant, aircraft_id: String) -> Dictionary:
 	var compatible_components: Dictionary = option.get("compatible_components", {})
@@ -402,8 +557,8 @@ static func _make_option(recipe: Dictionary, measurements: Dictionary,
 
 static func _validate_dossier(dossier: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
-	if dossier.get("format") != DOSSIER_FORMAT:
-		errors.append("dossier.format must be '%s'" % DOSSIER_FORMAT)
+	if dossier.get("format") not in [DOSSIER_FORMAT, FINANCIAL_DOSSIER_FORMAT]:
+		errors.append("dossier.format must be a supported economics format")
 	if typeof(dossier.get("currency")) != TYPE_STRING or str(dossier.get("currency", "")).strip_edges().is_empty():
 		errors.append("dossier.currency must be nonempty text")
 	if not _is_text(dossier.get("aircraft_id")) or not _is_text(dossier.get("source_sha256")):
@@ -437,13 +592,15 @@ static func _validate_dossier(dossier: Dictionary) -> Dictionary:
 		elif inventory_ids.size() > MAX_COMPONENTS:
 			errors.append("dossier.components[%s].physical_inventory_ids exceeds the bound" % id)
 		else:
+			var row_inventory: Dictionary = {}
 			for physical_id: Variant in inventory_ids:
 				if not _is_text(physical_id):
 					errors.append("dossier.components[%s] has an invalid physical inventory id" % id)
-				elif inventory_owner.has(physical_id):
+				elif row_inventory.has(physical_id) or (inventory_owner.has(physical_id) and dossier.get("format") == DOSSIER_FORMAT):
 					errors.append("physical inventory '%s' overlaps '%s' and '%s'" % [physical_id, inventory_owner[physical_id], id])
 				else:
 					inventory_owner[physical_id] = id
+					row_inventory[physical_id] = true
 		components[id] = component
 	return {"errors": errors, "components": components}
 

@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openrc-cost-profiles-v2.schema.json",
+  "title": "OpenRC versioned game-cost companion (authored or generated)",
+  "description": "Cross-references, exact source/catalog bindings, parent ownership and arithmetic are additionally validated by build_profiles.py and cost_profile.gd. Generated documents also require generated_from.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "policy_version",
+    "price_date",
+    "assumptions",
+    "aircraft"
+  ],
+  "properties": {
+    "format": {
+      "const": "openrc-cost-profiles v2"
+    },
+    "policy_version": {
+      "const": "local-contact-v1"
+    },
+    "price_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "assumptions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 2048
+      }
+    },
+    "generated_from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_sha256",
+        "legacy_catalog_sha256",
+        "generator_sha256"
+      ],
+      "properties": {
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "legacy_catalog_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "generator_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "aircraft": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 32,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "components",
+          "zones",
+          "propeller_component_id",
+          "propeller_inspection_ids",
+          "assumptions",
+          "shared_parent_children",
+          "source_hashes"
+        ],
+        "properties": {
+          "components": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 128,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "quantity",
+                "unit_minor",
+                "low_unit_minor",
+                "high_unit_minor",
+                "physical_inventory_ids",
+                "price_basis",
+                "offer_id",
+                "notes"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                },
+                "unit_minor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9000000000000000
+                },
+                "low_unit_minor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9000000000000000
+                },
+                "high_unit_minor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9000000000000000
+                },
+                "physical_inventory_ids": {
+                  "type": "array",
+                  "maxItems": 128,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "minItems": 1
+                },
+                "price_basis": {
+                  "enum": [
+                    "estimated",
+                    "price_proxy",
+                    "exact_product_price"
+                  ]
+                },
+                "offer_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "notes": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                }
+              }
+            }
+          },
+          "zones": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 256,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "source",
+                "probe_id",
+                "component_ids",
+                "response"
+              ],
+              "properties": {
+                "source": {
+                  "enum": [
+                    "hull",
+                    "gear",
+                    "propeller"
+                  ]
+                },
+                "probe_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "component_ids": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "response": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "kind"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "inspect"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "kind",
+                        "channel",
+                        "clear_below",
+                        "replace_at",
+                        "terminal_replace"
+                      ],
+                      "properties": {
+                        "kind": {
+                          "const": "channel_bands"
+                        },
+                        "channel": {
+                          "enum": [
+                            "depth_m",
+                            "compression_ratio",
+                            "normal_speed_mps",
+                            "slide_speed_mps"
+                          ]
+                        },
+                        "clear_below": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 10000
+                        },
+                        "replace_at": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 10000
+                        },
+                        "terminal_replace": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "propeller_component_id": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "propeller_inspection_ids": {
+            "type": "array",
+            "maxItems": 128,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "assumptions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          },
+          "shared_parent_children": {
+            "type": "object",
+            "maxProperties": 128,
+            "additionalProperties": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 128,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            }
+          },
+          "source_hashes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

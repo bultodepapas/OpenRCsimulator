@@ -31,6 +31,13 @@ Twelve web searches, 2026-10-22, before design:
 
 Precedence: `--scene_detail=<level>` after `--`, then `OPENRC_SCENE_DETAIL`, then the saved choice, then High. An explicit `--scenery_quality` still wins for the scenery tier. The LOD threshold applies at once; trees and props follow at the next flight.
 
+2026-11-09 addition: [L9b-R3](../L9b/README.md#l9b-r3-field-textured-path-shoulders)
+enables field-textured walking-path shoulders at High/Extreme and skips their
+bindings at Low/Medium. Its independent launch override can disable that material
+effect while retaining the same preset and collision inventory. This does not
+repair the existing ornament collision coupling described below. The historical
+cost table predates this addition.
+
 **Collision.** Field-tree collision ignores the preset: every preset collides with the High rule, so a tree is never added or removed from the simulation. Ornament props follow the existing LU-05 rule that what is drawn is what collides, as `--scenery_quality` already did; an invisible obstacle would be worse. The flight log stores the collision world, so replays stay exact.
 
 **Settings.** One row on the Graphics page, with Spanish text. It previews and is kept like text size, without the 15-second display trial, because it cannot blank the screen. Restore graphics defaults returns it to High. To fit the page at 1080p without scrolling (UI-23-R4), the "High is a temporary experiment" note moved from its own label into the Try High button's tooltip.

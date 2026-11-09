@@ -9262,3 +9262,6 @@ msgstr "保存済みの機体を試験中: %s · リビジョン %d"
 
 msgid "Based on saved build: %s · revision %d"
 msgstr "元の保存済み機体: %s · リビジョン %d"
+
+msgid "High and Extreme add detailed grass at walking-path edges."
+msgstr "高と最高では、歩道の縁に精細な草地を追加します。"

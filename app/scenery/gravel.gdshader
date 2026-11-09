@@ -59,6 +59,10 @@ void fragment() {
 	vec3 field_color = vec3(0.0);
 	if (field_turf_enabled) {
 		field_color = club_turf(rough_grass_colour(p), p, club_field_detail);
+	}
+	// These detail fetches use explicit gradients and have no internal derivatives.
+	// Skip them on gravel/access surfaces and the fully worn center of the tread.
+	if (field_turf_enabled && worn_mask > 0.01 && worn_shoulder > 0.0) {
 		float camera_distance = length(VERTEX);
 		float photo_weight = grass_photo_enabled ? rc_near_weight(turf_dx, turf_dy, camera_distance) : 0.0;
 		float turf_weight_value = turf_weight(turf_dx, turf_dy, camera_distance) * (1.0 - photo_weight);

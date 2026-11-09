@@ -2,6 +2,7 @@ extends RefCounted
 ## Economic valuation sidecar loader. Prices are advisory and never gate physical aircraft loading.
 
 const AircraftCatalog := preload("res://app_state/aircraft_catalog.gd")
+const CostProfile := preload("res://economy/cost_profile.gd")
 
 const FORMAT := "openrc-aircraft-economics v1"
 const CATALOG_PATH := "res://data/economy/catalog.json"
@@ -18,6 +19,11 @@ const EXCLUSION_KEYS := ["id", "scope", "physical_inventory_ids", "reason"]
 
 
 static func load_for(aircraft_id: String, physical_source_hash: String = "") -> Dictionary:
+	return CostProfile.apply(load_legacy_for(aircraft_id, physical_source_hash), aircraft_id)
+
+
+## Historical v1 reader remains closed and available for frozen-contract verification.
+static func load_legacy_for(aircraft_id: String, physical_source_hash: String = "") -> Dictionary:
 	var errors: Array[String] = []
 	var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 	if entry.is_empty():

@@ -7,6 +7,9 @@ const HullContact := preload("res://physics/hull_contact.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 
 const FORMAT := "openrc-aircraft-contact-events v1"
+const SUPPORT_FORMAT := "openrc-aircraft-support-events v2"
+const SUPPORT_POLICY := "accepted-endpoint-gear-support-v1"
+const TERMINAL_PROP_FORMAT := "openrc-aircraft-propeller-observation v2"
 const _LIFECYCLES := ["new", "persistent", "ended"]
 const _SOURCES := ["hull", "gear", "scenery", "lake", "propeller"]
 const _RESPONSES := ["contact", "terminal", "dissipative_impulse", "engine_stop_continue"]
@@ -197,6 +200,29 @@ static func validate_events(value: Variant, tick: int, bindings: Dictionary) -> 
 		if typeof(event_value) != TYPE_DICTIONARY:
 			return false
 		var event: Dictionary = event_value
+		if event.get("format") == TERMINAL_PROP_FORMAT:
+			if event.get("response") != "terminal" or event.get("event_type") != "strike":
+				return false
+			var legacy := event.duplicate(true)
+			legacy.format = FORMAT
+			legacy.response = "engine_stop_continue"
+			if not validate_events([legacy], tick, bindings):
+				return false
+			var prop_key := "propeller:%d:%s" % [str(event.contact_id).length(), event.contact_id]
+			if seen_ids.has(event.event_id) or seen_contacts.has(prop_key):
+				return false
+			seen_ids[event.event_id] = true
+			seen_contacts[prop_key] = true
+			continue
+		if event.get("format") == SUPPORT_FORMAT:
+			if not _support_event_is_valid(event, tick, bindings):
+				return false
+			var support_key := "gear:%d:%s" % [str(event.contact_id).length(), event.contact_id]
+			if seen_ids.has(event.event_id) or seen_contacts.has(support_key):
+				return false
+			seen_ids[event.event_id] = true
+			seen_contacts[support_key] = true
+			continue
 		if not _event_keys_are_known(event):
 			return false
 		for key: String in _COMMON_KEYS:
@@ -240,6 +266,49 @@ static func validate_events(value: Variant, tick: int, bindings: Dictionary) -> 
 		if not _optional_fields_are_valid(event):
 			return false
 	return true
+
+
+static func terminal_prop_event(strike: Dictionary, tick: int, policy: String, bindings: Dictionary) -> Dictionary:
+	var event := strike_event(strike, tick, policy, bindings)
+	if not event.is_empty():
+		event.format = TERMINAL_PROP_FORMAT
+		event.response = "terminal"
+	return event
+
+
+## Read-only accepted endpoint proxy. Compression is not incoming velocity or impact work.
+## A separate format preserves the closed v1 event contract.
+static func support_event(index: int, compression_m: float, previous_compression_m: float,
+		travel_m: float, tick: int, bindings: Dictionary) -> Dictionary:
+	if tick <= 0 or not is_finite(compression_m) or not is_finite(previous_compression_m) \
+		or not is_finite(travel_m) or travel_m <= 0.0 or (compression_m <= 0.0 and previous_compression_m <= 0.0):
+		return {}
+	var id := _binding_id_at(bindings, "support_points", index)
+	if id.is_empty():
+		return {}
+	var phase := "ended" if compression_m <= 0.0 else ("persistent" if previous_compression_m > 0.0 else "new")
+	var event := _base_event("support_contact", "gear", id, phase, tick, SUPPORT_POLICY, "contact")
+	event.format = SUPPORT_FORMAT
+	event["point_index"] = index
+	event["measure"] = {"compression_m": maxf(0.0, compression_m), "travel_limit_m": travel_m}
+	return event if _support_event_is_valid(event, tick, bindings) else {}
+
+
+static func _support_event_is_valid(event: Dictionary, tick: int, bindings: Dictionary) -> bool:
+	if event.size() != 11 or not _event_keys_are_known(event) or event.get("format") != SUPPORT_FORMAT \
+		or event.get("event_type") != "support_contact" or event.get("source") != "gear" \
+		or event.get("response") != "contact" or event.get("policy") != SUPPORT_POLICY \
+		or typeof(event.get("tick")) != TYPE_INT or event.tick != tick or tick <= 0 \
+		or event.get("lifecycle") not in _LIFECYCLES or typeof(event.get("point_index")) != TYPE_INT:
+		return false
+	var id := _binding_id_at(bindings, "support_points", event.point_index)
+	if id.is_empty() or event.get("contact_id") != id \
+		or event.get("event_id") != _event_id("support_contact", "gear", tick, id, event.lifecycle):
+		return false
+	var measure: Variant = event.get("measure")
+	return measure is Dictionary and measure.size() == 2 and measure.has("compression_m") \
+		and measure.has("travel_limit_m") and _optional_fields_are_valid(event) \
+		and measure.compression_m >= 0.0 and measure.travel_limit_m > 0.0
 
 
 static func _event_reference_is_valid(event: Dictionary, event_type: String, source: String,

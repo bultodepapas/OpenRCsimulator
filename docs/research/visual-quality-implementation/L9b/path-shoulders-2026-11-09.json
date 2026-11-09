@@ -1,0 +1,1617 @@
+{
+  "format": "openrc-l9b-r3-path-shoulders v1",
+  "date": "2026-11-09",
+  "observed_head_at_start": "eadf89edd350d26eca6470253ce9fe61fa1f706b",
+  "observed_head_at_reduction": "5fe6aeeaa2458a9eb93cd4f18b7b9a93509b07f7",
+  "snapshot": {
+    "path": "tmp/path-shoulder/snapshot/app",
+    "parent": "tmp/path-integration/snapshot/app",
+    "scope": "R2 reviewed source plus R3-owned hunks; current tractor/shadow/economy work excluded.",
+    "shared_junction_inputs": [
+      "app/assets",
+      "app/.godot",
+      "assets"
+    ],
+    "limit": "Not an independent immutable asset/import-cache snapshot."
+  },
+  "final_source_sha256": {
+    "tmp/path-shoulder/snapshot/app/render/field.gd": "f779aeba9b20383fa6972b07da31e921575cf3b5aa4dfd2f912fde25481c0d57",
+    "tmp/path-shoulder/snapshot/app/render/scene_detail.gd": "987bac41e21c8358f928f689484e793dd3f408754061f0d2bacdb766d47d2ed2",
+    "tmp/path-shoulder/snapshot/app/render/worn_ground_material.gd": "3921bc54f323a91b4953fada135462f5d66087ede908cb59c2ce3720bdc40240",
+    "tmp/path-shoulder/snapshot/app/render/ground.gd": "371a64887f34da10a38b08eb6a1460593ce091bbc91e784c5832324209927d05",
+    "tmp/path-shoulder/snapshot/app/render/ground.gdshader": "e9a06275d90e249701d4bf6a2b735aaf63c2f3da2b6ad427c0701fc6c2a8c907",
+    "tmp/path-shoulder/snapshot/app/render/grass_surface.gdshaderinc": "6a2ba59c3f9c8ff8cf3af6f2f8ee4d7aab3d5024ad993c375102ed1aeaebbbc4",
+    "tmp/path-shoulder/snapshot/app/render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "tmp/path-shoulder/snapshot/app/render/rc_ground_detail.gdshaderinc": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+    "tmp/path-shoulder/snapshot/app/scenery/scenery.gd": "a460f8cb7470a0b0377b79ae67b5347ac136b8f9018b13b24a8f2e08770e3bb6",
+    "tmp/path-shoulder/snapshot/app/scenery/gravel.gdshader": "363a5f31104c526f0bc8b318f776f20c3b904f1f30bab5d2e1915edbba6e062b",
+    "tmp/path-shoulder/snapshot/app/scenery/ground_features.gd": "57a30f1e901a9edc43a5ec2ccfa2d5a4f9d4a75f2d30494236eaa51a98f29523",
+    "tmp/path-shoulder/snapshot/app/scenery/collision_setup.gd": "6bf927cb4573418463f16c6872e96c77b7d835ac1ed41cfca8a776c011ecd1cc",
+    "tmp/path-shoulder/snapshot/app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "tmp/path-shoulder/snapshot/app/tests/capture_landscape_upgrade.gd": "893df0b0a8fc1b3d2357fedbcc0d8915562ee5cc6908944c420a9920bf2bc356",
+    "tmp/path-shoulder/snapshot/app/tests/test_field_surfaces.gd": "3cc6f490adb0c763a1fcc1d8aef9ad8fc6b9dbf2184a59ac14167030f75752a8",
+    "tmp/path-shoulder/snapshot/app/tests/test_landscape_gravel.gd": "039c740ff7f97da66f0ba8fcf53ea6b66ec387379b24bea5aad189db9b4d1cc3",
+    "tmp/path-shoulder/snapshot/app/tests/test_scene_detail.gd": "7ad32f8d0bc3a40cb81743dce1141a7b66665d223a08d1942d7df2fdc7cf57d2",
+    "tmp/path-shoulder/snapshot/app/tests/test_landscape_collision_setup.gd": "c608314f7492d08198f534fa76d6b82467f3c8757f41fc1a152bb1c5547ed01a",
+    "tmp/path-shoulder/snapshot/app/tests/test_landscape_ground_lu18.gd": "1bc5273f10cd8cd5eba7192ce2f640eba72df66737a7b495c0091304006550e9",
+    "tmp/path-shoulder/snapshot/app/tests/test_time_of_day_scenery_update.gd": "e5d9f2f3110671a3b35eb303adb8c4c6ac719cd2d0f161aeb50d9e2810842ece",
+    "tmp/path-shoulder/snapshot/app/tests/test_ui_language.gd": "6c4b2fc6a75a3a6d1ffd7074d5d06e8c54482b36ca5b44342e6c2a2390630ebf",
+    "tmp/path-shoulder/snapshot/app/ui/settings_screen.gd": "69ce4502ea41e96e29bf006b0537bfda76dfc6900cbd0b1eab6c252678e960b5",
+    "tmp/path-shoulder/snapshot/app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "tmp/path-shoulder/snapshot/app/data/scenery/default.json": "02e72dbb762b069ff7973a6571ee5baaea8177b334be033c215aeaa6016ee062",
+    "tmp/path-shoulder/snapshot/app/project.godot": "2ca26f73592fe6fdf0b620a151c2455ac7ed4a854f61043d0bf99bccd8b694ae",
+    "tmp/path-shoulder/snapshot/app/i18n/de.po": "77c393b3da89cbdec85eb3f0eab98d616635dbfbd977048dcd3aa646ddea2c8b",
+    "tmp/path-shoulder/snapshot/app/i18n/es.po": "e2930c2b2fcb8042bf171f3a2c47ec2827ba2cf1935799cd943911b52254caf1",
+    "tmp/path-shoulder/snapshot/app/i18n/fr.po": "ed1ac95b46231f991e2db28ceabbb9c9ad59553585c1a2e4de50b7634f49a8a6",
+    "tmp/path-shoulder/snapshot/app/i18n/it.po": "06493aaf000c7f19f683c25827b28091b89ca450485d7bc37d19742b4571be12",
+    "tmp/path-shoulder/snapshot/app/i18n/ja.po": "c052beedd13efa0c898cdc7b058866e0ac062adbd6ec6ad35b75487915a2d971",
+    "tmp/path-shoulder/snapshot/app/i18n/pt_BR.po": "813cddba123f39de6a973c5f3d0660314a0a5cf0bf1be68a378b775e0b406403",
+    "tmp/path-shoulder/snapshot/app/i18n/ru.po": "a0ffbeb97126402325b688f6d31329fb3ff0272c78315a4a03fbbadca40b5e3c",
+    "tmp/path-shoulder/snapshot/app/i18n/zh_Hans.po": "1a6e6f246661bc0828b041d318f2caf10c7790ee189a55274fcda4d1cb97ffa9"
+  },
+  "retained_asset_sha256": {
+    "app/assets/landscape/turf/detail.png": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+    "app/assets/landscape/rc-ground/grass-albedo.jpg": "8a8bfcffd087134caad2a7def216f3dd2d307fbe02340ca47e3c5c71f49d50b4",
+    "app/assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg": "3b655de96161164bf2324e136b3409ad8417c9f94750bc008e9c93ee507c2fac",
+    "app/assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg.import": "82b75e4eca9e26c0b33bc7259453272e748248f33650657a9cbf0ec576108081"
+  },
+  "stage_sources": {
+    "tmp/path-shoulder/pre-preset-field.gd": "261512015deb08b38a4a3fdc3e7bc6beca64a2385ddff6bccb37a9641696d8bc",
+    "tmp/path-shoulder/pre-preset-scene_detail.gd": "028f2c4319d16677282990164b3dafcb5fa6f03825098e5851a7312afa744c4e",
+    "tmp/path-shoulder/final-worn_ground_material.gd": "0606fa34ea923b85c0d6394fc8e76c65e64a6583d94a5670283c803e9cbba40e",
+    "tmp/path-shoulder/pre-sampling-opt-gravel.gdshader": "49c7a6d9f5e6ffe1696a03a73e512d6c3fe66e3b0b5aede0608816289c362a13",
+    "tmp/path-shoulder/optimized-gravel.gdshader": "363a5f31104c526f0bc8b318f776f20c3b904f1f30bab5d2e1915edbba6e062b",
+    "tmp/path-shoulder/final-capture_landscape_upgrade.gd": "893df0b0a8fc1b3d2357fedbcc0d8915562ee5cc6908944c420a9920bf2bc356"
+  },
+  "stage_limits": [
+    "Initial off/on and final-off/on use the pre-preset Field. optimized-on adds the preset gate and explicit-gradient sampling gate.",
+    "release-off/on and opt-profile runs use the final preset/launch override and binder cleanup. Shader old/new is the only opt-profile mutation.",
+    "The first profile ABBA predates the binder null-node guard. Its exact executed binder hash was not retained; final-worn_ground_material.gd is a later guarded version. Normal valid scene bindings and shader were unchanged then.",
+    "Initial failed material assertions assumed dummy RenderingServer could resolve uniform defaults. The test was corrected to distinguish dummy/native capabilities; both final modes pass. Raw failures retained."
+  ],
+  "platform": {
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "driver": "3.3.0 NVIDIA 617.42",
+    "renderer": "gl_compatibility",
+    "width": 1920,
+    "height": 1080,
+    "scene_detail": "high"
+  },
+  "static_views": {
+    "entry_path": {
+      "counters": {
+        "draws": 232.0,
+        "visible_draws": 232,
+        "primitives": 408715.0,
+        "shadow_draws": 0
+      },
+      "image_sha256": {
+        "tmp/path-shoulder/final-off/entry_path.png": "0aff6087e0dc9fbb5b1ff5e3524ba6836fdd4116df566c1d7a4cc3577c133517",
+        "tmp/path-shoulder/final-on/entry_path.png": "fc7684a9baf779a11345bfc32d4b4d025eca1b709d1a7d26e52d5bcc6d14e05d",
+        "tmp/path-shoulder/optimized-on/entry_path.png": "fc7684a9baf779a11345bfc32d4b4d025eca1b709d1a7d26e52d5bcc6d14e05d",
+        "tmp/path-shoulder/release-off/entry_path.png": "0aff6087e0dc9fbb5b1ff5e3524ba6836fdd4116df566c1d7a4cc3577c133517",
+        "tmp/path-shoulder/release-on/entry_path.png": "fc7684a9baf779a11345bfc32d4b4d025eca1b709d1a7d26e52d5bcc6d14e05d"
+      },
+      "optimization_pixel_identical": true,
+      "production_off_matches_ablation": true,
+      "on_off_identical": false,
+      "video_memory_monitor_bytes": {
+        "off": 750867758.0,
+        "on": 748737566.0
+      },
+      "on_ground_materials": [
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://render/lake/bank.gdshader"
+        },
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "cloud_shadow_strength": 0.22,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://render/ground.gdshader"
+        },
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://scenery/gravel.gdshader"
+        }
+      ]
+    },
+    "pilot_south": {
+      "counters": {
+        "draws": 158.0,
+        "visible_draws": 158,
+        "primitives": 376663.0,
+        "shadow_draws": 0
+      },
+      "image_sha256": {
+        "tmp/path-shoulder/final-off/pilot_south.png": "aab94733d91b88dcdc0d4e77b713cb3c1ddd1b2ce7391e41e5ef97cfcee35128",
+        "tmp/path-shoulder/final-on/pilot_south.png": "c658a59ef5d57e91a5cf14f2a4b77240663a7730367653fb824d0366158fd54b",
+        "tmp/path-shoulder/optimized-on/pilot_south.png": "c658a59ef5d57e91a5cf14f2a4b77240663a7730367653fb824d0366158fd54b",
+        "tmp/path-shoulder/release-off/pilot_south.png": "aab94733d91b88dcdc0d4e77b713cb3c1ddd1b2ce7391e41e5ef97cfcee35128",
+        "tmp/path-shoulder/release-on/pilot_south.png": "c658a59ef5d57e91a5cf14f2a4b77240663a7730367653fb824d0366158fd54b"
+      },
+      "optimization_pixel_identical": true,
+      "production_off_matches_ablation": true,
+      "on_off_identical": false,
+      "video_memory_monitor_bytes": {
+        "off": 759162158.0,
+        "on": 757031966.0
+      },
+      "on_ground_materials": [
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://render/lake/bank.gdshader"
+        },
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "cloud_shadow_strength": 0.22,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://render/ground.gdshader"
+        },
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://scenery/gravel.gdshader"
+        }
+      ]
+    },
+    "gravel_close": {
+      "counters": {
+        "draws": 94.0,
+        "visible_draws": 94,
+        "primitives": 296350.0,
+        "shadow_draws": 0
+      },
+      "image_sha256": {
+        "tmp/path-shoulder/final-off/gravel_close.png": "a7541a9a2566e431f1377686f95468d2929ee83d584f11ff831699bcbe66a076",
+        "tmp/path-shoulder/final-on/gravel_close.png": "a7541a9a2566e431f1377686f95468d2929ee83d584f11ff831699bcbe66a076",
+        "tmp/path-shoulder/optimized-on/gravel_close.png": "a7541a9a2566e431f1377686f95468d2929ee83d584f11ff831699bcbe66a076",
+        "tmp/path-shoulder/release-off/gravel_close.png": "a7541a9a2566e431f1377686f95468d2929ee83d584f11ff831699bcbe66a076",
+        "tmp/path-shoulder/release-on/gravel_close.png": "a7541a9a2566e431f1377686f95468d2929ee83d584f11ff831699bcbe66a076"
+      },
+      "optimization_pixel_identical": true,
+      "production_off_matches_ablation": true,
+      "on_off_identical": true,
+      "video_memory_monitor_bytes": {
+        "off": 759162158.0,
+        "on": 757031966.0
+      },
+      "on_ground_materials": [
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://render/lake/bank.gdshader"
+        },
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "cloud_shadow_strength": 0.22,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://render/ground.gdshader"
+        },
+        {
+          "parameters": {
+            "anti_tiling": 1.0,
+            "dry_amount": 0.449999988079071,
+            "grass_photo_enabled": true,
+            "macro_amp": 0.25,
+            "pilot_pin_m": 35.0,
+            "tile_m": 1.5,
+            "turf_detail_strength": 1.0
+          },
+          "shader": "res://scenery/gravel.gdshader"
+        }
+      ]
+    }
+  },
+  "production_override_controls": {
+    "release-off": "environment on; CLI off",
+    "release-on": "environment off; CLI on"
+  },
+  "profiles": {
+    "profile-off-a": {
+      "report": "tmp/path-shoulder/profile-off-a/report.json",
+      "sha256": "9cd22629471415ee7b054a27375d5c91d52d32a1130baa46c2ee0c40eff11d75",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.26199996471405,
+            "p95_nearest_rank_ms": 3.18700003623962,
+            "min_ms": 1.18299996852875,
+            "max_ms": 4.25799989700317
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.326999962329865,
+            "p95_nearest_rank_ms": 2.49200010299683,
+            "min_ms": 1.11099994182587,
+            "max_ms": 5.05299997329712
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.873,
+            "p95_nearest_rank_ms": 3.406,
+            "min_ms": 1.44,
+            "max_ms": 6.321
+          },
+          "video_memory_monitor_bytes": 748737566.0,
+          "worn_shoulder_enabled": [
+            false
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 0.961000025272369,
+            "p95_nearest_rank_ms": 2.29999995231628,
+            "min_ms": 0.912999987602234,
+            "max_ms": 2.83200001716614
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.638000011444092,
+            "p95_nearest_rank_ms": 0.796999990940094,
+            "min_ms": 0.609000027179718,
+            "max_ms": 1.76300001144409
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.092,
+            "p95_nearest_rank_ms": 2.48,
+            "min_ms": 0.939,
+            "max_ms": 3.329
+          },
+          "video_memory_monitor_bytes": 757031966.0,
+          "worn_shoulder_enabled": [
+            false
+          ]
+        }
+      }
+    },
+    "profile-on-a": {
+      "report": "tmp/path-shoulder/profile-on-a/report.json",
+      "sha256": "2ca6a85f64535fba5a0e29699d30e54193c180e7afd8556571e56e6802d3900c",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.2505000233650199,
+            "p95_nearest_rank_ms": 2.76799988746643,
+            "min_ms": 1.19099998474121,
+            "max_ms": 4.25400018692017
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.13800001144409,
+            "p95_nearest_rank_ms": 1.56400001049042,
+            "min_ms": 1.09300005435944,
+            "max_ms": 3.51300001144409
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.5019999999999998,
+            "p95_nearest_rank_ms": 2.547,
+            "min_ms": 1.416,
+            "max_ms": 4.225
+          },
+          "video_memory_monitor_bytes": 752997950.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.00300002098084,
+            "p95_nearest_rank_ms": 2.28399991989136,
+            "min_ms": 0.962999999523163,
+            "max_ms": 2.84899997711182
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.626999974250793,
+            "p95_nearest_rank_ms": 0.754999995231628,
+            "min_ms": 0.606000006198883,
+            "max_ms": 1.54299998283386
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.1284999999999998,
+            "p95_nearest_rank_ms": 2.421,
+            "min_ms": 0.958,
+            "max_ms": 3.042
+          },
+          "video_memory_monitor_bytes": 761292350.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        }
+      }
+    },
+    "profile-on-b": {
+      "report": "tmp/path-shoulder/profile-on-b/report.json",
+      "sha256": "ae2f4d5d61f0f75c6584a7e3e79cd269eb53c3a61d7103acf08088e4bffd5cbf",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.24699997901917,
+            "p95_nearest_rank_ms": 2.58299994468689,
+            "min_ms": 1.2039999961853,
+            "max_ms": 3.6340000629425
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.13300001621246,
+            "p95_nearest_rank_ms": 1.40699994564056,
+            "min_ms": 1.09599995613098,
+            "max_ms": 2.32599997520447
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.489,
+            "p95_nearest_rank_ms": 2.572,
+            "min_ms": 1.415,
+            "max_ms": 3.747
+          },
+          "video_memory_monitor_bytes": 752997950.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.01499998569489,
+            "p95_nearest_rank_ms": 2.05299997329712,
+            "min_ms": 0.967000007629395,
+            "max_ms": 3.09899997711182
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.629999995231628,
+            "p95_nearest_rank_ms": 1.14600002765656,
+            "min_ms": 0.60699999332428,
+            "max_ms": 1.92999994754791
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.15,
+            "p95_nearest_rank_ms": 2.196,
+            "min_ms": 0.933,
+            "max_ms": 3.232
+          },
+          "video_memory_monitor_bytes": 761292350.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        }
+      }
+    },
+    "profile-off-b": {
+      "report": "tmp/path-shoulder/profile-off-b/report.json",
+      "sha256": "5eb0976ceeb47245cf4640b5474246b9514ae453b846739ad36f6ebbdb6c36b0",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.26199996471405,
+            "p95_nearest_rank_ms": 2.55999994277954,
+            "min_ms": 1.18400001525879,
+            "max_ms": 4.40999984741211
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.16299998760223,
+            "p95_nearest_rank_ms": 1.77999997138977,
+            "min_ms": 1.09099996089935,
+            "max_ms": 2.37299990653992
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.6190000000000002,
+            "p95_nearest_rank_ms": 2.552,
+            "min_ms": 1.406,
+            "max_ms": 3.615
+          },
+          "video_memory_monitor_bytes": 748737566.0,
+          "worn_shoulder_enabled": [
+            false
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 0.972000002861023,
+            "p95_nearest_rank_ms": 2.16599988937378,
+            "min_ms": 0.925000011920929,
+            "max_ms": 2.78399991989136
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.6335000097751615,
+            "p95_nearest_rank_ms": 0.86599999666214,
+            "min_ms": 0.597000002861023,
+            "max_ms": 1.22599995136261
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.111,
+            "p95_nearest_rank_ms": 2.343,
+            "min_ms": 0.951,
+            "max_ms": 2.917
+          },
+          "video_memory_monitor_bytes": 757031966.0,
+          "worn_shoulder_enabled": [
+            false
+          ]
+        }
+      }
+    },
+    "opt-profile-old-a": {
+      "report": "tmp/path-shoulder/opt-profile-old-a/report.json",
+      "sha256": "728ada843cdff77fc5978edae976a46cb1e229de61b848f8b08976f7f4849026",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.23599994182587,
+            "p95_nearest_rank_ms": 2.88100004196167,
+            "min_ms": 1.192999958992,
+            "max_ms": 4.91699981689453
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.11800003051758,
+            "p95_nearest_rank_ms": 1.32200002670288,
+            "min_ms": 1.08700001239777,
+            "max_ms": 2.1489999294281
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.441,
+            "p95_nearest_rank_ms": 2.698,
+            "min_ms": 1.397,
+            "max_ms": 5.095
+          },
+          "video_memory_monitor_bytes": 755128142.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.00100004673004,
+            "p95_nearest_rank_ms": 2.375,
+            "min_ms": 0.962000012397766,
+            "max_ms": 3.54699993133545
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.625999987125397,
+            "p95_nearest_rank_ms": 0.741999983787537,
+            "min_ms": 0.60699999332428,
+            "max_ms": 1.39600002765656
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.127,
+            "p95_nearest_rank_ms": 2.613,
+            "min_ms": 0.933,
+            "max_ms": 3.796
+          },
+          "video_memory_monitor_bytes": 763422542.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        }
+      }
+    },
+    "opt-profile-new-a": {
+      "report": "tmp/path-shoulder/opt-profile-new-a/report.json",
+      "sha256": "b36196947cb03a00b508a95d70c64c65fd899542b262e1d50b15ad619073948f",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.26499998569489,
+            "p95_nearest_rank_ms": 2.59599995613098,
+            "min_ms": 1.19200003147125,
+            "max_ms": 3.41599988937378
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.13699996471405,
+            "p95_nearest_rank_ms": 1.82500004768372,
+            "min_ms": 1.06099998950958,
+            "max_ms": 3.20099997520447
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.563,
+            "p95_nearest_rank_ms": 2.709,
+            "min_ms": 1.359,
+            "max_ms": 4.056
+          },
+          "video_memory_monitor_bytes": 748737566.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.01850003004074,
+            "p95_nearest_rank_ms": 2.16499996185303,
+            "min_ms": 0.953999996185303,
+            "max_ms": 3.4760000705719
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.62950000166893,
+            "p95_nearest_rank_ms": 0.816999971866608,
+            "min_ms": 0.58899998664856,
+            "max_ms": 1.33599996566772
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.1535,
+            "p95_nearest_rank_ms": 2.316,
+            "min_ms": 0.933,
+            "max_ms": 3.378
+          },
+          "video_memory_monitor_bytes": 757031966.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        }
+      }
+    },
+    "opt-profile-new-b": {
+      "report": "tmp/path-shoulder/opt-profile-new-b/report.json",
+      "sha256": "dfbc1867358593c83c90fb0f084cca773ba2f7f588f80b09b2b90f045dbc4646",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.26450002193451,
+            "p95_nearest_rank_ms": 2.62800002098084,
+            "min_ms": 1.192999958992,
+            "max_ms": 3.93700003623962
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.10399997234344,
+            "p95_nearest_rank_ms": 1.31200003623962,
+            "min_ms": 1.05900001525879,
+            "max_ms": 2.06900000572205
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.4849999999999999,
+            "p95_nearest_rank_ms": 2.658,
+            "min_ms": 1.354,
+            "max_ms": 3.453
+          },
+          "video_memory_monitor_bytes": 748737566.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.00600004196167,
+            "p95_nearest_rank_ms": 2.19600009918213,
+            "min_ms": 0.957000017166138,
+            "max_ms": 2.90300011634827
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.610000014305115,
+            "p95_nearest_rank_ms": 0.767000019550323,
+            "min_ms": 0.587999999523163,
+            "max_ms": 1.33800005912781
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.1404999999999998,
+            "p95_nearest_rank_ms": 2.37,
+            "min_ms": 0.935,
+            "max_ms": 2.977
+          },
+          "video_memory_monitor_bytes": 757031966.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        }
+      }
+    },
+    "opt-profile-old-b": {
+      "report": "tmp/path-shoulder/opt-profile-old-b/report.json",
+      "sha256": "417315ffda9685191a6f97f23a4454974c751e5f3eb686bb59bdd7e2bbd2e99a",
+      "cases": {
+        "entry_path": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.26499998569489,
+            "p95_nearest_rank_ms": 2.59599995613098,
+            "min_ms": 1.19900000095367,
+            "max_ms": 3.60500001907349
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 1.12199997901917,
+            "p95_nearest_rank_ms": 1.41999995708466,
+            "min_ms": 1.07099997997284,
+            "max_ms": 2.38299989700317
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.5375,
+            "p95_nearest_rank_ms": 2.581,
+            "min_ms": 1.368,
+            "max_ms": 3.648
+          },
+          "video_memory_monitor_bytes": 748737566.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        },
+        "gravel_close": {
+          "gpu": {
+            "n": 600,
+            "median_ms": 1.01699995994568,
+            "p95_nearest_rank_ms": 2.24300003051758,
+            "min_ms": 0.966000020503998,
+            "max_ms": 4.81899976730347
+          },
+          "cpu": {
+            "n": 600,
+            "median_ms": 0.632000029087067,
+            "p95_nearest_rank_ms": 0.96399998664856,
+            "min_ms": 0.591000020503998,
+            "max_ms": 1.32799994945526
+          },
+          "wall": {
+            "n": 600,
+            "median_ms": 1.1655,
+            "p95_nearest_rank_ms": 2.362,
+            "min_ms": 0.912,
+            "max_ms": 4.923
+          },
+          "video_memory_monitor_bytes": 757031966.0,
+          "worn_shoulder_enabled": [
+            true
+          ]
+        }
+      }
+    }
+  },
+  "paired_deltas_ms": {
+    "initial_feature_on_minus_off": {
+      "entry_path": [
+        {
+          "gpu": {
+            "median_ms": -0.011499941349030207,
+            "p95_nearest_rank_ms": -0.4190001487731898
+          },
+          "cpu": {
+            "median_ms": -0.18899995088577493,
+            "p95_nearest_rank_ms": -0.9280000925064102
+          },
+          "wall": {
+            "median_ms": -0.3710000000000002,
+            "p95_nearest_rank_ms": -0.859
+          }
+        },
+        {
+          "gpu": {
+            "median_ms": -0.014999985694880147,
+            "p95_nearest_rank_ms": 0.023000001907349965
+          },
+          "cpu": {
+            "median_ms": -0.02999997138976984,
+            "p95_nearest_rank_ms": -0.3730000257492101
+          },
+          "wall": {
+            "median_ms": -0.13000000000000012,
+            "p95_nearest_rank_ms": 0.020000000000000018
+          }
+        }
+      ],
+      "gravel_close": [
+        {
+          "gpu": {
+            "median_ms": 0.041999995708471016,
+            "p95_nearest_rank_ms": -0.016000032424920096
+          },
+          "cpu": {
+            "median_ms": -0.011000037193299006,
+            "p95_nearest_rank_ms": -0.04199999570846602
+          },
+          "wall": {
+            "median_ms": 0.036499999999999755,
+            "p95_nearest_rank_ms": -0.05900000000000016
+          }
+        },
+        {
+          "gpu": {
+            "median_ms": 0.04299998283386697,
+            "p95_nearest_rank_ms": -0.11299991607666016
+          },
+          "cpu": {
+            "median_ms": -0.0035000145435335472,
+            "p95_nearest_rank_ms": 0.28000003099442006
+          },
+          "wall": {
+            "median_ms": 0.038999999999999924,
+            "p95_nearest_rank_ms": -0.1469999999999998
+          }
+        }
+      ]
+    },
+    "optimization_new_minus_old": {
+      "entry_path": [
+        {
+          "gpu": {
+            "median_ms": 0.029000043869019887,
+            "p95_nearest_rank_ms": -0.2850000858306898
+          },
+          "cpu": {
+            "median_ms": 0.01899993419647017,
+            "p95_nearest_rank_ms": 0.5030000209808401
+          },
+          "wall": {
+            "median_ms": 0.12199999999999989,
+            "p95_nearest_rank_ms": 0.01100000000000012
+          }
+        },
+        {
+          "gpu": {
+            "median_ms": -0.0004999637603799734,
+            "p95_nearest_rank_ms": 0.03200006484985973
+          },
+          "cpu": {
+            "median_ms": -0.018000006675729985,
+            "p95_nearest_rank_ms": -0.10799992084503995
+          },
+          "wall": {
+            "median_ms": -0.05250000000000021,
+            "p95_nearest_rank_ms": 0.07699999999999996
+          }
+        }
+      ],
+      "gravel_close": [
+        {
+          "gpu": {
+            "median_ms": 0.01749998331070013,
+            "p95_nearest_rank_ms": -0.21000003814697
+          },
+          "cpu": {
+            "median_ms": 0.003500014543533103,
+            "p95_nearest_rank_ms": 0.07499998807907104
+          },
+          "wall": {
+            "median_ms": 0.026499999999999968,
+            "p95_nearest_rank_ms": -0.29700000000000015
+          }
+        },
+        {
+          "gpu": {
+            "median_ms": -0.010999917984010121,
+            "p95_nearest_rank_ms": -0.04699993133545011
+          },
+          "cpu": {
+            "median_ms": -0.022000014781952015,
+            "p95_nearest_rank_ms": -0.19699996709823697
+          },
+          "wall": {
+            "median_ms": -0.025000000000000133,
+            "p95_nearest_rank_ms": 0.008000000000000007
+          }
+        }
+      ]
+    }
+  },
+  "timing_scope": "Short 600-sample root-viewport static fixture after existing ~100-frame warm loop. No simulation; not the official duration gate, full flight, modest hardware or other-renderer qualification. GPU values are nonzero. All profile jobs serialized without observed competing Godot processes; original early profiles had no observed running app. Other agents share the host.",
+  "memory_limit": "video_memory is the renderer's whole-process estimate. Initial feature on/off differed by 4,260,384 bytes; cause unconfirmed. No identical-memory or extra-texture-allocation claim.",
+  "motion": {
+    "pan-off": {
+      "report": "tmp/path-shoulder/pan-off/report.json",
+      "sha256": "303dfe9c1071e60d6fe8af6f6f44d0243fe47eb0278d9b46b8ea24b24ca3bb0c",
+      "cases": {
+        "entry_path": {
+          "frames": 32,
+          "frame_sha256": {
+            "tmp/path-shoulder/pan-off/entry_path_000.png": "2d1d0bf40ff0e7a9a34fd9cd13f83a1bbef79ddc93c67df960958c62962b7893",
+            "tmp/path-shoulder/pan-off/entry_path_001.png": "debf85bb6bdd74471131f579590715e8218fe2eb0d3477896993a90ab8277cb8",
+            "tmp/path-shoulder/pan-off/entry_path_002.png": "b2275be7248d88d10a36ec135dbd52e44358e20daa33da8a98cbc09c88c48bb9",
+            "tmp/path-shoulder/pan-off/entry_path_003.png": "f628cf74b8c079806ea63968b8cc03197d6b81cf5b27ad994e749ff28c98635c",
+            "tmp/path-shoulder/pan-off/entry_path_004.png": "537ea838c64f8f78551d7480fc68374c1fd01b6316c84130389fbb791be55b90",
+            "tmp/path-shoulder/pan-off/entry_path_005.png": "9822a9ad14d64f352666ae5dfe850b70e1fd2cca6c559dbd54e993aab41ec73b",
+            "tmp/path-shoulder/pan-off/entry_path_006.png": "12b6851ead295dd25155b92cd98234879bf80f433fa1c9a219a30b00b5c85afd",
+            "tmp/path-shoulder/pan-off/entry_path_007.png": "b0b5ad3710c5d2b0f6dc9e3aa95a18865b4ea63e865f7b1776bcac6d52d9bfd5",
+            "tmp/path-shoulder/pan-off/entry_path_008.png": "d1166d1efe328a8eabe9b6a2bed77a3f50865806a58931b09a146415d829cd39",
+            "tmp/path-shoulder/pan-off/entry_path_009.png": "8ec09f521308fc6a4af3cc928ba984a3477152ced16f1f09b4db7c73245ab11f",
+            "tmp/path-shoulder/pan-off/entry_path_010.png": "f725ec7351f7cb2f4f1a71cb1cee4e2b75e2bba93dc262fb1de045b0ea9577e5",
+            "tmp/path-shoulder/pan-off/entry_path_011.png": "a93ac99a6321fb3b5ede0f61470c34f022ae25833153501eba7dec6d6807da2b",
+            "tmp/path-shoulder/pan-off/entry_path_012.png": "dcfd13ac765e8220595bebfa8dda5ca468efb345d44ac885b5b74649ac7d3f1f",
+            "tmp/path-shoulder/pan-off/entry_path_013.png": "aa0b7abbc2787f25c2a46da839bd651a190059f567ff154ef0f96d1ffb925575",
+            "tmp/path-shoulder/pan-off/entry_path_014.png": "f667f127feff4effd2385af127630865fa23a442b5305079b98b0958f1fa43ab",
+            "tmp/path-shoulder/pan-off/entry_path_015.png": "5bbaaacd1b0d949c4edacb531cf695e66e88f0150e95f30a5d5c783a341dfbba",
+            "tmp/path-shoulder/pan-off/entry_path_016.png": "d151363b87a6a6c66ffe2e2e8955cb22c7e4090ffdba2f4ce6bffb75c7888265",
+            "tmp/path-shoulder/pan-off/entry_path_017.png": "83b9eb3035d9d4dce616ff9b76e8ff5eca5a220d6df95c453eac33db9e19df5f",
+            "tmp/path-shoulder/pan-off/entry_path_018.png": "ac827fb6227f02e3e1f6b4fb786dec08ef7b1ed9c0e971afe93fbfc833270db7",
+            "tmp/path-shoulder/pan-off/entry_path_019.png": "752372e380902c4850a723274c7520bcd986590030ce4811eb8f874c0ec61c07",
+            "tmp/path-shoulder/pan-off/entry_path_020.png": "b93e5a7efc6523eca6dfbcd06edc55a433bf90a569dc0cd1c551d8a33646de66",
+            "tmp/path-shoulder/pan-off/entry_path_021.png": "7f17ad3fd219144b0af86fe6c3aa5dafd5a31b7dc4057675e0a393ea0ecc7df8",
+            "tmp/path-shoulder/pan-off/entry_path_022.png": "82b01354ef67be101f8f4c0ce3447eb4eb89e19f5ceb5c78466f2ef1536ebe2e",
+            "tmp/path-shoulder/pan-off/entry_path_023.png": "7ba2449ad01e90f663efb9117f3fb8bef325d8ab48a3898210bfb81ce9211856",
+            "tmp/path-shoulder/pan-off/entry_path_024.png": "2eb1f29e4aa2bf31724d9940f3bc1be04e75f2746ddb550d6ae7b8682e52fe76",
+            "tmp/path-shoulder/pan-off/entry_path_025.png": "7059babcb5018c6274820dd5e17f26071f4dea1f07b22df824de3f72d05baa6e",
+            "tmp/path-shoulder/pan-off/entry_path_026.png": "61f17379a7903305146bd8b621809400a1ab1c733054e546509ea443077a4b6c",
+            "tmp/path-shoulder/pan-off/entry_path_027.png": "f3f190e4093c72af2315977c95d0fa3b9dc47d817b7a242b06491f1c323709b4",
+            "tmp/path-shoulder/pan-off/entry_path_028.png": "ff1c9778b40f2d4192361134ad98ccde24a9294929986e96bf4f9a85076e3ba0",
+            "tmp/path-shoulder/pan-off/entry_path_029.png": "f01f00a37327d877e3a5e354f6677bc8414650b2bdb822a77ebdbe1127509ba9",
+            "tmp/path-shoulder/pan-off/entry_path_030.png": "f9fb4b1105b0d22b6689cae30b6256136892c341271f96025b6f3cfe5f419abd",
+            "tmp/path-shoulder/pan-off/entry_path_031.png": "80e1fe8a37042c24fa711c4b436b1e150a1529c9abedc73ebd6328ef30fd29eb"
+          },
+          "feature": [
+            false
+          ]
+        },
+        "pilot_south": {
+          "frames": 32,
+          "frame_sha256": {
+            "tmp/path-shoulder/pan-off/pilot_south_000.png": "e77ac612d57baeaae6ee6db697a00d20618b2a990f265efebf82f8101ac32bb7",
+            "tmp/path-shoulder/pan-off/pilot_south_001.png": "03dba511a40373ca17b121959a1e446fad98208f4f19a074819a9275e13476a2",
+            "tmp/path-shoulder/pan-off/pilot_south_002.png": "c65e6621710d7287f3ff972b6d41b7c4c1298e2c4c6dee2f3194062f0ae2fb76",
+            "tmp/path-shoulder/pan-off/pilot_south_003.png": "4e220f1664e43a660389ff111d003f866f9ae6e06fef1b401603b24044e27be9",
+            "tmp/path-shoulder/pan-off/pilot_south_004.png": "854197d60e41b239d1e44d4f21e5161eab3d80c4067764045c28f49751f6d756",
+            "tmp/path-shoulder/pan-off/pilot_south_005.png": "f8bc85da98e4706ab941f02dd14b2b78fe0df4afc42170b96a723239e4e8833e",
+            "tmp/path-shoulder/pan-off/pilot_south_006.png": "19fc96569b08782dafa02d254e967d45525a3621b9917b41ba2227ba9a507419",
+            "tmp/path-shoulder/pan-off/pilot_south_007.png": "962464d1e1c85824dd4e7738a26b0d662a769d6a5438dde3ea4d160c9600d45a",
+            "tmp/path-shoulder/pan-off/pilot_south_008.png": "eb3af0b165c91ba7244b539a285972011b5a67f5b94e73df3be615b5182d814d",
+            "tmp/path-shoulder/pan-off/pilot_south_009.png": "f3d7e81c213e430db9e0adc8f6b1ed90b34c28b37a9b9f077e5a031bfff93beb",
+            "tmp/path-shoulder/pan-off/pilot_south_010.png": "9df8c5df657cdd182ed6decd10d2c399c43d80c127392f10672c42a7aa946022",
+            "tmp/path-shoulder/pan-off/pilot_south_011.png": "dc0bd7efae08656a326414376f50e30605ac5df2233c3acedb2097fcaee0fc51",
+            "tmp/path-shoulder/pan-off/pilot_south_012.png": "0e714c519be50a4aac1f9215e88676ddac03387d234e4a21e087454bcbbe14a4",
+            "tmp/path-shoulder/pan-off/pilot_south_013.png": "0c620294c2c971c2b8b2cb73891d627ee050980663b72beb1da8c3204ef00dc9",
+            "tmp/path-shoulder/pan-off/pilot_south_014.png": "4d03f052c63627ea02a7d0dc1b76378afbcef46ab377cd37d882620eb24a8f30",
+            "tmp/path-shoulder/pan-off/pilot_south_015.png": "b6ade195ee69681af80a150026fc4aad72fa3933e13c082ff8d703b67ed8db36",
+            "tmp/path-shoulder/pan-off/pilot_south_016.png": "2c82af2e90d5b0db627ec9fe2e65fcbbd2851fa6036a09c06bdc4114f8d613be",
+            "tmp/path-shoulder/pan-off/pilot_south_017.png": "70d155243de3733c34befc201ee1cdc6d074639fa2a1757a1152aa6e4935e78f",
+            "tmp/path-shoulder/pan-off/pilot_south_018.png": "8070f72bda7232d80520a12f93484511941e2b95244b1078afb4257e9dece5cc",
+            "tmp/path-shoulder/pan-off/pilot_south_019.png": "065132d19e170c87aeea5628b4e4a67bb5cd3cf5d91ae620416527281939a1d7",
+            "tmp/path-shoulder/pan-off/pilot_south_020.png": "2e87810ad789e64f202a48b5166aa653bb72f8fe667e5cbc80d4c3ee95c10556",
+            "tmp/path-shoulder/pan-off/pilot_south_021.png": "29fbd3285e243c44b805c40415ebcaea6a2c8cba0a6bf0128675cd5c9285a3c9",
+            "tmp/path-shoulder/pan-off/pilot_south_022.png": "83f5602cbdc7649a84e79c3b90e35987878e744fab8a27c92ae7c3353a90922e",
+            "tmp/path-shoulder/pan-off/pilot_south_023.png": "1ac5c93c561b52a46b79921095c8539501f7a924eee83e314bcde9c53ef90b2b",
+            "tmp/path-shoulder/pan-off/pilot_south_024.png": "a8903d62b3694c430b804b6addbb947d4a2bb7fff9380d65146106ac34b02d30",
+            "tmp/path-shoulder/pan-off/pilot_south_025.png": "b36089ec237949f09ea82561dea4fdcca8a95154b739e11435bd1be968b1a71f",
+            "tmp/path-shoulder/pan-off/pilot_south_026.png": "c5da4f86c094b309289c6d55f9476c86f3eed62d885532e4a1a01296f9b95429",
+            "tmp/path-shoulder/pan-off/pilot_south_027.png": "33eefc5627ffd691aef214119c666619f523bc4e7a14ed154bb65c14e63dcb5d",
+            "tmp/path-shoulder/pan-off/pilot_south_028.png": "af0fad265344cdc579bd259e2d6ff92e1cb5dafa4fa6f48f664e4d4c08ad3810",
+            "tmp/path-shoulder/pan-off/pilot_south_029.png": "c9e4fa110841060be35982a738f12dbc28f8fd0405d03f460fc2d0900c2cebab",
+            "tmp/path-shoulder/pan-off/pilot_south_030.png": "4704dcaea55ba8eca955ce6df0f16595946a0055e0fca21122db92969758a4e8",
+            "tmp/path-shoulder/pan-off/pilot_south_031.png": "989e60935bc8488a124a1ceeb9b169d647bfc8b95cfb9989502f93c0445bfb8d"
+          },
+          "feature": [
+            false
+          ]
+        }
+      }
+    },
+    "pan-on": {
+      "report": "tmp/path-shoulder/pan-on/report.json",
+      "sha256": "baa00d9b406e7bfd9a2c8ef30a5379d2fde5c581da4f5f0977b8bde8d5c4524f",
+      "cases": {
+        "entry_path": {
+          "frames": 32,
+          "frame_sha256": {
+            "tmp/path-shoulder/pan-on/entry_path_000.png": "122c476197f54b3eb08a3aa62bd49de311ea38a2c133684f34d78de91b00731a",
+            "tmp/path-shoulder/pan-on/entry_path_001.png": "acfbbdf2b0a2531901caaf2d54c527ae19898945e1805c6ab6b1fc32a8dc0312",
+            "tmp/path-shoulder/pan-on/entry_path_002.png": "5da7276c8127961f940a1cd8da9c2de921aebf6b6a665390357aee5aa9b65d06",
+            "tmp/path-shoulder/pan-on/entry_path_003.png": "7ce5b4325527e58ab933fe8884fd55a74e0ebaa278dcf1ffb2b1b512d0eb2c6e",
+            "tmp/path-shoulder/pan-on/entry_path_004.png": "e04fa2f44de486237be405ed1b041cde8f3c5759efadb6a4b2446b4702940727",
+            "tmp/path-shoulder/pan-on/entry_path_005.png": "ccc92f80b09a19a137983439b047d5b4c91c4dabcaa982df2bd6448426fca2d3",
+            "tmp/path-shoulder/pan-on/entry_path_006.png": "c90cd1d6d2b2c05e656bde7f1d17b7a1d8724f43045e98562b78b68914ab0365",
+            "tmp/path-shoulder/pan-on/entry_path_007.png": "fa71ef25d5eaf5d3d9c676d6908b81d13b69413907623b80cf02796c3e5daf56",
+            "tmp/path-shoulder/pan-on/entry_path_008.png": "3e6a28c41f3ed272dbb6fe2c8d4be1590145749951dc34dd034cfb653d142976",
+            "tmp/path-shoulder/pan-on/entry_path_009.png": "2015127fe0be1d3cd3f617828451cf93e4d57dceda3ac58fb543aaa6659952fd",
+            "tmp/path-shoulder/pan-on/entry_path_010.png": "55dec0dc66f9aff1cffebb6f163adf16aa21e2a195494f646929e726ccd65e00",
+            "tmp/path-shoulder/pan-on/entry_path_011.png": "5118e388af0d717fc53642b69bdaa6984415c381c92c7e6fc83b495a2ea02008",
+            "tmp/path-shoulder/pan-on/entry_path_012.png": "c4529ab82e2eebac67323d1fc1258fc5693c4b7884aed71a36c932f85491b617",
+            "tmp/path-shoulder/pan-on/entry_path_013.png": "a1a1bddfb07ea54ef231f8f1a3e1f96b5f9fef853c180542f34d453b8140ca77",
+            "tmp/path-shoulder/pan-on/entry_path_014.png": "d48d7608dd25c6c50dd31200531a74b8191ea20bd0b2a1f7ae426a69aa20e5e3",
+            "tmp/path-shoulder/pan-on/entry_path_015.png": "2f18392bab40eb271ec18a7badece1741cf852b763e895b8f813f51392170179",
+            "tmp/path-shoulder/pan-on/entry_path_016.png": "6dda72ce60fc799afc38aa55a93e60e234985275fbe7cda90ee43d4f7cd668f3",
+            "tmp/path-shoulder/pan-on/entry_path_017.png": "d0b5ec16c9434b46364ecba03365e39bbb047221fd74c2e4218d6c71f7bf2758",
+            "tmp/path-shoulder/pan-on/entry_path_018.png": "d1ae470b0950d487d9d0b05056495c6f59e8171089a0120ff6e718ff4f30c9e8",
+            "tmp/path-shoulder/pan-on/entry_path_019.png": "3399c263ce659978009cd11bc8686dfe9148e1e9583f270ecbe4512f64f54ac9",
+            "tmp/path-shoulder/pan-on/entry_path_020.png": "10715b9bbfa75ef61f22d669ef79583f155188e19fe46ba4eded156e3eaaae8e",
+            "tmp/path-shoulder/pan-on/entry_path_021.png": "a84c9cc43f54bdc43c296e4f347b3d167bc18db3af29e32c85797ff95ff107b1",
+            "tmp/path-shoulder/pan-on/entry_path_022.png": "60d5907a29eb2cbeda1d926ce190e1940c23486ea00a0f3ea6fd33fd360243b4",
+            "tmp/path-shoulder/pan-on/entry_path_023.png": "f9e7ed54a8877d4c57f60dbd074cc402fd01787d2551035b9db4d1866ba6c2ed",
+            "tmp/path-shoulder/pan-on/entry_path_024.png": "ae043719c7aabf753249fb542ead0ba3b5d88a9dd990747b586bb6b55ad086fb",
+            "tmp/path-shoulder/pan-on/entry_path_025.png": "a141aa4d38ff8231a7524bdf684febf04d72126e9dde7b264c46d3091ad63176",
+            "tmp/path-shoulder/pan-on/entry_path_026.png": "80c2aa517bed9c6838a459747424e1b2b70a95b12107c1d376444955b1855565",
+            "tmp/path-shoulder/pan-on/entry_path_027.png": "9b1bd5d4ad7e8f4d35776669fd82f9d6ce645773c4e8af536f394e8df57ccaf2",
+            "tmp/path-shoulder/pan-on/entry_path_028.png": "091d37de74323cfd5876b88941fa411ca8aaac098fbc940c84053ad146142bdf",
+            "tmp/path-shoulder/pan-on/entry_path_029.png": "786ba5220fbfa862fb6987881ce70636866709cd5eefd6d25568485b48a15ab0",
+            "tmp/path-shoulder/pan-on/entry_path_030.png": "6a5c51d4225f34394fb586edd4092b70d1e54b85fe71f8e993bb135b7f3c3f90",
+            "tmp/path-shoulder/pan-on/entry_path_031.png": "1175e61f138478c1c7a5c04bcf8d0a457c3091963a140a47c6dcb38a943098e5"
+          },
+          "feature": [
+            true
+          ]
+        },
+        "pilot_south": {
+          "frames": 32,
+          "frame_sha256": {
+            "tmp/path-shoulder/pan-on/pilot_south_000.png": "081699867a8d8de39aaaa255c589c18ef351b2297da56b6bcd431b0c4a58c46f",
+            "tmp/path-shoulder/pan-on/pilot_south_001.png": "d0dfe9079b9bf674045fa8431530b8f0675547f5f1924780b4480da10bd9c35c",
+            "tmp/path-shoulder/pan-on/pilot_south_002.png": "ae3966b366119d72d02c791568dae77c5ee5a1e84bc64ec9853f041a485b6968",
+            "tmp/path-shoulder/pan-on/pilot_south_003.png": "35f6e786a1416e1a41ffdf1fbe226db3a45f78a063c0b34104d0770bcae5edd4",
+            "tmp/path-shoulder/pan-on/pilot_south_004.png": "98a309ee413168459649f557de31464f9e03f480e27a115eb4453ad0a50802a0",
+            "tmp/path-shoulder/pan-on/pilot_south_005.png": "7a660e10cec70d4e91487342d477a0a0b7a695a6fdb7ea83cd3fa0b5f002f231",
+            "tmp/path-shoulder/pan-on/pilot_south_006.png": "1ff2b95f26c746f043077ce5a0e7fb40b2731eb70fc35126bf4f9ff37d74fd9e",
+            "tmp/path-shoulder/pan-on/pilot_south_007.png": "7512ada2d098f6c4e70c957ae45446f3cde0a71c370606b52132d66a84044394",
+            "tmp/path-shoulder/pan-on/pilot_south_008.png": "e953bba74aee524076f515f55781236ba8d09b30bdb0c312fab081e7a73e4a04",
+            "tmp/path-shoulder/pan-on/pilot_south_009.png": "666a0a601e2d95737e8846759d50e1a99795157176a0c8557d0a69a6da8036b9",
+            "tmp/path-shoulder/pan-on/pilot_south_010.png": "e369e46345bff3e48cdae4aae518702e2b831ea58285a37e738bcadef035d8bc",
+            "tmp/path-shoulder/pan-on/pilot_south_011.png": "4b1d5c5159c6c87f7c3650f8e2d27993d613f5ef8cc30421e8a2772552a6e2bd",
+            "tmp/path-shoulder/pan-on/pilot_south_012.png": "78deedb7e85271f6ce5dfc4f190de8b00865bb7e6949f8a19ba30364b4acd539",
+            "tmp/path-shoulder/pan-on/pilot_south_013.png": "f911e6130368bddb9873b56874dc5c6a47d675755b2555c47ac4d13d0f1ab685",
+            "tmp/path-shoulder/pan-on/pilot_south_014.png": "f1018d1d5a1b25428f275d2825c80b4e04ea6065dd9b5315ced620f075c87657",
+            "tmp/path-shoulder/pan-on/pilot_south_015.png": "e2af5228ecb498561d3b38436a2a1cbf748ccde08d2a543b0afbc9e2faba4d5e",
+            "tmp/path-shoulder/pan-on/pilot_south_016.png": "8564b03cf45af32d1edf1271ac0f227715d439233fcede77748faf53123b2c53",
+            "tmp/path-shoulder/pan-on/pilot_south_017.png": "7890379232730b6afbde553af30e225a13ced6fbb27c9e21d31b9e652199733d",
+            "tmp/path-shoulder/pan-on/pilot_south_018.png": "8a16c273b5600b4047ab1b047217bd28a0eb2e2d8ca293f05633abeeac943488",
+            "tmp/path-shoulder/pan-on/pilot_south_019.png": "893c982e72084b9860ebdf65853ee66f64f330c69bd9727edb9c536a2faab158",
+            "tmp/path-shoulder/pan-on/pilot_south_020.png": "ec2833db1d1868b33e8271908150c69234c698d435a6aca5da7bd8a38050d136",
+            "tmp/path-shoulder/pan-on/pilot_south_021.png": "e03c90f26f65f75367a1ca1c398ccfd58b1d8824f3dfb82abbde382f7e72c967",
+            "tmp/path-shoulder/pan-on/pilot_south_022.png": "f95f54fe211bb0658299a139d33bac93b81412609c34638f6adc1ef74ae498e1",
+            "tmp/path-shoulder/pan-on/pilot_south_023.png": "e4011ad92e49b1b8560de1b98e67ac0d62a0ba2cc843bd1bf2e8b1d46c199746",
+            "tmp/path-shoulder/pan-on/pilot_south_024.png": "4e7405aa5ff0afe2bdd37288d6a1907d89513dc96bd21217e819f2752111e729",
+            "tmp/path-shoulder/pan-on/pilot_south_025.png": "4fe905e82164b81f6b7ec6a1e3b28646bd6590c205f1a7a30e379984c59fde45",
+            "tmp/path-shoulder/pan-on/pilot_south_026.png": "64365157632242da783d6b7f84768b89e32e24a2d27235a0c0eb4a6f7804edd1",
+            "tmp/path-shoulder/pan-on/pilot_south_027.png": "5266012df71cf0c60012fbec592c11b72900dd573321f51a529d854fd874cdaf",
+            "tmp/path-shoulder/pan-on/pilot_south_028.png": "6f2a620cbe3dffc09a6716b4c14a5c4095de6dc2b549a79c438c95a35d70ab0c",
+            "tmp/path-shoulder/pan-on/pilot_south_029.png": "01bb8a32b5bfce14df0b3eca2706027d03686cea1aab91871e88a6cbc2f2a174",
+            "tmp/path-shoulder/pan-on/pilot_south_030.png": "10bf7975f2ba0e17de9da4ebca9e9b45458b768e5b4b43ec8ec43261f3a49d74",
+            "tmp/path-shoulder/pan-on/pilot_south_031.png": "67faec1edd9b4a17876e339c90893eb801aa2a12b2d43e9b167e60bbb234704e"
+          },
+          "feature": [
+            true
+          ]
+        }
+      }
+    }
+  },
+  "checks": [
+    {
+      "label": "shoulder-binding-draft-parse",
+      "report": "tmp/path-shoulder/checks/shoulder-binding-draft-parse-jnp9f0gs/report.json",
+      "sha256": "96b01d4eb675d3e896fd0b092141536b3d51fe05096dc2614ed8d08ea4ce9b71",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "result_lines": []
+    },
+    {
+      "label": "shoulder-boundary-final-test_field_surfaces",
+      "report": "tmp/path-shoulder/checks/shoulder-boundary-final-test_field_surfaces-che2wewr/report.json",
+      "sha256": "26c0f88794af6d56e9cc8da5797191a58e1a74d412f070a891486cc0a536bd3c",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c503d389d59b6a58a077cb367a30f5d805b22d163079f17e2eba23ccb3fa5fa5",
+      "result_lines": [
+        "29 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "shoulder-boundary-final-test_landscape_collision_setup",
+      "report": "tmp/path-shoulder/checks/shoulder-boundary-final-test_landscape_collision_setup-zq6cabv1/report.json",
+      "sha256": "e7be927f28c7cca91bceb9fc55c78fc7faa413d0ccad8fba3cb24cd950b08da2",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0f28e4e581efb6db6c75ccb68d7e4f5ab7ccfa5adbd5dc33b26ae04a5224d56a",
+      "result_lines": [
+        "landscape collision setup: 27 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "shoulder-capture-parse",
+      "report": "tmp/path-shoulder/checks/shoulder-capture-parse-2bqjf6n2/report.json",
+      "sha256": "f09d51e8889181f148dd970bea1e3657d9fa4dc612bed6c4e6e37dfcd8fc41a3",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "result_lines": []
+    },
+    {
+      "label": "shoulder-catalog-import",
+      "report": "tmp/path-shoulder/checks/shoulder-catalog-import-6cbdz3co/report.json",
+      "sha256": "5897ec7a484a08bdf93dca3d75461aca097b42810e2ae1b507ec5ca7c227682d",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c49862a4386a434f10d7d029ba5091bc223f085d1bc02f0bea1a7f47b20a790b",
+      "result_lines": []
+    },
+    {
+      "label": "shoulder-catalog-language",
+      "report": "tmp/path-shoulder/checks/shoulder-catalog-language-lyjo4gcv/report.json",
+      "sha256": "c79fd7b173932f0dfd6396a2759f07395c93fa09f79a6e4e3dc50336c77f2535",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5e73f361201388346a90eecd256cd3458d7e81d5adc4ff2a4de4820871129aa1",
+      "result_lines": []
+    },
+    {
+      "label": "shoulder-defaults-diagnosis",
+      "report": "tmp/path-shoulder/checks/shoulder-defaults-diagnosis-xp7t672t/report.json",
+      "sha256": "0ab103dd5255dd30e833b8cae55dd5d921adf7b9a378d37e97bca62c1e85f156",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5c3173e5a43e2f90934dacc1cc71be91654a4144dacc5589ae934eb1e0c785f8",
+      "result_lines": [
+        "landscape gravel: 13 checks, 1 failures"
+      ]
+    },
+    {
+      "label": "shoulder-field-boundaries",
+      "report": "tmp/path-shoulder/checks/shoulder-field-boundaries-txv8x8mf/report.json",
+      "sha256": "01ecd171a437178fdb7c9311518a3042ba1c379c9cb23f32971b49eadd194e9c",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0df3c5cc91287a3c25952becc162ae6410acff625b5c1c46d0262e43f3d17b8e",
+      "result_lines": [
+        "25 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "shoulder-field-parse",
+      "report": "tmp/path-shoulder/checks/shoulder-field-parse-tx1h8kxh/report.json",
+      "sha256": "b7efd2f25558280090dfd93f3e1c612fd6cb3151ae18e9c964ff19dc6bdf4214",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "result_lines": []
+    },
+    {
+      "label": "shoulder-final-material-native",
+      "report": "tmp/path-shoulder/checks/shoulder-final-material-native-2b0544sr/report.json",
+      "sha256": "ea8e90111d929098ec05a0e7ec9b079cc4cb43d226a6cc898e0380b960a564b0",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5e3d9ac3fc40301f62a3300a4a916e59a1266e09819cd1229417e77555529449",
+      "result_lines": [
+        "landscape gravel: 13 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "shoulder-final-off",
+      "report": "tmp/path-shoulder/checks/shoulder-final-off-3382bkse/report.json",
+      "sha256": "de1d1ba4c55461e682e1b50a60da513d7e0d0e64dda015c1fc6bd809171bb402",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c3ac7a7163599eb8c4dbc9a8954c289fa973779c9dad7b2e5656195536548bd2",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/final-off"
+      ]
+    },
+    {
+      "label": "shoulder-final-on",
+      "report": "tmp/path-shoulder/checks/shoulder-final-on-1t4d9yj8/report.json",
+      "sha256": "3843274b454e4c3efaf18aee63701f7e7f4c73e8e84a0d809b958d169a43b920",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "538fbfe0010f9146944c8681f04fc1157016260bbbdf24b86466b06d83842000",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/final-on"
+      ]
+    },
+    {
+      "label": "shoulder-final-test_field_surfaces",
+      "report": "tmp/path-shoulder/checks/shoulder-final-test_field_surfaces-e2ofv4w_/report.json",
+      "sha256": "fc4a434b93a6b0d02467d2e59c6259496c982c40e9c9d5ef465de8a7e2d391a2",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "182965c79573e390cadeaa9bb29344b82697ab76af9a4d2b68e26fe44f4703e1",
+      "result_lines": [
+        "29 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "shoulder-final-test_landscape_gravel",
+      "report": "tmp/path-shoulder/checks/shoulder-final-test_landscape_gravel-3ka5whas/report.json",
+      "sha256": "9e3aede6cad81f3e084e39831dae8bd65bf54f84050a30ec52788ed901e30d31",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a7e2f9430214999b79a1753f697bda5adae04e7bcb917bf01cbaf263ce84196d",
+      "result_lines": [
+        "landscape gravel: 13 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "shoulder-final-test_scene_detail",
+      "report": "tmp/path-shoulder/checks/shoulder-final-test_scene_detail-8pklebr0/report.json",
+      "sha256": "f10331446ca4601fabd163052e15c7c274d455d0b65142d4ee17b7bc0bd02913",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e024fbf29d17dd8b354ad2bea9520ece14806860ad4c4222dc6b998a71d2e2b2",
+      "result_lines": [
+        "scene detail tests passed"
+      ]
+    },
+    {
+      "label": "shoulder-material-contract",
+      "report": "tmp/path-shoulder/checks/shoulder-material-contract-selx21k_/report.json",
+      "sha256": "4c131bf2d7696d7f472b4b76419ad53c04ff229af0186b8c72e31418e376bd2b",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "983951c2ae21180cd8dc9238c7ac8141ac5ae13cc8ffaff608610b6d33c9f850",
+      "result_lines": [
+        "landscape gravel: 13 checks, 1 failures"
+      ]
+    },
+    {
+      "label": "shoulder-material-headless",
+      "report": "tmp/path-shoulder/checks/shoulder-material-headless-81_9_c9z/report.json",
+      "sha256": "675fa59ef03caaa33f83db5923ff6b1e9b79013ae69d14b973d06ad4ff5ab274",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a7e2f9430214999b79a1753f697bda5adae04e7bcb917bf01cbaf263ce84196d",
+      "result_lines": [
+        "landscape gravel: 13 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "shoulder-material-native",
+      "report": "tmp/path-shoulder/checks/shoulder-material-native-h9e4dj56/report.json",
+      "sha256": "d64b8cd0ac275f8c1b5f1f347b483c1e5ad9a651c0bd83c5dbbc090a077e9d54",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5e3d9ac3fc40301f62a3300a4a916e59a1266e09819cd1229417e77555529449",
+      "result_lines": [
+        "landscape gravel: 13 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "shoulder-off-1080",
+      "report": "tmp/path-shoulder/checks/shoulder-off-1080-2s7lmfr1/report.json",
+      "sha256": "c5d52e0d1b69d177b727f8c76e4bdd3f2c95e31b98baf181cd915ce5bdcb56b5",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "98287535b26f95b90bdea21d0d5b5904e92ac05b1969c13e5fba7bc449562e7e",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/off"
+      ]
+    },
+    {
+      "label": "shoulder-on-1080",
+      "report": "tmp/path-shoulder/checks/shoulder-on-1080-fu_svqw_/report.json",
+      "sha256": "d5aee9ab944897c41ff1faf195d2ba547d8d9ac1dc717f760f61cb2269752836",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a1b83398bce411b9e914543234c4d00c19019d5fa876ccda2708416b0578cc1d",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/on"
+      ]
+    },
+    {
+      "label": "shoulder-opt-profile-new-a",
+      "report": "tmp/path-shoulder/checks/shoulder-opt-profile-new-a-tcm9vwts/report.json",
+      "sha256": "70fa20891b95f284e7f1b08f0de743a2042f81bca6fa45821855e80ad49e739c",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1d28e05d9d5c87d967536a452a64dcfc9edfe6b5235fcc8ea3ce6bf52ac4533c",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/opt-profile-new-a"
+      ]
+    },
+    {
+      "label": "shoulder-opt-profile-new-b",
+      "report": "tmp/path-shoulder/checks/shoulder-opt-profile-new-b-a87qi9df/report.json",
+      "sha256": "0e8c290a5b3c339eaf5c8b5fc8053adbb9d1b34a5254505f0681309556e89d3c",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d518d196553098b6d99030a56f709536eef68ebe086f85defdb31273c5e643dd",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/opt-profile-new-b"
+      ]
+    },
+    {
+      "label": "shoulder-opt-profile-old-a",
+      "report": "tmp/path-shoulder/checks/shoulder-opt-profile-old-a-b4o0igqn/report.json",
+      "sha256": "98d79b80cf13c08d725ccf7bd9d6ec52652e2af1d984d8852e4f4c30d1221f78",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f8d6f43e4edcc49435c3a6e4e001d7d31c21abdc3accd17c93efb44c198a1de8",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/opt-profile-old-a"
+      ]
+    },
+    {
+      "label": "shoulder-opt-profile-old-b",
+      "report": "tmp/path-shoulder/checks/shoulder-opt-profile-old-b-sdnyt0h1/report.json",
+      "sha256": "6097124f64e9ff054aa55025b877dbcee44888643147c68673fa8146c0254aac",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e05ed55b34a9df3268fb8f4906b5aa9daa3e795d8199a0422f113b2c540f0c50",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/opt-profile-old-b"
+      ]
+    },
+    {
+      "label": "shoulder-optimized-on",
+      "report": "tmp/path-shoulder/checks/shoulder-optimized-on-8f79n6rh/report.json",
+      "sha256": "1dffc40147056c0074aae12632a1f460855aa14b9354e603693287c981734769",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3ca4e4edcd46547536b10750649e062f2b9180ff4042ecbc4a0739dddf2fc83c",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/optimized-on"
+      ]
+    },
+    {
+      "label": "shoulder-pan-off",
+      "report": "tmp/path-shoulder/checks/shoulder-pan-off-kwrmb__1/report.json",
+      "sha256": "1edda52071a0189c4e010544d1848b3f9f3497e40aae83da7daa2d05df10c2d9",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "964c3fc8b36d913b5e53e12539b07c66fb42d2f42f90458c933f15d68ec710b4",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/pan-off"
+      ]
+    },
+    {
+      "label": "shoulder-pan-on",
+      "report": "tmp/path-shoulder/checks/shoulder-pan-on-t5cc_wsz/report.json",
+      "sha256": "599471006f3b52d784fe02f8eca10330e5c1bb9c0cdc0b43f2e51dc4161f43d9",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "aabb2c2dd449925b39084805e2f6a3487811c7bca31f39a91f584b8aa722e1c5",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/pan-on"
+      ]
+    },
+    {
+      "label": "shoulder-profile-off-a",
+      "report": "tmp/path-shoulder/checks/shoulder-profile-off-a-2lnt8jdw/report.json",
+      "sha256": "0694e1460af1b882141e49017722a283c2c51a482f6a472f36193f21043b24c2",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cdfedc3822afbf4829a38b7846d5737adee9ffa4aa29bd9e0e7d5c7bad61d720",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/profile-off-a"
+      ]
+    },
+    {
+      "label": "shoulder-profile-off-b",
+      "report": "tmp/path-shoulder/checks/shoulder-profile-off-b-kqnkw358/report.json",
+      "sha256": "2c762251ac72d807c5a03e59829d68953e7685c675ca9b7afdcd9274435f92e7",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "26ce18a43110561441b526215027af3cbafc988da01e21a8eb8c288b92d4dfb3",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/profile-off-b"
+      ]
+    },
+    {
+      "label": "shoulder-profile-on-a",
+      "report": "tmp/path-shoulder/checks/shoulder-profile-on-a-bhb80te2/report.json",
+      "sha256": "d263e348fa248dfe7671f0038ed73e8624b811ab803060d75bb8e48a4de37f59",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ee50a48c05a99a91ab64002be31a8f6b6272bd38bec4f3553920b14256b36232",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/profile-on-a"
+      ]
+    },
+    {
+      "label": "shoulder-profile-on-b",
+      "report": "tmp/path-shoulder/checks/shoulder-profile-on-b-7_pbdryr/report.json",
+      "sha256": "1f35ac61fb0b336688fe7d7275109f0a42ddafd08692003c77e895570f5667b6",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cc08d2d975d122aa5d07ef8d64ca19c5a79e610aaf8b1093458d015ba25c72a1",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/profile-on-b"
+      ]
+    },
+    {
+      "label": "shoulder-release-off",
+      "report": "tmp/path-shoulder/checks/shoulder-release-off-5ypnvfkf/report.json",
+      "sha256": "d4a449c81b2d5460d4cb51d9fd23d476f68c8e4aeb45df159ca5dbe4ee2587bb",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5137dd8f8902c8923b5d373e8279c48292cf4a4174d0c363a92f0bd5acfc4d61",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/release-off"
+      ]
+    },
+    {
+      "label": "shoulder-release-on",
+      "report": "tmp/path-shoulder/checks/shoulder-release-on-15cc_fpr/report.json",
+      "sha256": "71d9128fc261047a8b3218eaef4f32d7a5db809c11afb62d4c190fa55cee4d1d",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fd209ea835a6584babdbf885310f949a0e0ebdd77139b2af9e034cb2a9c8061d",
+      "result_lines": [
+        "LU native capture complete: C:/DEVELOPMENT/OpenRCsimulator/tmp/path-shoulder/release-on"
+      ]
+    },
+    {
+      "label": "shoulder-test_field_surfaces",
+      "report": "tmp/path-shoulder/checks/shoulder-test_field_surfaces-5z8y3loe/report.json",
+      "sha256": "c6d0b644b6de46dc8172e1ef8a897d1ef8e4990b54337fa7389ff58bbf1b73ec",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1fe09deeb597142fdac0ae56b91842b24ab1924e6cc8ca02a4cc31a4a426cf75",
+      "result_lines": [
+        "22 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "shoulder-test_landscape_ground_lu18",
+      "report": "tmp/path-shoulder/checks/shoulder-test_landscape_ground_lu18-3_hmx5j0/report.json",
+      "sha256": "cd4a296e10b506c5f86eb15a5fb532501f7727592941e837094d1fb13972ac59",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2a24bf734cb3636bfb48032df8e3877c0e793c13e1e8ff8e678cdece56ba028d",
+      "result_lines": [
+        "LU-18 ground: 37 checks, 0 failures"
+      ]
+    },
+    {
+      "label": "shoulder-test_time_of_day_scenery_update",
+      "report": "tmp/path-shoulder/checks/shoulder-test_time_of_day_scenery_update-b_1sna9j/report.json",
+      "sha256": "abc2f61af4057141b9d24c80516ffe30912899a5b6a664682696c6a6577de27b",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ed17b4ba9876a6cdbaa070724eab1132eae35498c3206a31077f0e7bea6c8cef",
+      "result_lines": [
+        "25 scenery lighting checks, 0 failed"
+      ]
+    },
+    {
+      "label": "shoulder-timing-capture-parse",
+      "report": "tmp/path-shoulder/checks/shoulder-timing-capture-parse-7l7avekg/report.json",
+      "sha256": "0ae24f4d162407bb3076831fae9eb4c5e7cc8fdc50ecfb124a1dc2ae72d1cd7f",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "result_lines": []
+    }
+  ],
+  "review": "Good Enemy source-read-only review prompted preset/launch gating, disabled texture-reference release and explicit-gradient sample gating. No reviewer renders/tests; collision/visual results are lead-run evidence.",
+  "limits": [
+    "Opaque perimeter remains a different material: normals, roughness, lighting and fog are not fully matched.",
+    "No new assets, meshes or batches. Explicit-gradient detail fetches skip non-shoulder pixels; derivative-bearing base turf still evaluates across the enabled shared material.",
+    "Preset Automatic remains a GPU-name heuristic, not measured recommendation. The new independent override is launch-only, not a saved in-app control.",
+    "Existing Scene detail changes ornament collision inventory; R3 on/off at the same tier preserves the full collision world. The inherited policy is not repaired here.",
+    "Required CI, independent owner/art/flight review and whole-flight frame-time/simulation-rate gates remain open."
+  ]
+}

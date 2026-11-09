@@ -20,6 +20,7 @@ func _initialize() -> void:
 	_test_inputs_are_not_mutated()
 	_test_loaded_catalog_contract()
 	_test_timber_spinner_salvage_guard()
+	_test_scoped_completeness_and_fees()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -123,11 +124,13 @@ func _test_prop_only_with_engine_inspection() -> void:
 	_check("prop plus engine and airframe inspection retain only the known lower bound", result["low_minor"] == 539 and result["high_minor"] == null and result["outcome"] == "inspection", str(result))
 	var terminal: Dictionary = _assessment(false)
 	terminal["terminal"] = true
+	terminal["complete_build_replacement_feasible"] = true
 	terminal["components"] = {"propeller": {"disposition": "inspect"}}
 	var terminal_result: Dictionary = Calculator.calculate(_dossier(), terminal)
 	_check("CR-39c terminal pending inspection is bounded by the complete-build replacement ceiling", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == 133134 and terminal_result["low_minor"] == 0 and terminal_result["total_minor"] == null and not terminal_result["complete"] and terminal_result["range_basis"] == "complete_build_replacement_ceiling" and terminal_result["replacement_quote_low_minor"] == 82734 and terminal_result["replacement_quote_high_minor"] == 133134 and terminal_result["replacement_quote_scope"] == "complete_build_replacement_quote_comparison", str(terminal_result))
 	var hull_crash: Dictionary = _assessment(false)
 	hull_crash["terminal"] = true
+	hull_crash["complete_build_replacement_feasible"] = true
 	hull_crash["unresolved"] = ["Crash inspection pending; component survival is not yet established."]
 	var hull_result: Dictionary = Calculator.calculate(_dossier(), hull_crash)
 	_check("CR-39c terminal crash without assessed parts reports a 0..ceiling range, never a total", hull_result["ok"] and hull_result["low_minor"] == 0 and hull_result["high_minor"] == 133134 and hull_result["total_minor"] == null and hull_result["known_subtotal_minor"] == 0, str(hull_result))
@@ -166,6 +169,66 @@ func _test_known_inspection_fee_has_no_upper_bound() -> void:
 	}
 	var result: Dictionary = Calculator.calculate(_dossier(), assessment)
 	_check("known inspection fees add to subtotal but do not bound repair costs", result["known_subtotal_minor"] == 889 and result["low_minor"] == 889 and result["high_minor"] == null and result["total_minor"] == null, str(result))
+
+
+func _test_scoped_completeness_and_fees() -> void:
+	var dossier := _dossier()
+	dossier.components = [
+		_component("wing", 1, 1000, 1000, 1000, ["wing-parent"], "fixture"),
+		_component("unrelated", 1, null, null, null, ["other-parent"], "fixture"),
+	]
+	dossier.complete = false
+	dossier.missing = ["Unrelated whole-build part has no price."]
+	var local := _assessment(false)
+	local.components = {"wing": {"disposition": "replace"}}
+	var known := Calculator.calculate(dossier, local)
+	_check("unrelated missing whole-build price does not poison a local incident", known.ok and known.complete and known.incident_complete and known.total_minor == 1000 and not known.whole_build_complete and not known.whole_build_unresolved.is_empty() and known.unresolved.is_empty(), str(known))
+	local.components = {"unrelated": {"disposition": "replace"}}
+	var missing := Calculator.calculate(dossier, local)
+	_check("missing required local price remains unresolved", missing.ok and not missing.complete and missing.total_minor == null and not missing.range_reasons.is_empty(), str(missing))
+	var large_unrelated := dossier.duplicate(true)
+	large_unrelated.components[1].unit_minor = Calculator.MAX_MINOR
+	large_unrelated.components[1].quantity = Calculator.MAX_QUANTITY
+	local.components = {"wing": {"disposition": "replace"}}
+	var large_result := Calculator.calculate(large_unrelated, local)
+	_check("unrelated whole-build product overflow does not block a bounded local charge", large_result.ok and large_result.total_minor == 1000, str(large_result))
+	var unsupported := dossier.duplicate(true)
+	unsupported.components = []
+	var empty_result := Calculator.calculate(unsupported, _assessment(false))
+	_check("an unsupported zero-component dossier cannot produce a complete free incident", empty_result.ok and not empty_result.complete and empty_result.total_minor == null and empty_result.low_minor == null and empty_result.high_minor == null and not empty_result.unresolved.is_empty(), str(empty_result))
+
+	var one := _dossier()
+	one.components = [_component("wing", 1, 1000, 1000, 1000, ["wing-parent"], "fixture")]
+	var assessment := _assessment(false)
+	assessment.terminal = true
+	assessment.components = {"wing": {"disposition": "inspect", "inspection_minor": 500, "inspection_fee_id": "inspection-1"}}
+	assessment.incurred_fees = [{"id": "retrieval-1", "kind": "retrieval", "amount_minor": 200}]
+	var reference := Calculator.calculate(one, assessment)
+	_check("a priced build reference is not asserted as a feasible ceiling", reference.high_minor == null and reference.replacement_quote_high_minor == 1700 and reference.incurred_fees_minor == 700, str(reference))
+	assessment.complete_build_replacement_feasible = true
+	var bounded := Calculator.calculate(one, assessment)
+	_check("feasible replacement includes each previously incurred fee once", bounded.low_minor == 700 and bounded.high_minor == 1700 and bounded.replacement_quote_low_minor == 1700 and bounded.incurred_fees_complete, str(bounded))
+	var unknown_fee := assessment.duplicate(true)
+	unknown_fee.incurred_fees[0].amount_minor = null
+	var unknown := Calculator.calculate(one, unknown_fee)
+	_check("unknown incurred fee cannot become zero or a replacement ceiling", unknown.ok and not unknown.complete and not unknown.incurred_fees_complete and unknown.high_minor == null and unknown.replacement_quote_high_minor == null, str(unknown))
+	var duplicate_fee := assessment.duplicate(true)
+	duplicate_fee.incurred_fees[0].id = "inspection-1"
+	_check("a fee ID cannot be charged both in a component and at incident scope", not Calculator.calculate(one, duplicate_fee).ok)
+	var loss := _assessment(true)
+	loss.components = {"wing": {"disposition": "reuse", "inspection_minor": 500}}
+	loss.incurred_fees = [{"id": "retrieval-1", "kind": "retrieval", "amount_minor": 200}]
+	var loss_result := Calculator.calculate(one, loss)
+	_check("total loss reuses one unit and includes both sunk fees once", loss_result.complete and loss_result.total_minor == 700 and loss_result.salvage_minor == 1000, str(loss_result))
+
+	var children := one.duplicate(true)
+	children.format = "openrc-aircraft-economics v2"
+	children.components.append(_component("wing-servo", 1, 250, 250, 250, ["wing-parent"], "fixture"))
+	var child_assessment := _assessment(false)
+	child_assessment.components = {"wing": {"disposition": "replace"}, "wing-servo": {"disposition": "replace"}}
+	_check("v2 financial children may share their validated physical parent", Calculator.calculate(children, child_assessment).total_minor == 1250)
+	children.format = "openrc-aircraft-economics v1"
+	_check("v1 still rejects overlapping physical allocations", not Calculator.calculate(children, child_assessment).ok)
 
 
 func _test_unknown_price_and_known_zero() -> void:
@@ -273,8 +336,17 @@ func _test_inputs_are_not_mutated() -> void:
 
 
 func _test_loaded_catalog_contract() -> void:
-	var loaded: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60")
-	_check("calculator consumes the normalized runtime baseline dossier", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
+	var current: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60")
+	_check("calculator consumes the current financial profile", bool(current.get("ok", false)) and current.dossier.get("format") == "openrc-aircraft-economics v2", str(current.get("errors", [])))
+	if current.get("ok", false):
+		var current_loss := Calculator.calculate(current.dossier, _assessment(true))
+		_check("current financial components produce the priced Stik build once", current_loss.get("total_minor") == 95431 and _line_count(current_loss, "airframe_wing") == 1 and _line_count(current_loss, "engine_and_muffler") == 1, str(current_loss))
+		var local := _assessment(false)
+		local.components = {"airframe_wing": {"disposition": "replace"}}
+		var current_local := Calculator.calculate(current.dossier, local)
+		_check("current financial wing is priced without replacing the rest of the aircraft", current_local.get("complete") and current_local.get("total_minor") == 11999 and current_local.get("lines", []).size() == 1, str(current_local))
+	var loaded: Dictionary = Catalog.load_legacy_for("jensen-das-ugly-stik-60")
+	_check("calculator consumes the historical v1 baseline dossier", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
 	if bool(loaded.get("ok", false)):
 		var dossier: Dictionary = loaded["dossier"]
 		var propeller: Dictionary = {}
@@ -286,7 +358,7 @@ func _test_loaded_catalog_contract() -> void:
 		var total_loss: Dictionary = Calculator.calculate(dossier, _assessment(true))
 		_check("actual baseline catalog produces the accepted integer-cent sum", total_loss.get("total_minor") == 99433 and total_loss.get("replacement_minor") == 99433, str(total_loss))
 	for spec: Array in [["stik-glow-55ax-2t", 99433, 539], ["stik-glow-fs64v-4t", 130059, 1165]]:
-		var variant := Catalog.load_for(spec[0])
+		var variant := Catalog.load_legacy_for(spec[0])
 		_check("variant economic dossier loads: " + spec[0], variant.get("ok", false))
 		if not variant.get("ok", false):
 			continue
@@ -300,7 +372,7 @@ func _test_loaded_catalog_contract() -> void:
 		salvage.components = {"fuselage_servos": {"disposition": "reuse", "quantity": 2}}
 		var reused := Calculator.calculate(variant.dossier, salvage)
 		_check("variant conditional two-servo credit remains the installed baseline value: " + spec[0], reused.get("salvage_minor") == 6798 and reused.get("total_minor") == spec[1] - 6798)
-	var incomplete: Dictionary = Catalog.load_for("gp-extra-300s-60")
+	var incomplete: Dictionary = Catalog.load_legacy_for("gp-extra-300s-60")
 	if bool(incomplete.get("ok", false)):
 		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
 		_check("Extra known parts are a subtotal, never a full aircraft quote", partial_report.get("known_subtotal_minor") == 17534 and partial_report.get("total_minor") == null and partial_report.get("replacement_minor") == null, str(partial_report))
@@ -313,19 +385,19 @@ func _test_loaded_catalog_contract() -> void:
 		var extra_repair := Calculator.calculate(incomplete.dossier, extra_strike)
 		_check("Extra isolated strike prices prop only with unresolved inspection", extra_repair.get("known_subtotal_minor") == 539 and extra_repair.get("total_minor") == null and extra_repair.get("high_minor") == null)
 	for spec: Array in [["turbo-lumber-evolution", 46587], ["p51d-mustang-120", 245671], ["sebart-avanti-s-a200-p100rx", 655912]]:
-		var fleet: Dictionary = Catalog.load_for(spec[0])
+		var fleet: Dictionary = Catalog.load_legacy_for(spec[0])
 		_check("fleet pricing dossier loads " + spec[0], fleet.get("ok", false))
 		if fleet.get("ok", false):
 			var report := Calculator.calculate(fleet.dossier, _assessment(true))
 			_check("fleet known parts never masquerade as whole-build replacement " + spec[0], report.get("known_subtotal_minor") == spec[1] and report.get("total_minor") == null and report.get("replacement_minor") == null and report.get("high_minor") == null, str(report))
-	incomplete = Catalog.load_for("xcell-60-research")
+	incomplete = Catalog.load_legacy_for("xcell-60-research")
 	if bool(incomplete.get("ok", false)):
 		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
 		_check("runtime incomplete route cannot produce a total or zero replacement quote", not partial_report["complete"] and partial_report["total_minor"] == null and partial_report["replacement_minor"] == null and partial_report["low_minor"] == null and partial_report["high_minor"] == null and not partial_report["unresolved"].is_empty(), str(partial_report))
 
 
 func _test_timber_spinner_salvage_guard() -> void:
-	var loaded: Dictionary = Catalog.load_for("turbo-lumber-evolution")
+	var loaded: Dictionary = Catalog.load_legacy_for("turbo-lumber-evolution")
 	if not loaded.get("ok", false):
 		_check("Lumber spinner salvage guard loads current dossier", false, str(loaded.get("errors", [])))
 		return

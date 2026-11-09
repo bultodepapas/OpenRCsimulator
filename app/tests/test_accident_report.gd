@@ -33,8 +33,39 @@ func _run() -> void:
 	await _report_behavior()
 	await _comparison_behavior()
 	await _timber_parts_behavior()
+	await _preview_scope_behavior()
 	print("accident report: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _preview_scope_behavior() -> void:
+	root.size = Vector2i(1920, 1080)
+	root.content_scale_size = Vector2i(1920, 1080)
+	var view := AccidentReport.new()
+	root.add_child(view)
+	await _ui.settle()
+	var source := {currency = "USD", complete = true, total_minor = 5999, known_subtotal_minor = 5999,
+		low_minor = 5999, high_minor = 5999, outcome = "repair", valuation_kind = "preview_game_parts_estimate",
+		identity = {aircraft_id = "turbo-lumber-evolution"}, lines = [{id = "wing_main", action = "replacement", quantity = 1, amount_minor = 5999}],
+		assumptions = [], unresolved = []}
+	view.show_assessment(source, true)
+	await _ui.settle()
+	_check("1080p preview keeps observed local scope in headline", view._caption_label.text.contains("Observed local parts only") and view._status_label.text == "LOCAL GAME REPAIR ESTIMATE")
+	_check("preview bare wing excludes grouped servos", _details_text(view).contains("servos excluded"))
+	_check_live_panel_bounds(view, "1080p local preview")
+	var frozen := JSON.stringify(view._report)
+	view.mark_evidence_unavailable()
+	_check("refused evidence warns without mutating accepted report", view._status_label.text == "COST EVIDENCE INCOMPLETE" and JSON.stringify(view._report) == frozen)
+	TranslationServer.set_locale("es")
+	await _ui.settle()
+	_check("Spanish rejected-evidence warning is readable", view._status_label.text == "EVIDENCIA DE COSTES INCOMPLETA")
+	_check("Spanish preview valuation avoids an untranslated identifier", view._humanize_identifier("preview_game_parts_estimate") == "Estimación preliminar de piezas del juego")
+	view.clear_report()
+	view.show_assessment(source, true)
+	_check("new flight clears session-only evidence warning", view._status_label.text == "ESTIMACIÓN LOCAL DEL JUEGO")
+	TranslationServer.set_locale("en")
+	view.queue_free()
+	await _ui.settle()
 
 
 func _comparison_behavior() -> void:
@@ -577,7 +608,7 @@ func _repair_report_fixture() -> Dictionary:
 	incident._last_tick = 20
 	incident._queue_assessment(20)
 	var context: Dictionary = incident.inspection_context()
-	var component_id := "covered_airframe_and_installation_hardware"
+	var component_id := "airframe_wing"
 	var receipt := {
 		"format": "openrc-accident-inspection v1",
 		"inspection_id": "ui-selected-repair",
@@ -626,7 +657,7 @@ func _repair_line(report_value: Dictionary) -> Dictionary:
 	if not lines is Array:
 		return {}
 	for line: Variant in lines:
-		if line is Dictionary and line.get("id") == "covered_airframe_and_installation_hardware":
+		if line is Dictionary and line.get("id") == "airframe_wing":
 			return line
 	return {}
 

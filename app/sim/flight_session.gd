@@ -1100,6 +1100,7 @@ const _START_OWNER_FIELDS := ["_weather", "fuel_start_fill", "input_enabled", "a
 	"_deflection_key", "_deflection_cache", "_has_committed_aircraft", "_pending_controller_start",
 	"_scenery_damage", "soft_contacts", "prop_strike", "crash", "_last_scenery_event", "_last_lake_event",
 	"_contact_tick", "_contact_events", "_active_hull_ids", "_soft_contacts_cache_tick",
+	"_cost_support_previous", "_cost_support_tick",
 	"_soft_contacts_cache_previous", "_soft_contacts_cache_state", "_pending_contact_tick", "_pending_crash",
 	"_pending_crash_state", "_pending_scenery_event", "_pending_lake_event", "_pending_scenery_damage", "_pending_scenery_tick",
 	"_out_of_trim", "_airframe_offset", "_native_stage", "stage_backend_error"]
@@ -1318,6 +1319,10 @@ var _contact_bindings: Dictionary = {}
 var _contact_tick: int = -1
 var _contact_events: Array[Dictionary] = []
 var _active_hull_ids := PackedStringArray()
+## Enabled by the incident consumer; technical/disabled routes incur no gear-observer work.
+var cost_observations_enabled := false
+var _cost_support_previous := PackedFloat64Array()
+var _cost_support_tick := -1
 var _resolving_contact: bool = false
 var _committing_contacts: bool = false
 var _pending_contact_tick: int = -1
@@ -2579,6 +2584,18 @@ func _observe_contact_tick(tick: int) -> void:
 	if tick == 0:
 		_active_hull_ids.clear()
 		prop_strike = {}
+	if tick > 0 and cost_observations_enabled and aircraft.get("ok", false):
+		# Observe the committed endpoint only. Never sample an RK candidate or add loads.
+		var current := gear_compressions(sim.state)
+		var gear := current_landing_gear()
+		for index in current.size():
+			var event := ContactEvents.support_event(index, current[index],
+				_cost_support_previous[index] if _cost_support_tick == tick - 1 and index < _cost_support_previous.size() else 0.0,
+				float(gear.contacts[index].max_compression), tick, _contact_bindings)
+			if not event.is_empty():
+				_contact_events.append(event)
+		_cost_support_previous = current
+		_cost_support_tick = tick
 	if not soft_hull_contacts or not aircraft.get("ok", false):
 		_soft_contacts_cache_tick = -1
 		_active_hull_ids.clear()
@@ -2592,7 +2609,7 @@ func _observe_contact_tick(tick: int) -> void:
 		return
 	_active_hull_ids = observed.active_ids
 	if tick > 0:
-		_contact_events.assign(observed.events)
+		_contact_events.append_array(observed.events)
 
 
 func _append_contact_event(event: Dictionary) -> void:
@@ -2630,6 +2647,8 @@ func _clear_pending_contacts() -> void:
 
 
 func _reset_contact_history() -> void:
+	_cost_support_previous = PackedFloat64Array()
+	_cost_support_tick = -1
 	_hull_scrape_cache_key = PackedByteArray()
 	_hull_scrape_cache = {}
 	_hull_scrape_cache_tick = -1
@@ -2641,6 +2660,12 @@ func _reset_contact_history() -> void:
 
 
 func _restore_contact_history(record: Dictionary) -> void:
+	_cost_support_previous = PackedFloat64Array()
+	_cost_support_tick = int(record.tick)
+	_cost_support_previous.resize(_contact_bindings.get("support_points", []).size())
+	for event: Dictionary in record.events:
+		if event.get("format") == ContactEvents.SUPPORT_FORMAT:
+			_cost_support_previous[int(event.point_index)] = float(event.measure.compression_m)
 	_hull_scrape_cache_key = PackedByteArray()
 	_hull_scrape_cache = {}
 	_hull_scrape_cache_tick = -1
@@ -2696,7 +2721,7 @@ func _contact_event_context_is_valid(event: Dictionary) -> bool:
 				return false
 			return event.policy == (HullContact.law() if soft_hull_contacts else "legacy-terminal-hull-v1")
 		"gear":
-			return event.policy == "gear-overtravel-terminal-v1"
+			return event.policy == (ContactEvents.SUPPORT_POLICY if event.get("format") == ContactEvents.SUPPORT_FORMAT else "gear-overtravel-terminal-v1")
 		"propeller":
 			return soft_hull_contacts and event.policy == HullContact.law()
 		"lake":
@@ -3520,6 +3545,15 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	pause_reason = "CRASH at %.1f m/s (sink %.1f m/s%s) - %s" % [speed, sink, "" if why.is_empty() else ", " + why, "restarting" if crash_auto_restart else "[R] restart"]
 	print(pause_reason)
 	_append_contact_event(ContactEvents.impact_event(impact, _contact_bindings, _impact_policy(impact)))
+	# A terminal boundary must retain a simultaneous powered disc/ground fact.
+	# Observe only: the frozen flight keeps its original engine/rotor/checkpoint state.
+	if cost_observations_enabled and soft_hull_contacts and impact.trigger != "water" and engine_running \
+		and prop_strike.is_empty() and not _prop_disc.is_empty() and sim.aux[AUX_RPM] >= HullContact.STRIKE_MIN_RPM:
+		var disc := HullContact.prop_disc_depth(sim.state, _prop_disc, _lake, float(sim.tick) * sim.dt())
+		if float(disc.depth) > 0.0:
+			var strike := {tick = sim.tick, rpm = sim.aux[AUX_RPM], point_ned = disc.point_ned,
+				velocity_ned = M.q_rotate(RB._att(sim.state), RB._slice3(sim.state, RB.VEL))}
+			_append_contact_event(ContactEvents.terminal_prop_event(strike, sim.tick, HullContact.law(), _contact_bindings))
 
 
 ## The shell may retain an armed radio when restarting under the same device/profile ownership.

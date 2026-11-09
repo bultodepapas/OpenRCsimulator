@@ -169,6 +169,7 @@ static func quote_calculated(
 			"candidate_id": package_candidate.id,
 			"candidate_kind": "authored_package_candidate",
 			"coverage_ids": package_candidate.coverage_ids.duplicate(),
+			"surplus_ids": package_candidate.get("surplus_ids", []).duplicate(),
 			"cost_cents": package_candidate.cost_cents,
 			"available": package_candidate.available,
 			"compatible": package_candidate.compatible,
@@ -204,6 +205,7 @@ static func quote_calculated(
 	return {
 		"status": optimizer_status,
 		"optimizer_status": optimizer_status,
+		"optimality_scope": "declared_candidate_set",
 		"coverage_scope": "replacements_only",
 		"assessment_complete": assessment_complete,
 		"complete": assessment_complete and bool(optimized.get("optimality_proven", false)),
@@ -211,10 +213,12 @@ static func quote_calculated(
 		"search_complete": bool(optimized.get("search_complete", false)),
 		"search_nodes": int(optimized.get("search_nodes", 0)),
 		"unknown_cost_alternative_found": bool(optimized.get("unknown_cost_alternative_found", false)),
+		"unknown_eligibility_alternative_found": bool(optimized.get("unknown_eligibility_alternative_found", false)),
 		"total_cost_cents": optimized.get("total_cost_cents"),
 		"required_unit_ids": required_unit_ids,
 		"selected_candidate_ids": optimized.get("selected_candidate_ids", []).duplicate(true),
 		"selected_lines": selected_lines,
+		"selected_coverage": optimized.get("selected_coverage", []).duplicate(true),
 		"selected_provenance": selected_provenance.entries,
 		"selected_provenance_truncated": selected_provenance.truncated,
 		"candidate_catalog": candidate_catalog,
@@ -222,7 +226,7 @@ static func quote_calculated(
 		"currency": _bounded_text(dossier.get("currency", "USD"), 32),
 		"price_date": _bounded_text(dossier.get("price_date", ""), 128),
 		"errors": errors,
-		"estimate_note": "Replacement-only snapshot estimate; not a purchase, inventory, live availability, physical-fit, complete repair total, labor, or salvage result.",
+		"estimate_note": "Replacement-only snapshot estimate; not a purchase, inventory, live availability, physical-fit, complete repair total, labor, or salvage result. Optimality is relative to the declared candidate set; surplus is unvalued and no sale credit is assumed.",
 	}
 
 
@@ -235,12 +239,12 @@ static func _bounded_package_candidates(package_candidates: Array, default_count
 		if typeof(candidate_value) != TYPE_DICTIONARY:
 			return {"ok": false, "errors": ["Package candidate %d must be a dictionary." % index], "candidates": []}
 		var candidate: Dictionary = candidate_value
-		if candidate.size() != _PACKAGE_KEYS.size():
-			return {"ok": false, "errors": ["Package candidate %d must contain exactly the six documented fields." % index], "candidates": []}
+		if candidate.size() > _PACKAGE_KEYS.size() + 1:
+			return {"ok": false, "errors": ["Package candidate %d exceeds the field bound." % index], "candidates": []}
 		for key: Variant in candidate.keys():
 			if typeof(key) != TYPE_STRING and typeof(key) != TYPE_STRING_NAME:
 				return {"ok": false, "errors": ["Package candidate %d contains an unknown field." % index], "candidates": []}
-			if String(key) not in _PACKAGE_KEYS:
+			if String(key) not in _PACKAGE_KEYS and String(key) != "surplus_ids":
 				return {"ok": false, "errors": ["Package candidate %d contains an unknown field." % index], "candidates": []}
 		for key: String in _PACKAGE_KEYS:
 			if not candidate.has(key):
@@ -265,15 +269,25 @@ static func _bounded_package_candidates(package_candidates: Array, default_count
 			if String(coverage_id).length() > MAX_COVERAGE_ID_LENGTH:
 				return {"ok": false, "errors": ["Package candidate %d coverage ID exceeds the supported length." % index], "candidates": []}
 			safe_coverage.append(String(coverage_id))
+		var surplus_value: Variant = candidate.get("surplus_ids", [])
+		if typeof(surplus_value) != TYPE_ARRAY or surplus_value.size() > MAX_REQUIRED_UNITS:
+			return {"ok": false, "errors": ["Package candidate %d surplus_ids must be a bounded array." % index], "candidates": []}
+		var safe_surplus: Array = []
+		for surplus_id: Variant in surplus_value:
+			if typeof(surplus_id) != TYPE_STRING or String(surplus_id).strip_edges().is_empty() or String(surplus_id).length() > MAX_COVERAGE_ID_LENGTH:
+				return {"ok": false, "errors": ["Package candidate %d surplus IDs must be bounded non-empty strings." % index], "candidates": []}
+			safe_surplus.append(String(surplus_id))
 		var cost_value: Variant = candidate.get("cost_cents")
 		if cost_value != null and (typeof(cost_value) != TYPE_INT or int(cost_value) < 0 or int(cost_value) > PackageOptimizer.MAX_COST_CENTS):
 			return {"ok": false, "errors": ["Package candidate %d cost_cents must be null or an integer within the supported economics range." % index], "candidates": []}
-		if typeof(candidate.get("available")) != TYPE_BOOL or typeof(candidate.get("compatible")) != TYPE_BOOL:
-			return {"ok": false, "errors": ["Package candidate %d available and compatible fields must be booleans." % index], "candidates": []}
+		for flag: String in ["available", "compatible"]:
+			if candidate[flag] != null and typeof(candidate[flag]) != TYPE_BOOL:
+				return {"ok": false, "errors": ["Package candidate %d availability and compatibility must be booleans or unknown." % index], "candidates": []}
 		# Rebuild from validated scalar fields and a string-only array; never deep-copy untrusted input.
 		candidates.append({
 			"id": String(id_value),
 			"coverage_ids": safe_coverage,
+			"surplus_ids": safe_surplus,
 			"cost_cents": cost_value,
 			"available": candidate.available,
 			"compatible": candidate.compatible,
@@ -308,6 +322,7 @@ static func _base_result(
 	return {
 		"status": status,
 		"optimizer_status": "not_run",
+		"optimality_scope": "declared_candidate_set",
 		"coverage_scope": "replacements_only",
 		"assessment_complete": assessment_complete,
 		"complete": complete,
@@ -315,16 +330,18 @@ static func _base_result(
 		"search_complete": false,
 		"search_nodes": 0,
 		"unknown_cost_alternative_found": false,
+		"unknown_eligibility_alternative_found": false,
 		"total_cost_cents": total_cost_cents,
 		"required_unit_ids": required_unit_ids.duplicate(true),
 		"selected_candidate_ids": [],
 		"selected_lines": [],
+		"selected_coverage": [],
 		"selected_provenance": [],
 		"selected_provenance_truncated": false,
 		"candidate_catalog": [],
 		"candidate_catalog_omitted": false,
 		"errors": _bounded_errors(errors),
-		"estimate_note": "Replacement-only snapshot estimate; not a purchase, inventory, live availability, physical-fit, complete repair total, labor, or salvage result.",
+		"estimate_note": "Replacement-only snapshot estimate; not a purchase, inventory, live availability, physical-fit, complete repair total, labor, or salvage result. Optimality is relative to the declared candidate set; surplus is unvalued and no sale credit is assumed.",
 	}
 
 

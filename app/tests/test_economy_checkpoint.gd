@@ -1,5 +1,6 @@
 extends SceneTree
 const Incident = preload("res://economy/incident.gd")
+const Catalog = preload("res://economy/catalog.gd")
 const StateCodec = preload("res://economy/checkpoint.gd")
 const Events = preload("res://sim/aircraft_contact_events.gd")
 const Settlement = preload("res://economy/settlement.gd")
@@ -38,7 +39,7 @@ func _run() -> void:
 		not healthy.is_empty() and healthy.get("format") == "openrc-visual-checkpoint v1")
 	var ledger: Variant = main._accident_incident
 	var tick: int = session.sim.tick
-	var event: Dictionary = Events.hull_events([{index = 0, new = true, depth_m = 0.001}], bindings, PackedStringArray(), tick).events[0]
+	var event: Dictionary = Events.hull_events([{index = 0, new = true, depth_m = 0.01}], bindings, PackedStringArray(), tick).events[0]
 	ledger.observe({tick = tick, events = [event]}, bindings, false)
 	ledger.evaluate_pending()
 	var receipt := _receipt(ledger, "pair-inspection", "replace", ["electrical_damage"])
@@ -86,7 +87,7 @@ func _run() -> void:
 
 func _unit_cases(bindings: Dictionary) -> void:
 	var ledger := Incident.new()
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	var empty := ledger.checkpoint(0, bindings)
 	check("healthy ledger captures without fabricating damage", not empty.is_empty() and empty.revision == 0)
 	var raw := {tick = 10, rpm = 6000.0, point_ned = PackedFloat64Array([0, 0, 0]), velocity_ned = PackedFloat64Array([8, 0, 0])}
@@ -102,7 +103,7 @@ func _unit_cases(bindings: Dictionary) -> void:
 	var saved := ledger.checkpoint(10, bindings)
 	check("active damaged ledger captures", not saved.is_empty())
 	var destination := Incident.new()
-	destination.begin("jensen-das-ugly-stik-60", "")
+	destination.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	var staged := destination.prepare_restore(bytes_to_var(var_to_bytes(saved)), 10, bindings)
 	check("prepare is detached and accepts native roundtrip", staged.ok and destination.report.is_empty())
 	if staged.ok:
@@ -166,13 +167,13 @@ func _unit_cases(bindings: Dictionary) -> void:
 	ledger._assessment.terminal = true
 	check("terminal crash remains archive-only until crash state can resume", ledger.checkpoint(10, bindings).is_empty())
 	# Separate diagnostic overflow facts remain resumable without dropping their caveat.
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	for tick in range(1, 131):
 		var event: Dictionary = Events.hull_events([{index = 0, new = true, depth_m = 0.001}], bindings, PackedStringArray(), tick).events[0]
 		ledger.observe({tick = tick, events = [event]}, bindings, false)
 	ledger.evaluate_pending()
 	check("bounded overflow ledger roundtrips", destination.prepare_restore(ledger.checkpoint(130, bindings), 130, bindings).ok)
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	ledger.observe({tick = 5, events = [], active_hull_ids = PackedStringArray(["legacy-active"])}, bindings, false, true)
 	ledger.evaluate_pending()
 	check("legacy active contact records missing history without inventing an impact", ledger.journal.is_empty() and str(ledger.report.unresolved).contains("earlier damage history"))
@@ -193,7 +194,7 @@ func _receipt(ledger: Variant, id: String, disposition: String, flags: Array) ->
 
 func _repair_cases(bindings: Dictionary) -> void:
 	var ledger := Incident.new()
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	var event: Dictionary = Events.hull_events([{index = 0, new = true, depth_m = 0.001}], bindings, PackedStringArray(), 20).events[0]
 	ledger.observe({tick = 20, events = [event]}, bindings, false)
 	var no_inspection := ledger.checkpoint(20, bindings)
@@ -229,7 +230,7 @@ func _repair_cases(bindings: Dictionary) -> void:
 	var original := ledger.report.duplicate(true)
 	var saved := ledger.checkpoint(20, bindings)
 	var other := Incident.new()
-	other.begin("jensen-das-ugly-stik-60", "")
+	other.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	var staged := other.prepare_restore(bytes_to_var(var_to_bytes(saved)), 20, bindings)
 	check("selected repair checkpoint validates", staged.ok)
 	if staged.ok:
@@ -259,7 +260,8 @@ func _repair_cases(bindings: Dictionary) -> void:
 	receipt.full_inspection = true
 	receipt.components = {}
 	for part: Dictionary in ledger.dossier.components:
-		receipt.components[part.id] = {disposition = "reuse", quantity = part.quantity, damage_flags = [], evidence = "Synthetic full inspection."}
+		var disposition := "replace" if ledger._confirmed_replacements.has(part.id) else "reuse"
+		receipt.components[part.id] = {disposition = disposition, quantity = part.quantity, damage_flags = [], evidence = "Synthetic full inspection."}
 	check("complete explicit inspection resolves contact uncertainty", ledger.apply_inspection(receipt).ok and ledger._assessment.unresolved.is_empty())
 	check("resolved full inspection checkpoint remains valid", other.prepare_restore(ledger.checkpoint(20, bindings), 20, bindings).ok)
 

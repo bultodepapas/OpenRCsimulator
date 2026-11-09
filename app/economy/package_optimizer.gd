@@ -1,7 +1,8 @@
 class_name PackageOptimizer
 extends RefCounted
 
-## Pure bounded search for the least-cost exact cover of installed units.
+## Pure bounded search over declared sold packages for required installed units.
+## Overlap and explicitly identified surplus are retained, never credited.
 ## See docs/research/crash-damage-investigations/CR-31d/README.md for the input and result contract.
 
 const DEFAULT_SEARCH_LIMIT: int = 100000
@@ -9,6 +10,8 @@ const MAX_SEARCH_LIMIT: int = 1000000
 const MAX_REQUIRED_UNITS: int = 64
 const MAX_CANDIDATES: int = 512
 const MAX_COST_CENTS: int = 9000000000000000
+const MAX_ID_LENGTH: int = 132
+const MAX_PROVENANCE_LENGTH: int = 2048
 const _CANDIDATE_KEYS: Array[String] = [
 	"id", "coverage_ids", "cost_cents", "available", "compatible", "provenance",
 ]
@@ -27,7 +30,7 @@ static func optimize(required_unit_ids: Variant, candidates: Variant, search_lim
 
 	var usable_candidates: Array = []
 	for raw_candidate in candidates:
-		if not raw_candidate.available or not raw_candidate.compatible:
+		if raw_candidate.available == false or raw_candidate.compatible == false:
 			continue
 		var coverage_indices: Array = []
 		for unit_id in raw_candidate.coverage_ids:
@@ -36,7 +39,10 @@ static func optimize(required_unit_ids: Variant, candidates: Variant, search_lim
 		usable_candidates.append({
 			"id": raw_candidate.id,
 			"coverage_indices": coverage_indices,
+			"coverage_ids": raw_candidate.coverage_ids.duplicate(),
+			"surplus_ids": raw_candidate.get("surplus_ids", []).duplicate(),
 			"cost_cents": raw_candidate.cost_cents,
+			"eligibility_unknown": raw_candidate.available == null or raw_candidate.compatible == null,
 			"provenance": raw_candidate.provenance,
 		})
 	usable_candidates.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
@@ -61,12 +67,13 @@ static func optimize(required_unit_ids: Variant, candidates: Variant, search_lim
 		"search_nodes": 0,
 		"limit_reached": false,
 		"unknown_cover_found": false,
+		"unknown_eligibility_cover_found": false,
 		"over_limit_known_cover_found": false,
 		"best_found": false,
 		"best_cost": 0,
 		"best_ids": [],
 	}
-	_search(context, covered, [], 0, 0, false, false)
+	_search(context, covered, [], 0, 0, false, false, false)
 
 	var selected_ids: Array = context.best_ids.duplicate()
 	var selected_provenance := _selected_provenance(selected_ids, usable_candidates)
@@ -75,11 +82,13 @@ static func optimize(required_unit_ids: Variant, candidates: Variant, search_lim
 		status = "search_limit"
 	elif context.unknown_cover_found:
 		status = "unknown_cost"
+	elif context.unknown_eligibility_cover_found:
+		status = "unknown_eligibility"
 	elif context.best_found:
 		status = "optimal"
 	elif context.over_limit_known_cover_found:
 		status = "cost_out_of_range"
-	return _result(
+	var result := _result(
 		status,
 		selected_ids,
 		context.best_cost if context.best_found else null,
@@ -90,6 +99,9 @@ static func optimize(required_unit_ids: Variant, candidates: Variant, search_lim
 		[],
 		selected_provenance
 	)
+	result["unknown_eligibility_alternative_found"] = bool(context.unknown_eligibility_cover_found)
+	result["selected_coverage"] = _selected_coverage(selected_ids, usable_candidates)
+	return result
 
 
 static func _validate_inputs(required_unit_ids: Variant, candidates: Variant, search_limit: Variant) -> Dictionary:
@@ -112,8 +124,8 @@ static func _validate_inputs(required_unit_ids: Variant, candidates: Variant, se
 	var unit_seen: Dictionary = {}
 	var unit_ids: Array = []
 	for unit_id in required_unit_ids:
-		if typeof(unit_id) != TYPE_STRING or String(unit_id).strip_edges().is_empty():
-			errors.append("required_unit_ids entries must be non-empty strings")
+		if typeof(unit_id) != TYPE_STRING or String(unit_id).strip_edges().is_empty() or String(unit_id).length() > MAX_ID_LENGTH:
+			errors.append("required_unit_ids entries must be bounded non-empty strings")
 			continue
 		if unit_seen.has(unit_id):
 			errors.append("required_unit_ids contains duplicate ID %s" % unit_id)
@@ -128,13 +140,17 @@ static func _validate_inputs(required_unit_ids: Variant, candidates: Variant, se
 		if typeof(candidate) != TYPE_DICTIONARY:
 			errors.append("candidate %d must be a dictionary" % candidate_index)
 			continue
-		if candidate.size() != _CANDIDATE_KEYS.size():
-			errors.append("candidate %d must contain exactly the six documented fields" % candidate_index)
+		if candidate.size() > _CANDIDATE_KEYS.size() + 1:
+			errors.append("candidate %d exceeds the field bound" % candidate_index)
+			continue
+		for key in candidate:
+			if key not in _CANDIDATE_KEYS and key != "surplus_ids":
+				errors.append("candidate %d contains an unknown field" % candidate_index)
 		for key in _CANDIDATE_KEYS:
 			if not candidate.has(key):
 				errors.append("candidate %d is missing %s" % [candidate_index, key])
-		if not candidate.has("id") or typeof(candidate.id) != TYPE_STRING or String(candidate.id).strip_edges().is_empty():
-			errors.append("candidate %d id must be a non-empty string" % candidate_index)
+		if not candidate.has("id") or typeof(candidate.id) != TYPE_STRING or String(candidate.id).strip_edges().is_empty() or String(candidate.id).length() > MAX_ID_LENGTH:
+			errors.append("candidate %d id must be a bounded non-empty string" % candidate_index)
 		elif candidate_ids.has(candidate.id):
 			errors.append("candidate IDs must be unique: %s" % candidate.id)
 		else:
@@ -149,8 +165,8 @@ static func _validate_inputs(required_unit_ids: Variant, candidates: Variant, se
 			else:
 				var coverage_seen: Dictionary = {}
 				for unit_id in candidate.coverage_ids:
-					if typeof(unit_id) != TYPE_STRING or String(unit_id).strip_edges().is_empty():
-						errors.append("candidate %d coverage IDs must be non-empty strings" % candidate_index)
+					if typeof(unit_id) != TYPE_STRING or String(unit_id).strip_edges().is_empty() or String(unit_id).length() > MAX_ID_LENGTH:
+						errors.append("candidate %d coverage IDs must be bounded non-empty strings" % candidate_index)
 						continue
 					if coverage_seen.has(unit_id):
 						errors.append("candidate %d repeats coverage ID %s" % [candidate_index, unit_id])
@@ -158,15 +174,28 @@ static func _validate_inputs(required_unit_ids: Variant, candidates: Variant, se
 					coverage_seen[unit_id] = true
 					if not unit_seen.has(unit_id):
 						errors.append("candidate %d covers unrequired ID %s" % [candidate_index, unit_id])
+		if candidate.has("surplus_ids"):
+			var surplus: Variant = candidate.surplus_ids
+			if typeof(surplus) != TYPE_ARRAY or surplus.size() > MAX_REQUIRED_UNITS:
+				errors.append("candidate %d surplus_ids must be a bounded array" % candidate_index)
+			else:
+				var surplus_seen: Dictionary = {}
+				for surplus_id in surplus:
+					if typeof(surplus_id) != TYPE_STRING or String(surplus_id).strip_edges().is_empty() or String(surplus_id).length() > MAX_ID_LENGTH:
+						errors.append("candidate %d surplus IDs must be bounded non-empty strings" % candidate_index)
+					elif surplus_seen.has(surplus_id) or unit_seen.has(surplus_id):
+						errors.append("candidate %d repeats or misclassifies surplus ID %s" % [candidate_index, surplus_id])
+					else:
+						surplus_seen[surplus_id] = true
 		if candidate.has("cost_cents"):
 			var cost: Variant = candidate.cost_cents
 			if cost != null and (typeof(cost) != TYPE_INT or int(cost) < 0 or int(cost) > MAX_COST_CENTS):
 				errors.append("candidate %d cost_cents must be null or an integer from 0 through %d" % [candidate_index, MAX_COST_CENTS])
 		for flag in ["available", "compatible"]:
-			if candidate.has(flag) and typeof(candidate[flag]) != TYPE_BOOL:
-				errors.append("candidate %d %s must be a boolean" % [candidate_index, flag])
-		if candidate.has("provenance") and (typeof(candidate.provenance) != TYPE_STRING or String(candidate.provenance).strip_edges().is_empty()):
-			errors.append("candidate %d provenance must be a non-empty string" % candidate_index)
+			if candidate.has(flag) and candidate[flag] != null and typeof(candidate[flag]) != TYPE_BOOL:
+				errors.append("candidate %d %s must be a boolean or unknown" % [candidate_index, flag])
+		if candidate.has("provenance") and (typeof(candidate.provenance) != TYPE_STRING or String(candidate.provenance).strip_edges().is_empty() or String(candidate.provenance).length() > MAX_PROVENANCE_LENGTH):
+			errors.append("candidate %d provenance must be a bounded non-empty string" % candidate_index)
 	return {"errors": errors, "unit_ids": unit_ids}
 
 
@@ -177,11 +206,10 @@ static func _search(
 	covered_count: int,
 	running_cost: int,
 	amount_over_limit: bool,
-	has_unknown_cost: bool
+	has_unknown_cost: bool,
+	has_unknown_eligibility: bool
 ) -> void:
 	if context.limit_reached:
-		return
-	if has_unknown_cost and context.unknown_cover_found:
 		return
 	if int(context.search_nodes) >= int(context.search_limit):
 		context.limit_reached = true
@@ -189,8 +217,14 @@ static func _search(
 	context.search_nodes = int(context.search_nodes) + 1
 
 	if covered_count == int(context.unit_count):
+		if not _irredundant_cover(selected_indices, context.candidates, int(context.unit_count)):
+			return
 		if has_unknown_cost:
 			context.unknown_cover_found = true
+		if has_unknown_eligibility:
+			context.unknown_eligibility_cover_found = true
+		if has_unknown_cost or has_unknown_eligibility:
+			return
 		elif amount_over_limit:
 			context.over_limit_known_cover_found = true
 		else:
@@ -211,8 +245,7 @@ static func _search(
 			continue
 		var choices: Array = []
 		for candidate_index in context.candidates_by_unit[unit_index]:
-			if _candidate_fits(context.candidates[candidate_index], covered):
-				choices.append(candidate_index)
+			choices.append(candidate_index)
 		if choices.is_empty():
 			return
 		if chosen_unit == -1 or choices.size() < chosen_candidates.size():
@@ -220,7 +253,7 @@ static func _search(
 			chosen_candidates = choices
 
 	for candidate_index in chosen_candidates:
-		if context.limit_reached or (has_unknown_cost and context.unknown_cover_found):
+		if context.limit_reached:
 			return
 		var candidate: Dictionary = context.candidates[candidate_index]
 		var next_unknown := has_unknown_cost or candidate.cost_cents == null
@@ -232,28 +265,68 @@ static func _search(
 				next_over_limit = true
 			else:
 				next_cost += candidate_cost
+		var newly_covered: Array = []
 		for covered_index in candidate.coverage_indices:
-			covered[covered_index] = 1
+			if covered[covered_index] == 0:
+				covered[covered_index] = 1
+				newly_covered.append(covered_index)
 		selected_indices.append(candidate_index)
 		_search(
 			context,
 			covered,
 			selected_indices,
-			covered_count + candidate.coverage_indices.size(),
+			covered_count + newly_covered.size(),
 			next_cost,
 			next_over_limit,
-			next_unknown
+			next_unknown,
+			has_unknown_eligibility or bool(candidate.eligibility_unknown)
 		)
 		selected_indices.pop_back()
-		for covered_index in candidate.coverage_indices:
+		for covered_index in newly_covered:
 			covered[covered_index] = 0
 
 
-static func _candidate_fits(candidate: Dictionary, covered: PackedByteArray) -> bool:
-	for covered_index in candidate.coverage_indices:
-		if covered[covered_index] != 0:
+static func _irredundant_cover(selected_indices: Array, candidates: Array, unit_count: int) -> bool:
+	var counts := PackedInt32Array()
+	counts.resize(unit_count)
+	for candidate_index in selected_indices:
+		for unit_index in candidates[candidate_index].coverage_indices:
+			counts[unit_index] += 1
+	for candidate_index in selected_indices:
+		var needed := false
+		for unit_index in candidates[candidate_index].coverage_indices:
+			if counts[unit_index] == 1:
+				needed = true
+				break
+		if not needed:
 			return false
 	return true
+
+
+static func _selected_coverage(selected_ids: Array, candidates: Array) -> Array:
+	var selected: Dictionary = {}
+	for candidate in candidates:
+		if candidate.id in selected_ids:
+			selected[candidate.id] = candidate
+	var assigned: Dictionary = {}
+	var result: Array = []
+	for candidate_id in selected_ids:
+		var candidate: Dictionary = selected[candidate_id]
+		var ids: Array = candidate.coverage_ids.duplicate()
+		ids.sort()
+		var allocated: Array = []
+		var overlap: Array = []
+		for unit_id in ids:
+			if assigned.has(unit_id):
+				overlap.append(unit_id)
+			else:
+				assigned[unit_id] = true
+				allocated.append(unit_id)
+		var surplus: Array = candidate.surplus_ids.duplicate()
+		surplus.sort()
+		result.append({"candidate_id": candidate_id, "allocated_ids": allocated,
+			"overlap_ids": overlap, "surplus_ids": surplus})
+	return result
 
 
 static func _selected_ids(selected_indices: Array, candidates: Array) -> Array:
@@ -301,12 +374,15 @@ static func _result(
 ) -> Dictionary:
 	return {
 		"status": status,
+		"optimality_scope": "declared_candidate_set",
 		"selected_candidate_ids": selected_ids,
 		"total_cost_cents": total_cost_cents,
 		"optimality_proven": optimality_proven,
 		"search_complete": search_complete,
 		"search_nodes": search_nodes,
 		"unknown_cost_alternative_found": unknown_cost_alternative_found,
+		"unknown_eligibility_alternative_found": false,
+		"selected_coverage": [],
 		"errors": PackedStringArray(errors),
 		"selected_provenance": selected_provenance,
 	}

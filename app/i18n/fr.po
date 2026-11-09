@@ -10185,3 +10185,6 @@ msgstr "Essai du modèle enregistré : %s · révision %d"
 
 msgid "Based on saved build: %s · revision %d"
 msgstr "Basé sur le modèle enregistré : %s · révision %d"
+
+msgid "High and Extreme add detailed grass at walking-path edges."
+msgstr "Élevé et Extrême ajoutent de l’herbe détaillée sur les bords des chemins piétonniers."

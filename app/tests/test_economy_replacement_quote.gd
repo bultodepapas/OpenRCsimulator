@@ -13,6 +13,7 @@ func _initialize() -> void:
 	_test_partial_assessment_is_not_complete()
 	_test_unknown_component_price()
 	_test_overlapping_packages_and_full_bundle()
+	_test_surplus_and_required_overlap()
 	_test_unit_bound_and_search_limit()
 	_test_total_loss_and_invalid_assessment()
 	_test_package_candidate_preflight()
@@ -195,6 +196,44 @@ func _test_overlapping_packages_and_full_bundle() -> void:
 	var bundle_result := ReplacementQuote.quote(dossier, assessment, cheaper_bundle)
 	_check("a cheaper full bundle is selected once across multiple components", bundle_result.status == "optimal" and bundle_result.selected_candidate_ids == ["full-bundle"] and bundle_result.total_cost_cents == 750 and bundle_result.selected_provenance.size() == 1, str(bundle_result))
 	_check("authored bundle compatibility is explicitly identified in the catalog", bundle_result.candidate_catalog.size() == 3 and bundle_result.candidate_catalog[0].candidate_kind == "authored_package_candidate" and bundle_result.candidate_catalog[0].compatibility_basis.contains("Explicit authored coverage"), str(bundle_result.candidate_catalog))
+
+
+func _test_surplus_and_required_overlap() -> void:
+	var dossier := _dossier([_component("left", 1, 2100), _component("center", 1, 2100), _component("right", 1, 2100)])
+	var assessment := _assessment({"left": {"disposition": "replace"}, "center": {"disposition": "replace"}, "right": {"disposition": "replace"}})
+	var left_kit := _package("left-kit", ["left:0", "center:0"], 400)
+	var right_kit := _package("right-kit", ["center:0", "right:0"], 300)
+	right_kit["surplus_ids"] = ["uninstalled-spare"]
+	var result := ReplacementQuote.quote(dossier, assessment, [right_kit, left_kit])
+	_check("quote chooses two necessary overlapping kits without charging a requirement twice", result.status == "optimal" and result.total_cost_cents == 700 and result.selected_candidate_ids == ["left-kit", "right-kit"], str(result))
+	_check("quote retains overlap and unvalued extra package contents", result.selected_coverage == [
+		{"candidate_id": "left-kit", "allocated_ids": ["center:0", "left:0"], "overlap_ids": [], "surplus_ids": []},
+		{"candidate_id": "right-kit", "allocated_ids": ["right:0"], "overlap_ids": ["center:0"], "surplus_ids": ["uninstalled-spare"]},
+	], str(result.selected_coverage))
+	var archive := result.duplicate(true)
+	archive["format"] = "openrc-replacement-comparison v3"
+	archive["catalog_hash"] = "overlap-catalog"
+	_check("overlap and surplus survive v3 archive validation after JSON roundtrip", Incident._valid_comparison_archive(JSON.parse_string(JSON.stringify(archive)), "overlap-catalog"))
+	var double_allocation := archive.duplicate(true)
+	double_allocation.selected_coverage[1].overlap_ids.clear()
+	double_allocation.selected_coverage[1].allocated_ids.append("center:0")
+	_check("v3 archive rejects a required unit allocated twice", not Incident._valid_comparison_archive(double_allocation, "overlap-catalog"))
+	var hidden_overlap := archive.duplicate(true)
+	hidden_overlap.selected_coverage[1].overlap_ids.clear()
+	_check("v3 archive rejects omitted overlapping sold coverage", not Incident._valid_comparison_archive(hidden_overlap, "overlap-catalog"))
+	var bad_surplus := archive.duplicate(true)
+	bad_surplus.selected_coverage[1].surplus_ids.append("left:0")
+	_check("v3 archive rejects a required unit described as surplus", not Incident._valid_comparison_archive(bad_surplus, "overlap-catalog"))
+	var pair := _package("pair", ["left:0"], 1500)
+	pair["surplus_ids"] = ["right-spare"]
+	var pair_result := ReplacementQuote.quote(dossier, _assessment({"left": {"disposition": "replace"}, "right": {"disposition": "reuse"}}), [pair])
+	_check("single failed unit uses a cheaper pair with a spare and no credit for the surviving right unit", pair_result.total_cost_cents == 1500 and pair_result.required_unit_ids == ["left:0"] and pair_result.selected_coverage[0].surplus_ids == ["right-spare"], str(pair_result))
+	var uncertain := pair.duplicate(true)
+	uncertain.id = "uncertain"
+	uncertain.available = null
+	uncertain.cost_cents = 100
+	var unknown := ReplacementQuote.quote(dossier, _assessment({"left": {"disposition": "replace"}}), [pair, uncertain])
+	_check("unknown stock is not selected or called optimal", unknown.status == "unknown_eligibility" and unknown.total_cost_cents == 1500 and not unknown.optimality_proven, str(unknown))
 
 
 func _covers_once(required: Array, selected_ids: Array, candidate_catalog: Array) -> bool:

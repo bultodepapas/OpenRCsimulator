@@ -172,7 +172,7 @@ func _test_bounds(session: Variant) -> void:
 	var late_tick := Incident.MAX_EVENTS + 3
 	ledger.observe({tick = late_tick, events = [_strike(late_tick, bindings)]}, bindings, false)
 	ledger.evaluate_pending()
-	check("contact journal is bounded and duplicate parts stay one purchase", ledger.journal.size() == Incident.MAX_EVENTS and ledger.report.get("known_subtotal_minor") == 539)
+	check("contact journal is bounded and duplicate parts stay one purchase", ledger.journal.size() <= Incident.MAX_EVENTS and ledger._journal_overflow and ledger.report.get("known_subtotal_minor") == 539)
 	check("late prop strike survives a full journal with bounded separate evidence", ledger.report.confirmed_facts.propeller_strike.tick == late_tick and ledger._seen.size() == Incident.MAX_EVENTS)
 	var revision: int = ledger.report.revision
 	ledger.observe({tick = late_tick, events = [_strike(late_tick, bindings)]}, bindings, false)
@@ -185,8 +185,8 @@ func _test_bounds(session: Variant) -> void:
 	var water := _lake_event(late_tick + 2, "water", bindings)
 	ledger.observe({tick = late_tick + 2, events = [water]}, bindings, true)
 	ledger.evaluate_pending()
-	check("late water exposure survives full history and retains its evidence", ledger.report.confirmed_facts.get("water_exposure", {}).get("material") == "water" and str(ledger.report.unresolved).contains("Water exposure") and ledger.journal.size() == Incident.MAX_EVENTS)
-	check("journal overflow remains explicit incomplete evidence", str(ledger.report.get("unresolved", [])).contains("journal limit") and ledger.report.get("total_minor") == null)
+	check("late water exposure survives full history and retains its evidence", ledger.report.confirmed_facts.get("water_exposure", {}).get("material") == "water" and str(ledger.report.unresolved).contains("Water exposure") and ledger.journal.size() <= Incident.MAX_EVENTS and ledger._journal_overflow)
+	check("journal truncation is disclosed without discarding bounded summaries", ledger.report.get("journal_truncated", false) and str(ledger.report.get("assumptions", [])).contains("diagnostic event journal is truncated") and ledger.report.get("total_minor") == null)
 	ledger.begin("jensen-das-ugly-stik-60", "mismatched-aircraft")
 	ledger.observe({tick = 1, events = []}, bindings, true)
 	ledger.evaluate_pending()
@@ -367,10 +367,14 @@ func _test_terminal_determinism() -> void:
 		report.erase("incident_id")
 		var label := "effects %s, publication every %d" % ["on" if spec[0] else "off", spec[1]]
 		check("terminal hull crash has the effects director only when requested (%s)" % label, (main._crash_director != null) == spec[0])
-		check("terminal hull crash headlines the whole-aircraft ceiling (%s)" % label, not session.crash.is_empty() and report.get("terminal", false)
-			and report.get("high_minor") == 133134 and report.get("total_minor") == null and amount == "Up to US$1,331")
-		check("terminal hull crash names the covered airframe inspection (%s)" % label,
-			str(report.get("lines", [])).contains("covered_airframe_and_installation_hardware"))
+		check("terminal hull crash headlines a scoped game estimate (%s)" % label, not session.crash.is_empty() and report.get("terminal", false)
+			and report.get("known_subtotal_minor") == 6000 and amount == "US$60.00")
+		var tail := {}
+		for line: Dictionary in report.get("lines", []):
+			if line.get("id") == "airframe_tail":
+				tail = line
+		check("terminal hull crash prices the mapped tail game allowance (%s)" % label,
+			tail.get("action") == "replacement" and tail.get("amount_minor") == 6000)
 		if expected.is_empty():
 			expected = report
 		check("terminal crash report is independent of effects and publication cadence (%s)" % label, report == expected)

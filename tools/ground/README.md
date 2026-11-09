@@ -38,6 +38,36 @@ setting changes, then check the actual texture via `test_landscape_gravel.gd`.
 batch and collision checks. [Dated evidence and limits](../../docs/research/visual-quality-implementation/L9b/README.md#l9b-r2-worn-path-color-and-filtering)
 remain separate from whole-flight performance qualification.
 
+## L9b-R3 field-textured path shoulders
+
+Club's walking-path shoulders reuse that scene's field turf at High and Extreme.
+Low and Medium skip the field-texture bindings and the uniform shader block.
+This follows the saved Scene detail choice at the next world build; Automatic
+uses the existing GPU-name heuristic, not measured performance.
+
+The independent production override is `--worn_path_turf=auto|on|off` after `--`,
+then `OPENRC_WORN_PATH_TURF`, then the preset policy. `off` disables this material
+effect without changing the prop tier or collision inventory; `on` permits a
+preview at any preset. This is a launch override, not a saved in-app control.
+Custom fields, explicit scenery files and standalone scenery retain their prior
+shoulder treatment. No asset regeneration is needed.
+
+For a matched capture, use the R2 three views above. `--worn_shoulder=off` is a
+capture-only ablation after binding; it does not test disabled resource lifetime.
+The production `--worn_path_turf=off` skips the binding itself. Each report records
+`worn_shoulder_enabled` and the enabled shoulder's effective ground parameters.
+
+Optional `--measure_render_time=on` records raw CPU/GPU render times for the root
+viewport. Verify GPU values are nonzero; defaults leave timing queries disabled.
+These short static-view diagnostics exclude simulation and do not qualify the
+whole-flight budget. Motion/readback timings are unsuitable for that purpose.
+Run only one rendered process and preserve the exact source/import identities.
+`test_field_surfaces.gd`, `test_landscape_gravel.gd`, `test_scene_detail.gd` and
+`test_landscape_collision_setup.gd` cover bindings, isolation, presets, texture
+release and the override's unchanged collision world at a fixed prop tier.
+[Dated evidence and limits](../../docs/research/visual-quality-implementation/L9b/README.md#l9b-r3-field-textured-path-shoulders)
+own the visual and cost results.
+
 ## DT-11a horizon construction
 
 `Horizon.mesh()` reuses per-build float64 azimuth tables and preallocates triangle

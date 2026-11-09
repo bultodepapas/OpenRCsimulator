@@ -19,16 +19,28 @@
       ],
       "compatible_components": {
         "jensen-das-ugly-stik-60": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "stik-glow-61fx-2t": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "stik-glow-55ax-2t": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "stik-glow-fs64v-4t": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "gp-extra-300s-60": [
           "wing_main",
@@ -86,16 +98,28 @@
       ],
       "compatible_components": {
         "jensen-das-ugly-stik-60": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "stik-glow-61fx-2t": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "stik-glow-55ax-2t": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "stik-glow-fs64v-4t": [
-          "covered_airframe_and_installation_hardware"
+          "covered_airframe_and_installation_hardware",
+          "airframe_wing",
+          "airframe_fuselage",
+          "airframe_tail"
         ],
         "gp-extra-300s-60": [
           "wing_main",

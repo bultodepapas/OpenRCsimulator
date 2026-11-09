@@ -1,8 +1,10 @@
 extends RefCounted
 
 const FORMAT: String = "openrc-aircraft-economics v1"
+const FINANCIAL_FORMAT: String = "openrc-aircraft-economics v2"
 const MAX_MINOR: int = 9000000000000000
 const MAX_QUANTITY: int = 1000000
+const MAX_FEES: int = 64
 const DISPOSITIONS: Array[String] = ["reuse", "replace", "repair", "inspect", "unknown", "unrecoverable"]
 
 
@@ -15,6 +17,7 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 	report["price_date"] = dossier.get("price_date", "") if typeof(dossier.get("price_date", "")) == TYPE_STRING else ""
 	var errors: Array = []
 	var unresolved: Array = []
+	var whole_build_unresolved: Array = []
 	var components: Array = []
 	var components_by_id: Dictionary = {}
 	var assessment_components: Dictionary = {}
@@ -22,8 +25,8 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 	var is_total_loss: bool = false
 	var aggregate_ceiling: int = 0
 
-	if dossier.get("format") != FORMAT:
-		errors.append("dossier.format: expected '%s'" % FORMAT)
+	if dossier.get("format") not in [FORMAT, FINANCIAL_FORMAT]:
+		errors.append("dossier.format: expected a supported economics format")
 	if not _is_nonempty_string(dossier.get("aircraft_id")):
 		errors.append("dossier.aircraft_id: expected a nonempty string")
 	if not _is_nonempty_string(dossier.get("source_sha256")):
@@ -64,13 +67,17 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 			if typeof(ids_value) != TYPE_ARRAY:
 				errors.append("dossier.components[%s].physical_inventory_ids: expected an array" % component_id)
 			else:
+				var row_inventory: Dictionary = {}
 				for physical_id_value: Variant in ids_value:
 					if not _is_nonempty_string(physical_id_value):
 						errors.append("dossier.components[%s].physical_inventory_ids: entries must be nonempty strings" % component_id)
-					elif seen_inventory.has(physical_id_value):
+					elif row_inventory.has(physical_id_value):
+						errors.append("dossier.components[%s].physical_inventory_ids: duplicate '%s'" % [component_id, physical_id_value])
+					elif seen_inventory.has(physical_id_value) and dossier.get("format") == FORMAT:
 						errors.append("dossier.components[%s].physical_inventory_ids: '%s' is already covered by '%s'" % [component_id, physical_id_value, seen_inventory[physical_id_value]])
 					else:
 						seen_inventory[physical_id_value] = component_id
+						row_inventory[physical_id_value] = true
 			for price_key: String in ["unit_minor", "low_unit_minor", "high_unit_minor"]:
 				if not component.has(price_key):
 					errors.append("dossier.components[%s]: missing '%s'" % [component_id, price_key])
@@ -89,8 +96,16 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 			if component.get("offer_id") != null and typeof(component.get("offer_id")) != TYPE_STRING:
 				errors.append("dossier.components[%s].offer_id: expected null or a string" % component_id)
 			var upper_unit: Variant = component.get("high_unit_minor") if component.get("high_unit_minor") != null else component.get("unit_minor")
-			if _is_minor(upper_unit) and _is_quantity(quantity_value) and quantity_value > 0:
-				var upper_product: Dictionary = _multiply_minor(upper_unit, quantity_value)
+			var total_loss_requested: bool = typeof(assessment.get("total_loss", false)) == TYPE_BOOL and bool(assessment.get("total_loss", false))
+			var relevant_quantity: Variant = quantity_value if total_loss_requested else 0
+			var decisions: Variant = assessment.get("components", {})
+			if not total_loss_requested and typeof(decisions) == TYPE_DICTIONARY and decisions.get(component_id) is Dictionary:
+				var scoped_decision: Dictionary = decisions[component_id]
+				var comparable: Variant = scoped_decision.get("replacement_comparable", true)
+				if scoped_decision.get("disposition") in ["replace", "unrecoverable"] or (scoped_decision.get("disposition") == "repair" and not (typeof(comparable) == TYPE_BOOL and not comparable)):
+					relevant_quantity = scoped_decision.get("quantity", quantity_value)
+			if _is_minor(upper_unit) and _is_quantity(relevant_quantity) and relevant_quantity > 0:
+				var upper_product: Dictionary = _multiply_minor(upper_unit, relevant_quantity)
 				if not bool(upper_product["ok"]) or int(upper_product["value"]) > MAX_MINOR - aggregate_ceiling:
 					errors.append("dossier.components[%s]: aggregate amount exceeds supported integer range" % component_id)
 				else:
@@ -103,7 +118,25 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 	if typeof(raw_missing) != TYPE_ARRAY:
 		errors.append("dossier.missing: expected an array")
 	else:
-		_append_unresolved(unresolved, raw_missing, "dossier.missing", errors)
+		_append_unresolved(whole_build_unresolved, raw_missing, "dossier.missing", errors)
+	if not source_complete and whole_build_unresolved.is_empty():
+		whole_build_unresolved.append("whole-build dossier is incomplete")
+	var build_ceiling: int = 0
+	for component_value: Variant in components:
+		if component_value is Dictionary:
+			if component_value.get("unit_minor") == null:
+				_append_one(whole_build_unresolved, "%s: whole-build price is unknown" % str(component_value.get("id", "component")))
+			var upper: Variant = component_value.get("high_unit_minor") if component_value.get("high_unit_minor") != null else component_value.get("unit_minor")
+			var quantity: Variant = component_value.get("quantity")
+			if _is_minor(upper) and _is_quantity(quantity) and int(quantity) > 0:
+				var product := _multiply_minor(upper, int(quantity))
+				if not product.ok or int(product.value) > MAX_MINOR - build_ceiling:
+					_append_one(whole_build_unresolved, "whole-build amount exceeds supported integer range")
+				else:
+					build_ceiling += int(product.value)
+	var whole_build_complete: bool = source_complete and whole_build_unresolved.is_empty() and not components.is_empty()
+	report["whole_build_complete"] = whole_build_complete
+	report["whole_build_unresolved"] = whole_build_unresolved
 
 	if typeof(assessment.get("terminal", false)) != TYPE_BOOL:
 		errors.append("assessment.terminal: expected a boolean")
@@ -111,7 +144,13 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 		errors.append("assessment.total_loss: expected a boolean")
 	else:
 		is_total_loss = assessment["total_loss"]
+	if assessment.has("complete_build_replacement_feasible") and typeof(assessment["complete_build_replacement_feasible"]) != TYPE_BOOL:
+		errors.append("assessment.complete_build_replacement_feasible: expected a boolean")
+	if is_total_loss:
+		for reason: String in whole_build_unresolved:
+			_append_one(unresolved, reason)
 	var raw_assessment_components: Variant = assessment.get("components", {})
+	var fee_ids: Dictionary = {}
 	if typeof(raw_assessment_components) != TYPE_DICTIONARY:
 		errors.append("assessment.components: expected an object")
 	else:
@@ -133,6 +172,14 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				errors.append("assessment.components[%s].repair_minor: expected a nonnegative integer minor-unit amount" % key_value)
 			if decision.has("inspection_minor") and not _is_minor(decision["inspection_minor"]):
 				errors.append("assessment.components[%s].inspection_minor: expected a nonnegative integer minor-unit amount" % key_value)
+			if decision.has("inspection_fee_id") and (not decision.has("inspection_minor") or not _is_nonempty_string(decision["inspection_fee_id"]) or String(decision["inspection_fee_id"]).length() > 128):
+				errors.append("assessment.components[%s].inspection_fee_id: expected a bounded ID for an inspection fee" % key_value)
+			if decision.has("inspection_minor"):
+				var fee_id: String = String(decision.get("inspection_fee_id", "component:%s:inspection" % key_value))
+				if fee_ids.has(fee_id):
+					errors.append("assessment: duplicate incurred fee ID '%s'" % fee_id)
+				else:
+					fee_ids[fee_id] = true
 			if decision.has("replacement_comparable"):
 				if typeof(decision["replacement_comparable"]) != TYPE_BOOL:
 					errors.append("assessment.components[%s].replacement_comparable: expected a boolean" % key_value)
@@ -160,6 +207,41 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 	else:
 		_append_unresolved(unresolved, raw_assessment_unresolved, "assessment.unresolved", errors)
 
+	var additional_fees: Array = []
+	var additional_fees_total: int = 0
+	var fees_complete: bool = true
+	var raw_fees: Variant = assessment.get("incurred_fees", [])
+	if typeof(raw_fees) != TYPE_ARRAY or raw_fees.size() > MAX_FEES:
+		errors.append("assessment.incurred_fees: expected a bounded array")
+	else:
+		for fee_value: Variant in raw_fees:
+			if typeof(fee_value) != TYPE_DICTIONARY or fee_value.size() != 3 or not fee_value.has_all(["id", "kind", "amount_minor"]):
+				errors.append("assessment.incurred_fees: each fee requires id, kind and amount_minor")
+				continue
+			var fee: Dictionary = fee_value
+			if not _is_nonempty_string(fee.id) or String(fee.id).length() > 128 or fee.kind not in ["inspection", "retrieval", "setup", "other"]:
+				errors.append("assessment.incurred_fees: invalid fee ID or kind")
+				continue
+			if components_by_id.has(fee.id):
+				errors.append("assessment.incurred_fees: fee ID must not collide with a component ID")
+				continue
+			if fee_ids.has(fee.id):
+				errors.append("assessment: duplicate incurred fee ID '%s'" % fee.id)
+				continue
+			fee_ids[fee.id] = true
+			if fee.amount_minor != null and not _is_minor(fee.amount_minor):
+				errors.append("assessment.incurred_fees[%s]: amount must be null or bounded integer cents" % fee.id)
+				continue
+			if fee.amount_minor == null:
+				fees_complete = false
+				_append_one(unresolved, "%s: incurred %s fee is unknown" % [fee.id, fee.kind])
+			elif int(fee.amount_minor) > MAX_MINOR - aggregate_ceiling:
+				errors.append("assessment.incurred_fees[%s]: aggregate amount exceeds supported integer range" % fee.id)
+			else:
+				aggregate_ceiling += int(fee.amount_minor)
+				additional_fees_total += int(fee.amount_minor)
+			additional_fees.append({"id": fee.id, "kind": fee.kind, "amount_minor": fee.amount_minor})
+
 	if not errors.is_empty():
 		report["ok"] = false
 		report["errors"] = errors
@@ -167,21 +249,29 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 		report["unresolved"] = unresolved
 		return report
 
-	var known_subtotal: int = 0
-	var low_total: int = 0
-	var high_total: int = 0
+	var known_subtotal: int = additional_fees_total
+	var low_total: int = additional_fees_total
+	var high_total: int = additional_fees_total
 	var low_possible: bool = true
 	var high_possible: bool = true
-	var calculation_complete: bool = source_complete and unresolved.is_empty()
+	var calculation_complete: bool = (not is_total_loss or whole_build_complete) and unresolved.is_empty()
+	var incurred_fees: int = additional_fees_total
+	for decision_value: Variant in assessment_components.values():
+		if decision_value is Dictionary and _is_minor(decision_value.get("inspection_minor")):
+			incurred_fees += int(decision_value["inspection_minor"])
 	var replacement_total: int = 0
 	var replacement_complete: bool = true
 	var salvage_total: int = 0
 	var salvage_complete: bool = true
 	var saw_inspection: bool = false
 	var lines: Array = []
+	for fee: Dictionary in additional_fees:
+		lines.append({"id": fee.id, "quantity": 1, "action": "incurred_fee", "amount_minor": fee.amount_minor, "fee_kind": fee.kind})
 	if components.is_empty():
 		low_possible = false
 		high_possible = false
+		calculation_complete = false
+		_append_one(unresolved, "no economic components are available for incident assessment")
 	if not unresolved.is_empty():
 		saw_inspection = true
 		high_possible = false
@@ -282,7 +372,7 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				high_total += inspection_amount
 				lines.append(_line(component, 1, "inspection", inspection_amount, {}))
 
-		if not replacement_complete or not source_complete:
+		if not replacement_complete or not whole_build_complete:
 			report["replacement_minor"] = null
 		else:
 			report["replacement_minor"] = replacement_total
@@ -425,16 +515,20 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				calculation_complete = false
 			lines.append(_line(component, quantity, action, line_amount, extra.merged({"low_minor": line_low, "high_minor": line_high})))
 
-		if terminal and source_complete:
+		if terminal and whole_build_complete:
 			var replacement_quote: Dictionary = _complete_build_replacement_quote(components)
-			report["replacement_quote_low_minor"] = replacement_quote["low"]
-			report["replacement_quote_high_minor"] = replacement_quote["high"]
+			var quote_low: Variant = replacement_quote["low"] if fees_complete else null
+			var quote_high: Variant = replacement_quote["high"] if fees_complete else null
+			quote_low = int(quote_low) + incurred_fees if quote_low != null and int(quote_low) <= MAX_MINOR - incurred_fees else null
+			quote_high = int(quote_high) + incurred_fees if quote_high != null and int(quote_high) <= MAX_MINOR - incurred_fees else null
+			report["replacement_quote_low_minor"] = quote_low
+			report["replacement_quote_high_minor"] = quote_high
 			report["replacement_quote_scope"] = "complete_build_replacement_quote_comparison"
-			# CR-39c: C_incident = min(C_repair, C_replace), and a complete dossier always
-			# prices C_replace, so the complete-build high bounds the bill even while
-			# inspections are pending. It is a ceiling, never a total.
-			var ceiling: Variant = replacement_quote["high"]
-			if ceiling != null and not high_possible and (not low_possible or low_total <= int(ceiling)):
+			report["replacement_quote_includes"] = "Whole-build component prices and the known incurred fees; no unpriced fee is assumed free."
+			# A catalog value is only a comparison. A ceiling also needs an explicit
+			# like-scope, feasible replacement including every incurred/required fee.
+			var ceiling: Variant = quote_high
+			if assessment.get("complete_build_replacement_feasible", false) == true and ceiling != null and not high_possible and (not low_possible or low_total <= int(ceiling)):
 				high_possible = true
 				high_total = int(ceiling)
 				report["range_basis"] = "complete_build_replacement_ceiling"
@@ -461,9 +555,21 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 	report["high_minor"] = high_total if high_possible else null
 	report["total_minor"] = known_subtotal if calculation_complete else null
 	report["complete"] = calculation_complete
+	report["incident_complete"] = calculation_complete
+	report["incident_scope"] = "whole_build" if is_total_loss else "assessed_components"
+	report["incurred_fees_minor"] = incurred_fees
+	report["incurred_fees_complete"] = fees_complete
 	report["outcome"] = "total_loss" if is_total_loss else ("inspection" if saw_inspection else "repair")
 	report["lines"] = lines
 	report["unresolved"] = unresolved
+	report["range_reasons"] = unresolved.duplicate()
+	for line: Dictionary in lines:
+		if line.has("low_minor") and line.has("high_minor") and line.low_minor != null and line.high_minor != null and line.low_minor != line.high_minor:
+			_append_one(report["range_reasons"], "%s: component price or feasible repair/replacement bounds differ" % line.id)
+	if report["range_basis"] == "complete_build_replacement_ceiling":
+		_append_one(report["range_reasons"], "Upper bound assumes the explicitly feasible whole-build replacement comparison.")
+	elif is_total_loss and report["low_minor"] != null and report["high_minor"] != null and report["low_minor"] != report["high_minor"]:
+		_append_one(report["range_reasons"], "Whole-build component price bounds differ.")
 	return report
 
 
@@ -477,6 +583,13 @@ static func _empty_report() -> Dictionary:
 		"high_minor": null,
 		"total_minor": null,
 		"complete": false,
+		"incident_complete": false,
+		"incident_scope": "unavailable",
+		"whole_build_complete": false,
+		"whole_build_unresolved": [],
+		"incurred_fees_minor": 0,
+		"incurred_fees_complete": false,
+		"range_reasons": [],
 		"valuation_kind": "",
 		"outcome": "unavailable",
 		"lines": [],
@@ -487,6 +600,7 @@ static func _empty_report() -> Dictionary:
 		"replacement_quote_low_minor": null,
 		"replacement_quote_high_minor": null,
 		"replacement_quote_scope": "",
+		"replacement_quote_includes": "",
 		"price_date": "",
 	}
 

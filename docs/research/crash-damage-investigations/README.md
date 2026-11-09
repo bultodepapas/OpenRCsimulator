@@ -39,6 +39,8 @@ The current research has gaps and source-quality limits documented in each repor
 
 ## Implementation evidence
 
+[CR-40](CR-40/README.md) records the 2026-11-09 crash-cost handoff remediation: versioned financial children and fixed-wing game allowances, bounded accepted evidence, local assessment, scoped quotes, paired restore and preview-only release limits.
+
 [CR-33a](CR-33a/README.md) defines the measurements needed before structural or thermal outcomes can determine a bill. [CR-33b](CR-33b/README.md) verifies isolated impact-energy estimates and bounded allocations; it supplies no failure thresholds and does not close CR-07. [Report 03](03-rc-construction-material-joint-evidence.md) reviews relevant literature but accepts no installed-aircraft structural threshold.
 
 [CR-30c](CR-30c/README.md) records active-flight economic checkpoint validation. [CR-31d](CR-31d/README.md) specifies the bounded pure helper for package-cost optimization. [CR-36d electric](CR-36d/electric.md) records updated replacement-price proxies for the fictional Turbo Lumber inventory; its partial offers do not complete aircraft valuation.

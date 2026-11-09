@@ -5,10 +5,11 @@ const Events = preload("res://sim/aircraft_contact_events.gd")
 const Inspection = preload("res://economy/inspection.gd")
 const Calculator = preload("res://economy/calculator.gd")
 const RepairPlanner = preload("res://economy/repair_planner.gd")
-const FORMAT := "openrc-economics-checkpoint v1"
+const DamageAssessment = preload("res://economy/damage_assessment.gd")
+const FORMAT := "openrc-economics-checkpoint v2"
 const ENVELOPE := "openrc-flight-economics-checkpoint v1"
 const MAX_BYTES := 262144
-const FIELDS := ["format", "tick", "catalog_hash", "recipe_hash", "bindings_hash", "identity", "assessment", "last_tick", "assessment_tick", "revision", "journal", "facts", "inspections", "blocked", "repair_choices", "payload_sha256"]
+const FIELDS := ["format", "tick", "catalog_hash", "recipe_hash", "profile_hash", "bindings_hash", "identity", "assessment", "last_tick", "assessment_tick", "revision", "journal", "facts", "fact_revisions", "inspections", "blocked", "repair_choices", "summaries", "seen_order", "proof_floor_tick", "tick_event_count", "open_contacts", "decision_revisions", "journal_overflow", "evidence_overflow", "prior_history_unknown", "terminal_qualified", "unmapped_evidence", "unmapped_revision", "payload_sha256"]
 
 
 static func digest(value: Variant) -> String:
@@ -28,12 +29,18 @@ static func seal(value: Dictionary) -> Dictionary:
 static func capture(incident: RefCounted, tick: int, bindings: Dictionary) -> Dictionary:
 	var value := {
 		format = FORMAT, tick = tick, catalog_hash = incident.get("_catalog_hash"),
-		recipe_hash = incident.get("_recipe_hash"), bindings_hash = digest(bindings),
+		recipe_hash = incident.get("_recipe_hash"), profile_hash = incident.get("_profile_hash"), bindings_hash = digest(bindings),
 		identity = incident.get("_identity"), assessment = incident.get("_assessment"),
 		last_tick = incident.get("_last_tick"), assessment_tick = incident.get("_assessment_tick"),
 		revision = incident.get("_revision"), journal = incident.get("journal"),
-		facts = incident.get("_confirmed_facts"), inspections = incident.get("_inspections"),
-		blocked = incident.get("_reuse_blocked"), repair_choices = incident.get("_repair_choices")}
+		facts = incident.get("_confirmed_facts"), fact_revisions = incident.get("_fact_revisions"), inspections = incident.get("_inspections"),
+		blocked = incident.get("_reuse_blocked"), repair_choices = incident.get("_repair_choices"),
+		summaries = incident.get("_summaries"), seen_order = incident.get("_seen_order"),
+		proof_floor_tick = incident.get("_proof_floor_tick"), tick_event_count = incident.get("_tick_event_count"),
+		open_contacts = incident.get("_open_contacts"), decision_revisions = incident.get("_decision_revisions"),
+		journal_overflow = incident.get("_journal_overflow"), evidence_overflow = incident.get("_evidence_overflow"),
+		prior_history_unknown = incident.get("_prior_history_unknown"), terminal_qualified = incident.get("_terminal_qualified"),
+		unmapped_evidence = incident.get("_unmapped_evidence"), unmapped_revision = incident.get("_unmapped_revision")}
 	if not native_data(value):
 		return {}
 	value = seal(value)
@@ -42,6 +49,8 @@ static func capture(incident: RefCounted, tick: int, bindings: Dictionary) -> Di
 
 ## Complete validation precedes any live mutation. Only the same frozen prices/recipes can resume.
 static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: Dictionary) -> Dictionary:
+	if value is Dictionary and value.get("format") == "openrc-economics-checkpoint v1":
+		return fail("Legacy economics checkpoint cannot resume; view its archived report instead.")
 	if not native_data(value) or not value is Dictionary or not keys(value, FIELDS):
 		return fail("Invalid economics checkpoint schema.")
 	if var_to_bytes(value).size() > MAX_BYTES or value.format != FORMAT:
@@ -53,6 +62,7 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 	if not value.tick is int or value.tick != tick or tick < 0:
 		return fail("Economics and physics checkpoint ticks disagree.")
 	if value.catalog_hash != incident.get("_catalog_hash") or value.recipe_hash != incident.get("_recipe_hash") \
+		or value.profile_hash != incident.get("_profile_hash") \
 		or value.bindings_hash != digest(bindings):
 		return fail("Economics catalog, recipe or contact bindings changed.")
 	var identity: Dictionary = incident.get("_identity")
@@ -81,16 +91,45 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 	if JSON.stringify(value.inspections).to_utf8_buffer().size() > Inspection.MAX_BYTES \
 		or JSON.stringify(value.repair_choices).to_utf8_buffer().size() > Inspection.MAX_BYTES:
 		return fail("Inspection or repair history exceeds its byte limit.")
-	var seen := {}
+	var journal_seen := {}
 	var previous_tick := -1
+	var journal_bytes := 0
 	for event: Variant in value.journal:
 		if not valid_event(event, bindings, value.last_tick) or event.lifecycle != "new" or event.tick < previous_tick:
 			return fail("Invalid or out-of-order contact journal.")
-		var key := str(event.event_id) + ":" + str(event.response)
-		if seen.has(key):
+		journal_bytes += var_to_bytes(event).size()
+		if journal_bytes > 65536:
+			return fail("Contact journal byte bound exceeded.")
+		var key := str(event.event_id)
+		if journal_seen.has(key):
 			return fail("Duplicate contact journal event.")
-		seen[key] = true
+		journal_seen[key] = JSON.stringify(event, "", true, true).sha256_text()
 		previous_tick = event.tick
+	var proof := _validate_contact_state(value, dossier, journal_seen, bindings)
+	if not proof.ok:
+		return proof
+	var seen: Dictionary = proof.seen
+	if not value.journal_overflow:
+		for event_id: String in seen:
+			if event_id.contains(":new:") and not journal_seen.has(event_id):
+				return fail("Contact journal truncation flag was removed.")
+		for row: Dictionary in value.summaries.values():
+			if str(row.event_id).contains(":new:") and not journal_seen.has(row.event_id):
+				return fail("Contact summary refers to truncated journal evidence.")
+	for event: Dictionary in value.journal:
+		if event.source == "propeller" and event.event_type == "strike":
+			continue
+		var game := DamageAssessment.resolve(incident.get("_damage_profile"), event) if not incident.get("_damage_profile").is_empty() else {matched = false}
+		var targets: Array = game.get("components", []) if game.get("matched", false) else incident._contact_components(event, bindings)
+		for id: String in targets:
+			if not value.summaries.has(id) or value.summaries[id].first_tick > event.tick:
+				return fail("Contact summary omitted a retained mapped component.")
+	if value.prior_history_unknown and value.revision > 0 and not value.assessment.unresolved.has("Session restored or aircraft reloaded: earlier damage history is unavailable."):
+		return fail("Unpaired checkpoint lost its missing-history warning.")
+	if value.evidence_overflow and not value.assessment.unresolved.has("Contact evidence exceeded its bound; coverage is incomplete.") \
+		and not value.assessment.unresolved.has("Contact episode limit reached; coverage is incomplete.") \
+		and not value.assessment.unresolved.has("Component summary limit reached; coverage is incomplete."):
+		return fail("Contact evidence overflow lost its coverage warning.")
 	for key: Variant in value.facts:
 		var fact: Variant = value.facts[key]
 		if key == "restored_propeller_strike":
@@ -107,51 +146,56 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 				return fail("Mismatched water fact.")
 		else:
 			return fail("Unknown confirmed contact fact.")
+	if not value.fact_revisions is Dictionary or value.fact_revisions.size() != value.facts.size():
+		return fail("Confirmed contact facts lack their evidence revisions.")
+	for key: Variant in value.fact_revisions:
+		if not value.facts.has(key) or not value.fact_revisions[key] is int \
+			or value.fact_revisions[key] <= 0 or value.fact_revisions[key] > value.revision:
+			return fail("Invalid confirmed contact fact revision.")
 	var blocked := {}
+	var confirmed_replacements := {}
 	var receipt_hashes := {}
 	var receipts_by_id := {}
 	var latest_decisions := {}
+	var latest_decision_revisions := {}
 	var last_revision := -1
-	var has_full_inspection := false
+	var last_full_revision := 0
 	var inspected_assessment := {components = {}, terminal = false, total_loss = false, unresolved = []}
 	for receipt: Variant in value.inspections:
 		if not receipt is Dictionary or not receipt.get("expected_revision") is int \
 			or receipt.expected_revision <= last_revision or receipt.expected_revision >= value.revision:
 			return fail("Invalid inspection revision order.")
-		var checked := Inspection.validate(receipt, dossier, inspected_assessment, value.identity, value.catalog_hash, receipt.expected_revision, blocked)
+		var checked := Inspection.validate(receipt, dossier, inspected_assessment, value.identity, value.catalog_hash, receipt.expected_revision, blocked, confirmed_replacements)
 		if not checked.ok or receipt_hashes.has(receipt.inspection_id):
 			return fail("Invalid or duplicate inspection receipt.")
 		blocked = checked.blocked
 		inspected_assessment = checked.assessment
-		has_full_inspection = has_full_inspection or receipt.full_inspection
+		if receipt.full_inspection:
+			last_full_revision = receipt.expected_revision + 1
 		for id: Variant in receipt.components:
-			var decision: Dictionary = receipt.components[id].duplicate(true)
-			decision.erase("evidence")
-			decision.erase("damage_flags")
+			var decision: Dictionary = checked.assessment.components[id].duplicate(true)
 			latest_decisions[id] = decision
+			latest_decision_revisions[id] = receipt.expected_revision + 1
+			if receipt.components[id].get("disposition") in ["replace", "unrecoverable"]:
+				confirmed_replacements[id] = true
 		receipt_hashes[receipt.inspection_id] = JSON.stringify(receipt, "", true, true).sha256_text()
 		receipts_by_id[receipt.inspection_id] = receipt
 		last_revision = receipt.expected_revision
 	if value.assessment.total_loss != inspected_assessment.total_loss:
 		return fail("Whole-aircraft disposition disagrees with full inspection evidence.")
-	# Only a full inspection can remove these contact-derived caveats. Diagnostics
-	# without retained contacts still require an unresolved reason, never a zero bill.
-	if not has_full_inspection:
-		var required_reasons := []
-		for event: Dictionary in value.journal:
-			if event.source != "propeller" or event.event_type != "strike":
-				required_reasons.append(Inspection.RESOLVABLE[0])
-		if value.facts.has("water_exposure"):
-			required_reasons.append(Inspection.RESOLVABLE[1])
-		if value.facts.has("propeller_strike") or value.facts.has("restored_propeller_strike"):
-			required_reasons.append(Inspection.RESOLVABLE[3] if not dossier.get("propeller_component_id", "").is_empty() else "A propeller strike was recorded; no compatible replacement price is available.")
-		if value.facts.has("restored_propeller_strike"):
-			required_reasons.append("Session restored or aircraft reloaded: earlier damage history is unavailable.")
-		for reason: String in required_reasons:
-			if not value.assessment.unresolved.has(reason):
-				return fail("Uninspected contact lost its unresolved assessment reason.")
-		if value.revision > 0 and value.journal.is_empty() and value.facts.is_empty() and value.inspections.is_empty() and value.assessment.unresolved.is_empty():
-			return fail("Damage revision lost its unresolved diagnostic evidence.")
+	if value.unmapped_revision > last_full_revision and not value.assessment.unresolved.has(Inspection.RESOLVABLE[0]):
+		return fail("Unmapped contact lost its structural uncertainty.")
+	# A later full inspection can resolve older facts, but not a new exposure or strike.
+	var required_reasons := []
+	if int(value.fact_revisions.get("water_exposure", 0)) > last_full_revision:
+		required_reasons.append(Inspection.RESOLVABLE[1])
+	if maxi(int(value.fact_revisions.get("propeller_strike", 0)), int(value.fact_revisions.get("restored_propeller_strike", 0))) > last_full_revision:
+		required_reasons.append(Inspection.RESOLVABLE[3] if not dossier.get("propeller_component_id", "").is_empty() else "A propeller strike was recorded; no compatible replacement price is available.")
+	for reason: String in required_reasons:
+		if not value.assessment.unresolved.has(reason):
+			return fail("Uninspected contact lost its unresolved assessment reason.")
+	if value.revision > 0 and value.journal.is_empty() and value.facts.is_empty() and value.inspections.is_empty() and value.assessment.unresolved.is_empty():
+		return fail("Damage revision lost its unresolved diagnostic evidence.")
 	if blocked != value.blocked:
 		return fail("Inspection restrictions disagree with their evidence.")
 	for id: Variant in blocked:
@@ -169,18 +213,6 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 	for id: String in forced:
 		if not value.assessment.components.has(id):
 			return fail("Assessment omitted a confirmed propeller decision.")
-	# CR-39d: a retained non-propeller contact may name its mapped parts as pending inspection.
-	var contact_inspections := {}
-	var contact_map: Variant = dossier.get("contact_components", {})
-	if contact_map is Dictionary:
-		for event: Dictionary in value.journal:
-			if event.source == "propeller" and event.event_type == "strike":
-				continue
-			var contact_id := str(event.get("contact_id", ""))
-			for key: String in [contact_id, str(event.get("probe_id", "")), "%s/%s" % [event.source, contact_id]]:
-				if not key.is_empty() and contact_map.get(key) is Array:
-					for mapped: Variant in contact_map[key]:
-						contact_inspections[str(mapped)] = true
 	for id: Variant in latest_decisions:
 		if not value.assessment.components.has(id):
 			return fail("Assessment omitted an inspected component.")
@@ -188,9 +220,28 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 		var decision: Dictionary = value.assessment.components[id]
 		if decision.has("quantity") and (not decision.quantity is int or decision.quantity <= 0):
 			return fail("Checkpoint decisions require positive affected quantities.")
-		if decision != latest_decisions.get(id) and decision != forced.get(id) \
-			and not (contact_inspections.has(id) and decision == {disposition = "inspect"}):
+		var latest: Dictionary = latest_decisions.get(id, {})
+		var summary: Dictionary = value.summaries.get(id, {})
+		var newer_contact: bool = int(summary.get("evidence_revision", 0)) > int(latest_decision_revisions.get(id, 0))
+		if confirmed_replacements.has(id) and decision.get("disposition") not in ["replace", "unrecoverable"]:
+			return fail("Confirmed replacement was downgraded by later evidence.")
+		var reopened := {disposition = "inspect"}
+		if latest.has("inspection_minor"):
+			reopened.inspection_minor = latest.inspection_minor
+		var permitted_contact: bool = newer_contact and decision == reopened
+		var game_replacement := {disposition = "replace", quantity = 1}
+		if latest.has("inspection_minor"):
+			game_replacement.inspection_minor = latest.inspection_minor
+		var permitted_game: bool = not incident.get("_damage_profile").is_empty() and newer_contact \
+			and summary.get("recommendation") == "replace" and decision == game_replacement \
+			and value.decision_revisions.get(id) == summary.evidence_revision
+		var forced_decision: Dictionary = forced.get(id, {})
+		if latest.has("inspection_minor") and not forced_decision.is_empty():
+			forced_decision.inspection_minor = latest.inspection_minor
+		if decision != latest and decision != forced_decision and not permitted_contact and not permitted_game:
 			return fail("Assessment has no matching inspection or confirmed propeller decision.")
+		if newer_contact and latest.get("disposition") in ["reuse", "repair"] and decision == latest:
+			return fail("Later contact did not reopen a cleared component.")
 	if (value.facts.has("propeller_strike") or value.facts.has("restored_propeller_strike")) \
 		and value.assessment.components.get(prop_id, {}).get("disposition") in ["reuse", "repair"]:
 		return fail("Confirmed propeller damage contradicts the assessment.")
@@ -210,7 +261,74 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 		return fail("Healthy revision contains damage evidence.")
 	if value.revision > 0 and value.assessment_tick < 0:
 		return fail("Damage revision has no accepted evidence tick.")
-	return {ok = true, data = copy, seen = seen, receipt_hashes = receipt_hashes, errors = []}
+	return {ok = true, data = copy, seen = seen, receipt_hashes = receipt_hashes,
+		confirmed_replacements = confirmed_replacements, last_full_revision = last_full_revision, errors = []}
+
+
+static func _validate_contact_state(value: Dictionary, dossier: Dictionary, journal_seen: Dictionary, bindings: Dictionary) -> Dictionary:
+	if not value.seen_order is Array or value.seen_order.size() > 128 or not value.summaries is Dictionary \
+		or value.summaries.size() > 256 or not value.open_contacts is Dictionary or value.open_contacts.size() > 128 \
+		or not value.decision_revisions is Dictionary or not value.proof_floor_tick is int \
+		or value.proof_floor_tick < -1 or value.proof_floor_tick > value.last_tick \
+		or not value.tick_event_count is int or value.tick_event_count < 0 or value.tick_event_count > 64:
+		return fail("Invalid bounded contact summary or replay cursor.")
+	if not value.unmapped_revision is int or value.unmapped_revision < 0 or value.unmapped_revision > value.revision \
+		or value.unmapped_evidence != (value.unmapped_revision > 0):
+		return fail("Invalid unmapped-contact evidence revision.")
+	for flag: String in ["journal_overflow", "evidence_overflow", "prior_history_unknown", "terminal_qualified", "unmapped_evidence"]:
+		if not value[flag] is bool:
+			return fail("Invalid contact coverage flag.")
+	var seen := {}
+	var previous_tick := -1
+	var current_count := 0
+	for proof: Variant in value.seen_order:
+		if not proof is Dictionary or not keys(proof, ["id", "tick", "digest"]) \
+			or not Inspection._text(proof.id) or not proof.tick is int or proof.tick < previous_tick \
+			or proof.tick > value.last_tick or proof.tick < value.proof_floor_tick \
+			or not proof.digest is String or proof.digest.length() != 64 or not proof.digest.is_valid_hex_number(false) \
+			or seen.has(proof.id):
+			return fail("Invalid or duplicate contact replay proof.")
+		if journal_seen.has(proof.id) and journal_seen[proof.id] != proof.digest:
+			return fail("Contact replay proof conflicts with retained evidence.")
+		seen[proof.id] = proof.digest
+		previous_tick = proof.tick
+		if proof.tick == value.last_tick:
+			current_count += 1
+	if current_count > value.tick_event_count:
+		return fail("Contact tick count is below retained proof.")
+	var parts := {}
+	for part: Dictionary in dossier.get("components", []):
+		parts[part.id] = part
+	if parts.size() > 256 or value.decision_revisions.size() > parts.size():
+		return fail("Economic component bound exceeded.")
+	for id: Variant in value.decision_revisions:
+		if not parts.has(id) or not value.assessment.components.has(id) or not value.decision_revisions[id] is int \
+			or value.decision_revisions[id] <= 0 or value.decision_revisions[id] > value.revision:
+			return fail("Invalid component decision revision.")
+	for id: Variant in value.summaries:
+		var row: Variant = value.summaries[id]
+		if not parts.has(id) or not row is Dictionary \
+			or not keys(row, ["first_tick", "latest_tick", "evidence_revision", "recommendation", "reason", "event_id", "source", "peaks"]) \
+			or not row.first_tick is int or not row.latest_tick is int or row.first_tick < 0 \
+			or row.first_tick > row.latest_tick or row.latest_tick > value.last_tick \
+			or not row.evidence_revision is int or row.evidence_revision < 0 or row.evidence_revision > value.revision \
+			or row.recommendation not in ["clear", "inspect", "replace"] \
+			or not row.reason is String or row.reason.length() > 2048 or not row.event_id is String or row.event_id.length() > 2048 \
+			or not row.source is String or row.source not in ["", "hull", "gear", "propeller"] or not row.peaks is Dictionary:
+			return fail("Invalid component contact summary.")
+		if row.recommendation != "clear" and (row.evidence_revision == 0 or row.event_id.is_empty() or row.reason.is_empty()):
+			return fail("Damage recommendation lacks its evidence revision.")
+		for channel: Variant in row.peaks:
+			var number: Variant = row.peaks[channel]
+			if channel not in ["depth_m", "normal_speed_mps", "slide_speed_mps", "compression_m", "compression_ratio"] \
+				or typeof(number) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(number)) or float(number) < 0.0:
+				return fail("Invalid endpoint channel maximum.")
+	for episode: Variant in value.open_contacts:
+		if not episode is String or episode.is_empty() or episode.length() > 2048 \
+			or not value.open_contacts[episode] is int or value.open_contacts[episode] < 0 \
+			or value.open_contacts[episode] > value.last_tick:
+			return fail("Invalid open contact episode.")
+	return {ok = true, seen = seen}
 
 
 static func valid_choice(choice: Dictionary, receipt: Dictionary, dossier: Dictionary, recipes: Dictionary) -> bool:

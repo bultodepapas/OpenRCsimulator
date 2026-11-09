@@ -9211,3 +9211,6 @@ msgstr "正在测试已保存的机型：%s · 版本 %d"
 
 msgid "Based on saved build: %s · revision %d"
 msgstr "基于已保存的机型：%s · 版本 %d"
+
+msgid "High and Extreme add detailed grass at walking-path edges."
+msgstr "高和极高设置会在步道边缘添加精细草地。"

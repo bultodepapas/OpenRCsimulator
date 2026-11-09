@@ -1,0 +1,681 @@
+{
+  "format": "openrc-crash-cost-verification v1",
+  "date": "2026-11-09",
+  "baseline_head": "5fe6aeeaa2458a9eb93cd4f18b7b9a93509b07f7",
+  "scope": "Local game-assessment preview; not the complete handoff release or physical qualification",
+  "engine": {
+    "version": "Godot 4.8 beta2 official cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "path": ".tools/Godot_v4.8-beta2_win64.exe",
+    "sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+    "platform": "Windows x86_64"
+  },
+  "consolidated": {
+    "ok": true,
+    "source_unchanged": true,
+    "source_sha256": {
+      "app/economy/calculator.gd": "dc5dfa0ad16b6fe91a6073bcd0876b8e9c94d226682f9826e47fd134d91c5b8c",
+      "app/economy/catalog.gd": "171898aaa8e3757695deaa68dd6dda73d2d976aea0f11b07a885a578d8ed20cf",
+      "app/economy/checkpoint.gd": "12771926be20dab4f534329d4332ec0c78de3a44afc0398d704c0f30fc56f6a5",
+      "app/economy/component_resolver.gd": "ac8038a471de6b258d3a91e919288101665a868c6fb283ee2c291fca246a53fc",
+      "app/economy/cost_profile.gd": "6ce0855def63df523becd543fc79616f36c8f14e9ac4faafd6188002246e27c1",
+      "app/economy/damage_assessment.gd": "765d2ba6362cc10c88b55e65bb7c883bc277a18a75c7d72c7d910d7d2b7eb52d",
+      "app/economy/impact_budget.gd": "4e85fd359c43508a749fd00871498ffee66521ecd66c319aba13f5db3dc7ca2d",
+      "app/economy/incident.gd": "1c298777b5d68b639939ecc96ce8790bc1a81249a4368bb4b832c046e88a25d8",
+      "app/economy/inspection.gd": "97887e00cc23b70124369094dc338688ba54473793a06014efdd19b3b6c55d9e",
+      "app/economy/package_optimizer.gd": "c6debf0d6b5fcd8ffc1eee7c1474802390bb46108d54ea00d0b2c8c015d241cd",
+      "app/economy/repair_details.gd": "95be217e28dbf86374a54fcc0e27b023ee138cdccdd9e602621c00515f08161b",
+      "app/economy/repair_planner.gd": "0c73afc1b80a129c982f9ab12b891a94339be173b5ca96836f6465b7c2e7fc1d",
+      "app/economy/replacement_quote.gd": "342cf2723e0349a55d53725bb7a60059c9dee9ac32e242747d58d652e0634a67",
+      "app/economy/settlement.gd": "f8c6c8bdbedbb520ef4fc9309a5cb4a39528faefcfb09a215475fd8972716e7c",
+      "app/economy/thermal_budget.gd": "072084c73597dfeddf6a8feb98298b3db4267957070596823644f1de53b79a5e",
+      "app/main.gd": "634d1434edde01ef2ec9bb35214403b6e18468831f58197cad84590eb39b554f",
+      "app/sim/flight_session.gd": "e67a248feb105159814e707361fd39f9c513bd7946f35156c8e830e86094d766",
+      "app/sim/aircraft_contact_events.gd": "ad1a8f1a7ae4df47b98e1b44d34af8790635cb127bc55758b337e34523c77317",
+      "app/statistics/fixed_wing_adapter.gd": "d59f20f1d6b21faae1ebf62d9cda141ef56494bd4741d185618c9753e51a53f2",
+      "app/ui/accident_report.gd": "5d84d81fc66d50e140918de4fa6ee9deb550dca66414f6d14739b4c6666fc4c7",
+      "app/i18n/es.po": "a2591a15245c3294e4557dd4cc426011a9d29e8c1d144819b176adb01e70c858",
+      "app/data/economy/cost-profiles.json": "c2c341d164189bce7f084e2831d6697526c65042dd38510aecfed76e7a72bc0d",
+      "app/data/economy/repair-recipes.json": "41bb0efd0d4998089ab88afb8167588c3ac0a2de790f05c828cbd546550ac688",
+      "research/crash-economics/cost-profiles.json": "4a491f20cc07081c2463d05d5b1a61a25897bda4a18c3b404071ae0cc9e19c9f",
+      "research/crash-economics/build_profiles.py": "e0e1517bc153a1bdf728b0ed0ebc598602ac18cf8984ab696c74aada717d5696",
+      "research/crash-economics/build_runtime.py": "7f7af817536fdae38e18266247eadadaaa05431c1221644fe3a7a6dfe9293abf",
+      "app/tests/test_economy_calculator.gd": "8beee4eba3c0046a3ffb8591056ff7bb4db2a462f9fd33e0374377abe19e9d41",
+      "app/tests/test_economy_catalog.gd": "e817cb52d0e8f1a1dcb8dc0812044d770bafed2c359ce8f434f8332ebf0bf517",
+      "app/tests/test_economy_checkpoint.gd": "68167f8367ec6fcafbbd21e76e15c59debf9d88d64f6e66a7153513dbe6bb9dc",
+      "app/tests/test_economy_component_resolver.gd": "6e014659a5cc2cd076aa20271157e909bf7704304ef39750cb15006984dbe0e9",
+      "app/tests/test_economy_cr39.gd": "b42ad31e26fbd9d338f201d78b3201dbb8a5d1d92e509b26b2945ab080187f36",
+      "app/tests/test_economy_impact_budget.gd": "0d9a91a91cd128837a0e344e045fa5836495a5833da6edb6b6ee71e4a3e554b4",
+      "app/tests/test_economy_inspection.gd": "4ccc48513d4a00b68f75119474b3dcf289ec4a44f354c117daa8e9cac11538e7",
+      "app/tests/test_economy_package_optimizer.gd": "8a938ca2400ed9d50ee8146adb15cc0896921c5b3465ab9d7379199e70087184",
+      "app/tests/test_economy_repair_details.gd": "ddf7fd6fb62422ba9aaca70c3ee4ec9320bb18a20328a0da9689a5d581c4455f",
+      "app/tests/test_economy_repair_planner.gd": "75e6364e14be80ec735fe7b912dec2b2a68c27782293badc7286c00d5c619466",
+      "app/tests/test_economy_replacement_quote.gd": "4f48ee7d6316b45e1c649f14bcb77606fda87c78d9f06c85125a2d31e1f78d87",
+      "app/tests/test_economy_thermal_budget.gd": "e634caff9e47c28af1dab8e4caf37b1fc592b21d680ee45f3b0a260a44b3c25b",
+      "app/tests/test_cost_profiles.gd": "ed4255ff91ccac33900ac232578052b47bd315efda65d4e58fbfa9a7f44f5f3a",
+      "app/tests/test_crash_cost_fleet.gd": "34d149972c06545414b9d0dfe30827df5dfff1c70972235a4e5d71738d02426c",
+      "app/tests/test_crash_cost_incident.gd": "9e8a66a704799a846b1105740aca5891cccb2deb5bca9030c07690d5a616ee03",
+      "app/tests/test_crash_cost_producers.gd": "c300d748f8c1e21e990b06ee3c4cf98b2a6a93288b6c2960202fd854c1402bd9",
+      "app/tests/test_accident_integration.gd": "d2c26f945400c48b16f38c33885c8a7909a1437ba67055b0ee342448e5d200f8",
+      "app/tests/test_accident_report.gd": "14d191f58c960b35bc99aeb6cb6b8387bfdb3a5beaa96aa4d43a6445dae8d768",
+      "app/tests/test_accident_settlement.gd": "bb16c919ae5133c7183dccfefa36ef2eacd83b4d04704ee8ee17674526f59f2a",
+      "app/tests/test_aircraft_contact_events.gd": "aab42d1013ec005fec060996de04b154d241d3a9a053854a35c1c529b5c8a58e",
+      "app/tests/test_aircraft_contact_session.gd": "02e0cfd8e91fe94582740009335e67748c65f64243f7442a3e52bd372b51f1a3",
+      "app/tests/test_crash_snapshot.gd": "ded417a5dd06576b313c1dbf02b94bc960383768c1d52a8d823fdf094db21763",
+      "app/tests/test_ground_accident_session.gd": "3eff3076e74813c9681fae75f148dc739438d5a171a04f15c5cce88357db6d8e",
+      "app/tests/test_flight_statistics_terrain.gd": "e0727f28c4efa3d05595b128c17c6d1a9643aa541da3acf1d3f6e7217e941e9a",
+      "app/tests/test_flight_statistics_lifecycle.gd": "b42193c6d3e4a748c61321e69dd91dc0f19597145059aaf1e5fbf6b69c4e8d15",
+      "app/tests/test_checkpoint.gd": "428a4cf834f72719ee3fae0e41edebd6147f290473f95513f05be92b8b890b2f",
+      "app/tests/test_checkpoint_integrity.gd": "cfc900ab607dbf05e875224603a877a0854926be951c803a2b89aae62b8e9bc0",
+      "app/tests/test_visual_checkpoint.gd": "5ff193499d8ca538a5d2ee013f33f4aacad9e44cca122634be077eef97b94f4c",
+      "app/tests/test_water_checkpoint.gd": "32e8bc9fee091311f1cd29b0d1ec7c9a5b6b43adfef156ca6081f677a40f58aa"
+    },
+    "scripts": [
+      {
+        "script": "test_economy_calculator.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_calculator-20bqglst/report.json",
+          "sha256": "a18ad866747c3e7692f669c4db87b5940ef0f041053459ccb55aac83e7ab7556",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "33661af4fdc53d0ee9648af7ec2c21d3caaad015ca2c2517ce4be43c14321273",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_catalog.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_catalog-cjosh3vu/report.json",
+          "sha256": "d66ea01142ab70c3134dc76f500662b3d6fdb24d114c4475b99902934c88bf60",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "2ce01a320dabb941125db3b8720f2d0e2be0654a676a69af153aedb474f7bbc4",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_checkpoint.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_checkpoint-0w5psvkk/report.json",
+          "sha256": "3e757b7500d651897cfc2e44ce627ad5b9a360cf67d79a25fe5c71bb59e5fcea",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "8fdfc8ebdd6dcd018e44e7733fb9cf920c2ad17484a275bc433c56d9c1618b50",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_component_resolver.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_component_resolver-s_ycpijt/report.json",
+          "sha256": "778912dff0c7d0696e74d1508c44c57eaa4ebbde3dcd6ecf1d57c4900330e32e",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "7bd593db3fcb1a41b7c4f74a70ac73ba0edf2d44f082e318cee3403231d1e749",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_cr39.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_cr39-5_ydqi1p/report.json",
+          "sha256": "9b48e61eb973caa0be60cbb3970309e94a82d90793e3821d64d894e722291418",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "2f9490a272e5d806c31ea49aac91fdde1df0aed973f1982c03ce20cef44b57ae",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_impact_budget.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_impact_budget-62lb78h7/report.json",
+          "sha256": "333c6c0fad00da338be11e6108e8cd20406d4a0b6003b3619691630a6d5e4c59",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "8d4735e7ffe66d677610b46dc33fd75599e19b11bedeef9850a2149aa7ed4db2",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_inspection.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_inspection-ls2c271j/report.json",
+          "sha256": "327269a452847cae014ce2917cd6607b7bcb36ee7740e1c8b233248ab2cfe5eb",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "9fa45ce404bcfd77f11072ebe9ea2197f29130c57aced32dce930b4b46e2eb0d",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_package_optimizer.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_package_optimizer-uzn2kuy4/report.json",
+          "sha256": "a5f3fef3eb4d0519b69c20e5cdd46bfebcb7cb513de7173a845c1675fb114e5a",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "a0417645e472e4a91b794dbe8b5a8ac0bf5d2450bc6105dd22cbb39651d92234",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_repair_details.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_repair_details-oflq2748/report.json",
+          "sha256": "63b5d39b1edbcd8a0f2b5326eb9c2a63683d21324430ce51b7b8c191cd6d05c8",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "c5bb30132cefea93c72c0f4c01ac9ec4739350628358951df6e363e2cec69e02",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_repair_planner.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_repair_planner-dka3ayj7/report.json",
+          "sha256": "10e438f53504607ebed32e2d4309a57a9059bcfc486eb4a5f714967a55375d15",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "a3055f542a1bca1a540d2ba33c937166e7ce5d18837b59e2b83137294410c3f1",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_replacement_quote.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_replacement_quote-ydyyynsh/report.json",
+          "sha256": "1d5e9eec182273a46682c0dc80480fa154a34c388c3fbcb2fc4fd418c770e2d4",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "8622847459fc983fc23dda6de577b31dc87ae71728e7f2be485b6c3e4c4e9b1c",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_thermal_budget.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_economy_thermal_budget-xovbg8f7/report.json",
+          "sha256": "9eb8432f8c426aa5147858f5a359ff72648881027a819aa27cfa2f5e218aea4f",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "c1d9f018cb63953844ee49c9d64a7dd66a7c4fedfc0949c24cc1d099c41dcc96",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_cost_profiles.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_cost_profiles-y6h2fo8z/report.json",
+          "sha256": "ce0e30c327726b3a9b5a0b5a07d3cf30fd5944a556d6d928d2ad3214aae8a086",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "1385281b81f4737de773b0836ee0366dd2af5c2ef411de49d7558421edc459cb",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_cost_fleet.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_crash_cost_fleet-96v1krb7/report.json",
+          "sha256": "77e390d2944384c23a4d6f63133dfdeceeb6b5ba45de82aa2857814778511f72",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "540e90a8c466653c3bb68ec564a6736fd4ae797846f2e77501aa7dd21f92396d",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_cost_incident.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_crash_cost_incident-m4ywmwfj/report.json",
+          "sha256": "1fa5b25231eb0cc4fe784ef409cdba72f6d3ee1ad401f647d3d7fd671c820036",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "0a18118b0c43a18739145e7a338e0c98af711adf25791f50cbd2cdec91d3855b",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_cost_producers.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_crash_cost_producers-ww3e_z0h/report.json",
+          "sha256": "3b0f8a7f0502dcb32fc491b5d0a65422d44710337c376c32da3f615f1544858b",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "aa49159d89fca0307790cd8e42f2d75c487819db2d10fe7d949ddce3a47fc520",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_accident_integration.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_accident_integration-de78ftq5/report.json",
+          "sha256": "6a1f014e53d8e3703ff2b2c9d8397c1b78c2d52c27761ea7f8e147d392fa511e",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "b3c06ca460640023f94a400a4b00b7932ab644f4b7b85e2e7378cfda29e1f41f",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_accident_report.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_accident_report-54m5vomj/report.json",
+          "sha256": "c9b574522c93e8d8aecbe3d91c01f1ed16736d2215ac828f194bea654458d249",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "cb66351b651b6d6cff56f3a1c7abf716f4347e0fb89a92d54e96a5c82849700c",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_accident_settlement.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_accident_settlement-5s85lqcu/report.json",
+          "sha256": "3e436ad820d52ae88d7e010f56e0520de42ccfeac4d4dbe0f0b8b08cb0459c29",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "925688932b45b1688a1c11ad359fc7292670ee104790d1f65ff2a4cd36ffcc16",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_aircraft_contact_events.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_aircraft_contact_events-uen5mp5_/report.json",
+          "sha256": "7ac56fa7075c12b810075f6600b02f5eafdee2d5ca4cb60188f510162423b022",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "b7640ba64026289a2d8feed53cde0be71d8a2bc1072412190fa2f2f7c9f78a9d",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_aircraft_contact_session.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_aircraft_contact_session-nnvye1dl/report.json",
+          "sha256": "bead450057b79b08ee9813d5cc093ccbd6184200487091b6b3f720c0087018f1",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "6791a1401c036c294f511116ce9621ce067254bba0bd4315efe731056f45cb38",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_snapshot.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_crash_snapshot-72wvi2_w/report.json",
+          "sha256": "b3273ee43636ff3d652c4de40875f6cde7499a8cb59ccf1f82fa7bb81609c3d8",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "883e193f0f93617d38babc7f2a7c3e8e04c2eac47c380deb9e17f3155013b3f9",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_ground_accident_session.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_ground_accident_session-ftmj51ud/report.json",
+          "sha256": "4a27f3bac4e5a129b25377fce8d63fe25b7b9dbe76b9432a77ca6ff5b6c14a89",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "34b8d3ba503bbea758e7d33b474ef9332db4636c86f9853b6178dca08fdc34cf",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_flight_statistics_terrain.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_flight_statistics_terrain-bohf6l0o/report.json",
+          "sha256": "0d4cc26060de8a8cd60d5f9131340e0660efe4dba95fd62eb74eb7cb42231e0d",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "82e0c1ed22a20f5c25a5c902322b39a4be8707c1f76c3860c7fbc6ff3988f723",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_flight_statistics_lifecycle.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_flight_statistics_lifecycle-qdjsaob3/report.json",
+          "sha256": "4dc0c541884739544ffbf3d74bbdfb371abdc3fdd26c84afcc6b0c3110d9bec6",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "3b9b84e42df93e84e94f24024f726357929ee64fd0904970cd9e91ced47382cb",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_checkpoint.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_checkpoint-supiksm3/report.json",
+          "sha256": "e92d221d91142163bd185f2d72b64932cc1004d932572c5a51140276d2687be5",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "c65cf4fe35bb15ce52182af244c7a3cdf83ae5a6934a9ddb637075f991d02834",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_checkpoint_integrity.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_checkpoint_integrity-a_m79gdj/report.json",
+          "sha256": "892b3664825760a7f2dad2160e8ffdd236e69f473eed408601d52e525b6d8b56",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "26bbd39d8bd6cb8edfd2b7d390f70eb3903f792d5f24388ce4e4617ccd9d65c8",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_visual_checkpoint.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_visual_checkpoint-om4daglk/report.json",
+          "sha256": "622e668064f9842905a816b524a8bd4ee4c4c52c95ec02f4e12daa73ec283014",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "a3055f542a1bca1a540d2ba33c937166e7ce5d18837b59e2b83137294410c3f1",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_water_checkpoint.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-stable/test_water_checkpoint-y3vbmeuw/report.json",
+          "sha256": "76cfdd9487a1e766c0321ef0725a3a0d91c2c6d9a77db34cf90d9e3616dd9708",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "3cb9177c66798533c1d8bf9bbc1413a2b41202a6f41dfe1c352e0b30b9de8825",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    ]
+  },
+  "followup": {
+    "ok": true,
+    "source_unchanged": true,
+    "source_sha256": {
+      "app/economy/calculator.gd": "dc5dfa0ad16b6fe91a6073bcd0876b8e9c94d226682f9826e47fd134d91c5b8c",
+      "app/economy/catalog.gd": "171898aaa8e3757695deaa68dd6dda73d2d976aea0f11b07a885a578d8ed20cf",
+      "app/economy/checkpoint.gd": "12771926be20dab4f534329d4332ec0c78de3a44afc0398d704c0f30fc56f6a5",
+      "app/economy/component_resolver.gd": "ac8038a471de6b258d3a91e919288101665a868c6fb283ee2c291fca246a53fc",
+      "app/economy/cost_profile.gd": "8c6e2cab7d02d72864cfaac0a437dc8920f385a0c9dd9a5c1bcc8b1388776434",
+      "app/economy/damage_assessment.gd": "765d2ba6362cc10c88b55e65bb7c883bc277a18a75c7d72c7d910d7d2b7eb52d",
+      "app/economy/impact_budget.gd": "4e85fd359c43508a749fd00871498ffee66521ecd66c319aba13f5db3dc7ca2d",
+      "app/economy/incident.gd": "1c298777b5d68b639939ecc96ce8790bc1a81249a4368bb4b832c046e88a25d8",
+      "app/economy/inspection.gd": "97887e00cc23b70124369094dc338688ba54473793a06014efdd19b3b6c55d9e",
+      "app/economy/package_optimizer.gd": "c6debf0d6b5fcd8ffc1eee7c1474802390bb46108d54ea00d0b2c8c015d241cd",
+      "app/economy/repair_details.gd": "95be217e28dbf86374a54fcc0e27b023ee138cdccdd9e602621c00515f08161b",
+      "app/economy/repair_planner.gd": "0c73afc1b80a129c982f9ab12b891a94339be173b5ca96836f6465b7c2e7fc1d",
+      "app/economy/replacement_quote.gd": "342cf2723e0349a55d53725bb7a60059c9dee9ac32e242747d58d652e0634a67",
+      "app/economy/settlement.gd": "f8c6c8bdbedbb520ef4fc9309a5cb4a39528faefcfb09a215475fd8972716e7c",
+      "app/economy/thermal_budget.gd": "072084c73597dfeddf6a8feb98298b3db4267957070596823644f1de53b79a5e",
+      "app/main.gd": "634d1434edde01ef2ec9bb35214403b6e18468831f58197cad84590eb39b554f",
+      "app/sim/flight_session.gd": "e67a248feb105159814e707361fd39f9c513bd7946f35156c8e830e86094d766",
+      "app/sim/aircraft_contact_events.gd": "ad1a8f1a7ae4df47b98e1b44d34af8790635cb127bc55758b337e34523c77317",
+      "app/statistics/fixed_wing_adapter.gd": "d59f20f1d6b21faae1ebf62d9cda141ef56494bd4741d185618c9753e51a53f2",
+      "app/ui/accident_report.gd": "5d84d81fc66d50e140918de4fa6ee9deb550dca66414f6d14739b4c6666fc4c7",
+      "app/i18n/es.po": "a2591a15245c3294e4557dd4cc426011a9d29e8c1d144819b176adb01e70c858",
+      "app/data/economy/cost-profiles.json": "1aa5659dc922297ab59b3bcb5fd5b9775731762523057c2c07c53a55d958bc4f",
+      "app/data/economy/repair-recipes.json": "41bb0efd0d4998089ab88afb8167588c3ac0a2de790f05c828cbd546550ac688",
+      "research/crash-economics/cost-profiles.json": "7c0169474f96f77e69ef78d1661834e68a8d08138ae765bec3217602fca32b55",
+      "research/crash-economics/build_profiles.py": "b6f56ac59349582a45063515257a74d85cc091fe8d06ae6a497635e853f40acd",
+      "research/crash-economics/build_runtime.py": "7f7af817536fdae38e18266247eadadaaa05431c1221644fe3a7a6dfe9293abf",
+      "app/tests/test_cost_profiles.gd": "fa3f074c7f5c9b4946f56c59f2d2a5252daec0ba60d6a2690f919060b2bf17fc",
+      "app/tests/test_crash_cost_fleet.gd": "34d149972c06545414b9d0dfe30827df5dfff1c70972235a4e5d71738d02426c",
+      "app/tests/test_crash_cost_incident.gd": "9e8a66a704799a846b1105740aca5891cccb2deb5bca9030c07690d5a616ee03",
+      "app/tests/test_crash_cost_producers.gd": "c300d748f8c1e21e990b06ee3c4cf98b2a6a93288b6c2960202fd854c1402bd9",
+      "app/tests/test_economy_checkpoint.gd": "68167f8367ec6fcafbbd21e76e15c59debf9d88d64f6e66a7153513dbe6bb9dc",
+      "app/tests/test_economy_inspection.gd": "4ccc48513d4a00b68f75119474b3dcf289ec4a44f354c117daa8e9cac11538e7",
+      "app/tests/test_accident_integration.gd": "d2c26f945400c48b16f38c33885c8a7909a1437ba67055b0ee342448e5d200f8",
+      "app/tests/test_accident_report.gd": "14d191f58c960b35bc99aeb6cb6b8387bfdb3a5beaa96aa4d43a6445dae8d768"
+    },
+    "scripts": [
+      {
+        "script": "test_cost_profiles.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_cost_profiles-mpa53hdg/report.json",
+          "sha256": "fea9eb339e8d41dbda6401e6883acf3bab87c34e12c418f608bd130031dea3d7",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "39cab793b28d6e3b98bf4979270c10be61ee507024e2140ccd983b0a96b02244",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_cost_fleet.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_crash_cost_fleet-gxka_dpo/report.json",
+          "sha256": "b2adb6aff2c39c1280ea33392893f49bae3534f0e5c2400f93bae2e648ea2391",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "540e90a8c466653c3bb68ec564a6736fd4ae797846f2e77501aa7dd21f92396d",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_cost_incident.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_crash_cost_incident-1453c9s9/report.json",
+          "sha256": "89a1cab7029baf2af6cf1c30a9696b17c3f509a9ad12b5d311a4cdcaa97a3c80",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "0a18118b0c43a18739145e7a338e0c98af711adf25791f50cbd2cdec91d3855b",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_crash_cost_producers.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_crash_cost_producers-eqozqiqm/report.json",
+          "sha256": "fc8cd31a8a468cda315d62d1b97651d3fefb593c781e3358bebf08824472766a",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "aa49159d89fca0307790cd8e42f2d75c487819db2d10fe7d949ddce3a47fc520",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_checkpoint.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_economy_checkpoint-e4lhhlb2/report.json",
+          "sha256": "3f4340f9fc4a5878bc15315c8dcd85deb57fc102d595b7cca416ad4ca70e7929",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "8fdfc8ebdd6dcd018e44e7733fb9cf920c2ad17484a275bc433c56d9c1618b50",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_economy_inspection.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_economy_inspection-iiiwtpok/report.json",
+          "sha256": "44b27068461b03d944e38b213923ace7322c15598a8e5e74f5f2a570e13348d1",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "9fa45ce404bcfd77f11072ebe9ea2197f29130c57aced32dce930b4b46e2eb0d",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_accident_integration.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_accident_integration-msz2gvf6/report.json",
+          "sha256": "55e42215df765bf06e5c53291b2f8ddf5ae6a91dfe34efc98292f60da1ae1efb",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "b3c06ca460640023f94a400a4b00b7932ab644f4b7b85e2e7378cfda29e1f41f",
+          "errors": 0,
+          "warnings": 0
+        }
+      },
+      {
+        "script": "test_accident_report.gd",
+        "receipt": {
+          "path": "tmp/crash-cost-final-followup/test_accident_report-rkhgefsy/report.json",
+          "sha256": "6e52e3ac13cb238e1484d406b98db15a67dee41f6cfe8061cb55a2f489d545b5",
+          "ok": true,
+          "complete": true,
+          "log_sha256": "cb66351b651b6d6cff56f3a1c7abf716f4347e0fb89a92d54e96a5c82849700c",
+          "errors": 0,
+          "warnings": 0
+        }
+      }
+    ]
+  },
+  "final_ui_translation": {
+    "path": "tmp/crash-cost-final-followup/ui-translation-pi3bvlzt/report.json",
+    "sha256": "c45f9e1f6b9ecaa6b2005cc29234e689aade0365a0d699172b865421111c5cfe",
+    "ok": true,
+    "complete": true,
+    "log_sha256": "d32dc25455f9881da7d7ee5a9e1a750d2015b2fbfaced2b4f7025027edbfe1b2",
+    "errors": 0,
+    "warnings": 0
+  },
+  "final_source_sha256": {
+    "app/data/economy/cost-profiles.json": "1aa5659dc922297ab59b3bcb5fd5b9775731762523057c2c07c53a55d958bc4f",
+    "app/data/economy/repair-recipes.json": "41bb0efd0d4998089ab88afb8167588c3ac0a2de790f05c828cbd546550ac688",
+    "app/data/schema/openrc-cost-profiles-v2.schema.json": "9133d87cf21316f391e9a94d25ae5a1e1c863486d5b6846a72d1c15231d0aa3d",
+    "app/economy/calculator.gd": "dc5dfa0ad16b6fe91a6073bcd0876b8e9c94d226682f9826e47fd134d91c5b8c",
+    "app/economy/catalog.gd": "171898aaa8e3757695deaa68dd6dda73d2d976aea0f11b07a885a578d8ed20cf",
+    "app/economy/checkpoint.gd": "12771926be20dab4f534329d4332ec0c78de3a44afc0398d704c0f30fc56f6a5",
+    "app/economy/component_resolver.gd": "ac8038a471de6b258d3a91e919288101665a868c6fb283ee2c291fca246a53fc",
+    "app/economy/cost_profile.gd": "8c6e2cab7d02d72864cfaac0a437dc8920f385a0c9dd9a5c1bcc8b1388776434",
+    "app/economy/damage_assessment.gd": "765d2ba6362cc10c88b55e65bb7c883bc277a18a75c7d72c7d910d7d2b7eb52d",
+    "app/economy/impact_budget.gd": "4e85fd359c43508a749fd00871498ffee66521ecd66c319aba13f5db3dc7ca2d",
+    "app/economy/incident.gd": "1c298777b5d68b639939ecc96ce8790bc1a81249a4368bb4b832c046e88a25d8",
+    "app/economy/inspection.gd": "97887e00cc23b70124369094dc338688ba54473793a06014efdd19b3b6c55d9e",
+    "app/economy/package_optimizer.gd": "c6debf0d6b5fcd8ffc1eee7c1474802390bb46108d54ea00d0b2c8c015d241cd",
+    "app/economy/repair_details.gd": "95be217e28dbf86374a54fcc0e27b023ee138cdccdd9e602621c00515f08161b",
+    "app/economy/repair_planner.gd": "0c73afc1b80a129c982f9ab12b891a94339be173b5ca96836f6465b7c2e7fc1d",
+    "app/economy/replacement_quote.gd": "342cf2723e0349a55d53725bb7a60059c9dee9ac32e242747d58d652e0634a67",
+    "app/economy/settlement.gd": "f8c6c8bdbedbb520ef4fc9309a5cb4a39528faefcfb09a215475fd8972716e7c",
+    "app/economy/thermal_budget.gd": "072084c73597dfeddf6a8feb98298b3db4267957070596823644f1de53b79a5e",
+    "app/i18n/es.po": "e16f9563dc025afdab9b4ace8a54c3400db9a2cdb8d46bf7c0efebda86eb7522",
+    "app/main.gd": "634d1434edde01ef2ec9bb35214403b6e18468831f58197cad84590eb39b554f",
+    "app/sim/aircraft_contact_events.gd": "ad1a8f1a7ae4df47b98e1b44d34af8790635cb127bc55758b337e34523c77317",
+    "app/sim/flight_session.gd": "e67a248feb105159814e707361fd39f9c513bd7946f35156c8e830e86094d766",
+    "app/statistics/fixed_wing_adapter.gd": "d59f20f1d6b21faae1ebf62d9cda141ef56494bd4741d185618c9753e51a53f2",
+    "app/tests/test_accident_integration.gd": "d2c26f945400c48b16f38c33885c8a7909a1437ba67055b0ee342448e5d200f8",
+    "app/tests/test_accident_report.gd": "d08543f9619ff8b2660e99cfa664a0b92c3f8aac574026b2bcf4266700c2cde9",
+    "app/tests/test_cost_profiles.gd": "fa3f074c7f5c9b4946f56c59f2d2a5252daec0ba60d6a2690f919060b2bf17fc",
+    "app/tests/test_crash_cost_fleet.gd": "34d149972c06545414b9d0dfe30827df5dfff1c70972235a4e5d71738d02426c",
+    "app/tests/test_crash_cost_incident.gd": "9e8a66a704799a846b1105740aca5891cccb2deb5bca9030c07690d5a616ee03",
+    "app/tests/test_crash_cost_producers.gd": "c300d748f8c1e21e990b06ee3c4cf98b2a6a93288b6c2960202fd854c1402bd9",
+    "app/tests/test_economy_checkpoint.gd": "68167f8367ec6fcafbbd21e76e15c59debf9d88d64f6e66a7153513dbe6bb9dc",
+    "app/tests/test_economy_inspection.gd": "4ccc48513d4a00b68f75119474b3dcf289ec4a44f354c117daa8e9cac11538e7",
+    "app/ui/accident_report.gd": "864c43cb5b5d9f51ebb0d4f5e5163db7e28a4788b9f5a8691dbe1c00c6c20598",
+    "research/crash-economics/build_profiles.py": "b6f56ac59349582a45063515257a74d85cc091fe8d06ae6a497635e853f40acd",
+    "research/crash-economics/build_runtime.py": "7f7af817536fdae38e18266247eadadaaa05431c1221644fe3a7a6dfe9293abf",
+    "research/crash-economics/cost-profiles.json": "7c0169474f96f77e69ef78d1661834e68a8d08138ae765bec3217602fca32b55",
+    "research/crash-economics/test_cost_profiles.py": "00e0d24314e8b8d495afe145f8b9bd8e5eb690b4af2babe83977ec9ac156ad8f"
+  },
+  "source_changes_after_followup": [
+    "app/ui/accident_report.gd",
+    "app/i18n/es.po",
+    "app/tests/test_accident_report.gd"
+  ],
+  "offline": {
+    "unittest_command": "python -m unittest discover -s research/crash-economics -p 'test_*.py'",
+    "tests": 73,
+    "passed": true,
+    "generators": [
+      "build_catalog.py --check",
+      "build_runtime.py --check"
+    ],
+    "schema_documents_valid": true
+  },
+  "native": {
+    "debug_directory": "tmp/debug-bridge/20261109-132729-47870",
+    "renderer": "Compatibility",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "scenario": "Home -> Jensen airborne -> input-driven dive -> automatic report -> EN/ES breakdown -> Home -> Lumber runway -> immutable prior archive",
+    "accepted_tick": 564,
+    "known_subtotal_minor": 12538,
+    "complete": false,
+    "report_errors": [],
+    "archive_reopened_minor": 12538,
+    "new_runway_damage": false,
+    "loaded_source_sha256": {
+      "app/economy/incident.gd": "1c298777b5d68b639939ecc96ce8790bc1a81249a4368bb4b832c046e88a25d8",
+      "app/main.gd": "634d1434edde01ef2ec9bb35214403b6e18468831f58197cad84590eb39b554f",
+      "app/sim/flight_session.gd": "e67a248feb105159814e707361fd39f9c513bd7946f35156c8e830e86094d766"
+    },
+    "loaded_source_matches_final": {
+      "app/economy/incident.gd": true,
+      "app/main.gd": true,
+      "app/sim/flight_session.gd": true
+    },
+    "shutdown": {
+      "forced": false,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "captures": [
+      {
+        "path": "tmp/debug-bridge/20261109-132729-47870/shots/shot-93108-001.png",
+        "sha256": "3d3d71d4b2795d6fe6b53361244c102d76a62136225a2a51c9a244c62d3b0331",
+        "committed": false
+      },
+      {
+        "path": "tmp/debug-bridge/20261109-132729-47870/shots/shot-93108-002.png",
+        "sha256": "100188328014a1ab631626baffc17ea4820e50bdf894be2aef9709709c011078",
+        "committed": false
+      }
+    ],
+    "limit": "Captures precede the final valuation-label translation only; the final UI translation is separately covered by the 128-check UI suite. No GPU/performance qualification.",
+    "loaded_source_comparison": "Compared loaded UTF-8 script text with both exact file bytes and LF-normalized text to account for editor EOL decoding."
+  },
+  "independent_review": {
+    "role": "Good Enemy",
+    "mode": "read-only source/data review",
+    "final_high_severity_findings": 0,
+    "execution_evidence": false
+  },
+  "unqualified": [
+    "Required full repository CI and release gates",
+    "Complete handoff 46-case/every-player-route matrix",
+    "Normal-play grouped purchase/repair/fee transaction",
+    "Calibrated physical serviceability and secondary/internal damage",
+    "Delayed thermal/fire and stopped/scenery prop capabilities",
+    "X-Cell economics"
+  ]
+}

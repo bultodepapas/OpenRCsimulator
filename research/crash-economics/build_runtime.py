@@ -1164,6 +1164,15 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 output_path.write_bytes(payload)
+        # Companion generation is an explicit versioned path, never a relaxed v1 schema.
+        import build_profiles
+        profile_payload = build_profiles.render(build_profiles.build(ROOT))
+        profile_path = ROOT / build_profiles.OUTPUT
+        if args.check:
+            if not profile_path.exists() or profile_path.read_bytes() != profile_payload:
+                _fail("stale game cost profiles; run research/crash-economics/build_profiles.py")
+        else:
+            profile_path.write_bytes(profile_payload)
         if args.check:
             print(f"runtime economics sidecar is current ({len(context['routes'])} aircraft routes)")
             return 0

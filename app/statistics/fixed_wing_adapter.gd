@@ -98,6 +98,10 @@ func sample() -> Dictionary:
 		incident = incident or (hull.facts.touching and not hull.facts.intended_support)
 	var ground_contact: bool = physical or not contacts.get("active_hull_ids", []).is_empty()
 	for event: Dictionary in contacts.get("events", []):
+		# Cost-only endpoint proxies do not change the established statistics contact threshold.
+		# This adapter already samples physical wheel compression above.
+		if event.get("format") == "openrc-aircraft-support-events v2":
+			continue
 		if event.get("lifecycle") != "ended":
 			incident = incident or event.get("source") in ["scenery", "lake", "propeller"] \
 				or (event.get("source") == "hull" and not bool(observation.get("intended_support", false))) \

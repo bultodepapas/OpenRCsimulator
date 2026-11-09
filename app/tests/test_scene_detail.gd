@@ -47,6 +47,8 @@ func _test_levels() -> void:
 	for level: String in SceneDetail.LEVELS:
 		var profile: Dictionary = SceneDetail.PROFILES[level]
 		qualities.append(profile.scenery_quality)
+		_check("%s selects the intended worn-path turf cost" % level,
+			profile.worn_path_turf == (level in ["high", "extreme"]))
 		if not previous.is_empty():
 			_check("%s never costs less than the level below" % level,
 				float(profile.mesh_lod_threshold_px) <= float(previous.mesh_lod_threshold_px)

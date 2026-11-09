@@ -875,6 +875,7 @@ func _refresh_graphics_info() -> void:
 func _refresh_scene_detail_tooltip() -> void:
 	var detected: Dictionary = SceneDetail.detected()
 	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. Automatic picks a level for your GPU. Extreme draws every nearby field tree in 3D and needs a strong GPU.") \
+		+ "\n" + tr("High and Extreme add detailed grass at walking-path edges.") \
 		+ "\n" + tr("Detected: %s (%s).") % [RenderingServer.get_video_adapter_name(), tr(str(detected.reason))]
 
 

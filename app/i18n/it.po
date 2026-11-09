@@ -10038,3 +10038,6 @@ msgstr "Prova del modello salvato: %s · revisione %d"
 
 msgid "Based on saved build: %s · revision %d"
 msgstr "Basato sul modello salvato: %s · revisione %d"
+
+msgid "High and Extreme add detailed grass at walking-path edges."
+msgstr "Alto ed Estremo aggiungono erba dettagliata ai bordi dei percorsi pedonali."

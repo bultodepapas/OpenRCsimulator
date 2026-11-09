@@ -49,7 +49,7 @@ func _test_all_routes_and_baseline() -> void:
 	var loaded_by_id: Dictionary = {}
 	var offer_sources_by_id: Dictionary = {}
 	for aircraft_id: String in routes:
-		var result: Dictionary = Catalog.load_for(aircraft_id)
+		var result: Dictionary = Catalog.load_legacy_for(aircraft_id)
 		_check("route loads " + aircraft_id, bool(result.get("ok", false)), str(result.get("errors", [])))
 		if bool(result.get("ok", false)):
 			var dossier: Dictionary = result["dossier"]
@@ -109,7 +109,7 @@ func _test_all_routes_and_baseline() -> void:
 func _test_missing_prices_do_not_gate_routes() -> void:
 	var incomplete_count := 0
 	for aircraft_id: String in AircraftCatalog.ids():
-		var result: Dictionary = Catalog.load_for(aircraft_id)
+		var result: Dictionary = Catalog.load_legacy_for(aircraft_id)
 		if not bool(result.get("ok", false)):
 			continue
 		var dossier: Dictionary = result["dossier"]
@@ -136,22 +136,22 @@ func _test_missing_prices_do_not_gate_routes() -> void:
 
 
 func _test_rejects_unknown_or_stale_sources() -> void:
-	var unknown: Dictionary = Catalog.load_for("../jensen-das-ugly-stik-60")
+	var unknown: Dictionary = Catalog.load_legacy_for("../jensen-das-ugly-stik-60")
 	_check("unknown/path-like aircraft ID is rejected", not bool(unknown.get("ok", false)) and _has_error(unknown.get("errors", []), "unknown aircraft route"))
-	var no_route: Dictionary = Catalog.load_for("does-not-exist")
+	var no_route: Dictionary = Catalog.load_legacy_for("does-not-exist")
 	_check("unknown route is not substituted", not bool(no_route.get("ok", false)))
-	var invalid_hash: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60", "not-a-hash")
+	var invalid_hash: Dictionary = Catalog.load_legacy_for("jensen-das-ugly-stik-60", "not-a-hash")
 	_check("malformed caller source hash is rejected", not bool(invalid_hash.get("ok", false)) and _has_error(invalid_hash.get("errors", []), "lowercase SHA-256"))
-	var stale_hash: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60", "0".repeat(64))
+	var stale_hash: Dictionary = Catalog.load_legacy_for("jensen-das-ugly-stik-60", "0".repeat(64))
 	_check("mismatched caller source hash is rejected", not bool(stale_hash.get("ok", false)) and _has_error(stale_hash.get("errors", []), "does not match"))
-	var first: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60")
+	var first: Dictionary = Catalog.load_legacy_for("jensen-das-ugly-stik-60")
 	if bool(first.get("ok", false)):
-		var same: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60", str(first["dossier"]["source_sha256"]))
+		var same: Dictionary = Catalog.load_legacy_for("jensen-das-ugly-stik-60", str(first["dossier"]["source_sha256"]))
 		_check("matching exact physical source hash is accepted", bool(same.get("ok", false)), str(same.get("errors", [])))
 		var component: Dictionary = same["dossier"]["components"][0]
 		_check("loader returns integer-typed quantity", typeof(component.get("quantity")) == TYPE_INT)
 		component["quantity"] = 999
-		var reread: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60")
+		var reread: Dictionary = Catalog.load_legacy_for("jensen-das-ugly-stik-60")
 		_check("caller mutation cannot change stored sidecar", int(reread["dossier"]["components"][0]["quantity"]) != 999)
 
 
@@ -159,13 +159,13 @@ func _test_registered_battery_variant() -> void:
 	var entry: Dictionary = AircraftCatalog.entry("turbo-lumber-evolution")
 	var pack_path: String = entry.battery_data
 	var pack_hash := FileAccess.get_sha256(pack_path)
-	var loaded: Dictionary = Catalog.load_for("turbo-lumber-evolution", pack_hash)
+	var loaded: Dictionary = Catalog.load_legacy_for("turbo-lumber-evolution", pack_hash)
 	_check("default finite-pack mode binds the declared aircraft source", loaded.get("ok", false)
 		and loaded.get("binding") == "registered_variant", str(loaded.get("errors")))
 	if not loaded.get("ok", false):
 		return
 	_check("pack report preserves the flown source hash", loaded.dossier.source_sha256 == pack_hash)
-	var ideal: Dictionary = Catalog.load_for("turbo-lumber-evolution", FileAccess.get_sha256(entry.data))
+	var ideal: Dictionary = Catalog.load_legacy_for("turbo-lumber-evolution", FileAccess.get_sha256(entry.data))
 	_check("pack and ideal modes price the same installed parts", ideal.get("ok", false)
 		and loaded.dossier.components == ideal.dossier.components
 		and loaded.dossier.contact_components == ideal.dossier.contact_components)
@@ -181,8 +181,8 @@ func _test_registered_battery_variant() -> void:
 	modified = pack.duplicate(true)
 	modified.crash_hull_ids.append("unsupported_contact")
 	_check("registered-variant signature rejects changed contact mappings", not Catalog._physical_signature_matches(signature, modified))
-	_check("arbitrary source hash cannot use the pack fallback", not Catalog.load_for("turbo-lumber-evolution", "1".repeat(64)).get("ok", false))
-	_check("another aircraft cannot borrow the registered pack hash", not Catalog.load_for("jensen-das-ugly-stik-60", pack_hash).get("ok", false))
+	_check("arbitrary source hash cannot use the pack fallback", not Catalog.load_legacy_for("turbo-lumber-evolution", "1".repeat(64)).get("ok", false))
+	_check("another aircraft cannot borrow the registered pack hash", not Catalog.load_legacy_for("jensen-das-ugly-stik-60", pack_hash).get("ok", false))
 
 
 func _test_document_integrity_checks() -> void:

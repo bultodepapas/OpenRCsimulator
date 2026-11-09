@@ -6,11 +6,12 @@ const MAX_BYTES := 65536
 const KEYS := ["format", "inspection_id", "incident_id", "aircraft_id", "source_sha256", "catalog_hash", "expected_revision", "full_inspection", "total_loss", "basis", "evidence", "components"]
 const ROW_KEYS := ["disposition", "quantity", "repair_minor", "inspection_minor", "salvage_eligible", "replacement_comparable", "damage_flags", "evidence"]
 const FLAGS := ["structural_damage", "thermal_damage", "electrical_damage", "lipo_damage", "unretrieved"]
-const RESOLVABLE := ["Impact or surface contact requires structural inspection.", "Water exposure requires inspection of electronics and powertrain.", "Crash inspection pending; component survival is not yet established.", "Propeller strike: inspect the powertrain, shaft and mount before return to service."]
+const RESOLVABLE := ["Impact or surface contact requires structural inspection.", "Water exposure requires inspection of electronics and powertrain.", "Crash inspection pending; component survival is not yet established.", "Propeller strike: inspect the powertrain, shaft and mount before return to service.", "Contact has no unambiguous economic component binding.", "Compatible local game assessment is unavailable."]
 
 
 static func validate(receipt: Dictionary, dossier: Dictionary, current: Dictionary,
-		identity: Dictionary, catalog_hash: String, revision: int, blocked: Dictionary) -> Dictionary:
+		identity: Dictionary, catalog_hash: String, revision: int, blocked: Dictionary,
+		confirmed_replacements: Dictionary = {}) -> Dictionary:
 	var errors: Array = []
 	if receipt.size() != KEYS.size() or JSON.stringify(receipt).to_utf8_buffer().size() > MAX_BYTES:
 		return _failure("inspection has missing/extra fields or exceeds its size limit")
@@ -50,6 +51,14 @@ static func validate(receipt: Dictionary, dossier: Dictionary, current: Dictiona
 		if not parts.has(id) or typeof(receipt.components[id]) != TYPE_DICTIONARY:
 			return _failure("unknown component or malformed inspection decision")
 		var decision: Dictionary = receipt.components[id].duplicate(true)
+		if confirmed_replacements.has(id) \
+			and decision.get("disposition") not in ["replace", "unrecoverable"]:
+			return _failure("a confirmed replacement cannot be downgraded by a later inspection")
+		var previous: Dictionary = current.get("components", {}).get(id, {})
+		if previous.has("inspection_minor"):
+			if decision.has("inspection_minor") and decision.inspection_minor != previous.inspection_minor:
+				return _failure("a second inspection fee requires a unique fee identity")
+			decision.inspection_minor = previous.inspection_minor
 		for key: Variant in decision:
 			if key not in ROW_KEYS:
 				return _failure("unknown component decision field")

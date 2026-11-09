@@ -5,6 +5,7 @@ const Builder := preload("res://render/field.gd")
 const Ground := preload("res://render/ground.gd")
 const SceneryData := preload("res://scenery/scenery_loader.gd")
 const WornGroundMaterial := preload("res://render/worn_ground_material.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -17,10 +18,16 @@ func _initialize() -> void:
 func _run() -> void:
 	var previous_scenery := OS.get_environment("OPENRC_SCENERY")
 	var previous_file := OS.get_environment("OPENRC_SCENERY_FILE")
+	var previous_detail := OS.get_environment("OPENRC_SCENE_DETAIL")
+	var previous_turf := OS.get_environment("OPENRC_WORN_PATH_TURF")
 	OS.set_environment("OPENRC_SCENERY", "on")
+	OS.set_environment("OPENRC_SCENE_DETAIL", "high")
+	OS.set_environment("OPENRC_WORN_PATH_TURF", "auto")
 	OS.unset_environment("OPENRC_SCENERY_FILE")
 	_test_default_surface_is_consolidated()
 	_test_explicit_scenery_keeps_legacy_shoulder()
+	_test_lower_presets_skip_shoulder_resources()
+	_test_independent_shoulder_override()
 	_test_priority_ignores_json_order()
 	_test_shifted_ned_coordinates()
 	_test_capacity_and_shader_arrays_agree()
@@ -30,6 +37,8 @@ func _run() -> void:
 	_test_overlay_outside_flat_horizon_falls_back()
 	_restore_environment("OPENRC_SCENERY", previous_scenery)
 	_restore_environment("OPENRC_SCENERY_FILE", previous_file)
+	_restore_environment("OPENRC_SCENE_DETAIL", previous_detail)
+	_restore_environment("OPENRC_WORN_PATH_TURF", previous_turf)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -91,6 +100,41 @@ func _test_explicit_scenery_keeps_legacy_shoulder() -> void:
 		and detail.get_shader_parameter("field_turf_enabled") != true)
 	field.free()
 	OS.unset_environment("OPENRC_SCENERY_FILE")
+
+
+func _test_lower_presets_skip_shoulder_resources() -> void:
+	var loaded: Dictionary = Loader.load_from()
+	for level: String in ["low", "medium"]:
+		OS.set_environment("OPENRC_SCENE_DETAIL", level)
+		var field: Node3D = Builder.build(loaded.field)
+		var scenery: Node = field.get_node_or_null("Scenery")
+		var detail: ShaderMaterial = scenery.get_meta(WornGroundMaterial.MATERIAL_META, null) as ShaderMaterial if scenery != null else null
+		_check("%s skips field-turf shading and its texture bindings" % level, detail != null
+			and detail.get_shader_parameter("field_turf_enabled") != true
+			and detail.get_shader_parameter("grass") == null
+			and detail.get_shader_parameter("turf_detail") == null
+			and detail.get_shader_parameter("rc_grass_albedo") == null)
+		field.free()
+	OS.set_environment("OPENRC_SCENE_DETAIL", "high")
+
+
+func _test_independent_shoulder_override() -> void:
+	var loaded: Dictionary = Loader.load_from()
+	for choice: Array in [["high", "off"], ["low", "on"]]:
+		var level: String = choice[0]
+		var value: String = choice[1]
+		OS.set_environment("OPENRC_SCENE_DETAIL", level)
+		OS.set_environment("OPENRC_WORN_PATH_TURF", value)
+		var field: Node3D = Builder.build(loaded.field)
+		var scenery: Node = field.get_node("Scenery")
+		var detail: ShaderMaterial = scenery.get_meta(WornGroundMaterial.MATERIAL_META) as ShaderMaterial
+		_check("independent turf %s keeps %s while selecting the shoulder" % [value, level],
+			SceneDetail.level() == level
+			and (detail.get_shader_parameter("field_turf_enabled") == true) == (value == "on")
+			and (detail.get_shader_parameter("grass") != null) == (value == "on"))
+		field.free()
+	OS.set_environment("OPENRC_WORN_PATH_TURF", "auto")
+	OS.set_environment("OPENRC_SCENE_DETAIL", "high")
 
 
 func _restore_environment(key: String, value: String) -> void:

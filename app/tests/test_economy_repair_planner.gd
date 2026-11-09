@@ -21,6 +21,7 @@ func _initialize() -> void:
 	_test_damage_class_boundaries()
 	_test_recipe_applicability()
 	_test_package_rounding()
+	_test_combined_materials_and_labor()
 	_test_alternative_options_are_not_accumulated()
 	_test_unknown_comparator_and_replacement()
 	_test_invalid_data_and_overlap()
@@ -56,7 +57,7 @@ func _test_covering_costs_and_modes() -> void:
 	var cash_choice: Dictionary = Planner.select_option(diy, "covered_airframe_and_installation_hardware", "covering-film-patch")
 	var use_choice: Dictionary = Planner.select_option(diy, "covered_airframe_and_installation_hardware", "covering-film-patch", "consumption")
 	_check("cash option returns calculator repair decision with component count and matched comparator", cash_choice.ok and cash_choice.decision.disposition == "repair" and cash_choice.decision.quantity == 1 and cash_choice.decision.repair_minor == 2299 and cash_choice.decision.replacement_comparable == true, str(cash_choice))
-	_check("selected repair provenance carries the applicable aircraft/component scope", cash_choice.provenance.aircraft_id == "jensen-das-ugly-stik-60" and cash_choice.provenance.applicable_component_ids_for_aircraft == ["covered_airframe_and_installation_hardware"])
+	_check("selected repair provenance carries the applicable aircraft/component scope", cash_choice.provenance.aircraft_id == "jensen-das-ugly-stik-60" and cash_choice.provenance.applicable_component_ids_for_aircraft == ["covered_airframe_and_installation_hardware", "airframe_wing", "airframe_fuselage", "airframe_tail"])
 	_check("consumption option is explicit and still uses component count", use_choice.ok and use_choice.decision.quantity == 1 and use_choice.decision.repair_minor == 14 and use_choice.costing_basis == "consumption", str(use_choice))
 	var paid: Dictionary = Planner.plan(dossier, inspected, _recipes, "paid")
 	var paid_option: Dictionary = paid.components.covered_airframe_and_installation_hardware.options[0]
@@ -92,7 +93,7 @@ func _test_recipe_applicability() -> void:
 	var baseline_plan: Dictionary = Planner.plan(baseline, _inspection("covering_only", {"covering_area_milli_sq_in": 10500}, 1, true, 30), _recipes, "diy")
 	_check("Stik covering recipe is scoped to the authored combined airframe group", baseline_plan.ok and baseline_plan.components.covered_airframe_and_installation_hardware.options.size() == 1)
 	var baseline_scope: Dictionary = baseline_plan.components.covered_airframe_and_installation_hardware.options[0].compatible_components
-	_check("covering recipe records explicit aircraft/component applicability", baseline_scope.get("jensen-das-ugly-stik-60", []) == ["covered_airframe_and_installation_hardware"])
+	_check("covering recipe records explicit aircraft/component applicability", baseline_scope.get("jensen-das-ugly-stik-60", []) == ["covered_airframe_and_installation_hardware", "airframe_wing", "airframe_fuselage", "airframe_tail"])
 
 	var engine_inspection: Dictionary = _inspection("covering_only", {"covering_area_milli_sq_in": 10500}, 1, true, 30, "engine_and_muffler")
 	var engine_plan: Dictionary = Planner.plan(baseline, engine_inspection, _recipes, "diy")
@@ -149,6 +150,76 @@ func _test_package_rounding() -> void:
 	var line: Dictionary = option.materials[0]
 	_check("slightly more than one package rounds purchase to two packages", line.package_count == 2 and line.purchase_minor == 4598, str(line))
 	_check("consumption allocation does not round up to the second package", line.consumption_minor == 2300, str(line))
+
+
+func _test_combined_materials_and_labor() -> void:
+	var repairs := [_shared_selection("left", 4, "paid", "cash"), _shared_selection("right", 3, "paid", "cash")]
+	var shared := [{"id": "work", "component_ids": ["left", "right"], "labor_minutes": 30,
+		"scope": "shared_complete_work", "basis": "scenario_assumption", "evidence": "Fixture: one complete shared task covers both repairs."}]
+	var total := Planner.aggregate_selections(repairs, shared, 500)
+	_check("two repairs share one 10-unit pack and one paid 30-minute group", total.ok and total.complete and total.material_purchase_minor == 1000 and total.material_consumption_minor == 700 and total.labor_minor == 3000 and total.cash_total_minor == 4500 and total.consumption_total_minor == 4200 and total.total_minor == 4500, str(total))
+	var unshared := Planner.aggregate_selections(repairs, [], 500)
+	_check("labor is charged separately without explicit shared-work evidence", unshared.ok and unshared.labor_minor == 6000 and unshared.cash_total_minor == 7500, str(unshared))
+	var setup := shared.duplicate(true)
+	setup[0].scope = "additional_setup"
+	setup[0].evidence = "Fixture: shared setup is additional to both component tasks."
+	var setup_total := Planner.aggregate_selections(repairs, setup, 500)
+	_check("additional shared setup retains both positive component tasks", setup_total.ok and setup_total.labor_minor == 9000 and setup_total.cash_total_minor == 10500, str(setup_total))
+	var erased := shared.duplicate(true)
+	erased[0].labor_minutes = 0
+	_check("zero combined work cannot erase positive component labor", not Planner.aggregate_selections(repairs, erased, 500).ok)
+	var unsupported := shared.duplicate(true)
+	unsupported[0].erase("evidence")
+	_check("shared complete work requires explicit evidence", not Planner.aggregate_selections(repairs, unsupported, 500).ok)
+	var diy := [_shared_selection("left", 4, "diy", "consumption"), _shared_selection("right", 3, "diy", "consumption")]
+	var diy_total := Planner.aggregate_selections(diy, shared, 500)
+	_check("explicit zero-rate DIY preserves separate cash and consumption bases", diy_total.ok and diy_total.cash_total_minor == 1500 and diy_total.consumption_total_minor == 1200 and diy_total.total_minor == 1200, str(diy_total))
+	var unknown_fee := Planner.aggregate_selections(repairs, shared, null)
+	_check("unknown incurred fees prevent a finite combined total", unknown_fee.ok and not unknown_fee.complete and unknown_fee.total_minor == null and not unknown_fee.unresolved.is_empty())
+	var repeated := shared.duplicate(true)
+	repeated[0].component_ids = ["left", "left"]
+	_check("a component cannot be counted twice in shared labor", not Planner.aggregate_selections(repairs, repeated, 500).ok)
+	var inconsistent := repairs.duplicate(true)
+	inconsistent[1].provenance.materials[0].source.name = "different supplier"
+	inconsistent[1].provenance.sources[0].name = "different supplier"
+	_check("different source packages are not silently pooled", not Planner.aggregate_selections(inconsistent, shared, 500).ok)
+	var rounded := _shared_selection("left", 1, "diy", "consumption")
+	rounded.provenance.materials[0].package_units = 3
+	rounded.provenance.materials[0].package_price_minor = 1
+	rounded.provenance.materials[0].purchase_minor = 1
+	rounded.provenance.materials[0].consumption_minor = 1
+	rounded.provenance.repair_minor = 1
+	rounded.decision.repair_minor = 1
+	var rounded_result := Planner.aggregate_selections([rounded])
+	_check("v1's disclosed ceiling policy preserves one-third cent as one cent", rounded_result.ok and rounded_result.total_minor == 1 and rounded_result.rounding_policy == "v1_ceiling_per_material_and_labor_group", str(rounded_result))
+	var four := repairs.duplicate(true)
+	four.append(_shared_selection("third", 1, "paid", "cash"))
+	four.append(_shared_selection("fourth", 1, "paid", "cash"))
+	var other_group := {"id": "other-work", "component_ids": ["third", "fourth"], "labor_minutes": 30,
+		"scope": "shared_complete_work", "basis": "scenario_assumption", "evidence": "A separate complete shared task."}
+	var forward := Planner.aggregate_selections(four, [shared[0], other_group], 500)
+	four.reverse()
+	var reverse := Planner.aggregate_selections(four, [other_group, shared[0]], 500)
+	_check("grouped repair output is deterministic under reordered inputs", forward == reverse, str(reverse))
+
+
+func _shared_selection(component_id: String, units: int, labor_mode: String, basis: String) -> Dictionary:
+	var rate: int = 6000 if labor_mode == "paid" else 0
+	var labor: int = 3000 if labor_mode == "paid" else 0
+	var used: int = units * 100
+	var material_source := {"name": "fixture pack"}
+	var labor_source := {"name": "fixture labor"}
+	var selected_material: int = 1000 if basis == "cash" else used
+	var repair: int = selected_material + labor
+	return {"ok": true, "costing_basis": basis, "labor_mode": labor_mode,
+		"decision": {"disposition": "repair", "repair_minor": repair},
+		"provenance": {"component_id": component_id, "costing_basis": basis, "labor_mode": labor_mode,
+			"repair_minor": repair, "labor_minutes": 30, "labor_rate_minor_per_hour": rate, "labor_minor": labor,
+			"sources": [material_source.duplicate(true), labor_source],
+			"materials": [{"material_id": "film", "requirement_key": "area", "unit": "unit",
+				"required_units": units, "package_units": 10, "package_price_minor": 1000,
+				"package_count": 1, "purchase_minor": 1000, "consumption_minor": used,
+				"source": material_source.duplicate(true)}]}}
 
 
 func _test_alternative_options_are_not_accumulated() -> void:

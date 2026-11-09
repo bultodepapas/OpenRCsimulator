@@ -14,6 +14,7 @@ const ENVIRONMENT_KEYS: Array[String] = [
 	"OPENRC_SCENERY",
 	"OPENRC_SCENERY_QUALITY",
 	"OPENRC_SCENERY_FILE",
+	"OPENRC_WORN_PATH_TURF",
 ]
 
 var failures := 0
@@ -86,7 +87,9 @@ func _test_quality_filter(field: Dictionary) -> void:
 		return
 
 	_set_options("on", "on", "high")
+	OS.set_environment("OPENRC_WORN_PATH_TURF", "off")
 	var high_a: Dictionary = CollisionSetup.build(field)
+	OS.set_environment("OPENRC_WORN_PATH_TURF", "on")
 	var high_b: Dictionary = CollisionSetup.build(field)
 	_check("high-quality collision setup builds", high_a.ok and high_b.ok)
 	if not high_a.ok or not high_b.ok:
@@ -94,6 +97,7 @@ func _test_quality_filter(field: Dictionary) -> void:
 	_check("high proxy IDs match high visible placements", _proxy_ids(high_a.world) == _proxy_ids(expected_high.world))
 	_check("repeated high build keeps identity stable", high_a.world.identity == high_b.world.identity)
 	_check("repeated high build keeps proxy IDs stable", _proxy_ids(high_a.world) == _proxy_ids(high_b.world))
+	_check("worn-path turf override leaves the full collision world unchanged", high_a.world == high_b.world)
 
 	_set_options("on", "on", "low")
 	var low: Dictionary = CollisionSetup.build(field)

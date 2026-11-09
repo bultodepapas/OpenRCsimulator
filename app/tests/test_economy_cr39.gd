@@ -69,8 +69,8 @@ func _test_contact_mapping() -> void:
 	ledger._assessment.components["gear_main"] = {"disposition": "replace", "quantity": 1}
 	ledger._mark_contact_inspection(["gear_main"])
 	check("contact never downgrades a confirmed replacement", ledger._assessment.components.gear_main.disposition == "replace")
-	ledger._assessment.components["tail_surfaces"] = {"disposition": "reuse"}
-	check("contact keeps an existing receipt decision; the structural note stays owned by observe()", not ledger._mark_contact_inspection(["tail_surfaces"]) and ledger._assessment.components.tail_surfaces.disposition == "reuse")
+	ledger._assessment.components["tail_surfaces"] = {"disposition": "reuse", "inspection_minor": 250}
+	check("new contact reopens reuse and preserves its incurred inspection fee", ledger._mark_contact_inspection(["tail_surfaces"]) and ledger._assessment.components.tail_surfaces.disposition == "inspect" and ledger._assessment.components.tail_surfaces.inspection_minor == 250)
 	ledger._queue_assessment(1)
 	ledger.evaluate_pending()
 	var named := false
@@ -113,7 +113,7 @@ func _test_compact_archive() -> void:
 	reader.archive_path = ARCHIVE
 	var loaded: Dictionary = reader.load_archive()
 	check("compact archive round-trips through validation", not loaded.is_empty() and loaded.get("high_minor") == ledger.report.get("high_minor"))
-	check("terminal Stik crash without a prop strike archives its 0..ceiling range", ledger.report.get("low_minor") == 0 and ledger.report.get("high_minor") == 133134 and ledger.report.get("total_minor") == null, str(ledger.report))
+	check("terminal crash archives an unknown upper bound without a feasible replacement claim", ledger.report.get("low_minor") == 0 and ledger.report.get("high_minor") == null and ledger.report.get("total_minor") == null and ledger.report.get("replacement_quote_high_minor") != null, str(ledger.report))
 
 
 func _test_terminal_headline() -> void:
@@ -168,8 +168,8 @@ func _test_physical_signature() -> void:
 
 
 func _test_fleet_contact_bindings() -> void:
-	for spec: Array in [["jensen-das-ugly-stik-60", "probe_wing_left_tip", "covered_airframe_and_installation_hardware"],
-			["stik-glow-fs64v-4t", "contact_nose", "covered_airframe_and_installation_hardware"],
+	for spec: Array in [["jensen-das-ugly-stik-60", "probe_wing_left_tip", "airframe_wing"],
+			["stik-glow-fs64v-4t", "contact_nose", "gear_nose"],
 			["gp-extra-300s-60", "probe_wing_right_te", "wing_main"],
 			["p51d-mustang-120", "probe_scoop_bottom", "belly_scoop"],
 			["sebart-avanti-s-a200-p100rx", "contact_nose", "gear_nose"],
@@ -177,7 +177,8 @@ func _test_fleet_contact_bindings() -> void:
 		var ledger := Incident.new()
 		ledger.begin(spec[0], "")
 		check("%s loads its current dossier" % spec[0], not ledger.dossier.is_empty(), str(ledger._catalog_errors))
-		check("%s maps %s to %s" % spec, ledger._contact_components({source = "hull", contact_id = spec[1]}).has(spec[2]))
+		var source := "gear" if String(spec[1]).begins_with("contact_") else "hull"
+		check("%s maps %s to %s" % spec, ledger._contact_components({source = source, contact_id = spec[1]}).has(spec[2]))
 	var lumber := Incident.new()
 	lumber.begin("turbo-lumber-evolution", "")
 	lumber._mark_propeller()

@@ -186,7 +186,10 @@ from the next flight: Low and Medium draw all field trees as cards with fewer pr
 parked-model engines, High
 draws the trees in front of the pilot in 3D, and Extreme every nearby field tree. Automatic
 (default) picks Low, Medium or High from your GPU at each launch; its tooltip names the GPU. Tree
-collision is the same at every level. [Presets and measured cost](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).
+collision is the same at every level; ornament collision follows the visible prop tier.
+High and Extreme also add field-textured walking-path edges. This ground effect can be
+disabled independently with the [launch override](../tools/ground/README.md#l9b-r3-field-textured-path-shoulders).
+[Presets and measured cost](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).
 **Birds** (Off, Few, Normal, Many) sets how many birds fly over the field: vultures and storks circling in
 thermals, kites, swallows and evening swifts, chosen by time of day and weather. Normal follows Scene detail, Few
 halves it, Many keeps full flocks at every level and Off sends them all away. The change applies at once, also from

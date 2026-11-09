@@ -138,6 +138,8 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 **CR-28…39.** Accepted incidents supply observations; component resolution, repair/salvage estimates and dated commercial prices remain distinct. Unknown structural damage is not silently priced as zero or promoted to measured failure. Coverage groups avoid double-counting variants, and provisional bounds remain labeled. Godot wreck presentation does not feed unqualified state back into flight. [Crash contract](CRASH-DAMAGE-PLAN.md), [economics decisions and limits](plans/crash-damage-economics.md).
 
+**CR-40 (2026-11-09).** Admit deterministic local game assessment through a separately generated v2 financial companion, with exact reviewed installation hashes and a frozen legacy-price-catalog digest. Keep v1 schemas and historical readers closed. Disjoint financial children replace inclusive legacy allocations without changing mass; missing vendor fit may use a labeled authored USD game allowance. The default quote covers observed local parts and excludes DIY/commissioning labor. Whole-build comparisons cannot certify an unresolved incident ceiling. Timed hazards, physical serviceability and the separate X-Cell installation retain their gates. [Contract, evidence and remaining work](research/crash-damage-investigations/CR-40/README.md).
+
 ## Presentation
 
 ### Compatibility baseline and a Windows NVIDIA package

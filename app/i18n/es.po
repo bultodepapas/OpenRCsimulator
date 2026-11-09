@@ -11,6 +11,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Preview game parts estimate. DIY labor, tax and shipping are excluded."
+msgstr "Estimación preliminar de piezas del juego. Excluye mano de obra propia, impuestos y envío."
+
+msgid "Wing, flaps and ailerons (servos excluded)"
+msgstr "Ala, flaps y alerones (sin servos)"
+
+msgid "Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded."
+msgstr "Solo piezas locales observadas. Puede haber otros daños sin evaluar. Excluye mano de obra propia, impuestos y envío."
+
+msgid "LOCAL GAME REPAIR ESTIMATE"
+msgstr "ESTIMACIÓN LOCAL DEL JUEGO"
+
+msgid "Observed local parts estimate"
+msgstr "Estimación de piezas locales observadas"
+
+msgid "Preview game parts estimate"
+msgstr "Estimación preliminar de piezas del juego"
+
+msgid "Package availability or eligibility is unresolved; no cheapest purchase is confirmed."
+msgstr "La disponibilidad o validez del paquete no está resuelta; no se confirma la compra más económica."
+
+msgid "Included surplus units: %d. No sale credit is assumed."
+msgstr "Unidades sobrantes incluidas: %d. No se descuenta una posible venta."
+
+msgid "Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed."
+msgstr "Solo reparaciones locales observadas. Incluye la mano de obra seleccionada; excluye impuestos y envío. Puede haber otros daños sin evaluar."
+
+msgid "COST EVIDENCE INCOMPLETE"
+msgstr "EVIDENCIA DE COSTES INCOMPLETA"
+
+msgid "Accident cost evidence is incomplete; some contact observations were rejected."
+msgstr "La evidencia de costes del accidente está incompleta; se rechazaron algunas observaciones de contacto."
+
+msgid "Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing."
+msgstr "Se rechazó parte de la evidencia de contacto. Se muestra la última estimación aceptada; puede que falten daños adicionales."
+
+msgid "Preview game repair estimate; component outcomes are deterministic authored game rules, not measured failure predictions."
+msgstr "Estimación preliminar del juego; los resultados siguen reglas deterministas diseñadas para el juego, sin predecir fallos reales medidos."
+
+msgid "Offline USD cash parts estimate; DIY labor is unbilled. Tax, freight, recovery and external equipment are excluded."
+msgstr "Estimación de piezas en USD sin conexión. La mano de obra propia no se cobra. Excluye impuestos, transporte, recuperación y equipo externo."
+
+msgid "Unquoted parts use explicit authored game allowances dated 2026-11-09. They are not vendor offers or physical-fit claims."
+msgstr "Las piezas sin cotización usan importes estimados para el juego con fecha 2026-11-09. No son ofertas comerciales ni garantizan compatibilidad física."
+
+msgid "Water exposure requires assessment; delayed thermal/fire propagation, stopped-blade phase and scenery prop strikes are not modeled."
+msgstr "La exposición al agua requiere evaluación. No se modelan la propagación térmica o de incendios tardía, la posición de palas detenidas ni los golpes de hélice contra elementos del paisaje."
+
+msgid "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope."
+msgstr "Solo se evalúan regiones locales observadas. Los daños secundarios o internos no observados quedan fuera de esta versión preliminar."
+
+msgid "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation."
+msgstr "Los grupos físicos identifican la cobertura sin añadir masa. Las piezas económicas sustituyen la valoración agrupada anterior."
+
+msgid "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work."
+msgstr "Los umbrales locales son supuestos preliminares del juego. La compresión o profundidad final aceptada no mide la energía del impacto entrante."
+
+msgid "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+msgstr "La valoración de piezas con trabajo propio excluye el montaje y la puesta en servicio. No se cobran las referencias anteriores de montaje remunerado."
+
 msgid "development build"
 msgstr "versión de desarrollo"
 
@@ -8806,3 +8866,6 @@ msgstr "Probando el diseño guardado: %s · revisión %d"
 
 msgid "Based on saved build: %s · revision %d"
 msgstr "Basado en el diseño guardado: %s · revisión %d"
+
+msgid "High and Extreme add detailed grass at walking-path edges."
+msgstr "Alto y Extremo añaden hierba detallada en los bordes de los senderos peatonales."

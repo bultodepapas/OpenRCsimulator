@@ -10,6 +10,7 @@ const LAYER := 9 # above the flight HUD; the pause menu and report screens stay 
 const TOAST_SECONDS := 5.0
 const MAX_MINOR_AMOUNT := 9000000000000000000
 const COMPONENT_LABELS := {
+	"preview_game_parts_estimate": "Preview game parts estimate",
 	"central_aileron_servo": "Central aileron servo",
 	"covered_airframe_and_installation_hardware": "Airframe and installation hardware",
 	"engine_and_muffler": "Engine and muffler",
@@ -70,6 +71,13 @@ var _suspended := false
 var _content_visible := false
 var _toast_remaining := 0.0
 var _layout_retry_frames := 0
+var _evidence_warning := false
+
+
+func mark_evidence_unavailable() -> void:
+	_evidence_warning = true
+	if not _report.is_empty() and _surface != null:
+		_render_report()
 
 
 func _init() -> void:
@@ -181,6 +189,7 @@ func dismiss_settled() -> void:
 
 ## Removes the current report after an intentional caller action, such as restarting the incident.
 func clear_report() -> void:
+	_evidence_warning = false
 	_report.clear()
 	_content_visible = false
 	_terminal = false
@@ -499,6 +508,14 @@ func _render_report() -> void:
 	_amount_label.text = state.amount
 	_amount_label.add_theme_font_size_override("font_size", int(layout_metrics(_surface.size, UiTheme.text_scale).headline_size))
 	_caption_label.text = state.caption
+	if _report.get("valuation_kind") == "preview_game_parts_estimate":
+		_caption_label.text = tr("Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded.")
+		if not _report.get("repair_choices", []).is_empty():
+			_caption_label.text = tr("Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed.")
+		_status_label.text = tr("LOCAL GAME REPAIR ESTIMATE") if _report.get("complete", false) else state.status
+	if _evidence_warning and not _archived:
+		_status_label.text = tr("COST EVIDENCE INCOMPLETE")
+		_caption_label.text = tr("Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing.")
 	_details_button.text = tr("Hide damage breakdown") if _expanded else tr("Show damage breakdown")
 	if timber:
 		_details_button.text = tr("Hide parts and prices") if _expanded else tr("Show parts and prices")
@@ -637,7 +654,7 @@ func _rebuild_details() -> void:
 	_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
 	var complete: bool = typeof(_report.get("complete", false)) == TYPE_BOOL and bool(_report.get("complete", false))
 	if complete:
-		_add_detail_money(tr("Complete estimated total"), _report.get("total_minor"), currency)
+		_add_detail_money(tr("Observed local parts estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
 	_add_detail_money(tr("Salvage value reported"), _report.get("salvage_minor"), currency)
 	_add_detail_money(tr("Replacement reference reported"), _report.get("replacement_minor"), currency)
 	var replacement_quote_low: Variant = _valid_minor(_report.get("replacement_quote_low_minor"))
@@ -741,7 +758,7 @@ func _rebuild_timber_details() -> void:
 	else:
 		_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
 	if _report.get("complete") == true:
-		_add_detail_money(tr("Complete estimated total"), _report.get("total_minor"), currency)
+		_add_detail_money(tr("Observed local parts estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
 	else:
 		_add_detail_text(tr("Pending inspections and unpriced items are excluded from the subtotal."), true)
 	if str(_report.get("outcome", "")) == "total_loss":
@@ -964,7 +981,7 @@ func _add_replacement_comparison(currency: String) -> void:
 	if not value is Dictionary:
 		return
 	var status: Variant = value.get("status")
-	if status not in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
+	if status not in ["optimal", "unknown_cost", "unknown_eligibility", "search_limit", "infeasible", "cost_out_of_range"]:
 		return
 	_add_detail_section(tr("Replacement parts comparison"))
 	_add_detail_text(tr("Parts only. Inspection, repairs and labor are separate; this comparison is not added to the accident total."), true)
@@ -976,6 +993,8 @@ func _add_replacement_comparison(currency: String) -> void:
 		var explanation := tr("Some package prices are unknown; the cheapest option is unresolved.")
 		if status == "search_limit":
 			explanation = tr("Comparison is incomplete; a cheaper combination may exist.")
+		elif status == "unknown_eligibility":
+			explanation = tr("Package availability or eligibility is unresolved; no cheapest purchase is confirmed.")
 		elif status == "infeasible":
 			explanation = tr("No compatible combination covers all requested parts.")
 		elif status == "cost_out_of_range":
@@ -986,6 +1005,12 @@ func _add_replacement_comparison(currency: String) -> void:
 	if value.get("assessment_complete") != true:
 		_add_detail_text(tr("Other damage or inspection costs remain unresolved."), true)
 	_add_detail_text(tr("Catalog estimates; availability and physical fit require confirmation."), true)
+	var surplus := 0
+	for coverage: Variant in value.get("selected_coverage", []):
+		if coverage is Dictionary and coverage.get("surplus_ids") is Array:
+			surplus += coverage.surplus_ids.size()
+	if surplus > 0:
+		_add_detail_text(tr("Included surplus units: %d. No sale credit is assumed.") % surplus, true)
 
 
 func _add_detail_section(text: String) -> void:
@@ -1382,6 +1407,8 @@ func _humanize_identifier(value: String) -> String:
 	var display := str(COMPONENT_LABELS.get(identifier, identifier.replace("_", " ").replace("-", " ")))
 	if _is_timber_report():
 		display = str(TIMBER_COMPONENT_LABELS.get(identifier, display))
+		if _report.get("valuation_kind") == "preview_game_parts_estimate" and identifier == "wing_main":
+			display = "Wing, flaps and ailerons (servos excluded)"
 	if not display.is_empty():
 		display = display.left(1).to_upper() + display.substr(1)
 	return tr(display)

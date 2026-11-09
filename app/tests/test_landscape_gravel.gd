@@ -79,8 +79,11 @@ func _initialize() -> void:
 			detail.get_shader_parameter("anti_tiling") == null and detail.get_shader_parameter("pilot_pin_m") == null)
 	print("shoulder defaults: anti_tiling=", detail.get_shader_parameter("anti_tiling"),
 		" pilot_pin_m=", detail.get_shader_parameter("pilot_pin_m"))
-	_check("missing ground disables a previously bound shoulder", not WornGroundMaterial.bind(node, null)
-		and detail.get_shader_parameter("field_turf_enabled") == false)
+	_check("missing ground disables the shoulder and releases copied textures", not WornGroundMaterial.bind(node, null)
+		and detail.get_shader_parameter("field_turf_enabled") == false
+		and detail.get_shader_parameter("grass") == null
+		and detail.get_shader_parameter("turf_detail") == null
+		and detail.get_shader_parameter("rc_grass_albedo") == null)
 	print("gravel flat batches: %d; cells: %d" % [batches, node.get_meta("stats").cells])
 	node.free()
 	print("landscape gravel: %d checks, %d failures" % [checks, failures])

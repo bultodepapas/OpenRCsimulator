@@ -14,6 +14,8 @@ func _initialize() -> void:
 	_test_ties_order_and_input_purity()
 	_test_malformed_and_unsafe_inputs()
 	_test_sum_above_economics_limit()
+	_test_overlap_surplus_and_uncertain_eligibility()
+	_test_all_tiny_candidate_universes()
 	print("CR-31d package optimizer: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -213,6 +215,69 @@ func _test_sum_above_economics_limit() -> void:
 	_check("a feasible total above the shared economics limit is never reported", too_large.status == "cost_out_of_range" and too_large.total_cost_cents == null and not too_large.optimality_proven, str(too_large))
 
 
+func _test_overlap_surplus_and_uncertain_eligibility() -> void:
+	var ab := _candidate("ab", ["a", "b"], 400)
+	var bc := _candidate("bc", ["b", "c"], 300)
+	bc["surplus_ids"] = ["spare-servo"]
+	var candidates := [ab, bc, _candidate("individual-a", ["a"], 900), _candidate("individual-c", ["c"], 900)]
+	var actual := PackageOptimizer.optimize(["a", "b", "c"], candidates)
+	var oracle := _exhaustive_oracle(["a", "b", "c"], candidates)
+	_check("overlapping necessary packages match independent subset enumeration", actual.status == oracle.status and actual.selected_candidate_ids == oracle.selected_candidate_ids and actual.total_cost_cents == 700, str(actual))
+	_check("required units are allocated once and duplicate sold contents and spare are retained", actual.selected_coverage == [
+		{"candidate_id": "ab", "allocated_ids": ["a", "b"], "overlap_ids": [], "surplus_ids": []},
+		{"candidate_id": "bc", "allocated_ids": ["c"], "overlap_ids": ["b"], "surplus_ids": ["spare-servo"]},
+	], str(actual.selected_coverage))
+	var reversed := candidates.duplicate(true)
+	reversed.reverse()
+	var reordered := PackageOptimizer.optimize(["c", "a", "b"], reversed)
+	_check("overlap allocation is deterministic under reordered inputs", reordered.selected_coverage == actual.selected_coverage and reordered.selected_candidate_ids == actual.selected_candidate_ids)
+	var pair := _candidate("pair", ["left"], 1500)
+	pair["surplus_ids"] = ["right-spare"]
+	var pair_result := PackageOptimizer.optimize(["left"], [pair, _candidate("single", ["left"], 2100)])
+	_check("one damaged unit can buy a cheaper pair with an unvalued spare", pair_result.total_cost_cents == 1500 and pair_result.selected_coverage[0].surplus_ids == ["right-spare"], str(pair_result))
+	var unknown_price := _candidate("unknown", ["a", "b", "c"], null)
+	var price_result := PackageOptimizer.optimize(["a", "b", "c"], candidates + [unknown_price])
+	_check("unknown price prevents optimality but preserves the known feasible overlap", price_result.status == "unknown_cost" and price_result.total_cost_cents == 700 and not price_result.optimality_proven, str(price_result))
+	var unknown_stock := _candidate("unknown-stock", ["a", "b", "c"], 100)
+	unknown_stock.available = null
+	var stock_result := PackageOptimizer.optimize(["a", "b", "c"], candidates + [unknown_stock])
+	_check("unknown availability blocks optimality without becoming a confirmed purchase", stock_result.status == "unknown_eligibility" and stock_result.total_cost_cents == 700 and not stock_result.optimality_proven, str(stock_result))
+	var price_only := _candidate("a-unpriced", ["a"], null)
+	var available_b := _candidate("b-known", ["b"], 2)
+	var uncertain_b := _candidate("c-uncertain", ["b"], 1)
+	uncertain_b.available = null
+	var both_unknown := PackageOptimizer.optimize(["a", "b"], [price_only, available_b, uncertain_b])
+	_check("all completed uncertainty branches are reported", both_unknown.status == "unknown_cost" and both_unknown.search_complete and both_unknown.unknown_cost_alternative_found and both_unknown.unknown_eligibility_alternative_found, str(both_unknown))
+	var long_surplus := pair.duplicate(true)
+	long_surplus.surplus_ids = ["x".repeat(PackageOptimizer.MAX_ID_LENGTH + 1)]
+	_check_invalid("oversized surplus ID", ["left"], [long_surplus])
+	_check_invalid("oversized provenance", ["a"], [_candidate("a", ["a"], 1, true, true, "x".repeat(PackageOptimizer.MAX_PROVENANCE_LENGTH + 1))])
+	var misclassified := pair.duplicate(true)
+	misclassified.surplus_ids = ["left"]
+	_check_invalid("required unit mislabeled as surplus", ["left"], [misclassified])
+
+
+func _test_all_tiny_candidate_universes() -> void:
+	var pool := [
+		_candidate("a", ["a"], 0), _candidate("b", ["b"], 3),
+		_candidate("c", ["c"], 2), _candidate("ab", ["a", "b"], 3),
+		_candidate("ac", ["a", "c"], 2), _candidate("bc", ["b", "c"], 4),
+		_candidate("abc", ["a", "b", "c"], 5),
+	]
+	var mismatch := ""
+	for universe_mask in range(1 << pool.size()):
+		var candidates: Array = []
+		for index in range(pool.size()):
+			if universe_mask & (1 << index):
+				candidates.append(pool[index])
+		var expected := _exhaustive_oracle(["a", "b", "c"], candidates)
+		var actual := PackageOptimizer.optimize(["a", "b", "c"], candidates)
+		if actual.status != expected.status or actual.total_cost_cents != expected.total_cost_cents or actual.selected_candidate_ids != expected.selected_candidate_ids:
+			mismatch = "mask=%d expected=%s actual=%s" % [universe_mask, expected, actual]
+			break
+	_check("all 128 three-unit candidate universes match independent exhaustive enumeration", mismatch.is_empty(), mismatch)
+
+
 func _without_provenance(candidate: Dictionary) -> Dictionary:
 	var copy := candidate.duplicate(true)
 	copy.erase("provenance")
@@ -235,7 +300,7 @@ func _exhaustive_oracle(required: Array, candidates: Array) -> Dictionary:
 		var selected_ids: Array = []
 		var total_cost := 0
 		var unknown_cost := false
-		var overlaps := false
+		var coverage_counts: Dictionary = {}
 		var eligible := true
 		for candidate_index in range(candidates.size()):
 			if (subset & (1 << candidate_index)) == 0:
@@ -246,17 +311,25 @@ func _exhaustive_oracle(required: Array, candidates: Array) -> Dictionary:
 				break
 			selected_ids.append(candidate.id)
 			for unit_id in candidate.coverage_ids:
-				if covered.has(unit_id):
-					overlaps = true
-					break
 				covered[unit_id] = true
-			if overlaps:
-				break
+				coverage_counts[unit_id] = int(coverage_counts.get(unit_id, 0)) + 1
 			if candidate.cost_cents == null:
 				unknown_cost = true
 			else:
 				total_cost += int(candidate.cost_cents)
-		if not eligible or overlaps or covered.size() != required.size():
+		if not eligible or covered.size() != required.size():
+			continue
+		var redundant := false
+		for candidate_index in range(candidates.size()):
+			if (subset & (1 << candidate_index)) == 0:
+				continue
+			var needed := false
+			for unit_id in candidates[candidate_index].coverage_ids:
+				if int(coverage_counts[unit_id]) == 1:
+					needed = true
+			if not needed:
+				redundant = true
+		if redundant:
 			continue
 		var exact := true
 		for unit_id in required:

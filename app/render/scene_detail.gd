@@ -1,5 +1,5 @@
 ## VQ-06b: the Scene detail preset. One saved choice maps onto existing knobs: the scenery prop tier
-## (SC-24), which field trees render in 3D (L8a-R1) and the viewport's mesh LOD threshold.
+## (SC-24), which field trees render in 3D (L8a-R1), worn-path turf and the viewport's mesh LOD threshold.
 ## Prop selection also determines ornament collision at the next world build (LU-05).
 ## Existing sessions keep their installed collision world; field-tree collision is unchanged.
 ## Precedence: --scene_detail=<level> after --, then OPENRC_SCENE_DETAIL, then the player's saved
@@ -25,11 +25,12 @@ const MOBILE_MARKERS: Array[String] = ["adreno", "mali", "powervr", "tegra"]
 # scenery_quality: Scenery tier filter. field_tree_half_angle_deg: 3D field trees within this angle
 # of the runway as seen from the pilot (0 = cards only; 180 = the whole near ring).
 # mesh_lod_threshold_px: Godot's per-viewport LOD error; 1 px is its perceptually lossless default.
+# worn_path_turf: L9b-R3 field-texture blending; lower presets skip its binding and shader samples.
 const PROFILES := {
-	"low": {"scenery_quality": "low", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 4.0},
-	"medium": {"scenery_quality": "balanced", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 2.0},
-	"high": {"scenery_quality": "high", "field_tree_half_angle_deg": 60.0, "mesh_lod_threshold_px": 1.0},
-	"extreme": {"scenery_quality": "high", "field_tree_half_angle_deg": 180.0, "mesh_lod_threshold_px": 1.0},
+	"low": {"scenery_quality": "low", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 4.0, "worn_path_turf": false},
+	"medium": {"scenery_quality": "balanced", "field_tree_half_angle_deg": 0.0, "mesh_lod_threshold_px": 2.0, "worn_path_turf": false},
+	"high": {"scenery_quality": "high", "field_tree_half_angle_deg": 60.0, "mesh_lod_threshold_px": 1.0, "worn_path_turf": true},
+	"extreme": {"scenery_quality": "high", "field_tree_half_angle_deg": 180.0, "mesh_lod_threshold_px": 1.0, "worn_path_turf": true},
 }
 
 static var _preference := ""

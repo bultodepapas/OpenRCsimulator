@@ -10013,3 +10013,6 @@ msgstr "Испытание сохранённой модели: %s · верси
 
 msgid "Based on saved build: %s · revision %d"
 msgstr "На основе сохранённой модели: %s · версия %d"
+
+msgid "High and Extreme add detailed grass at walking-path edges."
+msgstr "Высокий и экстремальный уровни добавляют детализированную траву по краям пешеходных дорожек."

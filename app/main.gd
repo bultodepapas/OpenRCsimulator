@@ -348,6 +348,7 @@ var _accident_incident: RefCounted
 var _accident_report: CanvasLayer
 var _accident_restored := false
 var _accident_bindings: Dictionary = {}
+var _accident_evidence_warning_pending := false
 var _accident_source_hash := ""
 var _accident_archive_error := OK
 var _accident_settlement: RefCounted
@@ -2794,7 +2795,10 @@ func _on_accident_contacts() -> void:
 		_accident_reload_pending = true
 		return # Rebind at the frame boundary; no catalog or archive I/O in an accepted callback.
 	_accident_restored = _accident_restored or (not _accident_paired_history and session.pause_reason == "checkpoint restored (recorded inputs)")
-	_accident_incident.observe(session.contact_events(), _accident_bindings, not session.crash.is_empty(), _accident_restored)
+	var admitted: Dictionary = _accident_incident.observe(session.contact_events(), _accident_bindings, not session.crash.is_empty(), _accident_restored)
+	if not admitted.get("ok", false):
+		# Rejected evidence cannot mutate the financial ledger. Surface the gap in its live view.
+		_accident_evidence_warning_pending = true
 	if _accident_incident.has_damage() and not _accident_incident.terminal:
 		_observe_accident_settlement()
 
@@ -2824,6 +2828,10 @@ func _observe_accident_settlement() -> void:
 
 ## All valuation, UI publication and persistence run outside accepted simulation callbacks.
 func _update_accident_report() -> void:
+	if _accident_evidence_warning_pending:
+		_accident_evidence_warning_pending = false
+		_note = tr("Accident cost evidence is incomplete; some contact observations were rejected.")
+		_accident_report.mark_evidence_unavailable()
 	if _accident_reload_pending:
 		var archived: Dictionary = _accident_incident.archive()
 		_begin_accident_ledger()
@@ -2844,6 +2852,8 @@ func _update_accident_report() -> void:
 
 
 func _begin_accident_ledger() -> void:
+	_accident_evidence_warning_pending = false
+	session.cost_observations_enabled = true
 	_accident_source_hash = str(session.aircraft.get("input_identity", {}).get("sha256", ""))
 	_accident_bindings = session.contact_contract()
 	_accident_incident.begin(aircraft_id, _accident_source_hash)

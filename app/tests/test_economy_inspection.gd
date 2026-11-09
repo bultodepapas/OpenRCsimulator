@@ -1,5 +1,6 @@
 extends SceneTree
 const Incident = preload("res://economy/incident.gd")
+const Catalog = preload("res://economy/catalog.gd")
 const AircraftData = preload("res://physics/aircraft_data.gd")
 const ContactContract = preload("res://physics/aircraft_contact_contract.gd")
 const ContactEvents = preload("res://sim/aircraft_contact_events.gd")
@@ -10,7 +11,7 @@ func _initialize() -> void:
 	_test_repair_choices()
 	_test_corsair_damage()
 	var ledger := Incident.new()
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	ledger._last_tick = 10
 	ledger._assessment.unresolved = ["Crash inspection pending; component survival is not yet established."]
 	ledger._queue_assessment(10)
@@ -74,7 +75,7 @@ func _initialize() -> void:
 		check("bounded history accepts distinct receipt %d" % i, ledger.apply_inspection(receipt(ledger, "bounded-%d" % i)).get("ok", false))
 	report_copy = ledger.report.duplicate(true)
 	check("history overflow is atomic", not ledger.apply_inspection(receipt(ledger, "over-limit")).get("ok", true) and ledger.report == report_copy)
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	check("reset clears receipts and non-reuse flags", ledger._inspections.is_empty() and ledger._reuse_blocked.is_empty() and ledger.report.is_empty())
 	ledger._queue_assessment(30)
 	ledger._last_tick = 30
@@ -90,7 +91,7 @@ func _initialize() -> void:
 
 func _test_repair_choices() -> void:
 	var ledger := Incident.new()
-	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger.begin_with_catalog(Catalog.load_legacy_for("jensen-das-ugly-stik-60", ""), "jensen-das-ugly-stik-60", "")
 	ledger._last_tick = 20
 	ledger._queue_assessment(20)
 	var receipt_value := receipt(ledger, "film-repair")
@@ -171,7 +172,7 @@ func _test_corsair_damage() -> void:
 	}
 	for probe_id: String in cases:
 		var ledger := Incident.new()
-		ledger.begin("f4u-corsair-250", "")
+		ledger.begin_with_catalog(Catalog.load_legacy_for("f4u-corsair-250", ""), "f4u-corsair-250", "")
 		var index := -1
 		for i in bindings.hull_probes.size():
 			if bindings.hull_probes[i].id == probe_id: index = i
@@ -193,7 +194,7 @@ func _test_corsair_damage() -> void:
 			check("right controls remain untouched by left-only inspection", not ledger._assessment.components.has("aileron_servo_right") and not ledger._assessment.components.has("flap_servos_right"))
 		var saved := ledger.checkpoint(10, bindings)
 		var restored := Incident.new()
-		restored.begin("f4u-corsair-250", "")
+		restored.begin_with_catalog(Catalog.load_legacy_for("f4u-corsair-250", ""), "f4u-corsair-250", "")
 		var prepared := restored.prepare_restore(saved, 10, bindings)
 		if not prepared.get("ok", false): print(prepared)
 		check(probe_id + " damage matrix survives checkpoint validation", prepared.get("ok", false))
@@ -204,7 +205,7 @@ func _test_corsair_damage() -> void:
 	# decision, either when observed or when checkpoint evidence is reconstructed.
 	for self_reference: bool in [false, true]:
 		var ledger := Incident.new()
-		ledger.begin("f4u-corsair-250", "")
+		ledger.begin_with_catalog(Catalog.load_legacy_for("f4u-corsair-250", ""), "f4u-corsair-250", "")
 		if self_reference: ledger.dossier.propeller_inspection_ids.append("propeller")
 		var strike := ContactEvents.strike_event({tick = 10, rpm = 4000.0,
 			point_ned = PackedFloat64Array([0.0, 0.0, 0.0]), velocity_ned = PackedFloat64Array([1.0, 0.0, 0.0])}, 10, "test", bindings)
@@ -223,7 +224,7 @@ func _test_corsair_damage() -> void:
 	# F4U-11-R3: newly priced packages require explicit replacement; the included
 	# ignition has no second charge and unresolved external switch keeps the bill open.
 	var package_ledger := Incident.new()
-	package_ledger.begin("f4u-corsair-250", "")
+	package_ledger.begin_with_catalog(Catalog.load_legacy_for("f4u-corsair-250", ""), "f4u-corsair-250", "")
 	package_ledger._last_tick = 20
 	package_ledger._queue_assessment(20)
 	var packages := receipt(package_ledger, "explicit-package-replacement")

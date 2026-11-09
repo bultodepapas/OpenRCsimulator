@@ -91,6 +91,65 @@ serialized. [Capture controls](../../../../tools/ground/README.md#l9b-r2-worn-pa
 own reproduction. Independent art/flight acceptance, required CI, other
 renderers/hardware and shared whole-flight performance gates remain open.
 
+## L9b-R3: field-textured path shoulders
+
+2026-11-09. The R2 shoulder still formed a smooth ribbon against the finer Club
+turf. Its existing outer strip now approaches the actual field's base color and
+close grass detail, using the same scene-owned textures, scale, macro variation
+and pilot pin. The existing vertex tag supplies the cross-track blend. The tread,
+route geometry, opaque material and batching remain intact; no cutout, asset or
+additional mesh was introduced. This matches color/detail approximately: normals,
+roughness, lighting and fog still differ, so the perimeter is not seamless.
+
+The binding is limited to ordinary Club scenery. Custom fields, standalone
+scenery and explicit scenery files retain R2. High/Extreme enable it by default;
+Low/Medium skip the binding and uniform shader block. The saved Scene detail
+choice is preserved. An independent production launch override can disable the
+effect at High or preview it at Low without changing the preset. This override
+is not a persisted in-app control, and Automatic remains a GPU-name heuristic.
+[Controls and checks](../../../../tools/ground/README.md#l9b-r3-field-textured-path-shoulders)
+own reproduction.
+
+The shader keeps derivative-bearing base turf evaluation under a uniform branch.
+An optimization gates only the explicit-gradient detail samples to worn shoulder
+fragments, avoiding those fetches on parking/access surfaces and the fully worn
+center. Three matched native 1920 × 1080 High views are byte-identical before and
+after that optimization. Production off matches the after-binding ablation;
+parking remains byte-identical with the enhancement on/off. Draw and primitive
+counts match in every view. Two matched 32-frame camera translations are retained;
+their readback/PNG timings do not establish performance or perceptual shimmer.
+
+Focused checks pass: field surfaces/binding and isolation (29), gravel/material
+(13, both dummy and native defaults checked), preset/settings tests, collision
+setup (27), LU-18 routes/material tags (37) and time-of-day updates (25). Lower
+presets bind no added field samplers. Failed/null rebinding releases copied
+texture references. The full production collision world is identical for the
+new override on/off at a fixed prop tier. The inherited Scene detail policy
+still changes ornament collision between prop tiers; this pass does not repair
+that separate graphics/physics requirement.
+The language check also passes with the added preset tooltip in all eight
+translation catalogs (2,866 source messages in this frozen snapshot).
+
+The initial short ABBA root-viewport diagnostic on the RTX 3090 measured a close
+parking GPU-median increase of 0.042/0.043 ms, with no consistent p95 increase.
+It used 600 samples per view after the capture's short warm loop, not the official
+whole-flight duration/workload. A second ABBA comparison of the sample-gated
+shader against the ungated version retained exact pixels; close parking's GPU
+median changed by +0.0175/−0.011 ms. This does not show a consistent median
+speedup; it supports avoiding unnecessary source-level texture work without an
+FPS claim. In the initial feature-on/off ABBA, the overall renderer memory
+estimate was 4,260,384 bytes higher with the feature on in both paired views;
+its cause was not established. Reusing source
+textures does not prove identical renderer memory use. Required CI, modest
+hardware/other renderers, whole-flight cost and independent owner acceptance
+remain open.
+
+[Source identities, raw-result hashes and reduced measurements](path-shoulders-2026-11-09.json)
+bind the successful runs and preserve the initial dummy-default test failures.
+Raw captures/logs and the reducer are under ignored `tmp/path-shoulder/`. The
+reviewed source snapshot excludes concurrent tractor/shadow/economy work, while
+assets/import caches remain shared junctions. No new images are committed.
+
 ## Original surface review
 
 2026-10-20. Native Godot 4.7.2 Compatibility/OpenGL captures at 1280 × 720 on an RTX 3090. This record covers presentation only; it does not qualify ground physics or owner flight readability.
