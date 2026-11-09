@@ -30,6 +30,9 @@ const TREE_WIND_SHADERS := {
 	"double_repeat": "res://scenery/imported_tree_wind.gdshader",
 	"back_repeat": "res://scenery/imported_tree_wind_cull_back.gdshader",
 	"double_clamp": "res://scenery/imported_tree_wind_clamp.gdshader",
+	"double_repeat_backlight": "res://scenery/imported_tree_wind_backlight.gdshader",
+	"back_repeat_backlight": "res://scenery/imported_tree_wind_backlight_cull_back.gdshader",
+	"double_clamp_backlight": "res://scenery/imported_tree_wind_backlight_clamp.gdshader",
 }
 
 var _failures := 0
@@ -352,6 +355,11 @@ func _check_tree_wind_material(asset_id: String, surface_index: int, wind_materi
 		is_equal_approx(float(wind_material.get_shader_parameter("leaf_flutter_tilt")),
 			ImportedVegetation.LEAF_FLUTTER_TILT if scissor and not normal_map else 0.0))
 	_check(label + " keeps its render priority", wind_material.render_priority == source_material.render_priority)
+	if source_material.get_feature(BaseMaterial3D.FEATURE_BACKLIGHT):
+		_check(label + " preserves backlight color and optional data texture",
+			wind_material.get_shader_parameter("backlight_color") == source_material.backlight
+			and wind_material.get_shader_parameter("backlight_texture") == source_material.get_texture(BaseMaterial3D.TEXTURE_BACKLIGHT)
+			and bool(wind_material.get_shader_parameter("use_backlight_texture")) == (source_material.get_texture(BaseMaterial3D.TEXTURE_BACKLIGHT) != null))
 
 
 func _tree_wind_parameter_snapshot(root: Node3D) -> Array[String]:

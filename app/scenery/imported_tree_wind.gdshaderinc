@@ -42,6 +42,17 @@ uniform vec4 ao_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
 uniform float ao_light_affect = 0.0;
 uniform bool use_alpha_scissor = false;
 uniform float alpha_scissor_threshold = 0.5;
+#ifdef TREE_WIND_BACKLIGHT
+// Compile only for materials with this source feature; unchanged bark/off variants
+// do not activate the renderer's backlight lighting path. Godot adds texture + color.
+uniform vec4 backlight_color : source_color = vec4(0.0);
+#ifdef TREE_WIND_CLAMP
+uniform sampler2D backlight_texture : hint_default_black, filter_linear_mipmap, repeat_disable;
+#else
+uniform sampler2D backlight_texture : hint_default_black, filter_linear_mipmap, repeat_enable;
+#endif
+uniform bool use_backlight_texture = false;
+#endif
 // L6c-R1: highest mip for the foliage alpha test; the default never clamps (StandardMaterial3D parity).
 uniform float alpha_scissor_max_mip = 1000.0;
 // Source-mesh bend frame (local units) and the per-asset crown-top limit in metres.
@@ -124,6 +135,10 @@ void fragment() {
 		alpha_tex *= COLOR.a;
 	}
 	ALBEDO = albedo_color.rgb * albedo_tex.rgb;
+#ifdef TREE_WIND_BACKLIGHT
+	vec3 backlight_tex = use_backlight_texture ? texture(backlight_texture, base_uv).rgb : vec3(0.0);
+	BACKLIGHT = backlight_color.rgb + backlight_tex;
+#endif
 	float metallic_tex = use_metallic_texture ? dot(texture(metallic_texture, base_uv), metallic_texture_channel) : 1.0;
 	METALLIC = metallic_tex * metallic;
 	SPECULAR = specular;

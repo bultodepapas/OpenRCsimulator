@@ -3482,12 +3482,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	var scenery_stats: Dictionary = installed_scenery.get_meta("stats", {}) if installed_scenery != null else {}
 	var installed_world: Dictionary = session.collision_world()
 	var meadow: Node = _field_node.get_node_or_null("RunwayMeadow") if is_instance_valid(_field_node) else null
-	var detail_trees: Node = _field_node.get_node_or_null("treelineDetail") if is_instance_valid(_field_node) else null
-	var detail_instances := 0
-	if detail_trees != null:
-		for batch: MultiMeshInstance3D in detail_trees.find_children("*", "MultiMeshInstance3D", true, false):
-			if batch.multimesh != null:
-				detail_instances += batch.multimesh.instance_count
+	var detail_instances := FrameSamples.field_tree_detail_instances(_field_node, field)
 	var route_name: String = frametimes_route if not frametimes_route.is_empty() else \
 		("scripted-fixed" if _frametimes_scripted_fixed else "live-input")
 	# Endpoint evidence is read once after sampling; no new per-tick observer.

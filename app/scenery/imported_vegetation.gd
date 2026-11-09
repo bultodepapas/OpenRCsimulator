@@ -10,6 +10,9 @@ const TREE_WIND_SHADER_PATHS := {
 	"double_repeat": "res://scenery/imported_tree_wind.gdshader",
 	"back_repeat": "res://scenery/imported_tree_wind_cull_back.gdshader",
 	"double_clamp": "res://scenery/imported_tree_wind_clamp.gdshader",
+	"double_repeat_backlight": "res://scenery/imported_tree_wind_backlight.gdshader",
+	"back_repeat_backlight": "res://scenery/imported_tree_wind_backlight_cull_back.gdshader",
+	"double_clamp_backlight": "res://scenery/imported_tree_wind_backlight_clamp.gdshader",
 }
 # Largest crown-top sway (m) keeping every displaced source vertex inside the existing
 # collision proxies (VegetationPlacement wind_margin) at the smallest placed height.
@@ -39,6 +42,10 @@ const FOLIAGE_ALPHA_MAX_MIP := 6.0
 # sweep in the club and field views chose 0.85; specular keeps the dielectric 0.5. Bark keeps its
 # authored roughness texture.
 const LANDSCAPELAB_FOLIAGE_ROUGHNESS := 0.85
+# L8a-R4: restrained neutral backlight on the existing Fagus leaves only. The renderer
+# multiplies diffuse/backlight by the original albedo, retaining its leaf/vein color.
+# This authored appearance value is not a measured leaf-thickness/transmission law.
+const FAGUS_FOLIAGE_BACKLIGHT := Color(0.35, 0.35, 0.35)
 # L8a-R1: Godot switches LOD only below 1 px of geometric error, so a distant LandscapeLab tree
 # keeps its full bark mesh (Fagus: 6,912 of 9,312 triangles) in a crown tens of pixels tall.
 # The bark_lod_error_px build option lets bark surfaces of world-LOD batches switch at that error
@@ -577,8 +584,6 @@ static func _tree_material_support_reason(source_material: Material) -> String:
 		return "subsurface scattering is not supported"
 	if material.get_feature(BaseMaterial3D.FEATURE_SUBSURFACE_TRANSMITTANCE):
 		return "subsurface transmittance is not supported"
-	if material.get_feature(BaseMaterial3D.FEATURE_BACKLIGHT):
-		return "backlight is not supported"
 	if material.get_feature(BaseMaterial3D.FEATURE_REFRACTION):
 		return "refraction is not supported"
 	if material.get_feature(BaseMaterial3D.FEATURE_DETAIL):
@@ -675,6 +680,9 @@ static func _part(
 			(material as StandardMaterial3D).metallic = 0.0
 			if (material as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
 				(material as StandardMaterial3D).roughness = LANDSCAPELAB_FOLIAGE_ROUGHNESS
+				if str(asset.get("id", "")) == "landscapelab_fagus":
+					(material as StandardMaterial3D).backlight_enabled = true
+					(material as StandardMaterial3D).backlight = FAGUS_FOLIAGE_BACKLIGHT
 		materials.append(material)
 	return {
 		"mesh": mesh,
@@ -859,6 +867,10 @@ static func _tree_wind_material(base_material: BaseMaterial3D, bounds_value: AAB
 	material.set_shader_parameter("use_ao_texture", ambient_occlusion and base_material.ao_texture != null)
 	material.set_shader_parameter("ao_texture_channel", _texture_channel_mask(base_material.ao_texture_channel))
 	material.set_shader_parameter("ao_light_affect", base_material.ao_light_affect)
+	if base_material.get_feature(BaseMaterial3D.FEATURE_BACKLIGHT):
+		material.set_shader_parameter("backlight_color", base_material.backlight)
+		material.set_shader_parameter("backlight_texture", base_material.get_texture(BaseMaterial3D.TEXTURE_BACKLIGHT))
+		material.set_shader_parameter("use_backlight_texture", base_material.get_texture(BaseMaterial3D.TEXTURE_BACKLIGHT) != null)
 	material.set_shader_parameter("use_alpha_scissor", scissor)
 	material.set_shader_parameter("alpha_scissor_threshold", base_material.alpha_scissor_threshold)
 	material.set_shader_parameter("alpha_scissor_max_mip", FOLIAGE_ALPHA_MAX_MIP if scissor else 1000.0)
@@ -868,11 +880,14 @@ static func _tree_wind_material(base_material: BaseMaterial3D, bounds_value: AAB
 
 ## Empty when no variant matches the source cull mode and texture repeat.
 static func _tree_wind_shader_key(material: BaseMaterial3D) -> String:
+	var key := ""
 	if material.cull_mode == BaseMaterial3D.CULL_DISABLED:
-		return "double_repeat" if material.texture_repeat else "double_clamp"
-	if material.cull_mode == BaseMaterial3D.CULL_BACK and material.texture_repeat:
-		return "back_repeat"
-	return ""
+		key = "double_repeat" if material.texture_repeat else "double_clamp"
+	elif material.cull_mode == BaseMaterial3D.CULL_BACK and material.texture_repeat:
+		key = "back_repeat"
+	if not key.is_empty() and material.get_feature(BaseMaterial3D.FEATURE_BACKLIGHT):
+		key += "_backlight"
+	return key
 
 
 ## Same masks as BaseMaterial3D's channel uniforms (scene/resources/material.cpp).

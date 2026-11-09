@@ -363,6 +363,21 @@ func _seal_stream(complete: bool) -> bool:
 
 
 ## Read-only scene observation after frame collection has finished.
+## FieldTreeDetail uses each authored object's ID, including custom fields with several treelines.
+static func field_tree_detail_instances(field_root: Node, field: Dictionary) -> int:
+	var instances := 0
+	if not is_instance_valid(field_root):
+		return instances
+	for object_data: Dictionary in field.get("objects", []):
+		var detail: Node = field_root.get_node_or_null(str(object_data.get("id", "treeline")) + "Detail")
+		if detail == null:
+			continue
+		for batch: MultiMeshInstance3D in detail.find_children("*", "MultiMeshInstance3D", true, false):
+			if batch.multimesh != null:
+				instances += batch.multimesh.instance_count
+	return instances
+
+
 static func effective_grass_state(field_root: Node) -> Dictionary:
 	return GrassSceneSnapshot.effective_grass_state(field_root)
 

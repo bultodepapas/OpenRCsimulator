@@ -1925,7 +1925,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--input", type=Path, required=True, help="directory containing run-*.json and same-stem logs")
     parser.add_argument("--out", type=Path, required=True, help="new summary JSON path")
     parser.add_argument("--require-1080p", action="store_true",
-                        help="also require actual 1920x1080 viewports and identified installed worlds")
+                        help="also require a 1920x1080 window/render-target estimate and identified installed worlds")
     parser.add_argument("--p95-max-ms", type=float, default=DEFAULT_POLICY["p95_max_ms"])
     parser.add_argument("--p99-max-ms", type=float, default=DEFAULT_POLICY["p99_max_ms"])
     parser.add_argument("--ratio-min", type=float, default=DEFAULT_POLICY["simulation_wall_ratio_min"])

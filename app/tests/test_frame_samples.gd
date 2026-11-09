@@ -42,6 +42,7 @@ func _initialize() -> void:
 	_test_stream_long_run(60)
 	_test_stream_long_run(120)
 	_test_effective_grass_state()
+	_test_field_tree_detail_instances()
 	_test_production_grass_profile_snapshot()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -419,6 +420,23 @@ func _test_frame_limit() -> void:
 	warmup.record_frame(0.01, 10000, 20000)
 	warmup.record_frame(0.01, 10000, 30000)
 	_check("warmup frames do not consume retention", warmup.report().complete and warmup.report().frames == 1)
+
+
+func _test_field_tree_detail_instances() -> void:
+	var field_node := Node3D.new()
+	for entry: Array in [["woods", 3], ["orchard", 5], ["treeline", 9]]:
+		var detail := Node3D.new()
+		detail.name = str(entry[0]) + "Detail"
+		var batch := MultiMeshInstance3D.new()
+		batch.multimesh = MultiMesh.new()
+		batch.multimesh.instance_count = int(entry[1])
+		detail.add_child(batch)
+		field_node.add_child(detail)
+	var custom_field := {objects = [{id = "woods"}, {id = "orchard"}]}
+	_check("detailed-tree inventory uses every authored treeline ID", FrameSamples.field_tree_detail_instances(field_node, custom_field) == 8)
+	_check("missing detailed trees count zero", FrameSamples.field_tree_detail_instances(field_node, {objects = [{id = "absent"}]}) == 0)
+	_check("unavailable field root counts zero", FrameSamples.field_tree_detail_instances(null, custom_field) == 0)
+	field_node.free()
 
 
 func _test_effective_grass_state() -> void:
