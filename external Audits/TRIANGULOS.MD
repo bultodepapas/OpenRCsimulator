@@ -739,3 +739,403 @@ For each experiment, use the existing debug bridge, flight measurement, shadow, 
 The budget report should follow the asset through the whole pipeline: **imported geometry → runtime-modified geometry → selected LOD → visible and auxiliary passes**. It should record triangles, vertices, surfaces, memory, and frame timing separately. Godot’s generated LODs normally reuse the original vertex arrays through alternative index buffers, so a large reduction in rendered triangles does not imply the same reduction in resident mesh memory. [Pinned importer implementation](https://github.com/godotengine/godot/blob/cafc17a19/scene/resources/3d/importer_mesh.cpp#L830).
 
 **My first implementation choice is the Lumber LOD-preservation work, including its paint-compatibility handling. The next measured prototype should be the aircraft shadow proxy, followed by the parked Stik.** Those three have the clearest connection between a specific current mechanism, a bounded change, and evidence that can establish whether the change is worthwhile.
+Completed **30 focused investigations**, using three specialist subagents, a synthesis pass, and an independent technical review.
+
+The result is a **50-page engineering dossier** covering current limits, Godot internals, optimization mathematics, hardware differences, **13 repository assessments**, and **60 primary-source documents and pages**. Each investigation includes its application to OpenRC, a bounded experiment, likely traps, and a recommendation.
+
+**[OpenRC_30_Optimization_Investigations.pdf](https://chatgpt.com/library?file_id=libfile_fde3_f-b803dc0b3668819182b2030a4211ca86_ac5d15b10f548191b3cb750779cf7c10&account_id=personal)**
+
+**My engineering conclusion:** our first priorities should be to verify that the existing aircraft LOD pipeline preserves its data, establish reliable measurements for complete flights, and then address parked aircraft, auxiliary views, shadows, and foliage. Those areas contain concrete opportunities. Texture streaming, terrain replacement, and virtualized geometry deserve controlled experiments once we have established their prerequisites.
+
+The audit uses OpenRC commit `f47d1dc6cccb` and the project’s pinned Godot `4.8.beta2.official.cafc17a19`. This is completed source inspection and research; proposed performance improvements still require measurements on target hardware. Production code remains unchanged.
+
+# What our current limits actually mean
+
+The checked-in scenery budget defines these limits for its **High-detail, 1280 × 720 qualification fixture**:
+
+| View class | Maximum drawn primitives | Maximum draw calls |
+|---|---:|---:|
+| Pilot | 1,307,000 | 360 |
+| Ground | 1,062,000 | 395 |
+| Aerial | 827,000 | 405 |
+
+These are **project acceptance allocations**. The fixture excludes the active player aircraft, and the budget’s own notes record historical overruns. They therefore need separate qualification against complete flights at the project’s primary **1920 × 1080** target. See scene_budget.json[scene_budget.json](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/tools/scenery/scene_budget.json).
+
+Source geometry has a separate set of allowances: **380,000 triangles for population, 350,000 for parked aircraft, 175,000 for merged scenery cells, and 150,000 for close vegetation**, among others. These count full-detail geometry, including instance multiplicity. They serve a different purpose from the per-view rendering limits. See scene_source_budget.gd[scene_source_budget.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/tests/scene_source_budget.gd).
+
+The same budget file also records **160,000 source triangles for its declared shadow-caster scope**, a **495 MiB renderer texture estimate**, and an explicit-exception policy for visible surfaces exceeding **5,000 triangles without generated LODs**. None of those numbers represents a universal Godot hardware limit.
+
+Changing these ceilings requires updating their supporting measurements and allocation rationale. Increasing a number in the budget file changes acceptance policy; rendering cost remains governed by the actual workload.
+
+# Investigations 1–10: geometry, LOD, and asset processing
+
+## 1. Calibrate triangle counters before using them to make decisions
+
+The exact Compatibility renderer pin accounts for instanced geometry differently between its LOD and non-LOD paths. The inspected LOD path converts indices into primitives but does not apply the same instance multiplier.
+
+OpenRC already compensates in its attribution tooling, but the separate shadow-pass difference remains a calibration concern. We also must avoid dividing an already-converted primitive count by three.
+
+**Application:** establish a small, known-geometry fixture with and without LODs, instances, and shadows. Validate each reported quantity before using it to approve higher budgets. The relevant project implementation is attribution_report.py[attribution_report.py](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/tools/scenery/attribution_report.py).
+
+## 2. Base aircraft detail on projected error and recognition
+
+For a small transverse geometric error:
+
+\[
+e_{\mathrm{pixels}}
+\approx
+\frac{e_{\mathrm{world}}\,H}
+{2z\tan(\theta_v/2)}
+\]
+
+Here, \(H\) is viewport height, \(z\) is camera-space depth, and \(\theta_v\) is vertical field of view.
+
+At 1080 pixels, a **1 cm error at 100 m** projects to approximately:
+
+| Vertical FOV | Projected error |
+|---|---:|
+| 50° | 0.116 px |
+| 10° | 0.617 px |
+
+Zoom changes the result by roughly **5.33×**. Godot’s automatic mesh LOD accounts for projected size, while visibility-range HLOD uses a separate distance mechanism. [Godot Engine (stable) documentation in English](https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html?utm_source=chatgpt.com)
+
+**Application:** validate wing silhouette, tail orientation, contrast, and attitude recognition through our actual camera modes. The constant-autozoom behavior in pilot_camera.gd[pilot_camera.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/pilot_camera.gd) makes distance alone an inadequate quality criterion.
+
+## 3. Imported aircraft LODs can disappear during mesh rebuilding
+
+This is one of the strongest findings.
+
+The Lumber/Timber visual repair reconstructs mesh surfaces without passing their LOD dictionaries. This occurs in both the initial reconstruction and the cached-template reconstruction. Unchanged surfaces inside a rebuilt mesh can also lose those dictionaries.
+
+The remaining factual question is which affected imported surfaces contain useful LOD data in the actual binary assets.
+
+**Application:** inspect the imported mesh before repair, after repair, and after paint preparation, through both cold and warm cache paths. Preserve or correctly regenerate each affected LOD. Existing paint tests begin after the earlier repair stage, so they cannot detect that earlier loss. See timber_visual_details.gd[timber_visual_details.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/aircraft/timber_visual_details.gd) and test_procedural_skin.gd[test_procedural_skin.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/tests/test_procedural_skin.gd).
+
+## 4. The parked-aircraft baker contains a misleading LOD parameter name
+
+The baker passes values named `GENERATE_LOD_NEAR_DISTANCE = 25` and `GENERATE_LOD_FAR_DISTANCE = 60` into `ImporterMesh.generate_lods()`.
+
+The pinned API interprets these arguments as **a normal-merge angle and an unused compatibility parameter**. They are not near/far distances.
+
+There is a second trap: simplification ratios are targets. Seams, disconnected geometry, material boundaries, topology, and error constraints can prevent the requested reduction. Meshoptimizer explicitly documents these constraints. [GitHub](https://github.com/zeux/meshoptimizer/blob/master/README.md?utm_source=chatgpt.com)
+
+**Application:** correct the naming while preserving behavior, then use the owning bake pipeline to update generated identities. Investigate achieved reduction per surface. See bake_parked_aircraft.gd[bake_parked_aircraft.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/tools/scenery/bake_parked_aircraft.gd).
+
+## 5. Optimize vertex reuse before assuming triangle reduction is necessary
+
+The Extra and P-51 procedural builders emit unindexed triangle corners. The paint adapter can also expand geometry to individual corners.
+
+This creates a potential vertex-processing opportunity, but safe reuse requires equality of the **complete vertex record**: position, normal, UVs, tangent handedness, colors, weights, and custom attributes.
+
+Meshoptimizer’s workflow separates indexing, vertex-cache ordering, optional overdraw ordering, and vertex-fetch optimization. These can improve work without changing triangle count. [GitHub](https://github.com/zeux/meshoptimizer/blob/master/README.md?utm_source=chatgpt.com)
+
+**Application:** measure complete-record reuse on one aircraft. Preserve paint seams and remap any triangle-indexed crash data. The parked baker already indexes its output, so repeating that operation there would add little.
+
+## 6. Material complexity needs its own LOD policy
+
+A shared mesh can still contain many material surfaces and require many submissions.
+
+OpenRC already groups compatible fleet materials. It also intentionally simplifies Stik engine materials in Low and Medium by baking albedo into vertex colors, averaging some material properties, and omitting normal maps. High preserves the authored finishes.
+
+**Application:** extend this approach selectively to distant parked assets. Compare surface count, submission cost, close appearance, and texture memory together. Material consolidation must preserve the intended metallic, roughness, normal, and color-space semantics. See parked_aircraft.gd[parked_aircraft.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/scenery/parked_aircraft.gd) and fleet.gd[fleet.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/scenery/fleet.gd).
+
+## 7. The parked Stik is a particularly useful simplification experiment
+
+Its checked-in assembled metadata records **21,178 near triangles and 19,228 at its second far level**: approximately **90.8% retained**. That is a stored-asset finding; the selected runtime workload still needs measurement. See stik_assembled.json[stik_assembled.json](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/assets/scenery/aircraft/stik_assembled.json).
+
+**Application:** create one far-only representation with simpler small components and fewer material surfaces.
+
+The transition needs special care: automatic mesh LOD considers the nearest point of the batch bounds, while visibility-range HLOD uses the bounds’ center. A large batch can therefore transition while one aircraft is still relatively close. Test the closest instance or split the batch. [Godot Engine (stable) documentation in English](https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html?utm_source=chatgpt.com)
+
+## 8. Paint identity is part of optimization correctness
+
+OpenRC hashes the paint adapter’s source into the template identity. Lumber adds further visual-source dependencies. Consequently, an edit can leave every UV visually unchanged and still invalidate an existing `.orskin` archive.
+
+**Application:** every candidate touching this pipeline needs legacy skin fixtures and explicit compatibility checks. Where equivalence is proven, use a narrow, reviewed identity migration. Preserve rejection of unrelated or incompatible identities.
+
+This is a product-compatibility requirement, not merely an image comparison. See procedural_skin.gd[procedural_skin.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/aircraft/procedural_skin.gd) and custom_skin.gd[custom_skin.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/aircraft/custom_skin.gd).
+
+## 9. Quantization belongs on a separately validated rendering derivative
+
+For a uniform \(b\)-bit grid spanning length \(L\):
+
+\[
+\text{step}=\frac{L}{2^b-1}
+\]
+
+A 1.5 m span at 14-bit precision gives a step of approximately **91.6 μm**, with nearest-rounding error of at most half a step per axis before transforms.
+
+OpenRC deliberately disables mesh attribute compression for some accepted aircraft imports. Its metrology, pivot, and rigid-transform checks protect different contracts.
+
+**Application:** preserve canonical geometry and physical measurements. Evaluate compression on a rendering derivative with explicit geometric and visual tolerances. Also inspect dequantization transforms: a visually acceptable result can still violate imported-model construction rules. See imported_model.gd[imported_model.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/aircraft/imported_model.gd).
+
+## 10. Build a narrow glTF optimization pipeline
+
+Three tools are useful together:
+
+- **Khronos glTF Validator:** format and accessor validation.
+- **glTF Transform:** targeted inspection and transformations.
+- **gltfpack/meshoptimizer:** mesh ordering, simplification, quantization, and packing.
+
+Their responsibilities differ. A valid glTF can still contain incorrect OpenRC pivots, hinge names, crash tags, paint mappings, or physical dimensions. gltfpack’s preservation options must be verified against those contracts. [GitHub](https://github.com/zeux/meshoptimizer/blob/master/gltf/README.md?utm_source=chatgpt.com)
+
+**Application:** pin tool versions, process disposable derivatives, and compare structural contracts before any visual or performance acceptance.
+
+# Investigations 11–20: scenery, foliage, shadows, and additional views
+
+## 11. MultiMesh cell size trades culling precision against submission cost
+
+Each surface’s selected automatic LOD is shared across the instances of a MultiMesh. Broad bounds or a nearby instance can keep distant instances detailed.
+
+OpenRC already exposes **0, 64, 128, and 256 m** cell choices. Field trees already have a 256 m policy and additional detail controls.
+
+**Application:** compare existing choices under one controlled flight. A crucial harness trap is that flight_quality.py[flight_quality.py](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/tools/trees/flight_quality.py) normally compares wind-off against wind-on at 720p. A cell-size experiment needs explicit 1080p and matching wind and grass settings. Its cap/VSync behavior also requires a separate shipping-configuration check.
+
+## 12. Occlusion culling needs an airfield-specific justification
+
+Godot’s documented occlusion system rasterizes simplified occluders into a CPU-side buffer and tests object bounds. Large opaque blockers can help; an open field may provide little useful rejection. The official demo explicitly discusses this outdoor limitation. [Godot Engine (4.7) documentation in English](https://docs.godotengine.org/en/4.7/tutorials/3d/occlusion_culling.html?utm_source=chatgpt.com)
+
+**Application:** begin with a static building or shelter cluster that demonstrably hides expensive content. Measure saved work against CPU visibility-testing cost.
+
+Avoid treating a woodland’s empty space as a solid occluder. Frustum culling, distance policies, and LOD remain the more direct first controls for the open-field portions.
+
+## 13. Impostors should be evaluated from airborne viewpoints
+
+OpenRC already has impostor and card-baking infrastructure. The woodland representation’s limited viewing directions make elevation and changing aircraft viewpoints useful research targets.
+
+External octahedral-impostor projects provide ideas, but maturity, renderer claims, and licenses vary. One inspected project’s current README and Asset Library listing disagree on supported renderers. [GitHub](https://github.com/zhangjt93/godot-imposter?utm_source=chatgpt.com)
+
+**Application:** extend one existing woodland asset with elevation-aware views. Evaluate rotation, parallax, lighting, wind, atlas memory, and transition stability before adopting an external plugin.
+
+## 14. Preserve foliage coverage through mipmaps
+
+Ordinary mip filtering can reduce the number of texels surviving an alpha cutoff, thinning distant foliage. Coverage-preserving mipmaps address that texture problem.
+
+OpenRC already has an accepted maple workflow. Some remaining foliage follows different import and shader policies, and the far treeline already applies alpha compensation.
+
+**Application:** extend the existing capture/comparison tools to one remaining asset. Avoid stacking multiple compensation mechanisms without measurement. Texture coverage also cannot restore leaf cards removed by mesh simplification. The relevant implementation and tooling are documented in README.md[tools/trees/README.md](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/tools/trees/README.md). Godot’s alpha-coverage import work provides the upstream mechanism. [Godot Engine](https://godotengine.org/article/dev-snapshot-godot-4-8-dev-5/?utm_source=chatgpt.com)
+
+## 15. Fewer foliage triangles can still produce a slower frame
+
+Cards exchange geometry for fragment work. Overlapping transparent regions, alpha tests, and partially occupied pixel quads can dominate their cost. Arm’s analysis explains why tiny triangles and discarded fragments remain expensive. [developer.arm.com](https://developer.arm.com/community/arm-community-blogs/b/mobile-graphics-and-gaming-blog/posts/finding-and-fixing-hidden-performance-problems-in-mobile-games-with-arm-performance-studio?utm_source=chatgpt.com)
+
+Alpha-to-coverage also requires renderer-specific treatment; the pinned Compatibility path does not provide the same behavior as Forward+/Mobile.
+
+**Application:** measure screen coverage, card overlap, fragment cost, and temporal stability before reducing protected leaf geometry. A candidate with fewer triangles should still pass a GPU-time comparison.
+
+## 16. A dedicated projected-shadow proxy is promising
+
+OpenRC’s projected aircraft shadow extracts full geometry for a dedicated mask, while already using caching and excluding the propeller.
+
+That makes a purpose-built silhouette proxy worth investigating. It must preserve the shadow across bank angles, landing attitudes, and sun directions.
+
+For a centered 1.5 m span, a 0.25° rotation moves an individual tip about **3.27 mm**. Low sun can amplify projected displacement substantially, so this alone cannot establish a safe cache or simplification threshold.
+
+**Application:** compare blurred receiver images and redraw cost while preserving existing cache behavior. This uses a separate proxy representation; Godot’s `ArrayMesh.shadow_mesh` has stricter matching-position requirements. See projected_shadow\.gd[projected_shadow.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/projected_shadow.gd).
+
+## 17. Shadow maps require separate geometry, range, and memory budgets
+
+Increasing shadow-map resolution improves sampling but leaves caster geometry intact. Cascades can also repeat geometry work.
+
+Nominal 32-bit depth storage illustrates the scaling:
+
+| Atlas | Base depth storage |
+|---|---:|
+| 4096 × 4096 | 64 MiB |
+| 8192 × 8192 | 256 MiB |
+
+Cascades share the atlas; multiplying these figures by cascade count again would overstate that storage. Actual allocation remains platform-dependent.
+
+**Application:** first compare shadow distance, caster scope, and useful near-aircraft cues. Several distant vegetation paths already disable casting. Use shadow_settings.gd[shadow_settings.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/shadow_settings.gd) as the configuration owner.
+
+## 18. The magnifier and reflections need independent budgets
+
+The magnifier already isolates the aircraft and disables rendering when hidden. Its visible aircraft can occupy many more pixels than the main-view aircraft, legitimately requiring more detail.
+
+The optional planar reflection is another active rendering workload. Halving each image dimension produces one-quarter the pixels, but geometry, submissions, culling, and fixed pass costs do not necessarily scale that way. Godot exposes separate viewport LOD thresholds. [Godot Engine (stable) documentation in English](https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html?utm_source=chatgpt.com)
+
+**Application:** attribute magnifier, reflection probe, and planar capture separately. Test explicit LOD and effect policies while preserving their existing visibility gates. See lake_planar_reflection.gd[lake_planar_reflection.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/lake/lake_planar_reflection.gd).
+
+## 19. Investigate terrain topology before replacing the terrain system
+
+The current horizon construction implies approximately **84,960 triangles before lake clipping**, with a dense radial structure near its inner region. That identifies a topology question, not a proven bottleneck. See horizon.gd[horizon.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/horizon.gd).
+
+Geometry clipmaps offer reusable meshes and graded detail, but transition morphing and matching boundaries are necessary to prevent cracks and popping. [NVIDIA Developer](https://developer.nvidia.com/gpugems/gpugems2/part-i-geometric-complexity/chapter-2-terrain-rendering-using-gpu-based-geometry?utm_source=chatgpt.com)
+
+**Application:** first test a bounded change to the inner topology. Preserve OpenRC’s authoritative terrain height and slope sampler independently of rendering. Terrain3D is a useful architectural reference for a larger experiment.
+
+## 20. Texture streaming is conditional on renderer and content
+
+Exact-pin source inspection rules out streaming as an optimization for the current Compatibility path: streamed textures fall back to full-resolution loading there.
+
+Forward+/Mobile require the dedicated streamed-texture import path. Enabling a project flag does not convert ordinary or embedded GLB textures automatically, and foliage’s alpha-coverage requirements need separate consideration.
+
+A recent upstream investigation also found feedback overhead alongside GPU timestamp discrepancies. Its headline results cannot be transferred directly to OpenRC or other hardware. [GitHub](https://github.com/godotengine/godot/issues/125124?utm_source=chatgpt.com)
+
+**Application:** limit the first experiment to an established opaque-texture residency problem on a supported backend, with an independent GPU trace.
+
+# Investigations 21–30: profiling, hardware, correctness, and advanced techniques
+
+## 21. Choose the profiler for the actual graphics API
+
+RenderDoc is useful for supported Windows/Linux OpenGL and Vulkan paths; Metal needs a different route. NVIDIA Nsight requires suitable NVIDIA hardware, API support, and drivers. On Apple hardware, use the appropriate Metal tooling. [GitHub](https://github.com/baldurk/renderdoc?utm_source=chatgpt.com)
+
+**Application:** start with one question—such as which pass dominates, whether geometry is repeated, or whether foliage is fragment-bound—then capture with a compatible tool.
+
+Use captures for attribution. Obtain acceptance timings from comparable uncaptured runs because capture itself changes execution.
+
+## 22. Loading optimization should target the longest indivisible stage
+
+OpenRC already has a bounded loading broker and staged scene construction. A nominal stage budget does not prevent one indivisible operation from taking longer.
+
+Godot’s active SceneTree is not thread-safe, and worker-side GPU resource operations can introduce synchronization stalls. [Godot Engine (4.7) documentation in English](https://docs.godotengine.org/en/4.7/tutorials/performance/thread_safe_apis.html?utm_source=chatgpt.com)
+
+**Application:** measure the longest stage, time to usable flight, first-flight pacing, peak memory, and cancellation behavior. Subdivide the responsible work while preserving ownership. The starting point is flight_scene_load.gd[flight_scene_load.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/ui/flight_scene_load.gd).
+
+## 23. Shader warmup must match the renderer
+
+Godot’s documented pipeline-precompilation and ubershader mechanisms concern RenderingDevice renderers. Its Compatibility guidance describes actually displaying the relevant material or effect during loading.
+
+A hidden node or preloaded resource does not demonstrate that the necessary Compatibility shader path has executed. Headless baking also has documented limitations. [Godot Engine (4.7) documentation in English](https://docs.godotengine.org/en/4.7/tutorials/performance/pipeline_compilations.html?utm_source=chatgpt.com)
+
+**Application:** reproduce and attribute a first-use hitch, then warm that specific path. Track blocking behavior rather than treating every compilation counter increase as a visible stall.
+
+## 24. Benchmark complete workloads and frame-time distributions
+
+Use the existing **10-second warmup and 60-second sample**, with at least **three alternating baseline/candidate pairs**, plus any stricter owning-track requirements.
+
+Establish no-change variation first. Hold aircraft, scenery, camera/input tape, resolution, cap, VSync, renderer, and power conditions constant.
+
+Report p50, p95, and p99 frame time. A 60-second run at 60 Hz contains about 3,600 frames, leaving only about 36 observations beyond the estimated p99; neighboring frames are also correlated. Repeated runs matter. [GitHub](https://github.com/google/benchmark/blob/main/docs/reducing_variance.md?utm_source=chatgpt.com)
+
+**Application:** accept a candidate when its benefit exceeds run variation and its correctness gates remain intact.
+
+## 25. Qualify reconstruction against thin, moving aircraft features
+
+An internal resolution scale \(s\) produces approximately \(s^2\) as many pixels. At 0.85 scale, that is **72.25%** of native pixel count, before reconstruction and fixed costs.
+
+Temporal reconstruction introduces history, motion-vector, transparency, and reset requirements. AMD’s guidance specifically addresses discontinuous camera changes and reactive content. [GPUOpen Manuals](https://gpuopen.com/manuals/fsr_sdk/techniques/super-resolution-upscaler/?utm_source=chatgpt.com)
+
+**Application:** test existing supported modes against wing edges, tail surfaces, propellers, rapid pans, and camera cuts. Inspect reconstruction.gd[reconstruction.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/reconstruction.gd) and its provider policies before changing defaults.
+
+## 26. Calibrate hardware profiles before adding continuous adaptation
+
+The current Auto detail choice uses GPU classification as a heuristic. Effective capacity also depends on driver, renderer, resolution, memory bandwidth, power limits, and sustained thermals.
+
+First-party performance guidance supports granular quality controls, sustained-load testing, and user choice. Those principles transfer to OpenRC even where platform-specific APIs do not. [developer.android.com](https://developer.android.com/games/optimize/adpf/best-practices-adpf?utm_source=chatgpt.com)
+
+**Application:** first produce measured hardware recommendations with a manual override. A later controller could use smoothed timings, hysteresis, and slower quality recovery. That controller is a proposed design, not existing functionality.
+
+## 27. Scene-detail changes currently affect the collision world
+
+This is another consequential finding.
+
+Although the scene-detail header describes a presentation-only contract, scenery construction passes the tier into collision setup. Existing tests expect Low and High to produce different collision inventories and world identities.
+
+**Application:** preserve each configuration’s current collision and replay behavior while optimizing it. An adaptive controller must use selected rendering controls; changing the whole preset mid-flight can change the physical world.
+
+Any unification of collisions across tiers needs an explicit product decision. See collision_setup.gd[collision_setup.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/scenery/collision_setup.gd) and test_landscape_collision_setup.gd[test_landscape_collision_setup.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/tests/test_landscape_collision_setup.gd).
+
+## 28. Replace single-number asset judgments with several budgets
+
+Useful admission and performance dimensions include:
+
+- Vertices, indices, and decoded mesh storage.
+- Surfaces, materials, and draw submissions.
+- Alpha coverage and overdraw.
+- Texture dimensions, formats, and residency.
+- Repeated shadow and auxiliary-view work.
+- Loading cost and physical representation.
+
+For scale, one uncompressed **4096² RGBA8 texture is 64 MiB**, or approximately **85.3 MiB with a complete mip chain**, before extra copies.
+
+**Application:** preserve existing bounded intake and identity validation, while keeping those checks distinct from rendering acceptance. The current intake implementation is custom_skin.gd[custom_skin.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/aircraft/custom_skin.gd).
+
+## 29. Meshlets and virtualized geometry are useful research branches
+
+Two inspected projects illustrate different approaches:
+
+- **Cyan232/godot-nanite:** CPU-driven selection with MultiMesh and vertex pulling, plus substantial material and feature limitations.
+- **Likha/godot_RT_WIP:** an experimental GPU-driven cluster-rendering direction targeting Forward+.
+
+Neither establishes a portable drop-in solution for OpenRC. [GitHub](https://github.com/Cyan232/godot-nanite/blob/main/README.md?utm_source=chatgpt.com)
+
+**Application:** retain hierarchy selection, screen-error, and submission ideas as research material. Defer engine adoption until a measured bottleneck justifies the renderer, material, memory, and maintenance costs.
+
+## 30. Validate geometry, appearance, identity, and hardware separately
+
+A successful candidate needs several independent forms of evidence:
+
+| Gate | What it establishes |
+|---|---|
+| Structural geometry | Valid surfaces, attributes, LOD indices, and remapping |
+| Content compatibility | Existing skins and template identities remain usable |
+| Simulation | Contacts, world identity, and replay behavior remain correct |
+| Appearance | Aircraft recognition and temporal stability remain acceptable |
+| Hardware performance | The target device benefits under representative workloads |
+
+**Application:** add the aircraft LOD fixture before seam repair, exercise cold/warm caches, and include legacy skins. Existing tests cover later stages. Headless or software-rendered CI cannot certify native GPU performance. See test_procedural_skin.gd[test_procedural_skin.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/tests/test_procedural_skin.gd). [Godot Engine (4.7) documentation in English](https://docs.godotengine.org/en/4.7/about/list_of_features.html?utm_source=chatgpt.com)
+
+# Repositories worth studying—and what to take from them
+
+The dossier assesses all 13, including maturity and license qualifications.
+
+| Repository | Useful contribution to OpenRC |
+|---|---|
+| [meshoptimizer / gltfpack](https://github.com/zeux/meshoptimizer) | Simplification constraints, vertex-cache/fetch optimization, asset processing |
+| [glTF Transform](https://github.com/donmccurdy/glTF-Transform) | Targeted, inspectable glTF transformations |
+| [Khronos glTF Validator](https://github.com/KhronosGroup/glTF-Validator) | Structural format validation before project-specific checks |
+| [Terrain3D](https://github.com/TokisanGames/Terrain3D) | Clipmaps, spatial instancing cells, separate shadow representations |
+| [Godot occlusion and LOD demo](https://github.com/godotengine/godot-demo-projects/tree/master/3d/occlusion_culling_mesh_lod) | A controlled reference for visibility experiments |
+| [godot-imposter](https://github.com/zhangjt93/godot-imposter) | Impostor baking architecture; older validation and transform caveats |
+| [Octahedral Impostor LOD](https://github.com/hdrsniped/octahedral-impostor-lod-godot) | Newer impostor ideas; renderer claims and custom license require qualification |
+| [Smart Planar Reflector](https://github.com/KipJM/smart_planar_reflector) | Reflection visibility, update policies, and pass-cost control |
+| [PicaSim](https://github.com/Rowlhouse/PicaSim) | RC-specific readability and simulator-design comparisons; code and assets have distinct licensing considerations |
+| [Likha](https://github.com/shirofuji/godot_RT_WIP) | Experimental GPU-driven geometry research |
+| [Cyan232/godot-nanite](https://github.com/Cyan232/godot-nanite) | Cluster hierarchy concepts with clearly limited implementation scope |
+| [RenderDoc](https://github.com/baldurk/renderdoc) | Frame inspection and pass attribution on supported APIs |
+| [Google Benchmark](https://github.com/google/benchmark) | Variance-control methodology for isolated CPU experiments |
+
+The most transferable senior-development practice across this material is **maintaining explicit contracts while changing one measured cost at a time**. That includes preserving useful optimizations already present in OpenRC and resisting wholesale pipeline replacement before attribution is clear.
+
+# Configuration and hardware strategy
+
+These are the principal controls to use through their existing owners:
+
+| Control | Current behavior / adjustment point |
+|---|---|
+| Scene detail | Low / Medium / High / Extreme use mesh LOD thresholds of **4 / 2 / 1 / 1 pixels** |
+| Override order | `--scene_detail=<level>` after `--`, then `OPENRC_SCENE_DETAIL`, then saved preference |
+| Object detail | `GeometryInstance3D.lod_bias`; values below 1 select coarser detail earlier |
+| Auxiliary views | Independent viewport LOD thresholds, layers, update conditions, and effect budgets |
+| Tree batching | Existing 0 / 64 / 128 / 256 m choices |
+| Shadows | Owner-controlled technique, distance, softness, and quality; distance choices map to **100 / 300 / 600 m** |
+| Reconstruction | Existing capability and provider policies |
+| Asset processing | Owning import/bake pipeline, including generated source identities |
+
+Project ownership is implemented in scene_detail.gd[scene_detail.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/scene_detail.gd), shadow_settings.gd[shadow_settings.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/shadow_settings.gd), and reconstruction.gd[reconstruction.gd](sandbox:/workspace/scratch/deb90f1e745e/OpenRCsimulator/app/render/reconstruction.gd).
+
+For hardware, I would use this qualification matrix:
+
+| Hardware/path | First comparison | Primary questions |
+|---|---|---|
+| Integrated GPU / Compatibility | Current Auto, explicit Medium and Low, then one targeted change | CPU submissions, shared memory, foliage fill, sustained behavior |
+| Discrete GPU / Compatibility | Current baseline versus one asset or pass candidate | Geometry versus fragment cost, repeated passes, driver behavior |
+| Apple Silicon / Mobile + Metal | Native baseline and supported MetalFX choices | Thin-feature quality, unified memory, sustained load, timestamp accuracy |
+| Capable hardware / Forward+ | Native baseline, then reconstruction, reflections, and shadows separately | Temporal quality, extra views, pipeline hitches, residency |
+
+These are **comparison plans**, not certified hardware presets. Start at actual 1080p, record both output and internal resolution, and qualify higher resolutions or 720p fallback separately.
+
+# The development order I recommend
+
+| Priority | Concrete next slice | Acceptance evidence |
+|---|---|---|
+| **1** | Calibrate counters and establish a complete 1080p flight baseline | Correct instance/pass accounting and repeated-run variation |
+| **2** | Trace Lumber LOD survival through repair, cache, and paint preparation | Valid LODs, preserved skin compatibility, close/far imagery |
+| **3** | Build one far-only parked Stik candidate | Lower measured cost with stable silhouette and unchanged contacts |
+| **4** | Test one projected-shadow proxy | Preserved landing/bank/low-sun cues and measured pass improvement |
+| **5** | Assign an explicit planar-reflection budget | Attributed cost reduction with acceptable reflected aircraft |
+| **6** | Extend one foliage mip workflow and run one controlled cell-size sweep | Coverage, temporal quality, and GPU improvement under equal settings |
+| **7** | Qualify the accepted changes across representative hardware | Stable frame times, preserved recognition, and unchanged simulation contracts |
+
+The strongest immediate development task is **the LOD-survival and paint-compatibility fixture, accompanied by a reliable 1080p flight baseline**. Its result will determine whether the next aircraft change should preserve existing LODs, regenerate affected levels, or leave particular surfaces untouched. That gives the subsequent optimization work a defensible foundation.
