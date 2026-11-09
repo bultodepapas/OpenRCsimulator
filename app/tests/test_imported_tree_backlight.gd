@@ -21,6 +21,7 @@ func _run() -> void:
 		print("skip native backlight pixels: headless renderer draws nothing")
 	else:
 		await _test_pixels()
+		_check("all 30 native pixel comparisons executed", pixels.size() == 30)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--report="):
 			var file := FileAccess.open(arg.trim_prefix("--report="), FileAccess.WRITE)

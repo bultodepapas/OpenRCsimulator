@@ -1,0 +1,113 @@
+{
+  "format": "openrc-fagus-backlight-validation v1",
+  "date": "2026-11-09",
+  "starting_head": "1094aded3b7a339a99ca27299d765217caa3ba7e",
+  "observed_head": "8fb825a96dbc39fbbf99c1056ba643c9cde49b5d",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+  },
+  "source_sha256": {
+    "app/scenery/imported_vegetation.gd": "ff57d1aba9f1a92911c91e7070ca0b855d9c431ad28224cac4ef5880f19f4e3e",
+    "app/scenery/imported_tree_wind.gdshaderinc": "d80c3ae2737704f234c7e28fbb2e16d1bcbb1cb35282eb28d9e17822166f16fb",
+    "app/scenery/imported_tree_wind_backlight.gdshader": "bd76330b1289dfb421bbce925dcc4f57208afc477e2d0eda8b6b8681cace0c59",
+    "app/scenery/imported_tree_wind_backlight_clamp.gdshader": "dd482d2b940f4b8bcd410f6a25cc8d2d7b18c9dd03ddd9dd3f80a46b3b7f29bd",
+    "app/scenery/imported_tree_wind_backlight_cull_back.gdshader": "909164527748e2f1bb5a7a8d964644ff3a15d032e3dd38205d6446aac5a64f02",
+    "app/tests/test_imported_tree_backlight.gd": "77593a783df0c33bd7de923bdec922c85e7069adb572cec29a8feb4876381421",
+    "app/tests/test_imported_tree_rendering.gd": "23213571726f3d82dabe0f234996bd5cfc77cd7b78a722b33cdc30c7d4711e31",
+    "tools/trees/backlight_review.gd": "e822ecb146378daa59498db9b7bb4e3072aed207234e5037e44cfb35524a30b8",
+    "app/data/woodland_edges.json": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61"
+  },
+  "checked_runs": [
+    {
+      "label": "backlight-final-import",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/backlight-final-import-fog_nky4/report.json",
+      "sha256": "e1d826e65759604882315962b10a1382f5a9c60c6140e5a6bdab89b2b931363d"
+    },
+    {
+      "label": "backlight-lighting-complete",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/backlight-lighting-complete-vexiwav_/report.json",
+      "sha256": "36b5fbfdea13569f2882de0d4bf6f42cf623c5461c3a2f9f8b02a9a67601d0a4"
+    },
+    {
+      "label": "backlight-pixels-final",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/backlight-pixels-final-1nlcvcgn/report.json",
+      "sha256": "fed0f8d0513814c52f377787267972ad23484e368bbff970a606a704063a3a99"
+    },
+    {
+      "label": "backlight-production-field",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/backlight-production-field-a1847jiz/report.json",
+      "sha256": "667348dd1f2ea5702402338af43bb28c920f3bfa45e1915cd8b09a34ebf72d86"
+    },
+    {
+      "label": "test_field_tree_detail",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/test_field_tree_detail-8g0dyogu/report.json",
+      "sha256": "d16800f8e861f727d6d980226e8713bc79fa13f78818608ba5febbb4c186b901"
+    },
+    {
+      "label": "test_imported_tree_backlight",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/test_imported_tree_backlight-jx9wu25c/report.json",
+      "sha256": "57fc4ae1d5ee38aad2f6beccba300eea4c6f5159b98fe6da823c25cc9952a5d4"
+    },
+    {
+      "label": "test_imported_tree_rendering",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/test_imported_tree_rendering-o874uzvt/report.json",
+      "sha256": "69fa2f7b46e72b5499be6b499696f4c7735c9ba8d1a1be685cb35b90f944b816"
+    },
+    {
+      "label": "test_imported_vegetation",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/test_imported_vegetation-7ilnbtly/report.json",
+      "sha256": "54ed01172964b361781a7a5caf9ee419acf854944683778a845a0e8b93cd715e"
+    },
+    {
+      "label": "test_woodland_edge_habitat",
+      "ok": true,
+      "report": "tmp/vegetation-backlight-20261109/checks/test_woodland_edge_habitat-5pxvargb/report.json",
+      "sha256": "8f928dee68de2c39f407a7f74c0d0968c05f8b7e0856e55770b56efe80ef5275"
+    }
+  ],
+  "negative_capture": {
+    "label": "backlight-capture-failure-negative",
+    "ok": false,
+    "report": "tmp/vegetation-backlight-20261109/checks/backlight-capture-failure-negative-vv7y4lu_/report.json",
+    "sha256": "690f044d8e107452c1c70923942ab5d735bb3f707139decf6369b71eca52f79b",
+    "expected_failure": true,
+    "complete_report_published": false,
+    "mutation": "Final capture path replaced by the existing output directory in a disposable script copy.",
+    "script_sha256": "0dfa6fa58fa1cdd74309be3e6a3b5fa90ef921603cf17bcdeffd28b943b7865f"
+  },
+  "native_pixel_cases": 30,
+  "native_pixel_max_channel_error": 0,
+  "native_pixel_ci_registration": false,
+  "rendered_preview_size": [
+    1920,
+    1080
+  ],
+  "lighting_cases": 43,
+  "scope": "Material appearance; no physical state or collision change. Retained native pixel proof is not an automated CI visual gate.",
+  "files_sha256": {
+    "lighting-comparison.json": "1a673306abc279c4a5f97e08d81a78119be33e618c0337b8c9664872ee199dc8",
+    "lighting-review.json": "0d5271fd01f6291f096afc7c5a66e9e8a91186c4d496ef469f9bf826bc459a00",
+    "pixel-parity.json": "4ac5aea22b0906736e6d55a010cf9a4805305e1542fa1c9d63246a98991f33ad"
+  },
+  "source_hash_convention": "source_sha256 records exact capture-host Windows working-tree bytes. source_text_sha256_lf records UTF-8 source text after newline normalization to LF for checkout-independent comparison.",
+  "source_text_sha256_lf": {
+    "app/scenery/imported_vegetation.gd": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
+    "app/scenery/imported_tree_wind.gdshaderinc": "623a03bb198c2c634f4378d96eba8b29c9ecd311b6201ef7e7620f993f2c48d4",
+    "app/scenery/imported_tree_wind_backlight.gdshader": "bd76330b1289dfb421bbce925dcc4f57208afc477e2d0eda8b6b8681cace0c59",
+    "app/scenery/imported_tree_wind_backlight_clamp.gdshader": "dd482d2b940f4b8bcd410f6a25cc8d2d7b18c9dd03ddd9dd3f80a46b3b7f29bd",
+    "app/scenery/imported_tree_wind_backlight_cull_back.gdshader": "909164527748e2f1bb5a7a8d964644ff3a15d032e3dd38205d6446aac5a64f02",
+    "app/tests/test_imported_tree_backlight.gd": "77593a783df0c33bd7de923bdec922c85e7069adb572cec29a8feb4876381421",
+    "app/tests/test_imported_tree_rendering.gd": "0491e252ab7c14dd80acb8169bd855f6fde046fa241eea488dda33d742ea1832",
+    "tools/trees/backlight_review.gd": "e822ecb146378daa59498db9b7bb4e3072aed207234e5037e44cfb35524a30b8",
+    "app/data/woodland_edges.json": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61"
+  }
+}

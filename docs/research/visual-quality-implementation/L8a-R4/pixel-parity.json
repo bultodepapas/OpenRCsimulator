@@ -1,0 +1,188 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"checks": 65,
+	"failures": 0,
+	"pixels": [
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "off",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "off",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "missing",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "missing",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "color",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "color",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "texture",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "texture",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "combined",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "combined",
+			"variant": "double_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "off",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "off",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "missing",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "missing",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "color",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "color",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "texture",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "texture",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "combined",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "combined",
+			"variant": "back_repeat"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "off",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "off",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "missing",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "missing",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "color",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "color",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "texture",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "texture",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 0.0,
+			"max_channel_error": 0,
+			"mode": "combined",
+			"variant": "double_clamp"
+		},
+		{
+			"direct_light": 1.0,
+			"max_channel_error": 0,
+			"mode": "combined",
+			"variant": "double_clamp"
+		}
+	],
+	"renderer": "gl_compatibility"
+}

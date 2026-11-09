@@ -1,5 +1,10 @@
 # TT-21 — Turbo Lumber visual optimization
 
+**2026-11-09 follow-up:** [TT-21-R1 LOD preservation](lods/README.md) restores
+imported LODs on unchanged repair surfaces, including cached builds, and retains
+the distributed custom-paint identity. Its 1080p geometry/image evidence is separate
+from the historical construction and frame measurements below.
+
 Measured 2026-10-20 with the pinned Godot 4.7.2 engine. This pass optimizes only the Turbo Lumber presentation added in [TT-20](../TT-20/README.md). The original aircraft geometry, flight physics, controls, collision definitions, damage decisions and cost calculations are unchanged.
 
 ## Results

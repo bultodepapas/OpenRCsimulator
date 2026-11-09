@@ -1,0 +1,130 @@
+[
+  {
+    "case": "noon_front_static",
+    "sun_elevation_deg": 89.958042670405,
+    "changed_pixels": 127390,
+    "max_channel_delta": 76,
+    "mean_abs_channel_delta": 0.5733386381172839,
+    "darkened_pixels": 4314
+  },
+  {
+    "case": "noon_front_wind",
+    "sun_elevation_deg": 89.958042670405,
+    "changed_pixels": 125321,
+    "max_channel_delta": 76,
+    "mean_abs_channel_delta": 0.5523193962191358,
+    "darkened_pixels": 4288
+  },
+  {
+    "case": "noon_back_static",
+    "sun_elevation_deg": 89.958042670405,
+    "changed_pixels": 101437,
+    "max_channel_delta": 75,
+    "mean_abs_channel_delta": 0.42957887249228394,
+    "darkened_pixels": 2743
+  },
+  {
+    "case": "noon_back_wind",
+    "sun_elevation_deg": 89.958042670405,
+    "changed_pixels": 99501,
+    "max_channel_delta": 75,
+    "mean_abs_channel_delta": 0.41327558352623456,
+    "darkened_pixels": 2753
+  },
+  {
+    "case": "low_sun_front_static",
+    "sun_elevation_deg": 6.84858176964146,
+    "changed_pixels": 91686,
+    "max_channel_delta": 38,
+    "mean_abs_channel_delta": 0.14405900366512345,
+    "darkened_pixels": 10043
+  },
+  {
+    "case": "low_sun_front_wind",
+    "sun_elevation_deg": 6.84858176964146,
+    "changed_pixels": 88909,
+    "max_channel_delta": 38,
+    "mean_abs_channel_delta": 0.13542329764660493,
+    "darkened_pixels": 9834
+  },
+  {
+    "case": "low_sun_back_static",
+    "sun_elevation_deg": 6.84858176964146,
+    "changed_pixels": 93433,
+    "max_channel_delta": 37,
+    "mean_abs_channel_delta": 0.14403754340277777,
+    "darkened_pixels": 7425
+  },
+  {
+    "case": "low_sun_back_wind",
+    "sun_elevation_deg": 6.84858176964146,
+    "changed_pixels": 90905,
+    "max_channel_delta": 37,
+    "mean_abs_channel_delta": 0.13683437017746913,
+    "darkened_pixels": 7239
+  },
+  {
+    "case": "sunset_front_static",
+    "sun_elevation_deg": -0.832160011289598,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "sunset_front_wind",
+    "sun_elevation_deg": -0.832160011289598,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "sunset_back_static",
+    "sun_elevation_deg": -0.832160011289598,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "sunset_back_wind",
+    "sun_elevation_deg": -0.832160011289598,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "night_front_static",
+    "sun_elevation_deg": -89.7604461170817,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "night_front_wind",
+    "sun_elevation_deg": -89.7604461170817,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "night_back_static",
+    "sun_elevation_deg": -89.7604461170817,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  },
+  {
+    "case": "night_back_wind",
+    "sun_elevation_deg": -89.7604461170817,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "mean_abs_channel_delta": 0.0,
+    "darkened_pixels": 0
+  }
+]

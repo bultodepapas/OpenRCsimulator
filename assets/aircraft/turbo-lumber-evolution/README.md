@@ -71,6 +71,12 @@ The factory layout uses paired lower-cowl landing lamps, wingtip navigation lens
 
 [TT-21](../../../docs/research/timber-integration/TT-21/README.md) records bounded finish-data caches, batched wheel hardware and skipped airborne dust work, with paired CPU measurements and unchanged-render checks. Cached data never owns a model's nodes or materials; meshes and finish materials remain per instance.
 
+[TT-21-R1](../../../docs/research/timber-integration/TT-21/lods/README.md) preserves
+imported LODs on unchanged surfaces through both repair and cache reconstruction.
+Split/smoothed surfaces remain full-detail. Existing custom paints retain their
+exact reviewed compatibility identity; native 1080p evidence records the scoped
+geometry reduction and base-detail parity.
+
 The four script-bound foam/rubber maps use lossless data imports with complete mip chains. Keep their normal direction, channels, per-profile strength and local sampling scale intact. A single normal-driven roughness import is unsuitable for the several strengths sharing these maps. [TT-04-R1](../../../docs/research/timber-integration/TT-04-R1/README.md) records the paired import correction and its limits.
 
 For a controlled 1080p texture comparison, run the existing inspector through the checked runner with a fresh output directory:

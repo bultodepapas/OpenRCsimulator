@@ -1,0 +1,32 @@
+{
+  "scope": "Fresh disposable sparse Git clones; raw native/validation receipt stability and LF-normalized source identity, not a complete simulator package test.",
+  "clones": [
+    {
+      "core.autocrlf": "true",
+      "raw_receipt_hashes_exact": true,
+      "normalized_source_hashes_exact": true
+    },
+    {
+      "core.autocrlf": "false",
+      "raw_receipt_hashes_exact": true,
+      "normalized_source_hashes_exact": true
+    }
+  ],
+  "receipt_sha256": {
+    "docs/research/visual-quality-implementation/L8a-R4/lighting-comparison.json": "1a673306abc279c4a5f97e08d81a78119be33e618c0337b8c9664872ee199dc8",
+    "docs/research/visual-quality-implementation/L8a-R4/lighting-review.json": "0d5271fd01f6291f096afc7c5a66e9e8a91186c4d496ef469f9bf826bc459a00",
+    "docs/research/visual-quality-implementation/L8a-R4/pixel-parity.json": "4ac5aea22b0906736e6d55a010cf9a4805305e1542fa1c9d63246a98991f33ad",
+    "docs/research/visual-quality-implementation/L8a-R4/validation.json": "ce1fa86b7ea074c6be5de060ec7e19cb4a799cc1b5ecd848e2e2938ae5878822"
+  },
+  "source_text_sha256_lf": {
+    "app/scenery/imported_vegetation.gd": "236dd3b64005dbcbc78149d887eb53c666e3015ffb457bafd23d80c691649c6e",
+    "app/scenery/imported_tree_wind.gdshaderinc": "623a03bb198c2c634f4378d96eba8b29c9ecd311b6201ef7e7620f993f2c48d4",
+    "app/scenery/imported_tree_wind_backlight.gdshader": "bd76330b1289dfb421bbce925dcc4f57208afc477e2d0eda8b6b8681cace0c59",
+    "app/scenery/imported_tree_wind_backlight_clamp.gdshader": "dd482d2b940f4b8bcd410f6a25cc8d2d7b18c9dd03ddd9dd3f80a46b3b7f29bd",
+    "app/scenery/imported_tree_wind_backlight_cull_back.gdshader": "909164527748e2f1bb5a7a8d964644ff3a15d032e3dd38205d6446aac5a64f02",
+    "app/tests/test_imported_tree_backlight.gd": "77593a783df0c33bd7de923bdec922c85e7069adb572cec29a8feb4876381421",
+    "app/tests/test_imported_tree_rendering.gd": "0491e252ab7c14dd80acb8169bd855f6fde046fa241eea488dda33d742ea1832",
+    "tools/trees/backlight_review.gd": "e822ecb146378daa59498db9b7bb4e3072aed207234e5037e44cfb35524a30b8",
+    "app/data/woodland_edges.json": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61"
+  }
+}

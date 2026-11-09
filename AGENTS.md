@@ -36,6 +36,8 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 
 The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.
 
+Make visual enhancements optional and scalable from modest computers to high-end PCs through quality presets and independent controls for geometry detail, vegetation density, lighting, shadows, reflections and effects. Recommend an initial preset using detected hardware and measured performance, and preserve saved user overrides. Optimize CPU, GPU, RAM and VRAM use at every quality level, including maximum settings; disabled features must avoid unnecessary processing and memory allocations. Graphics settings must leave simulation physics unchanged. Validate performance on real hardware, following the 1080p-first resolution priorities above.
+
 ## Discover code
 
 Prefer codebase-memory-mcp: `search_graph`, `trace_path`, `get_code_snippet`, `query_graph`, then `get_architecture`. Index the repository first if absent. Stored line ranges may lag the working tree; verify the current source before editing. Use `rg` for literals, configuration, non-code files or insufficient graph results.

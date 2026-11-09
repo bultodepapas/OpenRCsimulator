@@ -95,6 +95,12 @@ source; Timber additionally binds the visual-detail layer used before mapping.
 Exported applications carry those source proofs and the kit JSON. A changed
 mapping requires regenerating identities, prepared scenes and kits together.
 
+The [TT-21-R1 LOD repair](../../docs/research/timber-integration/TT-21/lods/README.md)
+keeps the distributed Timber paint identity through one exact, reviewed old-kit/new
+runtime-identity pair. Base geometry/paint mapping and existing kit bytes are unchanged;
+unrelated identities and future source drift remain rejected. Its `source_sha256`
+generation fingerprint is separately updated to the repeated pinned-engine export.
+
 ## Evidence
 
 The original X8-only integration was checked on Windows on 2026-10-28 with Godot

@@ -1,0 +1,1050 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"captures": [
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "static_front",
+			"light_direction": [
+				0.0,
+				-0.124034740030766,
+				-0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "4873273ff6cbbc311b9886ae79b2e45da1786336d48eeb592b59b66e58b589da",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "static_side",
+			"light_direction": [
+				-0.992277920246124,
+				-0.124034747481346,
+				0.0000000433738449601151
+			],
+			"light_energy": 1.0,
+			"sha256": "ccbd0631fc042a98da060ff7f3b26e20fdd4c45e293bfc9f67b13345ddb71287",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "static_rear",
+			"light_direction": [
+				0.0000000867476899202302,
+				-0.124034747481346,
+				0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "c93bcbcf9a598adfcd2400596afbf2b3c47082ec1b65c6f3261de7557a00e881",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "static_ambient",
+			"light_direction": [
+				0.0,
+				-0.124034740030766,
+				-0.992277920246124
+			],
+			"light_energy": 0.0,
+			"sha256": "e07948788e62acc35be29e4526db5b986c3d4794ba0b69ecbfa035adf0b0ff51",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "wind_front",
+			"light_direction": [
+				0.0,
+				-0.124034740030766,
+				-0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "8bff23d7146815318d17471e98778277292f30cd692934d6be3b6acd9de68350",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "wind_side",
+			"light_direction": [
+				-0.992277920246124,
+				-0.124034747481346,
+				0.0000000433738449601151
+			],
+			"light_energy": 1.0,
+			"sha256": "9557655aa6009237e93c0ce48ba25e73d498c509f77d0cd3b6fcc5efecaccc6c",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "wind_rear",
+			"light_direction": [
+				0.0000000867476899202302,
+				-0.124034747481346,
+				0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "cc9a6f303ce5b139f39f8f57fe7191fe37aa56edddba686d8e8b8e5afd0ec79c",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "wind_ambient",
+			"light_direction": [
+				0.0,
+				-0.124034740030766,
+				-0.992277920246124
+			],
+			"light_energy": 0.0,
+			"sha256": "8eafe26c6a44a198d77c266db051d394b8e54a6ad19c73ce3d39773e7d519f33",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 1.0,
+			"id": "wind_gust",
+			"light_direction": [
+				0.0000000867476899202302,
+				-0.124034747481346,
+				0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "5d1a3259da244b0c05758dca4ab763f920104b0b4d3bda76e6000e427966e558",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 1.0,
+			"id": "wind_repeat",
+			"light_direction": [
+				0.0000000867476899202302,
+				-0.124034747481346,
+				0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "5d1a3259da244b0c05758dca4ab763f920104b0b4d3bda76e6000e427966e558",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 1025.0,
+			"id": "wind_wrap",
+			"light_direction": [
+				0.0000000867476899202302,
+				-0.124034747481346,
+				0.992277920246124
+			],
+			"light_energy": 1.0,
+			"sha256": "5d1a3259da244b0c05758dca4ab763f920104b0b4d3bda76e6000e427966e558",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "noon_front_static_off",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "15a7363b86ac244d4d1994653c77ae0fd731fdcb82f5348552347bcd1bc7540c",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "noon_front_static_on",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "8a9febf1457dd717f568e543c64c8b648e1b34fd4124d5c335c977b15ba6aaf1",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "noon_back_static_off",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "2050a55bec742323e92d1652b9374f575b674de7e809c0e9b1dc0e61dc97e003",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "noon_back_static_on",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "20b540ef75a1fd01ca6b46328e107c6593cde2ed6da54462dd8cf4e132b28a6c",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "noon_front_wind_off",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "b8cee3396e88a0f4bec4b21f0309881a40fa84a5b9412ce795f998f83f81b8fc",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "noon_front_wind_on",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "39ddd2b9bf677b1f6841bbec2fe0d04be8944b1b13955d1836bb98a2471cc2be",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "noon_back_wind_off",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "f9d47b3694bb3d3e65737d9d9bfcfa31617b0dfd2b3ea2162387e0a73b511fd8",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "noon_back_wind_on",
+			"light_direction": [
+				0.000017697553630569,
+				-0.999999761581421,
+				-0.000732079613953829
+			],
+			"light_energy": 0.977500021457672,
+			"sha256": "d31c556047016b5b2aa18accf79df2dd7ee298d4e4de1345054f9bd112897f24",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_front_static_off",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "3ffc5641c5648fff4a02ed41279db548c5f6607d83c3a9802364be4477bf35f9",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_front_static_on",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "463b4dc311199397dd61156a77a6f5cff0d86d7c8b47a431a7dbb5e7ac5a027f",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_back_static_off",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "6921c498b1c0f7994264585d1d2aa09c5c5192fb2673b360eeee9a3ef521e9c1",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_back_static_on",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "dd23607dddc1828cbd21da98d96c922de9603fa6e18ec085902cb6c2ffbc8861",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_front_wind_off",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "acaafd0609d11aca6bc6f163d9aa2cf0ee558415c307861978a8c278646ac75f",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_front_wind_on",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "4edc510d09f34723f028472a2bc4aa08785c3a13060595fd7adb7d04af1cd253",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_back_wind_off",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "3ba6ac169cd484c781eeae7f7799ca0d05bd64325a2e2797f8d3c5713c940ef5",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "low_sun_back_wind_on",
+			"light_direction": [
+				0.992864429950714,
+				-0.119245871901512,
+				0.000860799569636583
+			],
+			"light_energy": 0.595149755477905,
+			"sha256": "5e006248b8ee3cb3795f05567e16a20306103019e09d8fcdb9901b3420d1f42d",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_front_static_off",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "4c4486d20050e783f88138685ce0e5ce74aad301c99a28ef34cc3aac089dc372",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_front_static_on",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "4c4486d20050e783f88138685ce0e5ce74aad301c99a28ef34cc3aac089dc372",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_back_static_off",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "49e4f42940066f43ef95f59ab41590f27e87024fdd9a7ad1acbeb2fb465f3114",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_back_static_on",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "49e4f42940066f43ef95f59ab41590f27e87024fdd9a7ad1acbeb2fb465f3114",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_front_wind_off",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "5077268cd1d2dc6d4765cb1abf07bb6850c63a8be8f1ee99ebdc4345745f5ab1",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_front_wind_on",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "5077268cd1d2dc6d4765cb1abf07bb6850c63a8be8f1ee99ebdc4345745f5ab1",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_back_wind_off",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "f93bfe5b53d5df672ea2f6075942325a5d9d5410ce5118a311ec00423c906ced",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "sunset_back_wind_on",
+			"light_direction": [
+				0.999999105930328,
+				-0.000872664502821863,
+				0.00100803165696561
+			],
+			"light_energy": 0.0000000496741030531211,
+			"sha256": "f93bfe5b53d5df672ea2f6075942325a5d9d5410ce5118a311ec00423c906ced",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "night_front_static_off",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "633735e592a0832148f5945b4ce2fc0011cf20cad09079186fd910de6cee9553",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "night_front_static_on",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "633735e592a0832148f5945b4ce2fc0011cf20cad09079186fd910de6cee9553",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "night_back_static_off",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "5026c800d2dfc597bc008e22e1c4a8ae027b56ded3b661ebc29e7faa70fa9dfa",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "night_back_static_on",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "5026c800d2dfc597bc008e22e1c4a8ae027b56ded3b661ebc29e7faa70fa9dfa",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "night_front_wind_off",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "1f2c290507e4b05bc8743f5a9e480e0df00386904dfc0e3677c0c64fdea366bb",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				26.0
+			],
+			"clock": 0.0,
+			"id": "night_front_wind_on",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "1f2c290507e4b05bc8743f5a9e480e0df00386904dfc0e3677c0c64fdea366bb",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "night_back_wind_off",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "85e0ecbf8167fe995a6df06b6b9e2c03cdacf5d2b29208dd6101bd82bfa201c2",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"camera_position": [
+				0.0,
+				7.5,
+				-26.0
+			],
+			"clock": 0.0,
+			"id": "night_back_wind_on",
+			"light_direction": [
+				-0.00693885935470462,
+				-0.000872664502821863,
+				-0.999975562095642
+			],
+			"light_energy": 0.0,
+			"sha256": "85e0ecbf8167fe995a6df06b6b9e2c03cdacf5d2b29208dd6101bd82bfa201c2",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"godot": "4.8-beta2 (official)",
+	"low_sun": {
+		"config": {
+			"date": "2026-03-20",
+			"format": "openrc-lighting v1",
+			"latitude_deg": 0.0,
+			"local_seconds": 63600,
+			"location_name": "Reference field (synthetic)",
+			"longitude_deg": 0.0,
+			"mode": "astronomical",
+			"utc_offset_minutes": 0
+		},
+		"config_sha256": "ef225da95a90649435da0413035abaab21bb4fe68caa409e6fe4ac083c5ae215",
+		"exposure": 0.6,
+		"format": "openrc-visual-context v1",
+		"illumination_kind": "estimated",
+		"mode": "fixed",
+		"moon": "not-modelled",
+		"profile": "openrc-lighting-curves v1",
+		"solar": {
+			"azimuth_deg": 270.049674627115,
+			"direction_ned": [
+				0.000860799533979591,
+				-0.99286438189334,
+				-0.119245872849832
+			],
+			"elevation_deg": 6.84858176964146,
+			"errors": [],
+			"hour_angle_deg": 83.1514156808869,
+			"julian_date": 2461120.23611111,
+			"ok": true
+		}
+	},
+	"night": {
+		"config": {
+			"date": "2026-03-20",
+			"format": "openrc-lighting v1",
+			"latitude_deg": 0.0,
+			"local_seconds": 457,
+			"location_name": "Reference field (synthetic)",
+			"longitude_deg": 0.0,
+			"mode": "astronomical",
+			"utc_offset_minutes": 0
+		},
+		"config_sha256": "4c84e10e6850288eeb7cedf2183ad5b372d446064e2b7ccfb49b9bbe35bba58f",
+		"exposure": 0.6,
+		"format": "openrc-visual-context v1",
+		"illumination_kind": "estimated",
+		"mode": "fixed",
+		"moon": "not-modelled",
+		"profile": "openrc-lighting-curves v1",
+		"solar": {
+			"azimuth_deg": 179.602429307409,
+			"direction_ned": [
+				-0.00418089115767803,
+				0.0000290113248368742,
+				0.999991259615538
+			],
+			"elevation_deg": -89.7604461170817,
+			"errors": [],
+			"hour_angle_deg": -179.998337759001,
+			"julian_date": 2461119.50528935,
+			"ok": true
+		}
+	},
+	"noon": {
+		"config": {
+			"date": "2026-03-20",
+			"format": "openrc-lighting v1",
+			"latitude_deg": 0.0,
+			"local_seconds": 43648,
+			"location_name": "Reference field (synthetic)",
+			"longitude_deg": 0.0,
+			"mode": "astronomical",
+			"utc_offset_minutes": 0
+		},
+		"config_sha256": "40800e6774388c0136fd6b1274495f060bab197afe5d474be381b29d051589ff",
+		"exposure": 0.6,
+		"format": "openrc-visual-context v1",
+		"illumination_kind": "estimated",
+		"mode": "fixed",
+		"moon": "not-modelled",
+		"profile": "openrc-lighting-curves v1",
+		"solar": {
+			"azimuth_deg": 181.384818942915,
+			"direction_ned": [
+				-0.000732079599124135,
+				-0.0000176975540272452,
+				-0.999999731873093
+			],
+			"elevation_deg": 89.958042670405,
+			"errors": [],
+			"hour_angle_deg": 0.0010139954252395,
+			"julian_date": 2461120.00518519,
+			"ok": true
+		}
+	},
+	"renderer": "gl_compatibility",
+	"scope": "15 m production Fagus: neutral fixed-camera/exposure light sweep, then matched material-off/on front/back views under production noon/low-sun/sunset/night SDR snapshots. No moon/flowing-world, aircraft simulation or performance qualification.",
+	"source_sha256": {
+		"res://assets/landscape/vegetation/catalog.json": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+		"res://scenery/imported_tree_wind.gdshaderinc": "d80c3ae2737704f234c7e28fbb2e16d1bcbb1cb35282eb28d9e17822166f16fb",
+		"res://scenery/imported_vegetation.gd": "ff57d1aba9f1a92911c91e7070ca0b855d9c431ad28224cac4ef5880f19f4e3e"
+	},
+	"sunset": {
+		"config": {
+			"date": "2026-03-20",
+			"format": "openrc-lighting v1",
+			"latitude_deg": 0.0,
+			"local_seconds": 65443,
+			"location_name": "Reference field (synthetic)",
+			"longitude_deg": 0.0,
+			"mode": "astronomical",
+			"utc_offset_minutes": 0
+		},
+		"config_sha256": "e40acec727d19d8ad055f08fa37302a70cb7ed01f68be6760ce33093209d9133",
+		"exposure": 0.6,
+		"format": "openrc-visual-context v1",
+		"illumination_kind": "estimated",
+		"mode": "fixed",
+		"moon": "not-modelled",
+		"profile": "openrc-lighting-curves v1",
+		"solar": {
+			"azimuth_deg": 270.057755991862,
+			"direction_ned": [
+				0.0010079257324361,
+				-0.999894021541376,
+				0.0145234214816389
+			],
+			"elevation_deg": -0.832160011289598,
+			"errors": [],
+			"hour_angle_deg": 90.8321604340213,
+			"julian_date": 2461120.25744213,
+			"ok": true
+		}
+	},
+	"viewport": [
+		1920,
+		1080
+	]
+}

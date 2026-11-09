@@ -36,6 +36,7 @@
 /docs/research/visual-quality-implementation/L6a-R1/** -text whitespace=cr-at-eol
 # Retain the native bake/verification receipts byte-for-byte, including their pinned hashes.
 /docs/research/visual-quality-implementation/L8a-R3/*.json -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/L8a-R4/*.json -text whitespace=cr-at-eol
 # Raw engine output and unified-diff context retain meaningful source whitespace.
 /docs/research/visual-quality-implementation/L6a-R1/**/*.log -whitespace
 /docs/research/visual-quality-implementation/L6a-R1/*.patch -whitespace

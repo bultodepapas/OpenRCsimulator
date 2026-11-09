@@ -14,7 +14,7 @@ const PAINT_FACE_GRID_CELL_M := 0.01
 const FRACTURE_CAP_OFFSET_M := 0.00012
 const PAINT_REPAIR_CACHE_CAPACITY := 8
 const FUSELAGE_SAMPLE_CACHE_CAPACITY := 256
-const PAINT_REPAIR_CACHE_REVISION := "paint-template-v1"
+const PAINT_REPAIR_CACHE_REVISION := "paint-template-v2-lods"
 
 ## These bounded caches contain derived render data only. Source meshes and material resources stay untouched.
 static var _paint_repair_cache: Dictionary = {}
@@ -213,7 +213,9 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 			var original_name := source_mesh.surface_get_name(surface_index)
 			var arrays := source_mesh.surface_get_arrays(surface_index)
 			if not remaps.has(surface_index) and not (smooth_mesh and smooth_normal_materials.has(material_name)):
-				derived.add_surface_from_arrays(source_mesh.surface_get_primitive_type(surface_index), arrays)
+				var lods := _surface_lods(source_mesh, surface_index)
+				var flags := source_mesh.surface_get_format(surface_index)
+				derived.add_surface_from_arrays(source_mesh.surface_get_primitive_type(surface_index), arrays, [], lods, flags)
 				var copied_index := derived.get_surface_count() - 1
 				if surface_material != null:
 					derived.surface_set_material(copied_index, surface_material)
@@ -223,6 +225,8 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 					name = original_name,
 					material_name = material_name,
 					arrays = arrays,
+					lods = lods,
+					flags = flags,
 				})
 				continue
 			var surface_remaps: Dictionary = remaps.get(surface_index, {})
@@ -246,6 +250,9 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 					name = output_surface_name,
 					material_name = String(target_material.resource_name) if target_material != null else "",
 					arrays = split_arrays,
+					# Split/smoothed surfaces have new vertex indices. Imported LODs cannot be reused.
+					lods = {},
+					flags = 0,
 				})
 		var template := {resource_name = source_mesh.resource_name, surfaces = template_surfaces}
 		_bounded_cache_store(_paint_repair_cache, _paint_repair_cache_order, cache_key, {
@@ -277,8 +284,18 @@ static func _mesh_content_sha256(mesh: Mesh, header: String = "") -> String:
 	context.update(PackedInt32Array([mesh.get_surface_count()]).to_byte_array())
 	for surface_index in mesh.get_surface_count():
 		context.update(PackedInt32Array([mesh.surface_get_primitive_type(surface_index)]).to_byte_array())
+		context.update(PackedInt64Array([mesh.surface_get_format(surface_index)]).to_byte_array())
 		if mesh is ArrayMesh:
 			context.update((mesh as ArrayMesh).surface_get_name(surface_index).to_utf8_buffer())
+			var lods := _surface_lods(mesh as ArrayMesh, surface_index)
+			var distances: Array = lods.keys()
+			distances.sort()
+			context.update(PackedInt32Array([distances.size()]).to_byte_array())
+			for distance: float in distances:
+				var lod_indices: PackedInt32Array = lods[distance]
+				context.update(PackedFloat64Array([distance]).to_byte_array())
+				context.update(PackedInt64Array([lod_indices.size()]).to_byte_array())
+				context.update(lod_indices.to_byte_array())
 		var arrays := mesh.surface_get_arrays(surface_index)
 		for channel in Mesh.ARRAY_MAX:
 			var value: Variant = arrays[channel]
@@ -292,6 +309,24 @@ static func _mesh_content_sha256(mesh: Mesh, header: String = "") -> String:
 			context.update(PackedInt64Array([bytes.size()]).to_byte_array())
 			context.update(bytes)
 	return context.finish().hex_encode()
+
+
+## Godot serializes distance/index-buffer pairs outside surface_get_arrays().
+## Decode the same 16/32-bit layout used by the existing procedural-paint adapter.
+static func _surface_lods(mesh: ArrayMesh, surface_index: int) -> Dictionary:
+	var surfaces: Array = mesh.get("_surfaces")
+	var surface: Dictionary = surfaces[surface_index]
+	var items: Array = surface.get("lods", [])
+	var lods := {}
+	var index_bytes := 2 if int(surface.vertex_count) <= 65536 else 4
+	for index in range(0, items.size(), 2):
+		var raw: PackedByteArray = items[index + 1]
+		var indices := PackedInt32Array()
+		indices.resize(raw.size() / index_bytes)
+		for element in indices.size():
+			indices[element] = raw.decode_u16(element * 2) if index_bytes == 2 else raw.decode_u32(element * 4)
+		lods[float(items[index])] = indices
+	return lods
 
 
 static func _packed_array_bytes(value: Variant) -> PackedByteArray:
@@ -331,7 +366,7 @@ static func _instantiate_surface_template(template: Dictionary, materials_by_nam
 	var derived := ArrayMesh.new()
 	derived.resource_name = String(template.get("resource_name", ""))
 	for surface: Dictionary in template.surfaces:
-		derived.add_surface_from_arrays(int(surface.primitive), surface.arrays)
+		derived.add_surface_from_arrays(int(surface.primitive), surface.arrays, [], surface.lods, int(surface.flags))
 		var surface_index := derived.get_surface_count() - 1
 		var material_name := String(surface.material_name)
 		var surface_material := materials_by_name.get(material_name) as Material

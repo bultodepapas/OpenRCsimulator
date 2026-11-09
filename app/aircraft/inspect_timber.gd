@@ -185,6 +185,9 @@ func _run() -> void:
 			"fov_deg": view.fov if view.projection == "persp" else null, "controls": view.controls,
 			"attitude_deg": [view.attitude_deg.x, view.attitude_deg.y, view.attitude_deg.z],
 			"png_sha256": FileAccess.get_sha256(path),
+			# Raw engine submissions for this isolated view; not source triangles or GPU timing.
+			"counter_primitives": int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)),
+			"counter_draw_calls": int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),
 		})
 		print("Captured %s" % path)
 	var manifest := {
