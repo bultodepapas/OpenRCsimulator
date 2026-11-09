@@ -2,10 +2,12 @@
 """Exercise capture scheduling with disposable command stubs; no Godot is run."""
 from collections import Counter
 import json
+import math
 import os
 from pathlib import Path
 import shutil
 import subprocess
+import struct
 import sys
 import tempfile
 import unittest
@@ -26,7 +28,7 @@ EXPECTED_IMAGES += ["field/capture-land-top.png"]
 EXPECTED_IMAGES += [f"ui-{screen}-{lang}.png" for lang in ("en", "es") for screen in ("home", "pause", "help", "hint")]
 EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "compare_captures.py",
                      "check_trimmed_flight.py", "test_visual_quality_cases.py", "visual_quality_cases.py",
-                     "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "check_review.py", "check_horizon.py", "check_phase6.py",
+                     "test_field_failures.py", "run_checked.py", "run_checked.py", "summarize.py", "capture_groups.py", "check_review.py", "check_horizon.py", "check_phase6.py",
                      "check_cloud_probe.py", "check_surfaces.py", "test_stripes.py", "check_stripes.py",
                      "check_windsock.py", "check_windsock.py", "check_windsock.py", "check_windsock.py",
                      "check_grass.py", "check_grass_seam.py", "check_wind.py", "test_treeline_readability.py",
@@ -36,7 +38,7 @@ EXPECTED_CHECKERS = ["test_capture_runner.py", "check_landscape_captures.py", "c
 # normalized. Stub output is only sufficient to exercise the shell's sequencing
 # and final manifest writer; it does not pretend to be rendered evidence.
 STUB = r'''
-import hashlib, json, os, pathlib, sys
+import hashlib, json, os, pathlib, sys, struct
 from pathlib import Path
 name = Path(sys.argv[1]).name
 args = sys.argv[2:]
@@ -87,6 +89,15 @@ elif args:
         required = [args[index + 1] for index, value in enumerate(args) if value == '--require-text']
         report = run_checked([sys.executable, '-c', f'print({output!r})', '--script', opt('--script')],
                              Path(opt('--out-dir')), required=required, label=opt('--label'))
+        if not env.get('FAKE_PIXEL_NO_METRICS') and ('segment_filter' in opt('--label') or 'skin_patterns' in opt('--label')):
+            sys.path.insert(0, str(Path(root) / 'tools/ci'))
+            from capture_groups import SEGMENT_METRIC_NAMES, SKIN_METRIC_NAMES
+            segment = 'segment_filter' in opt('--label')
+            values = {key: 0.03 for key in (SEGMENT_METRIC_NAMES if segment else SKIN_METRIC_NAMES)}
+            write(Path(opt('--out-dir')) / ('segment_filter-metrics.json' if segment else 'skin_patterns-metrics.json'), json.dumps({
+                'format': 'openrc-lighting-' + ('segment' if segment else 'skin') + '-metrics v1', 'viewport': [1920, 1080],
+                'complete': True, 'checks': count, 'failures': 0, 'metrics': values,
+                'float64_hex': {key: struct.pack('<d', value).hex() for key, value in values.items()}}))
         sys.exit(report['exit_code'])
     elif script == 'capture_runner.py':
         path = Path(target)
@@ -193,6 +204,80 @@ class InventoryVolatilityTests(unittest.TestCase):
                     changed = receipts.tree_inventory(root)
                     self.assertNotEqual(original[name]['normalized_sha256'], changed[name]['normalized_sha256'])
 
+    def test_segment_metrics_reject_missing_malformed_and_nonfinite_values(self):
+        valid = {'format': 'openrc-lighting-segment-metrics v1', 'viewport': [1920, 1080],
+                 'complete': True, 'checks': 12, 'failures': 0,
+                 'metrics': {key: 0.03 for key in receipts.SEGMENT_METRIC_NAMES},
+                 'float64_hex': {key: struct.pack('<d', 0.03).hex() for key in receipts.SEGMENT_METRIC_NAMES}}
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / Path(receipts.SEGMENT_METRICS).name
+            with self.assertRaises(OSError):
+                receipts.verify_segment_metrics(path)
+            path.write_text(json.dumps(valid))
+            receipts.verify_segment_metrics(path)
+            mutations = [dict(valid, complete=False), dict(valid, checks=0), dict(valid, failures=1),
+                         dict(valid, viewport=[1280, 720]), dict(valid, metrics={}), dict(valid, float64_hex={})]
+            for bad in (float('nan'), float('inf'), -float('inf'), '0.03', True, None):
+                mutations.append(dict(valid, metrics={**valid['metrics'], 'far_filtered_error': bad}))
+            for value in mutations:
+                with self.subTest(value=value):
+                    path.write_text(json.dumps(value))
+                    with self.assertRaises(ValueError):
+                        receipts.verify_segment_metrics(path)
+
+    def test_segment_metric_drift_is_data_and_has_no_volatile_fields(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / Path(receipts.SEGMENT_METRICS).name
+            path.write_text(json.dumps({'metrics': {'far_filtered_error': 0.03}, 'elapsed_seconds': 1}))
+            original = receipts.normalized_sha256(path, [])
+            path.write_text(json.dumps({'metrics': {'far_filtered_error': 0.030001}, 'elapsed_seconds': 1}))
+            self.assertNotEqual(original, receipts.normalized_sha256(path, []))
+            self.assertEqual(receipts.kind_of(receipts.SEGMENT_METRICS), 'data')
+
+    def test_skin_metric_roster_is_required_and_finite(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / Path(receipts.SKIN_METRICS).name
+            data = {'format': 'openrc-lighting-skin-metrics v1', 'viewport': [1920, 1080],
+                    'complete': True, 'checks': 13, 'failures': 0,
+                    'metrics': {key: 0.03 for key in receipts.SKIN_METRIC_NAMES},
+                    'float64_hex': {key: struct.pack('<d', 0.03).hex() for key in receipts.SKIN_METRIC_NAMES}}
+            path.write_text(json.dumps(data))
+            receipts.verify_pixel_metrics(path, 'skin', 13, receipts.SKIN_METRIC_NAMES)
+            for bad in (float('nan'), float('inf'), -float('inf'), True, '0.03'):
+                data['metrics']['exposure_delta'] = bad
+                path.write_text(json.dumps(data))
+                with self.assertRaises(ValueError):
+                    receipts.verify_pixel_metrics(path, 'skin', 13, receipts.SKIN_METRIC_NAMES)
+
+    def test_adjacent_float64_metrics_remain_distinct_and_rounded_values_fail(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / Path(receipts.SEGMENT_METRICS).name
+            values = {key: 0.03 for key in receipts.SEGMENT_METRIC_NAMES}
+            data = {'format': 'openrc-lighting-segment-metrics v1', 'viewport': [1920, 1080],
+                    'complete': True, 'checks': 12, 'failures': 0, 'metrics': values,
+                    'float64_hex': {key: struct.pack('<d', value).hex() for key, value in values.items()}}
+            path.write_text(json.dumps(data))
+            receipts.verify_segment_metrics(path)
+            original = receipts.normalized_sha256(path, [])
+            value = math.nextafter(0.03, math.inf)
+            values['far_filtered_error'] = value
+            data['float64_hex']['far_filtered_error'] = struct.pack('<d', value).hex()
+            path.write_text(json.dumps(data))
+            receipts.verify_segment_metrics(path)
+            self.assertNotEqual(original, receipts.normalized_sha256(path, []))
+            values['far_filtered_error'] = 0.03  # simulate a rounded writer with the correct source bytes
+            path.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'exact float64 bytes'):
+                receipts.verify_segment_metrics(path)
+
+    def test_signed_zero_retains_exact_hex_and_invalid_bytes_fail(self):
+        self.assertTrue(receipts.metric_bytes_match(0.0, struct.pack('<d', -0.0).hex()))
+        for encoded in ('', 'not hex', '0' * 15, '0' * 18, struct.pack('<d', math.nan).hex(),
+                        struct.pack('<d', math.inf).hex(), struct.pack('<d', 1.0).hex()):
+            self.assertFalse(receipts.metric_bytes_match(0.0, encoded), encoded)
+        self.assertNotEqual(receipts.canonical_sha256({'float64_hex': struct.pack('<d', 0.0).hex()}),
+                            receipts.canonical_sha256({'float64_hex': struct.pack('<d', -0.0).hex()}))
+
 
 @unittest.skipIf(os.name == 'nt', 'requires Linux or WSL shell utilities')
 class CaptureGroupsTests(unittest.TestCase):
@@ -206,6 +291,8 @@ class CaptureGroupsTests(unittest.TestCase):
         godot_tools.mkdir()
         for name in ('run_checked.py', 'summarize.py'):
             shutil.copy2(ROOT / 'tools/godot' / name, godot_tools / name)
+        (self.root / 'tools/ci').mkdir()
+        shutil.copy2(ROOT / 'tools/ci/capture_groups.py', self.root / 'tools/ci/capture_groups.py')
         self.bin = self.root / "bin"
         self.bin.mkdir()
         stub = self.root / "fixture_stub.py"
@@ -321,6 +408,13 @@ class CaptureGroupsTests(unittest.TestCase):
         env = dict(self.env, FAKE_OUT=str(output), FAKE_FAIL='--import')
         result = subprocess.run(['bash', str(self.app / 'capture.sh')], env=env, capture_output=True)
         self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((output / 'run-manifest.json').exists())
+
+    def test_passing_pixel_log_without_structured_metrics_fails_the_quality_group(self):
+        self.env['FAKE_PIXEL_NO_METRICS'] = '1'
+        result, output, _ = self.run_capture(self.current, 'quality')
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('segment_filter-metrics.json', result.stderr)
         self.assertFalse((output / 'run-manifest.json').exists())
         self.assertIn('setup\t', (output / 'timings.tsv').read_text())
 
@@ -650,6 +744,22 @@ assert capture_groups.TREELINE_CASES == [case.case_id for case in treeline_reada
                          [f'core: {log_name}'])
         receipt_path.write_text(original_receipt)
         core.write_text(original)
+        # Semantic measurements are data even when images and checked logs agree.
+        quality = results / 'quality' / receipts.INVENTORY
+        quality_receipt = results / 'quality' / receipts.RECEIPT
+        original_quality, original_quality_receipt = quality.read_text(), quality_receipt.read_text()
+        for metric_path in (receipts.SEGMENT_METRICS, receipts.SKIN_METRICS):
+            data, receipt = json.loads(original_quality), json.loads(original_quality_receipt)
+            data['files'][metric_path] = {'sha256': '2' * 64, 'normalized_sha256': '3' * 64, 'bytes': 200}
+            receipt['outputs'][metric_path] = '2' * 64
+            quality.write_text(json.dumps(data))
+            quality_receipt.write_text(json.dumps(receipt))
+            metrics = rejected('metric-only-drift-' + Path(metric_path).stem, contains='quality: ' + metric_path)
+            self.assertEqual(metrics['errors'], [])
+            self.assertEqual(metrics['different']['data'], ['quality: ' + metric_path])
+        quality.write_text(original_quality)
+        quality_receipt.write_text(original_quality_receipt)
+        receipt = json.loads(original_receipt)
         dropped = json.loads(original)
         del dropped['files']['capture.png']
         receipt['outputs'] = {k: v for k, v in json.loads(original_receipt)['outputs'].items() if k != 'capture.png'}

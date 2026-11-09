@@ -32,7 +32,7 @@ func _run() -> void:
 	var worst_720_case := ""
 	for lang in ["en", "es", "zh_Hans", "pt_BR", "de", "fr", "it", "ru", "ja"]:
 		TranslationServer.set_locale(lang)
-		for id in Catalog.ids():
+		for id in Catalog.player_ids():
 			for defaults in [false, true]:
 				for height in [720, 1080]:
 					var m := await _measure(id, defaults, Vector2(1280 if height == 720 else 1920, height))
@@ -65,7 +65,7 @@ func _run() -> void:
 						"%.0f > %.0f" % [m.legend_bottom_scrolled, m.scroll_bottom])
 	for lang in ["en", "es", "zh_Hans", "pt_BR", "de", "fr", "it", "ru", "ja"]:
 		TranslationServer.set_locale(lang)
-		for id in Catalog.ids():
+		for id in Catalog.player_ids():
 			var m := await _measure(id, false, Vector2(1280, 720), 2.0)
 			var case := "%s %s 720p 200%%" % [lang, id]
 			_check("%s: pinned Fly and utility footer fit above the bottom edge" % case,

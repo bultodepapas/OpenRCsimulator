@@ -3,8 +3,11 @@ extends SceneTree
 const Home = preload("res://ui/home.gd")
 const App = preload("res://app_root.gd")
 const Weather = preload("res://physics/wind_config.gd")
+const FieldLoader = preload("res://data/field_loader.gd")
+const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Preferences = preload("res://app_state/preferences.gd")
 const UiTheme = preload("res://ui/ui_theme.gd")
+const UiInput = preload("res://ui/ui_input.gd")
 const Driver = preload("res://tests/ui_driver.gd")
 const PREFS = "user://test_home_launch_conditions.cfg"
 # Seed 4 selects Timber, whose cancelled preview exercises material teardown.
@@ -32,6 +35,7 @@ class TestApp extends App:
 		return Candidate.new()
 var checks := 0
 var failures := 0
+var long_field_notice := ""
 func _initialize() -> void:
 	run.call_deferred()
 func check(label: String, passed: bool) -> void:
@@ -44,9 +48,162 @@ func check(label: String, passed: bool) -> void:
 func frames(count: int = 5) -> void:
 	for _i in count:
 		await process_frame
+
+func inside(rect: Rect2, viewport: Rect2) -> bool:
+	return rect.size.x > 0 and rect.size.y > 0 and rect.position.x >= viewport.position.x - 0.5 \
+		and rect.position.y >= viewport.position.y - 0.5 and rect.end.x <= viewport.end.x + 0.5 \
+		and rect.end.y <= viewport.end.y + 0.5
+
+func check_home_layout(h: Control, ui: RefCounted, locale: String, scale: float, page: int, state: String) -> void:
+	var blocked := state == "blocked" or state == "blocked_with_save_error"
+	var stock_notice := state == "stock_notice" or state == "stock_with_save_error"
+	var save_error := state == "save_error" or state == "blocked_with_save_error" or state == "stock_with_save_error"
+	h.set_note("")
+	h.set_stock_selection_notice("")
+	h.set_weather_config(Weather.spatial_defaults() if blocked else Weather.defaults())
+	if stock_notice:
+		# A retained technical selection can accompany a settings-save error.
+		h.set_stock_selection_notice("stik-glow-fs64v-4t")
+	if save_error:
+		# A settings save can fail while an inadmissible weather selection is retained.
+		h.set_note(h.tr("Could not save settings (error %d).") % ERR_CANT_CREATE)
+	elif state == "field_errors":
+		# set_landscape() reports all field validation errors together.
+		h.set_note(long_field_notice)
+	elif state == "runtime_error":
+		h.fail_start("Flight scene could not be created.")
+	await frames(8) # Resize, wrapping, deferred responsive layout and container sorts must settle.
+	var viewport: Rect2 = h.get_viewport_rect()
+	var expected := Rect2(0, 0, 1920, 1080)
+	var case := "%s/%.1f page %d %s" % [locale, scale, page, state]
+	var rects := PackedStringArray()
+	for control: Control in [h.fly_button, h.review_conditions_button, h.controls_button, h.help_button,
+			h.quit_button, h.language_button, h.settings_button, h.launch_warning, h.note_label, h.stock_selection_notice]:
+		rects.append("%s=%s visible=%s" % [control.name, str(control.get_global_rect()), control.is_visible_in_tree()])
+	print("layout %s root=%s viewport=%s warning=%s note=%s stock=%s %s" % [case, str(root.size), str(viewport),
+		h.launch_warning.text if h.launch_warning.is_visible_in_tree() else "<hidden>",
+		h.note_label.text if h.note_label.is_visible_in_tree() else "<hidden>",
+		h.stock_selection_notice.text if h.stock_selection_notice.is_visible_in_tree() else "<hidden>", "; ".join(rects)])
+	check("%s settled viewport is 1920x1080" % case, root.size == Vector2i(1920, 1080) and viewport == expected)
+	check("%s admission and messages match the state" % case,
+		h.launch_warning.is_visible_in_tree() == blocked and h.review_conditions_button.is_visible_in_tree() == blocked
+		and h.fly_button.disabled == blocked and h.note_label.is_visible_in_tree() == (save_error or state == "runtime_error" or state == "field_errors")
+		and h.stock_selection_notice.is_visible_in_tree() == stock_notice)
+	for control: Control in [h.fly_button, h.controls_button, h.help_button, h.quit_button, h.language_button, h.settings_button]:
+		check("%s %s remains fully inside the viewport" % [case, control.name],
+			control.is_visible_in_tree() and inside(control.get_global_rect(), viewport))
+	if page == 1:
+		check("%s aircraft details remain fully inside the viewport" % case,
+			h._catalog_detail.is_visible_in_tree() and inside(h._catalog_detail.get_global_rect(), viewport))
+		for detail: Label in [h._detail_name_label, h._detail_capability_label, h._detail_summary_label, h._detail_note_label]:
+			check("%s aircraft detail %s shows every line" % [case, detail.name],
+				detail.get_visible_line_count() == detail.get_line_count())
+	for control: Control in [h.review_conditions_button, h.launch_warning, h.note_label, h.stock_selection_notice]:
+		if control.is_visible_in_tree():
+			if h._scroll.is_ancestor_of(control):
+				await check_scroll_notice(h._scroll, control, case)
+			else:
+				check("%s %s remains fully inside the viewport" % [case, control.name], inside(control.get_global_rect(), viewport))
+	if state == "blocked_with_save_error":
+		var alternate_blocked: Dictionary = Weather.spatial_defaults()
+		alternate_blocked.spatial_wind.identity.seed_u32 += 1
+		h.set_weather_config(alternate_blocked)
+		await frames(3)
+		check("%s another blocked weather selection preserves the notice and recovery action" % case,
+			h.launch_warning.visible and h.note_label.visible and h.review_conditions_button.visible)
+	if h._scroll.is_ancestor_of(h.note_label) and h._scroll.get_v_scroll_bar().visible:
+		root.gui_release_focus()
+		h.ensure_focus()
+		await frames(2)
+		var action: Control = h.review_conditions_button if blocked else h.fly_button
+		check("%s initial focus reaches the primary action" % case, action.has_focus())
+		await ui.tap(KEY_UP)
+		check("%s Up reaches the notices from the primary action" % case,
+			h._scroll.has_focus() and h._scroll.scroll_vertical == 0)
+		await ui.tap(KEY_PAGEDOWN)
+		check("%s notices can be scrolled by keyboard" % case, h._scroll.scroll_vertical > 0)
+		await ui.tap(KEY_HOME)
+		await ui.tap(KEY_UP)
+		var previous: Control = h.start_button if page == 0 else h._page_buttons[page]
+		check("%s Up at the first boundary reaches the preceding page control" % case, previous.has_focus())
+		if page == 1 and h._scroll.is_ancestor_of(previous):
+			await ui.tap(KEY_ENTER)
+			await frames(3)
+			check("%s selecting a page keeps its focused navigation control visible" % case,
+				previous.has_focus() and h._scroll.get_global_rect().encloses(previous.get_global_rect()))
+		root.gui_release_focus()
+		h.ensure_focus()
+		await ui.tap(KEY_UP)
+		await ui.tap(KEY_TAB)
+		check("%s Tab returns from notices to the action" % case, action.has_focus())
+		await ui.tap(KEY_UP)
+		await ui.tap(KEY_END)
+		await ui.tap(KEY_DOWN)
+		check("%s Down at the last boundary returns to the action" % case, action.has_focus())
+		UiInput.set_gamepad(Driver.FAKE_DEVICE)
+		await ui.joy_button(JOY_BUTTON_DPAD_UP)
+		check("%s controller reaches the notices" % case, h._scroll.has_focus())
+		await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
+		check("%s controller scrolls the notices" % case, h._scroll.has_focus() and h._scroll.scroll_vertical > 0)
+		await ui.tap(KEY_HOME)
+		await ui.joy_button(JOY_BUTTON_DPAD_UP)
+		check("%s controller exits to the preceding page control" % case, previous.has_focus())
+		root.gui_release_focus()
+		h.ensure_focus()
+		await ui.joy_button(JOY_BUTTON_DPAD_UP)
+		await ui.tap(KEY_END)
+		await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
+		check("%s controller exits at the last boundary" % case, action.has_focus())
+		if locale == "es" and scale == 2.0 and page == 1 and state == "field_errors":
+			UiInput.set_gamepad(Driver.FAKE_DEVICE, {
+				"navigate_up": {"type": "button", "button": JOY_BUTTON_Y},
+				"navigate_down": {"type": "button", "button": JOY_BUTTON_X},
+			})
+			await ui.joy_button(JOY_BUTTON_Y)
+			check("remapped controller enters the notices", h._scroll.has_focus())
+			await ui.joy_button(JOY_BUTTON_X)
+			check("remapped controller scrolls the notices", h._scroll.scroll_vertical > 0)
+			await ui.tap(KEY_END)
+			await ui.joy_button(JOY_BUTTON_X)
+			check("remapped controller exits the notices", action.has_focus())
+		UiInput.isolate_joypads()
+		await ui.tap(KEY_UP)
+		h.set_note("")
+		h.set_stock_selection_notice("")
+		await frames(8)
+		check("%s removing notices restores focus to the action" % case, action.has_focus())
+
+func check_scroll_notice(scroll: ScrollContainer, control: Control, case: String) -> void:
+	# A notice taller than the body is read in sections; both ends must be reachable without clipping text.
+	scroll.scroll_vertical = 0
+	await frames(2)
+	var area := scroll.get_global_rect()
+	var top := control.get_global_rect().position.y - area.position.y
+	var maximum := maxi(0, int(ceil(scroll.get_v_scroll_bar().max_value - scroll.get_v_scroll_bar().page)))
+	scroll.scroll_vertical = clampi(int(floor(top)), 0, maximum)
+	await frames(2)
+	var first := control.get_global_rect()
+	check("%s %s start is reachable in scroll body" % [case, control.name],
+		area.size.y > 0 and first.position.y >= area.position.y - 1.0 and first.position.y < area.end.y)
+	scroll.scroll_vertical = clampi(int(ceil(top + first.size.y - area.size.y)), 0, maximum)
+	await frames(2)
+	var last := control.get_global_rect()
+	check("%s %s end is reachable without truncated text" % [case, control.name],
+		last.end.y <= area.end.y + 1.0 and last.end.y > area.position.y
+		and (not control is Label or ((control as Label).text_overrun_behavior == TextServer.OVERRUN_NO_TRIMMING
+			and (control as Label).get_visible_line_count() == (control as Label).get_line_count())))
+	scroll.scroll_vertical = 0
+
 func run() -> void:
 	var ui = Driver.new(self)
+	var malformed: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(FieldLoader.DEFAULT_PATH))
+	for index in 8:
+		malformed.surfaces.append({"id": "broken-%d" % index})
+	var field_result: Dictionary = FieldLoader.validate(malformed)
+	long_field_notice = "; ".join(field_result.errors)
+	check("malformed field produces a long multi-error notice", not field_result.ok and field_result.errors.size() >= 8 and long_field_notice.length() > 500)
 	root.size = Vector2i(1920,1080)
+	await frames(8)
 	for locale in ["en","es"]:
 		TranslationServer.set_locale(locale)
 		for scale in [1.0,2.0]:
@@ -54,26 +211,27 @@ func run() -> void:
 			var h = Home.new()
 			h.theme = UiTheme.build()
 			h.set_aircraft("xcell-60-research")
-			h.set_weather_config(Weather.spatial_defaults())
 			root.add_child(h)
 			await frames()
 			for page in [0,1]:
 				h._select_page(page)
 				await frames()
-				check("%s/%s page %s admission beside Fly" % [locale,scale,page],h.launch_warning.is_visible_in_tree() and h.review_conditions_button.is_visible_in_tree() and h.fly_button.disabled)
-				var r: Rect2 = h.review_conditions_button.get_global_rect()
-				check("%s/%s page %s recovery inside primary viewport" % [locale,scale,page],r.position.y >= 0 and r.end.y <= 1080 and r.end.x <= 1920)
-				check("shared Fly and utilities remain fully in viewport",h.fly_button.get_global_rect().end.y <= 1080 and h.quit_button.get_global_rect().end.y <= 1080)
-				h.reject_start("Injected runtime refusal")
-				check("runtime refusal visible on both pages",h.note_label.is_visible_in_tree())
+				for state in ["clean", "blocked", "save_error", "blocked_with_save_error", "runtime_error", "field_errors", "stock_notice", "stock_with_save_error"]:
+					await check_home_layout(h, ui, locale, scale, page, state)
+				# The blocked state keeps keyboard access to the corrective action.
+				h.set_weather_config(Weather.spatial_defaults())
+				await frames()
 				h.controls_button.grab_focus()
 				await ui.tap(KEY_UP)
-				check("directional navigation reaches corrective action",h.review_conditions_button.has_focus())
+				check("%s/%.1f page %d directional navigation reaches corrective action" % [locale, scale, page],h.review_conditions_button.has_focus())
+			h.set_weather_config(Weather.defaults())
 			h.fail_start("Flight scene could not be created.")
 			TranslationServer.set_locale("es" if locale == "en" else "en")
 			check("runtime launch outcome follows locale",h.note_label.text == h.tr("Could not start flight: %s") % h.tr("Flight scene could not be created."))
 			TranslationServer.set_locale(locale)
-			h.set_weather_config(Weather.defaults())
+			var changed_weather: Dictionary = Weather.defaults()
+			changed_weather.speed_mps = float(changed_weather.speed_mps) + 1.0
+			h.set_weather_config(changed_weather)
 			check("correcting conditions clears launch-owned failure",not h.note_label.visible)
 			h.set_note("Independent save failure")
 			h.set_aircraft("jensen-das-ugly-stik-60")
@@ -87,6 +245,21 @@ func run() -> void:
 			check("Garage has visible fallback focus",h.ground_vehicle_button.has_focus())
 			h.free()
 			await frames(1)
+	# Long catalog descriptions must also fit when the 200% detail card is widened.
+	UiTheme.text_scale = 2.0
+	for locale in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		var detail_home = Home.new()
+		root.add_child(detail_home)
+		detail_home._select_page(1)
+		for id: String in Catalog.player_ids():
+			detail_home.set_aircraft(id)
+			await frames(8)
+			var details: Rect2 = detail_home._catalog_detail.get_global_rect()
+			check("%s %s 200%% aircraft details fit: %s" % [locale, id, str(details)],
+				detail_home._catalog_detail.is_visible_in_tree() and inside(details, detail_home.get_viewport_rect()))
+		detail_home.free()
+		await frames(1)
 	UiTheme.text_scale = 1.0
 	TranslationServer.set_locale("en")
 	var prefs: Dictionary = Preferences.DEFAULTS.duplicate(true)
@@ -136,6 +309,7 @@ func run() -> void:
 		if random_route:
 			app.open_natural_random()
 			await frames()
+			print("Random fixture aircraft=%s error=%s" % [str(app.natural_random_screen._scenario.get("aircraft_id", "")), app.natural_random_screen.error_label.text])
 			check("seeded Random cancellation covers Timber preview",str(app.natural_random_screen._scenario.get("aircraft_id","")) == RANDOM_AIRCRAFT)
 		if random_route:
 			app.natural_random_screen._on_fly()

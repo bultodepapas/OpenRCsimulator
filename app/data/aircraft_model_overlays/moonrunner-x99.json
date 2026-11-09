@@ -110,7 +110,7 @@
     },
     {
       "path": "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json",
-      "sha256": "bb298d977ea33761072fcb55ce04cbf1454c1581e3d079a19f465f7fad694484",
+      "sha256": "ffbb91e680d947e2a4f8e9702c3c71f25476fd5ea92daf737a31450528aba69b",
       "hash_mode": "lf_text",
       "role": "overlay_runtime_proof"
     },

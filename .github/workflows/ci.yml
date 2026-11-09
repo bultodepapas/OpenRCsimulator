@@ -6,6 +6,12 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      visual_shadow:
+        description: 'Run the expensive seven-group visual equivalence experiment'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -477,7 +483,7 @@ jobs:
           fi
       # Shadow-only steps inside the required job: their failure must never fail the visual gate.
       - name: Inventory full outputs for the visual group shadow comparison
-        if: github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'workflow_dispatch' && inputs.visual_shadow == true
         continue-on-error: true
         run: |
           mkdir -p "$RUNNER_TEMP/visual-shadow"
@@ -485,7 +491,7 @@ jobs:
             --godot "$(app/get-godot.sh)" --visual-python "$(app/tests/visual-env.sh)" \
             --out "$RUNNER_TEMP/visual-shadow/inventory.json"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
+        if: github.event_name == 'workflow_dispatch' && inputs.visual_shadow == true
         continue-on-error: true
         with:
           name: visual-shadow-full
@@ -499,6 +505,19 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true # Optional storage only; capture and uploads remain strict.
         run: python3 tools/ci/capture_project_evidence.py prepare --captures app/captures --github-output "$GITHUB_OUTPUT"
+      - name: Prepare compact capture diagnostics
+        if: always()
+        continue-on-error: true # Review aid only; raw capture uploads below remain strict.
+        run: python3 tools/ci/capture_diagnostics.py --captures app/captures --out "$RUNNER_TEMP/capture-diagnostics"
+      - name: Upload compact capture diagnostics
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: capture-diagnostics
+          path: ${{ runner.temp }}/capture-diagnostics/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Upload captures with verified project reconstruction
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always() && steps.capture_project_evidence.outcome == 'success' && steps.capture_project_evidence.outputs.equivalent == 'true'
@@ -516,10 +535,10 @@ jobs:
 
   # PT1-CI-03 shadow evidence, not a gate: run the seven capture groups on separate runners and
   # compare every output with the unchanged full job above. `CI required` does not depend on these
-  # jobs, and continue-on-error keeps a shadow difference from marking the run failed. Main/manual only.
+  # jobs, and continue-on-error keeps a shadow difference from marking the run failed. Manual opt-in only.
   visual-groups:
     needs: scope
-    if: needs.scope.outputs.app == 'true' && github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/')
+    if: needs.scope.outputs.app == 'true' && github.event_name == 'workflow_dispatch' && inputs.visual_shadow == true
     name: Visual group shadow (${{ matrix.group }})
     runs-on: ubuntu-24.04
     timeout-minutes: 120
@@ -582,7 +601,7 @@ jobs:
 
   visual-shadow:
     needs: [scope, visuals, visual-groups]
-    if: ${{ !cancelled() && needs.scope.outputs.app == 'true' && github.event_name != 'pull_request' && !startsWith(github.ref, 'refs/tags/') }}
+    if: ${{ !cancelled() && needs.scope.outputs.app == 'true' && github.event_name == 'workflow_dispatch' && inputs.visual_shadow == true }}
     name: Visual group shadow comparison
     runs-on: ubuntu-24.04
     timeout-minutes: 15

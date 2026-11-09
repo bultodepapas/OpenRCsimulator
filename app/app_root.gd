@@ -284,6 +284,9 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 	if wants_direct_flight(user_args):
+		var technical_id := aircraft_argument(user_args)
+		if Catalog.has(technical_id) and not Catalog.is_player_selectable(technical_id):
+			print("research-only aircraft: ", technical_id, " (retained technical configuration)")
 		# The engine starts in the OS locale (es_ES on a Spanish system): automation is always English.
 		TranslationServer.set_locale("en")
 		Conditions.session_preset = "" # no interactive sky choice may leak into a later technical route
@@ -345,7 +348,10 @@ func _ready() -> void:
 		field_path = Landscapes.entry(landscape_id).field_path
 	if preferences.note != "":
 		print("settings: ", preferences.note)
+		print("settings path: ", ProjectSettings.globalize_path(preferences_path))
 	TranslationServer.set_locale(preferences.language)
+	if not bool(preferences.get("writable", true)):
+		_settings_note = tr("Saved settings are protected or unavailable. Changes will apply only to this session.")
 	if preferences.get("lighting_invalid", false):
 		_settings_note = tr("Invalid saved time-of-day settings; using legacy daylight.")
 	statistics_service = load("res://statistics/service.gd").new()
@@ -475,7 +481,7 @@ static func weather_for_aircraft(id: String, raw: Variant) -> Dictionary:
 
 
 func show_home() -> void:
-	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	var aircraft: String = Preferences.resolve_player_selection(preferences)
 	# UI-32 (UI-30 AS-3): a rotorcraft only shows the weather without turbulence; the saved selection keeps it.
 	var home_weather: Dictionary = weather_for_aircraft(aircraft, preferences.get("weather_config", WeatherSettings.defaults()))
 	var night_options: Dictionary = _night_options_from_preferences()
@@ -539,6 +545,7 @@ func show_home() -> void:
 	_update_controller_home()
 	_update_controller_button_prompts()
 	home.set_note(_settings_note)
+	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	if not _update_info.is_empty():
 		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
 
@@ -657,7 +664,7 @@ func set_language(code: String) -> bool:
 ## app adjusted it (game findings #7). UI callers may ignore it; scripts and tools must not.
 func set_aircraft(id: String) -> bool:
 	if _loading_active: return false
-	if home == null or not Catalog.has(id):
+	if home == null or not Catalog.is_player_selectable(id):
 		return false
 	id = Catalog.canonical_id(id)
 	preferences.aircraft = id
@@ -668,7 +675,8 @@ func set_aircraft(id: String) -> bool:
 		preferences.start_choice = "airborne" # D6e-R4: the former explicit choice is Home's airborne start
 	if home_scene != null:
 		home_scene.request_aircraft(id, home.livery_id)
-	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+	_report_selection_save(Preferences.save_to(preferences_path, preferences, true))
+	home.set_stock_selection_notice(Preferences.retained_aircraft(preferences))
 	return true
 
 
@@ -880,6 +888,10 @@ func start_flight(request: Dictionary = {}) -> void:
 		chosen_weather = request.weather_config.duplicate(true)
 		chosen_lighting = request.lighting_config.duplicate(true)
 	var route_aircraft_id := aircraft
+	if has_home and not is_random and not Catalog.is_player_selectable(aircraft):
+		if departing_home != null:
+			departing_home.reject_start(tr("This aircraft is available only through technical compatibility routes."))
+		return
 	if not has_home and not is_random:
 		route_aircraft_id = aircraft_argument(user_args)
 	var helicopter_route: bool = Catalog.is_rotorcraft(route_aircraft_id)
@@ -1112,6 +1124,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	_loading_retained_home = null
 	_loading_retained_random = null
 	if has_home and not is_random:
+		preferences.aircraft = aircraft
 		if departing_home != null:
 			preferences.start_choice = saved_fixed_start
 			preferences.rotorcraft_start_choice = saved_rotor_start
@@ -1123,7 +1136,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		preferences.night_field_lighting = selected_night.field_lighting
 		preferences.night_campfire = selected_night.campfire
 		preferences.night_field_activation = selected_night.field_activation
-		var err: Error = Preferences.save_to(preferences_path, preferences)
+		var err: Error = Preferences.save_to(preferences_path, preferences, true)
 		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 		flight._note = _settings_note
 	if is_random:

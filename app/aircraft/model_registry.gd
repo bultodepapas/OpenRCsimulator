@@ -7,6 +7,7 @@ const PACKAGE_PROOF_FORMAT := "openrc-aircraft-model-package v1"
 const PACKAGE_PROOF_ROOT := "res://data/aircraft_models/proofs/"
 const TEXT_HASH := "lf_text"
 const BINARY_HASH := "raw"
+const OVERLAY_FAMILIES := ["moonrunner-x99", "stik-electric-6s"]
 const CRASH_SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "engine", "propeller",
 	"horizontal_tail", "vertical_tail", "gear", "canopy"]
 
@@ -14,7 +15,7 @@ const CRASH_SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "engi
 static func describe(family_id: String) -> Dictionary:
 	if not Manifest._is_slug(family_id):
 		return _failure("MODEL_FAMILY_INVALID", "$.family_id", "requested visual family must be a lowercase stable slug")
-	if family_id == "moonrunner-x99":
+	if OVERLAY_FAMILIES.has(family_id):
 		var overlay_path := "res://aircraft/model_overlay_registry.gd"
 		if not ResourceLoader.exists(overlay_path):
 			return _failure("MODEL_OVERLAY_RESOLVER_MISSING", overlay_path, "overlay model resolver is unavailable")

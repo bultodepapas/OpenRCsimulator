@@ -5,6 +5,7 @@ const Weather := preload("res://physics/wind_config.gd")
 const Field := preload("res://data/field_loader.gd")
 const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
+const PublicationBridge := preload("res://tests/publication_fixture_bridge.gd")
 var checks := 0
 var failed := 0
 var output := ""
@@ -55,18 +56,41 @@ func _parity() -> void:
 	var expected: Dictionary = expected_by_platform.get(OS.get_name(), {})
 	if expected.is_empty():
 		print("frozen 25-endpoint weather traces exist for Windows and Linux only; %s skips them" % OS.get_name())
+	var bridge: Dictionary = {}
+	if not expected.is_empty():
+		bridge = PublicationBridge.load_family("weather")
+		check("source-bound weather fixture loads", bridge.get("ok", false))
+		if not bridge.get("ok", false): printerr("weather fixture: ", bridge.get("error", "unknown"))
 	for name: String in ["calm","gusty","turbulent","cool-dense"]:
 		var f := flight()
 		check("valid weather selected",f.setup_weather(Weather.defaults() if name=="calm" else Weather.preset(name)))
 		f.reset()
+		var row: Dictionary = bridge.get("cases", {}).get(name, {})
+		if bridge.get("ok", false):
+			check("original weather digest retained " + name, row.reference_sha256 == expected[name])
 		var hash := HashingContext.new()
 		hash.start(HashingContext.HASH_SHA256)
 		for i: int in 25:
-			check("complete accepted weather checkpoint",not f.checkpoint().is_empty())
-			hash.update(var_to_bytes(f.checkpoint()))
+			var checkpoint: Dictionary = f.checkpoint()
+			check("complete accepted weather checkpoint",not checkpoint.is_empty())
+			if bridge.get("ok", false):
+				check("typed weather checkpoint and events " + name, PublicationBridge.matches(row, i, checkpoint, f.sim.last_events))
+				if i == 0:
+					var changed := checkpoint.duplicate(true)
+					changed.aero_loads_law = "unexpected"
+					check("unexpected weather law rejects", not PublicationBridge.matches(row, i, changed, f.sim.last_events))
+					changed = checkpoint.duplicate(true)
+					var state: PackedFloat64Array = changed.simulation.state.duplicate()
+					state[0] = NAN
+					changed.simulation.state = state
+					check("nonfinite weather state rejects", not PublicationBridge.matches(row, i, changed, f.sim.last_events))
+					var events: Array = f.sim.last_events.duplicate(true)
+					events.append({"kind": "changed"})
+					check("changed weather event rejects", not PublicationBridge.matches(row, i, checkpoint, events))
+			hash.update(var_to_bytes(checkpoint))
 			if i < 24: f.sim.step()
 		var digest := hash.finish().hex_encode()
-		if not expected.is_empty(): check("frozen complete 25-endpoint weather trace "+name,digest==expected[name])
+		if bridge.get("ok", false): check("frozen complete 25-endpoint weather trace "+name,digest==row.current_sha256)
 		f.free()
 func _refusals() -> void:
 	for live: bool in [false,true]:

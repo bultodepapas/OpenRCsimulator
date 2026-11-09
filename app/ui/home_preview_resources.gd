@@ -5,6 +5,7 @@ extends Node
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
 const CustomSkin := preload("res://aircraft/custom_skin.gd")
+const ModelOverlay := preload("res://aircraft/model_overlay_registry.gd")
 const RESOURCE_LIMIT := 2
 var _active_path := ""
 var _active_callback := Callable()
@@ -24,7 +25,11 @@ static func path_for(id: String, livery := "") -> String:
 		return HX700.SCENE_PATH if id == "xcell-60-research" else ""
 	var family := Catalog.visual_family(id)
 	if family.is_empty(): return ""
-	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(("res://data/aircraft_model_overlays/" if family == "moonrunner-x99" else "res://data/aircraft_models/") + family + ".json"))
+	var manifest_path := (ModelOverlay.DIRECTORY + "/" if family in ModelOverlay.FAMILIES else "res://data/aircraft_models/") + family + ".json"
+	if not FileAccess.file_exists(manifest_path): return ""
+	var parser := JSON.new()
+	if parser.parse(FileAccess.get_file_as_string(manifest_path)) != OK: return ""
+	var parsed: Variant = parser.data
 	if not parsed is Dictionary: return ""
 	var asset: Variant = parsed.get("asset", {})
 	if not asset is Dictionary or asset.get("kind") != "imported_glb": return ""

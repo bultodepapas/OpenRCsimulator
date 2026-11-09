@@ -4,7 +4,7 @@ The catalog has three experimental finite-fuel Stik variants (`stik-glow-55ax-2t
 
 ## Fly and configure
 
-Select a finite-glow Stik or the Extra in the catalog. For direct launch, append this suffix to the engine command in [TOOLS](TOOLS.md):
+Select the Extra in the stock catalog for finite glow. The three finite-glow Stiks remain technical/compatibility specimens, available by explicit direct launch and existing Workshop documents. Home offers the unchanged basic Stik and experimental Electric 6S instead. For a technical glow launch, append this suffix to the engine command in [TOOLS](TOOLS.md):
 
 ```text
 -- --quick-flight --aircraft=stik-glow-61fx-2t

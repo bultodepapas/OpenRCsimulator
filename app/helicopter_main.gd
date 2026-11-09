@@ -543,7 +543,7 @@ func _unhandled_input(event: InputEvent) -> void:
      if session.calibration==null: pause_requested.emit() # UI-31: the result shows in Pause
    KEY_T:
     if recorder.recording: recorder.stop()
-    else: recorder.start(session.trace_meta())
+    else: recorder.start(session.trace_meta(),true)
 
 func _cycle_night_lights() -> void:
  if _night_kit!=null:

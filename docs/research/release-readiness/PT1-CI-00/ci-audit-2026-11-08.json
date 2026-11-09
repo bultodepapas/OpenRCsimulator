@@ -1,0 +1,523 @@
+{
+  "format": "openrc-ci-audit-evidence v1",
+  "audit_commit": "939ab5df4de4fc615b1051d2b1e4cba51a423b27",
+  "audit_intake_sha256": "3917d0401a6ad3f0ccb5abaad5f1dfb1ca74ff521dfd2b6c00a3751916716d5f",
+  "source": {
+    "head": "f96f9e678a0583176b0cb273e4b15abfb4d73652",
+    "files": {
+      "app/tests/test_generator_rate_datums.gd": "b05182685c9589691363d0ce13f86a021633f793794ceb3c18140ab55d79a7ca",
+      "app/tests/test_lighting_segment_filter.gd": "dd5ded82215bb579281e46066f544025c992fb1262e1ab25d4226ee79c4a79d6",
+      "app/tests/test_lighting_skin_patterns.gd": "10335cfa7bca2c5a62cef3c42560dcbf8f241aee9cee20be3d3bebdd721369ff",
+      "tools/ci/capture_groups.py": "bff355ad614ca4017688735237fbf96de85c5bd952590f874b0094fa5b430967",
+      "tools/ci/capture_diagnostics.py": "64f6afac1b138a5ccc9a13475935a1dcf89b35a84bfb90459dc693e2ec860eb5",
+      "tools/ci/test_capture_groups.py": "7c87bde136739faf62e4e032ec4067c7b53740188742b50943934ae1ca78ed6a",
+      "tools/ci/test_capture_diagnostics.py": "779f0c0d13fd50e87eb0bf0b6e1659c1744a10392fb1a27fedcdbb489918e940",
+      "tools/ci/test_visual_workflow.py": "3ce9ffcd23ee47d184bb5ca9916137f2f46ec19784907676944cd22f8ff7c6cd",
+      ".github/workflows/ci.yml": "577c6d2cc3dd44035a1e404ac748bb02aa04c27f499e0ba1aee14b82b4c3f5e4",
+      "app/capture.sh": "c4487a424f0c2dce7eb881d21d365648e61cbebf60bfc79d141d4f67d666687e"
+    },
+    "engine_sha512": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea"
+  },
+  "platform": "Windows x86-64",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "renderer": "OpenGL Compatibility / NVIDIA RTX 3090",
+  "fixture_resolution": [
+    1920,
+    1080
+  ],
+  "rate_datums": {
+    "checks": 281,
+    "failures": 0,
+    "mutations": [
+      {
+        "label": "nan-x3iab5k1",
+        "report_sha256": "13d20e9e261b1c7f59ab650adae5c56e96a0e701178ea2bb666b62b1f3409416",
+        "ok": false,
+        "complete": true,
+        "reason": "process_exit",
+        "exit_code": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "73604174c65a3b6244a87fd2b96aeb78d9b31710b0cda3e6ebf96b0334f8cd80",
+        "expected_failure": true,
+        "checks": 281,
+        "failed_comparisons": 96
+      },
+      {
+        "label": "negative-infinity-xeiivgmt",
+        "report_sha256": "81c83eea3f42e9787f444098d498d26cf70e628988f604dedcf82e2f7d254abe",
+        "ok": false,
+        "complete": true,
+        "reason": "process_exit",
+        "exit_code": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "e0ed0edc6807a730d1a8a3fc8a69b3a3e6ca22f06adb7506c66c1cebf4b7aaa7",
+        "expected_failure": true,
+        "checks": 281,
+        "failed_comparisons": 96
+      },
+      {
+        "label": "positive-infinity-qg_6vhw7",
+        "report_sha256": "5d386849a068a2afd39f3d4e96ed532627fb28e0ed321e56b3fc3e75659f9ee3",
+        "ok": false,
+        "complete": true,
+        "reason": "process_exit",
+        "exit_code": 1,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "af6d5ac73b9d7a5fbb2db9e5e0eefbf0e918f64ffd5672e57cbe25f34357f95a",
+        "expected_failure": true,
+        "checks": 281,
+        "failed_comparisons": 96
+      }
+    ]
+  },
+  "lighting_reports": [
+    {
+      "label": "point-sampled-negative-_yf7_a4e",
+      "report_sha256": "6579cbcc4fcf24bb219f002f25ce923c41f05bc39ca1676bbaa8a547d3bf5e62",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "exit_code": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c968f0bb0626f0078b304c0094c20d7f8ae4f6e1839fa4bd8477762bdccfa630",
+      "expected_failure": true
+    },
+    {
+      "label": "segment_filter-parse-3eqrr_kb",
+      "report_sha256": "38cbe845f1b004b2b3dd42cba23f5c503634ebed35ac8556ad9593aa3bcefddb",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "exit_code": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "expected_failure": false
+    },
+    {
+      "label": "segment_filter-pixels-rdzp253a",
+      "report_sha256": "2d636e01af13525dbfe18699ee83951692b44de35bda2e149b3906596ef4b6ad",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "exit_code": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e8c2f53cf19ea0de9eecd3df1d2c4aa03cc08be49cb9c5586c23cb9384737950",
+      "expected_failure": false
+    },
+    {
+      "label": "skin_patterns-parse-o_nz4dgp",
+      "report_sha256": "4aa79c2075c767d6ddecfd47efdc02a0b2827397669307be393ffa047f87daec",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "exit_code": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "expected_failure": false
+    },
+    {
+      "label": "skin_patterns-pixels-izup3j5y",
+      "report_sha256": "4909d9dcfea52076cf4e433340ec28bb4cdaf907305bb259f9b8c4e4757d0988",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "exit_code": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "8dae02a533d08cfbf2f489997ec2400f8952cb4ff620581a81fa852e64605efb",
+      "expected_failure": false
+    }
+  ],
+  "lighting_metrics": {
+    "skin_patterns": {
+      "checks": 13,
+      "complete": true,
+      "failures": 0,
+      "float64_hex": {
+        "breath_error": "00000000f802513f",
+        "chase_error": "00000000d6e9553f",
+        "exposure_delta": "0000000000000000",
+        "exposure_error": "0000000028024b3f",
+        "mirror_distance": "00000000b089d33f",
+        "mirror_error": "00000000f0b15d3f",
+        "phase_distance": "000000400c1eca3f",
+        "phase_early_error": "00000000b043503f",
+        "phase_later_error": "00000000e09b523f",
+        "pulse_error": "0000000088623c3f",
+        "rainbow_error": "00000000a84a603f",
+        "segments_error": "00000000009f453f",
+        "steady_error": "00000000c085373f",
+        "wave_error": "000000005005533f",
+        "wave_spatial_distance": "00000000f648d23f"
+      },
+      "format": "openrc-lighting-skin-metrics v1",
+      "metrics": {
+        "breath_error": 0.0010383054614067078,
+        "chase_error": 0.0013374891132116318,
+        "exposure_delta": 0.0,
+        "exposure_error": 0.0008242316544055939,
+        "mirror_distance": 0.3052787780761719,
+        "mirror_error": 0.0018124431371688843,
+        "phase_distance": 0.204041987657547,
+        "phase_early_error": 0.000992700457572937,
+        "phase_later_error": 0.001135796308517456,
+        "pulse_error": 0.0004331190139055252,
+        "rainbow_error": 0.001988723874092102,
+        "segments_error": 0.0006598234176635742,
+        "steady_error": 0.0003589242696762085,
+        "wave_error": 0.001160934567451477,
+        "wave_spatial_distance": 0.285703182220459
+      },
+      "viewport": [
+        1920,
+        1080
+      ]
+    },
+    "segment_filter": {
+      "checks": 12,
+      "complete": true,
+      "failures": 0,
+      "float64_hex": {
+        "cell_overlap_error": "0000000089c0853f",
+        "far_filtered_error": "80f6e97c584d9e3f",
+        "far_point_error": "000000000000e03f",
+        "perspective_error": "80f6e97c584d9e3f",
+        "reversed_error": "001010101010603f",
+        "whole_path_0_0": "8144c87e838cd93f",
+        "whole_path_0_1": "8144c87e838cd93f",
+        "whole_path_0_2": "fdedde04f2cdc93f",
+        "whole_path_1_0": "555555555555d53f",
+        "whole_path_1_1": "555555555555d53f",
+        "whole_path_1_2": "555555555555d53f",
+        "whole_path_2_0": "55b5517299fbd73f",
+        "whole_path_2_1": "5625d7463302d43f",
+        "whole_path_2_2": "5625d7463302d43f"
+      },
+      "format": "openrc-lighting-segment-metrics v1",
+      "metrics": {
+        "cell_overlap_error": 0.010621137917041779,
+        "far_filtered_error": 0.02959192526258514,
+        "far_point_error": 0.5,
+        "perspective_error": 0.02959192526258514,
+        "reversed_error": 0.0019607843137254832,
+        "whole_path_0_0": 0.39920127278407597,
+        "whole_path_0_1": 0.39920127278407597,
+        "whole_path_0_2": 0.2015974544318481,
+        "whole_path_1_0": 0.3333333333333333,
+        "whole_path_1_1": 0.3333333333333333,
+        "whole_path_1_2": 0.3333333333333333,
+        "whole_path_2_0": 0.3747314087293792,
+        "whole_path_2_1": 0.3126342956353104,
+        "whole_path_2_2": 0.3126342956353104
+      },
+      "viewport": [
+        1920,
+        1080
+      ]
+    }
+  },
+  "orchestration": {
+    "quick_preflight": {
+      "result": "passed",
+      "test_counts": [
+        14,
+        44,
+        123
+      ],
+      "log_sha256": "2c4b61baa60c9bb12961887d3129a4274279e7c7afc329e1f46916dcad46a697",
+      "scope": "partial CI; final signed-zero helper change covered by capture-group rerun"
+    },
+    "capture_groups_final": {
+      "result": "passed",
+      "tests": 20,
+      "skips": 0,
+      "log_sha256": "9d629c964044a95fdd1a93b480330ac126c2bd962d5e8bb4c532280b8fc3be6f"
+    }
+  },
+  "limitations": [
+    "Working tree shared and changing; per-file source hashes bind this evidence.",
+    "Complete required hosted CI and downstream native/export qualification not established.",
+    "Full visual group equivalence, history/mutation qualification and hosted artifact round trip pending.",
+    "Named metric equality does not compare every unsaved pixel or validate physical flight."
+  ],
+  "ui_current_working_tree": {
+    "source": {
+      "head_before": "0b3de74768cdeaf93b827eed99a21b4d63595682",
+      "before": {
+        "app/ui/home.gd": "2d0eba9a97d692971e521af7f273d54b1d979d0995192ca17c257bd634ce2ce0",
+        "app/app_root.gd": "9173af3f7eaff6a6673e386a130f61883689a86f9250800d5ddb37493b9a6ed0",
+        "app/app_state/aircraft_catalog.gd": "7341a286606ec10d0561715e796d04fa40378734d8f80d899dd4db46c4bb2557",
+        "app/tests/test_home_launch_conditions.gd": "c45b1b25a185edd0cd2f83857090e7496d9f51345c7315e1a6cf56b8c984493e",
+        "app/tests/test_ui_home.gd": "c4531d9685695d3fff741f5de038910a07f10feccfeeae62d4e4fc5f3b9dada9",
+        "app/tests/test_ui_recovery_dead_ends.gd": "52864c65eca8f01d66f286dfcb33ca85f7bb4acafc28d2dfc60578c25759fc99"
+      },
+      "runs": [
+        {
+          "script": "test_home_launch_conditions.gd",
+          "exit": 0
+        },
+        {
+          "script": "test_ui_home.gd",
+          "exit": 0
+        },
+        {
+          "script": "test_ui_recovery_dead_ends.gd",
+          "exit": 0
+        }
+      ],
+      "after": {
+        "app/ui/home.gd": "2d0eba9a97d692971e521af7f273d54b1d979d0995192ca17c257bd634ce2ce0",
+        "app/app_root.gd": "9173af3f7eaff6a6673e386a130f61883689a86f9250800d5ddb37493b9a6ed0",
+        "app/app_state/aircraft_catalog.gd": "7341a286606ec10d0561715e796d04fa40378734d8f80d899dd4db46c4bb2557",
+        "app/tests/test_home_launch_conditions.gd": "c45b1b25a185edd0cd2f83857090e7496d9f51345c7315e1a6cf56b8c984493e",
+        "app/tests/test_ui_home.gd": "c4531d9685695d3fff741f5de038910a07f10feccfeeae62d4e4fc5f3b9dada9",
+        "app/tests/test_ui_recovery_dead_ends.gd": "52864c65eca8f01d66f286dfcb33ca85f7bb4acafc28d2dfc60578c25759fc99"
+      },
+      "head_after": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "changed_inputs": []
+    },
+    "reports": [
+      {
+        "label": "test_controller_calibration_disclosure-s1l_7od6",
+        "ok": true,
+        "complete": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "9780f048acd11fa7ad381f35a1d1e2606a9ce9e82963fbd5b82ef019a72458f1"
+      },
+      {
+        "label": "test_home_launch_conditions-aq6id1bh",
+        "ok": true,
+        "complete": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "d1cdf93fb1db18bc0598397143e89d58f03e9cab18f2dffc52c008024258c055"
+      },
+      {
+        "label": "test_ui_home-8cdxi29s",
+        "ok": true,
+        "complete": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "72a0a8bc67b0a83071cf6bb18b6badebd21240c0eab83bd3b46bee04085e16b4"
+      },
+      {
+        "label": "test_ui_home_layout-2niaoy3p",
+        "ok": true,
+        "complete": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "262dcded5c3ef8224105081301e7224776d6194166fc784acf7b6c15a8f86111"
+      },
+      {
+        "label": "test_ui_recovery_dead_ends-df_4vh_j",
+        "ok": true,
+        "complete": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "5a29251ccb29413d42587334bd6d5d6342ebeca52de917e02b8c9cca7a6d5568"
+      },
+      {
+        "label": "test_ui_screen_stack-tvg9zm2a",
+        "ok": true,
+        "complete": true,
+        "reason": "passed",
+        "exit_code": 0,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "log_sha256": "4e480b41e2187596ea7c9c88cc2cb40c5ffc9b08236d43d1d088a6d4b418c974"
+      }
+    ],
+    "additional_source": {
+      "head_before": "84a0d98d1e1ffaae4950532e653390f5a9abe590",
+      "before": {
+        "app/ui/home.gd": "2d0eba9a97d692971e521af7f273d54b1d979d0995192ca17c257bd634ce2ce0",
+        "app/app_root.gd": "9173af3f7eaff6a6673e386a130f61883689a86f9250800d5ddb37493b9a6ed0",
+        "app/app_state/aircraft_catalog.gd": "7341a286606ec10d0561715e796d04fa40378734d8f80d899dd4db46c4bb2557",
+        "app/tests/test_controller_calibration_disclosure.gd": "012252a1e7c9c121b35a9254d4c109f92bd063c24b8d6c35bac09b37e809c689",
+        "app/tests/test_ui_home_layout.gd": "4a3fc6bc96d109d4888b5e154b57af6f15f5061b37b6b5a2f658ea2ec8115295",
+        "app/tests/test_ui_screen_stack.gd": "ce8a69048124e26d71e5dd8f3e984318731382c18d79b9cb95e5d7c9f13adb29"
+      },
+      "runs": [
+        {
+          "script": "test_controller_calibration_disclosure.gd",
+          "exit": 0
+        },
+        {
+          "script": "test_ui_home_layout.gd",
+          "exit": 0
+        },
+        {
+          "script": "test_ui_screen_stack.gd",
+          "exit": 0
+        }
+      ],
+      "after": {
+        "app/ui/home.gd": "2d0eba9a97d692971e521af7f273d54b1d979d0995192ca17c257bd634ce2ce0",
+        "app/app_root.gd": "9173af3f7eaff6a6673e386a130f61883689a86f9250800d5ddb37493b9a6ed0",
+        "app/app_state/aircraft_catalog.gd": "7341a286606ec10d0561715e796d04fa40378734d8f80d899dd4db46c4bb2557",
+        "app/tests/test_controller_calibration_disclosure.gd": "012252a1e7c9c121b35a9254d4c109f92bd063c24b8d6c35bac09b37e809c689",
+        "app/tests/test_ui_home_layout.gd": "4a3fc6bc96d109d4888b5e154b57af6f15f5061b37b6b5a2f658ea2ec8115295",
+        "app/tests/test_ui_screen_stack.gd": "ce8a69048124e26d71e5dd8f3e984318731382c18d79b9cb95e5d7c9f13adb29"
+      },
+      "changed_inputs": [],
+      "head_after": "84a0d98d1e1ffaae4950532e653390f5a9abe590"
+    }
+  },
+  "publication_fixtures": {
+    "report": "ci-audit-fixtures-2026-11-08.md",
+    "evidence_sha256": "c6bfd8964c9cb52b5304ef4aed7de3912db6e3730df843ff2dddfbf011b4abe1",
+    "fixture_sha256_lf": "24facb93a4d0b6f1ba7b02aa262d860056720c8632c1696204287be9035dc85f",
+    "source_pins": {
+      "data/aircraft/jensen_ugly_stik_60.json": {
+        "mode": "exact",
+        "sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+      },
+      "data/aircraft/p51d_mustang_120.json": {
+        "mode": "exact",
+        "sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c"
+      },
+      "data/fuels/openrc-fuel-registry.json": {
+        "mode": "exact",
+        "sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043"
+      },
+      "data/ground/wheel_profiles.json": {
+        "mode": "exact",
+        "sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665"
+      },
+      "physics/aero.gd": {
+        "mode": "script-lf",
+        "sha256": "72042b7b51698ccec5d25bc22093df5610fe6f7e4b147e29b32d06fa2f734576"
+      },
+      "physics/aircraft_data.gd": {
+        "mode": "script-lf",
+        "sha256": "3f8879f6c6f87b87956bffda19d0fb89e40463695025508b01aae4dbae48455f"
+      },
+      "physics/electric_battery_step.gd": {
+        "mode": "script-lf",
+        "sha256": "abc7c83fa52b01120e9baaefef453564f5044b18a198127c3c5b2134f7472409"
+      },
+      "physics/electric_stop.gd": {
+        "mode": "script-lf",
+        "sha256": "b77284044eb4f890d8f83b5b282a12e0f36272b11ecd596d2b9512d1ae6b24ab"
+      },
+      "physics/event_bracket.gd": {
+        "mode": "script-lf",
+        "sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf"
+      },
+      "physics/math3d.gd": {
+        "mode": "script-lf",
+        "sha256": "4c2eee2f8ef4d38352014628ba9665fdd4f50d4b1edcf90ffc680c7763de8832"
+      },
+      "physics/propulsion.gd": {
+        "mode": "script-lf",
+        "sha256": "e85734749f6f1fae5ad61858a267d4393b9b21bd2f0c85afd0dc19946f816f6f"
+      },
+      "physics/rigid_body.gd": {
+        "mode": "script-lf",
+        "sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+      },
+      "physics/wheel_profiles.gd": {
+        "mode": "script-lf",
+        "sha256": "7cc4f860c23b5127bba1959a85d7dde601378cfa98284fa3b3579f75dabee26d"
+      },
+      "physics/wind_config.gd": {
+        "mode": "script-lf",
+        "sha256": "4824223a8fb6c85ad6edd347a24d74bf1d5152451db6263d4eba2a621a981f66"
+      },
+      "sim/electric_contact_step.gd": {
+        "mode": "script-lf",
+        "sha256": "ef6bf63bd3babd77e44b11deb4e06070885bbdc6c3a7a3913b8e315955213b76"
+      },
+      "sim/flight_session.gd": {
+        "mode": "script-lf",
+        "sha256": "9b93be96e64e7c8ff425a177fb1590c9032d1de6b2bd6f536fb6a7d836a098cc"
+      },
+      "sim/simulation.gd": {
+        "mode": "script-lf",
+        "sha256": "56953f116a293a984cbc5315b9cd97dc156e63cdd98c12fbc041e6df6baaab92"
+      },
+      "sim/vehicle_model.gd": {
+        "mode": "script-lf",
+        "sha256": "e065d8b8b52c223c0260ac3da3976fd528755d5052d8245ae070cccd4b287174"
+      }
+    },
+    "shaft": {
+      "Windows": [
+        214,
+        0
+      ],
+      "Linux": [
+        214,
+        0
+      ]
+    },
+    "weather": {
+      "Windows": [
+        313,
+        0
+      ],
+      "Linux": [
+        313,
+        0
+      ]
+    },
+    "fleet_linux_reference": [
+      535,
+      0
+    ],
+    "event_scope": "empty-event traces only; unexpected events reject",
+    "native_glow": {
+      "checks": 14,
+      "failed": 2,
+      "reason": "stale installed library receipt; fresh qualified build required"
+    },
+    "build_blocker": "6 GiB minimum; about 5.5 GiB available; task cache removal rejected as blocked by policy"
+  },
+  "integration_head": "84a0d98d1e1ffaae4950532e653390f5a9abe590"
+}

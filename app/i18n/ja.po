@@ -9025,3 +9025,21 @@ msgstr "電圧や推定残量などの飛行用バッテリーセンサーの測
 
 msgid "Focus the description to scroll with arrows or %s / %s."
 msgstr "説明にフォーカスすると、矢印キーまたは %s / %s でスクロールできます。"
+
+msgid "%s is a technical configuration. Home is using %s. Existing builds and technical launches remain available; your saved selection is retained until you choose an aircraft or Fly."
+msgstr "%s は技術用の構成です。ホームでは %s を使用しています。保存済みの機体と技術用の起動は引き続き利用できます。機体を選ぶか「飛行」を押すまで、保存済みの選択は保持されます。"
+
+msgid "Electric Workshop trials use ideal fixed voltage; the battery never runs flat. Normal stock flight offers the finite pack."
+msgstr "ワークショップの電動試験飛行では理想的な固定電圧を使用し、バッテリーは消耗しません。通常の飛行では放電するバッテリーを選べます。"
+
+msgid "This aircraft is available only through technical compatibility routes."
+msgstr "この機体は互換性のための技術用起動からのみ利用できます。"
+
+msgid "High-wing sport trainer · 1.52 m · 6S electric"
+msgstr "高翼スポーツ練習機 · 1.52 m · 6S電動"
+
+msgid "Experimental: estimated 6S electric conversion, not flight-validated. Battery and motor behavior require physical qualification."
+msgstr "実験的：推定による6S電動改造で、飛行検証は未完了です。バッテリーとモーターの挙動には実機での検証が必要です。"
+
+msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
+msgstr "保存済みの設定は保護されているか利用できません。変更はこのセッションにのみ適用されます。"

@@ -9776,3 +9776,21 @@ msgstr "Показания датчиков полётного аккумуля�
 
 msgid "Focus the description to scroll with arrows or %s / %s."
 msgstr "Переведите фокус на описание для прокрутки стрелками или %s / %s."
+
+msgid "%s is a technical configuration. Home is using %s. Existing builds and technical launches remain available; your saved selection is retained until you choose an aircraft or Fly."
+msgstr "%s — техническая конфигурация. На главном экране используется %s. Сохранённые модели и технический запуск остаются доступны; сохранённый выбор сохраняется, пока вы не выберете самолёт или не нажмёте ЛЕТЕТЬ."
+
+msgid "Electric Workshop trials use ideal fixed voltage; the battery never runs flat. Normal stock flight offers the finite pack."
+msgstr "Электрические испытательные полёты в Мастерской используют идеальное постоянное напряжение; батарея не разряжается. В обычном полёте доступна батарея с разрядом."
+
+msgid "This aircraft is available only through technical compatibility routes."
+msgstr "Этот самолёт доступен только через технические способы запуска для совместимости."
+
+msgid "High-wing sport trainer · 1.52 m · 6S electric"
+msgstr "Высокоплан для спортивного обучения · 1,52 м · электрический 6S"
+
+msgid "Experimental: estimated 6S electric conversion, not flight-validated. Battery and motor behavior require physical qualification."
+msgstr "Экспериментально: оценочная электрическая конфигурация 6S, не проверенная в полёте. Поведение батареи и двигателя требует физической проверки."
+
+msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
+msgstr "Сохранённые настройки защищены или недоступны. Изменения действуют только в этом сеансе."

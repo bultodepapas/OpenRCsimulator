@@ -273,6 +273,7 @@ func _source_hashes() -> Dictionary:
 			"res://physics/dynamics.gd", "res://physics/hull_contact.gd", "res://physics/wind_field.gd",
 			"res://sim/environment.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
 			"res://sim/native_stage.gd", "res://app_state/native_package.gd", "res://data/aircraft/jensen_ugly_stik_60.json",
+			"res://data/ground/wheel_profiles.json",
 			"res://sim/native/stage_config.gd", "res://sim/native/weather_adapter.gd", "res://sim/native/native_weather.gd",
 			"res://sim/native/native_configuration.gd", "res://sim/native/electric_stage_adapter.gd",
 			"res://sim/native/liquid_stage_adapter.gd", "res://sim/native/glow_stage_adapter.gd",

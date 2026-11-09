@@ -23,17 +23,22 @@ class ModelOverlayTests(unittest.TestCase):
     def setUpClass(cls):
         cls.temporary = tempfile.TemporaryDirectory(prefix="moonrunner-overlay-")
         cls.root = Path(cls.temporary.name)
-        manifest = read(ROOT / models.OVERLAY_OUTPUT_DIR / "moonrunner-x99.json")
-        overlay = read(ROOT / custom.OVERLAY_OUTPUT_DIR / "moonrunner-x99.json")
-        resources = {models.REGISTRY_PATH.as_posix(), models.OVERLAY_SOURCE.as_posix(), custom.OVERLAY_SOURCE.as_posix(),
+        resources = {models.REGISTRY_PATH.as_posix(),
                      custom.SOURCE_PATH.as_posix(), custom.OUTPUT_PATH.as_posix()}
+        resources.update(path.as_posix() for path in models.OVERLAY_SOURCES.values())
+        resources.update(path.as_posix() for path in custom.OVERLAY_SOURCES.values())
         resources.update(path.relative_to(ROOT).as_posix() for path in (ROOT / models.OUTPUT_DIR).glob("*.json"))
-        records = [manifest["geometry"]["source"], *manifest["authoring_sources"], *manifest["dependencies"]]
-        records += [{"path": manifest["asset"]["path"]}]
-        for livery in manifest.get("liveries", []):
-            records.extend([{"path": livery["path"]}, {"path": livery["path"] + ".import"}])
-        records += overlay["families"][0]["presentation_sources"]
-        records += read(ROOT / "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json")["sources"]
+        records = []
+        for family, path in models.OVERLAY_SOURCES.items():
+            manifest = read(ROOT / models.OVERLAY_OUTPUT_DIR / f"{family}.json")
+            overlay = read(ROOT / custom.OVERLAY_OUTPUT_DIR / f"{family}.json")
+            records += [manifest["geometry"]["source"], *manifest["authoring_sources"], *manifest["dependencies"]]
+            if manifest["asset"].get("path"):
+                records.append({"path": manifest["asset"]["path"]})
+            for livery in manifest.get("liveries", []):
+                records.extend([{"path": livery["path"]}, {"path": livery["path"] + ".import"}])
+            records += overlay["families"][0]["presentation_sources"]
+            records += read(ROOT / path.parent / "runtime-proof.json")["sources"]
         for record in records:
             path = record["path"]
             resources.add("app/" + path.removeprefix("res://") if path.startswith("res://") else path)
@@ -52,6 +57,8 @@ class ModelOverlayTests(unittest.TestCase):
         cls.temporary.cleanup()
 
     def test_base_aggregate_is_current_and_unchanged(self):
+        self.assertEqual(set(models.OVERLAY_SOURCES), {"moonrunner-x99", "stik-electric-6s"})
+        self.assertEqual(set(custom.OVERLAY_SOURCES), set(models.OVERLAY_SOURCES))
         aggregate = self.root / custom.OUTPUT_PATH
         original = aggregate.read_bytes()
         self.assertEqual(custom.generate(self.root, True), 0)
@@ -64,8 +71,10 @@ class ModelOverlayTests(unittest.TestCase):
     def test_repeatability_and_legacy_content(self):
         self.assertEqual(models.generate_overlay(self.root, False), 0)
         self.assertEqual(custom.generate_overlay(self.root, False), 0)
-        for relative in (models.OVERLAY_OUTPUT_DIR / "moonrunner-x99.json", custom.OVERLAY_OUTPUT_DIR / "moonrunner-x99.json"):
-            self.assertEqual((self.root / relative).read_bytes(), (ROOT / relative).read_bytes())
+        for family in models.OVERLAY_SOURCES:
+            for directory in (models.OVERLAY_OUTPUT_DIR, custom.OVERLAY_OUTPUT_DIR):
+                relative = directory / f"{family}.json"
+                self.assertEqual((self.root / relative).read_bytes(), (ROOT / relative).read_bytes())
         self.assertEqual(models.generate_overlay(self.root, True), 0)
         self.assertEqual(custom.generate_overlay(self.root, True), 0)
         old = read(ROOT / "app/data/aircraft_models/skywalker-x8.json")
@@ -126,8 +135,9 @@ class ModelOverlayTests(unittest.TestCase):
             source.write_bytes(original)
 
     def test_wrong_or_duplicate_family_is_rejected(self):
-        for relative, generate, key in ((models.OVERLAY_SOURCE, models.generate_overlay, "family_id"),
-                                        (custom.OVERLAY_SOURCE, custom.generate_overlay, "visual_family")):
+        cases = [(path, models.generate_overlay, "family_id") for path in models.OVERLAY_SOURCES.values()]
+        cases += [(path, custom.generate_overlay, "visual_family") for path in custom.OVERLAY_SOURCES.values()]
+        for relative, generate, key in cases:
             source = self.root / relative
             original = source.read_bytes()
             try:

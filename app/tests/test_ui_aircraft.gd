@@ -1,6 +1,6 @@
 # UI-05 / EX-11 / AV-03 / TT-10: choosing the aircraft on Home with real key events (tests/ui_driver.gd). The card and
 # backdrop follow the choice, the choice is remembered, Fly starts exactly that airplane (model and physics), and a
-# stale or broken preference falls back to the default. Includes the three inferred glow Stik installations.
+# stale or broken preference falls back to the default. Technical glow fixtures remain outside stock selection.
 # Run: godot --headless --path . --script res://tests/test_ui_aircraft.gd
 extends SceneTree
 
@@ -18,6 +18,7 @@ const CORSAIR := "f4u-corsair-250"
 const GLOW_61FX := "stik-glow-61fx-2t"
 const GLOW_55AX := "stik-glow-55ax-2t"
 const GLOW_FS64V := "stik-glow-fs64v-4t"
+const ELECTRIC := "stik-electric-6s"
 const HELI := "xcell-60-research"
 const X8 := "moonrunner-x99"
 
@@ -71,12 +72,12 @@ func _tab_until(target: String, max_presses := 32) -> bool:
 
 
 func _aircraft_counter(id: String) -> String:
-	var ids: PackedStringArray = Catalog.ids()
+	var ids: PackedStringArray = Catalog.player_ids()
 	return "%d / %d" % [ids.find(id) + 1, ids.size()]
 
 
 func _aircraft_counter_tooltip(id: String) -> String:
-	var ids: PackedStringArray = Catalog.ids()
+	var ids: PackedStringArray = Catalog.player_ids()
 	return tr("Aircraft %d of %d") % [ids.find(id) + 1, ids.size()]
 
 
@@ -87,7 +88,9 @@ func _run() -> void:
 	var home: Control = app.home
 	_check("catalog order keeps the Stik glow variants before the Extra",
 		Catalog.step(STIK, 1) == GLOW_61FX and Catalog.step(GLOW_61FX, 1) == GLOW_55AX
-		and Catalog.step(GLOW_55AX, 1) == GLOW_FS64V and Catalog.step(GLOW_FS64V, 1) == EXTRA)
+		and Catalog.step(GLOW_55AX, 1) == GLOW_FS64V and Catalog.step(GLOW_FS64V, 1) == ELECTRIC)
+	_check("stock navigation offers basic then electric then Extra", Catalog.player_step(STIK, 1) == ELECTRIC
+		and Catalog.player_step(ELECTRIC, 1) == EXTRA)
 	_check("default: the Ugly Stik on the card and in the backdrop", home.aircraft_id == STIK and home.aircraft_name_label.text == Catalog.entry(STIK).name
 		and app.home_scene.airplane.aircraft_id == STIK)
 	_check("default: Fly enabled and focused, catalog counter", not home.fly_button.disabled and ui.focus_name() == "Fly"
@@ -104,35 +107,15 @@ func _run() -> void:
 		return
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("MAX-61FX Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_61FX
-		and home.aircraft_count_label.text == _aircraft_counter(GLOW_61FX)
-		and home.aircraft_name_label.text.contains("61FX")
-		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(GLOW_61FX).name)
-		and app.home_scene.airplane.aircraft_id == GLOW_61FX and not home.fly_button.disabled
-		and home.aircraft_status_label.text.contains("MAX-61FX") and home.aircraft_status_label.text.contains("not flight-validated"),
+	_check("electric Stik: experimental 6S on card and backdrop", home.aircraft_id == ELECTRIC
+		and home.aircraft_count_label.text == _aircraft_counter(ELECTRIC)
+		and home.aircraft_name_label.text.contains("6S")
+		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(ELECTRIC).name)
+		and app.home_scene.airplane.aircraft_id == ELECTRIC and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and home.battery_mode == "pack",
 		"%s / %s / %s / %s" % [home.aircraft_id, home.aircraft_name_label.text,
 			home.aircraft_name_label.tooltip_text, home.aircraft_status_label.text])
-	_check("MAX-61FX selection does not start a flight", app.flight == null)
-	await ui.tap(KEY_ENTER)
-	await _preview(app)
-	_check("55AX glow Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_55AX
-		and home.aircraft_name_label.text.contains("55AX")
-		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(GLOW_55AX).name)
-		and app.home_scene.airplane.aircraft_id == GLOW_55AX and not home.fly_button.disabled
-		and home.aircraft_status_label.text.contains("inferred") and home.aircraft_status_label.text.contains("2-stroke"),
-		"%s / %s / %s / %s" % [home.aircraft_id, home.aircraft_name_label.text,
-			home.aircraft_name_label.tooltip_text, home.aircraft_status_label.text])
-	_check("55AX selection does not start a flight", app.flight == null)
-	await ui.tap(KEY_ENTER)
-	await _preview(app)
-	_check("FS-64V glow Stik: experimental true 4-stroke on card and backdrop", home.aircraft_id == GLOW_FS64V
-		and home.aircraft_name_label.text.contains("FS-64V")
-		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(GLOW_FS64V).name)
-		and app.home_scene.airplane.aircraft_id == GLOW_FS64V and not home.fly_button.disabled
-		and home.aircraft_status_label.text.contains("inferred") and home.aircraft_status_label.text.contains("4-stroke"),
-		"%s / %s / %s / %s" % [home.aircraft_id, home.aircraft_name_label.text,
-			home.aircraft_name_label.tooltip_text, home.aircraft_status_label.text])
-	_check("FS-64V selection does not start a flight", app.flight == null)
+	_check("electric selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("Enter on the arrow: the Extra on the card, in the backdrop and saved", home.aircraft_id == EXTRA and home.aircraft_name_label.text == Catalog.short_name(EXTRA)

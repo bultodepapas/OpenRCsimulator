@@ -34,6 +34,7 @@ const ENTRIES := [
 	{
 		# NITRO-61FX: the default Stik's own O.S. MAX-61FX on its APC 12x6, flown by the glow engine model.
 		id = "stik-glow-61fx-2t",
+		player_selectable = false,
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick · MAX-61FX",
 		short_name = "Ugly Stick · 61FX",
@@ -44,6 +45,7 @@ const ENTRIES := [
 	},
 	{
 		id = "stik-glow-55ax-2t",
+		player_selectable = false,
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick · MAX-55AX",
 		short_name = "Ugly Stick · 55AX",
@@ -54,6 +56,7 @@ const ENTRIES := [
 	},
 	{
 		id = "stik-glow-fs64v-4t",
+		player_selectable = false,
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick · FS-64V",
 		short_name = "Ugly Stick · FS-64V",
@@ -61,6 +64,18 @@ const ENTRIES := [
 		status = EXPERIMENTAL,
 		status_note = "Experimental: inferred O.S. FS-64V 4-stroke installation and engine profile; not flight-validated.",
 		data = "res://data/aircraft/stik_glow_fs64v_4t.json",
+	},
+	{
+		id = "stik-electric-6s",
+		visual_family = "stik-electric-6s",
+		name = "Ugly Stick · Electric 6S",
+		short_name = "Ugly Stick · 6S",
+		summary = "High-wing sport trainer · 1.52 m · 6S electric",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: estimated 6S electric conversion, not flight-validated. Battery and motor behavior require physical qualification.",
+		data = "res://data/aircraft/stik_electric_6s.json",
+		battery_data = "res://data/aircraft/battery/stik_electric_6s_pack.json",
+		player_selectable = true,
 	},
 	{
 		id = "gp-extra-300s-60",
@@ -161,6 +176,31 @@ static func canonical_id(id: String) -> String:
 
 static func has(id: String) -> bool:
 	return ids().has(canonical_id(id))
+
+
+## Stock player selection is separate from the complete technical/compatibility registry.
+## Omitted metadata preserves existing entries, including previews and rotorcraft.
+static func is_player_selectable(id: String) -> bool:
+	var e := entry(canonical_id(id))
+	return not e.is_empty() and bool(e.get("player_selectable", true))
+
+
+static func player_entries() -> Array:
+	return ENTRIES.filter(func(e: Dictionary) -> bool: return is_player_selectable(str(e.id)))
+
+
+static func player_ids() -> PackedStringArray:
+	var out := PackedStringArray()
+	for e in player_entries():
+		out.append(e.id)
+	return out
+
+
+## Hidden/unknown origins must be resolved explicitly before navigation.
+static func player_step(id: String, delta: int) -> String:
+	var list := player_ids()
+	var i := list.find(canonical_id(id))
+	return "" if i < 0 or list.is_empty() else list[posmod(i + delta, list.size())]
 
 
 ## Vehicle ownership is explicit where the catalog crosses into aircraft-only systems.

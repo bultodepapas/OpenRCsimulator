@@ -1183,13 +1183,18 @@ func _cmd_fly(request: Dictionary) -> Dictionary:
 	var screens: Variant = app.get("screens")
 	if screens == null or not screens.is_top("home"):
 		return _fail("fly starts from Home (screens: %s)" % [_screen_ids()])
+	var errors := _home_request_errors(request)
+	if not errors.is_empty():
+		return _fail("nothing changed: " + "; ".join(errors))
 	if request.has("aircraft"):
 		var id := str(request.aircraft)
-		if not Catalog.has(id):
-			return _fail("unknown aircraft '%s'; flyable: %s" % [id, ", ".join(Catalog.flyable_ids())])
-		app.set_aircraft(id)
+		if not app.set_aircraft(id):
+			return _fail("aircraft selection was refused; flight not started")
 	if request.has("start"):
+		# A supported vocabulary value may normalize for the chosen aircraft/field.
+		# Keep the existing fallback contract and report the effective selection below.
 		app.set_start_choice(str(request.start))
+	var selection := _home_selection()
 	app.start_flight()
 	return {pending = func() -> Variant:
 		var session := _session()
@@ -1197,7 +1202,7 @@ func _cmd_fly(request: Dictionary) -> Dictionary:
 		# Commands following `fly` must see the usable route and its launch review.
 		if session == null or not session.is_inside_tree() or _screen_ids().has("loading"):
 			return null
-		return _ok(_flight_state(session)),
+		return _ok(_flight_state(session).merged({selection = selection, requested_start = request.get("start", "")})),
 		timeout_s = 240.0}
 
 
@@ -2826,6 +2831,8 @@ func _cmd_choose(request: Dictionary) -> Dictionary:
 func _cmd_catalog(_request: Dictionary) -> Dictionary:
 	var aircraft: Array = []
 	for id: String in Catalog.flyable_ids():
+		if not Catalog.is_player_selectable(id):
+			continue
 		var starts: Array = ["airborne"]
 		if Catalog.is_rotorcraft(id):
 			starts = ["runway", "airborne"]
@@ -2836,7 +2843,7 @@ func _cmd_catalog(_request: Dictionary) -> Dictionary:
 				starts.append("hand_launch")
 		aircraft.append({id = id, name = Catalog.short_name(id), rotorcraft = Catalog.is_rotorcraft(id), starts = starts})
 	var home: Variant = app.get("home") if app != null else null
-	return _ok({aircraft = aircraft, landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
+	return _ok({aircraft = aircraft, technical_aircraft_ids = Array(Catalog.ids()), landscapes = Array(Landscapes.ids()), time_of_day = Array(Conditions.HOME_CHOICES),
 		languages = Preferences.LANGUAGES, screens = SCREEN_OPENERS.keys(), camera_views = CameraViews,
 		gizmo_layers = FlightGizmos.LAYERS, selected = _home_selection() if home != null else {},
 		notes = ["start: a runway-less landscape or aircraft falls back (see setup's read-back)",
@@ -2855,49 +2862,53 @@ func _home_selection() -> Dictionary:
 func _cmd_setup(request: Dictionary) -> Dictionary:
 	if app.get("home") == null or app.get("flight") != null or app.get("ground_vehicle") != null:
 		return _fail("setup works on Home: use home first")
-	# Validate everything first: an invalid value changes nothing at all.
-	var errors: Array = []
-	if request.has("language") and not Preferences.LANGUAGES.has(str(request.language)):
-		errors.append("language '%s' unknown; one of %s" % [request.language, Preferences.LANGUAGES.keys()])
-	if request.has("aircraft") and not Catalog.flyable_ids().has(str(request.aircraft)):
-		errors.append("aircraft '%s' unknown or not flyable; see catalog" % request.aircraft)
-	if request.has("landscape") and not Landscapes.has(str(request.landscape)):
-		errors.append("landscape '%s' unknown; one of %s" % [request.landscape, Landscapes.ids()])
-	if request.has("time_of_day") and not Conditions.HOME_CHOICES.has(str(request.time_of_day)):
-		errors.append("time_of_day '%s' unknown; one of %s" % [request.time_of_day, Conditions.HOME_CHOICES])
-	if request.has("start") and str(request.start) not in ["runway", "airborne", "hand_launch"]:
-		errors.append("start '%s' unknown; one of runway, airborne, hand_launch" % request.start)
+	var errors := _home_request_errors(request)
 	if not errors.is_empty():
 		return _fail("nothing changed: " + "; ".join(errors))
-	if request.has("language"):
-		app.set_language(str(request.language))
-	if request.has("aircraft"):
-		app.set_aircraft(str(request.aircraft)) # before start: the start choice depends on the aircraft
-	if request.has("landscape"):
-		app.set_landscape(str(request.landscape))
-	if request.has("time_of_day"):
-		app.set_time_of_day(str(request.time_of_day))
-	if request.has("start"):
-		app.set_start_choice(str(request.start))
+	var adjusted := PackedStringArray()
+	for key: String in ["language", "aircraft", "landscape", "time_of_day", "start"]:
+		if request.has(key):
+			var applied: bool = app.call("set_" + ("start_choice" if key == "start" else key), str(request[key]))
+			if not applied:
+				adjusted.append(key)
 	var wanted := {}
 	for key: String in ["aircraft", "start", "landscape", "time_of_day", "language"]:
 		if request.has(key):
-			wanted[key] = str(request[key])
+			wanted[key] = Catalog.canonical_id(str(request[key])) if key == "aircraft" else str(request[key])
 	return {pending = func() -> Variant:
 		var now := _home_selection()
 		var differs := {}
 		for key: String in wanted:
 			if str(now.get(key)) != wanted[key]:
 				differs[key] = {asked = wanted[key], got = now.get(key)}
-		# The landscape rebuilds over a few frames; wait for it, then report what really applies.
 		if differs.has("landscape") and _screen_ids().has("loading"):
 			return null
 		var out := {selected = now}
+		if not adjusted.is_empty():
+			out.adjusted = Array(adjusted)
 		if not differs.is_empty():
 			out.differs = differs
 			out.note = "the app kept other values (an aircraft without a runway start, a landscape without a pad, ...)"
 		return _ok(out),
 		timeout_s = 120.0}
+
+
+## Validate the whole composed request before invoking any setter or persisting anything.
+func _home_request_errors(request: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if bool(app.get("_loading_active")):
+		errors.append("Home is loading")
+	if request.has("language") and not Preferences.LANGUAGES.has(str(request.language)):
+		errors.append("language '%s' unknown; one of %s" % [request.language, Preferences.LANGUAGES.keys()])
+	if request.has("aircraft") and (not Catalog.is_player_selectable(str(request.aircraft)) or not Catalog.can_fly(str(request.aircraft))):
+		errors.append("aircraft '%s' is not a selectable stock flight; see catalog (technical IDs require direct CLI)" % request.aircraft)
+	if request.has("landscape") and not Landscapes.has(str(request.landscape)):
+		errors.append("landscape '%s' unknown; one of %s" % [request.landscape, Landscapes.ids()])
+	if request.has("time_of_day") and not Conditions.HOME_CHOICES.has(str(request.time_of_day)):
+		errors.append("time_of_day '%s' unknown; one of %s" % [request.time_of_day, Conditions.HOME_CHOICES])
+	if request.has("start") and str(request.start) not in ["runway", "airborne", "hand_launch"]:
+		errors.append("start '%s' unknown; one of runway, airborne, hand_launch" % request.start)
+	return errors
 
 
 func _settle(frames: int, result: Dictionary) -> Dictionary:

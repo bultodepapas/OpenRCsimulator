@@ -14,6 +14,7 @@ Choose a tool before writing ad-hoc test or debug code. Read the linked contract
 | Aircraft handling comparison | [Flight-test battery](physics.md#flight-test-battery); match baseline/candidate aircraft and case sets. |
 | Aircraft data or generated assets | [Source pipelines](physics.md#aircraft-data-and-generators); edit the owner, regenerate, then `--check`. |
 | Flight feel, exact replay or candidate replay | [Flight logs](../FLIGHT-LOGGING.md); preserve a baseline and the same input tape. |
+| Recover an interrupted manual T recording | [Telemetry chunk recovery](../../tools/trace/README.md); only verified published prefixes, always marked incomplete. |
 | Native flight backend development | [NK-3 C++ tools](../../research/native-kernel/README.md#c-development-tools-nk-3): sanitizers, symbols, exactness and timing. |
 | Rendering, materials, lighting or scenery | [Area checkers](graphics.md#area-capture-checkers); full suite: `app/capture.sh`. |
 | Frame time or GPU cost | [Frame diagnosis](graphics.md#frame-diagnosis); use the target display/GPU and record actual pixels. |

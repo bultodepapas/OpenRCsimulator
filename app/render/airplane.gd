@@ -113,9 +113,13 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	# F4U-10: a gasoline shaft propeller is drawn at its physical diameter, as a finite glow propeller is, so the
 	# visual disc and the prop-strike geometry agree (the P-51's visual and physical propellers are both 26 in).
 	var shaft_diameter: float = float(model.get("propulsion", {}).get("diameter", NAN)) if model.get("propulsion", {}).has("shaft") else NAN
+	if family == "stik-electric-6s" and model.get("propulsion", {}).get("kind") == "electric_prop":
+		shaft_diameter = float(model.propulsion.get("diameter", NAN))
+		if is_finite(propeller_diameter_m) and propeller_diameter_m > 0.0:
+			shaft_diameter = propeller_diameter_m
 	airplane._scaled_propeller_visual = not glow.is_empty() or is_finite(shaft_diameter)
 	var customization: Dictionary
-	if family == "moonrunner-x99":
+	if registry.OVERLAY_FAMILIES.has(family):
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):
 			airplane.root.free()
@@ -215,7 +219,8 @@ static func _retain_surface_override_materials(model: Node3D) -> void:
 static func livery_choices(id: String) -> Array:
 	var family: String = Catalog.visual_family(id)
 	if family.is_empty(): return []
-	var parsed: Variant = {} if Catalog.is_rotorcraft(id) else JSON.parse_string(FileAccess.get_file_as_string(("res://data/aircraft_model_overlays/" if family == "moonrunner-x99" else "res://data/aircraft_models/") + family + ".json"))
+	var registry: Script = load("res://aircraft/model_registry.gd")
+	var parsed: Variant = {} if Catalog.is_rotorcraft(id) else JSON.parse_string(FileAccess.get_file_as_string(("res://data/aircraft_model_overlays/" if registry.OVERLAY_FAMILIES.has(family) else "res://data/aircraft_models/") + family + ".json"))
 	var choices := []
 	if parsed is Dictionary and parsed.get("liveries") is Array:
 		for record: Variant in parsed.liveries:

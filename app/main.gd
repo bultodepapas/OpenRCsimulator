@@ -2104,7 +2104,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if recorder.recording:
 					recorder.stop()
 				elif not _scripted:
-					recorder.start(_trace_meta())
+					recorder.start(_trace_meta(), true)
 			KEY_C:
 				_rig.cycle(-1 if event.shift_pressed else 1)
 			KEY_1:

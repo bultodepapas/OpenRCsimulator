@@ -53,6 +53,56 @@
   {
    "balance_fuel_state": "as_inventory",
    "catalog_ids": [
+    "stik-electric-6s"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "pack_ecm",
+   "file": "battery/stik_electric_6s_pack.json",
+   "flags": [
+    "cg_range_not_declared"
+   ],
+   "fuel_items": [],
+   "id": "stik-electric-6s",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
+   "mac_m": 0.3048,
+   "neutral_donor_items": [],
+   "neutral_point": {
+    "kind": "estimated",
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.004684
+   ],
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.004684
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.600082,
+     "static_margin_pct_mac": 3.835
+    }
+   },
+   "variant_kind": "catalog"
+  },
+  {
+   "balance_fuel_state": "as_inventory",
+   "catalog_ids": [
     "turbo-lumber-evolution"
    ],
    "cg_range_check": {
@@ -570,6 +620,56 @@
      "cg_shift_from_declared_mm": -7.672,
      "mass_kg": 12.734858,
      "static_margin_pct_mac": 13.3
+    }
+   },
+   "variant_kind": "catalog"
+  },
+  {
+   "balance_fuel_state": "as_inventory",
+   "catalog_ids": [
+    "stik-electric-6s"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "fixed_voltage",
+   "file": "stik_electric_6s.json",
+   "flags": [
+    "cg_range_not_declared"
+   ],
+   "fuel_items": [],
+   "id": "stik-electric-6s",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
+   "mac_m": 0.3048,
+   "neutral_donor_items": [],
+   "neutral_point": {
+    "kind": "estimated",
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.004684
+   ],
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.004684
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.600082,
+     "static_margin_pct_mac": 3.835
     }
    },
    "variant_kind": "catalog"
@@ -1383,6 +1483,7 @@
    "moonrunner-x99",
    "p51d-mustang-120",
    "sebart-avanti-s-a200-p100rx",
+   "stik-electric-6s",
    "stik-glow-55ax-2t",
    "stik-glow-61fx-2t",
    "stik-glow-fs64v-4t",
@@ -1390,6 +1491,7 @@
   ],
   "catalog_covered_files": [
    "battery/moonrunner_x99_6s_pack.json",
+   "battery/stik_electric_6s_pack.json",
    "battery/turbo_lumber_evolution_4s_pack.json",
    "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
@@ -1397,6 +1499,7 @@
    "moonrunner_x99.json",
    "p51d_mustang_120.json",
    "sebart_avanti_s_a200.json",
+   "stik_electric_6s.json",
    "stik_glow_55ax_2t.json",
    "stik_glow_61fx_2t.json",
    "stik_glow_fs64v_4t.json",
@@ -1404,6 +1507,7 @@
   ],
   "catalog_data_files": [
    "battery/moonrunner_x99_6s_pack.json",
+   "battery/stik_electric_6s_pack.json",
    "battery/turbo_lumber_evolution_4s_pack.json",
    "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
@@ -1411,6 +1515,7 @@
    "moonrunner_x99.json",
    "p51d_mustang_120.json",
    "sebart_avanti_s_a200.json",
+   "stik_electric_6s.json",
    "stik_glow_55ax_2t.json",
    "stik_glow_61fx_2t.json",
    "stik_glow_fs64v_4t.json",
@@ -1420,6 +1525,7 @@
   "errors": [],
   "reported_airplane_files": [
    "battery/moonrunner_x99_6s_pack.json",
+   "battery/stik_electric_6s_pack.json",
    "battery/turbo_lumber_evolution_4s_pack.json",
    "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
@@ -1427,6 +1533,7 @@
    "moonrunner_x99.json",
    "p51d_mustang_120.json",
    "sebart_avanti_s_a200.json",
+   "stik_electric_6s.json",
    "stik_glow_55ax_2t.json",
    "stik_glow_55ax_2t_apc_13x6.json",
    "stik_glow_61fx_2t.json",

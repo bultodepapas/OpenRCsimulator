@@ -661,46 +661,58 @@ def generate(root: Path, check: bool) -> int:
     return 0
 
 
-# A separate one-family registry allows a future consumer to merge overlays only
-# after verifying unique family IDs and the ordinary manifest/source hashes.
+# Each registered family has its own proved companion; no directory scanning.
 OVERLAY_SOURCE = Path("assets/aircraft/moonrunner-x99-overlay/customization-bindings.json")
 OVERLAY_OUTPUT_DIR = Path("app/data/aircraft_customization_overlays")
 OVERLAY_FAMILY = "moonrunner-x99"
+OVERLAY_SOURCES = {
+    OVERLAY_FAMILY: OVERLAY_SOURCE,
+    "stik-electric-6s": Path("assets/aircraft/stik-electric-6s/customization-bindings.json"),
+}
 
 
-def overlay_registry(root: Path) -> dict[str, Any]:
+def overlay_registry(root: Path, family: str = OVERLAY_FAMILY) -> dict[str, Any]:
     from build_models import OVERLAY_OUTPUT_DIR as MODEL_OVERLAY_DIR, overlay_manifest
 
-    source = json.loads((root / OVERLAY_SOURCE).read_text(encoding="utf-8"))
-    slots = validate_source(source, {OVERLAY_FAMILY})
-    model_path = root / MODEL_OVERLAY_DIR / f"{OVERLAY_FAMILY}.json"
+    if family not in OVERLAY_SOURCES:
+        raise CustomizationError("unregistered customization overlay family")
+    base = json.loads((root / SOURCE_PATH).read_text(encoding="utf-8"))
+    if not isinstance(base, dict) or not isinstance(base.get("families"), list):
+        raise CustomizationError("base customization registry is malformed")
+    if any(isinstance(item, dict) and item.get("visual_family") in OVERLAY_SOURCES for item in base["families"]):
+        raise CustomizationError("overlay family collides with the base customization registry")
+    source = json.loads((root / OVERLAY_SOURCES[family]).read_text(encoding="utf-8"))
+    slots = validate_source(source, {family})
+    model_path = root / MODEL_OVERLAY_DIR / f"{family}.json"
     model_bytes = model_path.read_bytes()
-    expected = (json.dumps(overlay_manifest(root), indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    expected = (json.dumps(overlay_manifest(root, family), indent=2, ensure_ascii=False) + "\n").encode("utf-8")
     if model_bytes != expected:
         raise CustomizationError("model overlay is missing or stale")
-    companion = build_companion(OVERLAY_FAMILY, hashlib.sha256(model_bytes).hexdigest(),
-                                slots[OVERLAY_FAMILY], presentation_sources(root))
+    companion = build_companion(family, hashlib.sha256(model_bytes).hexdigest(),
+                                slots[family], presentation_sources(root))
     return {"format": REGISTRY_FORMAT, "version": 1, "families": [companion]}
 
 
 def generate_overlay(root: Path, check: bool) -> int:
     try:
-        registry = overlay_registry(root)
         directory = root / OVERLAY_OUTPUT_DIR
-        output = directory / f"{OVERLAY_FAMILY}.json"
-        unexpected = {p.name for p in directory.iterdir()} - {output.name} if directory.exists() else set()
+        expected = {f"{family}.json" for family in OVERLAY_SOURCES}
+        unexpected = {p.name for p in directory.iterdir()} - expected if directory.exists() else set()
         if unexpected:
             raise CustomizationError("unregistered overlay customization outputs: " + ", ".join(sorted(unexpected)))
-        rendered = (json.dumps(registry, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-        if check:
-            if not output.is_file() or output.read_bytes() != rendered:
-                raise CustomizationError(f"stale overlay customization registry: {OVERLAY_OUTPUT_DIR / output.name}")
-            print("MoonRunner customization overlay is current")
-        else:
-            directory.mkdir(parents=True, exist_ok=True)
-            if not output.is_file() or output.read_bytes() != rendered:
-                output.write_bytes(rendered)
-            print("generated MoonRunner customization overlay")
+        for family in OVERLAY_SOURCES:
+            registry = overlay_registry(root, family)
+            output = directory / f"{family}.json"
+            rendered = (json.dumps(registry, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+            if check:
+                if not output.is_file() or output.read_bytes() != rendered:
+                    raise CustomizationError(f"stale overlay customization registry: {OVERLAY_OUTPUT_DIR / output.name}")
+                print(f"{family} customization overlay is current")
+            else:
+                directory.mkdir(parents=True, exist_ok=True)
+                if not output.is_file() or output.read_bytes() != rendered:
+                    output.write_bytes(rendered)
+                print(f"generated {family} customization overlay")
         return 0
     except (OSError, UnicodeError, json.JSONDecodeError, CustomizationError, ValueError) as exc:
         print(f"customization overlay generation failed: {exc}", file=sys.stderr)

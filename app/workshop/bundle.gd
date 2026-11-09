@@ -10,6 +10,7 @@ const PresentationProfile := preload("res://workshop/presentation.gd")
 const StrictJSON := preload("res://workshop/strict_json.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const ModelRegistry := preload("res://aircraft/model_registry.gd")
 
 const FORMAT: String = "openrc-aircraft-variant-bundle"
 const VERSION: int = 1
@@ -178,7 +179,7 @@ static func _resolve_current_profile(payload: Dictionary) -> Dictionary:
 		return physical
 	var base_id := str(payload["base_id"])
 	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
-		if base_id == "moonrunner-x99":
+		if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 			return _failure("Overlay customization dependency is unavailable.")
 		var legacy: Dictionary = PresentationProfile.validate(payload["presentation_profile"])
 		if not bool(legacy.get("ok", false)) or not bool(legacy.get("available", false)):
@@ -190,7 +191,7 @@ static func _resolve_current_profile(payload: Dictionary) -> Dictionary:
 	if customization == null:
 		return _failure("Customization dependency cannot be loaded.")
 	var described: Dictionary
-	if base_id == "moonrunner-x99":
+	if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):
 			return _failure("Overlay customization resolver is unavailable.")
@@ -201,8 +202,8 @@ static func _resolve_current_profile(payload: Dictionary) -> Dictionary:
 	else:
 		described = customization.describe(base_id)
 	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
-		if base_id == "moonrunner-x99":
-			return _failure("The MoonRunner customization overlay is invalid.")
+		if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
+			return _failure("The registered customization overlay is invalid.")
 		var unavailable: Dictionary = PresentationProfile.validate(payload["presentation_profile"])
 		if not bool(unavailable.get("ok", false)) or not bool(unavailable.get("available", false)) \
 				or not _is_unbound_stock_profile(unavailable["profile"]):

@@ -12,6 +12,8 @@ var camera: Camera3D
 var ribbon: MeshInstance3D
 var material: ShaderMaterial
 var baseline: ShaderMaterial
+var metrics := {}
+var whole_path_samples := 0
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -76,6 +78,8 @@ func _run() -> void:
 			_save(old, "far-point-sampled")
 			_save(filtered, "far-filtered")
 	print("far red-fraction maximum error: point=", old_error, " filtered=", filtered_error)
+	metrics.far_point_error = old_error
+	metrics.far_filtered_error = filtered_error
 	check("point-sampled baseline exposes far color aliasing", old_error > 0.4)
 	check("subpixel translations retain the intended red/blue energy balance", filtered_error < 0.07 and filtered_error < old_error * 0.2)
 	# The final incomplete palette cycle must retain its true weighted color.
@@ -88,7 +92,8 @@ func _run() -> void:
 	_set_pattern(255, ["#FF0000", "#0000FF"])
 	material.set_shader_parameter("pattern_extras", Vector4(255, 1, 0.98, 0))
 	var reversed := await _render(false)
-	check("reverse and wrapped offset retain dense pattern energy", _two_color_error(reversed, 128.0 / 255.0) < 0.07)
+	metrics.reversed_error = _two_color_error(reversed, 128.0 / 255.0)
+	check("reverse and wrapped offset retain dense pattern energy", metrics.reversed_error < 0.07)
 	_set_pattern(16, ["#FF0000", "#00FF00", "#0000FF"])
 	material.set_shader_parameter("pattern_extras", Vector4(16, 1, 0.98, 0))
 	check("one-segment footprint matches independent cell-overlap integration", _cell_overlap_matches(await _render(false)))
@@ -118,9 +123,11 @@ func _run() -> void:
 	material.set_shader_parameter("radiance", 1.0)
 	_set_pattern(256, ["#FF0000", "#0000FF"])
 	var perspective := await _render(false)
-	check("perspective view independently filters the same dense strip", _two_color_error(perspective, 0.5) < 0.07)
+	metrics.perspective_error = _two_color_error(perspective, 0.5)
+	check("perspective view independently filters the same dense strip", metrics.perspective_error < 0.07)
 	viewport.free()
 	await process_frame
+	_write_metrics()
 	print("Lighting segment filter: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -162,6 +169,9 @@ func _color_weights(image: Image, expected: Vector3) -> bool:
 	if total < 0.005: return false
 	var error := (rgb / total - expected).abs()
 	print("whole-path color weights: ", rgb / total, " expected=", expected)
+	for axis in 3:
+		metrics["whole_path_%d_%d" % [whole_path_samples, axis]] = rgb[axis] / total
+	whole_path_samples += 1
 	return maxf(error.x, maxf(error.y, error.z)) < 0.035
 
 func _cell_overlap_matches(image: Image) -> bool:
@@ -188,7 +198,29 @@ func _cell_overlap_matches(image: Image) -> bool:
 		var error := (rgb / total - expected).abs()
 		worst = maxf(worst, maxf(error.x, maxf(error.y, error.z)))
 	print("cell-overlap maximum color-weight error: ", worst)
+	metrics.cell_overlap_error = worst
 	return worst < 0.035
+
+func _write_metrics() -> void:
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--lighting-metrics-out="):
+			var path := arg.trim_prefix("--lighting-metrics-out=")
+			var file := FileAccess.open(path, FileAccess.WRITE)
+			if file == null:
+				check("write structured lighting metrics", false)
+				return
+			var float64_hex := {}
+			for key in metrics:
+				float64_hex[key] = PackedFloat64Array([float(metrics[key])]).to_byte_array().hex_encode()
+			var encoded := JSON.stringify({
+				"format": "openrc-lighting-segment-metrics v1", "viewport": [1920, 1080],
+				"complete": true, "checks": checks, "failures": failures, "metrics": metrics,
+				"float64_hex": float64_hex,
+			}, "  ", true, true)
+			file.store_string(encoded + "\n")
+			file.flush()
+			if file.get_error() != OK:
+				check("flush structured lighting metrics", false)
 
 func _save(image: Image, label: String) -> void:
 	for arg in OS.get_cmdline_user_args():

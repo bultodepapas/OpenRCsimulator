@@ -17,6 +17,17 @@ func _initialize() -> void:
 	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = bytes, recipe = {}}
 	var first := Trial.freeze(payload)
 	check("default trial freezes", first.get("ok", false))
+	var electric_payload := {base_id = "stik-electric-6s",
+		base_bytes = FileAccess.get_file_as_bytes(Catalog.entry("stik-electric-6s").data), recipe = {}}
+	var electric_trial := Trial.freeze(electric_payload)
+	check("electric Workshop freezes the ideal source", electric_trial.get("ok", false)
+		and JSON.parse_string(electric_trial.raw_bytes.get_string_from_utf8()).capabilities.energy == "fixed_voltage")
+	electric_payload.battery_mode = "pack"
+	check("finite-pack Workshop request is refused without silent downgrade", not Trial.freeze(electric_payload).get("ok", false))
+	electric_payload.battery_mode = "ideal"
+	var explicit_ideal := Trial.freeze(electric_payload)
+	check("explicit ideal keeps the same physical trial identity", explicit_ideal.get("ok", false)
+		and explicit_ideal.identity == electric_trial.identity)
 	if not first.get("ok", false):
 		printerr(first.get("errors", []))
 		quit(1)

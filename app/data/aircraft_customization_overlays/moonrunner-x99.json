@@ -7,7 +7,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "moonrunner-x99",
-      "model_manifest_sha256": "93803c4fc4d3ada7407532fd4079305572ed67bbd5eef5e60b3c877cc9239149",
+      "model_manifest_sha256": "15ac988ef031678012ddf69d27fb3482388a355693ce771adb4f5d0d30ede0d7",
       "paint_slots": [
         {
           "id": "body",
@@ -195,7 +195,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "1ffd3353d2f06d6165fe1b77a7dd2eabdafbb77ae982e1be3d318ce1a5512df8"
+      "slots_sha256": "18f3721eb8b8aff23e8b6eed409d7bb622690fa3a4fe1dd6658115e940bfa8a3"
     }
   ]
 }

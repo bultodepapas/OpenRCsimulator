@@ -1,4 +1,4 @@
-"""Generate the closed MoonRunner runtime overlay source-input proof."""
+"""Generate the closed runtime overlay source-input proofs."""
 from __future__ import annotations
 
 import argparse
@@ -8,10 +8,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-OUTPUT = Path("assets/aircraft/moonrunner-x99-overlay/runtime-proof.json")
-PATHS = (
-    "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json",
-    "assets/aircraft/moonrunner-x99-overlay/model-bindings.json",
+FAMILIES = {
+    "moonrunner-x99": ("assets/aircraft/moonrunner-x99-overlay", "openrc-moonrunner-overlay-source-proof"),
+    "stik-electric-6s": ("assets/aircraft/stik-electric-6s", "openrc-stik-electric-6s-overlay-source-proof"),
+}
+COMMON_PATHS = (
     "res://aircraft/customization_overlay.gd",
     "res://aircraft/model_manifest.gd",
     "res://aircraft/model_overlay_registry.gd",
@@ -22,25 +23,27 @@ PATHS = (
 
 def generate(root: Path, check: bool) -> int:
     try:
-        sources = []
-        for resource in PATHS:
-            path = root / ("app/" + resource.removeprefix("res://") if resource.startswith("res://") else resource)
-            data = path.read_bytes().replace(b"\r\n", b"\n")
-            data.decode("utf-8")
-            if not data:
-                raise ValueError(f"empty source: {resource}")
-            sources.append({"path": resource, "sha256": hashlib.sha256(data).hexdigest()})
-        rendered = (json.dumps({"format": "openrc-moonrunner-overlay-source-proof", "version": 1, "sources": sources}, indent=2) + "\n").encode("utf-8")
-        output = root / OUTPUT
-        if check:
-            if not output.is_file() or output.read_bytes() != rendered:
-                raise ValueError(f"stale overlay source proof: {OUTPUT}")
-            print("MoonRunner runtime source proof is current")
-        else:
-            output.parent.mkdir(parents=True, exist_ok=True)
-            if not output.is_file() or output.read_bytes() != rendered:
-                output.write_bytes(rendered)
-            print("generated MoonRunner runtime source proof")
+        for family, (directory, proof_format) in FAMILIES.items():
+            sources = []
+            paths = (f"{directory}/customization-bindings.json", f"{directory}/model-bindings.json", *COMMON_PATHS)
+            for resource in paths:
+                path = root / ("app/" + resource.removeprefix("res://") if resource.startswith("res://") else resource)
+                data = path.read_bytes().replace(b"\r\n", b"\n")
+                data.decode("utf-8")
+                if not data:
+                    raise ValueError(f"empty source: {resource}")
+                sources.append({"path": resource, "sha256": hashlib.sha256(data).hexdigest()})
+            rendered = (json.dumps({"format": proof_format, "version": 1, "sources": sources}, indent=2) + "\n").encode("utf-8")
+            output = root / directory / "runtime-proof.json"
+            if check:
+                if not output.is_file() or output.read_bytes() != rendered:
+                    raise ValueError(f"stale overlay source proof: {output.relative_to(root)}")
+                print(f"{family} runtime source proof is current")
+            else:
+                output.parent.mkdir(parents=True, exist_ok=True)
+                if not output.is_file() or output.read_bytes() != rendered:
+                    output.write_bytes(rendered)
+                print(f"generated {family} runtime source proof")
         return 0
     except (OSError, UnicodeError, ValueError) as exc:
         print(f"overlay source proof generation failed: {exc}", file=sys.stderr)

@@ -9,6 +9,7 @@ const Session = preload("res://sim/flight_session.gd")
 const Air = preload("res://physics/air_data.gd")
 const Flaps = preload("res://physics/flaps.gd")
 const GlowFlight = preload("res://physics/glow/flight.gd")
+const ChunkStore = preload("res://sim/trace_chunk_store.gd")
 
 const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
 const MASS_TRACE_SCHEMA: String = "openrc-mass-sample v1"
@@ -29,6 +30,16 @@ const COLUMNS := [
 
 var meta := {} # written as "# key: value" lines above the header
 var _rows := PackedFloat64Array() # flattened, COLUMNS.size() per row
+## Interactive recording may spill immutable full chunks; _rows then owns only the tail.
+## Scripted analysis stays in memory unless explicitly opted in.
+var _chunk_store: RefCounted
+var _chunk_enabled := false
+var _chunk_directory := "user://trace_spools"
+var _chunk_row_limit := 4096
+var _chunk_error: Error = OK
+var _read_error: Error = OK
+var last_cleanup_error: Error = OK
+var last_cleanup_path := ""
 const WEATHER_COLUMNS = ["wind_north_mps", "wind_east_mps", "wind_down_mps", "tas_mps", "ground_horizontal_mps", "loads_t_s", "loads_wind_north_mps", "loads_wind_east_mps", "loads_wind_down_mps", "loads_tas_mps"]
 const TURBULENCE_COLUMNS = ["turbulence_north_mps", "turbulence_east_mps", "turbulence_down_mps", "loads_turbulence_north_mps", "loads_turbulence_east_mps", "loads_turbulence_down_mps"]
 const SPATIAL_COLUMNS = ["loads_north_m", "loads_east_m", "loads_down_m", "weather_epoch_time_s", "loads_weather_epoch_time_s"]
@@ -144,7 +155,21 @@ var _flap_meta: Dictionary = {}
 var _flap_recording_start: float = NAN
 
 
-func clear() -> void:
+func clear() -> Error:
+	if last_cleanup_error != OK and not DirAccess.dir_exists_absolute(last_cleanup_path):
+		last_cleanup_error = OK
+		last_cleanup_path = ""
+	if _chunk_store != null:
+		var error: Error = _chunk_store.discard()
+		if error != OK:
+			return error
+		if _chunk_store.cleanup_error() != OK:
+			last_cleanup_error = _chunk_store.cleanup_error()
+			last_cleanup_path = _chunk_store.cleanup_path()
+	_chunk_store = null
+	_chunk_enabled = false
+	_chunk_error = OK
+	_read_error = OK
 	_rows.clear()
 	_columns = COLUMNS.duplicate()
 	_weather = null
@@ -206,14 +231,78 @@ func clear() -> void:
 	_flap_recording_start = NAN
 	_atmosphere = {}
 	_turbulence_index = -1
+	return OK
 
 
 func row_count() -> int:
-	return _rows.size() / _columns.size()
+	return _spooled_rows() + _rows.size() / _columns.size()
 
 
 func value(row: int, column: String) -> float:
-	return _rows[row * _columns.size() + _columns.find(column)]
+	var index := _columns.find(column)
+	if row < 0 or row >= row_count() or index < 0:
+		return NAN
+	var stored := _spooled_rows()
+	if row < stored:
+		var values: PackedFloat64Array = _chunk_store.row(row)
+		if values.size() != _columns.size():
+			_read_error = _chunk_store.read_error()
+			return NAN
+		return values[index]
+	return _rows[(row - stored) * _columns.size() + index]
+
+
+func enable_chunk_storage(directory := "user://trace_spools", row_limit := 4096) -> void:
+	# Mode is selected before the first row; changing a live owner's storage is refused.
+	if row_count() != 0 or row_limit < 1 or row_limit > 4096:
+		_chunk_error = ERR_INVALID_PARAMETER
+		return
+	_chunk_enabled = true
+	_chunk_directory = directory
+	_chunk_row_limit = row_limit
+
+
+func storage_error() -> Error:
+	return _read_error if _read_error != OK else _chunk_error
+
+
+func recovery_directory() -> String:
+	return "" if _chunk_store == null else _chunk_store.directory_path()
+
+
+## Called only after the recorder's final CSV publication succeeds.
+func mark_saved() -> void:
+	if _chunk_store != null:
+		_chunk_store.mark_saved()
+
+
+func _spooled_rows() -> int:
+	return 0 if _chunk_store == null else _chunk_store.row_count()
+
+
+func _spill_full_chunk() -> bool:
+	if not _chunk_enabled:
+		return true
+	if _chunk_error != OK:
+		return false
+	if _chunk_store != null:
+		_chunk_error = _chunk_store.write_error()
+		if _chunk_error != OK:
+			return false
+	var capacity: int = mini(_chunk_row_limit, 1048576 / (8 * _columns.size()))
+	if capacity < 1:
+		_chunk_error = ERR_OUT_OF_MEMORY
+		return false
+	if _rows.size() < capacity * _columns.size():
+		return true
+	if _chunk_store == null:
+		_chunk_store = ChunkStore.new(_columns, capacity, _chunk_directory)
+	_chunk_error = _chunk_store.append_chunk(_rows, "\n".join(_csv_header()) + "\n")
+	if _chunk_error != OK:
+		return false
+	# The store has taken a detached snapshot; replace the filling buffer.
+	_rows = PackedFloat64Array()
+	return true
 
 
 func columns() -> Array:
@@ -534,7 +623,7 @@ func _gear_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedF
 			or command_down not in [0.0, 1.0] or wheel_brake < 0.0 or wheel_brake > 1.0:
 		_invalid_weather = true
 		return PackedFloat64Array()
-	if _rows.is_empty():
+	if row_count() == 0:
 		var start_tick: float = float(_gear_meta.get("recording_start_tick", NAN))
 		if float(tick) != start_tick or not _positive_float64_within_one_ulp(extension, _gear_recording_start[0]) \
 				or target_down != _gear_recording_start[1]:
@@ -614,7 +703,7 @@ func _flap_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedF
 	if actual < 0.0 or actual > 1.0 or requested < 0.0 or requested > 1.0:
 		_invalid_weather = true
 		return PackedFloat64Array()
-	if _rows.is_empty():
+	if row_count() == 0:
 		if float(tick) != float(_flap_meta.get("recording_start_tick", NAN)) \
 				or not _positive_float64_within_one_ulp(actual, _flap_recording_start):
 			_invalid_weather = true
@@ -1107,7 +1196,10 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		aux := PackedFloat64Array([0.0]), continuous := PackedFloat64Array(), mass_sample: Dictionary = {}) -> void:
 	if _invalid_weather:
 		return
-	if _rows.is_empty():
+	# A refused spill leaves all previously accepted rows intact and rejects this new sample.
+	if not _spill_full_chunk():
+		return
+	if row_count() == 0:
 		_prepare_weather()
 	if _invalid_weather:
 		return
@@ -1136,13 +1228,13 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _invalid_weather:
 		return
 	if _coupled_shaft and (aux.size() < 4 or not _finite(aux) or aux[0] < 0.0 \
-			or (_rows.is_empty() and not _positive_float64_within_one_ulp(aux[0], _coupled_start_rpm))):
+			or (row_count() == 0 and not _positive_float64_within_one_ulp(aux[0], _coupled_start_rpm))):
 		_invalid_weather = true
 		return
 	if _continuous_turbine and (tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
 			or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, _expected_input_count()) or aux.size() < 4 or not _finite(aux) \
 			or aux[0] < 0.0 or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1) \
-			or (_rows.is_empty() and (absf(aux[0] - _coupled_start_rpm) > 1e-9 or str(meta.get("recording_start_tick")) != str(tick)))):
+			or (row_count() == 0 and (absf(aux[0] - _coupled_start_rpm) > 1e-9 or str(meta.get("recording_start_tick")) != str(tick)))):
 		_invalid_weather = true
 		return
 	var glow_row := PackedFloat64Array()
@@ -1330,7 +1422,7 @@ func _liquid_sample(sample: Dictionary, tick: int, t: float, continuous: PackedF
 			or not stores is Array or stores.size() != 1:
 		_invalid_weather = true
 		return PackedFloat64Array()
-	if _rows.is_empty():
+	if row_count() == 0:
 		var start_tick: Variant = meta.get("recording_start_tick")
 		if typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or float(start_tick) != float(tick) \
 				or continuous[_liquid_state_index] != _liquid_start_usable_kg \
@@ -1395,7 +1487,7 @@ func _liquid_sample(sample: Dictionary, tick: int, t: float, continuous: PackedF
 		return PackedFloat64Array()
 	var identity: Dictionary = {registry_sha256 = str(sample.registry_sha256), blend = str(blend), family = str(family),
 		density_kg_m3 = density, reserve_fraction = reserve, reserve_basis = str(basis), reserve_estimated = bool(estimated)}
-	if _rows.is_empty():
+	if row_count() == 0:
 		if _liquid_start_fill_known and int(meta.get("recording_start_tick", -1)) == 0 \
 				and absf(fill - _liquid_start_fill) > 1e-9:
 			_invalid_weather = true
@@ -1424,7 +1516,7 @@ func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFl
 			or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1):
 		_invalid_weather = true
 		return PackedFloat64Array()
-	if _rows.is_empty():
+	if row_count() == 0:
 		var expected_start_tick: float = float(meta.get("recording_start_tick", NAN))
 		if tick != int(expected_start_tick) or not _glow_start_matches(values):
 			_invalid_weather = true
@@ -1457,13 +1549,13 @@ func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFl
 				or (source_mode == 2.0 and line_fuel <= 0.0))):
 		_invalid_weather = true
 		return PackedFloat64Array()
-	if _glow_line_layout and not _rows.is_empty():
+	if _glow_line_layout and row_count() > 0:
 		var line_tolerance: float = maxf(1e-12, absf(_glow_last_line_fuel_kg) * 2e-12)
 		if line_fuel > _glow_last_line_fuel_kg + line_tolerance:
 			_invalid_weather = true
 			return PackedFloat64Array()
-	var opportunity_delta: int = 0 if _rows.is_empty() else int(values[9]) - _glow_last_opportunities
-	var fire_events: int = 0 if _rows.is_empty() else int(values[10]) - _glow_last_fires
+	var opportunity_delta: int = 0 if row_count() == 0 else int(values[9]) - _glow_last_opportunities
+	var fire_events: int = 0 if row_count() == 0 else int(values[10]) - _glow_last_fires
 	if fire_events > opportunity_delta:
 		_invalid_weather = true
 		return PackedFloat64Array()
@@ -1546,7 +1638,7 @@ func _glow_fuel_sample_matches(sample: Dictionary, values: PackedFloat64Array, t
 	if (mode == 1.0 and float(main.usable_kg) <= 0.0) \
 			or (mode == 2.0 and (expected_line_count == 0 or line_remaining <= 0.0)):
 		return false
-	if not _rows.is_empty():
+	if row_count() > 0:
 		var inventory_tolerance: float = maxf(1e-10, total_capacity * 1e-9)
 		if float(main.remaining_kg) > _glow_last_main_fuel_kg + inventory_tolerance:
 			return false
@@ -1592,12 +1684,18 @@ func _glow_start_matches(values: PackedFloat64Array) -> bool:
 		and str(start.get("stop_reason", "")) == _glow_reason_codes[int(values[8])]
 
 
-## Ticks that are missing between consecutive rows (a recorder that drops samples must be visible).
+## Missing ticks; [-1] means an unreadable row (storage_error supplies its cause).
 func gaps() -> PackedInt64Array:
 	var missing := PackedInt64Array()
+	if row_count() > 0 and not is_finite(value(0, "tick")):
+		return PackedInt64Array([-1])
 	for r in range(1, row_count()):
-		var expected := int(value(r - 1, "tick")) + 1
-		var got := int(value(r, "tick"))
+		var previous := value(r - 1, "tick")
+		var current := value(r, "tick")
+		if not is_finite(previous) or not is_finite(current):
+			return PackedInt64Array([-1])
+		var expected := int(previous) + 1
+		var got := int(current)
 		for k in range(expected, got):
 			missing.append(k)
 	return missing
@@ -1605,8 +1703,12 @@ func gaps() -> PackedInt64Array:
 
 ## True when ticks go up by exactly 1 per row: no gaps, duplicates or reordering.
 func is_continuous() -> bool:
+	if row_count() > 0 and not is_finite(value(0, "tick")):
+		return false
 	for r in range(1, row_count()):
-		if int(value(r, "tick")) != int(value(r - 1, "tick")) + 1:
+		var current := value(r, "tick")
+		var previous := value(r - 1, "tick")
+		if not is_finite(current) or not is_finite(previous) or int(current) != int(previous) + 1:
 			return false
 	return true
 
@@ -1652,7 +1754,8 @@ func _csv_header() -> PackedStringArray:
 		if _glow_line_layout:
 			written_meta.glow_supply_mode_semantics = "glow_fuel_source_mode: 0 starved, 1 main tank, 2 pre-primed line; glow_line_fuel_kg is liquid mass remaining in the feed line"
 	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
-	for visual_key: String in ["visual_context", "visual_timeline"]:
+	for visual_key: String in ["visual_context", "visual_timeline", "trace_capture_complete",
+			"trace_capture_stop_reason", "trace_capture_last_tick"]:
 		if meta.has(visual_key):
 			written_meta[visual_key] = meta[visual_key]
 	for key in written_meta:
@@ -1664,10 +1767,18 @@ func _csv_header() -> PackedStringArray:
 
 func _csv_row(r: int) -> String:
 	var n := _columns.size()
+	var stored := _spooled_rows()
+	var values := PackedFloat64Array()
+	if r < stored:
+		values = _chunk_store.row(r)
+		if values.size() != n:
+			_read_error = _chunk_store.read_error()
+			return ""
+	var offset := (r - stored) * n
 	var cells := PackedStringArray()
-	cells.append(str(int(_rows[r * n])))
+	cells.append(str(int(values[0] if r < stored else _rows[offset])))
 	for c in range(1, n):
-		cells.append("%.9f" % _rows[r * n + c])
+		cells.append("%.9f" % (values[c] if r < stored else _rows[offset + c]))
 	return ",".join(cells)
 
 
@@ -1676,7 +1787,10 @@ func to_csv() -> String:
 	if lines.is_empty():
 		return ""
 	for r in row_count():
-		lines.append(_csv_row(r))
+		var line := _csv_row(r)
+		if line.is_empty():
+			return ""
+		lines.append(line)
 	return "\n".join(lines) + "\n"
 
 
@@ -1707,6 +1821,19 @@ func save(path: String) -> Error:
 	var header := _csv_header()
 	if header.is_empty():
 		return ERR_INVALID_DATA
+	if _chunk_store != null:
+		# Even a failed drain has joined the writer and retained unacknowledged
+		# chunks. Export that frozen prefix directly, so an unwritable spool does
+		# not prevent saving to a healthy destination. Read/write errors still fail.
+		_chunk_store.drain()
+		# Never overwrite raw history while it is the source of this export.
+		var destination := ProjectSettings.globalize_path(path).simplify_path().replace("\\", "/")
+		var owned: String = _chunk_store.directory_path().simplify_path().replace("\\", "/")
+		if OS.get_name() == "Windows":
+			destination = destination.to_lower()
+			owned = owned.to_lower()
+		if not owned.is_empty() and (destination == owned or destination.begins_with(owned + "/")):
+			return ERR_INVALID_PARAMETER
 	var dir_error := DirAccess.make_dir_recursive_absolute(path.get_base_dir())
 	if dir_error != OK and dir_error != ERR_ALREADY_EXISTS:
 		return dir_error
@@ -1724,6 +1851,9 @@ func save(path: String) -> Error:
 		if not written:
 			break
 		var line := _csv_row(r)
+		if line.is_empty():
+			written = false
+			break
 		if characters > 0 and characters + line.length() + 1 > BATCH_CHARACTERS:
 			written = f.store_string("\n".join(batch) + "\n")
 			batch.clear()
@@ -1741,6 +1871,8 @@ func save(path: String) -> Error:
 		return OK
 	# A partial file must not pass for a trace.
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	if _read_error != OK:
+		return _read_error
 	return write_error if write_error != OK else ERR_FILE_CANT_WRITE
 
 

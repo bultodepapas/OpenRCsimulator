@@ -92,11 +92,11 @@ func _run() -> void:
 	await ui.settle()
 
 	# --- SP-1 / AS-2: beside the catalog, the selected aircraft's full name, capability, summary and limits.
-	app.set_aircraft("stik-glow-61fx-2t")
+	app.set_aircraft("gp-extra-300s-60")
 	home._select_page(1)
 	for frame in 4: await process_frame
 	var details: Control = home.find_child("AircraftDetails", true, false)
-	var entry: Dictionary = Catalog.entry("stik-glow-61fx-2t")
+	var entry: Dictionary = Catalog.entry("gp-extra-300s-60")
 	var details_text := ""
 	if details != null:
 		for label: Label in details.find_children("*", "Label", true, false):

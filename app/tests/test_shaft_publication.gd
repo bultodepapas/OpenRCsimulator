@@ -6,6 +6,7 @@ const P51_PATH := "res://data/aircraft/p51d_mustang_120.json"
 const Log := preload("res://sim/flight_log.gd")
 const Reader := preload("res://tools/flight_log_cli.gd")
 const Weather := preload("res://physics/wind_config.gd")
+const PublicationBridge := preload("res://tests/publication_fixture_bridge.gd")
 var checks := 0
 var failed := 0
 func check(label:String, passed:bool)->void:
@@ -73,6 +74,11 @@ func _parity()->void:
 	}
 	var expected:Dictionary=expected_by_platform.get(OS.get_name(),{})
 	if expected.is_empty():print("frozen 25-endpoint shaft traces exist for Windows and Linux only; %s skips them"%OS.get_name())
+	var bridge:Dictionary={}
+	if not expected.is_empty():
+		bridge=PublicationBridge.load_family("shaft")
+		check("source-bound shaft fixture loads",bridge.get("ok",false))
+		if not bridge.get("ok",false):printerr("shaft fixture: ",bridge.get("error","unknown"))
 	for initial:String in ["split","coupled-rk4"]:
 		var f:=flight(initial)
 		check("legacy fixture starts",f!=null)
@@ -80,13 +86,29 @@ func _parity()->void:
 		var target:="split" if initial=="coupled-rk4" else "coupled-rk4"
 		check("opposite mode accepts",f.setup_shaft_integrator(target))
 		f.reset()
+		var row:Dictionary=bridge.get("cases",{}).get(target,{})
+		if bridge.get("ok",false):
+			var anchored:String=row.original_sha256 if OS.get_name()=="Windows" else row.reference_sha256
+			check("original shaft digest retained "+target,anchored==expected[target])
 		var hash:=HashingContext.new();hash.start(HashingContext.HASH_SHA256)
 		for tick:int in 25:
-			check("complete checkpoint",not f.checkpoint().is_empty())
-			hash.update(var_to_bytes(f.checkpoint()))
+			var checkpoint:Dictionary=f.checkpoint()
+			check("complete checkpoint",not checkpoint.is_empty())
+			if bridge.get("ok",false):
+				check("typed shaft checkpoint and events "+target,PublicationBridge.matches(row,tick,checkpoint,f.sim.last_events))
+				if tick==0:
+					var changed:=checkpoint.duplicate(true)
+					changed.configuration="0".repeat(64)
+					check("unexpected shaft configuration rejects",not PublicationBridge.matches(row,tick,changed,f.sim.last_events))
+					changed=checkpoint.duplicate(true)
+					var state:PackedFloat64Array=changed.simulation.state.duplicate();state[0]=NAN;changed.simulation.state=state
+					check("nonfinite shaft state rejects",not PublicationBridge.matches(row,tick,changed,f.sim.last_events))
+					var events:Array=f.sim.last_events.duplicate(true);events.append({"kind":"changed"})
+					check("changed shaft event rejects",not PublicationBridge.matches(row,tick,checkpoint,events))
+			hash.update(var_to_bytes(checkpoint))
 			if tick<24:f.sim.step()
 		var digest:=hash.finish().hex_encode()
-		if not expected.is_empty():check("frozen full 25-endpoint shaft trace "+target,digest==expected[target])
+		if bridge.get("ok",false):check("frozen full 25-endpoint shaft trace "+target,digest==row.current_sha256)
 		f.free()
 func _refusals()->void:
 	for live:bool in [false,true]:

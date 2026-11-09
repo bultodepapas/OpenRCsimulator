@@ -137,6 +137,8 @@ var control_label: Label
 var controller_prompt_label: Label
 var keys_legend: GridContainer
 var note_label: Label
+var stock_selection_notice: Label
+var _retained_stock_id := ""
 var launch_warning: Label
 var review_conditions_button: Button
 var _launch_note_key := ""
@@ -173,6 +175,9 @@ var _top_scrim: TextureRect
 var _page_host: VBoxContainer
 var _navigation: GridContainer
 var _navigation_in_scroll := false
+var _primary_actions: VBoxContainer
+var _launch_notices: VBoxContainer
+var _scroll_focus_mode: Control.FocusMode
 var _conditions_row: GridContainer
 var _nav_buttons: Array[Button] = []
 var _catalog_buttons: Array[Button] = []
@@ -305,6 +310,9 @@ func _init() -> void:
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	_scroll.follow_focus = false
+	_scroll_focus_mode = _scroll.focus_mode
+	_scroll.gui_input.connect(_on_notice_scroll_input)
+	_scroll.focus_entered.connect(_on_notice_scroll_focus)
 	_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_left_layout.add_child(_scroll)
@@ -333,10 +341,10 @@ func _init() -> void:
 	aircraft_count_label.name = "AircraftCount"
 	heading.add_child(aircraft_count_label)
 	previous_button = _arrow_button("PreviousAircraft", "left")
-	previous_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.step(aircraft_id, -1)))
+	previous_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.player_step(aircraft_id, -1)))
 	heading.add_child(previous_button)
 	next_button = _arrow_button("NextAircraft", "right")
-	next_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.step(aircraft_id, 1)))
+	next_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.player_step(aircraft_id, 1)))
 	heading.add_child(next_button)
 	flight_page.add_child(heading)
 	var flight_card := PanelContainer.new()
@@ -420,6 +428,10 @@ func _init() -> void:
 	note_label.name = "HomeNotice"
 	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_label.visible = false
+	stock_selection_notice = _label("", "SecondaryLabel", false)
+	stock_selection_notice.name = "StockSelectionNotice"
+	stock_selection_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	stock_selection_notice.visible = false
 	var disclosure_row := HBoxContainer.new()
 	disclosure_row.name = "FlightDetailsDisclosure"
 	disclosure_row.add_theme_constant_override("separation", 4)
@@ -536,7 +548,7 @@ func _init() -> void:
 	catalog_list.name = "AircraftCatalog"
 	catalog_list.add_theme_constant_override("separation", 6)
 	aircraft_page.add_child(catalog_list)
-	for entry: Dictionary in Catalog.ENTRIES:
+	for entry: Dictionary in Catalog.player_entries():
 		var id: String = entry.id
 		var item := _button("", "HomeAction")
 		item.name = "Aircraft_%s" % id.replace("-", "_")
@@ -666,12 +678,19 @@ func _init() -> void:
 	primary_actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	primary_actions.add_theme_constant_override("separation", 0)
 	_left_layout.add_child(primary_actions)
-	primary_actions.add_child(note_label)
+	_primary_actions = primary_actions
+	_launch_notices = VBoxContainer.new()
+	_launch_notices.name = "LaunchNotices"
+	_launch_notices.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_launch_notices.add_theme_constant_override("separation", 0)
+	primary_actions.add_child(_launch_notices)
+	_launch_notices.add_child(note_label)
+	_launch_notices.add_child(stock_selection_notice)
 	launch_warning = _label("", "SecondaryLabel", false)
 	launch_warning.name = "LaunchConditionsNotice"
 	launch_warning.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	launch_warning.visible = false
-	primary_actions.add_child(launch_warning)
+	_launch_notices.add_child(launch_warning)
 	review_conditions_button = _button("Review Conditions", "QuietButton")
 	review_conditions_button.name = "ReviewLaunchConditions"
 	review_conditions_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -683,7 +702,7 @@ func _init() -> void:
 	failure_launch_notice.name = "FailureLaunchNotice"
 	failure_launch_notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	failure_launch_notice.visible = false
-	primary_actions.add_child(failure_launch_notice)
+	_launch_notices.add_child(failure_launch_notice)
 	fly_button = _button("FLY", "CompactPrimaryButton")
 	fly_button.name = "Fly"
 	fly_button.custom_minimum_size.y = 56
@@ -791,7 +810,7 @@ func _nav_button(label: String, node_name: String, page_index: int) -> Button:
 
 
 func _request_aircraft(id: String) -> void:
-	if not Catalog.has(id):
+	if not Catalog.is_player_selectable(id):
 		return
 	id = Catalog.canonical_id(id)
 	_requested_aircraft_id = id
@@ -968,6 +987,9 @@ func _select_page(index: int) -> void:
 			ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
 		if has_focus():
 			_page_buttons[selected].grab_focus()
+		_update_notice_focus_links()
+		if _launch_notices.get_parent() == _page_host:
+			_ensure_scrolled_focus.call_deferred()
 
 
 ## UI-34a (UI-30 AS-1): Pause's Change aircraft lands here, with the aircraft just flown focused.
@@ -985,6 +1007,8 @@ func _reveal_selected_aircraft() -> void:
 	if not is_inside_tree() or not _pages[1].visible: return
 	var selected := _catalog_ids.find(aircraft_id)
 	if selected >= 0:
+		if _launch_notices.get_parent() == _page_host and not _catalog_buttons[selected].has_focus():
+			return # Keep new notices at the top unless opening the focused aircraft explicitly.
 		_scroll.ensure_control_visible(_catalog_buttons[selected])
 
 
@@ -1037,6 +1061,24 @@ func _apply_responsive_layout() -> void:
 		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button, ground_vehicle_choice]
 		for index in _page_buttons.size():
 			_page_buttons[index].focus_neighbor_bottom = _page_buttons[index].get_path_to(first_page_controls[index])
+	# Long concurrent notices can otherwise force the pinned actions below the viewport. Put the whole
+	# notice group at the start of the existing scroll body; the corrective action and Fly stay pinned.
+	# An empty visible container still reserves the parent's separation and can overflow Practice.
+	_launch_notices.visible = stock_selection_notice.visible or note_label.visible \
+		or launch_warning.visible or failure_launch_notice.visible
+	var notices_in_scroll := stock_selection_notice.visible or note_label.visible
+	var notices_parent: Node = _page_host if notices_in_scroll else _primary_actions
+	var restore_notice_focus := _scroll.has_focus() and not notices_in_scroll
+	if _launch_notices.get_parent() != notices_parent:
+		_launch_notices.reparent(notices_parent)
+		if notices_in_scroll:
+			_scroll.scroll_vertical = 0
+	if _launch_notices.get_index() != 0:
+		notices_parent.move_child(_launch_notices, 0)
+	_scroll.focus_mode = Control.FOCUS_ALL if notices_in_scroll else _scroll_focus_mode
+	_update_notice_focus_links()
+	if restore_notice_focus:
+		_focus_launch_action()
 	# Large text needs room to wrap inside the bounded rail. Save each button's authored wrap mode so a live
 	# return to normal text restores its original presentation, including after a language change.
 	for button: Button in find_children("*", "Button", true, false):
@@ -1049,6 +1091,7 @@ func _apply_responsive_layout() -> void:
 		livery_button.autowrap_mode = TextServer.AUTOWRAP_OFF if large_text else int(livery_button.get_meta(HOME_AUTOWRAP_META))
 		livery_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if large_text else TextServer.OVERRUN_NO_TRIMMING
 	for utility: Button in [controls_button, help_button, quit_button]:
+		_set_utility_margins(utility, not compact and not large_text and viewport_size.y <= 1080.0)
 		if compact:
 			# Keep translated utility labels inside the compact rail without truncation.
 			_set_responsive_font(utility, 20 if large_text else 18)
@@ -1083,8 +1126,11 @@ func _apply_responsive_layout() -> void:
 	_left_layout.offset_right = inset + span + rail_width
 	if _catalog_detail != null:
 		var detail_left := inset + span + rail_width + 32.0
+		# Enlarged detail text needs horizontal room to wrap before it reaches the bottom of the window.
+		var detail_width := minf(viewport_size.x - detail_left - inset,
+			clampf(viewport_size.x * 0.50, 660.0, 1100.0) if large_text else clampf(viewport_size.x * 0.22, 360.0, 460.0))
 		_catalog_detail.offset_left = detail_left
-		_catalog_detail.offset_right = detail_left + clampf(viewport_size.x * 0.22, 360.0, 460.0)
+		_catalog_detail.offset_right = detail_left + detail_width
 		_catalog_detail.offset_top = maxf(88.0 if compact else 108.0, header_top + header_height + 16.0)
 		_catalog_detail.offset_bottom = _catalog_detail.offset_top
 		_update_catalog_detail_visibility()
@@ -1134,10 +1180,92 @@ func _apply_responsive_layout() -> void:
 		update_notice.offset_top = maxf(112.0, _header_actions.get_global_rect().end.y + 16.0)
 
 
+func _update_notice_focus_links() -> void:
+	var selected := 0
+	for index in _pages.size():
+		if _pages[index].visible:
+			selected = index
+			break
+	var action: Control = ground_vehicle_button if selected == 3 else review_conditions_button if review_conditions_button.visible else fly_button if not fly_button.disabled else _page_buttons[selected]
+	var previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and (review_conditions_button.visible or not fly_button.disabled) else _page_buttons[selected]
+	if previous == action:
+		previous = _page_buttons[selected - 1] if selected > 0 else language_button
+	if _launch_notices.get_parent() == _page_host:
+		action.focus_neighbor_top = action.get_path_to(_scroll)
+		_scroll.focus_neighbor_top = _scroll.get_path_to(previous)
+		_scroll.focus_neighbor_bottom = _scroll.get_path_to(action)
+		_scroll.focus_next = _scroll.get_path_to(action)
+	else:
+		action.focus_neighbor_top = action.get_path_to(previous)
+
+
+func _on_notice_scroll_focus() -> void:
+	if _launch_notices.get_parent() == _page_host:
+		_scroll.scroll_vertical = 0
+
+
+func _ensure_scrolled_focus() -> void:
+	if not is_inside_tree():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if is_instance_valid(focused) and focused != _scroll and _scroll.is_ancestor_of(focused):
+		_scroll.ensure_control_visible(focused)
+
+
+func _on_notice_scroll_input(event: InputEvent) -> void:
+	if _launch_notices.get_parent() != _page_host or not _scroll.has_focus() or not event.is_pressed():
+		return
+	var bar := _scroll.get_v_scroll_bar()
+	var maximum := maxi(0, int(ceil(bar.max_value - bar.page)))
+	if event.is_action_pressed("ui_up") or event.is_action_pressed("ui_down"):
+		var up := event.is_action_pressed("ui_up")
+		if up and _scroll.scroll_vertical <= 0:
+			var previous := _scroll.get_node_or_null(_scroll.focus_neighbor_top) as Control
+			if can_focus(previous):
+				previous.grab_focus()
+		elif not up and _scroll.scroll_vertical >= maximum:
+			var next := _scroll.get_node_or_null(_scroll.focus_neighbor_bottom) as Control
+			if can_focus(next):
+				next.grab_focus()
+			else:
+				_focus_launch_action()
+		else:
+			_scroll.scroll_vertical += -64 if up else 64
+		_scroll.accept_event()
+		return
+	if not event is InputEventKey:
+		return
+	var page := maxi(1, int(_scroll.size.y * 0.8))
+	match event.keycode:
+		KEY_PAGEUP: _scroll.scroll_vertical -= page
+		KEY_PAGEDOWN: _scroll.scroll_vertical += page
+		KEY_HOME: _scroll.scroll_vertical = 0
+		KEY_END: _scroll.scroll_vertical = maximum
+		_: return
+	_scroll.accept_event()
+
+
 func _set_responsive_font(control: Control, logical_size: int, decorative := false) -> void:
 	var font_size := UiTheme._font_size(logical_size, decorative)
 	if not control.has_theme_font_size_override("font_size") or control.get_theme_font_size("font_size") != font_size:
 		control.add_theme_font_size_override("font_size", font_size)
+
+
+## Fit full-size utility labels in the normal 1080p rail without a second footer row.
+func _set_utility_margins(button: Button, tight: bool) -> void:
+	const MARGIN_META := "home_utility_margins"
+	if button.has_meta(MARGIN_META) and bool(button.get_meta(MARGIN_META)) == tight:
+		return
+	button.set_meta(MARGIN_META, tight)
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		if not tight:
+			button.remove_theme_stylebox_override(state)
+			continue
+		var style := button.get_theme_stylebox(state).duplicate() as StyleBoxFlat
+		if style != null:
+			style.content_margin_left = 4.0
+			style.content_margin_right = 4.0
+			button.add_theme_stylebox_override(state, style)
 
 
 func _set_compact_action_density(button: Button, active: bool) -> void:
@@ -1215,6 +1343,8 @@ func _statistics_time(seconds: float) -> String:
 
 func set_aircraft(id: String) -> void:
 	id = Catalog.canonical_id(id)
+	if not Catalog.is_player_selectable(id):
+		return
 	if id != aircraft_id:
 		_clear_launch_note()
 	_refresh_statistics_summary(id)
@@ -1616,6 +1746,16 @@ func set_note(text: String) -> void:
 		_apply_responsive_layout.call_deferred()
 
 
+## Keep compatibility selection information visible through unrelated setting changes.
+func set_stock_selection_notice(id: String) -> void:
+	_retained_stock_id = id
+	stock_selection_notice.visible = not id.is_empty()
+	stock_selection_notice.text = tr("%s is a technical configuration. Home is using %s. Existing builds and technical launches remain available; your saved selection is retained until you choose an aircraft or Fly.") \
+		% [Catalog.short_name(id), Catalog.short_name(aircraft_id)] if not id.is_empty() else ""
+	if is_node_ready():
+		_apply_responsive_layout.call_deferred()
+
+
 ## Displays the explicitly selected flight and menu devices. Empty names mean keyboard/no controller.
 func set_controller_devices(flight_name: String, menu_name: String) -> void:
 	_flight_device_name = flight_name.strip_edges()
@@ -1767,10 +1907,11 @@ static func next_language(code: String) -> String:
 
 func _update_texts() -> void:
 	_refresh_launch_note()
+	set_stock_selection_notice(_retained_stock_id)
 	language_button.text = tr("Language: %s") % Preferences.LANGUAGES[current_language()]
-	var aircraft_position := Catalog.ids().find(aircraft_id) + 1
-	aircraft_count_label.text = "%d / %d" % [aircraft_position, Catalog.ids().size()]
-	aircraft_count_label.tooltip_text = tr("Aircraft %d of %d") % [aircraft_position, Catalog.ids().size()]
+	var aircraft_position := Catalog.player_ids().find(aircraft_id) + 1
+	aircraft_count_label.text = "%d / %d" % [aircraft_position, Catalog.player_ids().size()]
+	aircraft_count_label.tooltip_text = tr("Aircraft %d of %d") % [aircraft_position, Catalog.player_ids().size()]
 	aircraft_name_label.text = _aircraft_display_name()
 	aircraft_name_label.tooltip_text = tr(Catalog.entry(aircraft_id).name)
 	aircraft_summary_label.text = tr(Catalog.entry(aircraft_id).summary)
@@ -1950,6 +2091,8 @@ func _update_launch_admission() -> bool:
 	for utility: Control in [controls_button, help_button, quit_button]:
 		utility.focus_neighbor_top = utility.get_path_to(primary_action)
 	start_button.focus_neighbor_bottom = start_button.get_path_to(primary_action)
+	if is_node_ready():
+		_update_notice_focus_links()
 	if warning_was_visible != launch_warning.visible and is_node_ready():
 		_apply_responsive_layout.call_deferred()
 	return error.is_empty()

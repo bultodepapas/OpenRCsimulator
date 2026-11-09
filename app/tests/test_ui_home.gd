@@ -102,8 +102,8 @@ func _run() -> void:
 		home.previous_button.get_parent() == home.get_node("HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading")
 		and home.next_button.get_parent() == home.previous_button.get_parent())
 	_check("Aircraft destination lists every catalog entry with proper-name capability text",
-		home.get_node("HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftCatalog").get_child_count() == Catalog.ids().size()
-		and home._catalog_buttons.size() == Catalog.ids().size())
+		home.get_node("HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftCatalog").get_child_count() == Catalog.player_ids().size()
+		and home._catalog_buttons.size() == Catalog.player_ids().size())
 	var selected_catalog_index: int = home._catalog_ids.find(home.aircraft_id)
 	var selected_catalog_button: Button = home._catalog_buttons[selected_catalog_index]
 	var selected_catalog_style := selected_catalog_button.get_theme_stylebox("pressed") as StyleBoxFlat
@@ -281,7 +281,7 @@ func _run() -> void:
 	home.set_controller_devices(long_device, "XInput Controller")
 	for locale in ["en", "es"]:
 		TranslationServer.set_locale(locale)
-		for aircraft in Catalog.ids():
+		for aircraft in Catalog.player_ids():
 			# Mirror AppRoot's effective selection; the saved airplane turbulence is not
 			# itself a valid helicopter launch config. Refused layouts have their own test.
 			home.set_weather_config(AppRoot.weather_for_aircraft(aircraft, app.preferences.weather_config))

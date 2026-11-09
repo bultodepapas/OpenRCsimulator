@@ -9,6 +9,13 @@ the production exporter. The [C7 / RCV-43 / SC-09-R2 memory follow-up](../../doc
 records the baseline source, commands, exact CSV digest, allocator counters and
 limitations. It is an export component witness, not a flight, FPS or GPU benchmark.
 
+`trace_chunk_probe.gd` compares retained numeric storage for 120,001 synthetic rows.
+Use `-- --chunks` for the interactive bounded store or `--trace-source=<frozen-script>`
+for an in-memory reference. It forces a drain every 1,024 candidate rows; this is a
+controlled storage witness, not scheduler or frame-pacing qualification. The same
+[memory follow-up](../../docs/research/memory-2026-11-08.md#interactive-telemetry-chunks--c7--heli-16-continuation)
+retains its identities, exact CSV hash and observed limits.
+
 `field_validation_probe.gd` compares complete field validation and file loading
 with explicit source/data snapshots and a no-tree control. Its [DT-11a / L6b report](../../docs/research/visual-quality-implementation/VQ-01c/loading/field-validation/README.md)
 retains normalized-data/diagnostic parity, paired CPU batches, immutable-input

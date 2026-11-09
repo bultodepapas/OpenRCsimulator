@@ -1,5 +1,5 @@
 extends RefCounted
-## Versioned source-input proof for the separately registered MoonRunner overlay.
+## Versioned source-input proofs for the separately registered overlays.
 ## Packaged proofs identify exporter inputs, not compiled bytecode.
 const Registry := preload("res://aircraft/model_registry.gd")
 const PROOF_SOURCE := "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json"
@@ -14,27 +14,48 @@ const SOURCE_PATHS := [
 ]
 const FORMAT := "openrc-moonrunner-overlay-source-proof"
 
-static func verify(manifest: Dictionary) -> Dictionary:
+const ELECTRIC_FAMILY := "stik-electric-6s"
+const ELECTRIC_PROOF_SOURCE := "assets/aircraft/stik-electric-6s/runtime-proof.json"
+const ELECTRIC_SOURCE_PATHS := [
+	"assets/aircraft/stik-electric-6s/customization-bindings.json",
+	"assets/aircraft/stik-electric-6s/model-bindings.json",
+	"res://aircraft/customization_overlay.gd",
+	"res://aircraft/model_manifest.gd",
+	"res://aircraft/model_overlay_registry.gd",
+	"res://aircraft/model_registry.gd",
+	"res://aircraft/overlay_source_proof.gd",
+]
+
+static func source_paths(family: String) -> Array:
+	if family == "moonrunner-x99": return SOURCE_PATHS
+	if family == ELECTRIC_FAMILY: return ELECTRIC_SOURCE_PATHS
+	return []
+
+static func verify(manifest: Dictionary, family: String = "moonrunner-x99") -> Dictionary:
+	var paths := source_paths(family)
+	if paths.is_empty(): return _failure("Unknown overlay source proof family.")
+	var proof_source := ELECTRIC_PROOF_SOURCE if family == ELECTRIC_FAMILY else PROOF_SOURCE
+	var proof_format := "openrc-stik-electric-6s-overlay-source-proof" if family == ELECTRIC_FAMILY else FORMAT
 	var record := {}
 	for item: Variant in manifest.get("authoring_sources", []):
-		if item is Dictionary and item.get("path") == PROOF_SOURCE and item.get("role") == "overlay_runtime_proof":
+		if item is Dictionary and item.get("path") == proof_source and item.get("role") == "overlay_runtime_proof":
 			if not record.is_empty(): return _failure("Overlay source proof is duplicated.")
 			record = item
 	if record.is_empty(): return _failure("Overlay source proof is missing from the model manifest.")
 	var package: Dictionary = Registry._read_package_proofs()
 	if not package.get("ok", false): return package
 	var files: Dictionary = package.get("files", {})
-	var proof_bytes := _read_source(PROOF_SOURCE, files)
+	var proof_bytes := _read_source(proof_source, files)
 	if proof_bytes.is_empty() or _sha256_lf(proof_bytes) != str(record.get("sha256", "")):
 		return _failure("Overlay source proof bytes are missing or changed.")
 	var proof: Variant = JSON.parse_string(proof_bytes.get_string_from_utf8())
 	if not proof is Dictionary or proof.size() != 3 or not proof.has_all(["format", "version", "sources"]) \
-			or proof.format != FORMAT or typeof(proof.version) not in [TYPE_INT, TYPE_FLOAT] \
-			or proof.version != 1 or not proof.sources is Array or proof.sources.size() != SOURCE_PATHS.size():
+			or proof.format != proof_format or typeof(proof.version) not in [TYPE_INT, TYPE_FLOAT] \
+			or proof.version != 1 or not proof.sources is Array or proof.sources.size() != paths.size():
 		return _failure("Overlay source proof is malformed or unsupported.")
-	for index in SOURCE_PATHS.size():
+	for index in paths.size():
 		var item: Variant = proof.sources[index]
-		var source: String = SOURCE_PATHS[index]
+		var source: String = paths[index]
 		if not item is Dictionary or item.size() != 2 or not item.has_all(["path", "sha256"]) \
 				or item.path != source or not _valid_sha(str(item.sha256)):
 			return _failure("Overlay source proof has unknown or malformed source records.")

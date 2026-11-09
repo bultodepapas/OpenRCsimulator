@@ -9919,3 +9919,21 @@ msgstr "Sensordaten des Flugakkus, einschließlich Spannung und geschätzter Res
 
 msgid "Focus the description to scroll with arrows or %s / %s."
 msgstr "Fokussiere die Beschreibung, um mit den Pfeiltasten oder %s / %s zu scrollen."
+
+msgid "%s is a technical configuration. Home is using %s. Existing builds and technical launches remain available; your saved selection is retained until you choose an aircraft or Fly."
+msgstr "%s ist eine technische Konfiguration. Die Startseite verwendet %s. Gespeicherte Modelle und technische Starts bleiben verfügbar; die gespeicherte Auswahl bleibt erhalten, bis du ein Flugzeug auswählst oder FLIEGEN drückst."
+
+msgid "Electric Workshop trials use ideal fixed voltage; the battery never runs flat. Normal stock flight offers the finite pack."
+msgstr "Elektrische Werkstatt-Testflüge verwenden eine ideale Festspannung; der Akku wird nie leer. Im normalen Flug ist ein endlicher Akku verfügbar."
+
+msgid "This aircraft is available only through technical compatibility routes."
+msgstr "Dieses Flugzeug ist nur über technische Kompatibilitätswege verfügbar."
+
+msgid "High-wing sport trainer · 1.52 m · 6S electric"
+msgstr "Hochdecker-Sporttrainer · 1,52 m · 6S elektrisch"
+
+msgid "Experimental: estimated 6S electric conversion, not flight-validated. Battery and motor behavior require physical qualification."
+msgstr "Experimentell: geschätzter 6S-Elektro-Umbau, nicht flugerprobt. Akku- und Motorverhalten müssen physisch validiert werden."
+
+msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
+msgstr "Die gespeicherten Einstellungen sind geschützt oder nicht verfügbar. Änderungen gelten nur für diese Sitzung."

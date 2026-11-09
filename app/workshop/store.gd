@@ -7,6 +7,7 @@ const WorkshopDependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
 const WorkshopParameters = preload("res://workshop/parameters.gd")
 const PresentationProfile = preload("res://workshop/presentation.gd")
+const ModelRegistry = preload("res://aircraft/model_registry.gd")
 const DEFAULT_ROOT: String = "user://aircraft_variants"
 const VARIANT_FORMAT: String = "openrc-aircraft-variant"
 const LEGACY_VARIANT_VERSION: int = 1
@@ -1057,12 +1058,12 @@ static func _resolve_workshop_descriptor(
 
 static func _resolve_customization_bindings(base_id: String, descriptor: Dictionary) -> Dictionary:
 	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
-		return {"ok": false, "missing": base_id != "moonrunner-x99", "errors": PackedStringArray(["Customization companion is unavailable."])}
+		return {"ok": false, "missing": not ModelRegistry.OVERLAY_FAMILIES.has(base_id), "errors": PackedStringArray(["Customization companion is unavailable."])}
 	var customization_script: Script = load("res://render/aircraft_customization.gd")
 	if customization_script == null:
-		return {"ok": false, "missing": base_id != "moonrunner-x99", "errors": PackedStringArray(["Customization companion is unavailable."])}
+		return {"ok": false, "missing": not ModelRegistry.OVERLAY_FAMILIES.has(base_id), "errors": PackedStringArray(["Customization companion is unavailable."])}
 	var described: Dictionary
-	if base_id == "moonrunner-x99":
+	if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):
 			return {"ok": false, "missing": false, "errors": PackedStringArray(["Overlay customization resolver is unavailable."])}
@@ -1073,7 +1074,7 @@ static func _resolve_customization_bindings(base_id: String, descriptor: Diction
 	else:
 		described = customization_script.describe(base_id)
 	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
-		return {"ok": false, "missing": base_id != "moonrunner-x99",
+		return {"ok": false, "missing": not ModelRegistry.OVERLAY_FAMILIES.has(base_id),
 			"errors": described.get("errors", PackedStringArray(["Customization companion could not describe this aircraft."]))}
 	var bindings: Dictionary = described["bindings"]
 	if not descriptor.is_empty() and typeof(descriptor.get("presentation", null)) == TYPE_DICTIONARY:

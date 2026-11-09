@@ -1,0 +1,111 @@
+{
+  "schema": "openrc-aircraft-model-bindings",
+  "version": 2,
+  "families": [
+    {
+      "family_id": "stik-electric-6s",
+      "builder": {
+        "script": "res://aircraft/stik_electric_model.gd",
+        "adapter": "euler_hinges"
+      },
+      "geometry": {
+        "script": "res://aircraft/ugly_stik_geometry.gd",
+        "source": "assets/aircraft/ugly-stik-60/geometry.json",
+        "revision_path": "id",
+        "identity_path": "id",
+        "datum": {
+          "model_z_le": {
+            "path": "wing.leading_z"
+          },
+          "model_y_thrust": {
+            "path": "equipment.shaft_y"
+          }
+        }
+      },
+      "asset": {
+        "kind": "procedural"
+      },
+      "bindings": {
+        "controls": {
+          "aileron_left": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_left",
+                "node": "aileron_left_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "aileron_right": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "aileron_right",
+                "node": "aileron_right_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "elevator": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "elevator",
+                "node": "elevator_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          },
+          "rudder": {
+            "visual_only": false,
+            "hinges": [
+              {
+                "key": "rudder",
+                "node": "rudder_hinge",
+                "source": "builder",
+                "geometry_ref": ""
+              }
+            ]
+          }
+        },
+        "rotor": {
+          "present": true,
+          "node": "propeller",
+          "spin_node": "",
+          "diameter": {
+            "path": "equipment.prop_diameter"
+          },
+          "source": "builder",
+          "geometry_ref": ""
+        },
+        "gear": {
+          "keys": {
+            "left": "left",
+            "right": "right",
+            "steering": "steering",
+            "nose": "nose"
+          }
+        },
+        "crash": {
+          "provider": "none",
+          "metadata_script": "",
+          "asset_node": ""
+        }
+      },
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/stik-electric-6s/customization-bindings.json",
+          "role": "overlay_customization_source"
+        },
+        {
+          "path": "assets/aircraft/stik-electric-6s/runtime-proof.json",
+          "role": "overlay_runtime_proof"
+        }
+      ]
+    }
+  ]
+}

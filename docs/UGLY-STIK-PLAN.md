@@ -1,6 +1,6 @@
 # Jensen Ugly Stik 60: current model and remaining acceptance
 
-Checked 2026-10-19 · Owner: Stik model/finish track · Prefixes **US-01…08**, **US-V01…12** and repairs. This guide owns visual scope and acceptance. The [asset guide](../assets/aircraft/ugly-stik-60/README.md) owns sources, commands and model interfaces; dated research owns delivery evidence.
+Visual model checked 2026-10-19; stock integration 2026-11-08 · Owner: Stik model/finish track · Prefixes **US-01…08**, **US-V01…12** and repairs. This guide owns visual scope and acceptance. The [asset guide](../assets/aircraft/ugly-stik-60/README.md) owns sources, commands and model interfaces; dated research owns delivery evidence.
 
 ## Current implementation
 
@@ -9,6 +9,19 @@ The native model represents the 60-inch Jensen with a generic .61-class installa
 The [geometry](../assets/aircraft/ugly-stik-60/geometry.json) and [appearance](../assets/aircraft/ugly-stik-60/appearance.json) are separate editable sources. The manifest selects the native builder through the shared [model contract](AIRCRAFT_CONTRACT.md#model-and-package-contract). Mesh counts and v3/v4/v5/v6 report names describe delivery snapshots; use current verification for today's model.
 
 The base catalog aircraft, `jensen-das-ugly-stik-60`, retains prescribed fuel and fixed tricycle gear without flaps. Finite-glow Stik configurations share the visual family but have distinct installations and energy behavior. Use the [glow guide](GLOW-ENGINES.md) and [fuel standard](FUEL-SYSTEM.md); the mesh does not select engine physics or establish mass/CG/inertia.
+
+## Stock configurations
+
+Home and the Workshop new-stock picker offer two Ugly Stiks:
+
+| Configuration | ID | Behavior |
+| --- | --- | --- |
+| Basic reference | `jensen-das-ugly-stik-60` | Default; existing MAX-61FX inventory, prescribed fuel/RPM law, unchanged data and test/golden reference. |
+| Experimental Electric 6S | `stik-electric-6s` | Scorpion SII-4020-540KV, APC 12x8E, Gens ace 6S 4000 mAh reference pack and Tribunus III 06-80A reference ESC. Normal flight defaults to finite pack; ideal fixed voltage remains explicit. |
+
+The electric model has its own inventory, model family and estimated mass of 2.600082 kg; it reuses the unchanged airframe geometry and donor wheel profile through a closed key alias. The global wheel registry and existing basic Workshop dependency pins remain unchanged. Its Workshop editor/trial uses **ideal fixed voltage with no depletion**, stated in the editor. It does not simulate the selected brands' firmware, current limiting, motor/ESC thermal protection or electric propwash. The static/source fit, bounded numerical envelope and unresolved startup-current/physical-fit constraints are recorded in the [installation dossier](../research/propulsion/stik-6s/README.md). Software admission does not qualify a real conversion or pilot handling.
+
+The three finite-glow Stiks retain their original technical IDs, physics, explicit CLI routes and saved Workshop documents; they are excluded from new stock choices. A saved hidden Home selection resolves to the basic aircraft with an explanation. Unrelated saves retain the original selection until an explicit aircraft selection or successful Fly save. See [glow compatibility routes](GLOW-ENGINES.md#fly-and-configure) and the [implementation evidence](research/propulsion/ugly-stik-implementation-2026-11-08.md). The [active plan](plans/ugly-stik-two-variants.md) retains remaining qualification gates.
 
 ## Delivered work and pending gates
 

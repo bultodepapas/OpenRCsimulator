@@ -360,19 +360,27 @@ class AircraftModelManifestTests(unittest.TestCase):
             "assets/aircraft/moonrunner-x99-overlay/customization-bindings.json",
             "app/data/aircraft_model_overlays/moonrunner-x99.json",
             "app/data/aircraft_customization_overlays/moonrunner-x99.json",
+            "assets/aircraft/stik-electric-6s/model-bindings.json",
+            "assets/aircraft/stik-electric-6s/customization-bindings.json",
+            "app/data/aircraft_model_overlays/stik-electric-6s.json",
+            "app/data/aircraft_customization_overlays/stik-electric-6s.json",
+            "app/tests/fixtures/moonrunner-overlay-pre-electric-descriptor.json",
+            "app/tests/fixtures/moonrunner-overlay-pre-electric-customization.json",
         }
         relative_files.update(
             path.relative_to(ROOT).as_posix() for path in OUTPUT_DIR.glob("*.json")
         )
-        overlay = load_json(ROOT / "app/data/aircraft_model_overlays/moonrunner-x99.json")
-        customization_overlay = load_json(ROOT / "app/data/aircraft_customization_overlays/moonrunner-x99.json")
-        for source in customization_overlay["families"][0]["presentation_sources"]:
-            relative_files.add("app/" + source["path"].removeprefix("res://"))
-        proof = load_json(ROOT / "assets/aircraft/moonrunner-x99-overlay/runtime-proof.json")
-        for source in proof["sources"]:
-            path = source["path"]
-            relative_files.add("app/" + path.removeprefix("res://") if path.startswith("res://") else path)
-        for manifest in [*self.manifests.values(), overlay]:
+        overlays = []
+        for family, directory in (("moonrunner-x99", "moonrunner-x99-overlay"), ("stik-electric-6s", "stik-electric-6s")):
+            overlays.append(load_json(ROOT / f"app/data/aircraft_model_overlays/{family}.json"))
+            customization_overlay = load_json(ROOT / f"app/data/aircraft_customization_overlays/{family}.json")
+            for source in customization_overlay["families"][0]["presentation_sources"]:
+                relative_files.add("app/" + source["path"].removeprefix("res://"))
+            proof = load_json(ROOT / f"assets/aircraft/{directory}/runtime-proof.json")
+            for source in proof["sources"]:
+                path = source["path"]
+                relative_files.add("app/" + path.removeprefix("res://") if path.startswith("res://") else path)
+        for manifest in [*self.manifests.values(), *overlays]:
             relative_files.add(manifest["source_registry"]["path"])
             relative_files.add(manifest["geometry"]["source"]["path"])
             relative_files.update(source["path"] for source in manifest["authoring_sources"])
@@ -425,6 +433,12 @@ class AircraftModelManifestTests(unittest.TestCase):
                     manifests.append(checkout / "app/data/aircraft_customization.json")
                     for manifest_path in manifests:
                         self.assertNotIn(b"\r", manifest_path.read_bytes(), f"generated manifest must stay LF: {manifest_path}")
+
+                    # Historical Workshop pins compare raw bytes at runtime, including on Windows.
+                    for fixture in ("moonrunner-overlay-pre-electric-descriptor.json", "moonrunner-overlay-pre-electric-customization.json"):
+                        relative = Path("app/tests/fixtures") / fixture
+                        self.assertEqual((checkout / relative).read_bytes(), (ROOT / relative).read_bytes(),
+                                         f"historical fixture changed across checkout: {relative}")
 
                     result = subprocess.run(
                         [sys.executable, "research/aircraft-standardization/build_moonrunner_geometry.py", "--check"],

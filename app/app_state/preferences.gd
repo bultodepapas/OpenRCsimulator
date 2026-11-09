@@ -3,6 +3,8 @@
 # Every value is validated by type and range: ConfigFile returns whatever type the file holds, not the default's.
 extends RefCounted
 
+const PreferencesFile := preload("res://app_state/preferences_file.gd")
+
 const BadSettingsBackup := preload("res://app_state/bad_settings_backup.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Landscapes := preload("res://landscapes/catalog.gd")
@@ -79,11 +81,26 @@ const DEFAULTS := {
 ## Returns the preferences: the DEFAULTS keys plus `writable` (false for a newer file or an unreadable file that
 ## could not be preserved) and `note` (what happened to an unusable file, "" when all is well).
 static func load_from(path: String) -> Dictionary:
+	var lock_error := PreferencesFile._acquire(path)
+	if lock_error != OK:
+		var unavailable := DEFAULTS.duplicate(true)
+		unavailable.writable = false
+		unavailable.note = "Settings are in use or unavailable. Saved settings were kept."
+		return unavailable
+	var loaded := _load_locked(path)
+	PreferencesFile._release(path)
+	return loaded
+
+
+static func _load_locked(path: String) -> Dictionary:
 	var prefs := DEFAULTS.duplicate(true)
 	prefs.failure_config = FailureConfig.defaults()
 	prefs.out_of_trim_config = OutOfTrim.defaults()
 	prefs.writable = true
 	prefs.note = ""
+	if PreferencesFile._recover_locked(path) != OK:
+		prefs.writable = false
+		prefs.note = "incomplete settings transaction could not be recovered; previous settings were retained"
 	if not FileAccess.file_exists(path):
 		return prefs
 	var cfg := ConfigFile.new()
@@ -216,7 +233,22 @@ static func load_from(path: String) -> Dictionary:
 	return prefs
 
 
-static func save_to(path: String, prefs: Dictionary) -> Error:
+## Resolve only the stock Home selection. Keep the technical ID until explicit selection/Fly persists.
+static func resolve_player_selection(prefs: Dictionary) -> String:
+	var id := str(prefs.get("aircraft", DEFAULTS.aircraft))
+	if not Catalog.is_player_selectable(id):
+		if Catalog.has(id) and not prefs.has("_retained_aircraft"):
+			prefs._retained_aircraft = id
+		id = Catalog.DEFAULT_ID
+		prefs.aircraft = id
+	return Catalog.canonical_id(id)
+
+
+static func retained_aircraft(prefs: Dictionary) -> String:
+	return str(prefs.get("_retained_aircraft", ""))
+
+
+static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -> Error:
 	if not prefs.get("writable", true):
 		return ERR_FILE_NO_PERMISSION
 	if typeof(prefs.get("latency_marker", DEFAULTS.latency_marker)) != TYPE_BOOL:
@@ -276,7 +308,8 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	cfg.set_value("updates", "check", prefs.get("check_updates", DEFAULTS.check_updates))
-	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
+	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft) if commit_aircraft \
+		else prefs.get("_retained_aircraft", prefs.get("aircraft", DEFAULTS.aircraft)))
 	cfg.set_value("flight", "landscape", prefs.get("landscape", DEFAULTS.landscape))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "rotorcraft_start_choice", prefs.get("rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice))
@@ -320,7 +353,10 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	aircraft_ids.sort()
 	for aircraft_id: String in aircraft_ids:
 		cfg.set_value("liveries", aircraft_id, liveries[aircraft_id])
-	return cfg.save(path)
+	var error := PreferencesFile.save(path, cfg)
+	if error == OK and commit_aircraft:
+		prefs.erase("_retained_aircraft")
+	return error
 
 
 ## Night options are visual-only. Two-key values are accepted for older callers and migrate to automatic activation.

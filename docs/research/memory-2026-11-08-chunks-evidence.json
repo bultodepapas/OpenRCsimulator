@@ -1,0 +1,1803 @@
+{
+  "scope": "Windows x86-64 headless component and controlled retained-storage checks; no real-time frame, physical, GPU or packaged qualification",
+  "baseline_commit": "f96f9e678",
+  "head_at_retention": "704a1f0f57b00f99ad393da62152f598c74254bd",
+  "source_hash_scope": "Task source files at final retention. Helicopter main contains unrelated concurrent impact work; this task changes only its T-start call. Whole shared dependency tree was not frozen for all runs.",
+  "sha256": {
+    "app/sim/trace.gd": "104c60e5192cf98341194d783767959783e874b37cb2f1c8e0dc635c02d81c34",
+    "app/sim/recorder.gd": "00ea33e6b0b63434569912f215fab0a1fff382e058a8d9a5caa64da8cd72994a",
+    "app/sim/rotorcraft_recorder.gd": "b4b912b494a9344d9c19b8719349e00690dc3c3d6aafa9df6946d4dcd74fc52b",
+    "app/sim/trace_chunk_store.gd": "f5747fd6c6d9903958cebaac673a1c4a4fa9a654496fc063222ba929e7265b28",
+    "app/main.gd": "a69d585e5d3d9262f9c9e567b852669dcef56ba05293da087c4eb886fa4ec9e8",
+    "app/helicopter_main.gd": "d2703661d04690d19c35e5d172f4ba80f830bdb1da73f5b9bbac89b3956b1eeb",
+    "app/tests/test_trace_chunks.gd": "1a2248655d0ec045a2e04a49e1a3e50f8e08d07e14e4d83fcc6055407e14c935",
+    "app/tests/test_rotorcraft_trace_chunks.gd": "d42ff80b1b1f8d9c8787d4503d3e070bf91a7706ec951631168462e67f347dc4",
+    "app/tests/test_trace_chunk_store.gd": "ee86b325aad3363d8e4139daf73b3cd802d908eb7e1ab635cf33c8550c841384",
+    "tools/trace/recover_chunks.gd": "ac13616e813b5d85a94aefdbdb13b2f4fdeff4aacb0d173dbccde3f200d6eafd",
+    "research/performance/trace_chunk_probe.gd": "567421f9ca81e51993eacb5a2b59e432ddf246ecb1adc102a6e0e5fb2eadfb62"
+  },
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "baseline_trace_sha256": "8f14e934d0a1ffa8431b65c0f31b0f62c2df14b4919f407be0dccd27a1ceb114",
+  "passing_suite_assertions": 908,
+  "separate_known_failures": [
+    "test_trace_metadata: new concurrent stik-electric-6s reaches legacy lag-law assertion before recording; 494 checks, 1 failed",
+    "test_heli_ground_session: concurrent impact preparation/reach mismatch; see rotor checker receipts"
+  ],
+  "runs": [
+    {
+      "label": "chunk-import",
+      "started_utc": "2026-11-08T20:52:39.385477+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--editor",
+        "--import"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.375,
+      "log_bytes": 2174,
+      "log_sha256": "dde7c8654cc3bd90eaa2f1ec2b3d30426f295b49df02a56f044b79e000ede564",
+      "local_report": "tmp/memory-chunk-integration-20261108/chunk-import-7pj_dwnz/report.json",
+      "report_sha256": "7e6ad8874a5567f2ee15761250258ff8686887d3efa454bdd009c44bcaf4b867",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "chunk-memory-candidate",
+      "started_utc": "2026-11-08T20:49:09.449013+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../research/performance/trace_chunk_probe.gd",
+        "--",
+        "--chunks"
+      ],
+      "required_text": [
+        "TRACE_CHUNK_PROBE_COMPLETE"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 11.735,
+      "log_bytes": 533,
+      "log_sha256": "cb320f5e0577ca723b566a7a0e10f199ad402f10117b1b75d9cf8b875d0640e8",
+      "local_report": "tmp/memory-chunk-integration-20261108/chunk-memory-candidate-hr72vv7e/report.json",
+      "report_sha256": "8b7a0100b73275f263202f86710eedfdb0fc0c8bb8e536e116927093bb589884",
+      "completion_lines": [
+        "TRACE_CHUNK_PROBE_COMPLETE"
+      ],
+      "failures": [],
+      "measurement": {
+        "chunks": true,
+        "csv_sha256": "6638cfbd36dfecb1d373348b0520b1e16efad64e13084e2ec25f20c85dec506a",
+        "engine": "4.8-beta2 (official)",
+        "error": 0,
+        "pacing": "forced drain every 1024 synthetic rows",
+        "peak_sampled_retained_raw_bytes": 1266432,
+        "rows": 120001,
+        "source_sha256": "104c60e5192cf98341194d783767959783e874b37cb2f1c8e0dc635c02d81c34",
+        "static_initial_bytes": 157022794,
+        "static_process_peak_bytes": 283193757,
+        "static_recorded_bytes": 157188510
+      }
+    },
+    {
+      "label": "chunk-memory-reference",
+      "started_utc": "2026-11-08T20:48:46.653994+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../research/performance/trace_chunk_probe.gd",
+        "--",
+        "--trace-source=C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunk-integration-20261108/reference_trace.gd"
+      ],
+      "required_text": [
+        "TRACE_CHUNK_PROBE_COMPLETE"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 10.156,
+      "log_bytes": 535,
+      "log_sha256": "6c1914987764152db045ff12513e3dfc6dbe66441dfcfdba7660162ff3c349f8",
+      "local_report": "tmp/memory-chunk-integration-20261108/chunk-memory-reference-f0u674m5/report.json",
+      "report_sha256": "b38d0c91399e2f5ea8aa130d905fc8b270da29d23c4f33e98e554cc0c83c45d6",
+      "completion_lines": [
+        "TRACE_CHUNK_PROBE_COMPLETE"
+      ],
+      "failures": [],
+      "measurement": {
+        "chunks": false,
+        "csv_sha256": "6638cfbd36dfecb1d373348b0520b1e16efad64e13084e2ec25f20c85dec506a",
+        "engine": "4.8-beta2 (official)",
+        "error": 0,
+        "pacing": "forced drain every 1024 synthetic rows",
+        "peak_sampled_retained_raw_bytes": 32640272,
+        "rows": 120001,
+        "source_sha256": "8f14e934d0a1ffa8431b65c0f31b0f62c2df14b4919f407be0dccd27a1ceb114",
+        "static_initial_bytes": 156659683,
+        "static_process_peak_bytes": 280975675,
+        "static_recorded_bytes": 203196467
+      }
+    },
+    {
+      "label": "recorder-parse",
+      "started_utc": "2026-11-08T20:26:06.749961+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/recorder.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.078,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunk-integration-20261108/recorder-parse-v0c4m25o/report.json",
+      "report_sha256": "a44d26a658baa6a69081a8a9c255312b70985b1a7c5fa4d603204b9d7f8b14ee",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "recovery-cli",
+      "started_utc": "2026-11-08T20:49:54.317268+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "../tools/trace/recover_chunks.gd",
+        "--",
+        "--spool=C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/cases/trace-8401c6ad9a294fbf2ec3a598fde1f84f",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunk-integration-20261108/recovery-cli-output"
+      ],
+      "required_text": [
+        "TRACE_CHUNK_RECOVERY_COMPLETE"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.703,
+      "log_bytes": 308,
+      "log_sha256": "e16c1ce3c6422ed03c8b157c9357cde8d8c22e8b1bb6a83a1e090d4888b32f89",
+      "local_report": "tmp/memory-chunk-integration-20261108/recovery-cli-ke4693gn/report.json",
+      "report_sha256": "74460283b30e3d726d2a40d12780001f8de3ae40d72381379e19c51ec0cef4af",
+      "completion_lines": [
+        "TRACE_CHUNK_RECOVERY_COMPLETE"
+      ],
+      "failures": []
+    },
+    {
+      "label": "test_glow_trace",
+      "started_utc": "2026-11-08T20:51:10.590958+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_glow_trace.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.547,
+      "log_bytes": 626,
+      "log_sha256": "b0e245bef21319fb6f55c059276925ac344e157aedec28121e3c3a64a57a2b75",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_glow_trace-opi898ku/report.json",
+      "report_sha256": "9c09ee22765393cdb0e626373820cd1db131dacb62ba5268681f5ffe13af9d61",
+      "completion_lines": [
+        "NITRO-TRACE: 292 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "test_manual_trace_integrity",
+      "started_utc": "2026-11-08T20:42:41.302372+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_manual_trace_integrity.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 22.485,
+      "log_bytes": 5647,
+      "log_sha256": "b6a8328079e58c1763747c7accd22f77d5c6b041ea3ec913f9cc7dfa86021e51",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_manual_trace_integrity-a42pkt24/report.json",
+      "report_sha256": "1d7e8dcab70c4c89033f6745a8973a9e815cd401f577eb4e21026652548b45cd",
+      "completion_lines": [
+        "Manual trace integrity: 54 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "test_time_of_day_edit",
+      "started_utc": "2026-11-08T20:51:10.601590+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_time_of_day_edit.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 29.719,
+      "log_bytes": 1755,
+      "log_sha256": "57870bbc7cb112dc5b86e5a1b065d6ed6128a8c95197b4c74ba5e149d1e3cd1e",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_time_of_day_edit-uk4yb8mm/report.json",
+      "report_sha256": "d95f2e3610b5a41e003875332268ae9f8bc51391400c92ede3591a8b36d965f5",
+      "completion_lines": [
+        "TOD-08b Main lighting edit: 64 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "test_trace",
+      "started_utc": "2026-11-08T20:42:41.325402+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 8.188,
+      "log_bytes": 93,
+      "log_sha256": "41f4bfa6e170cf59640a9be42cd51686008009db5aeda18efe3e112a963a447d",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_trace-mx3vhzzl/report.json",
+      "report_sha256": "424023817403beb1a04ae5acf8057c06d1962d8fb3212b633e4228730dcf6d48",
+      "completion_lines": [
+        "38 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "test_trace_departure_generations",
+      "started_utc": "2026-11-08T20:42:41.302372+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_departure_generations.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.36,
+      "log_bytes": 1585,
+      "log_sha256": "15df6699fc013b0b3f028fac6cc2d95e1844c016f08d341345dd909748cd8718",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_trace_departure_generations-kn5797_p/report.json",
+      "report_sha256": "1d7ba898df12ce103a5c3ffc209371dd61a42028c72a3cc4bbc791101cd48243",
+      "completion_lines": [
+        "Trace departure generations: 27 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "test_trace_metadata",
+      "started_utc": "2026-11-08T20:51:10.590451+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_metadata.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.563,
+      "log_bytes": 1461,
+      "log_sha256": "71f343aee548817fc013099896bd06153dfeb1e15ae9b069c53d978f8b17fecc",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_trace_metadata-sy5bltxr/report.json",
+      "report_sha256": "756776dd5a50f6449f622b9a3c995901f0e7e3ed777230d72520af9356b6e247",
+      "completion_lines": [
+        "C7-R2 / DATA-3: 494 checks, 1 failed"
+      ],
+      "failures": [
+        "FAIL Stik/Extra lag stik-electric-6s "
+      ]
+    },
+    {
+      "label": "test_trace_streaming",
+      "started_utc": "2026-11-08T20:42:41.325402+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_streaming.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 8.313,
+      "log_bytes": 110,
+      "log_sha256": "1496fe69a34ef35099076927dc51a73ef28e80df404ce0cb9be45c653adc8363",
+      "local_report": "tmp/memory-chunk-integration-20261108/test_trace_streaming-ymsmvcus/report.json",
+      "report_sha256": "64a2941180ba6fe36442603cfbfff8b956b456756baada5fbf88549e26dc05d1",
+      "completion_lines": [
+        "trace streaming: 21 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "trace-chunks",
+      "started_utc": "2026-11-08T20:28:17.929055+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": false,
+      "reason": "engine_error",
+      "counts": {
+        "error": 12,
+        "warning": 0
+      },
+      "elapsed_seconds": 12.0,
+      "log_bytes": 6400,
+      "log_sha256": "a9a0ed0bd6295171d1d4634381149c082691a3fb879684fb621d9f895069ca42",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-chunks-2sq8q1k_/report.json",
+      "report_sha256": "10d16cce5e5613519f8e070cf4a96dd30624f43fd4060bc5cb1e3efdfd690dc4",
+      "completion_lines": [
+        "trace chunks: 199 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "trace-chunks-final",
+      "started_utc": "2026-11-08T20:49:54.312261+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.562,
+      "log_bytes": 2174,
+      "log_sha256": "92849dcce5d09ebc5d0c0bb391d046a6a27e3b28e85ebf9420a6f9b9e568c7fc",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-chunks-final-_ic18z21/report.json",
+      "report_sha256": "7d02910b3569451c3a6000615159f75990fb1f05de85cf18e3879e79191ff0a3",
+      "completion_lines": [
+        "trace chunks: 292 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "trace-chunks",
+      "started_utc": "2026-11-08T20:45:01.763000+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.0,
+      "log_bytes": 1529,
+      "log_sha256": "f47fd60dddd546e24ef2a4b077f3ca59991db05089aed2b08037251b419bf97d",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-chunks-p3yeo9sy/report.json",
+      "report_sha256": "c24e2845446cda66065b1978c6181a38a5c7015c5dbe8c64c1c02c940ba115d4",
+      "completion_lines": [
+        "trace chunks: 286 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "trace-chunks",
+      "started_utc": "2026-11-08T20:37:54.328528+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 9.782,
+      "log_bytes": 1401,
+      "log_sha256": "e5120bf91eb99e56ccf187ff9c7361599aeb87b402faea6f156e0eada50ba262",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-chunks-pwa9r2xq/report.json",
+      "report_sha256": "63e655550f2cd32aa7c2421b22841d56082ec262351764e5d486dcd914d71818",
+      "completion_lines": [
+        "trace chunks: 259 checks, 1 failed"
+      ],
+      "failures": [
+        "FAIL weather accepted"
+      ]
+    },
+    {
+      "label": "trace-chunks",
+      "started_utc": "2026-11-08T20:41:06.629432+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 8.219,
+      "log_bytes": 1378,
+      "log_sha256": "fcc78f916db0a88534fa6285a274684b991e44fc541ef43bc7a192b0c6165fe1",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-chunks-q6gobmo8/report.json",
+      "report_sha256": "0dc321e0df38500625ac356b627aee033945e137d7183ec70f5a5f97155d9854",
+      "completion_lines": [
+        "trace chunks: 264 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "trace-parse",
+      "started_utc": "2026-11-08T20:25:34.101777+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/trace.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.313,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-parse-d_nishtc/report.json",
+      "report_sha256": "2f3159cee1504461bc84e9c551e42ef341fe758660d44108795489719c1ca31c",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "trace-parse-final",
+      "started_utc": "2026-11-08T20:43:59.001680+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/trace.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.016,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunk-integration-20261108/trace-parse-final-zncn1d6c/report.json",
+      "report_sha256": "db3c1ace30929c445ca335cc16a10211c8913102281573e6ab1635380dec7ed3",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "cleanup-check",
+      "started_utc": "2026-11-08T20:46:04.443464+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 2.594,
+      "log_bytes": 3809,
+      "log_sha256": "c08b757acff3fabac2443254a412425806d90dd29faf2c811ef73622f3ad07a1",
+      "local_report": "tmp/memory-chunks-20261108/checks/cleanup-check-yprceev7/report.json",
+      "report_sha256": "2e5a65cdb45c031ee8da93d2bd9c3faa236447d1f066314d0300294c5a25a350",
+      "completion_lines": [
+        "trace chunk store: 79 checks, 0 failures"
+      ],
+      "failures": []
+    },
+    {
+      "label": "discard-check",
+      "started_utc": "2026-11-08T20:44:26.957223+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.063,
+      "log_bytes": 3481,
+      "log_sha256": "06a56e0193361b15b732cde8946071b19e2ab8a49f7222aca0a549911e6475b4",
+      "local_report": "tmp/memory-chunks-20261108/checks/discard-check-qi07nvij/report.json",
+      "report_sha256": "5b5bdd0134a359a4b6dedf1a9be60f93e2492bfd5495b5a3acb4243121e400a2",
+      "completion_lines": [
+        "trace chunk store: 72 checks, 0 failures"
+      ],
+      "failures": []
+    },
+    {
+      "label": "draft-parse",
+      "started_utc": "2026-11-08T20:26:06.866573+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.625,
+      "log_bytes": 645,
+      "log_sha256": "da94154812fbe75be8fb6827bc9a45a03a6a7fa4f265670d14cad9c13c35c085",
+      "local_report": "tmp/memory-chunks-20261108/checks/draft-parse-eynoevcq/report.json",
+      "report_sha256": "992828023a7540f57f814a6fad02ad59051991270a79130923e76bec3416eb67",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "draft-parse",
+      "started_utc": "2026-11-08T20:26:16.767473+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.531,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunks-20261108/checks/draft-parse-k446po_k/report.json",
+      "report_sha256": "ee8becb855323c013cdb9c91dedc1d620ff57be5ee40d9d856750127fb02d2ec",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "final-fixture",
+      "started_utc": "2026-11-08T20:48:13.330918+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunk_store.gd",
+        "--",
+        "--keep-fixture"
+      ],
+      "required_text": [
+        "trace chunk store: 83 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.172,
+      "log_bytes": 4148,
+      "log_sha256": "66016ef4c0f27665d777ed6d5e408144a28782fbc1a64d600086e245a3438ddb",
+      "local_report": "tmp/memory-chunks-20261108/checks/final-fixture-91ll3psf/report.json",
+      "report_sha256": "42d53ef808f33cf75114d01ff3efaab612a7fbc12090bc596e5a6c668a51abb6",
+      "completion_lines": [
+        "trace chunk store: 83 checks, 0 failures"
+      ],
+      "failures": []
+    },
+    {
+      "label": "final-parse",
+      "started_utc": "2026-11-08T20:47:43.589385+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.609,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunks-20261108/checks/final-parse-6q5idi_a/report.json",
+      "report_sha256": "a02ba6855d2e1059530c1bd8fc178cebe2f605bae214c911385d84ab88448521",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "focused-draft",
+      "started_utc": "2026-11-08T20:38:11.522378+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/test_trace_chunk_store.gd"
+      ],
+      "required_text": [
+        "trace chunk store: 52 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.016,
+      "log_bytes": 2538,
+      "log_sha256": "8ba131759887c6507386d6cf87c2e22ae0859c5c14661fb5c821ede55a3637a6",
+      "local_report": "tmp/memory-chunks-20261108/checks/focused-draft-6vliz4tt/report.json",
+      "report_sha256": "d14926b952a39c34d664f51b2d4209dee175c11e3e706d3285ee6d34d07ed7ac",
+      "completion_lines": [
+        "trace chunk store: 52 checks, 0 failures"
+      ],
+      "failures": []
+    },
+    {
+      "label": "focused-draft",
+      "started_utc": "2026-11-08T20:37:51.525952+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/test_trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.0,
+      "log_bytes": 2540,
+      "log_sha256": "dd5c2731f97df2ed999582a95583324c37bbe9f0f3638ed3386dab8ab35bf586",
+      "local_report": "tmp/memory-chunks-20261108/checks/focused-draft-q0mqkrak/report.json",
+      "report_sha256": "ba88ea65e9da7df70a37e2207aa74b58897b2998f9b0a65e03849bcfbee6e1c5",
+      "completion_lines": [
+        "trace chunk store: 52 checks, 2 failures"
+      ],
+      "failures": [
+        "FAIL queued rows preserve original bits despite caller mutation",
+        "FAIL published rows preserve signed zero and NaN payload bits"
+      ]
+    },
+    {
+      "label": "focused",
+      "started_utc": "2026-11-08T20:39:30.828750+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_chunk_store.gd"
+      ],
+      "required_text": [
+        "trace chunk store: 54 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.094,
+      "log_bytes": 2666,
+      "log_sha256": "aee919c355dfdfaf5dfef5a5c6f3c93ccada44f2a39f4ae47243d1d8d40c533c",
+      "local_report": "tmp/memory-chunks-20261108/checks/focused-mpr_1rft/report.json",
+      "report_sha256": "ed4d46c237497e297e3626484dd2e94cbc8ee319244d5da22a3bafadefa76591",
+      "completion_lines": [
+        "trace chunk store: 54 checks, 0 failures"
+      ],
+      "failures": []
+    },
+    {
+      "label": "runtime-parse",
+      "started_utc": "2026-11-08T20:28:22.444705+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://sim/trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.5,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunks-20261108/checks/runtime-parse-nelabrbi/report.json",
+      "report_sha256": "c2408d23c9c42350c68be5d5ae8ee3f237a84726516e75c3e26b74324e3ebe96",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "test-draft-parse",
+      "started_utc": "2026-11-08T20:37:46.415466+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/test_trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.625,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunks-20261108/checks/test-draft-parse-1o_dgqfs/report.json",
+      "report_sha256": "b977d9205d533d7528eebbe67addc7b627ea988102926a79edf23e924a1c0efa",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "test-draft-parse",
+      "started_utc": "2026-11-08T20:36:52.041251+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/test_trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.609,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-chunks-20261108/checks/test-draft-parse-wykn1b8j/report.json",
+      "report_sha256": "3ac2c250683e89070f4c5cdd8480773af4de9dba9839dd457cb7c32cb8cb2880",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "test-parse",
+      "started_utc": "2026-11-08T20:36:11.671917+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/memory-chunks-20261108/test_trace_chunk_store.gd"
+      ],
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.61,
+      "log_bytes": 539,
+      "log_sha256": "1ac8c26aaaace35e28b071964976557d1e315cf9e63cd25ff3cfd3b2d67b497b",
+      "local_report": "tmp/memory-chunks-20261108/checks/test-parse-d35ykwj4/report.json",
+      "report_sha256": "c7774fccaf932426f8bddf74b372321c881b2ad0e84f7dd1556f131ce09b28d0",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "rotor-auto-publication",
+      "started_utc": "2026-11-08T20:42:01.060431+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.89,
+      "log_bytes": 2318,
+      "log_sha256": "33d973edc6a9025d1bc79164a016dbbea983e806e58e8803b82015a772aa1e6f",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-auto-publication-9c9ot27z/report.json",
+      "report_sha256": "e599726d1252b5298e3495472f5d45988ce00a1cff4102fa6a766412b6bb4459",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 30 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-csv-batches",
+      "started_utc": "2026-11-08T20:40:48.971568+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.047,
+      "log_bytes": 2260,
+      "log_sha256": "98dc55f84701af27ddbdc59b4719891493172601e1dab9bbd47b1198aade0cab",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-csv-batches-46dromlb/report.json",
+      "report_sha256": "cfbf600e60d67225422c50a52d0e7d914c9a0fb33647f2ee0260db296dd34f48",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 30 checks, 1 failed"
+      ],
+      "failures": [
+        "FAIL CSV remains exact across bounded formatting batches"
+      ]
+    },
+    {
+      "label": "rotor-csv-batches-fixed",
+      "started_utc": "2026-11-08T20:41:28.198738+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.875,
+      "log_bytes": 2270,
+      "log_sha256": "25e21262987468eefcba310c57edb12604b02a5f9674666a38f6bf1e410c2ad3",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-csv-batches-fixed-m4y0zteq/report.json",
+      "report_sha256": "4e27d31f912d2919ef52e47b8a5ce81f0f06dd52db3585a7dfc649d16e4312ac",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 30 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-departure-final-f5747f",
+      "started_utc": "2026-11-08T20:50:20.249417+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_departure_generations.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.594,
+      "log_bytes": 1585,
+      "log_sha256": "15df6699fc013b0b3f028fac6cc2d95e1844c016f08d341345dd909748cd8718",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-departure-final-f5747f-7kyw3yug/report.json",
+      "report_sha256": "daccd3f5b4cd660d4f2484434b0cd00d148a081b43179c9f6767eeac552e7fe0",
+      "completion_lines": [
+        "Trace departure generations: 27 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-departure",
+      "started_utc": "2026-11-08T20:37:16.619501+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_trace_departure_generations.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.562,
+      "log_bytes": 1585,
+      "log_sha256": "15df6699fc013b0b3f028fac6cc2d95e1844c016f08d341345dd909748cd8718",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-departure-w64cnh6d/report.json",
+      "report_sha256": "7ed87e51f5e36b99a768d5755b4a791424ad9c8b0db4e0a0c0ace90577553871",
+      "completion_lines": [
+        "Trace departure generations: 27 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-draft-parse",
+      "started_utc": "2026-11-08T20:27:29.638827+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\memory-rotor-chunks-20261108\\rotorcraft_recorder.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.156,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-draft-parse-ldcixoro/report.json",
+      "report_sha256": "2e89fe4a44fb9e488859d62658d11af420516c7f73f02a27e0980cfafe372fab",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "rotor-final-f5747f",
+      "started_utc": "2026-11-08T20:49:54.282867+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.781,
+      "log_bytes": 3588,
+      "log_sha256": "6c111f670888f03edf3bfc1d0fe53858dd5f73a1f1c0bca62e6d3558cf4bc2e3",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-final-f5747f-d_8wc4vm/report.json",
+      "report_sha256": "883a2c03663135501d16eb5d09b0f703b6e272f274efafe74487f7dffd4c26ac",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 37 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-final-store-86e662",
+      "started_utc": "2026-11-08T20:46:40.059020+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.875,
+      "log_bytes": 3588,
+      "log_sha256": "46e808bae7057d011e82161317aed5acbb32565d5fa34b9a56bac3a4736b3fdd",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-final-store-86e662-l96xvaqg/report.json",
+      "report_sha256": "c88fafca85a3d911e0b3dbcabc9a5f28d6a119eb96acabd3937460916f47f8e2",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 37 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-ground-session",
+      "started_utc": "2026-11-08T20:37:27.096035+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_ground_session.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 11,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.719,
+      "log_bytes": 1919,
+      "log_sha256": "20fb44ca1de6ba6500555235eb18539a675004a76f592c2e83f71e5c28ffd341",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-ground-session-eymh2m3g/report.json",
+      "report_sha256": "6a3c15475b5e46877c9d8d009d406ce1b98b234c6ce8171c5e42c0375dfeb2f1",
+      "completion_lines": [],
+      "failures": [
+        "FAIL selected ground setup"
+      ]
+    },
+    {
+      "label": "rotor-ground-session-retry",
+      "started_utc": "2026-11-08T20:38:51.643724+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_ground_session.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 5.937,
+      "log_bytes": 1343,
+      "log_sha256": "e3b737e626a555344a26d5a478859c00d6940002ec31095a17147af089f4542b",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-ground-session-retry-nnapuwu9/report.json",
+      "report_sha256": "ec59da812d0dffb1532629e7a5b79853f7bb0f4131f6aa512ad0a37a64780cfe",
+      "completion_lines": [],
+      "failures": [
+        "FAIL disarmed advances",
+        "FAIL disarmed exact replay",
+        "FAIL sixty second rotor-off rest stays finite",
+        "FAIL armed hold advances",
+        "FAIL armed hold exact replay",
+        "FAIL explicit hold release starts soft ramp",
+        "FAIL spool starts without fault",
+        "FAIL spooling checkpoint records lifecycle"
+      ]
+    },
+    {
+      "label": "rotor-manual-final-f5747f",
+      "started_utc": "2026-11-08T20:49:59.857638+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_manual_trace_integrity.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 16.062,
+      "log_bytes": 5647,
+      "log_sha256": "d671979fea387f9b05f4745d3cad3a715dccfcc709f5492c07a438b53e2aec58",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-manual-final-f5747f-vv8lvb31/report.json",
+      "report_sha256": "d3a8483a9fed05522eb5d92937cf64083fef59333f03864f26269320cc7343d8",
+      "completion_lines": [
+        "Manual trace integrity: 54 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-manual-integrity-final",
+      "started_utc": "2026-11-08T20:46:50.359453+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_manual_trace_integrity.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 20.062,
+      "log_bytes": 5648,
+      "log_sha256": "f701b20ec0aa58349ee8febe5b6f53b422d725b7b6cc468879e26ccb6721cc71",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-manual-integrity-final-3swx_ir7/report.json",
+      "report_sha256": "2cfcce819d24d6da91cc198526b129b98f3a61d0d4010212450c80ea7c007b50",
+      "completion_lines": [
+        "Manual trace integrity: 54 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-manual-integrity",
+      "started_utc": "2026-11-08T20:36:44.905270+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_manual_trace_integrity.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 20.437,
+      "log_bytes": 5647,
+      "log_sha256": "c2aad6001c6881dfdc311c40153c4c4e537cce80107a8c3a427373c9099e37d7",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-manual-integrity-ro4z_wt1/report.json",
+      "report_sha256": "5c5a46f573037d7baa3a9cb4f2698af2f438ed45c603df2653b492d50ba67b61",
+      "completion_lines": [
+        "Manual trace integrity: 54 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-publication-collision",
+      "started_utc": "2026-11-08T20:42:42.240460+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.453,
+      "log_bytes": 2449,
+      "log_sha256": "b23823d0f7acad48a8d7f2f2af2107f1fb22db2f2748a6d4685ce80cdaa4eafd",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-publication-collision-e8bljpd3/report.json",
+      "report_sha256": "eae618c3dc9aad9432b40c100f1ed222eb56937ee3860182bcdb60ff5077d939",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 31 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-spool-path",
+      "started_utc": "2026-11-08T20:39:42.261913+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.016,
+      "log_bytes": 2191,
+      "log_sha256": "36a994d0ab273abdda72cea5f2c03003ef54c13b1deba873936466692dbc7a19",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-spool-path-9nftkz5v/report.json",
+      "report_sha256": "33250a3172f81636fc488fc1c5d084dc3f447ced01867ce791301070ba1bc29f",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 29 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-storage-recovery",
+      "started_utc": "2026-11-08T20:45:44.340078+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 1,
+      "complete": true,
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.906,
+      "log_bytes": 3585,
+      "log_sha256": "bda91e7898ee85a565331906181fb4ffaf9c0cb8c34fde0aa38cb942648b2dfa",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-storage-recovery-4l_zgfbb/report.json",
+      "report_sha256": "b8a0eaa6884df332d28e16e8b5fe511eef515209f1d3c645c3bf413fc2e96e16",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 37 checks, 1 failed"
+      ],
+      "failures": [
+        "FAIL successful spool can be explicitly cleared"
+      ]
+    },
+    {
+      "label": "rotor-storage-recovery-fixed",
+      "started_utc": "2026-11-08T20:46:24.230158+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.875,
+      "log_bytes": 3588,
+      "log_sha256": "8a80cfa9eebdc7f054e3761002434e57e102a2ff5ac1d54012379aae59612809",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-storage-recovery-fixed-d0xqi0s4/report.json",
+      "report_sha256": "bf8c5ac74f8564bbc11aa932f594d6ebdd10c94182ea6d9198f265ce2c02228d",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 37 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-test-draft-parse",
+      "started_utc": "2026-11-08T20:30:20.471947+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\memory-rotor-chunks-20261108\\test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 7.344,
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-test-draft-parse-y28btamu/report.json",
+      "report_sha256": "9a625022fe977c6522a732f59f4e96220367acdae7b7e70bf552e3efe21d8c95",
+      "completion_lines": [],
+      "failures": []
+    },
+    {
+      "label": "rotor-trace-chunks",
+      "started_utc": "2026-11-08T20:36:21.953054+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 0.985,
+      "log_bytes": 2034,
+      "log_sha256": "4b8930d8d3d7ebc9b8a01e1b31be6e6a0bd718a4281798c6d522483822a47383",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-trace-chunks-82iuri9j/report.json",
+      "report_sha256": "fcc9e5208876422d9d386f0481bbb645039909785af79b5a78ef79204bd85b64",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 27 checks, 0 failed"
+      ],
+      "failures": []
+    },
+    {
+      "label": "rotor-trace-chunks-final-candidate",
+      "started_utc": "2026-11-08T20:38:29.229482+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotorcraft_trace_chunks.gd"
+      ],
+      "required_text": [
+        "0 failed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 1.0,
+      "log_bytes": 2049,
+      "log_sha256": "95b89799cfcd1c068b27130f560637bf970a9ce63c90b03eca34be9bb183fc54",
+      "local_report": "tmp/memory-rotor-chunks-20261108/checks/rotor-trace-chunks-final-candidate-u8aom4el/report.json",
+      "report_sha256": "c94590069b1d4980fde2038bc97b3e2452ec1ad46ad030a649c68b8e504c1733",
+      "completion_lines": [
+        "Rotorcraft trace chunks: 27 checks, 0 failed"
+      ],
+      "failures": []
+    }
+  ]
+}

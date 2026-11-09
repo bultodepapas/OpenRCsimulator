@@ -1933,6 +1933,8 @@ func _update_capabilities() -> void:
 	if not bool(_capabilities.get("tank_capacity", false)):
 		unavailable.append(tr("tank capacity"))
 	var notes := PackedStringArray()
+	if _base_id == "stik-electric-6s":
+		notes.append(tr("Electric Workshop trials use ideal fixed voltage; the battery never runs flat. Normal stock flight offers the finite pack."))
 	if unavailable.is_empty():
 		notes.append(tr("Try different sizes, weights, tank capacities and power levels. Values are estimates for experimentation."))
 	if not unavailable.is_empty():
@@ -2301,6 +2303,8 @@ func _build_library() -> void:
 	_base_selector.fit_to_longest_item = false
 	_base_selector.clip_text = true
 	for entry: Dictionary in Catalog.airplane_flyable_entries():
+		if not Catalog.is_player_selectable(str(entry.id)):
+			continue
 		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
 		_base_selector.set_item_metadata(_base_selector.item_count - 1, str(entry.id))
 	_base_selector.item_selected.connect(_on_base_selected)
@@ -3593,7 +3597,7 @@ func _refresh_recovery_after_conflict() -> void:
 
 
 func _describe_customization(base_id: String) -> Dictionary:
-	if base_id == "moonrunner-x99":
+	if base_id in ["moonrunner-x99", "stik-electric-6s"]:
 		var overlay_path := "res://aircraft/customization_overlay.gd"
 		if not ResourceLoader.exists(overlay_path):
 			return {"ok": false, "errors": PackedStringArray(["Overlay customization resolver is unavailable."])}

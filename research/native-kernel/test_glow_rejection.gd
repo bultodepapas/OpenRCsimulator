@@ -34,7 +34,8 @@ const TRIAL_VALUES := [0.0, 0.299922, 384.8666308211922, 0.0, 0.0150477554176534
 ## Captured FS64V gusty runway midpoint: identical for soft-hull on and off.
 ## Variant bytes avoid GDScript decimal-literal rounding of the original float64 state.
 const FOUR_STROKE_AIRCRAFT := "stik-glow-fs64v-4t"
-const FOUR_STROKE_AIRCRAFT_SHA256 := "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+const FOUR_STROKE_HISTORICAL_AIRCRAFT_SHA256 := "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+const FOUR_STROKE_AIRCRAFT_SHA256 := "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8"
 const FOUR_STROKE_TICK_TIME := 805.0 * (1.0 / 240.0)
 const FOUR_STROKE_TRIAL_TIME := FOUR_STROKE_TICK_TIME + (1.0 / 240.0) / 2.0
 const FOUR_STROKE_TRIAL_SHA256 := "e064ab046fc2119231564b6b6c125fc256c752ebb2fb04d557d7ee7bef0e16c8"

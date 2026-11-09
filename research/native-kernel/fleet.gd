@@ -60,6 +60,22 @@ const RUNWAY_START_BOUNDARIES := {
 			config_sha256 = {"on": "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
 				"off": "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6"}}}},
 }
+# Linux beta2 observations after the v3 aero and propeller coefficient identity
+# changes. Original live-config pins above remain the pre-change observations;
+# the other frame, setup and refusal pins are unchanged.
+const RUNWAY_LIVE_CONFIG_V3 := {
+	"p51d-mustang-120": {"ideal": {
+		"on": "a120b9be96178870e380e01486860116f5a15b41a4b0f33f5d807e409586a739",
+		"off": "e7ad152326dfc35d2680b5e87bca9815252954ea116f92945773ff1507377f31"}},
+	"sebart-avanti-s-a200-p100rx": {"ideal": {
+		"on": "71eacab24f437a64e8b5e99760cd2cee13d80c58973b06a42d0eddc4f36a11c9",
+		"off": "51ade6c80792878318294d849ad95ea92195b92d4abddf2f2a7034317bcf4fbc"}},
+	"turbo-lumber-evolution": {
+		"pack": {"on": "6bfcd1af73adf7c4c9da08c86ab354244b68a4e7a6378ff0873dd6186651dd47",
+			"off": "f9bed09ec32208ca4462f27a0d86a6e6219811888e280535040718dd5e99569e"},
+		"ideal": {"on": "eba55a47f7129469446a2f123e89c769d707b21919b0eb337df7bb85050e1d47",
+			"off": "1cd1f331c71a27b5ead12a4f84220351b9cdf1bed9cf36a2a70303c1f5e341da"}},
+}
 const TRIM_START_REFUSAL := "reset failed: trim: reference-speed trim already requires more than the requested throttle"
 const TRIM_START_BOUNDARIES := {
 	"skywalker-x8": {weather = "hot-high", batteries = {"ideal": {default_battery = false,
@@ -80,7 +96,8 @@ const GLOW_REVERSE_CASES := {
 	"stik-glow-61fx-2t": {tick = 873, stage_fraction = 1.0, rejected_stage_calls = 4},
 	"stik-glow-55ax-2t": {tick = 801, stage_fraction = 1.0, rejected_stage_calls = 4},
 	"stik-glow-fs64v-4t": {tick = 805, stage_fraction = 0.5, rejected_stage_calls = 2, feed_factor = 0.0,
-		aircraft_sha256 = "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+		historical_aircraft_sha256 = "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+		aircraft_sha256 = "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8",
 		trial_sha256 = "e064ab046fc2119231564b6b6c125fc256c752ebb2fb04d557d7ee7bef0e16c8",
 		context_sha256 = "e7cc667d8cf303f497701c1079db0c5936303c31da51e236791b13f238cc61b6",
 		cause_bytes_hex = "00000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903f" \
@@ -784,9 +801,14 @@ static func _fleet_start_proof_valid(row: Dictionary, proof: Variant, requested:
 			or proof.get("before_live_config_bytes_hex") != proof.get("live_config_bytes_hex"):
 		return false
 	var live_hex: Variant = proof.get("live_config_bytes_hex")
+	var expected_live: String = spec.live_config_sha256["on" if row.soft_hull else "off"]
+	if runway:
+		var aircraft_pins: Dictionary = RUNWAY_LIVE_CONFIG_V3.get(row.aircraft, {})
+		var battery_pins: Dictionary = aircraft_pins.get(row.battery, {})
+		expected_live = str(battery_pins.get("on" if row.soft_hull else "off", ""))
 	if typeof(live_hex) != TYPE_STRING or live_hex.is_empty() or live_hex.length() > 1048576 \
 			or live_hex.length() % 2 != 0 or not live_hex.is_valid_hex_number() \
-			or proof.get("live_config_sha256") != spec.live_config_sha256["on" if row.soft_hull else "off"] \
+			or expected_live.is_empty() or proof.get("live_config_sha256") != expected_live \
 			or proof.live_config_sha256 != _fleet_encoded_sha256(live_hex.hex_decode()):
 		return false
 	var expected_hashes := {frame = spec.frame_sha256,

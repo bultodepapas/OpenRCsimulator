@@ -1,6 +1,6 @@
 # Ugly Stik: two selectable variants, unchanged basic reference
 
-2026-11-08 · Revision 3 · **Status: ready for staged implementation, with explicit admission gates. Runtime, generated data and test changes remain unimplemented.**
+2026-11-08 · Revision 6 · **Status: software implementation complete with bounded verification. Two stock variants, compatibility/persistence, sourced estimated installation, model/Workshop/exported resources, final maneuver cards and scoped Linux native equivalence are implemented and checked. Required CI, broader native/performance, physical/pilot acceptance and the unrelated combined recorder draft retain their own gates.**
 
 Owner: fixed-wing physics/aircraft data with NITRO, EL/BAT, AS, AE, AFC, UI, US and native-backend owners. Steps: **EL1e-STIK-00…08**, under EL1e aircraft integration. [Ownership registry](../README.md#tracks-plans-and-step-ids).
 
@@ -11,7 +11,7 @@ Keep exactly two **player-selectable stock Ugly Stiks**. The electric aircraft r
 | Configuration | Canonical ID | Powertrain and role |
 | --- | --- | --- |
 | **Existing Ugly Stick basic / MAX-61FX reference** | **Keep `jensen-das-ugly-stik-60`** | Existing MAX-61FX/APC 12x6 representation, prescribed fuel and existing RPM law. Keep the application default, common test reference and 15 m/s airborne start. |
-| **Ugly Stick · Electric 6S** | Proposed `stik-electric-6s` | Scorpion SII-4020-540KV, APC 13x8E, 6S 4000 mAh LiPo. Finite `pack_ecm` is the normal mode; qualify electrical behavior separately. |
+| **Ugly Stick · Electric 6S** | `stik-electric-6s` | Scorpion SII-4020-540KV, APC 12x8E, 6S 4000 mAh LiPo. Finite `pack_ecm` is the normal mode; qualify electrical behavior separately. |
 
 The basic aircraft already names an O.S. MAX-61FX in its inventory. **Do not replace it with `stik-glow-61fx-2t`.** That experimental aircraft has finite fuel, a coupled shaft and a 20 m/s start. Keeping the engine name would not preserve its physics, state or compatibility.
 
@@ -58,7 +58,7 @@ The electric aircraft gets independent installation data and a separate `stik-el
 
 Use an additive visibility boundary. Keep `ENTRIES` as the literal technical registry and preserve lookup/enumeration semantics (`entry`, `has`, `ids`, `can_fly`, `step` and fleet lists). Do not convert entries to computed factories: the Workshop and economy generators parse the literal IDs and data paths. Technical validity does not imply a stock player choice.
 
-Proposed catalog API (new implementation, not existing methods):
+Implemented catalog API:
 
 | API / metadata | Contract |
 | --- | --- |
@@ -105,7 +105,7 @@ Rollback before explicit user choice leaves the original saved selection intact.
 
 ## Electric installation and battery modes
 
-Initial candidate: **Scorpion SII-4020-540KV + APC 13x8E + Gens ace G-tech GEA406S60X9GT 6S 4000 mAh + Scorpion Tribunus III 06-80A**. The [manufacturer-source record](../research/propulsion/ugly-stik-6s-selection-2026-11-08.md#pack-and-esc-reference-selected-during-final-planning-review) pins approximate pack/ESC mass and dimensions. Fit, wiring, cooling, BEC setpoint, actual firmware behavior and electrical characterization remain acceptance inputs, not guessed facts.
+Implemented experimental candidate: **Scorpion SII-4020-540KV + APC 12x8E + Gens ace G-tech GEA406S60X9GT 6S 4000 mAh + Scorpion Tribunus III 06-80A**. The 13x8E/13x6.5E preliminary choices were revised after full-charge current/RPM screening. The [installation dossier](../../research/propulsion/stik-6s/README.md) owns the source points, conditional DC-equivalent fit, residual errors and operating limits; the [manufacturer-source record](../research/propulsion/ugly-stik-6s-selection-2026-11-08.md#pack-and-esc-reference-selected-during-final-planning-review) pins pack/ESC references. Fit, wiring, cooling, BEC setpoint, actual firmware behavior and electrical characterization remain physical acceptance inputs.
 
 Generate a separate electric inventory from unchanged shared airframe inputs: motor, mount, adapter, ESC, battery, wires and restraints. Recompute mass, CG, inertia, rotor inertia and strike envelope. Remove glow engine/exhaust/tank from electric inventory and appearance. Reuse suitable licensed downloadable geometry/data; preserve stable `airplane`, `propeller`, `*_hinge` interfaces.
 
@@ -115,18 +115,22 @@ Follow the current battery contract: one electric ID with **ideal fixed-voltage 
 
 Screening goals, not measured acceptance:
 
-- Aim initially for 3.0–3.4 kg ready to fly; derive inventory, not artificial ballast. Target at least 350 W/kg electrical input and 1.2 static thrust/weight under the declared nominal bench condition.
+- Derive inventory, not artificial ballast. The original 3.0–3.4 kg screening aim is superseded by the estimated 2.600082 kg inventory after removing glow hardware, receiver pack, unused throttle servo and the donor's virtual balance fixture. Target at least 350 W/kg electrical input and 1.2 static thrust/weight under the declared nominal bench condition; source-point calculations and runtime predictions remain distinct.
 - Assess current/voltage from fully charged 25.2 V through sag/depletion. Nominal 22.2 V is not constant, and nameplate ratings are not implemented motor/ESC protection.
 - Verify minimum prop clearance in the declared normal taxi/takeoff/landing envelope, including suspension, pitch and terrain; check bay fit, retention and cooling.
 - Use sourced in-flight `Ct/Cp` with correct provenance. Separate fitting, published-data checks and independent validation: one static point cannot satisfy all three.
 
 Record a decision before stock exposure: the sourced/estimated installation must support the power and thrust targets and a declared electrical operating envelope. If 13x8E exceeds that envelope at full charge, assess the sourced 13x6.5E fallback with the same gates and regenerate the single electric installation. If neither passes, keep electric hidden and revise the installation; do not hide the failure with an unsupported throttle cap, invented ESC protection or nominal-voltage-only evidence. Hardware measurements remain a separate physical-validation gate, not a claim made by software admission.
 
-Reuse the shared `VehicleModel`, float64 state, shaft and battery laws. Electrical coupled replay is additive; basic golden v1 remains untouched. Electric propwash, motor/ESC thermal dynamics and current limiting are outside the current power-stage contract; keep experimental limits explicit. [Electric guide](../ELECTRIC-PROPULSION-PLAN.md), [battery guide](battery-realism.md), [aircraft contract](../AIRCRAFT_CONTRACT.md).
+Implementation decision: use sourced APC 12x8E instead. Its conditional numerical steady screen passes at 25.2 V and sampled axial speeds 0–30 m/s; it does **not** pass a hardware startup-current qualification. The estimated pack/ideal ESC produces an unprotected severe zero-speed/full-duty transient, and higher-speed propeller RPM, actual fit and thermal/firmware response remain unqualified. Preserve these limits in the dossier and experimental status; a steady-current check cannot close them.
+
+Reuse the shared `VehicleModel`, float64 state, shaft and battery laws. Electrical coupled replay is additive; basic golden v1 remains untouched. The electric aircraft shares the exact donor wheel-profile key through a closed default-registry alias. The global wheel file and old basic Workshop dependency hashes remain byte-identical; explicit profile selections/custom registry paths retain their behavior and a missing aliased donor is refused. Electric propwash, motor/ESC thermal dynamics and current limiting are outside the current power-stage contract; keep experimental limits explicit. [Electric guide](../ELECTRIC-PROPULSION-PLAN.md), [battery guide](battery-realism.md), [aircraft contract](../AIRCRAFT_CONTRACT.md).
+
+Implementation refinement: the lighter inventory requires two contact substeps at 240 Hz. The existing dynamic-battery whole-tick policy now owns that subdivision internally, retains the original one-piece route and samples the ESC supervisor once at the outer endpoint. `Simulation` and its policy/substep rejection remain unchanged. Do not lower gear stiffness or add fictitious mass. Check the installed callback identity before suppressing the kernel's substep request; cover piece boundaries, failure atomicity, ground replay and unchanged existing battery cases. Requalify the basic AFC source pin after this shared session-source change.
 
 ### Authoring outputs and identity boundary
 
-The paths below are proposed additions, not files already implemented. Keep one installation source and generate both energy modes from it; do not clone and independently tune two aircraft JSON files.
+The paths below are implemented additions. Keep one installation source and generate both energy modes from it; do not clone and independently tune two aircraft JSON files.
 
 | Source / output | Required contract |
 | --- | --- |
@@ -155,17 +159,17 @@ No shared-kernel refactor, donor cleanup or finite-glow promotion belongs in thi
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| EL1e-STIK-00 | Select the sourced motor/prop/pack/ESC candidate; review preservation and dependency policy. | Planning and independent static review complete; no runtime qualification. |
-| EL1e-STIK-01 | Freeze source/engine/dirty inputs, base data/goldens, dependency hashes, registry/case sets and known failures. | Pending: reproducible baseline, exact baseline log replay under matching identity, implicit-default and donor inventory. |
-| EL1e-STIK-02 | Add player APIs and route stock consumers through them, initially with all existing entries visible. Implement saved-selection resolution, safe persistence and atomic debug rejection. | Pending: old defaults/navigation unchanged; synthetic hidden-ID cases exercise new boundaries before the real cutover. Preserve technical enumerations and CLI. |
-| EL1e-STIK-03a | Add the 4000 mAh BAT record and deterministic ideal/pack installation generator. Keep drafts outside `app/` until valid. | Pending: inventory/mass/CG/inertia, motor/prop provenance, full-charge envelope and fit review; existing cell fits and aircraft data unchanged. |
-| EL1e-STIK-03b | Extend the closed overlay registry/generators and add independent electric presentation. | Pending: basic physical manifests/descriptors unchanged; only explicitly audited MoonRunner proof refreshes permitted, with saved-record tests. Resolve this gate before inserting the new catalog ID. |
-| EL1e-STIK-03c | Atomically register the hidden electric package with its descriptor, source proofs, audio/smoke handling and economy dossier. | Pending: all technical loaders admit it; exact registry/dossier sets agree; no incomplete intermediate entry can break basic loading. |
-| EL1e-STIK-04 | Qualify lifecycle, visuals, ideal-only Workshop, compatibility and identities before exposure. | Pending: coupled replay, pack events, complete flows and declared physical limits; inspect at 1080p first. Basic/other aircraft retain their contracts. |
-| EL1e-STIK-05 | In one cutover, show electric and hide the three glow stock choices; activate explained session fallback for affected saved selections. | Pending: exactly two visible Stiks, basic first/default; original saved ID persists until explicit successful save. Technical IDs/CLI/data retain original physics. |
-| EL1e-STIK-06 | Audit the checks already added with each slice; reconcile intentional set/order expectations. | Pending: old physical assertions/tolerances retained; before/after case-set comparison proves no silent coverage loss. Do not defer regression tests until this step. |
-| EL1e-STIK-07 | Verify stable integration, native receipts, performance and exports. | Pending: required CI, justified broad integration gate, fresh-checkout/package checks, actual-backend proof and unchanged-basic evidence. |
-| EL1e-STIK-08 | Reconcile `GLOW-ENGINES.md`, `AIRCRAFT_CONTRACT.md`, Workshop/electric guides and debug/CLI help with implemented support. | Pending: current stock lists/counts and ideal-mode limitation accurate; preserve history, fixture commands and owner-held physical/pilot gates. Consolidate this plan only after completion. |
+| EL1e-STIK-00 | Select the sourced motor/prop/pack/ESC candidate; review preservation and dependency policy. | Implemented selection: 12x8E replaced preliminary 13-inch candidates after full-charge screening. Conditional DC-equivalent fit and severe startup transient are disclosed in the installation dossier. |
+| EL1e-STIK-01 | Freeze source/engine/dirty inputs, base data/goldens, dependency hashes, registry/case sets and known failures. | Basic data/model/descriptor hashes and golden bytes preserved. Four basic goldens pass before/after; nine retained companion tapes compare identically across accepted solver revisions. A separate current-build 6,428-sample log replays exactly; it is not a pre-change recording. |
+| EL1e-STIK-02 | Add player APIs and route stock consumers through them, initially with all existing entries visible. Implement saved-selection resolution, safe persistence and atomic debug rejection. | Implemented additive player APIs, retained selection marker, bounded validated preference replacement/recovery, localized notice and all-or-nothing debug prevalidation. Schema 1/6/99 and three hidden IDs exercised without changing technical enumeration. |
+| EL1e-STIK-03a | Add the 4000 mAh BAT record and deterministic ideal/pack installation generator. Keep drafts outside `app/` until valid. | Implemented deterministic 2.600082 kg ideal/pack inventory and sourced-mass BAT record. Thirty-two installation checks, low-SOC cutoff and bounded full-charge current/RPM screen pass. Actual fit, startup current and physical errors remain open; existing packs and donor stay unchanged. |
+| EL1e-STIK-03b | Extend the closed overlay registry/generators and add independent electric presentation. | Implemented closed two-family overlay registration and independent electric equipment. Basic global manifest/descriptor bytes unchanged; audited MoonRunner proof chain regenerated. Saved stale MoonRunner documents remain readable and fail strict trial admission instead of rebasing. LF/CRLF fresh clones pass. |
+| EL1e-STIK-03c | Atomically register the hidden electric package with its descriptor, source proofs, audio/smoke handling and economy dossier. | Implemented all twelve technical routes, electric descriptor/customization/source proofs and unpriced electric economy entry. Catalog, package, descriptor and economy admission checks pass. |
+| EL1e-STIK-04 | Qualify lifecycle, visuals, ideal-only Workshop, compatibility and identities before exposure. | Implemented ideal/pack replay, low-SOC cutoff/reset, depleted-start refusal, applied donor-wheel alias, contact refinement/strike/reset and ideal-only Workshop refusal of pack claims. Six requested maneuver-card cases pass in each mode. Windows 1080p Home, flight and Workshop inspected. Bounded ground cases pass; physical/pilot qualification remains open. |
+| EL1e-STIK-05 | In one cutover, show electric and hide the three glow stock choices; activate explained session fallback for affected saved selections. | Implemented atomic visibility cutover: basic → electric → Extra; exactly two stock Stiks, nine stock choices. All three glow IDs/data/CLI/saved compatibility contexts retained. Persistence failure keeps the original-ID marker. |
+| EL1e-STIK-06 | Audit the checks already added with each slice; reconcile intentional set/order expectations. | Existing technical fleet, finite-fuel UI fixture coverage, Natural Random pool and AFC support retained; targeted catalog/UI/Workshop/debug/battery/log regressions pass. Broad runner includes new test files automatically. Final contact contract passes 1,563 checks; alias compatibility passes 15 and the two-mode missing-donor mutation fails closed. Final focused regressions are recorded in linked evidence; a whole-tree/CI pass is not claimed. |
+| EL1e-STIK-07 | Verify stable integration, native receipts, performance and exports. | Actual exported PCK smoke passes 64 checks from an empty project with compiled overlay scripts and applied wheels. LF/CRLF clone regeneration passes. All 19 native oracle gates and nine scoped Linux native/reference start rows pass; the qualified library is installed through the unchanged guard. Four unchanged basic goldens and 4,387 log checks pass on the final alias. Required CI, broader fleet/weather, performance and physical gates remain separate. |
+| EL1e-STIK-08 | Reconcile `GLOW-ENGINES.md`, `AIRCRAFT_CONTRACT.md`, Workshop/electric guides and debug/CLI help with implemented support. | Canonical Stik, electric, Workshop, aircraft, first-launch, tools and glow guides updated; technical fixture history retained. This plan remains active for the remaining qualification gates, linked to dated implementation evidence. |
 
 Keep each step independently reviewable. Preparatory changes preserve existing behavior; do not ship the final transition before both visible aircraft and compatibility flows are admitted.
 
@@ -173,7 +177,7 @@ The critical path is **01 → 02 → 03a/03b → 03c → 04 → 05 → 06/07 →
 
 ## Acceptance matrix and stop conditions
 
-Use [existing tools](../tools/README.md), [physics/conformance checks](../tools/physics.md), [flight logging](../FLIGHT-LOGGING.md), [flight-test cards](../../research/flight-test/README.md), [BAT tools](../../research/battery/README.md) and [native qualification](../../research/native-kernel/README.md). Run focused checks while implementing, then required CI and broader coverage on the stable cross-cutting candidate. **No runtime suite was run for this document-only review.**
+Use [existing tools](../tools/README.md), [physics/conformance checks](../tools/physics.md), [flight logging](../FLIGHT-LOGGING.md), [flight-test cards](../../research/flight-test/README.md), [BAT tools](../../research/battery/README.md) and [native qualification](../../research/native-kernel/README.md). Run focused checks while implementing, then required CI and broader coverage on the stable cross-cutting candidate. The [implementation evidence](../research/propulsion/ugly-stik-implementation-2026-11-08.md) records executed checks, exact identities and open gates; the earlier source review above remains historical.
 
 Start from these existing checks, extending them where the failure mode is missing. Test files are under `app/tests/` unless a path is given. Run GDScript through the [checked runner](../tools/shared.md#one-godot-script); a zero engine exit alone is insufficient. This is a dependency map, not a command to rerun every group after every edit.
 

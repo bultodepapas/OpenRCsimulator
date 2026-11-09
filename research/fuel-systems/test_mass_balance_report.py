@@ -101,6 +101,24 @@ class MassBalanceReportTests(unittest.TestCase):
         self.assertEqual(timber["cg_range_check"]["status"], "not_declared")
         self.assertNotIn("full", timber["states"])
 
+    def test_sourced_electric_stik_keeps_the_airframe_estimate_in_both_modes(self) -> None:
+        rows = {row["file"]: row for row in report.aircraft_rows()}
+        basic = rows["jensen_ugly_stik_60.json"]
+        donor = json.loads(STIK.read_bytes())
+        for path in ("stik_electric_6s.json", "battery/stik_electric_6s_pack.json"):
+            source = json.loads((report.AIRCRAFT_DIR / path).read_bytes())
+            for section in ("aero", "reference"):
+                self.assertEqual(source[section], donor[section], (path, section))
+            row = rows[path]
+            self.assertEqual(row["catalog_ids"], ["stik-electric-6s"])
+            self.assertEqual(row["neutral_point"], basic["neutral_point"])
+            self.assertEqual(row["neutral_point"]["kind"], "estimated")
+            self.assertEqual(row["plan_cg_state"], "declared")
+            self.assertTrue(row["plan_cg_matches_inventory"])
+            self.assertNotIn("missing_neutral_point", row["flags"])
+            self.assertGreater(row["states"]["declared"]["static_margin_pct_mac"], 0)
+            self.assertEqual(set(row["states"]), {"declared"})
+
     def test_missing_neutral_point_is_visible_but_only_fails_qualification(self) -> None:
         data = report.report()
         synthetic = next(

@@ -103,23 +103,27 @@ REFERENCE_SOURCES = [
     "app/sim/native/helicopter_stage_adapter.gd", "app/sim/native/prescribed_stage_adapter.gd",
     # Tick/event owners and the runtime/data inputs named by the family oracles.
     # Test scripts and synthetic test fixtures stay in each oracle's harness identity.
-    "app/sim/aircraft_propulsion_runtime.gd", "app/sim/fuel_sample.gd",
+    "app/sim/aircraft_propulsion_runtime.gd", "app/sim/fuel_sample.gd", "app/sim/electric_contact_step.gd",
     "app/physics/battery/esc_supervisor.gd", "app/physics/event_step.gd", "app/physics/integrator.gd",
     "app/physics/effective_mass.gd", "app/physics/ground_surfaces.gd", "app/physics/ground_support.gd",
     "app/physics/swirl_loads.gd", "app/physics/wheel_profiles.gd", "app/app_state/aircraft_catalog.gd",
     "app/data/field_loader.gd", "app/data/lake_loader.gd",
-    "app/data/fields/default.json", "app/data/fields/lake.json", "app/data/fuels/openrc-fuel-registry.json",
+    "app/data/fields/default.json", "app/data/fields/lake.json", "app/data/ground/wheel_profiles.json",
+    "app/data/fuels/openrc-fuel-registry.json",
     "app/data/aircraft/f4u_corsair_250.json", "app/data/aircraft/gp_extra_300s_60.json",
     "app/data/aircraft/hx700_electric_3d_experimental.json", "app/data/aircraft/p51d_mustang_120.json",
     "app/data/aircraft/sebart_avanti_s_a200.json", "app/data/aircraft/moonrunner_x99.json",
     "app/data/aircraft/stik_glow_55ax_2t.json", "app/data/aircraft/stik_glow_61fx_2t.json",
     "app/data/aircraft/stik_glow_fs64v_4t.json", "app/data/aircraft/turbo_lumber_evolution.json",
+    "app/data/aircraft/stik_electric_6s.json",
     "app/data/aircraft/xcell_60_research.json",
     "app/data/aircraft/battery/moonrunner_x99_6s_pack.json",
     "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
+    "app/data/aircraft/battery/stik_electric_6s_pack.json",
     "app/data/batteries/cells/lipo-bak503562-galeotti-v1.json",
     "app/data/batteries/packs/lipo-4s1p-3200-30c-class.json",
     "app/data/batteries/packs/lipo-6s1p-5000-30c-class.json",
+    "app/data/batteries/packs/lipo-6s1p-4000-gea406s60x9gt-est-v1.json",
     "app/data/glow/extra_61fx_2t.json", "app/data/glow/os_fs_64v_candidate.json",
     "app/data/glow/os_max_55ax_candidate.json", "app/data/glow/os_max_61fx_candidate.json",
     "app/data/glow/os_max_61fx_installed_candidate.json", "app/data/glow/profile_contract.json",
@@ -595,7 +599,8 @@ def _extended_verification(key: str, data: dict, components: dict) -> str:
                  "wrong oracle format")
         coverage = data["coverage"]
         if key == "propeller":
-            ids = ELECTRIC_IDS | (LIQUID_IDS - {"sebart-avanti-s-a200-p100rx"}) | {"jensen-das-ugly-stik-60"}
+            ids = ELECTRIC_IDS | (LIQUID_IDS - {"sebart-avanti-s-a200-p100rx"}) | {
+                "jensen-das-ugly-stik-60", "stik-electric-6s"}
             _require(set(coverage) == {"propeller_" + name for name in ids}, "incomplete propeller catalog")
             accepted = sum(row["states"] for row in coverage.values())
             _require(all(_positive(row["states"], MIN_COMPONENT_STATES) for row in coverage.values()),

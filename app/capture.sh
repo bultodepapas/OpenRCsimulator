@@ -235,18 +235,21 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_field_failures.py" FieldFai
 record_check quality:field-failures
 # CI-09: these pixel suites skip under headless unit runs; render them at 1920x1080 and require their completion lines.
 for suite in "skin_patterns:Lighting skin patterns: " "segment_filter:Lighting segment filter: "; do
+  rm -f "$CAPTURES/lighting-pixels/${suite%%:*}-metrics.json"
   xvfb-run -a -s "-screen 0 1920x1080x24" python3 "$HERE/../tools/godot/run_checked.py" --timeout 300 \
     --out-dir "$CAPTURES/lighting-pixels" --label "lighting-${suite%%:*}" \
     --require-text "${suite#*:}" --require-text " checks, 0 failed" -- \
     "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy --resolution 1920x1080 \
-    --script "res://tests/test_lighting_${suite%%:*}.gd"
+    --script "res://tests/test_lighting_${suite%%:*}.gd" \
+    -- --lighting-metrics-out="$CAPTURES/lighting-pixels/${suite%%:*}-metrics.json"
   # The literal markers above cannot reject "0 checks"; require a nonzero assertion count.
   grep -qE "^${suite#*:}[1-9][0-9]* checks, 0 failed" "$CAPTURES/lighting-pixels/lighting-${suite%%:*}-"*/engine.log \
     || { echo "lighting pixels ${suite%%:*}: no nonzero completion line" >&2; exit 1; }
 done
-# Validate the complete assertion roster and reject duplicate/contradictory
-# terminal markers before this display-backed contract can count as complete.
+# Validate minimum assertion counts, matching ok-line counts and unique,
+# consistent terminal markers. This does not establish assertion-label identity.
 python3 "$HERE/../tools/godot/summarize.py" "$CAPTURES/lighting-pixels"
+python3 "$HERE/../tools/ci/capture_groups.py" verify-metrics --root "$CAPTURES"
 record_check quality:lighting-pixels
 finish_phase
 fi

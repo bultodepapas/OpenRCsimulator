@@ -8974,3 +8974,21 @@ msgstr "飞行电池传感器读数，包括电压和估计剩余电量。仅在
 
 msgid "Focus the description to scroll with arrows or %s / %s."
 msgstr "将焦点移到说明后，可使用方向键或 %s / %s 滚动。"
+
+msgid "%s is a technical configuration. Home is using %s. Existing builds and technical launches remain available; your saved selection is retained until you choose an aircraft or Fly."
+msgstr "%s 是技术测试配置。主页正在使用 %s。已保存的机体和技术启动方式仍可使用；在您选择飞机或点击“飞行”之前，将保留原来保存的选择。"
+
+msgid "Electric Workshop trials use ideal fixed voltage; the battery never runs flat. Normal stock flight offers the finite pack."
+msgstr "工坊中的电动试飞使用理想固定电压，电池不会耗尽。普通飞行可使用会放电的电池。"
+
+msgid "This aircraft is available only through technical compatibility routes."
+msgstr "此飞机仅可通过技术兼容启动方式使用。"
+
+msgid "High-wing sport trainer · 1.52 m · 6S electric"
+msgstr "高翼运动教练机 · 1.52 m · 6S电动"
+
+msgid "Experimental: estimated 6S electric conversion, not flight-validated. Battery and motor behavior require physical qualification."
+msgstr "实验性：估算的6S电动改装，尚未通过飞行验证。电池和电机的表现仍需实物验证。"
+
+msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
+msgstr "已保存的设置受保护或不可用。更改仅适用于本次会话。"

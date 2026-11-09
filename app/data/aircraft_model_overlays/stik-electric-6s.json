@@ -1,0 +1,211 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 1,
+  "family_id": "stik-electric-6s",
+  "builder": {
+    "script": "res://aircraft/stik_electric_model.gd",
+    "adapter": "euler_hinges"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": -0.115,
+    "model_y_thrust": -0.005
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/stik-electric-6s/model-bindings.json",
+    "sha256": "0340fca145faf80569a82128f1c510e1528129668b555aad652e2df887096e62",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/ugly_stik_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "800d58b7e94ff3a4c29a008316dda3bd062f1a79d4ea06bfd529463407552631",
+      "hash_mode": "lf_text"
+    },
+    "revision": "jensen-60-nitro-61-v3",
+    "datum_source": {
+      "model_z_le": {
+        "path": "wing.leading_z"
+      },
+      "model_y_thrust": {
+        "path": "equipment.shaft_y"
+      }
+    }
+  },
+  "asset": {
+    "kind": "procedural",
+    "identity": "jensen-60-nitro-61-v3",
+    "revision": "jensen-60-nitro-61-v3"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "builder",
+            "geometry_ref": ""
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "",
+      "authored_diameter_m": 0.3048,
+      "source": "builder",
+      "geometry_ref": ""
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "steering": "steering",
+        "nose": "nose"
+      }
+    },
+    "crash": {
+      "provider": "none",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "800d58b7e94ff3a4c29a008316dda3bd062f1a79d4ea06bfd529463407552631",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/stik-electric-6s/customization-bindings.json",
+      "sha256": "7765aae333f1810a4e00d56fc689d3e5f7a3bd136affa45dd676bdff12167164",
+      "hash_mode": "lf_text",
+      "role": "overlay_customization_source"
+    },
+    {
+      "path": "assets/aircraft/stik-electric-6s/runtime-proof.json",
+      "sha256": "7f7013ce1d6f2d6e1558ed8d1e65002d1442c5056f6b4349b57efe485b8f2b37",
+      "hash_mode": "lf_text",
+      "role": "overlay_runtime_proof"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/stik_electric_model.gd",
+      "sha256": "9f9d63c60506e4f8779268c5a4050945575284aafc207300041d586f3400afba",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_appearance.gd",
+      "sha256": "f3b88a0a6824215ea491051e41afdbfa19d77e2ed3d1bb4ecc38cd027ec9f04f",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_controls.gd",
+      "sha256": "3c1c834058230a23869cc5bce883021e61cce81fd53c547a1ca8ec6da60ce318",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_equipment.gd",
+      "sha256": "e2c125aa11529580cb83884dd7b2be9b4135ab3ae76481cd3243ccffd1af9b18",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_finish.gd",
+      "sha256": "eff5ebd9c255143fd10a7d263c00d9622ca3a1fbd6ef78766cabcf1eb9e84c40",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_fracture.gd",
+      "sha256": "254536b598b3d64b6b3c394151f4b1cc0bf983f1eef960685e2e26fd53818f35",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_gear_flex.gd",
+      "sha256": "b1e7b21a92f8b18762d0bda854f867adfc414dff04bab39e6df23e8e1b4cd5b0",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_geometry.gd",
+      "sha256": "9d3d4fc3ed499e4658f41d17b0003cb99fbb832bcde41272ab3a3e54ea0c51ed",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_grain.res",
+      "sha256": "f4dabff80aa6ac249dc6025ae3b1dd632a64fee8251e03fe25bdd6511e361c10",
+      "hash_mode": "raw",
+      "role": "resource_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_installation.gd",
+      "sha256": "83acd49b0653269014318e4afb897bebdab1eaab38aa37275516460edfa24ffe",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_model.gd",
+      "sha256": "bccbe905a3d72a6ba75bad0f2cc1f733b4f2d17959257345f95a5a0770dca759",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://assets/aircraft/ugly-stik-60/os61_engine.glb",
+      "sha256": "e679b303d3e59f1dc82cb0ac390ddc1742a701cb2a97bfb84efd0f30eb7b9a43",
+      "hash_mode": "raw",
+      "role": "resource_dependency"
+    }
+  ]
+}

@@ -81,6 +81,12 @@ The [local CI preflight](../tools/ci/README.md) provides quick/full/release chec
 6. Verify all six delivered files with the [release verifier](../tools/release/README.md#export-and-transfer-contract). Publication also checks the current remote tag commit and refuses to create a missing tag. Linux execution, static ABI inventory and structural pack checks do not replace native OS, GPU, radio or pilot acceptance; use the [exported runway smoke and pilot card](research/menu-investigations/UI-06c/README.md).
 7. Update the [project website](../site/README.md#preview-and-maintain) from the published tag/assets and verify public English/Spanish download and checksum links.
 
+## Preference file recovery
+
+Preferences use a validated temporary file and one `.openrc-previous` copy. Only a complete, verified backup is published; an interrupted publication restores that copy before reading. Unknown/future schemas remain protected. Readers and writers share a per-profile `.openrc-lock` directory; a busy or interrupted lock makes settings read-only instead of risking another writer's data. Ordinary loading does not migrate the saved aircraft selection.
+
+If settings remain unavailable after a crash, close **all OpenRC instances** first. Locate the settings path printed in the startup log (Godot's `user://` directory). Preserve the settings file and any `.openrc-previous` copy. Remove only the `pid` file inside that settings file's `.openrc-lock` directory and then the empty lock directory; restart to let validated backup recovery run. Never remove a live instance's lock, recursively delete the settings folder, or edit the backup to force acceptance. A malformed/unrecoverable backup remains protected for inspection. This is bounded process-interruption recovery, not a claim of storage power-loss durability.
+
 ## Radio diagnostics
 
 | Task | Command / reference |

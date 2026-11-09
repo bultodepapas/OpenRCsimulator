@@ -79,6 +79,9 @@ func _keyboard_routes() -> void:
 	_check("keyboard flight is running", not session.sim.paused and app.pause_menu == null)
 
 	# --- PS-1: the wizard is visible whatever overlay preset is active, and ending it reopens Pause.
+	var stored_before: Dictionary = app.controllers.store.load_all().duplicate(true)
+	var roles_before := [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")]
+	var active_profile_before: Dictionary = session.radio.profile.duplicate(true)
 	session.calibration = RcCalibration.new()
 	session.sim.set_paused(true)
 	await ui.settle()
@@ -88,13 +91,24 @@ func _keyboard_routes() -> void:
 		and prompt != null and prompt.text.begins_with("Centre the sticks"), prompt.text if prompt != null else "no card")
 	await ui.tap(KEY_ESCAPE)
 	await ui.settle()
-	_check("Esc cancels the wizard and opens Pause with the result", session.calibration == null
-		and app.screens.is_top("pause") and session.sim.paused
-		and app.pause_menu.status_label.text.contains("Radio calibration cancelled"), app.pause_menu.status_label.text if app.pause_menu != null else "no Pause")
+	_check("Esc cancels the wizard and opens Pause", session.calibration == null
+		and app.pause_menu != null and app.screens.is_top("pause") and session.sim.paused)
+	var expected_cancellation := "Calibration cancelled. Your controller settings remain active. Settings saved before calibration are kept."
+	_check("Pause explains cancellation and retained settings", app.pause_menu != null
+		and app.pause_menu.status_label.text == expected_cancellation,
+		app.pause_menu.status_label.text if app.pause_menu != null else "no Pause")
 	_check("calibration card hides with the wizard", card != null and not card.visible)
+	await _wait(0.3) # The periodic status refresh must not replace the cancellation result.
+	_check("cancellation result survives Pause refresh", app.pause_menu != null
+		and app.pause_menu.status_label.text == expected_cancellation)
+	_check("cancellation preserves stored settings, selected devices and active profile",
+		app.controllers.store.load_all() == stored_before
+		and roles_before == [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")]
+		and session.radio.profile == active_profile_before)
 	app.continue_flight()
 	await ui.settle()
-	_check("Continue after a cancelled wizard flies again", app.pause_menu == null and not session.sim.paused)
+	_check("Continue after a cancelled wizard flies again with its profile", app.pause_menu == null
+		and not session.sim.paused and session.radio.profile == active_profile_before)
 	session.calibration = FinishingWizard.new()
 	session.sim.set_paused(true)
 	await ui.settle()

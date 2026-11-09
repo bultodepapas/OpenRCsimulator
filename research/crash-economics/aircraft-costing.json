@@ -2418,6 +2418,322 @@
         "The source describes the HX-700 as a flybarless visual only. No HX-700 identity, component, count, or price is used for this X-Cell research route."
       ],
       "notes": "Inventory-readiness audit only. The source hash is documented in CR-36c/large-aircraft.md. No independent economic dossier is authored because the physical JSON provides no physical inventory IDs; the generated route remains explicitly unpriced until a rotorcraft authoring contract supplies an identified build BOM and quantities."
+    },
+    {
+      "aircraft_id": "stik-electric-6s",
+      "status": "independent_partial_inventory_costing",
+      "price_observations": [],
+      "replacement_total_minor": null,
+      "missing": [
+        "No current matched USD replacement offers or complete conversion/assembly cost have been reviewed; every component remains unpriced.",
+        "The estimated motor, mounting, wiring and battery installation require physical build and fit verification."
+      ],
+      "notes": "Independent unpriced electric inventory; no inherited glow engine, tank or fuel valuation. Contact maps identify inspection scope, not damage or replacement claims.",
+      "dossier": {
+        "expected_source_sha256": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+        "lines": [
+          {
+            "id": "item_spinner_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_spinner_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: spinner and prop nut. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_receiver_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_receiver_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: receiver. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_fuselage_servos",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_fuselage_servos"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: elevator and rudder servos (2). No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_aileron_servo",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_aileron_servo"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: aileron servo. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_nose_gear_assembly",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_nose_gear_assembly"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: nose gear and 2.75 in wheel. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_main_gear_assembly",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_main_gear_assembly"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: main gear and 3 in wheels. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_wing_airframe",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_wing_airframe"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: wing incl. ailerons. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_fuselage_front",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_fuselage_front"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: fuselage front (firewall to F4). No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_fuselage_rear",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_fuselage_rear"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: fuselage rear (F4 to tail). No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_stabilizer_elevator",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_stabilizer_elevator"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: stabilizer and elevator. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_fin_rudder",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_fin_rudder"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: fin and rudder. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_control_hardware",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_control_hardware"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: pushrods, horns, hardware. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_motor_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_motor_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: Scorpion SII-4020-540KV. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_propeller_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_propeller_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: APC LP12080E 12x8E Thin Electric. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_esc_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_esc_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: Scorpion Tribunus III 06-80A SBEC. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_motor_mount",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_motor_mount"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: motor mount and fasteners. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_prop_adapter",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_prop_adapter"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: propeller adapter and fasteners. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_power_wiring",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_power_wiring"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: power wiring and connectors. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_battery_restraint",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_battery_restraint"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: battery tray and restraint. No matched current USD replacement offer is asserted."
+          },
+          {
+            "id": "item_battery_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "item_battery_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced installed component: Gens ace G-tech GEA406S60X9GT 6S 4000 mAh (estimated electrical law). No matched current USD replacement offer is asserted."
+          }
+        ],
+        "contact_components": {
+          "probe_wing_left_tip": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_right_tip": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_left_le": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_right_le": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_left_top": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_right_top": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_left_top_front": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_right_top_front": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_left_outer": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_right_outer": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_left_te": [
+            "item_wing_airframe"
+          ],
+          "probe_wing_right_te": [
+            "item_wing_airframe"
+          ],
+          "probe_stabilizer_left_tip": [
+            "item_stabilizer_elevator"
+          ],
+          "probe_stabilizer_right_tip": [
+            "item_stabilizer_elevator"
+          ],
+          "probe_fin_top": [
+            "item_fin_rudder"
+          ],
+          "probe_rudder_top_te": [
+            "item_fin_rudder"
+          ],
+          "probe_rudder_te": [
+            "item_fuselage_rear",
+            "item_stabilizer_elevator",
+            "item_fin_rudder"
+          ],
+          "probe_tail_end": [
+            "item_fuselage_rear",
+            "item_stabilizer_elevator",
+            "item_fin_rudder"
+          ],
+          "probe_tail_skid": [
+            "item_fuselage_rear",
+            "item_stabilizer_elevator",
+            "item_fin_rudder"
+          ],
+          "probe_nose_bottom_left": [
+            "item_fuselage_front",
+            "item_motor_mount"
+          ],
+          "probe_nose_bottom_right": [
+            "item_fuselage_front",
+            "item_motor_mount"
+          ],
+          "probe_motor_right": [
+            "item_motor_main",
+            "item_motor_mount",
+            "item_fuselage_front"
+          ],
+          "probe_motor_top": [
+            "item_motor_main",
+            "item_motor_mount",
+            "item_fuselage_front"
+          ],
+          "probe_motor_front_top": [
+            "item_motor_main",
+            "item_motor_mount",
+            "item_fuselage_front"
+          ],
+          "probe_motor_front_bottom": [
+            "item_motor_main",
+            "item_motor_mount",
+            "item_fuselage_front"
+          ],
+          "probe_spinner_tip": [
+            "item_spinner_main",
+            "item_prop_adapter",
+            "item_motor_main"
+          ],
+          "contact_main_left": [
+            "item_main_gear_assembly",
+            "item_fuselage_front"
+          ],
+          "contact_main_right": [
+            "item_main_gear_assembly",
+            "item_fuselage_front"
+          ],
+          "contact_nose": [
+            "item_nose_gear_assembly",
+            "item_fuselage_front"
+          ],
+          "propeller/propulsion_main": [
+            "item_propeller_main"
+          ]
+        },
+        "propeller_component_id": "item_propeller_main",
+        "propeller_inspection_ids": [
+          "item_motor_main",
+          "item_motor_mount",
+          "item_prop_adapter",
+          "item_fuselage_front"
+        ]
+      }
     }
   ],
   "research_only_specimens": {

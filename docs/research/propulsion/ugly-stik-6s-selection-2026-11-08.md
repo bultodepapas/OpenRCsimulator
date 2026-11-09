@@ -8,6 +8,8 @@ The plan's second review preserves the existing basic aircraft, ID and tests unc
 
 ## Selection
 
+**Implementation refinement:** the delivered numerical candidate selects APC **12x8E**, not the preliminary 13-inch options below. Full-charge screening exposed current/RPM constraints, and the independent installation inventory derives **2.600082 kg** rather than forcing the initial mass envelope with ballast. The [installation dossier](../../../research/propulsion/stik-6s/README.md) records primary points, the conditional motor-equivalent fit, residuals, bounded numerical screens and still-open startup-current/fit/physical gates. The comparison below preserves the original planning evidence.
+
 Use **Scorpion SII-4020-540KV + APC Thin Electric 13x8E + 6S 4000 mAh LiPo** as the first electric conversion candidate. The final planning pass selects the pack and ESC references below; actual fit, current and flight qualification remain pending.
 
 Scorpion recommends this motor for 60–64-inch aerobatic aircraft on 6S, with 3500–4000 mAh packs. Its current product page gives 540 rpm/V, 288 g, 85 A maximum continuous current and 1850 W maximum continuous power. The page was available and marked in stock when checked; this is not a local availability or purchasing commitment. [Manufacturer product and specifications](https://www.scorpionsystem.com/catalog/aeroplane/motors_1/sii-40/SII_4020-540/).

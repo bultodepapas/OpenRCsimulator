@@ -6,8 +6,8 @@
       "np_x_m": 0.132588,
       "kind": "estimated",
       "source": "43.5 % of the 0.3048 m chord: research/flight-dynamics/climb-trim derive_pitch_reference.py (Helmbold slopes, tail q-ratio 0.9, Raymer fuselage term; band 42.5-44.5 %, VLM 44.4 %); docs/research/flight-dynamics/climb-trim/README.md",
-      "applies_to": ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-61fx-2t", "stik-glow-fs64v-4t"],
-      "applies_note": "The generated APC 13x6 variants share their base aircraft id, so they inherit this entry; the synthetic electric fixtures keep an earlier aero reference and are not covered."
+      "applies_to": ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-61fx-2t", "stik-glow-fs64v-4t", "stik-electric-6s"],
+      "applies_note": "The generated APC 13x6 variants share their base aircraft id, so they inherit this entry; the synthetic electric fixtures keep an earlier aero reference and are not covered. EL1e-STIK: the sourced 6S ideal/pack modes reuse the current donor airframe and aerodynamic inputs, so this remains an estimated unpowered-airframe reference; different thrust/CG height and powered stability are not qualified."
     },
     "gp-extra-300s-60": {
       "np_x_m": 0.147033,

@@ -18,6 +18,8 @@ python3 research/timber/tt01/manifest.py --check
 python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check
 python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py --check
 python3 research/timber/tt07/derive_physics.py --check
+python3 research/propulsion/stik-6s/build_aircraft.py --check
+python3 research/propulsion/stik-6s/build_costing_entry.py --check
 python3 research/skywalker-x8/X8-00/manifest.py --check
 python3 research/skywalker-x8/X8-02/install_assets.py --check
 python3 research/skywalker-x8/X8-02/compile_model.py --check

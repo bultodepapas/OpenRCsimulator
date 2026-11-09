@@ -120,6 +120,38 @@ class PromotionEvidence(unittest.TestCase):
         compared = sum(row["count"] for row in data["components"].values())
         data["total"] = {"compared": compared, "identical": compared, "mismatched": 0}
 
+    def test_propeller_coverage_requires_the_exact_catalog_including_stik_electric(self):
+        data = evidence("stage_oracle")
+        data["format"] = "openrc-nk3-propeller-oracle v1"
+        ids = {"jensen-das-ugly-stik-60", "stik-electric-6s", "turbo-lumber-evolution",
+               "moonrunner-x99", "p51d-mustang-120", "f4u-corsair-250"}
+        data["coverage"] = {"propeller_" + name: {"states": 1000} for name in ids}
+        names = ("propeller_velocity", "propeller_thrust_torque", "propeller_loads", "propeller_rotor",
+                 "propeller_normal", "propeller_pfactor", "propeller_flow_validity")
+        data["components"] = {name: {"count": 6000, "identical": 6000} for name in names}
+        self.retotal(data)
+        self.assertEqual(builder.verification_error("propeller", data), "")
+
+        missing = copy.deepcopy(data)
+        missing["coverage"].pop("propeller_stik-electric-6s")
+        self.assertEqual(builder.verification_error("propeller", missing), "incomplete propeller catalog")
+        unexpected = copy.deepcopy(data)
+        unexpected["coverage"]["propeller_unexpected"] = {"states": 1000}
+        self.assertEqual(builder.verification_error("propeller", unexpected), "incomplete propeller catalog")
+
+    def test_wheel_profile_changes_invalidate_the_mirrored_source_identity(self):
+        with patch.object(builder, "ROOT", self.root):
+            for name in builder.REFERENCE_SOURCES:
+                path = self.root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(name.encode("utf-8"))
+            before = builder.mirrored_sources()
+            wheel = self.root / "app/data/ground/wheel_profiles.json"
+            wheel.write_bytes(b"changed wheel registry")
+            after = builder.mirrored_sources()
+        self.assertEqual({name for name in before if before[name] != after[name]},
+                         {"app/data/ground/wheel_profiles.json"})
+
     def test_completed_runs_qualify_and_pin_the_evidence_bytes(self):
         for kind in ("stage_oracle", "trajectory"):
             with self.subTest(kind=kind):

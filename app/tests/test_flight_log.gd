@@ -31,7 +31,7 @@ func check(label: String, passed: bool) -> void:
 func _run() -> void:
 	_mac_identity_tests()
 	_boundary_snapshot_tests()
-	for path in ["res://data/aircraft/jensen_ugly_stik_60.json", "res://data/aircraft/gp_extra_300s_60.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json", "res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/stik_glow_61fx_2t.json"]:
+	for path in ["res://data/aircraft/jensen_ugly_stik_60.json", "res://data/aircraft/gp_extra_300s_60.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json", "res://data/aircraft/turbo_lumber_evolution.json", "res://data/aircraft/stik_glow_61fx_2t.json", "res://data/aircraft/stik_electric_6s.json", "res://data/aircraft/battery/stik_electric_6s_pack.json"]:
 		if not FileAccess.file_exists(path):
 			# Catalog paths are checked below by the caller; never silently invent a specimen.
 			check("specimen exists: " + path, false)

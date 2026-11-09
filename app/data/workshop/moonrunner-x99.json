@@ -73,7 +73,7 @@
   ],
   "presentation": {
     "visual_family": "moonrunner-x99",
-    "model_manifest_sha256": "93803c4fc4d3ada7407532fd4079305572ed67bbd5eef5e60b3c877cc9239149",
+    "model_manifest_sha256": "15ac988ef031678012ddf69d27fb3482388a355693ce771adb4f5d0d30ede0d7",
     "scale_root": "airplane"
   }
 }

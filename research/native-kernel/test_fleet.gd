@@ -23,7 +23,8 @@ const FS64V_CONTEXT_HEX := (
 	"72130dac128785bf0000000000000000030001005555555555d50a4003000000000000000300000000000000010000000000" +
 	"00000100000000000000"
 )
-const FS64V_AIRCRAFT_SHA := "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+const FS64V_HISTORICAL_AIRCRAFT_SHA := "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+const FS64V_AIRCRAFT_SHA := "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8"
 const FS64V_CAUSE_BYTES_HEX := "210000000700000000000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903ffb702e7c620d903fd22f068cdc4b333f85580189a0cd453f"
 
 var _checks := 0
@@ -436,6 +437,12 @@ func _initialize() -> void:
 		observed.native_diagnostic_stage_call = observed.native_stage_calls
 		_check(Fleet._fleet_runtime_proof_error(observed_row, observed, 600, 2400).is_empty(),
 			"FS64V midpoint rejection is proven separately: soft=%s" % declared_row.soft_hull)
+		var historical: Dictionary = observed.duplicate(true)
+		historical.reference_aircraft_sha256 = FS64V_HISTORICAL_AIRCRAFT_SHA
+		historical.native_aircraft_sha256 = FS64V_HISTORICAL_AIRCRAFT_SHA
+		_check(Fleet.GLOW_REVERSE_CASES["stik-glow-fs64v-4t"].historical_aircraft_sha256 == FS64V_HISTORICAL_AIRCRAFT_SHA \
+			and not Fleet._fleet_runtime_proof_error(observed_row, historical, 600, 2400).is_empty(),
+			"historical FS64V identity remains recorded but cannot certify the current installation")
 		for change: Array in [["warmup_completed", 599], ["samples_completed", 206],
 				["reference_rollback", false], ["native_rollback", false], ["reference_owner_retained", false],
 				["native_owner_retained", false], ["native_covered_every_tick", false],

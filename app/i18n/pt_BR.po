@@ -9815,3 +9815,21 @@ msgstr "Leituras dos sensores da bateria de voo, incluindo tensão e carga resta
 
 msgid "Focus the description to scroll with arrows or %s / %s."
 msgstr "Foque a descrição para rolar com as setas ou %s / %s."
+
+msgid "%s is a technical configuration. Home is using %s. Existing builds and technical launches remain available; your saved selection is retained until you choose an aircraft or Fly."
+msgstr "%s é uma configuração técnica. O início está usando %s. Os modelos salvos e as inicializações técnicas continuam disponíveis; a seleção salva é mantida até você escolher um avião ou pressionar VOAR."
+
+msgid "Electric Workshop trials use ideal fixed voltage; the battery never runs flat. Normal stock flight offers the finite pack."
+msgstr "Os voos de teste elétricos da Oficina usam tensão fixa ideal; a bateria nunca acaba. O voo normal oferece uma bateria com descarga."
+
+msgid "This aircraft is available only through technical compatibility routes."
+msgstr "Este avião só está disponível pelas rotas técnicas de compatibilidade."
+
+msgid "High-wing sport trainer · 1.52 m · 6S electric"
+msgstr "Treinador esportivo de asa alta · 1,52 m · elétrico 6S"
+
+msgid "Experimental: estimated 6S electric conversion, not flight-validated. Battery and motor behavior require physical qualification."
+msgstr "Experimental: conversão elétrica 6S estimada, sem validação em voo. O comportamento da bateria e do motor exige validação física."
+
+msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
+msgstr "As configurações salvas estão protegidas ou indisponíveis. As alterações só serão aplicadas nesta sessão."

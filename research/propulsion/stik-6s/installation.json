@@ -1,0 +1,44 @@
+{
+  "format": "openrc-stik-electric-installation-source v1",
+  "id": "stik-electric-6s",
+  "airframe_source": "app/data/aircraft/jensen_ugly_stik_60.json",
+  "pack_id": "lipo-6s1p-4000-gea406s60x9gt-est-v1",
+  "motor": {
+    "name": "Scorpion SII-4020-540KV",
+    "mass_kg": 0.288,
+    "size_m": [0.0462, 0.0489, 0.0489],
+    "position_m": [-0.226, 0.0, 0.0],
+    "manufacturer_url": "https://www.scorpionsystem.com/catalog/aeroplane/motors_1/sii-40/SII_4020-540/",
+    "chart_url": "https://www.scorpionsystem.com/files/i2,653_data_chart.htm",
+    "nominal_kv_rpm_per_v": 540.0,
+    "catalog_resistance_ohm": 0.020,
+    "sample_no_load_kv_rpm_per_v": 555.0,
+    "sample_resistance_ohm": 0.021,
+    "sample_no_load_current_a_at_20_v": 1.79,
+    "loaded_fit_points": [[18.5, 35.85, 8938.0], [22.2, 49.92, 10334.0]],
+    "held_out_electrical_points": [[22.2, 61.44, 9953.0], [22.2, 57.98, 10065.0]],
+    "fit_note": "V = rpm/Kv + I*R: fit to two Scorpion 12x8E loaded points. The chart does not define voltage measurement point or phase/DC resistance convention; fitted parameters are a conditional effective surrogate, not winding characterization. Unknown ESC/wiring losses bias this motor-only representation. I0 is the sample's 20 V no-load value, held constant by the simulator."
+  },
+  "propeller": {
+    "name": "APC LP12080E 12x8E Thin Electric",
+    "diameter_m": 0.3048,
+    "mass_kg": 0.026082,
+    "size_m": [0.010, 0.3048, 0.020],
+    "position_m": [-0.286, 0.0, 0.0],
+    "product_url": "https://www.apcprop.com/product/12x8e/",
+    "map_url": "https://www.apcprop.com/files/PER3_12x8E.dat",
+    "map_note": "APC v2022-0915, simulation dated 2022-09-22; computational prediction, not wind-tunnel data. Selected rows of its 10000 rpm table; independent from the motor's static fit. Direct raw download returned HTTP 403 in this environment; the source table was retrieved through the web reader and its selected rows are retained below. No upstream file hash claimed.",
+    "j_ct_cp": [[0.0,0.1100,0.0417],[0.0564,0.1076,0.0433],[0.1128,0.1046,0.0448],[0.1691,0.1009,0.0462],[0.2255,0.0964,0.0471],[0.2819,0.0910,0.0475],[0.3383,0.0845,0.0471],[0.3946,0.0771,0.0458],[0.4510,0.0686,0.0436],[0.5074,0.0592,0.0403],[0.5638,0.0489,0.0359],[0.6201,0.0382,0.0307],[0.6765,0.0271,0.0246],[0.7329,0.0161,0.0179],[0.7893,0.0052,0.0106],[0.8175,0.0,0.0069]],
+    "rpm_limit_source": "https://www.apcprop.com/technical-information/rpm-limits/ : 150000 / diameter in inches for Thin Electric; 12500 rpm suggested maximum",
+    "motor_rotor_inertia_kg_m2": 0.00004
+  },
+  "esc": {"name": "Scorpion Tribunus III 06-80A SBEC", "mass_kg": 0.070, "size_m": [0.0522,0.032,0.0203], "position_m": [-0.12,0.0,-0.02], "source": "https://www.scorpionsystem.com/catalog/speed_controllers/tribunus_esc/tribunus_III_esc/III_06_80/ : approximately 70 g without connectors, 80 A continuous, 11-26.1 V; actual BEC setpoint and firmware unknown"},
+  "installation_items": [
+    {"id":"item_motor_mount","name":"motor mount and fasteners","mass_kg":0.040,"position_m":[-0.19,0.0,-0.01],"size_m":[0.035,0.05,0.05]},
+    {"id":"item_prop_adapter","name":"propeller adapter and fasteners","mass_kg":0.025,"position_m":[-0.28,0.0,0.0],"size_m":[0.02,0.025,0.025]},
+    {"id":"item_power_wiring","name":"power wiring and connectors","mass_kg":0.035,"position_m":[-0.06,0.0,-0.02],"size_m":[0.08,0.02,0.02]},
+    {"id":"item_battery_restraint","name":"battery tray and restraint","mass_kg":0.025,"position_m":[0.02,0.0,-0.03],"size_m":[0.16,0.05,0.01]}
+  ],
+  "installation_estimate": "Masses, dimensions and placements of separate mount, adapter, connectors, wiring and restraint are estimates for an unbuilt conversion, not measured or verified fit. The battery is positioned mathematically to the donor plan CG, with physical bay/retention access unverified.",
+  "bench": {"url":"https://www.scorpionsystem.com/files/i2,653_data_chart.htm", "nominal_voltage_v":22.2, "current_a":49.92, "rpm":10334, "static_thrust_kgf":3.265, "input_power_w":1108.2, "limit_current_a":68.0, "limit_power_w":1850.0}
+}

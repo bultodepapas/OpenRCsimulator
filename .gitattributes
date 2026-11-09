@@ -255,6 +255,15 @@
 
 # Generated overlay proof is checked byte-for-byte.
 /assets/aircraft/moonrunner-x99-overlay/runtime-proof.json text eol=lf
+/assets/aircraft/stik-electric-6s/runtime-proof.json text eol=lf
+# Historical Workshop fixtures assert exact bytes, independent of core.autocrlf.
+/app/tests/fixtures/moonrunner-overlay-pre-electric-descriptor.json text eol=lf
+/app/tests/fixtures/moonrunner-overlay-pre-electric-customization.json text eol=lf
+# The electric installation dossier records this exact source identity.
+/research/propulsion/stik-6s/installation.json text eol=lf
+# Retained numeric flight-card evidence binds its exact captured bytes.
+/docs/research/propulsion/ugly-stik-flight-card-2026-11-08.json text eol=lf
+/docs/research/propulsion/ugly-stik-native-receipt-2026-11-08.json text eol=lf
 
 # Skin archives embed the LF-normalized packer byte-for-byte.
 /tools/skins/pack_image.py text eol=lf

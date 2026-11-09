@@ -86,7 +86,7 @@ def presentation_binding(base_id: str) -> dict[str, str]:
     if family_match is None or not ID_RE.fullmatch(family_match.group("family")):
         raise ValueError(f"{base_id}: missing or invalid catalog visual family")
     family = family_match.group("family")
-    manifest_dir = "app/data/aircraft_model_overlays" if family == "moonrunner-x99" else "app/data/aircraft_models"
+    manifest_dir = "app/data/aircraft_model_overlays" if family in {"moonrunner-x99", "stik-electric-6s"} else "app/data/aircraft_models"
     manifest_bytes = (ROOT / manifest_dir / f"{family}.json").read_bytes()
     manifest = json.loads(manifest_bytes.decode("utf-8"))
     if manifest.get("schema") != "openrc-aircraft-model" or type(manifest.get("version")) is not int or manifest["version"] not in {1, 2} or manifest.get("family_id") != family:

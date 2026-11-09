@@ -121,9 +121,9 @@ func _run() -> void:
 	app.end_flight()
 	await ui.settle()
 	_check("End flight keeps the battery choice", app.home.battery_mode == "ideal", app.home.battery_mode)
-	app.set_aircraft("stik-glow-61fx-2t")
+	app.set_aircraft("gp-extra-300s-60")
 	await ui.settle()
-	_check("glow aircraft shows the remembered fuel fill", Catalog.has_finite_fuel("stik-glow-61fx-2t")
+	_check("glow aircraft shows the remembered fuel fill", Catalog.has_finite_fuel("gp-extra-300s-60")
 		and is_equal_approx(app.home.fuel_start_fill, 0.75), str(app.home.fuel_start_fill))
 	var saved := Preferences.load_from(PREFS)
 	_check("Fly saved the battery and fuel choices", saved.battery_mode == "ideal" and is_equal_approx(float(saved.fuel_fill), 0.75),

@@ -21,6 +21,7 @@ var capture_dir := ""
 var checks := 0
 var failures := 0
 var check_rows: Array[Dictionary] = []
+var metrics := {}
 
 
 func _initialize() -> void:
@@ -66,6 +67,7 @@ func _run() -> void:
 		var points: Array[float] = _sample_points(pattern)
 		var image: Image = await _render_pattern(pattern, seconds, Vector2(0.0, 1.0), BASE_ENERGY)
 		var error: float = _sample_error(image, pattern, seconds, BASE_ENERGY, points)
+		metrics[str(entry.name) + "_error"] = error
 		_check("%s pixels match Patterns.sample" % str(entry.name), error <= LINEAR_TOLERANCE, "max linear RGB error=%.5f" % error)
 		_capture(image, str(entry.name))
 
@@ -74,6 +76,7 @@ func _run() -> void:
 	var wave_image: Image = await _render_pattern(wave, wave_time, Vector2(0.0, 1.0), BASE_ENERGY)
 	var wave_left: Vector3 = _sample_linear(wave_image, 0.14)
 	var wave_right: Vector3 = _sample_linear(wave_image, 0.57)
+	metrics.wave_spatial_distance = wave_left.distance_to(wave_right)
 	_check("wave has spatial contrast within one frame", wave_left.distance_to(wave_right) > 0.035,
 		"linear RGB distance=%.5f" % wave_left.distance_to(wave_right))
 	_capture(wave_image, "wave-spatial")
@@ -85,9 +88,12 @@ func _run() -> void:
 	var phase_points: Array[float] = [0.19, 0.36, 0.68, 0.87]
 	var early_error: float = _sample_error(early_image, wave, early_time, BASE_ENERGY, phase_points)
 	var later_error: float = _sample_error(later_image, wave, later_time, BASE_ENERGY, phase_points)
+	metrics.phase_early_error = early_error
+	metrics.phase_later_error = later_error
 	_check("wave phase advances match bounded presentation time", maxf(early_error, later_error) <= LINEAR_TOLERANCE,
 		"early=%.5f later=%.5f" % [early_error, later_error])
 	var phase_delta: float = _sample_linear(early_image, 0.27).distance_to(_sample_linear(later_image, 0.27))
+	metrics.phase_distance = phase_delta
 	_check("wave phase advance changes the sampled color", phase_delta > 0.035, "linear RGB distance=%.5f" % phase_delta)
 	_capture(early_image, "wave-phase-early")
 	_capture(later_image, "wave-phase-later")
@@ -97,10 +103,12 @@ func _run() -> void:
 	var mirror_image: Image = await _render_pattern(wave, mirror_time, Vector2(1.0, -1.0), BASE_ENERGY)
 	var mirror_points: Array[float] = [0.12, 0.29, 0.61, 0.86]
 	var mirror_error: float = _sample_error(mirror_image, wave, mirror_time, BASE_ENERGY, mirror_points, true)
+	metrics.mirror_error = mirror_error
 	_check("negative span_uv_range mirrors root-to-tip sampling", mirror_error <= LINEAR_TOLERANCE,
 		"max linear RGB error=%.5f" % mirror_error)
 	var forward_color: Vector3 = _sample_linear(forward_image, 0.19)
 	var mirror_color: Vector3 = _sample_linear(mirror_image, 0.19)
+	metrics.mirror_distance = forward_color.distance_to(mirror_color)
 	_check("negative span reverses the same spatial pattern", forward_color.distance_to(mirror_color) > 0.035,
 		"linear RGB distance=%.5f" % forward_color.distance_to(mirror_color))
 	_capture(mirror_image, "wave-negative-span")
@@ -115,6 +123,8 @@ func _run() -> void:
 	var exposure_delta := 0.0
 	for u: float in [0.17, 0.39, 0.63, 0.84]:
 		exposure_delta = maxf(exposure_delta, _sample_linear(baseline_image, u).distance_to(_sample_linear(high_exposure_image, u)))
+	metrics.exposure_error = exposure_error
+	metrics.exposure_delta = exposure_delta
 	_check("49131 exposure with inverse energy avoids double gain", exposure_error <= LINEAR_TOLERANCE and exposure_delta <= LINEAR_TOLERANCE,
 		"reference error=%.5f baseline delta=%.5f" % [exposure_error, exposure_delta])
 	_capture(baseline_image, "steady-exposure-1")
@@ -125,6 +135,7 @@ func _run() -> void:
 	viewport.free()
 	await process_frame
 	_write_summary()
+	_write_metrics()
 	print("Lighting skin patterns: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -234,6 +245,27 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	print(("ok   " if ok else "FAIL ") + label + (" — " + detail if not detail.is_empty() else ""))
 	if not ok:
 		failures += 1
+
+
+func _write_metrics() -> void:
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--lighting-metrics-out="):
+			var file := FileAccess.open(arg.trim_prefix("--lighting-metrics-out="), FileAccess.WRITE)
+			if file == null:
+				_check("write structured lighting metrics", false)
+				return
+			var float64_hex := {}
+			for key in metrics:
+				float64_hex[key] = PackedFloat64Array([float(metrics[key])]).to_byte_array().hex_encode()
+			var encoded := JSON.stringify({
+				"format": "openrc-lighting-skin-metrics v1", "viewport": [VIEW_SIZE.x, VIEW_SIZE.y],
+				"complete": true, "checks": checks, "failures": failures, "metrics": metrics,
+				"float64_hex": float64_hex,
+			}, "  ", true, true)
+			file.store_string(encoded + "\n")
+			file.flush()
+			if file.get_error() != OK:
+				_check("flush structured lighting metrics", false)
 
 
 func _write_summary() -> void:

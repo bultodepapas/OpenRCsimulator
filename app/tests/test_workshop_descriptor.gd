@@ -21,7 +21,14 @@ func _initialize() -> void:
 
 func _test_catalog_descriptors() -> void:
 	var entries: Array = Catalog.airplane_flyable_entries()
-	_check("every fixed-wing flyable catalog aircraft is discovered", entries.size() == 10 and not entries.is_empty(), str(entries))
+	var expected_ids := ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t",
+		"stik-glow-fs64v-4t", "stik-electric-6s", "gp-extra-300s-60", "p51d-mustang-120",
+		"f4u-corsair-250", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "moonrunner-x99"]
+	var actual_ids := []
+	for entry: Dictionary in entries: actual_ids.append(str(entry.get("id", "")))
+	expected_ids.sort()
+	actual_ids.sort()
+	_check("every fixed-wing flyable catalog aircraft is discovered", actual_ids == expected_ids, str(actual_ids))
 	for entry_variant: Variant in entries:
 		var entry: Dictionary = entry_variant
 		var id: String = str(entry.get("id", ""))

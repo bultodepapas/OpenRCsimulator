@@ -146,11 +146,33 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
             if aircraft_id in {"gp-extra-300s-60", "turbo-lumber-evolution", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx",
-                               "f4u-corsair-250", "moonrunner-x99"}:
+                               "f4u-corsair-250", "moonrunner-x99", "stik-electric-6s"}:
                 continue
             self.assertEqual(dossier["components"], [], aircraft_id)
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)
             self.assertEqual(dossier["propeller_inspection_ids"], [], aircraft_id)
+
+    def test_stik_electric_inventory_is_independent_and_entirely_unpriced(self) -> None:
+        aircraft_id = "stik-electric-6s"
+        dossier = self.dossiers[aircraft_id]
+        self.assertFalse(dossier["complete"])
+        self.assertTrue(dossier["missing"])
+        components = dossier["components"]
+        source_ids = {row["id"] for row in self.context["route_sources"][aircraft_id]["inventory_rows"]}
+        bound = [pid for row in components for pid in row["physical_inventory_ids"]]
+        self.assertEqual(set(bound), source_ids)
+        self.assertEqual(len(bound), len(set(bound)), "each electric inventory item is covered once")
+        self.assertTrue({"item_motor_main", "item_battery_main", "item_esc_main", "item_propeller_main"} <= source_ids)
+        self.assertFalse({"item_engine_main", "item_muffler_main", "item_engine_mount", "item_receiver_battery",
+                          "item_fuel_main", "item_fuel_tank", "item_balance_mass_virtual"} & source_ids)
+        for row in components:
+            self.assertEqual(row["quantity"], 1)
+            for field in ("unit_minor", "low_unit_minor", "high_unit_minor", "offer_id"):
+                self.assertIsNone(row[field], (row["id"], field))
+        self.assertEqual(dossier["propeller_component_id"], "item_propeller_main")
+        self.assertEqual(dossier["contact_components"]["propeller/propulsion_main"], ["item_propeller_main"])
+        self.assertEqual(dossier["propeller_inspection_ids"],
+                         ["item_motor_main", "item_motor_mount", "item_prop_adapter", "item_fuselage_front"])
 
     def test_fleet_part_subtotals_do_not_claim_full_aircraft_prices(self) -> None:
         cases = {"turbo-lumber-evolution": 46587, "p51d-mustang-120": 245671,

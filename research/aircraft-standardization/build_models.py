@@ -793,23 +793,29 @@ def generate(root: Path, check: bool) -> int:
 OVERLAY_SOURCE = Path("assets/aircraft/moonrunner-x99-overlay/model-bindings.json")
 OVERLAY_OUTPUT_DIR = Path("app/data/aircraft_model_overlays")
 OVERLAY_FAMILY = "moonrunner-x99"
+OVERLAY_SOURCES = {
+    OVERLAY_FAMILY: OVERLAY_SOURCE,
+    "stik-electric-6s": Path("assets/aircraft/stik-electric-6s/model-bindings.json"),
+}
 
 
-def overlay_manifest(root: Path) -> dict[str, Any]:
-    source_path = root / OVERLAY_SOURCE
+def overlay_manifest(root: Path, family_id: str = OVERLAY_FAMILY) -> dict[str, Any]:
+    if family_id not in OVERLAY_SOURCES:
+        raise ModelManifestError("unregistered model overlay family")
+    source_path = root / OVERLAY_SOURCES[family_id]
     base_registry = json.loads((root / REGISTRY_PATH).read_text(encoding="utf-8"))
     base_diagnostics = validate_registry(base_registry)
     if base_diagnostics:
         raise ModelManifestError(base_diagnostics[0]["message"])
-    if any(family["family_id"] == OVERLAY_FAMILY for family in base_registry["families"]):
+    if any(family["family_id"] in OVERLAY_SOURCES for family in base_registry["families"]):
         raise ModelManifestError("overlay family collides with the base model registry")
     registry = json.loads(source_path.read_text(encoding="utf-8"))
     diagnostics = validate_registry(registry)
     if diagnostics:
         raise ModelManifestError(diagnostics[0]["message"])
     families = registry["families"]
-    if len(families) != 1 or families[0]["family_id"] != OVERLAY_FAMILY:
-        raise ModelManifestError("model overlay must contain exactly the registered MoonRunner family")
+    if len(families) != 1 or families[0]["family_id"] != family_id:
+        raise ModelManifestError("model overlay must contain exactly its registered family")
     return build_manifest(root, source_path, families[0])
 
 
@@ -818,22 +824,24 @@ def generate_overlay(root: Path, check: bool) -> int:
         import build_overlay_proof
         if build_overlay_proof.generate(root, True):
             raise ModelManifestError("overlay runtime source proof is stale")
-        manifest = overlay_manifest(root)
         directory = root / OVERLAY_OUTPUT_DIR
-        output = directory / f"{OVERLAY_FAMILY}.json"
-        unexpected = {p.name for p in directory.iterdir()} - {output.name} if directory.exists() else set()
+        expected = {f"{family}.json" for family in OVERLAY_SOURCES}
+        unexpected = {p.name for p in directory.iterdir()} - expected if directory.exists() else set()
         if unexpected:
             raise ModelManifestError("unregistered overlay model manifests: " + ", ".join(sorted(unexpected)))
-        rendered = (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
-        if check:
-            if not output.is_file() or output.read_bytes() != rendered:
-                raise ModelManifestError(f"stale overlay model manifest: {OVERLAY_OUTPUT_DIR / output.name}")
-            print("MoonRunner model overlay is current")
-        else:
-            directory.mkdir(parents=True, exist_ok=True)
-            if not output.is_file() or output.read_bytes() != rendered:
-                output.write_bytes(rendered)
-            print("generated MoonRunner model overlay")
+        for family in OVERLAY_SOURCES:
+            manifest = overlay_manifest(root, family)
+            output = directory / f"{family}.json"
+            rendered = (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+            if check:
+                if not output.is_file() or output.read_bytes() != rendered:
+                    raise ModelManifestError(f"stale overlay model manifest: {OVERLAY_OUTPUT_DIR / output.name}")
+                print(f"{family} model overlay is current")
+            else:
+                directory.mkdir(parents=True, exist_ok=True)
+                if not output.is_file() or output.read_bytes() != rendered:
+                    output.write_bytes(rendered)
+                print(f"generated {family} model overlay")
         return 0
     except (OSError, UnicodeError, json.JSONDecodeError, ModelManifestError) as exc:
         print(f"model overlay generation failed: {exc}", file=sys.stderr)

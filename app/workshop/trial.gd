@@ -1,8 +1,11 @@
 ## AE-10: freeze a detached recipe and its exact source for one reproducible trial.
 extends RefCounted
 
+const ModelRegistry := preload("res://aircraft/model_registry.gd")
 
 static func freeze(payload: Dictionary) -> Dictionary:
+	if payload.has("battery_mode") and (typeof(payload.battery_mode) != TYPE_STRING or payload.battery_mode != "ideal"):
+		return {ok = false, errors = PackedStringArray(["Workshop battery selection supports ideal fixed voltage only; finite-pack trials are not supported."])}
 	var base_bytes_value: Variant = payload.get("base_bytes", null)
 	var base_id_value: Variant = payload.get("base_id", null)
 	var recipe_value: Variant = payload.get("recipe", {})
@@ -46,12 +49,12 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		return {ok = false, errors = PackedStringArray(["Workshop presentation profile must be an object."])}
 	var customization_script: Script = load("res://render/aircraft_customization.gd") \
 		if ResourceLoader.exists("res://render/aircraft_customization.gd") else null
-	if customization_script == null and base_id == "moonrunner-x99":
+	if customization_script == null and ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 		return {ok = false, errors = PackedStringArray(["Overlay customization dependency is unavailable."])}
 	var customization: Dictionary = {}
 	var presentation_bindings: Dictionary = {}
 	if customization_script != null:
-		if base_id == "moonrunner-x99":
+		if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 			var overlay_path := "res://aircraft/customization_overlay.gd"
 			if not ResourceLoader.exists(overlay_path):
 				return {ok = false, errors = PackedStringArray(["Overlay customization resolver is unavailable."])}
@@ -72,7 +75,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		if bool(checked_profile.get("ok", false)) and not bool(checked_profile.get("available", false)):
 			return {ok = false, errors = PackedStringArray(["Presentation profile is unavailable for the current aircraft binding."])}
 	else:
-		if base_id == "moonrunner-x99":
+		if ModelRegistry.OVERLAY_FAMILIES.has(base_id):
 			return {ok = false, errors = customization.get("errors", PackedStringArray(["Overlay customization is invalid."]))}
 		checked_profile = profile_script.validate(profile_value)
 		if bool(checked_profile.get("ok", false)):

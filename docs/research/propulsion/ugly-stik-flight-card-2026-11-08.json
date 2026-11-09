@@ -1,0 +1,366 @@
+{
+  "format": "ft-stik-electric-frozen-alias-assessment-v1",
+  "card": "ft-card-v5",
+  "requested_cases": [
+    "trim_sweep",
+    "stall_power_off",
+    "vmax",
+    "hands_off",
+    "takeoff",
+    "landing"
+  ],
+  "wheel_loader_sha256": "20329e06566a5e15594969f855103d3f779dc49ea3f0935d0d3d18150ea0cc47",
+  "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+  "snapshot_vs_live_drift": [],
+  "selection": "same existing card and pilot; every case starts a fresh session; fixed-voltage default vs exact pack bytes routed in a disposable app copy",
+  "scope": "software behavior with estimated aircraft parameters; not physical validation, endurance, a continuous circuit, a full executable release or native-backend qualification",
+  "source_inventories": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\flight-card-frozen-alias\\source-inventories.json",
+  "actual_pck": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\stik-frozen-alias-candidate.pck",
+  "actual_pck_sha256": "9ae37c31b8660b789fea119de6b0c1b333ed1110cd775f68d3bb015d3774538d",
+  "actual_pck_smoke_report": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\frozen-alias-pck-smoke-lu8ki_pn\\report.json",
+  "missing_donor_control_report": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\frozen-alias-missing-donor-pob90he7\\report.json",
+  "modes": {
+    "ideal": {
+      "input_sha256": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+      "cases": {
+        "trim_sweep": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "points": 33,
+            "slowest_trim_mps": 9.75,
+            "first_untrimmable_mps": 34.5,
+            "cruise_throttle_at_start_speed": 0.411
+          }
+        },
+        "stall_power_off": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "stall_speed_mps": 9.06,
+            "stall_alpha_deg": 19.0,
+            "wing_drop": "right",
+            "bank_in_first_second_deg": 38.6,
+            "max_bank_in_recovery_deg": 38.6,
+            "altitude_lost_m": 14.9,
+            "recovery_time_s": 2.73,
+            "break_kind": "wing drop or sink",
+            "deceleration_before_break_mps2": 0.39,
+            "ratio_to_cl_max_estimate": 1.004
+          }
+        },
+        "vmax": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "max_level_speed_mps": 33.89,
+            "max_level_speed_kmh": 122.0,
+            "rpm_at_max": 11074,
+            "time_plus_5_mps_s": 0.63,
+            "time_plus_10_mps_s": 1.38,
+            "time_to_90_percent_s": 3.87,
+            "initial_acceleration_mps2": 8.23,
+            "height_error_end_m": 0.26,
+            "height_error_run_m": 0.29
+          }
+        },
+        "hands_off": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "height_change_10_s_m": 0.8,
+            "speed_change_10_s_mps": 1.08,
+            "bank_10_s_deg": 1.2,
+            "heading_change_10_s_deg": 10.6,
+            "height_change_30_s_m": 1.2,
+            "speed_change_30_s_mps": 0.02,
+            "bank_30_s_deg": 1.5,
+            "heading_change_30_s_deg": 35.0,
+            "bank_after_aileron_pulse_deg": 7.3,
+            "phugoid_period_s": 12.76,
+            "reached_floor_s": null
+          }
+        },
+        "takeoff": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "liftoff_speed_mps": 15.92,
+            "liftoff_speed_vs": 1.76,
+            "ground_roll_m": 13.2,
+            "time_to_liftoff_s": 2.86,
+            "rotation_attitude_deg": 8.0,
+            "max_rudder_stick": 0.02,
+            "max_heading_error_deg": 0.2,
+            "rudder_free_heading_change_3_s_deg": -1.3
+          }
+        },
+        "landing": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "approach_speed_mps": 11.78,
+            "touchdown_speed_mps": 11.28,
+            "touchdown_speed_vs": 1.24,
+            "touchdown_sink_mps": 0.5,
+            "touchdown_pitch_deg": 4.3,
+            "touchdown_past_threshold_m": 12.4,
+            "bounced": false,
+            "rollout_m": 49.4,
+            "rollout_time_s": 8.67,
+            "max_heading_error_deg": 0.6,
+            "flare_height_m": 0.823944576433428
+          }
+        }
+      },
+      "traces": {
+        "hands_off.csv": {
+          "rows": 601,
+          "first_s": 0.0,
+          "last_s": 30.0,
+          "sha256": "9efbbd3829217be05e8f313cc1f28875f79ed6a4e26b2d2c25fecc124376fe04",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "landing.csv": {
+          "rows": 914,
+          "first_s": 0.0,
+          "last_s": 45.65,
+          "sha256": "b7be54f147921871785eb8c4c19dea1e8d9edeadf19ccc0817a28f09d023405f",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "stall_power_off.csv": {
+          "rows": 244,
+          "first_s": 0.0,
+          "last_s": 12.15,
+          "sha256": "21b325178ea1c1fc28636773dff65527f4aaad972f02be371e03dfc8464abe01",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "takeoff.csv": {
+          "rows": 118,
+          "first_s": 0.0,
+          "last_s": 5.85,
+          "sha256": "f6bbe3a47f8d55a024c73b82e8445fea5b6c867939c7e471faa983ea9e7b6c0f",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "takeoff_rudder_free.csv": {
+          "rows": 61,
+          "first_s": 0.0,
+          "last_s": 3.0,
+          "sha256": "3ca87065bbf0be0b1c15aff6189780bdafc7e2ab5483527a2a715469256c1231",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "vmax.csv": {
+          "rows": 213,
+          "first_s": 0.0,
+          "last_s": 10.6,
+          "sha256": "51e0905966c2a779e4e010581754a8d9406777e2f255fa5a009ceeab3004239a",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        }
+      },
+      "run_json": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\ft-frozen-alias-ideal\\run.json",
+      "profile_json": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\ft-frozen-alias-ideal\\stik-electric-6s\\profile.json"
+    },
+    "pack": {
+      "input_sha256": "fbbfd74512b8e3141adc530296687721c5ca7e3d94a38c384fbaf10f03c2c73e",
+      "cases": {
+        "trim_sweep": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "points": 35,
+            "slowest_trim_mps": 9.75,
+            "first_untrimmable_mps": 36.0,
+            "cruise_throttle_at_start_speed": 0.367
+          }
+        },
+        "stall_power_off": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "stall_speed_mps": 9.06,
+            "stall_alpha_deg": 19.0,
+            "wing_drop": "right",
+            "bank_in_first_second_deg": 39.5,
+            "max_bank_in_recovery_deg": 39.5,
+            "altitude_lost_m": 17.0,
+            "recovery_time_s": 2.82,
+            "break_kind": "wing drop or sink",
+            "deceleration_before_break_mps2": 0.39,
+            "ratio_to_cl_max_estimate": 1.004
+          }
+        },
+        "vmax": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "max_level_speed_mps": 35.39,
+            "max_level_speed_kmh": 127.4,
+            "rpm_at_max": 11565,
+            "time_plus_5_mps_s": 0.59,
+            "time_plus_10_mps_s": 1.24,
+            "time_to_90_percent_s": 3.75,
+            "initial_acceleration_mps2": 8.98,
+            "height_error_end_m": 0.33,
+            "height_error_run_m": 0.36
+          }
+        },
+        "hands_off": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "height_change_10_s_m": 0.74,
+            "speed_change_10_s_mps": 1.09,
+            "bank_10_s_deg": 1.3,
+            "heading_change_10_s_deg": 10.7,
+            "height_change_30_s_m": 0.78,
+            "speed_change_30_s_mps": 0.04,
+            "bank_30_s_deg": 1.9,
+            "heading_change_30_s_deg": 37.7,
+            "bank_after_aileron_pulse_deg": 7.3,
+            "phugoid_period_s": 12.77,
+            "reached_floor_s": null
+          }
+        },
+        "takeoff": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "liftoff_speed_mps": 16.16,
+            "liftoff_speed_vs": 1.78,
+            "ground_roll_m": 12.7,
+            "time_to_liftoff_s": 2.71,
+            "rotation_attitude_deg": 8.0,
+            "max_rudder_stick": 0.02,
+            "max_heading_error_deg": 0.3,
+            "rudder_free_heading_change_3_s_deg": -2.2
+          }
+        },
+        "landing": {
+          "valid": true,
+          "skipped": false,
+          "notes": [],
+          "metrics": {
+            "approach_speed_mps": 11.78,
+            "touchdown_speed_mps": 11.28,
+            "touchdown_speed_vs": 1.24,
+            "touchdown_sink_mps": 0.5,
+            "touchdown_pitch_deg": 4.3,
+            "touchdown_past_threshold_m": 12.4,
+            "bounced": false,
+            "rollout_m": 49.3,
+            "rollout_time_s": 8.67,
+            "max_heading_error_deg": 0.6,
+            "flare_height_m": 0.823944576433166
+          }
+        }
+      },
+      "traces": {
+        "hands_off.csv": {
+          "rows": 601,
+          "first_s": 0.0,
+          "last_s": 30.0,
+          "sha256": "868b98a98059bfd446dfc5f9ebe0155a34f55659283da620e1fb41ef6ab959a2",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4",
+          "selected_first_last": {
+            "battery_soc": [
+              1.0,
+              0.992857
+            ],
+            "bus_voltage_v": [
+              24.816721,
+              24.750145
+            ],
+            "consumed_charge_c": [
+              0.0,
+              102.86455
+            ],
+            "terminal_energy_j": [
+              0.0,
+              2548.971227
+            ],
+            "esc_limit": [
+              1.0,
+              1.0
+            ],
+            "pack_exhausted": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "landing.csv": {
+          "rows": 913,
+          "first_s": 0.0,
+          "last_s": 45.6,
+          "sha256": "2aae133d650a88194c785c80f889e5815383fbbca96138cc93ad320b7797fff5",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "stall_power_off.csv": {
+          "rows": 246,
+          "first_s": 0.0,
+          "last_s": 12.25,
+          "sha256": "125b5d34e0bd8431480a7bf5eaaed957eb7d65a38c7321cf7493027440c36e3c",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "takeoff.csv": {
+          "rows": 115,
+          "first_s": 0.0,
+          "last_s": 5.7,
+          "sha256": "0c63896f96b458bc4b3aafa40122ea4026d6258291d5310f5e068506d570f899",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "takeoff_rudder_free.csv": {
+          "rows": 61,
+          "first_s": 0.0,
+          "last_s": 3.0,
+          "sha256": "28061abdfdd7c6b224ccdfcbac91edde9614fe244e2df4ea1037463f33c7e891",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        },
+        "vmax.csv": {
+          "rows": 201,
+          "first_s": 0.0,
+          "last_s": 10.0,
+          "sha256": "9c878c3e1d7200a4b440501a8e014bdf6ec1e418dd1dca0f2c344ed7c92063f5",
+          "wheel_profile_status": "applied",
+          "wheel_profile_input_sha256": "58a2526829a3e9e529ac16f79a7d135614618c3d70350c2187d804a476e40665",
+          "wheel_profile_sha256": "82df781b3f8c198bc4c5a9b20941e3579409eb63fef0dc952ea1093e0ef919a4"
+        }
+      },
+      "run_json": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\ft-frozen-alias-pack\\run.json",
+      "profile_json": "D:\\OpenRCsimulator-evidence\\stik-two-variants-20261108\\electric-models\\ft-frozen-alias-pack\\stik-electric-6s\\profile.json"
+    }
+  }
+}

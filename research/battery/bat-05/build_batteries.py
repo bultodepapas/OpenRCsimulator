@@ -69,6 +69,8 @@ LIPO_CLASSES = (
     ("lipo-6s1p-5000-30c-class", 6, 5.0, 30),
 )
 HG2_PACKS = (("liion-4s1p-3000-hg2", 4, 1), ("liion-4s2p-6000-hg2", 4, 2))
+STIK_PACK_ID = "lipo-6s1p-4000-gea406s60x9gt-est-v1"
+STIK_PACK_SOURCE = "https://gensace.de/products/gea406s60x9gt (GEA406S60X9GT, checked 2026-11-08)"
 
 # Thermal correlation inputs (Incropera & DeWitt, Fundamentals of Heat and Mass Transfer).
 H_NATURAL = 5.0          # W/(m²·K); Table 1.1 free convection of gases 2–25 W/(m²·K)
@@ -297,6 +299,24 @@ def lipo_pack(pack_id: str, series: int, capacity_ah: float, c_rating: int, temp
     }
 
 
+def stik_pack(template: dict, template_sha: str) -> dict:
+    """An identified box and mass with the existing *estimated* LiPo electrical class law."""
+    pack = lipo_pack(STIK_PACK_ID, 6, 4.0, 60, template, template_sha)
+    dims = [0.162, 0.045, 0.037]
+    pack["display_name"] = "Gens ace G-tech GEA406S60X9GT 6S 4000 mAh (estimated electrical law)"
+    pack["class_note"] = ("Product mass, box and label are approximate manufacturer specifications. The BAK/Galeotti "
+                          "cell curve and class resistance anchor are borrowed estimates, not measurements of this pack.")
+    pack["rated_capacity_ah"] = q(4.0, "Ah", "manual", STIK_PACK_SOURCE + ": 4000 mAh label")
+    pack["mass_kg"] = q(0.606, "kg", "manual", STIK_PACK_SOURCE + ": approximately 606 g")
+    pack["dimensions_m"] = q(dims, "m", "manual", STIK_PACK_SOURCE + ": approximately 162 x 45 x 37 mm")
+    pack["heat_transfer"] = heat_transfer(dims, "manufacturer-specified approximate")
+    pack["interconnect_resistance_ohm"] = q(LEADS_OHM, "ohm", "estimated",
+        "Estimated 2 mOhm for pack leads and XT90-class connection; not measured for this pack or installation")
+    pack["label"] = {"c_rating_continuous": 60, "c_rating_burst": None,
+                     "source": STIK_PACK_SOURCE + ": 60C label, informative only; not a current limit"}
+    return pack
+
+
 def hg2_pack(pack_id: str, series: int, parallel: int, template: dict, template_sha: str) -> dict:
     ref_ah = template["reference_capacity_ah"]["value"]
     cells = series * parallel
@@ -356,6 +376,7 @@ def build(fit: dict) -> dict:
     out[CELL_DIR / f"{HG2_ID}.json"] = hg2_bytes
     for pack_id, series, cap, c_rating in LIPO_CLASSES:
         out[PACK_DIR / f"{pack_id}.json"] = dumps(lipo_pack(pack_id, series, cap, c_rating, lipo, sha256(lipo_bytes)))
+    out[PACK_DIR / f"{STIK_PACK_ID}.json"] = dumps(stik_pack(lipo, sha256(lipo_bytes)))
     for pack_id, series, parallel in HG2_PACKS:
         out[PACK_DIR / f"{pack_id}.json"] = dumps(hg2_pack(pack_id, series, parallel, hg2, sha256(hg2_bytes)))
     validate(out)

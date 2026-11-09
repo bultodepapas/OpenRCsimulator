@@ -13,10 +13,12 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import platform
 import re
+import struct
 import subprocess
 import sys
 import tempfile
@@ -88,7 +90,8 @@ REQUIRED_OUTPUTS = {
     "core": ["trace-physics.csv", "landscape-counters.txt", "field/landscape-counters.txt",
              "sun-alignment/report.json", "sun-alignment/sun_alignment.png"],
     "ui": [],
-    "quality": ["vq01b/visual-quality-run-manifest.json", "aircraft-lights/summary.json"],
+    "quality": ["vq01b/visual-quality-run-manifest.json", "aircraft-lights/summary.json",
+                "lighting-pixels/segment_filter-metrics.json", "lighting-pixels/skin_patterns-metrics.json"],
     "terrain-atmosphere": ["l6b/repeat-1/review.json", "l7/capture-summary.json",
                            "l4b/capture-summary.json", "l15d/summary.json"],
     "ground": ["l9c/summary.json", "l9c/stripes/summary.json", "l10a/summary.json",
@@ -313,6 +316,7 @@ def verify_outputs(root: Path, group: str) -> dict[str, str]:
         if data.get("image") != image.name or data.get("sha256") != digest(image) or data.get("capture_scene") != scene:
             fail(f"{group}: image/sidecar mismatch: {name}")
     if group == "quality":
+        verify_lighting_metrics(root)
         verify_matrix(root, "vq01b", VQ_CASES)
         light_summary = read_json(root / "aircraft-lights/summary.json")
         if not isinstance(light_summary, dict) or light_summary.get("ok") is not True:
@@ -427,6 +431,15 @@ def reduce_groups(args) -> None:
 # Shadow equivalence: hosted group jobs and the unchanged full job each publish a
 # small inventory; ``compare`` checks every output against the full run.
 INVENTORY = "inventory.json"
+SEGMENT_METRICS = "lighting-pixels/segment_filter-metrics.json"
+SKIN_METRICS = "lighting-pixels/skin_patterns-metrics.json"
+# Until matched rendered evidence justifies a wider boundary, metric equivalence
+# requires exact values (absolute and relative tolerances are both zero).
+SEGMENT_METRIC_NAMES = {"far_point_error", "far_filtered_error", "cell_overlap_error", "perspective_error", "reversed_error"}
+SEGMENT_METRIC_NAMES.update(f"whole_path_{sample}_{axis}" for sample in range(3) for axis in range(3))
+SKIN_METRIC_NAMES = {f"{pattern}_error" for pattern in ("steady", "breath", "pulse", "chase", "wave", "rainbow", "segments")}
+SKIN_METRIC_NAMES.update({"wave_spatial_distance", "phase_early_error", "phase_later_error", "phase_distance",
+                          "mirror_error", "mirror_distance", "exposure_error", "exposure_delta"})
 BOOKKEEPING = {START, CHECKS, RECEIPT, "timings.tsv", ".gdignore", ".capture.lock", "run-manifest.json"}
 TEXT_SUFFIXES = {".json", ".txt", ".csv", ".log", ".tsv", ".html", ".md", ".xml", ".svg"}
 IMAGE_SUFFIXES = {".png", ".exr", ".jpg", ".jpeg", ".webp"}
@@ -494,6 +507,9 @@ def normalized_sha256(path: Path, markers: list[str]) -> str | None:
         try:
             # Recorded run clocks/IDs and log digests are not rendered evidence.
             value = json.loads(data)
+            if path.name in {Path(SEGMENT_METRICS).name, Path(SKIN_METRICS).name}:
+                # No run-clock/path rules apply inside semantic measurements.
+                return canonical_sha256(value)
             own_output_paths = None
             if (isinstance(value, dict) and value.get("format") == "openrc-godot-check v1"
                     and path.name == "report.json" and CHECKED_RUN.search(path.parent.name)):
@@ -560,9 +576,47 @@ def tree_inventory(root: Path) -> dict:
     return dict(sorted(files.items()))
 
 
+def metric_bytes_match(value: float, encoded: str) -> bool:
+    if type(encoded) is not str or not re.fullmatch(r"[0-9a-f]{16}", encoded):
+        return False
+    decoded = struct.unpack("<d", bytes.fromhex(encoded))[0]
+    # Godot prints -0.0 as 0.0. Hex remains authoritative and distinguishes the
+    # signs during comparison; decimal display need only agree numerically.
+    return math.isfinite(decoded) and decoded == float(value)
+
+
+def verify_pixel_metrics(path: Path, suite: str, minimum_checks: int, names: set[str]) -> None:
+    data = read_json(path)
+    if (not isinstance(data, dict) or data.get("format") != f"openrc-lighting-{suite}-metrics v1"
+            or not same_json(data.get("viewport"), [1920, 1080]) or data.get("complete") is not True
+            or type(data.get("checks")) is not int or data["checks"] < minimum_checks
+            or type(data.get("failures")) is not int or data["failures"] != 0):
+        fail("missing, incomplete or failed structured lighting metrics")
+    values = data.get("metrics")
+    if (not isinstance(values, dict) or set(values) != names
+            or any(type(v) not in (int, float) or not math.isfinite(v) for v in values.values())):
+        fail("structured lighting metric roster must contain finite numeric values")
+    bits = data.get("float64_hex")
+    if (not isinstance(bits, dict) or set(bits) != names
+            or any(not metric_bytes_match(value, bits[key])
+                   for key, value in values.items())):
+        fail("structured lighting values do not match their exact float64 bytes")
+
+
+def verify_segment_metrics(path: Path) -> None:
+    verify_pixel_metrics(path, "segment", 12, SEGMENT_METRIC_NAMES)
+
+
+def verify_lighting_metrics(root: Path) -> None:
+    verify_segment_metrics(local_file(root, SEGMENT_METRICS))
+    verify_pixel_metrics(local_file(root, SKIN_METRICS), "skin", 13, SKIN_METRIC_NAMES)
+
+
 def inventory(args) -> None:
     if args.group != "all":
         valid_run_id(args.run_id)
+    if args.group in ("all", "quality"):
+        verify_lighting_metrics(args.root)
     source = source_identity(args.repo)
     atomic_new_json(args.out, {
         "format": "openrc-capture-inventory v1", "group": args.group,
@@ -656,6 +710,10 @@ def compare_groups(args) -> int:
                              "volatile_json_keys": sorted(VOLATILE_KEYS),
                              "checked_report_paths": {"log": "engine.log", "report": "report.json"},
                              "checked_report_path_validation": "exact own file paths; validity retained"},
+        "metric_policy": {"absolute_tolerance": 0.0, "relative_tolerance": 0.0,
+                          "encoding": "full-precision decimal plus validated little-endian float64 hex",
+                          "required_metrics": {SEGMENT_METRICS: sorted(SEGMENT_METRIC_NAMES),
+                                               SKIN_METRICS: sorted(SKIN_METRIC_NAMES)}},
         "timings_seconds": {"full": sum(row[1] for row in full.get("timings", [])), "groups": group_seconds,
                             "slowest_group": max(group_seconds.values(), default=0)},
     }
@@ -682,6 +740,8 @@ def compare_groups(args) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
+    p = sub.add_parser("verify-metrics", help="require complete, finite lighting measurements")
+    p.add_argument("--root", type=Path, required=True)
     for command in ("begin", "finish"):
         p = sub.add_parser(command)
         p.add_argument("--repo", type=Path, required=True)
@@ -715,6 +775,9 @@ def main() -> int:
     p.add_argument("--groups", type=Path, nargs="+", required=True)
     args = parser.parse_args()
     try:
+        if args.command == "verify-metrics":
+            verify_lighting_metrics(args.root)
+            return 0
         if args.command == "compare":
             valid_run_id(args.run_id)
             return compare_groups(args)

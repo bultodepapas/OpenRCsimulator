@@ -9,6 +9,7 @@ const Compiler := preload("res://workshop/compiler.gd")
 const Trial := preload("res://workshop/trial.gd")
 const Store := preload("res://workshop/store.gd")
 const Bundle := preload("res://workshop/bundle.gd")
+const Descriptor := preload("res://workshop/descriptor.gd")
 const MODEL := "res://data/aircraft_model_overlays/moonrunner-x99.json"
 const OVERLAY := "res://data/aircraft_customization_overlays/moonrunner-x99.json"
 
@@ -36,6 +37,7 @@ func _initialize() -> void:
 	_test_missing_resolvers()
 	_test_invalid_resolver()
 	_test_detached_workshop()
+	_test_historical_saved_record()
 	print("MoonRunner overlay: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -191,6 +193,48 @@ func _test_detached_workshop() -> void:
 			_check("import retains exact physical and presentation pins", imported.variant.base_bytes == bytes and imported.variant.presentation_profile == variant.presentation_profile)
 			Store.delete_variant(imported.variant.id, root + "/imports")
 	_check("new-family snapshot cleans up", Store.delete_variant(variant.id, root).get("ok", false))
+
+
+func _test_historical_saved_record() -> void:
+	# Reconstruct a pre-refresh record in a disposable store. Listing/loading is
+	# structural; preparation must reject its original manifest pin without edits.
+	var old_path := "res://tests/fixtures/moonrunner-overlay-pre-electric-descriptor.json"
+	var companion_path := "res://tests/fixtures/moonrunner-overlay-pre-electric-customization.json"
+	_check("historical descriptor fixture is exact", FileAccess.get_sha256(old_path) == "7d0ed39f08140e9239474b833b3695f3c88193ef1b1dee293d84959e15f4ddf0")
+	var old: Variant = JSON.parse_string(FileAccess.get_file_as_string(old_path))
+	var companion: Variant = JSON.parse_string(FileAccess.get_file_as_string(companion_path))
+	if not old is Dictionary or not companion is Dictionary or companion.get("families", []).size() != 1:
+		_check("historical inputs parse", false)
+		return
+	_check("historical descriptor retains the original model", old.presentation.model_manifest_sha256 == "93803c4fc4d3ada7407532fd4079305572ed67bbd5eef5e60b3c877cc9239149")
+	var base_bytes := FileAccess.get_file_as_bytes("res://data/aircraft/moonrunner_x99.json")
+	var current: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/workshop/moonrunner-x99.json"))
+	var root := "user://moonrunner_overlay_history_%d" % Time.get_ticks_usec()
+	var saved: Dictionary = Store.save_variant("Historical fixture", "moonrunner-x99", base_bytes, Compiler.defaults(), "", root, current)
+	_check("current MoonRunner record saves", saved.get("ok", false), str(saved.get("errors", [])))
+	if not saved.get("ok", false): return
+	var id: String = saved.variant.id
+	var revision := root.path_join(id).path_join("revisions/00000001.json")
+	var record: Variant = JSON.parse_string(FileAccess.get_file_as_string(revision))
+	if not record is Dictionary:
+		_check("disposable saved record parses", false)
+		return
+	record.workshop_descriptor = old
+	record.presentation_profile = Profile.defaults(companion.families[0])
+	var file := FileAccess.open(revision, FileAccess.WRITE)
+	file.store_string(JSON.stringify(record, "\t", true, true) + "\n")
+	file.close()
+	var before := FileAccess.get_file_as_bytes(revision)
+	var loaded: Dictionary = Store.load_variant(id, root)
+	_check("historical record remains readable with original pins", loaded.get("ok", false) and loaded.get("variant", {}).get("workshop_descriptor", {}) == old, str(loaded.get("errors", [])))
+	if loaded.get("ok", false):
+		var variant: Dictionary = loaded.variant
+		var verified: Dictionary = Descriptor.verify_presentation(variant.workshop_descriptor)
+		_check("historical model mismatch is explicit", not verified.get("ok", false) and str(verified.get("errors", [])).contains("saved model manifest is missing or changed"), str(verified.get("errors", [])))
+		var trial: Dictionary = Trial.freeze({base_id = variant.base_id, base_bytes = variant.base_bytes, recipe = variant.recipe, workshop_descriptor = variant.workshop_descriptor, dependencies = variant.dependencies, compiler_version = variant.compiler_version, variant_id = variant.id, variant_revision = variant.revision, presentation_profile = variant.presentation_profile})
+		_check("historical trial refuses to silently rebind", not trial.get("ok", false))
+	_check("historical revision bytes remain untouched", FileAccess.get_file_as_bytes(revision) == before)
+	_check("historical fixture cleans up", Store.delete_variant(id, root).get("ok", false))
 
 
 func _check(name: String, passed: bool, detail: String = "") -> void:

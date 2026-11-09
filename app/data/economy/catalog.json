@@ -4,8 +4,8 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "f948a1cd28303baa251ff7929ecbc8c65d9ad4eb887a74b52965554882096ffe",
-    "aircraft_catalog_sha256": "351cde1629c94a2706fe7f60b7416d85c36e2633cae7cfe511e89c914575ea31",
+    "aircraft_costing_sha256": "0874cdbba4434f5da39f0b6bbc79ddd0dac70eaa4931f3e295eac4b281e76851",
+    "aircraft_catalog_sha256": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
   },
@@ -5344,6 +5344,583 @@
           "probe_engine_head",
           "probe_engine_top",
           "probe_fin_top",
+          "probe_nose_bottom_left",
+          "probe_nose_bottom_right",
+          "probe_rudder_te",
+          "probe_rudder_top_te",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_end",
+          "probe_tail_skid",
+          "probe_wing_left_le",
+          "probe_wing_left_outer",
+          "probe_wing_left_te",
+          "probe_wing_left_tip",
+          "probe_wing_left_top",
+          "probe_wing_left_top_front",
+          "probe_wing_right_le",
+          "probe_wing_right_outer",
+          "probe_wing_right_te",
+          "probe_wing_right_tip",
+          "probe_wing_right_top",
+          "probe_wing_right_top_front",
+          "propeller/propulsion_main"
+        ]
+      }
+    },
+    {
+      "format": "openrc-aircraft-economics v1",
+      "aircraft_id": "stik-electric-6s",
+      "source_sha256": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+      "currency": "USD",
+      "price_date": "2026-10-25",
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "item_spinner_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_spinner_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: spinner and prop nut. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_receiver_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_receiver_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: receiver. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_fuselage_servos",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_fuselage_servos"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: elevator and rudder servos (2). No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_aileron_servo",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_aileron_servo"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: aileron servo. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_nose_gear_assembly",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_nose_gear_assembly"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: nose gear and 2.75 in wheel. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_main_gear_assembly",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_main_gear_assembly"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: main gear and 3 in wheels. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_wing_airframe",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_wing_airframe"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: wing incl. ailerons. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_fuselage_front",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_fuselage_front"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: fuselage front (firewall to F4). No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_fuselage_rear",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_fuselage_rear"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: fuselage rear (F4 to tail). No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_stabilizer_elevator",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_stabilizer_elevator"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: stabilizer and elevator. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_fin_rudder",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_fin_rudder"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: fin and rudder. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_control_hardware",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_control_hardware"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: pushrods, horns, hardware. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_motor_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_motor_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: Scorpion SII-4020-540KV. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_propeller_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_propeller_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: APC LP12080E 12x8E Thin Electric. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_esc_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_esc_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: Scorpion Tribunus III 06-80A SBEC. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_motor_mount",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_motor_mount"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: motor mount and fasteners. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_prop_adapter",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_prop_adapter"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: propeller adapter and fasteners. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_power_wiring",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_power_wiring"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: power wiring and connectors. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_battery_restraint",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_battery_restraint"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: battery tray and restraint. No matched current USD replacement offer is asserted."
+        },
+        {
+          "id": "item_battery_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_battery_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced installed component: Gens ace G-tech GEA406S60X9GT 6S 4000 mAh (estimated electrical law). No matched current USD replacement offer is asserted."
+        }
+      ],
+      "exclusions": [],
+      "missing": [
+        "No current matched USD replacement offers or complete conversion/assembly cost have been reviewed; every component remains unpriced.",
+        "The estimated motor, mounting, wiring and battery installation require physical build and fit verification.",
+        "No replacement price for economic component: item_spinner_main.",
+        "No replacement price for economic component: item_receiver_main.",
+        "No replacement price for economic component: item_fuselage_servos.",
+        "No replacement price for economic component: item_aileron_servo.",
+        "No replacement price for economic component: item_nose_gear_assembly.",
+        "No replacement price for economic component: item_main_gear_assembly.",
+        "No replacement price for economic component: item_wing_airframe.",
+        "No replacement price for economic component: item_fuselage_front.",
+        "No replacement price for economic component: item_fuselage_rear.",
+        "No replacement price for economic component: item_stabilizer_elevator.",
+        "No replacement price for economic component: item_fin_rudder.",
+        "No replacement price for economic component: item_control_hardware.",
+        "No replacement price for economic component: item_motor_main.",
+        "No replacement price for economic component: item_propeller_main.",
+        "No replacement price for economic component: item_esc_main.",
+        "No replacement price for economic component: item_motor_mount.",
+        "No replacement price for economic component: item_prop_adapter.",
+        "No replacement price for economic component: item_power_wiring.",
+        "No replacement price for economic component: item_battery_restraint.",
+        "No replacement price for economic component: item_battery_main."
+      ],
+      "complete": false,
+      "contact_components": {
+        "probe_wing_left_tip": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_right_tip": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_left_le": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_right_le": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_left_top": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_right_top": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_left_top_front": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_right_top_front": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_left_outer": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_right_outer": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_left_te": [
+          "item_wing_airframe"
+        ],
+        "probe_wing_right_te": [
+          "item_wing_airframe"
+        ],
+        "probe_stabilizer_left_tip": [
+          "item_stabilizer_elevator"
+        ],
+        "probe_stabilizer_right_tip": [
+          "item_stabilizer_elevator"
+        ],
+        "probe_fin_top": [
+          "item_fin_rudder"
+        ],
+        "probe_rudder_top_te": [
+          "item_fin_rudder"
+        ],
+        "probe_rudder_te": [
+          "item_fuselage_rear",
+          "item_stabilizer_elevator",
+          "item_fin_rudder"
+        ],
+        "probe_tail_end": [
+          "item_fuselage_rear",
+          "item_stabilizer_elevator",
+          "item_fin_rudder"
+        ],
+        "probe_tail_skid": [
+          "item_fuselage_rear",
+          "item_stabilizer_elevator",
+          "item_fin_rudder"
+        ],
+        "probe_nose_bottom_left": [
+          "item_fuselage_front",
+          "item_motor_mount"
+        ],
+        "probe_nose_bottom_right": [
+          "item_fuselage_front",
+          "item_motor_mount"
+        ],
+        "probe_motor_right": [
+          "item_motor_main",
+          "item_motor_mount",
+          "item_fuselage_front"
+        ],
+        "probe_motor_top": [
+          "item_motor_main",
+          "item_motor_mount",
+          "item_fuselage_front"
+        ],
+        "probe_motor_front_top": [
+          "item_motor_main",
+          "item_motor_mount",
+          "item_fuselage_front"
+        ],
+        "probe_motor_front_bottom": [
+          "item_motor_main",
+          "item_motor_mount",
+          "item_fuselage_front"
+        ],
+        "probe_spinner_tip": [
+          "item_spinner_main",
+          "item_prop_adapter",
+          "item_motor_main"
+        ],
+        "contact_main_left": [
+          "item_main_gear_assembly",
+          "item_fuselage_front"
+        ],
+        "contact_main_right": [
+          "item_main_gear_assembly",
+          "item_fuselage_front"
+        ],
+        "contact_nose": [
+          "item_nose_gear_assembly",
+          "item_fuselage_front"
+        ],
+        "propeller/propulsion_main": [
+          "item_propeller_main"
+        ]
+      },
+      "propeller_component_id": "item_propeller_main",
+      "propeller_inspection_ids": [
+        "item_motor_main",
+        "item_motor_mount",
+        "item_prop_adapter",
+        "item_fuselage_front"
+      ],
+      "physical_signature": {
+        "inventory": {
+          "item_spinner_main": {
+            "name": "spinner and prop nut",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_receiver_main": {
+            "name": "receiver",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_servos": {
+            "name": "elevator and rudder servos (2)",
+            "mass": 0.09000000000000001,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_aileron_servo": {
+            "name": "aileron servo",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_nose_gear_assembly": {
+            "name": "nose gear and 2.75 in wheel",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_main_gear_assembly": {
+            "name": "main gear and 3 in wheels",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_wing_airframe": {
+            "name": "wing incl. ailerons",
+            "mass": 0.52,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_front": {
+            "name": "fuselage front (firewall to F4)",
+            "mass": 0.22,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_rear": {
+            "name": "fuselage rear (F4 to tail)",
+            "mass": 0.14,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_stabilizer_elevator": {
+            "name": "stabilizer and elevator",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fin_rudder": {
+            "name": "fin and rudder",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_control_hardware": {
+            "name": "pushrods, horns, hardware",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_motor_main": {
+            "name": "Scorpion SII-4020-540KV",
+            "mass": 0.288,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_propeller_main": {
+            "name": "APC LP12080E 12x8E Thin Electric",
+            "mass": 0.026082,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_esc_main": {
+            "name": "Scorpion Tribunus III 06-80A SBEC",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_motor_mount": {
+            "name": "motor mount and fasteners",
+            "mass": 0.04,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_prop_adapter": {
+            "name": "propeller adapter and fasteners",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_power_wiring": {
+            "name": "power wiring and connectors",
+            "mass": 0.035,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_battery_restraint": {
+            "name": "battery tray and restraint",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_battery_main": {
+            "name": "Gens ace G-tech GEA406S60X9GT 6S 4000 mAh (estimated electrical law)",
+            "mass": 0.606,
+            "mass_unit": "kg",
+            "energy_source": "lipo"
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "electric_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_nose",
+          "probe_fin_top",
+          "probe_motor_front_bottom",
+          "probe_motor_front_top",
+          "probe_motor_right",
+          "probe_motor_top",
           "probe_nose_bottom_left",
           "probe_nose_bottom_right",
           "probe_rudder_te",
