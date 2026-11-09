@@ -1,5 +1,10 @@
 # AFC-02-R5: companion qualification on Godot 4.8 beta2
 
+The [2026-11-09 Session/lifecycle qualification](../AFC-03-R2/README.md) renews
+solver admission after the accepted-input repair, with nine identical retained
+tapes and targeted real Session/fleet checks. The earlier full circuit matrices
+remain dated evidence on their named sources.
+
 The [2026-11-09 prediction and selection follow-up](../AFC-04-R9/README.md)
 records the corrected controller's matrix, encounter surveys, exact recordings
 and source-profile promotion. The original campaigns below remain dated evidence.

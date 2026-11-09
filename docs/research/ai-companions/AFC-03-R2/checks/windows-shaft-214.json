@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7b7f4b4e-862c-4c57-99d1-4ba843391b5d",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/live-test_shaft_publication.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T20:14:51.703715+00:00",
+  "label": "final-live-windows-shaft",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-fixtures\\checks\\final-live-windows-shaft-k21l9q_a\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-fixtures\\checks\\final-live-windows-shaft-k21l9q_a\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Shaft publication: 214 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.328,
+  "log_bytes": 5324,
+  "log_sha256": "968872db22f13f83f04527defcde6180da99211d9fb3112b055ee39c1be3b552"
+}

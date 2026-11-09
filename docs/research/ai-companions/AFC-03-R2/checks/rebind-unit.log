@@ -1,0 +1,16 @@
+.......rebind: setup error: engine build differs: profile requires 4.8.beta1.official.old, got 4.8.beta2.official.new
+.rebind: setup error: solver identity unavailable in C:\Users\bulto\AppData\Local\Temp\tmpji1ybg7l\app: ['wrong engine']
+........rebind: setup error: fixture stale source/engine
+  inspected one.orfl.gz: stored_sha256=59a81c9ebe12012e687245745d7eaf9e0b85e5fa473e3580fd2bbac257e04fff orfl_sha256=2549643d1939b4e35fae1641836660bda74ab15febeab6ad135ba1a0140085ac
+Solver identity changed: accepted aaaaaaaa -> current bbbbbbbb. Replaying 1 tapes on both sides...
+.....rebind: setup error: solver inspection tape SHA-256 missing or differs: C:\Users\bulto\AppData\Local\Temp\tmplh37p87u\workspace\companion-rebind-tapes-id1jcnyy\one.orfl
+.rebind: setup error: materialized ORFL SHA-256 differs: C:\Users\bulto\AppData\Local\Temp\tmpb6c_idcl\one.orfl.gz
+...............
+----------------------------------------------------------------------
+Ran 37 tests in 0.566s
+
+OK
+  identical one.orfl (1 rows)
+All tapes identical. Commit the physics change, then re-run with --accept to re-pin.
+  inspected one.orfl.gz: stored_sha256=59a81c9ebe12012e687245745d7eaf9e0b85e5fa473e3580fd2bbac257e04fff orfl_sha256=2549643d1939b4e35fae1641836660bda74ab15febeab6ad135ba1a0140085ac
+Companion qualification is current (aaaaaaaa); nothing to re-bind.

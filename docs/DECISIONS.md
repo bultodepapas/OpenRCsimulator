@@ -180,6 +180,16 @@ Suitable supplied or freely obtainable assets take precedence over recreating eq
 
 ## Runtime and delivery
 
+### Accepted transition identity owns companion restart
+
+**AFC-01-R2 / AFC-03-R2 (2026-11-09).** Session publishes operational kind/generation
+receipts without changing physical checkpoint schemas. Only the latest accepted
+start may rebuild a roster; restore and pending configuration cannot authorize
+resume. The paired Main facade refuses an active fleet before player-only restore;
+an accepted direct Session/debug restore retires it before clocks can diverge.
+Logical removal is synchronous, with disposal deferred when an agent callback is
+active. [Contract and evidence](research/ai-companions/AFC-03-R2/README.md).
+
 ### Native controls own interaction; styling follows a shared shell
 
 **UI-21/22.** Keep native focus/input and named session pause holds while laying out the shell from a bounded 1080p reference with compact reflow and localization. Theme and finite motion stay beneath controls, with reduced-motion support and explicit preference rollback. Successive color/glass experiments are consolidated in the current visual system instead of remaining competing directives. [Shell contract](MENU-PLAN.md), [color and surfaces](plans/menu-redesign.md#color-and-surfaces).

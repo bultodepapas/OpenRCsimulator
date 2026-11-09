@@ -1,0 +1,31 @@
+{
+  "format": "afc-r10-publication-typed-comparison-v1",
+  "cases": {
+    "windows-weather": {
+      "case_count": 4,
+      "endpoints": 100,
+      "reference_sha256": "c4c77958e6918ebbb618765412f7019b5f60228e11eecd65d8e07dd8be4acf2f",
+      "current_sha256": "c4c77958e6918ebbb618765412f7019b5f60228e11eecd65d8e07dd8be4acf2f"
+    },
+    "windows-shaft": {
+      "case_count": 2,
+      "endpoints": 50,
+      "reference_sha256": "1f700c3de4a660093f378c84a9c23e5580414ded4fea3533a79b3339a3c001fc",
+      "current_sha256": "1f700c3de4a660093f378c84a9c23e5580414ded4fea3533a79b3339a3c001fc"
+    },
+    "linux-weather": {
+      "case_count": 4,
+      "endpoints": 100,
+      "reference_sha256": "0a0784cf5bd1f51ad89f10bf0fd4d8ca73cb5f3778a638251dfa326b0589c11c",
+      "current_sha256": "0a0784cf5bd1f51ad89f10bf0fd4d8ca73cb5f3778a638251dfa326b0589c11c"
+    },
+    "linux-shaft": {
+      "case_count": 2,
+      "endpoints": 50,
+      "reference_sha256": "d05ce2655fcf0a673ce7555ad09f58209dee88d83b26d86502cf0f9556ac6dac",
+      "current_sha256": "d05ce2655fcf0a673ce7555ad09f58209dee88d83b26d86502cf0f9556ac6dac"
+    }
+  },
+  "differences": [],
+  "ok": true
+}

@@ -2,7 +2,7 @@
 extends RefCounted
 
 const FIXTURE_PATH := "res://tests/fixtures/publication_fixture_bridge.json"
-const FIXTURE_SHA256 := "24facb93a4d0b6f1ba7b02aa262d860056720c8632c1696204287be9035dc85f"
+const FIXTURE_SHA256 := "a57dc4c7a8b5687b59fcb4886b6a1235a22a32f96bc5e5cfe37b35a347001c4a"
 const CURRENT_ENGINE := "cafc17a192acf67903910a68aeb3c076c0907a4b"
 const OLD_AERO := "section-plane-source-weighted-wake-velocity-v2"
 const CURRENT_AERO := "section-plane-source-weighted-wake-velocity-v3"

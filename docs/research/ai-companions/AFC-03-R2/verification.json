@@ -1,0 +1,414 @@
+{
+  "format": "openrc-afc-03-r2-verification-v1",
+  "date": "2026-11-09",
+  "baseline_commit": "5b72d04e9ef43049e97bb4124d697e4955a913c1",
+  "session_commit": "84b52ce7a",
+  "head_at_collection": "84b52ce7ac196c7e1cd0954d6d3ed73d3e1d3df7",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "flight_source_manifest_unchanged": true,
+  "qualification_inputs": {
+    "app/tests/publication_fixture_bridge.gd": "21a270bd362a5603ec821a383b042f34f700f2cafc552da776070d13e379be97",
+    "app/tests/fixtures/publication_fixture_bridge.json": "a57dc4c7a8b5687b59fcb4886b6a1235a22a32f96bc5e5cfe37b35a347001c4a",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "2ea320a190ae56c818324440ac7cffa3e92104247ef2b45dbaeabf19bcaa4061",
+    "tools/companions/qualification.json": "bbc53328f7bed94433283b145aab422f1b34a427eec106e65aa2ccd7840f199f"
+  },
+  "checks": [
+    {
+      "label": "afc-r10-profiles-renewed",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-profiles-renewed.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-restore-publication",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-restore-publication.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_restore_publication.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-companions_lifecycle",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-companions_lifecycle.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_lifecycle.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-companions_manager",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-companions_manager.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-companions_observation",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-companions_observation.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_observation.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-companions_record",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-companions_record.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_record.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-companions_restore",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-companions_restore.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_restore.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-companions_shell",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-companions_shell.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_shell.gd"
+      ]
+    },
+    {
+      "label": "afc-r10-stable-time-of-day",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/afc-r10-stable-time-of-day.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_time_of_day_checkpoint.gd"
+      ]
+    },
+    {
+      "label": "external-rejection-63",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/external-rejection-63.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_external_rejection.gd"
+      ]
+    },
+    {
+      "label": "session-65",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/session-65.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_session.gd"
+      ]
+    },
+    {
+      "label": "session-failures-24",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/session-failures-24.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_session_failures.gd"
+      ]
+    },
+    {
+      "label": "reset-publication-215",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/reset-publication-215.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-session/test_reset_publication.gd"
+      ]
+    },
+    {
+      "label": "reset-transaction-148",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/reset-transaction-148.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-session/test_flight_reset_transaction.gd"
+      ]
+    },
+    {
+      "label": "restore-before",
+      "ok": false,
+      "complete": true,
+      "expected": false,
+      "report": "checks/restore-before.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/afc-r10/test_companions_restore.gd",
+        "--",
+        "--baseline"
+      ]
+    },
+    {
+      "label": "external-before",
+      "ok": false,
+      "complete": true,
+      "expected": false,
+      "report": "checks/external-before.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/afc-r10/baseline_external.gd"
+      ]
+    },
+    {
+      "label": "windows-weather-313",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/windows-weather-313.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/live-test_weather_publication.gd"
+      ]
+    },
+    {
+      "label": "windows-shaft-214",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/windows-shaft-214.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/live-test_shaft_publication.gd"
+      ]
+    },
+    {
+      "label": "linux-weather-313",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/linux-weather-313.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/afc-r10-fixtures/linux/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_weather_publication.gd"
+      ]
+    },
+    {
+      "label": "linux-shaft-214",
+      "ok": true,
+      "complete": true,
+      "expected": true,
+      "report": "checks/linux-shaft-214.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_linux.x86_64",
+        "--headless",
+        "--path",
+        "tmp/afc-r10-fixtures/linux/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shaft_publication.gd"
+      ]
+    },
+    {
+      "label": "source-mutation-refused",
+      "ok": false,
+      "complete": true,
+      "expected": false,
+      "report": "checks/source-mutation-refused.json",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/afc-r10-fixtures/windows/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_weather_publication.gd"
+      ]
+    }
+  ],
+  "cohort_replays": {
+    "player": {
+      "rows": 25,
+      "complete": true,
+      "solver_changed": false,
+      "csv_sha256": "808b68685492d7fca544b8ecb7d81f5a85ad1873f8f73b47f3d60531959f0f0a"
+    },
+    "companion-0": {
+      "rows": 25,
+      "complete": true,
+      "solver_changed": false,
+      "csv_sha256": "ec723ae201a58cbb503e56c111c96014dbc80fab28c34493a4595398023f195a"
+    }
+  },
+  "solver_rebind": {
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-09-896989e0-to-b0a074e4.json",
+    "identical_tapes": 9,
+    "baseline": "full",
+    "solver_sha256": "b0a074e43c9a82d90126a49d86964b638bbd4a4dfeb5aca58bd36677fef02464",
+    "python_unit_tests": 37
+  },
+  "live": {
+    "active_before": 3,
+    "admission_ticks": 8978,
+    "restored_tick": 8978,
+    "active_after_restore": 0,
+    "restored_input_enabled": false,
+    "active_after_restart": 3,
+    "stop": {
+      "stopped": true,
+      "pid": 3004,
+      "forced": false,
+      "launcher_exit_code": null,
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "scope": "Accepted-input and companion lifecycle boundaries; no controller tuning or numerical-law change. No physical, native-backend, packaged or 1080p performance qualification."
+}

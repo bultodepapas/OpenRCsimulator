@@ -14,6 +14,12 @@ repairs the isolated AFC traffic schedulers' occupancy and cooldown-capacity
 invariants. Static-path integration, recovery qualification and later activities
 remain separate gates below.
 
+The [AFC-01-R2 / AFC-03-R2 follow-up](../research/ai-companions/AFC-03-R2/README.md)
+repairs rejected external controls and accepted transition identity, stale
+companion restart callbacks, focus ordering and technical player-only restore.
+Its targeted fleet checks and source/tape requalification preserve the existing
+airborne scope; they do not replace the remaining activity and physical gates.
+
 The first implementation covers parts of AFC-00…06: a controllerless session
 seam, one-to-three Stik circuits, common tick snapshots, basic proximity response,
 player-authored scenery damage publication, model/audio instances, and Home/Pause

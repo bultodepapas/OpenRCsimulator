@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9a534f17-57fa-4d89-b961-af1aa429bfee",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/afc-r10-fixtures/windows/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_weather_publication.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T20:13:14.148470+00:00",
+  "label": "windows-weather-mutation",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-fixtures\\checks\\windows-weather-mutation-gyc5_11r\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-fixtures\\checks\\windows-weather-mutation-gyc5_11r\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Weather publication: 193 checks, 1 failed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 6.578,
+  "log_bytes": 6508,
+  "log_sha256": "b7517c2a12d219bee4bf259cbed353c86fdb95b1ffd7aa68d25c3a5a0be8c911"
+}

@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "source_pins_verified": 18,
+  "fixture_sha256": "a57dc4c7a8b5687b59fcb4886b6a1235a22a32f96bc5e5cfe37b35a347001c4a",
+  "historical_families_unchanged": true,
+  "reference_commit_unchanged": true,
+  "fixture_changes_only": [
+    "candidate_commit",
+    "candidate_overlays.sim/flight_session.gd",
+    "source_pins.sim/flight_session.gd",
+    "source_pins.physics/wheel_profiles.gd"
+  ],
+  "helper_change": "fixture SHA-256 only"
+}

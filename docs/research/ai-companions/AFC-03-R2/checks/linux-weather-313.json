@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "44983174-fe8e-4bdd-be6f-bb387570e267",
+  "command": [
+    ".tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "tmp/afc-r10-fixtures/linux/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_weather_publication.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-09T20:10:31.621018+00:00",
+  "label": "linux-weather-candidate",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/checks/linux-weather-candidate-m_od5bi2/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/checks/linux-weather-candidate-m_od5bi2/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "Weather publication: 313 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 32.651517,
+  "log_bytes": 6445,
+  "log_sha256": "b7f5ef9f8dda10bc41c36dcd1306ac004a70ff234b5537e82424a2329a948f37"
+}

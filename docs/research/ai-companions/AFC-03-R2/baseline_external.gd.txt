@@ -1,0 +1,130 @@
+extends SceneTree
+
+const Session := preload("res://../tmp/afc-r10/legacy_session.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const WheelProfiles := preload("res://physics/wheel_profiles.gd")
+const Weather := preload("res://physics/wind_config.gd")
+const RB := preload("res://physics/rigid_body.gd")
+const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
+const P51_PATH := "res://data/aircraft/p51d_mustang_120.json"
+
+var checks := 0
+var failures := 0
+
+
+func _initialize() -> void:
+	Engine.physics_ticks_per_second = 240
+	_test_paused_and_guarded_inputs()
+	_test_precommit_fault_observers()
+	print("baseline external rejection: %d checks, %d failed" % [checks, failures])
+	quit(1 if failures else 0)
+
+
+func _check(label: String, ok: bool, detail: Variant = "") -> void:
+	checks += 1
+	if not ok:
+		failures += 1
+		printerr("FAIL ", label, " ", str(detail))
+
+
+func _new_avanti() -> Session:
+	var session := Session.new()
+	session.input_enabled = false
+	session.setup(str(Catalog.entry(AVANTI_ID).get("data", "")), AVANTI_ID)
+	_check("real Avanti fixture starts and configures external driver", session.is_flyable()
+		and session.gear_is_retractable() and session.wheel_brake_available() and session.flaps_available()
+		and session.sim.inputs.size() == 7 and session.configure_external_driver())
+	return session
+
+
+func _packet_a() -> Dictionary:
+	return {roll = 0.1, pitch = -0.1, yaw = 0.05, throttle = 0.6, gear_down = true, flaps = 0.7, brake = 0.25}
+
+
+func _packet_b() -> Dictionary:
+	return {roll = -0.6, pitch = 0.4, yaw = -0.3, throttle = 0.3, gear_down = false, flaps = 0.1, brake = 0.75}
+
+
+func _packet_c() -> Dictionary:
+	return {roll = 0.25, pitch = 0.15, yaw = -0.12, throttle = 0.65, gear_down = false, flaps = 0.35, brake = 0.5}
+
+
+func _step(session: Session, packet: Dictionary) -> bool:
+	var staged: Dictionary = session.prepare_external_tick(packet)
+	return staged.get("ok", false) and session.step_external_tick()
+
+
+func _controls(session: Session) -> Dictionary:
+	return {commands = session.commands.duplicate(true), raw = session.raw.duplicate(true),
+		gear = session._gear_requested_down, flaps = session._flap_requested, brake = session._wheel_brake_demand,
+		inputs = session.sim.inputs.duplicate(), tick = session.sim.tick}
+
+
+func _matches_packet(session: Session, packet: Dictionary) -> bool:
+	return session.commands == {roll = packet.roll, pitch = packet.pitch, yaw = packet.yaw, throttle = packet.throttle} \
+		and session.raw == session.commands and session._gear_requested_down == packet.gear_down \
+		and session._flap_requested == packet.flaps and session._wheel_brake_demand == packet.brake \
+		and session.sim.inputs[4] == (1.0 if packet.gear_down else 0.0) \
+		and session.sim.inputs[5] == packet.brake and session.sim.inputs[6] == packet.flaps
+
+
+func _test_paused_and_guarded_inputs() -> void:
+	var session := _new_avanti()
+	_check("packet A commits all seven controls", _step(session, _packet_a()) and _matches_packet(session, _packet_a()))
+	var accepted: Dictionary = _controls(session)
+	var checkpoint: Dictionary = session.checkpoint()
+	_check("accepted packet checkpoint contains seven inputs", not checkpoint.is_empty() and checkpoint.simulation.inputs.size() == 7)
+	session.sim.set_paused(true)
+	_check("ordinary pause refuses B and preserves accepted owner and kernel", not _step(session, _packet_b())
+		and _controls(session) == accepted and not session._external_packet_ready)
+	_check("ordinary paused rejection preserves the serialized checkpoint", var_to_bytes(session.checkpoint()) == var_to_bytes(checkpoint))
+	session.resume()
+	session.hold("test")
+	_check("held guard refuses B without altering accepted controls", not _step(session, _packet_b()) and _controls(session) == accepted)
+	session.release("test")
+	session.resume()
+	session.sim.stop_at_tick = session.sim.tick
+	_check("stop-at-tick guard refuses B without altering accepted controls", not _step(session, _packet_b()) and _controls(session) == accepted)
+	session.sim.stop_at_tick = -1
+	_check("fresh C resumes with its own seven controls", _step(session, _packet_c()) and _matches_packet(session, _packet_c())
+		and session.sim.tick == int(accepted.tick) + 1)
+	session.free()
+
+
+func _inject_pre_tick_fault(session: Session) -> Callable:
+	var original: Callable = session.sim.model.pre_tick
+	session.sim.model.pre_tick = func(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+		if original.is_valid():
+			original.call(aux, inputs, dt)
+		return PackedFloat64Array([NAN])
+	return original
+
+
+func _test_precommit_fault_observers() -> void:
+	var session := _new_avanti()
+	_check("precommit fixture accepts A", _step(session, _packet_a()))
+	var accepted: Dictionary = _controls(session)
+	var checkpoint: Dictionary = session.checkpoint()
+	var pause_seen: Array[Dictionary] = []
+	var fault_seen: Array[Dictionary] = []
+	var attempt_seen: Array[Dictionary] = []
+	session.sim.paused_changed.connect(func(paused: bool) -> void:
+		if paused: pause_seen.append(_controls(session)))
+	session.sim.faulted.connect(func(_reason: String) -> void: fault_seen.append(_controls(session)))
+	session.sim.before_step.connect(func(_tick: int) -> void: attempt_seen.append(_controls(session)))
+	var original := _inject_pre_tick_fault(session)
+	_check("actual pre-tick kernel rejection consumes B", not _step(session, _packet_b())
+		and not session._external_packet_ready and not session.sim.fault_reason.is_empty())
+	_check("before_step sees the attempted B", attempt_seen.size() == 1 and attempt_seen[0].commands.roll == _packet_b().roll,
+		{attempt = attempt_seen, reason = session.sim.fault_reason})
+	_check("precommit fault returns all accepted owner and kernel inputs", _controls(session) == accepted)
+	_check("pause and fault observers see accepted A with restored kernel inputs", pause_seen.size() == 1 and fault_seen.size() == 1
+		and pause_seen[0] == accepted and fault_seen[0] == accepted, {pause = pause_seen, fault = fault_seen, accepted = accepted})
+	session.sim.model.pre_tick = original
+	_check("real A checkpoint restores after kernel rejection", session.restore_checkpoint(checkpoint))
+	session.resume()
+	_check("fresh C commits after checkpoint recovery", _step(session, _packet_c()) and _matches_packet(session, _packet_c()))
+	session.free()
+
+

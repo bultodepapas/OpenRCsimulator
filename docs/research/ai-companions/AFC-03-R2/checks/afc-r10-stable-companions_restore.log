@@ -1,0 +1,26 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"","requested":"gdscript_reference"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945/player.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945/companion-0.orfl
+Companion capture REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945/player.orfl (24 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945/companion-0.orfl (24 ticks)
+Companion capture closed: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945 (complete=true, tick=24)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945-reentrant/player.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945-reentrant/companion-0.orfl
+Companion capture REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945-reentrant
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945-reentrant/player.orfl (0 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945-reentrant/companion-0.orfl (1 ticks)
+Companion capture closed: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-capture-18612945-reentrant (complete=false, tick=0)
+Capture stream player ended early or outside the common tick boundary.
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: explicit pause after accepted start
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+companion restore lifecycle: 36 checks, 0 failed

@@ -1,5 +1,10 @@
 # PT1-CI-00: source-bound fixture reconciliation
 
+The [2026-11-09 identity follow-up](../../ai-companions/AFC-03-R2/README.md)
+qualifies the current Session and wheel-reader source pins against the unchanged
+typed reference captures on Windows and Linux. Historical family data and source
+drift rejection remain intact. The original campaign below remains dated evidence.
+
 2026-11-08. The historical checkpoints and the original fleet and glow identities remain recorded. The publication tests now compare every complete typed checkpoint and the separate event tape after two explicitly checked identity substitutions. This is a bounded software-preservation result, not aircraft validation.
 
 The [compressed evidence](ci-audit-fixtures-2026-11-08.json.gz) (SHA-256 `c6bfd8964c9cb52b5304ef4aed7de3912db6e3730df843ff2dddfbf011b4abe1`) contains 48 raw UTF-8 captures with their original hashes, 59 checked reports and exact log bytes, and nine observer/comparison recipes. Its `captures` entries contain `raw_utf8`; `checks` contain `report_raw_utf8` and base64 log bytes. Their individual hashes were verified after decompression.

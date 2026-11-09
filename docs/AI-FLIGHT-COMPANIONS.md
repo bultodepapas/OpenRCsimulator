@@ -6,6 +6,7 @@ gates live in [the implementation plan](plans/ai-flight-companions.md).
 Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md),
 [cost attribution and equivalence](research/ai-companions/AFC-00-R1/README.md),
 [lifecycle checks](research/ai-companions/AFC-03-R1/README.md),
+[accepted-input and restore lifecycle repair](research/ai-companions/AFC-03-R2/README.md),
 [moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md),
 [avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md), and
 [sound, labels and accessible controls](research/ai-companions/AFC-05-R1/README.md).
@@ -56,6 +57,9 @@ checkout of this snapshot and packaged exports remain open.
    flight unless **Save these settings as the default** is selected.
 5. **Remove companions now** immediately clears their sessions, models and audio.
    Restart brings back the configured roster. To keep them off, disable and Apply.
+   Restoring a player checkpoint keeps the roster removed; only a new start or
+   explicit restart rebuilds it. Pending weather/shaft selection also waits for
+   its physical reset. Focus loss and explicit pause survive deferred completion.
    The status updates without replacing unapplied settings. If Remove had focus,
    focus moves to Cancel. Cancel discards the dialog draft.
 
@@ -244,6 +248,15 @@ Aircraft planning runs at 60 Hz and aircraft physics at 240 Hz. A rejected playe
 step never advances companions. Player damage is mirrored after all AI finish that
 tick, for use at the next boundary. Remove disconnects all three player observers;
 reconfiguring the same manager reconnects them once.
+
+External Session controls describe the last accepted tick after rejection and
+during pause/fault notifications. The precommit `before_step` notification may
+observe the attempted packet. Crash countdown/reset remains independent. Accepted
+transition receipts distinguish start, restore and pending configuration, with
+generations that invalidate stale companion callbacks. The paired Main checkpoint
+facade refuses a live fleet; an accepted direct Session/debug restore removes it.
+Removal from an AI callback stops the cohort immediately and defers disposal
+until the active stack unwinds. Incomplete capture boundaries remain explicit.
 
 The current controller predicts eight seconds at 0.25-second intervals using
 exact constant-turn segment displacement plus wind. Prediction and ordinary

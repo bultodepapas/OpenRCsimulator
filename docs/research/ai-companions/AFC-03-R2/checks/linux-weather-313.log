@@ -1,0 +1,53 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/refusal-false.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/refusal-false.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/refusal-true.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/refusal-true.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/accepted-pending.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/accepted-pending.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-mass.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-mass.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-model.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-model.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-state.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-state.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-step.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-step.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-reset.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-reset.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-restore.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-restore.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-weather.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-weather.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-shaft.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-shaft.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-pause-step.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-pause-step.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-pause-resume.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-pause-resume.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-fault-mutation.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/observer-fault-mutation.orfl (0 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/validator-reentry.orfl
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418/validator-reentry.orfl (0 ticks)
+Weather publication: 313 checks, 0 failed; /mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-fixtures/linux/app/../tmp/weather-publication-14405418

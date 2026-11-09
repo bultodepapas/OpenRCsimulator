@@ -138,6 +138,11 @@ var companion_config: Dictionary = CompanionConfig.defaults()
 var companions: Node
 var _companions_initialized := false
 var _companions_reset_pending := false
+var _companions_reset_generation := -1
+var _companions_reset_session_id := 0
+var _companions_reset_roster := false
+var _companions_resume_after_reset := false
+var _companions_application_focused := true
 var _companions_error := ""
 ## Resolved only when this flight is created. Session reset retains its draw and onset.
 var failure_config: Dictionary = FailureConfig.defaults()
@@ -2006,7 +2011,11 @@ func _input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		_companions_application_focused = false
+		_companions_resume_after_reset = false
 		_clear_wheel_brake()
+	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_companions_application_focused = true
 
 
 ## The shell resumes successful restarts when controls are ready and keeps recovery failures visible.
@@ -2924,10 +2933,7 @@ func _on_resetting() -> void:
 	_history_crash_camera_active = false # rig.reset() below already invalidates this flight's history.
 	if _overlays != null:
 		_overlays.reset_flight()
-	if _companions_initialized and (companions != null or companion_config.enabled) and not _companions_reset_pending:
-		_companions_reset_pending = true
-		session.hold("companions-reset")
-		call_deferred("_restart_companions")
+	_queue_companion_transition()
 	_aircraft_lights.reset()
 	if is_instance_valid(_rgb_lighting):
 		_rgb_lighting.reset()
@@ -2998,6 +3004,9 @@ func companion_status() -> Dictionary:
 
 
 func remove_companions_now() -> void:
+	# A removal after an accepted start wins over its queued roster creation.
+	# The matching deferred completion still releases its start hold normally.
+	_companions_reset_roster = false
 	if companions != null:
 		companions.remove_now()
 
@@ -3020,22 +3029,66 @@ func _start_companions() -> Dictionary:
 	return prepared
 
 
-func _restart_companions() -> void:
+## Reset notifications also close recorders for restore and pending configuration.
+## Only an accepted physical start authorizes a roster rebuild and later resume.
+func _queue_companion_transition() -> void:
+	var transition: Dictionary = session.last_transition()
+	_companions_reset_generation = int(transition.get("generation", -1))
+	_companions_reset_session_id = session.get_instance_id()
+	if _companions_reset_pending:
+		session.release("companions-reset")
 	_companions_reset_pending = false
+	_companions_reset_roster = false
+	_companions_resume_after_reset = false
+	# Debug rewind restores Session directly, outside the paired Main facade.
+	# A player-only restored clock cannot keep the previous fleet's sessions.
+	if transition.get("kind", "") == FlightSession.TRANSITION_RESTORE and companions != null:
+		companions.remove_now()
+	if transition.get("kind", "") != FlightSession.TRANSITION_START:
+		return
+	if not _companions_initialized or (companions == null and not companion_config.enabled):
+		return
+	_companions_reset_pending = true
+	_companions_reset_roster = true
+	_companions_resume_after_reset = _companions_application_focused
+	session.hold("companions-reset")
+	call_deferred("_restart_companions", _companions_reset_generation, _companions_reset_session_id)
+
+
+func _restart_companions(generation: int, source_session_id: int) -> void:
+	# A stale callback owns neither the current roster nor its shared hold.
+	if not _companions_reset_pending or generation != _companions_reset_generation \
+			or source_session_id != _companions_reset_session_id:
+		return
 	if not is_inside_tree() or session == null:
 		return
-	if not session.start_error.is_empty() or session.sim.tick != 0:
+	_companions_reset_pending = false
+	var resume_authorized: bool = _companions_resume_after_reset
+	_companions_resume_after_reset = false
+	if source_session_id != session.get_instance_id():
+		return
+	var transition: Dictionary = session.last_transition()
+	if int(transition.get("generation", -1)) != generation \
+			or transition.get("kind", "") != FlightSession.TRANSITION_START:
+		session.release("companions-reset")
+		return
+	if not session.start_error.is_empty() or not session.sim.fault_reason.is_empty() or session.sim.tick != 0:
 		_companions_error = "Flight restart was refused; the previous companions are retained."
 		session.release("companions-reset")
 		return
-	if companions != null:
-		remove_child(companions)
-		companions.free()
-		companions = null
-	var result: Dictionary = _start_companions()
-	_companions_error = "" if result.ok else "; ".join(result.errors)
+	if _companions_reset_roster:
+		if companions != null:
+			remove_child(companions)
+			companions.free()
+			companions = null
+		var result: Dictionary = _start_companions()
+		_companions_error = "" if result.ok else "; ".join(result.errors)
+	_companions_reset_roster = false
 	session.release("companions-reset")
-	session.resume()
+	# Focus loss, an explicit failsafe or controller readiness may have paused
+	# this accepted start after its publication. Completion cannot clear that cue.
+	if resume_authorized and session.pause_reason.is_empty():
+		session.resume()
 
 
 ## Saved preferences establish a flight-local cue. V may then change it without

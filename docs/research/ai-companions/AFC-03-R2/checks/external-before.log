@@ -1,0 +1,11 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL ordinary pause refuses B and preserves accepted owner and kernel 
+FAIL ordinary paused rejection preserves the serialized checkpoint 
+FAIL held guard refuses B without altering accepted controls 
+FAIL stop-at-tick guard refuses B without altering accepted controls 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL precommit fault returns all accepted owner and kernel inputs 
+FAIL pause and fault observers see accepted A with restored kernel inputs { &"pause": [{ &"commands": { &"roll": -0.6, &"pitch": 0.4, &"yaw": -0.3, &"throttle": 0.3 }, &"raw": { &"roll": -0.6, &"pitch": 0.4, &"yaw": -0.3, &"throttle": 0.3 }, &"gear": false, &"flaps": 0.1, &"brake": 0.75, &"inputs": [0.1, 0.00019560256457, 0.05, 0.6, 1.0, 0.25, 0.7], &"tick": 1 }], &"fault": [{ &"commands": { &"roll": -0.6, &"pitch": 0.4, &"yaw": -0.3, &"throttle": 0.3 }, &"raw": { &"roll": -0.6, &"pitch": 0.4, &"yaw": -0.3, &"throttle": 0.3 }, &"gear": false, &"flaps": 0.1, &"brake": 0.75, &"inputs": [0.1, 0.00019560256457, 0.05, 0.6, 1.0, 0.25, 0.7], &"tick": 1 }], &"accepted": { &"commands": { &"roll": 0.1, &"pitch": -0.1, &"yaw": 0.05, &"throttle": 0.6 }, &"raw": { &"roll": 0.1, &"pitch": -0.1, &"yaw": 0.05, &"throttle": 0.6 }, &"gear": true, &"flaps": 0.7, &"brake": 0.25, &"inputs": [0.1, 0.00019560256457, 0.05, 0.6, 1.0, 0.25, 0.7], &"tick": 1 } }
+baseline external rejection: 16 checks, 6 failed

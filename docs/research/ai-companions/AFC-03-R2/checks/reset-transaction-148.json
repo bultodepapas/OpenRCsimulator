@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "dad0bba9-7915-469e-aa20-a8d9ab68b4da",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r10-session/test_flight_reset_transaction.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:59:48.947547+00:00",
+  "label": "flight-reset-transaction",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-session\\checks\\flight-reset-transaction-75amwx9h\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-session\\checks\\flight-reset-transaction-75amwx9h\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.453,
+  "log_bytes": 8124,
+  "log_sha256": "fb73c14bf337528326798c68a4d2ecf2a7dc1e8a99239232db15b05d5ab18510"
+}

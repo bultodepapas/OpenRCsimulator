@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d51397ea-1a0c-4488-8357-8b04b199db44",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_time_of_day_checkpoint.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T20:26:12.032396+00:00",
+  "label": "afc-r10-stable-time-of-day",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10\\stable-checks\\afc-r10-stable-time-of-day-f3x8zkf8\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10\\stable-checks\\afc-r10-stable-time-of-day-f3x8zkf8\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 18.453,
+  "log_bytes": 457,
+  "log_sha256": "41dc988d540bae66a342edfcd951431038ef4b0699de319d929d48a25ee48d8c"
+}

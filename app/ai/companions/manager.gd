@@ -24,6 +24,7 @@ var _player: Node
 var _snapshot: Array = []
 var _snapshot_tick := -1
 var _removed := false
+var _advancing := false
 var _damage_dirty := false
 
 
@@ -154,6 +155,7 @@ func _after_step(tick: int, _time: float, _state: PackedFloat64Array,
 	# Simulation also publishes stepped(0) on reset; it has no accepted before_step.
 	if _snapshot_tick < 0 or _snapshot_tick != tick - 1 or agents.is_empty() or _removed:
 		return
+	_advancing = true
 	var started := Time.get_ticks_usec()
 	# Plan every agent before advancing any of them. All observations are from tick N.
 	var ready: Array[Node] = []
@@ -162,19 +164,31 @@ func _after_step(tick: int, _time: float, _state: PackedFloat64Array,
 		var observation: Dictionary = _snapshot[index + 1] if not _snapshot.is_empty() else {}
 		if agent.prepare(observation, _snapshot_tick, _snapshot):
 			ready.append(agent)
+		if _removed:
+			_advancing = false
+			return
 	for agent in ready:
 		agent.advance()
+		if _removed:
+			_advancing = false
+			return
 	# Player is the only world-damage author in the airborne MVP. The next mask
 	# becomes visible to companions only after they finish this common tick.
 	if _damage_dirty:
 		var damage: Dictionary = _player.scenery_damage()
 		for agent in agents:
-			if agent.session.sim.tick == tick and not agent.session.import_external_scenery_damage(damage, tick):
-				agent.failure = "Shared scenery state was refused."
+			if agent.session.sim.tick == tick:
+				var imported: bool = agent.session.import_external_scenery_damage(damage, tick)
+				if _removed:
+					_advancing = false
+					return
+				if not imported:
+					agent.failure = "Shared scenery state was refused."
 		_damage_dirty = false
 	accepted_ticks += 1
 	last_tick_usec = Time.get_ticks_usec() - started
 	_snapshot_tick = -1
+	_advancing = false
 
 
 func _process(delta: float) -> void:
@@ -238,7 +252,7 @@ func remove_now() -> void:
 	_player = null
 	_snapshot.clear()
 	_snapshot_tick = -1
-	_clear_agents()
+	_clear_agents(_advancing)
 	set_process(false)
 	changed.emit()
 
@@ -247,10 +261,13 @@ func _scenery_changed() -> void:
 	_damage_dirty = true
 
 
-func _clear_agents() -> void:
+func _clear_agents(deferred_disposal := false) -> void:
 	for agent in agents:
 		if agent.get_parent() == self: remove_child(agent)
-		agent.free()
+		# A restore/removal can originate in this agent's stepped observer.
+		# Logical removal is immediate; its active stack must unwind first.
+		if deferred_disposal: agent.queue_free()
+		else: agent.free()
 	agents.clear()
 
 

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b03ff2e2-c3df-4eb0-88d8-be477b429e58",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_external_rejection.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:58:33.825624+00:00",
+  "label": "external-rejection-candidate-r3",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-session\\checks\\external-rejection-candidate-r3-o2_crxhk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r10-session\\checks\\external-rejection-candidate-r3-o2_crxhk\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.438,
+  "log_bytes": 1945,
+  "log_sha256": "e4badae3d7237bef884e899618d7d1094c450688687195660125372f7a55cdde"
+}

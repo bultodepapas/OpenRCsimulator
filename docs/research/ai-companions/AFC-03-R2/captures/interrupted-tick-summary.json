@@ -1,0 +1,42 @@
+{
+	"capture_id": "2026-11-09T20:10:32-20211252",
+	"complete": false,
+	"error": "Capture stream player ended early or outside the common tick boundary.",
+	"final_tick": 0,
+	"format": "openrc-companion-capture v1",
+	"kind": "summary",
+	"manifest_sha256": "50d319f3e4dec16858eec6605e35efa75839df40b1fa464fbc342ae703f8f8c4",
+	"reason": "companions removed",
+	"replay_scope": {
+		"decision_replay": false,
+		"fleet_restore": false,
+		"per_session_inputs": "Use existing .orfl verification; do not infer fleet equivalence.",
+		"shared_world_replay": false
+	},
+	"streams": [
+		{
+			"bytes": 4814148,
+			"complete": false,
+			"error": "",
+			"final_tick": 0,
+			"generation": 0,
+			"id": "player",
+			"log": "player.orfl",
+			"rows": 1,
+			"session_tick": 1,
+			"sha256": "a41563626d59b303157133ace3fc1fbce7e9a5edebc5963b49d050699bd072a0"
+		},
+		{
+			"bytes": 4814616,
+			"complete": false,
+			"error": "",
+			"final_tick": 1,
+			"generation": 0,
+			"id": "companion-0",
+			"log": "companion-0.orfl",
+			"rows": 2,
+			"session_tick": 1,
+			"sha256": "15accb39a3911e81e458d59b9bd6eff0bc19ea87fa76a53257719f55a3615999"
+		}
+	]
+}
