@@ -90,7 +90,7 @@ on an isolated pinned Linux snapshot, compare exact baseline/candidate input-tap
 trajectories and run controlled paired session measurements. Keep source identities
 with every oracle/fleet/replay result. Do not reuse the existing binary's old evidence.
 
-Offscreen afterimage culling, F10 hashing, companion mathematics and indexed
+Offscreen afterimage culling, F10 hashing and indexed
 shadow preparation retain the report's separate visual, numerical, lifecycle and
 target-hardware gates. Existing concurrent shadow/tractor changes were preserved.
 Full required CI, exports and physical device/audio qualification remain separate;
@@ -100,3 +100,73 @@ Raw local runs remain under `tmp/perf-report-input-audio-20261109`,
 `tmp/perf-report-components-20261109`, `tmp/perf-report-wind-20261109` and
 `tmp/perf-report-final-20261109`. Early test-fixture/CLI mistakes and the native-Windows
 shell-fixture attempt are retained as failed/inconclusive runs, not passes.
+
+## A33 follow-up: Timber grid and current companion scorer
+
+Integrated the second supplied report against clean baseline
+`7e8ce3a4d0ea88943979ff0403fbb3cfeb3c3fe9`. Its external patch/archive were not
+attached. Intake SHA-256:
+`1c29eb499445efe92fc9239190a403962448ce1b392a9a10df7d2f70adc79988`.
+The [compact evidence](performance-followup-2026-11-09.json) retains both timing
+screens, exact source/engine and Timber source/import identities, checked-run
+receipts and encounter comparisons. The reusable
+[probe contract](../../research/performance/README.md) owns reproduction.
+
+- **TT-21:** use the existing `Vector3i` cell coordinates as paint-index keys.
+  Builder and lookup change together; geometry, tolerances, bucket/material order
+  and empty/missing-bucket behavior remain unchanged. Actual cold/warm repaired
+  arrays, serialized LOD records, formats, names and transforms match the baseline.
+  Source meshes remain unchanged. Renew only the exact current paint identity;
+  the distributed kit's legacy identity stays unchanged.
+- **AFC-04:** the current AFC-04-R9 scorer already uses interval closest approach
+  and arc-error bounds, so the older report's endpoint-minimum rewrite is obsolete.
+  Skip unused endpoint roots after sample zero when tracing is off, preserving
+  every interval calculation and traced endpoint. This reduces 65 roots to 33 per
+  threat/bank, rather than the older scorer's 33-to-one claim. Reuse the first
+  original saturated `lerpf`/turn-rate result locally; do not substitute the target
+  bank at that transition. Renew the pilot raw hash, normalized behavior-source
+  hash and profile's manifest hash. Solver, engine, circuit and aircraft pins stay
+  unchanged.
+- **PT1-CI:** both UID omissions named in the report were already fixed. Generate
+  the missing `test_companions_behavior_manifest.gd.uid` and the new paint-grid
+  test's UID with the pinned editor. The exact tracked-sidecar gate passes with
+  these candidate additions in a temporary Git index; the real index is unchanged.
+
+Native Windows 11 Pro, Ryzen 9 5900X, official Godot
+`4.8.beta2.official.cafc17a19`, editor binary, headless/Dummy. Each screen uses five
+alternating ABBA/BAAB groups, ten adjacent pairs per workload. Cold repair clears
+the repair cache in an already-imported warm process; instantiation and comparison
+are outside timing. Command batches follow 300 warmup/parity calls. Source
+identities remain unchanged across both screens.
+
+| Component | First baseline → candidate | Repeat baseline → candidate | Observed reduction |
+| --- | ---: | ---: | ---: |
+| Complete cold Timber repair | 408.928 → 327.025 ms | 391.243 → 310.242 ms | 20.0–20.7%; all 20 pairs faster |
+| Command, one nearby threat | 987.711 → 926.315 µs | 991.025 → 934.695 µs | 5.7–6.2%; 18/20 pairs faster |
+| Command, three nearby threats | 1875.776 → 1688.287 µs | 3494.746 → 2906.585 µs | 10.0–16.8%; 19/20 pairs faster |
+
+These are shared-host component screens. Absolute command costs vary substantially
+between screens; power, thermal state and competing work were not controlled.
+Warm repair moved in opposite directions (−3.4% and +1.8% savings), so no warm-path
+benefit is claimed. No displayed FPS, GPU cost, frame percentiles, 1080p readiness,
+physical input latency or peak-memory improvement is established.
+
+The retained probe passes **1,626 checks**, including 600 exact score/trace cases,
+600 command/latch comparisons and actual imported-mesh cold/warm comparisons.
+The final **14 affected suites pass 1,222 checks**: prediction (350), paint grid
+(157), LOD/paint identity (58), profiles (52), behavior manifest (39), pilot (24),
+clearance (20), terrain/traffic (60), manager (53), encounters (191), session (65),
+session failures (24), traffic lifecycle (40) and actual Timber stock/custom skins
+and material lifetime (89). The expanded prediction and grid tests also pass
+against the baseline sources. Analytic ramp references cover samples 7, 8, 9 and
+32 in both directions. Import and checked execution report no engine errors.
+
+Seven 12-second real-session encounters plus the repeat have identical result
+objects, state/control digests and trajectory CSV bytes (SHA-256
+`bda3a6c8190a8869c9222ba8d52ef9912c6c717b6c6c204b38fa3ed44e65ad9b`).
+The deliberately conflicting parallel two-threat fixture still misses separation
+in both versions; this remains a survey, not expanded operating qualification.
+Baseline Timber text matches the commit after CRLF normalization; its measured
+raw hash and the Git blob hash are retained separately. Raw local runs are in
+`tmp/perf-followup-20261109`. Required full CI, exports and native 1080p/sustained
+qualification remain pending. No commit, push or publication was performed.

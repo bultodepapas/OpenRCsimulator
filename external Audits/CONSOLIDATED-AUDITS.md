@@ -121,9 +121,14 @@ The stage-owned temporal wind candidate is retained as an apply-ready research
 patch, **outside production**: its four reference-source changes invalidate the
 qualified native receipt and require fresh native/fleet/replay qualification.
 The report's afterimage proposal refines A26, F10 hashing remains A24, and its
-companion/native-dead-work/shadow proposals retain their stated numerical,
+native-dead-work/shadow proposals retain their stated numerical,
 compiler, GPU and loading gates. The slower synchronous shadow-indexing experiment
 was rejected; logical storage reduction is not measured VRAM or a frame-time gain.
+The [later follow-up](../docs/research/performance-report-2026-11-09.md#a33-follow-up-timber-grid-and-current-companion-scorer)
+implements Timber integer grid keys and removes unused endpoint roots/reuses the
+saturated turn rate in the newer interval-CPA companion scorer. Exact comparison,
+source-admission and Windows component checks pass; full CI and native 1080p
+qualification remain separate.
 
 | Source / ID | Pending candidate | Qualification boundary | Original report |
 | --- | --- | --- | --- |

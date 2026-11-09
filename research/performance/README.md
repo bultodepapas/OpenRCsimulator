@@ -24,6 +24,32 @@ Run without competing measurements. This headless component screen does not
 qualify frame pacing, GPU work, physical input latency or listening quality.
 [Integration and Windows evidence](../../docs/research/performance-report-2026-11-09.md).
 
+`timber_companion_probe.gd` compares prior Timber paint-repair and companion-pilot
+sources against the current tree. Extract `app/aircraft/timber_visual_details.gd`
+and `app/ai/companions/pilot.gd` from the intended baseline commit as `.gd` files
+outside `app/`; verify their recorded SHA-256 values against that commit. The probe
+loads the supplied files against current dependencies; passing the candidate as its
+own baseline is only a null control. Create the output parent first:
+
+```powershell
+python tools/godot/run_checked.py --timeout 180 --require-text '0 failed; paint_identity=' -- `
+  .tools/Godot_v4.8-beta2_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/research/performance/timber_companion_probe.gd" -- `
+  --pilot-baseline=C:/captures/pilot-baseline.gd `
+  --timber-baseline=C:/captures/timber-baseline.gd --out=C:/captures/timber-companion-new.json
+```
+
+The output path must be new. Seeded score/trace and command/latch comparisons
+precede five alternating ABBA/BAAB timing groups per workload. Timber timing covers
+complete cache-cold repair of the actual imported hierarchy in a warm process;
+instantiation and byte comparisons are untimed. Warm-cache repair is a control.
+Mesh parity covers arrays, serialized LOD records, formats, names and transforms;
+the separate skin-fleet suite checks paint admission and material lifetime.
+Command fixtures use fixed synthetic snapshots with one/three nearby threats,
+300 warmup/parity calls and 400 commands per timed batch. Source hashes are checked
+before/after; these are component screens without a full asset/import dependency
+identity or a native 1080p frame qualification. Run without competing measurements.
+
 `trace_export_probe.gd` saves 120,001 synthetic fixed-wing telemetry rows through
 the production exporter. The [C7 / RCV-43 / SC-09-R2 memory follow-up](../../docs/research/memory-2026-11-08.md)
 records the baseline source, commands, exact CSV digest, allocator counters and

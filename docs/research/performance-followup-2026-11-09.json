@@ -1,0 +1,2013 @@
+{
+  "format": "openrc-performance-followup-v1",
+  "date": "2026-11-09",
+  "baseline_commit": "7e8ce3a4d0ea88943979ff0403fbb3cfeb3c3fe9",
+  "intake_sha256": "1c29eb499445efe92fc9239190a403962448ce1b392a9a10df7d2f70adc79988",
+  "environment": {
+    "os": "Microsoft Windows 11 Pro",
+    "cpu": "AMD Ryzen 9 5900X",
+    "physical_cores": 12,
+    "logical_processors": 24,
+    "engine": "4.8.beta2.official.cafc17a19",
+    "display": "headless",
+    "audio_driver": "Dummy",
+    "release_export": false,
+    "power_thermal_and_competing_work_controlled": false
+  },
+  "engine_sha512": {
+    "Godot_v4.8-beta2_win64_console.exe": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+    "Godot_v4.8-beta2_win64.exe": "e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55"
+  },
+  "source_sha256": {
+    "app/ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+    "app/aircraft/timber_visual_details.gd": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933",
+    "app/aircraft/custom_skin.gd": "96eda6c17197e4994803edb2f03aad94acc852b04096738c2a58778eb54345c2",
+    "app/data/ai/companions/behavior-manifest.json": "93101856228074bcaa7916fdad7cc7a88be79aa7f7d28189e3f8d0b416c79edb",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "e2a442818addbaf3ddf0be55db7e59742b90e79e8f6868193b3ba6034e3c663a",
+    "app/tests/test_companions_prediction.gd": "d7a3248cf529aee5bb803c38cfa6a1b5f0a49522b6e2ee1fe49c8c25a46d19ee",
+    "app/tests/test_timber_paint_grid.gd": "d0b1e7330d9e50b231d14cb5e186b3409e2c3adc562aeea325bb6dd739a399f8",
+    "app/tests/test_timber_visual_lods.gd": "42f1753ae5e37af79c38b0ac5e5d4f6274c58e1ecd47edcd8a196f982f689840",
+    "research/performance/timber_companion_probe.gd": "e75a0869478d4ae80ada86f288c30fa2cb489dd4d73c705dd945189b303dd498",
+    "app/assets/aircraft/turbo-lumber-evolution/timber.glb": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+    "app/assets/aircraft/turbo-lumber-evolution/timber.glb.import": "a25822325cc792e13f94f20348af900084df347a5bc04f87a7e98e1cc7bef5f1",
+    "app/project.godot": "2ca26f73592fe6fdf0b620a151c2455ac7ed4a854f61043d0bf99bccd8b694ae",
+    "app/.godot/imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn": "ac62277e820acdcc724ce5755be8438ec63d29388503824f801b35eacecca410"
+  },
+  "baseline_sources": {
+    "app/ai/companions/pilot.gd": {
+      "git_blob_sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+      "measured_file_sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+      "normalized_source_equal": true
+    },
+    "app/aircraft/timber_visual_details.gd": {
+      "git_blob_sha256": "6b200f12db0e672624b044076457f71d0c67597cb1d69ba3a0cf73ff9ae4b945",
+      "measured_file_sha256": "a6bc63da322b36efc8a57796ffc78e45177e383afd94c3424edec2e7e0d66ae2",
+      "normalized_source_equal": true
+    }
+  },
+  "screens": [
+    {
+      "raw": {
+        "checks": 1625,
+        "command_us": {
+          "1": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 974.4775
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 915.8175
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 933.375
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 990.8775
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 899.82
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 979.705
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 991.4425
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 909.965
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 983.9775
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 909.1325
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1009.5225
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 984.545
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 929.0275
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 1231.2725
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 990.995
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 979.5475
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1036.1675
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 958.915
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 923.6025
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 956.1725
+            }
+          ],
+          "3": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1824.4025
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 1642.98
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 1685.955
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1851.5175
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1679.2925
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 1840.49
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 1901.78
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 1720.8975
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1801.485
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1676.675
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 1727.375
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1962.49
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1657.9475
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 1808.61
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 2009.665
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1690.62
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1934.36
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1747.0975
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1772.15
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1900.035
+            }
+          ]
+        },
+        "engine": "4.8-beta2 (official)",
+        "failed": 0,
+        "paint_identity": "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c",
+        "score_cases": 600,
+        "source_sha256": {
+          "res://../tmp/perf-followup-20261109/baseline/pilot.gd": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+          "res://../tmp/perf-followup-20261109/baseline/timber_visual_details.gd": "a6bc63da322b36efc8a57796ffc78e45177e383afd94c3424edec2e7e0d66ae2",
+          "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "res://aircraft/timber_visual_details.gd": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933"
+        },
+        "timber_us": [
+          {
+            "candidate": false,
+            "cold": 398517,
+            "group": 0,
+            "warm": 7241
+          },
+          {
+            "candidate": true,
+            "cold": 311467,
+            "group": 0,
+            "warm": 7661
+          },
+          {
+            "candidate": true,
+            "cold": 347920,
+            "group": 0,
+            "warm": 7444
+          },
+          {
+            "candidate": false,
+            "cold": 415556,
+            "group": 0,
+            "warm": 8506
+          },
+          {
+            "candidate": true,
+            "cold": 333468,
+            "group": 1,
+            "warm": 8079
+          },
+          {
+            "candidate": false,
+            "cold": 404945,
+            "group": 1,
+            "warm": 7292
+          },
+          {
+            "candidate": false,
+            "cold": 422155,
+            "group": 1,
+            "warm": 7207
+          },
+          {
+            "candidate": true,
+            "cold": 331823,
+            "group": 1,
+            "warm": 7743
+          },
+          {
+            "candidate": false,
+            "cold": 477926,
+            "group": 2,
+            "warm": 7678
+          },
+          {
+            "candidate": true,
+            "cold": 322226,
+            "group": 2,
+            "warm": 7468
+          },
+          {
+            "candidate": true,
+            "cold": 380313,
+            "group": 2,
+            "warm": 12073
+          },
+          {
+            "candidate": false,
+            "cold": 425398,
+            "group": 2,
+            "warm": 7974
+          },
+          {
+            "candidate": true,
+            "cold": 347574,
+            "group": 3,
+            "warm": 7589
+          },
+          {
+            "candidate": false,
+            "cold": 412910,
+            "group": 3,
+            "warm": 7416
+          },
+          {
+            "candidate": false,
+            "cold": 379552,
+            "group": 3,
+            "warm": 7273
+          },
+          {
+            "candidate": true,
+            "cold": 315502,
+            "group": 3,
+            "warm": 7464
+          },
+          {
+            "candidate": false,
+            "cold": 385146,
+            "group": 4,
+            "warm": 7170
+          },
+          {
+            "candidate": true,
+            "cold": 309295,
+            "group": 4,
+            "warm": 7177
+          },
+          {
+            "candidate": true,
+            "cold": 297333,
+            "group": 4,
+            "warm": 7162
+          },
+          {
+            "candidate": false,
+            "cold": 379109,
+            "group": 4,
+            "warm": 7236
+          }
+        ]
+      },
+      "summary": {
+        "timber_cold": {
+          "baseline_median_us": 408927.5,
+          "candidate_median_us": 327024.5,
+          "reduction_percent": 20.028733699738954,
+          "candidate_faster_adjacent_pairs": 10,
+          "pairs": 10
+        },
+        "timber_warm": {
+          "baseline_median_us": 7282.5,
+          "candidate_median_us": 7528.5,
+          "reduction_percent": -3.377960865087548,
+          "candidate_faster_adjacent_pairs": 3,
+          "pairs": 10
+        },
+        "command_1": {
+          "baseline_median_us": 987.7112500000001,
+          "candidate_median_us": 926.315,
+          "reduction_percent": 6.216012017682293,
+          "candidate_faster_adjacent_pairs": 9,
+          "pairs": 10
+        },
+        "command_3": {
+          "baseline_median_us": 1875.77625,
+          "candidate_median_us": 1688.2875,
+          "reduction_percent": 9.995261961547918,
+          "candidate_faster_adjacent_pairs": 10,
+          "pairs": 10
+        }
+      }
+    },
+    {
+      "raw": {
+        "checks": 1626,
+        "command_us": {
+          "1": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 1069.6025
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 923.2025
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 918.005
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 976.07
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 926.2775
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 993.3675
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 987.45
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 928.2275
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 981.7075
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 957.2
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 937.3825
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 1032.815
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 1000.105
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 988.6825
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 986.1975
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 938.4625
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1007.3375
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 932.0075
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 969.0525
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 999.7925
+            }
+          ],
+          "3": [
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 3797.39
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 3145.48
+            },
+            {
+              "candidate": true,
+              "group": 0,
+              "us_per_command": 2607.9775
+            },
+            {
+              "candidate": false,
+              "group": 0,
+              "us_per_command": 2815.3075
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 2680.8425
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 2570.6075
+            },
+            {
+              "candidate": false,
+              "group": 1,
+              "us_per_command": 3368.53
+            },
+            {
+              "candidate": true,
+              "group": 1,
+              "us_per_command": 2940.595
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 3661.8875
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 3243.44
+            },
+            {
+              "candidate": true,
+              "group": 2,
+              "us_per_command": 2969.655
+            },
+            {
+              "candidate": false,
+              "group": 2,
+              "us_per_command": 3620.9625
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 3451.5475
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 3710.13
+            },
+            {
+              "candidate": false,
+              "group": 3,
+              "us_per_command": 4285.7525
+            },
+            {
+              "candidate": true,
+              "group": 3,
+              "us_per_command": 2872.575
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 2402.4525
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1881.6075
+            },
+            {
+              "candidate": true,
+              "group": 4,
+              "us_per_command": 1738.645
+            },
+            {
+              "candidate": false,
+              "group": 4,
+              "us_per_command": 1853.025
+            }
+          ]
+        },
+        "engine": "4.8-beta2 (official)",
+        "failed": 0,
+        "paint_identity": "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c",
+        "score_cases": 600,
+        "source_sha256": {
+          "res://../research/performance/timber_companion_probe.gd": "e75a0869478d4ae80ada86f288c30fa2cb489dd4d73c705dd945189b303dd498",
+          "res://../tmp/perf-followup-20261109/baseline/pilot.gd": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+          "res://../tmp/perf-followup-20261109/baseline/timber_visual_details.gd": "a6bc63da322b36efc8a57796ffc78e45177e383afd94c3424edec2e7e0d66ae2",
+          "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+          "res://ai/companions/pilot.gd": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
+          "res://aircraft/timber_model.gd": "4d8daf200b7e0928ce18fe6ca451b08423ff1a59e6ef1119350e43004c9b0437",
+          "res://aircraft/timber_visual_details.gd": "b50e0f91291aea08dfb50c129fc16b4359de28ce1b05cc97c99f174438e7d933"
+        },
+        "timber_us": [
+          {
+            "candidate": false,
+            "cold": 390876,
+            "group": 0,
+            "warm": 7377
+          },
+          {
+            "candidate": true,
+            "cold": 309007,
+            "group": 0,
+            "warm": 8472
+          },
+          {
+            "candidate": true,
+            "cold": 306122,
+            "group": 0,
+            "warm": 7143
+          },
+          {
+            "candidate": false,
+            "cold": 397551,
+            "group": 0,
+            "warm": 7108
+          },
+          {
+            "candidate": true,
+            "cold": 307786,
+            "group": 1,
+            "warm": 7081
+          },
+          {
+            "candidate": false,
+            "cold": 383154,
+            "group": 1,
+            "warm": 7182
+          },
+          {
+            "candidate": false,
+            "cold": 387228,
+            "group": 1,
+            "warm": 7527
+          },
+          {
+            "candidate": true,
+            "cold": 323441,
+            "group": 1,
+            "warm": 7055
+          },
+          {
+            "candidate": false,
+            "cold": 396874,
+            "group": 2,
+            "warm": 7221
+          },
+          {
+            "candidate": true,
+            "cold": 301677,
+            "group": 2,
+            "warm": 7170
+          },
+          {
+            "candidate": true,
+            "cold": 311477,
+            "group": 2,
+            "warm": 7140
+          },
+          {
+            "candidate": false,
+            "cold": 382400,
+            "group": 2,
+            "warm": 7043
+          },
+          {
+            "candidate": true,
+            "cold": 304879,
+            "group": 3,
+            "warm": 7167
+          },
+          {
+            "candidate": false,
+            "cold": 381053,
+            "group": 3,
+            "warm": 7507
+          },
+          {
+            "candidate": false,
+            "cold": 391609,
+            "group": 3,
+            "warm": 7734
+          },
+          {
+            "candidate": true,
+            "cold": 322911,
+            "group": 3,
+            "warm": 7707
+          },
+          {
+            "candidate": false,
+            "cold": 431161,
+            "group": 4,
+            "warm": 7441
+          },
+          {
+            "candidate": true,
+            "cold": 343897,
+            "group": 4,
+            "warm": 10680
+          },
+          {
+            "candidate": true,
+            "cold": 349098,
+            "group": 4,
+            "warm": 7232
+          },
+          {
+            "candidate": false,
+            "cold": 415123,
+            "group": 4,
+            "warm": 7172
+          }
+        ]
+      },
+      "summary": {
+        "timber_cold": {
+          "baseline_median_us": 391242.5,
+          "candidate_median_us": 310242.0,
+          "reduction_percent": 20.703400065176968,
+          "candidate_faster_adjacent_pairs": 10,
+          "pairs": 10
+        },
+        "timber_warm": {
+          "baseline_median_us": 7299.0,
+          "candidate_median_us": 7168.5,
+          "reduction_percent": 1.7879161528976617,
+          "candidate_faster_adjacent_pairs": 5,
+          "pairs": 10
+        },
+        "command_1": {
+          "baseline_median_us": 991.025,
+          "candidate_median_us": 934.695,
+          "reduction_percent": 5.6840140258822895,
+          "candidate_faster_adjacent_pairs": 9,
+          "pairs": 10
+        },
+        "command_3": {
+          "baseline_median_us": 3494.74625,
+          "candidate_median_us": 2906.585,
+          "reduction_percent": 16.829869979830438,
+          "candidate_faster_adjacent_pairs": 9,
+          "pairs": 10
+        }
+      }
+    }
+  ],
+  "encounter": {
+    "case_results": [
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 238,
+        "case": "head-on",
+        "case_id": "seed-20261020-head-on",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": 3.14159265358979,
+        "intruder_heading_rad": -0.416156114332503,
+        "intruder_start_east_m": 109.554253610802,
+        "intruder_start_north_m": 149.021349400167,
+        "min_agl_m_by_role": {
+          "ai": 34.228456664313,
+          "player": 34.9930207050975
+        },
+        "min_center_separation_m": 61.2139495727229,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 61.2139495727229,
+        "nominal_intercept_east_m": 73.1719660295122,
+        "nominal_intercept_north_m": 231.339811183368,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.0661482187007471,
+          "roll": 1.0,
+          "throttle": 0.287436043435915,
+          "yaw": 0.194151259219355
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1786793832754,
+          "player": 2.71611891129077e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": 109.554253610802,
+          "heading_rad": -0.416156114332503,
+          "north": 149.021349400167
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": 80.0,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "f8115f7149cf73f8f83db76cfbd08ecefeb93c2bc2263d1cf525a4521bf1242f",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 153,
+        "case": "crossing-left",
+        "case_id": "seed-20261020-crossing-left",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": 1.5707963267949,
+        "intruder_heading_rad": -1.9869524411274,
+        "intruder_start_east_m": 155.490427812713,
+        "intruder_start_north_m": 267.722098764658,
+        "min_agl_m_by_role": {
+          "ai": 34.1092099129734,
+          "player": 34.993055870015
+        },
+        "min_center_separation_m": 69.3265545760359,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 69.3265545760359,
+        "nominal_intercept_east_m": 73.1719660295122,
+        "nominal_intercept_north_m": 231.339811183368,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.0663576564915304,
+          "roll": 1.0,
+          "throttle": 0.289540705962522,
+          "yaw": 0.266603274676367
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1820945297389,
+          "player": 2.36232782979513e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": 155.490427812713,
+          "heading_rad": -1.9869524411274,
+          "north": 267.722098764658
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": 80.0,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "65faaea34932b124efb0c24abd4eb55cb73fad0b4edceed5f76125fa2932879c",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 720,
+        "case": "crossing-right",
+        "case_id": "seed-20261020-crossing-right",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": -1.5707963267949,
+        "intruder_heading_rad": 1.15464021246239,
+        "intruder_start_east_m": -9.14649575368902,
+        "intruder_start_north_m": 194.957523602079,
+        "min_agl_m_by_role": {
+          "ai": 34.9719524442923,
+          "player": 34.9930181145764
+        },
+        "min_center_separation_m": 59.8198811975726,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 59.8198811975726,
+        "nominal_intercept_east_m": 73.1719660295122,
+        "nominal_intercept_north_m": 231.339811183368,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.00212630968363748,
+          "roll": 0.15707963267949,
+          "throttle": 0.282642995667027,
+          "yaw": 0.032914161276278
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 5.27319689768698,
+          "player": 2.36432101898666e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": -9.14649575368902,
+          "heading_rad": 1.15464021246239,
+          "north": 194.957523602079
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": 80.0,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "5867be7e111ef8d62660ca18019a2985efb7ad36e01fee52c5bbe2f376ba5d8a",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 243,
+        "case": "head-on",
+        "case_id": "seed-20261021-head-on",
+        "circuit_direction": "decreasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910625166,
+        "initial_target_height_error_m": 0.00219106251655887,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": 3.14159265358979,
+        "intruder_heading_rad": 0.475436540720208,
+        "intruder_start_east_m": -112.322834649862,
+        "intruder_start_north_m": 155.599760182464,
+        "min_agl_m_by_role": {
+          "ai": 34.3265182463046,
+          "player": 34.9930550371453
+        },
+        "min_center_separation_m": 60.9423662985778,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 60.9423662985778,
+        "nominal_intercept_east_m": -71.1274392031297,
+        "nominal_intercept_north_m": 235.618129285985,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.0466162989304525,
+          "roll": 1.0,
+          "throttle": 0.286725122468414,
+          "yaw": 0.204758959825831
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1464762580276,
+          "player": 2.67246806799638e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": -112.322834649862,
+          "heading_rad": 0.475436540720208,
+          "north": 155.599760182464
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": 80.0,
+        "seed": 20261021,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "b42c7b26a8e202772e5bfd4b1158e8256cea6144b19d473f4063e50e0ffe1ab0",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 720,
+        "case": "crossing-left",
+        "case_id": "seed-20261021-crossing-left",
+        "circuit_direction": "decreasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910625166,
+        "initial_target_height_error_m": 0.00219106251655887,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": 1.5707963267949,
+        "intruder_heading_rad": -1.09535978607469,
+        "intruder_start_east_m": 8.8909299003912,
+        "intruder_start_north_m": 194.422733839252,
+        "min_agl_m_by_role": {
+          "ai": 34.9488028868918,
+          "player": 34.9931294964052
+        },
+        "min_center_separation_m": 58.4649428355137,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 58.4649428355137,
+        "nominal_intercept_east_m": -71.1274392031297,
+        "nominal_intercept_north_m": 235.618129285985,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.00450991233878184,
+          "roll": 0.15707963267949,
+          "throttle": 0.283361692464643,
+          "yaw": 0.0287191161260601
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 5.14378702120218,
+          "player": 2.37468560278258e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": 8.8909299003912,
+          "heading_rad": -1.09535978607469,
+          "north": 194.422733839252
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": 80.0,
+        "seed": 20261021,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "fb1aa355324737882ba9d3bcde2975719dd24989d76c0060c3f6adb3ae0a153e",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 156,
+        "case": "crossing-right",
+        "case_id": "seed-20261021-crossing-right",
+        "circuit_direction": "decreasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910625166,
+        "initial_target_height_error_m": 0.00219106251655887,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": -1.5707963267949,
+        "intruder_heading_rad": 2.0462328675151,
+        "intruder_start_east_m": -151.145808306651,
+        "intruder_start_north_m": 276.813524732717,
+        "min_agl_m_by_role": {
+          "ai": 34.2008047319841,
+          "player": 34.9930675971495
+        },
+        "min_center_separation_m": 69.4882259069823,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 69.4882259069823,
+        "nominal_intercept_east_m": -71.1274392031297,
+        "nominal_intercept_north_m": 235.618129285985,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.0860416454601668,
+          "roll": 1.0,
+          "throttle": 0.288581907844738,
+          "yaw": 0.291625759028259
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1656922067451,
+          "player": 2.37667879197411e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": -151.145808306651,
+          "heading_rad": 2.0462328675151,
+          "north": 276.813524732717
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": 80.0,
+        "seed": 20261021,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "838e8f4e218cba61a1c8562eeceea190aa951bc9f69f2393c878ced2e98067a6",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 720,
+        "case": "parallel-two-threats",
+        "case_id": "seed-20261020-parallel-two-threats",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {
+          "peer_threshold_m": 15.0,
+          "peer_vertical_below_m": 9.0,
+          "peer_vertical_trigger_m": 6.0,
+          "player_lateral_right_m": 29.0,
+          "player_threshold_m": 30.0,
+          "player_vertical_offset_m": 0.0,
+          "traffic_order": [
+            "player",
+            "companion-peer"
+          ]
+        },
+        "flight_logs": {},
+        "geometry_kind": "constructed_initial_conflict_fixture",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": null,
+        "intruder_heading_rad": 1.60043653925729,
+        "intruder_start_east_m": 2.3708698098786,
+        "intruder_start_north_m": 278.96486088492,
+        "min_agl_m_by_role": {
+          "ai": 34.9934136856608,
+          "peer": 25.9930708081366,
+          "player": 34.993033509135
+        },
+        "min_center_separation_m": 8.99999996604507,
+        "min_separation_to_peer_m": 8.99999996604507,
+        "min_separation_to_player_m": 28.9998518764645,
+        "nominal_intercept_east_m": null,
+        "nominal_intercept_north_m": null,
+        "nominal_intercept_time_s": 0.0,
+        "peak_abs_axes": {
+          "pitch": 0.000520676341291235,
+          "roll": 0.00212519116268564,
+          "throttle": 0.282561645224584,
+          "yaw": 0.00845801006230033
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 0.0684371231680129,
+          "peer": 2.23795282424399e-12,
+          "player": 2.23795282424399e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": 1.51142950379761,
+          "heading_rad": 1.60043653925729,
+          "north": 249.977598814136
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": null,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": false,
+        "state_command_sha256": "9475a6aaea325ee758908c67990f1c444121e23ebcb5b41548aad1debd1678b6",
+        "ticks": 2880,
+        "valid_run": true
+      }
+    ],
+    "deterministic_repeat": {
+      "case": "parallel-two-threats",
+      "exact_state_command_match": true,
+      "first_sha256": "9475a6aaea325ee758908c67990f1c444121e23ebcb5b41548aad1debd1678b6",
+      "repeat_complete": true,
+      "repeat_run": {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 720,
+        "case": "parallel-two-threats",
+        "case_id": "seed-20261020-parallel-two-threats",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {
+          "peer_threshold_m": 15.0,
+          "peer_vertical_below_m": 9.0,
+          "peer_vertical_trigger_m": 6.0,
+          "player_lateral_right_m": 29.0,
+          "player_threshold_m": 30.0,
+          "player_vertical_offset_m": 0.0,
+          "traffic_order": [
+            "player",
+            "companion-peer"
+          ]
+        },
+        "flight_logs": {},
+        "geometry_kind": "constructed_initial_conflict_fixture",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": null,
+        "intruder_heading_rad": 1.60043653925729,
+        "intruder_start_east_m": 2.3708698098786,
+        "intruder_start_north_m": 278.96486088492,
+        "min_agl_m_by_role": {
+          "ai": 34.9934136856608,
+          "peer": 25.9930708081366,
+          "player": 34.993033509135
+        },
+        "min_center_separation_m": 8.99999996604507,
+        "min_separation_to_peer_m": 8.99999996604507,
+        "min_separation_to_player_m": 28.9998518764645,
+        "nominal_intercept_east_m": null,
+        "nominal_intercept_north_m": null,
+        "nominal_intercept_time_s": 0.0,
+        "peak_abs_axes": {
+          "pitch": 0.000520676341291235,
+          "roll": 0.00212519116268564,
+          "throttle": 0.282561645224584,
+          "yaw": 0.00845801006230033
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 0.0684371231680129,
+          "peer": 2.23795282424399e-12,
+          "player": 2.23795282424399e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 720,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": 1.51142950379761,
+          "heading_rad": 1.60043653925729,
+          "north": 249.977598814136
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 2880,
+        "route_radius_m": null,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": false,
+        "state_command_sha256": "9475a6aaea325ee758908c67990f1c444121e23ebcb5b41548aad1debd1678b6",
+        "ticks": 2880,
+        "valid_run": true
+      },
+      "repeat_sha256": "9475a6aaea325ee758908c67990f1c444121e23ebcb5b41548aad1debd1678b6"
+    },
+    "same_case_results": true,
+    "trajectory_sha256": "bda3a6c8190a8869c9222ba8d52ef9912c6c717b6c6c204b38fa3ed44e65ad9b",
+    "trajectory_bytes": 382603,
+    "same_trajectory_bytes": true,
+    "separation_gate_passed_for_all_cases": false,
+    "report_sha256": {
+      "baseline": "206319ff27df0a0cfe8b2c898b7beff6c35c120f31fc92b90cd2d79687fa1d0d",
+      "candidate": "109d04e5e28b5bc064783fa98306cdaa79750e17de8fcf2fb7cc3823c347e40d"
+    }
+  },
+  "checked_runs": [
+    {
+      "label": "baseline-companion-prediction",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_prediction.gd"
+      ],
+      "started_utc": "2026-11-09T21:19:41.121528+00:00",
+      "elapsed_seconds": 0.578,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 116,
+      "log_sha256": "f89ac5edfcfc34bc9fe6a86d7c164273fe01f197f26d3c0618f0b9d9981fd919"
+    },
+    {
+      "label": "baseline-extended-prediction",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/perf-followup-20261109/baseline-test_companions_prediction.gd"
+      ],
+      "started_utc": "2026-11-09T21:29:24.506289+00:00",
+      "elapsed_seconds": 0.687,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 116,
+      "log_sha256": "10f0e5488c8632fa6b1a2e1d223d32ed6f2ae377b9338388239d6b2f9eed8182"
+    },
+    {
+      "label": "baseline-grid",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/perf-followup-20261109/baseline-test_timber_paint_grid.gd"
+      ],
+      "started_utc": "2026-11-09T21:29:24.506289+00:00",
+      "elapsed_seconds": 0.781,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 113,
+      "log_sha256": "644ad0cd45f066296a609ac88f648dbce55c84eee3ca01b644587a2aae3c2443"
+    },
+    {
+      "label": "baseline-timber-lods",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T21:19:42.181213+00:00",
+      "elapsed_seconds": 0.86,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 93,
+      "log_sha256": "21079a9df5b7f148ab772df66d256dc5a480a3facd711623318a1f2d9c7f33c7"
+    },
+    {
+      "label": "candidate-companion-prediction",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_prediction.gd"
+      ],
+      "started_utc": "2026-11-09T21:24:52.590469+00:00",
+      "elapsed_seconds": 0.672,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 116,
+      "log_sha256": "f0da628633b5ba4309f14a96d37805630247a85086472120e566a819c68195b2"
+    },
+    {
+      "label": "candidate-companion-ramp",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_prediction.gd"
+      ],
+      "started_utc": "2026-11-09T21:27:00.663404+00:00",
+      "elapsed_seconds": 0.594,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 116,
+      "log_sha256": "10f0e5488c8632fa6b1a2e1d223d32ed6f2ae377b9338388239d6b2f9eed8182"
+    },
+    {
+      "label": "candidate-grid-final",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_paint_grid.gd"
+      ],
+      "started_utc": "2026-11-09T21:29:24.505290+00:00",
+      "elapsed_seconds": 0.781,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 113,
+      "log_sha256": "644ad0cd45f066296a609ac88f648dbce55c84eee3ca01b644587a2aae3c2443"
+    },
+    {
+      "label": "candidate-import",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "started_utc": "2026-11-09T21:24:35.844288+00:00",
+      "elapsed_seconds": 6.312,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 2588,
+      "log_sha256": "29a185a714fbe90c749bfed77f72b659bf12248be8fcba0baf6f7a291d72cd7b"
+    },
+    {
+      "label": "candidate-test_companions_behavior_manifest",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_behavior_manifest.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:08.189869+00:00",
+      "elapsed_seconds": 5.391,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 371,
+      "log_sha256": "454a8ca8c70b30a6b01eed3b75140866430f42c3cac545b893f8f0b8864f1e11"
+    },
+    {
+      "label": "candidate-test_companions_clearance",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_clearance.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:08.192486+00:00",
+      "elapsed_seconds": 0.704,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 114,
+      "log_sha256": "4b3560b3d9d72f98b98c729d49451bfcf63b674d241121d593791b68f0f4cbfd"
+    },
+    {
+      "label": "candidate-test_companions_encounters",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_encounters.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:48.710148+00:00",
+      "elapsed_seconds": 0.688,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 116,
+      "log_sha256": "bc7ba6897cf47d0ff58d704203be412bf3f1d585e3603d5e2a4d554e4470a4b5"
+    },
+    {
+      "label": "candidate-test_companions_manager",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:08.188312+00:00",
+      "elapsed_seconds": 20.36,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 1429,
+      "log_sha256": "3f86c01dcf4acf52826d326d48fd52237c91a44edc862d44a0a87b50cec20dc9"
+    },
+    {
+      "label": "candidate-test_companions_pilot",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_pilot.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:08.185167+00:00",
+      "elapsed_seconds": 0.688,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 1450,
+      "log_sha256": "d09bf3f09e66236f3a7934e562c38854d5ca6f860aeb0124a70e83466ccdbe77"
+    },
+    {
+      "label": "candidate-test_companions_profiles",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:08.191443+00:00",
+      "elapsed_seconds": 7.532,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 3057,
+      "log_sha256": "5a313a604f895beb9900c3fc3239f6f78a20d7d2b3cd6a9226a394a663be02a0"
+    },
+    {
+      "label": "candidate-test_companions_session",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_session.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:48.718784+00:00",
+      "elapsed_seconds": 4.203,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 1426,
+      "log_sha256": "8adf55296457c6e7c6d91ced1c984e8e3d4ccf9b2490b10ad7a18ce2991108be"
+    },
+    {
+      "label": "candidate-test_companions_session_failures",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_session_failures.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:48.718784+00:00",
+      "elapsed_seconds": 9.922,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 403,
+      "log_sha256": "3c1d47871c13de0a44d3081021fd6769a74c5c38a0954c42a0187e4582abb7b2"
+    },
+    {
+      "label": "candidate-test_companions_terrain_traffic",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_terrain_traffic.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:08.190920+00:00",
+      "elapsed_seconds": 0.704,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 120,
+      "log_sha256": "c74ee7865467c81d61c817992f398eeac9384d9f7fb893b013c473de86640ec7"
+    },
+    {
+      "label": "candidate-test_companions_traffic_lifecycle",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_traffic_lifecycle.gd"
+      ],
+      "started_utc": "2026-11-09T21:25:48.717650+00:00",
+      "elapsed_seconds": 4.656,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 216,
+      "log_sha256": "bbacbcfff79be249fdb545cae6df4c60d2bcfe3b19ed9538dfb3f5436fe38972"
+    },
+    {
+      "label": "candidate-timber-grid",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_paint_grid.gd"
+      ],
+      "started_utc": "2026-11-09T21:24:52.589423+00:00",
+      "elapsed_seconds": 0.672,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 113,
+      "log_sha256": "644ad0cd45f066296a609ac88f648dbce55c84eee3ca01b644587a2aae3c2443"
+    },
+    {
+      "label": "candidate-timber-lods",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_visual_lods.gd"
+      ],
+      "started_utc": "2026-11-09T21:24:52.602387+00:00",
+      "elapsed_seconds": 0.875,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 93,
+      "log_sha256": "21079a9df5b7f148ab772df66d256dc5a480a3facd711623318a1f2d9c7f33c7"
+    },
+    {
+      "label": "candidate-timber-skin-fleet",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_skin_fleet.gd",
+        "--",
+        "turbo-lumber-evolution"
+      ],
+      "started_utc": "2026-11-09T21:25:58.817048+00:00",
+      "elapsed_seconds": 3.282,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 105,
+      "log_sha256": "3f47f566f3bc5b62028f83e651139fd565ee3512822f0f242f9d887b31bf1bef"
+    },
+    {
+      "label": "encounter-baseline",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/ai-companions/encounter_probe.gd",
+        "--",
+        "--record-none",
+        "--seconds=12",
+        "--pilot=res://../tmp/perf-followup-20261109/baseline/pilot.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/perf-followup-20261109/encounter-baseline"
+      ],
+      "started_utc": "2026-11-09T21:21:36.105679+00:00",
+      "elapsed_seconds": 66.782,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 2054,
+      "log_sha256": "9995ad6e8f35b178e6ed252d4fa941902f97b9809843818eddcf0082d1284c11"
+    },
+    {
+      "label": "encounter-candidate",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/ai-companions/encounter_probe.gd",
+        "--",
+        "--record-none",
+        "--seconds=12",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/perf-followup-20261109/encounter-candidate"
+      ],
+      "started_utc": "2026-11-09T21:23:58.285391+00:00",
+      "elapsed_seconds": 54.313,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 2055,
+      "log_sha256": "bbdf07332f254aedc1cd19bf189cc809cc17a0223430f1f281b8c574eb705a39"
+    },
+    {
+      "label": "parse-qualification",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://../tmp/perf-followup-20261109/qualify.gd"
+      ],
+      "started_utc": "2026-11-09T21:22:56.503925+00:00",
+      "elapsed_seconds": 2.031,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 72,
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "label": "qualify-current-optimizations",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/perf-followup-20261109/qualify.gd"
+      ],
+      "started_utc": "2026-11-09T21:23:03.808905+00:00",
+      "elapsed_seconds": 33.125,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 190,
+      "log_sha256": "cf897730b37092ab49b5df850602cc9492560ff9ebc635094ccde2d789e5cd13"
+    },
+    {
+      "label": "retained-component-probe",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../research/performance/timber_companion_probe.gd",
+        "--",
+        "--pilot-baseline=res://../tmp/perf-followup-20261109/baseline/pilot.gd",
+        "--timber-baseline=res://../tmp/perf-followup-20261109/baseline/timber_visual_details.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/perf-followup-20261109/retained-probe.json"
+      ],
+      "started_utc": "2026-11-09T21:28:20.266057+00:00",
+      "elapsed_seconds": 42.343,
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_bytes": 190,
+      "log_sha256": "2b58909a17fce8b770a4fca5f144d9ef2fe3cae67655a664570cd9878793cffa"
+    }
+  ],
+  "uid_gate": {
+    "passed": true,
+    "method": "exact release_preflight.godot_uid_sidecars with candidate additions in a temporary index",
+    "added_paths": [
+      "app/tests/test_companions_behavior_manifest.gd.uid",
+      "app/tests/test_timber_paint_grid.gd",
+      "app/tests/test_timber_paint_grid.gd.uid"
+    ]
+  },
+  "limits": [
+    "Component editor-binary screens, not 1080p rendering, GPU, FPS, frame-tail or input-latency qualification.",
+    "Command fixtures use fixed synthetic snapshots; observed absolute costs vary between screens.",
+    "Mesh parity excludes material objects/properties; the separate stock/custom skin-fleet and LOD tests cover admission and material behavior.",
+    "Survey-only conflicting parallel encounter retains its failed separation gate in both versions.",
+    "Focused checks do not replace required full CI, release/export, sustained or physical qualification.",
+    "Current recorded identities supplement before/after probe source hashes; they do not lock all dependencies during execution."
+  ]
+}

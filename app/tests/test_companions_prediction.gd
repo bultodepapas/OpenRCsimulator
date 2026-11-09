@@ -38,7 +38,9 @@ func _state(speed: float = 15.0, bank: float = 0.0) -> PackedFloat64Array:
 func _run() -> void:
 	_check_segments()
 	_check_turns()
+	_check_ramp_transition()
 	_check_continuous_scoring()
+	_check_trace_score_parity()
 	_check_guidance()
 	print("companion prediction: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
@@ -92,6 +94,35 @@ func _check_turns() -> void:
 			_near("arc sagitta", Pilot._arc_chord_error(15.0, rate),
 				0.0 if absf(rate) < 1e-10 else 30.0 / absf(rate) * sin(rate * 0.25 / 4.0) ** 2)
 
+func _check_ramp_transition() -> void:
+	# Independent circular-arc integrals for +25 -> -25 degrees at 15 m/s.
+	# Samples straddle the first saturated interval (8) and include the horizon.
+	var endpoints := [
+		[7, 25.487683232191227, 5.673773243632486],
+		[8, 29.1575342374192, 6.440511640128651],
+		[9, 32.875112359741316, 6.925596244776369],
+		[32, 86.37924244091688, -46.51800864092562],
+	]
+	for direction: float in [-1.0, 1.0]:
+		var pilot := Pilot.new()
+		var velocity := PackedFloat64Array([15, 0, 0])
+		var traffic: Array = []
+		for position: PackedFloat64Array in [PackedFloat64Array([0, 0, -100]),
+			PackedFloat64Array([1000, 0, -100]), PackedFloat64Array([0, 1000, -100])]:
+			traffic.append({id = str(traffic.size()), is_player = false, position_ned = position,
+				velocity_ned = PackedFloat64Array([0, 0, 0])})
+		var threats: Array[Dictionary] = pilot._prepare_threats(traffic, velocity)
+		var bank: float = direction * deg_to_rad(25.0)
+		var result: Dictionary = pilot._score_bank(_state(), velocity, 15, bank, 0, -bank, 100, threats, true)
+		for endpoint: Array in endpoints:
+			var sample: int = endpoint[0]
+			var d0: float = result.distance_traces_m[0][sample]
+			var dn: float = result.distance_traces_m[1][sample]
+			var de: float = result.distance_traces_m[2][sample]
+			_near("ramped north at sample " + str(sample), (d0*d0 - dn*dn + 1000000.0) / 2000.0, endpoint[1])
+			_near("ramped east at sample " + str(sample), (d0*d0 - de*de + 1000000.0) / 2000.0, direction * endpoint[2])
+
+
 func _check_continuous_scoring() -> void:
 	var pilot := Pilot.new()
 	var velocity := PackedFloat64Array([15.0, 0.0, 0.0])
@@ -142,6 +173,31 @@ func _check_continuous_scoring() -> void:
 	_check("threat arc bow is not falsely clear", result.traffic_margin_m < 0.0)
 	_check("threat arc bow endpoints are clear", result.distance_traces_m[0][0] > 31.5
 		and result.distance_traces_m[0][1] > 31.5)
+
+func _check_trace_score_parity() -> void:
+	# Trace endpoints and the ordinary interval-CPA path must rank identical banks.
+	for wind: PackedFloat64Array in [PackedFloat64Array([0, 0, 0]), PackedFloat64Array([1.2, -0.5, 0])]:
+		for speed: float in [0.0, 2.999999, 3.0, 15.0]:
+			var pilot := Pilot.new()
+			pilot._planning_wind = wind
+			var velocity := PackedFloat64Array([speed + wind[0], wind[1], 2.0])
+			var peers: Array = [
+				{id = "player", is_player = true, position_ned = PackedFloat64Array([25, 31.49, -100]),
+					velocity_ned = PackedFloat64Array([-5, 0, 0])},
+				{id = "peer", is_player = false, position_ned = PackedFloat64Array([-10, 0, -60]),
+					velocity_ned = PackedFloat64Array([15, 0, 5]), bank_rad = -0.2},
+			]
+			var threats: Array[Dictionary] = pilot._prepare_threats(peers, velocity)
+			for bank: float in [-Pilot.AVOID_BANK_LIMIT_RAD, -1e-12, 0.0, Pilot.AVOID_BANK_LIMIT_RAD]:
+				var original := var_to_bytes(threats)
+				var traced: Dictionary = pilot._score_bank(_state(), velocity, speed, -bank, 0, bank, 24, threats, true)
+				var plain: Dictionary = pilot._score_bank(_state(), velocity, speed, -bank, 0, bank, 24, threats)
+				_check("trace retains every endpoint", traced.distance_traces_m.size() == 2
+					and traced.distance_traces_m[0].size() == 33 and traced.distance_traces_m[1].size() == 33)
+				traced.erase("distance_traces_m")
+				_check("trace and ordinary interval scores are byte-identical", var_to_bytes(traced) == var_to_bytes(plain))
+				_check("scoring preserves prepared threat bytes", var_to_bytes(threats) == original)
+
 
 func _check_guidance() -> void:
 	var loaded: Dictionary = Field.load_from()

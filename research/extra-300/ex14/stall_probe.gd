@@ -14,12 +14,15 @@ const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const P := preload("../../flight-test/pilot.gd")
+const FlightLog := preload("res://sim/flight_log.gd")
 
 const ALTITUDE := 300.0
 const HOLD_S := 5.0
 const RELEASE_S := 3.0
 const ENTRY_VS := 1.4  # entry speed / the FT card's power-off stall speed (summary-extra-d.md: 11.11 m/s)
 const VS_CARD := 11.11
+var output_dir := ""
+var failed := false
 
 
 func _initialize() -> void:
@@ -30,24 +33,48 @@ func _initialize() -> void:
 			id = arg.trim_prefix("--aircraft=")
 		elif arg.begins_with("--data="):
 			data_path = arg.trim_prefix("--data=")
+		elif arg.begins_with("--out="):
+			output_dir = arg.trim_prefix("--out=")
+	if not output_dir.is_empty():
+		if DirAccess.dir_exists_absolute(output_dir) or DirAccess.make_dir_recursive_absolute(output_dir) != OK:
+			printerr("Expected a fresh writable --out directory")
+			quit(2)
+			return
 	var data: String = Catalog.entry(id).data if data_path.is_empty() else data_path
 	for rates in ["normal", "full"]:
 		for ailerons in ["hands_off", "wings_level"]:
-			print(JSON.stringify(_stall(data, rates, ailerons)))
-	quit(0)
+			var result := _stall(data, rates, ailerons)
+			print(JSON.stringify(result))
+			if not output_dir.is_empty():
+				var report := FileAccess.open(output_dir.path_join(rates + "_" + ailerons + ".json"), FileAccess.WRITE)
+				report.store_string(JSON.stringify(result, "\t", true, true) + "\n")
+	print("EXTRA_STALL_PROBE_COMPLETE failures=", int(failed))
+	quit(1 if failed else 0)
 
 
 func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 	var session := Flight.new()
+	session.setup_stage_backend("gdscript_reference")
 	session.setup(data)
 	root.add_child(session)
 	session.input_enabled = false
 	session.crash_auto_restart = false
-	session.trim_at(ENTRY_VS * VS_CARD, "level")
+	var trim: Dictionary = session.trim_at(ENTRY_VS * VS_CARD, "level")
+	if not trim.get("ok", false):
+		failed = true
+		session.free()
+		return {case = "%s/%s" % [rates, ailerons], error = "entry trim refused", trim = trim}
 	session.set_start_altitude(ALTITUDE)
 	session.reset()
 	session.rate_profile = rates
 	var sim: Node = session.sim
+	var recorder: RefCounted = null
+	if not output_dir.is_empty():
+		recorder = FlightLog.new(session)
+		if recorder.start(output_dir.path_join(rates + "_" + ailerons + ".orfl")) != OK:
+			failed = true
+			session.free()
+			return {case = "%s/%s" % [rates, ailerons], error = "recording refused"}
 	var dt: float = sim.dt()
 	var ctx := {}
 	var out := {case = "%s/%s" % [rates, ailerons], rates_active = session.rates_active(),
@@ -74,6 +101,8 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 			at_stop = at_stop + 1 if c.pitch >= 0.999 else 0
 			if at_stop >= roundi(0.25 / dt):
 				t_stop = t
+				if recorder != null:
+					recorder.mark("elevator stop: " + rates + "/" + ailerons)
 				stop = {t_s = t, speed_mps = P.speed(s), alpha_deg = rad_to_deg(P.alpha(s)), pitch_deg = rad_to_deg(e[1]),
 					alt_m = P.altitude(s)}
 		var since := t - t_stop if t_stop >= 0.0 else -1.0
@@ -93,6 +122,8 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 			c.pitch = 0.0
 			c.roll = 0.0
 			if not out.has("hold_end"):
+				if recorder != null:
+					recorder.mark("release elevator")
 				out.hold_end = _row(s, since)
 			if since > HOLD_S + RELEASE_S:
 				out.release_end = _row(s, since)
@@ -104,7 +135,14 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 		sim.step()
 		if not sim.fault_reason.is_empty() or not session.crash.is_empty():
 			out.stopped = sim.fault_reason + str(session.crash)
+			failed = true
 			break
+	if t_stop < 0.0 or not out.has("release_end"):
+		out.error = "requested stop/hold/recovery did not complete"
+		failed = true
+	if recorder != null and recorder.stop() != OK:
+		out.error = "recording did not close"
+		failed = true
 	var late_rate := late_yaw / 2.0
 	out.stop = stop
 	out.elevator_at_stop_deg = _stop_deflection(session)

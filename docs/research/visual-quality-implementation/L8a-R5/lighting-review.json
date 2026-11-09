@@ -1,0 +1,3319 @@
+{
+  "format": "openrc-tree-card-lighting-review v1",
+  "date": "2026-11-09",
+  "step": "L8a-R5",
+  "observed_head": "7e8ce3a4d0ea88943979ff0403fbb3cfeb3c3fe9",
+  "sources": {
+    "app/render/treeline.gdshader": {
+      "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65",
+      "utf8_lf_sha256": "ac1ee408a766edcbe9d8b63d3d5305715ed6415de0adb5da1dbd7a21f8335c13"
+    },
+    "app/tests/test_treeline_backlight.gd": {
+      "sha256": "4f08d0e859ba91ebd5f94d18a83ca418bd26455b2c0cea3e46cd7c4a995c2ff6",
+      "utf8_lf_sha256": "4f08d0e859ba91ebd5f94d18a83ca418bd26455b2c0cea3e46cd7c4a995c2ff6"
+    },
+    "tools/trees/card_lighting_review.gd": {
+      "sha256": "eec0b9c7e651804c41716bc342f859d0ab36caa5f11eb5c4c36af84bbe0966f0",
+      "utf8_lf_sha256": "eec0b9c7e651804c41716bc342f859d0ab36caa5f11eb5c4c36af84bbe0966f0"
+    },
+    "tools/trees/quality_capture.gd": {
+      "sha256": "40b9ea1b466b33d00964d1232aff9761a99d926182fcd83c83d4fe898f452106",
+      "utf8_lf_sha256": "53a52364267d00f9129a820f7a2e21d7990b837ba9d370889d807d146f0ed1ae"
+    },
+    "app/render/atmosphere.gd": {
+      "sha256": "953c6151c13de0a7d28f8b46735abf0327bd1573666fa2eb86d48245cd02b36c",
+      "utf8_lf_sha256": "39eeff393ce8082a8ac4deacf2187e17a175713d74067cc8b666a01140e9e43c"
+    },
+    "app/render/time_of_day_lighting.gd": {
+      "sha256": "11e221d5062ad25c9e2e12749d4f39f58ca40f2cbaf9930455b05806f93c839f",
+      "utf8_lf_sha256": "4c768bdab12b187008792669cd8871590510884130cf6c4b5310ff065ab68bfd"
+    },
+    "app/environment/time_of_day_config.gd": {
+      "sha256": "2d2ca6d5aac290761c3380b3e54ec459400a373d32cb4cc0e2fbae1ed8d91d8f",
+      "utf8_lf_sha256": "f3f2a3c35cfbcd97d3cd4018685cf7fa7e3896da00f1a1d6f2dcf7611867d03d"
+    },
+    "app/render/field.gd": {
+      "sha256": "f779aeba9b20383fa6972b07da31e921575cf3b5aa4dfd2f912fde25481c0d57",
+      "utf8_lf_sha256": "f779aeba9b20383fa6972b07da31e921575cf3b5aa4dfd2f912fde25481c0d57"
+    },
+    "app/render/scene_detail.gd": {
+      "sha256": "987bac41e21c8358f928f689484e793dd3f408754061f0d2bacdb766d47d2ed2",
+      "utf8_lf_sha256": "f09958c92dd99d5e2404d47fac0a97f449095448a2a94b25db2a06742973d3c8"
+    }
+  },
+  "baseline_shader_sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6",
+  "environment": {
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "renderer": "gl_compatibility",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "lighting": {
+      "ambient_color": [
+        1,
+        1,
+        1
+      ],
+      "ambient_energy": 0.2,
+      "background": [
+        0.06,
+        0.06,
+        0.06
+      ],
+      "clock": 0.0,
+      "msaa": "4x",
+      "reflections": "disabled",
+      "shadows": false,
+      "tone_mapper": "linear",
+      "wind": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "production_source_sha256": {
+    "C:/DEVELOPMENT/OpenRCsimulator/app/../assets/landscape/vegetation/derived/landscapelab_tree_2026/Fagus.glb": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+    "C:/DEVELOPMENT/OpenRCsimulator/app/../assets/landscape/vegetation/derived/landscapelab_tree_2026/pine_joined.glb": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+    "C:/DEVELOPMENT/OpenRCsimulator/app/../assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus.glb": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+    "res://../tools/trees/card_lighting_review.gd": "eec0b9c7e651804c41716bc342f859d0ab36caa5f11eb5c4c36af84bbe0966f0",
+    "res://assets/landscape/trees/atlas.png": "546b74371c95853922e244e4ce66ddcdaf0c1a39a38b426d92aa1d4faf586ff2",
+    "res://assets/landscape/trees/catalog.json": "ad6a3f27b62fed496cdcd809ddf2b2559be94649af9ffed03f84ecfd1bf329bc",
+    "res://assets/landscape/trees/foliage_mask.png": "eacd14a4dcd041ba0037119163613b6255544ecef6158672914539f10893c139",
+    "res://assets/landscape/vegetation/catalog.json": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+    "res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+    "res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+    "res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+    "res://render/field_tree_detail.gd": "0754e3181362c4382fd1cb41e675e25c11a8422fc3d008c1bd07c704c5c89e0a",
+    "res://render/shader_clock.gd": "c560bb552c14364963cd40fbbcb372748df893b0a43cdd6f789e1a58eb294b12",
+    "res://render/tree_assets.gd": "214c028f723119fced431564f466ab91af3ef7579b37f4729d521c50a8dc2e69",
+    "res://render/tree_identity.gdshaderinc": "e0895d0239ed87a0695081a366bdb90c872d027104c1de8454b990553fa8c353",
+    "res://render/tree_wind.gdshaderinc": "23186f9443854cb53874441b9750c5eaa8adf4d416cb07ce9e7cdd3063e4e20a",
+    "res://render/treeline.gd": "d0e7ce7c28f04effae9c98df0468d1ed589cc19008c2cc25d0309e7472e48a54",
+    "res://render/treeline.gdshader": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65",
+    "res://scenery/imported_vegetation.gd": "ff57d1aba9f1a92911c91e7070ca0b855d9c431ad28224cac4ef5880f19f4e3e"
+  },
+  "diagnostics": [
+    {
+      "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/sweep",
+      "images": 48,
+      "report_sha256": "08e5c1abc2a4e9450c449915e8cfded1b00da43eb4cc83cc7d3be51a8d49b1b5",
+      "neutral_backlight": null,
+      "neutral_backlight_applied": null,
+      "effective_card_uniforms": {
+        "0": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.1,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "1": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.1,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "2": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.1,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        }
+      }
+    },
+    {
+      "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/neutral-025",
+      "images": 48,
+      "report_sha256": "819c953784537bb1808f1021ebb45c5634d55d723b953e427edfb735bc9c8a64",
+      "neutral_backlight": 0.25,
+      "neutral_backlight_applied": true,
+      "effective_card_uniforms": {
+        "0": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "1": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "2": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        }
+      }
+    },
+    {
+      "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/neutral-035",
+      "images": 48,
+      "report_sha256": "f8b0a2fdc4ffe7c3276641386e39ed180d5ae620415aa6d6d6a1b82990989671",
+      "neutral_backlight": 0.35,
+      "neutral_backlight_applied": true,
+      "effective_card_uniforms": {
+        "0": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.35,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "1": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.35,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "2": {
+          "baseline": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "mask_only": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.400000005960464,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          },
+          "neutral_leaf": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.35,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        }
+      }
+    },
+    {
+      "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/production",
+      "images": 24,
+      "report_sha256": "a0e99a3f20d19d15836008cca8fb6d03ca324ce4513678f0861493bd1a55589d",
+      "neutral_backlight": 0.1,
+      "neutral_backlight_applied": false,
+      "effective_card_uniforms": {
+        "0": {
+          "production": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "1": {
+          "production": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "2": {
+          "production": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        }
+      }
+    },
+    {
+      "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/production-final",
+      "images": 24,
+      "report_sha256": "bd04ecc9a3489615fbc9bedaabb6302ff2ca3a2a1e9d12a465ca98c1ef68fa27",
+      "neutral_backlight": 0.1,
+      "neutral_backlight_applied": false,
+      "effective_card_uniforms": {
+        "0": {
+          "production": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "1": {
+          "production": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        },
+        "2": {
+          "production": {
+            "atlas": "res://assets/landscape/trees/atlas.png",
+            "backlight": 0.25,
+            "bark_gain": 1.0,
+            "base_dark": 0.649999976158142,
+            "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
+            "frame_sizes": [
+              1.12500095367432,
+              1.12500095367432,
+              1.12500095367432
+            ],
+            "leaf_gain": 1.0,
+            "leaf_saturation": 0.949999988079071,
+            "underside": -0.5,
+            "up_bias": 0.5,
+            "wind_enabled": true
+          }
+        }
+      }
+    }
+  ],
+  "native_pixels": {
+    "baseline": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "checks": 5,
+      "failures": 2,
+      "godot": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "metrics": {
+        "albedo_normalized_backlight_gain_ratio": 1.98803726947287,
+        "ambient_max_delta_8bit": 0,
+        "bark_max_delta_8bit": 34
+      },
+      "renderer": "gl_compatibility",
+      "shader_sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+    },
+    "candidate": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "checks": 5,
+      "failures": 0,
+      "godot": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "metrics": {
+        "albedo_normalized_backlight_gain_ratio": 0.969573976753229,
+        "ambient_max_delta_8bit": 0,
+        "bark_max_delta_8bit": 0
+      },
+      "renderer": "gl_compatibility",
+      "shader_sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+    }
+  },
+  "synthetic_comparisons": [
+    {
+      "slot": 0,
+      "light": "front",
+      "baseline_to_candidate": {
+        "changed_pixels": 170116,
+        "max_channel_delta": 7,
+        "mean_channel_delta": 0.05878150720164609
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 0,
+      "light": "side",
+      "baseline_to_candidate": {
+        "changed_pixels": 251348,
+        "max_channel_delta": 32,
+        "mean_channel_delta": 0.5392542759773663
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 0,
+      "light": "rear",
+      "baseline_to_candidate": {
+        "changed_pixels": 253520,
+        "max_channel_delta": 32,
+        "mean_channel_delta": 0.9272579089506173
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 0,
+      "light": "ambient",
+      "baseline_to_candidate": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 1,
+      "light": "front",
+      "baseline_to_candidate": {
+        "changed_pixels": 121815,
+        "max_channel_delta": 3,
+        "mean_channel_delta": 0.03968685699588478
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 1,
+      "light": "side",
+      "baseline_to_candidate": {
+        "changed_pixels": 195861,
+        "max_channel_delta": 26,
+        "mean_channel_delta": 0.4179004308127572
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 1,
+      "light": "rear",
+      "baseline_to_candidate": {
+        "changed_pixels": 196388,
+        "max_channel_delta": 25,
+        "mean_channel_delta": 0.6668115033436214
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 1,
+      "light": "ambient",
+      "baseline_to_candidate": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 2,
+      "light": "front",
+      "baseline_to_candidate": {
+        "changed_pixels": 41293,
+        "max_channel_delta": 3,
+        "mean_channel_delta": 0.015892650462962964
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 2,
+      "light": "side",
+      "baseline_to_candidate": {
+        "changed_pixels": 62404,
+        "max_channel_delta": 36,
+        "mean_channel_delta": 0.15130240483539095
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 2,
+      "light": "rear",
+      "baseline_to_candidate": {
+        "changed_pixels": 62423,
+        "max_channel_delta": 38,
+        "mean_channel_delta": 0.2290449781378601
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "slot": 2,
+      "light": "ambient",
+      "baseline_to_candidate": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "repeated_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    }
+  ],
+  "field_comparisons": [
+    {
+      "profile": "legacy",
+      "view": "pilot_north",
+      "baseline_sha256": "09f74edf303968db17e2e4721ffc9810c49c85a55149e6d214f030d42a5c0a3b",
+      "candidate_sha256": "2fbaf90dab2393cd9e7525156adf1594ff868de881a74f3dead92a1c097ff2bd",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        8.0,
+        -300.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 133,
+        "primitives": 318826,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 6887,
+      "max_channel_delta": 9,
+      "mean_channel_delta": 0.004017007458847736
+    },
+    {
+      "profile": "legacy",
+      "view": "front_woods_zoom",
+      "baseline_sha256": "04c8db83ac926546dcc2b0d4b83b84b8e10ab5bc62984d809224ac3f1adb5852",
+      "candidate_sha256": "5da7c7c7eef0256ab3d9baff9548ffa0bd0aa93d6577a61c7a3ca2e68d059238",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        9.0,
+        -430.0
+      ],
+      "fov": 10.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 54,
+        "primitives": 175719,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 24464,
+      "max_channel_delta": 9,
+      "mean_channel_delta": 0.01803096064814815
+    },
+    {
+      "profile": "legacy",
+      "view": "aerial_overview",
+      "baseline_sha256": "d69d53b77236048dba59b1769bc70c6034bced8d96db0f4c9d03dcccc7778346",
+      "candidate_sha256": "c9096b5f28494f20e4972fa7b27028ed0e37a900050c053082bc034f94ac3414",
+      "eye": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "at": [
+        0.0,
+        0.0,
+        20.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 376,
+        "primitives": 473897,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 46416,
+      "max_channel_delta": 14,
+      "mean_channel_delta": 0.07946759259259259
+    },
+    {
+      "profile": "legacy",
+      "view": "car_park",
+      "baseline_sha256": "7d3d25fd5bf0aa27bffe057f879c1d30689155e4c904b862de669292b39fa45e",
+      "candidate_sha256": "00e19434019124008d5e896a99c6eadb41147d98ac6800a2d16f8ecb77e2714a",
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "at": [
+        -12.0,
+        0.5,
+        39.0
+      ],
+      "fov": 45.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 155,
+        "primitives": 294378,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 21315,
+      "max_channel_delta": 23,
+      "mean_channel_delta": 0.040834780092592594
+    },
+    {
+      "profile": "noon",
+      "view": "pilot_north",
+      "baseline_sha256": "dc288471f10ccf0a5da3ec04933d7812810a7f6465eaa29d263f51f209437d03",
+      "candidate_sha256": "aa9f096e3bbe8229a6cb979ecdbd7a8208a7c00222c19896a24341356cc9d903",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        8.0,
+        -300.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 133,
+        "primitives": 318826,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 6711,
+      "max_channel_delta": 11,
+      "mean_channel_delta": 0.006551729681069959
+    },
+    {
+      "profile": "noon",
+      "view": "front_woods_zoom",
+      "baseline_sha256": "3939da1a03723b4583ccf40b58d7d7e2d9665a4ba97f25eeebc73be070901b10",
+      "candidate_sha256": "1925ab3b4044d3338b13b2a4702008c4548323ec6a94c774f74dd18ec60d6239",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        9.0,
+        -430.0
+      ],
+      "fov": 10.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 54,
+        "primitives": 175719,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 25378,
+      "max_channel_delta": 26,
+      "mean_channel_delta": 0.03369196887860082
+    },
+    {
+      "profile": "noon",
+      "view": "aerial_overview",
+      "baseline_sha256": "40098db93b15da506fe76453ab5a37b7822b8c56e05ef46a001d003d24733963",
+      "candidate_sha256": "a60099627ba41c161807c0ee540a4b19844dbf9ebe42e26efcd533f2a7aced65",
+      "eye": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "at": [
+        0.0,
+        0.0,
+        20.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 374,
+        "primitives": 473897,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 41036,
+      "max_channel_delta": 7,
+      "mean_channel_delta": 0.026404642489711933
+    },
+    {
+      "profile": "noon",
+      "view": "car_park",
+      "baseline_sha256": "3b3d1e13c737cf38ca75fa460c2f3b925d61c9b441f7092ab01aae36ed99e11b",
+      "candidate_sha256": "145b5010ff07a8a8defd684f2d62f65f8ca92f992ad82b82d5a8a9e8d2dd97ee",
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "at": [
+        -12.0,
+        0.5,
+        39.0
+      ],
+      "fov": 45.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 153,
+        "primitives": 294378,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 22171,
+      "max_channel_delta": 20,
+      "mean_channel_delta": 0.02788532021604938
+    },
+    {
+      "profile": "low-sun",
+      "view": "pilot_north",
+      "baseline_sha256": "1d2c0cd60f277f151072076800ffd501fd8b1de3beae6116418a13c82172c8d8",
+      "candidate_sha256": "416a439d26277f419bc69e272d4855b0aab807e1012bf46dfbfeedd1b810420f",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        8.0,
+        -300.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 135,
+        "primitives": 318830,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 6219,
+      "max_channel_delta": 7,
+      "mean_channel_delta": 0.0038340727880658435
+    },
+    {
+      "profile": "low-sun",
+      "view": "front_woods_zoom",
+      "baseline_sha256": "a01b242f55abf22d46580982c37061c9a4069707d37f71feab17abc08c8cbf6e",
+      "candidate_sha256": "d138f29c330a286d1dcd8bce8d5da8fc9fe5d04f1f6f1cad287f8e05142a6d82",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        9.0,
+        -430.0
+      ],
+      "fov": 10.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 55,
+        "primitives": 175721,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 23803,
+      "max_channel_delta": 16,
+      "mean_channel_delta": 0.017878568672839507
+    },
+    {
+      "profile": "low-sun",
+      "view": "aerial_overview",
+      "baseline_sha256": "bff6cfcb6c70b14dc552b49809bd58f04f1015ac2acd093a993a168d99877820",
+      "candidate_sha256": "22b50c2f93e0a9d7a34b01e9ee9d948052012c64c82372b5c5ba1b42f645cd09",
+      "eye": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "at": [
+        0.0,
+        0.0,
+        20.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 374,
+        "primitives": 473897,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 43283,
+      "max_channel_delta": 8,
+      "mean_channel_delta": 0.041296457047325104
+    },
+    {
+      "profile": "low-sun",
+      "view": "car_park",
+      "baseline_sha256": "5f5a0f5001c948531160c62f3a6954d3facb77e2a012c9cbc6c3a5ef5b29eae8",
+      "candidate_sha256": "8bea35ce9d1419dab40a928c63d1cb5ea6a7721b1df0b8d67d5baaa45ba293f4",
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "at": [
+        -12.0,
+        0.5,
+        39.0
+      ],
+      "fov": 45.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 152,
+        "primitives": 294324,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 19254,
+      "max_channel_delta": 14,
+      "mean_channel_delta": 0.018740354938271604
+    },
+    {
+      "profile": "dusk",
+      "view": "pilot_north",
+      "baseline_sha256": "8222a7b855613e8b2ddd7107fba3bc45082dcc5fa4dd76f541daf9729213dd49",
+      "candidate_sha256": "20f81f3972e2bdd64df922adcd2a2874992648a63e8e98328efafcb514dea104",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        8.0,
+        -300.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 117,
+        "primitives": 318606,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 29,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 4.661779835390946e-06
+    },
+    {
+      "profile": "dusk",
+      "view": "front_woods_zoom",
+      "baseline_sha256": "82af06e38a0aab4dca6875214166c99231019a69481c6db8f149ac9dafed70c4",
+      "candidate_sha256": "5331a2838c5576cc79ce2d38471e9282129f869c163d6fe825f0f44d79daf0d3",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        9.0,
+        -430.0
+      ],
+      "fov": 10.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 49,
+        "primitives": 175717,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 157,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 2.5237911522633746e-05
+    },
+    {
+      "profile": "dusk",
+      "view": "aerial_overview",
+      "baseline_sha256": "8663c8acce61378d16d7f53d785ee610b829e65e5b9335176e2f86a771afbc64",
+      "candidate_sha256": "757af706cc86e1de0051dcdbf5303bcd397679e908396e8ed0fe7e71d628f887",
+      "eye": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "at": [
+        0.0,
+        0.0,
+        20.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 344,
+        "primitives": 472332,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 415,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 6.703317901234568e-05
+    },
+    {
+      "profile": "dusk",
+      "view": "car_park",
+      "baseline_sha256": "83d3493a3a2429bdb657509dbf7d3bdcb4fbad2811dde9cf41e14226ba3ff335",
+      "candidate_sha256": "8f79e28b2af0bb94f76d7f44998c986c698310c29ec18f75ccbe6c63da3f8e86",
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "at": [
+        -12.0,
+        0.5,
+        39.0
+      ],
+      "fov": 45.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 129,
+        "primitives": 292909,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 224,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 3.60082304526749e-05
+    },
+    {
+      "profile": "night",
+      "view": "pilot_north",
+      "baseline_sha256": "3a2a5a8774069a654b875859891429c8445b323cefc8dfeb4b5f6ff44007898c",
+      "candidate_sha256": "3a2a5a8774069a654b875859891429c8445b323cefc8dfeb4b5f6ff44007898c",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        8.0,
+        -300.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 117,
+        "primitives": 318606,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    {
+      "profile": "night",
+      "view": "front_woods_zoom",
+      "baseline_sha256": "1086f14c0fcf6f21842870559d50329715092da10f25cd28b18c4e33ea8e9f8c",
+      "candidate_sha256": "1086f14c0fcf6f21842870559d50329715092da10f25cd28b18c4e33ea8e9f8c",
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "at": [
+        0.0,
+        9.0,
+        -430.0
+      ],
+      "fov": 10.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 49,
+        "primitives": 175717,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    {
+      "profile": "night",
+      "view": "aerial_overview",
+      "baseline_sha256": "d33e0e6fbdebc92c4442cfa66eb552b8ab0a3808883dab8b0d236088c972ce93",
+      "candidate_sha256": "d33e0e6fbdebc92c4442cfa66eb552b8ab0a3808883dab8b0d236088c972ce93",
+      "eye": [
+        160.0,
+        140.0,
+        -140.0
+      ],
+      "at": [
+        0.0,
+        0.0,
+        20.0
+      ],
+      "fov": 50.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 344,
+        "primitives": 472332,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    {
+      "profile": "night",
+      "view": "car_park",
+      "baseline_sha256": "3f11d0caf1a1dd8a0a2c0fe542db44241a33b95d01aebdf74622e67a5fdca774",
+      "candidate_sha256": "3f11d0caf1a1dd8a0a2c0fe542db44241a33b95d01aebdf74622e67a5fdca774",
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "at": [
+        -12.0,
+        0.5,
+        39.0
+      ],
+      "fov": 45.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 129,
+        "primitives": 292909,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    {
+      "profile": "legacy",
+      "view": "west_cards_close",
+      "baseline_sha256": "bd1f959e488a14596deb819c3b8d48e8ac0c2429239dc01ed67a8aec2613cd61",
+      "candidate_sha256": "5024d573bb528afc83d4da7167628f134ce68608877c850d28a2b39e2e8676cc",
+      "eye": [
+        -495.0,
+        5.0,
+        220.0
+      ],
+      "at": [
+        -534.5,
+        13.0,
+        249.5
+      ],
+      "fov": 48.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 26,
+        "primitives": 97720,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 389680,
+      "max_channel_delta": 37,
+      "mean_channel_delta": 0.9596672453703704
+    },
+    {
+      "profile": "noon",
+      "view": "west_cards_close",
+      "baseline_sha256": "62014224ce32f8977272ed49c89f782edda64ee4784451ed383c906c67414935",
+      "candidate_sha256": "76aba7d97a1843f0d5c015b84dd5cb63163a193271cdab6bb66c981a5353edfb",
+      "eye": [
+        -495.0,
+        5.0,
+        220.0
+      ],
+      "at": [
+        -534.5,
+        13.0,
+        249.5
+      ],
+      "fov": 48.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 26,
+        "primitives": 97720,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 380410,
+      "max_channel_delta": 42,
+      "mean_channel_delta": 0.6823828125
+    },
+    {
+      "profile": "low-sun",
+      "view": "west_cards_close",
+      "baseline_sha256": "bc970d6719f271038bc0664dda485a81484595a028da76647397148ea58c7afb",
+      "candidate_sha256": "33a8b9a32c5f52200208065cd27cf83e28cea7da192d166c372f836c6e069a3b",
+      "eye": [
+        -495.0,
+        5.0,
+        220.0
+      ],
+      "at": [
+        -534.5,
+        13.0,
+        249.5
+      ],
+      "fov": 48.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 26,
+        "primitives": 97720,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 359586,
+      "max_channel_delta": 25,
+      "mean_channel_delta": 0.4272239904835391
+    },
+    {
+      "profile": "dusk",
+      "view": "west_cards_close",
+      "baseline_sha256": "83f388c1eb3d15405d31795b4b8c0910cf4f5c0ba7247cc43fdf63fd0ec8a4bb",
+      "candidate_sha256": "f26a39ccba16ded8697b01fd4b218d91b457ccead281ac69f85743194fac09cb",
+      "eye": [
+        -495.0,
+        5.0,
+        220.0
+      ],
+      "at": [
+        -534.5,
+        13.0,
+        249.5
+      ],
+      "fov": 48.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 22,
+        "primitives": 97720,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 5181,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 0.0008351015946502058
+    },
+    {
+      "profile": "night",
+      "view": "west_cards_close",
+      "baseline_sha256": "a62373b3dbbb27080edc04bb976e5dad85c88c069b57187cd9749896bfddbd0f",
+      "candidate_sha256": "a62373b3dbbb27080edc04bb976e5dad85c88c069b57187cd9749896bfddbd0f",
+      "eye": [
+        -495.0,
+        5.0,
+        220.0
+      ],
+      "at": [
+        -534.5,
+        13.0,
+        249.5
+      ],
+      "fov": 48.0,
+      "clock": 0.0,
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "counters": {
+        "draws": 22,
+        "primitives": 97720,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    }
+  ],
+  "field_inputs": {
+    "legacy": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/legacy-baseline",
+        "report_sha256": "d5765ceb01f9c72052628448f98ee864d652516a111a86bc23417eda1297bfd4",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/legacy-candidate",
+        "report_sha256": "ec7f400db54896bc445f976850a3f2a1122946eec059adc083ef0bf02ab6caaf",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      }
+    },
+    "noon": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/noon-baseline",
+        "report_sha256": "ed38b105949227516cb3df0474de04f51cbf011beeee8987b6083df264f162a0",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/noon-candidate",
+        "report_sha256": "6782b0b9ec4748caca71283bae7c7e450fc49ed3feb8f9376ef998719c78b685",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      }
+    },
+    "low-sun": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/low-sun-baseline",
+        "report_sha256": "14772f8180b02316c91ba7ca2f13bec8291f54779d9045a14625b998b75c692b",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/low-sun-candidate",
+        "report_sha256": "8d9396676398e23fa6b7013feb4694e09f94ecee1ac92f29a34476ad2b9f778c",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      }
+    },
+    "dusk": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/dusk-baseline",
+        "report_sha256": "4d0323728e375bb07365592d37fb5b5d078b0bd2df71a8d7e8302ef87d589aaa",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/dusk-candidate",
+        "report_sha256": "140f4cf213019e327febf537e0fbe297cd248f6aa66bd7c168cd1b453bb8f56d",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      }
+    },
+    "night": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/night-baseline",
+        "report_sha256": "753896b7712a20ef9b787a6a200af29839f85f4225ce8f8b51bf395b1fad9c5d",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/night-candidate",
+        "report_sha256": "fa04d24f6c9381db21e622d5fd0d93ac786bd867fe9a25bb69c0111dbb7f075e",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        },
+        "near_grass_source": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+        "meadow_source": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396"
+      }
+    },
+    "west-legacy": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-legacy-baseline",
+        "report_sha256": "ddcba381f3fdd4939e52118494a2ce681adb972af68e9c31414174ec3943fba2",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        }
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-legacy-candidate",
+        "report_sha256": "52d5d566180977c0e8346c2844b527aa379bff285ffd44775d5ca19c7b7d9a17",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        }
+      }
+    },
+    "west-noon": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-noon-baseline",
+        "report_sha256": "d225f147ef46f611627173a18f8a5cc7f8c992187dbafa457dc6a5480ed93dcd",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        }
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-noon-candidate",
+        "report_sha256": "565dabe6c71a68304a802ce1a84971f5429b9ce573fea2e97a9f76fdb0d395d6",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        }
+      }
+    },
+    "west-low-sun": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-low-sun-baseline",
+        "report_sha256": "f2d5004c791c6102270388bfec6c55363072c3e146e86b673aef930683b078ef",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        }
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-low-sun-candidate",
+        "report_sha256": "5d7763f5556b9ec97b802ed6c96dddaaac9ca392b70fbc1257b5ee866912e749",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        }
+      }
+    },
+    "west-dusk": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-dusk-baseline",
+        "report_sha256": "d3fe37ed7f7bf471837c281c34a8bce03fa59a170c8a9ea4faead2c122f17b77",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        }
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-dusk-candidate",
+        "report_sha256": "76c6392f09c08a503dbc37e645970f317b1a12f9da7c5ed5389153048bbe4bfd",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        }
+      }
+    },
+    "west-night": {
+      "baseline": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-night-baseline",
+        "report_sha256": "695883e4cabeb726dae3eabd2551b0f9c5558284840f3546eec3587359603551",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "materials": 1,
+          "path": "res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+          "sha256": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6"
+        }
+      },
+      "candidate": {
+        "directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-night-candidate",
+        "report_sha256": "0161b8f4ddbbcc66cd298935fbb1473f6c1095993625cc4a01992918c5a75fcb",
+        "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+        "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+        "shader_source": {
+          "path": "res://render/treeline.gdshader",
+          "sha256": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65"
+        }
+      }
+    }
+  },
+  "field_lighting": {
+    "legacy": {
+      "mode": "legacy"
+    },
+    "noon": {
+      "config": {
+        "date": "2026-03-20",
+        "format": "openrc-lighting v1",
+        "latitude_deg": 0.0,
+        "local_seconds": 43200,
+        "location_name": "Reference field (synthetic)",
+        "longitude_deg": 0.0,
+        "mode": "astronomical",
+        "utc_offset_minutes": 0
+      },
+      "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+      "exposure": 0.6,
+      "format": "openrc-visual-context v1",
+      "illumination_kind": "estimated",
+      "mode": "fixed",
+      "moon": "not-modelled",
+      "profile": "openrc-lighting-curves v1",
+      "solar": {
+        "azimuth_deg": 91.3508190967778,
+        "direction_ned": [
+          -0.000767848264455414,
+          0.0325626972411591,
+          -0.999469399810431
+        ],
+        "elevation_deg": 88.1334460994826,
+        "errors": [],
+        "hour_angle_deg": -1.86603553948009,
+        "julian_date": 2461120.0,
+        "ok": true
+      }
+    },
+    "low-sun": {
+      "config": {
+        "date": "2026-03-20",
+        "format": "openrc-lighting v1",
+        "latitude_deg": 0.0,
+        "local_seconds": 63600,
+        "location_name": "Reference field (synthetic)",
+        "longitude_deg": 0.0,
+        "mode": "astronomical",
+        "utc_offset_minutes": 0
+      },
+      "config_sha256": "ef225da95a90649435da0413035abaab21bb4fe68caa409e6fe4ac083c5ae215",
+      "exposure": 0.6,
+      "format": "openrc-visual-context v1",
+      "illumination_kind": "estimated",
+      "mode": "fixed",
+      "moon": "not-modelled",
+      "profile": "openrc-lighting-curves v1",
+      "solar": {
+        "azimuth_deg": 270.049674627115,
+        "direction_ned": [
+          0.000860799533979591,
+          -0.99286438189334,
+          -0.119245872849832
+        ],
+        "elevation_deg": 6.84858176964146,
+        "errors": [],
+        "hour_angle_deg": 83.1514156808869,
+        "julian_date": 2461120.23611111,
+        "ok": true
+      }
+    },
+    "dusk": {
+      "config": {
+        "date": "2026-03-20",
+        "format": "openrc-lighting v1",
+        "latitude_deg": 0.0,
+        "local_seconds": 65400,
+        "location_name": "Reference field (synthetic)",
+        "longitude_deg": 0.0,
+        "mode": "astronomical",
+        "utc_offset_minutes": 0
+      },
+      "config_sha256": "a2aca2bfb66eda23615423fec96517091d1b2e5797129d90f538af35e9658cca",
+      "exposure": 0.6,
+      "format": "openrc-visual-context v1",
+      "illumination_kind": "estimated",
+      "mode": "fixed",
+      "moon": "not-modelled",
+      "profile": "openrc-lighting-curves v1",
+      "solar": {
+        "azimuth_deg": 270.057556960967,
+        "direction_ned": [
+          0.00100449307489731,
+          -0.999934558997836,
+          0.011395995589058
+        ],
+        "elevation_deg": -0.652956584228282,
+        "errors": [],
+        "hour_angle_deg": 90.6529569136615,
+        "julian_date": 2461120.25694444,
+        "ok": true
+      }
+    },
+    "night": {
+      "config": {
+        "date": "2026-03-20",
+        "format": "openrc-lighting v1",
+        "latitude_deg": 0.0,
+        "local_seconds": 0,
+        "location_name": "Reference field (synthetic)",
+        "longitude_deg": 0.0,
+        "mode": "astronomical",
+        "utc_offset_minutes": 0
+      },
+      "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+      "exposure": 0.6,
+      "format": "openrc-visual-context v1",
+      "illumination_kind": "estimated",
+      "mode": "fixed",
+      "moon": "not-modelled",
+      "profile": "openrc-lighting-curves v1",
+      "solar": {
+        "azimuth_deg": 262.76166332457,
+        "direction_ned": [
+          -0.00421738666746885,
+          -0.0332053595591734,
+          0.999439651878113
+        ],
+        "elevation_deg": -88.081830980773,
+        "errors": [],
+        "hour_angle_deg": 178.097106317655,
+        "julian_date": 2461119.5,
+        "ok": true
+      }
+    }
+  },
+  "checked_runs": [
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-lighting-baseline-regression-l5foeh7q/report.json",
+      "report_sha256": "b99e0406edd6964df65a67390fc7a07089f3a898b0beb02d2bed82afc9d20843",
+      "label": "card-lighting-baseline-regression",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/vegetation-card-lighting-20261109/test_treeline_backlight.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/baseline-pixels.json"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-lighting-candidate-pixels-ob6j42km/report.json",
+      "report_sha256": "ddad2e3a0c3642c2a23b50db6d159dc665048956fdb9a18506f9c650dd2a0a0b",
+      "label": "card-lighting-candidate-pixels",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "tree-card backlight: 5 checks, 0 failed"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_treeline_backlight.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/candidate-pixels.json"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-lighting-production-review-23pnlfd5/report.json",
+      "report_sha256": "438e3c8c41c8810135001994519d315c372c17713444b23bbb4fab165ee2f39d",
+      "label": "card-lighting-production-review",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE CARD LIGHTING COMPLETE: 24 images"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/card_lighting_review.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/production",
+        "--variants=production"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-lighting-sweep-2fihlqhx/report.json",
+      "report_sha256": "1fee89c06475d901b89a94d970c838d4a3ce40b3340c5ffb47c2f0cfddfd4057",
+      "label": "card-lighting-sweep",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE CARD LIGHTING COMPLETE: 48 images"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/card_lighting_review.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/sweep",
+        "--shader-source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+        "--variants=all"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-neutral-quarter-_h46svsx/report.json",
+      "report_sha256": "7bc366567b749b41d135e54277c7221d8c7bf14b1907ecb0a8d3dceaa3dfe739",
+      "label": "card-neutral-quarter",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE CARD LIGHTING COMPLETE: 48 images"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/card_lighting_review.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/neutral-025",
+        "--shader-source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+        "--variants=all",
+        "--neutral-backlight=0.25"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-neutral-third-bou037x9/report.json",
+      "report_sha256": "8f0e8eb2c18c12c29e3190529f3058ebbb6bd52426eb95395aee335742fc04f7",
+      "label": "card-neutral-third",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE CARD LIGHTING COMPLETE: 48 images"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/card_lighting_review.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/neutral-035",
+        "--shader-source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+        "--variants=all",
+        "--neutral-backlight=0.35"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-pixels-headless-skip-vdzykcis/report.json",
+      "report_sha256": "3aad2a54da712125afeefec28c8b1f28b6ece3962d7fe4d7a12b6e8ddb12ccfc",
+      "label": "card-pixels-headless-skip",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "skip tree-card backlight pixels: a native framebuffer is required"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_treeline_backlight.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-pixels-parse-989d4dto/report.json",
+      "report_sha256": "9644661788af58d23b9ea98ba0252c649bafbd237432eef29f9882a088c812d4",
+      "label": "card-pixels-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/vegetation-card-lighting-20261109/test_treeline_backlight.gd",
+        "--check-only"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-review-default-production-8n_ml94r/report.json",
+      "report_sha256": "31c44a069b176efdb644821912e826762bac6d813cac546c155fa2ef54480a77",
+      "label": "card-review-default-production",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE CARD LIGHTING COMPLETE: 24 images"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/card_lighting_review.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/production-final"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-review-final-parse-r0rsk_q4/report.json",
+      "report_sha256": "1a536f695548db062b45aa34c801bd96f46b4271864310b0d5235b901dd17886",
+      "label": "card-review-final-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://../tools/trees/card_lighting_review.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/card-world-capture-parse-zfx6wewa/report.json",
+      "report_sha256": "f3debaee3af1fe4fef85cc087c07ea81a9cf199e6aedb9174a6985e8df6d9c0a",
+      "label": "card-world-capture-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--check-only"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/cards-world-baseline-phwz3pgz/report.json",
+      "report_sha256": "21e0bdc48b99565b6eda4dd31e6f5fe0bc8aef2724507bd72d020b65c626629a",
+      "label": "cards-world-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/world-baseline"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/detailed-tree-boundary-ypp67f93/report.json",
+      "report_sha256": "73ba4ac83b6e00f7dc8caee7f6367623740df04b1e49175a8dd866d8fb50c096",
+      "label": "detailed-tree-boundary",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_field_tree_detail.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/dusk-baseline-fdj527y1/report.json",
+      "report_sha256": "87bd6c90558cbc3ebc470ebdefc076433419f5b673239bad5672a4520b34206f",
+      "label": "dusk-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\dusk-baseline",
+        "--time-of-day=18:10",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/dusk-candidate-_mpyc27y/report.json",
+      "report_sha256": "52a4d1e4b27be24ed6321a038a80a17d66748f43c4b2bcabb3f2bb0c833738bc",
+      "label": "dusk-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\dusk-candidate",
+        "--time-of-day=18:10",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/legacy-baseline-npzeu_ew/report.json",
+      "report_sha256": "c37dfb487ccc016752fa5eeeef0db5248b5da112ccb24c5994aea0f17f3f0ee2",
+      "label": "legacy-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\legacy-baseline",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/legacy-candidate-dti6jb8q/report.json",
+      "report_sha256": "6024fb05c7a365d61e772f3e8229b6c50ff65e0781025d4750c0c66f1099369b",
+      "label": "legacy-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\legacy-candidate"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/low-sun-baseline-mpf8_jni/report.json",
+      "report_sha256": "7c1600e524f08c2ebfa211c15673333276d6b09cf3ec73eff7c424f77b58abf3",
+      "label": "low-sun-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\low-sun-baseline",
+        "--time-of-day=17:40",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/low-sun-candidate-c34in789/report.json",
+      "report_sha256": "d33cdf503cac87d8fcb0bd7f424523a859a500feefdde18bf36b1e3f8c92b48f",
+      "label": "low-sun-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\low-sun-candidate",
+        "--time-of-day=17:40",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/night-baseline-o5s74zmi/report.json",
+      "report_sha256": "bbba110998212e87cc02bc61a1fc9f89069a815e2e00591686c63fe5d33f4ec9",
+      "label": "night-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\night-baseline",
+        "--time-of-day=00:00",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/night-candidate-32palb01/report.json",
+      "report_sha256": "38535b8cd48f8b96db44c7049786556685263954cb0fa2d1cfcd946b3ae86490",
+      "label": "night-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\night-candidate",
+        "--time-of-day=00:00",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/noon-baseline-oe8q9ucu/report.json",
+      "report_sha256": "d834f92eb3d4c0af7f792e3077c1d242373cbf9027856830b734e257877bc5d2",
+      "label": "noon-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\noon-baseline",
+        "--time-of-day=12:00",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/noon-candidate-68btc82o/report.json",
+      "report_sha256": "f59d68af19662b0d664c6f57b7d2fe25bdbe6cbdbab2855bf8a829adc09ab8c6",
+      "label": "noon-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=pilot_north,front_woods_zoom,east_cards_close,aerial_overview,car_park",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\noon-candidate",
+        "--time-of-day=12:00",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/tree-card-assets-8rfaxkb3/report.json",
+      "report_sha256": "e111b631b4c56f3c98d07ed4c397f57932afefddb9431f315b55a1100cec974a",
+      "label": "tree-card-assets",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_tree_assets.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/tree-card-contract-1xsnxwkl/report.json",
+      "report_sha256": "1a60e9196eb6cf9b614efd7dc278aa37570d7d5c1cf2b930d8e6ff1bd1cbba2f",
+      "label": "tree-card-contract",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_treeline.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-cards-framing-qq1a0bxy/report.json",
+      "report_sha256": "c58bb52393d7f1e98d42153e81e49e8ebef0d1640240609c854a7a975cda2ca2",
+      "label": "west-cards-framing",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/west-framing"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-dusk-baseline-1f8dltb0/report.json",
+      "report_sha256": "a03379e16b57eb8e4e2a9a56f53bee2db0973df03d4e1754b3c3a8a21611e2d3",
+      "label": "west-dusk-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-dusk-baseline",
+        "--time-of-day=18:10",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-dusk-candidate-0qwbp9vv/report.json",
+      "report_sha256": "e392492ba4f9f5f10fd72e20b16d479c7dbaf31c2b7c478286253dbde772bd71",
+      "label": "west-dusk-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-dusk-candidate",
+        "--time-of-day=18:10",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-legacy-baseline-9j5bl8c4/report.json",
+      "report_sha256": "17cef44ac9e1b7ea3865e642265cbc0f9591f2a81d2a1c54df7cd604573e9014",
+      "label": "west-legacy-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-legacy-baseline",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-legacy-candidate-h595flp2/report.json",
+      "report_sha256": "73daded574fe90d3fb6b17c0cced1067a5c9c5114c8131f34ab24294b03ecba2",
+      "label": "west-legacy-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-legacy-candidate"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-low-sun-baseline-7548sry2/report.json",
+      "report_sha256": "e99f7d057060abe5334238d13593336c198af04bf80643bab4f838654363585f",
+      "label": "west-low-sun-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-low-sun-baseline",
+        "--time-of-day=17:40",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-low-sun-candidate-64wpddhp/report.json",
+      "report_sha256": "8d33058ac6983abc7ce6aa3c34851ea82b287380e46d3d62a891423610298fd3",
+      "label": "west-low-sun-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-low-sun-candidate",
+        "--time-of-day=17:40",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-night-baseline-ibr4r3gc/report.json",
+      "report_sha256": "309969b2c371705ea37b4b7d40d53e8b2ad7efe320f1c053faad5d2d8b8e667f",
+      "label": "west-night-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-night-baseline",
+        "--time-of-day=00:00",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-night-candidate-ho_3x84c/report.json",
+      "report_sha256": "dc3e4c8fc9fd6f6efa3890d30a9bdf5a638ce101019b73a247a062d10ada8375",
+      "label": "west-night-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-night-candidate",
+        "--time-of-day=00:00",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-noon-baseline-jk284u77/report.json",
+      "report_sha256": "8e69f129a077ff366f4d319504f72ccf1d80963f184117a01fc0a059e07dcf69",
+      "label": "west-noon-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-noon-baseline",
+        "--time-of-day=12:00",
+        "--date=2026-03-20",
+        "--card_shader_source=res://../tmp/vegetation-card-lighting-20261109/baseline_treeline.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-card-lighting-20261109/checks/west-noon-candidate-tg6uxoiv/report.json",
+      "report_sha256": "4dbb26ec9b96f42be71fd964378db4e82071426f8c07188ca1587536c6f571cc",
+      "label": "west-noon-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "TREE QUALITY COMPLETE"
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=west_cards_close",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-card-lighting-20261109\\west-noon-candidate",
+        "--time-of-day=12:00",
+        "--date=2026-03-20"
+      ]
+    }
+  ],
+  "exclusions": [
+    "east_cards_close from the initial ten reports was poorly framed and is excluded; west_cards_close replaces it in fresh folders.",
+    "Snapshots exclude the flowing world and moon, motion, aircraft readability, performance qualification and export qualification.",
+    "Shared-workspace parallel edits are outside this scoped verification."
+  ],
+  "complete": true
+}

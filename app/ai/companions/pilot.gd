@@ -395,16 +395,24 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 	var terrain_horizon: float = minf(PREDICTION_HORIZON_S, REACTION_MARGIN_S)
 	minimum_terrain_margin = minf(minimum_terrain_margin,
 		clearance - down_rate * terrain_horizon - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M)
+	var saturated_turn_rate: float = 0.0
+	var turn_rate_saturated := false
 	for sample_index in range(sample_count + 1):
 		var previous_north: float = own_north
 		var previous_east: float = own_east
 		var previous_down: float = own_down
 		var own_segment_error: float = 0.0
 		if sample_index > 0:
-			var midpoint_s: float = (float(sample_index) - 0.5) * PREDICTION_STEP_S
-			var ramp: float = clampf((midpoint_s - REACTION_MARGIN_S) / BANK_RESPONSE_S, 0.0, 1.0)
-			var bank: float = lerpf(current_bank, candidate_bank, ramp)
-			var turn_rate: float = G * tan(bank) / maxf(own_speed, 3.0)
+			var turn_rate: float = saturated_turn_rate
+			if not turn_rate_saturated:
+				var midpoint_s: float = (float(sample_index) - 0.5) * PREDICTION_STEP_S
+				var ramp: float = clampf((midpoint_s - REACTION_MARGIN_S) / BANK_RESPONSE_S, 0.0, 1.0)
+				var bank: float = lerpf(current_bank, candidate_bank, ramp)
+				turn_rate = G * tan(bank) / maxf(own_speed, 3.0)
+				if ramp == 1.0:
+					# Reuse the original lerpf result, including its transition rounding.
+					saturated_turn_rate = turn_rate
+					turn_rate_saturated = true
 			var half_turn: float = 0.5 * turn_rate * PREDICTION_STEP_S
 			var middle_heading: float = heading + half_turn
 			var arc_distance: float = own_speed * PREDICTION_STEP_S * _sinc(half_turn)
@@ -427,8 +435,11 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 			var north_delta: float = positions[offset] - own_north
 			var east_delta: float = positions[offset + 1] - own_east
 			var down_delta: float = positions[offset + 2] - own_down
-			var distance: float = AvoidanceMath.sqrt_(north_delta * north_delta
-				+ east_delta * east_delta + down_delta * down_delta)
+			# Later scores use interval CPA; endpoint distances are only trace data.
+			var distance: float = 0.0
+			if sample_index == 0 or include_trace:
+				distance = AvoidanceMath.sqrt_(north_delta * north_delta
+					+ east_delta * east_delta + down_delta * down_delta)
 			var interval_distance: float = distance
 			if sample_index > 0:
 				interval_distance = _relative_segment_distance(

@@ -8,11 +8,11 @@ const KITS := "res://assets/skin-kit/models.json"
 # Exact, reviewed asset pair: historical custom paint uses identical UVs/materials.
 const MOONRUNNER_LEGACY_ASSET_SHA256 := "3e14a512fac3048e45cdeb46cbad7cc16f20fe41e5b6957b7df516c80a9b17ac"
 const MOONRUNNER_DERIVATIVE_ASSET_SHA256 := "54d67d9bbfe4ce4abdc4bafa523c3bf812422d6336ba1d0f151a2970e087b0f0"
-# TT-21 LOD repair: unchanged base triangles, paint UVs and material groups keep the
+# TT-21 LOD repair and grid keys: unchanged base triangles, paint UVs and material groups keep the
 # distributed Timber kit valid. The full new source-bound adapter identity is exact;
 # any later source/manifest change must be reviewed again, not admitted by this pair.
 const TIMBER_LEGACY_PAINT_IDENTITY := "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
-const TIMBER_LOD_PAINT_IDENTITY := "45bd45bff9cd6617839d24b8ab84200f5edb6de82c226939df7bb2c3b280bf69"
+const TIMBER_LOD_PAINT_IDENTITY := "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c"
 const ROOT := "user://skins/"
 const ARCHIVE_LIMIT := 32 * 1024 * 1024
 const MANIFEST_LIMIT := 64 * 1024

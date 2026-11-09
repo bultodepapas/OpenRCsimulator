@@ -4,7 +4,7 @@ const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
 const CurrentDetails := preload("res://aircraft/timber_visual_details.gd")
 const CustomPaint := preload("res://aircraft/custom_skin.gd")
 const LEGACY_ID := "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
-const LOD_ID := "45bd45bff9cd6617839d24b8ab84200f5edb6de82c226939df7bb2c3b280bf69"
+const LOD_ID := "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c"
 
 var details: Script = CurrentDetails
 var checks := 0

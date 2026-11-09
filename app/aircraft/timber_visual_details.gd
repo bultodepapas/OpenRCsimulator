@@ -411,7 +411,7 @@ static func _build_paint_face_index(paint_faces: Array[Dictionary]) -> Dictionar
 		for x in range(min_cell.x, max_cell.x + 1):
 			for y in range(min_cell.y, max_cell.y + 1):
 				for z in range(min_cell.z, max_cell.z + 1):
-					var key := "%d:%d:%d" % [x, y, z]
+					var key := Vector3i(x, y, z)
 					var bucket: Array = index.get(key, [])
 					bucket.append(paint_face)
 					index[key] = bucket
@@ -558,7 +558,7 @@ static func _covering_paint_at(point: Vector3, normal: Vector3, paint_faces: Arr
 			floori(point.y / PAINT_FACE_GRID_CELL_M),
 			floori(point.z / PAINT_FACE_GRID_CELL_M)
 		)
-		candidate_faces = paint_face_index.get("%d:%d:%d" % [cell.x, cell.y, cell.z], [])
+		candidate_faces = paint_face_index.get(cell, [])
 	for face_variant in candidate_faces:
 		var paint_face: Dictionary = face_variant
 		var paint_normal: Vector3 = paint_face.normal

@@ -9,7 +9,7 @@
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
-    "sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+    "sha256": "873b23caa426419231f19b929df29874572e82138c56b52c1899f8cb3b0882f1",
     "dependencies": {
       "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
     }
@@ -59,6 +59,6 @@
     "path": "res://data/ai/companions/behavior-manifest.json",
     "format": "openrc-ai-behavior-manifest v1",
     "normalization": "utf8-lf",
-    "sha256": "c50dbc02ba4eda3b55dcf561ca8cc554945a26b2cf68eed00624819e7ad4393e"
+    "sha256": "93101856228074bcaa7916fdad7cc7a88be79aa7f7d28189e3f8d0b416c79edb"
   }
 }

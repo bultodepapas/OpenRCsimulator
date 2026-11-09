@@ -180,6 +180,37 @@ For a vegetation replacement comparison, explicitly select the same wind setting
 
 `palette_probe.gd --out=<new-absolute-json>` uses native Compatibility readback to compare the production world-space patch function against the CPU reference at all field-tree positions, including a translated parent. See the [retained command and exact fixture](../../docs/research/visual-quality-implementation/L6c/tree-completion/palette/README.md) for its versioned arguments and tolerance.
 
+## Tree-card lighting (L8a-R5)
+
+`card_lighting_review.gd --variants=production --out=<new absolute folder>`
+captures the production cards and their matching downloaded source meshes:
+oak, beech and pine, each under front/side/rear/ambient-only light at 1920×1080.
+Camera, height/yaw identity, material values, source hashes and PNG hashes are
+recorded. Wind is zero, exposure and ambient are fixed, and shadows/reflections
+are disabled to isolate direct-light behavior. Run on native Compatibility
+through the checked runner; require `TREE CARD LIGHTING COMPLETE: 24 images`.
+
+For an expression sweep, pass `--variants=all --shader-source=<legacy shader>`
+and `--neutral-backlight=0.25`. This mode requires the original unambiguous
+`BACKLIGHT = backlight * ALBEDO;` expression and captures 48 images, including
+mask-only and neutral-leaf diagnostics. Production mode always uses the supplied
+shader unchanged. The neutral diagnostic argument does not override production.
+
+`app/tests/test_treeline_backlight.gd` checks bark isolation, single albedo
+multiplication and the absence of ambient-only backlighting on native pixels.
+Its optional `--out=<new absolute JSON>` records metrics and shader/adapter
+identity. Headless execution explicitly skips pixels.
+
+The field `quality_capture.gd` supports `--time-of-day=HH:MM --date=YYYY-MM-DD`
+using production SDR lighting snapshots. Without a time argument its legacy
+lighting stays in use. The `front_woods_zoom` and `west_cards_close` views help
+review field cards. Capture-only `--card_shader_source=<shader snapshot>` swaps
+the existing field-owned card materials and records the source hash; it adds no
+trees and leaves all other field construction intact. Use identical explicit
+1080p dimensions, scene detail and wind settings on both sides. These snapshots
+do not include Field World's flowing sky or moon and do not measure flight cost.
+See [the scoped evidence](../../docs/research/visual-quality-implementation/L8a-R5/README.md).
+
 ## Decorative woodland margins
 
 `python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` reuses the existing downloaded shrub atlas and short-grass mesh. It adds four small default-field patches, with five high-quality batches and 1,956 triangles; balanced quality is a stable subset and low quality omits this decoration.

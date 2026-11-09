@@ -23,7 +23,8 @@ const vec3 CROWN_HALF_W = vec3(0.416383, 0.324097, 0.187867);
 const vec3 CROWN_HALF_H = vec3(0.366, 0.426, 0.289);
 uniform float up_bias = 0.5;
 uniform float underside = -0.5;
-uniform float backlight = 0.4;
+// L8a-R5: neutral direct-light coefficient; the renderer applies leaf albedo once.
+uniform float backlight : hint_range(0.0, 1.0) = 0.25;
 uniform float base_dark = 0.65;
 uniform float leaf_saturation = 0.95;
 uniform float leaf_gain = 1.0;
@@ -100,7 +101,8 @@ void fragment() {
     q /= max(1.0, length(q));
     q.y = max(q.y, underside);
     NORMAL = normalize(vec3(q, sqrt(max(0.0, 1.0 - dot(q, q)))) + up_bias * up_view);
-    BACKLIGHT = backlight * ALBEDO;
+    // Source material IDs keep opaque trunks/branches out of the leaf-light path.
+    BACKLIGHT = vec3(backlight) * foliage;
     ROUGHNESS = 1.0;
     METALLIC = 0.0;
 }

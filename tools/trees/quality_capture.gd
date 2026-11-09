@@ -9,6 +9,8 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Clock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
+const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const SnapshotLighting = preload("res://render/time_of_day_lighting.gd")
 
 var args: Dictionary = {}
 var viewport: SubViewport
@@ -17,6 +19,7 @@ var camera: Camera3D
 var content: Node3D
 var output: String
 var views: Array[Dictionary] = []
+var lighting: Dictionary = {}
 var report: Dictionary = {format = "openrc-tree-quality v1", captures = [], samples = [], complete = false}
 
 
@@ -59,11 +62,18 @@ func _run() -> void:
 	root.add_child(viewport)
 	stage = Node3D.new()
 	viewport.add_child(stage)
+	if args.has("time-of-day"):
+		var configured := LightingConfig.from_args(args)
+		if not configured.ok:
+			_fail(str(configured.errors))
+			return
+		lighting = SnapshotLighting.snapshot(configured.config)
+		report["lighting"] = SnapshotLighting.context(configured.config, lighting)
 	var env := WorldEnvironment.new()
-	env.environment = Atmosphere.environment()
+	env.environment = Atmosphere.environment(lighting)
 	Atmosphere.update_clouds(env.environment, 0.0)
 	stage.add_child(env)
-	var sun := Atmosphere.create_sun(stage)
+	var sun := Atmosphere.create_sun(stage, lighting)
 	report["directional_shadows_enabled"] = sun.shadow_enabled
 	report["directional_shadow_distance_m"] = sun.directional_shadow_max_distance
 	camera = Camera3D.new()
@@ -167,10 +177,33 @@ func _field() -> bool:
 		if captured_builder.reload() != OK:
 			_fail("cannot compile the source-snapshot field builder")
 			return false
-		content = captured_builder.build(loaded.field)
+		content = captured_builder.build(loaded.field, lighting)
 	else:
-		content = Field.build(loaded.field)
+		content = Field.build(loaded.field, lighting)
 	stage.add_child(content)
+	if args.has("card_shader_source"):
+		var shader_path := str(args.card_shader_source)
+		var shader_code := FileAccess.get_file_as_string(shader_path)
+		if shader_code.is_empty():
+			_fail("card_shader_source must be readable")
+			return false
+		var shader := Shader.new()
+		shader.code = shader_code
+		var materials: Array[ShaderMaterial] = []
+		for batch: MultiMeshInstance3D in content.find_children("*", "MultiMeshInstance3D", true, false):
+			for surface in batch.multimesh.mesh.get_surface_count():
+				var material := batch.multimesh.mesh.surface_get_material(surface) as ShaderMaterial
+				if material != null and material.shader.resource_path == "res://render/treeline.gdshader" and not materials.has(material):
+					materials.append(material)
+		if materials.is_empty():
+			_fail("card shader comparison found no production tree-card materials")
+			return false
+		for material in materials:
+			material.shader = shader
+			material.set_shader_parameter("backlight", RenderingServer.shader_get_parameter_default(shader.get_rid(), "backlight"))
+		report["card_shader_source"] = {path = shader_path, sha256 = FileAccess.get_sha256(shader_path), materials = materials.size()}
+	else:
+		report["card_shader_source"] = {path = "res://render/treeline.gdshader", sha256 = FileAccess.get_sha256("res://render/treeline.gdshader")}
 	var foreground := content.get_node_or_null("NearGrass")
 	if foreground != null:
 		report["near_grass"] = {source = grass_source, source_sha256 = FileAccess.get_sha256(grass_source),
@@ -212,6 +245,9 @@ func _field() -> bool:
 			at = Frames.ned_to_render([568.0, 296.0, -5.0]), fov = 50.0})
 		views.append({id = "forest_maple", eye = Frames.ned_to_render([-455.0, -737.0, -4.0]),
 			at = Frames.ned_to_render([-480.0, -770.0, -5.0]), fov = 45.0})
+		views.append({id = "front_woods_zoom", eye = Vector3(0.0, 1.7, 0.0), at = Vector3(0.0, 9.0, -430.0), fov = 10.0})
+		views.append({id = "west_cards_close", eye = Frames.ned_to_render([-220.0, -495.0, -5.0]),
+			at = Frames.ned_to_render([-249.5, -534.5, -13.0]), fov = 48.0})
 		var pilot: Dictionary = loaded.field.pilot
 		var pn := float(pilot.north)
 		var pe := float(pilot.east)
