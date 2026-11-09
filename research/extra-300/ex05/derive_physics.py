@@ -734,6 +734,7 @@ data = {
                 # rate and the inflated tau for its stall (docs/research/flight-dynamics/elevator-repair-2026-10-13.md).
                 "downwash_gradient": q(deps, "1", "derived", D("d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence")),
             },
+            "wing_separated_force_offset": q(0.25, "1", "estimated", "EX-14i candidate: maximum aft shift in strip chords relative to the modeled wing force point; quasi-steady separated-pressure estimate, SAND80-2114 NACA 0015 moment trend; not Extra flight identification"),
             "vertical": {
                 "area": q(Sv, "m2", "derived", D("fin + rudder side polygon from " + GEO_SRC)),
                 "position": q(le(xv_ac, fin_cy), "m", "derived", D("fin ac: quarter chord at the area-centroid height")),

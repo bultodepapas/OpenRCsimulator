@@ -1206,6 +1206,19 @@
                 }
               }
             },
+            "wing_separated_force_offset": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 0.25
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
             "wing_section_cm_ac": {
               "$ref": "#/$defs/evidence",
               "properties": {
@@ -7602,6 +7615,11 @@
                       "required": [
                         "wing_section_cm_ac"
                       ]
+                    },
+                    {
+                      "required": [
+                        "wing_separated_force_offset"
+                      ]
                     }
                   ]
                 }
@@ -7651,6 +7669,28 @@
         "not": {
           "required": [
             "crash_tolerance"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "aero": {
+            "properties": {
+              "surfaces": {
+                "required": [
+                  "wing_separated_force_offset"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "flaps"
           ]
         }
       }

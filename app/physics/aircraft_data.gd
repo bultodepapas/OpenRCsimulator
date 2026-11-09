@@ -242,6 +242,8 @@ static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictio
 				return {ok=false,errors=tolerance_errors,warnings=result.warnings,model={}}
 			result.model.crash_tolerance = tolerance
 		if raw.has("flaps"):
+			if result.model.surfaces.has("wing_separated_force_offset"):
+				return {ok=false,errors=PackedStringArray(["aero.surfaces.wing_separated_force_offset: flap force/moment composition is not supported"]),warnings=result.warnings,model={}}
 			var flap_errors := PackedStringArray()
 			var flap_model := _flaps(flap_errors, raw.get("flaps"), result.model.reference, result.model.envelope)
 			if not flap_errors.is_empty():
@@ -521,6 +523,8 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}, layout: D
 	if not envelope.is_empty():
 		envelope.station_ys = station_ys(span, chords)
 	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope, domain, layout)
+	if surfaces.has("wing_separated_force_offset") and (tailless or raw.has("flaps")):
+		errors.append("aero.surfaces.wing_separated_force_offset: supported only on conventional wings without flaps")
 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
 		if not _induced_map(envelope, surfaces, aero, area, span, chords):
 			errors.append("aero.surfaces: induced wing calibration cannot reproduce CLa with a finite positive section slope in [0.1, 50] 1/rad")
@@ -2561,6 +2565,10 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var cm_ac = _dq(domain, errors, "aero.surfaces.wing_section_cm_ac", node.get("wing_section_cm_ac"), "1", -0.3, 0.1)
 		if cm_ac != null:
 			out.wing_cm_ac = float(cm_ac)
+	if node.has("wing_separated_force_offset"):
+		var cp_offset = _dq(domain, errors, "aero.surfaces.wing_separated_force_offset", node.get("wing_separated_force_offset"), "1", 0.0, 0.25)
+		if cp_offset != null:
+			out.wing_separated_force_offset = float(cp_offset)
 	# Optional (P51-25): the fuselage's destabilizing yaw derivative about the ARP, a Munk-type pure couple in the local
 	# model (Aero._local_loads). The oracle's Cnb then carries fin + body; absent = 0 = no couple, byte-identical.
 	if node.has("body_cn_beta"):

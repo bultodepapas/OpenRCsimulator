@@ -22,6 +22,7 @@ const RELEASE_S := 3.0
 const ENTRY_VS := 1.4  # entry speed / the FT card's power-off stall speed (summary-extra-d.md: 11.11 m/s)
 const VS_CARD := 11.11
 var output_dir := ""
+var case_filter := ""
 var failed := false
 
 
@@ -35,6 +36,12 @@ func _initialize() -> void:
 			data_path = arg.trim_prefix("--data=")
 		elif arg.begins_with("--out="):
 			output_dir = arg.trim_prefix("--out=")
+		elif arg.begins_with("--case="):
+			case_filter = arg.trim_prefix("--case=")
+	if not case_filter.is_empty() and not ["normal/hands_off", "normal/wings_level", "full/hands_off", "full/wings_level"].has(case_filter):
+		printerr("Unknown --case: " + case_filter)
+		quit(2)
+		return
 	if not output_dir.is_empty():
 		if DirAccess.dir_exists_absolute(output_dir) or DirAccess.make_dir_recursive_absolute(output_dir) != OK:
 			printerr("Expected a fresh writable --out directory")
@@ -43,6 +50,8 @@ func _initialize() -> void:
 	var data: String = Catalog.entry(id).data if data_path.is_empty() else data_path
 	for rates in ["normal", "full"]:
 		for ailerons in ["hands_off", "wings_level"]:
+			if not case_filter.is_empty() and case_filter != rates + "/" + ailerons:
+				continue
 			var result := _stall(data, rates, ailerons)
 			print(JSON.stringify(result))
 			if not output_dir.is_empty():

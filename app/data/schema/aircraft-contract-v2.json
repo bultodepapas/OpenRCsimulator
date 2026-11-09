@@ -517,7 +517,8 @@
         "tail_k",
         "tail_CD90",
         "vertical",
-        "tailless"
+        "tailless",
+        "wing_separated_force_offset"
       ]
     },
     {
@@ -548,7 +549,8 @@
         "tail_k",
         "tail_CD90",
         "horizontal",
-        "vertical"
+        "vertical",
+        "wing_separated_force_offset"
       ]
     },
     {

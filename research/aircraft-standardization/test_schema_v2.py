@@ -33,6 +33,7 @@ EXPECTED_FLEET = {
     "sebart_avanti_s_a200",
     "synthetic_stik_electric_4s",
     "synthetic_stik_electric_6s",
+    "stik_electric_6s",
     "synthetic_stik_electric_4s_battery",
     "synthetic_stik_electric_6s_battery",
     "stik_glow_55ax_2t",
@@ -112,13 +113,13 @@ def build_cases(app: Path) -> list[Case]:
                    if read_json(path).get("vehicle") != "rotorcraft"}
     if set(fleet_paths) != EXPECTED_FLEET:
         raise AssertionError(
-            "expected the five catalog, four electric, five glow, and Turbo Lumber v2 files; "
+            "expected the registered fixed-wing v2 data files; "
             f"missing={sorted(EXPECTED_FLEET - set(fleet_paths))}, "
             f"extra={sorted(set(fleet_paths) - EXPECTED_FLEET)}"
         )
     fleet = {name: read_json(path) for name, path in fleet_paths.items()}
     if any(data.get("format") != "openrc-aircraft v2" for data in fleet.values()):
-        raise AssertionError("all fifteen current fixed-wing aircraft data files must be explicitly migrated to v2")
+        raise AssertionError("all current fixed-wing aircraft data files must be explicitly migrated to v2")
     stik = fleet["jensen_ugly_stik_60"]
     p51 = fleet["p51d_mustang_120"]
     avanti = fleet["sebart_avanti_s_a200"]
@@ -134,6 +135,17 @@ def build_cases(app: Path) -> list[Case]:
         data = deepcopy(source)
         cases.append(Case(name, data, schema_ok, loader_ok, classification))
         return data
+
+    # EX-14i: the separated-wing force offset is opt-in, conventional, and flap-free.
+    extra = fleet["gp_extra_300s_60"]
+    offset = extra["aero"]["surfaces"]["wing_separated_force_offset"]
+    no_offset = add("separated-offset:absent", extra, schema_ok=True, loader_ok=True)
+    no_offset["aero"]["surfaces"].pop("wing_separated_force_offset")
+    for name, source in (("flapped", avanti), ("tailless", fleet["moonrunner_x99"])):
+        unsupported = add(f"separated-offset:{name}", source, schema_ok=False, loader_ok=False)
+        unsupported["aero"]["surfaces"]["wing_separated_force_offset"] = deepcopy(offset)
+    excessive_offset = add("separated-offset:excessive", extra, schema_ok=False, loader_ok=False)
+    excessive_offset["aero"]["surfaces"]["wing_separated_force_offset"]["value"] = 0.250001
 
     # Optional feed-line and pickup data retain stable resource/inventory IDs,
     # authored geometry and source quantities. The line fluid is a second liquid

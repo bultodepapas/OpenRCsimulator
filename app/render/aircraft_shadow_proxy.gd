@@ -8,6 +8,8 @@ const ENGINE_HASH := "cafc17a192acf67903910a68aeb3c076c0907a4b"
 const MANIFEST_SHA256 := "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
 # This is the imported LOD selection criterion, not a certified geometric-error bound.
 const MAX_LOD_DISTANCE := 0.0005
+## Packed conversion copies native-endian words; serialized indices are little-endian.
+static var _native_little_endian := PackedByteArray([1, 0, 0, 0]).to_int32_array()[0] == 1
 
 
 static func source_supported(model: Node3D) -> bool:
@@ -158,12 +160,33 @@ static func _select_lod(surface: Dictionary, vertex_count: int, base_count: int,
 			return failure
 		seen[distance] = true
 		var indices := PackedInt32Array()
-		indices.resize(raw.size() / index_bytes)
-		for index in indices.size():
-			var value := raw.decode_u16(index * 2) if index_bytes == 2 else raw.decode_u32(index * 4)
-			if value >= vertex_count:
+		if indices.resize(raw.size() / index_bytes) != OK:
+			return failure
+		if index_bytes == 2 and _native_little_endian:
+			# Read two u16 values per native word, retaining validation of every LOD.
+			var words: PackedInt32Array = raw.to_int32_array() if raw.size() % 4 == 0 \
+				else raw.slice(0, raw.size() - 2).to_int32_array()
+			if words.size() != raw.size() / 4:
 				return failure
-			indices[index] = value
+			for pair in words.size():
+				var word: int = words[pair]
+				var low: int = word & 0xffff
+				var high: int = (word >> 16) & 0xffff
+				if low >= vertex_count or high >= vertex_count:
+					return failure
+				indices[pair * 2] = low
+				indices[pair * 2 + 1] = high
+			if indices.size() % 2 != 0:
+				var last := raw.decode_u16(raw.size() - 2)
+				if last >= vertex_count:
+					return failure
+				indices[indices.size() - 1] = last
+		else:
+			for index in indices.size():
+				var value := raw.decode_u16(index * 2) if index_bytes == 2 else raw.decode_u32(index * 4)
+				if value >= vertex_count:
+					return failure
+				indices[index] = value
 		if distance <= max_distance and distance > float(result.distance) and indices.size() < base_count:
 			result.indices = indices
 			result.distance = distance

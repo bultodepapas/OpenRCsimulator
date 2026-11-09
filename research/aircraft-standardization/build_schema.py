@@ -757,12 +757,15 @@ def add_v2_overlay(schema: dict, spec: dict):
                   "then": {"properties": {"aero": {"not": {"required": ["ground_effect"]}, "properties": {"surfaces": {
                       "required": ["tailless"], "not": {"anyOf": [
                           {"required": ["horizontal"]}, {"required": ["wing_aileron_effectiveness"]},
-                          {"required": ["wing_section_cm_ac"]}]}}}}}},
+                          {"required": ["wing_section_cm_ac"]}, {"required": ["wing_separated_force_offset"]}]}}}}}},
                   "else": {"properties": {"aero": {"properties": {"surfaces": {
                       "required": ["horizontal", "wing_aileron_effectiveness"], "not": {"required": ["tailless"]}}}}}}})
     rules.append({"if": branch_condition(["capabilities", "damage"], "tolerant_hull"),
                   "then": {"required": ["crash_tolerance"]},
                   "else": {"not": {"required": ["crash_tolerance"]}}})
+    rules.append({"if": {"properties": {"aero": {"properties": {"surfaces": {
+        "required": ["wing_separated_force_offset"]}}}}},
+        "then": {"not": {"required": ["flaps"]}}})
     schema["allOf"] = list(schema.get("allOf", [])) + rules
     add_physical_identity(schema)
     return schema

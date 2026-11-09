@@ -475,7 +475,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	# D11j: the section's pitching moment about its aerodynamic centre as a pure couple per strip (q_i·S_i·c_i·Cm_ac);
 	# 0 (absent) adds no arithmetic, so aircraft without it stay byte-identical to the frozen oracle.
 	var cm_ac: float = surfaces.get("wing_cm_ac", 0.0)
-	var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if cm_ac != 0.0 else PackedFloat64Array()
+	var separated_offset: float = float(surfaces.get("wing_separated_force_offset", 0.0))
+	var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if cm_ac != 0.0 or separated_offset != 0.0 else PackedFloat64Array()
 	# X8-04: tailless strips act at their own swept stations; covered strips add the elevon's camber couple.
 	var tailless: Dictionary = surfaces.get("tailless", {})
 	var station_x: PackedFloat64Array = tailless.get("station_x", PackedFloat64Array())
@@ -596,6 +597,14 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		if cm_ac != 0.0 and plane_speed > 0.0:
 			section_my = lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
 			my_sum += section_my
+		if separated_offset != 0.0 and weight > 0.0:
+			# Quasi-steady aft migration relative to the existing strip force point.
+			# Use actual FRD normal force, including drag and spatial/rate flow.
+			var chord_i: float = station_chords[i] if i < station_chords.size() else float(ref.c)
+			var shift: float = separated_offset * weight * _separated_offset_fraction(M.atan2_(f2, f0))
+			var separated_couple: float = shift * chord_i * fz # [−shift*c,0,0] × F, pitch component
+			section_my += separated_couple
+			my_sum += separated_couple
 		if not station_x.is_empty() and plane_speed > 0.0:
 			# X8-04: the elevon's camber couple, fading with the strip's separation like the attached section it describes.
 			var elevon_couple: float = lift_q * plane_speed * plane_speed * station_area * elevon_chords[i] \
@@ -1386,3 +1395,20 @@ static func _spatial_finite(values: PackedFloat64Array, size: int) -> bool:
 
 static func _spatial_failure(message: String) -> Dictionary:
 	return {ok = false, law = SPATIAL_LOADS_LAW, errors = PackedStringArray([message])}
+
+
+## Bounded C1 continuation for atan2's [−PI, PI] domain, periodic at its seam.
+## Keep angle/90 degrees from 15 to 60 degrees; flatten the endpoint slopes.
+## Reverse flow is a numerical continuation, not independently calibrated data.
+static func _separated_offset_fraction(alpha: float) -> float:
+	var angle := absf(alpha)
+	if angle > PI / 2.0:
+		angle = PI - angle
+	var linear := angle / (PI / 2.0)
+	if linear < 1.0 / 6.0:
+		var t := maxf(0.0, linear) * 6.0
+		return (2.0*t*t - t*t*t) / 6.0
+	if linear <= 2.0 / 3.0:
+		return maxf(0.0, linear)
+	var t := 3.0 * linear - 2.0
+	return (2.0 + t + t*t - t*t*t) / 3.0

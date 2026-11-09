@@ -1302,6 +1302,12 @@
           "source": "research/extra-300/ex05/derive_physics.py: d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence"
         }
       },
+      "wing_separated_force_offset": {
+        "value": 0.25,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "EX-14i candidate: maximum aft shift in strip chords relative to the modeled wing force point; quasi-steady separated-pressure estimate, SAND80-2114 NACA 0015 moment trend; not Extra flight identification"
+      },
       "vertical": {
         "area": {
           "value": 0.051391,

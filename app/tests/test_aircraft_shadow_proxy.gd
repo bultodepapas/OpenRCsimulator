@@ -21,6 +21,7 @@ func _initialize() -> void:
 	_test_empty_and_root_mesh()
 	_test_invalid_limits_and_bounds()
 	_test_serialized_lod_validation()
+	_test_packed_u16_validation()
 	_test_scope_and_policy()
 	_test_session_context()
 	_test_session_context_producer()
@@ -335,6 +336,32 @@ func _test_serialized_lod_validation() -> void:
 	]
 	for index in invalid_records.size():
 		_check(not _select(invalid_records[index], 5, 9, 1.0).get("ok", false), "malformed LOD record is rejected: " + str(index))
+
+
+func _test_packed_u16_validation() -> void:
+	var saved_endian: bool = proxy._native_little_endian
+	for native: bool in [saved_endian, false]:
+		proxy._native_little_endian = native
+		for count: int in [3, 6, 9, 12, 15, 18, 21]:
+			var values := PackedInt32Array()
+			for index in count:
+				values.append([0, 32767, 32768, 65535][index % 4])
+			var raw := _raw(values)
+			var before := raw.duplicate()
+			var result := _select({vertex_count = 65536, lods = [0.2, raw]}, 65536, count + 3, 1.0)
+			_check(result.ok and result.indices == values, "all u16 lanes/tails preserve unsigned values: " + str(count))
+			_check(raw == before, "decoder leaves serialized source bytes unchanged")
+			for bad_index in count:
+				var invalid := PackedInt32Array()
+				invalid.resize(count)
+				invalid[bad_index] = 5
+				var rejected := {vertex_count = 5, lods = [0.2, _raw(invalid)]}
+				_check(not _select(rejected, 5, count + 3, 1.0).ok, "low/high/tail rejects index equal to vertex count")
+				var valid := PackedInt32Array()
+				valid.resize(count)
+				rejected.lods = [0.2, _raw(valid), 2.0, _raw(invalid)]
+				_check(not _select(rejected, 5, count + 3, 1.0).ok, "invalid index in unselected LOD still rejects the mesh")
+	proxy._native_little_endian = saved_endian
 
 
 func _test_scope_and_policy() -> void:
