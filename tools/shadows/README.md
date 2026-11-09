@@ -119,6 +119,33 @@ triangle saving or timing difference does not establish a whole-flight gain.
 [Dated source, visual and timing evidence](../../docs/research/visual-quality-implementation/VQ-04a/aircraft-proxy-20261109/README.md)
 records the extra binding cost and current hardware limits.
 
+## Paired aircraft collection comparison
+
+`compare_aircraft_collection.gd` compares prior proxy/projected sources against
+the current collector, including exact mesh arrays, bounds, counts and fallback
+metadata. Export both prior files as `.gd` outside `app/` and check their hashes
+against the intended baseline commit. The tool binds the baseline proxy to the
+supplied baseline projected collector in memory; passing current files as the
+baseline establishes only a null control. Create the output parent first:
+
+```powershell
+python tools/godot/run_checked.py --timeout 180 --require-text '0 failed' -- `
+  .tools/Godot_v4.8-beta2_win64_console.exe --path app --audio-driver Dummy `
+  --rendering-method gl_compatibility --resolution 1920x1080 `
+  --script "$PWD/tools/shadows/compare_aircraft_collection.gd" -- `
+  --baseline-proxy=res://../tmp/shadow-base/aircraft_shadow_proxy.gd `
+  --baseline-projected=res://../tmp/shadow-base/projected_shadow.gd `
+  --out=C:/captures/shadow-collection-new.json
+```
+
+The JSON path must be new. Five gear/flap fixtures each run five alternating
+ABBA/BAAB groups after untimed setup/shape checks. Every timed shape is compared
+outside timing, and selected source hashes are checked before/after. Run without
+competing measurements. This measures warm-process collector CPU cost; it does
+not measure first interaction, FPS, GPU pass time or peak memory. Add `--headless`
+for software-only screening; that cannot establish native rendering performance.
+[Packed-index qualification and rejected experiments](../../docs/research/visual-quality-implementation/VQ-04a/collection-decoder-20261109/README.md).
+
 ## Initially disabled aircraft cues
 
 `Shadow.create(parent, cue_override)` and the optional fifth argument to

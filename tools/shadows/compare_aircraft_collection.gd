@@ -86,6 +86,8 @@ func _run() -> void:
 	var report := {format = "openrc-shadow-collection-pair-v1", complete = _failed == 0,
 		checks = _checks, failed = _failed, engine = Engine.get_version_info(),
 		display = DisplayServer.get_name(), renderer = RenderingServer.get_current_rendering_method(),
+		adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_current_rendering_driver_name(),
+		window_size = [root.size.x, root.size.y],
 		baseline_bound_source_sha256 = baseline_proxy.source_code.sha256_text(),
 		source_sha256 = hashes, cases = cases,
 		scope = "Imported warm-process Corsair collector component; rendering, first interactive frame, GPU cost and peak memory unmeasured."}

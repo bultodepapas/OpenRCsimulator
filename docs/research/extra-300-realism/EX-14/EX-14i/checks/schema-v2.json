@@ -1,0 +1,1663 @@
+{
+  "format": "openrc-as-schema-v2-loader-agreement-v1",
+  "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+  "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+  "counts": {
+    "cases": 155,
+    "schema_loader_agreements": 144,
+    "positive_fleet": 17,
+    "combustion_masks": 18,
+    "turbine_masks": 8,
+    "legacy_v1": 3,
+    "runtime_only_coupled_cases": 11
+  },
+  "failures": [],
+  "cases": [
+    {
+      "name": "fleet-positive:f4u_corsair_250",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:gp_extra_300s_60",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:jensen_ugly_stik_60",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:moonrunner_x99",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:p51d_mustang_120",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:sebart_avanti_s_a200",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:stik_electric_6s",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:stik_glow_55ax_2t",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:stik_glow_55ax_2t_apc_13x6",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:stik_glow_61fx_2t",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:stik_glow_fs64v_4t",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:stik_glow_fs64v_4t_apc_13x6",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:synthetic_stik_electric_4s",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:synthetic_stik_electric_4s_battery",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:synthetic_stik_electric_6s",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:synthetic_stik_electric_6s_battery",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fleet-positive:turbo_lumber_evolution",
+      "classification": "positive",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "separated-offset:absent",
+      "classification": "v2-structural",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "separated-offset:flapped",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "aero.surfaces.wing_separated_force_offset: flap force/moment composition is not supported"
+      ]
+    },
+    {
+      "name": "separated-offset:tailless",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "aero.surfaces.wing_separated_force_offset: supported only on conventional wings without flaps"
+      ]
+    },
+    {
+      "name": "separated-offset:excessive",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "aero.surfaces.wing_separated_force_offset: 0.250001 outside [0.0, 0.25] 1"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:optional-pickup-and-primed-line",
+      "classification": "fuel-feed-line",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "fuel-feed-line:capacity-exceeds-main-tank",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "fuel_system.tanks[0].feed_line: liquid item box cannot hold its declared capacity"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:blend-family-mismatch",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "fuel_system.tanks[0].feed_line.liquid_inventory_id: item 'item_fuel_line' must declare energy_source 'glow_fuel'"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:reuses-tank-liquid",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "fuel_system.tanks[0].feed_line.liquid_inventory_id: each inventory item belongs to one tank or line role only",
+        "fuel_system.tanks[0].feed_line: preprimed liquid mass must be positive and no greater than capacity at the bound blend density",
+        "fuel_system: liquid fuel item 'item_fuel_line' belongs to no declared tank"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:pickup-wrong-arity",
+      "classification": "fuel-feed-line",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "fuel_system.tanks[0].pickup_position: expected 3 numbers"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:empty-resource-id",
+      "classification": "fuel-feed-line",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/fuel_system/tanks/0/feed_line/id: must not be empty"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:pickup-missing-provenance",
+      "classification": "fuel-feed-line",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/fuel_system/tanks/0/pickup_position: quantity is missing 'source'"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:capacity-missing-provenance",
+      "classification": "fuel-feed-line",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/fuel_system/tanks/0/feed_line/capacity: quantity is missing 'source'"
+      ]
+    },
+    {
+      "name": "fuel-feed-line:geometry-empty-provenance",
+      "classification": "fuel-feed-line",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/20/position/source: must be a nonempty string"
+      ]
+    },
+    {
+      "name": "identity:legacy-v2",
+      "classification": "v2-structural",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "identity:legacy-v2-fuel-references",
+      "classification": "identity",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "identity:legacy-v2-referenced-id-duplicate",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/5/id: duplicate physical ID; first used at /inventory/0/id"
+      ]
+    },
+    {
+      "name": "identity:legacy-v2-orphan-id",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: identity fields require the complete versioned module"
+      ]
+    },
+    {
+      "name": "identity:missing-version",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: identity fields require the complete versioned module"
+      ]
+    },
+    {
+      "name": "identity:missing-inventory",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected a stable ID of 1 to 80 characters"
+      ]
+    },
+    {
+      "name": "identity:missing-support",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/landing_gear/contacts/0/id: expected a stable ID of 1 to 80 characters"
+      ]
+    },
+    {
+      "name": "identity:missing-hull",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/crash_hull_ids: requires an array aligned with crash_hull.value"
+      ]
+    },
+    {
+      "name": "identity:missing-propulsion",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/id: expected a stable ID of 1 to 80 characters"
+      ]
+    },
+    {
+      "name": "identity:missing-surfaces",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/controls/surface_ids: expected the four conventional surface IDs"
+      ]
+    },
+    {
+      "name": "identity:missing-elevator",
+      "classification": "identity",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/controls/surface_ids: missing required field 'elevator'"
+      ]
+    },
+    {
+      "name": "identity:version-0",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: null values are not supported"
+      ]
+    },
+    {
+      "name": "identity:version-1",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: must equal 1.0"
+      ]
+    },
+    {
+      "name": "identity:version-2",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: must equal 1.0"
+      ]
+    },
+    {
+      "name": "identity:version-3",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: must equal 1.0"
+      ]
+    },
+    {
+      "name": "identity:version-4",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: must equal 1.0"
+      ]
+    },
+    {
+      "name": "identity:version-5",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: must equal 1.0"
+      ]
+    },
+    {
+      "name": "identity:version-6",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/physical_identity_version: must equal 1.0"
+      ]
+    },
+    {
+      "name": "identity:syntax-0",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: null values are not supported"
+      ]
+    },
+    {
+      "name": "identity:syntax-1",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: must be a string"
+      ]
+    },
+    {
+      "name": "identity:syntax-2",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: must be a string"
+      ]
+    },
+    {
+      "name": "identity:syntax-3",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected lowercase snake_case starting with a letter"
+      ]
+    },
+    {
+      "name": "identity:syntax-4",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected lowercase snake_case starting with a letter"
+      ]
+    },
+    {
+      "name": "identity:syntax-5",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected lowercase snake_case starting with a letter"
+      ]
+    },
+    {
+      "name": "identity:syntax-6",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected lowercase snake_case starting with a letter"
+      ]
+    },
+    {
+      "name": "identity:syntax-7",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected lowercase snake_case starting with a letter"
+      ]
+    },
+    {
+      "name": "identity:syntax-8",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/id: expected a stable ID of 1 to 80 characters"
+      ]
+    },
+    {
+      "name": "identity:duplicate-hull",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/crash_hull_ids/1: duplicate physical ID; first used at /crash_hull_ids/0"
+      ]
+    },
+    {
+      "name": "identity:cross-group-duplicate",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/id: duplicate physical ID; first used at /inventory/0/id"
+      ]
+    },
+    {
+      "name": "identity:hull-count",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/crash_hull_ids: count must match crash_hull.value"
+      ]
+    },
+    {
+      "name": "identity:gear-up",
+      "classification": "v2-structural",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "identity:synthetic_stik_electric_4s",
+      "classification": "v2-structural",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "identity:synthetic_stik_electric_4s_battery",
+      "classification": "v2-structural",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "positive:all-zero-steering",
+      "classification": "v2-positive-edge",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "reject:unsupported-propulsion-kind",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion: has no supported object branch for its selector"
+      ]
+    },
+    {
+      "name": "reject:unsupported-layout",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/propulsion_layout: 'single_pusher' is incompatible with propulsion family 'glow_prop'"
+      ]
+    },
+    {
+      "name": "reject:numeric-capability",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/gear: must be one of [\"fixed_tricycle\", \"fixed_taildragger\", \"locked_down_taildragger\", \"locked_up\", \"retractable_tricycle\", \"retractable_taildragger\"]"
+      ]
+    },
+    {
+      "name": "reject:unsupported-version-no-downgrade",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "format must be 'openrc-aircraft v2' or explicit legacy 'openrc-aircraft v1'"
+      ]
+    },
+    {
+      "name": "reject:missing-required-convention-id",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/: missing required field 'convention_id'"
+      ]
+    },
+    {
+      "name": "reject:missing-required-capabilities",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/: missing required field 'capabilities'"
+      ]
+    },
+    {
+      "name": "reject:missing-required-initial-speed",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/start: missing required field 'level_speed'"
+      ]
+    },
+    {
+      "name": "reject:missing-required-inventory-size",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0: missing required field 'size'"
+      ]
+    },
+    {
+      "name": "reject:missing-required-combustion-rotation",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/propeller: missing required field 'rotation'"
+      ]
+    },
+    {
+      "name": "reject:whitespace-balance-configuration",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/balance/configuration: must not be empty"
+      ]
+    },
+    {
+      "name": "reject:whitespace-inventory-name",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/inventory/0/name: must not be empty"
+      ]
+    },
+    {
+      "name": "reject:null-optional-shaft",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/engine/shaft: null values are not supported"
+      ]
+    },
+    {
+      "name": "reject:null-optional-slipstream",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/propeller/slipstream: null values are not supported"
+      ]
+    },
+    {
+      "name": "reject:unknown-active-coefficient",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/aero/coefficients/CL_unregistered: unknown field"
+      ]
+    },
+    {
+      "name": "reject:turbine-with-propeller-branch",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/propeller: unknown field"
+      ]
+    },
+    {
+      "name": "reject:combustion-with-electric-motor",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/motor: unknown field"
+      ]
+    },
+    {
+      "name": "reject:electric-with-combustion-engine",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/propulsion/engine: unknown field"
+      ]
+    },
+    {
+      "name": "reject:locked-up-with-contacts",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/gear: requires landing_gear to be absent"
+      ]
+    },
+    {
+      "name": "reject:zero-inertia-reference",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/plausibility/inertia_reference/value/0: must be greater than zero"
+      ]
+    },
+    {
+      "name": "reject:rectangular-with-root_chord",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/reference/root_chord: unknown field"
+      ]
+    },
+    {
+      "name": "reject:rectangular-with-tip_chord",
+      "classification": "v2-structural",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/reference/tip_chord: unknown field"
+      ]
+    },
+    {
+      "name": "positive:tapered-root-tip",
+      "classification": "v2-planform-branch",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "reject:tapered-missing-root-tip",
+      "classification": "v2-planform-branch",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/reference: missing required field 'root_chord'",
+        "/reference: missing required field 'tip_chord'"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:00:",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:01:angles",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:02:normal_force",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.normal_force: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:03:angles+normal_force",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:04:pfactor",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.pfactor_moment: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:05:angles+pfactor",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:06:normal_force+pfactor",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.normal_force: needs thrust_angles (give [0, 0] for an axial shaft)",
+        "propulsion.propeller.pfactor_moment: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:07:angles+normal_force+pfactor",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:08:slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:09:angles+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:10:normal_force+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.normal_force: needs thrust_angles (give [0, 0] for an axial shaft)",
+        "propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:11:angles+normal_force+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:12:pfactor+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.pfactor_moment: needs thrust_angles (give [0, 0] for an axial shaft)",
+        "propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:13:angles+pfactor+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-feature-mask:14:normal_force+pfactor+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "propulsion.propeller.normal_force: needs thrust_angles (give [0, 0] for an axial shaft)",
+        "propulsion.propeller.pfactor_moment: needs thrust_angles (give [0, 0] for an axial shaft)",
+        "propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)"
+      ]
+    },
+    {
+      "name": "combustion-feature-mask:15:angles+normal_force+pfactor+slipstream",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-no-shaft:angles-false",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "combustion-no-shaft:angles-true",
+      "classification": "v2-feature-dependency",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:00:",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:01:ram_flow",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:02:ram_jet",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:03:ram_flow+ram_jet",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:04:thrust_angles",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:05:ram_flow+thrust_angles",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:06:ram_jet+thrust_angles",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "turbine-option-mask:07:ram_flow+ram_jet+thrust_angles",
+      "classification": "v2-optional-turbine",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "runtime-only:reference-area-coupling",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "reference: span × mean_chord = 0.4645 m2 differs from wing_area 0.5110 m2 by more than 1 %"
+      ]
+    },
+    {
+      "name": "runtime-only:all-zero-steering-gear-topology",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/landing_gear/contacts: taildragger requires at least two contacts ahead and one aft of plan CG"
+      ]
+    },
+    {
+      "name": "hull-intent:explicit-synthetic-belly",
+      "classification": "hull-intent",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "hull-intent:explicit-synthetic-skid",
+      "classification": "hull-intent",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "hull-intent:missing-format",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'format'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-role",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'role'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-evidence",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'evidence'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-contact_law",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'contact_law'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-allowed_contact_ids",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'allowed_contact_ids'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-stop_groups",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'stop_groups'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-rest_pose",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'rest_pose'"
+      ]
+    },
+    {
+      "name": "hull-intent:missing-control_envelope",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: missing required field 'control_envelope'"
+      ]
+    },
+    {
+      "name": "hull-intent:module-without-capability",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support: requires capabilities.landing_support",
+        "/intended_hull_support: incompatible capability: landing_support"
+      ]
+    },
+    {
+      "name": "hull-intent:capability-without-module",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/landing_support: requires intended_hull_support to be present"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-capabilities/landing_support=guess_from_label",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/landing_support: must be one of [\"authored_hull_v1\"]"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-capabilities/landing_support=False",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/landing_support: must be one of [\"authored_hull_v1\"]"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/role=foam",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support/role: must be one of [\"belly\", \"skid\"]"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/contact_law=terminal_hull",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support/contact_law: must equal soft_hull_spring_friction_v2"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/allowed_contact_ids=[]",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support/allowed_contact_ids: must contain at least 1 item(s)"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/allowed_contact_ids=['probe_belly', 'probe_belly']",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "nonempty unique authored allowed_contact_ids required"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/allowed_contact_ids=['bad/id']",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "nonempty unique authored allowed_contact_ids required"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/allowed_contact_ids=['probe_belly\\n']",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "nonempty unique authored allowed_contact_ids required"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/allowed_contact_ids=['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa']",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "nonempty unique authored allowed_contact_ids required"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/stop_groups=[]",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support/stop_groups: must contain at least 1 item(s)"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/stop_groups=[[]]",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support/stop_groups/0: must contain at least 1 item(s)"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/stop_groups=[['probe_belly', 'probe_belly']]",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "stop groups require nonempty unique hull IDs"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/stop_groups=[['probe_belly'], ['probe_belly']]",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "duplicate stop group"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/evidence/source= ",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/intended_hull_support/evidence/source: must not be empty"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/evidence/source=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "strict authored hull-support format, role, soft-hull law and provenance required"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/rest_pose/roll/unit=deg",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "rest_pose.roll: unit must be 'rad'"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/rest_pose/pitch/value=0.7853981733974483",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "rest_pose.pitch: value outside [-0.78539816339745, 0.78539816339745]"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/control_envelope/roll_tolerance/value=0",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "control_envelope.roll_tolerance: value outside [0.000001, 0.78539816339745]"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/control_envelope/max_angular_speed/value=100.01",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "control_envelope.max_angular_speed: value outside [0.000001, 100.0]"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/allowed_contact_ids=['missing_hull_id']",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "allowed hull support ID is not physically bound: missing_hull_id"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/stop_groups=[['probe_nose']]",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "stop group references a non-intended hull ID"
+      ]
+    },
+    {
+      "name": "hull-intent:reject-intended_hull_support/stop_groups=[['probe_belly_front', 'probe_belly'], ['probe_belly', 'probe_belly_front']]",
+      "classification": "coupled-runtime-only",
+      "schema_ok": true,
+      "loader_ok": false,
+      "expected_schema_ok": true,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "duplicate stop group"
+      ]
+    },
+    {
+      "name": "hull-intent:cannot-combine-wheel-ground-module",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/landing_support: requires ground to be absent"
+      ]
+    },
+    {
+      "name": "hull-intent:requires-authored-physical-identity",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/landing_support: requires physical_identity_version to be present",
+        "/intended_hull_support: requires physical_identity_version"
+      ]
+    },
+    {
+      "name": "hull-intent:installed-wheels-not-supported",
+      "classification": "hull-intent",
+      "schema_ok": false,
+      "loader_ok": false,
+      "expected_schema_ok": false,
+      "expected_loader_ok": false,
+      "loader_errors": [
+        "/capabilities/landing_support: requires landing_gear to be absent",
+        "/intended_hull_support: incompatible capability: gear"
+      ]
+    },
+    {
+      "name": "legacy-positive:v1-stik",
+      "classification": "legacy-v1",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "legacy-permissive:unknown-root-metadata",
+      "classification": "legacy-v1",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    },
+    {
+      "name": "legacy-permissive:no-inferred-v2-intent",
+      "classification": "legacy-v1",
+      "schema_ok": true,
+      "loader_ok": true,
+      "expected_schema_ok": true,
+      "expected_loader_ok": true,
+      "loader_errors": []
+    }
+  ],
+  "source_sha256": {
+    "app/data/schema/openrc-aircraft-v1.schema.json": "59949f28bf57eafb20023863516c53c6c3ae63539f520dbd03c4a24b476441e1",
+    "app/data/schema/openrc-aircraft-v2.schema.json": "6cc738075c3fc1c8e2708f4803516bd337f4bcb726ec85e60c6cf2aa82db2716",
+    "app/data/schema/aircraft-contract-v2.json": "f1def784df2ef1689aca71ab0cb339c76ea421358f38d3ff553061b9164a96b8",
+    "app/physics/aircraft_contract.gd": "42f9c2e62877591f166d12e925dfb2f8578cba0d15ec8ac674a0fed36a228718",
+    "app/physics/aircraft_data.gd": "459d203c4a4d16254889eb1d95b74bab8337f460972ce521bbcdc407311ee982",
+    "research/aircraft-data/schema/loader_probe.gd": "0d634fed41ddf61a3d40f2aab43978dbbe1d8b5786821c791c8b0bad5bffdaea",
+    "research/aircraft-standardization/test_schema_v2.py": "53165567b959c49ae6727f1ccce14d88a10268e1949c2605693661ff4c1243d1",
+    "research/aircraft-standardization/fixtures/legacy-stik-v1.json": "fcf07a988155d937d365c65c659d8ef1d4693320f48ac7085414b87e1fdb7eb4",
+    "app/data/aircraft/f4u_corsair_250.json": "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10",
+    "app/data/aircraft/gp_extra_300s_60.json": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7",
+    "app/data/aircraft/hx700_electric_3d_experimental.json": "6805ea966fbcd07111d89743946b4dd7a46d58ad6057085c15bb21cfd0e0731e",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+    "app/data/aircraft/moonrunner_x99.json": "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
+    "app/data/aircraft/p51d_mustang_120.json": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+    "app/data/aircraft/stik_electric_6s.json": "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "a71cf12e61a511a868b6e7ff005e116f1fe6cc57633c47850b9ae02d1838d0b9",
+    "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "19b319f1e0a2b29112b72fff2f62dac244c8b543ea82437a189e5161f7619e94",
+    "app/data/aircraft/stik_glow_61fx_2t.json": "a214c7d144f3b1a978a01f9f52bb80d2ce76de27644c1d8571d669f291a05350",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8",
+    "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "877cd05d0669822a2a68021858334d1c73380d95d2d58660be75f655b72c4a0e",
+    "app/data/aircraft/synthetic_stik_electric_4s.json": "87a182fb8aa68a15d07dd0b20785e8d9ff21f0f30813a17b57533cf53ae24b01",
+    "app/data/aircraft/synthetic_stik_electric_4s_battery.json": "d6efdbba275c3a04755d591ce37ae11a3d1e461fe31de4927fb105cab8f9a0a1",
+    "app/data/aircraft/synthetic_stik_electric_6s.json": "4683006bbebeacb1977bff8ac3448ef0b1af995db567df147c9606004785c858",
+    "app/data/aircraft/synthetic_stik_electric_6s_battery.json": "0ceb94706dff1414f75bddb58ead3e361c9d316314b699751b93f3b9a8cdb635",
+    "app/data/aircraft/turbo_lumber_evolution.json": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
+    "app/data/aircraft/xcell_60_research.json": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04"
+  },
+  "classification_policy": "JSON Schema checks v2 structure; coupled physical relationships remain loader-only. V1 is routed explicitly to its legacy schema/loader branch."
+}

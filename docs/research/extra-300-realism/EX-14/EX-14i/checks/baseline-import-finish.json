@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b853cad0-b14d-4ea0-a34d-be42e5932fcd",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/extra300-feel-20261109/baseline/app",
+    "--audio-driver",
+    "Dummy",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T21:45:32.399874+00:00",
+  "label": "baseline-import-finish",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109\\checks\\baseline-import-finish-c0zz6eqz\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109\\checks\\baseline-import-finish-c0zz6eqz\\report.json",
+  "timeout_seconds": 900.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 107.656,
+  "log_bytes": 170990,
+  "log_sha256": "44b7b81b6849e329d69e45fba307f1e63b557629dc3aee02d09bcbd32ac9e903"
+}

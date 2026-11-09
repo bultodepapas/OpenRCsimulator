@@ -1,0 +1,3310 @@
+{
+  "format": "openrc-woodland-root-review v1",
+  "step": "L7-R5",
+  "date": "2026-11-09",
+  "complete": true,
+  "observed_head": "731bfefa4c5e5ea3d28fc09c9ccecd4dcae77726",
+  "source_sha256": {
+    "tools/trees/quality_capture.gd": "63ae969f495a3d8eaeef6229094ed54528337e0956181f1284416cfa74b4a5b3",
+    "app/tests/test_woodland_root_lighting.gd": "0687f3f648e41b5aa8fc2d86a11ca1239c276e83d9e0f966b15921af765a2049",
+    "app/render/aircraft_customization.gd": "5bfc6fb144cb5c8bad49b70e35b4a37365b42753896cd46cf85ae9c99689cb50",
+    "app/render/aircraft_shadow_proxy.gd": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1",
+    "app/render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+    "app/render/atmosphere.gd": "953c6151c13de0a7d28f8b46735abf0327bd1573666fa2eb86d48245cd02b36c",
+    "app/render/cloud_field.gdshaderinc": "574d21b3a3941ebda9fdd64f468ac245f1623bdee5c3a5f696aa26b0b1da3874",
+    "app/render/cloud_relief.gdshaderinc": "373dd8786360d9d8e3c4e5fd956289693812e92152606d9d8bfe71ab97504e25",
+    "app/render/cloud_shader_variants.gd": "09735e06cc1d4055b10303dd2ea5c001d4a403ce7b148f9cd4efb90f9892a6b9",
+    "app/render/cloud_shadow_map.gd": "4848b724e4c7e1a1e9cb598aa1ba35ee7d12fef782f0f14199322422da9b869f",
+    "app/render/cloud_shadow_map.gdshader": "f75a91fcf999d27543cf379ac76ae28df361da20db69c55b8159c427b5115391",
+    "app/render/cloud_shadow_map.gdshaderinc": "ca0e8376b75515b55354385fe80e7b9c7cd5759505ddb5d8845bcb9c3cd1ce73",
+    "app/render/engine_audio.gd": "82d221f39818bec1c3b2fd3bec72f5a3798cb8c6ab6936f5181f285517df8ec8",
+    "app/render/engine_sound.gd": "843bb5a5cfe8dda0ea4d7f49d6d94717813917add9cf3e2f17722c44f8d4c6df",
+    "app/render/engine_voice.gd": "6840b43b3a0aa2e98a42ef505ccbd69b63afb40b4742f5c1078eed75f7373441",
+    "app/render/field.gd": "f779aeba9b20383fa6972b07da31e921575cf3b5aa4dfd2f912fde25481c0d57",
+    "app/render/field_projected_shadows.gd": "834fd2993f3110811c8b8e5d4f0a3e3f954a1fd94f36ce5a93ad334674e3ab54",
+    "app/render/field_tree_detail.gd": "0754e3181362c4382fd1cb41e675e25c11a8422fc3d008c1bd07c704c5c89e0a",
+    "app/render/flightline_barrier.gd": "b12f06cda97698ec0b1c72ccd544112aef6b1cbd6c894fdb2fff5a32d59060c5",
+    "app/render/flightline_barrier.gdshader": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+    "app/render/flightline_barrier_detail.gd": "881da6550eab19ddba53d71dff6ae7aff789f55b9c4cd1e7544eb5ba98eea64a",
+    "app/render/flightline_barrier_foliage.gdshader": "01e8725624361f950c4581d4fb901d1b451b7ff3938adecef70d2bfc8705c1b0",
+    "app/render/flightline_barrier_planting.gd": "ed1646824ed04c304ed1a599a06e5b7d679c281319068b640014587c5972b86f",
+    "app/render/flightline_barrier_soil.gdshader": "8f65d6b3c954af669fcb6ff1a61b726a200ea0c5086330cae9a2be179b8345fa",
+    "app/render/flight_cue_shadows.gd": "ae026a9a3c408e05ffa80b4c27f07c58332fc545b7debc86a11139b76f6bfbad",
+    "app/render/frames.gd": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9",
+    "app/render/frame_diagnostics.gd": "067cc4c4f45e273466107048f1f1290e0da5acb581a424a6a7b227408bccca39",
+    "app/render/frame_samples.gd": "6130f11d350e0e5e6e0e78ea2268c92d07f69331f230bdc80718b5ddc8c38eff",
+    "app/render/grass_ground_material.gd": "69f067ca5ff95fc9546efc0fa0409eb00165438e576a738d379080cb15030c9e",
+    "app/render/grass_quality.gd": "2bb90ea1c3d83334a92e45fe5689641301d4e1c5f2b9757bda7e23e95e4aa36d",
+    "app/render/grass_scene_snapshot.gd": "4160864e003f16bb1a3b101cf06828f6352cda955dc0d68a04fddad10ff58c0f",
+    "app/render/grass_surface.gdshaderinc": "6a2ba59c3f9c8ff8cf3af6f2f8ee4d7aab3d5024ad993c375102ed1aeaebbbc4",
+    "app/render/ground.gd": "371a64887f34da10a38b08eb6a1460593ce091bbc91e784c5832324209927d05",
+    "app/render/ground.gdshader": "e9a06275d90e249701d4bf6a2b735aaf63c2f3da2b6ad427c0701fc6c2a8c907",
+    "app/render/ground_gear.gd": "2d5da9f900d896cdbaa08e9fdd252eab8437f725c75fb6d17abcc2841db4431f",
+    "app/render/high_graphics_profile.gd": "c19b545cda99570074093b1896264c508727bce515a0c92f456a12e8e9be2a57",
+    "app/render/horizon.gd": "5e2fff9a86c431401921f311b4de3a9f6a421059da73d74d9f2a0d04762a2afa",
+    "app/render/hud.gd": "ae618c200e8ad814baacb8908c6690ac92f28678fc859f5e537a8d9f6d35a0dd",
+    "app/render/metalfx_policy.gd": "980cfc5a27827f4c45d8e4d65c5e304d13c05ee84eb8880a4da7485ddd04e813",
+    "app/render/near_grass.gd": "a949e11f5168cbf4fa63294756bef2537d27a2ef62f65c4344668920c00cce1e",
+    "app/render/near_grass.gdshader": "4cb13bb1a9a6b28cc4b8dba2eecd39a150c5ba828f90e52699ca759c2fbfe579",
+    "app/render/nvidia_reflex.gd": "ceb2dc9b46bbc5788a2560fe920c92173d64ae6cae323ffb1dc319ffc9670081",
+    "app/render/panel.gd": "da9853d7fac10f6fa3a3099a388459f395dbb7c9f042fd743ab19431c457b5a3",
+    "app/render/pilot_camera.gd": "273701e332fff62e405d6a2265e26c9257191a438a033d97128a31e097565531",
+    "app/render/pilot_station.gd": "aa5f9e62eb7ee9265a6cf3cec2284f69a12940a880ea4a0c89e8481180fd1704",
+    "app/render/pilot_station.gdshader": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+    "app/render/pilot_station_detail.gd": "3dd3c775d76d526041567fe0271d5cc74e80fdbbb4a2b9a3eec62e22e20f3521",
+    "app/render/presentation_cadence.gd": "293ad9114706b8c5bb5e49551c4198ebf4e085efda5c3aca22d6837e7e04869d",
+    "app/render/presentation_sources.gd": "51406600a2ff76ef9195274eb7d616d4b51846e8d30e9c31bc7ccf4747f14a2a",
+    "app/render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+    "app/render/projected_shadow_mask.gdshader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+    "app/render/projected_shadow_receiver.gdshader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+    "app/render/propeller_blur.gd": "a2a7fba326cb70dc230519d087e22d7337bee97cdaf996f9441e513ba54b6894",
+    "app/render/rc_ground_detail.gdshaderinc": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+    "app/render/rc_ground_material.gd": "acd6778ecceac0f5c604d3b4697f387c32b641861ce7c501505c040af865d9e0",
+    "app/render/rc_track_field.gd": "f44ebe821e32b788ff0d2a0f0d96357656b51e06d2bbad78062fde4cf184c6b7",
+    "app/render/reconstruction.gd": "98c49af0f0b3dec28abc89cb600d304f6399fb02279b11d66b3b11926743f27d",
+    "app/render/scene_detail.gd": "987bac41e21c8358f928f689484e793dd3f408754061f0d2bacdb766d47d2ed2",
+    "app/render/shader_clock.gd": "c560bb552c14364963cd40fbbcb372748df893b0a43cdd6f789e1a58eb294b12",
+    "app/render/shadow.gd": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+    "app/render/shadow_field_policy.gd": "5b843e11a13bb2d642340fbf8de548428d52016419a1636102ae46712caf5c6f",
+    "app/render/shadow_settings.gd": "7636d2ca7d9a36b96349e63ad531e6ee3aa7c015b3bc37cc599f9884e45b14b0",
+    "app/render/sky.gdshader": "b1e4a1c821e07d1fee38e08d2bf7dc473c468de1eec265d74396aebaa92f0828",
+    "app/render/time_of_day_lighting.gd": "11e221d5062ad25c9e2e12749d4f39f58ca40f2cbaf9930455b05806f93c839f",
+    "app/render/treeline.gd": "d0e7ce7c28f04effae9c98df0468d1ed589cc19008c2cc25d0309e7472e48a54",
+    "app/render/treeline.gdshader": "7c3e4d968ba69e86a1124017b9bd06ee42228cdc1c5299505cc2e67eb30ccf65",
+    "app/render/tree_assets.gd": "214c028f723119fced431564f466ab91af3ef7579b37f4729d521c50a8dc2e69",
+    "app/render/tree_identity.gdshaderinc": "e0895d0239ed87a0695081a366bdb90c872d027104c1de8454b990553fa8c353",
+    "app/render/tree_wind.gdshaderinc": "23186f9443854cb53874441b9750c5eaa8adf4d416cb07ce9e7cdd3063e4e20a",
+    "app/render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "app/render/viewport_color.gd": "2cf819867bd3323e0b2f94496b680f744d8b37bc049a6ed25a50b6222141e4ad",
+    "app/render/visual_evidence.gd": "6e588a0f3db59b6ff021363c7e76b6e03c23662a03852f86ecae4c73c43918e6",
+    "app/render/windsock.gd": "9b4c3d9d0a4a238a1294cda0f0ec9e1757851956b956ca5b654a1db70e1e06c3",
+    "app/render/windsock_deformation.gdshaderinc": "74c26d2f5dac781959d2c0c7cf2c2468047225ce7564623ee55174a3d30dae13",
+    "app/render/windsock_fabric.gdshader": "b08962a05e9008e4dba4be517e4f4e4b07db8a17cf4d3979af5cbe8a60625c31",
+    "app/render/windsock_motion.gd": "ad487410160748f8c01cd8f6d904f3a4e5089bc86827eac8a1cbe49a2681bb8e",
+    "app/render/windsock_projected_shadow.gd": "e4aab08df8ec849f039fc06f61211c5f4a8e7e9901d1492e715f76387a1b35c9",
+    "app/render/windsock_shadow_mask.gdshader": "9145d98677f88a3a0def847be70c89425ce8d00be59b8c47c68301d22b83d328",
+    "app/render/windsock_support.gdshader": "9f98aac6a9501885c75b0c112962fcbe11a65787737b646d9aaf3d9ff260729e",
+    "app/render/worn_ground_material.gd": "3921bc54f323a91b4953fada135462f5d66087ede908cb59c2ce3720bdc40240",
+    "app/render/camera/camera_collision.gd": "84a84e83395a47a4f3df65e439d39b0be09dbc45ed749d97ac6a7b170f4c3ced",
+    "app/render/camera/camera_math.gd": "0caf7ef08fed0ee089bbf026d68cd8a3e2da0cbd0f41ed235a4accbf977e761e",
+    "app/render/camera/camera_rig.gd": "32dec8c71d9f4d58b9ef519682dc4c66804b1e2c3503071230b359f05606f477",
+    "app/render/camera/camera_settings.gd": "99583020ad12e73655804a611063a132d27f5da04ab1a9a9dd757ee2dd0b3837",
+    "app/render/camera/chase_view.gd": "275cb4248e4c6167c91f77800833f3e2286ba6ce340766360294fcf21ffd3e8c",
+    "app/render/camera/flyby_view.gd": "871a20aaa90a614679cd09b3e25b31019d4e3f7abebfb6f691333a0b42fc40b8",
+    "app/render/camera/magnifier.gd": "e0290f176d64fb4cf4f3d8df3df78896a35b2520c6a7587d4ca811b832ae1e2e",
+    "app/render/camera/orbit_view.gd": "bd101860a96f33f180b7bf7fb6db046d432341209c3139d3d970821fc40cd301",
+    "app/render/crash/airframe_scuffs.gd": "d8f6ffb73b7582bf17b96a577d896abb7143b7940f8814563201df9edff5f450",
+    "app/render/crash/cause.gd": "bfc9b6103435e8f4baf3e9c1c503b8f68d20f1dcf7e23fd36aa4cca7742bc921",
+    "app/render/crash/crash_audio.gd": "6a3c5855a3ed3d550a57904fb199f782761fb382e0d53f3901e4c295ea188978",
+    "app/render/crash/director.gd": "1ba07bd91a5e51c90dadf27d2707c86b08c4d71f442e5ea200a7120d84f8e763",
+    "app/render/crash/effects.gd": "45d719d20a47bbbe03b0a6b18ea1e7e8ce9d3035f1c4e77b58ece2f0f1ffe957",
+    "app/render/crash/presentation_context.gd": "a87281cabf0879f68d330b42b32d550f64cee6b9626b2a62cb82749c46f47cbb",
+    "app/render/crash/prop_break.gd": "db018be27b137863085dedad85ed604d668523f48197c26d5ffeb6d84b5bf0ee",
+    "app/render/crash/scenery_damage.gd": "ed01ace30eb672612e68a8c7b1e9cd91e912708abb1d031d6ba89b6d2d225d58",
+    "app/render/crash/section_splitter.gd": "a63dedcd63d74e62e0831575eb802a6b25f90f80fbda795f61942922e79b4345",
+    "app/render/crash/severity.gd": "183d2282929e28f0be709f6343cd766990fdf6e452aac6a4c6c14960e7936b47",
+    "app/render/crash/shader_warmup.gd": "2c351b96131e45a69a6e3752a551670f9db174f15062858a12e40f14133d6697",
+    "app/render/crash/wreck.gd": "62f47b5867fe11e0c268a28e9e32330621fa2ad8d6a91b33019cee619b342224",
+    "app/render/lake/bank.gdshader": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
+    "app/render/lake/generated_geometry_stamp.gd": "31a4c4f718b4a8a6d22760f1095ae0f1992deccbd99f4c8c7e375df67d0c802c",
+    "app/render/lake/lake_planar_reflection.gd": "07e7f58ade4a29e97ab9c7febb431489f6eab3257894dfa816109598da540665",
+    "app/render/lake/lake_plants.gd": "8f0a754727e1caff69e211b2759c06a4c10c3c28475d41b8f0d1490368b90991",
+    "app/render/lake/lake_reflection.gd": "40f240e5f39d1e3852ea265c3d6faa0066e51eb29f032897dc229cff2ed2794c",
+    "app/render/lake/lake_terrain.gd": "ef23575c0439b3cc505945d70e3da2b1a4bc76386da635709d9b677cb9a60dd1",
+    "app/render/lake/lake_world.gd": "be97fbc9f3303e58a9824dd04bb1e474a41c1d8ebb793000f1cb2486044d06ab",
+    "app/render/lake/lily_pad.gdshader": "1676d73af401b34b57a8203538ebe5f72fab705adb021d8b991408fb27ba8acd",
+    "app/render/lake/water.gdshader": "3ae225d250b59ba5ea19757756f60a5f551b4234fb856e69dc3bd488d0423b13",
+    "app/render/lake/water_effects.gd": "d204e591fb4c131b5ebf22d0a08960dfbdb72ce15116db15bf01684da91acd01",
+    "app/render/lake/water_material.gd": "5455b30b116c77d1946ea3d6943cacba0e54cc5186c6587991d7045129be3ecb",
+    "app/render/lake/vendor/smart_planar_reflector/planar_reflector.gd": "3a2333668ca01c71fa962308c75cac5596128ed101d634d71823d4f8b921a8e7",
+    "app/render/landscape_upgrade/airfield_lighting.gd": "6001fed1f6a7d30993c326dbfce4e679069978b73276b170301fb8667a1d7b9c",
+    "app/render/landscape_upgrade/countryside.gd": "84034ed67190767c0bb0820d411b9544041bc877c32adbf5cc5bf79501d07ebe",
+    "app/render/landscape_upgrade/countryside_surface.gdshader": "d395c48b5a6087300c0a9b0927d4ac75631535a532116f632ec1419f5dd0d047",
+    "app/render/landscape_upgrade/field_lamp.gdshader": "cf8d83ae8cef807f29659fea4a8a741c43d795aeb88bbafd9a57c98ac7f9caff",
+    "app/render/landscape_upgrade/hill_settlements.gd": "d7d6b59aa984e8ace28f28f8157f277026587673e9726b1fea8f5f7162d97420",
+    "app/render/landscape_upgrade/options.gd": "4e9e69b1eadafd56e07c1c6561a4b7b10a3a573fcffc609b1b8120d780323327",
+    "app/render/landscape_upgrade/regional_beacon.gdshader": "a4acbe6152bf4e59925358bece49d28a8abbe779ddda95be6c1e3e1f18bd56fe",
+    "app/render/landscape_upgrade/regional_lighting.gd": "812982b26a541284aeb69c3d4249498bd209cd0a6c46576483a27d5f155b4c2b",
+    "app/render/landscape_upgrade/regional_pool.gdshader": "111211814c739b33442615f4d3dfdc927bf17857cdb763e431bafff157b454e9",
+    "app/render/landscape_upgrade/regional_window.gdshader": "c6f8a54ef70122e921d4ec204738657a184b2aa73eba1ba7cb110ecd9e230de0",
+    "app/render/landscape_upgrade/ridges.gd": "ca0bd3aa3cb3661db1761dff97be206e978d16ebe489f785e3674f0cba7f04e4",
+    "app/render/landscape_upgrade/ridge_haze.gdshader": "c9688437380bef067e8a247990121d54926f8bc1e99ebe6c83cfd2f38481ac30",
+    "app/render/landscape_upgrade/runway_ground_spill.gdshader": "fa92f65ab980ad18211b6bb6d72e40b0e965070e3914bcd1fc35ff7a970fbb81",
+    "app/render/landscape_upgrade/runway_marker.gdshader": "c620befd3d2218bee04b98e16eeca89864c5052a30a04f62691d716d6746f92f",
+    "app/render/landscape_upgrade/scenery_bodies.gd": "2a9a548aa3d7a2dce9e362b9ad3c254aae0ace5383c3af6899645c52e404faef",
+    "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
+    "app/render/landscape_upgrade/sun_glare.gd": "6514ee4e606fb3b95111000fb89de0f9375e57fd4f0ce8911ce31144bc940729",
+    "app/render/landscape_upgrade/sun_glare.gdshader": "b6ec223f9a56c7a4743d79d45cd3ecc437ff4afee9ba8ba284bf35307c4d91fe",
+    "app/render/landscape_upgrade/twilight_palette.gd": "a19098324e298c26dd46c73224cb8aca5dda5b0dd4ba83aaa3ebddadb727cb78",
+    "app/render/landscape_upgrade/window_glow.gdshader": "1c848057a461d187ffee17a0e20eb2479276f705da65bb1f83fa3f6da43ff557",
+    "app/render/lighting/aircraft_lighting_rig_3d.gd": "e1be3db5624ff3891c1c2c43507067511e056d0959dbc6fb7b6f02d0da38a00a",
+    "app/render/lighting/lighting_patterns.gd": "b85510348bcec11e0f730de03cf1ccb4725af4e9b000747da727ba49316fc468",
+    "app/render/lighting/lighting_policy.gd": "8e1722281534a5ea5e288b57b2a67c892adb6ebc09f02e8ccdd7f6add8cf9d8b",
+    "app/render/lighting/lighting_profile.gd": "ce2b0634826ce58251fba691eb37bd1d461b1661cd25dba1a89df9d6402594ee",
+    "app/render/lighting/lighting_scene_budget.gd": "09477e9e900b37050e422ae90427e6d5cb54823e562c8f44c94ce316e4ef2d26",
+    "app/render/lighting/lighting_skins.gd": "236251a7c6a185a168a657c20c998cd0b4bc119d1b745740d95065def71721fa",
+    "app/render/lighting/lighting_vfx.gd": "cf11fe6390f456bbb4576e7271522077a5d2127ebe4790c533b5866afbd8a188",
+    "app/render/lighting/rgb_lamp.gdshader": "9df65a3e5cd9bb33af72700d914f10d04e9c4179a97895109e13c3fa05e9ba29",
+    "app/render/lighting/rgb_patterns.gdshaderinc": "14a89bcc4f76d827622f70e7f4af301a4c27202b3a063e08620b0111970506f6",
+    "app/render/lighting/rgb_skin.gdshader": "30d73cb64ab841197c42b374ad74d4f46ef6e5fbdfe7dbacb91c48a8b9a61b60",
+    "app/render/lighting/rgb_strip.gdshader": "e0f4baf9272561ef0f74ca089725602ded88b20a5658369c05ceb79223cf7a72",
+    "app/render/overlays/alert_audio.gd": "a63f8eb55bb4b8514c2ef479d04c50d5d1d0f80f35b3a2e79a1a65cf1d87602b",
+    "app/render/overlays/alert_policy.gd": "c9fe79b8166c562c2a0f8422edc94f8082a7fce46806fdc9206ec5576028ecc3",
+    "app/render/overlays/battery_panel.gd": "4ac1f60119e1c46b45b30db74de4bcb74b913a246f853994e7ce2855a6788f63",
+    "app/render/overlays/battery_sensors.gd": "1a6c69dfc6941dde07c91e6305baa741cc321a39126e8e273fa0171f83a61261",
+    "app/render/overlays/classic_instrument.gd": "3198b8fc4f2184482df8377de7c4add30b121a25ca26fd0cc725d22794767504",
+    "app/render/overlays/controls_guide.gd": "54d5c28d4d1fff9f34eeb2373fe97966632373f723030cd688d4949138379619",
+    "app/render/overlays/flight_data.gd": "78e12f073ef641c0c781fee50108ee730f5b11166c3bd1ad3150045b14cb3d25",
+    "app/render/overlays/flight_metrics.gd": "b018bf039e7c4a365d453c3701483be7bae06629e535bfd59661d4c5b2a4b2be",
+    "app/render/overlays/fuel_instrument.gd": "cf2e2e9d34b1e131fa903937e68ab4a355808b0fa7917ba8828a878e998d0b24",
+    "app/render/overlays/fuel_liquid.gdshader": "dbbe65e204a06ceb814ac5eb155153a5ed44c1f73faf6b70fceafb649a64a441",
+    "app/render/overlays/navigation_data.gd": "c35b2ab6634b1804ef9e39fc449bcd6db6f06fc1c644b2f51514e75a13b2c47d",
+    "app/render/overlays/navigation_instrument.gd": "4b457f9d3da54e589f9eb1ada245aebcbb36a287b1d9ef66288f5bba0bb5314e",
+    "app/render/overlays/overlay_frame.gd": "bb8feebeb7e54fd5753ea22705169e97d14e2be854ad571dae9ed250d7260be5",
+    "app/render/overlays/overlay_manager.gd": "b8dc279495ac71551092e057477c8ee1dcc6661b14aa02a74c0663893b4cd733",
+    "app/render/overlays/overlay_settings.gd": "3d56878878d0111c824b5c8046bb88efa566f9149546641f080fb9678cae7baa",
+    "app/render/overlays/player_instrument.gd": "9d8254cdfe0c06ead37c662c21149b0ee069cb828daa954afd40209ed590ede2",
+    "app/render/overlays/session_statistics.gd": "08c4aa1180f7a8f3d10923db38fe39587e26be8fc75b59aee8b9b1ad0d5de452",
+    "app/render/overlays/telemetry.gd": "331493ce55f432091d8cafb0ff889f77c5a1ed618c1e5543179229fc97079237",
+    "app/render/overlays/telemetry_panel.gd": "8c1112c615cb8277a6cc884fb05f323a29ff5f165c44b0bb5bc3fe4c7f7d378a",
+    "app/render/overlays/training_instrument.gd": "ba10c6627f13f1d2973aab86fb29688776a1c0fe637765d711f300ed0e37c93a",
+    "app/render/overlays/transmitter.gd": "917e2c132be09e684f52bfe27ff719c1d5634927fbedb8664a7613e72faa1700",
+    "app/render/overlays/units.gd": "16bdbda513ff5919951a7fc412d09a9657790d8de8db569b40d75b557d4a0ee0",
+    "app/render/overlays/warnings_bar.gd": "f5985eda2a364dd2e2778daf5a8408fa2715622049eada8df4a9bd5e44cce5ea",
+    "app/render/overlays/wind.gd": "3b965b074da5a74f255078db83d06de2d3071ff104a4b53d94e7caae9384e79c",
+    "app/render/rotor/heli_crash_presentation.gd": "3485f4db0ff66b1274a85c6f0ad310eb8b298a7523640271de14153f4fb53ea4",
+    "app/render/rotor/heli_night_lights.gd": "9fb5d33017f6f1b99205c0bf79f10ec32174eb9d0227ade0bd16937678f6ebfc",
+    "app/render/rotor/heli_night_rotor.gd": "6aa86f962e9011894fe64289ab65714994baaa92276040aae17188efd95bde55",
+    "app/render/rotor/heli_night_rotor.gdshader": "2f94d4065927e628202e5112c89adf668e9c408e656934cc7820a104babf6c3f",
+    "app/render/rotor/heli_rotor_blur.gd": "461c88665e392dd2784b33a0369c8dfa42105baf57e7dc3a8b756c954c54d238",
+    "app/render/rotor/heli_rotor_visual.gd": "46d48dbaa2852f40681f31c9df8816acd672df1534392821a6161db8e7ac12da",
+    "app/render/rotor/heli_wreck.gd": "054c319fa1fc68e9a8af22688ff2fa6d0e66759b7fea079f6c548cca06183743",
+    "app/render/rotor/hx700_controller_input.gd": "873fe30cd063b93db1d83a08c407928114ca336c14ace1a439467c637ab5ed01",
+    "app/render/rotor/hx700_elastic_skin.gd": "566f78e49b4ac03e7e40a128826e9c038bf3ba2bb9003d393184ed246607f7f5",
+    "app/render/rotor/hx700_inspection_motion.gd": "15fa888af8b39bc1aba45e69243ae7d51c3cd9c4407be9b3f930012f524f6cbe",
+    "app/render/rotor/hx700_mechanics_view.gd": "fb4b978e355861a358e75d67f440b8fd7f8987a0aabea9d37231135ad15ea0ff",
+    "app/render/rotor/hx700_mechanism.gd": "763575e9dbf8182e91a44e0068f488b02f59516e4f96c72c301336be1213c71e",
+    "app/render/rotor/hx700_motion_equations.gd": "5e8aca4cbd6d668100c40af3b9d79864f29acc06fe534508fe2c231808bedafd",
+    "app/render/smoke/exhaust.gd": "c0fa5949b8cd2739c4bee0cd7fb85579809fe2028ee7e15427fb9c8c1a31fd57",
+    "app/render/smoke/process.gdshader": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb",
+    "app/render/smoke/profile_process.gdshader": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
+    "app/render/smoke/profile_smoke.gd": "c567c81c017e924706d391212e4b7262a89ea71e3f8cf17bac3eff85f515e089",
+    "app/render/smoke/profile_smoke_schedule.gd": "558134c6dffe4d41899888b975db109bfa33f4e35ac6f01655f2f333dfbd0bb4",
+    "app/render/smoke/smoke_system.gd": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d",
+    "app/render/smoke/stock_profile.gd": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f",
+    "app/render/sun/skyline.gd": "c5ea7a7abfc0672a5941cd0e613c028bbc4dd4b2537013b0627d49fee14dfd4e",
+    "app/render/sun/sky_mirror.gd": "892cc40734b50a0f79ad2db6474b0fa86fde6dc788db318106a53c92173e34a8",
+    "app/render/sun/sun_afterimage.gdshader": "c9edf4a0d90cb5ef86581413fff0906e706bee5e7415a21328e10eb67b6799f7",
+    "app/render/sun/sun_optics.gd": "a3b2e5c64d9ed1014a9c6822cc2d2a36d32221222abf0ed89443f0ee0ca54afd",
+    "app/render/weather/cloud_flash.gdshader": "33d57070382bbe115387f11d027d4f7e5b8196ab266dd3c2b82b68f4437d049c",
+    "app/render/weather/cloud_transport.gd": "0d2052cea0e0640f09c5502b57aa78bc0ceed985bade0dc8f538bf6823b8f921",
+    "app/render/weather/lightning.gd": "0f1990160263c2405524bd2187e8e8162231e60dc57991925d66b1c810c3cda1",
+    "app/render/weather/lightning_bolt.gdshader": "15c1d14d0652f836fefbb16615bfe3915380ee755af06a8ae21a152fec436d80",
+    "app/render/weather/rain_curtain.gdshader": "d33e6d1e3f45c61a453918611c25d6539a3393fe9d8240be1aa994f8213b6ee6",
+    "app/render/weather/sky_appearance.gd": "fb9888cee67bc5a9d482ff5140e56f0fbeb31c2f07eb9759752085ee773cb2ea",
+    "app/render/weather/storm_bank.gd": "16bcafc9304e8a802c34330a85af0218f0ca2960d207fa7ab0077443bd27145c",
+    "app/render/weather/storm_bank.gdshader": "f9bf4cf5f555608975480e016f89aef7304dd89cfeff2abc7685d10adc626e7e",
+    "app/render/weather/storm_cell.gd": "4f33a55dd7e6d179096727ae41293e8eb54b9cbf82068f0de6b38ebb2ab9d323",
+    "app/render/world/aircraft_lights.gd": "deddeed684377a97b419d29a211bbc27f1a54779f3fe8cd673a3961901d9ac3a",
+    "app/render/world/aircraft_light_state.gd": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec",
+    "app/render/world/campfire.gd": "837330016f2296a578b3ddf1ed4f0968b616dd14630285cf16a754236dc444d9",
+    "app/render/world/campfire_flame.gdshader": "f4256ef819abef5a151140f937b64aec0d49ecda899d13a33bf135e4ca2fb192",
+    "app/render/world/conditions.gd": "0d8ffaad1fb51d6dada4e5fa4f9eec971d9c79fd750a7d3fb469bac63bf89451",
+    "app/render/world/engine_srgb.gdshaderinc": "ba21c75f2bdd830d2dbcadbfb1b4d6f5202352a06014f79a0e34ec650ee02799",
+    "app/render/world/ephemeris.gd": "4725edf686fcaf0f01ecf5271cfc61fe7a7074cb4d9e676842827144f6a49d0b",
+    "app/render/world/exposure.gd": "c25487774ecec2d0957eef4825f43884594b3bfc365fbeefdc4ad6c80a518e19",
+    "app/render/world/field_lights.gd": "1cd86d3a478d9b9ee585002aad0b28a0190d4d6c21ba9fcdd9d3b90c7579f910",
+    "app/render/world/led_strip.gdshader": "66d042cb73fb75dd76767eea8cb6a24e6caf5135e27e5c444e62cdb8895446b4",
+    "app/render/world/light_sprite.gdshader": "4d35764b9c53ecbfd361d24e8883a855df19eb977850223af59e2f9685603633",
+    "app/render/world/lunar.gd": "b2f4e57c95a08814b2469b27b447ef12e6a9579048919ef6024b9b005c408ec8",
+    "app/render/world/moon_disc.gdshaderinc": "cba8b6ea7f291f9d7479716282942332e68b3dbf14f4fb14f98a7cd5e7205ce6",
+    "app/render/world/moon_glare.gd": "8b562349d7ce34331bf7b4882e59273a3aae37b80369d0d17487c6a68d2d6b74",
+    "app/render/world/sky_retirement.gd": "56b3d1c8c417f7efa11de89ad1ebf6cbd61a384e82fd20a1cd4a2e5fab46c9fd",
+    "app/render/world/sky_state.gd": "6121bb69a0617b9864b1c718a0b79033e61c18a86ae32913c2019100bdd95302",
+    "app/render/world/stars.gd": "50347186d077d4e18e42d3d8cc9b177d8cb65e819461c7d374339d51cc773e1b",
+    "app/render/world/stars.gdshader": "5200b91bbce6e7baea7960eecb4932cc980bb76190cff95d21123ace92fc931b",
+    "app/render/world/world.gd": "bc42a719122ac0f24c58c2513a296b29c3339e1afd93fd9b552ee2f1689201c8",
+    "app/scenery/airfield_detail.gd": "07e4dadab0066c41f3e7cd298416101b97a99812da449a4f9bb947a8b7a5ac48",
+    "app/scenery/airfield_flower.gdshader": "5ff70f166d47176ccdf6d3fb27d24b653bdb20da82b5dfd28c9c366c38f33085",
+    "app/scenery/ambience.gd": "162edd04255dafc95ab41747e9e5b2c4f8e50676c6e1a2097a7e936c43ae17b7",
+    "app/scenery/ambience_player.gd": "c0dec47dfe876665fd77e40220cae7f8b2cdfc5e526903c5c0ebff8a64e280bb",
+    "app/scenery/birds.gd": "46526908347915624e22375de2d44315241671b96e68b7a8db3221f712634e88",
+    "app/scenery/botanical_habitats.gd": "f52aeb6de723fd4ece07d7e1703fdd7fd687367f2d88aae8d057588a3d6a4843",
+    "app/scenery/building_roofs.gd": "84c3919618d315cf89e9089124ed7be15bb0551ff529a26764950bed09198a20",
+    "app/scenery/building_roofs.gdshader": "9416f75d9930e2ebf5e631ef8440b175d13258431e6c9e3ee52be0e370b1b588",
+    "app/scenery/capture_views.gd": "9865c5ae3978e0c09443d83f17da47c55e7e8ea08ba0b2370058d943192f3b73",
+    "app/scenery/club_furniture.gd": "861f01584f39487cddaeac4fbb04e8a3cba9de26ce20ec5b11c6624575b82591",
+    "app/scenery/club_shed.gd": "cef022a026dea1f51dd8b63fa16bf7fc30022205287e7af9ed2b307bee128856",
+    "app/scenery/club_sign.gd": "e72f60207dadc07ba162cdff11a5e7f5d41f947f418aa0d7cc6d5eb475874361",
+    "app/scenery/collision_setup.gd": "6bf927cb4573418463f16c6872e96c77b7d835ac1ed41cfca8a776c011ecd1cc",
+    "app/scenery/collision_world.gd": "1d0d7d39eb1445cd748ac8057616b84238e2460988b22b008705e367f505722f",
+    "app/scenery/crop_ground.gdshader": "9098ba9ef71e23bbcdf24d9bbe1a634ea53f84db5be754a89fb7091694853d8d",
+    "app/scenery/damage_batches.gd": "58f0be70d5f6efba4db2cc5cf81e53d8450bab5446b124e86c7e7511707c57a1",
+    "app/scenery/farm_tractor.gd": "e30cd4f7ada3741a7a2151bdc2257d006a6ab69eb0e5c67e974cdd20f7f59675",
+    "app/scenery/fence_parts.gd": "3ba56c15aaba2802143ebf71233db59f44cc518bf9532dba048c60261db59001",
+    "app/scenery/fleet.gd": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+    "app/scenery/flowers.gd": "d34e0df2360b9036daf7757d046c66fb6ed92c89d62564d2cbbafde4614fc773",
+    "app/scenery/flowers.gdshader": "b04bafb84b98e1da52ade6dbe697f50b533499b656ed929cb9ce72468ea33dc6",
+    "app/scenery/gravel.gdshader": "363a5f31104c526f0bc8b318f776f20c3b904f1f30bab5d2e1915edbba6e062b",
+    "app/scenery/ground_features.gd": "57a30f1e901a9edc43a5ec2ccfa2d5a4f9d4a75f2d30494236eaa51a98f29523",
+    "app/scenery/imported_grass.gdshader": "0f78242b88037a670795074d0d6a882a461798ab7913a3e4b99d3f56d5685f10",
+    "app/scenery/imported_grass_material.gd": "dbefe91f495fd0c7ab2a15a66e7645bbc7b1db47283bb45eeb79bbd83c3caffa",
+    "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
+    "app/scenery/imported_near_grass.gd": "24bca2a4b126cade3ae12b006d0004a426c4185442b055e0b9824ad5517ea7b9",
+    "app/scenery/imported_tree_wind.gdshader": "e8f4ffa44c845d500b6514342011257bc9502b6aaa8b8e2cdc09c05b1c21e9e8",
+    "app/scenery/imported_tree_wind.gdshaderinc": "d80c3ae2737704f234c7e28fbb2e16d1bcbb1cb35282eb28d9e17822166f16fb",
+    "app/scenery/imported_tree_wind_backlight.gdshader": "bd76330b1289dfb421bbce925dcc4f57208afc477e2d0eda8b6b8681cace0c59",
+    "app/scenery/imported_tree_wind_backlight_clamp.gdshader": "dd482d2b940f4b8bcd410f6a25cc8d2d7b18c9dd03ddd9dd3f80a46b3b7f29bd",
+    "app/scenery/imported_tree_wind_backlight_cull_back.gdshader": "909164527748e2f1bb5a7a8d964644ff3a15d032e3dd38205d6446aac5a64f02",
+    "app/scenery/imported_tree_wind_clamp.gdshader": "8a50ad39fe465b57e308ff2bd1ad8ca80990435b91922c04ae575c3163b20531",
+    "app/scenery/imported_tree_wind_cull_back.gdshader": "333612342fec2b6f3621521b5a4369f0836f0491b100ef77e102a3ff10e77b84",
+    "app/scenery/imported_vegetation.gd": "ff57d1aba9f1a92911c91e7070ca0b855d9c431ad28224cac4ef5880f19f4e3e",
+    "app/scenery/imported_vegetation_wind.gdshader": "c7d4d330ac2c026b53619e66a890826de0ec33bf0558f804866de26777a5e7b8",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "app/scenery/models.gd": "72daff888627ac0839246777fb2aec49ef33a0a4403cd1ae4fa6ba0c49f4f703",
+    "app/scenery/motion.gdshader": "01ca5f5bb331eee49b87bee489eb25becabf05a8c102eb75b6947e9531f06ace",
+    "app/scenery/palette.gd": "442ca537c20bedda28c1a5cd7c15945c71e766ed883a256e1e34deccbfde6f63",
+    "app/scenery/parked_aircraft.gd": "33110611fd3e9747440e2b827f890590e1be36def4d5cfea0a143cf232a37c3c",
+    "app/scenery/people.gd": "cfe60240888ca710b33356d7856b9bcac34f4fa8d160e4fa8382ac195f001d1b",
+    "app/scenery/people_gaze.gd": "511a12c3d0165ae6e60d8c3d608bc47f7b9934012fe39cecab3594f8a9f8838e",
+    "app/scenery/pit_chair.gd": "7885be9beca6c9f4912dfdd713cb2e65f232042f81c9fe1ce8cd20f70f07d065",
+    "app/scenery/pit_shelter_roof.gdshader": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db",
+    "app/scenery/population.gd": "4441418e058f108f9638139526888a53b80bef0d6a75338d2fd1ce81d1af5f9c",
+    "app/scenery/population_person.gdshader": "0cde4fc7d1cebcc2fee04f90c53c03d4fe2df86f226b3f52c16ca39044ebffcd",
+    "app/scenery/postcards.gd": "e677f591c1afbb6db13ed939438f14c79b33dcfe819e0f30a75ddb6690df4b18",
+    "app/scenery/power_lines.gd": "1288bf35817353b596090e9ea9ca184513c89c7a7c00027aa919b11aaec722ed",
+    "app/scenery/prefabs.gd": "7a2e33f25de71557a0c235e4923484d4d4070b334419b9a38df986dabf6c8c87",
+    "app/scenery/rc_track_option.gd": "142a12f3b561d8c5138ee551639ad20ff91c1e4eadb2a5ae2e173b868a0000ba",
+    "app/scenery/runway_meadow.gd": "8af41ab08d52904a0bb2d592440dadfd44ca311bdeb4b98ceed2c6f671e4d396",
+    "app/scenery/runway_scenario.gd": "7793df4f3331b09dc8df80e803c6eeedcbced74b8dee0f14b574539679fbe575",
+    "app/scenery/scenery.gd": "1e23ae5578be097e12cc0b4959321f7e732f8884fd8d3cf46088284f9e7ae425",
+    "app/scenery/scenery_loader.gd": "7b07f2ecc47ffed2ef4d1ce7ca552f58bb14625666df30c6105ca017a682f541",
+    "app/scenery/support_surfaces.gd": "6899325c3ef7608dcac49cf50694a938295cee2accfe9890bb0e5607a89404b2",
+    "app/scenery/takeoff_pilot.gd": "86c182174e404ea917807d53e0863ab19c99faaa65707ce64a8f634e1f5ec5d9",
+    "app/scenery/vegetation.gd": "0d80321b6b6dca4d5ba152e2f3da5092b41e22c30fc1343f37477d8be948dac3",
+    "app/scenery/vegetation_placement.gd": "53b78f9f0314b3dee659b408bc0ace8763b7c6ba0503d7df9ce345297ff72b75",
+    "app/scenery/vertex_color_linear.gdshaderinc": "61b97ddbb6278497e8f297ac7d6aaef67e258c15ce7d91ffd64dd04afea43ab2",
+    "app/scenery/woodland_cards.gdshader": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+    "app/scenery/woodland_edge_habitat.gd": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+    "app/scenery/woodland_floor.gdshader": "57362ec06f860d387c0a24c89c6856085ccf9b021382d94933f4a246c6fe82fc",
+    "app/scenery/birds/birds_runtime.gd": "4195051baec44e775e04459df4f4cce172e7e52f13a423ba4f45b9515e5d8e8d",
+    "app/scenery/birds/bird_data.gd": "bcdb53d4a74475a52f00a411e3d43ddaf7f197b4f568eb7a79840a6f98023ffe",
+    "app/scenery/birds/bird_director.gd": "247631519118ef488602a78d7b32940f484dc178c9a7123b0581805c5adecf76",
+    "app/scenery/birds/bird_planform.gd": "d0d4387ecf042209a93f6b644924e1001f3de4cc83106892f7afd1ad41546194",
+    "app/scenery/birds/bird_tracks.gd": "412596b7d9a746530e67ec4c5a779d42e9824985a6e49057db3c772431642476",
+    "app/scenery/birds/sky_birds.gdshader": "ea2818f79e6252f3e63b4e26e68ef12f83e681eacbdcd37412f95e510a95843f",
+    "app/environment/moon_config.gd": "0613a40ae615dc59404cf0fc3c6573129b3c5d1d041e92c184935ccfa88de15e",
+    "app/environment/sky_appearance_config.gd": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68",
+    "app/environment/solar_clock.gd": "ba0c1d8000b9e29ad76b1433b489d5d79b51ea159d7e997ce6acfbce9969bbb9",
+    "app/environment/solar_position.gd": "b8df9dcff91ff16f6907fa61f2a5efbc0672209576446db7d4c6c5ffd68ea6f7",
+    "app/environment/storm_events.gd": "fe2d57ad43203f99ef3018b0b260b66042350bc18e3472a4253e16e2183e791d",
+    "app/environment/time_of_day_config.gd": "2d2ca6d5aac290761c3380b3e54ec459400a373d32cb4cc0e2fbae1ed8d91d8f",
+    "app/environment/visual_timeline.gd": "43efa6102a7dd7e6b8bdeb4638bb09eb9cf423193fc799772646047c484a8878",
+    "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "app/data/fields/grass.json": "916bb15fefd84da6d354e4ad1f9480f01c0391f1e799f592a53c3ee504161d52",
+    "app/data/fields/horizon.json": "7040c33f522a4e0a035089baa341018aa6000b01113c3c4dd9a8f52b86d93c3c",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/fields/lights.json": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
+    "app/data/fields/mountains.json": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+    "app/data/scenery/countryside.json": "41dca09f57c2b3c7855c1dc22d533dc8d861a63b9f0316abea6ec64c5f12e4f8",
+    "app/data/scenery/default.json": "02e72dbb762b069ff7973a6571ee5baaea8177b334be033c215aeaa6016ee062",
+    "app/data/scenery/hill_settlements.json": "6c973ef75f63aac64a3a3ca1fe7f5343630b29a188feb22c51c7c9603bfaf128",
+    "app/data/scenery/power_cable.json": "b29026e81fae6a77b51bd4900d9442ff657b11f31f37c672fd23f03e47289a13",
+    "app/data/scenery/power_insulator.json": "c3a85e71b2ceb317874c23f2fc2c8a2423a043f6e75f842bff0e56e6e57ad2ff",
+    "app/data/scenery/birds/birds.json": "350d300025c12ca893924d68ee88c2b4b18b322bb88736a5f17fb02304d6bdd2",
+    "app/data/scenery/models/car_hatch.json": "c43e80445c9c7db8c7c7a8465b213e77a3f7d230a7ace05db0b27435ae92baa0",
+    "app/data/scenery/models/car_sedan.json": "2a399fc4972f9e6929fb6305901347fad230d150661804d453efaf6bd86d613e",
+    "app/data/scenery/models/car_sport.json": "9fac663b3d7e78a7a318311a1618a46cc2e8ed6479560acc920eddbad35bfce4",
+    "app/data/scenery/models/car_suv.json": "2bffbe060c5b80a365091361aaf04a5ebe3d3d971c73c0a441de9b7717ccf295",
+    "app/data/scenery/models/cow.json": "111f356acbcb08a5a2dd6e8014e86163175df963cb70944f6882eaeb5ebbf1a1",
+    "app/data/scenery/models/fleet_avanti.json": "5e4d7d9bc4c7ee561dfb0ffad5478b8954552d7fc244f41d18057321b25b3bec",
+    "app/data/scenery/models/fleet_extra.json": "80afd7e94d33436f2ecec4567917a9235202fd847b59e948a5b823653d6d58f8",
+    "app/data/scenery/models/fleet_p51.json": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3",
+    "app/data/scenery/models/fleet_stik.json": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949",
+    "app/data/scenery/models/sheep.json": "610ea5934ee3f698d6e5e4ead4ab5974851db654da79de9c1130724ccce68575",
+    "app/data/woodland_edges.json": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+    "app/physics/ground_terrain.gd": "8b632311a0f513b8cadf0a9440ba393173b5971bf4ca14fd568813fa5e327efc",
+    "app/physics/ground_surfaces.gd": "0977473117cd1381a911b39f3f8094008be2e6b188412f890ff746177f43b73e"
+  },
+  "baseline_shader_sha256": "3c2cb882e4d7bae6c17c109e5d6bf14439baf268f70359aa3d4053149a15c564",
+  "environment": {
+    "godot": "4.8-beta2 (official)",
+    "renderer": "gl_compatibility",
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "msaa": "4x"
+  },
+  "native_pixels": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "cases": [
+      {
+        "label": "production grass fractions follow both source manifests",
+        "metrics": {
+          "expected": "(0.909091, 0.90909)",
+          "installed": "(0.909091, 0.90909)"
+        },
+        "passed": true
+      },
+      {
+        "label": "production root correction is enabled and bounded",
+        "metrics": {
+          "strength": 0.75
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14470,
+          "changed": 0,
+          "foreground": 1914,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14470,
+          "changed": 521,
+          "foreground": 1914,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.219607844948769,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall upper 70% stays unchanged",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 9313,
+          "changed": 0,
+          "foreground": 1311,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall source roots gain color",
+        "metrics": {
+          "above_full_channels": 0,
+          "blue_mean": 0.0235944656194937,
+          "candidate_mean": 0.0722162628787298,
+          "changed": 521,
+          "darker_channels": 0,
+          "full_mean": 0.0722162628787298,
+          "green_mean": 0.175130208333333,
+          "red_mean": 0.109583271083547,
+          "samples": 603
+        },
+        "passed": true
+      },
+      {
+        "label": "bush_common_flowers zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 12823,
+          "changed": 0,
+          "foreground": 3561,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "bush_common_flowers root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 12823,
+          "changed": 0,
+          "foreground": 3561,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "bush_common_flowers is unchanged at production root strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 12823,
+          "changed": 0,
+          "foreground": 3561,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "fern_1 zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 15487,
+          "changed": 0,
+          "foreground": 897,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "fern_1 root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 15487,
+          "changed": 0,
+          "foreground": 897,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "fern_1 is unchanged at production root strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 15487,
+          "changed": 0,
+          "foreground": 897,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14422,
+          "changed": 0,
+          "foreground": 1962,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14422,
+          "changed": 628,
+          "foreground": 1962,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.219607844948769,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short upper 70% stays unchanged",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 9411,
+          "changed": 0,
+          "foreground": 1213,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short source roots gain color",
+        "metrics": {
+          "above_full_channels": 0,
+          "blue_mean": 0.0228697441926149,
+          "candidate_mean": 0.068614363348096,
+          "changed": 628,
+          "darker_channels": 0,
+          "full_mean": 0.068614363348096,
+          "green_mean": 0.193773318037331,
+          "red_mean": 0.119740994177132,
+          "samples": 749
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 0 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 0 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 1719,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.219607844017446,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 1 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 1 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 1659,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.184313729405403,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 2 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 2 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 1719,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.227450981736183,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 3 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 3 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 1599,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.137254916131496,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "dark roots gain restrained green color at the default strength",
+        "metrics": {
+          "full_strength": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 1599,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.180392168462276,
+            "valid": true
+          },
+          "root": {
+            "above_full_channels": 0,
+            "blue_mean": 0.0632184935010169,
+            "candidate_mean": 0.0949062853887388,
+            "changed": 605,
+            "darker_channels": 0,
+            "full_mean": 0.126430082292432,
+            "green_mean": 0.243590804170971,
+            "red_mean": 0.205359302867543,
+            "samples": 605
+          }
+        },
+        "passed": true
+      }
+    ],
+    "checks": 25,
+    "display": "Windows",
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "failures": 0,
+    "pixel_checks": 23,
+    "renderer": "gl_compatibility",
+    "sources_sha256": {
+      "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "1c673aea5119ad0de5a040d3271fd5ba979e70363a20ede170437c02177e3c85",
+      "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d",
+      "res://assets/landscape/vegetation/impostors/fern_1_4view.json": "5b84dafde1d9e7affec29ee1a9471faff2ce645c146676fdf2b26a38a4c17b75",
+      "res://assets/landscape/vegetation/impostors/fern_1_4view.png": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f",
+      "res://assets/landscape/vegetation/impostors/grass_common_short_4view.json": "6c1f0bc3a90e0e8a5d2430b3ae907a3c2a52d681733c6cbf7f1f62676d1dc6f0",
+      "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9",
+      "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.json": "a267a3b854bab65e6123561a328d297fb0e8adc7ebb7f16ab0c71b3af205f06c",
+      "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c",
+      "res://scenery/woodland_cards.gdshader": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+      "res://scenery/woodland_edge_habitat.gd": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36"
+    },
+    "status": "passed",
+    "viewport": [
+      128,
+      128
+    ]
+  },
+  "mutation_pixels": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "cases": [
+      {
+        "label": "production grass fractions follow both source manifests",
+        "metrics": {
+          "expected": "(0.909091, 0.90909)",
+          "installed": "(0.909091, 0.90909)"
+        },
+        "passed": true
+      },
+      {
+        "label": "production root correction is enabled and bounded",
+        "metrics": {
+          "strength": 0.75
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14470,
+          "changed": 0,
+          "foreground": 1914,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14470,
+          "changed": 0,
+          "foreground": 1914,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall upper 70% stays unchanged",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 9313,
+          "changed": 0,
+          "foreground": 1311,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_tall source roots gain color",
+        "metrics": {
+          "above_full_channels": 0,
+          "blue_mean": 0.0,
+          "candidate_mean": 0.0,
+          "changed": 0,
+          "darker_channels": 0,
+          "full_mean": 0.0,
+          "green_mean": 0.0728641528988359,
+          "red_mean": 0.018794905882372,
+          "samples": 603
+        },
+        "passed": false
+      },
+      {
+        "label": "bush_common_flowers zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 12823,
+          "changed": 0,
+          "foreground": 3561,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "bush_common_flowers root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 12823,
+          "changed": 0,
+          "foreground": 3561,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "bush_common_flowers is unchanged at production root strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 12823,
+          "changed": 0,
+          "foreground": 3561,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "fern_1 zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 15487,
+          "changed": 0,
+          "foreground": 897,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "fern_1 root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 15487,
+          "changed": 0,
+          "foreground": 897,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "fern_1 is unchanged at production root strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 15487,
+          "changed": 0,
+          "foreground": 897,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short zero-strength rendering matches source color and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14422,
+          "changed": 0,
+          "foreground": 1962,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short root strength preserves silhouette and alpha",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 14422,
+          "changed": 0,
+          "foreground": 1962,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short upper 70% stays unchanged",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 9411,
+          "changed": 0,
+          "foreground": 1213,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "grass_common_short source roots gain color",
+        "metrics": {
+          "above_full_channels": 0,
+          "blue_mean": 0.0,
+          "candidate_mean": 0.0,
+          "changed": 0,
+          "darker_channels": 0,
+          "full_mean": 0.0,
+          "green_mean": 0.0981909085975311,
+          "red_mean": 0.0323515664114653,
+          "samples": 749
+        },
+        "passed": false
+      },
+      {
+        "label": "synthetic view 0 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 0 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 0,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 1 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 1 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 0,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 2 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 2 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 0,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 3 selects its source frame and nonuniform alpha",
+        "metrics": {
+          "comparison": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "hole_alpha": 0.0,
+          "leaf_alpha": 1.0
+        },
+        "passed": true
+      },
+      {
+        "label": "synthetic view 3 retains alpha at default strength",
+        "metrics": {
+          "alpha_changed": 0,
+          "background": 10236,
+          "changed": 0,
+          "foreground": 6148,
+          "max_alpha_delta": 0.0,
+          "max_rgb_delta": 0.0,
+          "valid": true
+        },
+        "passed": true
+      },
+      {
+        "label": "dark roots gain restrained green color at the default strength",
+        "metrics": {
+          "full_strength": {
+            "alpha_changed": 0,
+            "background": 10236,
+            "changed": 0,
+            "foreground": 6148,
+            "max_alpha_delta": 0.0,
+            "max_rgb_delta": 0.0,
+            "valid": true
+          },
+          "root": {
+            "above_full_channels": 0,
+            "blue_mean": 0.0,
+            "candidate_mean": 0.0,
+            "changed": 0,
+            "darker_channels": 0,
+            "full_mean": 0.0,
+            "green_mean": 0.113724637622676,
+            "red_mean": 0.113724637622676,
+            "samples": 605
+          }
+        },
+        "passed": false
+      }
+    ],
+    "checks": 25,
+    "display": "Windows",
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "failures": 3,
+    "pixel_checks": 23,
+    "renderer": "gl_compatibility",
+    "sources_sha256": {
+      "res://../tmp/vegetation-contact-20261109/mutant.gdshader": "3fea98f7aceef4a4fc89f4df70aeffcbac2d5adf0a7bd59636124118352f10d2",
+      "res://../tmp/vegetation-contact-20261109/mutant_builder.gd": "3ac65b429d1f04f9ec9dca435c2c924f8c914f2cebfb0537874321168a8d40a0",
+      "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "1c673aea5119ad0de5a040d3271fd5ba979e70363a20ede170437c02177e3c85",
+      "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d",
+      "res://assets/landscape/vegetation/impostors/fern_1_4view.json": "5b84dafde1d9e7affec29ee1a9471faff2ce645c146676fdf2b26a38a4c17b75",
+      "res://assets/landscape/vegetation/impostors/fern_1_4view.png": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f",
+      "res://assets/landscape/vegetation/impostors/grass_common_short_4view.json": "6c1f0bc3a90e0e8a5d2430b3ae907a3c2a52d681733c6cbf7f1f62676d1dc6f0",
+      "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9",
+      "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.json": "a267a3b854bab65e6123561a328d297fb0e8adc7ebb7f16ab0c71b3af205f06c",
+      "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+    },
+    "status": "failed",
+    "viewport": [
+      128,
+      128
+    ]
+  },
+  "mutation_source_sha256": {
+    "mutant.gdshader": "3fea98f7aceef4a4fc89f4df70aeffcbac2d5adf0a7bd59636124118352f10d2",
+    "mutant_builder.gd": "3ac65b429d1f04f9ec9dca435c2c924f8c914f2cebfb0537874321168a8d40a0",
+    "mutant_test.gd": "608cc6f5c9cdc71d26837ba39520dce0213745273ad11538a533fcd7d0b310b8"
+  },
+  "field_runs": [
+    {
+      "profile": "legacy",
+      "images_per_variant": 12,
+      "lighting": {
+        "mode": "legacy"
+      },
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 0.75,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+        "triangles": 472
+      },
+      "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+      "reports": {
+        "baseline": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/legacy-baseline/report.json",
+          "sha256": "619f39158df903f859cf163e7c6afebeff2a9e7447b64badedd037aaca9a3988"
+        },
+        "candidate": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/legacy-candidate/report.json",
+          "sha256": "874d547a158eaf312d5c0fdeb2f3d591ee25aa229843625331bf8ba0c51373d0"
+        }
+      }
+    },
+    {
+      "profile": "noon",
+      "images_per_variant": 4,
+      "lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 43200,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "8f9bef7015d46fdd72cb07b1a59cae20879764c1b0a1094ef3a645aeb1fb3408",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 91.3508190967778,
+          "direction_ned": [
+            -0.000767848264455414,
+            0.0325626972411591,
+            -0.999469399810431
+          ],
+          "elevation_deg": 88.1334460994826,
+          "errors": [],
+          "hour_angle_deg": -1.86603553948009,
+          "julian_date": 2461120.0,
+          "ok": true
+        }
+      },
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 0.75,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+        "triangles": 472
+      },
+      "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+      "reports": {
+        "baseline": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/noon-baseline/report.json",
+          "sha256": "a74934ad34cadd7d4c4d6675a8868417841d679bd7406b401d49668ba3cbd9cf"
+        },
+        "candidate": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/noon-candidate/report.json",
+          "sha256": "e2700f1e70d8a16a9167ceb6f4e83c303a53fdfa6ca47024ac1033020517946d"
+        }
+      }
+    },
+    {
+      "profile": "low-sun",
+      "images_per_variant": 6,
+      "lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 63600,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "ef225da95a90649435da0413035abaab21bb4fe68caa409e6fe4ac083c5ae215",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 270.049674627115,
+          "direction_ned": [
+            0.000860799533979591,
+            -0.99286438189334,
+            -0.119245872849832
+          ],
+          "elevation_deg": 6.84858176964146,
+          "errors": [],
+          "hour_angle_deg": 83.1514156808869,
+          "julian_date": 2461120.23611111,
+          "ok": true
+        }
+      },
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 0.75,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+        "triangles": 472
+      },
+      "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+      "reports": {
+        "baseline": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/low-sun-baseline/report.json",
+          "sha256": "7f8f84708186916758955866e5b84cf3355a7e3f04ceff65d75446f1db3cfe3b"
+        },
+        "candidate": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/low-sun-candidate/report.json",
+          "sha256": "0b10082bb8cd6982cc547cebf7baa134f6e1743311b33419b80936d7e97648c6"
+        }
+      }
+    },
+    {
+      "profile": "dusk",
+      "images_per_variant": 2,
+      "lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 65400,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "a2aca2bfb66eda23615423fec96517091d1b2e5797129d90f538af35e9658cca",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 270.057556960967,
+          "direction_ned": [
+            0.00100449307489731,
+            -0.999934558997836,
+            0.011395995589058
+          ],
+          "elevation_deg": -0.652956584228282,
+          "errors": [],
+          "hour_angle_deg": 90.6529569136615,
+          "julian_date": 2461120.25694444,
+          "ok": true
+        }
+      },
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 0.75,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+        "triangles": 472
+      },
+      "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+      "reports": {
+        "baseline": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/dusk-baseline/report.json",
+          "sha256": "1a0fd1e6d73365286ad5049eb7a4ca0ecdab5ac877160f23b63b3243a1287ac4"
+        },
+        "candidate": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/dusk-candidate/report.json",
+          "sha256": "bea1fcc66935ec5215edeba0e09dfc34d88e116472dc32999dbb41038a3cce6d"
+        }
+      }
+    },
+    {
+      "profile": "night",
+      "images_per_variant": 2,
+      "lighting": {
+        "config": {
+          "date": "2026-03-20",
+          "format": "openrc-lighting v1",
+          "latitude_deg": 0.0,
+          "local_seconds": 0,
+          "location_name": "Reference field (synthetic)",
+          "longitude_deg": 0.0,
+          "mode": "astronomical",
+          "utc_offset_minutes": 0
+        },
+        "config_sha256": "b20660a63c942878476644361e2fd1f3baf31df8d18779470d271a50971e6632",
+        "exposure": 0.6,
+        "format": "openrc-visual-context v1",
+        "illumination_kind": "estimated",
+        "mode": "fixed",
+        "moon": "not-modelled",
+        "profile": "openrc-lighting-curves v1",
+        "solar": {
+          "azimuth_deg": 262.76166332457,
+          "direction_ned": [
+            -0.00421738666746885,
+            -0.0332053595591734,
+            0.999439651878113
+          ],
+          "elevation_deg": -88.081830980773,
+          "errors": [],
+          "hour_angle_deg": 178.097106317655,
+          "julian_date": 2461119.5,
+          "ok": true
+        }
+      },
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 0.75,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "f1e9bedad718f348868e4c7b697d7e4312c35ed644fa76caee3e3039d14d0187",
+        "triangles": 472
+      },
+      "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "vegetation_catalog_sha256": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
+      "reports": {
+        "baseline": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/night-baseline/report.json",
+          "sha256": "8f6a910800461b89a51fb4ab1ef623f4648b521c36efb926b132f669b83d1ff3"
+        },
+        "candidate": {
+          "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/night-candidate/report.json",
+          "sha256": "7f754148e0dab72440b76426ccba0a7d6d7a4491e9d72bb5710887c5b49ae0c4"
+        }
+      }
+    }
+  ],
+  "field_comparisons": [
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-east-north-eye",
+      "baseline_sha256": "86d21952d53d6ecbfa15b5cdd9a770df93e79b923630abf7baf67e32e00fdf6d",
+      "candidate_sha256": "29253068316f2336dac3e7dcbd9d53a993f1c2e552e78f8d21d101fc8aad7daa",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64618515968323,
+          -245.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 61,
+        "primitives": 181003,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 11601,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.02818560313786008
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-east-north-overview",
+      "baseline_sha256": "bd0601ea3adca8b3419bcfc2ad62a56df8902e38900f24ad20f5a31f34823dfd",
+      "candidate_sha256": "cae28e4e735f8f4b90046650365a01e4956da5e1d2076d53b328eca59688cf03",
+      "camera": {
+        "eye": [
+          541.5,
+          4.99618530273438,
+          -242.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 60,
+        "primitives": 180999,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 2866,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.0073315329218107
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-east-north-reverse",
+      "baseline_sha256": "454faae0836f2343c405f326d9edce60b46a5284af689d0da5a82397795c5572",
+      "candidate_sha256": "a9ac0eeee923a2f7ad073fc002862061be7087ca9e5a9cfc62a96161d8c8d3b8",
+      "camera": {
+        "eye": [
+          530.5,
+          1.64618515968323,
+          -253.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 172614,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 13803,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.03319299768518519
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-east-south-eye",
+      "baseline_sha256": "f4fec5a03d7b62dc356baf902d1924470d0b050e925a643f895d726a0d042a25",
+      "candidate_sha256": "5d31528f42db5fb43c8e48bef7ea9f8747d3acadbd10bee9654665311871c7f7",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64549481868744,
+          253.5
+        ],
+        "at": [
+          534.5,
+          0.375494807958603,
+          249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 268,
+        "primitives": 489445,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 13399,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.033377379115226334
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-east-south-overview",
+      "baseline_sha256": "1b485670d27a5bd00fd9c46fbc7e0c54c20a8b2233f1c2715ba91bb339693719",
+      "candidate_sha256": "88c96611bd1433348f8ddf832e6a36d830707054fdc1b69085d402a56c493b66",
+      "camera": {
+        "eye": [
+          541.5,
+          4.9954948425293,
+          256.5
+        ],
+        "at": [
+          534.5,
+          0.375494807958603,
+          249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 266,
+        "primitives": 489281,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 3281,
+      "max_channel_delta": 28,
+      "mean_channel_delta": 0.008291216563786008
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-east-south-reverse",
+      "baseline_sha256": "799db2ecc15263ea5fa9ce19d06f1c6e10d0ee44527e27d7a4de3e1b69275a9c",
+      "candidate_sha256": "1aa00393d0d83c21b98e49bf2608113d01ab13fdc2b4211e95da5183514be61b",
+      "camera": {
+        "eye": [
+          530.5,
+          1.64549481868744,
+          245.5
+        ],
+        "at": [
+          534.5,
+          0.375494807958603,
+          249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 10,
+        "primitives": 88333,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 17202,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.04209121013374486
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-southwest-eye",
+      "baseline_sha256": "a8cdef3a41e085a7161dc38b9c692045fda46f147b17a280435d9a1dad903203",
+      "candidate_sha256": "f57bb038e83d141e334643d314089a953cfff5982d0468bf36d11aee251ef102",
+      "camera": {
+        "eye": [
+          205.5,
+          1.65393280982971,
+          557.0
+        ],
+        "at": [
+          201.5,
+          0.383932828903198,
+          553.0
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 230,
+        "primitives": 428344,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 13875,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.032734214248971195
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-southwest-overview",
+      "baseline_sha256": "2e285646e4f31e040dac21bb6ef396e82f6bc8688a8e1d4d461e23602d99279f",
+      "candidate_sha256": "4127e9202f4ac13b283381364a6a505b1deff617f743529d0113d4b9d1c2ba2a",
+      "camera": {
+        "eye": [
+          208.5,
+          5.00393295288086,
+          560.0
+        ],
+        "at": [
+          201.5,
+          0.383932828903198,
+          553.0
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 220,
+        "primitives": 426594,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 3411,
+      "max_channel_delta": 28,
+      "mean_channel_delta": 0.0077491640946502054
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-southwest-reverse",
+      "baseline_sha256": "f9aec18dbe7edd19a991011f0a07ae6d7c36df7e01bbe191259e5ea1cf3e5582",
+      "candidate_sha256": "1a0e001373f07bb54cefbd914bc110b78578c6654fcab0a45043c0d82e3edbd5",
+      "camera": {
+        "eye": [
+          197.5,
+          1.65393280982971,
+          549.0
+        ],
+        "at": [
+          201.5,
+          0.383932828903198,
+          553.0
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 12,
+        "primitives": 94084,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 18663,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.04095164609053498
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-northwest-eye",
+      "baseline_sha256": "baa43f43a92576aec4751553105e7aea6cd139f162d4bc201e9ce51e72268803",
+      "candidate_sha256": "5c56be04b22a4d2b1c2559f10f6f4d1e21da320d53bc05038bfd459de6080d10",
+      "camera": {
+        "eye": [
+          -549.0,
+          1.6479355096817,
+          -197.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 107894,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 14858,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.036081693672839504
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-northwest-overview",
+      "baseline_sha256": "b85392bdd323db09aeeb2ef6b70ef3e121ce1f858e345d84a8ccf72d32ed04a7",
+      "candidate_sha256": "56e984604d1bf39c9b04eaabccc86c3c55bafd71f66771f552576b87975c30aa",
+      "camera": {
+        "eye": [
+          -546.0,
+          4.99793529510498,
+          -194.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 107894,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 3423,
+      "max_channel_delta": 28,
+      "mean_channel_delta": 0.00850389017489712
+    },
+    {
+      "profile": "legacy",
+      "view": "woodland-edge-northwest-reverse",
+      "baseline_sha256": "4f65e970a9b475b5fd7914c098f6c9912cb931c10414b7e63b3f400d0a1396b0",
+      "candidate_sha256": "0da7cb11e90003b6c941ff534b2718cdd4cae3460e4ca2ed2d545125317c097e",
+      "camera": {
+        "eye": [
+          -557.0,
+          1.6479355096817,
+          -205.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 203,
+        "primitives": 420777,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 16091,
+      "max_channel_delta": 27,
+      "mean_channel_delta": 0.03797823431069959
+    },
+    {
+      "profile": "noon",
+      "view": "woodland-edge-east-north-eye",
+      "baseline_sha256": "958816ceac5a70a2e5b8918ffe8496e6671ee402ac520ee3f9e41eaf19e377ba",
+      "candidate_sha256": "359dd2ebc26190bbb3b27be43b57d6a808364e5b6efb928bdd69ef2f3694b0bd",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64618515968323,
+          -245.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 55,
+        "primitives": 181003,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 11902,
+      "max_channel_delta": 39,
+      "mean_channel_delta": 0.04929655349794239
+    },
+    {
+      "profile": "noon",
+      "view": "woodland-edge-east-south-eye",
+      "baseline_sha256": "488474a8bca4caf0575d8f58f2daed30129a19675fb48d262811d447cd2d4f58",
+      "candidate_sha256": "f0f12948eda86e661b6e148cb6b77000eb77d92b770e3ca5ee66c9ba19d3a359",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64549481868744,
+          253.5
+        ],
+        "at": [
+          534.5,
+          0.375494807958603,
+          249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 268,
+        "primitives": 489445,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 13681,
+      "max_channel_delta": 39,
+      "mean_channel_delta": 0.058448431069958846
+    },
+    {
+      "profile": "noon",
+      "view": "woodland-edge-southwest-eye",
+      "baseline_sha256": "6dfc229a732efa6145844c9e4a7c3a14b1ab40343f1bf16f8c8b8647d7aa852f",
+      "candidate_sha256": "d0693aaadea83e2b84dc1ec2b053d221be1fba682d5e50b11e2970823ec18620",
+      "camera": {
+        "eye": [
+          205.5,
+          1.65393280982971,
+          557.0
+        ],
+        "at": [
+          201.5,
+          0.383932828903198,
+          553.0
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 228,
+        "primitives": 428344,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 14269,
+      "max_channel_delta": 39,
+      "mean_channel_delta": 0.05736448688271605
+    },
+    {
+      "profile": "noon",
+      "view": "woodland-edge-northwest-eye",
+      "baseline_sha256": "4b17c58ef5f53f345d90560dd2da1cf7536705045d425398bd9a3ddcd735ea9b",
+      "candidate_sha256": "13d7742a68009522977714d035cbf809d7411e365c9fd33d5dbc7e6a5f3e365b",
+      "camera": {
+        "eye": [
+          -549.0,
+          1.6479355096817,
+          -197.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 107894,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 15248,
+      "max_channel_delta": 39,
+      "mean_channel_delta": 0.06339747299382716
+    },
+    {
+      "profile": "low-sun",
+      "view": "woodland-edge-east-north-eye",
+      "baseline_sha256": "1c3354d4a1e6c318e7d48943834db50b7636d7a51f913b40dc089a35df133c4e",
+      "candidate_sha256": "6b84810ff8c2bca17eca0ba765e3a255fc3f8c6cac60c47c1cf7c4964a330213",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64618515968323,
+          -245.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 57,
+        "primitives": 181003,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 4315,
+      "max_channel_delta": 5,
+      "mean_channel_delta": 0.0014109117798353909
+    },
+    {
+      "profile": "low-sun",
+      "view": "woodland-edge-east-north-overview",
+      "baseline_sha256": "5c3bc61cda77324af57d9a592a9738c43428c8b854e219bf366a5618322ac13d",
+      "candidate_sha256": "0ce5c0dd9da2a3ef58d2ee364ef8c82fa8662cd7b7ea28352535e389ccbd067c",
+      "camera": {
+        "eye": [
+          541.5,
+          4.99618530273438,
+          -242.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 57,
+        "primitives": 180999,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 1321,
+      "max_channel_delta": 5,
+      "mean_channel_delta": 0.0004952739197530864
+    },
+    {
+      "profile": "low-sun",
+      "view": "woodland-edge-east-north-reverse",
+      "baseline_sha256": "d23e7c9303ac78784affd431c7e1736c3553a69de1265b3261fe5ac169ca966a",
+      "candidate_sha256": "a61b10767f7a160972f7d029ea7957bbd14d1d740946bcc4c199972599089a41",
+      "camera": {
+        "eye": [
+          530.5,
+          1.64618515968323,
+          -253.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 40,
+        "primitives": 172614,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 4604,
+      "max_channel_delta": 4,
+      "mean_channel_delta": 0.0015316358024691358
+    },
+    {
+      "profile": "low-sun",
+      "view": "woodland-edge-northwest-eye",
+      "baseline_sha256": "af0a551fc05a08a859ba9c9b40755c57d711cc92e314bc7319cb0da8925d42d1",
+      "candidate_sha256": "1d4d59ca6fad94b96498a9bf7f6716672853ded0aa2e27afc60d89d168c5e8e9",
+      "camera": {
+        "eye": [
+          -549.0,
+          1.6479355096817,
+          -197.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 107894,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 5134,
+      "max_channel_delta": 5,
+      "mean_channel_delta": 0.0017578125
+    },
+    {
+      "profile": "low-sun",
+      "view": "woodland-edge-northwest-overview",
+      "baseline_sha256": "7d30dcb097577b56c62da0ec9da09cb3dc4ccc18b00d450310c5dd3f28eae52d",
+      "candidate_sha256": "8f7028a453ffc235f2f9a7e36f54237489a8e4736fe924e7f0df2fb8f3708bf5",
+      "camera": {
+        "eye": [
+          -546.0,
+          4.99793529510498,
+          -194.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 107894,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 1411,
+      "max_channel_delta": 5,
+      "mean_channel_delta": 0.0005518582818930041
+    },
+    {
+      "profile": "low-sun",
+      "view": "woodland-edge-northwest-reverse",
+      "baseline_sha256": "9e40c7403745c2c984e5186e0584b73c9de4a1794bb472c72b1a314cde128d23",
+      "candidate_sha256": "8fe2f5581af36d5ace5a41f996f8d4b78fd20eec308d324f3dc1b510b3a654a5",
+      "camera": {
+        "eye": [
+          -557.0,
+          1.6479355096817,
+          -205.5
+        ],
+        "at": [
+          -553.0,
+          0.377935469150543,
+          -201.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 203,
+        "primitives": 420777,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 5291,
+      "max_channel_delta": 5,
+      "mean_channel_delta": 0.0016303369341563786
+    },
+    {
+      "profile": "dusk",
+      "view": "woodland-edge-east-north-eye",
+      "baseline_sha256": "92853a31a30ce2fee57822982035bb21c1435ac0a39558ba7d6f6fc4c15d9348",
+      "candidate_sha256": "72d7b78f44c0e307286d0a2419a82236429218198d2e87deaa7ff4c3a3f33f60",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64618515968323,
+          -245.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 53,
+        "primitives": 181003,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 1,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 1.6075102880658437e-07
+    },
+    {
+      "profile": "dusk",
+      "view": "woodland-edge-east-north-reverse",
+      "baseline_sha256": "42710d2e5942670194c9a2afdc96d46c3c614424989621c4135591a96296c6fb",
+      "candidate_sha256": "b1c6acd7a670511ccdf6449f4258ccb57f2cd7ce4796a0d27046e05e07b584f6",
+      "camera": {
+        "eye": [
+          530.5,
+          1.64618515968323,
+          -253.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 172614,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 1,
+      "max_channel_delta": 1,
+      "mean_channel_delta": 1.6075102880658437e-07
+    },
+    {
+      "profile": "night",
+      "view": "woodland-edge-east-north-eye",
+      "baseline_sha256": "dcfecf7c9a8f80d0fa382ff02b0976942c6951283c1262c943caaa9f976bc6b8",
+      "candidate_sha256": "dcfecf7c9a8f80d0fa382ff02b0976942c6951283c1262c943caaa9f976bc6b8",
+      "camera": {
+        "eye": [
+          538.5,
+          1.64618515968323,
+          -245.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 53,
+        "primitives": 181003,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    },
+    {
+      "profile": "night",
+      "view": "woodland-edge-east-north-reverse",
+      "baseline_sha256": "0471fcdeb59cffe7a6a107ed51933fa6b904192a43b380a16591e4ea6370c6f1",
+      "candidate_sha256": "0471fcdeb59cffe7a6a107ed51933fa6b904192a43b380a16591e4ea6370c6f1",
+      "camera": {
+        "eye": [
+          530.5,
+          1.64618515968323,
+          -253.5
+        ],
+        "at": [
+          534.5,
+          0.376185208559036,
+          -249.5
+        ],
+        "fov": 50.0,
+        "wind": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "clock": 0.0
+      },
+      "counters": {
+        "draws": 16,
+        "primitives": 172614,
+        "shadow_draws": 0
+      },
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_channel_delta": 0.0
+    }
+  ],
+  "controls": [
+    {
+      "view": "woodland-edge-east-north-eye",
+      "correction_off_to_original": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "view": "woodland-edge-east-north-overview",
+      "correction_off_to_original": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    },
+    {
+      "view": "woodland-edge-northwest-eye",
+      "correction_off_to_original": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      },
+      "selected_trial_to_production": {
+        "changed_pixels": 0,
+        "max_channel_delta": 0,
+        "mean_channel_delta": 0.0
+      }
+    }
+  ],
+  "checked_runs": [
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-baseline-eye-bsyqgqc2/report.json",
+      "sha256": "da68ba2d04002c9613bdcc061e69af69aa8db58b44e4980e2cc6b93108ed5993",
+      "label": "woodland-baseline-eye",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../docs/research/visual-quality-implementation/L6c/tree-completion/groundcover-transition/capture.gd",
+        "--",
+        "--width=1920",
+        "--height=1080",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/baseline-eye",
+        "--view=eye"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-baseline-overview-ewfvv4f5/report.json",
+      "sha256": "3715d4c1462ae1f4910cf2f17386b27aa0504f518844a778aadaf9d1bdbb7f4b",
+      "label": "woodland-baseline-overview",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../docs/research/visual-quality-implementation/L6c/tree-completion/groundcover-transition/capture.gd",
+        "--",
+        "--width=1920",
+        "--height=1080",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/baseline-overview",
+        "--view=overview"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-builder-parse-prrolri9/report.json",
+      "sha256": "c7d145a797a0c81ad67d9f810f50af81f2bef40789bfaa4ff6def59eec5b4466",
+      "label": "woodland-builder-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://scenery/woodland_edge_habitat.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-dusk-baseline-jfqxl793/report.json",
+      "sha256": "f35946368b2f2cd3261960fde811fc2e2501ccc7f3d04939c0f71e54d0f980b4",
+      "label": "woodland-dusk-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\dusk-baseline",
+        "--time-of-day=18:10",
+        "--date=2026-03-20",
+        "--woodland_shader_source=res://../tmp/vegetation-contact-20261109/baseline_woodland_cards.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-dusk-candidate-ywwglvc7/report.json",
+      "sha256": "0c909bcf056c2343fa7175463c68f8dbdb2a9b55b6fde58c71e442ed4ab69a68",
+      "label": "woodland-dusk-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\dusk-candidate",
+        "--time-of-day=18:10",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-half-trial-r1c6feu4/report.json",
+      "sha256": "d5c0c72d66c9891939aa6627874c4892a05a5849097bf317f12905d22dcc15fa",
+      "label": "woodland-half-trial",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-northwest-eye",
+        "--woodland_root_lift=0.5",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/trial-half"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-legacy-baseline-61ay7lah/report.json",
+      "sha256": "b8d2aa7000450bc4a58e5590a40940f3e0f43238f988c59e2d9471eca4eb298b",
+      "label": "woodland-legacy-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-east-north-reverse,woodland-edge-east-south-eye,woodland-edge-east-south-overview,woodland-edge-east-south-reverse,woodland-edge-southwest-eye,woodland-edge-southwest-overview,woodland-edge-southwest-reverse,woodland-edge-northwest-eye,woodland-edge-northwest-overview,woodland-edge-northwest-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\legacy-baseline",
+        "--woodland_shader_source=res://../tmp/vegetation-contact-20261109/baseline_woodland_cards.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-legacy-candidate-ja1tchdd/report.json",
+      "sha256": "e10ba45471290165b6dc395844c735ebd63ac120a848596d10d383b662673342",
+      "label": "woodland-legacy-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-east-north-reverse,woodland-edge-east-south-eye,woodland-edge-east-south-overview,woodland-edge-east-south-reverse,woodland-edge-southwest-eye,woodland-edge-southwest-overview,woodland-edge-southwest-reverse,woodland-edge-northwest-eye,woodland-edge-northwest-overview,woodland-edge-northwest-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\legacy-candidate"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-low-sun-baseline-gbiygmgs/report.json",
+      "sha256": "e2fd0086f0833d886ac5411886ded3cf05e9b2949993cca52b86f1190505faee",
+      "label": "woodland-low-sun-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-east-north-reverse,woodland-edge-northwest-eye,woodland-edge-northwest-overview,woodland-edge-northwest-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\low-sun-baseline",
+        "--time-of-day=17:40",
+        "--date=2026-03-20",
+        "--woodland_shader_source=res://../tmp/vegetation-contact-20261109/baseline_woodland_cards.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-low-sun-candidate-3doioo3d/report.json",
+      "sha256": "7070c9fb0b79d648431e9fa0c8ef3cf2c690f51f51292444543c1192667d5a45",
+      "label": "woodland-low-sun-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-east-north-reverse,woodland-edge-northwest-eye,woodland-edge-northwest-overview,woodland-edge-northwest-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\low-sun-candidate",
+        "--time-of-day=17:40",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-native-boundaries-isdekd5_/report.json",
+      "sha256": "26e631565a1f6e30a16e5f55e2ee544ddb821d6bf645ec1b788220e123feb675",
+      "label": "woodland-native-boundaries",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_woodland_edge_habitat.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-night-baseline-s15iwwaj/report.json",
+      "sha256": "ace97690e19b7dd3d0107fc23b48df262e854edb26ba4b83427b369394e049f1",
+      "label": "woodland-night-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\night-baseline",
+        "--time-of-day=00:00",
+        "--date=2026-03-20",
+        "--woodland_shader_source=res://../tmp/vegetation-contact-20261109/baseline_woodland_cards.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-night-candidate-7ath6r8s/report.json",
+      "sha256": "119634263c6d2385dc8a5f642a665f59531afb537cd05734d2bdb1c6386386a3",
+      "label": "woodland-night-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-reverse",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\night-candidate",
+        "--time-of-day=00:00",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-noon-baseline-zam6h9wo/report.json",
+      "sha256": "dc482f27c53bf4574013df027d531d51a731b68a9c3dd216a1f333c7a358da60",
+      "label": "woodland-noon-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-south-eye,woodland-edge-southwest-eye,woodland-edge-northwest-eye",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\noon-baseline",
+        "--time-of-day=12:00",
+        "--date=2026-03-20",
+        "--woodland_shader_source=res://../tmp/vegetation-contact-20261109/baseline_woodland_cards.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-noon-candidate-134sfrb2/report.json",
+      "sha256": "e4d5d9f821fc3e12ebf0043b847df298bff9176f806f5da9a369fcca96a8cbe0",
+      "label": "woodland-noon-candidate",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-south-eye,woodland-edge-southwest-eye,woodland-edge-northwest-eye",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\noon-candidate",
+        "--time-of-day=12:00",
+        "--date=2026-03-20"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-quality-parse-olg7qprq/report.json",
+      "sha256": "8d7afc0f4399b77632aef5833880498fe9e845aaa1bf15fecce28625d4b0848c",
+      "label": "woodland-quality-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://../tools/trees/quality_capture.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-root-ci-skip-qpk3cucx/report.json",
+      "sha256": "ede15c890cb73f3045ee0db143a6146016218d40f4e2a0f71815ec736bcaf88f",
+      "label": "woodland-root-ci-skip",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_woodland_root_lighting.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-root-muted-regression-ww89jwdu/report.json",
+      "sha256": "1aac17625af3a16590e2983e485cafe6e4d6e5a699a3dbba240bb2de59b98a81",
+      "label": "woodland-root-muted-regression",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "Expected disposable mutation: root branch disabled, three root-color assertions fail.",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/vegetation-contact-20261109/mutant_test.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/mutant-pixels.json"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-root-native-draft-jp2tuhfk/report.json",
+      "sha256": "29ead5e352a88c6ae1b32bb4f1cde99c68ef1cc7b11340f2579653e0fc2870c2",
+      "label": "woodland-root-native-draft",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "Superseded draft asserted the initial artist default0.5 after the chosen default changed to0.75.",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/vegetation-contact-20261109/test_woodland_root_lighting.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/native-pixels.json"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-root-native-final-draft-pj_g9kav/report.json",
+      "sha256": "e0d0791af686c778d6673af0e47704c65fb4935f41c8385f2959f39e19498621",
+      "label": "woodland-root-native-final-draft",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/vegetation-contact-20261109/test_woodland_root_lighting.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/native-pixels-corrected.json"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-root-production-pixels-jn98sxq0/report.json",
+      "sha256": "906df598cdc37c6e214bcfec6ee971682837e5e439be6856e714292ebce83161",
+      "label": "woodland-root-production-pixels",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_woodland_root_lighting.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/production-pixels.json"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-runtime-h7cw2d_z/report.json",
+      "sha256": "718979bdb477f9bbb0c120ad5e91ae10fde96ec58dbc5e03999bd01e754eb449",
+      "label": "woodland-runtime",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "Initial required-text typo: the app reported 29 checks, 0 failures; the runner expected 0 failed.",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_woodland_edge_habitat.gd"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-trial-baseline-at4t_k9i/report.json",
+      "sha256": "29512c645cb9dac8d3e3818a25a9200b58d619e5f26900ec085f6255aa109149",
+      "label": "woodland-trial-baseline",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-northwest-eye",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\trial-baseline",
+        "--woodland_shader_source=res://../tmp/vegetation-contact-20261109/baseline_woodland_cards.gdshader"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-trial-full-e7jdrjoq/report.json",
+      "sha256": "77062665dc234e72ec9034296f997071a4428fdd8794010db6a36d0ce8389baf",
+      "label": "woodland-trial-full",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-northwest-eye",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\trial-full",
+        "--woodland_root_lift=1"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-trial-off-8kt33xh3/report.json",
+      "sha256": "abf61eb370493232fa966a0026cae1cbf136a3ce6da3715688e60645cf9d738e",
+      "label": "woodland-trial-off",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-northwest-eye",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\trial-off",
+        "--woodland_root_lift=0"
+      ]
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/vegetation-contact-20261109/checks/woodland-trial-three-quarter-g_ees4ac/report.json",
+      "sha256": "8abba3d0971d43fe30f5d8d5ed4987616a814620d17bcbb179273caf9f49af0e",
+      "label": "woodland-trial-three-quarter",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "note": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/trees/quality_capture.gd",
+        "--",
+        "--mode=field",
+        "--width=1920",
+        "--height=1080",
+        "--wind=off",
+        "--scene_detail=high",
+        "--views=woodland-edge-east-north-eye,woodland-edge-east-north-overview,woodland-edge-northwest-eye",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vegetation-contact-20261109\\trial-three-quarter",
+        "--woodland_root_lift=0.75"
+      ]
+    }
+  ],
+  "placement_checks": {
+    "command": "python tools/trees/place_woodland_edges.py --check; python tools/trees/test_place_woodland_edges.py",
+    "tests": 6,
+    "result": "passed",
+    "python": "3.11.9"
+  },
+  "trials": [
+    {
+      "name": "trial-half",
+      "report_sha256": "69707f65ff2e4dc70edf094c1ae39593e1c21e54f5b51e72b3e7216c62131192",
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": null,
+        "root_lift": 0.5,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "469aadd226ee904dec56dfa21ddeff1898471a3c2e8d1742079d366af497398f",
+        "triangles": 472
+      }
+    },
+    {
+      "name": "trial-three-quarter",
+      "report_sha256": "30adc5c9e7f3ad9edf78311a107c810ed8aee45dc2ddc8139b0b3aed2d974081",
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 0.75,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "469aadd226ee904dec56dfa21ddeff1898471a3c2e8d1742079d366af497398f",
+        "triangles": 472
+      }
+    },
+    {
+      "name": "trial-full",
+      "report_sha256": "69657e6432b1acd450ca46b99a7bda2838e3a95b21472a81080f23d5e2a0276c",
+      "woodland": {
+        "atlases": {
+          "fern_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/fern_1_4view.png",
+            "sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f"
+          },
+          "impostor_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+            "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+          },
+          "plain_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+            "sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c"
+          },
+          "short_grass_atlas": {
+            "path": "res://assets/landscape/vegetation/impostors/grass_common_short_4view.png",
+            "sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9"
+          }
+        },
+        "batches": 5,
+        "builder_sha256": "9ce26691a80c892d60a1a069a550fb73be1ae63c307bc5d397cccb3519a76b36",
+        "grass_height_fractions": [
+          0.90909069776535,
+          0.909090459346771
+        ],
+        "plants": 220,
+        "recipe_sha256": "0358969c71a02b1189893d47e76fb96e4599f8254c2418af1773d78f38ea3a61",
+        "root_color": [
+          0.280000001192093,
+          0.340000003576279,
+          0.119999997317791
+        ],
+        "root_lift": 1.0,
+        "shader_path": "res://scenery/woodland_cards.gdshader",
+        "shader_sha256": "469aadd226ee904dec56dfa21ddeff1898471a3c2e8d1742079d366af497398f",
+        "triangles": 472
+      }
+    }
+  ],
+  "limitations": [
+    "Initial half-strength trial lacks root_color serialization; use as qualitative evidence only.",
+    "Static SDR views; no moving-flight, full-world moon/sky, exported-build or performance qualification.",
+    "Root contrast reduction only; source rectangular bases and dark ferns remain. Exact local turf/litter agreement is not established.",
+    "Unrelated shared-workspace aircraft and physics edits are outside this verification."
+  ]
+}

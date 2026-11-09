@@ -200,6 +200,11 @@ static func _material() -> ShaderMaterial:
 		_card_material.set_shader_parameter("plain_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png"))
 		_card_material.set_shader_parameter("short_grass_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_short_4view.png"))
 		_card_material.set_shader_parameter("fern_atlas", load("res://assets/landscape/vegetation/impostors/fern_1_4view.png"))
+		var tall := _species_manifest("grass_common_tall")
+		var short := _species_manifest(GRASS_ID)
+		_card_material.set_shader_parameter("grass_height_fractions", Vector2(
+			float(tall.source_height_m) / float(tall.frame_world_size_m[0]),
+			float(short.source_height_m) / float(short.frame_world_size_m[0])))
 	return _card_material
 
 

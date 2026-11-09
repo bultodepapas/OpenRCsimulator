@@ -11,6 +11,9 @@ const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting = preload("res://render/time_of_day_lighting.gd")
+const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
+const GroundTerrain = preload("res://physics/ground_terrain.gd")
+const LakeLoader = preload("res://data/lake_loader.gd")
 
 var args: Dictionary = {}
 var viewport: SubViewport
@@ -181,6 +184,7 @@ func _field() -> bool:
 	else:
 		content = Field.build(loaded.field, lighting)
 	stage.add_child(content)
+	if not _woodland_review(loaded.field): return false
 	if args.has("card_shader_source"):
 		var shader_path := str(args.card_shader_source)
 		var shader_code := FileAccess.get_file_as_string(shader_path)
@@ -272,6 +276,81 @@ func _field() -> bool:
 		if selected.is_empty():
 			return false
 		views = selected
+	return true
+
+
+## Capture-only material controls; leave the cached production material immutable.
+func _woodland_review(field: Dictionary) -> bool:
+	var woodland := content.find_child("WoodlandEdges", true, false)
+	if woodland == null:
+		if args.has("woodland_shader_source") or args.has("woodland_root_lift") or str(args.get("views", "")).contains("woodland-"):
+			_fail("woodland review requires the production WoodlandEdges subtree")
+			return false
+		return true
+	var inventory := {plants = woodland.get_meta("plants", []).size(), triangles = woodland.get_meta("triangles", 0),
+		batches = woodland.get_meta("batches", 0), recipe_sha256 = FileAccess.get_sha256("res://data/woodland_edges.json"),
+		builder_sha256 = FileAccess.get_sha256("res://scenery/woodland_edge_habitat.gd")}
+	var shader_path := str(args.get("woodland_shader_source", "res://scenery/woodland_cards.gdshader"))
+	var shader_code := FileAccess.get_file_as_string(shader_path)
+	if shader_code.is_empty():
+		_fail("woodland_shader_source must be readable")
+		return false
+	var lift := -1.0
+	if args.has("woodland_root_lift"):
+		var value := str(args.woodland_root_lift)
+		if not value.is_valid_float() or not is_finite(float(value)) or float(value) < 0.0 or float(value) > 1.0:
+			_fail("woodland_root_lift must be finite and between zero and one")
+			return false
+		lift = float(value)
+		if not shader_code.contains("uniform float root_lift"):
+			_fail("woodland_root_lift requires a shader declaring that control")
+			return false
+	var material: ShaderMaterial
+	for child in woodland.get_children():
+		if not child is MultiMeshInstance3D: continue
+		if material == null:
+			material = child.material_override.duplicate() as ShaderMaterial
+			if material == null:
+				_fail("woodland review requires production ShaderMaterials")
+				return false
+			if args.has("woodland_shader_source"):
+				var shader := Shader.new()
+				shader.code = shader_code
+				material.shader = shader
+			if lift >= 0.0: material.set_shader_parameter("root_lift", lift)
+		child.material_override = material
+	if material != null:
+		var effective: Variant = material.get_shader_parameter("root_lift")
+		if effective == null:
+			effective = RenderingServer.shader_get_parameter_default(material.shader.get_rid(), "root_lift")
+		inventory["root_lift"] = effective
+		var color: Variant = RenderingServer.shader_get_parameter_default(material.shader.get_rid(), "root_color")
+		inventory["root_color"] = [color.r, color.g, color.b] if color is Color else ([color.x, color.y, color.z] if color is Vector3 else null)
+		var fractions: Variant = material.get_shader_parameter("grass_height_fractions")
+		inventory["grass_height_fractions"] = [fractions.x, fractions.y] if fractions is Vector2 else null
+		inventory["atlases"] = {}
+		for parameter: String in ["impostor_atlas", "plain_atlas", "short_grass_atlas", "fern_atlas"]:
+			var texture := material.get_shader_parameter(parameter) as Texture2D
+			if texture != null:
+				inventory.atlases[parameter] = {path = texture.resource_path, sha256 = FileAccess.get_sha256(texture.resource_path)}
+	inventory["shader_path"] = shader_path
+	inventory["shader_sha256"] = FileAccess.get_sha256(shader_path)
+	report["woodland"] = inventory
+	if not str(args.get("views", "")).contains("woodland-"): return true
+	var table := GroundSurfaces.load_table()
+	var lake := LakeLoader.load_from()
+	if not table.ok or not lake.ok: return false
+	var surfaces := GroundSurfaces.build(table.table, field)
+	if not surfaces.ok: return false
+	var recipe: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/woodland_edges.json"))
+	for patch: Dictionary in recipe.patches:
+		var center: Array = patch.floor_center_ne_m
+		var ground := GroundTerrain.sample_validated(float(center[0]), float(center[1]), surfaces.rects, lake.lake)
+		var target := Frames.ned_to_render([float(center[0]), float(center[1]), -ground[0]])
+		for pose: Array in [["eye", Vector3(4.0, 1.65, 4.0)], ["overview", Vector3(7.0, 5.0, 7.0)],
+				["reverse", Vector3(-4.0, 1.65, -4.0)]]:
+			views.append({id = str(patch.id) + "-" + str(pose[0]), eye = target + pose[1],
+				at = target + Vector3.UP * 0.38, fov = 50.0})
 	return true
 
 

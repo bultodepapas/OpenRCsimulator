@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8df29724-c8c5-404a-ac78-ede3249f3736",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_extra_runway.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T21:59:56.025556+00:00",
+  "label": "test_extra_runway",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109\\checks\\test_extra_runway-h_yh1dns\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109\\checks\\test_extra_runway-h_yh1dns\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 22.906,
+  "log_bytes": 2020,
+  "log_sha256": "0ec16c2982dfaabf274b62dc01e4a0431979ef366db5cd6b3c7fde84a886858b"
+}

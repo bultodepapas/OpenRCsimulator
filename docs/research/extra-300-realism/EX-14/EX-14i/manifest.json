@@ -1,0 +1,910 @@
+{
+  "format": "openrc-extra-evidence-ex14i-v1",
+  "complete": true,
+  "files": [
+    {
+      "path": "baseline/normal_hands_off.orfl.gz",
+      "bytes": 1585123,
+      "sha256": "2cb60127b01a0d4b1918e5a16f6d615e4825041fddc6eeeb92ac50fd6c78e938",
+      "source": "tmp/extra300-feel-20261109/baseline-stall-ready/normal_hands_off.orfl",
+      "original_bytes": 4694860,
+      "original_sha256": "087f18f07c1f8d677e777c28282d86f4d92f5b996b932112697f4e27620c51c0",
+      "compression": "gzip"
+    },
+    {
+      "path": "baseline/normal_hands_off.json",
+      "bytes": 7652,
+      "sha256": "1d85c94a8ebb628770d36cd10c37894f5f0d34e400a339a11609ea0c911036e5",
+      "source": "tmp/extra300-feel-20261109/baseline-stall-ready/normal_hands_off.json",
+      "original_bytes": 7652,
+      "original_sha256": "1d85c94a8ebb628770d36cd10c37894f5f0d34e400a339a11609ea0c911036e5",
+      "compression": "none"
+    },
+    {
+      "path": "baseline/normal_hands_off.csv.gz",
+      "bytes": 1848017,
+      "sha256": "0cbd23bd6c565beda4637e6ae489999d0de03f999ddeb341fa8802a960e81a72",
+      "source": "tmp/extra300-feel-20261109/exact-normal_hands_off/flight.csv",
+      "original_bytes": 5393467,
+      "original_sha256": "e4168168085c96f9bf080e35b8906b17a21cb5b5f8717f2dfa10ee5a5e4533d4",
+      "compression": "gzip"
+    },
+    {
+      "path": "baseline/normal_hands_off-replay.json",
+      "bytes": 11687,
+      "sha256": "049bf7ca31f2aa99fa3a4d23136f55318b9be55466db436374fbaebdc05eba65",
+      "source": "tmp/extra300-feel-20261109/exact-normal_hands_off/replay.json",
+      "original_bytes": 11687,
+      "original_sha256": "049bf7ca31f2aa99fa3a4d23136f55318b9be55466db436374fbaebdc05eba65",
+      "compression": "none"
+    },
+    {
+      "path": "tape/control-normal_hands_off.json",
+      "bytes": 11910,
+      "sha256": "f3b494313f7475e41c7b599cc4f29225a1fd475e36469715e40df34f758d8fb9",
+      "source": "tmp/extra300-feel-20261109/tape-control-normal_hands_off/replay.json",
+      "original_bytes": 11910,
+      "original_sha256": "f3b494313f7475e41c7b599cc4f29225a1fd475e36469715e40df34f758d8fb9",
+      "compression": "none"
+    },
+    {
+      "path": "tape/control-compare-normal_hands_off.json",
+      "bytes": 1469,
+      "sha256": "87a4df0f01bf9240cd03d4d0525366c78b18da2b798a52de771a43ae6a761079",
+      "source": "tmp/extra300-feel-20261109/control-compare-normal_hands_off.json",
+      "original_bytes": 1469,
+      "original_sha256": "87a4df0f01bf9240cd03d4d0525366c78b18da2b798a52de771a43ae6a761079",
+      "compression": "none"
+    },
+    {
+      "path": "tape/offset-normal_hands_off.csv.gz",
+      "bytes": 1848005,
+      "sha256": "e1edad5c3d74b812f1cde10234343fa9258cf194c90682d663c32276b9bd7132",
+      "source": "tmp/extra300-feel-20261109/tape-offset-normal_hands_off/flight.csv",
+      "original_bytes": 5401362,
+      "original_sha256": "feca18754fcb1987504edd3fc611582b015c73de1e0432b0d0d703c149a835ea",
+      "compression": "gzip"
+    },
+    {
+      "path": "tape/offset-normal_hands_off.json",
+      "bytes": 11911,
+      "sha256": "138fd0ae2ad197e7b129fbf30dd434a7ee12427bc3022528d26d090181a5999d",
+      "source": "tmp/extra300-feel-20261109/tape-offset-normal_hands_off/replay.json",
+      "original_bytes": 11911,
+      "original_sha256": "138fd0ae2ad197e7b129fbf30dd434a7ee12427bc3022528d26d090181a5999d",
+      "compression": "none"
+    },
+    {
+      "path": "tape/offset-compare-normal_hands_off.json",
+      "bytes": 2393,
+      "sha256": "04332a1256c3b9546092453dfa4cf9cda9690641db3aa36f6faf35c4a2906d6b",
+      "source": "tmp/extra300-feel-20261109/offset-compare-normal_hands_off.json",
+      "original_bytes": 2393,
+      "original_sha256": "04332a1256c3b9546092453dfa4cf9cda9690641db3aa36f6faf35c4a2906d6b",
+      "compression": "none"
+    },
+    {
+      "path": "baseline/normal_wings_level.orfl.gz",
+      "bytes": 1600597,
+      "sha256": "02eec530ec31701e44c155ad866cd2ff7e8b23c9b0824f252ebdeaa00cdd864f",
+      "source": "tmp/extra300-feel-20261109/baseline-stall-ready/normal_wings_level.orfl",
+      "original_bytes": 4694864,
+      "original_sha256": "fd7a02727cc739922192767dcc152ff44653bff6f751770c87acb71b538498b5",
+      "compression": "gzip"
+    },
+    {
+      "path": "baseline/normal_wings_level.json",
+      "bytes": 7613,
+      "sha256": "7cfc85c82f6497cdfbe54af1790fc41c8fe8cd97a862cad778f7537d38f25068",
+      "source": "tmp/extra300-feel-20261109/baseline-stall-ready/normal_wings_level.json",
+      "original_bytes": 7613,
+      "original_sha256": "7cfc85c82f6497cdfbe54af1790fc41c8fe8cd97a862cad778f7537d38f25068",
+      "compression": "none"
+    },
+    {
+      "path": "baseline/normal_wings_level.csv.gz",
+      "bytes": 1865373,
+      "sha256": "0da4c732e417048af3807effdef115abf3a2b404e0916c74f16b7f83c970ef7b",
+      "source": "tmp/extra300-feel-20261109/exact-normal_wings_level/flight.csv",
+      "original_bytes": 5404257,
+      "original_sha256": "00ab14d4b8ed5972c876559067063e40fe4aba5e9f46cde47ea32421282cbe69",
+      "compression": "gzip"
+    },
+    {
+      "path": "baseline/normal_wings_level-replay.json",
+      "bytes": 11691,
+      "sha256": "6d6798c71e90a6a63b72a99c3d62f8555454a242271bbc13c1f73b0df191b2f1",
+      "source": "tmp/extra300-feel-20261109/exact-normal_wings_level/replay.json",
+      "original_bytes": 11691,
+      "original_sha256": "6d6798c71e90a6a63b72a99c3d62f8555454a242271bbc13c1f73b0df191b2f1",
+      "compression": "none"
+    },
+    {
+      "path": "tape/control-normal_wings_level.json",
+      "bytes": 11914,
+      "sha256": "869426eb9bac9ce22774e0c49e294a23ad3d146a74b7fa7611a82e33013483be",
+      "source": "tmp/extra300-feel-20261109/tape-control-normal_wings_level/replay.json",
+      "original_bytes": 11914,
+      "original_sha256": "869426eb9bac9ce22774e0c49e294a23ad3d146a74b7fa7611a82e33013483be",
+      "compression": "none"
+    },
+    {
+      "path": "tape/offset-normal_wings_level.csv.gz",
+      "bytes": 1866764,
+      "sha256": "7d4e801451e45c4703798407913c3979f5927e6f7ffc78877352c6ce5b085caa",
+      "source": "tmp/extra300-feel-20261109/tape-offset-normal_wings_level/flight.csv",
+      "original_bytes": 5390928,
+      "original_sha256": "4f357d94f0f566e9c3cc702e07dc4ad92ee4b9f47da85ac87ca3f9d45cc06166",
+      "compression": "gzip"
+    },
+    {
+      "path": "tape/offset-normal_wings_level.json",
+      "bytes": 11915,
+      "sha256": "77f394f48e10e9243db745bab7a25c4d8b2069547062c26295b3ed84c6064b0b",
+      "source": "tmp/extra300-feel-20261109/tape-offset-normal_wings_level/replay.json",
+      "original_bytes": 11915,
+      "original_sha256": "77f394f48e10e9243db745bab7a25c4d8b2069547062c26295b3ed84c6064b0b",
+      "compression": "none"
+    },
+    {
+      "path": "tape/offset-compare-normal_wings_level.json",
+      "bytes": 2415,
+      "sha256": "e1faf22bc41c6bdc8cb12b705a8334f0237edc83bb89adaaba92b0e9b990bbc1",
+      "source": "tmp/extra300-feel-20261109/offset-compare-normal_wings_level.json",
+      "original_bytes": 2415,
+      "original_sha256": "e1faf22bc41c6bdc8cb12b705a8334f0237edc83bb89adaaba92b0e9b990bbc1",
+      "compression": "none"
+    },
+    {
+      "path": "final/normal_wings_level.orfl.gz",
+      "bytes": 1594514,
+      "sha256": "971f06bd27f7520631d4c7624ca4368aee5d9aaee976b04666529ae82b33c151",
+      "source": "tmp/extra300-feel-20261109/final-stall-integrated/normal_wings_level.orfl",
+      "original_bytes": 4665892,
+      "original_sha256": "38ddfc888f23592e330b9c282d9ce6e535d53604d81ebac890bd8a3f8520f1fb",
+      "compression": "gzip"
+    },
+    {
+      "path": "final/normal_wings_level.json",
+      "bytes": 7599,
+      "sha256": "9e00e033d6b9b9642649ad05fcb77c3845376bc068d7d60fee5d85b8822898e6",
+      "source": "tmp/extra300-feel-20261109/final-stall-integrated/normal_wings_level.json",
+      "original_bytes": 7599,
+      "original_sha256": "9e00e033d6b9b9642649ad05fcb77c3845376bc068d7d60fee5d85b8822898e6",
+      "compression": "none"
+    },
+    {
+      "path": "final/normal_wings_level.csv.gz",
+      "bytes": 1857764,
+      "sha256": "4e66c8e884e4233e17f1908a8b8269964dd69733c9ea79cbd6de09a585a58d9d",
+      "source": "tmp/extra300-feel-20261109/final-exact/flight.csv",
+      "original_bytes": 5392044,
+      "original_sha256": "0673d6b7df0e29cea1b8081110bdfab5f91e53f69e7447561c9ecdd720bde6eb",
+      "compression": "gzip"
+    },
+    {
+      "path": "final/replay.json",
+      "bytes": 11693,
+      "sha256": "4c9c85f8038c48a0af890ddf6e2a59f1589ec990dda3da915d4c2941ee919e90",
+      "source": "tmp/extra300-feel-20261109/final-exact/replay.json",
+      "original_bytes": 11693,
+      "original_sha256": "4c9c85f8038c48a0af890ddf6e2a59f1589ec990dda3da915d4c2941ee919e90",
+      "compression": "none"
+    },
+    {
+      "path": "final/guard-parity.json",
+      "bytes": 1469,
+      "sha256": "4ea5eaceeb84d75e014539c7903d0b5972fb45bbec2214dc6f4eb1402ee6cf00",
+      "source": "tmp/extra300-feel-20261109/final-guard-parity.json",
+      "original_bytes": 1469,
+      "original_sha256": "4ea5eaceeb84d75e014539c7903d0b5972fb45bbec2214dc6f4eb1402ee6cf00",
+      "compression": "none"
+    },
+    {
+      "path": "checks/schema-v2.json",
+      "bytes": 55118,
+      "sha256": "208f9430417249cf3b5bda463fd711bc3ba3a9cd78276b478e995a5d6e19cb66",
+      "source": "tmp/extra300-feel-20261109/schema-v2-final.json",
+      "original_bytes": 55118,
+      "original_sha256": "208f9430417249cf3b5bda463fd711bc3ba3a9cd78276b478e995a5d6e19cb66",
+      "compression": "none"
+    },
+    {
+      "path": "checks/baseline-import-finish.json",
+      "bytes": 1186,
+      "sha256": "af7a8c7900b810743156ee3888b6bb5b2f0f1240d19ce88b23281500e91aa2d3",
+      "source": "tmp/extra300-feel-20261109/checks/baseline-import-finish-c0zz6eqz/report.json",
+      "original_bytes": 1186,
+      "original_sha256": "af7a8c7900b810743156ee3888b6bb5b2f0f1240d19ce88b23281500e91aa2d3",
+      "compression": "none"
+    },
+    {
+      "path": "checks/baseline-import-finish.log.gz",
+      "bytes": 8246,
+      "sha256": "54861dd2cca1186ad7a70aa30ae323afe32cd77ebd1c4147d86d7917ca1b97d7",
+      "source": "tmp/extra300-feel-20261109/checks/baseline-import-finish-c0zz6eqz/engine.log",
+      "original_bytes": 170990,
+      "original_sha256": "44b7b81b6849e329d69e45fba307f1e63b557629dc3aee02d09bcbd32ac9e903",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/offset-final-guards.json",
+      "bytes": 1207,
+      "sha256": "b88692ad43354b0ae94598b44187c9fda75c17e524577f31d1a8d401dda2e921",
+      "source": "tmp/extra300-feel-20261109/checks/offset-final-guards-sft0ajub/report.json",
+      "original_bytes": 1207,
+      "original_sha256": "b88692ad43354b0ae94598b44187c9fda75c17e524577f31d1a8d401dda2e921",
+      "compression": "none"
+    },
+    {
+      "path": "checks/offset-final-guards.log.gz",
+      "bytes": 141,
+      "sha256": "94eed242c6835bf5321aed9b2d4115d45c003e1342397600439b75ab5dc787c2",
+      "source": "tmp/extra300-feel-20261109/checks/offset-final-guards-sft0ajub/engine.log",
+      "original_bytes": 126,
+      "original_sha256": "53aef0fd626d048b9c0eadb8d7b654f00de1f1ffca55430d389ec4928713c537",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/final-stall-integrated.json",
+      "bytes": 1414,
+      "sha256": "103f4ffadf6a7cc0a7345cc80afd2b273f1c7f906518f6368a4a263bad81bf06",
+      "source": "tmp/extra300-feel-20261109/checks/final-stall-integrated-wrd4w817/report.json",
+      "original_bytes": 1414,
+      "original_sha256": "103f4ffadf6a7cc0a7345cc80afd2b273f1c7f906518f6368a4a263bad81bf06",
+      "compression": "none"
+    },
+    {
+      "path": "checks/final-stall-integrated.log.gz",
+      "bytes": 1511,
+      "sha256": "e974fdda685bb83a7496fc1be5b266ac930021b00d23c37e07031d3602411560",
+      "source": "tmp/extra300-feel-20261109/checks/final-stall-integrated-wrd4w817/engine.log",
+      "original_bytes": 5073,
+      "original_sha256": "d6448b3ccef17c0c78ab6b935af77f3bd0180411e29f0e2644df55bbf471fc81",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_extra_handling.json",
+      "bytes": 1181,
+      "sha256": "7cdd1660eaebfec9fd1b73a19699e3b54c340f68cc379c2476d3146ced6a3e13",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_handling-5i465nqq/report.json",
+      "original_bytes": 1181,
+      "original_sha256": "7cdd1660eaebfec9fd1b73a19699e3b54c340f68cc379c2476d3146ced6a3e13",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_extra_handling.log.gz",
+      "bytes": 947,
+      "sha256": "0774a9d339f4dad7fe8973afe069c47698ee39a3814bf90d44cced2c4d59ed18",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_handling-5i465nqq/engine.log",
+      "original_bytes": 1874,
+      "original_sha256": "e9febd67dc712d4572a1f4db2899d3d91ade487060d6dd714af5804a1c2d4baf",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_extra_runway.json",
+      "bytes": 1173,
+      "sha256": "4ada853a4b781790dda7c9a02eb4d4d3aa99a35400e7ab53d6a32b42b5d639ad",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_runway-h_yh1dns/report.json",
+      "original_bytes": 1173,
+      "original_sha256": "4ada853a4b781790dda7c9a02eb4d4d3aa99a35400e7ab53d6a32b42b5d639ad",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_extra_runway.log.gz",
+      "bytes": 685,
+      "sha256": "97e87a03cfde2bd804577156fe2f12064552a814adf7c136d89a0f1afe9f6c26",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_runway-h_yh1dns/engine.log",
+      "original_bytes": 2020,
+      "original_sha256": "0ec16c2982dfaabf274b62dc01e4a0431979ef366db5cd6b3c7fde84a886858b",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_extra_installation.json",
+      "bytes": 1195,
+      "sha256": "326a9493daae9a8e830a00a53b396c9d076031b923e27833186a85ca194d90c4",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_installation-l4tll5y8/report.json",
+      "original_bytes": 1195,
+      "original_sha256": "326a9493daae9a8e830a00a53b396c9d076031b923e27833186a85ca194d90c4",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_extra_installation.log.gz",
+      "bytes": 615,
+      "sha256": "4110d0546fe7672d80f59fd2ce1ea2e1297ace70d7c1ce013204d91d1e962b0f",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_installation-l4tll5y8/engine.log",
+      "original_bytes": 1235,
+      "original_sha256": "70b91517271a14bbeb008dac66d0cda4973e727d94cc1d7f46b8d1451b024861",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_extra_post_stall.json",
+      "bytes": 1187,
+      "sha256": "d0af1bcf738448d23d7da490540a391a95b3c798b53f28404f316e853e00d455",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_post_stall-lzmho4vd/report.json",
+      "original_bytes": 1187,
+      "original_sha256": "d0af1bcf738448d23d7da490540a391a95b3c798b53f28404f316e853e00d455",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_extra_post_stall.log.gz",
+      "bytes": 390,
+      "sha256": "8cd99f1c3c44a38df6891b0f002bb1065bfbb61b2ddc05d40ec9bf23d9161045",
+      "source": "tmp/extra300-feel-20261109/checks/test_extra_post_stall-lzmho4vd/engine.log",
+      "original_bytes": 721,
+      "original_sha256": "689297bf12892b5b29f2114e7499942ad650175688a3eef52db95aeaf49d0a6b",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_wing_polar.json",
+      "bytes": 1163,
+      "sha256": "e597689ded471480a989431a07ff2a31868dfefb8e99822ddf7ea24a89730c02",
+      "source": "tmp/extra300-feel-20261109/checks/test_wing_polar-z725ei5a/report.json",
+      "original_bytes": 1163,
+      "original_sha256": "e597689ded471480a989431a07ff2a31868dfefb8e99822ddf7ea24a89730c02",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_wing_polar.log.gz",
+      "bytes": 120,
+      "sha256": "8addd533c8fcc0e5c93f1bc5758a1d1abb37852474b0d73b20c031992126c317",
+      "source": "tmp/extra300-feel-20261109/checks/test_wing_polar-z725ei5a/engine.log",
+      "original_bytes": 108,
+      "original_sha256": "c867595854b85453db33e98fab2c8c80c47f79e21c0a7661533b4ae819851c93",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_spatial_aero_continuation.json",
+      "bytes": 1221,
+      "sha256": "761e63bace5775542d048e8477e8d6015c53128b94e17c758dd782ae531f1dc7",
+      "source": "tmp/extra300-feel-20261109/checks/test_spatial_aero_continuation-gxu87v49/report.json",
+      "original_bytes": 1221,
+      "original_sha256": "761e63bace5775542d048e8477e8d6015c53128b94e17c758dd782ae531f1dc7",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_spatial_aero_continuation.log.gz",
+      "bytes": 126,
+      "sha256": "c908196c96c28a6d23e3ea34b4b79e394d2fa17ae0e12771bf770a5546be08e6",
+      "source": "tmp/extra300-feel-20261109/checks/test_spatial_aero_continuation-gxu87v49/engine.log",
+      "original_bytes": 120,
+      "original_sha256": "83717abf21de50fd59cac196729d8162ec901b3e35605cd870f1b411aaf73848",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_aircraft_contract.json",
+      "bytes": 1192,
+      "sha256": "dd54079f882988799b5de952f5f77c44fb468bbe3afb14c0dd1112f923bac90f",
+      "source": "tmp/extra300-feel-20261109/checks/test_aircraft_contract-6bu22478/report.json",
+      "original_bytes": 1192,
+      "original_sha256": "dd54079f882988799b5de952f5f77c44fb468bbe3afb14c0dd1112f923bac90f",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_aircraft_contract.log.gz",
+      "bytes": 198,
+      "sha256": "294121636658f923e7e3fe42ffe6c125b83cb64b2139335ae1943d96d27b5848",
+      "source": "tmp/extra300-feel-20261109/checks/test_aircraft_contract-6bu22478/engine.log",
+      "original_bytes": 213,
+      "original_sha256": "e187d3d4e176a7d14590f1ee7fa195b152b436b0ee96add1fa5def9a34891a40",
+      "compression": "gzip"
+    },
+    {
+      "path": "checks/test_golden.json",
+      "bytes": 1148,
+      "sha256": "6cade4d7e1f84b74edf31f92f84d7a6d8e0c7e883292d7915a1a322f0fb513c7",
+      "source": "tmp/extra300-feel-20261109/checks/test_golden-c097il43/report.json",
+      "original_bytes": 1148,
+      "original_sha256": "6cade4d7e1f84b74edf31f92f84d7a6d8e0c7e883292d7915a1a322f0fb513c7",
+      "compression": "none"
+    },
+    {
+      "path": "checks/test_golden.log.gz",
+      "bytes": 468,
+      "sha256": "e1ccdae95b63e25ff043b1b39a9fb4bd5288609e5a17dc231b5c6a34e267e9df",
+      "source": "tmp/extra300-feel-20261109/checks/test_golden-c097il43/engine.log",
+      "original_bytes": 1068,
+      "original_sha256": "d83933be5c71914354b600719768846c7aa97b2dff6ff4f4f67593a2c095107f",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline-run.json",
+      "bytes": 3532,
+      "sha256": "44064d42f53b7a5181c25095d4483f6f144a68c19321157d6dcd06c4e975923f",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/run.json",
+      "original_bytes": 3532,
+      "original_sha256": "44064d42f53b7a5181c25095d4483f6f144a68c19321157d6dcd06c4e975923f",
+      "compression": "none"
+    },
+    {
+      "path": "card/baseline/inverted.csv.gz",
+      "bytes": 58384,
+      "sha256": "a283049d85c801c8583faed5d0cdc78185ef26baa5ff80cbbbda449c1948526e",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/inverted.csv",
+      "original_bytes": 165927,
+      "original_sha256": "1c3d74fc156149a1cf1f4ce4c3e3bc47bbb62f89363133e02b68a31bfd4e51cb",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/profile.json",
+      "bytes": 11625,
+      "sha256": "25e152438e8a8210f3525a5da549a86b963e4495b02b8481c21ea5ba59a1915f",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/profile.json",
+      "original_bytes": 11625,
+      "original_sha256": "25e152438e8a8210f3525a5da549a86b963e4495b02b8481c21ea5ba59a1915f",
+      "compression": "none"
+    },
+    {
+      "path": "card/baseline/profile.md",
+      "bytes": 6170,
+      "sha256": "0f83858d86bfd8cadd951d04d8606e4892fef2e31e6def039030d97df011c3e1",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/profile.md",
+      "original_bytes": 6170,
+      "original_sha256": "0f83858d86bfd8cadd951d04d8606e4892fef2e31e6def039030d97df011c3e1",
+      "compression": "none"
+    },
+    {
+      "path": "card/baseline/roll_rate_14mps_left.csv.gz",
+      "bytes": 12045,
+      "sha256": "c46a1bd401d8bdccb32ad43879714c96accc59875811330fda22343d903c3a6a",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/roll_rate_14mps_left.csv",
+      "original_bytes": 31381,
+      "original_sha256": "cf51f34d76005b17d8256506b833e778cd2775e525ef56ef153e7df11d3dd2cc",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/roll_rate_14mps_right.csv.gz",
+      "bytes": 12210,
+      "sha256": "6b0a16209d7a15b31c6b542cc6e8141f83c39552ca111283d4d7fa0d9eb843ed",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/roll_rate_14mps_right.csv",
+      "original_bytes": 31238,
+      "original_sha256": "260638ff1b43d0346899efec53e10b9b85a947892207151b8d45269b5c7f9399",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/roll_rate_22mps_left.csv.gz",
+      "bytes": 11003,
+      "sha256": "24bc8835ff1ff9760d09f4d267f2a7d1b79f51b8f819e9be51a67a80fc71a352",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/roll_rate_22mps_left.csv",
+      "original_bytes": 28547,
+      "original_sha256": "079567df2f34446ba7e9eb5e40faa95269e808f15a2663c9a897c731c97e2977",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/roll_rate_22mps_right.csv.gz",
+      "bytes": 10989,
+      "sha256": "58f776bb46d4951f03d94a5069782d4d6ed088bbfc451de43b967a6cd46118f2",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/roll_rate_22mps_right.csv",
+      "original_bytes": 28065,
+      "original_sha256": "27ac7912c494aff8d422ff4da1700840bf0311efe2feddff1fc79adb8d64ac88",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/roll_rate_33mps_left.csv.gz",
+      "bytes": 9653,
+      "sha256": "bb6f2169065e9a31320e947a517c25963ee2549cc2025ad5ce295c1013eb0460",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/roll_rate_33mps_left.csv",
+      "original_bytes": 24977,
+      "original_sha256": "9ecf7a90739a98defc83e43a2a53df4917ca57761871075b56995a1c42873ba5",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/roll_rate_33mps_right.csv.gz",
+      "bytes": 9650,
+      "sha256": "1c76fb515fe792a149ffe7562416b07f38802bc58fab49307b8c104fb4680e8f",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/roll_rate_33mps_right.csv",
+      "original_bytes": 24621,
+      "original_sha256": "08e7c6a115bdc97b324e6be85055c84949bd49989ff52adb66c52d4b774ef408",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/run.log.gz",
+      "bytes": 842,
+      "sha256": "14345fae0954c6d95d70313573168d6dfdc6991921055eede0fc60e18918a5c7",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/run.log",
+      "original_bytes": 1606,
+      "original_sha256": "4faa61ca109bc3a1af83dffa39dc5f2dfda55af640a21ada711ed212f69fb5dd",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/snap_roll_left.csv.gz",
+      "bytes": 28053,
+      "sha256": "6c91c7252294d100848f5aaf951a372e042e919bc8272ee8b02e0be679ed2981",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/snap_roll_left.csv",
+      "original_bytes": 71696,
+      "original_sha256": "ca3530c63c43b21f413b46ec7903e133b9e20944f389fa237155380f8beb396c",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/snap_roll_right.csv.gz",
+      "bytes": 26736,
+      "sha256": "3d7da08f0de93dcb5a864d61e18b05cc56762cd69dacdadcb936745a26f0467b",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/snap_roll_right.csv",
+      "original_bytes": 68217,
+      "original_sha256": "0a6a71d5d53c43321271e0415a2df0723b4ff5f2f26d09448048b22cb527acca",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/spin_left.csv.gz",
+      "bytes": 36446,
+      "sha256": "b661d2ec3f95987e10adf969906a6eefbe1c9195165035eed52fda029a7d8479",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/spin_left.csv",
+      "original_bytes": 92471,
+      "original_sha256": "05c69e22737dc3387dbe411a195543f7300fd2cbad402c2600968bc6195e6e69",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/spin_right.csv.gz",
+      "bytes": 36018,
+      "sha256": "061d9e03b9bca26356a0884feeb81a468e74c16c10089efb3a875c7ae58613bd",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/spin_right.csv",
+      "original_bytes": 92283,
+      "original_sha256": "14a0f129dd7c892f2e5e16103bae703b0d978829cca4f2fe46127b2b52a50996",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/stall_power_off.csv.gz",
+      "bytes": 62510,
+      "sha256": "3a60a2b2a68ee8d1ee85c7d86cc2753864b556d26289bf2e52664f4418b8acdc",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/stall_power_off.csv",
+      "original_bytes": 167247,
+      "original_sha256": "0091dc2ccdbbb1b6074750e3d4142e36abdb9ee0b9dc34bdcb4a91489e2b085f",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/baseline/vmax.csv.gz",
+      "bytes": 73091,
+      "sha256": "741f6995745ce5ee5cabcc914bb3a77721e3ca7b319c76ab1a218a1257db8c3d",
+      "source": "tmp/extra300-feel-20261109/ft-baseline/gp-extra-300s-60/vmax.csv",
+      "original_bytes": 206905,
+      "original_sha256": "ba9abf18cc6b629709effa65d6955140b4e557268378b7e7c007d07f898893af",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate-run.json",
+      "bytes": 3606,
+      "sha256": "7e7b4d4a4a60175bf206296b1ba0b298fa852859ec60cdc6b7840760d2da3bda",
+      "source": "tmp/extra300-feel-20261109/ft-final/run.json",
+      "original_bytes": 3606,
+      "original_sha256": "7e7b4d4a4a60175bf206296b1ba0b298fa852859ec60cdc6b7840760d2da3bda",
+      "compression": "none"
+    },
+    {
+      "path": "card/candidate/inverted.csv.gz",
+      "bytes": 58385,
+      "sha256": "21f9841705ea1e1fea3f81a0653bb5a57b6223be9d8f2a7f808a078ed878cc25",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/inverted.csv",
+      "original_bytes": 165927,
+      "original_sha256": "3ba84d589058249f87818eec36cd0e1a8ac210999efbb769c944eb8d894cf500",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/profile.json",
+      "bytes": 11545,
+      "sha256": "30501e39278f23cecc65e545c1299a631e7dbcb9083c6fff7b697b78c7ce314a",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/profile.json",
+      "original_bytes": 11545,
+      "original_sha256": "30501e39278f23cecc65e545c1299a631e7dbcb9083c6fff7b697b78c7ce314a",
+      "compression": "none"
+    },
+    {
+      "path": "card/candidate/profile.md",
+      "bytes": 6100,
+      "sha256": "f31e17a887ae343c2a9bf6f978d5620fdde84d573682d61b54e48087b7486ba1",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/profile.md",
+      "original_bytes": 6100,
+      "original_sha256": "f31e17a887ae343c2a9bf6f978d5620fdde84d573682d61b54e48087b7486ba1",
+      "compression": "none"
+    },
+    {
+      "path": "card/candidate/roll_rate_14mps_left.csv.gz",
+      "bytes": 12055,
+      "sha256": "eb331770779935286b0431502092f41f093994b676cb6676ce637be156bcfe2e",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/roll_rate_14mps_left.csv",
+      "original_bytes": 31342,
+      "original_sha256": "0792f7d22643364aaf8bcbcec56bd488bc0b3dfcb54c0966b85503494a2138ca",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/roll_rate_14mps_right.csv.gz",
+      "bytes": 12255,
+      "sha256": "b55044210391bae041c1b50315249e8f837b789d61795dfcc63897990ee19689",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/roll_rate_14mps_right.csv",
+      "original_bytes": 31274,
+      "original_sha256": "c1a03dfb89f67f110bbf9c50ad30a2612dff3b4a9457344bfbce1c4451f347d6",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/roll_rate_22mps_left.csv.gz",
+      "bytes": 11012,
+      "sha256": "d6ec5ee464fdf90c052e207a068550df07f806c46b0b6fcbd9117f7f93829f8d",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/roll_rate_22mps_left.csv",
+      "original_bytes": 28547,
+      "original_sha256": "bf2dacdcf3c3bcfc46daee4a9ca622efcb5c2df8339220cbc27c3927a1e19cbd",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/roll_rate_22mps_right.csv.gz",
+      "bytes": 10994,
+      "sha256": "9334743acf39cdd627bb811d21f35a60daad27a944a1a933c1058628c1c75214",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/roll_rate_22mps_right.csv",
+      "original_bytes": 28064,
+      "original_sha256": "3a04afaae93caef6d52c727af8e60cbf52389a8c035c1e84acad458aa2734688",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/roll_rate_33mps_left.csv.gz",
+      "bytes": 9653,
+      "sha256": "00985bd6e5b6b10f0d4d4f5511f6faa32fe7a349b4a205dfdeab93dff4cf183a",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/roll_rate_33mps_left.csv",
+      "original_bytes": 24977,
+      "original_sha256": "b8595e0d5187590a4044029007199ce4d384503e6db72982052bacb70086b0af",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/roll_rate_33mps_right.csv.gz",
+      "bytes": 9651,
+      "sha256": "667efcba1be9b24c1da11e4758fd7b86e7190ecf9e33234bdab00f3843eaec0e",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/roll_rate_33mps_right.csv",
+      "original_bytes": 24621,
+      "original_sha256": "585902501230e2a61c5e25f1564988a99c1cd72fa725da5877541bc0b66d98f4",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/run.log.gz",
+      "bytes": 794,
+      "sha256": "e036277fb6a698976d14d11e4404c1fb4aa2f8c83429773fcd541d0270381c0e",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/run.log",
+      "original_bytes": 1516,
+      "original_sha256": "f58301ecb957454a62dead65e9dd886164a3ff3760080e8e0aaef25a6b0e591e",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/snap_roll_left.csv.gz",
+      "bytes": 26760,
+      "sha256": "759eaa267220d5daadb35e2dcacf65ab8183b4df25ffc20e493eaf8741eec65f",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/snap_roll_left.csv",
+      "original_bytes": 68464,
+      "original_sha256": "8aa93c4874158549da1ff0e73990e0a58b071299dd1067418232b2c61a0d0bcc",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/snap_roll_right.csv.gz",
+      "bytes": 26398,
+      "sha256": "369a3478a0c414ad3c3cd5048eac887d94ffacb6beef6591786b01958c664158",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/snap_roll_right.csv",
+      "original_bytes": 67485,
+      "original_sha256": "6b74f77624e874abee0a18f85ccd2d9207235d0a687890c43c33536ff37da678",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/spin_left.csv.gz",
+      "bytes": 36625,
+      "sha256": "9faa644939a560de0edaa5a0efab4e24f6ecd1ff94a76df6ed9ee246da856503",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/spin_left.csv",
+      "original_bytes": 93435,
+      "original_sha256": "7ebe21b2b93607fe8507746626be52f5557f4e5f9c569b6c502265d0ed6e0906",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/spin_right.csv.gz",
+      "bytes": 37057,
+      "sha256": "2175ab8382b55de33e126e069b741ed2eb903e7d57a351e7f74f2a847280867c",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/spin_right.csv",
+      "original_bytes": 95308,
+      "original_sha256": "fb71819e85296cab95d460292658f7aa05608e16fd843278c0d95b5718f4c728",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/stall_power_off.csv.gz",
+      "bytes": 61115,
+      "sha256": "2bea62e7b1c0e73057abda372aa9e57003e77acd483e313f4c5a09f91fb396b9",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/stall_power_off.csv",
+      "original_bytes": 163826,
+      "original_sha256": "748b5f2543daf7ee7e5ec508161e39bb686cd13e759423f39485a8c06e301c2d",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/candidate/vmax.csv.gz",
+      "bytes": 73092,
+      "sha256": "aeff5d54858484737fd4d3b171f5031238beecc9e8405c82c0f3ae4ce31fa032",
+      "source": "tmp/extra300-feel-20261109/ft-final/gp-extra-300s-60/vmax.csv",
+      "original_bytes": 206905,
+      "original_sha256": "538f237785e73b605aa8c575c2f5e3e19971d49f2aa05a2b28cefb65a68a6d72",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-baseline-run.json",
+      "bytes": 3513,
+      "sha256": "71c5c39f27a3f08d3c739dcb9962b9d0311afef3757483844acd5b200890520e",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/run.json",
+      "original_bytes": 3513,
+      "original_sha256": "71c5c39f27a3f08d3c739dcb9962b9d0311afef3757483844acd5b200890520e",
+      "compression": "none"
+    },
+    {
+      "path": "card/inverted-baseline/profile.json",
+      "bytes": 7143,
+      "sha256": "d5d49df604e0c174ca84a372fdaddd93d9b1b003a90881b584208e5730811c38",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/gp-extra-300s-60/profile.json",
+      "original_bytes": 7143,
+      "original_sha256": "d5d49df604e0c174ca84a372fdaddd93d9b1b003a90881b584208e5730811c38",
+      "compression": "none"
+    },
+    {
+      "path": "card/inverted-baseline/profile.md",
+      "bytes": 3679,
+      "sha256": "03483be8341bde5717205ad3553f711518b1b86686063085a7ae118dd909d330",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/gp-extra-300s-60/profile.md",
+      "original_bytes": 3679,
+      "original_sha256": "03483be8341bde5717205ad3553f711518b1b86686063085a7ae118dd909d330",
+      "compression": "none"
+    },
+    {
+      "path": "card/inverted-baseline/run.log.gz",
+      "bytes": 763,
+      "sha256": "a72228bc3c0cb6fca0075f8804170ae96fa32a676a0c6823122fb31f77534e24",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/gp-extra-300s-60/run.log",
+      "original_bytes": 1447,
+      "original_sha256": "1b31f18ddbe493e10be6c990c80f255b55a0f9c493634d8faf82d21a3d16921c",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-baseline/stall_inverted.csv.gz",
+      "bytes": 56561,
+      "sha256": "61d72b9fd1db795ab4e39e64b4bc275881ce9e16ce0d97d7cd5f9b2aaf5dcf2b",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/gp-extra-300s-60/stall_inverted.csv",
+      "original_bytes": 149904,
+      "original_sha256": "fe96b9131392593285afc98a94258fab3bf3586f93538889159aadc3ee34666d",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-baseline/stall_power_off.csv.gz",
+      "bytes": 62510,
+      "sha256": "469d43d7a69adad0de004d2054a4bbfdf34e197c8927cc9c5777090e97b5a909",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/gp-extra-300s-60/stall_power_off.csv",
+      "original_bytes": 167247,
+      "original_sha256": "fbb50655f3deba3f0874ca464725521ab8a8cfc62db579368bbaef85b987096b",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-baseline/vmax.csv.gz",
+      "bytes": 73091,
+      "sha256": "5656dbefac2ebb18ea802116fc6aa6f2c75e89e07afe35a4dd2553113508dd09",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-baseline/gp-extra-300s-60/vmax.csv",
+      "original_bytes": 206905,
+      "original_sha256": "3df13a7d0f4f597c134d558f1d1e95d2766fb24ab0e9fcb813d2aabd08516811",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-candidate-run.json",
+      "bytes": 3587,
+      "sha256": "a87cb2004171bf250d8054b8260eb4b39ba93b2465a75a87139741e0364cda22",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/run.json",
+      "original_bytes": 3587,
+      "original_sha256": "a87cb2004171bf250d8054b8260eb4b39ba93b2465a75a87139741e0364cda22",
+      "compression": "none"
+    },
+    {
+      "path": "card/inverted-candidate/profile.json",
+      "bytes": 7142,
+      "sha256": "7b2572e541e148b1f11f2893bae10ec60aceaa99cb7a44a163ac2a563e36fbdc",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/gp-extra-300s-60/profile.json",
+      "original_bytes": 7142,
+      "original_sha256": "7b2572e541e148b1f11f2893bae10ec60aceaa99cb7a44a163ac2a563e36fbdc",
+      "compression": "none"
+    },
+    {
+      "path": "card/inverted-candidate/profile.md",
+      "bytes": 3679,
+      "sha256": "2e29f5310be27bc454594ea2724e15bb5cae8aace861b69f51ceb79b75c52c4e",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/gp-extra-300s-60/profile.md",
+      "original_bytes": 3679,
+      "original_sha256": "2e29f5310be27bc454594ea2724e15bb5cae8aace861b69f51ceb79b75c52c4e",
+      "compression": "none"
+    },
+    {
+      "path": "card/inverted-candidate/run.log.gz",
+      "bytes": 767,
+      "sha256": "c771d53fb8b3a3624fbd0af2450daa489b4f490b242e6da3c76f90726cff3d20",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/gp-extra-300s-60/run.log",
+      "original_bytes": 1448,
+      "original_sha256": "28db3b561612be97dea8c8048685e6c5ce6130b0447bec799136d807426f06c6",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-candidate/stall_inverted.csv.gz",
+      "bytes": 56928,
+      "sha256": "6b70c60d4b8b97bb7570df3cea045dc009474d1f61fa67f5b90b5427221e4f71",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/gp-extra-300s-60/stall_inverted.csv",
+      "original_bytes": 150941,
+      "original_sha256": "9db946e1770c5358daa6b6b5d0f2d55ecb2f7363649aa8adb91da446e9ce584a",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-candidate/stall_power_off.csv.gz",
+      "bytes": 61115,
+      "sha256": "01a851b8210c4c9d3862135e4fb36e23dc7f290b49153071684d4ffd67f14049",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/gp-extra-300s-60/stall_power_off.csv",
+      "original_bytes": 163826,
+      "original_sha256": "9fdcc5d216399e09500658e02129648fc926909e277607c426a68b9ea826b965",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/inverted-candidate/vmax.csv.gz",
+      "bytes": 73092,
+      "sha256": "d559f358321aff4656a5d88b11ca29f772819dfa7fa25f5813caa1441a9bd2ac",
+      "source": "tmp/extra300-feel-20261109/ft-inverted-candidate/gp-extra-300s-60/vmax.csv",
+      "original_bytes": 206905,
+      "original_sha256": "e98fbb092081e9a2f6234d8b2ae930617373e77d71a69aafb2064feb0ebd216b",
+      "compression": "gzip"
+    },
+    {
+      "path": "card/compare.md",
+      "bytes": 4529,
+      "sha256": "1355f75d7a3750f5c5471fb316565e3cd85c323bf0d09a56ac8f64da6106db7a",
+      "source": "tmp/extra300-feel-20261109/ft-final-compare.md",
+      "original_bytes": 4529,
+      "original_sha256": "1355f75d7a3750f5c5471fb316565e3cd85c323bf0d09a56ac8f64da6106db7a",
+      "compression": "none"
+    },
+    {
+      "path": "application/app-launch.txt",
+      "bytes": 563,
+      "sha256": "6ad9b1c1d1f2645be2c50187f10726b82936fccbe2dc355cdb9dd22d822d4b7f",
+      "source": "tmp/extra300-feel-20261109/app-launch.txt",
+      "original_bytes": 563,
+      "original_sha256": "6ad9b1c1d1f2645be2c50187f10726b82936fccbe2dc355cdb9dd22d822d4b7f",
+      "compression": "none"
+    },
+    {
+      "path": "application/app-state.txt",
+      "bytes": 1068,
+      "sha256": "c35fbdfe82095043b9e80516a2c09bfc2e67fdc7ed3321c12f967e583a163ef0",
+      "source": "tmp/extra300-feel-20261109/app-state.txt",
+      "original_bytes": 1068,
+      "original_sha256": "c35fbdfe82095043b9e80516a2c09bfc2e67fdc7ed3321c12f967e583a163ef0",
+      "compression": "none"
+    },
+    {
+      "path": "application/app-step.txt",
+      "bytes": 734,
+      "sha256": "ddc500ded22075d4d754b50a1812371ca4162bae74fc6724cf2272cd251bc458",
+      "source": "tmp/extra300-feel-20261109/app-step.txt",
+      "original_bytes": 734,
+      "original_sha256": "ddc500ded22075d4d754b50a1812371ca4162bae74fc6724cf2272cd251bc458",
+      "compression": "none"
+    },
+    {
+      "path": "application/app-logs.txt",
+      "bytes": 1208,
+      "sha256": "47bb4762d07dd9794267f41451e7d585d3fba8c5fb4c3bac30a48fcb9b418b0f",
+      "source": "tmp/extra300-feel-20261109/app-logs.txt",
+      "original_bytes": 1208,
+      "original_sha256": "47bb4762d07dd9794267f41451e7d585d3fba8c5fb4c3bac30a48fcb9b418b0f",
+      "compression": "none"
+    },
+    {
+      "path": "application/app-stop.txt",
+      "bytes": 114,
+      "sha256": "a8a7fdb9eaf840f552ae226292b7964b853cacd4344901125f2408456c527c85",
+      "source": "tmp/extra300-feel-20261109/app-stop.txt",
+      "original_bytes": 114,
+      "original_sha256": "a8a7fdb9eaf840f552ae226292b7964b853cacd4344901125f2408456c527c85",
+      "compression": "none"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 105700,
+      "sha256": "63cbf0f8ae1458d4c68f3fa85a00dda6b3b0e96463c5f19873fde37a93417006",
+      "compression": "none"
+    }
+  ],
+  "aliases": {
+    "tape/control-normal_hands_off.csv.gz": "baseline/normal_hands_off.csv.gz",
+    "tape/control-normal_wings_level.csv.gz": "baseline/normal_wings_level.csv.gz",
+    "tape/control-compare-normal_wings_level.json": "tape/control-compare-normal_hands_off.json"
+  },
+  "original_recordings_remaining_local": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109",
+  "note": "Compressed members are individual evidence payloads. Resolve aliases for byte-identical payloads. Verify decompressed hashes; preserve .orfl, matching CSV and report together. No source images are included."
+}

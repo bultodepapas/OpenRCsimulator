@@ -298,7 +298,7 @@ Full card against production on the same commit 3bfdc64f ([compare](ft/ex14h/com
 | Snap (right / left): short of 360° | 84° / 123° | 69° / 0° |
 | Attached flight: landing, take-off, loop, rolls, go-around | – | within 1–5 % |
 
-**Not adopted: the separated centre of pressure.** The strip model keeps a stalled strip's force at the quarter chord, but measured sections move it aft.
+**Not adopted at EX-14h (historical): the separated centre of pressure.** EX-14i below adopts a revised, bounded force-offset estimate. The original experiment treated the strip point as quarter chord; the conventional model actually applies the force at the wing/body ARP.
 - SAND80-2114 Fig. 30 (NACA 0015, Re 3.6·10⁵): Cm,c/4 ≈ −0.06 at 20°, −0.10 at 30°, −0.17 at 45°, −0.4 at 90°.
 - Selig's full-envelope RC model applies the section moment at the quarter chord, "driven largely by drag acting on the 50% chord location".
 - Experiment: a disposable-copy law ([patch](ft/ex14h/cp-shift-experiment.patch)) moving the centre of pressure aft by 0.25·|α|/90°·(1 − attached fraction) reproduces those values.
@@ -324,16 +324,52 @@ The full-up stop is not too stiff in pitch. Dantsker & Selig's instrumented Sukh
 - The spin turns slower than the Extra 260 band (Ωb/2V 0.13–0.15 against 0.20).
 - Software verification only.
 
+## EX-14i — separated-wing force offset, 2026-11-09
+
+**Delivered as experimental software.** Reviewed the two external Extra audits, the Character Research and Round 3 investigation with their supporting handoffs. E300-01/02/06/07/08 are prior implemented repairs. The later reports do not justify increasing engine power, deleting stall progression or substituting the cooling diagnostic. The 124 oz review's fuel state remains unknown; no mass, propulsion, rate or attached-flight coefficient was changed here.
+
+The new optional `aero.surfaces.wing_separated_force_offset` is an estimated maximum aft displacement in strip chords from the **existing modeled wing force point**, not a measured Extra centre of pressure. The Extra selects 0.25. The local law multiplies it by the strip's separation fraction and an incidence factor, then adds `r_offset × F` using the **actual** strip force. The pitch increment is `shift × chord × Fz` in body FRD. The ordinary global/local blend still applies separately. The factor equals angle/90° from 15–60°, has C1 endpoint joins, reaches one at 90° and returns to zero at ±180°. That reverse-flow continuation is numerical, not calibrated. The adjacent-section moment trend in [SAND80-2114](https://www.osti.gov/servlets/purl/6548367) motivates the mechanism; this is not a fit to its NACA 0015 moment curve or measured 13%-thick kit-wing data.
+
+The loader and offline schema accept only conventional wings without flaps. Flap forces already have their own moment arms, and their composition is deliberately refused. Absent/zero offsets preserve existing loads. The native decoder refuses the new field; changed shared-source receipts require fleet-wide native requalification before acceleration can be claimed. The shared kernel has no new aircraft branch.
+
+Windows x86-64, official Godot 4.8-beta2, GDScript reference, float64, 240 Hz, headless. Baseline source is `7e8ce3a4d0ea88943979ff0403fbb3cfeb3c3fe9`; frozen baseline/candidate apps and the same card runner were used. [Summary and source identities](EX-14i/summary.json) and [retained files](EX-14i/manifest.json) bind the evidence. Four baseline logs replay exactly for 19,910 ticks. The two normal-rate tapes were also replayed under the changed solver with the option absent and enabled: the absent controls have no numerical divergence from the original exact CSVs. These candidate reports explicitly say `solver_changed: true`; they are not exact old-source replay. A final integrated 4,915-tick recording replays exactly with `solver_changed: false`.
+
+The stall probe uses the same 15.554 m/s entry and new trim in each arm, holds idle/full elevator for five seconds after reaching the stop, then centres the elevator. Its wings-level case uses active aileron feedback.
+
+| Response | Baseline | EX-14i |
+| --- | ---: | ---: |
+| Low-rate wings-level: maximum bank / height lost during hold | 63.6° / 17.2 m | **4.5° / 9.5 m** |
+| Low-rate hands-off: first bank beyond 20° / height lost | 0.89 s / 41.3 m | **2.63 s / 14.8 m** |
+| Low-rate hands-off: maximum bank | 82.2° | 88.6°; still a wing drop |
+| Card power-off stall: loss / recovery time | 40.8 m / 4.25 s | 33.0 m / 3.96 s |
+| Right snap: final rotation / stop error | 303.2° / −56.8° | **358.7° / −1.3°** |
+| Left snap: final rotation / stop error | 356.8° / −3.2° | **361.2° / +1.2°** |
+| Vmax / RPM | 41.21 m/s / 13,660 | same reported values |
+| Roll rate at 22 m/s, right / left | 305.7 / 307.6°/s | same reported values |
+| Inverted trim: elevator / alpha | −0.106 / −2.8° | same reported values |
+| Upright spin card, right / left | classified spin; earlier work identifies an accelerating spiral | classified spiral in both directions; both recover |
+
+Both seven-family cards are valid, with no engine/script errors. Speed-relative cases use each arm's own measured stall speed; fixed-speed rolls, cruise and inverted trim remain unchanged at report precision. Snap heading coupling changes, and the hands-off stall is **not** fixed. Neither the old rotating descent nor the new spiral establishes realistic sustained spin behavior. The negative post-stall polar remains an unmeasured recipe, so sign-symmetric code is not inverted-stall validation.
+
+The separate inverted-stall subset is valid in both arms: roll-off remains about 104°, with 25.4 m lost and 2.95 s recovery. It supplies a held-out software control, not a gentle inverted-stall claim.
+
+Verification includes 774 new assertions (independent force-offset moments with control incidence, twist, mixed body rates and spatial flow; bounded/C1 continuation; absent/zero preservation; valid flapped/tailless counterexamples), 155 schema/loader cases, all 17 structural fleet preflights, existing Extra handling/runway/installation/post-stall tests, wing-polar and spatial-continuation tests, 4,505 aircraft-contract assertions and four unchanged golden flights. Generated aircraft/schema/register/Workshop/cost bindings are current. The schema harness's stale fleet list was extended to include the already tracked `stik_electric_6s` file. The real headless application starts the Extra, accepts a 240-tick control step and exits without a crash or leaked objects. Startup/catch-up hitches were observed; no rendering, FPS or target-host performance qualification is claimed. Required CI and physical/pilot acceptance remain open.
+
+Reproduce with the [flight-log CLI](../../../FLIGHT-LOGGING.md), the existing card runner and checked runner. Resolve manifest aliases for identical payloads and decompress `.gz` files to fresh ignored paths; the manifest records compressed and original SHA-256. For an old baseline exact replay use its pinned checkout. For a new stall recording:
+
+```powershell
+python tools/godot/run_checked.py --timeout 300 --require-text 'EXTRA_STALL_PROBE_COMPLETE failures=0' -- $GodotWindows --headless --path app --audio-driver Dummy --script "$PWD/research/extra-300/ex14/stall_probe.gd" -- --case=normal/wings_level --out=C:/captures/new-extra-stall
+```
+
+Omit `--case` for the four-case matrix. Outputs must be new. The tested card selection is `trim_sweep,stall_power_off,vmax,roll_rate,inverted,spin,snap_roll`; the separate inverted-stall check is retained in the summary. These are software comparisons, not a real-aircraft flight grade.
+
 ## Open findings (ranked)
 
-1. **Installed engine power rests on a secondhand dyno figure.** EX-14g adopts it, with one Glassock rig check.
+1. **The installed engine/propeller remains unidentified.** EX-14g uses a conditional power anchor and one Glassock rig check. External Round 3 identifies the Gierke primary source, but its stock-exhaust/fuel setup is not the Extra's Pitts installation; the borrowed propeller loading also needs independent identification.
    - The back pressure is a wide-open function of rpm, so the part-throttle derate and endurance are slightly overstated.
    - The Pitts muffler's own loss is not quantified.
    - Needed: a tach and thrust reading of the airplane's own 61FX on the 12×6, static and on a full-throttle level pass, with the muffler noted. One reading would replace k and confirm the prop fit.
-2. **The stall is milder but does not yet mush, and the spin is a spiral dive.**
-   - EX-14h removes the violent wing drop (+14° in the first second, against −76°), but a held low-rate stall still rolls off over 2.5 s.
-   - The measured separated centre of pressure gives the owners' mush and crisper snaps. It stops the card's upright spin, because the model's spin is an accelerating spiral at α 18–23° rather than the Extra 260's steady α ≈ 34°.
-   - Next: spin physics with rotation and separation dynamics (D10-R4, D8b-R2d-v3), then the centre-of-pressure law ([EX-14h](#ex-14h--post-stall-wing-polar)).
+2. **Hands-off stall and sustained spin remain unqualified.** EX-14i improves the actively controlled low-rate stall, delays the hands-off departure and improves snap completion. A late hands-off wing drop persists, and both spin-card entries are spirals. Separation/rotation dynamics and matched observations remain necessary; the force-offset estimate is not spin validation.
 3. **Knife-edge is close but not sustained.**
    - With full rudder the model holds β ≈ τ·δr ≈ 21°. With the installed engine (EX-14g) it sinks 13.6 m/s at full rudder and power (5.9 with catalog power); owners hold altitude only at full rudder and power, and RCM asks for more rudder on the .61FX.
    - Missing pieces:
@@ -342,7 +378,7 @@ The full-up stop is not too stiff in pitch. Dantsker & Selig's instrumented Sukh
      - knife-edge pitch toward the belly, which owners mix out with 3–6 % up.
 4. **Left hammerhead torque roll and snap rolls.**
    - Left hammerheads lose the pivot at the top: 119–135° of roll and 134° of pitch rotation in the probe. Missing wing swirl does not explain it: on this low wing the wake covers only 1.8 cm of exposed root per side near static (about 140 cm², against about 500 cm² per stab half). The pitch points to gyroscopic precession of the clockwise prop turning the left yaw rate into pitch, with little elevator authority near zero airspeed. Real hammerheads are asymmetric for the same reason, and pilots compensate with timing and elevator, so the probe's simple pilot is part of the result.
-   - Snaps stop short of 360° by 69° (right) and complete to the left (EX-14h); owners call them crisp. The separated centre of pressure brings the right snap to 33° short (EX-14h).
+   - EX-14i completes the scripted snaps in both directions with about 1.3° stop error; real-pilot snap feel and cross-axis coupling remain unqualified. The EX-14h short-snap results above are historical.
 5. **Ground and landing remain unmeasured.** Rolling resistance, tyre and spring values are borrowed, and no measured flare exists.
 
 ## Reproduce

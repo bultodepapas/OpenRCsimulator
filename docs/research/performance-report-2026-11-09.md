@@ -170,3 +170,8 @@ Baseline Timber text matches the commit after CRLF normalization; its measured
 raw hash and the Git blob hash are retained separately. Raw local runs are in
 `tmp/perf-followup-20261109`. Required full CI, exports and native 1080p/sustained
 qualification remain pending. No commit, push or publication was performed.
+
+The subsequent [VQ-04a packed-index follow-up](visual-quality-implementation/VQ-04a/collection-decoder-20261109/README.md)
+retains a modest native shadow-collection improvement, exact 1080p image parity
+and the rejected traversal/gather experiments. Geometry collection remains
+synchronous; complete-flight and first-interactive-frame qualification stay open.

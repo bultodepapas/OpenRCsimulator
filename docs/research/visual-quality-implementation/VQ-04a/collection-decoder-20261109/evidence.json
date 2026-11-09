@@ -1,0 +1,3454 @@
+{
+  "format": "openrc-shadow-decoder-evidence-v1",
+  "date": "2026-11-09",
+  "baseline_revision_at_intake": "7e8ce3a4d0ea88943979ff0403fbb3cfeb3c3fe9",
+  "closing_head": "731bfefa4c5e5ea3d28fc09c9ccecd4dcae77726",
+  "source_sha256": {
+    "app/render/aircraft_shadow_proxy.gd": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1",
+    "app/render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+    "app/tests/test_aircraft_shadow_proxy.gd": "50bf666fefe6ecbccc534fb7c3a31edbf871a86435654b2ff418d65bbf60595f",
+    "tools/shadows/compare_aircraft_collection.gd": "05544eebefd434969ab7582f7145e60db9917a17898300c5122e2e914819fcc9",
+    "tools/shadows/aircraft_proxy_trial.gd": "dfc121491d0e417c3a1c62359b4a6b65918702a8dc6f5e7184dab2ad24035e18",
+    "app/render/shadow.gd": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+    "app/render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+    "app/aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+    "app/data/aircraft_models/f4u-corsair-250.json": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
+  },
+  "baseline_source_sha256": {
+    "aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+    "projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3"
+  },
+  "environment": {
+    "os": "Windows 11 Pro",
+    "cpu": "AMD Ryzen 9 5900X",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "NVIDIA OpenGL 617.42",
+    "engine": "4.8.beta2.official.cafc17a19",
+    "output": [
+      1920,
+      1080
+    ],
+    "thermal_power_controlled": false,
+    "no_other_godot_observed_at_native_timing_launch": true,
+    "other_processes_continuously_monitored": false
+  },
+  "engine_sha512": {
+    "Godot_v4.8-beta2_win64_console.exe": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+    "Godot_v4.8-beta2_win64.exe": "e83c615fb181c6e1c83f204801e8c73a9340ea500d0da3d7e598f6c4213051de5df8073041c27790838b9e4eff4770c483d7dbb75545da7ad4382c53e23f6a55"
+  },
+  "native_timing": [
+    {
+      "raw": {
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "baseline_bound_source_sha256": "48bf3b32121e2e8d9cd87d5b32726a2124714d147020df0b7b5423632c2dd115",
+        "cases": [
+          {
+            "flaps_deg": 0.0,
+            "gear": 1.0,
+            "id": "gear_down",
+            "shape_sha256": "fe58b7f622ab265561e36ba0d078a785090cd89b16081a0765fcfd9baa35b619",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 121835
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 117785
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 113232
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 123179
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 113824
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 118281
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 118315
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 127876
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 118944
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 115559
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 114325
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 118917
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 112360
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 118029
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 117860
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 114415
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 117100
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 113611
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 115909
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 118280
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 10.0,
+            "gear": 1.0,
+            "id": "takeoff_flaps",
+            "shape_sha256": "bb54ad273605e984053d651286e2d4869e255aa7e0ff22e47daa568fbd9f1faa",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 131377
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 128732
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 134513
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 123685
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 125082
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 119362
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 117559
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 113959
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 116939
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 114455
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 113712
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 118070
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 114535
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 126894
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 121421
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 116853
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 119321
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 114352
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 114684
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 118592
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 25.0,
+            "gear": 1.0,
+            "id": "landing_flaps",
+            "shape_sha256": "87eb4d8590beb26f705ccff56af6f010f361ea78ddf44ac6aee67d4456cceca9",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 118940
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 118570
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 116671
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 119184
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 123128
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 127572
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 139103
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 123244
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 118751
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 119827
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 115013
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 121509
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 126857
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 119181
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 121212
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 116263
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 117581
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 117341
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 114420
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 120549
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 0.0,
+            "gear": 0.5,
+            "id": "gear_half",
+            "shape_sha256": "b09cc58cc38baee63e5ba928648113357ee54cf484ed7359ecd1a0c65977e185",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 117630
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 120998
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 121459
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 118013
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 113899
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 120677
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 119514
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 128340
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 121489
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 114877
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 115110
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 117525
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 125201
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 126724
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 122098
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 128369
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 126496
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 121801
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 121393
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 129567
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 0.0,
+            "gear": 0.0,
+            "id": "gear_up",
+            "shape_sha256": "080b97de3d7b444d2209358869e4c6358f011580d2a29ef21ebf5eb99a68c371",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 123054
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 117121
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 116711
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 126386
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 113174
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 117882
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 121428
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 115906
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 125128
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 116917
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 114947
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 126286
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 119667
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 120755
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 119125
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 119276
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 119332
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 117498
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 114409
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 119881
+              }
+            ],
+            "triangles": 178455
+          }
+        ],
+        "checks": 117,
+        "complete": true,
+        "display": "Windows",
+        "driver": "opengl3",
+        "engine": {
+          "build": "official",
+          "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta2",
+          "string": "4.8-beta2 (official)",
+          "timestamp": 0
+        },
+        "failed": 0,
+        "format": "openrc-shadow-collection-pair-v1",
+        "renderer": "gl_compatibility",
+        "scope": "Imported warm-process Corsair collector component; rendering, first interactive frame, GPU cost and peak memory unmeasured.",
+        "source_sha256": {
+          "C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/compare_aircraft_collection.gd": "05544eebefd434969ab7582f7145e60db9917a17898300c5122e2e914819fcc9",
+          "res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+          "res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+          "res://aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+          "res://render/aircraft_shadow_proxy.gd": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1",
+          "res://render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+          "res://render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3"
+        },
+        "window_size": [
+          1920,
+          1080
+        ]
+      },
+      "summary": {
+        "cases": [
+          {
+            "case": "gear_down",
+            "baseline_median_us": 118298.0,
+            "candidate_median_us": 114370.0,
+            "reduction_percent": 3.320428071480497,
+            "candidate_faster_pairs": 9
+          },
+          {
+            "case": "takeoff_flaps",
+            "baseline_median_us": 119341.5,
+            "candidate_median_us": 114609.5,
+            "reduction_percent": 3.965091774445606,
+            "candidate_faster_pairs": 8
+          },
+          {
+            "case": "landing_flaps",
+            "baseline_median_us": 119866.5,
+            "candidate_median_us": 117955.5,
+            "reduction_percent": 1.5942736294127235,
+            "candidate_faster_pairs": 8
+          },
+          {
+            "case": "gear_half",
+            "baseline_median_us": 121083.0,
+            "candidate_median_us": 121426.0,
+            "reduction_percent": -0.2832767605692066,
+            "candidate_faster_pairs": 6
+          },
+          {
+            "case": "gear_up",
+            "baseline_median_us": 121091.5,
+            "candidate_median_us": 116814.0,
+            "reduction_percent": 3.53245273202496,
+            "candidate_faster_pairs": 9
+          }
+        ],
+        "pooled_baseline_median_us": 119438.0,
+        "pooled_candidate_median_us": 116691.0,
+        "pooled_reduction_percent": 2.2999380431688365,
+        "median_adjacent_pair_saving_us": 3979.0,
+        "candidate_faster_pairs": 40,
+        "adjacent_pairs": 50
+      }
+    },
+    {
+      "raw": {
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "baseline_bound_source_sha256": "48bf3b32121e2e8d9cd87d5b32726a2124714d147020df0b7b5423632c2dd115",
+        "cases": [
+          {
+            "flaps_deg": 0.0,
+            "gear": 1.0,
+            "id": "gear_down",
+            "shape_sha256": "fe58b7f622ab265561e36ba0d078a785090cd89b16081a0765fcfd9baa35b619",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 130928
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 122893
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 125259
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 120480
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 131220
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 139771
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 120482
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 119995
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 123188
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 121071
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 118873
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 123087
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 117234
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 120560
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 122382
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 118476
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 119512
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 117767
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 135630
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 120845
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 10.0,
+            "gear": 1.0,
+            "id": "takeoff_flaps",
+            "shape_sha256": "bb54ad273605e984053d651286e2d4869e255aa7e0ff22e47daa568fbd9f1faa",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 119116
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 119982
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 118012
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 120731
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 130823
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 122358
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 119663
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 116045
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 119953
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 118352
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 117929
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 121943
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 138256
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 124241
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 122240
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 119558
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 120822
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 118633
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 121544
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 124753
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 25.0,
+            "gear": 1.0,
+            "id": "landing_flaps",
+            "shape_sha256": "87eb4d8590beb26f705ccff56af6f010f361ea78ddf44ac6aee67d4456cceca9",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 119121
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 118679
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 133919
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 147929
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 147232
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 152686
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 159806
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 151132
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 145228
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 155476
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 144342
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 140060
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 141194
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 158633
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 160940
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 162038
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 155689
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 147290
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 160752
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 157237
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 0.0,
+            "gear": 0.5,
+            "id": "gear_half",
+            "shape_sha256": "b09cc58cc38baee63e5ba928648113357ee54cf484ed7359ecd1a0c65977e185",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 165418
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 124244
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 120278
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 124328
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 133939
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 130420
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 128460
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 117628
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 120862
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 121224
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 119255
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 127999
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 119925
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 124149
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 122993
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 119951
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 119561
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 125792
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 116978
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 121232
+              }
+            ],
+            "triangles": 178455
+          },
+          {
+            "flaps_deg": 0.0,
+            "gear": 0.0,
+            "id": "gear_up",
+            "shape_sha256": "080b97de3d7b444d2209358869e4c6358f011580d2a29ef21ebf5eb99a68c371",
+            "source_triangles": 321191,
+            "trials": [
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 119685
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 128061
+              },
+              {
+                "candidate": true,
+                "group": 0,
+                "usec": 122470
+              },
+              {
+                "candidate": false,
+                "group": 0,
+                "usec": 125219
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 119716
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 125411
+              },
+              {
+                "candidate": false,
+                "group": 1,
+                "usec": 121631
+              },
+              {
+                "candidate": true,
+                "group": 1,
+                "usec": 117357
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 121409
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 117332
+              },
+              {
+                "candidate": true,
+                "group": 2,
+                "usec": 117761
+              },
+              {
+                "candidate": false,
+                "group": 2,
+                "usec": 123344
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 117517
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 126862
+              },
+              {
+                "candidate": false,
+                "group": 3,
+                "usec": 129595
+              },
+              {
+                "candidate": true,
+                "group": 3,
+                "usec": 121484
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 142439
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 190894
+              },
+              {
+                "candidate": true,
+                "group": 4,
+                "usec": 169183
+              },
+              {
+                "candidate": false,
+                "group": 4,
+                "usec": 150760
+              }
+            ],
+            "triangles": 178455
+          }
+        ],
+        "checks": 117,
+        "complete": true,
+        "display": "Windows",
+        "driver": "opengl3",
+        "engine": {
+          "build": "official",
+          "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta2",
+          "string": "4.8-beta2 (official)",
+          "timestamp": 0
+        },
+        "failed": 0,
+        "format": "openrc-shadow-collection-pair-v1",
+        "renderer": "gl_compatibility",
+        "scope": "Imported warm-process Corsair collector component; rendering, first interactive frame, GPU cost and peak memory unmeasured.",
+        "source_sha256": {
+          "C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/compare_aircraft_collection.gd": "05544eebefd434969ab7582f7145e60db9917a17898300c5122e2e914819fcc9",
+          "res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+          "res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+          "res://aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+          "res://render/aircraft_shadow_proxy.gd": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1",
+          "res://render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+          "res://render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3"
+        },
+        "window_size": [
+          1920,
+          1080
+        ]
+      },
+      "summary": {
+        "cases": [
+          {
+            "case": "gear_down",
+            "baseline_median_us": 121613.5,
+            "candidate_median_us": 120533.0,
+            "reduction_percent": 0.8884704411927902,
+            "candidate_faster_pairs": 8
+          },
+          {
+            "case": "takeoff_flaps",
+            "baseline_median_us": 121382.5,
+            "candidate_median_us": 119095.5,
+            "reduction_percent": 1.8841266245134158,
+            "candidate_faster_pairs": 7
+          },
+          {
+            "case": "landing_flaps",
+            "baseline_median_us": 154187.5,
+            "candidate_median_us": 147261.0,
+            "reduction_percent": 4.4922578029996,
+            "candidate_faster_pairs": 6
+          },
+          {
+            "case": "gear_half",
+            "baseline_median_us": 124238.5,
+            "candidate_median_us": 120114.5,
+            "reduction_percent": 3.3194219183264484,
+            "candidate_faster_pairs": 7
+          },
+          {
+            "case": "gear_up",
+            "baseline_median_us": 125315.0,
+            "candidate_median_us": 120600.0,
+            "reduction_percent": 3.762518453497188,
+            "candidate_faster_pairs": 7
+          }
+        ],
+        "pooled_baseline_median_us": 123746.5,
+        "pooled_candidate_median_us": 121147.5,
+        "pooled_reduction_percent": 2.1002614215351545,
+        "median_adjacent_pair_saving_us": 3125.5,
+        "candidate_faster_pairs": 35,
+        "adjacent_pairs": 50
+      }
+    }
+  ],
+  "logical_extra_temporary_data": {
+    "max_word_buffer_bytes": 129772,
+    "max_word_plus_prefix_slice_bytes": 259544,
+    "scope": "Maximum across all imported Corsair u16 LOD records, including excluded meshes; excludes object/allocator overhead and existing buffers. Not measured peak RAM.",
+    "inspection_source_sha256": "a0cf360453a0e4bba1a1036deea89fcc17080512f828ec96f242dff63f505cb3"
+  },
+  "native_images": {
+    "same_png_bytes": true,
+    "files": {
+      "bank_minus-cache-axis-0-mask.png": "e4d68f9f569191c9b3c46a0587680ff4a2346599a8b35ded721b618a9f17bf1c",
+      "bank_minus-cache-axis-0-receiver.png": "5c0f7d7f98cc9768c861ee0f625953e10725e2518af507af015f680d59795ce9",
+      "bank_minus-cache-axis-1-mask.png": "6a4dc3772310492eec69f131f09ffbf55a24afa93d6818418a13a29754b8248c",
+      "bank_minus-cache-axis-1-receiver.png": "34ebc1d1a9e8aea8f1ad2440d57346bf911b31a58dfb84d27c71ff167281ecbf",
+      "bank_minus-cache-axis-2-mask.png": "394d33e19137642b4022c0670930d398395b612b474c00c4a01c5f8e9c1c1308",
+      "bank_minus-cache-axis-2-receiver.png": "b422906f387cca289ab8625af51bf7db4386a42e8b428e2cf626b86f43621bf1",
+      "bank_minus-full-mask.png": "f54883303c524f98853955cdb61369f2a36fcdab135f4ec07ab01015d5b1fd93",
+      "bank_minus-full-receiver.png": "624a1166e000dec62f9dd57b32f56fea7655647ec8322636df1a20b9dd52cb78",
+      "bank_minus-proxy-mask.png": "78161b161b03863e9a374aea94d12665d9bd48ce4a72a3a4883980e594fd0a56",
+      "bank_minus-proxy-receiver.png": "7d7113c138b9efc4695316e34601004635753e2f91e1af84ca72449b37d05f50",
+      "deferred-cue-off-eager-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-cue-off-eager-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-cue-off-enabled-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-cue-off-enabled-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-local-off-eager-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-local-off-eager-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-local-off-enabled-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-local-off-enabled-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-native-eager-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-native-eager-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-native-enabled-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-native-enabled-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-off-eager-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-off-eager-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "deferred-off-enabled-mask.png": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+      "deferred-off-enabled-receiver.png": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830",
+      "gear_transit-cache-axis-0-mask.png": "08b37253ed9347db271189424064755b90d59a5d3adf070fc6b87e973615344f",
+      "gear_transit-cache-axis-0-receiver.png": "0f3f98b6093f0c772d803076f273a57517377fd19005b393bd9ee5781a52e536",
+      "gear_transit-cache-axis-1-mask.png": "803aaba867e9516e1dccdb801e1de2a450534e2682c15b97f5b79d6d726c817b",
+      "gear_transit-cache-axis-1-receiver.png": "6a94645a3ba6f579048e77cbeebf92771e43e25c397187c0d86e41fe98da1215",
+      "gear_transit-cache-axis-2-mask.png": "a0b44da0f540b28723582c3a3fdd36630847822e1e7a6eadec0d5d55f8f11bc2",
+      "gear_transit-cache-axis-2-receiver.png": "07e82afc2ae868a5c3cbffe439ede5f0a1c684cbf48285ca8821a47023159947",
+      "gear_transit-full-mask.png": "8725d37e85ae79a45283dce64f7e5e2be33199e0c39a338c3cc54984246997e8",
+      "gear_transit-full-receiver.png": "d6dc9dd6a4bdd79d456c2ce7dcd948b24b796231caab848e015348151c9a4255",
+      "gear_transit-proxy-mask.png": "c1d99b8f7bf46e68a8f1ee9b61e4ae882406902289c962004271d580d999efab",
+      "gear_transit-proxy-receiver.png": "00987a50169d3df67c0869addce347ac610361be3285f51a0b7a79ffb3cd3bdb",
+      "gear_up-cache-axis-0-mask.png": "45b0febb3d8994391f089dbe88c77899f8cba1dd9a26213f57322546c05ce65d",
+      "gear_up-cache-axis-0-receiver.png": "dd0d6bde769ab7c2acdcce64ed428f75a5c570648a77bf031718ac3fc5549c95",
+      "gear_up-cache-axis-1-mask.png": "5f045ca1fcb4d4356a31b47d90e09df299ec04c66025ab5ed6d6473f9515015c",
+      "gear_up-cache-axis-1-receiver.png": "cc29e28315fb71750b9146cc1cf55b5ce805d217c54daa4ee7bc6c1fd6ea27fc",
+      "gear_up-cache-axis-2-mask.png": "01154b7d122088a1549a02eeae69559e182c4abc90e4382d37ad81003bed524b",
+      "gear_up-cache-axis-2-receiver.png": "9ef2c349340f07145f566c3ae3f83bfa9f40bf82995a5cc7c80fc2534be5fb9d",
+      "gear_up-full-mask.png": "0fb48e52076f8249147ed065de654ce4d34c0e13aa36b523246038c0cb4451bb",
+      "gear_up-full-receiver.png": "cdba76fee6432e4bab16bb9334bd51fb285fcca383f455f6b8ff11b7c2f72d6e",
+      "gear_up-proxy-mask.png": "e980170a78b9ec97fb261def822a20cdd054059cc66a72d8f40ec8231f49f5e5",
+      "gear_up-proxy-receiver.png": "8b595b7324e81b7fd006ced869550d3d83189980be419a3a306e7e923fd37e52",
+      "horizon_clamp-cache-axis-0-mask.png": "06ea3ee957c2a31804c7b888ed93c3dff6e0f41a9761974a530e6cde2279293c",
+      "horizon_clamp-cache-axis-0-receiver.png": "360185ce0f74250783b9af589fae68ae16563858b422a8d910338c9032b261e2",
+      "horizon_clamp-cache-axis-1-mask.png": "b0ec875aac00a2628b32b30d8f9888a6329daa58890e7a6ff0500a881df8d327",
+      "horizon_clamp-cache-axis-1-receiver.png": "31eab1ed74e0f9c45d51abb91469dc77b40579c4acc6f906681c37d9282f0dcb",
+      "horizon_clamp-cache-axis-2-mask.png": "4339d22146f0688f992cb194986b328388a4a6b983dc04192867acc318c2b9fc",
+      "horizon_clamp-cache-axis-2-receiver.png": "3a424a037ffd88b89bc085e31f288862a21191c5e7dd8ca44cfda4c609e1b1d6",
+      "horizon_clamp-full-mask.png": "cad16ba0c2238aadc33ccf636e6a4668a8764cec611f59ceab3a64bf438a4c85",
+      "horizon_clamp-full-receiver.png": "2a5e090d7029c65e3bf72e515c0a8331caba87a7d52614f82df6fc74a5bc0b12",
+      "horizon_clamp-proxy-mask.png": "75b5ca23e9eac7709ded11af59dbb1c4170ab971b63a30568941056bfd8a8001",
+      "horizon_clamp-proxy-receiver.png": "1bbc59b7bfd7629a7cf59ab1fe1aea0c47566abbcb287a294d39125550348544",
+      "knife_minus-cache-axis-0-mask.png": "6a3fa4ea8d38f76d69d7a8b2184099ad24c67a6100a8590b962756de49e27058",
+      "knife_minus-cache-axis-0-receiver.png": "03af380c71f4d669a8e9b9f970fb4bf361d4fb4398e75579091ef13a69613b2c",
+      "knife_minus-cache-axis-1-mask.png": "948486989d71ad0c7e3490054efc31eff59d1f90519ee1114312dc732abd002c",
+      "knife_minus-cache-axis-1-receiver.png": "6e926c0d0179bc6d95ccca4fbc8521dfb398de8a9aeee2c58197dbc2b039cb7f",
+      "knife_minus-cache-axis-2-mask.png": "7b3c4f923d44ab4527928d65368e31c4953042af5a8413e108b7170bd70638e0",
+      "knife_minus-cache-axis-2-receiver.png": "5ff5295d2f9bde2155c34ab9b1f8bf419bcbb2f6653e8f69b13301b18a257ff6",
+      "knife_minus-full-mask.png": "08f7e90365216bbae3fb09419bd27d7e5fc9a5131127822436eefbdd78045606",
+      "knife_minus-full-receiver.png": "3abd7e64968644dff1f7d9aefc08872eb1ee4ed2a1b700f1a43f3ef5295dee36",
+      "knife_minus-proxy-mask.png": "12afa8f071a1aced560eef26d7f209d5a28c930a40ff566ca5636cebc0bee628",
+      "knife_minus-proxy-receiver.png": "2b2286107244b9025e1e5d98462ccb575fcd72898baa4b23b613285b50588342",
+      "landing-cache-axis-0-mask.png": "b82c59b5d628574e285b76cfe734d4c68e07e063d09357bd0ac6933760ca7fcd",
+      "landing-cache-axis-0-receiver.png": "bc6eaf5745a45984799896318090ecf70037e6b5cc5e436276db097a91bc85fb",
+      "landing-cache-axis-1-mask.png": "80f23e16806569b9903e92c02ac6107aa597a2a3d3197e9828e316506f320376",
+      "landing-cache-axis-1-receiver.png": "47edddf20ccb9fb5d97e0674a7f2c1ac9308b977f384cd758a5cdfcae461fbd9",
+      "landing-cache-axis-2-mask.png": "be53d9a7db0bb7ce9bbbf56ea4c7bf2fe70aa9cfe627dc6c72e6a8e9c8146316",
+      "landing-cache-axis-2-receiver.png": "3fbe874af729014b00c49958347e26c26482b966fb6b042b02d3255ba270d5d7",
+      "landing-full-mask.png": "a2f23bbe9bf33d4e0fb732d497f4373ece865634d10ee0f0cac958bb8d88bd44",
+      "landing-full-receiver.png": "455e2335cea432d59022a113f588c33398bde8f5f7376da1620ddbb0544407f9",
+      "landing-proxy-mask.png": "483599e75d1a6458374c24180b9ce1379d986a5aefde2d6228cbf7f60f25e9da",
+      "landing-proxy-receiver.png": "4c42df52d154f1c51e5907cc672cdfb4e5acd4e2a180205d93100f3f20786005",
+      "low_sun-cache-axis-0-mask.png": "c4d31de56541c7009593289e5e58cd03ae20b2f91fd23a49d31f9bd322cb3dff",
+      "low_sun-cache-axis-0-receiver.png": "5454a1fc7128ca6375de6084329264622a92bf553ea3b9fea75a300eced655f9",
+      "low_sun-cache-axis-1-mask.png": "22164297915b48dfb40c3d350adbe0de8ace57cf08e375baa2e3572601a454c7",
+      "low_sun-cache-axis-1-receiver.png": "4ce19a545e39ae8f51dacc4e6ebba913830ab05654f96bb68639c0188b148373",
+      "low_sun-cache-axis-2-mask.png": "06fa30af55a314a9e74cb453894ad8f9fb1800cbda7aa7e55928ab4a6240d18c",
+      "low_sun-cache-axis-2-receiver.png": "5633f79524172966a51513b935c477cdfabfd9a3e3d154c52d7f81b1f981987e",
+      "low_sun-full-mask.png": "e75e0308015ba699fc7f4ce6dac413c0d77bcfc8b916d0d3340a46828d6a4a85",
+      "low_sun-full-receiver.png": "a4b5d5f06c65c7008374b2dfaa5a1b367b2038f1dc1a63fc7e5ea735e95149a1",
+      "low_sun-proxy-mask.png": "53281408c00ad7fad062a0bbd26a01c468f14f2b37c5e4c068ddbf79d3a8004d",
+      "low_sun-proxy-receiver.png": "063ee8dc1eea56b7f73fec164bce043aceb5200277e8fb779f3a1d19add53466",
+      "low_sun_bank-cache-axis-0-mask.png": "1574487e108849ff583baddd299201e0a1c6ff40876b0d292ac49b5a49c8c336",
+      "low_sun_bank-cache-axis-0-receiver.png": "b432b7ea226ab3c30db6963ac856d95c2ce75bb80ea290e416285d6084714c97",
+      "low_sun_bank-cache-axis-1-mask.png": "e18491b4308322d5c1d225039df4fe3f799013a7faa953d047fc443c83c02a47",
+      "low_sun_bank-cache-axis-1-receiver.png": "c982958cfd08bf6d2af18c7cce2d8c0994cbbc63f9c18f1d2494e8a6bc9a0906",
+      "low_sun_bank-cache-axis-2-mask.png": "1294a12595c7f6bee31385da29c1ef9cc7e13bb22a787f0fc480959d0c1894d9",
+      "low_sun_bank-cache-axis-2-receiver.png": "5e8fc28ebf6a7e5f9ab1c4292c4a917853da399879f61d52745be1b82ee71b8c",
+      "low_sun_bank-full-mask.png": "9ba2772c0552d138d9bd9e6ea1c44614e7eee31ec74e35dbaabf5f61298b9357",
+      "low_sun_bank-full-receiver.png": "96456665a8e9463fd8b52fcc01fdefc8ca9fcfb894aa07682370743c311ed381",
+      "low_sun_bank-proxy-mask.png": "846cabaf7e3affe6caa6a36b6ecb8f18012b28ffa314545e4fb4aee6e3119885",
+      "low_sun_bank-proxy-receiver.png": "fd1c7e71a7f39a864c1e3d6df6bf8732b29f47a74e052385a318a0e138c637fb",
+      "low_sun_inverted-cache-axis-0-mask.png": "28816e4cf07342657a6f058022842cc9ce22a8943b0d05772c19380e6c4e4dd6",
+      "low_sun_inverted-cache-axis-0-receiver.png": "285d84b71cc2b9700e7f3d24e4f5fd14f27883d1b522e059e4f70c4f38eb80c8",
+      "low_sun_inverted-cache-axis-1-mask.png": "81b66e5382cf7a3615ac4fdbf9eaa4a7b82b97067d12af49201906ca9e8b684c",
+      "low_sun_inverted-cache-axis-1-receiver.png": "a986ed27dfa47b3443a9ff300dfe11b6ae5fa9598a6f3d24810dc609a385b119",
+      "low_sun_inverted-cache-axis-2-mask.png": "029ab2b019ad1cf5afc8855dd1f478c8bdc0ae721a90717052526eb4ad1c7ab2",
+      "low_sun_inverted-cache-axis-2-receiver.png": "ccc3470f3a86673312f88cb5e63c6e49421efd93e837497de6c2417dd1c86a7b",
+      "low_sun_inverted-full-mask.png": "7b80c316d4a90ae5e3c1676016d0b0c1a88900a53d66793acbbb13c4f35ef3d7",
+      "low_sun_inverted-full-receiver.png": "28637824e782ea97ff3c7b68e468f2d88e5c9d5dac823e7ce75a0219965ed647",
+      "low_sun_inverted-proxy-mask.png": "1489f6bb290523095d679beb1f6b0365c0e10799534cbd77fab15a87afd2576f",
+      "low_sun_inverted-proxy-receiver.png": "035ad73ef54bfd54a8380f9c34b681d36c49fb35651e67168dc3f25fc39a8983",
+      "low_sun_knife-cache-axis-0-mask.png": "9a79a2be238806055c7ebd8db649e8aba11124787d164122b8753fbde669c63c",
+      "low_sun_knife-cache-axis-0-receiver.png": "fbab067ddcbc50c03c89ddcae13b149bca2f2a37f001ff582555c29c912314c1",
+      "low_sun_knife-cache-axis-1-mask.png": "700058dff6afc92b21e377d59aea9a2ba6c7ee84beb2e6aca440155ce906e74c",
+      "low_sun_knife-cache-axis-1-receiver.png": "e747d8632f81edd38fda8fad56b8b5784f80be6d8b0e18c649770b7d8c114d42",
+      "low_sun_knife-cache-axis-2-mask.png": "11f5c045b65544afa600fbe0e6c7d45d98aea5fe2e34dd48e1a4f86020af6954",
+      "low_sun_knife-cache-axis-2-receiver.png": "a7afaf407b96d234939e6c7308ee2a8b230dc49df965f272c55181c894966754",
+      "low_sun_knife-full-mask.png": "d60d06761b57f6ac8393d1bff2d0677e1c0c9ba0c02cdcbaba46f274244379ca",
+      "low_sun_knife-full-receiver.png": "f82a8c5151c523f8dc500408cd48738f93189571d06bf4cfe2b02905d2303fb2",
+      "low_sun_knife-proxy-mask.png": "6c8aa66a2c9e152d0f5dd34848a5c164afb85632af41d77ef870d8a1fe098a1e",
+      "low_sun_knife-proxy-receiver.png": "0accf91d9a9d807503b202f150115ae1161211c6ca2d5e25595eac0cf377d1f8",
+      "takeoff-cache-axis-0-mask.png": "9b1e49706a2f8a6977bc313864f725135657ad52e2d507dfc3779cb99f2a4e36",
+      "takeoff-cache-axis-0-receiver.png": "d68a4a4a92bd49ccc19d84db79386fd4a80663034bc1a510ec1b4c0be25b0b5c",
+      "takeoff-cache-axis-1-mask.png": "4fdbf937363c188acafbad6e69a39a5305dc4b8ce657dc5342ea8b5ae3892c1c",
+      "takeoff-cache-axis-1-receiver.png": "2f83efec322664b4f3e60f794f84c340e12230d7dc938515cb5feca925585fd2",
+      "takeoff-cache-axis-2-mask.png": "6ee3e647a526d140a2d01c97e8c3aa0a3a921142fdfc4db4cf4bd3fc50273f41",
+      "takeoff-cache-axis-2-receiver.png": "d8bdd5d0eda731157e659613deb72ed0c7e802e36f259c6e2bb9b490d247c5ed",
+      "takeoff-full-mask.png": "f7c8cc4781b7f80f6926e967ae39e988525846fae065a1fda1625ff0706f86ee",
+      "takeoff-full-receiver.png": "ace4d455b610ad710c5e939ee4ba1716077a4f8bfb9f54ee2835b345500fd514",
+      "takeoff-proxy-mask.png": "a28a453342f4e5d493306bc5dac31faf8a46cfffec8b1a148ed6b0b8bc2d5081",
+      "takeoff-proxy-receiver.png": "f8055ab322086491cb31d0fb22cb0ea6121bbfc98c7900bc5fc331c7545ffce7"
+    },
+    "baseline_report_sha256": "145cd44c0c402762bbe42179e64fc026a4c3083da00f290787e734ec227fa542",
+    "candidate_report_sha256": "50fc2be90f662fbd48c3684962a1f31b3c94a61615e85adc74d3e78e561290bb",
+    "candidate_summary": {
+      "format": "openrc-aircraft-shadow-proxy-summary v1",
+      "report_sha256": "50fc2be90f662fbd48c3684962a1f31b3c94a61615e85adc74d3e78e561290bb",
+      "identity": {
+        "engine": {
+          "build": "official",
+          "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+          "hex": 264192,
+          "major": 4,
+          "minor": 8,
+          "patch": 0,
+          "status": "beta2",
+          "string": "4.8-beta2 (official)",
+          "timestamp": 0
+        },
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "renderer": "gl_compatibility",
+        "driver": "opengl3",
+        "window_size": [
+          1920,
+          1080
+        ],
+        "reconstruction": {
+          "effective": "native",
+          "effective_provider": "native",
+          "execution_status": "policy_selected",
+          "fallback": false,
+          "fallback_reason": "",
+          "fsr_sharpness": 0.200000002980232,
+          "history_reset": {
+            "api_available": false,
+            "last_reason": "",
+            "notifications": 0,
+            "submitted": 0
+          },
+          "logical_canvas_size": [
+            1920.0,
+            1080.0
+          ],
+          "msaa_3d": 2,
+          "nominal_3d_size": [
+            1920,
+            1080
+          ],
+          "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+          "nvidia_reflex": {
+            "accepted": "unconfirmed",
+            "available": false,
+            "pending": false,
+            "reason": "support_missing",
+            "requested": "on"
+          },
+          "output_size": [
+            1920,
+            1080
+          ],
+          "output_size_scope": "viewport_render_target_estimate_v1",
+          "provider": "native",
+          "provider_available": true,
+          "requested": "native",
+          "requested_provider": "native",
+          "scale": 1.0,
+          "scaling_3d_mode": 0,
+          "selected": "native",
+          "sharpening_active": false,
+          "sharpening_strength": 0.899999998509884,
+          "temporal": false,
+          "texture_mipmap_bias": 0.0
+        },
+        "asset_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+        "livery": "midnight",
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "source_sha256": {
+          "main": "bc4cb66d0ddad068e7c198923b0f822ed48d6dd2e9ef44ee24cfc6b0ae231beb",
+          "mask_shader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+          "projected": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+          "proxy": "1d9024014168463e916e4c994470f0773068ec203f1c6b00eacea9e909d5abd1",
+          "receiver_shader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+          "shadow": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+          "tool": "dfc121491d0e417c3a1c62359b4a6b65918702a8dc6f5e7184dab2ad24035e18"
+        },
+        "max_lod_distance": 0.0005
+      },
+      "bindings": [
+        {
+          "actual": {
+            "lod_surfaces": 39,
+            "max_lod_distance": 0.0005,
+            "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+            "representation": "imported-lod-proxy",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 178455
+          },
+          "case_id": "qualified-stock",
+          "expected_representation": "imported-lod-proxy"
+        },
+        {
+          "actual": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+            "representation": "full",
+            "requested": "full",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "case_id": "explicit-full",
+          "expected_representation": "full"
+        },
+        {
+          "actual": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "case_id": "missing-context",
+          "expected_representation": "full"
+        },
+        {
+          "actual": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "case_id": "workshop",
+          "expected_representation": "full"
+        },
+        {
+          "actual": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "different",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "case_id": "wrong-manifest",
+          "expected_representation": "full"
+        },
+        {
+          "actual": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "case_id": "custom-paint",
+          "expected_representation": "full"
+        },
+        {
+          "actual": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "case_id": "precomputed-home",
+          "expected_representation": "full"
+        }
+      ],
+      "deferred": [
+        {
+          "captures": [
+            {
+              "mask": "deferred-off-eager-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-off-eager-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            },
+            {
+              "mask": "deferred-off-enabled-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-off-enabled-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            }
+          ],
+          "disabled_fallback_texture_absent": true,
+          "disabled_projector_absent": true,
+          "disabled_setup_usec": 129,
+          "disabled_texture_bytes_delta": 0,
+          "eager_setup_usec": 5344,
+          "eager_texture_bytes_delta": 611668,
+          "enabled_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "exact_mask_and_receiver": true,
+          "first_enable_usec": 3418,
+          "mode": "off",
+          "pending_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "pending_representation": "full",
+            "pending_triangles": 321191,
+            "representation": "deferred",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 0
+          }
+        },
+        {
+          "captures": [
+            {
+              "mask": "deferred-native-eager-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-native-eager-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            },
+            {
+              "mask": "deferred-native-enabled-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-native-enabled-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            }
+          ],
+          "disabled_fallback_texture_absent": true,
+          "disabled_projector_absent": true,
+          "disabled_setup_usec": 123,
+          "disabled_texture_bytes_delta": 0,
+          "eager_setup_usec": 7306,
+          "eager_texture_bytes_delta": 611668,
+          "enabled_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "exact_mask_and_receiver": true,
+          "first_enable_usec": 6912,
+          "mode": "native",
+          "pending_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "pending_representation": "full",
+            "pending_triangles": 321191,
+            "representation": "deferred",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 0
+          }
+        },
+        {
+          "captures": [
+            {
+              "mask": "deferred-cue-off-eager-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-cue-off-eager-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            },
+            {
+              "mask": "deferred-cue-off-enabled-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-cue-off-enabled-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            }
+          ],
+          "disabled_fallback_texture_absent": true,
+          "disabled_projector_absent": true,
+          "disabled_setup_usec": 136,
+          "disabled_texture_bytes_delta": 0,
+          "eager_setup_usec": 8206,
+          "eager_texture_bytes_delta": 611668,
+          "enabled_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "exact_mask_and_receiver": true,
+          "first_enable_usec": 6589,
+          "mode": "cue-off",
+          "pending_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "pending_representation": "full",
+            "pending_triangles": 321191,
+            "representation": "deferred",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 0
+          }
+        },
+        {
+          "captures": [
+            {
+              "mask": "deferred-local-off-eager-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-local-off-eager-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            },
+            {
+              "mask": "deferred-local-off-enabled-mask.png",
+              "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+              "receiver": "deferred-local-off-enabled-receiver.png",
+              "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+            }
+          ],
+          "disabled_fallback_texture_absent": true,
+          "disabled_projector_absent": true,
+          "disabled_setup_usec": 133,
+          "disabled_texture_bytes_delta": 0,
+          "eager_setup_usec": 8023,
+          "eager_texture_bytes_delta": 611668,
+          "enabled_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "representation": "full",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 321191
+          },
+          "exact_mask_and_receiver": true,
+          "first_enable_usec": 7123,
+          "mode": "local-off",
+          "pending_geometry": {
+            "lod_surfaces": 0,
+            "max_lod_distance": 0.0,
+            "model_manifest_sha256": "",
+            "pending_representation": "full",
+            "pending_triangles": 321191,
+            "representation": "deferred",
+            "requested": "auto",
+            "source_triangles": 321191,
+            "triangles": 0
+          }
+        }
+      ],
+      "cases": [
+        {
+          "case_id": "landing",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 27.439,
+          "proxy_collect_ms": 134.905,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 509,
+                "changed_pixels": 8,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 3412,
+                "changed_pixels": 1461,
+                "peak_8bit": 10,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 12566,
+                "changed_pixels": 188,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 106880,
+                "changed_pixels": 40802,
+                "peak_8bit": 25,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 38128,
+                "changed_pixels": 517,
+                "peak_8bit": 191,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 257381,
+                "changed_pixels": 51993,
+                "peak_8bit": 36,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 13140,
+                "changed_pixels": 194,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 80390,
+                "changed_pixels": 26358,
+                "peak_8bit": 23,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "takeoff",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 28.481,
+          "proxy_collect_ms": 129.692,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 701,
+                "changed_pixels": 11,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 4708,
+                "changed_pixels": 2452,
+                "peak_8bit": 8,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 16270,
+                "changed_pixels": 236,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 104851,
+                "changed_pixels": 41848,
+                "peak_8bit": 20,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 40437,
+                "changed_pixels": 535,
+                "peak_8bit": 191,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 272988,
+                "changed_pixels": 60807,
+                "peak_8bit": 33,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 14930,
+                "changed_pixels": 222,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 92515,
+                "changed_pixels": 40677,
+                "peak_8bit": 18,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "low_sun",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 25.743,
+          "proxy_collect_ms": 127.719,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 318,
+                "changed_pixels": 5,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 2108,
+                "changed_pixels": 325,
+                "peak_8bit": 22,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 18223,
+                "changed_pixels": 230,
+                "peak_8bit": 191,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 183469,
+                "changed_pixels": 21715,
+                "peak_8bit": 94,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 4646,
+                "changed_pixels": 69,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 51081,
+                "changed_pixels": 16674,
+                "peak_8bit": 45,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 17021,
+                "changed_pixels": 218,
+                "peak_8bit": 191,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 145646,
+                "changed_pixels": 20978,
+                "peak_8bit": 61,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "low_sun_bank",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 26.072,
+          "proxy_collect_ms": 133.45,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 320,
+                "changed_pixels": 5,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 2134,
+                "changed_pixels": 308,
+                "peak_8bit": 24,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2866,
+                "changed_pixels": 44,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 46876,
+                "changed_pixels": 14147,
+                "peak_8bit": 41,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 3436,
+                "changed_pixels": 53,
+                "peak_8bit": 127,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 63506,
+                "changed_pixels": 15156,
+                "peak_8bit": 46,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2485,
+                "changed_pixels": 36,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 25018,
+                "changed_pixels": 9182,
+                "peak_8bit": 49,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "low_sun_knife",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 26.368,
+          "proxy_collect_ms": 122.538,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 128,
+                "changed_pixels": 2,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 855,
+                "changed_pixels": 128,
+                "peak_8bit": 23,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 1403,
+                "changed_pixels": 22,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 22126,
+                "changed_pixels": 12943,
+                "peak_8bit": 25,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 3635,
+                "changed_pixels": 56,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 84092,
+                "changed_pixels": 18673,
+                "peak_8bit": 42,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2295,
+                "changed_pixels": 36,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 30196,
+                "changed_pixels": 12694,
+                "peak_8bit": 26,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "low_sun_inverted",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 26.056,
+          "proxy_collect_ms": 125.24,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 255,
+                "changed_pixels": 4,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 1720,
+                "changed_pixels": 371,
+                "peak_8bit": 18,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 19250,
+                "changed_pixels": 242,
+                "peak_8bit": 191,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 181541,
+                "changed_pixels": 23653,
+                "peak_8bit": 83,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 5037,
+                "changed_pixels": 78,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 57610,
+                "changed_pixels": 18163,
+                "peak_8bit": 35,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 22309,
+                "changed_pixels": 251,
+                "peak_8bit": 255,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 156143,
+                "changed_pixels": 23716,
+                "peak_8bit": 83,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "gear_up",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 25.856,
+          "proxy_collect_ms": 123.938,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 318,
+                "changed_pixels": 5,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 2138,
+                "changed_pixels": 1660,
+                "peak_8bit": 6,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 20009,
+                "changed_pixels": 283,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 148909,
+                "changed_pixels": 63147,
+                "peak_8bit": 22,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 33600,
+                "changed_pixels": 448,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 233318,
+                "changed_pixels": 71383,
+                "peak_8bit": 22,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 16447,
+                "changed_pixels": 241,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 107275,
+                "changed_pixels": 53871,
+                "peak_8bit": 18,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "gear_transit",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 27.267,
+          "proxy_collect_ms": 121.379,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 254,
+                "changed_pixels": 4,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 1700,
+                "changed_pixels": 250,
+                "peak_8bit": 24,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 5805,
+                "changed_pixels": 78,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 87485,
+                "changed_pixels": 14370,
+                "peak_8bit": 57,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2361,
+                "changed_pixels": 36,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 44962,
+                "changed_pixels": 12916,
+                "peak_8bit": 46,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 4590,
+                "changed_pixels": 60,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 56193,
+                "changed_pixels": 12819,
+                "peak_8bit": 51,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "bank_minus",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 27.547,
+          "proxy_collect_ms": 137.874,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 319,
+                "changed_pixels": 5,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 2145,
+                "changed_pixels": 1384,
+                "peak_8bit": 6,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 19820,
+                "changed_pixels": 286,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 137199,
+                "changed_pixels": 47308,
+                "peak_8bit": 22,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 22501,
+                "changed_pixels": 311,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 172592,
+                "changed_pixels": 48967,
+                "peak_8bit": 22,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 14671,
+                "changed_pixels": 217,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 101231,
+                "changed_pixels": 38449,
+                "peak_8bit": 19,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "knife_minus",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 25.304,
+          "proxy_collect_ms": 124.077,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 64,
+                "changed_pixels": 1,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 426,
+                "changed_pixels": 64,
+                "peak_8bit": 23,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2805,
+                "changed_pixels": 43,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 30136,
+                "changed_pixels": 13324,
+                "peak_8bit": 49,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 3824,
+                "changed_pixels": 59,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 80776,
+                "changed_pixels": 18303,
+                "peak_8bit": 48,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 3060,
+                "changed_pixels": 47,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 33488,
+                "changed_pixels": 12584,
+                "peak_8bit": 42,
+                "pixels": 2073600
+              }
+            }
+          ]
+        },
+        {
+          "case_id": "horizon_clamp",
+          "full_triangles": 321191,
+          "representation": "imported-lod-proxy",
+          "lod_surfaces": 39,
+          "full_collect_ms": 26.834,
+          "proxy_collect_ms": 149.721,
+          "proxy_l1_below_largest_sampled_cache_control": {
+            "mask_alpha": true,
+            "receiver_rgb_max": true
+          },
+          "differences": [
+            {
+              "role": "proxy",
+              "triangles": 178455,
+              "mask_alpha": {
+                "l1": 127,
+                "changed_pixels": 2,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 840,
+                "changed_pixels": 113,
+                "peak_8bit": 25,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-0",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 1912,
+                "changed_pixels": 28,
+                "peak_8bit": 128,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 51510,
+                "changed_pixels": 10331,
+                "peak_8bit": 53,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-1",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2105,
+                "changed_pixels": 33,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 32240,
+                "changed_pixels": 9187,
+                "peak_8bit": 30,
+                "pixels": 2073600
+              }
+            },
+            {
+              "role": "cache-axis-2",
+              "triangles": 321191,
+              "mask_alpha": {
+                "l1": 2041,
+                "changed_pixels": 32,
+                "peak_8bit": 64,
+                "pixels": 65536
+              },
+              "receiver_rgb_max": {
+                "l1": 29634,
+                "changed_pixels": 8658,
+                "peak_8bit": 42,
+                "pixels": 2073600
+              }
+            }
+          ]
+        }
+      ],
+      "profiles": [],
+      "collection_median_ms": {
+        "full": 26.368,
+        "proxy": 127.719
+      },
+      "limits": "Isolated masks/receivers and deterministic animated attitude; not physics, pilot or whole-flight FPS. GPU timestamp polls may be delayed; wall samples include frame dispatch and receiver rendering. Gear/flaps are set before each bind; no dynamic articulation claim. Cache controls are sampled context, not a global simplification-error bound. Percentiles use linear interpolation; GPU samples may repeat or lag."
+    },
+    "baseline_trial_derived_sha256": "00de2ee9f98b4f483e426a240780b5f18a038ad57ef8be4ae9c726e52faea527",
+    "baseline_source_map": {
+      "main": "bc4cb66d0ddad068e7c198923b0f822ed48d6dd2e9ef44ee24cfc6b0ae231beb",
+      "mask_shader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+      "projected": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+      "proxy": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+      "receiver_shader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+      "shadow": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+      "tool": "00de2ee9f98b4f483e426a240780b5f18a038ad57ef8be4ae9c726e52faea527"
+    }
+  },
+  "accepted_checked_runs": [
+    {
+      "label": "baseline-native-1080p",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/baseline_trial.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/baseline-native-1080p",
+        "--cache-controls",
+        "--profile-frames=0"
+      ],
+      "started_utc": "2026-11-09T22:11:05.885452+00:00",
+      "elapsed_seconds": 11.203,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a4e33f2fe9b448415858ab1f3c57eb2128729136ac1de687c4b70a3ccc6f7602",
+      "log_bytes": 248
+    },
+    {
+      "label": "final-native-collector-pair",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/compare_aircraft_collection.gd",
+        "--",
+        "--baseline-proxy=res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd",
+        "--baseline-projected=res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/final-native-pair.json"
+      ],
+      "started_utc": "2026-11-09T22:08:59.006049+00:00",
+      "elapsed_seconds": 18.672,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4cb8aa41ba1be816d3c9b03d8e8d01dfd2c1e297bd8e35b8681d830205231efc",
+      "log_bytes": 214
+    },
+    {
+      "label": "final-native-collector-repeat",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/compare_aircraft_collection.gd",
+        "--",
+        "--baseline-proxy=res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd",
+        "--baseline-projected=res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/final-native-repeat.json"
+      ],
+      "started_utc": "2026-11-09T22:12:01.474861+00:00",
+      "elapsed_seconds": 20.063,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4cb8aa41ba1be816d3c9b03d8e8d01dfd2c1e297bd8e35b8681d830205231efc",
+      "log_bytes": 214
+    },
+    {
+      "label": "final-packed-index-proxy-unit",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_shadow_proxy.gd"
+      ],
+      "started_utc": "2026-11-09T22:05:33.322901+00:00",
+      "elapsed_seconds": 8.719,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c691a4819730f0f9a34d790848e8c178c22097c5f1c0b4d223325058c20d77a7",
+      "log_bytes": 117
+    },
+    {
+      "label": "final-test_flight_cue_shadows",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_cue_shadows.gd"
+      ],
+      "started_utc": "2026-11-09T22:07:24.788142+00:00",
+      "elapsed_seconds": 1.266,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "490be92ee22452d2159c2fe4b23b942b2a8756c8b5b48494eb69095fb76ce9eb",
+      "log_bytes": 93
+    },
+    {
+      "label": "final-test_home_preview_geometry",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_home_preview_geometry.gd"
+      ],
+      "started_utc": "2026-11-09T22:07:24.791143+00:00",
+      "elapsed_seconds": 0.687,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "dd3641c55b59f6382137a6cdad28abbffa5c337d5af2b291f83c123fd26986d0",
+      "log_bytes": 116
+    },
+    {
+      "label": "final-test_projected_shadow",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_projected_shadow.gd"
+      ],
+      "started_utc": "2026-11-09T22:07:24.793982+00:00",
+      "elapsed_seconds": 5.312,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "da2a94a64509bb51dcb227c8ad83c96f3bf545e2e92012073deb3f80a722abe1",
+      "log_bytes": 122
+    },
+    {
+      "label": "final-test_shadow_cue_controls",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_cue_controls.gd"
+      ],
+      "started_utc": "2026-11-09T22:07:24.788142+00:00",
+      "elapsed_seconds": 10.219,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "6328113b7dc10a9aeeae3a095a25a3b27d8edfe18c5d7fce48cc4e0489bd8c7a",
+      "log_bytes": 114
+    },
+    {
+      "label": "final-test_shadow_deferred",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_deferred.gd"
+      ],
+      "started_utc": "2026-11-09T22:07:24.791143+00:00",
+      "elapsed_seconds": 10.312,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "bc2048c0fbef2b24e80f5b390219bd9c5b83ea1212ce2abd6c917fd76949e455",
+      "log_bytes": 119
+    },
+    {
+      "label": "final-test_shadow_ownership",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_ownership.gd"
+      ],
+      "started_utc": "2026-11-09T22:07:24.793444+00:00",
+      "elapsed_seconds": 6.171,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "571170ecc23cf7a10b86616915344969323610dac9245f4826a885bae1c02699",
+      "log_bytes": 473
+    },
+    {
+      "label": "index-temporary-data-bound",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/shadow-preparation-20261109/inspect_lods.gd"
+      ],
+      "started_utc": "2026-11-09T22:15:57.898278+00:00",
+      "elapsed_seconds": 4.297,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "25a897fd36c1dd82dd7f680f54cd4175e539314e3c51658260fbb1828207e1c9",
+      "log_bytes": 175
+    },
+    {
+      "label": "packed-index-native-1080p",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/aircraft_proxy_trial.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/native-1080p",
+        "--cache-controls",
+        "--profile-frames=0"
+      ],
+      "started_utc": "2026-11-09T22:06:48.880354+00:00",
+      "elapsed_seconds": 11.922,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a4e33f2fe9b448415858ab1f3c57eb2128729136ac1de687c4b70a3ccc6f7602",
+      "log_bytes": 248
+    }
+  ],
+  "preliminary_or_rejected_checked_runs": [
+    {
+      "label": "baseline-test_aircraft_shadow_proxy",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_shadow_proxy.gd"
+      ],
+      "started_utc": "2026-11-09T21:54:31.103389+00:00",
+      "elapsed_seconds": 8.547,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c8cd232ff988c9f123c4352a9051cf8f0723bbd5fecc19a2f17d7bd5c2f59047",
+      "log_bytes": 116
+    },
+    {
+      "label": "baseline-test_shadow_collection",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_collection.gd"
+      ],
+      "started_utc": "2026-11-09T21:54:31.102859+00:00",
+      "elapsed_seconds": 0.5,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c9281901692a5ed108bc6dc4b988aee1edd7136b8a99ef0b60de22d0521a9fdb",
+      "log_bytes": 112
+    },
+    {
+      "label": "candidate-test_aircraft_shadow_proxy",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_shadow_proxy.gd"
+      ],
+      "started_utc": "2026-11-09T21:55:12.266169+00:00",
+      "elapsed_seconds": 10.375,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c8cd232ff988c9f123c4352a9051cf8f0723bbd5fecc19a2f17d7bd5c2f59047",
+      "log_bytes": 116
+    },
+    {
+      "label": "candidate-test_shadow_collection",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shadow_collection.gd"
+      ],
+      "started_utc": "2026-11-09T21:55:12.266169+00:00",
+      "elapsed_seconds": 0.609,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c9281901692a5ed108bc6dc4b988aee1edd7136b8a99ef0b60de22d0521a9fdb",
+      "log_bytes": 112
+    },
+    {
+      "label": "grouped-index-collector-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/shadows/compare_aircraft_collection.gd",
+        "--",
+        "--baseline-proxy=res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd",
+        "--baseline-projected=res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/grouped-index-screen.json"
+      ],
+      "started_utc": "2026-11-09T22:01:46.619045+00:00",
+      "elapsed_seconds": 17.703,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b51432179f564db530df220102efd9a3ebffd8f3f83bbadfe2366feb06361920",
+      "log_bytes": 117
+    },
+    {
+      "label": "inspect-index-workload",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tmp/shadow-preparation-20261109/inspect_lods.gd"
+      ],
+      "started_utc": "2026-11-09T21:58:45.129102+00:00",
+      "elapsed_seconds": 4.188,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "953b92284e42edb2c3c53d13c24ee16224a68762393ad0504de2dac4daf8b1fe",
+      "log_bytes": 112
+    },
+    {
+      "label": "native-gather-collector-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/shadows/compare_aircraft_collection.gd",
+        "--",
+        "--baseline-proxy=res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd",
+        "--baseline-projected=res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/native-gather-screen.json"
+      ],
+      "started_utc": "2026-11-09T22:03:53.477821+00:00",
+      "elapsed_seconds": 20.469,
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "61c3c0bf5de3e24dd979c6f57e194397c88f6f9b404689439ccfcacb265656e2",
+      "log_bytes": 2259
+    },
+    {
+      "label": "native-gather-proxy-unit",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_shadow_proxy.gd"
+      ],
+      "started_utc": "2026-11-09T22:03:38.978536+00:00",
+      "elapsed_seconds": 8.156,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c8cd232ff988c9f123c4352a9051cf8f0723bbd5fecc19a2f17d7bd5c2f59047",
+      "log_bytes": 116
+    },
+    {
+      "label": "paired-index-collector-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/shadows/compare_aircraft_collection.gd",
+        "--",
+        "--baseline-proxy=res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd",
+        "--baseline-projected=res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/paired-index-screen.json"
+      ],
+      "started_utc": "2026-11-09T22:00:08.195943+00:00",
+      "elapsed_seconds": 17.687,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b51432179f564db530df220102efd9a3ebffd8f3f83bbadfe2366feb06361920",
+      "log_bytes": 117
+    },
+    {
+      "label": "paired-index-proxy-unit",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_shadow_proxy.gd"
+      ],
+      "started_utc": "2026-11-09T21:59:53.039246+00:00",
+      "elapsed_seconds": 9.156,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c8cd232ff988c9f123c4352a9051cf8f0723bbd5fecc19a2f17d7bd5c2f59047",
+      "log_bytes": 116
+    },
+    {
+      "label": "proxy-collector-pair-screen",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://../tools/shadows/compare_aircraft_collection.gd",
+        "--",
+        "--baseline-proxy=res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd",
+        "--baseline-projected=res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-preparation-20261109/pair-screen.json"
+      ],
+      "started_utc": "2026-11-09T21:56:47.756702+00:00",
+      "elapsed_seconds": 23.032,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b51432179f564db530df220102efd9a3ebffd8f3f83bbadfe2366feb06361920",
+      "log_bytes": 117
+    }
+  ],
+  "rejected_experiments": [
+    {
+      "reason": "Single-pass fusion: mixed complete-collector times; runtime restored.",
+      "complete": true,
+      "checks": 117,
+      "failed": 0,
+      "source_sha256": {
+        "res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+        "res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+        "res://../tools/shadows/compare_aircraft_collection.gd": "780c9d5c57f1135d58aa753d486b0b69d6630f336bc1350a4418206c402b39a3",
+        "res://aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+        "res://render/aircraft_shadow_proxy.gd": "5130c6ece949ffdc1e121f4b738acebcb9b176c50517d43b41bcb372446cde8b",
+        "res://render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+        "res://render/projected_shadow.gd": "308c4870995c64075848f59fcffe348602c76ea7f1a0da58d2c1824063701c66"
+      },
+      "summary": {
+        "cases": [
+          {
+            "case": "gear_down",
+            "baseline_median_us": 142888.0,
+            "candidate_median_us": 146657.5,
+            "reduction_percent": -2.638080174682278,
+            "candidate_faster_pairs": 3
+          },
+          {
+            "case": "takeoff_flaps",
+            "baseline_median_us": 136858.5,
+            "candidate_median_us": 138425.0,
+            "reduction_percent": -1.1446128665738797,
+            "candidate_faster_pairs": 4
+          },
+          {
+            "case": "landing_flaps",
+            "baseline_median_us": 141991.5,
+            "candidate_median_us": 137700.5,
+            "reduction_percent": 3.022011880992881,
+            "candidate_faster_pairs": 5
+          },
+          {
+            "case": "gear_half",
+            "baseline_median_us": 140436.0,
+            "candidate_median_us": 146294.0,
+            "reduction_percent": -4.171295109516082,
+            "candidate_faster_pairs": 5
+          },
+          {
+            "case": "gear_up",
+            "baseline_median_us": 155831.5,
+            "candidate_median_us": 149114.5,
+            "reduction_percent": 4.310425042433652,
+            "candidate_faster_pairs": 7
+          }
+        ],
+        "pooled_baseline_median_us": 142888.0,
+        "pooled_candidate_median_us": 144114.5,
+        "pooled_reduction_percent": -0.8583645932478623,
+        "median_adjacent_pair_saving_us": -537.0,
+        "candidate_faster_pairs": 24,
+        "adjacent_pairs": 50
+      },
+      "report_sha256": "7c835b95918c56150fb58ec9a8ea21be6dd6cf9a07bdb8a7b6f4cbad9e4f59d4"
+    },
+    {
+      "reason": "Four-index word variant: modest gain did not justify extra lane/tail complexity.",
+      "complete": true,
+      "checks": 117,
+      "failed": 0,
+      "source_sha256": {
+        "res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+        "res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+        "res://../tools/shadows/compare_aircraft_collection.gd": "780c9d5c57f1135d58aa753d486b0b69d6630f336bc1350a4418206c402b39a3",
+        "res://aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+        "res://render/aircraft_shadow_proxy.gd": "b6a4805ed8af133d5ff0f5e775acde06dbe27920cc69c5d76746609bc6532306",
+        "res://render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+        "res://render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3"
+      },
+      "summary": {
+        "cases": [
+          {
+            "case": "gear_down",
+            "baseline_median_us": 111384.5,
+            "candidate_median_us": 109118.5,
+            "reduction_percent": 2.034394372646109,
+            "candidate_faster_pairs": 9
+          },
+          {
+            "case": "takeoff_flaps",
+            "baseline_median_us": 113283.5,
+            "candidate_median_us": 113107.0,
+            "reduction_percent": 0.1558038019658592,
+            "candidate_faster_pairs": 6
+          },
+          {
+            "case": "landing_flaps",
+            "baseline_median_us": 114862.0,
+            "candidate_median_us": 113319.0,
+            "reduction_percent": 1.3433511518169627,
+            "candidate_faster_pairs": 6
+          },
+          {
+            "case": "gear_half",
+            "baseline_median_us": 115359.0,
+            "candidate_median_us": 109841.5,
+            "reduction_percent": 4.782895136053533,
+            "candidate_faster_pairs": 9
+          },
+          {
+            "case": "gear_up",
+            "baseline_median_us": 111712.0,
+            "candidate_median_us": 109177.0,
+            "reduction_percent": 2.2692280148954413,
+            "candidate_faster_pairs": 10
+          }
+        ],
+        "pooled_baseline_median_us": 113459.5,
+        "pooled_candidate_median_us": 109865.5,
+        "pooled_reduction_percent": 3.1676501306633686,
+        "median_adjacent_pair_saving_us": 2440.0,
+        "candidate_faster_pairs": 40,
+        "adjacent_pairs": 50
+      },
+      "report_sha256": "d7ba71b2835403ffcbba32e722768fecc776bebdcfaaf7d775957b98a3d84309"
+    },
+    {
+      "reason": "Temporary ArrayMesh gather: changed exact geometry bytes and was 36-40% slower; rejected.",
+      "complete": false,
+      "checks": 117,
+      "failed": 55,
+      "source_sha256": {
+        "res://../tmp/shadow-preparation-20261109/baseline/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+        "res://../tmp/shadow-preparation-20261109/baseline/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+        "res://../tools/shadows/compare_aircraft_collection.gd": "780c9d5c57f1135d58aa753d486b0b69d6630f336bc1350a4418206c402b39a3",
+        "res://aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+        "res://render/aircraft_shadow_proxy.gd": "3c18dc38a72991766d8f62b7fe319e2e0aa6df8e78df8e7a5dec17fa570ab2b4",
+        "res://render/airplane.gd": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+        "res://render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3"
+      },
+      "summary": {
+        "cases": [
+          {
+            "case": "gear_down",
+            "baseline_median_us": 111735.0,
+            "candidate_median_us": 154147.5,
+            "reduction_percent": -37.95811518324608,
+            "candidate_faster_pairs": 0
+          },
+          {
+            "case": "takeoff_flaps",
+            "baseline_median_us": 127226.0,
+            "candidate_median_us": 174951.0,
+            "reduction_percent": -37.51198654363102,
+            "candidate_faster_pairs": 0
+          },
+          {
+            "case": "landing_flaps",
+            "baseline_median_us": 112824.5,
+            "candidate_median_us": 156864.0,
+            "reduction_percent": -39.03363187960063,
+            "candidate_faster_pairs": 0
+          },
+          {
+            "case": "gear_half",
+            "baseline_median_us": 113612.5,
+            "candidate_median_us": 159096.5,
+            "reduction_percent": -40.034327208713826,
+            "candidate_faster_pairs": 0
+          },
+          {
+            "case": "gear_up",
+            "baseline_median_us": 114232.0,
+            "candidate_median_us": 155675.0,
+            "reduction_percent": -36.279676447930534,
+            "candidate_faster_pairs": 0
+          }
+        ],
+        "pooled_baseline_median_us": 113949.5,
+        "pooled_candidate_median_us": 158059.0,
+        "pooled_reduction_percent": -38.709691573898965,
+        "median_adjacent_pair_saving_us": -41706.0,
+        "candidate_faster_pairs": 0,
+        "adjacent_pairs": 50
+      },
+      "report_sha256": "2e4639a065bff6cd29e6aa98511c0b7551ba87da7f3bdb8052c4569b0cefb739"
+    }
+  ],
+  "limits": [
+    "Warm-process collector-component screen, not loading/first-interactive-frame, FPS, GPU pass or frame-tail qualification.",
+    "One pose was slightly slower in the first native screen; effects vary across poses and campaigns.",
+    "The temporary packed-word buffer adds short-lived memory; peak RAM/VRAM was not measured.",
+    "Full CI, exports, other platforms/GPUs and physical acceptance remain separate.",
+    "HEAD advanced externally and unrelated physics/scenery work was preserved; accepted rendering source hashes stayed fixed."
+  ]
+}

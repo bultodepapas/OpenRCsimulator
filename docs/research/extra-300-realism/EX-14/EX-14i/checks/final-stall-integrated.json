@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b4feeda2-9c5e-4d11-b476-2a7afbedf9f7",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/extra-300/ex14/stall_probe.gd",
+    "--",
+    "--case=normal/wings_level",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/extra300-feel-20261109/final-stall-integrated"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T22:04:25.339917+00:00",
+  "label": "final-stall-integrated",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109\\checks\\final-stall-integrated-wrd4w817\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\extra300-feel-20261109\\checks\\final-stall-integrated-wrd4w817\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "EXTRA_STALL_PROBE_COMPLETE failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 14.657,
+  "log_bytes": 5073,
+  "log_sha256": "d6448b3ccef17c0c78ab6b935af77f3bd0180411e29f0e2644df55bbf471fc81"
+}

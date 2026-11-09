@@ -211,6 +211,28 @@ trees and leaves all other field construction intact. Use identical explicit
 do not include Field World's flowing sky or moon and do not measure flight cost.
 See [the scoped evidence](../../docs/research/visual-quality-implementation/L8a-R5/README.md).
 
+## Woodland grass root review (L7-R5)
+
+`quality_capture.gd --mode=field` supports all four `woodland-edge-<pocket>-<view>`
+cameras. Pockets are `east-north`, `east-south`, `southwest` and `northwest`;
+views are `eye`, `overview` and `reverse`. Cameras use the fixed recipe center
+and authoritative terrain height. Select them through `--views`, with explicit
+`--width=1920 --height=1080 --wind=off --scene_detail=high`.
+
+Capture-only `--woodland_root_lift=0..1` varies the correction on a private
+material. `--woodland_shader_source=<original shader snapshot>` compares the
+old shader on the same production field. The report includes effective root
+strength/color, source height fractions, atlas hashes and habitat counts.
+The cached production material is not edited. The existing `--time-of-day`
+and `--date` arguments select static SDR lighting snapshots.
+
+Run `res://tests/test_woodland_root_lighting.gd` through the checked runner on
+native Compatibility and require `woodland root lighting: passed`.
+`-- --out=<new absolute JSON>` retains pixel metrics and source identities.
+Headless execution explicitly skips pixels. The separate native
+`test_woodland_edge_habitat.gd` covers geometry, quality and frame selection.
+See [evidence and scope](../../docs/research/visual-quality-implementation/L7-R5/README.md).
+
 ## Decorative woodland margins
 
 `python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` reuses the existing downloaded shrub atlas and short-grass mesh. It adds four small default-field patches, with five high-quality batches and 1,956 triangles; balanced quality is a stable subset and low quality omits this decoration.

@@ -7,6 +7,11 @@ uniform sampler2D short_grass_atlas : source_color, filter_linear, repeat_disabl
 uniform sampler2D fern_atlas : source_color, filter_linear, repeat_disable;
 uniform float alpha_cutoff : hint_range(0.0, 1.0) = 0.32;
 uniform float atlas_frames = 4.0;
+// L7-R5: soften the downloaded grass's baked black bases without recoloring its tips.
+uniform float root_lift : hint_range(0.0, 1.0) = 0.75;
+uniform vec3 root_color : source_color = vec3(0.28, 0.34, 0.12);
+// Tall/short source height divided by the square bake size; transparent padding is not plant height.
+uniform vec2 grass_height_fractions = vec2(0.9090909);
 
 varying float selected_frame;
 varying float species;
@@ -57,6 +62,12 @@ void fragment() {
 	else if (species > 1.5) { leaf_sample = texture(fern_atlas, atlas_uv); }
 	else { leaf_sample = texture(impostor_atlas, atlas_uv); }
 	ALBEDO = leaf_sample.rgb * plant_tint;
+	if (root_lift > 0.0 && (species < 0.5 || species > 2.5)) {
+		float height_fraction = species < 0.5 ? grass_height_fractions.x : grass_height_fractions.y;
+		float plant_height = (0.5 - UV.y) / max(height_fraction, 0.001) + 0.5;
+		float root_weight = 1.0 - smoothstep(0.0, 0.30, plant_height);
+		ALBEDO = mix(ALBEDO, max(ALBEDO, root_color * plant_tint), root_weight * clamp(root_lift, 0.0, 1.0));
+	}
 	// The downloaded atlas contains source albedo, with no baked light. Let the world light its canopy.
 	NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
 	ROUGHNESS = 1.0;
