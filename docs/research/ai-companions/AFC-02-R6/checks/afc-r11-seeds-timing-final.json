@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e5ee7187-7fca-4f0c-bc31-fa48723d767e",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_seeds_timing.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T21:03:39.903582+00:00",
+  "label": "afc-r11-seeds-timing-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11\\checks\\afc-r11-seeds-timing-final-4o73_rtj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11\\checks\\afc-r11-seeds-timing-final-4o73_rtj\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companions seeds and timing: 83 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.594,
+  "log_bytes": 3161,
+  "log_sha256": "9f725ec9c09ebb8cf57f9891453686a1c3d288ef7b48b716bfd0807cc795c492"
+}

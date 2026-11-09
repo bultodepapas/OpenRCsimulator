@@ -35,6 +35,8 @@ func _run() -> void:
 	UiInput.set_gamepad(UiDriver.FAKE_DEVICE)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(NO_WRITE_PATH))
 	root.size = Vector2i(1920, 1080)
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	root.content_scale_size = Vector2i(1920, 1080)
 	var dialog := CompanionsDialog.new()
 	dialog.applied.connect(_on_applied)
 	dialog.close_requested.connect(_on_close_requested)
@@ -150,6 +152,35 @@ func _run() -> void:
 	_check("Spanish status translates flying, pending count, and restart notice",
 		dialog.status_label.text.contains("3 en vuelo · 2 tras reiniciar")
 		and dialog.status_label.text.contains("Los ajustes de vuelo cambian al reiniciar."), dialog.status_label.text)
+	var localized_statuses := {
+		"en": ["Traffic: 2 flying · 3 in session · 2 after restart", "Flight settings change after restart."],
+		"es": ["Tráfico: 2 en vuelo · 3 en la sesión · 2 tras reiniciar", "Los ajustes de vuelo cambian al reiniciar."],
+		"zh_Hans": ["交通流：2 架在空中 · 本次飞行中有 3 架 · 重启后有 2 架", "飞行设置将在重启后更改。"],
+		"pt_BR": ["Tráfego: 2 no ar · 3 na sessão · 2 após reiniciar", "As configurações de voo mudam após reiniciar."],
+		"de": ["Flugverkehr: 2 in der Luft · 3 in der Sitzung · 2 nach dem Neustart", "Die Flugeinstellungen ändern sich nach dem Neustart."],
+		"fr": ["Trafic : 2 en vol · 3 dans la session · 2 après redémarrage", "Les paramètres de vol changent après le redémarrage."],
+		"it": ["Traffico: 2 in volo · 3 nella sessione · 2 dopo il riavvio", "Le impostazioni di volo cambiano dopo il riavvio."],
+		"ru": ["Трафик: 2 в воздухе · 3 в сеансе · 2 после перезапуска", "Настройки полёта изменятся после перезапуска."],
+		"ja": ["飛行中：2機 · セッション中3機 · 再開後2機", "飛行設定は再開後に変更されます。"],
+	}
+	for locale: String in localized_statuses:
+		TranslationServer.set_locale(locale)
+		dialog.refresh_status({"in_flight": true, "active": 3, "airborne": 2,
+			"requested_count": 2, "pending_count": 2, "pending_restart": true})
+		var expected: Array = localized_statuses[locale]
+		_check("%s translates flying, session and restart status" % locale,
+			dialog.status_label.text.contains(expected[0]) and dialog.status_label.text.contains(expected[1]),
+			dialog.status_label.text)
+		await ui.settle()
+		var viewport: Rect2 = root.get_visible_rect()
+		_check("%s 1080p pending dialog and footer fit" % locale,
+			viewport.size == Vector2(1920.0, 1080.0)
+			and viewport.grow(1.0).encloses(dialog.dialog_panel.get_global_rect())
+			and viewport.encloses(dialog.cancel_button.get_global_rect())
+			and viewport.encloses(dialog.apply_button.get_global_rect()) and dialog._body_scroll.size.y >= 80.0,
+			"viewport=%s panel=%s scroll=%s cancel=%s apply=%s" % [viewport,
+				dialog.dialog_panel.get_global_rect(), dialog._body_scroll.size,
+				dialog.cancel_button.get_global_rect(), dialog.apply_button.get_global_rect()])
 	TranslationServer.set_locale("en")
 	_check("Remove companions is shown only for an active in-flight group",
 		dialog.remove_button.visible and dialog.save_default_check.visible)

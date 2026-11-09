@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "65191f1b-7166-43a4-aebb-5c451bf4dc0f",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://../research/ai-companions/avoidance/encounter_probe_gentle.gd",
+    "--",
+    "--seconds=60",
+    "--record-none",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r11/gentle-encounters"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T21:02:11.714479+00:00",
+  "label": "afc-r11-gentle-encounters",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11\\checks\\afc-r11-gentle-encounters-m7qhim1m\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11\\checks\\afc-r11-gentle-encounters-m7qhim1m\\report.json",
+  "timeout_seconds": 2400.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION ENCOUNTER SURVEY COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 366.61,
+  "log_bytes": 2038,
+  "log_sha256": "9769c0dc24ced54e591acdeb73061231ce6c649635af0d9ed8661338bfa9be79"
+}

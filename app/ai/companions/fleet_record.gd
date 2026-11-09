@@ -240,6 +240,7 @@ static func _source_hashes() -> Dictionary:
 	var result := {}
 	for path: String in ["res://ai/companions/fleet_record.gd", "res://ai/companions/manager.gd",
 			"res://ai/companions/agent.gd", "res://ai/companions/pilot.gd",
+			"res://ai/companions/seed_allocator.gd",
 			"res://ai/companions/circuit_controller.gd", "res://sim/flight_log.gd",
 			"res://ai/companions/config.gd", "res://ai/companions/profile_loader.gd",
 			"res://ai/companions/airspace.gd", "res://main.gd"]:

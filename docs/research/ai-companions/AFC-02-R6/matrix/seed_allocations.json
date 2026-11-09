@@ -1,0 +1,164 @@
+[
+	{
+		"allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "32527a5bb510a833",
+					"nonce": 0,
+					"seed": 2999205664,
+					"slot": 0
+				}
+			],
+			"count": 1,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 0,
+			"traffic_seed": 20261020
+		},
+		"count": 1,
+		"weather": "calm"
+	},
+	{
+		"allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "32527a5bb510a833",
+					"nonce": 0,
+					"seed": 2999205664,
+					"slot": 0
+				},
+				{
+					"actor_id": "companion-1",
+					"initial_rng_state_hex": "0015e3d5e7b90cf9",
+					"nonce": 0,
+					"seed": 1843264998,
+					"slot": 1
+				}
+			],
+			"count": 2,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 0,
+			"traffic_seed": 20261020
+		},
+		"count": 2,
+		"weather": "calm"
+	},
+	{
+		"allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "32527a5bb510a833",
+					"nonce": 0,
+					"seed": 2999205664,
+					"slot": 0
+				},
+				{
+					"actor_id": "companion-1",
+					"initial_rng_state_hex": "0015e3d5e7b90cf9",
+					"nonce": 0,
+					"seed": 1843264998,
+					"slot": 1
+				},
+				{
+					"actor_id": "companion-2",
+					"initial_rng_state_hex": "583e896b39088cd7",
+					"nonce": 0,
+					"seed": 2361156510,
+					"slot": 2
+				}
+			],
+			"count": 3,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 0,
+			"traffic_seed": 20261020
+		},
+		"count": 3,
+		"weather": "calm"
+	},
+	{
+		"allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "850315d70824eb6f",
+					"nonce": 0,
+					"seed": 812089759,
+					"slot": 0
+				}
+			],
+			"count": 1,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 20261011,
+			"traffic_seed": 20261020
+		},
+		"count": 1,
+		"weather": "gentle-practice"
+	},
+	{
+		"allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "850315d70824eb6f",
+					"nonce": 0,
+					"seed": 812089759,
+					"slot": 0
+				},
+				{
+					"actor_id": "companion-1",
+					"initial_rng_state_hex": "068293631d0db1a5",
+					"nonce": 0,
+					"seed": 3343987396,
+					"slot": 1
+				}
+			],
+			"count": 2,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 20261011,
+			"traffic_seed": 20261020
+		},
+		"count": 2,
+		"weather": "gentle-practice"
+	},
+	{
+		"allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "850315d70824eb6f",
+					"nonce": 0,
+					"seed": 812089759,
+					"slot": 0
+				},
+				{
+					"actor_id": "companion-1",
+					"initial_rng_state_hex": "068293631d0db1a5",
+					"nonce": 0,
+					"seed": 3343987396,
+					"slot": 1
+				},
+				{
+					"actor_id": "companion-2",
+					"initial_rng_state_hex": "6ef38b651c6e69bc",
+					"nonce": 0,
+					"seed": 744131276,
+					"slot": 2
+				}
+			],
+			"count": 3,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 20261011,
+			"traffic_seed": 20261020
+		},
+		"count": 3,
+		"weather": "gentle-practice"
+	}
+]

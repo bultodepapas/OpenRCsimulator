@@ -20,6 +20,13 @@ companion restart callbacks, focus ordering and technical player-only restore.
 Its targeted fleet checks and source/tape requalification preserve the existing
 airborne scope; they do not replace the remaining activity and physical gates.
 
+The [AFC-02-R6 follow-up](../research/ai-companions/AFC-02-R6/README.md) adds
+versioned fixed-roster turbulence allocation, declared behavior-source admission,
+and requested/admitted/pending status. Manager timing now includes both owned
+physics callbacks and offers opt-in phase diagnostics. Separate prediction,
+control and recorder attribution, a fresh 1080p hardware baseline, static-path
+qualification and the later activity/population gates remain open.
+
 The first implementation covers parts of AFC-00…06: a controllerless session
 seam, one-to-three Stik circuits, common tick snapshots, basic proximity response,
 player-authored scenery damage publication, model/audio instances, and Home/Pause

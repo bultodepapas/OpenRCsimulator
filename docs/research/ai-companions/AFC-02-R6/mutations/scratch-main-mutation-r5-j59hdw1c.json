@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ceac247b-5512-421b-a3d4-0f6b99773341",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/afc-r11-manifest/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_behavior_manifest.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T21:07:04.760275+00:00",
+  "label": "scratch-main-mutation-r5",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11-manifest\\checks\\scratch-main-mutation-r5-j59hdw1c\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11-manifest\\checks\\scratch-main-mutation-r5-j59hdw1c\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "8 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.593,
+  "log_bytes": 121,
+  "log_sha256": "22fa4f7c7dd9aba05886f9116a136faa9a73af7e0dd6a222afd6a066b4c5af10"
+}

@@ -6036,6 +6036,18 @@ msgstr "伙伴 %d"
 msgid "Traffic: %d airborne / %d active / %d requested"
 msgstr "交通流：%d 架在空中 / %d 架活动中 / %d 架已请求"
 
+msgid "Traffic: %d flying"
+msgstr "交通流：%d 架在空中"
+
+msgid " · %d in session"
+msgstr " · 本次飞行中有 %d 架"
+
+msgid " · %d after restart"
+msgstr " · 重启后有 %d 架"
+
+msgid "Flight settings change after restart."
+msgstr "飞行设置将在重启后更改。"
+
 msgid ""
 "Flight settings apply after Restart flight. Sound and labels apply "
 "immediately. Remove now clears the current companions."

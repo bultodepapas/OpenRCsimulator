@@ -1,5 +1,5 @@
 {
-  "format": "openrc-ai-aircraft v1",
+  "format": "openrc-ai-aircraft v2",
   "id": "jensen-das-ugly-stik-60",
   "catalog_id": "jensen-das-ugly-stik-60",
   "aircraft_data": {
@@ -39,7 +39,7 @@
       "min": 1,
       "max": 3
     },
-    "evidence": "docs/research/ai-companions/AFC-02-R5/README.md"
+    "evidence": "docs/research/ai-companions/AFC-02-R6/README.md"
   },
   "performance": {
     "stall_speed": {
@@ -54,5 +54,11 @@
     "entry_speed": {
       "status": "unknown"
     }
+  },
+  "behavior_manifest": {
+    "path": "res://data/ai/companions/behavior-manifest.json",
+    "format": "openrc-ai-behavior-manifest v1",
+    "normalization": "utf8-lf",
+    "sha256": "c50dbc02ba4eda3b55dcf561ca8cc554945a26b2cf68eed00624819e7ad4393e"
   }
 }

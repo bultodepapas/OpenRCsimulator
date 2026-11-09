@@ -5,10 +5,36 @@ extends RefCounted
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const StrictJSON := preload("res://workshop/strict_json.gd")
 
-const AIRCRAFT_FORMAT := "openrc-ai-aircraft v1"
+const AIRCRAFT_FORMAT := "openrc-ai-aircraft v2"
 const FIELD_FORMAT := "openrc-ai-field v1"
-const IDENTITY_FORMAT := "openrc-ai-profile-identity v1"
+const IDENTITY_FORMAT := "openrc-ai-profile-identity v2"
+const BEHAVIOR_MANIFEST_FORMAT := "openrc-ai-behavior-manifest v1"
+const BEHAVIOR_MANIFEST_PATH := "res://data/ai/companions/behavior-manifest.json"
+const BEHAVIOR_NORMALIZATION := "utf8-lf"
+const BEHAVIOR_MANIFEST_MAX_BYTES := 65536
+## Deliberate on-disk behavior-source boundary, not a complete build or security identity.
+## Admission assumes scripts and source files are stable during the running process.
+## Mixed orchestration files are pinned whole, including their presentation code.
+const BEHAVIOR_SOURCE_PATHS := [
+	"res://ai/companions/agent.gd",
+	"res://ai/companions/airspace.gd",
+	"res://ai/companions/circuit_controller.gd",
+	"res://ai/companions/config.gd",
+	"res://ai/companions/manager.gd",
+	"res://ai/companions/observation_airdata.gd",
+	"res://ai/companions/pilot.gd",
+	"res://ai/companions/profile_loader.gd",
+	"res://ai/companions/seed_allocator.gd",
+	"res://ai/companions/static_trajectory.gd",
+	"res://app_root.gd",
+	"res://data/field_loader.gd",
+	"res://data/lake_loader.gd",
+	"res://main.gd",
+	"res://scenery/collision_world.gd",
+	"res://workshop/strict_json.gd",
+]
 const AIRCRAFT_DATA_FORMAT := "openrc-aircraft v2"
 const FIELD_DATA_FORMAT := "openrc-field v1"
 const QUALIFIED_ENGINE_VERSION := "4.8.beta2.official.cafc17a19"
@@ -35,7 +61,7 @@ const ROUTE_CENTER_RADIUS_FACTOR := 2.0
 const ROUTE_CENTER_WIDTH_FACTOR := 2.0
 
 const AIRCRAFT_PROFILE_KEYS := [
-	"format", "id", "catalog_id", "aircraft_data", "controller", "solver", "engine_version",
+	"format", "id", "catalog_id", "aircraft_data", "controller", "behavior_manifest", "solver", "engine_version",
 	"field_profile_id", "qualification", "performance",
 ]
 const FIELD_PROFILE_KEYS := [
@@ -47,7 +73,7 @@ const ACTIVITY_ALLOWLIST := ["circuits"]
 const QUALIFIED_SKILL := "experienced"
 const QUALIFIED_START_MODES := ["airborne"]
 const UNQUALIFIED_MODES := ["ground", "takeoff", "runway", "landing"]
-const EVIDENCE_PATH := "docs/research/ai-companions/AFC-02-R5/README.md"
+const EVIDENCE_PATH := "docs/research/ai-companions/AFC-02-R6/README.md"
 const QUALIFIED_SCENARIOS := ["calm", "gentle-practice"]
 const REBIND_HINT := "run python3 tools/companions/rebind.py"
 
@@ -107,6 +133,10 @@ static func load_profile(
 		"controller_path": PILOT_SOURCE_PATH,
 		"controller_sha256": str(aircraft_profile.controller.sha256),
 		"controller_dependencies": aircraft_profile.controller.dependencies.duplicate(true),
+		"behavior_manifest_path": BEHAVIOR_MANIFEST_PATH,
+		"behavior_manifest_format": BEHAVIOR_MANIFEST_FORMAT,
+		"behavior_manifest_sha256": str(validated.behavior_manifest_sha256),
+		"behavior_normalization": BEHAVIOR_NORMALIZATION,
 		"solver_sha256": str(validated.solver_sha256),
 		"solver_qualification_sha256": str(validated.solver_qualification_sha256),
 		"solver_normalization": SOLVER_NORMALIZATION,
@@ -211,9 +241,39 @@ static func validate_profile_data(
 	# Bind the declared dependency to the script Godot actually resolves, not just
 	# a matching unrelated file in the profile's metadata.
 	var pilot_script: Script = load(PILOT_SOURCE_PATH) as Script
-	if pilot_script == null or pilot_script.get_base_script() == null \
+	if pilot_script == null or pilot_script.resource_path != PILOT_SOURCE_PATH or pilot_script.get_base_script() == null \
 			or pilot_script.get_base_script().resource_path != CIRCUIT_SOURCE_PATH:
 		errors.append("controller.dependencies: pilot must inherit the qualified circuit source")
+	var field_loader_script: Script = FieldLoader
+	if field_loader_script.resource_path != "res://data/field_loader.gd":
+		errors.append("behavior manifest: resolved field loader is not the qualified source path")
+	var strict_json_script: Script = StrictJSON
+	if strict_json_script.resource_path != "res://workshop/strict_json.gd":
+		errors.append("behavior manifest: resolved JSON parser is not the qualified source path")
+
+	var behavior_reference: Dictionary = _object(errors, "behavior_manifest", profile.get("behavior_manifest"))
+	_check_keys(errors, "behavior_manifest", behavior_reference, ["path", "format", "normalization", "sha256"],
+		["path", "format", "normalization", "sha256"])
+	if behavior_reference.get("path") != BEHAVIOR_MANIFEST_PATH:
+		errors.append("behavior_manifest.path: unsupported source path")
+	if behavior_reference.get("format") != BEHAVIOR_MANIFEST_FORMAT:
+		errors.append("behavior_manifest.format: unsupported manifest format")
+	if behavior_reference.get("normalization") != BEHAVIOR_NORMALIZATION:
+		errors.append("behavior_manifest.normalization: only strict UTF-8 with LF line endings is supported")
+	var behavior_sha: String = _read_sha256(errors, "behavior_manifest.sha256", behavior_reference.get("sha256"))
+	var behavior_file: Dictionary = _read_behavior_manifest()
+	if not behavior_file.get("ok", false):
+		errors.append_array(behavior_file.get("errors", PackedStringArray()))
+	else:
+		if not behavior_sha.is_empty() and behavior_sha != behavior_file.sha256:
+			errors.append("behavior_manifest.sha256: current behavior manifest does not match this profile")
+		var source_bytes: Dictionary = {}
+		for path: String in BEHAVIOR_SOURCE_PATHS:
+			if FileAccess.file_exists(path):
+				source_bytes[path] = FileAccess.get_file_as_bytes(path)
+		var behavior_check: Dictionary = validate_behavior_manifest(behavior_file.raw, source_bytes)
+		if not behavior_check.get("ok", false):
+			errors.append_array(behavior_check.get("errors", PackedStringArray()))
 
 	var solver: Dictionary = _object(errors, "solver", profile.get("solver"))
 	_check_keys(errors, "solver", solver, ["sha256", "normalization"], ["sha256", "normalization"])
@@ -279,6 +339,7 @@ static func validate_profile_data(
 		"field_profile": field_profile.duplicate(true),
 		"solver_sha256": raw_solver_identity,
 		"solver_qualification_sha256": str(current_solver_identity.sha256),
+		"behavior_manifest_sha256": behavior_sha,
 	}
 
 
@@ -525,6 +586,77 @@ static func _is_sha256(value: String) -> bool:
 		if HEX.find(value.substr(index, 1)) < 0:
 			return false
 	return true
+
+
+static func _read_behavior_manifest() -> Dictionary:
+	if not FileAccess.file_exists(BEHAVIOR_MANIFEST_PATH):
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: qualified manifest file is missing"])}
+	var file := FileAccess.open(BEHAVIOR_MANIFEST_PATH, FileAccess.READ)
+	if file == null:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: cannot read qualified manifest"])}
+	var length: int = file.get_length()
+	if length <= 0 or length > BEHAVIOR_MANIFEST_MAX_BYTES:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: empty or exceeds byte limit"])}
+	var bytes: PackedByteArray = file.get_buffer(length)
+	if bytes.size() != length:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: incomplete read"])}
+	return parse_behavior_manifest(bytes)
+
+
+## Parse and fingerprint the same strict JSON byte buffer.
+static func parse_behavior_manifest(bytes: PackedByteArray) -> Dictionary:
+	# Parse and hash one buffer, including duplicate-key and RFC 8259 checks.
+	if bytes.is_empty() or bytes.size() > BEHAVIOR_MANIFEST_MAX_BYTES:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: empty or exceeds byte limit"])}
+	var digest: Dictionary = _behavior_text_digest(bytes)
+	if not digest.ok:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: invalid UTF-8/LF text"])}
+	var parsed: Dictionary = StrictJSON.parse(bytes, 65536, 8, 1024)
+	if not parsed.ok:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: invalid JSON: " + str(parsed.errors)])}
+	if typeof(parsed.data) != TYPE_DICTIONARY:
+		return {"ok": false, "errors": PackedStringArray(["behavior manifest: expected a top-level object"])}
+	return {"ok": true, "errors": PackedStringArray(), "raw": parsed.data, "sha256": digest.sha256}
+
+
+## Validate the exact declared source set; only line endings are normalized.
+## The byte map is supplied by the caller so tests can exercise invalid content.
+static func validate_behavior_manifest(raw: Variant, source_bytes_by_path: Dictionary) -> Dictionary:
+	var errors := PackedStringArray()
+	var manifest: Dictionary = _object(errors, "behavior manifest", raw)
+	_check_keys(errors, "behavior manifest", manifest, ["format", "normalization", "sources"],
+		["format", "normalization", "sources"])
+	if manifest.get("format") != BEHAVIOR_MANIFEST_FORMAT:
+		errors.append("behavior manifest.format: unsupported format")
+	if manifest.get("normalization") != BEHAVIOR_NORMALIZATION:
+		errors.append("behavior manifest.normalization: unsupported normalization")
+	var sources: Dictionary = _object(errors, "behavior manifest.sources", manifest.get("sources"))
+	_check_keys(errors, "behavior manifest.sources", sources, BEHAVIOR_SOURCE_PATHS, BEHAVIOR_SOURCE_PATHS)
+	_check_keys(errors, "behavior source bytes", source_bytes_by_path, BEHAVIOR_SOURCE_PATHS, BEHAVIOR_SOURCE_PATHS)
+	for path: String in BEHAVIOR_SOURCE_PATHS:
+		var expected: String = _read_sha256(errors, "behavior manifest.sources." + path, sources.get(path))
+		var raw_bytes: Variant = source_bytes_by_path.get(path)
+		if typeof(raw_bytes) != TYPE_PACKED_BYTE_ARRAY:
+			errors.append("behavior source '%s': missing byte content" % path)
+			continue
+		var actual: Dictionary = _behavior_text_digest(raw_bytes)
+		if not actual.ok:
+			errors.append("behavior source '%s': empty or invalid UTF-8/LF content" % path)
+		elif not expected.is_empty() and actual.sha256 != expected:
+			errors.append("behavior source '%s': current source does not match the qualified manifest" % path)
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _behavior_text_digest(bytes: PackedByteArray) -> Dictionary:
+	if bytes.is_empty():
+		return {"ok": false, "sha256": ""}
+	var text: String = bytes.get_string_from_utf8()
+	if text.to_utf8_buffer() != bytes:
+		return {"ok": false, "sha256": ""}
+	text = text.replace("\r\n", "\n")
+	if text.contains("\r"):
+		return {"ok": false, "sha256": ""}
+	return {"ok": true, "sha256": text.sha256_text()}
 
 
 ## Fingerprint normalized solver source without changing FlightLog's raw-byte identity.

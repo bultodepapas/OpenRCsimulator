@@ -1,0 +1,740 @@
+{
+	"ai_planning_hz": 60,
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"artifacts": {
+		"first_recorded_scenario": "none",
+		"recorded_logs": {},
+		"trajectory_csv": {
+			"bytes": 1916611,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-r11/gentle-encounters/trajectory.csv",
+			"sha256": "1b73e3e1afde179661d4df17fca2c7ab2833d4327a4479be78a329784ea51ef6",
+			"write_error": "",
+			"write_verified": true
+		}
+	},
+	"cases": [
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 236,
+			"case": "head-on",
+			"case_id": "seed-20261020-head-on",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": 3.14159265358979,
+			"intruder_heading_rad": -0.416156114332503,
+			"intruder_start_east_m": 109.554253610802,
+			"intruder_start_north_m": 149.021349400167,
+			"min_agl_m_by_role": {
+				"ai": 34.2783715250053,
+				"player": 34.5863772704435
+			},
+			"min_center_separation_m": 60.8326840335971,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 60.8326840335971,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.156198314068057,
+				"roll": 1.0,
+				"throttle": 0.323444963006916,
+				"yaw": 0.194913543350643
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 26.2434437292793,
+				"player": 1.07367156964256
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 109.554253610802,
+				"heading_rad": -0.416156114332503,
+				"north": 149.021349400167
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "850315d70824eb6f",
+						"nonce": 0,
+						"seed": 812089759,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261020
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "998ffe380a8ed8659f5eeb26379302667746198adccebaf9953f423959d52613",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 154,
+			"case": "crossing-left",
+			"case_id": "seed-20261020-crossing-left",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": 1.5707963267949,
+			"intruder_heading_rad": -1.9869524411274,
+			"intruder_start_east_m": 155.490427812713,
+			"intruder_start_north_m": 267.722098764658,
+			"min_agl_m_by_role": {
+				"ai": 34.1580680500785,
+				"player": 34.5813714688521
+			},
+			"min_center_separation_m": 69.2904085138614,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 69.2904085138614,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.156198314068057,
+				"roll": 1.0,
+				"throttle": 0.323536173318988,
+				"yaw": 0.275497423386918
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 26.2299275639462,
+				"player": 1.22947846234571
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 155.490427812713,
+				"heading_rad": -1.9869524411274,
+				"north": 267.722098764658
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "850315d70824eb6f",
+						"nonce": 0,
+						"seed": 812089759,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261020
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "498458a628b7f14c0e1bef8302302157049c800aa698ceea309358aa2baeb850",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 3553,
+			"case": "crossing-right",
+			"case_id": "seed-20261020-crossing-right",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": -1.5707963267949,
+			"intruder_heading_rad": 1.15464021246239,
+			"intruder_start_east_m": -9.14649575368902,
+			"intruder_start_north_m": 194.957523602079,
+			"min_agl_m_by_role": {
+				"ai": 34.8187581505751,
+				"player": 34.9331832781084
+			},
+			"min_center_separation_m": 53.0952446515701,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 53.0952446515701,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.156198314068057,
+				"roll": 0.950117759290441,
+				"throttle": 0.314091409256106,
+				"yaw": 0.177348462660166
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 18.1018565401867,
+				"player": 1.18131881211483
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -9.14649575368902,
+				"heading_rad": 1.15464021246239,
+				"north": 194.957523602079
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "850315d70824eb6f",
+						"nonce": 0,
+						"seed": 812089759,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261020
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "4887c51aec63416fefb47c5697fb36df4d3c4f0d7ec32ef7416459a4dbabcab7",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 248,
+			"case": "head-on",
+			"case_id": "seed-20261021-head-on",
+			"circuit_direction": "decreasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910625166,
+			"initial_target_height_error_m": 0.00219106251655887,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": 3.14159265358979,
+			"intruder_heading_rad": 0.475436540720208,
+			"intruder_start_east_m": -112.322834649862,
+			"intruder_start_north_m": 155.599760182464,
+			"min_agl_m_by_role": {
+				"ai": 34.2958448305566,
+				"player": 34.9227785108065
+			},
+			"min_center_separation_m": 61.997653332823,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 61.997653332823,
+			"nominal_intercept_east_m": -71.1274392031297,
+			"nominal_intercept_north_m": 235.618129285985,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.108236140664486,
+				"roll": 1.0,
+				"throttle": 0.326487436473023,
+				"yaw": 0.206005489264867
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 26.2240531389511,
+				"player": 1.17011140393853
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -112.322834649862,
+				"heading_rad": 0.475436540720208,
+				"north": 155.599760182464
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": 80.0,
+			"seed": 20261021,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "cc1b2b8d577cbf0d",
+						"nonce": 0,
+						"seed": 3661774690,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261021
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "2b8855acc3faff764b4c9a5e39088c8acfd47e37687527ef14f1f5c052b79725",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 2441,
+			"case": "crossing-left",
+			"case_id": "seed-20261021-crossing-left",
+			"circuit_direction": "decreasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910625166,
+			"initial_target_height_error_m": 0.00219106251655887,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": 1.5707963267949,
+			"intruder_heading_rad": -1.09535978607469,
+			"intruder_start_east_m": 8.8909299003912,
+			"intruder_start_north_m": 194.422733839252,
+			"min_agl_m_by_role": {
+				"ai": 34.0283590489283,
+				"player": 34.3701666910634
+			},
+			"min_center_separation_m": 43.3848028127677,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 43.3848028127677,
+			"nominal_intercept_east_m": -71.1274392031297,
+			"nominal_intercept_north_m": 235.618129285985,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.108236140664486,
+				"roll": 1.0,
+				"throttle": 0.317518383903173,
+				"yaw": 0.237641266006607
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 26.3589119195412,
+				"player": 1.19446674559238
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 8.8909299003912,
+				"heading_rad": -1.09535978607469,
+				"north": 194.422733839252
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": 80.0,
+			"seed": 20261021,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "cc1b2b8d577cbf0d",
+						"nonce": 0,
+						"seed": 3661774690,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261021
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "162d49d18f3c17594111903967ea359ea370ba0ee0c5c45824c2fefc5388982f",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 158,
+			"case": "crossing-right",
+			"case_id": "seed-20261021-crossing-right",
+			"circuit_direction": "decreasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0021910625166,
+			"initial_target_height_error_m": 0.00219106251655887,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": -1.5707963267949,
+			"intruder_heading_rad": 2.0462328675151,
+			"intruder_start_east_m": -151.145808306651,
+			"intruder_start_north_m": 276.813524732717,
+			"min_agl_m_by_role": {
+				"ai": 34.1799032595008,
+				"player": 34.9205413631195
+			},
+			"min_center_separation_m": 69.6580959408316,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 69.6580959408316,
+			"nominal_intercept_east_m": -71.1274392031297,
+			"nominal_intercept_north_m": 235.618129285985,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 0.108236140664486,
+				"roll": 1.0,
+				"throttle": 0.324604245637508,
+				"yaw": 0.298961953105656
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 26.2468142701447,
+				"player": 1.12225616053064
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -151.145808306651,
+				"heading_rad": 2.0462328675151,
+				"north": 276.813524732717
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": 80.0,
+			"seed": 20261021,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "cc1b2b8d577cbf0d",
+						"nonce": 0,
+						"seed": 3661774690,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261021
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": true,
+			"state_command_sha256": "dc326f1767698420e32a35902f9927b1d778082b3a6dd638f11a02ca886d8530",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		{
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 3600,
+			"case": "parallel-two-threats",
+			"case_id": "seed-20261020-parallel-two-threats",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {
+				"peer_threshold_m": 15.0,
+				"peer_vertical_below_m": 9.0,
+				"peer_vertical_trigger_m": 6.0,
+				"player_lateral_right_m": 29.0,
+				"player_threshold_m": 30.0,
+				"player_vertical_offset_m": 0.0,
+				"traffic_order": [
+					"player",
+					"companion-peer"
+				]
+			},
+			"flight_logs": {},
+			"geometry_kind": "constructed_initial_conflict_fixture",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": null,
+			"intruder_heading_rad": 1.60043653925729,
+			"intruder_start_east_m": 2.3708698098786,
+			"intruder_start_north_m": 278.96486088492,
+			"min_agl_m_by_role": {
+				"ai": 34.9778207346021,
+				"peer": 25.9640831886838,
+				"player": 34.9641881620607
+			},
+			"min_center_separation_m": 8.34360445157447,
+			"min_separation_to_peer_m": 8.34360445157447,
+			"min_separation_to_player_m": 29.0,
+			"nominal_intercept_east_m": null,
+			"nominal_intercept_north_m": null,
+			"nominal_intercept_time_s": 0.0,
+			"peak_abs_axes": {
+				"pitch": 0.156198314068057,
+				"roll": 0.0127092123042434,
+				"throttle": 0.316827016269002,
+				"yaw": 0.0315893196303449
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 0.314832569378739,
+				"peer": 1.04076422923384,
+				"player": 1.04076422923384
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 1.51142950379761,
+				"heading_rad": 1.60043653925729,
+				"north": 249.977598814136
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": null,
+			"seed": 20261020,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "850315d70824eb6f",
+						"nonce": 0,
+						"seed": 812089759,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261020
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": false,
+			"state_command_sha256": "a6aa270618b3556fb33d857b10c313cda82eefd937ac82765e1388bfc2741c1a",
+			"ticks": 14400,
+			"valid_run": true
+		}
+	],
+	"classification": "survey_only",
+	"collision_identity": "8c49e45696cbd0c126060041800e5e42b8a671c085aa18175245616c0dabe53b",
+	"deterministic_repeat": {
+		"case": "parallel-two-threats",
+		"exact_state_command_match": true,
+		"first_sha256": "a6aa270618b3556fb33d857b10c313cda82eefd937ac82765e1388bfc2741c1a",
+		"repeat_complete": true,
+		"repeat_run": {
+			"ai_crash": {},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 3600,
+			"case": "parallel-two-threats",
+			"case_id": "seed-20261020-parallel-two-threats",
+			"circuit_direction": "increasing",
+			"complete": true,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "",
+			"finite_metrics": true,
+			"first_avoidance_tick": 0,
+			"fixture_parameters": {
+				"peer_threshold_m": 15.0,
+				"peer_vertical_below_m": 9.0,
+				"peer_vertical_trigger_m": 6.0,
+				"player_lateral_right_m": 29.0,
+				"player_threshold_m": 30.0,
+				"player_vertical_offset_m": 0.0,
+				"traffic_order": [
+					"player",
+					"companion-peer"
+				]
+			},
+			"flight_logs": {},
+			"geometry_kind": "constructed_initial_conflict_fixture",
+			"initial_commanded_target_height_m": 35.0021910623372,
+			"initial_target_height_error_m": 0.00219106233716104,
+			"initial_target_height_matches_nominal": false,
+			"intruder_heading_offset_rad": null,
+			"intruder_heading_rad": 1.60043653925729,
+			"intruder_start_east_m": 2.3708698098786,
+			"intruder_start_north_m": 278.96486088492,
+			"min_agl_m_by_role": {
+				"ai": 34.9778207346021,
+				"peer": 25.9640831886838,
+				"player": 34.9641881620607
+			},
+			"min_center_separation_m": 8.34360445157447,
+			"min_separation_to_peer_m": 8.34360445157447,
+			"min_separation_to_player_m": 29.0,
+			"nominal_intercept_east_m": null,
+			"nominal_intercept_north_m": null,
+			"nominal_intercept_time_s": 0.0,
+			"peak_abs_axes": {
+				"pitch": 0.156198314068057,
+				"roll": 0.0127092123042434,
+				"throttle": 0.316827016269002,
+				"yaw": 0.0315893196303449
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 0.314832569378739,
+				"peer": 1.04076422923384,
+				"player": 1.04076422923384
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 3600,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 1.51142950379761,
+				"heading_rad": 1.60043653925729,
+				"north": 249.977598814136
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 14400,
+			"route_radius_m": null,
+			"seed": 20261020,
+			"seed_allocation": {
+				"allocations": [
+					{
+						"actor_id": "companion-0",
+						"initial_rng_state_hex": "850315d70824eb6f",
+						"nonce": 0,
+						"seed": 812089759,
+						"slot": 0
+					}
+				],
+				"count": 1,
+				"domain": "openrc/companions/turbulence/v1",
+				"format": "openrc-companion-seeds v1",
+				"player_seed": 20261011,
+				"traffic_seed": 20261020
+			},
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": false,
+			"state_command_sha256": "a6aa270618b3556fb33d857b10c313cda82eefd937ac82765e1388bfc2741c1a",
+			"ticks": 14400,
+			"valid_run": true
+		},
+		"repeat_sha256": "a6aa270618b3556fb33d857b10c313cda82eefd937ac82765e1388bfc2741c1a"
+	},
+	"engine": "4.8-beta2 (official)",
+	"failed_validity_cases": [],
+	"field_id": "default",
+	"format": "openrc-companion-encounter-survey v1",
+	"geometry_note": "The six intruders are placed to meet the nominal circular route at 6 s from initial_pose and the field-derived circuit radius. Actual trimmed trajectories may miss that intercept.",
+	"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+	"physics_hz": 240,
+	"pilot_resource": "res://ai/companions/pilot.gd",
+	"pilot_source_sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+	"probe_resource": "res://../research/ai-companions/avoidance/encounter_probe_gentle.gd",
+	"probe_source_sha256": "de1a1f98c209e3be036374ba640429b9b32241a53dd62ae9e9578f207b05b02f",
+	"process_success": true,
+	"purpose": "Survey of actual fixed-step FlightSession encounters; not qualification or physical validation.",
+	"qualification_claimed": false,
+	"recording_mode": "none",
+	"requested_ticks": 14400,
+	"scope": "Six nominal route-intercept geometries plus one constructed two-threat initial-conflict fixture. The fixture is not an admitted production spawn. Intruder motion comes from real controllerless FlightSessions at solved trim.",
+	"seconds": 60,
+	"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m; peer distances are reported separately",
+	"separation_gate_m": 30.0,
+	"separation_gate_passed_for_all_cases": false,
+	"title": "Companion Encounter Survey — geometry gate miss; not a qualification",
+	"valid_complete_runs": true,
+	"weather": "gentle-practice"
+}

@@ -43,9 +43,32 @@ func validate_record(record: Variant, player_seed: int, traffic_seed: int, count
 	var expected: Dictionary = resolve(player_seed, traffic_seed, count)
 	if not expected.ok:
 		return expected
-	if not record is Dictionary or record != expected.record:
+	if not _same_record(record, expected.record):
 		return _failure("Seed allocation does not match the versioned fixed roster.")
 	return expected
+
+
+## JSON numbers arrive as float64. Every numeric field here is an exact uint32
+## or smaller; accept integral JSON values, while retaining exact keys and types.
+static func _same_record(actual: Variant, expected: Variant) -> bool:
+	if expected is Dictionary:
+		if not actual is Dictionary or actual.size() != expected.size():
+			return false
+		for key: String in expected:
+			if not actual.has(key) or not _same_record(actual[key], expected[key]):
+				return false
+		return true
+	if expected is Array:
+		if not actual is Array or actual.size() != expected.size():
+			return false
+		for index in expected.size():
+			if not _same_record(actual[index], expected[index]):
+				return false
+		return true
+	if typeof(expected) == TYPE_INT:
+		return typeof(actual) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(actual)) \
+			and actual >= 0 and actual <= UINT32_MAX and actual == floor(float(actual)) and int(actual) == expected
+	return typeof(actual) == typeof(expected) and actual == expected
 
 
 func _candidate_seed(player_seed: int, traffic_seed: int, slot: int, nonce: int) -> int:

@@ -21,6 +21,7 @@ var observation_batches := 0
 var _profile_identity: Dictionary = {}
 var _airspace_report: Dictionary = {}
 var _seed_allocation: Dictionary = {}
+var _seed_weather: Dictionary = {}
 var _record: RefCounted
 var _player: Node
 var _snapshot: Array = []
@@ -82,6 +83,7 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 	var candidates: Array[Node] = []
 	var airspace_report: Dictionary = {}
 	var seed_allocation: Dictionary = {}
+	var seed_weather: Dictionary = {}
 	if checked.config.enabled:
 		var weather: Dictionary = player.weather_configuration()
 		var resolved: Dictionary = SeedAllocator.new().resolve(int(weather.get("turbulence_seed", 0)),
@@ -89,15 +91,12 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 		if not resolved.ok:
 			return resolved
 		seed_allocation = resolved.record
-		seed_allocation.weather_has_seed = weather.has("turbulence_seed")
-		seed_allocation.turbulence_active = WeatherConfig.has_turbulence(weather)
+		seed_weather = {weather_has_seed = weather.has("turbulence_seed"),
+			turbulence_active = WeatherConfig.has_turbulence(weather)}
 		# The canonical allocation is validated by each actor before any replacement.
-		var canonical: Dictionary = resolved.record.duplicate(true)
-		canonical.erase("weather_has_seed")
-		canonical.erase("turbulence_active")
 		for slot: int in int(checked.config.count):
 			var agent: Node = Agent.new()
-			var prepared: Dictionary = agent.configure(player, field, slot, int(checked.config.count), int(checked.config.seed), visuals, audio_enabled, checked.qualification, canonical)
+			var prepared: Dictionary = agent.configure(player, field, slot, int(checked.config.count), int(checked.config.seed), visuals, audio_enabled, checked.qualification, seed_allocation)
 			if not prepared.ok:
 				agent.free()
 				for candidate in candidates: candidate.free()
@@ -128,6 +127,7 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 	_profile_identity = checked.qualification.identity.duplicate(true) if checked.config.enabled else {}
 	_airspace_report = airspace_report.duplicate(true)
 	_seed_allocation = seed_allocation.duplicate(true)
+	_seed_weather = seed_weather.duplicate(true)
 	error = ""
 	_removed = false
 	accepted_ticks = 0
@@ -248,7 +248,7 @@ func _after_step(tick: int, _time: float, _state: PackedFloat64Array,
 		_last_prepare_usec = prepare_usec
 		_last_advance_usec = advance_usec
 		_last_world_usec = world_usec
-		_last_overhead_usec = after_usec - prepare_usec - advance_usec - world_usec
+		_last_overhead_usec = after_usec - prepare_usec - advance_usec - world_usec if _detailed_timing else 0
 	_clear_pending_timing()
 
 
@@ -269,11 +269,13 @@ func set_detailed_timing(enabled: bool) -> void:
 
 
 func timing_status() -> Dictionary:
-	return {format = "openrc-companion-timing v1", detailed = _detailed_timing,
-		paired_tick_usec = last_tick_usec, before_usec = _last_before_usec, after_usec = _last_after_usec,
-		prepare_usec = _last_prepare_usec, advance_usec = _last_advance_usec,
-		world_publication_usec = _last_world_usec, after_overhead_usec = _last_overhead_usec,
-		presentation_usec = _last_presentation_usec}
+	var result := {format = "openrc-companion-timing v1", detailed = _detailed_timing,
+		paired_tick_usec = last_tick_usec, before_usec = _last_before_usec, after_usec = _last_after_usec}
+	if _detailed_timing:
+		result.merge({prepare_usec = _last_prepare_usec, advance_usec = _last_advance_usec,
+			world_publication_usec = _last_world_usec, after_overhead_usec = _last_overhead_usec,
+			presentation_usec = _last_presentation_usec})
+	return result
 
 
 func _clock_usec() -> int:
@@ -286,7 +288,10 @@ func _clear_pending_timing() -> void:
 
 
 func _timing_faulted(_reason: String) -> void:
-	_clear_pending_timing()
+	# Faults can also originate in postcommit observers before our stepped slot.
+	# An accepted player tick still owns the matching companion timing pair.
+	if not is_instance_valid(_player) or _player.sim.tick <= _pending_timing_tick:
+		_clear_pending_timing()
 
 
 func _reset_timing() -> void:
@@ -320,6 +325,7 @@ func status() -> Dictionary:
 		timing = timing_status(),
 		config = config.duplicate(true), profile_identity = _profile_identity.duplicate(true),
 		seed_allocation = _seed_allocation.duplicate(true),
+		seed_weather = _seed_weather.duplicate(true),
 		airspace_report = _airspace_report.duplicate(true), recording = recording_status()}
 
 
@@ -332,7 +338,7 @@ func start_recording(directory: String, max_ticks: int = FleetRecord.MAX_TICKS) 
 	var candidate := FleetRecord.new()
 	var result: Dictionary = candidate.start(_player, agents, {config = config.duplicate(true),
 		profile_identity = _profile_identity.duplicate(true), airspace_report = _airspace_report.duplicate(true),
-		seed_allocation = _seed_allocation.duplicate(true)},
+		seed_allocation = _seed_allocation.duplicate(true), seed_weather = _seed_weather.duplicate(true)},
 		directory, max_ticks)
 	_record = candidate
 	return result

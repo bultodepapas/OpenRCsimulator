@@ -1,0 +1,17 @@
+{
+  "source_csv": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11\\matrix\\scenario_metrics.csv",
+  "source_csv_sha256": "d31cf298f997a320fd51e713d30ad8e4dab64e254bf3d18540325d2d911a57c0",
+  "matrix_rows": 6,
+  "ticks_per_row": 28800,
+  "seed": 20261020,
+  "observations": {
+    "min_agl": 34.321804,
+    "max_agl": 75.01731,
+    "min_tas": 14.58339,
+    "max_tas": 15.606786,
+    "max_radial_error": 3.904957,
+    "min_player_separation": 122.324777,
+    "min_pair_separation": 118.771338
+  },
+  "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611"
+}

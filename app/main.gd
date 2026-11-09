@@ -1195,6 +1195,7 @@ func _prepare_flight() -> void:
 			_accident_report.show_archived(archived)
 		elif not _accident_incident.archive_load_error.is_empty():
 			_note = tr("The saved accident report could not be opened. A new flight can still begin.")
+			_accident_report.show_archive_unavailable()
 		session.crash_auto_restart = false
 	if companion_config.enabled and not await _startup_stage("Preparing companions"):
 		return

@@ -6142,6 +6142,18 @@ msgstr "僚機%d"
 msgid "Traffic: %d airborne / %d active / %d requested"
 msgstr "飛行中：%d機 / 有効：%d機 / 要求：%d機"
 
+msgid "Traffic: %d flying"
+msgstr "飛行中：%d機"
+
+msgid " · %d in session"
+msgstr " · セッション中%d機"
+
+msgid " · %d after restart"
+msgstr " · 再開後%d機"
+
+msgid "Flight settings change after restart."
+msgstr "飛行設定は再開後に変更されます。"
+
 msgid ""
 "Flight settings apply after Restart flight. Sound and labels apply "
 "immediately. Remove now clears the current companions."

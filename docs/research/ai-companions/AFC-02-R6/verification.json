@@ -1,0 +1,323 @@
+{
+  "format": "openrc-afc-02-r6-verification v1",
+  "date": "2026-11-09",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "platform": "Windows x86_64",
+  "head_at_collection": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "checks": [
+    {
+      "path": "checks/afc-r11-baseline-record.json",
+      "sha256": "c33af500c9b5ea45480d9547b91d34285394dcc3730231e8fd570ae8ac6eb0a7",
+      "label": "afc-r11-baseline-record",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-seeds-timing2.json",
+      "sha256": "abb035498229180573c7a78febfa8685d59a9d1249d5bd8b069390167d366d57",
+      "label": "afc-r11-seeds-timing2",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-seeds-timing-final.json",
+      "sha256": "22df8f7469809a7f6713f65c79120f2b13686cdbc520caab2f0685e5275b650e",
+      "label": "afc-r11-seeds-timing-final",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-manager.json",
+      "sha256": "f736433c9e5ec1523d14632f6783a0f2410b0cf4ac890cb449d63cdff9e72fbd",
+      "label": "afc-r11-manager",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-record.json",
+      "sha256": "5661d9190c7a5d7395096da58ed39936db534754e8a67ab80d17475ee059ab59",
+      "label": "afc-r11-record",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-observation.json",
+      "sha256": "050cae4578710dbfe55aa45a77f6d3ca2c651c29aaca9ef4c36c63cf979b1568",
+      "label": "afc-r11-observation",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-lifecycle.json",
+      "sha256": "5b0c868af4eeb9522cbb7c34af30469c7d6a8c00bcb57559782436e6eb7c4b6d",
+      "label": "afc-r11-lifecycle",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-matrix.json",
+      "sha256": "03ed992e9965bc955eb544df3ed084748619e17b2d8fda3cf1167a7553527510",
+      "label": "afc-r11-matrix",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/afc-r11-gentle-encounters.json",
+      "sha256": "d8e1ccf8c275e186687b27cbd19d68553a753fbe5a049e77297a57d26912d8b1",
+      "label": "afc-r11-gentle-encounters",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-profiles.json",
+      "sha256": "2f4ee4ab2d1a2252558895dfaec8a11937332304d21b0f74eb8000f54e26a469",
+      "label": "profiles",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-behavior-manifest.json",
+      "sha256": "1b78b4724842bf0a835bf828f38e381f32701682c00d1340b19fd0586db00d41",
+      "label": "behavior-manifest",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-v2-manager.json",
+      "sha256": "12b88e0cd32229dd74614b298e19410dc5179ace40c91ea77544f27cb7b2b3f9",
+      "label": "v2-manager",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-v2-record.json",
+      "sha256": "f9d8d6931c7c46d530f9f8e86fd402903157a179066505b831d94938e1923da8",
+      "label": "v2-record",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-v2-seeds-timing.json",
+      "sha256": "a627e550510df04cc30aa535b475eb69360d7360cb358a16fe644ff9562ed100",
+      "label": "v2-seeds-timing",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-dialog-1080.json",
+      "sha256": "adb638ae200c03d1e75c5f2bf41d35b8e8be3cb089502fc601f60743bcf22145",
+      "label": "dialog-1080",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-draft-strict.json",
+      "sha256": "1b1064a35631b2c5110736792b904e9dbe7705c99f22edb9dd7b8f5336aabbe0",
+      "label": "draft-strict",
+      "ok": true,
+      "complete": true
+    },
+    {
+      "path": "checks/final-shell.json",
+      "sha256": "dd23379766a055607245c2d938c15b13b94c82b341b28f08c2150b248857e633",
+      "label": "shell",
+      "ok": true,
+      "complete": true
+    }
+  ],
+  "exact_replays": [
+    {
+      "path": "replays/old-companion0.json",
+      "sha256": "d903d03458d2fef2f457529948fcd76d3978c43ec195b932b1cf764172230456",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": false
+    },
+    {
+      "path": "replays/new-companion0.json",
+      "sha256": "8d9ebbe287050e0180fdadb26d609b3b78249522a997afff3d61211981248754",
+      "rows": 241,
+      "complete": true,
+      "solver_changed": false
+    },
+    {
+      "path": "replays/new-companion1.json",
+      "sha256": "ce016f5a1b12ed5d3ad89cd5b4592efcf420027167011999c05025342edd6d6f",
+      "rows": 241,
+      "complete": true,
+      "solver_changed": false
+    },
+    {
+      "path": "replays/new-companion2.json",
+      "sha256": "2fbed1b0e3b59f7230a994233c6b38428593770498c80659b1f9facde3cdf232",
+      "rows": 241,
+      "complete": true,
+      "solver_changed": false
+    },
+    {
+      "path": "replays/new-player.json",
+      "sha256": "1006de639e24e10b6150a3babbbf052a38351e312b559a6bbc30a8446f629e09",
+      "rows": 241,
+      "complete": true,
+      "solver_changed": false
+    },
+    {
+      "path": "replays/new-calm-companion0.json",
+      "sha256": "560a5db327955c57f9ed442b1e20841acc668c581b5ef281433ffe9e7723c743",
+      "rows": 261,
+      "complete": true,
+      "solver_changed": false
+    }
+  ],
+  "tapes": [
+    {
+      "path": "tapes/baseline-calm/companion-0.orfl.gz",
+      "stored_sha256": "12d6f131c74e32a52858493c5304390853b330dc5ad2c40fdb6d834ae190ad32",
+      "source_sha256": "8045e36d1634f1865acb142aca014eedf26452b31045620f1dbcd4b953bc631a",
+      "source_bytes": 4998408,
+      "stored_bytes": 459624
+    },
+    {
+      "path": "tapes/candidate-calm/companion-0.orfl.gz",
+      "stored_sha256": "97286ce4f854933f9efde8210ecdb40048097a3197a46185e2a4f1690a8b9e06",
+      "source_sha256": "5ebe43751c689104e2f5360fe1569de6bca987f2b8957a986fb8f8997e7ed67f",
+      "source_bytes": 4998408,
+      "stored_bytes": 459621
+    },
+    {
+      "path": "tapes/candidate-gentle/player.orfl.gz",
+      "stored_sha256": "579aa0cba6b1ff1ea9ec2828e5d741e78fdf6f4b67f32ec2af92d9d95d686e9b",
+      "source_sha256": "64128b472efb8443e93e40f91417d7abe8312f576426bad962f92589a1e8dd27",
+      "source_bytes": 235640,
+      "stored_bytes": 69561
+    },
+    {
+      "path": "tapes/candidate-gentle/companion-0.orfl.gz",
+      "stored_sha256": "e36f04abc9f403c383d018f649b214f4ca9f9b975ab728ed1a8ba16ce7fb853e",
+      "source_sha256": "3f75a422b9bca78da18f309087192ea22e25d0a3e998d4d9a2a14a96615ae5dc",
+      "source_bytes": 235664,
+      "stored_bytes": 75946
+    },
+    {
+      "path": "tapes/candidate-gentle/companion-1.orfl.gz",
+      "stored_sha256": "8d968aaeebca231507063075c1d07b9313691419a958e5351acd55ae11864930",
+      "source_sha256": "f0edab6cba5beb692cf50462aca6ca745ba8cd738ee557c87d6ba8694d3cfe20",
+      "source_bytes": 235688,
+      "stored_bytes": 76352
+    },
+    {
+      "path": "tapes/candidate-gentle/companion-2.orfl.gz",
+      "stored_sha256": "290100f17f27d61d84f39f54872fe2d13d018b1afdfc9ba998545b4b8ec5f5a5",
+      "source_sha256": "6407e000007c65fad52b74f56df30448780e0eb3c8e1b7b1dc905afb3468e11e",
+      "source_bytes": 235716,
+      "stored_bytes": 76398
+    }
+  ],
+  "source_mutations": [
+    {
+      "path": "mutations/scratch-audio-mutation-r5-ex7ub38i.json",
+      "sha256": "e71ed2de8b049ca49fd24bd707f8e061cb152a50c9d57b8b4ec7fb2af8a2f2ab"
+    },
+    {
+      "path": "mutations/scratch-audio-mutation-r5-j87_h95x.json",
+      "sha256": "1b4a236cbaf39874c9c90b013d3ed998fd1e4fb14a6e5cfe875d62924a2a5fe3"
+    },
+    {
+      "path": "mutations/scratch-audio-mutation-r5-l719qjuw.json",
+      "sha256": "7b2c4cba777046f80f58a5f62fb14dde484681febc4463a1383354159d61d666"
+    },
+    {
+      "path": "mutations/scratch-corrupt-manifest-r5-42z7yv18.json",
+      "sha256": "023f6674dbe609138cfc4ba95a8cfaa08944ae0eb4aa0d88896350e91ed3b72d"
+    },
+    {
+      "path": "mutations/scratch-corrupt-manifest-r5-59mpyn93.json",
+      "sha256": "6d48419c578e9bb609019924c05d61ce8896ad507e8b01dd71790740f44830af"
+    },
+    {
+      "path": "mutations/scratch-corrupt-manifest-r5-zpyna9nn.json",
+      "sha256": "85fb10992e297fd25a4e80aa84b3787e1f668edb43cee11aa9c1dcb257568d10"
+    },
+    {
+      "path": "mutations/scratch-main-mutation-r5-9pk9m5jh.json",
+      "sha256": "0b94e1c4df4c0dbf6eb0964f2bcf00a3ef2705a17482d6c8d3e5f9b6ac1594f6"
+    },
+    {
+      "path": "mutations/scratch-main-mutation-r5-j59hdw1c.json",
+      "sha256": "b769bdf36c6b729ef3378c52e51711fa519bbb51ca6c559d4aa98713dc2df498"
+    },
+    {
+      "path": "mutations/scratch-main-mutation-r5-lmqlvy0t.json",
+      "sha256": "293bb8f75f57851d831127ec3bdcea403488f3445d4ac0481dd7a7d3fb6d8d12"
+    },
+    {
+      "path": "mutations/scratch-matched-duplicate-r5-0pes1776.json",
+      "sha256": "6fee020e829bdb6129496e73ca2bddf2843a5b089964196626df4f8574e6aa7e"
+    },
+    {
+      "path": "mutations/scratch-matched-duplicate-r5-273_esfv.json",
+      "sha256": "f8f7244aa2c235af79e9eb481789fde72d9d63e99b4b335a12baf88e9d7499d0"
+    },
+    {
+      "path": "mutations/scratch-matched-duplicate-r5-4jjrl4mi.json",
+      "sha256": "707174a434ffea3ab58f379c511f7641b5430cfe53b995cecda112c2f475c6e5"
+    },
+    {
+      "path": "mutations/scratch-missing-manifest-r5-bo192cb2.json",
+      "sha256": "2f49f44be299a04a8adc27c6d5ba9fb3df452ed88dba0477a7866d8c08db563c"
+    },
+    {
+      "path": "mutations/scratch-missing-manifest-r5-ofjnahtz.json",
+      "sha256": "ff36e72d2614634fead9f0118382e7aa034382490281cb989529bda7fd0b304a"
+    },
+    {
+      "path": "mutations/scratch-missing-manifest-r5-xflefdcv.json",
+      "sha256": "fa3e85ddf15ce2ee7b4aad8551cf5c0cffbe71b3b156aaea4bb9cd6e7559146f"
+    },
+    {
+      "path": "mutations/scratch-missing-source-r5-3gj0pxs3.json",
+      "sha256": "fee35d1951df6db7911e7865be6a8ccd4d81d2c89c66bbd1a2ed96bee6dbcb46"
+    },
+    {
+      "path": "mutations/scratch-missing-source-r5-5e3zwd37.json",
+      "sha256": "1f60b36a9a81a64bf097fb75297539dad2ead2760452b3feffff73b64b01c787"
+    },
+    {
+      "path": "mutations/scratch-missing-source-r5-pvq9_de2.json",
+      "sha256": "f0766e7f8e7eb5570e86c5b641fb8bd2b08ffbb7976217e5fd1c5275abc39312"
+    },
+    {
+      "path": "mutations/scratch-oversized-manifest-r5-bx_qklcr.json",
+      "sha256": "83d8ee0074e63f284e98d6bdd9ab130bec51d46c0dbacb5f475ee892afabb17d"
+    },
+    {
+      "path": "mutations/scratch-oversized-manifest-r5-npp9dv24.json",
+      "sha256": "21e923ffb761dbfa81ab2cbe2fb83c4d77ba3d5b1c940ca9dac891e76be6abac"
+    },
+    {
+      "path": "mutations/scratch-pilot-lineendings-r5-35y4zwer.json",
+      "sha256": "425a3001e60098c45e2c605ceee4d6c8dab381c145111f35918d7cb677c930bb"
+    },
+    {
+      "path": "mutations/scratch-pilot-lineendings-r5-d6bzo3h5.json",
+      "sha256": "ab5e9aeb8b9d4cf4a8f844b5d6c4bc30bcc3783c1abe4c1fd41a4404a17c9715"
+    },
+    {
+      "path": "mutations/scratch-pilot-lineendings-r5-zple_ft8.json",
+      "sha256": "bef2d438bdeb65e31259f1bb16608cb00e89bbbf317db24a46e2cd1b7d9d357a"
+    }
+  ],
+  "working_tree": true,
+  "source_manifest": "source-manifest.json",
+  "source_manifest_sha256": "75e775b66841c9917cbc95959d1e9aa5e5c04519fd25dcafdd3d1ef6124fc0d9",
+  "prior_R2_paths": 195,
+  "changed_prior_R2_paths": [
+    "app/ai/companions/agent.gd",
+    "app/ai/companions/fleet_record.gd",
+    "app/ai/companions/manager.gd",
+    "app/ai/companions/profile_loader.gd",
+    "app/main.gd"
+  ],
+  "physics_sim_aircraft_field_inputs_match_R2": true,
+  "note": "The behavior manifest is a reviewed selected set. Main includes concurrent economy presentation work. No rendered hardware performance or physical-validation claim."
+}

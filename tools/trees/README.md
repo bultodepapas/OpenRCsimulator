@@ -155,6 +155,17 @@ The probe defaults still reproduce the legacy fixture. Coverage analysis require
 
 ## Native flight and forest review
 
+The same `quality_capture.gd --mode=field` probe supports the foreground views
+`grass_pilot`, `grass_low`, `grass_margin`, `grass_reverse`, `grass_overhead`
+and `grass_transition`, and `--motion=grass-margin-pan`. Use explicit
+`--width=1920 --height=1080` for primary review. Capture-only
+`--near_grass_source` / `--meadow_source` overrides compile a private copy of
+the production field builder with those source snapshots, preserving its
+normal exclusions and construction order. Effective source hashes, inventories
+and non-grass meadow transform identities are recorded. The
+[foreground guide](../grass/README.md#maintained-foreground-review-l11a-r4)
+owns the command and qualification limits.
+
 The [completion evidence](../../docs/research/visual-quality-implementation/L6c/tree-completion/README.md) separates active-flight timing, offline camera tracks, aircraft contrast measurements and exact numerical replay. Use the direct native Godot executable on Windows; its console wrapper may return before the child finishes.
 
 `flight_quality.py --baseline <frozen-app> --candidate <frozen-app> --pairs 5 --warmup 10 --sample 60 --out <new-folder>` runs alternating AB/BA pairs through the normal flight scene and input callback. Both apps must share simulation and measurement code. The tree comparison explicitly uses imported-tree wind off/on and unchanged default grass. Environment selectors are recorded; changing field layout is a separately identified world. Run timing alone and retain raw clocks, input reads, viewport CPU/GPU metrics, memory counters and actual renderer settings. Monitor values are estimates reported by Godot, not a vendor memory-residency trace.

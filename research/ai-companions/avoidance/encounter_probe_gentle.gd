@@ -9,6 +9,7 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const CollisionSetup := preload("res://scenery/collision_setup.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const WeatherConfig := preload("res://physics/wind_config.gd")
+const SeedAllocator := preload("res://ai/companions/seed_allocator.gd")
 const RigidBody := preload("res://physics/rigid_body.gd")
 const Math3D := preload("res://physics/math3d.gd")
 
@@ -264,7 +265,12 @@ func _run_encounter(seed_value: int, geometry: String, record_logs: bool, write_
 	var pilot: Variant = _pilot_script.new()
 	if pilot == null or not pilot.has_method("configure") or not pilot.has_method("initial_pose") or not pilot.has_method("command"):
 		return _invalid_setup_result(case_name, seed_value, geometry, "Selected pilot does not implement configure, initial_pose and command.")
-	var ai_build: Dictionary = _new_session()
+	var allocation: Dictionary = SeedAllocator.new().resolve(int(_weather.get("turbulence_seed", 0)), seed_value, 1)
+	if not allocation.ok:
+		return _invalid_setup_result(case_name, seed_value, geometry, "Seed allocation refused.")
+	var actor_weather: Dictionary = _weather.duplicate(true)
+	actor_weather.turbulence_seed = int(allocation.record.allocations[0].seed)
+	var ai_build: Dictionary = _new_session(actor_weather)
 	if not ai_build.get("ok", false):
 		return _invalid_setup_result(case_name, seed_value, geometry, str(ai_build.get("error", "AI session setup failed.")))
 	var ai: Node = ai_build.session
@@ -322,19 +328,20 @@ func _run_encounter(seed_value: int, geometry: String, record_logs: bool, write_
 
 	var result := _run_sessions(case_name, seed_value, geometry, route, pose, pilot, roles,
 		record_logs, write_trajectory, log_prefix)
+	result.seed_allocation = allocation.record
 	_free_roles(roles)
 	if not player_spawn_spec.is_empty():
 		result["player_initial_spawn_spec"] = player_spawn_spec
 	return result
 
 
-func _new_session() -> Dictionary:
+func _new_session(weather_override: Dictionary = {}) -> Dictionary:
 	var session: Node = FlightSession.new()
 	session.start_choice = FlightSession.START_AIRBORNE
 	session.input_enabled = false
 	session.crash_auto_restart = false
 	session.rate_profile = "full"
-	if not session.setup_weather(_weather):
+	if not session.setup_weather(_weather if weather_override.is_empty() else weather_override):
 		var reason := "Gentle-practice weather refused: %s" % str(session.weather_error)
 		session.free()
 		return {"ok": false, "error": reason}

@@ -1,0 +1,214 @@
+{
+	"admission": {
+		"airspace_report": {
+			"aircraft_radius_m": 0.905097348146863,
+			"center_east_m": 0.0,
+			"center_north_m": 199.0,
+			"collision_enabled": false,
+			"collision_world_identity": "",
+			"corridors": [
+				{
+					"center_height_m": 35.0,
+					"max_height_m": 39.9050973481469,
+					"min_height_m": 30.0949026518531,
+					"slot": 0
+				},
+				{
+					"center_height_m": 55.0,
+					"max_height_m": 59.9050973481469,
+					"min_height_m": 50.0949026518531,
+					"slot": 1
+				},
+				{
+					"center_height_m": 75.0,
+					"max_height_m": 79.9050973481469,
+					"min_height_m": 70.0949026518531,
+					"slot": 2
+				}
+			],
+			"count": 3,
+			"exclusion_margin_m": 30.0,
+			"geometry_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"ground_upper_m": 0.007,
+			"identity": "42ac169a1c74273c50bcfa9e66b9d7ac376ce419304bdd7c285913ae04370dd8",
+			"inner_radius_m": 67.0949026518531,
+			"lake_identity": "",
+			"obstacle_clearance_m": 2.0,
+			"outer_radius_m": 92.9050973481469,
+			"policy": "openrc-ai-static-circuit v1",
+			"protected_proxy_count": 0,
+			"proxy_count": 0,
+			"radial_allowance_m": 10.0,
+			"radius_m": 80.0,
+			"scope": "nominal_circuit_corridor",
+			"surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+			"vertical_allowance_m": 2.0
+		},
+		"config": {
+			"activity": "circuits",
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"count": 3,
+			"enabled": true,
+			"engine_volume": 1.0,
+			"incidents_enabled": false,
+			"label_distance_m": 250.0,
+			"pilot": "experienced",
+			"seed": 0,
+			"show_labels": false
+		},
+		"profile_identity": {
+			"aircraft_data_format": "openrc-aircraft v2",
+			"aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+			"aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66",
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+			"aircraft_profile_sha256": "2ea320a190ae56c818324440ac7cffa3e92104247ef2b45dbaeabf19bcaa4061",
+			"controller_dependencies": {
+				"res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
+			},
+			"controller_path": "res://ai/companions/pilot.gd",
+			"controller_sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+			"engine_version": "4.8.beta2.official.cafc17a19",
+			"field_data_format": "openrc-field v1",
+			"field_data_path": "res://data/fields/default.json",
+			"field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+			"field_profile_id": "club-default",
+			"field_profile_path": "res://data/ai/companions/fields/club-default.json",
+			"field_profile_sha256": "004dad60bd8e15d72cab5e3702dba83f9969790627f9f693f2d11892d1c2cb78",
+			"format": "openrc-ai-profile-identity v1",
+			"solver_normalization": "utf8-lf",
+			"solver_qualification_sha256": "b0a074e43c9a82d90126a49d86964b638bbd4a4dfeb5aca58bd36677fef02464",
+			"solver_sha256": "1b09db76142b16c00bad181d244e809e17669527256ea44b4bbd01c14f4e7475"
+		},
+		"seed_allocation": {
+			"allocations": [
+				{
+					"actor_id": "companion-0",
+					"initial_rng_state_hex": "c2bd91222f87582f",
+					"nonce": 0,
+					"seed": 814420720,
+					"slot": 0
+				},
+				{
+					"actor_id": "companion-1",
+					"initial_rng_state_hex": "d13cba1bb51c37ed",
+					"nonce": 0,
+					"seed": 1958825883,
+					"slot": 1
+				},
+				{
+					"actor_id": "companion-2",
+					"initial_rng_state_hex": "4bdbcbc61efc81a4",
+					"nonce": 0,
+					"seed": 455836733,
+					"slot": 2
+				}
+			],
+			"count": 3,
+			"domain": "openrc/companions/turbulence/v1",
+			"format": "openrc-companion-seeds v1",
+			"player_seed": 20261011,
+			"traffic_seed": 0
+		},
+		"seed_weather": {
+			"turbulence_active": true,
+			"weather_has_seed": true
+		}
+	},
+	"build": {
+		"commit": "",
+		"commit_date": "",
+		"describe": "",
+		"dirty": false,
+		"godot": "4.8-beta2 (official)",
+		"label": "",
+		"parsed": {
+			"after": 0,
+			"base": "0.2.0",
+			"dirty": false,
+			"prerelease": "",
+			"semver": "0.2.0",
+			"sha": "",
+			"tag": ""
+		},
+		"source": "development",
+		"version": "0.2.0"
+	},
+	"capture_id": "2026-11-09T21:00:15-5210538",
+	"complete": false,
+	"dt_s": 0.00416666666666667,
+	"engine": "4.8-beta2 (official)",
+	"format": "openrc-companion-capture v1",
+	"generation_scope": "Generation zero within this capture only; membership changes close the capture.",
+	"global_tick_origin": 0,
+	"kind": "manifest",
+	"max_buffer_rows_per_stream": 240,
+	"max_bytes_per_stream": 536870912,
+	"max_streams": 4,
+	"max_ticks": 240,
+	"physics_hz": 240,
+	"replay_scope": {
+		"decision_replay": false,
+		"fleet_restore": false,
+		"per_session_inputs": "Use existing .orfl verification; do not infer fleet equivalence.",
+		"shared_world_replay": false
+	},
+	"rng_state": "Exact session RNG state is in each .orfl initial checkpoint; pilot phase uses the admitted slot and seed.",
+	"roster": [
+		{
+			"aircraft_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+			},
+			"generation": 0,
+			"id": "player",
+			"local_tick_origin": 0,
+			"log": "player.orfl"
+		},
+		{
+			"aircraft_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+			},
+			"generation": 0,
+			"id": "companion-0",
+			"local_tick_origin": 0,
+			"log": "companion-0.orfl"
+		},
+		{
+			"aircraft_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+			},
+			"generation": 0,
+			"id": "companion-1",
+			"local_tick_origin": 0,
+			"log": "companion-1.orfl"
+		},
+		{
+			"aircraft_identity": {
+				"format": "openrc-aircraft v2",
+				"sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+			},
+			"generation": 0,
+			"id": "companion-2",
+			"local_tick_origin": 0,
+			"log": "companion-2.orfl"
+		}
+	],
+	"scope": "Fixed-roster diagnostic capture. A final summary is required to establish a complete common-clock capture.",
+	"source_scope": "Selected capture/admission scripts; full solver identity is in each .orfl header. Not a complete application build hash.",
+	"source_sha256": {
+		"res://ai/companions/agent.gd": "7a4d7aaa2d123bbdc8cc25df419781f1c64eb012f652ad4bec3ac90b0fc14106",
+		"res://ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+		"res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+		"res://ai/companions/config.gd": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+		"res://ai/companions/fleet_record.gd": "6a068e7cf0b0535feb09963ef3c8a0a26d1d5f34498da13f94510ba30d6b0b1d",
+		"res://ai/companions/manager.gd": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+		"res://ai/companions/pilot.gd": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+		"res://ai/companions/profile_loader.gd": "4c793d2d0b8e74ff56927f5840750626c193b9f7a107d5f91131ea331ca7b312",
+		"res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+		"res://main.gd": "1cc6f6e2a9ac6a0623f5f236d3bb60ee5974cbdb91d898f1ed078d11014b911c",
+		"res://sim/flight_log.gd": "b7f086ef6a749ed0ef3329d4e6aac95db8a045ccc7d7f55590931d3ea92e12e5"
+	}
+}

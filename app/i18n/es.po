@@ -8918,6 +8918,9 @@ msgstr "No se pudieron verificar los importes guardados. Este informe histórico
 msgid "The saved accident report could not be opened. A new flight can still begin."
 msgstr "No se pudo abrir el informe del accidente guardado. Aun así, se puede iniciar un vuelo nuevo."
 
+msgid "Saved accident report unavailable"
+msgstr "Informe de accidente guardado no disponible"
+
 msgid "Cost plan unavailable"
 msgstr "Plan de costes no disponible"
 

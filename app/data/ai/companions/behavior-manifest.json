@@ -1,0 +1,22 @@
+{
+  "format": "openrc-ai-behavior-manifest v1",
+  "normalization": "utf8-lf",
+  "sources": {
+    "res://ai/companions/agent.gd": "ccdc8c90d244ec1ed38d175a6fd0db3eea34c570b36da82ae16059359361bafd",
+    "res://ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+    "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f",
+    "res://ai/companions/config.gd": "a85bea7b709cc5d30a3ec0d28599e7b7a03de60cd3d63c2cf1df82d38eaf5e1d",
+    "res://ai/companions/manager.gd": "329243f89d686ef73ee40e63aa457b5f3724441eec64fdcb607bf1d70e717585",
+    "res://ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+    "res://ai/companions/pilot.gd": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
+    "res://ai/companions/profile_loader.gd": "1947c948c4bf88ee4f11657046da6a6f0c757d2734d2c4ab9102d202b608def8",
+    "res://ai/companions/seed_allocator.gd": "c1a7c3d95816cec771c4c8f9d3bd5268e6428f66f0025d1b6674336ac5e954a1",
+    "res://ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+    "res://app_root.gd": "45d3d8f15f0d28c870ee3c4323b0e55860c77a5a0876f9eddb380b004ea2f044",
+    "res://data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "res://data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "res://main.gd": "658c1b5b657e7610966d4a4f442cfbcca2299548b625035d27d17eeebc5d1bcd",
+    "res://scenery/collision_world.gd": "1d0d7d39eb1445cd748ac8057616b84238e2460988b22b008705e367f505722f",
+    "res://workshop/strict_json.gd": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+  }
+}

@@ -1,12 +1,13 @@
 # AI flight companions
 
-Status: experimental airborne slice, 2026-10-25. The remaining work and release
+Status: experimental airborne slice, 2026-11-09. The remaining work and release
 gates live in [the implementation plan](plans/ai-flight-companions.md).
 [Verification and measured limits](research/ai-companions/AFC-00-06/README.md).
 Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md),
 [cost attribution and equivalence](research/ai-companions/AFC-00-R1/README.md),
 [lifecycle checks](research/ai-companions/AFC-03-R1/README.md),
 [accepted-input and restore lifecycle repair](research/ai-companions/AFC-03-R2/README.md),
+[seed, admission and status repair](research/ai-companions/AFC-02-R6/README.md),
 [moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md),
 [avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md), and
 [sound, labels and accessible controls](research/ai-companions/AFC-05-R1/README.md).
@@ -53,6 +54,9 @@ checkout of this snapshot and packaged exports remain open.
 3. Fly. The companions launch airborne in separated circuits north of the runway.
 4. **Pause → Session options → Flight companions** shows the current population.
    Apply flight-setting changes, then **Restart flight** to rebuild the roster.
+   Status distinguishes flying aircraft, the admitted launch configuration and
+   pending changes. A seed-only change also waits for restart. Remove preserves
+   the requested settings and does not itself mark them as a changed admission.
    Sound and label settings apply immediately. Changes made here stay with this
    flight unless **Save these settings as the default** is selected.
 5. **Remove companions now** immediately clears their sessions, models and audio.
@@ -78,6 +82,11 @@ limit, and disappear for stopped/crashed companions. These controls never select
 a camera or change flight dynamics. Apply commits the draft; Cancel discards it.
 
 The seed selects starting phase/direction and per-aircraft turbulence seeds.
+Turbulence uses `openrc-companion-seeds v1`: a separate domain, stable actor IDs,
+and bounded collision retries exclude the player's and earlier actors' seeds and
+actual initial RNG states. Capture metadata retains the resolved seeds and nonces.
+This prevents identical starting realizations for the fixed roster; it does not
+prove statistical independence. Calm v1 weather gains no turbulence state.
 Repeatability requires the same aircraft data, source, weather and initial roster.
 The current roster is created only at tick zero; settings do not add aircraft
 midflight. Menus, focus/controller holds and a stopped player simulation also stop
@@ -88,7 +97,7 @@ the companion clock.
 | Setting or behavior | Available now |
 | --- | --- |
 | Field | Club field only; normal fixed-wing flights |
-| Qualification | Exact aircraft, field, pilot, circuit-base dependency and solver source identities; official Godot `4.8.beta2.official.cafc17a19` at 240 Hz. Changed or unavailable sources, engine builds and other tick rates refuse admission |
+| Qualification | Exact aircraft, field, pilot/base, solver and declared behavior-manifest sources; official Godot `4.8.beta2.official.cafc17a19` at 240 Hz. Changed or unavailable required sources, engine builds and other tick rates refuse admission |
 | Weather | Reference atmosphere; mean wind ≤1.5 m/s, gust ≤0.6 m/s, updraft ≤0.15 m/s, turbulence RMS ≤[0.15, 0.15, 0.08] m/s |
 | Aircraft/activity/skill | Ugly Stik circuits, experienced pilots |
 | Population | Experimental fixed roster of 1–3; higher counts refused |
@@ -99,6 +108,26 @@ the companion clock.
 | Crash/fault fallback | That companion stops, its voice is silenced, and status identifies it; restart or Remove clears it |
 | Logging/checkpoints | Optional fixed-roster diagnostic capture links per-aircraft logs; no fleet restore or decision replay. A player-only paired checkpoint cannot save/restore while companions remain |
 | Technical routes | Scripted flight, trace/capture, Workshop, synthetic electric demos, experimental aircraft-data routes and Natural Random do not admit companions |
+
+Aircraft profile v2 binds a versioned behavior manifest of sixteen selected source
+files, including admission, launch/status integration, observation, static checks
+and seed allocation. Its UTF-8 source hashes normalize CRLF to LF; the pre-existing
+raw pilot/base gates retain their exact-byte rules. User presentation settings and
+unlisted render/audio assets do not invalidate this manifest. A change anywhere in
+a listed mixed-purpose file requires review and renewal. This is an explicit
+dependency set, not complete semantic closure or a security boundary. Admission
+assumes source files remain stable in the running process. Compiled exports without
+the required readable sources remain outside qualification.
+
+`Manager.last_tick_usec` now sums the matching before-step and after-step callback
+durations, excluding the player solver between them. Opt-in detailed timing reports
+exclusive prepare, advance, world-publication and residual after-step phases;
+presentation is a separate render-callback sample. Preparation includes prediction
+and control; advancement includes synchronous companion recorder callbacks.
+Player recording and callbacks outside Manager are excluded. Disabled detailed
+timing omits unavailable phase fields. These diagnostics do not enter flight
+decisions. Separate prediction/control/recording attribution and a fresh complete
+1080p hardware baseline remain open.
 
 Takeoff/landing cycles, other models, low passes, aerobatics, overtaking activities,
 pilot difficulty choices, incidents, comic scenarios and busy-skies presets are

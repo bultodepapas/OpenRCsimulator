@@ -80,6 +80,7 @@ var _content_visible := false
 var _toast_remaining := 0.0
 var _layout_retry_frames := 0
 var _evidence_warning := false
+var _archive_unavailable := false
 
 
 func mark_evidence_unavailable() -> void:
@@ -102,6 +103,9 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and not _report.is_empty() and _surface != null:
 		_render_report()
+	elif what == NOTIFICATION_TRANSLATION_CHANGED and _archive_unavailable and _surface != null:
+		_restore_button.text = tr("Saved accident report unavailable")
+		_layout()
 
 
 ## Shows a copied assessment. Incomplete values stay labeled as a range, subtotal, or unknown amount.
@@ -208,6 +212,23 @@ func show_archived(report: Dictionary) -> void:
 	_layout_retry_frames = 2
 
 
+## A failed saved report leaves a passive notice without taking flight input.
+func show_archive_unavailable() -> void:
+	if _surface == null:
+		_build_ui()
+	clear_report()
+	_archive_unavailable = true
+	_content_visible = true
+	_restore_button.text = tr("Saved accident report unavailable")
+	_restore_button.disabled = true
+	_restore_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_restore_button.visible = true
+	_surface.visible = not _suspended
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_layout()
+	_layout_retry_frames = 2
+
+
 ## Shows a prominent read-only report when a nonterminal incident settles on the ground.
 func show_settled(report: Dictionary) -> void:
 	if _surface == null:
@@ -248,6 +269,7 @@ func dismiss_settled() -> void:
 
 ## Removes the current report after an intentional caller action, such as restarting the incident.
 func clear_report() -> void:
+	_archive_unavailable = false
 	_evidence_warning = false
 	_report.clear()
 	_content_visible = false
@@ -266,6 +288,8 @@ func clear_report() -> void:
 		_report_panel.visible = false
 		_toast_panel.visible = false
 		_restore_button.visible = false
+		_restore_button.disabled = false
+		_restore_button.mouse_filter = Control.MOUSE_FILTER_STOP
 		_details_button.button_pressed = false
 		_details_scroll.visible = false
 		_details_scroll.custom_minimum_size.y = 0.0
@@ -576,6 +600,9 @@ static func layout_metrics(viewport_size: Vector2, ui_scale: float = 1.0) -> Dic
 
 
 func _render_report() -> void:
+	_archive_unavailable = false
+	_restore_button.disabled = false
+	_restore_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	if _surface == null:
 		return
 	var identity_value: Variant = _report.get("identity", {})

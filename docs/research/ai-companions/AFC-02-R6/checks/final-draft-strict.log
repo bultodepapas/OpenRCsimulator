@@ -1,0 +1,88 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   isolated enabled roster preference saves 0
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   normal Home flight starts
+ok   unmodified qualified profile admits one actual companion
+ok   Pause freezes admitted player and companion
+ok   en 1080p pending status is localized Traffic: 1 flying · 2 after restart
+Flight settings change after restart.
+Flight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions.
+ok   en 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   en 1080p Remove focus is visible
+ok   es 1080p pending status is localized Tráfico: 1 en vuelo · 2 tras reiniciar
+Los ajustes de vuelo cambian al reiniciar.
+Los ajustes de vuelo se aplican al reiniciar el vuelo. El sonido y las etiquetas cambian de inmediato. Retirar ahora elimina a los compañeros actuales.
+ok   es 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   es 1080p Remove focus is visible
+ok   zh_Hans 1080p pending status is localized 交通流：1 架在空中 · 重启后有 2 架
+飞行设置将在重启后更改。
+飞行设置会在重新开始飞行后生效。声音和标签会立即生效。现在移除会清空当前伙伴。
+ok   zh_Hans 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   zh_Hans 1080p Remove focus is visible
+ok   pt_BR 1080p pending status is localized Tráfego: 1 no ar · 2 após reiniciar
+As configurações de voo mudam após reiniciar.
+As configurações de voo entram em vigor após Reiniciar voo. O som e os rótulos são aplicados imediatamente. Remover agora limpa os companheiros atuais.
+ok   pt_BR 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   pt_BR 1080p Remove focus is visible
+ok   de 1080p pending status is localized Flugverkehr: 1 in der Luft · 2 nach dem Neustart
+Die Flugeinstellungen ändern sich nach dem Neustart.
+Flugeinstellungen gelten nach „Flug neu starten“. Ton und Beschriftungen werden sofort übernommen. Mit „Jetzt entfernen“ werden die aktuellen Begleitflugzeuge entfernt.
+ok   de 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   de 1080p Remove focus is visible
+ok   fr 1080p pending status is localized Trafic : 1 en vol · 2 après redémarrage
+Les paramètres de vol changent après le redémarrage.
+Les paramètres de vol s’appliquent après « Redémarrer le vol ». Le son et les libellés prennent effet immédiatement. « Retirer maintenant » supprime les avions accompagnateurs actuels.
+ok   fr 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   fr 1080p Remove focus is visible
+ok   it 1080p pending status is localized Traffico: 1 in volo · 2 dopo il riavvio
+Le impostazioni di volo cambiano dopo il riavvio.
+Le impostazioni di volo si applicano dopo Riavvia volo. Suono ed etichette cambiano subito. Rimuovi ora elimina gli aerei accompagnatori attuali.
+ok   it 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   it 1080p Remove focus is visible
+ok   ru 1080p pending status is localized Трафик: 1 в воздухе · 2 после перезапуска
+Настройки полёта изменятся после перезапуска.
+Настройки полёта применяются после перезапуска. Звук и подписи меняются сразу. «Убрать сейчас» очищает список самолётов-компаньонов.
+ok   ru 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   ru 1080p Remove focus is visible
+ok   ja 1080p pending status is localized 飛行中：1機 · 再開後2機
+飛行設定は再開後に変更されます。
+飛行設定は飛行を再開した後に反映されます。音量とラベルはすぐに反映されます。今すぐ削除すると、現在の僚機が消去されます。
+ok   ja 1080p dialog and footer fit [P: (560.0, 215.0), S: (800.0, 650.0)]
+ok   ja 1080p Remove focus is visible
+ok   Pause opens real roster dialog
+ok   invalid seed refuses Apply and retains draft
+ok   repeated status refresh retains invalid seed and every draft field { "enabled": true, "count": 3, "seed": "bad seed", "volume": 35.0, "labels": true, "distance": 600.0, "distance_text": "600 m", "save_default": true, "save_as_default": true }
+ok   status refresh preserves validation error and seed editing focus
+ok   status refresh does not advance player or companion physics
+ok   status refresh retains uncommitted distance text and focused editor text=675 value=600.0 before=600.0 focus=@SpinBoxLineEdit@1336
+ok   status refresh retains scroll position
+DISTANCE_BLUR raw=675 m value=675.0
+ok   leaving distance editor commits its native value
+ok   invalid seed feedback returns after editing distance
+ok   real Remove control has focus
+ok   manager owns active player observer callbacks
+ok   actual Remove clears the admitted manager roster { &"active": 0, &"airborne": 0, &"requested": 1, &"faulted": 0, &"crashed": 0, &"seed": 101, &"error": "", &"removed": true, &"last_tick_usec": 0, &"ticks": 48, &"observation_batches": 12, &"timing": { &"format": "openrc-companion-timing v1", &"detailed": false, &"paired_tick_usec": 0, &"before_usec": 0, &"after_usec": 0 }, &"config": { "enabled": true, "count": 1, "seed": 101, "aircraft_id": "jensen-das-ugly-stik-60", "activity": "circuits", "pilot": "experienced", "incidents_enabled": false, "engine_volume": 1.0, "show_labels": false, "label_distance_m": 250.0 }, &"profile_identity": { "format": "openrc-ai-profile-identity v2", "aircraft_id": "jensen-das-ugly-stik-60", "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json", "aircraft_data_format": "openrc-aircraft v2", "aircraft_data_sha256": "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66", "controller_path": "res://ai/companions/pilot.gd", "controller_sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905", "controller_dependencies": { "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f" }, "behavior_manifest_path": "res://data/ai/companions/behavior-manifest.json", "behavior_manifest_format": "openrc-ai-behavior-manifest v1", "behavior_manifest_sha256": "c50dbc02ba4eda3b55dcf561ca8cc554945a26b2cf68eed00624819e7ad4393e", "behavior_normalization": "utf8-lf", "solver_sha256": "1b09db76142b16c00bad181d244e809e17669527256ea44b4bbd01c14f4e7475", "solver_qualification_sha256": "b0a074e43c9a82d90126a49d86964b638bbd4a4dfeb5aca58bd36677fef02464", "solver_normalization": "utf8-lf", "engine_version": "4.8.beta2.official.cafc17a19", "field_profile_id": "club-default", "field_data_path": "res://data/fields/default.json", "field_data_format": "openrc-field v1", "field_data_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d", "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json", "aircraft_profile_sha256": "c2f3cb1e3ebdf7610ea6871dbdabac62d277a0869a57c5b94433fd4f7cd51b9b", "field_profile_path": "res://data/ai/companions/fields/club-default.json", "field_profile_sha256": "bfd594576deef96ac46dd78b95bc6f3aca66148b56d4ae3e61a01aa329763611" }, &"seed_allocation": { &"format": "openrc-companion-seeds v1", &"domain": "openrc/companions/turbulence/v1", &"player_seed": 20261011, &"traffic_seed": 101, &"count": 1, &"allocations": [{ &"actor_id": "companion-0", &"slot": 0, &"seed": 2602027804, &"nonce": 0, &"initial_rng_state_hex": "7ef147ee6dd66a8f" }] }, &"seed_weather": { &"weather_has_seed": true, &"turbulence_active": true }, &"airspace_report": { &"policy": "openrc-ai-static-circuit v1", &"scope": "nominal_circuit_corridor", &"count": 1, &"center_north_m": 199.0, &"center_east_m": 0.0, &"radius_m": 80.0, &"inner_radius_m": 67.0949026518531, &"outer_radius_m": 92.9050973481469, &"corridors": [{ &"slot": 0, &"center_height_m": 35.0, &"min_height_m": 30.0949026518531, &"max_height_m": 39.9050973481469 }], &"aircraft_radius_m": 0.90509734814686, &"radial_allowance_m": 10.0, &"vertical_allowance_m": 2.0, &"obstacle_clearance_m": 2.0, &"exclusion_margin_m": 30.0, &"ground_upper_m": 0.007, &"collision_enabled": true, &"collision_world_identity": "f6fe0efcd5112d2ec6466eedbb031f43ad07a00cf9db5b4860278809f26b62fe", &"geometry_sha256": "523ad98d6f26e0201bcbe5ed04486fe8577b27484c6b043d923c5b9ca1bad408", &"proxy_count": 6078, &"surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa", &"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa", &"protected_proxy_count": 56, &"minimum_vertical_gap_after_allowances_m": 28.2949026518531, &"identity": "3bb7a4deab1f8a874caa3bc244c2e2b0c6ecd44232dba6e790cef288937c04d8" }, &"recording": { &"active": false, &"complete": false, &"error": "", &"directory": "" }, &"requested_count": 1, &"admitted_count": 1, &"pending_count": 1, &"pending_restart": false, &"requested_config": { "enabled": true, "count": 1, "seed": 101, "aircraft_id": "jensen-das-ugly-stik-60", "activity": "circuits", "pilot": "experienced", "incidents_enabled": false, "engine_volume": 1.0, "show_labels": false, "label_distance_m": 250.0 }, &"admitted_config": { "enabled": true, "count": 1, "seed": 101, "aircraft_id": "jensen-das-ugly-stik-60", "activity": "circuits", "pilot": "experienced", "incidents_enabled": false, "engine_volume": 1.0, "show_labels": false, "label_distance_m": 250.0 }, &"in_flight": true }
+ok   actual Remove releases companion session, model, and engine nodes
+ok   actual Remove disconnects the player observers
+ok   Remove keeps every pending field and default choice { "enabled": true, "count": 3, "seed": "bad seed", "volume": 35.0, "labels": true, "distance": 675.0, "distance_text": "675 m", "save_default": true, "save_as_default": true }
+ok   Remove keeps validation feedback and reports empty traffic
+ok   focus moves to Cancel when focused Remove disappears
+ok   Remove leaves paused player state and accepted settings intact
+ok   post-removal refresh preserves draft, error and Cancel focus
+ok   Cancel discards draft while keeping immediate removal
+ok   reopened draft comes from accepted config
+ok   flight admission refusal keeps dialog and all draft fields error=Companions require a normal fixed-wing flight at Club field. focus=Apply draft={ "enabled": true, "count": 2, "seed": "77", "volume": 35.0, "labels": true, "distance": 600.0, "distance_text": "600 m", "save_default": true, "save_as_default": true } expected={ "enabled": true, "count": 2, "seed": "77", "volume": 35.0, "labels": true, "distance": 600.0, "distance_text": "600 m", "save_default": true, "save_as_default": true }
+ok   status refresh preserves rejected Apply feedback
+ok   Apply commits precisely the surviving draft to flight and default { "enabled": true, "count": 2, "seed": 77, "aircraft_id": "jensen-das-ugly-stik-60", "activity": "circuits", "pilot": "experienced", "incidents_enabled": false, "engine_volume": 0.35, "show_labels": true, "label_distance_m": 600.0 }
+ok   Apply does not recreate the removed roster before Restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   direct flight admits an actual companion
+ok   direct dialog hides default persistence
+ok   direct status refresh keeps hidden default and draft
+ok   direct real Remove retains hidden default and draft
+companions draft refresh: 60 checks, 0 failed

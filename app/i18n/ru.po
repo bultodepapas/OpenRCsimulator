@@ -6552,6 +6552,18 @@ msgstr "Самолёт-компаньон %d"
 msgid "Traffic: %d airborne / %d active / %d requested"
 msgstr "Трафик: %d в воздухе / %d активны / %d запрошены"
 
+msgid "Traffic: %d flying"
+msgstr "Трафик: %d в воздухе"
+
+msgid " · %d in session"
+msgstr " · %d в сеансе"
+
+msgid " · %d after restart"
+msgstr " · %d после перезапуска"
+
+msgid "Flight settings change after restart."
+msgstr "Настройки полёта изменятся после перезапуска."
+
 msgid ""
 "Flight settings apply after Restart flight. Sound and labels apply "
 "immediately. Remove now clears the current companions."

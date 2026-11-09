@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a6bce040-ec84-45af-82a8-4db7b1631986",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/afc-r11-manifest/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_behavior_manifest_refusal_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T21:13:09.505091+00:00",
+  "label": "scratch-pilot-lineendings-r5",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11-manifest\\checks\\scratch-pilot-lineendings-r5-d6bzo3h5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r11-manifest\\checks\\scratch-pilot-lineendings-r5-d6bzo3h5\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "manifest refusal probe: passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.875,
+  "log_bytes": 176,
+  "log_sha256": "bd35af5fb091dd8c0f8e528589722e78019490c174322d13ce182088a5d5d9ae"
+}

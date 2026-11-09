@@ -6771,6 +6771,18 @@ msgstr "Begleitflugzeug %d"
 msgid "Traffic: %d airborne / %d active / %d requested"
 msgstr "Flugverkehr: %d in der Luft / %d aktiv / %d angefordert"
 
+msgid "Traffic: %d flying"
+msgstr "Flugverkehr: %d in der Luft"
+
+msgid " · %d in session"
+msgstr " · %d in der Sitzung"
+
+msgid " · %d after restart"
+msgstr " · %d nach dem Neustart"
+
+msgid "Flight settings change after restart."
+msgstr "Die Flugeinstellungen ändern sich nach dem Neustart."
+
 msgid ""
 "Flight settings apply after Restart flight. Sound and labels apply "
 "immediately. Remove now clears the current companions."

@@ -1,5 +1,30 @@
 # L11a grass placement
 
+## Maintained foreground review (L11a-R4)
+
+The default static layer now uses shorter plants and groups its taller sources
+away from managed edges. The runway meadow separately grades grass height near
+the runway and pilot; its saved On/Off control still applies. Source geometry,
+materials, default species quotas and all existing exclusions remain unchanged.
+[Implementation, evidence and qualification limits](../../docs/research/visual-quality-implementation/grass-quality/README.md#l11a-r4-maintained-foreground-composition--2026-11-09).
+
+Use the existing production-field probe for native 1080p review, with a fresh
+output directory and one rendered process at a time:
+
+```powershell
+python tools/godot/run_checked.py --timeout 240 --require-text 'TREE QUALITY COMPLETE' -- .tools/Godot_v4.8-beta2_win64_console.exe --path app --rendering-method gl_compatibility --audio-driver Dummy --script res://../tools/trees/quality_capture.gd -- --mode=field --width=1920 --height=1080 --wind=off --scene_detail=high --views=grass_pilot,grass_low,grass_margin,grass_reverse,grass_overhead,grass_transition,pilot_north,car_park --out=C:/new-empty-location/foreground
+```
+
+For the moving-camera comparison replace `--views=...` with
+`--motion=grass-margin-pan --frames=24 --wind_mps=0`. These are offline spatial
+samples, not real-time flight/performance measurements. The probe also accepts
+`--near_grass_source=<snapshot.gd>` and `--meadow_source=<snapshot.gd>` to compare
+preserved sources through the same production field builder and exclusions;
+its report records the effective source hashes. Ordinary captures use the
+production preload path. The legacy full-scan layout benchmark now includes
+the current spatial policy while retaining its independent filter/sort reducer;
+its enhanced reference still checks the original placement behavior.
+
 ## Enhanced grass preview
 
 The implemented preview combines retained 2K grass surface detail, the short-grass-heavy allocation and bounded imported-grass wind. It is opt-in while full-session and owner acceptance remain open. From the repository root on Windows:

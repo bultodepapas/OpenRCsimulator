@@ -6795,6 +6795,18 @@ msgstr "Avion accompagnateur %d"
 msgid "Traffic: %d airborne / %d active / %d requested"
 msgstr "Trafic : %d en vol / %d actifs / %d demandés"
 
+msgid "Traffic: %d flying"
+msgstr "Trafic : %d en vol"
+
+msgid " · %d in session"
+msgstr " · %d dans la session"
+
+msgid " · %d after restart"
+msgstr " · %d après redémarrage"
+
+msgid "Flight settings change after restart."
+msgstr "Les paramètres de vol changent après le redémarrage."
+
 msgid ""
 "Flight settings apply after Restart flight. Sound and labels apply "
 "immediately. Remove now clears the current companions."

@@ -3,6 +3,7 @@ extends RefCounted
 ## not authentication, a market-price check, or a checkpoint for resuming.
 
 const RepairDetails = preload("res://economy/repair_details.gd")
+const RepairPlanner = preload("res://economy/repair_planner.gd")
 
 const FORMAT := "openrc-accident-report-archive v1"
 const MAX_PAYLOAD_BYTES := 262144
@@ -29,8 +30,8 @@ static func encode(report: Variant) -> Dictionary:
 	var payload := JSON.stringify(report, "", true, true)
 	if payload.to_utf8_buffer().size() > MAX_PAYLOAD_BYTES:
 		return _encode_failure("Report payload exceeds the byte limit.")
-	var parsed: Variant = JSON.parse_string(payload)
-	var checked := validate_report(parsed, true)
+	var parsed: Variant = _parse_json(payload)
+	var checked := validate_report(parsed, true, payload)
 	if not checked.ok:
 		return _encode_failure("Invalid current report: %s" % str(checked.errors))
 	var envelope := {"format": FORMAT, "report_json": payload, "payload_sha256": payload.sha256_text()}
@@ -43,7 +44,7 @@ static func encode(report: Variant) -> Dictionary:
 static func decode(text: Variant) -> Dictionary:
 	if not text is String or text.to_utf8_buffer().size() > MAX_ARCHIVE_BYTES:
 		return _decode_failure("Archive text is absent or exceeds the byte limit.")
-	var value: Variant = JSON.parse_string(text)
+	var value: Variant = _parse_json(text)
 	if not value is Dictionary:
 		return _decode_failure("Archive is not a JSON object.")
 	if value.get("format") == FORMAT:
@@ -51,15 +52,20 @@ static func decode(text: Variant) -> Dictionary:
 			or value.report_json.to_utf8_buffer().size() > MAX_PAYLOAD_BYTES or not _hash(value.get("payload_sha256")) \
 			or value.report_json.sha256_text() != value.payload_sha256:
 			return _decode_failure("Archive envelope or exact payload digest is invalid.")
-		var report: Variant = JSON.parse_string(value.report_json)
-		var checked := validate_report(report, true)
+		var report: Variant = _parse_json(value.report_json)
+		var checked := validate_report(report, true, value.report_json)
 		if not checked.ok:
 			return _decode_failure("Archived current report is invalid: %s" % str(checked.errors))
 		return {"ok": true, "errors": [], "report": report, "legacy": false}
+	if value.has("report_json") or value.has("payload_sha256"):
+		return _decode_failure("Unsupported or malformed archive envelope.")
 	if value.get("format") not in ["openrc-accident-report v1", "openrc-accident-report v2"] \
 		or text.to_utf8_buffer().size() > MAX_PAYLOAD_BYTES:
 		return _decode_failure("Unsupported archive format.")
 	# Older raw reports are display-only. Do not expose unrelated embedded books.
+	# Bound the complete input before duplicating or descending to remove private books.
+	if not _safe_tree(value, true):
+		return _decode_failure("Historical report exceeds structural bounds.")
 	var legacy: Dictionary = value.duplicate(true)
 	_strip_private(legacy)
 	for key: Variant in legacy.keys():
@@ -71,7 +77,7 @@ static func decode(text: Variant) -> Dictionary:
 	return {"ok": true, "errors": [], "report": legacy, "legacy": true}
 
 
-static func validate_report(value: Variant, strict_current: bool = false) -> Dictionary:
+static func validate_report(value: Variant, strict_current: bool = false, payload: String = "") -> Dictionary:
 	if not value is Dictionary or not _safe_tree(value):
 		return _validation_failure("Report is not bounded serializable data.")
 	var report: Dictionary = value
@@ -137,6 +143,24 @@ static func validate_report(value: Variant, strict_current: bool = false) -> Dic
 					return _validation_failure("Report line total is outside the supported range.")
 	if strict_current and sum != int(report.known_subtotal_minor):
 		return _validation_failure("Known subtotal does not equal its itemized lines.")
+	if strict_current:
+		var has_plan_lines := false
+		for row: Dictionary in report.lines:
+			if row.action in ["selected_purchase", "repair_material", "repair_labor", "game_labor"]:
+				has_plan_lines = true
+		if (has_plan_lines or (report.has("cost_context") and (not report.cost_context is Dictionary or not report.cost_context.is_empty()))) \
+			and not report.has("selected_cost_plan"):
+			return _validation_failure("Selected plan evidence is missing.")
+		if report.has("costing_error") and not _text(report.costing_error, 4096, true):
+			return _validation_failure("Costing error is not bounded text.")
+		if report.get("costing_available") == true and report.ok == true \
+			and (not report.has("costing_error") or (report.costing_error == "" and not report.has("selected_cost_plan"))):
+			return _validation_failure("A successful costing result needs its selected receipt.")
+		if report.get("costing_available") == true and report.complete and not report.has("selected_cost_plan"):
+			return _validation_failure("An unavailable cost plan cannot certify a complete estimate.")
+		if report.has("selected_cost_plan") and report.complete and report.get("incident_scope") == "assessed_components" \
+			and report.get("range_basis") == "component_price_bounds" and not _complete_line_range(report.lines, report):
+			return _validation_failure("Complete selected-plan bounds do not match their itemized prices.")
 	if not _validate_optional_lists(report, strict_current):
 		return _validation_failure("Report evidence or history is malformed.")
 	if report.has("game_assessment") and not _validate_game(report.game_assessment):
@@ -148,6 +172,8 @@ static func validate_report(value: Variant, strict_current: bool = false) -> Dic
 	if strict_current and report.has("active_cost_receipt") and not report.has("selected_cost_plan") \
 		and (not report.active_cost_receipt is Dictionary or not report.active_cost_receipt.is_empty()):
 		return _validation_failure("An active receipt has no selected plan.")
+	if strict_current and not _raw_receipt_digests(payload if not payload.is_empty() else JSON.stringify(report, "", true, true), report):
+		return _validation_failure("A saved transaction or request digest does not match its exact JSON bytes.")
 	return {"ok": true, "errors": []}
 
 
@@ -263,7 +289,7 @@ static func _validate_optional_lists(report: Dictionary, strict: bool) -> bool:
 			if not entry is Dictionary or not _text(entry.get("transaction_id"), 128) or seen.has(entry.transaction_id):
 				return false
 			seen[entry.transaction_id] = true
-			if strict and not _valid_receipt(entry):
+			if strict and (not _valid_receipt(entry) or entry.identity != report.identity or entry.catalog_hash != report.get("catalog_hash")):
 				return false
 	return true
 
@@ -647,6 +673,17 @@ static func _valid_repair(value: Variant, request: Dictionary) -> bool:
 	if not selected.is_empty():
 		return false
 	var aggregate: Dictionary = value.aggregate
+	# Reconcile grouped material and labor against the saved selections and
+	# evidenced group scopes, without consulting any current recipe book.
+	var recipe_groups := []
+	for group: Variant in request.shared_labor_groups:
+		if not group is Dictionary:
+			return false
+		if group.get("scope") != "shared_setup_all_work":
+			recipe_groups.append(group)
+	var recomputed := RepairPlanner.aggregate_selections(_semantic_integers(value.selections), _semantic_integers(recipe_groups), 0)
+	if not recomputed.get("ok", false) or recomputed != _semantic_integers(aggregate):
+		return false
 	if aggregate.get("ok") != true or aggregate.get("complete") != true or aggregate.get("costing_basis") != request.costing_basis \
 		or aggregate.get("labor_mode") != request.labor_mode or aggregate.get("rounding_policy") != "v1_ceiling_per_material_and_labor_group" \
 		or not aggregate.get("materials") is Array or aggregate.materials.size() > 4096 \
@@ -773,11 +810,49 @@ static func _validate_active_plan(report: Dictionary, lines: Dictionary) -> bool
 	for id: Variant in lines:
 		if lines[id].get("action") in ["selected_purchase", "repair_material", "repair_labor", "game_labor"] and not expected.has(id):
 			return false
-	for fee: Dictionary in receipt.request.incurred_fees:
+	var frozen_fees: Array = receipt.base_assessment.get("incurred_fees", []).duplicate(true)
+	frozen_fees.append_array(receipt.request.incurred_fees)
+	var covered := {}
+	for unit: String in purchase.required_unit_ids:
+		var split := unit.rfind(":")
+		if split <= 0:
+			return false
+		covered[unit.substr(0, split)] = true
+	for component: String in receipt.repair.component_ids:
+		covered[component] = true
+	for component: Variant in covered:
+		var decision: Variant = receipt.covered_decisions.get(component)
+		if not decision is Dictionary:
+			return false
+		if decision.has("inspection_minor"):
+			frozen_fees.append({"id": decision.get("inspection_fee_id", "component:%s:inspection" % component),
+				"kind": "inspection", "amount_minor": decision.inspection_minor})
+	var seen_fees := {}
+	for fee: Dictionary in frozen_fees:
+		if seen_fees.has(fee.id):
+			return false
+		seen_fees[fee.id] = true
 		if not lines.has(fee.id) or lines[fee.id].get("action") != "incurred_fee" \
 			or lines[fee.id].get("fee_kind") != fee.kind or lines[fee.id].get("amount_minor") != fee.amount_minor:
 			return false
 	return true
+
+
+static func _complete_line_range(lines: Array, report: Dictionary) -> bool:
+	var low := 0
+	var high := 0
+	for line: Dictionary in lines:
+		var amount: Variant = line.get("amount_minor")
+		var lower: Variant = line.get("low_minor", amount)
+		var upper: Variant = line.get("high_minor", amount)
+		# Some historical or special rows do not state comparable bounds.
+		if not _minor(lower) or not _minor(upper):
+			return true
+		if int(lower) > MAX_MINOR - low or int(upper) > MAX_MINOR - high:
+			return true
+		low += int(lower)
+		high += int(upper)
+	return report.get("low_minor") == low and report.get("high_minor") == high
 
 
 static func _mul_div(value: int, units: int, divisor: int, ceil_result: bool) -> Variant:
@@ -794,6 +869,22 @@ static func _mul_div(value: int, units: int, divisor: int, ceil_result: bool) ->
 	if (ceil_result and rest > 0) or (not ceil_result and rest * 2 >= divisor):
 		rounded += 1
 	return null if rounded > MAX_MINOR - amount else amount + rounded
+
+
+static func _semantic_integers(value: Variant) -> Variant:
+	if value is Dictionary:
+		var result := {}
+		for key: Variant in value:
+			result[key] = _semantic_integers(value[key])
+		return result
+	if value is Array:
+		var result := []
+		for item: Variant in value:
+			result.append(_semantic_integers(item))
+		return result
+	if value is float and is_finite(value) and floor(value) == value and absf(value) <= float(MAX_SAFE_INTEGER):
+		return int(value)
+	return value
 
 
 static func _identity(value: Variant, needs_source: bool) -> bool:
@@ -895,11 +986,159 @@ static func _unique_strings(value: Variant, count: int, length: int) -> bool:
 	return true
 
 
-static func _safe_tree(value: Variant) -> bool:
-	return _safe_node(value, 0, {"count": 0}, [])
+## Hash the actual receipt/request substrings. JSON.parse_string turns every
+## numeric token into a float, so re-serializing parsed data changes valid
+## receipt hashes (and coercing all integral floats would lose information).
+static func _raw_receipt_digests(payload: String, report: Dictionary) -> bool:
+	var fields := _raw_object_fields(payload, 0)
+	if fields.is_empty():
+		return false
+	if report.has("active_cost_receipt") and not report.active_cost_receipt.is_empty():
+		if not fields.has("active_cost_receipt") or not _raw_receipt_digest(payload, fields.active_cost_receipt, report.active_cost_receipt):
+			return false
+	for name: String in ["cost_transactions", "quote_history"]:
+		if not report.has(name):
+			continue
+		if not fields.has(name):
+			return false
+		var positions := _raw_array_values(payload, int(fields[name].start))
+		if positions.size() != report[name].size():
+			return false
+		for index: int in range(positions.size()):
+			if not _raw_receipt_digest(payload, positions[index], report[name][index]):
+				return false
+	return true
 
 
-static func _safe_node(value: Variant, depth: int, budget: Dictionary, ancestors: Array) -> bool:
+static func _raw_receipt_digest(payload: String, span: Dictionary, receipt: Dictionary) -> bool:
+	var start := int(span.start)
+	var end := int(span.end)
+	var fields := _raw_object_fields(payload, start)
+	if not fields.has("receipt_digest") or not fields.has("request"):
+		return false
+	var digest_field: Dictionary = fields.receipt_digest
+	var request_field: Dictionary = fields.request
+	# The canonical producer sorts keys and emits compact JSON. Remove the
+	# digest member and its preceding comma, preserving all other exact bytes.
+	var key_start := int(digest_field.key_start)
+	if key_start <= start or payload[key_start - 1] != ",":
+		return false
+	var unsigned := payload.substr(start, key_start - 1 - start) + payload.substr(int(digest_field.end), end - int(digest_field.end))
+	var request := payload.substr(int(request_field.start), int(request_field.end) - int(request_field.start))
+	return unsigned.sha256_text() == receipt.receipt_digest and request.sha256_text() == receipt.request_digest
+
+
+static func _raw_object_fields(text: String, start: int) -> Dictionary:
+	var result := {}
+	if start < 0 or start >= text.length() or text[start] != "{":
+		return result
+	var i := _skip_space(text, start + 1)
+	while i < text.length() and text[i] != "}":
+		var key_start := i
+		var key_end := _raw_string_end(text, i)
+		if key_end < 0:
+			return {}
+		var key: Variant = _parse_json(text.substr(i, key_end - i))
+		if not key is String or result.has(key):
+			return {}
+		i = _skip_space(text, key_end)
+		if i >= text.length() or text[i] != ":":
+			return {}
+		var value_start := _skip_space(text, i + 1)
+		var value_end := _raw_value_end(text, value_start)
+		if value_end < 0:
+			return {}
+		result[key] = {"key_start": key_start, "start": value_start, "end": value_end}
+		i = _skip_space(text, value_end)
+		if i < text.length() and text[i] == ",":
+			i = _skip_space(text, i + 1)
+		elif i >= text.length() or text[i] != "}":
+			return {}
+	return result
+
+
+static func _raw_array_values(text: String, start: int) -> Array:
+	var result := []
+	if start < 0 or start >= text.length() or text[start] != "[":
+		return result
+	var i := _skip_space(text, start + 1)
+	while i < text.length() and text[i] != "]":
+		var end := _raw_value_end(text, i)
+		if end < 0:
+			return []
+		result.append({"start": i, "end": end})
+		i = _skip_space(text, end)
+		if i < text.length() and text[i] == ",":
+			i = _skip_space(text, i + 1)
+		elif i >= text.length() or text[i] != "]":
+			return []
+	return result
+
+
+static func _raw_value_end(text: String, start: int) -> int:
+	if start >= text.length():
+		return -1
+	if text[start] == '"':
+		return _raw_string_end(text, start)
+	if text[start] in ["{", "["]:
+		var stack: Array[String] = []
+		var i := start
+		while i < text.length():
+			var ch := text[i]
+			if ch == '"':
+				i = _raw_string_end(text, i)
+				if i < 0:
+					return -1
+				continue
+			if ch == "{" or ch == "[":
+				stack.append(ch)
+			elif ch == "}" or ch == "]":
+				if stack.is_empty() or (ch == "}" and stack.back() != "{") or (ch == "]" and stack.back() != "["):
+					return -1
+				stack.pop_back()
+				if stack.is_empty():
+					return i + 1
+			i += 1
+		return -1
+	var i := start
+	while i < text.length() and text[i] not in [",", "}", "]", " ", "\t", "\r", "\n"]:
+		i += 1
+	return i if i > start else -1
+
+
+static func _raw_string_end(text: String, start: int) -> int:
+	if start >= text.length() or text[start] != '"':
+		return -1
+	var i := start + 1
+	while i < text.length():
+		if text[i] == "\\":
+			i += 2
+		elif text[i] == '"':
+			return i + 1
+		else:
+			i += 1
+	return -1
+
+
+static func _skip_space(text: String, start: int) -> int:
+	var i := start
+	while i < text.length() and text[i] in [" ", "\t", "\r", "\n"]:
+		i += 1
+	return i
+
+
+static func _parse_json(text: String) -> Variant:
+	var parser := JSON.new()
+	if parser.parse(text) != OK:
+		return null
+	return parser.data
+
+
+static func _safe_tree(value: Variant, allow_private: bool = false) -> bool:
+	return _safe_node(value, 0, {"count": 0}, [], allow_private)
+
+
+static func _safe_node(value: Variant, depth: int, budget: Dictionary, ancestors: Array, allow_private: bool) -> bool:
 	budget.count += 1
 	if budget.count > MAX_NODES or depth > MAX_DEPTH:
 		return false
@@ -913,12 +1152,13 @@ static func _safe_node(value: Variant, depth: int, budget: Dictionary, ancestors
 		if value is Dictionary:
 			for key: Variant in value:
 				if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME] or String(key).length() > 256 \
-					or String(key) in PRIVATE_FIELDS or not _safe_node(value[key], depth + 1, budget, ancestors):
+					or (not allow_private and String(key) in PRIVATE_FIELDS) \
+					or not _safe_node(value[key], depth + 1, budget, ancestors, allow_private):
 					ancestors.pop_back()
 					return false
 		else:
 			for item: Variant in value:
-				if not _safe_node(item, depth + 1, budget, ancestors):
+				if not _safe_node(item, depth + 1, budget, ancestors, allow_private):
 					ancestors.pop_back()
 					return false
 		ancestors.pop_back()
@@ -934,7 +1174,7 @@ static func _safe_node(value: Variant, depth: int, budget: Dictionary, ancestors
 			if value.size() > MAX_ARRAY or budget.count + value.size() > MAX_NODES:
 				return false
 			for item: Variant in value:
-				if not _safe_node(item, depth + 1, budget, ancestors):
+				if not _safe_node(item, depth + 1, budget, ancestors, allow_private):
 					return false
 			return true
 		_:

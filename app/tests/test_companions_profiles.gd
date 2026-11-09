@@ -67,6 +67,10 @@ func _run() -> void:
 		and result.identity.field_data_sha256 == result.field_profile.field_source.sha256 \
 		and result.identity.controller_sha256 == result.profile.controller.sha256 \
 		and result.identity.controller_dependencies == result.profile.controller.dependencies \
+		and result.identity.behavior_manifest_path == Loader.BEHAVIOR_MANIFEST_PATH \
+		and result.identity.behavior_manifest_format == Loader.BEHAVIOR_MANIFEST_FORMAT \
+		and result.identity.behavior_manifest_sha256 == result.profile.behavior_manifest.sha256 \
+		and result.identity.behavior_normalization == Loader.BEHAVIOR_NORMALIZATION \
 		and result.identity.solver_sha256 == FlightLog.solver_identity() \
 		and result.identity.solver_qualification_sha256 == result.profile.solver.sha256 \
 		and result.identity.engine_version == Loader.QUALIFIED_ENGINE_VERSION \
@@ -86,8 +90,26 @@ func _run() -> void:
 	var field_profile_copy: Dictionary = _profile(FIELD_PROFILE_PATH)
 
 	var bad_aircraft: Dictionary = profile_copy.duplicate(true)
-	bad_aircraft.format = "openrc-ai-aircraft v2"
+	bad_aircraft.format = "openrc-ai-aircraft v3"
 	_check("unknown aircraft profile versions fail closed", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	bad_aircraft = profile_copy.duplicate(true)
+	bad_aircraft.format = "openrc-ai-aircraft v1"
+	bad_aircraft.erase("behavior_manifest")
+	_check("legacy profile without behavior qualification refuses", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	bad_aircraft = profile_copy.duplicate(true)
+	bad_aircraft.behavior_manifest.sha256 = "0".repeat(64)
+	_check("behavior manifest identity mismatch refuses", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	for invalid_reference: Dictionary in [
+		{"path": "res://unrelated.json"}, {"format": "openrc-ai-behavior-manifest v2"},
+		{"normalization": "none"}, {"sha256": "A".repeat(64)}, {"extra": true},
+	]:
+		bad_aircraft = profile_copy.duplicate(true)
+		bad_aircraft.behavior_manifest.merge(invalid_reference, true)
+		_check("invalid behavior reference refuses " + str(invalid_reference.keys()),
+			not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	bad_aircraft = profile_copy.duplicate(true)
+	bad_aircraft.behavior_manifest.erase("sha256")
+	_check("behavior reference without digest refuses", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
 
 	bad_aircraft = profile_copy.duplicate(true)
 	bad_aircraft.qualification.activities = ["circuits", "landing"]

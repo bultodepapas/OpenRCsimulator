@@ -254,7 +254,8 @@ func _test_bounds(session: Variant) -> void:
 	var startup: Variant = _make(true)
 	check("corrupt saved report is disclosed without blocking a new flight", startup.startup_error.is_empty()
 		and startup._accident_incident.report.is_empty() and not startup._accident_incident.archive_load_error.is_empty()
-		and startup._note.contains("saved accident report could not be opened"))
+		and startup._accident_report._restore_button.visible and startup._accident_report._restore_button.disabled
+		and startup._accident_report._restore_button.text.contains("Saved accident report unavailable"))
 	_retire_main(startup)
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
 	ledger.archive_path = ARCHIVE

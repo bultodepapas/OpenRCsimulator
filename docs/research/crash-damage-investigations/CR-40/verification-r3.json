@@ -1,0 +1,1727 @@
+{
+  "format": "openrc-crash-cost-verification v3",
+  "date": "2026-11-09",
+  "round": 3,
+  "baseline_head": "d1dd090070ee5c84882b66ea3474f5146ec7721a",
+  "head_at_verification": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "scope": "Durable saved-report consistency, passive error/historical UI and declared fixed-wing financial coverage. Not physical, full incident-class, performance or release qualification.",
+  "engine": {
+    "version": "Godot 4.8 beta2 official cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "path": ".tools/Godot_v4.8-beta2_win64.exe",
+    "sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+    "platform": "Windows x86_64"
+  },
+  "source_sha256": {
+    "app/economy/incident.gd": "8451bc9ca9d121db936ac574794a655b1753a635938bc312f4c2ab94f4c3f0d6",
+    "app/economy/report_archive.gd": "45135d2c098bf1c7345c5defab28ccc048d0a193698d74be405fea1d59569c1d",
+    "app/economy/cost_transaction.gd": "43612368d0e93b7cc776a3e78f088279c79e6d109752599b1270b4efe6e87062",
+    "app/economy/calculator.gd": "dc5dfa0ad16b6fe91a6073bcd0876b8e9c94d226682f9826e47fd134d91c5b8c",
+    "app/economy/repair_details.gd": "95be217e28dbf86374a54fcc0e27b023ee138cdccdd9e602621c00515f08161b",
+    "app/economy/checkpoint.gd": "659318bac36d90c411ac57e6fa5b9c871ecebc1ed45fdee7dc1aab61a25bd0eb",
+    "app/economy/damage_assessment.gd": "70702094f08c2937fde12182d807820f832fec0ae2fd20b6cfc6bb7be2869895",
+    "app/ui/accident_report.gd": "78aa1c2131e096c922e1b504fd31318fef27204bd75a1bbf8c6a964e1fd22f48",
+    "app/main.gd": "bc4cb66d0ddad068e7c198923b0f822ed48d6dd2e9ef44ee24cfc6b0ae231beb",
+    "app/i18n/es.po": "0f94d59bc8bb04bf9f23f9085f2e07feac15eb1f65767d817f97deb58fb96fde",
+    "app/sim/flight_session.gd": "621507d66c4a785fe101f08576d04104fe6ce60955dd700b5fa50fd3454e3853",
+    "app/data/economy/cost-profiles.json": "d0f718a003e99fb510c3db1ad4933d52f64967c86d936f759062ed4f640b1103",
+    "app/data/economy/catalog.json": "f757cb060bf12700465ad802b195dc78e570fa52b58624dbe49e78b98b47495d",
+    "app/tests/test_economy_report_archive.gd": "d989fac04ae97b82d34a5797d9e5612e7cd87d0c0632404ca67cabe80222ecab",
+    "app/tests/test_crash_cost_common_coverage.gd": "ba7a7d091ffae8f9c5feb128a2dd1231033739995e750f0179190f9cfbd652e4",
+    "app/tests/test_accident_integration.gd": "cd760dcee732d899d8d1c66b514e734cdb6b88f2062740aa6c7c1c8a1f4bb99d",
+    "app/tests/test_accident_report.gd": "fd3eae17afad9ee3b83280270a38f4007239ae7d1682fbedbf1a0b1f9c41c31c",
+    "app/tests/test_economy_cr39.gd": "872658194dd16f8b90b8b0dadce8150e129db9a3d7c635cfeb0fbd7f2f57ee42",
+    "app/tests/test_economy_inspection.gd": "4ccc48513d4a00b68f75119474b3dcf289ec4a44f354c117daa8e9cac11538e7",
+    "app/tests/test_economy_repair_details.gd": "ab55d519dd267c7999b95b6a83df13f8b08ce0ca4c076625cd51e32314543d47",
+    "app/tests/test_economy_checkpoint.gd": "68167f8367ec6fcafbbd21e76e15c59debf9d88d64f6e66a7153513dbe6bb9dc",
+    "app/tests/test_crash_cost_round2.gd": "99b9baaaea011ecab091b236346068568d7551a9c327a317e37ec1157f2fa9d5",
+    "app/tests/test_crash_cost_incident.gd": "9e8a66a704799a846b1105740aca5891cccb2deb5bca9030c07690d5a616ee03",
+    "app/tests/test_accident_settlement.gd": "bb16c919ae5133c7183dccfefa36ef2eacd83b4d04704ee8ee17674526f59f2a",
+    "app/tests/test_crash_cost_game_flow.gd": "a06ed19ba9ce46b3c5e12944b01d17ece9e0a7e417a969650a646002e7cdfff9",
+    "app/tests/test_visual_checkpoint.gd": "5ff193499d8ca538a5d2ee013f33f4aacad9e44cca122634be077eef97b94f4c",
+    "app/tests/test_water_checkpoint.gd": "32e8bc9fee091311f1cd29b0d1ec7c9a5b6b43adfef156ca6081f677a40f58aa"
+  },
+  "checks": {
+    "selected_scripts": 14,
+    "reported_checks": 2390,
+    "all_pass": true,
+    "scripts": [
+      {
+        "script": "test_economy_report_archive.gd",
+        "checks": 53,
+        "receipt_path": "tmp/crash-cost-r3-final-recheck/test_economy_report_archive-7xk5j3_u/report.json",
+        "receipt_sha256": "d0952376e8432dad65fd34375fee90b6cdb13ebb5ef81428b3a7a1109802bd16",
+        "log_sha256": "0d55b1fb1208d3e687e65a538885e166b7d14826096b1d1ca8fd8e9e013a28ef",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_crash_cost_common_coverage.gd",
+        "checks": 1428,
+        "receipt_path": "tmp/crash-cost-r3-final-recheck/test_crash_cost_common_coverage-vulixrxa/report.json",
+        "receipt_sha256": "83cbf9480f2e9705e7319772b1b36a1ad7c8d7d16ceabd4a6eab480aba8963e8",
+        "log_sha256": "0d7f031463664c1446c4afdd84b95ac124115303f13723cf334c5af6a9c6ad53",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_accident_integration.gd",
+        "checks": 90,
+        "receipt_path": "tmp/crash-cost-r3-final-recheck/test_accident_integration-x3dc6_0q/report.json",
+        "receipt_sha256": "e38205198cfaa89a43905500ea55d4e7c6bb2fce9e5b5bdf012796fe93ffcabf",
+        "log_sha256": "9fa585d5e4cc24695786c347f3c97caf65553c97ffc18178f01a13669be9bdb5",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_accident_report.gd",
+        "checks": 156,
+        "receipt_path": "tmp/crash-cost-r3-final/test_accident_report-ogf1q9n2/report.json",
+        "receipt_sha256": "d54400d0c504cdba4bb43d4e07818a68c50a73fa4b8e8a27e88dfa26bc0fba73",
+        "log_sha256": "9b53470b53b2735ffe4e524232d6ee023c37dbbc93bf83732d45e3563e295a32",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_economy_cr39.gd",
+        "checks": 52,
+        "receipt_path": "tmp/crash-cost-r3-final/test_economy_cr39-vne99yig/report.json",
+        "receipt_sha256": "f9253ec9615281d90c499f7b82776308fa2ee46aa1ffbbaad4fd28b9d3dec5f9",
+        "log_sha256": "2f9490a272e5d806c31ea49aac91fdde1df0aed973f1982c03ce20cef44b57ae",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_economy_inspection.gd",
+        "checks": 83,
+        "receipt_path": "tmp/crash-cost-r3-final/test_economy_inspection-qv179e8q/report.json",
+        "receipt_sha256": "8c5864a5dcab773cf5bc0a43e8e37a9b843f69024261aec75263c5c6248f882e",
+        "log_sha256": "9fa45ce404bcfd77f11072ebe9ea2197f29130c57aced32dce930b4b46e2eb0d",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_economy_repair_details.gd",
+        "checks": 49,
+        "receipt_path": "tmp/crash-cost-r3-final/test_economy_repair_details-ta5pocos/report.json",
+        "receipt_sha256": "faee4e85d46de47e3f9e986d04d700ad5c33c79672c83b65866448619945cb21",
+        "log_sha256": "c5bb30132cefea93c72c0f4c01ac9ec4739350628358951df6e363e2cec69e02",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_economy_checkpoint.gd",
+        "checks": 65,
+        "receipt_path": "tmp/crash-cost-r3-final/test_economy_checkpoint-pkhdu48r/report.json",
+        "receipt_sha256": "34915c7782fba101f5eb0579ce43abb4a42b2e5d143bf359745845a10c3c83e8",
+        "log_sha256": "8fdfc8ebdd6dcd018e44e7733fb9cf920c2ad17484a275bc433c56d9c1618b50",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_crash_cost_round2.gd",
+        "checks": 72,
+        "receipt_path": "tmp/crash-cost-r3-final/test_crash_cost_round2-aa2zyvit/report.json",
+        "receipt_sha256": "709c5ca80ee030a9988733bfb4eca938148ff56449a764f9e27750d35882216b",
+        "log_sha256": "7b18fe2aa8ae7e742be4e3dec4a0ae55cdc392bf8d1ebab0e606b27367d35cde",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_crash_cost_incident.gd",
+        "checks": 59,
+        "receipt_path": "tmp/crash-cost-r3-final/test_crash_cost_incident-nxjl4d6t/report.json",
+        "receipt_sha256": "0546a6d9d6c732d062e9ac08992e41971a0cb71868f80bee45594aecb32508fc",
+        "log_sha256": "0a18118b0c43a18739145e7a338e0c98af711adf25791f50cbd2cdec91d3855b",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_accident_settlement.gd",
+        "checks": 46,
+        "receipt_path": "tmp/crash-cost-r3-final/test_accident_settlement-goi0d8_j/report.json",
+        "receipt_sha256": "d290a45405a5c54e97184c9315ccc539bcc9d2952e76648ea08abb2a64a82b76",
+        "log_sha256": "925688932b45b1688a1c11ad359fc7292670ee104790d1f65ff2a4cd36ffcc16",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_crash_cost_game_flow.gd",
+        "checks": 159,
+        "receipt_path": "tmp/crash-cost-r3-final/test_crash_cost_game_flow-q805mrrk/report.json",
+        "receipt_sha256": "df024911d796586454949a025d646a9b82155cb45abb69296019907d1e55ecd1",
+        "log_sha256": "9bf378efaba043f7bf63b1a65763d6e197c94dc38b761fb126e4ab6447d25c30",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_visual_checkpoint.gd",
+        "checks": 62,
+        "receipt_path": "tmp/crash-cost-r3-final/test_visual_checkpoint-zmlfc9qe/report.json",
+        "receipt_sha256": "f8589b231251418feeea6b9089bf7bf9881f902ed4d881fba2ec3ba5b086685b",
+        "log_sha256": "a3055f542a1bca1a540d2ba33c937166e7ce5d18837b59e2b83137294410c3f1",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      },
+      {
+        "script": "test_water_checkpoint.gd",
+        "checks": 16,
+        "receipt_path": "tmp/crash-cost-r3-final/test_water_checkpoint-6b08m3tk/report.json",
+        "receipt_sha256": "208aea6eae5bde2dfc56c04d66e40c35684b47a4b88d295fb27272feddb78551",
+        "log_sha256": "3cb9177c66798533c1d8bf9bbc1413a2b41202a6f41dfe1c352e0b30b9de8825",
+        "diagnostic_counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "ok": true,
+        "complete": true
+      }
+    ],
+    "source_stability": {
+      "initial_changed": [
+        "app/economy/report_archive.gd",
+        "app/tests/test_economy_report_archive.gd"
+      ],
+      "reason": "Final guard rejects complete no-plan zero estimates even with a costing error. Added negative and positive controls.",
+      "resolution": "Archive53, coverage1428 and production integration90 rerun after that final guard; all tracked source bytes remained unchanged. Other11 affected scripts passed in the preceding stable consumer run.",
+      "recheck_summary_path": "tmp/crash-cost-r3-final-recheck/summary.json"
+    },
+    "generation_check": {
+      "command": "python research/crash-economics/build_runtime.py --check",
+      "ok": true
+    },
+    "import": {
+      "command": "pinned Godot --headless --path app --audio-driver Dummy --editor --import",
+      "receipt_parent": "tmp/crash-cost-r3-import",
+      "ok": true
+    },
+    "baseline_regression": {
+      "receipt_path": "tmp/crash-cost-r3-integration/missing-receipt-baseline-si37nhib/report.json",
+      "checks": 79,
+      "failed": 1,
+      "reason": "Default automatic report retained a selected receipt digest but not its active receipt; subsequent owner integration passes."
+    },
+    "ci": "Focused local checks; the full required CI/release roster is not claimed."
+  },
+  "archive_contract": {
+    "format": "openrc-accident-report-archive v1",
+    "report_format": "openrc-accident-report v2",
+    "envelope_keys": [
+      "format",
+      "report_json",
+      "payload_sha256"
+    ],
+    "payload_byte_limit": 262144,
+    "file_byte_limit": 526336,
+    "line_limit": 384,
+    "text_item_limit": 512,
+    "depth_limit": 24,
+    "node_limit": 65536,
+    "verification": "Exact payload bytes and canonical nested request/unsigned-receipt byte spans, plus frozen metadata and itemized consistency; no integer/float coercion used as a digest oracle.",
+    "authenticity": false,
+    "live_catalog_access": false,
+    "legacy": "Raw report v1/v2 accepted only as bounded, visibly unverified historical views; malformed envelope never falls back to raw negotiation.",
+    "failed_read": "Returns no report and an error without replacing previously accepted last_report; source file is unchanged.",
+    "failed_write": "Existing atomic .tmp write/flush/rename remains; failed encoding or I/O preserves the previous archive."
+  },
+  "coverage": {
+    "routes": 11,
+    "zones": 275,
+    "target_associations": 277,
+    "propeller_followups": 34,
+    "middle_severe_archive_round_trips": 550,
+    "checks": 1428,
+    "ledger_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-cost-round3-coverage/ledger-25726218.json",
+    "ledger_sha256": "7b7f7375ce4b7eade93fae92f4c6a3299bd7bcfda9d19f6969839506746da0b7",
+    "repeated_ledger_identical": true,
+    "ledger": {
+      "format": "openrc-crash-cost-coverage-evidence v1",
+      "routes": {
+        "f4u-corsair-250": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main_left",
+                "gear_main_right",
+                "gear_tail"
+              ],
+              "zones": 3
+            },
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "wing_left",
+                "wing_right"
+              ],
+              "zones": 2
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "fuselage_front",
+                "fuselage_rear",
+                "propeller",
+                "spinner_main",
+                "wing_left",
+                "wing_right"
+              ],
+              "zones": 21
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "fuselage_front",
+            "fuselage_rear",
+            "gear_main_left",
+            "gear_main_right",
+            "gear_tail",
+            "propeller",
+            "spinner_main",
+            "wing_left",
+            "wing_right"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "fuselage_front",
+                "fuselage_rear"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main_left",
+                "gear_main_right",
+                "gear_tail"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_moki_s250",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "horizontal_tail",
+                "vertical_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "wing_joiner",
+                "wing_left",
+                "wing_right"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "cowl_main",
+            "engine_moki_s250",
+            "engine_mount",
+            "fuselage_front",
+            "spinner_main",
+            "throttle_choke_servos"
+          ]
+        },
+        "gp-extra-300s-60": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "landing_gear_main",
+                "landing_gear_tail"
+              ],
+              "zones": 3
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "fuselage_front",
+                "horizontal_tail",
+                "spinner_main",
+                "vertical_tail",
+                "wing_main"
+              ],
+              "zones": 10
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "fuselage_front",
+            "horizontal_tail",
+            "landing_gear_main",
+            "landing_gear_tail",
+            "propeller",
+            "spinner_main",
+            "vertical_tail",
+            "wing_main"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "fuselage_front",
+                "fuselage_rear"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "landing_gear_main",
+                "landing_gear_tail"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_main",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "horizontal_tail",
+                "vertical_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "wing_main"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "engine_main",
+            "engine_mount",
+            "fuselage_front",
+            "spinner_main"
+          ]
+        },
+        "jensen-das-ugly-stik-60": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "zones": 3
+            },
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "engine_and_muffler"
+              ],
+              "zones": 4
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "airframe_fuselage",
+                "airframe_tail",
+                "airframe_wing",
+                "spinner"
+              ],
+              "zones": 22
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "airframe_fuselage",
+            "airframe_tail",
+            "airframe_wing",
+            "engine_and_muffler",
+            "gear_main",
+            "gear_nose",
+            "propeller",
+            "spinner"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "airframe_fuselage"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_and_muffler",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "airframe_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "airframe_wing"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "engine_and_muffler",
+            "engine_mount"
+          ]
+        },
+        "moonrunner-x99": {
+          "class_financial_coverage": {
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "wing_left",
+                "wing_right"
+              ],
+              "zones": 2
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "body_main",
+                "wing_left",
+                "wing_right"
+              ],
+              "zones": 26
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller_main"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "body_main",
+            "propeller_main",
+            "wing_left",
+            "wing_right"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "body_main"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "motor_main",
+                "motor_mount",
+                "propeller_main"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "spars_main",
+                "wing_left",
+                "wing_right"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "body_main",
+            "motor_main",
+            "motor_mount"
+          ]
+        },
+        "p51d-mustang-120": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main_left",
+                "gear_main_right",
+                "gear_tail"
+              ],
+              "zones": 3
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "belly_scoop",
+                "fuselage_front",
+                "horizontal_tail",
+                "propeller",
+                "spinner_main",
+                "vertical_tail",
+                "wing_left",
+                "wing_right"
+              ],
+              "zones": 14
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "belly_scoop",
+            "fuselage_front",
+            "gear_main_left",
+            "gear_main_right",
+            "gear_tail",
+            "horizontal_tail",
+            "propeller",
+            "spinner_main",
+            "vertical_tail",
+            "wing_left",
+            "wing_right"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "fuselage_front",
+                "fuselage_rear"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main_left",
+                "gear_main_right",
+                "gear_tail"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_main",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "horizontal_tail",
+                "vertical_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "wing_joiner",
+                "wing_left",
+                "wing_right"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "cowl_main",
+            "engine_main",
+            "engine_mount",
+            "fuselage_front",
+            "muffler_pair",
+            "spinner_main"
+          ]
+        },
+        "sebart-avanti-s-a200-p100rx": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main_left",
+                "gear_main_right",
+                "gear_nose"
+              ],
+              "zones": 3
+            },
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "airframe_fuselage",
+                "engine_main",
+                "turbine_accessories"
+              ],
+              "zones": 1
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "airframe_fuselage",
+                "airframe_tail",
+                "canopy_pilot",
+                "wing_left",
+                "wing_right"
+              ],
+              "zones": 12
+            }
+          },
+          "declared_zone_targets": [
+            "airframe_fuselage",
+            "airframe_tail",
+            "canopy_pilot",
+            "engine_main",
+            "gear_main_left",
+            "gear_main_right",
+            "gear_nose",
+            "turbine_accessories",
+            "wing_left",
+            "wing_right"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "airframe_fuselage"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main_left",
+                "gear_main_right",
+                "gear_nose"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_main",
+                "thrust_tube",
+                "turbine_accessories"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "airframe_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "wing_joiner",
+                "wing_left",
+                "wing_right"
+              ],
+              "missing_price": []
+            }
+          },
+          "independent_component_cases": [
+            {
+              "actions": [
+                "repair",
+                "scope_clear",
+                "scope_clear"
+              ],
+              "expected_total_minor": 2500,
+              "normal_speed_mps": 3.0,
+              "passed": true
+            },
+            {
+              "actions": [
+                "replace",
+                "repair",
+                "repair"
+              ],
+              "expected_total_minor": 148000,
+              "normal_speed_mps": 20.0,
+              "passed": true
+            },
+            {
+              "actions": [
+                "replace",
+                "replace",
+                "repair"
+              ],
+              "expected_total_minor": 420000,
+              "normal_speed_mps": 37.0,
+              "passed": true
+            },
+            {
+              "actions": [
+                "replace",
+                "replace",
+                "replace"
+              ],
+              "expected_total_minor": 458000,
+              "normal_speed_mps": 42.0,
+              "passed": true
+            }
+          ],
+          "propeller_followups": []
+        },
+        "stik-electric-6s": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "item_main_gear_assembly",
+                "item_nose_gear_assembly"
+              ],
+              "zones": 3
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "item_fin_rudder",
+                "item_fuselage_front",
+                "item_fuselage_rear",
+                "item_spinner_main",
+                "item_stabilizer_elevator",
+                "item_wing_airframe"
+              ],
+              "zones": 26
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "item_propeller_main"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "item_fin_rudder",
+            "item_fuselage_front",
+            "item_fuselage_rear",
+            "item_main_gear_assembly",
+            "item_nose_gear_assembly",
+            "item_propeller_main",
+            "item_spinner_main",
+            "item_stabilizer_elevator",
+            "item_wing_airframe"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "item_fuselage_front",
+                "item_fuselage_rear"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "item_main_gear_assembly",
+                "item_nose_gear_assembly"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "item_motor_main",
+                "item_motor_mount",
+                "item_prop_adapter",
+                "item_propeller_main"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "item_fin_rudder",
+                "item_stabilizer_elevator"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "item_wing_airframe"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "item_fuselage_front",
+            "item_motor_main",
+            "item_motor_mount",
+            "item_prop_adapter"
+          ]
+        },
+        "stik-glow-55ax-2t": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "zones": 3
+            },
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "engine_and_muffler"
+              ],
+              "zones": 4
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "airframe_fuselage",
+                "airframe_tail",
+                "airframe_wing",
+                "spinner"
+              ],
+              "zones": 22
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "airframe_fuselage",
+            "airframe_tail",
+            "airframe_wing",
+            "engine_and_muffler",
+            "gear_main",
+            "gear_nose",
+            "propeller",
+            "spinner"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "airframe_fuselage"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_and_muffler",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "airframe_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "airframe_wing"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "engine_and_muffler",
+            "engine_mount"
+          ]
+        },
+        "stik-glow-61fx-2t": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "zones": 3
+            },
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "engine_and_muffler"
+              ],
+              "zones": 4
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "airframe_fuselage",
+                "airframe_tail",
+                "airframe_wing",
+                "spinner"
+              ],
+              "zones": 22
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "airframe_fuselage",
+            "airframe_tail",
+            "airframe_wing",
+            "engine_and_muffler",
+            "gear_main",
+            "gear_nose",
+            "propeller",
+            "spinner"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "airframe_fuselage"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_and_muffler",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "airframe_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "airframe_wing"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "engine_and_muffler",
+            "engine_mount"
+          ]
+        },
+        "stik-glow-fs64v-4t": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/contact_normal_proxy_mps": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "zones": 3
+            },
+            "hull/contact_normal_proxy_mps": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "engine_and_muffler"
+              ],
+              "zones": 4
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "airframe_fuselage",
+                "airframe_tail",
+                "airframe_wing",
+                "spinner"
+              ],
+              "zones": 22
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "airframe_fuselage",
+            "airframe_tail",
+            "airframe_wing",
+            "engine_and_muffler",
+            "gear_main",
+            "gear_nose",
+            "propeller",
+            "spinner"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "airframe_fuselage"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main",
+                "gear_nose"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "engine_and_muffler",
+                "engine_mount",
+                "propeller"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "airframe_tail"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "airframe_wing"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "engine_and_muffler",
+            "engine_mount"
+          ]
+        },
+        "turbo-lumber-evolution": {
+          "class_financial_coverage": {
+            "gear/compression_ratio": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "hull/depth_m": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/followup": {
+              "missing_allowance": [],
+              "missing_price": []
+            },
+            "propeller/propeller_strike": {
+              "missing_allowance": [],
+              "missing_price": []
+            }
+          },
+          "declared_classes": {
+            "gear/compression_ratio": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "gear_main",
+                "gear_tail"
+              ],
+              "zones": 3
+            },
+            "hull/depth_m": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "fuselage_main",
+                "propeller_main",
+                "spinner_main",
+                "tail_surfaces",
+                "wing_main"
+              ],
+              "zones": 17
+            },
+            "propeller/propeller_strike": {
+              "archive_middle_ok": true,
+              "archive_severe_ok": true,
+              "middle_ok": true,
+              "severe_ok": true,
+              "targets": [
+                "propeller_main"
+              ],
+              "zones": 1
+            }
+          },
+          "declared_zone_targets": [
+            "fuselage_main",
+            "gear_main",
+            "gear_tail",
+            "propeller_main",
+            "spinner_main",
+            "tail_surfaces",
+            "wing_main"
+          ],
+          "essential_groups": {
+            "body": {
+              "ids": [
+                "fuselage_main"
+              ],
+              "missing_price": []
+            },
+            "gear": {
+              "ids": [
+                "gear_main",
+                "gear_tail"
+              ],
+              "missing_price": []
+            },
+            "propulsion": {
+              "ids": [
+                "motor_main",
+                "propeller_main"
+              ],
+              "missing_price": []
+            },
+            "tail": {
+              "ids": [
+                "tail_surfaces"
+              ],
+              "missing_price": []
+            },
+            "wing": {
+              "ids": [
+                "wing_main",
+                "wing_servos"
+              ],
+              "missing_price": []
+            }
+          },
+          "propeller_followups": [
+            "fuselage_main",
+            "motor_main",
+            "spinner_main"
+          ]
+        }
+      }
+    },
+    "negative_controls": "Missing essential wing/gear prices fail class, route and fleet coverage while a separately scoped prop-only preview can still be numeric.",
+    "method": "Independent essential-group manifest and fixed observations; real accepted-event serializers through Incident and automatic estimates. No injected final dispositions.",
+    "limits": "Declared profiles, mappings, priced groups and software behavior only; no universal hazard coverage or physical validation."
+  },
+  "native": {
+    "resolution": [
+      1920,
+      1080
+    ],
+    "platform": "Windows x86_64",
+    "renderer": "Compatibility / NVIDIA RTX3090",
+    "sessions": [
+      {
+        "directory": "tmp/debug-bridge/20261109-160309-47901",
+        "engine_log_sha256": "132f5ca25e32ebf2338d8bcfc515e839d065f7598ecf7559138156dd25c3dcf1",
+        "engine_errors": 0,
+        "stopped": true,
+        "forced": false,
+        "leaked_objects": 0
+      },
+      {
+        "directory": "tmp/debug-bridge/20261109-161007-47902",
+        "engine_log_sha256": "133047f093089720bff6c0f1051ea5c47749e5b0f2393dd62abdcab137a47a83",
+        "engine_errors": 0,
+        "stopped": true,
+        "forced": false,
+        "leaked_objects": 0
+      }
+    ],
+    "normal_incident": {
+      "path": "tmp/crash-cost-r3-native/automatic-report.json",
+      "sha256": "c7d393f6a0a17d0b6e223a14c01bc299ec6776472862603071ddf2ee239d0278",
+      "tick": 11670,
+      "total_minor": 8539,
+      "currency": "USD",
+      "complete": true,
+      "active_receipt_present_without_ui_selections": true,
+      "archive_file_bytes": 41010,
+      "archive_sha256": "ed79d7b782810dee768b950ff6e55515f55bae9c50271fa4fd0ff6de8d55b13a",
+      "method": "Keyboard-seam pitch/throttle inputs through debug bridge; accepted stepping to a crash, no state or disposition injection."
+    },
+    "reopen": {
+      "proof": [
+        "LOCAL GAME REPAIR ESTIMATE",
+        false,
+        "",
+        false,
+        8539.0,
+        "auto-3f8dd88ea4a30da25a460afa8a9dd25c38f9a01de17d49f7955ccabd8bacaa18"
+      ],
+      "shot": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\debug-bridge\\20261109-160309-47901/shots/shot-55376-003.png",
+        "width": 1920,
+        "height": 1080,
+        "format": "png"
+      },
+      "loaded_codec_sha256": "fc67f4842559537db6928423a149c452b4721dc594e2ad981be689407d4bfef4"
+    },
+    "corrupt_intermediate": {
+      "path": "tmp/crash-cost-r3-native/corrupt-reopen.json",
+      "reason": "Checksum rejection and preserved file were correct, but a legacy telemetry note alone was not visibly sufficient; led to passive error notice."
+    },
+    "final_corrupt_notice": {
+      "startup_error": "",
+      "archive_load_error": "Archive envelope or exact payload digest is invalid.",
+      "notice_visible": true,
+      "notice_disabled_and_passive": true,
+      "notice_text": "Saved accident report unavailable",
+      "new_flight_started": true,
+      "accepted_tick": 65,
+      "holds": [],
+      "manual_visual_check": true
+    },
+    "images": [
+      {
+        "label": "Legacy Spanish report warning",
+        "path": "tmp/debug-bridge/20261109-160309-47901/shots/shot-55376-001.png",
+        "sha256": "beaeba418e37aadb307988b4351e251c41a3a44d984f496662e4d0c3521a418d",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      },
+      {
+        "label": "Automatic Jensen estimate",
+        "path": "tmp/debug-bridge/20261109-160309-47901/shots/shot-55376-002.png",
+        "sha256": "998e1acfde371770d026bb56ccee83f8a0b7e7187ce3ecf3b150b446fe699a82",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      },
+      {
+        "label": "Saved current estimate reopened",
+        "path": "tmp/debug-bridge/20261109-160309-47901/shots/shot-55376-003.png",
+        "sha256": "7d90d219d1cb2d407fb804fa457a3c3960513cdda63a90d0fcf488954cfbf1b5",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      },
+      {
+        "label": "Final passive corrupted-report notice",
+        "path": "tmp/debug-bridge/20261109-161007-47902/shots/shot-80732-001.png",
+        "sha256": "4f88c8ed9d2c24278b33bce9af1092cf3a6911e7e4249a0869e157f5242b74a5",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      }
+    ],
+    "source_limits": "First native session predates the last archived zero-plan guard and passive-notice change. Second session qualifies final passive UI and corruption path, before the final three-line complete-zero guard. The unchanged UI and all final archive semantics are covered by final focused checks. No final whole-application native or performance certification is claimed.",
+    "concurrency": "Unrelated headless companion work shared the host; no timings qualify a hardware budget.",
+    "isolated_profile": "tmp/crash-cost-r3-native/profile; deliberately corrupted file restored from the retained valid backup after the sessions."
+  },
+  "review": {
+    "role": "Good Enemy",
+    "method": "Read-only source review; no tests or independent physical experiment.",
+    "resolved": "Missing default receipt, inner digest proof, stripped plans including zero-work/error bypass, frozen prior fees and derivable complete-plan ranges. Concrete fixtures cover each finding.",
+    "limits": "Review of an evolving source; final follow-up checks provide the reported execution evidence."
+  },
+  "remaining": [
+    "Required CI and release-package qualification",
+    "Full advertised hazard/class desktop matrix and human acceptance",
+    "Physical damage and real serviceability validation",
+    "X-Cell financial inventory and rotorcraft cost gate",
+    "Unsupported water/recovery, delayed thermal, stopped/scenery prop channels",
+    "Nominated-hardware performance budgets",
+    "Explicit repair recipe chooser remains API-only"
+  ],
+  "git_diff_check": true
+}

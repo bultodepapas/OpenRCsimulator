@@ -281,10 +281,24 @@ func _check_direct_route() -> void:
 	await ui.close_app(app)
 
 func _check_layouts(config: Dictionary, status: Dictionary) -> void:
-	for locale: String in ["en", "es"]:
+	# Headless display drivers can retain a 64px physical window; set the logical
+	# canvas explicitly so this is a 1080p layout check, not a window-size request.
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	root.content_scale_size = Vector2i(1920, 1080)
+	var expected_statuses := {
+		"en": "1 flying · 2 after restart",
+		"es": "1 en vuelo · 2 tras reiniciar",
+		"zh_Hans": "1 架在空中 · 重启后有 2 架",
+		"pt_BR": "1 no ar · 2 após reiniciar",
+		"de": "1 in der Luft · 2 nach dem Neustart",
+		"fr": "1 en vol · 2 après redémarrage",
+		"it": "1 in volo · 2 dopo il riavvio",
+		"ru": "1 в воздухе · 2 после перезапуска",
+		"ja": "1機 · 再開後2機",
+	}
+	for locale: String in expected_statuses:
 		TranslationServer.set_locale(locale)
-		var sizing: Dictionary = UiScale.apply(root)
-		UiTheme.compact_layout = sizing.compact
+		UiTheme.compact_layout = UiScale.is_compact(root.content_scale_size)
 		UiTheme.text_scale = 1.0
 		var dialog := CompanionsDialog.new()
 		var pending_status := status.duplicate(true)
@@ -296,10 +310,10 @@ func _check_layouts(config: Dictionary, status: Dictionary) -> void:
 		await ui.settle()
 		await ui.settle()
 		var viewport: Rect2 = root.get_visible_rect()
-		var expected_status := "1 en vuelo · 2 tras reiniciar" if locale == "es" else "1 flying · 2 after restart"
-		_check("%s 1080p pending status is localized" % locale, dialog.status_label.text.contains(expected_status),
+		_check("%s 1080p pending status is localized" % locale, dialog.status_label.text.contains(expected_statuses[locale]),
 			dialog.status_label.text)
-		_check("%s 1080p dialog and footer fit" % locale, viewport.grow(1.0).encloses(dialog.dialog_panel.get_global_rect())
+		_check("%s 1080p dialog and footer fit" % locale, viewport.size == Vector2(1920.0, 1080.0)
+			and viewport.grow(1.0).encloses(dialog.dialog_panel.get_global_rect())
 			and viewport.encloses(dialog.cancel_button.get_global_rect()) and viewport.encloses(dialog.apply_button.get_global_rect())
 			and dialog._body_scroll.size.y >= 80.0, str(dialog.dialog_panel.get_global_rect()))
 		dialog.remove_button.grab_focus()

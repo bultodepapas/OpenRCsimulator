@@ -1,5 +1,56 @@
 # Grass quality implementation
 
+## L11a-R4 maintained foreground composition — 2026-11-09
+
+The vegetation audit's ground follow-up called for shorter maintained turf,
+fewer conspicuous isolated tufts and a graded transition into rough growth.
+The default imported layer now uses 4.5–11 cm short plants and 10–22 cm taller
+plants selected in smooth pilot-relative patches. Tall plant centers stay at
+least 1.5 m from managed surfaces and the pilot station. Existing row ranks, yaw bytes,
+quality caps and exclusion predicates remain authoritative; narrow custom
+fields can contain only short plants rather than forcing tall quotas.
+
+The separate runway meadow also grades whole grass height, including its
+minimum height, near the runway and pilot. Grass is scaled to 45% at the mown
+lip or within 6 m of the pilot, returning smoothly to full recipe height by
+6 m from the runway and 18 m from the pilot. Flowers/clover keep their heights.
+This corrects the earlier vigor-only treatment, which could never lower the
+22 cm floor of a tall photographic grass source. Scaling remains uniform and
+reduces footprints along with heights; positions, species, tint and colony
+membership stay intact.
+
+No asset, texture, shader, material, density setting, collision or physics data
+changed. The enhanced **imported near-grass** branch retains its original
+selection and wind/material treatment. The meadow grade applies in both modes
+and retains its saved On/Off control. The default high tier still has 150
+imported clumps, 49,579 source triangles and three batches. The captured default
+field meadow keeps 4,478 plants, 153,346 source triangles and 22 batches; its
+non-grass accent-transform hash is identical before/after.
+
+Native Windows / Godot 4.8-beta2 `cafc17a19` / Compatibility / RTX 3090, NVIDIA
+617.42: eight paired still views and a 24-sample translated-camera route were
+captured at **1920 × 1080**. Margin and reverse views show fewer large dark tufts;
+pilot/low views change more subtly. Seven stills retain their draw count; the
+car-park view uses one fewer draw. A repeat matches six of eight stills exactly;
+the overhead and car-park repeats differ at 7 and 11 pixels respectively, by at
+most one 8-bit channel level. Strict native pixel-repeat qualification is not
+claimed. [Receipt, source hashes and per-view measurements](foreground-composition-2026-11-09.json).
+
+Focused checked verification passes **462 checks**: imported placement 77,
+independent full-scan reference 117, production frame snapshots 151, meadow 59,
+mask bounds 23 and field/mask integration 35. Coverage includes complete
+transformed plant bounds, exact tier identity, translation, changed fields and
+masks, original enhanced placement parity, smaller maintained heights and
+unchanged accent heights. The independent review found no blocking defect.
+The [capture guide](../../../../tools/grass/README.md#maintained-foreground-review-l11a-r4)
+owns reproduction. Raw images remain in ignored local evidence; no images were
+added to Git. These spatial camera samples do not qualify live frame pacing,
+wind stability, other renderers, packaged builds or human aircraft recognition.
+The pre-existing 22–30 m imported-grass boundary limitation remains open. No
+frame-time or loading improvement is inferred from unchanged geometry.
+
+## Original material/wind preview — 2026-10-17
+
 2026-10-17. Owner: landscape L, coordinated with VQ and RCV. Implemented as an opt-in preview; verification results and unresolved gates are separated below. The [plan](../../../plans/grass-quality.md) owns remaining acceptance; the [44 investigations](../../grass-quality-2026-10-17.md) own external references. This report owns the experiment decisions below.
 
 Set `OPENRC_GRASS_QUALITY=enhanced` before launching to preview the combined change. Otherwise, including unknown selector values, the original ground binding, static imported materials and original allocation remain selected. [Launch and tool commands](../../../../tools/grass/README.md#enhanced-grass-preview).

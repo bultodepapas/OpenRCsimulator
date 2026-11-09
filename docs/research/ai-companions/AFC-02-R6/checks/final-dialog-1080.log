@@ -1,0 +1,45 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   new settings are Off with count 1 and seed 0
+ok   controller Accept applies the selected settings once
+ok   Apply emits the flight and presentation draft
+ok   an out-of-range seed blocks Apply
+ok   invalid Apply preserves every control value
+ok   invalid seed focuses the field for correction
+ok   Cancel requests close without applying the draft
+ok   Escape requests close from a focused control
+ok   Tab moves from enable to count
+ok   Tab moves from count to seed
+ok   controller navigation moves from enable to count
+ok   Tab reaches companion volume
+ok   controller reaches optional labels
+ok   presentation values are emitted without touching the source
+ok   in-flight status explains restart and Remove now behavior
+ok   new pending count takes precedence over the legacy admitted count
+ok   same-count flight changes still show a pending restart
+ok   disabling companions leaves the live group distinct from the next launch
+ok   unchanged flight settings do not claim a pending restart
+ok   Spanish status translates flying, pending count, and restart notice
+ok   en translates flying, session and restart status
+ok   en 1080p pending dialog and footer fit
+ok   es translates flying, session and restart status
+ok   es 1080p pending dialog and footer fit
+ok   zh_Hans translates flying, session and restart status
+ok   zh_Hans 1080p pending dialog and footer fit
+ok   pt_BR translates flying, session and restart status
+ok   pt_BR 1080p pending dialog and footer fit
+ok   de translates flying, session and restart status
+ok   de 1080p pending dialog and footer fit
+ok   fr translates flying, session and restart status
+ok   fr 1080p pending dialog and footer fit
+ok   it translates flying, session and restart status
+ok   it 1080p pending dialog and footer fit
+ok   ru translates flying, session and restart status
+ok   ru 1080p pending dialog and footer fit
+ok   ja translates flying, session and restart status
+ok   ja 1080p pending dialog and footer fit
+ok   Remove companions is shown only for an active in-flight group
+ok   Save as default checkbox is available to the Pause owner
+ok   Remove emits the immediate removal request
+ok   the dialog leaves its preferences path untouched
+Companions dialog: 0 failed

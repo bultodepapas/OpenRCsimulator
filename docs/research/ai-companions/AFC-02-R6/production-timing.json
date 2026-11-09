@@ -1,0 +1,1 @@
+{"format": "openrc-companion-timing v1", "detailed": true, "paired_tick_usec": 3974, "before_usec": 84, "after_usec": 3890, "prepare_usec": 907, "advance_usec": 2983, "world_publication_usec": 0, "after_overhead_usec": 0, "presentation_usec": 806}
