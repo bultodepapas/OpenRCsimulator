@@ -1,0 +1,80 @@
+[
+  {
+    "path": "app/economy/calculator.gd",
+    "git_blob_sha": "495fc599235c5f295b2690df1cd2d84666982397",
+    "baseline_git_blob_sha": "495fc599235c5f295b2690df1cd2d84666982397",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/catalog.gd",
+    "git_blob_sha": "bacdba0c2a854eca3fffc9a4d5b1e3b7263d257d",
+    "baseline_git_blob_sha": "bacdba0c2a854eca3fffc9a4d5b1e3b7263d257d",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/checkpoint.gd",
+    "git_blob_sha": "825b26e93200b8bc4f29b366d3eb0bb8617eb173",
+    "baseline_git_blob_sha": "825b26e93200b8bc4f29b366d3eb0bb8617eb173",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/component_resolver.gd",
+    "git_blob_sha": "c107c33552a254ae2b38922f651ffe844733e9d6",
+    "baseline_git_blob_sha": "c107c33552a254ae2b38922f651ffe844733e9d6",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/impact_budget.gd",
+    "git_blob_sha": "66730ffd67c80dfe5cb7cb3939c2ae157410528c",
+    "baseline_git_blob_sha": "66730ffd67c80dfe5cb7cb3939c2ae157410528c",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/incident.gd",
+    "git_blob_sha": "8d94e1502374125c8710e7a34a7c969136c988c5",
+    "baseline_git_blob_sha": "8d94e1502374125c8710e7a34a7c969136c988c5",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/inspection.gd",
+    "git_blob_sha": "601eb6bd087e146b70919553eeb93fc4c9bd1c49",
+    "baseline_git_blob_sha": "601eb6bd087e146b70919553eeb93fc4c9bd1c49",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/package_optimizer.gd",
+    "git_blob_sha": "28536cc6801015d3fca8be02f8899127000aa56c",
+    "baseline_git_blob_sha": "28536cc6801015d3fca8be02f8899127000aa56c",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/repair_details.gd",
+    "git_blob_sha": "23aa7fc957bc0e2b49d53b564f6a8984003497fc",
+    "baseline_git_blob_sha": "23aa7fc957bc0e2b49d53b564f6a8984003497fc",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/repair_planner.gd",
+    "git_blob_sha": "379fb8ba96422dd8826980c45be1a7209a769763",
+    "baseline_git_blob_sha": "379fb8ba96422dd8826980c45be1a7209a769763",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/replacement_quote.gd",
+    "git_blob_sha": "5786d912b468b1239da27425c1c1e4a13f4e22d3",
+    "baseline_git_blob_sha": "5786d912b468b1239da27425c1c1e4a13f4e22d3",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/settlement.gd",
+    "git_blob_sha": "55d7775aee499bac986473498c95cacc85a52f2a",
+    "baseline_git_blob_sha": "55d7775aee499bac986473498c95cacc85a52f2a",
+    "unchanged": true
+  },
+  {
+    "path": "app/economy/thermal_budget.gd",
+    "git_blob_sha": "90fbb47b38b25676e05ac150d600fa1d8c6b92aa",
+    "baseline_git_blob_sha": "90fbb47b38b25676e05ac150d600fa1d8c6b92aa",
+    "unchanged": true
+  }
+]

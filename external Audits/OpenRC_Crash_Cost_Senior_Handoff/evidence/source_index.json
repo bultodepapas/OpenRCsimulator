@@ -1,0 +1,146 @@
+{
+  "code_sources": [
+    [
+      "C01",
+      "Live incident wiring",
+      "app/main.gd",
+      "1169–1180 and 2786–2795"
+    ],
+    [
+      "C02",
+      "Incident ledger and lifecycle",
+      "app/economy/incident.gd",
+      "225–375"
+    ],
+    [
+      "C03",
+      "Cost calculation and completeness",
+      "app/economy/calculator.gd",
+      "102–106, 170–187 and 382–463"
+    ],
+    [
+      "C04",
+      "Generated fleet economics catalog",
+      "app/data/economy/catalog.json",
+      "Aircraft records and linked offers"
+    ],
+    [
+      "C05",
+      "Player aircraft catalog",
+      "app/app_state/aircraft_catalog.gd",
+      "23–162 and associated route metadata"
+    ],
+    [
+      "C06",
+      "Accepted simulation and terminal flow",
+      "app/sim/flight_session.gd",
+      "2395–2419, 2581–2589, 2930–3068, 3195–3204 and 6146–6152"
+    ],
+    [
+      "C07",
+      "Contact-event schema and generation",
+      "app/sim/aircraft_contact_events.gd",
+      "103–143, 252–305 and 356–374"
+    ],
+    [
+      "C08",
+      "Hull contact evidence",
+      "app/physics/hull_contact.gd",
+      "421–466"
+    ],
+    [
+      "C09",
+      "Impact snapshot",
+      "app/physics/impact_snapshot.gd",
+      "65–129"
+    ],
+    [
+      "C10",
+      "Inspection and checkpoint contracts",
+      "app/economy/checkpoint.gd",
+      "71–73 and restore validation; also inspection.gd and test_economy_checkpoint.gd"
+    ],
+    [
+      "C11",
+      "Impact and component helper architecture",
+      "app/economy/impact_budget.gd",
+      "Also component_resolver.gd and thermal_budget.gd; production-call search"
+    ],
+    [
+      "C12",
+      "Package coverage and replacement comparison",
+      "app/economy/package_optimizer.gd",
+      "4–14, 95–256; also replacement_quote.gd and incident.gd 359–375"
+    ],
+    [
+      "C13",
+      "Repair planning",
+      "app/economy/repair_planner.gd",
+      "22–190; also research/crash-economics/repair-recipes.json"
+    ],
+    [
+      "C14",
+      "Render damage assumptions",
+      "app/render/crash/severity.gd",
+      "4–17; also wreck.gd and director.gd 728–733"
+    ],
+    [
+      "C15",
+      "Experimental gear damage prototype",
+      "app/physics/gear_damage.gd",
+      "1–7 and 126–170; also aircraft_ground_damage.gd"
+    ],
+    [
+      "C16",
+      "Catalog identity and source checks",
+      "app/economy/catalog.gd",
+      "95–176; also build_catalog.py and build_runtime.py"
+    ],
+    [
+      "C17",
+      "Current CR-39 regression assertions",
+      "app/tests/test_economy_cr39.gd",
+      "69–73 and 104–116"
+    ],
+    [
+      "C18",
+      "Accident report headline",
+      "app/ui/accident_report.gd",
+      "522–590"
+    ],
+    [
+      "C19",
+      "Scenery contact route",
+      "app/sim/scenery_collision.gd",
+      "Hull-probe sweep and contact generation"
+    ]
+  ],
+  "docs_sources": [
+    [
+      "D01",
+      "Crash damage plan",
+      "docs/CRASH-DAMAGE-PLAN.md"
+    ],
+    [
+      "D02",
+      "Canonical crash damage economics plan",
+      "docs/plans/crash-damage-economics.md"
+    ],
+    [
+      "D03",
+      "Historical CR-39 investigation and updates",
+      "docs/research/crash-damage-investigations/CR-39/README.md"
+    ],
+    [
+      "D04",
+      "Existing CR-36 electric and package pricing research",
+      "docs/research/crash-damage-investigations/CR-36d/electric.md"
+    ],
+    [
+      "D05",
+      "Consolidated external audit queue",
+      "external Audits/CONSOLIDATED-AUDITS.md"
+    ]
+  ],
+  "base_url": "https://github.com/bultodepapas/OpenRCsimulator/blob/f47d1dc6cccb141936407d0217eafdc465558190/"
+}

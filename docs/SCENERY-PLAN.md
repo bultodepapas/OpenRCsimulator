@@ -1,6 +1,6 @@
 # Scenery plan: current field and remaining gates
 
-2026-10-20 · Revision 16 · Step prefix: **SC** · Gate: **SC**
+2026-11-09 · Revision 17 · Step prefix: **SC** · Gate: **SC**
 
 **Status:** scenery is implemented and on by default. The owner requested that default on 2026-10-11. Gate SC readability and performance acceptance remains open. SC-18, SC-22 and SC-24 are partial; optional SC-19b and SC-21 remain parked.
 

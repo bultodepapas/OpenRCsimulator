@@ -1,0 +1,1872 @@
+{
+  "schema_version": "1.0",
+  "document_type": "reviewed_external_evidence_import_candidates",
+  "project": "OPEN RC SIMULATOR",
+  "observed_date": "2026-11-09",
+  "repository_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "status": "proposed_import_candidates_not_production_updates",
+  "source_memo": "pricing_research.md",
+  "compatibility_policy": {
+    "price_evidence_is_compatibility_proof": false,
+    "exact_definition": "Offered product or variant matches the identified product reference. This does not certify installation, electrical compatibility, physical fidelity or crash-damage response.",
+    "analogue_definition": "Economic calibration reference only. Do not silently alter the simulated aircraft's mass, hardware, performance, protocol or features.",
+    "required_before_production_import": [
+      "Verify authored component-to-product mapping.",
+      "Resolve purchase-bundle overlap and sold quantity.",
+      "Preserve unknown package details.",
+      "Keep source prices separate from game allowances and labor-duration policy."
+    ]
+  },
+  "field_semantics": {
+    "price_minor": "Integer advertised price for the stated sold unit, in currency minor units; USD/EUR/AUD use 100 minor units per currency unit.",
+    "unit_and_quantity": "A set or pair is one sold package. contained_unit_count is null where exact constituent count is unknown.",
+    "package_includes": "Only explicitly retained contents are listed, except where a caution labels an inference. A null quantity is unknown.",
+    "package_excludes": "Only verified exclusions are listed. An empty array means no exclusion was verified, not that everything is included.",
+    "package_details_complete": "False means this is not an exhaustive package bill of materials.",
+    "availability": "Observed vendor status, not a promise of fulfillment and not a zero-value rule.",
+    "exact_vs_analogue": "Evidence-to-authored-product relation; never a compatibility certification.",
+    "evidence_confidence": "Qualitative confidence in product/listing evidence; not a statistical crash-damage confidence interval."
+  },
+  "global_cautions": [
+    "All prices were observed or re-opened on 2026-11-09; no purchase was made and no checkout total was obtained.",
+    "Shipping, destination tax, import fees and local shop margins are not inferred. P27 specifically states US tariffs are included.",
+    "Retail prices and availability can change independently; older crawl snippets sometimes differed from freshly opened pages.",
+    "Do not add a whole assembly or aircraft package to separately priced components already included in that package.",
+    "Damage uncertainty, price uncertainty and incomplete catalog coverage are separate concepts.",
+    "No verified universal turbine or receiver survival percentage, or 40/500 km/h destruction threshold, was established.",
+    "These evidence candidates are not a claim that every fleet aircraft now has a complete bill of materials."
+  ],
+  "observations": [
+    {
+      "id": "P01",
+      "product": "APC 12 x 6 Sport propeller",
+      "sku": "LP12060",
+      "price_minor": 539,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "12 x 6 Sport propeller",
+          "quantity": 1,
+          "unit": "propeller",
+          "sku": "LP12060"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.apcprop.com/product/12x6/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "jensen-das-ugly-stik-60",
+          "stik-glow-61fx-2t",
+          "gp-extra-300s-60"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified.",
+        "excluded_authored_variants": {
+          "stik-glow-55ax-2t": "Uses APC LP12070 12x7, not LP12060. Equal existing price does not establish identical product.",
+          "stik-glow-fs64v-4t": "Uses Master Airscrew K Series 14x6, not LP12060."
+        }
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Propeller damage alone does not establish engine damage.",
+        "Do not attach this exact SKU to every Stik variant; use the installed propeller identity."
+      ],
+      "source_type": "manufacturer",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn1764567view1"
+      ]
+    },
+    {
+      "id": "P02",
+      "product": "APC 12 x 8E Thin Electric propeller",
+      "sku": "LP12080E",
+      "price_minor": 487,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "12 x 8E propeller",
+          "quantity": 1,
+          "unit": "propeller",
+          "sku": "LP12080E"
+        },
+        {
+          "item": "Adapter ring set",
+          "quantity": 1,
+          "unit": "set",
+          "sku": "LPAR06E"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.apcprop.com/product/12x8e/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "stik-electric-6s"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Do not add another adapter ring set automatically."
+      ],
+      "source_type": "manufacturer",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn1675815view0"
+      ]
+    },
+    {
+      "id": "P03",
+      "product": "Scorpion SII-4020-540KV motor",
+      "sku": null,
+      "price_minor": 16999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "SII-4020-540KV motor",
+          "quantity": 1,
+          "unit": "motor",
+          "sku": null
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.scorpionsystem.com/catalog/aeroplane/motors_1/sii-40/SII_4020-540/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "stik-electric-6s"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "in_stock",
+        "note": "Latest opened manufacturer page showed in stock; an older search excerpt differed."
+      },
+      "cautions": [
+        "Accessory enumeration was not fully verified.",
+        "A matching product price does not validate the authored aircraft's propeller, battery or installation compatibility.",
+        "Separate manufacturer stock code not retained; model designation identifies the product."
+      ],
+      "model_designation": "SII-4020-540KV",
+      "source_type": "manufacturer",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn8670786view0"
+      ]
+    },
+    {
+      "id": "P04",
+      "product": "Scorpion Tribunus III 06-80A SBEC",
+      "sku": null,
+      "price_minor": 12999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Tribunus III 06-80A ESC",
+          "quantity": 1,
+          "unit": "ESC",
+          "sku": null
+        },
+        {
+          "item": "BEC cable",
+          "quantity": 2,
+          "unit": "cable",
+          "sku": null
+        },
+        {
+          "item": "Mounting hardware",
+          "quantity": 1,
+          "unit": "pack",
+          "sku": null
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.scorpionsystem.com/catalog/speed_controllers/tribunus_esc/tribunus_III_esc/III_06_80/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "stik-electric-6s"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "in_stock",
+        "note": "Manufacturer page showed in stock."
+      },
+      "cautions": [
+        "Included BEC cables must not be purchased a second time.",
+        "Separate manufacturer stock code not retained; model designation identifies the product."
+      ],
+      "model_designation": "Tribunus III 06-80A SBEC",
+      "source_type": "manufacturer",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn8670786view1"
+      ]
+    },
+    {
+      "id": "P05",
+      "product": "Gens ace G-Tech 6S 4000mAh 60C XT90 LiPo battery",
+      "sku": "GEA406S60X9GT",
+      "price_minor": 10999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "6S 4000mAh 60C XT90 battery",
+          "quantity": 1,
+          "unit": "battery",
+          "sku": "GEA406S60X9GT"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.genstattu.com/gens-ace-g-tech-6s-4000mah-60c-xt90/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "stik-electric-6s"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "manufacturer_stock_listed_retailer_backorder",
+        "note": "Manufacturer showed stock quantity band; Horizon showed backorder. Stock is seller-specific."
+      },
+      "cautions": [
+        "Retail price is for one battery, not the manufacturer's wholesale 12-pieces-per-box metadata.",
+        "Battery replacement must be assessed separately from motor and ESC replacement."
+      ],
+      "source_type": "manufacturer_with_retail_package_corroboration",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn8670786view2",
+        "turn2845323view2",
+        "turn4180837view5"
+      ],
+      "supporting_urls": [
+        "https://www.horizonhobby.com/product/22.2v-4000mah-6s-60c-g-tech-lipo-battery-xt90/GEA406S60X9GT.html"
+      ]
+    },
+    {
+      "id": "P06",
+      "product": "Hitec HS-311 standard servo, retail single",
+      "sku": "HS-311",
+      "price_minor": 1699,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "HS-311 servo",
+          "quantity": 1,
+          "unit": "servo",
+          "sku": "HS-311"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://hitecrcd.com/servos/servos-by-category/standard-sport/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "jensen-das-ugly-stik-60",
+          "stik-glow-61fx-2t",
+          "stik-glow-55ax-2t",
+          "stik-glow-fs64v-4t",
+          "stik-electric-6s",
+          "gp-extra-300s-60",
+          "p51d-mustang-120"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "economic_analogue_unless_explicitly_installed",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "The lower bulk price requires a minimum of ten and is a different offer.",
+        "Generic cost class only; unsuitable as a universal replacement for flight-control servos."
+      ],
+      "source_type": "manufacturer",
+      "evidence_confidence": "high_price_economic_analogue",
+      "evidence_refs": [
+        "turn2631344view2"
+      ]
+    },
+    {
+      "id": "P07",
+      "product": "Hitec HS-5485HB digital sport servo",
+      "sku": "HS-5485HB",
+      "price_minor": 2999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "HS-5485HB digital servo",
+          "quantity": 1,
+          "unit": "servo",
+          "sku": "HS-5485HB"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://hitecrcd.com/servos/servos-by-category/standard-sport/",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "jensen-das-ugly-stik-60",
+          "stik-glow-61fx-2t",
+          "stik-glow-55ax-2t",
+          "stik-glow-fs64v-4t",
+          "stik-electric-6s",
+          "gp-extra-300s-60"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "economic_analogue",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Manufacturer positions the product for sport airplanes up to .60, but this is not proof of fit for any particular authored surface."
+      ],
+      "source_type": "manufacturer",
+      "evidence_confidence": "high_price_economic_analogue",
+      "evidence_refs": [
+        "turn2631344view2"
+      ]
+    },
+    {
+      "id": "P08",
+      "product": "Spektrum AR631+ DSMX 6-channel AS3X and SAFE receiver",
+      "sku": "SPM-1031",
+      "price_minor": 6999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "AR631+ receiver",
+          "quantity": 1,
+          "unit": "receiver",
+          "sku": "SPM-1031"
+        },
+        {
+          "item": "Manual",
+          "quantity": 1,
+          "unit": "manual",
+          "sku": null
+        }
+      ],
+      "package_excludes": [
+        "Transmitter"
+      ],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/ar631-dsmx-6-channel-as3x-and-safe-receiver/SPM-1031.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "jensen-das-ugly-stik-60",
+          "stik-glow-61fx-2t",
+          "stik-glow-55ax-2t",
+          "stik-glow-fs64v-4t",
+          "stik-electric-6s",
+          "gp-extra-300s-60",
+          "turbo-lumber-evolution"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "economic_analogue",
+      "availability": {
+        "status": "in_stock",
+        "note": "In stock when opened."
+      },
+      "cautions": [
+        "Do not silently change the installed receiver, stabilization features or transmitter protocol."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high_price_economic_analogue",
+      "evidence_refs": [
+        "turn1764567view2"
+      ]
+    },
+    {
+      "id": "P09",
+      "product": "Hangar 9 Ultra Stick 10cc wing with ailerons and flaps",
+      "sku": "HAN234502",
+      "price_minor": 11999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Wing assembly with named ailerons and flaps",
+          "quantity": 1,
+          "unit": "assembly",
+          "sku": "HAN234502"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/wing-with-ailerons-and-flaps-ultra-stick-10cc/HAN234502.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "jensen-das-ugly-stik-60",
+          "stik-glow-61fx-2t",
+          "stik-glow-55ax-2t",
+          "stik-glow-fs64v-4t",
+          "stik-electric-6s"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "economic_analogue",
+      "availability": {
+        "status": "in_stock",
+        "note": "Latest fresh open showed in stock; older search excerpt showed backorder."
+      },
+      "cautions": [
+        "Not an exact-fit Jensen or Great Planes replacement.",
+        "Servo contents were not enumerated: unknown, not a verified exclusion.",
+        "Do not separately charge named included surfaces without checking package coverage."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high_price_economic_analogue",
+      "evidence_refs": [
+        "turn3357770view0"
+      ]
+    },
+    {
+      "id": "P10",
+      "product": "Hangar 9 Ultra Stick 10cc fuselage",
+      "sku": "HAN234501",
+      "price_minor": 9999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Fuselage",
+          "quantity": 1,
+          "unit": "fuselage",
+          "sku": "HAN234501"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/fuselage-ultra-stick-10cc/HAN234501.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "jensen-das-ugly-stik-60",
+          "stik-glow-61fx-2t",
+          "stik-glow-55ax-2t",
+          "stik-glow-fs64v-4t",
+          "stik-electric-6s"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "economic_analogue",
+      "availability": {
+        "status": "in_stock",
+        "note": "Latest fresh open showed in stock."
+      },
+      "cautions": [
+        "Not an exact-fit Jensen or Great Planes replacement.",
+        "Other fittings were not enumerated; preserve that uncertainty."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high_price_economic_analogue",
+      "evidence_refs": [
+        "turn3357770view1"
+      ]
+    },
+    {
+      "id": "P11",
+      "product": "E-flite Turbo Timber Evolution 1.5m wing",
+      "sku": "EFL105252",
+      "price_minor": 5999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Wing replacement assembly",
+          "quantity": 1,
+          "unit": "assembly",
+          "sku": "EFL105252"
+        }
+      ],
+      "package_excludes": [
+        "Servos"
+      ],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "turbo-lumber-evolution"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_supplier_replacement_economic_analogue_to_fictional_aircraft",
+      "availability": {
+        "status": "in_stock",
+        "note": "In stock when opened."
+      },
+      "cautions": [
+        "Source explicitly excludes servos.",
+        "Surviving wing servos should be reused.",
+        "Existing grouped $115.95 wing-plus-four-servos valuation must not be applied to foam-only wing replacement."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view0",
+        "turn1264201view1"
+      ]
+    },
+    {
+      "id": "P12",
+      "product": "E-flite Turbo Timber Evolution 1.5m fuselage",
+      "sku": "EFL105251",
+      "price_minor": 5499,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Fuselage",
+          "quantity": 1,
+          "unit": "fuselage",
+          "sku": "EFL105251"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/fuselage-turbo-timber-evolution-1.5m/EFL105251.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "turbo-lumber-evolution"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_supplier_replacement_economic_analogue_to_fictional_aircraft",
+      "availability": {
+        "status": "in_stock",
+        "note": "In stock when opened."
+      },
+      "cautions": [
+        "Detailed fittings and electronics contents were not enumerated.",
+        "Do not treat the title as a complete installed-electronics package."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn9001297view0"
+      ]
+    },
+    {
+      "id": "P13",
+      "product": "E-flite three-blade 11 x 7.3 propeller",
+      "sku": "EFL5962",
+      "price_minor": 799,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Three-blade 11 x 7.3 propeller",
+          "quantity": 1,
+          "unit": "propeller",
+          "sku": "EFL5962"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "turbo-lumber-evolution"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_supplier_replacement_economic_analogue_to_fictional_aircraft",
+      "availability": {
+        "status": "in_stock",
+        "note": "In stock when opened."
+      },
+      "cautions": [
+        "Spinner and motor are distinct damage and purchase decisions."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn9001297view1"
+      ]
+    },
+    {
+      "id": "P14",
+      "product": "E-flite Turbo Timber Evolution updated landing-gear set with heavy-duty springs",
+      "sku": "EFL-1249",
+      "price_minor": 1699,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "set",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "Updated landing-gear set with heavy-duty springs",
+          "quantity": 1,
+          "unit": "set",
+          "sku": "EFL-1249"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/e-flite-complete-updated-landing-gear-set-with-heavy-duty-springs-turbo-timber-evolution-1.5m/EFL-1249.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "turbo-lumber-evolution"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_supplier_replacement_economic_analogue_to_fictional_aircraft",
+      "availability": {
+        "status": "in_stock",
+        "note": "In stock when opened."
+      },
+      "cautions": [
+        "Exact wheel and other accessory membership was not verified.",
+        "Updated set is an alternative to the older gear set, not an additional simultaneous replacement."
+      ],
+      "source_type": "manufacturer_retail",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn9001297view2"
+      ]
+    },
+    {
+      "id": "P15",
+      "product": "E-flite Turbo Timber Evolution 1.5m PNP with floats",
+      "sku": "EFL105275B",
+      "price_minor": 29999,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "PNP_package",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "Turbo Timber Evolution airframe",
+          "quantity": 1,
+          "unit": "airframe",
+          "sku": null
+        },
+        {
+          "item": "Installed metal-geared servo",
+          "quantity": 6,
+          "unit": "servo",
+          "sku": "SPMSA370"
+        },
+        {
+          "item": "Installed brushless outrunner motor",
+          "quantity": 1,
+          "unit": "motor",
+          "sku": "SPM-1012"
+        },
+        {
+          "item": "Installed Avian 70A Smart Lite ESC",
+          "quantity": 1,
+          "unit": "ESC",
+          "sku": "SPMXAE70E"
+        },
+        {
+          "item": "Optional-use leading-edge slats",
+          "quantity": 1,
+          "unit": "set",
+          "sku": null
+        },
+        {
+          "item": "Optional-use floats",
+          "quantity": 1,
+          "unit": "set",
+          "sku": null
+        }
+      ],
+      "package_excludes": [
+        "Receiver",
+        "Transmitter",
+        "Flight battery",
+        "LiPo charger"
+      ],
+      "package_details_complete": false,
+      "url": "https://www.horizonhobby.com/product/turbo-timber-evolution-1.5m-pnp-includes-floats/EFL105275B.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "turbo-lumber-evolution"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "complete_package_economic_analogue_to_fictional_aircraft",
+      "availability": {
+        "status": "backorder",
+        "note": "Backorder when opened; estimated month varied between retrievals and is not retained as a promise."
+      },
+      "cautions": [
+        "This whole-aircraft package is a mutually exclusive purchase alternative to separate included components.",
+        "Storefront box list does not separately enumerate propeller/spinner; assembly instructions and completion requirements support inclusion as model hardware. This remains an explicitly labeled inference.",
+        "Do not automatically charge a new transmitter or charger for an onboard aircraft crash."
+      ],
+      "source_type": "manufacturer_retail_with_manufacturer_manual",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn4180837view1",
+        "turn6053893view0",
+        "turn6181577view0",
+        "turn5707465view0",
+        "turn5707465view1"
+      ],
+      "supporting_urls": [
+        "https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dwb7e67f91/Manuals/EFL105250B-Manual_EN.pdf"
+      ]
+    },
+    {
+      "id": "P16",
+      "product": "CARF Corsair right folding wing",
+      "sku": "791215",
+      "price_minor": 75400,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Right folding wing",
+          "quantity": 1,
+          "unit": "wing",
+          "sku": "791215"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "variant_unresolved_economic_reference",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Not the $341 plug-in outer-wing SKU791201.",
+        "Adjacent surfaces have separate listings, but full wing-package membership is not established here.",
+        "Single-side damage must not automatically buy both wings.",
+        "Physical wing_joiner provenance describes CARF plug-in wings with aluminium tubes, while aircraft-costing research cites folding-wing ARF 795000 and spares 791215/791216. Installed variant and entire modeled-wing versus retail-part coverage remain unresolved. Do not bind this price as an exact installed replacement until reviewed. Existing wing rows are unpriced; this finding does not demonstrate a charged wrong-wing bill."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "blocked_pending_installed_variant_and_package_coverage",
+      "source_conflict": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:wing_joiner",
+        "economic_source": "research/crash-economics/aircraft-costing.json:f4u-corsair-250",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190"
+      }
+    },
+    {
+      "id": "P17",
+      "product": "CARF Corsair left folding wing",
+      "sku": "791216",
+      "price_minor": 75400,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Left folding wing",
+          "quantity": 1,
+          "unit": "wing",
+          "sku": "791216"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "variant_unresolved_economic_reference",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Not the $341 plug-in outer-wing SKU791202.",
+        "Full accessory membership is not established here.",
+        "Single-side damage must not automatically buy both wings.",
+        "Physical wing_joiner provenance describes CARF plug-in wings with aluminium tubes, while aircraft-costing research cites folding-wing ARF 795000 and spares 791215/791216. Installed variant and entire modeled-wing versus retail-part coverage remain unresolved. Do not bind this price as an exact installed replacement until reviewed. Existing wing rows are unpriced; this finding does not demonstrate a charged wrong-wing bill."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "blocked_pending_installed_variant_and_package_coverage",
+      "source_conflict": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:wing_joiner",
+        "economic_source": "research/crash-economics/aircraft-costing.json:f4u-corsair-250",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190"
+      }
+    },
+    {
+      "id": "P18",
+      "product": "CARF Corsair fuselage",
+      "sku": "791100",
+      "price_minor": 177000,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "Fuselage",
+          "quantity": 1,
+          "unit": "fuselage",
+          "sku": "791100"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "model_family_reference_scope_unresolved",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Fuselage part, not a complete powered aircraft.",
+        "Detailed fittings and installed-electronics membership were not verified.",
+        "The modeled front/rear composite shell groups do not establish installed CARF SKU791100 or the entire sold-fuselage contents. This is a CARF-family economic reference spanning potential multiple physical regions. Do not infer an exact SKU, divide its price arbitrarily, or duplicate full-fuselage coverage."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "review_required_installed_identity_and_package_coverage",
+      "binding_review": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:fuselage shell inventory",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+        "reason": "The modeled front/rear composite shell groups do not establish installed CARF SKU791100 or the entire sold-fuselage contents. This is a CARF-family economic reference spanning potential multiple physical regions. Do not infer an exact SKU, divide its price arbitrarily, or duplicate full-fuselage coverage."
+      }
+    },
+    {
+      "id": "P19",
+      "product": "CARF Corsair main pneumatic retract set",
+      "sku": "790500",
+      "price_minor": 133000,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "set",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "Main pneumatic retract set",
+          "quantity": 1,
+          "unit": "set",
+          "sku": "790500"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "variant_or_package_unresolved_economic_reference",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Price is for a set, not one landing-gear leg: do not multiply it by two.",
+        "Pneumatic configuration is distinct from current F4U4 V2 electric retracts.",
+        "Wheels are separately listed; full set membership beyond named retracts remains unverified.",
+        "The modeled main left/right gear provenance names Sierra Giant Scale rotating retract, strut, wheel and door estimates. CARF790500 is not established as that installed assembly or as covering all its contents. Current main-gear costing rows are unpriced; no existing wrong charge is demonstrated."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "review_required_installed_identity_and_package_coverage",
+      "binding_review": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:gear_main_left/gear_main_right",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+        "reason": "The modeled main left/right gear provenance names Sierra Giant Scale rotating retract, strut, wheel and door estimates. CARF790500 is not established as that installed assembly or as covering all its contents. Current main-gear costing rows are unpriced; no existing wrong charge is demonstrated."
+      }
+    },
+    {
+      "id": "P20",
+      "product": "CARF Corsair 7-inch main wheels, pair",
+      "sku": "790550",
+      "price_minor": 34600,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "pair",
+        "contained_unit_count": 2,
+        "contained_unit": "wheel"
+      },
+      "package_includes": [
+        {
+          "item": "7-inch wheel",
+          "quantity": 2,
+          "unit": "wheel",
+          "sku": "790550"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "variant_or_package_unresolved_economic_reference",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "One purchased pair covers both main wheels; do not multiply the pair price by two.",
+        "The installed main-gear provenance refers to Sierra assemblies; CARF790550 wheel-pair compatibility and exact included scope are not established. Sold quantity is one pair. Do not infer exact fit, double the pair, or duplicate wheels already included in a chosen gear package."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "review_required_installed_identity_and_package_coverage",
+      "binding_review": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:gear_main_left/gear_main_right",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+        "reason": "The installed main-gear provenance refers to Sierra assemblies; CARF790550 wheel-pair compatibility and exact included scope are not established. Sold quantity is one pair. Do not infer exact fit, double the pair, or duplicate wheels already included in a chosen gear package."
+      }
+    },
+    {
+      "id": "P21",
+      "product": "CARF Corsair pneumatic tail-gear set",
+      "sku": "790600",
+      "price_minor": 60800,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "set",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "Pneumatic tail-gear set",
+          "quantity": 1,
+          "unit": "set",
+          "sku": "790600"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "variant_or_package_unresolved_economic_reference",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Distinct purchase from main retracts and main wheels.",
+        "Accessory-level contents were not fully enumerated.",
+        "The physical inventory describes a CARF retractable tail-wheel assembly with doors without an exact installed SKU. CARF790600 is a candidate reference; establish revision and whether the sold set covers wheel, actuator, doors and hardware before an exact installed binding."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "review_required_installed_identity_and_package_coverage",
+      "binding_review": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:gear_tail",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+        "reason": "The physical inventory describes a CARF retractable tail-wheel assembly with doors without an exact installed SKU. CARF790600 is a candidate reference; establish revision and whether the sold set covers wheel, actuator, doors and hardware before an exact installed binding."
+      }
+    },
+    {
+      "id": "P22",
+      "product": "CARF Corsair Navy folding-wing ARF",
+      "sku": "795000",
+      "price_minor": 517000,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "ARF_package",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "Navy folding-wing ARF package",
+          "quantity": 1,
+          "unit": "ARF_package",
+          "sku": "795000"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "f4u-corsair-250"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "alternate_variant_package_not_matched",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Full package membership was not independently enumerated.",
+        "Do not assume installed engine, electronics or all optional equipment are included.",
+        "Whole structure purchase is an alternative to constituent spare structures, not additive.",
+        "Physical wing_joiner provenance describes CARF plug-in wings with aluminium tubes, while aircraft-costing research cites folding-wing ARF 795000 and spares 791215/791216. Installed variant and entire modeled-wing versus retail-part coverage remain unresolved. Do not bind this price as an exact installed replacement until reviewed. Existing wing rows are unpriced; this finding does not demonstrate a charged wrong-wing bill."
+      ],
+      "source_type": "manufacturer",
+      "market": "USA/Canada USD regional storefront",
+      "evidence_confidence": "high_price_incomplete_package_detail",
+      "evidence_refs": [
+        "turn3025913view4",
+        "turn1264201view5",
+        "turn1264201view6",
+        "turn1264201view7"
+      ],
+      "binding_status": "blocked_pending_installed_variant_and_package_coverage",
+      "source_conflict": {
+        "physical_source": "app/data/aircraft/f4u_corsair_250.json:wing_joiner",
+        "economic_source": "research/crash-economics/aircraft-costing.json:f4u-corsair-250",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190"
+      }
+    },
+    {
+      "id": "P23",
+      "product": "JetCat P100-RX turbine, non-BL variant, CARF listing",
+      "sku": "850100",
+      "price_minor": 278000,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "JetCat P100-RX turbine with identified autostart and valves",
+          "quantity": 1,
+          "unit": "engine",
+          "sku": "850100"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://carf-models.com/de/products/jetcat-p100rx",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "sebart-avanti-s-a200-p100rx"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "not_verified",
+        "note": "No reliable stock status retained from the observation."
+      },
+      "cautions": [
+        "Non-BL P100-RX must not be silently substituted with P100-RX-BL.",
+        "Complete ECU/pump/accessory bundle membership was not resolved; do not add overlapping replacements by assumption.",
+        "This is advertised engine replacement price, not a crash inspection or repair quote."
+      ],
+      "source_type": "direct_vendor",
+      "evidence_confidence": "high_price_incomplete_package_detail",
+      "evidence_refs": [
+        "turn3025913view5"
+      ]
+    },
+    {
+      "id": "P24",
+      "product": "SebArt Avanti S Jet 2m White/Blue ARF without retracts",
+      "sku": "SEB-A200-WB",
+      "price_minor": 274900,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "ARF_package",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "Avanti S Jet 2m ARF airframe",
+          "quantity": 1,
+          "unit": "airframe",
+          "sku": "SEB-A200-WB"
+        },
+        {
+          "item": "Assembly hardware and plastic parts",
+          "quantity": 1,
+          "unit": "kit",
+          "sku": null
+        },
+        {
+          "item": "Cockpit and canopy",
+          "quantity": 1,
+          "unit": "set",
+          "sku": null
+        },
+        {
+          "item": "Decals",
+          "quantity": 1,
+          "unit": "set",
+          "sku": null
+        },
+        {
+          "item": "Illustrated manual",
+          "quantity": 1,
+          "unit": "manual",
+          "sku": null
+        }
+      ],
+      "package_excludes": [
+        "Radio, minimum nine channels",
+        "Eight to ten standard servos",
+        "Landing gear",
+        "Battery",
+        "Turbine"
+      ],
+      "package_details_complete": false,
+      "url": "https://www.turbines-rc.com/en/jets-edf/574-sebart-avanti-s-jet-2m-whiteblue-arf-no-retracts.html",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "sebart-avanti-s-a200-p100rx"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "authored_family_commercial_reference_revision_unresolved",
+      "availability": {
+        "status": "available_on_order_conflicting_stock_text",
+        "note": "Listing says available on order and also warns last items in stock; no guaranteed shipment status inferred."
+      },
+      "cautions": [
+        "Not a ready-to-fly aircraft price.",
+        "No-retract and retract-equipped bundles are different purchase alternatives.",
+        "Conflicting stock wording prevents claiming immediate shipping.",
+        "The source identifies the A200 family and modeled dimensions. The specific White/Blue no-retract commercial package is an economic reference with revision and exact delivered scope pending. Current A200 manufacturer list uses a different size label. Preserve the historical offer without certifying exact fit or substituting its package for independently required installation parts."
+      ],
+      "source_type": "retailer",
+      "evidence_confidence": "high_price_and_stated_package",
+      "evidence_refs": [
+        "turn3357770view6",
+        "turn3357770view7"
+      ],
+      "binding_status": "review_required_installed_identity_and_package_coverage",
+      "binding_review": {
+        "physical_source": "app/data/aircraft/sebart_avanti_s_a200.json:description/inventory",
+        "commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+        "reason": "The source identifies the A200 family and modeled dimensions. The specific White/Blue no-retract commercial package is an economic reference with revision and exact delivered scope pending. Current A200 manufacturer list uses a different size label. Preserve the historical offer without certifying exact fit or substituting its package for independently required installation parts."
+      }
+    },
+    {
+      "id": "P25",
+      "product": "Desert Aircraft DA-120 engine",
+      "sku": "MDA120",
+      "price_minor": 124900,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "DA-120 engine package",
+          "quantity": 1,
+          "unit": "engine_package",
+          "sku": "MDA120"
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://www.desertaircraft.com/products/da-120",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "p51d-mustang-120"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "exact_authored_product",
+      "availability": {
+        "status": "sold_out",
+        "note": "Manufacturer listed estimated production timing late November, subject to change without guaranteed availability."
+      },
+      "cautions": [
+        "Current extracted page did not enumerate all package accessories.",
+        "Existing catalog historical accessory claims were not re-certified here; retain provenance rather than inferring absence.",
+        "Sold-out status does not make replacement value zero.",
+        "Production lead time is an estimate."
+      ],
+      "source_type": "manufacturer",
+      "evidence_confidence": "high_price_incomplete_package_detail",
+      "evidence_refs": [
+        "turn3357770view3"
+      ]
+    },
+    {
+      "id": "P26",
+      "product": "RadioMaster RP1 V2 ExpressLRS 2.4GHz nano receiver, FCC or LBT",
+      "sku": "HP0157.RX-RP1-V2",
+      "price_minor": 1899,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "item"
+      },
+      "package_includes": [
+        {
+          "item": "RP1 V2 receiver",
+          "quantity": 1,
+          "unit": "receiver",
+          "sku": null
+        },
+        {
+          "item": "65mm UFL 2.4GHz T antenna",
+          "quantity": 1,
+          "unit": "antenna",
+          "sku": null
+        },
+        {
+          "item": "CRSF wire",
+          "quantity": 1,
+          "unit": "wire",
+          "sku": null
+        },
+        {
+          "item": "User manual",
+          "quantity": 1,
+          "unit": "manual",
+          "sku": null
+        }
+      ],
+      "package_excludes": [],
+      "package_details_complete": false,
+      "url": "https://radiomasterrc.com/products/rp1-expresslrs-2-4ghz-nano-receiver",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "moonrunner-x99"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "economic_analogue_unless_explicitly_installed",
+      "availability": {
+        "status": "available",
+        "note": "Both FCC and LBT variants were marked available."
+      },
+      "cautions": [
+        "FCC and LBT firmware variants are alternatives, not two receivers.",
+        "Do not charge included antenna or CRSF wire again.",
+        "Price match does not establish radio protocol or onboard flight-controller compatibility."
+      ],
+      "variants": [
+        {
+          "name": "FCC",
+          "sku": "HP0157.RX-RP1-V2",
+          "price_minor": 1899,
+          "currency": "USD"
+        },
+        {
+          "name": "LBT",
+          "sku": "HP0157.RX-RP1-V2-LBT",
+          "price_minor": 1899,
+          "currency": "USD"
+        }
+      ],
+      "source_type": "manufacturer",
+      "evidence_confidence": "high_price_and_package",
+      "evidence_refs": [
+        "turn3357770view4",
+        "turn5106466view6"
+      ]
+    },
+    {
+      "id": "P27",
+      "product": "SonicModell Skywalker X8 2122mm FPV complete PNP kit",
+      "sku": "RB-Son-11",
+      "price_minor": 50741,
+      "currency": "USD",
+      "unit_and_quantity": {
+        "sold_quantity": 1,
+        "sold_unit": "PNP_package",
+        "contained_unit_count": null
+      },
+      "package_includes": [
+        {
+          "item": "X8 airframe",
+          "quantity": 1,
+          "unit": "airframe",
+          "sku": null
+        },
+        {
+          "item": "Motor",
+          "quantity": 1,
+          "unit": "motor",
+          "sku": null
+        },
+        {
+          "item": "ESC",
+          "quantity": 1,
+          "unit": "ESC",
+          "sku": null
+        },
+        {
+          "item": "Servos",
+          "quantity": null,
+          "unit": "servo",
+          "sku": null
+        }
+      ],
+      "package_excludes": [
+        "Battery",
+        "Transmitter and receiver"
+      ],
+      "package_details_complete": false,
+      "url": "https://www.robotshop.com/products/sonicmodell-skywalker-x8-2122-flying-wing-drone-fpv-complete-kit",
+      "observed_date": "2026-11-09",
+      "applicability": {
+        "aircraft_ids": [
+          "moonrunner-x99"
+        ],
+        "scope": "Economic evidence candidate only; installation and physical compatibility are not certified."
+      },
+      "exact_vs_analogue": "complete_package_economic_analogue_to_fictional_aircraft",
+      "availability": {
+        "status": "in_stock",
+        "quantity": 10,
+        "note": "Latest opened page showed ten units; the older catalog observation recorded backorder."
+      },
+      "cautions": [
+        "Motor, ESC and servo models and servo count are unspecified.",
+        "Complete kit overlaps separately priced electronics; use as an alternative basket.",
+        "Do not manufacture per-wing or per-body vendor prices by arbitrary allocation.",
+        "Price includes tariffs in USA; destination shipping remains separate."
+      ],
+      "manufacturer_model": "Skywalker_X8_WHITE_PNP",
+      "source_type": "retailer",
+      "market": "RobotShop US; advertised price includes US tariffs",
+      "evidence_confidence": "high_price_partial_package_detail",
+      "evidence_refs": [
+        "turn5106466view4",
+        "turn5106466view5"
+      ]
+    }
+  ],
+  "subtotals": [
+    {
+      "id": "stik_electric_four_exact_products",
+      "aircraft_id": "stik-electric-6s",
+      "observation_ids": [
+        "P02",
+        "P03",
+        "P04",
+        "P05"
+      ],
+      "quantities": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "price_minor": 41484,
+      "currency": "USD",
+      "scope": "One APC prop, one Scorpion motor, one Scorpion ESC and one Gens ace battery only.",
+      "is_complete_aircraft_value": false,
+      "cautions": [
+        "Does not include the remaining airframe/electronics/hardware.",
+        "Does not certify prop/motor/battery compatibility."
+      ]
+    }
+  ],
+  "specific_notes": [
+    {
+      "id": "timber_wing_servos_excluded",
+      "observation_id": "P11",
+      "statement": "EFL105252 wing costs 5999 USD minor units and explicitly excludes servos. Preserve surviving servos; do not replace four servos automatically.",
+      "catalog_grouped_wing_plus_four_servos_minor": 11595,
+      "currency": "USD",
+      "is_grouped_value_a_bare_wing_price": false
+    },
+    {
+      "id": "timber_pnp_bundle",
+      "observation_id": "P15",
+      "statement": "PNP basket includes six servos, motor, ESC and floats; excludes receiver, transmitter, battery and charger. It is an alternative to individually buying included components."
+    },
+    {
+      "id": "corsair_sold_quantity",
+      "observation_ids": [
+        "P19",
+        "P20"
+      ],
+      "statement": "133000 USD minor units is one main-retract set; 34600 is one wheel pair. Do not double either price for two main legs/wheels."
+    }
+  ],
+  "labor_evidence": [
+    {
+      "id": "L01",
+      "provider": "Ray & Robin's Hobby Center",
+      "location": "West Falmouth, Maine, USA",
+      "service": "RC repair including cars and airplanes",
+      "price_minor": 3000,
+      "currency": "USD",
+      "billing_unit": "hour",
+      "url": "https://mainehobbies.com/services/",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn5594065view0"
+      ],
+      "scope": "Repairs generally offered for vehicles purchased through this shop.",
+      "parts_included": null,
+      "cautions": [
+        "A single advertised shop rate, not a worldwide or Colombian market average.",
+        "Does not establish task duration or turbine-specialist rates."
+      ]
+    },
+    {
+      "id": "L02",
+      "provider": "Dailey RC / 5TRC",
+      "location": "USA",
+      "service": "Inspection, tuning, installation and repair for 1/5-scale RC vehicles",
+      "price_minor": 5300,
+      "currency": "USD",
+      "billing_unit": "hour",
+      "url": "https://5trc.com/product/rofun-rovan-repairs-and-customizations-hourly-rate-dailey-rc/",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn9880578view0"
+      ],
+      "parts_included": false,
+      "cautions": [
+        "Parts are extra.",
+        "Not an aircraft or turbine specialist rate.",
+        "Do not treat L01 and L02 as a statistical market interval."
+      ]
+    }
+  ],
+  "proposed_labor_policy": {
+    "is_market_fact": false,
+    "default_workshop_rate_minor_per_hour": 3000,
+    "currency": "USD",
+    "documented_example": "L01",
+    "modes": [
+      "DIY cash: parts, consumables and necessary specialist services.",
+      "Workshop valuation: DIY cash plus explicitly authored active labor."
+    ],
+    "cautions": [
+      "Task durations require authored calibration; they were not measured in this research.",
+      "Passive adhesive curing is not active labor.",
+      "Charge shared setup/teardown once per incident.",
+      "A game policy of 30 USD/hour must not be described as a universal market rate."
+    ]
+  },
+  "jetcat_nonflatfee_caveat": {
+    "id": "S01",
+    "provider": "JetCat",
+    "service": "Repair return and cost-estimate process",
+    "url": "https://www.jetcat.de/jetcat/2024/Reparaturformulare%20240722/Repair%20Return%20Form%20JetCat%20-EN-%202024.pdf",
+    "index_url": "https://www.jetcat.de/de/service/Reparatur-Ruecksendeformular",
+    "observed_date": "2026-11-09",
+    "form_year": 2024,
+    "evidence_refs": [
+      "turn2845323view3",
+      "turn5106466view0"
+    ],
+    "price_minor": null,
+    "currency": null,
+    "approval_threshold_minor": 35000,
+    "approval_threshold_currency": "EUR",
+    "threshold_basis": "net",
+    "threshold_is_flat_fee": false,
+    "under_threshold_process": "Form states repairs below EUR350 net may be carried out without consultation.",
+    "over_threshold_process": "Form states a cost estimate is issued above EUR350 net.",
+    "send_with_turbine": [
+      "ECU",
+      "Pump"
+    ],
+    "do_not_send": [
+      "Batteries",
+      "Fuel tanks"
+    ],
+    "cautions": [
+      "EUR350 is an approval threshold, not a fixed inspection fee, expected repair bill or replacement price.",
+      "No public fixed P100-RX post-crash inspection fee was verified.",
+      "This source does not establish that every minor impact requires factory return.",
+      "P23 is a new-engine replacement price and must not be substituted for an unknown inspection quote."
+    ]
+  },
+  "specialist_service_evidence": [
+    {
+      "id": "S02",
+      "provider": "PST Jets",
+      "service": "Crash service",
+      "price_minor": 15000,
+      "currency": "USD",
+      "billing_unit": "minimum_labor_charge",
+      "url": "https://pstjets.com/RC_models/services.php",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn7892149view1"
+      ],
+      "additional_charges": [
+        "Actual replacement parts",
+        "Shipping"
+      ],
+      "cautions": [
+        "Not a JetCat P100-RX quote.",
+        "Page footer is 2017; date of last tariff revision not verified.",
+        "Useful process example, not an automatic production tariff."
+      ]
+    },
+    {
+      "id": "S03",
+      "provider": "KingTech Turbines Australia",
+      "service": "Routine scheduled 25-hour turbine service",
+      "price_minor": 88000,
+      "currency": "AUD",
+      "billing_unit": "scheduled_service",
+      "url": "https://www.kingtechturbinesaustralia.com.au/product-page/25-hr-turbine-service",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn3118998view0"
+      ],
+      "additional_charges": [
+        "Shipping to service center",
+        "Additional work quoted separately"
+      ],
+      "cautions": [
+        "AUD, not USD.",
+        "Routine scheduled service, not crash repair.",
+        "Not a JetCat service quote."
+      ]
+    }
+  ],
+  "manufacturer_guidance_references": [
+    {
+      "id": "G01",
+      "manufacturer": "Horizon Hobby / E-flite",
+      "document": "Turbo Timber Evolution EFL105250B / EFL105275B instruction manual",
+      "url": "https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dwb7e67f91/Manuals/EFL105250B-Manual_EN.pdf",
+      "observed_date": "2026-11-09",
+      "document_version": "Updated 10/23",
+      "evidence_refs": [
+        "turn6181577view0",
+        "turn5707465view0",
+        "turn5707465view1",
+        "turn5707465view2"
+      ],
+      "relevant_pages": [
+        3,
+        13,
+        14,
+        18
+      ],
+      "supported_findings": [
+        "EPO foam can be repaired with adhesives; replace parts when they cannot be repaired.",
+        "Propulsion left powered during an imminent crash can add airframe, motor and ESC damage.",
+        "Check receiver mounting security after impact.",
+        "Cracked or nicked propellers and spinners should not be installed.",
+        "PNP motor, ESC and six servos are installed; receiver, battery, charger and transmitter are required to complete."
+      ],
+      "modeling_implication": "Use separate repair, inspect, reuse and replace decisions; include propulsion-running state as evidence.",
+      "cautions": [
+        "Does not provide numerical crash-survival probabilities.",
+        "Do not treat receiver security checking as a universal certification of undamaged electronics."
+      ]
+    },
+    {
+      "id": "G02",
+      "manufacturer": "Spektrum / Horizon Hobby",
+      "document": "Smart Batteries safety sheet",
+      "url": "https://www.spektrumrc.com/on/demandware.static/-/Sites-horizon-master/default/dwa92ae859/Manuals/SMART%20Batteries%20Safety%20Sheet%20Update%20Manual-MULTI.pdf",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn5106466view2",
+        "turn9008724view0"
+      ],
+      "supported_findings": [
+        "Post-crash battery observation is called for.",
+        "Damaged or swollen batteries should be retired from use."
+      ],
+      "modeling_implication": "Battery inspection and battery replacement are distinct states; battery damage does not automatically mean all electronics are destroyed.",
+      "cautions": [
+        "No numerical battery crash-survival curve established."
+      ]
+    },
+    {
+      "id": "G03",
+      "manufacturer": "JetCat",
+      "document": "JetCat RX turbine instruction manual",
+      "url": "https://www.jetcat.de/jetcat/Bedienungsanleitung/Strahlturbinen_DE_JetCat_RX_%20120218.pdf",
+      "index_url": "https://www.jetcat.de/en/service/User-manual",
+      "observed_date": "2026-11-09",
+      "document_version": "Legacy text dated August2011, currently linked by manufacturer",
+      "evidence_refs": [
+        "turn5594065view1",
+        "turn3118998view1",
+        "turn3118998view3",
+        "turn3118998view4"
+      ],
+      "supported_findings": [
+        "Includes P100-RX.",
+        "Describes factory inspection around25 operating hours.",
+        "Excludes crash-caused failure from warranty."
+      ],
+      "modeling_implication": "Scheduled maintenance, crash inspection and replacement are separate activities.",
+      "cautions": [
+        "No mandatory factory-return-after-every-minor-impact rule was located.",
+        "No fixed P100-RX post-crash inspection fee or survival curve was verified."
+      ]
+    },
+    {
+      "id": "G04",
+      "manufacturer": "Hitec",
+      "document": "Warranties, Service & Repairs",
+      "url": "https://hitecrcd.com/warranties-service-repairs/",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn5106466view1",
+        "turn9008724search3"
+      ],
+      "supported_findings": [
+        "Manufacturer provides a repair route.",
+        "Accident damage is outside stated warranty coverage."
+      ],
+      "modeling_implication": "Repairable servo damage need not imply automatic whole-servo replacement.",
+      "cautions": [
+        "Warranty exclusion does not mean all servos fail in a crash."
+      ]
+    },
+    {
+      "id": "G05",
+      "manufacturer": "APC",
+      "document": "Technical support advisories",
+      "url": "https://www.apcprop.com/technical-information/technical-support-advisories/",
+      "observed_date": "2026-11-09",
+      "evidence_refs": [
+        "turn9008724search6"
+      ],
+      "supported_findings": [
+        "Documented multi-rotor QR assembly advisory prohibits operation with damaged blades or hubs."
+      ],
+      "modeling_implication": "Separate blade/hub damage from motor damage.",
+      "cautions": [
+        "Assembly-specific guidance; do not generalize to a claim that every fixed-wing propeller touch destroys its motor."
+      ]
+    }
+  ],
+  "root_review_corrections": [
+    {
+      "date": "2026-11-09",
+      "item": "P01",
+      "reason": "Restricted exact product applicability to the three configurations that actually author LP12060; excluded 55AX and FS64V by pinned catalog evidence."
+    }
+  ],
+  "reviewed_date": "2026-11-09",
+  "supersedes_for_import": "evidence/price_observations_2026-11-09.json; historical file retained unchanged",
+  "review_corrections": [
+    {
+      "id": "P16",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "variant_unresolved_economic_reference",
+      "reason": "Physical wing_joiner provenance describes CARF plug-in wings with aluminium tubes, while aircraft-costing research cites folding-wing ARF 795000 and spares 791215/791216. Installed variant and entire modeled-wing versus retail-part coverage remain unresolved. Do not bind this price as an exact installed replacement until reviewed. Existing wing rows are unpriced; this finding does not demonstrate a charged wrong-wing bill."
+    },
+    {
+      "id": "P17",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "variant_unresolved_economic_reference",
+      "reason": "Physical wing_joiner provenance describes CARF plug-in wings with aluminium tubes, while aircraft-costing research cites folding-wing ARF 795000 and spares 791215/791216. Installed variant and entire modeled-wing versus retail-part coverage remain unresolved. Do not bind this price as an exact installed replacement until reviewed. Existing wing rows are unpriced; this finding does not demonstrate a charged wrong-wing bill."
+    },
+    {
+      "id": "P22",
+      "field": "exact_vs_analogue",
+      "previous": "exact_variant_complete_structure_reference",
+      "reviewed": "alternate_variant_package_not_matched",
+      "reason": "Physical wing_joiner provenance describes CARF plug-in wings with aluminium tubes, while aircraft-costing research cites folding-wing ARF 795000 and spares 791215/791216. Installed variant and entire modeled-wing versus retail-part coverage remain unresolved. Do not bind this price as an exact installed replacement until reviewed. Existing wing rows are unpriced; this finding does not demonstrate a charged wrong-wing bill."
+    },
+    {
+      "id": "P18",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "model_family_reference_scope_unresolved",
+      "reason": "The modeled front/rear composite shell groups do not establish installed CARF SKU791100 or the entire sold-fuselage contents. This is a CARF-family economic reference spanning potential multiple physical regions. Do not infer an exact SKU, divide its price arbitrarily, or duplicate full-fuselage coverage."
+    },
+    {
+      "id": "P19",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "variant_or_package_unresolved_economic_reference",
+      "reason": "The modeled main left/right gear provenance names Sierra Giant Scale rotating retract, strut, wheel and door estimates. CARF790500 is not established as that installed assembly or as covering all its contents. Current main-gear costing rows are unpriced; no existing wrong charge is demonstrated."
+    },
+    {
+      "id": "P20",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "variant_or_package_unresolved_economic_reference",
+      "reason": "The installed main-gear provenance refers to Sierra assemblies; CARF790550 wheel-pair compatibility and exact included scope are not established. Sold quantity is one pair. Do not infer exact fit, double the pair, or duplicate wheels already included in a chosen gear package."
+    },
+    {
+      "id": "P21",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "variant_or_package_unresolved_economic_reference",
+      "reason": "The physical inventory describes a CARF retractable tail-wheel assembly with doors without an exact installed SKU. CARF790600 is a candidate reference; establish revision and whether the sold set covers wheel, actuator, doors and hardware before an exact installed binding."
+    },
+    {
+      "id": "P24",
+      "field": "exact_vs_analogue",
+      "previous": "exact_authored_variant_reference",
+      "reviewed": "authored_family_commercial_reference_revision_unresolved",
+      "reason": "The source identifies the A200 family and modeled dimensions. The specific White/Blue no-retract commercial package is an economic reference with revision and exact delivered scope pending. Current A200 manufacturer list uses a different size label. Preserve the historical offer without certifying exact fit or substituting its package for independently required installation parts."
+    }
+  ]
+}

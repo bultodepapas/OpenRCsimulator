@@ -1,0 +1,565 @@
+{
+  "document_type": "research_only_incremental_price_observations",
+  "schema_version": "1.0",
+  "observed_date": "2026-11-09",
+  "repository_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "status": "proposed_research_not_imported_not_qualified",
+  "instructions": "IDs N01–N17 are new research IDs, not existing catalog offer IDs. No catalog mutation, purchase, physical compatibility certification, live stock guarantee, currency conversion, or whole-aircraft quotation is implied. Preserve currencies and tax basis; resolve variant and package scope before import. Where an offer already exists, refresh by adding a dated observation rather than overwriting history.",
+  "observations": [
+    {
+      "id": "N01",
+      "product": "APC Sport propeller 12x7",
+      "sku": "LP12070",
+      "amount_minor": 539,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "propeller",
+      "package_includes": [
+        "one 12x7 Sport propeller"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart shown; quantity and fulfillment unverified",
+      "source_url": "https://www.apcprop.com/product/12x7/",
+      "evidence_refs": [
+        "turn1443622view0"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "stik-glow-55ax-2t:propeller / item_propeller_main"
+      ],
+      "classification": "exact authored product; existing offer recheck",
+      "cautions": [
+        "Image alt text LP12060 conflicts with the product code and dimensions; rely on textual LP12070 12x7. Equal price with 12x6 does not make it the same SKU.",
+        "Installation and flight suitability not established."
+      ],
+      "existing_offer_id": "apc-lp12070",
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N02",
+      "product": "Master Airscrew K Series propeller 14x6",
+      "sku": null,
+      "amount_minor": 1165,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "propeller",
+      "package_includes": [
+        "one K Series 14x6"
+      ],
+      "package_excludes": [],
+      "availability": "Sold out",
+      "source_url": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
+      "evidence_refs": [
+        "turn1443622view1"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "stik-glow-fs64v-4t:propeller / item_propeller_main"
+      ],
+      "classification": "exact authored product; existing offer recheck",
+      "cautions": [
+        "Retailer code MAS1460 is not displayed on this manufacturer page.",
+        "No availability or installation certification."
+      ],
+      "existing_offer_id": "ma-k14x6",
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N03",
+      "product": "Corsair right plug-in wing",
+      "sku": "791201",
+      "amount_minor": 34100,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "item",
+      "package_includes": [
+        "one right plug-in wing"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart shown; inventory count and shipment not verified",
+      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "evidence_refs": [
+        "turn6654090view2"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "f4u-corsair-250:wing_right"
+      ],
+      "classification": "variant-specific candidate; coverage and physical equivalence unresolved",
+      "cautions": [
+        "Do not assign an entire simulated wing panel to an outer panel without resolving the center wing and overlapping coverage.",
+        "Plug-in and folding versions are different purchase paths. Detailed membership of surfaces, hinges, servos and hardware is not confirmed."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N04",
+      "product": "Corsair left plug-in wing",
+      "sku": "791202",
+      "amount_minor": 34100,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "item",
+      "package_includes": [
+        "one left plug-in wing"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart shown; inventory count and shipment not verified",
+      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "evidence_refs": [
+        "turn6654090view2"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "f4u-corsair-250:wing_left"
+      ],
+      "classification": "variant-specific candidate; coverage and physical equivalence unresolved",
+      "cautions": [
+        "Do not assign an entire simulated wing panel to an outer panel without resolving the center wing and overlapping coverage.",
+        "Plug-in and folding versions are different purchase paths. Detailed membership of surfaces, hinges, servos and hardware is not confirmed."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N05",
+      "product": "Corsair center plug-in wing with carbon spar",
+      "sku": "791203",
+      "amount_minor": 81200,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "item",
+      "package_includes": [
+        "one center plug-in wing",
+        "carbon spar"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart shown; inventory count and shipment not verified",
+      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "evidence_refs": [
+        "turn6654090view2"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "f4u-corsair-250:wing_left",
+        "f4u-corsair-250:wing_right",
+        "f4u-corsair-250:wing_joiner"
+      ],
+      "classification": "variant-specific candidate; coverage and physical equivalence unresolved",
+      "cautions": [
+        "Do not assign an entire simulated wing panel to an outer panel without resolving the center wing and overlapping coverage.",
+        "Plug-in and folding versions are different purchase paths. Detailed membership of surfaces, hinges, servos and hardware is not confirmed."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N06",
+      "product": "Corsair plug-in wing tube set",
+      "sku": "790201",
+      "amount_minor": 13100,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "one plug-in wing tube set; number in separately sold set not specified"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart shown; inventory count and shipment not verified",
+      "source_url": "https://carf-models.com/en/products/f4u-1d-corsair/id/301/region/5",
+      "evidence_refs": [
+        "turn6654090view1"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "f4u-corsair-250:wing_joiner"
+      ],
+      "classification": "variant-specific candidate; coverage and physical equivalence unresolved",
+      "cautions": [
+        "Do not assign an entire simulated wing panel to an outer panel without resolving the center wing and overlapping coverage.",
+        "Plug-in and folding versions are different purchase paths. Detailed membership of surfaces, hinges, servos and hardware is not confirmed."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N07",
+      "product": "Moki 250 standard radial, Germany",
+      "sku": "MOKI 250",
+      "amount_minor": 409800,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "engine",
+      "package_includes": [
+        "engine, rear carburetor, mounted ring muffler and electronic ignition system per listed description"
+      ],
+      "package_excludes": [],
+      "availability": "Delivery time requires inquiry; no inventory count verified",
+      "source_url": "https://www.mokimotor.de/produkte/motoren/moki-250/",
+      "evidence_refs": [
+        "turn3639435view0"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "f4u-corsair-250:engine_moki_s250",
+        "f4u-corsair-250:ignition_module"
+      ],
+      "classification": "same model family reference; exact CARF box contents not established",
+      "cautions": [
+        "Site lists propeller and ignition battery as accessories; do not treat them as included.",
+        "Moki 250 and CARF 953250 box contents cannot be made identical merely by inference.",
+        "Radial cast mount vs separate installation/firewall mount must be crosswalked.",
+        "The related catalog offer is a different seller and USD observation, not the same seller offer to overwrite or refresh."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price for pickup/shipping within Germany, VAT included, shipping extra; no foreign destination quote",
+      "related_existing_offer_id": "f4u_carf_953250_20261025"
+    },
+    {
+      "id": "N08",
+      "product": "Moki S250 radial with electric starter",
+      "sku": "953260",
+      "amount_minor": 535000,
+      "currency": "USD",
+      "sold_quantity": 1,
+      "sold_unit": "engine",
+      "package_includes": [
+        "engine",
+        "rear carburetor",
+        "electric starter",
+        "mounted ring muffler",
+        "electronic ignition system"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart shown; count and delivery unverified",
+      "source_url": "https://carf-models.com/en/products/product-e6b6167a-7bdd-5cc4-4dc7-ea304d034f1d",
+      "evidence_refs": [
+        "turn1443622view2"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "f4u-corsair-250:engine_moki_s250"
+      ],
+      "classification": "different starter-equipped variant; alternative only",
+      "cautions": [
+        "The catalog price is standard 953250 $4,610; 953260 cannot be used as the exact standard SKU or added on top of it."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Destination tax and shipping not established"
+    },
+    {
+      "id": "N09",
+      "product": "Avanti S canopy and cockpit",
+      "sku": "A200-01 W/Y",
+      "amount_minor": 19000,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "one canopy and cockpit set"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:canopy_pilot"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N10",
+      "product": "Avanti S fuselage",
+      "sku": "A200-04 W/Y",
+      "amount_minor": 170900,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "item",
+      "package_includes": [
+        "one fuselage; detailed contents unspecified"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:fuselage_shell_*"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N11",
+      "product": "Avanti S wing set",
+      "sku": "A200-05 W/Y",
+      "amount_minor": 70300,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "one wing set; detailed membership unspecified"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:wing_left",
+        "sebart-avanti-s-a200-p100rx:wing_right"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N12",
+      "product": "Avanti S tail set",
+      "sku": "A200-06 W/Y",
+      "amount_minor": 22800,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "one tail set; detailed membership unspecified"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:stabilizer_left",
+        "sebart-avanti-s-a200-p100rx:stabilizer_right",
+        "sebart-avanti-s-a200-p100rx:vertical_tail"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N13",
+      "product": "Avanti S wing carbon tube set",
+      "sku": "A200-09",
+      "amount_minor": 5700,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "two carbon wing tubes of different sizes"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:wing_joiner"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N14",
+      "product": "Avanti S complete electric landing gear set",
+      "sku": "A200-EL set",
+      "amount_minor": 65000,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "one complete electric landing gear set; detailed contents not itemized in price list"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:gear_main_left",
+        "sebart-avanti-s-a200-p100rx:gear_main_right",
+        "sebart-avanti-s-a200-p100rx:gear_nose"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF.",
+        "Electric actuation is not the modeled pneumatic configuration; alternative economic reference only."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N15",
+      "product": "Avanti S kerosene and smoke tank",
+      "sku": "A200-16",
+      "amount_minor": 27700,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "item",
+      "package_includes": [
+        "one kerosene and smoke tank"
+      ],
+      "package_excludes": [],
+      "availability": "No stock or lead time supplied in price list",
+      "source_url": "https://www.sebart.it/download/sebart-pricelist.pdf",
+      "evidence_refs": [
+        "turn3001459view4"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:fuel_tank"
+      ],
+      "classification": "same A200 family; revision/fit requires verification",
+      "cautions": [
+        "2026 list labels A200 Avanti S 2.3 m; verify exact revision, dimensions, color and membership against modeled 2.0 m span/2.2 m length before binding.",
+        "Preserve set coverage; do not allocate one set price to each side or add contained parts to an ARF."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Price list states prices include 20% VAT; shipping, market and destination terms not specified"
+    },
+    {
+      "id": "N16",
+      "product": "Electron SebArt Avanti S landing gear combination",
+      "sku": "SebArt_AvantiS",
+      "amount_minor": 80600,
+      "currency": "EUR",
+      "sold_quantity": 1,
+      "sold_unit": "set",
+      "package_includes": [
+        "two ER-40 main retracts",
+        "one ER-40 nose retract with steering mechanism",
+        "two main struts and one nose strut",
+        "two main wheels with electric brakes",
+        "one nose wheel",
+        "one controller",
+        "cables and a battery connector"
+      ],
+      "package_excludes": [],
+      "availability": "Add to Cart after selections; no stock or lead time verified",
+      "source_url": "https://www.electron-retracts.com/product/avanti-s-sebart-combo/",
+      "evidence_refs": [
+        "turn1443622view3",
+        "turn1836347search2"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "sebart-avanti-s-a200-p100rx:gear_main_left",
+        "sebart-avanti-s-a200-p100rx:gear_main_right",
+        "sebart-avanti-s-a200-p100rx:gear_nose"
+      ],
+      "classification": "Avanti S manufacturer-described combination; different electric operation",
+      "cautions": [
+        "From price, not final configured price; options include retract model, controller, steering servo and hardware.",
+        "Not the modeled pneumatic gear; exact aircraft revision/fit unverified."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "From €806 excluding tax; shipping and destination unknown",
+      "supporting_urls": [
+        "https://www.electron-retracts.com/classic-retracts/"
+      ]
+    },
+    {
+      "id": "N17",
+      "product": "Skywalker X8 airframe kit or PNP storefront listing",
+      "sku": "FA33-6290-33",
+      "amount_minor": 1254000,
+      "currency": "UAH",
+      "sold_quantity": 1,
+      "sold_unit": "listing",
+      "package_includes": [
+        "Seller describes KIT structure and carbon components and separately describes PNP with motor, ESC, two servos and propeller"
+      ],
+      "package_excludes": [
+        "KIT described without electronics"
+      ],
+      "availability": "Add to Cart shown; availability and priced variant unresolved",
+      "source_url": "https://flasharmy.com.ua/en/komplekt-dlya-zbirki-aviamodeli-skywalker-x8",
+      "evidence_refs": [
+        "turn3001459view5"
+      ],
+      "observed_date": "2026-11-09",
+      "candidate_aircraft_and_components": [
+        "moonrunner-x99:wing_left",
+        "moonrunner-x99:wing_right",
+        "moonrunner-x99:body_main",
+        "moonrunner-x99:spars_main"
+      ],
+      "classification": "economic analogue candidate; listed price-to-variant ambiguity blocks import",
+      "cautions": [
+        "Page simultaneously discusses KIT and PNP. Do not assign listed amount to either variant without seller clarification.",
+        "Do not convert UAH to USD or claim identical fit to fictional MoonRunner."
+      ],
+      "existing_offer_id": null,
+      "tax_shipping": "Destination tax and shipping not established"
+    }
+  ],
+  "unpriced_evidence": [
+    {
+      "id": "U01",
+      "product": "SebArt A200-13 dual-wall exhaust pipe for P100RX",
+      "url": "https://sebart.it/accessories.html",
+      "evidence_refs": [
+        "turn2987211view0",
+        "turn2987211view1"
+      ],
+      "availability": "manufacturer accessories page says in stock for pipe group, timestamp not established; exact individual stock unconfirmed",
+      "price": null,
+      "finding": "Matches named A200-13/P100RX. Manufacturer manual calls it optional. Current 2026 price list instead lists A200-14 for P160-180, so no transfer of that price.",
+      "binding": "Potential exact item identity; obtain current dated sale price and revision evidence."
+    },
+    {
+      "id": "U02",
+      "product": "P-51 airframe and gear",
+      "price": null,
+      "finding": "The physical file describes plans/short-kit class from multiple references and no single specified commercial kit or retract manufacturer. Scale and appearance alone cannot identify one exact SKU.",
+      "binding": "Maintain null until a selected reference product is declared or documented compatible; use transparent authored financial allowance only if desired."
+    }
+  ],
+  "validation": {
+    "existing_catalog_unchanged": true,
+    "historical_record_policy": "Immutable observations; N01 and N02 recheck existing offer IDs without rewriting them",
+    "exchange_rates_applied": false,
+    "new_research_imported_into_catalog": false,
+    "existing_offers_n01_n02_already_bound_in_pinned_catalog": true
+  }
+}

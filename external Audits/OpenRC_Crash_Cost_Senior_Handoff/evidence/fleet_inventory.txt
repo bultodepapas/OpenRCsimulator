@@ -1,0 +1,177 @@
+
+## jensen-das-ugly-stik-60
+complete True rows 9 priced 9 unpriced 0 prices bases {'estimated': 4, 'price_proxy': 4, 'exact_product_price': 1}
+priced subtotal nominal/low/high $994.33 $827.34 $1,331.34 (not whole-build total if incomplete)
+inventory signature 20 bound 19 excluded 1 uncovered [] contacts signed/mapped/unmapped 30 30 []
+propeller propeller prop_inspections ['engine_and_muffler', 'covered_airframe_and_installation_hardware'] source hash match True
+unpriced -
+priced rows:
+  covered_airframe_and_installation_hardware x1 $350.00 [280.00–450.00] estimated stik_airframe_ultra_stick_10cc_arf Backorder | October 2026
+  engine_and_muffler x1 $249.99 [225.00–350.00] price_proxy os-max55ax-osmg0557 Horizon Hobby page says Backorder, expected November 2026
+  fuselage_servos x3 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  central_aileron_servo x1 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  receiver x1 $99.99 [99.99–99.99] price_proxy receiver_spektrum_ar8360t_plus In stock
+  propeller x1 $5.39 [5.39–5.39] exact_product_price apc-lp12060 APC product page shows Add to Cart; inventory count is not shown
+  receiver_battery x1 $25.00 [20.00–35.00] estimated None 
+  onboard_fuel x1 $3.00 [1.00–5.00] estimated None 
+  final_assembly_and_commissioning x1 $125.00 [60.00–210.00] estimated None 
+
+## stik-glow-61fx-2t
+complete True rows 9 priced 9 unpriced 0 prices bases {'estimated': 4, 'price_proxy': 4, 'exact_product_price': 1}
+priced subtotal nominal/low/high $994.33 $827.34 $1,331.34 (not whole-build total if incomplete)
+inventory signature 20 bound 19 excluded 1 uncovered [] contacts signed/mapped/unmapped 30 30 []
+propeller propeller prop_inspections ['engine_and_muffler', 'covered_airframe_and_installation_hardware'] source hash match True
+unpriced -
+priced rows:
+  covered_airframe_and_installation_hardware x1 $350.00 [280.00–450.00] estimated stik_airframe_ultra_stick_10cc_arf Backorder | October 2026
+  engine_and_muffler x1 $249.99 [225.00–350.00] price_proxy os-max55ax-osmg0557 Horizon Hobby page says Backorder, expected November 2026
+  fuselage_servos x3 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  central_aileron_servo x1 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  receiver x1 $99.99 [99.99–99.99] price_proxy receiver_spektrum_ar8360t_plus In stock
+  propeller x1 $5.39 [5.39–5.39] exact_product_price apc-lp12060 APC product page shows Add to Cart; inventory count is not shown
+  receiver_battery x1 $25.00 [20.00–35.00] estimated None 
+  onboard_fuel x1 $3.00 [1.00–5.00] estimated None 
+  final_assembly_and_commissioning x1 $125.00 [60.00–210.00] estimated None 
+
+## stik-glow-55ax-2t
+complete True rows 9 priced 9 unpriced 0 prices bases {'estimated': 4, 'price_proxy': 4, 'exact_product_price': 1}
+priced subtotal nominal/low/high $994.33 $827.34 $1,331.34 (not whole-build total if incomplete)
+inventory signature 20 bound 19 excluded 1 uncovered [] contacts signed/mapped/unmapped 30 30 []
+propeller propeller prop_inspections ['engine_and_muffler', 'covered_airframe_and_installation_hardware'] source hash match True
+unpriced -
+priced rows:
+  covered_airframe_and_installation_hardware x1 $350.00 [280.00–450.00] estimated stik_airframe_ultra_stick_10cc_arf Backorder | October 2026
+  engine_and_muffler x1 $249.99 [225.00–350.00] price_proxy os-max55ax-osmg0557 Horizon Hobby page says Backorder, expected November 2026
+  fuselage_servos x3 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  central_aileron_servo x1 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  receiver x1 $99.99 [99.99–99.99] price_proxy receiver_spektrum_ar8360t_plus In stock
+  propeller x1 $5.39 [5.39–5.39] exact_product_price apc-lp12070 APC product page shows Add to Cart; inventory count is not shown
+  receiver_battery x1 $25.00 [20.00–35.00] estimated None 
+  onboard_fuel x1 $3.00 [1.00–5.00] estimated None 
+  final_assembly_and_commissioning x1 $125.00 [60.00–210.00] estimated None 
+
+## stik-glow-fs64v-4t
+complete True rows 9 priced 9 unpriced 0 prices bases {'estimated': 4, 'exact_product_price': 2, 'price_proxy': 3}
+priced subtotal nominal/low/high $1,300.59 $1,158.59 $1,537.59 (not whole-build total if incomplete)
+inventory signature 20 bound 19 excluded 1 uncovered [] contacts signed/mapped/unmapped 30 30 []
+propeller propeller prop_inspections ['engine_and_muffler', 'covered_airframe_and_installation_hardware'] source hash match True
+unpriced -
+priced rows:
+  covered_airframe_and_installation_hardware x1 $350.00 [280.00–450.00] estimated stik_airframe_ultra_stick_10cc_arf Backorder | October 2026
+  engine_and_muffler x1 $549.99 [549.99–549.99] exact_product_price os-fs64v-osmg901 Horizon Hobby page says In Stock
+  fuselage_servos x3 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  central_aileron_servo x1 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  receiver x1 $99.99 [99.99–99.99] price_proxy receiver_spektrum_ar8360t_plus In stock
+  propeller x1 $11.65 [11.65–11.65] exact_product_price ma-k14x6 Manufacturer product page says Sold out
+  receiver_battery x1 $25.00 [20.00–35.00] estimated None 
+  onboard_fuel x1 $3.00 [1.00–5.00] estimated None 
+  final_assembly_and_commissioning x1 $125.00 [60.00–210.00] estimated None 
+
+## stik-electric-6s
+complete False rows 20 priced 0 unpriced 20 prices bases {}
+priced subtotal nominal/low/high $0.00 $0.00 $0.00 (not whole-build total if incomplete)
+inventory signature 20 bound 20 excluded 0 uncovered [] contacts signed/mapped/unmapped 30 30 []
+propeller item_propeller_main prop_inspections ['item_motor_main', 'item_motor_mount', 'item_prop_adapter', 'item_fuselage_front'] source hash match True
+unpriced item_spinner_main x1, item_receiver_main x1, item_fuselage_servos x1, item_aileron_servo x1, item_nose_gear_assembly x1, item_main_gear_assembly x1, item_wing_airframe x1, item_fuselage_front x1, item_fuselage_rear x1, item_stabilizer_elevator x1, item_fin_rudder x1, item_control_hardware x1, item_motor_main x1, item_propeller_main x1, item_esc_main x1, item_motor_mount x1, item_prop_adapter x1, item_power_wiring x1, item_battery_restraint x1, item_battery_main x1
+priced rows:
+
+## gp-extra-300s-60
+complete False rows 22 priced 3 unpriced 19 prices bases {'exact_product_price': 1, 'price_proxy': 2}
+priced subtotal nominal/low/high $175.34 $175.34 $225.34 (not whole-build total if incomplete)
+inventory signature 22 bound 21 excluded 1 uncovered [] contacts signed/mapped/unmapped 14 14 []
+propeller propeller prop_inspections ['engine_main', 'engine_mount', 'spinner_main', 'fuselage_front'] source hash match True
+unpriced engine_main x1, muffler_main x1, spinner_main x1, engine_mount x1, cowl_main x1, fuel_tank x1, receiver_battery x1, receiver_radio x1, landing_gear_main x1, landing_gear_tail x1, wing_main x1, fuselage_front x1, fuselage_rear x1, canopy_pilot x1, horizontal_tail x1, vertical_tail x1, control_hardware x1, fuel_flight x1, final_assembly_and_commissioning x1
+priced rows:
+  propeller x1 $5.39 [5.39–5.39] exact_product_price apc-lp12060 APC product page shows Add to Cart; inventory count is not shown
+  fuselage_servos x3 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+  aileron_servos x2 $33.99 [33.99–43.99] price_proxy savox-sc0252mgp Adrenaline RC displayed only 2 units left
+
+## p51d-mustang-120
+complete False rows 27 priced 4 unpriced 23 prices bases {'exact_product_price': 1, 'price_proxy': 3}
+priced subtotal nominal/low/high $2,456.71 $2,456.71 $2,456.71 (not whole-build total if incomplete)
+inventory signature 33 bound 32 excluded 1 uncovered [] contacts signed/mapped/unmapped 18 18 []
+propeller propeller prop_inspections ['engine_main', 'muffler_pair', 'propeller', 'spinner_main', 'engine_mount', 'cowl_main', 'fuselage_front'] source hash match True
+unpriced propeller x1, spinner_main x1, engine_mount x1, cowl_main x1, fuel_tank x1, fuel_flight x1, ignition_battery x1, receiver_batteries x2, receiver_radio x1, gear_main_left x1, gear_main_right x1, gear_tail x1, wing_left x1, wing_right x1, wing_joiner x1, fuselage_front x1, belly_scoop x1, fuselage_rear x1, canopy_pilot x1, horizontal_tail x1, vertical_tail x1, control_hardware x1, final_assembly_and_commissioning x1
+priced rows:
+  engine_main x1 $1249.00 [1249.00–1249.00] exact_product_price p51_engine_da120 Sold out; manufacturer page gives an estimated production time of late September without guaranteed availability
+  muffler_pair x2 $225.00 [225.00–225.00] price_proxy da_ks3086_canister_desert_aircraft_20261016 Variant available; no shipment estimate stated
+  flight_control_servos x7 $103.39 [103.39–103.39] price_proxy savox-sa1230sgp ServoCity page shows a quantity control; explicit stock status is not displayed
+  throttle_choke_servos x2 $16.99 [16.99–16.99] price_proxy stik_servos_hitec_hs311_four In stock
+
+## f4u-corsair-250
+complete False rows 33 priced 13 unpriced 20 prices bases {'price_proxy': 11, 'estimated': 2}
+priced subtotal nominal/low/high $7,113.88 $7,113.88 $7,113.88 (not whole-build total if incomplete)
+inventory signature 34 bound 33 excluded 1 uncovered [] contacts signed/mapped/unmapped 27 27 []
+propeller propeller prop_inspections ['engine_moki_s250', 'spinner_main', 'engine_mount', 'cowl_main', 'fuselage_front', 'ignition_module', 'throttle_choke_servos'] source hash match True
+unpriced ignition_module x1, propeller x1, spinner_main x1, engine_mount x1, fuel_tank x1, fuel_flight x1, ignition_battery x1, receiver_batteries x1, receiver_radio x1, gear_main_left x1, gear_main_right x1, gear_tail x1, wing_left x1, wing_right x1, wing_joiner x1, fuselage_front x1, fuselage_rear x1, canopy_pilot x1, control_hardware x1, final_assembly_and_commissioning x1
+priced rows:
+  engine_moki_s250 x1 $4610.00 [4610.00–4610.00] price_proxy f4u_carf_953250_20261025 Add to Cart shown; stock quantity and delivery not stated
+  cowl_main x1 $262.00 [262.00–262.00] price_proxy f4u_carf_791102_20261025 Add to Cart shown; stock quantity and delivery not stated
+  retract_air x1 $479.00 [479.00–479.00] price_proxy f4u_carf_790650_20261025 Add to Cart shown; stock quantity and delivery not stated
+  aileron_servo_left x1 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  aileron_servo_right x1 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  flap_servos_left x2 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  flap_servos_right x2 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  elevator_servos x2 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  rudder_servo x1 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  tail_steering_servo x1 $103.39 [103.39–103.39] price_proxy f4u_savox_sa1230sgp_servocity_20261025 Quantity control shown; explicit stock status not displayed
+  throttle_choke_servos x2 $16.99 [16.99–16.99] price_proxy f4u_hitec_hs311_horizon_20261025 In Stock displayed at observation
+  horizontal_tail x1 $454.00 [454.00–454.00] estimated None 
+  vertical_tail x1 $241.00 [241.00–241.00] estimated None 
+
+## sebart-avanti-s-a200-p100rx
+complete False rows 15 priced 5 unpriced 10 prices bases {'exact_product_price': 3, 'price_proxy': 2}
+priced subtotal nominal/low/high $6,559.12 $6,559.12 $6,559.12 (not whole-build total if incomplete)
+inventory signature 39 bound 38 excluded 1 uncovered [] contacts signed/mapped/unmapped 16 16 []
+propeller  prop_inspections [] source hash match True
+unpriced turbine_accessories x1, thrust_tube x1, gear_main_left x1, gear_main_right x1, gear_nose x1, pneumatic_system x1, receiver_batteries x3, avionics x1, fuel_flight x1, final_assembly_and_commissioning x1
+priced rows:
+  airframe_arf_package x1 $2749.00 [2749.00–2749.00] exact_product_price sebart-avanti-a200-arf-no-retracts-turbines-rc Seller page says Available on order and also warns Last items in stock; availability text conflicts
+  engine_main x1 $2780.00 [2780.00–2780.00] exact_product_price jetcat-p100-rx-850100-carf CARF-Models shows Add to Cart; no stock count or lead time is stated
+  fuel_tank x1 $225.00 [225.00–225.00] exact_product_price sebart-a200-16-kero-smoke-tank-gator Gator RC page says In stock
+  servos_ds8411_class x5 $98.99 [98.99–98.99] price_proxy savox-sa1258tgp Nitro Hobbies listing says out of stock
+  servos_ds8911_class x3 $103.39 [103.39–103.39] price_proxy savox-sa1230sgp ServoCity page shows a quantity control; explicit stock status is not displayed
+
+## turbo-lumber-evolution
+complete False rows 14 priced 8 unpriced 6 prices bases {'estimated': 1, 'price_proxy': 7}
+priced subtotal nominal/low/high $465.87 $465.87 $465.87 (not whole-build total if incomplete)
+inventory signature 13 bound 12 excluded 1 uncovered [] contacts signed/mapped/unmapped 21 21 []
+propeller propeller_main prop_inspections ['spinner_main', 'motor_main', 'fuselage_main'] source hash match True
+unpriced fuselage_main x1, tail_surfaces x1, gear_main x1, gear_tail x1, wiring_lighting x1, final_assembly_and_commissioning x1
+priced rows:
+  wing_main x1 $115.95 [115.95–115.95] estimated None 
+  propeller_main x1 $7.99 [7.99–7.99] price_proxy timber_evolution_propeller_efl5962_horizon_20261020 In stock at Horizon Hobby
+  spinner_main x1 $8.99 [8.99–8.99] price_proxy timber_evolution_spinner_efl17553_horizon_20261020 In stock at Horizon Hobby
+  motor_main x1 $74.99 [74.99–74.99] price_proxy timber_evolution_motor_spm1012_horizon_20261020 In stock at Horizon Hobby
+  esc_main x1 $74.99 [74.99–74.99] price_proxy timber_evolution_esc_spmxae70e_horizon_20261020 In stock at Horizon Hobby
+  receiver_radio x1 $84.99 [84.99–84.99] price_proxy timber_evolution_receiver_spm1032_horizon_20261020 In stock at Horizon Hobby
+  tail_servos x2 $13.99 [13.99–13.99] price_proxy timber_evolution_servo_spmsa370_horizon_20261020 Backorder; estimated October 2026
+  battery_main x1 $69.99 [69.99–69.99] price_proxy timber_evolution_battery_proxy_horizon_20261020 Backorder; estimated October 2026
+
+## moonrunner-x99
+complete False rows 20 priced 12 unpriced 8 prices bases {'price_proxy': 8, 'exact_product_price': 3, 'estimated': 1}
+priced subtotal nominal/low/high $1,090.05 $1,090.05 $1,090.05 (not whole-build total if incomplete)
+inventory signature 19 bound 19 excluded 0 uncovered [] contacts signed/mapped/unmapped 29 29 []
+propeller propeller_main prop_inspections ['motor_main', 'motor_mount', 'body_main'] source hash match True
+unpriced wing_left x1, wing_right x1, body_main x1, spars_main x1, motor_mount x1, mapping_camera x1, wiring_main x1, final_assembly_and_commissioning x1
+priced rows:
+  motor_main x1 $74.99 [74.99–74.99] price_proxy x8_motor_sunnysky_x3530_520kv_readymaderc_20261025 In Stock
+  propeller_main x1 $4.87 [4.87–4.87] exact_product_price x8_propeller_apc_lp12060ep_readymaderc_20261025 Only 8 left
+  esc_main x1 $41.99 [41.99–41.99] price_proxy x8_esc_hobbywing_skywalker_v2_60a_racedayquads_20261025 In stock
+  flight_controller x1 $130.99 [130.99–130.99] price_proxy x8_flight_controller_matek_h743_wing_v3_racedayquads_20261025 Sold out
+  receiver_telemetry x1 $77.98 [77.98–77.98] estimated None 
+  gps_compass x1 $43.99 [43.99–43.99] price_proxy x8_gps_holybro_m10_holybro_20261025 Available (store variant data)
+  fpv_camera x1 $139.99 [139.99–139.99] price_proxy x8_fpv_dji_o4_air_unit_racedayquads_20261025 In stock
+  parachute_pack x1 $402.27 [402.27–402.27] price_proxy x8_parachute_fruity_chutes_fwrb_7lb_20261025 2 items left; the page also offers a back-in-stock notice
+  servo_elevon_left x1 $11.50 [11.50–11.50] exact_product_price x8_servo_emax_es3054_alofthobbies_20261025 In stock, ready to ship
+  servo_elevon_right x1 $11.50 [11.50–11.50] exact_product_price x8_servo_emax_es3054_alofthobbies_20261025 In stock, ready to ship
+  nose_ballast x1 $9.99 [9.99–9.99] price_proxy x8_nose_weight_hangar9_han3626_horizon_20261025 Backorder; December 2026
+  battery_main x1 $139.99 [139.99–139.99] price_proxy x8_battery_spektrum_spmx56s30_horizon_20261025 Backorder; expected January 2027
+
+## xcell-60-research
+complete False rows 0 priced 0 unpriced 0 prices bases {}
+priced subtotal nominal/low/high $0.00 $0.00 $0.00 (not whole-build total if incomplete)
+inventory signature 0 bound 0 excluded 0 uncovered [] contacts signed/mapped/unmapped 0 0 []
+propeller  prop_inspections [] source hash match True
+unpriced -
+priced rows:

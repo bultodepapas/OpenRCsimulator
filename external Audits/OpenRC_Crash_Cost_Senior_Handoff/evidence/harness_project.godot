@@ -1,0 +1,13 @@
+config_version=5
+[application]
+config/name="OpenRC Economy Audit Harness"
+config/features=PackedStringArray("4.8")
+[rendering]
+renderer/rendering_method="gl_compatibility"
+
+[internationalization]
+locale/translations=PackedStringArray("res://i18n/es.po")
+
+[physics]
+common/physics_ticks_per_second=240
+common/max_physics_steps_per_frame=12

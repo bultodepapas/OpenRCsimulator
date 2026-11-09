@@ -1,0 +1,43 @@
+{
+  "status": "handoff_artifact_validation_passed_not_game_release",
+  "date": "2026-11-09",
+  "audited_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "later_head_reviewed": "f7b58bd830d4a5eb78901d00514ce1fc18286477",
+  "production_git_status_clean": true,
+  "modular_markdown_documents": 7,
+  "modular_word_count": 35613,
+  "combined_word_count": 35907,
+  "work_packages": 19,
+  "proposed_cases": 46,
+  "proposed_case_status": "proposed_not_executed",
+  "release_gates": 8,
+  "reviewed_price_observations": 27,
+  "additional_or_rechecked_observations": 17,
+  "unpriced_research_leads": 2,
+  "reviewed_price_relation_corrections": 8,
+  "local_markdown_links_and_combined_anchors_valid": true,
+  "pinned_source_paths_checked": 38,
+  "pinned_source_path_or_line_failures": 0,
+  "json_documents_parsed_before_this_record": 46,
+  "fresh_reproducer_checked_reports_ok": 14,
+  "fresh_reproducer_existing_scripts": 12,
+  "fresh_reproducer_existing_assertions": 674,
+  "fresh_reproducer_current_behavior_probes": 10,
+  "fresh_reproducer_scope": "Isolated historical economics harness; no full-app or proposed acceptance execution.",
+  "omitted_reconstructible_content": [
+    "Repository source/data copies",
+    "Godot import/cache files",
+    "Isolated user profile",
+    "Engine executable"
+  ],
+  "not_claimed": [
+    "Production fixes implemented",
+    "Graphical flight exercised",
+    "All 46 acceptance cases executed",
+    "Current-head integration certified",
+    "Physical crash calibration",
+    "Native release performance qualified"
+  ],
+  "acceptance_primary_fields_and_gates_aligned": true,
+  "original_43_case_ids_priorities_preserved": true
+}

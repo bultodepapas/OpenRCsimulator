@@ -1,0 +1,13 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok terminal_stik_whole_build_ceiling {"complete":false,"high_minor":133134,"known_subtotal_minor":0,"low_minor":0,"ok":true,"outcome":"inspection","range_basis":"complete_build_replacement_ceiling","total_minor":null}
+ok terminal_stik_prop_floor {"complete":false,"high_minor":133134,"known_subtotal_minor":539,"low_minor":539,"ok":true,"outcome":"inspection","range_basis":"complete_build_replacement_ceiling","total_minor":null}
+ok resolved_stik_prop_only {"complete":true,"high_minor":539,"known_subtotal_minor":539,"low_minor":539,"ok":true,"outcome":"repair","range_basis":"component_price_bounds","total_minor":539}
+ok extra_whole_dossier_blocks_local_total {"complete":false,"high_minor":null,"known_subtotal_minor":539,"low_minor":539,"ok":true,"outcome":"inspection","range_basis":"component_price_bounds","total_minor":null}
+ok terminal_ceiling_excludes_inspection_fee {"complete":false,"high_minor":133134,"known_subtotal_minor":500,"low_minor":500,"ok":true,"outcome":"inspection","range_basis":"complete_build_replacement_ceiling","total_minor":null}
+ok lumber_wing_bundle {"report":{"complete":false,"high_minor":null,"known_subtotal_minor":11595,"low_minor":11595,"ok":true,"outcome":"inspection","range_basis":"component_price_bounds","total_minor":null},"wing_unit_minor":11595}
+ok later_contact_keeps_earlier_reuse {"changed":false,"disposition":"reuse"}
+ok prop_strike_downgrades_replacement {"disposition":"inspect"}
+ok lake_propeller_binding_gap {"qualified_binding":["propeller_main"],"result":[]}
+ok jet_translation_energy_example {"at_40_kmh_j":706.085061728395,"at_500_kmh_j":110325.790895062,"mass_kg":11.438578,"ratio":156.25}
+AUDIT PROBES: 10 checks, 0 failed

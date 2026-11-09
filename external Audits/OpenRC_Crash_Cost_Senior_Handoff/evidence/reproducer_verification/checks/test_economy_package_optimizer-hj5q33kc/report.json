@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ca9b0fff-1e2b-4eb7-a38e-1a6ed3eb84fe",
+  "command": [
+    "/workspace/scratch/bf9c4bc414d0/audit_work/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/bf9c4bc414d0/senior_handoff/evidence/reproducer_verification/economy_harness",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_economy_package_optimizer.gd"
+  ],
+  "cwd": "/workspace/scratch/bf9c4bc414d0/audit_work/OpenRCsimulator",
+  "started_utc": "2026-11-09T16:52:49.674790+00:00",
+  "label": "test_economy_package_optimizer",
+  "log": "/workspace/scratch/bf9c4bc414d0/senior_handoff/evidence/reproducer_verification/checks/test_economy_package_optimizer-hj5q33kc/engine.log",
+  "report": "/workspace/scratch/bf9c4bc414d0/senior_handoff/evidence/reproducer_verification/checks/test_economy_package_optimizer-hj5q33kc/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "CR-31d package optimizer: 40 checks, 0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.262988,
+  "log_bytes": 11076,
+  "log_sha256": "f2a46c8ef2ba0a5228e5727c4ab31ff4e6bd987b35f5aabe300063fe9ba7a72b"
+}

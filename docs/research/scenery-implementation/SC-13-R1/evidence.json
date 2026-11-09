@@ -124,7 +124,7 @@
         "current_matches": true
       }
     ],
-    "note": "Shared HEAD advanced during work. Frozen source and exact source/recipe/content hashes identify the tested candidate; source assets and imported cache were junctioned. Other sessions made later capture-harness edits."
+    "note": "Shared HEAD advanced during work. Frozen source and exact source/recipe/content hashes identify the tested candidate; source assets and imported cache were junctioned. Other sessions made later capture-harness edits. Final 81-check headless integration also passed in the current shared app after the metadata addition."
   },
   "source_budget": {
     "group": "cells",
@@ -441,6 +441,30 @@
       "ok": true,
       "elapsed_seconds": 0.282,
       "log_sha256": "5096a3dc1361d1ebf7beb11397f430130f7a30dc0b58619be21fc89a51cbb11d"
+    },
+    "tractor-current-headless-81": {
+      "path": "tmp/tractor-intake-20261109/checks/tractor-current-headless-81-u61s_gmx/report.json",
+      "bytes": 1247,
+      "sha256": "56f8d17fbc39124cad7483feee99b00e17aa6d4bfb213f137d01dab45129d4cd",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_farm_tractor.gd"
+      ],
+      "started_utc": "2026-11-09T17:25:28.384094+00:00",
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "ok": true,
+      "elapsed_seconds": 6.969,
+      "log_sha256": "1a61dcce5dd5e09f02ad06b150e065f46996351f45242ed80ae7133d2fd7d353"
     }
   },
   "native_runs": {

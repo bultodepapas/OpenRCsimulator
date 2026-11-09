@@ -1,0 +1,51 @@
+{
+  "audited_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "repository": "https://github.com/bultodepapas/OpenRCsimulator",
+  "observed_date": "2026-11-09",
+  "production_files_changed": false,
+  "engine": "Godot 4.8.beta2.official.cafc17a19",
+  "physics_ticks_per_second": 240,
+  "source_files_byte_matched": 217,
+  "executed_existing_godot_scripts": 12,
+  "executed_existing_assertions": 674,
+  "assertions_by_script": {
+    "calculator": 67,
+    "catalog": 102,
+    "component_resolver": 35,
+    "cr39": 52,
+    "impact_budget": 36,
+    "inspection": 83,
+    "package_optimizer": 40,
+    "repair_details": 49,
+    "repair_planner": 51,
+    "replacement_quote": 45,
+    "thermal_budget": 68,
+    "accident_settlement": 46
+  },
+  "executed_audit_probes": 10,
+  "executed_python_tests": {
+    "command": "python3 -m unittest discover -s research/crash-economics -p 'test_*.py'",
+    "result": "67 passed",
+    "raw_log": "Not separately retained; this is an auditor observation record."
+  },
+  "generator_checks": [
+    {
+      "command": "python3 research/crash-economics/build_runtime.py --check",
+      "result": "Passed; all 12 routes current"
+    },
+    {
+      "command": "python3 research/crash-economics/build_catalog.py --check",
+      "result": "Passed"
+    }
+  ],
+  "not_executed": [
+    "Full-main checkpoint integration",
+    "Interactive graphical flight",
+    "Native UI/performance verification",
+    "Physical material or survival calibration",
+    "All proposed 43 acceptance cases",
+    "Cross-platform determinism qualification"
+  ],
+  "harness_setup_history": "Initial attempts exposed missing full-main context/assets, default 60 Hz configuration, localization/research path dependencies and success-marker mismatch. Harness configuration was corrected; source files were not modified. Full-main checkpoint test was excluded from the focused final suite.",
+  "probe_fixture_history": "Initial terminal probe fixtures lacked the production unresolved-contact flag. Fixtures were corrected to model the actual incident contract; final 10 probes passed. These are current-behavior confirmations, not fixes."
+}

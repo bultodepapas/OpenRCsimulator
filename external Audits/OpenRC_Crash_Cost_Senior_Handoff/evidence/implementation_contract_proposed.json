@@ -1,0 +1,281 @@
+{
+  "format": "openrc-crash-economics-implementation-contract-proposal v1",
+  "status": "proposed_not_implemented",
+  "date": "2026-11-09",
+  "audited_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "purpose": "Design requirements for a deterministic game estimate; not a drop-in runtime schema or physical certification.",
+  "release_scope": {
+    "selectable_fixed_wing": 8,
+    "hidden_fixed_wing_variants": 3,
+    "rotorcraft": "Separate X-Cell inventory and production integration gate; no inherited HX-700 visual pricing.",
+    "future_routes": "Discover catalog routes at validation time; never rely only on the current count."
+  },
+  "layers": [
+    {
+      "name": "accepted_evidence",
+      "owns": "Accepted primary observations and their measurement provenance",
+      "does_not_own": "Prices, renderer particles or purchase decisions"
+    },
+    {
+      "name": "component_assessment",
+      "owns": "Bounded deterministic condition/exposure per installed physical instance",
+      "consumers": [
+        "repair_planner",
+        "meaningful_visual_component_states",
+        "archive"
+      ]
+    },
+    {
+      "name": "repair_and_purchase_plan",
+      "owns": "Required tasks, reusable units, compatible purchases, material consumption and acquired surplus"
+    },
+    {
+      "name": "valuation",
+      "owns": "Integer currency, scoped completeness, frozen prices and honest solution status"
+    },
+    {
+      "name": "presentation",
+      "owns": "Explanation and cosmetic effects",
+      "does_not_own": "Financial damage evidence"
+    }
+  ],
+  "authoring_contract": {
+    "identity": {
+      "required": [
+        "schema_version",
+        "source_ref",
+        "installed_configuration_id",
+        "battery_mode",
+        "source_revision_or_digest",
+        "economics_fingerprint",
+        "damage_profile_version",
+        "price_catalog_version",
+        "rule_version"
+      ],
+      "notes": [
+        "Map to existing Creator SourceRef rather than replacing its native schema.",
+        "Raw source digest and declared cost-relevant projection have distinct roles.",
+        "A cosmetic change may preserve economic identity; component, geometry, installation or package changes may not."
+      ]
+    },
+    "component_instance": {
+      "required": [
+        "id",
+        "class",
+        "zone_id",
+        "quantity",
+        "installed",
+        "material_profile",
+        "mount_relation",
+        "observation_channels",
+        "repair_policy_ref",
+        "purchase_unit_refs"
+      ],
+      "id_rule": "Stable lowercase snake_case; instance identity separates left/right and individually reusable electronics.",
+      "optional": [
+        "position_m",
+        "protection_profile",
+        "thermal_profile",
+        "water_profile",
+        "parent_id",
+        "alias_history"
+      ],
+      "quantity_rule": "Positive integer for installed units; optional uninstalled equipment is excluded from requirements."
+    },
+    "zone_binding": {
+      "required": [
+        "id",
+        "qualified_contact_or_probe_ids",
+        "component_ids",
+        "supported_channels",
+        "excluded_channels_with_reason"
+      ],
+      "semantics": "Candidate examination scope, never a list of items automatically destroyed."
+    },
+    "accepted_evidence": {
+      "required": [
+        "incident_id",
+        "accepted_step",
+        "simulation_time",
+        "event_or_episode_id",
+        "zone_id",
+        "source",
+        "phase",
+        "provenance",
+        "supported_measurement_flags"
+      ],
+      "measurements_when_supported": {
+        "contact_position": "metres in declared frame",
+        "contact_normal": "unit vector in declared frame",
+        "relative_contact_velocity": "m/s, normal closing and tangent distinguished",
+        "effective_mass": "kg, with declared calculation",
+        "normal_impulse": "N*s, if supported",
+        "compression_or_penetration": "metres with source semantics",
+        "rotational_rate": "rad/s or explicit rpm conversion",
+        "surface_class": "bounded enum",
+        "gear_state": "deployment, side and lock/compression state",
+        "fuel_or_battery_state": "source-specific units and provenance"
+      },
+      "absence_rule": "Missing channels remain absent; do not synthesize a measurement from cause text or classify absence as a passed inspection."
+    },
+    "game_response_profile": {
+      "required": [
+        "id",
+        "version",
+        "component_class",
+        "input_channels",
+        "response_rule",
+        "assumption_basis",
+        "supported_outcomes",
+        "review_scenarios"
+      ],
+      "rule_basis": [
+        "authored_game_calibration",
+        "manufacturer_guidance",
+        "measured_data_if_available"
+      ],
+      "constraint": "No numerical failure threshold is supplied by this audit; authored values must be reviewed and tested before promotion."
+    },
+    "purchase_offer": {
+      "required": [
+        "id",
+        "currency",
+        "price_minor",
+        "sold_quantity",
+        "sold_unit",
+        "included_component_units",
+        "excluded_component_units",
+        "compatibility_basis",
+        "valuation_basis",
+        "observed_or_authored_date",
+        "availability_policy"
+      ],
+      "valuation_basis": [
+        "observed_exact_product",
+        "documented_compatible_replacement",
+        "declared_economic_analogue",
+        "authored_game_allowance"
+      ],
+      "optional": [
+        "source_url",
+        "source_document",
+        "stock_status",
+        "meaningful_low_minor",
+        "meaningful_high_minor"
+      ],
+      "constraint": "Known positive integer quantity; nonnegative bounded integer amounts; explicit package coverage. Null price is not zero."
+    },
+    "repair_recipe": {
+      "required": [
+        "id",
+        "version",
+        "eligible_component_class_and_condition",
+        "material_consumption",
+        "active_minutes",
+        "shared_work_groups",
+        "required_checks",
+        "mutually_exclusive_replacements"
+      ],
+      "constraint": "Aggregate shared material use before purchase rounding; charge access and setup once; cure/wait time is not active labor."
+    },
+    "incident_snapshot": {
+      "required": [
+        "incident_id",
+        "source_identity",
+        "economics_fingerprint",
+        "price_snapshot",
+        "rule_versions",
+        "valuation_mode",
+        "component_evidence_revision",
+        "assessment_revision",
+        "dispositions",
+        "plan",
+        "scope_completeness",
+        "history_status",
+        "settlement_status"
+      ],
+      "constraint": "Historical bill remains immutable after later price changes; explicit revaluation creates a new comparison."
+    }
+  },
+  "assessment_policy": {
+    "condition_states": [
+      "intact",
+      "cosmetic",
+      "repairable",
+      "unserviceable",
+      "unknown"
+    ],
+    "dispositions": [
+      "reuse",
+      "repair",
+      "replace",
+      "pending_inspection"
+    ],
+    "exposure_channels": [
+      "structure",
+      "shock",
+      "rotating_drive",
+      "water",
+      "heat"
+    ],
+    "revisions": "Each relevant new observation advances evidence revision. An assessment covers a specific evidence revision.",
+    "reinspection": "Relevant newer evidence reopens prior reuse. Confirmed irreversible condition is never downgraded by a new inspect request.",
+    "budget": "Allocate accepted incident energy/work once across simultaneous observations. Separate identified later physical impacts and rotation. No cosmetic debris charges.",
+    "journal": "Diagnostic records may be bounded, including the present 128 limit. Independent fixed-size per-component summaries keep updating after overflow.",
+    "settlement": "Supported secondary hazards resolve on a deterministic finite logical scope independent of render/watch/skip timing. Unsupported outcomes remain named pending states.",
+    "randomness": "Use deterministic assessment initially. Any future deliberate random variation must pin seed and rule version to the incident, never reroll on reopening."
+  },
+  "financial_policy": {
+    "headline": "One coherent feasible repair/rebuild plan; explicitly estimated and scoped.",
+    "money": "Integer minor units with overflow validation; no floating-point summation of currency.",
+    "plan_cost_terms": [
+      "required purchase basket",
+      "materials on chosen consumption or checkout basis",
+      "active paid labor if selected",
+      "incurred inspection and other sunk fees",
+      "minus separately realized sale credits if enabled"
+    ],
+    "reuse": "Remove reused units from requirements before buying. Do not credit them twice or subtract them from unavoidable bundled new contents.",
+    "surplus": "Acquired extra package contents are spares. Their new retail price is not a realized cash refund.",
+    "replacement_comparison": "Must restore a compatible installed capability and include incurred fees. Mark unavailable or assumed game packages distinctly.",
+    "optimization": "Only claim a proven minimum when search completeness is established. Otherwise identify the best feasible plan and bound/status.",
+    "completeness_dimensions": [
+      "condition_and_history_coverage",
+      "incident_required_purchase_coverage",
+      "whole_build_comparison_coverage"
+    ],
+    "monotonicity": "Confirmed physical damage worsens monotonically absent explicit repair. The optimum plan price need not increase because package choices can change.",
+    "proposed_workshop_rate": {
+      "currency": "USD",
+      "minor_per_hour": 3000,
+      "basis": "Authored game policy grounded in one RC shop example; not a global/Colombian average.",
+      "source": "https://mainehobbies.com/services/"
+    },
+    "uncertainty": "Specific component/plan alternatives; no whole-build range presented as a local conditional confidence interval; no statistical claims without evidence."
+  },
+  "semantic_validators": [
+    "Every installed physical instance is mapped or explicitly excluded with a justified scope reason.",
+    "Every required incident item has an observed price, declared economic analogue or reviewed game allowance before stable promotion.",
+    "All identities and cross-references are unique and resolve; invalid variants do not inherit another aircraft silently.",
+    "Every qualified probe binding can be found, including propeller/propulsion_main in lake events.",
+    "Package prices correspond to sold units, including sets/pairs; engine accessory and PNP contents do not duplicate purchases.",
+    "An offer covers only reviewed compatible requirements; surplus is recorded separately.",
+    "No repair and replacement of the same discarded item coexist in one plan.",
+    "Shared labor and materials aggregate exactly once; consumed and checkout bases do not mix.",
+    "History or missing essential measurement is never converted into a healthy component fact.",
+    "Old archived incidents retain frozen versions and prices after refresh or migration.",
+    "Ordinary source/profile errors produce a clear provisional/error result, never a free repair.",
+    "All proposed release scenarios are run through the appropriate production path before stable labeling."
+  ],
+  "non_goals_for_first_release": [
+    "Campaign wallet",
+    "Persistent trading or spare-inventory game",
+    "Full retailer checkout",
+    "Finite-element material failure",
+    "Fluid fire simulation",
+    "Certification of real-world repairability",
+    "Physically flying a repaired wreck"
+  ],
+  "acceptance_matrix": "acceptance_matrix_proposed.json",
+  "price_candidates": "price_observations_2026-11-09.json"
+}

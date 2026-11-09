@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "37d0f73a-70e1-41d4-bfbf-879356a02400",
+  "command": [
+    "/workspace/scratch/bf9c4bc414d0/audit_work/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/bf9c4bc414d0/senior_handoff/evidence/reproducer_verification/economy_harness",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_accident_settlement.gd"
+  ],
+  "cwd": "/workspace/scratch/bf9c4bc414d0/audit_work/OpenRCsimulator",
+  "started_utc": "2026-11-09T16:52:53.114984+00:00",
+  "label": "test_accident_settlement",
+  "log": "/workspace/scratch/bf9c4bc414d0/senior_handoff/evidence/reproducer_verification/checks/test_accident_settlement-ak5zb1fi/engine.log",
+  "report": "/workspace/scratch/bf9c4bc414d0/senior_handoff/evidence/reproducer_verification/checks/test_accident_settlement-ak5zb1fi/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "accident settlement: 46 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.162033,
+  "log_bytes": 2306,
+  "log_sha256": "86fbbd93a2de265f4562cca61a7359e37413e51db3323dcc85d2f9e9dc6aea76"
+}

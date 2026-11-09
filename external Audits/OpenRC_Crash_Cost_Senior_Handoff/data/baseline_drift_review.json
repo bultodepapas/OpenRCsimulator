@@ -1,0 +1,1157 @@
+{
+  "audit_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "current_head": "f7b58bd830d4a5eb78901d00514ce1fc18286477",
+  "comparison_date": "2026-11-09",
+  "status": "ahead",
+  "ahead_by": 9,
+  "file_count": 217,
+  "compare_url": "https://github.com/bultodepapas/OpenRCsimulator/compare/f47d1dc6cccb141936407d0217eafdc465558190...f7b58bd830d4a5eb78901d00514ce1fc18286477",
+  "commits": [
+    {
+      "sha": "b788965e661e74ce10651e93b45fcaf5fa7df8ec",
+      "subject": "NR-02-R1: bind bounded scenario cache to exact source bytes",
+      "date": "2026-11-09T14:36:31Z"
+    },
+    {
+      "sha": "b15260932531ad0751bc83ad6befa020b306eb4c",
+      "subject": "UI-32-R11: identify frozen Workshop trials in Pause",
+      "date": "2026-11-09T14:36:52Z"
+    },
+    {
+      "sha": "c8d5cfbe5c8111f8bc07c70eab5c749dfc11e30c",
+      "subject": "M5-W-AUD-22: reuse spatial observer datum wind",
+      "date": "2026-11-09T14:37:42Z"
+    },
+    {
+      "sha": "979819ecceb9f14799c31ca81521034e8498940a",
+      "subject": "FUEL-12-R5: preserve connected zero-fuel RK derivatives",
+      "date": "2026-11-09T14:49:35Z"
+    },
+    {
+      "sha": "7556c3afec9197e9bd61997fbff31274118cddbe",
+      "subject": "AFC-02-R5: rebind audit-corrected solver after matched tapes",
+      "date": "2026-11-09T14:51:58Z"
+    },
+    {
+      "sha": "1094aded3b7a339a99ca27299d765217caa3ba7e",
+      "subject": "Reconcile verified audit corrections and remaining gates",
+      "date": "2026-11-09T14:54:40Z"
+    },
+    {
+      "sha": "a831fa35d24a8b18cfe27e3d2a02a0a922281462",
+      "subject": "Add visual quality implementation files and tests",
+      "date": "2026-11-09T15:22:35Z"
+    },
+    {
+      "sha": "8fb825a96dbc39fbbf99c1056ba643c9cde49b5d",
+      "subject": "Add backlight review tool for controlled lighting of broadleaf vegetation",
+      "date": "2026-11-09T15:29:45Z"
+    },
+    {
+      "sha": "f7b58bd830d4a5eb78901d00514ce1fc18286477",
+      "subject": "Add pixel parity and validation JSON files for visual quality implementation",
+      "date": "2026-11-09T15:48:44Z"
+    }
+  ],
+  "changed_paths": [
+    {
+      "path": ".gitattributes",
+      "status": "modified",
+      "sha": "d5600529770a84312ea7cdff8d2ae29e5fbbc6d3"
+    },
+    {
+      "path": "AGENTS.md",
+      "status": "modified",
+      "sha": "6f671fa340794c113b543f85be0bb58fdcc1570b"
+    },
+    {
+      "path": "app/aircraft/custom_skin.gd",
+      "status": "modified",
+      "sha": "3bf9fe2a8cc2c3892a2560d15ea9992bec34ff35"
+    },
+    {
+      "path": "app/aircraft/inspect_timber.gd",
+      "status": "modified",
+      "sha": "aa7b9d552bc0bc3c457127c60f6e706307ea7325"
+    },
+    {
+      "path": "app/aircraft/timber_visual_details.gd",
+      "status": "modified",
+      "sha": "f660f041a0518439ed937ca69f40e0f1ec166192"
+    },
+    {
+      "path": "app/app_root.gd",
+      "status": "modified",
+      "sha": "53604c23816c0d1c8d9dff680a57e5175b4100b0"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg.import",
+      "status": "modified",
+      "sha": "dc0ca591ff7b72d6d217e0345d1b1e166da4162e"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg.import",
+      "status": "modified",
+      "sha": "3d10953a2274b0077be253650e21c316ab0d13a9"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg.import",
+      "status": "modified",
+      "sha": "4f2191b96cc796693ab7f1c7a36a95c0e6ec3399"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg.import",
+      "status": "modified",
+      "sha": "7098101e43f68d337bd3ca7352104338df213f43"
+    },
+    {
+      "path": "app/assets/landscape/UPGRADE_CREDITS.md",
+      "status": "modified",
+      "sha": "3c9fc886970ad7d8491ce9cda470da0aafff98dd"
+    },
+    {
+      "path": "app/assets/landscape/trees/LICENSE.txt",
+      "status": "modified",
+      "sha": "d8406fe0ead1cb7363a74c07ef274ed7d34aea6e"
+    },
+    {
+      "path": "app/assets/landscape/trees/atlas.png",
+      "status": "modified",
+      "sha": "a982817e0280dc1fe0399de93ee548123c0ca4ea"
+    },
+    {
+      "path": "app/assets/landscape/trees/catalog.json",
+      "status": "modified",
+      "sha": "7ce5f46a67bfa98dc671db15a16adbc25108247a"
+    },
+    {
+      "path": "app/assets/landscape/trees/foliage_mask.png",
+      "status": "modified",
+      "sha": "a0047b40571c75d5d5b9dbacc1a8d74d10e5d8e1"
+    },
+    {
+      "path": "app/assets/landscape/trees/licenses/CommonTree_1.txt",
+      "status": "modified",
+      "sha": "f4c1991ebf680df63accc34f1ef9c2eff44fd4d5"
+    },
+    {
+      "path": "app/assets/landscape/trees/licenses/CommonTree_3.txt",
+      "status": "modified",
+      "sha": "f4c1991ebf680df63accc34f1ef9c2eff44fd4d5"
+    },
+    {
+      "path": "app/assets/landscape/trees/licenses/Pine_1.txt",
+      "status": "modified",
+      "sha": "f4c1991ebf680df63accc34f1ef9c2eff44fd4d5"
+    },
+    {
+      "path": "app/assets/skin-kit/models.json",
+      "status": "modified",
+      "sha": "cc0d2d2e833cbb43b65c42e8da65b77d62083e61"
+    },
+    {
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "status": "modified",
+      "sha": "d6344869c41c2ccd4e413d7fc80253638cb7bb1b"
+    },
+    {
+      "path": "app/data/woodland_edges.json",
+      "status": "modified",
+      "sha": "534ad81290c73de3f64d17831bcf306dcf38eff8"
+    },
+    {
+      "path": "app/i18n/de.po",
+      "status": "modified",
+      "sha": "0fe9746723b87e2f80b7c5cd19297d24a11e26d1"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "status": "modified",
+      "sha": "ca085db7f1d9b91aa81ecaa66eb0cdffe8b460fd"
+    },
+    {
+      "path": "app/i18n/fr.po",
+      "status": "modified",
+      "sha": "65e0fbe141a01561a89e68f7b3e4678b546ae05d"
+    },
+    {
+      "path": "app/i18n/it.po",
+      "status": "modified",
+      "sha": "88c7c5ce9569b44d7b79e546353d851157f0d8e5"
+    },
+    {
+      "path": "app/i18n/ja.po",
+      "status": "modified",
+      "sha": "e6499d04a0a1329d31aa95b0a4ea9656aa519650"
+    },
+    {
+      "path": "app/i18n/pt_BR.po",
+      "status": "modified",
+      "sha": "ab4ac5faa7a7c6e40b1925f040d321af3b18b7df"
+    },
+    {
+      "path": "app/i18n/ru.po",
+      "status": "modified",
+      "sha": "b050bd0640d11bb9a41f7dc1aed07337d9307394"
+    },
+    {
+      "path": "app/i18n/zh_Hans.po",
+      "status": "modified",
+      "sha": "b3aaf7ef6c8b1fc1c1c3383f7f8696e4e4f19b5c"
+    },
+    {
+      "path": "app/main.gd",
+      "status": "modified",
+      "sha": "7d42f19e8d7f3ea0fecf9d83a7ebfb6fdadffe92"
+    },
+    {
+      "path": "app/physics/glow/flight.gd",
+      "status": "modified",
+      "sha": "fff0688aad9b660efb4966aa9ffa5498ddc89394"
+    },
+    {
+      "path": "app/render/frame_samples.gd",
+      "status": "modified",
+      "sha": "78297af3f01302d2e4d6a5aef84403f1c0ab0472"
+    },
+    {
+      "path": "app/render/overlays/overlay_manager.gd",
+      "status": "modified",
+      "sha": "48091191461040538d367ef2433399958bb4b3f7"
+    },
+    {
+      "path": "app/render/scene_detail.gd",
+      "status": "modified",
+      "sha": "da49cd4597cb964dc77e74f1af68ef701ee2f5c8"
+    },
+    {
+      "path": "app/render/tree_assets.gd",
+      "status": "modified",
+      "sha": "6c603d36b4cf031431d86435b384574d2bc1d00c"
+    },
+    {
+      "path": "app/render/treeline.gd",
+      "status": "modified",
+      "sha": "4f7dd56fd60b7a6923b832d33c49f5f746e6c288"
+    },
+    {
+      "path": "app/render/treeline.gdshader",
+      "status": "modified",
+      "sha": "e7f814c68bfe3a568917dfe221be3beb897a0496"
+    },
+    {
+      "path": "app/render/visual_evidence.gd",
+      "status": "modified",
+      "sha": "2eae698364436a78a52fc80babfa52faa807c26f"
+    },
+    {
+      "path": "app/scenarios/scenario_config.gd",
+      "status": "modified",
+      "sha": "a40bc8516aca68b79355553394ab62703539153f"
+    },
+    {
+      "path": "app/scenery/collision_world.gd",
+      "status": "modified",
+      "sha": "8e1e8650e41e6a8308c22750ef3ebc4ff1f2fa87"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind.gdshaderinc",
+      "status": "modified",
+      "sha": "32c06fc496130337d90a62f9dd82f86acdf117e2"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind_backlight.gdshader",
+      "status": "added",
+      "sha": "a57e5e9a0c98b86ba8c368c7dbf81646b26ebb63"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind_backlight.gdshader.uid",
+      "status": "added",
+      "sha": "91d5177d6e8d77baa2fc39019ed8f9e7187fb299"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind_backlight_clamp.gdshader",
+      "status": "added",
+      "sha": "9b8a432f169705662e0b69a9332bbc4ac44ed85b"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind_backlight_clamp.gdshader.uid",
+      "status": "added",
+      "sha": "769ffa708ecae7e350c5a23fd666b8bd9f4aee69"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind_backlight_cull_back.gdshader",
+      "status": "added",
+      "sha": "01d971c0b586a3d48d80afcef06481056b02cc63"
+    },
+    {
+      "path": "app/scenery/imported_tree_wind_backlight_cull_back.gdshader.uid",
+      "status": "added",
+      "sha": "488beb3e646890572842c8e0d1173689180f18fc"
+    },
+    {
+      "path": "app/scenery/imported_vegetation.gd",
+      "status": "modified",
+      "sha": "783a11e6ed02c2ea19f38b0dac1d639afb1d61bd"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "status": "modified",
+      "sha": "6f82a959f2c6dd45f74ff6695fdb1d2f89385ccc"
+    },
+    {
+      "path": "app/sim/trace.gd",
+      "status": "modified",
+      "sha": "58addd3d3af07a4f71d85cc5ba03d0579e6f5551"
+    },
+    {
+      "path": "app/tests/check_atmosphere_trace.py",
+      "status": "modified",
+      "sha": "8aaa46deee7e26d93eaee3f2ee19237ee64244a2"
+    },
+    {
+      "path": "app/tests/check_trimmed_flight.py",
+      "status": "modified",
+      "sha": "83578969932c087e3a3ed9fbc911f898bff3ea51"
+    },
+    {
+      "path": "app/tests/test_field_tree_detail.gd",
+      "status": "modified",
+      "sha": "d93467eacc64b027f15c2c3b3bba0cf715ae8224"
+    },
+    {
+      "path": "app/tests/test_frame_samples.gd",
+      "status": "modified",
+      "sha": "695cbe7b07c3490b9aab77022417d6a0e69f94a6"
+    },
+    {
+      "path": "app/tests/test_glow_counter_edges.gd",
+      "status": "modified",
+      "sha": "52fcb239658edd18d8b0e0199a4e2d2929568c96"
+    },
+    {
+      "path": "app/tests/test_glow_line_zero_trial.gd",
+      "status": "added",
+      "sha": "5c1838acea254760c547c61f8dc5ac8fbea3b6a8"
+    },
+    {
+      "path": "app/tests/test_glow_line_zero_trial.gd.uid",
+      "status": "added",
+      "sha": "ec79a64a20a15de50e5262b644830efd17253e26"
+    },
+    {
+      "path": "app/tests/test_glow_session.gd",
+      "status": "modified",
+      "sha": "02e95130d1a32433041898aaec2c5264f31bc73f"
+    },
+    {
+      "path": "app/tests/test_glow_trace.gd",
+      "status": "modified",
+      "sha": "e96aeabec5f890e29099a4680db40555cb85a72e"
+    },
+    {
+      "path": "app/tests/test_imported_tree_backlight.gd",
+      "status": "added",
+      "sha": "52631a17f3d41dbed7961483264883ba651a8752"
+    },
+    {
+      "path": "app/tests/test_imported_tree_backlight.gd.uid",
+      "status": "added",
+      "sha": "8c02ba625857c4d3c7f161a816f01fa60e5c3d54"
+    },
+    {
+      "path": "app/tests/test_imported_tree_rendering.gd",
+      "status": "modified",
+      "sha": "a15b113ad4d5f2110bf633c5bf206fba84f1ce3f"
+    },
+    {
+      "path": "app/tests/test_landscape_collision_coverage.gd",
+      "status": "modified",
+      "sha": "3ff7301f501d5103a2a02cdc67f9ee1e1045efb7"
+    },
+    {
+      "path": "app/tests/test_landscape_collision_setup.gd",
+      "status": "modified",
+      "sha": "73617414970bfb6adf1ed2c5dd504d14d452d90f"
+    },
+    {
+      "path": "app/tests/test_natural_random_source_cache.gd",
+      "status": "added",
+      "sha": "3ccf308d0857cd100afe8e579fba9b078038f968"
+    },
+    {
+      "path": "app/tests/test_natural_random_source_cache.gd.uid",
+      "status": "added",
+      "sha": "fa2ee89971e5f3a3aa0d0a1caf3f601668b3e4bc"
+    },
+    {
+      "path": "app/tests/test_observer_wind.gd",
+      "status": "added",
+      "sha": "3c901194148ac47783c5d2b996670425de7557d0"
+    },
+    {
+      "path": "app/tests/test_observer_wind.gd.uid",
+      "status": "added",
+      "sha": "b71f619cbebbbbf4ec0d7e957e2625ad34961f48"
+    },
+    {
+      "path": "app/tests/test_scene_detail.gd",
+      "status": "modified",
+      "sha": "80dd302d33abd21f06900e3c5aa76a4d63e7468b"
+    },
+    {
+      "path": "app/tests/test_timber_detail_textures.gd",
+      "status": "added",
+      "sha": "7e40cfff33dd2017f7f59f8b5ac94a2419b26cb9"
+    },
+    {
+      "path": "app/tests/test_timber_detail_textures.gd.uid",
+      "status": "added",
+      "sha": "001c6bac825271233d8adf86b4b0c8c578d146c4"
+    },
+    {
+      "path": "app/tests/test_timber_visual_lods.gd",
+      "status": "added",
+      "sha": "ea56a7555d02eb01c63216ceb6f6e861d7f2afeb"
+    },
+    {
+      "path": "app/tests/test_trace_acceptance.py",
+      "status": "modified",
+      "sha": "ea6a62c7fbdba292f732e158af736f0b55e21f1d"
+    },
+    {
+      "path": "app/tests/test_ui_pause.gd",
+      "status": "modified",
+      "sha": "acdc921c819e11163de2814b7d6974fd67bcd517"
+    },
+    {
+      "path": "app/tests/test_workshop_integration.gd",
+      "status": "modified",
+      "sha": "203da75bde3c1b1b53314ea4c26252cf825c5aac"
+    },
+    {
+      "path": "app/tests/test_workshop_preview.gd",
+      "status": "modified",
+      "sha": "c5ef239616d4ce78e1acbc598085984e4641bb37"
+    },
+    {
+      "path": "app/tests/test_workshop_trial.gd",
+      "status": "modified",
+      "sha": "9f74355040bee556a0ab7077bf1983353743cf37"
+    },
+    {
+      "path": "app/tests/test_workshop_ui.gd",
+      "status": "modified",
+      "sha": "8f5ad307c739e227b0da4e9c1a90159ddc60a55e"
+    },
+    {
+      "path": "app/ui/pause_menu.gd",
+      "status": "modified",
+      "sha": "2963274c9ce1a47e70255ae1bd2e51fe0d52701f"
+    },
+    {
+      "path": "app/ui/workshop.gd",
+      "status": "modified",
+      "sha": "1b61e0bd2d93bc84ab30fb810811797bcce44575"
+    },
+    {
+      "path": "app/ui/workshop_preview.gd",
+      "status": "modified",
+      "sha": "18502de6de95469ebd90871fea67843d2dab1f19"
+    },
+    {
+      "path": "app/workshop/trial.gd",
+      "status": "modified",
+      "sha": "9b9817ec6d1ac36cfabf10c201d9027149375607"
+    },
+    {
+      "path": "assets/aircraft/turbo-lumber-evolution/README.md",
+      "status": "modified",
+      "sha": "e4ed14ff6e42072b2698962667f1847eb09795f5"
+    },
+    {
+      "path": "assets/landscape/PROVENANCE.json",
+      "status": "modified",
+      "sha": "1e88e5cebdc41acb3fe15506040c3f325de2c657"
+    },
+    {
+      "path": "docs/AIRCRAFT-WORKSHOP.md",
+      "status": "modified",
+      "sha": "eae4b5fa440ad3451ca2c4f275b12671061005dc"
+    },
+    {
+      "path": "docs/GLOW-ENGINES.md",
+      "status": "modified",
+      "sha": "aff0de212c276d344739aacf100d1a488764ebe3"
+    },
+    {
+      "path": "docs/LANDSCAPE-PLAN.md",
+      "status": "modified",
+      "sha": "940f0f3c427e7ecc524e2a44b31434851be5b668"
+    },
+    {
+      "path": "docs/TIMBER-INTEGRATION-PLAN.md",
+      "status": "modified",
+      "sha": "e99f0f1efed9b752fb8594a85c8e1fbbd9ddce24"
+    },
+    {
+      "path": "docs/TOOLS.md",
+      "status": "modified",
+      "sha": "a031b14664c9f101802d856398965d18e04b8b00"
+    },
+    {
+      "path": "docs/WIND-ATMOSPHERE-REFERENCE.md",
+      "status": "modified",
+      "sha": "57eeb5571ca57e986e67aed23c110d02a0b19931"
+    },
+    {
+      "path": "docs/plans/aircraft-editor.md",
+      "status": "modified",
+      "sha": "ede21354d49e013a71d21978f481d4af937a7ee3"
+    },
+    {
+      "path": "docs/plans/tree-forest-quality.md",
+      "status": "modified",
+      "sha": "f726a8e637b57073be9b27acbdb76cde286bc2ee"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-02/rebinds/2026-11-09-b5332032-to-b98411b3.json",
+      "status": "added",
+      "sha": "8da13db58ac527ff49b236eb0d9a37a2c170cd58"
+    },
+    {
+      "path": "docs/research/aircraft-editor/AE-08b-09/README.md",
+      "status": "modified",
+      "sha": "fbe25137299c4dfea06c7a3e3d375f2178091e10"
+    },
+    {
+      "path": "docs/research/aircraft-editor/AE-08b-09/reflections-20261109.json",
+      "status": "added",
+      "sha": "bf697553fe48ede34d37a8dd5f513eb480c4f6b7"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/README.md",
+      "status": "modified",
+      "sha": "3769fd12eb3bd4ab289ac1ce9c74d0c7be8918d4"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/baseline-expected-failure/engine.log",
+      "status": "added",
+      "sha": "ef9066f909e07849760cfebce4d3e0a4618b7527"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/baseline-expected-failure/report.json",
+      "status": "added",
+      "sha": "17260302f12ab5df05d9bd7ffb50991e24853f91"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/baseline-recording/engine.log",
+      "status": "added",
+      "sha": "984890728cbca8bcae155ee438ba19ced87d6893"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/baseline-recording/report.json",
+      "status": "added",
+      "sha": "0982ece5d979b680defeff30af411c95a121e5b2"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/baseline-witness/engine.log",
+      "status": "added",
+      "sha": "0775bb28eacd31c80bafdd935830548b15accc58"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/baseline-witness/report.json",
+      "status": "added",
+      "sha": "d13bbca6be53e8f83b7f1a7fe82f4c0621215888"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/exact-control/engine.log",
+      "status": "added",
+      "sha": "63b99dda85292ecf5665a14594031dd66d2a6848"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/exact-control/report.json",
+      "status": "added",
+      "sha": "956906a97b5c169b827ff25067dee00a0e0f5528"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/exact-exhaust/engine.log",
+      "status": "added",
+      "sha": "63b99dda85292ecf5665a14594031dd66d2a6848"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/exact-exhaust/report.json",
+      "status": "added",
+      "sha": "e20b66d3bd83599607a390c762fbb6beee3fc17e"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/final-candidate-control/engine.log",
+      "status": "added",
+      "sha": "d807d1ed310be22ae2ed75c2ccc345c747b2f8bd"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/final-candidate-control/report.json",
+      "status": "added",
+      "sha": "ded8052c66896e9fbc8e995e4a17f65fb947450b"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/final-candidate-exhaust/engine.log",
+      "status": "added",
+      "sha": "d807d1ed310be22ae2ed75c2ccc345c747b2f8bd"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/final-candidate-exhaust/report.json",
+      "status": "added",
+      "sha": "18d25fc9d3627f7352d5b4c5d0fabfff0ba44261"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-connected-trial/engine.log",
+      "status": "added",
+      "sha": "136b273e4013068fd7c3eac837bd08749345933b"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-connected-trial/report.json",
+      "status": "added",
+      "sha": "67c76e40efecc3b0f1e064eeef784770fc912738"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-counter-edges/engine.log",
+      "status": "added",
+      "sha": "7c67a6922db1d7a8b0fbf3930fc58d8168c5be63"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-counter-edges/report.json",
+      "status": "added",
+      "sha": "4d6c2727750ad2bb65f2b9c524f41b0a679ee666"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-event-counters/engine.log",
+      "status": "added",
+      "sha": "fa8161ccee3854ddafe13e7372573d67efd6ca40"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-event-counters/report.json",
+      "status": "added",
+      "sha": "2b0434801d6f1c4d7a1cc9ebca097cfd37048917"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-flight-physics/engine.log",
+      "status": "added",
+      "sha": "395cb171c4fa26ec074c386a48ee02b7a5afc7ee"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-flight-physics/report.json",
+      "status": "added",
+      "sha": "be80c3d6ba142106c9f45eaec01fc37179954a90"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-lifecycle/engine.log",
+      "status": "added",
+      "sha": "3c78ac3d92677501b0b9008680e041ff64042738"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-lifecycle/report.json",
+      "status": "added",
+      "sha": "f1f94a6bdde3ff82871274e43572fee4087dfd32"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-prepared/engine.log",
+      "status": "added",
+      "sha": "6eedd19ba5be32dea60a96556f5f7b25e9278fa3"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-prepared/report.json",
+      "status": "added",
+      "sha": "7efcacd4abd2579c5410c1f0d8094c22b93d46f3"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-session/engine.log",
+      "status": "added",
+      "sha": "5ff60bf48fc7942a411f0bf8b9a5aa4e299985c0"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-session/report.json",
+      "status": "added",
+      "sha": "cb7eb6177e446ff397930756d4ff8698ffe555f7"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-trace/engine.log",
+      "status": "added",
+      "sha": "f7f92d55916e81af5891380422c14a1eb4d387fb"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/glow-trace/report.json",
+      "status": "added",
+      "sha": "101432eccd9307f5d85d5eef37639a2933989ac8"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/line-zero-final/engine.log",
+      "status": "added",
+      "sha": "45cdc7d876376e5a8f0a4af8974b80a3b2e49370"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/line-zero-final/report.json",
+      "status": "added",
+      "sha": "7b3c1028dcf20f642eba0655c57dda39c055fc9e"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/resource-event-step/engine.log",
+      "status": "added",
+      "sha": "9f1473c8ed3654aebbea94c094a4bd49caf3a2cc"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/resource-event-step/report.json",
+      "status": "added",
+      "sha": "80346a18d29c50e43106d840ac44005621dc8f6e"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/source-version-guards/engine.log",
+      "status": "added",
+      "sha": "2450b68feffa5b8f25131bff45d2b896fbd92525"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/checks/source-version-guards/report.json",
+      "status": "added",
+      "sha": "d8a124db1f10b078c07bc66b97d5bbe77b946564"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/evidence.json",
+      "status": "added",
+      "sha": "2b29be576f4873e634fef7897ebcb6a27a0bb0aa"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/fixtures/baseline_witness.gd",
+      "status": "added",
+      "sha": "fc163e8db7a6539591176f2df6eb2490469db530"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/fixtures/candidate-replay.patch",
+      "status": "added",
+      "sha": "517c9727a829d041eb2cef6c1151d688df692830"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/fixtures/record_baseline.gd",
+      "status": "added",
+      "sha": "73f693a9437c9d7206727d9bce6f460408bea0d8"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/fixtures/source_version_guards.gd",
+      "status": "added",
+      "sha": "e02d7f105cda38e6d4da6e142e18c039fb253a47"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/fixtures/test_glow_line_zero_trial.gd",
+      "status": "added",
+      "sha": "4e4dbe68457d0673cc27c911197e56c2acd5b32e"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/55ax-control.orfl",
+      "status": "added",
+      "sha": "59648c088fae3d43c39cb2f75f1083dfe6d4aaa5"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/55ax-exhaust.orfl",
+      "status": "added",
+      "sha": "cfc35bf5dc8a1383da4fa1895674991400b38bbc"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/candidate-55ax-control.csv",
+      "status": "added",
+      "sha": "1aacb0fe0308ef3029ece80acfd7c17a8c513713"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/candidate-55ax-control.json",
+      "status": "added",
+      "sha": "a9819bb32710208f5e682fae09debd5f9dd45462"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/candidate-55ax-exhaust.csv",
+      "status": "added",
+      "sha": "2bc82ca900e416a62d8fac0df23431326397b69a"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/candidate-55ax-exhaust.json",
+      "status": "added",
+      "sha": "1ae250e23aa0851adda82841ed214dec782c6657"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/comparison-55ax-control.json",
+      "status": "added",
+      "sha": "87c14fead1340d5ecba5271540f444f96b231e89"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/comparison-55ax-exhaust.json",
+      "status": "added",
+      "sha": "9cf3a469228158a2e9fdd31eeb6d95cfd0081d77"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/exact-55ax-control/flight.csv",
+      "status": "added",
+      "sha": "1aacb0fe0308ef3029ece80acfd7c17a8c513713"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/exact-55ax-control/godot.log",
+      "status": "added",
+      "sha": "63b99dda85292ecf5665a14594031dd66d2a6848"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/exact-55ax-control/replay.json",
+      "status": "added",
+      "sha": "d0a4edec1543d5b36106ff7459026c6742e80d04"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/exact-55ax-exhaust/flight.csv",
+      "status": "added",
+      "sha": "2bc82ca900e416a62d8fac0df23431326397b69a"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/exact-55ax-exhaust/godot.log",
+      "status": "added",
+      "sha": "63b99dda85292ecf5665a14594031dd66d2a6848"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/flights/exact-55ax-exhaust/replay.json",
+      "status": "added",
+      "sha": "9a7333a533277adf90f8cfe7eed2c9e4f30ed784"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/native/build-receipt.json",
+      "status": "added",
+      "sha": "9c86617d3e404523558802a509c00c9d2919a8a7"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/native/build.log",
+      "status": "added",
+      "sha": "dffccafef5ff1572576fc9445f9c3e3a01309bbd"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/native/engine.log",
+      "status": "added",
+      "sha": "b4d0c9a023e3f00f298ed08cb051ea94cee62cec"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/native/oracle.json",
+      "status": "added",
+      "sha": "3cbf975ee8eaeb173afe7a8f2cdafa6575da6527"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/native/report.json",
+      "status": "added",
+      "sha": "b7a25c55bd7bb7c13cd9bd8576f0b577ae299481"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/native/stale-source-refusal.json",
+      "status": "added",
+      "sha": "3b2b7594ea971d249d8475acb6b735076a37a2d3"
+    },
+    {
+      "path": "docs/research/fuel-systems/FUEL-12/zero-line-20261109/source-manifest.json",
+      "status": "added",
+      "sha": "1a7bec24c403543dae26d1473e684d515dbe6373"
+    },
+    {
+      "path": "docs/research/landscape-upgrade/LU-34/README.md",
+      "status": "modified",
+      "sha": "06a30f46f8bea28e9b4e0d88fa1bd569046bcd1e"
+    },
+    {
+      "path": "docs/research/menu-investigations/UI-32/README.md",
+      "status": "modified",
+      "sha": "cd14c9623286c40b102ed8b4d11eba64c2b8859c"
+    },
+    {
+      "path": "docs/research/menu-investigations/UI-32/audit-20261109-trial-checks.json",
+      "status": "added",
+      "sha": "137d6f75db0ae70212976ab80241652b9b7dfc96"
+    },
+    {
+      "path": "docs/research/natural-random/README.md",
+      "status": "modified",
+      "sha": "4036414818fb0b96431e257bc47614ae270e8f25"
+    },
+    {
+      "path": "docs/research/natural-random/source-cache-20261109.json",
+      "status": "added",
+      "sha": "bad4e5fa2783ada40a7c0aae590533d531f4faa7"
+    },
+    {
+      "path": "docs/research/timber-integration/TT-04-R1/README.md",
+      "status": "added",
+      "sha": "71e0dce6f8b5f6ec217ffdccd0b629df17e9b9bf"
+    },
+    {
+      "path": "docs/research/timber-integration/TT-04-R1/comparison.json",
+      "status": "added",
+      "sha": "762b0a2baa8739a7e2618f5c7d50107ce03794c5"
+    },
+    {
+      "path": "docs/research/timber-integration/TT-04-R1/verification.json",
+      "status": "added",
+      "sha": "119e7b15bd31be14b7cf3767b001def633208caa"
+    },
+    {
+      "path": "docs/research/timber-integration/TT-21/README.md",
+      "status": "modified",
+      "sha": "471899700ad81a67a2a2db646a6e692112eaad27"
+    },
+    {
+      "path": "docs/research/timber-integration/TT-21/lods/README.md",
+      "status": "added",
+      "sha": "0cc5090f5cd7d5a7b6d6f8a515934d5524ad2a4f"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R3/README.md",
+      "status": "added",
+      "sha": "b821a66c35e44c976ec71e213b812233880504b6"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R3/atlas-analysis.json",
+      "status": "added",
+      "sha": "a1fea4a14123fb1d19a4e917704c8da159378511"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R3/bake-manifest.json",
+      "status": "added",
+      "sha": "21ab21e8c5ed0c711454a53b69f68e0a23bb5b03"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R3/fresh-checkout.json",
+      "status": "added",
+      "sha": "2fa5e188cb3b773975bdda7d85af4cce6cb9c5f5"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R3/repeatability.json",
+      "status": "added",
+      "sha": "6a0b2704aa18a4ddd7de67fd0298016e47c1e1d4"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R3/validation.json",
+      "status": "added",
+      "sha": "c7bc2c1e7c1e0aa384a1f9651e6788792f9937ab"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R4/README.md",
+      "status": "added",
+      "sha": "2f5d043c10b7233cf558dd8c06c043e668ba32cb"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R4/checkout.json",
+      "status": "added",
+      "sha": "57a67fb5a8d497343eda411026fdfed61772f834"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R4/lighting-comparison.json",
+      "status": "added",
+      "sha": "e28c307dbd833e5f0c96cf623ae22503da54fe00"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R4/lighting-review.json",
+      "status": "added",
+      "sha": "0f6c626c506186a0c38687fca7654a0cb72c8f9e"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R4/pixel-parity.json",
+      "status": "added",
+      "sha": "c58cd5331f0d8cf16b94f526c7553a101cdc36b6"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/L8a-R4/validation.json",
+      "status": "added",
+      "sha": "25f94d927e69fcc9f5eb8f79abfdb2c8b225adfc"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-02a/README.md",
+      "status": "modified",
+      "sha": "79c8604eec36f7b787949f8a035a326f523b2241"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-06b-scene-detail/README.md",
+      "status": "modified",
+      "sha": "a9fe44c6f7312cb98a62efa131441ac923f9d3c3"
+    },
+    {
+      "path": "docs/research/visual-quality-implementation/VQ-06b-scene-detail/geometry-audit-20261109.md",
+      "status": "added",
+      "sha": "d3d228b35900b39786878e3325a11054d784ad87"
+    },
+    {
+      "path": "docs/research/wind-implementation/M5-W05d-R6/wopt02-20261109.json",
+      "status": "added",
+      "sha": "9c8acc53882c9e588d9af43872a1b19c3574758b"
+    },
+    {
+      "path": "external Audits/COMPLETED-AUDIT-WORK.md",
+      "status": "modified",
+      "sha": "1e320b5aa1b332e23b20f954721be202a5843281"
+    },
+    {
+      "path": "external Audits/CONSOLIDATED-AUDITS.md",
+      "status": "modified",
+      "sha": "f4eeaec245b4af365e8eacb0a70702b1711db9f6"
+    },
+    {
+      "path": "external Audits/TRIANGULOS.MD",
+      "status": "added",
+      "sha": "92731087088c1f16763f4687f483f74fbbb0e162"
+    },
+    {
+      "path": "research/aircraft-editor/capture_material_reference.gd",
+      "status": "added",
+      "sha": "b9c67a169704a3c0fdbb05d949cbbac5fe4ca874"
+    },
+    {
+      "path": "research/glow-engines/packaged_smoke.py",
+      "status": "modified",
+      "sha": "38fc7087fe4079e5f6fcd4706b1001c0c509a38a"
+    },
+    {
+      "path": "research/native-kernel/glow_stage_oracle.gd",
+      "status": "modified",
+      "sha": "e49fdb5339273e0de509e43e38989e8a1bff5a03"
+    },
+    {
+      "path": "research/native-kernel/src/nk_glow_stage.hpp",
+      "status": "modified",
+      "sha": "c1696d63f9f6b482be8753989bb53a889dc22e9d"
+    },
+    {
+      "path": "research/performance/README.md",
+      "status": "modified",
+      "sha": "60b23a6f6baee6c780fcf3ba09302c0e173f1986"
+    },
+    {
+      "path": "research/performance/frame_diagnose.py",
+      "status": "modified",
+      "sha": "1336f19e47d3ce9673a18c39007b1c27b15cdffb"
+    },
+    {
+      "path": "research/performance/native_summary.py",
+      "status": "modified",
+      "sha": "10627857ee19d8866182293c84dea701b8df5a1a"
+    },
+    {
+      "path": "research/performance/test_frame_diagnose.py",
+      "status": "modified",
+      "sha": "4d6f90355d281bbf7d5af2a7cf44f702d2a07f5f"
+    },
+    {
+      "path": "research/performance/test_native_summary.py",
+      "status": "modified",
+      "sha": "f196a231dd3b518ecf4442cadd3bd5444dcba31f"
+    },
+    {
+      "path": "research/timber/visual-upgrade/compare_texture_motion.py",
+      "status": "added",
+      "sha": "62e0496899a122bb342ed7c7b807261c7d5bf417"
+    },
+    {
+      "path": "tools/companions/qualification.json",
+      "status": "modified",
+      "sha": "84fd596e62902b3492be20282ec1da31c4dffd0a"
+    },
+    {
+      "path": "tools/godot/fixed_brake_legacy.py",
+      "status": "modified",
+      "sha": "f1b63b9aa52e9500e4606bd497ce2de189fe7f89"
+    },
+    {
+      "path": "tools/landscape/vegetation/README.md",
+      "status": "modified",
+      "sha": "40689ccaddc31792110d2fc016de407e9359d55c"
+    },
+    {
+      "path": "tools/scenery/README.md",
+      "status": "modified",
+      "sha": "f2bcd0f4186bb83fb3dd204606bd2e449d0e3484"
+    },
+    {
+      "path": "tools/scenery/attribute_views.gd",
+      "status": "modified",
+      "sha": "57b42e286360b76566a3319229d32698c96cdc6c"
+    },
+    {
+      "path": "tools/scenery/attribution_report.py",
+      "status": "modified",
+      "sha": "b0c595652b2f0fdd561c2614274e844d23e4c980"
+    },
+    {
+      "path": "tools/scenery/budget.sh",
+      "status": "modified",
+      "sha": "2fa4b4897604d8477c8f86152c47280d0a600df6"
+    },
+    {
+      "path": "tools/scenery/scene_budget.json",
+      "status": "modified",
+      "sha": "5962fe880119f77af74ba326d62d50704c3dcd2d"
+    },
+    {
+      "path": "tools/scenery/test_attribution_report.py",
+      "status": "modified",
+      "sha": "09e2918e071210b31ee1bda99a549cde2bb2e9eb"
+    },
+    {
+      "path": "tools/skins/README.md",
+      "status": "modified",
+      "sha": "7db27e1ca5b2ee9fc014b28e578c09734ce75e33"
+    },
+    {
+      "path": "tools/trees/README.md",
+      "status": "modified",
+      "sha": "dff2a2744ac09c1cb6fe4390d080cdb1d5a5b1c2"
+    },
+    {
+      "path": "tools/trees/backlight_review.gd",
+      "status": "added",
+      "sha": "d3f56b5c68c7d9cbe141c825e8e1d43c478ca22d"
+    },
+    {
+      "path": "tools/trees/build.py",
+      "status": "modified",
+      "sha": "5230a3c3af0eb10ca7da4eef93af9c58174534e8"
+    },
+    {
+      "path": "tools/trees/process_atlas.py",
+      "status": "modified",
+      "sha": "b1aafcffc7da84ffdc48d8bed19c8bae38556004"
+    },
+    {
+      "path": "tools/trees/test_adapt_recipe.py",
+      "status": "modified",
+      "sha": "fa6cffedc520b76b064eea7bd6fc0553cc42b20c"
+    },
+    {
+      "path": "tools/trees/test_process_atlas.py",
+      "status": "modified",
+      "sha": "85817bff50fd63b13fe1fd45fc8d88a34051eb03"
+    },
+    {
+      "path": "tools/trees/test_verify_bakes.py",
+      "status": "added",
+      "sha": "b11d5ecd41b855d3f7480d54dbe4e010140cf6b1"
+    },
+    {
+      "path": "tools/trees/verify_bakes.py",
+      "status": "modified",
+      "sha": "74ad914b8213f85282b805ccdd965cdc3268ca98"
+    },
+    {
+      "path": "tools/trees/world_replay.gd",
+      "status": "modified",
+      "sha": "a5f43228cbdee373badd393173c6f85dded8c70b"
+    }
+  ],
+  "relevant_patches": [
+    {
+      "path": "AGENTS.md",
+      "patch": "@@ -36,6 +36,8 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo\n \n The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.\n \n+Make visual enhancements optional and scalable from modest computers to high-end PCs through quality presets and independent controls for geometry detail, vegetation density, lighting, shadows, reflections and effects. Recommend an initial preset using detected hardware and measured performance, and preserve saved user overrides. Optimize CPU, GPU, RAM and VRAM use at every quality level, including maximum settings; disabled features must avoid unnecessary processing and memory allocations. Graphics settings must leave simulation physics unchanged. Validate performance on real hardware, following the 1080p-first resolution priorities above.\n+\n ## Discover code\n \n Prefer codebase-memory-mcp: `search_graph`, `trace_path`, `get_code_snippet`, `query_graph`, then `get_architecture`. Index the repository first if absent. Stored line ranges may lag the working tree; verify the current source before editing. Use `rg` for literals, configuration, non-code files or insufficient graph results."
+    },
+    {
+      "path": "app/main.gd",
+      "patch": "@@ -79,6 +79,7 @@ const World := preload(\"res://render/world/world.gd\")\n const FieldError = preload(\"res://ui/field_error.gd\")\n const Hud := preload(\"res://render/hud.gd\")\n const FrameSamples := preload(\"res://render/frame_samples.gd\")\n+const SceneDetail := preload(\"res://render/scene_detail.gd\")\n const ViewportColor := preload(\"res://render/viewport_color.gd\")\n const Reconstruction := preload(\"res://render/reconstruction.gd\")\n const Air := preload(\"res://physics/air_data.gd\")\n@@ -3475,6 +3476,13 @@ func _finish_frame_time(exit_code: int = OK) -> void:\n \t\tticks = int(sample_ticks[sample_ticks.size() - 1] - sample_ticks[0]) if sample_ticks.size() > 1 else 0,\n \t}\n \tvar run_args: Dictionary = _user_args()\n+\t# The current preference can describe the NEXT world. Read the installed props and\n+\t# collision inventory instead of inferring them from SceneDetail.level().\n+\tvar installed_scenery: Node = _field_node.get_node_or_null(\"Scenery\") if is_instance_valid(_field_node) else null\n+\tvar scenery_stats: Dictionary = installed_scenery.get_meta(\"stats\", {}) if installed_scenery != null else {}\n+\tvar installed_world: Dictionary = session.collision_world()\n+\tvar meadow: Node = _field_node.get_node_or_null(\"RunwayMeadow\") if is_instance_valid(_field_node) else null\n+\tvar detail_instances := FrameSamples.field_tree_detail_instances(_field_node, field)\n \tvar route_name: String = frametimes_route if not frametimes_route.is_empty() else \\\n \t\t(\"scripted-fixed\" if _frametimes_scripted_fixed else \"live-input\")\n \t# Endpoint evidence is read once after sampling; no new per-tick observer.\n@@ -3493,6 +3501,20 @@ func _finish_frame_time(exit_code: int = OK) -> void:\n \t\troute = route_name,\n \t\tpreset = \"high-experimental\" if Atmosphere.HighGraphics.active() else \"current-default\",\n \t\tgraphics_profile = Atmosphere.HighGraphics.describe(),\n+\t\tscene_at_report = {\n+\t\t\tscope = \"end of collection only; not settings or visibility history\",\n+\t\t\tlandscape_id = landscape_id,\n+\t\t\tcollision_world_status = \"installed\" if not installed_world.is_empty() else \"absent\",\n+\t\t\tcollision_world_identity = installed_world.get(\"identity\", \"\"),\n+\t\t\tscenery_present = installed_scenery != null,\n+\t\t\tinstalled_scenery_quality = scenery_stats.get(\"quality\", \"absent\" if installed_scenery == null else \"unknown\"),\n+\t\t\trequested_scene_detail = SceneDetail.level(),\n+\t\t\tmesh_lod_threshold_px = get_viewport().mesh_lod_threshold,\n+\t\t\tfield_tree_detail_instances = detail_instances,\n+\t\t\trunway_meadow = {present = meadow != null,\n+\t\t\t\tplants = meadow.get_meta(\"plants\", 0) if meadow != null else 0,\n+\t\t\t\tsource_triangles = meadow.get_meta(\"source_triangles\", 0) if meadow != null else 0},\n+\t\t},\n \t\tshadows = Atmosphere.ShadowSettings.describe(),\n \t\tbackend = RenderingServer.get_current_rendering_method(),\n \t\trendering_driver = RenderingServer.get_current_rendering_driver_name(),\n@@ -3521,6 +3543,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:\n \t\tarchitecture = Engine.get_architecture_name(),\n \t\tpid = OS.get_process_id(),\n \t\twindow = \"%dx%d\" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],\n+\t\twindow_size_at_report = [DisplayServer.window_get_size().x, DisplayServer.window_get_size().y],\n \t\tvsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,\n \t\t# A CLI cap can differ from the shipped default even when VSync is enabled.\n \t\tmax_fps = Engine.max_fps,"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "patch": "@@ -671,6 +671,23 @@ func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:\n \treturn Air.compute(s, wind_at(at, s), air_density(s))\n \n \n+## One accepted-endpoint observation. A successful spatial Air receipt already contains its datum wind;\n+## detach it from the stage sampler. A refused station still needs the independent datum wind for the HUD.\n+## Derived sessions retain their existing wind_at/air_data dispatch, including overrides of either method.\n+func observer_air_and_wind(s: PackedFloat64Array, time_s: float) -> Dictionary:\n+\tif get_script() != load(\"res://sim/flight_session.gd\") or sim == null \\\n+\t\t\tor not _weather.is_spatial() or _weather_pending_reset \\\n+\t\t\tor PackedFloat64Array([time_s]).to_byte_array() != PackedFloat64Array([sim.time()]).to_byte_array() \\\n+\t\t\tor s.to_byte_array() != sim.state.to_byte_array():\n+\t\tvar wind: PackedFloat64Array = wind_at(time_s)\n+\t\treturn {wind = wind.duplicate(), air = air_data(s, time_s)}\n+\tvar air: Dictionary = air_data(s, time_s)\n+\tif air.has(\"spatial_sampler\"):\n+\t\tvar wind: PackedFloat64Array = air.spatial_sampler.reference_wind\n+\t\treturn {wind = wind.duplicate(), air = air}\n+\treturn {wind = wind_at(time_s).duplicate(), air = air}\n+\n+\n ## Pure reset-time producer for each runway candidate; independent of the accepted tick and OU window.\n func _initial_air_sampler(model: Dictionary) -> Callable:\n \tif not _weather.is_spatial():"
+    }
+  ]
+}

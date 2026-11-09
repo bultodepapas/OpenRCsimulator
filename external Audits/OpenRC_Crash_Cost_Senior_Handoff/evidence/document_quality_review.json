@@ -1,0 +1,18 @@
+{
+  "report_pages": 25,
+  "method": "Rendered DOCX to PDF and 140 dpi PNGs; inspected every page at readable resolution.",
+  "result": "Passed final visual review",
+  "final_corrections": [
+    "Removed inherited Title paragraph border",
+    "Kept fleet table together at start of page 5",
+    "Removed empty trailing page",
+    "Shortened R03 to avoid orphaned page number"
+  ],
+  "review_coverage": {
+    "root": "Selected pages and layout checks",
+    "damage_reviewer": "1–9 with final recheck 1 and 4–9",
+    "economics_reviewer": "10–17 final render",
+    "pricing_reviewer": "18–25 final render"
+  },
+  "content_correction": "P01 applicability restricted to the authored LP12060 configurations."
+}

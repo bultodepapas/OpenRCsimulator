@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "70c70c4a-0493-4d91-bb86-6d9d93d0f458",
+  "command": [
+    "/workspace/scratch/bf9c4bc414d0/audit_work/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/bf9c4bc414d0/audit_work/economy_harness",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_economy_calculator.gd"
+  ],
+  "cwd": "/workspace/scratch/bf9c4bc414d0",
+  "started_utc": "2026-11-09T15:29:30.694453+00:00",
+  "label": "test_economy_calculator",
+  "log": "/workspace/scratch/bf9c4bc414d0/audit_work/verification/test_economy_calculator-isr8nt3z/engine.log",
+  "report": "/workspace/scratch/bf9c4bc414d0/audit_work/verification/test_economy_calculator-isr8nt3z/report.json",
+  "timeout_seconds": 45,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.464515,
+  "log_bytes": 90,
+  "log_sha256": "67df90159bc27d557db03c27864ebf76bb9d37bf1eb305a1c5478a7aec6239e1"
+}

@@ -1,0 +1,79 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "label": "import",
+      "ok": true,
+      "report": "checks/import-bquywop9/report.json"
+    },
+    {
+      "label": "test_economy_calculator",
+      "ok": true,
+      "report": "checks/test_economy_calculator-e7jqkf0k/report.json"
+    },
+    {
+      "label": "test_economy_catalog",
+      "ok": true,
+      "report": "checks/test_economy_catalog-uc1g_x3x/report.json"
+    },
+    {
+      "label": "test_economy_component_resolver",
+      "ok": true,
+      "report": "checks/test_economy_component_resolver-oi_cwust/report.json"
+    },
+    {
+      "label": "test_economy_cr39",
+      "ok": true,
+      "report": "checks/test_economy_cr39-ba0i8nxo/report.json"
+    },
+    {
+      "label": "test_economy_impact_budget",
+      "ok": true,
+      "report": "checks/test_economy_impact_budget-bars_wtt/report.json"
+    },
+    {
+      "label": "test_economy_inspection",
+      "ok": true,
+      "report": "checks/test_economy_inspection-uz5n42tu/report.json"
+    },
+    {
+      "label": "test_economy_package_optimizer",
+      "ok": true,
+      "report": "checks/test_economy_package_optimizer-hj5q33kc/report.json"
+    },
+    {
+      "label": "test_economy_repair_details",
+      "ok": true,
+      "report": "checks/test_economy_repair_details-me3le9nb/report.json"
+    },
+    {
+      "label": "test_economy_repair_planner",
+      "ok": true,
+      "report": "checks/test_economy_repair_planner-t3__ok1l/report.json"
+    },
+    {
+      "label": "test_economy_replacement_quote",
+      "ok": true,
+      "report": "checks/test_economy_replacement_quote-ichch7cv/report.json"
+    },
+    {
+      "label": "test_economy_thermal_budget",
+      "ok": true,
+      "report": "checks/test_economy_thermal_budget-g2b0xpd2/report.json"
+    },
+    {
+      "label": "test_accident_settlement",
+      "ok": true,
+      "report": "checks/test_accident_settlement-ak5zb1fi/report.json"
+    },
+    {
+      "label": "audit_probe",
+      "ok": true,
+      "report": "checks/audit_probe-0xdfjw5d/report.json"
+    }
+  ],
+  "historical_scripts": 12,
+  "historical_assertions": 674,
+  "current_behavior_probes": 10,
+  "scope": "isolated reproduction; not a full-app or acceptance run"
+}

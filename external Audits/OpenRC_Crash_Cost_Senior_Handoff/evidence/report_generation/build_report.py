@@ -1,0 +1,547 @@
+from pathlib import Path
+import json, re, hashlib
+from docx import Document
+from docx.shared import Inches, Pt, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+
+ROOT = Path('/workspace/scratch/bf9c4bc414d0/audit_work')
+OUT = ROOT / 'deliverables'
+COMMIT = 'f47d1dc6cccb141936407d0217eafdc465558190'
+REPO = 'https://github.com/bultodepapas/OpenRCsimulator/blob/' + COMMIT + '/'
+doc = Document()
+sec = doc.sections[0]
+sec.page_width, sec.page_height = Inches(8.5), Inches(11)
+sec.top_margin = sec.bottom_margin = Inches(.72)
+sec.left_margin = sec.right_margin = Inches(.75)
+sec.header_distance = sec.footer_distance = Inches(.30)
+for name in ['Normal', 'Title', 'Subtitle', 'Heading 1', 'Heading 2', 'Heading 3', 'Header', 'Footer']:
+    s = doc.styles[name]
+    s.font.name = 'Arial'
+    s.font.color.rgb = RGBColor(0, 0, 0)
+    s.font._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), 'Arial')
+normal = doc.styles['Normal']
+normal.font.size = Pt(11)
+normal.paragraph_format.line_spacing = 1.10
+normal.paragraph_format.space_after = Pt(7)
+normal.paragraph_format.widow_control = True
+for name, size, before, after in [('Title',23,0,10),('Subtitle',11,0,7),('Heading 1',16,18,9),('Heading 2',12.5,13,6),('Heading 3',11,10,5)]:
+    s=doc.styles[name]
+    s.font.size=Pt(size)
+    s.font.bold = name != 'Subtitle'
+    s.paragraph_format.space_before=Pt(before)
+    s.paragraph_format.space_after=Pt(after)
+    s.paragraph_format.keep_with_next=True
+    s.paragraph_format.keep_together=True
+for name in ['List Bullet','List Number']:
+    doc.styles[name].font.name='Arial'
+    doc.styles[name].font.size=Pt(11)
+    doc.styles[name].paragraph_format.space_after=Pt(5)
+    doc.styles[name].paragraph_format.line_spacing=1.08
+hp=sec.header.paragraphs[0]
+hp.text='OPEN RC SIMULATOR  |  CRASH COST AUDIT'
+hp.style=doc.styles['Header']
+hp.runs[0].font.size=Pt(8.5)
+fp=sec.footer.paragraphs[0]
+fp.alignment=WD_ALIGN_PARAGRAPH.RIGHT
+rr=fp.add_run('9 November 2026   •   ' + COMMIT[:12] + '   |   ')
+rr.font.size=Pt(8)
+fld=OxmlElement('w:fldSimple'); fld.set(qn('w:instr'),'PAGE');fp._p.append(fld)
+doc.core_properties.title='OPEN RC SIMULATOR Crash repair cost audit and implementation plan'
+doc.core_properties.subject='Independent source audit, price evidence, fleet standard and staged delivery plan'
+doc.core_properties.author='OpenAI'
+doc.core_properties.keywords='OpenRC; crash damage; repair costs; fleet; audit; game economics'
+blocks=[]
+
+def p(text, style=None):
+    blocks.append({'type':'paragraph','text':text})
+    return doc.add_paragraph(text, style=style)
+
+def h1(text):
+    blocks.append({'type':'heading1','text':text}); doc.add_heading(text,1)
+
+def h2(text):
+    blocks.append({'type':'heading2','text':text}); doc.add_heading(text,2)
+
+def bullets(items):
+    for item in items:
+        blocks.append({'type':'bullet','text':item});doc.add_paragraph(item,style='List Bullet')
+
+def table(headers, rows, widths, keep_first_rows=0):
+    blocks.append({'type':'table','headers':headers,'rows':rows})
+    t=doc.add_table(rows=1,cols=len(headers))
+    t.autofit=False
+    for col,w in zip(t.columns,widths): col.width=Inches(w)
+    pr=t._tbl.tblPr
+    bord=OxmlElement('w:tblBorders')
+    for key in ['top','left','bottom','right','insideH','insideV']:
+        e=OxmlElement('w:'+key);e.set(qn('w:val'),'single');e.set(qn('w:sz'),'5');e.set(qn('w:color'),'D9D9D9');bord.append(e)
+    pr.append(bord)
+    mar=OxmlElement('w:tblCellMar')
+    for key,val in [('top','90'),('bottom','90'),('left','100'),('right','100')]:
+        e=OxmlElement('w:'+key);e.set(qn('w:w'),val);e.set(qn('w:type'),'dxa');mar.append(e)
+    pr.append(mar)
+    repeat=OxmlElement('w:tblHeader');repeat.set(qn('w:val'),'true');t.rows[0]._tr.get_or_add_trPr().append(repeat)
+    for i,text in enumerate(headers):t.rows[0].cells[i].text=text
+    for row in rows:
+        cells=t.add_row().cells
+        for i,text in enumerate(row):cells[i].text=str(text)
+    for ri,row in enumerate(t.rows):
+        no_split=OxmlElement('w:cantSplit');row._tr.get_or_add_trPr().append(no_split)
+        for ci,cell in enumerate(row.cells):
+            cell.width=Inches(widths[ci]);cell.vertical_alignment=WD_CELL_VERTICAL_ALIGNMENT.CENTER
+            if ri==0:
+                fill=OxmlElement('w:shd');fill.set(qn('w:fill'),'E7EEF5');cell._tc.get_or_add_tcPr().append(fill)
+            for para in cell.paragraphs:
+                para.paragraph_format.space_before=Pt(0);para.paragraph_format.space_after=Pt(2)
+                para.paragraph_format.line_spacing=1.04
+                if ri < keep_first_rows - 1:
+                    para.paragraph_format.keep_with_next=True
+                if ci>0 and len(str(cell.text))<24: para.alignment=WD_ALIGN_PARAGRAPH.CENTER
+                for run in para.runs:
+                    run.font.size=Pt(10)
+                    run.font.bold=(ri==0)
+                    run.font.color.rgb=RGBColor(0,0,0)
+    spacer=doc.add_paragraph();spacer.paragraph_format.space_after=Pt(2);spacer.paragraph_format.space_before=Pt(0)
+    spacer.paragraph_format.line_spacing=1
+    spacer.add_run().font.size=Pt(2)
+    return t
+
+def hyperlink(paragraph,label,url):
+    rel=paragraph.part.relate_to(url,'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink',is_external=True)
+    el=OxmlElement('w:hyperlink');el.set(qn('r:id'),rel)
+    run=OxmlElement('w:r');pr=OxmlElement('w:rPr')
+    color=OxmlElement('w:color');color.set(qn('w:val'),'1F4E79');pr.append(color)
+    under=OxmlElement('w:u');under.set(qn('w:val'),'single');pr.append(under)
+    run.append(pr);te=OxmlElement('w:t');te.text=label;run.append(te);el.append(run);paragraph._p.append(el)
+
+doc.add_paragraph('Crash repair cost audit\nand implementation plan',style='Title')
+p('OPEN RC SIMULATOR',style='Subtitle')
+p('9 November 2026 • Independent review of source, current fleet data, repair pricing and model design')
+p('Audited revision ' + COMMIT)
+p('Status: audit and implementation specification. Production code and catalog data were not changed. The proposed acceptance cases are not claims that the proposed system has already shipped.')
+
+h1('Executive assessment')
+p('The current cost system is a strong accounting foundation attached to an unfinished damage assessor. It records accepted contacts, handles integer currency safely, keeps price provenance, supports explicit inspection decisions, and contains tested repair and package helpers. However, ordinary crash evidence usually becomes “inspect this component.” Except for a confirmed propeller strike, the live path does not decide which parts are repairable, destroyed or reusable. This is the principal reason the result can feel unrelated to the actual accident. [C01–C03, C11–C13]')
+p('The broad Stik range is reproducible. A terminal incident can produce US$0–1,331.34; recording a broken propeller changes the lower bound to US$5.39 but leaves the upper bound at US$1,331.34. That upper number is the high scenario for replacing the modeled complete build, not a conditional estimate of the local crash. The existing tests pass partly because they assert this behavior. Merely narrowing the displayed interval would conceal the unfinished assessment. [C03, T01]')
+p('Fleet coverage is also unfinished. Eight airplanes are selectable, three additional glow Stik configurations are hidden technical routes, and a separate X-Cell helicopter research route exists. Only the four glow Stik dossiers have complete modeled prices. Seven of the eight selectable airplanes therefore have incomplete economic dossiers. “Complete” here means the authored rows have values; it does not mean every value is a verified compatible, available retail part. [C04, C05]')
+p('The recommended product target is a stable, deterministic game estimate. It should reproduce recognizable RC repair decisions without pretending to predict laboratory material failure. A local wing break can require a wing and refitting while preserving servos, receiver and propulsion. A hard landing can damage one gear leg, its mount or a sold gear set. A severe direct impact can destroy multiple systems. Those outcomes should follow contact location, loading, protection and secondary hazards, rather than speed multiplied by aircraft price.')
+bullets([
+    'Keep the accounting, provenance, archive, generator and existing tested helper architecture. Complete the live assessment layer instead of starting the economy again.',
+    'Separate physical component condition, the package that must be bought, and the labor needed to restore the airplane. A wing contact is not an instruction to buy every component mapped to that contact.',
+    'Complete all eleven fixed-wing configurations with explicit exact-price, economic-analogue or authored game-allowance bases. Keep the helicopter as a distinct extension until its physical inventory and live report path exist.',
+    'Publish a useful nominal repair estimate after deterministic simulated inspection. Show unresolved items and their own bounded alternatives separately. Keep complete-aircraft replacement as a comparison, not the headline range.',
+    'Qualify the feature through production-path scenarios, event and money invariants, and the full fleet. Remove the economics experimental label only when those gates pass; preserve independent flight-physics qualifications.'
+])
+
+h1('1 Scope evidence and confidence')
+h2('What was reviewed')
+p('The review pins GitHub main at the revision above and traces accepted flight contacts through the incident ledger, calculator, replacement comparison, settlement and report. It also reviews source-generated economics data, every current route, physics contact and gear interfaces, render damage presentation, inspection and repair helpers, checkpoint behavior, and the existing crash research plan. All observations in this report apply to that revision; subsequent commits need a targeted recheck.')
+p('Existing project material was used before opening new work: the consolidated external audit queue and completed work register; CRASH-DAMAGE-PLAN; the canonical crash-damage-economics plan; CR-39 and relevant CR-36 pricing research. The relevant identity and installation interface in the existing Aircraft Import Integration Plan was reviewed, as was page 7 of the November 6 Visual and Performance Audit. The entire 53-page import document was not re-audited. Historical findings were checked against current code rather than copied as current defects. [D01–D07]')
+p('External research records 27 manufacturer or retailer price observations, package boundaries, workshop-rate examples and manufacturer repair guidance. Prices are a dated USD baseline unless another currency is explicitly named. They exclude tax, shipping and Colombian import charges. A manufacturer listing establishes the product and price, not that an analogous spare physically fits a fictional or differently configured simulated airplane. [P01–P27, R01–R03]')
+h2('Verification actually performed')
+table(['Check','Result','Boundary'],[
+    ['Runtime and catalog generators','Both --check commands passed','All 12 generated routes current; source checks do not prove damage realism.'],
+    ['Python economics tests','67 tests passed','Research and generation logic.'],
+    ['Existing Godot economy scripts','12 scripts; 674 assertions passed','Unmodified relevant source copied into an isolated project with 240 Hz configuration.'],
+    ['Additional audit probes','10 checks passed','Constructed incident/calculator/helper inputs reproduce current behavior; not flown accidents.'],
+    ['Repository change review','No production changes','Read-only audit at pinned revision.']
+],[2.05,1.75,3.2])
+p('The engine was the repository-pinned Godot 4.8 beta 2 build cafc17a19. A transitive preload harness copied 217 source files without altering their content, retained the 240 Hz project setting, and included the required data, recipe and localization dependencies. The checked runner inspected emitted diagnostics as well as process exit codes. The evidence package includes source hashes, final successful reports, logs, probe source and results. [T01]')
+p('Full application checkpoint integration, interactive graphical flight, native rendering, input-device behavior and physical crash calibration were not rerun. An initial attempt to include the full-main checkpoint script encountered the sparse harness’s missing scene/assets and autoload context; that is a harness limitation, not a newly demonstrated production defect. Other initial harness configuration and marker mismatches were corrected before the final passing run. The report does not claim an end-to-end playable-build certification or that helper tests prove the missing live assessment already works.')
+h2('How to read findings')
+p('“Confirmed” means the behavior is present in current source, with a focused executed probe where stated. “Integration risk” identifies a current helper contract that will be unsafe when new live decisions are introduced. “Proposal” describes a future implementation or a game assumption. No proposed numerical damage threshold is presented as experimentally measured.')
+
+h1('2 Why the ranges are so wide')
+h2('The current chain')
+p('The live session publishes accepted contact observations. Main forwards them to Incident.observe. A new contact opens a generic structural-inspection caveat and mapped component inspections. A recognized prop strike replaces the propeller and requests related powertrain inspection. The calculator then sees many unresolved “inspect” rows. There is no live caller resolving those rows through apply_inspection or apply_repair_choice, and the impact, component and thermal budget modules remain helper/test consumers. [C01, C02, C11]')
+p('For an inspected component, the current calculator sets a zero lower bound and an unknown upper bound. When the event is terminal and the complete-build dossier is marked complete, it substitutes that build’s high value as a provisional ceiling. It therefore answers “what is the broad replacement exposure while the accident remains unassessed?” The player expects “what did this crash probably break and what is the repair?” Those are different quantities. [C03, C18]')
+table(['Reproduced input','Current result','Meaning'],[
+    ['Default Stik terminal incident','US$0–1,331.34','No confirmed purchases; whole-build high scenario as ceiling.'],
+    ['Same plus recorded prop strike','US$5.39–1,331.34','Propeller purchase confirmed; structural/powertrain questions remain.'],
+    ['Synthetic fully resolved Stik prop-only assessment','US$5.39','Demonstrates the calculator can price a completed local assessment.'],
+    ['Extra prop replacement with unrelated dossier gaps','US$5.39 known; total incomplete','Global catalog completeness blocks the otherwise priced local item.']
+],[2.2,1.65,3.15])
+p('The last two rows are constructed calculator inputs, not current automatic live outcomes. A local total should become complete only after the assessor has resolved all relevant affected components and history; it must not simply drop unknown nearby damage to make the number look precise. [T01]')
+h2('The Stik build itself contains scenario uncertainty')
+p('The default Stik’s modeled complete build is US$994.33 nominal, with US$827.34–1,331.34 bounds. Its US$504 width is fully explained by authored input spreads. The airframe and installation group contributes US$170, engine US$125, four servos US$40, receiver battery US$15, fuel US$4, and assembly US$150. This is not a statistical confidence interval learned from crash outcomes. [C04]')
+table(['Input group','Low to high','Width'],[
+    ['Airframe and installation','US$280–450','US$170'],
+    ['Engine and muffler','US$225–350','US$125'],
+    ['Four servos','4 × US$33.99–43.99','US$40'],
+    ['Receiver battery','US$20–35','US$15'],
+    ['Fuel','US$1–5','US$4'],
+    ['Assembly and commissioning','US$60–210','US$150']
+],[3.0,2.6,1.4])
+p('The labor entry assumes three hours at US$20, five hours at US$25, or six hours at US$35. It is a build scenario, not task-specific crash labor or a verified shop quote. An illustrative DIY purchase basis removes that assembly entry: US$869.33 nominal and US$767.34–1,121.34. The current product does not expose that subtraction as a complete-aircraft DIY toggle. [C04]')
+h2('Three different kinds of uncertainty need separate treatment')
+bullets([
+    'Condition uncertainty: whether a mount, shaft, receiver or spar actually failed. Resolve it through the game’s explicit assessment or show a specific pending component.',
+    'Price uncertainty: exact SKU, compatible substitute, stock, date, location and included contents. Freeze the selected basis and explain estimates.',
+    'Choice uncertainty: repair versus replacement, DIY versus workshop, individual spare versus package. Present these as alternative plans, rather than blending them into one enormous interval.'
+])
+p('A useful estimate should be the cost of one coherent chosen plan, with clearly named alternatives. Summing every independent worst case produces a number for a hypothetical accident that may not match any feasible scenario. A display-only clamp, midpoint of zero and full replacement, universal percentage of aircraft value, or random repair bill would not fix the model.')
+
+h1('3 Current fleet and exact data work')
+p('The following totals are sums of known priced rows in the checked-in catalog, including row quantities. They are not complete replacement quotes for incomplete aircraft, and they are not crash bills. A priced row may itself contain several physical parts or an estimate. All eleven fixed-wing records currently map or explicitly exclude their signed inventory IDs and map their signed contact IDs. This is good naming coverage; it does not establish sufficient physical granularity or correct spare compatibility. Current raw source hashes match. [C04, C05, T01]')
+table(['Configuration','Access','Priced rows','Known subtotal'],[
+    ['Jensen Ugly Stick .60','Selectable','9 / 9','US$994.33'],
+    ['Stik MAX-61FX two-stroke','Hidden','9 / 9','US$994.33'],
+    ['Stik MAX-55AX two-stroke','Hidden','9 / 9','US$994.33'],
+    ['Stik FS-64V four-stroke','Hidden','9 / 9','US$1,300.59'],
+    ['Ugly Stick Electric 6S','Selectable','0 / 20','Unknown'],
+    ['Great Planes Extra 300S .60','Selectable','3 / 22','US$175.34'],
+    ['P-51D Mustang 120 cc','Selectable','4 / 27','US$2,456.71'],
+    ['F4U Corsair Moki 250','Selectable','13 / 33','US$7,113.88'],
+    ['Vantage Jet / SebArt Avanti S','Selectable','5 / 15','US$6,559.12'],
+    ['Turbo Lumber Evolution','Selectable','8 / 14','US$465.87'],
+    ['MoonRunner X99','Selectable','12 / 20','US$1,090.05'],
+    ['X-Cell .60 research helicopter','Research route','0 / 0','No economic BOM']
+],[3.25,1.15,1.05,1.55],keep_first_rows=3)
+h2('Glow Stik family')
+p('Reuse the four variant identities and current economic sources. Split the US$350 covered-airframe and installation allowance into meaningful structure and service units: wing sections or sold wing assembly, front and rear fuselage, tail surfaces, left and right gear/mounts, tank and powertrain mount. Keep the whole build allowance as a comparison package. Currently 24 contact probes can lead to the same broad airframe group. Do not replace that entire group for every wingtip brush or bent leg. [C04]')
+p('Author one shared balsa trainer profile, with variant-specific engine, propeller, fuel and installed mass/rating data. The FS-64V must retain its own four-stroke price and installation choices. A modern Ultra Stick wing or fuselage can support an economic analogue, but cannot be labeled an exact spare for the legacy Jensen or Extra without a compatibility finding. [P09, P10]')
+h2('Electric Stik 6S')
+p('This is the highest-value quick data fix: all 20 rows are unpriced even though the dossier identifies commercially priceable hardware. Four exact named-product observations total US$414.84: motor US$169.99, ESC US$129.99, propeller US$4.87, battery US$109.99. Importing them still leaves the rest of the build and structural decomposition to finish. Separate battery, motor, ESC/BEC, mounting, propeller, receiver and individual servos. Include the selected battery mode and actual installed hardware in the configuration identity. [P02–P05]')
+h2('Great Planes Extra 300S')
+p('Only the propeller and five proxy servos contribute to the known subtotal. Reuse the balsa sport class but author the Extra’s own zones and mounting relationships. Complete engine and muffler, airframe/spare basis, gear, tank, receiver power and labor. Obsolete or unavailable original structure is a reason to declare a reviewed game allowance or alternative package, not to borrow another airplane’s exact fit or leave all localized bills permanently unresolved.')
+h2('P-51D Mustang 120 cc')
+p('The DA-120, two muffler proxies and nine servo proxies dominate the existing known subtotal. Complete the particular airframe, retract and strut packages, wheels, doors, propeller/spinner, receiver power and structural spares. Track left and right retract condition separately even when replacement is sold as a pair or set. The engine row already includes ignition-related contents; do not add another ignition purchase when the same package supplies it. [C04, P25]')
+h2('F4U Corsair Moki 250')
+p('This needs separate outer wings, center structure, wing mechanism/joiners, gear and radial-engine installation. Current contact maps name a wing, joiner and servos as inspection candidates; they do not prove every listed item failed. CARF’s folding-wing and plug-in-wing products are different purchases. Use the installed variant: the observed folding wings are US$754 each, while the manufacturer also lists different plug-in wing items. Gear sets and wheel pairs must retain their sold quantities. Keep the Moki assembly’s included mount, muffler and ignition scope explicit before pricing those separately. [C04, P16–P22]')
+h2('Vantage Jet and Avanti installation')
+p('Keep the installed SebArt Avanti S A200 / P100-RX identity behind the player-facing Vantage Jet name. Split wing, fuselage, tail, retracts and mounts from the current US$2,749 ARF group. Distinguish the turbine, fuel tank and plumbing, pump/ECU package boundary, batteries, receiver, servos, exhaust tube and assembly. The listed ARF excludes retracts; it is not a ready-to-fly aircraft. A broken airframe is not automatically a destroyed US$2,780 turbine. [C04, P23, P24]')
+p('A protected powertrain can remain reusable in the game after a local structural accident if the defined assessment supports it; direct ingestion, mount collapse, severe transmitted shock or heat can change that. No verified fixed JetCat crash inspection fee was found. If the game needs a numeric allowance, author and label that allowance instead of calling the official €350 quote-approval threshold a service price. [R02]')
+h2('Turbo Lumber Evolution')
+p('Use the E-flite Timber commercial family as a declared economic analogue, not a claim of mechanical interchangeability. The present wing row is US$115.95: US$59.99 structure plus four US$13.99 servo proxies. Split those conditions. A broken foam wing with four surviving servos should be able to buy the bare wing. Complete fuselage, tail, gear and wheel/mount alternatives and separate the US$299.99 PNP package from individual purchases. Manufacturer guidance explicitly supports foam repair where suitable. [C04, P11–P15, R03]')
+h2('MoonRunner X99')
+p('Preserve its flying-wing, pusher and gearless configuration. Do not inherit tractor-prop or landing-gear charges. Separate left/right foam structure and elevons, spar/joiner, rear motor mount, pusher propeller, motor, ESC, battery, receiver and actually installed payload electronics. The current catalog includes FPV/autopilot/parachute-related values: bill only the selected installation. Complete the remaining structure, camera and assembly basis. An X8 PNP package is a possible economic alternative only after its variant and included hardware are reconciled. [C04, P26, P27]')
+h2('X-Cell helicopter boundary')
+p('The X-Cell research route has no economic parts inventory and does not share the fixed-wing live incident integration. Its HX-700 visual surrogate is not authority for physical or financial parts. Before claiming stable helicopter economics, define blades and sold pairs, rotor head, shafts, swashplate, main gear, tail drive, boom, skids, frame, servos and powertrain, then add rotor-specific contact and stored-rotation energy rules. The eleven-plane standard should be extensible to that profile without pretending the current empty dossier is covered. [C05]')
+
+h1('4 Findings that must be fixed or contained')
+p('Release blockers are the absence of live component assessment, incomplete fleet prices and unsuitable component granularity. The remaining findings below explain ways the completed system could still miss damage, erase evidence, overcharge or misstate confidence. Several are integration risks because production does not yet generate inspection decisions.')
+h2('F01 Live severity does not become a repair decision')
+p('Confirmed release blocker. Incident.observe opens inspections; no production caller completes the inspection or repair-choice APIs. The CR-33 impact budget and component resolver and CR-35 thermal budget are not live. Implement a small versioned gameplay assessor that uses accepted evidence and publishes component conditions, repair dispositions and reasons. Do not treat tested helper existence as finished integration. [C01, C02, C11]')
+h2('F02 The headline substitutes whole-build exposure for a local estimate')
+p('Confirmed and reproduced. Inspection rows use zero-to-unknown bounds, and a terminal complete dossier supplies a whole-build high ceiling. Replace this headline with an incident-scoped assessed plan. Keep a separately labeled whole-build comparison until a feasible repair or replacement plan is established. Do not merely relabel the current range “accurate.” [C03, C18, T01]')
+h2('F03 Missing unrelated prices block an otherwise resolved local amount')
+p('Confirmed and reproduced. The calculator imports all dossier missing entries and globally gates completeness. Introduce separate assessment coverage, incident purchase coverage and whole-build quote coverage. A prop-only incident can become complete when all relevant nearby components are resolved, even if an unrelated tail spare lacks a future catastrophe price. Missing affected structure must still remain visible. [C03, T01]')
+h2('F04 Terminal collision can suppress the propeller strike')
+p('Confirmed source ordering. The flight session checks terminal hull/gear guards before calling the prop-strike detector, which runs only in the no-terminal branch. A same-tick nose collision with actual blade contact can therefore omit that strike. Collect all accepted primary contact evidence for the step before choosing the terminal transition; deduplicate the physical event and allocate its severity once. Not every terminal nose collision necessarily touches a blade. [C06]')
+h2('F05 Stationary blades and scenery lack equivalent prop evidence')
+p('Confirmed source limitation. The existing strike requires engine-running state and at least 300 rpm. Scenery uses hull probes rather than a dedicated prop-disc sweep. Add geometric blade contact for unpowered and powered states, including obstacles, while keeping rotor spin energy and downstream shaft inspection separate. A stopped propeller may break without the additional powered load. Avoid treating the turbine route as if it had a propeller. [C06, C07, C19]')
+h2('F06 Gear events do not describe the landing failures the player expects')
+p('Confirmed source limitation. Normal wheel contact does not produce the economy gear incident; the current path emits a gear event at terminal travel limit. The impact snapshot explicitly lacks a deforming-wheel velocity. GP-16/17 compliance-failure helpers are experimental and test-only. Add a bounded accepted-tick seam for sink/normal load, side load, compression/travel, slip or snag, deployment and mount context. Do not fabricate these measurements from a generic “hard landing” label. [C07, C09, C15]')
+h2('F07 Continuing contact can get worse without an updated assessment')
+p('Confirmed source behavior. Incident.observe processes new events and skips persistent and ended phases. A growing scrape or repeated loading within one contact episode may therefore be lost unless another terminal event appears. Maintain a bounded episode summary containing maximum relevant severity and nonduplicated accumulated work where appropriate; finalize it on end. Costs should change only when the component condition or plan actually changes. [C02]')
+h2('F08 The diagnostic journal also limits later component knowledge')
+p('Confirmed source behavior. After 128 retained events, later ordinary contacts are flagged incomplete but are not mapped into component inspections. Prop and water facts have separate retention. Decouple the display/debug journal from a fixed-size per-zone/component summary. Later major damage must update that summary even when the journal is full. Keep the overflow flag for audit detail loss, not as permission to forget known damage. [C02]')
+h2('F09 New damage can preserve old reuse or erase old replacement')
+p('Confirmed helper behavior and reproduced integration risk. A new ordinary contact does not reopen a component already marked reuse; an existing test intentionally preserves that behavior. Conversely, a later prop strike can overwrite an associated engine/mount replacement with inspect. Track evidence revision per component. Reopen reuse after relevant new evidence; retain confirmed irreversible damage. A later repair can improve the component only through an explicit repair transaction. The selected bill need not increase monotonically because a different package can become cheaper. [C02, T01]')
+h2('F10 Lake propeller evidence misses the qualified binding')
+p('Confirmed helper behavior and reproduced. A lake event can identify probe_source=propeller and probe_id=propulsion_main, but the mapping helper never tries that combined key. The catalog contains propeller/propulsion_main. Normalize qualified probe identity once and test water/hull/prop routes against it. Naming the component still requests an assessment; it does not itself prove failure. [C02, C07, T01]')
+h2('F11 Terminal reconstruction can discard earlier contact measurements')
+p('Confirmed source flow; consequence requires production validation. Hull detection calculates pre-contact normal velocity, depth and specific energy, but the terminal path passes the chosen index/rule into a reconstructed snapshot. That event may replace the earlier hull observation. Preserve original accepted pre/post evidence, timestamps and provenance in the terminal bundle before introducing severity-based billing. Do not mistake detected-state velocity or a guard threshold for absorbed material energy. [C06–C09]')
+h2('F12 Some restored flights can lose ended-contact economics history')
+p('Source-level risk, not a completed full-app reproduction. Restoring a physics-only checkpoint creates a fresh incident ledger. Its missing-history caveat is added when active hull contact, a prop latch or new journal entry is visible. A prior ended brush can be absent from all three. Require paired economy checkpoints for a complete report, or mark legacy/unpaired restored history unknown independently of current active contact. Existing paired checkpoints and archive semantics are reusable. [C02, C06, C10]')
+h2('F13 A replacement comparison can exclude already-incurred fees')
+p('Reproduced conditional accounting defect. With US$5 of inspection expense already included, the terminal Stik high remains US$1,331.34. If that expense is sunk and payable even when replacing the aircraft, a feasible upper plan is US$1,336.34. Define whether each fee is incurred, optional or plan-contingent, then include sunk amounts in every plan. Do not call a backordered or incomplete replacement a guaranteed cash ceiling. [C03, T01]')
+h2('F14 Component groups and packages can overcharge localized damage')
+p('Confirmed granularity problem; prospective package integration risk. Stik and Avanti structural groups are broad, and the Lumber wing includes reusable servos. The existing optimizer intentionally handles exact coverage with no extra units. Real boxes may include surplus intact items, so explicit required-unit coverage and purchased-surplus accounting are needed before general PNP comparisons. Production currently supplies no package candidates by default; this audit did not observe a live PNP double bill. [C04, C12]')
+h2('F15 A weak fallback identity can accept an economically different installation')
+p('Future-change risk, not a current source mismatch. The catalog fallback compares inventory names/masses/energy labels, propulsion identity/kind, propeller presence and contact IDs. Same-ID changes to dimensions, SKU, positions, embedded quantities or package contents can escape that projection. Define an economics-relevant fingerprint including selected installation, battery mode and relevant geometry/revisions. Cosmetic-only edits should not invalidate prices, while hardware changes must. [C16, D06]')
+h2('F16 Visual damage and cause labels are not financial authority')
+p('Confirmed architectural separation that needs a clearer contract. Render severity classes and breakup are provisional, while rendered secondary contacts drive effects and audio. A detached-looking wing does not currently imply an assessed wing replacement. The existing visual audit also reports render-cadence-sensitive cause classification. Make the deterministic component assessment authoritative for economically meaningful visible states, keep cosmetic debris and labels out of billing, and validate cause timing separately. These findings do not establish that the current bill itself changes with render cadence. [C14, D07]')
+
+h1('5 What should be reused')
+p('The efficient approach is to finish the existing design. Several foundations already address difficult robustness problems and should remain the default implementation path. [C02, C03, C10–C13, C16, D02]')
+table(['Existing foundation','Recommended treatment'],[
+    ['Integer minor currency units and overflow checks','Keep. Validate quantities and intermediate arithmetic; round only at the declared presentation or purchase boundary.'],
+    ['Unknown values remain null','Keep. Never convert an unpriced or unassessed component into a zero-cost fact.'],
+    ['Generated catalog and source provenance','Keep. Edit source dossiers/offers, regenerate, then run both check commands.'],
+    ['Accepted events and separation from the flight kernel','Keep. Add evidence at the accepted boundary; keep prices, file access and package search outside physics ticks.'],
+    ['Cached catalog and revision-based valuation','Keep. Update the assessment only when meaningful evidence changes; avoid allocating or sorting prices every simulation tick.'],
+    ['Inspection dispositions and repair receipts','Extend with evidence revision, reopen rules and immutable confirmed damage.'],
+    ['Archive and paired checkpoint semantics','Keep and extend with assessment/profile identity and per-component evidence summaries.'],
+    ['Repair recipes and package helpers','Reuse within their tested contracts. Add coverage/surplus and shared-work semantics before generalizing.'],
+    ['Impact and thermal helper tests','Keep as building blocks. Their production integration and game calibration need separate acceptance.']
+],[2.25,4.75])
+p('Do not build an online price scraper into gameplay, a second renderer-owned damage ledger, a per-aircraft switch statement in the physics kernel, or a new campaign wallet as prerequisites. Persistent inventory trading, checkout simulation and physically flying a repaired wreck can be later features. The first release needs a truthful educational repair estimate and consistent wreck/report behavior.')
+
+h1('6 External pricing and repair evidence')
+h2('Useful current price observations')
+p('The observations below were checked on 9 November 2026. They are proposed data-import candidates, not silent changes to the current catalog. Currency is USD. Exact applicability, stock caveats, quantities, package inclusions and exclusions are retained in price_observations_2026-11-09.json. The word “analogue” means an economic reference requiring an explicit game assumption.')
+table(['Product or sold package','Observed price','Use and source'],[
+    ['APC 12×6 Sport propeller','US$5.39','Default Stik / 61FX / Extra; P01'],
+    ['APC 12×8E propeller','US$4.87','Electric Stik named prop; P02'],
+    ['Scorpion SII-4020-540KV motor','US$169.99','Electric Stik named motor; P03'],
+    ['Tribunus III 06-80A ESC SBEC','US$129.99','Electric Stik named ESC; P04'],
+    ['Gens ace 6S 4000 mAh 60C XT90','US$109.99','One battery; P05'],
+    ['Hitec HS-311 servo','US$16.99','Installed-use or explicit analogue; P06'],
+    ['Hitec HS-5485HB servo','US$29.99','Sport-aircraft analogue; P07'],
+    ['Spektrum AR631+ receiver','US$69.99','Only if installed or declared analogue; P08'],
+    ['Ultra Stick 10 cc wing with surfaces','US$119.99','Legacy-airframe economic analogue; P09'],
+    ['Ultra Stick 10 cc fuselage','US$99.99','Legacy-airframe economic analogue; P10'],
+    ['Timber Evolution wing','US$59.99','Servos excluded; P11'],
+    ['Timber Evolution fuselage','US$54.99','Structure analogue for Lumber; P12'],
+    ['Timber 11×7.3 three-blade propeller','US$7.99','Named commercial reference; P13'],
+    ['Updated Timber landing-gear set','US$16.99','Set with heavy springs; P14'],
+    ['Timber Evolution PNP','US$299.99','Airframe, motor, ESC and six servos; P15'],
+    ['Corsair right / left folding wing','US$754 each','Different from plug-in wing SKUs; P16–P17'],
+    ['Corsair fuselage','US$1,770','Structure; P18'],
+    ['Corsair main pneumatic retracts','US$1,330','Price per set; P19'],
+    ['Corsair 7-inch wheels','US$346','Price per pair; P20'],
+    ['Corsair pneumatic tail-gear set','US$608','Tail assembly; P21'],
+    ['Corsair folding-wing Navy ARF','US$5,170','Airframe package, not ready to fly; P22'],
+    ['JetCat P100-RX non-BL','US$2,780','Accessory package scope needs confirmation; P23'],
+    ['SebArt Avanti S A200 ARF','US$2,749','Retracts and flight equipment excluded; P24'],
+    ['Desert Aircraft DA-120','US$1,249','Listed sold out at observation; P25'],
+    ['RadioMaster RP1 V2 receiver','US$18.99','Use only for selected installation; P26'],
+    ['Skywalker X8 PNP reference','US$507.41','Includes propulsion/servos; verify variant; P27']
+],[3.20,1.15,2.65])
+p('These prices demonstrate why one generic “crash percentage” is unsuitable: a small propeller, a foam wing, a giant composite wing and a turbine have very different replacement structures. Their retail prices should affect the bill only after the game determines which installed items need repair or replacement.')
+h2('Package boundaries matter as much as price freshness')
+p('The Timber commercial wing excludes servos. Using the existing US$13.99 servo proxy, a parts-only illustration is US$59.99 if all four servos survive, US$87.97 with two failed servos, or US$115.95 with four failed servos. These are arithmetic examples under a declared economic equivalence assumption, not predictions of a particular accident. They show why the current bundled wing row is too coarse. [C04, P11]')
+p('The Timber PNP contains the airframe, motor, ESC, six servos and floats; receiver and battery are separate. US$299.99 plus the current US$84.99 receiver proxy and US$69.99 battery proxy gives a hypothetical US$454.97 package benchmark before other missing costs and labor. Adding the PNP to the existing US$465.87 subtotal instead would yield US$765.86 and duplicate at least US$293.91 of already counted items. That is a hazard to prevent during integration, not a double charge observed in the present live application. [C04, C12, P15]')
+p('The procurement layer must retain “one item,” “pair,” “set,” “ARF,” and “PNP” as distinct units. It must also distinguish manufacturer reference price, actual stock and declared in-game availability. A backorder can remain a valid game valuation basis if clearly designated; it cannot establish an immediately purchasable real-world ceiling.')
+h2('Labor and specialist service')
+p('Ray & Robin’s Hobby Center advertises US$30/hour for RC airplane and car service, with a generally-purchased-there qualification. This supports US$30/hour as a transparent starting game policy, not as a worldwide or Colombian market average. A separate US$53/hour large-RC-vehicle source is not equivalent aircraft labor. The time for each game repair remains an authored assumption until separately reviewed. [R01]')
+p('JetCat’s official return form uses a quote/approval process. Its €350 net figure is an approval threshold, not a flat inspection or repair fee, and it asks for ECU and pump with the turbine. No fixed P100-RX crash-inspection price was established. Do not transfer a different manufacturer’s routine service tariff or an old crash-labor minimum into this installation as fact. [R02]')
+p('The Timber manual supports separate repair and inspection states: EPO foam may be repaired when suitable; unrepairable parts are replaced; propulsion left running can add motor/ESC and airframe damage; receiver mounting is checked after impact. These statements ground the game’s distinctions, but do not provide a universal failure-speed curve or survival percentage. [R03]')
+
+h1('7 A practical damage model for a game')
+h2('One assessment with several consumers')
+p('Use a single deterministic component assessment between accepted physics evidence and both economics and visible damage. Physics supplies contact and state facts. The assessor produces condition changes and the reason for each change. The repair planner turns those conditions into work and required purchases. The report and renderer read the same economically meaningful state. Cosmetic sparks, particles, debris trajectories and sound never create charges.')
+p('Keep four concepts separate: a physical instance or zone, such as the left wing and its servo; its condition, such as a broken spar and an undamaged servo; a sold package, such as a bare wing or PNP aircraft; and the service task, such as moving the servo into a replacement wing. A single contact can inspect several components without destroying them all. A single package can replace several failed components without being charged several times.')
+h2('Evidence that earns a damage decision')
+p('For each accepted contact or bounded episode, retain stable identities, accepted step/time, component zone, location and normal, surface/object class, contact mode, local closing velocity where available, penetration/compression or impulse evidence, propulsion state and relevant fuel/battery state. Preserve whether each value is measured by the model, derived, a profile assumption or absent. Add gear-specific observations at the accepted tick instead of reconstructing imaginary wheel loads from the report label.')
+p('Use local contact motion: center-of-mass velocity plus rotational motion at the contact, relative to the obstacle. Resolve normal closing motion separately from sliding. Where the existing rigid-body state supports it, effective mass includes mass, inertia and contact offset. Compute a bounded impact budget and allocate it across simultaneous contacts without spending the same kinetic-energy loss at every probe. Propeller rotation and later physical impacts are additional identified sources; rendered fragments are not. The current CR-33 helpers are a starting point, subject to integration checks. [C08, C09, C11, D02]')
+p('A practical release can use reviewed severity bands and monotone response curves per material/component class. It does not need finite-element analysis or measured failure energy for every glue joint. Author any thresholds as game calibration, use sensible interpolation around boundaries, and keep them versioned. Do not invent a universal “wing breaks at 40 km/h” rule. Spatial overlap, normal load, stopping distance, mount path and class still matter.')
+h2('Component condition and evidence coverage')
+p('Represent condition and economic disposition separately. Useful condition states are intact, cosmetic damage, repairable damage, unserviceable and unknown. A disposition can be reuse, repair, replace or pending inspection. Track structural, shock, rotating-drive, water and heat exposure where the component needs those channels. A detached wing can remain recoverable for parts; a component that looks intact can be unavailable because its mount or wiring failed.')
+p('Use bounded per-component summaries that survive journal overflow: strongest relevant evidence, accumulated bounded damage where justified, latest evidence revision, assessment revision and a short reason trace. Confirmed irreversible damage cannot be erased by a new inspection request. A prior reuse decision is invalidated by later relevant evidence. Missing hazard telemetry must remain unknown or be covered by an explicitly declared game rule; absence of a recorded event alone does not prove the component survived.')
+p('For the built-in fleet, deliberately choose and implement a complete supported set of observation channels and game assumptions. That makes a finished game estimate possible. For unsupported imports or legacy histories, show a provisional assessment rather than silently claiming the same coverage. The stability claim belongs to the covered contract, not to every imaginable real-world failure mode.')
+h2('Propeller and powertrain')
+p('Detect a geometric blade contact whether the propeller is powered, windmilling or stopped. Powered contact includes the modeled rotational load and can justify shaft, mount, motor or engine inspection. A confirmed broken blade buys the correct installed propeller once. A spinner, adapter, shaft and mount have their own conditions. They are not automatically included just because the propeller broke.')
+p('Collect prop and hull contacts in one accepted-step bundle before terminal handling. Add an obstacle sweep for the blade region, not just ground height. Use separate pusher geometry for MoonRunner. A jet does not receive a propeller branch. For piston and electric installations, direct crankcase/motor impact, mount displacement and relevant shock evidence determine downstream damage rather than a blanket engine replacement.')
+h2('Landing gear')
+p('Landing quickly is not sufficient evidence that the gear failed. A fast but shallow, aligned touchdown on a suitable runway can be gentle; a slow touchdown with high sink, side load, a snag, overtravel or an unlocked retract can be severe. Evaluate left/right legs, wheels/axles, struts/retract mechanisms and mounts separately, with surface and deployment context.')
+p('The game can distinguish a cosmetic scuff, a bent replaceable leg, a damaged mount needing structural work, and a failed retract assembly. If a replacement is sold only as a set, the purchase may include an undamaged side, but the report should explain that package choice. Do not pretend both sides physically broke. Keep unavailable deformation/load evidence visible until the accepted-tick seam supports the rule.')
+h2('Wing and fuselage structure')
+p('Define outer skin/foam, primary spar or joint, control surface/hinge and attached electronics as separate assessment targets at useful game resolution. A small repairable foam/covering defect uses a materials-and-time recipe. An unserviceable spar or wing root can require a panel or assembly. An airframe-wide loss is reached through the combined structural conditions, not through a visual severity label.')
+p('Use shared profiles for foam high-wing, foam flying-wing, balsa trainer, balsa sport, large warbird and composite/wood turbine jet, with per-aircraft geometry, protection and installation parameters. Allow data overrides with an explanation. Avoid hard-coded aircraft-ID branches for damage in the kernel.')
+h2('Your 40 and 500 km/h turbine examples')
+p('The requested qualitative behavior is sound when the accident geometry is specified. A roughly 40 km/h local wing/gear or airframe impact can break structure while leaving a protected, dry turbine and receiver reusable under the game’s assessment. A direct impact at 500 km/h into a rigid obstacle can be authored as catastrophic across the structure and systems. A fast glancing touch should remain distinguishable from a direct stop.')
+p('Using the currently loaded jet mass of 11.438578 kg, whole-aircraft translational kinetic energy is about 706 joules at 40 km/h and 110,326 joules at 500 km/h, a 156.25-fold ratio. This calculation explains why increasing speed can become much more destructive. It is not energy necessarily absorbed by the turbine or receiver, a measured strength threshold, or proof of a universal outcome. Local coupling and later hazards still determine the assessed components. [T01]')
+p('Do not add a hidden “all electronics die above this airspeed” shortcut. If the gameplay design wants near-total destruction for a direct catastrophic case, implement and test a supported structural collapse and severe shock pathway. Keep low-speed direct turbine ingestion, a crushed battery or a water immersion as counterexamples to simplistic speed-based survival.')
+h2('Water fire and the end of the incident')
+p('Water and heat are separate channels, not automatic multipliers. Water exposure needs location, component protection and recovery assumptions. A damaged battery can become unusable without destroying every radio component. Fuel/thermal consequences depend on actual modeled energy sources and a bounded propagation rule. Turbine, glow/gasoline and electric profiles should share the accounting contract but use their relevant hazards.')
+p('After a terminal event, settle the economic aftermath on a deterministic logical clock with a declared finite scope. Evaluate supported secondary hazards independently of whether the player watches the animation, disables effects, pauses or immediately restarts. If the implemented model cannot settle a hazard, retain a named pending outcome instead of fabricating certainty. Do not make a full physical fire simulator or prolonged waiting a prerequisite for the first useful game bill.')
+
+h1('8 Repair accounting and the player report')
+h2('Price a feasible restoration plan')
+p('For each assessed incident, construct candidate plans that restore the required installed capabilities. The cost of a plan includes required purchases, consumed materials, active paid labor and already-incurred fees. Reused components reduce the purchase requirement before pricing. An optional realized resale credit is a separate transaction, with zero credit by default. Compare repair/rebuild and replacement plans only when their scope and feasibility are compatible.')
+p('This requires explicit coverage of individual component units, package contents and quantities. A box can contain spare units the incident does not require. Record those extras without forcing their purchase price into each failed component or claiming their full retail value as cash recovered. Keep the existing exact-cover optimizer for its present domain; add a reviewed surplus-capable planner or normalized candidates for broader packages. If a search reaches a limit, report the best feasible plan found and its status, not a proven global minimum. [C12]')
+p('Repair alternatives must include structural applicability and mutually exclusive operations. Replacing a wing and repairing that same discarded wing cannot both be selected. Shared removal, access, teardown and recommissioning are charged once. Materials used by several repairs are summed before package purchase rounding. A small glue use is a consumption cost; buying a first bottle is a different cash-checkout scenario. Keep one declared basis in the headline.')
+h2('Salvage is reuse with a reason')
+p('An illustrative component-built default Stik rebuild can avoid US$417.96 in purchases if the engine/muffler, receiver and two servos are confirmed recoverable and reused: US$249.99 + US$99.99 + two times US$33.99. Against the current US$994.33 nominal build, that gives US$576.37 before additional removal, refit, inspection or repair. It does not claim those items survive a particular impact. [C04]')
+p('Apply this logic once. Do not subtract surviving electronics from a PNP price that includes new electronics anyway. The old items may become spares; they have not avoided a purchase inside that inseparable box. Do not credit failed, lost or unrecovered components, and do not “salvage” labor or consumed fuel. Reuse assumptions can change when subsequent relevant damage is assessed.')
+h2('A modest transparent labor policy')
+p('Offer a clear parts-and-consumables basis and an optional workshop basis. A reasonable initial game workshop setting is US$30/hour, grounded in the cited shop example but explicitly authored as the game rate. Keep active work separate from adhesive cure or shipping wait. Avoid an automatic large minimum fee for every small propeller replacement unless a separately chosen real-shop scenario requires it. [R01]')
+table(['Candidate game task','Initial active time','Qualification'],[
+    ['Replace a propeller and check attachment','10 minutes','Authored game starting value; inspect downstream parts only when evidence calls for it.'],
+    ['Transfer reusable equipment to a foam wing','30 minutes','Illustrative task; tune to installation complexity.'],
+    ['Replace accessible fixed gear','20 minutes','Mount repair and retract work are separate tasks.'],
+    ['Install and configure a receiver','30 minutes','Only when replacement/refit is actually required.'],
+    ['Replace an accessible electric motor','30 minutes','Share teardown with associated work.'],
+    ['Specialist turbine service','Separately authored or quoted','No verified universal JetCat crash fee.']
+],[3.0,1.4,2.6])
+p('For illustration, a US$5.39 propeller plus ten minutes at US$30/hour gives US$10.39. A US$59.99 bare foam wing plus thirty minutes gives US$74.99 if the existing servos and other required components are reusable and no additional materials are needed. These are proposed game examples; the labor times are not retailer service quotes. [P01, P11, R01]')
+h2('What the report should show')
+bullets([
+    'A headline such as “Estimated repair US$75” for the selected plan. Keep cents in the detailed accounting and use sensible rounding in the headline.',
+    'Damage and reason: for example, left wing structure replaced after a local break; wing servos retained after the modeled inspection.',
+    'Parts, materials and labor as separate subtotals, with DIY/workshop basis visible.',
+    'Specific unresolved components and their alternatives, if any. A pending turbine assessment should not turn every unrelated line into a vague global interval.',
+    'A separately labeled replacement/rebuild alternative and any unavailable or assumed purchase basis.',
+    'Expandable provenance: source date, exact product or analogue/game allowance, assessment rule version and incident identity.'
+])
+p('Distinguish stable software from economic evidence and flight-model maturity. “Estimated repair” can be the normal player label once release gates pass. A detail can say “game allowance” or “price analogue” without branding the entire feature experimental. Independently experimental aircraft aerodynamics or rotorcraft physics should keep their own status. Remove the label because the contract is finished, not because a string was deleted.')
+
+h1('9 Standard for current and future aircraft')
+h2('Required authoring contract')
+p('Add a versioned economics/damage profile alongside the existing source dossier and generated runtime catalog. The profile must describe the actual installed configuration and resolve all required game costs for the shipped fleet. It is not a mesh-price list. Preserve stable component IDs and the Creator SourceRef identity model, including battery/installation selections and imported source revision/digest. [C16, D06]')
+table(['Contract area','Required information'],[
+    ['Identity','Schema version; aircraft/source ID; installed variant; battery mode; source revision; cost-relevant fingerprint; profile/rule/catalog versions.'],
+    ['Physical instances','Stable component ID and quantity; parent/zone; material/class; location; mounting and transmission relationships; installed/optional state.'],
+    ['Observation bindings','Contact and qualified probe IDs; gear/prop/hull roles; supported severity channels; measurement provenance; explicit exclusions.'],
+    ['Game response','Intact/repairable/unserviceable rules; protection and shock paths; repair eligibility; covered water/heat assumptions; calibration provenance.'],
+    ['Purchases','Product/SKU or allowance ID; sold unit; contents and exclusions; quantities; compatibility basis; stock and game-availability policy.'],
+    ['Money and sources','Integer minor units; currency; observed date; source URL; exact/analogue/authored basis; bounds only when meaningful.'],
+    ['Repair tasks','Applicability; materials consumption; active minutes; shared-work groups; replacement alternatives; required checks.'],
+    ['Validation','Scenario IDs; expected qualitative outcomes; review status; supported routes; unknowns; generator and coverage checks.']
+],[1.65,5.35])
+p('The fingerprint should change for economically relevant installation changes such as engine/ESC/battery/propeller choice, component multiplicity, mounting/contact geometry, material response profile and package mapping. It should not change merely because a paint scheme or display label changes. Retain raw-source hashes for exact generation provenance, and use an explicit documented projection for legitimate cosmetic-only equivalence.')
+h2('Price basis hierarchy')
+p('First use an observed exact installed product with its sold scope. If that is unavailable, use a documented compatible replacement where compatibility is established. Next allow a declared economic analogue for a game-defined part. Finally, use a finite, reviewed, versioned game allowance for the otherwise unsupported shipped component. Record that last value as authored, with its rationale and sensitivity, rather than manufacturing a source citation.')
+p('This hierarchy is what makes the whole shipped fleet practical to complete. An obsolete balsa airframe does not need a currently purchasable perfect spare before the game can give a repair estimate. It does need a declared basis and reviewed scale. No allowance is derived from accident speed; damage determines the required item first. A missing required allowance fails the stable-feature data gate instead of becoming zero.')
+h2('New aircraft onboarding')
+bullets([
+    'Declare the actual physical/install identity and choose a relevant shared component/material profile.',
+    'Enumerate stable physical component instances, useful left/right zones and every installed optional subsystem.',
+    'Bind contacts and supported observation channels, with justified exclusions and no orphaned priced instances.',
+    'Attach exact offers, compatible alternatives, economic analogues or explicit game allowances; reconcile sold packages.',
+    'Provide repair recipes and a complete replacement/rebuild comparison where supported.',
+    'Run inherited class scenarios plus aircraft-specific prop, gear, wing, powertrain and hazard cases through the production path.',
+    'Review the worst mismatches and publish the profile version only after software/data gates pass.'
+])
+p('For imports without sufficient configuration or observation data, provide a clearly provisional class-based preview and explain the missing fields. Never silently bind a custom aircraft to stock prices because the visible name or mesh resembles a built-in model. A future class profile can inherit common rules, but its installation and available evidence still need qualification.')
+h2('Incident snapshot and migration')
+p('Freeze the accepted incident identity, source/installation fingerprint, rules and game assumptions, catalog prices, valuation mode and assessment evidence revisions. A later retail refresh must not rewrite historical bills. Any optional “revalue at today’s prices” operation creates a separately labeled comparison. Migrate old incidents without fabricating missing condition evidence; retain their original estimate and status.')
+p('Deterministic inspection should use stable inputs and rules, without random rerolls on pause, restart or reopening the report. If variation is ever deliberately added, pin its seed to the incident and version it; deterministic classification is the simpler initial design. Keep profile and currency migrations explicit and reject incompatible checkpoint restoration with a useful explanation.')
+
+h1('10 Ordered implementation plan')
+p('The work below fits the existing crash-economics tracks. These are proposed work packages, not claims that new CR tickets already exist. Each should have one implementation owner and an independent reviewer. Data research and fixture authoring can proceed in parallel, while production evidence and assessment changes should be reviewed in dependency order. [D02]')
+h2('Work package 1 Establish the shipping contract')
+p('Update the canonical plan and current roster, state the stable gameplay-estimate target, and separate incident completeness, catalog completeness and physical validation. Document the current range behavior and the covered observation channels. Establish the regression baseline and the evidence conventions used in this report. Main areas: docs/plans/crash-damage-economics.md, aircraft catalog, report terminology and focused tests. Acceptance: one current fleet list, one definition of an assessed incident, and no claim that a whole-build scenario is a local crash estimate.')
+h2('Work package 2 Complete component and purchase data')
+p('Under CR-36, split broad airframe and embedded-electronics groups, resolve the Electric Stik’s immediate price gaps, and complete all eleven fixed-wing configurations using the declared price hierarchy. Author packages with contents/quantities, labor recipes and shared class data. Add the economics fingerprint and generator checks. Acceptance: every shipped required component has a finite reviewed basis; optional equipment reflects installation; no overlapping default purchase assignment; exact/proxy/allowance status remains visible. Do not hand-edit generated catalog.json.')
+h2('Work package 3 Preserve accepted evidence and repair the ledger')
+p('Under CR-39 and the contact tracks, collect simultaneous terminal/prop evidence; add stopped-blade and scenery support; fix qualified water bindings; preserve original measurement provenance; create bounded persistent/per-zone summaries; and make history/inspection revisions explicit. Add the gear observation seam needed by the chosen rules. Acceptance: relevant contacts reach the live ledger once, later contacts survive journal overflow, confirmed replacement is not downgraded, and new evidence can reopen reuse. Files primarily include flight_session.gd, aircraft_contact_events.gd, impact_snapshot.gd and incident.gd.')
+h2('Work package 4 Ship the smallest useful local assessor')
+p('Integrate CR-33/34 through a versioned gameplay service outside the physics kernel. Implement the first coherent set: no material damage, propeller replacement, localized foam/balsa repair, wing assembly replacement, and gear/mount outcomes. Resolve the simulated inspection into explicit per-component dispositions. Start with Stik, Lumber and Avanti representative profiles, then exercise every inherited route. Acceptance: real production-flow fixtures distinguish ordinary landings, local damage and severe direct impacts; visible economic component states and bill agree.')
+h2('Work package 5 Add powertrain survival and supported aftermath')
+p('Assess engine/motor/turbine, receiver, battery, ESC and installed electronics through local exposure, transmitted load and protection rules. Add supported water/heat consequences from CR-35 using a deterministic settlement scope. Preserve recoverable items explicitly, and preserve unknowns when required channels are absent. Acceptance: the defined moderate jet case retains protected equipment while a supported catastrophic case does not; later direct, water or heat evidence can revoke reuse; skipping effects cannot alter final disposition.')
+h2('Work package 6 Finish repair versus replacement accounting')
+p('Extend CR-31/39 planning for mutually exclusive tasks, shared labor, consumed materials, package contents and purchased surplus. Separate DIY/workshop and incident/global completeness. Include sunk fees in every plan. Use bounded search with honest solution status. Acceptance: the wing-with-reused-servos example, paired gear, engine accessory scope, PNP alternative and sunk-inspection counterexample reconcile exactly to integer cents. The current optimizer’s exact-cover contract remains tested.')
+h2('Work package 7 Deliver the player report and compatibility migration')
+p('Replace the unhelpful headline with the assessed plan, reasons, retained parts, task labor and explicit pending items. Generalize any aircraft-specific presentation exception. Keep replacement comparison, price basis and source date in details. Archive profile/price snapshots, pair checkpoints and migrate legacy incidents honestly. Acceptance: a player can explain the bill from the report, old prices remain frozen, and rendering, pause, restart and report reopening do not reroll an incident.')
+h2('Work package 8 Qualify the whole fleet and promote the feature')
+p('Under CR-38, run the proposed release gates and representative live scenarios on the target desktop build, then every route and relevant battery/installation variant. Review surprising cases with RC domain feedback, record intentional game assumptions and correct outliers. Remove the economics experimental label for qualified configurations; retain separate physical-model and helicopter status. Acceptance: the eight gates below pass with evidence, remaining limitations are precise, and future-aircraft authoring is enforced by the generator/CI contract.')
+p('This sequence avoids a long wait for a fully realistic destruction simulator. A usable, qualified local-damage slice can arrive first; complete fixed-wing fleet pricing and supported aftermath are still required before advertising the full fleet feature as finished. The plan deliberately leaves campaign money, persistent spare trading, full real-shop checkout, detailed fluid/heat simulation and damaged-flight reconstruction outside the initial cost-release critical path.')
+
+h1('11 Release gates and acceptance evidence')
+p('The accompanying acceptance_matrix_proposed.json contains 43 proposed cases. All are explicitly marked proposed_not_executed. Existing passing tests and the ten current-behavior probes are a baseline, not substitutes for running the new production-path cases.')
+table(['Gate','Evidence needed before promotion'],[
+    ['1 Fleet and identity','All 8 selectable airplanes plus 3 hidden configurations have valid reviewed profiles, installation fingerprints, prices/allowances and purchase mappings. X-Cell has its own gate.'],
+    ['2 Contact and locality','Ordinary landing, brush, localized break and direct high-energy crash differ through the live path for foam, balsa and jet/large-airframe representatives. Simultaneous contacts do not spend energy twice.'],
+    ['3 Propeller and drivetrain','Stopped and powered strikes, obstacles and same-tick terminal impacts are preserved; propeller charged once; related engine/receiver outcomes require supported evidence.'],
+    ['4 Landing gear','Fast shallow landing differs from high sink, side load and snag; left/right and deployed/retracted states work; missing load inputs are not invented.'],
+    ['5 Later damage and settlement','Persistent contact, new damage after reuse, established replacement, water/heat and skipped aftermath retain correct component state and explicit unknowns.'],
+    ['6 Financial reconciliation','Local scope, pairs/sets, package surplus, shared work, materials, DIY/workshop and incurred fees reconcile; optimization status is truthful.'],
+    ['7 Replay and historical stability','Accepted tapes survive duplicate/reordered permissible delivery, rejected steps, 128-event overflow, checkpoints, reset and price refresh without lost or repeated charges.'],
+    ['8 Product and documentation','Report/visible states agree at target UI size; independent review confirms understandable bills; generators and docs enforce future-aircraft onboarding; labels match qualified scope.']
+],[1.70,5.30])
+h2('High-value scenarios to run first')
+bullets([
+    'Same airspeed and aircraft: shallow aligned touchdown versus steep sink or side-loaded touchdown. Assert the appropriate gear outcome, not a speed-derived fee.',
+    'Local wing break with reusable wing servos versus the same structural break with two independently failed servos. Verify the required purchase difference.',
+    'Stationary blade contact, running prop contact, untouched propeller and simultaneous terminal nose/blade contact. Prove detection and one charge through production.',
+    'Moderate dry jet structural loss with protected electronics, direct powertrain impact, and direct high-energy catastrophe. Use defined geometry and supported channels rather than universal 40/500 km/h assertions.',
+    'Continuous scrape that increases in severity, a costly contact after journal event 128, and a new local hit after reuse. Confirm later evidence is retained.',
+    'Delayed water/thermal exposure with effects on/off and immediate restart. Settle on the same logical rules or preserve the same explicit pending outcome.',
+    'A complete local incident on an incomplete whole-build dossier; a genuinely missing affected price; and an authored allowance. Keep those three cases distinct.',
+    'Package containing extra intact components, gear sold as a set, shared teardown and incurred inspection. Confirm no duplicate buys or fictional salvage refund.'
+])
+p('Replay qualification should cover 30, 60 and 144 render frames per second on a fixed accepted simulation tape and supported platform, with effects toggles and report timing variations. Do not claim cross-platform numeric equivalence until each platform’s physics/replay contract is qualified. Measure CPU/memory with the real application when adding the accepted-tick summary; this audit did not benchmark the proposed implementation.')
+h2('Calibration quality without endless research')
+p('Use a compact scenario corpus with expected ordering and local outcomes, then hold out some cases for review. Prioritize “this ordinary landing should not cause a bill,” “this wing break should not replace unrelated servos,” and “this direct catastrophic impact should not leave a trivial repair.” Agree on game behavior first, record unresolved physical uncertainty, and tune shared class parameters rather than adding one-off aircraft exceptions.')
+p('Any published probability or confidence interval needs actual evidence supporting that statistical interpretation. The initial feature can use deterministic outcomes and scenario bounds without survival percentages. If a display uses low/high prices, identify the coherent plan alternatives that produce them. Track unexplained or overly broad estimates as a product defect with a saved incident tape, profile version and bill breakdown.')
+
+h1('12 Continuing improvement and ownership')
+p('Maintain one canonical cost standard and one generated fleet coverage report. Each profile change should name its effect on representative scenarios and why it is justified. Keep price updates separate from damage-calibration updates so a user can tell whether an amount changed because a spare costs more or because the model assessed a different failure.')
+bullets([
+    'Review prices on a scheduled maintenance cadence, for example every 90 days, with an explicit stale flag after a chosen limit. These intervals are product policy, not guarantees of market stability.',
+    'Retain the last observed offer and its stock/source date. Do not silently substitute a different SKU or regional currency.',
+    'Record incident-level diagnostics: unresolved-component rate, missing-price rate, replacement-alternative availability, bill changes after later evidence, and scenarios that depend on allowances.',
+    'Store reproducible crash tapes for player-reported bad bills; fix the common class rule or data mapping where possible.',
+    'Require the profile and acceptance scenarios whenever a new aircraft, battery mode, propeller, engine or important installation option is added.',
+    'Use an independent reviewer for package scope and the most expensive protected-component outcomes. A second review is more valuable here than adding more tests that only mirror arithmetic.'
+])
+p('Recommended first implementation priority: complete the live local assessment and per-component data alongside the accepted-evidence fixes. Buying more price research alone will not make a wing break produce a wing bill, and connecting an unreviewed severity multiplier would undermine the good accounting already present. The existing architecture can support the requested behavior once those missing contracts are completed.')
+
+doc.add_page_break()
+h1('Appendix A Evidence and source index')
+p('Code links below are pinned to the audited revision. Line references in the audit findings identify the relevant areas; the linked files preserve their full context. Price sources were observed on 9 November 2026. Existing project documents are evidence of prior decisions or findings, not independent proof that every intended feature is implemented.')
+code_sources = [
+    ('C01','Live incident wiring','app/main.gd','1169–1180 and 2786–2795'),
+    ('C02','Incident ledger and lifecycle','app/economy/incident.gd','225–375'),
+    ('C03','Cost calculation and completeness','app/economy/calculator.gd','102–106, 170–187 and 382–463'),
+    ('C04','Generated fleet economics catalog','app/data/economy/catalog.json','Aircraft records and linked offers'),
+    ('C05','Player aircraft catalog','app/app_state/aircraft_catalog.gd','23–162 and associated route metadata'),
+    ('C06','Accepted simulation and terminal flow','app/sim/flight_session.gd','2395–2419, 2581–2589, 2930–3068, 3195–3204 and 6146–6152'),
+    ('C07','Contact-event schema and generation','app/sim/aircraft_contact_events.gd','103–143, 252–305 and 356–374'),
+    ('C08','Hull contact evidence','app/physics/hull_contact.gd','421–466'),
+    ('C09','Impact snapshot','app/physics/impact_snapshot.gd','65–129'),
+    ('C10','Inspection and checkpoint contracts','app/economy/checkpoint.gd','71–73 and restore validation; also inspection.gd and test_economy_checkpoint.gd'),
+    ('C11','Impact and component helper architecture','app/economy/impact_budget.gd','Also component_resolver.gd and thermal_budget.gd; production-call search'),
+    ('C12','Package coverage and replacement comparison','app/economy/package_optimizer.gd','4–14, 95–256; also replacement_quote.gd and incident.gd 359–375'),
+    ('C13','Repair planning','app/economy/repair_planner.gd','22–190; also research/crash-economics/repair-recipes.json'),
+    ('C14','Render damage assumptions','app/render/crash/severity.gd','4–17; also wreck.gd and director.gd 728–733'),
+    ('C15','Experimental gear damage prototype','app/physics/gear_damage.gd','1–7 and 126–170; also aircraft_ground_damage.gd'),
+    ('C16','Catalog identity and source checks','app/economy/catalog.gd','95–176; also build_catalog.py and build_runtime.py'),
+    ('C17','Current CR-39 regression assertions','app/tests/test_economy_cr39.gd','69–73 and 104–116'),
+    ('C18','Accident report headline','app/ui/accident_report.gd','522–590'),
+    ('C19','Scenery contact route','app/sim/scenery_collision.gd','Hull-probe sweep and contact generation')
+]
+for key,title,path,note in code_sources:
+    pp=p(f'[{key}] {title}. {note}. ')
+    hyperlink(pp,path,REPO+path)
+docs_sources=[
+    ('D01','Crash damage plan','docs/CRASH-DAMAGE-PLAN.md'),
+    ('D02','Canonical crash damage economics plan','docs/plans/crash-damage-economics.md'),
+    ('D03','Historical CR-39 investigation and updates','docs/research/crash-damage-investigations/CR-39/README.md'),
+    ('D04','Existing CR-36 electric and package pricing research','docs/research/crash-damage-investigations/CR-36d/electric.md'),
+    ('D05','Consolidated external audit queue','external Audits/CONSOLIDATED-AUDITS.md')
+]
+for key,title,path in docs_sources:
+    pp=p(f'[{key}] ');hyperlink(pp,title,REPO+path.replace(' ','%20'))
+pp=p('[D06] OpenRC Aircraft Import Integration Plan, revision 6. Relevant installation and SourceRef interface, pages 8–11. ')
+hyperlink(pp,'Existing project document','https://chatgpt.com/library?file_id=libfile_fde3_f-093ff2da9de48191914938f8127899d9_ac5d15b10f548191b3cb750779cf7c10&account_id=personal')
+pp=p('[D07] OpenRC New Visual and Performance Audit, 6 November 2026, page 7. Cause timing finding and its scope. ')
+hyperlink(pp,'Existing project audit','https://chatgpt.com/library?file_id=libfile_a560cf21b50c8191822577765fa140ce&account_id=personal')
+p('[T01] OpenRC_Crash_Cost_Evidence_2026-11-09.zip. Includes final focused test logs, audit probe source/results, source-hash manifest, fleet inventory, price observations, proposed contract and proposed acceptance matrix. Proposed cases and observed checks are stored separately.')
+h2('Price source links')
+prices=json.loads((ROOT/'price_observations_2026-11-09.json').read_text())
+for row in prices['observations']:
+    pp=p('['+row['id']+'] ')
+    hyperlink(pp,row['product'],row['url'])
+    pp.add_run(' — '+(row.get('sku') or 'SKU not verified')+'. Observed 9 November 2026.')
+h2('Repair guidance and labor links')
+pp=p('[R01] ');hyperlink(pp,'Ray and Robin’s Hobby Center services','https://mainehobbies.com/services/');pp.add_run('. RC aircraft/car labor example; the game rate and task durations remain declared policy.')
+pp=p('[R02] ');hyperlink(pp,'JetCat official repair return form','https://www.jetcat.de/jetcat/2024/Reparaturformulare%20240722/Repair%20Return%20Form%20JetCat%20-EN-%202024.pdf');pp.add_run('. Quote process and approval threshold; not a fixed crash-inspection fee.')
+pp=p('[R03] ');hyperlink(pp,'E-flite Turbo Timber Evolution instruction manual','https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dwb7e67f91/Manuals/EFL105250B-Manual_EN.pdf');pp.add_run('. Updated October 2023. Printed pages 3, 13 and 14 cover package contents, propellers, repair and post-impact checks.')
+p('Additional specialist-service and manufacturer references are retained in the structured price evidence with their limitations. They are not automatically accepted as compatible replacement prices or verified fees for the current fleet.')
+
+h1('Appendix B Deliverable map')
+table(['File or evidence group','Purpose'],[
+    ['OpenRC_Crash_Cost_Audit_2026-11-09.docx','Editable complete audit and implementation plan.'],
+    ['OpenRC_Crash_Cost_Audit_2026-11-09.pdf','Reviewed reading copy of the same report.'],
+    ['price_observations_2026-11-09.json','27 proposed price-import observations with sources, quantities and caveats; no production edits.'],
+    ['acceptance_matrix_proposed.json','43 proposed cases and 8 proposed gates, all explicitly unexecuted.'],
+    ['implementation_contract_proposed.json','Machine-readable design requirements and invariants for implementation; not an active runtime schema.'],
+    ['fleet_inventory.txt and source manifest','Current per-route pricing and mapping facts, plus byte identity of harness source.'],
+    ['verification reports and audit_probe.gd','Executed baseline evidence and reproducible current-behavior probes, separate from proposed tests.']
+],[3.0,4.0])
+OUT.mkdir(parents=True,exist_ok=True)
+for tree in [doc._element, doc.styles._element]:
+    for border in list(tree.iter(qn('w:pBdr'))):
+        border.getparent().remove(border)
+last=doc.paragraphs[-1]
+if not last.text:
+    last.paragraph_format.line_spacing=Pt(1)
+    last.paragraph_format.space_before=Pt(0)
+    last.paragraph_format.space_after=Pt(0)
+    last.paragraph_format.keep_with_next=False
+    mark=last._p.get_or_add_pPr()
+    mark_rpr=OxmlElement('w:rPr')
+    mark_size=OxmlElement('w:sz');mark_size.set(qn('w:val'),'2');mark_rpr.append(mark_size);mark.append(mark_rpr)
+doc_path=OUT/'OpenRC_Crash_Cost_Audit_2026-11-09.docx'
+doc.save(doc_path)
+(ROOT/'report_build/report_blocks.json').write_text(json.dumps(blocks,ensure_ascii=False,indent=2))
+print(json.dumps({'docx':str(doc_path),'blocks':len(blocks),'words':sum(len(str(b).split()) for b in blocks),'bytes':doc_path.stat().st_size}))
+
+

@@ -1,0 +1,800 @@
+{
+  "format": "openrc-proposed-damage-acceptance-matrix-v1",
+  "title": "Proposed crash damage and repair economics acceptance matrix",
+  "baseline": {
+    "repository_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+    "baseline_role": "Source identity for this proposed matrix; it is not a test result.",
+    "catalog_source": "app/app_state/aircraft_catalog.gd",
+    "economy_catalog_source": "app/data/economy/catalog.json"
+  },
+  "scope": {
+    "policy": "Cases describe target behavior. Existing support, costs, thresholds, fit and physical validity must be established during execution; this document asserts no passing result.",
+    "baseline_airplane_routes": [
+      "jensen-das-ugly-stik-60",
+      "stik-glow-61fx-2t",
+      "stik-glow-55ax-2t",
+      "stik-glow-fs64v-4t",
+      "stik-electric-6s",
+      "gp-extra-300s-60",
+      "p51d-mustang-120",
+      "f4u-corsair-250",
+      "sebart-avanti-s-a200-p100rx",
+      "turbo-lumber-evolution",
+      "moonrunner-x99"
+    ],
+    "baseline_rotorcraft_routes": [
+      "xcell-60-research"
+    ],
+    "historical_aliases": {
+      "skywalker-x8": "moonrunner-x99"
+    },
+    "profile_selection": "Profile labels are proposed fixture selectors, not existing schema identifiers. Resolve them from installed aircraft capabilities and authored configurations at test execution; do not interpret an empty selector as a pass.",
+    "priorities": {
+      "P0": "Release-blocking for an in-scope supported feature or an explicitly disclosed unsupported boundary.",
+      "P1": "Required focused extension or comparison; schedule and qualification must be explicit."
+    },
+    "status_meaning": "proposed_not_executed means no execution, pass, failure or validation is claimed."
+  },
+  "case_schema": {
+    "id": "Unique stable case identifier.",
+    "category": "Behavior group.",
+    "priority": "Proposed release priority.",
+    "applicable_profiles": "Fixture selectors resolved against installed capabilities.",
+    "setup": "Conditions and discriminating controls.",
+    "expected_damage": "Target component-state outcome.",
+    "expected_economics": "Target valuation and uncertainty outcome.",
+    "invariants": "Cross-cutting constraints to verify.",
+    "status": "Always proposed_not_executed in this artifact."
+  },
+  "cases": [
+    {
+      "id": "LAND-01",
+      "category": "landing_gear",
+      "priority": "P0",
+      "applicable_profiles": [
+        "fixed_gear",
+        "retract_gear_deployed"
+      ],
+      "setup": "Replay a controlled fast, shallow touchdown within the aircraft landing envelope: low sink, little lateral slip, aligned wheels, no propeller or hull contact, and no overload indicated by the accepted contact evidence.",
+      "expected_damage": "No gear damage solely because forward speed is high; retain healthy gear when the authored ground-load policy finds no damaging load.",
+      "expected_economics": "No repair purchase or false accident total for this landing; a normal landing does not become an aircraft write-off.",
+      "invariants": [
+        "Groundspeed alone is not a damage threshold.",
+        "The same accepted evidence gives the same result at every render cadence."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "LAND-02",
+      "category": "landing_gear",
+      "priority": "P0",
+      "applicable_profiles": [
+        "fixed_gear"
+      ],
+      "setup": "Compare a controlled normal landing with a hard-sink landing, holding aircraft, surface, forward speed and attitude as close as the fixture permits; author the hard case to cross the reviewed gear-damage policy.",
+      "expected_damage": "The hard case resolves the affected gear or mount according to its declared load and construction, with any unrelated zones retained as unaffected.",
+      "expected_economics": "Price only the selected gear and mount actions; keep missing component prices explicitly unknown.",
+      "invariants": [
+        "Do not substitute the aircraft purchase price for the gear price.",
+        "No validated numeric load threshold is implied by this fixture."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "LAND-03",
+      "category": "landing_gear",
+      "priority": "P0",
+      "applicable_profiles": [
+        "fixed_gear",
+        "retract_gear_deployed"
+      ],
+      "setup": "Replay aligned and substantial lateral-slip landings at similar vertical sink and forward speed; use accepted side-load or a documented game proxy where the physical signal is unavailable.",
+      "expected_damage": "The side-load case assesses the loaded leg and mount under the lateral damage policy; the aligned case remains governed by its own evidence.",
+      "expected_economics": "The cost follows the affected gear, any documented mount repair, and their compatible prices; unknown side-load costs stay explicitly estimated or unresolved.",
+      "invariants": [
+        "Lateral and normal channels remain distinguishable.",
+        "The policy does not claim measured gear failure strength."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "LAND-04",
+      "category": "landing_gear",
+      "priority": "P0",
+      "applicable_profiles": [
+        "asymmetric_gear"
+      ],
+      "setup": "Touch down on one main leg with the opposite leg clear, then stop without a further impact; repeat mirrored with equivalent conditions.",
+      "expected_damage": "Resolve only the contacted leg and its authored load-path neighbors, with left and right swapped in the mirrored run.",
+      "expected_economics": "Price only the affected side, respecting whether the actual part is sold singly or as a pair.",
+      "invariants": [
+        "Avoid duplicate pair purchases and false damage on the other side.",
+        "Receipt and presentation identify the impacted side when the profile supports it."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "LAND-05",
+      "category": "landing_gear",
+      "priority": "P0",
+      "applicable_profiles": [
+        "fixed_gear",
+        "retract_gear_deployed"
+      ],
+      "setup": "Use equivalent hard landings for a fixed-gear profile and a retract profile with the gear down; select reviewed per-profile leg, attachment, actuator and package policies.",
+      "expected_damage": "Assess the loaded leg and mount separately; consider retract mechanism damage only where installed and supported by the event and authored policy.",
+      "expected_economics": "Use each aircraft’s compatible repair or package costs rather than a generic percentage of aircraft price.",
+      "invariants": [
+        "Fixed and retract hardware remain distinct.",
+        "An absent or unpriced retract mechanism is not assigned zero cost."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "LAND-06",
+      "category": "landing_gear",
+      "priority": "P0",
+      "applicable_profiles": [
+        "retract_gear_retracted",
+        "no_gear_airplanes"
+      ],
+      "setup": "Compare a wheels-up runway landing with the intended supported belly landing of a gearless aircraft, using each model’s explicit contact role and comparable impact severity.",
+      "expected_damage": "The retracted-gear scenario assesses the contacted belly and exposed structure; the intended supported landing is not automatically classified as gear failure.",
+      "expected_economics": "Charge only selected local repair actions and any documented downstream parts; no imaginary landing-gear purchase for a gearless aircraft.",
+      "invariants": [
+        "Contact role and aircraft configuration are explicit.",
+        "Identical visual poses do not force identical hardware assumptions."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STRUCT-01",
+      "category": "local_structure",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Replay a wingtip brush with low normal and tangential contact exposure, intact covering by the reviewed gameplay policy, and no secondary contact.",
+      "expected_damage": "The contacted zone remains intact or inspection-only under the declared policy; no damaged spar or opposite-wing disposition is invented.",
+      "expected_economics": "Allow zero material repair when inspection is resolved and free under the fixture policy; otherwise label any inspection amount or missing fee explicitly.",
+      "invariants": [
+        "Normal contact severity and location are recorded.",
+        "A zero charge requires an explicit supported decision."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STRUCT-02",
+      "category": "local_structure",
+      "priority": "P0",
+      "applicable_profiles": [
+        "repairable_skin_airplanes"
+      ],
+      "setup": "Inject or reproduce a covering-only tear with an inspected intact spar and a compatible local patch recipe.",
+      "expected_damage": "Resolve covering damage without declaring spar or entire wing replacement.",
+      "expected_economics": "Price the selected compatible patch and chosen labor and material basis; distinguish consumed material from package purchase.",
+      "invariants": [
+        "A structural damage flag cannot be hidden by a covering-only recipe.",
+        "Do not double count a purchased package and its consumed fraction."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STRUCT-03",
+      "category": "local_structure",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Create a medium wingtip impact that crosses the reviewed local-repair tier but does not implicate the root, opposite wing or onboard electronics.",
+      "expected_damage": "Mark the contacted wing zone repairable and leave unrelated components unchanged unless a declared load path independently affects them.",
+      "expected_economics": "Use a compatible local repair estimate and scoped prices; do not replace the full aircraft merely because the flight stops.",
+      "invariants": [
+        "Outcome is derived from a declared game policy, not claimed measured failure data.",
+        "Unknown price remains unknown."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STRUCT-04",
+      "category": "local_structure",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Create a much more severe direct wing-root or fuselage impact under a reviewed catastrophic tier, and define which components have separately supported survival evidence.",
+      "expected_damage": "Resolve the documented structural losses and only their authored downstream effects; let an explicit total-loss policy decide whether whole-build replacement is the economic alternative.",
+      "expected_economics": "Compute affected replacement or repair versus a compatible whole-build alternative, deducting supported reuse exactly once.",
+      "invariants": [
+        "Terminal flight and economic total loss are separate decisions.",
+        "Do not invent survival or damage for unobserved components."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STRUCT-05",
+      "category": "local_structure",
+      "priority": "P1",
+      "applicable_profiles": [
+        "asymmetric_wings"
+      ],
+      "setup": "Replay equivalent left and right wing contacts on an aircraft with separately mapped halves and repair parts.",
+      "expected_damage": "The same local outcome follows the mirrored contacted side; the opposite wing and its controls are unchanged absent additional evidence.",
+      "expected_economics": "Price the relevant side or a correctly documented shared wing package without a second purchase.",
+      "invariants": [
+        "Geometry, part identity and price coverage use the same side.",
+        "Aggregate-only dossiers must say localization is unavailable."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STRUCT-06",
+      "category": "local_structure",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Compare equal total-speed direct and glancing contacts against the same target and surface, using matched local geometry and distinct normal and tangential components.",
+      "expected_damage": "The normal-impact and abrasion channels differ according to their declared policies; glancing contact is not forced to match a direct impact.",
+      "expected_economics": "Each cost follows its own local outcome and compatible repair, without speed-times-aircraft-price formulas.",
+      "invariants": [
+        "No universal speed-only crash or survival rule.",
+        "No double counting of a shared simultaneous energy budget."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "PROP-01",
+      "category": "propeller_powertrain",
+      "priority": "P0",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Reproduce a nonterminal powered propeller strike with a positive disc contact and an accepted strike event; keep surrounding structure clear.",
+      "expected_damage": "Resolve the struck propeller once and assess relevant shaft, mount and engine or motor separately; do not automatically destroy the engine.",
+      "expected_economics": "Price one compatible propeller replacement plus any explicitly selected inspection or repair; absent prices remain unknown.",
+      "invariants": [
+        "One physical part is not purchased twice.",
+        "Unrelated spinner and engine are not automatically billed."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "PROP-02",
+      "category": "propeller_powertrain",
+      "priority": "P0",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Compare a stopped propeller physically struck by the ground with a stopped propeller that remains clear; include a powered strike as a separate condition.",
+      "expected_damage": "A documented unpowered blade contact is assessed according to its impact evidence, while a clear disc creates no blade damage; powered contact retains its own policy.",
+      "expected_economics": "Price only the resulting blade and independently supported powertrain actions.",
+      "invariants": [
+        "Do not infer a strike from RPM alone.",
+        "Unpowered does not automatically mean undamaged."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "PROP-03",
+      "category": "propeller_powertrain",
+      "priority": "P0",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Construct one accepted tick with a terminal nose or gear collision and a separately evidenced intersecting propeller disc.",
+      "expected_damage": "Retain both the terminal contact and propeller evidence; classify the blade once without inventing unobserved engine damage.",
+      "expected_economics": "The propeller appears once in the incident estimate if the model establishes damage; any other components follow their own evidence.",
+      "invariants": [
+        "Same-tick event ordering cannot erase propeller evidence.",
+        "Duplicate publication cannot duplicate a purchase."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "PROP-04",
+      "category": "propeller_powertrain",
+      "priority": "P0",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Sweep a propeller or blade through a scenery obstacle while fuselage probes remain clear, and run a matched clear-disc control.",
+      "expected_damage": "A supported propeller-obstacle contact yields a documented localized outcome; the clear-disc control has no invented blade contact.",
+      "expected_economics": "Apply compatible propeller and independently supported powertrain prices, with explicit unknowns if the obstacle geometry cannot determine a contact.",
+      "invariants": [
+        "Do not relabel a hull-only collision as a proven propeller hit.",
+        "Unavailable disc detection stays explicit until implemented."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "PROP-05",
+      "category": "propeller_powertrain",
+      "priority": "P1",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Impact a wing or tail while the propeller, nose, motor and engine remain clear and there is no fire or water exposure.",
+      "expected_damage": "Leave the powertrain and propeller unaffected or explicitly unresolved according to installation evidence; do not assign damage from overall crash severity alone.",
+      "expected_economics": "No automatic propeller or engine replacement line; preserve eligible reusable components without double credit.",
+      "invariants": [
+        "A terminal flight is not proof that every installed component was destroyed.",
+        "Price attribution follows contact and load paths."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "POWER-01",
+      "category": "propeller_powertrain",
+      "priority": "P0",
+      "applicable_profiles": [
+        "glow_gas_electric_airplanes"
+      ],
+      "setup": "Compare a local nose or mount strike with an airframe-loss scenario in which the engine or motor and receiver are separately outside the affected zones and have no hazard exposure.",
+      "expected_damage": "For the nose strike, inspect or damage the specific mount and powertrain components based on evidence; for the distant airframe loss, apply the declared reusable-component policy.",
+      "expected_economics": "Deduct supported reused engine or motor and receiver once from the replacement alternative; do not deduct damaged or unknown parts as if confirmed reusable.",
+      "invariants": [
+        "Receiver, engine or motor, mount and propeller have independent dispositions.",
+        "No salvage credit exists without a compatible physical inventory binding."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "TURBINE-01",
+      "category": "propeller_powertrain",
+      "priority": "P0",
+      "applicable_profiles": [
+        "turbine_airplanes"
+      ],
+      "setup": "Compare a mild isolated wing or gear incident with a direct high-energy turbine-installation strike using the reviewed turbine profile, at matched instrumentation and explicit geometry.",
+      "expected_damage": "The mild local case leaves the turbine outside the damage path when evidence supports that conclusion; the direct case receives the authored turbine and mount assessment or remains unresolved if evidence is insufficient.",
+      "expected_economics": "Preserve the turbine when its reuse is supported; price repair or replacement only for supported damage, and expose any unpriced component.",
+      "invariants": [
+        "No universal speed guarantees turbine survival or destruction.",
+        "No propeller part is invented for a turbine."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "HAZARD-01",
+      "category": "battery_water_fire",
+      "priority": "P0",
+      "applicable_profiles": [
+        "electric_airplanes"
+      ],
+      "setup": "Create an accepted local battery-pack impact that meets the reviewed damaged-pack rule but has no modeled ignition or thermal runaway.",
+      "expected_damage": "Replace the damaged pack under the declared policy; keep unrelated parts separate and do not invent a fire.",
+      "expected_economics": "Include one compatible pack replacement and independently supported local repairs, with unknown prices explicitly marked.",
+      "invariants": [
+        "Pack damage does not require visible flame.",
+        "No VFX condition determines damage."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "HAZARD-02",
+      "category": "battery_water_fire",
+      "priority": "P0",
+      "applicable_profiles": [
+        "electric_airplanes"
+      ],
+      "setup": "Replay the same initial damaged pack with and without a separately evidenced delayed thermal event after flight motion has stopped.",
+      "expected_damage": "Both runs retain the initial pack damage; only the confirmed thermal event can add affected nearby components or revoke their provisional reuse.",
+      "expected_economics": "Bill each damaged unit once and update only additional evidenced losses; retain any unknown price or hazard condition.",
+      "invariants": [
+        "The delayed event has deterministic timing and an idempotent identity.",
+        "No thermal bill is inferred solely from cinematic fire."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "HAZARD-03",
+      "category": "battery_water_fire",
+      "priority": "P0",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Generate a valid lake event whose probe_source is propeller and whose probe_id resolves to the installed propeller; keep an equivalent non-propeller lake event as control.",
+      "expected_damage": "Retain water exposure and map the qualified propeller probe to the proper local component; do not claim physical blade breakage without a separate disposition rule.",
+      "expected_economics": "Show relevant affected or inspected part identities and any separately evidenced repair; unresolved water and powertrain costs remain explicit.",
+      "invariants": [
+        "Source-qualified probe mapping is used.",
+        "The event is not silently reduced to only a generic structural note."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "HAZARD-04",
+      "category": "battery_water_fire",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Compare a water entry with an otherwise comparable bank-ground collision, including recoverable and unretrieved variants where authored.",
+      "expected_damage": "Water exposure affects the relevant electronics and powertrain assessment; bank-only contact does not invent water exposure. Retrieval is explicit.",
+      "expected_economics": "Apply retrieval, replacement and salvage rules only to supported facts; no automatic zero for missing electronics costs.",
+      "invariants": [
+        "Material identity and retrieval are retained across checkpoint and report.",
+        "No blanket aircraft write-off from a bank-only hit."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "HAZARD-05",
+      "category": "battery_water_fire",
+      "priority": "P1",
+      "applicable_profiles": [
+        "fuel_powered_airplanes"
+      ],
+      "setup": "Compare fuel leakage without an ignition source, a supported ignition event, and a water or wet environment, using declared energy and thermal evidence.",
+      "expected_damage": "Leaking fuel alone is not fire; only an explicit physical or game-policy ignition event can create thermal damage, including potential low-visibility combustion.",
+      "expected_economics": "Charge evidenced thermal losses and inspections only; an unresolved ignition or damage state remains labeled.",
+      "invariants": [
+        "An explosion or flame effect is neither required nor sufficient evidence.",
+        "No aircraft-wide or fixed-speed-only ignition rule."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "HAZARD-06",
+      "category": "battery_water_fire",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Replay the identical incident with effects on and off, camera near and far, and with optional secondary visual simulation skipped; run the deterministic gameplay aftermath and settlement to completion.",
+      "expected_damage": "The same committed component damage and explicitly modeled aftermath result in each run, independently of visual debris, fire, frame rate or camera.",
+      "expected_economics": "Compare identical dispositions, amounts, range, provenance and settlement timing after excluding only explicitly nondeterministic presentation metadata.",
+      "invariants": [
+        "Secondary visual impacts cannot create extra damage or charges.",
+        "A deterministic gameplay secondary contact is recorded independently of visual simulation."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-01",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Start a low-severity hull contact, maintain the same contact episode while severity or scrape exposure increases, then separate.",
+      "expected_damage": "The bounded episode summary retains the onset, relevant peak or accumulated quantity, final disposition and affected zone, including escalation when the declared policy calls for it.",
+      "expected_economics": "Recalculate one action per affected unit without missing later escalation or repeatedly purchasing a part.",
+      "invariants": [
+        "Persistent ticks are not ignored as damage evidence.",
+        "Continuous contact does not produce a purchase per frame."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-02",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Deliver the same accepted event and same inspection receipt repeatedly before and after report publication, including exact duplicate and same-ID conflicting payload variants.",
+      "expected_damage": "Exact repeats do not change damage; a conflicting same-ID receipt is rejected without mutation.",
+      "expected_economics": "No duplicate cost, salvage credit, revision or history entry.",
+      "invariants": [
+        "Identities are stable and bounded.",
+        "The rejected conflict leaves the report unchanged."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-03",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Force a candidate contact tick to fail solver or transaction admission, then retry an accepted tick from the previous state.",
+      "expected_damage": "Rejected candidate evidence cannot modify damage, visual state, committed episode history or checkpoint.",
+      "expected_economics": "No report revision, archive write, cost or salvage arises from the rejected candidate.",
+      "invariants": [
+        "A later accepted event can still be processed once.",
+        "Physics and economic state remain transactionally paired."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-04",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Submit independent simultaneous contacts in all deterministic input orderings and replay a multi-contact episode with the same accepted total exposure.",
+      "expected_damage": "Equivalent permutations produce the same per-zone dispositions and bounded exposure assignment.",
+      "expected_economics": "The same parts and totals result without overlap or duplicated energy-related claims.",
+      "invariants": [
+        "Sort or otherwise canonicalize unordered input.",
+        "Never allocate more than the declared shared episode budget."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-05",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Exceed the current 128-event diagnostic journal with accepted contacts, then introduce a new wing or gear zone contact, a prop strike and water exposure.",
+      "expected_damage": "Bounded per-zone summaries retain late relevant facts or explicitly identify overflow and missing scope; prop and water facts are not lost.",
+      "expected_economics": "Later billable evidence is not silently omitted or double charged; any unbounded uncertainty remains explicit.",
+      "invariants": [
+        "Memory and checkpoint sizes remain bounded.",
+        "A generic overflow warning does not pretend to reconstruct missing local damage."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-06",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Confirm a component reusable through a valid assessment, then deliver a later accepted impact to that same component and a separate contact to another component.",
+      "expected_damage": "New local evidence reopens the affected reusable disposition; unrelated reuse remains intact, and the earlier receipt remains an immutable historical record.",
+      "expected_economics": "Recompute only affected salvage and repairs; never retain stale reuse as a confirmed current credit.",
+      "invariants": [
+        "Compare evidence chronology, not only component ID.",
+        "A repeated copy of the same later event is idempotent."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-07",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "propeller_airplanes"
+      ],
+      "setup": "Confirm an engine, motor or mount replacement, then submit a later propeller strike that requests inspection of the same component.",
+      "expected_damage": "The already confirmed replacement is not downgraded to mere inspection; previously reusable adjacent components may be reopened only where new evidence applies.",
+      "expected_economics": "The confirmed replacement cost is retained once along with any new propeller cost.",
+      "invariants": [
+        "Damage state is monotone absent an explicit completed repair transaction.",
+        "Receipt provenance survives recalculation."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-08",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Save a paired active-flight checkpoint after a localized impact and partial assessment, restore it in a compatible session, and continue with the same accepted inputs.",
+      "expected_damage": "The restored incident, component state, per-zone evidence, deduplication IDs and settlement continue consistently with the uninterrupted run.",
+      "expected_economics": "Compare frozen prices, repair decisions, credit, report and subsequent revisions; duplicate receipts remain idempotent.",
+      "invariants": [
+        "Reject incompatible physics, price, recipe or contact bindings before mutating either half.",
+        "Terminal reports remain view-only until a supported terminal-resume contract exists."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-09",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Restore an unpaired physics-only checkpoint made after a prior hull brush ended, with no active contact and no latched propeller strike.",
+      "expected_damage": "Earlier damage history is explicitly unavailable rather than implicitly clean; no fabricated contact or physical damage is added.",
+      "expected_economics": "The report clearly distinguishes unknown history from zero loss, or an equivalent persistent restore warning is presented.",
+      "invariants": [
+        "Compare with an active-contact and latched-propeller legacy restore.",
+        "Do not silently transfer the previous live ledger to an unrelated checkpoint."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "STATE-10",
+      "category": "evidence_determinism",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Replay one fixed accepted input tape under 30, 60 and 144 Hz render publication, including a sustained contact, duplicate event, aftermath and stable-ground settlement.",
+      "expected_damage": "Identical accepted physical events and component dispositions occur; the same deterministic tick triggers settlement.",
+      "expected_economics": "Reports match in amounts, affected units, provenance, evidence and completeness after excluding only documented identity or wall-clock metadata.",
+      "invariants": [
+        "Report evaluation and disk writes occur outside accepted physics callbacks.",
+        "Software determinism is not physical validation."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-01",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "incomplete_dossier_airplanes"
+      ],
+      "setup": "Resolve every affected component for a local accident using an aircraft whose unrelated inventory remains unpriced; run a second case with one affected price missing.",
+      "expected_damage": "Unaffected components are explicitly assessed outside the incident scope, while any genuinely uncertain component remains unresolved.",
+      "expected_economics": "Permit a complete scoped repair total only when all required incident costs and decisions are resolved; keep complete-build replacement completeness and affected missing prices separate.",
+      "invariants": [
+        "Do not hide unassessed damage to narrow the range.",
+        "Do not represent an unavailable amount as zero."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-02",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplane_routes"
+      ],
+      "setup": "Enumerate every airplane route from the actual current catalog, including player-selectable and retained nonselectable variants, then exercise its source identity, contact mappings and a relevant damage-to-report fixture.",
+      "expected_damage": "Each route either produces a supported local component assessment or an explicit incomplete condition; no vehicle silently inherits an unrelated profile.",
+      "expected_economics": "Every required affected component has a compatible price, documented proxy or visible unknown; package scope and whole-build completeness are checked separately.",
+      "invariants": [
+        "Use discovery at execution time rather than assuming the baseline route count.",
+        "Treat the historical Skywalker X8 alias as the current canonical route, not an extra aircraft."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-03",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "rotorcraft_separate_gate"
+      ],
+      "setup": "Enumerate the X-Cell research route and any future rotorcraft separately; inspect its own contact, installed inventory and economic identity contracts.",
+      "expected_damage": "Do not claim a helicopter crash model from fixed-wing gear or propeller fixtures; unsupported rotor, skid and drivetrain cases remain explicitly unavailable.",
+      "expected_economics": "Do not issue an airplane-based bill or use the HX-700 visual surrogate as proof of X-Cell parts; record missing BOM and prices until the rotorcraft gate is met.",
+      "invariants": [
+        "Helicopter acceptance is independent from the airplane release gate.",
+        "A visual model does not establish a physical inventory."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-04",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "source_ref_and_registered_variants"
+      ],
+      "setup": "Exercise stock aircraft sourceRef resolution, a documented registered battery or propulsion variant, a harmless text-only edit, and a change to an economically relevant part or contact binding.",
+      "expected_damage": "Retain compatible model bindings for an allowed sourceRef or registered variant; reject or explicitly mark stale an economically relevant identity mismatch.",
+      "expected_economics": "Use the correct variant-specific price and frozen provenance; do not attach an incompatible propeller, battery or dossier.",
+      "invariants": [
+        "Fingerprint includes all fields affecting damage, installation, contact-to-part mapping and valuation, with schema version.",
+        "An allowed text-only change cannot silently rebind changed physical inventory."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-05",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes",
+        "future_airplane"
+      ],
+      "setup": "Load a newly authored aircraft with a documented, approved class fallback and then a version with a missing or incompatible class mapping.",
+      "expected_damage": "The approved class profile produces bounded, explicitly identified game-policy dispositions; missing required mapping is reported as unavailable instead of silently using another aircraft’s profile.",
+      "expected_economics": "Compatible class-level cost proxies carry their source, scope and estimate label; absent prices or package compatibility stay unknown.",
+      "invariants": [
+        "A fallback is explicit, versioned and overridable by a compatible aircraft-specific profile.",
+        "No fabricated exact bill or physical qualification claim."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-06",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "package_priced_airplanes"
+      ],
+      "setup": "Quote repairs needing a subset of parts from a multi-item package, a pair package, and overlapping whole-airframe plus subassembly alternatives using fixture prices and quantities.",
+      "expected_damage": "Each required affected physical unit is covered by a compatible option; unused surplus is recorded without inventing extra damage.",
+      "expected_economics": "Compare valid coverage options once, avoid purchasing the same unit twice, and distinguish package cash outlay from material consumption.",
+      "invariants": [
+        "Do not add a kit and already included parts as separate purchases.",
+        "Unknown compatibility or price prevents a false optimal claim."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-07",
+      "category": "pricing_and_coverage",
+      "priority": "P0",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Compare a local repair with a compatible whole-build replacement after an inspection or retrieval fee has already been incurred; include DIY and paid-labor selections.",
+      "expected_damage": "Repair choices follow compatible damage classes and an explicit decision to repair or replace.",
+      "expected_economics": "Include already incurred fees in both alternatives where applicable and distinguish scoped repair, total incident cost and replacement comparison; label taxes, shipping and excluded costs.",
+      "invariants": [
+        "A whole-build price is not called an unconditional upper bound when incurred fees or excluded costs sit outside it.",
+        "No labor charge is counted twice."
+      ],
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "ECON-08",
+      "category": "pricing_and_coverage",
+      "priority": "P1",
+      "applicable_profiles": [
+        "all_airplanes"
+      ],
+      "setup": "Freeze an incident and its catalog, then refresh a seller price, remove an offer or mark a documented proxy stale while opening the prior incident.",
+      "expected_damage": "No physical damage state changes solely due to a price refresh.",
+      "expected_economics": "The archived report retains its original dated values and source; any re-quote is separate, versioned and explicitly identifies missing or changed prices.",
+      "invariants": [
+        "No network or disk price lookup occurs inside a physics tick.",
+        "Unknown or unavailable prices are not silently replaced with zero."
+      ],
+      "status": "proposed_not_executed"
+    }
+  ],
+  "release_gates": [
+    {
+      "id": "GATE-01",
+      "name": "Catalog and identity coverage",
+      "evidence_required": "Discover all current airplane routes and variants from the authoritative catalog; prove compatible sourceRef, fingerprint, inventory, contact-zone and price or visible-unknown coverage. List each route and unresolved gap.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-02",
+      "name": "Local damage and gear behavior",
+      "evidence_required": "Execute the landing and local-structure cases for representative fixed, retractable, gearless, balsa and foam profiles, including sides, hard sink, side-load and glancing controls.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-03",
+      "name": "Powertrain and hazards",
+      "evidence_required": "Execute powered and stopped propeller, same-tick terminal, object, engine and receiver salvage, turbine, pack, water and conditional fire cases; record unsupported conditions.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-04",
+      "name": "Financial arithmetic and disclosure",
+      "evidence_required": "Prove incident-scope completeness, compatible package coverage, net salvage once, labor and already-incurred fees, documented range basis, price provenance and unknown-price handling.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-05",
+      "name": "Accepted-event integrity and persistence",
+      "evidence_required": "Prove duplicate, rejected tick, event ordering, long scrape, overflow, later evidence and paired or unpaired checkpoint behavior with bounded state and no double charge.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-06",
+      "name": "Determinism and gameplay presentation",
+      "evidence_required": "Replay accepted tapes across publication cadences, effects and camera settings; compare component assessment, financial results, settlement and the rendered representation against the same gameplay facts.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-07",
+      "name": "Full application and player acceptance",
+      "evidence_required": "Exercise actual launch, flight, report, settlement, restart and restoration on the supported target application and host; inspect readable UI and rendered damage with representative aircraft, report build and environment identity.",
+      "status": "proposed_not_executed"
+    },
+    {
+      "id": "GATE-08",
+      "name": "Independent modeling and rotorcraft boundary",
+      "evidence_required": "Review profile calibration against independent construction, repair and expert evidence; separately qualify rotorcraft inventory and collision contracts or state explicitly that rotorcraft damage economics is unavailable.",
+      "status": "proposed_not_executed"
+    }
+  ],
+  "validation_boundaries": {
+    "software": "Unit and integration fixtures establish implementation behavior only for their recorded source, inputs and environment; they do not prove realistic damage or exact cross-platform physics.",
+    "full_application_and_browser": "A real application run must use the actual production launch and incident/report flow. Browser interaction is relevant only if a browser-hosted production route exists; native Godot evidence does not become browser evidence by assertion. Record host, build, settings and observed interaction.",
+    "physical": "Numerical determinism, screenshots, expert agreement and matching fitted examples do not establish physical validation. Use independent component or repair evidence, holdout cases and documented uncertainty. No crash-testing of a real aircraft is a prerequisite.",
+    "performance": "Measure bounded episode tracking, report generation, persistence and presentation on the accepted target host; source inspection and unrelated benchmarks cannot establish target frame or physics budgets."
+  }
+}

@@ -1,0 +1,139 @@
+{
+	"baseline": "f47d1dc6cccb141936407d0217eafdc465558190",
+	"checks": 10,
+	"failures": 0,
+	"observations": [
+		{
+			"id": "terminal_stik_whole_build_ceiling",
+			"matched_current_source": true,
+			"observed": {
+				"complete": false,
+				"high_minor": 133134,
+				"known_subtotal_minor": 0,
+				"low_minor": 0,
+				"ok": true,
+				"outcome": "inspection",
+				"range_basis": "complete_build_replacement_ceiling",
+				"total_minor": null
+			},
+			"scope": "Calculator with unassessed terminal incident; not a flown crash."
+		},
+		{
+			"id": "terminal_stik_prop_floor",
+			"matched_current_source": true,
+			"observed": {
+				"complete": false,
+				"high_minor": 133134,
+				"known_subtotal_minor": 539,
+				"low_minor": 539,
+				"ok": true,
+				"outcome": "inspection",
+				"range_basis": "complete_build_replacement_ceiling",
+				"total_minor": null
+			},
+			"scope": "Confirmed propeller plus unresolved terminal assessment."
+		},
+		{
+			"id": "resolved_stik_prop_only",
+			"matched_current_source": true,
+			"observed": {
+				"complete": true,
+				"high_minor": 539,
+				"known_subtotal_minor": 539,
+				"low_minor": 539,
+				"ok": true,
+				"outcome": "repair",
+				"range_basis": "component_price_bounds",
+				"total_minor": 539
+			},
+			"scope": "Constructed fully resolved prop-only assessment, not normal inspection-producing strike path."
+		},
+		{
+			"id": "extra_whole_dossier_blocks_local_total",
+			"matched_current_source": true,
+			"observed": {
+				"complete": false,
+				"high_minor": null,
+				"known_subtotal_minor": 539,
+				"low_minor": 539,
+				"ok": true,
+				"outcome": "inspection",
+				"range_basis": "component_price_bounds",
+				"total_minor": null
+			},
+			"scope": "Same isolated priced action; source-wide missing notes block completion. Does not establish all other real-flight damage absent."
+		},
+		{
+			"id": "terminal_ceiling_excludes_inspection_fee",
+			"matched_current_source": true,
+			"observed": {
+				"complete": false,
+				"high_minor": 133134,
+				"known_subtotal_minor": 500,
+				"low_minor": 500,
+				"ok": true,
+				"outcome": "inspection",
+				"range_basis": "complete_build_replacement_ceiling",
+				"total_minor": null
+			},
+			"scope": "Conditional accounting risk if the 500-cent inspection is already incurred: replacement upper plus sunk fee is 133634 cents."
+		},
+		{
+			"id": "lumber_wing_bundle",
+			"matched_current_source": true,
+			"observed": {
+				"report": {
+					"complete": false,
+					"high_minor": null,
+					"known_subtotal_minor": 11595,
+					"low_minor": 11595,
+					"ok": true,
+					"outcome": "inspection",
+					"range_basis": "component_price_bounds",
+					"total_minor": null
+				},
+				"wing_unit_minor": 11595
+			},
+			"scope": "Authored composite wing price includes four servo proxies; not bare wing price or proof all four servos failed."
+		},
+		{
+			"id": "later_contact_keeps_earlier_reuse",
+			"matched_current_source": true,
+			"observed": {
+				"changed": false,
+				"disposition": "reuse"
+			},
+			"scope": "Existing component helper; real inspection producer is not connected in normal play."
+		},
+		{
+			"id": "prop_strike_downgrades_replacement",
+			"matched_current_source": true,
+			"observed": {
+				"disposition": "inspect"
+			},
+			"scope": "Existing propeller helper; integration risk once prior inspection/replacement receipts are used."
+		},
+		{
+			"id": "lake_propeller_binding_gap",
+			"matched_current_source": true,
+			"observed": {
+				"qualified_binding": [
+					"propeller_main"
+				],
+				"result": []
+			},
+			"scope": "Probe of binding lookup fields only; not a complete validated lake event nor proof of blade damage."
+		},
+		{
+			"id": "jet_translation_energy_example",
+			"matched_current_source": true,
+			"observed": {
+				"at_40_kmh_j": 706.085061728395,
+				"at_500_kmh_j": 110325.790895062,
+				"mass_kg": 11.438578,
+				"ratio": 156.25
+			},
+			"scope": "Arithmetic from loaded mass. Total translational energy, not component absorbed energy; no asserted survival probability."
+		}
+	]
+}

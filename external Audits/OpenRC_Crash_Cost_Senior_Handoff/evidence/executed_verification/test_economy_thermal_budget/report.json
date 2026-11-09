@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6ccb8e9a-f69e-458f-8727-e4d103f15d53",
+  "command": [
+    "/workspace/scratch/bf9c4bc414d0/audit_work/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/workspace/scratch/bf9c4bc414d0/audit_work/economy_harness",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_economy_thermal_budget.gd"
+  ],
+  "cwd": "/workspace/scratch/bf9c4bc414d0",
+  "started_utc": "2026-11-09T15:29:39.315810+00:00",
+  "label": "test_economy_thermal_budget",
+  "log": "/workspace/scratch/bf9c4bc414d0/audit_work/verification/test_economy_thermal_budget-63jj0szv/engine.log",
+  "report": "/workspace/scratch/bf9c4bc414d0/audit_work/verification/test_economy_thermal_budget-63jj0szv/report.json",
+  "timeout_seconds": 45,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ThermalBudget tests passed:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.262849,
+  "log_bytes": 108,
+  "log_sha256": "a70c0283462a524bbf098c792e451057ada98d02b402bca3d57a7c9663bc778b"
+}

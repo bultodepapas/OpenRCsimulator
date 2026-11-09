@@ -3,6 +3,8 @@ extends SceneTree
 const Loader := preload("res://data/field_loader.gd")
 const Builder := preload("res://render/field.gd")
 const Ground := preload("res://render/ground.gd")
+const SceneryData := preload("res://scenery/scenery_loader.gd")
+const WornGroundMaterial := preload("res://render/worn_ground_material.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -13,7 +15,12 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var previous_scenery := OS.get_environment("OPENRC_SCENERY")
+	var previous_file := OS.get_environment("OPENRC_SCENERY_FILE")
+	OS.set_environment("OPENRC_SCENERY", "on")
+	OS.unset_environment("OPENRC_SCENERY_FILE")
 	_test_default_surface_is_consolidated()
+	_test_explicit_scenery_keeps_legacy_shoulder()
 	_test_priority_ignores_json_order()
 	_test_shifted_ned_coordinates()
 	_test_capacity_and_shader_arrays_agree()
@@ -21,6 +28,8 @@ func _run() -> void:
 	_test_missing_rough_falls_back()
 	_test_surface_overflow_falls_back_whole_field()
 	_test_overlay_outside_flat_horizon_falls_back()
+	_restore_environment("OPENRC_SCENERY", previous_scenery)
+	_restore_environment("OPENRC_SCENERY_FILE", previous_file)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -44,6 +53,23 @@ func _test_default_surface_is_consolidated() -> void:
 			and detail.get_shader_parameter("field_turf_enabled") == true
 			and detail.get_shader_parameter("grass") == material.get_shader_parameter("grass")
 			and detail.get_shader_parameter("tile_m") == material.get_shader_parameter("tile_m"))
+		var other: Node3D = Builder.build(loaded.field)
+		var other_ground: ShaderMaterial = other.get_node("rough").material_override as ShaderMaterial
+		var other_scenery: Node = other.get_node("Scenery")
+		var other_detail: ShaderMaterial = other_scenery.get_meta(WornGroundMaterial.MATERIAL_META) as ShaderMaterial
+		_check("two fields retain private ground and shoulder material ownership",
+			detail != other_detail and material != other_ground
+			and detail.get_shader_parameter("grass") != other_detail.get_shader_parameter("grass"))
+		var original_tile: Variant = material.get_shader_parameter("tile_m")
+		material.set_shader_parameter("tile_m", 3.75)
+		WornGroundMaterial.bind(scenery, material)
+		_check("rebinding one field cannot change the other field's turf scale",
+			detail.get_shader_parameter("tile_m") == 3.75
+			and other_detail.get_shader_parameter("tile_m") == other_ground.get_shader_parameter("tile_m")
+			and other_detail.get_shader_parameter("tile_m") != 3.75)
+		other.free()
+		material.set_shader_parameter("tile_m", original_tile)
+		WornGroundMaterial.bind(scenery, material)
 		_check("Club turf scale is finer than the shared base material", material != null
 			and float(material.get_shader_parameter("tile_m")) > 0.0
 			and float(material.get_shader_parameter("tile_m")) < float(ordinary.get_shader_parameter("tile_m")))
@@ -53,6 +79,23 @@ func _test_default_surface_is_consolidated() -> void:
 			and _rect_at(material, 1) == Vector4(0.0, -15.0, 50.0, 6.0) and _kind_at(material, 1) == 2,
 			str(material.get_shader_parameter("surface_rects")) if material != null else "missing material")
 	field.free()
+
+
+func _test_explicit_scenery_keeps_legacy_shoulder() -> void:
+	OS.set_environment("OPENRC_SCENERY_FILE", SceneryData.DEFAULT_PATH)
+	var loaded: Dictionary = Loader.load_from()
+	var field: Node3D = Builder.build(loaded.field)
+	var scenery: Node = field.get_node_or_null("Scenery")
+	var detail: ShaderMaterial = scenery.get_meta(WornGroundMaterial.MATERIAL_META, null) as ShaderMaterial if scenery != null else null
+	_check("an explicit scenery file retains its existing shoulder treatment", detail != null
+		and detail.get_shader_parameter("field_turf_enabled") != true)
+	field.free()
+	OS.unset_environment("OPENRC_SCENERY_FILE")
+
+
+func _restore_environment(key: String, value: String) -> void:
+	if value.is_empty(): OS.unset_environment(key)
+	else: OS.set_environment(key, value)
 
 
 func _test_priority_ignores_json_order() -> void:

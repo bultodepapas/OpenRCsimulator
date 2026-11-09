@@ -10,6 +10,8 @@ const PARAMETERS: Array[StringName] = [
 
 
 static func bind(scenery: Node, ground: ShaderMaterial) -> bool:
+	if scenery == null:
+		return false
 	var material: ShaderMaterial = scenery.get_meta(MATERIAL_META, null) as ShaderMaterial
 	if material == null or material.shader != SHADER:
 		return false
