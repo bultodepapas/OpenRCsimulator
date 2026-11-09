@@ -9,9 +9,9 @@ const SOURCE_SHA := "67eefa2748276d0554373691b4002239c66823ed84fae256793173b307d
 const OUTPUT := "res://assets/scenery/farm_tractor/tractor.res"
 const INFO := "res://assets/scenery/farm_tractor/tractor.json"
 const ENVELOPE := Vector3(2.35, 2.35, 3.6)
-const TARGET_TRIANGLES := 1800
 const TEXTURE_SIZE := 1024
 var _textures := {}
+var _max_contact_adjustment_m := 0.0
 
 
 func _initialize() -> void:
@@ -57,6 +57,7 @@ func _initialize() -> void:
 		source_url = "https://grab3d.com/models/vehicles/tractor/", author = "Grab3D", license = "CC0-1.0",
 		source_sha256 = SOURCE_SHA, recipe_sha256 = recipe_sha, source_triangles = 32784, triangles = _triangle_count(mesh),
 		surfaces = mesh.get_surface_count(), texture_size_px = TEXTURE_SIZE, content_sha256 = digest,
+		max_contact_adjustment_m = _max_contact_adjustment_m,
 		size_m = [bounds.size.x, bounds.size.y, bounds.size.z],
 		notes = "Uniformly fitted within the existing tractor proxy; centred XZ, y=0, front -Z. PBR/UV retained, 1K S3TC mipmaps, automatic mesh LODs.",
 		engine = Engine.get_version_info()}
@@ -120,16 +121,11 @@ func _bake(parts: Array[Dictionary]) -> ArrayMesh:
 	imported.generate_lods(60.0, 75.0, [])
 	var reduced := ArrayMesh.new()
 	var pending: Array[Dictionary] = []
-	var ratio := float(TARGET_TRIANGLES) / float(_triangle_count(merged))
+	var selections := _near_indices(imported, source_parts)
 	for surface in imported.get_surface_count():
 		var arrays := imported.get_surface_arrays(surface)
 		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
-		var want := maxi(12, int(float(indices.size()) * ratio))
-		var near := indices
-		for lod in imported.get_surface_lod_count(surface):
-			var candidate := imported.get_surface_lod_indices(surface, lod)
-			if candidate.size() >= 12 and absi(candidate.size() - want) < absi(near.size() - want):
-				near = candidate
+		var near: PackedInt32Array = selections[surface]
 		var lods := {}
 		for lod in imported.get_surface_lod_count(surface):
 			var candidate := imported.get_surface_lod_indices(surface, lod)
@@ -150,10 +146,26 @@ func _bake(parts: Array[Dictionary]) -> ArrayMesh:
 		var minimum := INF
 		for index: int in surface.arrays[Mesh.ARRAY_INDEX]: minimum = minf(minimum, vertices[index].y)
 		wheel_offsets[surface.source_part] = -minimum
+		_max_contact_adjustment_m = maxf(_max_contact_adjustment_m, absf(minimum))
 	for surface: Dictionary in pending:
 		if not wheel_offsets.has(surface.source_part): continue
 		var vertices: PackedVector3Array = surface.arrays[Mesh.ARRAY_VERTEX]
 		for i in vertices.size(): vertices[i].y += float(wheel_offsets[surface.source_part])
+		if surface.material.resource_name.contains("tire"):
+			# Pin the lowest retained tire samples to the shared ground plane.
+			# This bounded display-only correction avoids floating coarse wheels.
+			for i in vertices.size(): vertices[i].y = maxf(0.0, vertices[i].y)
+			var rendered_sets: Array = [surface.arrays[Mesh.ARRAY_INDEX]]
+			rendered_sets.append_array(surface.lods.values())
+			for rendered: PackedInt32Array in rendered_sets:
+				var minimum := INF
+				for index: int in rendered: minimum = minf(minimum, vertices[index].y)
+				if minimum > 0.04:
+					push_error("Tractor wheel LOD needs more than 4 cm of contact repair")
+					return null
+				_max_contact_adjustment_m = maxf(_max_contact_adjustment_m, minimum)
+				for index: int in rendered:
+					if vertices[index].y <= minimum + 0.0001: vertices[index].y = 0.0
 		surface.arrays[Mesh.ARRAY_VERTEX] = vertices
 	# Reduction can discard tiny extremal vertices. Ground and centre the retained mesh again.
 	var first_vertices: PackedVector3Array = pending[0].arrays[Mesh.ARRAY_VERTEX]
@@ -174,6 +186,37 @@ func _bake(parts: Array[Dictionary]) -> ArrayMesh:
 	if _triangle_count(result) > Tractor.MAX_SOURCE_TRIANGLES or result.get_surface_count() > Tractor.MAX_SURFACES:
 		push_error("Farm tractor exceeds its 4000-triangle / five-surface intake limit: %d triangles, %d surfaces" % [_triangle_count(result), result.get_surface_count()])
 		return null
+	return result
+
+
+## Start with every physical part present, then spend the fixed source budget
+## on one finer step per part: body, front wheels, windows, rear wheels.
+## This handles discrete meshoptimizer levels without raising the scene ceiling.
+func _near_indices(imported: ImporterMesh, source_parts: Array[int]) -> Array[PackedInt32Array]:
+	var choices: Array[Array] = []
+	var selected: Array[int] = []
+	var total := 0
+	for surface in imported.get_surface_count():
+		var full: PackedInt32Array = imported.get_surface_arrays(surface)[Mesh.ARRAY_INDEX]
+		var unique := {full.size(): full}
+		for lod in imported.get_surface_lod_count(surface):
+			var candidate := imported.get_surface_lod_indices(surface, lod)
+			if candidate.size() >= 12 and not unique.has(candidate.size()): unique[candidate.size()] = candidate
+		var levels: Array[PackedInt32Array] = []
+		for candidate: PackedInt32Array in unique.values(): levels.append(candidate)
+		levels.sort_custom(func(a: PackedInt32Array, b: PackedInt32Array) -> bool: return a.size() < b.size())
+		choices.append(levels)
+		selected.append(0)
+		total += levels[0].size()
+	for part in [0, 1, 2, 5, 3, 4]:
+		for surface in imported.get_surface_count():
+			if source_parts[surface] != part or choices[surface].size() < 2: continue
+			var delta: int = choices[surface][1].size() - choices[surface][0].size()
+			if total + delta <= Tractor.MAX_SOURCE_TRIANGLES * 3:
+				selected[surface] = 1
+				total += delta
+	var result: Array[PackedInt32Array] = []
+	for surface in imported.get_surface_count(): result.append(choices[surface][selected[surface]])
 	return result
 
 

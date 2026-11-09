@@ -505,6 +505,7 @@ static func _setup_build(context: _SceneryBuild) -> void:
 	context.support_surfaces = support_surfaces
 	context.ground_cells = ground_cells
 	context.gravel = gravel
+	root.set_meta("ground_detail_material", gravel)
 	context.shadow_cells = shadow_cells
 	context.population_contact_kit = population_contact_kit
 	context.population_shadow_groups = population_shadow_groups

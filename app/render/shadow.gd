@@ -27,6 +27,41 @@ class _CuePolicy:
 	var shadow_api: Script
 	var last_update: Array = []
 	var revision := -1
+	# Geometry is captured synchronously at bind time; only renderer nodes are deferred.
+	var pending: Dictionary = {}
+
+	func defer_binding(model: Node3D, shape: Dictionary, geometry: Dictionary) -> void:
+		clear_pending()
+		pending = {source = weakref(model), shape = shape.duplicate(), geometry = geometry.duplicate()}
+		model.visibility_changed.connect(_pending_source_changed)
+		model.tree_entered.connect(_pending_source_changed)
+
+	func clear_pending() -> void:
+		var model: Node3D = pending.source.get_ref() if not pending.is_empty() else null
+		if is_instance_valid(model):
+			model.visibility_changed.disconnect(_pending_source_changed)
+			model.tree_entered.disconnect(_pending_source_changed)
+		pending.clear()
+
+	func materialize() -> void:
+		if pending.is_empty():
+			return
+		var model: Node3D = pending.source.get_ref()
+		if not is_instance_valid(model):
+			clear_pending()
+			carrier.set_meta("projected_shadow_geometry", {representation = "unavailable", triangles = 0, source_triangles = 0})
+			return # A vanished bound source must never turn into a generic shadow.
+		if (carrier.is_inside_tree() and not model.is_inside_tree()) \
+				or not (model.is_visible_in_tree() if model.is_inside_tree() else model.visible):
+			return
+		var shape: Dictionary = pending.shape
+		var geometry: Dictionary = pending.geometry
+		clear_pending()
+		shadow_api.call("_install_shape", carrier, model, shape, geometry)
+
+	func _pending_source_changed() -> void:
+		if not last_update.is_empty():
+			apply_shadow_policy()
 
 	func _ready() -> void:
 		add_to_group("shadow_policy_consumers")
@@ -34,8 +69,12 @@ class _CuePolicy:
 
 	func _process(_delta: float) -> void:
 		if not is_instance_valid(carrier):
+			clear_pending()
 			queue_free()
 			return
+		if not pending.is_empty() and not is_instance_valid(pending.source.get_ref()):
+			clear_pending()
+			carrier.set_meta("projected_shadow_geometry", {representation = "unavailable", triangles = 0, source_triangles = 0})
 		if revision != ShadowSettings.revision:
 			apply_shadow_policy()
 
@@ -58,7 +97,7 @@ class _CuePolicy:
 			apply_shadow_policy()
 
 
-static func create(parent: Node3D) -> MeshInstance3D:
+static func create(parent: Node3D, cue_override: String = "auto") -> MeshInstance3D:
 	var m := MeshInstance3D.new()
 	m.name = "AircraftShadow" # a stable path for tools and reports
 	var quad := PlaneMesh.new() # 1 × 1 in the XZ plane; UV u along +X, v along +Z
@@ -69,7 +108,9 @@ static func create(parent: Node3D) -> MeshInstance3D:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.albedo_color = Color(0, 0, 0, 0.6)
-	mat.albedo_texture = ImageTexture.create_from_image(silhouette())
+	var enabled := _cue_enabled(cue_override)
+	if enabled:
+		mat.albedo_texture = ImageTexture.create_from_image(silhouette())
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	m.material_override = mat
 	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -79,7 +120,7 @@ static func create(parent: Node3D) -> MeshInstance3D:
 	policy.shadow_api = load("res://render/shadow.gd")
 	m.set_meta("shadow_cue_policy", policy)
 	m.visibility_changed.connect(policy.visibility_changed)
-	if not ShadowSettings.projected_enabled() or ShadowSettings.aircraft_cue() == "off":
+	if not enabled:
 		mat.albedo_color.a = 0.0
 	parent.add_child(m)
 	parent.add_child(policy)
@@ -90,7 +131,10 @@ static func create(parent: Node3D) -> MeshInstance3D:
 ## A precomputed shape is valid only for the same unchanged neutral model (e.g. a static Home preview).
 ## Only an explicitly admitted stock flight context may select the qualified aircraft proxy.
 ## Cached Home geometry and callers without that context retain full collection.
-static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}, proxy_context: Dictionary = {}) -> void:
+static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}, proxy_context: Dictionary = {}, cue_override: String = "auto") -> void:
+	var policy := shadow.get_meta("shadow_cue_policy", null) as _CuePolicy
+	if policy != null:
+		policy.clear_pending()
 	var old := shadow.get_node_or_null("ProjectedShadow")
 	if old != null:
 		shadow.remove_child(old)
@@ -98,13 +142,35 @@ static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary 
 	if shape.is_empty():
 		shape = AircraftShadowProxy.collect(model, AircraftShadowProxy.MAX_LOD_DISTANCE) \
 			if AircraftShadowProxy.qualified(model, proxy_context) else Projected.collect(model)
-	shadow.set_meta("projected_shadow_geometry", {
+	var geometry := {
 		representation = shape.get("representation", "full" if not shape.is_empty() else "legacy"),
 		triangles = shape.get("triangles", 0), source_triangles = shape.get("source_triangles", shape.get("triangles", 0)),
 		lod_surfaces = shape.get("lod_surfaces", 0), max_lod_distance = shape.get("max_lod_distance", 0.0),
 		requested = AircraftShadowProxy.requested(),
 		model_manifest_sha256 = str(proxy_context.get("model_manifest_sha256", "")),
-	})
+	}
+	if policy != null and not _cue_enabled(cue_override):
+		# Preserve the bind-time geometry, including mutable visual observers, but
+		# avoid an unused offscreen target, receiver and shader materials.
+		policy.defer_binding(model, shape, geometry)
+		var deferred := geometry.duplicate()
+		deferred.pending_representation = geometry.representation
+		deferred.pending_triangles = geometry.triangles
+		deferred.representation = "deferred"
+		deferred.triangles = 0
+		shadow.set_meta("projected_shadow_geometry", deferred)
+		shadow.mesh = null
+		return
+	_install_shape(shadow, model, shape, geometry)
+
+
+static func _cue_enabled(cue_override: String) -> bool:
+	var cue := cue_override if cue_override in ["sun", "vertical", "off"] else ShadowSettings.aircraft_cue()
+	return ShadowSettings.projected_enabled() and cue != "off"
+
+
+static func _install_shape(shadow: MeshInstance3D, model: Node3D, shape: Dictionary, geometry: Dictionary) -> void:
+	shadow.set_meta("projected_shadow_geometry", geometry)
 	if shape.is_empty():
 		shadow.mesh = shadow.get_meta("legacy_shadow_mesh")
 		return # legacy mask remains a supported fallback
@@ -178,9 +244,16 @@ static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, 
 	shadow.transform = footprint(b, pos, span, length, direction)
 	var opacity := alpha(pos.y) * clampf(strength, 0.0, 1.0) if enabled else 0.0
 	(shadow.material_override as StandardMaterial3D).albedo_color.a = opacity
+	var shown := shadow.is_visible_in_tree() if shadow.is_inside_tree() else shadow.visible
+	if enabled and shown and opacity > 0.0:
+		if policy != null:
+			policy.materialize()
+		if shadow.mesh != null:
+			var material := shadow.material_override as StandardMaterial3D
+			if material.albedo_texture == null:
+				material.albedo_texture = ImageTexture.create_from_image(silhouette())
 	var projected := shadow.get_node_or_null("ProjectedShadow")
 	if projected != null:
-		var shown := shadow.is_visible_in_tree() if shadow.is_inside_tree() else shadow.visible
 		projected.refresh(pos.y, direction.normalized(), opacity, enabled and shown and opacity > 0.0)
 
 

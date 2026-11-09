@@ -193,22 +193,30 @@ static func _add_automatic_buttons(profile: Dictionary, bindings: Dictionary, ex
 	if str(_dict_value(profile, "kind", "")) != "gamepad":
 		return
 	var definitions := _definition_map()
+	# Automatic candidates begin unbound unless explicitly overridden. If that
+	# contract changes, replacing a binding would also need to remove occupancy.
+	var occupied_buttons: Variant = null
 	for action_id: String in AUTOMATIC_BUTTONS:
 		var entry: Dictionary = AUTOMATIC_BUTTONS[action_id]
 		if explicit_ids.has(action_id) or (not str(entry.channel).is_empty() and not bool(capabilities.get(entry.channel, false))):
 			continue
-		var candidate := {"type": "button", "button": int(entry.button)}
-		var reserved := false
+		if occupied_buttons == null:
+			occupied_buttons = {}
+			for other_id: Variant in bindings:
+				var binding: Variant = bindings[other_id]
+				if not definitions.has(str(other_id)) or not _valid_binding(binding) or _is_unbound(binding):
+					continue
+				if _contexts_overlap("flight", str(definitions[other_id].context)) and binding.type == "button":
+					occupied_buttons[int(binding.button)] = true
+		var button := int(entry.button)
+		var candidate := {"type": "button", "button": button}
+		var reserved: bool = occupied_buttons.has(button)
 		for aux_entry in aux_bindings:
 			if aux_entry.name == entry.channel or _same_aux_control(candidate, aux_entry.binding):
 				reserved = true
-		for other_id: Variant in bindings:
-			if not definitions.has(str(other_id)) or not _valid_binding(bindings[other_id]) or _is_unbound(bindings[other_id]):
-				continue
-			if _contexts_overlap("flight", str(definitions[other_id].context)) and _same_binding(candidate, bindings[other_id]):
-				reserved = true
 		if not reserved:
 			bindings[action_id] = candidate
+			occupied_buttons[button] = true
 
 
 ## Validate the whole calibrated profile's semantic bindings and reserved AUX sources.

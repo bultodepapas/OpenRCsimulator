@@ -8,6 +8,7 @@ const Treeline = preload("res://render/treeline.gd")
 const FieldTreeDetail = preload("res://render/field_tree_detail.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
 const Ground = preload("res://render/ground.gd")
+const WornGroundMaterial = preload("res://render/worn_ground_material.gd")
 const NearGrass = preload("res://render/near_grass.gd")
 const ImportedNearGrass = preload("res://scenery/imported_near_grass.gd")
 const RunwayMeadow = preload("res://scenery/runway_meadow.gd")
@@ -276,7 +277,10 @@ static func _advance_build(context: _BuildContext) -> void:
 						or Scenery.next_build_stage(context.scenery_build) != stage:
 					break
 			if Scenery.build_finished(context.scenery_build):
-				context.result.add_child(Scenery.take_build(context.scenery_build))
+				var attached_scenery: Node3D = Scenery.take_build(context.scenery_build)
+				if str(context.field.get("id", "")) == "default" and not bool(context.scenery_options.get("file_explicit", false)):
+					WornGroundMaterial.bind(attached_scenery, context.grass)
+				context.result.add_child(attached_scenery)
 				context.scenery_build = null
 				context.phase = _BuildPhase.LAKE_ATTACH
 		_BuildPhase.LAKE_ATTACH:

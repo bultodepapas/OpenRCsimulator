@@ -11,6 +11,7 @@ const EXPECTED_AIRCRAFT_BLADE_COUNTS := {
 	"stik-glow-61fx-2t": 2,
 	"stik-glow-55ax-2t": 2,
 	"stik-glow-fs64v-4t": 2,
+	"stik-electric-6s": 2,
 	"gp-extra-300s-60": 2,
 	"p51d-mustang-120": 4,
 	"f4u-corsair-250": 3,

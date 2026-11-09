@@ -31,6 +31,8 @@ GENERATORS = [
     "assets/aircraft/turbo-lumber-evolution/build_geometry.py",
     "assets/aircraft/turbo-lumber-evolution/compile_geometry.py",
     "research/timber/tt07/derive_physics.py",
+    "research/propulsion/stik-6s/build_aircraft.py",
+    "research/propulsion/stik-6s/build_costing_entry.py",
     "research/skywalker-x8/X8-00/manifest.py",
     "research/skywalker-x8/X8-02/install_assets.py",
     "research/skywalker-x8/X8-02/compile_model.py",

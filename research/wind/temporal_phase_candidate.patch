@@ -1,0 +1,446 @@
+diff --git a/app/physics/wind_aircraft_flow.gd b/app/physics/wind_aircraft_flow.gd
+index 9e8d24563..2c3199583 100644
+--- a/app/physics/wind_aircraft_flow.gd
++++ b/app/physics/wind_aircraft_flow.gd
+@@ -7,6 +7,7 @@ const RB := preload("res://physics/rigid_body.gd")
+ const Aero := preload("res://physics/aero.gd")
+ const Air := preload("res://physics/air_data.gd")
+ const Simulation := preload("res://sim/simulation.gd")
++const SimEnvironment := preload("res://sim/environment.gd")
+ 
+ const LAW := "m5-w05c-r1-fixed-datum-station-relative-flow-v1"
+ const STAGE_AIR_LAW := "m5-w05c-r2-point-air-v1"
+@@ -22,6 +23,8 @@ class StagePointSampler:
+ 	var reference_wind := PackedFloat64Array()
+ 	var environment: Object
+ 	var time_s := 0.0
++	var wind_query: Callable
++	var query_environment: Object
+ 
+ 	func delta_at(arm: PackedFloat64Array) -> PackedFloat64Array:
+ 		if not _finite3(arm) or not is_instance_valid(environment):
+@@ -29,7 +32,8 @@ class StagePointSampler:
+ 		var position := M.add(position_ned, M.q_rotate(q_body_to_ned, arm))
+ 		if not _finite3(position):
+ 			return PackedFloat64Array([NAN, NAN, NAN])
+-		var wind: Variant = environment.call("wind_world", position, time_s)
++		var wind: Variant = wind_query.call(position, time_s) if environment == query_environment \
++			else environment.call("wind_world", position, time_s)
+ 		if not _finite3(wind):
+ 			return PackedFloat64Array([NAN, NAN, NAN])
+ 		if wind[0] == reference_wind[0] and wind[1] == reference_wind[1] and wind[2] == reference_wind[2]:
+@@ -56,7 +60,8 @@ static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Obj
+ 		return {ok = false, errors = PackedStringArray(["unsupported spatial aerodynamic law"]), air = {}}
+ 	if not is_finite(rho) or rho <= 0.0:
+ 		return {ok = false, errors = PackedStringArray(["invalid stage density"]), air = {}}
+-	var flow := _sample(s, model, environment, time_s, include_flow)
++	var wind_query := _world_query(environment, time_s)
++	var flow := _sample(s, model, environment, time_s, include_flow, wind_query)
+ 	if not flow.ok:
+ 		return {ok = false, errors = flow.errors, air = {}}
+ 	if flow.propulsion_index < 0:
+@@ -72,6 +77,8 @@ static func stage_air(s: PackedFloat64Array, model: Dictionary, environment: Obj
+ 	point_sampler.reference_wind = flow.reference_wind_ned.duplicate()
+ 	point_sampler.environment = environment
+ 	point_sampler.time_s = time_s
++	point_sampler.wind_query = wind_query
++	point_sampler.query_environment = environment
+ 	air.spatial_air_law = STAGE_AIR_LAW
+ 	if not aero_law.is_empty():
+ 		air.spatial_aero_law = aero_law
+@@ -267,7 +274,16 @@ static func sample(s: Variant, model: Variant, environment: Variant, time_s: flo
+ 
+ 
+ ## One sampling/validation law for diagnostic and lean receipts. Only retained output differs.
+-static func _sample(s: Variant, model: Variant, environment: Variant, time_s: float, include_flow: bool) -> Dictionary:
++static func _world_query(environment: Variant, time_s: float) -> Callable:
++	if environment == null or not environment is Object or not environment.has_method("wind_world"):
++		return Callable()
++	if environment.get_script() == SimEnvironment:
++		return environment.prepare_wind_world_query(time_s)
++	return Callable(environment, "wind_world")
++
++
++static func _sample(s: Variant, model: Variant, environment: Variant, time_s: float, include_flow: bool,
++		wind_query := Callable()) -> Dictionary:
+ 	var station_geometry: Dictionary = geometry(model)
+ 	if not station_geometry.ok:
+ 		return _sample_failure(station_geometry.errors, station_geometry, time_s)
+@@ -282,12 +298,14 @@ static func _sample(s: Variant, model: Variant, environment: Variant, time_s: fl
+ 		return _sample_failure(errors, station_geometry, time_s)
+ 
+ 	var state: PackedFloat64Array = s
++	if not wind_query.is_valid():
++		wind_query = _world_query(environment, time_s)
+ 	# RK stages use the supplied quaternion directly; normalization belongs to the integrator's accepted-step path.
+ 	# Match Air.compute and the existing stage-point transform even when an intermediate stage is not exactly unit length.
+ 	var q_body_to_ned: PackedFloat64Array = state.slice(RB.ATT, RB.ATT + 4)
+ 	var q_ned_to_body: PackedFloat64Array = M.q_conj(q_body_to_ned)
+ 	var position_ned: PackedFloat64Array = state.slice(RB.POS, RB.POS + 3)
+-	var reference_wind_value: Variant = environment.call("wind_world", position_ned.duplicate(), time_s)
++	var reference_wind_value: Variant = wind_query.call(position_ned.duplicate(), time_s)
+ 	if not _finite3(reference_wind_value):
+ 		errors.append("environment rejected the datum wind sample")
+ 		return _sample_failure(errors, station_geometry, time_s)
+@@ -321,7 +339,7 @@ static func _sample(s: Variant, model: Variant, environment: Variant, time_s: fl
+ 		if not _finite3(station_position):
+ 			errors.append("station %d world position is nonfinite" % i)
+ 			return _sample_failure(errors, station_geometry, time_s)
+-		var station_wind_value: Variant = environment.call("wind_world", station_position.duplicate(), time_s)
++		var station_wind_value: Variant = wind_query.call(station_position.duplicate(), time_s)
+ 		if not _finite3(station_wind_value):
+ 			errors.append("environment rejected wind at station %d" % i)
+ 			return _sample_failure(errors, station_geometry, time_s)
+diff --git a/app/physics/wind_field.gd b/app/physics/wind_field.gd
+index ed235d402..d320ccbc5 100644
+--- a/app/physics/wind_field.gd
++++ b/app/physics/wind_field.gd
+@@ -108,6 +108,22 @@ func sample_world(position_ned: PackedFloat64Array, time_s: float) -> PackedFloa
+ 	return sample(time_s)
+ 
+ 
++## Optional stage-local acceleration. Custom providers keep their virtual sample_world.
++func prepare_world_query(time_s: float) -> Callable:
++	if get_script() != load("res://physics/wind_field.gd") or _spatial == null \
++			or _spatial.get_script() != SpatialField:
++		return Callable()
++	var provider := _spatial
++	var query: Callable = provider.prepare_world_query(time_s)
++	if not query.is_valid():
++		return Callable()
++	return func(position: PackedFloat64Array, at: float) -> PackedFloat64Array:
++		if _spatial != provider or at != time_s:
++			return sample_world(position, at)
++		var result: Dictionary = query.call(position, at)
++		return result.wind_ned_mps if result.get("ok", false) else M.v3(NAN, NAN, NAN)
++
++
+ func _apply_config(config: Dictionary) -> bool:
+ 	var spatial: RefCounted = null
+ 	if config.format == Config.SPATIAL_FORMAT:
+diff --git a/app/physics/wind_spatial_field.gd b/app/physics/wind_spatial_field.gd
+index 6c223c552..d6f87d2d5 100644
+--- a/app/physics/wind_spatial_field.gd
++++ b/app/physics/wind_spatial_field.gd
+@@ -36,6 +36,7 @@ var _gust_transition_height := 0.0
+ var _gust_values := PackedFloat64Array()
+ var _gust_max_duration := 0.0
+ var _turbulence_rms := 0.0
++var _configuration_generation := 0
+ 
+ 
+ ## Validate, detach, and freeze a spatial provider. A failure never yields a zero-wind fallback.
+@@ -67,6 +68,7 @@ func _apply_config(config: Dictionary, content_hash: String, thermal_field: Vari
+ 	_thermal_law = thermal_law
+ 	_prepare_profile_and_gusts()
+ 	_modes = _resolve_modes()
++	_configuration_generation += 1
+ 
+ 
+ func _prepare_profile_and_gusts() -> void:
+@@ -163,6 +165,32 @@ func absolute_speed_bound_mps() -> float:
+ ## Evaluate at a world point [north, east, down] and caller simulation seconds.
+ ## Returns a structured failure outside the declared flat-site domain.
+ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) -> Dictionary:
++	return _sample_world(position_ned, simulation_time_s, PackedFloat64Array())
++
++
++## Stage-owned temporal remainders only; never store query time on the shared field.
++## A reconfiguration or another query time falls back to ordinary virtual dispatch.
++func prepare_world_query(simulation_time_s: float) -> Callable:
++	if get_script() != load("res://physics/wind_spatial_field.gd") \
++			or not is_finite(simulation_time_s) or simulation_time_s <= 0.0 or _turbulence_rms == 0.0:
++		return Callable()
++	var epoch_time := simulation_time_s + float(_config.identity.epoch_offset_s)
++	var horizon := float(_config.domain.time_horizon_s)
++	if simulation_time_s > horizon or not is_finite(epoch_time) or epoch_time > horizon:
++		return Callable()
++	var temporal_phases := PackedFloat64Array()
++	temporal_phases.resize(_modes.size() / MODE_SCALAR_COUNT)
++	for index: int in temporal_phases.size():
++		temporal_phases[index] = fposmod(_modes[index * MODE_SCALAR_COUNT + 8] * epoch_time, TAU_F64)
++	var generation := _configuration_generation
++	return func(position: PackedFloat64Array, time_s: float) -> Dictionary:
++		if time_s != simulation_time_s or generation != _configuration_generation:
++			return sample_world(position, time_s)
++		return _sample_world(position, time_s, temporal_phases)
++
++
++func _sample_world(position_ned: PackedFloat64Array, simulation_time_s: float,
++		temporal_phases: PackedFloat64Array) -> Dictionary:
+ 	if position_ned.size() != 3:
+ 		return _sample_failure("position_ned must contain exactly three NED components")
+ 	for component: float in position_ned:
+@@ -191,7 +219,7 @@ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) ->
+ 
+ 	var wind := _profile_wind(height_agl)
+ 	var gust := _gust_wind(height_agl, epoch_time)
+-	var turbulent := _turbulence_wind(position_ned[0], position_ned[1], height_agl, epoch_time)
++	var turbulent := _turbulence_wind(position_ned[0], position_ned[1], height_agl, epoch_time, temporal_phases)
+ 	for axis: int in 3:
+ 		wind[axis] += gust[axis] + turbulent[axis]
+ 		if not is_finite(wind[axis]):
+@@ -313,7 +341,8 @@ func _first_possible_gust(epoch_time: float) -> int:
+ 	return first
+ 
+ 
+-func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_time: float) -> PackedFloat64Array:
++func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_time: float,
++		temporal_phases := PackedFloat64Array()) -> PackedFloat64Array:
+ 	var result_north := 0.0
+ 	var result_east := 0.0
+ 	var result_down := 0.0
+@@ -330,8 +359,9 @@ func _turbulence_wind(north_m: float, east_m: float, height_agl: float, epoch_ti
+ 		var phase_offset: float = _modes[mode_offset + 7]
+ 		var omega: float = _modes[mode_offset + 8]
+ 		var spatial_phase := k_north * north_m + k_east * east_m + phase_offset
+-		var temporal_phase := omega * epoch_time
+-		var phase := fposmod(fposmod(spatial_phase, TAU_F64) + fposmod(temporal_phase, TAU_F64), TAU_F64)
++		var temporal_remainder: float = fposmod(omega * epoch_time, TAU_F64) if temporal_phases.is_empty() \
++			else temporal_phases[mode_offset / MODE_SCALAR_COUNT]
++		var phase := fposmod(fposmod(spatial_phase, TAU_F64) + temporal_remainder, TAU_F64)
+ 		var cosine_phase := M.cos_(phase)
+ 		var sine_phase := M.sin_(phase)
+ 		var vertical_phase := k_down * height_agl
+diff --git a/app/sim/environment.gd b/app/sim/environment.gd
+index 030875ea9..c8bf0f17e 100644
+--- a/app/sim/environment.gd
++++ b/app/sim/environment.gd
+@@ -70,6 +70,42 @@ func wind_world(position_ned: PackedFloat64Array, time_s: float) -> PackedFloat6
+ 	return out
+ 
+ 
++## Prepare one pure stage's repeated point queries, preserving overridden providers.
++## Turbulence callbacks retain the original per-query dispatch and refusal order.
++func prepare_wind_world_query(time_s: float) -> Callable:
++	if get_script() != load("res://sim/environment.gd") or weather == null \
++			or weather.get_script() != WeatherField:
++		return wind_world
++	var provider := weather
++	var query := provider.prepare_world_query(time_s)
++	if not query.is_valid():
++		return wind_world
++	return func(position: PackedFloat64Array, at: float) -> PackedFloat64Array:
++		if weather != provider or at != time_s:
++			return wind_world(position, at)
++		if not _valid_ned_vector(position) or not is_finite(at) or at < 0.0:
++			return _invalid_world_wind()
++		var out: PackedFloat64Array = query.call(position, at)
++		if not _valid_ned_vector(out):
++			return _invalid_world_wind()
++		# Keep this sequence identical to wind_world: callbacks may reject or rebind.
++		if not turbulence.is_valid():
++			return out
++		var noise_value: Variant = turbulence.call(at)
++		if typeof(noise_value) != TYPE_PACKED_FLOAT64_ARRAY:
++			return _invalid_world_wind()
++		if noise_value.is_empty():
++			return out
++		if not _valid_ned_vector(noise_value):
++			return _invalid_world_wind()
++		for axis: int in 3:
++			var combined: float = out[axis] + float(noise_value[axis])
++			if not is_finite(combined):
++				return _invalid_world_wind()
++			out[axis] = combined
++		return out
++
++
+ ## Atmosphere at `down_m` (NED down of the datum): {ok, rho_kgm3, engine_charge_ratio, ...} per the weather law.
+ func air(down_m: float = 0.0) -> Dictionary:
+ 	return weather.atmosphere(down_m)
+diff --git a/app/tests/test_spatial_wind_temporal.gd b/app/tests/test_spatial_wind_temporal.gd
+new file mode 100644
+index 000000000..02d6a094b
+--- /dev/null
++++ b/app/tests/test_spatial_wind_temporal.gd
+@@ -0,0 +1,189 @@
++# M5-W05d-R6 / WOPT-03: stage-owned temporal reuse, exact bytes and live ownership.
++extends SceneTree
++
++const Spatial := preload("res://physics/wind_spatial_field.gd")
++const SpatialConfig := preload("res://physics/wind_spatial_config.gd")
++const Weather := preload("res://physics/wind_field.gd")
++const Config := preload("res://physics/wind_config.gd")
++const SimEnvironment := preload("res://sim/environment.gd")
++const Flight := preload("res://sim/flight_session.gd")
++const Catalog := preload("res://app_state/aircraft_catalog.gd")
++
++class DerivedEnvironment extends "res://sim/environment.gd":
++	var calls := 0
++	func wind_world(_position: PackedFloat64Array, _time: float) -> PackedFloat64Array:
++		calls += 1
++		return PackedFloat64Array([9.0, 8.0, 7.0])
++
++class DerivedWeather extends "res://physics/wind_field.gd":
++	var calls := 0
++	func prepare_world_query(_time: float) -> Callable:
++		return func(_position: PackedFloat64Array, _at: float) -> PackedFloat64Array:
++			return PackedFloat64Array([NAN, NAN, NAN])
++	func sample_world(_position: PackedFloat64Array, _time: float) -> PackedFloat64Array:
++		calls += 1
++		return PackedFloat64Array([6.0, 5.0, 4.0])
++
++class DerivedSpatial extends "res://physics/wind_spatial_field.gd":
++	func prepare_world_query(_time: float) -> Callable:
++		return func(_position: PackedFloat64Array, _at: float) -> Dictionary:
++			return {ok = false}
++	func sample_world(_position: PackedFloat64Array, _time: float) -> Dictionary:
++		return {ok = true, wind_ned_mps = PackedFloat64Array([3.0, 2.0, 1.0])}
++
++var _checks := 0
++var _failed := 0
++var _noise_calls := 0
++var _noise: Variant = PackedFloat64Array()
++
++func _check(label: String, ok: bool) -> void:
++	_checks += 1
++	if not ok:
++		_failed += 1
++		printerr("FAIL " + label)
++
++func _same(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
++	return a.to_byte_array() == b.to_byte_array()
++
++func _initialize() -> void:
++	_run.call_deferred()
++
++func _run() -> void:
++	_check("negative zero fixture retains its sign bit", PackedFloat64Array([_negative_zero()]).to_byte_array().hex_encode() == "0000000000000080")
++	_boundary_fixture()
++	_mode_and_refusal_matrix()
++	_live_owners_and_callbacks()
++	_virtual_providers()
++	_real_session()
++	print("spatial temporal reuse: %d checks, %d failed" % [_checks, _failed])
++	quit(1 if _failed else 0)
++
++func _boundary_fixture() -> void:
++	if OS.get_name() not in ["Windows", "Linux"]:
++		# Historical byte fixtures exist only for these hosts; direct parity runs everywhere.
++		return
++	var suffix := "_linux" if OS.get_name() == "Linux" else ""
++	var path := "res://tests/fixtures/spatial_wind_boundary_before%s.json" % suffix
++	var fixture: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
++	for item: Dictionary in fixture.cases:
++		var field: RefCounted = Spatial.build(item.config).field
++		for index: int in fixture.queries.size():
++			var point: Dictionary = fixture.queries[index]
++			var time_s := float(point.time_s)
++			var position := PackedFloat64Array(point.position_ned_m)
++			var query: Callable = field.prepare_world_query(time_s)
++			var result: Dictionary = query.call(position, time_s) if query.is_valid() else field.sample_world(position, time_s)
++			_check("prepared original bytes %s/%d" % [item.id, index], result.ok
++				and result.wind_ned_mps.to_byte_array().hex_encode() == item.wind_bytes_hex[index])
++			result.wind_ned_mps[0] = NAN
++
++func _mode_and_refusal_matrix() -> void:
++	for count: int in [8, 24, 64]:
++		for epoch: float in [_negative_zero(), 0.0, 7.125]:
++			var raw := SpatialConfig.defaults()
++			raw.identity.epoch_offset_s = epoch
++			raw.turbulence.mode_count = count
++			raw.turbulence.rms_mps = 0.3
++			var field: RefCounted = Spatial.build(raw).field
++			var query: Callable = field.prepare_world_query(5.25)
++			_check("nonzero field prepares", query.is_valid())
++			for time_s: float in [5.25, 0.0, _negative_zero(), 8.0, -1.0, INF, NAN, 86401.0]:
++				for position: PackedFloat64Array in [PackedFloat64Array([1.0, -2.0, -10.0]),
++					PackedFloat64Array([0.0, 0.0, -0.0]), PackedFloat64Array([1.0, 2.0, 0.25]),
++					PackedFloat64Array([1.0, 2.0, 0.251]), PackedFloat64Array([10001.0, 0.0, -1.0]),
++					PackedFloat64Array([0.0, 10001.0, -1.0]), PackedFloat64Array([0.0, 0.0, -201.0]),
++					PackedFloat64Array([NAN, 0.0, 0.0]), PackedFloat64Array()]:
++					_check("query exact output or refusal", var_to_bytes(query.call(position, time_s))
++						== var_to_bytes(field.sample_world(position, time_s)))
++			var other: Callable = field.prepare_world_query(6.5)
++			var point := PackedFloat64Array([23.0, 17.0, -1.1])
++			other.call(point, 6.5)
++			_check("interleaved contexts", var_to_bytes(query.call(point, 5.25)) == var_to_bytes(field.sample_world(point, 5.25)))
++			var changed := SpatialConfig.resolve(raw)
++			changed.config.identity.seed_u32 += 1
++			changed = SpatialConfig.resolve(changed.config)
++			field._apply_config(changed.config, changed.content_hash, null, "", "")
++			_check("same spatial owner reconfigured", var_to_bytes(query.call(point, 5.25)) == var_to_bytes(field.sample_world(point, 5.25)))
++	var zero: RefCounted = Spatial.build(SpatialConfig.defaults()).field
++	_check("disabled turbulence prepares no scratch", not zero.prepare_world_query(5.25).is_valid())
++
++func _negative_zero() -> float:
++	return PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128]).to_float64_array()[0]
++
++func _config() -> Dictionary:
++	var raw := Config.spatial_defaults()
++	raw.spatial_wind.turbulence.rms_mps = 0.1
++	return raw
++
++func _noise_sample(_time: float) -> Variant:
++	_noise_calls += 1
++	return _noise
++
++func _live_owners_and_callbacks() -> void:
++	var environment := SimEnvironment.new()
++	environment.weather = Weather.build(_config()).field
++	environment.turbulence = _noise_sample
++	var query := environment.prepare_wind_world_query(1.5)
++	_check("valid empty session noise permits preparation", query.get_method() != "wind_world")
++	var point := PackedFloat64Array([1.0, 2.0, -10.0])
++	for noise: Variant in [PackedFloat64Array(), PackedFloat64Array([0.25, -0.5, 0.0]),
++		PackedFloat64Array([NAN, 0.0, 0.0]), PackedFloat64Array([1.0]), null, [0.0, 0.0, 0.0]]:
++		_noise = noise
++		_noise_calls = 0
++		_check("noise refusal and bytes", _same(query.call(point, 1.5), environment.wind_world(point, 1.5)))
++		_check("one noise callback per valid weather sample", _noise_calls == 2)
++	_noise_calls = 0
++	query.call(PackedFloat64Array([10001.0, 0.0, -1.0]), 1.5)
++	_check("weather refusal precedes noise", _noise_calls == 0)
++	_noise = PackedFloat64Array()
++	environment.turbulence = Callable()
++	_check("callback removal remains live", _same(query.call(point, 1.5), environment.wind_world(point, 1.5)))
++	var changed := _config()
++	changed.spatial_wind.identity.seed_u32 += 10
++	environment.weather._apply_config(Config.validate(changed).config)
++	_check("same weather owner reconfigured", _same(query.call(point, 1.5), environment.wind_world(point, 1.5)))
++	environment.weather = Weather.build(Config.defaults()).field
++	_check("weather replacement", _same(query.call(point, 1.5), environment.wind_world(point, 1.5)))
++	environment.turbulence = func(_time: float) -> PackedFloat64Array:
++		environment.weather = Weather.build(changed).field
++		return PackedFloat64Array()
++	query.call(point, 1.5)
++	environment.turbulence = Callable()
++	_check("callback rebind observed on next query", _same(query.call(point, 1.5), environment.wind_world(point, 1.5)))
++
++func _virtual_providers() -> void:
++	var point := PackedFloat64Array([1.0, 2.0, -10.0])
++	var derived := DerivedEnvironment.new()
++	var query := derived.prepare_wind_world_query(2.0)
++	_check("environment override preserved", _same(query.call(point, 2.0), PackedFloat64Array([9.0, 8.0, 7.0])) and derived.calls == 1)
++	var environment := SimEnvironment.new()
++	var weather := DerivedWeather.new()
++	environment.weather = weather
++	query = environment.prepare_wind_world_query(2.0)
++	_check("weather override preserved", _same(query.call(point, 2.0), PackedFloat64Array([6.0, 5.0, 4.0])) and weather.calls == 1)
++	environment.weather = Weather.build(_config()).field
++	environment.weather._spatial = DerivedSpatial.new()
++	query = environment.prepare_wind_world_query(2.0)
++	_check("spatial override preserved", _same(query.call(point, 2.0), PackedFloat64Array([3.0, 2.0, 1.0])))
++
++func _real_session() -> void:
++	var session := Flight.new()
++	session.input_enabled = false
++	session.physics_enabled = false
++	session.setup(Catalog.data_for("jensen-das-ugly-stik-60"))
++	root.add_child(session)
++	_check("stock aircraft loads", session.is_flyable())
++	_check("session weather installs", session.setup_weather(_config()))
++	session.reset()
++	var air: Dictionary = session.air_data(session.sim.state, 1.5)
++	_check("production stage with valid session callback uses temporal query", session.environment.turbulence.is_valid()
++		and air.has("spatial_sampler") and air.spatial_sampler.wind_query.get_method() != "wind_world")
++	var first: PackedFloat64Array = air.ambient_delta_body_at.call(PackedFloat64Array([0.3, 0.2, -0.1]))
++	var other: Dictionary = session.air_data(session.sim.state, 2.0)
++	other.ambient_delta_body_at.call(PackedFloat64Array([0.0, 0.0, 0.0]))
++	_check("retained stage sampler survives interleaving", _same(first, air.ambient_delta_body_at.call(PackedFloat64Array([0.3, 0.2, -0.1]))))
++	var replacement := DerivedEnvironment.new()
++	air.spatial_sampler.environment = replacement
++	air.ambient_delta_body_at.call(PackedFloat64Array([0.3, 0.2, -0.1]))
++	_check("retained sampler environment rebind remains live", replacement.calls == 1)
++	session.free()

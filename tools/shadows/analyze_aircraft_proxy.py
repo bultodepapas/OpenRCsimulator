@@ -45,6 +45,15 @@ def summarize(directory: Path) -> dict:
     report = json.loads(report_path.read_text(encoding="utf-8"))
     if report.get("format") != "openrc-aircraft-shadow-proxy-trial v1" or not report.get("complete"):
         raise ValueError("A complete aircraft proxy trial is required")
+    deferred = report.get("deferred", [])
+    for case in deferred:
+        for capture in case["captures"]:
+            for key in ("mask", "receiver"):
+                path = directory / capture[key]
+                if hashlib.sha256(path.read_bytes()).hexdigest() != capture[key + "_sha256"]:
+                    raise ValueError(f"Changed deferred capture: {path}")
+        if not case["exact_mask_and_receiver"]:
+            raise ValueError(f"Deferred activation did not preserve the image: {case['mode']}")
     cases = []
     for case in report["cases"]:
         full = next(variant for variant in case["variants"] if variant["role"] == "full")
@@ -90,7 +99,7 @@ def summarize(directory: Path) -> dict:
         "format": "openrc-aircraft-shadow-proxy-summary v1",
         "report_sha256": hashlib.sha256(report_path.read_bytes()).hexdigest(),
         "identity": {key: report[key] for key in ("engine", "adapter", "renderer", "driver", "window_size", "reconstruction", "asset_sha256", "livery", "model_manifest_sha256", "source_sha256", "max_lod_distance")},
-        "bindings": report["bindings"], "cases": cases, "profiles": profiles,
+        "bindings": report["bindings"], "deferred": deferred, "cases": cases, "profiles": profiles,
         "collection_median_ms": {role: statistics.median(case[role + "_collect_ms"] for case in cases) for role in ("full", "proxy")},
         "limits": report["limits"] + " Cache controls are sampled context, not a global simplification-error bound. Percentiles use linear interpolation; GPU samples may repeat or lag.",
     }

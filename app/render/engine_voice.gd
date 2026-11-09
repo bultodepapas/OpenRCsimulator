@@ -65,12 +65,25 @@ func render(rpm: float, max_rpm: float, frames: int) -> PackedVector2Array:
 	var alpha := 1.0 - exp(-1.0 / (SMOOTH_SECONDS * RATE))
 	var out := PackedVector2Array()
 	out.resize(maxi(frames, 0))
-	for i in out.size():
-		frequency += alpha * (target - frequency)
-		amplitude += alpha * (gain - amplitude)
-		var value := amplitude * sample(table, phase)
-		out[i] = Vector2(value, value)
-		phase = fposmod(phase + frequency / RATE, 1.0)
+	if is_finite(phase) and phase >= 0.0 and phase < 1.0 \
+			and is_finite(frequency) and frequency >= 0.0 and table.size() >= TABLE_SIZE + 1:
+		# The normalized, nonnegative oscillator stays in range throughout this block.
+		# Keep this expression identical to sample() so both paths round the same way.
+		for i in out.size():
+			frequency += alpha * (target - frequency)
+			amplitude += alpha * (gain - amplitude)
+			var index := phase * TABLE_SIZE
+			var lo := int(index)
+			var value := amplitude * (table[lo] + (table[lo + 1] - table[lo]) * (index - lo))
+			out[i] = Vector2(value, value)
+			phase = fposmod(phase + frequency / RATE, 1.0)
+	else:
+		for i in out.size():
+			frequency += alpha * (target - frequency)
+			amplitude += alpha * (gain - amplitude)
+			var value := amplitude * sample(table, phase)
+			out[i] = Vector2(value, value)
+			phase = fposmod(phase + frequency / RATE, 1.0)
 	return out
 
 

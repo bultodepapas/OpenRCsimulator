@@ -8,6 +8,8 @@ uniform float detail_strength : hint_range(0.0, 1.0) = 1.0;
 uniform bool use_photo_aggregate = false;
 uniform sampler2D aggregate_albedo : source_color, repeat_enable, filter_linear_mipmap;
 uniform bool use_photo_worn = false;
+uniform bool field_turf_enabled = false;
+uniform bool club_field_detail = false;
 uniform sampler2D worn_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 // L9b-R2: measured RGB means of the retained sparse_grass_Diffuse_2k.jpg.
 // Use photographic variation around the authored turf palette, as on the field.
@@ -17,10 +19,14 @@ varying vec3 ground_color;
 varying vec2 ground_position;
 varying float aggregate_mask;
 varying float worn_mask;
+varying float worn_shoulder;
 
 // Reuse the project's integer cloud hash: stable across large/negative world coordinates.
 #include "res://render/cloud_field.gdshaderinc"
 #include "res://scenery/vertex_color_linear.gdshaderinc"
+#include "res://render/grass_surface.gdshaderinc"
+#include "res://render/turf_detail.gdshaderinc"
+#include "res://render/rc_ground_detail.gdshaderinc"
 
 float lattice(vec2 p) {
 	return cloud_field_hash2(ivec2(p), 8137u);
@@ -39,12 +45,37 @@ void vertex() {
 	ground_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
 	aggregate_mask = smoothstep(0.44, 0.50, COLOR.a) * clamp((1.0 - COLOR.a) * 2.0, 0.0, 1.0);
 	worn_mask = clamp((0.45 - COLOR.a) * 2.2, 0.0, 1.0);
+	worn_shoulder = clamp((COLOR.a - 0.18) / 0.25, 0.0, 1.0);
 }
 
 void fragment() {
 	vec2 p = ground_position;
 	// Fade before a stone is subpixel. Automatic fragment derivatives work in GLES3.
 	float footprint = max(length(dFdx(p)), length(dFdy(p)));
+	// Uniform branch: the shared turf functions compute derivatives internally.
+	// Evaluate before any per-fragment worn-mask branch; keep explicit map gradients.
+	vec2 turf_dx = dFdx(p);
+	vec2 turf_dy = dFdy(p);
+	vec3 field_color = vec3(0.0);
+	if (field_turf_enabled) {
+		field_color = club_turf(rough_grass_colour(p), p, club_field_detail);
+		float camera_distance = length(VERTEX);
+		float photo_weight = grass_photo_enabled ? rc_near_weight(turf_dx, turf_dy, camera_distance) : 0.0;
+		float turf_weight_value = turf_weight(turf_dx, turf_dy, camera_distance) * (1.0 - photo_weight);
+		if (turf_weight_value > 0.0) {
+			field_color *= 1.0 + (turf_sample(p, turf_dx, turf_dy).b - 0.5) * 0.9 * turf_weight_value;
+		}
+		if (photo_weight > 0.0) {
+			vec2 a;
+			vec2 b;
+			float blend;
+			rc_uvs(p, 1.4, a, b, blend);
+			vec3 photo = mix(textureGrad(rc_grass_albedo, a, turf_dx / 1.4, turf_dy / 1.4).rgb,
+				textureGrad(rc_grass_albedo, b, turf_dx / 1.4, turf_dy / 1.4).rgb, blend);
+			vec3 source_mean = OUTPUT_IS_SRGB ? RC_GRASS_MEAN_SRGB : RC_GRASS_MEAN_LINEAR;
+			field_color *= mix(vec3(1.0), clamp(photo / source_mean, vec3(0.25), vec3(2.4)), photo_weight * 0.7);
+		}
+	}
 	float fine_filter = 1.0 - smoothstep(0.012, 0.05, footprint);
 	float broad_filter = 1.0 - smoothstep(0.06, 0.22, footprint);
 	float amount = aggregate_mask * detail_strength;
@@ -65,6 +96,9 @@ void fragment() {
 		vec3 value_weights = vec3(0.2126, 0.7152, 0.0722);
 		float worn_variation = clamp(dot(sparse, value_weights) / dot(source_mean, value_weights), 0.45, 1.8);
 		base *= mix(1.0, worn_variation, worn_mask * 0.65 * broad_filter);
+	}
+	if (field_turf_enabled && worn_mask > 0.01) {
+		base = mix(base, field_color, smoothstep(0.0, 1.0, worn_shoulder));
 	}
 	ALBEDO = base;
 	ROUGHNESS = 0.88;

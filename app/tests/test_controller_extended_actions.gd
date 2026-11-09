@@ -23,6 +23,7 @@ func _initialize() -> void:
 	_test_radio_aux_pause_compatibility()
 	_test_aircraft_defaults()
 	_test_restart_and_flap_defaults()
+	_test_automatic_occupancy()
 	if failures == 0:
 		print("PASS extended controller actions: %d checks" % checks)
 	else:
@@ -301,6 +302,94 @@ func _test_restart_and_flap_defaults() -> void:
 	_check("radio can bind restart to an unused channel", Actions.validate_profile_bindings(profile).ok)
 	profile.actions.restart_flight.axis = 2
 	_check("restart cannot reuse a primary flight channel", not Actions.validate_profile_bindings(profile).ok)
+
+
+## Preserve the original per-candidate scan as an oracle for the occupancy index.
+func _reference_automatic_bindings(profile: Dictionary, capabilities: Dictionary) -> Dictionary:
+	if profile.get("kind", "") != "gamepad":
+		return Actions.effective_bindings(profile, capabilities)
+	var base_profile := profile.duplicate(true)
+	base_profile.kind = "no_automatic_buttons"
+	var bindings := Actions.effective_bindings(base_profile, capabilities)
+	var definitions := Actions._definition_map()
+	var explicit_ids := {}
+	var explicit: Variant = profile.get("actions", {})
+	if explicit is Dictionary:
+		for action_key in explicit:
+			explicit_ids[str(action_key)] = true
+	var aux_bindings := Actions._configured_aux_bindings(profile)
+	for action_id: String in Actions.AUTOMATIC_BUTTONS:
+		var entry: Dictionary = Actions.AUTOMATIC_BUTTONS[action_id]
+		if explicit_ids.has(action_id) or (not str(entry.channel).is_empty() and not bool(capabilities.get(entry.channel, false))):
+			continue
+		var candidate := {"type": "button", "button": int(entry.button)}
+		var reserved := false
+		for aux_entry in aux_bindings:
+			if aux_entry.name == entry.channel or Actions._same_aux_control(candidate, aux_entry.binding):
+				reserved = true
+		for other_id: Variant in bindings:
+			if not definitions.has(str(other_id)) or not Actions._valid_binding(bindings[other_id]) or Actions._is_unbound(bindings[other_id]):
+				continue
+			if Actions._contexts_overlap("flight", str(definitions[other_id].context)) and Actions._same_binding(candidate, bindings[other_id]):
+				reserved = true
+		if not reserved:
+			bindings[action_id] = candidate
+	return bindings
+
+
+func _test_automatic_occupancy() -> void:
+	var capabilities: Array[Dictionary] = []
+	for mask in 32:
+		capabilities.append({gear = bool(mask & 1), smoke = bool(mask & 2), flaps = bool(mask & 4),
+			rates = bool(mask & 8), helicopter = bool(mask & 16)})
+	var action_sets := [
+		{},
+		{camera_cycle = {type = "button", button = JOY_BUTTON_B}, pause = {type = "button", button = JOY_BUTTON_RIGHT_SHOULDER}},
+		{gear_toggle = {type = "unbound"}, smoke_toggle = {type = "unbound"}, flaps_cycle = {type = "unbound"},
+			restart_flight = {type = "unbound"}, rates_toggle = {type = "unbound"},
+			helicopter_arm = {type = "unbound"}, helicopter_hold = {type = "unbound"},
+			helicopter_mode = {type = "unbound"}, helicopter_trainer = {type = "unbound"}},
+		{camera_cycle = {type = "button", button = float(JOY_BUTTON_B)}, mystery = {type = "button", button = JOY_BUTTON_A}},
+		{accept = {type = "button", button = JOY_BUTTON_B}, calibrate = {type = "button", button = JOY_BUTTON_LEFT_STICK}},
+		{gear_toggle = {type = "unbound"}, flaps_cycle = {type = "button", button = JOY_BUTTON_BACK}},
+		{StringName("camera_cycle"): {StringName("type"): "button", StringName("button"): JOY_BUTTON_A}},
+	]
+	var aux_sets := [
+		{},
+		{gear = {type = "axis", axis = 9, off = -1.0, on = 1.0, invert = false}},
+		{flaps = {type = "button", button = JOY_BUTTON_RIGHT_SHOULDER, mode = "toggle_edge"}},
+		{smoke = {type = "switch", buttons = [JOY_BUTTON_B, JOY_BUTTON_A, JOY_BUTTON_LEFT_STICK], invert = false}},
+		{smoke = {type = "button", button = JOY_BUTTON_A, mode = "invalid"}},
+		{unknown = {type = "button", button = JOY_BUTTON_B, mode = "level"}},
+	]
+	for caps in capabilities:
+		for actions in action_sets:
+			for aux in aux_sets:
+				var profile := _profile()
+				profile.kind = "gamepad"
+				profile.actions = actions.duplicate(true)
+				profile.aux = aux.duplicate(true)
+				var original := profile.duplicate(true)
+				var expected := _reference_automatic_bindings(profile, caps)
+				var actual := Actions.effective_bindings(profile, caps)
+				_check("automatic resolver matches original scan and preserves profile", actual == expected and profile == original,
+					"caps=%s actions=%s aux=%s" % [str(caps), str(actions), str(aux)])
+
+	var profile := _profile()
+	profile.kind = "gamepad"
+	var all_caps: Dictionary = capabilities.back()
+	var first := Actions.effective_bindings(profile, all_caps)
+	_check("declaration order gives shared buttons to airplane defaults",
+		first.gear_toggle.button == JOY_BUTTON_B and first.flaps_cycle.button == JOY_BUTTON_A
+		and first.helicopter_hold.type == "unbound" and first.helicopter_arm.type == "unbound")
+	profile.actions = {gear_toggle = {type = "unbound"}, flaps_cycle = {type = "unbound"}}
+	var second := Actions.effective_bindings(profile, all_caps)
+	_check("a later resolution can assign buttons released by saved Clears",
+		second.gear_toggle.type == "unbound" and second.flaps_cycle.type == "unbound"
+		and second.helicopter_hold.button == JOY_BUTTON_B and second.helicopter_arm.button == JOY_BUTTON_A)
+	second.gear_toggle.type = "changed"
+	_check("returned bindings remain detached from saved overrides and other results",
+		profile.actions.gear_toggle.type == "unbound" and first.gear_toggle.type == "button")
 
 
 func _profile() -> Dictionary:

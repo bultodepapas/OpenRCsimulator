@@ -296,6 +296,72 @@ func _runtime_voice_checks() -> void:
 		"changed phase=%s isolated phase=%s" % [str(changed.phase), str(isolated.phase)])
 
 
+## Original per-sample helper path, retained as an exact PCM and state oracle.
+func _reference_render(voice: Variant, rpm: float, max_rpm: float, frames: int) -> PackedVector2Array:
+	Voice.prepare()
+	var target := maxf(rpm, 0.0) / 60.0 if is_finite(rpm) else 0.0
+	var gain: float = Voice.level(rpm, max_rpm)
+	var table: PackedFloat32Array = Voice._tables[Voice.band(maxf(voice.frequency, target), Voice.RATE)]
+	var alpha := 1.0 - exp(-1.0 / (Voice.SMOOTH_SECONDS * Voice.RATE))
+	var out := PackedVector2Array()
+	out.resize(maxi(frames, 0))
+	for i in out.size():
+		voice.frequency += alpha * (target - voice.frequency)
+		voice.amplitude += alpha * (gain - voice.amplitude)
+		var value: float = voice.amplitude * Voice.sample(table, voice.phase)
+		out[i] = Vector2(value, value)
+		voice.phase = fposmod(voice.phase + voice.frequency / Voice.RATE, 1.0)
+	return out
+
+
+func _check_render_reference(label: String, start: Dictionary, blocks: Array) -> void:
+	var actual := Voice.new()
+	var expected := Voice.new()
+	for voice in [actual, expected]:
+		voice.phase = start.phase
+		voice.frequency = start.frequency
+		voice.amplitude = start.amplitude
+	var exact := true
+	for block in blocks:
+		var expected_pcm := _reference_render(expected, block.rpm, block.max_rpm, block.frames)
+		var actual_pcm: PackedVector2Array = actual.render(block.rpm, block.max_rpm, block.frames)
+		var expected_state := PackedFloat64Array([expected.phase, expected.frequency, expected.amplitude])
+		var actual_state := PackedFloat64Array([actual.phase, actual.frequency, actual.amplitude])
+		if actual_pcm.to_byte_array() != expected_pcm.to_byte_array() or actual_state.to_byte_array() != expected_state.to_byte_array():
+			exact = false
+	_check("runtime PCM and state match helper path: " + label, exact)
+
+
+func _runtime_exactness_checks() -> void:
+	var normal_blocks := [
+		{rpm = 0.0, max_rpm = MAX_STIK_RPM, frames = -1},
+		{rpm = 2800.0, max_rpm = MAX_STIK_RPM, frames = 1},
+		{rpm = 9000.0, max_rpm = MAX_STIK_RPM, frames = 31},
+		{rpm = 11025.0 * 60.0, max_rpm = 11025.0 * 60.0, frames = 257},
+		{rpm = 1800.0, max_rpm = MAX_STIK_RPM, frames = 1024},
+		{rpm = NAN, max_rpm = MAX_STIK_RPM, frames = 333},
+		{rpm = 5000.0, max_rpm = 0.0, frames = 64},
+	]
+	_check_render_reference("zero start and target changes", {phase = 0.0, frequency = 0.0, amplitude = 0.0}, normal_blocks)
+	_check_render_reference("phase just below wrap", {phase = 1.0 - 1.0 / 1048576.0, frequency = 1837.5, amplitude = 0.42}, normal_blocks)
+	_check_render_reference("table boundary and high band", {phase = 1.0 / Voice.TABLE_SIZE, frequency = 11025.0, amplitude = 0.73}, normal_blocks)
+	_check_render_reference("negative starting phase uses helper", {phase = -0.125, frequency = 0.0, amplitude = 0.5},
+		[{rpm = 0.0, max_rpm = MAX_STIK_RPM, frames = 1}])
+	_check_render_reference("negative starting frequency uses helper", {phase = 0.5, frequency = -10.0, amplitude = 0.5},
+		[{rpm = 0.0, max_rpm = MAX_STIK_RPM, frames = 32}])
+	for invalid_frequency in [NAN, INF]:
+		# One frame samples a valid phase before the invalid frequency propagates to it.
+		_check_render_reference("non-finite starting frequency uses helper", {phase = 0.25, frequency = invalid_frequency, amplitude = 0.5},
+			[{rpm = 0.0, max_rpm = MAX_STIK_RPM, frames = 1}])
+
+	Voice.prepare()
+	var full_table: PackedFloat32Array = Voice._tables[6]
+	Voice._tables[6] = PackedFloat32Array([0.5, -0.5])
+	_check_render_reference("short table uses helper", {phase = 0.0, frequency = 0.0, amplitude = 0.5},
+		[{rpm = 0.0, max_rpm = MAX_STIK_RPM, frames = 4}])
+	Voice._tables[6] = full_table
+
+
 func _vector_x(values: PackedVector2Array) -> PackedFloat32Array:
 	var output := PackedFloat32Array()
 	output.resize(values.size())
@@ -307,5 +373,6 @@ func _vector_x(values: PackedVector2Array) -> PackedFloat32Array:
 func _initialize() -> void:
 	_pure_oracle_checks()
 	_runtime_voice_checks()
+	_runtime_exactness_checks()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

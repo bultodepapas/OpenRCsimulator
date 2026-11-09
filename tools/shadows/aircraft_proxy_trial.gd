@@ -7,6 +7,7 @@ const Proxy := preload("res://render/aircraft_shadow_proxy.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Retraction := preload("res://aircraft/retractable_model.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
+const ShadowSettings := preload("res://render/shadow_settings.gd")
 
 var out := ""
 var max_distance := Proxy.MAX_LOD_DISTANCE
@@ -70,6 +71,7 @@ func _run() -> void:
 		return
 	world.add_child(aircraft.root)
 	var bindings := await _check_bindings()
+	var deferred := await _check_deferred()
 	var sun := Vector3(0.3, 0.91, 0.28).normalized()
 	var low := Vector3(0.94, 0.08, 0.33).normalized()
 	var horizon := Vector3(0.94, 0.015, 0.33).normalized()
@@ -164,7 +166,7 @@ func _run() -> void:
 		renderer = RenderingServer.get_current_rendering_method(), driver = RenderingServer.get_current_rendering_driver_name(),
 		window_size = [root.size.x, root.size.y], reconstruction = Reconstruction.describe(root),
 		asset_sha256 = aircraft.root.get_meta("asset_sha256", ""), livery = aircraft.root.get_meta("livery", ""),
-		max_lod_distance = max_distance, bindings = bindings, cases = rows, profiles = profiles,
+		max_lod_distance = max_distance, bindings = bindings, deferred = deferred, cases = rows, profiles = profiles,
 		model_manifest_sha256 = aircraft.get("model_manifest_sha256", ""),
 		source_sha256 = {"proxy": FileAccess.get_sha256("res://render/aircraft_shadow_proxy.gd"),
 			"shadow": FileAccess.get_sha256("res://render/shadow.gd"),
@@ -181,7 +183,7 @@ func _run() -> void:
 		mesh.mesh = null
 	aircraft.root.queue_free()
 	await _draws(2)
-	print("AIRCRAFT PROXY TRIAL: ", rows.size(), " cases; ", profiles.size(), " profile batches; ", failures.size(), " errors")
+	print("AIRCRAFT PROXY TRIAL: ", rows.size(), " cases; ", deferred.size(), " deferred cases; ", profiles.size(), " profile batches; ", failures.size(), " errors")
 	quit(1 if not failures.is_empty() else 0)
 
 
@@ -216,6 +218,89 @@ func _check_bindings() -> Array:
 		carrier.queue_free()
 		await _draws(2)
 	OS.set_environment("OPENRC_AIRCRAFT_SHADOW_PROXY", saved_override)
+	return results
+
+
+## Compare the disabled route with the existing eager allocation path using one
+## precomputed immutable shape. This isolates setup; geometry collection is unchanged.
+func _check_deferred() -> Array:
+	var saved: Dictionary = ShadowSettings.describe().requested.duplicate(true)
+	var results := []
+	var shape := Projected.collect(aircraft.root)
+	var direction := Vector3(0.4, 0.8, -0.3).normalized()
+	aircraft.root.position = Vector3(0, 1, 0)
+	for mode: String in ["off", "native", "cue-off", "local-off"]:
+		ShadowSettings.apply({shadow_technique = "auto", shadow_aircraft_cue = "sun"})
+		await _draws(2)
+		var memory_before := RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TEXTURE_MEM_USED)
+		var start := Time.get_ticks_usec()
+		var eager := Shadow.create(world)
+		Shadow.bind_model(eager, aircraft.root, shape)
+		var eager_usec := Time.get_ticks_usec() - start
+		var expected: Node = eager.get_node("ProjectedShadow")
+		expected.receiver.layers = 2
+		await _draws(2)
+		var memory_after_eager := RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TEXTURE_MEM_USED)
+		ShadowSettings.apply({shadow_technique = "auto" if mode in ["cue-off", "local-off"] else mode,
+			shadow_aircraft_cue = "off" if mode == "cue-off" else "sun"})
+		start = Time.get_ticks_usec()
+		var initial_cue := "off" if mode == "local-off" else "auto"
+		var deferred := Shadow.create(world, initial_cue)
+		Shadow.bind_model(deferred, aircraft.root, shape, {}, initial_cue)
+		var deferred_usec := Time.get_ticks_usec() - start
+		var pending_geometry: Dictionary = deferred.get_meta("projected_shadow_geometry", {}).duplicate(true)
+		var no_projector := deferred.get_node_or_null("ProjectedShadow") == null
+		var no_texture := (deferred.material_override as StandardMaterial3D).albedo_texture == null
+		if not no_projector or not no_texture or pending_geometry.get("representation") != "deferred":
+			failures.append(mode + ": disabled bind allocated projected nodes or fallback texture")
+		Shadow.update(deferred, Basis.IDENTITY, Vector3(0, 1, 0), 2.0, 2.0, direction, 1.0, initial_cue)
+		await _draws(2)
+		var memory_after_deferred := RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TEXTURE_MEM_USED)
+		start = Time.get_ticks_usec()
+		ShadowSettings.apply({shadow_technique = "projected", shadow_aircraft_cue = "sun"})
+		Shadow.update(deferred, Basis.IDENTITY, Vector3(0, 1, 0), 2.0, 2.0, direction, 1.0, "sun")
+		var activation_usec := Time.get_ticks_usec() - start
+		var actual: Node = deferred.get_node_or_null("ProjectedShadow")
+		if actual == null:
+			failures.append(mode + ": enabling did not create the projector")
+			eager.queue_free()
+			deferred.queue_free()
+			await _draws(2)
+			continue
+		actual.receiver.layers = 2
+		Shadow.update(eager, Basis.IDENTITY, Vector3(0, 1, 0), 2.0, 2.0, direction)
+		var center: Vector3 = expected.receiver.position
+		var side: float = expected.receiver.basis.x.length()
+		camera.size = side * 1.1
+		camera.look_at_from_position(center + Vector3(0, side + 10, side * 0.2), center, Vector3.FORWARD)
+		var captures := []
+		for index in 2:
+			var projector: Node = expected if index == 0 else actual
+			var other: Node = actual if index == 0 else expected
+			other.receiver.visible = false
+			projector.receiver.visible = true
+			await _draws(4)
+			var stem := "deferred-" + mode + ("-eager" if index == 0 else "-enabled")
+			var mask: Image = projector.viewport.get_texture().get_image()
+			var receiver: Image = root.get_texture().get_image()
+			mask.save_png(out.path_join(stem + "-mask.png"))
+			receiver.save_png(out.path_join(stem + "-receiver.png"))
+			captures.append({mask = stem + "-mask.png", receiver = stem + "-receiver.png",
+				mask_sha256 = FileAccess.get_sha256(out.path_join(stem + "-mask.png")),
+				receiver_sha256 = FileAccess.get_sha256(out.path_join(stem + "-receiver.png"))})
+		var exact: bool = captures[0].mask_sha256 == captures[1].mask_sha256 \
+			and captures[0].receiver_sha256 == captures[1].receiver_sha256
+		if not exact: failures.append(mode + ": deferred enable differs from the eager mask/receiver")
+		results.append({mode = mode, disabled_projector_absent = no_projector, disabled_fallback_texture_absent = no_texture,
+			pending_geometry = pending_geometry, enabled_geometry = deferred.get_meta("projected_shadow_geometry", {}),
+			eager_setup_usec = eager_usec, disabled_setup_usec = deferred_usec, first_enable_usec = activation_usec,
+			eager_texture_bytes_delta = memory_after_eager - memory_before,
+			disabled_texture_bytes_delta = memory_after_deferred - memory_after_eager,
+			exact_mask_and_receiver = exact, captures = captures})
+		eager.queue_free()
+		deferred.queue_free()
+		await _draws(3)
+	ShadowSettings.apply(saved)
 	return results
 
 

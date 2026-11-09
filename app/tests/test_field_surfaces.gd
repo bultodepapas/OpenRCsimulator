@@ -38,6 +38,12 @@ func _test_default_surface_is_consolidated() -> void:
 	if rough != null:
 		var material: ShaderMaterial = rough.material_override as ShaderMaterial
 		var ordinary: ShaderMaterial = Ground.grass_material()
+		var scenery: Node = field.get_node_or_null("Scenery")
+		var detail: ShaderMaterial = scenery.get_meta("ground_detail_material", null) as ShaderMaterial if scenery != null else null
+		_check("Club scenery shoulder shares the field's effective grass binding", detail != null
+			and detail.get_shader_parameter("field_turf_enabled") == true
+			and detail.get_shader_parameter("grass") == material.get_shader_parameter("grass")
+			and detail.get_shader_parameter("tile_m") == material.get_shader_parameter("tile_m"))
 		_check("Club turf scale is finer than the shared base material", material != null
 			and float(material.get_shader_parameter("tile_m")) > 0.0
 			and float(material.get_shader_parameter("tile_m")) < float(ordinary.get_shader_parameter("tile_m")))

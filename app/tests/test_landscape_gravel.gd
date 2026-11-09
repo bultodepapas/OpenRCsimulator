@@ -5,6 +5,8 @@ const Scenery := preload("res://scenery/scenery.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Loader := preload("res://scenery/scenery_loader.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const Ground := preload("res://render/ground.gd")
+const WornGroundMaterial := preload("res://render/worn_ground_material.gd")
 var failures := 0
 var checks := 0
 
@@ -55,6 +57,24 @@ func _initialize() -> void:
 	_check("detail uses existing flat single-surface batches", batches > 0 and surfaces_valid)
 	_check("photographic path detail has real imported mipmaps", worn_texture != null
 		and worn_texture.get_image().has_mipmaps())
+	var detail: ShaderMaterial = node.get_meta(WornGroundMaterial.MATERIAL_META) as ShaderMaterial
+	_check("standalone scenery keeps field-turf blending disabled", detail != null
+		and detail.get_shader_parameter("field_turf_enabled") != true)
+	var ground: ShaderMaterial = Ground.grass_material()
+	ground.set_shader_parameter("tile_m", 2.375)
+	ground.set_shader_parameter("macro_amp", 0.17)
+	ground.set_shader_parameter("pilot_xz", Vector2(19, -7))
+	_check("field turf binds to the existing scenery material", WornGroundMaterial.bind(node, ground))
+	_check("shoulder shares the scene-owned grass and turf resources",
+		detail.get_shader_parameter("grass") == ground.get_shader_parameter("grass")
+		and detail.get_shader_parameter("turf_detail") == ground.get_shader_parameter("turf_detail"))
+	_check("shoulder receives nondefault scale, macro and pilot values",
+		detail.get_shader_parameter("tile_m") == 2.375 and detail.get_shader_parameter("macro_amp") == 0.17
+		and detail.get_shader_parameter("pilot_xz") == Vector2(19, -7))
+	_check("unset source parameters resolve to effective shader defaults",
+		detail.get_shader_parameter("anti_tiling") == 1.0 and detail.get_shader_parameter("pilot_pin_m") == 35.0)
+	_check("missing ground disables a previously bound shoulder", not WornGroundMaterial.bind(node, null)
+		and detail.get_shader_parameter("field_turf_enabled") == false)
 	print("gravel flat batches: %d; cells: %d" % [batches, node.get_meta("stats").cells])
 	node.free()
 	print("landscape gravel: %d checks, %d failures" % [checks, failures])

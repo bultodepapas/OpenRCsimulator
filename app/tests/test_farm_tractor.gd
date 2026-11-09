@@ -37,12 +37,12 @@ func _asset() -> void:
 	var box := mesh.get_aabb()
 	check("uniformly fitted mesh remains in the existing gameplay envelope", box.size.x <= 2.351 and box.size.y <= 2.351 and box.size.z <= 3.601)
 	check("grounded and centred", absf(box.position.y) < 0.001 and absf(box.get_center().x) < 0.001 and absf(box.get_center().z) < 0.001)
-	var skin: Script = load("res://aircraft/procedural_skin.gd")
 	var serialized: Array = mesh.get("_surfaces")
 	var triangles := 0
 	var lod_count := 0
 	var textures := 0
 	var wheel_samples := 0
+	var expected_wheel_samples := 0
 	for surface in mesh.get_surface_count():
 		var arrays := mesh.surface_get_arrays(surface)
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
@@ -62,14 +62,14 @@ func _asset() -> void:
 			var image := texture.get_image()
 			check("portable mip-filtered 1K texture", image != null and not image.is_empty() and image.has_mipmaps() and image.get_width() <= 1024 and image.get_height() <= 1024)
 		var rendered_sets: Array[PackedInt32Array] = [indices]
-		var decoded: Dictionary = skin._lods(serialized[surface])
-		check("saved LOD buffers decode", decoded.ok)
-		for size: float in decoded.lods:
-			var lod_indices: PackedInt32Array = decoded.lods[size]
+		var decoded := _saved_lods(serialized[surface])
+		for size: float in decoded:
+			var lod_indices: PackedInt32Array = decoded[size]
 			check("LOD %d/%f reduces submitted geometry" % [surface, size], lod_indices.size() < indices.size() and lod_indices.size() >= 12 and size > 0)
 			rendered_sets.append(lod_indices)
 			lod_count += 1
 		if material.resource_name.contains("tire"):
+			expected_wheel_samples += rendered_sets.size() * 4
 			var minimum_z := INF
 			var maximum_z := -INF
 			for index: int in indices:
@@ -86,10 +86,12 @@ func _asset() -> void:
 					check("rendered wheel bottom stays grounded at every LOD: " + str(minima), is_finite(minimum) and absf(minimum) <= 0.01)
 					wheel_samples += 1
 	check("bounded source geometry", triangles > 0 and triangles <= Tractor.MAX_SOURCE_TRIANGLES)
-	check("multiple generated LODs and all four wheel regions checked", lod_count >= 2 and wheel_samples >= 8)
+	check("multiple generated body LODs", lod_count >= 2)
+	check("every retained tire index set covers all four grounded wheels", wheel_samples >= 4 and wheel_samples == expected_wheel_samples)
 	check("all four PBR texture bindings survive save/load", textures == 4)
 	var info: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/scenery/farm_tractor/tractor.json"))
 	check("metadata agrees with the derivative", int(info.triangles) == triangles and int(info.surfaces) == mesh.get_surface_count())
+	check("source credit and licence ship with the asset", str(info.author) == "Grab3D" and str(info.license) == "CC0-1.0" and FileAccess.get_file_as_string("res://assets/scenery/farm_tractor/LICENSE.txt").begins_with("CC0 1.0 Universal"))
 	if OS.get_cmdline_user_args().has("--asset-only"): return
 	var baker: Script = load("res://../tools/scenery/bake_farm_tractor.gd")
 	var original: String = baker.signature(mesh)
@@ -104,6 +106,22 @@ func _asset() -> void:
 		altered_material.set(setting, old_value)
 	altered_material.uv1_offset = Vector3(0.1, 0.2, 0.0)
 	check("UV transform mutation changes regeneration signature", str(baker.signature(altered)) != original)
+
+
+## Read the actual saved index sets, as procedural_skin.gd::_lods does; an
+## ImporterMesh.from_mesh round trip would silently omit these ArrayMesh LODs.
+func _saved_lods(surface: Dictionary) -> Dictionary:
+	var records: Array = surface.get("lods", [])
+	check("saved LOD records have size/buffer pairs", records.size() % 2 == 0)
+	var stride := 2 if int(surface.vertex_count) <= 65536 else 4
+	var result := {}
+	for i in range(0, records.size(), 2):
+		var bytes: PackedByteArray = records[i + 1]
+		check("saved LOD indices are complete", bytes.size() % (stride * 3) == 0)
+		var indices := PackedInt32Array()
+		for j in bytes.size() / stride: indices.append(bytes.decode_u16(j * stride) if stride == 2 else bytes.decode_u32(j * stride))
+		result[float(records[i])] = indices
+	return result
 
 
 func _inputs() -> Dictionary:
@@ -138,8 +156,16 @@ func _integration() -> void:
 		check("original transform and damage identity retained", node.transform == script._placement_xf(-27.0, 326.0, 250.0) and node.get_meta("damage_motion_id") == Tractor.DAMAGE_ID)
 		check("no callbacks, shadows or range-based disappearance", node.get_script() == null and node.process_mode == Node.PROCESS_MODE_DISABLED and node.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF and node.visibility_range_end == 0.0)
 		var pristine := node.mesh
-		script.apply_damage(built, {Tractor.DAMAGE_ID: {state = "marked"}})
+		var law: Script = load("res://sim/scenery_damage.gd")
+		var impact_state: String = law.impact_state("metal", 16.0)
+		check("retained metal policy produces a mark", impact_state == "marked")
+		script.apply_damage(built, {Tractor.DAMAGE_ID: {state = impact_state}})
 		check("normal metal impact keeps the tractor visible", node.visible)
+		var scars: Node3D = load("res://render/crash/scenery_damage.gd").new()
+		root.add_child(scars)
+		scars._spawn(Tractor.DAMAGE_ID, {state = impact_state, profile = "metal", point_ned = [-27.0, 326.0, -1.0], normal_ned = [1.0, 0.0, 0.0], velocity_ned = [0.0, 0.0, 0.0]}, 3.0)
+		check("normal impact retains the existing scar presentation", scars.get_child_count() == 1 and scars.get_child(0).get_child_count() > 0 and node.visible)
+		scars.free()
 		script.apply_damage(built, {Tractor.DAMAGE_ID: {state = "broken"}})
 		check("damage presentation targets the original id", not node.visible)
 		script.apply_damage(built, {})

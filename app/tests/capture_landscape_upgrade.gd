@@ -220,6 +220,8 @@ func _run() -> void:
 							ground_feature_materials.append(material)
 						if str(args.get("worn_photo", "on")) == "off":
 							material.set_shader_parameter("use_photo_worn", false)
+						if str(args.get("worn_shoulder", "on")) == "off":
+							material.set_shader_parameter("field_turf_enabled", false)
 						if str(args.get("gravel_detail", "on")) == "legacy":
 							item.mesh.surface_set_material(surface, SceneryMaterials.opaque_material())
 						elif str(args.get("gravel_detail", "on")) == "off":
@@ -247,6 +249,9 @@ func _run() -> void:
 			return
 		ground_overrides["tile_m"] = tile
 	var ground_materials := _ground_materials(built.field)
+	for material: ShaderMaterial in ground_feature_materials:
+		if _ground_parameter(material, "field_turf_enabled") == true:
+			ground_materials.append(material)
 	if ground_materials.is_empty():
 		printerr("Ground diagnostics found no production turf materials")
 		quit(1)
@@ -484,9 +489,11 @@ func _run() -> void:
 			marker_center_px = camera.unproject_position(marker_world)}
 		case_report["ground_materials"] = []
 		case_report["worn_photo_enabled"] = []
+		case_report["worn_shoulder_enabled"] = []
 		for material: ShaderMaterial in ground_feature_materials:
 			case_report.worn_photo_enabled.append(_ground_parameter(material, "use_photo_worn"))
-		for material: ShaderMaterial in _ground_materials(built.field):
+			case_report.worn_shoulder_enabled.append(_ground_parameter(material, "field_turf_enabled"))
+		for material: ShaderMaterial in ground_materials:
 			var record := {shader = material.shader.resource_path, parameters = {}}
 			for parameter: String in ["tile_m", "macro_amp", "dry_amount", "anti_tiling",
 					"grass_photo_enabled", "turf_detail_strength", "cloud_shadow_strength"]:
