@@ -34,7 +34,7 @@ func _run() -> void:
 	InputMap.load_from_project_settings()
 	UiInput.set_gamepad(UiDriver.FAKE_DEVICE)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(NO_WRITE_PATH))
-	root.size = Vector2i(1280, 720)
+	root.size = Vector2i(1920, 1080)
 	var dialog := CompanionsDialog.new()
 	dialog.applied.connect(_on_applied)
 	dialog.close_requested.connect(_on_close_requested)
@@ -116,13 +116,41 @@ func _run() -> void:
 		"airborne": 2,
 		"active": 3,
 		"requested": 3,
+		"faulted": 1,
 	})
 	_check("in-flight status explains restart and Remove now behavior",
-		dialog.status_label.visible and dialog.status_label.text.contains("2 airborne / 3 active / 3 requested")
+		dialog.status_label.visible and dialog.status_label.text.contains("2 flying · 3 in session · 3 after restart")
 		and dialog.status_label.text.contains("Flight settings apply after Restart flight")
 		and dialog.status_label.text.contains("Sound and labels apply immediately")
-		and dialog.status_label.text.contains("Remove now clears the current companions."),
+		and dialog.status_label.text.contains("Remove now clears the current companions.")
+		and dialog.status_label.text.contains("1 companions stopped"),
 		dialog.status_label.text)
+	dialog.refresh_status({"in_flight": true, "active": 3, "airborne": 3,
+		"requested": 3, "requested_count": 2, "pending_count": 2, "pending_restart": true})
+	_check("new pending count takes precedence over the legacy admitted count",
+		dialog.status_label.text.contains("3 flying · 2 after restart")
+		and dialog.status_label.text.contains("Flight settings change after restart."), dialog.status_label.text)
+	dialog.refresh_status({"in_flight": true, "active": 3, "airborne": 3,
+		"requested_count": 3, "pending_count": 3, "pending_restart": true})
+	_check("same-count flight changes still show a pending restart",
+		dialog.status_label.text.contains("3 flying · 3 after restart")
+		and dialog.status_label.text.contains("Flight settings change after restart."), dialog.status_label.text)
+	dialog.refresh_status({"in_flight": true, "active": 3, "airborne": 3,
+		"requested_count": 0, "pending_count": 0, "pending_restart": true})
+	_check("disabling companions leaves the live group distinct from the next launch",
+		dialog.status_label.text.contains("3 flying · 0 after restart"), dialog.status_label.text)
+	dialog.refresh_status({"in_flight": true, "active": 3, "airborne": 3,
+		"requested_count": 3, "pending_count": 3, "pending_restart": false})
+	_check("unchanged flight settings do not claim a pending restart",
+		dialog.status_label.text.contains("3 flying") and not dialog.status_label.text.contains("after restart"),
+		dialog.status_label.text)
+	TranslationServer.set_locale("es")
+	dialog.refresh_status({"in_flight": true, "active": 3, "airborne": 3,
+		"requested_count": 2, "pending_count": 2, "pending_restart": true})
+	_check("Spanish status translates flying, pending count, and restart notice",
+		dialog.status_label.text.contains("3 en vuelo · 2 tras reiniciar")
+		and dialog.status_label.text.contains("Los ajustes de vuelo cambian al reiniciar."), dialog.status_label.text)
+	TranslationServer.set_locale("en")
 	_check("Remove companions is shown only for an active in-flight group",
 		dialog.remove_button.visible and dialog.save_default_check.visible)
 	dialog.save_default_check.grab_focus()

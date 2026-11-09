@@ -146,8 +146,48 @@ func _field() -> bool:
 	if not loaded.ok:
 		_fail(str(loaded.errors))
 		return false
-	content = Field.build(loaded.field)
+	var grass_source := str(args.get("near_grass_source", "res://scenery/imported_near_grass.gd"))
+	var meadow_source := str(args.get("meadow_source", "res://scenery/runway_meadow.gd"))
+	if args.has("near_grass_source") or args.has("meadow_source"):
+		# Capture-only source substitution preserves the full production build order,
+		# including its current scenery, path, light, lake and course exclusions.
+		var field_source := FileAccess.get_file_as_string("res://render/field.gd")
+		for replacement: Array in [
+			["near_grass_source", "res://scenery/imported_near_grass.gd", grass_source],
+			["meadow_source", "res://scenery/runway_meadow.gd", meadow_source],
+		]:
+			if not args.has(replacement[0]): continue
+			var original := "preload(%s)" % JSON.stringify(replacement[1])
+			if not FileAccess.file_exists(replacement[2]) or field_source.count(original) != 1:
+				_fail("source snapshot requires a readable source and the production field preload")
+				return false
+			field_source = field_source.replace(original, "preload(%s)" % JSON.stringify(replacement[2]))
+		var captured_builder := GDScript.new()
+		captured_builder.source_code = field_source
+		if captured_builder.reload() != OK:
+			_fail("cannot compile the source-snapshot field builder")
+			return false
+		content = captured_builder.build(loaded.field)
+	else:
+		content = Field.build(loaded.field)
 	stage.add_child(content)
+	var foreground := content.get_node_or_null("NearGrass")
+	if foreground != null:
+		report["near_grass"] = {source = grass_source, source_sha256 = FileAccess.get_sha256(grass_source),
+			clumps = foreground.get_meta("clumps", 0), triangles = foreground.get_meta("source_triangles", 0),
+			placements = foreground.get_meta("cpu_placements", []),
+			quality = foreground.get_meta("quality", ""), wind_material = foreground.has_meta("grass_wind")}
+	var meadow := content.get_node_or_null("RunwayMeadow")
+	if meadow != null:
+		var accents: Array[String] = []
+		for batch: Node in meadow.get_children():
+			if batch is MultiMeshInstance3D and not str(batch.name).begins_with("grass_"):
+				for index in batch.multimesh.instance_count:
+					accents.append("%s:%d:%s" % [batch.name, index, batch.multimesh.get_instance_transform(index)])
+		report["meadow"] = {source = meadow_source, source_sha256 = FileAccess.get_sha256(meadow_source),
+			plants = meadow.get_meta("plants", 0), triangles = meadow.get_meta("source_triangles", 0),
+			batches = meadow.get_child_count(), groups = meadow.get_meta("groups", {}),
+			accent_transform_sha256 = "\n".join(accents).sha256_text()}
 	var plants := content.get_node_or_null("Scenery/ImportedVegetationBatches")
 	var tree_batches := 0
 	var tree_instances := 0
@@ -172,6 +212,18 @@ func _field() -> bool:
 			at = Frames.ned_to_render([568.0, 296.0, -5.0]), fov = 50.0})
 		views.append({id = "forest_maple", eye = Frames.ned_to_render([-455.0, -737.0, -4.0]),
 			at = Frames.ned_to_render([-480.0, -770.0, -5.0]), fov = 45.0})
+		var pilot: Dictionary = loaded.field.pilot
+		var pn := float(pilot.north)
+		var pe := float(pilot.east)
+		for pose: Array in [
+			["grass_pilot", [pn, pe, -1.7], [pn + 30.0, pe + 8.0, 0.0], 55.0],
+			["grass_low", [pn + 2.0, pe + 2.0, -0.55], [pn + 10.0, pe + 2.0, 0.0], 68.0],
+			["grass_margin", [pn + 4.0, pe + 2.0, -0.55], [pn + 5.5, pe + 12.0, 0.0], 62.0],
+			["grass_reverse", [pn + 14.0, pe + 12.0, -1.7], [pn - 5.0, pe + 1.0, 0.0], 55.0],
+			["grass_overhead", [pn + 5.0, pe, -25.0], [pn + 5.1, pe, 0.0], 65.0],
+			["grass_transition", [pn - 20.0, pe + 15.0, -0.65], [pn - 5.0, pe, 0.0], 55.0],
+		]:
+			views.append({id = pose[0], eye = Frames.ned_to_render(pose[1]), at = Frames.ned_to_render(pose[2]), fov = pose[3]})
 		var selected: Array[Dictionary] = []
 		for requested in str(args.views).split(",", false):
 			var found := false
@@ -271,7 +323,7 @@ func _motion() -> bool:
 	var route := str(args.motion)
 	var count := int(args.get("frames", "192"))
 	var wind_mps := float(args.get("wind_mps", "5"))
-	if route not in ["oak-approach", "card-orbit", "forest-pan", "car-park-wind"] or count < 24 or count > 480 \
+	if route not in ["oak-approach", "card-orbit", "forest-pan", "car-park-wind", "grass-margin-pan"] or count < 24 or count > 480 \
 			or not is_finite(wind_mps) or wind_mps < 0.0 or wind_mps > 20.0:
 		return false
 	var loaded: Dictionary = Loader.load_from(str(args.get("field", Loader.DEFAULT_PATH)))
@@ -310,6 +362,12 @@ func _motion() -> bool:
 				view.eye = Frames.ned_to_render(source.eye)
 				view.at = Frames.ned_to_render(source.at)
 				view.fov = float(source.fov)
+			"grass-margin-pan":
+				var pn := float(loaded.field.pilot.north)
+				var pe := float(loaded.field.pilot.east)
+				view.eye = Frames.ned_to_render([pn + 4.0, pe + 1.0 + 6.0 * phase, -0.6])
+				view.at = Frames.ned_to_render([pn + 5.5, pe + 11.0 + 6.0 * phase, -0.1])
+				view.fov = 62.0
 		if not await _capture(view, view.id, float(index) / 24.0, Vector3(wind_mps, 0.0, 0.0)):
 			return false
 	return true

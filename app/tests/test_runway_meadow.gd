@@ -22,6 +22,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 	var field: Dictionary = loaded.field
+	_test_grass_height_transition()
 	var high := Meadow.layout(field, "high")
 	var repeat := Meadow.layout(field, "high")
 	var balanced := Meadow.layout(field, "balanced")
@@ -39,6 +40,9 @@ func _initialize() -> void:
 	var colonies: Dictionary = {}
 	var clear := true
 	var sized := true
+	var close_grass := 0
+	var short_near_pilot := true
+	var accents_keep_height := true
 	for plant: Dictionary in high:
 		triangles += int(plant.source_triangles)
 		species[plant.asset_id] = int(species.get(plant.asset_id, 0)) + 1
@@ -46,9 +50,18 @@ func _initialize() -> void:
 		clear = clear and NearGrass.accepts(float(plant.north), float(plant.east), field)
 		var height := float(plant.height_m)
 		sized = sized and height > 0.03 and height < 0.7 and is_finite(float(plant.ground_up_m))
+		var source_range: Vector2 = Meadow.HEIGHT_RANGES[plant.asset_id]
+		if str(plant.asset_id).begins_with("grass_"):
+			if Vector2(float(plant.north) - float(field.pilot.north), float(plant.east) - float(field.pilot.east)).length() <= 6.0:
+				close_grass += 1
+				short_near_pilot = short_near_pilot and height <= source_range.y * 0.45 + 0.000001
+		else:
+			accents_keep_height = accents_keep_height and height >= source_range.x and height <= source_range.y
 	_check("budget holds", triangles <= Meadow.MAX_SOURCE_TRIANGLES, str(triangles))
 	_check("runway, rotor pad and pilot station stay clear", clear)
 	_check("heights stay within the short-rough envelope", sized)
+	_check("near-pilot grass uses shorter whole-plant heights", close_grass > 0 and short_near_pilot)
+	_check("flowers and clover retain their source height ranges", accents_keep_height)
 	_check("photographic cards dominate", int(species.get("grass_lolipop_small", 0)) \
 		+ int(species.get("grass_lolipop_tall", 0)) > high.size() * 0.8, str(species))
 	for asset_id: String in Meadow.SPECIES_CAPS.keys():
@@ -101,6 +114,31 @@ func _initialize() -> void:
 	print("runway meadow checks: %d checks, %d failures; high plants=%d triangles=%d" % [
 		checks, failures, high.size(), triangles])
 	quit(1 if failures > 0 else 0)
+
+
+func _test_grass_height_transition() -> void:
+	# Separate the pilot and runway to observe each maintained zone independently.
+	var area := {rn = 100.0, re = 0.0, half_n = 5.0, half_e = 5.0, pilot_n = 0.0, pilot_e = 0.0}
+	_check("pilot turf keeps grass at 45 percent of its rough height",
+		is_equal_approx(Meadow._grass_height_scale(area, 0.0, 0.0), 0.45))
+	_check("the mown lip keeps grass at 45 percent of its rough height",
+		is_equal_approx(Meadow._grass_height_scale(area, 100.0, 5.7), 0.45))
+	_check("outer meadow retains full source-recipe height",
+		is_equal_approx(Meadow._grass_height_scale(area, 50.0, 0.0), 1.0))
+	var bounded_and_continuous := true
+	var previous := 0.45
+	for step in 121:
+		var value := Meadow._grass_height_scale(area, 6.0 + float(step) * 0.1, 0.0)
+		bounded_and_continuous = bounded_and_continuous and value >= previous - 0.000001 \
+			and value >= 0.45 and value <= 1.0 and value - previous < 0.01
+		previous = value
+	_check("pilot grass grades continuously into the rough", bounded_and_continuous and is_equal_approx(previous, 1.0))
+	var translated := area.duplicate()
+	for key: String in ["rn", "pilot_n"]: translated[key] += 137.25
+	for key: String in ["re", "pilot_e"]: translated[key] -= 82.75
+	_check("grass maintenance follows a translated field",
+		is_equal_approx(Meadow._grass_height_scale(area, 11.0, 0.0),
+			Meadow._grass_height_scale(translated, 148.25, -82.75)))
 
 
 func _keys(plants: Array[Dictionary]) -> Array:

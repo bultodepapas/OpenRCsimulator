@@ -94,6 +94,14 @@ func _cost_plan_behavior() -> void:
 	view.show_archived(changed)
 	_check("archived cost plans have no active transaction controls", not view._cost_actions.visible)
 	_check("archived cost plans reset previously expanded details", not view._details_scroll.visible and not view._details_button.button_pressed)
+	var historical := changed.duplicate(true)
+	historical.archive_legacy_unverified = true
+	view.show_archived(historical)
+	_check("historical reports disclose unverifiable saved amounts", view._status_label.text == "HISTORICAL REPORT · UNVERIFIED" and view._caption_label.text.contains("for reference"))
+	TranslationServer.set_locale("es")
+	await _ui.settle()
+	_check("historical verification warning is localized", view._status_label.text == "INFORME HISTÓRICO · SIN VERIFICAR" and view._caption_label.text.contains("como referencia"))
+	TranslationServer.set_locale("en")
 	var fresh := AccidentReport.new()
 	root.add_child(fresh)
 	fresh.show_archived(source)
@@ -111,6 +119,16 @@ func _cost_plan_behavior() -> void:
 	view.controller_action("details")
 	details = _details_text(view)
 	_check("unsupported route does not imply a selected plan", not view._cost_actions.visible and not details.contains("Selected cost plan") and details.contains("Cost plan unavailable"), details)
+	unsupported.identity.aircraft_id = "jensen-das-ugly-stik-60"
+	unsupported.game_assessment = {current_outcomes = {engine_main = {action = "scope_clear"}}}
+	view.show_assessment(unsupported, true)
+	view.controller_action("details")
+	details = _details_text(view)
+	_check("unresolved purchase plan retains independently assessed no-charge scope", details.contains("Assessed game scope") and details.contains("No additional game charge within the assessed scope: Engine main") and details.contains("does not certify physical health or salvage") and not details.contains("Selected cost plan"), details)
+	TranslationServer.set_locale("es")
+	await _ui.settle()
+	_check("incomplete assessed scope is localized without implying a selected plan", _details_text(view).contains("Alcance evaluado del juego") and not _details_text(view).contains("Plan de costes seleccionado"))
+	TranslationServer.set_locale("en")
 	view.queue_free()
 	await _ui.settle()
 

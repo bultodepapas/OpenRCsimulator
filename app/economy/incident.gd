@@ -11,11 +11,13 @@ const ReplacementQuote = preload("res://economy/replacement_quote.gd")
 const Checkpoint = preload("res://economy/checkpoint.gd")
 const DamageAssessment = preload("res://economy/damage_assessment.gd")
 const CostTransaction = preload("res://economy/cost_transaction.gd")
+const ReportArchive = preload("res://economy/report_archive.gd")
 const RECIPE_PATH := "res://data/economy/repair-recipes.json"
 const Events = preload("res://sim/aircraft_contact_events.gd")
 const MAX_EVENTS := 128
 const ARCHIVE_PATH := "user://last_accident.json"
-const ARCHIVE_MAX_BYTES := 262144
+const ARCHIVE_MAX_BYTES := ReportArchive.MAX_PAYLOAD_BYTES
+const ARCHIVE_FILE_MAX_BYTES := ReportArchive.MAX_ARCHIVE_BYTES
 const MAX_INSPECTIONS := 16
 const MAX_EVENTS_PER_TICK := 64
 const MAX_EVENT_BYTES := 65536
@@ -37,6 +39,7 @@ var report: Dictionary = {}
 var last_report: Dictionary = {}
 var journal: Array = []
 var archive_path := ARCHIVE_PATH
+var archive_load_error := ""
 var terminal := false
 var _assessment: Dictionary = {}
 var _seen: Dictionary = {}
@@ -1173,6 +1176,13 @@ func _recalculate() -> void:
 	report["cost_transactions"] = _cost_transactions.duplicate(true)
 	report["quote_history"] = _quote_history.duplicate(true)
 	report["quote_history_truncated"] = _quote_history_truncated
+	# Automatic estimates need a durable receipt even when no UI selection was made.
+	# A stale plan remains in explicit history but cannot attest the current bill.
+	report["active_cost_receipt"] = _active_cost_receipt.duplicate(true) \
+		if report.get("selected_cost_plan", {}) is Dictionary and not report.get("selected_cost_plan", {}).is_empty() else {}
+	report["cost_context"] = {profile_hash = _profile_hash, recipe_hash = _recipe_hash,
+		purchase_book_hash = _purchase_book_hash, labor_policy_hash = _labor_policy_hash} \
+		if not report.active_cost_receipt.is_empty() else {}
 	if _quote_history_truncated:
 		report.assumptions.append("Older quote selections were dropped from bounded history; these were estimates, not purchases.")
 	if _journal_overflow:
@@ -1269,13 +1279,13 @@ func flush(force_retry := false) -> Error:
 
 
 func _write_archive() -> Error:
-	var encoded := JSON.stringify(report, "", true, true) # CR-39f: compact; readers accept either form.
-	if encoded.to_utf8_buffer().size() > ARCHIVE_MAX_BYTES:
-		return ERR_OUT_OF_MEMORY
+	var encoded := ReportArchive.encode(report)
+	if not encoded.ok:
+		return ERR_INVALID_DATA
 	var file := FileAccess.open(archive_path + ".tmp", FileAccess.WRITE)
 	if file == null:
 		return FileAccess.get_open_error()
-	file.store_string(encoded)
+	file.store_string(encoded.text)
 	file.flush()
 	var write_error := file.get_error()
 	file.close()
@@ -1299,13 +1309,22 @@ func archive() -> Dictionary:
 
 
 func load_archive() -> Dictionary:
+	archive_load_error = ""
 	if not FileAccess.file_exists(archive_path):
 		return {}
+	archive_load_error = "Saved accident report is unreadable or invalid."
 	var file := FileAccess.open(archive_path, FileAccess.READ)
-	if file == null or file.get_length() > ARCHIVE_MAX_BYTES:
+	if file == null:
 		return {}
-	var value: Variant = JSON.parse_string(file.get_as_text())
+	if file.get_length() > ARCHIVE_FILE_MAX_BYTES:
+		file.close()
+		return {}
+	var decoded := ReportArchive.decode(file.get_as_text())
 	file.close()
+	if not decoded.ok:
+		archive_load_error = "; ".join(decoded.errors)
+		return {}
+	var value: Dictionary = decoded.report
 	if typeof(value) != TYPE_DICTIONARY or value.get("format") not in ["openrc-accident-report v1", "openrc-accident-report v2"]:
 		return {}
 	# Disk history is presentation-only; it never enters a new flight's ledger or credits a wallet.
@@ -1343,6 +1362,9 @@ func load_archive() -> Dictionary:
 			return {}
 	if value.complete and value.get("total_minor") == null:
 		return {}
+	if decoded.legacy:
+		value["archive_legacy_unverified"] = true
+	archive_load_error = ""
 	last_report = value.duplicate(true)
 	return last_report.duplicate(true)
 

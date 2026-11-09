@@ -5913,6 +5913,18 @@ msgstr "Compañero %d"
 msgid "Traffic: %d airborne / %d active / %d requested"
 msgstr "Tráfico: %d en vuelo / %d activos / %d solicitados"
 
+msgid "Traffic: %d flying"
+msgstr "Tráfico: %d en vuelo"
+
+msgid " · %d in session"
+msgstr " · %d en la sesión"
+
+msgid " · %d after restart"
+msgstr " · %d tras reiniciar"
+
+msgid "Flight settings change after restart."
+msgstr "Los ajustes de vuelo cambian al reiniciar."
+
 msgid "Flight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions."
 msgstr "Los ajustes de vuelo se aplican al reiniciar el vuelo. El sonido y las etiquetas cambian de inmediato. Retirar ahora elimina a los compañeros actuales."
 
@@ -8893,6 +8905,18 @@ msgstr "Estimación local del juego. Puede haber otros daños sin evaluar. Exclu
 
 msgid "Selected cost plan"
 msgstr "Plan de costes seleccionado"
+
+msgid "Assessed game scope"
+msgstr "Alcance evaluado del juego"
+
+msgid "HISTORICAL REPORT · UNVERIFIED"
+msgstr "INFORME HISTÓRICO · SIN VERIFICAR"
+
+msgid "Saved amounts could not be verified. This historical report is for reference."
+msgstr "No se pudieron verificar los importes guardados. Este informe histórico se muestra como referencia."
+
+msgid "The saved accident report could not be opened. A new flight can still begin."
+msgstr "No se pudo abrir el informe del accidente guardado. Aun así, se puede iniciar un vuelo nuevo."
 
 msgid "Cost plan unavailable"
 msgstr "Plan de costes no disponible"

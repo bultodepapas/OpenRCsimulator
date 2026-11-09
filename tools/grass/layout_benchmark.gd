@@ -1,4 +1,5 @@
 ## CPU-only parity and AB/BA timing for the imported near-grass placement reducer.
+## The full-scan reference retains the former reduction algorithm but applies current habitat rules.
 ## Run headless against the app tree; timings are layout CPU time, never FPS claims.
 extends SceneTree
 
@@ -88,6 +89,26 @@ func _make_cases(field: Dictionary) -> Array[Dictionary]:
 	cases.append({"id": "mask_near_selected_row", "field": field, "exclusions": [nearby_mask], "anchor_row_index": anchor_row_index})
 	cases.append({"id": "mask_edge_through_selected_row", "field": field, "exclusions": [edge_mask], "anchor_row_index": anchor_row_index})
 	cases.append({"id": "mask_bounds_outside_window", "field": field, "exclusions": [far_mask]})
+
+	var narrow := {"pilot": {"north": 0.0, "east": 0.0}, "flight_cues": [], "surfaces": [
+		{"type": "rough", "center_north": 0.0, "center_east": 0.0, "width_north_south": 10.0, "length_east_west": 20.0},
+		{"type": "runway", "center_north": 0.0, "center_east": 0.0, "width_north_south": 8.0, "length_east_west": 20.0},
+	]}
+	cases.append({"id": "narrow_rough_strips", "field": narrow, "exclusions": []})
+	var old_quality := OS.get_environment(GRASS_QUALITY_ENV)
+	OS.set_environment(GRASS_QUALITY_ENV, "")
+	var tall_anchor := {}
+	for plant: Dictionary in _legacy_layout(field, "high", []):
+		if str(plant.asset_id) != "grass_common_short":
+			tall_anchor = plant
+			break
+	OS.set_environment(GRASS_QUALITY_ENV, old_quality)
+	if not tall_anchor.is_empty():
+		var modified_field: Dictionary = field.duplicate(true)
+		modified_field.surfaces.append({"type": "mown", "center_north": float(tall_anchor.north) + 2.0,
+			"center_east": float(tall_anchor.east), "width_north_south": 2.0, "length_east_west": 2.0})
+		cases.append({"id": "additional_managed_surface", "field": modified_field, "exclusions": []})
+	_check("additional managed-surface fixture has a tall anchor", not tall_anchor.is_empty())
 	_check("mask edge fixture actually excludes its selected boundary point",
 		not NearGrass.accepts(anchor.x, anchor.y, field, [edge_mask]))
 	_check("far mask fixture lies outside the placement window",
@@ -148,7 +169,7 @@ func _run_parity(cases: Array[Dictionary]) -> void:
 				var expected := _legacy_layout(field, quality, exclusions)
 				var actual := ImportedNearGrass.layout(field, quality, exclusions)
 				var same := actual == expected
-				_check("%s/%s/%s exact legacy dictionary/order parity" % [profile, case.id, quality], same,
+				_check("%s/%s/%s exact full-scan reference dictionary/order parity" % [profile, case.id, quality], same,
 					"new=%d old=%d" % [actual.size(), expected.size()])
 				if same:
 					_check("%s/%s/%s source triangle total unchanged" % [profile, case.id, quality],
@@ -201,20 +222,32 @@ func _legacy_layout(field: Dictionary, quality: String, exclusions: Array) -> Ar
 	var pilot: Dictionary = field.get("pilot", {})
 	var pilot_north := float(pilot.get("north", 0.0))
 	var pilot_east := float(pilot.get("east", 0.0))
-	var local_exclusions := ImportedNearGrass._nearby_exclusions(pilot_north, pilot_east, exclusions)
+	var enhanced := OS.get_environment(GRASS_QUALITY_ENV).strip_edges().to_lower() == "enhanced"
 	for row_index: int in range(rows.size()):
 		var row: Array = rows[row_index]
 		var north := pilot_north + float(row[0]) * 0.001
 		var east := pilot_east + float(row[1]) * 0.001
-		if not NearGrass.accepts(north, east, field, local_exclusions):
+		if not NearGrass.accepts(north, east, field, exclusions):
 			continue
 		var asset_index := int(Palette.hash01(ImportedNearGrass.SEED, row_index, 101) * float(ImportedNearGrass.ASSET_IDS.size()))
 		var asset_id: String = ImportedNearGrass.ASSET_IDS[mini(asset_index, ImportedNearGrass.ASSET_IDS.size() - 1)]
 		var source_triangles := int(triangle_counts.get(asset_id, 0))
 		if source_triangles <= 0:
 			continue
+		var habitat := 0.0
+		if not enhanced and asset_id != "grass_common_short":
+			habitat = _reference_habitat(float(row[0]) * 0.001, float(row[1]) * 0.001)
+			if habitat <= 0.0 or not _reference_tall_clear(field, north, east):
+				continue
 		var yaw_u16 := int(row[2])
 		var size_u8 := int(row[3])
+		var size := float(size_u8) / 255.0
+		var height := lerpf(0.12, 0.25, size)
+		if not enhanced:
+			if asset_id == "grass_common_short":
+				height = lerpf(0.045, 0.11, size)
+			else:
+				height = lerpf(0.10, lerpf(0.14, 0.22, habitat), size)
 		(candidates_by_asset[asset_id] as Array).append({
 			"asset_id": asset_id,
 			"source_triangles": source_triangles,
@@ -225,10 +258,10 @@ func _legacy_layout(field: Dictionary, quality: String, exclusions: Array) -> Ar
 			"yaw_u16": yaw_u16,
 			"yaw_rad": float(yaw_u16) * TAU / 65536.0,
 			"size_u8": size_u8,
-			"height_m": lerpf(ImportedNearGrass.MIN_HEIGHT_M, ImportedNearGrass.MAX_HEIGHT_M, float(size_u8) / 255.0),
+			"height_m": height,
 			"seed": ImportedNearGrass.SEED + row_index,
 		})
-	var limits: Dictionary = ImportedNearGrass.ENHANCED_QUALITY_LIMITS if OS.get_environment(GRASS_QUALITY_ENV).strip_edges().to_lower() == "enhanced" else ImportedNearGrass.QUALITY_LIMITS
+	var limits: Dictionary = ImportedNearGrass.ENHANCED_QUALITY_LIMITS if enhanced else ImportedNearGrass.QUALITY_LIMITS
 	var quality_limits: Dictionary = limits.get(quality, limits.high)
 	var triangles := 0
 	for asset_id: String in ImportedNearGrass.ASSET_IDS:
@@ -250,6 +283,30 @@ func _legacy_layout(field: Dictionary, quality: String, exclusions: Array) -> Ar
 	return result
 
 
+func _reference_habitat(north: float, east: float) -> float:
+	var field_value := cos(north * 0.31 + east * 0.12 + 0.4) \
+		+ cos(east * 0.29 - north * 0.11 - 0.7) + 0.25 * sin(north * 0.19 - east * 0.35)
+	return smoothstep(0.55, 1.3, field_value)
+
+
+func _reference_tall_clear(field: Dictionary, north: float, east: float) -> bool:
+	for surface: Dictionary in field.surfaces:
+		if str(surface.get("type", "")) == "rough":
+			continue
+		var dn := maxf(absf(north - float(surface.center_north)) - float(surface.width_north_south) * 0.5, 0.0)
+		var de := maxf(absf(east - float(surface.center_east)) - float(surface.length_east_west) * 0.5, 0.0)
+		if dn * dn + de * de < 2.25:
+			return false
+	for cue: Dictionary in field.get("flight_cues", []):
+		if str(cue.get("type", "")) != "pilot_station":
+			continue
+		var dn := maxf(absf(north - float(cue.north)) - float(cue.depth) * 0.5, 0.0)
+		var de := maxf(absf(east - float(cue.east)) - float(cue.width) * 0.5, 0.0)
+		if dn * dn + de * de < 2.25:
+			return false
+	return true
+
+
 func _run_benchmarks(cases: Array[Dictionary], profile: String) -> void:
 	OS.set_environment(GRASS_QUALITY_ENV, "" if profile == "default" else profile)
 	for case_id: String in ["default_open", "bounded_rough_field", "mask_near_selected_row"]:
@@ -262,7 +319,7 @@ func _run_benchmarks(cases: Array[Dictionary], profile: String) -> void:
 		var cold_result := ImportedNearGrass.layout(field, quality, exclusions)
 		var cold_us := Time.get_ticks_usec() - cold_start
 		var old_check := _legacy_layout(field, quality, exclusions)
-		_check("%s/%s benchmark layout agrees with legacy" % [profile, case_id], cold_result == old_check)
+		_check("%s/%s benchmark layout agrees with full-scan reference" % [profile, case_id], cold_result == old_check)
 		var old_samples: Array[int] = []
 		var new_samples: Array[int] = []
 		for warmup in 2:
@@ -298,6 +355,7 @@ func _run_benchmarks(cases: Array[Dictionary], profile: String) -> void:
 			"legacy_usec_in_collection_order": old_raw,
 			"optimized_usec_in_collection_order": new_raw,
 			"order": "legacy/optimized on even zero-based indices; optimized/legacy on odd indices",
+			"legacy_scope": "full-scan candidate sort with current habitat rules, not a historical scene baseline",
 			"measurement": "headless layout CPU time; no FPS/render claim",
 		}
 		_timings.append(timing)

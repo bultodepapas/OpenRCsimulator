@@ -29,6 +29,7 @@ var _body_scroll: ScrollContainer
 var _in_flight := false
 var _active_count := 0
 var _requested_count := 1
+var _disabled_zero_count := false
 var save_as_default := false
 
 
@@ -56,7 +57,8 @@ func _focus_initial() -> void:
 
 func configure(config: Dictionary, status: Dictionary = {}) -> void:
 	var requested_count := clampi(int(config.get("count", 1)), 1, 3)
-	_requested_count = requested_count
+	_requested_count = requested_count if bool(config.get("enabled", false)) else 0
+	_disabled_zero_count = not bool(config.get("enabled", false)) and int(config.get("count", 1)) == 0
 	enabled_check.button_pressed = bool(config.get("enabled", false))
 	count_picker.select(requested_count - 1)
 	seed_edit.text = str(config.get("seed", 0))
@@ -78,8 +80,16 @@ func refresh_status(status: Dictionary) -> void:
 	_in_flight = bool(status.get("in_flight", false))
 	_active_count = maxi(0, _status_integer(status, "active", "active_count", 0))
 	var airborne := maxi(0, _status_integer(status, "airborne", "airborne_count", 0))
-	_requested_count = maxi(0, _status_integer(status, "requested", "requested_count", _requested_count))
-	status_label.text = tr("Traffic: %d airborne / %d active / %d requested") % [airborne, _active_count, _requested_count]
+	_requested_count = maxi(0, _status_integer(status, "requested_count", "requested", _requested_count))
+	var pending_count := maxi(0, _status_integer(status, "pending_count", "requested_count", _requested_count))
+	var pending_restart := bool(status.get("pending_restart", false))
+	status_label.text = tr("Traffic: %d flying") % airborne
+	if _active_count != airborne:
+		status_label.text += tr(" · %d in session") % _active_count
+	if pending_restart or pending_count != airborne:
+		status_label.text += tr(" · %d after restart") % pending_count
+	if pending_restart:
+		status_label.text += "\n" + tr("Flight settings change after restart.")
 	if _in_flight:
 		status_label.text += "\n" + tr("Flight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions.")
 		var stopped := int(status.get("faulted", 0)) + int(status.get("crashed", 0))
@@ -341,6 +351,10 @@ func _on_apply() -> void:
 		set_error(tr("Choose between 1 and 3 companions."))
 		count_picker.grab_focus()
 		return
+	# Direct --companions=0 has no picker equivalent; leave that accepted value
+	# alone when an Off draft only changes sound or labels.
+	if not enabled_check.button_pressed and count == 1 and _disabled_zero_count:
+		count = 0
 	set_error("")
 	applied.emit({
 		"enabled": enabled_check.button_pressed,

@@ -35,7 +35,7 @@ func _run() -> void:
 	InputMap.load_from_project_settings()
 	UiInput.isolate_joypads()
 	ui = UiDriver.new(self)
-	root.size = Vector2i(1280, 720)
+	root.size = Vector2i(1920, 1080)
 	_remove_file(PREFS)
 	_remove_file(FUTURE_PREFS)
 	if not CompanionConfig.engine_qualified():
@@ -136,7 +136,8 @@ func _run() -> void:
 	await _open_pause_companions(app)
 	dialog = app.companions_dialog
 	_check("Pause dialog reports all three active pilots",
-		dialog != null and dialog.status_label.text.contains("3 active / 3 requested"),
+		dialog != null and dialog.status_label.text.contains("3 flying")
+		and not dialog.status_label.text.contains("after restart"),
 		dialog.status_label.text if dialog != null else "missing dialog")
 	var flight_config_before: Dictionary = main.companion_config.duplicate(true)
 	dialog.count_picker.select(0)
@@ -150,6 +151,51 @@ func _run() -> void:
 		str(main.companion_config))
 	_check("Cancel preserves live companion presentation", main.companions.agents[0]._engine_volume == 1.0
 		and not main.companions.agents[0]._show_labels)
+
+	# A presentation-only Apply changes the current roster without staging a flight change.
+	await _open_pause_companions(app)
+	dialog = app.companions_dialog
+	dialog.volume_slider.value = 50.0
+	dialog.labels_check.button_pressed = true
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var presentation_status: Dictionary = main.companion_status()
+	_check("presentation-only Apply does not mark a flight restart pending",
+		presentation_status.active == 3 and presentation_status.airborne == 3
+		and presentation_status.requested_count == 3 and presentation_status.admitted_count == 3
+		and presentation_status.pending_count == 3 and not presentation_status.pending_restart
+		and main.companions.agents[0]._engine_volume == 0.5, str(presentation_status))
+	_check("admitted config retains launch-time presentation and requested config is current",
+		presentation_status.admitted_config.engine_volume == 1.0
+		and presentation_status.requested_config.engine_volume == 0.5, str(presentation_status))
+	presentation_status.requested_config.seed = 999
+	presentation_status.admitted_config.seed = 998
+	_check("status configuration snapshots do not alias Main or each other",
+		main.companion_config.seed == 101 and main.companion_status().requested_config.seed == 101
+		and main.companion_status().admitted_config.seed == 101)
+
+	# A seed-only change has the same count but still needs a restart.
+	await _open_pause_companions(app)
+	dialog = app.companions_dialog
+	_check("presentation-only Apply displays no pending restart", not dialog.status_label.text.contains("after restart"),
+		dialog.status_label.text)
+	dialog.seed_edit.text = "202"
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var seed_status: Dictionary = main.companion_status()
+	_check("seed-only Apply stages the same population without changing admission",
+		seed_status.active == 3 and seed_status.requested_count == 3 and seed_status.admitted_count == 3
+		and seed_status.pending_restart and seed_status.requested_config.seed == 202
+		and seed_status.admitted_config.seed == 101, str(seed_status))
+	await _open_pause_companions(app)
+	dialog = app.companions_dialog
+	_check("seed-only pending restart is visible at the same count",
+		dialog.status_label.text.contains("3 flying · 3 after restart")
+		and dialog.status_label.text.contains("Flight settings change after restart."), dialog.status_label.text)
+	await ui.tap(KEY_ESCAPE)
+	await ui.settle()
 
 	# Apply changes the configuration for Restart; live pilots remain the original three until then.
 	await _open_pause_companions(app)
@@ -166,13 +212,22 @@ func _run() -> void:
 	await ui.settle()
 	_check("Pause Apply stages two pilots for the next restart",
 		main.companion_config.count == 2 and main.companion_config.seed == 202
-		and main.companion_status().active == 3 and main.companions.agents.size() == 3,
+		and main.companion_status().active == 3 and main.companions.agents.size() == 3
+		and main.companion_status().requested == 3 and main.companion_status().requested_count == 2
+		and main.companion_status().admitted_count == 3 and main.companion_status().pending_count == 2
+		and main.companion_status().pending_restart,
 		str(main.companion_status()))
 	_check("sound and labels apply without replacing or advancing the paused flight",
 		main.companions.agents[0] == live_agent and live_agent._engine_volume == 0.0
 		and live_agent._show_labels and live_agent._label_distance_m == 500.0
 		and live_agent._traffic_label != null and live_agent._engine.volume_db == -80.0
 		and live_agent.session.sim.state.to_byte_array() == live_state)
+	await _open_pause_companions(app)
+	dialog = app.companions_dialog
+	_check("reopened dialog shows the live and next-restart populations",
+		dialog.status_label.text.contains("3 flying · 2 after restart"), dialog.status_label.text)
+	await ui.tap(KEY_ESCAPE)
+	await ui.settle()
 
 	# Restart uses Main's deferred manager rebuild after the session reset.
 	app.pause_menu.restart_button.grab_focus()
@@ -181,11 +236,35 @@ func _run() -> void:
 	var restarted_two: bool = await _wait_for_active(main, 2)
 	_check("Restart rebuilds the live group from the staged count",
 		restarted_two and main.companions.agents.size() == 2
-		and app.pause_menu == null, str(main.companion_status()))
+		and app.pause_menu == null and main.companion_status().admitted_count == 2
+		and main.companion_status().admitted_config.seed == 202
+		and not main.companion_status().pending_restart, str(main.companion_status()))
 
-	# Saving as default is explicit and remains separate from the live restart behavior.
+	# Disabling is staged too: the two current pilots remain until Restart.
 	app.open_pause()
 	await ui.settle()
+	await _open_pause_companions(app)
+	dialog = app.companions_dialog
+	dialog.enabled_check.button_pressed = false
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var off_status: Dictionary = main.companion_status()
+	_check("Disable stages zero without removing the admitted roster",
+		off_status.active == 2 and off_status.airborne == 2 and off_status.admitted_count == 2
+		and off_status.requested_count == 0 and off_status.pending_count == 0 and off_status.pending_restart,
+		str(off_status))
+	await _open_pause_companions(app)
+	dialog = app.companions_dialog
+	_check("disabled request is distinct from the live group",
+		dialog.status_label.text.contains("2 flying · 0 after restart"), dialog.status_label.text)
+	dialog.enabled_check.button_pressed = true
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("restoring the admitted flight settings clears pending status", not main.companion_status().pending_restart)
+
+	# Saving as default is explicit and remains separate from the live restart behavior.
 	await _open_pause_companions(app)
 	dialog = app.companions_dialog
 	dialog.save_default_check.grab_focus()
@@ -215,6 +294,9 @@ func _run() -> void:
 	_check("Pause save failure rolls the staged flight config back",
 		main.companion_config == before_failed_save and dialog.error_label.visible,
 		str(main.companion_config))
+	_check("failed save retains its draft while status reflects the rolled-back config",
+		dialog.count_picker.get_selected_id() == 1 and dialog.seed_edit.text == "303"
+		and not main.companion_status().pending_restart and main.companion_status().requested_count == 2)
 	_check("failed save also restores live presentation", main.companions.agents[0]._engine_volume == 0.0
 		and main.companions.agents[0]._show_labels)
 	_check("Pause save failure preserves the previous on-disk default",
@@ -236,6 +318,11 @@ func _run() -> void:
 	_check("Remove now leaves no active AI pilots", removed_all
 		and main.companions.agents.is_empty() and not dialog.remove_button.visible,
 		str(main.companion_status()))
+	_check("Remove preserves the request and shows what will return after restart",
+		main.companion_status().active == 0 and main.companion_status().airborne == 0
+		and main.companion_status().requested_count == 2 and main.companion_status().admitted_count == 2
+		and not main.companion_status().pending_restart
+		and dialog.status_label.text.contains("0 flying · 2 after restart"), dialog.status_label.text)
 	_check("Remove now does not rewrite the saved default",
 		Preferences.load_from(PREFS).companion_config == persisted.companion_config)
 
@@ -254,7 +341,7 @@ func _run() -> void:
 
 	# The direct CLI route ignores the saved Home preference, but its fixed-wing Pause can still configure the flight.
 	var direct: Variant = load("res://app_root.tscn").instantiate()
-	direct.user_args = PackedStringArray(["--quick-flight"])
+	direct.user_args = PackedStringArray(["--quick-flight", "--companions=0"])
 	direct.preferences_path = PREFS
 	root.add_child(direct)
 	await ui.settle()
@@ -265,6 +352,40 @@ func _run() -> void:
 	await ui.settle()
 	_check("direct fixed-wing Pause keeps the flight settings entry", direct.pause_menu != null
 		and direct.pause_menu.companions_button.visible)
+	var disabled_status: Dictionary = direct.flight.companion_status()
+	_check("an Off launch still records admitted settings without a manager",
+		direct.flight.companions == null and disabled_status.admitted_count == 0
+		and not disabled_status.admitted_config.is_empty() and not disabled_status.admitted_config.enabled
+		and disabled_status.admitted_config.count == 0
+		and not disabled_status.pending_restart, str(disabled_status))
+	direct.open_companions_settings()
+	await ui.settle()
+	dialog = direct.companions_dialog
+	dialog.volume_slider.value = 50.0
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	_check("presentation-only Apply preserves a direct Off/count-zero request",
+		direct.flight.companion_config.count == 0 and direct.flight.companion_config.engine_volume == 0.5
+		and not direct.flight.companion_status().pending_restart, str(direct.flight.companion_status()))
+	direct.open_companions_settings()
+	await ui.settle()
+	dialog = direct.companions_dialog
+	dialog.enabled_check.button_pressed = true
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var enabled_status: Dictionary = direct.flight.companion_status()
+	_check("enabling after an Off launch is pending rather than admitted live",
+		enabled_status.active == 0 and enabled_status.admitted_count == 0
+		and enabled_status.requested_count == 1 and enabled_status.pending_count == 1
+		and enabled_status.pending_restart and direct.flight.companions == null, str(enabled_status))
+	direct.open_companions_settings()
+	await ui.settle()
+	_check("Off launch displays the staged first pilot", direct.companions_dialog.status_label.text.contains("0 flying · 1 after restart"),
+		direct.companions_dialog.status_label.text)
+	await ui.tap(KEY_ESCAPE)
+	await ui.settle()
 	await ui.close_app(direct)
 	await _check_capture_shell()
 
@@ -314,7 +435,7 @@ func _check_unqualified_engine_shell() -> void:
 
 
 func _check_capture_shell() -> void:
-	var destination := ProjectSettings.globalize_path("res://../tmp/afc-shell-capture-%d" % Time.get_ticks_usec())
+	var destination := ProjectSettings.globalize_path("res://../tmp/afc-r11-status/shell-capture-%d" % Time.get_ticks_usec())
 	var app: Variant = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray(["--quick-flight", "--companions=1", "--companions-record=" + destination])
 	app.preferences_path = PREFS

@@ -96,10 +96,16 @@ func _run() -> void:
 	var reader := Incident.new()
 	reader.archive_path = ARCHIVE
 	check("stored report reopens with frozen catalog identity", reader.load_archive().get("catalog_hash") == incident.report.get("catalog_hash"))
+	var archived_receipt: Dictionary = reader.load_archive().get("active_cost_receipt", {})
+	check("default automatic plan archives its receipt without requiring a player selection", not archived_receipt.is_empty()
+		and archived_receipt.get("receipt_digest") == incident.report.get("selected_cost_plan", {}).get("receipt_digest")
+		and archived_receipt.get("transaction_id") == incident.report.get("selected_cost_plan", {}).get("transaction_id")
+		and incident.report.get("cost_transactions", []).is_empty() and incident.report.get("quote_history", []).is_empty())
 	var archived_comparison: Dictionary = reader.load_archive().get("replacement_comparison", {})
 	check("archive preserves the comparison snapshot without repricing", archived_comparison.get("total_cost_cents") == comparison.total_cost_cents
 		and archived_comparison.get("status") == comparison.status and archived_comparison.get("selected_provenance") == comparison.selected_provenance
 		and archived_comparison.get("required_unit_ids") == comparison.required_unit_ids and archived_comparison.get("catalog_hash") == comparison.catalog_hash)
+	_test_archive_integrity(incident, reader)
 	for defect: String in ["negative_amount", "wrong_catalog", "false_complete", "zero_sum", "empty_coverage"]:
 		var malformed: Dictionary = incident.report.duplicate(true)
 		if defect == "negative_amount":
@@ -164,6 +170,45 @@ func _run() -> void:
 	quit(1 if failures else 0)
 
 
+func _test_archive_integrity(incident: RefCounted, reader: RefCounted) -> void:
+	var saved_text := FileAccess.get_file_as_string(ARCHIVE)
+	var envelope: Variant = JSON.parse_string(saved_text)
+	var enveloped: bool = envelope is Dictionary and envelope.get("format") == "openrc-accident-report-archive v1" and envelope.get("report_json") is String
+	check("new saved reports use a bounded exact-payload integrity envelope", enveloped)
+	if not enveloped:
+		return
+	var accepted: Dictionary = reader.last_report.duplicate(true)
+	for defect: String in ["payload_byte", "reconciled_total", "selected_digest", "missing_receipt", "receipt_amount", "wrong_context", "nested_shape"]:
+		var modified: Dictionary = envelope.duplicate(true)
+		var payload: Dictionary = JSON.parse_string(modified.report_json)
+		match defect:
+			"payload_byte", "reconciled_total": payload.total_minor = int(payload.total_minor) + 1
+			"selected_digest": payload.selected_cost_plan.receipt_digest = "f".repeat(64)
+			"missing_receipt": payload.erase("active_cost_receipt")
+			"receipt_amount": payload.active_cost_receipt.purchase.total_cost_cents = int(payload.active_cost_receipt.purchase.total_cost_cents) + 1
+			"wrong_context": payload.cost_context.purchase_book_hash = "f".repeat(64)
+			"nested_shape": payload.lines[0].allocated_ids = "not-an-array"
+		modified.report_json = JSON.stringify(payload, "", true, true)
+		if defect != "payload_byte":
+			modified.payload_sha256 = String(modified.report_json).sha256_text()
+		var file := FileAccess.open(ARCHIVE, FileAccess.WRITE)
+		file.store_string(JSON.stringify(modified, "", true, true))
+		file.close()
+		check("changed saved report is refused without replacing accepted history: " + defect, reader.load_archive().is_empty() and reader.last_report == accepted and not reader.archive_load_error.is_empty())
+	var historical: Dictionary = incident.report.duplicate(true)
+	historical.erase("active_cost_receipt")
+	historical.erase("cost_context")
+	var file := FileAccess.open(ARCHIVE, FileAccess.WRITE)
+	file.store_string(JSON.stringify(historical, "", true, true))
+	file.close()
+	var loaded: Dictionary = reader.load_archive()
+	check("historical raw report remains view-only and visibly unverified", not loaded.is_empty() and loaded.get("archive_legacy_unverified", false) and loaded.get("total_minor") == historical.get("total_minor"))
+	file = FileAccess.open(ARCHIVE, FileAccess.WRITE)
+	file.store_string(saved_text)
+	file.close()
+	check("refused corrupt reads preserve the saved valid quote", not reader.load_archive().is_empty() and reader.archive_load_error.is_empty())
+
+
 func _test_bounds(session: Variant) -> void:
 	var ledger := Incident.new()
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
@@ -206,6 +251,11 @@ func _test_bounds(session: Variant) -> void:
 	corrupt.store_string('{"format":"openrc-accident-report v1","lines":"invalid"}')
 	corrupt.close()
 	check("malformed saved report is refused", ledger.load_archive().is_empty())
+	var startup: Variant = _make(true)
+	check("corrupt saved report is disclosed without blocking a new flight", startup.startup_error.is_empty()
+		and startup._accident_incident.report.is_empty() and not startup._accident_incident.archive_load_error.is_empty()
+		and startup._note.contains("saved accident report could not be opened"))
+	_retire_main(startup)
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
 	ledger.archive_path = ARCHIVE
 	ledger.observe({tick = 1, events = [_strike(1, bindings)]}, bindings, false)

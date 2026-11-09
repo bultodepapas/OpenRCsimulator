@@ -608,6 +608,9 @@ func _render_report() -> void:
 		_status_label.text = tr("LOCAL GAME REPAIR ESTIMATE") if _report.get("complete", false) else state.status
 		if _report.get("costing_mode") == "paid":
 			_caption_label.text = tr("Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed.")
+	if _archived and _report.get("archive_legacy_unverified", false) == true:
+		_status_label.text = tr("HISTORICAL REPORT · UNVERIFIED")
+		_caption_label.text = tr("Saved amounts could not be verified. This historical report is for reference.")
 	if _evidence_warning and not _archived:
 		_status_label.text = tr("COST EVIDENCE INCOMPLETE")
 		_caption_label.text = tr("Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing.")
@@ -838,6 +841,7 @@ func _add_game_cost_scope() -> void:
 		if not str(_report.get("costing_error", "")).is_empty():
 			_add_detail_section(tr("Cost plan unavailable"))
 			_add_detail_text(tr("The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."), true)
+		_add_game_scope_outcomes(true)
 		return
 	_add_detail_section(tr("Selected cost plan"))
 	_add_detail_text(tr("Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."), true)
@@ -849,12 +853,20 @@ func _add_game_cost_scope() -> void:
 	var error := str(_report.get("costing_error", ""))
 	if not error.is_empty():
 		_add_detail_text(tr("The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."), true)
+	_add_game_scope_outcomes(false)
+
+
+func _add_game_scope_outcomes(separate_section: bool) -> void:
 	var assessment: Variant = _report.get("game_assessment", {})
 	var outcomes: Variant = assessment.get("current_outcomes", {}) if assessment is Dictionary else {}
+	var heading_added := false
 	if outcomes is Dictionary:
 		for id: Variant in outcomes:
 			var outcome: Variant = outcomes[id]
 			if outcome is Dictionary and outcome.get("action") == "scope_clear":
+				if separate_section and not heading_added:
+					_add_detail_section(tr("Assessed game scope"))
+					heading_added = true
 				_add_detail_text(tr("No additional game charge within the assessed scope: %s. This does not certify physical health or salvage.") % _humanize_identifier(str(id)), true)
 
 

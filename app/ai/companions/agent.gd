@@ -10,6 +10,8 @@ const EngineSound := preload("res://render/engine_sound.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const Profiles := preload("res://ai/companions/profile_loader.gd")
 const ObservationAirdata := preload("res://ai/companions/observation_airdata.gd")
+const SeedAllocator := preload("res://ai/companions/seed_allocator.gd")
+const WeatherConfig := preload("res://physics/wind_config.gd")
 
 var session: Node
 var pilot: RefCounted
@@ -27,10 +29,13 @@ var _engine_volume := 1.0
 var _show_labels := false
 var _label_distance_m := 250.0
 var _traffic_label: Label3D
+var _seed_allocation: Dictionary = {}
 
 
 func configure(player: Node, field: Dictionary, slot: int, count: int, seed_value: int,
-		visuals: bool, audio_enabled: bool, qualification: Dictionary = {}) -> Dictionary:
+		visuals: bool, audio_enabled: bool, qualification: Dictionary = {}, seed_record: Dictionary = {}) -> Dictionary:
+	if slot < 0 or slot >= count:
+		return _refuse("Companion slot is outside the fixed roster.")
 	slot_id = slot
 	name = "Companion%d" % (slot + 1)
 	session = Flight.new()
@@ -50,9 +55,20 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 			or identity.get("aircraft_data_format") != session.aircraft.input_identity.get("format"):
 		return _refuse("Companion session data differs from the qualified aircraft.")
 	var weather: Dictionary = player.weather_configuration().duplicate(true)
-	# Independent aircraft turbulence; the common mean/gust profile keeps the same launch clock.
+	# Resolve the whole fixed roster, including the player's initial RNG state. The
+	# traffic seed still controls pilot phase/direction through pilot.configure below.
+	var allocator := SeedAllocator.new()
+	var player_seed := int(weather.get("turbulence_seed", 0))
+	var allocation: Dictionary = allocator.resolve(player_seed, seed_value, count) if seed_record.is_empty() \
+		else allocator.validate_record(seed_record, player_seed, seed_value, count)
+	if not allocation.ok:
+		return _refuse("; ".join(allocation.errors))
+	_seed_allocation = allocation.record.allocations[slot].duplicate(true)
+	_seed_allocation.weather_has_seed = weather.has("turbulence_seed")
+	_seed_allocation.turbulence_active = WeatherConfig.has_turbulence(weather)
+	# Preserve v1 calm weather; no turbulence law or RNG state is added to it.
 	if weather.has("turbulence_seed"):
-		weather.turbulence_seed = (int(weather.turbulence_seed) + seed_value + slot * 104729) & 0xffffffff
+		weather.turbulence_seed = int(_seed_allocation.seed)
 	if not session.setup_weather(weather):
 		return _refuse(session.weather_error)
 	_weather_rms = PackedFloat64Array(weather.get("turbulence_rms_mps", [0.0, 0.0, 0.0]))
@@ -82,6 +98,10 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 		_audio_enabled = audio_enabled
 		render(0.0, true)
 	return {ok = true, errors = PackedStringArray()}
+
+
+func seed_allocation() -> Dictionary:
+	return _seed_allocation.duplicate(true)
 
 
 func _ready() -> void:

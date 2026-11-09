@@ -87,7 +87,7 @@ func _run() -> void:
 	await ui.settle()
 	var dialog: Variant = app.companions_dialog
 	_check("Pause opens real roster dialog", dialog != null and dialog.remove_button.visible
-		and dialog.status_label.text.contains("1 active / 1 requested"))
+		and dialog.status_label.text.contains("1 flying"))
 	if dialog == null:
 		await ui.close_app(app)
 		_finish()
@@ -168,7 +168,7 @@ func _run() -> void:
 		and not player_session.sim.before_step.is_connected(Callable(manager, "_before_step")))
 	_check("Remove keeps every pending field and default choice", _snapshot(dialog) == before_remove, str(_snapshot(dialog)))
 	_check("Remove keeps validation feedback and reports empty traffic", dialog.error_label.visible
-		and dialog.error_label.text == invalid_error and dialog.status_label.text.contains("0 active / 1 requested")
+		and dialog.error_label.text == invalid_error and dialog.status_label.text.contains("0 flying · 1 after restart")
 		and not dialog.remove_button.visible)
 	_check("focus moves to Cancel when focused Remove disappears", root.gui_get_focus_owner() == dialog.cancel_button)
 	_check("Remove leaves paused player state and accepted settings intact", player_session.sim.tick == player_tick
@@ -287,11 +287,18 @@ func _check_layouts(config: Dictionary, status: Dictionary) -> void:
 		UiTheme.compact_layout = sizing.compact
 		UiTheme.text_scale = 1.0
 		var dialog := CompanionsDialog.new()
-		dialog.configure(config, status)
+		var pending_status := status.duplicate(true)
+		pending_status.requested_count = 2
+		pending_status.pending_count = 2
+		pending_status.pending_restart = true
+		dialog.configure(config, pending_status)
 		root.add_child(dialog)
 		await ui.settle()
 		await ui.settle()
 		var viewport: Rect2 = root.get_visible_rect()
+		var expected_status := "1 en vuelo · 2 tras reiniciar" if locale == "es" else "1 flying · 2 after restart"
+		_check("%s 1080p pending status is localized" % locale, dialog.status_label.text.contains(expected_status),
+			dialog.status_label.text)
 		_check("%s 1080p dialog and footer fit" % locale, viewport.grow(1.0).encloses(dialog.dialog_panel.get_global_rect())
 			and viewport.encloses(dialog.cancel_button.get_global_rect()) and viewport.encloses(dialog.apply_button.get_global_rect())
 			and dialog._body_scroll.size.y >= 80.0, str(dialog.dialog_panel.get_global_rect()))

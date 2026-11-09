@@ -135,6 +135,8 @@ var trim_throttle: float = NAN
 var weather_config: Dictionary = {}
 ## Airborne companion choices are resolved at launch/restart; direct flights ignore Home preferences.
 var companion_config: Dictionary = CompanionConfig.defaults()
+## Accepted launch settings, retained even when an Off launch creates no manager.
+var _companion_admitted_config: Dictionary = {}
 var companions: Node
 var _companions_initialized := false
 var _companions_reset_pending := false
@@ -1191,6 +1193,8 @@ func _prepare_flight() -> void:
 		var archived: Dictionary = _accident_incident.load_archive()
 		if not archived.is_empty():
 			_accident_report.show_archived(archived)
+		elif not _accident_incident.archive_load_error.is_empty():
+			_note = tr("The saved accident report could not be opened. A new flight can still begin.")
 		session.crash_auto_restart = false
 	if companion_config.enabled and not await _startup_stage("Preparing companions"):
 		return
@@ -2997,10 +3001,26 @@ func set_companion_config(raw: Dictionary) -> Dictionary:
 func companion_status() -> Dictionary:
 	var result: Dictionary = companions.status() if companions != null else {
 		active = 0, airborne = 0, requested = int(companion_config.count) if companion_config.enabled else 0}
+	var requested: Dictionary = companion_config.duplicate(true)
+	var admitted: Dictionary = _companion_admitted_config.duplicate(true)
+	result.requested_count = int(requested.count) if requested.enabled else 0
+	result.admitted_count = int(admitted.get("count", 0)) if admitted.get("enabled", false) else 0
+	result.pending_count = result.requested_count
+	result.pending_restart = _companion_flight_settings(requested) != _companion_flight_settings(admitted)
+	result.requested_config = requested
+	result.admitted_config = admitted
 	result.in_flight = true
 	if not _companions_error.is_empty():
 		result.error = _companions_error
 	return result
+
+
+## Presentation changes take effect immediately and do not require a roster rebuild.
+func _companion_flight_settings(config: Dictionary) -> Dictionary:
+	var flight_settings := config.duplicate(true)
+	for key: String in ["engine_volume", "show_labels", "label_distance_m"]:
+		flight_settings.erase(key)
+	return flight_settings
 
 
 func remove_companions_now() -> void:
@@ -3012,10 +3032,12 @@ func remove_companions_now() -> void:
 
 
 func _start_companions() -> Dictionary:
+	_companion_admitted_config = {}
 	var checked: Dictionary = _companion_options(companion_config)
 	if not checked.ok:
 		return checked
 	if not companion_config.enabled:
+		_companion_admitted_config = checked.config.duplicate(true)
 		return checked
 	var candidate := CompanionManager.new()
 	candidate.name = "FlightCompanions"
@@ -3024,6 +3046,7 @@ func _start_companions() -> Dictionary:
 	if not prepared.ok:
 		candidate.free()
 		return prepared
+	_companion_admitted_config = prepared.config.duplicate(true)
 	companions = candidate
 	add_child(companions)
 	return prepared

@@ -120,13 +120,16 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 		var range_m: Vector2 = HEIGHT_RANGES.get(asset_id, Vector2(0.1, 0.3))
 		var north := float(plant.north)
 		var east := float(plant.east)
+		var height := lerpf(range_m.x, range_m.y, clampf(float(plant.size_u), 0.0, 1.0))
+		if asset_id.begins_with("grass_"):
+			height *= _grass_height_scale(area, north, east)
 		result.append({
 			"asset_id": asset_id,
 			"colony": str(plant.colony),
 			"north": north,
 			"east": east,
 			"ground_up_m": _ground_up(north, east, surface_rects),
-			"height_m": lerpf(range_m.x, range_m.y, clampf(float(plant.size_u), 0.0, 1.0)),
+			"height_m": height,
 			"yaw_rad": float(plant.yaw_rad),
 			"tint": plant.tint,
 			"seed": int(plant.seed),
@@ -373,6 +376,17 @@ static func _edge_distance(area: Dictionary, north: float, east: float) -> float
 	var on := maxf(absf(north - float(area.rn)) - float(area.half_n), 0.0)
 	var oe := maxf(absf(east - float(area.re)) - float(area.half_e), 0.0)
 	return sqrt(on * on + oe * oe)
+
+
+## Scale the whole grass plant, including its minimum height: reducing vigor alone
+## still left 22 cm grass at the mown edge. Preserve full height in the outer meadow.
+## Flowers/clover retain their growth stage; geometry, colony membership and tint stay intact.
+static func _grass_height_scale(area: Dictionary, north: float, east: float) -> float:
+	var edge := _edge_distance(area, north, east)
+	var pilot_distance := Vector2(north - float(area.pilot_n), east - float(area.pilot_e)).length()
+	var shoulder := lerpf(0.45, 1.0, smoothstep(MOWN_CLEAR_M, 6.0, edge))
+	var maintained := lerpf(0.45, 1.0, smoothstep(6.0, 18.0, pilot_distance))
+	return minf(shoulder, maintained)
 
 
 static func _outer_fade(area: Dictionary, north: float, east: float) -> float:

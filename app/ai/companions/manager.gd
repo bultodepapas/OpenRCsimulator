@@ -9,6 +9,7 @@ const Profiles := preload("res://ai/companions/profile_loader.gd")
 const Airspace := preload("res://ai/companions/airspace.gd")
 const FleetRecord := preload("res://ai/companions/fleet_record.gd")
 const WeatherConfig := preload("res://physics/wind_config.gd")
+const SeedAllocator := preload("res://ai/companions/seed_allocator.gd")
 
 signal changed
 var config: Dictionary = Config.defaults()
@@ -19,6 +20,7 @@ var accepted_ticks := 0
 var observation_batches := 0
 var _profile_identity: Dictionary = {}
 var _airspace_report: Dictionary = {}
+var _seed_allocation: Dictionary = {}
 var _record: RefCounted
 var _player: Node
 var _snapshot: Array = []
@@ -26,6 +28,18 @@ var _snapshot_tick := -1
 var _removed := false
 var _advancing := false
 var _damage_dirty := false
+# Diagnostics only. A before/after pair is timed separately to exclude the player
+# solver between signals. Detailed phases are opt-in and never enter decisions.
+var _detailed_timing := false
+var _pending_timing_tick := -1
+var _pending_before_usec := 0
+var _last_before_usec := 0
+var _last_after_usec := 0
+var _last_prepare_usec := 0
+var _last_advance_usec := 0
+var _last_world_usec := 0
+var _last_overhead_usec := 0
+var _last_presentation_usec := 0
 
 
 static func validate_context(player: Node, field: Dictionary, landscape: String, requested: Dictionary) -> Dictionary:
@@ -67,10 +81,23 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 		return _refuse("Start or restart the flight to enable companions.")
 	var candidates: Array[Node] = []
 	var airspace_report: Dictionary = {}
+	var seed_allocation: Dictionary = {}
 	if checked.config.enabled:
+		var weather: Dictionary = player.weather_configuration()
+		var resolved: Dictionary = SeedAllocator.new().resolve(int(weather.get("turbulence_seed", 0)),
+			int(checked.config.seed), int(checked.config.count))
+		if not resolved.ok:
+			return resolved
+		seed_allocation = resolved.record
+		seed_allocation.weather_has_seed = weather.has("turbulence_seed")
+		seed_allocation.turbulence_active = WeatherConfig.has_turbulence(weather)
+		# The canonical allocation is validated by each actor before any replacement.
+		var canonical: Dictionary = resolved.record.duplicate(true)
+		canonical.erase("weather_has_seed")
+		canonical.erase("turbulence_active")
 		for slot: int in int(checked.config.count):
 			var agent: Node = Agent.new()
-			var prepared: Dictionary = agent.configure(player, field, slot, int(checked.config.count), int(checked.config.seed), visuals, audio_enabled, checked.qualification)
+			var prepared: Dictionary = agent.configure(player, field, slot, int(checked.config.count), int(checked.config.seed), visuals, audio_enabled, checked.qualification, canonical)
 			if not prepared.ok:
 				agent.free()
 				for candidate in candidates: candidate.free()
@@ -100,16 +127,20 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 	config = checked.config.duplicate(true)
 	_profile_identity = checked.qualification.identity.duplicate(true) if checked.config.enabled else {}
 	_airspace_report = airspace_report.duplicate(true)
+	_seed_allocation = seed_allocation.duplicate(true)
 	error = ""
 	_removed = false
 	accepted_ticks = 0
 	observation_batches = 0
+	_reset_timing()
 	_snapshot_tick = -1
 	agents = candidates
 	for agent in agents: add_child(agent)
 	_player.sim.before_step.connect(_before_step)
 	_player.sim.stepped.connect(_after_step)
 	_player.scenery_damage_changed.connect(_scenery_changed)
+	_player.resetting.connect(_clear_pending_timing)
+	_player.sim.faulted.connect(_timing_faulted)
 	_damage_dirty = true
 	set_process(not agents.is_empty())
 	changed.emit()
@@ -134,6 +165,8 @@ func apply_presentation(requested: Dictionary) -> Dictionary:
 
 
 func _before_step(tick: int) -> void:
+	_clear_pending_timing()
+	var started := _clock_usec()
 	_snapshot.clear()
 	_snapshot_tick = tick
 	if _removed or agents.is_empty():
@@ -142,21 +175,30 @@ func _before_step(tick: int) -> void:
 	for agent in agents:
 		planning = planning or agent.needs_command(tick)
 	if not planning:
+		_pending_timing_tick = tick
+		_pending_before_usec = _clock_usec() - started
 		return
 	observation_batches += 1
 	_snapshot.append({id = "player", is_player = true, state = _player.sim.state.duplicate(),
 		command = _player.sim.inputs.duplicate()})
 	for agent in agents:
 		_snapshot.append(agent.observation())
+	_pending_timing_tick = tick
+	_pending_before_usec = _clock_usec() - started
 
 
 func _after_step(tick: int, _time: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	# Simulation also publishes stepped(0) on reset; it has no accepted before_step.
 	if _snapshot_tick < 0 or _snapshot_tick != tick - 1 or agents.is_empty() or _removed:
+		_clear_pending_timing()
 		return
 	_advancing = true
-	var started := Time.get_ticks_usec()
+	var started := _clock_usec()
+	var phase_started := started
+	var prepare_usec := 0
+	var advance_usec := 0
+	var world_usec := 0
 	# Plan every agent before advancing any of them. All observations are from tick N.
 	var ready: Array[Node] = []
 	for index in agents.size():
@@ -167,11 +209,19 @@ func _after_step(tick: int, _time: float, _state: PackedFloat64Array,
 		if _removed:
 			_advancing = false
 			return
+	if _detailed_timing:
+		var now := _clock_usec()
+		prepare_usec = now - phase_started
+		phase_started = now
 	for agent in ready:
 		agent.advance()
 		if _removed:
 			_advancing = false
 			return
+	if _detailed_timing:
+		var now := _clock_usec()
+		advance_usec = now - phase_started
+		phase_started = now
 	# Player is the only world-damage author in the airborne MVP. The next mask
 	# becomes visible to companions only after they finish this common tick.
 	if _damage_dirty:
@@ -185,18 +235,70 @@ func _after_step(tick: int, _time: float, _state: PackedFloat64Array,
 				if not imported:
 					agent.failure = "Shared scenery state was refused."
 		_damage_dirty = false
+	if _detailed_timing:
+		world_usec = _clock_usec() - phase_started
 	accepted_ticks += 1
-	last_tick_usec = Time.get_ticks_usec() - started
 	_snapshot_tick = -1
 	_advancing = false
+	var after_usec := _clock_usec() - started
+	if _pending_timing_tick == tick - 1:
+		_last_before_usec = _pending_before_usec
+		_last_after_usec = after_usec
+		last_tick_usec = _last_before_usec + _last_after_usec
+		_last_prepare_usec = prepare_usec
+		_last_advance_usec = advance_usec
+		_last_world_usec = world_usec
+		_last_overhead_usec = after_usec - prepare_usec - advance_usec - world_usec
+	_clear_pending_timing()
 
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(_player):
 		return
+	var started := _clock_usec() if _detailed_timing else 0
 	var frozen: bool = _player.sim.paused or not _player.holds.is_empty()
 	for agent in agents:
 		agent.render(delta, frozen)
+	if _detailed_timing:
+		_last_presentation_usec = _clock_usec() - started
+
+
+func set_detailed_timing(enabled: bool) -> void:
+	_detailed_timing = enabled
+	_reset_timing()
+
+
+func timing_status() -> Dictionary:
+	return {format = "openrc-companion-timing v1", detailed = _detailed_timing,
+		paired_tick_usec = last_tick_usec, before_usec = _last_before_usec, after_usec = _last_after_usec,
+		prepare_usec = _last_prepare_usec, advance_usec = _last_advance_usec,
+		world_publication_usec = _last_world_usec, after_overhead_usec = _last_overhead_usec,
+		presentation_usec = _last_presentation_usec}
+
+
+func _clock_usec() -> int:
+	return Time.get_ticks_usec()
+
+
+func _clear_pending_timing() -> void:
+	_pending_timing_tick = -1
+	_pending_before_usec = 0
+
+
+func _timing_faulted(_reason: String) -> void:
+	_clear_pending_timing()
+
+
+func _reset_timing() -> void:
+	_clear_pending_timing()
+	last_tick_usec = 0
+	_last_before_usec = 0
+	_last_after_usec = 0
+	_last_prepare_usec = 0
+	_last_advance_usec = 0
+	_last_world_usec = 0
+	_last_overhead_usec = 0
+	_last_presentation_usec = 0
 
 
 func status() -> Dictionary:
@@ -215,7 +317,9 @@ func status() -> Dictionary:
 	return {active = agents.size(), airborne = airborne, requested = int(config.count) if config.enabled else 0,
 		faulted = failures, crashed = crashed, seed = config.seed, error = "; ".join(problems), removed = _removed,
 		last_tick_usec = last_tick_usec, ticks = accepted_ticks, observation_batches = observation_batches,
+		timing = timing_status(),
 		config = config.duplicate(true), profile_identity = _profile_identity.duplicate(true),
+		seed_allocation = _seed_allocation.duplicate(true),
 		airspace_report = _airspace_report.duplicate(true), recording = recording_status()}
 
 
@@ -227,7 +331,8 @@ func start_recording(directory: String, max_ticks: int = FleetRecord.MAX_TICKS) 
 		return _refuse("Enable companions before starting a fleet capture.")
 	var candidate := FleetRecord.new()
 	var result: Dictionary = candidate.start(_player, agents, {config = config.duplicate(true),
-		profile_identity = _profile_identity.duplicate(true), airspace_report = _airspace_report.duplicate(true)},
+		profile_identity = _profile_identity.duplicate(true), airspace_report = _airspace_report.duplicate(true),
+		seed_allocation = _seed_allocation.duplicate(true)},
 		directory, max_ticks)
 	_record = candidate
 	return result
@@ -252,6 +357,7 @@ func remove_now() -> void:
 	_player = null
 	_snapshot.clear()
 	_snapshot_tick = -1
+	_reset_timing()
 	_clear_agents(_advancing)
 	set_process(false)
 	changed.emit()
@@ -277,6 +383,8 @@ func _disconnect() -> void:
 	if _player.sim.before_step.is_connected(_before_step): _player.sim.before_step.disconnect(_before_step)
 	if _player.sim.stepped.is_connected(_after_step): _player.sim.stepped.disconnect(_after_step)
 	if _player.scenery_damage_changed.is_connected(_scenery_changed): _player.scenery_damage_changed.disconnect(_scenery_changed)
+	if _player.resetting.is_connected(_clear_pending_timing): _player.resetting.disconnect(_clear_pending_timing)
+	if _player.sim.faulted.is_connected(_timing_faulted): _player.sim.faulted.disconnect(_timing_faulted)
 
 
 func _exit_tree() -> void:

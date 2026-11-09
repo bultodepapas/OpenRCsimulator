@@ -15,8 +15,14 @@ const ASSET_IDS: Array[String] = [
 	"grass_wispy_tall",
 ]
 const SEED := 610708
+# The opt-in enhanced profile retains its original height range.
 const MIN_HEIGHT_M := 0.12
 const MAX_HEIGHT_M := 0.25
+const SHORT_MIN_HEIGHT_M := 0.045
+const SHORT_MAX_HEIGHT_M := 0.11
+const TALL_MIN_HEIGHT_M := 0.10
+const TALL_MAX_HEIGHT_M := 0.22
+const TALL_MANAGED_CLEARANCE_M := 1.5
 const MAX_SOURCE_TRIANGLES := 50000
 const QUALITY_LIMITS := {
 	"low": {"grass_common_short": 17, "grass_common_tall": 11, "grass_wispy_tall": 10},
@@ -63,7 +69,8 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 	var pilot_north := float(pilot.get("north", 0.0))
 	var pilot_east := float(pilot.get("east", 0.0))
 	var local_exclusions := _nearby_exclusions(pilot_north, pilot_east, exclusions)
-	var limits: Dictionary = ENHANCED_QUALITY_LIMITS if GrassQuality.enhanced() else QUALITY_LIMITS
+	var enhanced := GrassQuality.enhanced()
+	var limits: Dictionary = ENHANCED_QUALITY_LIMITS if enhanced else QUALITY_LIMITS
 	var quality_limits: Dictionary = limits.get(quality, limits.high)
 	var ranked_row_keys := _ranked_row_keys(rows)
 	var triangles := 0
@@ -81,8 +88,20 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 			var east := pilot_east + float(row[1]) * 0.001
 			if not NearGrass.accepts(north, east, field, local_exclusions):
 				continue
+			var habitat := 0.0
+			if not enhanced and asset_index > 0:
+				habitat = _tall_habitat(float(row[0]) * 0.001, float(row[1]) * 0.001)
+				if habitat <= 0.0 or not _away_from_managed(field, north, east):
+					continue
 			var yaw_u16 := int(row[2])
 			var size_u8 := int(row[3])
+			var size := float(size_u8) / 255.0
+			var height := lerpf(MIN_HEIGHT_M, MAX_HEIGHT_M, size)
+			if not enhanced:
+				if asset_index == 0:
+					height = lerpf(SHORT_MIN_HEIGHT_M, SHORT_MAX_HEIGHT_M, size)
+				else:
+					height = lerpf(TALL_MIN_HEIGHT_M, lerpf(0.14, TALL_MAX_HEIGHT_M, habitat), size)
 			result.append({
 				"asset_id": asset_id,
 				"source_triangles": source_triangles,
@@ -93,7 +112,7 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 				"yaw_u16": yaw_u16,
 				"yaw_rad": float(yaw_u16) * TAU / 65536.0,
 				"size_u8": size_u8,
-				"height_m": lerpf(MIN_HEIGHT_M, MAX_HEIGHT_M, float(size_u8) / 255.0),
+				"height_m": height,
 				"seed": SEED + row_index,
 			})
 			triangles += source_triangles
@@ -104,6 +123,37 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 		push_error("Downloaded near grass exceeds its %d source-triangle budget (%d)" % [MAX_SOURCE_TRIANGLES, triangles])
 		return []
 	return result
+
+
+## A smooth, pilot-relative field keeps taller shapes in a few quiet patches.
+static func _tall_habitat(north_offset: float, east_offset: float) -> float:
+	var pattern := cos(north_offset * 0.31 + east_offset * 0.12 + 0.4) \
+		+ cos(east_offset * 0.29 - north_offset * 0.11 - 0.7) \
+		+ 0.25 * sin(north_offset * 0.19 - east_offset * 0.35)
+	return smoothstep(0.55, 1.3, pattern)
+
+
+## Keep the full normal exclusion predicate and add a wider edge for tall families.
+static func _away_from_managed(field: Dictionary, north: float, east: float) -> bool:
+	for surface: Dictionary in field.surfaces:
+		if str(surface.get("type", "")) == "rough":
+			continue
+		if not _outside_tall_margin(north, east, float(surface.center_north), float(surface.center_east),
+				float(surface.width_north_south) * 0.5, float(surface.length_east_west) * 0.5):
+			return false
+	for cue: Dictionary in field.get("flight_cues", []):
+		if str(cue.get("type", "")) == "pilot_station" \
+				and not _outside_tall_margin(north, east, float(cue.north), float(cue.east),
+					float(cue.depth) * 0.5, float(cue.width) * 0.5):
+			return false
+	return true
+
+
+static func _outside_tall_margin(north: float, east: float, center_north: float, center_east: float,
+		half_north: float, half_east: float) -> bool:
+	var dn := maxf(absf(north - center_north) - half_north, 0.0)
+	var de := maxf(absf(east - center_east) - half_east, 0.0)
+	return dn * dn + de * de >= TALL_MANAGED_CLEARANCE_M * TALL_MANAGED_CLEARANCE_M
 
 
 ## Per-asset order depends only on the validated row indices and the fixed seed/species list.
