@@ -1,6 +1,6 @@
 # External audits — pending work
 
-Updated **2026-11-08**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). The 31 original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
+Updated **2026-11-09**. This is the active queue, organized by area. Delivered changes and their evidence moved to [COMPLETED-AUDIT-WORK.md](COMPLETED-AUDIT-WORK.md). Original audit summaries remain unchanged in this folder and retain detailed reproductions, derivations, measurements and limits.
 
 **Read status carefully:** entries require implementation, investigation or qualification. Reproduce historical findings against current source before editing; an old report is not proof of a current failure. Implemented work is removed from the implementation queue even when native/physical/release gates remain; those gates are listed separately below. Concurrent unverified edits are not classified as completed.
 
@@ -35,9 +35,7 @@ Source: [A11][A11].
 
 Paused alert inspection is implemented in [UI-32-R10](../docs/research/menu-investigations/UI-32/README.md#paused-alert-inspection-ui-32-r10-2026-11-08) and recorded in the completed ledger. Physical-controller/assistive-technology, participant and required-CI qualification remain separate below. Original report: [A21][A21].
 
-Remaining source-only orientation follow-up:
-
-- **Trial build identity:** Pause names the base aircraft/field but not the frozen build's saved/draft identity. Consider Testing unsaved changes to… or Testing saved revision…; compare actual relevant contents for any Last flown draft indicator. Test fly neither saves the build nor proves it passed. This is orientation work, not evidence that the wrong build flies. Original report: [A21][A21].
+**Trial build identity** is implemented in [UI-32-R11](../docs/research/menu-investigations/UI-32/README.md#frozen-trial-identity-ui-32-r11--a21-2026-11-09): Pause identifies the frozen saved/unsaved build and ancestor revision from complete relevant contents. Test fly neither saves nor certifies it. Software and native Windows 1080p evidence are in the completed ledger; participant/device/platform and required-CI qualification remain separate. Original report: [A21][A21].
 
 Evaluate with players recovering an experiment, browsing a start without restarting, and identifying the tested build/conditions. These proposed tasks have not been run as participant research. The original links a 12-page PDF and an evidence ZIP retaining 85 bridge commands, including setup failures/resolution; those external deliverables were not inspected during consolidation.
 
@@ -62,7 +60,7 @@ An immutable accepted-tick contact observation could carry environment/geometry 
 
 ### Shared kernel and ground vehicles
 
-- **Fuel residual scope:** connected-trial and firing-counter fixes do not close exact-zero feed-line derivative/timing or establish physically resolved spark probability. Investigate those separately. [A4][A4], [A6][A6]
+- **Fuel residual scope:** [FUEL-12-R5](../docs/research/fuel-systems/FUEL-12/README.md#exact-zero-connected-trials-fuel-12-r5--a4a6-2026-11-09) implements the exact-zero connected RK derivative and versioned native mirror, with synthetic event/refinement and retained stock controls. Broader event-timing convergence, physically resolved spark probability, installed-native/package and full CI qualification remain separate. [A4][A4], [A6][A6]
 
 ### Extra 300 generator and presentation
 
@@ -155,7 +153,7 @@ The failed-save/new-T loss warning is already covered by A30's generation-aware 
 | **P1 qualification — Manual telemetry storage** | C7 / HELI-16 interactive T rows now use bounded raw chunks, one writer and explicit incomplete-prefix recovery; [implementation and Windows evidence](../docs/research/memory-2026-11-08.md#interactive-telemetry-chunks--c7--heli-16-continuation). Remaining: native frame pacing, long runs, slow-volume/package/platform recovery and variable visual metadata. Scripted analysis stays in-memory by default; explicit full-history APIs can still allocate the whole record. | [A31 original][A31] |
 | **P1 experiment — Monster Car 2 maps** | Extends A26 §2F and VQ-02a / DT-MAC-04d: trial platform-correct VRAM compression on the three full-resolution 4096² maps with mips intact. Require actual runtime formats/fallback, native 1080p paint/emission/PBR quality, transition/pressure and packaged evidence. Conditional ~256 MiB logical RD payload is not observed VRAM. | [A31 original][A31] |
 | **P2 — Ground input tape and checkpoints** | RCV: versioned segmented tape or bounded spool must retain exact replay and recovery. No ring truncation presented as equivalent history. | [A31 original][A31] |
-| **P3 hypothesis — Natural Random source cache** | Reproduce stamped-key growth or same-size/same-time stale identity on disposable data before compacting/bounding entries. Uncached launch validation remains the mismatch gate. A28 CPU sample/audio/cloud and A26 preload/native pressure work retain their existing owners. | [A31 original][A31] |
+| **P3 qualification — Natural Random source cache** | The same-size/same-time field mismatch is reproduced and [NR-02-R1](../docs/research/natural-random/README.md#source-identity-cache-nr-02-r1--a31-2026-11-09) implements bounded compact identities and exact top-level content checks. Aircraft/model mutation, complete dependency snapshot, native loading cost and full CI/release qualification remain separate. Uncached launch validation stays authoritative. | [A31 original][A31] |
 
 ### A26 Apple Silicon research applications
 
@@ -183,11 +181,9 @@ The failed-save/new-T loss warning is already covered by A30's generation-aware 
 
 Retain actual 1080p first, release-equivalent identities, effective renderer/scaler sizes, audio/lighting/seed/cache/power state and separate diagnostic/clean runs. The report's suggested 60-second screen and roughly 20-minute sustained follow-up are exploratory suggestions, not replacements for the owning Mac plan/A26 qualification gates or proof of thermal equilibrium. No FPS, battery or sustained gain is established. Original report: [A28][A28].
 
-### Wind sampling and thermal query candidates
+### Wind observer qualification
 
-| Pending item | Evidence and acceptance boundary | Original report |
-| --- | --- | --- |
-| **WOPT-02 — P3, reuse observer datum wind** | Unmodified flow plus synthetic station model/real spatial field across 8/24/64 modes and three times reduced the isolated wind-plus-stage-air sequence from 11 provider calls to 10, with compared wind/selected air fields byte-identical. This is not a complete overlay refresh count or timing result. Add an explicit observer/session accessor for air plus its detached datum wind within the same state/time/provider snapshot. Retain datum fallback when station validation fails, legacy/pending-reset behavior, full station validation and result ownership; no cross-frame/stage cache or datum-only Air.compute substitute. Refusal/fallback were harness-simulated, not exercised through the actual overlay; test that path before integration. Distinct from downwash reuse, flap accessors and station batching. | [A22 original][A22] |
+**WOPT-02** is implemented with [actual-overlay parity and refusal checks](../docs/WIND-ATMOSPHERE-REFERENCE.md#observer-datum-reuse-m5-w-aud-22--wopt-02-2026-11-09), including detached datum ownership, legacy/pending reset and pure-provider fallback. Complete-frame cost, target-platform/package and required-CI qualification remain open. Source: [A22][A22].
 
 ### Rendering math and platform experiments
 
@@ -271,6 +267,7 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 
 | Implemented or historical area | Pending gate | Original report |
 | --- | --- | --- |
+| A21 trial identity; A22 WOPT-02; A31 source cache | [UI-32-R11](../docs/research/menu-investigations/UI-32/README.md#frozen-trial-identity-ui-32-r11--a21-2026-11-09), [actual overlay reuse](../docs/WIND-ATMOSPHERE-REFERENCE.md#observer-datum-reuse-m5-w-aud-22--wopt-02-2026-11-09) and [NR-02-R1](../docs/research/natural-random/README.md#source-identity-cache-nr-02-r1--a31-2026-11-09) have focused Windows software evidence and bounded 1080p UI review. Complete required CI, participant/device/platform/release and target-performance gates remain separate. | [A21][A21], [A22][A22], [A31][A31] |
 | A30 reference-reset follow-up | [Guarded reference/native-request transactions](../docs/research/helicopter/HELI-20/README.md#runtime-refusal-and-reset-follow-up-a20--a30-2026-11-08) pass 305 reset/observer assertions, with actual recorder, calibration and gamepad preservation. Actual native execution and callback backend-status identity, complete required CI, devices and physical qualification remain separate. | [A30 summary][A30], [A30 full][A30-full] |
 | A21 §5 | [UI-32-R10](../docs/research/menu-investigations/UI-32/README.md#paused-alert-inspection-ui-32-r10-2026-11-08) passes 101 focused checks plus 399 existing consumer checks, with native Windows 1080p EN100/200 and ES200 review. Physical controllers, assistive technology, participant comprehension, other platforms, full CI and performance qualification remain open; later concurrent controller/catalog additions have software evidence but were not re-captured natively. | [A21 original][A21] |
 | A20 / H02 runtime reporting | [Reference diagnostic receipt](../docs/research/helicopter/HELI-20/README.md#a20-rotor-runtime-reporting-2026-11-08): 38 focused checks and 740 matched accepted-tick hashes, three checkpoints and fault rollback. Actual-native failed-trial reporting, required CI and physical qualification remain open; this does not close the unsupported rotor-law overlap. | [A15 original][A15], [A20 original][A20] |
@@ -292,7 +289,7 @@ A16/A19 propose experiments, not completed physical validation. A20 reports four
 | A13 UI2-01/UI2-05; A14 F14 | [UI-31-R2](../docs/research/menu-investigations/UI-31/README.md#coordinated-departures-ui-31-r2-2026-11-06) repairs coordinated departures with 910 focused checks. Native OS close, physical controllers, rendered/assistive-technology acceptance and required full CI remain separate. | [A13 original][A13], [A14 original][A14] |
 | A6 F1 | Optional future support for refused multi-substep glow requires independently qualified contact/event composition; safe admission refusal is already delivered. | [A6 original][A6] |
 | A6 F3 | Dynamically flown/physical landing and target cost; constructed geometry fixtures do not establish those. | [A6 original][A6] |
-| A6 F4 / A4 | Full applicable CI/native installation/physical gates; zero-total feed-line derivative remains separate. | [A6 original][A6], [A4 original][A4] |
+| A6 F4 / A4 | [FUEL-12-R5](../docs/research/fuel-systems/FUEL-12/README.md#exact-zero-connected-trials-fuel-12-r5--a4a6-2026-11-09) closes the exact-zero derivative software gap with bounded reference/native and stock replay evidence. Full applicable CI, native installation/fleet/package, broader event-timing convergence and physical gates remain open. | [A6 original][A6], [A4 original][A4] |
 | A6 O4 | Fresh source-bound stock NK-3 numerical qualification is recorded in the R3 evidence; required full app/visual CI and sustained 1080p full-scene measurements remain. Reported isolated spatial full-step median 7.47% is not FPS. | [A6 original][A6] |
 | A1/A7 rendering hardening | Actual MetalFX execution, valid displayed recovery, native lifecycle/readability. Callback/property observations alone are insufficient. | [A1 original][A1], [A7 original][A7] |
 | A1 instrumentation | Verify current reducer rejects profiler/HUD/diagnostic contamination before accepting timing; historical source claims are not current gate proof. A24 reproduced the existing contamination eligibility limitation and a synthetic stream whose aggregate/percentile gates pass one 400 ms interval; neither establishes an observed game hitch. Retain clean-launch, maximum-interval and burst checks. | [A1 original][A1], [A24 original][A24] |

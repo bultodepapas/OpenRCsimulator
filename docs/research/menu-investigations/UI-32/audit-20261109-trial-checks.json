@@ -342,5 +342,96 @@
       "Capture 003 was taken before settled layout; later maximum-name spots waited for layout",
       "Native session is UI evidence; concurrent later fuel-law work is qualified separately"
     ]
+  },
+  "post_merge_consumer_checks": {
+    "reason": "Concurrent unrelated Workshop preview changes advanced after the first checks; both affected consumers passed on the later shared tree.",
+    "checks": [
+      {
+        "path": "tmp/audit-integration-20261109/final-workshop-ui-3peosddy/report.json",
+        "sha256": "c076b76f4b23e0e1c836459015bd16889ce54acfdfe71dafca7650f14877998b",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "14a2cd20-5a3c-4fc4-8cb3-9ab5e884e176",
+          "command": [
+            ".tools/Godot_v4.8-beta2_win64_console.exe",
+            "--headless",
+            "--path",
+            "app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/test_workshop_ui.gd"
+          ],
+          "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+          "started_utc": "2026-11-09T14:53:13.915936+00:00",
+          "label": "final-workshop-ui",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\final-workshop-ui-3peosddy\\engine.log",
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\final-workshop-ui-3peosddy\\report.json",
+          "timeout_seconds": 180.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 29.812,
+          "log_bytes": 8842,
+          "log_sha256": "f07039813b1e7f104d8edf9dbd0527b17a8c818b7d8e9a7301758a0e4e0bffce"
+        }
+      },
+      {
+        "path": "tmp/audit-integration-20261109/final-workshop-integration-juwvs4gh/report.json",
+        "sha256": "70de8ca4ef0867246af08fcc01bc991d02e60a526189268f05de7865caffc1d5",
+        "receipt": {
+          "format": "openrc-godot-check v1",
+          "capture_id": "87bd6c63-e0ce-40be-b573-8c42e2e1b807",
+          "command": [
+            ".tools/Godot_v4.8-beta2_win64_console.exe",
+            "--headless",
+            "--path",
+            "app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tests/test_workshop_integration.gd"
+          ],
+          "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+          "started_utc": "2026-11-09T14:53:13.915936+00:00",
+          "label": "final-workshop-integration",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\final-workshop-integration-juwvs4gh\\engine.log",
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\final-workshop-integration-juwvs4gh\\report.json",
+          "timeout_seconds": 180.0,
+          "max_log_bytes": 8388608,
+          "warnings_as_errors": false,
+          "required_text": [],
+          "process_exit": 0,
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": [],
+          "reason": "passed",
+          "detail": "",
+          "exit_code": 0,
+          "ok": true,
+          "elapsed_seconds": 34.093,
+          "log_bytes": 3636,
+          "log_sha256": "4dd5dceafafbb629d48c3779a0d51cfb1dc7f15290ad09490a96aab321653eb1"
+        }
+      }
+    ],
+    "preview_dependency_sha256": "6611615560fd08da560a45b9092f94cf495aa30197ec210ce57c54677edc4578",
+    "native_scope": "Earlier native UI observations are not a qualification of the concurrent preview changes."
   }
 }

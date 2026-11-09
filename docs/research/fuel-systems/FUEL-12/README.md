@@ -177,6 +177,11 @@ identities. No library was installed in the shared app; old source-bound receipt
 continue to refuse and fall back. Native installation/fleet/package, complete CI,
 target cost, broader convergence and physical qualification remain open.
 
+The evidence byte policy was verified from fresh sparse clones of `979819ecc`
+with `core.autocrlf=false` and `true`: all 63 original evidence files, including
+their manifest, retained identical bytes. The manifest records this scoped check;
+it is not a fresh-clone application or package qualification.
+
 ## Implemented result
 
 Current finite Stiks and Extra use the versioned glow adapter. P-51 and Ventage consume their explicit gasoline/turbine stores. Every supported adapter updates mass, CG and inertia, preserves unusable residue, locates exhaustion and continues with its stopped-source law. A glow installation can additionally declare an identified pre-primed line and pickup plane; synthetic tests cover loss of access, finite line depletion and retained unreachable main fuel. Bundled aircraft retain line-free/main-only data until their owners have source-backed delivery geometry.

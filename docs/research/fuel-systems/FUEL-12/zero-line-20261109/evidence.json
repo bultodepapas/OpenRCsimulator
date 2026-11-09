@@ -18,6 +18,24 @@
     "timing_limit": "constant-flow 240/480/960 Hz test also met its root tolerance on baseline; it does not establish a pre-fix timing error or physical timing accuracy"
   },
   "date": "2026-11-09",
+  "evidence_checkout_verification": {
+    "ok": true,
+    "results": [
+      {
+        "clone": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-evidence-checkout-20261109\\autocrlf-false",
+        "commit": "979819ecc",
+        "core.autocrlf": "false",
+        "verified_files": 63
+      },
+      {
+        "clone": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-evidence-checkout-20261109\\autocrlf-true",
+        "commit": "979819ecc",
+        "core.autocrlf": "true",
+        "verified_files": 63
+      }
+    ],
+    "scope": "fresh sparse clones; exact fuel evidence byte policy only, not app/import/native/package qualification"
+  },
   "files_sha256": {
     "checks/baseline-expected-failure/engine.log": "e66fac9ce9a60f416b8dd89668e00c1d9b9cb7e8dbc339ca830cf6451db21b06",
     "checks/baseline-expected-failure/report.json": "45b140961919a1570dcba9c6c0932bf23da79e18113023067687018c52028bc0",

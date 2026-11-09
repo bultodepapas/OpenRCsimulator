@@ -99,6 +99,7 @@
 /docs/research/fuel-systems/FUEL-12/evidence/** -text whitespace=cr-at-eol
 /docs/research/fuel-systems/FUEL-12/zero-line-20261109/** -text whitespace=cr-at-eol
 /docs/research/fuel-systems/FUEL-12/zero-line-20261109/fixtures/** whitespace=-space-before-tab,-blank-at-eof,cr-at-eol
+/docs/research/ai-companions/AFC-02/rebinds/2026-11-09-b5332032-to-b98411b3.json whitespace=cr-at-eol
 
 # Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
 /app/data/aircraft_models/*.json text eol=lf
