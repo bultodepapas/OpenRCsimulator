@@ -3,7 +3,7 @@
   "date": "2026-11-09",
   "engine": "4.8.beta2.official.cafc17a19",
   "platform": "Windows x86_64",
-  "head_at_collection": "45d86d250f6e38a3d9b60d30c01bdc2396571efe",
+  "head_at_collection": "da7b5cfa85d95b7f6e74bf816e2456520ce55d47",
   "checks": [
     {
       "path": "checks/afc-r11-baseline-record.json",

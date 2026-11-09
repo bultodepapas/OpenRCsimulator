@@ -114,7 +114,7 @@ gentle capture; runtime flight inputs are identical.
 
 [Normal app admission](production-admission.json), without overrides, observes
 three airborne companions with traffic seed zero through tick 3,213, profile
-identity v2 and the exact manifest hash above. The
+identity v2 and the recorded manifest hash. The
 [timing sample](production-timing.json) records separate owned callback phases
 after another 24 manually stepped ticks. A nonzero-tick capture request correctly
 refuses the launch-only capture contract. Remove leaves zero active actors and
