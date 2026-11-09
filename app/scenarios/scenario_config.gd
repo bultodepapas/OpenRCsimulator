@@ -32,6 +32,10 @@ const SCENARIO_KEYS: Array[String] = [
 const BUILD_IDENTITY_KEYS: Array[String] = [
 	"engine_version", "application_version", "describe", "commit", "dirty", "commit_date",
 ]
+## Generation-only identities, not validated models or fields. Each source slot replaces
+## its previous revision; LRU eviction also bounds callers using distinct field paths.
+const SOURCE_CACHE_MAX_ENTRIES := 16
+const SOURCE_CACHE_MAX_ENTRY_BYTES := 4096
 
 static var _policy_loaded := false
 static var _policy_ok := false
@@ -201,6 +205,10 @@ static func load_field_source(path: String = FieldLoader.DEFAULT_PATH) -> Dictio
 	if path.strip_edges().is_empty():
 		return {"ok": false, "field": {}, "identity": "", "errors": PackedStringArray(["field path is empty"])}
 	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
+	return _field_source_from_bytes(path, bytes)
+
+
+static func _field_source_from_bytes(path: String, bytes: PackedByteArray) -> Dictionary:
 	if bytes.is_empty():
 		return {"ok": false, "field": {}, "identity": "", "errors": PackedStringArray(["%s: cannot read field file (error %d)" % [path, FileAccess.get_open_error()]])}
 	var parser := JSON.new()
@@ -218,21 +226,29 @@ static func load_field_source(path: String = FieldLoader.DEFAULT_PATH) -> Dictio
 	}
 
 
-## Resolve immutable source identities. Generation may reuse same-process profiles; source verification always bypasses this cache.
+## Generation may reuse compact identities only after checking exact top-level bytes.
+## The uncached launch gate still revalidates all aircraft/model dependencies.
 static func resolve_source_identities(aircraft_id: String, field_path: String = FieldLoader.DEFAULT_PATH,
 		use_cache: bool = true) -> Dictionary:
 	if not EXPECTED_AIRCRAFT_IDS.has(aircraft_id):
 		return {"ok": false, "source": {}, "errors": PackedStringArray(["aircraft_id is not in the Natural Random stock allowlist"])}
-	var field_key := "field|%s|%s" % [field_path, _file_stamp(field_path)]
 	var field_source: Dictionary = {}
-	if use_cache and _source_cache.has(field_key):
-		field_source = _source_cache[field_key].duplicate(true)
-	else:
-		field_source = load_field_source(field_path)
-		if bool(field_source.get("ok", false)) and use_cache:
-			_source_cache[field_key] = field_source.duplicate(true)
-	if not bool(field_source.get("ok", false)):
-		return {"ok": false, "source": {}, "errors": field_source.get("errors", PackedStringArray())}
+	var field_key := "field|" + ProjectSettings.globalize_path(field_path).sha256_text()
+	var field_bytes := PackedByteArray()
+	var field_digest := ""
+	if use_cache and not field_path.strip_edges().is_empty():
+		field_bytes = FileAccess.get_file_as_bytes(field_path)
+		if not field_bytes.is_empty():
+			field_digest = _sha256(field_bytes)
+			field_source = _cached_source(field_key, field_digest)
+	if field_source.is_empty():
+		var loaded_field: Dictionary = _field_source_from_bytes(field_path, field_bytes) \
+			if use_cache and not field_path.strip_edges().is_empty() else load_field_source(field_path)
+		if not bool(loaded_field.get("ok", false)):
+			return {"ok": false, "source": {}, "errors": loaded_field.get("errors", PackedStringArray())}
+		field_source = {"field_id": str(loaded_field.field.get("id", "")), "field_identity": str(loaded_field.identity)}
+		if use_cache:
+			_remember_source(field_key, field_digest, field_source)
 
 	var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 	if entry.is_empty() or entry.get("data", "").is_empty() or entry.get("status", "") == AircraftCatalog.PREVIEW:
@@ -247,11 +263,14 @@ static func resolve_source_identities(aircraft_id: String, field_path: String = 
 	if data_path.is_empty() or not FileAccess.file_exists(data_path):
 		return {"ok": false, "source": {}, "errors": PackedStringArray(["aircraft catalog has no current default flight data for '%s'" % aircraft_id])}
 	var model_path := "res://data/aircraft_models/%s.json" % visual_family
-	var aircraft_key := "aircraft|%s|%s|%s|%s" % [aircraft_id, data_path, _file_stamp(data_path), _file_stamp(model_path)]
+	var aircraft_key := "aircraft|" + JSON.stringify([aircraft_id, data_path, visual_family, model_path]).sha256_text()
+	var data_digest := FileAccess.get_sha256(data_path) if use_cache else ""
+	var model_digest := FileAccess.get_sha256(model_path) if use_cache else ""
+	var aircraft_digest := (data_digest + model_digest).sha256_text()
 	var aircraft_source: Dictionary = {}
-	if use_cache and _source_cache.has(aircraft_key):
-		aircraft_source = _source_cache[aircraft_key].duplicate(true)
-	else:
+	if use_cache and not data_digest.is_empty() and not model_digest.is_empty():
+		aircraft_source = _cached_source(aircraft_key, aircraft_digest)
+	if aircraft_source.is_empty():
 		var loaded: Dictionary = AircraftData.load_file(data_path)
 		if not bool(loaded.get("ok", false)):
 			return {"ok": false, "source": {}, "errors": loaded.get("errors", PackedStringArray())}
@@ -267,14 +286,16 @@ static func resolve_source_identities(aircraft_id: String, field_path: String = 
 		}
 		if not _is_sha256(str(aircraft_source.aircraft_identity)) or not _is_sha256(str(aircraft_source.model_identity)):
 			return {"ok": false, "source": {}, "errors": PackedStringArray(["accepted aircraft or model source did not expose a SHA-256 identity"])}
-		if use_cache:
-			_source_cache[aircraft_key] = aircraft_source.duplicate(true)
+		# Each loader validates and hashes its own single read. A concurrent edit
+		# must never associate that later snapshot with an earlier lookup digest.
+		if use_cache and aircraft_source.aircraft_identity == data_digest and aircraft_source.model_identity == model_digest:
+			_remember_source(aircraft_key, aircraft_digest, aircraft_source)
 
 	return {
 		"ok": true,
 		"source": {
-			"field_id": str(field_source.field.get("id", "")),
-			"field_identity": str(field_source.identity),
+			"field_id": str(field_source.field_id),
+			"field_identity": str(field_source.field_identity),
 			"aircraft_identity": str(aircraft_source.aircraft_identity),
 			"model_identity": str(aircraft_source.model_identity),
 		},
@@ -626,15 +647,30 @@ static func _sha256(bytes: PackedByteArray) -> String:
 	return hashing.finish().hex_encode()
 
 
-static func _file_stamp(path: String) -> String:
-	var absolute := ProjectSettings.globalize_path(path) if path.begins_with("res://") else path
-	var modified: int = FileAccess.get_modified_time(absolute)
-	var length := -1
-	var file := FileAccess.open(path, FileAccess.READ)
-	if file != null:
-		length = file.get_length()
-		file.close()
-	return "%s:%d:%d" % [absolute, modified, length]
+static func clear_source_cache() -> void:
+	_source_cache.clear()
+
+
+static func _cached_source(key: String, digest: String) -> Dictionary:
+	if not _source_cache.has(key):
+		return {}
+	var entry: Dictionary = _source_cache[key]
+	_source_cache.erase(key)
+	if entry.digest != digest:
+		return {}
+	# Dictionary insertion order supplies LRU recency without retaining a second key list.
+	_source_cache[key] = entry
+	return entry.source.duplicate(true)
+
+
+static func _remember_source(key: String, digest: String, source: Dictionary) -> void:
+	_source_cache.erase(key)
+	var entry := {"digest": digest, "source": source.duplicate(true)}
+	if var_to_bytes(entry).size() > SOURCE_CACHE_MAX_ENTRY_BYTES:
+		return
+	while _source_cache.size() >= SOURCE_CACHE_MAX_ENTRIES:
+		_source_cache.erase(_source_cache.keys()[0])
+	_source_cache[key] = entry
 
 
 static func _sorted_value(value: Variant) -> Variant:

@@ -1,0 +1,241 @@
+{
+  "date": "2026-11-09",
+  "baseline_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "platform": "Windows x86-64",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "qualification": "focused software evidence; complete required CI/platform/release and physical qualification remain open",
+  "scope": "NR-02-R1 / A31 top-level source identity cache",
+  "source_sha256": {
+    "app/scenarios/scenario_config.gd": "b7555e02d336b8a6dfcde41a12dfc2016b3dc9790b0e9bdab51d61fb13d8c714",
+    "app/tests/test_natural_random_source_cache.gd": "c661813945a81c849ff096e6550262ea9a8ba62986e3f1a50634698f9a1b20ef"
+  },
+  "checks": [
+    {
+      "path": "tmp/audit-cache-checks-20261109/source-cache-final2-o6jm0zlx/report.json",
+      "sha256": "f6778236610827682a6b3e50c2da5a2199bb86ca5e85e4e9c654d0dc95ceb73f",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c4bd1ab2-2132-4140-802d-0bf6b368caf0",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_natural_random_source_cache.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:26:22.988520+00:00",
+        "label": "source-cache-final2",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-checks-20261109\\source-cache-final2-o6jm0zlx\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-checks-20261109\\source-cache-final2-o6jm0zlx\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.031,
+        "log_bytes": 170,
+        "log_sha256": "32bb4e2649c795318c3d7dca33e04e47f8def105649d1f5bee3861b33e5e5110"
+      }
+    },
+    {
+      "path": "tmp/audit-cache-checks-20261109/config-zg64szbv/report.json",
+      "sha256": "32dab9792aa4a9484b72d08152aa1ce1567196cb8a17740ac54f33d3cbc0b348",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0aa0e27c-012e-4d93-a3c2-e12a44a4382e",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_natural_random_config.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:15:44.354600+00:00",
+        "label": "config",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-checks-20261109\\config-zg64szbv\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-checks-20261109\\config-zg64szbv\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all Natural Random config checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.062,
+        "log_bytes": 2969,
+        "log_sha256": "9686a1fc5edc743cdacefaf3d56b012723ca6bb4bc6dd496f56500dee0b1934a"
+      }
+    },
+    {
+      "path": "tmp/audit-cache-checks-20261109/generator-h00dd0sh/report.json",
+      "sha256": "e7ca514b46f51685733f207d36257d38475136512acce76ec70725059df4a78d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f6a8cdee-d785-4d81-ab48-0aeaae6d13a8",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_natural_random_generator.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:15:44.354600+00:00",
+        "label": "generator",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-checks-20261109\\generator-h00dd0sh\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-checks-20261109\\generator-h00dd0sh\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all Natural Random generator checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 25.531,
+        "log_bytes": 4825,
+        "log_sha256": "11fa6c98fef49a0a67f8e5789812f1d5948736fe343d6395c4dec70ea0d36c83"
+      }
+    }
+  ],
+  "integration": [
+    {
+      "path": "tmp/audit-integration-20261109/natural-ui-gu8minm9/report.json",
+      "sha256": "9f77c3c13c0a2692af9da451eade6c38e92fee8345b6dd188f154d0ce0ae8713",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "8b13c444-dd23-4f83-82dd-077c94b2cecc",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_natural_random.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:27:14.189277+00:00",
+        "label": "natural-ui",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\natural-ui-gu8minm9\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\natural-ui-gu8minm9\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 29.313,
+        "log_bytes": 2714,
+        "log_sha256": "fdd4004bd104c7c015dfab90f5cccff9fde1f0a167ec770f36177195246ca970"
+      }
+    }
+  ],
+  "limits": [
+    "16 entries and 4096 serialized bytes per entry do not bound allocator/RSS",
+    "Top-level hashes do not make transitive dependency snapshots atomic",
+    "No separately executed aircraft/model same-stamp mutation or native load timing"
+  ],
+  "baseline_witness": [
+    {
+      "path": "tmp/audit-cache-repro-20261109/baseline-nss048id/report.json",
+      "sha256": "59888dff6609d6b0727f715b00778e335a79e31edeef6cb1861d53a174d0a8df",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "44fa8c37-e370-44ed-a7ca-b1385fc8ff10",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "../tmp/audit-cache-repro-20261109/repro.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:13:13.473172+00:00",
+        "label": "baseline",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-repro-20261109\\baseline-nss048id\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-cache-repro-20261109\\baseline-nss048id\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "CACHE_REPRO_COMPLETE"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.859,
+        "log_bytes": 238,
+        "log_sha256": "3d078c8d1b087678b598f03209027530ea71d7018b8f046f7e2e98bebc571e41"
+      }
+    }
+  ]
+}

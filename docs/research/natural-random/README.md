@@ -10,6 +10,32 @@ Preparation loads the actual stock data and configures weather before trim, with
 
 The implementation adds no wind equations, simulation state, aircraft tuning, assets or dependencies. Current source separately includes other vehicle and night-lighting integrations; their presence is not Natural Random admission or acceptance.
 
+### Source identity cache (NR-02-R1 / A31, 2026-11-09)
+
+A disposable Windows fixture reproduced the audit's same-size/same-timestamp stale
+field identity: cached generation returned `default` while uncached validation
+returned `changed`. Generation now checks exact top-level source bytes before a
+cache hit. Field parsing and hashing consume one buffer; aircraft/model misses
+are retained only when their loaders' accepted digests match the lookup digests.
+Launch still bypasses this cache and validates dependencies.
+
+The cache keeps compact field IDs/digests and aircraft/model digests, replacing
+each source slot's previous revision. LRU retention is at most 16 entries, with
+each serialized entry at most 4,096 bytes; oversized identities bypass retention.
+These are serialized-record bounds, not allocator/RSS limits. No validated field,
+aircraft model, failed load or unbounded path string is retained. Callers receive
+detached results, and `clear_source_cache()` releases optional retention.
+
+The [checked evidence](source-cache-20261109.json) records the baseline witness,
+42 focused assertions, existing configuration and 10,000-seed generator checks,
+and production menu lifecycle verification. Tests include content reversion,
+malformed/missing recovery, launch refusal, actual oversized bypass, LRU recency,
+ownership and uncached nonpollution. The timestamp observation is diagnostic on
+slow hosts. Aircraft/model same-stamp mutation and concurrent file modification
+are not separately qualified; top-level hashes do not make dependency snapshots
+atomic. Independent review found no concrete regression. Full CI, native loading
+cost and platform/release qualification remain open; no speedup is claimed.
+
 ## Scenario identity and recording
 
 `openrc-flight-scenario v1` is separate from the sealed aircraft, weather, lighting and checkpoint formats. It carries the resolved settings, seed, generator/recipe versions, required capabilities, build identity and exact SHA-256 hashes of source aircraft, field and model manifest. Source checks bypass the generation cache at launch.
