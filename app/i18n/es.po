@@ -8869,3 +8869,99 @@ msgstr "Basado en el diseño guardado: %s · revisión %d"
 
 msgid "High and Extreme add detailed grass at walking-path edges."
 msgstr "Alto y Extremo añaden hierba detallada en los bordes de los senderos peatonales."
+
+msgid "DIY estimate"
+msgstr "Estimación con trabajo propio"
+
+msgid "Include shop labor"
+msgstr "Incluir mano de obra de taller"
+
+msgid "Purchase plan"
+msgstr "Plan de repuestos"
+
+msgid "Recommended parts"
+msgstr "Repuestos recomendados"
+
+msgid "Choose a frozen parts package estimate. Extra supplied parts receive no sale credit."
+msgstr "Elige una estimación de paquete con precios guardados. No se descuentan posibles ventas de piezas sobrantes."
+
+msgid "Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed."
+msgstr "Estimación local del juego con la mano de obra de taller seleccionada. Excluye impuestos y envío; puede haber otros daños sin evaluar."
+
+msgid "Selected cost plan"
+msgstr "Plan de costes seleccionado"
+
+msgid "Cost plan unavailable"
+msgstr "Plan de costes no disponible"
+
+msgid "Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."
+msgstr "Los importes de piezas y materiales excluyen la mano de obra. La mano de obra seleccionada se añade una vez; la preparación compartida se cobra una sola vez."
+
+msgid "Quantities identify purchase or service scope, not a count of physically confirmed failed units."
+msgstr "Las cantidades indican el alcance de la compra o del servicio, no el número de unidades con fallos físicos confirmados."
+
+msgid "Shop labor uses an authored game rate and duration, not a repair shop quote."
+msgstr "La mano de obra usa una tarifa y una duración estimadas para el juego, no una cotización de taller."
+
+msgid "DIY cash cost does not charge for owner time."
+msgstr "El coste con trabajo propio no cobra el tiempo del usuario."
+
+msgid "The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."
+msgstr "El plan de compra o mano de obra no está resuelto. El subtotal mostrado excluye los costes pendientes."
+
+msgid "Replacement package"
+msgstr "Paquete de repuestos"
+
+msgid "Repair materials"
+msgstr "Materiales de reparación"
+
+msgid "Labor"
+msgstr "Mano de obra"
+
+msgid "Incurred fee"
+msgstr "Cargo ya incurrido"
+
+msgid "Shared setup"
+msgstr "Preparación compartida"
+
+msgid "Labor: %s"
+msgstr "Mano de obra: %s"
+
+msgid "Active work: %d min"
+msgstr "Trabajo activo: %d min"
+
+msgid "Active work: unknown"
+msgstr "Trabajo activo: desconocido"
+
+msgid "Labor: %s · duration unknown"
+msgstr "Mano de obra: %s · duración desconocida"
+
+msgid "Additional duplicate supplied units: %d. They are unvalued and receive no sale credit."
+msgstr "Unidades duplicadas adicionales incluidas: %d. No se valoran ni se descuentan posibles ventas."
+
+msgid "The cost option could not be applied. The previous estimate is retained."
+msgstr "No se pudo aplicar la opción de costes. Se conserva la estimación anterior."
+
+msgid "One package plus individual parts: %s"
+msgstr "Un paquete más piezas individuales: %s"
+
+msgid "No additional game charge within the assessed scope: %s. This does not certify physical health or salvage."
+msgstr "Sin cargo adicional del juego dentro del alcance evaluado: %s. No certifica el estado físico ni el valor recuperable."
+
+msgid "Previous package (needs review)"
+msgstr "Paquete anterior (requiere revisión)"
+
+msgid "Selected local game estimate"
+msgstr "Estimación local del juego seleccionada"
+
+msgid "Selected-plan price range"
+msgstr "Intervalo de precios del plan seleccionado"
+
+msgid "Low estimate"
+msgstr "Estimación mínima"
+
+msgid "High estimate"
+msgstr "Estimación máxima"
+
+msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
+msgstr "La variación de precios y las alternativas del modelo son límites, no probabilidades de confianza."

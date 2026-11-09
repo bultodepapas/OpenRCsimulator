@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8b7053fa-ea0d-407c-a9cc-e7d38208e150",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "research/ai-companions/traffic",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://test_scheduler_boundaries.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:34:54.740740+00:00",
+  "label": "scheduler-boundaries-r3",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9-schedulers\\checks\\scheduler-boundaries-r3-nysvmnvs\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9-schedulers\\checks\\scheduler-boundaries-r3-nysvmnvs\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "scheduler boundaries: 79 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.438,
+  "log_bytes": 115,
+  "log_sha256": "805938c38bdfa0e093fe11d4933124c3f9d84042713930fcca30d289fcb6e320"
+}

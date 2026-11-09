@@ -126,7 +126,7 @@ func _test_supersession_and_ambiguity() -> void:
 	var replacement_applied: Dictionary = replaced_fixture.ledger.apply_inspection(later_replacement)
 	_check("later replacement inspection is accepted", replacement_applied.get("ok", false), str(replacement_applied))
 	_check("superseded repair choice is hidden after the current action becomes replacement",
-		_line(replaced_fixture.ledger.report, COMPONENT_ID).get("action") == "replacement"
+		_selected_covers(replaced_fixture.ledger.report, COMPONENT_ID + ":0")
 		and RepairDetails.normalize(replaced_fixture.ledger.report).is_empty())
 
 	var duplicate: Dictionary = fixture.ledger.report.duplicate(true)
@@ -223,6 +223,13 @@ func _line(report: Dictionary, component_id: String) -> Dictionary:
 		if value is Dictionary and value.get("id") == component_id:
 			return value
 	return {}
+
+
+func _selected_covers(report: Dictionary, unit_id: String) -> bool:
+	for value: Variant in report.get("lines", []):
+		if value is Dictionary and value.get("action") == "selected_purchase" and unit_id in value.get("allocated_ids", []):
+			return true
+	return false
 
 
 func _check(label: String, passed: bool, detail: String = "") -> void:

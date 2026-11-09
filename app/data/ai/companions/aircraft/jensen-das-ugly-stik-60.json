@@ -9,13 +9,13 @@
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
-    "sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+    "sha256": "8e6dad42e377f9c95156fc9ea285fbf493420cb159b156557d66097584349905",
     "dependencies": {
-      "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+      "res://ai/companions/circuit_controller.gd": "3624536ab2ede52139de22868e4fbfa39869d5def2072cd82c86fdd0c81e958f"
     }
   },
   "solver": {
-    "sha256": "b98411b3c131e0a91bd7e2793799bf2f4d69264e1f29b058084e623ab20a1581",
+    "sha256": "896989e041c938d5054ab7837fe73d86d61655c6946ddfc04daea39f345ae51f",
     "normalization": "utf8-lf"
   },
   "engine_version": "4.8.beta2.official.cafc17a19",

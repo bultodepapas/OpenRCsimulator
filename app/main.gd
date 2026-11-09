@@ -1180,6 +1180,8 @@ func _prepare_flight() -> void:
 		add_child(_accident_report)
 		_accident_incident.assessment_changed.connect(_on_accident_assessment)
 		_accident_report.restart_requested.connect(_request_restart)
+		_accident_report.costing_mode_requested.connect(_on_accident_costing_mode_requested)
+		_accident_report.purchase_package_requested.connect(_on_accident_purchase_package_requested)
 		session.contact_events_changed.connect(_on_accident_contacts)
 		var archived: Dictionary = _accident_incident.load_archive()
 		if not archived.is_empty():
@@ -2867,6 +2869,22 @@ func _begin_accident_ledger() -> void:
 
 func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 	_accident_report.show_assessment(report, terminal)
+
+
+func _on_accident_costing_mode_requested(mode: String) -> void:
+	if _accident_incident == null or mode not in ["diy", "paid"]:
+		return
+	var result: Dictionary = _accident_incident.set_costing_mode(mode)
+	if not result.get("ok", false):
+		_note = tr("The cost option could not be applied. The previous estimate is retained.")
+
+
+func _on_accident_purchase_package_requested(package_id: String) -> void:
+	if _accident_incident == null:
+		return
+	var result: Dictionary = _accident_incident.set_purchase_package(package_id)
+	if not result.get("ok", false):
+		_note = tr("The cost option could not be applied. The previous estimate is retained.")
 
 
 func _exit_tree() -> void:

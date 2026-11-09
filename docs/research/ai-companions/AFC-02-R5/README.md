@@ -1,5 +1,9 @@
 # AFC-02-R5: companion qualification on Godot 4.8 beta2
 
+The [2026-11-09 prediction and selection follow-up](../AFC-04-R9/README.md)
+records the corrected controller's matrix, encounter surveys, exact recordings
+and source-profile promotion. The original campaigns below remain dated evidence.
+
 The [2026-11-08 source requalification](source-requalification-2026-11-08/README.md) retains the current-law matrix, nine fresh exact-replay tapes, source/profile promotion and production-admission checks. It preserves this campaign's existing scope and limitations. The original beta2 campaign below remains dated evidence.
 
 2026-11-01. The existing airborne Ugly Stik circuit scope was checked on official

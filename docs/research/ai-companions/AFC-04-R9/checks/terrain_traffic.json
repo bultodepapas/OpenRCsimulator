@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a1178005-fbac-4b89-8c0f-f42f74eea1cb",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_terrain_traffic.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:28:16.055832+00:00",
+  "label": "afc-r9-final-terrain_traffic",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9\\final-checks\\afc-r9-final-terrain_traffic-yi3d5wnn\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9\\final-checks\\afc-r9-final-terrain_traffic-yi3d5wnn\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.0,
+  "log_bytes": 120,
+  "log_sha256": "c74ee7865467c81d61c817992f398eeac9384d9f7fb893b013c473de86640ec7"
+}

@@ -196,7 +196,7 @@ static func plan(dossier: Dictionary, inspection: Dictionary, recipe_book: Dicti
 ## Selects one explicitly chosen candidate. A missing/null repair price is a
 ## refusal to make a finite quote, never a zero-dollar fallback.
 static func select_option(plan_value: Dictionary, component_id: String, option_id: String,
-		costing_basis: String = "cash") -> Dictionary:
+		costing_basis: String = "cash", explicit_group_choice: bool = false) -> Dictionary:
 	if not bool(plan_value.get("ok", false)) or plan_value.get("format") != PLAN_FORMAT:
 		return _selection_failure("repair plan is invalid")
 	if costing_basis not in COSTING_BASES:
@@ -251,7 +251,7 @@ static func select_option(plan_value: Dictionary, component_id: String, option_i
 		refusal["unresolved"] = selected.get("unresolved", []).duplicate(true)
 		refusal["costing_basis"] = costing_basis
 		return refusal
-	if _is_minor(component.get("replacement_minor")) and int(amount) > int(component.replacement_minor):
+	if not explicit_group_choice and _is_minor(component.get("replacement_minor")) and int(amount) > int(component.replacement_minor):
 		var more_expensive := _selection_failure("repair option costs more than the explicit comparable replacement; choose replacement explicitly")
 		more_expensive["provenance"] = _selection_provenance(component, selected, costing_basis, amount, str(plan_value.get("aircraft_id", "")))
 		more_expensive["costing_basis"] = costing_basis

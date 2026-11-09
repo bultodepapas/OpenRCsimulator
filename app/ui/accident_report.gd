@@ -5,6 +5,8 @@ const RepairDetails := preload("res://economy/repair_details.gd")
 
 signal restart_requested
 signal inspect_requested
+signal costing_mode_requested(mode: String)
+signal purchase_package_requested(package_id: String)
 
 const LAYER := 9 # above the flight HUD; the pause menu and report screens stay above it
 const TOAST_SECONDS := 5.0
@@ -58,6 +60,12 @@ var _details_content: VBoxContainer
 var _toast_status: Label
 var _toast_amount: Label
 var _aircraft_identity: Label
+var _cost_actions: HFlowContainer
+var _diy_button: Button
+var _shop_button: Button
+var _purchase_selector: OptionButton
+var _purchase_label: Label
+var _purchase_ids: Array[String] = []
 
 var _report: Dictionary = {}
 var _terminal := false
@@ -100,29 +108,76 @@ func _notification(what: int) -> void:
 func show_assessment(report: Dictionary, terminal: bool = true) -> void:
 	if _surface == null:
 		_build_ui()
+	var id := _incident_id(report)
+	var preserve_view: bool = not id.is_empty() and id == _incident_id(_report) and not _archived and terminal == _terminal \
+		and report.get("costing_available", false) == true and _report.get("costing_available", false) == true
+	var was_expanded := _expanded
+	var was_settled := _settled_report
+	var was_minimized := _minimized
 	_report = report.duplicate(true)
 	_terminal = terminal
 	_archived = false
-	_settled_report = false
+	_settled_report = preserve_view and was_settled
 	_auto_settled = false
-	_reopen_only = false
-	_expanded = terminal and _is_timber_report()
-	_minimized = false
+	_reopen_only = _settled_report
+	_expanded = was_expanded if preserve_view else terminal and _is_timber_report()
+	_minimized = preserve_view and was_minimized
 	_content_visible = true
 	_toast_remaining = TOAST_SECONDS if not terminal else 0.0
 	_render_report()
-	_report_panel.visible = terminal
-	_toast_panel.visible = not terminal
-	_restore_button.visible = false
+	_report_panel.visible = (terminal or _settled_report) and not _minimized
+	_toast_panel.visible = not terminal and not _settled_report and not _minimized
+	_restore_button.visible = _minimized
 	_details_button.set_pressed_no_signal(_expanded)
 	_details_scroll.visible = _expanded
 	_details_scroll.custom_minimum_size.y = 0.0
-	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if terminal else Control.MOUSE_FILTER_IGNORE
+	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if terminal and not _minimized else Control.MOUSE_FILTER_IGNORE
 	_surface.visible = not _suspended
 	_layout()
 	_layout_retry_frames = 2
-	if terminal and not _suspended:
+	if terminal and not _suspended and not preserve_view:
 		_focus_inspect.call_deferred()
+
+
+func _update_purchase_options() -> void:
+	_purchase_selector.get_popup().hide()
+	_purchase_selector.clear()
+	_purchase_ids.clear()
+	_purchase_label.text = tr("Purchase plan")
+	_purchase_selector.add_item(tr("Recommended parts"))
+	_purchase_ids.append("")
+	var selected := 0
+	var values: Variant = _report.get("purchase_options", [])
+	if values is Array:
+		for option: Variant in values:
+			if not option is Dictionary or not option.get("id") is String or _purchase_ids.has(option.id) or _purchase_ids.size() >= 9:
+				continue
+			var label := tr("One package plus individual parts: %s") % _humanize_identifier(str(option.get("label", option.id)))
+			var amount: Variant = _valid_minor(option.get("total_minor"))
+			if amount != null:
+				label += " · " + _format_money(int(amount), _currency_code(_report.get("currency")), true)
+			_purchase_selector.add_item(label)
+			_purchase_ids.append(option.id)
+			if _report.get("purchase_package_id", "") == option.id:
+				selected = _purchase_ids.size() - 1
+	var current_id := str(_report.get("purchase_package_id", ""))
+	if not current_id.is_empty() and not _purchase_ids.has(current_id):
+		_purchase_selector.add_item(tr("Previous package (needs review)"))
+		_purchase_ids.append(current_id)
+		selected = _purchase_ids.size() - 1
+	_purchase_selector.select(selected)
+	_purchase_selector.visible = _purchase_ids.size() > 1 or not str(_report.get("purchase_package_id", "")).is_empty()
+	_purchase_label.visible = _purchase_selector.visible
+
+
+func _on_purchase_selected(index: int) -> void:
+	if index >= 0 and index < _purchase_ids.size() and not _archived and _report.get("costing_available", false):
+		purchase_package_requested.emit(_purchase_ids[index])
+
+
+static func _incident_id(value: Dictionary) -> String:
+	var identity: Variant = value.get("identity", {})
+	return str(value.get("incident_id", identity.get("incident_id", "") if identity is Dictionary else ""))
 
 
 ## Restores an immutable previous assessment behind a small reopen control, without taking focus or input.
@@ -201,6 +256,7 @@ func clear_report() -> void:
 	_minimized = false
 	_toast_remaining = 0.0
 	if _surface != null:
+		_purchase_selector.get_popup().hide()
 		_surface.visible = false
 		_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_report_panel.visible = false
@@ -222,6 +278,7 @@ func suspend(on: bool) -> void:
 	if _surface == null:
 		return
 	if on:
+		_purchase_selector.get_popup().hide()
 		var focused := get_viewport().gui_get_focus_owner()
 		if focused in _interactive_controls():
 			focused.release_focus()
@@ -346,6 +403,36 @@ func _build_ui() -> void:
 	_hide_archived_button.visible = false
 	_hide_archived_button.pressed.connect(_hide_read_only_report)
 	actions.add_child(_hide_archived_button)
+	_cost_actions = HFlowContainer.new()
+	_cost_actions.name = "CostEstimateActions"
+	_cost_actions.add_theme_constant_override("h_separation", _scaled(10))
+	_cost_actions.visible = false
+	column.add_child(_cost_actions)
+	var cost_modes := ButtonGroup.new()
+	cost_modes.allow_unpress = false
+	_diy_button = _button("DIY estimate")
+	_diy_button.name = "CostDIY"
+	_diy_button.toggle_mode = true
+	_diy_button.button_group = cost_modes
+	_diy_button.pressed.connect(func() -> void: costing_mode_requested.emit("diy"))
+	_cost_actions.add_child(_diy_button)
+	_shop_button = _button("Include shop labor")
+	_shop_button.name = "CostShopLabor"
+	_shop_button.toggle_mode = true
+	_shop_button.button_group = cost_modes
+	_shop_button.pressed.connect(func() -> void: costing_mode_requested.emit("paid"))
+	_cost_actions.add_child(_shop_button)
+	_purchase_label = _label("Purchase plan", UiTheme.TEXT_2, _scaled(15))
+	_cost_actions.add_child(_purchase_label)
+	_purchase_selector = OptionButton.new()
+	_purchase_selector.name = "CostPurchasePlan"
+	_purchase_selector.focus_mode = Control.FOCUS_ALL
+	_purchase_selector.clip_text = true
+	_purchase_selector.fit_to_longest_item = false
+	_purchase_selector.custom_minimum_size.x = _scaled(280)
+	_purchase_selector.tooltip_text = tr("Choose a frozen parts package estimate. Extra supplied parts receive no sale credit.")
+	_purchase_selector.item_selected.connect(_on_purchase_selected)
+	_cost_actions.add_child(_purchase_selector)
 
 	_details_scroll = ScrollContainer.new()
 	_details_scroll.name = "DamageDetailsScroll"
@@ -513,6 +600,8 @@ func _render_report() -> void:
 		if not _report.get("repair_choices", []).is_empty():
 			_caption_label.text = tr("Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed.")
 		_status_label.text = tr("LOCAL GAME REPAIR ESTIMATE") if _report.get("complete", false) else state.status
+		if _report.get("costing_mode") == "paid":
+			_caption_label.text = tr("Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed.")
 	if _evidence_warning and not _archived:
 		_status_label.text = tr("COST EVIDENCE INCOMPLETE")
 		_caption_label.text = tr("Some contact evidence was rejected. This is the last accepted estimate; additional damage may be missing.")
@@ -530,6 +619,11 @@ func _render_report() -> void:
 		_restore_button.text = tr("Show accident report")
 	_toast_status.text = tr("DAMAGE REPORTED")
 	_toast_amount.text = state.amount
+	_diy_button.text = tr("DIY estimate")
+	_shop_button.text = tr("Include shop labor")
+	_diy_button.set_pressed_no_signal(_report.get("costing_mode", "diy") == "diy")
+	_shop_button.set_pressed_no_signal(_report.get("costing_mode") == "paid")
+	_update_purchase_options()
 	_rebuild_details()
 	_apply_action_visibility()
 	_layout()
@@ -634,6 +728,8 @@ func _rebuild_details() -> void:
 		child.queue_free()
 	if not _expanded:
 		return
+	_add_game_cost_scope()
+	_add_selected_price_range()
 	if _is_timber_report():
 		_rebuild_timber_details()
 		return
@@ -654,7 +750,7 @@ func _rebuild_details() -> void:
 	_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
 	var complete: bool = typeof(_report.get("complete", false)) == TYPE_BOOL and bool(_report.get("complete", false))
 	if complete:
-		_add_detail_money(tr("Observed local parts estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
+		_add_detail_money(tr("Selected local game estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
 	_add_detail_money(tr("Salvage value reported"), _report.get("salvage_minor"), currency)
 	_add_detail_money(tr("Replacement reference reported"), _report.get("replacement_minor"), currency)
 	var replacement_quote_low: Variant = _valid_minor(_report.get("replacement_quote_low_minor"))
@@ -674,8 +770,7 @@ func _rebuild_details() -> void:
 			if not line_value is Dictionary:
 				continue
 			var line: Dictionary = line_value
-			var raw_id := str(line.get("id", ""))
-			var descriptor := _humanize_identifier(raw_id) if raw_id != "" else tr("Unspecified item")
+			var descriptor := _cost_line_name(line)
 			var action := _action_text(line.get("action", ""))
 			if action != "":
 				descriptor += " · " + action
@@ -698,6 +793,7 @@ func _rebuild_details() -> void:
 			var notes := str(line.get("notes", ""))
 			if notes != "":
 				_add_detail_text(notes, true)
+			_add_cost_line_scope(line)
 			line_count += 1
 	if line_count == 0:
 		_add_detail_text(tr("No priced line items were supplied."), true)
@@ -714,6 +810,80 @@ func _rebuild_details() -> void:
 		_add_detail_section(tr("Assumptions"))
 		for assumption: Variant in assumptions:
 			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _add_selected_price_range() -> void:
+	var low: Variant = _valid_minor(_report.get("low_minor"))
+	var high: Variant = _valid_minor(_report.get("high_minor"))
+	if low == null or high == null or low == high:
+		return
+	var currency := _currency_code(_report.get("currency", "USD"))
+	_add_detail_section(tr("Selected-plan price range"))
+	_add_detail_money(tr("Low estimate"), low, currency)
+	_add_detail_money(tr("High estimate"), high, currency)
+	_add_detail_text(tr("Price variation and modeled alternatives are bounds, not confidence probabilities."), true)
+	for reason: Variant in _report.get("range_reasons", []):
+		_add_detail_text(_unresolved_text(reason), true)
+
+
+func _add_game_cost_scope() -> void:
+	var selected: Variant = _report.get("selected_cost_plan")
+	if not selected is Dictionary or selected.is_empty():
+		if not str(_report.get("costing_error", "")).is_empty():
+			_add_detail_section(tr("Cost plan unavailable"))
+			_add_detail_text(tr("The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."), true)
+		return
+	_add_detail_section(tr("Selected cost plan"))
+	_add_detail_text(tr("Parts and material allowances exclude labor. The selected labor basis is added once; shared setup is charged once."), true)
+	_add_detail_text(tr("Quantities identify purchase or service scope, not a count of physically confirmed failed units."), true)
+	if _report.get("costing_mode") == "paid":
+		_add_detail_text(tr("Shop labor uses an authored game rate and duration, not a repair shop quote."), true)
+	else:
+		_add_detail_text(tr("DIY cash cost does not charge for owner time."), true)
+	var error := str(_report.get("costing_error", ""))
+	if not error.is_empty():
+		_add_detail_text(tr("The purchase or labor plan is unresolved. The displayed subtotal excludes missing costs."), true)
+	var assessment: Variant = _report.get("game_assessment", {})
+	var outcomes: Variant = assessment.get("current_outcomes", {}) if assessment is Dictionary else {}
+	if outcomes is Dictionary:
+		for id: Variant in outcomes:
+			var outcome: Variant = outcomes[id]
+			if outcome is Dictionary and outcome.get("action") == "scope_clear":
+				_add_detail_text(tr("No additional game charge within the assessed scope: %s. This does not certify physical health or salvage.") % _humanize_identifier(str(id)), true)
+
+
+func _cost_line_name(line: Dictionary) -> String:
+	var action := str(line.get("action", ""))
+	if action == "selected_purchase":
+		var names := PackedStringArray()
+		for token: Variant in line.get("allocated_ids", []):
+			var id := str(token)
+			if id.rfind(":") > 0:
+				id = id.substr(0, id.rfind(":"))
+			var display := _humanize_identifier(id)
+			if not names.has(display):
+				names.append(display)
+		return tr("Replacement package") + (": " + ", ".join(names) if not names.is_empty() else "")
+	if action in ["repair_labor", "game_labor"]:
+		var label := str(line.get("label", ""))
+		return tr("Shared setup") if label == "shared_setup" else tr("Labor: %s") % _humanize_identifier(label)
+	if action == "repair_material":
+		return tr("Repair materials") + ": " + _humanize_identifier(str(line.get("label", "")))
+	return _humanize_identifier(str(line.get("id", ""))) if not str(line.get("id", "")).is_empty() else tr("Unspecified item")
+
+
+func _add_cost_line_scope(line: Dictionary) -> void:
+	if line.has("surplus_ids") and line.surplus_ids is Array and not line.surplus_ids.is_empty():
+		_add_detail_text(tr("Included surplus units: %d. No sale credit is assumed.") % line.surplus_ids.size(), true)
+	if line.has("overlap_ids") and line.overlap_ids is Array and not line.overlap_ids.is_empty():
+		_add_detail_text(tr("Additional duplicate supplied units: %d. They are unvalued and receive no sale credit.") % line.overlap_ids.size(), true)
+	if line.get("action") in ["repair_labor", "game_labor"]:
+		var minutes: Variant = line.get("labor_minutes")
+		_add_detail_text(tr("Active work: unknown") if minutes == null else tr("Active work: %d min") % int(minutes), true)
+	if line.has("provenance"):
+		_add_detail_text(str(line.provenance), true)
+	if line.get("action") in ["repair_material", "repair_labor"] and line.get("source") is Dictionary:
+		_add_repair_source(line.source)
 
 
 func _is_timber_report() -> bool:
@@ -749,6 +919,7 @@ func _rebuild_timber_details() -> void:
 	_add_timber_part_row({}, currency, true)
 	for line: Dictionary in lines:
 		_add_timber_part_row(line, currency)
+		_add_cost_line_scope(line)
 	if lines.is_empty():
 		_add_detail_text(tr("No assessed parts yet."), true)
 	_details_content.add_child(HSeparator.new())
@@ -758,7 +929,7 @@ func _rebuild_timber_details() -> void:
 	else:
 		_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
 	if _report.get("complete") == true:
-		_add_detail_money(tr("Observed local parts estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
+		_add_detail_money(tr("Selected local game estimate") if _report.get("valuation_kind") == "preview_game_parts_estimate" else tr("Complete estimated total"), _report.get("total_minor"), currency)
 	else:
 		_add_detail_text(tr("Pending inspections and unpriced items are excluded from the subtotal."), true)
 	if str(_report.get("outcome", "")) == "total_loss":
@@ -827,6 +998,8 @@ func _timber_line_order(line: Dictionary) -> int:
 
 
 func _timber_part_name(line: Dictionary) -> String:
+	if line.get("action") in ["selected_purchase", "repair_material", "repair_labor", "game_labor", "incurred_fee"]:
+		return _cost_line_name(line)
 	if str(line.get("id", "")) == "propeller_main":
 		# Old immutable reports priced a combined assembly under the same ID.
 		# Use the frozen offer identity, never today's catalog, to name blade-only rows.
@@ -896,7 +1069,8 @@ func _add_repair_details(rows: Array[Dictionary], currency: String) -> void:
 		var costing_basis := tr("Cash purchase") if row.get("costing_basis") == "cash" else tr("Consumption allocation")
 		_add_detail_text(tr("Costing basis: %s") % costing_basis, true)
 		var labor_label := tr("DIY") if row.get("labor_mode") == "diy" else tr("Paid")
-		_add_detail_text(tr("Labor: %s · %d min") % [labor_label, int(row.get("labor_minutes", 0))], true)
+		var minutes: Variant = row.get("labor_minutes")
+		_add_detail_text(tr("Labor: %s · duration unknown") % labor_label if minutes == null else tr("Labor: %s · %d min") % [labor_label, int(minutes)], true)
 		_add_detail_money(tr("Labor cost"), row.get("labor_minor"), currency)
 		var materials: Variant = row.get("materials", [])
 		if materials is Array:
@@ -1133,6 +1307,17 @@ func controller_action(action: String) -> bool:
 		return true
 	if action == "accept":
 		var focused := get_viewport().gui_get_focus_owner()
+		if focused == _diy_button and _cost_actions.visible:
+			costing_mode_requested.emit("diy")
+			return true
+		if focused == _shop_button and _cost_actions.visible:
+			costing_mode_requested.emit("paid")
+			return true
+		if focused == _purchase_selector and _purchase_selector.visible and _cost_actions.visible:
+			var next := posmod(_purchase_selector.selected + 1, _purchase_selector.item_count)
+			_purchase_selector.select(next)
+			_on_purchase_selected(next)
+			return true
 		if focused == _inspect_button and _terminal and not _reopen_only and _report_panel.visible:
 			_on_inspect_pressed()
 			return true
@@ -1201,6 +1386,11 @@ func _visible_action_controls() -> Array[Control]:
 			controls.append(_inspect_button)
 			controls.append(_details_button)
 			controls.append(_restart_button)
+		if _cost_actions.visible:
+			controls.append(_diy_button)
+			controls.append(_shop_button)
+			if _purchase_selector.visible:
+				controls.append(_purchase_selector)
 	return controls
 
 
@@ -1211,6 +1401,7 @@ func _apply_action_visibility() -> void:
 	_restart_button.visible = not _reopen_only
 	_details_button.visible = not _minimized
 	_hide_archived_button.visible = _reopen_only and not _minimized
+	_cost_actions.visible = not _archived and not _minimized and _report.get("costing_available", false) == true
 
 
 func _focus_inspect() -> void:
@@ -1273,7 +1464,7 @@ func _scaled(value: float) -> int:
 
 
 func _interactive_controls() -> Array[Control]:
-	return [_inspect_button, _details_button, _restart_button, _hide_archived_button, _restore_button]
+	return [_inspect_button, _details_button, _restart_button, _hide_archived_button, _restore_button, _diy_button, _shop_button, _purchase_selector]
 
 
 func _release_report_focus() -> void:
@@ -1359,6 +1550,10 @@ func _quantity_text(value: Variant) -> String:
 
 func _action_text(value: Variant) -> String:
 	match str(value):
+		"selected_purchase": return tr("Replacement package")
+		"repair_material": return tr("Repair materials")
+		"repair_labor", "game_labor": return tr("Labor")
+		"incurred_fee": return tr("Incurred fee")
 		"repair": return tr("Repair")
 		"replace": return tr("Replace")
 		"replacement": return tr("Replacement")

@@ -1,8 +1,17 @@
 # AFC traffic scheduling draft
 
-This isolated Godot 4.7.2 harness contains deterministic scheduling groundwork
+This isolated Godot harness contains deterministic scheduling groundwork
 for AFC-07, AFC-13/17 and AFC-19. It is research code; none of these classes is
 connected to the production flight or companion runtime.
+
+The [2026-11-09 invariant repair](../../../docs/research/ai-companions/AFC-04-R9/README.md)
+was checked on official Godot 4.8-beta2. Matching observed player entry consumes
+its grant and permits one later ticket confirmation. An outstanding grant reserves
+queue capacity for requeue; saturated older checkpoints are refused atomically.
+Removing a player's wreck retains physical blocking until footprint and protected
+path clearance, in either observation order. Activity leases reserve their distinct
+cooldown-history keys before completion; overcommitted checkpoints are refused.
+Expired history remains retained and counts toward the 512-key bound.
 
 `RunwayCoordinator` accepts same-boundary requests through `submit_request()` and
 grants one after `resolve()`. `enter_runway()` requires the returned ticket and
@@ -64,9 +73,9 @@ stale-generation, wind, player-incursion, wreck, quota, eligibility, replay-stat
 and Poisson checks from the repository root:
 
 ```powershell
-python tools/godot/run_checked.py --warnings-as-errors --timeout 90 --require-text "PASS traffic scheduler draft checks" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_traffic_schedulers.gd
-python tools/godot/run_checked.py --warnings-as-errors --timeout 60 --require-text "scheduler boundaries: 20 checks, 0 failed" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_scheduler_boundaries.gd
-python tools/godot/run_checked.py --warnings-as-errors --timeout 60 --require-text "runway tailwind: 19 checks, 0 failed" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_runway_tailwind.gd
+python tools/godot/run_checked.py --warnings-as-errors --timeout 90 --require-text "PASS traffic scheduler draft checks" -- .tools/Godot_v4.8-beta2_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_traffic_schedulers.gd
+python tools/godot/run_checked.py --warnings-as-errors --timeout 60 --require-text "scheduler boundaries: 79 checks, 0 failed" -- .tools/Godot_v4.8-beta2_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_scheduler_boundaries.gd
+python tools/godot/run_checked.py --warnings-as-errors --timeout 60 --require-text "runway tailwind: 19 checks, 0 failed" -- .tools/Godot_v4.8-beta2_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_runway_tailwind.gd
 ```
 
 The source-bound review receipt is [AFC-07 R1](../../../docs/research/ai-companions/AFC-07-R1/README.md).

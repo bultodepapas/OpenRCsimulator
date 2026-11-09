@@ -47,6 +47,55 @@ class CostProfileTests(unittest.TestCase):
     def test_omitted_route_refused(self):
         self.mutate_source(lambda doc: doc["aircraft"].pop("gp-extra-300s-60"), "every fixed-wing")
 
+    def test_missing_common_prop_followup_is_not_silent_pending(self):
+        self.mutate_source(lambda doc: doc["aircraft"]["jensen-das-ugly-stik-60"]["propeller_followups"].pop(), "follow-up coverage")
+
+    def test_legacy_multi_target_requires_independent_rules(self):
+        def mutate(doc):
+            profile = doc["aircraft"]["sebart-avanti-s-a200-p100rx"]
+            zone = next(z for z in profile["zones"] if z["probe_id"] == "probe_belly_station_plus_six")
+            zone["component_responses"].pop("engine_main")
+        self.mutate_source(mutate, "per-component responses")
+
+    def test_local_service_cannot_fall_back_to_free(self):
+        def mutate(doc):
+            profile = doc["aircraft"]["jensen-das-ugly-stik-60"]
+            profile["zones"][0]["response"]["service_minor_by_component"] = {}
+        self.mutate_source(mutate, "service allowance")
+
+    def test_purchase_quantities_are_strict_integers(self):
+        def mutate(doc):
+            package = doc["aircraft"]["jensen-das-ugly-stik-60"]["packages"][0]
+            package["component_quantities"]["airframe_wing"] = True
+        self.mutate_source(mutate, "expected an integer")
+
+    def test_labor_scope_is_explicit_for_every_part(self):
+        self.mutate_source(lambda doc: doc["aircraft"]["jensen-das-ugly-stik-60"]["labor_policy"]["minutes_by_component"].pop("propeller"), "every financial component")
+
+    def test_avanti_power_prices_have_disjoint_declared_coverage(self):
+        profile = build_profiles.build()["aircraft"]["sebart-avanti-s-a200-p100rx"]
+        rows = {c["id"]: c for c in profile["components"]}
+        self.assertEqual(278000, rows["engine_main"]["unit_minor"])
+        self.assertEqual(40000, rows["turbine_accessories"]["unit_minor"])
+        self.assertEqual("price_proxy", rows["engine_main"]["price_basis"])
+        self.assertIn("Excludes the standard turbine control", rows["turbine_accessories"]["notes"])
+        self.assertEqual(["engine_main", "turbine_accessories"], profile["shared_parent_children"]["turbine_accessories"])
+
+    def test_severe_grouped_followups_do_not_use_unreachable_thresholds(self):
+        document = build_profiles.build()
+        for aircraft, component in (("p51d-mustang-120", "muffler_pair"), ("f4u-corsair-250", "throttle_choke_servos")):
+            follow = next(r for r in document["aircraft"][aircraft]["propeller_followups"] if r["component_id"] == component)
+            self.assertEqual(45.0, follow["replace_speed_mps"])
+            self.assertEqual(20000.0, follow["replace_rpm"])
+
+    def test_moonrunner_adapter_and_mount_have_disjoint_declared_coverage(self):
+        profile = build_profiles.build()["aircraft"]["moonrunner-x99"]
+        rows = {c["id"]: c for c in profile["components"]}
+        self.assertEqual(["motor_main", "propeller_main"], profile["shared_parent_children"]["propeller_main"])
+        self.assertIn("propeller_main", rows["motor_main"]["physical_inventory_ids"])
+        self.assertIn("blade only", rows["propeller_main"]["notes"])
+        self.assertIn("excludes the metal X mount", rows["motor_mount"]["notes"])
+
     def test_geometry_change_requires_review_even_if_ids_match(self):
         original = Path.read_bytes
         target = build_profiles.ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"

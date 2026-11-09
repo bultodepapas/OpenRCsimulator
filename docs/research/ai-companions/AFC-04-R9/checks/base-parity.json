@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "aa49317d-6f1c-44b3-974b-a3713f4ecbce",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://../tmp/afc-r9/base_parity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:20:17.239788+00:00",
+  "label": "afc-r9-base-parity",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9\\checks\\afc-r9-base-parity-ivbb37n5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9\\checks\\afc-r9-base-parity-ivbb37n5\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.89,
+  "log_bytes": 118,
+  "log_sha256": "7489349170f80f32153041559a5191fc984a2d0722be136f0e936b489f2a7cf2"
+}

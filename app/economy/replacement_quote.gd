@@ -31,6 +31,14 @@ static func quote(
 	return quote_calculated(dossier, assessment, Calculator.calculate(dossier, assessment), package_candidates, search_limit)
 
 
+## Explicitly chooses a feasible, priced set. This proves only that this chosen
+## set covers the requirements, not that it is the cheapest declared set.
+static func quote_explicit(dossier: Dictionary, assessment: Dictionary, package_candidates: Array,
+		selected_candidate_ids: Array, search_limit: Variant = PackageOptimizer.DEFAULT_SEARCH_LIMIT) -> Dictionary:
+	return quote_calculated(dossier, assessment, Calculator.calculate(dossier, assessment),
+		package_candidates, search_limit, selected_candidate_ids)
+
+
 ## Same quote from a Calculator.calculate(dossier, assessment) result the caller already holds.
 ## Only ok, complete and replacement lines (id, action, quantity) are read.
 static func quote_calculated(
@@ -38,7 +46,8 @@ static func quote_calculated(
 	assessment: Dictionary,
 	calculation: Dictionary,
 	package_candidates: Array = [],
-	search_limit: Variant = PackageOptimizer.DEFAULT_SEARCH_LIMIT
+	search_limit: Variant = PackageOptimizer.DEFAULT_SEARCH_LIMIT,
+	selected_candidate_ids: Variant = null
 ) -> Dictionary:
 	var assessment_complete: bool = bool(calculation.get("complete", false))
 	if not bool(calculation.get("ok", false)):
@@ -109,6 +118,8 @@ static func quote_calculated(
 			})
 
 	if unit_records.is_empty():
+		if selected_candidate_ids != null:
+			return _base_result("invalid_selection", assessment_complete, null, false, ["There are no replacement units for an explicit purchase."], [])
 		var no_replacement_result := _base_result("no_replacements", assessment_complete, 0, assessment_complete, [])
 		no_replacement_result["optimizer_status"] = "optimal"
 		no_replacement_result["optimality_proven"] = true
@@ -121,12 +132,14 @@ static func quote_calculated(
 	var required_unit_ids: Array = []
 	var optimizer_candidates: Array = []
 	var candidate_catalog: Array = []
+	var individual_components: Dictionary = {}
 	for index: int in range(unit_records.size()):
 		var record: Dictionary = unit_records[index]
 		var component: Dictionary = record.component
 		var unit_id: String = String(record.unit_id)
 		required_unit_ids.append(unit_id)
 		var candidate_id := "individual-%03d" % index
+		individual_components[candidate_id] = {"component_id": record.component_id, "unit_id": unit_id}
 		var provenance := _individual_provenance(dossier, component)
 		var candidate := {
 			"id": candidate_id,
@@ -178,7 +191,32 @@ static func quote_calculated(
 			"provenance": package_candidate.provenance,
 		})
 
+	var validation: Dictionary = PackageOptimizer._validate_inputs(required_unit_ids, optimizer_candidates, search_limit)
+	if not validation.errors.is_empty():
+		return _base_result("invalid_candidates", assessment_complete, null, false, _bounded_errors(validation.errors), required_unit_ids)
+	var explicit_ids: Array = []
+	if selected_candidate_ids != null:
+		if typeof(selected_candidate_ids) != TYPE_ARRAY or selected_candidate_ids.is_empty() or selected_candidate_ids.size() > MAX_REQUIRED_UNITS:
+			return _base_result("invalid_selection", assessment_complete, null, false, ["Explicit selection must contain a bounded nonempty set of candidate IDs."], required_unit_ids)
+		var seen: Dictionary = {}
+		for id: Variant in selected_candidate_ids:
+			if typeof(id) != TYPE_STRING or String(id).strip_edges().is_empty() or String(id).length() > MAX_ID_LENGTH or seen.has(id):
+				return _base_result("invalid_selection", assessment_complete, null, false, ["Explicit candidate IDs must be unique bounded strings."], required_unit_ids)
+			seen[id] = true
+			explicit_ids.append(id)
+		explicit_ids.sort()
+		var filtered: Array = []
+		for candidate: Dictionary in optimizer_candidates:
+			if seen.has(candidate.id):
+				filtered.append(candidate)
+		if filtered.size() != explicit_ids.size():
+			return _base_result("invalid_selection", assessment_complete, null, false, ["An explicit candidate is absent from the frozen set."], required_unit_ids)
+		optimizer_candidates = filtered
+
 	var optimized: Dictionary = PackageOptimizer.optimize(required_unit_ids, optimizer_candidates, search_limit)
+	if selected_candidate_ids != null:
+		if optimized.get("status") != "optimal" or optimized.get("selected_candidate_ids") != explicit_ids:
+			return _base_result("invalid_selection", assessment_complete, null, false, ["Selected candidates must be priced, eligible and form a nonredundant complete cover."], required_unit_ids)
 	candidate_catalog.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
 		return String(left.candidate_id) < String(right.candidate_id)
 	)
@@ -194,22 +232,32 @@ static func quote_calculated(
 		catalog_omitted = true
 	var selected_provenance: Dictionary = _bounded_selected_provenance(optimized.get("selected_provenance", []))
 	var selected_lines: Array = []
+	var selected_candidate_kinds: Array = []
 	for candidate: Dictionary in optimizer_candidates:
 		if candidate.id in optimized.get("selected_candidate_ids", []):
 			var coverage: Array = candidate.coverage_ids.duplicate()
 			coverage.sort()
 			selected_lines.append({"candidate_id": candidate.id, "coverage_ids": coverage, "cost_cents": candidate.cost_cents})
+			if individual_components.has(candidate.id):
+				var origin: Dictionary = individual_components[candidate.id]
+				selected_candidate_kinds.append({"candidate_id": candidate.id, "kind": "dossier_individual_estimate",
+					"component_id": origin.component_id, "unit_id": origin.unit_id})
+			else:
+				selected_candidate_kinds.append({"candidate_id": candidate.id, "kind": "authored_package_candidate"})
 	selected_lines.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
 		return String(left.candidate_id) < String(right.candidate_id)
 	)
+	selected_candidate_kinds.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return String(left.candidate_id) < String(right.candidate_id)
+	)
 	return {
-		"status": optimizer_status,
+		"status": "selected" if selected_candidate_ids != null else optimizer_status,
 		"optimizer_status": optimizer_status,
-		"optimality_scope": "declared_candidate_set",
+		"optimality_scope": "explicit_selection" if selected_candidate_ids != null else "declared_candidate_set",
 		"coverage_scope": "replacements_only",
 		"assessment_complete": assessment_complete,
 		"complete": assessment_complete and bool(optimized.get("optimality_proven", false)),
-		"optimality_proven": bool(optimized.get("optimality_proven", false)),
+		"optimality_proven": false if selected_candidate_ids != null else bool(optimized.get("optimality_proven", false)),
 		"search_complete": bool(optimized.get("search_complete", false)),
 		"search_nodes": int(optimized.get("search_nodes", 0)),
 		"unknown_cost_alternative_found": bool(optimized.get("unknown_cost_alternative_found", false)),
@@ -218,6 +266,7 @@ static func quote_calculated(
 		"required_unit_ids": required_unit_ids,
 		"selected_candidate_ids": optimized.get("selected_candidate_ids", []).duplicate(true),
 		"selected_lines": selected_lines,
+		"selected_candidate_kinds": selected_candidate_kinds,
 		"selected_coverage": optimized.get("selected_coverage", []).duplicate(true),
 		"selected_provenance": selected_provenance.entries,
 		"selected_provenance_truncated": selected_provenance.truncated,
@@ -335,6 +384,7 @@ static func _base_result(
 		"required_unit_ids": required_unit_ids.duplicate(true),
 		"selected_candidate_ids": [],
 		"selected_lines": [],
+		"selected_candidate_kinds": [],
 		"selected_coverage": [],
 		"selected_provenance": [],
 		"selected_provenance_truncated": false,

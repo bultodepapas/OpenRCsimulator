@@ -94,6 +94,7 @@ func _init(initial_direction: int = 1, fairness_promotion_ticks: int = DEFAULT_F
 ## the currently accepted runway direction. Negative crosswind/gust limits need
 ## a later profile gate. Tailwind defaults to zero and requires an explicit finite
 ## nonnegative profile limit; direction hysteresis never overrides that envelope.
+## A reservation retains one queue slot so a revocation can requeue its request.
 func submit_request(tick: int, request_id: String, owner_id: int, generation: int, pilot_id: String, operation: String, direction: int = 0, player_request: bool = false, emergency: bool = false, committed_arrival: bool = false, protected_volume_id: String = "", earliest_entry_tick: int = -1, latest_entry_tick: int = -1, max_crosswind_mps: float = -1.0, max_gust_mps: float = -1.0, protected_volume_ids: Array = [], max_tailwind_mps: float = 0.0) -> Dictionary:
 	if tick < 0 or request_id.is_empty() or pilot_id.is_empty() or owner_id < 0 or generation < 0:
 		return _reject("invalid_identity_or_tick")
@@ -116,7 +117,7 @@ func submit_request(tick: int, request_id: String, owner_id: int, generation: in
 			protected_volumes.append(String(volume))
 	if not protected_volume_id.is_empty() and not protected_volumes.has(protected_volume_id):
 		protected_volumes.append(protected_volume_id)
-	if _requests.size() >= _max_queue:
+	if _requests.size() + (1 if not _grant.is_empty() else 0) >= _max_queue:
 		return _reject("request_queue_full")
 	if _request_id_exists(request_id):
 		return _reject("duplicate_request_id")
@@ -176,8 +177,8 @@ func update_wind(tick: int, headwind_component_mps: float, crosswind_mps: float,
 
 
 ## Player observations are advisory to the AI. The player is never constrained.
-## A player approach or runway incursion immediately revokes a reserved AI grant;
-## only a complete footprint and protected-path clearance releases occupancy.
+## A matching player entry consumes its grant; a different occupant revokes it.
+## Only complete footprint and protected-path clearance releases occupancy.
 func observe_player(tick: int, player_id: int, generation: int, in_runway: bool, approach_intent: bool) -> Dictionary:
 	if tick < 0 or player_id < 0 or generation < 0:
 		return _reject("invalid_player_identity_or_tick")
@@ -187,17 +188,26 @@ func observe_player(tick: int, player_id: int, generation: int, in_runway: bool,
 	var was_approaching: bool = _player_approach_intent
 	if in_runway and not _physical_blockers.has(_blocker_key(player_id, generation)) and _physical_blockers.size() >= HARD_MAX_PHYSICAL_BLOCKERS:
 		return _reject("physical_blocker_capacity_exceeded")
-	var reserved_emergency: bool = bool(_grant.get("emergency", false))
-	if (in_runway or (approach_intent and not reserved_emergency)) and _mode == MODE_RESERVED and not bool(_grant.get("player_request", false)):
-		_revoke_reservation(tick, "player_incursion" if in_runway else "player_approach", true)
+	var key: String = _blocker_key(player_id, generation)
+	var overlapping: bool = _physical_blockers.size() > (1 if _physical_blockers.has(key) else 0) or not _blocked_wrecks.is_empty()
+	if was_in_runway and (not in_runway or previous_player_id != player_id or previous_generation != generation):
+		var previous_key: String = _blocker_key(previous_player_id, previous_generation)
+		if _physical_blockers.has(previous_key):
+			_physical_blockers[previous_key].erase("observed_grant_tick")
+	if _mode == MODE_RESERVED:
+		var matching_player: bool = bool(_grant.get("player_request", false)) and int(_grant.get("owner_id", -1)) == player_id and int(_grant.get("generation", -1)) == generation
+		if in_runway:
+			if matching_player and tick >= int(_grant["entry_tick"]) and tick <= int(_grant["deadline_tick"]):
+				_occupy_grant(tick, player_id, generation, true)
+			else:
+				_revoke_reservation(tick, "player_incursion", not matching_player)
+		elif approach_intent and not bool(_grant.get("emergency", false)) and not bool(_grant.get("player_request", false)):
+			_revoke_reservation(tick, "player_approach", true)
 	if in_runway:
 		_player_owner_id = player_id
 		_player_generation = generation
-		var key: String = _blocker_key(player_id, generation)
-		var overlapping: bool = not _physical_blockers.is_empty() or not _blocked_wrecks.is_empty()
 		var blocker: Dictionary = _physical_blockers.get(key, _new_blocker(player_id, generation, "player", true))
 		blocker["is_player"] = true
-		blocker["is_wreck"] = false
 		blocker["on_runway"] = true
 		blocker["footprint_clear"] = false
 		blocker["protected_path_clear"] = false
@@ -206,11 +216,11 @@ func observe_player(tick: int, player_id: int, generation: int, in_runway: bool,
 		if not was_in_runway or previous_player_id != player_id or previous_generation != generation:
 			_record_event(tick, "player_runway_occupancy", {"owner_id": player_id, "generation": generation, "overlapped": overlapping})
 	elif was_in_runway:
-		var key: String = _blocker_key(previous_player_id, previous_generation)
-		if _physical_blockers.has(key):
-			var blocker: Dictionary = _physical_blockers[key]
+		var previous_key: String = _blocker_key(previous_player_id, previous_generation)
+		if _physical_blockers.has(previous_key):
+			var blocker: Dictionary = _physical_blockers[previous_key]
 			blocker["on_runway"] = false
-			_physical_blockers[key] = blocker
+			_physical_blockers[previous_key] = blocker
 		_record_event(tick, "player_clearance_required", {"owner_id": previous_player_id, "generation": previous_generation})
 		_player_in_runway = false
 		_player_owner_id = -1
@@ -281,8 +291,17 @@ func resolve(tick: int) -> Dictionary:
 
 
 ## A grant ticket is accepted once and only for the owner generation it names.
+## An observed player entry can be confirmed once after it consumed the grant.
 ## Physical occupancy supersedes reservation timers and cannot expire.
 func enter_runway(tick: int, ticket: int, owner_id: int, generation: int) -> Dictionary:
+	var key: String = _blocker_key(owner_id, generation)
+	if _physical_blockers.has(key):
+		var observed: Dictionary = _physical_blockers[key]
+		if observed.has("observed_grant_tick") and _player_in_runway and owner_id == _player_owner_id and generation == _player_generation and ticket == int(observed.get("ticket", -1)):
+			if tick < int(observed["observed_grant_tick"]):
+				return _reject("tick_precedes_observed_entry")
+			observed.erase("observed_grant_tick")
+			return {"ok": true, "mode": _mode}
 	if _mode != MODE_RESERVED or ticket != int(_grant.get("ticket", -1)) or owner_id != int(_grant.get("owner_id", -1)) or generation != int(_grant.get("generation", -1)):
 		return _reject("stale_grant")
 	if tick < int(_grant.get("entry_tick", -1)) or tick > int(_grant.get("deadline_tick", -1)):
@@ -296,24 +315,32 @@ func enter_runway(tick: int, ticket: int, owner_id: int, generation: int) -> Dic
 	if not _request_wind_is_valid(_grant):
 		_revoke_reservation(tick, "wind_envelope_exceeded", true)
 		return _reject("wind_envelope_exceeded")
-	var key: String = _blocker_key(owner_id, generation)
 	var is_player: bool = bool(_grant.get("player_request", false))
 	if _physical_blockers.has(key) and (not is_player or not bool(_physical_blockers[key].get("is_player", false))):
 		return _reject("owner_generation_already_blocks_runway")
 	if not _physical_blockers.has(key) and _physical_blockers.size() >= HARD_MAX_PHYSICAL_BLOCKERS:
 		return _reject("physical_blocker_capacity_exceeded")
+	_occupy_grant(tick, owner_id, generation, false)
+	return {"ok": true, "mode": _mode}
+
+
+func _occupy_grant(tick: int, owner_id: int, generation: int, observed_player: bool) -> void:
+	var key: String = _blocker_key(owner_id, generation)
+	var ticket: int = int(_grant["ticket"])
+	var is_player: bool = bool(_grant.get("player_request", false))
 	var blocker: Dictionary = _new_blocker(owner_id, generation, String(_grant.get("pilot_id", "")), is_player)
 	blocker["operation"] = String(_grant.get("operation", ""))
 	blocker["direction"] = _direction
 	blocker["protected_volume_id"] = String(_grant.get("protected_volume_id", ""))
 	blocker["protected_volumes"] = _grant.get("protected_volumes", []).duplicate(true)
 	blocker["ticket"] = ticket
+	if observed_player:
+		blocker["observed_grant_tick"] = tick
 	_physical_blockers[key] = blocker
 	var operation: String = String(blocker["operation"])
 	_grant.clear()
 	_refresh_occupancy_mode()
 	_record_event(tick, "runway_occupied", {"ticket": ticket, "owner_id": owner_id, "generation": generation, "operation": operation})
-	return {"ok": true, "mode": _mode}
 
 
 ## Reports geometric clearance from the caller's swept footprint query. It is
@@ -364,6 +391,7 @@ func report_runway_wreck(tick: int, owner_id: int, generation: int, pilot_id: St
 	var key: String = _blocker_key(owner_id, generation)
 	if _physical_blockers.has(key):
 		var blocker: Dictionary = _physical_blockers[key]
+		blocker.erase("observed_grant_tick")
 		blocker["is_wreck"] = true
 		blocker["on_runway"] = true
 		blocker["footprint_clear"] = false
@@ -386,7 +414,13 @@ func clear_wreck_and_occupancy(tick: int, wreck_id: String, wreck_removal_commit
 	if _physical_blockers.has(key):
 		var blocker: Dictionary = _physical_blockers[key]
 		if bool(blocker.get("is_wreck", false)) and String(blocker.get("wreck_id", "")) == wreck_id:
-			_physical_blockers.erase(key)
+			if bool(blocker.get("is_player", false)):
+				# Wreck removal does not establish the player's geometric clearance.
+				blocker["is_wreck"] = false
+				blocker.erase("wreck_id")
+				_physical_blockers[key] = blocker
+			else:
+				_physical_blockers.erase(key)
 	_refresh_occupancy_mode()
 	_record_event(tick, "runway_wreck_removed", {"wreck_id": wreck_id, "owner_id": removed_wreck.get("owner_id", -1), "generation": removed_wreck.get("generation", -1), "remaining_wrecks": _blocked_wrecks.size()})
 	return {"ok": true, "mode": _mode, "remaining_wrecks": _blocked_wrecks.size(), "remaining_blockers": _physical_blockers.size()}
@@ -491,7 +525,7 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	var raw_wrecks: Variant = candidate.get("blocked_wrecks", null)
 	if not raw_requests is Array or not raw_events is Array or not raw_grant is Dictionary or not raw_blockers is Dictionary or not raw_wrecks is Dictionary:
 		return _reject("invalid_state_shape")
-	if raw_requests.size() > max_queue or raw_events.size() > max_events or raw_blockers.size() > HARD_MAX_PHYSICAL_BLOCKERS or raw_wrecks.size() > HARD_MAX_WRECKS:
+	if raw_requests.size() + (1 if not raw_grant.is_empty() else 0) > max_queue or raw_events.size() > max_events or raw_blockers.size() > HARD_MAX_PHYSICAL_BLOCKERS or raw_wrecks.size() > HARD_MAX_WRECKS:
 		return _reject("state_bound_exceeded")
 	if typeof(candidate.get("player_in_runway", null)) != TYPE_BOOL or typeof(candidate.get("player_approach_intent", null)) != TYPE_BOOL:
 		return _reject("invalid_player_state")
@@ -519,6 +553,10 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 		var player_key: String = _blocker_key(player_owner_id, player_generation)
 		if not restored_blockers.has(player_key) or not bool(restored_blockers[player_key].get("is_player", false)) or not bool(restored_blockers[player_key].get("on_runway", false)):
 			return _reject("player_blocker_missing")
+	for blocker_key: String in restored_blockers:
+		var blocker: Dictionary = restored_blockers[blocker_key]
+		if blocker.has("observed_grant_tick") and (not player_in_runway or blocker_key != _blocker_key(player_owner_id, player_generation) or int(blocker["ticket"]) > grant_sequence):
+			return _reject("invalid_observed_grant")
 	if (String(mode) == MODE_RESERVED) != (not raw_grant.is_empty()):
 		return _reject("grant_mode_mismatch")
 	if not raw_grant.is_empty() and (not restored_blockers.is_empty() or not raw_wrecks.is_empty()):
@@ -699,7 +737,11 @@ func _revoke_reservation(tick: int, reason: String, requeue: bool) -> void:
 	_grant.clear()
 	_mode = MODE_FREE
 	_record_event(tick, "reservation_revoked", {"ticket": old_grant.get("ticket", -1), "request_id": old_grant.get("request_id", ""), "owner_id": old_grant.get("owner_id", -1), "generation": old_grant.get("generation", -1), "reason": reason})
-	if requeue and _requests.size() < _max_queue:
+	if requeue:
+		if _requests.size() >= _max_queue:
+			# Defensive only: accepted checkpoints and new requests reserve this slot.
+			_record_event(tick, "request_cancelled", {"request_id": old_grant.get("request_id", ""), "owner_id": old_grant.get("owner_id", -1), "generation": old_grant.get("generation", -1), "reason": "requeue_capacity_exceeded"})
+			return
 		old_grant.erase("ticket")
 		old_grant.erase("entry_tick")
 		old_grant.erase("deadline_tick")
@@ -774,6 +816,8 @@ func _valid_physical_blocker(key: String, value: Variant, wrecks: Dictionary) ->
 	if bool(blocker["footprint_clear"]) and bool(blocker["protected_path_clear"]):
 		return false
 	if bool(blocker["on_runway"]) and bool(blocker["footprint_clear"]):
+		return false
+	if blocker.has("observed_grant_tick") and (typeof(blocker["observed_grant_tick"]) != TYPE_INT or int(blocker["observed_grant_tick"]) < 0 or typeof(blocker.get("ticket", null)) != TYPE_INT or int(blocker["ticket"]) <= 0 or not bool(blocker["is_player"]) or bool(blocker["is_wreck"]) or not bool(blocker["on_runway"])):
 		return false
 	if bool(blocker["is_wreck"]):
 		var wreck_id: Variant = blocker.get("wreck_id", null)

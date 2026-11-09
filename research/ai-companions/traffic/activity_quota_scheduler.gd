@@ -90,7 +90,8 @@ func request_activity(tick: int, request_id: String, pilot_id: String, owner_id:
 		return {"ok": false, "reason": eligibility_reason if not eligibility_reason.is_empty() else "ineligible"}
 	if int(_cooldown_until.get(_cooldown_key(pilot_id, activity_id), -1)) > tick:
 		return _reject("activity_cooldown")
-	if not _cooldown_until.has(_cooldown_key(pilot_id, activity_id)) and _cooldown_until.size() >= HARD_MAX_COOLDOWNS:
+	var cooldown_claims: Dictionary = _cooldown_claims(_cooldown_until, _active)
+	if not cooldown_claims.has(_cooldown_key(pilot_id, activity_id)) and cooldown_claims.size() >= HARD_MAX_COOLDOWNS:
 		return _reject("cooldown_state_full")
 	if _pending.size() >= _max_pending:
 		return _reject("activity_queue_full")
@@ -151,6 +152,9 @@ func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 	var granted: Array[Dictionary] = []
 	var used_by_quota: Dictionary = _active_quota_counts()
 	var used_owners: Dictionary = {}
+	# Existing history and every active lease both claim a future cooldown key.
+	# Pending requests reserve nothing until they are granted at this boundary.
+	var cooldown_claims: Dictionary = _cooldown_claims(_cooldown_until, _active)
 	for request: Dictionary in ranked:
 		if int(request["request_tick"]) > tick:
 			continue
@@ -162,6 +166,9 @@ func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 		var quota_key: String = String(request["quota_key"])
 		var used: int = int(used_by_quota.get(quota_key, 0))
 		if used >= int(request["quota"]):
+			continue
+		var cooldown_key: String = _cooldown_key(String(request["pilot_id"]), String(request["activity_id"]))
+		if not cooldown_claims.has(cooldown_key) and cooldown_claims.size() >= HARD_MAX_COOLDOWNS:
 			continue
 		var lease: Dictionary = {
 			"request_id": request["request_id"],
@@ -177,6 +184,7 @@ func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 			"repeat_cooldown_ticks": request["repeat_cooldown_ticks"]
 		}
 		_active[key] = lease
+		cooldown_claims[cooldown_key] = true
 		used_by_quota[quota_key] = used + 1
 		used_owners[key] = true
 		granted.append(lease.duplicate(true))
@@ -341,6 +349,8 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 		if typeof(cooldown_key) != TYPE_STRING or not _valid_cooldown_key(String(cooldown_key)) or typeof(raw_cooldowns[cooldown_key]) != TYPE_INT or int(raw_cooldowns[cooldown_key]) < 0:
 			return _reject("malformed_cooldown_state")
 		restored_cooldowns[String(cooldown_key)] = raw_cooldowns[cooldown_key]
+	if _cooldown_claims(restored_cooldowns, restored_active).size() > HARD_MAX_COOLDOWNS:
+		return _reject("state_bound_exceeded")
 	var restored_events: Array[Dictionary] = []
 	var previous_event_sequence: int = 0
 	for event: Variant in raw_events:
@@ -537,6 +547,15 @@ func _active_quota_counts() -> Dictionary:
 		var quota_key: String = String(lease.get("quota_key", ""))
 		counts[quota_key] = int(counts.get(quota_key, 0)) + 1
 	return counts
+
+
+func _cooldown_claims(cooldowns: Dictionary, active: Dictionary) -> Dictionary:
+	var claims: Dictionary = {}
+	for cooldown_key: Variant in cooldowns:
+		claims[cooldown_key] = true
+	for lease: Dictionary in active.values():
+		claims[_cooldown_key(String(lease["pilot_id"]), String(lease["activity_id"]))] = true
+	return claims
 
 
 func _quota_definition_conflicts(quota_key: String, quota: int) -> bool:

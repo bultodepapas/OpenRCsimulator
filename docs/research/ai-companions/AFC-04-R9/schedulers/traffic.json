@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d6613ae3-74e2-470a-a208-43fc6c299a9d",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "research/ai-companions/traffic",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://test_traffic_schedulers.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:35:04.841743+00:00",
+  "label": "traffic-schedulers-r3",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9-schedulers\\checks\\traffic-schedulers-r3-kt28ab80\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9-schedulers\\checks\\traffic-schedulers-r3-kt28ab80\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "PASS traffic scheduler draft checks"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.266,
+  "log_bytes": 109,
+  "log_sha256": "5dbbd4f2e2e6780932fe5efda32cee8ec46fd3d3c30ee937fe41da218e00e0c1"
+}

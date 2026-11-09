@@ -7,6 +7,13 @@ The [current guide](../AI-FLIGHT-COMPANIONS.md) describes implemented controls a
 limits; [dated evidence](../research/ai-companions/AFC-00-06/README.md) records tests
 and costs. Numeric targets below remain acceptance gates, not performance claims.
 
+The [AFC-04-R9 audit follow-up](../research/ai-companions/AFC-04-R9/README.md)
+corrects the production forecast geometry, shares nominal bank guidance with
+control, and ranks traffic feasibility before steering preference. It also
+repairs the isolated AFC traffic schedulers' occupancy and cooldown-capacity
+invariants. Static-path integration, recovery qualification and later activities
+remain separate gates below.
+
 The first implementation covers parts of AFC-00…06: a controllerless session
 seam, one-to-three Stik circuits, common tick snapshots, basic proximity response,
 player-authored scenery damage publication, model/audio instances, and Home/Pause

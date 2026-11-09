@@ -1,0 +1,11 @@
+     1 info         debug bridge: listening on 127.0.0.1:19679 (pid 74724)
+     2 info         aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+     3 info         physics backend: {"identity":{"backend":"gdscript_reference"},"reason":"native stage: Linux x86_64 only","requested":"native"}
+     4 info         aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+     5 info         aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+     6 info         aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+     7 event        route: flight @tick 12
+     8 event        paused: false @tick 12
+     9 event        crashed: false @tick 12
+    10 event        hitch 98 ms: physics catch-up (12 ticks, the per-frame maximum) @tick 24
+    11 event        paused: true @tick 8206

@@ -48,6 +48,9 @@ var _center_north_m: float = 0.0
 var _center_east_m: float = 0.0
 var _radius_m: float = 0.0
 var _target_height_m: float = 0.0
+## Derived afresh at the command boundary, before the avoidance hook. Prediction
+## and the ordinary controls consume the same snapshot-specific guidance.
+var _nominal_demand: Dictionary = {}
 
 
 ## `trim` is the accepted FlightSession start/trim result (expects V and throttle when present).
@@ -208,13 +211,14 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 	var wind_radial: float = wind[0] * unit_north + wind[1] * unit_east
 	var target_air_north: float = tangent_north * target_speed + unit_north * (radial_target - wind_radial)
 	var target_air_east: float = tangent_east * target_speed + unit_east * (radial_target - wind_radial)
+	_nominal_demand = {
+		"target_speed_mps": target_speed,
+		"bank_rad": _guidance_bank(target_air_north, target_air_east, target_speed, euler[0]),
+	}
 	var avoidance: Dictionary = _avoidance_velocity(state, attitude, ground_velocity, target_air_north, target_air_east, traffic)
-	target_air_north = float(avoidance.air_north)
-	target_air_east = float(avoidance.air_east)
-	var target_heading: float = Math3D.atan2_(target_air_east, target_air_north)
-	var course_error: float = wrapf(target_heading - euler[0], -PI, PI)
-	var feed_forward_bank: float = _direction * atan2(target_speed * target_speed, G * _radius_m)
-	var bank_target: float = clampf(feed_forward_bank + clampf(1.6 * course_error, -deg_to_rad(12.0), deg_to_rad(12.0)), -MAX_BANK_RAD, MAX_BANK_RAD)
+	var bank_target: float = float(_nominal_demand.bank_rad)
+	if target_air_north != float(avoidance.air_north) or target_air_east != float(avoidance.air_east):
+		bank_target = _guidance_bank(float(avoidance.air_north), float(avoidance.air_east), target_speed, euler[0])
 	var roll_delta: float = clampf(1.8 * (bank_target - euler[2]) - 0.35 * state[RigidBody.RATE], -1.0, 1.0)
 	var beta: float = Math3D.atan2_(air_body[1], Math3D.sqrt_(air_body[0] * air_body[0] + air_body[2] * air_body[2]))
 	var coordinated_rate: float = G * tan(euler[2]) / maxf(airspeed, 3.0)
@@ -251,6 +255,13 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 		"tick": tick,
 	}
 	return packet if _packet_finite(packet) else _packet(false, "controller produced a nonfinite demand")
+
+
+func _guidance_bank(air_north: float, air_east: float, target_speed: float, heading: float) -> float:
+	var target_heading: float = Math3D.atan2_(air_east, air_north)
+	var course_error: float = wrapf(target_heading - heading, -PI, PI)
+	var feed_forward_bank: float = _direction * atan2(target_speed * target_speed, G * _radius_m)
+	return clampf(feed_forward_bank + clampf(1.6 * course_error, -deg_to_rad(12.0), deg_to_rad(12.0)), -MAX_BANK_RAD, MAX_BANK_RAD)
 
 
 func _avoidance_velocity(

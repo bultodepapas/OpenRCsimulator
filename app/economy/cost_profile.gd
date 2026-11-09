@@ -2,7 +2,8 @@ extends RefCounted
 ## Explicit versioned adapter: financial children never change physical inventory or flight state.
 
 const PATH := "res://data/economy/cost-profiles.json"
-const FORMAT := "openrc-cost-profiles v2"
+const FORMAT := "openrc-cost-profiles v3"
+const POLICY := "local-contact-v2"
 const MAX_BYTES := 1048576
 const MAX_COMPONENTS := 128
 const MAX_ZONES := 256
@@ -55,11 +56,23 @@ static func apply(loaded: Dictionary, aircraft_id: String) -> Dictionary:
 	out.dossier = dossier
 	out.catalog_hash = (str(loaded.catalog_hash) + bytes.get_string_from_utf8().sha256_text()).sha256_text()
 	out.damage_profile = {
-		format = "openrc-game-damage-profile v1", profile_id = aircraft_id + ":local-contact-v1",
-		policy_version = "local-contact-v1", source_sha256 = source_hash,
+		format = "openrc-game-damage-profile v2", profile_id = aircraft_id + ":" + POLICY,
+		policy_version = POLICY, source_sha256 = source_hash,
 		basis = "authored_game_policy", assumptions = value.assumptions.duplicate() + profile.assumptions.duplicate(),
-		zones = profile.zones.duplicate(true),
+		zones = profile.zones.duplicate(true), propeller_followups = profile.propeller_followups.duplicate(true),
 	}
+	_normalize_game_money(out.damage_profile)
+	out.package_book = {format = "openrc-game-purchase-book v1", aircraft_id = aircraft_id, packages = profile.packages.duplicate(true)}
+	for package: Dictionary in out.package_book.packages:
+		if package.cost_cents != null:
+			package.cost_cents = int(package.cost_cents)
+		for id: String in package.component_quantities:
+			package.component_quantities[id] = int(package.component_quantities[id])
+	out.labor_policy = profile.labor_policy.duplicate(true)
+	out.labor_policy.paid_rate_minor_per_hour = int(out.labor_policy.paid_rate_minor_per_hour)
+	out.labor_policy.shared_setup_minutes = int(out.labor_policy.shared_setup_minutes)
+	for id: String in out.labor_policy.minutes_by_component:
+		out.labor_policy.minutes_by_component[id] = int(out.labor_policy.minutes_by_component[id])
 	return out
 
 
@@ -70,7 +83,7 @@ static func validate_document(value: Variant) -> PackedStringArray:
 	for key: String in required:
 		if not value.has(key):
 			return PackedStringArray(["missing profile document " + key])
-	if value.format != FORMAT or value.policy_version != "local-contact-v1" \
+	if value.format != FORMAT or value.policy_version != POLICY \
 		or not value.aircraft is Dictionary or value.aircraft.is_empty() or value.aircraft.size() > 32 \
 		or not value.assumptions is Array or value.assumptions.is_empty() or value.assumptions.size() > 8 \
 		or not value.generated_from is Dictionary or value.generated_from.size() != 3:
@@ -97,7 +110,7 @@ static func validate_document(value: Variant) -> PackedStringArray:
 
 static func validate(profile: Dictionary, legacy: Dictionary, physical: Dictionary = {}) -> PackedStringArray:
 	var errors := PackedStringArray()
-	var required := ["components", "zones", "propeller_component_id", "propeller_inspection_ids", "assumptions", "shared_parent_children", "source_hashes"]
+	var required := ["components", "zones", "propeller_component_id", "propeller_inspection_ids", "assumptions", "shared_parent_children", "source_hashes", "construction_class", "propeller_followups", "packages", "labor_policy"]
 	if profile.size() != required.size():
 		return PackedStringArray(["unknown or missing profile fields"])
 	for key: String in required:
@@ -109,6 +122,9 @@ static func validate(profile: Dictionary, legacy: Dictionary, physical: Dictiona
 		or not profile.assumptions is Array or profile.assumptions.size() > 16 \
 		or not profile.shared_parent_children is Dictionary or not profile.propeller_inspection_ids is Array:
 		return PackedStringArray(["invalid profile arrays or bounds"])
+	if profile.construction_class not in ["wood", "foam", "composite"] \
+		or not profile.propeller_followups is Array or profile.propeller_followups.size() > MAX_COMPONENTS:
+		return PackedStringArray(["invalid declared game construction or follow-ups"])
 	for hash_value: Variant in profile.source_hashes:
 		if not hash_value is String or hash_value.length() != 64 or not hash_value.is_valid_hex_number(false):
 			errors.append("invalid exact source hash")
@@ -180,9 +196,9 @@ static func validate(profile: Dictionary, legacy: Dictionary, physical: Dictiona
 		qualified["propeller:propeller/" + str(physical.propulsion.get("id", ""))] = true
 	var zones: Dictionary = {}
 	for value: Variant in profile.zones:
-		if not value is Dictionary or value.size() != 4 or value.get("source") not in ["hull", "gear", "propeller"] \
+		if not value is Dictionary or value.size() != 5 or value.get("source") not in ["hull", "gear", "propeller"] \
 			or not value.get("probe_id") is String or not legacy.contact_components.has(value.probe_id) \
-			or not value.get("component_ids") is Array or value.component_ids.is_empty():
+			or not value.get("component_ids") is Array or value.component_ids.is_empty() or not value.get("component_responses") is Dictionary:
 			return PackedStringArray(["invalid qualified zone"])
 		var key := str(value.source) + ":" + str(value.probe_id)
 		if not qualified.is_empty() and not qualified.has(key):
@@ -200,11 +216,67 @@ static func validate(profile: Dictionary, legacy: Dictionary, physical: Dictiona
 	for id: Variant in profile.propeller_inspection_ids:
 		if not ids.has(id):
 			errors.append("invalid inspection target")
-	var game_profile := {format = "openrc-game-damage-profile v1", profile_id = "validated-companion", policy_version = "local-contact-v1",
-		source_sha256 = profile.source_hashes[0], basis = "authored_game_policy", assumptions = profile.assumptions, zones = profile.zones}
-	var game_checked := Damage.validate(game_profile, {components = profile.components}, str(profile.source_hashes[0]))
+	var game_profile := {format = "openrc-game-damage-profile v2", profile_id = "validated-companion", policy_version = POLICY,
+		source_sha256 = profile.source_hashes[0], basis = "authored_game_policy", assumptions = profile.assumptions, zones = profile.zones, propeller_followups = profile.propeller_followups}
+	var game_checked := Damage.validate(game_profile, {components = profile.components, propeller_inspection_ids = profile.propeller_inspection_ids}, str(profile.source_hashes[0]))
 	if not game_checked.ok:
 		errors.append(str(game_checked.error))
+	errors.append_array(_validate_books(profile, ids))
+	return errors
+
+
+static func _normalize_game_money(profile: Dictionary) -> void:
+	for zone: Dictionary in profile.zones:
+		var responses := [zone.response]
+		responses.append_array(zone.component_responses.values())
+		for response: Dictionary in responses:
+			for id: String in response.get("service_minor_by_component", {}):
+				response.service_minor_by_component[id] = int(response.service_minor_by_component[id])
+	for follow: Dictionary in profile.propeller_followups:
+		if follow.service_minor != null:
+			follow.service_minor = int(follow.service_minor)
+
+
+static func _validate_books(profile: Dictionary, ids: Dictionary) -> PackedStringArray:
+	var errors := PackedStringArray()
+	if not profile.packages is Array or profile.packages.size() > 64:
+		return PackedStringArray(["invalid bounded purchase book"])
+	var seen: Dictionary = {}
+	for package: Variant in profile.packages:
+		if not package is Dictionary or package.size() != 6:
+			return PackedStringArray(["invalid package schema"])
+		for field: String in ["id", "component_quantities", "cost_cents", "available", "compatible", "provenance"]:
+			if not package.has(field):
+				return PackedStringArray(["missing package field"])
+		if not package.id is String or package.id.is_empty() or package.id.length() > 128 or seen.has(package.id) \
+			or not package.component_quantities is Dictionary or package.component_quantities.is_empty() \
+			or not package.provenance is String or package.provenance.is_empty() or package.provenance.length() > 2048:
+			return PackedStringArray(["invalid package identity, contents or provenance"])
+		seen[package.id] = true
+		var count := 0
+		for id: Variant in package.component_quantities:
+			if not id is String or not ids.has(id) or not _integer(package.component_quantities[id], 1, 64):
+				return PackedStringArray(["invalid sold financial quantity"])
+			count += int(package.component_quantities[id])
+		if count > 64 or (package.cost_cents != null and not _integer(package.cost_cents, 0, MAX_MINOR)):
+			errors.append("package price or unit bound exceeded")
+		for field: String in ["available", "compatible"]:
+			if package[field] != null and not package[field] is bool:
+				errors.append("package eligibility must be boolean or unknown")
+	var labor: Variant = profile.labor_policy
+	if not labor is Dictionary or labor.size() != 7:
+		return PackedStringArray(["invalid labor policy schema"])
+	for field: String in ["format", "currency", "paid_rate_minor_per_hour", "minutes_by_component", "shared_setup_minutes", "basis", "evidence"]:
+		if not labor.has(field):
+			return PackedStringArray(["missing labor policy field"])
+	if labor.format != "openrc-game-labor-policy v1" or labor.currency != "USD" or labor.basis != "authored_game_policy" \
+		or not labor.minutes_by_component is Dictionary or labor.minutes_by_component.size() != ids.size() \
+		or not _integer(labor.paid_rate_minor_per_hour, 0, 1000000) or not _integer(labor.shared_setup_minutes, 0, 60000) \
+		or not labor.evidence is String or labor.evidence.is_empty() or labor.evidence.length() > 2048:
+		return PackedStringArray(["invalid authored labor basis"])
+	for id: Variant in labor.minutes_by_component:
+		if not ids.has(id) or not _integer(labor.minutes_by_component[id], 0, 60000):
+			errors.append("invalid labor scope or active minutes")
 	return errors
 
 

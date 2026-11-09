@@ -1,0 +1,263 @@
+{
+  "format": "openrc-afc-04-r9-verification-v1",
+  "date": "2026-11-09",
+  "baseline_commit": "7b8ade33ae24414e420708f82b0235b3ff0b0f70",
+  "head_at_collection": "7b8ade33ae24414e420708f82b0235b3ff0b0f70",
+  "source_manifest_unchanged": true,
+  "engine": "4.8.beta2.official.cafc17a19",
+  "platform": "Windows x86_64 headless reference",
+  "checks": [
+    {
+      "label": "afc-r9-final-calm",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/calm.json"
+    },
+    {
+      "label": "afc-r9-final-clearance",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/clearance.json"
+    },
+    {
+      "label": "afc-r9-final-comparison",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/comparison.json"
+    },
+    {
+      "label": "afc-r9-final-gentle",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/gentle.json"
+    },
+    {
+      "label": "afc-r9-final-manager",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/manager.json"
+    },
+    {
+      "label": "afc-r9-final-matrix",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/matrix.json"
+    },
+    {
+      "label": "afc-r9-final-observation",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/observation.json"
+    },
+    {
+      "label": "afc-r9-final-pilot",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/pilot.json"
+    },
+    {
+      "label": "afc-r9-final-prediction",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/prediction.json"
+    },
+    {
+      "label": "afc-r9-final-profiles-renewed",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/profiles-renewed.json"
+    },
+    {
+      "label": "afc-r9-final-record",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/record.json"
+    },
+    {
+      "label": "afc-r9-final-shell",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/shell.json"
+    },
+    {
+      "label": "afc-r9-final-terrain_traffic",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/terrain_traffic.json"
+    },
+    {
+      "label": "afc-r9-final-traffic_lifecycle",
+      "ok": true,
+      "complete": true,
+      "errors": 0,
+      "warnings": 0,
+      "report": "checks/traffic_lifecycle.json"
+    }
+  ],
+  "base_extraction_parity_checks": 256,
+  "matrix_checks": 148,
+  "matrix_parity": {
+    "scenario_metrics.csv": {
+      "sha256": "29cab4ba7a47da1afd10e39249b7080eb5537d5004c558995e9e0c301a6e2d56",
+      "equals_R5_bytes": true
+    },
+    "flight_samples_1hz.csv": {
+      "sha256": "cdabecb58ad7ecb98762ba6de6d4f7ece6b7f3c71abfef1476f93c5c2aaba5fb",
+      "equals_R5_bytes": true
+    }
+  },
+  "surveys": {
+    "baseline-crossing": {
+      "nominal_passed": 6,
+      "min_nominal_player_distance_m": 58.090394481403,
+      "constructed_conflict_passed": false,
+      "ticks_per_case": 2880
+    },
+    "final-comparison": {
+      "nominal_passed": 6,
+      "min_nominal_player_distance_m": 58.090394481403,
+      "constructed_conflict_passed": false,
+      "ticks_per_case": 2880
+    },
+    "final-calm": {
+      "nominal_passed": 6,
+      "min_nominal_player_distance_m": 55.7440506400708,
+      "constructed_conflict_passed": false,
+      "ticks_per_case": 14400
+    },
+    "final-gentle": {
+      "nominal_passed": 6,
+      "min_nominal_player_distance_m": 53.1109060967252,
+      "constructed_conflict_passed": false,
+      "ticks_per_case": 14400
+    }
+  },
+  "replays": {
+    "baseline-exact": {
+      "complete": true,
+      "mode": "exact",
+      "solver_changed": false,
+      "rows": 2881,
+      "csv_sha256": "4fa0618b6685a07a7d933b69915a64bd0d35534e649543d0086219df9fb8b41d"
+    },
+    "final-exact-ai": {
+      "complete": true,
+      "mode": "exact",
+      "solver_changed": false,
+      "rows": 2881,
+      "csv_sha256": "4fa0618b6685a07a7d933b69915a64bd0d35534e649543d0086219df9fb8b41d"
+    },
+    "final-exact-player": {
+      "complete": true,
+      "mode": "exact",
+      "solver_changed": false,
+      "rows": 2881,
+      "csv_sha256": "9ee61bfb8e1096cba5669c068f705e9b1ca7ac622268655a714d4573e25eaec1"
+    },
+    "final-exact-peer": {
+      "complete": true,
+      "mode": "exact",
+      "solver_changed": false,
+      "rows": 2881,
+      "csv_sha256": "667d13256f39203edfc72d872efa20696891a504b84f39719ebdc30dff729a3f"
+    }
+  },
+  "exogenous_input_parity": {
+    "player": {
+      "equal_all_csv_bytes": true,
+      "sha256": "9ee61bfb8e1096cba5669c068f705e9b1ca7ac622268655a714d4573e25eaec1",
+      "rows": 2881
+    },
+    "peer": {
+      "equal_all_csv_bytes": true,
+      "sha256": "667d13256f39203edfc72d872efa20696891a504b84f39719ebdc30dff729a3f",
+      "rows": 2881
+    }
+  },
+  "tapes": {
+    "baseline": {
+      "stored_path": "tapes/baseline-ai.orfl.gz",
+      "stored_sha256": "b6ef97b84a145557c8d5a5cad20b5b5ef702a061074eb3b98b498163e61774ff",
+      "orfl_sha256": "e91bc62e2ac1c366921502db8c5022ffda73c10ff45a427d5d05605b6b7d04c8",
+      "stored_bytes": 1182226,
+      "orfl_bytes": 7260128
+    },
+    "candidate": {
+      "stored_path": "tapes/candidate-ai.orfl.gz",
+      "stored_sha256": "d9fb0e9f86cf120ef4d6d14670d89bdd8f585e290d1228dc7b809afae7168582",
+      "orfl_sha256": "274295112fe2a912d81b0dd6e90365b90120abb2f4d7904bad81444d91c44738",
+      "stored_bytes": 1182226,
+      "orfl_bytes": 7260128
+    }
+  },
+  "research_scheduler_checks": {
+    "boundaries": {
+      "ok": true,
+      "complete": true,
+      "report": "schedulers/boundaries.json"
+    },
+    "traffic": {
+      "ok": true,
+      "complete": true,
+      "report": "schedulers/traffic.json"
+    },
+    "tailwind": {
+      "ok": true,
+      "complete": true,
+      "report": "schedulers/tailwind.json"
+    }
+  },
+  "research_sources": {
+    "research/ai-companions/traffic/runway_coordinator.gd": "d771cdb36cbf01d54f6c1eb32389fb4e00059ef0815d6e7345502ef94bef7583",
+    "research/ai-companions/traffic/activity_quota_scheduler.gd": "7896dcea297ec42e050bcfaefdca7045bcd5c800134018bdc122878afae10234",
+    "research/ai-companions/traffic/test_scheduler_boundaries.gd": "c498d1f363bcedae3fa4f07a7dc34f5b97ff7b1e7c593f44dd744d4109eeb393"
+  },
+  "admission": {
+    "active": 3,
+    "airborne": 3,
+    "ticks": 8206,
+    "faulted": 0,
+    "crashed": 0,
+    "stop": {
+      "stopped": true,
+      "pid": 74724,
+      "forced": false,
+      "launcher_exit_code": null,
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "solver_rebind": {
+    "receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-11-09-b98411b3-to-896989e0.json",
+    "identical_tapes": 9,
+    "before": "b98411b3c131e0a91bd7e2793799bf2f4d69264e1f29b058084e623ab20a1581",
+    "after": "896989e041c938d5054ab7837fe73d86d61655c6946ddfc04daea39f345ae51f"
+  },
+  "limits": "Forecast/software evidence only; constructed initial conflict still fails. No static-path containment, arbitrary encounter safety, physical validation, fleet restore, rendering or 1080p performance qualification."
+}

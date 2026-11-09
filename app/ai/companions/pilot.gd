@@ -18,7 +18,8 @@ const TERRAIN_CLEARANCE_M := 20.0
 const TERRAIN_UNCERTAINTY_M := 5.0
 const AVOID_BANK_LIMIT_RAD := 0.4363323129985824
 const BANK_CHOICES_DEG := [-25.0, -20.0, -15.0, -10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 20.0, 25.0]
-const AVOIDANCE_STATE_VERSION := "reachable-pilot-state-v1"
+const AVOIDANCE_STATE_VERSION := "reachable-pilot-state-v2"
+const CLEARANCE_TOLERANCE_M := 1e-9
 const MAX_PLAN_DIAGNOSTICS := 128
 
 ## Diagnostics are read-only, bounded and off in normal flight.
@@ -175,7 +176,7 @@ func _avoidance_velocity(
 	var prior_has_plan: bool = _has_held_maneuver
 	var prior_plan_bank: float = _held_bank_rad
 	var current_bank: float = clampf(own_euler[2], -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
-	var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps, G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	var nominal_bank: float = float(_nominal_demand.bank_rad)
 	var threats: Array[Dictionary] = _prepare_threats(traffic, own_velocity)
 	if threats.is_empty():
 		return _clear_traffic_response(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
@@ -193,21 +194,18 @@ func _avoidance_velocity(
 		return _unmodified_traffic_response(base_air_north, base_air_east)
 	var best_bank: float = nominal_bank
 	var best_score: float = float(baseline.score)
+	var best_traffic_margin: float = float(baseline.traffic_margin_m)
 	for bank_degrees: float in BANK_CHOICES_DEG:
 		var candidate_bank: float = deg_to_rad(bank_degrees)
 		var result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
 			nominal_bank, candidate_bank, clearance, threats)
 		var tie_bias: float = 0.15 if candidate_bank > 0.0 else 0.0
 		var candidate_score: float = float(result.score) - 0.75 * absf(candidate_bank - nominal_bank) + tie_bias
-		if candidate_score > best_score:
+		var candidate_margin: float = float(result.traffic_margin_m)
+		if _prefer_traffic_candidate(candidate_margin, candidate_score, best_traffic_margin, best_score):
 			best_score = candidate_score
 			best_bank = candidate_bank
-	# Include the continuous nominal bank in the candidate set and favor it when
-	# a reachable choice cannot improve the worst predicted clearance.
-	var nominal_score: float = float(baseline.score)
-	if nominal_score >= best_score:
-		best_bank = nominal_bank
-		best_score = nominal_score
+			best_traffic_margin = candidate_margin
 
 	if _has_held_maneuver:
 		var held_result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
@@ -218,8 +216,10 @@ func _avoidance_velocity(
 				_clear_since_tick = _planning_tick
 		else:
 			_clear_since_tick = -1
-		var held_is_unsafe: bool = float(held_result.score) < -2.0
-		if held_is_unsafe and best_score > float(held_result.score) + 2.0:
+		var held_margin: float = float(held_result.traffic_margin_m)
+		# Commitment cannot retain an unsafe turn over a traffic-feasible one.
+		# If none is feasible, retain the existing 2 m retarget hysteresis.
+		if held_margin < 0.0 and (best_traffic_margin >= 0.0 or best_traffic_margin > held_margin + 2.0):
 			_set_held_maneuver(best_bank, _planning_tick + HOLD_TIME_TICKS, "retarget")
 			_clear_since_tick = -1
 		elif _planning_tick >= _hold_until_tick and _clear_since_tick >= 0 \
@@ -259,6 +259,8 @@ func _avoidance_velocity(
 		"best_candidate_adjusted_score_m": best_score,
 		"selected_score_m": float(selected_prediction.score),
 		"selected_traffic_margin_m": float(selected_prediction.traffic_margin_m),
+		"traffic_feasible_candidate_available": best_traffic_margin >= 0.0,
+		"selected_traffic_feasible": float(selected_prediction.traffic_margin_m) >= 0.0,
 		"selected_player_min_m": _finite_diagnostic(selected_prediction.minimum_player_distance_m),
 		"selected_peer_min_m": _finite_diagnostic(selected_prediction.minimum_peer_distance_m),
 		"selected_terrain_margin_m": float(selected_prediction.terrain_margin_m),
@@ -278,6 +280,18 @@ func _avoidance_velocity(
 		_plan_diagnostic_count += 1
 
 	return _bank_response(base_air_north, base_air_east, nominal_bank, best_bank)
+
+
+## Feasibility precedes steering preferences. If every option violates traffic
+## clearance, maximize its worst margin; this remains best effort, not recovery
+## qualification. Static-world feasibility is a separate, still-open gate.
+static func _prefer_traffic_candidate(margin: float, preference: float,
+		best_margin: float, best_preference: float) -> bool:
+	if (margin >= 0.0) != (best_margin >= 0.0):
+		return margin >= 0.0
+	if margin < 0.0 and margin != best_margin:
+		return margin > best_margin
+	return preference > best_preference
 
 
 func _prepare_threats(traffic: Array, own_velocity: PackedFloat64Array) -> Array[Dictionary]:
@@ -341,16 +355,20 @@ func _prepare_threats(traffic: Array, own_velocity: PackedFloat64Array) -> Array
 		predicted_positions[1] = east
 		predicted_positions[2] = down
 		for sample_index in range(1, sample_count + 1):
-			heading = wrapf(heading + turn_rate * PREDICTION_STEP_S, -PI, PI)
-			north += air_horizontal_speed * cos(heading) * PREDICTION_STEP_S + threat_wind[0] * PREDICTION_STEP_S
-			east += air_horizontal_speed * sin(heading) * PREDICTION_STEP_S + threat_wind[1] * PREDICTION_STEP_S
+			var half_turn: float = 0.5 * turn_rate * PREDICTION_STEP_S
+			var middle_heading: float = heading + half_turn
+			var distance: float = air_horizontal_speed * PREDICTION_STEP_S * _sinc(half_turn)
+			north += distance * cos(middle_heading) + threat_wind[0] * PREDICTION_STEP_S
+			east += distance * sin(middle_heading) + threat_wind[1] * PREDICTION_STEP_S
+			heading = wrapf(heading + 2.0 * half_turn, -PI, PI)
 			down += velocity_down * PREDICTION_STEP_S
 			var offset: int = sample_index * 3
 			predicted_positions[offset] = north
 			predicted_positions[offset + 1] = east
 			predicted_positions[offset + 2] = down
 		threats.append({"id": item_id, "is_player": is_player,
-			"required_separation_m": required_separation, "positions": predicted_positions})
+			"required_separation_m": required_separation, "positions": predicted_positions,
+			"segment_error_m": _arc_chord_error(air_horizontal_speed, turn_rate)})
 	return threats
 
 
@@ -378,14 +396,27 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 	minimum_terrain_margin = minf(minimum_terrain_margin,
 		clearance - down_rate * terrain_horizon - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M)
 	for sample_index in range(sample_count + 1):
+		var previous_north: float = own_north
+		var previous_east: float = own_east
+		var previous_down: float = own_down
+		var own_segment_error: float = 0.0
 		if sample_index > 0:
 			var midpoint_s: float = (float(sample_index) - 0.5) * PREDICTION_STEP_S
 			var ramp: float = clampf((midpoint_s - REACTION_MARGIN_S) / BANK_RESPONSE_S, 0.0, 1.0)
 			var bank: float = lerpf(current_bank, candidate_bank, ramp)
 			var turn_rate: float = G * tan(bank) / maxf(own_speed, 3.0)
-			heading = wrapf(heading + turn_rate * PREDICTION_STEP_S, -PI, PI)
-			own_north += own_speed * cos(heading) * PREDICTION_STEP_S + _planning_wind[0] * PREDICTION_STEP_S
-			own_east += own_speed * sin(heading) * PREDICTION_STEP_S + _planning_wind[1] * PREDICTION_STEP_S
+			var half_turn: float = 0.5 * turn_rate * PREDICTION_STEP_S
+			var middle_heading: float = heading + half_turn
+			var arc_distance: float = own_speed * PREDICTION_STEP_S * _sinc(half_turn)
+			own_north += arc_distance * cos(middle_heading) + _planning_wind[0] * PREDICTION_STEP_S
+			own_east += arc_distance * sin(middle_heading) + _planning_wind[1] * PREDICTION_STEP_S
+			heading = wrapf(heading + 2.0 * half_turn, -PI, PI)
+			own_segment_error = _arc_chord_error(own_speed, turn_rate)
+			# The vertical forecast stops at terrain_horizon, which may fall
+			# inside this interval. Bound that kink's deviation from the chord.
+			var split_s: float = terrain_horizon - float(sample_index - 1) * PREDICTION_STEP_S
+			if split_s > 0.0 and split_s < PREDICTION_STEP_S:
+				own_segment_error += absf(down_rate) * split_s * (1.0 - split_s / PREDICTION_STEP_S)
 			own_down = state[AvoidanceRigidBody.POS + 2] + down_rate * minf(float(sample_index) * PREDICTION_STEP_S, terrain_horizon)
 			var remaining_clearance: float = clearance - (own_down - state[AvoidanceRigidBody.POS + 2])
 			minimum_terrain_margin = minf(minimum_terrain_margin,
@@ -398,8 +429,21 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 			var down_delta: float = positions[offset + 2] - own_down
 			var distance: float = AvoidanceMath.sqrt_(north_delta * north_delta
 				+ east_delta * east_delta + down_delta * down_delta)
-			minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], distance)
+			var interval_distance: float = distance
+			if sample_index > 0:
+				interval_distance = _relative_segment_distance(
+					positions[offset - 3] - previous_north,
+					positions[offset - 2] - previous_east,
+					positions[offset - 1] - previous_down,
+					north_delta, east_delta, down_delta)
+				# CPA is exact on synchronized chords. Subtract deviations of
+				# both forecast arcs, independently of the empirical allowance.
+				interval_distance = maxf(0.0, interval_distance - own_segment_error
+					- float(threats[threat_index].get("segment_error_m", 0.0)))
+			minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], interval_distance)
 			if include_trace:
+				# Endpoint samples remain available for prediction residual work;
+				# minima above are conservative interval bounds, not samples.
 				distance_traces[threat_index][sample_index] = distance
 	var traffic_margin: float = INF
 	var minimum_player_distance: float = INF
@@ -407,7 +451,7 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 	for threat_index in threats.size():
 		var threat: Dictionary = threats[threat_index]
 		var separation: float = minimum_by_threat[threat_index]
-		var margin: float = separation - float(threat.required_separation_m)
+		var margin: float = separation - float(threat.required_separation_m) - CLEARANCE_TOLERANCE_M
 		if bool(threat.is_player):
 			minimum_player_distance = minf(minimum_player_distance, separation)
 			traffic_margin = minf(traffic_margin, margin * 1.2)
@@ -423,6 +467,37 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 	if include_trace:
 		result["distance_traces_m"] = distance_traces
 	return result
+
+
+## Stable constant-turn displacement scale, including the straight-flight limit.
+static func _sinc(angle: float) -> float:
+	if absf(angle) < 1e-4:
+		var squared: float = angle * angle
+		return 1.0 - squared / 6.0 + squared * squared / 120.0
+	return sin(angle) / angle
+
+
+## Maximum horizontal arc/chord deviation for the bounded forecast segment.
+static func _arc_chord_error(speed: float, turn_rate: float) -> float:
+	var half_turn: float = 0.5 * turn_rate * PREDICTION_STEP_S
+	var scale: float = _sinc(0.5 * half_turn)
+	return speed * PREDICTION_STEP_S * absf(half_turn) * 0.25 * scale * scale
+
+
+## Minimum relative distance over one synchronized linear interval (NED metres).
+static func _relative_segment_distance(n0: float, e0: float, d0: float,
+		n1: float, e1: float, d1: float) -> float:
+	var dn: float = n1 - n0
+	var de: float = e1 - e0
+	var dd: float = d1 - d0
+	var motion_squared: float = dn * dn + de * de + dd * dd
+	var fraction: float = 0.0
+	if motion_squared > 0.0:
+		fraction = clampf(-(n0 * dn + e0 * de + d0 * dd) / motion_squared, 0.0, 1.0)
+	var north: float = n0 + fraction * dn
+	var east: float = e0 + fraction * de
+	var down: float = d0 + fraction * dd
+	return AvoidanceMath.sqrt_(north * north + east * east + down * down)
 
 
 func _bank_response(base_air_north: float, base_air_east: float,
@@ -452,8 +527,7 @@ func _clear_traffic_response(state: PackedFloat64Array, attitude: PackedFloat64A
 		var air_east: float = own_velocity[1] - _planning_wind[1]
 		var air_speed: float = AvoidanceMath.sqrt_(air_north * air_north + air_east * air_east)
 		if is_finite(air_speed) and air_speed >= 3.0:
-			var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps,
-				G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+			var nominal_bank: float = float(_nominal_demand.bank_rad)
 			return _bank_response(base_air_north, base_air_east, nominal_bank, _held_bank_rad)
 	return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 

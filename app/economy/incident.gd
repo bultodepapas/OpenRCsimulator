@@ -10,6 +10,7 @@ const RepairPlanner = preload("res://economy/repair_planner.gd")
 const ReplacementQuote = preload("res://economy/replacement_quote.gd")
 const Checkpoint = preload("res://economy/checkpoint.gd")
 const DamageAssessment = preload("res://economy/damage_assessment.gd")
+const CostTransaction = preload("res://economy/cost_transaction.gd")
 const RECIPE_PATH := "res://data/economy/repair-recipes.json"
 const Events = preload("res://sim/aircraft_contact_events.gd")
 const MAX_EVENTS := 128
@@ -20,6 +21,14 @@ const MAX_EVENTS_PER_TICK := 64
 const MAX_EVENT_BYTES := 65536
 const MAX_JOURNAL_BYTES := 65536
 const MAX_OPEN_CONTACTS := 128
+const MAX_GAME_RECEIPTS := 64
+const MAX_GAME_RECEIPT_BYTES := 32768
+const MAX_SCOPE_OBSERVATIONS := 16
+const MAX_COST_TRANSACTIONS := 16
+const MAX_COST_HISTORY_BYTES := 98304
+const MAX_QUOTE_HISTORY := 8
+const MAX_QUOTE_HISTORY_BYTES := 32768
+const EVIDENCE_FLUSH_INTERVAL_TICKS := 60
 const BINDING_NOTE := "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
 const REGISTERED_VARIANT_NOTE := "This registered battery configuration preserves the priced inventory and contact bindings."
 
@@ -37,6 +46,23 @@ var _tick_event_count := 0
 var _open_contacts: Dictionary = {}
 var _summaries: Dictionary = {}
 var _decision_revisions: Dictionary = {}
+var _game_scopes: Dictionary = {}
+var _game_receipts: Array = []
+var _scope_unresolved: Dictionary = {}
+var _package_book: Dictionary = {}
+var _purchase_book_hash := ""
+var _labor_policy: Dictionary = {}
+var _labor_policy_hash := ""
+var _costing_mode := "diy"
+var _costing_error := ""
+var _purchase_package_id := ""
+var _purchase_options_key := ""
+var _purchase_options_cache: Array = []
+var _cost_transactions: Array = []
+var _quote_history: Array = []
+var _quote_history_truncated := false
+var _transaction_hashes: Dictionary = {}
+var _active_cost_receipt: Dictionary = {}
 var _damage_profile: Dictionary = {}
 var _profile_hash := ""
 var _profile_error := ""
@@ -51,6 +77,9 @@ var _full_inspection_revision := 0
 var _last_tick := -1
 var _assessment_tick := -1
 var _pending := false
+var _evidence_pending := false
+var _evidence_only_dirty := false
+var _last_archive_tick := -1
 var _confirmed_facts: Dictionary = {}
 var _fact_revisions: Dictionary = {}
 var _catalog_hash := ""
@@ -98,6 +127,20 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_damage_profile = {}
 	_profile_hash = ""
 	_profile_error = ""
+	_package_book = loaded.get("package_book", {}).duplicate(true) if loaded.get("package_book", {}) is Dictionary else {}
+	_labor_policy = loaded.get("labor_policy", {}).duplicate(true) if loaded.get("labor_policy", {}) is Dictionary else {}
+	_purchase_book_hash = CostTransaction.digest(_package_book) if not _package_book.is_empty() else ""
+	_labor_policy_hash = CostTransaction.digest(_labor_policy) if not _labor_policy.is_empty() else ""
+	_costing_mode = "diy"
+	_costing_error = ""
+	_purchase_package_id = ""
+	_purchase_options_key = ""
+	_purchase_options_cache = []
+	_cost_transactions = []
+	_quote_history = []
+	_quote_history_truncated = false
+	_transaction_hashes = {}
+	_active_cost_receipt = {}
 	if loaded.has("damage_profile"):
 		var profile_check := DamageAssessment.validate(loaded.damage_profile, dossier, str(_identity.source_sha256))
 		if profile_check.ok:
@@ -115,6 +158,9 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_open_contacts = {}
 	_summaries = {}
 	_decision_revisions = {}
+	_game_scopes = {}
+	_game_receipts = []
+	_scope_unresolved = {}
 	_journal_overflow = false
 	_journal_bytes = 0
 	_evidence_overflow = false
@@ -126,6 +172,9 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_last_tick = -1
 	_assessment_tick = -1
 	_pending = false
+	_evidence_pending = false
+	_evidence_only_dirty = false
+	_last_archive_tick = -1
 	_confirmed_facts = {}
 	_fact_revisions = {}
 	terminal = false
@@ -202,10 +251,129 @@ func apply_repair_choice(receipt: Dictionary, repair_inspection: Dictionary, com
 
 ## Read-only identity for an assessment producer. Not a player-controlled damage shortcut.
 func inspection_context() -> Dictionary:
-	return {identity = _identity.duplicate(true), catalog_hash = _catalog_hash, revision = _revision}
+	return {identity = _identity.duplicate(true), catalog_hash = _catalog_hash, profile_hash = _profile_hash,
+		recipe_hash = _recipe_hash, purchase_book_hash = _purchase_book_hash,
+		labor_policy_hash = _labor_policy_hash, revision = _revision}
+
+
+## Owner-supplied frozen books and restriction snapshots, never UI-provided data.
+func cost_transaction_context() -> Dictionary:
+	return {identity = _identity.duplicate(true), catalog_hash = _catalog_hash, profile_hash = _profile_hash,
+		recipe_hash = _recipe_hash, purchase_book_hash = _purchase_book_hash,
+		labor_policy_hash = _labor_policy_hash, revision = _revision,
+		package_book = _package_book.duplicate(true), labor_policy = _labor_policy.duplicate(true),
+		blocked = _reuse_blocked.duplicate(true), confirmed_replacements = _confirmed_replacements.duplicate(true)}
+
+
+## Explicit plans are atomic: the pure planner validates every choice before the
+## ledger, fee history, report or archive can change.
+func apply_cost_transaction(request: Dictionary) -> Dictionary:
+	if not Checkpoint.native_data(request) or var_to_bytes(request).size() > CostTransaction.MAX_REQUEST_BYTES:
+		return {ok = false, errors = ["Invalid or oversized cost transaction."]}
+	var id := str(request.get("transaction_id", ""))
+	var request_hash := CostTransaction.digest(request)
+	if _transaction_hashes.has(id):
+		if _transaction_hashes[id] != request_hash:
+			return {ok = false, errors = ["Transaction ID already refers to different evidence."]}
+		return {ok = true, duplicate = true}
+	if not has_damage() or _package_book.is_empty() or _labor_policy.is_empty():
+		return {ok = false, errors = ["No compatible active cost transaction scope."]}
+	evaluate_pending()
+	var prepared: Dictionary = CostTransaction.prepare(request, dossier, _assessment, _recipe_book, cost_transaction_context())
+	return _commit_cost_transaction(prepared)
+
+
+## UI may select only the labor mode. Other financial inputs remain frozen and
+## owner controlled. A failed selection leaves the previous accepted bill intact.
+func set_costing_mode(mode: String) -> Dictionary:
+	if mode not in ["diy", "paid"]:
+		return {ok = false, errors = ["Unsupported cost mode."]}
+	if not has_damage() or _package_book.is_empty() or _labor_policy.is_empty():
+		return {ok = false, errors = ["No compatible active cost estimate."]}
+	evaluate_pending()
+	if mode == _costing_mode and not _active_cost_receipt.is_empty():
+		return {ok = true, duplicate = true}
+	if _active_has_explicit_repairs():
+		return _costing_refusal("Changing labor mode requires reselecting the explicit repair plan.")
+	var prepared := _prepare_purchase(mode, _purchase_package_id)
+	var committed := _commit_cost_transaction(prepared, _purchase_package_id, false)
+	if not committed.get("ok", false):
+		return _costing_refusal("; ".join(committed.get("errors", [])))
+	return committed
+
+
+func set_purchase_package(id: String) -> Dictionary:
+	if id.length() > 128 or not has_damage() or _package_book.is_empty() or _labor_policy.is_empty():
+		return {ok = false, errors = ["No compatible purchase option."]}
+	evaluate_pending()
+	if id == _purchase_package_id and not _active_cost_receipt.is_empty():
+		return {ok = true, duplicate = true}
+	if _active_has_explicit_repairs():
+		return _costing_refusal("Changing packages requires reselecting the explicit repair plan.")
+	var prepared := _prepare_purchase(_costing_mode, id)
+	var committed := _commit_cost_transaction(prepared, id, false)
+	return committed if committed.get("ok", false) else _costing_refusal("; ".join(committed.get("errors", [])))
+
+
+func _prepare_purchase(mode: String, id: String) -> Dictionary:
+	var context := cost_transaction_context()
+	return CostTransaction.prepare_mode(dossier, _assessment, _recipe_book, context, mode) if id.is_empty() \
+		else CostTransaction.prepare_package_option(dossier, _assessment, _recipe_book, context, mode, id)
+
+
+func _active_has_explicit_repairs() -> bool:
+	return not _active_cost_receipt.get("repair", {}).get("component_ids", []).is_empty()
+
+
+func _costing_refusal(message: String) -> Dictionary:
+	_costing_error = message
+	if not report.is_empty():
+		report["costing_error"] = message
+		assessment_changed.emit(report.duplicate(true), terminal)
+	return {ok = false, errors = [message]}
+
+
+func _commit_cost_transaction(prepared: Dictionary, selected_package := "", retain_history := true) -> Dictionary:
+	if not prepared.get("ok", false):
+		return {ok = false, errors = prepared.get("errors", ["Cost transaction could not be prepared."])}
+	var receipt: Dictionary = prepared.receipt
+	if retain_history and (_cost_transactions.size() >= MAX_COST_TRANSACTIONS \
+		or var_to_bytes(_cost_transactions + [receipt]).size() > MAX_COST_HISTORY_BYTES):
+		return {ok = false, errors = ["Cost transaction history limit reached; existing estimate retained."]}
+	var candidate: Dictionary = prepared.assessment.duplicate(true)
+	if not Calculator.calculate(dossier, candidate).get("ok", false):
+		return {ok = false, errors = ["Prepared cost transaction contains an invalid assessment."]}
+	_assessment = candidate
+	if retain_history:
+		_cost_transactions.append(receipt.duplicate(true))
+		_transaction_hashes[receipt.transaction_id] = receipt.request_digest
+	else:
+		_retain_quote_selection(receipt)
+	_costing_mode = receipt.request.labor_mode
+	_purchase_package_id = selected_package
+	_purchase_options_key = ""
+	_costing_error = ""
+	_active_cost_receipt = receipt.duplicate(true)
+	_queue_assessment(_last_tick)
+	for id: String in receipt.repair.get("component_ids", []):
+		_decision_revisions[id] = _revision
+		_clear_game_scope(id)
+		_scope_unresolved.erase(id)
+	evaluate_pending()
+	return {ok = true, duplicate = false, revision = _revision}
+
+
+func _retain_quote_selection(receipt: Dictionary) -> void:
+	var next := _quote_history.duplicate(true)
+	next.append(receipt.duplicate(true))
+	while not next.is_empty() and (next.size() > MAX_QUOTE_HISTORY or var_to_bytes(next).size() > MAX_QUOTE_HISTORY_BYTES):
+		next.pop_front()
+		_quote_history_truncated = true
+	_quote_history = next
 
 
 func checkpoint(tick: int, bindings: Dictionary) -> Dictionary:
+	evaluate_pending()
 	return Checkpoint.capture(self, tick, bindings)
 
 
@@ -235,6 +403,19 @@ func commit_restore(prepared: Dictionary) -> void:
 	_open_contacts = data.open_contacts.duplicate(true)
 	_summaries = data.summaries.duplicate(true)
 	_decision_revisions = data.decision_revisions.duplicate(true)
+	_game_scopes = data.game_scopes.duplicate(true)
+	_game_receipts = data.game_receipts.duplicate(true)
+	_scope_unresolved = data.scope_unresolved.duplicate(true)
+	_costing_mode = data.costing_mode
+	_purchase_package_id = data.purchase_package_id
+	_purchase_options_key = ""
+	_purchase_options_cache = []
+	_cost_transactions = data.cost_transactions.duplicate(true)
+	_quote_history = data.quote_history.duplicate(true)
+	_quote_history_truncated = data.quote_history_truncated
+	_transaction_hashes = prepared.transaction_hashes.duplicate(true)
+	_active_cost_receipt = data.active_cost_receipt.duplicate(true)
+	_costing_error = ""
 	_journal_overflow = data.journal_overflow
 	_journal_bytes = 0
 	for event: Dictionary in journal:
@@ -250,6 +431,9 @@ func commit_restore(prepared: Dictionary) -> void:
 	terminal = false
 	report = {}
 	_pending = _revision > 0
+	_evidence_pending = false
+	_evidence_only_dirty = false
+	_last_archive_tick = -1
 	_dirty = false
 	_persisted_revision = -1
 	_flush_attempt_revision = -1
@@ -290,6 +474,8 @@ func apply_inspection(receipt: Dictionary) -> Dictionary:
 		_full_inspection_revision = _revision
 	for component_id: String in receipt.components:
 		_decision_revisions[component_id] = _revision
+		_clear_game_scope(component_id)
+		_scope_unresolved.erase(component_id)
 		if receipt.components[component_id].get("disposition") in ["replace", "unrecoverable"]:
 			_confirmed_replacements[component_id] = true
 	evaluate_pending()
@@ -446,6 +632,11 @@ func _observe_event(event: Dictionary, bindings: Dictionary) -> bool:
 		for id: String in dossier.get("propeller_inspection_ids", []):
 			if id != prop_id:
 				_record_summary(id, event, "inspect", "propeller strike requires related inspection", "", null)
+				if _damage_profile.get("format") == DamageAssessment.FORMAT_V2:
+					var followup := DamageAssessment.propeller_followup(_damage_profile, event, id)
+					if not followup.get("matched", false) or followup.get("recommendation") == "inspect":
+						_scope_unresolved[id] = _revision + 1
+					_queue_game_scope(id, event, followup, "propeller_followup")
 		_mark_propeller()
 		return true
 	var resolved := DamageAssessment.resolve(_damage_profile, event) if not _damage_profile.is_empty() else {matched = false}
@@ -455,22 +646,41 @@ func _observe_event(event: Dictionary, bindings: Dictionary) -> bool:
 		and not (event.source == "lake" and event.get("material") == "water"):
 		_terminal_qualified = true
 	var targets: Array = resolved.get("components", []) if resolved.get("matched", false) else _contact_components(event, bindings)
-	var recommendation: String = resolved.get("recommendation", "inspect")
 	var relevant := false
-	var recorded_targets := []
+	var event_has_action := false
+	for action: Dictionary in resolved.get("actions", {}).values():
+		if action.get("recommendation") != "clear":
+			event_has_action = true
 	for id: String in targets:
-		relevant = _record_summary(id, event, recommendation, str(resolved.get("reason", "accepted contact requires inspection")),
-			str(resolved.get("channel", "")), resolved.get("value")) or relevant
-		if _summaries.has(id):
-			recorded_targets.append(id)
+		var local: Dictionary = resolved.get("actions", {}).get(id, resolved).duplicate(true)
+		var recommendation: String = local.get("recommendation", "inspect")
+		if _damage_profile.get("format") == DamageAssessment.FORMAT_V2 and recommendation == "clear" \
+			and event_has_action and (event.lifecycle == "new" or event.event_type == "impact") \
+			and not _assessment.components.has(id):
+			# Record a no-action scoped assumption only when an incident already
+			# exists; an ordinary clear contact by itself remains quiet.
+			recommendation = "scope_clear"
+			local.recommendation = recommendation
+		var component_relevant := _record_summary(id, event, recommendation, str(local.get("reason", "accepted contact requires inspection")),
+			str(local.get("channel", "")), local.get("value"), local.get("service_minor"))
+		if _damage_profile.get("format") == DamageAssessment.FORMAT_V2 and recommendation == "inspect" \
+			and not _scope_unresolved.has(id) and _summaries.has(id):
+			_scope_unresolved[id] = _revision + 1
+			_summaries[id].evidence_revision = _revision + 1
+			component_relevant = true
+		relevant = component_relevant or relevant
+		if _damage_profile.get("format") == DamageAssessment.FORMAT_V2 and component_relevant:
+			_queue_game_scope(id, event, local, "local_contact")
+		if recommendation != "clear" and component_relevant and _summaries.has(id):
+			changed = _mark_contact_inspection([id]) or changed
+			changed = true
+		if recommendation == "inspect":
+			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
 	if not resolved.get("matched", false) and (relevant or _unmapped_revision <= _full_inspection_revision \
 			or event.lifecycle == "new" or event.event_type == "impact"):
 		_unmapped_revision = _revision + 1
 		changed = true
-	if recommendation != "clear" and relevant:
-		changed = _mark_contact_inspection(recorded_targets) or changed
-		changed = true
-	if not resolved.get("matched", false) or recommendation == "inspect":
+	if not resolved.get("matched", false):
 		changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
 	if not resolved.get("matched", false) and targets.is_empty():
 		changed = _add_unresolved("Contact has no unambiguous economic component binding.") or changed
@@ -489,11 +699,12 @@ func _observe_event(event: Dictionary, bindings: Dictionary) -> bool:
 ## Maxima are accepted endpoint values, not incoming speed or measured strength.
 ## An episode's peak never decreases when a contact ends or a milder sample arrives.
 func _record_summary(id: String, event: Dictionary, recommendation: String, reason: String,
-		channel: String, value: Variant) -> bool:
+		channel: String, value: Variant, service_minor: Variant = null) -> bool:
 	if not _summaries.has(id) and _summaries.size() >= DamageAssessment.MAX_COMPONENTS:
 		_evidence_overflow = true
 		_add_unresolved("Component summary limit reached; coverage is incomplete.")
 		return true
+	var existed := _summaries.has(id)
 	var summary: Dictionary = _summaries.get(id, {first_tick = event.tick, latest_tick = event.tick,
 		evidence_revision = 0, recommendation = "clear", reason = "", event_id = "", source = "", peaks = {}})
 	var old_rank := _recommendation_rank(str(summary.recommendation))
@@ -509,6 +720,27 @@ func _record_summary(id: String, event: Dictionary, recommendation: String, reas
 	if not channel.is_empty() and value != null and (not summary.peaks.has(channel) or float(value) > float(summary.peaks[channel])):
 		summary.peaks[channel] = float(value)
 		increased = true
+	var applied: Dictionary = _game_scopes.get(id, {})
+	if event.lifecycle == "persistent" and applied.get("status") in ["pending", "applied"] \
+		and recommendation in ["scope_clear", "repair", "replace"] \
+		and _recommendation_rank(recommendation) <= _recommendation_rank(str(applied.get("action", "clear"))) \
+		and (recommendation != "repair" or applied.get("action") != "repair" \
+			or int(applied.get("service_minor", -1)) >= int(service_minor)):
+		if (has_damage() or _pending) and (increased or summary.latest_tick != event.tick):
+			_evidence_pending = true
+		summary.latest_tick = event.tick
+		_summaries[id] = summary
+		return false
+	# Peaks remain cumulative, but a genuinely new impact cannot inherit a
+	# recommendation corrected by a later explicit receipt. Identical persistent
+	# samples never undo an already-applied game decision.
+	if int(summary.evidence_revision) > 0 and int(_decision_revisions.get(id, 0)) > int(summary.evidence_revision) \
+		and (event.lifecycle == "new" or event.event_type == "impact" or increased):
+		summary.recommendation = "clear"
+		summary.reason = ""
+		summary.event_id = ""
+		summary.source = ""
+		old_rank = _recommendation_rank("clear")
 	var relevant: bool = rank > 0 and (event.lifecycle == "new" or event.event_type == "impact" or increased or rank > old_rank)
 	var previous_latest_tick: int = summary.latest_tick
 	summary.latest_tick = event.tick
@@ -520,12 +752,137 @@ func _record_summary(id: String, event: Dictionary, recommendation: String, reas
 		summary.source = str(event.get("probe_source", event.source))
 	if relevant:
 		summary.evidence_revision = _revision + 1
+	elif (has_damage() or _pending) and (not existed or increased or previous_latest_tick != event.tick):
+		_evidence_pending = true
 	_summaries[id] = summary
 	return relevant
 
 
 static func _recommendation_rank(value: String) -> int:
-	return ["clear", "inspect", "replace"].find(value)
+	return ["clear", "scope_clear", "inspect", "repair", "replace"].find(value)
+
+
+## Queue one narrowly scoped game decision; independent evidence or a prior
+## human/receipt decision keeps the component in inspection instead.
+func _queue_game_scope(id: String, event: Dictionary, result: Dictionary, scope: String) -> void:
+	var previous: Dictionary = _game_scopes.get(id, {})
+	var action := str(result.get("recommendation", "inspect"))
+	if not result.get("matched", false) or action == "inspect":
+		if previous.get("status") == "pending" or previous.get("action") != "replace":
+			_clear_game_scope(id)
+		return
+	if action == "clear":
+		return
+	if action not in ["scope_clear", "repair", "replace"]:
+		return
+	var candidate: Dictionary = previous if previous.get("status") == "pending" else {}
+	if candidate.is_empty():
+		var decision: Dictionary = _assessment.components.get(id, {})
+		var prior_game: bool = previous.get("status") == "applied" and previous.get("receipt_id", "") != ""
+		if not decision.is_empty() and not (prior_game and decision.get("disposition") == previous.get("action")):
+			if decision.get("disposition") != "replace":
+				_clear_game_scope(id)
+			return # Explicit decisions need their own evidence; replacement stays durable.
+		candidate = {status = "pending", observations = previous.get("observations", []).duplicate(true) if prior_game else [],
+			evidence_revision = _revision + 1, action = previous.action if prior_game else "scope_clear",
+			service_minor = previous.service_minor if prior_game else null, floor_receipt_id = "",
+			supersedes_receipt_id = previous.receipt_id if prior_game else "", receipt_id = ""}
+	var amount: Variant = result.get("service_minor") if action == "repair" else null
+	var witness := {scope = scope, event = event.duplicate(true), action = action, service_minor = amount,
+		reason = str(result.get("reason", "")), channel = str(result.get("channel", "")), value = result.get("value")}
+	var found := -1
+	for index in candidate.observations.size():
+		var prior: Dictionary = candidate.observations[index]
+		if prior.scope == scope and prior.action == action:
+			found = index
+			break
+	if found < 0:
+		if candidate.observations.size() >= MAX_SCOPE_OBSERVATIONS:
+			_clear_game_scope(id)
+			_add_unresolved("Game assessment evidence limit reached; inspection required.")
+			return
+		candidate.observations.append(witness)
+	else:
+		var prior: Dictionary = candidate.observations[found]
+		var larger_service: bool = action == "repair" and int(amount) > int(prior.service_minor)
+		var same_service: bool = action != "repair" or int(amount) == int(prior.service_minor)
+		var earlier: bool = event.tick < prior.event.tick or (event.tick == prior.event.tick and event.event_id < prior.event.event_id)
+		if larger_service or (same_service and earlier):
+			candidate.observations[found] = witness
+	candidate.observations.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return a.event.tick < b.event.tick or (a.event.tick == b.event.tick and a.event.event_id < b.event.event_id))
+	candidate.evidence_revision = _revision + 1
+	if _recommendation_rank(action) > _recommendation_rank(candidate.action):
+		candidate.action = action
+		candidate.service_minor = amount
+	elif action == "repair" and candidate.action == "repair":
+		candidate.service_minor = maxi(int(candidate.service_minor), int(amount))
+	_game_scopes[id] = candidate
+
+
+func _clear_game_scope(id: String) -> void:
+	_game_scopes.erase(id)
+	var retained := []
+	for receipt: Dictionary in _game_receipts:
+		if receipt.get("component_id") != id:
+			retained.append(receipt)
+	_game_receipts = retained
+
+
+func _apply_v2_game_scopes() -> void:
+	var ids: Array = _game_scopes.keys()
+	ids.sort()
+	var quantities := {}
+	for part: Dictionary in dossier.get("components", []):
+		quantities[part.id] = part.quantity
+	for id: String in ids:
+		var candidate: Dictionary = _game_scopes[id]
+		if candidate.status != "pending":
+			continue
+		var summary: Dictionary = _summaries.get(id, {})
+		if int(summary.get("evidence_revision", 0)) != candidate.evidence_revision or _scope_unresolved.has(id) \
+			or _prior_history_unknown or _evidence_overflow or _unmapped_revision > _full_inspection_revision \
+			or int(_fact_revisions.get("water_exposure", 0)) > _full_inspection_revision:
+			continue
+		var disposition: String = _assessment.components.get(id, {}).get("disposition", "")
+		if disposition != "inspect" and not (disposition == "replace" and candidate.action == "replace"):
+			continue
+		if candidate.action == "replace" and int(quantities.get(id, 0)) != 1:
+			_add_unresolved("A grouped component needs a quantity-specific inspection.")
+			continue
+		var evidence := {format = "openrc-game-scope-receipt v1", component_id = id,
+			evidence_revision = candidate.evidence_revision, observations = candidate.observations.duplicate(true),
+			action = candidate.action, service_minor = candidate.service_minor,
+			basis = "scenario_assumption", profile_sha256 = _profile_hash,
+			policy_version = _damage_profile.policy_version, floor_receipt_id = candidate.floor_receipt_id,
+			service_basis = "authored whole-group cash materials or outside service; labor excluded; affected unit count unknown"}
+		evidence["receipt_id"] = Checkpoint.digest(evidence)
+		var retained := []
+		for old: Dictionary in _game_receipts:
+			if old.get("component_id") != id:
+				retained.append(old)
+		if retained.size() >= MAX_GAME_RECEIPTS \
+			or var_to_bytes(retained + [evidence]).size() > MAX_GAME_RECEIPT_BYTES:
+			_add_unresolved("Game assessment history limit reached; inspection required.")
+			continue
+		retained.append(evidence)
+		retained.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.component_id < b.component_id)
+		_game_receipts = retained
+		var prior_fee: Variant = _assessment.components.get(id, {}).get("inspection_minor")
+		if candidate.action == "scope_clear":
+			_assessment.components.erase(id) # No salvage or physical-health claim.
+		elif candidate.action == "repair":
+			_assessment.components[id] = {disposition = "repair", quantity = int(quantities[id]),
+				repair_minor = int(candidate.service_minor), replacement_comparable = false}
+		else:
+			_assessment.components[id] = {disposition = "replace", quantity = 1}
+		if prior_fee != null and candidate.action != "scope_clear":
+			_assessment.components[id].inspection_minor = prior_fee
+		candidate.status = "applied"
+		candidate.receipt_id = evidence.receipt_id
+		candidate.supersedes_receipt_id = ""
+		_game_scopes[id] = candidate
+		_decision_revisions[id] = candidate.evidence_revision
 
 
 func has_damage() -> bool:
@@ -540,11 +897,36 @@ func _queue_assessment(tick: int) -> void:
 
 ## Frame/reset/exit boundary only: no price calculation, UI signal or disk I/O in observe().
 func evaluate_pending() -> void:
+	if not _pending and not _evidence_pending:
+		return
 	if not _pending:
+		_evidence_pending = false
+		_refresh_report_evidence()
 		return
 	_pending = false
+	_evidence_pending = false
 	_apply_game_assessment()
 	_recalculate()
+
+
+## Update cumulative evidence without rerunning the price optimizer or creating
+## a new financial decision. Disk writes are bounded separately in flush().
+func _refresh_report_evidence() -> void:
+	if report.is_empty():
+		return
+	report["contact_summary"] = _summaries.duplicate(true)
+	report["evidence"] = journal.duplicate(true)
+	report["confirmed_facts"] = _confirmed_facts.duplicate(true)
+	report["journal_truncated"] = _journal_overflow
+	var truncation_note := "The diagnostic event journal is truncated; bounded component summaries retain supported contact evidence."
+	if _journal_overflow and report.get("assumptions") is Array and not report.assumptions.has(truncation_note):
+		report.assumptions.append(truncation_note)
+	if report.get("game_assessment") is Dictionary:
+		report.game_assessment["components"] = _summaries.duplicate(true)
+	_dirty = true
+	_evidence_only_dirty = true
+	if _flush_error == OK:
+		_flush_attempt_revision = -1
 
 
 func _apply_game_assessment() -> void:
@@ -554,6 +936,8 @@ func _apply_game_assessment() -> void:
 	for part: Dictionary in dossier.get("components", []):
 		quantities[part.id] = part.quantity
 	var grouped_pending := false
+	if _damage_profile.get("format") == DamageAssessment.FORMAT_V2:
+		_apply_v2_game_scopes()
 	for id: String in _summaries:
 		var summary: Dictionary = _summaries[id]
 		if summary.recommendation != "replace":
@@ -564,6 +948,8 @@ func _apply_game_assessment() -> void:
 					or _assessment.components.get(id, {}).get("disposition") in ["inspect", "unknown"]:
 				grouped_pending = true
 			continue
+		if _damage_profile.get("format") == DamageAssessment.FORMAT_V2:
+			continue # Versioned scope receipts, not implicit v1 decisions, authorize v2 results.
 		if summary.evidence_revision <= int(_decision_revisions.get(id, 0)):
 			continue
 		if _assessment.components.get(id, {}).get("disposition") != "replace":
@@ -572,16 +958,30 @@ func _apply_game_assessment() -> void:
 				replacement.inspection_minor = _assessment.components[id].inspection_minor
 			_assessment.components[id] = replacement
 		_decision_revisions[id] = summary.evidence_revision
+	for id: String in _game_scopes:
+		var pending_scope: Dictionary = _game_scopes[id]
+		if pending_scope.status == "pending" and pending_scope.action == "replace" and int(quantities.get(id, 0)) > 1:
+			grouped_pending = true
 	if grouped_pending:
 		_add_unresolved("A grouped component needs a quantity-specific inspection.")
 	else:
 		_assessment.unresolved.erase("A grouped component needs a quantity-specific inspection.")
-	var resolved: bool = _unmapped_revision <= _full_inspection_revision and not _assessment.components.is_empty()
+	var has_scope_clear := false
+	for item: Dictionary in _game_scopes.values():
+		has_scope_clear = has_scope_clear or (item.status == "applied" and item.action == "scope_clear")
+	var resolved: bool = _scope_unresolved.is_empty() and _unmapped_revision <= _full_inspection_revision \
+		and (not _assessment.components.is_empty() or has_scope_clear)
 	for id: String in _assessment.components:
 		if _assessment.components[id].get("disposition") in ["inspect", "unknown"]:
 			resolved = false
 	if resolved:
 		_assessment.unresolved.erase("Impact or surface contact requires structural inspection.")
+	var prop_pending := false
+	for id: String in dossier.get("propeller_inspection_ids", []):
+		if id != dossier.get("propeller_component_id") and _assessment.components.get(id, {}).get("disposition") in ["inspect", "unknown"]:
+			prop_pending = true
+	if not prop_pending and _damage_profile.get("format") == DamageAssessment.FORMAT_V2:
+		_assessment.unresolved.erase("Propeller strike: inspect the powertrain, shaft and mount before return to service.")
 	if terminal and _terminal_qualified and resolved:
 		for reason: String in _assessment.unresolved:
 			if reason != "Crash inspection pending; component survival is not yet established.":
@@ -671,6 +1071,9 @@ func compare_replacements(package_candidates: Array = []) -> Dictionary:
 
 
 func _recalculate() -> void:
+	var base_calculation := {}
+	var costing_available: bool = not _package_book.is_empty() and not _labor_policy.is_empty() \
+		and not _assessment.get("total_loss", false)
 	if dossier.is_empty():
 		report = {ok = false, currency = "USD", known_subtotal_minor = 0, total_minor = null,
 			low_minor = null, high_minor = null, complete = false, outcome = "unavailable",
@@ -684,18 +1087,52 @@ func _recalculate() -> void:
 		report.unresolved.append("Cost data is out of date for this aircraft version; no prices were applied." if stale
 			else "Compatible aircraft cost dossier is unavailable.")
 	else:
-		report = Calculator.calculate(dossier, _assessment)
-	# CR-39f: quote from this calculation; lines gain display fields only after the quote.
-	var comparison := ReplacementQuote.quote_calculated(dossier, _assessment, report)
+		base_calculation = Calculator.calculate(dossier, _assessment)
+		report = base_calculation.duplicate(true)
+		if costing_available and report.get("ok", false):
+			var reconciled: Dictionary = CostTransaction.reconcile(dossier, _assessment, _active_cost_receipt) \
+				if not _active_cost_receipt.is_empty() else {ok = false}
+			if not reconciled.get("ok", false):
+				if _active_has_explicit_repairs():
+					_costing_error = "Selected repair plan needs review after new evidence."
+				else:
+					var prepared := _prepare_purchase(_costing_mode, _purchase_package_id)
+					if prepared.get("ok", false):
+						_active_cost_receipt = prepared.receipt.duplicate(true)
+						reconciled = prepared.report
+					else:
+						_active_cost_receipt = {}
+						_costing_error = "; ".join(prepared.get("errors", []))
+			if reconciled.get("ok", false):
+				report = reconciled.duplicate(true)
+				_costing_error = ""
+			else:
+				report = _incomplete_cost_report(base_calculation)
+	# The comparison must cover the same frozen package universe as the selected
+	# bill; individual-only prices are not a global cheapest-parts claim.
+	var comparison := {}
+	if costing_available and not base_calculation.is_empty():
+		var adapted := CostTransaction.package_candidates(_package_book, dossier, _assessment)
+		if adapted.get("ok", false):
+			comparison = ReplacementQuote.quote_calculated(dossier, _assessment, base_calculation, adapted.candidates)
+	else:
+		comparison = ReplacementQuote.quote_calculated(dossier, _assessment, base_calculation if not base_calculation.is_empty() else report)
 	var component_lookup: Dictionary = {}
 	for component: Dictionary in dossier.get("components", []):
 		component_lookup[component.id] = component
 	for line: Dictionary in report.get("lines", []):
-		var component: Dictionary = component_lookup.get(line.get("id", ""), {})
+		var component_id := str(line.get("component_id", line.get("id", "")))
+		if component_id.is_empty():
+			component_id = str(line.get("id", ""))
+		var component: Dictionary = component_lookup.get(component_id, {})
 		line["notes"] = str(component.get("notes", ""))
 		var source: Dictionary = _offer_sources.get(str(line.get("offer_id", "")), {})
 		for field: String in source:
 			line[field] = source[field]
+		var scope: Dictionary = _game_scopes.get(component_id, {})
+		if scope.get("status") == "applied" and scope.get("action") == "repair":
+			line["game_scope_note"] = "Whole-group game service; the number of affected units is unknown."
+			line["notes"] = str(line.notes) + " " + str(line.game_scope_note)
 	report["assumptions"] = ["USD prices exclude tax, shipping and transmitter/field equipment."]
 	if _binding == "physical_signature" and not dossier.is_empty():
 		report.assumptions.append(BINDING_NOTE)
@@ -706,12 +1143,38 @@ func _recalculate() -> void:
 	if not _damage_profile.is_empty():
 		report.assumptions.append("Local damage outcomes are deterministic game assumptions, not measured component survival.")
 		report.assumptions.append_array(_damage_profile.assumptions)
+		var outcomes := {}
+		for id: String in _game_scopes:
+			var current: Dictionary = _game_scopes[id]
+			if current.status != "applied":
+				continue
+			var reasons := []
+			for item: Dictionary in current.observations:
+				if not reasons.has(item.reason):
+					reasons.append(item.reason)
+			var scope_note := "Within the declared game scope; not a physical health or salvage confirmation."
+			if current.action == "repair" and int(component_lookup.get(id, {}).get("quantity", 0)) > 1:
+				scope_note = "Whole-group game service; affected unit count is unknown."
+			outcomes[id] = {action = current.action, reason = "; ".join(reasons),
+				service_minor = current.service_minor, quantity_scope = scope_note, basis = "scenario_assumption"}
 		report["game_assessment"] = {format = "openrc-game-assessment v1", basis = "scenario_assumption",
 			profile_id = _damage_profile.profile_id, policy_version = _damage_profile.policy_version,
-			profile_sha256 = _profile_hash, components = _summaries.duplicate(true)}
+			profile_sha256 = _profile_hash, components = _summaries.duplicate(true),
+			current_outcomes = outcomes, scoped_receipts = _game_receipts.duplicate(true),
+			receipt_scope = "current_per_component_game_estimate"}
 	report["contact_summary"] = _summaries.duplicate(true)
 	report["journal_truncated"] = _journal_overflow
-	report["contact_coverage_incomplete"] = _unmapped_revision > _full_inspection_revision or _evidence_overflow
+	report["contact_coverage_incomplete"] = _unmapped_revision > _full_inspection_revision or _evidence_overflow or not _scope_unresolved.is_empty()
+	report["costing_available"] = costing_available and not dossier.is_empty()
+	report["costing_mode"] = _costing_mode
+	report["costing_error"] = _costing_error
+	report["purchase_package_id"] = _purchase_package_id
+	report["purchase_options"] = _purchase_options() if costing_available else []
+	report["cost_transactions"] = _cost_transactions.duplicate(true)
+	report["quote_history"] = _quote_history.duplicate(true)
+	report["quote_history_truncated"] = _quote_history_truncated
+	if _quote_history_truncated:
+		report.assumptions.append("Older quote selections were dropped from bounded history; these were estimates, not purchases.")
 	if _journal_overflow:
 		report.assumptions.append("The diagnostic event journal is truncated; bounded component summaries retain supported contact evidence.")
 	report["inspections"] = _inspections.duplicate(true)
@@ -732,15 +1195,73 @@ func _recalculate() -> void:
 	report["tick"] = _assessment_tick
 	report["revision"] = _revision
 	_dirty = true
+	_evidence_only_dirty = false
 	assessment_changed.emit(report.duplicate(true), terminal)
+
+
+func _incomplete_cost_report(base: Dictionary) -> Dictionary:
+	# An unknown package may be cheaper than the individual reference prices.
+	# Keep only charges that do not depend on the unresolved selection as known.
+	var safe := _assessment.duplicate(true)
+	var pending := {}
+	for line: Dictionary in base.get("lines", []):
+		if line.get("action") == "replacement":
+			pending[line.get("id")] = true
+	if _active_has_explicit_repairs():
+		for id: String in _active_cost_receipt.repair.component_ids:
+			pending[id] = true
+	for id: Variant in pending:
+		if not safe.components.has(id):
+			continue
+		var old: Dictionary = safe.components[id]
+		var row := {disposition = "inspect"}
+		for key: String in ["inspection_minor", "inspection_fee_id"]:
+			if old.has(key):
+				row[key] = old[key]
+		safe.components[id] = row
+	var out := Calculator.calculate(dossier, safe)
+	out["individual_reference_subtotal_minor"] = base.get("known_subtotal_minor")
+	out.complete = false
+	out["incident_complete"] = false
+	out.total_minor = null
+	out.low_minor = null
+	out.high_minor = null
+	out.unresolved.append("Selected parts or labor estimate is unavailable.")
+	return out
+
+
+func _purchase_options() -> Array:
+	if _active_has_explicit_repairs():
+		return []
+	var key := CostTransaction.digest([_revision, _costing_mode, _assessment, _purchase_book_hash, _labor_policy_hash])
+	if key == _purchase_options_key:
+		return _purchase_options_cache.duplicate(true)
+	var result := []
+	var auto := _prepare_purchase(_costing_mode, "")
+	if auto.get("ok", false):
+		result.append({id = "", label = "Automatic", total_minor = auto.report.get("total_minor")})
+	for package: Dictionary in _package_book.get("packages", []):
+		if result.size() >= 8:
+			break
+		var id := str(package.get("id", ""))
+		var option := _prepare_purchase(_costing_mode, id)
+		if option.get("ok", false):
+			result.append({id = id, label = id.replace("-", " ").replace("_", " ").capitalize(),
+				total_minor = option.report.get("total_minor")})
+	_purchase_options_key = key
+	_purchase_options_cache = result.duplicate(true)
+	return result
 
 
 ## Called outside accepted-tick callbacks. Persistence is a single bounded latest-report snapshot.
 func flush(force_retry := false) -> Error:
 	evaluate_pending()
-	if not _dirty or report.is_empty() or _persisted_revision == _revision:
+	if not _dirty or report.is_empty() or (_persisted_revision == _revision and not _evidence_only_dirty):
 		return OK
-	if _flush_attempt_revision == _revision and not force_retry:
+	if _evidence_only_dirty and not terminal and not force_retry and _last_archive_tick >= 0 \
+		and _last_tick - _last_archive_tick < EVIDENCE_FLUSH_INTERVAL_TICKS:
+		return OK
+	if _flush_attempt_revision == _revision and _flush_error != OK and not force_retry:
 		return _flush_error as Error
 	_flush_attempt_revision = _revision
 	_flush_error = _write_archive()
@@ -763,7 +1284,9 @@ func _write_archive() -> Error:
 	var rename_error := DirAccess.rename_absolute(archive_path + ".tmp", archive_path)
 	if rename_error == OK:
 		_dirty = false
+		_evidence_only_dirty = false
 		_persisted_revision = _revision
+		_last_archive_tick = _last_tick
 	return rename_error
 
 

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f2802959-a4bc-46de-89e8-01d0a3de5135",
+  "command": [
+    ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "research/ai-companions/traffic",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://test_runway_tailwind.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-09T19:35:04.834868+00:00",
+  "label": "runway-tailwind-r3",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9-schedulers\\checks\\runway-tailwind-r3-ve49kk3e\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc-r9-schedulers\\checks\\runway-tailwind-r3-ve49kk3e\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "runway tailwind: 19 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.328,
+  "log_bytes": 110,
+  "log_sha256": "864f23183580edc86a34fd60608e1bcd0bd9d70bfab538b3c3730e4c0b3e6faa"
+}

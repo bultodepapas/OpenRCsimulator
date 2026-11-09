@@ -15,6 +15,9 @@ gaps. Its candidate verification is separate from source-profile admission.
 The [terrain/traffic separation repair](research/ai-companions/AFC-04-R8/README.md)
 prevents low terrain clearance from creating or prolonging an avoidance maneuver
 when traffic is clear; terrain recovery and candidate-turn ranking remain separate.
+The [prediction and selection repair](research/ai-companions/AFC-04-R9/README.md)
+shares nominal guidance with control, corrects turn integration and interval
+traffic checks, and prioritizes traffic-feasible turns over steering preferences.
 The [fresh Windows checkout receipt](research/ai-companions/AFC-02/controller-dependency-checkout/verification.json)
 records 1,200 successful script parses and all 16 companion regression groups;
 its source snapshot and checkout corrections are explicit.
@@ -243,16 +246,28 @@ tick, for use at the next boundary. Remove disconnects all three player observer
 reconfiguring the same manager reconnects them once.
 
 The current controller predicts eight seconds at 0.25-second intervals using
-air-relative banked turns plus wind displacement. It scores eleven bank choices
+exact constant-turn segment displacement plus wind. Prediction and ordinary
+control share the snapshot's nominal bank, including heading correction and
+clamped trim speed. Synchronized interval closest approach includes allowances
+for both arcs' chord deviation and the vertical forecast's reaction-time kink.
+Reported forecast minima are conservative interval bounds in the Club coordinate
+domain; diagnostic distance traces remain endpoint samples.
+It scores eleven bank choices
 from −25° to +25° plus the nominal turn against all prepared threats. A 0.9-second
 reaction allowance, 0.75-second bank-response ramp, two-second minimum hold and
 one-second clear interval limit late reactions and oscillation. Missing observations
 preserve an already-held maneuver until its hold and clear dwell expire; otherwise
-no-traffic circuit commands remain in the unchanged base. Invalid/low-speed predictions retain the
+no-traffic circuit commands retain the base's existing law. Traffic-feasible
+searched turns precede steering preferences; an unsafe held turn yields to a
+feasible alternative. When no searched turn is feasible, selection maximizes the
+worst traffic margin, with 2 m retarget hysteresis for an already-held turn.
+This is best effort, not qualified recovery. Terrain recovery remains independent;
+static candidate-path feasibility is still open. Invalid/low-speed predictions retain the
 legacy response. These are approximate forecasts; the predicted vertical rate is
 held only over the reaction interval, and neither model-error bounds nor arbitrary
 player maneuvers are qualified. Diagnostic traces are optional, bounded and off by
-default. Controller latch state is explicit for research checkpoint continuation.
+default. Controller latch state v2 supports research checkpoint continuation and
+refuses v1 states from the previous predictor.
 
 Profiles are validated once per manager launch, before replacing a live roster.
 They bind both the wrapper and the actual inherited circuit script; a missing,

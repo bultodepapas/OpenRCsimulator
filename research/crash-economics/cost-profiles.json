@@ -1,13 +1,15 @@
 {
-  "format": "openrc-cost-profiles v2",
-  "policy_version": "local-contact-v1",
+  "format": "openrc-cost-profiles v3",
+  "policy_version": "local-contact-v2",
   "price_date": "2026-11-09",
   "assumptions": [
     "Preview game repair estimate; component outcomes are deterministic authored game rules, not measured failure predictions.",
     "Offline USD cash parts estimate; DIY labor is unbilled. Tax, freight, recovery and external equipment are excluded.",
     "Unquoted parts use explicit authored game allowances dated 2026-11-09. They are not vendor offers or physical-fit claims.",
     "Water exposure requires assessment; delayed thermal/fire propagation, stopped-blade phase and scenery prop strikes are not modeled.",
-    "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope."
+    "Only observed local regions are assessed; unobserved secondary/internal damage remains outside this preview scope.",
+    "Automatic checks are scoped game assumptions, not physical health or salvage clearance. Service allowances cover cash materials/outside charges and exclude labor; optional shop labor is itemized separately.",
+    "Game purchase availability and compatibility describe this offline cost model; dated merchant stock and physical installation fit are separate evidence."
   ],
   "aircraft": {
     "jensen-das-ugly-stik-60": {
@@ -236,8 +238,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -250,8 +257,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -264,8 +276,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -278,8 +295,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -292,8 +314,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -306,8 +333,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -320,8 +352,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -334,8 +371,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -348,8 +390,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -362,8 +409,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -376,8 +428,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -390,8 +447,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -404,8 +466,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -418,8 +485,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -432,8 +504,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -446,8 +523,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -460,8 +542,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -474,8 +561,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -488,8 +580,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -502,8 +599,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -516,8 +618,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -530,52 +637,89 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_head",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_bottom",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -588,8 +732,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -602,8 +751,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -616,8 +770,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -630,8 +789,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_nose": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -642,11 +806,81 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "engine_and_muffler",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_and_muffler": 30,
+          "fuselage_servos": 20,
+          "central_aileron_servo": 10,
+          "receiver": 10,
+          "propeller": 10,
+          "receiver_battery": 10,
+          "onboard_fuel": 10,
+          "airframe_wing": 20,
+          "airframe_fuselage": 20,
+          "airframe_tail": 20,
+          "gear_nose": 10,
+          "gear_main": 10,
+          "engine_mount": 30,
+          "fuel_tank": 10,
+          "spinner": 10,
+          "control_hardware": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "stik-complete-airframe-game-package",
+          "component_quantities": {
+            "airframe_wing": 1,
+            "airframe_fuselage": 1,
+            "airframe_tail": 1,
+            "gear_nose": 1,
+            "gear_main": 1,
+            "engine_mount": 1,
+            "fuel_tank": 1,
+            "spinner": 1,
+            "control_hardware": 1
+          },
+          "cost_cents": 35000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game package allowance, 2026-11-09. $350 covers the declared structure, gear, mount, tank, spinner and hardware groups from the legacy inclusive allocation. It is an alternative purchase, never charged alongside included parts. Extra supplied groups are unvalued surplus; no commercial SKU or physical-fit claim."
+        }
       ]
     },
     "stik-glow-61fx-2t": {
@@ -875,8 +1109,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -889,8 +1128,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -903,8 +1147,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -917,8 +1166,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -931,8 +1185,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -945,8 +1204,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -959,8 +1223,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -973,8 +1242,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -987,8 +1261,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1001,8 +1280,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1015,8 +1299,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1029,8 +1318,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1043,8 +1337,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1057,8 +1356,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1071,8 +1375,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1085,8 +1394,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1099,8 +1413,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1113,8 +1432,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1127,8 +1451,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1141,8 +1470,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1155,8 +1489,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1169,52 +1508,89 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_head",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_bottom",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1227,8 +1603,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -1241,8 +1622,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -1255,8 +1641,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -1269,8 +1660,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_nose": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -1281,11 +1677,81 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "a214c7d144f3b1a978a01f9f52bb80d2ce76de27644c1d8571d669f291a05350"
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "engine_and_muffler",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_and_muffler": 30,
+          "fuselage_servos": 20,
+          "central_aileron_servo": 10,
+          "receiver": 10,
+          "propeller": 10,
+          "receiver_battery": 10,
+          "onboard_fuel": 10,
+          "airframe_wing": 20,
+          "airframe_fuselage": 20,
+          "airframe_tail": 20,
+          "gear_nose": 10,
+          "gear_main": 10,
+          "engine_mount": 30,
+          "fuel_tank": 10,
+          "spinner": 10,
+          "control_hardware": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "stik-complete-airframe-game-package",
+          "component_quantities": {
+            "airframe_wing": 1,
+            "airframe_fuselage": 1,
+            "airframe_tail": 1,
+            "gear_nose": 1,
+            "gear_main": 1,
+            "engine_mount": 1,
+            "fuel_tank": 1,
+            "spinner": 1,
+            "control_hardware": 1
+          },
+          "cost_cents": 35000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game package allowance, 2026-11-09. $350 covers the declared structure, gear, mount, tank, spinner and hardware groups from the legacy inclusive allocation. It is an alternative purchase, never charged alongside included parts. Extra supplied groups are unvalued surplus; no commercial SKU or physical-fit claim."
+        }
       ]
     },
     "stik-glow-55ax-2t": {
@@ -1514,8 +1980,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1528,8 +1999,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1542,8 +2018,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1556,8 +2037,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1570,8 +2056,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1584,8 +2075,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1598,8 +2094,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1612,8 +2113,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1626,8 +2132,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1640,8 +2151,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1654,8 +2170,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1668,8 +2189,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1682,8 +2208,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1696,8 +2227,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1710,8 +2246,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1724,8 +2265,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1738,8 +2284,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1752,8 +2303,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1766,8 +2322,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1780,8 +2341,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1794,8 +2360,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1808,52 +2379,89 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_head",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_bottom",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -1866,8 +2474,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -1880,8 +2493,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -1894,8 +2512,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -1908,8 +2531,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_nose": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -1920,11 +2548,81 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "a71cf12e61a511a868b6e7ff005e116f1fe6cc57633c47850b9ae02d1838d0b9"
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "engine_and_muffler",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_and_muffler": 30,
+          "fuselage_servos": 20,
+          "central_aileron_servo": 10,
+          "receiver": 10,
+          "propeller": 10,
+          "receiver_battery": 10,
+          "onboard_fuel": 10,
+          "airframe_wing": 20,
+          "airframe_fuselage": 20,
+          "airframe_tail": 20,
+          "gear_nose": 10,
+          "gear_main": 10,
+          "engine_mount": 30,
+          "fuel_tank": 10,
+          "spinner": 10,
+          "control_hardware": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "stik-complete-airframe-game-package",
+          "component_quantities": {
+            "airframe_wing": 1,
+            "airframe_fuselage": 1,
+            "airframe_tail": 1,
+            "gear_nose": 1,
+            "gear_main": 1,
+            "engine_mount": 1,
+            "fuel_tank": 1,
+            "spinner": 1,
+            "control_hardware": 1
+          },
+          "cost_cents": 35000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game package allowance, 2026-11-09. $350 covers the declared structure, gear, mount, tank, spinner and hardware groups from the legacy inclusive allocation. It is an alternative purchase, never charged alongside included parts. Extra supplied groups are unvalued surplus; no commercial SKU or physical-fit claim."
+        }
       ]
     },
     "stik-glow-fs64v-4t": {
@@ -2153,8 +2851,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2167,8 +2870,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2181,8 +2889,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2195,8 +2908,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2209,8 +2927,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2223,8 +2946,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2237,8 +2965,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2251,8 +2984,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2265,8 +3003,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2279,8 +3022,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2293,8 +3041,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2307,8 +3060,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2321,8 +3079,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_wing": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2335,8 +3098,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2349,8 +3117,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2363,8 +3136,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2377,8 +3155,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2391,8 +3174,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2405,8 +3193,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2419,8 +3212,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2433,8 +3231,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2447,52 +3250,89 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_head",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_top",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_engine_front_bottom",
           "component_ids": [
-            "engine_and_muffler",
-            "engine_mount"
+            "engine_and_muffler"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "engine_and_muffler": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2505,8 +3345,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -2519,8 +3364,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -2533,8 +3383,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -2547,8 +3402,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_nose": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -2559,11 +3419,81 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8"
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "engine_and_muffler",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_and_muffler": 30,
+          "fuselage_servos": 20,
+          "central_aileron_servo": 10,
+          "receiver": 10,
+          "propeller": 10,
+          "receiver_battery": 10,
+          "onboard_fuel": 10,
+          "airframe_wing": 20,
+          "airframe_fuselage": 20,
+          "airframe_tail": 20,
+          "gear_nose": 10,
+          "gear_main": 10,
+          "engine_mount": 30,
+          "fuel_tank": 10,
+          "spinner": 10,
+          "control_hardware": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "stik-complete-airframe-game-package",
+          "component_quantities": {
+            "airframe_wing": 1,
+            "airframe_fuselage": 1,
+            "airframe_tail": 1,
+            "gear_nose": 1,
+            "gear_main": 1,
+            "engine_mount": 1,
+            "fuel_tank": 1,
+            "spinner": 1,
+            "control_hardware": 1
+          },
+          "cost_cents": 35000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game package allowance, 2026-11-09. $350 covers the declared structure, gear, mount, tank, spinner and hardware groups from the legacy inclusive allocation. It is an alternative purchase, never charged alongside included parts. Extra supplied groups are unvalued surplus; no commercial SKU or physical-fit claim."
+        }
       ]
     },
     "stik-electric-6s": {
@@ -2841,8 +3771,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2855,8 +3790,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2869,8 +3809,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2883,8 +3828,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2897,8 +3847,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2911,8 +3866,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2925,8 +3885,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2939,8 +3904,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2953,8 +3923,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2967,8 +3942,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2981,8 +3961,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -2995,8 +3980,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_wing_airframe": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3009,8 +3999,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_stabilizer_elevator": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3023,8 +4018,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_stabilizer_elevator": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3037,8 +4037,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fin_rudder": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3051,8 +4056,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fin_rudder": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3065,8 +4075,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_rear": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3079,8 +4094,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_rear": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3093,8 +4113,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_rear": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3107,8 +4132,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3121,8 +4151,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3135,8 +4170,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3149,8 +4189,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3163,8 +4208,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3177,8 +4227,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3191,8 +4246,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_spinner_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -3205,8 +4265,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_main_gear_assembly": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -3219,8 +4284,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_main_gear_assembly": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -3233,8 +4303,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_nose_gear_assembly": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "propeller",
@@ -3247,8 +4322,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "item_propeller_main": 2299
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "item_propeller_main",
@@ -3261,13 +4341,88 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "830137e2daaf43295c404ad0af6676ac44a8fb0102c2d2b81c2c0b4a395337e6",
         "fbbfd74512b8e3141adc530296687721c5ca7e3d94a38c384fbaf10f03c2c73e"
-      ]
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "item_motor_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "item_motor_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "item_prop_adapter",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "item_fuselage_front",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "item_spinner_main": 10,
+          "item_receiver_main": 10,
+          "item_fuselage_servos": 20,
+          "item_aileron_servo": 10,
+          "item_nose_gear_assembly": 10,
+          "item_main_gear_assembly": 10,
+          "item_wing_airframe": 20,
+          "item_fuselage_front": 20,
+          "item_fuselage_rear": 20,
+          "item_stabilizer_elevator": 10,
+          "item_fin_rudder": 10,
+          "item_control_hardware": 10,
+          "item_motor_main": 10,
+          "item_propeller_main": 10,
+          "item_esc_main": 10,
+          "item_motor_mount": 10,
+          "item_prop_adapter": 10,
+          "item_power_wiring": 10,
+          "item_battery_restraint": 10,
+          "item_battery_main": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": []
     },
     "gp-extra-300s-60": {
       "components": [
@@ -3557,8 +4712,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3571,8 +4731,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3585,8 +4750,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3599,8 +4769,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3613,8 +4788,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3627,8 +4807,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3641,8 +4826,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "vertical_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3655,8 +4845,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "vertical_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3669,8 +4864,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "horizontal_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3683,8 +4883,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "horizontal_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -3697,8 +4902,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -3711,8 +4921,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "landing_gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -3725,8 +4940,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "landing_gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -3739,8 +4959,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "landing_gear_tail": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -3753,12 +4978,88 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc"
-      ]
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "engine_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "spinner_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "fuselage_front",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_main": 30,
+          "muffler_main": 10,
+          "propeller": 10,
+          "spinner_main": 10,
+          "engine_mount": 30,
+          "cowl_main": 10,
+          "fuel_tank": 10,
+          "receiver_battery": 10,
+          "receiver_radio": 10,
+          "fuselage_servos": 20,
+          "aileron_servos": 10,
+          "landing_gear_main": 10,
+          "landing_gear_tail": 10,
+          "wing_main": 20,
+          "fuselage_front": 20,
+          "fuselage_rear": 20,
+          "canopy_pilot": 10,
+          "horizontal_tail": 10,
+          "vertical_tail": 10,
+          "control_hardware": 10,
+          "fuel_flight": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": []
     },
     "p51d-mustang-120": {
       "components": [
@@ -4119,8 +5420,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4133,8 +5439,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4147,8 +5458,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4161,8 +5477,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4175,8 +5496,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4189,8 +5515,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner_main": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4203,8 +5534,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4217,8 +5553,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4231,8 +5572,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4245,8 +5591,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "vertical_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4259,8 +5610,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "vertical_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4273,8 +5629,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "horizontal_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4287,8 +5648,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "horizontal_tail": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4301,8 +5667,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_front": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4315,8 +5686,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "belly_scoop": 2299
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -4329,8 +5705,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main_left": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -4343,8 +5724,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main_right": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -4357,8 +5743,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_tail": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -4374,11 +5765,124 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c"
+      ],
+      "construction_class": "wood",
+      "propeller_followups": [
+        {
+          "component_id": "engine_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "muffler_pair",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "spinner_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "cowl_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "fuselage_front",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_main": 30,
+          "muffler_pair": 10,
+          "propeller": 10,
+          "spinner_main": 10,
+          "engine_mount": 30,
+          "cowl_main": 10,
+          "fuel_tank": 10,
+          "fuel_flight": 10,
+          "ignition_battery": 10,
+          "receiver_batteries": 10,
+          "receiver_radio": 10,
+          "flight_control_servos": 10,
+          "throttle_choke_servos": 10,
+          "gear_main_left": 10,
+          "gear_main_right": 10,
+          "gear_tail": 10,
+          "wing_left": 20,
+          "wing_right": 20,
+          "wing_joiner": 20,
+          "fuselage_front": 20,
+          "belly_scoop": 10,
+          "fuselage_rear": 20,
+          "canopy_pilot": 10,
+          "horizontal_tail": 10,
+          "vertical_tail": 10,
+          "control_hardware": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "p51d-mustang-120-wing-pair-game-package",
+          "component_quantities": {
+            "wing_left": 1,
+            "wing_right": 1
+          },
+          "cost_cents": 120000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game allowance, 2026-11-09: a pair of wing financial groups supplied together. This alternative covers the named left/right requirements once; an unneeded supplied wing is unvalued surplus, not salvage or sale credit. No exact commercial spare variant, strength or installation fit is claimed."
+        }
       ]
     },
     "f4u-corsair-250": {
@@ -4801,8 +6305,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4815,36 +6324,51 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_gull_left_bottom",
           "component_ids": [
-            "wing_left",
-            "wing_joiner",
-            "flap_servos_left",
-            "gear_main_left",
-            "retract_air"
+            "wing_left"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 28.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 1200
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_gull_right_bottom",
           "component_ids": [
-            "wing_right",
-            "wing_joiner",
-            "flap_servos_right",
-            "gear_main_right",
-            "retract_air"
+            "wing_right"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 28.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 1200
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4857,8 +6381,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4871,8 +6400,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4885,8 +6419,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4899,8 +6438,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4913,8 +6457,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "propeller",
@@ -4927,8 +6476,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4941,8 +6495,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4955,8 +6514,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4969,8 +6533,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4983,8 +6552,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -4997,8 +6571,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner_main": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5011,8 +6590,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5025,8 +6609,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5039,8 +6628,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5053,8 +6647,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5067,8 +6666,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5081,8 +6685,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5095,8 +6704,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_rear": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5109,8 +6723,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_front": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5123,8 +6742,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_front": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5137,8 +6761,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main_left": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5151,8 +6780,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main_right": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5165,8 +6799,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_tail": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller",
@@ -5181,11 +6820,129 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {},
       "source_hashes": [
         "52ec066763aa05baca356737bedb1150c18562b9618b611bfbb6ce305e517f10"
+      ],
+      "construction_class": "composite",
+      "propeller_followups": [
+        {
+          "component_id": "engine_moki_s250",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "spinner_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "engine_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "cowl_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "fuselage_front",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "throttle_choke_servos",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_moki_s250": 30,
+          "propeller": 10,
+          "spinner_main": 10,
+          "engine_mount": 30,
+          "cowl_main": 10,
+          "fuel_tank": 10,
+          "fuel_flight": 10,
+          "ignition_battery": 10,
+          "receiver_batteries": 10,
+          "receiver_radio": 10,
+          "retract_air": 10,
+          "aileron_servo_left": 10,
+          "aileron_servo_right": 10,
+          "flap_servos_left": 10,
+          "flap_servos_right": 10,
+          "elevator_servos": 10,
+          "rudder_servo": 10,
+          "tail_steering_servo": 10,
+          "throttle_choke_servos": 10,
+          "gear_main_left": 10,
+          "gear_main_right": 10,
+          "gear_tail": 10,
+          "wing_left": 20,
+          "wing_right": 20,
+          "wing_joiner": 20,
+          "fuselage_front": 20,
+          "fuselage_rear": 20,
+          "canopy_pilot": 10,
+          "horizontal_tail": 10,
+          "vertical_tail": 10,
+          "control_hardware": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "f4u-corsair-250-wing-pair-game-package",
+          "component_quantities": {
+            "wing_left": 1,
+            "wing_right": 1
+          },
+          "cost_cents": 120000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game allowance, 2026-11-09: a pair of wing financial groups supplied together. This alternative covers the named left/right requirements once; an unneeded supplied wing is unvalued surplus, not salvage or sale credit. No exact commercial spare variant, strength or installation fit is claimed."
+        }
       ]
     },
     "sebart-avanti-s-a200-p100rx": {
@@ -5197,11 +6954,12 @@
           "low_unit_minor": 278000,
           "high_unit_minor": 278000,
           "physical_inventory_ids": [
-            "engine_main"
+            "engine_main",
+            "turbine_accessories"
           ],
-          "price_basis": "exact_product_price",
+          "price_basis": "price_proxy",
           "offer_id": "jetcat-p100-rx-850100-carf",
-          "notes": "Exact non-BL JetCat P100-RX, CARF product no. 850100, listed at $2,780. The product details include autostart and valves. The distinct turbine_accessories row contains ECU/pump/valves and UAT/hopper; the listing does not itemize that installation group, so it stays unpriced and the turbine price is not represented as a complete avionics/fuel installation."
+          "notes": "Dated P100-RX non-BL CARF 850100 USD2780 reference retained as a provisional game power-package proxy. Financial scope includes turbine core and the standard controls assumed included by this game package; actual seller ECU/pump/valve box contents remain unresolved. The separate accessories allowance covers only additional installation extras and cannot charge these standard controls again. Not a verified complete avionics/fuel installation or exact delivered-box assertion. Standard controls supplied with a core replacement may be unneeded and remain unvalued; purchasing the group does not assert those controls independently failed and grants no sale credit."
         },
         {
           "id": "turbine_accessories",
@@ -5214,7 +6972,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "Authored game allowance (USD minor units), 2026-11-09. Per installed turbine_accessories unit/group; quantity 1. Economic scope only; no exact commercial fit established."
+          "notes": "Authored USD400 game allowance, 2026-11-09, for additional installation extras such as UAT/hopper, additional plumbing, wiring and fittings. Excludes the standard turbine control contents valued in engine_main. Both financial children reference the existing mixed turbine_accessories physical parent but have explicitly disjoint game purchase scopes. Actual current seller package contents and physical-fit qualification remain unresolved."
         },
         {
           "id": "thrust_tube",
@@ -5366,21 +7124,6 @@
           "notes": "Authored game allowance (USD minor units), 2026-11-09. Per installed fuel_flight unit/group; quantity 1. Economic scope only; no exact commercial fit established."
         },
         {
-          "id": "airframe_wings",
-          "quantity": 1,
-          "unit_minor": 90000,
-          "low_unit_minor": 90000,
-          "high_unit_minor": 90000,
-          "physical_inventory_ids": [
-            "wing_left",
-            "wing_right",
-            "wing_joiner"
-          ],
-          "price_basis": "estimated",
-          "offer_id": null,
-          "notes": "Authored game allowance (USD minor units), 2026-11-09. Local airframe_wings group for authored 2.00 m A200; excludes turbine/accessories/gear. Current 2.3 m supplier spare identity unresolved. Economic scope only; no exact commercial fit established."
-        },
-        {
           "id": "airframe_tail",
           "quantity": 1,
           "unit_minor": 35000,
@@ -5443,6 +7186,45 @@
           "price_basis": "estimated",
           "offer_id": null,
           "notes": "Authored game allowance (USD minor units), 2026-11-09. Local control_hardware group for authored 2.00 m A200; excludes turbine/accessories/gear. Current 2.3 m supplier spare identity unresolved. Economic scope only; no exact commercial fit established."
+        },
+        {
+          "id": "wing_left",
+          "quantity": 1,
+          "unit_minor": 45000,
+          "low_unit_minor": 45000,
+          "high_unit_minor": 45000,
+          "physical_inventory_ids": [
+            "wing_left"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored local wing_left USD game allowance, 2026-11-09. Disjoint financial child of the physical installation. The full wing set is an alternative sold package; its unneeded contents are unvalued surplus. Current commercial spare revision remains unverified."
+        },
+        {
+          "id": "wing_right",
+          "quantity": 1,
+          "unit_minor": 45000,
+          "low_unit_minor": 45000,
+          "high_unit_minor": 45000,
+          "physical_inventory_ids": [
+            "wing_right"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored local wing_right USD game allowance, 2026-11-09. Disjoint financial child of the physical installation. The full wing set is an alternative sold package; its unneeded contents are unvalued surplus. Current commercial spare revision remains unverified."
+        },
+        {
+          "id": "wing_joiner",
+          "quantity": 1,
+          "unit_minor": 5000,
+          "low_unit_minor": 5000,
+          "high_unit_minor": 5000,
+          "physical_inventory_ids": [
+            "wing_joiner"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Authored local wing_joiner USD game allowance, 2026-11-09. Disjoint financial child of the physical installation. The full wing set is an alternative sold package; its unneeded contents are unvalued surplus. Current commercial spare revision remains unverified."
         }
       ],
       "zones": [
@@ -5450,57 +7232,77 @@
           "source": "hull",
           "probe_id": "probe_wing_left_le",
           "component_ids": [
-            "airframe_wings"
+            "wing_left"
           ],
           "response": {
             "kind": "channel_bands",
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_wing_right_le",
           "component_ids": [
-            "airframe_wings"
+            "wing_right"
           ],
           "response": {
             "kind": "channel_bands",
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_wing_left_te",
           "component_ids": [
-            "airframe_wings"
+            "wing_left"
           ],
           "response": {
             "kind": "channel_bands",
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_wing_right_te",
           "component_ids": [
-            "airframe_wings"
+            "wing_right"
           ],
           "response": {
             "kind": "channel_bands",
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5513,8 +7315,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5527,8 +7334,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5541,21 +7353,69 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_belly_station_plus_six",
           "component_ids": [
-            "airframe_fuselage"
+            "airframe_fuselage",
+            "engine_main",
+            "turbine_accessories"
           ],
           "response": {
             "kind": "channel_bands",
-            "channel": "depth_m",
-            "clear_below": 0.003,
-            "replace_at": 0.025,
-            "terminal_replace": true
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 30.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_fuselage": 2500,
+              "engine_main": 6000,
+              "turbine_accessories": 2000
+            }
+          },
+          "component_responses": {
+            "airframe_fuselage": {
+              "kind": "channel_bands",
+              "channel": "contact_normal_proxy_mps",
+              "clear_below": 1.0,
+              "replace_at": 18.0,
+              "terminal_replace": false,
+              "middle_action": "repair",
+              "service_minor_by_component": {
+                "airframe_fuselage": 2500
+              }
+            },
+            "engine_main": {
+              "kind": "channel_bands",
+              "channel": "contact_normal_proxy_mps",
+              "clear_below": 4.0,
+              "replace_at": 35.0,
+              "terminal_replace": false,
+              "middle_action": "repair",
+              "service_minor_by_component": {
+                "engine_main": 6000
+              }
+            },
+            "turbine_accessories": {
+              "kind": "channel_bands",
+              "channel": "contact_normal_proxy_mps",
+              "clear_below": 6.0,
+              "replace_at": 40.0,
+              "terminal_replace": false,
+              "middle_action": "repair",
+              "service_minor_by_component": {
+                "turbine_accessories": 2000
+              }
+            }
           }
         },
         {
@@ -5569,8 +7429,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5583,8 +7448,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5597,8 +7467,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5611,8 +7486,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "canopy_pilot": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5625,8 +7505,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "airframe_tail": 2500
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5639,8 +7524,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main_left": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5653,8 +7543,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main_right": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5667,8 +7562,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_nose": 700
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "",
@@ -5676,11 +7576,64 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Rear belly station plus-six (authored x about 0.581 m) is a game exposure witness near the estimated turbine center x about 0.54 m; inward endpoint normal speed bands govern this scoped rule, not aircraft forward speed or measured turbine strength.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
-      "shared_parent_children": {},
+      "shared_parent_children": {
+        "turbine_accessories": [
+          "engine_main",
+          "turbine_accessories"
+        ]
+      },
       "source_hashes": [
         "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd"
+      ],
+      "construction_class": "composite",
+      "propeller_followups": [],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "engine_main": 30,
+          "turbine_accessories": 30,
+          "thrust_tube": 10,
+          "fuel_tank": 10,
+          "gear_main_left": 10,
+          "gear_main_right": 10,
+          "gear_nose": 10,
+          "pneumatic_system": 10,
+          "servos_ds8411_class": 10,
+          "servos_ds8911_class": 10,
+          "receiver_batteries": 10,
+          "avionics": 10,
+          "fuel_flight": 10,
+          "airframe_tail": 20,
+          "airframe_fuselage": 20,
+          "canopy_pilot": 10,
+          "control_hardware": 10,
+          "wing_left": 25,
+          "wing_right": 25,
+          "wing_joiner": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "avanti-wing-set-game-package",
+          "component_quantities": {
+            "wing_left": 1,
+            "wing_right": 1,
+            "wing_joiner": 1
+          },
+          "cost_cents": 90000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored USD900 whole-wing-set game allowance, 2026-11-09, preserving the former grouped financial valuation as an alternative purchase. Includes both wing financial children and the joiner once. Unneeded supplied parts are unvalued; no claim that both wings failed, no turbine/electronics, and no exact current 2.3m vendor-spare identity or currency conversion."
+        }
       ]
     },
     "turbo-lumber-evolution": {
@@ -5880,8 +7833,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5894,8 +7852,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5908,8 +7871,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "tail_surfaces": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5922,8 +7890,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "tail_surfaces": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5936,8 +7909,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "tail_surfaces": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -5950,8 +7928,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "tail_surfaces": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5964,8 +7947,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5978,8 +7966,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_main": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "gear",
@@ -5992,8 +7985,13 @@
             "channel": "compression_ratio",
             "clear_below": 0.8,
             "replace_at": 1.0,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "gear_tail": 700
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "propeller",
@@ -6006,8 +8004,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6020,8 +8023,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "spinner_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6034,8 +8042,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6048,8 +8061,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6062,8 +8080,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6076,8 +8099,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6090,8 +8118,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6104,8 +8137,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6118,8 +8156,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6132,8 +8175,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6146,8 +8194,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6160,8 +8213,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "fuselage_main": 600
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller_main",
@@ -6173,7 +8231,8 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
       "shared_parent_children": {
         "wing_main": [
@@ -6188,6 +8247,86 @@
       "source_hashes": [
         "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
         "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53"
+      ],
+      "construction_class": "foam",
+      "propeller_followups": [
+        {
+          "component_id": "spinner_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        },
+        {
+          "component_id": "motor_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "fuselage_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "wing_main": 20,
+          "fuselage_main": 20,
+          "tail_surfaces": 10,
+          "gear_main": 10,
+          "gear_tail": 10,
+          "propeller_main": 10,
+          "spinner_main": 10,
+          "motor_main": 10,
+          "esc_main": 10,
+          "receiver_radio": 10,
+          "tail_servos": 10,
+          "wiring_lighting": 10,
+          "battery_main": 10,
+          "wing_servos": 20
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "lumber-pnp-game-reference",
+          "component_quantities": {
+            "wing_main": 1,
+            "wing_servos": 4,
+            "fuselage_main": 1,
+            "tail_surfaces": 1,
+            "gear_main": 1,
+            "gear_tail": 1,
+            "propeller_main": 1,
+            "spinner_main": 1,
+            "motor_main": 1,
+            "esc_main": 1,
+            "tail_servos": 2,
+            "wiring_lighting": 1
+          },
+          "cost_cents": 29999,
+          "available": true,
+          "compatible": true,
+          "provenance": "Economic game package reference, USD299.99 observed 2026-11-09 for EFL105275B (https://www.horizonhobby.com/product/turbo-timber-evolution-1.5m-pnp-includes-floats/EFL105275B.html). Fictional Lumber installation uses explicitly authored contents, not an assertion of exact vendor box identity or fit. Merchant listing was backorder; available=true is offline game-cost availability only. Excludes flight battery/receiver; surplus unvalued."
+        }
       ]
     },
     "moonrunner-x99": {
@@ -6251,7 +8390,8 @@
           "low_unit_minor": 7499,
           "high_unit_minor": 7499,
           "physical_inventory_ids": [
-            "motor_main"
+            "motor_main",
+            "propeller_main"
           ],
           "price_basis": "price_proxy",
           "offer_id": "x8_motor_sunnysky_x3530_520kv_readymaderc_20261025",
@@ -6281,7 +8421,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "Authored game allowance (USD minor units), 2026-11-09. Per installed motor_mount unit/group; quantity 1. Economic scope only; no exact commercial fit established."
+          "notes": "Authored game allowance (USD minor units), 2026-11-09, for the modeled plywood/plastic motor mount plate. It excludes the metal X mount allocated to the motor package. Economic scope only; no exact commercial fit established."
         },
         {
           "id": "esc_main",
@@ -6452,8 +8592,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6466,8 +8611,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6480,8 +8630,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6494,8 +8649,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6508,8 +8668,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6522,8 +8687,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6536,8 +8706,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6550,8 +8725,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6564,8 +8744,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6578,8 +8763,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "body_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "propeller",
@@ -6592,8 +8782,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "propeller_main": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6606,8 +8801,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6620,19 +8820,32 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_elevon_left_te",
           "component_ids": [
-            "wing_left",
-            "servo_elevon_left"
+            "wing_left"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 1200
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6645,8 +8858,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6659,8 +8877,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6673,8 +8896,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6687,8 +8915,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6701,8 +8934,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6715,8 +8953,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_left": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6729,8 +8972,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6743,19 +8991,32 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
           "probe_id": "probe_elevon_right_te",
           "component_ids": [
-            "wing_right",
-            "servo_elevon_right"
+            "wing_right"
           ],
           "response": {
-            "kind": "inspect"
-          }
+            "kind": "channel_bands",
+            "channel": "contact_normal_proxy_mps",
+            "clear_below": 2.0,
+            "replace_at": 22.0,
+            "terminal_replace": false,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 1200
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6768,8 +9029,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6782,8 +9048,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6796,8 +9067,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6810,8 +9086,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6824,8 +9105,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         },
         {
           "source": "hull",
@@ -6838,8 +9124,13 @@
             "channel": "depth_m",
             "clear_below": 0.003,
             "replace_at": 0.025,
-            "terminal_replace": true
-          }
+            "terminal_replace": true,
+            "middle_action": "repair",
+            "service_minor_by_component": {
+              "wing_right": 600
+            }
+          },
+          "component_responses": {}
         }
       ],
       "propeller_component_id": "propeller_main",
@@ -6851,12 +9142,93 @@
       "assumptions": [
         "Physical parents are coverage references, not additional mass. Financial children replace the legacy inclusive allocation.",
         "Local thresholds are preview game assumptions; accepted endpoint compression/depth is not incoming impact work.",
-        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged."
+        "Default DIY parts scope excludes final assembly/commissioning labor; legacy paid build references are not charged.",
+        "Versioned local-contact-v2 service and endpoint bounds are authored game rules. A service cash allowance excludes labor and never certifies real shaft, electronics or structural serviceability."
       ],
-      "shared_parent_children": {},
+      "shared_parent_children": {
+        "propeller_main": [
+          "motor_main",
+          "propeller_main"
+        ]
+      },
       "source_hashes": [
         "051b63f37dcd57cd39a7bb3c37ec38ddbc6176eeba9126eec96a0dc21f30ba7c",
         "2df4233db38a2f964fe87db0bba11d91463918dd5d0823c5db37f90062d6d3c0"
+      ],
+      "construction_class": "foam",
+      "propeller_followups": [
+        {
+          "component_id": "motor_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "motor_mount",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 2500
+        },
+        {
+          "component_id": "body_main",
+          "kind": "powered_envelope_bands",
+          "clear_speed_mps": 12.0,
+          "clear_rpm": 6000.0,
+          "replace_speed_mps": 45.0,
+          "replace_rpm": 20000.0,
+          "middle_action": "repair",
+          "service_minor": 1200
+        }
+      ],
+      "labor_policy": {
+        "format": "openrc-game-labor-policy v1",
+        "currency": "USD",
+        "paid_rate_minor_per_hour": 4500,
+        "minutes_by_component": {
+          "wing_left": 20,
+          "wing_right": 20,
+          "body_main": 20,
+          "spars_main": 10,
+          "motor_main": 10,
+          "propeller_main": 10,
+          "motor_mount": 10,
+          "esc_main": 10,
+          "flight_controller": 10,
+          "receiver_telemetry": 10,
+          "gps_compass": 10,
+          "fpv_camera": 10,
+          "mapping_camera": 10,
+          "parachute_pack": 10,
+          "servo_elevon_left": 10,
+          "servo_elevon_right": 10,
+          "wiring_main": 10,
+          "nose_ballast": 10,
+          "battery_main": 10
+        },
+        "shared_setup_minutes": 5,
+        "basis": "authored_game_policy",
+        "evidence": "Authored 2026-11-09 game scenario: $45/hour shop rate; active minutes per affected financial row and one shared setup, excluding any separately selected recipe labor. DIY cash does not charge for owner time. Not a repair shop quote or measured work duration."
+      },
+      "packages": [
+        {
+          "id": "moonrunner-x99-wing-pair-game-package",
+          "component_quantities": {
+            "wing_left": 1,
+            "wing_right": 1
+          },
+          "cost_cents": 16000,
+          "available": true,
+          "compatible": true,
+          "provenance": "Authored offline USD game allowance, 2026-11-09: a pair of wing financial groups supplied together. This alternative covers the named left/right requirements once; an unneeded supplied wing is unvalued surplus, not salvage or sale credit. No exact commercial spare variant, strength or installation fit is claimed."
+        }
       ]
     }
   }

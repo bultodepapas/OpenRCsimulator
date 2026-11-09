@@ -186,9 +186,9 @@ func _test_fleet_contact_bindings() -> void:
 	lumber.evaluate_pending()
 	var prop_line: Dictionary = {}
 	for line: Dictionary in lumber.report.get("lines", []):
-		if line.get("id") == "propeller_main":
+		if line.get("component_id") == "propeller_main" and line.get("action") == "selected_purchase":
 			prop_line = line
-	check("electric prop strike prices the Lumber propeller once", prop_line.get("action") == "replacement" and prop_line.get("amount_minor") == 799
+	check("electric prop strike prices the Lumber propeller once", prop_line.get("action") == "selected_purchase" and prop_line.get("amount_minor") == 799
 		and not lumber.report.unresolved.has("A propeller strike was recorded; no compatible replacement price is available."), str(lumber.report.get("unresolved")))
 
 
@@ -205,9 +205,9 @@ func _test_timber_propeller_parts_report() -> void:
 	var spinner_line: Dictionary = {}
 	var spinner_billed := false
 	for line: Dictionary in ledger.report.get("lines", []):
-		if line.get("action") == "replacement":
+		if line.get("action") in ["replacement", "selected_purchase"]:
 			replacement_count += 1
-		if line.get("id") == propeller_id:
+		if line.get("component_id") == propeller_id and line.get("action") == "selected_purchase":
 			propeller_line = line
 		if line.get("id") == "spinner_main":
 			spinner_line = line
@@ -215,7 +215,7 @@ func _test_timber_propeller_parts_report() -> void:
 			and line.get("amount_minor") != null and int(line.amount_minor) > 0:
 			spinner_billed = true
 	check("Lumber blade strike prices only the EFL5962 prop at 799 cents",
-		propeller_id == "propeller_main" and propeller_line.get("action") == "replacement"
+		propeller_id == "propeller_main" and propeller_line.get("action") == "selected_purchase"
 		and propeller_line.get("quantity") == 1 and propeller_line.get("amount_minor") == 799
 		and propeller_line.get("product_sku") == "EFL5962"
 		and str(propeller_line.get("product_name", "")) != ""
@@ -235,7 +235,7 @@ func _test_timber_propeller_parts_report() -> void:
 	var loaded: Dictionary = reader.load_archive()
 	var loaded_propeller: Dictionary = {}
 	for line: Dictionary in loaded.get("lines", []):
-		if line.get("id") == propeller_id:
+		if line.get("component_id") == propeller_id and line.get("action") == "selected_purchase":
 			loaded_propeller = line
 	check("Lumber product identity and package price survive report archive validation",
 		not loaded.is_empty() and archived_report.get("known_subtotal_minor") == 799

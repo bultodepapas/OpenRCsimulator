@@ -34,8 +34,73 @@ func _run() -> void:
 	await _comparison_behavior()
 	await _timber_parts_behavior()
 	await _preview_scope_behavior()
+	await _cost_plan_behavior()
 	print("accident report: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _cost_plan_behavior() -> void:
+	root.size = Vector2i(1920, 1080)
+	root.content_scale_size = Vector2i(1920, 1080)
+	var view := AccidentReport.new()
+	root.add_child(view)
+	await _ui.settle()
+	var source := {currency = "USD", complete = true, total_minor = 6000, known_subtotal_minor = 6000,
+		low_minor = 6000, high_minor = 7000, outcome = "repair", valuation_kind = "preview_game_parts_estimate",
+		incident_id = "cost-ui-fixture", identity = {aircraft_id = "turbo-lumber-evolution", incident_id = "cost-ui-fixture"},
+		costing_available = true, costing_mode = "diy", costing_error = "", purchase_package_id = "",
+		purchase_options = [{id = "pnp-kit", label = "lumber_pnp_game_reference", total_minor = 6000}],
+		selected_cost_plan = {financial_scope = "selected_estimate_not_realized_purchase"},
+		lines = [{id = "plan-purchase-hiddenhash", action = "selected_purchase", quantity = 1, amount_minor = 6000,
+			allocated_ids = ["wing_main:0"], overlap_ids = ["tail_servos:0"], surplus_ids = ["extra@motor_main/0"],
+			provenance = "Authored game package. Merchant listing was backorder; game availability only."},
+			{id = "unpriced-work", action = "repair_labor", amount_minor = null, labor_minutes = null}],
+		assumptions = [], unresolved = []}
+	var modes: Array[String] = []
+	var packages: Array[String] = []
+	view.costing_mode_requested.connect(func(mode: String) -> void: modes.append(mode))
+	view.purchase_package_requested.connect(func(id: String) -> void: packages.append(id))
+	view.show_assessment(source, true)
+	await _ui.settle()
+	_check("normal report offers trusted costing controls", view._cost_actions.visible and view._purchase_selector.visible)
+	var details := _details_text(view)
+	_check("Lumber selected package retains surplus, overlap and source caveat", details.contains("Included surplus units: 1") and details.contains("Additional duplicate supplied units: 1") and details.contains("Merchant listing was backorder"), details)
+	_check("selected package describes parts instead of internal transaction ID", details.contains("Replacement package") and not details.contains("plan-purchase-hiddenhash"), details)
+	_check("unknown labor duration remains unknown", details.contains("Active work: unknown") and not details.contains("Active work: 0 min"), details)
+	_check("selected price bounds remain visible", details.contains("Selected-plan price range") and details.contains("US$70.00") and details.contains("not confidence probabilities"), details)
+	view._shop_button.grab_focus()
+	_check("controller requests shop labor from normal report", view.controller_action("accept") and modes == ["paid"])
+	var changed := source.duplicate(true)
+	changed.costing_mode = "paid"
+	view.show_assessment(changed, true)
+	_check("same-incident mode refresh retains expanded view and costing focus", view._expanded and root.gui_get_focus_owner() == view._shop_button)
+	await _ui.tap(KEY_SPACE)
+	await _ui.tap(KEY_SPACE)
+	_check("repeated active-mode presses keep the selected shop mode visible", view._shop_button.button_pressed and not view._diy_button.button_pressed)
+	for control: Control in [view._diy_button, view._shop_button, view._purchase_selector]:
+		control.grab_focus()
+		view.suspend(true)
+		_check("cost control releases focus behind menus", root.gui_get_focus_owner() != control and control.focus_mode == Control.FOCUS_NONE)
+		view.suspend(false)
+	view._purchase_selector.grab_focus()
+	_check("controller chooses a trusted package", view.controller_action("accept") and packages == ["pnp-kit"])
+	changed.purchase_options = []
+	changed.purchase_package_id = "pnp-kit"
+	changed.costing_error = "Previous choice no longer applies."
+	view.show_assessment(changed, true)
+	view._purchase_selector.grab_focus()
+	_check("stale package offers visible recovery to recommended", view._purchase_selector.visible and view.controller_action("accept") and packages.back() == "")
+	view.show_archived(changed)
+	_check("archived cost plans have no active transaction controls", not view._cost_actions.visible)
+	var unsupported := {currency = "USD", complete = false, total_minor = null, known_subtotal_minor = 0,
+		low_minor = null, high_minor = null, outcome = "unavailable", costing_mode = "diy", costing_available = false,
+		costing_error = "No compatible plan.", lines = [], assumptions = [], unresolved = [], identity = {aircraft_id = "xcell-60-research"}}
+	view.show_assessment(unsupported, true)
+	view.controller_action("details")
+	details = _details_text(view)
+	_check("unsupported route does not imply a selected plan", not view._cost_actions.visible and not details.contains("Selected cost plan") and details.contains("Cost plan unavailable"), details)
+	view.queue_free()
+	await _ui.settle()
 
 
 func _preview_scope_behavior() -> void:

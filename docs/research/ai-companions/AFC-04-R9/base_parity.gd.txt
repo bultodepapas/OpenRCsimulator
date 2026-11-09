@@ -1,0 +1,34 @@
+extends SceneTree
+const Current := preload("res://ai/companions/circuit_controller.gd")
+const Legacy := preload("res://../tmp/afc-r9/legacy_circuit.gd")
+const Body := preload("res://physics/rigid_body.gd")
+const Math3D := preload("res://physics/math3d.gd")
+const Field := preload("res://data/field_loader.gd")
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+func _run() -> void:
+	var field: Dictionary = Field.load_from().field
+	var checks := 0
+	var failed := 0
+	for seed_value: int in [20261020, 20261021]:
+		for speed: float in [5.0, 15.0, 20.0, 30.0]:
+			for error: float in [-0.05, 0.0, 0.05, 0.8]:
+				for wind: PackedFloat64Array in [PackedFloat64Array([0, 0, 0]), PackedFloat64Array([1.2, -0.5, 0.0])]:
+					for clearance: float in [24.0, 35.0]:
+						var current := Current.new()
+						var legacy := Legacy.new()
+						current.configure(0, 1, seed_value, {V=15.0, throttle=0.45}, field)
+						legacy.configure(0, 1, seed_value, {V=15.0, throttle=0.45}, field)
+						var pose: Dictionary = current.initial_pose()
+						var snapshot := {state=Body.make_state(PackedFloat64Array([pose.north + 10.0, pose.east, -pose.height_m]),
+							PackedFloat64Array([15,0,0]), Math3D.q_from_euler(pose.heading_rad + error, 0, 0.05), PackedFloat64Array([0.1,0,0])),
+							wind_ned=wind, airspeed_m_s=15.0, trim={V=speed, throttle=0.45}, ground_clearance_m=clearance}
+						var peer := {id="player", is_player=true, position_ned=PackedFloat64Array([pose.north+10, pose.east+5, -pose.height_m]), velocity_ned=PackedFloat64Array([0,0,0])}
+						for traffic: Array in [[], [peer]]:
+							checks += 1
+							if var_to_bytes(current.command(snapshot, 4, traffic)) != var_to_bytes(legacy.command(snapshot, 4, traffic)):
+								failed += 1
+	print("base extraction parity: %d checks, %d failed" % [checks, failed])
+	quit(1 if failed else 0)
