@@ -152,3 +152,62 @@ Reference construction time includes this replacement and is not compared.
 Normal launches enable the addition for Club;
 scenery-off, the landscape comparison switch and ineligible custom fields
 omit it. Green paradise remains separate.
+
+## LU-28-R1: working field surfaces (2026-11-09)
+
+The owner's November 9 landscape brief prioritized ground continuity and crop
+identity using existing free assets. Club paths and LU-22 shoreline work already
+exist. This follow-up improves the agricultural surfaces without adding models:
+
+- The current 54 parcels distinguish wheat, maize, pasture, stubble and tilled
+  soil through palette, filtered planting spacing, mowing swaths and tramlines.
+- Six-metre headlands stop cultivated rows at field ends; short beds cap that
+  width at 18% of row length. One existing wheat parcel has a 24 m harvested
+  strip with stubble and restrained straw rows, sharing the parent UV coordinates.
+- Two four-metre access corridors connect the main farm road to its wheat and
+  maize fields, ending inside their headlands and clearing existing fences/trees.
+- Dirt tracks expose the existing terrain between two compacted, irregular rut
+  ribbons. Two-metre flared mouths connect them to roads and yards. World-space
+  soil sampling keeps intersecting ribbons in the same photographic phase.
+- Yard gravel reuses the bundled CC0 River Small Rocks photograph. Its import
+  now uses mipmaps and VRAM compression; the new countryside binding loads it
+  only when that layer is built. This import also affects the existing car park.
+
+The bake uses **7,168 triangles, 24 cells, 54 parcels and 16 routes**, compared
+with 6,764 / 24 / 54 / 14 immediately before this follow-up. It retains one shared
+material, no new frame callbacks or shadow casters, and the existing 14,000
+triangle ceiling. Field UV2.y now carries the full parent row length in both
+orientations; road/yard UV2.y still carries corridor width. Validated
+`surface_style` metadata supplies the shader's headland/harvest dimensions.
+These are flat cultivation cues, not botanical silhouettes or physical terrain.
+Aircraft, obstacle inventories and flight physics are unchanged.
+
+Verification used official **Godot 4.8-beta2 (`cafc17a19`)**, Windows,
+Compatibility/OpenGL and the RTX 3090 at **1920×1080**:
+
+- Ten offline regressions passed: reproducible bake, source identities, winding,
+  clearance, both row orientations across cells, both field ends, and actual
+  left/right rut triangle intersections at the access/road junctions.
+- Twenty-eight countryside checks passed, including material/style isolation,
+  conditional gravel loading, mipmaps, lighting, disabled/custom-field behavior
+  and existing crop collision bounds. Existing scenery ground checks and all
+  49 landscape selection checks also passed.
+- Native review covered Low, Medium, High and Extreme, with actual viewport LOD
+  thresholds **4 / 2 / 1 / 1 pixels** recorded by the capture harness. Views cover
+  crops, harvest, close entrances, farms, aerial context, village/highway and the
+  existing car-park gravel. A final world-space soil correction received separate
+  junction/farm captures at all four levels.
+
+[Source identities and native review summary](working-fields-2026-11-09.json)
+retain the exact inputs, image hashes, frame samples and local output locations.
+No additional images are committed. Use the existing landscape capture tool
+with `--width=1920 --height=1080`, explicit `--scene_detail`, and the new
+`plain_wheat`, `plain_field_entry`, `plain_farm_junction` cases to reproduce.
+
+Concurrent L9b turf work was preserved. Final captures use a frozen source copy;
+an earlier High reference predates that turf change and is composition context,
+not an isolated performance comparison. Short postcard frame samples do not
+qualify the combined +0.5 ms allowance, full flight performance, lower-end GPUs,
+other renderers or independent pilot acceptance. Full CI/export gates were not
+run for this local visual slice. Imported machinery, crop meshes and the creek
+remain separate follow-ups requiring their own sourcing and qualification.

@@ -37,6 +37,10 @@ func _test_default_surface_is_consolidated() -> void:
 		"consolidated=%s children=%s" % [field.get_meta("surfaces_consolidated", false), _child_names(field)])
 	if rough != null:
 		var material: ShaderMaterial = rough.material_override as ShaderMaterial
+		var ordinary: ShaderMaterial = Ground.grass_material()
+		_check("Club turf scale is finer than the shared base material", material != null
+			and float(material.get_shader_parameter("tile_m")) > 0.0
+			and float(material.get_shader_parameter("tile_m")) < float(ordinary.get_shader_parameter("tile_m")))
 		_check("default rotorpad and runway rectangles are retained in the shader data", material != null
 			and material.get_shader_parameter("surface_count") == 2
 			and _rect_at(material, 0) == Vector4(0.0, -6.0, 3.0, 3.0) and _kind_at(material, 0) == 3
@@ -64,6 +68,8 @@ func _test_priority_ignores_json_order() -> void:
 	var second: Node3D = Builder.build(second_result.field)
 	var first_material: ShaderMaterial = (first.get_node("rough") as MeshInstance3D).material_override as ShaderMaterial
 	var second_material: ShaderMaterial = (second.get_node("rough") as MeshInstance3D).material_override as ShaderMaterial
+	_check("custom fields retain the shared grass scale", first_material.get_shader_parameter("tile_m")
+		== Ground.grass_material().get_shader_parameter("tile_m"))
 	_check("mown then runway priority is stable when JSON surfaces reorder",
 		bool(first.get_meta("surfaces_consolidated", false))
 		and bool(second.get_meta("surfaces_consolidated", false))

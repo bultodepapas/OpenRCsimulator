@@ -1,5 +1,54 @@
 # L9b — Club grass airfield surface review
 
+## L9b-R1: finer Club turf
+
+2026-11-09. The [supplied ground-realism audit](ground-audit-2026-11-09.md)
+and concept image suggested finer turf and coordinated ground treatments. A
+matched native comparison isolated an oversized base pattern: disabling macro
+variation left the small pale patches; reducing the generated texture's world
+tile from 6 m to 1.5 m made that pattern finer. This is an art estimate, not a
+measured grass dimension. The audit's reported C-shaped mark was not localized
+and is not claimed fixed.
+
+The Club-only override lives in `field.gd`, before surface and RC-track material
+clones are created. Fallback grass already inherits it; the lake bank now copies
+the same scale. Shared defaults, photographic map scale, macro/dry variation,
+mowing, surface geometry, contact data and flight physics retain their previous
+behavior. No assets, texture reads, meshes or instances were added.
+
+Native evidence used Godot `4.8.beta2.official.cafc17a19`, Windows NVIDIA RTX 3090,
+Compatibility/OpenGL, 1920 × 1080 and High detail. Seven matched views cover the
+normal pilot, reverse runway, threshold, path, lake, 200 m target diagnostic and
+raised ground; all retain identical draw/primitive counts. A separate close bank
+pair checks the sampling scale at the grass/soil transition. The existing dark
+walking tread and broad mowing bands remain visible. The track's material-copy
+contract is tested; these flight-world captures do not establish RC-verge visual
+acceptance.
+
+Two matched 48-frame camera translations cover the pilot and low threshold views.
+An observational planar reprojection of 47 adjacent pairs per view measured RGB
+RMS of 1.630 → 1.630 and 2.452 → 2.454 on a 0–255 scale. This shows no substantial
+increase in that bounded residual; it is not perceptual shimmer acceptance. The
+legacy 1280 × 720 surface fixture retains 30.1% runway-edge Weber contrast at
+100 m, above its 5% floor; that fixture does not qualify 1080p by itself.
+
+Checked tests passed: field surfaces (21), near grass (52), grass material (39),
+lake world (53), and RC ground material (zero failures). Updated scripts parse.
+The initial render failed on a concurrent countryside shader edit; comparisons
+then used an isolated source snapshot based on `f7b58bd830d4a5eb78901d00514ce1fc18286477`
+with this change, restoring unrelated dirty countryside sources to that commit.
+One incomplete snapshot omitted the source `failures/` directory; the lake test
+passed after restoring it. These failed attempts remain in the raw check logs.
+
+[Source identities and reduced evidence](ground-scale-2026-11-09.json) identify
+the successful runs. Raw images, reports, checked logs and the observational
+reducer remain under ignored `tmp/ground-realism/`; no new images are committed.
+[Capture instructions](../../../../tools/ground/README.md#l9b-r1-club-turf-scale-review)
+own the commands. Independent owner review, other renderers/hardware, required CI
+and the shared whole-flight frame-time/sim-rate gates remain open.
+
+## Original surface review
+
 2026-10-20. Native Godot 4.7.2 Compatibility/OpenGL captures at 1280 × 720 on an RTX 3090. This record covers presentation only; it does not qualify ground physics or owner flight readability.
 
 ## Field references and asset choice

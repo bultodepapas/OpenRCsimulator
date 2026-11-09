@@ -1,0 +1,497 @@
+{
+  "asset_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+  "base_signature_scope": "Existing details_profile.gd mesh debug-map helper hashes every mesh's complete surface arrays and active material storage properties, node path, root-relative transform, visibility, and shadow flag. Labels are not included.",
+  "baseline_commit": "8fb825a96dbc39fbbf99c1056ba643c9cde49b5d",
+  "baseline_source_sha256": "a9bb210dbdb2171a61aaa5e8ab6e301f5209ef47b088525c602fe82ac6c04e2f",
+  "cache_entries": {
+    "after_cold": 5,
+    "after_warm": 5,
+    "before": 0
+  },
+  "candidate_source_sha256": "a6bc63da322b36efc8a57796ffc78e45177e383afd94c3424edec2e7e0d66ae2",
+  "engine": {
+    "build": "official",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "hex": 264192,
+    "major": 4,
+    "minor": 8,
+    "patch": 0,
+    "status": "beta2",
+    "string": "4.8-beta2 (official)",
+    "timestamp": 0
+  },
+  "inventory": {
+    "baseline": {
+      "base_mesh_material_signature": "915d1049fb3b93f0d0ae9a423baf8ee5f8aea5212e610501bd715dec2119d6a0",
+      "full_model": {
+        "base_triangles": 46856,
+        "lod_levels": 78,
+        "lod_surfaces": 26,
+        "lod_triangles_across_levels": 19945,
+        "mesh_instances": 29,
+        "surfaces": 65,
+        "vertices": 69347
+      },
+      "imported": {
+        "base_triangles": 42519,
+        "lod_levels": 114,
+        "lod_surfaces": 44,
+        "lod_triangles_across_levels": 32527,
+        "mesh_instances": 21,
+        "surfaces": 49,
+        "vertices": 40151
+      },
+      "repaired": {
+        "base_triangles": 42519,
+        "lod_levels": 78,
+        "lod_surfaces": 26,
+        "lod_triangles_across_levels": 19945,
+        "mesh_instances": 21,
+        "surfaces": 57,
+        "vertices": 66408
+      },
+      "source_meshes_unchanged": true,
+      "unchanged_surface_match": {
+        "differences": [
+          {
+            "material": "metal",
+            "path": "TurboTimberEvolution/cowl",
+            "surface": "metal"
+          },
+          {
+            "material": "red",
+            "path": "TurboTimberEvolution/fuselage_core",
+            "surface": "red"
+          },
+          {
+            "material": "black",
+            "path": "TurboTimberEvolution/fuselage_core",
+            "surface": "black"
+          },
+          {
+            "material": "light_red",
+            "path": "TurboTimberEvolution/fuselage_core",
+            "surface": "light_red"
+          },
+          {
+            "material": "red",
+            "path": "TurboTimberEvolution/wing_left_fixed",
+            "surface": "red"
+          },
+          {
+            "material": "dark_grey",
+            "path": "TurboTimberEvolution/wing_left_fixed",
+            "surface": "dark_grey"
+          },
+          {
+            "material": "light_red",
+            "path": "TurboTimberEvolution/wing_left_fixed",
+            "surface": "light_red"
+          },
+          {
+            "material": "red",
+            "path": "TurboTimberEvolution/wing_right_fixed",
+            "surface": "red"
+          },
+          {
+            "material": "dark_grey",
+            "path": "TurboTimberEvolution/wing_right_fixed",
+            "surface": "dark_grey"
+          },
+          {
+            "material": "light_green",
+            "path": "TurboTimberEvolution/wing_right_fixed",
+            "surface": "light_green"
+          }
+        ],
+        "lods_exact": 26,
+        "lods_lost_or_changed": 10,
+        "no_matching_base": 9,
+        "same_base_surfaces": 40,
+        "same_base_with_lods": 36
+      }
+    },
+    "candidate_cache_hit": {
+      "base_mesh_material_signature": "915d1049fb3b93f0d0ae9a423baf8ee5f8aea5212e610501bd715dec2119d6a0",
+      "full_model": {
+        "base_triangles": 46856,
+        "lod_levels": 100,
+        "lod_surfaces": 36,
+        "lod_triangles_across_levels": 24055,
+        "mesh_instances": 29,
+        "surfaces": 65,
+        "vertices": 69347
+      },
+      "imported": {
+        "base_triangles": 42519,
+        "lod_levels": 114,
+        "lod_surfaces": 44,
+        "lod_triangles_across_levels": 32527,
+        "mesh_instances": 21,
+        "surfaces": 49,
+        "vertices": 40151
+      },
+      "repaired": {
+        "base_triangles": 42519,
+        "lod_levels": 100,
+        "lod_surfaces": 36,
+        "lod_triangles_across_levels": 24055,
+        "mesh_instances": 21,
+        "surfaces": 57,
+        "vertices": 66408
+      },
+      "source_meshes_unchanged": true,
+      "unchanged_surface_match": {
+        "differences": [],
+        "lods_exact": 36,
+        "lods_lost_or_changed": 0,
+        "no_matching_base": 9,
+        "same_base_surfaces": 40,
+        "same_base_with_lods": 36
+      }
+    },
+    "candidate_cold": {
+      "base_mesh_material_signature": "915d1049fb3b93f0d0ae9a423baf8ee5f8aea5212e610501bd715dec2119d6a0",
+      "full_model": {
+        "base_triangles": 46856,
+        "lod_levels": 100,
+        "lod_surfaces": 36,
+        "lod_triangles_across_levels": 24055,
+        "mesh_instances": 29,
+        "surfaces": 65,
+        "vertices": 69347
+      },
+      "imported": {
+        "base_triangles": 42519,
+        "lod_levels": 114,
+        "lod_surfaces": 44,
+        "lod_triangles_across_levels": 32527,
+        "mesh_instances": 21,
+        "surfaces": 49,
+        "vertices": 40151
+      },
+      "repaired": {
+        "base_triangles": 42519,
+        "lod_levels": 100,
+        "lod_surfaces": 36,
+        "lod_triangles_across_levels": 24055,
+        "mesh_instances": 21,
+        "surfaces": 57,
+        "vertices": 66408
+      },
+      "source_meshes_unchanged": true,
+      "unchanged_surface_match": {
+        "differences": [],
+        "lods_exact": 36,
+        "lods_lost_or_changed": 0,
+        "no_matching_base": 9,
+        "same_base_surfaces": 40,
+        "same_base_with_lods": 36
+      }
+    }
+  },
+  "inventory_artifact_sha256": "1c52b50734cc4a33c5d692d2c09d44c0c23271c2b65a2537136284b9da312699",
+  "inventory_scope": "Registry.describe -> manifest builder -> source inventory -> Details.apply -> inventory; aggregate LOD triangles sums all index-buffer levels, not a selected draw or a performance measurement.",
+  "limitations": [
+    "Aggregate LOD triangles sum every stored level; they are not a selected frame.",
+    "Preserved index buffers may increase resident memory.",
+    "Moving pilot readability, whole-flight FPS, full CI and target-hardware qualification remain separate."
+  ],
+  "pixel_comparison": {
+    "rows": [
+      {
+        "changed_pixels": 46,
+        "file": "inspection_oblique_front_left.png",
+        "finish": "production",
+        "max_rgb_delta": 89,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 27,
+        "file": "inspection_oblique_rear_right.png",
+        "finish": "production",
+        "max_rgb_delta": 125,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 58,
+        "file": "inspection_oblique_front_left_full.png",
+        "finish": "production",
+        "max_rgb_delta": 89,
+        "silhouette_iou": 0.9999951173305469,
+        "silhouette_xor": 1,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 27,
+        "file": "inspection_oblique_rear_right_full.png",
+        "finish": "production",
+        "max_rgb_delta": 125,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 19,
+        "file": "distance_050m_level_crossing.png",
+        "finish": "production",
+        "max_rgb_delta": 58,
+        "silhouette_iou": 0.9850746268656716,
+        "silhouette_xor": 2,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 21,
+        "file": "distance_050m_roll_minus60.png",
+        "finish": "production",
+        "max_rgb_delta": 58,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 19,
+        "file": "distance_050m_roll_plus60.png",
+        "finish": "production",
+        "max_rgb_delta": 59,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 14,
+        "file": "distance_050m_nose_toward_pilot.png",
+        "finish": "production",
+        "max_rgb_delta": 59,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_front_left.png",
+        "finish": "production",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_rear_right.png",
+        "finish": "production",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_front_left_full.png",
+        "finish": "production",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_rear_right_full.png",
+        "finish": "production",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 47,
+        "file": "inspection_oblique_front_left.png",
+        "finish": "paint",
+        "max_rgb_delta": 101,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 25,
+        "file": "inspection_oblique_rear_right.png",
+        "finish": "paint",
+        "max_rgb_delta": 104,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 58,
+        "file": "inspection_oblique_front_left_full.png",
+        "finish": "paint",
+        "max_rgb_delta": 101,
+        "silhouette_iou": 0.9999951173305469,
+        "silhouette_xor": 1,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 25,
+        "file": "inspection_oblique_rear_right_full.png",
+        "finish": "paint",
+        "max_rgb_delta": 104,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "inspection"
+      },
+      {
+        "changed_pixels": 18,
+        "file": "distance_050m_level_crossing.png",
+        "finish": "paint",
+        "max_rgb_delta": 27,
+        "silhouette_iou": 0.9850746268656716,
+        "silhouette_xor": 2,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 18,
+        "file": "distance_050m_roll_minus60.png",
+        "finish": "paint",
+        "max_rgb_delta": 42,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 15,
+        "file": "distance_050m_roll_plus60.png",
+        "finish": "paint",
+        "max_rgb_delta": 40,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 17,
+        "file": "distance_050m_nose_toward_pilot.png",
+        "finish": "paint",
+        "max_rgb_delta": 49,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "distance"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_front_left.png",
+        "finish": "paint",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_rear_right.png",
+        "finish": "paint",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_front_left_full.png",
+        "finish": "paint",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      },
+      {
+        "changed_pixels": 0,
+        "file": "inspection_oblique_rear_right_full.png",
+        "finish": "paint",
+        "max_rgb_delta": 0,
+        "silhouette_iou": 1.0,
+        "silhouette_xor": 0,
+        "suite": "base-control-inspection"
+      }
+    ],
+    "scope": "matched isolated 1080p images; no frame-time or pilot acceptance"
+  },
+  "rendered_scope": "Windows NVIDIA RTX3090 617.42 Compatibility OpenGL3 isolated 50m, 1920x1080, native inspector cameras",
+  "rendered_submissions": [
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24827,
+      "counter_primitives_before": 29465,
+      "finish": "production",
+      "view": "distance_050m_level_crossing.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24827,
+      "counter_primitives_before": 29465,
+      "finish": "production",
+      "view": "distance_050m_roll_minus60.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24827,
+      "counter_primitives_before": 29465,
+      "finish": "production",
+      "view": "distance_050m_roll_plus60.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24821,
+      "counter_primitives_before": 29459,
+      "finish": "production",
+      "view": "distance_050m_nose_toward_pilot.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24827,
+      "counter_primitives_before": 29465,
+      "finish": "paint",
+      "view": "distance_050m_level_crossing.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24827,
+      "counter_primitives_before": 29465,
+      "finish": "paint",
+      "view": "distance_050m_roll_minus60.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24827,
+      "counter_primitives_before": 29465,
+      "finish": "paint",
+      "view": "distance_050m_roll_plus60.png"
+    },
+    {
+      "counter_draw_calls_after": 143,
+      "counter_draw_calls_before": 143,
+      "counter_primitives_after": 24821,
+      "counter_primitives_before": 29459,
+      "finish": "paint",
+      "view": "distance_050m_nose_toward_pilot.png"
+    }
+  ],
+  "scope": "TT-21-R1 isolated LOD/paint correctness and 1080p submissions; no FPS/hardware acceptance",
+  "source_sha256_raw": {
+    "app/aircraft/custom_skin.gd": "7fd0891f1ac93fceb0d7602d27762813059ccd361371ca1cdcd9f867224eeadb",
+    "app/aircraft/procedural_skin.gd": "7f5d825b2e8e5c9963ef584d77956b89c85a133aedcec37c2e9ecb59af3961fa",
+    "app/aircraft/timber_visual_details.gd": "a6bc63da322b36efc8a57796ffc78e45177e383afd94c3424edec2e7e0d66ae2",
+    "app/assets/skin-kit/models.json": "e3c3d02cefad3f3dea100935929bc28a2747a2fc41696c9c322ae39f11b9e6c5",
+    "app/assets/skin-kit/turbo-lumber-evolution.zip": "ec1f50871cfdba24ac5323ab31a066260ef7ab61018137ebb34585130cf1b44b"
+  },
+  "verification_head": "f7b58bd830d4a5eb78901d00514ce1fc18286477"
+}

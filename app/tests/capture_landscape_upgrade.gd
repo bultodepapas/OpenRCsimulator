@@ -15,7 +15,11 @@ const SceneryMaterials := preload("res://scenery/scenery.gd")
 const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
 const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 const FLEET_VIEWS := {
+	"ground_200m": {eye = [0.0, -13.0, -1.7], at = [200.0, -13.0, 0.0], fov = 30.0},
+	"ground_raised": {eye = [40.0, -5.0, -55.0], at = [40.0, 0.0, 0.0], fov = 55.0},
+	"bank_detail": {eye = [76.0, 110.0, -1.6], at = [79.0, 112.0, 0.2], fov = 48.0},
 	"power_runway_east": {eye = [0.0, -13.0, -1.7], at = [50.0, 850.0, -18.0], fov = 55.0},
 	"power_corridor": {eye = [-330.0, 380.0, -130.0], at = [50.0, 1100.0, -15.0], fov = 70.0},
 	"power_detail": {eye = [62.0, 625.0, -23.0], at = [50.0, 650.0, -24.5], fov = 40.0},
@@ -32,6 +36,9 @@ const FLEET_VIEWS := {
 	"plain_village": {eye = [-610.0, -960.0, -45.0], at = [-680.0, -760.0, -3.0], fov = 55.0},
 	"plain_highway": {eye = [-350.0, 880.0, -22.0], at = [50.0, 945.0, -0.2], fov = 50.0},
 	"plain_crop": {eye = [480.0, 400.0, -8.0], at = [520.0, 500.0, -0.2], fov = 55.0},
+	"plain_wheat": {eye = [610.0, 435.0, -26.0], at = [673.0, 350.0, -0.1], fov = 55.0},
+	"plain_field_entry": {eye = [558.0, 510.0, -5.0], at = [558.0, 528.0, -0.1], fov = 55.0},
+	"plain_farm_junction": {eye = [550.0, 683.0, -4.0], at = [562.0, 701.0, -0.1], fov = 55.0},
 	"plain_overview": {eye = [-650.0, -950.0, -680.0], at = [350.0, 260.0, 0.0], fov = 58.0},
 	"plain_east": {eye = [-450.0, 350.0, -220.0], at = [400.0, 950.0, 0.0], fov = 55.0},
 	"plain_farm": {eye = [450.0, 160.0, -75.0], at = [610.0, 365.0, -3.0], fov = 55.0},
@@ -82,6 +89,20 @@ var args := {}
 ## SUN-03: the crossing case's start and end angle from the sun (deg).
 const SUN_CROSSING_DEG := 4.0
 
+
+func _ground_materials(field: Node) -> Array[ShaderMaterial]:
+	var result: Array[ShaderMaterial] = []
+	for material: ShaderMaterial in World.haze_materials(field):
+		if material.shader.resource_path in ["res://render/ground.gdshader",
+				"res://render/near_grass.gdshader", "res://render/lake/bank.gdshader"]:
+			result.append(material)
+	return result
+
+
+func _ground_parameter(material: ShaderMaterial, parameter: String) -> Variant:
+	var value: Variant = material.get_shader_parameter(parameter)
+	return value if value != null else RenderingServer.shader_get_parameter_default(material.shader.get_rid(), parameter)
+
 func _initialize() -> void:
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off") # visual timings; avoid audio mixing in a capture-only process
 	for arg: String in OS.get_cmdline_user_args():
@@ -91,6 +112,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	root.size = Vector2i(int(args.get("width", 1280)), int(args.get("height", 720)))
+	root.mesh_lod_threshold = float(SceneDetail.profile().mesh_lod_threshold_px)
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	var out := str(args.get("out", "user://landscape-upgrade"))
 	DirAccess.make_dir_recursive_absolute(out)
@@ -195,6 +217,35 @@ func _run() -> void:
 	var habitats: Node3D = built.field.get_node_or_null("Scenery/BotanicalHabitats")
 	if habitats != null and str(args.get("botanicals", "on")) == "off":
 		habitats.visible = false
+	# L9b-R1: one-layer ground ablations in the same production world and lighting.
+	# A photo-off capture reveals the procedural turf beneath it; it is not albedo-only.
+	var ground_diagnostic := str(args.get("ground_diagnostic", "normal"))
+	var ground_controls := {"normal": {}, "macro-off": {"macro_amp": 0.0},
+		"dry-off": {"dry_amount": 0.0}, "detiling-off": {"anti_tiling": 0.0},
+		"photo-off": {"grass_photo_enabled": false}, "turf-off": {"turf_detail_strength": 0.0},
+		"clouds-off": {"cloud_shadow_strength": 0.0}}
+	if not ground_controls.has(ground_diagnostic):
+		printerr("Unknown --ground_diagnostic: ", ground_diagnostic)
+		quit(1)
+		return
+	var ground_overrides: Dictionary = ground_controls[ground_diagnostic].duplicate()
+	if args.has("grass_tile_m"):
+		var tile := float(args.grass_tile_m)
+		if not is_finite(tile) or tile <= 0.0:
+			printerr("--grass_tile_m must be finite and positive")
+			quit(1)
+			return
+		ground_overrides["tile_m"] = tile
+	var ground_materials := _ground_materials(built.field)
+	if ground_materials.is_empty():
+		printerr("Ground diagnostics found no production turf materials")
+		quit(1)
+		return
+	for material: ShaderMaterial in ground_materials:
+		for parameter: String in ground_overrides:
+			for uniform: Dictionary in material.shader.get_shader_uniform_list():
+				if uniform.name == parameter:
+					material.set_shader_parameter(parameter, ground_overrides[parameter])
 	var camera := Camera3D.new()
 	camera.far = 21000
 	camera.near = 0.1
@@ -221,7 +272,9 @@ func _run() -> void:
 	var original_exposure: float = built.environment.tonemap_exposure
 	var report := {night_options = built.get("night_options", {}), adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
 		engine = Engine.get_version_info(), renderer = "gl_compatibility", width = root.size.x, height = root.size.y,
+		scene_detail = SceneDetail.level(), mesh_lod_threshold_px = root.mesh_lod_threshold,
 		arguments = args, lake = lake_diagnostics, field_build_ms = built.field_build_ms,
+		countryside_stats = built.field.get_node("Countryside").get_meta("stats") if built.field.has_node("Countryside") else {},
 		reflection_slots = ProjectSettings.get_setting("rendering/reflections/reflection_atlas/reflection_count"),
 		botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
 	if regional != null:
@@ -369,6 +422,13 @@ func _run() -> void:
 			for mat: ShaderMaterial in World.haze_materials(built.field):
 				if mat.shader.resource_path == "res://render/ground.gdshader":
 					print("HORIZON diagnostic=", horizon_diagnostic, " rim=", mat.get_shader_parameter("rim_start"), ",", mat.get_shader_parameter("rim_end"))
+		for material: ShaderMaterial in ground_materials:
+			for parameter: String in ground_overrides:
+				for uniform: Dictionary in material.shader.get_shader_uniform_list():
+					if uniform.name == parameter and material.get_shader_parameter(parameter) != ground_overrides[parameter]:
+						printerr("Ground diagnostic override lost after world update: ", parameter)
+						quit(1)
+						return
 		var frames := []
 		var motion := str(args.get("motion", "off"))
 		var camera_origin := camera.transform
@@ -412,6 +472,15 @@ func _run() -> void:
 			glare_solar_uv = flare.get_meta("solar_uv", Vector2(-1.0, -1.0)),
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
 			marker_center_px = camera.unproject_position(marker_world)}
+		case_report["ground_materials"] = []
+		for material: ShaderMaterial in _ground_materials(built.field):
+			var record := {shader = material.shader.resource_path, parameters = {}}
+			for parameter: String in ["tile_m", "macro_amp", "dry_amount", "anti_tiling",
+					"grass_photo_enabled", "turf_detail_strength", "cloud_shadow_strength"]:
+				for uniform: Dictionary in material.shader.get_shader_uniform_list():
+					if uniform.name == parameter:
+						record.parameters[parameter] = _ground_parameter(material, parameter)
+			case_report.ground_materials.append(record)
 		if regional != null:
 			case_report["regional_flashes_px"] = []
 			for optical: MultiMeshInstance3D in regional.find_children("beacon_*", "MultiMeshInstance3D", true, false):

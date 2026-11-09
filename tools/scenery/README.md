@@ -51,10 +51,18 @@ Each option has an `OPENRC_SCENERY_*` environment-variable twin.
 
 LU-28 checks: `python3 tools/scenery/test_countryside.py` verifies tree clearance,
 road/driveway connections, farm gates, winding and protected flight-area geometry.
-`res://tests/test_countryside.gd` checks the shared field integration and lighting.
+`res://tests/test_countryside.gd` checks the shared field integration and lighting,
+validated bake-to-shader style settings, optional gravel loading and mipmaps.
 Native views in `capture_landscape_upgrade.gd` include `plain_overview`,
 `plain_east`, `plain_farm`, `plain_farm_gate`, `plain_village`, `plain_highway`
 and `plain_crop`. [Captures, research and measured cost](../../docs/research/landscape-upgrade/LU-28/README.md).
+
+LU-28-R1 adds `plain_wheat`, `plain_field_entry` and `plain_farm_junction` views.
+The offline tests also check both row orientations across cell boundaries,
+headland endpoints, buffered field-entry clearance and actual rut-to-road
+triangle intersections. Rebuild through `bake_countryside.py`; its `surface_style`
+owns headland and harvested-strip dimensions used by the material. Field UV2.y
+stores the parent row length; road/yard UV2.y remains the full corridor width.
 
 SC-09-R1 parked placements use the existing `fleet` group with optional unit-tagged
 `scale` (`1`, 0.25–1.5) and `elevation` (`m`, 0–1.5), plus `configuration`

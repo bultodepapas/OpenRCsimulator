@@ -1,5 +1,28 @@
 # Ground surface capture
 
+## L9b-R1 Club turf scale review
+
+Use the production-world capture for matched 1080p ground views:
+
+```powershell
+python tools/godot/run_checked.py --label club-turf --out-dir tmp/club-turf/checks --timeout 300 -- .tools/Godot_v4.8-beta2_win64_console.exe --path app --rendering-method gl_compatibility --audio-driver Dummy --script res://tests/capture_landscape_upgrade.gd -- --out=C:/DEVELOPMENT/OpenRCsimulator/tmp/club-turf/views --width=1920 --height=1080 --cases=pilot_north,runway_west,runway_marker_close,entry_path,lake_shore,ground_200m,ground_raised --frames=30 --scene_detail=high --scenery_birds=off
+```
+
+Choose a new output directory for each run. `--grass_tile_m=6` restores the old
+Club base-texture scale for a controlled comparison; the current Club uses 1.5 m.
+The separate `--ground_diagnostic` controls are `normal`, `macro-off`, `dry-off`,
+`detiling-off`, `photo-off`, `turf-off` and `clouds-off`. Detiling-off exposes the
+repeated tile; photo-off exposes procedural turf and does not override the RC
+soil route. These controls do not change production settings. Effective material
+values appear in each case's `ground_materials` report and overrides are checked
+after world updates. `ground_200m` is a narrow diagnostic aimed at a known ground
+point, while `pilot_north` is the normal pilot view.
+
+Add `--motion=camera --frames=48` for a slow camera translation with saved frames.
+Motion-capture timings include readback/PNG work and cannot qualify performance.
+The [L9b evidence](../../docs/research/visual-quality-implementation/L9b/README.md#l9b-r1-finer-club-turf)
+records the comparison and remaining acceptance limits.
+
 ## DT-11a horizon construction
 
 `Horizon.mesh()` reuses per-build float64 azimuth tables and preallocates triangle

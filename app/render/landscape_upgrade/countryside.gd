@@ -20,6 +20,16 @@ static func _load() -> bool:
 			or not raw.get("cells") is Dictionary or raw.cells.size() > MAX_CELLS:
 		push_error("Countryside: missing or incompatible visual layout")
 		return false
+	var style: Variant = raw.get("surface_style")
+	if not style is Dictionary:
+		push_error("Countryside: missing field surface style")
+		return false
+	for key: String in ["headland_m", "headland_fraction", "harvested_length_m"]:
+		var value: Variant = style.get(key)
+		if not (value is float or value is int) or not is_finite(float(value)) \
+				or value <= 0.0 or value > (0.5 if key == "headland_fraction" else 100.0):
+			push_error("Countryside: invalid field surface style")
+			return false
 	var arrays_by_cell := {}
 	var total := 0
 	for key: String in raw.cells:
@@ -68,7 +78,7 @@ static func _load() -> bool:
 		return false
 	_cached_arrays = arrays_by_cell
 	_stats = {triangles = total, cells = arrays_by_cell.size(),
-		parcels = raw.get("parcels", []).size(), roads = raw.get("roads", []).size()}
+		parcels = raw.get("parcels", []).size(), roads = raw.get("roads", []).size(), style = style.duplicate()}
 	return true
 
 
@@ -82,6 +92,11 @@ static func build(lighting: Dictionary = {}) -> Node3D:
 	material.set_shader_parameter("grass_tex", GRASS)
 	material.set_shader_parameter("soil_tex", DIRT)
 	material.set_shader_parameter("asphalt_tex", ASPHALT)
+	# Keep this newly shared 2K resource unloaded when scenery/countryside is off.
+	material.set_shader_parameter("gravel_tex", load(
+		"res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg"))
+	for key: String in _stats.style:
+		material.set_shader_parameter(key, _stats.style[key])
 	Atmosphere.update_ground_material(material, lighting)
 	for key: String in _cached_arrays:
 		var mesh := ArrayMesh.new()
@@ -93,5 +108,5 @@ static func build(lighting: Dictionary = {}) -> Node3D:
 		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(instance)
 	root.set_meta("lighting_material", material)
-	root.set_meta("stats", _stats.duplicate())
+	root.set_meta("stats", _stats.duplicate(true))
 	return root

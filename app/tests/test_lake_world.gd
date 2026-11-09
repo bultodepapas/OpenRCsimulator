@@ -188,6 +188,7 @@ func _test_attached_scene(field: Dictionary, lake: Dictionary) -> void:
 func _test_ground_cut(field: Dictionary, lake: Dictionary) -> void:
 	var Horizon := preload("res://render/horizon.gd")
 	var ground_material: ShaderMaterial = Ground.grass_material({})
+	ground_material.set_shader_parameter("tile_m", 2.375) # detect a silently retained bank default
 	var field_node := Node3D.new()
 	var ground := MeshInstance3D.new()
 	ground.name = "rough"
@@ -203,6 +204,10 @@ func _test_ground_cut(field: Dictionary, lake: Dictionary) -> void:
 	other.position = ground.position
 	field_node.add_child(other)
 	var attached: Node3D = LakeWorld.attach(field_node, field, ground_material, lake, {}, false)
+	if attached != null:
+		var bank_material: ShaderMaterial = attached.get_node("Basin").material_override as ShaderMaterial
+		_check("lake-bank turf inherits the surrounding ground scale", bank_material.get_shader_parameter("tile_m")
+			== ground_material.get_shader_parameter("tile_m"))
 	_check("both ground meshes receive the geometric lake cut",
 		attached != null and int(field_node.get_meta("ground_lake_cut", 0)) == 2
 		and ground.mesh != original and other.mesh != original)

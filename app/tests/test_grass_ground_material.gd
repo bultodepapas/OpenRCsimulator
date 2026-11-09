@@ -56,6 +56,7 @@ func _run() -> void:
 	_check("a cloned default surface keeps the source photo binding disabled", ordinary.get_shader_parameter("grass_photo_enabled") != true)
 
 	var rc_ground := Ground.grass_material()
+	rc_ground.set_shader_parameter("tile_m", 2.375)
 	RcDetail.configure(rc_ground)
 	_check("RC binder still enables its existing surface route", rc_ground.get_shader_parameter("rc_surface_enabled") == true)
 	_check("RC material leaves the optional grass photo branch disabled", rc_ground.get_shader_parameter("grass_photo_enabled") != true)
@@ -70,6 +71,8 @@ func _run() -> void:
 		var baseline_surface := baseline.get_node_or_null("DirtLoopSurface") as MeshInstance3D
 		var proposed_surface := proposed.get_node_or_null("DirtLoopSurface") as MeshInstance3D
 		var track_material := proposed_surface.material_override as ShaderMaterial if proposed_surface != null else null
+		_check("RC track clone inherits the field's grass scale", track_material != null
+			and track_material.get_shader_parameter("tile_m") == rc_ground.get_shader_parameter("tile_m"))
 		_check("RC track clone keeps private dirt coverage and six grass/dirt binders",
 			track_material != null
 			and track_material.get_shader_parameter("rc_track_surface") == true

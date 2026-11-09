@@ -25,6 +25,8 @@ func check(label: String, passed: bool) -> void:
 
 
 func _run() -> void:
+	check("field script does not preload optional gravel photo", not ResourceLoader.has_cached(
+		"res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg"))
 	var previous := {}
 	for key: String in ["OPENRC_SCENERY", "OPENRC_SCENERY_FILE", "OPENRC_LANDSCAPE_UPGRADE", "OPENRC_SCENERY_QUALITY"]:
 		previous[key] = OS.get_environment(key)
@@ -45,6 +47,9 @@ func _run() -> void:
 		check("surface triangle budget", stats.triangles > 0 and stats.triangles <= 14000)
 		check("agricultural parcels and connected accesses exist", stats.parcels >= 20 and stats.roads >= 10)
 		var mat: ShaderMaterial = plain.get_meta("lighting_material")
+		for key: String in stats.style:
+			check(key + " matches the validated bake", is_equal_approx(
+				float(mat.get_shader_parameter(key)), float(stats.style[key])))
 		check("registered in field light updates", built.get_meta("lighting_materials").has(mat))
 		check("registered once in flowing haze collection", World.haze_materials(built).count(mat) == 1)
 		var indices := 0
@@ -57,12 +62,14 @@ func _run() -> void:
 				and not child.is_processing() and not child.is_physics_processing()
 		check("all surfaces share material, disable shadows and callbacks", static_batches)
 		check("loaded topology matches budget metadata", indices / 3 == stats.triangles)
-		for texture_name: String in ["grass_tex", "soil_tex", "asphalt_tex"]:
+		for texture_name: String in ["grass_tex", "soil_tex", "asphalt_tex", "gravel_tex"]:
 			var texture: Texture2D = mat.get_shader_parameter(texture_name)
 			check(texture_name + " has mipmaps", texture != null and texture.get_image().has_mipmaps())
 		var second := Countryside.build(noon)
 		var other: ShaderMaterial = second.get_meta("lighting_material")
 		check("separate worlds own separate mutable material", other != mat)
+		(stats.style as Dictionary)["headland_m"] = 1.0
+		check("world metadata does not alias the cached style", float(second.get_meta("stats").style.headland_m) != 1.0)
 		check("time update succeeds", FieldBuilder.update_lighting(built, night))
 		check("night sun follows shared field lighting",
 			(mat.get_shader_parameter("sun_lin") as Vector3).distance_to(Atmosphere.sun_linear(night)) < .00001)

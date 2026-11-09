@@ -370,6 +370,8 @@ static func _build_ground_setup(context: _BuildContext) -> void:
 	# The default club's mowing and taxi detail is presentation only. Field surfaces and contact stay authoritative.
 	context.grass.set_shader_parameter("club_field_detail", str(context.field.get("id", "")) == "default")
 	if str(context.field.get("id", "")) == "default":
+		# L9b-R1: the retained procedural tile reads as fine turf, rather than metre-wide blotches.
+		context.grass.set_shader_parameter("tile_m", 1.5)
 		# Reuse the bundled CC0 grass maps at walking distance; the shader fades them before the flight view.
 		var grass_detail := load("res://render/grass_ground_material.gd")
 		grass_detail.configure(context.grass)

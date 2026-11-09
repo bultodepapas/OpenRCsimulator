@@ -162,7 +162,13 @@ func _test_blade_mesh() -> void:
 
 func _test_standalone_build() -> void:
 	var globals_before: Array = RenderingServer.global_shader_parameter_get_list()
-	var grass: Node3D = NearGrass.build(_field, Ground.grass_material())
+	var ground: ShaderMaterial = Ground.grass_material()
+	ground.set_shader_parameter("tile_m", 2.375) # nondefault scale must reach every fallback chunk
+	var grass: Node3D = NearGrass.build(_field, ground)
+	for chunk: MultiMeshInstance3D in _chunks(grass):
+		var material: ShaderMaterial = chunk.multimesh.mesh.surface_get_material(0) as ShaderMaterial
+		_check("fallback grass inherits its ground's turf scale", material.get_shader_parameter("tile_m")
+			== ground.get_shader_parameter("tile_m"))
 	var globals_after: Array = RenderingServer.global_shader_parameter_get_list()
 	_check("standalone grass build registers sim_clock and wind_vec once",
 		globals_after.count(&"sim_clock") == 1 and globals_after.count(&"wind_vec") == 1

@@ -17,7 +17,12 @@ FIELD = ROOT / "app/data/fields/default.json"
 SCENERY = ROOT / "app/data/scenery/default.json"
 HORIZON = ROOT / "app/data/fields/horizon.json"
 KINDS = {"crop": 0, "soil": 1, "highway": 2, "road": 3, "track": 4, "yard": 5}
-PALETTE = ["#687242", "#8c8248", "#536638", "#99884e", "#716648", "#5e713e"]
+KINDS.update({"wheat": 0, "maize": 6, "pasture": 7, "stubble": 8, "wheat_harvest": 9})
+PALETTE = ["#687242", "#8c8248", "#536638", "#99884e", "#716648", "#9a8c60"]
+FIELD_COVERS = ["pasture", "wheat", "maize", "wheat", "soil", "stubble"]
+HEADLAND_M = 6.0
+HEADLAND_FRACTION = .18
+HARVESTED_LENGTH_M = 24.0  # First passes across the wheat field's southern headland.
 HIGHWAY = [(-2200, 700), (-1400, 820), (-950, 860), (-430, 950),
            (-120, 940), (350, 960), (600, 930), (1000, 970),
            (1400, 1250), (1900, 1700)]
@@ -110,7 +115,18 @@ def generate():
                 points = [(a, c), (b, c), (b, d), (a, d)]
                 uvs = [(n - n0, e - e0) if rotate else (e - e0, n - n0) for n, e in points]
                 points = [(n, e + (n - pivot) * shear) for n, e in points]
-                quad(points, uvs, kind, e1 - e0, tint, lift)
+                # UV2.y is row length for fields, full width for roads/yards.
+                # Use the along-row dimension, including when the UV axes rotate.
+                extent = (e1 - e0 if rotate else n1 - n0) if kind < 2 or kind >= 6 else e1 - e0
+                quad(points, uvs, kind, extent, tint, lift)
+
+    def field_parcel(bounds, cover, tint, rotate=False, shear=0.0):
+        rectangle(bounds, KINDS[cover], color(tint), rotate=rotate, shear=shear)
+        row_length = bounds[3] - bounds[1] if rotate else bounds[2] - bounds[0]
+        parcels.append({"bounds_ne_m": bounds, "kind": KINDS[cover], "cover": cover,
+                        "row_axis": 0 if rotate else 1, "shear": shear,
+                        "headland_m": 0 if cover == "pasture" else min(HEADLAND_M, row_length * HEADLAND_FRACTION),
+                        "harvested_length_m": HARVESTED_LENGTH_M if cover == "wheat_harvest" else 0})
 
     # Keep the club, lake, flight box and wooded ring intact. Fields occupy clear
     # outer land; a margin avoids painting crop rows through existing tree trunks.
@@ -129,22 +145,19 @@ def generate():
             if any(n0 < a1 and n1 > a0 and e0 < b1 and e1 > b0 for a0, b0, a1, b1 in compounds):
                 continue
             index = (ni * 7 + ei * 11) % len(PALETTE)
-            kind = KINDS["soil"] if index == 4 else KINDS["crop"]
             bounds = [n0, e0, n1, e1]
             shear = [-0.075, 0.035, 0.08, -0.025][(ni * 3 + ei) % 4]
             pivot = (n0 + n1) / 2
-            rectangle(bounds, kind, color(PALETTE[index]), rotate=(ni + ei) % 2 == 0, shear=shear)
+            field_parcel(bounds, FIELD_COVERS[index], PALETTE[index], rotate=(ni + ei) % 2 == 0, shear=shear)
             # Narrow grass headlands and dark drainage margins form readable boundaries.
-            rectangle([n0 - 2, e0, n0, e1], 0, color("#394729"), rotate=True, shear=shear, pivot=pivot)
-            rectangle([n0, e0 - 2, n1, e0], 0, color("#435033"), shear=shear, pivot=pivot)
-            parcels.append({"bounds_ne_m": bounds, "kind": kind, "row_axis": (ni + ei) % 2, "shear": shear})
-    for bounds, tint in [([630, 280, 780, 430], "#8c8248"), ([470, 380, 550, 540], "#536638")]:
+            rectangle([n0 - 2, e0, n0, e1], KINDS["pasture"], color("#394729"), rotate=True, shear=shear, pivot=pivot)
+            rectangle([n0, e0 - 2, n1, e0], KINDS["pasture"], color("#435033"), shear=shear, pivot=pivot)
+    for bounds, cover, tint in [([630, 280, 780, 430], "wheat_harvest", "#8c8248"),
+                                ([470, 380, 550, 540], "maize", "#536638")]:
         assert not any(bounds[0] - 10 < n < bounds[2] + 10 and bounds[1] - 10 < e < bounds[3] + 10 for n, e in trees)
-        rectangle(bounds, 0, color(tint))
-        parcels.append({"bounds_ne_m": bounds, "kind": 0, "row_axis": 1, "shear": 0})
+        field_parcel(bounds, cover, tint)
     berry_bed = [647, 447, 661, 462]
-    rectangle(berry_bed, 1, color("#716648"))
-    parcels.append({"bounds_ne_m": berry_bed, "kind": 1, "row_axis": 1, "shear": 0})
+    field_parcel(berry_bed, "soil", "#716648")
 
     def route(name, points, width, kind, tint, lift=0.085):
         # Bound corner cuts in metres so smoothing cannot pull a long straight
@@ -167,6 +180,18 @@ def generate():
             steps = max(1, math.ceil(math.dist(a, b) / 12))
             dense.extend([(a[0] + (b[0] - a[0]) * i / steps, a[1] + (b[1] - a[1]) * i / steps)
                          for i in range(1, steps + 1)])
+        if kind == KINDS["track"]:
+            total_length = sum(math.dist(a, b) for a, b in zip(dense, dense[1:]))
+            refined, travelled = [dense[0]], 0.0
+            for a, b in zip(dense, dense[1:]):
+                segment_length = math.dist(a, b)
+                for mark in (2.0, total_length - 2.0):
+                    if travelled + 1e-6 < mark < travelled + segment_length - 1e-6:
+                        t = (mark - travelled) / segment_length
+                        refined.append(tuple(a[i] + (b[i] - a[i]) * t for i in range(2)))
+                refined.append(b)
+                travelled += segment_length
+            dense = refined
         edges = []
         distance = 0.0
         for i, point in enumerate(dense):
@@ -177,12 +202,34 @@ def generate():
                 distance += math.dist(dense[i - 1], point)
             edges.append(([(point[0] + normal[0] * side * width / 2,
                             point[1] + normal[1] * side * width / 2) for side in (-1, 1)], distance))
+        def lane_vertex(edge, side, endpoint_side):
+            left, right = edge[0]
+            half = ((right[0] - left[0]) / 2, (right[1] - left[1]) / 2)
+            if kind == KINDS["track"]:
+                flare = max(0, 1 - min(edge[1], distance - edge[1]) / 2)
+                side = side * (1 - flare) + endpoint_side * flare
+                side += .035 * math.sin(edge[1] * 1.7) * (1 - flare)
+            point = tuple((left[i] + right[i]) / 2 + half[i] * side for i in range(2))
+            return point, (side * width / 2, edge[1])
+
+        starts = {key: len(cell["indices"]) for key, cell in cells.items()}
         for a, b in zip(edges, edges[1:]):
-            quad([a[0][0], b[0][0], b[0][1], a[0][1]],
-                 [(-width / 2, a[1]), (-width / 2, b[1]), (width / 2, b[1]), (width / 2, a[1])],
-                 kind, width, tint, lift)
+            # Dirt access is two compacted ribbons. Leave the crown/shoulders as
+            # actual underlying turf, rather than a mismatched green rectangle.
+            lanes = [(-.70, -.38), (.38, .70)] if kind == KINDS["track"] else [(-1, 1)]
+            for low, high in lanes:
+                # The short compacted mouth covers both ruts at junctions; it
+                # narrows into separate ribbons over the first/last two metres.
+                lo_end, hi_end = (-1, 0) if low < 0 and high < 0 else (0, 1)
+                if kind != KINDS["track"]:
+                    lo_end, hi_end = low, high
+                vertices = [lane_vertex(a, low, lo_end), lane_vertex(b, low, lo_end),
+                            lane_vertex(b, high, hi_end), lane_vertex(a, high, hi_end)]
+                quad([v[0] for v in vertices], [v[1] for v in vertices], kind, width, tint, lift)
         roads.append({"id": name, "kind": kind, "width_m": width,
                       "points_ne_m": points, "length_m": round(distance, 2),
+                      "mesh_ranges": {key: [starts.get(key, 0), len(cell["indices"])]
+                                      for key, cell in cells.items() if len(cell["indices"]) > starts.get(key, 0)},
                       "centerline_ne_m": [[round(n, 4), round(e, 4)] for n, e in dense]})
         return dense
 
@@ -192,8 +239,16 @@ def generate():
     route("west-village-road", [RURAL[0], (-950, -1200), (-600, -1550),
                                (-300, -1850), (-180, -2060)], 6.5, 3, color("#61625c"), 0.085)
     route("club-link", [(-606.25, -350), (-680, -350)], 4, 4, color("#948772"), 0.07)
-    route("old-farm-link", [(609, 360), (609, 400), (575, 450), (560, 700),
-                           (560, 850), (600, 930)], 4, 4, color("#948772"), 0.08)
+    farm_path = route("old-farm-link", [(609, 360), (609, 400), (575, 450), (560, 700),
+                                      (560, 850), (600, 930)], 4, 4, color("#948772"), 0.08)
+    # Join the actual smoothed road. Stop in the six-metre headlands, outside the
+    # fenced farmyard; a lower lift lets the parent road cover the short junction.
+    for name, target, field_index in [("wheat-field-entry", (634, 400), -3),
+                                     ("maize-field-entry", (546, 525), -2)]:
+        join = nearest_on_path(target, farm_path)
+        route(name, [join, target], 4, KINDS["track"], color("#948772"), 0.07)
+        roads[-1]["parcel_index"] = len(parcels) + field_index
+        roads[-1]["parent_road"] = "old-farm-link"
     route("east-farm-link", [(738, 670), (738, 690), (720, 690), (610, 680),
                             (560, 700)], 4, 4, color("#948772"), 0.08)
     rectangle([578, 300, 625, 374], 5, color("#8a8474"), lift=0.095)
@@ -211,6 +266,8 @@ def generate():
         "format": "openrc-countryside v1", "generator": "tools/scenery/bake_countryside.py",
         "source": "Art-directed agricultural layout; estimated metres; existing visual horizon",
         "physical_terrain": False,
+        "surface_style": {"headland_m": HEADLAND_M, "headland_fraction": HEADLAND_FRACTION,
+                          "harvested_length_m": HARVESTED_LENGTH_M},
         "source_sha256": {str(p.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
                           for p in (FIELD, SCENERY, HORIZON)},
         "parcels": parcels, "roads": roads, "triangles": triangles, "cells": cells,

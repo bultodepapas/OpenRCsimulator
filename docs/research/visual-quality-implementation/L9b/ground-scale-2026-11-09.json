@@ -1,0 +1,1264 @@
+{
+  "format": "openrc-l9b-r1-ground-scale v1",
+  "date": "2026-11-09",
+  "baseline_commit": "f7b58bd830d4a5eb78901d00514ce1fc18286477",
+  "observed_head_at_reduction": "f7b58bd830d4a5eb78901d00514ce1fc18286477",
+  "snapshot": {
+    "source": "tmp/ground-realism/snapshot/app",
+    "restored_unrelated_paths": [
+      "app/data/scenery/countryside.json",
+      "app/render/landscape_upgrade/countryside.gd",
+      "app/render/landscape_upgrade/countryside_surface.gdshader",
+      "app/tests/test_countryside.gd"
+    ],
+    "shared_asset_and_import_inputs": [
+      "app/assets",
+      "app/.godot",
+      "assets"
+    ],
+    "note": "Code snapshot frozen for comparison. Asset/import cache directories are junctions; no independent full-asset snapshot or hardware performance claim."
+  },
+  "source_sha256": {
+    "app/render/field.gd": "fa315a842dc5b65efdd5973c491e5a58c083c85ce0b348a9738f97f0563ee33a",
+    "app/render/lake/lake_world.gd": "be97fbc9f3303e58a9824dd04bb1e474a41c1d8ebb793000f1cb2486044d06ab",
+    "app/tests/test_field_surfaces.gd": "de02b3b237ba7c57a80c0f7b721874967385d95f2578d39054c67b2a2b2c233d",
+    "app/tests/test_near_grass.gd": "1999f779e8691630ed104c2348cb2818759e6a0643a68f4d8b69adfda4d397c6",
+    "app/tests/test_lake_world.gd": "b7ed424352fdb74af2afbfbf69b2024de4880b46616ecace46b7d8be7398af9b",
+    "app/tests/test_grass_ground_material.gd": "5352a620deeba305886648eb2a2fc919d1fa3b575d09c6458a93e08cd5849634",
+    "app/render/ground.gd": "371a64887f34da10a38b08eb6a1460593ce091bbc91e784c5832324209927d05",
+    "app/render/ground.gdshader": "e9a06275d90e249701d4bf6a2b735aaf63c2f3da2b6ad427c0701fc6c2a8c907",
+    "app/render/grass_surface.gdshaderinc": "6a2ba59c3f9c8ff8cf3af6f2f8ee4d7aab3d5024ad993c375102ed1aeaebbbc4",
+    "app/render/near_grass.gd": "a949e11f5168cbf4fa63294756bef2537d27a2ef62f65c4344668920c00cce1e",
+    "app/render/lake/bank.gdshader": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
+    "app/render/rc_ground_detail.gdshaderinc": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+    "app/render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "app/render/grass_ground_material.gd": "69f067ca5ff95fc9546efc0fa0409eb00165438e576a738d379080cb15030c9e",
+    "app/spec.gd": "a6d302ca72ad9ce01f0c124c7c7894a0c61606436ffe3b6492f886635f15e57b",
+    "app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "app/scenery/postcards.gd": "e677f591c1afbb6db13ed939438f14c79b33dcfe819e0f30a75ddb6690df4b18"
+  },
+  "capture_scripts": {
+    "static_motion": {
+      "path": "tmp/ground-realism/capture-landscape-static-motion.gd",
+      "sha256": "3277debb337e5fb702896c2f99e33ed257d7316f4a7cc68bdd9134a9cf59a445",
+      "note": "Unset macro/dry/detiling entries are null (shader defaults); tile_m is explicit."
+    },
+    "bank_effective_defaults": {
+      "path": "tmp/ground-realism/snapshot/app/tests/capture_landscape_upgrade.gd",
+      "sha256": "7d3ef4288e44f758c0749e382305b2028d87e920623c331504e629b32db73aed"
+    }
+  },
+  "shared_grass_asset_sha256": {
+    "app/assets/landscape/rc-ground/grass-albedo.jpg": "8a8bfcffd087134caad2a7def216f3dd2d307fbe02340ca47e3c5c71f49d50b4",
+    "app/assets/landscape/rc-ground/grass-albedo.jpg.import": "51007c0218e8f9419ea51a274058f9f676ef8a347102183b19365386121e3ea7",
+    "app/assets/landscape/rc-ground/grass-normal.jpg": "7ccaf9e28ea7a533e590c2e07a39e141017a5a5db8b7241730a3c287c540e881",
+    "app/assets/landscape/rc-ground/grass-normal.jpg.import": "2b3e619e13c35e062a4214d95dbd859dbeee3b7fd3dea2e994096f789e200b4e",
+    "app/assets/landscape/rc-ground/grass-roughness.jpg": "2a2a3f9220a351f14858075d4c6ba1ff7fde8bedd7009c94cb432bc2b9a362e4",
+    "app/assets/landscape/rc-ground/grass-roughness.jpg.import": "7d4d7228199b8a48cac7b90c1eeabcb83b16194ae24683048482c29863b79e53"
+  },
+  "engine": {
+    "build": "official",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "hex": 264192,
+    "major": 4,
+    "minor": 8,
+    "patch": 0,
+    "status": "beta2",
+    "string": "4.8-beta2 (official)",
+    "timestamp": 0
+  },
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "driver": "3.3.0 NVIDIA 617.42",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "renderer": "gl_compatibility",
+  "change": {
+    "scope": "Club field only",
+    "baseline_tile_m": 6.0,
+    "candidate_tile_m": 1.5,
+    "lake_bank_inherits_scale": true,
+    "new_assets_or_draws": 0
+  },
+  "matched_view_counters": {
+    "entry_path": {
+      "draws": 232.0,
+      "primitives": 408715.0
+    },
+    "ground_200m": {
+      "draws": 88.0,
+      "primitives": 255241.0
+    },
+    "ground_raised": {
+      "draws": 88.0,
+      "primitives": 217021.0
+    },
+    "lake_shore": {
+      "draws": 119.0,
+      "primitives": 233031.0
+    },
+    "pilot_north": {
+      "draws": 149.0,
+      "primitives": 334816.0
+    },
+    "runway_marker_close": {
+      "draws": 203.0,
+      "primitives": 418181.0
+    },
+    "runway_west": {
+      "draws": 334.0,
+      "primitives": 589373.0
+    }
+  },
+  "motion": {
+    "method": "Adjacent frames warped by the known camera pose onto the y=0 plane; bilinear RGB sampling. Ground ROI only; approximate geometry, animated scenery and view-dependent shading remain. Smaller residual is observational, not proof of perceptual shimmer closure.",
+    "views": {
+      "pilot_north": {
+        "roi_xyxy": [
+          350,
+          720,
+          1570,
+          1000
+        ],
+        "baseline": {
+          "pairs": 47,
+          "mean_rgb_rms_255": 1.6302007411388642,
+          "p95_rgb_rms_255": 2.125288343429565
+        },
+        "candidate": {
+          "pairs": 47,
+          "mean_rgb_rms_255": 1.6296099754090005,
+          "p95_rgb_rms_255": 2.1101579904556274
+        }
+      },
+      "runway_marker_close": {
+        "roi_xyxy": [
+          350,
+          720,
+          1570,
+          1000
+        ],
+        "baseline": {
+          "pairs": 47,
+          "mean_rgb_rms_255": 2.4519268451853002,
+          "p95_rgb_rms_255": 2.553887677192688
+        },
+        "candidate": {
+          "pairs": 47,
+          "mean_rgb_rms_255": 2.45438821265038,
+          "p95_rgb_rms_255": 2.513642454147339
+        }
+      }
+    }
+  },
+  "surface_fixture": {
+    "viewport": [
+      1280,
+      720
+    ],
+    "metrics": {
+      "aerial_overview": {
+        "surface_changed_pixels": {
+          "shift0": 6935,
+          "shift05": 6933
+        },
+        "surface_residual_rms_rgb": 25.1779,
+        "half_pixel_residual_rms_delta_rgb": 2.1277,
+        "half_pixel_shimmer_ratio": 0.0845,
+        "comparison": "surface residual only; observational and includes expected half-pixel camera motion"
+      },
+      "runway_oblique_100": {
+        "surface_changed_pixels": {
+          "shift0": 11413,
+          "shift05": 11505
+        },
+        "surface_residual_rms_rgb": 19.9009,
+        "half_pixel_residual_rms_delta_rgb": 7.9099,
+        "half_pixel_shimmer_ratio": 0.39747,
+        "comparison": "surface residual only; observational and includes expected half-pixel camera motion"
+      },
+      "runway_oblique_300": {
+        "surface_changed_pixels": {
+          "shift0": 2296,
+          "shift05": 2321
+        },
+        "surface_residual_rms_rgb": 13.3275,
+        "half_pixel_residual_rms_delta_rgb": 9.2358,
+        "half_pixel_shimmer_ratio": 0.69299,
+        "comparison": "surface residual only; observational and includes expected half-pixel camera motion"
+      },
+      "runway_threshold": {
+        "surface_changed_pixels": {
+          "shift0": 94618,
+          "shift05": 94586
+        },
+        "surface_residual_rms_rgb": 29.3902,
+        "half_pixel_residual_rms_delta_rgb": 2.4471,
+        "half_pixel_shimmer_ratio": 0.08326,
+        "comparison": "surface residual only; observational and includes expected half-pixel camera motion"
+      },
+      "runway_zoom_100": {
+        "surface_changed_pixels": {
+          "shift0": 9580,
+          "shift05": 9550
+        },
+        "surface_residual_rms_rgb": 21.2312,
+        "half_pixel_residual_rms_delta_rgb": 1.9289,
+        "half_pixel_shimmer_ratio": 0.09085,
+        "comparison": "surface residual only; observational and includes expected half-pixel camera motion"
+      },
+      "runway_zoom_300": {
+        "surface_changed_pixels": {
+          "shift0": 2539,
+          "shift05": 2544
+        },
+        "surface_residual_rms_rgb": 10.975,
+        "half_pixel_residual_rms_delta_rgb": 1.0736,
+        "half_pixel_shimmer_ratio": 0.09782,
+        "comparison": "surface residual only; observational and includes expected half-pixel camera motion"
+      },
+      "runway_edge_100m": {
+        "inside_median_luma": 131.925,
+        "adjacent_rough_median_luma": 101.397,
+        "weber_contrast": 0.30108,
+        "minimum_weber_contrast": 0.05,
+        "inside_edge_pixels": 8795,
+        "outside_edge_pixels": 12800
+      }
+    },
+    "capture_manifest_sha256": "d3f6ded2137d5a7f869db145f205d9b658872bf9c4e92c8d5953bf24a2ff1b79",
+    "scope": "Existing surface fixture/reducer only; not the full mutation/repeat suite or 1080p qualification."
+  },
+  "checks": [
+    {
+      "label": "ground-bank-baseline",
+      "started_utc": "2026-11-09T16:08:36.629757+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/bank-baseline",
+        "--cases=bank_detail",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--grass_tile_m=6"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "747977d37bebbdd2c93daabe669d34d1e60db7d099aadce7b22616a4077ef0cd",
+      "report": "tmp/ground-realism/checks/ground-bank-baseline-7n59veif/report.json",
+      "report_sha256": "3c0cc210e561189066397d485418f581c57fce65791231a993fed1aac75054c3"
+    },
+    {
+      "label": "ground-bank-candidate",
+      "started_utc": "2026-11-09T16:08:47.071496+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/bank-candidate",
+        "--cases=bank_detail",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "6cd10701bcb24cbb8ba0fb10d41e1c09fa8a75a3d12e8b686812ec7e8eda3538",
+      "report": "tmp/ground-realism/checks/ground-bank-candidate-8ong0lhx/report.json",
+      "report_sha256": "cfe3ed59be2aa8ad358bdf083a0a1a730a9daef300d8f98e4389b05d9d155cc5"
+    },
+    {
+      "label": "ground-baseline-1080",
+      "started_utc": "2026-11-09T15:55:50.339713+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/before",
+        "--cases=pilot_north,runway_west,runway_marker_close,lake_shore",
+        "--width=1920",
+        "--height=1080",
+        "--frames=30",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "04fdd8d6ec1d74d2062cbaebe179d77940f4f90409ad759e7401258a1ef17cfc",
+      "report": "tmp/ground-realism/checks/ground-baseline-1080-9pbz84xh/report.json",
+      "report_sha256": "30a6107d72b9b70b3d357979f7f5cf77f4ab73974a3df9423e53b76f9663c102"
+    },
+    {
+      "label": "ground-capture-final-parse",
+      "started_utc": "2026-11-09T16:08:18.207890+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "report": "tmp/ground-realism/checks/ground-capture-final-parse-di509yuk/report.json",
+      "report_sha256": "c76e2716dc6393fee85831a99a1736e84721962ed8361b2660eb5ce38747d75b"
+    },
+    {
+      "label": "ground-capture-parse-final",
+      "started_utc": "2026-11-09T16:01:27.635649+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "report": "tmp/ground-realism/checks/ground-capture-parse-final-c2sifpwg/report.json",
+      "report_sha256": "f8650e804fe84fe7f2f152eeceee30a1104d10a503d54c8b0af501ede1957e68"
+    },
+    {
+      "label": "ground-capture-parse",
+      "started_utc": "2026-11-09T15:57:04.983929+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "report": "tmp/ground-realism/checks/ground-capture-parse-kqipsaxs/report.json",
+      "report_sha256": "6930b961ee006683aacf72e6e75cb0c778cebd39dcf72d25f6a10764e254f1c5"
+    },
+    {
+      "label": "ground-diagnostic-normal",
+      "started_utc": "2026-11-09T15:57:21.503581+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/diagnostic-normal",
+        "--cases=pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": false,
+      "reason": "engine_error",
+      "counts": {
+        "error": 2,
+        "warning": 1
+      },
+      "log_sha256": "9134323e64fec373f6bfe1be6054e03e3cc6d34e2dc8ad8c2887f218d5b69080",
+      "report": "tmp/ground-realism/checks/ground-diagnostic-normal-zjh1rv_v/report.json",
+      "report_sha256": "e759749c47b612ef29883674086b936b8b9aa8f0eecbaf9a2e5f2622de2c84ab"
+    },
+    {
+      "label": "ground-edge-fixture",
+      "started_utc": "2026-11-09T16:08:57.891488+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tools/ground/capture_surfaces.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/surfaces-candidate"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3b8442a4fd825a2ee3b079a19197747ce52fb627de85017085b5b58e34cb297d",
+      "report": "tmp/ground-realism/checks/ground-edge-fixture-0ltya0ag/report.json",
+      "report_sha256": "dd335df5302f7f336077abe07efebe3f3d0a068ed9e9c10c6cceb327f6797b44"
+    },
+    {
+      "label": "ground-field-contract",
+      "started_utc": "2026-11-09T16:02:24.619219+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_field_surfaces.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "aa03164b9074b60c1ad745f6fae13a0e9f02ca2da40c7fd6ef02cd8ad897a8ba",
+      "report": "tmp/ground-realism/checks/ground-field-contract-ikgy9dqe/report.json",
+      "report_sha256": "3d4fb4acf251d9403a800d179d9c1d0dbd00d139c08c9f366f5ca3ba8d2b6956"
+    },
+    {
+      "label": "ground-final-baseline",
+      "started_utc": "2026-11-09T16:04:26.417802+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/final-baseline",
+        "--cases=pilot_north,runway_west,runway_marker_close,entry_path,lake_shore,ground_200m,ground_raised",
+        "--width=1920",
+        "--height=1080",
+        "--frames=10",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--grass_tile_m=6"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f6d390fed9d2c0a22fcea3bf69cafbde81060cb3e796c896e064fcffa1a5001f",
+      "report": "tmp/ground-realism/checks/ground-final-baseline-wyv_uv3e/report.json",
+      "report_sha256": "52205cc1b96d223cb669a1295851940513b0a049ed8e3df6d8b7709daedd2af1"
+    },
+    {
+      "label": "ground-final-candidate",
+      "started_utc": "2026-11-09T16:04:43.518772+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/final-candidate",
+        "--cases=pilot_north,runway_west,runway_marker_close,entry_path,lake_shore,ground_200m,ground_raised",
+        "--width=1920",
+        "--height=1080",
+        "--frames=10",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4bb0fb55c67a0f8e4000cab6ca719cdacf5d266493c353480171991516cc4478",
+      "report": "tmp/ground-realism/checks/ground-final-candidate-wg471kvx/report.json",
+      "report_sha256": "81ebfdd5d7ce7c1bdf0ef6645eaf58afa1ad4747390de740bc3bdc94262360c0"
+    },
+    {
+      "label": "ground-isolated-detiling-off",
+      "started_utc": "2026-11-09T15:59:31.819660+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-detiling-off",
+        "--cases=pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--ground_diagnostic=detiling-off"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0cae5b965b2add6677e7f3baab4e7bcdc9c6be49fc425c65b7a725dff850c7d7",
+      "report": "tmp/ground-realism/checks/ground-isolated-detiling-off-o3oscplc/report.json",
+      "report_sha256": "3510a2bc151da6a08fa8e22ad98390361d5f65a59c437f30491b3efa2b4c5a63"
+    },
+    {
+      "label": "ground-isolated-macro-off",
+      "started_utc": "2026-11-09T15:59:17.545723+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-macro-off",
+        "--cases=pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--ground_diagnostic=macro-off"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "97c06ec04a042c1179a9bcbebf9b0674b0e96831c042cc5693a1a5ad65164e75",
+      "report": "tmp/ground-realism/checks/ground-isolated-macro-off-wybfrxco/report.json",
+      "report_sha256": "36dab64bcd5b3a3f3534ecdf64d139031e82265dde4866588e66fd25f81cd913"
+    },
+    {
+      "label": "ground-isolated-normal",
+      "started_utc": "2026-11-09T15:59:00.879712+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-normal",
+        "--cases=pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "62e539f4dc94436f594698f91249f3246067964943e629f36fa08b99a1876ae8",
+      "report": "tmp/ground-realism/checks/ground-isolated-normal-axj64vfa/report.json",
+      "report_sha256": "7085e98d612d991055cdc7a6a38f397806232b84b9b67a0a813df802324d84fd"
+    },
+    {
+      "label": "ground-isolated-tile-1_5",
+      "started_utc": "2026-11-09T15:59:49.052101+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-tile-1_5",
+        "--cases=pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--grass_tile_m=1.5"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "88445c939639662110300a2a2725f30276c08734a3cb9054a93938e529ae0c3e",
+      "report": "tmp/ground-realism/checks/ground-isolated-tile-1_5-idjdc9ts/report.json",
+      "report_sha256": "7101f873891d899f97bfc119fa5c3da0b2b316df3b0f0afa0b8332464ec36a72"
+    },
+    {
+      "label": "ground-lake-complete-snapshot",
+      "started_utc": "2026-11-09T16:03:33.634684+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_lake_world.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cd4a84c56bc11ba4bbe6dfd0ace40e5ba0cdc9a1a70235fe679331bca2717e11",
+      "report": "tmp/ground-realism/checks/ground-lake-complete-snapshot-8jtlf3mt/report.json",
+      "report_sha256": "6e179c03f60b03d179a93fc4f1a587a46f7747189ceab584e5c9c4640b6bf35e"
+    },
+    {
+      "label": "ground-motion-baseline",
+      "started_utc": "2026-11-09T16:05:00.939028+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/motion-baseline",
+        "--cases=pilot_north,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=48",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--grass_tile_m=6",
+        "--motion=camera"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0670c1714e2a03d2baea470deacee1480910cf192b19d23ea60fbed6dbc25d33",
+      "report": "tmp/ground-realism/checks/ground-motion-baseline-fl0i44h5/report.json",
+      "report_sha256": "cffd15cf80ceee32c8e01553bd74da73dd67abe184c37342a2d2b626c3d14e6f"
+    },
+    {
+      "label": "ground-motion-candidate",
+      "started_utc": "2026-11-09T16:06:05.060039+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/motion-candidate",
+        "--cases=pilot_north,runway_marker_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=48",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--motion=camera"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1047e887e4bf0a520d77b9618863094329bb9f1b43203cb9e3fe32fc21b7a012",
+      "report": "tmp/ground-realism/checks/ground-motion-candidate-vjr9dwbs/report.json",
+      "report_sha256": "9b14b3e7e5928b54ddd413c271a6366c577455235bd5cc687b5693b0ab01ec75"
+    },
+    {
+      "label": "ground-rc-material",
+      "started_utc": "2026-11-09T16:04:07.514096+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_ground_material.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "17268274d79b5e978bc82401637bc010f1fb413306edf9be0496456cee48b473",
+      "report": "tmp/ground-realism/checks/ground-rc-material-x5b1tnti/report.json",
+      "report_sha256": "ade7065ef2cf8909214e1520a1a0864f9db174970bb0772776bdb89f37a8c3fa"
+    },
+    {
+      "label": "ground-test_grass_ground_material",
+      "started_utc": "2026-11-09T16:02:45.637395+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_grass_ground_material.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "e0d2672f2728f91fae047271efcc2efc8ff13562f6be8b2f84bc9455401bb58a",
+      "report": "tmp/ground-realism/checks/ground-test_grass_ground_material-zjntguur/report.json",
+      "report_sha256": "b03f8038e6066813ed914b07d3da3b79833c6574f3cff5337d6f8350b56f3f1a"
+    },
+    {
+      "label": "ground-test_lake_world",
+      "started_utc": "2026-11-09T16:02:53.155536+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_lake_world.gd"
+      ],
+      "ok": false,
+      "reason": "process_exit",
+      "counts": {
+        "error": 17,
+        "warning": 0
+      },
+      "log_sha256": "b25a61396c624c2273bbd8b69537e0be251463df124ccc3720b155b335b966ef",
+      "report": "tmp/ground-realism/checks/ground-test_lake_world-ht6k6l4a/report.json",
+      "report_sha256": "9438a1ec08a757e7fb0aabc59b0f6a2f09c89a2d96ebb1e35f42187f89a87eb1"
+    },
+    {
+      "label": "ground-test_near_grass",
+      "started_utc": "2026-11-09T16:02:38.224997+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/ground-realism/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_near_grass.gd"
+      ],
+      "ok": true,
+      "reason": "passed",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "3e68d750a067c11a50aa01e41770798fb11871565297e93b843139650cc41813",
+      "report": "tmp/ground-realism/checks/ground-test_near_grass-os_hlog8/report.json",
+      "report_sha256": "cccfa2d32ee053a2ec9226f1eb0c74862ab6d12999f8c17c9c32469d7f7110fb"
+    }
+  ],
+  "runs": {
+    "isolated-normal": {
+      "report": "tmp/ground-realism/isolated-normal/report.json",
+      "report_sha256": "a140cad332ce952c5d011d8a8c8ec7232d312319480be3c8775f7c3f01010de2",
+      "arguments": {
+        "cases": "pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-normal",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "ground_200m.png": "6612442457a330c0c78628984d069e5e7aaf5230b05a0d18c72082b811b1b6af",
+        "ground_raised.png": "c8b008d681121bd013f86fbe8fc21602816e47e1b5479e2787f4cc0f57de13a1",
+        "pilot_north.png": "4f5f91eac5a83ab97bb0e3c1879424668aad229ea4b3b4e7f08eba23d33ea5b1",
+        "runway_marker_close.png": "d12b8746bfaac35e946e4c28f27d99a8c000a71b5af0be0dee77b79d49753767"
+      }
+    },
+    "isolated-macro-off": {
+      "report": "tmp/ground-realism/isolated-macro-off/report.json",
+      "report_sha256": "75dba8752e9909a4e018cc11c3b95a7eac02174a39e695c002ec81218df71ed0",
+      "arguments": {
+        "cases": "pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "frames": "5",
+        "ground_diagnostic": "macro-off",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-macro-off",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "ground_200m.png": "5ec7a9a2e0f35ad87ee3cb27f0b0dafba7610a540bb181dba92bfea633239271",
+        "ground_raised.png": "cbd60a9123037860fe5b350207e62b596a26b46008a7c9ebe9f2dee0ffaaf6cb",
+        "pilot_north.png": "3a737a639789085d5dcfc96ed19017cec3f756bf6846b53662776f008b798b48",
+        "runway_marker_close.png": "7e5d53d664de923c7d49c16d3cd0b767be757359d54c0889309b4f648bcd6618"
+      }
+    },
+    "isolated-detiling-off": {
+      "report": "tmp/ground-realism/isolated-detiling-off/report.json",
+      "report_sha256": "efc1d1e938f3ea970ff7e67b8763e0edf9ba5707c885cd095c6bed2ba15771e6",
+      "arguments": {
+        "cases": "pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "frames": "5",
+        "ground_diagnostic": "detiling-off",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-detiling-off",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "ground_200m.png": "e853ae46f5f2c2e02ee8db09b8a78289acd7447b5265f4ed08da47cdae3c81eb",
+        "ground_raised.png": "bc9ed34b61abbedbec4bbb5d8884afd8db496a97e13d46765a852b0a5324dca6",
+        "pilot_north.png": "abeaaf002a3d680f054371da84a0c02a8de5d5169565b8ab932c420fc0569f94",
+        "runway_marker_close.png": "a99adb6f3f79b9e77001eee5e2fb083b24acf10a45aee638b40fd33c62bdeba4"
+      }
+    },
+    "isolated-tile-1_5": {
+      "report": "tmp/ground-realism/isolated-tile-1_5/report.json",
+      "report_sha256": "a8e1e623cac225c32e5aa5f0a894bc2cf3dbcd46e81b6042751f96bffd95c24d",
+      "arguments": {
+        "cases": "pilot_north,ground_200m,ground_raised,runway_marker_close",
+        "frames": "5",
+        "grass_tile_m": "1.5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/isolated-tile-1_5",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "ground_200m.png": "a73cdab846047f3db583b1d613e38cb370f128779961217ce541249df585b122",
+        "ground_raised.png": "2b784785a00ea56ac9cc6a27570eb01efe2acd31f922d30a4ed9fd9e7eb0505f",
+        "pilot_north.png": "2de5b43b50ec0c1b8cebbe8ac826a0f5337a11885c7dda04921631591889f2ee",
+        "runway_marker_close.png": "88b1f555678f6e0dcfee9e98e367154189230bc3b2f52cbac51ed76191309817"
+      }
+    },
+    "final-baseline": {
+      "report": "tmp/ground-realism/final-baseline/report.json",
+      "report_sha256": "955a8dc484ed707cc5c8634935d22d9ccf45727d172ca311b3fe6824f5e8ba95",
+      "arguments": {
+        "cases": "pilot_north,runway_west,runway_marker_close,entry_path,lake_shore,ground_200m,ground_raised",
+        "frames": "10",
+        "grass_tile_m": "6",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/final-baseline",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "entry_path.png": "377a4c42983356b24ac9f4be55d6f67ba244c17a3c1e63da9f8af7ebe1fa75bc",
+        "ground_200m.png": "6612442457a330c0c78628984d069e5e7aaf5230b05a0d18c72082b811b1b6af",
+        "ground_raised.png": "c8b008d681121bd013f86fbe8fc21602816e47e1b5479e2787f4cc0f57de13a1",
+        "lake_shore.png": "2f850a121bb9ece6475caa4968e8273f0f564d0656557cc4613c7dee426635e1",
+        "pilot_north.png": "4f5f91eac5a83ab97bb0e3c1879424668aad229ea4b3b4e7f08eba23d33ea5b1",
+        "runway_marker_close.png": "d12b8746bfaac35e946e4c28f27d99a8c000a71b5af0be0dee77b79d49753767",
+        "runway_west.png": "bfebe227d4e1deac4fef77aa7b3838877e9d013ef950af746229f87906953b44"
+      }
+    },
+    "final-candidate": {
+      "report": "tmp/ground-realism/final-candidate/report.json",
+      "report_sha256": "8f10763172859120a45ee606607725877d9f3403154c066702facb3514ba675c",
+      "arguments": {
+        "cases": "pilot_north,runway_west,runway_marker_close,entry_path,lake_shore,ground_200m,ground_raised",
+        "frames": "10",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/final-candidate",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "entry_path.png": "4f4a99d9a07135aacb4b074e282179ff918d54d92761adb084da8f1fb626d008",
+        "ground_200m.png": "a73cdab846047f3db583b1d613e38cb370f128779961217ce541249df585b122",
+        "ground_raised.png": "2b784785a00ea56ac9cc6a27570eb01efe2acd31f922d30a4ed9fd9e7eb0505f",
+        "lake_shore.png": "053a93d9ae16656e1663afb2bbeb1d8159f4ac1cb9b222d87fe5186e37df6f22",
+        "pilot_north.png": "2de5b43b50ec0c1b8cebbe8ac826a0f5337a11885c7dda04921631591889f2ee",
+        "runway_marker_close.png": "88b1f555678f6e0dcfee9e98e367154189230bc3b2f52cbac51ed76191309817",
+        "runway_west.png": "55dfe115c7f0a6de98f6502738dd6194ae469c407e6c15d751ec3dc33ad41c48"
+      }
+    },
+    "motion-baseline": {
+      "report": "tmp/ground-realism/motion-baseline/report.json",
+      "report_sha256": "13ce98d9fe9f53c4df942c67e4a9d04f206cdab62d5d4a353117050a2979d776",
+      "arguments": {
+        "cases": "pilot_north,runway_marker_close",
+        "frames": "48",
+        "grass_tile_m": "6",
+        "height": "1080",
+        "motion": "camera",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/motion-baseline",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "pilot_north.png": "5a6dd2bcdbd6a638180d466fbf8dfaf2a131e2af2dd43461b0f02645d099c2b2",
+        "pilot_north_000.png": "bfa6c075a794171a09f58c78b1dbbce2c1d17905e3ecedac36e783a6b690d25c",
+        "pilot_north_001.png": "6ef490c1bcd3219dbe184da3fe0912bf2ec37363fcf4051f3f9ecf9366873cae",
+        "pilot_north_002.png": "3909aa34295191b0e6a8d41003e43e2622d59812b3c38682a9e92fc9d3aa3ceb",
+        "pilot_north_003.png": "eedcc0bba53106754aef6e1eaa0ea07eb20c7bb4ee8b5d6b370ed5b0be6b1cf7",
+        "pilot_north_004.png": "4c320e4678ebad435583388a15b824a0ef80a7c5b0c91b945fdfdb97a4c05723",
+        "pilot_north_005.png": "4385f278d2a98fc4c3cc058d8557cfe086129a0dedd13752dd2c0fc5029c0885",
+        "pilot_north_006.png": "ea6400777906333580ad188b94000691c89d9d805d9ec51b4a38ce0048a452a8",
+        "pilot_north_007.png": "73ccb1296f8ea93d102a32aebe5c28ac5790d868a369f20d45bd63c2330d088e",
+        "pilot_north_008.png": "571617ea1d20e2a671f90ad4714be043697a81b611da0bdf70a632d083181055",
+        "pilot_north_009.png": "a239ddc336bb04335015821706ba3e5153173b52f5e03d69bbc3c0736243ab2d",
+        "pilot_north_010.png": "5b573c303e0c9eeca7b41c2c66c7916422aac6c3bc75e09e3f50672b7561a528",
+        "pilot_north_011.png": "bf151bdb0c3279640e9aa3d37897c2657e2821caf28ab365393d3f7b17f70a7d",
+        "pilot_north_012.png": "5fc88e8821efbd0e346890726e667f653afb84190743886a68acd98a8aa1a8a3",
+        "pilot_north_013.png": "7dafc0bbbc8dd248543b6adebaeb82b255d164f773a0025d0f5d08e1a5001a08",
+        "pilot_north_014.png": "7f9a99158727ced6ed077a4e7fa5cd5b7c25eb11152d0591f1a48dfb6c3a075a",
+        "pilot_north_015.png": "befa436031e959e2ecb8893c422774878aaaf780ded8a0db17c029e19033a14f",
+        "pilot_north_016.png": "34b9b803d66a3de33b421a1ac9205d633ed4aba7b804ef32d09705a7fecf15be",
+        "pilot_north_017.png": "c9b2cfab450ef53666bf905528add69a9c9039e25923b43f15964e3583f0b1b2",
+        "pilot_north_018.png": "4cd9c26258beb3f4b9e965ce81fc654b4c5e9f25e338453101866ddb08de6fa8",
+        "pilot_north_019.png": "0c22000899ff95e5b86b88f868ae88dbdc68bcdb8c9bb995e2f1dba5c72fd1a8",
+        "pilot_north_020.png": "307bb17862630c62ef51c44194237856edb131ad9f90424bfdfb19fa3ca07154",
+        "pilot_north_021.png": "757f1da3d3177e1b8169321089c2d3fb80538baf0309f3d054f37de1fb2fcd63",
+        "pilot_north_022.png": "173ba7e9e163c6c8bfcbf4495f0a54721da480188f133e29cc7ba51658b8f59d",
+        "pilot_north_023.png": "d3b26862644aa5c2a0b8014388ed973a52a8d899dc04faff2f01fbde14e826fb",
+        "pilot_north_024.png": "2abcfa46f2070bfb8a25856c28690c8bb4fe407d5adfbc563d0927892999f045",
+        "pilot_north_025.png": "3ab458249b63312745e59bdaa9e3225b70050bd7361818d77a46d57efe605cc7",
+        "pilot_north_026.png": "379b3611c06765a5b704cfa101ffb4ddf373996506e1684c58e4ca1100762d95",
+        "pilot_north_027.png": "b5385656fd8623dd02ac4eb5bad3dff040573bf4ea27cc75755a0cdbc5e826a1",
+        "pilot_north_028.png": "f59fa8d78787ab9fe13dc5365f3c5fa27614c731a315a69ec38fa9feb7ded79b",
+        "pilot_north_029.png": "49389d777a0d8e023482cc99e19acc4b089772847502560f22aae6f71e63d8a5",
+        "pilot_north_030.png": "c6f034092f638a38fa71497e19c7c8a2322c8c03b3b7fb2d6f0ba144174eff3d",
+        "pilot_north_031.png": "fe243c74c2bbdea4daab93bb188089d330ad051e54219808e14f3ee10ef749ac",
+        "pilot_north_032.png": "a73329f01f42ef8eea8b813f4750ec3722d6a9915c6fe48b4988fbe58ee15d64",
+        "pilot_north_033.png": "a29d444d918f09d5ad9371c5fbac4fee7cabb29c4bd047416ce14076bb324e78",
+        "pilot_north_034.png": "34d495c26d2c504d6dfddf338f7ad34739cc6c6b29e7c12e34b5e5be1a88a104",
+        "pilot_north_035.png": "adfd4dd8d6168199be402de1ceee7dc2d55165a8aa6750bff33289113c417b9c",
+        "pilot_north_036.png": "f63b88432b305e0f527309132ba2074d0b60122c150ab4f2f0b65a5b8ca1c761",
+        "pilot_north_037.png": "eab63e3f8eb7c11969e77373fcccb77f03b296a087e1cc799179b275ffdf87f8",
+        "pilot_north_038.png": "8ba5eb56a058bfaea2806c1bf1ed8802b13693bf61a211aee393395ce0ce3afa",
+        "pilot_north_039.png": "fe4a5444c7e6d2aa37834fd225cf168f630ae8800ace480d838981d32913a118",
+        "pilot_north_040.png": "4baa9642e3372b0845db49bba241ffe33fa8655fd628c2fbc66e390cc2c7fc50",
+        "pilot_north_041.png": "4bccd04ac702b3bfd3ab45549dab1b4237034ceaece05991f64c6c3f09768b09",
+        "pilot_north_042.png": "bb24ac53d8686e478693e38094e9dff1caa54b303b6cf8351b6ffd5aa65c11f8",
+        "pilot_north_043.png": "460d3c7db5845dbd49d5186692ccaef7b6d3fd5ef8ac8dd84cfb814b3b1de6c5",
+        "pilot_north_044.png": "7faf9d420a1a81aa432927614efa0123088edb62388b3918236a3a5a7842edc2",
+        "pilot_north_045.png": "a8440001467f7ccb95cb6f17efa35f1c485cb047fb639073b3722df563c3e1fe",
+        "pilot_north_046.png": "9f8560d0b8cc3a1fcda561ee8ac53ac22d8fed9848d8cedfd6280ee93c5d3a56",
+        "pilot_north_047.png": "5a6dd2bcdbd6a638180d466fbf8dfaf2a131e2af2dd43461b0f02645d099c2b2",
+        "runway_marker_close.png": "9e199c0a9aa6f7776f007664c40f46dcd373a9cf6af8fb06fc027dc28ae5b417",
+        "runway_marker_close_000.png": "3600e9ff362ab7636007ce7d3c9a944cba8d7caaedaea87bcfd5c6067aec4bdb",
+        "runway_marker_close_001.png": "ae083cc7681d61710c570ecba250feafed7d08778f55fe9283806ea5abe89541",
+        "runway_marker_close_002.png": "b47134251a133621453556a713bf08d9cae4c88ba4a155cce74fb08fe297f6fa",
+        "runway_marker_close_003.png": "5f54d9b58bcbe0b0f0da55f96ffde779daf429b61e7b40ce191831ab0a30ff70",
+        "runway_marker_close_004.png": "e5663e3d4ad58c48f0ce3cf98675f063e9e1c1bac85125ae17bf03a327eb863f",
+        "runway_marker_close_005.png": "ffb4e7d64c8c681efa734bc18b4e368a3159336b75547baa7e2fcadb4ac623f7",
+        "runway_marker_close_006.png": "3d83a6f5dbe4546b467f121185e0244a9cd4b4ece62edd1c576a530b82dc6bc5",
+        "runway_marker_close_007.png": "732998f0211f47a70db1fee34d50ffc66e1ee6a81a504b1a8a111c02d915caaf",
+        "runway_marker_close_008.png": "84a7660cd146304b80f4b859b685896acff9bf3e9396f204ebc1508c3e3b1e04",
+        "runway_marker_close_009.png": "45d88cf3d1d24f04063228e96c9a8c6ccbb21b92e20247449f0ec34a2d5784c5",
+        "runway_marker_close_010.png": "df7f1a25ff6294874c3fb68d7402c4b3936e8353b8055e40fd700e3487a7f92f",
+        "runway_marker_close_011.png": "1cb6c8467d3a1af0265f27add1dc38b7c94ca15f2a527e9575ac34e5ed352df5",
+        "runway_marker_close_012.png": "642d5da3d3ec3edd8ad0d01f34d2f9fd2aa73b52eead679494c402618241fa9c",
+        "runway_marker_close_013.png": "8d1549a135433d2cc1f1c06ba168ab894d5e5233ccf8e7c4c1614b065ed2f734",
+        "runway_marker_close_014.png": "610896ad6005d88b8214e376c8abd3e6847a3b1035d943bb3b2cd60ad9a0074c",
+        "runway_marker_close_015.png": "3a2d82873dc900a9c68f9a2ecb3b831531cef6dcc3ea718844af2c0f612017ce",
+        "runway_marker_close_016.png": "36adb532b89bddd9839ee86b70527ecd6dedec989f5a27d4a4e2433d503424bc",
+        "runway_marker_close_017.png": "7739c2d890ee57cdbdfe398831d8b9fab6d87835d8613fac5103dea679e0e148",
+        "runway_marker_close_018.png": "ed92fdbff297d68fe42830f69602029af8ad8ae138e49957b971003f09f67e45",
+        "runway_marker_close_019.png": "73014f85f1759cec8c4e07a8ed573e17bab39f1d3e4376d3b7d7842814a391de",
+        "runway_marker_close_020.png": "013c50a08d50eb1b21c2eb746f9907e23014beb2a9ae7f1e78e077c194d329c3",
+        "runway_marker_close_021.png": "510b7fd88ea4b40cbdc8df6c429e4c6345165c84d2193ac98a359e7e7d70bba2",
+        "runway_marker_close_022.png": "5684460f1ed8b8716a3aa752d3b2ce457e3b069f4e4bc6e15a6e3c98926bfc34",
+        "runway_marker_close_023.png": "0fdf0b85effb11aafa766d719c69db59941de18f991968b0bff2d3e6129c1817",
+        "runway_marker_close_024.png": "79e148af0fe9e76459d370603c508f72d68b79f6d8e3bd3d55486ee05de81732",
+        "runway_marker_close_025.png": "66ce688d44285d9f05f8ad5c354725f0d94c95ac24a4efaea687f20ee5443b71",
+        "runway_marker_close_026.png": "e096fd5a6db1562437569f8f8ae41043f607e4656fca36a3be91356bf68eef78",
+        "runway_marker_close_027.png": "992db875b38453bd6e3def62092ca40bf069e49c360e3409b996e18999341d4b",
+        "runway_marker_close_028.png": "63c4bf370016d81e7e0e7287f5a06976d561c1ca732f28b1deee9b9c95f79f55",
+        "runway_marker_close_029.png": "7a2a0a855b9e97865c583d8891d47558a4a5294c29add28fb50cd2796d00a746",
+        "runway_marker_close_030.png": "dd7c610facb6ea8f20f9b1493e8fc408d5b11b37255d9d098594e487cc077d59",
+        "runway_marker_close_031.png": "13f1b3c3c87d7e9c8807effdc5d46f9e2e431541f75382a12138d60cc9b90690",
+        "runway_marker_close_032.png": "48128cc73ac3d595cd0ef3f3bb45ff9eb25be08aea8d82019f395ce6840f1cba",
+        "runway_marker_close_033.png": "3b38c84b5bce0bfee271eb840356d92388a1715f300f2fa725085d36a61cf48d",
+        "runway_marker_close_034.png": "af435e04c9efd1649b640bd3bcd00eee0aa895f489bce3b27094df3cb46ee01a",
+        "runway_marker_close_035.png": "b0afe7510ba02d1ae6c7b37069ec76bd8755dc9a9dcb5c5ed14976b808436619",
+        "runway_marker_close_036.png": "5f42e0e7bf1e9a31a914de70127563674c7da79e2f0b5506426dd18f5cca74a7",
+        "runway_marker_close_037.png": "0a8d9f333f122e1d7c89183b306d70b6218e99b06014537f83036390ad3f376b",
+        "runway_marker_close_038.png": "8c07415979faa7816dc9a55365249683ec3fe96a89445e61201e34d2385fe455",
+        "runway_marker_close_039.png": "834968fb94ac953251655d5ad9d3b0fd7bc39fcebfddd788b06698e8bdb074bd",
+        "runway_marker_close_040.png": "a9899b6cfb9bc2e86cba0dc5b655df1ef443e5c95cb9f32c03ed0be73331234f",
+        "runway_marker_close_041.png": "7bc1ff917b36f40c02704e1cc9207a7583d5dce463bd8cb322f7a4177c41fae9",
+        "runway_marker_close_042.png": "2f915551a45291f22737f689bbfb133e91eebcc844eb1869044aba7ec5f7f4ed",
+        "runway_marker_close_043.png": "0fde63df2c0ff7138c1581da4d8c3c33587e02e5e06ec6ddfd436b23567079a1",
+        "runway_marker_close_044.png": "9bcb3ff319ade912e30642e5b3d21b5c700978449c99f8b9973c6c1d7fca3bde",
+        "runway_marker_close_045.png": "929f628e477bce7533e354aa4a54f35604b8f3c74cd09d568dabfd80cf3c7509",
+        "runway_marker_close_046.png": "d31e0797cf3020b122929f421b0b77ea4208bf281d5b9a2d19eda70ba80ecbc6",
+        "runway_marker_close_047.png": "9e199c0a9aa6f7776f007664c40f46dcd373a9cf6af8fb06fc027dc28ae5b417"
+      }
+    },
+    "motion-candidate": {
+      "report": "tmp/ground-realism/motion-candidate/report.json",
+      "report_sha256": "bc4dacd4c6f2c7150b21451890fd5ba8270607351fea39e8329b53d8937d8457",
+      "arguments": {
+        "cases": "pilot_north,runway_marker_close",
+        "frames": "48",
+        "height": "1080",
+        "motion": "camera",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/motion-candidate",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "pilot_north.png": "c2ad23f2b0663b6a09391acdb6b0b577f0f6bc2b46f1180379d2d12fbd77721f",
+        "pilot_north_000.png": "f0849eedde1c04ede117b07d4e4cdac8078bb191f273a1b9690ce016ba00fdb8",
+        "pilot_north_001.png": "a7d6c7a485a0ce728e711b670d84667d83c588283c7568d2bad32afc5c5c5753",
+        "pilot_north_002.png": "47e645855460b3de05eed1ea7c1b32d9d4ff427a94035792c6bd72d13dc36a53",
+        "pilot_north_003.png": "f928aa1a55e444f006e98427d10727355051e33abf77669cedc737ba34640804",
+        "pilot_north_004.png": "07a9431a23daf7781f0aa02e463bf2c629d1f7b1f3949a8fb09274a384c2616a",
+        "pilot_north_005.png": "ec275d1f92f71162a7a4bbb6be58c1e557174644f2a558d9c4ff44cbb710e14b",
+        "pilot_north_006.png": "af15d7d43b025d2e939f2640bd7a9c4fb6229e01480216c05d867e3d37005563",
+        "pilot_north_007.png": "e93f21bb019a44dc478041da25793cd3212e50bbad43447dabbdecb23e40d6b0",
+        "pilot_north_008.png": "d7466204f5a7e60df4b021e1d9d6dc481f7ce8f2583b8383b39d4a2b02740ab3",
+        "pilot_north_009.png": "c1c51939cefcc22008f0de42441ccbd31661671885e26e1a2f00f25161776de2",
+        "pilot_north_010.png": "282135f740ff8d4b91d8a2f269ab5731f4dab4c01e16d9b7bfb09505e1fa3c61",
+        "pilot_north_011.png": "b31dc867ba921df26ace0209fe1ddb0cf4868c33fd5533466d2035d4c00e57d5",
+        "pilot_north_012.png": "cc9cf2b59a75189138d266bf79d9b245c83bd4f39f69720defda9c24f1d2c67d",
+        "pilot_north_013.png": "36b97bf8ff826a28167189a2845eb0c662df055f16816dc5f113aa34e0415184",
+        "pilot_north_014.png": "909a6f9fbccc3d6eed0bff39388d29a056a59452f11de2589b04489598e7a3a7",
+        "pilot_north_015.png": "31e2c68a25dfa6c533e54365eac8e5a5901c0c60aa0338d280dd776fbdb8c9eb",
+        "pilot_north_016.png": "5402221dbf0c5d6f04ffefb448e1b34676f39a09284ef7cca4fc9f3f8928249b",
+        "pilot_north_017.png": "74ed252fa6b291cc891e047ad45cdf60d032fc351ee6bedecc59ed867a71f993",
+        "pilot_north_018.png": "1998c992663a160bb7e945af2cd467cebc32d62a6db75cb56c81a32d28d23786",
+        "pilot_north_019.png": "3397538c89a32ffc2da976df61846a8e9c36e2f676da321ea56729e2f6e3ff0c",
+        "pilot_north_020.png": "c7760533c2ecd77404ac31251dfeced6bee157d33baee8f985376add9bdce1e9",
+        "pilot_north_021.png": "0d40a371c9033c262442cf8400066fbd558004abdecc718c8afe79faeed408da",
+        "pilot_north_022.png": "715caac1a1bb3c0fb3cebac24221d40438a624eab2bd16b87f657e1284473829",
+        "pilot_north_023.png": "0ee3ed441ffd9187e3f2d51529ce6332afc51c8b7b9eb38c73c007c23b30ed69",
+        "pilot_north_024.png": "4ae6d93937976f520661c1f899bd3d0e0042750b99810f8c00cfba2b766aa90a",
+        "pilot_north_025.png": "5f04bdc28a91f1ba56bf867f7f3f94aff0f718a54c3426c594374a6e4e51d131",
+        "pilot_north_026.png": "f2a97e616bc31f56fff05c315bbb4d5157be8075bbb86b60b17917e863f4e5a3",
+        "pilot_north_027.png": "14b4f1b66a2a9e3c20b156f3cd3076bbd8d582bf4b42f2ad75b5d3546d34b202",
+        "pilot_north_028.png": "1e4f7f2b1bf356ad2b80c65a88cd7231700fb97ae60e32ea0b168bea00658576",
+        "pilot_north_029.png": "28114ef1bdcbfe9a4b218231671d829863654e17281a8b681f2a2ae4b301fced",
+        "pilot_north_030.png": "01ecf240b717b2239b1aaab5d4784b46212e9b6849e19218b36cc40e8d53dd74",
+        "pilot_north_031.png": "3a3eaabb8ebd1c2334449cff992429a990bf1c7cc978cf7badadb546c8269e95",
+        "pilot_north_032.png": "5a50ad7350649601f527f26ca03d6b3038822d4421ceff2d3fcc64b3043b2bbb",
+        "pilot_north_033.png": "e454fde256d9cd351c4b0fd01fc11a7af79b189569c42e364adc82496c76326c",
+        "pilot_north_034.png": "5ad404455ef0bdd82ad1c615989ee2365a838cdd67e69499d88c594d94be0883",
+        "pilot_north_035.png": "6e73af8031202fb03b99511a0ccda51784536aa686ec32ca4c30f99c916243bb",
+        "pilot_north_036.png": "cf0c27788dfd898e59f0bf836938ae22fe0dcbde8db036b154c9cad60afce5db",
+        "pilot_north_037.png": "dcf275e3616580306d0417cc33c872f8dd198927df2c050402bb68277a1b21bd",
+        "pilot_north_038.png": "bcc736c158a572b95df2be104adb5545dcb470430aecac3ed37b3201c190dfae",
+        "pilot_north_039.png": "f383a2efce027ec84f4aafaf5a131567b6fdb63dbc3ef7aaea744c7420f65752",
+        "pilot_north_040.png": "49712066606ce502b34bd55853a0ac6f0d4500601734fc0d8c00e534c24b3cba",
+        "pilot_north_041.png": "c99561602f932f8190da6314d62d6411e1a0363a9baeff6ceb40ce257045c21d",
+        "pilot_north_042.png": "85bf43852f00adec359add14eb1d0f453ef549e1859380172d1afaf59eaa4256",
+        "pilot_north_043.png": "f0375f2285660d48327fe76e21cb76c85adc94dd5e48a35fbc90dc3b7c84b3d2",
+        "pilot_north_044.png": "83bb90650b900c73214ce71912667b3c18435988a40fc626c117c665b65bd09c",
+        "pilot_north_045.png": "b9805d31382d0b62cdd3d1844ca86188f36ae9b9f2edf13790f2068399f539e1",
+        "pilot_north_046.png": "148ed9adcbc774956566acd1d8d502a2fe92422d410eeab75f69a8a21bc91c9b",
+        "pilot_north_047.png": "c2ad23f2b0663b6a09391acdb6b0b577f0f6bc2b46f1180379d2d12fbd77721f",
+        "runway_marker_close.png": "a5a501ba79be1c33e37b56aed5b4a9e37d11078e168e4cbfc1dfd177ee662531",
+        "runway_marker_close_000.png": "3c5807fb663ed0fc88dd04e42e824cd2d66e69a23ba98373cee966f3e6757ca9",
+        "runway_marker_close_001.png": "122e7e95cc791a54574358888f855056e7f5750b4b9aba47d95c71b18ccb714a",
+        "runway_marker_close_002.png": "02630660ccebbd01ceac5488f375a3b355de7730cbda5ac27ec158390ca88d5c",
+        "runway_marker_close_003.png": "69be424286be9ade7f3c1b5bddaaa248e0b59cab62afbeadd846f9e8f29a8549",
+        "runway_marker_close_004.png": "d6cfb3fcf6bdf319b38fa1f061dee55a475c636512ac07334acbb7fcd0aa0cf2",
+        "runway_marker_close_005.png": "99be6c9ad9300f140c7ac90210b1dc9cf70bf9499561c42ac43a94fcd51d4b3b",
+        "runway_marker_close_006.png": "17e6afee2d472169c763248fbf0d39595c01070b5e9298a54cceefb0513845e0",
+        "runway_marker_close_007.png": "daa2cc6df4c325fb8104f7c01e9306a911bd66f1434fb34dabf7a25e4f46fd98",
+        "runway_marker_close_008.png": "54ed5b2e00152f1e54d312e9a44b3981c82733c4d6ac2926575655e01e07152a",
+        "runway_marker_close_009.png": "9914b382293b3cae09ecfd736526623d71cc791ef38a867e71872296c6b75505",
+        "runway_marker_close_010.png": "73d397d35c9ac7eafffcfe5794a236f8ff44a90ac142043adef44d12512a0706",
+        "runway_marker_close_011.png": "02180dd5df3900e40428c413ac4dae05a662bfd0af344e90b1dc186b646db333",
+        "runway_marker_close_012.png": "7f8f82bbd2542e2e823c9b3288e306174b83a8bef5bf51ceb379c692e3f0e5ed",
+        "runway_marker_close_013.png": "084d6da7307e98e74f7b6d67333a84bb3f563e15db779c292159173d0399cb11",
+        "runway_marker_close_014.png": "a54a9e7bb2df5e969cca60804530b71da12b1927f0e07574a8ea43aef4a84633",
+        "runway_marker_close_015.png": "6313412e9375cfea6cf70088731c09508801ce9411804eccdabb8e859bc72529",
+        "runway_marker_close_016.png": "9f28f75462ee8d31915959600be6518aca43f874d660cb2592ea38f6d4574db9",
+        "runway_marker_close_017.png": "c5e6662954acc0338b6df3cf8c26d1f4890839e98e53126c10857e4179e2baf0",
+        "runway_marker_close_018.png": "85986984828f628588f0415e764232d911708e597631839bb9dd840c21ad3eff",
+        "runway_marker_close_019.png": "6094153bc5f53c27e6d6a37fad0b72ae9da05b84ac89fbe6d0575bacf712045a",
+        "runway_marker_close_020.png": "96a20c78f3cd061a487b31bf6ca4ea9c246d42f643359cfb0bcf4a6143a286e5",
+        "runway_marker_close_021.png": "c850425dd2db5602a456d944de6f7cf3a70ef4de3b9f27787c010909d0236a5d",
+        "runway_marker_close_022.png": "9cc4b2212e7c349410f2e428976c6f8eafee82f969c76ad39f8a536c92335b8a",
+        "runway_marker_close_023.png": "9861a5e269fdbcef381b229f5f54aa18de971be67ae30bd8b691997aea2f662c",
+        "runway_marker_close_024.png": "923fcbac23f11583f682a09e5e2ce9d2f20a4f5fd17524398d057fc26f9cee4c",
+        "runway_marker_close_025.png": "65aeb29b588311a19d13ea5553412496a5ddd56a92d49c81f5f24a58e9a41d65",
+        "runway_marker_close_026.png": "db769206ab471edbfd4ae0afc9a2fae254cfd3ce425f83443caec8b3a680a047",
+        "runway_marker_close_027.png": "548688a86474631f5ec6017c6e6308662daaca91412c790249aa2350d0fb3088",
+        "runway_marker_close_028.png": "3aca0aa4e915efb48613cc1ddd8bbcf9ed172110712bdedd4fe4b8b918fd86ea",
+        "runway_marker_close_029.png": "f2ca2da89de8ccdc1941427c34be3f76e7bcd54e1b69523467a80d84d69e0034",
+        "runway_marker_close_030.png": "6cc11596576b61d3ffe6d86fc3af935727588c2bee13401999765b203a212dbe",
+        "runway_marker_close_031.png": "b8fe0258ee6645651d443a726aaf34564683a977360be4dae7bf217fce20e62e",
+        "runway_marker_close_032.png": "b65bb879dab7180c916239278beda07567c63e78dcbc49d5b3c832525ec3f4a1",
+        "runway_marker_close_033.png": "e184d94c4307f2d12b7f71df67d7a7dc67a1b1ac47f2e61b08a88b2dc1c4e65b",
+        "runway_marker_close_034.png": "c65b396962ba4710cec1902f8f614f6eded411fbcbe9629c053c12eb26fa5e33",
+        "runway_marker_close_035.png": "6d73513b6fd08e1dbfa8bf84d1b9b9ae1b44a2f8649b5e8bc727c8eb11d408c6",
+        "runway_marker_close_036.png": "fde8503ff089d483930833b8e586d116a40f870822787272c48a7a2d80959a1f",
+        "runway_marker_close_037.png": "005fee4b932f4781e70258665c9a043ab29a4fa77d80c907dabc019e46affbec",
+        "runway_marker_close_038.png": "9befc7ddf27b9bf06d05e8315dc8e63513a83e01bd31b40bf101ed42f01f0c6a",
+        "runway_marker_close_039.png": "9982687cf201a452194e9addf3c4ef1cf686ec6c788e712cb37931a9c0e240c8",
+        "runway_marker_close_040.png": "3e274fc7743194740cad847b349bc95be3730deff988723c155e6125590b3900",
+        "runway_marker_close_041.png": "3cfff244367a4b95a3c0b9410db348041ef4a74f85c8e3d5d1574d9b0d2618f2",
+        "runway_marker_close_042.png": "5f32c8746eafbead280dc296900def3ae8bd66b74c06729250f24d2d1a5f73ba",
+        "runway_marker_close_043.png": "fb4c557550992892bfdd6b0ebf47e47e4b77b3e20443e704cf0a900dbd558641",
+        "runway_marker_close_044.png": "1d140331a0b835b5aa0591ad970a5beb691fec74973cb028130ee5eaab3acf23",
+        "runway_marker_close_045.png": "20611b53068ed37f8d4a7f202a29a39290c264d414e86164127c207d329128ba",
+        "runway_marker_close_046.png": "49f40cdf7f0cd77c3e58c0993c828a2d3e2e78072d08f6629780d7063e4bf1b8",
+        "runway_marker_close_047.png": "a5a501ba79be1c33e37b56aed5b4a9e37d11078e168e4cbfc1dfd177ee662531"
+      }
+    },
+    "bank-baseline": {
+      "report": "tmp/ground-realism/bank-baseline/report.json",
+      "report_sha256": "fa98dc4dc1a7cf06e280598d83328a5c5b0f98f265d634a798b0c36955cc2dd6",
+      "arguments": {
+        "cases": "bank_detail",
+        "frames": "5",
+        "grass_tile_m": "6",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/bank-baseline",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "bank_detail.png": "9a58b1db80fc552c7e506c37f9036edb2594b3bc88d7abc07ea8db79ccf4b26c"
+      }
+    },
+    "bank-candidate": {
+      "report": "tmp/ground-realism/bank-candidate/report.json",
+      "report_sha256": "b6f919bd3af043715426ab7314d0cf468dca129a2301e1b0f9e806af41c2e38e",
+      "arguments": {
+        "cases": "bank_detail",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-realism/bank-candidate",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "png_sha256": {
+        "bank_detail.png": "0ba9bf41ade8f3ffa710f5d634b6ef3074a118005a0a16708bb39ffe6d49e5c1"
+      }
+    }
+  },
+  "observational_reducer": {
+    "path": "tmp/ground-realism/analyse_motion.py",
+    "sha256": "397900c97d95184efa513c15deff70c61d1d1fb589d78d803ef4072324672659"
+  },
+  "limits": [
+    "Reported C shape was not localized; not claimed fixed.",
+    "Owner art/flight-readability and perceptual shimmer acceptance remain open.",
+    "RC material propagation checked; native RC verge was not reviewed in this slice.",
+    "Required CI, other renderers/hardware and shared whole-flight frame/sim-rate budgets remain open.",
+    "No physical validation or whole-game performance qualification."
+  ]
+}
