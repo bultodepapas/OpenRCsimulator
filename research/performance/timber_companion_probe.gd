@@ -12,9 +12,10 @@ var _baseline_pilot: Script
 var _baseline_details: Script
 var _output := ""
 var _baseline_paths: Array[String] = []
+var _parity_only := false
 var checks := 0
 var failed := 0
-var report := {timber_us = [], command_us = {}, score_cases = 0}
+var report := {timber_us = [], command_us = {}, score_cases = 0, split_cases = 0}
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -35,6 +36,8 @@ func _run() -> void:
 			timber_path = argument.trim_prefix("--timber-baseline=")
 		elif argument.begins_with("--out="):
 			_output = argument.trim_prefix("--out=")
+		elif argument == "--parity-only":
+			_parity_only = true
 	if _output.is_empty() or FileAccess.file_exists(_output) or DirAccess.dir_exists_absolute(_output) \
 			or not FileAccess.file_exists(pilot_path) or not FileAccess.file_exists(timber_path):
 		printerr("Supply --pilot-baseline=<prior pilot.gd> --timber-baseline=<prior details.gd> --out=<new JSON file>.")
@@ -50,9 +53,11 @@ func _run() -> void:
 	_baseline_paths = [pilot_path, timber_path]
 	var original_hashes := _source_hashes()
 	_score_parity()
+	_split_parity()
 	_timber()
 	_commands()
 	report.engine = Engine.get_version_info().string
+	report.timing_mode = "correctness_only" if _parity_only else "component_screen"
 	report.paint_identity = Paint.identity(Paint.TIMBER)
 	report.source_sha256 = _source_hashes()
 	check(report.source_sha256 == original_hashes, "measured sources remain unchanged")
@@ -117,7 +122,7 @@ func _snapshot(root: Node3D) -> PackedByteArray:
 
 func _timber() -> void:
 	var expected := PackedByteArray()
-	for group in 5:
+	for group in (1 if _parity_only else 5):
 		var order: Array = [false, true, true, false] if group % 2 == 0 else [true, false, false, true]
 		for candidate: bool in order:
 			var script: Script = Details if candidate else _baseline_details
@@ -171,7 +176,7 @@ func _commands() -> void:
 			check(var_to_bytes(a) == var_to_bytes(b) and var_to_bytes(before.snapshot_state()) == var_to_bytes(after.snapshot_state()), "command/latch parity")
 		var latch: Dictionary = before.snapshot_state()
 		var timings: Array = []
-		for group in 5:
+		for group in (0 if _parity_only else 5):
 			var order: Array = [false, true, true, false] if group % 2 == 0 else [true, false, false, true]
 			for candidate: bool in order:
 				var pilot = after if candidate else before
@@ -189,3 +194,74 @@ func _source_hashes() -> Dictionary:
 		"res://ai/companions/circuit_controller.gd", "res://aircraft/timber_model.gd", get_script().resource_path] + _baseline_paths:
 		result[path] = FileAccess.get_sha256(path)
 	return result
+
+
+func _split_parity() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20261109
+	for case in 300:
+		report.split_cases += 1
+		var count := 3 * (1 + case % 6)
+		var source := []
+		source.resize(Mesh.ARRAY_MAX)
+		var vertices := PackedVector3Array()
+		var normals := PackedVector3Array()
+		var colors := PackedColorArray()
+		var uv := PackedVector2Array()
+		var tangents := PackedFloat32Array()
+		for index in count:
+			vertices.append(Vector3(rng.randf_range(-2, 2), rng.randf_range(-2, 2), rng.randf_range(-2, 2)))
+			normals.append(Vector3(rng.randf_range(-2, 2), rng.randf_range(-2, 2), rng.randf_range(-2, 2)))
+			colors.append(Color(rng.randf(), rng.randf(), rng.randf(), rng.randf()))
+			uv.append(Vector2(rng.randf(), rng.randf()))
+			for component in 4: tangents.append(rng.randf_range(-2, 2))
+		source[Mesh.ARRAY_VERTEX] = vertices
+		source[Mesh.ARRAY_NORMAL] = vertices if case % 13 == 0 else normals
+		source[Mesh.ARRAY_COLOR] = colors
+		source[Mesh.ARRAY_TEX_UV] = uv
+		source[Mesh.ARRAY_TEX_UV2] = uv # Deliberately shared source channels.
+		source[Mesh.ARRAY_TANGENT] = tangents
+		if case % 5 == 0: source[Mesh.ARRAY_NORMAL] = null
+		elif case % 5 == 1: source[Mesh.ARRAY_NORMAL] = PackedVector3Array()
+		elif case % 5 == 2: source[Mesh.ARRAY_NORMAL] = 42
+		var indices := PackedInt32Array()
+		for index in 3 * (1 + case % 5):
+			indices.append(rng.randi_range(0, count - 1))
+		match case % 7:
+			0: source[Mesh.ARRAY_INDEX] = null
+			1: source[Mesh.ARRAY_INDEX] = PackedInt32Array()
+			2: source[Mesh.ARRAY_INDEX] = indices
+			3:
+				for i in indices.size(): indices[i] -= count
+				source[Mesh.ARRAY_INDEX] = indices
+			4:
+				indices.append(999999)
+				source[Mesh.ARRAY_INDEX] = indices
+			5:
+				source[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 0, 0])
+				source[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3(7, 8, 9)])
+			6: source[Mesh.ARRAY_INDEX] = indices
+		if case % 11 == 0: source.append("ignored extra slot")
+		source[Mesh.ARRAY_CUSTOM0] = PackedByteArray([1, 2, 3])
+		var surface: int = (1 << 40) if case % 3 == 0 else -3
+		var remaps := {}
+		for triangle in 8:
+			if triangle % 3 != 0: remaps[triangle] = ["red", "black", "white"][triangle % 3]
+		if case % 17 == 0: remaps[0] = &"named"
+		var lookup := {}
+		if case % 4 == 0:
+			lookup["%d:0:1" % surface] = Vector3.ZERO
+			lookup["%d:1:2" % surface] = Vector3(0.25, -0.5, 0.75)
+		var input_before := var_to_bytes([source, remaps, lookup])
+		var a: Dictionary = _baseline_details._split_material_surface(source, remaps, lookup, surface, "white")
+		var b: Dictionary = Details._split_material_surface(source, remaps, lookup, surface, "white")
+		check(var_to_bytes(a) == var_to_bytes(b), "exact output " + str(case))
+		var keys := b.keys()
+		if not keys.is_empty():
+			var first: Array = b[keys[0]]
+			var second_uv := var_to_bytes(first[Mesh.ARRAY_TEX_UV2])
+			first[Mesh.ARRAY_TEX_UV][0] = Vector2(77, 88)
+			check(first[Mesh.ARRAY_TEX_UV][0] == Vector2(77, 88), "output mutation witness")
+			check(var_to_bytes(first[Mesh.ARRAY_TEX_UV2]) == second_uv, "output UV channels independent")
+			check(var_to_bytes(a) != var_to_bytes(b), "baseline and candidate results independently owned")
+		check(var_to_bytes([source, remaps, lookup]) == input_before, "inputs unmodified")

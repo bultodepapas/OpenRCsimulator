@@ -414,6 +414,13 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 			# Open-loop counterfactual: identical body/internal initial state, candidate mass/configuration.
 			# Existing restore validates laws, wheel identities, typed layouts and admissibility.
 			checkpoint.configuration = candidate_checkpoint.configuration
+			# D8b-R2d-R1 changes only force coefficients, not the wake unit or state
+			# layout. This explicit candidate-only experiment can retain the complete
+			# v3 initial state under v4. Exact replay and live restore still reject v3.
+			if checkpoint.get("aero_loads_law") == "section-plane-source-weighted-wake-velocity-v3" \
+					and candidate_checkpoint.get("aero_loads_law") == "section-plane-source-weighted-wake-velocity-v4" \
+					and checkpoint.get("wake_state_unit") == candidate_checkpoint.get("wake_state_unit"):
+				checkpoint.aero_loads_law = candidate_checkpoint.aero_loads_law
 			for key in ["mass", "inertia", "gravity"]:
 				checkpoint.simulation[key] = candidate_checkpoint.simulation[key]
 			# wheel_profiles.json gains rows when other aircraft are added. Adopt the candidate's file identity,

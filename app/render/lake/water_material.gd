@@ -70,12 +70,12 @@ static func update_lighting(material: ShaderMaterial, lighting: Dictionary = {})
 		# adapters do for a scene snapshot.
 		effective_lighting = Spec.ATMOSPHERE.duplicate(true)
 		effective_lighting.merge(lighting, true)
-	material.set_shader_parameter("haze_lin", Atmosphere.haze_linear(effective_lighting))
+	material.set_shader_parameter("haze_lin", Atmosphere.visual_haze_linear(effective_lighting))
 	material.set_shader_parameter("sun_dir", Atmosphere.sun_direction(effective_lighting))
 	material.set_shader_parameter("sun_lin", Atmosphere.sun_linear(effective_lighting))
 	material.set_shader_parameter("sun_scatter", Atmosphere.sun_scatter(effective_lighting))
 	Atmosphere.track_shadow_material(material, effective_lighting)
-	material.set_shader_parameter("beta", Atmosphere.beta())
+	material.set_shader_parameter("beta", Atmosphere.visual_beta())
 
 	var flow_state: Dictionary = Atmosphere.state
 	var lobe_lin: Vector3 = flow_state.lobe_lin if lighting.is_empty() and not flow_state.is_empty() \

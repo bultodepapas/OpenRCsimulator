@@ -18,6 +18,7 @@ const View := preload("res://vehicles/ground/airfield_track_view.gd")
 const RcTrackField := preload("res://render/rc_track_field.gd")
 const Option := preload("res://scenery/rc_track_option.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const SettingsScreen := preload("res://ui/settings_screen.gd")
 
 var _count := 0
 var _failures := 0
@@ -278,13 +279,18 @@ func _test_flight_render(field: Dictionary, track: Dictionary, rects: PackedFloa
 
 
 func _test_option(field: Dictionary) -> void:
-	_check("Automatic needs a dedicated GPU", bool(Option.automatic({level = "high", reason = "dedicated GPU"}, "high").enabled)
-		and not bool(Option.automatic({level = "medium", reason = "integrated GPU"}, "high").enabled)
-		and not bool(Option.automatic({level = "high", reason = "unrecognized GPU"}, "high").enabled)
-		and not bool(Option.automatic({level = "high", reason = "no GPU reported"}, "extreme").enabled))
-	_check("Automatic respects a lower Scene detail", not bool(Option.automatic({level = "high", reason = "dedicated GPU"}, "medium").enabled)
-		and bool(Option.automatic({level = "high", reason = "dedicated GPU"}, "extreme").enabled))
+	for level: String in ["low", "medium", "high", "extreme"]:
+		for reason: String in ["dedicated GPU", "integrated GPU", "no GPU reported"]:
+			_check("Automatic is off for %s / %s" % [level, reason],
+				not bool(Option.automatic({level = level, reason = reason}, level).enabled))
+	for locale: String in ["es", "de", "fr", "it", "ja", "pt_BR", "ru", "zh_Hans"]:
+		var catalog: Translation = load("res://i18n/%s.po" % locale)
+		var translated := str(catalog.get_message(SettingsScreen.RC_TRACK_TOOLTIP))
+		_check("%s translates the hardware-independent circuit description" % locale,
+			not translated.is_empty() and translated != SettingsScreen.RC_TRACK_TOOLTIP)
 	var previous := Option.preference()
+	Option.set_preference("auto")
+	_check("Automatic resolves the same circuit-free scenario", Option.resolve(field, true).is_empty())
 	Option.set_preference("on")
 	_check("menu flights follow On", not Option.resolve(field, true).is_empty())
 	_check("traces and tests never read the preference", Option.resolve(field, false).is_empty())

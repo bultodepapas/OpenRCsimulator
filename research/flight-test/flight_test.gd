@@ -40,6 +40,7 @@ const CSV_EVERY := 12 # 240 Hz ticks per committed CSV row (20 Hz)
 var session: Node
 var model: Dictionary
 var aircraft_id := ""
+var data_override := ""
 var out_dir := ""
 var only: PackedStringArray = []
 var full_traces := false
@@ -65,6 +66,8 @@ func _initialize() -> void:
 			aircraft_id = arg.substr(11)
 		elif arg.begins_with("--out="):
 			out_dir = arg.substr(6)
+		elif arg.begins_with("--data="):
+			data_override = arg.substr(7)
 		elif arg.begins_with("--only="):
 			only = arg.substr(7).split(",")
 		elif arg == "--full-traces":
@@ -80,8 +83,23 @@ func _initialize() -> void:
 		push_error("unknown catalog aircraft: " + aircraft_id)
 		quit(2)
 		return
+	var selected_data: String = entry.data
+	var expected_data_id := ""
+	if not data_override.is_empty():
+		var stock: Variant = JSON.parse_string(FileAccess.get_file_as_string(entry.data))
+		if not stock is Dictionary or not stock.get("id") is String or str(stock.id).is_empty():
+			push_error("cannot identify the selected catalog aircraft's data id")
+			quit(2)
+			return
+		expected_data_id = stock.id
+		selected_data = data_override
 	session = FlightSession.new()
-	session.setup(entry.data)
+	session.setup(selected_data)
+	if not expected_data_id.is_empty() and session.aircraft.get("ok", false) and session.aircraft.model.id != expected_data_id:
+		push_error("--data must retain the selected catalog aircraft's data id")
+		session.free()
+		quit(2)
+		return
 	root.add_child(session)
 	session.input_enabled = false
 	session.crash_auto_restart = false
@@ -1327,6 +1345,7 @@ func _wheel_height(s: PackedFloat64Array) -> float:
 
 func _write_report() -> void:
 	var data := { format = VERSION, aircraft = aircraft_id, name = Catalog.entry(aircraft_id).get("name", aircraft_id),
+		aircraft_input_sha256 = session.aircraft.get("input_identity", {}).get("sha256", ""),
 		data_sha256 = model.get("data_sha256", ""), mass_kg = model.mass_kg, wing_area_m2 = model.reference.S, span_m = model.reference.b,
 		start_speed_mps = v_start, stall_speed_estimate_mps = vs_estimate, stall_start_alpha_deg = rad_to_deg(a1),
 		engine = Engine.get_version_info().string, results = {} }

@@ -15,6 +15,13 @@ const FRACTURE_CAP_OFFSET_M := 0.00012
 const PAINT_REPAIR_CACHE_CAPACITY := 8
 const FUSELAGE_SAMPLE_CACHE_CAPACITY := 256
 const PAINT_REPAIR_CACHE_REVISION := "paint-template-v2-lods"
+const SPLIT_COPY_CHANNELS := [
+	[Mesh.ARRAY_NORMAL, TYPE_PACKED_VECTOR3_ARRAY, 1],
+	[Mesh.ARRAY_COLOR, TYPE_PACKED_COLOR_ARRAY, 1],
+	[Mesh.ARRAY_TEX_UV, TYPE_PACKED_VECTOR2_ARRAY, 1],
+	[Mesh.ARRAY_TEX_UV2, TYPE_PACKED_VECTOR2_ARRAY, 1],
+	[Mesh.ARRAY_TANGENT, TYPE_PACKED_FLOAT32_ARRAY, 4],
+]
 
 ## These bounded caches contain derived render data only. Source meshes and material resources stay untouched.
 static var _paint_repair_cache: Dictionary = {}
@@ -602,6 +609,11 @@ static func _point_inside_triangle(point: Vector3, a: Vector3, b: Vector3, c: Ve
 static func _split_material_surface(source: Array, triangle_remaps: Dictionary, smooth_lookup: Dictionary, surface_index: int, default_material: String) -> Dictionary:
 	var vertices: PackedVector3Array = source[Mesh.ARRAY_VERTEX]
 	var indices := _triangle_indices(source, vertices.size())
+	var has_smoothing := not smooth_lookup.is_empty()
+	if not has_smoothing and _can_bulk_split(source, indices, vertices.size()):
+		var bulk := _split_unsmoothed_surface(source, indices, triangle_remaps, default_material)
+		if bulk.ok:
+			return bulk.groups
 	var groups: Dictionary = {}
 	for triangle in range(indices.size() / 3):
 		var output_name := String(triangle_remaps.get(triangle, default_material))
@@ -609,11 +621,81 @@ static func _split_material_surface(source: Array, triangle_remaps: Dictionary, 
 			groups[output_name] = _empty_surface_arrays()
 		var output: Array = groups[output_name]
 		for corner in 3:
-			var normal_key := "%d:%d:%d" % [surface_index, triangle, corner]
-			var has_smooth_normal := smooth_lookup.has(normal_key)
-			_append_surface_vertex(output, source, indices[triangle * 3 + corner], smooth_lookup.get(normal_key, Vector3.ZERO), has_smooth_normal)
+			if has_smoothing:
+				var normal_key := "%d:%d:%d" % [surface_index, triangle, corner]
+				var has_smooth_normal := smooth_lookup.has(normal_key)
+				_append_surface_vertex(output, source, indices[triangle * 3 + corner], smooth_lookup.get(normal_key, Vector3.ZERO), has_smooth_normal)
+			else:
+				_append_surface_vertex(output, source, indices[triangle * 3 + corner], Vector3.ZERO, false)
 		groups[output_name] = output
 	return groups
+
+
+## The scalar path retains partial/malformed private-input behavior and diagnostics.
+static func _can_bulk_split(source: Array, indices: PackedInt32Array, vertex_count: int) -> bool:
+	if source.size() != Mesh.ARRAY_MAX or indices.size() % 3 != 0:
+		return false
+	for spec: Array in SPLIT_COPY_CHANNELS:
+		var values: Variant = source[spec[0]]
+		if values == null:
+			continue
+		if typeof(values) != int(spec[1]):
+			return false
+		if not values.is_empty() and values.size() < vertex_count * int(spec[2]):
+			return false
+	for index: int in indices:
+		if index < 0 or index >= vertex_count:
+			return false
+	return true
+
+
+## Group indices in encounter order; copy each channel once per material group.
+static func _split_unsmoothed_surface(source: Array, indices: PackedInt32Array,
+		triangle_remaps: Dictionary, default_material: String) -> Dictionary:
+	var by_material := {}
+	for triangle in range(indices.size() / 3):
+		var material_value: Variant = triangle_remaps.get(triangle, default_material)
+		if typeof(material_value) != TYPE_STRING:
+			return {ok = false}
+		var name := String(material_value)
+		if not by_material.has(name):
+			by_material[name] = PackedInt32Array()
+		var corners: PackedInt32Array = by_material[name]
+		var before := corners.size()
+		for corner in 3:
+			corners.append(indices[triangle * 3 + corner])
+		if corners.size() != before + 3:
+			return {ok = false}
+		by_material[name] = corners
+	var groups := {}
+	var vertices: PackedVector3Array = source[Mesh.ARRAY_VERTEX]
+	for material: String in by_material:
+		var corners: PackedInt32Array = by_material[material]
+		var output := _empty_surface_arrays()
+		var copied_vertices: PackedVector3Array = output[Mesh.ARRAY_VERTEX]
+		if copied_vertices.resize(corners.size()) != OK:
+			return {ok = false}
+		for index in corners.size():
+			copied_vertices[index] = vertices[corners[index]]
+		output[Mesh.ARRAY_VERTEX] = copied_vertices
+		for spec: Array in SPLIT_COPY_CHANNELS:
+			var values: Variant = source[spec[0]]
+			if values == null or values.is_empty():
+				continue
+			var width := int(spec[2])
+			var copied: Variant = values.slice(0, 0)
+			if copied.resize(corners.size() * width) != OK:
+				return {ok = false}
+			if width == 1:
+				for index in corners.size():
+					copied[index] = values[corners[index]]
+			else:
+				for index in corners.size():
+					for component in width:
+						copied[index * width + component] = values[corners[index] * width + component]
+			output[spec[0]] = copied
+		groups[material] = output
+	return {ok = true, groups = groups}
 
 
 static func _empty_surface_arrays() -> Array:

@@ -79,9 +79,36 @@ static func prepare(samples: PackedFloat64Array, side: float, slope: float, offs
 	return {angles = x, values = values, tangents = tangents}
 
 
-## [CL, profile CD, attached fraction]. Base is the actual induced, coupled strip lift.
-## At fraction 1 this preserves the attached map; at 0 it is the explicit separated polar.
-static func evaluate(alpha: float, base: float, polar: Dictionary) -> PackedFloat64Array:
+## [CL, profile CD, attached fraction]. Progression changes stall, not flow direction.
+## Preserve the fitted stall coordinate through 45 degrees; then converge C1 to the
+## unscaled table by 90 degrees and its periodic physical-angle continuation beyond.
+## This continuation policy is numerical, not an additional measured aircraft fit.
+static func evaluate(alpha: float, base: float, polar: Dictionary, progression := 1.0) -> PackedFloat64Array:
+	if progression == 1.0:
+		return _evaluate(alpha, base, polar)
+	var angle := absf(alpha)
+	if angle >= PI/2.0:
+		return _evaluate(alpha, base, polar)
+	var progressed := _evaluate(alpha*progression, base, polar)
+	if angle <= PI/4.0:
+		return progressed
+	var physical := _evaluate(alpha, base, polar)
+	if progression > 1.0:
+		# A more advanced stall coordinate cannot regain attached lift while fading
+		# to the physical table. Keep its lower retention in the coupled-base term.
+		var reference: float = polar.offset + polar.slope*alpha
+		physical[0] += (progressed[2]-physical[2])*(base-reference)
+		physical[2] = progressed[2]
+	var t := (angle-PI/4.0)/(PI/4.0)
+	var blend := t*t*(3.0-2.0*t)
+	for component in 3:
+		progressed[component] = (1.0-blend)*progressed[component] + blend*physical[component]
+	return progressed
+
+
+## Base is the actual induced, coupled strip lift. At fraction 1 this preserves the
+## attached map; at 0 it is the explicit separated polar. No strip-angle scaling here.
+static func _evaluate(alpha: float, base: float, polar: Dictionary) -> PackedFloat64Array:
 	var side := 1.0 if alpha >= 0.0 else -1.0
 	var angle := absf(alpha)
 	var branch: Dictionary = polar.positive if side > 0.0 else polar.negative

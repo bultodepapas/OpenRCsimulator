@@ -8,6 +8,7 @@ const Ground := preload("res://render/ground.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const SkyAppearance := preload("res://render/weather/sky_appearance.gd")
 const CloudTransport := preload("res://render/weather/cloud_transport.gd")
+const Water := preload("res://render/lake/water_material.gd")
 const LAYERED_CLOUD_UNIFORMS: Array[StringName] = [
 	&"appearance_layer_count", &"appearance_layer_parameters", &"appearance_layer_motion",
 	&"appearance_layer_seeds", &"appearance_cloud_density",
@@ -127,8 +128,44 @@ func _initialize() -> void:
 	_check("transmittance at the rim ≤ 4 %", Atmosphere.transmittance(Spec.ATMOSPHERE.rim_end_m) <= 0.04, "%.4f" % Atmosphere.transmittance(Spec.ATMOSPHERE.rim_end_m))
 
 	_test_layered_cloud_cache()
+	_test_profile_haze()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_profile_haze() -> void:
+	var ground: ShaderMaterial = Ground.grass_material()
+	var grass := ShaderMaterial.new()
+	grass.shader = Atmosphere.NEAR_GRASS_SHADER
+	var water: ShaderMaterial = Water.create({"waves": []})
+	var holder := Node3D.new()
+	holder.set_meta("lighting_materials", [ground, grass, water])
+	var base_beta := Atmosphere.beta()
+	var base_transmittance := Atmosphere.transmittance(2000.0)
+	var environment := Atmosphere.environment()
+	for preset: String in ["clear", "overcast", "electrical_storm", "classic"]:
+		var selection := SkyConfig.for_preset(preset)
+		_check("haze profile accepted: " + preset, Atmosphere.configure_appearance(selection))
+		var checked := SkyConfig.validate(selection)
+		var resolved := SkyAppearance.resolve(checked.profile, checked.config)
+		var coefficient := base_beta * (float(resolved.haze_scale) if preset != "classic" else 1.0)
+		Atmosphere.update_environment(environment)
+		var haze_color := environment.fog_light_color.srgb_to_linear()
+		var haze := Vector3(haze_color.r, haze_color.g, haze_color.b) * environment.fog_light_energy
+		_check(preset + " environment uses profile extinction", absf(environment.fog_density / coefficient - 1.0) < 1e-6)
+		# Fresh lake creation and the refresh of an existing lake must agree.
+		var fresh_water := Water.create({"waves": []})
+		for iteration in 2:
+			Atmosphere.update_cloud_appearance(holder)
+			for item: Array in [[ground, "ground"], [grass, "grass"], [water, "existing water"], [fresh_water, "fresh water"]]:
+				var material: ShaderMaterial = item[0]
+				_check("%s %s extinction, refresh %d" % [preset, item[1], iteration],
+					absf(float(material.get_shader_parameter("beta")) / coefficient - 1.0) < 1e-6)
+				_check("%s %s haze color, refresh %d" % [preset, item[1], iteration],
+					(material.get_shader_parameter("haze_lin") as Vector3).is_equal_approx(haze))
+		_check(preset + " preserves base visibility law", Atmosphere.beta() == base_beta
+			and Atmosphere.transmittance(2000.0) == base_transmittance)
+	holder.free()
 
 
 func _test_layered_cloud_cache() -> void:

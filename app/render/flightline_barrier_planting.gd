@@ -154,7 +154,7 @@ static func _soil(cue: Dictionary, posts: PackedVector3Array) -> MeshInstance3D:
 					kit.cols[v] = Color(1, 1, 1, 0)
 	var material := ShaderMaterial.new()
 	material.shader = Soil
-	material.set_shader_parameter("soil_color", preload("res://assets/landscape/rc-ground/dirt-albedo.jpg"))
+	material.set_shader_parameter("soil_color", load("res://assets/landscape/rc-ground/dirt-albedo.jpg"))
 	var node := MeshInstance3D.new()
 	node.name = "SoilCollars"
 	node.mesh = kit.to_mesh(material)

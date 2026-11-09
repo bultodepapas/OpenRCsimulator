@@ -48,6 +48,19 @@ const TREE_CROWN_CENTER_FRACTIONS := [0.612061, 0.568, 0.704346]
 const BUILDINGS: Array[String] = ["pavilion", "shed", "barn", "silo", "farmhouse", "church", "village_house"]
 const VEHICLES: Array[String] = ["car_sedan", "car_hatch", "car_suv", "car_sport", "tractor"]
 
+# Instance prefabs routed by _add_scenery. Visual quality must retain each of these
+# placements; non-collidable ornaments may still be filtered.
+const COLLIDABLE_INSTANCES: Array[String] = [
+	"pit_shelter", "avanti_cradle", "shade_tree", "sapling", "flagpole", "club_sign",
+	"picnic_table", "bench", "round_bale", "bale_stack", "person_pilot", "person_standing",
+	"person_sitting", "person_working", "bush", "cow", "sheep", "turbine", "pylon",
+]
+
+
+static func instance_has_collision(prefab: String) -> bool:
+	return prefab in COLLIDABLE_INSTANCES or prefab in BUILDINGS or prefab in VEHICLES
+
+
 # Only the main thread touches this one-entry cache. Retained serialized key and world bytes together stay within
 # MAX_BUILD_CACHE_BYTES; temporary keys, build results, decoded copies, and caller-owned worlds are not retained.
 static var _build_cache_key := PackedByteArray()

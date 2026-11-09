@@ -7,7 +7,7 @@
       "version": 4,
       "source_proof_version": 3,
       "visual_family": "stik-electric-6s",
-      "model_manifest_sha256": "f3e1b069e669f738d697d02e201eb6e6bde8ce4a869d2cd9016dd80b1139b18f",
+      "model_manifest_sha256": "27523d28e1fa9ec026d8e2c2655a7d237ee4d70d8a18babd6d51332d0651209d",
       "paint_slots": [
         {
           "id": "body",
@@ -469,7 +469,7 @@
           "sha256": "657e9161f3bc5599437f91dbe53a70c82ec9848ab01954d2bf84f221111f9f91"
         }
       ],
-      "slots_sha256": "c13b8d4c445bf625167bb0451f2f59caaa94513b3e1e472b47a79cd4a80e2783"
+      "slots_sha256": "1ad71b56341724dc5e0fb82213d6ab32367865466f66a73130dacfec4191b74d"
     }
   ]
 }

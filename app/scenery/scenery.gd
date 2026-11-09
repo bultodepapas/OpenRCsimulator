@@ -27,6 +27,7 @@ const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd"
 const Flowers = preload("res://scenery/flowers.gd")
 const BotanicalHabitats = preload("res://scenery/botanical_habitats.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
+const CollisionWorld = preload("res://scenery/collision_world.gd")
 const AirfieldDetail = preload("res://scenery/airfield_detail.gd")
 const FarmTractor = preload("res://scenery/farm_tractor.gd")
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
@@ -233,14 +234,19 @@ static func shadow_material() -> StandardMaterial3D:
 	return m
 
 
-## Tier filter (SC-24): low keeps landmarks and standard props; balanced drops half the ornaments (a fixed, seeded half,
-## so changing quality never reshuffles); high keeps everything.
+## Tier filter for non-collidable ornaments: low drops them, balanced keeps a seeded half, high keeps all.
 static func keep(tier: String, seed: int, quality: String) -> bool:
 	if tier == "landmark" or tier == "standard" or quality == "high":
 		return true
 	if quality == "low":
 		return false
 	return Palette.hash01(seed, 4242) < 0.5
+
+
+## Every physical placement stays represented at every quality. Low substitutes batched,
+## simple people and a procedural tractor; the collision inventory always uses the full layout.
+static func keep_instance(prefab: String, tier: String, seed: int, quality: String) -> bool:
+	return CollisionWorld.instance_has_collision(prefab) or keep(tier, seed, quality)
 
 
 static func _cell(n: float, e: float) -> Vector2i:
@@ -614,18 +620,19 @@ static func _build_instance(context: _SceneryBuild, group: Dictionary, placement
 	var damage_id := "prop:%s:%02d" % [group.id, placement_index]
 	var prefab: String = pl.prefab
 	var spec: Dictionary = Prefabs.CATALOG[prefab] if Prefabs.CATALOG.has(prefab) else Models.CATALOG[prefab]
-	if not keep(spec.tier, pl.seed, quality):
+	if not keep_instance(prefab, spec.tier, pl.seed, quality):
 		stats.skipped += 1
 		return
 	var xf := _placement_xf(pl.north, pl.east, pl.heading)
 	var tractor: MeshInstance3D = null
-	if prefab == "tractor" and str(group.id) == "tractor" and placement_index == 0 \
+	if quality != "low" and prefab == "tractor" and str(group.id) == "tractor" and placement_index == 0 \
 			and bool(context.opts.get("farm_tractor", true)) and not bool(context.opts.get("file_explicit", false)) \
 			and layout_file_applies(context.field, {file = Loader.DEFAULT_PATH, file_explicit = false}) \
 			and FarmTractor.eligible(context.scenery):
 		tractor = FarmTractor.create(xf, spec.size)
+	var use_population := Population.handles(prefab) and not (quality == "low" and prefab.begins_with("person_"))
 	var kit: MeshKit = null
-	if tractor == null and not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
+	if tractor == null and not use_population and not VegetationPlacement.handles(prefab):
 		if prefab == "pit_shelter":
 			kit = MeshKit.new()
 			pit_shelter_kits[damage_id] = kit
@@ -646,14 +653,25 @@ static func _build_instance(context: _SceneryBuild, group: Dictionary, placement
 			tint = Color.WHITE # Preserve the supplier's leaf/bark PBR color.
 		ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id, tint)
 		context.vegetation_triangles += int(plant.triangles)
-	elif Population.handles(prefab):
+	elif use_population:
 		var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
 		if prefab == "person_sitting":
 			foot_height += SupportSurfaces.SEATED_OFFSET_M
 		Population.queue(population_batches, prefab, xf, pl.seed, spec.size, foot_height, str(group.get("zone", "")))
 	elif Prefabs.CATALOG.has(prefab):
-		kit.xf = xf
+		var prefab_xf := xf
+		if prefab.begins_with("person_"):
+			prefab_xf.origin.y += SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
+			if prefab == "person_sitting": prefab_xf.origin.y += SupportSurfaces.SEATED_OFFSET_M
+		kit.xf = prefab_xf
 		var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
+		if quality == "low" and prefab.begins_with("person_"):
+			# Bake the normally animated arms into the same static cell instead of dropping them.
+			for part: Dictionary in moving:
+				var part_kit: MeshKit = part.kit
+				kit.append_arrays(part_kit.verts, part_kit.norms, part_kit.cols,
+					Transform3D(Basis.IDENTITY, part.pivot))
+			moving.clear()
 		kit.xf = Transform3D.IDENTITY
 		for roof: MeshInstance3D in BuildingRoofs.create(prefab, xf, pl.seed, damage_id):
 			roof_parent.add_child(roof)

@@ -2,7 +2,7 @@
 
 ## Sky collection and conditions UI (FW-78/79)
 
-`sky_gallery.gd` renders the production `World`/`Atmosphere` in a native Compatibility SubViewport at 1280×720 with 4× MSAA. It records nine daytime profiles plus quiet/peak electrical-storm views at full and new moon. `--mode=day`, `--mode=night` or the default `--mode=all` selects the matrix; `--horizon=on` adds low-angle views. `--write-previews=on` writes nine runtime card images under `app/assets/sky/weather/previews/` from daytime renders only; replacing existing images also requires `--overwrite-previews=on`. Reusing capture outputs requires `--overwrite=on`. The manifest records engine/adapter, lighting, camera and event identity. This is a composition fixture without a flown aircraft, not performance or flight-acceptance evidence.
+`sky_gallery.gd` renders the production `World`/`Atmosphere` in a native Compatibility SubViewport at 1280×720 by default with 4× MSAA. Set `--width=1920 --height=1080` for the primary 1080p target; the manifest records the actual viewport. It records nine daytime profiles plus quiet/peak electrical-storm views at full and new moon. `--mode=day`, `--mode=night` or the default `--mode=all` selects the matrix; `--horizon=on` adds low-angle views. `--write-previews=on` writes nine runtime card images under `app/assets/sky/weather/previews/` from daytime renders only; replacing existing images also requires `--overwrite-previews=on`. Reusing capture outputs requires `--overwrite=on`. The manifest records engine/adapter, lighting, camera and event identity. This is a composition fixture without a flown aircraft, not performance or flight-acceptance evidence.
 
 ```sh
 "$(app/get-godot.sh)" --path app --audio-driver Dummy --script "$PWD/tools/atmosphere/sky_gallery.gd" -- --out=/tmp/sky-gallery --mode=all
@@ -70,7 +70,8 @@ inside the shader, before output encoding; encoded R/G differences remain
 diagnostics. This avoids interpreting Mobile's sRGB amplification as linear
 density error. It does not waive a visual gate.
 Blank-tile negative controls must fail agreement in both cache modes and all
-three shader stages, so a silently disabled cache cannot pass by comparing the
+three shader stages. Each additional sky-relief sampler also has a matching
+agreement and blank-tile control, so a silently disabled cache cannot pass by comparing the
 analytic function to itself. Every case also requires a complete, finite 512×512
 readback; missing, wrongly sized or nonfinite images fail even for negative
 controls. Reports retain per-case validity, engine and source hashes.
@@ -79,7 +80,10 @@ controls. Reports retain per-case validity, engine and source hashes.
 
 The production cache now keeps analytic noise until a validated HDR bake is
 published. It retries once, then stays analytic for that seed. At most four seeds
-are retained. `CloudShadowMap.diagnostics()` distinguishes disabled, unused,
+are retained; layered skies request the actual eligible relief seeds, and layers
+without a matching tile stay analytic. Clear and cirrus do not request relief tiles.
+Disabling both cache modes cancels pending work and releases the retained tiles.
+`CloudShadowMap.diagnostics()` distinguishes disabled, unused,
 pending, ready, failed and capacity-limited consumers. Readiness checks 16
 seed-specific samples in both channels; it is not a complete image comparison.
 

@@ -1,0 +1,997 @@
+{
+  "format": "openrc-extra-evidence-ex14j-v1",
+  "complete": true,
+  "files": [
+    {
+      "path": "sources/frozen-baseline.patch",
+      "source": "frozen source changes against 7e8ce3a4d0ea88943979ff0403fbb3cfeb3c3fe9",
+      "bytes": 16646,
+      "sha256": "5414d7f7e47363a4cbbced8c22dcf6846293711d3fdeb83e28293752e13dac63",
+      "original_bytes": 16646,
+      "original_sha256": "5414d7f7e47363a4cbbced8c22dcf6846293711d3fdeb83e28293752e13dac63",
+      "compression": "none"
+    },
+    {
+      "path": "frozen-baseline-stall/normal_hands_off.orfl.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-baseline-stall/normal_hands_off.orfl",
+      "bytes": 1569109,
+      "sha256": "77513a8b63adceea1827c8de260696486b7c49e36fcadf57ec852650294df2c4",
+      "original_bytes": 4665888,
+      "original_sha256": "6b3320990fd3c30890f6d510c45bc519aefe8f48985a7e3a393ccef8ebd920f9",
+      "compression": "gzip"
+    },
+    {
+      "path": "frozen-baseline-stall/normal_hands_off.json",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-baseline-stall/normal_hands_off.json",
+      "bytes": 7344,
+      "sha256": "3d16203e3d2932f57f3fa431429011922995c204d54907e32cf48809360f7ed6",
+      "original_bytes": 7344,
+      "original_sha256": "3d16203e3d2932f57f3fa431429011922995c204d54907e32cf48809360f7ed6",
+      "compression": "none"
+    },
+    {
+      "path": "candidate-stall/normal_hands_off.orfl.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/candidate-stall/normal_hands_off.orfl",
+      "bytes": 1569892,
+      "sha256": "18c48c495033ca571cddc5e413ff42f17664d0ae62b064d62e1095e0c5165a25",
+      "original_bytes": 4667032,
+      "original_sha256": "99f363c7c5bd2b02c0e386b4732a554fc53bb1bcdab74c4f84ddaec13737eb89",
+      "compression": "gzip"
+    },
+    {
+      "path": "candidate-stall/normal_hands_off.json",
+      "source": "tmp/extra300-roll-continuity-20261109/candidate-stall/normal_hands_off.json",
+      "bytes": 7402,
+      "sha256": "9dba97611cbcbbc6c055e298bd31d58695ba4c5976312f46c67d15853a1d3fa2",
+      "original_bytes": 7402,
+      "original_sha256": "9dba97611cbcbbc6c055e298bd31d58695ba4c5976312f46c67d15853a1d3fa2",
+      "compression": "none"
+    },
+    {
+      "path": "frozen-baseline-exact/replay.json",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-baseline-exact/replay.json",
+      "bytes": 11699,
+      "sha256": "74a637040d313682d3e50cc7428911b8e5eb8f3619676b462a056698a25e8f46",
+      "original_bytes": 11699,
+      "original_sha256": "74a637040d313682d3e50cc7428911b8e5eb8f3619676b462a056698a25e8f46",
+      "compression": "none"
+    },
+    {
+      "path": "frozen-baseline-exact/flight.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-baseline-exact/flight.csv",
+      "bytes": 1833305,
+      "sha256": "588a18aa0817a321c18ebb6e261504cd06dfd7e75f75d21b004942ba55fa8e17",
+      "original_bytes": 5363673,
+      "original_sha256": "b48833d30884f98911c22cb1cacdfc9a788baa8771aacf90bb2b5e50387371e3",
+      "compression": "gzip"
+    },
+    {
+      "path": "frozen-baseline-exact/godot.log",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-baseline-exact/godot.log",
+      "bytes": 387,
+      "sha256": "e7000a33d6da388f3085db9b11297a42548ece39adb7385eafd874f78ce422d1",
+      "original_bytes": 387,
+      "original_sha256": "e7000a33d6da388f3085db9b11297a42548ece39adb7385eafd874f78ce422d1",
+      "compression": "none"
+    },
+    {
+      "path": "frozen-candidate-tape/replay.json",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-candidate-tape/replay.json",
+      "bytes": 11942,
+      "sha256": "1b6b34c17942f94d7d3dc169f8fdd53269c76be3766b90ac5399427382700aba",
+      "original_bytes": 11942,
+      "original_sha256": "1b6b34c17942f94d7d3dc169f8fdd53269c76be3766b90ac5399427382700aba",
+      "compression": "none"
+    },
+    {
+      "path": "frozen-candidate-tape/flight.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-candidate-tape/flight.csv",
+      "bytes": 1830673,
+      "sha256": "3a794ef99ef59caaf88484b62b854ac297d9fc51569adeb54c9c0a0752333be0",
+      "original_bytes": 5366776,
+      "original_sha256": "e8abf7008141904738d7efd8cbe882a3009c870aa4c10dc56283a606d2e74443",
+      "compression": "gzip"
+    },
+    {
+      "path": "frozen-candidate-tape/godot.log",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-candidate-tape/godot.log",
+      "bytes": 391,
+      "sha256": "da6b1e1e738110c58112377848b9ebf2f71dd6189d31aeae098892df05c13bcf",
+      "original_bytes": 391,
+      "original_sha256": "da6b1e1e738110c58112377848b9ebf2f71dd6189d31aeae098892df05c13bcf",
+      "compression": "none"
+    },
+    {
+      "path": "candidate-exact/replay.json",
+      "source": "tmp/extra300-roll-continuity-20261109/candidate-exact/replay.json",
+      "bytes": 11777,
+      "sha256": "ac26b524890c9a045042cbd2a20b09297419ff398f3e524a13dc9639d3c35808",
+      "original_bytes": 11777,
+      "original_sha256": "ac26b524890c9a045042cbd2a20b09297419ff398f3e524a13dc9639d3c35808",
+      "compression": "none"
+    },
+    {
+      "path": "candidate-exact/flight.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/candidate-exact/flight.csv",
+      "bytes": 1833665,
+      "sha256": "06b9497ee5d115771492a99e4a05dc6bbe3bbe3ffaaa6ba6f689e010370fc620",
+      "original_bytes": 5364314,
+      "original_sha256": "9babfffb7bc27031e12f5603a870b68605af33009e7d76c6e06e8abeb59c7ff6",
+      "compression": "gzip"
+    },
+    {
+      "path": "candidate-exact/godot.log",
+      "source": "tmp/extra300-roll-continuity-20261109/candidate-exact/godot.log",
+      "bytes": 387,
+      "sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "original_bytes": 387,
+      "original_sha256": "afe5b868629c3a8447b7cc86e9ae730b7119706718fb186667ab91cf42b19714",
+      "compression": "none"
+    },
+    {
+      "path": "card-compare.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-compare.md",
+      "bytes": 2475,
+      "sha256": "7566d856dc58d30d9480a9c52d98c75183d07997a877fa49b90b53a7d92506b3",
+      "original_bytes": 2475,
+      "original_sha256": "7566d856dc58d30d9480a9c52d98c75183d07997a877fa49b90b53a7d92506b3",
+      "compression": "none"
+    },
+    {
+      "path": "input-control-compare.md",
+      "source": "tmp/extra300-roll-continuity-20261109/input-control-compare.md",
+      "bytes": 370,
+      "sha256": "ad2c0c4ce1eb7d4f5eeb0ecc7cc813665e30354043dd6f66b0378427f195888b",
+      "original_bytes": 370,
+      "original_sha256": "ad2c0c4ce1eb7d4f5eeb0ecc7cc813665e30354043dd6f66b0378427f195888b",
+      "compression": "none"
+    },
+    {
+      "path": "frozen-tape-compare.json",
+      "source": "tmp/extra300-roll-continuity-20261109/frozen-tape-compare.json",
+      "bytes": 2345,
+      "sha256": "c67c263575af08e09939738617aec5096d65fa54505ea9847a5251befc4a2aa6",
+      "original_bytes": 2345,
+      "original_sha256": "c67c263575af08e09939738617aec5096d65fa54505ea9847a5251befc4a2aa6",
+      "compression": "none"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/inverted.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/inverted.csv",
+      "bytes": 58182,
+      "sha256": "48c847cb1ff409687d2ac7a05f0a3fb007f92f910f89ea6362f858c2899004bb",
+      "original_bytes": 165927,
+      "original_sha256": "d9a4e82d7a001723ba0e4276059de75d3fbbfb367d860c4786fd51f0cef2ab11",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/profile.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/profile.json",
+      "bytes": 11545,
+      "sha256": "83e7a2b944300526429ba9d3200ececffdcf31665de3595af65a1f614b0895fc",
+      "original_bytes": 11545,
+      "original_sha256": "83e7a2b944300526429ba9d3200ececffdcf31665de3595af65a1f614b0895fc",
+      "compression": "none"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/profile.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/profile.md",
+      "bytes": 6100,
+      "sha256": "f31e17a887ae343c2a9bf6f978d5620fdde84d573682d61b54e48087b7486ba1",
+      "original_bytes": 6100,
+      "original_sha256": "f31e17a887ae343c2a9bf6f978d5620fdde84d573682d61b54e48087b7486ba1",
+      "compression": "none"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/roll_rate_14mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/roll_rate_14mps_left.csv",
+      "bytes": 12018,
+      "sha256": "9e819b662513027aa27d97ffc950d58ba6769e781fb22c5acdcfd30833d95227",
+      "original_bytes": 31342,
+      "original_sha256": "6a590e74a5be7a95a69080fe6c7ae2c0830abe6ad667db4d75eb26bccebb64cd",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/roll_rate_14mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/roll_rate_14mps_right.csv",
+      "bytes": 12230,
+      "sha256": "7b7f8507e773f53c00d4ccdab5d0b86dd08b934c709b6cfbb9ca5d08a916f5bc",
+      "original_bytes": 31274,
+      "original_sha256": "c3d58c18dfca2790608e0415784439443905d71f64fcf8377856b84697b13756",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/roll_rate_22mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/roll_rate_22mps_left.csv",
+      "bytes": 10987,
+      "sha256": "78675bf5b89430fe60307b1876ea85b804f92acb8bca9b50565c14b8418f43f9",
+      "original_bytes": 28547,
+      "original_sha256": "8dc7ad7ffd96b15023dd47372c05f9c4042af3613c5ec0ec1171a395351709b9",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/roll_rate_22mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/roll_rate_22mps_right.csv",
+      "bytes": 10971,
+      "sha256": "456629a72cb521cef77bf59568e47ebc990d80937a0921123125a3976341ebe1",
+      "original_bytes": 28064,
+      "original_sha256": "db706f91f7efcb56fa9582b3100e047fe8b155108536c659ec82fa5e4ca40e2c",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/roll_rate_33mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/roll_rate_33mps_left.csv",
+      "bytes": 9636,
+      "sha256": "6d9ffb158b181089fa175150899bee26a9df2997bff43923726f4a269ceb3757",
+      "original_bytes": 24977,
+      "original_sha256": "a81b486297cba5e084e5edfffef4412ea58efcd7b4482ce6a77d5ef0266d4804",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/roll_rate_33mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/roll_rate_33mps_right.csv",
+      "bytes": 9634,
+      "sha256": "af509bfc6f10e6a13eb752c1fb2caf3bc47ab322e36771ddbc50c13e50a57e0b",
+      "original_bytes": 24621,
+      "original_sha256": "675865ec6822c2516cd36d2f7145be2eca170a652c41f249386e5c2d13b73ac3",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/run.log",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/run.log",
+      "bytes": 1501,
+      "sha256": "41b454a8c93e95297ea1773b09dbddcaa5a59fb9a949586a5f8e970608c1478d",
+      "original_bytes": 1501,
+      "original_sha256": "41b454a8c93e95297ea1773b09dbddcaa5a59fb9a949586a5f8e970608c1478d",
+      "compression": "none"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/snap_roll_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/snap_roll_left.csv",
+      "bytes": 26683,
+      "sha256": "491351b1e263235255a99fe8c619b7548dbae084ca3d9c5884556320f2237a0e",
+      "original_bytes": 68464,
+      "original_sha256": "801b9d5ad36c5bd870fc56aeb4a8b44c401411c9b3c0a24fcf806120704762a8",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/snap_roll_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/snap_roll_right.csv",
+      "bytes": 26334,
+      "sha256": "24b46d5b2d4420022641c63cd1d142e4f71d10d5767be70e7f61083e5ab32129",
+      "original_bytes": 67485,
+      "original_sha256": "189d675768c0084e9688dcc75a8e3791cd2b568981c62df39e869ab167614e46",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/spin_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/spin_left.csv",
+      "bytes": 36454,
+      "sha256": "08862840514eff62ce221f53614d2209cb9e8e7b953f4f3f5000a4b75912b084",
+      "original_bytes": 93435,
+      "original_sha256": "4b347721e6fc904266e15e2d9f2fbb46965c85785e1a72c7239d94f24e461704",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/spin_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/spin_right.csv",
+      "bytes": 36913,
+      "sha256": "8f375a1ee1bfd4d5103ed14290d1d438bd0240e9fc82a9484b0eb5f90164f82a",
+      "original_bytes": 95308,
+      "original_sha256": "2dd3d89d624d9b1e968220e3b8878ca49f9571398cfbbf6a110a21a6b1acc655",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/stall_power_off.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/stall_power_off.csv",
+      "bytes": 60843,
+      "sha256": "cbba590933c93ce981e07a9df3b1724a06f9a7bd3c9863e52a8489eb5db3c724",
+      "original_bytes": 163826,
+      "original_sha256": "9e9327c0de2019004031f879578ebf2e435ce9f925bce64f410965ef55de269b",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/gp-extra-300s-60/vmax.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/gp-extra-300s-60/vmax.csv",
+      "bytes": 72926,
+      "sha256": "c27003131149eb4c180f6029e06d9739074bc5696500b4f1325e0cf6f727f48d",
+      "original_bytes": 206905,
+      "original_sha256": "ace777bf1ffdead4e95e0ce250e66ad1e756cbc1d6f15e9750d638be8bf83527",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-baseline/run.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/run.json",
+      "bytes": 2183,
+      "sha256": "f5838aa4f1497b73a600c1e0a0cf52165f2ad6b03f25b8b58b5cc98055c2f39c",
+      "original_bytes": 2183,
+      "original_sha256": "f5838aa4f1497b73a600c1e0a0cf52165f2ad6b03f25b8b58b5cc98055c2f39c",
+      "compression": "none"
+    },
+    {
+      "path": "card-baseline/summary.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-baseline/summary.md",
+      "bytes": 2582,
+      "sha256": "eec9c093b81fe3c4655b1c75420817e13930c295309a2c8578df29e753b8f2e6",
+      "original_bytes": 2582,
+      "original_sha256": "eec9c093b81fe3c4655b1c75420817e13930c295309a2c8578df29e753b8f2e6",
+      "compression": "none"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/inverted.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/inverted.csv",
+      "bytes": 58326,
+      "sha256": "88be1dcf2464c1eaec09a879c2c9d51b53706aa3107d12a74ec21e4bfe9fe9ae",
+      "original_bytes": 166027,
+      "original_sha256": "0664df2479b74b6bc2df2c04df946ba43f9c53c7cd48c1f8b6baf6f951884c02",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/profile.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/profile.json",
+      "bytes": 11545,
+      "sha256": "ab6c4e83dfd9984ecc149bc939733890738b2462c366ebea8dc26703814cf8be",
+      "original_bytes": 11545,
+      "original_sha256": "ab6c4e83dfd9984ecc149bc939733890738b2462c366ebea8dc26703814cf8be",
+      "compression": "none"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/profile.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/profile.md",
+      "bytes": 6101,
+      "sha256": "f8fd7af29b8a88e1845c120630c407a5329c01cb28ea0d22a6b00a717a522dc4",
+      "original_bytes": 6101,
+      "original_sha256": "f8fd7af29b8a88e1845c120630c407a5329c01cb28ea0d22a6b00a717a522dc4",
+      "compression": "none"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/roll_rate_14mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/roll_rate_14mps_left.csv",
+      "bytes": 12150,
+      "sha256": "9475894676197322f4ac4e192969e079b1790f8c4b6382e4d5d6b061194e1ef9",
+      "original_bytes": 31533,
+      "original_sha256": "646873d324d9bf70bd51615e02e5ef34b4efeeb60d7723b9b5ccbfbc39fec54c",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/roll_rate_14mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/roll_rate_14mps_right.csv",
+      "bytes": 12243,
+      "sha256": "1cd2cf0937819290b4b4947bce827ee9dfc46d192ee28b547936202aeeef6ccf",
+      "original_bytes": 31399,
+      "original_sha256": "d39489db7717a3e5c16495181eff2a52dddeec50fa4212c5ae2c368e75b0ee19",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/roll_rate_22mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/roll_rate_22mps_left.csv",
+      "bytes": 11059,
+      "sha256": "490bd56ee46e2166c6e782c0eab4b18219bf28a3e8d7ec708b9e071314180015",
+      "original_bytes": 28651,
+      "original_sha256": "9e6ee61a60eb426612909ca00d4a2fc73fb47979d8ea0acea4aab2a7864f14c1",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/roll_rate_22mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/roll_rate_22mps_right.csv",
+      "bytes": 11049,
+      "sha256": "bae63a4f7aff04369aa7fd75d42d22f53e5bda9f41221520e0d337a0cbcc2968",
+      "original_bytes": 28131,
+      "original_sha256": "e4ab80906a4945c50410f13ad6226f871ab825c31d82832a8ea5ccfa8a871cdc",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/roll_rate_33mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/roll_rate_33mps_left.csv",
+      "bytes": 9727,
+      "sha256": "92adbc6c6b91153534bffa89e76b051275532ef7c43e798e186acceb592bf4ed",
+      "original_bytes": 25074,
+      "original_sha256": "2b35b496746a670b4f85616abb7302701c730d4fbbe04633a3dcbcc7933cebdb",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/roll_rate_33mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/roll_rate_33mps_right.csv",
+      "bytes": 9680,
+      "sha256": "b77f32174b2675245de8622444672a3ca1600cddb494bb283282151612a255bb",
+      "original_bytes": 24720,
+      "original_sha256": "9b27df917e5774e6d46551abd7a3bc1d4e20174c9e8287c4d27c40619454a84d",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/run.log",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/run.log",
+      "bytes": 1502,
+      "sha256": "ea947339a2428eb4d32cf53baeffe98b6bf9eeb4c22a5b7ff7bd84a267557c32",
+      "original_bytes": 1502,
+      "original_sha256": "ea947339a2428eb4d32cf53baeffe98b6bf9eeb4c22a5b7ff7bd84a267557c32",
+      "compression": "none"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/snap_roll_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/snap_roll_left.csv",
+      "bytes": 26802,
+      "sha256": "83ecf888de6ee8f91b974a4331f174fa96eebfd0cebd80b2422a1365ad4b4f27",
+      "original_bytes": 68564,
+      "original_sha256": "965f622bec1e2d16f064317f90c89c8c6460c8891847f44a587521d8475367c3",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/snap_roll_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/snap_roll_right.csv",
+      "bytes": 26517,
+      "sha256": "7f3c624e1dd0973bef29033ea3e16001724588fce8f11c116b8f99c555d7a5a4",
+      "original_bytes": 67962,
+      "original_sha256": "c7b60c36d8ee4c840278255af4602f067e374ae92cef871322eda04723e12e0f",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/spin_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/spin_left.csv",
+      "bytes": 36493,
+      "sha256": "204ae4c02952ad609526a478771890787c9a11849613461f03ea59683d124b0f",
+      "original_bytes": 93306,
+      "original_sha256": "707b01822c3c591c4d94252c6f0ac4f08baccbc09145a14be733d9d70ad5777b",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/spin_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/spin_right.csv",
+      "bytes": 36698,
+      "sha256": "b73aba540c4ebb0c8fd683b89b7c07cde36c56e16e682ed74ba84c1a1b331c2a",
+      "original_bytes": 95141,
+      "original_sha256": "99412a845ccc153a80ee683f746954571e70c93631e8f11e49e46a3d598f6554",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/stall_power_off.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/stall_power_off.csv",
+      "bytes": 60910,
+      "sha256": "2f4639490007d367e9cd83ccb552110033dc8f90c26bd0fe9947b21e3d4c31e0",
+      "original_bytes": 163948,
+      "original_sha256": "4c0803c0c78141ca5c5178016daf1057be060559350566f1808f4c59077c114a",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/gp-extra-300s-60/vmax.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/gp-extra-300s-60/vmax.csv",
+      "bytes": 73000,
+      "sha256": "87d573355d23c943d3b4ac8df422ec033edbddf7ae1ca49b21ad0dc80a9c9194",
+      "original_bytes": 206998,
+      "original_sha256": "d14b25342f0fffb439bee2a10499bc95371e766c243b1d5f865544c25a27bb3f",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-candidate/run.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/run.json",
+      "bytes": 2405,
+      "sha256": "9d428081ba5daabb478e8ec43454a5046c031726ef3875745d61fe1ff0083e46",
+      "original_bytes": 2405,
+      "original_sha256": "9d428081ba5daabb478e8ec43454a5046c031726ef3875745d61fe1ff0083e46",
+      "compression": "none"
+    },
+    {
+      "path": "card-candidate/summary.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-candidate/summary.md",
+      "bytes": 2582,
+      "sha256": "a561fe9b4988f727042787b08f0d378865dd0572e1e1d00ba419b97ccb472efe",
+      "original_bytes": 2582,
+      "original_sha256": "a561fe9b4988f727042787b08f0d378865dd0572e1e1d00ba419b97ccb472efe",
+      "compression": "none"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/inverted.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/inverted.csv",
+      "bytes": 58246,
+      "sha256": "a2d5617d8d299ed27f2eb8361cf7139fcb1186d4f0f3712e3d2905edb870555e",
+      "original_bytes": 166002,
+      "original_sha256": "25715204c93c34a61f4a62d598ba12c13fb6ea192a11be527c519b6c03e70f1a",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/profile.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/profile.json",
+      "bytes": 11544,
+      "sha256": "84f08c2e9dde3b5bb8d3f3f85cbf1a1f2f856100b896541786618bacdf117a4b",
+      "original_bytes": 11544,
+      "original_sha256": "84f08c2e9dde3b5bb8d3f3f85cbf1a1f2f856100b896541786618bacdf117a4b",
+      "compression": "none"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/profile.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/profile.md",
+      "bytes": 6100,
+      "sha256": "f31e17a887ae343c2a9bf6f978d5620fdde84d573682d61b54e48087b7486ba1",
+      "original_bytes": 6100,
+      "original_sha256": "f31e17a887ae343c2a9bf6f978d5620fdde84d573682d61b54e48087b7486ba1",
+      "compression": "none"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/roll_rate_14mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/roll_rate_14mps_left.csv",
+      "bytes": 12081,
+      "sha256": "d60e355fa043b3521bd50ff0b8f1312402975ada9bc11918ae46bf4681700f22",
+      "original_bytes": 31417,
+      "original_sha256": "e816d3ee3b7b75eb73bb173c90e4c941c87b9dd74078b9de7fda8567065e1020",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/roll_rate_14mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/roll_rate_14mps_right.csv",
+      "bytes": 12293,
+      "sha256": "9152cce9db907b586c58286f1e0f5ea274d26824d050537b5fa2fbdcb4c030bb",
+      "original_bytes": 31349,
+      "original_sha256": "ab95e1db40f6fb7d6469a4d755502ca4743102c62728a17647a27fa2c2f08c2e",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/roll_rate_22mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/roll_rate_22mps_left.csv",
+      "bytes": 11048,
+      "sha256": "ddad357f9a5413d22a66ad16c647ca8a6a532769f531f985527d6bd3436ae92a",
+      "original_bytes": 28622,
+      "original_sha256": "fe29540255cd95ed216cd1a841a215b21c7cf3084883937d095dd06da8a854ae",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/roll_rate_22mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/roll_rate_22mps_right.csv",
+      "bytes": 11034,
+      "sha256": "c8566a058538928fb055595c1f4da70a10987ffd7cc9a01b70e4ef92ee164d39",
+      "original_bytes": 28139,
+      "original_sha256": "87038d23c5f5251edd2f57dfff81b856b5c923396b69b46f77cdba9b68125ba2",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/roll_rate_33mps_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/roll_rate_33mps_left.csv",
+      "bytes": 9697,
+      "sha256": "6e5beaf1cc1367f4c577dca194c44eba3cd9acc02416a31b7fa19769ec4f5e4e",
+      "original_bytes": 25052,
+      "original_sha256": "6707b137e058e69af6fa374c224b4b065f4afd19002626e2a9f7a62339967505",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/roll_rate_33mps_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/roll_rate_33mps_right.csv",
+      "bytes": 9696,
+      "sha256": "156d65f22c0a78a03d56e5bf62495fbd78715144a890e6d319b5fcbbacf033b3",
+      "original_bytes": 24696,
+      "original_sha256": "dda75a38b0893f0aeb91b9184edd2e009e84592f5546b8354ecd683b79ca4031",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/run.log",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/run.log",
+      "bytes": 1500,
+      "sha256": "345724dac12017a868db2935793e9a50c94e923350bddd6bb9529342c5894e80",
+      "original_bytes": 1500,
+      "original_sha256": "345724dac12017a868db2935793e9a50c94e923350bddd6bb9529342c5894e80",
+      "compression": "none"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/snap_roll_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/snap_roll_left.csv",
+      "bytes": 26748,
+      "sha256": "8abf0b4912721e9885193fcbb8d5630ac3da8bb56c3c3a4f874455bc8bb02c0a",
+      "original_bytes": 68539,
+      "original_sha256": "d9b4710b15e7519f07db8060e7f92850072145587d5bb1a7b79d3a37efb8a036",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/snap_roll_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/snap_roll_right.csv",
+      "bytes": 26398,
+      "sha256": "73ecdb8a6a44c7927e32348202735c60178a82e0fc206c9cdc863e6498cf57c1",
+      "original_bytes": 67560,
+      "original_sha256": "d850d66fdbd7874ed8b166e208b1ec6944307df96fbef688b981bca893ecf924",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/spin_left.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/spin_left.csv",
+      "bytes": 36521,
+      "sha256": "89feded59eda2e22222c7d119ce8152c48e076c3fb3e655f23403529f0f8aff1",
+      "original_bytes": 93510,
+      "original_sha256": "f6904c0a4dfcc94db3176c001687032ab236fc73b5baad19e557477561cb6e15",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/spin_right.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/spin_right.csv",
+      "bytes": 36978,
+      "sha256": "4da022e5bd60ca563a024f0f05f47c8f067e5a2d93c047448088b69a68dccf7b",
+      "original_bytes": 95383,
+      "original_sha256": "9c1ea930fdadd211df9ec1958eb875075069f5649f2c62f84a790acf1110e655",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/stall_power_off.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/stall_power_off.csv",
+      "bytes": 60909,
+      "sha256": "f006dd39d0a0265484ba8092c48666ae7e7a93f80450e6b2706d889f2785b4be",
+      "original_bytes": 163901,
+      "original_sha256": "5d36b3daa9cb9fac9f4b6b3f72109e0e13f9b745686404abbe468f45198e852d",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/gp-extra-300s-60/vmax.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/gp-extra-300s-60/vmax.csv",
+      "bytes": 72996,
+      "sha256": "6b2a501df4b65371ac77bff79856dd6f001f5c240ca4bccf02f817045dc31019",
+      "original_bytes": 206980,
+      "original_sha256": "32e82dc4fe34abdfe6941a706ca3a00a8f17a733f56e48c42eade32fc56787d7",
+      "compression": "gzip"
+    },
+    {
+      "path": "card-control/run.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/run.json",
+      "bytes": 2297,
+      "sha256": "1fac33dc879384623dd0b03d7fcf7eb094c78eb5d92ed3f3891020bcce17760e",
+      "original_bytes": 2297,
+      "original_sha256": "1fac33dc879384623dd0b03d7fcf7eb094c78eb5d92ed3f3891020bcce17760e",
+      "compression": "none"
+    },
+    {
+      "path": "card-control/summary.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-control/summary.md",
+      "bytes": 2582,
+      "sha256": "eec9c093b81fe3c4655b1c75420817e13930c295309a2c8578df29e753b8f2e6",
+      "original_bytes": 2582,
+      "original_sha256": "eec9c093b81fe3c4655b1c75420817e13930c295309a2c8578df29e753b8f2e6",
+      "compression": "none"
+    },
+    {
+      "path": "card-identity-final/gp-extra-300s-60/profile.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-identity-final/gp-extra-300s-60/profile.json",
+      "bytes": 5923,
+      "sha256": "e455a02bde3cdfaf0c19ad23ffc85672a84b410ab7368155628a60017791cd9e",
+      "original_bytes": 5923,
+      "original_sha256": "e455a02bde3cdfaf0c19ad23ffc85672a84b410ab7368155628a60017791cd9e",
+      "compression": "none"
+    },
+    {
+      "path": "card-identity-final/gp-extra-300s-60/profile.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-identity-final/gp-extra-300s-60/profile.md",
+      "bytes": 2939,
+      "sha256": "239d86314dee85deee45fd114cf01a9e0465a83cad03dbc3b971586af91dca87",
+      "original_bytes": 2939,
+      "original_sha256": "239d86314dee85deee45fd114cf01a9e0465a83cad03dbc3b971586af91dca87",
+      "compression": "none"
+    },
+    {
+      "path": "card-identity-final/gp-extra-300s-60/run.log",
+      "source": "tmp/extra300-roll-continuity-20261109/card-identity-final/gp-extra-300s-60/run.log",
+      "bytes": 612,
+      "sha256": "f02cc1352d5662ff0204e050e762e13f328865d1fdb39487c5eafe96a550777f",
+      "original_bytes": 612,
+      "original_sha256": "f02cc1352d5662ff0204e050e762e13f328865d1fdb39487c5eafe96a550777f",
+      "compression": "none"
+    },
+    {
+      "path": "card-identity-final/run.json",
+      "source": "tmp/extra300-roll-continuity-20261109/card-identity-final/run.json",
+      "bytes": 2797,
+      "sha256": "e216cec29e99284e013f941df37611b5adf54e0460a4a86040356897b5622466",
+      "original_bytes": 2797,
+      "original_sha256": "e216cec29e99284e013f941df37611b5adf54e0460a4a86040356897b5622466",
+      "compression": "none"
+    },
+    {
+      "path": "card-identity-final/summary.md",
+      "source": "tmp/extra300-roll-continuity-20261109/card-identity-final/summary.md",
+      "bytes": 2533,
+      "sha256": "3987c06e0565e1dfffafd0d77473efddd26e1b4b4b0585fad97f3252f723bfa8",
+      "original_bytes": 2533,
+      "original_sha256": "3987c06e0565e1dfffafd0d77473efddd26e1b4b4b0585fad97f3252f723bfa8",
+      "compression": "none"
+    },
+    {
+      "path": "id-mismatch-final/gp-extra-300s-60/run.log",
+      "source": "tmp/extra300-roll-continuity-20261109/id-mismatch-final/gp-extra-300s-60/run.log",
+      "bytes": 336,
+      "sha256": "190a64f90c66bc2490f4abd8cd66a4e317a7993875c8d9b313f371af40bdac2d",
+      "original_bytes": 336,
+      "original_sha256": "190a64f90c66bc2490f4abd8cd66a4e317a7993875c8d9b313f371af40bdac2d",
+      "compression": "none"
+    },
+    {
+      "path": "id-mismatch-final/run.json",
+      "source": "tmp/extra300-roll-continuity-20261109/id-mismatch-final/run.json",
+      "bytes": 3728,
+      "sha256": "49cab9a57205079abd09ff93646dd7c747e4a385a848785e6f077261ac063753",
+      "original_bytes": 3728,
+      "original_sha256": "49cab9a57205079abd09ff93646dd7c747e4a385a848785e6f077261ac063753",
+      "compression": "none"
+    },
+    {
+      "path": "curves-baseline/gp_extra_300s_60-roll-regimes.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/curves-baseline/gp_extra_300s_60-roll-regimes.csv",
+      "bytes": 736,
+      "sha256": "94cf0462abf66f7c216d79ee35f2a6214a73d12a67f3984c84f9d9c7f6b7e6ba",
+      "original_bytes": 2371,
+      "original_sha256": "7690e16bd7c9f52858dec5e81c0a6b59f5ec08fd298935cbdd0e842280511f5c",
+      "compression": "gzip"
+    },
+    {
+      "path": "curves-candidate/gp_extra_300s_60-roll-regimes.csv.gz",
+      "source": "tmp/extra300-roll-continuity-20261109/curves-candidate/gp_extra_300s_60-roll-regimes.csv",
+      "bytes": 715,
+      "sha256": "c045d29dbba28b5df4585e2319332c438725add1763e68d12b16dc1dce6b4e41",
+      "original_bytes": 2371,
+      "original_sha256": "d52089d799798d666e7a1483945761c565a3d79050af911818948f82608f0fe8",
+      "compression": "gzip"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_handling-_7arx_ek/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_handling-_7arx_ek/engine.log",
+      "bytes": 1874,
+      "sha256": "f89d8dab5d7eab74bd57d22b0ad04894e4929cd5f44ba6fbf90991462dc7aa53",
+      "original_bytes": 1874,
+      "original_sha256": "f89d8dab5d7eab74bd57d22b0ad04894e4929cd5f44ba6fbf90991462dc7aa53",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_handling-_7arx_ek/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_handling-_7arx_ek/report.json",
+      "bytes": 1228,
+      "sha256": "9afa30fab3f62fc17d1eb0fac94813e0b00f2818a770f5dfbb2fbe3642efea97",
+      "original_bytes": 1228,
+      "original_sha256": "9afa30fab3f62fc17d1eb0fac94813e0b00f2818a770f5dfbb2fbe3642efea97",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_installation-_zw3h6hi/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_installation-_zw3h6hi/engine.log",
+      "bytes": 1235,
+      "sha256": "70b91517271a14bbeb008dac66d0cda4973e727d94cc1d7f46b8d1451b024861",
+      "original_bytes": 1235,
+      "original_sha256": "70b91517271a14bbeb008dac66d0cda4973e727d94cc1d7f46b8d1451b024861",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_installation-_zw3h6hi/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_installation-_zw3h6hi/report.json",
+      "bytes": 1243,
+      "sha256": "1b885c54435e3c3956b06d9d747608b6de78afe9cb13c3f45b0fd2c300e34d4f",
+      "original_bytes": 1243,
+      "original_sha256": "1b885c54435e3c3956b06d9d747608b6de78afe9cb13c3f45b0fd2c300e34d4f",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_post_stall-8shwh8_d/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_post_stall-8shwh8_d/engine.log",
+      "bytes": 721,
+      "sha256": "689297bf12892b5b29f2114e7499942ad650175688a3eef52db95aeaf49d0a6b",
+      "original_bytes": 721,
+      "original_sha256": "689297bf12892b5b29f2114e7499942ad650175688a3eef52db95aeaf49d0a6b",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_post_stall-8shwh8_d/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_post_stall-8shwh8_d/report.json",
+      "bytes": 1234,
+      "sha256": "29b838cbcc6f8c9310abf031aa8c986fd86356c1bc70177485effa69826a0ce4",
+      "original_bytes": 1234,
+      "original_sha256": "29b838cbcc6f8c9310abf031aa8c986fd86356c1bc70177485effa69826a0ce4",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_runway-4fd_y70d/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_runway-4fd_y70d/engine.log",
+      "bytes": 2020,
+      "sha256": "0ec16c2982dfaabf274b62dc01e4a0431979ef366db5cd6b3c7fde84a886858b",
+      "original_bytes": 2020,
+      "original_sha256": "0ec16c2982dfaabf274b62dc01e4a0431979ef366db5cd6b3c7fde84a886858b",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-extra_runway-4fd_y70d/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-extra_runway-4fd_y70d/report.json",
+      "bytes": 1220,
+      "sha256": "32431f46fe71f2c74e1cbf5466aba2483c5040b0a94cd94d6517614ccd31778a",
+      "original_bytes": 1220,
+      "original_sha256": "32431f46fe71f2c74e1cbf5466aba2483c5040b0a94cd94d6517614ccd31778a",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-golden-w8j1bfvl/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-golden-w8j1bfvl/engine.log",
+      "bytes": 1068,
+      "sha256": "d83933be5c71914354b600719768846c7aa97b2dff6ff4f4f67593a2c095107f",
+      "original_bytes": 1068,
+      "original_sha256": "d83933be5c71914354b600719768846c7aa97b2dff6ff4f4f67593a2c095107f",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-golden-w8j1bfvl/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-golden-w8j1bfvl/report.json",
+      "bytes": 1195,
+      "sha256": "52c0cb8ab489d9fbbee0c1813d4994d026bbb67f98a25d2b4c25165bbc80812d",
+      "original_bytes": 1195,
+      "original_sha256": "52c0cb8ab489d9fbbee0c1813d4994d026bbb67f98a25d2b4c25165bbc80812d",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-roll-coupling-final-30us_efy/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-roll-coupling-final-30us_efy/engine.log",
+      "bytes": 972,
+      "sha256": "e8465a9604596f58fd01b84cf95cb6e7ce73a2ec5a6a83887d397c441ff9a189",
+      "original_bytes": 972,
+      "original_sha256": "e8465a9604596f58fd01b84cf95cb6e7ce73a2ec5a6a83887d397c441ff9a189",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-roll-coupling-final-30us_efy/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-roll-coupling-final-30us_efy/report.json",
+      "bytes": 1276,
+      "sha256": "4eb67ea30876c54bb8082f2c8e1974d0efd2c5c6a354786a5e8c3dcd09f0e1bd",
+      "original_bytes": 1276,
+      "original_sha256": "4eb67ea30876c54bb8082f2c8e1974d0efd2c5c6a354786a5e8c3dcd09f0e1bd",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-wing_body_roll-qkgl6kqt/engine.log",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-wing_body_roll-qkgl6kqt/engine.log",
+      "bytes": 1428,
+      "sha256": "533b355ebb426be0eff3ed52e9d9dd7b297f8bdd487d5b23f2f4f52cc3094c2c",
+      "original_bytes": 1428,
+      "original_sha256": "533b355ebb426be0eff3ed52e9d9dd7b297f8bdd487d5b23f2f4f52cc3094c2c",
+      "compression": "none"
+    },
+    {
+      "path": "integrated-checks/ex14j-wing_body_roll-qkgl6kqt/report.json",
+      "source": "tmp/extra300-roll-continuity-20261109/integrated-checks/ex14j-wing_body_roll-qkgl6kqt/report.json",
+      "bytes": 1227,
+      "sha256": "320a68909cdd9045240566e0557b1c1e2e6935eac3a167cfc46511f9e489f269",
+      "original_bytes": 1227,
+      "original_sha256": "320a68909cdd9045240566e0557b1c1e2e6935eac3a167cfc46511f9e489f269",
+      "compression": "none"
+    },
+    {
+      "path": "sources/flight-test/card_aerobatics.gd.gz",
+      "source": "research/flight-test/card_aerobatics.gd",
+      "bytes": 8948,
+      "sha256": "f98d53c6bb75ef3080f16d25ba0bebcb3daa6c772c3f044a7de7aad1678e3184",
+      "original_bytes": 36156,
+      "original_sha256": "a7b9b6532622286e15a7ef9bf2500afef36cab4f83e095eaa36c2ae7b3422a14",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/flight-test/card_field.gd.gz",
+      "source": "research/flight-test/card_field.gd",
+      "bytes": 3253,
+      "sha256": "5b6b2594681e9b99c1718d2b24d92308e7d900d31d7f12c30b955a43e7f8e5a8",
+      "original_bytes": 10075,
+      "original_sha256": "297a131d32073b2b6eca5cd904bb63503b87607e6ce0845be7e1c9d584db7d1b",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/flight-test/card_power.gd.gz",
+      "source": "research/flight-test/card_power.gd",
+      "bytes": 4663,
+      "sha256": "cbe61155aa801252ba7815f4f69775f7e2edcce8025dbe973782c528ffce383a",
+      "original_bytes": 15513,
+      "original_sha256": "a533edfd93b1f4ec8f154a4025679dd71619f72be8f6a7925800ebf47c8a6531",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/flight-test/card_stalls.gd.gz",
+      "source": "research/flight-test/card_stalls.gd",
+      "bytes": 4815,
+      "sha256": "f3dcec2724ba96d0babab3dfe8fdd389c68a6305574d0e58dff8b6573858e652",
+      "original_bytes": 18976,
+      "original_sha256": "30d013b86712372ec7e93e4f6397e46af1e40d543f7af35e3da1f83b8f7007a5",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/flight-test/flight_test.gd.gz",
+      "source": "research/flight-test/flight_test.gd",
+      "bytes": 21045,
+      "sha256": "d25f07268fcff52b89423a12174ab32214c01e72b70105ec696d8ac6056b338d",
+      "original_bytes": 75591,
+      "original_sha256": "b6beb2a6d08719bf207175d8bc67c4ab767019438caf7ec2879c98a8508ffd86",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/flight-test/pilot.gd.gz",
+      "source": "research/flight-test/pilot.gd",
+      "bytes": 3355,
+      "sha256": "7b5e32a85fb0795cce62a96f0d71646c456900ef5eeb7e75806a498877536096",
+      "original_bytes": 10817,
+      "original_sha256": "94f15ee2b219e3241b6347f15743a535ce8c7679fd078b6db009cec05fd4606c",
+      "compression": "gzip"
+    },
+    {
+      "path": "sources/flight-test/run.py",
+      "source": "research/flight-test/run.py",
+      "bytes": 9177,
+      "sha256": "df7f63dd394f146fb7c9fcb3dd186d38ea814709021e9f2c73b1864efd25c269",
+      "original_bytes": 9177,
+      "original_sha256": "df7f63dd394f146fb7c9fcb3dd186d38ea814709021e9f2c73b1864efd25c269",
+      "compression": "none"
+    },
+    {
+      "path": "sources/flight-test/test_run.py",
+      "source": "research/flight-test/test_run.py",
+      "bytes": 5273,
+      "sha256": "7c89e9fd8880628e80868b23058f196c90ac6db38c585e137bbafbf793074313",
+      "original_bytes": 5273,
+      "original_sha256": "7c89e9fd8880628e80868b23058f196c90ac6db38c585e137bbafbf793074313",
+      "compression": "none"
+    },
+    {
+      "path": "sources/flight-test/compare.py",
+      "source": "research/flight-test/compare.py",
+      "bytes": 6867,
+      "sha256": "425a69fee16147920cea05f05d78438e46107cdcacf36650a45201f37ffd5625",
+      "original_bytes": 6867,
+      "original_sha256": "425a69fee16147920cea05f05d78438e46107cdcacf36650a45201f37ffd5625",
+      "compression": "none"
+    },
+    {
+      "path": "sources/candidate/research/extra-300/ex05/derive_physics.py",
+      "source": "research/extra-300/ex05/derive_physics.py",
+      "bytes": 73229,
+      "sha256": "4dde884e988a7f8acc9e64fedc06e749a9ea22e400242da8ffeb01b906b1d697",
+      "original_bytes": 73229,
+      "original_sha256": "4dde884e988a7f8acc9e64fedc06e749a9ea22e400242da8ffeb01b906b1d697",
+      "compression": "none"
+    },
+    {
+      "path": "sources/candidate/research/extra-300/ex05/test_physics_invariants.py",
+      "source": "research/extra-300/ex05/test_physics_invariants.py",
+      "bytes": 7318,
+      "sha256": "35dcdc4fbc6f9e9a83f188b2408b315aab9607026494ae8ac51c2fa96e680896",
+      "original_bytes": 7318,
+      "original_sha256": "35dcdc4fbc6f9e9a83f188b2408b315aab9607026494ae8ac51c2fa96e680896",
+      "compression": "none"
+    },
+    {
+      "path": "sources/candidate/research/extra-300/ex14/stall_probe.gd",
+      "source": "research/extra-300/ex14/stall_probe.gd",
+      "bytes": 8519,
+      "sha256": "494919d7ac5d8951db5bb6b1d7e77473963e007177e92ef746d77d80049a8f91",
+      "original_bytes": 8519,
+      "original_sha256": "494919d7ac5d8951db5bb6b1d7e77473963e007177e92ef746d77d80049a8f91",
+      "compression": "none"
+    },
+    {
+      "path": "sources/candidate/app/tests/test_extra_roll_coupling.gd",
+      "source": "app/tests/test_extra_roll_coupling.gd",
+      "bytes": 3135,
+      "sha256": "7e904d8acbff2926dfb4d4f9f3064cf8464b966d02e15e9e9002f8691b02a533",
+      "original_bytes": 3135,
+      "original_sha256": "7e904d8acbff2926dfb4d4f9f3064cf8464b966d02e15e9e9002f8691b02a533",
+      "compression": "none"
+    },
+    {
+      "path": "sources/candidate/app/data/aircraft/gp_extra_300s_60.json",
+      "source": "app/data/aircraft/gp_extra_300s_60.json",
+      "bytes": 72852,
+      "sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+      "original_bytes": 72852,
+      "original_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
+      "compression": "none"
+    },
+    {
+      "path": "sources/baseline/gp_extra_300s_60.json",
+      "source": "tmp/extra300-feel-20261109/candidate/app/data/aircraft/gp_extra_300s_60.json",
+      "bytes": 72452,
+      "sha256": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7",
+      "original_bytes": 72452,
+      "original_sha256": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7",
+      "compression": "none"
+    },
+    {
+      "path": "summary.json",
+      "source": "scoped source and evidence audit",
+      "bytes": 22872,
+      "sha256": "570e741f68a738bf29b16aa162bf91c252f4b09fb643f20db11b37853a6e9f37",
+      "original_bytes": 22872,
+      "original_sha256": "570e741f68a738bf29b16aa162bf91c252f4b09fb643f20db11b37853a6e9f37",
+      "compression": "none"
+    }
+  ],
+  "note": "Gzip payloads use deterministic mtime=0. Originals remain in ignored tmp/. No images."
+}

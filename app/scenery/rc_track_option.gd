@@ -3,18 +3,16 @@
 ## circuit is never visible without its physics or the reverse. Helicopters and the car activity never ask.
 ## Precedence: --rc_track=<auto|on|off> after --, then OPENRC_RC_TRACK, then the saved preference, which only
 ## menu-launched (interactive) flights read. Traces, captures and tests stay without it unless asked explicitly.
-## Automatic turns it on only for a dedicated GPU (SceneDetail's detection) at High or Extreme scene detail.
+## Automatic selects the same circuit-free scenario on all hardware and detail levels.
 extends RefCounted
 
-const SceneDetail := preload("res://render/scene_detail.gd")
 const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
 
 const AUTO := "auto"
 const PREFERENCES: Array[String] = ["auto", "on", "off"]
 ## display.cfg [graphics] rc_track; app_state/display_preferences.gd mirrors these values.
 const DEFAULT := AUTO
-const AUTO_REASON := "dedicated GPU"
-const AUTO_LEVELS: Array[String] = ["high", "extreme"]
+const AUTO_REASON := "default scenario"
 
 static var _preference := DEFAULT
 
@@ -38,16 +36,10 @@ static func explicit() -> String:
 	return requested if PREFERENCES.has(requested) else ""
 
 
-## What Automatic picks on this machine, with the reason Settings shows. `detected` is SceneDetail.detected().
-static func automatic(detected: Dictionary = {}, detail_level: String = "") -> Dictionary:
-	var gpu: Dictionary = detected if not detected.is_empty() else SceneDetail.detected()
-	var level: String = detail_level if not detail_level.is_empty() else SceneDetail.level()
-	if str(gpu.get("reason", "")) != AUTO_REASON:
-		return {enabled = false, reason = str(gpu.get("reason", "unknown GPU"))}
-	if not AUTO_LEVELS.has(level):
-		return {enabled = false, reason = "Scene detail"}
-	return {enabled = true, reason = AUTO_REASON}
-
+## Automatic is a scenario default, never a graphics or hardware decision. The parameters
+## remain accepted for callers displaying a draft and for compatibility with older tools.
+static func automatic(_detected: Dictionary = {}, _detail_level: String = "") -> Dictionary:
+	return {enabled = false, reason = AUTO_REASON}
 
 ## True when this flight shows and simulates the circuit. `interactive` is a menu-launched flight.
 static func enabled(interactive: bool) -> bool:

@@ -17,7 +17,7 @@ const Reconstruction := preload("res://render/reconstruction.gd")
 const NvidiaReflex := preload("res://render/nvidia_reflex.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const RcTrackOption := preload("res://scenery/rc_track_option.gd")
-const RC_TRACK_TOOLTIP := "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
+const RC_TRACK_TOOLTIP := "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic leaves it off regardless of graphics settings or hardware. Applies at the next flight."
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const NATIVE_SHADOW_LIMITATION := "Native shadow coverage is experimental; some objects do not cast shadows."
 
@@ -902,15 +902,12 @@ func _rc_track_selected(index: int) -> void:
 	_on_presentation_option_changed()
 
 
-## What Automatic picks on this GPU for the drafted Scene detail.
+## Automatic selects the same scenario regardless of graphics settings.
 func _rc_track_automatic() -> Dictionary:
-	var detail := str(_draft.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail))
-	if detail.is_empty() or detail == SceneDetail.AUTO:
-		detail = str(SceneDetail.detected().level)
-	return RcTrackOption.automatic({}, detail)
+	return RcTrackOption.automatic()
 
 
-## Automatic's caption and the tooltip follow the drafted Scene detail.
+## Show the scenario selected by Automatic.
 func _refresh_rc_track_captions() -> void:
 	if _rc_track_picker == null:
 		return
@@ -918,7 +915,7 @@ func _refresh_rc_track_captions() -> void:
 		_rc_track_picker.set_item_text(index, _choice_caption("rc_track", _rc_track_picker.get_item_metadata(index)))
 	var picked: Dictionary = _rc_track_automatic()
 	_rc_track_picker.tooltip_text = tr(RC_TRACK_TOOLTIP) + "\n" + tr("Automatic (%s)") % \
-		(tr("On") if bool(picked.enabled) else tr("Off")) + ": " + tr(str(picked.reason))
+		(tr("On") if bool(picked.enabled) else tr("Off"))
 
 
 func _birds_selected(index: int) -> void:

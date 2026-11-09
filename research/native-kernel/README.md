@@ -97,7 +97,7 @@ These rows identify implemented code, not release qualification. Installed fleet
 must match the exact candidate. Preparation guards retain explicit resource budgets; an over-budget input is
 refused with a diagnostic and cannot count as native coverage.
 
-Laws: `Aero.LOADS_LAW` `section-plane-source-weighted-wake-velocity-v3` (envelope, coupled or uncoupled strips,
+Laws: `Aero.LOADS_LAW` `section-plane-source-weighted-wake-velocity-v4` (envelope, coupled or uncoupled strips,
 ground effect, downwash lag, twist, `wing_cm_ac`, body terms, E0a2 or legacy tails); `Wheels.ROLLING_LAW`
 `wheel-positive-terrain-excess-v2`; soft hull `soft-hull-spring-friction-v2` with the lake normal law.
 

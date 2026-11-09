@@ -5,9 +5,9 @@ class_name WaterEffects
 ## world NED metres; visuals are placed on the configured mean water plane.
 ## Aircraft sinking changes only the supplied render root, never simulation state.
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
-const SPLASH_ONE: AudioStreamWAV = preload("res://assets/audio/water/peludo-splash1.wav")
-const SPLASH_TWO: AudioStreamWAV = preload("res://assets/audio/water/peludo-splash2.wav")
-const VISTULA_AMBIENCE: AudioStreamMP3 = preload("res://assets/audio/water/randommind-vistula-short.mp3")
+const SPLASH_ONE_PATH := "res://assets/audio/water/peludo-splash1.wav"
+const SPLASH_TWO_PATH := "res://assets/audio/water/peludo-splash2.wav"
+const VISTULA_AMBIENCE_PATH := "res://assets/audio/water/randommind-vistula-short.mp3"
 
 const CHECKPOINT_VERSION := 1
 const MAX_DROPLETS := 16
@@ -310,7 +310,7 @@ static func ambient_player(lake: Dictionary, audio_on: bool = true) -> AudioStre
 	player.process_mode = Node.PROCESS_MODE_PAUSABLE
 	player.position = _lake_center_world(lake)
 	if audio_on:
-		var loop_stream := VISTULA_AMBIENCE.duplicate() as AudioStreamMP3
+		var loop_stream := (load(VISTULA_AMBIENCE_PATH) as AudioStreamMP3).duplicate() as AudioStreamMP3
 		loop_stream.loop = true
 		loop_stream.loop_offset = 0.0
 		player.stream = loop_stream
@@ -693,4 +693,4 @@ static func _polygon_centroid(raw_polygon: Variant) -> Vector2:
 
 
 func _splash_stream(index: int) -> AudioStreamWAV:
-	return SPLASH_ONE if index == 0 else SPLASH_TWO
+	return load(SPLASH_ONE_PATH if index == 0 else SPLASH_TWO_PATH) as AudioStreamWAV

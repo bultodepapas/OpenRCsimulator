@@ -714,6 +714,7 @@ data = {
         "conventions": stik["aero"]["conventions"],
         "coefficients": coefficients,
         "surfaces": {
+            "wing_body_cl_beta": q(Clb_wing + dihedral_low, "1/rad", "derived", D("EX-14j: existing DATCOM wing-at-CL_ref plus low-wing interference, carried into the local law; exact closure of the serialized oracle Clb and fin force arm; estimated, not separated-flow identification")),
             "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("D11-R1: research/aero/aileron_effectiveness.py; Clda_right matched through the calibrated section slope and induced-flow map (six equal-area strips); model consistency, not flight calibration")),
             "body_cy_beta": q(CYb_B, "1/rad", "derived", D("EX-14d (D10-R3): the DATCOM body side-force slope -2 K_i S0/S (K_i 1.3 low wing), as in the oracle's CYb; NACA TN 3551 fuselage-alone -1.5/rad on A_max x K_i gives -0.116")),
             "body_crossflow_area": q(body_cda, "m2", "derived", D("EX-14d (D10-R3): Allen-Perkins eta 0.65 x c_d 1.4 (Polhamus TR R-29, subcritical rounded rectangle) x fuselage side area from geometry.json; estimated factors")),
@@ -790,6 +791,10 @@ def check_consistency(d):
     arp = d["reference"]["aero_reference_point"]["value"]
     S_, b_ = d["reference"]["wing_area"]["value"], d["reference"]["wing_span"]["value"]
     cy = fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * fin_["control_effectiveness"]["value"]
+    # Keep the existing oracle coefficient exactly. The optional local couple closes
+    # its fin/wing-body decomposition after the fin and geometry have been rounded.
+    fin_clb = -fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * (fin_["position"]["value"][2] - arp[2]) / b_
+    d["aero"]["surfaces"]["wing_body_cl_beta"]["value"] = d["aero"]["coefficients"]["Clb"]["value"] - fin_clb
     arm = fin_["position"]["value"][0] - arp[0]
     exp = {"CYdr": cy, "Cndr": -cy * arm / b_, "Cldr": cy * (fin_["position"]["value"][2] - arp[2]) / b_,
            "Cnb": fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * arm / b_,
@@ -835,6 +840,7 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
+- EX-14j carries the existing wing-plus-low-wing-interference Clb estimate into the local law through `wing_body_cl_beta`; the oracle coefficients are preserved. This closes a model decomposition, not measured separated-flow or inverted roll behavior.
 - EX-14e: ground effect uses the shared M5-GE-1 law with constants fitted to an image-method VLM of this wing and tail (no fuselage, no rolled-up wake); not measured on a flare.
 - EX-14c: the quasi-static tail slipstream (momentum wake, Selig wash factor, swirl, Ribner sidewash), propeller normal force and P-factor follow the P-51 method on the Glow propeller surrogate. The fin is two pieces (above the fuselage top line, and the rudder behind the tail post down to its bottom edge); both use the vertical surface's per-area law, although the lower piece is all rudder. The wing in the wake, a transported (lagged) wake and the jet normal force are not modelled; no Extra wake measurement exists. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
 """

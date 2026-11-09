@@ -4,8 +4,8 @@ extends RefCounted
 
 const Atmosphere := preload("res://render/atmosphere.gd")
 const SHADER := preload("res://render/landscape_upgrade/countryside_surface.gdshader")
-const GRASS := preload("res://assets/landscape/rc-ground/grass-albedo.jpg")
-const DIRT := preload("res://assets/landscape/rc-ground/dirt-albedo.jpg")
+const GRASS_PATH := "res://assets/landscape/rc-ground/grass-albedo.jpg"
+const DIRT_PATH := "res://assets/landscape/rc-ground/dirt-albedo.jpg"
 const ASPHALT := preload("res://assets/landscape/countryside/aerial_asphalt_01_diff_1k.jpg")
 const PATH := "res://data/scenery/countryside.json"
 const MAX_TRIANGLES := 14000
@@ -89,8 +89,8 @@ static func build(lighting: Dictionary = {}) -> Node3D:
 		return root
 	var material := ShaderMaterial.new()
 	material.shader = SHADER
-	material.set_shader_parameter("grass_tex", GRASS)
-	material.set_shader_parameter("soil_tex", DIRT)
+	material.set_shader_parameter("grass_tex", load(GRASS_PATH))
+	material.set_shader_parameter("soil_tex", load(DIRT_PATH))
 	material.set_shader_parameter("asphalt_tex", ASPHALT)
 	# Keep this newly shared 2K resource unloaded when scenery/countryside is off.
 	material.set_shader_parameter("gravel_tex", load(

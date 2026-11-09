@@ -4,15 +4,11 @@ extends RefCounted
 const Options := preload("res://render/landscape_upgrade/options.gd")
 const Scenery := preload("res://scenery/scenery.gd")
 const Loader := preload("res://scenery/scenery_loader.gd")
-const Prefabs := preload("res://scenery/prefabs.gd")
-const Models := preload("res://scenery/models.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 
 ## `rc_track`: the validated RC-TRACK circuit of this airplane flight, or {} (scenery/rc_track_option.gd).
 static func build(field: Dictionary, rc_track: Dictionary = {}) -> Dictionary:
-	if not Options.enabled():
-		return {ok = true, world = {}, errors = PackedStringArray()}
 	var scenery := {groups = []}
 	var opts := Scenery.options()
 	if opts.enabled and Scenery.layout_file_applies(field, opts):
@@ -20,20 +16,10 @@ static func build(field: Dictionary, rc_track: Dictionary = {}) -> Dictionary:
 		if not loaded.ok:
 			return {ok = false, world = {}, errors = loaded.errors}
 		scenery = loaded.scenery.duplicate(true)
-		var quality: String = opts.quality if Scenery.QUALITIES.has(opts.quality) else "high"
-		for group: Dictionary in scenery.groups:
-			if group.type != "instances":
-				continue
-			var kept := []
-			for source_index: int in group.placements.size():
-				var placement: Dictionary = group.placements[source_index]
-				placement.source_index = source_index
-				var spec: Dictionary = Prefabs.CATALOG[placement.prefab] if Prefabs.CATALOG.has(placement.prefab) else Models.CATALOG[placement.prefab]
-				if Scenery.keep(spec.tier, placement.seed, quality):
-					kept.append(placement)
-			group.placements = kept
 	var lights := {}
-	if field.get("id", "") == "default":
+	# The technical landscape baseline hides legacy light fixtures during daylight.
+	# Other scenery, field trees, barriers and an explicit circuit remain visible.
+	if Options.enabled() and field.get("id", "") == "default":
 		var loaded := FieldLights.load_from()
 		if not loaded.ok:
 			return {ok = false, world = {}, errors = loaded.errors}

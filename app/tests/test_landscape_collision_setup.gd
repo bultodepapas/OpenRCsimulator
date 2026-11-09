@@ -8,6 +8,8 @@ const CollisionWorld := preload("res://scenery/collision_world.gd")
 const Scenery := preload("res://scenery/scenery.gd")
 const Prefabs := preload("res://scenery/prefabs.gd")
 const Models := preload("res://scenery/models.gd")
+const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 
 const ENVIRONMENT_KEYS: Array[String] = [
 	"OPENRC_LANDSCAPE_UPGRADE",
@@ -43,10 +45,34 @@ func _run(field: Dictionary) -> void:
 
 
 func _test_landscape_disabled(field: Dictionary) -> void:
-	_set_options("off", "on", "high")
-	var built: Dictionary = CollisionSetup.build(field)
-	_check("landscape-upgrade off builds an empty collision world", built.ok
-		and typeof(built.get("world")) == TYPE_DICTIONARY and built.world.is_empty())
+	_set_options("off", "on", "low")
+	var loaded: Dictionary = SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
+	var baseline: Dictionary = CollisionSetup.build(field)
+	var expected: Dictionary = CollisionWorld.build(field, loaded.scenery) if loaded.ok else {ok = false}
+	_check("landscape baseline retains the visible field and scenery inventory",
+		baseline.ok and expected.ok and baseline.world == expected.world)
+	if not baseline.ok: return
+	var kinds := {}
+	for proxy: Dictionary in baseline.world.proxies: kinds[str(proxy.kind)] = true
+	_check("baseline retains field trees, barrier and scenery while omitting hidden daytime light fixtures",
+		kinds.has("tree_trunk") and kinds.has("fence") and kinds.has("person")
+		and kinds.has("building") and not kinds.has("lamp"))
+	var track: Dictionary = Track.load_default()
+	var with_track: Dictionary = CollisionSetup.build(field, track.track) if track.ok else {ok = false}
+	var track_count := 0
+	if with_track.ok:
+		for proxy: Dictionary in with_track.world.proxies:
+			if proxy.kind == "rc_track": track_count += 1
+	_check("explicit circuit keeps its visible solid hazards in the landscape baseline",
+		with_track.ok and track_count == 17 and with_track.world.identity != baseline.world.identity)
+	_set_options("off", "off", "high")
+	var bare: Dictionary = CollisionSetup.build(field)
+	var bare_kinds := {}
+	if bare.ok:
+		for proxy: Dictionary in bare.world.proxies: bare_kinds[str(proxy.kind)] = true
+	_check("scenery-off baseline retains field trees and barrier but removes scenery", bare.ok
+		and bare_kinds.has("tree_trunk") and bare_kinds.has("fence")
+		and not bare_kinds.has("person") and not bare_kinds.has("building"))
 
 
 func _test_scenery_disabled(field: Dictionary) -> void:
@@ -73,70 +99,68 @@ func _test_scenery_disabled(field: Dictionary) -> void:
 func _test_quality_filter(field: Dictionary) -> void:
 	var source_result: Dictionary = SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
 	var lights_result: Dictionary = FieldLights.load_from()
-	_check("normalized scenery and default lamps load for quality comparison", source_result.ok and lights_result.ok)
+	_check("normalized scenery and default lamps load", source_result.ok and lights_result.ok)
 	if not source_result.ok or not lights_result.ok:
 		return
-	var high_expected := _visible_filter(source_result.scenery, "high")
-	var low_expected := _visible_filter(source_result.scenery, "low")
-	_check("low retained visible placement IDs are a subset of high", _is_subset(low_expected.ids, high_expected.ids))
-	_check("low quality drops ornament placements", low_expected.ids.size() < high_expected.ids.size())
-	var expected_high: Dictionary = CollisionWorld.build(field, high_expected.scenery, lights_result.lights)
-	var expected_low: Dictionary = CollisionWorld.build(field, low_expected.scenery, lights_result.lights)
-	_check("independently filtered high and low collision inventories build", expected_high.ok and expected_low.ok)
-	if not expected_high.ok or not expected_low.ok:
-		return
-
-	_set_options("on", "on", "high")
-	OS.set_environment("OPENRC_WORN_PATH_TURF", "off")
-	var high_a: Dictionary = CollisionSetup.build(field)
-	OS.set_environment("OPENRC_WORN_PATH_TURF", "on")
-	var high_b: Dictionary = CollisionSetup.build(field)
-	_check("high-quality collision setup builds", high_a.ok and high_b.ok)
-	if not high_a.ok or not high_b.ok:
-		return
-	_check("high proxy IDs match high visible placements", _proxy_ids(high_a.world) == _proxy_ids(expected_high.world))
-	_check("repeated high build keeps identity stable", high_a.world.identity == high_b.world.identity)
-	_check("repeated high build keeps proxy IDs stable", _proxy_ids(high_a.world) == _proxy_ids(high_b.world))
-	_check("worn-path turf override leaves the full collision world unchanged", high_a.world == high_b.world)
-
+	# Check the visual-retention policy against the actual collision builder for every
+	# catalog instance, including currently unused ornaments, so a future proxy cannot be hidden.
+	var mismatches: Array[String] = []
+	var catalog := Prefabs.CATALOG.keys()
+	for id: Variant in Models.CATALOG.keys():
+		if not catalog.has(id): catalog.append(id)
+	for raw_id: Variant in catalog:
+		var prefab := str(raw_id)
+		var proxies: Array[Dictionary] = []
+		var fixture := {groups = [{type = "instances", id = "policy", placements = [
+			{prefab = prefab, north = 0.0, east = 0.0, heading = 0.0, seed = 123}]}]}
+		CollisionWorld._add_scenery(proxies, fixture, [], {})
+		if CollisionWorld.instance_has_collision(prefab) != not proxies.is_empty():
+			mismatches.append(prefab)
+	_check("render-retention policy matches actual catalog collision builders: %s" % [mismatches], mismatches.is_empty())
+	var expected: Dictionary = CollisionWorld.build(field, source_result.scenery, lights_result.lights)
+	_check("unfiltered physical scenario builds", expected.ok)
+	if not expected.ok: return
+	var expected_bench := false
+	for proxy: Dictionary in expected.world.proxies:
+		if proxy.part == "bench_seat": expected_bench = true
+	_check("fixture includes a collidable bench", expected_bench)
+	var adapters := [PackedStringArray(["llvmpipe", "Mesa"]),
+		PackedStringArray(["Intel UHD Graphics 620", "Intel"]),
+		PackedStringArray(["NVIDIA GeForce RTX 3090", "NVIDIA"])]
+	for quality: String in ["low", "balanced", "high"]:
+		_set_options("on", "on", quality)
+		for adapter: PackedStringArray in adapters:
+			SceneDetail.adapter_override = adapter
+			SceneDetail.set_preference(SceneDetail.AUTO)
+			var built: Dictionary = CollisionSetup.build(field)
+			_check("%s with %s keeps the full world identity and proxies" % [quality, adapter[0]],
+				built.ok and built.world == expected.world)
+		var missing: Array[String] = []
+		for group: Dictionary in source_result.scenery.groups:
+			if str(group.type) != "instances": continue
+			for placement: Dictionary in group.placements:
+				var prefab := str(placement.prefab)
+				var spec: Dictionary = Prefabs.CATALOG[prefab] if Prefabs.CATALOG.has(prefab) else Models.CATALOG[prefab]
+				if CollisionWorld.instance_has_collision(prefab) and not Scenery.keep_instance(
+						prefab, str(spec.tier), int(placement.seed), quality):
+					missing.append(prefab)
+		_check("%s retains every visible physical placement: %s" % [quality, missing], missing.is_empty())
+	OS.unset_environment("OPENRC_SCENERY_QUALITY")
+	for level: String in ["low", "medium", "high", "extreme", "auto"]:
+		SceneDetail.set_preference(level)
+		for adapter: PackedStringArray in adapters:
+			SceneDetail.adapter_override = adapter
+			var automatic_world: Dictionary = CollisionSetup.build(field)
+			_check("detail %s on %s retains the full scenario" % [level, adapter[0]],
+				automatic_world.ok and automatic_world.world == expected.world)
+	SceneDetail.adapter_override = PackedStringArray()
+	SceneDetail.set_preference("")
 	_set_options("on", "on", "low")
-	var low: Dictionary = CollisionSetup.build(field)
-	_check("low-quality collision setup builds", low.ok)
-	if not low.ok:
-		return
-	_check("low proxy IDs match low retained visible placements", _proxy_ids(low.world) == _proxy_ids(expected_low.world))
-	_check("quality option changes collision-world identity", low.world.identity != high_a.world.identity)
-	_check("quality option changes the retained collision inventory", _proxy_ids(low.world) != _proxy_ids(high_a.world))
-	# Automatic's conservative fallback uses Balanced. Its world is deliberate and
-	# must still match the visible seeded ornament selection, including proxy IDs.
-	var balanced_expected := _visible_filter(source_result.scenery, "balanced")
-	var expected_balanced: Dictionary = CollisionWorld.build(field, balanced_expected.scenery, lights_result.lights)
-	_set_options("on", "on", "balanced")
-	var balanced: Dictionary = CollisionSetup.build(field)
-	_check("balanced collision setup and independently filtered inventory build", balanced.ok and expected_balanced.ok)
-	if balanced.ok and expected_balanced.ok:
-		_check("balanced proxy IDs match balanced visible placements", _proxy_ids(balanced.world) == _proxy_ids(expected_balanced.world))
-		_check("balanced and high have distinct installed world identities", balanced.world.identity != high_a.world.identity)
-
-
-func _visible_filter(source: Dictionary, quality: String) -> Dictionary:
-	var filtered := source.duplicate(true)
-	var retained_ids: Array[String] = []
-	for group: Dictionary in filtered.groups:
-		if str(group.type) != "instances":
-			continue
-		var kept: Array = []
-		for source_index: int in group.placements.size():
-			var placement: Dictionary = group.placements[source_index]
-			var prefab := str(placement.get("prefab", group.get("prefab", "")))
-			var spec: Dictionary = Prefabs.CATALOG[prefab] if Prefabs.CATALOG.has(prefab) else Models.CATALOG[prefab]
-			if not Scenery.keep(str(spec.tier), int(placement.seed), quality):
-				continue
-			kept.append(placement)
-			retained_ids.append("%s:%04d:%s:%d" % [group.id, source_index, prefab, int(placement.seed)])
-		group.placements = kept
-	retained_ids.sort()
-	return {scenery = filtered, ids = retained_ids}
+	OS.set_environment("OPENRC_WORN_PATH_TURF", "off")
+	var low_a: Dictionary = CollisionSetup.build(field)
+	OS.set_environment("OPENRC_WORN_PATH_TURF", "on")
+	var low_b: Dictionary = CollisionSetup.build(field)
+	_check("worn-path turf leaves the full collision world unchanged", low_a.ok and low_b.ok and low_a.world == low_b.world)
 
 
 func _proxy_ids(world: Dictionary) -> Array[String]:

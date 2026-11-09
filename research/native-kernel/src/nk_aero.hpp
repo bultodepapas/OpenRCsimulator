@@ -2,7 +2,7 @@
 // operation by operation: app/physics/air_data.gd compute, app/physics/ground_effect.gd factors/law and
 // app/physics/aero.gd loads (_global_loads, _local_loads, _wing_flow, local_flow_weight,
 // _wing_lift_coefficient_with, _tail_surface_from_flow, _surface_with_flow, _tail_curve, downwash_angle).
-// Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v3". Flaps, tailless elevons and the tabulated wing
+// Aero.LOADS_LAW "section-plane-source-weighted-wake-velocity-v4". Flaps, tailless elevons and the tabulated wing
 // polar and optional station-delta raw evaluations are included for qualification; production admission remains
 // the decoder's responsibility.
 #pragma once
@@ -97,6 +97,7 @@ struct AeroModel {
 	R wing_aileron_effectiveness = 0, attached_limit = 0, tail_local_limit = 0, tail_stall_end = 0;
 	R tail_CD0 = 0, tail_k = 0, tail_CD90 = 0;
 	R body_cn_beta = 0, wing_body_cl_beta = 0, body_cy_beta = 0, body_crossflow_area = 0, wing_cm_ac = 0;
+	R wing_separated_force_offset = 0;
 	std::vector<R> station_incidence;
 	TaillessModel tailless;
 	Tail horizontal;
@@ -219,7 +220,7 @@ inline R downwash_angle(R wake_velocity, R gain, R plane_speed) {
 }
 
 // wing_polar.gd evaluate. Each branch contains prepared angles and interleaved [CL, CD, attached] values/tangents.
-inline std::array<R, 3> wing_polar_evaluate(R alpha, R base, const WingPolarModel &polar) {
+inline std::array<R, 3> wing_polar_sample(R alpha, R base, const WingPolarModel &polar) {
 	const R side = alpha >= 0.0 ? R(1.0) : R(-1.0);
 	const R angle = absf(alpha);
 	const WingPolarBranch &branch = side > 0.0 ? polar.positive : polar.negative;
@@ -253,6 +254,43 @@ inline std::array<R, 3> wing_polar_evaluate(R alpha, R base, const WingPolarMode
 	const R reference = polar.offset + polar.slope * alpha;
 	result[0] = side * result[0] + result[2] * (base - reference);
 	return result;
+}
+
+
+// wing_polar.gd evaluate: preserve forward stall progression, then converge C1
+// to the physical-angle table over 45..90 degrees. No scaled reverse-flow direction.
+inline std::array<R, 3> wing_polar_evaluate(R alpha, R base, const WingPolarModel &polar, R progression = 1.0) {
+	if (progression == 1.0) return wing_polar_sample(alpha, base, polar);
+	const R angle = absf(alpha);
+	if (angle >= kPi / 2.0) return wing_polar_sample(alpha, base, polar);
+	std::array<R, 3> progressed = wing_polar_sample(alpha * progression, base, polar);
+	if (angle <= kPi / 4.0) return progressed;
+	std::array<R, 3> physical = wing_polar_sample(alpha, base, polar);
+	if (progression > 1.0) {
+		const R reference = polar.offset + polar.slope * alpha;
+		physical[0] += (progressed[2] - physical[2]) * (base - reference);
+		physical[2] = progressed[2];
+	}
+	const R t = (angle - kPi / 4.0) / (kPi / 4.0);
+	const R blend = t * t * (3.0 - 2.0 * t);
+	for (int component = 0; component < 3; ++component) {
+		progressed[component] = (1.0 - blend) * progressed[component] + blend * physical[component];
+	}
+	return progressed;
+}
+
+// aero.gd _separated_offset_fraction: bounded C1, even and periodic at +/-pi.
+inline R separated_offset_fraction(R alpha) {
+	R angle = absf(alpha);
+	if (angle > kPi / 2.0) angle = kPi - angle;
+	const R linear = angle / (kPi / 2.0);
+	if (linear < 1.0 / 6.0) {
+		const R t = maxf(0.0, linear) * 6.0;
+		return (2.0 * t * t - t * t * t) / 6.0;
+	}
+	if (linear <= 2.0 / 3.0) return maxf(0.0, linear);
+	const R t = 3.0 * linear - 2.0;
+	return (2.0 + t + t * t - t * t * t) / 3.0;
 }
 
 inline bool flap_active(const Deflections &d, const AeroModel &m) {
@@ -399,8 +437,8 @@ inline R wing_lift_coefficient_with(const R *s, const Air &air, const Deflection
 		}
 		R cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * cd90 * sin_(2.0 * effective);
 		if (m.polar.enabled) {
-			const R polar_angle = m.polar.strip_factor.empty() ? effective : effective * m.polar.strip_factor[i];
-			const std::array<R, 3> sample = wing_polar_evaluate(polar_angle, base, m.polar);
+			const R progression = m.polar.strip_factor.empty() ? R(1.0) : m.polar.strip_factor[i];
+			const std::array<R, 3> sample = wing_polar_evaluate(effective, base, m.polar, progression);
 			cl = sample[0];
 			weight = 1.0 - sample[2];
 		}
@@ -670,7 +708,7 @@ inline Loads global_loads(const R *s, const Air &air, const Deflections &d, cons
 }
 
 // aero.gd _section_coefficients: clean strip reference used by the flap pitch increment.
-inline std::array<R, 3> section_coefficients(R alpha, R base, const AeroModel &m, R induced_scale) {
+inline std::array<R, 3> section_coefficients(R alpha, R base, const AeroModel &m, R induced_scale, R progression = 1.0) {
 	const R a_span = m.a2 - m.a1;
 	const R n_span = m.n2 - m.n1;
 	R weight = alpha >= 0.0 ? aero_smoothstep((alpha - m.a1) / a_span)
@@ -678,7 +716,7 @@ inline std::array<R, 3> section_coefficients(R alpha, R base, const AeroModel &m
 	R cl;
 	R cd;
 	if (m.polar.enabled) {
-		const std::array<R, 3> sample = wing_polar_evaluate(alpha, base, m.polar);
+		const std::array<R, 3> sample = wing_polar_evaluate(alpha, base, m.polar, progression);
 		cl = sample[0];
 		weight = 1.0 - sample[2];
 		cd = sample[1] + sample[2] * induced_scale * m.k_induced * pow_(cl - m.CL_minD, 2.0);
@@ -763,8 +801,8 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 			cd = cd0 + (1.0 - weight) * ge[i] * k_induced * pow_(cl - cl_min_d, 2.0) +
 				weight * cd90 * pow_(sin_(effective), 2.0);
 			if (m.polar.enabled) {
-				const R polar_angle = m.polar.strip_factor.empty() ? effective : effective * m.polar.strip_factor[i];
-				const std::array<R, 3> sample = wing_polar_evaluate(polar_angle, base, m.polar);
+				const R progression = m.polar.strip_factor.empty() ? R(1.0) : m.polar.strip_factor[i];
+				const std::array<R, 3> sample = wing_polar_evaluate(effective, base, m.polar, progression);
 				cl = sample[0];
 				weight = 1.0 - sample[2];
 				cd = sample[1] + sample[2] * ge[i] * k_induced * pow_(cl - cl_min_d, 2.0);
@@ -773,8 +811,8 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 			cl = weight == 0.0 ? base : (1.0 - weight) * base + weight * 0.5 * cd90 * sin_(2.0 * effective);
 			cd = cd0 + (1.0 - weight) * k_induced * pow_(cl - cl_min_d, 2.0) + weight * cd90 * pow_(sin_(effective), 2.0);
 			if (m.polar.enabled) {
-				const R polar_angle = m.polar.strip_factor.empty() ? effective : effective * m.polar.strip_factor[i];
-				const std::array<R, 3> sample = wing_polar_evaluate(polar_angle, base, m.polar);
+				const R progression = m.polar.strip_factor.empty() ? R(1.0) : m.polar.strip_factor[i];
+				const std::array<R, 3> sample = wing_polar_evaluate(effective, base, m.polar, progression);
 				cl = sample[0];
 				weight = 1.0 - sample[2];
 				cd = sample[1] + sample[2] * k_induced * pow_(cl - cl_min_d, 2.0);
@@ -811,8 +849,8 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 			if (ge_active) {
 				clean_base += (1.0 - ge[i]) * (strip_slope * (clean_effective + m.strip_alpha_zero) - clean_base);
 			}
-			const R clean_angle = m.polar.strip_factor.empty() ? clean_effective : clean_effective * m.polar.strip_factor[i];
-			const std::array<R, 3> clean_coeff = section_coefficients(clean_angle, clean_base, m, induced_factor);
+			const R progression = m.polar.strip_factor.empty() ? R(1.0) : m.polar.strip_factor[i];
+			const std::array<R, 3> clean_coeff = section_coefficients(clean_effective, clean_base, m, induced_factor, progression);
 			flap_delta_cl = cl - clean_coeff[0];
 		}
 		wing_cl += (flow.speeds[i] * cl) / static_cast<double>(stations);
@@ -838,6 +876,12 @@ inline Loads local_loads(const R *s, const Air &air, const Deflections &d, const
 		if (cm_ac != 0.0 && plane_speed > 0.0) {
 			const R section_my = lift_q * plane_speed * plane_speed * station_area * m.station_chords[i] * cm_ac;
 			my_sum += section_my;
+		}
+		if (m.wing_separated_force_offset != 0.0 && weight > 0.0) {
+			const R chord_i = i < static_cast<int>(m.station_chords.size()) ? m.station_chords[i] : m.c;
+			const R shift = m.wing_separated_force_offset * weight * separated_offset_fraction(atan2_(f2, f0));
+			const R separated_couple = shift * chord_i * fz;
+			my_sum += separated_couple;
 		}
 		if (has_tailless && plane_speed > 0.0) {
 			const R elevon_couple = lift_q * plane_speed * plane_speed * station_area * m.station_chords[i]

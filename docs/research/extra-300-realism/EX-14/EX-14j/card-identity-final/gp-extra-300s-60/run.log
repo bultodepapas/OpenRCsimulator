@@ -1,0 +1,6 @@
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FT gp-extra-300s-60: 3.82 kg, S 0.480 m2, start 22.0 m/s, CL_max 1.05 -> Vs estimate 11.0 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.244,"first_untrimmable_mps":41.8,"points":27,"slowest_trim_mps":12.1}
+FT report: tmp\extra300-roll-continuity-20261109\card-identity-final/gp-extra-300s-60/profile.md

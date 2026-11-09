@@ -186,7 +186,7 @@ from the next flight: Low and Medium draw all field trees as cards with fewer pr
 parked-model engines, High
 draws the trees in front of the pilot in 3D, and Extreme every nearby field tree. Automatic
 (default) picks Low, Medium or High from your GPU at each launch; its tooltip names the GPU. Tree
-collision is the same at every level; ornament collision follows the visible prop tier.
+and scenery collision are the same at every level; collidable props remain visible.
 High and Extreme also add field-textured walking-path edges. This ground effect can be
 disabled independently with the [launch override](../tools/ground/README.md#l9b-r3-field-textured-path-shoulders).
 [Presets and measured cost](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).
@@ -194,6 +194,8 @@ disabled independently with the [launch override](../tools/ground/README.md#l9b-
 thermals, kites, swallows and evening swifts, chosen by time of day and weather. Normal follows Scene detail, Few
 halves it, Many keeps full flocks at every level and Off sends them all away. The change applies at once, also from
 the Pause menu: in flight the birds fly off or arrive over a minute or two. [Birds plan](plans/birds-sky-life.md).
+**Settings → Display → RC circuit** selects a physical dirt circuit for the next airplane flight.
+Automatic leaves it off on every GPU and detail level; On includes its terrain and obstacles.
 Workshop's separate preview images do not use the main-view MSAA setting.
 
 **Graphics → Shadows** adds quality, technique, aircraft cue, distance and softness controls.

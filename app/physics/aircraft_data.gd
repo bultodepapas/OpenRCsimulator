@@ -2333,18 +2333,21 @@ static func _wing_polar(errors: PackedStringArray, node: Variant, envelope: Dict
 			continue
 		polar[name] = WingPolar.prepare(samples, 1.0 if name == "positive" else -1.0,
 			slope, offset, aero.CD0, envelope.CD90, errors, path + "." + name)
-	# Optional (D8b-R2d): spanwise stall progression. Strip i reads the table at its angle times
+	# Optional (D8b-R2d): spanwise stall progression. The forward stall coordinate uses
 	# f_i = 1 + g·(λ_i − 1), where λ_i is its attached loading relative to the wing mean: the induced-map row sum over the
 	# mean row sum. A rectangular wing's root (λ > 1) then separates first and a tapered wing's tip; g = 0 or absent
-	# leaves every strip on the shared table. Derived from the calibrated map, so it adds no aircraft coefficient.
+	# leaves every strip on the shared table. WingPolar fades this coordinate to the physical-angle table
+	# over 45..90 degrees, preserving the periodic separated law. No new aircraft coefficient is added.
 	if errors.is_empty() and raw.has("spanwise_progression"):
 		var gain: Variant = _q(errors, path + ".spanwise_progression", raw.get("spanwise_progression"), "1", 0.0, 1.0)
 		var rows: PackedFloat64Array = envelope.get("strip_row_sum", PackedFloat64Array())
 		var mean := 0.0
+		var positive_rows := not rows.is_empty()
 		for value: float in rows:
 			mean += value / float(rows.size())
+			positive_rows = positive_rows and is_finite(value) and value > 0.0
 		if gain != null and errors.is_empty():
-			if rows.size() != envelope.station_ys.size() or not (mean > 0.0):
+			if rows.size() != envelope.station_ys.size() or not positive_rows or not is_finite(mean) or not (mean > 0.0):
 				errors.append(path + ".spanwise_progression: requires positive induced-map row sums for every station")
 			else:
 				var factors := PackedFloat64Array()

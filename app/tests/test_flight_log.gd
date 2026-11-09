@@ -287,6 +287,22 @@ func _flight(path: String) -> void:
 	check("complete file accepted", read.ok)
 	if read.ok:
 		check("initial plus all ticks", read.rows == 261)
+		if path.contains("extra_300"):
+			var old_header: Dictionary = read.header.duplicate(true)
+			old_header.checkpoint.aero_loads_law = "section-plane-source-weighted-wake-velocity-v3"
+			var exact_old: Dictionary = Reader.prepare_replay(old_header)
+			check("v3 law cannot silently exact replay under v4", not exact_old.ok)
+			var candidate_old: Dictionary = Reader.prepare_replay(old_header, path)
+			check("explicit v3 to v4 candidate keeps initial numeric state", candidate_old.ok)
+			if candidate_old.ok:
+				check("candidate law migration preserves full body/internal initial state",
+					candidate_old.flight.sim.state == old_header.checkpoint.simulation.state \
+					and candidate_old.flight.sim.aux == old_header.checkpoint.simulation.aux \
+					and candidate_old.flight.sim.continuous == old_header.checkpoint.simulation.continuous \
+					and candidate_old.flight.sim.modes == old_header.checkpoint.simulation.modes)
+				candidate_old.flight.free()
+			old_header.checkpoint.wake_state_unit = "coefficient (incompatible)"
+			check("candidate cannot migrate a different wake state unit", not Reader.prepare_replay(old_header, path).ok)
 		var replay: Dictionary = Reader.prepare_replay(read.header)
 		check("self contained replay prepares", replay.ok)
 		if replay.ok:

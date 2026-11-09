@@ -134,6 +134,7 @@ func _run() -> void:
 	var baseline_rows: int = flight.recorder.trace.row_count()
 	var first_result: Dictionary = flight.apply_lighting_config(first_config)
 	_check("first paused edit commits", first_result.ok and first_result.changed and first_result.errors.is_empty(), str(first_result))
+	_check("lighting commit publishes the selected exposure immediately", World.Exposure.last == flight._env.tonemap_exposure)
 	_check("TOD-09b retains field, Sun and environment identity during Apply",
 		flight._field_node.get_instance_id() == paused_baseline.field_id
 		and flight._sun.get_instance_id() == paused_baseline.sun_id
@@ -167,6 +168,7 @@ func _run() -> void:
 
 	var second_result: Dictionary = flight.apply_lighting_config(second_config)
 	_check("a second edit at the same tick commits", second_result.ok and second_result.changed, str(second_result))
+	_check("later lighting commit keeps shader exposure synchronized", World.Exposure.last == flight._env.tonemap_exposure)
 	_check("same-tick events are retained in append order and the last one wins",
 		flight._visual_timeline.events.size() == 2
 		and flight._visual_timeline.events[0].tick == baseline_tick

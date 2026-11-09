@@ -363,6 +363,36 @@ python tools/godot/run_checked.py --timeout 300 --require-text 'EXTRA_STALL_PROB
 
 Omit `--case` for the four-case matrix. Outputs must be new. The tested card selection is `trim_sweep,stall_power_off,vmax,roll_rate,inverted,spin,snap_roll`; the separate inverted-stall check is retained in the summary. These are software comparisons, not a real-aircraft flight grade.
 
+## EX-14j — local sideslip-roll consistency, 2026-11-09
+
+**Delivered as a model-consistency correction.** The existing global `Clb` includes the DATCOM wing-at-`CL_ref` estimate and low-wing interference. The local strips omitted their sum, leaving an artificial change in roll sensitivity as loads shifted to the local law. The generator now selects the existing shared `wing_body_cl_beta` module, about **+0.004132/rad**. Low-wing interference exceeds the stabilizing wing term, so its sign is positive. No shared solver law or oracle coefficient changes in this pass. The exact value closes the serialized fin/wing-body decomposition after geometry rounding; all previously present aircraft data remain unchanged.
+
+This is an estimate frozen at `CL_ref`, not measured Extra separated-flow or inverted behavior. Static body-axis roll derivatives below use neutral controls, 25 m/s and central β = ±1° about the current CG. Body crossflow and load-reference transfers leave a residual; agreement is not exact everywhere. The 20° row is an observation outside the attached oracle's validation domain.
+
+| α | Existing oracle Clβ | Local before | Local after |
+| --- | ---: | ---: | ---: |
+| 0° | −0.02584 | −0.03052 | −0.02639 |
+| 8° | −0.02535 | −0.02952 | −0.02543 |
+| 12° | −0.02473 | −0.02876 | −0.02472 |
+| 20° | −0.02337 | −0.02682 | −0.02294 |
+
+The reference-runtime comparison uses official Godot 4.8-beta2, Windows x86-64, float64 and 240 Hz. [Source identities and results](EX-14j/summary.json), [compressed payload manifest](EX-14j/manifest.json), [card comparison](EX-14j/card-compare.md) and [unchanged-input control](EX-14j/input-control-compare.md) bind this evidence. Both seven-family cards and the control have 7/7 valid families. The unchanged `--data` control has zero metric differences at zero tolerance. All 13 trace input hashes in each arm match the recorded aircraft bytes. Later runner guards change provenance/error handling, not pilots or metrics.
+
+| Response | Before | EX-14j |
+| --- | ---: | ---: |
+| Low-rate hands-off: first bank beyond 20° | 2.633 s | 2.629 s |
+| Hands-off: maximum bank / height lost during hold | 88.6° / 14.8 m | 91.6° / 15.1 m |
+| Right / left snap stop error | −1.3° / +1.2° | −2.5° / +0.6° |
+| Spin card right / left height lost | 99.8 / 102.2 m | 101.9 / 105.1 m |
+
+Cruise/maximum speed, normal roll rates and inverted trim remain unchanged at report precision. Both snaps complete and both spin entries retain the card's spiral classification and recover. The hands-off stall is slightly worse, consistent with adding the existing positive roll contribution; this pass is **not a stall or spin improvement claim**.
+
+The 4,915-tick baseline and a separately re-trimmed candidate recording each replay exactly. The baseline tape also runs open-loop on the candidate data with the **same solver fingerprint**, `complete: true` and `solver_changed: false`. Candidate replay is not exact equivalence: its maximum whole-run position and attitude differences are 43.6 m and 1.87 rad after departure. An earlier trial crossed source versions (`solver_changed: true`) and is excluded from the data-only comparison. The frozen source patch and file hashes are retained; these results do not qualify the concurrently changing main-tree solver.
+
+Checks on the integrated tree: 17 Extra coupling assertions (oracle-gap checks limited to α ≤ 12°), 16 shared wing/body-roll assertions, Extra handling/runway/installation/post-stall checks, four unchanged golden flights, four generator invariants and five runner provenance/rejection tests pass. Schema/register, Workshop and economics freshness checks pass; mass/balance values are unchanged. Wrong-aircraft data is refused by the real card. Required CI, native requalification, pilot feel and physical acceptance remain separate.
+
+Use the [standard data-only comparison workflow](../../../tools/physics.md#flight-test-battery). Decompress retained `.gz` payloads to fresh ignored paths. The baseline runtime can be reconstructed from the recorded base commit and source patch; use its pinned solver for exact replay. Do not substitute a newer solver when interpreting the data-only result.
+
 ## Open findings (ranked)
 
 1. **The installed engine/propeller remains unidentified.** EX-14g uses a conditional power anchor and one Glassock rig check. External Round 3 identifies the Gierke primary source, but its stock-exhaust/fuel setup is not the Extra's Pitts installation; the borrowed propeller loading also needs independent identification.

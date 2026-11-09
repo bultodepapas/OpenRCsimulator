@@ -4,7 +4,7 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "c5cd736a6256aac4200b97f079510b459dd7c0db46faa54919ca3bf8b6e4f49b",
+    "aircraft_costing_sha256": "69d6be85f8879088cc56f33af846648d694ee8efca7b8f94bf7c6b0fe345dcfb",
     "aircraft_catalog_sha256": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
@@ -5949,7 +5949,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "gp-extra-300s-60",
-      "source_sha256": "82776c0b9bda73162843225aa5abb7c8525b7d6c6e5d309beeb10146fa7222a7",
+      "source_sha256": "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",

@@ -189,7 +189,8 @@ def check_metadata(metadata: dict, first: dict) -> None:
     for key, allowed in {
         'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle',
                        'section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle',
-                       'section-plane-source-weighted-wake-velocity-v3 with bounded attached oracle'),
+                       'section-plane-source-weighted-wake-velocity-v3 with bounded attached oracle',
+                       'section-plane-source-weighted-wake-velocity-v4 with bounded attached oracle'),
         'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1',
                              'turbine-rpm-governor-rk4-v1',
                              'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',

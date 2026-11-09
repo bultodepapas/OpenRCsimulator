@@ -2,7 +2,8 @@ extends RefCounted
 ## DT-MAC-06b C2/C5b: periodic noise tiles shared by ground, near grass and sky. The analytic path stays
 ## active until an HDR readback passes seed-specific sample checks and an RG16F ImageTexture is published.
 ## The checks detect blank, wrong-seed and implausible samples; they do not prove every pixel or displayed frame.
-## Tiles persist for the process (at most MAX_TILES, including failures). A failed seed remains analytic.
+## At most MAX_TILES are retained, including failures. Disabling both modes cancels
+## in-flight work and releases every tile. A failed seed remains analytic until then.
 
 const ENVIRONMENT_KEY := "OPENRC_CLOUD_SHADOW_MAP"
 const GROUND_ENVIRONMENT_KEY := "OPENRC_CLOUD_SHADOW_MAP_GROUND"
@@ -18,11 +19,12 @@ const SkyMirror := preload("res://render/sun/sky_mirror.gd")
 
 # seed -> {status: pending|ready|failed, attempts, failure, texture}
 static var _tiles: Dictionary = {}
-# instance id -> {material: WeakRef, seed, mode, status}; never retain a scene's materials.
+# instance id (or id:slot) -> {material: WeakRef, seed, mode, slot, status}; weak references only.
 static var _consumers: Dictionary = {}
 static var _settings: Dictionary = {}
 static var _generation := 0
 static var _registrations := 0
+static var _bake_serial := 0
 const PRUNE_EVERY := 64
 
 
@@ -63,13 +65,14 @@ static func baked(seed: int) -> bool:
 
 ## Keep this binding current across seed and mode changes. Pending/failed/capacity cases use analytic noise.
 ## `mode` identifies the consumer, not a different tile: both modes share a validated texture for each seed.
-static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground") -> void:
-	if not is_instance_valid(mat) or mode not in ["ground", "sky"]:
+static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground", slot: int = 0) -> void:
+	if not is_instance_valid(mat) or mode not in ["ground", "sky"] or slot < 0 or slot >= MAX_TILES \
+			or (slot > 0 and mode != "sky"):
 		return
 	_sync_settings()
-	var id := mat.get_instance_id()
+	var id: Variant = _consumer_key(mat, slot)
 	if not _requested(_settings, mode):
-		_disable_consumer(id, mat)
+		_disable_consumer(id, mat, slot)
 		return
 	var entry: Dictionary = _consumers.get(id, {})
 	if not entry.is_empty() and entry.material.get_ref() != mat:
@@ -80,7 +83,7 @@ static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground") -> vo
 		_registrations += 1
 		if _registrations % PRUNE_EVERY == 0:
 			_prune_consumers()
-		entry = {material = weakref(mat), seed = seed, mode = mode, status = ""}
+		entry = {material = weakref(mat), seed = seed, mode = mode, slot = slot, status = ""}
 		_consumers[id] = entry
 		_generation += 1
 	elif int(entry.seed) != seed or str(entry.mode) != mode:
@@ -88,6 +91,38 @@ static func apply(mat: ShaderMaterial, seed: int, mode: String = "ground") -> vo
 		entry.mode = mode
 		_generation += 1
 	_sync_consumer(id)
+
+
+## Bind up to MAX_TILES distinct eligible sky-layer seeds. Extra layers remain analytic.
+## Clearing unused slots also removes stale bindings after a preset change.
+static func apply_sky(mat: ShaderMaterial, seeds: Array) -> void:
+	if not is_instance_valid(mat):
+		return
+	var unique: Array[int] = []
+	for raw: Variant in seeds:
+		if typeof(raw) == TYPE_INT and not unique.has(int(raw)):
+			unique.append(int(raw))
+	for slot in MAX_TILES:
+		if slot < unique.size():
+			apply(mat, unique[slot], "sky", slot)
+		else:
+			_disable_consumer(_consumer_key(mat, slot), mat, slot)
+
+
+static func _consumer_key(mat: ShaderMaterial, slot: int) -> Variant:
+	return mat.get_instance_id() if slot == 0 else "%d:%d" % [mat.get_instance_id(), slot]
+
+
+static func _slot_parameter(slot: int, suffix: String) -> String:
+	if slot == 0:
+		return "cloud_shadow_map" + suffix
+	return "cloud_relief_map_%d%s" % [slot, suffix]
+
+
+## Stop a ground consumer when the selected appearance cannot cast a cloud shadow.
+static func clear_ground(mat: ShaderMaterial) -> void:
+	if is_instance_valid(mat):
+		_disable_consumer(_consumer_key(mat, 0), mat)
 
 
 ## Snapshot of live consumers and the seeds they require. `effective` is disabled, unused, ready, pending,
@@ -99,7 +134,7 @@ static func diagnostics() -> Dictionary:
 	var consumers := {ground = [], sky = []}
 	var required_seeds := {ground = [], sky = []}
 	var ids := _consumers.keys()
-	ids.sort()
+	ids.sort_custom(func(a: Variant, b: Variant) -> bool: return str(a) < str(b))
 	for id in ids:
 		var entry: Dictionary = _consumers[id]
 		var mat := entry.material.get_ref() as ShaderMaterial
@@ -107,21 +142,22 @@ static func diagnostics() -> Dictionary:
 			continue
 		var mode: String = entry.mode
 		var seed: int = entry.seed
-		var actual_enabled: bool = mat.get_shader_parameter("cloud_shadow_map_enabled") == true
+		var slot: int = int(entry.slot)
+		var actual_enabled: bool = mat.get_shader_parameter(_slot_parameter(slot, "_enabled")) == true
 		var status: String = entry.status
 		var tile: Dictionary = _tiles.get(seed, {})
 		if status == "ready":
 			var mode_flag := "cloud_shadow_map_ground_enabled" if mode == "ground" else "cloud_shadow_map_detail_enabled"
-			if not actual_enabled or mat.get_shader_parameter(mode_flag) != true \
-					or mat.get_shader_parameter("cloud_shadow_map_seed") != seed \
-					or mat.get_shader_parameter("cloud_shadow_map") != tile.get("texture"):
+			if not actual_enabled or (slot == 0 and mat.get_shader_parameter(mode_flag) != true) \
+					or mat.get_shader_parameter(_slot_parameter(slot, "_seed")) != seed \
+					or mat.get_shader_parameter(_slot_parameter(slot, "")) != tile.get("texture"):
 				status = "inconsistent"
 		elif actual_enabled:
 			status = "inconsistent"
 		if entry.has("observed_status") and entry.observed_status != status:
 			_generation += 1
 		entry.observed_status = status
-		consumers[mode].append({seed = seed, status = status, enabled = actual_enabled})
+		consumers[mode].append({seed = seed, slot = slot, status = status, enabled = actual_enabled})
 		if not required_seeds[mode].has(seed):
 			required_seeds[mode].append(seed)
 	var effective := {}
@@ -161,6 +197,21 @@ static func _sync_settings() -> void:
 	_generation += 1
 	for id in _consumers.keys():
 		_sync_consumer(id)
+	if not _requested(_settings, "ground") and not _requested(_settings, "sky"):
+		_cancel_tiles()
+
+
+## Called on the main thread. Deferred and resumed bakes also check their unique token,
+## so a canceled old bake cannot publish into a newly requested tile with the same seed.
+static func _cancel_tiles() -> void:
+	if _tiles.is_empty():
+		return
+	for tile: Dictionary in _tiles.values():
+		var viewport: Variant = tile.get("viewport")
+		if is_instance_valid(viewport):
+			viewport.queue_free()
+	_tiles.clear()
+	_generation += 1
 
 
 static func _prune_consumers() -> void:
@@ -170,7 +221,7 @@ static func _prune_consumers() -> void:
 			_generation += 1
 
 
-static func _sync_consumer(id: int) -> void:
+static func _sync_consumer(id: Variant) -> void:
 	var entry: Dictionary = _consumers.get(id, {})
 	if entry.is_empty():
 		return
@@ -181,8 +232,9 @@ static func _sync_consumer(id: int) -> void:
 		return
 	var mode: String = entry.mode
 	var seed: int = entry.seed
+	var slot: int = int(entry.slot)
 	if not _requested(_settings, mode):
-		_disable_consumer(id, mat)
+		_disable_consumer(id, mat, slot)
 		return
 	var status: String
 	var texture: Texture2D = null
@@ -193,15 +245,19 @@ static func _sync_consumer(id: int) -> void:
 	var changed := str(entry.status) != status
 	entry.status = status
 	# Disable first so a changed seed cannot observe an old tile, even during an update.
-	if status != "ready" or mat.get_shader_parameter("cloud_shadow_map_seed") != seed \
-			or mat.get_shader_parameter("cloud_shadow_map") != texture:
-		changed = _set_parameter(mat, "cloud_shadow_map_enabled", false) or changed
-	changed = _set_parameter(mat, "cloud_shadow_map", texture) or changed
-	changed = _set_parameter(mat, "cloud_shadow_map_seed", seed) or changed
-	changed = _set_parameter(mat, "cloud_shadow_map_ground_enabled", _requested(_settings, "ground")) or changed
-	changed = _set_parameter(mat, "cloud_shadow_map_detail_enabled", _requested(_settings, "sky")) or changed
+	var enabled_parameter := _slot_parameter(slot, "_enabled")
+	var texture_parameter := _slot_parameter(slot, "")
+	var seed_parameter := _slot_parameter(slot, "_seed")
+	if status != "ready" or mat.get_shader_parameter(seed_parameter) != seed \
+			or mat.get_shader_parameter(texture_parameter) != texture:
+		changed = _set_parameter(mat, enabled_parameter, false) or changed
+	changed = _set_parameter(mat, texture_parameter, texture) or changed
+	changed = _set_parameter(mat, seed_parameter, seed) or changed
+	if slot == 0:
+		changed = _set_parameter(mat, "cloud_shadow_map_ground_enabled", _requested(_settings, "ground")) or changed
+		changed = _set_parameter(mat, "cloud_shadow_map_detail_enabled", _requested(_settings, "sky")) or changed
 	if status == "ready":
-		changed = _set_parameter(mat, "cloud_shadow_map_enabled", true) or changed
+		changed = _set_parameter(mat, enabled_parameter, true) or changed
 	if changed:
 		# This transition is counted here. Remember it so the next diagnostic
 		# snapshot does not count the same internal publication a second time.
@@ -211,19 +267,20 @@ static func _sync_consumer(id: int) -> void:
 
 
 ## Disabled modes retain no weak references. A later apply registers a material again if it is re-enabled.
-static func _disable_consumer(id: int, mat: ShaderMaterial) -> void:
+static func _disable_consumer(id: Variant, mat: ShaderMaterial, slot: int = 0) -> void:
 	var changed := false
-	if mat.get_shader_parameter("cloud_shadow_map_enabled") == true:
-		mat.set_shader_parameter("cloud_shadow_map_enabled", false)
+	var enabled_parameter := _slot_parameter(slot, "_enabled")
+	var texture_parameter := _slot_parameter(slot, "")
+	if mat.get_shader_parameter(enabled_parameter) == true:
+		mat.set_shader_parameter(enabled_parameter, false)
 		changed = true
-	if mat.get_shader_parameter("cloud_shadow_map") != null:
-		mat.set_shader_parameter("cloud_shadow_map", null)
+	if mat.get_shader_parameter(texture_parameter) != null:
+		mat.set_shader_parameter(texture_parameter, null)
 		changed = true
 	if _consumers.erase(id):
 		changed = true
 	if changed:
 		_generation += 1
-
 
 static func _set_parameter(mat: ShaderMaterial, key: String, value: Variant) -> bool:
 	if mat.get_shader_parameter(key) == value:
@@ -250,17 +307,40 @@ static func _ensure_tile(seed: int) -> Dictionary:
 static func _start_bake(tree: SceneTree, seed: int) -> void:
 	var tile: Dictionary = _tiles[seed]
 	tile.attempts += 1
+	_bake_serial += 1
+	var token := _bake_serial
+	tile.token = token
 	_generation += 1
 	var viewport := _create(seed)
-	# Material refreshes run inside other nodes' setup; attach once the root is free.
-	tree.root.add_child.call_deferred(viewport)
-	_bake.call_deferred(tree, viewport, seed)
+	tile.viewport = viewport
+	# Material refreshes can run during setup; attach once the root is free.
+	_attach_and_bake.call_deferred(tree, viewport, seed, token)
 
 
-static func _bake(tree: SceneTree, viewport: SubViewport, seed: int) -> void:
-	# This is a delay, not evidence that the renderer displayed a frame.
+static func _bake_is_current(seed: int, token: int) -> bool:
+	var tile: Dictionary = _tiles.get(seed, {})
+	return not tile.is_empty() and tile.get("status", "") == "pending" and tile.get("token", -1) == token
+
+
+static func _attach_and_bake(tree: SceneTree, viewport: SubViewport, seed: int, token: int) -> void:
+	_sync_settings()
+	if not is_instance_valid(viewport):
+		return
+	if not _bake_is_current(seed, token) or not is_instance_valid(tree) or tree.root == null:
+		viewport.queue_free()
+		return
+	tree.root.add_child(viewport)
+	_bake(tree, viewport, seed, token)
+
+
+static func _bake(tree: SceneTree, viewport: SubViewport, seed: int, token: int) -> void:
+	# The wait is not evidence that the renderer displayed a frame. Recheck settings
+	# on every frame, including when no material refresh observes an opt-out.
 	for frame in BAKE_FRAMES:
 		await tree.process_frame
+		_sync_settings()
+		if not _bake_is_current(seed, token):
+			return
 	var image: Image = null
 	var failure := "viewport_freed"
 	if is_instance_valid(viewport):
@@ -270,13 +350,13 @@ static func _bake(tree: SceneTree, viewport: SubViewport, seed: int) -> void:
 			image = viewport.get_texture().get_image()
 			failure = "invalid_readback"
 		viewport.queue_free()
-	_complete_bake(tree, seed, image, failure)
+	_complete_bake(tree, seed, image, failure, token)
 
-
-static func _complete_bake(tree: SceneTree, seed: int, image: Image, failure: String) -> void:
+static func _complete_bake(tree: SceneTree, seed: int, image: Image, failure: String, token: int = -1) -> void:
 	var tile: Dictionary = _tiles.get(seed, {})
-	if tile.is_empty() or tile.status != "pending":
+	if tile.is_empty() or tile.status != "pending" or (token >= 0 and int(tile.get("token", -1)) != token):
 		return
+	tile.erase("viewport")
 	if image != null:
 		failure = _validate_image(image, seed)
 		if failure.is_empty():

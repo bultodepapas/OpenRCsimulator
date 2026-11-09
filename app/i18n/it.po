@@ -9447,8 +9447,8 @@ msgstr "Modello di volo in sviluppo."
 msgid "RC circuit"
 msgstr "Circuito RC"
 
-msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
-msgstr "Il circuito in terra per auto RC a nord della pista, con salti, curve sopraelevate e barriere. È fisico: le ruote rotolano sul suo rilievo e l’aereo può urtarlo. Automatico lo attiva con una GPU dedicata e dettaglio scena Alto o Estremo. Si applica dal prossimo volo."
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic leaves it off regardless of graphics settings or hardware. Applies at the next flight."
+msgstr "Il circuito in terra per auto RC a nord della pista, con salti, curve sopraelevate e barriere. È fisico: le ruote rotolano sul suo rilievo e l’aereo può urtarlo. Automatico lo lascia disattivato indipendentemente dalle impostazioni grafiche e dall’hardware. Si applica dal prossimo volo."
 
 msgid "Apply or cancel pending fields before applying a preset."
 msgstr "Applica o annulla i campi in sospeso prima di applicare una preimpostazione."

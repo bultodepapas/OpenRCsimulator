@@ -34,6 +34,8 @@ var _root_uri: String = ""
 var _root_path: String = ""
 var _lock_path: String = ""
 var _lock_token: String = ""
+var _lock_scope: String = ""
+var _lock_lease: PacketPeerUDP
 var _owns_lock: bool = false
 var _current_slot: String = ""
 var _fence: Dictionary = {}
@@ -840,36 +842,50 @@ func _quarantine_bad_snapshots(slots: Array) -> bool:
 
 func _acquire_writer_lock() -> Dictionary:
 	_lock_token = _schema.new_id()
+	_lock_scope = _current_lock_scope()
+	# Unsupported scopes retain the original conservative, non-reclaimable lock.
+	if not _lock_scope.is_empty():
+		_lock_lease = PacketPeerUDP.new()
+		if _lock_lease.bind(0, "127.0.0.1") != OK or _lock_lease.get_local_port() < 1:
+			_close_lock_lease()
+			return {"owned": false, "note": "Statistics writer lease is unavailable; opened read-only."}
 	if DirAccess.make_dir_absolute(_lock_path) == OK:
 		if _write_lock_owner():
 			return {"owned": true, "note": ""}
+		DirAccess.remove_absolute(_lock_path.path_join("owner.json"))
 		DirAccess.remove_absolute(_lock_path)
+		_close_lock_lease()
 		return {"owned": false, "note": "Statistics writer lock could not be initialized; opened read-only."}
-	var owner_path: String = _lock_path.path_join("owner.json")
-	if not FileAccess.file_exists(owner_path):
-		return {"owned": false, "note": "Statistics writer lock has no valid owner record; opened read-only."}
-	var owner_file := FileAccess.open(owner_path, FileAccess.READ)
-	if owner_file == null or owner_file.get_length() > 2048:
-		return {"owned": false, "note": "Statistics writer lock owner is ambiguous; opened read-only."}
-	var owner_parser := JSON.new()
-	var parse_error: Error = owner_parser.parse(owner_file.get_as_text())
-	owner_file.close()
-	if parse_error != OK or typeof(owner_parser.data) != TYPE_DICTIONARY:
-		return {"owned": false, "note": "Statistics writer lock owner is malformed; opened read-only."}
-	var owner: Dictionary = owner_parser.data
-	if owner.size() != 3 or not owner.has_all(["pid", "token", "format"]) or owner.format != "openrc-flight-statistics-lock" or typeof(owner.pid) != TYPE_INT or not _schema._safe_id(owner.token):
-		return {"owned": false, "note": "Statistics writer lock owner is malformed; opened read-only."}
-	if OS.is_process_running(int(owner.pid)):
+	_close_lock_lease()
+	var owner: Dictionary = _read_lock_owner()
+	if not _valid_lease_owner(owner):
+		return {"owned": false, "note": "Statistics writer lock is legacy, incomplete or invalid; opened read-only."}
+	if _lock_scope.is_empty() or owner.scope != _lock_scope:
+		return {"owned": false, "note": "Statistics writer lock belongs to an unverified host or namespace; opened read-only."}
+	# Binding the previous owner's port both proves that its local lease has ended
+	# and serializes all reclaimers until the record is rechecked and retired.
+	_lock_lease = PacketPeerUDP.new()
+	if _lock_lease.bind(int(owner.port), "127.0.0.1") != OK:
+		_close_lock_lease()
 		return {"owned": false, "note": "Another process owns the statistics store; opened read-only."}
-	# Only a well-formed lock whose recorded process has exited is eligible for reclaim.
-	for entry: String in _directory_entries(_lock_path):
-		if entry != "owner.json":
-			return {"owned": false, "note": "Stale statistics lock contains unknown files; opened read-only."}
-	if DirAccess.remove_absolute(owner_path) != OK or DirAccess.remove_absolute(_lock_path) != OK:
-		return {"owned": false, "note": "Stale statistics lock could not be reclaimed; opened read-only."}
-	if DirAccess.make_dir_absolute(_lock_path) != OK or not _write_lock_owner():
+	if not _process_proven_absent(int(owner.pid)):
+		_close_lock_lease()
+		return {"owned": false, "note": "Statistics writer process is running or cannot be verified; opened read-only."}
+	if _read_lock_owner() != owner or _directory_entries(_lock_path) != ["owner.json"]:
+		_close_lock_lease()
+		return {"owned": false, "note": "Statistics writer lock changed or contains unknown files; opened read-only."}
+	if not _retire_lock_directory():
+		_close_lock_lease()
+		return {"owned": false, "note": "Stale statistics writer lock could not be retired; opened read-only."}
+	if DirAccess.make_dir_absolute(_lock_path) != OK:
+		_close_lock_lease()
 		return {"owned": false, "note": "Statistics writer lock was claimed by another process; opened read-only."}
-	return {"owned": true, "note": "Recovered a stale statistics lock after verifying its process exited."}
+	if not _write_lock_owner():
+		DirAccess.remove_absolute(_lock_path.path_join("owner.json"))
+		DirAccess.remove_absolute(_lock_path)
+		_close_lock_lease()
+		return {"owned": false, "note": "Statistics writer lock could not be initialized; opened read-only."}
+	return {"owned": true, "note": "Recovered a stale statistics writer lock."}
 
 
 func _write_lock_owner() -> bool:
@@ -878,8 +894,12 @@ func _write_lock_owner() -> bool:
 		"pid": OS.get_process_id(),
 		"token": _lock_token,
 	}
-	var path: String = _lock_path.path_join("owner.json")
-	var file := FileAccess.open(path, FileAccess.WRITE)
+	if _lock_lease != null:
+		owner.version = 2
+		owner.port = _lock_lease.get_local_port()
+		owner.scope = _lock_scope
+		owner.checksum = _lease_checksum(owner)
+	var file := FileAccess.open(_lock_path.path_join("owner.json"), FileAccess.WRITE)
 	if file == null:
 		return false
 	file.store_string(JSON.stringify(owner))
@@ -889,22 +909,131 @@ func _write_lock_owner() -> bool:
 	return write_error == OK
 
 
-func _release_writer_lock() -> void:
-	var owner_path: String = _lock_path.path_join("owner.json")
-	if not FileAccess.file_exists(owner_path):
-		return
-	var owner_file := FileAccess.open(owner_path, FileAccess.READ)
-	if owner_file == null or owner_file.get_length() > 2048:
-		return
+func _read_lock_owner() -> Dictionary:
+	var file := FileAccess.open(_lock_path.path_join("owner.json"), FileAccess.READ)
+	if file == null or file.get_length() > 2048:
+		return {}
 	var parser := JSON.new()
-	var parse_error: Error = parser.parse(owner_file.get_as_text())
-	owner_file.close()
-	if parse_error != OK or typeof(parser.data) != TYPE_DICTIONARY:
-		return
-	if str(parser.data.get("token", "")) != _lock_token or int(parser.data.get("pid", -1)) != OS.get_process_id():
-		return
-	DirAccess.remove_absolute(owner_path)
-	DirAccess.remove_absolute(_lock_path)
+	var parse_error: Error = parser.parse(file.get_as_text())
+	file.close()
+	return parser.data if parse_error == OK and typeof(parser.data) == TYPE_DICTIONARY else {}
+
+
+func _valid_lease_owner(owner: Dictionary) -> bool:
+	if owner.size() != 7 or not owner.has_all(["format", "version", "pid", "port", "token", "scope", "checksum"]):
+		return false
+	if owner.format != "openrc-flight-statistics-lock" or not _lock_integer(owner.version, 2, 2):
+		return false
+	if not _lock_integer(owner.pid, 1, 4294967295) or not _lock_integer(owner.port, 1, 65535):
+		return false
+	if not _schema._safe_id(owner.token) or typeof(owner.scope) != TYPE_STRING or typeof(owner.checksum) != TYPE_STRING:
+		return false
+	return owner.scope.length() <= 128 and owner.checksum == _lease_checksum(owner)
+
+
+func _lock_integer(value: Variant, low: int, high: int) -> bool:
+	if typeof(value) not in [TYPE_INT, TYPE_FLOAT]:
+		return false
+	var number: float = float(value)
+	return is_finite(number) and number >= low and number <= high and floor(number) == number
+
+
+func _lease_checksum(owner: Dictionary) -> String:
+	return ("%s|%d|%d|%d|%s|%s" % [owner.format, int(owner.version), int(owner.pid), int(owner.port), owner.token, owner.scope]).sha256_text()
+
+
+func _current_lock_scope() -> String:
+	match OS.get_name():
+		"Windows":
+			var device: String = OS.get_unique_id()
+			return "windows:" + device.sha256_text() if not device.is_empty() else ""
+		"Linux":
+			var boot_file := FileAccess.open("/proc/sys/kernel/random/boot_id", FileAccess.READ)
+			var ns_dir := DirAccess.open("/proc/self/ns")
+			if boot_file == null or ns_dir == null:
+				return ""
+			var boot: String = boot_file.get_line().strip_edges()
+			boot_file.close()
+			var net: String = ns_dir.read_link("net")
+			var pid: String = ns_dir.read_link("pid")
+			if boot.is_empty() or not _namespace_link(net, "net") or not _namespace_link(pid, "pid"):
+				return ""
+			return "linux:" + (boot + "|" + net + "|" + pid).sha256_text()
+	return ""
+
+
+func _namespace_link(link: String, kind: String) -> bool:
+	var prefix: String = kind + ":["
+	if not link.begins_with(prefix) or not link.ends_with("]"):
+		return false
+	return link.substr(prefix.length(), link.length() - prefix.length() - 1).is_valid_int()
+
+
+func _process_proven_absent(pid: int) -> bool:
+	if OS.get_name() == "Linux":
+		return DirAccess.dir_exists_absolute("/proc/self") and not DirAccess.dir_exists_absolute("/proc/%d" % pid)
+	if OS.get_name() != "Windows":
+		return false
+	# tasklist's CSV PID column is numeric and independent of localized labels.
+	# Any unexpected output or unavailable system utility fails closed.
+	var system_root: String = OS.get_environment("SystemRoot")
+	if not system_root.is_absolute_path():
+		return false
+	var tasklist: String = system_root.path_join("System32/tasklist.exe")
+	if not FileAccess.file_exists(tasklist):
+		return false
+	var output: Array = []
+	if OS.execute(tasklist, PackedStringArray(["/FO", "CSV", "/NH"]), output, true) != 0 or output.is_empty():
+		return false
+	var rows: int = 0
+	for line: String in str(output[0]).split("\n", false):
+		line = line.strip_edges()
+		if line.is_empty():
+			continue
+		if not line.begins_with("\""):
+			return false
+		var separator: int = line.find("\",\"", 1)
+		if separator < 0:
+			return false
+		var end: int = line.find("\"", separator + 3)
+		if end < 0:
+			return false
+		var pid_text: String = line.substr(separator + 3, end - separator - 3)
+		if not pid_text.is_valid_int():
+			return false
+		rows += 1
+		if int(pid_text) == pid:
+			return false
+	return rows > 0
+
+
+func _retire_lock_directory() -> bool:
+	# Rename the entire lock while its lease is held; never expose an empty live
+	# lock and never unlink a replacement another writer has since acquired.
+	var retirement: String = _root_path.path_join(".writer_retired_" + _lock_token)
+	if DirAccess.make_dir_absolute(retirement) != OK:
+		return false
+	var retired_lock: String = retirement.path_join(LOCK_DIR)
+	if DirAccess.rename_absolute(_lock_path, retired_lock) != OK:
+		DirAccess.remove_absolute(retirement)
+		return false
+	DirAccess.remove_absolute(retired_lock.path_join("owner.json"))
+	DirAccess.remove_absolute(retired_lock)
+	DirAccess.remove_absolute(retirement)
+	return true
+
+
+func _release_writer_lock() -> void:
+	var owner: Dictionary = _read_lock_owner()
+	if str(owner.get("token", "")) == _lock_token and _lock_integer(owner.get("pid"), 1, 4294967295) and int(owner.pid) == OS.get_process_id():
+		_retire_lock_directory()
+	_close_lock_lease()
+
+
+func _close_lock_lease() -> void:
+	if _lock_lease != null:
+		_lock_lease.close()
+		_lock_lease = null
 
 
 func _directory_entries(path: String) -> Array[String]:

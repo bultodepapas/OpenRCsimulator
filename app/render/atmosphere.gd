@@ -345,10 +345,10 @@ static func _profile_sky_tints(mat: ShaderMaterial, lighting: Dictionary = {}) -
 static func _apply_profile_environment(env: Environment, lighting: Dictionary = {}) -> void:
 	if not _appearance_enabled:
 		return
-	var haze := _profile_haze_linear(haze_linear(lighting))
+	var haze := visual_haze_linear(lighting)
 	env.fog_light_color = Color(haze.x, haze.y, haze.z).linear_to_srgb()
 	env.fog_light_energy = 1.0
-	env.fog_density = beta() * float(_appearance.haze_scale)
+	env.fog_density = visual_beta()
 	var ambient: Vector3 = _appearance.ambient_lin * float(_appearance.ambient_intensity)
 	if _uses_flow_state(lighting):
 		var current: Vector3 = state.ambient_lin
@@ -389,7 +389,13 @@ static func beta() -> float:
 	return KOSCHMIEDER / visibility_m
 
 
-## Fraction of an object's own light that reaches the eye through d metres of haze (64-bit mirror of the shaders).
+## Presentation extinction shared by native fog and custom surface haze (1/m).
+## Weather appearance scales the visual atmosphere, never physical visibility or wind.
+static func visual_beta() -> float:
+	return beta() * (float(_appearance.haze_scale) if _appearance_enabled else 1.0)
+
+
+## Base-range transmission, before the appearance profile's visual haze scale or ground rim closure.
 static func transmittance(d: float) -> float:
 	return exp(-beta() * d)
 
@@ -401,6 +407,11 @@ static func haze_linear(lighting: Dictionary = {}) -> Vector3:
 	var a: Dictionary = parameters(lighting)
 	var c: Color = a.haze.srgb_to_linear()
 	return Vector3(c.r, c.g, c.b) * a.haze_energy
+
+
+## The accepted appearance tint in the same linear units as Environment fog.
+static func visual_haze_linear(lighting: Dictionary = {}) -> Vector3:
+	return _profile_haze_linear(haze_linear(lighting))
 
 
 ## Compensation for Compatibility's sRGB blending of shadowed lights, used only with engine shadows (L3).
@@ -558,7 +569,7 @@ static func shadow_direction(lighting: Dictionary = {}) -> Vector3:
 
 
 static func _set_haze_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
-	mat.set_shader_parameter("haze_lin", _profile_haze_linear(haze_linear(lighting)))
+	mat.set_shader_parameter("haze_lin", visual_haze_linear(lighting))
 	mat.set_shader_parameter("sun_dir", sun_direction(lighting))
 	mat.set_shader_parameter("sun_lin", sun_linear(lighting))
 	mat.set_shader_parameter("sun_scatter", sun_scatter(lighting))
@@ -708,11 +719,25 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 		mat.set_shader_parameter("moon_eclipse_dim", 1.0)
 	_profile_sky_tints(mat, lighting)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
-	# DT-MAC-06b C5b candidate: relief shading reads the low octaves of the sky seed's noise tile.
-	var sky_seed: Variant = mat.get_shader_parameter("cloud_seed")
-	if typeof(sky_seed) == TYPE_INT:
-		CloudShadowMap.apply(mat, sky_seed, "sky")
+	# Each eligible deck has its own seed. Missing/pending/capacity tiles remain analytic.
+	CloudShadowMap.apply_sky(mat, _sky_relief_seeds(a))
 
+
+static func _sky_relief_seeds(parameters: Dictionary) -> Array[int]:
+	var seeds: Array[int] = []
+	if not _appearance_enabled:
+		if float(parameters.get("cloud_coverage", 0.0)) > 0.0:
+			seeds.append(selected_cloud_seed(int(parameters.cloud_seed)))
+		return seeds
+	if float(_appearance.get("cloud_density", 0.0)) <= 0.0:
+		return seeds
+	for layer: Dictionary in _appearance.get("cloud_layers", []):
+		var coverage := clampf(float(layer.get("coverage", 0.0)) + \
+			(float(_appearance.cloud_cover) - 0.5) * 0.5, 0.0, 1.0)
+		if str(layer.get("type", "")) not in ["cirrus", "anvil"] \
+				and coverage > 0.0 and float(layer.get("density", 0.0)) > 0.0:
+			seeds.append(int(layer.seed))
+	return seeds
 
 ## FW-MOON-08a: the aerosol optical depth over Krisciunas & Schaefer's sites, which scales the aureole (their aerosol
 ## term was fitted to clean observatory air). τ_a = (β·haze − β_Rayleigh)·H_aerosol, with β from the visibility and
@@ -881,7 +906,7 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
 	mat.set_shader_parameter("cloud_deck_m", a.cloud_deck_m)
 	mat.set_shader_parameter("cloud_shadow_strength", a.cloud_shadow_strength)
-	mat.set_shader_parameter("beta", beta())
+	mat.set_shader_parameter("beta", visual_beta())
 	if mat.shader == GROUND_SHADER:
 		# L7: spread the artistic rim closure in inverse distance at high visibility.
 		mat.set_shader_parameter("rim_start", a.rim_start_m if visibility_m <= a.visibility_m else 3000.0)
@@ -895,6 +920,11 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 ## DT-MAC-06b C2 candidate: the periodic noise tile for the seed this material's shadow uses.
 static func _set_cloud_shadow_map(mat: ShaderMaterial) -> void:
 	if mat.shader != GROUND_SHADER and mat.shader != NEAR_GRASS_SHADER:
+		return
+	if _appearance_enabled and (_shadow_layer_index() < 0 \
+			or float(_appearance.get("cloud_density", 0.0)) <= 0.0 \
+			or float(_appearance.get("cloud_shadow", 0.0)) <= 0.0):
+		CloudShadowMap.clear_ground(mat)
 		return
 	var seed_value: Variant = mat.get_shader_parameter(
 		"appearance_shadow_seed" if mat.get_shader_parameter("appearance_cloud_shadow") == true else "cloud_seed")
@@ -957,7 +987,7 @@ static func _update_environment_parameters(env: Environment, lighting: Dictionar
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX if a.get("tonemapper", "aces") == "agx" else Environment.TONE_MAPPER_ACES
 	env.tonemap_exposure = state.exposure if _uses_flow_state(lighting) else a.exposure
 	env.tonemap_white = a.white
-	env.fog_density = beta()
+	env.fog_density = visual_beta()
 	env.fog_light_color = a.haze
 	env.fog_light_energy = a.haze_energy
 	env.fog_sun_scatter = sun_scatter(lighting)

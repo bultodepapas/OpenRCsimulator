@@ -1,0 +1,154 @@
+{
+  "format": "openrc-reverse-flow-evidence-v1",
+  "step": "D8b-R2d-R1",
+  "date": "2026-11-09",
+  "baseline_commit": "5e673fbbdd4a2af94fb619eac87430d82f4d46c5",
+  "baseline_solver_sha256": "3a3eec62177ad583b2fa5fe7ee3a054d9e060e75e81e5ffb07eb11b8ca07f4e1",
+  "candidate_solver_sha256": "e11633515ef5f16f078109fb149fb0ec61d0028cc3790d62be0773a18d5db879",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "platform": "Windows x86_64",
+  "tape_ticks": 480,
+  "tape_dt_s": 0.004166666666666667,
+  "aircraft": "gp-extra-300s-60",
+  "files": [
+    {
+      "path": "ordinary.orfl.gz",
+      "sha256": "0c96f910ec5716a3cfee6e1ffbb50891f066d75afad1b99a86a9b7d748a7630b",
+      "bytes": 166391,
+      "raw_sha256": "486886da3b7f9e19525c47e25dfe738cb47cf5edf52f439bcf27a6af40b9fd5a",
+      "raw_bytes": 512532
+    },
+    {
+      "path": "ordinary-baseline.csv.gz",
+      "sha256": "3e48c9b3134ad2518cfee6cb71830f5c715e89d811bdc14486af2fad11370dc7",
+      "bytes": 173974,
+      "raw_sha256": "49ac374ade3a53ff7259a0f8f374fcdfed89657cc6b3d4e227df6beebf95f4ab",
+      "raw_bytes": 463047
+    },
+    {
+      "path": "ordinary-baseline.json",
+      "sha256": "123f66f29af681a7ef97fbc5edbd75d21b6a9582b9944a0ad0bcd48de2a41349",
+      "bytes": 11562
+    },
+    {
+      "path": "ordinary-candidate.csv.gz",
+      "sha256": "3e48c9b3134ad2518cfee6cb71830f5c715e89d811bdc14486af2fad11370dc7",
+      "bytes": 173974,
+      "raw_sha256": "49ac374ade3a53ff7259a0f8f374fcdfed89657cc6b3d4e227df6beebf95f4ab",
+      "raw_bytes": 463047
+    },
+    {
+      "path": "ordinary-candidate.json",
+      "sha256": "ca4687ede6b23966a661ce3817e53671415f60bb520e18b080153eaeb5d7037e",
+      "bytes": 11746
+    },
+    {
+      "path": "ordinary-comparison.json",
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+      "bytes": 1437
+    },
+    {
+      "path": "reverse.orfl.gz",
+      "sha256": "78954af482090723d6a39a61c9602a8b2391d468058687b23e953037b2815075",
+      "bytes": 166443,
+      "raw_sha256": "39f45b877f697d532a92a01435a1a89f79b603a2716504d52d5ac0761abbff2f",
+      "raw_bytes": 512492
+    },
+    {
+      "path": "reverse-baseline.csv.gz",
+      "sha256": "033ede9be8018ce5b3b826289ab4b4b5387ed70959bae290f3303e9ee6364e0b",
+      "bytes": 175284,
+      "raw_sha256": "b7ab41d9ba465e4c0ec83464aac7918ce478fc4dcc58a88cce2c6f6efa637ce8",
+      "raw_bytes": 471167
+    },
+    {
+      "path": "reverse-baseline.json",
+      "sha256": "c673b6bf0661012a46ce76963899015a046f8a860a3b29302800ffe71ba7e5fb",
+      "bytes": 11526
+    },
+    {
+      "path": "reverse-candidate.csv.gz",
+      "sha256": "3dc80183467b5e1ccd68670f41d527ae1e2a0358599d872287a64d20a103bc38",
+      "bytes": 175604,
+      "raw_sha256": "ab340e7fe95e8e759ed4134a5c5def67cfee67e9f8fb0d07807b3310405d5a9f",
+      "raw_bytes": 471548
+    },
+    {
+      "path": "reverse-candidate.json",
+      "sha256": "59d05a0c652f38cdfe6fb55c37b312d1f4859e0a88bf0c299087d479e6a580d8",
+      "bytes": 11710
+    },
+    {
+      "path": "reverse-comparison.json",
+      "sha256": "02f64efe155c0ce0ff42e7046d7ac1f1a7fd218e4c0078dceeac838c2a39cb4c",
+      "bytes": 2401
+    },
+    {
+      "path": "baseline-sources.json",
+      "sha256": "7686bb769e688e82b42cc2f3a5e819a940d037b02c03d3460d4c80552778bfb8",
+      "bytes": 31876
+    },
+    {
+      "path": "native-oracle.json.gz",
+      "sha256": "7456fbb3c74c3fd29206f3e151755190bcf63dbb2b558c2895fa943c22fb1fd5",
+      "bytes": 13566,
+      "raw_sha256": "52942775c49f8182fb66930aa82101e66ac610505bfebf70f6198816bfd09420",
+      "raw_bytes": 74833
+    }
+  ],
+  "limits": [
+    "Candidate mode is open loop, not exact replay or physical validation.",
+    "Candidate row zero retains the recorded initial last_loads; stepped candidate loads begin at tick 1.",
+    "The two-second reverse tape demonstrates an integrated response, not an aerobatic maneuver acceptance gate."
+  ],
+  "candidate_sources": [
+    {
+      "path": "app/physics/aero.gd",
+      "sha256": "c0141d609c9e12866dba457c04a412a5609c0ca637222d2057e71771b522ebb8"
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "sha256": "fdb76ba7357e00e777985a38b14e0ce182106a4fe68a1083b3e5e95d2a3f755e"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "ae2ced8856cdd9f1fd478db60e7b69f9e7d06465cf53c56be3dd158896a75358"
+    },
+    {
+      "path": "app/tools/flight_log_cli.gd",
+      "sha256": "1ad845c953d5c3fe05cc7620b817ba6de9d11ca89e7bb0954615f88aecfc5f2b"
+    },
+    {
+      "path": "research/native-kernel/src/nk_aero.hpp",
+      "sha256": "99607811a29dfd2b5ce769bb44ccab9f5cf8ecac68f05ad0b8b4ee920d79555c"
+    },
+    {
+      "path": "research/native-kernel/src/nk_kernel.cpp",
+      "sha256": "7d0927121b33fea462417a049c2eac465df1f2433d26dc8a7f93ae7d0c0ab36a"
+    },
+    {
+      "path": "research/native-kernel/src/nk_wake_spatial_aero.hpp",
+      "sha256": "01486b9e7b1a991bbbc02dce72091ff0e6f96f93af1fb90b99ce34dde90339a8"
+    },
+    {
+      "path": "app/tests/test_wing_reverse_flow.gd",
+      "sha256": "88813f7672b0cae3f971485607997d75826cc3bab305535bdd2b7a87d9db7980"
+    }
+  ],
+  "native": {
+    "verdict": "pass",
+    "run_valid": true,
+    "total": {
+      "compared": 593941,
+      "identical": 593941,
+      "mismatched": 0
+    },
+    "law_identity": {
+      "aero_native": "section-plane-source-weighted-wake-velocity-v4",
+      "aero_reference": "section-plane-source-weighted-wake-velocity-v4",
+      "rolling_native": "wheel-positive-terrain-excess-v2",
+      "rolling_reference": "wheel-positive-terrain-excess-v2"
+    },
+    "qualification": "Components only; no installation, fleet, package, timing or physical qualification."
+  }
+}

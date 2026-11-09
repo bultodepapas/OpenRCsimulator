@@ -15,6 +15,7 @@ render_mode use_debanding;
 // RD sky debanding scales its +/-1/255 noise by exposure. Night adaptation can
 // exceed 49000, overwhelming the physical sky; retain the calibrated GL path only.
 #include "res://render/cloud_field.gdshaderinc"
+#define OPENRC_CLOUD_SKY
 #include "res://render/cloud_shadow_map.gdshaderinc"
 #include "res://render/cloud_relief.gdshaderinc"
 uniform float cloud_relief_strength : hint_range(0.0, 1.0) = 1.0;

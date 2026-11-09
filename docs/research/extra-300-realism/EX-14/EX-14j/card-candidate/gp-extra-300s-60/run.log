@@ -1,0 +1,12 @@
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FT gp-extra-300s-60: 3.82 kg, S 0.480 m2, start 22.0 m/s, CL_max 1.05 -> Vs estimate 11.0 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.244,"first_untrimmable_mps":41.8,"points":27,"slowest_trim_mps":12.1}
+FT stall_power_off          valid {"altitude_lost_m":33.0,"bank_in_first_second_deg":-11.4,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.39,"max_bank_in_recovery_deg":11.4,"ratio_to_cl_max_estimate":1.01,"recovery_time_s":3.96,"stall_alpha_deg":22.2,"stall_speed_mps":11.12,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.13,"height_error_run_m":1.07,"initial_acceleration_mps2":2.43,"max_level_speed_kmh":148.4,"max_level_speed_mps":41.21,"rpm_at_max":13660,"time_plus_10_mps_s":3.71,"time_plus_5_mps_s":1.79,"time_to_90_percent_s":9.75}
+FT roll_rate                valid {}
+FT inverted                 valid {"alpha_deg":-2.8,"elevator_servo":-0.106,"elevator_stick":-0.106,"speed_mps":24.76,"throttle":0.306,"upright_throttle":0.305,"vertical_speed_mps":0.02}
+FT spin                     valid {}
+FT snap_roll                valid {}
+FT report: tmp\extra300-roll-continuity-20261109\card-candidate/gp-extra-300s-60/profile.md

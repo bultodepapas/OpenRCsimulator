@@ -306,7 +306,7 @@ static func _turned(st: SurfaceTool, center: Vector3, axis: Vector3, profile: Ar
 # US-V13: the owner's O.S. 61 SF Special Edition, modelled in Blender and bundled by
 # assets/aircraft/ugly-stik-60/engine/build_engine.py on its O.S. 905 radial mount with silicone fuel and pressure lines.
 # The GLB frame is the crank axis at the drive-hub face; its empties name the lever tip, intake bore and silencer outlet.
-const ENGINE_SCENE := preload("res://assets/aircraft/ugly-stik-60/os61_engine.glb")
+const ENGINE_SCENE_PATH := "res://assets/aircraft/ugly-stik-60/os61_engine.glb"
 const ENGINE_REVISION := "os-61sf-se-blender-v1"
 # Silencer outlet tube bore (engine-build.json outlet_bore_radius_m, probed in Blender).
 const ENGINE_OUTLET_BORE_M := 0.0042
@@ -336,7 +336,7 @@ static func engine_origin() -> Vector3:
 ## Engine-frame position of a GLB node (lever pivot, anchors); read once from the imported scene.
 static func engine_anchor(node_name: String) -> Vector3:
 	if _engine_anchors.is_empty():
-		var scene := ENGINE_SCENE.instantiate()
+		var scene := (load("res://assets/aircraft/ugly-stik-60/os61_engine.glb") as PackedScene).instantiate()
 		for child in scene.get_children():
 			_engine_anchors[String(child.name)] = (child as Node3D).position
 		scene.free()
@@ -364,7 +364,7 @@ static func _adopt(scene: Node, node_name: String, parent: Node3D, position: Vec
 
 static func _add_engine(root: Node3D, propeller: Node3D) -> void:
 	var origin := engine_origin()
-	var scene := ENGINE_SCENE.instantiate()
+	var scene := (load("res://assets/aircraft/ugly-stik-60/os61_engine.glb") as PackedScene).instantiate()
 	var assembly := _adopt(scene, "engine_assembly", root, origin)
 	assembly.set_meta("airframe_scuff_skip", true) # bare metal, not covering (render/crash/airframe_scuffs.gd)
 	# Crank nose, drive hub, washer and nut turn with the propeller; the washer closes on the wooden hub's front face.

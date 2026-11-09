@@ -1,0 +1,351 @@
+diff --git a/app/data/aircraft/gp_extra_300s_60.json b/app/data/aircraft/gp_extra_300s_60.json
+index 4e054c3b0..4ac7788e3 100644
+--- a/app/data/aircraft/gp_extra_300s_60.json
++++ b/app/data/aircraft/gp_extra_300s_60.json
+@@ -1302,6 +1302,12 @@
+           "source": "research/extra-300/ex05/derive_physics.py: d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence"
+         }
+       },
++      "wing_separated_force_offset": {
++        "value": 0.25,
++        "unit": "1",
++        "kind": "estimated",
++        "source": "EX-14i candidate: maximum aft shift in strip chords relative to the modeled wing force point; quasi-steady separated-pressure estimate, SAND80-2114 NACA 0015 moment trend; not Extra flight identification"
++      },
+       "vertical": {
+         "area": {
+           "value": 0.051391,
+diff --git a/app/data/schema/aircraft-contract-v2.json b/app/data/schema/aircraft-contract-v2.json
+index 712ae3161..95164cf42 100644
+--- a/app/data/schema/aircraft-contract-v2.json
++++ b/app/data/schema/aircraft-contract-v2.json
+@@ -517,7 +517,8 @@
+         "tail_k",
+         "tail_CD90",
+         "vertical",
+-        "tailless"
++        "tailless",
++        "wing_separated_force_offset"
+       ]
+     },
+     {
+@@ -548,7 +549,8 @@
+         "tail_k",
+         "tail_CD90",
+         "horizontal",
+-        "vertical"
++        "vertical",
++        "wing_separated_force_offset"
+       ]
+     },
+     {
+diff --git a/app/data/schema/openrc-aircraft-v1.schema.json b/app/data/schema/openrc-aircraft-v1.schema.json
+index 1e6d5461b..738fc98b4 100644
+--- a/app/data/schema/openrc-aircraft-v1.schema.json
++++ b/app/data/schema/openrc-aircraft-v1.schema.json
+@@ -1042,6 +1042,19 @@
+                 }
+               }
+             },
++            "wing_separated_force_offset": {
++              "$ref": "#/$defs/evidence",
++              "properties": {
++                "value": {
++                  "type": "number",
++                  "minimum": 0,
++                  "maximum": 0.25
++                },
++                "unit": {
++                  "const": "1"
++                }
++              }
++            },
+             "wing_section_cm_ac": {
+               "$ref": "#/$defs/evidence",
+               "properties": {
+diff --git a/app/data/schema/openrc-aircraft-v2.schema.json b/app/data/schema/openrc-aircraft-v2.schema.json
+index 1d5b7cc1d..f2d30dfb9 100644
+--- a/app/data/schema/openrc-aircraft-v2.schema.json
++++ b/app/data/schema/openrc-aircraft-v2.schema.json
+@@ -1206,6 +1206,19 @@
+                 }
+               }
+             },
++            "wing_separated_force_offset": {
++              "$ref": "#/$defs/evidence",
++              "properties": {
++                "value": {
++                  "type": "number",
++                  "minimum": 0,
++                  "maximum": 0.25
++                },
++                "unit": {
++                  "const": "1"
++                }
++              }
++            },
+             "wing_section_cm_ac": {
+               "$ref": "#/$defs/evidence",
+               "properties": {
+@@ -7602,6 +7615,11 @@
+                       "required": [
+                         "wing_section_cm_ac"
+                       ]
++                    },
++                    {
++                      "required": [
++                        "wing_separated_force_offset"
++                      ]
+                     }
+                   ]
+                 }
+@@ -7655,6 +7673,28 @@
+         }
+       }
+     },
++    {
++      "if": {
++        "properties": {
++          "aero": {
++            "properties": {
++              "surfaces": {
++                "required": [
++                  "wing_separated_force_offset"
++                ]
++              }
++            }
++          }
++        }
++      },
++      "then": {
++        "not": {
++          "required": [
++            "flaps"
++          ]
++        }
++      }
++    },
+     {
+       "if": {
+         "required": [
+diff --git a/app/physics/aero.gd b/app/physics/aero.gd
+index f8a9387bb..6a27c9c34 100644
+--- a/app/physics/aero.gd
++++ b/app/physics/aero.gd
+@@ -475,7 +475,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
+ 	# D11j: the section's pitching moment about its aerodynamic centre as a pure couple per strip (q_i·S_i·c_i·Cm_ac);
+ 	# 0 (absent) adds no arithmetic, so aircraft without it stay byte-identical to the frozen oracle.
+ 	var cm_ac: float = surfaces.get("wing_cm_ac", 0.0)
+-	var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if cm_ac != 0.0 else PackedFloat64Array()
++	var separated_offset: float = float(surfaces.get("wing_separated_force_offset", 0.0))
++	var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array()) if cm_ac != 0.0 or separated_offset != 0.0 else PackedFloat64Array()
+ 	# X8-04: tailless strips act at their own swept stations; covered strips add the elevon's camber couple.
+ 	var tailless: Dictionary = surfaces.get("tailless", {})
+ 	var station_x: PackedFloat64Array = tailless.get("station_x", PackedFloat64Array())
+@@ -596,6 +597,14 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
+ 		if cm_ac != 0.0 and plane_speed > 0.0:
+ 			section_my = lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
+ 			my_sum += section_my
++		if separated_offset != 0.0 and weight > 0.0:
++			# Quasi-steady aft migration relative to the existing strip force point.
++			# Use actual FRD normal force, including drag and spatial/rate flow.
++			var chord_i: float = station_chords[i] if i < station_chords.size() else float(ref.c)
++			var shift: float = separated_offset * weight * _separated_offset_fraction(M.atan2_(f2, f0))
++			var separated_couple: float = shift * chord_i * fz # [−shift*c,0,0] × F, pitch component
++			section_my += separated_couple
++			my_sum += separated_couple
+ 		if not station_x.is_empty() and plane_speed > 0.0:
+ 			# X8-04: the elevon's camber couple, fading with the strip's separation like the attached section it describes.
+ 			var elevon_couple: float = lift_q * plane_speed * plane_speed * station_area * elevon_chords[i] \
+@@ -1386,3 +1395,20 @@ static func _spatial_finite(values: PackedFloat64Array, size: int) -> bool:
+ 
+ static func _spatial_failure(message: String) -> Dictionary:
+ 	return {ok = false, law = SPATIAL_LOADS_LAW, errors = PackedStringArray([message])}
++
++
++## Bounded C1 continuation for atan2's [−PI, PI] domain, periodic at its seam.
++## Keep angle/90 degrees from 15 to 60 degrees; flatten the endpoint slopes.
++## Reverse flow is a numerical continuation, not independently calibrated data.
++static func _separated_offset_fraction(alpha: float) -> float:
++	var angle := absf(alpha)
++	if angle > PI / 2.0:
++		angle = PI - angle
++	var linear := angle / (PI / 2.0)
++	if linear < 1.0 / 6.0:
++		var t := maxf(0.0, linear) * 6.0
++		return (2.0*t*t - t*t*t) / 6.0
++	if linear <= 2.0 / 3.0:
++		return maxf(0.0, linear)
++	var t := 3.0 * linear - 2.0
++	return (2.0 + t + t*t - t*t*t) / 3.0
+diff --git a/app/physics/aircraft_data.gd b/app/physics/aircraft_data.gd
+index c29f540c5..518111e4b 100644
+--- a/app/physics/aircraft_data.gd
++++ b/app/physics/aircraft_data.gd
+@@ -242,6 +242,8 @@ static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictio
+ 				return {ok=false,errors=tolerance_errors,warnings=result.warnings,model={}}
+ 			result.model.crash_tolerance = tolerance
+ 		if raw.has("flaps"):
++			if result.model.surfaces.has("wing_separated_force_offset"):
++				return {ok=false,errors=PackedStringArray(["aero.surfaces.wing_separated_force_offset: flap force/moment composition is not supported"]),warnings=result.warnings,model={}}
+ 			var flap_errors := PackedStringArray()
+ 			var flap_model := _flaps(flap_errors, raw.get("flaps"), result.model.reference, result.model.envelope)
+ 			if not flap_errors.is_empty():
+@@ -521,6 +523,8 @@ static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}, layout: D
+ 	if not envelope.is_empty():
+ 		envelope.station_ys = station_ys(span, chords)
+ 	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope, domain, layout)
++	if surfaces.has("wing_separated_force_offset") and (tailless or raw.has("flaps")):
++		errors.append("aero.surfaces.wing_separated_force_offset: supported only on conventional wings without flaps")
+ 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
+ 		if not _induced_map(envelope, surfaces, aero, area, span, chords):
+ 			errors.append("aero.surfaces: induced wing calibration cannot reproduce CLa with a finite positive section slope in [0.1, 50] 1/rad")
+@@ -2561,6 +2565,10 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
+ 		var cm_ac = _dq(domain, errors, "aero.surfaces.wing_section_cm_ac", node.get("wing_section_cm_ac"), "1", -0.3, 0.1)
+ 		if cm_ac != null:
+ 			out.wing_cm_ac = float(cm_ac)
++	if node.has("wing_separated_force_offset"):
++		var cp_offset = _dq(domain, errors, "aero.surfaces.wing_separated_force_offset", node.get("wing_separated_force_offset"), "1", 0.0, 0.25)
++		if cp_offset != null:
++			out.wing_separated_force_offset = float(cp_offset)
+ 	# Optional (P51-25): the fuselage's destabilizing yaw derivative about the ARP, a Munk-type pure couple in the local
+ 	# model (Aero._local_loads). The oracle's Cnb then carries fin + body; absent = 0 = no couple, byte-identical.
+ 	if node.has("body_cn_beta"):
+diff --git a/research/aircraft-standardization/build_schema.py b/research/aircraft-standardization/build_schema.py
+index 6667f8583..40d473980 100644
+--- a/research/aircraft-standardization/build_schema.py
++++ b/research/aircraft-standardization/build_schema.py
+@@ -757,12 +757,15 @@ def add_v2_overlay(schema: dict, spec: dict):
+                   "then": {"properties": {"aero": {"not": {"required": ["ground_effect"]}, "properties": {"surfaces": {
+                       "required": ["tailless"], "not": {"anyOf": [
+                           {"required": ["horizontal"]}, {"required": ["wing_aileron_effectiveness"]},
+-                          {"required": ["wing_section_cm_ac"]}]}}}}}},
++                          {"required": ["wing_section_cm_ac"]}, {"required": ["wing_separated_force_offset"]}]}}}}}},
+                   "else": {"properties": {"aero": {"properties": {"surfaces": {
+                       "required": ["horizontal", "wing_aileron_effectiveness"], "not": {"required": ["tailless"]}}}}}}})
+     rules.append({"if": branch_condition(["capabilities", "damage"], "tolerant_hull"),
+                   "then": {"required": ["crash_tolerance"]},
+                   "else": {"not": {"required": ["crash_tolerance"]}}})
++    rules.append({"if": {"properties": {"aero": {"properties": {"surfaces": {
++        "required": ["wing_separated_force_offset"]}}}}},
++        "then": {"not": {"required": ["flaps"]}}})
+     schema["allOf"] = list(schema.get("allOf", [])) + rules
+     add_physical_identity(schema)
+     return schema
+diff --git a/research/extra-300/ex05/derive_physics.py b/research/extra-300/ex05/derive_physics.py
+index 124a7fbfb..e0812dad5 100644
+--- a/research/extra-300/ex05/derive_physics.py
++++ b/research/extra-300/ex05/derive_physics.py
+@@ -734,6 +734,7 @@ data = {
+                 # rate and the inflated tau for its stall (docs/research/flight-dynamics/elevator-repair-2026-10-13.md).
+                 "downwash_gradient": q(deps, "1", "derived", D("d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence")),
+             },
++            "wing_separated_force_offset": q(0.25, "1", "estimated", "EX-14i candidate: maximum aft shift in strip chords relative to the modeled wing force point; quasi-steady separated-pressure estimate, SAND80-2114 NACA 0015 moment trend; not Extra flight identification"),
+             "vertical": {
+                 "area": q(Sv, "m2", "derived", D("fin + rudder side polygon from " + GEO_SRC)),
+                 "position": q(le(xv_ac, fin_cy), "m", "derived", D("fin ac: quarter chord at the area-centroid height")),
+diff --git a/research/extra-300/ex14/stall_probe.gd b/research/extra-300/ex14/stall_probe.gd
+index 83853338e..852931d75 100644
+--- a/research/extra-300/ex14/stall_probe.gd
++++ b/research/extra-300/ex14/stall_probe.gd
+@@ -14,12 +14,15 @@ const Flight := preload("res://sim/flight_session.gd")
+ const Catalog := preload("res://app_state/aircraft_catalog.gd")
+ const RB := preload("res://physics/rigid_body.gd")
+ const P := preload("../../flight-test/pilot.gd")
++const FlightLog := preload("res://sim/flight_log.gd")
+ 
+ const ALTITUDE := 300.0
+ const HOLD_S := 5.0
+ const RELEASE_S := 3.0
+ const ENTRY_VS := 1.4  # entry speed / the FT card's power-off stall speed (summary-extra-d.md: 11.11 m/s)
+ const VS_CARD := 11.11
++var output_dir := ""
++var failed := false
+ 
+ 
+ func _initialize() -> void:
+@@ -30,24 +33,48 @@ func _initialize() -> void:
+ 			id = arg.trim_prefix("--aircraft=")
+ 		elif arg.begins_with("--data="):
+ 			data_path = arg.trim_prefix("--data=")
++		elif arg.begins_with("--out="):
++			output_dir = arg.trim_prefix("--out=")
++	if not output_dir.is_empty():
++		if DirAccess.dir_exists_absolute(output_dir) or DirAccess.make_dir_recursive_absolute(output_dir) != OK:
++			printerr("Expected a fresh writable --out directory")
++			quit(2)
++			return
+ 	var data: String = Catalog.entry(id).data if data_path.is_empty() else data_path
+ 	for rates in ["normal", "full"]:
+ 		for ailerons in ["hands_off", "wings_level"]:
+-			print(JSON.stringify(_stall(data, rates, ailerons)))
+-	quit(0)
++			var result := _stall(data, rates, ailerons)
++			print(JSON.stringify(result))
++			if not output_dir.is_empty():
++				var report := FileAccess.open(output_dir.path_join(rates + "_" + ailerons + ".json"), FileAccess.WRITE)
++				report.store_string(JSON.stringify(result, "\t", true, true) + "\n")
++	print("EXTRA_STALL_PROBE_COMPLETE failures=", int(failed))
++	quit(1 if failed else 0)
+ 
+ 
+ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
+ 	var session := Flight.new()
++	session.setup_stage_backend("gdscript_reference")
+ 	session.setup(data)
+ 	root.add_child(session)
+ 	session.input_enabled = false
+ 	session.crash_auto_restart = false
+-	session.trim_at(ENTRY_VS * VS_CARD, "level")
++	var trim: Dictionary = session.trim_at(ENTRY_VS * VS_CARD, "level")
++	if not trim.get("ok", false):
++		failed = true
++		session.free()
++		return {case = "%s/%s" % [rates, ailerons], error = "entry trim refused", trim = trim}
+ 	session.set_start_altitude(ALTITUDE)
+ 	session.reset()
+ 	session.rate_profile = rates
+ 	var sim: Node = session.sim
++	var recorder: RefCounted = null
++	if not output_dir.is_empty():
++		recorder = FlightLog.new(session)
++		if recorder.start(output_dir.path_join(rates + "_" + ailerons + ".orfl")) != OK:
++			failed = true
++			session.free()
++			return {case = "%s/%s" % [rates, ailerons], error = "recording refused"}
+ 	var dt: float = sim.dt()
+ 	var ctx := {}
+ 	var out := {case = "%s/%s" % [rates, ailerons], rates_active = session.rates_active(),
+@@ -74,6 +101,8 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
+ 			at_stop = at_stop + 1 if c.pitch >= 0.999 else 0
+ 			if at_stop >= roundi(0.25 / dt):
+ 				t_stop = t
++				if recorder != null:
++					recorder.mark("elevator stop: " + rates + "/" + ailerons)
+ 				stop = {t_s = t, speed_mps = P.speed(s), alpha_deg = rad_to_deg(P.alpha(s)), pitch_deg = rad_to_deg(e[1]),
+ 					alt_m = P.altitude(s)}
+ 		var since := t - t_stop if t_stop >= 0.0 else -1.0
+@@ -93,6 +122,8 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
+ 			c.pitch = 0.0
+ 			c.roll = 0.0
+ 			if not out.has("hold_end"):
++				if recorder != null:
++					recorder.mark("release elevator")
+ 				out.hold_end = _row(s, since)
+ 			if since > HOLD_S + RELEASE_S:
+ 				out.release_end = _row(s, since)
+@@ -104,7 +135,14 @@ func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
+ 		sim.step()
+ 		if not sim.fault_reason.is_empty() or not session.crash.is_empty():
+ 			out.stopped = sim.fault_reason + str(session.crash)
++			failed = true
+ 			break
++	if t_stop < 0.0 or not out.has("release_end"):
++		out.error = "requested stop/hold/recovery did not complete"
++		failed = true
++	if recorder != null and recorder.stop() != OK:
++		out.error = "recording did not close"
++		failed = true
+ 	var late_rate := late_yaw / 2.0
+ 	out.stop = stop
+ 	out.elevator_at_stop_deg = _stop_deflection(session)

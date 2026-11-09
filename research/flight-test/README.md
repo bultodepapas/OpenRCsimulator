@@ -31,7 +31,7 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 ```
 
 1. **Baseline.** Run the battery on the unchanged tree. `--aircraft all` (the default) asks the catalog for every aircraft a flight session accepts; the helicopter is left out. Card v3 took about 10 minutes with four parallel jobs on the owner's desktop (each glow Stik 6–7). Card v4 takes 3–5 times as long: 51 minutes with four jobs on the shared dev VM, each glow Stik 33–38. `--only` runs a subset; tests that place themselves by Vs and Vmax should then include `trim_sweep,stall_power_off,vmax`.
-2. **Candidate.** Make one explicit change in a disposable copy of `app/` (or the working tree) and run it with `--app`.
+2. **Candidate.** Freeze the sources and make one explicit change through the owning pipeline, following the [comparison workflow](../../docs/tools/physics.md#flight-test-battery). Use `--app` for a changed runtime. For an aircraft-data-only candidate, use the same frozen app in both arms and add `--data /absolute/path/to/generated.json` for one explicit `--aircraft`; the loaded data ID must match that catalog aircraft. Adjacent installations and assets still come from `--app`.
 3. **Compare.** The comparator lists, per aircraft:
    - every test whose validity changed;
    - every value that moved by more than max(`--abs`, `--rel` × |baseline|), 0.01 and 1 % by default;
@@ -45,14 +45,14 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 - `profile.md`: the readable report.
 - `run.log` and one CSV trace per flight, in the `openrc-trace` columns with session metadata, at 20 Hz (`--full-traces` writes every tick).
 - with `--diagnostics`, one `<test>.aero.csv` per flight at the same 20 Hz: α, β, airspeed, the production local-flow and sideslip weights, and body-axis CX…Cn from the coefficient oracle, the local model and the blended production loads. They are recomputed read-only from the session's own state, servo deflections, density, wind, downwash lag and ground height; `lerp_residual` checks that the blend equals oracle + w·(local − oracle) (exact without flaps). Profiles are identical with and without it.
-- `<out>/run.json`: card version, git commit and dirty paths, Godot version, `--app`, and each aircraft's data-file SHA-256, exit status and valid count.
+- `<out>/run.json`: card version, runner Git commit and dirty paths, Godot version, `--app`, `--data`, and each aircraft's loaded input-file SHA-256, exit status and valid count. `profile.json` also carries `aircraft_input_sha256`; its older `data_sha256` field is the semantic model hash. The runner checks the loaded byte hash against the file after the run and fails a mismatch.
 - `<out>/summary.md`: the comparison table across aircraft.
 
 `python research/flight-test/spin_state.py <out> [aircraft ...]` reads the spin traces offline. It prints each aircraft's state averaged over the card's steady window (4.0–6.25 s): α, |β|, airspeed, body rates, Ωb/2V, pitch angle, pitch-rate swing and sink. Beside each aircraft it prints two spins measured in flight with the same entry: NASA FASER (Ultra Stick 120) and the UIUC Aero Testbed (35 % Extra 260). Their speeds are scaled to that aircraft's wing loading. These rows compare other airframes; they are not acceptance bands ([sources](../../docs/research/flight-dynamics/rc-aero-data-sources.md), [current findings](../../docs/research/flight-test/FT-03/README.md#against-measured-rc-class-data)).
 
 `python research/flight-test/polar_fit.py <out> [aircraft ...]` works the same way for lift and drag (card v3 or later). It fits each airframe polar from `aero_sweep`: CL at α 0, CLα, and CD = CDmin + K(CL − CL_md)² with e. It then compares the idle glides with that polar, so the excess shows the idle propeller and trim drag. It also prints the NASA FASER and Southampton FliTePlat wind-tunnel references.
 
-It exits 1 when a run fails or Godot reports a script error. A test that is not valid is a result, not a run failure. Runs are deterministic: two runs of the full battery compare with no change.
+Use a new or empty `--out` directory and distinct aircraft IDs. The runner refuses reused evidence folders and duplicate jobs. It exits 1 when a run fails, Godot reports a script error or the loaded input identity disagrees with the reported file. A test that is not valid is a result, not a run failure. Runs are deterministic: two runs of the full battery compare with no change.
 
 You can also run one aircraft directly: `<godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- --aircraft=<id> --out=<dir> [--only=a,b]`, or list the aircraft with `-- --list`.
 

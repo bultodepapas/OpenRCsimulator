@@ -9301,8 +9301,8 @@ msgstr "Touceiras de grama, trevo e flores silvestres dos dois lados da pista. D
 msgid "RC circuit"
 msgstr "Circuito RC"
 
-msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic turns it on for a dedicated GPU at High or Extreme scene detail. Applies at the next flight."
-msgstr "O circuito de terra para carros RC ao norte da pista, com saltos, curvas inclinadas e barreiras. Ele é físico: as rodas rolam sobre o relevo e o avião pode colidir com ele. Automático o ativa com uma GPU dedicada e detalhe de cena Alto ou Extremo. Aplica-se no próximo voo."
+msgid "The RC car dirt circuit north of the runway, with its jumps, banked turns and barriers. It is physical: wheels roll over its relief and the airframe can hit it. Automatic leaves it off regardless of graphics settings or hardware. Applies at the next flight."
+msgstr "O circuito de terra para carros RC ao norte da pista, com saltos, curvas inclinadas e barreiras. Ele é físico: as rodas rolam sobre o relevo e o avião pode colidir com ele. Automático o mantém desativado independentemente das configurações gráficas ou do hardware. Aplica-se no próximo voo."
 
 msgid "Alert motion"
 msgstr "Animação dos alertas"

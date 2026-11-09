@@ -2580,12 +2580,13 @@ func restore_sky_presentation(transport: Dictionary) -> void:
 
 
 func _refresh_sky(retained_exposure: float = -1.0) -> void:
+	# Appearance-only changes retain the eye's current adaptation, including while paused.
+	# A combined lighting edit has already installed its newly selected exposure.
+	var exposure: float = retained_exposure if retained_exposure > 0.0 else _env.tonemap_exposure
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	Atmosphere.update_environment(_env, snapshot)
-	if retained_exposure > 0.0:
-		# A retained paused world already has an adapted exposure; do not reset it to the sky baseline.
-		_env.tonemap_exposure = retained_exposure
-		World.Exposure.set_value(retained_exposure)
+	_env.tonemap_exposure = exposure
+	World.Exposure.set_value(_env.tonemap_exposure)
 	Atmosphere.update_sun(_sun, snapshot)
 	Atmosphere.update_cloud_appearance(_field_node)
 	Atmosphere.update_clouds(_env, session.sim.time())
@@ -2714,6 +2715,7 @@ func _commit_lighting(staged: Dictionary, config: Dictionary) -> bool:
 	if staged.field.changed and not updated:
 		return false
 	Atmosphere.update_environment(_env, staged.lighting)
+	World.Exposure.set_value(_env.tonemap_exposure)
 	Atmosphere.update_sun(_sun, staged.lighting)
 	lighting_config = config.duplicate(true)
 	_lighting = staged.lighting

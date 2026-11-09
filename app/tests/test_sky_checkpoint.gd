@@ -6,6 +6,7 @@ const SkyCheckpoint := preload("res://app_state/sky_checkpoint.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const Weather := preload("res://physics/wind_config.gd")
+const World := preload("res://render/world/world.gd")
 var failures := 0
 var checks := 0
 
@@ -85,8 +86,46 @@ func _run() -> void:
 	check("running flight refuses visual edit", not flight.apply_sky_config(SkyConfig.for_preset("clear")).ok and _observed(flight) == before)
 	root.remove_child(flight)
 	flight.free()
+	_test_adapted_sky_edits()
 	print("sky checkpoint checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+func _test_adapted_sky_edits() -> void:
+	# Field-world time-of-day mode has eye adaptation and intentionally has no checkpoint support.
+	Conditions.session_preset = "night"
+	var flight := Main.new()
+	flight.user_args = PackedStringArray(["--soundscape=off"])
+	flight.interactive_start = true
+	root.add_child(flight)
+	flight.set_process(false)
+	if not flight.startup_error.is_empty() or flight.session == null:
+		check("adapted field-world fixture starts", false)
+		flight.free()
+		return
+	flight.session.physics_enabled = false
+	flight.session.input_enabled = false
+	flight.recorder.detach()
+	flight.session.sim.set_paused(true)
+	var clock_s: float = flight.session.sim.time()
+	World.adapt(flight._env, Vector3(0.0, 0.5, 0.0), clock_s, 1.0)
+	var adapted_exposure: float = flight._env.tonemap_exposure
+	var adapt_clock: float = World._adapt_clock
+	var adapt_log: float = World._adapt_log
+	var physics := var_to_bytes(flight.session.checkpoint())
+	check("fixture has adapted away from the sky baseline", not is_equal_approx(adapted_exposure, float(Atmosphere.state.exposure)))
+	for preset: String in ["clear", "overcast", "electrical_storm", "classic"]:
+		check("adapted sky edit applies: " + preset, flight.apply_sky_config(SkyConfig.for_preset(preset)).ok)
+		check("paused sky edit preserves adapted exposure: " + preset,
+			flight._env.tonemap_exposure == adapted_exposure and World.Exposure.last == adapted_exposure)
+		check("sky edit preserves adaptation history: " + preset, World._adapt_clock == adapt_clock and World._adapt_log == adapt_log)
+		World.update(flight._env, clock_s, Vector3.ZERO, Vector3(0.0, 0.5, 0.0))
+		check("same-clock update keeps exposure stable: " + preset,
+			flight._env.tonemap_exposure == adapted_exposure and World.Exposure.last == adapted_exposure)
+		check("adapted sky edit preserves physical bytes: " + preset, physics == var_to_bytes(flight.session.checkpoint()))
+	flight.free()
+	Conditions.session_preset = "day"
+
 
 func _observed(flight: Node) -> Dictionary:
 	return {physics = var_to_bytes(flight.session.checkpoint()), config = flight.sky_config.duplicate(true),

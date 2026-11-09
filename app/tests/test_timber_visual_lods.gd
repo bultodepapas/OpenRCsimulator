@@ -4,7 +4,7 @@ const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
 const CurrentDetails := preload("res://aircraft/timber_visual_details.gd")
 const CustomPaint := preload("res://aircraft/custom_skin.gd")
 const LEGACY_ID := "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
-const LOD_ID := "09c9207da3d8d5e375314760cd4218272836d6d19ee9472550eec69a11a17d2c"
+const LOD_ID := "375f9373e4755aad93a9907e829ed267e340c16142584991de0fb22aa4e9eedd"
 
 var details: Script = CurrentDetails
 var checks := 0
@@ -34,6 +34,8 @@ func _initialize() -> void:
 	_test_flags_cache_key()
 	_test_smoothed_fallback()
 	_test_wide_lod_indices()
+	_test_split_smoothing_defaults()
+	_test_split_index_order_and_fallbacks()
 	_test_paint_compatibility()
 	print("%d checks, %d failed" % [checks, failed])
 	quit(1 if failed else 0)
@@ -270,6 +272,105 @@ func _test_wide_lod_indices() -> void:
 	_check(warm_index >= 0 and _same_lods(expected, _lods(warm.node.mesh, warm_index)), "cache-hit repair preserves 32-bit LOD indices")
 	cold.root.free()
 	warm.root.free()
+
+
+func _split_fixture() -> Array:
+	var source := []
+	source.resize(Mesh.ARRAY_MAX)
+	source[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3.ZERO, Vector3.RIGHT, Vector3.UP,
+		Vector3.ONE, Vector3.ONE, Vector3.ONE]) # Preserve a degenerate second triangle too.
+	var normals := PackedVector3Array([Vector3(2, 0, 0), Vector3(0, 3, 0), Vector3(0, 0, 4),
+		Vector3(1, 2, 3), Vector3(-1, 0, 2), Vector3(4, 3, 2)])
+	source[Mesh.ARRAY_COLOR] = PackedColorArray([Color.RED, Color.GREEN, Color.BLUE, Color.WHITE, Color.BLACK, Color.GRAY])
+	source[Mesh.ARRAY_TEX_UV] = PackedVector2Array([Vector2.ZERO, Vector2.RIGHT, Vector2.DOWN, Vector2.ONE, Vector2(0.2, 0.3), Vector2(0.4, 0.5)])
+	source[Mesh.ARRAY_TEX_UV2] = source[Mesh.ARRAY_TEX_UV].duplicate()
+	var tangents := PackedFloat32Array()
+	for index in 24: tangents.append(float(index) * 0.05)
+	source[Mesh.ARRAY_TANGENT] = tangents
+	source[Mesh.ARRAY_NORMAL] = normals
+	return source
+
+
+func _test_split_smoothing_defaults() -> void:
+	var source := _split_fixture()
+	var normals: PackedVector3Array = source[Mesh.ARRAY_NORMAL]
+	for normal_data: Variant in [null, PackedVector3Array(), normals]:
+		source[Mesh.ARRAY_NORMAL] = normal_data
+		var expected := source.duplicate(true)
+		if normal_data is PackedVector3Array and normal_data.is_empty(): expected[Mesh.ARRAY_NORMAL] = null
+		var source_before := var_to_bytes(source)
+		for surface_id: int in [0, 7, -3, 1 << 40]:
+			var split: Dictionary = details.call("_split_material_surface", source, {}, {}, surface_id, "white")
+			var missing: Dictionary = details.call("_split_material_surface", source, {}, {"unrelated": Vector3.ONE}, surface_id, "white")
+			_check(split.keys() == ["white"], "unsmoothed split retains material order")
+			_check(var_to_bytes(split.white) == var_to_bytes(expected), "empty lookup preserves every packed source channel")
+			_check(var_to_bytes(split.white) == var_to_bytes(missing.white), "empty and nonempty missing-key lookup paths match exactly")
+			_check(var_to_bytes(source) == source_before, "split leaves all source channel bytes unchanged")
+	# A present zero must override a source normal, while missing keys retain it.
+	source[Mesh.ARRAY_NORMAL] = normals
+	var lookup := {"7:0:1": Vector3.ZERO, "7:1:2": Vector3(0.25, -0.5, 0.75)}
+	var smoothed: Dictionary = details.call("_split_material_surface", source, {1: "red"}, lookup, 7, "white")
+	_check(smoothed.keys() == ["white", "red"], "remapped groups retain first-triangle order")
+	_check(smoothed.white[Mesh.ARRAY_NORMAL] == PackedVector3Array([normals[0], Vector3.ZERO, normals[2]]), "present zero and absent normal keys remain distinct")
+	_check(smoothed.red[Mesh.ARRAY_NORMAL] == PackedVector3Array([normals[3], normals[4], Vector3(0.25, -0.5, 0.75)]), "surface/triangle/corner smoothing keys remain compatible")
+	for channel: int in [Mesh.ARRAY_VERTEX, Mesh.ARRAY_COLOR, Mesh.ARRAY_TEX_UV, Mesh.ARRAY_TEX_UV2, Mesh.ARRAY_TANGENT]:
+		var width := 4 if channel == Mesh.ARRAY_TANGENT else 1
+		_check(var_to_bytes(smoothed.white[channel]) == var_to_bytes(source[channel].slice(0, 3 * width)), "white group retains exact channel bytes " + str(channel))
+		_check(var_to_bytes(smoothed.red[channel]) == var_to_bytes(source[channel].slice(3 * width, 6 * width)), "red group retains exact channel bytes " + str(channel))
+
+
+func _test_split_index_order_and_fallbacks() -> void:
+	var source := _split_fixture()
+	var normals: PackedVector3Array = source[Mesh.ARRAY_NORMAL]
+	source[Mesh.ARRAY_INDEX] = PackedInt32Array([2, 0, 1, 4, 3, 4, 5, 2, 4])
+	var before := var_to_bytes(source)
+	var split: Dictionary = details.call("_split_material_surface", source, {1: "red"}, {}, 0, "white")
+	_check(split.keys() == ["white", "red"], "interleaved A/B/A retains first group encounter order")
+	_check(split.white[Mesh.ARRAY_NORMAL] == PackedVector3Array([normals[2], normals[0], normals[1], normals[5], normals[2], normals[4]]), "interleaved group retains duplicate/reordered source indices")
+	_check(split.red[Mesh.ARRAY_NORMAL] == PackedVector3Array([normals[4], normals[3], normals[4]]), "second group retains repeated indices")
+	_check(split.white[Mesh.ARRAY_COLOR] == PackedColorArray([Color.BLUE, Color.RED, Color.GREEN, Color.GRAY, Color.BLUE, Color.BLACK]), "indexed colors follow the same source order")
+	_check(split.white[Mesh.ARRAY_TANGENT] == PackedFloat32Array([
+		0.4, 0.45, 0.5, 0.55, 0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35,
+		1.0, 1.05, 1.1, 1.15, 0.4, 0.45, 0.5, 0.55, 0.8, 0.85, 0.9, 0.95]), "four-component tangent tuples retain exact order")
+	_check(var_to_bytes(source) == before, "grouping does not modify source indices or channels")
+	source = _split_fixture()
+	source[Mesh.ARRAY_INDEX] = PackedInt32Array()
+	var expected := source.duplicate(true)
+	expected[Mesh.ARRAY_INDEX] = null
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(var_to_bytes(split.white) == var_to_bytes(expected), "empty index buffer remains non-indexed sequential geometry")
+	source[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 1, 2, 999999])
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(split.white[Mesh.ARRAY_NORMAL] == normals.slice(0, 3), "ignored trailing invalid index retains original scalar behavior")
+	source = _split_fixture()
+	source[Mesh.ARRAY_VERTEX].append(Vector3(40, 50, 60))
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(split.white[Mesh.ARRAY_VERTEX].size() == 6 and split.white[Mesh.ARRAY_NORMAL] == normals, "ignored trailing non-indexed vertex does not require longer channels")
+	source = _split_fixture()
+	source[Mesh.ARRAY_INDEX] = PackedInt32Array([-1, 0, 1])
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(split.white[Mesh.ARRAY_NORMAL] == PackedVector3Array([normals[5], normals[0], normals[1]]), "negative private indices retain original scalar indexing")
+	source = _split_fixture()
+	source[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 0, 0])
+	source[Mesh.ARRAY_NORMAL] = PackedVector3Array([Vector3(7, 8, 9)])
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(split.white[Mesh.ARRAY_NORMAL] == PackedVector3Array([Vector3(7, 8, 9), Vector3(7, 8, 9), Vector3(7, 8, 9)]), "short but sufficiently referenced channel retains scalar behavior")
+	source = _split_fixture()
+	source[Mesh.ARRAY_NORMAL] = 42
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(split.white[Mesh.ARRAY_NORMAL] == null, "wrong-typed optional channel remains ignored")
+	source = _split_fixture()
+	source[Mesh.ARRAY_CUSTOM0] = PackedFloat32Array([7, 8])
+	source[Mesh.ARRAY_BONES] = PackedInt32Array([1])
+	source[Mesh.ARRAY_WEIGHTS] = PackedFloat32Array([1])
+	split = details.call("_split_material_surface", source, {}, {}, 0, "white")
+	_check(split.white[Mesh.ARRAY_CUSTOM0] == null and split.white[Mesh.ARRAY_BONES] == null and split.white[Mesh.ARRAY_WEIGHTS] == null and split.white[Mesh.ARRAY_INDEX] == null, "unsupported slots remain absent from expanded output")
+	source = _split_fixture()
+	split = details.call("_split_material_surface", source, {0: &"red"}, {}, 0, "white")
+	_check(split.keys() == ["red", "white"] and split.red[Mesh.ARRAY_NORMAL] == normals.slice(0, 3), "non-String remaps retain scalar StringName conversion")
+	var white_before := var_to_bytes(split.white)
+	split.red[Mesh.ARRAY_VERTEX][0] = Vector3(40, 50, 60)
+	_check(var_to_bytes(split.white) == white_before and source[Mesh.ARRAY_VERTEX][0] == Vector3.ZERO, "material-group arrays remain independently owned")
 
 
 func _test_paint_compatibility() -> void:

@@ -59,6 +59,11 @@ func _run() -> void:
 		Atmosphere.engine_shadows = str(args.engine_shadows) == "on"
 	viewport = SubViewport.new()
 	viewport.size = Vector2i(int(args.get("width", "1280")), int(args.get("height", "720")))
+	var lod_threshold := float(args.get("mesh_lod_threshold", "1"))
+	if not is_finite(lod_threshold) or lod_threshold < 0.0 or lod_threshold > 16.0:
+		_fail("mesh_lod_threshold must be zero to sixteen pixels")
+		return
+	viewport.mesh_lod_threshold = lod_threshold
 	viewport.msaa_3d = Viewport.MSAA_4X
 	viewport.own_world_3d = true
 	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
@@ -109,6 +114,7 @@ func _run() -> void:
 	report["godot"] = Engine.get_version_info().string
 	report["viewport"] = [viewport.size.x, viewport.size.y]
 	report["msaa"] = "4x"
+	report["mesh_lod_threshold"] = viewport.mesh_lod_threshold
 	report["scope"] = "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance."
 	RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), true)
 	var duration := float(args.get("profile", "0"))
@@ -154,6 +160,11 @@ func _field() -> bool:
 		OS.set_environment("OPENRC_TREE_WIND", str(args.wind))
 	if args.has("cell"):
 		OS.set_environment("OPENRC_TREE_CELL_SIZE_M", str(args.cell))
+	if args.has("woodland_meshes"):
+		if str(args.woodland_meshes) not in ["on", "off"]:
+			_fail("woodland_meshes must be on or off")
+			return false
+		OS.set_environment("OPENRC_WOODLAND_MESHES", str(args.woodland_meshes))
 	var path := str(args.get("field", Loader.DEFAULT_PATH))
 	var loaded: Dictionary = Loader.load_from(path)
 	if not loaded.ok:
@@ -289,7 +300,27 @@ func _woodland_review(field: Dictionary) -> bool:
 		return true
 	var inventory := {plants = woodland.get_meta("plants", []).size(), triangles = woodland.get_meta("triangles", 0),
 		batches = woodland.get_meta("batches", 0), recipe_sha256 = FileAccess.get_sha256("res://data/woodland_edges.json"),
-		builder_sha256 = FileAccess.get_sha256("res://scenery/woodland_edge_habitat.gd")}
+		builder_sha256 = FileAccess.get_sha256("res://scenery/woodland_edge_habitat.gd"),
+		mesh_details = woodland.get_meta("mesh_details", false), mesh_plans = woodland.get_meta("mesh_plans", []),
+		plant_records = woodland.get_meta("plants", []), source_triangle_allowances = {}}
+	var scenery := content.get_node_or_null("Scenery")
+	if scenery != null:
+		inventory.source_triangle_allowances = load("res://tests/scene_source_budget.gd").counts(scenery)
+	if args.has("woodland_texture_filter"):
+		if str(args.woodland_texture_filter) != "linear":
+			_fail("woodland_texture_filter diagnostic accepts linear only")
+			return false
+		for batch: MultiMeshInstance3D in woodland.find_children("*", "MultiMeshInstance3D", true, false):
+			if batch.material_override != null: continue
+			var mesh := batch.multimesh.mesh.duplicate() as ArrayMesh
+			if mesh == null: continue
+			for surface in mesh.get_surface_count():
+				var material := mesh.surface_get_material(surface).duplicate() as BaseMaterial3D
+				if material != null:
+					material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
+					mesh.surface_set_material(surface, material)
+			batch.multimesh.mesh = mesh
+		inventory["mesh_texture_filter_diagnostic"] = "linear without mipmaps"
 	var shader_path := str(args.get("woodland_shader_source", "res://scenery/woodland_cards.gdshader"))
 	var shader_code := FileAccess.get_file_as_string(shader_path)
 	if shader_code.is_empty():
@@ -348,6 +379,7 @@ func _woodland_review(field: Dictionary) -> bool:
 		var ground := GroundTerrain.sample_validated(float(center[0]), float(center[1]), surfaces.rects, lake.lake)
 		var target := Frames.ned_to_render([float(center[0]), float(center[1]), -ground[0]])
 		for pose: Array in [["eye", Vector3(4.0, 1.65, 4.0)], ["overview", Vector3(7.0, 5.0, 7.0)],
+				["close", Vector3(1.8, 0.8, 1.8)],
 				["reverse", Vector3(-4.0, 1.65, -4.0)]]:
 			views.append({id = str(patch.id) + "-" + str(pose[0]), eye = target + pose[1],
 				at = target + Vector3.UP * 0.38, fov = 50.0})
@@ -438,7 +470,7 @@ func _motion() -> bool:
 	var route := str(args.motion)
 	var count := int(args.get("frames", "192"))
 	var wind_mps := float(args.get("wind_mps", "5"))
-	if route not in ["oak-approach", "card-orbit", "forest-pan", "car-park-wind", "grass-margin-pan"] or count < 24 or count > 480 \
+	if route not in ["oak-approach", "card-orbit", "forest-pan", "car-park-wind", "grass-margin-pan", "woodland-orbit"] or count < 24 or count > 480 \
 			or not is_finite(wind_mps) or wind_mps < 0.0 or wind_mps > 20.0:
 		return false
 	var loaded: Dictionary = Loader.load_from(str(args.get("field", Loader.DEFAULT_PATH)))
@@ -483,6 +515,15 @@ func _motion() -> bool:
 				view.eye = Frames.ned_to_render([pn + 4.0, pe + 1.0 + 6.0 * phase, -0.6])
 				view.at = Frames.ned_to_render([pn + 5.5, pe + 11.0 + 6.0 * phase, -0.1])
 				view.fov = 62.0
+			"woodland-orbit":
+				if not str(views[0].id).begins_with("woodland-edge-"):
+					_fail("woodland-orbit requires one selected woodland view")
+					return false
+				var target: Vector3 = views[0].at
+				var angle := phase * TAU
+				view.at = target
+				view.eye = target + Vector3(cos(angle) * 6.0, 1.27, sin(angle) * 6.0)
+				view.fov = 55.0
 		if not await _capture(view, view.id, float(index) / 24.0, Vector3(wind_mps, 0.0, 0.0)):
 			return false
 	return true
@@ -501,13 +542,17 @@ func _profile(duration: float) -> bool:
 		return false
 	_place(view)
 	var warmup := float(args.get("warmup", "10"))
+	var wind_mps := float(args.get("wind_mps", "5"))
+	if not is_finite(wind_mps) or wind_mps < 0.0 or wind_mps > 20.0:
+		_fail("wind_mps must be zero to twenty")
+		return false
 	var started := Time.get_ticks_usec()
 	while float(Time.get_ticks_usec() - started) / 1000000.0 < warmup:
 		await _frame()
 	started = Time.get_ticks_usec()
 	var previous := started
 	while float(Time.get_ticks_usec() - started) / 1000000.0 < duration:
-		Clock.update(float(Time.get_ticks_usec() - started) / 1000000.0, Vector3(5, 0, 0))
+		Clock.update(float(Time.get_ticks_usec() - started) / 1000000.0, Vector3(wind_mps, 0, 0))
 		await _frame()
 		var now := Time.get_ticks_usec()
 		report.samples.append({wall_ms = float(now - previous) / 1000.0,
@@ -516,6 +561,7 @@ func _profile(duration: float) -> bool:
 		previous = now
 	report["duration_s"] = float(Time.get_ticks_usec() - started) / 1000000.0
 	report["warmup_s"] = warmup
+	report["profile_wind_mps"] = wind_mps
 	report["view"] = view.id
 	report["counters"] = _counters()
 	return true

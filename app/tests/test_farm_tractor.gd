@@ -136,7 +136,30 @@ func _check_low() -> void:
 	var inputs := _inputs()
 	var scenery_script: Script = load("res://scenery/scenery.gd")
 	var built: Node3D = scenery_script.build(inputs.field, inputs.scenery, {theme = "", quality = "low", audio = false, birds = false, farm_tractor = true})
-	check("Low preserves existing ornament removal", built.get_node_or_null("FarmTractor") == null)
+	check("Low uses a simple batched tractor", built.get_node_or_null("FarmTractor") == null)
+	var visible := {}
+	for child: Node in built.get_children():
+		for entry: Dictionary in child.get_meta("damage_ranges", []):
+			if int(entry.end) > int(entry.first): visible[str(entry.id)] = int(entry.end) - int(entry.first)
+	var categories := {bench = 0, tractor = 0, person = 0}
+	for group: Dictionary in inputs.scenery.groups:
+		if str(group.type) != "instances": continue
+		for index in group.placements.size():
+			var prefab := str(group.placements[index].prefab)
+			var category := "person" if prefab.begins_with("person_") else prefab
+			if categories.has(category):
+				categories[category] += 1
+				var id := "prop:%s:%02d" % [group.id, index]
+				check("Low renders physical %s %s:%d" % [prefab, group.id, index], visible.has(id))
+				if category == "person" and visible.has(id):
+					var kit: Variant = load("res://scenery/mesh_kit.gd").new()
+					var parts: Array = load("res://scenery/prefabs.gd").build(prefab, kit,
+						int(group.placements[index].seed), "summer")
+					var vertices: int = kit.verts.size()
+					for part: Dictionary in parts: vertices += part.kit.verts.size()
+					check("Low retains the complete static person including arms", visible[id] == vertices)
+	for category: String in categories:
+		check("Low fixture includes " + category, categories[category] > 0)
 	check("Low does not load tractor resources or textures", not ResourceLoader.has_cached(Tractor.MESH_PATH))
 	built.free()
 

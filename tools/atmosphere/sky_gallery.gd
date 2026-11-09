@@ -26,6 +26,7 @@ const STORM_EVENTS_SCRIPT := "res://environment/storm_events.gd"
 
 var _args: Dictionary = {}
 var _viewport: SubViewport
+var _view_size := VIEW_SIZE
 var _field: Dictionary
 var _images: Array[Dictionary] = []
 var _failures := 0
@@ -53,6 +54,13 @@ func _run() -> void:
 		_fail("--mode must be day, night, or all")
 		quit(1)
 		return
+	for dimension: String in ["width", "height"]:
+		var text := str(_args.get(dimension, VIEW_SIZE.x if dimension == "width" else VIEW_SIZE.y))
+		if not text.is_valid_int() or int(text) < 128 or int(text) > 8192:
+			_fail("--%s must be an integer from 128 to 8192" % dimension)
+			quit(1)
+			return
+	_view_size = Vector2i(int(_args.get("width", VIEW_SIZE.x)), int(_args.get("height", VIEW_SIZE.y)))
 	if not _prepare_directory(output_dir):
 		quit(1)
 		return
@@ -68,10 +76,10 @@ func _run() -> void:
 	_field = loaded.field
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	RenderingServer.render_loop_enabled = false
-	root.size = VIEW_SIZE
+	root.size = _view_size
 	_viewport = SubViewport.new()
 	_viewport.name = "SkyGalleryViewport"
-	_viewport.size = VIEW_SIZE
+	_viewport.size = _view_size
 	_viewport.msaa_3d = Viewport.MSAA_4X
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_viewport.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
@@ -251,8 +259,8 @@ func _capture_view(case_id: String, view: Dictionary, selection: Dictionary, lig
 		scene_root.queue_free()
 		return
 	var image: Image = _viewport.get_texture().get_image()
-	if image == null or image.is_empty() or image.get_size() != VIEW_SIZE:
-		_fail("capture did not return a 1280x720 image: " + case_id)
+	if image == null or image.is_empty() or image.get_size() != _view_size:
+		_fail("capture did not return a %dx%d image: %s" % [_view_size.x, _view_size.y, case_id])
 		scene_root.queue_free()
 		return
 	var output_dir := str(_args.out)
@@ -365,7 +373,8 @@ func _case_manifest(case_id: String, file_name: String, preset_id: String, phase
 		"clock_s": clock_s,
 		"camera": {"azimuth_deg": float(view.azimuth_deg), "elevation_deg": float(view.elevation_deg), "fov_deg": 70.0},
 		"lighting": light_meta,
-		"resolution": [VIEW_SIZE.x, VIEW_SIZE.y],
+		"cloud_cache": Atmosphere.CloudShadowMap.diagnostics(),
+		"resolution": [_view_size.x, _view_size.y],
 		"msaa": "4x",
 	}
 
@@ -380,7 +389,7 @@ func _write_manifest(output_dir: String) -> void:
 		"engine": Engine.get_version_info(),
 		"renderer": RenderingServer.get_current_rendering_method(),
 		"adapter": RenderingServer.get_video_adapter_name(),
-		"viewport": [VIEW_SIZE.x, VIEW_SIZE.y],
+		"viewport": [_view_size.x, _view_size.y],
 		"msaa": "4x",
 		"world_builder": "app/render/world/world.gd",
 		"sky_configuration": "Atmosphere.configure_appearance",

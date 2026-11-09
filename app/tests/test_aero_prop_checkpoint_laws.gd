@@ -54,7 +54,7 @@ func _initialize() -> void:
 	var snapshot: Dictionary = flight.checkpoint()
 	var current := digest(configuration_parts(flight, Aero.LOADS_LAW, true))
 	var old_lookup := digest(configuration_parts(flight, Aero.LOADS_LAW, false))
-	var old_aero := digest(configuration_parts(flight, "section-plane-source-weighted-wake-velocity-v2", true))
+	var old_aero := digest(configuration_parts(flight, "section-plane-source-weighted-wake-velocity-v3", true))
 	check("fixture checkpoint and independently reconstructed current configuration", not snapshot.is_empty() \
 		and snapshot.get("configuration", "") == current,
 		"actual %s expected %s" % [snapshot.get("configuration", ""), current])
@@ -75,7 +75,7 @@ func _initialize() -> void:
 		match change:
 			"lookup": old.configuration = old_lookup
 			"aero configuration": old.configuration = old_aero
-			"aero field": old.aero_loads_law = "section-plane-source-weighted-wake-velocity-v2"
+			"aero field": old.aero_loads_law = "section-plane-source-weighted-wake-velocity-v3"
 		var rejected: bool = not flight.restore_checkpoint(old)
 		check("historical %s rejected with session state preserved" % change, rejected \
 			and var_to_bytes(flight.checkpoint()) == before and flight.sim.paused == was_paused \

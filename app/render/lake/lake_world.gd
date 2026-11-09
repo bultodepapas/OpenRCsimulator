@@ -4,7 +4,6 @@ const Loader := preload("res://data/lake_loader.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://render/lake/lake_terrain.gd")
-const LakePlants := preload("res://render/lake/lake_plants.gd")
 const WaterEffects := preload("res://render/lake/water_effects.gd")
 static var _default_signature := PackedByteArray()
 
@@ -68,7 +67,8 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 	for parameter: String in ["tile_m", "grass_photo_enabled", "rc_grass_albedo", "rc_grass_normal",
 			"rc_grass_roughness", "turf_detail", "turf_detail_strength"]:
 		bank_material.set_shader_parameter(parameter, ground_material.get_shader_parameter(parameter))
-	node.add_child(LakePlants.build(lake))
+	var lake_plants: Script = load("res://render/lake/lake_plants.gd")
+	node.add_child(lake_plants.build(lake))
 	var ambience := WaterEffects.ambient_player(lake, audio_on)
 	if ambience != null:
 		node.add_child(ambience)

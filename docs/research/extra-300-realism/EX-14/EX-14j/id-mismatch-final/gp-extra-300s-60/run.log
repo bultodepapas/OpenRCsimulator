@@ -1,0 +1,6 @@
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ERROR: --data must retain the selected catalog aircraft's data id
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (research/flight-test/flight_test.gd:99)

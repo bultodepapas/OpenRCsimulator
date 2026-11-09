@@ -3,7 +3,6 @@
 ## cached mesh with the car activity's view in its "flight" profile. No collision or simulation state here.
 extends RefCounted
 
-const TrackView := preload("res://vehicles/ground/airfield_track_view.gd")
 const RcGroundMaterial := preload("res://render/rc_ground_material.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
@@ -22,6 +21,7 @@ const TURN_SEGMENTS := 12
 static func build(field: Dictionary, track: Dictionary, lake: Dictionary, ground_material: ShaderMaterial) -> Node3D:
 	if track.is_empty():
 		return null
+	var track_view: Script = load("res://vehicles/ground/airfield_track_view.gd")
 	var table := GroundSurfaces.load_table()
 	if not bool(table.get("ok", false)):
 		return null
@@ -41,8 +41,8 @@ static func build(field: Dictionary, track: Dictionary, lake: Dictionary, ground
 	var hashing := HashingContext.new()
 	hashing.start(HashingContext.HASH_SHA256)
 	hashing.update(var_to_bytes([Track.identity(track), rects, str(lake.get("identity", "")),
-		TrackView.FLIGHT_GRID_STEP_M]))
-	var view: Node3D = TrackView.build({"track": track}, road, material,
+		track_view.FLIGHT_GRID_STEP_M]))
+	var view: Node3D = track_view.build({"track": track}, road, material,
 		{profile = "flight", cache_key = hashing.finish().hex_encode()})
 	view.name = "RcTrack"
 	view.set_meta("rc_track_identity", Track.identity(track))

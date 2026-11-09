@@ -61,7 +61,7 @@ constexpr const char *kBackend = "native";
 constexpr const char *kBackendVersion = "openrc-native-kernel-stage-v2";
 constexpr int kAbi = 2;
 // Law identities the port mirrors; the oracle compares them with the loaded GDScript constants.
-constexpr const char *kAeroLaw = "section-plane-source-weighted-wake-velocity-v3";
+constexpr const char *kAeroLaw = "section-plane-source-weighted-wake-velocity-v4";
 constexpr const char *kRollingLaw = "wheel-positive-terrain-excess-v2";
 
 struct Decoder {
@@ -221,7 +221,7 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 				"station_chords", "ground_effect", "wing_polar"}) ||
 			!dec.only(surfaces, "surfaces", {"wing_aileron_effectiveness", "attached_limit", "tail_local_limit",
 				"tail_stall_end", "tail_CD0", "tail_k", "tail_CD90", "body_cn_beta", "wing_body_cl_beta", "body_cy_beta",
-				"body_crossflow_area", "wing_cm_ac", "station_incidence", "horizontal", "vertical", "tailless"}) ||
+				"body_crossflow_area", "wing_cm_ac", "wing_separated_force_offset", "station_incidence", "horizontal", "vertical", "tailless"}) ||
 			!dec.only(aero, "aero", {"CL0", "CLa", "CLadot", "CLq", "CLde", "CLda_each", "CD0", "CL_minD", "k_induced",
 				"CDda_each", "CDdr", "CDde", "CYb", "CYp", "CYr", "CYdr", "Clb", "Clp", "Clr", "Clda_right", "Clda_left",
 				"Cldr", "Cm0", "Cma", "Cmq", "Cmde", "Cmda_each", "Cnb", "Cnp", "Cnr", "Cnda_right", "Cnda_left",
@@ -285,6 +285,9 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 		}
 		if (!m.polar.strip_factor.empty() && static_cast<int>(m.polar.strip_factor.size()) != stations) {
 			return dec.fail("wing polar strip_factor size");
+		}
+		for (nk::R factor : m.polar.strip_factor) {
+			if (!nk::is_finite(factor) || factor <= 0.0) return dec.fail("wing polar strip_factor must be finite and positive");
 		}
 		for (const char *side : {"positive", "negative"}) {
 			Dictionary branch;
@@ -391,14 +394,21 @@ bool decode_aero(Decoder &dec, const Dictionary &model, nk::AeroModel &m) {
 			!dec.number(surfaces, "body_cy_beta", m.body_cy_beta, false, 0.0) ||
 			!dec.number(surfaces, "body_crossflow_area", m.body_crossflow_area, false, 0.0) ||
 			!dec.number(surfaces, "wing_cm_ac", m.wing_cm_ac, false, 0.0) ||
+			!dec.number(surfaces, "wing_separated_force_offset", m.wing_separated_force_offset, false, 0.0) ||
 			!dec.vec(surfaces, "station_incidence", m.station_incidence, false)) {
 		return false;
+	}
+	if (!nk::is_finite(m.wing_separated_force_offset) || m.wing_separated_force_offset < 0.0 || m.wing_separated_force_offset > 0.25) {
+		return dec.fail("wing_separated_force_offset range");
 	}
 	if (!m.station_incidence.empty() && static_cast<int>(m.station_incidence.size()) != stations) {
 		return dec.fail("station_incidence size");
 	}
 	if (m.wing_cm_ac.v != 0.0 && static_cast<int>(m.station_chords.size()) != stations) {
 		return dec.fail("wing_cm_ac without one station chord per station");
+	}
+	if (surfaces.has("wing_separated_force_offset") && (m.flaps.enabled || !m.tailless.station_x.empty())) {
+		return dec.fail("wing_separated_force_offset requires a conventional wing without flaps");
 	}
 	Dictionary vertical, horizontal;
 	if (!dec.dict(surfaces, "vertical", vertical, true) || !decode_tail(dec, vertical, m.vertical, true)) {

@@ -213,7 +213,8 @@ func run() -> void:
 		and not CloudShadowMap._consumers.has(untracked.get_instance_id()))
 	OS.set_environment(CloudShadowMap.SKY_ENVIRONMENT_KEY, "0")
 	CloudShadowMap.diagnostics()
-	check("sky can also be disabled", sky.get_shader_parameter("cloud_shadow_map_enabled") == false)
+	check("disabling both modes clears the sky and all cached tiles",
+		sky.get_shader_parameter("cloud_shadow_map_enabled") == false and CloudShadowMap._tiles.is_empty())
 	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "0")
 	OS.set_environment(CloudShadowMap.GROUND_ENVIRONMENT_KEY, "1")
 	var ground_only := CloudShadowMap.diagnostics()
@@ -221,16 +222,22 @@ func run() -> void:
 	check("re-enabled mode waits for material refresh", ground_only.effective.ground == "unused"
 		and ground.get_shader_parameter("cloud_shadow_map_enabled") == false)
 	CloudShadowMap.apply(ground, next_seed)
-	check("material refresh reuses the ready tile", ground.get_shader_parameter("cloud_shadow_map_enabled") == true
-		and ground.get_shader_parameter("cloud_shadow_map") == texture
+	check("material refresh restarts analytically after both modes were disabled",
+		ground.get_shader_parameter("cloud_shadow_map_enabled") != true
+		and CloudShadowMap._tiles[next_seed].status == "pending")
+	CloudShadowMap._complete_bake(self, next_seed, _sample_image(next_seed), "")
+	texture = ground.get_shader_parameter("cloud_shadow_map")
+	check("newly validated tile rebinds only the re-enabled mode",
+		ground.get_shader_parameter("cloud_shadow_map_enabled") == true and texture is ImageTexture
 		and sky.get_shader_parameter("cloud_shadow_map_enabled") == false)
 	OS.set_environment(CloudShadowMap.ENVIRONMENT_KEY, "1")
 	OS.set_environment(CloudShadowMap.GROUND_ENVIRONMENT_KEY, "")
 	OS.set_environment(CloudShadowMap.SKY_ENVIRONMENT_KEY, "")
 	CloudShadowMap.apply(near, seed)
 	CloudShadowMap.apply(sky, seed, "sky")
+	CloudShadowMap._complete_bake(self, seed, _sample_image(seed), "")
 	var both := CloudShadowMap.diagnostics()
-	check("restoring inherited modes reuses ready tiles", both.effective.ground == "ready" and both.effective.sky == "ready")
+	check("restoring inherited modes publishes fresh tiles", both.effective.ground == "ready" and both.effective.sky == "ready")
 
 	var bad_seed := seed + 2
 	var bad := ShaderMaterial.new()

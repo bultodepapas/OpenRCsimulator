@@ -20,6 +20,8 @@ const GroundEffect := preload("res://physics/ground_effect.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const WingPolar := preload("res://physics/wing_polar.gd")
+const WingPolarFixture := preload("res://tests/wing_polar_fixture.gd")
 
 const AIRCRAFT := "jensen-das-ugly-stik-60"
 const MAX_EXAMPLES := 6
@@ -93,6 +95,7 @@ func _checks() -> void:
 	_check_terrain(context)
 	_check_wheels(context)
 	_check_aero(context)
+	_check_late_detachment()
 	_check_refusals(context)
 	_time_components(context)
 
@@ -273,12 +276,14 @@ func _source_hashes() -> Dictionary:
 			"res://physics/dynamics.gd", "res://physics/hull_contact.gd", "res://physics/wind_field.gd",
 			"res://sim/environment.gd", "res://sim/flight_session.gd", "res://sim/simulation.gd",
 			"res://sim/native_stage.gd", "res://app_state/native_package.gd", "res://data/aircraft/jensen_ugly_stik_60.json",
+			"res://data/aircraft/sebart_avanti_s_a200.json", "res://data/aircraft/moonrunner_x99.json",
 			"res://data/ground/wheel_profiles.json",
 			"res://sim/native/stage_config.gd", "res://sim/native/weather_adapter.gd", "res://sim/native/native_weather.gd",
 			"res://sim/native/native_configuration.gd", "res://sim/native/electric_stage_adapter.gd",
 			"res://sim/native/liquid_stage_adapter.gd", "res://sim/native/glow_stage_adapter.gd",
 			"res://sim/native/helicopter_stage_adapter.gd",
 			"res://physics/flaps.gd", "res://physics/wing_polar.gd", "res://physics/aircraft_data.gd",
+			"res://tests/wing_polar_fixture.gd",
 			"res://physics/wind_config.gd", "res://physics/atmosphere.gd", "res://physics/wind_turbulence.gd",
 			"res://physics/wind_spatial_config.gd", "res://physics/wind_spatial_field.gd",
 			"res://physics/wind_spatial_presets.gd", "res://physics/wind_thermal_field.gd",
@@ -811,6 +816,65 @@ func _check_aero(context: Dictionary) -> void:
 					break
 
 
+## A valid synthetic polar whose attachment drops sharply above 45 degrees. These
+## deterministic states exercise the progression correction, not an aircraft fit.
+func _check_late_detachment() -> void:
+	var raw: Dictionary = WingPolarFixture.raw()
+	var first: Array = raw.aero.wing_polar.positive.value.slice(0, 4)
+	var cd0: float = first[2]
+	var cd90: float = raw.aero.wing_polar.positive.value[-2] - cd0
+	for name: String in ["positive", "negative"]:
+		var samples: Array = raw.aero.wing_polar[name].value.slice(0, 4)
+		samples.append_array([45.0, 2.5, cd0 + 0.3, 1.0, 50.0, 2.4, cd0 + 0.5, 1.0,
+			50.1, 2.3, cd0 + 0.51, 0.0, 70.0, 0.4, cd0 + 0.9, 0.0,
+			90.0, 0.0, cd0 + cd90, 0.0])
+		raw.aero.wing_polar[name].value = samples
+	var loaded: Dictionary = AircraftData.validate_and_derive(raw)
+	if not loaded.ok:
+		_failures.append("late-detachment polar data failed: " + str(loaded.errors))
+		return
+	var model: Dictionary = loaded.model
+	var polar: Dictionary = model.envelope.wing_polar
+	var wind := M.v3(0.0, 0.0, 0.0)
+	var d := {elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0}
+	var da := _deflection_array(d)
+	for factor: float in [1.024268, 1.0000000001]:
+		var factors := PackedFloat64Array()
+		factors.resize(model.envelope.station_ys.size())
+		factors.fill(factor)
+		polar.strip_factor = factors
+		var prepared: Dictionary = _native.prepare_aero(model)
+		if not prepared.ok:
+			_failures.append("late-detachment prepare_aero failed: " + str(prepared.error))
+			continue
+		for side: float in [-1.0, 1.0]:
+			var correction_witnesses := 0
+			for degrees: float in [45.000001, 49.1, 49.5, 49.9, 49.999999999, 50.0,
+					50.000000001, 50.05, 50.1, 67.5, 89.999, 90.0]:
+				var alpha := side * deg_to_rad(degrees)
+				for rates: PackedFloat64Array in [M.v3(0.0, 0.0, 0.0), M.v3(0.37, -0.08, 0.12)]:
+					var s := RB.make_state(M.v3(0.0, 0.0, -300.0), M.v3(25.0 * cos(alpha), 0.0, 25.0 * sin(alpha)),
+						M.q_identity(), rates)
+					var air := Air.compute(s, wind, 1.225)
+					var flow: Dictionary = Aero._wing_flow(s, air, d, model)
+					for angle: float in flow.angles:
+						if absf(angle) > PI / 4.0 and absf(angle) < PI / 2.0 \
+								and WingPolar._evaluate(angle, 0.3, polar)[2] > WingPolar._evaluate(angle * factor, 0.3, polar)[2]:
+							correction_witnesses += 1
+					for ground_up: float in [NAN, 299.0]:
+						var ge := GroundEffect.factors(s, model, ground_up)
+						var args := [factor, side, degrees, rates, ground_up]
+						_compare("late_detachment_local_loads", Aero._local_loads(s, air, d, model, 1.225, 0.37, null, ge),
+							_native.aero_component(5, s, wind, 1.225, da, 0.37, ground_up), args)
+						_compare("late_detachment_wake", PackedFloat64Array([Aero._wing_lift_coefficient_with(s, air, d, model, ge, true)]),
+							_native.aero_component(6, s, wind, 1.225, da, 0.37, ground_up), args)
+						_compare("late_detachment_loads", Aero.loads(s, air, d, model, 1.225, 0.37, ground_up),
+							_native.aero_loads(s, wind, 1.225, da, 0.37, ground_up), args)
+			_tally("aero_late_detachment", "correction_witnesses", correction_witnesses)
+			if correction_witnesses == 0:
+				_failures.append("late-detachment correction not exercised: factor=%s side=%s" % [factor, side])
+
+
 func _aero_variant_twist(model: Dictionary) -> Dictionary:
 	var out := model.duplicate(true)
 	out.surfaces.station_incidence = PackedFloat64Array([-0.03, -0.01, 0.02, 0.02, -0.01, -0.03])
@@ -864,11 +928,41 @@ func _check_refusals(context: Dictionary) -> void:
 		aero_empty_envelope = _native.prepare_aero(oracle_only),
 		gear_unknown_contact_key = _native.prepare_ground(gear_unknown, context.surfaces, context.lake, true),
 	}
+	var offset_errors := {}
+	for name: String in {"nan": NAN, "negative": -0.01, "above_max": 0.26}:
+		var invalid := model.duplicate(true)
+		invalid.surfaces.wing_separated_force_offset = {"nan": NAN, "negative": -0.01, "above_max": 0.26}[name]
+		var key := "aero_offset_" + name
+		checks[key] = _native.prepare_aero(invalid)
+		offset_errors[key] = "wing_separated_force_offset range"
+	for value: float in [0.0, 0.25]:
+		var valid := model.duplicate(true)
+		valid.surfaces.wing_separated_force_offset = value
+		var prepared: Dictionary = _native.prepare_aero(valid)
+		if not prepared.ok:
+			_failures.append("D6: native refused valid offset %s: %s" % [value, prepared.error])
+	for name: String in {"flaps": "sebart-avanti-s-a200-p100rx", "tailless": "moonrunner-x99"}:
+		var ids := {"flaps": "sebart-avanti-s-a200-p100rx", "tailless": "moonrunner-x99"}
+		var loaded: Dictionary = AircraftData.load_file(Catalog.data_for(ids[name]))
+		if not loaded.ok:
+			_failures.append("D6: offset %s baseline data failed: %s" % [name, str(loaded.errors)])
+			continue
+		var baseline: Dictionary = _native.prepare_aero(loaded.model)
+		if not baseline.ok:
+			_failures.append("D6: offset %s baseline refused: %s" % [name, baseline.error])
+			continue
+		var invalid: Dictionary = loaded.model.duplicate(true)
+		invalid.surfaces.wing_separated_force_offset = 0.25
+		var key := "aero_offset_with_" + name
+		checks[key] = _native.prepare_aero(invalid)
+		offset_errors[key] = "wing_separated_force_offset requires a conventional wing without flaps"
 	for name: String in checks:
 		var result: Dictionary = checks[name]
 		_report.refusals[name] = {refused = not result.ok, error = result.error}
 		if result.ok:
 			_failures.append("D6: native accepted " + name)
+		elif offset_errors.has(name) and result.error != offset_errors[name]:
+			_failures.append("D6: native refused %s for the wrong reason: %s" % [name, result.error])
 	# Leave the production context prepared.
 	_native.prepare_aero(model)
 	_ground_ready(_native, context.gear, context.surfaces, context.lake)

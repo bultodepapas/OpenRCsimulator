@@ -13,6 +13,7 @@ The [aircraft data](../app/data/aircraft/gp_extra_300s_60.json) selects `finite_
 | Shared engine/propeller and fuel behavior | [Glow guide](GLOW-ENGINES.md), [61FX dossier](research/glow-engines/NITRO-61FX/README.md), [fuel standard](FUEL-SYSTEM.md) |
 | Dated results and comparison tools | [Realism audit](research/extra-300-realism/README.md), [EX-06/08 probes](../research/extra-300/ex06/README.md) |
 | Moment/crossflow consistency and accepted F5 geometry | [2026-11-08 audit corrections and retained tapes](research/aero-consistency/audit-corrections-2026-11-08.md) |
+| Reverse-flow strip continuity | [D8b-R2d-R1 continuation, same-tape comparison and limits](research/aero-consistency/reverse-flow-2026-11-09/README.md) |
 | Real-model flight targets, sources and the EX-14 pass | [EX-14 evidence](research/extra-300-realism/EX-14/README.md), [source manifest](research/extra-300-realism/EX-14/sources.json) |
 
 Use the [aircraft contract](AIRCRAFT_CONTRACT.md), [player controls](FIRST-LAUNCH.md) and [flight logging workflow](FLIGHT-LOGGING.md). EX owns its sources, builder, generator, tests and research; shared physics/NITRO/fuel/input/crash/export boundaries stay with their [registered owners](README.md#tracks-plans-and-step-ids). Regenerate dependent data and model/Workshop bindings; never edit generated output.
@@ -35,8 +36,11 @@ Original delivery results retain their dated scope. Neither old passing counts n
 | EX-13 | Further aerobatic/ground extensions | Deferred; require scoped shared mechanisms, data and lifecycle/qualification proof. |
 | EX-14 | RCM-based mass assumption, Glow propwash/crossflow, fuselage side force, ground effect, APC-based propeller section, installed-engine estimate and FASER-based post-stall polar; later EX-14i adds the separated-wing force offset | Installed propulsion measurements, hands-off stall, sustained spin, knife-edge and left-hammerhead qualification remain open. [EX-14 evidence](research/extra-300-realism/EX-14/README.md). |
 | EX-14i | Bounded quasi-steady separated-wing pitch couple; controlled low-rate stall and snap completion improve in the paired software card | Experimental: late hands-off wing drop, spiral spin entries, unmeasured negative polar, native requalification and real-pilot/physical acceptance. [Comparison](research/extra-300-realism/EX-14/README.md#ex-14i--separated-wing-force-offset-2026-11-09). |
+| EX-14j | Existing wing/body sideslip-roll estimate carried into the local law; the attached oracle coefficients stay unchanged | Model consistency only: late hands-off wing drop grows slightly, snaps still complete, sustained spins remain unqualified. [Comparison](research/extra-300-realism/EX-14/README.md#ex-14j--local-sideslip-roll-consistency-2026-11-09). |
 
 ## Current model limits
+
+EX-14j reduces the change in roll sensitivity as loads shift to the local model by restoring its missing wing/body contribution. It retains the existing estimated coefficient and does not cure the hands-off stall. Its paired card and same-input replay use a frozen reference solver; they do not qualify concurrent solver edits or the native backend.
 
 EX-14i retains the engine, propeller, mass, rates and attached-flight coefficients. Its controlled stall and snap comparisons are software evidence. The hands-off low-rate stall still drops a wing; both spin-card directions classify as spirals and recover. The negative post-stall polar remains an unmeasured recipe. Changed-source native receipts require fleet-wide requalification, and the native decoder currently refuses the new offset field, retaining the reference fallback. Required CI, real-pilot review, physical measurements and native performance qualification remain separate.
 

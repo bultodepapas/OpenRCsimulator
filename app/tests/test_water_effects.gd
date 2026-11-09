@@ -44,8 +44,8 @@ func run() -> void:
 	_check("declarative depth is measured below mean water level", absf(effects._impact_depth_m - 0.20) < 1e-6)
 	_check("one CC0 source voice is selected per begin", effects._impact_audio_emitted \
 		and effects._impact_audio_requests_this_event == 1 and effects._impact_audio_source_index in [0, 1])
-	_check("selected voice is one of the downloaded source clips", effects._impact_voice.stream == Effects.SPLASH_ONE \
-		or effects._impact_voice.stream == Effects.SPLASH_TWO)
+	_check("selected voice is one of the downloaded source clips", effects._impact_voice.stream == load(Effects.SPLASH_ONE_PATH) \
+		or effects._impact_voice.stream == load(Effects.SPLASH_TWO_PATH))
 	_check("impact does not modify the immutable physics snapshot", hit.point_ned == PackedFloat64Array([112.0, 129.0, 0.65]) \
 		and hit.velocity_ned == PackedFloat64Array([0.0, 0.0, 12.0]))
 

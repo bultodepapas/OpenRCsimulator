@@ -4,6 +4,9 @@ extends SceneTree
 
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
 const Hedge = preload("res://scenery/imported_hedge.gd")
+const PlantLibrary = preload("res://scenery/imported_vegetation.gd")
+const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
+const GroundTerrain = preload("res://physics/ground_terrain.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const SceneryLoader = preload("res://scenery/scenery_loader.gd")
 const LakeLoader = preload("res://data/lake_loader.gd")
@@ -55,30 +58,65 @@ func _run() -> void:
 		WoodlandEdges.applicable(field, scenery, lake))
 	_check("the documented recipe hash is readable", FileAccess.get_sha256(WoodlandEdges.DATA_PATH).length() == 64)
 
+	# Pin the fallback explicitly even if the test process inherited a user override.
+	var environment_had_override := OS.has_environment("OPENRC_WOODLAND_MESHES")
+	var environment_before := OS.get_environment("OPENRC_WOODLAND_MESHES")
+	OS.set_environment("OPENRC_WOODLAND_MESHES", "off")
+	var cards: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
+	var card_plants: Array = cards.get_meta("plants", [])
+	var card_index := _plant_index(card_plants)
+	var card_geometry := _geometry_totals(cards)
+	_check("mesh opt-out restores the 472-triangle five-batch card layout",
+		bool(card_geometry.valid) and int(card_geometry.triangles) == 472 and int(card_geometry.batches) == 5
+		and int(cards.get_meta("triangles", -1)) == 472 and int(cards.get_meta("batches", -1)) == 5,
+		str(card_geometry))
+	_check("mesh opt-out retains all 220 original source cards",
+		card_plants.size() == 220 and bool(card_index.unique)
+		and _counts(card_plants, "asset_id") == {fern_1 = 24, grass_common_tall = 16,
+			bush_common_flowers = 8, grass_common_short = 172}
+		and _counts(card_plants, "rendering") == {card = 220}, str(_counts(card_plants, "asset_id")))
+	_check("fallback matches original recipe and hedge placement IDs, positions, yaw and heights",
+		_layout_matches_recipe(card_plants), "fallback plant records differ from recipe/hedge layout")
+	_check("fallback retains four 55-card batches and the shared source-atlas material",
+		_shrub_layout_contract(cards, 55) and _shrub_render_contract(cards), str(_shrub_batch_counts(cards)))
+	var balanced_cards: Node3D = WoodlandEdges.build(field, scenery, "balanced", lake)
+	var balanced_card_plants: Array = balanced_cards.get_meta("plants", [])
+	OS.unset_environment("OPENRC_WOODLAND_MESHES")
+
 	var high: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
 	var high_plants: Array = high.get_meta("plants", [])
 	var high_index := _plant_index(high_plants)
 	var high_geometry := _geometry_totals(high)
-	_check("high tier realizes all 472 source triangles", int(high.get_meta("triangles", -1)) == 472,
+	_check("high tier realizes 2656 source triangles", int(high.get_meta("triangles", -1)) == 2656,
 		str(high.get_meta("triangles", -1)))
-	_check("high tier realizes five merged batches", int(high.get_meta("batches", -1)) == 5,
+	_check("high tier realizes 13 render batches", int(high.get_meta("batches", -1)) == 13,
 		str(high.get_meta("batches", -1)))
-	_check("high-tier mesh surfaces independently total 472 triangles",
-		bool(high_geometry.valid) and int(high_geometry.triangles) == 472, str(high_geometry))
-	_check("high-tier subtree independently contains five render batches",
-		int(high_geometry.batches) == 5, str(high_geometry))
+	_check("high-tier surfaces independently total 2656 triangles",
+		bool(high_geometry.valid) and int(high_geometry.triangles) == 2656, str(high_geometry))
+	_check("high-tier subtree independently contains 13 render batches",
+		int(high_geometry.batches) == 13, str(high_geometry))
 	_check("geometry counts agree with emitted metadata",
 		int(high_geometry.triangles) == int(high.get_meta("triangles", -1))
 		and int(high_geometry.batches) == int(high.get_meta("batches", -1)), str(high_geometry))
 	_check("high tier realizes 220 plants", high_plants.size() == 220, str(high_plants.size()))
 	_check("all high-tier plant IDs are unique", bool(high_index.unique), str(high_index.ids.keys()))
 	_check("high-tier subtree contains no CollisionObject3D", not _has_collision_object(high))
+	_check("all woodland geometry casts no shadow", _shadows_are_off(high))
 
-	var mix_counts: Dictionary = {}
-	for plant: Dictionary in high_plants:
-		mix_counts[plant.asset_id] = int(mix_counts.get(plant.asset_id, 0)) + 1
-	_check("source mix has 24 ferns, 16 tall grasses, 8 flowering shrubs and 172 short-grass cards",
-		mix_counts == {fern_1 = 24, grass_common_tall = 16, bush_common_flowers = 8, grass_common_short = 172}, str(mix_counts))
+	_check("mixed tier preserves all four original source families",
+		_counts(high_plants, "source_asset_id") == {fern_1 = 24, grass_common_tall = 16,
+			bush_common_flowers = 8, grass_common_short = 172}, str(_counts(high_plants, "source_asset_id")))
+	_check("mixed tier uses the intended source meshes and remaining cards",
+		_counts(high_plants, "asset_id") == {grass_lolipop_small = 14, polyhaven_fern_02_a = 2,
+			forest_leafy_shrub = 2, grass_common_tall = 2, fern_1 = 22, bush_common_flowers = 6, grass_common_short = 172}
+		and _counts(high_plants, "rendering") == {mesh = 18, card = 202}, str(_counts(high_plants, "asset_id")))
+	_check("mesh accents use the specified first species paths in each patch",
+		_mesh_selection_matches_recipe(high_plants))
+	_check("mixed and fallback plants keep their IDs, positions, yaw and source families",
+		_placement_contract(high_plants, card_plants), "mixed plant records differ from fallback")
+	var mesh_bounds := _mesh_bounds_contract(high, card_index.ids, field, lake)
+	_check("every grounded mesh part fits its original card's height and horizontal envelope",
+		bool(mesh_bounds.ok), str(mesh_bounds))
 	var floor_mesh: MeshInstance3D = high.get_node("WoodlandLitter")
 	_check("litter uses 32 terrain triangles and casts no shadow",
 		_mesh_triangle_count(floor_mesh.mesh) == 32 and floor_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
@@ -86,8 +124,10 @@ func _run() -> void:
 	var high_again: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
 	_check("high rebuild preserves ordered plant records",
 		JSON.stringify(high_plants) == JSON.stringify(high_again.get_meta("plants", [])))
-	_check("high tier emits four 55-card mixed patch batches",
-		_shrub_layout_contract(high), str(_shrub_batch_counts(high)))
+	_check("high tier retains two 51-card and two 50-card patch batches",
+		_shrub_batch_counts(high) == {"woodland-edge-east-north_Shrubs": 51,
+			"woodland-edge-northwest_Shrubs": 51, "woodland-edge-east-south_Shrubs": 50,
+			"woodland-edge-southwest_Shrubs": 50}, str(_shrub_batch_counts(high)))
 	_check("high tier preserves shrub render settings and shared source-atlas material",
 		_shrub_render_contract(high))
 
@@ -100,6 +140,8 @@ func _run() -> void:
 			subset = false
 	_check("balanced tier is a stable strict subset of high", subset,
 		"balanced=%d high=%d" % [balanced_plants.size(), high_plants.size()])
+	_check("balanced mixed and card modes retain the same placement identities",
+		_placement_contract(balanced_plants, balanced_card_plants))
 	var balanced_again: Node3D = WoodlandEdges.build(field, scenery, "balanced", lake)
 	_check("balanced rebuild preserves ordered plant records",
 		JSON.stringify(balanced_plants) == JSON.stringify(balanced_again.get_meta("plants", [])))
@@ -108,11 +150,17 @@ func _run() -> void:
 
 	_check("terrain sample cache stays bounded across quality rebuilds",
 		WoodlandEdges._ground_heights.size() == 220, str(WoodlandEdges._ground_heights.size()))
+	_test_unavailable_mesh(field, scenery, lake, card_plants)
 
+	# An empty process-local parts cache makes accidental mesh work observable.
+	var previous_parts_cache: Dictionary = PlantLibrary._parts_cache
+	PlantLibrary._parts_cache = {}
 	var low: Node3D = WoodlandEdges.build(field, scenery, "low", lake)
 	_check("low tier builds zero woodland plants, triangles and batches",
 		low.get_meta("plants", []).is_empty() and int(low.get_meta("triangles", -1)) == 0
 		and int(low.get_meta("batches", -1)) == 0 and low.get_child_count() == 0)
+	_check("low tier skips source mesh loading", PlantLibrary._parts_cache.is_empty())
+	PlantLibrary._parts_cache = {}
 
 	var custom_field := field.duplicate(true)
 	custom_field["pilot"]["north"] = float(custom_field.pilot.north) + 1.0
@@ -132,6 +180,8 @@ func _run() -> void:
 		and int(custom_field_root.get_meta("triangles", -1)) == 0
 		and int(custom_scenery_root.get_meta("triangles", -1)) == 0
 		and int(custom_lake_root.get_meta("triangles", -1)) == 0)
+	_check("custom inputs skip source mesh loading", PlantLibrary._parts_cache.is_empty())
+	PlantLibrary._parts_cache = previous_parts_cache
 
 	_check("field/scenery/lake dictionaries are read-only",
 		JSON.stringify(field) == field_before and JSON.stringify(scenery) == scenery_before
@@ -139,9 +189,13 @@ func _run() -> void:
 	_check("recipe, field, scenery and lake input hashes are unchanged",
 		_input_hashes() == input_hashes_before, str(input_hashes_before) + " -> " + str(_input_hashes()))
 
-	for node: Node in [high, high_again, balanced, balanced_again, low,
+	for node: Node in [cards, balanced_cards, high, high_again, balanced, balanced_again, low,
 		custom_field_root, custom_scenery_root, custom_lake_root]:
 		node.free()
+	if environment_had_override:
+		OS.set_environment("OPENRC_WOODLAND_MESHES", environment_before)
+	else:
+		OS.unset_environment("OPENRC_WOODLAND_MESHES")
 	await _check_impostor_view_frames()
 	_finish()
 
@@ -217,13 +271,13 @@ func _check_impostor_view_frames() -> void:
 	viewport.free()
 
 
-func _shrub_layout_contract(root: Node3D) -> bool:
+func _shrub_layout_contract(root: Node3D, expected_count: int) -> bool:
 	var batches := _shrub_batches(root)
 	if batches.size() != 4:
 		return false
 	for batch_value: Variant in batches.values():
 		var batch: MultiMeshInstance3D = batch_value
-		if batch.multimesh == null or batch.multimesh.instance_count != 55:
+		if batch.multimesh == null or batch.multimesh.instance_count != expected_count:
 			return false
 	return true
 
@@ -298,6 +352,276 @@ func _shrub_batch_counts(root: Node3D) -> Dictionary:
 		var batch: MultiMeshInstance3D = batches[batch_name]
 		result[batch_name] = -1 if batch.multimesh == null else batch.multimesh.instance_count
 	return result
+
+
+func _counts(plants: Array, key: String) -> Dictionary:
+	var result: Dictionary = {}
+	for plant: Dictionary in plants:
+		var value := str(plant.get(key, ""))
+		result[value] = int(result.get(value, 0)) + 1
+	return result
+
+
+## Compare fallback records to the retained recipe and the existing hedge placement
+## contract, rather than to a second set of hard-coded positions.
+func _layout_matches_recipe(plants: Array) -> bool:
+	var recipe: Variant = JSON.parse_string(FileAccess.get_file_as_string(WoodlandEdges.DATA_PATH))
+	if not recipe is Dictionary:
+		return false
+	var expected: Dictionary = {}
+	for patch: Dictionary in recipe.get("patches", []):
+		for path_index in patch.paths_ne_m.size():
+			var points: Array[Vector2] = []
+			for point: Array in patch.paths_ne_m[path_index]:
+				points.append(Vector2(float(point[1]), -float(point[0])))
+			var placements := Hedge.layout(points, float(patch.shrub_heights_m[path_index]),
+				float(patch.shrub_width_m), int(patch.path_seeds[path_index]), "high")
+			for placement: Dictionary in placements:
+				var pos: Vector2 = placement.position
+				var manifest := WoodlandEdges._species_manifest(str(patch.shrub_species[path_index]))
+				var original: Transform3D = placement.transform
+				var max_side := Hedge._frame_size(Hedge._manifest()) * original.basis.get_scale().x \
+					* float(patch.shrub_height_m) / float(patch.shrub_heights_m[path_index])
+				var height := minf(float(placement.height_m), max_side * float(manifest.source_height_m) \
+					/ float(manifest.frame_world_size_m[0]))
+				expected[str(placement.id)] = {north = -pos.y, east = pos.x,
+					yaw_rad = float(placement.yaw_rad), asset_id = str(patch.shrub_species[path_index]),
+					height_m = height, patch = str(patch.id)}
+		for grass: Dictionary in patch.grass_cards:
+			expected[str(grass.id)] = {north = float(grass.north_m), east = float(grass.east_m),
+				yaw_rad = float(grass.yaw_rad), asset_id = "grass_common_short",
+				height_m = float(grass.height_m), patch = str(patch.id)}
+	var index := _plant_index(plants)
+	if not bool(index.unique) or expected.size() != plants.size():
+		return false
+	for plant: Dictionary in plants:
+		var id := str(plant.get("id", ""))
+		if not expected.has(id) or not plant.has("yaw_rad"):
+			return false
+		var reference: Dictionary = expected[id]
+		if absf(float(plant.north) - float(reference.north)) > 0.0001 \
+				or absf(float(plant.east) - float(reference.east)) > 0.0001 \
+				or not is_equal_approx(float(plant.yaw_rad), float(reference.yaw_rad)) \
+				or absf(float(plant.height_m) - float(reference.height_m)) > 0.00001 \
+				or str(plant.asset_id) != str(reference.asset_id) or str(plant.patch) != str(reference.patch):
+			return false
+	return true
+
+
+func _mesh_selection_matches_recipe(plants: Array) -> bool:
+	var recipe: Variant = JSON.parse_string(FileAccess.get_file_as_string(WoodlandEdges.DATA_PATH))
+	if not recipe is Dictionary:
+		return false
+	var expected: Dictionary = {}
+	for patch: Dictionary in recipe.get("patches", []):
+		var patch_id := str(patch.id)
+		for path_index in patch.paths_ne_m.size():
+			var species := str(patch.shrub_species[path_index])
+			var asset := ""
+			if species == "grass_common_tall" and (patch_id not in ["woodland-edge-east-north", "woodland-edge-northwest"] \
+					or path_index != patch.shrub_species.rfind("grass_common_tall")):
+				asset = "grass_lolipop_small"
+			elif patch_id in ["woodland-edge-east-north", "woodland-edge-northwest"] \
+					and path_index == patch.shrub_species.find("fern_1"):
+				asset = "polyhaven_fern_02_a"
+			elif patch_id in ["woodland-edge-east-south", "woodland-edge-southwest"] \
+					and path_index == patch.shrub_species.find("bush_common_flowers"):
+				asset = "forest_leafy_shrub"
+			if asset.is_empty():
+				continue
+			var points: Array[Vector2] = []
+			for point: Array in patch.paths_ne_m[path_index]:
+				points.append(Vector2(float(point[1]), -float(point[0])))
+			for placement: Dictionary in Hedge.layout(points, float(patch.shrub_heights_m[path_index]),
+					float(patch.shrub_width_m), int(patch.path_seeds[path_index]), "high"):
+				expected[str(placement.id)] = asset
+	var seen := 0
+	for plant: Dictionary in plants:
+		var id := str(plant.get("id", ""))
+		if expected.has(id):
+			if str(plant.get("rendering", "")) != "mesh" or str(plant.get("asset_id", "")) != str(expected[id]):
+				return false
+			seen += 1
+		elif str(plant.get("rendering", "")) != "card":
+			return false
+	return seen == 18 and expected.size() == 18
+
+
+func _placement_contract(mixed: Array, fallback: Array) -> bool:
+	var reference := _plant_index(fallback)
+	var actual := _plant_index(mixed)
+	if not bool(reference.unique) or not bool(actual.unique) or mixed.size() != fallback.size():
+		return false
+	for id: Variant in actual.ids:
+		if not reference.ids.has(id):
+			return false
+		var plant: Dictionary = actual.ids[id]
+		var old: Dictionary = reference.ids[id]
+		if not plant.has("yaw_rad") or not old.has("yaw_rad"):
+			return false
+		if float(plant.north) != float(old.north) or float(plant.east) != float(old.east) \
+				or float(plant.yaw_rad) != float(old.yaw_rad) or str(plant.patch) != str(old.patch) \
+				or str(plant.get("source_asset_id", "")) != str(old.asset_id) \
+				or float(plant.height_m) <= 0.0 or float(plant.height_m) > float(old.height_m) + 0.00001:
+			return false
+		if str(plant.get("rendering", "")) == "card" and (str(plant.asset_id) != str(old.asset_id) \
+				or not is_equal_approx(float(plant.height_m), float(old.height_m))):
+			return false
+	return true
+
+
+func _surface_rects(field: Dictionary) -> PackedFloat64Array:
+	var table := GroundSurfaces.load_table()
+	if not bool(table.get("ok", false)):
+		return PackedFloat64Array()
+	var result := GroundSurfaces.build(table.table, field)
+	return result.rects if bool(result.get("ok", false)) else PackedFloat64Array()
+
+
+func _collect_mesh_groups(node: Node, output: Array[Node3D]) -> void:
+	if node is Node3D and node.has_meta("_imported_vegetation_state"):
+		output.append(node as Node3D)
+	for child: Node in node.get_children():
+		_collect_mesh_groups(child, output)
+
+
+func _relative_transform(node: Node3D, root: Node3D) -> Transform3D:
+	var result := Transform3D.IDENTITY
+	var current: Node = node
+	while current != null and current != root:
+		if current is Node3D:
+			result = (current as Node3D).transform * result
+		current = current.get_parent()
+	return result
+
+
+func _problem(errors: Array[String], message: String) -> void:
+	if errors.size() < 20:
+		errors.append(message)
+
+
+## Inspect CPU-retained source-part bounds: headless MultiMesh transform readback is
+## a dummy. Every corner is checked against the old card envelope and terrain.
+func _mesh_bounds_contract(root: Node3D, fallback_by_id: Dictionary, field: Dictionary, lake: Dictionary) -> Dictionary:
+	var errors: Array[String] = []
+	var surfaces := _surface_rects(field)
+	var plans: Array = root.get_meta("mesh_plans", [])
+	var plants := _plant_index(root.get_meta("plants", []))
+	var by_id: Dictionary = {}
+	var ground_by_id: Dictionary = {}
+	var radius_by_id: Dictionary = {}
+	var minimum_by_id: Dictionary = {}
+	var records_by_id: Dictionary = {}
+	if surfaces.is_empty():
+		_problem(errors, "terrain surface table was unavailable")
+	for plan: Dictionary in plans:
+		var id := str(plan.get("id", ""))
+		if id.is_empty() or by_id.has(id) or not fallback_by_id.has(id) or not plants.ids.has(id):
+			_problem(errors, "missing or repeated mesh plan ID " + id)
+			continue
+		var old: Dictionary = fallback_by_id[id]
+		var plant: Dictionary = plants.ids[id]
+		var source_id := str(old.asset_id)
+		var manifest := WoodlandEdges._species_manifest(source_id)
+		var sample: PackedFloat64Array = GroundTerrain.sample_validated(float(old.north), float(old.east), surfaces, lake)
+		if sample.size() != 3 or manifest.is_empty() or not plan.get("placement") is Transform3D:
+			_problem(errors, "missing source, ground or placement for " + id)
+			continue
+		var ground := float(sample[0])
+		var radius := float(old.height_m) * float(manifest.frame_world_size_m[0]) \
+			/ float(manifest.source_height_m) * sqrt(2.0) * 0.5
+		var placement: Transform3D = plan.placement
+		var yaw_basis := Basis(Vector3.UP, float(old.yaw_rad))
+		if str(plant.get("rendering", "")) != "mesh" or str(plan.get("asset_id", "")) != str(plant.asset_id) \
+				or str(plan.get("source_asset_id", "")) != source_id \
+				or absf(float(plan.get("reference_height_m", -1)) - float(old.height_m)) > 0.0001 \
+				or absf(float(plan.get("height_m", -1)) - float(plant.height_m)) > 0.0001 \
+				or absf(float(plan.get("ground_height_m", INF)) - ground) > 0.002 \
+				or float(plan.get("envelope_radius_m", INF)) > radius + 0.002 \
+				or absf(placement.origin.x - float(old.east)) > 0.002 \
+				or absf(placement.origin.z + float(old.north)) > 0.002 \
+				or absf(placement.origin.y - ground) > 0.002 \
+				or placement.basis.orthonormalized().x.distance_to(yaw_basis.x) > 0.0001 \
+				or placement.basis.orthonormalized().z.distance_to(yaw_basis.z) > 0.0001:
+			_problem(errors, "mesh plan changed identity, height, ground, envelope or yaw for " + id)
+		by_id[id] = plan
+		ground_by_id[id] = ground
+		radius_by_id[id] = radius
+		minimum_by_id[id] = INF
+		records_by_id[id] = 0
+
+	var groups: Array[Node3D] = []
+	_collect_mesh_groups(root, groups)
+	var record_count := 0
+	for group: Node3D in groups:
+		var state: Dictionary = group.get_meta("_imported_vegetation_state", {})
+		var group_transform := _relative_transform(group, root)
+		for record: Dictionary in state.get("bounds", []):
+			var id := str(record.get("damage_id", ""))
+			if not by_id.has(id) or not record.get("bounds") is AABB or not record.get("transform") is Transform3D:
+				_problem(errors, "unassociated or malformed imported part " + id)
+				continue
+			if str(record.get("asset_id", "")) != str((by_id[id] as Dictionary).asset_id) or bool(record.get("hidden", false)):
+				_problem(errors, "wrong or hidden imported part " + id)
+			var old: Dictionary = fallback_by_id[id]
+			var bounds: AABB = record.bounds
+			var transform: Transform3D = group_transform * (record.transform as Transform3D)
+			var ground := float(ground_by_id[id])
+			for corner_index in 8:
+				var point := transform * bounds.get_endpoint(corner_index)
+				minimum_by_id[id] = minf(float(minimum_by_id[id]), point.y)
+				var distance := Vector2(point.x - float(old.east), point.z + float(old.north)).length()
+				if distance > float(radius_by_id[id]) + 0.002 \
+						or point.y < ground - 0.002 or point.y > ground + float(old.height_m) + 0.002:
+					_problem(errors, "part corner outside the old card envelope for " + id)
+			records_by_id[id] = int(records_by_id[id]) + 1
+			record_count += 1
+	for id: Variant in by_id:
+		if int(records_by_id[id]) == 0 or absf(float(minimum_by_id[id]) - float(ground_by_id[id])) > 0.002:
+			_problem(errors, "mesh part was missing or did not touch ground for " + str(id))
+	if plans.size() != 18 or by_id.size() != 18 or groups.size() != 4 or record_count < 18:
+		_problem(errors, "unexpected plan, group or part counts")
+	return {ok = errors.is_empty(), plans = plans.size(), groups = groups.size(), records = record_count, errors = errors}
+
+
+func _test_unavailable_mesh(field: Dictionary, scenery: Dictionary, lake: Dictionary, cards: Array) -> void:
+	var recipe: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(WoodlandEdges.DATA_PATH))
+	var record := WoodlandEdges._grass_record(recipe.patches[0].grass_cards[0])
+	var before := var_to_bytes(record)
+	var plan := WoodlandEdges._mesh_plan(record, "not-a-vegetation-asset", _surface_rects(field), lake)
+	_check("unknown mesh source yields no plan and leaves the card record untouched",
+		plan.is_empty() and before == var_to_bytes(record))
+	# The parts cache is process-local; restore its prior entry before assertions.
+	var asset_id := "grass_lolipop_small"
+	var had_entry := PlantLibrary._parts_cache.has(asset_id)
+	var old_entry: Variant = PlantLibrary._parts_cache.get(asset_id)
+	PlantLibrary._parts_cache[asset_id] = []
+	var missing: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
+	if had_entry:
+		PlantLibrary._parts_cache[asset_id] = old_entry
+	else:
+		PlantLibrary._parts_cache.erase(asset_id)
+	var missing_plants: Array = missing.get_meta("plants", [])
+	var geometry := _geometry_totals(missing)
+	var mix := _counts(missing_plants, "asset_id")
+	_check("unavailable small-grass mesh restores 14 original cards",
+		_placement_contract(missing_plants, cards) and int(mix.get("grass_common_tall", 0)) == 16 \
+		and int(mix.get(asset_id, 0)) == 0 and _counts(missing_plants, "rendering") == {mesh = 4, card = 216},
+		str(mix))
+	_check("unavailable source keeps the remaining mesh groups and correct geometry counts",
+		bool(geometry.valid) and int(geometry.triangles) == 2320 and int(geometry.batches) == 9 \
+		and int(missing.get_meta("triangles", -1)) == 2320 and int(missing.get_meta("batches", -1)) == 9,
+		str(geometry))
+	missing.free()
+
+
+func _shadows_are_off(node: Node) -> bool:
+	if node is GeometryInstance3D and (node as GeometryInstance3D).cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+		return false
+	for child: Node in node.get_children():
+		if not _shadows_are_off(child):
+			return false
+	return true
 
 
 func _plant_index(plants: Array) -> Dictionary:

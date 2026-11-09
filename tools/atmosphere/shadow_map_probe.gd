@@ -107,6 +107,7 @@ func _spatial_case(case: Dictionary, sky_consumer: bool = false) -> Dictionary:
 			"render_mode unshaded, fog_disabled, cull_disabled, shadows_disabled;", "")
 		source = source.replace("void fragment()", "void sky()").replace("UV * probe_span", "SCREEN_UV * probe_span")
 		source = source.replace("ALBEDO =", "COLOR =")
+		source = source.replace("shader_type sky;", "shader_type sky;\n#define OPENRC_CLOUD_SKY")
 	shader.code = _variant_source(source)
 	var material := ShaderMaterial.new()
 	material.shader = shader
@@ -160,18 +161,22 @@ func _variant_source(source: String) -> String:
 
 
 func _bind_tile(material: ShaderMaterial, case: Dictionary) -> void:
-	CloudShadowMap.apply(material, case.seed, "sky" if case.mode == 1 else "ground")
+	var slot := int(case.get("slot", 0))
+	CloudShadowMap.apply(material, case.seed, "sky" if case.mode == 1 else "ground", slot)
 	var expected := CloudShadowMap.texture_for(case.seed)
+	var enabled_parameter: String = CloudShadowMap._slot_parameter(slot, "_enabled")
+	var seed_parameter: String = CloudShadowMap._slot_parameter(slot, "_seed")
+	var texture_parameter: String = CloudShadowMap._slot_parameter(slot, "")
 	_bindings_ok = _bindings_ok and expected != null \
-		and material.get_shader_parameter("cloud_shadow_map_enabled") == true \
-		and material.get_shader_parameter("cloud_shadow_map_seed") == case.seed \
-		and material.get_shader_parameter("cloud_shadow_map") == expected
+		and material.get_shader_parameter(enabled_parameter) == true \
+		and material.get_shader_parameter(seed_parameter) == case.seed \
+		and material.get_shader_parameter(texture_parameter) == expected
 	if case.get("corrupt_tile", false):
 		# A blank bound tile must actually affect canvas, spatial AND sky sampling.
 		# A silently disabled cache would otherwise compare analytic noise to itself.
 		if _blank_tile == null:
 			_blank_tile = ImageTexture.create_from_image(Image.create_empty(2, 2, false, Image.FORMAT_RGH))
-		material.set_shader_parameter("cloud_shadow_map", _blank_tile)
+		material.set_shader_parameter(texture_parameter, _blank_tile)
 
 
 func _initialize() -> void:
@@ -271,10 +276,24 @@ func _run() -> void:
 		result.passed = _spatial_passes(result, case)
 		ok = ok and result.passed
 		sky_cases.append(result)
+	# Secondary sky samplers must agree with analytic density and fail a blank-tile
+	# negative control. Otherwise an unused sampler could silently pass as fallback.
+	if _bounds == "off":
+		for slot in range(1, CloudShadowMap.MAX_TILES):
+			for corrupt in [false, true]:
+				var case: Dictionary = CASES[1].duplicate()
+				case.mode = 1
+				case.slot = slot
+				case.corrupt_tile = corrupt
+				case.name = ("negative_blank_slot_" if corrupt else "detail_slot_") + str(slot)
+				var result: Dictionary = await _spatial_case(case, true)
+				result.passed = _spatial_passes(result, case)
+				ok = ok and result.passed
+				sky_cases.append(result)
 	ok = ok and _bindings_ok
 	var sources := {}
 	for path: String in ["res://render/cloud_field.gdshaderinc", "res://render/cloud_shadow_map.gdshaderinc",
-			"res://render/cloud_shadow_map.gd", "res://render/cloud_shadow_map.gdshader",
+			"res://render/cloud_shadow_map.gd", "res://render/cloud_shadow_map.gdshader", "res://render/sky.gdshader",
 			"res://render/sun/sky_mirror.gd", get_script().resource_path]:
 		sources[path] = FileAccess.get_sha256(path)
 	var report := {format = "openrc-shadow-map-probe v2", bindings_valid = _bindings_ok,

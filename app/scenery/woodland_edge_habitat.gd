@@ -10,10 +10,15 @@ const SceneryLoader = preload("res://scenery/scenery_loader.gd")
 const LakeLoader = preload("res://data/lake_loader.gd")
 const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
 const GroundTerrain = preload("res://physics/ground_terrain.gd")
+const PlantLibrary = preload("res://scenery/imported_vegetation.gd")
+const Population = preload("res://scenery/population.gd")
 
 const DATA_PATH := "res://data/woodland_edges.json"
 const GRASS_ID := "grass_common_short"
-const TRIANGLE_BUDGET := 472
+const CARD_TRIANGLE_BUDGET := 472
+const TRIANGLE_BUDGET := 2656
+const FERN_MESH_PATCHES := ["woodland-edge-east-north", "woodland-edge-northwest"]
+const SHRUB_MESH_PATCHES := ["woodland-edge-east-south", "woodland-edge-southwest"]
 const SPECIES: Array[String] = ["grass_common_tall", "bush_common_flowers", "fern_1", GRASS_ID]
 static var _card_material: ShaderMaterial
 static var _floor_material: ShaderMaterial
@@ -56,9 +61,11 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	if not surfaces.ok: return root
 	var terrain_lake: Dictionary = _defaults.lake if lake.is_empty() else lake
 	var plants: Array[Dictionary] = []
-	var triangles := 0
+	var mesh_plans: Array[Dictionary] = []
+	var use_meshes := OS.get_environment("OPENRC_WOODLAND_MESHES").to_lower() != "off"
 	for patch: Dictionary in data.patches:
 		var shrub_records: Array[Dictionary] = []
+		var mesh_batches := {}
 		for path_index in patch.paths_ne_m.size():
 			var points: Array[Vector2] = []
 			for point: Array in patch.paths_ne_m[path_index]:
@@ -68,33 +75,129 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 			for record: Dictionary in placements:
 				_fit_species(record, str(patch.shrub_species[path_index]), int(patch.path_seeds[path_index]),
 					float(patch.shrub_height_m) / float(patch.shrub_heights_m[path_index]))
-				shrub_records.append(record)
 				var location: Vector2 = record.position
-				plants.append({id = record.id, asset_id = record.species,
-					north = -location.y, east = location.x, height_m = record.height_m, patch = patch.id})
+				var asset_id := _mesh_asset(patch, path_index) if use_meshes else ""
+				var plan := _mesh_plan(record, asset_id, surfaces.rects, terrain_lake) if not asset_id.is_empty() else {}
+				var queued := false
+				if not plan.is_empty():
+					queued = not PlantLibrary.queue(mesh_batches, asset_id, plan.placement,
+						int(patch.path_seeds[path_index]), str(record.id), record.tint).is_empty()
+				if queued:
+					mesh_plans.append(plan)
+				else:
+					shrub_records.append(record)
+				plants.append({id = record.id, asset_id = asset_id if queued else record.species,
+					source_asset_id = record.species, rendering = "mesh" if queued else "card",
+					north = -location.y, east = location.x, yaw_rad = record.yaw_rad,
+					height_m = plan.height_m if queued else record.height_m, patch = patch.id})
 		for plant: Dictionary in patch.grass_cards:
 			var seed := int(plant.seed)
 			if quality == "balanced" and Palette.hash01(seed, 4242) >= 0.5: continue
 			shrub_records.append(_grass_record(plant))
-			plants.append({id = plant.id, asset_id = GRASS_ID, north = plant.north_m,
-				east = plant.east_m, height_m = plant.height_m, patch = patch.id})
+			plants.append({id = plant.id, asset_id = GRASS_ID, source_asset_id = GRASS_ID, rendering = "card",
+				north = plant.north_m, east = plant.east_m, yaw_rad = plant.yaw_rad,
+				height_m = plant.height_m, patch = patch.id})
 		var merged := _merge_shrubs(shrub_records, surfaces.rects, terrain_lake)
 		if merged != null:
 			merged.name = str(patch.id) + "_Shrubs"
 			root.add_child(merged)
-			triangles += merged.multimesh.instance_count * Hedge.CARD_TRIANGLES
+		if not mesh_batches.is_empty():
+			# Keep the four distant pockets separately culled; never make a field-wide plant batch.
+			var mesh_group := PlantLibrary.build(mesh_batches)
+			mesh_group.name = str(patch.id) + "_Meshes"
+			for child: Node in mesh_group.get_children():
+				if child is GeometryInstance3D:
+					child.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			root.add_child(mesh_group)
 	var floor_mesh := _floor(data.patches, surfaces.rects, terrain_lake)
 	root.add_child(floor_mesh)
-	triangles += int(floor_mesh.get_meta("triangles", 0))
-	if triangles > TRIANGLE_BUDGET:
+	var counts := _render_counts(root)
+	if int(counts.triangles) > (TRIANGLE_BUDGET if use_meshes else CARD_TRIANGLE_BUDGET):
 		push_error("Woodland edges exceed their qualified source geometry budget")
 		root.free()
 		return Node3D.new()
-	root.set_meta("triangles", triangles)
-	root.set_meta("batches", root.get_child_count())
+	root.set_meta("triangles", counts.triangles)
+	root.set_meta("batches", counts.batches)
 	root.set_meta("plants", plants)
+	root.set_meta("mesh_plans", mesh_plans)
+	root.set_meta("mesh_details", use_meshes)
+	root.set_meta("card_recipe_triangle_budget", CARD_TRIANGLE_BUDGET)
 	root.set_meta("source_recipe_sha256", FileAccess.get_sha256(DATA_PATH))
 	return root
+
+
+## Fixed source paths are chosen before tier filtering so quality changes preserve plant identity.
+static func _mesh_asset(patch: Dictionary, path_index: int) -> String:
+	var species := str(patch.shrub_species[path_index])
+	if species == "grass_common_tall":
+		# Retain one upright accent beside each fern; denser tufts carry the other grass groups.
+		if str(patch.id) in FERN_MESH_PATCHES and path_index == patch.shrub_species.rfind("grass_common_tall"):
+			return ""
+		return "grass_lolipop_small"
+	if str(patch.id) in FERN_MESH_PATCHES and path_index == patch.shrub_species.find("fern_1"):
+		return "polyhaven_fern_02_a"
+	if str(patch.id) in SHRUB_MESH_PATCHES and path_index == patch.shrub_species.find("bush_common_flowers"):
+		return "forest_leafy_shrub"
+	return ""
+
+
+## A replacement must fit the old card's complete horizontal envelope and source-relative height.
+## Queue at the ground, not the card center: the library adds the scaled source ground offset.
+static func _mesh_plan(record: Dictionary, asset_id: String, surfaces: PackedFloat64Array, lake: Dictionary) -> Dictionary:
+	var asset := PlantLibrary.get_asset(asset_id)
+	var parts := PlantLibrary.get_parts(asset_id)
+	if asset.is_empty() or parts.is_empty(): return {}
+	var bounds: Dictionary = asset.get("source_bounds_m", {})
+	var source_height := float(bounds.get("height", 0.0))
+	if source_height <= 0.0: return {}
+	var minimum_y := INF
+	var maximum_y := -INF
+	var radius := 0.0
+	for part: Dictionary in parts:
+		var mesh := part.get("mesh") as Mesh
+		if mesh == null or mesh.get_surface_count() == 0: return {}
+		var box: AABB = part.get("bounds", AABB())
+		var transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
+		for corner in 8:
+			var point := transform * box.get_endpoint(corner)
+			minimum_y = minf(minimum_y, point.y)
+			maximum_y = maxf(maximum_y, point.y)
+			radius = maxf(radius, Vector2(point.x, point.z).length())
+	var measured_height := maximum_y - minimum_y
+	if measured_height <= 0.0 or radius <= 0.0 \
+			or absf(minimum_y + float(bounds.get("ground_offset", 0.0))) > 0.0001:
+		return {}
+	var reference: Transform3D = record.transform
+	var envelope := Hedge._frame_size(Hedge._manifest()) * reference.basis.get_scale().x * sqrt(0.5)
+	var scale := minf(float(record.height_m) / maxf(source_height, measured_height), envelope / radius)
+	var height := source_height * scale
+	var ground := _ground_height(reference.origin.x, reference.origin.z, surfaces, lake)
+	var placement := PlantLibrary.fit_to_height(asset_id, height, Transform3D(
+		Basis(Vector3.UP, float(record.yaw_rad)), Vector3(reference.origin.x, ground, reference.origin.z)))
+	return {id = record.id, asset_id = asset_id, source_asset_id = record.species,
+		north = -reference.origin.z, east = reference.origin.x, height_m = height,
+		reference_height_m = record.height_m, envelope_radius_m = envelope,
+		footprint_radius_m = radius * scale, ground_height_m = ground, placement = placement}
+
+
+static func _render_counts(node: Node) -> Dictionary:
+	var triangles := 0
+	var batches := 0
+	var mesh: Mesh
+	var instances := 1
+	if node is MultiMeshInstance3D:
+		mesh = node.multimesh.mesh
+		instances = node.multimesh.instance_count
+	elif node is MeshInstance3D:
+		mesh = node.mesh
+	if mesh != null:
+		batches = 1
+		triangles = instances * Population.triangles(mesh)
+	for child: Node in node.get_children():
+		var counts := _render_counts(child)
+		triangles += int(counts.triangles)
+		batches += int(counts.batches)
+	return {triangles = triangles, batches = batches}
 
 
 ## Reuse the existing card geometry/material; combine the short source paths in each patch.

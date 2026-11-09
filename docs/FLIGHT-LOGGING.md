@@ -213,6 +213,12 @@ candidates are rejected. An external starter/cut/mixture intervention replays it
 recorded state edit at the same tick. Treat such intervals carefully when comparing
 different propulsion configurations.
 
+The explicit candidate path admits the v3-to-v4 aerodynamic continuation experiment:
+its body/internal layout and wake velocity unit are unchanged. It retains the recorded
+initial wake and input tape, and reports the changed solver identity. Other law/unit
+changes still require their own compatibility proof. Live restore and exact replay
+do not migrate this boundary.
+
 Equal array lengths do not establish compatible state semantics. For example, the
 R02 wake changed from a coefficient to velocity in m/s. Historical exact replay
 requires its original source; a new-law experiment needs a valid initial wake and

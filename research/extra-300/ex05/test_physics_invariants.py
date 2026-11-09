@@ -62,6 +62,20 @@ class PhysicsInvariants(unittest.TestCase):
         self.assertAlmostEqual((a["Cmq"] * c + dx * a["CLq"]) / c,
                                -2 * g["tail_q"] * (tail_arm / c) ** 2 * 1.1, delta=1e-6)
 
+    def test_local_roll_closes_existing_wing_body_estimate(self):
+        d, g = self.data, self.g
+        surface = d["aero"]["surfaces"]
+        term = surface["wing_body_cl_beta"]["value"]
+        fin = surface["vertical"]
+        ref = d["reference"]
+        fin_clb = (-fin["lift_slope"]["value"] * fin["area"]["value"]
+                   / ref["wing_area"]["value"]
+                   * (fin["position"]["value"][2] - ref["aero_reference_point"]["value"][2])
+                   / ref["wing_span"]["value"])
+        self.assertGreater(term, 0.0)  # Low-wing interference exceeds the stabilizing wing term.
+        self.assertAlmostEqual(term, g["Clb_wing"] + g["dihedral_low"], delta=1e-6)
+        self.assertAlmostEqual(term + fin_clb, d["aero"]["coefficients"]["Clb"]["value"], delta=1e-14)
+
     def test_section_adapter_optional_camber(self):
         from calibration_report import section_from_installation
         prop = json.loads(INSTALLATION.read_text(encoding="utf-8"))["propeller"]

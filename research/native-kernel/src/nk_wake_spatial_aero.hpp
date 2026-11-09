@@ -168,8 +168,8 @@ inline SpatialAeroResult spatial_aero_loads(const R *s, const Air &air, const De
 					const R angle = flow->angles[i], stall_angle = angle - stall_back * flow->flap_shifts[i];
 					if (stall_weight(stall_angle, m) != 0.0) return spatial_aero_failure("wing station is outside the attached domain");
 					if (m.polar.enabled) {
-						const R polar_angle = m.polar.strip_factor.empty() ? angle : angle * m.polar.strip_factor[i];
-						if (wing_polar_evaluate(polar_angle, 0.0, m.polar)[2] != 1.0) return spatial_aero_failure("tabulated wing station is outside the attached domain");
+						const R progression = m.polar.strip_factor.empty() ? R(1.0) : m.polar.strip_factor[i];
+						if (wing_polar_evaluate(angle, 0.0, m.polar, progression)[2] != 1.0) return spatial_aero_failure("tabulated wing station is outside the attached domain");
 					}
 				}
 			} else {

@@ -1206,6 +1206,12 @@
       }
     },
     "surfaces": {
+      "wing_body_cl_beta": {
+        "value": 0.004131611225752681,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14j: existing DATCOM wing-at-CL_ref plus low-wing interference, carried into the local law; exact closure of the serialized oracle Clb and fin force arm; estimated, not separated-flow identification"
+      },
       "wing_aileron_effectiveness": {
         "value": 0.467909,
         "unit": "1",

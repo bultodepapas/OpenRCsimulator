@@ -59,7 +59,7 @@ REFERENCE_LAW_DECLARATIONS = {
 # edits do not substitute the new flap or extrapolation equations into the old
 # evaluator. The exact same-host capture remains the discriminating comparison.
 AERO_OLD = b'const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v2"'
-AERO_CURRENT = b'const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v3"'
+AERO_CURRENT = b'const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v4"'
 COEFFICIENT_DECLARATION = b'const COEFFICIENT_LAW := "piecewise-linear-table-aware-floor-v1"'
 SESSION_OLD_CONFIG = (b'\tif Turbine.is_turbine(aircraft.model.propulsion):\n'
                       b'\t\tparts.append(Turbine.LOADS_LAW)\n\tif gear_is_retractable():')
@@ -74,7 +74,7 @@ REFERENCE_IDENTITY_EDITS = {
 # LF-normalized hashes still bind every byte apart from checkout line endings.
 REFERENCE_IDENTITY_HASHES = {
     AERO_PATH: ("069b76f54efdc6266c9991c31f0f925339396a023aceff14e990cf1e74c68d32",
-                "5fac8f470ca9fb1414c27761a5affeaa8b9eb2c30fb7204847a2408af9962b15"),
+                "00c6e9e8f48ffadb46240fb376d53342252d6c2cc2912ced7d047dcd8b4e8e8a"),
     PROPULSION_PATH: ("e515fb3eaa513cb2508cad7c9a8ed8cf164f9196c69ba11ec52795cb8cc9dcf8",
                       "fec3f41604cd5e012d6df12662efa5db05549fbd5f345ba8f7fcc55542b1992d"),
     SESSION_PATH: ("32b4ce2a20bee139d59260ef0f93da0904a9fc72e4537f018a9de8dad74d5654",
