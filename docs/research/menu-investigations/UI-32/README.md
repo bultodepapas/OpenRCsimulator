@@ -177,3 +177,35 @@ A21 §5 adds **Review active alerts** to Pause when the flight has an overlay ma
 The dedicated regression passes **101 checks**, including cap one with STALL and LOW, hidden rail, category changes, reset, empty/unavailable states, unchanged settings and preference bytes, keyboard navigation, remapped selected-pad input and isolation of another device. Existing alert policy, warning settings and rail presentation pass **33, 89 and 41 checks**; Pause, screen stack and language pass **94, 38 and 104 checks**. All five modified/new GDScripts pass checked parsing. A final combined-tree run retained identical hashes for 26 relevant inputs before and after the dedicated test. Other controller changes and additional catalog messages landed after the earlier native run; individual consumer receipts describe their own run times rather than asserting a common source snapshot.
 
 Native Windows Compatibility/RTX 3090 inspection used an actual **1920×1080** window and viewport. A synthetic, fixed paused sample with cap one displayed both alert explanations at English 100%/200% and live Spanish 200%; Down selected the second row and Escape returned focus. At 200%, Pause scrolled to show Return to Home and then Quit, with Resume visible. The debug session stopped without a reported crash or leaked objects; its launcher exit status was unavailable. The [checked evidence index](audit-20261108-alerts-checks.json) retains receipts, source and ignored capture hashes. This is bounded software and visual evidence, not a naturally observed simultaneous alert, physical-controller or screen-reader test, participant usability, full CI, release, other-platform or performance qualification. No images were added to Git.
+
+## Frozen trial identity (UI-32-R11 / A21, 2026-11-09)
+
+Pause identifies the frozen Workshop build as unsaved or as a saved name/revision.
+An edited saved build names its unsaved candidate and saved ancestor. The trial
+compares all persisted payload fields, including name/presentation, with the
+editor's saved baseline; ancestry alone never means saved. Recovered copies stay
+unsaved. Display context is detached and separate from physical, presentation,
+trace and replay identities. Test fly neither saves nor certifies the build.
+Nontrial Pause clears the trial display; there is no new Last flown indicator.
+
+Native save/edit/Test fly revealed an inherited freed-opener failure during screen
+suspension. The handoff now validates the opener before assigning it to a typed
+Control, retaining the existing restoration guard. Integration checks free an
+opener before launch and another during the trial, then return to the same editor.
+
+[Checked evidence](audit-20261109-trial-checks.json) includes 58 trial assertions,
+Workshop UI/integration, Pause, language coverage and Change aircraft consumers.
+The 1080p EN/DE matrix covers 100%/200%, renamed/reverted content, two distinct
+96-character names, translation changes and reachability of Resume/alerts.
+German 200% can make the identity taller than its scroller; both ends remain
+reachable, without a single-screen-fit claim.
+
+Native Windows Compatibility/RTX 3090 inspection used actual **1920×1080** pixels,
+English 100%/200% and German 200%. The real saved/edit/Test fly/Pause/return flow
+passes after the opener correction. A separately injected maximum-name display
+confirms wrapping and scrolling to the revision, Resume and alerts. The failed
+initial run and corrected run are retained separately; the latter reported no
+script error, crash or leaked objects, with launcher exit status unavailable.
+Ignored capture hashes are in the evidence index; no images are added to Git.
+Physical controllers, assistive technology, participant comprehension, other
+platforms, full CI/release and performance qualification remain open.

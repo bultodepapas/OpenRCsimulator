@@ -110,6 +110,7 @@ func _initialize() -> void:
 	var saved := Trial.freeze(payload)
 	check("saved revision ancestry is retained", saved.get("ok", false)
 		and saved.identity.ancestor_variant_id == "saved-parent" and saved.identity.ancestor_revision == 3)
+	_test_display_context(payload, saved, first.presentation_profile)
 	var conflicting_ancestor: Dictionary = payload.duplicate(true)
 	conflicting_ancestor.recipe.id = "different-parent"
 	check("conflicting recipe and payload ancestry is refused", not Trial.freeze(conflicting_ancestor).get("ok", false))
@@ -206,6 +207,54 @@ func check(label: String, condition: bool) -> void:
 	if not condition:
 		failures += 1
 		printerr("FAIL ", label)
+
+func _test_display_context(saved_payload: Dictionary, original: Dictionary, profile: Dictionary) -> void:
+	var candidate := saved_payload.duplicate(true)
+	candidate.presentation_profile = profile.duplicate(true)
+	var baseline := {base_id = candidate.base_id, base_bytes = candidate.base_bytes.duplicate(),
+		recipe = candidate.recipe.duplicate(true), name = "Weekend Trainer",
+		descriptor = candidate.workshop_descriptor.duplicate(true), dependencies = candidate.dependencies.duplicate(true),
+		compiler = candidate.compiler_version, presentation_profile = candidate.presentation_profile.duplicate(true)}
+	candidate.display_input = {name = "Weekend Trainer", baseline = baseline, requires_copy = false}
+	var exact := Trial.freeze(candidate)
+	check("saved display context does not alter physical identity or resolved bytes",
+		exact.get("ok", false) and exact.identity == original.identity and exact.raw_bytes == original.raw_bytes
+		and exact.display_context == {state = "saved", name = "Weekend Trainer", saved_name = "Weekend Trainer", revision = 3})
+	var changed := candidate.duplicate(true)
+	changed.recipe.scale = 0.75
+	var physical := Trial.freeze(changed)
+	check("changed physical contents are an unsaved draft", physical.get("ok", false)
+		and physical.display_context.state == "modified")
+	changed = candidate.duplicate(true)
+	changed.presentation_profile.visual_seed = 12
+	var appearance := Trial.freeze(changed)
+	check("changed presentation contents are an unsaved draft", appearance.get("ok", false)
+		and appearance.display_context.state == "modified" and appearance.identity == exact.identity)
+	changed = candidate.duplicate(true)
+	changed.display_input.name = "New name"
+	var renamed := Trial.freeze(changed)
+	check("renaming alone remains unsaved without changing physics", renamed.get("ok", false)
+		and renamed.display_context.state == "modified" and renamed.identity == exact.identity)
+	changed = candidate.duplicate(true)
+	changed.display_input.requires_copy = true
+	check("copy-required recovery never claims the baseline is saved", Trial.freeze(changed).get("display_context", {}).get("state") == "modified")
+	changed = candidate.duplicate(true)
+	changed.display_input.baseline.erase("presentation_profile")
+	check("incomplete saved baseline is refused", not Trial.freeze(changed).get("ok", false))
+	changed = candidate.duplicate(true)
+	changed.display_input.requires_copy = "false"
+	check("malformed display state is refused", not Trial.freeze(changed).get("ok", false))
+	changed = candidate.duplicate(true)
+	changed.variant_id = ""
+	changed.variant_revision = 0
+	changed.display_input.baseline = {}
+	var fresh := Trial.freeze(changed)
+	check("a new build is unsaved even when unchanged", fresh.get("ok", false)
+		and fresh.display_context == {state = "unsaved", name = "Weekend Trainer"})
+	changed.display_input.baseline = baseline
+	check("new build cannot claim saved ancestry via display metadata", not Trial.freeze(changed).get("ok", false))
+	check("returned display context is detached from the source", exact.display_context.name == "Weekend Trainer")
+
 
 func _expected_trial_id(identity: Dictionary) -> String:
 	var material: String = str(identity.base_sha256) + ":" + str(identity.recipe_sha256) + ":" \

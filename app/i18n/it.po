@@ -10029,3 +10029,12 @@ msgstr "Lettura del pulsante radio non valida."
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "Centra i comandi di rollio e beccheggio prima di riprendere il volo."
+
+msgid "Testing unsaved build: %s"
+msgstr "Prova del modello non salvato: %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "Prova del modello salvato: %s · revisione %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "Basato sul modello salvato: %s · revisione %d"

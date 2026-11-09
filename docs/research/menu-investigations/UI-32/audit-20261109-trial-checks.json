@@ -1,0 +1,346 @@
+{
+  "date": "2026-11-09",
+  "baseline_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "platform": "Windows x86-64",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "qualification": "focused software evidence; complete required CI/platform/release and physical qualification remain open",
+  "scope": "UI-32-R11 / A21 frozen trial display",
+  "source_sha256": {
+    "app/app_root.gd": "fb38f2ae9e7ef02729772df2de87fd6f145ee190645f34cd74f81079d9fd294d",
+    "app/ui/workshop.gd": "446d1e6147fdb838c05d11e15498916e10d2613a941b3603c3635d974bfbbdf2",
+    "app/workshop/trial.gd": "0e5db89de34c2e359beca0e0201cdf0d41afd1c3e3155037cebcee743834bedf",
+    "app/ui/pause_menu.gd": "012c39157d6a6f33a1544fdcd1a030a512ae339e43c587040d5946ead96503c4",
+    "app/tests/test_workshop_trial.gd": "b3993eb0b8a44ad335d671d6b1417a74dbe9e7df4c156c434f10d24739035328",
+    "app/tests/test_workshop_ui.gd": "2a3f0889c11a809406d1d8fa584d086ace46443ce5cb8e07e35a41849782a8c4",
+    "app/tests/test_workshop_integration.gd": "475b17d20a37c6a8154dc339c528745868d004ee611341fa9627be75b54a013f",
+    "app/tests/test_ui_pause.gd": "a836e8bb017af2f6e0b82e9d5932b4edf407767bc29aaa725814296569c111af",
+    "app/i18n/de.po": "08ea19f0414ab18cedb888b3ced25a17bfd9607ff9e804ea151ec4d91356e34c",
+    "app/i18n/es.po": "483196530150d24e41a29aa1d3aedbf4622b1cc0cd738a441910d6fa13ac9498",
+    "app/i18n/fr.po": "54765c914675682248b8d219c0e6dc2cf91a9c1e0e03569eb99ac2d826117e8e",
+    "app/i18n/it.po": "487b6a3fce3f0222cac22c3d888ed48a78279a0cf9357701791dd6a24b4d58e0",
+    "app/i18n/ja.po": "835d1e9e3cb529f781f6c11eb81814c5952bbf07e5ddd475059d14ede52f64b8",
+    "app/i18n/pt_BR.po": "88482258db0f75c320a0d76a669571bded02df9daaf90b3600bef47b828d33d1",
+    "app/i18n/ru.po": "1c576548e7ea591ad079c93615761de7ffb1b8326cc41cc2ce0cbddeda6dfc5b",
+    "app/i18n/zh_Hans.po": "694a88e0165b29ded20efd651fb4b30a240fef2c68aa6472cb960f4b0b860a5f"
+  },
+  "checks": [
+    {
+      "path": "tmp/audit-trial-identity-20261109/trial-r2-zb_3iiq6/report.json",
+      "sha256": "98d86b13993fca3facc605f8a2f02360f28f34b9da37a7a2f2148b0f939c0ef5",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "df5b0d76-91bf-4c05-b9d4-26788d1c8d2f",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_trial.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:16:17.773068+00:00",
+        "label": "trial-r2",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\trial-r2-zb_3iiq6\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\trial-r2-zb_3iiq6\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Workshop trial: 58 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 3,
+            "message": "Aircraft presentation changed after the Workshop trial was frozen.",
+            "context": [
+              "   at: push_warning (core/variant/variant_utility.cpp:1034)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] build (res://render/airplane.gd:72)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 11.032,
+        "log_bytes": 408,
+        "log_sha256": "42b3ba8b66bc793d32232f9a06afda904f70906970ed9e2a1f6ba1cc400537c4"
+      }
+    },
+    {
+      "path": "tmp/audit-trial-identity-20261109/workshop-ui-r2-xap9o7ci/report.json",
+      "sha256": "046ef035df69b04016cb39d4014e6e86e9e8a5eb9504fb804db6f59cfdf5b7ab",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "45e8e23b-238f-4902-80f8-f016b77e3aa2",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_ui.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:17:57.670020+00:00",
+        "label": "workshop-ui-r2",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\workshop-ui-r2-xap9o7ci\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\workshop-ui-r2-xap9o7ci\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Workshop UI: 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 30.031,
+        "log_bytes": 8842,
+        "log_sha256": "f07039813b1e7f104d8edf9dbd0527b17a8c818b7d8e9a7301758a0e4e0bffce"
+      }
+    },
+    {
+      "path": "tmp/audit-trial-identity-20261109/integration-r3-wadqcql5/report.json",
+      "sha256": "7a4f470281033b3bf1d1bd91e2720a3495085d603b5f290a6455fe9d1146d046",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "ba28084d-dd47-444d-9748-aefe2332f7c5",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_integration.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:23:46.021127+00:00",
+        "label": "integration-r3",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\integration-r3-wadqcql5\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\integration-r3-wadqcql5\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Workshop integration: 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 36.781,
+        "log_bytes": 3636,
+        "log_sha256": "4dd5dceafafbb629d48c3779a0d51cfb1dc7f15290ad09490a96aab321653eb1"
+      }
+    },
+    {
+      "path": "tmp/audit-trial-identity-20261109/pause-r5-v7xwcm9z/report.json",
+      "sha256": "1b7548cc39a2f5d96f39ee0980499a55c962a7d9d21572b9ffea9d0a05c57451",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0b8cfe50-a931-4835-9467-378ef4e253b6",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_pause.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:21:33.187927+00:00",
+        "label": "pause-r5",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\pause-r5-v7xwcm9z\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\pause-r5-v7xwcm9z\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all UI pause checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 52.562,
+        "log_bytes": 8581,
+        "log_sha256": "a3c556e4f065b1e7d89badf56e96ee140f65151d16463baf1682daec3d5a89ae"
+      }
+    },
+    {
+      "path": "tmp/audit-trial-identity-20261109/language-pqd4lmrv/report.json",
+      "sha256": "b966ab222bfbcedd101b8ab999fbfff911b867866f41e9fd2612acdfb86219a3",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "cbd4040b-6484-4512-b586-36821bef44b0",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_language.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:20:15.141434+00:00",
+        "label": "language",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\language-pqd4lmrv\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\language-pqd4lmrv\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "all UI language checks passed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 38.562,
+        "log_bytes": 5403,
+        "log_sha256": "ccc24dcd5f2624313a8d81224b6d0a1429b65b74c72b796c282dea65f13b216f"
+      }
+    },
+    {
+      "path": "tmp/audit-trial-identity-20261109/change-aircraft-eg3odyvt/report.json",
+      "sha256": "82f6d35a5507712ecbd497888c5fc643d28c8b765777166ec1e01eda76e7604d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b44bf8b0-338c-4703-a96b-156f17646f1f",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_change_aircraft.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:24:09.416880+00:00",
+        "label": "change-aircraft",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\change-aircraft-eg3odyvt\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-trial-identity-20261109\\change-aircraft-eg3odyvt\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "UI change aircraft: 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 27.454,
+        "log_bytes": 1189,
+        "log_sha256": "492db38912a87385c1385107d3cee8ef92f1c159e02e1dacf5c228716967c321"
+      }
+    }
+  ],
+  "native": {
+    "renderer": "Compatibility / OpenGL",
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "actual_pixels": [
+      1920,
+      1080
+    ],
+    "cases": [
+      "actual saved/edit/Test fly/Pause/return, EN100/200 and DE200",
+      "synthetic detached display with two 96-character names at DE200; explicit scrolling to identity end and alerts"
+    ],
+    "capture_sha256": {
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-001.png": "7fa5eab637c5c90f4f7f9ef497567b51a09d36db57357ead83ba79b910f3cbb0",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-002.png": "ab4fc5f78dd68df91e47e6ee6e46d28902dcbe5f75ef1b10366dc64d7b1c8023",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-003.png": "825edfe60598587008a2c3773449f5b223032606fb1cd5e943da139ae9505cba",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-004.png": "8357ac6dfaa3b71f163cab7c36f5419b0fe9a4ccde0bdb6ee73e978de9760b5c",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-005.png": "a714298c6cd35d3b8258288bfee16aaf2236695e40a5b507734ca64d55822c25",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-006.png": "dd4af4e7e517880d8e85b2bbccb6a4a81f72d36b4f7a8e7517cc2245d2963208",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-007.png": "dd4af4e7e517880d8e85b2bbccb6a4a81f72d36b4f7a8e7517cc2245d2963208",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-008.png": "dd4af4e7e517880d8e85b2bbccb6a4a81f72d36b4f7a8e7517cc2245d2963208",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-009.png": "a4ad91e05f027e218c05263ed9131ec7aa4a82fd1e1553e19bf0584b05c449aa",
+      "tmp/debug-bridge/20261109-092034-47870/shots/shot-92224-010.png": "fc303f5ca64ba60298cd24c33743a0adacdba5b99bfcee70d36c48c014c0e634"
+    },
+    "ignored_artifacts": {
+      "tmp/debug-bridge/20261109-092034-47870/launch.json": "6dfc076b8436922b15d8c202d122c316002224b840942576c3ff5eda2e155649",
+      "tmp/debug-bridge/20261109-092034-47870/log.jsonl": "746906b007245db7b6bb19fc3790bcf75b39cf8195bc3ca5ebc9be6d38e471bb",
+      "tmp/debug-bridge/20261109-092034-47870/engine.log": "812a757fec563c24d41dfa0b19236792efb53de8458c4ed602c06819838629ca"
+    },
+    "initial_failure_session": "tmp/debug-bridge/20261109-091833-47870",
+    "corrected_session": "tmp/debug-bridge/20261109-092034-47870",
+    "corrected_outcome": {
+      "crash": null,
+      "leaked_objects": 0,
+      "launcher_exit_code": null
+    },
+    "limits": [
+      "200% extreme identity requires scrolling",
+      "JSON-injected float revision was rejected; corrected diagnostic used explicit integer",
+      "Capture 003 was taken before settled layout; later maximum-name spots waited for layout",
+      "Native session is UI evidence; concurrent later fuel-law work is qualified separately"
+    ]
+  }
+}

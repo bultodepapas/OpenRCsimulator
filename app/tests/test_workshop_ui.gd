@@ -7,6 +7,7 @@ const Presentation := preload("res://workshop/presentation.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Store := preload("res://workshop/store.gd")
 const Workshop := preload("res://ui/workshop.gd")
+const Trial := preload("res://workshop/trial.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 
@@ -420,6 +421,28 @@ func _run() -> void:
 		and int(payload.get("variant_revision", 0)) == 2
 		and str(payload.get("compiler_version", "")) == str(variants[0].get("compiler_version", ""))
 		and payload.get("dependencies", {}) == variants[0].get("dependencies", {}))
+	var saved_trial: Dictionary = Trial.freeze(payload)
+	_check("unchanged saved payload freezes its saved name and revision",
+		saved_trial.get("ok", false) and saved_trial.get("display_context", {}) == {
+			state = "saved", name = "Workshop UI check", saved_name = "Workshop UI check", revision = 2})
+	workshop.set_note("")
+	workshop.set_variant_name("Renamed draft")
+	(_find(workshop, "TestFly") as Button).pressed.emit()
+	var renamed_payload: Dictionary = emitted_payloads.back()
+	var renamed_trial: Dictionary = Trial.freeze(renamed_payload)
+	_check("renamed draft is unsaved and retains its saved ancestor name",
+		renamed_trial.get("ok", false) and renamed_trial.get("display_context", {}) == {
+			state = "modified", name = "Renamed draft", saved_name = "Workshop UI check", revision = 2}
+		and renamed_trial.identity == saved_trial.identity)
+	_check("Test fly leaves the saved revision and editor changes untouched",
+		Store.list_variants(store_root).size() == 1 and int(Store.list_variants(store_root)[0].revision) == 2
+		and workshop.has_unsaved_changes())
+	workshop.set_note("")
+	workshop.set_variant_name("Workshop UI check")
+	(_find(workshop, "TestFly") as Button).pressed.emit()
+	var restored_trial: Dictionary = Trial.freeze(emitted_payloads.back())
+	_check("returning to the complete saved baseline restores saved status",
+		restored_trial.get("ok", false) and restored_trial.get("display_context", {}).get("state") == "saved")
 	workshop.set_note("")
 
 	workshop.set_recipe({"scale": 0.5}, false)

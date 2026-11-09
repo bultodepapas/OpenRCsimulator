@@ -10176,3 +10176,12 @@ msgstr "Lecture de bouton radio invalide."
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "Centrez les commandes de roulis et de tangage avant de reprendre le vol."
+
+msgid "Testing unsaved build: %s"
+msgstr "Essai du modèle non enregistré : %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "Essai du modèle enregistré : %s · révision %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "Basé sur le modèle enregistré : %s · révision %d"

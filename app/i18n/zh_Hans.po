@@ -9202,3 +9202,12 @@ msgstr "遥控器按钮输入无效。"
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "继续飞行前，请将横滚和俯仰控制回中。"
+
+msgid "Testing unsaved build: %s"
+msgstr "正在测试未保存的机型：%s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "正在测试已保存的机型：%s · 版本 %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "基于已保存的机型：%s · 版本 %d"

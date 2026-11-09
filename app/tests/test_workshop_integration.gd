@@ -13,6 +13,8 @@ const Atmosphere := preload("res://render/atmosphere.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const World := preload("res://render/world/world.gd")
+const Store := preload("res://workshop/store.gd")
+const ScreenStack := preload("res://ui/screen_stack.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -114,11 +116,16 @@ func _run() -> void:
 		visual.root.free()
 		_check_wreck_scale(flight._airplane.root, Catalog.DEFAULT_ID, 2.0)
 		host.open_pause()
+		check("Pause identifies the frozen unsaved trial build",
+			host.pause_menu.identity_label.text.contains("Testing unsaved build: Unsaved build")
+			and not session.trace_meta().workshop.has("display_context"))
+		var original_trial_text: String = host.pause_menu.identity_label.text
 		host.restart_flight()
 		check("trial restart keeps frozen identity and experimental mass", session.sim.tick == 0
 			and session.sim.mass == mass and session.aircraft.input_identity.sha256 == fingerprint
 			and host.flight == flight)
 		host.open_pause()
+		check("reopening Pause after restart retains the trial identity", host.pause_menu.identity_label.text == original_trial_text)
 		host.end_flight()
 		await ui.settle()
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
@@ -130,6 +137,43 @@ func _run() -> void:
 			editor.get("_active_page") == "compare" and preview.call("get_view_state") == preview_state
 			and root.gui_get_focus_owner() == trial_button and not editor.get("_trial_pending"))
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
+		# An edited saved build must not be labelled as its untouched revision.
+		editor.variants_root = "user://trial_identity_integration_%d" % Time.get_ticks_usec()
+		editor.set_variant_name("Weekend Trainer")
+		editor.save_named_variant()
+		var saved_build: Array = Store.list_variants(editor.variants_root)
+		check("saved trial fixture has one revision", saved_build.size() == 1 and int(saved_build[0].revision) == 1)
+		editor.set_recipe({scale = 1.0})
+		var workshop_surface: Control = ScreenStack._surface(editor)
+		var freed_opener := Button.new()
+		editor.add_child(freed_opener)
+		workshop_surface.set("return_focus", freed_opener)
+		freed_opener.free()
+		check("trial fixture has a freed Workshop opener", not is_instance_valid(workshop_surface.get("return_focus")))
+		# Exercise the separate return path too: this opener exists while the
+		# screens are detached, then disappears during the trial.
+		var home_surface: Control = ScreenStack._surface(host.home)
+		var late_opener := Button.new()
+		host.add_child(late_opener)
+		home_surface.set("return_focus", late_opener)
+		trial_button.grab_focus()
+		trial_button.pressed.emit()
+		check("edited saved build starts a trial", host.flight != null and host.flight.startup_error.is_empty())
+		if host.flight != null:
+			late_opener.free()
+			host.open_pause()
+			var identity_text: String = host.pause_menu.identity_label.text
+			check("Pause distinguishes unsaved changes from their saved revision",
+				identity_text.contains("Testing unsaved build: Weekend Trainer")
+				and identity_text.contains("Based on saved build: Weekend Trainer · revision 1"))
+			check("Test fly does not save changes or claim a pass", int(Store.list_variants(editor.variants_root)[0].revision) == 1
+				and editor.has_unsaved_changes() and not identity_text.to_lower().contains("passed"))
+			host.end_flight()
+			await ui.settle()
+			check("return keeps edited saved build unsaved", host.screens.top() == editor and editor.has_unsaved_changes())
+			check("freed openers do not prevent usable editor focus", root.gui_get_focus_owner() == trial_button)
+		elif is_instance_valid(late_opener):
+			late_opener.free()
 	for scale_value: float in [0.5, 2.0]:
 		editor.set_aircraft("gp-extra-300s-60", true)
 		editor.set_recipe({scale = scale_value})
@@ -149,6 +193,7 @@ func _run() -> void:
 		var original: Node = host.flight
 		original.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 		host.open_pause()
+		check("ordinary flight Pause does not retain an earlier trial identity", not host.pause_menu.identity_label.text.contains("Testing unsaved build"))
 		check("paused original accepts an independent sky", original.apply_sky_config(SkyConfig.for_preset("broken")).ok)
 		original.remember_lighting_selection = false # Natural Random's temporary save scope.
 		original.set_night_options("off", true, "off")

@@ -10004,3 +10004,12 @@ msgstr "Недопустимое значение кнопки аппарату�
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "Перед продолжением полёта установите управление креном и тангажом в центр."
+
+msgid "Testing unsaved build: %s"
+msgstr "Испытание несохранённой модели: %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "Испытание сохранённой модели: %s · версия %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "На основе сохранённой модели: %s · версия %d"

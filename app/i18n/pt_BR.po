@@ -10043,3 +10043,12 @@ msgstr "Leitura inválida de botão do transmissor."
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "Centralize os controles de rolagem e arfagem antes de continuar o voo."
+
+msgid "Testing unsaved build: %s"
+msgstr "Testando modelo não salvo: %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "Testando modelo salvo: %s · revisão %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "Baseado no modelo salvo: %s · revisão %d"

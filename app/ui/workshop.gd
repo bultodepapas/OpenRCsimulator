@@ -2115,6 +2115,11 @@ func _request_trial() -> void:
 		"dependencies": _variant_dependencies.duplicate(true),
 		"compiled": _compiled.duplicate(true),
 		"presentation_profile": _presentation.duplicate(true),
+		# Freeze the name and the complete saved baseline with the candidate. Trial
+		# compares the actual payload, rather than trusting ancestry as a saved state.
+		"display_input": {"name": _variant_name.text.strip_edges(),
+			"baseline": _baseline.duplicate(true) if not _saved_variant_id.is_empty() else {},
+			"requires_copy": _recovery_requires_copy},
 		"start_choice": trial_start_choice,
 	})
 

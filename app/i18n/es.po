@@ -8797,3 +8797,12 @@ msgstr "Lectura de botón de la emisora no válida."
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "Centra el alabeo y el cabeceo antes de continuar el vuelo."
+
+msgid "Testing unsaved build: %s"
+msgstr "Probando el diseño sin guardar: %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "Probando el diseño guardado: %s · revisión %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "Basado en el diseño guardado: %s · revisión %d"

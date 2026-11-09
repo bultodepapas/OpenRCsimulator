@@ -9253,3 +9253,12 @@ msgstr "送信機のボタン入力が無効です。"
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "飛行を続ける前にロールとピッチを中央に戻してください。"
+
+msgid "Testing unsaved build: %s"
+msgstr "未保存の機体を試験中: %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "保存済みの機体を試験中: %s · リビジョン %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "元の保存済み機体: %s · リビジョン %d"

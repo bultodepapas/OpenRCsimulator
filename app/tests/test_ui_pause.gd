@@ -6,6 +6,7 @@ extends SceneTree
 const UiDriver := preload("res://tests/ui_driver.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
+const Store := preload("res://workshop/store.gd")
 const PREFS := "user://test_ui_pause_settings.cfg"
 
 var _failures := 0
@@ -24,6 +25,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _initialize() -> void:
 	ui = UiDriver.new(self)
 	await _run_pause_layout_checks()
+	await _run_trial_identity_layout_checks()
 	await _run()
 
 
@@ -500,6 +502,13 @@ func _run_pause_layout_checks() -> void:
 	var enlarged_pause := load("res://ui/pause_menu.gd").new() as CanvasLayer
 	enlarged_viewport.add_child(enlarged_pause)
 	enlarged_pause.show_for(delayed_session)
+	enlarged_pause.set_identity("Workshop trial · Aircraft · Field")
+	enlarged_pause.set_trial_identity({state = "modified", name = "Draft", saved_name = "Trainer", revision = 4})
+	_check("Pause displays the frozen draft and its saved ancestor", enlarged_pause.identity_label.text.contains("Draft")
+		and enlarged_pause.identity_label.text.contains("Trainer") and enlarged_pause.identity_label.text.contains("4"))
+	enlarged_pause.set_trial_identity({})
+	_check("clearing trial identity preserves only aircraft and field", enlarged_pause.identity_label.text == "Workshop trial · Aircraft · Field")
+	enlarged_pause.set_identity("")
 	await process_frame
 	await process_frame
 	var enlarged_scroll: ScrollContainer = enlarged_pause.find_child("PauseScroll", true, false) as ScrollContainer
@@ -539,10 +548,79 @@ func _run_pause_layout_checks() -> void:
 		enlarged_pause.exit_options_container.visible and enlarged_pause.quit_button.visible
 		and not enlarged_pause.quit_button.disabled
 		and enlarged_pause.quit_button.focus_mode != Control.FOCUS_NONE)
+	enlarged_pause.set_identity("Workshop trial · Aircraft · Field")
+	enlarged_pause.set_trial_identity({state = "modified", name = "Weekend Trainer", saved_name = "Weekend Trainer", revision = 4})
+	await process_frame
+	await process_frame
+	enlarged_scroll.ensure_control_visible(continue_button)
+	await process_frame
+	_check("200% trial identity wraps within the rail and Resume remains reachable",
+		enlarged_pause.identity_label.autowrap_mode != TextServer.AUTOWRAP_OFF
+		and enlarged_pause.identity_label.size.x <= enlarged_scroll.size.x
+		and enlarged_scroll.get_global_rect().encloses(continue_button.get_global_rect()))
 	enlarged_pause.queue_free()
 	delayed_session.queue_free()
 	enlarged_viewport.queue_free()
 	await process_frame
+	TranslationServer.set_locale("en")
+	ScreenTheme.text_scale = saved_text_scale
+
+
+func _run_trial_identity_layout_checks() -> void:
+	var saved_text_scale := ScreenTheme.text_scale
+	for locale: String in ["en", "de"]:
+		for text_scale: float in [1.0, 2.0]:
+			TranslationServer.set_locale(locale)
+			ScreenTheme.text_scale = text_scale
+			var viewport := SubViewport.new()
+			viewport.size = Vector2i(1920, 1080)
+			viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+			root.add_child(viewport)
+			var session := PauseLayoutSession.new()
+			viewport.add_child(session)
+			var pause := load("res://ui/pause_menu.gd").new(true, true) as CanvasLayer
+			viewport.add_child(pause)
+			pause.show_for(session)
+			pause.set_identity("Workshop trial · Aircraft · Field")
+			var draft_name := "W".repeat(Store.MAX_NAME_LENGTH)
+			var saved_name := "M".repeat(Store.MAX_NAME_LENGTH)
+			pause.set_trial_identity({state = "modified", name = draft_name, saved_name = saved_name, revision = 999})
+			pause.active_alerts_button.visible = true
+			await process_frame
+			await process_frame
+			var scroll: ScrollContainer = pause.find_child("PauseScroll", true, false)
+			var prefix := "1080p trial identity %s %.0f%%" % [locale, text_scale * 100.0]
+			_check(prefix + " retains both maximum-length names", pause.identity_label.text.contains(draft_name)
+				and pause.identity_label.text.contains(saved_name))
+			if locale == "de":
+				_check(prefix + " uses German text", pause.identity_label.text.contains("Ungespeicherter Entwurf im Test:"))
+			else:
+				TranslationServer.set_locale("de")
+				await process_frame
+				_check(prefix + " updates after a live language change", pause.identity_label.text.contains("Ungespeicherter Entwurf im Test:"))
+				TranslationServer.set_locale("en")
+				await process_frame
+			scroll.scroll_vertical = 0
+			await process_frame
+			var top_visible: bool = pause.identity_label.get_global_rect().position.y >= scroll.get_global_rect().position.y \
+				and pause.identity_label.get_global_rect().position.y < scroll.get_global_rect().end.y
+			# For a label taller than the viewport, ensure_control_visible cannot fit
+			# both ends at once. A user can scroll to the remaining lines.
+			scroll.scroll_vertical += maxi(0, ceili(pause.identity_label.get_global_rect().end.y - scroll.get_global_rect().end.y))
+			await process_frame
+			var bottom_visible: bool = pause.identity_label.get_global_rect().end.y <= scroll.get_global_rect().end.y \
+				and pause.identity_label.get_global_rect().end.y > scroll.get_global_rect().position.y
+			_check(prefix + " top and bottom are reachable by scrolling", top_visible and bottom_visible,
+				"scroll=%s label=%s" % [str(scroll.get_global_rect()), str(pause.identity_label.get_global_rect())])
+			scroll.ensure_control_visible(pause.continue_button)
+			await process_frame
+			_check(prefix + " keeps Resume reachable", scroll.get_global_rect().encloses(pause.continue_button.get_global_rect())
+				and not pause.continue_button.disabled)
+			scroll.ensure_control_visible(pause.active_alerts_button)
+			await process_frame
+			_check(prefix + " keeps active alerts reachable", scroll.get_global_rect().encloses(pause.active_alerts_button.get_global_rect()))
+			viewport.queue_free()
+			await process_frame
 	TranslationServer.set_locale("en")
 	ScreenTheme.text_scale = saved_text_scale
 

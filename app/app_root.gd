@@ -2498,6 +2498,7 @@ func open_pause() -> void:
 	pause_menu.change_aircraft_requested.connect(change_aircraft)
 	pause_menu.change_aircraft_button.visible = has_home and not trial_pause
 	pause_menu.set_identity(_flight_identity(trial_pause))
+	pause_menu.set_trial_identity(flight.workshop_trial.get("display_context", {}) if trial_pause else {})
 	pause_menu.workshop_requested.connect(open_workshop)
 	pause_menu.workshop_button.visible = not helicopter_route and not trial_pause
 	pause_menu.failure_settings_requested.connect(open_failures_settings)
@@ -2691,7 +2692,8 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	while screens.top() != null:
 		var node: Node = screens.top()
 		var id: String = "workshop" if node == editor else ("home" if node == home else "pause")
-		var opener: Control = ScreenStack._surface(node).return_focus
+		var surface: Control = ScreenStack._surface(node)
+		var opener: Control = surface.return_focus if is_instance_valid(surface.return_focus) else null
 		_workshop_screens.push_front({id = id, node = screens.pop(false, false), opener = opener})
 	flight = candidate
 	screens.set_session(flight.session)

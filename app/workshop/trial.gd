@@ -2,6 +2,7 @@
 extends RefCounted
 
 const ModelRegistry := preload("res://aircraft/model_registry.gd")
+const Store := preload("res://workshop/store.gd")
 
 static func freeze(payload: Dictionary) -> Dictionary:
 	if payload.has("battery_mode") and (typeof(payload.battery_mode) != TYPE_STRING or payload.battery_mode != "ideal"):
@@ -133,6 +134,9 @@ static func freeze(payload: Dictionary) -> Dictionary:
 		return {ok = false, errors = PackedStringArray(["Saved variant ancestry requires a matching ID and positive revision."])}
 	if not ancestor_id.is_empty() and (pinned_compiler.is_empty() or supplied_dependencies.is_empty() or supplied_descriptor.is_empty()):
 		return {ok = false, errors = PackedStringArray(["Saved variant provenance is incomplete; reload it from the Workshop library."])}
+	var display_result := _display_context(payload, ancestor_id, ancestor_revision)
+	if not display_result.ok:
+		return display_result
 	recipe.erase("id")
 	recipe.erase("name")
 	var base_sha: String = _sha(base_bytes)
@@ -159,7 +163,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var resolved_sha: String = _sha(resolved_bytes)
 	result.data.input_identity = {format = "openrc-aircraft v2", sha256 = resolved_sha}
 	var model_sha: String = _sha(var_to_bytes(result.data.model))
-	return {ok = true, errors = PackedStringArray(), data = result.data.duplicate(true),
+	var frozen := {ok = true, errors = PackedStringArray(), data = result.data.duplicate(true),
 		scale = float(recipe.get("scale", 1.0)), raw_bytes = resolved_bytes, presentation = presentation_binding.duplicate(true),
 		presentation_profile = normalized_profile.duplicate(true),
 		presentation_identity = presentation_identity.duplicate(true),
@@ -170,6 +174,53 @@ static func freeze(payload: Dictionary) -> Dictionary:
 			dependencies = dependencies.duplicate(true), dependencies_sha256 = dependency_sha,
 			ancestor_variant_id = ancestor_id, ancestor_revision = ancestor_revision,
 			compiler = compiler_version, experimental = true}}
+	if not display_result.context.is_empty():
+		# UI-only context must not participate in the physical or trace identity.
+		frozen["display_context"] = display_result.context.duplicate(true)
+	return frozen
+
+
+## An editor-supplied baseline is compared against every persisted build field,
+## including presentation and name. An ancestor ID alone never means "saved".
+static func _display_context(payload: Dictionary, ancestor_id: String, revision: int) -> Dictionary:
+	if not payload.has("display_input"):
+		return {ok = true, context = {}}
+	var input: Variant = payload.display_input
+	if not input is Dictionary or input.size() != 3 or typeof(input.get("name")) != TYPE_STRING \
+			or typeof(input.get("baseline")) != TYPE_DICTIONARY or typeof(input.get("requires_copy")) != TYPE_BOOL:
+		return _invalid_display_context()
+	var name: String = input.name
+	if not _valid_display_name(name, true):
+		return _invalid_display_context()
+	var baseline: Dictionary = input.baseline
+	if ancestor_id.is_empty():
+		if not baseline.is_empty():
+			return _invalid_display_context()
+		return {ok = true, context = {state = "unsaved", name = name}}
+	if baseline.size() != 8 or typeof(baseline.get("base_id")) != TYPE_STRING \
+			or typeof(baseline.get("base_bytes")) != TYPE_PACKED_BYTE_ARRAY \
+			or typeof(baseline.get("recipe")) != TYPE_DICTIONARY \
+			or typeof(baseline.get("name")) != TYPE_STRING \
+			or typeof(baseline.get("descriptor")) != TYPE_DICTIONARY \
+			or typeof(baseline.get("dependencies")) != TYPE_DICTIONARY \
+			or typeof(baseline.get("compiler")) != TYPE_STRING \
+			or typeof(baseline.get("presentation_profile")) != TYPE_DICTIONARY \
+			or not _valid_display_name(baseline.name, false):
+		return _invalid_display_context()
+	var candidate := {base_id = payload.base_id, base_bytes = payload.base_bytes, recipe = payload.get("recipe", {}),
+		name = name, descriptor = payload.workshop_descriptor, dependencies = payload.dependencies,
+		compiler = payload.compiler_version, presentation_profile = payload.get("presentation_profile", {})}
+	var state := "modified" if input.requires_copy or candidate != baseline else "saved"
+	return {ok = true, context = {state = state, name = name, saved_name = baseline.name, revision = revision}}
+
+
+static func _valid_display_name(value: String, allow_empty: bool) -> bool:
+	return (allow_empty or not value.is_empty()) and value == value.strip_edges() and value.length() <= Store.MAX_NAME_LENGTH \
+		and not value.contains("\n") and not value.contains("\r") and not value.contains("\t")
+
+
+static func _invalid_display_context() -> Dictionary:
+	return {ok = false, errors = PackedStringArray(["Workshop build display context is invalid."])}
 
 
 static func _sha(bytes: PackedByteArray) -> String:

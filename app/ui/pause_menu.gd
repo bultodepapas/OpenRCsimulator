@@ -76,6 +76,8 @@ var _open_group := ""
 var _group_arrows := {} # group name -> disclosure chevron (UI-33)
 var _panel: PanelContainer
 var _sidebar_fade: TextureRect
+var _identity_base := ""
+var _trial_identity: Dictionary = {}
 
 
 ## `can_end`: whether "End flight" (back to Home) is offered; the direct route (`--` arguments) has no Home.
@@ -533,8 +535,36 @@ func _session_status_text(session: Node) -> String:
 
 ## "Aircraft · field" under the title; "" hides it.
 func set_identity(text: String) -> void:
-	identity_label.text = text
-	identity_label.visible = not text.is_empty()
+	_identity_base = text
+	_refresh_identity()
+
+
+## Read the detached display context captured with the trial; no live editor state is consulted.
+func set_trial_identity(context: Dictionary) -> void:
+	_trial_identity = context.duplicate(true)
+	_refresh_identity()
+
+
+func _refresh_identity() -> void:
+	var lines := PackedStringArray()
+	if not _identity_base.is_empty():
+		lines.append(_identity_base)
+	var state: Variant = _trial_identity.get("state")
+	var name: Variant = _trial_identity.get("name")
+	if state is String and name is String:
+		var display_name: String = name if not name.is_empty() else tr("Unsaved build")
+		if state == "unsaved":
+			lines.append(tr("Testing unsaved build: %s") % display_name)
+		elif state in ["saved", "modified"] and _trial_identity.get("revision") is int \
+				and int(_trial_identity.revision) > 0 and _trial_identity.get("saved_name") is String \
+				and not _trial_identity.saved_name.is_empty():
+			if state == "saved" and name == _trial_identity.saved_name:
+				lines.append(tr("Testing saved build: %s · revision %d") % [name, _trial_identity.revision])
+			elif state == "modified":
+				lines.append(tr("Testing unsaved build: %s") % display_name)
+				lines.append(tr("Based on saved build: %s · revision %d") % [_trial_identity.saved_name, _trial_identity.revision])
+	identity_label.text = "\n".join(lines)
+	identity_label.visible = not identity_label.text.is_empty()
 
 
 ## A message under the buttons (e.g. a trace that could not be saved); "" hides it.
@@ -551,8 +581,10 @@ func set_localized_note(message_key: String) -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready() and not _note_translation_key.is_empty():
-		note_label.text = tr(_note_translation_key)
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_refresh_identity()
+		if not _note_translation_key.is_empty():
+			note_label.text = tr(_note_translation_key)
 
 
 func _button(text: String, variation: String, node_name: String) -> Button:

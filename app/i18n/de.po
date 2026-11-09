@@ -10147,3 +10147,12 @@ msgstr "Ungültige Sender-Tasteneingabe."
 
 msgid "Center roll and pitch before continuing the flight."
 msgstr "Zentriere die Quer- und Höhenrudersteuerung, bevor du den Flug fortsetzt."
+
+msgid "Testing unsaved build: %s"
+msgstr "Ungespeicherter Entwurf im Test: %s"
+
+msgid "Testing saved build: %s · revision %d"
+msgstr "Gespeicherter Entwurf im Test: %s · Revision %d"
+
+msgid "Based on saved build: %s · revision %d"
+msgstr "Basiert auf gespeichertem Entwurf: %s · Revision %d"
