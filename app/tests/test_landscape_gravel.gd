@@ -71,8 +71,14 @@ func _initialize() -> void:
 	_check("shoulder receives nondefault scale, macro and pilot values",
 		detail.get_shader_parameter("tile_m") == 2.375 and detail.get_shader_parameter("macro_amp") == 0.17
 		and detail.get_shader_parameter("pilot_xz") == Vector2(19, -7))
-	_check("unset source parameters resolve to effective shader defaults",
-		detail.get_shader_parameter("anti_tiling") == 1.0 and detail.get_shader_parameter("pilot_pin_m") == 35.0)
+	if RenderingServer.shader_get_parameter_default(ground.shader.get_rid(), "anti_tiling") != null:
+		_check("unset source parameters resolve to effective shader defaults",
+			detail.get_shader_parameter("anti_tiling") == 1.0 and detail.get_shader_parameter("pilot_pin_m") == 35.0)
+	else:
+		_check("dummy renderer keeps shared shader defaults implicit",
+			detail.get_shader_parameter("anti_tiling") == null and detail.get_shader_parameter("pilot_pin_m") == null)
+	print("shoulder defaults: anti_tiling=", detail.get_shader_parameter("anti_tiling"),
+		" pilot_pin_m=", detail.get_shader_parameter("pilot_pin_m"))
 	_check("missing ground disables a previously bound shoulder", not WornGroundMaterial.bind(node, null)
 		and detail.get_shader_parameter("field_turf_enabled") == false)
 	print("gravel flat batches: %d; cells: %d" % [batches, node.get_meta("stats").cells])

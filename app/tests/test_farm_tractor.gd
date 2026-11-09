@@ -86,7 +86,7 @@ func _asset() -> void:
 					check("rendered wheel bottom stays grounded at every LOD: " + str(minima), is_finite(minimum) and absf(minimum) <= 0.01)
 					wheel_samples += 1
 	check("bounded source geometry", triangles > 0 and triangles <= Tractor.MAX_SOURCE_TRIANGLES)
-	check("multiple generated body LODs", lod_count >= 2)
+	check("multiple saved material LOD buffers", lod_count >= 2)
 	check("every retained tire index set covers all four grounded wheels", wheel_samples >= 4 and wheel_samples == expected_wheel_samples)
 	check("all four PBR texture bindings survive save/load", textures == 4)
 	var info: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/scenery/farm_tractor/tractor.json"))
@@ -125,6 +125,7 @@ func _saved_lods(surface: Dictionary) -> Dictionary:
 
 
 func _inputs() -> Dictionary:
+	load("res://render/shader_clock.gd").register()
 	var field_loader: Script = load("res://data/field_loader.gd")
 	var loader: Script = load("res://scenery/scenery_loader.gd")
 	var field: Dictionary = field_loader.load_from().field

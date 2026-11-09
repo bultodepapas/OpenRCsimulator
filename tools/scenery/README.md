@@ -8,6 +8,7 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 | `bake_countryside.py` | LU-28 crop parcels, roads and yards; static spatial batches follow the existing visual horizon. Run after `place.py`. Layout is estimated and supplies no physical terrain or tire friction. | `python3 tools/scenery/bake_countryside.py [--check]` |
 | `bake_models.gd` | Converts the third-party CC0 models (Quaternius cars, cow, sheep) into `openrc-scenery-model v1` JSON in `app/data/scenery/models/`. Checks each download's SHA-256, poses skinned meshes at their rest, puts the front to −Z, scales to the catalog size, reduces with meshoptimizer, and marks the car paint | `godot --headless --path app --script $PWD/tools/scenery/bake_models.gd -- --src=<downloads> [--check]` |
 | `bake_parked_aircraft.gd` | Production parked fleet: snapshots five current aircraft and the Stik maintenance configuration, preserves authored materials and generates static mesh LODs plus matching collision metadata. Re-run after a source model changes. Requires a real renderer to retain texture image data. | `godot --rendering-driver opengl3 --path app --script $PWD/tools/scenery/bake_parked_aircraft.gd [-- --check]` |
+| `bake_farm_tractor.gd` | SC-13-R1: verifies the retained CC0 source hash, fits the existing tractor envelope, simplifies physical parts independently, then merges identical materials and saves a self-contained mesh with 1K mipmapped S3TC textures and LODs. Requires a real renderer; `--check` compares source/recipe and saved mesh/material/texture/LOD contents. | `godot --rendering-driver opengl3 --path app --script $PWD/tools/scenery/bake_farm_tractor.gd [-- --check]` |
 | `bake_fleet.gd` | Legacy vertex-colour snapshots retained for model-format checks; the Club field uses the material-preserving resources above. | `godot --headless --path app --script $PWD/tools/scenery/bake_fleet.gd` |
 | `scenario.sh` + `scenario_report.py` | The runway scenario (`app/scenery/runway_scenario.gd`, pilot in `takeoff_pilot.gd`): airplane at the threshold, scripted takeoff, five cameras × 12 instants, manifest, sync checks, comparison with the previous run (heatmaps, verdict), filmstrips, `report.html`, history timeline. Also run by `app/capture.sh` | `tools/scenery/scenario.sh [root] [-- --aircraft=<id> --scenery=off]` |
 | `capture.sh` | Renders every view of `app/scenery/postcards.gd` with scenery off and twice on, then `check_views.py` checks per-view budgets (pilot views: ≤ +40 draws, ≤ +150 k primitives; 0 shadow-pass draws) and byte repeats | `tools/scenery/capture.sh [out-dir]` (needs `xvfb-run`) |
@@ -83,3 +84,22 @@ The generated JSON under `app/assets/scenery/aircraft/` must remain in all expor
 Capture views `hangar_west`, `hangar_east`, `hangar_micro`, `hangar_bench` and
 `hangar_service`, `hangar_ready` and `hangar_east_bench` are available through
 `app/scenery/capture_views.gd`.
+
+SC-13-R1 upgrades only the canonical default field's nearest tractor. An explicit
+scenery file or altered field/layout keeps its procedural representation. The
+existing ornament filter runs first: Low removes this placement without loading
+its mesh or textures; Medium and above retain it in the default layout. The mesh
+has no controller, engine shadows or distance cutoff. Its original collision
+proxy and damage ID remain authoritative. Compare with `--farm_tractor=off`
+or `OPENRC_FARM_TRACTOR=off`.
+
+The retained [source package](../../assets/scenery/farm_tractor/PROVENANCE.json)
+and generated runtime `tractor.json` own source and recipe identity.
+Run `res://tests/test_farm_tractor.gd` through the
+[checked runner](../godot/README.md): full integration normally runs headless;
+`--low-only` checks lazy loading in a fresh process and `--asset-only` checks an
+isolated runtime package. Native renderer runs also work. The capture harness
+`res://tests/capture_landscape_upgrade.gd` supplies `tractor_pilot`,
+`tractor_zoom`, `tractor_close`, `tractor_rear` and `tractor_aerial`; select
+`--width=1920 --height=1080` and the actual `--scene_detail` preset.
+[Dated verification and limits](../../docs/research/scenery-implementation/SC-13-R1/README.md).

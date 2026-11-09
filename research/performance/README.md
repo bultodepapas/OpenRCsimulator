@@ -4,6 +4,26 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`controller_voice_probe.gd` screens the complete binding resolver and engine-voice
+renderer against explicit historical source files. Retain `git show <revision>:app/input/controller_actions.gd`
+and `git show <revision>:app/render/engine_voice.gd` as `.gd` files outside `app/`,
+then run through the checked runner with the pinned engine:
+
+```powershell
+python tools/godot/run_checked.py --timeout 180 --require-text 'component screen complete' -- `
+  .tools/Godot_v4.8-beta2_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/research/performance/controller_voice_probe.gd" -- `
+  --baseline-actions=C:/captures/controller-baseline.gd `
+  --baseline-voice=C:/captures/voice-baseline.gd --output=C:/captures/components-new.json
+```
+
+Create the output parent first. The JSON path must be fresh. Seven pairs alternate
+variant order after warmup; raw batch means and source hashes are retained.
+Resolver values are µs/call; voice values are µs per generated audio second.
+Run without competing measurements. This headless component screen does not
+qualify frame pacing, GPU work, physical input latency or listening quality.
+[Integration and Windows evidence](../../docs/research/performance-report-2026-11-09.md).
+
 `trace_export_probe.gd` saves 120,001 synthetic fixed-wing telemetry rows through
 the production exporter. The [C7 / RCV-43 / SC-09-R2 memory follow-up](../../docs/research/memory-2026-11-08.md)
 records the baseline source, commands, exact CSV digest, allocator counters and

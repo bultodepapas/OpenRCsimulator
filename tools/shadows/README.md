@@ -99,6 +99,11 @@ python tools/shadows/analyze_aircraft_proxy.py C:/ABSOLUTE/NEW_DIRECTORY --out C
 
 The trial exercises seven production `Shadow.bind_model` admission/fallback
 cases and eleven poses through the actual 256² MSAA 4× mask and 1080p receiver.
+It also checks four initially disabled routes (master Off, Native, saved cue Off
+and explicit local Off). These use one precomputed full shape to isolate setup
+allocations, then require exact eager/deferred mask and receiver PNG parity on
+activation. Renderer texture-memory deltas are estimates; setup timings exclude
+geometry collection and are not full-flight benchmarks.
 Gear/flaps are set before collection, matching the existing bind-time geometry
 contract. `--cache-controls` adds three fresh full masks at 0.24° local-axis
 perturbations; these are sampled context, not a universal error bound.
@@ -113,5 +118,37 @@ can lag or repeat. Retain the raw report and captures for review; a component
 triangle saving or timing difference does not establish a whole-flight gain.
 [Dated source, visual and timing evidence](../../docs/research/visual-quality-implementation/VQ-04a/aircraft-proxy-20261109/README.md)
 records the extra binding cost and current hardware limits.
+
+## Initially disabled aircraft cues
+
+`Shadow.create(parent, cue_override)` and the optional fifth argument to
+`Shadow.bind_model` accept the same `sun` / `vertical` / `off` override as
+`Shadow.update`. Defaults follow saved settings; the global technique can veto
+all local cues. Main resolves the initial mode before building the world and
+passes it to creation and binding, including direct `--shadow=off` launches.
+
+An initially disabled cue skips its fallback texture and defers the projector,
+256² viewport, receiver and shader materials. Binding still captures geometry
+immediately: some visual meshes mutate in place, and collecting later would
+change the existing bind-time silhouette. A weak source reference guards the
+pending shape; expired sources release it on the next policy process frame.
+Visibility and tree-entry events replay the latest request for static owners.
+
+The first visible, nonzero enabled update installs the captured shape. An
+already-created projector remains cached while hidden for quick toggles. Empty
+models and unbound legacy carriers create their canonical fallback texture only
+when displayed. Freed bound sources cannot produce a generic ghost shadow.
+
+Frame metadata reports `representation=deferred`, zero instantiated mask
+triangles, and `pending_representation` / `pending_triangles` for the retained
+geometry. It restores the selected representation when activated. This does
+not mean the retained mesh buffers consume no memory. Geometry collection,
+Home's precomputed cache and field-shadow resources remain separate costs.
+
+Run `res://tests/test_shadow_deferred.gd` through the checked runner for snapshot,
+startup-order, override and source-lifetime checks. The existing cue, projector,
+blur, ownership, settings and Home-geometry suites cover affected consumers.
+[Dated native allocation and activation evidence](../../docs/research/visual-quality-implementation/VQ-04a/deferred-startup-20261109/README.md)
+records exact image parity and the first-enable setup cost.
 
 The [VQ-04a-F2 windsock follow-up](../../docs/research/visual-quality-implementation/VQ-04a/windsock/README.md) shares the visible sleeve deformation and basket yaw with one 512² field map. Run `test_windsock_shadow.gd` and `test_field_projected_shadows.gd` headless for lifecycle/cache/budget checks. Native `windsock_capture.gd -- --out=<new directory>` saves seven wind/light cases, isolated masks, shadow-hidden appearance controls and a wide low-sun view. `windsock_probe.gd -- --out=<JSON path>` checks coverage against independent ray-plane intersections and records alternating dynamic/cached component timings. These native tools require a display and absolute script paths when run with `--path app`; timings are fixture evidence, not full-flight performance qualification. `check_windsock_pack.gd` accepts one exported PCK path as its sole user argument from an empty project and constructs the imported caster and shaders.

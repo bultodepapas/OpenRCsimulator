@@ -111,6 +111,20 @@ Preserve the traced FROM/NED and air-relative conventions, committed OU interval
 
 Require current-source triage, correct output/refusal behavior and matched workload measurements. Component savings are not FPS. Preserve mutation checks, arithmetic/reduction order, signed zero and rollback; same-evaluation reuse is not permission for persistent caches.
 
+### A33 mathematical CPU review
+
+[A33][A33] reviews `8fb825a9` and reconciles successor `f7b58bd8`. The controller,
+voice and stale CI/audio roster corrections are implemented in the
+[completed ledger](COMPLETED-AUDIT-WORK.md#implemented-corrections), with
+[current Windows evidence](../docs/research/performance-report-2026-11-09.md).
+The stage-owned temporal wind candidate is retained as an apply-ready research
+patch, **outside production**: its four reference-source changes invalidate the
+qualified native receipt and require fresh native/fleet/replay qualification.
+The report's afterimage proposal refines A26, F10 hashing remains A24, and its
+companion/native-dead-work/shadow proposals retain their stated numerical,
+compiler, GPU and loading gates. The slower synchronous shadow-indexing experiment
+was rejected; logical storage reduction is not measured VRAM or a frame-time gain.
+
 | Source / ID | Pending candidate | Qualification boundary | Original report |
 | --- | --- | --- | --- |
 | A3 | Stage-validation reuse | Validated immutable/admitted data or supported mutation checks; full outputs/refusals and actual tick workload. | [A3 original][A3] |
@@ -363,6 +377,7 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 | A30 | [Code and simulation audit — recording, controls and audio][A30]; [full Page snapshot][A30-full] |
 | A31 | [RAM and GPU memory review — 2026-11-07, regenerated 2026-11-08][A31] |
 | A32 | [CI changes critical audit at 939ab5d][A32] |
+| A33 | [Mathematical CPU performance review — 2026-11-09][A33] |
 
 [A1]: apple-silicon-performance-audit-2026-11-05.md
 [A2]: mathematical-optimization-lab.md
@@ -398,3 +413,4 @@ Use originals for detailed witnesses and historical baselines. The [provenance a
 [A31]: ram-and-gpu-memory-review-2026-11-07.md
 
 [A32]: ci-changes-critical-audit-939ab5d.md
+[A33]: cpu-mathematical-optimization-2026-11-09.md

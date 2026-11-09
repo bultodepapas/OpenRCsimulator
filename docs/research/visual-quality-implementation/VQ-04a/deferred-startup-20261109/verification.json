@@ -1,0 +1,270 @@
+{
+  "format": "openrc-deferred-aircraft-shadow-verification v1",
+  "source_head_at_receipt": "a188a1d1b54adfb29dc1e9a3d444f6b61fccd674",
+  "note": "Shared tree has unrelated changes and automatic commits; source hashes identify this candidate. Required CI/full-suite and whole-flight FPS qualification are outside these focused checks.",
+  "source_sha256": {
+    "app/main.gd": "b2cc18f04825b77b58df5af05fb521fb7ba86977073eb2ed26123b69074cd282",
+    "app/render/shadow.gd": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+    "tools/shadows/aircraft_proxy_trial.gd": "dfc121491d0e417c3a1c62359b4a6b65918702a8dc6f5e7184dab2ad24035e18",
+    "app/render/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+    "app/render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+    "app/render/projected_shadow_mask.gdshader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+    "app/render/projected_shadow_receiver.gdshader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+    "app/tests/test_shadow_deferred.gd": "4dcc9ae7d447154d89cdb024785c7fd5cb1f2d63a6465e434ca0614d72c0ea1b",
+    "app/tests/test_shadow_cue_controls.gd": "b11c80e3b8b23cc63e7430b6387060f0d86c7aab56a2f5865214594931c86227",
+    "tools/shadows/analyze_aircraft_proxy.py": "3601c64447d450c7d81255b672e054d6e15f92a7f779bff44301a842131578d8"
+  },
+  "collector_and_proxy_unchanged_from_start": true,
+  "baseline_shadow_sha256": "3fa6b020e32712dd32aa004f1945f8984ea896c8e05c73cd755cee751bd8a439",
+  "checked_runs": [
+    {
+      "label": "final-test_shadow_blur",
+      "started_utc": "2026-11-09T17:16:41.025306+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "574d0091888d7a7de17086077fec995fa7999fad11a378874cba2935d5b417aa",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_shadow_blur-b6_0jobk/report.json",
+      "receipt_sha256": "4ef9ba6653b43964519bb9472e2bc51c1e0dfad14b586f1ae1bc0add2d48361a",
+      "checks": 50
+    },
+    {
+      "label": "final-test_shadow_cue_controls",
+      "started_utc": "2026-11-09T17:16:41.091842+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "6328113b7dc10a9aeeae3a095a25a3b27d8edfe18c5d7fce48cc4e0489bd8c7a",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_shadow_cue_controls-5ylvjx4s/report.json",
+      "receipt_sha256": "c5fd022c3a5926ae9bcc0d43e9b820b09ff9770266aab93e7f25e31423e062cb",
+      "checks": 50
+    },
+    {
+      "label": "final-test_flight_cue_shadows",
+      "started_utc": "2026-11-09T17:16:41.029487+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "490be92ee22452d2159c2fe4b23b942b2a8756c8b5b48494eb69095fb76ce9eb",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_flight_cue_shadows-pd02d0nr/report.json",
+      "receipt_sha256": "4a8ec86e29a4c9efaa6c5825ec5133346fcafeef6759b7b7da4e3e2f70183713",
+      "checks": 20
+    },
+    {
+      "label": "final-test_shadow_ownership",
+      "started_utc": "2026-11-09T17:16:41.083343+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "571170ecc23cf7a10b86616915344969323610dac9245f4826a885bae1c02699",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_shadow_ownership-0uump_2k/report.json",
+      "receipt_sha256": "87f4f082b446e312447e7f23b9dfe137b483af585b80c614ac0402e337096c9c",
+      "checks": 49
+    },
+    {
+      "label": "final-test_home_preview_geometry",
+      "started_utc": "2026-11-09T17:16:41.067382+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "dd3641c55b59f6382137a6cdad28abbffa5c337d5af2b291f83c123fd26986d0",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_home_preview_geometry-sglqjzrd/report.json",
+      "receipt_sha256": "21834c364f7998e056f528120df21ee7c0b8b387559254ef7cffbe110f967530",
+      "checks": 54
+    },
+    {
+      "label": "final-test_shadow_settings",
+      "started_utc": "2026-11-09T17:16:41.036376+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2b1011b2b38e8e86429108e34c4b90051baf803c06c743b5b9c356dc98816b32",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_shadow_settings-jn0hznrf/report.json",
+      "receipt_sha256": "f0a4f22e00d785e8f84280b1ca09332e2ec665cff5c707947a472b755194b91a",
+      "checks": 60
+    },
+    {
+      "label": "final-test_projected_shadow",
+      "started_utc": "2026-11-09T17:16:41.031654+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "da2a94a64509bb51dcb227c8ad83c96f3bf545e2e92012073deb3f80a722abe1",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_projected_shadow-axa1h2hs/report.json",
+      "receipt_sha256": "e66cf0800469437282e5f089d3673a4f12e361355f80dfd453d1d3a9ed832ec3",
+      "checks": 47
+    },
+    {
+      "label": "final-test_aircraft_shadow_proxy",
+      "started_utc": "2026-11-09T17:16:41.057420+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c8cd232ff988c9f123c4352a9051cf8f0723bbd5fecc19a2f17d7bd5c2f59047",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-test_aircraft_shadow_proxy-orxc15hu/report.json",
+      "receipt_sha256": "1b020fb4adbb4f0f9ef7eace2a1eaafacd39f2019d59fa49d966a6e6240fdbd1",
+      "checks": 80
+    },
+    {
+      "label": "final-main-parse",
+      "started_utc": "2026-11-09T17:19:25.019695+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-main-parse-0bq6rxwx/report.json",
+      "receipt_sha256": "1f98df7fce8a42f368b96f38603a11937ffb9d54ff6fcd6714b96fc8c363cece",
+      "checks": null
+    },
+    {
+      "label": "final-native",
+      "started_utc": "2026-11-09T17:17:02.639643+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a4e33f2fe9b448415858ab1f3c57eb2128729136ac1de687c4b70a3ccc6f7602",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/checks/final-native-alh9g56b/report.json",
+      "receipt_sha256": "3ed8a0337f261d352ab474590db899fea789a8bf1b682c6e8db5e911e28a75d8",
+      "checks": null
+    },
+    {
+      "label": "deferred-flight-startup-order",
+      "started_utc": "2026-11-09T17:14:18.955408+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "bc2048c0fbef2b24e80f5b390219bd9c5b83ea1212ce2abd6c917fd76949e455",
+      "process_exit": 0,
+      "receipt": "tmp/deferred-shadow-20261109/tests/checks/deferred-flight-startup-order-e6oojoj4/report.json",
+      "receipt_sha256": "252b776dddc16489ec973c65800ee950cfc12a3d6cf9f6e6d6b12575af861606",
+      "checks": 80
+    }
+  ],
+  "total_unit_checks": 490,
+  "native": {
+    "report_sha256": "c64b41097367502cd717856aa21d26485640cea92a4a5d8378027dbf68eecd3c",
+    "summary_sha256": "0316929c0f0e3166c721e65aa711643a1ebe78b6f39cb32bae406caadbf59a4d",
+    "comparison": "Four initially disabled routes versus unchanged eager constructor/bind path, with one shared precomputed full Corsair shape; excludes geometry collection and first visible draw.",
+    "exact_mask_and_receiver_cases": 4,
+    "eager_texture_bytes_delta": [
+      611668,
+      611668,
+      611668,
+      611668
+    ],
+    "disabled_texture_bytes_delta": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scope": "RenderingServer texture-memory estimate in this fixture; not total or peak VRAM. Single setup timings are observations, not performance acceptance."
+  },
+  "live_routes": [
+    {
+      "name": "direct-cli-off",
+      "port": 29875,
+      "output_directory": "tmp/debug-bridge/20261109-121330-29875",
+      "output_size": [
+        1920,
+        1080
+      ],
+      "engine_log_sha256": "a37d062682406d9fb82fa2e172fa0e108969af89b1111dac4f3fa1b215d3c810",
+      "engine_diagnostics": [],
+      "observed_initial": {
+        "mode": "off",
+        "representation": "deferred",
+        "projector_children": 0,
+        "fallback_texture_null": true,
+        "pending_representation": "imported-lod-proxy",
+        "pending_triangles": 178455,
+        "source_triangles": 321191
+      },
+      "observed_after_v": null,
+      "stop": {
+        "stopped": true,
+        "forced": false,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "limits": "Route and lifecycle smoke. Live background/focus hitches observed; no timing acceptance."
+    },
+    {
+      "name": "home-saved-off-then-v",
+      "port": 29876,
+      "output_directory": "tmp/debug-bridge/20261109-121416-29876",
+      "output_size": [
+        1920,
+        1080
+      ],
+      "engine_log_sha256": "2d1069f4ab30ce1b0185f98b317adcac38e94edfb5e18c309628d960a242e315",
+      "engine_diagnostics": [],
+      "observed_initial": {
+        "mode": "off",
+        "representation": "deferred",
+        "projector_children": 0,
+        "fallback_texture_null": true,
+        "pending_representation": "imported-lod-proxy",
+        "pending_triangles": 178551,
+        "source_triangles": 321287
+      },
+      "observed_after_v": {
+        "mode": "sun",
+        "representation": "imported-lod-proxy",
+        "projector_children": 1,
+        "triangles": 178551,
+        "source_triangles": 321287
+      },
+      "stop": {
+        "stopped": true,
+        "forced": false,
+        "crash": null,
+        "leaked_objects": 0
+      },
+      "limits": "Route and lifecycle smoke. Live background/focus hitches observed; no timing acceptance."
+    }
+  ]
+}

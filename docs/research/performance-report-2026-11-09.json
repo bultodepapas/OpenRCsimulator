@@ -1,0 +1,1537 @@
+{
+  "format": "openrc-cpu-report-integration-evidence v1",
+  "date": "2026-11-09",
+  "baseline_revision": "ca529cb88476a22fbb1c8edf957d6917ab9b6042",
+  "observed_final_head": "a188a1d1b54adfb29dc1e9a3d444f6b61fccd674",
+  "scope": "Retained production controller/audio/CI changes. Wind patch is research only; no whole-game, physical-device, listening, GPU, native-package or full required-CI qualification.",
+  "intake_sha256": "242f50409140c802214bf88a927345d2da82ddc9e18ace453082f8745cbc086a",
+  "source_sha256": {
+    "app/input/controller_actions.gd": "f7e0d1e2d28008696e864148c0727f9863eb3cfdd9e76ae0103e8605816e8ec8",
+    "app/render/engine_voice.gd": "6840b43b3a0aa2e98a42ef505ccbd69b63afb40b4742f5c1078eed75f7373441",
+    "app/tests/test_controller_extended_actions.gd": "084998b9543cea07ad0db82656e374dce82010974f7cfe0e5d13e68766a10059",
+    "app/tests/test_engine_voice.gd": "6796569dc882ac25d49bb895c9e5072b269db70b0ba93d11847ee4510b5c56be",
+    "app/tests/test_engine_sound.gd": "6101cf5532414a6075aa284b5835e7d2ec21a3c37dde94ef34b65467266c342b",
+    "tools/ci/test_phases.py": "47c115f5a5f178a1060767db90c041e7e1615a8e6d35b071f49fdfac27b6e0aa",
+    "research/performance/controller_voice_probe.gd": "3a478fb3264dfb868c49af66bec8919c10d16d3c22987f6b0b0a3f8af3bf62ab",
+    "research/wind/temporal_phase_candidate.patch": "0577fb84fcfd5fd139e9727712f15ffa9815e6ca3a4ad58e3c856378ecd4bdfe"
+  },
+  "engine_files_sha256": {
+    ".tools/Godot_v4.8-beta2_win64_console.exe": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    ".tools/Godot_v4.8-beta2_win64.exe": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2"
+  },
+  "component_screen": {
+    "calls_per_batch": 2000,
+    "cases": [
+      {
+        "after_batches": [
+          118.7815,
+          119.171,
+          117.5035,
+          119.341,
+          166.419,
+          168.0935,
+          116.2555
+        ],
+        "after_median": 119.171,
+        "before_batches": [
+          347.51,
+          356.9535,
+          346.6495,
+          364.548,
+          344.906,
+          536.896,
+          378.2805
+        ],
+        "before_median": 356.9535,
+        "id": "full-airplane",
+        "reduction_pct": 66.61441896493521
+      },
+      {
+        "after_batches": [
+          112.7615,
+          117.555,
+          117.6125,
+          113.376,
+          113.911,
+          111.816,
+          110.7315
+        ],
+        "after_median": 113.376,
+        "before_batches": [
+          179.325,
+          179.1425,
+          163.9865,
+          172.422,
+          163.4445,
+          165.057,
+          167.0025
+        ],
+        "before_median": 167.0025,
+        "id": "rates-restart",
+        "reduction_pct": 32.11119594018054
+      },
+      {
+        "after_batches": [
+          85.327,
+          121.049,
+          89.2035,
+          88.755,
+          88.398,
+          87.703,
+          85.8585
+        ],
+        "after_median": 88.398,
+        "before_batches": [
+          84.769,
+          95.789,
+          90.9915,
+          86.275,
+          87.6415,
+          87.956,
+          89.6645
+        ],
+        "before_median": 87.956,
+        "id": "explicit",
+        "reduction_pct": -0.5025239892673561
+      },
+      {
+        "after_batches": [
+          59.319,
+          59.6535,
+          58.259,
+          58.6845,
+          61.023,
+          61.0845,
+          57.985
+        ],
+        "after_median": 59.319,
+        "before_batches": [
+          59.1415,
+          57.7055,
+          57.521,
+          58.6585,
+          58.4785,
+          57.9585,
+          57.4145
+        ],
+        "before_median": 57.9585,
+        "id": "radio",
+        "reduction_pct": -2.347369238334318
+      },
+      {
+        "after_batches": [
+          3077.2293090820312,
+          2989.4983291625977,
+          3004.8070907592773,
+          2970.5726623535156,
+          2981.3392639160156,
+          2989.7506713867188,
+          2982.516860961914
+        ],
+        "after_median": 2989.4983291625977,
+        "before_batches": [
+          5470.8635330200195,
+          5414.843559265137,
+          5383.805465698242,
+          5416.357612609863,
+          5460.93807220459,
+          5446.806907653809,
+          5454.5454025268555
+        ],
+        "before_median": 5446.806907653809,
+        "id": "voice-usec-per-generated-second",
+        "reduction_pct": 45.11466296038916
+      }
+    ],
+    "format": "openrc-report-component-screen v1",
+    "machine": {
+      "godot": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "os": "Windows",
+      "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+    },
+    "pairs": 7,
+    "scope": "Windows headless component CPU only; no frame, GPU, hardware-input or listening qualification",
+    "source_sha256": {
+      "C:/DEVELOPMENT/OpenRCsimulator/research/performance/controller_voice_probe.gd": "3a478fb3264dfb868c49af66bec8919c10d16d3c22987f6b0b0a3f8af3bf62ab",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/perf-report-components-20261109/controller_baseline.gd": "d92f54b903bb3c1e97162c0ea7e73a690650cb102f818abd24aebf5e30794f75",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/perf-report-components-20261109/voice_baseline.gd": "fa7279d2c7fed450b773ead4ea930fb9d3869e9fdee98cf41aad4c25e8e8c926",
+      "res://input/controller_actions.gd": "f7e0d1e2d28008696e864148c0727f9863eb3cfdd9e76ae0103e8605816e8ec8",
+      "res://render/engine_voice.gd": "6840b43b3a0aa2e98a42ef505ccbd69b63afb40b4742f5c1078eed75f7373441"
+    },
+    "warmup_calls_per_variant": 500
+  },
+  "initial_component_screen": {
+    "calls_per_batch": 2000,
+    "cases": [
+      {
+        "after_batches": [
+          124.527,
+          122.261,
+          117.495,
+          116.641,
+          116.045,
+          114.6935,
+          123.927
+        ],
+        "after_median": 117.495,
+        "before_batches": [
+          356.675,
+          339.1075,
+          331.9405,
+          337.6465,
+          361.2905,
+          363.843,
+          329.8835
+        ],
+        "before_median": 339.1075,
+        "id": "full-airplane",
+        "reduction_pct": 65.35169525887808
+      },
+      {
+        "after_batches": [
+          112.645,
+          124.1635,
+          121.348,
+          115.059,
+          113.3815,
+          114.5235,
+          125.7145
+        ],
+        "after_median": 115.059,
+        "before_batches": [
+          165.464,
+          169.9345,
+          178.462,
+          167.019,
+          165.3925,
+          173.5425,
+          179.4975
+        ],
+        "before_median": 169.9345,
+        "id": "rates-restart",
+        "reduction_pct": 32.29214785696842
+      },
+      {
+        "after_batches": [
+          96.8435,
+          91.6625,
+          93.8715,
+          92.468,
+          88.048,
+          88.353,
+          116.1015
+        ],
+        "after_median": 92.468,
+        "before_batches": [
+          93.0405,
+          94.2275,
+          126.8085,
+          92.788,
+          87.339,
+          88.743,
+          102.5275
+        ],
+        "before_median": 93.0405,
+        "id": "explicit",
+        "reduction_pct": 0.6153234344183356
+      },
+      {
+        "after_batches": [
+          61.928,
+          62.4945,
+          60.5045,
+          60.1785,
+          59.646,
+          63.5475,
+          59.41
+        ],
+        "after_median": 60.5045,
+        "before_batches": [
+          61.6175,
+          59.7515,
+          58.0815,
+          57.635,
+          64.678,
+          58.9985,
+          58.0525
+        ],
+        "before_median": 58.9985,
+        "id": "radio",
+        "reduction_pct": -2.5526072696763435
+      },
+      {
+        "after_batches": [
+          3148.3898162841797,
+          3204.8303604125977,
+          3146.034622192383,
+          3047.6211547851562,
+          3119.538688659668,
+          3055.9484481811523,
+          3070.668411254883
+        ],
+        "after_median": 3119.538688659668,
+        "before_batches": [
+          5496.097755432129,
+          5625.044631958008,
+          5559.351539611816,
+          5654.989242553711,
+          5604.604911804199,
+          5531.425666809082,
+          5553.631782531738
+        ],
+        "before_median": 5559.351539611816,
+        "id": "voice-usec-per-generated-second",
+        "reduction_pct": 43.88664457658148
+      }
+    ],
+    "format": "openrc-report-component-screen v1",
+    "machine": {
+      "godot": {
+        "build": "official",
+        "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+        "hex": 264192,
+        "major": 4,
+        "minor": 8,
+        "patch": 0,
+        "status": "beta2",
+        "string": "4.8-beta2 (official)",
+        "timestamp": 0
+      },
+      "os": "Windows",
+      "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+    },
+    "pairs": 7,
+    "scope": "Windows headless component CPU only; no frame, GPU, hardware-input or listening qualification",
+    "warmup_calls_per_variant": 500
+  },
+  "wind_candidate": {
+    "promoted": false,
+    "reason": "Mirrored-source changes require fresh native qualification; original production bytes restored.",
+    "patch_applies": true,
+    "final_candidate_source_sha256": {
+      "app/physics/wind_aircraft_flow.gd": "842cb2ff1eb17e6128c7ce545163df28f14786f80f6e1428fbed35f384ac3495",
+      "app/physics/wind_field.gd": "f848dc16fa9ba0a33ce8cd028a00a70aa1688a99d24e847c1268b481f001e5b9",
+      "app/physics/wind_spatial_field.gd": "b75261cbfb19bc8634f1f5c3526c39362435f558f913adb759e2ca813f03c4f1",
+      "app/sim/environment.gd": "7e79156fb558a716dab5b94d5dd44954f7da615d88f8eeda8714dcb0402a0c48",
+      "app/tests/test_spatial_wind_temporal.gd": "15b629197b00f55c31111680c1aa8e08bce947391f3b82f45efde6ed6252b5d8"
+    },
+    "restored_source_sha256": {
+      "app/physics/wind_aircraft_flow.gd": "0ef03aedf2f199c6ebf7190e3c1d7b051978cbb74eb5b36ad45b3c2f97c0a36d",
+      "app/physics/wind_field.gd": "949fbd5c5927df4f5213e08b3a72f164c7bb02b9c038601ff4a5f152c968ef79",
+      "app/physics/wind_spatial_field.gd": "873800debb660a65567182f639bfa47e996b15ec67d31250e1d6b6d2d757e644",
+      "app/sim/environment.gd": "7e173120c75f9d2bade1251106a5d72ad2900fca94370b8f2fedc5d74cb71ab6"
+    },
+    "restored_matches_original_receipt": {
+      "app/physics/wind_aircraft_flow.gd": true,
+      "app/physics/wind_field.gd": true,
+      "app/physics/wind_spatial_field.gd": true,
+      "app/sim/environment.gd": true
+    },
+    "timing_limit": "One preliminary pair before final guard/test refinements; batch means vary; no accepted speedup.",
+    "measurements": {
+      "baseline": {
+        "machine": {
+          "architecture": "x86_64",
+          "godot": {
+            "build": "official",
+            "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+            "hex": 264192,
+            "major": 4,
+            "minor": 8,
+            "patch": 0,
+            "status": "beta2",
+            "string": "4.8-beta2 (official)",
+            "timestamp": 0
+          },
+          "logical_cpu_count": 24,
+          "os": "Windows",
+          "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+        },
+        "solver_sha256": "88d3533f90ca78c75f3435305b5ed3241d5794dd7f6ed0a11506ab0aab82fefb",
+        "case": {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "accepted_workload_ticks": 1440,
+          "aircraft_status": "flyable",
+          "baseline_available": false,
+          "case_id": "spatial-v5-modes-24",
+          "final_state_sha256_per_batch": [
+            "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088",
+            "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088",
+            "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 5760.70625,
+          "measurement_mode": "batch-timing",
+          "median_us_per_tick": 4256.316666666667,
+          "min_batch_mean_us_per_tick": 3680.9354166666667,
+          "mode_count": 24,
+          "p95_batch_mean_us_per_tick": 5760.70625,
+          "queries_per_accepted_tick_untimed": 50,
+          "reset_checks_expected": 9,
+          "reset_checks_passed": 9,
+          "samples_us_per_tick": [
+            4256.316666666667,
+            5760.70625,
+            3680.9354166666667
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            18.710856298160444,
+            0.1866304445831525,
+            1.3955174749710983,
+            0.7066327926155301,
+            -0.02588622027985514,
+            0.025886220279855144,
+            0.70663279261553,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 3,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 0,
+            "simulation_split_load_route": true,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "tick_budget_fraction": 1.0215159999999999,
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 24,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "de96d1090ee7b69483fa4ce17decf679427d1902ba8ead8dfa68286522bc1fe0",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "workload_coverage": {
+            "accepted_ticks": 480,
+            "final_state_sha256": "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088",
+            "first_query_time_s": 0.0,
+            "gust_peak_mps": 0.0,
+            "gust_queries_above_1e_minus_6_mps": 0,
+            "last_query_time_s": 2.0,
+            "matches_production": true,
+            "required_active_peak_mps": 0.01,
+            "thermal_peak_mps": 0.0,
+            "thermal_queries_above_1e_minus_6_mps": 0,
+            "wind_queries": 24000
+          },
+          "workload_ticks_per_batch": 480
+        }
+      },
+      "screen": {
+        "machine": {
+          "architecture": "x86_64",
+          "godot": {
+            "build": "official",
+            "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+            "hex": 264192,
+            "major": 4,
+            "minor": 8,
+            "patch": 0,
+            "status": "beta2",
+            "string": "4.8-beta2 (official)",
+            "timestamp": 0
+          },
+          "logical_cpu_count": 24,
+          "os": "Windows",
+          "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+        },
+        "solver_sha256": "9deca5f923386976a4b38f9e0df0799103e241bf73b1cd6362598bbc30317ea3",
+        "case": {
+          "accepted_timed_ticks": 1440,
+          "accepted_warmup_ticks": 720,
+          "accepted_workload_ticks": 1440,
+          "aircraft_status": "flyable",
+          "baseline_available": false,
+          "case_id": "spatial-v5-modes-24",
+          "final_state_sha256_per_batch": [
+            "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088",
+            "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088",
+            "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088"
+          ],
+          "final_states_repeatable": true,
+          "max_batch_mean_us_per_tick": 4056.820833333333,
+          "measurement_mode": "batch-timing",
+          "median_us_per_tick": 3925.425,
+          "min_batch_mean_us_per_tick": 3693.820833333333,
+          "mode_count": 24,
+          "p95_batch_mean_us_per_tick": 4056.820833333333,
+          "queries_per_accepted_tick_untimed": 50,
+          "reset_checks_expected": 9,
+          "reset_checks_passed": 9,
+          "samples_us_per_tick": [
+            3925.425,
+            3693.820833333333,
+            4056.820833333333
+          ],
+          "setup_start_state": [
+            60.0,
+            -40.0,
+            -30.0,
+            18.710856298160444,
+            0.1866304445831525,
+            1.3955174749710983,
+            0.7066327926155301,
+            -0.02588622027985514,
+            0.025886220279855144,
+            0.70663279261553,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "stage_wash_consumers": {
+            "actual_full_simulation_step_used": true,
+            "continuous_state_size": 3,
+            "fixed_wing_load_path": "FlightSession._loads -> _wash_loads -> Dynamics.loads_from_air",
+            "lagged_wash_transport_enabled": false,
+            "lagged_wash_transport_piece_count": 0,
+            "provider_queries_per_wind_flow_sample": 10,
+            "quasi_static_slipstream_piece_count": 0,
+            "simulation_split_load_route": true,
+            "simulation_stage_callback": true,
+            "stage_air_probe_contract_valid": true,
+            "stage_point_sampler_valid": true,
+            "wind_flow_station_count": 9
+          },
+          "tick_budget_fraction": 0.942102,
+          "timed_ticks_per_batch": 480,
+          "warmup_ticks_per_batch": 240,
+          "weather_configuration": {
+            "atmosphere_mode": "reference",
+            "field_elevation_m": 0.0,
+            "format": "openrc-weather v5",
+            "from_deg": 0.0,
+            "gust_delay_s": 2.0,
+            "gust_duration_s": 4.0,
+            "gust_mps": 0.0,
+            "gust_period_s": 12.0,
+            "gust_up_mps": 0.0,
+            "qnh_hpa": 1013.25,
+            "relative_humidity_pct": 0.0,
+            "spatial_wind": {
+              "datum": {
+                "ground_down_m": 0.0,
+                "law": "flat-site-ground-plane-v1"
+              },
+              "domain": {
+                "ground_extension_m": 0.25,
+                "ground_transition_height_m": 3.0,
+                "half_extent_east_m": 10000.0,
+                "half_extent_north_m": 10000.0,
+                "max_height_agl_m": 200.0,
+                "time_horizon_s": 86400.0
+              },
+              "format": "openrc-spatial-wind v1",
+              "frame": "NED",
+              "gusts": {
+                "events": [],
+                "law": "resolved-degree6-c2-bell-uniform-v1"
+              },
+              "identity": {
+                "epoch_offset_s": 0.0,
+                "seed_algorithm": "xorshift32-v1",
+                "seed_u32": 20261025,
+                "world_epoch_id_u32": 451
+              },
+              "profile": {
+                "displacement_height_m": 0.0,
+                "free_air_join_height_m": 20.0,
+                "free_air_wind_ned_mps": [
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "law": "neutral-log-flat-site-c1-wall-v1",
+                "layers": [],
+                "reference_from_deg": 270.0,
+                "reference_height_agl_m": 10.0,
+                "reference_speed_mps": 3.0,
+                "roughness_length_m": 0.03,
+                "surface_layer_top_agl_m": 80.0,
+                "wall_join_height_agl_m": 0.3
+              },
+              "turbulence": {
+                "coherence_time_s": 4.0,
+                "law": "finite-equal-variance-log-wavelength-vector-potential-frozen-reference-advection-flat-wall-v1",
+                "max_wavelength_m": 50.0,
+                "min_wavelength_m": 5.0,
+                "mode_count": 24,
+                "rms_mps": 0.3
+              }
+            },
+            "speed_mps": 0.0,
+            "temperature_c": 15.0,
+            "turbulence_rms_mps": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "turbulence_seed": 20261009,
+            "turbulence_tau_s": 2.0
+          },
+          "weather_format": "openrc-weather v5",
+          "weather_receipt": {
+            "aerodynamic_law": "matched-unwashed-full-angle-section-delta-v1",
+            "clock": "simulation-seconds-plus-immutable-epoch-offset; reset-reuses-epoch-v1",
+            "content_sha256": "de96d1090ee7b69483fa4ce17decf679427d1902ba8ead8dfa68286522bc1fe0",
+            "field": {
+              "epoch_offset_s": 0.0,
+              "seed_algorithm": "xorshift32-v1",
+              "seed_u32": 20261025,
+              "world_epoch_id_u32": 451
+            },
+            "format": "openrc-spatial-weather-receipt v1",
+            "point_air_law": "m5-w05c-r2-point-air-v1"
+          },
+          "workload_coverage": {
+            "accepted_ticks": 480,
+            "final_state_sha256": "be591c799ca70c0e8101f854d3e90219b3297476c0cd8c9e6a073b3e416e8088",
+            "first_query_time_s": 0.0,
+            "gust_peak_mps": 0.0,
+            "gust_queries_above_1e_minus_6_mps": 0,
+            "last_query_time_s": 2.0,
+            "matches_production": true,
+            "required_active_peak_mps": 0.01,
+            "thermal_peak_mps": 0.0,
+            "thermal_queries_above_1e_minus_6_mps": 0,
+            "wind_queries": 24000
+          },
+          "workload_ticks_per_batch": 480
+        }
+      }
+    }
+  },
+  "ci_phases": {
+    "command": "wsl -d Ubuntu --cd /mnt/c/DEVELOPMENT/OpenRCsimulator -- python3 -m unittest tools.ci.test_phases",
+    "observed_exit": 0,
+    "observed_tests": 11,
+    "observed_elapsed_seconds": 33.865,
+    "raw_log": "Tool transcript; no separate raw local file. Native Windows shell-fixture attempt was inconclusive and terminated."
+  },
+  "checked_runs": [
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-actions-quavmhnc/report.json",
+      "report_sha256": "3ce858c31858ed9ba467ca7510dec1d1e427fe93e30161191ca977cc809c4a6c",
+      "label": "controller-actions",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "43be45166b2a7736e30d3f32501f7358efe0d0729695cfcd609d2329a95a1ad6",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-binding-audit-506nxqup/report.json",
+      "report_sha256": "53a76a2616fc638430f75849d40f699f49c9c10ba6ad018c9c602b464f56a95d",
+      "label": "controller-binding-audit",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1e85e44ca9959329ab2924db0b8d09ccb152e98f005f5c3a4a69acdd53cb14ae",
+      "completion_lines": [
+        "controller binding audit: 14 checks, 0 failures"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-conditioning-88zvo9bh/report.json",
+      "report_sha256": "2eec0d9aee99ccdc568908c46a28c6d6027174e30ebb165704c0eb4ede4666c9",
+      "label": "controller-conditioning",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0fcbdb59b3f46cc5a86985359c68f91704c38c1f72d9b1bba578c77912699433",
+      "completion_lines": [
+        "Controller conditioning: 57 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-extended-matrix-2v4k10el/report.json",
+      "report_sha256": "867326ce2cb7c945c0e5f301bf1899be8a991094f053aa09ff71ad8d3d1126bf",
+      "label": "controller-extended-matrix",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "09a76843e650a38cf4905144283fed156b29b664bfb52c70cdc12f2d027f8cb2",
+      "completion_lines": [
+        "PASS extended controller actions: 1451 checks"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-extended-ww1gq0mr/report.json",
+      "report_sha256": "3f3af67a3e3719e231af476e24cdeff2ff1171cf3b39969007a2f010b7d0c205",
+      "label": "controller-extended",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "babb35278525706549da7eacf53144d8582a746fccab81b5f1cafa6d18ff050b",
+      "completion_lines": [
+        "PASS extended controller actions: 359 checks"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-integration-yj8frg70/report.json",
+      "report_sha256": "e9053d93d10d47d7cc629c7147b1dbdb31f25dc28f30b2d1c4aabbbc8ddd19a6",
+      "label": "controller-integration",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "006769237aae717ebebca7ca2d22fdf752aa5162f21f243feba4e4fb52451705",
+      "completion_lines": [
+        "Controller integration: 27/27 checks passed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/controller-profile-hw0o3z_9/report.json",
+      "report_sha256": "72bbd55d6dd45699cc97ed14c7deaa0cfd73b87c6ba5a073a6221e07e825fb58",
+      "label": "controller-profile",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "8287254ce823e2ad31569d3fc44d558b0c6462672fe4b23de723dac9b4a69012",
+      "completion_lines": [
+        "Controller profile: 74 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/engine-audio-integration-wh3604_j/report.json",
+      "report_sha256": "fbd1bd2ad583f798f19e4a3d308410bd2efb024b86d360a839190e6e31a1b023",
+      "label": "engine-audio-integration",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2eb3d3b956de8728be4a4620dec522d8fe54651523903ee070f2ba0bf812f380",
+      "completion_lines": [
+        "147 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/engine-sound-47xhwe1t/report.json",
+      "report_sha256": "4dd8e50ee1db1f2fd8213a9c36f692656bf9ceb1d1dac10e5de84ba68dfface4",
+      "label": "engine-sound",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0e46751b684520ca13b8ca72ae11095811fb84aee8e0e7621d64ab349b5ae5a5",
+      "completion_lines": [
+        "28 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/engine-voice-revised-ikatrv4_/report.json",
+      "report_sha256": "787c7e842915ffb659f84f744c5c454cc3c292b73197d0c1758f42ac410bfb69",
+      "label": "engine-voice-revised",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cc73491dd5902e552dba89fe0fe6bf9827c5b85af9533bb5cc66a560edcaf444",
+      "completion_lines": [
+        "78 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/engine-voice-zlzh7a__/report.json",
+      "report_sha256": "ca324a423f0e0135900267333ab52b6c7359831dab87eb32b2434b01eebb9d85",
+      "label": "engine-voice",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "log_sha256": "ca9145355232adf0ecff4f987ddb1b1360e8745639031df2568563a8fc125847",
+      "completion_lines": [
+        "78 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-controller-actions-2lkcltly/report.json",
+      "report_sha256": "2f8d0c1e63a89840368da865dbed8e909cf46d8af02b67159c4dad18a9a74e15",
+      "label": "parse-controller-actions",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-controller-extended-4dco_z_s/report.json",
+      "report_sha256": "429c1d229d7f0d8c663847474cb8a28b3f4250119f3e272fa6cd4b5761ce16ba",
+      "label": "parse-controller-extended",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-controller-extended-matrix-0b8rs6dm/report.json",
+      "report_sha256": "4604926f8a0064b09233971800b77d93d86a2e060f83a71b75657f3e0fd2055d",
+      "label": "parse-controller-extended-matrix",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-engine-sound-test-k0nf3ki7/report.json",
+      "report_sha256": "5f072b93a03dc77b3704175f54d70136fe6520857135bab1dac8a1c81c488b66",
+      "label": "parse-engine-sound-test",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-engine-voice-1x2k6h0v/report.json",
+      "report_sha256": "e5a39256199ff0dd547665347a32569c5939d191515b7e1c8d6cd2e07372f59d",
+      "label": "parse-engine-voice",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-engine-voice-test-0j7nyfg_/report.json",
+      "report_sha256": "475c03ecd7a414e5feb383d0f12e1269fc2af429c5a5e6b4e2a12479dc1ca745",
+      "label": "parse-engine-voice-test",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-input-audio-20261109/parse-engine-voice-test-revised-_yd_ric7/report.json",
+      "report_sha256": "2e51813d310a886bded70d379408538ab109361d52a2030b72b6053d82ee18a5",
+      "label": "parse-engine-voice-test-revised",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-components-20261109/checks/component-screen-9te2wexf/report.json",
+      "report_sha256": "d3be57d84c4274545843f2c15ec761051efa4615981703736dce8bca497b881a",
+      "label": "component-screen",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "log_sha256": "b1f2c94797e37e6dcb2d9e3ecf92259cf289dc2eb157fbe3e7b6f4426fbec231",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-components-20261109/checks/component-screen-t_sjde01/report.json",
+      "report_sha256": "0145dbc460691ab3fa34558e0494eb35f5b8bb66d9a4c36d3aa7c2d6f819761e",
+      "label": "component-screen",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fa7bb0dac08f7956c8ceb2e9920695eb773811cd3a9f44444432278d2a0bbf8e",
+      "completion_lines": [
+        "component screen complete"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-components-20261109/checks/reusable-component-screen-ev4xdz9h/report.json",
+      "report_sha256": "0ccfdf1af6370731e052fbd6dd9074efc34c528060dd531a2b1ab220cd6f1d0a",
+      "label": "reusable-component-screen",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "32f5ff95d491e28354a54a00a76df50de2bffb165eefc1b2a6ac85bc08f04098",
+      "completion_lines": [
+        "component screen complete"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_sf_environment-90w0d6sz/report.json",
+      "report_sha256": "cdf8e0843469b6c0ded30cb86206b3aeebdb82ddc1f691fc358b0d740a1cd36b",
+      "label": "test_sf_environment",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "fcb9a81a6f7a4460875eef0beadeb19a9cc0877a58677e486608f156cc3a353f",
+      "completion_lines": [
+        "27 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_gear_drag-2eb3__x9/report.json",
+      "report_sha256": "cacc738196a0335c867364fc44162b1033e3200bb595740abf67844491282756",
+      "label": "test_spatial_gear_drag",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "79304d3ab6e16343a3af79d470ae61af4ba393cf781f116a8dc98711e66d8b9f",
+      "completion_lines": [
+        "spatial gear drag: 8 checks, 0 failures"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_powered_stage-ad9xssa9/report.json",
+      "report_sha256": "f0ddc46eca1317818c6830b4aa0f80cfaf03876f65829d9d89df8587d10116e8",
+      "label": "test_spatial_powered_stage",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "392a324301fc26fe0bf171d5bea39b2661b8f3022731de58d5601cfa1a39d5af",
+      "completion_lines": [
+        "Spatial powered stage: 317 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_propulsion_flow-2ntga_d0/report.json",
+      "report_sha256": "c9b01f92a307e1bd3e5b77b5d13130226de15b986647c1df52f675a6112ebffb",
+      "label": "test_spatial_propulsion_flow",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "253a3795f3f83d147a2963f22d613cea23a80fecceda04bbd5b83ef2f8b3efee",
+      "completion_lines": [
+        "spatial propulsion flow: 29 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_stage_lean-xffk33am/report.json",
+      "report_sha256": "33d9f174719ca659cf904ed5fa9416e618e1dd1259eda4e0c6fd4bff1ab9197b",
+      "label": "test_spatial_stage_lean",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "42b5d4e0a55948b385df293055cf9c6b6be4fcc1300d2b291d23fd1d36d91c44",
+      "completion_lines": [
+        "Spatial stage lean: 738 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_wash-bfm8cvcz/report.json",
+      "report_sha256": "18be13722863e3ff09b17e06c71d5381cfe634906eb03ce2177287bf675f9676",
+      "label": "test_spatial_wash",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "88dc5f9009968bb3e9c050df0676c85e4510483a97c7cf1b9f65bfd19e85622d",
+      "completion_lines": [
+        "M5-W05c-R2 spatial wash: 30 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_weather_session-14y9qpfc/report.json",
+      "report_sha256": "20fb0850d96c997f98710aba44830142a11bf149ccf1c8432ea123cd601b70a1",
+      "label": "test_spatial_weather_session",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4be00c83666cde60cde2d24d9cc6d9d5f02b5c0632a1c7aee2dd6693d287000d",
+      "completion_lines": [
+        "M5-W05c-R2 spatial weather session: 111 checks, 0 failures"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_wind_benchmark-srhmu113/report.json",
+      "report_sha256": "30901a3943c6b6573715277b5407a2724b2b15e93a29363e9444597741560134",
+      "label": "test_spatial_wind_benchmark",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "482500e957f80833c42520e67934af2e86f93931ed64fddfe15fa78efec8dcd4",
+      "completion_lines": [
+        "110 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_wind_field-5d7fv7ty/report.json",
+      "report_sha256": "54d0d5922ccf25049ff6474e64297f072fc11cd6850785c77f79b5182c700214",
+      "label": "test_spatial_wind_field",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ffc909c812ff929e60c01d26e1a50f30a22c15c15ce94ed8e34a936a15532a05",
+      "completion_lines": [
+        "spatial wind field: 155 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_wind_flight-kg2_i5m5/report.json",
+      "report_sha256": "fac06670463069b77b615d54770ad1210b9c87469c9a223ea19507d638a61dab",
+      "label": "test_spatial_wind_flight",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "103ed5b271e9bf228fae5be01c200398ae2516be8d0bf6d747e2119b86fc9d9f",
+      "completion_lines": [
+        "M5-W05b-R1 aircraft spatial contract: 182 checks, 0 failures; 14 configurations"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_spatial_wind_prepared-rduka3to/report.json",
+      "report_sha256": "39a9d8845772268460a4d59e3a26eac49a6a998e3166c944f86547ff6952ce95",
+      "label": "test_spatial_wind_prepared",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "17f6745f0c04283fdc0e80c52167c0c40f8cbd2f80887cb085c01a2ffc8db73b",
+      "completion_lines": [
+        "prepared spatial wind: 1543 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_tailless_spatial_session-wo6wv7ev/report.json",
+      "report_sha256": "b2968e5fc2e9ff7ed54e96d0a943e75631f2438dc1230964ade5527b8c6b7b9e",
+      "label": "test_tailless_spatial_session",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "a6ee18b84de244eb26d8830d68995dea5a367c9003384f9e80d1beaf12d8a39e",
+      "completion_lines": [
+        "tailless spatial session (opt-in spatial v5): 77 checks, 0 failures; ORFL directory C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/tailless-spatial-3750184"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_wind_aircraft_flow-7x0fdgu0/report.json",
+      "report_sha256": "756c88056e4a4c440397e5b06927c501bd45979cc7e62a57adbf078a6d1aaa30",
+      "label": "test_wind_aircraft_flow",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b3fa5ced3a37c09577e8f3923f2d894862826ddefbc65f4ec42bb91f25060679",
+      "completion_lines": [
+        "wind aircraft flow: 91 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/test_wind_world_consumers-jdei16un/report.json",
+      "report_sha256": "2160ab8f041896654e715aa7bf1f80ce2351b331284726b47279738d040ec123",
+      "label": "test_wind_world_consumers",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "dadb2a458b1988ebd4020085d1a1a57ccee48fb9c2a3ff8c09b9de814466df2c",
+      "completion_lines": [
+        "world wind consumers: 14 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-baseline-pye8ubab/report.json",
+      "report_sha256": "87d453e1c80041ff1267e33f80d7de43e3ec6e1959e32378ba54504c3310b3aa",
+      "label": "wind-baseline",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "f6d95b134eaa24bf11091b6a4b95477a72ee8edea2a7228f636a85a118a9621c",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-cache-parse-ghk2z7zu/report.json",
+      "report_sha256": "d3fba39de13c0f321f2ff5ed97f040f5dab2298d96e0a8af025cb181b03f3c85",
+      "label": "wind-cache-parse",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "d1639c6ac0e41c11c7a378dad85e3081ee427bd1de5bb8b63c2a880f057a82de",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-candidate-screen-of032pdh/report.json",
+      "report_sha256": "9c1e547ca399b1822a9d9a557c3e70bfb2448f5ab868e8e1b9e359d53fb9c989",
+      "label": "wind-candidate-screen",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "5e0fa4f0d7a8fbce2b75784ce1fc553c4ffd814dfb84b7619f076ea3b8e25a76",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-temporal-ep0hqtk8/report.json",
+      "report_sha256": "01672360d99caa5a3f9a82a1df26329746e3c2b565e740188e430260851a3318",
+      "label": "wind-temporal",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "log_sha256": "705796fdf2545acdb1f2f99520e5c2ef5c60947a65178b53b100f191ac2ef900",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-temporal-final-p6rdviw9/report.json",
+      "report_sha256": "283ecd19e0904c2bd1a8e67ce7f716f7b949cc2e0a26644d41ca28671f21b96c",
+      "label": "wind-temporal-final",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "aa9fe8132f044b62ed4bbda39c795c1b0032a287664a7083f41954cf26d980b9",
+      "completion_lines": [
+        "spatial temporal reuse: 1462 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-temporal-ld0vrxly/report.json",
+      "report_sha256": "3cdc9d99c1df6e7d78e6efb461ea7d5a93c7b643385c7dfbc0e9312f428a939c",
+      "label": "wind-temporal",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "403d50d7ec1ee924854955ae92d70cfdf7ff223986e561e786f96f15430f84c6",
+      "completion_lines": [
+        "spatial temporal reuse: 1461 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-temporal-retained-birqap1_/report.json",
+      "report_sha256": "cd6a739c6c1a42825d33b8abf3b46fc4df9319512a9256f2e29d6fde82a2ccc8",
+      "label": "wind-temporal-retained",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b0f01722fed41b041160f59b67a3216551814f5d6e6d1d26fa5cb32350535103",
+      "completion_lines": [
+        "spatial temporal reuse: 1463 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-temporal-xjazd54w/report.json",
+      "report_sha256": "18bb313e72f42e4b6756506856663b24c36e11fdb35ba8565cef2bbab39821f9",
+      "label": "wind-temporal",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "counts": {
+        "error": 1,
+        "warning": 0
+      },
+      "log_sha256": "e158f56b4d6fe945f5cfe8bc6f3acb7d58ba2e536cfb381f3f5df6dc196ed47e",
+      "completion_lines": [
+        "spatial temporal reuse: 1460 checks, 1 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-wind-20261109/checks/wind-temporal-yrksxu_p/report.json",
+      "report_sha256": "2e4dc7f57d9a853ec1f2a3591b5597e7afb3fdd9ece5869d886a24b903fdec51",
+      "label": "wind-temporal",
+      "ok": false,
+      "complete": true,
+      "reason": "engine_error",
+      "process_exit": 0,
+      "counts": {
+        "error": 1,
+        "warning": 1
+      },
+      "log_sha256": "eba2b54f9e931a279ced889342658f1c28cafda8c72626d0476240758b1f97aa",
+      "completion_lines": [
+        "spatial temporal reuse: 1457 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-final-20261109/final-engine-audio-p29g9iwg/report.json",
+      "report_sha256": "8339b8fe585ea056ecb9e740f4c9c9bc35575af2f779a0d397b61ca6b05d613b",
+      "label": "final-engine-audio",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "2eb3d3b956de8728be4a4620dec522d8fe54651523903ee070f2ba0bf812f380",
+      "completion_lines": [
+        "147 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-final-20261109/final-test_controller_extended_actions-rfns8lxr/report.json",
+      "report_sha256": "ef6a8f3c38976a6ee3ca814262881bb872b22fc66a42f1bf516d0f6956d2ba0a",
+      "label": "final-test_controller_extended_actions",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "09a76843e650a38cf4905144283fed156b29b664bfb52c70cdc12f2d027f8cb2",
+      "completion_lines": [
+        "PASS extended controller actions: 1451 checks"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-final-20261109/final-test_controller_integration-uxtu8bif/report.json",
+      "report_sha256": "ff5f9df7360ab71131da278d3d7fac1d1ef6f9a00f26e7455048f12ba1a75c54",
+      "label": "final-test_controller_integration",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "006769237aae717ebebca7ca2d22fdf752aa5162f21f243feba4e4fb52451705",
+      "completion_lines": [
+        "Controller integration: 27/27 checks passed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-final-20261109/final-test_engine_audio_integration-sdkgb7dr/report.json",
+      "report_sha256": "2adc0877469dd401d3882155a1beee92fcdf2b3d0e2186f6280f6f83cad1f183",
+      "label": "final-test_engine_audio_integration",
+      "ok": false,
+      "complete": true,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "log_sha256": "5f112de657e626f053bcdbb609550c436b9ddd3afa6708a38eb62362ecc9d73c",
+      "completion_lines": []
+    },
+    {
+      "report": "tmp/perf-report-final-20261109/final-test_engine_sound-q16vryot/report.json",
+      "report_sha256": "14e011e34168404ae2b7f18ae56c6c883054617d8fd92fa5cfc9f558c89cd48f",
+      "label": "final-test_engine_sound",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0e46751b684520ca13b8ca72ae11095811fb84aee8e0e7621d64ab349b5ae5a5",
+      "completion_lines": [
+        "28 checks, 0 failed"
+      ]
+    },
+    {
+      "report": "tmp/perf-report-final-20261109/final-test_engine_voice-z37gzw9e/report.json",
+      "report_sha256": "d73eb4fc7cc1a1242319f07831586a7f44d019a800bd3a0d4b91a22e017531b1",
+      "label": "final-test_engine_voice",
+      "ok": true,
+      "complete": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "cc73491dd5902e552dba89fe0fe6bf9827c5b85af9533bb5cc66a560edcaf444",
+      "completion_lines": [
+        "78 checks, 0 failed"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,664 @@
+{
+  "format": "openrc-aircraft-shadow-proxy-summary v1",
+  "report_sha256": "c64b41097367502cd717856aa21d26485640cea92a4a5d8378027dbf68eecd3c",
+  "identity": {
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "renderer": "gl_compatibility",
+    "driver": "opengl3",
+    "window_size": [
+      1920,
+      1080
+    ],
+    "reconstruction": {
+      "effective": "native",
+      "effective_provider": "native",
+      "execution_status": "policy_selected",
+      "fallback": false,
+      "fallback_reason": "",
+      "fsr_sharpness": 0.200000002980232,
+      "history_reset": {
+        "api_available": false,
+        "last_reason": "",
+        "notifications": 0,
+        "submitted": 0
+      },
+      "logical_canvas_size": [
+        1920.0,
+        1080.0
+      ],
+      "msaa_3d": 2,
+      "nominal_3d_size": [
+        1920,
+        1080
+      ],
+      "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+      "nvidia_reflex": {
+        "accepted": "unconfirmed",
+        "available": false,
+        "pending": false,
+        "reason": "support_missing",
+        "requested": "on"
+      },
+      "output_size": [
+        1920,
+        1080
+      ],
+      "output_size_scope": "viewport_render_target_estimate_v1",
+      "provider": "native",
+      "provider_available": true,
+      "requested": "native",
+      "requested_provider": "native",
+      "scale": 1.0,
+      "scaling_3d_mode": 0,
+      "selected": "native",
+      "sharpening_active": false,
+      "sharpening_strength": 0.899999998509884,
+      "temporal": false,
+      "texture_mipmap_bias": 0.0
+    },
+    "asset_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+    "livery": "midnight",
+    "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+    "source_sha256": {
+      "main": "b2cc18f04825b77b58df5af05fb521fb7ba86977073eb2ed26123b69074cd282",
+      "mask_shader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+      "projected": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+      "proxy": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+      "receiver_shader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+      "shadow": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+      "tool": "dfc121491d0e417c3a1c62359b4a6b65918702a8dc6f5e7184dab2ad24035e18"
+    },
+    "max_lod_distance": 0.0005
+  },
+  "bindings": [
+    {
+      "actual": {
+        "lod_surfaces": 39,
+        "max_lod_distance": 0.0005,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "imported-lod-proxy",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 178455
+      },
+      "case_id": "qualified-stock",
+      "expected_representation": "imported-lod-proxy"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "full",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "explicit-full",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "missing-context",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "workshop",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "different",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "wrong-manifest",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "custom-paint",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "precomputed-home",
+      "expected_representation": "full"
+    }
+  ],
+  "deferred": [
+    {
+      "captures": [
+        {
+          "mask": "deferred-off-eager-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-off-eager-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        },
+        {
+          "mask": "deferred-off-enabled-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-off-enabled-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        }
+      ],
+      "disabled_fallback_texture_absent": true,
+      "disabled_projector_absent": true,
+      "disabled_setup_usec": 99,
+      "disabled_texture_bytes_delta": 0,
+      "eager_setup_usec": 4868,
+      "eager_texture_bytes_delta": 611668,
+      "enabled_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "exact_mask_and_receiver": true,
+      "first_enable_usec": 6530,
+      "mode": "off",
+      "pending_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "pending_representation": "full",
+        "pending_triangles": 321191,
+        "representation": "deferred",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 0
+      }
+    },
+    {
+      "captures": [
+        {
+          "mask": "deferred-native-eager-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-native-eager-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        },
+        {
+          "mask": "deferred-native-enabled-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-native-enabled-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        }
+      ],
+      "disabled_fallback_texture_absent": true,
+      "disabled_projector_absent": true,
+      "disabled_setup_usec": 100,
+      "disabled_texture_bytes_delta": 0,
+      "eager_setup_usec": 6286,
+      "eager_texture_bytes_delta": 611668,
+      "enabled_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "exact_mask_and_receiver": true,
+      "first_enable_usec": 7002,
+      "mode": "native",
+      "pending_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "pending_representation": "full",
+        "pending_triangles": 321191,
+        "representation": "deferred",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 0
+      }
+    },
+    {
+      "captures": [
+        {
+          "mask": "deferred-cue-off-eager-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-cue-off-eager-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        },
+        {
+          "mask": "deferred-cue-off-enabled-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-cue-off-enabled-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        }
+      ],
+      "disabled_fallback_texture_absent": true,
+      "disabled_projector_absent": true,
+      "disabled_setup_usec": 116,
+      "disabled_texture_bytes_delta": 0,
+      "eager_setup_usec": 13138,
+      "eager_texture_bytes_delta": 611668,
+      "enabled_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "exact_mask_and_receiver": true,
+      "first_enable_usec": 6136,
+      "mode": "cue-off",
+      "pending_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "pending_representation": "full",
+        "pending_triangles": 321191,
+        "representation": "deferred",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 0
+      }
+    },
+    {
+      "captures": [
+        {
+          "mask": "deferred-local-off-eager-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-local-off-eager-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        },
+        {
+          "mask": "deferred-local-off-enabled-mask.png",
+          "mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+          "receiver": "deferred-local-off-enabled-receiver.png",
+          "receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+        }
+      ],
+      "disabled_fallback_texture_absent": true,
+      "disabled_projector_absent": true,
+      "disabled_setup_usec": 116,
+      "disabled_texture_bytes_delta": 0,
+      "eager_setup_usec": 6944,
+      "eager_texture_bytes_delta": 611668,
+      "enabled_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "exact_mask_and_receiver": true,
+      "first_enable_usec": 6215,
+      "mode": "local-off",
+      "pending_geometry": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "pending_representation": "full",
+        "pending_triangles": 321191,
+        "representation": "deferred",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 0
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "landing",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 17.733,
+      "proxy_collect_ms": 117.87,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 509,
+            "changed_pixels": 8,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 3412,
+            "changed_pixels": 1461,
+            "peak_8bit": 10,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "takeoff",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 16.781,
+      "proxy_collect_ms": 119.743,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 701,
+            "changed_pixels": 11,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 4708,
+            "changed_pixels": 2452,
+            "peak_8bit": 8,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.916,
+      "proxy_collect_ms": 115.08,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 318,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2108,
+            "changed_pixels": 325,
+            "peak_8bit": 22,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun_bank",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.099,
+      "proxy_collect_ms": 113.896,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 320,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2134,
+            "changed_pixels": 308,
+            "peak_8bit": 24,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun_knife",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 19.956,
+      "proxy_collect_ms": 115.22,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 128,
+            "changed_pixels": 2,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 855,
+            "changed_pixels": 128,
+            "peak_8bit": 23,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun_inverted",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.259,
+      "proxy_collect_ms": 115.321,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 255,
+            "changed_pixels": 4,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 1720,
+            "changed_pixels": 371,
+            "peak_8bit": 18,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "gear_up",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 26.698,
+      "proxy_collect_ms": 114.691,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 318,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2138,
+            "changed_pixels": 1660,
+            "peak_8bit": 6,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "gear_transit",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 19.018,
+      "proxy_collect_ms": 113.042,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 254,
+            "changed_pixels": 4,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 1700,
+            "changed_pixels": 250,
+            "peak_8bit": 24,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "bank_minus",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 17.869,
+      "proxy_collect_ms": 113.949,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 319,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2145,
+            "changed_pixels": 1384,
+            "peak_8bit": 6,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "knife_minus",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 17.789,
+      "proxy_collect_ms": 119.925,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 64,
+            "changed_pixels": 1,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 426,
+            "changed_pixels": 64,
+            "peak_8bit": 23,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "horizon_clamp",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.528,
+      "proxy_collect_ms": 112.91,
+      "proxy_l1_below_largest_sampled_cache_control": {},
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 127,
+            "changed_pixels": 2,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 840,
+            "changed_pixels": 113,
+            "peak_8bit": 25,
+            "pixels": 2073600
+          }
+        }
+      ]
+    }
+  ],
+  "profiles": [],
+  "collection_median_ms": {
+    "full": 18.259,
+    "proxy": 115.08
+  },
+  "limits": "Isolated masks/receivers and deterministic animated attitude; not physics, pilot or whole-flight FPS. GPU timestamp polls may be delayed; wall samples include frame dispatch and receiver rendering. Gear/flaps are set before each bind; no dynamic articulation claim. Cache controls are sampled context, not a global simplification-error bound. Percentiles use linear interpolation; GPU samples may repeat or lag."
+}

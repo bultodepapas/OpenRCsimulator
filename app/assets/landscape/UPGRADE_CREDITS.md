@@ -151,6 +151,18 @@ Roads reuse **Aerial Asphalt 01** by **Rob Tuytel / Poly Haven**, CC0-1.0:
 Fields reuse the retained CC0 grass/dirt photographs. Houses, farms, fences,
 trees and cattle reuse the existing scenery library and its attribution records.
 
+## Nearest farm tractor (SC-13-R1, 2026-11-09)
+
+[Tractor by Grab3D](https://grab3d.com/models/vehicles/tractor/), CC0-1.0.
+The downloaded mesh is uniformly fitted to the existing decorative placement,
+reoriented, simplified by physical part, and combined into five material
+surfaces with saved LODs. Source PBR maps are reduced to 1K with mipmaps and S3TC
+compression. Tyre contact corrections are bounded to 4 cm in the bake; this
+changes presentation only. Exact source hashes and download URLs are retained
+in [source provenance](../../../assets/scenery/farm_tractor/PROVENANCE.json).
+The derivative metadata and original [CC0 notice](../scenery/farm_tractor/LICENSE.txt)
+ship under `assets/scenery/farm_tractor/` in every desktop export.
+
 ## Track barriers (2026-10-20)
 
 [Concrete Road Barrier by Amal Kumar / Poly Haven](https://polyhaven.com/a/concrete_road_barrier), [CC0](https://polyhaven.com/license). The track uses the author's LOD2 mesh and original 1K diffuse, OpenGL normal and ARM maps, packaged in a GLB. Its scale is fitted to the existing barrier footprints. The [source manifest](../../../assets/source-deliveries/concrete-road-barrier-polyhaven/source-manifest.json) records official URLs, source hashes, derivative hash and the reproducible export script.

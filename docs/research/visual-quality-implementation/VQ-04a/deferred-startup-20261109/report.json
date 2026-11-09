@@ -1,0 +1,857 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"asset_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+	"bindings": [
+		{
+			"actual": {
+				"lod_surfaces": 39,
+				"max_lod_distance": 0.0005,
+				"model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+				"representation": "imported-lod-proxy",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 178455
+			},
+			"case_id": "qualified-stock",
+			"expected_representation": "imported-lod-proxy"
+		},
+		{
+			"actual": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+				"representation": "full",
+				"requested": "full",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"case_id": "explicit-full",
+			"expected_representation": "full"
+		},
+		{
+			"actual": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"case_id": "missing-context",
+			"expected_representation": "full"
+		},
+		{
+			"actual": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"case_id": "workshop",
+			"expected_representation": "full"
+		},
+		{
+			"actual": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "different",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"case_id": "wrong-manifest",
+			"expected_representation": "full"
+		},
+		{
+			"actual": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"case_id": "custom-paint",
+			"expected_representation": "full"
+		},
+		{
+			"actual": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"case_id": "precomputed-home",
+			"expected_representation": "full"
+		}
+	],
+	"cases": [
+		{
+			"bank_deg": 0.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "landing",
+			"fallback_reason": "",
+			"flap_deg": 25.0,
+			"full_collect_usec": 17733,
+			"gear_extension": 1.0,
+			"height_m": 0.5,
+			"light": [
+				0.300526410341263,
+				0.911596715450287,
+				0.280491292476654
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 117870,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "landing-full-mask.png",
+					"mask_sha256": "a2f23bbe9bf33d4e0fb732d497f4373ece865634d10ee0f0cac958bb8d88bd44",
+					"receiver": "landing-full-receiver.png",
+					"receiver_sha256": "455e2335cea432d59022a113f588c33398bde8f5f7376da1620ddbb0544407f9",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "landing-proxy-mask.png",
+					"mask_sha256": "483599e75d1a6458374c24180b9ce1379d986a5aefde2d6228cbf7f60f25e9da",
+					"receiver": "landing-proxy-receiver.png",
+					"receiver_sha256": "4c42df52d154f1c51e5907cc672cdfb4e5acd4e2a180205d93100f3f20786005",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": -15.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "takeoff",
+			"fallback_reason": "",
+			"flap_deg": 10.0,
+			"full_collect_usec": 16781,
+			"gear_extension": 1.0,
+			"height_m": 1.0,
+			"light": [
+				0.300526410341263,
+				0.911596715450287,
+				0.280491292476654
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 119743,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "takeoff-full-mask.png",
+					"mask_sha256": "f7c8cc4781b7f80f6926e967ae39e988525846fae065a1fda1625ff0706f86ee",
+					"receiver": "takeoff-full-receiver.png",
+					"receiver_sha256": "ace4d455b610ad710c5e939ee4ba1716077a4f8bfb9f54ee2835b345500fd514",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "takeoff-proxy-mask.png",
+					"mask_sha256": "a28a453342f4e5d493306bc5dac31faf8a46cfffec8b1a148ed6b0b8bc2d5081",
+					"receiver": "takeoff-proxy-receiver.png",
+					"receiver_sha256": "f8055ab322086491cb31d0fb22cb0ea6121bbfc98c7900bc5fc331c7545ffce7",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": 0.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "low_sun",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 18916,
+			"gear_extension": 1.0,
+			"height_m": 0.5,
+			"light": [
+				0.940517425537109,
+				0.0800440311431885,
+				0.330181658267975
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 115080,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun-full-mask.png",
+					"mask_sha256": "e75e0308015ba699fc7f4ce6dac413c0d77bcfc8b916d0d3340a46828d6a4a85",
+					"receiver": "low_sun-full-receiver.png",
+					"receiver_sha256": "a4b5d5f06c65c7008374b2dfaa5a1b367b2038f1dc1a63fc7e5ea735e95149a1",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun-proxy-mask.png",
+					"mask_sha256": "53281408c00ad7fad062a0bbd26a01c468f14f2b37c5e4c068ddbf79d3a8004d",
+					"receiver": "low_sun-proxy-receiver.png",
+					"receiver_sha256": "063ee8dc1eea56b7f73fec164bce043aceb5200277e8fb779f3a1d19add53466",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": 60.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "low_sun_bank",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 18099,
+			"gear_extension": 1.0,
+			"height_m": 2.0,
+			"light": [
+				0.940517425537109,
+				0.0800440311431885,
+				0.330181658267975
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 113896,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun_bank-full-mask.png",
+					"mask_sha256": "9ba2772c0552d138d9bd9e6ea1c44614e7eee31ec74e35dbaabf5f61298b9357",
+					"receiver": "low_sun_bank-full-receiver.png",
+					"receiver_sha256": "96456665a8e9463fd8b52fcc01fdefc8ca9fcfb894aa07682370743c311ed381",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun_bank-proxy-mask.png",
+					"mask_sha256": "846cabaf7e3affe6caa6a36b6ecb8f18012b28ffa314545e4fb4aee6e3119885",
+					"receiver": "low_sun_bank-proxy-receiver.png",
+					"receiver_sha256": "fd1c7e71a7f39a864c1e3d6df6bf8732b29f47a74e052385a318a0e138c637fb",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": 90.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "low_sun_knife",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 19956,
+			"gear_extension": 1.0,
+			"height_m": 2.0,
+			"light": [
+				0.940517425537109,
+				0.0800440311431885,
+				0.330181658267975
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 115220,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun_knife-full-mask.png",
+					"mask_sha256": "d60d06761b57f6ac8393d1bff2d0677e1c0c9ba0c02cdcbaba46f274244379ca",
+					"receiver": "low_sun_knife-full-receiver.png",
+					"receiver_sha256": "f82a8c5151c523f8dc500408cd48738f93189571d06bf4cfe2b02905d2303fb2",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun_knife-proxy-mask.png",
+					"mask_sha256": "6c8aa66a2c9e152d0f5dd34848a5c164afb85632af41d77ef870d8a1fe098a1e",
+					"receiver": "low_sun_knife-proxy-receiver.png",
+					"receiver_sha256": "0accf91d9a9d807503b202f150115ae1161211c6ca2d5e25595eac0cf377d1f8",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": 180.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.237134605646133,
+				-0.415999978780746,
+				2.77779984474182,
+				0.765756726264954,
+				2.20999979972839
+			],
+			"case_id": "low_sun_inverted",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 18259,
+			"gear_extension": 0.0,
+			"height_m": 2.0,
+			"light": [
+				0.940517425537109,
+				0.0800440311431885,
+				0.330181658267975
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 115321,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun_inverted-full-mask.png",
+					"mask_sha256": "7b80c316d4a90ae5e3c1676016d0b0c1a88900a53d66793acbbb13c4f35ef3d7",
+					"receiver": "low_sun_inverted-full-receiver.png",
+					"receiver_sha256": "28637824e782ea97ff3c7b68e468f2d88e5c9d5dac823e7ce75a0219965ed647",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "low_sun_inverted-proxy-mask.png",
+					"mask_sha256": "1489f6bb290523095d679beb1f6b0365c0e10799534cbd77fab15a87afd2576f",
+					"receiver": "low_sun_inverted-proxy-receiver.png",
+					"receiver_sha256": "035ad73ef54bfd54a8380f9c34b681d36c49fb35651e67168dc3f25fc39a8983",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": 25.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.237134605646133,
+				-0.415999978780746,
+				2.77779984474182,
+				0.765756726264954,
+				2.20999979972839
+			],
+			"case_id": "gear_up",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 26698,
+			"gear_extension": 0.0,
+			"height_m": 3.0,
+			"light": [
+				0.300526410341263,
+				0.911596715450287,
+				0.280491292476654
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 114691,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "gear_up-full-mask.png",
+					"mask_sha256": "0fb48e52076f8249147ed065de654ce4d34c0e13aa36b523246038c0cb4451bb",
+					"receiver": "gear_up-full-receiver.png",
+					"receiver_sha256": "cdba76fee6432e4bab16bb9334bd51fb285fcca383f455f6b8ff11b7c2f72d6e",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "gear_up-proxy-mask.png",
+					"mask_sha256": "e980170a78b9ec97fb261def822a20cdd054059cc66a72d8f40ec8231f49f5e5",
+					"receiver": "gear_up-proxy-receiver.png",
+					"receiver_sha256": "8b595b7324e81b7fd006ced869550d3d83189980be419a3a306e7e923fd37e52",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": 30.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.358544766902924,
+				-0.415999978780746,
+				2.77779984474182,
+				0.887166857719421,
+				2.20999979972839
+			],
+			"case_id": "gear_transit",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 19018,
+			"gear_extension": 0.5,
+			"height_m": 1.0,
+			"light": [
+				0.940517425537109,
+				0.0800440311431885,
+				0.330181658267975
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 113042,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "gear_transit-full-mask.png",
+					"mask_sha256": "8725d37e85ae79a45283dce64f7e5e2be33199e0c39a338c3cc54984246997e8",
+					"receiver": "gear_transit-full-receiver.png",
+					"receiver_sha256": "d6dc9dd6a4bdd79d456c2ce7dcd948b24b796231caab848e015348151c9a4255",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "gear_transit-proxy-mask.png",
+					"mask_sha256": "c1d99b8f7bf46e68a8f1ee9b61e4ae882406902289c962004271d580d999efab",
+					"receiver": "gear_transit-proxy-receiver.png",
+					"receiver_sha256": "00987a50169d3df67c0869addce347ac610361be3285f51a0b7a79ffb3cd3bdb",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": -60.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "bank_minus",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 17869,
+			"gear_extension": 1.0,
+			"height_m": 2.0,
+			"light": [
+				0.300526410341263,
+				0.911596715450287,
+				0.280491292476654
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 113949,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "bank_minus-full-mask.png",
+					"mask_sha256": "f54883303c524f98853955cdb61369f2a36fcdab135f4ec07ab01015d5b1fd93",
+					"receiver": "bank_minus-full-receiver.png",
+					"receiver_sha256": "624a1166e000dec62f9dd57b32f56fea7655647ec8322636df1a20b9dd52cb78",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "bank_minus-proxy-mask.png",
+					"mask_sha256": "78161b161b03863e9a374aea94d12665d9bd48ce4a72a3a4883980e594fd0a56",
+					"receiver": "bank_minus-proxy-receiver.png",
+					"receiver_sha256": "7d7113c138b9efc4695316e34601004635753e2f91e1af84ca72449b37d05f50",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": -90.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "knife_minus",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 17789,
+			"gear_extension": 1.0,
+			"height_m": 2.0,
+			"light": [
+				0.940517425537109,
+				0.0800440311431885,
+				0.330181658267975
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 119925,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "knife_minus-full-mask.png",
+					"mask_sha256": "08f7e90365216bbae3fb09419bd27d7e5fc9a5131127822436eefbdd78045606",
+					"receiver": "knife_minus-full-receiver.png",
+					"receiver_sha256": "3abd7e64968644dff1f7d9aefc08872eb1ee4ed2a1b700f1a43f3ef5295dee36",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "knife_minus-proxy-mask.png",
+					"mask_sha256": "12afa8f071a1aced560eef26d7f209d5a28c930a40ff566ca5636cebc0bee628",
+					"receiver": "knife_minus-proxy-receiver.png",
+					"receiver_sha256": "2b2286107244b9025e1e5d98462ccb575fcd72898baa4b23b613285b50588342",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		},
+		{
+			"bank_deg": -25.0,
+			"bounds": [
+				-1.38889992237091,
+				-0.530866742134094,
+				-0.415999978780746,
+				2.77779984474182,
+				1.05948877334595,
+				2.20999979972839
+			],
+			"case_id": "horizon_clamp",
+			"fallback_reason": "",
+			"flap_deg": 0.0,
+			"full_collect_usec": 18528,
+			"gear_extension": 1.0,
+			"height_m": 0.5,
+			"light": [
+				0.943437993526459,
+				0.0150548610836267,
+				0.331206977367401
+			],
+			"lod_surfaces": 39,
+			"proxy_collect_usec": 112910,
+			"representation": "imported-lod-proxy",
+			"variants": [
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "horizon_clamp-full-mask.png",
+					"mask_sha256": "cad16ba0c2238aadc33ccf636e6a4668a8764cec611f59ceab3a64bf438a4c85",
+					"receiver": "horizon_clamp-full-receiver.png",
+					"receiver_sha256": "2a5e090d7029c65e3bf72e515c0a8331caba87a7d52614f82df6fc74a5bc0b12",
+					"role": "full",
+					"triangles": 321191
+				},
+				{
+					"cache_control_angle_deg": 0.0,
+					"mask": "horizon_clamp-proxy-mask.png",
+					"mask_sha256": "75b5ca23e9eac7709ded11af59dbb1c4170ab971b63a30568941056bfd8a8001",
+					"receiver": "horizon_clamp-proxy-receiver.png",
+					"receiver_sha256": "1bbc59b7bfd7629a7cf59ab1fe1aea0c47566abbcb287a294d39125550348544",
+					"role": "proxy",
+					"triangles": 178455
+				}
+			]
+		}
+	],
+	"complete": true,
+	"deferred": [
+		{
+			"captures": [
+				{
+					"mask": "deferred-off-eager-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-off-eager-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				},
+				{
+					"mask": "deferred-off-enabled-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-off-enabled-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				}
+			],
+			"disabled_fallback_texture_absent": true,
+			"disabled_projector_absent": true,
+			"disabled_setup_usec": 99,
+			"disabled_texture_bytes_delta": 0,
+			"eager_setup_usec": 4868,
+			"eager_texture_bytes_delta": 611668,
+			"enabled_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"exact_mask_and_receiver": true,
+			"first_enable_usec": 6530,
+			"mode": "off",
+			"pending_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"pending_representation": "full",
+				"pending_triangles": 321191,
+				"representation": "deferred",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 0
+			}
+		},
+		{
+			"captures": [
+				{
+					"mask": "deferred-native-eager-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-native-eager-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				},
+				{
+					"mask": "deferred-native-enabled-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-native-enabled-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				}
+			],
+			"disabled_fallback_texture_absent": true,
+			"disabled_projector_absent": true,
+			"disabled_setup_usec": 100,
+			"disabled_texture_bytes_delta": 0,
+			"eager_setup_usec": 6286,
+			"eager_texture_bytes_delta": 611668,
+			"enabled_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"exact_mask_and_receiver": true,
+			"first_enable_usec": 7002,
+			"mode": "native",
+			"pending_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"pending_representation": "full",
+				"pending_triangles": 321191,
+				"representation": "deferred",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 0
+			}
+		},
+		{
+			"captures": [
+				{
+					"mask": "deferred-cue-off-eager-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-cue-off-eager-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				},
+				{
+					"mask": "deferred-cue-off-enabled-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-cue-off-enabled-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				}
+			],
+			"disabled_fallback_texture_absent": true,
+			"disabled_projector_absent": true,
+			"disabled_setup_usec": 116,
+			"disabled_texture_bytes_delta": 0,
+			"eager_setup_usec": 13138,
+			"eager_texture_bytes_delta": 611668,
+			"enabled_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"exact_mask_and_receiver": true,
+			"first_enable_usec": 6136,
+			"mode": "cue-off",
+			"pending_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"pending_representation": "full",
+				"pending_triangles": 321191,
+				"representation": "deferred",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 0
+			}
+		},
+		{
+			"captures": [
+				{
+					"mask": "deferred-local-off-eager-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-local-off-eager-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				},
+				{
+					"mask": "deferred-local-off-enabled-mask.png",
+					"mask_sha256": "bfd978e81233912757aaa409d5b3a4572b4f2a11da5d951571e4d06f7fc2962b",
+					"receiver": "deferred-local-off-enabled-receiver.png",
+					"receiver_sha256": "accdfbeca0e7a6b05907f886b8c25b151b9825aa65b3b20e082d4f402005c830"
+				}
+			],
+			"disabled_fallback_texture_absent": true,
+			"disabled_projector_absent": true,
+			"disabled_setup_usec": 116,
+			"disabled_texture_bytes_delta": 0,
+			"eager_setup_usec": 6944,
+			"eager_texture_bytes_delta": 611668,
+			"enabled_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"representation": "full",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 321191
+			},
+			"exact_mask_and_receiver": true,
+			"first_enable_usec": 6215,
+			"mode": "local-off",
+			"pending_geometry": {
+				"lod_surfaces": 0,
+				"max_lod_distance": 0.0,
+				"model_manifest_sha256": "",
+				"pending_representation": "full",
+				"pending_triangles": 321191,
+				"representation": "deferred",
+				"requested": "auto",
+				"source_triangles": 321191,
+				"triangles": 0
+			}
+		}
+	],
+	"driver": "opengl3",
+	"engine": {
+		"build": "official",
+		"hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta2",
+		"string": "4.8-beta2 (official)",
+		"timestamp": 0
+	},
+	"errors": [],
+	"format": "openrc-aircraft-shadow-proxy-trial v1",
+	"limits": "Isolated masks/receivers and deterministic animated attitude; not physics, pilot or whole-flight FPS. GPU timestamp polls may be delayed; wall samples include frame dispatch and receiver rendering. Gear/flaps are set before each bind; no dynamic articulation claim.",
+	"livery": "midnight",
+	"max_lod_distance": 0.0005,
+	"model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+	"profiles": [],
+	"reconstruction": {
+		"effective": "native",
+		"effective_provider": "native",
+		"execution_status": "policy_selected",
+		"fallback": false,
+		"fallback_reason": "",
+		"fsr_sharpness": 0.200000002980232,
+		"history_reset": {
+			"api_available": false,
+			"last_reason": "",
+			"notifications": 0,
+			"submitted": 0
+		},
+		"logical_canvas_size": [
+			1920.0,
+			1080.0
+		],
+		"msaa_3d": 2,
+		"nominal_3d_size": [
+			1920,
+			1080
+		],
+		"nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+		"nvidia_reflex": {
+			"accepted": "unconfirmed",
+			"available": false,
+			"pending": false,
+			"reason": "support_missing",
+			"requested": "on"
+		},
+		"output_size": [
+			1920,
+			1080
+		],
+		"output_size_scope": "viewport_render_target_estimate_v1",
+		"provider": "native",
+		"provider_available": true,
+		"requested": "native",
+		"requested_provider": "native",
+		"scale": 1.0,
+		"scaling_3d_mode": 0,
+		"selected": "native",
+		"sharpening_active": false,
+		"sharpening_strength": 0.899999998509884,
+		"temporal": false,
+		"texture_mipmap_bias": 0.0
+	},
+	"renderer": "gl_compatibility",
+	"source_sha256": {
+		"main": "b2cc18f04825b77b58df5af05fb521fb7ba86977073eb2ed26123b69074cd282",
+		"mask_shader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+		"projected": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+		"proxy": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+		"receiver_shader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+		"shadow": "2ff7be48f6170d0f15b2d2f1c3c7b269d96df4a421b7dce18b5627c539cd4c2d",
+		"tool": "dfc121491d0e417c3a1c62359b4a6b65918702a8dc6f5e7184dab2ad24035e18"
+	},
+	"window_size": [
+		1920,
+		1080
+	]
+}

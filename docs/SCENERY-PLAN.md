@@ -37,6 +37,8 @@ Placement data and source packages are documented in [scenery provenance](../ass
 
 [SC-08-R7](research/scenery-implementation/SC-08-R7/README.md) textures the large shelter slabs with an existing CC0 concrete set, sizes the roof rafters, and adds visible steel frame connections and correctly aligned diagonal timber grain.
 
+[SC-13-R1](research/scenery-implementation/SC-13-R1/README.md) replaces the nearest default-field tractor with a downloaded CC0 Grab3D model, reduced to 3,994 triangles and five material surfaces with saved mesh LODs. It retains the existing placement, quality filter, collision envelope and damage identity. The other two tractors stay procedural. The derivative loads only when that placement survives filtering; `--farm_tractor=off` restores its procedural appearance. Native 1080p comparisons cover Low through Extreme; broader Gate SC performance acceptance remains open.
+
 Static object contact uses the separate float64 LU-05 collision world. [CR-17a local damage](research/crash-damage-investigations/CR-17a/README.md) removes failed fence pieces and lightweight props from their visual batches and subsequent contacts, with bounded material-specific effects and checkpoint/reset state. Large obstacles retain their main structure. Proxy dimensions, contact response and failure cutoffs are gameplay estimates. See the [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) for the original detector and measured cost.
 
 ## Remaining work

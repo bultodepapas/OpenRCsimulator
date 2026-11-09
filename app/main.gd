@@ -820,6 +820,7 @@ func _prepare_flight() -> void:
 				setup_request.frozen_data, _startup_cancel_requested):
 			return
 		startup_preparation_metrics.acquire_usec = Time.get_ticks_usec() - acquire_began
+	_initialize_shadow_mode(args)
 	var world_began := Time.get_ticks_usec()
 	var world_ready: bool = await _build_world()
 	startup_preparation_metrics.world_usec = Time.get_ticks_usec() - world_began
@@ -836,7 +837,6 @@ func _prepare_flight() -> void:
 	_rig.look_height = _look_height
 	if not camera_preferences.is_empty():
 		CameraSettings.apply_at_start(_rig, camera_preferences)
-	_initialize_shadow_mode(args)
 	if args.has("hide_airplane"):
 		# L0c readability: the same view without the airplane (and its pilot-aid shadow) is the background reference.
 		_airplane.root.visible = false
@@ -889,6 +889,7 @@ func _prepare_flight() -> void:
 		get_tree().quit(ERR_INVALID_DATA)
 		return
 	if session.aircraft.get("ok", false) and session.aircraft.model.propulsion.get("glow", {}).is_empty() and startup_checkpoint.is_valid():
+		_sync_shadow_preference()
 		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
 	# D6e-R5: sport gives keyboard/gamepad full roll travel with normal pitch/yaw.
 	# --rates selects the high/low starting profile; radios retain transmitter rates.
@@ -1435,6 +1436,7 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 	if not changed and not force_refresh:
 		return true
 	_extent = Shadow.model_extent(_airplane.root)
+	_sync_shadow_preference()
 	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context(), _shadow_mode)
 	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
 		_rig.set_span(_extent.x)
@@ -3140,6 +3142,7 @@ func _build_world() -> bool:
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
+	_sync_shadow_preference() # Staged construction can yield while settings change.
 	_shadow = Shadow.create(self, _shadow_mode)
 	# Bind the aircraft silhouette before fitting luminous geometry.
 	if not startup_checkpoint.is_valid():

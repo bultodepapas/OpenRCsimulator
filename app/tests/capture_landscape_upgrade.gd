@@ -117,6 +117,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	root.size = Vector2i(int(args.get("width", 1280)), int(args.get("height", 720)))
+	var measure_render_time := str(args.get("measure_render_time", "off")) == "on"
+	RenderingServer.viewport_set_measure_render_time(root.get_viewport_rid(), measure_render_time)
 	root.mesh_lod_threshold = float(SceneDetail.profile().mesh_lod_threshold_px)
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	var out := str(args.get("out", "user://landscape-upgrade"))
@@ -445,6 +447,8 @@ func _run() -> void:
 						quit(1)
 						return
 		var frames := []
+		var viewport_cpu_ms := []
+		var viewport_gpu_ms := []
 		var motion := str(args.get("motion", "off"))
 		var camera_origin := camera.transform
 		var aircraft_origin: Transform3D = aircraft.root.transform
@@ -463,6 +467,9 @@ func _run() -> void:
 			var now := Time.get_ticks_usec()
 			frames.append((now - last) / 1000.0)
 			last = now
+			if measure_render_time:
+				viewport_cpu_ms.append(RenderingServer.viewport_get_measured_render_time_cpu(root.get_viewport_rid()))
+				viewport_gpu_ms.append(RenderingServer.viewport_get_measured_render_time_gpu(root.get_viewport_rid()))
 			if motion != "off":
 				var filename := "%s_%03d.png" % [case, i]
 				root.get_texture().get_image().save_png(out.path_join(filename))
@@ -479,6 +486,8 @@ func _run() -> void:
 			primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
 			video_memory = Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED),
 			frame_ms_raw = raw_frames, median_ms = frames[frames.size()/2], p95_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.95)-1)],
+			viewport_cpu_ms_raw = viewport_cpu_ms, viewport_gpu_ms_raw = viewport_gpu_ms,
+			render_timing_enabled = measure_render_time,
 			motion = motion_frames, timing_valid = motion == "off",
 			p99_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.99)-1)],
 			glare_visible = flare.visible, glare_strength = flare.get_meta("strength", 0.0), exposure = built.environment.tonemap_exposure,
@@ -495,7 +504,7 @@ func _run() -> void:
 			case_report.worn_shoulder_enabled.append(_ground_parameter(material, "field_turf_enabled"))
 		for material: ShaderMaterial in ground_materials:
 			var record := {shader = material.shader.resource_path, parameters = {}}
-			for parameter: String in ["tile_m", "macro_amp", "dry_amount", "anti_tiling",
+			for parameter: String in ["tile_m", "macro_amp", "dry_amount", "anti_tiling", "pilot_pin_m",
 					"grass_photo_enabled", "turf_detail_strength", "cloud_shadow_strength"]:
 				for uniform: Dictionary in material.shader.get_shader_uniform_list():
 					if uniform.name == parameter:

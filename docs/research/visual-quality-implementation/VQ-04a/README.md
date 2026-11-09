@@ -9,6 +9,10 @@ the visual-quality plan's VQ-04a.
 reduces mask triangles by 44.44% for one verified source, with full fallbacks,
 1080p visual checks and explicit loading/timing limits.
 
+2026-11-09 follow-up: [initially disabled aircraft cues](deferred-startup-20261109/README.md)
+defer projector and fallback-texture allocation while preserving the captured
+silhouette, saved settings and direct-launch cue overrides.
+
 ## Ownership and coordination
 
 Initial status showed UI-21 menu files, propulsion/audio research, and L4c

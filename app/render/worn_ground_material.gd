@@ -20,6 +20,8 @@ static func bind(scenery: Node, ground: ShaderMaterial) -> bool:
 		var value: Variant = ground.get_shader_parameter(parameter)
 		if value == null:
 			value = RenderingServer.shader_get_parameter_default(ground.shader.get_rid(), parameter)
+		# The dummy renderer cannot resolve uniforms. Null keeps the canonical
+		# defaults from the same shared shader includes on the destination.
 		material.set_shader_parameter(parameter, value)
 	material.set_shader_parameter("field_turf_enabled", true)
 	return true

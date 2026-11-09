@@ -1,0 +1,38 @@
+{
+  "format": "openrc-source-provenance v1",
+  "retrieved_on": "2026-11-09",
+  "title": "Tractor",
+  "author": "Grab3D",
+  "license": "CC0-1.0",
+  "page_url": "https://grab3d.com/models/vehicles/tractor/",
+  "files": [
+    {
+      "path": "assets/scenery/farm_tractor/tractor.glb",
+      "bytes": 1687044,
+      "sha256": "67eefa2748276d0554373691b4002239c66823ed84fae256793173b307d05d6f",
+      "download_url": "https://grab3d.com/dl/tractor/tractor.glb"
+    },
+    {
+      "path": "assets/scenery/farm_tractor/LICENSE.txt",
+      "bytes": 760,
+      "sha256": "01908a56d6cada52704b20c5094c2aa16c9d8be6f124349c986764067abfd921",
+      "download_url": "https://grab3d.com/dl/tractor/LICENSE.txt"
+    },
+    {
+      "path": "assets/scenery/farm_tractor/upstream_manifest.json",
+      "bytes": 1427,
+      "sha256": "974c239e86d1c4afee518ab51764a8cf8caf7753d212c920dada37cbc4876de1",
+      "download_url": "https://grab3d.com/dl/tractor/manifest.json"
+    }
+  ],
+  "upstream_origin": "Procedural Blender scripts with AI-assisted code; the retained upstream manifest states no generative AI geometry or textures.",
+  "runtime_generator": "tools/scenery/bake_farm_tractor.gd",
+  "runtime_metadata": "app/assets/scenery/farm_tractor/tractor.json",
+  "processing": [
+    "Rotate imported front +Z to -Z; uniformly fit the existing 2.35 x 2.35 x 3.6 m gameplay envelope, centre XZ and ground Y.",
+    "Generate LODs for physical source parts independently, select near geometry within 4,000 triangles, then merge identical complete material descriptions while retaining each part at every combined LOD.",
+    "Correct retained tyre contact samples by at most 0.04 m; derivative metadata records the observed maximum. No physics or collision data changes.",
+    "Retain normals, tangents and UVs; resize source PBR maps to 1K, generate mipmaps and save self-contained S3TC PortableCompressedTexture2D buffers."
+  ],
+  "scope": "One static decorative tractor in the canonical default field; no vehicle controller or runtime authoring dependency."
+}

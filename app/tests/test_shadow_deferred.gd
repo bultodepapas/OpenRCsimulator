@@ -4,6 +4,30 @@ const Shadow := preload("res://render/shadow.gd")
 const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Projected := preload("res://render/projected_shadow.gd")
 
+
+class ShadowStartupProbe extends "res://main.gd":
+	const ShadowAPI := preload("res://render/shadow.gd")
+	var observed_mode := "not-built"
+	var observed_texture := false
+	var observed_representation := ""
+	var observed_projector := false
+
+	func _build_world() -> bool:
+		observed_mode = _shadow_mode
+		var carrier := ShadowAPI.create(self, _shadow_mode)
+		observed_texture = (carrier.material_override as StandardMaterial3D).albedo_texture != null
+		var model := Node3D.new()
+		var body := MeshInstance3D.new()
+		body.mesh = BoxMesh.new()
+		model.add_child(body)
+		add_child(model)
+		ShadowAPI.bind_model(carrier, model, {}, {}, _shadow_mode)
+		var geometry: Dictionary = carrier.get_meta("projected_shadow_geometry", {})
+		observed_representation = str(geometry.get("representation", ""))
+		observed_projector = carrier.get_node_or_null("ProjectedShadow") != null
+		return false # Stop before flight setup; interactive start does not quit.
+
+
 var checks := 0
 var failed := 0
 
@@ -17,6 +41,7 @@ func _run() -> void:
 	_test_saved_off_visibility_and_reuse()
 	_test_enabled_bind_remains_eager()
 	_test_initial_cue_override()
+	await _test_flight_startup_order()
 	await _test_freed_source()
 	await _test_detached_source()
 	_test_pending_snapshot_and_visibility()
@@ -219,6 +244,33 @@ func _test_initial_cue_override() -> void:
 		_update(carrier, "sun")
 		_check(_projector(carrier) == null and _representation(carrier) == "deferred", "global route vetoes explicit initial Sun at bind and update: " + technique)
 		host.free()
+
+
+func _test_flight_startup_order() -> void:
+	var cases: Array[Dictionary] = [
+		{name = "explicit Off, no checkpoint", saved = "sun", argument = "--shadow=off", checkpoint = false, mode = "off"},
+		{name = "saved Off, staged checkpoint", saved = "off", argument = "", checkpoint = true, mode = "off"},
+		{name = "explicit Sun overrides saved Off", saved = "off", argument = "--shadow=sun", checkpoint = true, mode = "sun"},
+		{name = "saved Sun, no checkpoint", saved = "sun", argument = "", checkpoint = false, mode = "sun"},
+	]
+	for entry: Dictionary in cases:
+		_select("projected", entry.saved)
+		var flight := ShadowStartupProbe.new()
+		flight.interactive_start = true
+		var args := PackedStringArray(["--scripted"])
+		if not String(entry.argument).is_empty(): args.append(entry.argument)
+		flight.set_user_args(args)
+		var checkpoint_calls := {count = 0}
+		if entry.checkpoint:
+			flight.startup_checkpoint = func(_label: String) -> bool:
+				checkpoint_calls.count += 1
+				return true
+		await flight._prepare_flight()
+		_check(flight.observed_mode == entry.mode and flight.startup_error.is_empty(), "flight resolves shadow mode before world construction: " + entry.name)
+		_check((int(checkpoint_calls.count) > 0) == bool(entry.checkpoint), "flight reaches the selected checkpoint path: " + entry.name)
+		var enabled: bool = entry.mode != "off"
+		_check(flight.observed_texture == enabled and flight.observed_projector == enabled and flight.observed_representation == ("full" if enabled else "deferred"), "world construction receives the resolved cue: " + entry.name)
+		flight.free()
 
 
 func _test_freed_source() -> void:
