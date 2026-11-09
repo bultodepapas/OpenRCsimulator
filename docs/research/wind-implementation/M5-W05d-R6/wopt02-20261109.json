@@ -1,0 +1,301 @@
+{
+  "date": "2026-11-09",
+  "baseline_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "platform": "Windows x86-64",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "qualification": "focused software evidence; complete required CI/platform/release and physical qualification remain open",
+  "scope": "M5-W-AUD-22 / WOPT-02 actual overlay same-observation reuse",
+  "source_sha256": {
+    "app/sim/flight_session.gd": "98c65aafc69d797731b20ac366ac892c8517de1a98d4404e0a8a929c5f92da5f",
+    "app/render/overlays/overlay_manager.gd": "b8dc279495ac71551092e057477c8ee1dcc6661b14aa02a74c0663893b4cd733",
+    "app/tests/test_observer_wind.gd": "830b7db290f35d7a8add6639f2a8884bdcf6fe249bbfa140b49c7a60a77d3f94"
+  },
+  "checks": [
+    {
+      "path": "tmp/audit-observer-wind-20261109/observer-final3-otnm8vc6/report.json",
+      "sha256": "45b0e01aefa8db470efe9a82433682fbaeda5cc7c7a0e92ae5a150a698469915",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1decb9a4-9533-414f-90e8-ed60eda97113",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_observer_wind.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:20:36.454698+00:00",
+        "label": "observer-final3",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\observer-final3-otnm8vc6\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\observer-final3-otnm8vc6\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "observer wind:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.641,
+        "log_bytes": 2859,
+        "log_sha256": "6a606997cae719cc9b3d87a8a52591c09c3464df2c43cce834c59a5d6d906914"
+      }
+    },
+    {
+      "path": "tmp/audit-observer-wind-20261109/spatial-stage-lean-e9j3u_5v/report.json",
+      "sha256": "f970a953c6626c75166a423a8b8306af4024388a2a6b12cb5a65d70ae5dc6c4f",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "09ac262d-a8e8-429f-8340-5ce63249753f",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_stage_lean.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:18:47.835460+00:00",
+        "label": "spatial-stage-lean",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\spatial-stage-lean-e9j3u_5v\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\spatial-stage-lean-e9j3u_5v\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Spatial stage lean:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.078,
+        "log_bytes": 114,
+        "log_sha256": "42b5d4e0a55948b385df293055cf9c6b6be4fcc1300d2b291d23fd1d36d91c44"
+      }
+    },
+    {
+      "path": "tmp/audit-observer-wind-20261109/overlay-fuel-final-o8qo679n/report.json",
+      "sha256": "85cd8ff7285b148b1d84a2092cded4fcf637c02050d03297e2d82bba6452c88b",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "da618cf6-9c1e-43d3-89e7-330dd2fb9c8f",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_overlay_fuel_flight.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:20:57.102249+00:00",
+        "label": "overlay-fuel-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\overlay-fuel-final-o8qo679n\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\overlay-fuel-final-o8qo679n\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "overlay fuel flight:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.75,
+        "log_bytes": 535,
+        "log_sha256": "ea4f723f738511b111c47c836f19d24cb7feb06acfaa62edd9e7cf865a6d7278"
+      }
+    },
+    {
+      "path": "tmp/audit-observer-wind-20261109/overlay-battery-final-qwoapj_1/report.json",
+      "sha256": "dd84320b5b1ebce331421f273cd5504c3f0ba5538c70a1b09fe72fdf457d1172",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "610ef6fa-0db8-4c4e-8417-30e35e791974",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_overlay_battery_flight.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:21:02.371834+00:00",
+        "label": "overlay-battery-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\overlay-battery-final-qwoapj_1\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-observer-wind-20261109\\overlay-battery-final-qwoapj_1\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "overlay battery flight:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 16.703,
+        "log_bytes": 595,
+        "log_sha256": "23fd3cc92c370b7626d33f20a6155443df64e8dac51a2dd13facf4f8ac5e1edb"
+      }
+    }
+  ],
+  "provider_calls": {
+    "stik": {
+      "baseline": 11,
+      "candidate": 10,
+      "modes": [
+        8,
+        24,
+        64
+      ],
+      "times": 3
+    },
+    "x99": {
+      "baseline": 10,
+      "candidate": 9,
+      "modes": [
+        24
+      ],
+      "times": 3
+    }
+  },
+  "limits": [
+    "No timing/FPS/physical qualification",
+    "Refusal fallback after validation relies on pure deterministic providers"
+  ],
+  "integrated_checks": [
+    {
+      "path": "tmp/audit-integration-20261109/golden-v8svsl8b/report.json",
+      "sha256": "a3d6990c07c1bda8a2705a960c3150c8b28810e7f4250a1e5c9963c3e2eb105d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "57fb7fa3-4564-4c00-a506-639f43579544",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_golden.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:27:14.189277+00:00",
+        "label": "golden",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\golden-v8svsl8b\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\golden-v8svsl8b\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.141,
+        "log_bytes": 1068,
+        "log_sha256": "d83933be5c71914354b600719768846c7aa97b2dff6ff4f4f67593a2c095107f"
+      }
+    },
+    {
+      "path": "tmp/audit-integration-20261109/flight-log-0dtlvax7/report.json",
+      "sha256": "2a268e3288b9b85e9121251bd2ed61edbe003502597df3c5044f64c684cf796d",
+      "receipt": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1531723d-e7cb-4211-9bbb-5b3634f35c91",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T14:27:14.193282+00:00",
+        "label": "flight-log",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\flight-log-0dtlvax7\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-integration-20261109\\flight-log-0dtlvax7\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 21.094,
+        "log_bytes": 7994,
+        "log_sha256": "f48856b5e2f035e88e2f91c7ca3ba9423aa2f448a481e69f7edd9b007daa4865"
+      }
+    }
+  ]
+}

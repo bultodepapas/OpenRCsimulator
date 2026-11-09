@@ -671,6 +671,23 @@ func air_data(s: PackedFloat64Array, time_s: float = NAN) -> Dictionary:
 	return Air.compute(s, wind_at(at, s), air_density(s))
 
 
+## One accepted-endpoint observation. A successful spatial Air receipt already contains its datum wind;
+## detach it from the stage sampler. A refused station still needs the independent datum wind for the HUD.
+## Derived sessions retain their existing wind_at/air_data dispatch, including overrides of either method.
+func observer_air_and_wind(s: PackedFloat64Array, time_s: float) -> Dictionary:
+	if get_script() != load("res://sim/flight_session.gd") or sim == null \
+			or not _weather.is_spatial() or _weather_pending_reset \
+			or PackedFloat64Array([time_s]).to_byte_array() != PackedFloat64Array([sim.time()]).to_byte_array() \
+			or s.to_byte_array() != sim.state.to_byte_array():
+		var wind: PackedFloat64Array = wind_at(time_s)
+		return {wind = wind.duplicate(), air = air_data(s, time_s)}
+	var air: Dictionary = air_data(s, time_s)
+	if air.has("spatial_sampler"):
+		var wind: PackedFloat64Array = air.spatial_sampler.reference_wind
+		return {wind = wind.duplicate(), air = air}
+	return {wind = wind_at(time_s).duplicate(), air = air}
+
+
 ## Pure reset-time producer for each runway candidate; independent of the accepted tick and OU window.
 func _initial_air_sampler(model: Dictionary) -> Callable:
 	if not _weather.is_spatial():

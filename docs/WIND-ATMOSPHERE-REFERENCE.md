@@ -402,6 +402,28 @@ The following artifacts retain earlier implementation and research evidence. The
 
 [workloads](research/wind-implementation/M5-W05d-R5/workloads) · [artifact directory](research/wind-implementation/M5-W05d-R6) · [checkout-verification.json](research/wind-implementation/M5-W05d-R6/checkout-verification.json) · [comparison-manifest.json](research/wind-implementation/M5-W05d-R6/comparison-manifest.json) · [integrated-after.json](research/wind-implementation/M5-W05d-R6/integrated-after.json) · [integrated-before.json](research/wind-implementation/M5-W05d-R6/integrated-before.json) · [integration-comparison.json](research/wind-implementation/M5-W05d-R6/integration-comparison.json) · [payload-manifest.json](research/wind-implementation/M5-W05d-R6/payload-manifest.json) · [pinned-sequence.json](research/wind-implementation/M5-W05d-R6/pinned-sequence.json) · [parity.json](research/wind-implementation/M5-W05d-R6/replay/parity.json) · [timing-affinity.json](research/wind-implementation/M5-W05d-R6/timing-affinity.json) · [workload-parity.json](research/wind-implementation/M5-W05d-R6/workload-parity.json)
 
+### Observer datum reuse (M5-W-AUD-22 / WOPT-02, 2026-11-09)
+
+`FlightSession.observer_air_and_wind` gives the overlay one full air-data receipt
+and a detached datum wind for the same accepted state/time/provider observation.
+Successful spatial sampling reuses its already sampled datum; failed station
+validation retains invalid air and independently samples the datum for the HUD.
+No frame/stage cache or datum-only substitute is introduced. Legacy weather,
+pending reset, non-endpoint calls and derived session overrides preserve the old
+wind-then-air sequence; the overlay also retains its original Node-adapter path.
+Spatial refusal samples the fallback datum after validation, relying on the
+environment's pure deterministic provider contract.
+
+[Windows checked evidence](research/wind-implementation/M5-W05d-R6/wopt02-20261109.json)
+includes 161 checks through the actual overlay snapshot, 738 existing lean-stage,
+25 fuel-overlay and 12 battery-overlay checks. Entire overlay bytes match an
+independent old-sequence session. Stik at 8/24/64 modes and three times uses
+10 rather than 11 provider calls; X99 at 24 modes uses 9 rather than 10. Refusal
+counts, station order/time, ownership, changed providers, signed zero, pending
+reset and unchanged checkpoints are covered. This is a bounded call-count and
+software-parity result, not a measured frame/FPS gain. Full CI, native package,
+target performance and physical qualification remain separate.
+
 ### Thermal query reuse (M5-W-AUD-21 / WOPT-01, 2026-11-08)
 
 `WindThermalField._cell_velocity` allocates its zero result only on inactive

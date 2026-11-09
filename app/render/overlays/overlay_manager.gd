@@ -596,8 +596,15 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 	var sim: Node = session.sim
 	var s: PackedFloat64Array = sim.state
 	var time_s: float = sim.time()
-	var wind: PackedFloat64Array = session.wind_at(time_s)
-	var air: Dictionary = session.air_data(s, time_s)
+	var observed: Dictionary
+	if session.has_method("observer_air_and_wind"):
+		observed = session.observer_air_and_wind(s, time_s)
+	else:
+		# Older session adapters retain the original observer call order.
+		var legacy_wind: PackedFloat64Array = session.wind_at(time_s)
+		observed = {wind = legacy_wind, air = session.air_data(s, time_s)}
+	var wind: PackedFloat64Array = observed.wind
+	var air: Dictionary = observed.air
 	var ground: PackedFloat64Array = GroundTerrain.sample(s[0], s[1], session.ground_surfaces)
 	# FUEL-06: the load factor divides by the live mass (fuel burned), not the initial wet build.
 	var live: Dictionary = session.mass_properties() if session.has_method("mass_properties") else {}
