@@ -10012,3 +10012,138 @@ msgstr "Die Hauptsteuerungen der Fernsteuerung müssen vor dem Flug kalibriert w
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "Joystick-Profile benötigen den Gasmodus radio_absolute; stick_rate und trigger_absolute werden nur für Gamepads unterstützt."
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "Die Menüprüfung passt nicht mehr zu diesem Sender. Prüfe erneut; der Entwurf bleibt unverändert."
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "Die Menüsteuerung des Senders ist im Entwurf geprüft. Speichere, um sie zu verwenden."
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "Verwende für Menüs ein Gamepad oder einen geprüften Sender. Tastatur und Maus bleiben verfügbar."
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "Gespeicherte Profile und geeignete Menüeinstellungen bleiben erhalten. Die Fluggeräteauswahl gilt für diese Sitzung."
+
+msgid "Export diagnostics…"
+msgstr "Diagnose exportieren…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "Exportiert den aktuellen Entwurf und die hier beobachteten Eingaben. Gerätekennungen werden entfernt."
+
+msgid "Verify radio menus…"
+msgstr "Sender für Menüs prüfen…"
+
+msgid "Disable radio menus"
+msgstr "Sendermenüs deaktivieren"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "Die Sendermenüs verwenden die kalibrierten Quer- und Höhenrudersteuerungen."
+
+msgid "Calibrated roll / pitch"
+msgstr "Querruder / Höhenruder kalibriert"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "Sendermenüs geprüft. Speichere, um diese Menüsteuerung zu behalten."
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "Kalibriere den Sender und weise physische Bedienelemente für Bestätigen, Zurück und Pause zu. Prüfe dann die Sendermenüs. Texteingaben benötigen weiterhin eine Tastatur."
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "Die Prüfung der Menüsteuerung ist abgelaufen. Prüfe erneut, bevor du diesen Sender für Menüs auswählst."
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "Sendermenüs im Entwurf deaktiviert. Speichere zum Anwenden; Tastatur und Maus bleiben verfügbar."
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "Schließe die Neubelegung ab oder brich sie ab, bevor du die Diagnose exportierst."
+
+msgid "Export controller diagnostics"
+msgstr "Controllerdiagnose exportieren"
+
+msgid "Controller diagnostic report"
+msgstr "Controllerdiagnosebericht"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "Controllerdiagnose ohne Gerätekennungen exportiert."
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "Die Diagnose wurde nicht exportiert (%s). Wähle einen neuen Dateinamen in einem beschreibbaren Ordner."
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "Die Senderverbindung hat sich geändert. Prüfe die Menüsteuerung vor dem Speichern erneut."
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "Bewege Quer- und Höhenruder aus der Mitte und zurück. Schalte Bestätigen, Zurück und Pause auf OFF. Tastatur und Maus bleiben verfügbar."
+
+msgid "Verify radio menus"
+msgstr "Sender für Menüs prüfen"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "Verwende für Menüs die kalibrierten Quer- und Höhenrudersteuerungen. Gas bewegt kein Menü. Folge jedem Schritt und speichere dann die Controllereinstellungen, um den Sender zu aktivieren."
+
+msgid "Use verified menu controls"
+msgstr "Geprüfte Menüsteuerung verwenden"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "Die Senderverbindung hat sich geändert. Die Menüprüfung wurde abgebrochen; der Entwurf bleibt unverändert."
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "Die Menüprüfung wurde abgebrochen, weil die Anwendung den Fokus verloren hat. Der Entwurf bleibt unverändert."
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "Der Sender lieferte eine ungültige Eingabe. Die Menüprüfung wurde abgebrochen; der Entwurf bleibt unverändert."
+
+msgid "Radio menu controls verified"
+msgstr "Sendermenüsteuerung geprüft"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "Wähle Geprüfte Menüsteuerung verwenden und dann Speichern. Abbrechen behält die bisherigen Controllereinstellungen."
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "Menüprüfung abgebrochen. Der Entwurf bleibt unverändert."
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "Zentriere die Quer- und Höhenrudersteuerung und lasse Bestätigen, Zurück und Pause los."
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "Bewege den Querruderknüppel nach RECHTS und halte ihn dort."
+
+msgid "Return roll and pitch to center."
+msgstr "Bewege die Quer- und Höhenrudersteuerung zurück zur Mitte."
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "Bewege den Querruderknüppel nach LINKS und halte ihn dort."
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "Bewege den Höhenruderknüppel nach UNTEN und halte ihn dort."
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "Bewege den Höhenruderknüppel nach OBEN und halte ihn dort."
+
+msgid "Release Accept, then press it."
+msgstr "Lasse Bestätigen los und drücke es dann."
+
+msgid "Release Accept."
+msgstr "Lasse Bestätigen los."
+
+msgid "Release Back, then press it."
+msgstr "Lasse Zurück los und drücke es dann."
+
+msgid "Release Back."
+msgstr "Lasse Zurück los."
+
+msgid "Release Pause, then press it."
+msgstr "Lasse Pause los und drücke es dann."
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "Lasse Bestätigen, Zurück und Pause los und zentriere dann die Quer- und Höhenrudersteuerung."
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "Ungültige oder unterbrochene Sendermenüprüfung."
+
+msgid "Invalid radio button sample."
+msgstr "Ungültige Sender-Tasteneingabe."
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "Zentriere die Quer- und Höhenrudersteuerung, bevor du den Flug fortsetzt."

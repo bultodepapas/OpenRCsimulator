@@ -9118,3 +9118,138 @@ msgstr "飛行前に送信機の主操縦装置をキャリブレーションす
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "ジョイスティックのプロファイルには radio_absolute スロットルが必要です。stick_rate と trigger_absolute はゲームパッドでのみ使用できます。"
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "メニューの確認内容がこの送信機と一致しなくなりました。もう一度確認してください。下書きは変更されません。"
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "送信機のメニュー操作を下書きで確認しました。使用するには保存してください。"
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "メニューにはゲームパッドまたは確認済みの送信機を使用します。キーボードとマウスも常に使用できます。"
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "保存したプロファイルと利用可能なメニュー設定は保持されます。飛行用デバイスの選択はこのセッション中のみ有効です。"
+
+msgid "Export diagnostics…"
+msgstr "診断情報をエクスポート…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "現在の下書きとこの画面で観測した入力を出力します。デバイスの識別情報は除外されます。"
+
+msgid "Verify radio menus…"
+msgstr "送信機のメニュー操作を確認…"
+
+msgid "Disable radio menus"
+msgstr "送信機のメニュー操作を無効化"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "送信機でのメニュー移動には、校正済みのロールとピッチの操作を使用します。"
+
+msgid "Calibrated roll / pitch"
+msgstr "校正済みロール / ピッチ"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "送信機のメニュー操作を確認しました。この操作を保持するには保存してください。"
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "送信機を校正し、決定・戻る・一時停止に物理操作を割り当ててから、メニュー操作を確認してください。文字入力には引き続きキーボードを使用します。"
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "メニュー操作の確認が無効になりました。この送信機をメニュー用に選ぶ前に、もう一度確認してください。"
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "送信機のメニュー操作を下書きで無効にしました。適用するには保存してください。キーボードとマウスも使用できます。"
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "診断情報を出力する前に、割り当て変更を完了するかキャンセルしてください。"
+
+msgid "Export controller diagnostics"
+msgstr "コントローラーの診断情報を出力"
+
+msgid "Controller diagnostic report"
+msgstr "コントローラー診断レポート"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "デバイスの識別情報を除いて診断情報を出力しました。"
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "診断情報を出力できませんでした（%s）。書き込み可能なフォルダーで新しいファイル名を選んでください。"
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "送信機の接続が変わりました。保存する前にメニュー操作をもう一度確認してください。"
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "ロールとピッチを中央から動かして戻してください。決定・戻る・一時停止を OFF にしてください。キーボードとマウスも使用できます。"
+
+msgid "Verify radio menus"
+msgstr "送信機のメニュー操作を確認"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "メニューには校正済みのロールとピッチを使用します。スロットルでメニューは動きません。各手順を完了し、コントローラー設定を保存して送信機を有効にしてください。"
+
+msgid "Use verified menu controls"
+msgstr "確認済みのメニュー操作を使う"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "送信機の接続が変わったため、メニュー操作の確認をキャンセルしました。下書きは変更されません。"
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "アプリのフォーカスが失われたため、メニュー操作の確認をキャンセルしました。下書きは変更されません。"
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "送信機から無効な入力が届いたため、メニュー操作の確認をキャンセルしました。下書きは変更されません。"
+
+msgid "Radio menu controls verified"
+msgstr "送信機のメニュー操作を確認済み"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "「確認済みのメニュー操作を使う」を選び、保存してください。キャンセルすると以前の設定が保持されます。"
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "メニュー操作の確認をキャンセルしました。下書きは変更されません。"
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "ロールとピッチを中央に戻し、決定・戻る・一時停止を放してください。"
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "ロールスティックを右に倒したままにしてください。"
+
+msgid "Return roll and pitch to center."
+msgstr "ロールとピッチを中央に戻してください。"
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "ロールスティックを左に倒したままにしてください。"
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "ピッチスティックを下に倒したままにしてください。"
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "ピッチスティックを上に倒したままにしてください。"
+
+msgid "Release Accept, then press it."
+msgstr "決定を放してから押してください。"
+
+msgid "Release Accept."
+msgstr "決定を放してください。"
+
+msgid "Release Back, then press it."
+msgstr "戻るを放してから押してください。"
+
+msgid "Release Back."
+msgstr "戻るを放してください。"
+
+msgid "Release Pause, then press it."
+msgstr "一時停止を放してから押してください。"
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "決定・戻る・一時停止を放してから、ロールとピッチを中央に戻してください。"
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "送信機のメニュー操作の確認が無効か中断されています。"
+
+msgid "Invalid radio button sample."
+msgstr "送信機のボタン入力が無効です。"
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "飛行を続ける前にロールとピッチを中央に戻してください。"

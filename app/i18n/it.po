@@ -9894,3 +9894,138 @@ msgstr "I comandi principali della radio devono essere calibrati prima del volo.
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "I profili joystick richiedono la modalità gas radio_absolute; stick_rate e trigger_absolute sono supportate solo per i gamepad."
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "La verifica dei menu non corrisponde più a questa trasmittente. Ripeti la verifica; la bozza non cambia."
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "I comandi dei menu della trasmittente sono verificati nella bozza. Salva per usarli."
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "Usa un gamepad o una trasmittente verificata per i menu. Tastiera e mouse restano disponibili."
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "I profili salvati e le preferenze dei menu idonee vengono conservati. La selezione del dispositivo di volo vale per questa sessione."
+
+msgid "Export diagnostics…"
+msgstr "Esporta diagnostica…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "Esporta la bozza corrente e gli input osservati in questa schermata. Gli identificativi del dispositivo sono oscurati."
+
+msgid "Verify radio menus…"
+msgstr "Verifica menu radio…"
+
+msgid "Disable radio menus"
+msgstr "Disattiva menu radio"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "I menu radio usano i comandi calibrati di rollio e beccheggio."
+
+msgid "Calibrated roll / pitch"
+msgstr "Rollio / beccheggio calibrati"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "Menu radio verificati. Salva per mantenere questo controllo dei menu."
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "Calibra la trasmittente e assegna comandi fisici ad Accetta, Indietro e Pausa, poi verifica i menu radio. Per il testo serve ancora la tastiera."
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "La verifica dei menu è scaduta. Ripetila prima di selezionare questa trasmittente per i menu."
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "Menu radio disattivati nella bozza. Salva per applicare; tastiera e mouse restano disponibili."
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "Termina o annulla la rimappatura prima di esportare la diagnostica."
+
+msgid "Export controller diagnostics"
+msgstr "Esporta diagnostica del controller"
+
+msgid "Controller diagnostic report"
+msgstr "Rapporto diagnostico del controller"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "Diagnostica del controller esportata senza identificativi del dispositivo."
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "La diagnostica non è stata esportata (%s). Scegli un nuovo nome in una cartella scrivibile."
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "La connessione della trasmittente è cambiata. Verifica di nuovo i comandi dei menu prima di salvare."
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "Sposta rollio e beccheggio dal centro e riportali al centro. Porta Accetta, Indietro e Pausa su OFF. Tastiera e mouse restano disponibili."
+
+msgid "Verify radio menus"
+msgstr "Verifica menu radio"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "Usa i comandi calibrati di rollio e beccheggio per i menu. Il gas non muove mai il menu. Segui ogni passo, poi salva le impostazioni del controller per attivare la trasmittente."
+
+msgid "Use verified menu controls"
+msgstr "Usa comandi menu verificati"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "La connessione della trasmittente è cambiata. La verifica dei menu è stata annullata; la bozza non cambia."
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "La verifica dei menu è stata annullata perché l’applicazione ha perso il focus. La bozza non cambia."
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "La trasmittente ha inviato un input non valido. La verifica dei menu è stata annullata; la bozza non cambia."
+
+msgid "Radio menu controls verified"
+msgstr "Comandi menu radio verificati"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "Scegli Usa comandi menu verificati, poi Salva. Annulla mantiene le impostazioni precedenti."
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "Verifica dei menu annullata. La bozza non cambia."
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "Centra i comandi di rollio e beccheggio e rilascia Accetta, Indietro e Pausa."
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "Sposta lo stick del rollio a DESTRA e tienilo fermo."
+
+msgid "Return roll and pitch to center."
+msgstr "Riporta al centro i comandi di rollio e beccheggio."
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "Sposta lo stick del rollio a SINISTRA e tienilo fermo."
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "Sposta lo stick del beccheggio in BASSO e tienilo fermo."
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "Sposta lo stick del beccheggio in ALTO e tienilo fermo."
+
+msgid "Release Accept, then press it."
+msgstr "Rilascia Accetta, poi premilo."
+
+msgid "Release Accept."
+msgstr "Rilascia Accetta."
+
+msgid "Release Back, then press it."
+msgstr "Rilascia Indietro, poi premilo."
+
+msgid "Release Back."
+msgstr "Rilascia Indietro."
+
+msgid "Release Pause, then press it."
+msgstr "Rilascia Pausa, poi premilo."
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "Rilascia Accetta, Indietro e Pausa, poi centra i comandi di rollio e beccheggio."
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "Verifica dei menu radio non valida o interrotta."
+
+msgid "Invalid radio button sample."
+msgstr "Lettura del pulsante radio non valida."
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "Centra i comandi di rollio e beccheggio prima di riprendere il volo."

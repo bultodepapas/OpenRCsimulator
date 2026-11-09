@@ -6,6 +6,7 @@ const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Calibration := preload("res://input/rc_calibration.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const RadioMenu := preload("res://input/radio_menu.gd")
 
 signal flight_selection_changed
 signal ui_selection_changed(id: int)
@@ -55,6 +56,9 @@ func _process(delta: float) -> void:
 func refresh() -> void:
 	_refreshing = true
 	registry.update_devices(enumerate_devices.call())
+	var ui_id: int = registry.selected_device_id("ui")
+	if ui_id >= 0 and not is_ui_device(ui_id):
+		registry.select_device("ui", -1)
 	_refreshing = false
 	_apply_automatic_defaults()
 
@@ -88,6 +92,7 @@ func _apply_automatic_defaults() -> void:
 				best_id = int(info.id)
 		registry.select_device("flight", best_id)
 	if not _manual_roles.has("ui"):
+		if _restore_ui_preference(devices): return
 		var ui_id: int = registry.selected_device_id("flight")
 		if not is_ui_gamepad(ui_id):
 			ui_id = -1
@@ -96,6 +101,24 @@ func _apply_automatic_defaults() -> void:
 					ui_id = int(info.id)
 					break
 		registry.select_device("ui", ui_id)
+
+
+func _restore_ui_preference(devices: Array[Dictionary]) -> bool:
+	var loaded: Dictionary = store.load_all()
+	if not bool(loaded.get("ok", false)): return false
+	var preference: Dictionary = loaded.get("ui_preference", {})
+	if preference.get("mode", "") == "keyboard":
+		registry.select_device("ui", -1)
+		return true
+	if preference.get("mode", "") != "profile": return false
+	var matches: Array[int] = []
+	for info: Dictionary in devices:
+		var matched: Dictionary = store.match_profile(info, devices)
+		if matched.get("profile_id", "") == preference.get("profile_id", "") and is_ui_device(int(info.id)):
+			matches.append(int(info.id))
+	if matches.size() != 1: return false
+	registry.select_device("ui", matches[0])
+	return true
 
 
 func _connection_changed(id: int, connected: bool) -> void:
@@ -160,12 +183,12 @@ func _bind_gamepad_confirmation(id: int) -> void:
 
 
 func select_devices(flight_id: int, ui_id: int) -> bool:
-	# Check both before making either selection; UI navigation is never assigned to an RC transmitter.
+	# Check both before making either selection; radios require verified saved navigation.
 	if flight_id < -1 or ui_id < -1:
 		return false
 	for id: int in [flight_id, ui_id]:
 		if id >= 0 and not registry.device_for_id(id).get("connected", false): return false
-	if ui_id >= 0 and not is_ui_gamepad(ui_id): return false
+	if ui_id >= 0 and not is_ui_device(ui_id): return false
 	var previous: int = registry.selected_device_id("flight")
 	_last_flight_selection_result = true
 	registry.select_device("ui", ui_id)
@@ -183,10 +206,26 @@ func is_ui_gamepad(id: int) -> bool:
 	if not bool(info.get("connected", false)) or JetiRadio.has_jeti_identity_claim(info) \
 			or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
 		return false
+	var current: Dictionary = _profiles.get("%d:%d" % [id, registry.connection_generation(id)], {})
+	var saved: Dictionary = store.match_profile(info, registry.get_devices())
+	if current.get("kind", "") == "radio" or saved.get("kind", "") == "radio": return false
 	if bool(info.get("known", false)) and info.get("kind", "") == "gamepad": return true
 	# Unknown hardware needs a saved, unambiguous user declaration before it may drive menus.
-	var saved: Dictionary = store.match_profile(info, registry.get_devices())
 	return saved.get("kind", "") == "gamepad" and bool(saved.get("configured", false)) and Profile.validate(saved).ok
+
+
+func is_ui_device(id: int) -> bool:
+	var info: Dictionary = registry.device_for_id(id)
+	if not bool(info.get("connected", false)): return false
+	var saved: Dictionary = store.match_profile(info, registry.get_devices())
+	var current: Dictionary = _profiles.get("%d:%d" % [id, registry.connection_generation(id)], {})
+	if current.get("kind", "") == "radio" and not RadioMenu.is_verified(current): return false
+	if RadioMenu.is_verified(saved) and bool(saved.get("configured", false)) and Profile.validate(saved).ok:
+		if not current.is_empty() and (not RadioMenu.is_verified(current) \
+			or RadioMenu.mapping_fingerprint(current) != RadioMenu.mapping_fingerprint(saved) \
+			or RadioMenu.action_fingerprint(current) != RadioMenu.action_fingerprint(saved)): return false
+		return true
+	return is_ui_gamepad(id)
 
 
 func profile_for_device(id: int) -> Dictionary:
@@ -261,6 +300,9 @@ func apply_profile(profile: Dictionary, device_id := -1, runtime_snapshot: Varia
 			if not defer_rollback_signal:
 				flight_selection_changed.emit()
 			return false
+	if registry.selected_device_id("ui") == id and active_profile.get("kind", "") == "radio" \
+		and not RadioMenu.is_verified(active_profile):
+		registry.select_device("ui", -1)
 	return true
 
 
@@ -374,7 +416,7 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 	if not bool(previous_store.get("ok", false)):
 		return {"ok": false, "profile": {}, "error": "Existing controller profile storage is unreadable: " + "; ".join(previous_store.get("errors", []))}
 	if not _ui_selection_eligible_for_setup(ui_id, flight_id, profile, previous_store):
-		return {"ok": false, "profile": {}, "error": "Choose a connected gamepad for menus. Radios and unconfigured devices cannot control the interface."}
+		return {"ok": false, "profile": {}, "error": "Choose a connected gamepad or a radio with verified menu controls."}
 
 	var previous_runtime_profile: Dictionary = profile_for_device(old_flight_id) if old_flight_id >= 0 else {}
 	var previous_cache: Dictionary = _profiles.duplicate(true)
@@ -383,7 +425,9 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 	var needs_flight_apply := flight_id != old_flight_id or (flight_id >= 0 and profile != previous_runtime_profile) or flight_was_lost
 	var notify_flight := flight_id != old_flight_id or (flight_id >= 0 and profile != previous_runtime_profile) or flight_was_lost
 
-	var saved: Dictionary = store.save_profile(profile)
+	var preference := _ui_preference_for_setup(ui_id, flight_id, profile)
+	var saved: Dictionary = store.save_profile_with_ui_preference(profile, preference) \
+		if store.has_method("save_profile_with_ui_preference") else store.save_profile(profile)
 	if not bool(saved.get("ok", false)):
 		return saved
 
@@ -403,7 +447,7 @@ func save_settings_from_setup(candidate: Dictionary, flight_device_id: int, ui_d
 	if committed:
 		_manual_roles = {"flight": true, "ui": true}
 		_settings_save_transaction = false
-		if ui_id != old_ui_id:
+		if ui_id != old_ui_id or (ui_id == flight_id and notify_flight):
 			ui_selection_changed.emit(ui_id)
 		if notify_flight:
 			flight_selection_changed.emit()
@@ -451,10 +495,14 @@ func _ui_selection_eligible_for_setup(ui_id: int, flight_id: int, candidate: Dic
 	if ui_id < 0:
 		return true
 	var info: Dictionary = registry.device_for_id(ui_id)
-	if not bool(info.get("connected", false)) or JetiRadio.has_jeti_identity_claim(info) \
-			or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
+	if not bool(info.get("connected", false)):
 		return false
-	if bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
+	var radio_hint: bool = JetiRadio.has_jeti_identity_claim(info) or info.get("kind", "") == "radio" \
+		or RcInput.looks_like_radio(str(info.get("name", "")))
+	var explicit_radio: bool = ui_id == flight_id and candidate.get("kind", "") == "radio"
+	var saved_ui: Dictionary = store.match_profile(info, registry.get_devices())
+	explicit_radio = explicit_radio or saved_ui.get("kind", "") == "radio"
+	if not radio_hint and not explicit_radio and bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
 		return true
 	var matching_profiles: Array[Dictionary] = []
 	var candidate_was_saved_for_ui := false
@@ -470,13 +518,22 @@ func _ui_selection_eligible_for_setup(ui_id: int, flight_id: int, candidate: Dic
 	if matching_profiles.size() != 1:
 		return false
 	var saved_profile: Dictionary = matching_profiles[0]
-	if saved_profile.get("kind", "") != "gamepad" or not bool(saved_profile.get("configured", false)) or not Profile.validate(saved_profile).ok:
+	var eligible_kind: bool = RadioMenu.is_verified(saved_profile) or (not radio_hint and saved_profile.get("kind", "") == "gamepad")
+	if not eligible_kind or not bool(saved_profile.get("configured", false)) or not Profile.validate(saved_profile).ok:
 		return false
 	# A new unknown gamepad is trusted only when this save declares the flight
 	# target itself. Existing separately saved menu pads remain eligible as usual.
 	if ui_id == flight_id and saved_profile.get("profile_id", "") != candidate.get("profile_id", ""):
 		return false
 	return _association_is_unambiguous(saved_profile.get("association", {}))
+
+
+func _ui_preference_for_setup(ui_id: int, flight_id: int, candidate: Dictionary) -> Dictionary:
+	if ui_id < 0: return {"mode": "keyboard"}
+	if ui_id == flight_id: return {"mode": "profile", "profile_id": str(candidate.profile_id)}
+	var matched: Dictionary = store.match_profile(registry.device_for_id(ui_id), registry.get_devices())
+	if not matched.is_empty(): return {"mode": "profile", "profile_id": str(matched.profile_id)}
+	return {} # An unsaved mapped gamepad retains the existing automatic-startup policy.
 
 
 func _association_is_unambiguous(association: Dictionary) -> bool:

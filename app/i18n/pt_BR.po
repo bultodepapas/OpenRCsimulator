@@ -9908,3 +9908,138 @@ msgstr "Os controles principais do rádio precisam ser calibrados antes do voo."
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "Perfis de joystick exigem acelerador radio_absolute; stick_rate e trigger_absolute são compatíveis apenas com controles de jogo."
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "A verificação dos menus não corresponde mais a este transmissor. Verifique novamente; o rascunho não muda."
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "Os controles de menu do transmissor estão verificados no rascunho. Salve para usá-los."
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "Use um controle ou transmissor verificado nos menus. Teclado e mouse continuam disponíveis."
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "Os perfis salvos e as preferências de menu elegíveis são mantidos. A seleção de voo vale para esta sessão."
+
+msgid "Export diagnostics…"
+msgstr "Exportar diagnóstico…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "Exporta o rascunho atual e as entradas observadas nesta tela. Os identificadores do dispositivo são ocultados."
+
+msgid "Verify radio menus…"
+msgstr "Verificar menus do transmissor…"
+
+msgid "Disable radio menus"
+msgstr "Desativar menus do transmissor"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "Os menus do transmissor usam os controles calibrados de rolagem e arfagem."
+
+msgid "Calibrated roll / pitch"
+msgstr "Rolagem / arfagem calibradas"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "Menus do transmissor verificados. Salve para manter este controle dos menus."
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "Calibre o transmissor e atribua controles físicos a Confirmar, Voltar e Pausa; depois verifique os menus. A digitação ainda exige teclado."
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "A verificação dos menus expirou. Verifique novamente antes de selecionar este transmissor para os menus."
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "Menus do transmissor desativados no rascunho. Salve para aplicar; teclado e mouse continuam disponíveis."
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "Conclua ou cancele a reatribuição antes de exportar o diagnóstico."
+
+msgid "Export controller diagnostics"
+msgstr "Exportar diagnóstico do controle"
+
+msgid "Controller diagnostic report"
+msgstr "Relatório de diagnóstico do controle"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "Diagnóstico do controle exportado com identificadores do dispositivo ocultos."
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "O diagnóstico não foi exportado (%s). Escolha outro nome em uma pasta com permissão de escrita."
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "A conexão do transmissor mudou. Verifique novamente os controles de menu antes de salvar."
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "Mova os controles de rolagem e arfagem para fora do centro e retorne. Leve Confirmar, Voltar e Pausa para OFF. Teclado e mouse continuam disponíveis."
+
+msgid "Verify radio menus"
+msgstr "Verificar menus do transmissor"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "Use os controles calibrados de rolagem e arfagem nos menus. O acelerador nunca move o menu. Siga cada etapa e salve as configurações do controle para ativar o transmissor."
+
+msgid "Use verified menu controls"
+msgstr "Usar controles de menu verificados"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "A conexão do transmissor mudou. A verificação dos menus foi cancelada; o rascunho não muda."
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "A verificação dos menus foi cancelada porque o aplicativo perdeu o foco. O rascunho não muda."
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "O transmissor enviou uma entrada inválida. A verificação dos menus foi cancelada; o rascunho não muda."
+
+msgid "Radio menu controls verified"
+msgstr "Controles de menu do transmissor verificados"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "Escolha Usar controles de menu verificados e depois Salvar. Cancelar mantém as configurações anteriores."
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "Verificação dos menus cancelada. O rascunho não muda."
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "Centralize os controles de rolagem e arfagem e solte Confirmar, Voltar e Pausa."
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "Mova o stick de rolagem para a DIREITA e mantenha-o nessa posição."
+
+msgid "Return roll and pitch to center."
+msgstr "Retorne os controles de rolagem e arfagem ao centro."
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "Mova o stick de rolagem para a ESQUERDA e mantenha-o nessa posição."
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "Mova o stick de arfagem para BAIXO e mantenha-o nessa posição."
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "Mova o stick de arfagem para CIMA e mantenha-o nessa posição."
+
+msgid "Release Accept, then press it."
+msgstr "Solte Confirmar e pressione-o em seguida."
+
+msgid "Release Accept."
+msgstr "Solte Confirmar."
+
+msgid "Release Back, then press it."
+msgstr "Solte Voltar e pressione-o em seguida."
+
+msgid "Release Back."
+msgstr "Solte Voltar."
+
+msgid "Release Pause, then press it."
+msgstr "Solte Pausa e pressione-o em seguida."
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "Solte Confirmar, Voltar e Pausa e depois centralize os controles de rolagem e arfagem."
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "Verificação dos menus do transmissor inválida ou interrompida."
+
+msgid "Invalid radio button sample."
+msgstr "Leitura inválida de botão do transmissor."
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "Centralize os controles de rolagem e arfagem antes de continuar o voo."

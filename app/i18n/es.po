@@ -8662,3 +8662,138 @@ msgstr "Los controles principales de la emisora deben calibrarse antes de volar.
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "Los perfiles de joystick requieren el modo de acelerador radio_absolute; stick_rate y trigger_absolute solo son compatibles con mandos de juego."
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "La verificación de menús ya no coincide con esta emisora. Vuelve a verificarla; el borrador no cambia."
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "Los controles de menú de la emisora están verificados en el borrador. Guarda para usarlos."
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "Usa un mando o una emisora verificada para los menús. El teclado y el ratón siempre están disponibles."
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "Los perfiles guardados y las preferencias de menú admitidas se conservan. La selección de vuelo dura esta sesión."
+
+msgid "Export diagnostics…"
+msgstr "Exportar diagnóstico…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "Exporta el borrador actual y las entradas observadas en esta pantalla. Se ocultan los identificadores del dispositivo."
+
+msgid "Verify radio menus…"
+msgstr "Verificar menús de la emisora…"
+
+msgid "Disable radio menus"
+msgstr "Desactivar menús de la emisora"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "Los menús de la emisora usan los controles calibrados de alabeo y cabeceo."
+
+msgid "Calibrated roll / pitch"
+msgstr "Alabeo / cabeceo calibrados"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "Menús de la emisora verificados. Guarda para conservar este control de menús."
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "Calibra la emisora y asigna controles físicos para Aceptar, Atrás y Pausa; luego verifica los menús. Para escribir aún se necesita teclado."
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "La verificación de menús ha caducado. Vuelve a verificar antes de seleccionar esta emisora para los menús."
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "Menús de la emisora desactivados en el borrador. Guarda para aplicar; el teclado y el ratón siguen disponibles."
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "Termina o cancela la reasignación antes de exportar el diagnóstico."
+
+msgid "Export controller diagnostics"
+msgstr "Exportar diagnóstico del controlador"
+
+msgid "Controller diagnostic report"
+msgstr "Informe de diagnóstico del controlador"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "Diagnóstico exportado con los identificadores del dispositivo ocultos."
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "No se exportó el diagnóstico (%s). Elige otro nombre en una carpeta con permiso de escritura."
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "La conexión de la emisora cambió. Vuelve a verificar los controles de menú antes de guardar."
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "Mueve el alabeo y el cabeceo fuera del centro y devuélvelos. Lleva Aceptar, Atrás y Pausa a OFF. El teclado y el ratón siguen disponibles."
+
+msgid "Verify radio menus"
+msgstr "Verificar menús de la emisora"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "Usa los controles calibrados de alabeo y cabeceo para los menús. El acelerador no los mueve. Sigue cada paso y guarda la configuración para activar la emisora."
+
+msgid "Use verified menu controls"
+msgstr "Usar controles de menú verificados"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "La conexión de la emisora cambió. Se canceló la verificación de menús; el borrador no cambia."
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "Se canceló la verificación de menús porque la aplicación perdió el foco. El borrador no cambia."
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "La emisora envió una entrada no válida. Se canceló la verificación de menús; el borrador no cambia."
+
+msgid "Radio menu controls verified"
+msgstr "Controles de menú de la emisora verificados"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "Elige Usar controles de menú verificados y luego Guardar. Cancelar conserva la configuración anterior."
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "Verificación de menús cancelada. El borrador no cambia."
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "Centra los controles de alabeo y cabeceo y suelta Aceptar, Atrás y Pausa."
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "Mueve la palanca de alabeo a la DERECHA y mantenla ahí."
+
+msgid "Return roll and pitch to center."
+msgstr "Devuelve el alabeo y el cabeceo al centro."
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "Mueve la palanca de alabeo a la IZQUIERDA y mantenla ahí."
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "Mueve la palanca de cabeceo hacia ABAJO y mantenla ahí."
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "Mueve la palanca de cabeceo hacia ARRIBA y mantenla ahí."
+
+msgid "Release Accept, then press it."
+msgstr "Suelta Aceptar y luego púlsalo."
+
+msgid "Release Accept."
+msgstr "Suelta Aceptar."
+
+msgid "Release Back, then press it."
+msgstr "Suelta Atrás y luego púlsalo."
+
+msgid "Release Back."
+msgstr "Suelta Atrás."
+
+msgid "Release Pause, then press it."
+msgstr "Suelta Pausa y luego púlsalo."
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "Suelta Aceptar, Atrás y Pausa y luego centra el alabeo y el cabeceo."
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "Verificación de menús de la emisora no válida o interrumpida."
+
+msgid "Invalid radio button sample."
+msgstr "Lectura de botón de la emisora no válida."
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "Centra el alabeo y el cabeceo antes de continuar el vuelo."

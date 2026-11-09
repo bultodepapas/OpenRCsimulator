@@ -1,0 +1,1250 @@
+{
+  "date": "2026-11-09",
+  "timezone": "America/Bogota",
+  "track_steps": [
+    "UI-12-GP-02",
+    "F1-GP-02"
+  ],
+  "audit_baseline": "2e05ed08c7c4ffb2e3c83440756fba594015dec6",
+  "audit_sha256": "dc3a9f9e4d8aedab38df72e9908d8d86763c7d9e02d4ab84b138b2cd2b2dc987",
+  "working_tree_head": "5f9d7a7aba8e30eb5df68cb1a3d4d38dec027967",
+  "source_note": "Local working-tree changes. Focused checks were selected by affected contracts while editing; latest successful invocations per script/mode are retained. This is not a full-app CI, exported-package, physical-controller or performance qualification.",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "platform": "native Windows x86_64",
+    "console_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+  },
+  "runtime_test_programs": 62,
+  "production_parse_commands": 13,
+  "new_assertions": {
+    "test_radio_menu": 180,
+    "test_radio_menu_service": 68,
+    "test_radio_menu_setup": 94,
+    "test_radio_menu_delivery": 19,
+    "test_radio_menu_journey": 44,
+    "test_controller_diagnostics": 49
+  },
+  "verified_collection": "tmp/controller-audit-verified-final-20261109",
+  "runs": [
+    {
+      "script": "res://app_root.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:47:09.482407+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/final-app_root.gd-9pophy_y/report.json",
+      "report_sha256": "4f9567ba74bef2bb135a7f1e47f91916ac13939f56d8354c07079f145e408746",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://input/controller_actions.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:45.587779+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-input_controller_actions.gd-xs4ens1j/report.json",
+      "report_sha256": "a56237f7747bd2d5e99427c30b8558a5f824e3306b455c2d3d7a7d2a548b55f6",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://input/controller_diagnostics.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:49.078207+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-input_controller_diagnostics.gd-wn2cog5b/report.json",
+      "report_sha256": "9e3f7a058003ca96c197e58feb9c5b8a95e3ce6487465f5458ad96dd35a439e0",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://input/controller_profile.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:46.227933+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-input_controller_profile.gd-f52lro_l/report.json",
+      "report_sha256": "0d451427e1feeef5c7c07a0e0427eb4b583f3ad9d9643f5fd04d330fab84586f",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://input/controller_profile_store.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:47.007218+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-input_controller_profile_store.gd-1or5ht9q/report.json",
+      "report_sha256": "9915cc7c00cec5029fb938fcd4de7f1cc5be535e2bffd584a8e3d0177d9422e9",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://input/controller_service.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:47.651418+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-input_controller_service.gd-4aeqe81m/report.json",
+      "report_sha256": "330f38681932e41f5a27cfb7c0de2a0436abbc1def9636c8eb7905d7b7d2c774",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://input/radio_menu.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:47:17.575699+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/final-input_radio_menu.gd-aasswvub/report.json",
+      "report_sha256": "529d0e1fc4cc062fe2342ed0d00c0ab41a5398e1cc3d1c616becf5e0e8db22b3",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://tests/test_accident_report.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:27:21.240006+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_accident_report-t_n637yl/report.json",
+      "report_sha256": "967a8425586f18b35aee864f58828eefa6fdc3fcf601745157119edef2199d78",
+      "log_sha256": "ae0059186c033424ce100a74186020b374274c50a39a3bd7f7bc2a27d8cc739c",
+      "last_log_line": "accident report: 119 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_aux_pause_retention.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:07.623420+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_aux_pause_retention-s28yjjr9/report.json",
+      "report_sha256": "d0efde59f1955964bf4f567e056dc7c66a9407ca1021737721c74e8d0108995d",
+      "log_sha256": "e70615242980d4f3bdccefbd2670b0cf7be5135d6709adb90e07edbeefa2118f",
+      "last_log_line": "AUX pause retention: 19 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_actions.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:11.519713+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_actions-txj7t2q9/report.json",
+      "report_sha256": "1b84bf873fdb96b1f5a465392f2723cc321f1423e4ff65341bd3a4f77d83ca7d",
+      "log_sha256": "43be45166b2a7736e30d3f32501f7358efe0d0729695cfcd609d2329a95a1ad6",
+      "last_log_line": "all controller action checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_audit_identity.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:12.318787+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_audit_identity-cmv5e64k/report.json",
+      "report_sha256": "c8261e1d7e62a076ccc98a442b6187eaf1367c38aafc869f04d07267502110a1",
+      "log_sha256": "13683be85935bca1ada4b6c5053a25b86596784e1f510ae2c1372195e3af0292",
+      "last_log_line": "Controller audit identity: 28 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_audit_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:44.729289+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_controller_audit_setup-8hi34ijt/report.json",
+      "report_sha256": "dd745e838f762cf8a58e95c878ff6cc938e32940f54deec40d6f823e68e6b81b",
+      "log_sha256": "a77b33123234f0930e5182417a8e6b872cc85437b5e0650cd1f9deb6429e9b6b",
+      "last_log_line": "Controller audit setup: 86 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_audit_shell.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:18.322996+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_audit_shell-ygoble92/report.json",
+      "report_sha256": "b53a4f3c4c5831d73db26481a82154de6c9537b82ab0319b2ca91bc4f818460b",
+      "log_sha256": "b36777fab0c1fd8c23d9948b60d97920e96dc5c84fdce70c581fe1ef5423f77f",
+      "last_log_line": "controller audit shell: 20 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_auto_defaults.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:37:39.332865+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-recheck-20261109/defaults-stable-2cfye8e2/report.json",
+      "report_sha256": "6cedf676bb2cb069e769392f2eb448168a7c0cb11537bed61bf6cca1ff222995",
+      "log_sha256": "45af9ee51820f736ebec5003ba47d65a24893b60c9a5da1ca3ee4fc4cf6742c8",
+      "last_log_line": "Controller automatic defaults: 37/37 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_aux_runtime.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:29.062846+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_aux_runtime-jvbcym2o/report.json",
+      "report_sha256": "108a1f3532f5e5ef2dd1d751db1d54bb2f6a3f88646e1f33228f9c204bd0f928",
+      "log_sha256": "5bff8c5ad41de59835abe1cc62ac6aa89221622777373a89ca136e16de4dcf8f",
+      "last_log_line": "Controller auxiliary runtime: 38/38 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_aux_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:30.009848+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_aux_setup-9xjkgffk/report.json",
+      "report_sha256": "8d3fbd2c448d92c84d6e783b115f0d38bc507d1f45d81a8eb4f5e76f0c36d323",
+      "log_sha256": "e75865aec5934573bacfa432fece3f4f1d85e632bb1641212f73649dbd3887a2",
+      "last_log_line": "all controller auxiliary setup checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_binding_audit.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:31.254075+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_binding_audit-_hhlvlrj/report.json",
+      "report_sha256": "46c1225a13f065cb3fa07677bab3cb8773b3b22fb61f0a9f1e6218dcdb661c5d",
+      "log_sha256": "1e85e44ca9959329ab2924db0b8d09ccb152e98f005f5c3a4a69acdd53cb14ae",
+      "last_log_line": "controller binding audit: 14 checks, 0 failures"
+    },
+    {
+      "script": "res://tests/test_controller_calibration_disclosure.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:46.413694+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-recheck-20261109/disclosure-focus-fixed-fqkwgekg/report.json",
+      "report_sha256": "27d7d6d82e41859f19f0e4567ad6ed92cac94eecf96b5fa843b149638265d736",
+      "log_sha256": "3d6ade779c523441d5f0d768707cc5b7fa88aa88e3dc468fb4e1f294af024a36",
+      "last_log_line": "Controller calibration disclosure: 89 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_capture_scroll.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:21:55.114675+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_capture_scroll-_x5sxh92/report.json",
+      "report_sha256": "5976a1c64bfd09a074b8550579a79dd0040ccc4bd175a617a7a5f5369d0206ab",
+      "log_sha256": "691d99e0eba1469c17cd709b226a23d441d9b92ec3b2f3625d09909803e7ba15",
+      "last_log_line": "Controller capture scroll: 1344 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_car.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:22:19.231000+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_car-4rxp0bgf/report.json",
+      "report_sha256": "e695a5ade1c2d27452b47cf52f4b13656dc7821473cd1a783fa233bbe5d27eea",
+      "log_sha256": "7d589ee52af80435ebebcc7940f874f8fca2345838d79e57d2cb7790e5310094",
+      "last_log_line": "Car controller audit: 43/43 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_conditioning.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:22:27.045864+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_conditioning-mhsbn12e/report.json",
+      "report_sha256": "1bf8bc1c6ed3a53a7c8f2d42462ff5bf18dfb43a0e53c500687b79b29a41d729",
+      "log_sha256": "0fcbdb59b3f46cc5a86985359c68f91704c38c1f72d9b1bba578c77912699433",
+      "last_log_line": "Controller conditioning: 57 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_diagnostics.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:37:19.542502+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-recheck-20261109/diagnostics-final-compiler-cleanup-zp_tm57q/report.json",
+      "report_sha256": "c8c17c006660d425b4c3cea69eb0b640dcdbead2fe2ca8f1b68bac51cef33c3a",
+      "log_sha256": "5f32675553dc5dbff7912bea31864be641b852729350540d33fb9274da74fc06",
+      "last_log_line": "Controller diagnostics: 49 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:13.522936+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-recheck-20261109/edge-contract-fixed-xoo72q8i/report.json",
+      "report_sha256": "6a0fb9a75e27eaf9121267a9de0766be586a15264a5610051d20338eb61f72cb",
+      "log_sha256": "2b5c499f05d8d11ffa05448b33d7ed8b83124acca4e6d5261581abf7218d3096",
+      "last_log_line": "controller edge continuity: 42 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_extended_actions.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:22:41.466013+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_extended_actions-ona8t7tf/report.json",
+      "report_sha256": "83d7c15732e619a1dd907572cdc1d5bb161c3dc1be87e7b9a7ae442b9a1d8489",
+      "log_sha256": "43487dbe7f620fd5e8819c144a2613417f8fcd2c1fa81ee1f8934a1f8d777c82",
+      "last_log_line": "PASS extended controller actions: 104 checks"
+    },
+    {
+      "script": "res://tests/test_controller_flight_actions.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:22:42.296958+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_flight_actions-bu1b_h_j/report.json",
+      "report_sha256": "166397511a3f1fa892ff07c08af1b0e08dd2c021c103095efe630d46d620ac21",
+      "log_sha256": "cdee4f5fdc0f3c66b19cda57eecd6a6101be3d4fd985653c9916fbcc60f66f41",
+      "last_log_line": "controller flight actions: 32 checks, 0 failures"
+    },
+    {
+      "script": "res://tests/test_controller_ground.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:22:51.549639+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_ground-dyaowtpu/report.json",
+      "report_sha256": "f7ca649e8d7d1ddbf4ad490494459b05740cac111d9488779bbca7052bc7ccba",
+      "log_sha256": "45fd534e332c075b8462f5ff58b3968c8b3c66b278d739734cbcc5557f654b99",
+      "last_log_line": "Ground controller integration: 24/24 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_integration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:22:56.321281+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_integration-wqwvbbsg/report.json",
+      "report_sha256": "cbca9777da1ad57130af9187169f79fe7083493c99ef103d62940ed30109b279",
+      "log_sha256": "006769237aae717ebebca7ca2d22fdf752aa5162f21f243feba4e4fb52451705",
+      "last_log_line": "Controller integration: 27/27 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_menu.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:27:03.016543+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-recheck-20261109/test_controller_menu-puo6whwy/report.json",
+      "report_sha256": "c7970fd42e89ba4f8cdfc6857058173ae9082382df58ae22ce286256ca376c58",
+      "log_sha256": "ee9538e2e5076391a5a369dd0ab0aba46749eccdd819e988220ae928773a91d4",
+      "last_log_line": "Controller menu: 56/56 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_pause_recovery.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:23:26.650447+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_pause_recovery-pfguz5um/report.json",
+      "report_sha256": "a1909c1fd63ac35a29457128fd66db22697a5c0d46a0043070dd161a6b845070",
+      "log_sha256": "61877e5b88863e260655b6076fe92dc7f700ded3ce459346d203851805412837",
+      "last_log_line": "Controller pause recovery: 60/60 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_persistence.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:23:45.819250+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_persistence-80jkjk0r/report.json",
+      "report_sha256": "b2083ad8715455ad368b49164f420063eb2ad2024572b9c1dfdf455dbc40d883",
+      "log_sha256": "161ac6658f3176376bbdeeb0943466eecedc2d4a8af5b456d7d6cdc6d182d0f1",
+      "last_log_line": "Controller persistence: 33 checks, 0 failures"
+    },
+    {
+      "script": "res://tests/test_controller_preflight_calibration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:29.193124+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_controller_preflight_calibration-0iz9fg2v/report.json",
+      "report_sha256": "2c74837914c8300404e6ae5e6165cd2a971fbfcd70bfe5138116a1e3158dd82e",
+      "log_sha256": "cf23ded6fe77ec6c76613b9eb662a2797fd71276c975f7b181dbe05f3f1be6ef",
+      "last_log_line": "Preflight calibration: 111 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_profile.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:03.043348+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_profile-81i19p15/report.json",
+      "report_sha256": "4e8a6ee7c628dc7750ccf27fc48ef34c499f5d161f9f0beb99410bc392e4b3b8",
+      "log_sha256": "8287254ce823e2ad31569d3fc44d558b0c6462672fe4b23de723dac9b4a69012",
+      "last_log_line": "Controller profile: 74 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_profile_creation.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:24.511208+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_controller_profile_creation-lqod2kpv/report.json",
+      "report_sha256": "4660f512e95d30f84b24f6d31a98564a435a76f2492a81b29050bdf7635cfa06",
+      "log_sha256": "5a265ccedc6f97010ec855b90eed288f06c20c6c0ee0816da233f10665c08b1e",
+      "last_log_line": "controller profile creation: 58 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_profile_hardening.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:06.296870+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_profile_hardening-4bkqk06p/report.json",
+      "report_sha256": "77a4a8f266e7bf511fff91298b72d68ef0435baffede2095b11ffc87115893db",
+      "log_sha256": "300f7932fcd2c6547f2ff644ee90f0cb3cffd0e650403f43f352d03a89371425",
+      "last_log_line": "Controller profile hardening: 80 checks, 0 failures"
+    },
+    {
+      "script": "res://tests/test_controller_prompts.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:07.485677+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_prompts-8efcggs9/report.json",
+      "report_sha256": "136d8afe9577a3b638ef3c7c9ed2781ddf52219f4aed33237d08c17d36b6f897",
+      "log_sha256": "a76cb5c3c1cd7ef553fb6e5cec6bf629ef917539c021a30ec556ff21d587bcb2",
+      "last_log_line": "PASS controller prompts: 138 checks"
+    },
+    {
+      "script": "res://tests/test_controller_rates.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:08.244192+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_rates-iu6axs1g/report.json",
+      "report_sha256": "09de88d55fa3798e409dd40453eb7de41deac60049570ce6649c030fca80985a",
+      "log_sha256": "401c1551347d2cccd635b238139e74f4a2d0d6687d1a4a975773c8bcdddd1aea",
+      "last_log_line": "controller rates: 67 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_recovery_focus.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:18.285001+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_recovery_focus-p7ow5wad/report.json",
+      "report_sha256": "10571d1dd50a1d1717991d8da7374780801d8cc4a3815dc888b60b0804f0fdc3",
+      "log_sha256": "fd13b370eaf0ffc14966e27c1ada486b8b57d13a619310ffad0ee5f1d4553aa8",
+      "last_log_line": "controller recovery focus: 75 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_registry.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:35.919618+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_registry-wexkgvnp/report.json",
+      "report_sha256": "3018287d4be877d2a688d61a8bd187d26992495025290beb12644cc6126cfa1e",
+      "log_sha256": "27847f0e4ecd9cc761d57f395eba409efa68c06c9ebb15e77903e63f14357fd0",
+      "last_log_line": "Controller registry: 27 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_responsive.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:36.596638+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_responsive-5pewv8__/report.json",
+      "report_sha256": "0baf05888bcd4cf38347922c11f9ab743377e9176ae5f80c7e1eccc1560be6c9",
+      "log_sha256": "da16d3e8985d1a7d958166cc5e531ad1c0dec37fa5c194cc6e4d514f3a9265f3",
+      "last_log_line": "Controller responsive layout: 18099/18099 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_routing_audit.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:46.925966+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_routing_audit-4iv7hm1w/report.json",
+      "report_sha256": "5873ebe5e1848d79dd3be46ac9adfed0ab5d0374a37605be69097ccadbb42615",
+      "log_sha256": "04379e55018607b90c50cb1cb358410a020e60cd80d21494c8980cedc175f7eb",
+      "last_log_line": "controller routing audit: 31 checks, 0 failures"
+    },
+    {
+      "script": "res://tests/test_controller_sections.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:24:56.407944+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_sections-yocxvaxq/report.json",
+      "report_sha256": "a646dfd12f2d345294cd7475785f5f4f8b22339b9d50ae0654deadeb84cd57a9",
+      "log_sha256": "3e61669b5be9d1c1fa273e04d5fd78bf90d60463ae42331b2545cb6cbdc4ba02",
+      "last_log_line": "Controller sections: 139/139 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_settings_save.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:42.225246+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_controller_settings_save-xj9dg_p5/report.json",
+      "report_sha256": "20e753a04a767c25919dd9684d30610cd0aa08d674079df626622203764819d7",
+      "log_sha256": "0f8281f81536babea08df62d2a0ded058a5c18a6ea36ab3ade730e32493136cd",
+      "last_log_line": "Controller settings save: 25/25 checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:46.732431+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_controller_setup-lehfigd7/report.json",
+      "report_sha256": "88e67ebef0245be2a753e05c02f4f7b166f97f14d5ad7bc30e1d4f5188525971",
+      "log_sha256": "c6489d623c26be82856532331967417cd65989da806be7ff57813e092b517d12",
+      "last_log_line": "all controller setup checks passed"
+    },
+    {
+      "script": "res://tests/test_controller_setup_safety.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:43.374230+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_controller_setup_safety-wjn_1pw3/report.json",
+      "report_sha256": "4cbc33c0dd0691c0c8d1191ea522686839d009a318492808c46a5f0cc2164358",
+      "log_sha256": "b68f07920279c95a1b62320b651dfae9bfe4ed5a3b8b6f037a7f454b1154ff38",
+      "last_log_line": "controller setup audit passed"
+    },
+    {
+      "script": "res://tests/test_controller_store.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:12.580430+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_store-jyh23lx_/report.json",
+      "report_sha256": "0937fc145197582fced9e9dac032bac9b6396acfe04bc294f6a8ba33af86f867",
+      "log_sha256": "6fbeeab43e9f2e24747b11fc846b8db4428924491e81142fc5aedcdd79b69584",
+      "last_log_line": "Controller profile store: 47 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_controller_verifier_loss.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:13.635995+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_controller_verifier_loss-95816bry/report.json",
+      "report_sha256": "94e92ea18714db0c5e4601ec57ccb0909f2dfc3c76951db9462f57deee59cb67",
+      "log_sha256": "3d2cf38ecc9bc6b4ecd2ab5c6b4276772cbce5ceb9c3ee90ea340c7ab4cd5b56",
+      "last_log_line": "Controller verifier loss: 15 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_exit_transaction.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:27:54.174745+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_exit_transaction-tf0lruoe/report.json",
+      "report_sha256": "7490fac6691f4733bdaf23e42fea558623dc93746a12bfdf4974515a8dbae7a1",
+      "log_sha256": "9d8e1b6185d6f2635beadc86b15e42ab3665fe1834b39ee7d2ffa57b67b266bb",
+      "last_log_line": "Exit transaction: 41 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_jeti_identity.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:17.924534+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_jeti_identity-w53c6fwt/report.json",
+      "report_sha256": "186e81a1729c56d1a9bcc1d3e9c49257e0fa65229d7aae3007fa90fe2c0944ec",
+      "log_sha256": "3c13e0ad247e6ee4d445820a42d090b8536b9c5e68e2d5bbefb28002df795b28",
+      "last_log_line": "JETI identity/service: 56/56 checks passed"
+    },
+    {
+      "script": "res://tests/test_jeti_runtime.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:18.998920+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_jeti_runtime-l_bjs11c/report.json",
+      "report_sha256": "947a340410f04edc1426578a633971dd361a963af799b91f870f3aa1142fdea0",
+      "log_sha256": "6cf9b929bb587e4e1e5198f4801bf89243ba62e652d70bcd390e62bb30896e64",
+      "last_log_line": "JETI runtime: 105 checks, 0 failures"
+    },
+    {
+      "script": "res://tests/test_jeti_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:26.903902+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_jeti_setup-ogyrniah/report.json",
+      "report_sha256": "69ade84b066b80d3697e570596494258d35df65999722156d617b6dbd0b2c07e",
+      "log_sha256": "7b98c9f52162eb25fdc9acab3ea04d766b50a79fbb1c99f76f2b240dd37ca15f",
+      "last_log_line": "PASS JETI setup: all checks"
+    },
+    {
+      "script": "res://tests/test_radio_menu.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:45:21.476849+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/radio-identity-sparse-4tm39tfg/report.json",
+      "report_sha256": "fdf2ab3e2b4ffeab93efee5d51a42936e449c7cf17faa7fa9795ecf012553f19",
+      "log_sha256": "84bb4b5a75442fddeeb230b177dd53860e5229108491446029924ad485d0b24d",
+      "last_log_line": "Radio menu: 180 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_radio_menu_delivery.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:26:22.900832+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_radio_menu_delivery-rnvipm5i/report.json",
+      "report_sha256": "9428fda1c8aa3d94a622de1e371ea3b000bb8fdc42542f23914683e46b7ca7ce",
+      "log_sha256": "65c8df05c3f05cf8d91eb8d311b4dee6f4ef1aebd38838845029bc63b9cca2f3",
+      "last_log_line": "Radio menu delivery: 19 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_radio_menu_journey.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:44:54.820766+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/test_radio_menu_journey-s67gpy1g/report.json",
+      "report_sha256": "b5dd133412819fc2acafcede5dda39e9a7abe44492949fc120d04c98ff24b858",
+      "log_sha256": "1b08221c97d14a3fcdb3c252206d509a3139d6e2153122dc81fa151410282f7d",
+      "last_log_line": "Radio menu journey: 44/44 checks passed"
+    },
+    {
+      "script": "res://tests/test_radio_menu_service.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:45:22.364358+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/service-identity-sparse-1hgkefl6/report.json",
+      "report_sha256": "c673cc6e6b69538dc0658f4d4666b4040b10bdef0b26897bab2caf42280d5119",
+      "log_sha256": "c0453c18a065a9222c403bdae75f59f066c37571d8d8682a40816bbc263daef2",
+      "last_log_line": "Radio menu service: 68 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_radio_menu_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:47:31.660579+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/sparse-setup-final-mj9zrjmy/report.json",
+      "report_sha256": "e22d7f5b2d47587bf2dd07fcc825c8d93c6b1d33fe2de275abaf62d3ea4d61a7",
+      "log_sha256": "d0601d3aa4a822ce305787bff223c45749617bc951ae0bffb1f61e23b912d6ab",
+      "last_log_line": "Radio menu setup: 94 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_rc_axis_history.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:22.628673+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_rc_axis_history-j3qgyhq0/report.json",
+      "report_sha256": "1d48f0bffe12173bd2a829f962096a08515bbb9e61c5828933b52e17beeb82ef",
+      "log_sha256": "8b2f375021c12dc63cc673a60608834d1870cbd7b65bd8b1b001d3d152b5d3e3",
+      "last_log_line": "F3b: 9252 checks, 0 failed; all 1024 axis-history combinations"
+    },
+    {
+      "script": "res://tests/test_rc_calibration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:27.375235+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_rc_calibration-tr_asprq/report.json",
+      "report_sha256": "04e85051de4ff080a99569bbe72b70408740dfacb0511975ee8afebad1c02e8f",
+      "log_sha256": "b037e0d10786d2d8fc9ed469d94cab734c8c823447c97a17bd60c35f0d0a98de",
+      "last_log_line": "39 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_rc_fault_boundaries.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:28.227421+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_rc_fault_boundaries-kvc8ywe9/report.json",
+      "report_sha256": "d2bc6b942f508a36d811bbb9963e17379fbf09dcd58924b7010160e1a996f192",
+      "log_sha256": "36341e3353b581d8c97c7b1d6ad0c795bb0f5170a7166f8918a0e6c87fadc5d5",
+      "last_log_line": "RC fault boundaries: 26/26 checks passed"
+    },
+    {
+      "script": "res://tests/test_rc_input.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:28.998415+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_rc_input-79xy1w89/report.json",
+      "report_sha256": "332d3aa00991aafc862a4f6252ae2d5eddd2b10ee9c140e37407296d0c4611d7",
+      "log_sha256": "45ea8e42dede09e49ba2ded1582d933ad818058e922b9f1e7fb350bb5248b313",
+      "last_log_line": "41 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_rc_profile_validation.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:29.875822+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_rc_profile_validation-yb_paerf/report.json",
+      "report_sha256": "8dcfdd8adeefaa1c73399d202b12703cdc8aac698972b790e48df95ea8e8ebc3",
+      "log_sha256": "d12903b9b58c22414caaf163d1db999030cf179981177e4638127714b110e246",
+      "last_log_line": "D6b-R1: 720 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_rc_rearm.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:31.879537+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_rc_rearm-hri5lwc3/report.json",
+      "report_sha256": "7d91d78bf70ef6a2300bf727180b2096771cc230ddda80eb607d71407bcbbf6e",
+      "log_sha256": "a313de2cbcb9a200c8928fbce4091ec983042416e9e267d2688d70f5bc3472ad",
+      "last_log_line": "D6b-R2: 368 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_settings_ui.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:29:52.140782+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-ui-final-20261109/test_settings_ui-0mkn23jz/report.json",
+      "report_sha256": "a43d72d766236a96c5fa769ab5fe51f696c3c596f0e5275255c798861d2f3631",
+      "log_sha256": "ce731fbe7edb31a252f10f4690ec4569c50a6dc4b2462e22aeb5955baa6b9023",
+      "last_log_line": "all Settings checks passed"
+    },
+    {
+      "script": "res://tests/test_smoke_aux.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:32.932182+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "report": "tmp/controller-audit-final-20261109/test_smoke_aux-nq2aiyy0/report.json",
+      "report_sha256": "c6366f475f508a88b1b8375b9c432f1d902368d8501539bd6b4bea6707892072",
+      "log_sha256": "2468a419ccc1e42e84cffa261b43f65961895d6c180a96bb62a7c9b7612eb027",
+      "last_log_line": "SM-03/04: 60 checks, 0 failed"
+    },
+    {
+      "script": "res://tests/test_ui_input.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:25:33.798777+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_ui_input-f5b7mqe5/report.json",
+      "report_sha256": "d29504de5f2ac97e821c4476264f68ca1a60c7a551946781fbef74b0b794f428",
+      "log_sha256": "2f33e261d9770b27368bba4408cb00340156054fbb3fbe4ca71c0fa204db03bc",
+      "last_log_line": "all UI input checks passed"
+    },
+    {
+      "script": "res://tests/test_ui_language.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:30:53.749632+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-ui-final-20261109/test_ui_language-6n823hf5/report.json",
+      "report_sha256": "2666c6be47c2cac6e712b25d2f3d9fd5dc0b5d716b259cf5a2ee0780a09c9a69",
+      "log_sha256": "79a129d88740f62076c9e5e98a206e1411ec0be2b61e58eb27c361bbb5c46de6",
+      "last_log_line": "all UI language checks passed"
+    },
+    {
+      "script": "res://tests/test_ui_pause.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:26:31.308145+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_ui_pause-a9gviwtt/report.json",
+      "report_sha256": "5887cf77e55f18da4b5e9d9a097949bd3fe17c820031544293fabc8e76461472",
+      "log_sha256": "ede6d3385422ca3bf10b77893e9e75fe0298204abb51519b11b1857d8219822f",
+      "last_log_line": "all UI pause checks passed"
+    },
+    {
+      "script": "res://tests/test_ui_quit.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:27:24.160751+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261109/test_ui_quit-xiiw42hk/report.json",
+      "report_sha256": "4c27bfcc1f6b7cdd81a552e0f29719a70acffec8abee0b341c0a2cbbc1e7a8ed",
+      "log_sha256": "65f9e382cbc8f044385470322854efb5c8783e2fe0d5e7c8b65c11e88ec41f5e",
+      "last_log_line": "UI quit: 0 failed"
+    },
+    {
+      "script": "res://tests/test_ui_screen_stack.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:30:21.642258+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-ui-final-20261109/test_ui_screen_stack-xcdfjv7c/report.json",
+      "report_sha256": "003b464b9f84d27131adfac774a02e0f77c5a7d81895fe8711029487088bd653",
+      "log_sha256": "4e480b41e2187596ea7c9c88cc2cb40c5ffc9b08236d43d1d088a6d4b418c974",
+      "last_log_line": "all UI screen stack checks passed"
+    },
+    {
+      "script": "res://tests/test_ui_settings_integration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T13:30:00.369752+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-ui-final-20261109/test_ui_settings_integration-wj7wskc_/report.json",
+      "report_sha256": "f79c71fc0bc7f3738eb1bb1defb35c8b434572761efe4c7bbed2fff58ca87526",
+      "log_sha256": "fec87c717230fca8a026c78f7fe12d6ac23c07b5f765c0c9ec9e35d6f5060039",
+      "last_log_line": "all Settings integration checks passed"
+    },
+    {
+      "script": "res://ui/controller_setup.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:47:16.704251+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-sparse-20261109/final-ui_controller_setup.gd-i33_6x4h/report.json",
+      "report_sha256": "fd1e07c44db979d98a6557ca33e91fc0c8cb20364075093a9083f5dbe58e0d74",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://ui/help_screen.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:52.263637+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-ui_help_screen.gd-wsfderqj/report.json",
+      "report_sha256": "9bbde17b98af072769567604060f9a0f088f520fa46e4c3c81c32e823001b7f9",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://ui/overlays_dialog.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:52.908266+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-ui_overlays_dialog.gd-yzihkcnt/report.json",
+      "report_sha256": "f2115f33d1fe154cda267e9db8f9092f1ac2cd508b97885dd91f8bb9f7666c19",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://ui/radio_menu_input.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:50.510689+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-ui_radio_menu_input.gd-j2z4st7y/report.json",
+      "report_sha256": "7df3f6e28baa25fbdd93858d7473ac16f4101b140e3e81764d1a8a96da3607ec",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://ui/radio_menu_setup.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:51.078089+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-ui_radio_menu_setup.gd-mpe8voao/report.json",
+      "report_sha256": "d1313928fa984465255a042fa38e7d7c303c4342de17b8c95f59323d58d75068",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    },
+    {
+      "script": "res://ui/ui_input.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T13:33:51.717173+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parse-final-20261109/parse-ui_ui_input.gd-6s12_wkp/report.json",
+      "report_sha256": "931dacfb894e718d164a99a9e34ef09372d0a772395fee90e2bdf7615bcec8de",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "last_log_line": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org"
+    }
+  ],
+  "source_hashes": {
+    "app/app_root.gd": "b52508ed395466c34d9573d393f1b7626bbe74d5c239dc9afa2574f2acb435c7",
+    "app/i18n/de.po": "70b2769366cf5473c123c9cd912c67f924a92f93b13e482b7b21e2e72f97a442",
+    "app/i18n/es.po": "cf3297193441b8a92b7ae92ff81bc1eadc3c76c853b7ce10eb03751d1e4cc4cf",
+    "app/i18n/fr.po": "11f2c755e626a0a111a413a3ab2206e81fea9fe1b85758dcd70ffd1c474053b7",
+    "app/i18n/it.po": "ce10b2caa039e88ba5ac035aff253ae5c6db989b0457384eeb3b6dfa3a859b02",
+    "app/i18n/ja.po": "2c4e357acbc95e242281044af1c864943b64408389754c5c73cb2232a0396f70",
+    "app/i18n/pt_BR.po": "9e290a4e11b092f17abfd62afb0a39f1f84afb393fbb6099c3fa1ed7b22342d6",
+    "app/i18n/ru.po": "12a4e1b450b4d37f32774b8622820381efe631d8a96b49b82a5959e2c6a8c6e5",
+    "app/i18n/zh_Hans.po": "8639a3b59a8e5b0a24a0e00c6cd0875a400521b6833384a344f8a2377c8420cd",
+    "app/input/controller_actions.gd": "80a7ffc1ec580e16c09e17200cde88a1c80bb1dc78f68717f523ace8a9b8107f",
+    "app/input/controller_diagnostics.gd": "cd35a863fae7bf64dcc81d2218b37649ec68b6893bcf4e66a370a9d7cf046185",
+    "app/input/controller_diagnostics.gd.uid": "1e60814452897afd57b0ee02dce1ad855a7d683e882433fc5869d6d42c8f2fe1",
+    "app/input/controller_profile.gd": "d5c4d4c1e9c1398a16b4c565667a4e3b29c6c3477cf553863b55d5322a66b39d",
+    "app/input/controller_profile_store.gd": "3ea5cf51ecbef62ae5ab9e037a3d01ab92484ac3fa92f4a8c8f738e11be4d2d6",
+    "app/input/controller_service.gd": "dbf3f59061b7acb6365d9a5ad5f7825c52d9e8838e28b1dc7526c11da685551d",
+    "app/input/radio_menu.gd": "7ad01a984120a594dc6b26e40bdabdca6bc6ce7744077d837809a66f1f5d2d41",
+    "app/input/radio_menu.gd.uid": "97664ae770d556d0bd86c167b614f70d848bb329b5db66e866ee7aca809229c3",
+    "app/tests/test_controller_diagnostics.gd": "b137b662b975825509bffd1cb96983bb24eaa4ead8484ed3919dbaf943bf5b93",
+    "app/tests/test_controller_diagnostics.gd.uid": "d3cf7febbe396bcdd2453343c8f73ecc1106c542afd16488dbb35bbf2af6c6f7",
+    "app/tests/test_controller_edge_continuity.gd": "5d6d6fe604bdb244961557281b507902259e8bfc08e5b68acfe2caabbd7679f4",
+    "app/tests/test_controller_setup.gd": "03d4b877b188bc9a457c4b61eebdd6acb0d718ce38f3b43bb826b9c33d0f23e9",
+    "app/tests/test_radio_menu.gd": "1dfb71a614f27a9c5fd41edf73387b6ab82c76fa88f47fb8a731b3dd789a8205",
+    "app/tests/test_radio_menu.gd.uid": "d431753bd8ad71602b1493d73d466dd22d88e1f1f7a8396782f2ed28365a482c",
+    "app/tests/test_radio_menu_delivery.gd": "86303e3c6914f8863be351210ef59106216d7d332162fe37e912a02b073a6799",
+    "app/tests/test_radio_menu_delivery.gd.uid": "76a6bc541769ee84d452fbe9830ab40ce3dd1d525372d89fa46e90eab8e3c447",
+    "app/tests/test_radio_menu_journey.gd": "ccd5e37f3b02f590fdb3127b511045a01600b4e4573404ac737e531d061da455",
+    "app/tests/test_radio_menu_journey.gd.uid": "221eeee6ee8a1308579c1c964f0e029bd92720f29f13ae200fd89f33c130262d",
+    "app/tests/test_radio_menu_service.gd": "1cd0918c0dfd42243e09736c4b28a4583ef2c10becb45e2f23ec7268f34d3d3d",
+    "app/tests/test_radio_menu_service.gd.uid": "8101e8dbdaac59c4e4f8546182847e4305087ecb5720b5880900b97773c4209d",
+    "app/tests/test_radio_menu_setup.gd": "af990f74775498b7528228aae76a5c588be344368b54923103f662ccb96abf27",
+    "app/tests/test_radio_menu_setup.gd.uid": "de86e1528df693e2129d3549111c657645115ebc148c79f6623460f9a64aab21",
+    "app/ui/controller_setup.gd": "86ed36103ad31d02de697bec29e6ca88a83772799c37cf2f37d7c90b33a8592b",
+    "app/ui/help_screen.gd": "5ba41d64e2b947d9517ebe3d5c3f616e7745b64396987a89aecac385c1e867dd",
+    "app/ui/overlays_dialog.gd": "1f3234653712f69b10c1df75b91c77c3f2d103988ae0625f0d47136ea913359d",
+    "app/ui/radio_menu_input.gd": "7cd0c54c800463c48aa7f97e2b651e17dc8d1311ba4da55016a939d4bbfba7dd",
+    "app/ui/radio_menu_input.gd.uid": "51b7d2eb072443003ba4aee4fa010767e361939f333a058888bdeaa64ff5cccb",
+    "app/ui/radio_menu_setup.gd": "cd4e1390f4decc18073de3c064fbd2aa57602ce54de74bde5f3975b2a0a363e3",
+    "app/ui/radio_menu_setup.gd.uid": "172a9aee563a0d6b76505076441a1f2a7289e7843f57477c77693c211d101a2c",
+    "app/ui/ui_input.gd": "8204f534723a196d8d9109e092f284c65a510cc97d1cf1d3dffd476b041ab6d9"
+  },
+  "source_digest": "b1f2ddb203f9626e11d81fa028943d63c33cc43e25e0bf165667914c43f2439e",
+  "visual_review": {
+    "path": "tmp/radio-menu-review-20261109",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "renderer": "OpenGL Compatibility, NVIDIA GeForce RTX 3090, driver 617.42",
+    "languages": [
+      "en",
+      "es"
+    ],
+    "text_scale": [
+      1.0,
+      2.0
+    ],
+    "device": "explicit synthetic visual fixture; no hardware qualification",
+    "files": {
+      "tmp/radio-menu-review-20261109/controls-en.png": "eb6931d4769e64110fe2b2794a2f1c9cd6996d873a5a4d9b5f25d6c20b04e101",
+      "tmp/radio-menu-review-20261109/controls-es-bottom.png": "9e1cc4c0c5149fc3d6e2f1e4798fa4b6182d97d04c5b15f1bf3a5a7745a23229",
+      "tmp/radio-menu-review-20261109/controls-es.png": "f49a53e065c985704bb34f27831b9b5531acc7f78c85415557fa26d5434dafdd",
+      "tmp/radio-menu-review-20261109/export-es.png": "c6963e33f6c5045a4c2609b5c5302cf9c9cb5e8281bb2e8770ca7a2d6db9c185",
+      "tmp/radio-menu-review-20261109/openrc-controller-2026-11-09T08-32-20.json": "fe834d023fbe4a8ef37f4e5ca61d2cbfd1f773ed526e64be72b199265eaf3cc1",
+      "tmp/radio-menu-review-20261109/verify-en.png": "a1c40ea35ee5351348ed46056b475e57fab4aff471a6c62b86860b1dec2f5f89",
+      "tmp/radio-menu-review-20261109/verify-es-200.png": "70ffefc8a51bc07fb0fcf9dcb877bce071a029df5ac15346d970df01c003b35e",
+      "tmp/radio-menu-review-20261109/verify-es.png": "6e00a046a42a8b2bd7ab34566ca61603f2d501f14cc1ef7c7acb934d5d243e86"
+    },
+    "native_session": "tmp/debug-bridge/20261109-082740-47870",
+    "exit": {
+      "crash": null,
+      "leaked_objects": 0
+    }
+  },
+  "diagnostic_export": {
+    "path": "tmp/radio-menu-review-20261109/openrc-controller-2026-11-09T08-32-20.json",
+    "identifiers_included": false,
+    "limits": "Synthetic device; no raw events observed in this capture. Development BuildInfo lacks an embedded commit; source_hashes above identify the local implementation."
+  },
+  "smoke": {
+    "path": "tmp/debug-bridge/20261109-083328-47870",
+    "ok": true,
+    "steps": 52,
+    "monkey_steps": 146,
+    "failed": [],
+    "launcher_exit_code": 0,
+    "leaked_objects_at_exit": 0,
+    "limits": "Headless software routing, bounded UI fuzz and three fly/Home soak cycles; hitches under competing checks are not performance qualification."
+  },
+  "open_qualification": [
+    "Physical radios, firmware, native USB/Bluetooth and RF-loss routes",
+    "Exported-package and native Linux/macOS acceptance",
+    "Physical latency, handling realism and target-hardware performance",
+    "Required full CI gates"
+  ]
+}

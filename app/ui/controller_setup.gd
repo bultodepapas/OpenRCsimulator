@@ -5,16 +5,21 @@ const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
+const RcInput := preload("res://input/rc_input.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
 const ActionAxisCapture := preload("res://input/action_axis_capture.gd")
+const RadioMenu := preload("res://input/radio_menu.gd")
+const ControllerDiagnostics := preload("res://input/controller_diagnostics.gd")
+const InputReportData := preload("res://input/input_report_data.gd")
 
 signal close_requested
 signal profile_saved(profile: Dictionary)
 signal draft_changed
 signal calibration_requested
+signal menu_verification_requested
 
 const LAYER := 12
 const CAPTURE_AXIS_RELEASE_THRESHOLD := 0.35
@@ -71,6 +76,7 @@ var glyph_family_help_label: Label
 ## Optional test seam. When set, previews use these typed inputs instead of native Input polling.
 var axis_preview_provider: Callable
 var button_preview_provider: Callable
+var diagnostic_capabilities: Dictionary = {}
 
 var action_filter: OptionButton
 var _settings_panel: PanelContainer
@@ -109,6 +115,15 @@ var _draft_profile: Dictionary = {}
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
 var _calibration_origins: Dictionary = {} # draft context -> connection that supplied its ranges
+var _menu_verification_origins: Dictionary = {}
+var verify_menus_button: Button
+var disable_menus_button: Button
+var _menu_help: Label
+var _diagnostics_dialog: FileDialog
+var _diagnostics_data: RefCounted
+var _diagnostics_connection := ""
+var _diagnostics_raw := PackedFloat64Array()
+var _diagnostics_seen: Array[bool] = []
 var _reused_radio_mappings: Dictionary = {} # explicit Duplicate/legacy choice, never inferred from matching axes
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
@@ -159,6 +174,13 @@ func _init() -> void:
 	_build()
 	_screen.visibility_changed.connect(_refresh_visible_preview)
 	visibility_changed.connect(_refresh_visible_preview)
+
+
+func _observe_popup_diagnostics(event: InputEvent) -> void:
+	if not is_inside_tree(): return
+	var focused := Window.get_focused_window()
+	if focused != null and focused != get_tree().root and focused.visible:
+		_observe_diagnostics(event)
 
 
 ## The owner injects shared objects before adding this CanvasLayer to the tree.
@@ -248,6 +270,55 @@ func selected_flight_device_id() -> int:
 
 func selected_ui_device_id() -> int:
 	return _draft_ui_device_id
+
+
+func apply_menu_verification(profile: Dictionary, device_id: int, generation: int) -> bool:
+	if str(profile.get("profile_id", "")) != str(_draft_profile.get("profile_id", "")) \
+		or _draft_flight_device_id != device_id or not _calibration_connection_matches(device_id, generation) \
+		or not RadioMenu.is_verified(profile) or RadioMenu.mapping_fingerprint(profile) != RadioMenu.mapping_fingerprint(_profile_candidate()) \
+		or RadioMenu.action_fingerprint(profile) != RadioMenu.action_fingerprint(_profile_candidate()):
+		_set_status(tr("Menu verification no longer matches this radio. Verify again; the draft is unchanged."), true)
+		return false
+	_draft_profile = profile.duplicate(true)
+	_draft_profile = _associate_candidate(_draft_profile)
+	_invalidate_menu_evidence()
+	_menu_verification_origins[str(profile.profile_id)] = {"id": device_id, "generation": generation,
+		"mapping": RadioMenu.mapping_fingerprint(profile), "actions": RadioMenu.action_fingerprint(profile)}
+	_draft_ui_device_id = device_id
+	_refresh_devices()
+	_update_menu_controls()
+	_remember_current_draft()
+	_set_status(tr("Radio menu controls are verified in the draft. Save to use this radio for menus."), false)
+	draft_changed.emit()
+	return true
+
+
+func menu_verification_lease(profile: Dictionary) -> Dictionary:
+	var origin: Dictionary = _menu_verification_origins.get(str(profile.get("profile_id", "")), {})
+	if origin.is_empty() or int(origin.id) != _draft_flight_device_id or not _calibration_connection_matches(int(origin.id), int(origin.generation)) \
+		or origin.mapping != RadioMenu.mapping_fingerprint(profile) or origin.actions != RadioMenu.action_fingerprint(profile): return {}
+	return origin.duplicate(true)
+
+
+## Only a challenge completed on this connection permits a current-sample handoff.
+func menu_seed_samples(profile: Dictionary) -> Dictionary:
+	var lease := menu_verification_lease(profile)
+	if lease.is_empty(): return {}
+	var axes := PackedFloat64Array()
+	for axis: int in RadioMenu.AXES:
+		var value: Variant = axis_preview_provider.call(int(lease.id), axis) if axis_preview_provider.is_valid() \
+			else Input.get_joy_axis(int(lease.id), axis)
+		if typeof(value) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(value)) or absf(float(value)) > 1.0: return {}
+		axes.append(float(value))
+	var buttons := {}
+	for action: String in RadioMenu.COMMANDS:
+		var binding: Dictionary = profile.actions[action]
+		if binding.type != "button": continue
+		var value: Variant = button_preview_provider.call(int(lease.id), int(binding.button)) if button_preview_provider.is_valid() \
+			else Input.is_joy_button_pressed(int(lease.id), int(binding.button))
+		if typeof(value) != TYPE_BOOL: return {}
+		buttons[int(binding.button)] = value
+	return {"axes": axes, "buttons": buttons, "lease": lease}
 
 
 static func _radio_mapping(profile: Dictionary) -> Dictionary:
@@ -365,8 +436,8 @@ func _build() -> void:
 	ui_device_picker.item_selected.connect(_on_ui_device_selected)
 	_add_field(roles, "Flight controller", flight_device_picker)
 	_add_field(roles, "Menu controller", ui_device_picker)
-	page.add_child(_label("Use a gamepad for menus. Keyboard and mouse are always available.", "SecondaryLabel", true))
-	device_lifetime_help = _label("Saved profiles persist. Device selections apply for this app session; startup selects devices automatically.", "SecondaryLabel", true)
+	page.add_child(_label("Use a gamepad or a verified radio for menus. Keyboard and mouse are always available.", "SecondaryLabel", true))
+	device_lifetime_help = _label("Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session.", "SecondaryLabel", true)
 	device_lifetime_help.name = "ControllerDeviceLifetime"
 	page.add_child(device_lifetime_help)
 
@@ -377,6 +448,20 @@ func _build() -> void:
 	legacy_import_button = _button("Recover legacy profile…")
 	legacy_import_button.pressed.connect(_import_legacy_profiles)
 	role_actions.add_child(legacy_import_button)
+	var navigation_actions := HFlowContainer.new()
+	navigation_actions.add_theme_constant_override("h_separation", 8)
+	navigation_actions.add_theme_constant_override("v_separation", 8)
+	var export_button := _button("Export diagnostics…", "", "ExportControllerDiagnostics")
+	export_button.pressed.connect(_open_diagnostics_export)
+	export_button.tooltip_text = tr("Export the current draft and input observed on this screen. Device identifiers are redacted.")
+	navigation_actions.add_child(export_button)
+	verify_menus_button = _button("Verify radio menus…", "", "VerifyRadioMenus")
+	verify_menus_button.pressed.connect(func() -> void: menu_verification_requested.emit())
+	navigation_actions.add_child(verify_menus_button)
+	disable_menus_button = _button("Disable radio menus", "", "DisableRadioMenus")
+	disable_menus_button.pressed.connect(_disable_radio_menus)
+	navigation_actions.add_child(disable_menus_button)
+	_menu_help = _label("", "SecondaryLabel", true)
 	calibrate_button = _button("Calibrate selected radio")
 	calibrate_button.name = "CalibrateSelectedRadio"
 	calibrate_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -402,6 +487,8 @@ func _build() -> void:
 	calibration_scope_help.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	calibration_scope_help.visible = false
 	page.add_child(calibration_scope_help)
+	page.add_child(navigation_actions)
+	page.add_child(_menu_help)
 	legacy_picker = _option("Legacy profile")
 	legacy_picker.visible = false
 	legacy_picker.item_selected.connect(_on_legacy_selected)
@@ -1146,6 +1233,7 @@ func _device_metadata_tooltip(device: Dictionary) -> String:
 
 
 func _ready() -> void:
+	get_tree().root.window_input.connect(_observe_popup_diagnostics)
 	if registry == null:
 		_set_status(tr("Controller services are not available."), true)
 		return
@@ -1232,6 +1320,7 @@ func _refresh_visible_preview() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	_observe_diagnostics(event)
 	if event is InputEventPanGesture or event is InputEventScreenDrag \
 		or event is InputEventMouseButton and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
 		var scroll := _section_body.get_parent() as ScrollContainer
@@ -1391,7 +1480,7 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 	for device in _devices:
 		var id := int(device.get("id", -1))
 		var kind := str(device.get("kind", "joystick"))
-		if id < 0 or (menu_only and kind == "radio"):
+		if id < 0:
 			continue
 		var name := str(device.get("name", device.get("raw_name", tr("Controller %d") % id)))
 		if _is_jeti_device(device):
@@ -1445,11 +1534,29 @@ func _on_ui_device_selected(index: int) -> void:
 func _is_menu_device_eligible(device: Dictionary) -> bool:
 	if device.is_empty() or not bool(device.get("connected", true)):
 		return false
+	if _radio_menu_profile_for_device(device).size() > 0: return true
+	if int(device.get("id", -1)) == _draft_flight_device_id and _draft_profile.get("kind", "") == "radio": return false
+	if profile_store != null and profile_store.has_method("match_profile"):
+		var saved: Dictionary = profile_store.match_profile(device, _devices)
+		if saved.get("kind", "") == "radio": return false
 	if bool(device.get("ambiguous", false)) or str(device.get("kind", "")) == "radio":
 		return false
 	if str(device.get("kind", "")) == "gamepad" and bool(device.get("known", false)):
 		return true
 	return _has_saved_gamepad_profile(device)
+
+
+func _radio_menu_profile_for_device(device: Dictionary) -> Dictionary:
+	var id := int(device.get("id", -1))
+	var profile := {}
+	if id == _draft_flight_device_id and RadioMenu.is_verified(_profile_candidate()): profile = _profile_candidate()
+	elif profile_store != null and profile_store.has_method("match_profile"):
+		profile = profile_store.match_profile(device, _devices)
+	if not RadioMenu.is_verified(profile): return {}
+	# A serial-qualified association may still be unique within a duplicated family.
+	var association: Dictionary = profile.get("association", {})
+	if bool(device.get("ambiguous", false)) and str(association.get("serial_number", "")).is_empty(): return {}
+	return profile
 
 
 func _has_saved_gamepad_profile(device: Dictionary) -> bool:
@@ -1513,6 +1620,7 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	_reset_validation()
 	var previous_profile_id := str(_draft_profile.get("profile_id", ""))
 	_draft_profile = profile.duplicate(true)
+	_invalidate_menu_evidence()
 	if not context_key.is_empty():
 		_draft_context_key = context_key
 	elif _draft_context_key.is_empty() or previous_profile_id != str(_draft_profile.get("profile_id", "")):
@@ -1538,6 +1646,7 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	_update_aux_controls()
 	_update_action_controls()
 	_update_preview()
+	_update_menu_controls()
 	draft_changed.emit()
 
 
@@ -2316,8 +2425,11 @@ func _update_action_controls() -> void:
 		var axis_button: Button = _axis_capture_buttons[action_id]
 		axis_button.text = tr("Learn axis")
 		axis_button.visible = str(_draft_profile.get("kind", "")) in ["radio", "joystick"] \
-			and str(definition.context) in ["flight", "both"]
+			and (str(definition.context) in ["flight", "both"] or (_draft_profile.get("kind", "") == "radio" and action_id in ["accept", "back"]))
 		axis_button.disabled = _is_capture_active()
+		var radio_navigation: bool = _draft_profile.get("kind", "") == "radio" and action_id.begins_with("navigate_")
+		capture_button.disabled = radio_navigation
+		capture_button.tooltip_text = tr("Radio menu movement uses the calibrated roll and pitch controls.") if radio_navigation else ""
 		label_control.text = tr(str(definition.label))
 		if action_id == "rates_toggle":
 			label_control.tooltip_text = tr("Airplane dual rates: press the left stick (L3) on a gamepad, or remap Dual rates below for a joystick. Each press alternates normal and high rates. Existing assignments take priority. Radio profiles use the transmitter's rates.")
@@ -2326,6 +2438,7 @@ func _update_action_controls() -> void:
 		var fallback_text := ControllerActions.binding_text(binding)
 		var prompt_text := str(prompt.get("text", fallback_text))
 		binding_control.text = prompt_text if not prompt_text.is_empty() else fallback_text
+		if radio_navigation: binding_control.text = tr("Calibrated roll / pitch")
 		var texture_path := str(prompt.get("texture_path", ""))
 		glyph_control.texture = _get_prompt_texture(texture_path)
 		glyph_control.visible = glyph_control.texture != null
@@ -2336,6 +2449,7 @@ func _update_action_controls() -> void:
 		clear_button.text = tr("Clear")
 		var clear_had_focus := clear_button.has_focus()
 		clear_button.disabled = action_id in ["back", "pause"] or binding.get("type", "unbound") == "unbound"
+		if radio_navigation: clear_button.disabled = true
 		clear_button.focus_mode = Control.FOCUS_NONE if clear_button.disabled else Control.FOCUS_ALL
 		if clear_had_focus and clear_button.disabled and capture_button.is_visible_in_tree():
 			capture_button.grab_focus()
@@ -2397,6 +2511,7 @@ func _get_prompt_texture(texture_path: String) -> Texture2D:
 
 
 func _start_capture(action_id: String, button: Button) -> void:
+	if _draft_profile.get("kind", "") == "radio" and action_id.begins_with("navigate_"): return
 	if _is_capture_active(): _capture_done()
 	# Selecting even the current section resets its scroll and focuses its tab.
 	# A row edit is not navigation: keep its viewport and keyboard/gamepad focus.
@@ -2526,7 +2641,8 @@ func _capture_done() -> void:
 func _start_axis_capture(action_id: String, button: Button) -> void:
 	if _draft_flight_device_id < 0 or _is_capture_active(): return
 	var definition := ControllerActions.action_definition(action_id)
-	if definition.get("context", "menu") not in ["flight", "both"]: return
+	if definition.get("context", "menu") not in ["flight", "both"] \
+		and not (_draft_profile.get("kind", "") == "radio" and action_id in ["accept", "back"]): return
 	_capturing_action = action_id
 	_capturing_device_id = _draft_flight_device_id
 	_capturing_generation = int(registry.connection_generation(_capturing_device_id))
@@ -2584,24 +2700,117 @@ func _sample_axis_capture(delta: float) -> void:
 		_set_status(tr("Return the switch to OFF and hold it there to finish learning."), false)
 
 
+func _update_menu_controls() -> void:
+	if verify_menus_button == null: return
+	var radio: bool = _draft_profile.get("kind", "") == "radio"
+	var connected := bool(_device_for_id(_draft_flight_device_id).get("connected", false))
+	var verified := RadioMenu.is_verified(_profile_candidate())
+	verify_menus_button.visible = radio
+	verify_menus_button.disabled = not connected or _is_capture_active() or not radio_mapping_verified(_draft_profile) \
+		or not RadioMenu.is_verified(RadioMenu.verified_profile(_draft_profile))
+	disable_menus_button.visible = radio and verified
+	disable_menus_button.disabled = _is_capture_active()
+	_menu_help.visible = radio
+	_menu_help.text = tr("Radio menus verified. Save to keep this menu controller.") if verified else \
+		tr("Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard.")
+
+
+func _invalidate_menu_evidence() -> void:
+	if not _draft_profile.has("ui_navigation") or RadioMenu.is_verified(_associate_candidate(_draft_profile.duplicate(true))): return
+	_draft_profile.erase("ui_navigation")
+	_menu_verification_origins.erase(str(_draft_profile.get("profile_id", "")))
+	if _draft_ui_device_id == _draft_flight_device_id:
+		_draft_ui_device_id = -1
+		_fill_device_picker(ui_device_picker, true, -1)
+	_set_status(tr("Menu control verification expired. Verify again before selecting this radio for menus."), false)
+
+
+func _disable_radio_menus() -> void:
+	_draft_profile.erase("ui_navigation")
+	_menu_verification_origins.erase(str(_draft_profile.get("profile_id", "")))
+	if _draft_ui_device_id == _draft_flight_device_id: _draft_ui_device_id = -1
+	_refresh_devices()
+	_update_menu_controls()
+	_draft_validation_changed()
+	_set_status(tr("Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."), false)
+
+
+func _observe_diagnostics(event: InputEvent) -> void:
+	if not (event is InputEventJoypadMotion or event is InputEventJoypadButton) or event.device != _draft_flight_device_id: return
+	_ensure_diagnostics()
+	if _diagnostics_data == null: return
+	if event is InputEventJoypadMotion and event.axis >= 0 and event.axis < RadioMenu.AXES:
+		_diagnostics_raw[event.axis] = event.axis_value
+		_diagnostics_seen[event.axis] = true
+	if _diagnostics_data == null: return
+	var now := Time.get_ticks_usec()
+	if event is InputEventJoypadMotion: _diagnostics_data.motion(event.device, int(event.axis), event.axis_value, now)
+	else: _diagnostics_data.button_event(event.device, int(event.button_index), event.pressed, now)
+
+
+func _ensure_diagnostics() -> void:
+	var info := _device_for_id(_draft_flight_device_id)
+	if info.is_empty() or not bool(info.get("connected", false)): return
+	var generation := int(registry.connection_generation(_draft_flight_device_id)) if registry.has_method("connection_generation") else 0
+	var identity := "%d:%d" % [_draft_flight_device_id, generation]
+	if _diagnostics_data != null and identity == _diagnostics_connection: return
+	_diagnostics_data = InputReportData.new()
+	_diagnostics_data.connect_device(_draft_flight_device_id, info, Time.get_ticks_usec())
+	_diagnostics_connection = identity
+	_diagnostics_raw.resize(RadioMenu.AXES)
+	_diagnostics_raw.fill(0.0)
+	_diagnostics_seen.resize(RadioMenu.AXES)
+	_diagnostics_seen.fill(false)
+
+
+func diagnostics_report() -> Dictionary:
+	var observations := {}
+	var info := _device_for_id(_draft_flight_device_id)
+	if _diagnostics_data != null:
+		var generation := int(registry.connection_generation(_draft_flight_device_id)) if registry.has_method("connection_generation") else 0
+		if _diagnostics_connection == "%d:%d" % [_draft_flight_device_id, generation]:
+			var records: Array = _diagnostics_data.snapshot()
+			if records.size() == 1:
+				observations = records[0]
+				observations["current_samples"] = {"raw_axes": _diagnostics_raw, "observed": _diagnostics_seen}
+	if not diagnostic_capabilities.is_empty(): observations["activity_capabilities"] = diagnostic_capabilities.duplicate()
+	var report := ControllerDiagnostics.build(info, _profile_candidate(), observations)
+	report["profile_scope"] = "controller_setup_draft"
+	return report
+
+
+func _open_diagnostics_export() -> void:
+	if _is_capture_active():
+		_set_status(tr("Finish or cancel remapping before exporting diagnostics."), true)
+		return
+	if is_instance_valid(_diagnostics_dialog):
+		_diagnostics_dialog.popup_centered_ratio(0.7)
+		return
+	_diagnostics_dialog = FileDialog.new()
+	_diagnostics_dialog.name = "ControllerDiagnosticsExport"
+	_diagnostics_dialog.title = tr("Export controller diagnostics")
+	_diagnostics_dialog.use_native_dialog = false
+	_diagnostics_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	_diagnostics_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	_diagnostics_dialog.add_filter("*.json", tr("Controller diagnostic report"))
+	_diagnostics_dialog.current_file = "openrc-controller-%s.json" % Time.get_datetime_string_from_system().replace(":", "-")
+	_diagnostics_dialog.file_selected.connect(_export_diagnostics_to)
+	add_child(_diagnostics_dialog)
+	_diagnostics_dialog.popup_centered_ratio(0.7)
+
+
+func _export_diagnostics_to(path: String) -> void:
+	var result := ControllerDiagnostics.write_new(path, diagnostics_report())
+	if result == OK:
+		_set_status(tr("Controller diagnostics exported with device identifiers redacted."), false)
+	else:
+		_set_status(tr("Diagnostics were not exported (%s). Choose a new filename in a writable folder.") % error_string(result), true)
+
+
 func _profile_candidate() -> Dictionary:
 	var candidate := _draft_profile.duplicate(true)
 	candidate["name"] = profile_name_edit.text.strip_edges()
-	var selected_device := _device_for_id(_draft_flight_device_id)
-	if not selected_device.is_empty():
-		var association: Dictionary = candidate.get("association", {}).duplicate(true)
-		var serial := str(selected_device.get("serial_number", ""))
-		var guid := str(selected_device.get("guid", ""))
-		var vendor_id := int(selected_device.get("vendor_id", 0))
-		var product_id := int(selected_device.get("product_id", 0))
-		if not serial.is_empty():
-			association["serial_number"] = serial
-		if not guid.is_empty() and vendor_id > 0 and product_id > 0:
-			association["guid"] = guid
-			association["vendor_id"] = vendor_id
-			association["product_id"] = product_id
-		if not serial.is_empty() or (not guid.is_empty() and vendor_id > 0 and product_id > 0):
-			candidate["association"] = association
+	candidate = _associate_candidate(candidate)
 	candidate["actions"] = _base_actions.duplicate(true)
 	if str(candidate.get("kind", "")) == "joystick":
 		candidate["configured"] = joystick_enabled.button_pressed
@@ -2609,6 +2818,24 @@ func _profile_candidate() -> Dictionary:
 	for action_id: Variant in _action_bindings:
 		if not inherited_actions.has(action_id) or _action_bindings[action_id] != inherited_actions[action_id]:
 			candidate.actions[str(action_id)] = _action_bindings[action_id].duplicate(true)
+	if candidate.has("ui_navigation") and not RadioMenu.is_verified(candidate): candidate.erase("ui_navigation")
+	return candidate
+
+
+func _associate_candidate(candidate: Dictionary) -> Dictionary:
+	var selected_device := _device_for_id(_draft_flight_device_id)
+	if not selected_device.is_empty():
+		var serial := str(selected_device.get("serial_number", ""))
+		var guid := str(selected_device.get("guid", ""))
+		var vendor_id := int(selected_device.get("vendor_id", 0))
+		var product_id := int(selected_device.get("product_id", 0))
+		# Match the service's activation representation before verification, even
+		# when a backend exposes only a serial or legacy descriptor identity.
+		var association := {"legacy_device_key": RcInput.key_for(_draft_flight_device_id, selected_device),
+			"guid": guid, "vendor_id": vendor_id, "product_id": product_id}
+		if not serial.is_empty():
+			association["serial_number"] = serial
+		candidate["association"] = association
 	return candidate
 
 
@@ -2626,6 +2853,11 @@ func _save_profile(close_on_success := true) -> bool:
 		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
 		return false
 	var candidate := _profile_candidate()
+	var menu_origin := menu_verification_lease(candidate)
+	if RadioMenu.is_verified(candidate) and not _menu_verification_origins.is_empty() \
+		and _menu_verification_origins.has(str(candidate.profile_id)) and menu_verification_lease(candidate).is_empty():
+		_set_status(tr("The radio connection changed. Verify menu controls again before saving."), true)
+		return false
 	if not radio_mapping_verified(candidate):
 		_set_status(tr("Calibrate this new radio before saving. A device name cannot verify its channel mapping."), true)
 		return false
@@ -2643,6 +2875,15 @@ func _save_profile(close_on_success := true) -> bool:
 		_set_status(tr("Profile was not saved: %s") % str(result.get("error", tr("storage error"))), true)
 		return false
 	var saved: Dictionary = result.get("profile", candidate).duplicate(true)
+	# ConfigFile canonicalizes floats. Carry the same successful measurements to
+	# their committed representation only after storage and runtime both succeed.
+	if not calibration_origin.is_empty() and calibration_origin.get("mapping", {}) == _radio_mapping(candidate):
+		calibration_origin["mapping"] = _radio_mapping(saved)
+		_calibration_origins[_draft_context_key] = calibration_origin
+	if not menu_origin.is_empty():
+		menu_origin["mapping"] = RadioMenu.mapping_fingerprint(saved)
+		menu_origin["actions"] = RadioMenu.action_fingerprint(saved)
+		_menu_verification_origins[str(saved.profile_id)] = menu_origin
 	_replace_saved_profile(saved)
 	var saved_context := _profile_context_key(saved)
 	if _draft_context_key != saved_context:
@@ -2653,7 +2894,7 @@ func _save_profile(close_on_success := true) -> bool:
 			_calibration_origins[saved_context] = _calibration_origins[_draft_context_key]
 			_calibration_origins.erase(_draft_context_key)
 		_draft_context_key = saved_context
-	_draft_profile = saved.duplicate(true)
+	_set_draft_profile(saved, _draft_context_key)
 	_drafts_by_context[_draft_context_key] = saved.duplicate(true)
 	_refresh_devices()
 	profile_saved.emit(saved.duplicate(true))
@@ -2797,6 +3038,8 @@ func _reset_validation() -> void:
 
 
 func _draft_validation_changed() -> void:
+	_invalidate_menu_evidence()
+	_update_menu_controls()
 	if not _rejected_issues.is_empty():
 		_rejected_issues.clear()
 		_rejected_message = ""

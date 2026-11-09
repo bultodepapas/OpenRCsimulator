@@ -710,7 +710,7 @@ func _help_region_input(event: InputEvent) -> void:
 	var from_keyboard: bool = event is InputEventKey and event.pressed
 	var from_selected_pad: bool = (event is InputEventJoypadButton or event is InputEventJoypadMotion) \
 			and UiInput.selected_gamepad_id() >= 0 and event.device == UiInput.selected_gamepad_id()
-	if from_keyboard or from_selected_pad:
+	if from_keyboard or from_selected_pad or UiInput.is_selected_radio_action(event):
 		if event.is_action_pressed("ui_up"): direction = -1
 		elif event.is_action_pressed("ui_down"): direction = 1
 		elif from_keyboard:

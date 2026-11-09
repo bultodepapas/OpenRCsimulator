@@ -161,7 +161,8 @@ func _test_setup_draft_and_single_save() -> void:
 	var unknown_menu_index := setup.ui_device_picker.get_item_index(7)
 	_check("unknown joystick is disabled for menu navigation", unknown_menu_index >= 0 and setup.ui_device_picker.is_item_disabled(unknown_menu_index))
 	_check("ambiguous controller identity stays disabled for menu navigation", setup.ui_device_picker.get_item_index(11) >= 0 and setup.ui_device_picker.is_item_disabled(setup.ui_device_picker.get_item_index(11)))
-	_check("radio devices are excluded from menu navigation choices", setup.ui_device_picker.get_item_index(9) == -1)
+	var unverified_radio_index := setup.ui_device_picker.get_item_index(9)
+	_check("unverified radios are visible but disabled for menu selection", unverified_radio_index >= 0 and setup.ui_device_picker.is_item_disabled(unverified_radio_index))
 	setup._on_ui_device_selected(setup.ui_device_picker.get_item_index(5))
 	_check("device picker edits stay drafts until Save", registry.selected_device_id("flight") == -1 and registry.selected_device_id("ui") == -1)
 	_check("the only confirmation action is Save", setup.save_button.text == "Save" and setup.find_child("ApplyDevices", true, false) == null)
@@ -386,7 +387,7 @@ func _test_unknown_saved_gamepad_menu_gate() -> void:
 	store.profiles.append(radio_profile)
 	setup._refresh_devices()
 	var radio_profile_index := setup.ui_device_picker.get_item_index(12)
-	_check("radio-kind profiles and radio-purpose devices never gain menu navigation", setup.ui_device_picker.get_item_index(9) == -1 and radio_profile_index >= 0 and setup.ui_device_picker.is_item_disabled(radio_profile_index) and setup.ui_device_picker.is_item_disabled(setup.ui_device_picker.get_item_index(11)))
+	_check("radio profiles require menu verification before selection", setup.ui_device_picker.get_item_index(9) >= 0 and setup.ui_device_picker.is_item_disabled(setup.ui_device_picker.get_item_index(9)) and radio_profile_index >= 0 and setup.ui_device_picker.is_item_disabled(radio_profile_index) and setup.ui_device_picker.is_item_disabled(setup.ui_device_picker.get_item_index(11)))
 	setup.free()
 	await process_frame
 

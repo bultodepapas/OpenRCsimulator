@@ -37,6 +37,9 @@ const ActiveAlerts := preload("res://ui/active_alerts.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const CalibrationCard := preload("res://ui/calibration_card.gd")
 const RadioCalibrationSetup := preload("res://ui/radio_calibration_setup.gd")
+const RadioMenu := preload("res://input/radio_menu.gd")
+const RadioMenuInput := preload("res://ui/radio_menu_input.gd")
+const RadioMenuSetup := preload("res://ui/radio_menu_setup.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -208,6 +211,15 @@ var _out_of_trim_airframes: Dictionary = {}
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 var controllers: Node
+var _radio_menu_input: RefCounted
+var _radio_menu_identity: Dictionary = {}
+var _radio_menu_context: Dictionary = {}
+var _radio_menu_releases: Array[InputEventAction] = []
+var _radio_menu_ingress_connected := false
+var _radio_menu_hint: Label
+var _radio_menu_ready_once := false
+var _radio_menu_epoch := 0
+var _radio_menu_delivery_targets: Dictionary = {}
 var _controller_action_edges: Dictionary = {}
 var _controller_action_require_off: Dictionary = {}
 var _controller_action_identities: Dictionary = {}
@@ -273,6 +285,13 @@ func _ready() -> void:
 	# PT1h-R12: labels name the value controls that follow them, on every route with UI (not the diagnostic one).
 	add_child(AccessibleLabels.new())
 	UiInput.isolate_joypads() # before any menu exists (UI-01b): radio sticks never move the focus
+	# Window ingress runs before embedded popups consume raw controller events.
+	get_tree().root.window_input.connect(_observe_radio_menu_event)
+	_radio_menu_ingress_connected = true
+	get_tree().root.focus_entered.connect(func() -> void: _radio_menu_epoch += 1)
+	get_tree().root.focus_exited.connect(func() -> void: _radio_menu_epoch += 1)
+	screens.surface_opened.connect(func(_surface: Control, _id: String, _feedback: bool) -> void: _radio_menu_epoch += 1)
+	screens.surface_closed.connect(func(_id: String, _restore: bool) -> void: _radio_menu_epoch += 1)
 	if user_args.has("--vehicle=mt8-bisonte") or user_args.has("--vehicle=monster-car-2"):
 		TranslationServer.set_locale("en")
 		if user_args.size() != 1:
@@ -368,6 +387,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	_tick_radio_menu(_delta)
 	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
 	if not _home_scene_preparation_busy():
@@ -1191,7 +1211,7 @@ func _finish_controller_launch(target: Node) -> void:
 		return # a newer route or an explicit pause takes precedence over this deferred launch
 	if not Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
 		target._poll_controller(false) # readiness only: leave staged launch throttle untouched
-		if target.can_resume():
+		if target.can_resume() and _radio_menu_flight_centered():
 			HeldKeys.mask(target, _keyboard_reader)
 			target.resume()
 			return
@@ -1610,6 +1630,7 @@ func open_controls(from: Control = null) -> void:
 	var capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES
 	if flight != null and flight.has_method("controller_capabilities"):
 		capabilities = flight.controller_capabilities()
+		setup.diagnostic_capabilities = capabilities.duplicate()
 	elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
 		capabilities = ControllerActions.HELICOPTER_CAPABILITIES
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"), capabilities)
@@ -1631,10 +1652,16 @@ func open_controls(from: Control = null) -> void:
 			if pause_menu != null:
 				pause_menu.set_localized_note("Profile saved and device selections applied, but calibration could not start.")
 				pause_menu.note_label.get_parent().move_child(pause_menu.note_label, pause_menu.status_label.get_index() + 1))
+	setup.menu_verification_requested.connect(func() -> void: _open_radio_menu_verification(setup))
 	setup.profile_saved.connect(func(profile: Dictionary) -> void:
 		if ground_vehicle != null: ground_vehicle.apply_controller_selection(controllers.registry.selected_device_id("flight"))
 		_update_controller_calibration_button(setup)
-		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
+		_controller_ui_changed(controllers.registry.selected_device_id("ui"))
+		var samples: Dictionary = setup.menu_seed_samples(profile)
+		if _radio_menu_input != null and not samples.is_empty() \
+				and int(samples.lease.id) == int(_radio_menu_identity.get("id", -1)) \
+				and int(samples.lease.generation) == int(_radio_menu_identity.get("generation", 0)):
+			_radio_menu_input.seed_verified_samples(samples.axes, samples.buttons))
 	screens.push("controls", setup, from)
 	var current: Dictionary = controllers.profile_for_device(controllers.registry.selected_device_id("flight"))
 	if not current.is_empty(): setup.load_selected_profile(current)
@@ -1693,6 +1720,29 @@ func _restore_calibration_controls_focus(setup: Node) -> void:
 			return
 
 
+func _open_radio_menu_verification(setup: Node) -> void:
+	if not screens.is_top("controls") or setup._is_capture_active(): return
+	var profile: Dictionary = setup._profile_candidate()
+	if not setup.radio_mapping_verified(profile): return
+	var id: int = setup.selected_flight_device_id()
+	var generation: int = controllers.registry.connection_generation(id)
+	var wizard := RadioMenuSetup.new()
+	if not wizard.configure(controllers.registry, id, profile):
+		wizard.free()
+		return
+	wizard.completed.connect(func(verified: Dictionary) -> void:
+		if not screens.is_top("radio_menu_verification"): return
+		screens.pop()
+		setup.apply_menu_verification(verified, id, generation)
+		_restore_calibration_controls_focus.call_deferred(setup))
+	wizard.cancelled.connect(func(reason: String) -> void:
+		if not screens.is_top("radio_menu_verification"): return
+		screens.pop()
+		setup._set_status(reason, false)
+		_restore_calibration_controls_focus.call_deferred(setup))
+	if not screens.push("radio_menu_verification", wizard, setup.verify_menus_button): wizard.free()
+
+
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:
 	if controllers != null and id >= 0:
 		var profile: Dictionary = controllers.profile_for_device(id)
@@ -1710,13 +1760,188 @@ func _controller_bindings(id: int, flight_context := false) -> Dictionary:
 
 
 func _controller_ui_changed(id: int) -> void:
+	if _radio_menu_input != null:
+		_radio_menu_releases.append_array(_radio_menu_input.reset_context(true))
+	_radio_menu_input = null
+	_radio_menu_identity = {}
+	_radio_menu_context = {}
+	_radio_menu_ready_once = false
 	if ground_vehicle != null:
 		ground_vehicle._refresh_controller_ui()
 		return
-	UiInput.set_gamepad(id, _controller_bindings(id))
+	var profile: Dictionary = controllers.profile_for_device(id) if controllers != null and id >= 0 else {}
+	if RadioMenu.is_verified(profile):
+		var generation: int = controllers.registry.connection_generation(id)
+		var router := RadioMenuInput.new()
+		if router.configure(id, generation, profile):
+			_radio_menu_input = router
+			_radio_menu_identity = {"id": id, "generation": generation}
+			UiInput.set_radio(id)
+		else: UiInput.set_gamepad(-1)
+	else:
+		if controllers != null and controllers.is_ui_gamepad(id):
+			UiInput.set_gamepad(id, _controller_bindings(id))
+		else:
+			UiInput.set_gamepad(-1)
 	_clear_controller_actions(false)
 	_update_controller_home()
 	_update_controller_button_prompts()
+
+
+## Only real window events update the radio cache. Dispatch happens later, outside
+## raw-event propagation, so a nested GUI push cannot leak the original event.
+func _observe_radio_menu_event(event: InputEvent) -> void:
+	if _radio_menu_input == null: return
+	if not bool(window_focus_probe.call()): return
+	_radio_menu_input.observe(event)
+	# A popup must not hide a held Pause activation from flight's OFF gate.
+	if controllers != null and event.device == int(_radio_menu_identity.get("id", -1)) \
+			and (screens.top() != null or _exit_request_active):
+		var id: int = event.device
+		var binding: Dictionary = _controller_bindings(id).get("pause", {})
+		var on := false
+		if event is InputEventJoypadButton and binding.get("type") == "button":
+			on = event.button_index == int(binding.get("button", -1)) and event.pressed
+		elif event is InputEventJoypadMotion and binding.get("type") == "axis" and event.axis == int(binding.get("axis", -1)):
+			on = RadioMenu.axis_action_active(event.axis_value, binding, false)
+		if on: _controller_action_require_off["%d:pause" % id] = binding.duplicate(true)
+
+
+func _radio_menu_popup() -> Window:
+	var focused := Window.get_focused_window()
+	return focused if focused != null and focused != get_tree().root and focused.visible and focused.is_embedded() else null
+
+
+func _radio_menu_state() -> Dictionary:
+	var top: Node = screens.top()
+	var capturing: bool = top != null and ((top.has_method("_is_capture_active") and top._is_capture_active()) \
+		or top.has_method("owns_controller_event"))
+	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
+	var accident: bool = flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active()
+	var focused: bool = window_focus_probe.call()
+	var popup := _radio_menu_popup()
+	return {"surface": top.get_instance_id() if top != null else 0, "epoch": _radio_menu_epoch,
+		"popup": popup.get_instance_id() if popup != null else 0,
+		"capture": capturing or calibrating, "focused": focused,
+		"exit_phase": _exit_request_phase, "accident": accident,
+		"enabled": ground_vehicle == null and not _loading_active and not _quit_audio_pending and focused \
+			and not capturing and not calibrating and (top != null or accident or _exit_request_active) \
+			and get_tree().root.gui_embed_subwindows}
+
+
+func _tick_radio_menu(delta: float) -> void:
+	if _radio_menu_input != null and controllers != null:
+		var id: int = _radio_menu_identity.get("id", -1)
+		if controllers.registry.selected_device_id("ui") != id \
+				or controllers.registry.connection_generation(id) != int(_radio_menu_identity.get("generation", 0)) \
+				or not bool(controllers.registry.device_for_id(id).get("connected", false)):
+			_controller_ui_changed(controllers.registry.selected_device_id("ui"))
+	_flush_radio_menu_releases()
+	if _radio_menu_input == null:
+		if is_instance_valid(_radio_menu_hint): _radio_menu_hint.hide()
+		return
+	var state := _radio_menu_state()
+	if state != _radio_menu_context:
+		var lost_focus: bool = not _radio_menu_context.is_empty() and state.focused != _radio_menu_context.focused
+		_radio_menu_releases.append_array(_radio_menu_input.reset_context(lost_focus))
+		if lost_focus: _radio_menu_ready_once = false
+		_radio_menu_context = state
+		_flush_radio_menu_releases()
+	var router: RefCounted = _radio_menu_input
+	var events: Array = router.advance(minf(delta, RadioMenuInput.MAX_DELTA), bool(state.enabled))
+	for event: InputEventAction in events:
+		_deliver_radio_menu_action(event)
+		router.mark_dispatched(event)
+		# Cancel is one level per physical activation, including deferred popup
+		# hides and a disclosure group closing within the same screen.
+		if _radio_menu_input != router or _radio_menu_state() != state \
+				or (event.pressed and event.action in [&"ui_cancel", &"openrc_radio_pause"]):
+			_radio_menu_releases.append_array(router.reset_context(false))
+			_radio_menu_context = {}
+			break
+	if router == _radio_menu_input and router.ready_for_commands(): _radio_menu_ready_once = true
+	_update_radio_menu_hint(bool(state.enabled) and not _radio_menu_ready_once)
+	_flush_radio_menu_releases()
+
+
+func _flush_radio_menu_releases() -> void:
+	var releases := _radio_menu_releases.duplicate()
+	_radio_menu_releases.clear()
+	for event: InputEventAction in releases: _deliver_radio_menu_action(event)
+
+
+func _deliver_radio_menu_action(event: InputEventAction) -> void:
+	if event.action == &"openrc_radio_pause":
+		event = event.duplicate()
+		event.action = &"ui_cancel"
+		event.set_meta("openrc_radio_pause", true)
+	event.set_meta("openrc_radio_ui", true)
+	var window: Window = get_tree().root
+	var popup := _radio_menu_popup()
+	var viewport: Viewport = popup if popup != null else window
+	var focused := viewport.gui_get_focus_owner()
+	var target := {"window": viewport.get_instance_id(), "focus": focused.get_instance_id() if focused != null else 0,
+		"context": _radio_menu_state()}
+	var delivery_key := "%d:%s" % [event.device, event.action]
+	if not event.pressed:
+		var previous: Dictionary = _radio_menu_delivery_targets.get(delivery_key, {})
+		_radio_menu_delivery_targets.erase(delivery_key)
+		# Focus exit already cancels BaseButton's press. A cleanup release must
+		# never complete a keyboard/mouse press on a different recipient.
+		if previous != target or bool(event.get_meta("openrc_radio_reset", false)):
+			_cancel_radio_menu_press(previous)
+			return
+	if event.pressed and popup == null:
+		if event.action == &"ui_cancel" and focused is LineEdit and focused.is_editing():
+			var parent_spin := focused.get_parent() as SpinBox
+			if parent_spin != null: focused.text = str(parent_spin.value)
+			focused.unedit()
+			focused.editing_toggled.emit(false)
+			return
+		# Numeric controls keep their normal range/step and value_changed path.
+		var spin: SpinBox = focused.get_parent() as SpinBox if focused is LineEdit else focused as SpinBox
+		if spin != null and event.action in [&"ui_left", &"ui_right"]:
+			if spin.editable: spin.value += spin.step * (-1.0 if event.action == &"ui_left" else 1.0)
+			return
+	if event.pressed: _radio_menu_delivery_targets[delivery_key] = target
+	window.push_input(event)
+	if popup == null and event.pressed and event.action in [&"ui_up", &"ui_down", &"ui_left", &"ui_right"]:
+		var next := window.gui_get_focus_owner()
+		# LineEdit auto-edits on focus when no global keyboard action is held.
+		# Semantic navigation leaves text entry an explicit Accept/keyboard choice.
+		if next is LineEdit and next != focused and next.is_editing():
+			next.unedit()
+			next.editing_toggled.emit(false)
+
+
+func _cancel_radio_menu_press(target: Dictionary) -> void:
+	if int(target.get("focus", 0)) == 0: return
+	var recipient: Object = instance_from_id(int(target.focus))
+	if not is_instance_valid(recipient) or not recipient is BaseButton or not recipient.has_focus(): return
+	recipient.release_focus() # Native BaseButton focus-exit cancels its pending press.
+	if UiSurface.can_focus(recipient) and get_tree().root.gui_get_focus_owner() == null:
+		recipient.grab_focus()
+
+
+func _update_radio_menu_hint(show_hint: bool) -> void:
+	if show_hint and not is_instance_valid(_radio_menu_hint):
+		var layer := CanvasLayer.new()
+		layer.name = "RadioMenuHint"
+		layer.layer = 60
+		add_child(layer)
+		_radio_menu_hint = Label.new()
+		_radio_menu_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_radio_menu_hint.theme = UiTheme.build()
+		_radio_menu_hint.theme_type_variation = "SecondaryLabel"
+		_radio_menu_hint.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+		_radio_menu_hint.offset_left = 420.0
+		_radio_menu_hint.offset_right = -24.0
+		_radio_menu_hint.offset_top = 12.0
+		_radio_menu_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		layer.add_child(_radio_menu_hint)
+	if is_instance_valid(_radio_menu_hint):
+		_radio_menu_hint.text = tr("Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available.")
+		_radio_menu_hint.visible = show_hint
 
 
 func _clear_controller_actions(require_off := true) -> void:
@@ -1891,6 +2116,17 @@ func _update_controller_button_prompts() -> void:
 func _input(event: InputEvent) -> void:
 	if controllers == null: return
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
+	if UiInput.is_selected_radio_action(event):
+		if event.is_action_pressed("ui_cancel") and not _exit_request_active:
+			if screens.top() != null:
+				var surface: Control = ScreenStack._surface(screens.top())
+				if surface != null: surface.close_requested.emit()
+			elif flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active():
+				if bool(event.get_meta("openrc_radio_pause", false)): open_pause()
+				else: flight.controller_action("back")
+			get_viewport().set_input_as_handled()
+		return
+	if not _radio_menu_ingress_connected: _observe_radio_menu_event(event)
 	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
 	# The same saved Back key may also be installed in native ui_cancel. Keep it
 	# available to the editor for this event, including repeats, then restore it.
@@ -1958,6 +2194,8 @@ func _input(event: InputEvent) -> void:
 		if _controller_action_require_off.has("%d:%s" % [id, action]): continue
 		# A held menu source cannot become a flight command, including signed axes.
 		if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and not previous.is_empty(): continue
+		if menu_context and _radio_menu_input != null and event.device == int(_radio_menu_identity.get("id", -1)) \
+				and action in ["back", "pause"]: continue
 		if in_menu:
 			if action in ["back", "pause"] and (_focused_editor_consumes_key(event) or _controller_capture_owns(event)): continue
 			if action == "calibrate" and (screens.is_top("home") or screens.is_top("pause")):
@@ -1966,7 +2204,9 @@ func _input(event: InputEvent) -> void:
 				return
 			if action not in ["back", "pause"]: continue
 			var focused := get_viewport().gui_get_focus_owner()
-			if focused is OptionButton and focused.get_popup().visible:
+			if _radio_menu_popup() != null:
+				_radio_menu_popup().hide()
+			elif focused is OptionButton and focused.get_popup().visible:
 				focused.get_popup().hide()
 			else:
 				var surface: Control = ScreenStack._surface(screens.top())
@@ -1991,6 +2231,8 @@ func _focused_editor_consumes_key(event: InputEvent) -> bool:
 
 
 func _controller_capture_owns(event: InputEvent) -> bool:
+	if screens.top() != null and screens.top().has_method("owns_controller_event") \
+			and screens.top().owns_controller_event(event): return true
 	if not screens.is_top("controls"):
 		return false
 	var setup: Node = screens.top()
@@ -2193,6 +2435,10 @@ func _on_update_download(url: String) -> void:
 
 
 func _notification(what: int) -> void:
+	if what in [NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_IN] and _radio_menu_input != null:
+		_radio_menu_releases.append_array(_radio_menu_input.reset_context(true))
+		_radio_menu_ready_once = false
+		_radio_menu_epoch += 1
 	if _quit_audio_pending:
 		return
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -3163,6 +3409,12 @@ func close_weather() -> void:
 		screens.pop()
 
 
+func _radio_menu_flight_centered() -> bool:
+	if _radio_menu_input == null or controllers == null: return true
+	if controllers.registry.selected_device_id("flight") != int(_radio_menu_identity.get("id", -1)): return true
+	return _radio_menu_input.sticks_centered()
+
+
 func continue_flight() -> void:
 	if not screens.is_top("pause"):
 		return
@@ -3170,6 +3422,10 @@ func continue_flight() -> void:
 	if not session.is_flyable():
 		_menu_feedback(&"reject")
 		return # nothing to go back to: the menu stays, Continue is disabled and says why
+	if not _radio_menu_flight_centered():
+		pause_menu.set_localized_note("Center roll and pitch before continuing the flight.")
+		_menu_feedback(&"reject")
+		return
 	if controllers != null and (session._controller_lost or (session.radio.connected and not session.radio.armed)):
 		pause_menu.set_note(pause_menu.status_text(flight.session))
 		pause_menu.focus_controller_recovery()
@@ -3223,7 +3479,7 @@ func _commit_restart_flight() -> void:
 	# Reset has committed. Release this guard before the explicit Resume below;
 	# the menu/controller holds still own sessions that are not ready to resume.
 	_complete_exit_request()
-	if controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed))):
+	if not _radio_menu_flight_centered() or (controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed)))):
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Flight restarted. Select Resume when the controls are ready."))
 		pause_menu.continue_button.grab_focus()

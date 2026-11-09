@@ -25,6 +25,8 @@ class FixtureService extends Node:
 	var ui_profile := Profile.defaults()
 	func profile_for_device(id: int) -> Dictionary:
 		return (ui_profile if id == 8 else flight_profile).duplicate(true)
+	func is_ui_gamepad(id: int) -> bool:
+		return id == 8 and ui_profile.get("kind", "") == "gamepad" and bool(registry.device_for_id(id).get("connected", false))
 	func save_settings_from_setup(candidate: Dictionary, flight_id: int, ui_id: int) -> Dictionary:
 		var result: Dictionary = store.save_profile(candidate)
 		if result.ok:

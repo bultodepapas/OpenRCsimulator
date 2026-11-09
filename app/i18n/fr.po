@@ -10041,3 +10041,138 @@ msgstr "Les commandes principales de la radiocommande doivent être calibrées a
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "Les profils de joystick exigent le mode des gaz radio_absolute ; stick_rate et trigger_absolute ne sont pris en charge que pour les manettes."
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "La vérification des menus ne correspond plus à cette radiocommande. Recommencez ; le brouillon reste inchangé."
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "Les commandes de menu de la radiocommande sont vérifiées dans le brouillon. Enregistrez pour les utiliser."
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "Utilisez une manette ou une radiocommande vérifiée pour les menus. Le clavier et la souris restent disponibles."
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "Les profils enregistrés et les préférences de menu admissibles sont conservés. Le choix du contrôleur de vol vaut pour cette session."
+
+msgid "Export diagnostics…"
+msgstr "Exporter le diagnostic…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "Exporte le brouillon actuel et les entrées observées sur cet écran. Les identifiants de l’appareil sont masqués."
+
+msgid "Verify radio menus…"
+msgstr "Vérifier les menus radio…"
+
+msgid "Disable radio menus"
+msgstr "Désactiver les menus radio"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "Les menus radio utilisent les commandes de roulis et de tangage calibrées."
+
+msgid "Calibrated roll / pitch"
+msgstr "Roulis / tangage calibrés"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "Menus radio vérifiés. Enregistrez pour conserver ce contrôleur de menu."
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "Calibrez la radiocommande et affectez des commandes physiques à Valider, Retour et Pause, puis vérifiez les menus radio. La saisie de texte utilise toujours un clavier."
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "La vérification des menus a expiré. Recommencez avant de choisir cette radiocommande pour les menus."
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "Menus radio désactivés dans le brouillon. Enregistrez pour appliquer ; le clavier et la souris restent disponibles."
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "Terminez ou annulez la réaffectation avant d’exporter le diagnostic."
+
+msgid "Export controller diagnostics"
+msgstr "Exporter le diagnostic du contrôleur"
+
+msgid "Controller diagnostic report"
+msgstr "Rapport de diagnostic du contrôleur"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "Diagnostic du contrôleur exporté avec les identifiants masqués."
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "Le diagnostic n’a pas été exporté (%s). Choisissez un nouveau nom dans un dossier accessible en écriture."
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "La connexion de la radiocommande a changé. Vérifiez à nouveau les commandes de menu avant d’enregistrer."
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "Écartez les commandes de roulis et de tangage du centre puis ramenez-les. Placez Valider, Retour et Pause sur OFF. Le clavier et la souris restent disponibles."
+
+msgid "Verify radio menus"
+msgstr "Vérifier les menus radio"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "Utilisez les commandes de roulis et de tangage calibrées pour les menus. Les gaz ne déplacent jamais le menu. Suivez les étapes puis enregistrez les réglages du contrôleur pour activer la radiocommande."
+
+msgid "Use verified menu controls"
+msgstr "Utiliser les commandes de menu vérifiées"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "La connexion de la radiocommande a changé. La vérification des menus est annulée ; le brouillon reste inchangé."
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "La vérification des menus est annulée car l’application a perdu le focus. Le brouillon reste inchangé."
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "La radiocommande a renvoyé une entrée invalide. La vérification des menus est annulée ; le brouillon reste inchangé."
+
+msgid "Radio menu controls verified"
+msgstr "Commandes de menu radio vérifiées"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "Choisissez Utiliser les commandes de menu vérifiées, puis Enregistrer. Annuler conserve les réglages précédents."
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "Vérification des menus annulée. Le brouillon reste inchangé."
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "Centrez les commandes de roulis et de tangage et relâchez Valider, Retour et Pause."
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "Déplacez le manche de roulis à DROITE et maintenez-le."
+
+msgid "Return roll and pitch to center."
+msgstr "Ramenez les commandes de roulis et de tangage au centre."
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "Déplacez le manche de roulis à GAUCHE et maintenez-le."
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "Déplacez le manche de tangage vers le BAS et maintenez-le."
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "Déplacez le manche de tangage vers le HAUT et maintenez-le."
+
+msgid "Release Accept, then press it."
+msgstr "Relâchez Valider, puis appuyez dessus."
+
+msgid "Release Accept."
+msgstr "Relâchez Valider."
+
+msgid "Release Back, then press it."
+msgstr "Relâchez Retour, puis appuyez dessus."
+
+msgid "Release Back."
+msgstr "Relâchez Retour."
+
+msgid "Release Pause, then press it."
+msgstr "Relâchez Pause, puis appuyez dessus."
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "Relâchez Valider, Retour et Pause, puis centrez les commandes de roulis et de tangage."
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "Vérification des menus radio invalide ou interrompue."
+
+msgid "Invalid radio button sample."
+msgstr "Lecture de bouton radio invalide."
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "Centrez les commandes de roulis et de tangage avant de reprendre le vol."

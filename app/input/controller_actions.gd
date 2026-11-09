@@ -108,7 +108,7 @@ static func clean_radio_bindings() -> Dictionary:
 
 
 ## Validate shape, require a back and pause recovery path, and reject collisions whose contexts overlap.
-static func validate(bindings: Dictionary) -> Dictionary:
+static func validate(bindings: Dictionary, radio_menu_actions := false) -> Dictionary:
 	var errors: Array[String] = []
 	var issues: Array[Dictionary] = []
 	var definitions := _definition_map()
@@ -127,7 +127,8 @@ static func validate(bindings: Dictionary) -> Dictionary:
 			errors.append(error)
 			_append_issue(issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
 		elif bindings[action_id].get("type", "") == "axis" and bindings[action_id].has("off") \
-				and str(action_id) != "pause" and definitions[str(action_id)].context == "menu":
+				and str(action_id) != "pause" and definitions[str(action_id)].context == "menu" \
+				and not (radio_menu_actions and str(action_id) in ["accept", "back"]):
 			var error: String = "Learned axis ranges are supported for flight actions and Pause only: %s" % str(action_id)
 			errors.append(error)
 			_append_issue(issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
@@ -226,7 +227,7 @@ static func validate_profile_bindings(profile: Dictionary, capabilities: Diction
 		errors.append(error)
 		_append_issue(issues, "aux_invalid", ["aux"], error)
 	var bindings := effective_bindings(profile, capabilities)
-	var action_report := validate(bindings)
+	var action_report := validate(bindings, str(profile.get("kind", "")) == "radio")
 	for error in action_report.errors:
 		_append_error(errors, str(error))
 	for issue in action_report.issues:

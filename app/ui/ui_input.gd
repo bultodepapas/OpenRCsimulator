@@ -1,8 +1,8 @@
-# A radio flies the airplane; it never navigates menus. A selected gamepad can be bound to
-# ui_* actions, but each generated event is limited to one Godot connection handle.
+# Gamepads use native InputMap bindings. Verified radios use guarded semantic GUI events.
 extends RefCounted
 
 static var _selected_gamepad_id := -1
+static var _selected_radio_id := -1
 static var _original_action_deadzones: Dictionary = {}
 static var _generated_key_events: Dictionary = {}
 static var _suspended_cancel_keys: Array[InputEvent] = []
@@ -11,6 +11,7 @@ static var _suspended_cancel_keys: Array[InputEvent] = []
 ## Erases joypad events from ui_* actions. Keyboard and mouse navigation remain untouched.
 static func isolate_joypads() -> int:
 	_selected_gamepad_id = -1
+	_selected_radio_id = -1
 	_restore_action_deadzones()
 	var removed := 0
 	for action: Variant in _generated_key_events:
@@ -54,6 +55,20 @@ static func set_gamepad(device_id: int, bindings: Dictionary = {}) -> int:
 
 static func selected_gamepad_id() -> int:
 	return _selected_gamepad_id
+
+
+static func set_radio(device_id: int) -> void:
+	isolate_joypads()
+	_selected_radio_id = device_id
+
+
+static func selected_radio_id() -> int:
+	return _selected_radio_id
+
+
+static func is_selected_radio_action(event: InputEvent) -> bool:
+	return event is InputEventAction and _selected_radio_id >= 0 and event.device == _selected_radio_id \
+		and bool(event.get_meta("openrc_radio_ui", false))
 
 
 ## A custom Back key also lives in ui_cancel for native popups. Temporarily remove

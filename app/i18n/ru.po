@@ -9869,3 +9869,138 @@ msgstr "Перед полётом необходимо откалиброват�
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "Для профилей джойстика требуется режим газа radio_absolute; stick_rate и trigger_absolute поддерживаются только для геймпадов."
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "Проверка меню больше не соответствует этой аппаратуре. Повторите проверку; черновик не изменён."
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "Управление меню с аппаратуры проверено в черновике. Сохраните, чтобы использовать его."
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "Для меню используйте геймпад или проверенную аппаратуру. Клавиатура и мышь всегда доступны."
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "Сохранённые профили и подходящие настройки меню сохраняются. Выбор устройства для полёта действует в текущем сеансе."
+
+msgid "Export diagnostics…"
+msgstr "Экспорт диагностики…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "Экспортирует текущий черновик и ввод, наблюдавшийся на этом экране. Идентификаторы устройства скрыты."
+
+msgid "Verify radio menus…"
+msgstr "Проверить меню аппаратуры…"
+
+msgid "Disable radio menus"
+msgstr "Отключить меню аппаратуры"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "Меню аппаратуры использует откалиброванные органы управления креном и тангажом."
+
+msgid "Calibrated roll / pitch"
+msgstr "Крен / тангаж откалиброваны"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "Меню аппаратуры проверено. Сохраните, чтобы оставить это управление меню."
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "Откалибруйте аппаратуру и назначьте физические органы для Принять, Назад и Пауза, затем проверьте меню. Для ввода текста по-прежнему нужна клавиатура."
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "Срок проверки меню истёк. Повторите её перед выбором этой аппаратуры для меню."
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "Меню аппаратуры отключено в черновике. Сохраните изменения; клавиатура и мышь остаются доступны."
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "Завершите или отмените переназначение перед экспортом диагностики."
+
+msgid "Export controller diagnostics"
+msgstr "Экспорт диагностики контроллера"
+
+msgid "Controller diagnostic report"
+msgstr "Отчёт диагностики контроллера"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "Диагностика контроллера экспортирована без идентификаторов устройства."
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "Диагностика не экспортирована (%s). Выберите новое имя в папке, доступной для записи."
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "Подключение аппаратуры изменилось. Повторите проверку управления меню перед сохранением."
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "Отклоните управление креном и тангажом от центра и верните обратно. Переведите Принять, Назад и Паузу в OFF. Клавиатура и мышь остаются доступны."
+
+msgid "Verify radio menus"
+msgstr "Проверить меню аппаратуры"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "Используйте для меню откалиброванные органы управления креном и тангажом. Газ не перемещает меню. Выполните все шаги и сохраните настройки контроллера для включения аппаратуры."
+
+msgid "Use verified menu controls"
+msgstr "Использовать проверенное управление меню"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "Подключение аппаратуры изменилось. Проверка меню отменена; черновик не изменён."
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "Проверка меню отменена, так как приложение потеряло фокус. Черновик не изменён."
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "Аппаратура передала недопустимый ввод. Проверка меню отменена; черновик не изменён."
+
+msgid "Radio menu controls verified"
+msgstr "Управление меню с аппаратуры проверено"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "Выберите Использовать проверенное управление меню, затем Сохранить. Отмена оставит прежние настройки контроллера."
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "Проверка меню отменена. Черновик не изменён."
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "Установите управление креном и тангажом в центр и отпустите Принять, Назад и Пауза."
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "Отклоните стик крена ВПРАВО и удерживайте."
+
+msgid "Return roll and pitch to center."
+msgstr "Верните управление креном и тангажом в центр."
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "Отклоните стик крена ВЛЕВО и удерживайте."
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "Отклоните стик тангажа ВНИЗ и удерживайте."
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "Отклоните стик тангажа ВВЕРХ и удерживайте."
+
+msgid "Release Accept, then press it."
+msgstr "Отпустите Принять, затем нажмите."
+
+msgid "Release Accept."
+msgstr "Отпустите Принять."
+
+msgid "Release Back, then press it."
+msgstr "Отпустите Назад, затем нажмите."
+
+msgid "Release Back."
+msgstr "Отпустите Назад."
+
+msgid "Release Pause, then press it."
+msgstr "Отпустите Пауза, затем нажмите."
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "Отпустите Принять, Назад и Пауза, затем установите управление креном и тангажом в центр."
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "Проверка меню аппаратуры недопустима или прервана."
+
+msgid "Invalid radio button sample."
+msgstr "Недопустимое значение кнопки аппаратуры."
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "Перед продолжением полёта установите управление креном и тангажом в центр."

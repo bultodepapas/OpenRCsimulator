@@ -9067,3 +9067,138 @@ msgstr "飞行前必须校准遥控器的主要操纵通道。"
 
 msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
 msgstr "操纵杆配置需要使用 radio_absolute 油门模式；stick_rate 和 trigger_absolute 仅支持游戏手柄。"
+
+msgid "Menu verification no longer matches this radio. Verify again; the draft is unchanged."
+msgstr "菜单验证已不再匹配此遥控器。请重新验证；草稿保持不变。"
+
+msgid "Radio menu controls are verified in the draft. Save to use this radio for menus."
+msgstr "草稿中的遥控器菜单控制已验证。保存后即可使用。"
+
+msgid "Use a gamepad or a verified radio for menus. Keyboard and mouse are always available."
+msgstr "使用游戏手柄或已验证的遥控器操作菜单。键盘和鼠标始终可用。"
+
+msgid "Saved profiles and eligible menu preferences persist. Flight device selections apply for this app session."
+msgstr "已保存的配置和符合条件的菜单偏好会保留。飞行设备选择仅在本次会话中有效。"
+
+msgid "Export diagnostics…"
+msgstr "导出诊断信息…"
+
+msgid "Export the current draft and input observed on this screen. Device identifiers are redacted."
+msgstr "导出当前草稿及此界面观察到的输入。设备标识会被隐藏。"
+
+msgid "Verify radio menus…"
+msgstr "验证遥控器菜单…"
+
+msgid "Disable radio menus"
+msgstr "禁用遥控器菜单"
+
+msgid "Radio menu movement uses the calibrated roll and pitch controls."
+msgstr "遥控器菜单使用校准后的横滚和俯仰控制。"
+
+msgid "Calibrated roll / pitch"
+msgstr "已校准的横滚 / 俯仰"
+
+msgid "Radio menus verified. Save to keep this menu controller."
+msgstr "遥控器菜单已验证。保存以保留此菜单控制器。"
+
+msgid "Calibrate this radio and assign physical Accept, Back and Pause controls, then verify radio menus. Text entry still uses a keyboard."
+msgstr "请校准遥控器，为确认、返回和暂停分配物理控制，再验证遥控器菜单。文本输入仍需键盘。"
+
+msgid "Menu control verification expired. Verify again before selecting this radio for menus."
+msgstr "菜单控制验证已失效。选择此遥控器操作菜单前，请重新验证。"
+
+msgid "Radio menus disabled in the draft. Save to apply; keyboard and mouse remain available."
+msgstr "草稿中已禁用遥控器菜单。保存后生效；键盘和鼠标仍可使用。"
+
+msgid "Finish or cancel remapping before exporting diagnostics."
+msgstr "导出诊断信息前，请完成或取消重新分配。"
+
+msgid "Export controller diagnostics"
+msgstr "导出控制器诊断信息"
+
+msgid "Controller diagnostic report"
+msgstr "控制器诊断报告"
+
+msgid "Controller diagnostics exported with device identifiers redacted."
+msgstr "已导出控制器诊断信息，设备标识已隐藏。"
+
+msgid "Diagnostics were not exported (%s). Choose a new filename in a writable folder."
+msgstr "诊断信息未导出（%s）。请在可写入的文件夹中选择新的文件名。"
+
+msgid "The radio connection changed. Verify menu controls again before saving."
+msgstr "遥控器连接已更改。保存前请重新验证菜单控制。"
+
+msgid "Move roll and pitch away and back to center. Cycle Accept, Back and Pause to OFF. Keyboard and mouse remain available."
+msgstr "将横滚和俯仰控制移离中间再移回。将确认、返回和暂停切至 OFF。键盘和鼠标仍可使用。"
+
+msgid "Verify radio menus"
+msgstr "验证遥控器菜单"
+
+msgid "Use the calibrated roll and pitch controls for menus. Throttle never moves the menu. Follow each step, then Save controller settings to enable the radio."
+msgstr "菜单使用校准后的横滚和俯仰控制，油门不会移动菜单。请按步骤操作，然后保存控制器设置以启用遥控器。"
+
+msgid "Use verified menu controls"
+msgstr "使用已验证的菜单控制"
+
+msgid "The radio connection changed. Menu verification was cancelled; the draft is unchanged."
+msgstr "遥控器连接已更改，菜单验证已取消；草稿保持不变。"
+
+msgid "Menu verification was cancelled because the application lost focus. The draft is unchanged."
+msgstr "应用失去焦点，菜单验证已取消。草稿保持不变。"
+
+msgid "The radio returned invalid input. Menu verification was cancelled; the draft is unchanged."
+msgstr "遥控器返回了无效输入，菜单验证已取消；草稿保持不变。"
+
+msgid "Radio menu controls verified"
+msgstr "遥控器菜单控制已验证"
+
+msgid "Choose Use verified menu controls, then Save. Cancel keeps your previous controller settings."
+msgstr "选择“使用已验证的菜单控制”，然后保存。取消将保留之前的控制器设置。"
+
+msgid "Menu verification cancelled. The draft is unchanged."
+msgstr "菜单验证已取消。草稿保持不变。"
+
+msgid "Center roll and pitch and release Accept, Back, and Pause."
+msgstr "将横滚和俯仰控制回中，并松开确认、返回和暂停。"
+
+msgid "Move the roll stick RIGHT and hold it."
+msgstr "将横滚摇杆向右推住。"
+
+msgid "Return roll and pitch to center."
+msgstr "将横滚和俯仰控制回中。"
+
+msgid "Move the roll stick LEFT and hold it."
+msgstr "将横滚摇杆向左推住。"
+
+msgid "Move the pitch stick DOWN and hold it."
+msgstr "将俯仰摇杆向下推住。"
+
+msgid "Move the pitch stick UP and hold it."
+msgstr "将俯仰摇杆向上推住。"
+
+msgid "Release Accept, then press it."
+msgstr "松开确认，然后按下。"
+
+msgid "Release Accept."
+msgstr "松开确认。"
+
+msgid "Release Back, then press it."
+msgstr "松开返回，然后按下。"
+
+msgid "Release Back."
+msgstr "松开返回。"
+
+msgid "Release Pause, then press it."
+msgstr "松开暂停，然后按下。"
+
+msgid "Release Accept, Back, and Pause, then center roll and pitch."
+msgstr "松开确认、返回和暂停，然后将横滚和俯仰控制回中。"
+
+msgid "Invalid or interrupted radio menu verification."
+msgstr "遥控器菜单验证无效或已中断。"
+
+msgid "Invalid radio button sample."
+msgstr "遥控器按钮输入无效。"
+
+msgid "Center roll and pitch before continuing the flight."
+msgstr "继续飞行前，请将横滚和俯仰控制回中。"

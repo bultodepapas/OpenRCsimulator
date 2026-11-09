@@ -8,6 +8,7 @@ const VALID_THROTTLE_MODES := ["stick_rate", "trigger_absolute", "radio_absolute
 const VALID_GLYPHS := ["auto", "xbox", "playstation", "nintendo", "generic"]
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
+const RadioMenu := preload("res://input/radio_menu.gd")
 
 const DEFAULT_DEADZONE := 0.08
 const DEFAULT_EXPO := 0.3
@@ -207,6 +208,8 @@ static func merge_radio_calibration(existing: Dictionary, calibration: Dictionar
 				if measured_aux.has(aux_name) and SmokeAux.valid_binding(measured_aux[aux_name], flight_axes):
 					aux[aux_name] = measured_aux[aux_name].duplicate(true)
 		result["aux"] = aux
+	if result.has("ui_navigation") and not RadioMenu.is_verified(result):
+		result.erase("ui_navigation")
 	return result if validate(result).ok else {}
 
 
@@ -375,6 +378,9 @@ static func validate(value: Variant) -> Dictionary:
 			errors.append("actions: " + str(action_error))
 		for action_issue in action_validation.issues:
 			issues.append(action_issue.duplicate(true))
+	var navigation_report := RadioMenu.validate(value)
+	for message: String in navigation_report.errors:
+		_append_validation_issue(errors, issues, "radio_menu_invalid", ["ui_navigation"], message)
 	var presentation: Variant = value.get("presentation")
 	if typeof(presentation) != TYPE_DICTIONARY:
 		var error: String = "presentation must be a Dictionary"

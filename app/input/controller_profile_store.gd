@@ -27,22 +27,34 @@ func _init(storage_path: String = DEFAULT_PATH, legacy_storage_path: String = LE
 func load_all() -> Dictionary:
 	var primary := _read_file(path)
 	if primary.ok:
-		return {"ok": true, "profiles": primary.profiles, "errors": []}
+		return {"ok": true, "profiles": primary.profiles, "ui_preference": primary.ui_preference, "errors": []}
 	var backup_path := path + BACKUP_SUFFIX
 	var backup_exists := FileAccess.file_exists(backup_path)
 	if backup_exists:
 		var backup := _read_file(backup_path)
 		if backup.ok:
-			return {"ok": true, "profiles": backup.profiles, "errors": ["Recovered profiles from rollback copy; primary storage is unreadable: " + str(primary.error)], "recovered_from_backup": true}
+			return {"ok": true, "profiles": backup.profiles, "ui_preference": backup.ui_preference, "errors": ["Recovered profiles from rollback copy; primary storage is unreadable: " + str(primary.error)], "recovered_from_backup": true}
 		if primary.missing:
 			return {"ok": false, "profiles": [], "errors": ["Primary profile storage is missing and its rollback copy is unreadable: " + backup.error]}
 	if primary.missing:
-		return {"ok": true, "profiles": [], "errors": []}
+		return {"ok": true, "profiles": [], "ui_preference": {}, "errors": []}
 	return {"ok": false, "profiles": [], "errors": [primary.error]}
 
 
 ## Validates and atomically replaces one profile by profile_id. A failed write keeps the previous file.
 func save_profile(candidate: Variant) -> Dictionary:
+	return _save_profile(candidate)
+
+
+## Profile and menu preference share one validated ConfigFile transaction.
+## The preference stores a profile identity, never an OS connection handle.
+func save_profile_with_ui_preference(candidate: Variant, preference: Dictionary) -> Dictionary:
+	if not _valid_ui_preference(preference):
+		return {"ok": false, "profile": {}, "error": "Invalid menu controller preference."}
+	return _save_profile(candidate, preference)
+
+
+func _save_profile(candidate: Variant, preference: Variant = null) -> Dictionary:
 	var validation := ControllerProfile.validate(candidate)
 	if not validation.ok:
 		return {"ok": false, "profile": {}, "error": "Invalid controller profile: " + "; ".join(validation.errors)}
@@ -59,7 +71,8 @@ func save_profile(candidate: Variant) -> Dictionary:
 			break
 	if not found:
 		profiles.append(saved_profile)
-	var transaction := _write_transaction(profiles, bool(loaded.get("recovered_from_backup", false)))
+	var ui_preference: Dictionary = loaded.get("ui_preference", {}) if preference == null else preference
+	var transaction := _write_transaction(profiles, bool(loaded.get("recovered_from_backup", false)), ui_preference)
 	if not transaction.ok:
 		return {"ok": false, "profile": {}, "error": transaction.error}
 	# Return the committed form, not the candidate, so the runtime applies exactly what reloads.
@@ -88,7 +101,10 @@ func restore_snapshot(snapshot: Dictionary) -> Dictionary:
 	var current := load_all()
 	if not current.ok:
 		return {"ok": false, "error": "Could not restore controller profiles because current storage is unreadable: " + "; ".join(current.errors)}
-	var transaction := _write_transaction(profiles, bool(current.get("recovered_from_backup", false)))
+	var preference: Variant = snapshot.get("ui_preference", {})
+	if not _valid_ui_preference(preference):
+		return {"ok": false, "error": "The previous menu controller preference is invalid."}
+	var transaction := _write_transaction(profiles, bool(current.get("recovered_from_backup", false)), preference)
 	if not transaction.ok:
 		return {"ok": false, "error": transaction.error}
 	return {"ok": true, "error": "", "warning": transaction.warning}
@@ -247,7 +263,20 @@ func _read_file(target_path: String) -> Dictionary:
 			return {"ok": false, "missing": false, "profiles": [], "error": "Duplicate profile_id in storage."}
 		identifiers[profile_id] = true
 		profiles.append(candidate.duplicate(true))
-	return {"ok": true, "missing": false, "profiles": profiles, "error": ""}
+	var preference: Variant = cfg.get_value(STORAGE_SECTION, "ui_preference", {})
+	if not _valid_ui_preference(preference):
+		return {"ok": false, "missing": false, "profiles": [], "error": "Invalid menu controller preference in storage."}
+	return {"ok": true, "missing": false, "profiles": profiles, "ui_preference": preference.duplicate(true), "error": ""}
+
+
+static func _valid_ui_preference(value: Variant) -> bool:
+	if not value is Dictionary: return false
+	if value.is_empty(): return true
+	if typeof(value.get("mode")) != TYPE_STRING: return false
+	if value.get("mode", "") == "keyboard": return value.size() == 1
+	return value.get("mode", "") == "profile" and value.size() == 2 \
+		and typeof(value.get("profile_id")) == TYPE_STRING and not str(value.profile_id).is_empty() \
+		and str(value.profile_id).length() <= 128
 
 
 ## Returns the value storage will reload for `profiles`: the ConfigFile encode/parse fixed point.
@@ -283,7 +312,9 @@ func _storage_form(profiles: Array) -> Dictionary:
 
 
 ## Commits `profiles` in their storage form; on success returns that form as `profiles`.
-func _write_transaction(candidate_profiles: Array, recovered_from_backup := false) -> Dictionary:
+func _write_transaction(candidate_profiles: Array, recovered_from_backup := false, ui_preference: Dictionary = {}) -> Dictionary:
+	if not _valid_ui_preference(ui_preference):
+		return {"ok": false, "error": "Invalid menu controller preference.", "warning": ""}
 	var storage_form := _storage_form(candidate_profiles)
 	if not storage_form.ok:
 		return {"ok": false, "error": storage_form.error, "warning": ""}
@@ -301,6 +332,7 @@ func _write_transaction(candidate_profiles: Array, recovered_from_backup := fals
 	var cfg := ConfigFile.new()
 	cfg.set_value(STORAGE_SECTION, "schema_version", ControllerProfile.SCHEMA_VERSION)
 	cfg.set_value(STORAGE_SECTION, "profiles", profiles)
+	cfg.set_value(STORAGE_SECTION, "ui_preference", ui_preference)
 	var write_error: Error = cfg.save(temporary)
 	if write_error != OK:
 		return {"ok": false, "error": "Could not write temporary controller profiles (%s)." % str(write_error), "warning": ""}
@@ -308,7 +340,7 @@ func _write_transaction(candidate_profiles: Array, recovered_from_backup := fals
 	if not verify.ok:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
 		return {"ok": false, "error": "Temporary controller profiles failed validation: " + str(verify.error), "warning": ""}
-	if verify.profiles != profiles:
+	if verify.profiles != profiles or verify.ui_preference != ui_preference:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
 		return {"ok": false, "error": "Temporary controller profiles did not read back identically.", "warning": ""}
 	var target_exists := FileAccess.file_exists(path)

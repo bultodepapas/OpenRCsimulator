@@ -165,6 +165,17 @@ func _process(delta: float) -> void:
 
 
 func _scroll_input(event: InputEvent) -> void:
+	if MenuInput.is_selected_radio_action(event):
+		if not event.is_pressed(): return
+		if event.is_action_pressed("ui_left") or event.is_action_pressed("ui_right"):
+			close_button.grab_focus()
+		elif event.is_action_pressed("ui_down"):
+			_help_scroll.get_v_scroll_bar().value += 40
+		elif event.is_action_pressed("ui_up"):
+			_help_scroll.get_v_scroll_bar().value -= 40
+		else: return
+		_help_scroll.accept_event()
+		return
 	if event is InputEventJoypadButton or event is InputEventJoypadMotion:
 		if MenuInput.selected_gamepad_id() < 0 or event.device != MenuInput.selected_gamepad_id():
 			return
