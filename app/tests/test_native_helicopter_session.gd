@@ -6,6 +6,7 @@ const Session := preload("res://sim/helicopter_flight_session.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Weather := preload("res://physics/wind_config.gd")
+const Recorder := preload("res://sim/recorder.gd")
 
 var checks := 0
 var failures := 0
@@ -332,8 +333,8 @@ func _guard() -> void:
 	session.free()
 
 
-func _reset_rollback() -> void:
-	var session := _session(NativeStage.BACKEND_NATIVE)
+func _reset_rollback(mode: String) -> void:
+	var session := _session(mode)
 	var model: RefCounted = session.sim.model
 	model.aux_size = session.sim.aux.size()
 	model.continuous_size = session.sim.continuous.size()
@@ -347,12 +348,14 @@ func _reset_rollback() -> void:
 			return false
 		return true
 	check("transaction fixture resets", session.reset(), session.start_error)
-	if native_available:
+	if mode == NativeStage.BACKEND_NATIVE and native_available:
 		check("transaction fixture retains a real native stage", session._native_stage != null \
 			and session._native_stage.owns_stage(session), str(session.stage_backend_status()))
-	else:
+	elif mode == NativeStage.BACKEND_NATIVE:
 		_attach_mock_stage(session)
 	for _i: int in 4: session.sim.step()
+	session.radio.connect_device(997, {"name": "reset test gamepad", "known": true})
+	check(mode + " fixture sets an independent gamepad collective", session.radio.set_rate_throttle_for_start(0.23))
 	var before := _physical(session)
 	var checkpoint: Dictionary = session.checkpoint()
 	check("transaction fixture produces a checkpoint", not checkpoint.is_empty())
@@ -360,26 +363,40 @@ func _reset_rollback() -> void:
 	var helper: RefCounted = session._native_stage
 	var old_stage: Callable = model.stage
 	var resetting_count := [0]
-	session.resetting.connect(func() -> void: resetting_count[0] += 1)
+	var recorder := Recorder.new(session.sim)
+	recorder.start(session.trace_meta())
+	var trace_path := "user://heli-reset-%d-%d-%s.csv" % [OS.get_process_id(), Time.get_ticks_usec(), mode]
+	while FileAccess.file_exists(trace_path): trace_path += ".new"
+	session.resetting.connect(func() -> void:
+		resetting_count[0] += 1
+		if recorder.recording: recorder.stop(trace_path))
 	reject[0] = true
 	var accepted: bool = session.reset()
 	reject[0] = false
-	check("rejected reset actually exercised validation", not accepted and attempted[0] > 0 and not session.start_error.is_empty())
+	check(mode + " rejected reset actually exercised validation", not accepted and attempted[0] > 0 and not session.start_error.is_empty())
 	var physical_ok: bool = _physical(session) == before
 	var model_ok: bool = session.sim.model == model
 	var stage_ok: bool = model.stage == old_stage
 	var helper_ok: bool = session._native_stage == helper
 	var checkpoint_ok: bool = var_to_bytes(session.checkpoint()) == saved
-	check("rejected reset restores owner, kernel, helper and callback", physical_ok \
+	check(mode + " rejected reset restores owner, kernel, helper and callback", physical_ok \
 		and model_ok and stage_ok and helper_ok and resetting_count[0] == 0 and checkpoint_ok,
 		"physical=%s model=%s stage=%s helper=%s signals=%d checkpoint=%s backend=%s" % \
 		[physical_ok, model_ok, stage_ok, helper_ok, resetting_count[0], checkpoint_ok, str(session.stage_backend_status())])
 	if helper != null:
 		check("old native helper remains owned after rejected reset", helper.owns_stage(session))
+	check(mode + " rejected reset preserves recording and gamepad collective", recorder.recording \
+		and session.radio._rate_throttle == 0.23)
 	var old_tick: int = session.sim.tick
 	session.sim.step()
-	check("flight continues after reset rollback", session.sim.tick == old_tick + 1 and session.sim.fault_reason.is_empty(),
+	check(mode + " flight continues after reset rollback", session.sim.tick == old_tick + 1 and session.sim.fault_reason.is_empty(),
 		"before=%d after=%d fault=%s backend=%s" % [old_tick, session.sim.tick, session.sim.fault_reason, str(session.stage_backend_status())])
+	var rows_before_reset: int = recorder.trace.row_count()
+	check(mode + " accepted reset stops the old recording before tick zero", session.reset() \
+		and resetting_count[0] == 1 and not recorder.recording and recorder.trace.row_count() == rows_before_reset \
+		and session.radio._rate_throttle == session.commands.throttle, session.start_error)
+	recorder.detach()
+	if FileAccess.file_exists(trace_path): DirAccess.remove_absolute(ProjectSettings.globalize_path(trace_path))
 	session.free()
 
 
@@ -589,7 +606,8 @@ func _run() -> void:
 	var status: Dictionary = NativeStage.library_status()
 	native_available = status.get("ok", false)
 	_selection()
-	_reset_rollback()
+	_reset_rollback(NativeStage.BACKEND_REFERENCE)
+	_reset_rollback(NativeStage.BACKEND_NATIVE)
 	_reset_observer_reentry()
 	_restore_observer_reentry()
 	_mock_native_publication()

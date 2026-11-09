@@ -64,6 +64,12 @@ static func humidity_molar_pct(relative_humidity_pct: float, temperature_k: floa
 	return clampf(relative_humidity_pct, 0.0, 100.0) * saturation_ratio * ISO_REFERENCE_PRESSURE_PA / pressure_pa
 
 
+## Outside this conservative envelope, retain the old eager evaluation, including its diagnostics.
+## This only selects an optimization; it does not validate or clamp the atmosphere.
+static func can_skip_humidity_fallback(temperature_k: float, pressure_pa: float) -> bool:
+	return temperature_k >= 180.0 and temperature_k <= 330.0 and pressure_pa >= 10000.0 and pressure_pa <= 120000.0
+
+
 ## Attenuation coefficient (dB/m) at frequency f for temperature, pressure and molar humidity h (%).
 static func absorption_db_per_m(frequency_hz: float, temperature_k: float = 288.15,
 		pressure_pa: float = ISO_REFERENCE_PRESSURE_PA, humidity_pct: float = 0.0) -> float:

@@ -40,6 +40,7 @@ func _run() -> void:
 		return
 	_test_propagation_runtime(field)
 	_test_absorption_runtime(field)
+	_test_absorption_sequence(field)
 
 	# A Soundscape must use its own seeded generator. Preserve the global RNG sequence
 	# across configure and a long run of scheduler stimuli through update_sound().
@@ -701,6 +702,73 @@ func _test_absorption_runtime(field: Dictionary) -> void:
 	rig._update_path_filters(far, far.source, far.listener, 1.0 / 60.0)
 	_check("screening shelf reaches its authored -24 dB (gain squared) and is flat when clear",
 		full_screen and float(rig.screen_filter.gain) == 1.0)
+	rig.free()
+
+
+## Original eager selection and filter clock, retained as a sequence oracle.
+class LegacyAbsorption:
+	var primed := false
+	var target := 0.0
+	var cutoff := 0.0
+	var clock := 0.0
+
+	func update(snapshot: Dictionary, source: Vector3, listener: Vector3, dt: float, enabled: bool) -> void:
+		var temperature_k: float = float(snapshot.get("temperature_c", 15.0)) + 273.15
+		var pressure_pa: float = float(snapshot.get("pressure_pa", Model.ISO_REFERENCE_PRESSURE_PA))
+		var humidity: float = float(snapshot.get("humidity_molar_pct",
+			Model.humidity_molar_pct(Model.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)))
+		var was_primed: bool = primed and cutoff > 0.0
+		clock -= dt
+		if not was_primed or clock <= 0.0:
+			clock = SoundscapeScript.ABSORPTION_REFRESH_S
+			target = Model.absorption_cutoff_hz(source.distance_to(listener), temperature_k, pressure_pa, humidity) \
+				if enabled else Model.ABSORPTION_CEILING_HZ
+		if not was_primed:
+			cutoff = target
+			primed = true
+		else:
+			cutoff = exp(lerpf(log(cutoff), log(target), 1.0 - exp(-dt / SoundscapeScript.ABSORPTION_SMOOTHING_S)))
+
+
+func _test_absorption_sequence(field: Dictionary) -> void:
+	var rig: Variant = SoundscapeScript.new()
+	root.add_child(rig)
+	rig.configure(field, "electric_prop", 4102026)
+	rig.propagation_delay = false
+	var old := LegacyAbsorption.new()
+	var matches := true
+	var air: Dictionary = Atmosphere.evaluate(1500.0, 35.0, 1013.25, 50.0)
+	var given_values: Array = [0.0, -0.0, false, null, "1.2", 2.25]
+	for step: int in 160:
+		if step == 91:
+			rig.reset_observer()
+			old.primed = false
+		if step == 120:
+			root.remove_child(rig)
+			root.add_child(rig)
+		var sample: Dictionary = _flight_snapshot()
+		sample.source = Vector3([300.0, 20.0, 800.0, 65.0][int(step / 11) % 4], 0.0, 0.0)
+		sample.temperature_c = 35.0 if step % 2 == 0 else 15.0
+		sample.pressure_pa = air.pressure_pa if step % 2 == 0 else Model.ISO_REFERENCE_PRESSURE_PA
+		if step % 7 != 0:
+			sample.humidity_molar_pct = given_values[step % given_values.size()]
+		sample.paused = step >= 45 and step < 58
+		rig.air_absorption = not (step >= 68 and step < 86)
+		var dt: float = [0.0, 1.0 / 120.0, 1.0 / 60.0, 0.05, 0.1][step % 5]
+		rig.update_sound(sample, dt)
+		old.update(sample, sample.source, sample.listener, dt, rig.air_absorption)
+		matches = matches and rig._absorption_primed == old.primed and rig._absorption_clock == old.clock \
+			and rig._absorption_target_hz == old.target and rig.last_absorption_cutoff_hz == old.cutoff \
+			and absf(float(rig.absorption_filter.cutoff_hz) - old.cutoff) < 0.002
+	_check("eager humidity oracle matches every target and cutoff across refresh, pause, toggle, reset and re-entry", matches)
+	_check("only the conservative atmosphere envelope skips eager fallback",
+		Model.can_skip_humidity_fallback(288.15, 101325.0)
+		and Model.can_skip_humidity_fallback(float(air.temperature_k), float(air.pressure_pa))
+		and not Model.can_skip_humidity_fallback(0.0, 101325.0)
+		and not Model.can_skip_humidity_fallback(288.15, 0.0)
+		and not Model.can_skip_humidity_fallback(NAN, 101325.0)
+		and not Model.can_skip_humidity_fallback(288.15, INF)
+		and not Model.can_skip_humidity_fallback(1e-300, 101325.0))
 	rig.free()
 
 

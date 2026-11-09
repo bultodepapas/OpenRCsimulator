@@ -52,10 +52,17 @@ func configure(voice_profile: Dictionary, bus: StringName) -> bool:
 	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
 	if not manifest is Dictionary:
 		return false
-	var bank: Array = manifest.get(str(profile.get("family", "")), [])
-	for entry: Dictionary in bank:
+	var bank: Variant = manifest.get(str(profile.get("family", "")), [])
+	if not bank is Array:
+		push_error("Malformed powertrain bank: family must be an array")
+		return false
+	for item: Variant in bank:
 		if layers.size() == MAX_LAYERS:
 			break
+		if not item is Dictionary or not item.has("file"):
+			push_error("Malformed powertrain bank: layer must contain a file")
+			return false
+		var entry: Dictionary = item
 		var source := load(ASSET_PATH + str(entry.file)) as AudioStreamWAV
 		if source == null:
 			continue

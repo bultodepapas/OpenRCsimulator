@@ -295,9 +295,14 @@ func snapshot() -> Dictionary:
 	# construction, so it takes the documented presentation humidity instead of 0 %.
 	var temperature_k: float = float(atmosphere.get("temperature_k", 288.15))
 	var pressure_pa: float = float(atmosphere.get("pressure_pa", SoundscapeModel.ISO_REFERENCE_PRESSURE_PA))
-	var humidity: float = SoundscapeModel.humidity_molar_pct(SoundscapeModel.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)
-	if not session.atmosphere_is_reference() and pressure_pa > 0.0:
+	var custom_humidity: bool = not session.atmosphere_is_reference() and pressure_pa > 0.0
+	var humidity: float
+	if custom_humidity and SoundscapeModel.can_skip_humidity_fallback(temperature_k, pressure_pa):
 		humidity = 100.0 * float(atmosphere.get("vapor_pressure_pa", 0.0)) / pressure_pa
+	else:
+		humidity = SoundscapeModel.humidity_molar_pct(SoundscapeModel.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)
+		if custom_humidity:
+			humidity = 100.0 * float(atmosphere.get("vapor_pressure_pa", 0.0)) / pressure_pa
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
 	var result: Dictionary = {
 		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),

@@ -248,15 +248,14 @@ func sample_world(position_ned: PackedFloat64Array, simulation_time_s: float) ->
 
 
 func _cell_velocity(cell: Dictionary, north_m: float, east_m: float, height_agl: float, epoch_time: float) -> PackedFloat64Array:
-	var zero := PackedFloat64Array([0.0, 0.0, 0.0])
 	var top := float(cell.top_agl_m)
 	if height_agl <= 0.0 or height_agl >= top:
-		return zero
+		return PackedFloat64Array([0.0, 0.0, 0.0])
 	var birth := float(cell.birth_s)
 	var duration := float(cell.duration_s)
 	var age := epoch_time - birth
 	if age < 0.0 or age >= duration:
-		return zero
+		return PackedFloat64Array([0.0, 0.0, 0.0])
 	var time_fraction := age / duration
 	var remainder := 1.0 - time_fraction
 	var lifecycle := 64.0 * time_fraction * time_fraction * time_fraction * remainder * remainder * remainder
@@ -272,7 +271,7 @@ func _cell_velocity(cell: Dictionary, north_m: float, east_m: float, height_agl:
 	var radial_squared := offset_north * offset_north + offset_east * offset_east
 	var radial_distance := sqrt(radial_squared)
 	if radial_distance >= 5.0 * radius:
-		return zero
+		return PackedFloat64Array([0.0, 0.0, 0.0])
 
 	var taper := 1.0
 	var taper_derivative := 0.0
@@ -284,7 +283,8 @@ func _cell_velocity(cell: Dictionary, north_m: float, east_m: float, height_agl:
 
 	var peak := float(cell.peak_updraft_mps)
 	var vertical_wave := 3.1415926535897932384626433832795 * height_agl / top
-	var vertical_value := peak * M.sin_(vertical_wave) * M.sin_(vertical_wave)
+	var vertical_sine := M.sin_(vertical_wave)
+	var vertical_value := peak * vertical_sine * vertical_sine
 	var vertical_derivative := peak * 3.1415926535897932384626433832795 / top * M.sin_(2.0 * vertical_wave)
 	var exponential := M.exp_(-radial_squared / radius_squared)
 	var radial_velocity := -0.5 * lifecycle * vertical_derivative * radial_distance * exponential * taper

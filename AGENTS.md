@@ -2,7 +2,7 @@
 
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Terra 6.1 Max sub-agents when useful and assign clear file boundaries.
 
-When delegating, use the [subagent collaboration guide](docs/SUBAGENTS.md) for specialist roles, task boundaries and evidence handoffs. Select only the specialists useful for the current task. alwways use a extra sub agent the GOOD ENEMY.
+When delegating, use the [subagent collaboration guide](docs/SUBAGENTS.md) for specialist roles, task boundaries and evidence handoffs. Select only the specialists useful for the current task. Amost always use at least one extra sub agent the GOOD ENEMY.
 
 do not create thing that you can free download
 
@@ -37,8 +37,6 @@ Use this order for planning, optimization and acceptance evidence. A 720p viewpo
 The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.
 
 ## Discover code
-
- 
 
 Prefer codebase-memory-mcp: `search_graph`, `trace_path`, `get_code_snippet`, `query_graph`, then `get_architecture`. Index the repository first if absent. Stored line ranges may lag the working tree; verify the current source before editing. Use `rg` for literals, configuration, non-code files or insufficient graph results.
 

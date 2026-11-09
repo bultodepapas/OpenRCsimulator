@@ -140,10 +140,12 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 	# Keep this cache local to one soundscape so temporary sessions do not retain old streams.
 	var loop_cache: Dictionary = {}
 	var motor_name: String = "" if not glow_family.is_empty() else ("motor_electric" if kind == "electric_prop" else ("turbine_whine" if kind == "turbine" else "motor_combustion"))
-	_voice("Motor", motor_name, AIRCRAFT_BUS, 8.0, loop_cache)
+	# Keep loading these sources here so missing or invalid resources retain their diagnostics.
+	# Guarded PCM construction waits until the recorded bank's actual admission result.
+	var motor_source: AudioStreamWAV = _voice("Motor", motor_name, AIRCRAFT_BUS, 8.0, loop_cache, false)
 	# A turbine has no propeller: its second aircraft voice carries the jet roar (AUD-10).
 	var propeller_name: String = "" if not glow_family.is_empty() else ("turbine_roar" if kind == "turbine" else "motor_propeller")
-	_voice("Propeller", propeller_name, AIRCRAFT_BUS, 8.0, loop_cache)
+	var propeller_source: AudioStreamWAV = _voice("Propeller", propeller_name, AIRCRAFT_BUS, 8.0, loop_cache, false)
 	_voice("Airframe", "airframe", AIRCRAFT_BUS, 10.0, loop_cache)
 	if not glow_family.is_empty():
 		_create_glow_player()
@@ -180,18 +182,18 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 		add_child(bank)
 		if bank.configure(voice_profile, _bus_names[1]):
 			powertrain = bank
-			# No layered duplicate engine/propeller orders: the recording already contains the prop.
-			for index: int in 2:
-				if index == 1 and str(voice_profile.family) == "gasoline":
-					continue # Retain the prop-only coast layer for a cut engine, never powered combustion.
-				_start_offsets.erase(index)
-				voices[index].stream = null
 			if glow_player != null:
 				glow_pump.stop()
 				glow_player.queue_free()
 				glow_player = null
 		else:
 			bank.queue_free()
+	if powertrain == null:
+		_assign_loop(0, motor_source, loop_cache, PATH + motor_name + ".wav")
+		_assign_loop(1, propeller_source, loop_cache, PATH + propeller_name + ".wav")
+	elif str(voice_profile.family) == "gasoline":
+		# The recorded bank contains the powered prop; retain the prop-only cut-engine coast layer.
+		_assign_loop(1, propeller_source, loop_cache, PATH + propeller_name + ".wav")
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.get("type", "") == "windsock":
 			var anchor := Vector3(float(cue.east), float(cue.pole_height), -float(cue.north))
@@ -251,7 +253,7 @@ func _setup_buses() -> void:
 
 
 func _voice(label: String, asset: String, bus_name: StringName, reference_distance: float,
-		loop_cache: Dictionary) -> void:
+		loop_cache: Dictionary, prepare_loop: bool = true) -> AudioStreamWAV:
 	var player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 	player.name = label
 	player.bus = _bus_names[1 if bus_name == AIRCRAFT_BUS else 2]
@@ -275,16 +277,23 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 		var source: AudioStreamWAV = load(source_path + asset + ".wav") as AudioStreamWAV
 		if source == null:
 			push_error("Missing soundscape source: " + asset)
-			return
-		var cache_key: String = source_path + asset + ".wav"
-		var wav: AudioStreamWAV = loop_cache.get(cache_key) as AudioStreamWAV
-		if wav == null:
-			wav = seamless_loop(source)
-			loop_cache[cache_key] = wav
-		player.stream = wav
-		# Motor, propeller and airframe start together: the blade-pass loop is a harmonic of the firing loop at the
-		# same pitch, so their phase decides level and timbre. A random offset changed the mix by up to 5 dB (AUD-07).
-		_start_offsets[voices.size() - 1] = rng.randf_range(0.0, source.get_length()) if voices.size() > 3 else 0.0
+			return null
+		if prepare_loop:
+			_assign_loop(voices.size() - 1, source, loop_cache, source_path + asset + ".wav")
+		return source
+	return null
+
+
+func _assign_loop(index: int, source: AudioStreamWAV, loop_cache: Dictionary, cache_key: String) -> void:
+	if source == null:
+		return
+	var wav: AudioStreamWAV = loop_cache.get(cache_key) as AudioStreamWAV
+	if wav == null:
+		wav = seamless_loop(source)
+		loop_cache[cache_key] = wav
+	voices[index].stream = wav
+	# Motor, propeller and airframe start together; later ambience keeps its seeded offset.
+	_start_offsets[index] = rng.randf_range(0.0, source.get_length()) if index >= 3 else 0.0
 
 
 ## AUD-07a: Godot 4.7.2 interpolates past loop_end into the stream's silent padding, so a seamless
@@ -536,8 +545,12 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 func _update_path_filters(snapshot: Dictionary, source: Vector3, listener: Vector3, dt: float) -> void:
 	var temperature_k: float = float(snapshot.get("temperature_c", 15.0)) + 273.15
 	var pressure_pa: float = float(snapshot.get("pressure_pa", Model.ISO_REFERENCE_PRESSURE_PA))
-	var humidity: float = float(snapshot.get("humidity_molar_pct",
-		Model.humidity_molar_pct(Model.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)))
+	var humidity: float
+	if snapshot.has("humidity_molar_pct") and Model.can_skip_humidity_fallback(temperature_k, pressure_pa):
+		humidity = float(snapshot["humidity_molar_pct"])
+	else:
+		var fallback: float = Model.humidity_molar_pct(Model.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)
+		humidity = float(snapshot.get("humidity_molar_pct", fallback))
 	var primed: bool = _absorption_primed and last_absorption_cutoff_hz > 0.0
 	_absorption_clock -= dt
 	if not primed or _absorption_clock <= 0.0:
