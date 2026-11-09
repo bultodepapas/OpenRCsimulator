@@ -1,6 +1,6 @@
 # CR-40 — Crash-cost handoff remediation
 
-2026-11-09. Local game assessment is implemented; release gates remain open. This record reconciles [CRASHES.MD](<../../../../external Audits/CRASHES.MD>) and the [senior handoff](<../../../../external Audits/OpenRC_Crash_Cost_Senior_Handoff/README.md>) with the application. CRASHES.MD was empty during round 1 and populated before round 2. Round 1 began at `300dc4e` and ended against `5fe6aee`; round 2 began against `7b8ade3`. Retained receipts identify working bytes separately from HEAD and unrelated shared-tree work.
+2026-11-09. Local game assessment is implemented; release gates remain open. This record reconciles [CRASHES.MD](<../../../../external Audits/CRASHES.MD>) and the [senior handoff](<../../../../external Audits/OpenRC_Crash_Cost_Senior_Handoff/README.md>) with the application. CRASHES.MD was empty during round 1 and populated before round 2. Round 1 began at `300dc4e` and ended against `5fe6aee`; round 2 began against `7b8ade3`; a concurrent shared commit advanced HEAD to `5b72d04` during verification. Retained receipts identify working bytes separately from HEAD and unrelated shared-tree work.
 
 ## Implemented boundary
 
@@ -37,6 +37,25 @@ Runtime bounds include a 1 MiB profile document, 128 financial rows, 256 zones, 
 ## Evidence and limits
 
 [Round-1 evidence](verification.json) retains its original source identities, 29-script checks and native observations; it is not relabeled as round-2 proof. [Round-2 evidence](verification-r2.json) records the current source snapshot, checked execution, offline generation/schema checks, constructed fleet cases and normal native journeys. Logs and images remain in ignored `tmp/`; screenshots are not committed.
+
+The final selected checks pass: **32 Godot scripts / 2,192 reported checks**, **81 offline authoring tests**, generation freshness and v3 schema validation. Main consumers were rerun after unrelated concurrent companion changes, and the final report/integration checks were rerun after the last UI correction. The report suite has 148 checks, including a regression that first reproduced the oversized blank archived panel. Reopening now resets collapsed state and reflows the card after hidden-container layout.
+
+All eight selectable airplanes produced numeric estimates through input-driven normal flights at 1920×1080, without injected dispositions:
+
+| Route | Local DIY estimate (USD) |
+| --- | ---: |
+| Jensen Ugly Stik | 138.38 |
+| Electric Stik 6S | 119.99 |
+| Extra 300S | 77.39 |
+| P-51D Mustang, idle crash | 356.00 |
+| F4U Corsair | 356.00 |
+| Avanti / Vantage | 1,400.00 |
+| Turbo Lumber | 59.99 |
+| MoonRunner X99 | 210.00 |
+
+These amounts describe different local observations, not equivalent crash severity or whole-aircraft losses. A separate severe 47.6 m/s P-51 case kept its two-muffler failed count unresolved and displayed a known subtotal. That control was not forced into a numeric total. The three retained glow variants remain covered by constructed and production integration checks, not separate selectable desktop journeys.
+
+The Spanish Lumber journey changed 5,999 cents DIY to 7,874 cents with shop work, then 31,874 cents for one PNP package plus shop work. Returning to recommended DIY restored 5,999 cents at the same accepted tick 2,584. Sources, unvalued surplus and the labor basis remained visible. Home/new-flight archive loading retained the financial lines, selected receipt and quote history; the JSON view-only round trip had tiny floating-evidence representation differences, so this is not claimed as full binary equality. Paired checkpoint equality is checked separately. The final native archived card fit at y=658, height=394 in 1080p and exposed no active costing controls. Qualifying native sessions stopped cleanly with zero leaked objects. An intermediate launch during a partial unrelated companion edit emitted parse errors and is explicitly excluded in the ledger.
 
 Round-2 constructed fleet fixtures exercise actual contact serialization → owner → automatic assessment → transaction → report for all 11 fixed-wing routes, without injecting final dispositions. Separate checks cover scoped fees, pair/surplus purchases, shared work, tamper/stale refusal, reimpact, cadence, checkpoints, archives, settlement and affected physical/statistics consumers. These verify behavior for the supplied observations; they do not establish solver trajectories, real crash outcomes or the complete handoff matrix.
 

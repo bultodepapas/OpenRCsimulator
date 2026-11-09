@@ -3,6 +3,8 @@
 extends SceneTree
 
 const Barrier = preload("res://render/flightline_barrier.gd")
+const Planting = preload("res://render/flightline_barrier_planting.gd")
+const Plants = preload("res://scenery/imported_vegetation.gd")
 const Frames = preload("res://render/frames.gd")
 const Loader = preload("res://data/field_loader.gd")
 const DEFAULT_PATH: String = "res://data/fields/default.json"
@@ -106,7 +108,7 @@ func _test_opening_and_slats(cue: Dictionary, vertices: PackedVector3Array) -> v
 
 
 func _test_boundary_variants(default_cue: Dictionary) -> void:
-	var boundary_values: Array = [[10.0, 0.5, 2.0], [80.0, 0.9, 2.0]]
+	var boundary_values: Array = [[10.0, 0.5, 2.0], [10.0, 0.5, 6.0], [80.0, 0.9, 2.0], [80.0, 0.9, 12.0]]
 	for variant_index: int in boundary_values.size():
 		var dimensions: Array = boundary_values[variant_index]
 		var width: float = float(dimensions[0])
@@ -155,10 +157,50 @@ func _check_rail_sections(cue: Dictionary) -> void:
 func _check_planting(first: Node3D, second: Node3D, cue: Dictionary) -> void:
 	var plants := first.get_node("PostVegetation") as Node3D
 	var records: Array = plants.get_meta("layout")
+	var positions: PackedVector3Array = Barrier.post_positions(cue)
+	var counts := PackedInt32Array()
+	var tallest := PackedFloat32Array()
+	counts.resize(positions.size())
+	tallest.resize(positions.size())
+	var source_triangles := 0
+	var baseline_instances := 0
+	var baseline_triangles := 0
+	var wispy_triangles: int = Plants.get_asset("grass_wispy_tall").source_triangles
+	var short_triangles: int = Plants.get_asset("grass_common_short").source_triangles
+	var clover_triangles: int = Plants.get_asset("clover_1").source_triangles
+	for i in positions.size():
+		baseline_instances += 4 + i % 3
+		baseline_triangles += 2 * wispy_triangles + short_triangles + (1 + i % 3) * clover_triangles
+	var by_seed := {}
+	var indices_ok := true
+	for record: Dictionary in records:
+		var index := int(record.post)
+		if index < 0 or index >= positions.size():
+			indices_ok = false
+			continue
+		counts[index] += 1
+		tallest[index] = maxf(tallest[index], float(record.height))
+		source_triangles += int(Plants.get_asset(record.asset).source_triangles)
+		by_seed[record.seed] = [record.asset, record.transform, record.height]
+	var bank_size := positions.size() / 2
+	var gate_left := bank_size - 1
+	var gate_right := bank_size
+	_check("plant records identify their post", indices_ok and by_seed.size() == records.size())
+	_check("gate groups stay sparse and lower than the outer groups", counts[gate_left] == 1 and counts[gate_right] == 1 and counts[0] >= 4 and counts[-1] >= 4 and tallest[gate_left] <= 0.0751 and tallest[gate_right] <= 0.0751 and tallest[0] >= 0.12 and tallest[-1] >= 0.12)
 	_check("downloaded plants use three batches and one soil mesh", plants.get_child_count() == 4)
-	_check("bounded source geometry for post plants", int(plants.get_meta("source_triangles")) < 90000)
+	_check("plant instances and source geometry do not exceed the prior layout", records.size() <= baseline_instances and source_triangles <= baseline_triangles and int(plants.get_meta("source_triangles")) == source_triangles)
+	var reversed := positions.duplicate()
+	reversed.reverse()
+	var reversed_by_seed := {}
+	for record: Dictionary in Planting.layout(cue, reversed):
+		reversed_by_seed[record.seed] = [record.asset, record.transform, record.height]
+	_check("post position determines plant placement independent of iteration order", by_seed == reversed_by_seed)
 	if second != null:
 		_check("plant placement is repeatable", records == second.get_node("PostVegetation").get_meta("layout"))
+		var distinct_counts := {}
+		for count in counts:
+			distinct_counts[count] = true
+		_check("default fence has clear, sparse and richer posts", distinct_counts.has(0) and distinct_counts.has(1) and distinct_counts.has(5) and distinct_counts.size() >= 4)
 	var state: Dictionary = plants.get_meta("_imported_vegetation_state")
 	var grounded := true
 	var bounded := true
@@ -175,9 +217,30 @@ func _check_planting(first: Node3D, second: Node3D, cue: Dictionary) -> void:
 	_check("all source plant bottoms sit on the ground", grounded)
 	var soil: MeshInstance3D = plants.get_node("SoilCollars")
 	var soil_clear := true
-	for p: Vector3 in soil.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]:
-		soil_clear = soil_clear and absf(p.x) >= cue.gap_width * 0.5 - 0.0001 and absf(p.x) <= cue.width * 0.5 + 0.0001 and p.y > 0.0 and p.y < 0.04
+	var soil_vertices: PackedVector3Array = soil.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var soil_radius := PackedFloat32Array()
+	soil_radius.resize(positions.size())
+	for p: Vector3 in soil_vertices:
+		soil_clear = soil_clear and absf(p.x) >= cue.gap_width * 0.5 - 0.0001 and absf(p.x) <= cue.width * 0.5 + 0.0001 and absf(p.z) < 0.42 and p.y > 0.0 and p.y < 0.04
+		for i in positions.size():
+			if absf(p.x - positions[i].x) < 0.3:
+				soil_radius[i] = maxf(soil_radius[i], Vector2(p.x - positions[i].x, p.z - positions[i].z).length())
 	_check("soil collars leave the walking opening and shadow mask clear", soil_clear)
+	_check("soil geometry stays within the previous fan budget", soil_vertices.size() / 3 <= positions.size() * 36)
+	_check("gate soil remains small", soil_radius[gate_left] > 0.0 and soil_radius[gate_left] < 0.16 and soil_radius[gate_right] > 0.0 and soil_radius[gate_right] < 0.16)
+	if second != null:
+		var repeat_soil: MeshInstance3D = second.get_node("PostVegetation/SoilCollars")
+		_check("soil shape repeats exactly", soil_vertices.to_byte_array() == repeat_soil.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array())
+		var soil_posts := 0
+		var smallest := INF
+		var largest := 0.0
+		for radius in soil_radius:
+			if radius > 0.0:
+				soil_posts += 1
+				smallest = minf(smallest, radius)
+				largest = maxf(largest, radius)
+		_check("default soil contacts are selective and varied", soil_posts > 2 and soil_posts < positions.size() and largest - smallest > 0.03)
+		print("Default planting: %d posts, %d plants, %d source triangles, %d soil triangles" % [positions.size(), records.size(), source_triangles, soil_vertices.size() / 3])
 
 
 func _check_detail(instance: MeshInstance3D, vertices: PackedVector3Array, normals: PackedVector3Array) -> void:

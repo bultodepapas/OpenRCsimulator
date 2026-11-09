@@ -1,5 +1,25 @@
 # Ground surface capture
 
+## L10c-R5 fence planting review
+
+`capture_barrier_detail.gd` uses the production field and defaults to a native
+1920 × 1080, 4×MSAA SubViewport. It records close/front/rear, pilot, flightline,
+gate, low-bank and overhead views, with engine, GPU, source and camera identities.
+Run one rendered process at a time and choose a fresh output directory:
+
+```powershell
+python tools/godot/run_checked.py --timeout 240 --require-text 'FENCE CAPTURE COMPLETE' -- .tools/Godot_v4.8-beta2_win64_console.exe --path app --rendering-method gl_compatibility --audio-driver Dummy --script res://../tools/ground/capture_barrier_detail.gd -- --out=C:/new-empty-location/fence-review --width=1920 --height=1080 --motion-frames=12
+```
+
+`--motion-frames=2..120` adds an offline camera translation along the fence;
+zero (the default) omits it. The simulation clock and field processing stay
+frozen. Readback and PNG work exclude these runs from frame-time qualification.
+`--planting-source=<path>` replaces only the captured planting with a preserved
+GDScript source snapshot, using the same cue, posts and downloaded assets. The
+manifest identifies that override; ordinary captures retain the production
+builder. [L10c evidence](../../docs/research/visual-quality-implementation/L10c/README.md#2026-11-09--l10c-r5-varied-fence-growth-and-ground-contact)
+records the comparison and its limits.
+
 ## L9b-R1 Club turf scale review
 
 Use the production-world capture for matched 1080p ground views:

@@ -6,6 +6,7 @@ const Events = preload("res://sim/aircraft_contact_events.gd")
 const Aircraft = preload("res://physics/aircraft_data.gd")
 const Contact = preload("res://physics/aircraft_contact_contract.gd")
 const State = preload("res://economy/checkpoint.gd")
+const Transaction = preload("res://economy/cost_transaction.gd")
 var checks := 0
 var failures := 0
 var stik: Dictionary
@@ -128,8 +129,10 @@ func _test_local_persistence() -> void:
 	for tick in range(2, 82):
 		value.observe({tick = tick, events = [hull(stik_bindings, name, tick, 0.01 + tick * 0.0001, true)]}, stik_bindings, false)
 		value.evaluate_pending()
+		value.flush()
 	check("same-band growing scrape retains peak without receipt/revision churn", value._revision == revision and value._game_receipts.size() == receipts and value._summaries.airframe_wing.peaks.depth_m > 0.018 and value.report.total_minor == 2299)
 	check("new persistent peak reaches the published report", value.report.contact_summary.airframe_wing.peaks.depth_m == value._summaries.airframe_wing.peaks.depth_m)
+	check("same-revision evidence is periodically flushed", float(value.load_archive().contact_summary.airframe_wing.peaks.depth_m) > 0.016)
 	check("new persistent peak survives forced archive and reopen", value.flush(true) == OK and is_equal_approx(float(value.load_archive().contact_summary.airframe_wing.peaks.depth_m), value._summaries.airframe_wing.peaks.depth_m))
 	DirAccess.remove_absolute(value.archive_path)
 	value.observe({tick = 82, events = [hull(stik_bindings, name, 82, 0.03, true)]}, stik_bindings, false)
@@ -302,3 +305,60 @@ func _test_choices() -> void:
 		check("paid selected plan survives restore", other.report.costing_mode == "paid" and other.report.known_subtotal_minor == value.report.known_subtotal_minor)
 	var before: Dictionary = value.report.duplicate(true)
 	check("unsupported mode does not mutate bill", not value.set_costing_mode("unknown").get("ok", true) and value.report == before)
+	var revision: int = value._revision
+	var history_count: int = value._quote_history.size()
+	check("reselecting the current mode is idempotent", value.set_costing_mode("paid").get("duplicate", false) and value._revision == revision and value._quote_history.size() == history_count)
+	var package_id := "stik-complete-airframe-game-package"
+	var chosen: Dictionary = value.set_purchase_package(package_id)
+	check("explicit package is selected from the frozen book", chosen.get("ok", false) and value.report.purchase_package_id == package_id and value.report.costing_available, chosen)
+	revision = value._revision
+	history_count = value._quote_history.size()
+	check("reselecting the current package is idempotent", value.set_purchase_package(package_id).get("duplicate", false) and value._revision == revision and value._quote_history.size() == history_count)
+	check("automatic purchase can be reselected", value.set_purchase_package("").get("ok", false))
+	var all_changed := true
+	for i in range(20):
+		var mode := "diy" if i % 2 == 0 else "paid"
+		all_changed = value.set_costing_mode(mode).get("ok", false) and all_changed
+	check("many quote toggles stay usable with bounded history", all_changed and value._quote_history.size() <= 8 and value._quote_history_truncated and value.report.quote_history_truncated)
+	value.archive_path = "user://round2-choice-evidence.json"
+	check("selection revision is archived", value.flush(true) == OK and value.load_archive().revision == value.report.revision)
+	DirAccess.remove_absolute(value.archive_path)
+	saved = value.checkpoint(1, stik_bindings)
+	other = owner()
+	prepared = other.prepare_restore(saved, 1, stik_bindings)
+	check("bounded quote choices survive paired restore", prepared.get("ok", false), prepared)
+	if prepared.get("ok", false):
+		other.commit_restore(prepared)
+		check("restored quote history and selected bill agree", other._quote_history == value._quote_history and other._quote_history_truncated and other.report.costing_mode == value.report.costing_mode and other.report.known_subtotal_minor == value.report.known_subtotal_minor)
+	var candidate: Dictionary = Transaction.prepare_mode(value.dossier, value._assessment, value._recipe_book, value.cost_transaction_context(), value._costing_mode)
+	var request: Dictionary = candidate.receipt.request.duplicate(true)
+	request.transaction_id = "round2-explicit-fee"
+	request.incurred_fees = [{id = "inspection-one", kind = "inspection", amount_minor = 500}]
+	var total_before: int = value.report.known_subtotal_minor
+	var accepted: Dictionary = value.apply_cost_transaction(request)
+	check("explicit transaction records an incurred fee once", accepted.get("ok", false) and value.report.known_subtotal_minor == total_before + 500, accepted)
+	revision = value._revision
+	check("replaying an identical transaction is idempotent", value.apply_cost_transaction(request).get("duplicate", false) and value._revision == revision)
+	var conflicting: Dictionary = request.duplicate(true)
+	conflicting.incurred_fees[0].amount_minor = 600
+	check("conflicting duplicate is rejected atomically", not value.apply_cost_transaction(conflicting).get("ok", true) and value._revision == revision and value.report.known_subtotal_minor == total_before + 500)
+	saved = value.checkpoint(1, stik_bindings)
+	other = owner()
+	prepared = other.prepare_restore(saved, 1, stik_bindings)
+	check("explicit fee and transaction survive paired restore", prepared.get("ok", false), prepared)
+	if prepared.get("ok", false):
+		other.commit_restore(prepared)
+		check("restored fee remains charged once", other._assessment.incurred_fees == [{id = "inspection-one", kind = "inspection", amount_minor = 500}] and other.report.known_subtotal_minor == value.report.known_subtotal_minor)
+	var forged: Dictionary = saved.duplicate(true)
+	forged.cost_transactions[0].purchase.selected_lines[0].cost_cents = 1
+	forged.cost_transactions[0].erase("receipt_digest")
+	forged.cost_transactions[0].receipt_digest = Transaction.digest(forged.cost_transactions[0])
+	forged = State.seal(forged)
+	check("recomputed digest cannot forge a historical cost receipt", not owner().prepare_restore(forged, 1, stik_bindings).get("ok", true))
+	var stale: Dictionary = Transaction.prepare_mode(value.dossier, value._assessment, value._recipe_book, value.cost_transaction_context(), value._costing_mode).receipt.request.duplicate(true)
+	stale.transaction_id = "round2-stale-choice"
+	value.observe({tick = 2, events = [strike(stik_bindings, 2, 5000, 5)]}, stik_bindings, false)
+	value.evaluate_pending()
+	revision = value._revision
+	var after_contact: Dictionary = value.report.duplicate(true)
+	check("new accepted evidence rejects a stale choice atomically", not value.apply_cost_transaction(stale).get("ok", true) and value._revision == revision and value.report == after_contact)

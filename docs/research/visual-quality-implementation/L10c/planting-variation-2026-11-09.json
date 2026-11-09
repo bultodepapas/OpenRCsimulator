@@ -1,0 +1,758 @@
+{
+  "format": "openrc-fence-planting-review v1",
+  "step": "L10c-R5",
+  "date": "2026-11-09",
+  "base_commit": "5b72d04e9ef43049e97bb4124d697e4955a913c1",
+  "complete": true,
+  "scope": "Native frozen-clock production field stills and prescribed spatial camera samples; no simulation or frame-time qualification.",
+  "native": {
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "renderer": "gl_compatibility",
+    "driver": "NVIDIA 617.42",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "msaa": "4x"
+  },
+  "baseline": {
+    "planting_sha256": "8b3def9a44069d334b3f103a361dec8970e7bc3bdd20df012003fd8747b2791c",
+    "plants": 99,
+    "plant_triangles": 42761,
+    "soil_triangles": 720,
+    "capture_script_sha256": "cdd4bff86cdff26af6fa0761a5a92090172f82ff480254a9220911eb603fade1"
+  },
+  "candidate": {
+    "planting_sha256": "ed1646824ed04c304ed1a599a06e5b7d679c281319068b640014587c5972b86f",
+    "plants": 48,
+    "plant_triangles": 16366,
+    "soil_triangles": 300,
+    "capture_script_sha256": "63b30dc79d811c448d3c375b1f473a206ccd375ffb76e5d25f72ea1dae09cc53"
+  },
+  "capture_note": "Baseline uses the preserved planting source override. Candidate and repeat use the unmodified production field builder. The capture-script changes between baseline and candidate add target/clip-plane/script-hash metadata only; camera definitions and rendering are identical.",
+  "sources": {
+    "res://render/flightline_barrier.gd": "b12f06cda97698ec0b1c72ccd544112aef6b1cbd6c894fdb2fff5a32d59060c5",
+    "res://render/flightline_barrier.gdshader": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+    "res://render/flightline_barrier_detail.gd": "881da6550eab19ddba53d71dff6ae7aff789f55b9c4cd1e7544eb5ba98eea64a",
+    "res://render/flightline_barrier_foliage.gdshader": "01e8725624361f950c4581d4fb901d1b451b7ff3938adecef70d2bfc8705c1b0",
+    "res://render/flightline_barrier_planting.gd": "ed1646824ed04c304ed1a599a06e5b7d679c281319068b640014587c5972b86f",
+    "res://render/flightline_barrier_soil.gdshader": "8f65d6b3c954af669fcb6ff1a61b726a200ea0c5086330cae9a2be179b8345fa"
+  },
+  "tests": [
+    {
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flightline_barrier.gd"
+      ],
+      "checks": 264,
+      "passed": true,
+      "warnings": 0,
+      "report_sha256": "afe6748234a3deb8c7dabf47d15e66266a50deeac070b0040705ed10d6a7d60a",
+      "local_report": "tmp/godot-checks/fence-planting/fence-planting-final-icdnqbiz/report.json"
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flightline_barrier_data.gd"
+      ],
+      "checks": 144,
+      "passed": true,
+      "warnings": 0,
+      "report_sha256": "3180e38f356e5b7da4608d027493156c9669b62f04962f55cff9a197cba06c5f",
+      "local_report": "tmp/godot-checks/fence-data-boundary-xykhhnlp/report.json"
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_cue_shadows.gd"
+      ],
+      "checks": 20,
+      "passed": true,
+      "warnings": 0,
+      "report_sha256": "97635e6cf59d8fd165f2d9b28679398d612ec1855f32246d2314ca4093c8db1d",
+      "local_report": "tmp/godot-checks/fence-shadow-boundary-squdgodt/report.json"
+    },
+    {
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_destruction.gd"
+      ],
+      "checks": 78,
+      "passed": true,
+      "warnings": 0,
+      "report_sha256": "11534d467a8488c633cf51a4684bc0d163c9fd285b9e1b9a2882812186185c5c",
+      "local_report": "tmp/godot-checks/fence-damage-boundary-1c8gy7ct/report.json"
+    }
+  ],
+  "total_checks": 506,
+  "exact_repeat_views": 19,
+  "exact_native_repeat_qualified": false,
+  "views": [
+    {
+      "view": "foot",
+      "baseline_sha256": "e280c7e043459a171814aaa44fb242fcea45a08244ff43d7d957cc1d232d97a5",
+      "candidate_sha256": "8ea3352d6ab7a7373682b1f3602a5ecdc44b5fb49404ee17a903d965b1466556",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 92,
+      "changed_pixels": 104595,
+      "changed_bounds_px": [
+        631,
+        413,
+        1221,
+        840
+      ],
+      "camera": {
+        "eye": [
+          3.45000004768372,
+          0.319999992847443,
+          -3.95000004768372
+        ],
+        "target": [
+          3.09999990463257,
+          0.109999999403954,
+          -4.5
+        ],
+        "fov": 52.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "detail",
+      "baseline_sha256": "81edaeb63f815be6ace09fcaaa1bfaf038c01e2361b757517fe5aa82c9db11a9",
+      "candidate_sha256": "0561ff19497c03a7d6c9ac0cd48a8c778dfd772404bb496e06317345e1b117b6",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 83,
+      "changed_pixels": 38997,
+      "changed_bounds_px": [
+        1100,
+        794,
+        1390,
+        1043
+      ],
+      "camera": {
+        "eye": [
+          3.5,
+          0.949999988079071,
+          -3.40000009536743
+        ],
+        "target": [
+          2.70000004768372,
+          0.389999985694885,
+          -4.5
+        ],
+        "fov": 48.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "rear",
+      "baseline_sha256": "d75d64f1a31f2bcab15f61949bd63775e8857ea53e4d260d5f927c05082f47a0",
+      "candidate_sha256": "ca9e9a44caa4e8c65620f61802da3688fd4d01e094970f6c48dc20a5402920fb",
+      "repeat_identical": false,
+      "repeat_changed_pixels": 2,
+      "repeat_max_channel_difference_8bit": 1,
+      "draw_calls": 268,
+      "changed_pixels": 36029,
+      "changed_bounds_px": [
+        503,
+        798,
+        840,
+        1023
+      ],
+      "camera": {
+        "eye": [
+          3.5,
+          0.949999988079071,
+          -5.59999990463257
+        ],
+        "target": [
+          2.70000004768372,
+          0.389999985694885,
+          -4.5
+        ],
+        "fov": 48.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "flightline",
+      "baseline_sha256": "fcd33fac98f6b7cd65ae26990de069d1478ddcfb7d24891aa42fe25508894583",
+      "candidate_sha256": "a62ef7d0a6c0127131892053ee9a8290c507e7de9e81625095bcbb864438a633",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 106,
+      "changed_pixels": 3630,
+      "changed_bounds_px": [
+        536,
+        459,
+        1920,
+        835
+      ],
+      "camera": {
+        "eye": [
+          9.0,
+          1.70000004768372,
+          1.0
+        ],
+        "target": [
+          0.0,
+          0.349999994039536,
+          -4.5
+        ],
+        "fov": 55.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      },
+      "upper_360_rows_changed_pixels": 0
+    },
+    {
+      "view": "pilot",
+      "baseline_sha256": "95b137b4135a9af35231e1def903eb8dd3fae91094d319627f58c78b5d852f58",
+      "candidate_sha256": "e7734cf17297ef4ae31ef712a83661dd551d323996104f911c28aed32bcda642",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 168,
+      "changed_pixels": 4606,
+      "changed_bounds_px": [
+        395,
+        561,
+        1400,
+        885
+      ],
+      "camera": {
+        "eye": [
+          0.0,
+          1.70000004768372,
+          0.0
+        ],
+        "target": [
+          25.0,
+          0.300000011920929,
+          -15.0
+        ],
+        "fov": 50.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      },
+      "upper_360_rows_changed_pixels": 0
+    },
+    {
+      "view": "gate",
+      "baseline_sha256": "23d7d81aabfe24a9eb9d375fc8d8ff153dd3aee522bdb5c610b12d09ffb51c16",
+      "candidate_sha256": "2d50b9fa5a5140c1e5ff49a37d98fa1dc963a415027aa50b0e80542b8b04d8e3",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 153,
+      "changed_pixels": 4584,
+      "changed_bounds_px": [
+        38,
+        190,
+        1873,
+        599
+      ],
+      "camera": {
+        "eye": [
+          0.0,
+          1.29999995231628,
+          -1.29999995231628
+        ],
+        "target": [
+          0.0,
+          0.150000005960464,
+          -4.5
+        ],
+        "fov": 60.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      },
+      "upper_360_rows_changed_pixels": 1
+    },
+    {
+      "view": "bank",
+      "baseline_sha256": "baa6ebff6caea781971c5fa4dc4774cad4f32d9ef6052046dfd7b40fb7fb63b8",
+      "candidate_sha256": "f2ecfeb5c776f9b621df12461b4b97279edf1a8a53c19333710d7263faf8ef16",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 133,
+      "changed_pixels": 6506,
+      "changed_bounds_px": [
+        535,
+        479,
+        1397,
+        635
+      ],
+      "camera": {
+        "eye": [
+          7.0,
+          0.400000005960464,
+          -2.59999990463257
+        ],
+        "target": [
+          3.5,
+          0.100000001490116,
+          -4.5
+        ],
+        "fov": 62.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      },
+      "upper_360_rows_changed_pixels": 0
+    },
+    {
+      "view": "overhead",
+      "baseline_sha256": "98ca38f6fc5203c2f9ccea443c9e707d24281df4e33557eb50477588ed2f7e9e",
+      "candidate_sha256": "974afc1bdc3c896888bbc3e3da2ba5b6dcccab233e5b64012c5f7eb7e2543f0a",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 66,
+      "changed_pixels": 5841,
+      "changed_bounds_px": [
+        179,
+        510,
+        1687,
+        571
+      ],
+      "camera": {
+        "eye": [
+          2.5,
+          7.0,
+          -4.48999977111816
+        ],
+        "target": [
+          2.5,
+          0.0,
+          -4.5
+        ],
+        "fov": 60.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-000",
+      "baseline_sha256": "afa58b197239488d690cec144c9e1750e5d040bc929fc0d8dd6f7b72405ed7d8",
+      "candidate_sha256": "03c9a85b66bf5706da5293500a851ada8e8536b99805a8ab63e0ed074af13468",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 111,
+      "changed_pixels": 12541,
+      "changed_bounds_px": [
+        878,
+        492,
+        1060,
+        655
+      ],
+      "camera": {
+        "eye": [
+          3.45000004768372,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          3.09999990463257,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-001",
+      "baseline_sha256": "bacf85e6959d4490e1f33ab37d4e8185307ac37c064da3fa0b2aef8fabb844cd",
+      "candidate_sha256": "655371b7a8a63dc821396c768f63d636682b334385bf61aae533e789380ad4a6",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 116,
+      "changed_pixels": 10992,
+      "changed_bounds_px": [
+        542,
+        476,
+        750,
+        625
+      ],
+      "camera": {
+        "eye": [
+          3.99545454978943,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          3.64545464515686,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-002",
+      "baseline_sha256": "e9a3ac5ffe2d4f4818b98b7bdc39dacbf0c0162594ec74ae5983da69a18cabf2",
+      "candidate_sha256": "ac3a9eecf26e18071aa30d2a0b75fda30defe7ffa4da115fc194e71684d61270",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 116,
+      "changed_pixels": 34019,
+      "changed_bounds_px": [
+        250,
+        462,
+        1920,
+        743
+      ],
+      "camera": {
+        "eye": [
+          4.54090929031372,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          4.19090890884399,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-003",
+      "baseline_sha256": "049528e085909765fe4e5177aadf956ffc3f58939a28d0daa5f0832b6529678c",
+      "candidate_sha256": "e5392b109c039e95a95a9d33cb89b43fcaba7f38456ba59cabbb149163a7e6a1",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 118,
+      "changed_pixels": 32716,
+      "changed_bounds_px": [
+        0,
+        451,
+        1565,
+        698
+      ],
+      "camera": {
+        "eye": [
+          5.08636379241943,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          4.73636341094971,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-004",
+      "baseline_sha256": "2fa8c7579a5a13ff1b5f3cb45c681cdd6d1b7443d084932cb2730c463cf8289d",
+      "candidate_sha256": "5b655f6bfe7a8d900655f4acac06a3141e9892084224d3857f59261106ffff95",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 118,
+      "changed_pixels": 18926,
+      "changed_bounds_px": [
+        0,
+        461,
+        1166,
+        660
+      ],
+      "camera": {
+        "eye": [
+          5.63181829452515,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          5.28181838989258,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-005",
+      "baseline_sha256": "19521635124ed2f9d353ebdbf651ca07739eb0796156ffa292530b074efdaf44",
+      "candidate_sha256": "f2fceccf62cfdb8724c836a17932f9ad109646c9cc81f50f794e18abb41691b8",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 118,
+      "changed_pixels": 14702,
+      "changed_bounds_px": [
+        532,
+        473,
+        836,
+        628
+      ],
+      "camera": {
+        "eye": [
+          6.17727279663086,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          5.82727289199829,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-006",
+      "baseline_sha256": "1946559528cd4e0215e5779dc419c5f81d440bfdfcac945f2a691603508d878b",
+      "candidate_sha256": "8e80dded213e65c6d39ddc20e84cc234c3318f9bb5ed96b5dd6de5d2fae8b479",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 117,
+      "changed_pixels": 27864,
+      "changed_bounds_px": [
+        262,
+        460,
+        1920,
+        730
+      ],
+      "camera": {
+        "eye": [
+          6.72272729873657,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          6.372727394104,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-007",
+      "baseline_sha256": "98e95863d1060751d0cf0d507ecadfdee98eb95550a007a1261af4422b8fd233",
+      "candidate_sha256": "2afce5543b80f3e93d242964f47376e32977502e5492bec4e49ff58ed1bbe58d",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 117,
+      "changed_pixels": 38281,
+      "changed_bounds_px": [
+        24,
+        454,
+        1708,
+        708
+      ],
+      "camera": {
+        "eye": [
+          7.26818180084229,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          6.91818189620972,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-008",
+      "baseline_sha256": "8498409f094354b7fc8ba1745fd3fd77819ef30fe72a844cbc5bcd32d865523d",
+      "candidate_sha256": "4c7b2a616d9cf2fa2b514a68449facbf435c2d5ebbc407adfea6d6fbb9feb382",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 117,
+      "changed_pixels": 24553,
+      "changed_bounds_px": [
+        0,
+        443,
+        1293,
+        668
+      ],
+      "camera": {
+        "eye": [
+          7.813636302948,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          7.46363639831543,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-009",
+      "baseline_sha256": "5a3c396fd2c61c01b67ed688b89ec406489b41513508fb33d47c2acd1066e083",
+      "candidate_sha256": "374a0e2bb8616a27e23e7a76951afafcaf959db28bf8d69e16e4d0e35724ddf4",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 116,
+      "changed_pixels": 16771,
+      "changed_bounds_px": [
+        608,
+        484,
+        939,
+        635
+      ],
+      "camera": {
+        "eye": [
+          8.35909080505371,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          8.0090913772583,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-010",
+      "baseline_sha256": "ae71e3aa135b9183c8350591fdb7542ee44a82d69b3da9e58d3f197777d11b52",
+      "candidate_sha256": "f307a96e9d43b92c992bce54c9a0de77296796f8b2fad267780f3eccb241492d",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 119,
+      "changed_pixels": 19230,
+      "changed_bounds_px": [
+        325,
+        468,
+        1920,
+        695
+      ],
+      "camera": {
+        "eye": [
+          8.90454578399658,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          8.55454540252686,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    },
+    {
+      "view": "motion-011",
+      "baseline_sha256": "c22549d8291ef40e85aaa78d2d71f79d94f680855c242ba70bd17636fc8b16d7",
+      "candidate_sha256": "6304f3d88e8919992c41919cc2d29fd5a645f8e1930270887b6ba57fc3ff03e1",
+      "repeat_identical": true,
+      "repeat_changed_pixels": 0,
+      "repeat_max_channel_difference_8bit": 0,
+      "draw_calls": 119,
+      "changed_pixels": 39044,
+      "changed_bounds_px": [
+        80,
+        455,
+        1817,
+        712
+      ],
+      "camera": {
+        "eye": [
+          9.44999980926514,
+          0.550000011920929,
+          -3.0
+        ],
+        "target": [
+          9.10000038146973,
+          0.119999997317791,
+          -4.5
+        ],
+        "fov": 56.0,
+        "near_m": 0.0299999993294477,
+        "far_m": 21000.0
+      }
+    }
+  ],
+  "local_raw_evidence": "tmp/vegetation-audit-fence-20261109",
+  "limitations": [
+    "No p95/p99 or simulation/wall-time qualification; geometry reductions do not establish a frame-time improvement.",
+    "No other renderer/platform, packaged-build or human attitude-recognition acceptance.",
+    "Camera samples are an offline spatial sequence with no simulation; they do not measure wind, live motion blur or frame pacing.",
+    "Rear-view repeat differs at two soil-contact pixels by one 8-bit green level. The other 19 views repeat byte-for-byte. Cause unresolved; strict native repeat qualification is not claimed."
+  ]
+}

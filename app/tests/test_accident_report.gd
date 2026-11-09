@@ -63,6 +63,7 @@ func _cost_plan_behavior() -> void:
 	view.show_assessment(source, true)
 	await _ui.settle()
 	_check("normal report offers trusted costing controls", view._cost_actions.visible and view._purchase_selector.visible)
+	_check("automatic cash scope includes services without implying parts only", view._caption_label.text.begins_with("Local game estimate.") and view._caption_label.text.contains("DIY time"))
 	var details := _details_text(view)
 	_check("Lumber selected package retains surplus, overlap and source caveat", details.contains("Included surplus units: 1") and details.contains("Additional duplicate supplied units: 1") and details.contains("Merchant listing was backorder"), details)
 	_check("selected package describes parts instead of internal transaction ID", details.contains("Replacement package") and not details.contains("plan-purchase-hiddenhash"), details)
@@ -92,6 +93,17 @@ func _cost_plan_behavior() -> void:
 	_check("stale package offers visible recovery to recommended", view._purchase_selector.visible and view.controller_action("accept") and packages.back() == "")
 	view.show_archived(changed)
 	_check("archived cost plans have no active transaction controls", not view._cost_actions.visible)
+	_check("archived cost plans reset previously expanded details", not view._details_scroll.visible and not view._details_button.button_pressed)
+	var fresh := AccidentReport.new()
+	root.add_child(fresh)
+	fresh.show_archived(source)
+	await _ui.settle()
+	fresh.controller_action("reopen")
+	await _ui.settle()
+	_check_live_panel_bounds(fresh, "fresh reopened cost archive at 1080p")
+	_check("collapsed archived report has no blank full-height panel", fresh._report_panel.size.y < 600.0, str(fresh._report_panel.size))
+	fresh.queue_free()
+	await _ui.settle()
 	var unsupported := {currency = "USD", complete = false, total_minor = null, known_subtotal_minor = 0,
 		low_minor = null, high_minor = null, outcome = "unavailable", costing_mode = "diy", costing_available = false,
 		costing_error = "No compatible plan.", lines = [], assumptions = [], unresolved = [], identity = {aircraft_id = "xcell-60-research"}}

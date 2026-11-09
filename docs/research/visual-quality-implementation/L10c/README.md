@@ -1,5 +1,44 @@
 # L10c — flightline barrier and complete-field review
 
+## 2026-11-09 — L10c-R5 varied fence growth and ground contact
+
+The vegetation audit's ground follow-up identified uneven fence growth and a
+clearer, maintained gate as useful near-field improvements. The post planting
+now varies between clear, sparse and fuller groups, with one short plant at
+each gate post and richer groups at the outer ends. Selective, smaller,
+directional soil contacts replace the repeated collar at every post. Variation
+depends on post position, so traversal order cannot change the composition.
+
+This reuses the existing downloaded grass and clover, their materials and three
+plant batches. Default plant instances fall **99 → 48**, plant source triangles
+**42,761 → 16,366**, and soil triangles **720 → 300**. Fence geometry, damage
+IDs, collision, ground contact, runway, walking opening and physics data retain
+their existing contracts. Custom fence dimensions keep the full source-mesh
+envelope inside their banks and below the pilot sightline.
+
+Native Windows / Godot **4.8-beta2 official cafc17a19** / Compatibility /
+NVIDIA RTX 3090, driver **617.42**: eight matched still views and twelve
+translated-camera frames at **1920 × 1080** show less repeated post-foot growth
+and a quieter gate. The whole-view draw count is unchanged in every pair.
+The close, gate, bank and overhead images were inspected; the camera track is
+an offline spatial comparison, not live frame-pacing evidence. A separate
+candidate repeat matches 19 of 20 images byte-for-byte; the rear view differs
+at two soil-contact pixels by one 8-bit green level. Its cause remains
+unresolved, so strict native repeat qualification is not claimed. The compact
+[verification receipt](planting-variation-2026-11-09.json) records hashes,
+counts, per-view comparisons and test identities; raw PNGs remain in ignored
+local evidence, with no new images added to Git.
+
+Focused checked tests: **264 barrier**, **144 field-data**, **20 contact-shadow**
+and **78 destruction/reset** checks pass with no engine errors. They cover
+determinism, gate/outer composition, source geometry, transformed plant bounds,
+soil contact and four custom width/gap combinations. The independent review
+found no blocking source defect. These observations do not qualify the whole
+flight's p95/p99 budget, other renderers, packaged builds or human aircraft
+recognition. No frame-time improvement is claimed from the reduced geometry.
+The [capture guide](../../../../tools/ground/README.md#l10c-r5-fence-planting-review)
+owns reproduction commands.
+
 ## 2026-10-20 — L10c-R4 timber and galvanized assembly
 
 The low flightline barrier now uses a sturdier 80 mm top rail and 65 mm lower rails, each 45 mm deep. The first row sits at 0.24 m; shorter custom barriers reduce rail height to preserve open slots. Each board has a 2.5 mm eased edge, a small deterministic bow and twist, exposed cut ends and 6 mm end clearance. Folded steel saddles have bearing and cheek plates, a runway-side domed bolt, a rear nut, and a returned flange with a low-profile rivet fixed to each post face. The 80 mm square steel posts retain formed caps, foot sleeves and their existing planting. The cue still fits its exact 48 × 0.65 × 0.08 m mesh envelope, keeps the 6 m central opening clear and preserves damage IDs.

@@ -69,27 +69,29 @@ func _run() -> void:
 	check("production prop strike continues flight with engine stopped", not session.prop_strike.is_empty() and session.crash.is_empty() and not session.engine_running)
 	check("accepted contact does not calculate, publish or save a report", incident.report.is_empty() and not enabled._accident_report._content_visible and not FileAccess.file_exists(ARCHIVE))
 	enabled._update_accident_report()
-	check("confirmed propeller is priced once at USD 5.39", incident.report.get("known_subtotal_minor") == 539)
+	var prop_line := _component_line(incident.report, "propeller")
+	check("confirmed propeller is priced once at USD 5.39", prop_line.get("amount_minor") == 539 and _component_count(incident.report, "propeller") == 1)
 	var comparison: Dictionary = incident.report.get("replacement_comparison", {})
 	check("production prop strike derives a bounded parts-only comparison", comparison.get("status") == "optimal" and comparison.get("total_cost_cents") == 539
 		and comparison.get("coverage_scope") == "replacements_only" and comparison.get("required_unit_ids") == ["propeller:0"])
-	check("optimal parts price does not complete the accident assessment", not comparison.get("assessment_complete", true)
-		and not comparison.get("complete", true) and incident.report.get("total_minor") == null)
+	check("modeled observations produce a scoped game estimate", comparison.get("assessment_complete", false)
+		and comparison.get("complete", false) and incident.report.get("total_minor") == 7838
+		and incident.report.get("game_assessment", {}).get("basis") == "scenario_assumption")
 	var before_comparison: Dictionary = incident.report.duplicate(true)
 	var authored_option: Dictionary = incident.compare_replacements([{id = "synthetic-discount", coverage_ids = ["propeller:0"],
 		cost_cents = 400, available = true, compatible = true, provenance = "Software fixture; no retail price or physical-fit claim."}])
 	check("explicit package comparison can choose a cheaper complete cover", authored_option.get("selected_candidate_ids") == ["synthetic-discount"] and authored_option.get("total_cost_cents") == 400)
-	check("comparing an alternative cannot rebill or apply it", incident.report == before_comparison and incident.report.known_subtotal_minor == 539)
-	var prop_line: Dictionary = {}
-	for line: Dictionary in incident.report.get("lines", []):
-		if line.get("id") == "propeller":
-			prop_line = line
+	check("comparing an alternative cannot rebill or apply it", incident.report == before_comparison)
 	check("priced part freezes its source and compatibility notes", str(prop_line.get("source_url", "")).begins_with("https://") and prop_line.get("observed_on") == "2026-10-15" and not str(prop_line.get("notes", "")).is_empty())
-	check("shaft and engine inspection prevents a false total or upper cost bound", incident.report.get("total_minor") == null and incident.report.get("high_minor") == null and not incident.report.get("complete", true))
+	check("local powertrain and wing services retain authored game scope", incident.report.get("complete", false)
+		and _component_line(incident.report, "engine_and_muffler").get("amount_minor") == 2500
+		and _component_line(incident.report, "engine_mount").get("amount_minor") == 2500
+		and _component_line(incident.report, "airframe_wing").get("amount_minor") == 2299
+		and incident.report.game_assessment.current_outcomes.engine_and_muffler.basis == "scenario_assumption")
 	var revision: int = incident.report.get("revision", -1)
 	enabled._on_accident_contacts()
 	enabled._update_accident_report()
-	check("repeated notification cannot bill the prop twice", incident.report.get("revision") == revision and incident.report.get("known_subtotal_minor") == 539)
+	check("repeated notification cannot bill the prop twice", incident.report.get("revision") == revision and incident.report.get("known_subtotal_minor") == before_comparison.known_subtotal_minor and _component_count(incident.report, "propeller") == 1)
 	check("snapshot persists outside accepted physics callbacks", incident.flush() == OK and FileAccess.file_exists(ARCHIVE))
 	var reader := Incident.new()
 	reader.archive_path = ARCHIVE
@@ -109,7 +111,7 @@ func _run() -> void:
 		elif defect == "empty_coverage":
 			malformed.replacement_comparison.selected_lines[0].coverage_ids = []
 		else:
-			malformed.replacement_comparison.complete = true
+			malformed.replacement_comparison.complete = not malformed.replacement_comparison.complete
 		var file := FileAccess.open(ARCHIVE, FileAccess.WRITE)
 		file.store_string(JSON.stringify(malformed))
 		file.close()
@@ -215,6 +217,21 @@ func _strike(tick: int, bindings: Dictionary) -> Dictionary:
 		velocity_ned = PackedFloat64Array([1.0, 0.0, 0.0])}, tick, HullContact.law(), bindings)
 
 
+func _component_line(report: Dictionary, component: String) -> Dictionary:
+	for line: Dictionary in report.get("lines", []):
+		if line.get("component_id", line.get("id")) == component:
+			return line
+	return {}
+
+
+func _component_count(report: Dictionary, component: String) -> int:
+	var count := 0
+	for line: Dictionary in report.get("lines", []):
+		if line.get("component_id", line.get("id")) == component:
+			count += 1
+	return count
+
+
 func _test_variant_strikes() -> void:
 	for spec: Array in [["stik-glow-55ax-2t", 539, "apc-lp12070"], ["stik-glow-fs64v-4t", 1165, "ma-k14x6"], ["gp-extra-300s-60", 539, "apc-lp12060"]]:
 		var main: Variant = _make(true, spec[0])
@@ -234,11 +251,10 @@ func _test_variant_strikes() -> void:
 		var report: Dictionary = main._accident_incident.report
 		check("variant production prop strike remains nonterminal: " + spec[0], not session.prop_strike.is_empty() and session.crash.is_empty())
 		check("variant prices its own propeller once: " + spec[0], report.get("known_subtotal_minor") == spec[1])
-		var prop_line: Dictionary = {}
-		for line: Dictionary in report.get("lines", []):
-			if line.get("id") == "propeller":
-				prop_line = line
-		check("variant retains selected source identity and inspection uncertainty: " + spec[0], prop_line.get("offer_id") == spec[2] and str(prop_line.get("source_url", "")).begins_with("https://") and report.get("total_minor") == null and report.get("high_minor") == null)
+		var prop_line := _component_line(report, "propeller")
+		check("variant retains source identity and scoped game estimate: " + spec[0], prop_line.get("offer_id") == spec[2]
+			and str(prop_line.get("source_url", "")).begins_with("https://") and report.get("total_minor") == spec[1]
+			and report.get("game_assessment", {}).get("basis") == "scenario_assumption")
 		if spec[0] == "stik-glow-fs64v-4t":
 			check("sold-out manufacturer offer stays labeled in report", str(prop_line.get("availability", "")).to_lower().contains("sold out"))
 		_retire_main(main)
@@ -258,6 +274,7 @@ func _test_cadence(session: Variant) -> void:
 	for fps in [30, 60, 144]:
 		var ledger := Incident.new()
 		ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
+		ledger._identity.incident_id = "cadence-integration-fixture"
 		var frame_clock := 0
 		for tick in range(1, 961):
 			var events: Array = []
@@ -353,6 +370,7 @@ func _test_terminal_determinism() -> void:
 		var main: Variant = _make(true, "jensen-das-ugly-stik-60", spec[0])
 		var session: Variant = main.session
 		session.reset()
+		main._accident_incident._identity.incident_id = "terminal-integration-fixture"
 		session.sim.set_paused(false)
 		for tick in 10:
 			session.sim.step()
@@ -369,12 +387,9 @@ func _test_terminal_determinism() -> void:
 		check("terminal hull crash has the effects director only when requested (%s)" % label, (main._crash_director != null) == spec[0])
 		check("terminal hull crash headlines a scoped game estimate (%s)" % label, not session.crash.is_empty() and report.get("terminal", false)
 			and report.get("known_subtotal_minor") == 6000 and amount == "US$60.00")
-		var tail := {}
-		for line: Dictionary in report.get("lines", []):
-			if line.get("id") == "airframe_tail":
-				tail = line
+		var tail := _component_line(report, "airframe_tail")
 		check("terminal hull crash prices the mapped tail game allowance (%s)" % label,
-			tail.get("action") == "replacement" and tail.get("amount_minor") == 6000)
+			tail.get("action") == "selected_purchase" and tail.get("amount_minor") == 6000)
 		if expected.is_empty():
 			expected = report
 		check("terminal crash report is independent of effects and publication cadence (%s)" % label, report == expected)

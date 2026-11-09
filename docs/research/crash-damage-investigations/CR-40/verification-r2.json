@@ -1,0 +1,901 @@
+{
+  "format": "openrc-crash-cost-verification v2",
+  "date": "2026-11-09",
+  "round": 2,
+  "baseline_head": "7b8ade33ae24414e420708f82b0235b3ff0b0f70",
+  "head_at_verification": "5b72d04e9ef43049e97bb4124d697e4955a913c1",
+  "scope": "Automatic local fixed-wing game estimates and normal report choices; not physical or release qualification",
+  "engine": {
+    "version": "Godot 4.8 beta2 official cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "path": ".tools/Godot_v4.8-beta2_win64.exe",
+    "sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2",
+    "platform": "Windows x86_64"
+  },
+  "source_sha256": {
+    "app/economy/calculator.gd": "dc5dfa0ad16b6fe91a6073bcd0876b8e9c94d226682f9826e47fd134d91c5b8c",
+    "app/economy/catalog.gd": "171898aaa8e3757695deaa68dd6dda73d2d976aea0f11b07a885a578d8ed20cf",
+    "app/economy/checkpoint.gd": "659318bac36d90c411ac57e6fa5b9c871ecebc1ed45fdee7dc1aab61a25bd0eb",
+    "app/economy/component_resolver.gd": "ac8038a471de6b258d3a91e919288101665a868c6fb283ee2c291fca246a53fc",
+    "app/economy/cost_profile.gd": "314a85029e08b549e14d231e0d0955744a85ea2557f37df9a3c77b4318b65dac",
+    "app/economy/damage_assessment.gd": "70702094f08c2937fde12182d807820f832fec0ae2fd20b6cfc6bb7be2869895",
+    "app/economy/impact_budget.gd": "4e85fd359c43508a749fd00871498ffee66521ecd66c319aba13f5db3dc7ca2d",
+    "app/economy/incident.gd": "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+    "app/economy/inspection.gd": "97887e00cc23b70124369094dc338688ba54473793a06014efdd19b3b6c55d9e",
+    "app/economy/package_optimizer.gd": "c6debf0d6b5fcd8ffc1eee7c1474802390bb46108d54ea00d0b2c8c015d241cd",
+    "app/economy/repair_details.gd": "95be217e28dbf86374a54fcc0e27b023ee138cdccdd9e602621c00515f08161b",
+    "app/economy/repair_planner.gd": "cfd2b0804a6b04ba28e0ef48dbad199fc0d7fd62a37256e2f64952cef99efa7f",
+    "app/economy/replacement_quote.gd": "f99dcec602c347b56b94b074e425fca73ce0043fce4e934b4603a24326f96ccd",
+    "app/economy/settlement.gd": "f8c6c8bdbedbb520ef4fc9309a5cb4a39528faefcfb09a215475fd8972716e7c",
+    "app/economy/thermal_budget.gd": "072084c73597dfeddf6a8feb98298b3db4267957070596823644f1de53b79a5e",
+    "app/main.gd": "2b4806fc96aa078e4d53be22a0714ada95189608166fa0c33eb7546f1bdfc8a6",
+    "app/sim/flight_session.gd": "621507d66c4a785fe101f08576d04104fe6ce60955dd700b5fa50fd3454e3853",
+    "app/sim/aircraft_contact_events.gd": "ad1a8f1a7ae4df47b98e1b44d34af8790635cb127bc55758b337e34523c77317",
+    "app/statistics/fixed_wing_adapter.gd": "d59f20f1d6b21faae1ebf62d9cda141ef56494bd4741d185618c9753e51a53f2",
+    "app/ui/accident_report.gd": "2ff5a18f0aa1c4dd2b2f1222d627bc230a6191596820d2751227ce99db060298",
+    "app/i18n/es.po": "8247c2519825885e55373e9089bcc40b98a3b25577ffb9a88c758737ff48e215",
+    "app/data/economy/cost-profiles.json": "d0f718a003e99fb510c3db1ad4933d52f64967c86d936f759062ed4f640b1103",
+    "app/data/economy/repair-recipes.json": "41bb0efd0d4998089ab88afb8167588c3ac0a2de790f05c828cbd546550ac688",
+    "research/crash-economics/cost-profiles.json": "3a6fae59b16d66120eff6c624b7258321331828251e4edd9feff9baf1adfbd97",
+    "research/crash-economics/build_profiles.py": "860f785b6cdf00fe0addf6d2ae0f70a91b07f4f8bf0537d915e25dac67ce7b2d",
+    "research/crash-economics/build_runtime.py": "7f7af817536fdae38e18266247eadadaaa05431c1221644fe3a7a6dfe9293abf",
+    "app/tests/test_economy_calculator.gd": "8beee4eba3c0046a3ffb8591056ff7bb4db2a462f9fd33e0374377abe19e9d41",
+    "app/tests/test_economy_catalog.gd": "e817cb52d0e8f1a1dcb8dc0812044d770bafed2c359ce8f434f8332ebf0bf517",
+    "app/tests/test_economy_checkpoint.gd": "68167f8367ec6fcafbbd21e76e15c59debf9d88d64f6e66a7153513dbe6bb9dc",
+    "app/tests/test_economy_component_resolver.gd": "6e014659a5cc2cd076aa20271157e909bf7704304ef39750cb15006984dbe0e9",
+    "app/tests/test_economy_cr39.gd": "872658194dd16f8b90b8b0dadce8150e129db9a3d7c635cfeb0fbd7f2f57ee42",
+    "app/tests/test_economy_impact_budget.gd": "0d9a91a91cd128837a0e344e045fa5836495a5833da6edb6b6ee71e4a3e554b4",
+    "app/tests/test_economy_inspection.gd": "4ccc48513d4a00b68f75119474b3dcf289ec4a44f354c117daa8e9cac11538e7",
+    "app/tests/test_economy_package_optimizer.gd": "8a938ca2400ed9d50ee8146adb15cc0896921c5b3465ab9d7379199e70087184",
+    "app/tests/test_economy_repair_details.gd": "ab55d519dd267c7999b95b6a83df13f8b08ce0ca4c076625cd51e32314543d47",
+    "app/tests/test_economy_repair_planner.gd": "75e6364e14be80ec735fe7b912dec2b2a68c27782293badc7286c00d5c619466",
+    "app/tests/test_economy_replacement_quote.gd": "4f48ee7d6316b45e1c649f14bcb77606fda87c78d9f06c85125a2d31e1f78d87",
+    "app/tests/test_economy_thermal_budget.gd": "e634caff9e47c28af1dab8e4caf37b1fc592b21d680ee45f3b0a260a44b3c25b",
+    "app/tests/test_cost_profiles.gd": "fa3f074c7f5c9b4946f56c59f2d2a5252daec0ba60d6a2690f919060b2bf17fc",
+    "app/tests/test_crash_cost_fleet.gd": "34d149972c06545414b9d0dfe30827df5dfff1c70972235a4e5d71738d02426c",
+    "app/tests/test_crash_cost_incident.gd": "9e8a66a704799a846b1105740aca5891cccb2deb5bca9030c07690d5a616ee03",
+    "app/tests/test_crash_cost_producers.gd": "c300d748f8c1e21e990b06ee3c4cf98b2a6a93288b6c2960202fd854c1402bd9",
+    "app/tests/test_accident_integration.gd": "c97a46e54bcb320f4d6c41570666b8c28bb8a5a82e21121f8ac221b949c5f396",
+    "app/tests/test_accident_report.gd": "235e512d19db3f991189fafa134b4f1348211534a8a1af8379fb27f375eb515f",
+    "app/tests/test_accident_settlement.gd": "bb16c919ae5133c7183dccfefa36ef2eacd83b4d04704ee8ee17674526f59f2a",
+    "app/tests/test_aircraft_contact_events.gd": "aab42d1013ec005fec060996de04b154d241d3a9a053854a35c1c529b5c8a58e",
+    "app/tests/test_aircraft_contact_session.gd": "02e0cfd8e91fe94582740009335e67748c65f64243f7442a3e52bd372b51f1a3",
+    "app/tests/test_crash_snapshot.gd": "ded417a5dd06576b313c1dbf02b94bc960383768c1d52a8d823fdf094db21763",
+    "app/tests/test_ground_accident_session.gd": "3eff3076e74813c9681fae75f148dc739438d5a171a04f15c5cce88357db6d8e",
+    "app/tests/test_flight_statistics_terrain.gd": "e0727f28c4efa3d05595b128c17c6d1a9643aa541da3acf1d3f6e7217e941e9a",
+    "app/tests/test_flight_statistics_lifecycle.gd": "b42193c6d3e4a748c61321e69dd91dc0f19597145059aaf1e5fbf6b69c4e8d15",
+    "app/tests/test_checkpoint.gd": "428a4cf834f72719ee3fae0e41edebd6147f290473f95513f05be92b8b890b2f",
+    "app/tests/test_checkpoint_integrity.gd": "cfc900ab607dbf05e875224603a877a0854926be951c803a2b89aae62b8e9bc0",
+    "app/tests/test_visual_checkpoint.gd": "5ff193499d8ca538a5d2ee013f33f4aacad9e44cca122634be077eef97b94f4c",
+    "app/tests/test_water_checkpoint.gd": "32e8bc9fee091311f1cd29b0d1ec7c9a5b6b43adfef156ca6081f677a40f58aa",
+    "app/economy/cost_transaction.gd": "43612368d0e93b7cc776a3e78f088279c79e6d109752599b1270b4efe6e87062",
+    "app/tests/test_cost_transaction.gd": "e6e943b3106d6f984298379a93c3b1095110995967365d0f64f675b633ba3e20",
+    "app/tests/test_crash_cost_round2.gd": "99b9baaaea011ecab091b236346068568d7551a9c327a317e37ec1157f2fa9d5",
+    "app/tests/test_crash_cost_game_flow.gd": "a06ed19ba9ce46b3c5e12944b01d17ece9e0a7e417a969650a646002e7cdfff9",
+    "app/data/schema/openrc-cost-profiles-v3.schema.json": "1ab078e3b94794ecb0c2b5c93a08452c314547256294ef774d8c2e2372341df4",
+    "app/ai/companions/manager.gd": "bbd2cbd63227b3c20539051c805da9a02127cf7f169dee10239b524c5e807e32",
+    "docs/AIRCRAFT_CONTRACT.md": "f2e2c807a6ec7d0b972f06fce8b9843b4d3d9c81ec4676deca291d5c96af2a2a",
+    "docs/CRASH-DAMAGE-PLAN.md": "4955583bebd60badb49fbcf8f96daad849bcad5a0a0b9d8489b8b7302aa2dfc7",
+    "docs/plans/crash-damage-economics.md": "a4f2b92dcf0efb9c54608937eeed220f2b63498d6f33aa626c2e321b9ada94f4",
+    "docs/DECISIONS.md": "cc3b16ba8f0cb126c038318037151d58f6f7a72acbd83167305afb573d71ce1c"
+  },
+  "verification": {
+    "unique_checked_scripts": 32,
+    "checks_with_reported_counts": 2192,
+    "all_selected_pass": true,
+    "scripts": [
+      {
+        "script": "test_economy_calculator.gd",
+        "checks": 81,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_calculator-7tfo13a4/report.json",
+          "sha256": "559de8077840486cc94408447a6fd55b8086cee810db32a4a38638418c7e54db",
+          "log_sha256": "33661af4fdc53d0ee9648af7ec2c21d3caaad015ca2c2517ce4be43c14321273",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_catalog.gd",
+        "checks": 102,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_catalog-1hlyz8yp/report.json",
+          "sha256": "a2a368a6516dc57c70b64786d134547e5d7c5a53b8c738a30f861e0a1dc240d2",
+          "log_sha256": "2ce01a320dabb941125db3b8720f2d0e2be0654a676a69af153aedb474f7bbc4",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_checkpoint.gd",
+        "checks": 65,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_checkpoint-85ea17ly/report.json",
+          "sha256": "98d5f0271d5ee34b105c687880ebf2decfa642290e20f4d0332f2f293f5030b6",
+          "log_sha256": "8fdfc8ebdd6dcd018e44e7733fb9cf920c2ad17484a275bc433c56d9c1618b50",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_component_resolver.gd",
+        "checks": 35,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_component_resolver-2w9m0aze/report.json",
+          "sha256": "861744044d4dadbebd6684fda432e820b0dd9095721c36b041e17cf1393101a6",
+          "log_sha256": "7bd593db3fcb1a41b7c4f74a70ac73ba0edf2d44f082e318cee3403231d1e749",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_cr39.gd",
+        "checks": 52,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_cr39-b1kwvug9/report.json",
+          "sha256": "5c9d23aaafff23fee45e070ab8f2f2b61786d07d4d9516fd94fd1ef7eaec1805",
+          "log_sha256": "2f9490a272e5d806c31ea49aac91fdde1df0aed973f1982c03ce20cef44b57ae",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_impact_budget.gd",
+        "checks": 36,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_impact_budget-oaxncfke/report.json",
+          "sha256": "606e567dbfe513bb28dded7c441a3d0021767462a8d344534ddcbae625a79fa4",
+          "log_sha256": "8d4735e7ffe66d677610b46dc33fd75599e19b11bedeef9850a2149aa7ed4db2",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_inspection.gd",
+        "checks": 83,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_inspection-0he1zcjd/report.json",
+          "sha256": "8004b55b08161c14dd2f04d42f2b21b02bc2cf104aaa5b0d91d24291f6b336e8",
+          "log_sha256": "9fa45ce404bcfd77f11072ebe9ea2197f29130c57aced32dce930b4b46e2eb0d",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_package_optimizer.gd",
+        "checks": 51,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_package_optimizer-awm5orjw/report.json",
+          "sha256": "ed8a10f65ed287786c2a9a675ac43aced60d3eeeeefae3c597c07cc0ca8319d0",
+          "log_sha256": "a0417645e472e4a91b794dbe8b5a8ac0bf5d2450bc6105dd22cbb39651d92234",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_repair_details.gd",
+        "checks": 49,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_repair_details-b4mao6du/report.json",
+          "sha256": "d064ecd6250bf7f0b3557240e783de2e038284179d20164b99e1c2682a054463",
+          "log_sha256": "c5bb30132cefea93c72c0f4c01ac9ec4739350628358951df6e363e2cec69e02",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_repair_planner.gd",
+        "checks": 62,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_repair_planner-9n40k695/report.json",
+          "sha256": "47f0d44acc29c1e27a450082f48dd5689be51fff1c762a35bc3445a8d201636c",
+          "log_sha256": "a3055f542a1bca1a540d2ba33c937166e7ce5d18837b59e2b83137294410c3f1",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_replacement_quote.gd",
+        "checks": 53,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_replacement_quote-yqx7oamg/report.json",
+          "sha256": "c4de2d1ff268069598d35da6d06f61dd46e6866837ce3597728b349791acd5c1",
+          "log_sha256": "8622847459fc983fc23dda6de577b31dc87ae71728e7f2be485b6c3e4c4e9b1c",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_economy_thermal_budget.gd",
+        "checks": 68,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_economy_thermal_budget-u_qkfest/report.json",
+          "sha256": "ad4b0af79b223df598ebbe6b1a6633cf33f9aba9702291c996f293a0cbce5bc0",
+          "log_sha256": "c1d9f018cb63953844ee49c9d64a7dd66a7c4fedfc0949c24cc1d099c41dcc96",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_cost_profiles.gd",
+        "checks": 67,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_cost_profiles-ljcyygxr/report.json",
+          "sha256": "aada2ffca306c05b30c0448f74ee42ea2f90bb335b8b91bd873f0be615ebd077",
+          "log_sha256": "39cab793b28d6e3b98bf4979270c10be61ee507024e2140ccd983b0a96b02244",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_crash_cost_fleet.gd",
+        "checks": 66,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_crash_cost_fleet-c0ou_gsh/report.json",
+          "sha256": "6ac4d6e16644618d3d485a924d889a109a3bf8810456efc976a9f17f6413225a",
+          "log_sha256": "540e90a8c466653c3bb68ec564a6736fd4ae797846f2e77501aa7dd21f92396d",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_crash_cost_incident.gd",
+        "checks": 59,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_crash_cost_incident-3sltqajc/report.json",
+          "sha256": "f85b959f8cb41548d76c81effd5385a8a8dc674ac769a28c971be481fef5efbd",
+          "log_sha256": "0a18118b0c43a18739145e7a338e0c98af711adf25791f50cbd2cdec91d3855b",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_crash_cost_producers.gd",
+        "checks": 16,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_crash_cost_producers-9ijrk862/report.json",
+          "sha256": "999a037ae1803704dbf8862bf4b34b95fb60390fbaffe5894136175705e15773",
+          "log_sha256": "aa49159d89fca0307790cd8e42f2d75c487819db2d10fe7d949ddce3a47fc520",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_accident_integration.gd",
+        "checks": 78,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-archive-final/integration-6ce0n2bw/report.json",
+          "sha256": "ee77f07992eb64ac3d5da3784e72af096f7d218eaf84f7ab4ffac13b474291e4",
+          "log_sha256": "434e934c16a0508bacae8e28df0096859713ef07446cec5a0f926e1e3732ec7c",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_accident_report.gd",
+        "checks": 148,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-archive-layout/fixed-w2r2vw27/report.json",
+          "sha256": "94e840c885b7db4b48ad35cc1a57911be27aa84977f1e93727e2acd96bb0cc12",
+          "log_sha256": "b8d9fed3c703787e9fabf5c0e3668b7a48aa225d86c80fdc50a94fb427ff072f",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_accident_settlement.gd",
+        "checks": 46,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_accident_settlement-gpv8ojck/report.json",
+          "sha256": "3b8be70b8144c1bfd38596ab5933544618f2d044c45dcc97ae0276c3170634a0",
+          "log_sha256": "925688932b45b1688a1c11ad359fc7292670ee104790d1f65ff2a4cd36ffcc16",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_aircraft_contact_events.gd",
+        "checks": 49,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_aircraft_contact_events-cevrm1wl/report.json",
+          "sha256": "be84febec3473de7e0a599ffa99a63423c2c47aea27b879c95b0e2ecbb63f0d4",
+          "log_sha256": "b7640ba64026289a2d8feed53cde0be71d8a2bc1072412190fa2f2f7c9f78a9d",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_aircraft_contact_session.gd",
+        "checks": 83,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_aircraft_contact_session-uyuuv6sd/report.json",
+          "sha256": "5ba48decb02c8b4135aa5cb41c8cb63f29cb3e51d733ab1f9b1d6c5654182f91",
+          "log_sha256": "6791a1401c036c294f511116ce9621ce067254bba0bd4315efe731056f45cb38",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_crash_snapshot.gd",
+        "checks": 42,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_crash_snapshot-8gckfbf9/report.json",
+          "sha256": "5ed9f4e7efda9ae7242b6a02d3ff1cd88f4527339b2d54ce1c8580673fe07be1",
+          "log_sha256": "883e193f0f93617d38babc7f2a7c3e8e04c2eac47c380deb9e17f3155013b3f9",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_ground_accident_session.gd",
+        "checks": 33,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_ground_accident_session-l5_aklom/report.json",
+          "sha256": "c1d3118c226ca60a089ed783698eddb1cf7b3cb39dc3a2b2fa0c4cc6f7dec840",
+          "log_sha256": "34b8d3ba503bbea758e7d33b474ef9332db4636c86f9853b6178dca08fdc34cf",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_flight_statistics_terrain.gd",
+        "checks": 82,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_flight_statistics_terrain-u66o8eca/report.json",
+          "sha256": "f9e89c9869e6f4b69dd4b6a8f162a4b6a9703ed0e0539ee247ed382a67486aa2",
+          "log_sha256": "82e0c1ed22a20f5c25a5c902322b39a4be8707c1f76c3860c7fbc6ff3988f723",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_flight_statistics_lifecycle.gd",
+        "checks": 74,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_flight_statistics_lifecycle-4tkun1jx/report.json",
+          "sha256": "2f665a56e01d3ce22ebb77b2a3a574dcf34e6d14c02e78994fe87137f4320ad7",
+          "log_sha256": "3b9b84e42df93e84e94f24024f726357929ee64fd0904970cd9e91ced47382cb",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_checkpoint.gd",
+        "checks": 104,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_checkpoint-ry24mk69/report.json",
+          "sha256": "4b99bbbcdb3b3256d71d4ba56ece302460790f6913e6f20e6781c9ef79349a59",
+          "log_sha256": "c65cf4fe35bb15ce52182af244c7a3cdf83ae5a6934a9ddb637075f991d02834",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_checkpoint_integrity.gd",
+        "checks": 149,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_checkpoint_integrity-9wfarofg/report.json",
+          "sha256": "89fc5c049c434784dc20188888ca1a13287f639ed093d045f7d47ff2b07dcf77",
+          "log_sha256": "26bbd39d8bd6cb8edfd2b7d390f70eb3903f792d5f24388ce4e4617ccd9d65c8",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_visual_checkpoint.gd",
+        "checks": 62,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_visual_checkpoint-jpjmdpb7/report.json",
+          "sha256": "9f32e31bbedea85f02fad24bd0d3b9c836caf32f3bf60f52bdf6e828359f4b6f",
+          "log_sha256": "a3055f542a1bca1a540d2ba33c937166e7ce5d18837b59e2b83137294410c3f1",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_water_checkpoint.gd",
+        "checks": 16,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-main-final/test_water_checkpoint-me_k6fky/report.json",
+          "sha256": "439b14e733812b8a51a65c112e28907255f83b62c7442fd3047dfa9a32b8cf46",
+          "log_sha256": "3cb9177c66798533c1d8bf9bbc1413a2b41202a6f41dfe1c352e0b30b9de8825",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_cost_transaction.gd",
+        "checks": 50,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_cost_transaction-nkmjldhn/report.json",
+          "sha256": "d533ae60a0038f4351ece4e408f5afee9d5c95e1fee0f4e9d0f46feb7b89f185",
+          "log_sha256": "83d9af1d2e14cfee9e13efd746f591c28e4bc8ab6fd2c477cebe73925c07a11d",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_crash_cost_round2.gd",
+        "checks": 72,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_crash_cost_round2-8m8i7335/report.json",
+          "sha256": "83c83c7414d2a9bd468bbf4617eb39e75a5c3b63068849b4059dbd9d12f8d5e1",
+          "log_sha256": "7b18fe2aa8ae7e742be4e3dec4a0ae55cdc392bf8d1ebab0e606b27367d35cde",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      },
+      {
+        "script": "test_crash_cost_game_flow.gd",
+        "checks": 159,
+        "receipt": {
+          "path": "tmp/crash-cost-r2-final/test_crash_cost_game_flow-q_5wvw74/report.json",
+          "sha256": "705504c974ac826aa1320395c1dd71bf120a3a755aabc231e7dabddd18c37248",
+          "log_sha256": "9bf378efaba043f7bf63b1a65763d6e197c94dc38b761fb126e4ab6447d25c30",
+          "errors": 0,
+          "warnings": 0,
+          "ok": true,
+          "complete": true,
+          "diagnostic_counts": {
+            "error": 0,
+            "warning": 0
+          }
+        }
+      }
+    ],
+    "selection_method": "32 affected scripts selected from prior boundaries plus transaction, current-policy integration and all-route flow. Main consumers rerun after concurrent main changes; final report and integration rerun after archive layout fix. This is not the full required CI roster.",
+    "source_stability": {
+      "economy_runtime": "unchanged throughout consolidated and follow-up checks",
+      "consolidated_changes": [
+        "app/main.gd (unrelated concurrent companion work)",
+        "app/tests/test_accident_integration.gd (policy fixtures)"
+      ],
+      "main_followup_changes": [
+        "app/ui/accident_report.gd",
+        "app/i18n/es.po",
+        "app/tests/test_accident_report.gd"
+      ],
+      "resolution": "Final report 148 and integration 78 rerun after the last UI changes. Current hashes retained here."
+    },
+    "resolved_failures": [
+      {
+        "path": "tmp/crash-cost-r2-final/test_accident_integration-85k57qgu/engine.log",
+        "reason": "Old policy amounts/pending expectations and different generated incident identities. Fixed fixtures use the same incident identity and still compare full transaction IDs/digests; runtime needed no change."
+      },
+      {
+        "path": "tmp/crash-cost-r2-archive-layout/baseline-compiled-1ij6z0t6/engine.log",
+        "reason": "Three new regressions exposed stale expanded state and a narrow hidden-card minimum height. Reset collapsed state and reflow after reopening."
+      }
+    ]
+  },
+  "offline": {
+    "unittest": {
+      "command": "python -m unittest discover -s research/crash-economics -p 'test_*.py'",
+      "tests": 81,
+      "ok": true
+    },
+    "generation": {
+      "command": "python research/crash-economics/build_runtime.py --check",
+      "ok": true,
+      "legacy_routes": 12,
+      "fixed_wing_profiles": 11
+    },
+    "schema": {
+      "version": "Draft 2020-12 with FormatChecker",
+      "documents": [
+        "research/crash-economics/cost-profiles.json",
+        "app/data/economy/cost-profiles.json"
+      ],
+      "ok": true,
+      "note": "Used installed jsonschema 4.26; no dependency added to the stdlib authoring suite."
+    },
+    "unit_discovery": {
+      "source": "tools/ci/phase_roster.py: tests/test_*.gd",
+      "new_scripts_discovered_by_pattern": true,
+      "windows_roster_command": "refused empty roster through this host bash shim; not a completed CI coverage receipt"
+    }
+  },
+  "native": {
+    "platform": "Windows x86_64",
+    "backend": "Compatibility / OpenGL 3.3 NVIDIA RTX 3090, driver 617.42",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "sessions": [
+      {
+        "directory": "tmp/debug-bridge/20261109-145258-47883",
+        "role": "all eight selectable journeys and live choices",
+        "stopped": true,
+        "forced": false,
+        "leaked_objects": 0
+      },
+      {
+        "directory": "tmp/debug-bridge/20261109-150544-47885",
+        "role": "final archived layout, current UI, no engine errors",
+        "stopped": true,
+        "forced": false,
+        "leaked_objects": 0
+      }
+    ],
+    "intermediate_session_excluded": {
+      "directory": "tmp/debug-bridge/20261109-150314-47884",
+      "reason": "Concurrent partial companion manager edit emitted _advancing parse errors; also exposed the fixed archive layout bug. Not a clean candidate pass."
+    },
+    "journeys": [
+      {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "accepted_tick": 2925,
+        "total_minor": 13838,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/jensen-das-ugly-stik-60.json",
+        "receipt_sha256": "5452b7c5bef052f8cc3063b048a5f34a050f9c09bce73b9bb58395f6aafd5506",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "stik-electric-6s",
+        "accepted_tick": 611,
+        "total_minor": 11999,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/stik-electric-6s.json",
+        "receipt_sha256": "5adbfd69286077b134fceb717606d05f3fefb5892399f7291a3b2be0a8285168",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "gp-extra-300s-60",
+        "accepted_tick": 371,
+        "total_minor": 7739,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/gp-extra-300s-60.json",
+        "receipt_sha256": "5c66e95948ca78fb7d050923b520397a92ee5be0886cd787ddfd836c4f643ad8",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "p51d-mustang-120",
+        "accepted_tick": 372,
+        "total_minor": 35600,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/p51d-mustang-120-idle.json",
+        "receipt_sha256": "c039d1b51195c11dba59b0d56a27efd8583c40997e0baba4fe0bfecc9bf33f49",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "f4u-corsair-250",
+        "accepted_tick": 366,
+        "total_minor": 35600,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/f4u-corsair-250.json",
+        "receipt_sha256": "7447b7ad4fd1755ad9c60122d07933ed357cae15445d7a5c2721b4bfdf83b5cf",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "sebart-avanti-s-a200-p100rx",
+        "accepted_tick": 370,
+        "total_minor": 140000,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/sebart-avanti-s-a200-p100rx.json",
+        "receipt_sha256": "3227f9f30ee1a8b63e5b1ee90c53d0ca671db72f0bf6d4eb93e0342a72aba3bd",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "turbo-lumber-evolution",
+        "accepted_tick": 2588,
+        "total_minor": 5999,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/turbo-lumber-evolution.json",
+        "receipt_sha256": "9a9ab6a46099e409d39c6edaeeb63e6281273cca65ffa34ea8504898dc878353",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      },
+      {
+        "aircraft_id": "moonrunner-x99",
+        "accepted_tick": 704,
+        "total_minor": 21000,
+        "currency": "USD",
+        "complete": true,
+        "receipt_path": "tmp/crash-cost-r2-native/moonrunner-x99.json",
+        "receipt_sha256": "adb021c9d558f3455012d0d33a376689d44e1f24daafed34be7ce6deb60c9752",
+        "loaded_script_sha256": [
+          "c6f193f7ef3298d2a03e9bfd643af4cb7c742427d9abc84dfb070936b5b84d94",
+          "afb867078ed3fad51a8a6a5340932852ffedcb791e263ae60cc7fbf6c77c105c",
+          "75a6add2204752efbf4695664b07a71498eb5c9bbd97534d13682a730a3fc05b"
+        ],
+        "scope": "input-driven local crash; one journey, not every common incident class"
+      }
+    ],
+    "severe_group_control": {
+      "path": "tmp/crash-cost-r2-native/p51d-mustang-120.json",
+      "result": "47.6 m/s crash retained 279400-cent known subtotal and unresolved two-muffler failed count; no invented total."
+    },
+    "spanish_choices": {
+      "receipt_path": "tmp/crash-cost-r2-native/lumber-spanish-choices.json",
+      "sha256": "304bb0ae6d105d5eff22197a796e30d4c50c5c5c63189943c2e9640fc36ad1b4",
+      "tick": 2584,
+      "recommended_diy_minor": 5999,
+      "recommended_paid_minor": 7874,
+      "one_pnp_package_paid_minor": 31874,
+      "return_to_diy_minor": 5999,
+      "physical_tick_unchanged": true
+    },
+    "archive": {
+      "receipt_path": "tmp/crash-cost-r2-native/native-archive-reopen.json",
+      "financial_identity_lines_choices_equal": true,
+      "full_json_equal": false,
+      "note": "13 serialized floating evidence values differed by <=3.6e-15 on the JSON view-only round trip. Money, identity, lines, choices and selected receipt matched. Binary paired checkpoint equality is tested separately."
+    },
+    "final_archived_layout": {
+      "panel_y": 658,
+      "panel_height": 394,
+      "viewport_height": 1080,
+      "active_cost_controls": false,
+      "frozen_total_minor": 5999
+    },
+    "images": [
+      {
+        "label": "English expanded normal P-51",
+        "path": "tmp/debug-bridge/20261109-145258-47883/shots/shot-32272-002.png",
+        "sha256": "6b18bf354d4c3fff1dd3109a52187af6e23fe6f57d90e88e3469cf30c1e132ba",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      },
+      {
+        "label": "Spanish Lumber package/shop",
+        "path": "tmp/debug-bridge/20261109-145258-47883/shots/shot-32272-004.png",
+        "sha256": "d4474395dc99d6420019f90fcf86004a8e2f0b427329ec9a73743b271687e40c",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      },
+      {
+        "label": "Final Spanish archived layout",
+        "path": "tmp/debug-bridge/20261109-150544-47885/shots/shot-79444-003.png",
+        "sha256": "ef4d798a67bb2c23baf5f87ad19a8afe1cd158b95900b82a854797272c72017a",
+        "resolution": [
+          1920,
+          1080
+        ],
+        "visually_inspected": true
+      }
+    ],
+    "normal_route_method": "Home/Fly, actual owner and profile, isolated keyboard input, accepted stepping until crash. Bridge step early-stop replies are expected when a crash pauses before the requested target. No final dispositions or aircraft states injected.",
+    "commands_sha256": "57400ad8f58b3f1fd868085783559c5d731de84d42924ec2e740c3d9dc4e7b22",
+    "limits": "One local crash per selectable route. No full incident-class, performance, physical or export qualification. Native main/session bytes may differ from final shared-tree companion work; loaded identities are retained, and the incident owner hash matches the current candidate."
+  },
+  "review": {
+    "role": "Good Enemy",
+    "method": "read-only source/data review, no independent experiments",
+    "remaining": "Explicit recipe chooser remains API-only. X-Cell, unsupported hazards, physical validation, every advertised incident class, required CI, release and target-hardware timing remain open."
+  },
+  "git_diff_check": true
+}

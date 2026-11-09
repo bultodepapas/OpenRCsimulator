@@ -8888,6 +8888,9 @@ msgstr "Elige una estimación de paquete con precios guardados. No se descuentan
 msgid "Local game estimate with selected shop labor. Tax and shipping are excluded; other damage may be unassessed."
 msgstr "Estimación local del juego con la mano de obra de taller seleccionada. Excluye impuestos y envío; puede haber otros daños sin evaluar."
 
+msgid "Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded."
+msgstr "Estimación local del juego. Puede haber otros daños sin evaluar. Excluye el tiempo propio, los impuestos y el envío."
+
 msgid "Selected cost plan"
 msgstr "Plan de costes seleccionado"
 

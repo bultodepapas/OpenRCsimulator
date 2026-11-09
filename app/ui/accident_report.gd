@@ -191,6 +191,8 @@ func show_archived(report: Dictionary) -> void:
 	_auto_settled = false
 	_reopen_only = true
 	_expanded = false
+	_details_button.set_pressed_no_signal(false)
+	_details_scroll.visible = false
 	_minimized = true
 	_content_visible = true
 	_toast_remaining = 0.0
@@ -217,6 +219,8 @@ func show_settled(report: Dictionary) -> void:
 	_auto_settled = true
 	_reopen_only = true
 	_expanded = false
+	_details_button.set_pressed_no_signal(false)
+	_details_scroll.visible = false
 	_minimized = false
 	_content_visible = true
 	_toast_remaining = 0.0
@@ -597,6 +601,8 @@ func _render_report() -> void:
 	_caption_label.text = state.caption
 	if _report.get("valuation_kind") == "preview_game_parts_estimate":
 		_caption_label.text = tr("Observed local parts only. Other damage may be unassessed. DIY labor, tax and shipping are excluded.")
+		if _report.get("costing_available", false):
+			_caption_label.text = tr("Local game estimate. Other damage may be unassessed. DIY time, tax and shipping are excluded.")
 		if not _report.get("repair_choices", []).is_empty():
 			_caption_label.text = tr("Observed local repair scope only. Selected repair labor is included; tax and shipping are excluded. Other damage may be unassessed.")
 		_status_label.text = tr("LOCAL GAME REPAIR ESTIMATE") if _report.get("complete", false) else state.status
@@ -1264,6 +1270,9 @@ func _reopen_report() -> void:
 	else:
 		_hide_archived_button.grab_focus()
 	_layout()
+	# Hidden containers may still report their narrow pre-layout minimum height.
+	# Reflow after showing the card before accepting that height as its size.
+	_layout_retry_frames = 2
 
 
 func _hide_read_only_report() -> void:
