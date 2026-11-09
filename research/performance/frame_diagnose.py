@@ -76,6 +76,10 @@ IDENTITY_FIELDS = (
     "window",
     "vsync",
     "render_settings",
+    "rendering_driver",
+    "scene_at_report",
+    "camera",
+    "window_size_at_report",
 )
 GENERAL_HINTS = [
     "Frame-budget observations describe wall intervals and do not qualify active flight.",

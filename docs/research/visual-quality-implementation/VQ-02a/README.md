@@ -5,6 +5,7 @@ Import/material corrections remain gated by VQ-01c/d. No production assets, impo
 settings, materials, physics or goldens changed in this slice.
 Commands and tool scope live in the [tool contract](../../../../research/performance/README.md#runtime-texture-inventory-vq-02a).
 The first correction, [VQ-02a-R1 roof map mipmaps](roof-mipmaps/README.md) (2026-10-21), is recorded separately.
+The bounded [TT-04-R1 foam/rubber correction](../../timber-integration/TT-04-R1/README.md) (2026-11-09) adds missing mip chains with paired 1080p camera-pan evidence. It does not close VQ-01c/d, aircraft readability or hardware performance gates.
 
 ## Source and evidence
 

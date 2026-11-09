@@ -1,0 +1,993 @@
+{
+  "step": "AE-08-R1",
+  "date": "2026-11-09",
+  "initial_head": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "head_at_final_summary": "7556c3afec9197e9bd61997fbff31274118cddbe",
+  "source_sha256": {
+    "app/ui/workshop_preview.gd": "6611615560fd08da560a45b9092f94cf495aa30197ec210ce57c54677edc4578",
+    "app/tests/test_workshop_preview.gd": "d2378a98bceb2e7b62671536653d020435337ce31fed683888ff6267a0dd27e1",
+    "research/aircraft-editor/capture_material_reference.gd": "0fd037d9c352603afa8b5993e54782910e5a0e0b328f6746d9ef7650ade48266",
+    "app/project.godot": "2ca26f73592fe6fdf0b620a151c2455ac7ed4a854f61043d0bf99bccd8b694ae",
+    "app/aircraft/ugly_stik_finish.gd": "586a53efaa9412265657da8a9215a3bc00c33a12382361542040ddd1df442cb5",
+    "app/aircraft/procedural_skin.gd": "7f5d825b2e8e5c9963ef584d77956b89c85a133aedcec37c2e9ecb59af3961fa",
+    "app/assets/skin-kit/models.json": "eb242aaa7526020770072ae104c306b17c6bca8ca2d60c5678cfa63a52f6db6c",
+    "app/data/aircraft_models/jensen-das-ugly-stik-60.json": "912bee8177251ecf7ed58cb50ee05439d2806ca181c41f86b397b40555b40e55"
+  },
+  "baseline_preview_sha256": "c719d1b45757e397d89d5a7bbb0cc8a75f124e0f5963af2987c3000b78b9a2c4",
+  "engine_sha512": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+  "platform": "Windows",
+  "driver": "NVIDIA 617.42",
+  "campaigns": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "renderer": "gl_compatibility",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": "4.8-beta2 (official)",
+      "window_pixels": [
+        1920,
+        1080
+      ],
+      "before_manifest_sha256": "8c61d2cadb4dfcb23e359ab593eb6962e09af59ab78855746e42744c4251aec6",
+      "after_manifest_sha256": "c736586c2b1001750cdeabaec01a4f084c4b7212416665a41634a2f16dc6254e",
+      "before_preview_source_sha256": "c719d1b45757e397d89d5a7bbb0cc8a75f124e0f5963af2987c3000b78b9a2c4",
+      "after_preview_source_sha256": "6611615560fd08da560a45b9092f94cf495aa30197ec210ce57c54677edc4578",
+      "before_directory": "tmp/workshop-reflections-20261109/before-clock",
+      "after_directory": "tmp/workshop-reflections-20261109/final-standard",
+      "captures": [
+        {
+          "label": "cold-day",
+          "before_png_sha256": "d7409611e0242eec82e067407a811487c9e8a2b3cfd57b4ef5917868fd2c5e69",
+          "after_png_sha256": "1d21ab23236ecacf9750afe16a02eb4b56764b3d2bba6765b4c97238c754ec86",
+          "after_raw_rgba8_sha256": "f87eb3e2e703592d95143fd9653e54eb2d5efd30420ab02c3b0bc1ce850522e3",
+          "before_raw_rgba8_sha256": "0c4137673b4be3558e93646d99f82b971dfd95788bb0fca34a79a3c7fa1d9040",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-day",
+          "before_png_sha256": "d7409611e0242eec82e067407a811487c9e8a2b3cfd57b4ef5917868fd2c5e69",
+          "after_png_sha256": "1d21ab23236ecacf9750afe16a02eb4b56764b3d2bba6765b4c97238c754ec86",
+          "after_raw_rgba8_sha256": "f87eb3e2e703592d95143fd9653e54eb2d5efd30420ab02c3b0bc1ce850522e3",
+          "before_raw_rgba8_sha256": "0c4137673b4be3558e93646d99f82b971dfd95788bb0fca34a79a3c7fa1d9040",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "side-day",
+          "before_png_sha256": "9f18130d1381866239af2026d90d8ebc1dd9e4f48179d8ea8a883a67a360c7cf",
+          "after_png_sha256": "8e076c45c80190404ea1ec48848033add1e262a8c46a4a9db826812238865373",
+          "after_raw_rgba8_sha256": "ff10885231a0ff392822158e906e13397933b11b398cfa73a519ae36ce0f5258",
+          "before_raw_rgba8_sha256": "56d1b265bbf3ad88563e485dc6c9c6f84754bc1f77fff8b0e2fc81b92f93a516",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-night",
+          "before_png_sha256": "876f2eb0c03d251b2d4ee94fa7088ee37bc9af8b7f7ca895d721b96eb0d083a8",
+          "after_png_sha256": "876f2eb0c03d251b2d4ee94fa7088ee37bc9af8b7f7ca895d721b96eb0d083a8",
+          "after_raw_rgba8_sha256": "d8d9fe57112619d11c2ed38582c6975f5fd6c7b05ddb297ffafab4d263447f02",
+          "before_raw_rgba8_sha256": "d8d9fe57112619d11c2ed38582c6975f5fd6c7b05ddb297ffafab4d263447f02",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-night",
+          "before_png_sha256": "876f2eb0c03d251b2d4ee94fa7088ee37bc9af8b7f7ca895d721b96eb0d083a8",
+          "after_png_sha256": "876f2eb0c03d251b2d4ee94fa7088ee37bc9af8b7f7ca895d721b96eb0d083a8",
+          "after_raw_rgba8_sha256": "d8d9fe57112619d11c2ed38582c6975f5fd6c7b05ddb297ffafab4d263447f02",
+          "before_raw_rgba8_sha256": "d8d9fe57112619d11c2ed38582c6975f5fd6c7b05ddb297ffafab4d263447f02",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-return-day",
+          "before_png_sha256": "9f18130d1381866239af2026d90d8ebc1dd9e4f48179d8ea8a883a67a360c7cf",
+          "after_png_sha256": "8e076c45c80190404ea1ec48848033add1e262a8c46a4a9db826812238865373",
+          "after_raw_rgba8_sha256": "ff10885231a0ff392822158e906e13397933b11b398cfa73a519ae36ce0f5258",
+          "before_raw_rgba8_sha256": "56d1b265bbf3ad88563e485dc6c9c6f84754bc1f77fff8b0e2fc81b92f93a516",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-return-day",
+          "before_png_sha256": "9f18130d1381866239af2026d90d8ebc1dd9e4f48179d8ea8a883a67a360c7cf",
+          "after_png_sha256": "8e076c45c80190404ea1ec48848033add1e262a8c46a4a9db826812238865373",
+          "after_raw_rgba8_sha256": "ff10885231a0ff392822158e906e13397933b11b398cfa73a519ae36ce0f5258",
+          "before_raw_rgba8_sha256": "56d1b265bbf3ad88563e485dc6c9c6f84754bc1f77fff8b0e2fc81b92f93a516",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "orbit-day",
+          "before_png_sha256": "831384d9c67546bee125a3745e6bd12b31f23c9fbd8a0f022afd3636ff27873f",
+          "after_png_sha256": "f928fce001a55675209dcd22dba273ea3a2647535dc3aa411c7791db5e1c7505",
+          "after_raw_rgba8_sha256": "a204feb4e0b6c3e77c862278d62b42b342b3080a41b9d3121a13ae18138b8b2e",
+          "before_raw_rgba8_sha256": "a3fae83aebdf3eab1ea04209fd0032cc1bdb4d50dea570d282be542c82b85f2d",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        }
+      ]
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "renderer": "forward_plus",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": "4.8-beta2 (official)",
+      "window_pixels": [
+        1920,
+        1080
+      ],
+      "before_manifest_sha256": "5f4f0ec1cb30489d7fdd80c618827bdc8a581a81ec1ad23b9a3d4d41c5210018",
+      "after_manifest_sha256": "3fedea7cab662d37577cb8fc8984652dff5380235c9adb53ce98b9509a5e34b9",
+      "before_preview_source_sha256": "c719d1b45757e397d89d5a7bbb0cc8a75f124e0f5963af2987c3000b78b9a2c4",
+      "after_preview_source_sha256": "6611615560fd08da560a45b9092f94cf495aa30197ec210ce57c54677edc4578",
+      "before_directory": "tmp/workshop-reflections-20261109/before-forward",
+      "after_directory": "tmp/workshop-reflections-20261109/final-forward",
+      "captures": [
+        {
+          "label": "cold-day",
+          "before_png_sha256": "0b3c1365e661abc1d0c30df7b162721f99208d48a272b2bfd2fdfb00368e7b97",
+          "after_png_sha256": "199cdf0c3e547f18b35a55d042a94f5993ebe7cde37311a1170755a429393118",
+          "after_raw_rgba8_sha256": "dcec545a13711e90f257cdd034e87bdca235d436972293ee31f793e885b64a1f",
+          "before_raw_rgba8_sha256": "bc6e325e270f3cf2d9a2b9ff11473b84d16e9a85f13054aae388d0ffa6c4c0a0",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-day",
+          "before_png_sha256": "0b3c1365e661abc1d0c30df7b162721f99208d48a272b2bfd2fdfb00368e7b97",
+          "after_png_sha256": "199cdf0c3e547f18b35a55d042a94f5993ebe7cde37311a1170755a429393118",
+          "after_raw_rgba8_sha256": "dcec545a13711e90f257cdd034e87bdca235d436972293ee31f793e885b64a1f",
+          "before_raw_rgba8_sha256": "bc6e325e270f3cf2d9a2b9ff11473b84d16e9a85f13054aae388d0ffa6c4c0a0",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "side-day",
+          "before_png_sha256": "f56a6c92210e01cea6115fa5d196bcd035f4989a9cc06cd078f32fa7e592400a",
+          "after_png_sha256": "99023f95be915f9dfda64a367d53faf4abaa2b3812c8d41ffe3636baf2eecaf8",
+          "after_raw_rgba8_sha256": "fd11b0fc6c6945b9b15eef1af64f4d9ca56796adaf74a0c66ddada9f866e159d",
+          "before_raw_rgba8_sha256": "97177fb9fcfe85369a52059d9ee6c243f4e0f55b3cd23d0e12fd88bd8a113fa3",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-night",
+          "before_png_sha256": "6e084c4aea8263cf06c5b348ba8d9cf5d378eefbfb62018dddbc4736d335e00b",
+          "after_png_sha256": "6dd256381cc4aa87cf3954025bfbdc0037b00e6e20f16fe257ac842aa7093aff",
+          "after_raw_rgba8_sha256": "6731d709b0726d70f5a5e1638707ccd7e88b8fd1d9003945a67fffb9e34215f7",
+          "before_raw_rgba8_sha256": "6731d709b0726d70f5a5e1638707ccd7e88b8fd1d9003945a67fffb9e34215f7",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-night",
+          "before_png_sha256": "6e084c4aea8263cf06c5b348ba8d9cf5d378eefbfb62018dddbc4736d335e00b",
+          "after_png_sha256": "6dd256381cc4aa87cf3954025bfbdc0037b00e6e20f16fe257ac842aa7093aff",
+          "after_raw_rgba8_sha256": "6731d709b0726d70f5a5e1638707ccd7e88b8fd1d9003945a67fffb9e34215f7",
+          "before_raw_rgba8_sha256": "6731d709b0726d70f5a5e1638707ccd7e88b8fd1d9003945a67fffb9e34215f7",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-return-day",
+          "before_png_sha256": "f56a6c92210e01cea6115fa5d196bcd035f4989a9cc06cd078f32fa7e592400a",
+          "after_png_sha256": "99023f95be915f9dfda64a367d53faf4abaa2b3812c8d41ffe3636baf2eecaf8",
+          "after_raw_rgba8_sha256": "fd11b0fc6c6945b9b15eef1af64f4d9ca56796adaf74a0c66ddada9f866e159d",
+          "before_raw_rgba8_sha256": "97177fb9fcfe85369a52059d9ee6c243f4e0f55b3cd23d0e12fd88bd8a113fa3",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-return-day",
+          "before_png_sha256": "f56a6c92210e01cea6115fa5d196bcd035f4989a9cc06cd078f32fa7e592400a",
+          "after_png_sha256": "99023f95be915f9dfda64a367d53faf4abaa2b3812c8d41ffe3636baf2eecaf8",
+          "after_raw_rgba8_sha256": "fd11b0fc6c6945b9b15eef1af64f4d9ca56796adaf74a0c66ddada9f866e159d",
+          "before_raw_rgba8_sha256": "97177fb9fcfe85369a52059d9ee6c243f4e0f55b3cd23d0e12fd88bd8a113fa3",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "orbit-day",
+          "before_png_sha256": "4e1cac5661ca5a4e68e0bfb6cbe64872f37d9d654c6e05ec049f6a2898d527d2",
+          "after_png_sha256": "1ac33849cb9b56300c4497dfde6162825b1d68c06af009af111367de44b8c5e3",
+          "after_raw_rgba8_sha256": "34b9ab5bf6ced5f617a8b56ba80dd7a15d88911ae742a7e95ecc81c4b1cc5486",
+          "before_raw_rgba8_sha256": "3ac6e59dc213fddaec8d56d7dc3227765b824126c5eb8d9ad3e44d0e1536558c",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        }
+      ]
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "renderer": "gl_compatibility",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": "4.8-beta2 (official)",
+      "window_pixels": [
+        1920,
+        1080
+      ],
+      "before_manifest_sha256": "5f33c9fc27b0f3a1197d60bc06a5e221f6618e4ab336119f1ad6abc5b1adfffd",
+      "after_manifest_sha256": "0a7474cd4d9444b49bd0b6bed564f9d1e15234d4fd5e41d75d46f315035ac3f3",
+      "before_preview_source_sha256": "c719d1b45757e397d89d5a7bbb0cc8a75f124e0f5963af2987c3000b78b9a2c4",
+      "after_preview_source_sha256": "6611615560fd08da560a45b9092f94cf495aa30197ec210ce57c54677edc4578",
+      "before_directory": "tmp/workshop-reflections-20261109/timber-before",
+      "after_directory": "tmp/workshop-reflections-20261109/timber-after",
+      "captures": [
+        {
+          "label": "cold-day",
+          "before_png_sha256": "f1fde029ede91748b3503a682b50677daa186f34c5d21e9022f3718b845f84b4",
+          "after_png_sha256": "c79e0c77d986402397be94e27909f7ecb420523725a18878261730f3d80d76cd",
+          "after_raw_rgba8_sha256": "c8b528c50c2cdb7fe6d23b093835c5994a4da27597c013726321f91da2a82420",
+          "before_raw_rgba8_sha256": "9d1d2b98ff36baac51beee89b24d762becadd99cbd396b5c52c9af27095e71e6",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-day",
+          "before_png_sha256": "f1fde029ede91748b3503a682b50677daa186f34c5d21e9022f3718b845f84b4",
+          "after_png_sha256": "c79e0c77d986402397be94e27909f7ecb420523725a18878261730f3d80d76cd",
+          "after_raw_rgba8_sha256": "c8b528c50c2cdb7fe6d23b093835c5994a4da27597c013726321f91da2a82420",
+          "before_raw_rgba8_sha256": "9d1d2b98ff36baac51beee89b24d762becadd99cbd396b5c52c9af27095e71e6",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "side-day",
+          "before_png_sha256": "ab2af57d0b6ead30faa9d8c5a28ada62bd05c3daf7705f664bd16dc7ddeb365c",
+          "after_png_sha256": "192684ca08b6cd13752d6d56d3550d58920fe07cba8716ee8b1dc462382ec3d9",
+          "after_raw_rgba8_sha256": "257d444191bcf038f5a8480901898294194db291737260f3120e6d2ed1dc0d39",
+          "before_raw_rgba8_sha256": "4f7abcbe223277964af0edad30db278eabb085ecc0dc17d67f2f4f76f6856e31",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-night",
+          "before_png_sha256": "144869d821453f33bb914b696dc0a7b0e43db24fe55cd110adec82b044411201",
+          "after_png_sha256": "144869d821453f33bb914b696dc0a7b0e43db24fe55cd110adec82b044411201",
+          "after_raw_rgba8_sha256": "3b244ae4a1aa28b27974753b2d582120bab2551b46115f0e513454a66d979613",
+          "before_raw_rgba8_sha256": "3b244ae4a1aa28b27974753b2d582120bab2551b46115f0e513454a66d979613",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-night",
+          "before_png_sha256": "144869d821453f33bb914b696dc0a7b0e43db24fe55cd110adec82b044411201",
+          "after_png_sha256": "144869d821453f33bb914b696dc0a7b0e43db24fe55cd110adec82b044411201",
+          "after_raw_rgba8_sha256": "3b244ae4a1aa28b27974753b2d582120bab2551b46115f0e513454a66d979613",
+          "before_raw_rgba8_sha256": "3b244ae4a1aa28b27974753b2d582120bab2551b46115f0e513454a66d979613",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-return-day",
+          "before_png_sha256": "ab2af57d0b6ead30faa9d8c5a28ada62bd05c3daf7705f664bd16dc7ddeb365c",
+          "after_png_sha256": "192684ca08b6cd13752d6d56d3550d58920fe07cba8716ee8b1dc462382ec3d9",
+          "after_raw_rgba8_sha256": "257d444191bcf038f5a8480901898294194db291737260f3120e6d2ed1dc0d39",
+          "before_raw_rgba8_sha256": "4f7abcbe223277964af0edad30db278eabb085ecc0dc17d67f2f4f76f6856e31",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-return-day",
+          "before_png_sha256": "ab2af57d0b6ead30faa9d8c5a28ada62bd05c3daf7705f664bd16dc7ddeb365c",
+          "after_png_sha256": "192684ca08b6cd13752d6d56d3550d58920fe07cba8716ee8b1dc462382ec3d9",
+          "after_raw_rgba8_sha256": "257d444191bcf038f5a8480901898294194db291737260f3120e6d2ed1dc0d39",
+          "before_raw_rgba8_sha256": "4f7abcbe223277964af0edad30db278eabb085ecc0dc17d67f2f4f76f6856e31",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "orbit-day",
+          "before_png_sha256": "fb66477da0d178c61c1c06ceed57fc8adccd80114cff045eb76e429ca54d4f80",
+          "after_png_sha256": "85f35a626f9628880d752eb8e0f625c46efcbcc6f3daabb1f83e879c1f839caa",
+          "after_raw_rgba8_sha256": "62e2b7a72812582a8877af31768442ea4b1031409f16e6b290450438ea264d93",
+          "before_raw_rgba8_sha256": "6bc8c62d52f63cd6facf849e4c0e0dc3c99a9bc0135a70dd98b32a0fe82d1e85",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        }
+      ]
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "renderer": "gl_compatibility",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": "4.8-beta2 (official)",
+      "window_pixels": [
+        1920,
+        1080
+      ],
+      "before_manifest_sha256": "ced553a781290e238ac4e4ac3326a14877f4d4cf819e9eff2e66aa53983c998a",
+      "after_manifest_sha256": "bb1734c2d81519775addb86cb4f55d2c7ebfccef56719b71a6af92d484927703",
+      "before_preview_source_sha256": "c719d1b45757e397d89d5a7bbb0cc8a75f124e0f5963af2987c3000b78b9a2c4",
+      "after_preview_source_sha256": "6611615560fd08da560a45b9092f94cf495aa30197ec210ce57c54677edc4578",
+      "before_directory": "tmp/workshop-reflections-20261109/p51-before",
+      "after_directory": "tmp/workshop-reflections-20261109/p51-after",
+      "captures": [
+        {
+          "label": "cold-day",
+          "before_png_sha256": "fc23cc8e6d247c4ceee09e651e3c1387c786248eca7ba5190e99beca0db46a4f",
+          "after_png_sha256": "cd59790b2f206b1e5fd0aa0e8e3cfa4c41a6dd882f008942dd037230b5f0017c",
+          "after_raw_rgba8_sha256": "866dcc0dba48ae51eb7ed0b2461d1e7050bb60e497a39a0f622f490afab0f679",
+          "before_raw_rgba8_sha256": "ca6d98e0012bf3e94cb1a9057d229575a575deea68a95a17533637b509484f96",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-day",
+          "before_png_sha256": "fc23cc8e6d247c4ceee09e651e3c1387c786248eca7ba5190e99beca0db46a4f",
+          "after_png_sha256": "cd59790b2f206b1e5fd0aa0e8e3cfa4c41a6dd882f008942dd037230b5f0017c",
+          "after_raw_rgba8_sha256": "866dcc0dba48ae51eb7ed0b2461d1e7050bb60e497a39a0f622f490afab0f679",
+          "before_raw_rgba8_sha256": "ca6d98e0012bf3e94cb1a9057d229575a575deea68a95a17533637b509484f96",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "side-day",
+          "before_png_sha256": "1dd20073a361b8f5dead7f1ef0c73aa06c5a5cf3907e79e0f7ebf1dbbac210d0",
+          "after_png_sha256": "9dd40966724c6f79b300c5f4490b6164910649e48ba95685434d19aad5cec7c0",
+          "after_raw_rgba8_sha256": "749c8cb2e74e9bcccc9a72442ad733c38986b6a25ca1fc7278ecedfa52b8d162",
+          "before_raw_rgba8_sha256": "e7ffc8602f1b78849bbda1c87f91f0279267dd459ec547414e36f5bd334b353e",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-night",
+          "before_png_sha256": "069a083795c00b9ac128c6af73b6098a7daad2a667c18ca2dfb60057779b8374",
+          "after_png_sha256": "069a083795c00b9ac128c6af73b6098a7daad2a667c18ca2dfb60057779b8374",
+          "after_raw_rgba8_sha256": "1f32c855881df76d9332be16377079016b282309ce48bbefd05618c0608ae538",
+          "before_raw_rgba8_sha256": "1f32c855881df76d9332be16377079016b282309ce48bbefd05618c0608ae538",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-night",
+          "before_png_sha256": "069a083795c00b9ac128c6af73b6098a7daad2a667c18ca2dfb60057779b8374",
+          "after_png_sha256": "069a083795c00b9ac128c6af73b6098a7daad2a667c18ca2dfb60057779b8374",
+          "after_raw_rgba8_sha256": "1f32c855881df76d9332be16377079016b282309ce48bbefd05618c0608ae538",
+          "before_raw_rgba8_sha256": "1f32c855881df76d9332be16377079016b282309ce48bbefd05618c0608ae538",
+          "pixels_equal": true,
+          "night": true,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "first-return-day",
+          "before_png_sha256": "1dd20073a361b8f5dead7f1ef0c73aa06c5a5cf3907e79e0f7ebf1dbbac210d0",
+          "after_png_sha256": "9dd40966724c6f79b300c5f4490b6164910649e48ba95685434d19aad5cec7c0",
+          "after_raw_rgba8_sha256": "749c8cb2e74e9bcccc9a72442ad733c38986b6a25ca1fc7278ecedfa52b8d162",
+          "before_raw_rgba8_sha256": "e7ffc8602f1b78849bbda1c87f91f0279267dd459ec547414e36f5bd334b353e",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "settled-return-day",
+          "before_png_sha256": "1dd20073a361b8f5dead7f1ef0c73aa06c5a5cf3907e79e0f7ebf1dbbac210d0",
+          "after_png_sha256": "9dd40966724c6f79b300c5f4490b6164910649e48ba95685434d19aad5cec7c0",
+          "after_raw_rgba8_sha256": "749c8cb2e74e9bcccc9a72442ad733c38986b6a25ca1fc7278ecedfa52b8d162",
+          "before_raw_rgba8_sha256": "e7ffc8602f1b78849bbda1c87f91f0279267dd459ec547414e36f5bd334b353e",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        },
+        {
+          "label": "orbit-day",
+          "before_png_sha256": "6e9e825ec3ad8267e0f79a86a56155da90a33485420354c03438f47d6a5a006d",
+          "after_png_sha256": "22bb7efdc6e779c1d323f8a4fa1fc458e66f5157416ca915ed75d5e7c973adb8",
+          "after_raw_rgba8_sha256": "87629fb88579ae2ac04bbbd8a2a1f89f4ed76e559872647dcb24a71b2195b4f6",
+          "before_raw_rgba8_sha256": "3acc3dfedb0d21853e5e52fb7f766076d7c6933cde164fe29da4fca9a2e6d7ad",
+          "pixels_equal": false,
+          "night": false,
+          "preview_pixels": [
+            1920,
+            1036
+          ]
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "label": "material-reference-final-forward",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:46:50.241369+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/final-forward",
+        "--reference=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/before-forward"
+      ],
+      "report_sha256": "8b94daa056a1782dcc4d6ff7ed67baf9c62b6f3f4e8981e7300252d1adaf14d0",
+      "log_sha256": "1556f36ee1f7dd5d2844ac6391335cdcc4c6df1a9778a080be8d4824dac5cefd",
+      "ok_assertion_lines": 0,
+      "completion": [
+        "WORKSHOP_REFERENCE_CAPTURE: 8 captures, 0 failed"
+      ]
+    },
+    {
+      "label": "material-reference-final-standard-v2",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:46:34.273461+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/final-standard",
+        "--reference=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/before-clock"
+      ],
+      "report_sha256": "200d67fa1c3054fa7dbd1fc32d7978f56bf522a9b8e68ffd0153939ae8dffc81",
+      "log_sha256": "ab557bfb7a53a68f9103d37223a093a307d4a4eed89de9ba9943023d37838523",
+      "ok_assertion_lines": 0,
+      "completion": [
+        "WORKSHOP_REFERENCE_CAPTURE: 8 captures, 0 failed"
+      ]
+    },
+    {
+      "label": "material-reference-p51-after",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:47:58.711881+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd",
+        "--",
+        "--aircraft=p51d-mustang-120",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/p51-after",
+        "--reference=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/p51-before"
+      ],
+      "report_sha256": "0dd2d8aa6ee906c8bd2ada5eb449a7129c2d715af9e249bde844b4d798442dfa",
+      "log_sha256": "60a58c5f2aa5c34fbe7e37c880a5933cc9784c6c1d8ac570ca2cafc0a4dc6c47",
+      "ok_assertion_lines": 0,
+      "completion": [
+        "WORKSHOP_REFERENCE_CAPTURE: 8 captures, 0 failed"
+      ]
+    },
+    {
+      "label": "material-reference-p51-before",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:47:52.661545+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd",
+        "--",
+        "--aircraft=p51d-mustang-120",
+        "--preview-script=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/workshop_preview_before.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/p51-before"
+      ],
+      "report_sha256": "84460a4df689bf1bf6af4a0e4995b0182ea75d93acc589ff6afb05bd785c3c7e",
+      "log_sha256": "4fdc20f11afdbb3edf8185894cdf5b44508fa73d5a14f31a12047cfa2dd8b39e",
+      "ok_assertion_lines": 0,
+      "completion": [
+        "WORKSHOP_REFERENCE_CAPTURE: 8 captures, 0 failed"
+      ]
+    },
+    {
+      "label": "material-reference-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:45:54.356014+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd"
+      ],
+      "report_sha256": "0cc244f251baa3decd51d0d321b555add3ebf6d4904b745393182fcdbb690fa8",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "ok_assertion_lines": 0,
+      "completion": []
+    },
+    {
+      "label": "material-reference-timber-after",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:47:36.211760+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd",
+        "--",
+        "--aircraft=turbo-lumber-evolution",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/timber-after",
+        "--reference=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/timber-before"
+      ],
+      "report_sha256": "65778198cd11c91bbcf210453c2a5e5a95e535b25b21bae8cb2951e5610aba3b",
+      "log_sha256": "f4b2e547354d495255909eb5a0bd74802a7539a3ede105a89779dba69c181c1a",
+      "ok_assertion_lines": 0,
+      "completion": [
+        "WORKSHOP_REFERENCE_CAPTURE: 8 captures, 0 failed"
+      ]
+    },
+    {
+      "label": "material-reference-timber-before",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:47:24.579913+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/aircraft-editor/capture_material_reference.gd",
+        "--",
+        "--aircraft=turbo-lumber-evolution",
+        "--preview-script=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/workshop_preview_before.gd",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/timber-before"
+      ],
+      "report_sha256": "e5d606296b118428cb4cc20b6887235c8ef6261cd870e58ae77480f0a155152b",
+      "log_sha256": "f3db8a53c0909d5573bb89ced325e7cbc08c89612e628ef1ef27e29078c677d2",
+      "ok_assertion_lines": 0,
+      "completion": [
+        "WORKSHOP_REFERENCE_CAPTURE: 8 captures, 0 failed"
+      ]
+    },
+    {
+      "label": "workshop-lighting",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:40:39.636124+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_lighting.gd"
+      ],
+      "report_sha256": "78b035e41ed438b933de6c4601ee6bb0cf7891381c82ae40339cd15b3cba64a7",
+      "log_sha256": "ecb10b7fef7ecb7f2ec33a304d55f712118e80e3b728217be2295d779589caab",
+      "ok_assertion_lines": 272,
+      "completion": [
+        "Workshop lighting checks: 0 failures"
+      ]
+    },
+    {
+      "label": "workshop-preview-baseline-layout",
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 4,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:38:48.328268+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/test_preview_before.gd"
+      ],
+      "report_sha256": "4d743a92e4e21653d98e381f293c34293dfccc8bf33ae9a4c1acf579f2e6d520",
+      "log_sha256": "f8387180ad0ba3d49595ea9f2d87661d883d5fdc22e5ecae07495e3b60a40d29",
+      "ok_assertion_lines": 46,
+      "completion": [
+        "workshop preview checks: 0 failures"
+      ]
+    },
+    {
+      "label": "workshop-preview-final-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:46:56.899612+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://ui/workshop_preview.gd"
+      ],
+      "report_sha256": "f73190193d37dad807c714c9a2983d2358e1642b1540265100899162a8b559b3",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "ok_assertion_lines": 0,
+      "completion": []
+    },
+    {
+      "label": "workshop-preview-fixed",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:39:35.006682+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_preview.gd"
+      ],
+      "report_sha256": "7b1e4ce7c64a32d4ea983a297a4a42f50fd4efbd1d485cd1d31731ffff2a4a1b",
+      "log_sha256": "2b2e03805f440a0c2ab9a9727bf4f2ea998d1fc7a576165bda0c3b850a80b96e",
+      "ok_assertion_lines": 58,
+      "completion": [
+        "workshop preview checks: 0 failures"
+      ]
+    },
+    {
+      "label": "workshop-preview-focus",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:40:59.180999+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_preview_focus.gd"
+      ],
+      "report_sha256": "428f0ca4698d91e43d7cd679574f6662842ebde452150b91256d57b420609f9f",
+      "log_sha256": "b567973124c3df588ea90c421f2400e8b6b98a7b5e9ea89f66a9383a6710576a",
+      "ok_assertion_lines": 37,
+      "completion": [
+        "Workshop preview focus: 37 checks, 0 failed"
+      ]
+    },
+    {
+      "label": "workshop-preview-test-parse",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:46:59.847898+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/test_workshop_preview.gd"
+      ],
+      "report_sha256": "d150154c0b4b15d57faa5ab51dd90dce3909bf8276c9c5b214e8b7187a717e58",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "ok_assertion_lines": 0,
+      "completion": []
+    },
+    {
+      "label": "workshop-reflections-before-clock",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:35:49.618119+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/capture_reference.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/before-clock"
+      ],
+      "report_sha256": "3ffcf456399891707274e01a96e2d22fde9cbabe6c7ac356fed0d25cbf5ff1f5",
+      "log_sha256": "bce8a4b5c047e43be20ee7a84485071397f2f97e75058b9cece76b5aa8f21013",
+      "ok_assertion_lines": 0,
+      "completion": []
+    },
+    {
+      "label": "workshop-reflections-before-forward",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:36:00.726254+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--rendering-method",
+        "forward_plus",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/capture_reference.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-reflections-20261109/before-forward"
+      ],
+      "report_sha256": "36d241faf533eda294ccd500e4a7985b74ae83564824b1a56c0a8745847bf4bf",
+      "log_sha256": "5667e4c95d400a69f2ef80f16c4e8ef96a0d02a264ce96a6c307950b70cf199d",
+      "ok_assertion_lines": 0,
+      "completion": []
+    },
+    {
+      "label": "workshop-smoke-preview",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "started_utc": "2026-11-09T14:41:53.288519+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_smoke_preview.gd"
+      ],
+      "report_sha256": "e2b02d97fa9b3c888802ef9269ecf06b653fc35bd20a9059df8717e7855770d0",
+      "log_sha256": "2dda95e25bb63afe992f057174d74f2cdb03b97938bc4ec574f8a1777cfe1e5b",
+      "ok_assertion_lines": 143,
+      "completion": [
+        "Workshop smoke preview: 143 checks, 0 failures"
+      ]
+    }
+  ],
+  "native_route": {
+    "actions": [
+      "Home",
+      "Workshop",
+      "Smoke: Twin Ribbons",
+      "Play",
+      "Night",
+      "Day",
+      "Pause",
+      "Back",
+      "Discard",
+      "Home",
+      "Stop"
+    ],
+    "preview_source_sha256": "4d9d8ac088d64c1948477ff7335b0576a5dfc91241f7acd1d245b56ff6d4b119",
+    "source_note": "Final preview differs only by the independently tested focus guard; all final paired captures use final source.",
+    "sky_id_reused": true,
+    "playback_viewport_mode": 4,
+    "paused_viewport_mode": 1,
+    "paused_is_processing": false,
+    "engine_log_sha256": "794cf67e13a6956ee6b7f8a93d0c1eb597be583000c14ff3ff5e54a8f4e33c89",
+    "events_sha256": "634518f7ba3d60fe334c41fbc56d28f4fd83ca6043a7e5881291eede4dcd4c4b",
+    "exit": {
+      "crash": null,
+      "leaked_objects": 0,
+      "forced": false
+    },
+    "performance_qualified": false
+  },
+  "limits": [
+    "Controlled Workshop reference, not outdoor flight lighting",
+    "Forward+ renderer check, not full High-profile qualification",
+    "No measured frame-time/VRAM budget or lower-end/Metal qualification",
+    "No full required CI run",
+    "Concurrent unrelated work preserved"
+  ],
+  "raw_artifact_root": "tmp/workshop-reflections-20261109",
+  "images_added_to_git": false
+}

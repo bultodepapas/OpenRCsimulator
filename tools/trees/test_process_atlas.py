@@ -275,6 +275,8 @@ class AtlasPipelineTests(unittest.TestCase):
                 atlas_pixels = np.asarray(atlas.convert("RGBA")).copy()
                 self.assertFalse(np.any(atlas_pixels[512:, 512:, 3]))
             catalog = json.loads(first["catalog"].read_text(encoding="utf-8"))
+            self.assertNotIn(b"\r", first["catalog"].read_bytes(),
+                             "the exact-hashed runtime catalog must use LF on every host")
             self.assertEqual(catalog["format"], "openrc-tree-assets v1")
             self.assertNotIn("recipe_id", catalog)
             self.assertEqual([item["id"] for item in catalog["species"]], list(IDS))

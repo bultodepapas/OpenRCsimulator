@@ -1,0 +1,8 @@
+{
+  "format": "openrc-tree-repeatability v1",
+  "all_identical": true,
+  "artifact_count": 30,
+  "raw_png_count": 15,
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "godot": "4.8.beta2.official.cafc17a19"
+}

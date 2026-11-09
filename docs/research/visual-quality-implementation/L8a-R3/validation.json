@@ -1,0 +1,393 @@
+{
+  "format": "openrc-field-tree-source-alignment v1",
+  "date": "2026-11-09",
+  "baseline_commit": "979819ecceb9f14799c31ca81521034e8498940a",
+  "source_sha256": {
+    "app/render/tree_assets.gd": "214c028f723119fced431564f466ab91af3ef7579b37f4729d521c50a8dc2e69",
+    "app/render/treeline.gd": "d0e7ce7c28f04effae9c98df0468d1ed589cc19008c2cc25d0309e7472e48a54",
+    "app/render/treeline.gdshader": "bd70596cdf2f2f5ee6340f5e94ad64d3e00841a11e4846ebbe6ec3a71127aaf6",
+    "app/scenery/collision_world.gd": "1d0d7d39eb1445cd748ac8057616b84238e2460988b22b008705e367f505722f",
+    "app/tests/test_field_tree_detail.gd": "7879a972f43e5016d44a81a66d8fa120a69af04e4002de10feda43c71c279050",
+    "app/tests/test_landscape_collision_coverage.gd": "c237f631fdfc4501a68e11b614992de1d77ff4b0515a07fd046f03364511cddb",
+    "app/data/woodland_edges.json": "4b7dfe98ec9043bf592459cedca3ffdb0356006aab22977eed340b4f741c0795",
+    "tools/trees/build.py": "2f3e7f1fe987dea9b6ca16a961056b66e5843863b5d512979e36e8f6ea67486f",
+    "tools/trees/verify_bakes.py": "a7acfd6c7b2cfa8bd069c2fbc8484e36cf90a6e80532ef1575f707d8dd09ee3a",
+    "tools/trees/world_replay.gd": "9ba3b2dfe7e437eaaad7a78ba737792c87610a2b7a99f24e8039813d7bb951c0",
+    "tools/trees/test_adapt_recipe.py": "27911e73b550684aed15e0b5822ae9f691fd9a943c92e5d9029bea0d438f91cf",
+    "tools/trees/test_verify_bakes.py": "7789ab31a51467ee3280cfe6a11dfd6e33f64a84cd66eb7352b1d4725de5fdee",
+    ".gitattributes": "8b8c52d0f8dd9ca28445b96685c69c06514e83c8169adda427595719c5f333c6",
+    "tools/trees/process_atlas.py": "eccf1821db04c45f761dac89e759a87a79bcded4a12ea6f8c95088e636899ae2",
+    "tools/trees/test_process_atlas.py": "59f53b6017392127b36af2c0c1e23b60a480bb41a0fb5b0d45742d52eba0c7aa"
+  },
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "path": ".tools/Godot_v4.8-beta2_win64_console.exe",
+    "sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+  },
+  "successful_checked_runs": [
+    {
+      "label": "collision-coverage-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/collision-coverage-final-lbcekrkb/report.json",
+      "report_sha256": "aad8df7ae026b1c9d4e92f3ea03b74e2ef7795d8f4f33b561cc2f3c367c3b600"
+    },
+    {
+      "label": "test_companions_airspace-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_companions_airspace-final-8bn6lyrc/report.json",
+      "report_sha256": "30bf12c9e08bf29119833ddb5029d016599922e05b33d7d4d1c687bae5630e60"
+    },
+    {
+      "label": "test_field_tree_detail-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_field_tree_detail-final-p7aebh40/report.json",
+      "report_sha256": "231a8aa9a276254da005ff6b8c543a939b8ed35c059891e22f8720afb9818b65"
+    },
+    {
+      "label": "test_landscape_checkpoint-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_landscape_checkpoint-final-ao8ztlzs/report.json",
+      "report_sha256": "c3c72acfebf052fca3aaa99ed14b385be88141d2182f830d55747ce3aa61bec5"
+    },
+    {
+      "label": "test_landscape_collision_session-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_landscape_collision_session-final-k0g3kuz7/report.json",
+      "report_sha256": "02622fd7a9dfe4db5dae713e971ab769de74938d65c5463f4684981e470943c5"
+    },
+    {
+      "label": "test_scene_detail-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_scene_detail-final-7pvv6mmo/report.json",
+      "report_sha256": "1ff07f926b886308d795695192f0ef1cbcad7f8529016762971f12e43c59f6ae"
+    },
+    {
+      "label": "test_tree_assets",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_tree_assets-7cjtgkao/report.json",
+      "report_sha256": "cf2965bb200f25988012ddef11c85c72963c796407c7e59844e5d5248b79267d"
+    },
+    {
+      "label": "test_woodland_edge_habitat",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_woodland_edge_habitat-slbm3saa/report.json",
+      "report_sha256": "f3ee95ff519b150c379b0a11ee95e4d1109602f3c04879a2bfb0551f47ff457d"
+    },
+    {
+      "label": "tree-runtime-final-native",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/tree-runtime-final-native-88sjwuwr/report.json",
+      "report_sha256": "9e4eeefe27ce33ca3217bd151bc109c19732ac7de5a1817653cfb3608be70ec3"
+    },
+    {
+      "label": "tree-source-candidate",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/tree-source-candidate-_as9_rk3/report.json",
+      "report_sha256": "fcc1b0992990e86c6c5b0e3e22aa7e19d1dd95401c5663ff3acd410e7d23471f"
+    },
+    {
+      "label": "tree-source-import",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/tree-source-import-lqh8uamh/report.json",
+      "report_sha256": "6242a4f79c6629468a0dbb81f744617c38de69d8969299c5e461383b8a1b7ec0"
+    },
+    {
+      "label": "tree-source-motion",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/tree-source-motion-62k98zqr/report.json",
+      "report_sha256": "8a6add88374d976874e56114b6d2eaeb314ba3480c255728111949580ddb398f"
+    },
+    {
+      "label": "tree-world-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/tree-world-final-wk9zrqrd/report.json",
+      "report_sha256": "bf192d124c400a6390557a8866f6896c8344819ba236a896d6310b995489de95"
+    },
+    {
+      "label": "test_landscape_collision_setup-shared-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_landscape_collision_setup-shared-final-u3_qruzp/report.json",
+      "report_sha256": "abbe2b2eeb2c57b70927b6194ef257d598d05f53782410e56e27cd2ae6d20334"
+    },
+    {
+      "label": "test_scene_detail-shared-final",
+      "ok": true,
+      "report": "tmp/vegetation-source-alignment-20261109/checks/test_scene_detail-shared-final-ncxngl8u/report.json",
+      "report_sha256": "55d6970a2352f679fdf7871a1787b3dafca8c25f0da940e07d0aa6b5e4ad3435"
+    }
+  ],
+  "native_static_views": [
+    {
+      "name": "baseline",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "captures": [
+        {
+          "at": [
+            0.0,
+            8.0,
+            -300.0
+          ],
+          "clock": 0.0,
+          "counters": {
+            "draws": 133,
+            "primitives": 319074,
+            "shadow_draws": 0
+          },
+          "eye": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ],
+          "fov": 50.0,
+          "id": "pilot_north",
+          "sha256": "b7309694b6a8e1f9c5b5838cb09f7d2170e03db2eb7e1bd548b9c797ce6b5cfb",
+          "wind": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "at": [
+            0.0,
+            0.0,
+            20.0
+          ],
+          "clock": 0.0,
+          "counters": {
+            "draws": 376,
+            "primitives": 474115,
+            "shadow_draws": 0
+          },
+          "eye": [
+            160.0,
+            140.0,
+            -140.0
+          ],
+          "fov": 50.0,
+          "id": "aerial_overview",
+          "sha256": "c68bf4e64b99b8f5b1e94fae182f0056b713134223894b694355996b5c484627",
+          "wind": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "at": [
+            0.0,
+            0.0,
+            -100.0
+          ],
+          "clock": 0.0,
+          "counters": {
+            "draws": 267,
+            "primitives": 495815,
+            "shadow_draws": 0
+          },
+          "eye": [
+            0.0,
+            1900.0,
+            1250.0
+          ],
+          "fov": 70.0,
+          "id": "forest_overview",
+          "sha256": "96a298dcec2cab8ad650f272107f4d7a35a6cce1bbdca7e1f4c5760c0847ebc1",
+          "wind": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "report_sha256": "d9572daffaabb89faa98803b2013d237f515cba581ec1f82bb8019dd9347e2c4"
+    },
+    {
+      "name": "candidate",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "api": "3.3.0 NVIDIA 617.42",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "captures": [
+        {
+          "at": [
+            0.0,
+            8.0,
+            -300.0
+          ],
+          "clock": 0.0,
+          "counters": {
+            "draws": 133,
+            "primitives": 319074,
+            "shadow_draws": 0
+          },
+          "eye": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ],
+          "fov": 50.0,
+          "id": "pilot_north",
+          "sha256": "fec4eb6b31736235395d4f5307cdd1ffb6a17aa03b751016b97ffb54b7c8d79e",
+          "wind": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "at": [
+            0.0,
+            0.0,
+            20.0
+          ],
+          "clock": 0.0,
+          "counters": {
+            "draws": 376,
+            "primitives": 474115,
+            "shadow_draws": 0
+          },
+          "eye": [
+            160.0,
+            140.0,
+            -140.0
+          ],
+          "fov": 50.0,
+          "id": "aerial_overview",
+          "sha256": "5cfc8e043e09914265e5d3512bd2b8818d6d72872ce227c0a8e6a443de5bedcb",
+          "wind": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "at": [
+            0.0,
+            0.0,
+            -100.0
+          ],
+          "clock": 0.0,
+          "counters": {
+            "draws": 267,
+            "primitives": 495815,
+            "shadow_draws": 0
+          },
+          "eye": [
+            0.0,
+            1900.0,
+            1250.0
+          ],
+          "fov": 70.0,
+          "id": "forest_overview",
+          "sha256": "035a007b0fb1d80d021156e231e322a6d746684c208b54741efba1542e70d1e2",
+          "wind": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "report_sha256": "a99990a33c70153b37535e1b3a606d658ba3ddf87dbbc69ff65ab177f3342c00"
+    }
+  ],
+  "motion": {
+    "frames": 48,
+    "size": [
+      1920,
+      1080
+    ],
+    "route": "forest-pan",
+    "wind_mps": 5,
+    "report_sha256": "ee9654a22a7d7fa20541eab8bdc14b5e2a668b348c5fb0c23b1f99a8a5114fab",
+    "scope": "Offline fixed-step camera samples, not live flight performance."
+  },
+  "world": {
+    "baseline": {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "complete": true,
+      "completed_ticks": 2400,
+      "failure": "",
+      "format": "openrc-tree-world-recording v1",
+      "input_reads": 2400,
+      "log_final_tick": 2400,
+      "log_first_tick": 0,
+      "log_rows": 2401,
+      "log_sha256": "9c46260ab703a603356b73767cb5415a334f88663e1a1ae8ec32760dc187add4",
+      "measurement_boundary_tick": 240,
+      "proxy_count": 6092,
+      "requested_ticks": 2400,
+      "scope": "Detached production callbacks with complete installed scenery, field and lake. Exact replay is a separate required CLI check. Cross-world comparisons are not exact equivalence or physical validation.",
+      "solver_sha256": "88d3533f90ca78c75f3435305b5ed3241d5794dd7f6ed0a11506ab0aab82fefb",
+      "world_identity": "4e28a8ab799eb75b921cb2ac70946548e812d0ce607d536b6b3c624887962e9f"
+    },
+    "candidate": {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "complete": true,
+      "completed_ticks": 2400,
+      "failure": "",
+      "format": "openrc-tree-world-recording v1",
+      "input_reads": 2400,
+      "log_final_tick": 2400,
+      "log_first_tick": 0,
+      "log_rows": 2401,
+      "log_sha256": "5632bc088cb0efa5a74a07b48e17ac5e5ed0373114d70412c4e825150e965c9e",
+      "measurement_boundary_tick": 240,
+      "proxy_count": 6092,
+      "requested_ticks": 2400,
+      "scope": "Detached production callbacks with complete installed scenery, field and lake. Exact replay is a separate required CLI check. Cross-world comparisons are not exact equivalence or physical validation.",
+      "solver_sha256": "88d3533f90ca78c75f3435305b5ed3241d5794dd7f6ed0a11506ab0aab82fefb",
+      "world_identity": "8c49e45696cbd0c126060041800e5e42b8a671c085aa18175245616c0dabe53b"
+    },
+    "exact_replays": {
+      "baseline": {
+        "complete": true,
+        "mode": "exact",
+        "solver_changed": false,
+        "rows": 2401
+      },
+      "final": {
+        "complete": true,
+        "mode": "exact",
+        "solver_changed": false,
+        "rows": 2401
+      }
+    },
+    "baseline_and_candidate_trim_csv_byte_identical": true,
+    "comparison_sha256": "712c5de2dd32a4e513b2f763b117df35e1bc6fba740565fec5d790a231fc884e"
+  },
+  "geometry": {
+    "tree_positions": 1680,
+    "detailed_high": 127,
+    "detailed_extreme": 480,
+    "card_triangles_per_tree": 6,
+    "woodland_edge_triangles": 472,
+    "woodland_edge_geometry_changed": false
+  },
+  "limits": [
+    "No full CI, export, whole-flight performance or independent pilot qualification.",
+    "Source identity is aligned; mesh/card lighting and close/aerial card volume remain open.",
+    "Collision preserves the old proxy volume and adds beech lower foliage; inherited mesh/card cross-preset containment limits remain."
+  ],
+  "fresh_checkout": {
+    "receipt": "fresh-checkout.json",
+    "all_exact": true,
+    "scope": "Disposable sparse Git fixture, autocrlf true/false; resource and receipt byte stability only."
+  },
+  "final_observed_head": "1094aded3b7a339a99ca27299d765217caa3ba7e",
+  "concurrent_work": "HEAD advanced and other agents edited scene-detail recommendation/evidence and aircraft files. Those edits were preserved; targeted current scene-detail and collision-setup suites also passed.",
+  "shared_dependencies_sha256": {
+    "app/render/scene_detail.gd": "028f2c4319d16677282990164b3dafcb5fa6f03825098e5851a7312afa744c4e",
+    "app/tests/test_scene_detail.gd": "7354c1d7c71999c1ba671141c960b41b2cbd930532bf8b86ab29e80a374d71e5",
+    "app/tests/test_landscape_collision_setup.gd": "5ecf6d477f8e49fdac7a0b91d82f0f0bac7a3d20aca7b2bac6f50f0c624dfc12"
+  }
+}

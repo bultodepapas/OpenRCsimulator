@@ -11,6 +11,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import build
+
 
 ROOT = Path(__file__).resolve().parents[2]
 ADAPTER = ROOT / "tools" / "trees" / "adapt.mjs"
@@ -129,6 +131,30 @@ class PinnedRecipeAdapterTests(unittest.TestCase):
             ["node", str(ADAPTER), "--source-recipe", str(recipe), "--out", str(output)],
             cwd=ROOT, text=True, capture_output=True, timeout=120, check=False,
         )
+
+    def test_field_recipe_matches_detailed_sources_and_ships_fagus_attribution(self) -> None:
+        recipe = build.field_recipe()
+        catalog = json.loads((ROOT / 'app/assets/landscape/vegetation/catalog.json').read_text(encoding='utf-8'))
+        by_id = {asset['id']: asset for asset in catalog['assets']}
+        self.assertEqual([item['id'] for item in recipe['species']],
+                         ['CommonTree_1', 'CommonTree_3', 'Pine_1'])
+        self.assertEqual([item['source_asset_id'] for item in recipe['species']],
+                         ['landscapelab:quercus', 'landscapelab:fagus', 'landscapelab:pine'])
+        for item in recipe['species']:
+            runtime = by_id[item['source_asset_id'].replace(':', '_')]
+            self.assertEqual(item['source_sha256'], runtime['source_sha256'])
+            self.assertEqual(_sha(Path(item['source_path'])), item['source_sha256'])
+            self.assertEqual(sorted(runtime['source_material_names']),
+                             sorted([item['bark_material_name'], item['foliage_material_name']]))
+        fagus = recipe['species'][1]
+        notices = [pin for pin in fagus['pinned_files'] if pin['role'] == 'license']
+        self.assertEqual(len(notices), 1, 'the adapter copies exactly one notice per slot')
+        notice = Path(notices[0]['path']).read_text(encoding='utf-8')
+        self.assertIn('Krzysztof Golik', notice)
+        self.assertIn('Fagus_sylvatica_in_Aubrac_(2).jpg', notice)
+        self.assertIn('Fagus_sylvatica_in_Aubrac_(3).jpg', notice)
+        self.assertEqual(build.realistic_recipe()['species'][1]['source_asset_id'],
+                         'lolipop:acer_large_3_lod1', 'the historical recipe must retain its maple')
 
     def test_nonidentity_node_hierarchy_is_preserved_under_a_1m_normalization_wrapper(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,402 @@
+{
+  "schema": "openrc-tree-atlas-analysis v1",
+  "raw_capture_size_px": 1024,
+  "atlas_size_px": 1024,
+  "tile_size_px": 512,
+  "atlas_variant": "adapted_albedo",
+  "runtime_alpha_reference": null,
+  "foliage_mask": {
+    "variant": "adapted_foliage_mask",
+    "channel": "red",
+    "space": "linear data; do not mark as source_color in the runtime shader",
+    "source": "exact glTF material identity; no RGB classification or hand painting",
+    "downsampling": "2x2 BOX with source silhouette alpha weighting, aligned with the albedo atlas"
+  },
+  "silhouette_iou_minimum": 0.995,
+  "downsampling": {
+    "method": "2x2 BOX; RGB is alpha-weighted in straight-alpha space, alpha is the arithmetic mean.",
+    "transparent_rgb": "zero when every input sample in a 2x2 block is transparent"
+  },
+  "reserved_fourth_slot": "transparent",
+  "species": [
+    {
+      "id": "CommonTree_1",
+      "bark_material_name": "branches",
+      "foliage_material_name": "leaves",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "material_mask_alpha_exactly_matches_adapted_albedo": true,
+      "material_mask_raw_visible_pixel_counts": {
+        "visible_bark_pixels": 39530,
+        "visible_foliage_pixels": 257625
+      },
+      "runtime_mask_alpha_exactly_matches_runtime_atlas": false,
+      "runtime_mask_alpha_alignment_before_edge_reconciliation": null,
+      "runtime_only_edge_labels_filled_from_nearest_source_material_id": 0,
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 297155,
+        "mean_absolute_rgb_difference_0_255": 0.0002938982461453899,
+        "mean_absolute_difference_by_channel_0_255": [
+          0.00027258501455469365,
+          0.00027931550874122935,
+          0.00032979421514024666
+        ],
+        "maximum_absolute_rgb_difference_0_255": 5,
+        "fraction_pixels_above_two_rgb_levels": 3.3652470932678234e-06
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        66,
+        39,
+        443,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 66,
+        "top": 39,
+        "right": 68,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ],
+      "source_asset_id": "landscapelab:quercus",
+      "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+      "derived_sha256": "b12968deb0ae766a207ce6852fd2d6849d5641ab4ec1d24996af9e570c2f3f87",
+      "source_provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "license_file": "licenses/CommonTree_1.txt",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Quercus tree asset",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb"
+      },
+      "normalization": {
+        "bottom_center_world_y_up": [
+          0.404389381408691,
+          0.0,
+          -0.76476001739502
+        ],
+        "height_m": 1.0,
+        "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+        "scale": 0.0167909539555435,
+        "source_bounds_world_y_up": {
+          "max": [
+            26.3473873138428,
+            59.5558776855469,
+            24.6304874420166
+          ],
+          "min": [
+            -25.5386085510254,
+            0.0,
+            -26.1600074768066
+          ]
+        },
+        "source_height_m": 59.5558776855469
+      },
+      "source_derived_quality_gates": {
+        "source_and_derived_hashes_pinned": true,
+        "normalized_height_m": 1.0,
+        "albedo_silhouette_iou": 1.0,
+        "albedo_silhouette_iou_minimum": 0.995,
+        "lit_silhouette_iou": 1.0,
+        "lit_silhouette_iou_minimum": 0.995,
+        "albedo_rgb_mae_0_255": 0.0002938982461453899,
+        "albedo_rgb_mae_maximum_0_255": 0.05,
+        "albedo_fraction_pixels_over_two_levels": 3.3652470932678234e-06,
+        "albedo_fraction_pixels_over_two_levels_maximum": 0.001
+      },
+      "material_foliage_coverage": {
+        "raw_capture_1024": {
+          "cutoff": 128,
+          "bbox_px_inclusive": [
+            132,
+            78,
+            886,
+            741
+          ],
+          "width_px": 755,
+          "height_px": 664,
+          "opaque_pixel_count": 257625
+        },
+        "atlas_tile_512": {
+          "cutoff": 128,
+          "bbox_px_inclusive": [
+            66,
+            39,
+            442,
+            370
+          ],
+          "width_px": 377,
+          "height_px": 332,
+          "opaque_pixel_count": 66111
+        }
+      }
+    },
+    {
+      "id": "CommonTree_3",
+      "bark_material_name": "branches",
+      "foliage_material_name": "leaves",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 0.9999864174725633,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 0.9999864174725633,
+          "minimum_iou": 0.995
+        }
+      },
+      "material_mask_alpha_exactly_matches_adapted_albedo": true,
+      "material_mask_raw_visible_pixel_counts": {
+        "visible_bark_pixels": 41579,
+        "visible_foliage_pixels": 179292
+      },
+      "runtime_mask_alpha_exactly_matches_runtime_atlas": false,
+      "runtime_mask_alpha_alignment_before_edge_reconciliation": null,
+      "runtime_only_edge_labels_filled_from_nearest_source_material_id": 0,
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 220869,
+        "mean_absolute_rgb_difference_0_255": 0.0015273004963726614,
+        "mean_absolute_difference_by_channel_0_255": [
+          0.0011907510786937053,
+          0.0016570908547600613,
+          0.0017340595556642171
+        ],
+        "maximum_absolute_rgb_difference_0_255": 67,
+        "fraction_pixels_above_two_rgb_levels": 1.811028256568373e-05
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        107,
+        35,
+        400,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 107,
+        "top": 35,
+        "right": 111,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ],
+      "source_asset_id": "landscapelab:fagus",
+      "source_sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+      "derived_sha256": "dcbf099770515a679bfe7ea24f7fff4722cc8e2c97376fb4adfbb570052faf5b",
+      "source_provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "license_file": "licenses/CommonTree_3.txt",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Fagus tree asset",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Fagus/Fagus.glb"
+      },
+      "normalization": {
+        "bottom_center_world_y_up": [
+          0.0110124498605728,
+          0.0,
+          0.0412513762712479
+        ],
+        "height_m": 1.0,
+        "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+        "scale": 0.981071877837569,
+        "source_bounds_world_y_up": {
+          "max": [
+            0.353193432092667,
+            1.01929330825806,
+            0.436788529157639
+          ],
+          "min": [
+            -0.331168532371521,
+            0.0,
+            -0.354285776615143
+          ]
+        },
+        "source_height_m": 1.01929330825806
+      },
+      "source_derived_quality_gates": {
+        "source_and_derived_hashes_pinned": true,
+        "normalized_height_m": 1.0,
+        "albedo_silhouette_iou": 0.9999864174725633,
+        "albedo_silhouette_iou_minimum": 0.995,
+        "lit_silhouette_iou": 0.9999864174725633,
+        "lit_silhouette_iou_minimum": 0.995,
+        "albedo_rgb_mae_0_255": 0.0015273004963726614,
+        "albedo_rgb_mae_maximum_0_255": 0.05,
+        "albedo_fraction_pixels_over_two_levels": 1.811028256568373e-05,
+        "albedo_fraction_pixels_over_two_levels_maximum": 0.001
+      },
+      "material_foliage_coverage": {
+        "raw_capture_1024": {
+          "cutoff": 128,
+          "bbox_px_inclusive": [
+            215,
+            71,
+            801,
+            844
+          ],
+          "width_px": 587,
+          "height_px": 774,
+          "opaque_pixel_count": 179292
+        },
+        "atlas_tile_512": {
+          "cutoff": 128,
+          "bbox_px_inclusive": [
+            108,
+            36,
+            400,
+            421
+          ],
+          "width_px": 293,
+          "height_px": 386,
+          "opaque_pixel_count": 48009
+        }
+      }
+    },
+    {
+      "id": "Pine_1",
+      "bark_material_name": "branches.001",
+      "foliage_material_name": "leaves.001",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "material_mask_alpha_exactly_matches_adapted_albedo": true,
+      "material_mask_raw_visible_pixel_counts": {
+        "visible_bark_pixels": 14139,
+        "visible_foliage_pixels": 61693
+      },
+      "runtime_mask_alpha_exactly_matches_runtime_atlas": false,
+      "runtime_mask_alpha_alignment_before_edge_reconciliation": null,
+      "runtime_only_edge_labels_filled_from_nearest_source_material_id": 0,
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 75832,
+        "mean_absolute_rgb_difference_0_255": 6.59352252347294e-05,
+        "mean_absolute_difference_by_channel_0_255": [
+          6.59352252347294e-05,
+          0.00011868340542251292,
+          1.318704504694588e-05
+        ],
+        "maximum_absolute_rgb_difference_0_255": 1,
+        "fraction_pixels_above_two_rgb_levels": 0.0
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        170,
+        31,
+        337,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 170,
+        "top": 31,
+        "right": 174,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ],
+      "source_asset_id": "landscapelab:pine",
+      "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+      "derived_sha256": "f7dc570e64e41975f77d747e8f65bf56ac70bab4dc6337f99311836365e62faf",
+      "source_provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "license_file": "licenses/Pine_1.txt",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Pine tree asset",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb"
+      },
+      "normalization": {
+        "bottom_center_world_y_up": [
+          -0.0801169872283936,
+          0.0,
+          -0.0733203887939453
+        ],
+        "height_m": 1.0,
+        "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+        "scale": 0.0242991371500089,
+        "source_bounds_world_y_up": {
+          "max": [
+            7.76777458190918,
+            41.1537246704102,
+            7.98500347137451
+          ],
+          "min": [
+            -7.92800855636597,
+            0.0,
+            -8.1316442489624
+          ]
+        },
+        "source_height_m": 41.1537246704102
+      },
+      "source_derived_quality_gates": {
+        "source_and_derived_hashes_pinned": true,
+        "normalized_height_m": 1.0,
+        "albedo_silhouette_iou": 1.0,
+        "albedo_silhouette_iou_minimum": 0.995,
+        "lit_silhouette_iou": 1.0,
+        "lit_silhouette_iou_minimum": 0.995,
+        "albedo_rgb_mae_0_255": 6.59352252347294e-05,
+        "albedo_rgb_mae_maximum_0_255": 0.05,
+        "albedo_fraction_pixels_over_two_levels": 0.0,
+        "albedo_fraction_pixels_over_two_levels_maximum": 0.001
+      },
+      "material_foliage_coverage": {
+        "raw_capture_1024": {
+          "cutoff": 128,
+          "bbox_px_inclusive": [
+            340,
+            63,
+            674,
+            587
+          ],
+          "width_px": 335,
+          "height_px": 525,
+          "opaque_pixel_count": 61693
+        },
+        "atlas_tile_512": {
+          "cutoff": 128,
+          "bbox_px_inclusive": [
+            170,
+            32,
+            336,
+            293
+          ],
+          "width_px": 167,
+          "height_px": 262,
+          "opaque_pixel_count": 16118
+        }
+      }
+    }
+  ],
+  "recipe_id": "field-trees-2026-11-09-v1"
+}

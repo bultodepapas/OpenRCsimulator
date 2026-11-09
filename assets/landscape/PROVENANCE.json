@@ -1,15 +1,15 @@
 {
   "format": "openrc-landscape-provenance v2",
   "current": {
-    "status": "promoted from the independent repeat bake; current runtime hashes captured after promotion",
-    "workstream": "vegetation-renewal-2026-10-20",
+    "status": "promoted from two byte-identical independent native bakes",
+    "workstream": "L8a-R3 field-tree source alignment",
     "derived_by": "OpenRCsimulator tree atlas pipeline",
-    "recipe_id": "realistic-trees-2026-10-20-v1",
+    "recipe_id": "field-trees-2026-11-09-v1",
     "source_recipe": {
       "generator": "tools/trees/build.py",
-      "selection": "--recipe realistic",
-      "recipe_id": "realistic-trees-2026-10-20-v1",
-      "sha256": "8f786a428a1aeaf11f403e350c7f2d09443e1bcbe80c9f06750c1cd5d3ab9a58",
+      "selection": "--recipe field",
+      "recipe_id": "field-trees-2026-11-09-v1",
+      "sha256": "5b7d5fe119efa708381cd0b21813c6d2aacf515ffbad52ff3086b42e61dc21f5",
       "sha256_source": "source_recipe_sha256 in the promoted repeat-bake manifest"
     },
     "stable_slots": [
@@ -20,13 +20,13 @@
       },
       {
         "id": "CommonTree_3",
-        "source_asset_id": "lolipop:acer_large_3_lod1",
-        "source_title": "Acer_large_3_LOD1 maple"
+        "source_asset_id": "landscapelab:fagus",
+        "source_title": "Fagus tree asset"
       },
       {
         "id": "Pine_1",
         "source_asset_id": "landscapelab:pine",
-        "source_title": "Joined pine tree asset"
+        "source_title": "Pine tree asset"
       }
     ],
     "sources": [
@@ -46,24 +46,28 @@
       },
       {
         "slot": "CommonTree_3",
-        "source_asset_id": "lolipop:acer_large_3_lod1",
-        "creator": "LOLIPOP (@lolipop_1707)",
-        "title": "Maple trees pack (lowpoly, game ready, LODs)",
-        "selected_model": "Acer_large_3_LOD1",
-        "source_path": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
-        "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
-        "source_archive_sha256": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
-        "conversion_manifest_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
-        "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
-        "license": "CC BY 4.0",
-        "license_url": "https://creativecommons.org/licenses/by/4.0/",
-        "license_notice": "app/assets/landscape/trees/licenses/CommonTree_3.txt"
+        "source_asset_id": "landscapelab:fagus",
+        "creator": "LandscapeLab Assets contributors",
+        "title": "Fagus tree asset",
+        "upstream_path": "Natural/Plants/Trees/Fagus/Fagus.glb",
+        "source_path": "assets/landscape/vegetation/source/landscapelab_tree_2026/Fagus.glb",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Fagus/Fagus.glb",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "license_notice": "app/assets/landscape/trees/licenses/CommonTree_3.txt",
+        "leaf_attribution": {
+          "creator": "Krzysztof Golik",
+          "source_license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_Fagus.md",
+          "sha256": "37024abfefe49fec375d961ebe9cb49d4ae61cf2d59b320fa7bb8f5dced8971e"
+        }
       },
       {
         "slot": "Pine_1",
         "source_asset_id": "landscapelab:pine",
         "creator": "LandscapeLab Assets contributors",
-        "title": "Joined pine tree asset",
+        "title": "Pine tree asset",
         "upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
         "source_path": "assets/landscape/vegetation/source/landscapelab_tree_2026/pine_joined.glb",
         "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb",
@@ -74,20 +78,20 @@
         "license_notice": "app/assets/landscape/trees/licenses/Pine_1.txt"
       }
     ],
-    "proof": "docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md",
+    "proof": "docs/research/visual-quality-implementation/L8a-R3/README.md",
     "runtime_sha256": {
-      "app/assets/landscape/trees/LICENSE.txt": "3382eb7d8b585705659d6ebba79ec1264e34d7640d2df66fa95f83174f9b0a9d",
-      "app/assets/landscape/trees/atlas.png": "6555b190842896867c8699e2c08294a396940ad8acdf3e90df1c9245b30e202e",
-      "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
-      "app/assets/landscape/trees/catalog.json": "797e2830d05efd715e60b3f964c7122e899792ffe209e39b38a62bd95394ab4e",
-      "app/assets/landscape/trees/foliage_mask.png": "6ca74c2cf8f596d4fe127d7183c0250cf868e001f6dedda6fa08f0adb562619f",
-      "app/assets/landscape/trees/foliage_mask.png.import": "2c6661ec8cc680141cd3569b2b3b36e66d6b549f11199c22afe73db38852ebfa",
-      "app/assets/landscape/trees/licenses/CommonTree_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
-      "app/assets/landscape/trees/licenses/CommonTree_3.txt": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
-      "app/assets/landscape/trees/licenses/Pine_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
+      "app/assets/landscape/trees/LICENSE.txt": "ae0ae40abca1e5fad20a6db270038d9bc5c489265e1926e25bb9062f5fb046cd",
+      "app/assets/landscape/trees/atlas.png": "546b74371c95853922e244e4ce66ddcdaf0c1a39a38b426d92aa1d4faf586ff2",
+      "app/assets/landscape/trees/atlas.png.import": "5c9e5b4de682d1d1c53f9336bf14883fd8458e91ad33db3b345701b13341b3a7",
+      "app/assets/landscape/trees/catalog.json": "ad6a3f27b62fed496cdcd809ddf2b2559be94649af9ffed03f84ecfd1bf329bc",
+      "app/assets/landscape/trees/foliage_mask.png": "eacd14a4dcd041ba0037119163613b6255544ecef6158672914539f10893c139",
+      "app/assets/landscape/trees/foliage_mask.png.import": "9a628e5277bd0247cd7b254041f4e8861783e8535b78c47bfe55142585e1cbff",
+      "app/assets/landscape/trees/licenses/CommonTree_1.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+      "app/assets/landscape/trees/licenses/CommonTree_3.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+      "app/assets/landscape/trees/licenses/Pine_1.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99"
     },
-    "bake_manifest_sha256": "8e132f3531e690884d1bfd88aa81c57bebd5659c0352ce7c996452c95a291d98",
-    "hash_status": "Runtime files were hashed after atlas-repeat promotion; bake manifest and generated source-recipe hashes are from atlas-repeat."
+    "bake_manifest_sha256": "ffd668236789250557fb28112f8fe8f2a65fa9448719178efef5b21d31c3024c",
+    "hash_status": "Promoted final bake-H atlas, mask, LF catalog and source notices; tree text files have explicit LF checkout rules and texture import settings are unchanged."
   },
   "historical": {
     "status": "historical; describes the retired Quaternius-based tree atlas before the vegetation renewal",
@@ -182,6 +186,95 @@
       "runtime_triangles_per_tree": 6,
       "runtime_surfaces_per_tree": 1,
       "close_lod_triangle_limit_pending_L8": 1000
+    },
+    "maple_atlas_2026_10_20": {
+      "status": "historical; replaced by the field-tree source-alignment recipe on 2026-11-09",
+      "workstream": "vegetation-renewal-2026-10-20",
+      "derived_by": "OpenRCsimulator tree atlas pipeline",
+      "recipe_id": "realistic-trees-2026-10-20-v1",
+      "source_recipe": {
+        "generator": "tools/trees/build.py",
+        "selection": "--recipe realistic",
+        "recipe_id": "realistic-trees-2026-10-20-v1",
+        "sha256": "8f786a428a1aeaf11f403e350c7f2d09443e1bcbe80c9f06750c1cd5d3ab9a58",
+        "sha256_source": "source_recipe_sha256 in the promoted repeat-bake manifest"
+      },
+      "stable_slots": [
+        {
+          "id": "CommonTree_1",
+          "source_asset_id": "landscapelab:quercus",
+          "source_title": "Quercus tree asset"
+        },
+        {
+          "id": "CommonTree_3",
+          "source_asset_id": "lolipop:acer_large_3_lod1",
+          "source_title": "Acer_large_3_LOD1 maple"
+        },
+        {
+          "id": "Pine_1",
+          "source_asset_id": "landscapelab:pine",
+          "source_title": "Joined pine tree asset"
+        }
+      ],
+      "sources": [
+        {
+          "slot": "CommonTree_1",
+          "source_asset_id": "landscapelab:quercus",
+          "creator": "LandscapeLab Assets contributors",
+          "title": "Quercus tree asset",
+          "upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb",
+          "source_path": "assets/landscape/vegetation/source/landscapelab_tree_2026/quercus.glb",
+          "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb",
+          "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+          "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+          "license": "CC BY-SA 4.0",
+          "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "license_notice": "app/assets/landscape/trees/licenses/CommonTree_1.txt"
+        },
+        {
+          "slot": "CommonTree_3",
+          "source_asset_id": "lolipop:acer_large_3_lod1",
+          "creator": "LOLIPOP (@lolipop_1707)",
+          "title": "Maple trees pack (lowpoly, game ready, LODs)",
+          "selected_model": "Acer_large_3_LOD1",
+          "source_path": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+          "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
+          "source_archive_sha256": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
+          "conversion_manifest_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+          "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+          "license": "CC BY 4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "license_notice": "app/assets/landscape/trees/licenses/CommonTree_3.txt"
+        },
+        {
+          "slot": "Pine_1",
+          "source_asset_id": "landscapelab:pine",
+          "creator": "LandscapeLab Assets contributors",
+          "title": "Joined pine tree asset",
+          "upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
+          "source_path": "assets/landscape/vegetation/source/landscapelab_tree_2026/pine_joined.glb",
+          "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb",
+          "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+          "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+          "license": "CC BY-SA 4.0",
+          "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "license_notice": "app/assets/landscape/trees/licenses/Pine_1.txt"
+        }
+      ],
+      "proof": "docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md",
+      "runtime_sha256": {
+        "app/assets/landscape/trees/LICENSE.txt": "3382eb7d8b585705659d6ebba79ec1264e34d7640d2df66fa95f83174f9b0a9d",
+        "app/assets/landscape/trees/atlas.png": "6555b190842896867c8699e2c08294a396940ad8acdf3e90df1c9245b30e202e",
+        "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
+        "app/assets/landscape/trees/catalog.json": "797e2830d05efd715e60b3f964c7122e899792ffe209e39b38a62bd95394ab4e",
+        "app/assets/landscape/trees/foliage_mask.png": "6ca74c2cf8f596d4fe127d7183c0250cf868e001f6dedda6fa08f0adb562619f",
+        "app/assets/landscape/trees/foliage_mask.png.import": "2c6661ec8cc680141cd3569b2b3b36e66d6b549f11199c22afe73db38852ebfa",
+        "app/assets/landscape/trees/licenses/CommonTree_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+        "app/assets/landscape/trees/licenses/CommonTree_3.txt": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+        "app/assets/landscape/trees/licenses/Pine_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
+      },
+      "bake_manifest_sha256": "8e132f3531e690884d1bfd88aa81c57bebd5659c0352ce7c996452c95a291d98",
+      "hash_status": "Runtime files were hashed after atlas-repeat promotion; bake manifest and generated source-recipe hashes are from atlas-repeat."
     }
   }
 }

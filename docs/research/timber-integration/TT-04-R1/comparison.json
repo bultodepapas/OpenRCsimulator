@@ -1,0 +1,1121 @@
+{
+  "method": "RGB8 second-difference RMS within fixed surface interiors across successive camera positions",
+  "limits": "Includes legitimate shading changes. Crops and silhouette checks do not qualify flight readability or GPU performance.",
+  "cases": {
+    "stock": {
+      "before_manifest_sha256": "6238821f1423c00eeb99b0a92827bee03a8e7fe316a4ac1e7457bde9f3649038",
+      "after_manifest_sha256": "9d018715751ee3ff34f962f88b864eb08d38b462475a1e1381e51a91f6140bea",
+      "textures_before": [
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "b2e890abdb819533919cead399dfdb49918507f7e2a9eaab57a168222a6e8fb7",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+        },
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "841f594b1b411553ef95ef10916fe9fd6211517c490fe7b75ae3335d11a497fb",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+        },
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "b4b17eb13e695837aada5727d0b2c618ce7458cd5a0a81e7855967527e976555",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+        },
+        {
+          "bytes": 1048576,
+          "format": 0,
+          "import_sha256": "a49d7b57d600d27109a685b33bb94a4e01d0b75e2f7e30c7782040cc0821b4da",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+        }
+      ],
+      "textures_after": [
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "ae824cdc16d02691c652b4e2c2c0f07b960fede54f99daf617e1a87c3e3d037d",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+        },
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "2d6be9149cce437034eb6e54e31d83fd5603dd96f67fe6adec3ca5d59f10fb3b",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+        },
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "f02a350798f6ec32d99f886c6a382a85a191b5d1edc85b5ff9fc02df3aa64f5a",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+        },
+        {
+          "bytes": 1398101,
+          "format": 0,
+          "import_sha256": "8c81bf0adaf37cbd9a782982992c309cea5d949a10e425052e151077442e3dcc",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+        }
+      ],
+      "temporal": {
+        "gear": {
+          "crop_xyxy": [
+            1320,
+            540,
+            1370,
+            640
+          ],
+          "camera_positions": 24,
+          "second_difference_rms_before": 0.296167438310074,
+          "second_difference_rms_after": 0.18521895315021247,
+          "after_before_ratio": 0.6253859445422779
+        },
+        "foam": {
+          "crop_xyxy": [
+            1020,
+            500,
+            1080,
+            510
+          ],
+          "camera_positions": 24,
+          "second_difference_rms_before": 0.26246692913372704,
+          "second_difference_rms_after": 0.26232257110879975,
+          "after_before_ratio": 0.9994499953750221
+        }
+      },
+      "captures": [
+        {
+          "file": "texture_gear_000.png",
+          "before_sha256": "2887c0649f4a82d9ebeff54b99d57835086eb2bfd12fa261d84b2834142c3ce1",
+          "after_sha256": "5969078c138e58a09fe1e49b12f0320eccea02a243e7d3eb09490fb74db6058b",
+          "changed_pixels": 46069,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_001.png",
+          "before_sha256": "f3eef4e58c8b023665b58225b32bec003d2de5f8b3369de96436c2d1b982038b",
+          "after_sha256": "abd27c222370e0f96b845cc1b983209f66ec69a463cfbe8ae9f00d8532c7beb2",
+          "changed_pixels": 46095,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_002.png",
+          "before_sha256": "e0e4b8b253f060547607c2246c40c145d749e4830153bbb379d72ce5edcd8639",
+          "after_sha256": "6e4a2d5c125bd8d7b50106bc3401ec6a793bbf7da9897a04824c2b00b52688aa",
+          "changed_pixels": 46152,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_003.png",
+          "before_sha256": "391b6fccbb981158221cbcf1404bb31e9866d69b01fd4cad43ba9af6d3fec488",
+          "after_sha256": "85712f9be98f9098b9a4ce51fa6956e18ace797cfb8c7ff0b8cd41307d9e790c",
+          "changed_pixels": 46367,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_004.png",
+          "before_sha256": "2d2574a4c2d0dfc97030e6ebbe4255016e3d73b36679afdda044f6adb33ccae7",
+          "after_sha256": "bd4394b40e503a2d696ece3f974b9de82cf47a0f2742aa6e87d19f2da5ae8a5d",
+          "changed_pixels": 45768,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_005.png",
+          "before_sha256": "5472c41d3b6a4764c44540b0b4df887cf13c6a2be3d8a25e4ae8324e8be6ad76",
+          "after_sha256": "e6db1e59f5d751f8fa32d7afcf4bde50a75f4d492293aaf2320e93cda46df694",
+          "changed_pixels": 45915,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_006.png",
+          "before_sha256": "4319d3d2f0915e32164fabd19cf6e1edad13b59b45d15feed40ab6a7faad8633",
+          "after_sha256": "5cf8801d8170dfbff86bf30110b3acd6291978a41f72f69dd5be3ad578f57511",
+          "changed_pixels": 46165,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_007.png",
+          "before_sha256": "8d1ce7a7158212f6c748288ed3cf2f96642f9a8d608d997f54d74ba5d8b599f7",
+          "after_sha256": "dc34d177c0df8994970d76ab6f26bd9a77fb1c8925479b0b286ea78d7ff80fa8",
+          "changed_pixels": 46016,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_008.png",
+          "before_sha256": "111352574edfc79a175ae04ae7e49ff2e2cb66f500ded36c988014ea6fb32513",
+          "after_sha256": "26e9766a55e71f70db154055c6a519b00eeafd7f1f1db8d87b216844b58cfa88",
+          "changed_pixels": 45857,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_009.png",
+          "before_sha256": "307d0e6a33211c609915bf26d0a03d963de6f05e250c17ab3e60996bb45ef93e",
+          "after_sha256": "fb2dea55a75707c8b49cb99807959b71d8e1eafa0bcdc601bf86f7f71d6ca7a2",
+          "changed_pixels": 45924,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_010.png",
+          "before_sha256": "100accbf17ee008b0421b986785377dc17a9454c57d2c6d7b9a41bfcc64dcec0",
+          "after_sha256": "57a52a1f24e11fa32c7a047d89f5a3a2ec52141864ebdb2c32e1ee68c281e79b",
+          "changed_pixels": 45786,
+          "max_channel_delta": 6,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_011.png",
+          "before_sha256": "328d38ca624881a9097b10423d53ffe202e37c7c75d1eebe3210ae6bd270a75b",
+          "after_sha256": "e3713fbf606638ac35ff2f921f9f36501f7ef1b74af2193c8a2cd95e4283c31c",
+          "changed_pixels": 45717,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_012.png",
+          "before_sha256": "cc172b41239ece74ee558301e18d72722b9019ae31f22186b26bc6032c477cd9",
+          "after_sha256": "beab232127659a7674cac53a3b1d587bf85ff65e73182ada9b9cbb8e0d98c4c1",
+          "changed_pixels": 45885,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_013.png",
+          "before_sha256": "14119b586972c2f9feb25d35896af525fbbad30cd752364969b61746eea25fa8",
+          "after_sha256": "57d1f5921a924cfd987c2b585958b8eb33888d6ddbe9012f49e3b8ccfc1dc030",
+          "changed_pixels": 45598,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_014.png",
+          "before_sha256": "f53063e7a721690990ba6480ca5fe2b3ae06a8428fd5ae94d8d2faf43eb8fa03",
+          "after_sha256": "ad35fe256788e2db9080413a2b7aae624021ebf5d59beac2a009f9e6f585d48e",
+          "changed_pixels": 45906,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_015.png",
+          "before_sha256": "cc0098b06486a3eff38baa9865ecb760a8adbd52ed96e1c0b968d90401eb0850",
+          "after_sha256": "a2755cd45cb71e144963f3d601a39b0ba03cc889073192c8fb93573736508c09",
+          "changed_pixels": 45917,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_016.png",
+          "before_sha256": "0a8cc00a86f03b0d7081c9c4e7ec9e25ce272cf9a0617a046e5eddcc6a71f7b6",
+          "after_sha256": "6e8f02de24ccc907761e56faf4712a13bde4b47f127eb341aaae6caa649708d1",
+          "changed_pixels": 45762,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_017.png",
+          "before_sha256": "ffa8d8ac290561cfa0fa57119b8cea678659f9f560bd249e9cd7f16b39cd693f",
+          "after_sha256": "d4851b1ef799bcbcd0e54436d25c71d222ebf85739b5eb88f48e16441a86ef3a",
+          "changed_pixels": 45805,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_018.png",
+          "before_sha256": "b11a133d24793fd99582301081c6affc49a3908c61fa2247628d915e7125bde6",
+          "after_sha256": "54f3b6c882337f3260129455973e8af1511164f0f947b3675d4ecb84db55f91c",
+          "changed_pixels": 45564,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_019.png",
+          "before_sha256": "577773a8d9b44d47d6ae5313601d1bcc0d37f614f3ba2fd76606275e8d624623",
+          "after_sha256": "edadcfac2373530e2aa41039cbdfa124b7e66bcd9ec3d285dd2d6780e3077316",
+          "changed_pixels": 45449,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_020.png",
+          "before_sha256": "a35e6c0fc062aac4f7e90874be6bbc3c6fd38894cc5577f74c3ed118b64fb248",
+          "after_sha256": "64ff91b85c28a4c50fc1dfe2ff86e4d0c8086243e3e83b9efcf5d07a3bb2d200",
+          "changed_pixels": 45387,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_021.png",
+          "before_sha256": "3d31e9178a09e1fca538237aba7a806963f18e40c02f171ab64651fed92dd804",
+          "after_sha256": "94929236d4ab5652ba4032c06c57fb1dc0bf9c24b0dae38a27db5af6a0b27b68",
+          "changed_pixels": 45459,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_022.png",
+          "before_sha256": "916e207d31f870db6036d563852281fb9fe615488c31f87ef2d0278576442349",
+          "after_sha256": "fb94bfdf5263a6aeaebb217fc395ce2c51d3707ded4b7eb8da4beb11676049b5",
+          "changed_pixels": 45700,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_023.png",
+          "before_sha256": "3be767b8dab51070ce62732a2017b5575475e247eb81590e3252fcc365f4966d",
+          "after_sha256": "abace956b12925213ca121dc109d2770f2125513ce665a0cd40834518627bae7",
+          "changed_pixels": 45696,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_000.png",
+          "before_sha256": "2841c149d9fa83d6719864d95d12bc69a19499856cedb6a7e565ed2da4497dc3",
+          "after_sha256": "4ba983c7fe8788694a7c2a3f7ed533aea5997b793452a58a0a2d9b5e3a9b7ddc",
+          "changed_pixels": 25584,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_001.png",
+          "before_sha256": "df0b441ca258fbbc283e1806aec1939d5b801778b7cc7d2592147944ab77068f",
+          "after_sha256": "31acdbbfdd7812b1c2a4ea225a943c839ec507f8e69568f3b30f128b5332d003",
+          "changed_pixels": 25426,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_002.png",
+          "before_sha256": "e0990008cc0c11ff1922d3bfc96c9e0c4bf8e6f17b777107dff06813e684f01c",
+          "after_sha256": "54cef2042176bb107069c2f22c53277ef01eb70cb23157977d3eb36202439323",
+          "changed_pixels": 25722,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_003.png",
+          "before_sha256": "bc433f444afb44aa0e858ad86a92767b7d5dfc9a6d44fcee0a65319d2f74cc57",
+          "after_sha256": "9a1bfd013e4b21e693195df5b579917fc9f395235576ead7d04f5ed19eb5782b",
+          "changed_pixels": 25799,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_004.png",
+          "before_sha256": "1471c140d3eb7f0643597cf456ab16efd9ae66a311442d2bee1e34277f21eaf1",
+          "after_sha256": "eb10cc0ffc3303b0733dca6cd35f7b236ff1c3949066236e53a04188bb924a03",
+          "changed_pixels": 25664,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_005.png",
+          "before_sha256": "fa1319f1915354d76843b3dde2972da964cd7505dab1e20adb91223cac4d0aea",
+          "after_sha256": "200fc34bbd334994b95670bb5b2f298ed6de3ea79c12ccb12a5670616d5744f6",
+          "changed_pixels": 25529,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_006.png",
+          "before_sha256": "d2219215220fc6ac451ff4ecd293213e0a1ae15aa5aeb97c2e19f30dccfce679",
+          "after_sha256": "02d5b4d9f4eb7cfb1883dfbeb7cbf58741ada95aca25910f4884f9f331673f19",
+          "changed_pixels": 25746,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_007.png",
+          "before_sha256": "c3b6f7b0ef57cc5bbefc2b688bc5c51a85e08936e09a878416f0e8a662c89fa0",
+          "after_sha256": "1ab120173e257e5f48963b58794d41607a367d84288b5f23459018c563b8b1e5",
+          "changed_pixels": 25672,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_008.png",
+          "before_sha256": "3d489b84077bbc3464939601d748e5d134c9c2411a9c4ecac26c9ded3050112c",
+          "after_sha256": "13c619131526869fd700f97aef6c3572d86ba2a99a1384f0bab0ca145149fe76",
+          "changed_pixels": 25815,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_009.png",
+          "before_sha256": "4584737d9ffd25a2e7bb4d2709a119797ddfc00636a588a4d131532cc9becaf4",
+          "after_sha256": "d52e322b32f13198ed66a88620c24f3adc3f552d1e33b58f32173f3df1ba92d0",
+          "changed_pixels": 25797,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_010.png",
+          "before_sha256": "6323926d7f7bcc9b79991662cb52bac268a61b1faa69ea7994742bc63dce25aa",
+          "after_sha256": "9c6071bd6b93b34cdf15dde220cf567bb68ec03e7b7d3f97fd113dbbee4f3b32",
+          "changed_pixels": 25673,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_011.png",
+          "before_sha256": "31bebbd1e83ab03aad5c83ece37e8a8063352ead6c59f6fa229d8fced1f2cf86",
+          "after_sha256": "c94376fbeb209fbee670b3a44701c190aeb1f5a49daeddd8cb8fd5321d14c8fc",
+          "changed_pixels": 25846,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_012.png",
+          "before_sha256": "c52701f6cb6f2cde29927afc75f55fc4e8f1543bb86f6c642ae0d3c34df9b2ff",
+          "after_sha256": "0e399c25c56262f8ed3dfc99fab09a0161e3a81cb3d9bd726e9446d5ba1234c1",
+          "changed_pixels": 25978,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_013.png",
+          "before_sha256": "fa972b0f3c53ed7970ea73f7abe101c2299db280f6d790b3ae2dad9efdc03967",
+          "after_sha256": "b765cb61aef95c11a3310c7d7a5e2a6a97c356e3edf8992ad78867c370b83a6b",
+          "changed_pixels": 25725,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_014.png",
+          "before_sha256": "9bddc936e5a763f399fa457ae51a865c802d600880325e215d576ef49addf2a7",
+          "after_sha256": "42e916a97f4a736a10fb2d27b4cc1b8470e05b41fefcfb3e6cd8dd118004b797",
+          "changed_pixels": 25822,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_015.png",
+          "before_sha256": "f20b77f8079adf3cc80c865f8745013b7bc58acfe51fdc09fae04c23fbfc8209",
+          "after_sha256": "7e566897356eb6dfc4bb5c89555ea175048c6db0c9016b6a1fe2fffdf6002a37",
+          "changed_pixels": 25725,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_016.png",
+          "before_sha256": "3f5f500a55f33fd8ece2239a2a0780dd159a6b760743ad29aca9c5c2a0ef3b91",
+          "after_sha256": "c8d3db1be9304d315925a65381ea25e30a609d6f7cd57c41dda7d5b6bc187f41",
+          "changed_pixels": 26030,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_017.png",
+          "before_sha256": "611f252a9671248f78507434a4a93642c02c299e22c1dcb08c99b0476c99f7f4",
+          "after_sha256": "3d69f677ba738a27a553995888342cf8fa20b9e636644bf730349aef76e2876e",
+          "changed_pixels": 26018,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_018.png",
+          "before_sha256": "ec14176b5ed586d5d5327f98cdf8b0abad3bc75a589973a3dbeb3342e34f3af1",
+          "after_sha256": "3eaf5c62f539a393a7364a0696d43ce220c29e484ea50127bb04e7782a3eebc0",
+          "changed_pixels": 25903,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_019.png",
+          "before_sha256": "f6f3d7d256a25f0636bffdf09342c6b9284ee702bd7f43b73f94b30ed447d9ed",
+          "after_sha256": "870c3dd2465fdc6defd0e521db75c0bff48bc5920d5469d8fe9580ccdc1b3c61",
+          "changed_pixels": 25903,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_020.png",
+          "before_sha256": "fb16253128b52de0173c21035b9533008c1bec12e6f953aa02ac602acf852fb2",
+          "after_sha256": "2c1fbe456b7edf8ba8f6dfb6701a08424a820fccc35894cd844f58012d2a6c8f",
+          "changed_pixels": 25924,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_021.png",
+          "before_sha256": "a51020a44b41dcd0bd9d78f70ac9094d15aa5f63ca73dc8534c1d1f3b76508ae",
+          "after_sha256": "19427980c00c98e5b91dda52d448908660dddb44d2432c5b83514ec562c90ec6",
+          "changed_pixels": 26049,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_022.png",
+          "before_sha256": "857b33a1961e0c456ca587021cdea5fe116c0b16192cb234b617856c26a34009",
+          "after_sha256": "bf59bc5abe5c9125e96c4a671d91795364e746d65c3bdd3c24e0df72f83a0826",
+          "changed_pixels": 26015,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_023.png",
+          "before_sha256": "45936045cea696455df4b94f69b79d004d2d45e8c64526aba7e82b2eeb8a1d0a",
+          "after_sha256": "baae59cff9dfcc533db25dd5e3d8e338901251c52f3f0ec1232585a7e334f8c4",
+          "changed_pixels": 25905,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        }
+      ]
+    },
+    "paint": {
+      "before_manifest_sha256": "4fb195ac9f46870b2efd5b2dee9e8759cf280ffba7432ab6f6e5227ad3afca09",
+      "after_manifest_sha256": "fef8a19fce04f16135eaa115afd9c22ea38f597917813f2beddba9c565c927aa",
+      "textures_before": [
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "b2e890abdb819533919cead399dfdb49918507f7e2a9eaab57a168222a6e8fb7",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+        },
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "841f594b1b411553ef95ef10916fe9fd6211517c490fe7b75ae3335d11a497fb",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+        },
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "b4b17eb13e695837aada5727d0b2c618ce7458cd5a0a81e7855967527e976555",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+        },
+        {
+          "bytes": 1048576,
+          "format": 0,
+          "import_sha256": "a49d7b57d600d27109a685b33bb94a4e01d0b75e2f7e30c7782040cc0821b4da",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+        }
+      ],
+      "textures_after": [
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "ae824cdc16d02691c652b4e2c2c0f07b960fede54f99daf617e1a87c3e3d037d",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+        },
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "2d6be9149cce437034eb6e54e31d83fd5603dd96f67fe6adec3ca5d59f10fb3b",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+        },
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "f02a350798f6ec32d99f886c6a382a85a191b5d1edc85b5ff9fc02df3aa64f5a",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+        },
+        {
+          "bytes": 1398101,
+          "format": 0,
+          "import_sha256": "8c81bf0adaf37cbd9a782982992c309cea5d949a10e425052e151077442e3dcc",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+        }
+      ],
+      "temporal": {
+        "gear": {
+          "crop_xyxy": [
+            1320,
+            540,
+            1370,
+            640
+          ],
+          "camera_positions": 24,
+          "second_difference_rms_before": 0.296167438310074,
+          "second_difference_rms_after": 0.18521895315021247,
+          "after_before_ratio": 0.6253859445422779
+        },
+        "foam": {
+          "crop_xyxy": [
+            1020,
+            500,
+            1080,
+            510
+          ],
+          "camera_positions": 24,
+          "second_difference_rms_before": 0.34086194960257543,
+          "second_difference_rms_after": 0.2991148558157835,
+          "after_before_ratio": 0.8775249222288773
+        }
+      },
+      "captures": [
+        {
+          "file": "texture_gear_000.png",
+          "before_sha256": "b42d0e0d9138f17497696eba34b91a1148b41027de44ba6feda090d4dcb4ce4f",
+          "after_sha256": "0b3d69c59fe45fd375e96dcdc3adac5e54a84b20947c2dce62c4233c87df6a01",
+          "changed_pixels": 44503,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_001.png",
+          "before_sha256": "86db6a2698634d46e6c3b064aa89bce82badc54230d700cd022cae50173dcbb0",
+          "after_sha256": "654c88d6a7813bc30c48eec473db5de638f3c3bfbba977990f8c516636d5dd7d",
+          "changed_pixels": 44650,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_002.png",
+          "before_sha256": "596a46933e0165de9089d4f66ea534838d486c5a59e18eeadf567f68261f1fca",
+          "after_sha256": "66b8e36317b4699e9998362dfe0bb17791c4982e72519ce18dd3c965ecf1619e",
+          "changed_pixels": 44771,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_003.png",
+          "before_sha256": "027027979762d25fbce964b4d110c6e90847404ba405e2944d9fc9062ff662f1",
+          "after_sha256": "2fd5d9eccadd9e56054c990a4b015b9f34baa4b539308e39946d1a16cf8c5719",
+          "changed_pixels": 45013,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_004.png",
+          "before_sha256": "72d87c0e65dbdbe5a593d7b3a0ea39841572a74746a5e5d307e759fe8e596535",
+          "after_sha256": "106d5ce0cf418aedc81e5ca92b5afb682f28cba76199b8658b1531215409f1bf",
+          "changed_pixels": 44511,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_005.png",
+          "before_sha256": "cc5eedb08171ea8c7c17e84488ac6584ad872a1e563205913ab0178057591743",
+          "after_sha256": "b41c7042c23815e098fd4080a68933f487886e483dedb11822d368678e907992",
+          "changed_pixels": 44653,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_006.png",
+          "before_sha256": "3b6d60df40fc19647903928e25e90b6d41a8c04491d883f570baf7b47dcf8b30",
+          "after_sha256": "ecb09cfefb6f793bc6d118ba7b03061c3a62b91ab29bb90d2d28dbef920ddd3e",
+          "changed_pixels": 44669,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_007.png",
+          "before_sha256": "44f90681c31b2b5d94ac01d4d1dc441c2bc372aef6c98b319592fa659ee409dc",
+          "after_sha256": "4456cc58117201b39065006605a1d88e3a3907dc5a4f73852107f3ad8bbe98ac",
+          "changed_pixels": 44541,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_008.png",
+          "before_sha256": "90d0922d3fd022271209876b2b7ddc2d1a15d3424c0cf8fd6606c738f1512ec2",
+          "after_sha256": "225bd704ce38f063e4bf149dc5dce2641d9e932b9489cb5c9237e301f72d38da",
+          "changed_pixels": 44623,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_009.png",
+          "before_sha256": "95add90e2cde1662575ea88ab0edfc6b28c29485255ecc31dd6de3bad36644c0",
+          "after_sha256": "de519f62ded80ff204357ae108278d1cd8b38e332b15721e1fa1bb34b1d48d21",
+          "changed_pixels": 44685,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_010.png",
+          "before_sha256": "393b2e2fba05847261f5467f8c37e237bd30e603afedec4ee8dd97b623dcfc4f",
+          "after_sha256": "99a627000c4ad6d140816e032861e7d8a6aaeebee76bedf8e9bf9e7d9befa9af",
+          "changed_pixels": 44596,
+          "max_channel_delta": 6,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_011.png",
+          "before_sha256": "d6fc543df73fa59294aa8afca04ca273de6763042c566d7a21fadaf28aab49af",
+          "after_sha256": "14f0a0a34fab9e69ac7c2e2bd08c9baf87ec141e10576867b80f1d5ba4f54848",
+          "changed_pixels": 44561,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_012.png",
+          "before_sha256": "c0188f44ee4b1a998cac6c214e81f1016383a076ddd2a42f808968b5724c8969",
+          "after_sha256": "148723606f2923f7648ae18caa0396a06a9472889ce25d51d5d93f0b27426743",
+          "changed_pixels": 44810,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_013.png",
+          "before_sha256": "4ad01934031a7251756b353986091622588775a591b7eabe7a7144250ef34f79",
+          "after_sha256": "29a8c1ab3cb07c6a14dc063d0e991ffda208af87242c73f567989b5b45883974",
+          "changed_pixels": 44484,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_014.png",
+          "before_sha256": "4136df2928dbfd038059687f537fbcee82ecf7d69e7f751510e80e62cff932c4",
+          "after_sha256": "476a94e5c2fc9dc014f263c51dd2fe97a8258a1374e625efef032cc6f5515aa0",
+          "changed_pixels": 44402,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_015.png",
+          "before_sha256": "85d7e9f54274c6f2ef699b415908c23ba93fc7c4cf6a9c1aaa6cf8bdd8f64edd",
+          "after_sha256": "d55ae01cbe2fb1e2f36d7b3d354c9c69f18fe07b513b0f8ebe0497f4dd520447",
+          "changed_pixels": 44737,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_016.png",
+          "before_sha256": "f623ace6bd1b79054c64d9b085ab9c5d2a677461be500600635a8d4ea009a8e7",
+          "after_sha256": "af2078360ec72f96322fd5d78e4fa6c85f6901d812cbc389c50e7d30ce01e747",
+          "changed_pixels": 44630,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_017.png",
+          "before_sha256": "8942b59c5a728622644c67d5d34fc6e6d940817868cf235165aba4f4a8c70ce7",
+          "after_sha256": "0690c2ba4a8f479e1143f8d5fae8157bc26bfd6e403d64ae9cd43a73c1c8111b",
+          "changed_pixels": 44434,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_018.png",
+          "before_sha256": "0750a0973fa8de25c5ea70b10916c039140bf7bdb35950e66078b3d772318419",
+          "after_sha256": "7241ae6f7e855d1a5cd1861042f61c52a8bb47b6ec248c2bd30c9cceb1a71aa4",
+          "changed_pixels": 44449,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_019.png",
+          "before_sha256": "cd095195804c8368bfad0fcb13aced26e2ef14c131d01697957c8b4f045387d1",
+          "after_sha256": "e469bb3f7a7db2c24d647e881f9921a7efbe8c4e6fb48be1722361f1bdd64869",
+          "changed_pixels": 44590,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_020.png",
+          "before_sha256": "55bd303b69c922713cf8c37292f45894e0620e766b3a52ec5142b1d328639cdc",
+          "after_sha256": "3788ec66da6d30e11f17fcc6b9a751b75cab4ea813c74e0e31b5dd27cbf8b33a",
+          "changed_pixels": 43993,
+          "max_channel_delta": 4,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_021.png",
+          "before_sha256": "6842669c3c964d886e188abb79b2fbf318d3cbca1e7650a973c9f0e397b75ae1",
+          "after_sha256": "34426a66f3d4c55ccc2170249ea03bcf478bebf315277577a9555e248098f96e",
+          "changed_pixels": 44011,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_022.png",
+          "before_sha256": "05428fb0a381bc30d3b533d52810ef2a6eba7ebf363c3333fa42dc6b75fc5ed5",
+          "after_sha256": "0660493382e2534e50bc6673501c1a69d5a31988bcd2793302f4d175034d7427",
+          "changed_pixels": 44458,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_gear_023.png",
+          "before_sha256": "d25f1f3582b32d850c961a60d3a6ce3404a327d465c1d87597092352e3528cb9",
+          "after_sha256": "cc4deafd5f7477409d388bd9787976c149efea7c0b1e76aab681d6a967d02cbd",
+          "changed_pixels": 44123,
+          "max_channel_delta": 5,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_000.png",
+          "before_sha256": "ab3f317e1321c33974021cb4c8a4639c41da1f6f2fd6678b798e35519ff98ece",
+          "after_sha256": "98f691c1fe2f33cd23ec9ac2e058d241c3f20e34eaac5cd8c79f3dbdb9d2681a",
+          "changed_pixels": 29367,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_001.png",
+          "before_sha256": "227d756c75896086dacafce5a88d4a21b041b2d107584c14244fb150c2f8442c",
+          "after_sha256": "88796fc88f34cc41f5e430d69f3e93c29aa5ccc608ff90919ba4398a951bce4b",
+          "changed_pixels": 29455,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_002.png",
+          "before_sha256": "d9bb2cf6ba8ab2f29de7c8b42686da905d8924c024549364592d1b7717ff7c77",
+          "after_sha256": "c1ba0ed6ce9e8fc2cd75c5aa492de946e8d60d565f8e6626580cf7e62fa7159b",
+          "changed_pixels": 29473,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_003.png",
+          "before_sha256": "ca10774515c61b0042bf6f7a37da798e6b15f11cf8b837986ac03039a08cabf2",
+          "after_sha256": "0cb6ac0c22d5d32e12c5660da246989cb262dfa1d6e809c1a4ef2e4407650cc0",
+          "changed_pixels": 29544,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_004.png",
+          "before_sha256": "464e4e71b9e9fb10b7528eaab8fac350bee1d5c17d95e54e25c837cc28f6d319",
+          "after_sha256": "1700d78ffb88c763802f2a949e788a83807e6e07c06ffe646d7bb244cfd2c6b2",
+          "changed_pixels": 29650,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_005.png",
+          "before_sha256": "fcf37375ddc74c81c173aedb096d93909b9eaf81aabfeeaf071bc264d72772a5",
+          "after_sha256": "d1e0b8c6d8bb0e56d298fb6d6bcbed0a6299271da9e3bf4412fa8f3a097a1b61",
+          "changed_pixels": 29705,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_006.png",
+          "before_sha256": "1b37cf3209b89e7d6a7c78f1170fef419045d38fbd5fe52016dfa94cca5fc6aa",
+          "after_sha256": "152a38761fafae3cc864142f646d32e01474d4b50c884fd465bcf6fc5c997bb6",
+          "changed_pixels": 29698,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_007.png",
+          "before_sha256": "2716fd9ba4888a9a0ad74c34ad752b6f856f17c295701a7f4a643bc65f9e6e5b",
+          "after_sha256": "203aba7a182f1398b29275c18ae88b4fa81503f6f2de0a744b2853e61d89c06c",
+          "changed_pixels": 29888,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_008.png",
+          "before_sha256": "2de4bcf3775c8d0e7edaf30e73a0317b6321590ef3c923f8f09ac6b42733e17c",
+          "after_sha256": "cb030ab74c7a859fbc93b4ab74381a4ee029798fbb62e8ed8f69546e17e699bf",
+          "changed_pixels": 30001,
+          "max_channel_delta": 3,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_009.png",
+          "before_sha256": "2f2316e084254b576425b204da7213f702c89357ea5b00ff404923ef6a7309db",
+          "after_sha256": "34e63fa978cc101a67b6e0aab765e51744694b4e7490674055b6b8df075dafb5",
+          "changed_pixels": 29773,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_010.png",
+          "before_sha256": "0ffe30360a01222436a1480762f736d7ab99908e0d9faf108a03ccdb27c178c7",
+          "after_sha256": "6c2ba19527ce5adaafbb4b88a2056954a6f322851eb1ccbdac9a8fb444efa9a5",
+          "changed_pixels": 29842,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_011.png",
+          "before_sha256": "4132cbdc502d6c2d0d1c01d493e70185fd0774482328545415364984fafb7912",
+          "after_sha256": "ddd67cd015d6b54578b21334ccfe7700ca9e3e046c34e98b417922f40277456d",
+          "changed_pixels": 29808,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_012.png",
+          "before_sha256": "b99e7987eabc0bd04a8086bd8d3ac2b733d39fd6b621dff48a61b967de4c72f0",
+          "after_sha256": "b3abcb0d8fc31c29c15c4c5de1724c0d8b3375ef8e78aa35e14609ec56370c6c",
+          "changed_pixels": 30080,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_013.png",
+          "before_sha256": "e4dc984ed27a39bcc2267a89bf5052df5a3cadb6cf5ab7b93ccf1b76106132cd",
+          "after_sha256": "80817d2362ec9cb6b1a2d7909231dfb778a1c6ff9ead385b011780bf793b4110",
+          "changed_pixels": 29873,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_014.png",
+          "before_sha256": "44167295ee8044e6b979b469885b590c8b06fdfe064cf600328beea9e3c7ea40",
+          "after_sha256": "4376878df7092821747cfe8e96be85a877e6ff2cc8d9f26b9c17a5e961778a12",
+          "changed_pixels": 29803,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_015.png",
+          "before_sha256": "8bb64c468de308a18ea6d28d45c06e780d19db068a9e28e2da94769285f55876",
+          "after_sha256": "7e0c656d24c8c2ee9e8b451696cb2305fa106b1fc3c4aa5bc6c7e9f3e8440505",
+          "changed_pixels": 29879,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_016.png",
+          "before_sha256": "59bcb25a33452bfc5d5d26e0c8df7ea8c4824fa2f891282851208a209b77776b",
+          "after_sha256": "ad6de470de8426d57c9c3b0819f41fa68996e3aaae47189b9a9c1066a2c6e8aa",
+          "changed_pixels": 30000,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_017.png",
+          "before_sha256": "706d16492e2b22193e3b85021765fff941fb35093ada16c6a4186227d7dc3def",
+          "after_sha256": "501c0e8e342f85bd0e6bb5d4bd55ba02ad2d3f928caf11fc6fb8b7b7b7d0a3af",
+          "changed_pixels": 29950,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_018.png",
+          "before_sha256": "9b1c6517882a5ab65074d85f9d37db82a45ea9033e303857485452fe3fcb75cf",
+          "after_sha256": "a0218f69d8f2a59bc17b07133be2e36df177e118bb19f2106345d98c793e369a",
+          "changed_pixels": 29858,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_019.png",
+          "before_sha256": "f61cfba1c2636d8115e965aae57976a0010b8b3fe2fb47260578ab4fac88c00f",
+          "after_sha256": "6f785a604604582e1b5a0e95f124e16691b90c3a50b564b08db2a5939c7c8c48",
+          "changed_pixels": 29906,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_020.png",
+          "before_sha256": "e64dfaf98c164da7a5b1add822c0754f5971e1cd7ab6468c79f02df5cbdb4bc3",
+          "after_sha256": "4a0f7a2a040f47c0e7ec3ff0fc3c026c7442b67afc47cfeb2c015b342b16379d",
+          "changed_pixels": 30133,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_021.png",
+          "before_sha256": "a96c4d7a08b50fc8f9e16b45de97a4fe156f890c77d311cf09a513ce820cb649",
+          "after_sha256": "8e7e0e5d44e35eddcb79e3947ae4a434665c808b41081090adf12a6037b85226",
+          "changed_pixels": 30077,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_022.png",
+          "before_sha256": "5c7dfde44255032b45a70ffe352188f065ccb62f854cc91300abb85a7e66ad9f",
+          "after_sha256": "661d9ea275f16eea62c41ea382c6e511a85b36dc1027b702bf31d89e34e23a11",
+          "changed_pixels": 30151,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "texture_foam_023.png",
+          "before_sha256": "c96d423d22b4920e8a186890f49993fd43467291d1c07cfd8b594a86575d1274",
+          "after_sha256": "f4f0a3947a447f8013ca52afd4cc5f65a31c827b5ee14df18e2fa622a5652728",
+          "changed_pixels": 30094,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        }
+      ]
+    },
+    "distance": {
+      "before_manifest_sha256": "7cbbfe2cffdd358785883b5c574fcdf5b757b7ee9a647cdba69b221494e3b50e",
+      "after_manifest_sha256": "c74ac4e593deb63022c9a1263c39617839910239f2e1fce4d89097d4973dc09c",
+      "textures_before": [
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "b2e890abdb819533919cead399dfdb49918507f7e2a9eaab57a168222a6e8fb7",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+        },
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "841f594b1b411553ef95ef10916fe9fd6211517c490fe7b75ae3335d11a497fb",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+        },
+        {
+          "bytes": 3145728,
+          "format": 4,
+          "import_sha256": "b4b17eb13e695837aada5727d0b2c618ce7458cd5a0a81e7855967527e976555",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+        },
+        {
+          "bytes": 1048576,
+          "format": 0,
+          "import_sha256": "a49d7b57d600d27109a685b33bb94a4e01d0b75e2f7e30c7782040cc0821b4da",
+          "mipmaps": 0,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+        }
+      ],
+      "textures_after": [
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "ae824cdc16d02691c652b4e2c2c0f07b960fede54f99daf617e1a87c3e3d037d",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+        },
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "2d6be9149cce437034eb6e54e31d83fd5603dd96f67fe6adec3ca5d59f10fb3b",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+        },
+        {
+          "bytes": 4194303,
+          "format": 4,
+          "import_sha256": "f02a350798f6ec32d99f886c6a382a85a191b5d1edc85b5ff9fc02df3aa64f5a",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+        },
+        {
+          "bytes": 1398101,
+          "format": 0,
+          "import_sha256": "8c81bf0adaf37cbd9a782982992c309cea5d949a10e425052e151077442e3dcc",
+          "mipmaps": 10,
+          "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+        }
+      ],
+      "temporal": {},
+      "captures": [
+        {
+          "file": "distance_020m_level_crossing.png",
+          "before_sha256": "7c59feba6b2be5b8bd4c5a9fa4f01414d48a2a0c6726ab4852cd69a8f242960e",
+          "after_sha256": "9d61c48ac845fdae17bedfb2c59b0716b8f37decdd974984ad45e43dea6f4040",
+          "changed_pixels": 17,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_020m_roll_minus60.png",
+          "before_sha256": "0efde22fa0f6c20792b0018552d6330b8072c7b67435e9033157b8d0ff60c01c",
+          "after_sha256": "7094189e33f1706f0ebf87ab34ef04b04ffa8df9a53ab38671827fae1c28a418",
+          "changed_pixels": 28,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_020m_roll_plus60.png",
+          "before_sha256": "81df2594850b000eb17fdb979944c51e1c115ab4e672df8d04a6d93282789dcb",
+          "after_sha256": "0b2b1331d19fd967496c1c5b78bbfe243605770c771aa74ebf374444e73e91bc",
+          "changed_pixels": 69,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_020m_nose_toward_pilot.png",
+          "before_sha256": "6b24aad007295adf69e8783ea5671e5a823caa6e9541429ffc0419390a6199c3",
+          "after_sha256": "9db5280079706100f3359dc6d0deaae403b29a427b4dae41891954cd04008b2e",
+          "changed_pixels": 10,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_050m_level_crossing.png",
+          "before_sha256": "929bec80701c3da7a421d6a673dcb24dd98a23f967c033a58ce448fdfc65c332",
+          "after_sha256": "9adf62d8a08d10fe9c09ef41ac80c5342d0a7eb99f007f035bfbb7998dfff620",
+          "changed_pixels": 1,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_050m_roll_minus60.png",
+          "before_sha256": "d1ff433ad4e12d3bccf812ebe5d3cf72ee0d374d3d0dd2ba65641b69f0e0374c",
+          "after_sha256": "51376c41387c05403d0983c3d32225f1f4b17d5a65b21cbc824f5cc9bae87413",
+          "changed_pixels": 13,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_050m_roll_plus60.png",
+          "before_sha256": "a99f35975bce1af0b1af7e0f19d6c185ed276bf2af0b3f314b8aa72a7a184b9a",
+          "after_sha256": "2e25b31bcf990d48935da7e40c6bae485c0a6109945fee06f115930daf8a5eeb",
+          "changed_pixels": 18,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_050m_nose_toward_pilot.png",
+          "before_sha256": "121cece6bf1d5e87b37b5c43d5a8cc012d3faad74239f493bbaac61a37415575",
+          "after_sha256": "de18f1124d7ede15cc3acb244e2db13441ca2456b5bed03a8fb39d6643599b6a",
+          "changed_pixels": 3,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_100m_level_crossing.png",
+          "before_sha256": "4b9101de4047c78f437635f7add6c33e421e555498f13dd2fbeb271d10ec6368",
+          "after_sha256": "37c3246e381072c4a5ec8b4b800d2672847564f732a23133872ac9e7236fe4d2",
+          "changed_pixels": 2,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_100m_roll_minus60.png",
+          "before_sha256": "c17e44ffd061206a2434e739b2b1bd76527d5625a0d4865a46e6d288ab5834b7",
+          "after_sha256": "3074e74474079eedcecf71c1bb83d55999fa464f1aff87bcb14ebd91aa044277",
+          "changed_pixels": 1,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_100m_roll_plus60.png",
+          "before_sha256": "f02a3f03fd178187fa3f2bbb86ece30ea1b9f218332984e1c005f6a70050e342",
+          "after_sha256": "30a96b39cc1ed89a2333e34fa6d031f6e949f0409f1ec67b67dc32d91c716f73",
+          "changed_pixels": 8,
+          "max_channel_delta": 2,
+          "silhouette_changed_pixels": 0
+        },
+        {
+          "file": "distance_100m_nose_toward_pilot.png",
+          "before_sha256": "d78c4b5c856750e504bdef9e8f245eb71081541c05b5f5aab585474f25cb04c1",
+          "after_sha256": "149f607a496a02221c6e8ce539422ab56163b78b745fac42ff6beb532ddbf905",
+          "changed_pixels": 4,
+          "max_channel_delta": 1,
+          "silhouette_changed_pixels": 0
+        }
+      ]
+    }
+  }
+}

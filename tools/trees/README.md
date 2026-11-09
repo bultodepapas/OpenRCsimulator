@@ -1,27 +1,30 @@
 # L6a tree authoring pipeline
 
-The [vegetation-renewal evidence](../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md) records the realistic source recipe and its accepted atlas proof. This guide owns the bake procedure; the current source choices do not change the card runtime contract.
+The [L8a-R3 evidence](../../docs/research/visual-quality-implementation/L8a-R3/README.md) records the current field-tree recipe and its atlas/collision proof. This guide owns the bake procedure; source choices retain the three-slot card runtime contract.
 
-The explicit `--recipe realistic` source set keeps the existing catalog slot IDs stable and records a distinct `source_asset_id` for each asset:
+Use `--recipe field` for the runtime source set. It keeps the catalog slot IDs stable and records a distinct `source_asset_id` for each asset:
 
 | Stable tree slot | Source asset ID | Source |
 | --- | --- | --- |
 | `CommonTree_1` | `landscapelab:quercus` | LandscapeLab Quercus |
-| `CommonTree_3` | `lolipop:acer_large_3_lod1` | LOLIPOP Acer maple |
+| `CommonTree_3` | `landscapelab:fagus` | LandscapeLab Fagus (beech) |
 | `Pine_1` | `landscapelab:pine` | LandscapeLab joined pine |
 
-The adapter wraps each selected scene to normalize its height to 1 m and put its stem at the grounded origin. The wrapper preserves the supplied mesh geometry, node transforms and material identities; it does not generate new plant geometry. The field runtime still uses three crossed atlas quads per tree (six triangles, one lit alpha-scissor surface). Close scenery remains the separate [downloaded vegetation library](../landscape/vegetation/README.md), not a mesh/card LOD transition. L6b/L7 own distribution and L6c owns flight readability. The source GLBs are not approved as L8 close-range LODs.
+The adapter normalizes each scene to 1 m height and grounds its bottom-center pivot. The wrapper preserves supplied geometry, node transforms and material identities. The field runtime uses three crossed atlas quads per card tree (six triangles, one lit alpha-scissor surface); High/Extreme use the same downloaded source models for selected detailed field trees. Selection remains fixed relative to the pilot, with no camera-driven mesh/card transition. Close scenery uses the separate [vegetation library](../landscape/vegetation/README.md). L6b/L7 own distribution and L6c owns flight readability.
+
+`--recipe realistic` reproduces the previous oak/maple/pine source set ([vegetation-renewal evidence](../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md)); its maple slot does not match the current beech atlas. The protected scenery maples and their textures are independent of this field recipe.
 
 `--recipe legacy` remains the default and reproduces the historical Quaternius card atlas. That legacy recipe is retained for comparison and reproducibility; its source and CC0 record are marked historic in [landscape provenance](../../assets/landscape/PROVENANCE.json).
 
 ```sh
 npm ci --prefix tools/trees
 PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" -m unittest discover -s tools/trees -p 'test_*.py'
-PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-realistic-A --recipe realistic --match-atlas app/assets/landscape/trees/atlas.png
-PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-realistic-B --recipe realistic --match-atlas app/assets/landscape/trees/atlas.png
+PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-field-A --recipe field
+PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-field-B --recipe field
+python3 tools/trees/verify_bakes.py /tmp/tree-field-A /tmp/tree-field-B
 ```
 
-The legacy bake remains available with `--recipe legacy` (also the default). Use `--recipe realistic` for the pinned replacement inputs. `--match-atlas` still checks mask alignment against the selected runtime color atlas; it does not replace or recolor that atlas. For a full source-set change, review the source/derived comparisons and repeat-bake evidence before promotion.
+The legacy bake remains available with `--recipe legacy` (also the default). `--match-atlas` checks mask alignment against a matching runtime color atlas; it does not replace or recolor that atlas. Do not use it to force a different source silhouette onto the current atlas. For a source-set change, review the source/derived comparisons, repeat-bake evidence and static collision implications before promotion. The repeat gate compares all 15 raw frames, including the source-material masks, and all derived artifacts.
 
 Requires pinned official Godot 4.8-beta2 (`app/get-godot.sh`), Node 24 and the existing pinned visual Python environment. Linux captures use Xvfb; Windows runs Godot natively. `--out` must be new/empty. The pipeline verifies all recipe source hashes and dependencies, validates glTF/GLB inputs, normalizes tree height to 1 m, decodes each selected scene with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
 
@@ -33,7 +36,7 @@ Each 1024² binary-alpha raw image is resolved to a 512² tile with alpha-weight
 
 For a new source set, inspect the source/derived comparisons, mips and independent repeat hashes before promotion. After that source set becomes the runtime recipe, a reproducibility bake must reproduce its runtime color atlas byte-for-byte. For a mask-only palette change, use `--match-atlas app/assets/landscape/trees/atlas.png`; this checks the baked silhouette against the existing atlas and sets the mask's final alpha channel to the runtime alpha exactly. It fills the few runtime-only edge texels from the nearest material-ID label in the source-derived mask and rejects silhouette IoU below 0.995. Promote only the reviewed atlas, foliage mask, catalog, aggregate license and three per-slot notices in `app/assets/landscape/trees/`. Refresh `assets/landscape/PROVENANCE.json` and proof reports after the promoted runtime hashes are final. Do not overwrite imported assets during a running editor/test.
 
-The generated `foliage_mask.png` shares the color atlas UVs. Its red channel encodes source glTF surface materials by exact material name, derived from the source assignments and alpha textures rather than painted or inferred from RGB. The realistic recipe preserves these names: `branches` / `leaves` for Quercus, `Maple_Bark_PBR` / `Maple_Leaves_PBR` for Maple, and `branches.001` / `leaves.001` for Pine. The legacy recipe retains its original `Bark_NormalTree`, `Leaves_NormalTree` and `Leaves_Pine` names. The bake rejects unknown identities and requires raw mask alpha to match the adapted albedo coverage byte-for-byte. The atlas processor alpha-weights the aligned mask downsample, leaving silhouette edges fractional. Runtime samples red as linear data and applies the forest palette variation to foliage only. The fourth tile remains transparent.
+The generated `foliage_mask.png` shares the color atlas UVs. Its red channel encodes source glTF surface materials by exact material name, derived from source assignments and alpha textures rather than painted or inferred from RGB. The field recipe preserves `branches` / `leaves` for Quercus and Fagus, and `branches.001` / `leaves.001` for Pine. The historical realistic recipe uses `Maple_Bark_PBR` / `Maple_Leaves_PBR` for Maple; legacy retains `Bark_NormalTree`, `Leaves_NormalTree` and `Leaves_Pine`. Unknown identities are rejected and raw mask alpha must match adapted albedo byte-for-byte. The processor alpha-weights the aligned mask downsample, leaving silhouette edges fractional. Runtime samples red as linear data and varies foliage only. The fourth tile remains transparent.
 
 The [L6b-R2 mask verifier](../../docs/research/visual-quality-implementation/L6b-R2/foliage-mask/fixtures/verify_mask.py) remains tied to that report's retained Quaternius atlas, mask and build manifest. It is historical evidence, not a gate for the renewed runtime bundle; its fixture and hashes are preserved unchanged. Use the current-runtime hashes in [vegetation-renewal evidence](../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md) for the renewed atlas.
 

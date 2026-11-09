@@ -2,8 +2,9 @@
 # (not via render/airplane.gd), resets controls, attitude, propeller and gear for every capture and records the camera
 # in manifest.json. Distances scale with the measured span so a regenerated geometry keeps framing the airplane.
 # Run (needs a display, e.g. xvfb-run): godot --path app --rendering-driver opengl3 \
-#   --script res://aircraft/inspect_timber.gd -- --output-dir=/new/dir [--suite=inspection|orbit|distance|all] [--size=WIDTHxHEIGHT]
-# Optional --finish=source retains raw metrology materials; --view-filter=nose restricts the capture names.
+#   --script res://aircraft/inspect_timber.gd -- --output-dir=/new/dir [--suite=inspection|orbit|distance|texture-motion|all] [--size=WIDTHxHEIGHT]
+# Optional --finish=source retains raw metrology materials; --finish=paint exercises custom foam paint.
+# --view-filter=nose restricts the capture names. texture-motion is a fixed-light subpixel camera pan, not flight.
 # Suites: inspection (12 review views), orbit (12 azimuths x 3 elevations), distance (pilot-view size at 20/50/100 m
 # with level, banked and nose-on attitudes, the Extra inspector's pilot eye and 50 deg field of view).
 extends SceneTree
@@ -11,6 +12,7 @@ extends SceneTree
 const Timber := preload("res://aircraft/timber_model.gd")
 const VisualDetails := preload("res://aircraft/timber_visual_details.gd")
 const VisualLighting := preload("res://aircraft/timber_visual_lighting.gd")
+const ProceduralPaint := preload("res://aircraft/procedural_skin.gd")
 const D: Dictionary = preload("res://aircraft/timber_geometry.gd").DATA
 const IMAGE_SIZE := Vector2i(1280, 720)
 const SKY := Color("#9bcef0")
@@ -95,12 +97,26 @@ static func views(suite: String) -> Array:
 				_view("distance_%s_roll_plus60" % tag, eye, Vector3.ZERO, "persp", NEUTRAL, PILOT_FOV_DEG, Vector3.UP, Vector3(0, -90, 60)),
 				_view("distance_%s_nose_toward_pilot" % tag, eye, Vector3.ZERO, "persp", NEUTRAL, PILOT_FOV_DEG, Vector3.UP, Vector3(0, 0, 0)),
 			]
+	if suite == "texture-motion":
+		for frame in 24:
+			var offset := float(frame) - 11.5
+			out.append(_view("texture_gear_%03d" % frame,
+				Vector3(-0.3 + offset * 0.0003, -0.16, -0.6), Vector3(0.0, -0.17, 0.0), "persp", NEUTRAL, 30.0))
+		for frame in 24:
+			var offset := float(frame) - 11.5
+			out.append(_view("texture_foam_%03d" % frame,
+				c + s * Vector3(-0.75, 0.36, -0.75) + Vector3(offset * 0.001, 0, 0), c))
 	return out
 
 
 func _run() -> void:
 	var out := _initialize_arg("output-dir", "")
 	var suite := _initialize_arg("suite", "inspection")
+	var finish := _initialize_arg("finish", "production")
+	if finish not in ["source", "production", "paint"]:
+		push_error("Unknown --finish; expected source, production or paint")
+		quit(2)
+		return
 	var selected := views(suite)
 	var view_filter := _initialize_arg("view-filter", "")
 	if not view_filter.is_empty():
@@ -128,9 +144,14 @@ func _run() -> void:
 	get_root().add_child(sun)
 	_airplane = Timber.build()
 	# Metrology retains the raw facade; this inspector shows the same finish as flight.
-	if _initialize_arg("finish", "production") != "source":
+	if finish != "source":
 		VisualDetails.apply(_airplane.root)
 		VisualLighting.apply(_airplane.root)
+	if finish == "paint" and not _apply_review_paint():
+		push_error("Could not apply the custom-paint review fixture")
+		_airplane.root.free()
+		quit(1)
+		return
 	get_root().add_child(_airplane.root)
 	_camera = Camera3D.new()
 	_camera.near = 0.02
@@ -169,7 +190,10 @@ func _run() -> void:
 	var manifest := {
 		"format": "openrc-capture-manifest v1",
 		"suite": suite,
-		"finish": _initialize_arg("finish", "production"),
+		"finish": finish,
+		"engine": Engine.get_version_info().string,
+		"inspector_sha256": FileAccess.get_sha256("res://aircraft/inspect_timber.gd"),
+		"detail_textures": _detail_texture_records(),
 		"visual_details_sha256": FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
 		"visual_detail_data_sha256": FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd"),
 		"visual_lighting_sha256": FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
@@ -194,3 +218,30 @@ func _run() -> void:
 	file.store_string(JSON.stringify(manifest, "  ") + "\n")
 	file.close()
 	quit(0)
+
+
+func _apply_review_paint() -> bool:
+	var prepared := ProceduralPaint.prepare(ProceduralPaint.TIMBER, _airplane.root)
+	if not prepared.get("ok", false):
+		return false
+	var count := 0
+	for node: MeshInstance3D in _airplane.root.find_children("*", "MeshInstance3D", true, false):
+		for surface in node.mesh.get_surface_count():
+			var material := node.get_active_material(surface)
+			if material == null or not material.resource_name.begins_with("openrc-paint-"):
+				continue
+			var painted := ProceduralPaint.paint(material, {base_color = [0.1, 0.5, 0.8, 1.0]}, null)
+			if painted == null:
+				return false
+			node.set_surface_override_material(surface, painted)
+			count += 1
+	return count > 0
+
+
+func _detail_texture_records() -> Array:
+	var records := []
+	for texture: Texture2D in [VisualDetails.FOAM_NORMAL, VisualDetails.FOAM_ROUGHNESS, VisualDetails.RUBBER_NORMAL, VisualDetails.RUBBER_ROUGHNESS]:
+		var image := texture.get_image()
+		records.append({path = texture.resource_path, import_sha256 = FileAccess.get_sha256(texture.resource_path + ".import"),
+			format = image.get_format(), mipmaps = image.get_mipmap_count(), bytes = image.get_data_size()})
+	return records

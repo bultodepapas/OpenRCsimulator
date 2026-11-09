@@ -60,8 +60,8 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 			# The former shared 0.66 +/- 0.34 crown began at 0.32 tree-height and missed these lower foliage pixels.
 			_check("%s measured lower foliage extends below the former 0.32-height crown edge" % expected_ids[species_index],
 				float(foliage_bounds.min_up_fraction) < 0.32)
-		_check("%s alpha half-width is measured from occupied atlas pixels" % expected_ids[species_index],
-			is_equal_approx(float(configured[species_index]), float(alpha_bounds.max_half_fraction)))
+		_check("%s collision half-width contains occupied atlas pixels" % expected_ids[species_index],
+			float(configured[species_index]) >= float(alpha_bounds.max_half_fraction) - 0.000001)
 		_check("%s frame multiplier matches the card builder" % expected_ids[species_index],
 			is_equal_approx(float(entry.frame_size_m), CollisionWorld.FIELD_TREE_CARD_FRAME_SIZE_M))
 		_check("%s bound does not use the transparent full-card width" % expected_ids[species_index],
@@ -91,6 +91,20 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 		var height := float(identity.height)
 		var frame_size := float(entry.frame_size_m)
 		var radius := height * frame_size * float(configured[species_index]) + CollisionWorld.FIELD_TREE_WIND_LEAN_M
+		# L8a-R3 regression: Extreme renders rear near-ring trees as full meshes,
+		# while their immutable collision world uses the card path. A new atlas must
+		# not shrink those already occupied proxy volumes to its smaller silhouette.
+		var previous_half_widths := [0.3701171875, 0.3017578125, 0.1669921875]
+		var previous_centers := [0.612061, 0.598877, 0.704346]
+		var previous_half_heights := [0.366, 0.404, 0.289]
+		_check("species %s preserves the previous horizontal proxy volume for detailed presets" % expected_ids[species_index],
+			float(crown.half_x) >= height * 1.125001 * float(previous_half_widths[species_index])
+				+ 0.24 - 0.000001)
+		_check("species %s preserves the previous vertical proxy volume for detailed presets" % expected_ids[species_index],
+			float(crown.bounds_down_min) <= -height * (float(previous_centers[species_index])
+				+ float(previous_half_heights[species_index])) + 0.000001
+			and float(crown.bounds_down_max) >= -height * (float(previous_centers[species_index])
+				- float(previous_half_heights[species_index])) - 0.000001)
 		_check("species %s crown uses a yaw-safe conservative box" % expected_ids[species_index], crown.shape == "box"
 			and crown.kind == "tree_foliage" and crown.response_class == "soft_foliage_impulse")
 		_check("species %s crown has measured horizontal and source-specific vertical extents" % expected_ids[species_index],

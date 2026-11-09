@@ -1,0 +1,42 @@
+{
+  "format": "openrc-tree-text-fresh-checkout v1",
+  "scope": "Disposable Git fixture containing all exact-hashed runtime tree resources and immutable bake JSON receipts; mutable validation aggregation is omitted. This is not a full simulator export/clone qualification.",
+  "clones": [
+    {
+      "core.autocrlf": "true",
+      "files": {
+        "app/assets/landscape/trees/LICENSE.txt": "ae0ae40abca1e5fad20a6db270038d9bc5c489265e1926e25bb9062f5fb046cd",
+        "app/assets/landscape/trees/atlas.png": "546b74371c95853922e244e4ce66ddcdaf0c1a39a38b426d92aa1d4faf586ff2",
+        "app/assets/landscape/trees/atlas.png.import": "5c9e5b4de682d1d1c53f9336bf14883fd8458e91ad33db3b345701b13341b3a7",
+        "app/assets/landscape/trees/catalog.json": "ad6a3f27b62fed496cdcd809ddf2b2559be94649af9ffed03f84ecfd1bf329bc",
+        "app/assets/landscape/trees/foliage_mask.png": "eacd14a4dcd041ba0037119163613b6255544ecef6158672914539f10893c139",
+        "app/assets/landscape/trees/foliage_mask.png.import": "9a628e5277bd0247cd7b254041f4e8861783e8535b78c47bfe55142585e1cbff",
+        "app/assets/landscape/trees/licenses/CommonTree_1.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+        "app/assets/landscape/trees/licenses/CommonTree_3.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+        "app/assets/landscape/trees/licenses/Pine_1.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+        "docs/research/visual-quality-implementation/L8a-R3/atlas-analysis.json": "e79d4672a85f0005e3b8eb01d87af561abc457e0fe7cf746c3ff50a96ff27558",
+        "docs/research/visual-quality-implementation/L8a-R3/bake-manifest.json": "ffd668236789250557fb28112f8fe8f2a65fa9448719178efef5b21d31c3024c",
+        "docs/research/visual-quality-implementation/L8a-R3/repeatability.json": "03471331fd8b17e1b889048972748254ba83a32988b47fd0b84076307f65410f"
+      },
+      "all_exact": true
+    },
+    {
+      "core.autocrlf": "false",
+      "files": {
+        "app/assets/landscape/trees/LICENSE.txt": "ae0ae40abca1e5fad20a6db270038d9bc5c489265e1926e25bb9062f5fb046cd",
+        "app/assets/landscape/trees/atlas.png": "546b74371c95853922e244e4ce66ddcdaf0c1a39a38b426d92aa1d4faf586ff2",
+        "app/assets/landscape/trees/atlas.png.import": "5c9e5b4de682d1d1c53f9336bf14883fd8458e91ad33db3b345701b13341b3a7",
+        "app/assets/landscape/trees/catalog.json": "ad6a3f27b62fed496cdcd809ddf2b2559be94649af9ffed03f84ecfd1bf329bc",
+        "app/assets/landscape/trees/foliage_mask.png": "eacd14a4dcd041ba0037119163613b6255544ecef6158672914539f10893c139",
+        "app/assets/landscape/trees/foliage_mask.png.import": "9a628e5277bd0247cd7b254041f4e8861783e8535b78c47bfe55142585e1cbff",
+        "app/assets/landscape/trees/licenses/CommonTree_1.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+        "app/assets/landscape/trees/licenses/CommonTree_3.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+        "app/assets/landscape/trees/licenses/Pine_1.txt": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
+        "docs/research/visual-quality-implementation/L8a-R3/atlas-analysis.json": "e79d4672a85f0005e3b8eb01d87af561abc457e0fe7cf746c3ff50a96ff27558",
+        "docs/research/visual-quality-implementation/L8a-R3/bake-manifest.json": "ffd668236789250557fb28112f8fe8f2a65fa9448719178efef5b21d31c3024c",
+        "docs/research/visual-quality-implementation/L8a-R3/repeatability.json": "03471331fd8b17e1b889048972748254ba83a32988b47fd0b84076307f65410f"
+      },
+      "all_exact": true
+    }
+  ]
+}

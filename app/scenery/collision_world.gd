@@ -32,14 +32,18 @@ const LANDSCAPELAB_CROWN_BOTTOM_FRACTIONS := {
 	"landscapelab_fagus": 0.12,
 	"landscapelab_quercus2": 0.31,
 }
-const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.3701171875, 0.3017578125, 0.1669921875] # realistic atlas occupied pixel centres at alpha 0.5
+# Oak/pine use occupied pixel centres at alpha 0.5. Beech's measured card width is
+# 0.2880859375; retain the previous maple width so Extreme's rear 3D trees do not
+# lose collision coverage when their permanent proxy follows this card path.
+const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.3701171875, 0.3017578125, 0.1669921875]
 const FIELD_TREE_CARD_FRAME_SIZE_M := 1.125001 # source frame size multiplied by Treeline.identity.height in shader
 const FIELD_TREE_WIND_LEAN_M := 0.24 # maximum lean in render/tree_wind.gdshaderinc (L15b)
-# Oak, maple and pine foliage extents measured from the source-material mask.
-# Rounded outward by at least half a texel; keep source-dependent crowns below
-# their actual lower branches instead of reusing the former stylized envelopes.
-const TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS := [0.366, 0.404, 0.289]
-const TREE_CROWN_CENTER_FRACTIONS := [0.612061, 0.598877, 0.704346]
+# Oak/pine foliage extents come from the source-material mask. Beech unions the
+# new card's lower leaves with the previous box: [.133, 1.003] contains both
+# [.136352, .982301] (new card) and [.194877, 1.002877] (previous proxy).
+# This is a conservative gameplay envelope shared by every visual preset.
+const TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS := [0.366, 0.435, 0.289]
+const TREE_CROWN_CENTER_FRACTIONS := [0.612061, 0.568, 0.704346]
 
 const BUILDINGS: Array[String] = ["pavilion", "shed", "barn", "silo", "farmhouse", "church", "village_house"]
 const VEHICLES: Array[String] = ["car_sedan", "car_hatch", "car_suv", "car_sport", "tractor"]

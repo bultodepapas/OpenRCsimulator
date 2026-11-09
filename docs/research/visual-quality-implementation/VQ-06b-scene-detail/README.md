@@ -105,13 +105,25 @@ Ten web searches and the engine source, 2026-10-22:
 | GeForce MX, GeForce GT, old GeForce 8/9 | Medium | entry-level GPU |
 | GeForce, RTX, Quadro, Radeon RX/Pro/R9/R7, FirePro, Intel Arc | High | dedicated GPU |
 | Intel (UHD, Iris, HD), Radeon(TM) Graphics, Radeon Vega, Apple M | Medium | integrated GPU |
-| anything else, or no name | High | unrecognized GPU / no GPU reported |
+| anything else, or no name | Medium (VQ-06b follow-up, 2026-11-09) | unrecognized GPU / no GPU reported |
 
 Rules are checked in that order, so "Intel Arc" and "Radeon RX" never count as integrated. Extreme is never chosen automatically. The Settings tooltip names the detected GPU and the reason.
 
 **Checks.** `test_scene_detail.gd` covers 14 driver strings, including ANGLE-wrapped names from macOS and Windows; a saved Automatic resolving through detection (llvmpipe → Low, then a different GPU → Medium); a saved level winning; and the menu entry, selection and restore. Mutations on a disposable copy, each caught: integrated checked before discrete ("Intel Arc" fell to Medium); Automatic never resolved; the caption ignoring Automatic. On this VM's real OpenGL driver Godot reports `llvmpipe (LLVM 20.1.2, 256 bits)` / `Mesa` with device type 0 (`DEVICE_TYPE_OTHER`), and Automatic picks Low; headless reports no GPU and keeps High.
 
-**Limits.** Name lists only guess. A measured benchmark (render the pilot view at High for a few seconds and step down when frames are slow) is the reliable next step. Its thresholds need the owner's RTX 3090 and one weak GPU; llvmpipe cannot calibrate them.
+**2026-11-09 follow-up.** Unknown hardware and missing GPU names now start at Medium
+when Automatic is selected. Explicit saved/CLI levels retain precedence; tools without
+a saved preference still use High. This is a conservative starting point, not a
+measured hardware profile. Since ornament selection also controls collision, the
+change deliberately selects the existing Balanced world at the next flight build.
+Existing flights keep their installed world. Field-tree contacts remain unchanged.
+Do not introduce live automatic tier switching until visual scaling and collision
+selection have separate contracts. [Checks and native sample](geometry-audit-20261109.md).
+
+**Limits.** Name lists only guess. Representative full-flight measurements on named
+hardware are needed before measured device profiles can replace this heuristic.
+The [existing flight collector and reducer](../../../../research/performance/README.md#geometry-audit-follow-up-vq-01c--vq-06b-2026-11-09)
+record installed-world and rendering context. llvmpipe cannot calibrate device profiles.
 
 ## Open
 

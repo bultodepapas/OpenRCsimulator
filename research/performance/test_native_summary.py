@@ -1205,6 +1205,125 @@ class NativeRunClassificationTests(unittest.TestCase):
                 summarize_directory(root, output)
 
 
+class MeasurementIdentityTests(unittest.TestCase):
+    @staticmethod
+    def modern_report():
+        report = valid_report()
+        report.update(
+            godot="4.8.beta2.official.cafc17a19", rendering_driver="opengl3", adapter="RTX 3090",
+            window="1920x1080", window_size_at_report=[1920, 1080], os="Windows", architecture="x86_64",
+            camera={"viewport": [1920, 1080], "mode": "pilot", "autozoom": True, "fov_deg": 30.0},
+            render_settings={"msaa_3d": 2, "scaling_3d_scale": 1.0, "scaling_3d_mode": 0,
+                             "reconstruction": {"output_size": [1920, 1080], "output_size_scope": "viewport_render_target_estimate_v1"}},
+            shadows={"effective": {"native": True, "projected": True}},
+            effective_grass={"verified": True, "near_grass": {"present": True, "route": "imported", "clump_count": 150}},
+            code_provenance={"source_sha256": {path: "a" * 64 for path in (
+                "res://main.gd", "res://render/scene_detail.gd", "res://scenery/scenery.gd", "res://scenery/collision_setup.gd")}},
+            scene_at_report={
+                "scope": "end of collection only; not settings or visibility history",
+                "landscape_id": "club_field", "collision_world_status": "installed",
+                "collision_world_identity": "b" * 64, "scenery_present": True,
+                "installed_scenery_quality": "high", "requested_scene_detail": "high",
+                "mesh_lod_threshold_px": 1.0,
+            },
+        )
+        return report
+
+    def test_campaign_refuses_different_or_unknown_measurement_identities(self):
+        mutations = {
+            "aircraft": lambda r: r.update(aircraft_id="f4u-corsair-250"),
+            "renderer": lambda r: r.update(backend="forward_plus"),
+            "engine": lambda r: r.update(godot="another-engine"),
+            "adapter": lambda r: r.update(adapter="Apple M1"),
+            "resolution": lambda r: r.update(window="1280x720"),
+            "output-resolution": lambda r: r["render_settings"]["reconstruction"].update(output_size=[1280, 720]),
+            "world": lambda r: r["scene_at_report"].update(collision_world_identity="c" * 64),
+            "quality": lambda r: r["scene_at_report"].update(installed_scenery_quality="balanced"),
+            "lod": lambda r: r["scene_at_report"].update(mesh_lod_threshold_px=4.0),
+            "missing-world": lambda r: r.pop("scene_at_report"),
+            "source": lambda r: r["code_provenance"]["source_sha256"].update({"res://main.gd": "d" * 64}),
+            "aa": lambda r: r["render_settings"].update(msaa_3d=0),
+            "shadows": lambda r: r["shadows"]["effective"].update(native=False),
+            "grass": lambda r: r["effective_grass"]["near_grass"].update(present=False),
+            "grass-count": lambda r: r["effective_grass"]["near_grass"].update(clump_count=30),
+            "missing-grass": lambda r: r.pop("effective_grass"),
+            "camera": lambda r: r["camera"].update(mode="chase"),
+        }
+        for name, mutate in mutations.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                first, second = self.modern_report(), self.modern_report()
+                mutate(second)
+                write_run(root, "run-1", first)
+                write_run(root, "run-2", second)
+                summary, status = summarize_directory(root, root / "summary.json", SHORT_POLICY)
+                self.assertTrue(summary["collection_valid"], summary["runs"])
+                self.assertFalse(summary["measurement_identity_consistent"])
+                self.assertFalse(summary["performance_pass"])
+                self.assertEqual(status, 1)
+
+    def test_dynamic_camera_endpoints_do_not_make_identical_workloads_different(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first, second = self.modern_report(), self.modern_report()
+            second["camera"].update(fov_deg=28.0, transform={"position": [100, 2, 3]})
+            write_run(root, "run-1", first)
+            write_run(root, "run-2", second)
+            summary, status = summarize_directory(root, root / "summary.json", SHORT_POLICY, require_1080p=True)
+        self.assertEqual(status, 0)
+        self.assertTrue(summary["primary_1080p_eligible"])
+        self.assertTrue(summary["measurement_identity_consistent"])
+
+    def test_1080p_gate_refuses_720p_software_and_missing_installed_world(self):
+        for mutation in ("720p", "scaled-output", "wrong-scope", "software", "missing", "absent", "no-source", "bad-source", "legacy"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                report = self.modern_report()
+                if mutation == "720p":
+                    report.update(window="1280x720")
+                    report["camera"]["viewport"] = [1280, 720]
+                    report["window_size_at_report"] = [1280, 720]
+                elif mutation == "scaled-output":
+                    report["render_settings"]["reconstruction"]["output_size"] = [1280, 720]
+                elif mutation == "wrong-scope":
+                    report["render_settings"]["reconstruction"]["output_size_scope"] = "physical-pixels-guessed"
+                elif mutation == "software":
+                    report["adapter"] = "llvmpipe (LLVM)"
+                elif mutation == "missing":
+                    report.pop("scene_at_report")
+                elif mutation == "absent":
+                    report["scene_at_report"].update(collision_world_status="absent", collision_world_identity="")
+                elif mutation == "no-source":
+                    report.pop("code_provenance")
+                elif mutation == "bad-source":
+                    report["code_provenance"]["source_sha256"] = {"res://not-runtime.gd": "garbage"}
+                else:
+                    report = valid_report()
+                write_run(root, "run-1", report)
+                summary, status = summarize_directory(root, root / "summary.json", SHORT_POLICY, require_1080p=True)
+                self.assertTrue(summary["collection_valid"])
+                self.assertFalse(summary["primary_1080p_eligible"])
+                self.assertFalse(summary["performance_pass"])
+                self.assertEqual(status, 1)
+
+    def test_1080p_output_with_different_logical_canvas_is_not_mistaken_for_720p(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            report = self.modern_report()
+            report.update(window="1280x720")  # Legacy field is the logical canvas.
+            report["camera"]["viewport"] = [1280, 720]
+            write_run(root, "run-1", report)
+            summary, status = summarize_directory(root, root / "summary.json", SHORT_POLICY, require_1080p=True)
+        self.assertEqual(status, 0)
+        self.assertTrue(summary["primary_1080p_eligible"])
+
+    def test_installed_world_status_cannot_hide_missing_identity(self):
+        report = self.modern_report()
+        report["scene_at_report"]["collision_world_identity"] = ""
+        errors, _ = validate_native_report(report)
+        self.assertIn("scene_at_report collision identity must agree with its status", errors)
+
+
 class BenchmarkHealthTests(unittest.TestCase):
     def test_complete_technical_circuit_is_admitted_without_product_claim(self):
         with tempfile.TemporaryDirectory() as temp_dir:

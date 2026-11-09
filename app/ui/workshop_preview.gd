@@ -38,6 +38,7 @@ var _rig: Node3D
 var _lighting_rig: Node3D
 var _camera: Camera3D
 var _preview_environment: Environment
+var _preview_day_sky: Sky
 var _preview_key_light: DirectionalLight3D
 var _preview_fill_light: DirectionalLight3D
 var _preview_ground: MeshInstance3D
@@ -585,6 +586,7 @@ func _build_world() -> void:
 	_preview_environment.ambient_light_energy = 0.62
 	_preview_environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	_preview_environment.tonemap_exposure = 0.65
+	_preview_day_sky = _create_day_reflection_sky()
 	var world_environment := WorldEnvironment.new()
 	world_environment.name = "PreviewEnvironment"
 	world_environment.environment = _preview_environment
@@ -631,6 +633,29 @@ func _build_world() -> void:
 	_apply_preview_environment()
 
 
+## A neutral inspection reference, independent of flight weather and directional lights.
+## The built-in panorama shader has no clock/light inputs; quality mode finishes its radiance in one update.
+static func _create_day_reflection_sky() -> Sky:
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	gradient.colors = PackedColorArray([Color(0.55, 0.55, 0.55), Color(0.18, 0.18, 0.18), Color(0.035, 0.035, 0.035)])
+	var panorama := GradientTexture2D.new()
+	panorama.width = 128
+	panorama.height = 64
+	panorama.fill_from = Vector2.ZERO
+	panorama.fill_to = Vector2(0.0, 1.0)
+	panorama.use_hdr = true
+	panorama.gradient = gradient
+	var material := PanoramaSkyMaterial.new()
+	material.panorama = panorama
+	var sky := Sky.new()
+	sky.resource_name = "WorkshopNeutralReflection"
+	sky.sky_material = material
+	sky.radiance_size = Sky.RADIANCE_SIZE_128
+	sky.process_mode = Sky.PROCESS_MODE_QUALITY
+	return sky
+
+
 ## Day/night is a local preview snapshot; it never writes process-wide shader globals or trial conditions.
 func set_preview_night(enabled: bool) -> void:
 	if _preview_night == enabled:
@@ -650,6 +675,8 @@ func _apply_preview_environment() -> void:
 	_preview_environment.ambient_light_color = NIGHT_AMBIENT if _preview_night else AMBIENT
 	_preview_environment.ambient_light_energy = 0.025 if _preview_night else 0.62
 	_preview_environment.tonemap_exposure = 8.0 if _preview_night else 0.65
+	_preview_environment.sky = null if _preview_night else _preview_day_sky
+	_preview_environment.reflected_light_source = Environment.REFLECTION_SOURCE_BG if _preview_night else Environment.REFLECTION_SOURCE_SKY
 	if is_instance_valid(_grid):
 		_grid.visible = not _preview_night
 	if is_instance_valid(_preview_key_light):
@@ -894,7 +921,7 @@ func _apply_preview_layout() -> void:
 	# Capture focus before hiding the outgoing controls; hiding them clears it.
 	var focused: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	var camera_focus_target: Control = null
-	if popup_camera and _inline_camera_buttons.has(focused):
+	if popup_camera and focused is Button and _inline_camera_buttons.has(focused):
 		camera_focus_target = _camera_menu_button
 	elif not popup_camera and focused == _camera_menu_button:
 		camera_focus_target = _inline_camera_buttons[0]

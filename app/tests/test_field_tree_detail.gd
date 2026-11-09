@@ -8,11 +8,13 @@ const FieldTreeDetail := preload("res://render/field_tree_detail.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
+const TreeAssets := preload("res://render/tree_assets.gd")
 
 var _failures := 0
 
 
 func _initialize() -> void:
+	_test_source_identity()
 	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
 	var front := Treeline.front_azimuth_deg(field)
 	_check("the default field's flying area lies north of the pilot", is_equal_approx(front, 0.0))
@@ -43,6 +45,21 @@ func _initialize() -> void:
 	else:
 		push_error("%d field tree detail test(s) failed" % _failures)
 		quit(1)
+
+
+## Card slots and detailed meshes must retain the same downloaded geometry/material source.
+## Comparing source hashes catches a silently substituted model under either stable alias.
+func _test_source_identity() -> void:
+	var catalog: Dictionary = TreeAssets.catalog().catalog
+	var slots := ["CommonTree_1", "CommonTree_3", "Pine_1"]
+	for species: int in slots.size():
+		var card: Dictionary = TreeAssets._species_entry(catalog, slots[species])
+		var detailed: Dictionary = ImportedVegetation.get_asset(Treeline.DETAIL_ASSETS[species])
+		_check("%s card and detailed model use the same source bytes" % slots[species],
+			not card.is_empty() and card.get("source_sha256", "") == detailed.get("source_sha256", "missing"))
+		var names: Array = detailed.get("source_material_names", [])
+		_check("%s card mask uses the detailed model's material identities" % slots[species],
+			names.has(card.get("bark_material_name", "")) and names.has(card.get("foliage_material_name", "")))
 
 
 func _test_rendering(field: Dictionary, trees: Dictionary, front: float, detail_count: int) -> void:

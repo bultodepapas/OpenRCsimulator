@@ -2273,7 +2273,7 @@
     }
   },
   "source_sha256_normalized_text": {
-    "app/assets/landscape/trees/catalog.json": "46d43e9394fc30f9f6d48dd3990b696f49ce4c31cc1938cc70231931a3745733",
+    "app/assets/landscape/trees/catalog.json": "ad6a3f27b62fed496cdcd809ddf2b2559be94649af9ffed03f84ecfd1bf329bc",
     "app/assets/landscape/vegetation/catalog.json": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
     "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
     "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
@@ -2285,7 +2285,7 @@
     "app/data/scenery/default.json": "5825cafeddd095c2b6419468978c0cf409794df7cc25b889c4deef990c268bd8",
     "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
     "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
-    "app/render/treeline.gd": "7d32ab8e069e86ad6455bdd392474624be11b5f1544919b9584857102f6ce0e6",
+    "app/render/treeline.gd": "915d7f83e5872bf830c6e68cfed4eb393febcbbfe7f3c12d37bb0ab8a39c9498",
     "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
     "app/scenery/imported_vegetation.gd": "27843f02e5aeba9570995dbc72df4fdc85962838d34a379b6aec85706eaa17cf",
     "app/scenery/models.gd": "72daff888627ac0839246777fb2aec49ef33a0a4403cd1ae4fa6ba0c49f4f703",

@@ -22,6 +22,11 @@
 /app/assets/landscape/vegetation/models/** -text
 /app/assets/landscape/vegetation/LICENSE.txt -text whitespace=-blank-at-eol,cr-at-eol
 /app/assets/landscape/vegetation/catalog.json text eol=lf
+# The field-tree catalog is generated as LF and its published provenance pins exact bytes.
+/app/assets/landscape/trees/catalog.json text eol=lf
+/app/assets/landscape/trees/LICENSE.txt text eol=lf
+/app/assets/landscape/trees/licenses/*.txt text eol=lf
+/app/assets/landscape/trees/*.import text eol=lf
 /assets/landscape/vegetation/source/*.txt -text
 /assets/landscape/vegetation/source/License_Standard.txt whitespace=-blank-at-eol,cr-at-eol
 /assets/landscape/vegetation/source/polyhaven_pine_sapling_small/*.gltf -text
@@ -29,6 +34,8 @@
 /assets/landscape/trees/source/*.gltf -text
 # Native tree evidence includes hashed raw reports and exact fixture snapshots.
 /docs/research/visual-quality-implementation/L6a-R1/** -text whitespace=cr-at-eol
+# Retain the native bake/verification receipts byte-for-byte, including their pinned hashes.
+/docs/research/visual-quality-implementation/L8a-R3/*.json -text whitespace=cr-at-eol
 # Raw engine output and unified-diff context retain meaningful source whitespace.
 /docs/research/visual-quality-implementation/L6a-R1/**/*.log -whitespace
 /docs/research/visual-quality-implementation/L6a-R1/*.patch -whitespace

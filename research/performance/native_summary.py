@@ -307,6 +307,28 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
             errors.append("vsync must agree with vsync_mode")
 
     _validate_lake_reflection_settings(report, errors)
+    if "scene_at_report" in report:
+        scene = report["scene_at_report"]
+        if not isinstance(scene, dict):
+            errors.append("scene_at_report must be an object")
+        else:
+            for key in ("scope", "landscape_id", "requested_scene_detail", "installed_scenery_quality"):
+                if not isinstance(scene.get(key), str) or not scene[key].strip():
+                    errors.append(f"scene_at_report.{key} must be a non-empty string")
+            if type(scene.get("scenery_present")) is not bool:
+                errors.append("scene_at_report.scenery_present must be a boolean")
+            elif ((scene["scenery_present"] and scene.get("installed_scenery_quality") not in ("low", "balanced", "high"))
+                  or (not scene["scenery_present"] and scene.get("installed_scenery_quality") != "absent")):
+                errors.append("scene_at_report installed scenery tier must agree with presence")
+            status, identity = scene.get("collision_world_status"), scene.get("collision_world_identity")
+            if status not in ("installed", "absent") or not isinstance(identity, str):
+                errors.append("scene_at_report must declare collision world status and identity")
+            elif ((status == "installed" and not re.fullmatch(r"[0-9a-f]{64}", identity))
+                  or (status == "absent" and identity != "")):
+                errors.append("scene_at_report collision identity must agree with its status")
+            threshold = scene.get("mesh_lod_threshold_px")
+            if not _is_number(threshold) or threshold < 0:
+                errors.append("scene_at_report.mesh_lod_threshold_px must be finite and non-negative")
 
     input_enabled = report.get("input_enabled")
     if type(input_enabled) is not bool:
@@ -1564,6 +1586,76 @@ def benchmark_checked_runner(report_path: Path, report: dict[str, Any], log_byte
     }
 
 
+def measurement_identity(report: dict[str, Any]) -> dict[str, Any]:
+    """Comparable endpoint configuration; never a claim of settings history or full asset identity."""
+    identity = {key: report.get(key) for key in (
+        "case_id", "route", "aircraft_id", "backend", "rendering_driver", "adapter", "api",
+        "godot", "os", "architecture", "window", "window_size_at_report", "preset", "scene_at_report",
+    )}
+    settings = report.get("render_settings")
+    identity["render_settings"] = {key: settings.get(key) for key in (
+        "msaa_3d", "screen_space_aa", "use_hdr_2d", "scaling_3d_scale", "scaling_3d_mode",
+    )} if isinstance(settings, dict) else None
+    reconstruction = settings.get("reconstruction") if isinstance(settings, dict) else None
+    identity["reconstruction"] = {key: reconstruction.get(key) for key in (
+        "requested", "selected", "effective", "provider", "scale", "fallback",
+        "output_size", "output_size_scope", "nominal_3d_size", "nominal_3d_size_scope",
+    )} if isinstance(reconstruction, dict) else None
+    shadows = report.get("shadows")
+    identity["effective_shadows"] = shadows.get("effective") if isinstance(shadows, dict) else None
+    grass = report.get("effective_grass")
+    identity["effective_grass"] = {key: grass.get(key) for key in (
+        "verified", "scenery", "ground", "near_grass",
+    )} if isinstance(grass, dict) else None
+    camera = report.get("camera")
+    identity["camera"] = {key: camera.get(key) for key in (
+        "mode", "autozoom", "projection", "keep_aspect", "near_m", "far_m", "viewport",
+    )} if isinstance(camera, dict) else None
+    # Autozoom's terminal FOV and pose vary with scheduling. Fixed-FOV workloads must match.
+    if isinstance(camera, dict) and camera.get("autozoom") is False:
+        identity["camera"]["fov_deg"] = camera.get("fov_deg")
+    provenance = report.get("code_provenance")
+    hashes = provenance.get("source_sha256") if isinstance(provenance, dict) else None
+    identity["recorded_source_sha256"] = hashlib.sha256(
+        json.dumps(hashes, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest() if isinstance(hashes, dict) and hashes else None
+    return identity
+
+
+def primary_1080p_gate(report: dict[str, Any]) -> dict[str, Any]:
+    """Check window size and render-target estimate alongside existing flight/pacing gates."""
+    reasons = []
+    settings = report.get("render_settings")
+    reconstruction = settings.get("reconstruction") if isinstance(settings, dict) else None
+    if (report.get("window_size_at_report") != [1920, 1080] or not isinstance(reconstruction, dict)
+            or reconstruction.get("output_size") != [1920, 1080]
+            or reconstruction.get("output_size_scope") != "viewport_render_target_estimate_v1"):
+        reasons.append("primary target requires a recorded 1920x1080 window and render-target estimate")
+    for key in ("godot", "backend", "rendering_driver", "adapter"):
+        if not isinstance(report.get(key), str) or not report[key].strip():
+            reasons.append(f"primary target requires recorded {key}")
+    adapter = str(report.get("adapter", "")).lower()
+    if any(marker in adapter for marker in ("llvmpipe", "softpipe", "lavapipe", "swiftshader", "basic render", "gdi generic")):
+        reasons.append("software rendering cannot qualify the primary hardware target")
+    scene = report.get("scene_at_report")
+    if (not isinstance(scene, dict) or scene.get("collision_world_status") != "installed"
+            or not isinstance(scene.get("collision_world_identity"), str)
+            or not re.fullmatch(r"[0-9a-f]{64}", scene["collision_world_identity"])
+            or not scene.get("landscape_id")
+            or scene.get("installed_scenery_quality") not in ("low", "balanced", "high", "absent")):
+        reasons.append("primary target requires an identified installed world and scenery tier")
+    provenance = report.get("code_provenance")
+    hashes = provenance.get("source_sha256") if isinstance(provenance, dict) else None
+    required_sources = {"res://main.gd", "res://render/scene_detail.gd", "res://scenery/scenery.gd",
+                        "res://scenery/collision_setup.gd"}
+    if (not isinstance(hashes, dict) or not required_sources.issubset(hashes)
+            or any(not isinstance(path, str) or not isinstance(digest, str)
+                   or not re.fullmatch(r"[0-9a-f]{64}", digest) for path, digest in hashes.items())):
+        reasons.append("primary target requires recorded runtime source hashes")
+    return {"eligible": not reasons, "reasons": reasons,
+            "scope": "endpoint window size and render-target estimate for one workload; not physical presentation, settings history, full asset, pilot or hardware acceptance"}
+
+
 def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
     report_bytes: bytes | None = None
     log_bytes: bytes | None = None
@@ -1679,6 +1771,8 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
                            else "other-or-unknown"),
         "normal_product_route_qualified": False,
         "session_at_report": report.get("session_at_report") if report is not None else None,
+        "measurement_identity": measurement_identity(report) if report is not None else None,
+        "primary_1080p": primary_1080p_gate(report) if report is not None else {"eligible": False, "reasons": ["report unavailable"]},
         "duration_eligibility": duration,
         "rendering_eligibility": rendering,
         "metrics": derived,
@@ -1703,7 +1797,8 @@ def _write_json(path: Path, value: Any) -> None:
     temporary.replace(path)
 
 
-def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, Any] | None = None) -> tuple[dict[str, Any], int]:
+def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, Any] | None = None,
+                        *, require_1080p: bool = False) -> tuple[dict[str, Any], int]:
     policy = dict(DEFAULT_POLICY if policy is None else policy)
     input_dir = input_dir.resolve()
     output_file = output_file.resolve()
@@ -1728,6 +1823,13 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
     workload_scope_consistent = bool(scopes) and all(scope == scopes[0] for scope in scopes)
     if scopes and not workload_scope_consistent:
         campaign_reasons.append("runs use different workload routes")
+    identities = [run["measurement_identity"] for run in runs]
+    measurement_identity_consistent = bool(identities) and all(item == identities[0] for item in identities)
+    if identities and not measurement_identity_consistent:
+        campaign_reasons.append("runs have different or mixed known/unknown measurement configurations or recorded sources")
+    primary_1080p_eligible = bool(runs) and all(run["primary_1080p"]["eligible"] for run in runs)
+    if require_1080p and not primary_1080p_eligible:
+        campaign_reasons.append("one or more runs lack primary 1080p viewport, hardware or installed-world evidence")
     benchmarks = [run["benchmark_health"] for run in runs]
     benchmark_identity_consistent: bool | None = None
     benchmark_capture_ids_distinct: bool | None = None
@@ -1778,6 +1880,7 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
     performance_pass = (
         len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
         and workload_scope_consistent and benchmark_identity_consistent is not False
+        and measurement_identity_consistent and (not require_1080p or primary_1080p_eligible)
         and benchmark_capture_ids_distinct is not False
         and configuration_consistent and (configuration_complete or legacy_configuration)
         and lake_reflection_configuration_consistent
@@ -1795,6 +1898,9 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         "duration_eligible_count": sum(bool(run["duration_eligibility"] and run["duration_eligibility"]["eligible"]) for run in runs),
         "performance_pass": performance_pass,
         "workload_scope_consistent": workload_scope_consistent,
+        "measurement_identity_consistent": measurement_identity_consistent,
+        "require_1080p": require_1080p,
+        "primary_1080p_eligible": primary_1080p_eligible,
         "benchmark_identity_consistent": benchmark_identity_consistent,
         "benchmark_capture_ids_distinct": benchmark_capture_ids_distinct,
         "pacing_configuration_consistent": configuration_consistent,
@@ -1818,6 +1924,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True, help="directory containing run-*.json and same-stem logs")
     parser.add_argument("--out", type=Path, required=True, help="new summary JSON path")
+    parser.add_argument("--require-1080p", action="store_true",
+                        help="also require actual 1920x1080 viewports and identified installed worlds")
     parser.add_argument("--p95-max-ms", type=float, default=DEFAULT_POLICY["p95_max_ms"])
     parser.add_argument("--p99-max-ms", type=float, default=DEFAULT_POLICY["p99_max_ms"])
     parser.add_argument("--ratio-min", type=float, default=DEFAULT_POLICY["simulation_wall_ratio_min"])
@@ -1853,7 +1961,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if policy["simulation_wall_ratio_min"] <= 0 or policy["simulation_wall_ratio_max"] < policy["simulation_wall_ratio_min"]:
         parser.error("simulation wall ratio limits must satisfy 0 < minimum <= maximum")
     try:
-        summary, status = summarize_directory(args.input, args.out, policy)
+        summary, status = summarize_directory(args.input, args.out, policy, require_1080p=args.require_1080p)
     except (OSError, ValueError) as error:
         print(f"native frame summary: {error}", file=sys.stderr)
         return 1

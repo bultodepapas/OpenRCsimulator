@@ -32,6 +32,7 @@ func _run() -> void:
 	await _settle()
 	preview.set_aircraft(AIRCRAFT_ID, 1.0)
 	await _settle()
+	_check_reflection_reference(preview)
 
 	var model_root := preview.get("_airplane_root") as Node3D
 	var model_bounds: AABB = preview.get("_model_bounds")
@@ -311,6 +312,43 @@ func _run() -> void:
 	await process_frame
 	print("workshop preview checks: %d failures" % _failures)
 	quit(_failures)
+
+
+func _check_reflection_reference(preview: Control) -> void:
+	var environment := preview.get("_preview_environment") as Environment
+	var day_sky := environment.sky
+	_check("day preview provides a local reflection environment", day_sky != null
+		and environment.reflected_light_source == Environment.REFLECTION_SOURCE_SKY)
+	if day_sky == null:
+		return
+	_check("reflection reference is bounded and completes its radiance in one update",
+		day_sky.radiance_size == Sky.RADIANCE_SIZE_128 and day_sky.process_mode == Sky.PROCESS_MODE_QUALITY)
+	var material := day_sky.sky_material as PanoramaSkyMaterial
+	_check("reflection reference uses a static panorama rather than light-driven sky inputs", material != null)
+	if material != null:
+		var panorama := material.panorama as GradientTexture2D
+		_check("reflection panorama has a small fixed HDR allocation", panorama != null
+			and panorama.width == 128 and panorama.height == 64 and panorama.use_hdr)
+	var camera: Camera3D = preview.get("_camera")
+	var camera_transform := camera.transform
+	var view_state: Dictionary = preview.get_view_state()
+	for cycle in 3:
+		preview.set_preview_night(true)
+		_check("night cycle %d retains the original flat-background reflection" % cycle,
+			environment.sky == null and environment.reflected_light_source == Environment.REFLECTION_SOURCE_BG
+			and environment.background_color == PreviewScript.NIGHT_BACKGROUND
+			and is_equal_approx(environment.tonemap_exposure, 8.0))
+		preview.set_preview_night(false)
+		_check("day cycle %d reuses the same reflection resource" % cycle,
+			environment.sky == day_sky and environment.reflected_light_source == Environment.REFLECTION_SOURCE_SKY
+			and environment.background_mode == Environment.BG_COLOR
+			and environment.background_color == PreviewScript.BACKGROUND
+			and environment.ambient_light_source == Environment.AMBIENT_SOURCE_COLOR
+			and is_equal_approx(environment.tonemap_exposure, 0.65))
+	_check("day/night leaves the inspection camera and view state intact", camera.transform == camera_transform
+		and preview.get_view_state() == view_state)
+	_check("reflection reference adds no reflection probe or processing loop",
+		preview.find_children("*", "ReflectionProbe", true, false).is_empty() and not preview.is_processing())
 
 
 func _all_bounds_fit(preview: Control, scale: float, maximum_half_extent: float) -> bool:

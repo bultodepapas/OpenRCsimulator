@@ -462,7 +462,7 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
     foliage_mask_path = out_dir / "foliage_mask.png"
     _save_png(atlas_path, atlas)
     _save_png(foliage_mask_path, foliage_mask_atlas)
-    catalog_path.write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    catalog_path.write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     analysis_path.write_text(json.dumps(analysis, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return {"atlas": atlas_path, "foliage_mask": foliage_mask_path, "catalog": catalog_path, "analysis": analysis_path}
 

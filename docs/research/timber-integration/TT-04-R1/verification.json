@@ -1,0 +1,787 @@
+{
+  "step": "TT-04-R1",
+  "date": "2026-11-09",
+  "baseline_commit": "f47d1dc6cccb141936407d0217eafdc465558190",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha512": "dd05e00ff13faac6b863aa1e4c51599cfaa973c9b8d2e31158d717b499a4ee0b08d46661c0c91215dcce77ce1edfb33595b8af476b2862a47465ec27545962ea",
+  "platform": "Windows",
+  "renderer": "gl_compatibility",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "driver": "617.42",
+  "image_size": [
+    1920,
+    1080
+  ],
+  "visual_python": {
+    "Pillow": "12.3.0",
+    "numpy": "2.5.3",
+    "requirements": "app/tests/requirements-visual.txt"
+  },
+  "source_files": {
+    "app/aircraft/inspect_timber.gd": {
+      "sha256": "fe2d0915c4ac58056ccc720f11c8d9f4671135de5ecf99a73b967426d47659d8",
+      "baseline_sha256": "3cce9e85f6fd423ece6a08db4fc53591658c5d9aa05d00764fce3684b4164bb1",
+      "equals_head_after_eol_normalization": false
+    },
+    "app/aircraft/timber_visual_details.gd": {
+      "sha256": "5ae26d28d4fb1f5497b3dd6f4112763ad2c34b34e8761af2a25d3f1542706fe8",
+      "baseline_sha256": "a9bb210dbdb2171a61aaa5e8ab6e301f5209ef47b088525c602fe82ac6c04e2f",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/aircraft/procedural_skin.gd": {
+      "sha256": "7f5d825b2e8e5c9963ef584d77956b89c85a133aedcec37c2e9ecb59af3961fa",
+      "baseline_sha256": "42f588a9bbedf4271fb4a13808a153a7a10a4019c60a942018b3c9ad528012a4",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/aircraft/timber_model.gd": {
+      "sha256": "4d8daf200b7e0928ce18fe6ca451b08423ff1a59e6ef1119350e43004c9b0437",
+      "baseline_sha256": "6cb840e85c2d22fb4a7bf60ae60f6dbabc4b8ac6fe60682c085bad2443a5939b",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/render/airplane.gd": {
+      "sha256": "b84ac997e64be84dc525bc4362ae6d6690ba893cbff2b4af0d103ee2af05aafb",
+      "baseline_sha256": "b3fcf8948fa97ca625ff01a78fa9c283a56903b5db973b7a8705f11e068d0ecf",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/project.godot": {
+      "sha256": "2ca26f73592fe6fdf0b620a151c2455ac7ed4a854f61043d0bf99bccd8b694ae",
+      "baseline_sha256": "6152aa63406e44288b1c80f8f5889751e083d1b7593fa2f4dd2a61a117a14be9",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/tests/test_timber_detail_textures.gd": {
+      "sha256": "8fdb17bedfa54e60d40eb52b60a66372facd4d2f7dbcb0842dbafd81880beec2"
+    },
+    "research/timber/visual-upgrade/compare_texture_motion.py": {
+      "sha256": "83a7b06254001480aea36d648705d2b7d236c09c05d4f2e119614a92ed375003"
+    },
+    "app/data/aircraft_models/turbo-lumber-evolution.json": {
+      "sha256": "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8",
+      "baseline_sha256": "446d9d66373519a5a79e46fb1d799c3373ae7da1d5d0ddb9647cdfac2bfc46c8",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/assets/skin-kit/models.json": {
+      "sha256": "eb242aaa7526020770072ae104c306b17c6bca8ca2d60c5678cfa63a52f6db6c",
+      "baseline_sha256": "39db4bd3f13e2760afaf5a9af75866610cd802c50b55eba360a43914dfa8c938",
+      "equals_head_after_eol_normalization": true
+    },
+    "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg": {
+      "sha256": "f9d739a05cc4d09230703cb1d831bb4c0334fed4b258490b1c453461acf7b574",
+      "baseline_sha256": "f9d739a05cc4d09230703cb1d831bb4c0334fed4b258490b1c453461acf7b574"
+    },
+    "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg": {
+      "sha256": "5374d3ea09f2f7b4e1cd3c4cf19adc542f9622a3a5f1dae07c75502b4a080035",
+      "baseline_sha256": "5374d3ea09f2f7b4e1cd3c4cf19adc542f9622a3a5f1dae07c75502b4a080035"
+    },
+    "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg": {
+      "sha256": "02709d839b1a1f402834920b8b8816920bbe08a40463aa188905a87621d6fa65",
+      "baseline_sha256": "02709d839b1a1f402834920b8b8816920bbe08a40463aa188905a87621d6fa65"
+    },
+    "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg": {
+      "sha256": "82417913bb17853c2ad8bd4c7049fe43a594be78f61b2791a0e9c9b8e3145529",
+      "baseline_sha256": "82417913bb17853c2ad8bd4c7049fe43a594be78f61b2791a0e9c9b8e3145529"
+    }
+  },
+  "import_changes": [
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg.import",
+      "before_sha256": "b2e890abdb819533919cead399dfdb49918507f7e2a9eaab57a168222a6e8fb7",
+      "after_sha256": "ae824cdc16d02691c652b4e2c2c0f07b960fede54f99daf617e1a87c3e3d037d",
+      "only_parameter_delta": "mipmaps/generate=false -> true"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg.import",
+      "before_sha256": "841f594b1b411553ef95ef10916fe9fd6211517c490fe7b75ae3335d11a497fb",
+      "after_sha256": "2d6be9149cce437034eb6e54e31d83fd5603dd96f67fe6adec3ca5d59f10fb3b",
+      "only_parameter_delta": "mipmaps/generate=false -> true"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg.import",
+      "before_sha256": "b4b17eb13e695837aada5727d0b2c618ce7458cd5a0a81e7855967527e976555",
+      "after_sha256": "f02a350798f6ec32d99f886c6a382a85a191b5d1edc85b5ff9fc02df3aa64f5a",
+      "only_parameter_delta": "mipmaps/generate=false -> true"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg.import",
+      "before_sha256": "a49d7b57d600d27109a685b33bb94a4e01d0b75e2f7e30c7782040cc0821b4da",
+      "after_sha256": "8c81bf0adaf37cbd9a782982992c309cea5d949a10e425052e151077442e3dcc",
+      "only_parameter_delta": "mipmaps/generate=false -> true"
+    }
+  ],
+  "external_analyses": [
+    {
+      "attachment_id": "ac254cda-848a-4852-a2c7-d93ebde2b7ff",
+      "sha256": "7b8479729475096529dc543835983f705aa4a77ed26939d60b5ce982e5dc4dfa",
+      "scope": "User-supplied text; linked PDF not read"
+    },
+    {
+      "attachment_id": "ba8ca8fe-85a9-4bd1-a492-e06b9760a1d8",
+      "sha256": "b364a02d50df99f89c0e22dd14550f83c335982d99e18203418bd927cc731275",
+      "scope": "User-supplied text; linked PDF not read"
+    }
+  ],
+  "comparison_sha256": "379cba752212bdeadce60407b7b22b3af52ea9a3ccfda93149cb446fe15e7f84",
+  "checks": [
+    {
+      "label": "baseline-distance",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://aircraft/inspect_timber.gd",
+        "--",
+        "--suite=distance",
+        "--size=1920x1080",
+        "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/distance-before"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/baseline-distance-0jqloeyd/report.json",
+      "report_sha256": "3f308cf8b92486b0e13baaf2b23125c78cf407f250d6324286d216ebb8ab47c2",
+      "log_sha256": "8a81a765c72e2dd76fecac75d376071a0818ab4d235f7ef8795fe8b90cb2dbe6",
+      "started_utc": "2026-11-09T13:59:13.381053+00:00"
+    },
+    {
+      "label": "baseline-unrelated-skin-failures-v2",
+      "ok": false,
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/texture-review-20261109/baseline-code/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_skin_fleet.gd",
+        "--",
+        "stik-electric-6s",
+        "gp-extra-300s-60"
+      ],
+      "completion": [
+        "FAIL stik-electric-6s has a kit",
+        "FAIL gp-extra-300s-60 matches its stock identity",
+        "FAIL gp-extra-300s-60 imports",
+        "Skin fleet: 4 checks, 3 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/baseline-unrelated-skin-failures-v2-rt92lkqu/report.json",
+      "report_sha256": "029cbb2d9576163c637f87b6952ccbcedc5815ae2b71b3334e0ed9210de5b592",
+      "log_sha256": "95d988e2f6f2ca7e10a314e7d6d236511b851f47ba612d1428d8dff3bbb5a59e",
+      "started_utc": "2026-11-09T14:08:13.377831+00:00"
+    },
+    {
+      "label": "candidate-distance",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://aircraft/inspect_timber.gd",
+        "--",
+        "--suite=distance",
+        "--size=1920x1080",
+        "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/distance-after"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/candidate-distance-pfbbho_a/report.json",
+      "report_sha256": "5718a4e9dfea66095c1d9db459e9b37417893770da1b11f52685456e02ae00e7",
+      "log_sha256": "81b76e51e90a55af2d56ba559bde567eef65e043bf46bddec591130d923b67ae",
+      "started_utc": "2026-11-09T14:00:23.695503+00:00"
+    },
+    {
+      "label": "candidate-import",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--editor",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/candidate-import-tlbstlz1/report.json",
+      "report_sha256": "7e15e594e8f34197f1441d9563a808174162cca55363f0603bf0f22dd946e64c",
+      "log_sha256": "3d8d09da0d254f8f11f51589189ccbad2dd19cb86cda854737bf64efa86ef430",
+      "started_utc": "2026-11-09T13:59:25.718259+00:00"
+    },
+    {
+      "label": "custom-skin",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_custom_skin.gd"
+      ],
+      "completion": [
+        "Custom skin: 47 checks, 0 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/custom-skin-d9xk7b4d/report.json",
+      "report_sha256": "6ec1a9fb14a56f5f7d1e49bec06473c12156f26ed213cc6fbbe8ad93741cb100",
+      "log_sha256": "ba89195b5dc918e1e7981c1ad4af80407a3a57853bf6bace019604b5066c884d",
+      "started_utc": "2026-11-09T14:00:51.894028+00:00"
+    },
+    {
+      "label": "fresh-texture-import",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--editor",
+        "--path",
+        "tmp/texture-review-20261109/fresh-import",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/fresh-texture-import-1c89jjsq/report.json",
+      "report_sha256": "078fb503e449ab0a13e1bcb9b607c8079c6972d6f24720e7314054b452b80da9",
+      "log_sha256": "25af51836a529744078d122dac68355508b83fafcfcec1b0c94f4ed7135e43b1",
+      "started_utc": "2026-11-09T13:59:02.154573+00:00"
+    },
+    {
+      "label": "packed-texture-readback",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--audio-driver",
+        "Dummy",
+        "--main-pack",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/texture-probe-v2.pck",
+        "--script",
+        "res://pack_probe.gd"
+      ],
+      "completion": [
+        "4 packed textures, 0 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/packed-texture-readback-xfmc9f8p/report.json",
+      "report_sha256": "126a6fb5236e4d6c160d1f6c5ae4578a526a40d1e4b9e002f48734d714544471",
+      "log_sha256": "09a9fec854890f725a09c46c968fbf7780818ca3dcee78d9d14f80ab6ab7bccf",
+      "started_utc": "2026-11-09T14:04:02.672267+00:00"
+    },
+    {
+      "label": "paint-baseline-motion",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://aircraft/inspect_timber.gd",
+        "--",
+        "--suite=texture-motion",
+        "--finish=paint",
+        "--size=1920x1080",
+        "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/paint-before"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/paint-baseline-motion-ub5_b8fm/report.json",
+      "report_sha256": "112af580398f8a1cd846bfd5a7c28a4f8580c90aa84bd79c10aaee50212354a6",
+      "log_sha256": "6bc3ed1f1dc2c60947bb678e84e61699926b8c4050f31214a961d89fbf430aba",
+      "started_utc": "2026-11-09T13:58:30.979362+00:00"
+    },
+    {
+      "label": "paint-candidate-motion",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://aircraft/inspect_timber.gd",
+        "--",
+        "--suite=texture-motion",
+        "--finish=paint",
+        "--size=1920x1080",
+        "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/paint-after"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/paint-candidate-motion-h418_m6g/report.json",
+      "report_sha256": "fadb9d175e0545716155ca79b0fb2f8e817a4b1e4ff7f5f6ce3233fa91d349f8",
+      "log_sha256": "e42ed1a6fd8354f36e8ed9b2dc402191f2405a7cdcd08bd082712265fe11d695",
+      "started_utc": "2026-11-09T14:00:02.028675+00:00"
+    },
+    {
+      "label": "parse-timber-inspector",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://aircraft/inspect_timber.gd"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/parse-timber-inspector-o9o_8q0r/report.json",
+      "report_sha256": "b2464d524975c896fa2bcdb8562b34fa9e8de5bbec09f54e58a41c6dc076aecf",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "started_utc": "2026-11-09T14:07:40.545724+00:00"
+    },
+    {
+      "label": "parse-timber-texture-test",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/test_timber_detail_textures.gd"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/parse-timber-texture-test-c6ix84_v/report.json",
+      "report_sha256": "69fcf1facbfbe1da64ad291ebb6ef9ebe8193a7756c6fbf05b048c7dc0d1629f",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "started_utc": "2026-11-09T14:07:41.557452+00:00"
+    },
+    {
+      "label": "procedural-skin",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_procedural_skin.gd"
+      ],
+      "completion": [
+        "3458 checks, 0 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/procedural-skin-grdbda2o/report.json",
+      "report_sha256": "5eca9ae74caf2580906c13931770b4fe289c6b0295e19fbe9848d7bde23b8eb7",
+      "log_sha256": "d0c2c0e8d905f89f55861cc64a8c64a6c20ecfa71bd5d90cb0e4e6c3910d6810",
+      "started_utc": "2026-11-09T14:02:27.485198+00:00"
+    },
+    {
+      "label": "skin-fleet",
+      "ok": false,
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_skin_fleet.gd"
+      ],
+      "completion": [
+        "FAIL stik-electric-6s has a kit",
+        "FAIL gp-extra-300s-60 matches its stock identity",
+        "FAIL gp-extra-300s-60 imports",
+        "Skin fleet: 525 checks, 3 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/skin-fleet-jh09ybc5/report.json",
+      "report_sha256": "a7eafca62f1f399dc87d4838af432d7b65851888597be6126ba5e6dea716df37",
+      "log_sha256": "f1a743040ef2932d9f413ad8a1e460a7a478fdc4c9945628564b8f24326b87c2",
+      "started_utc": "2026-11-09T14:02:40.016049+00:00"
+    },
+    {
+      "label": "stock-baseline-motion",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://aircraft/inspect_timber.gd",
+        "--",
+        "--suite=texture-motion",
+        "--size=1920x1080",
+        "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/stock-before"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/stock-baseline-motion-9d0t04a8/report.json",
+      "report_sha256": "37719cd595a5eb8694d6b1daf4dbe38b1d538b246ecf19b1364d2eb13d5d4a45",
+      "log_sha256": "82094841ea9e3189b4538c8b776fa6963773f382901dd69fc55aac66f7e07d6b",
+      "started_utc": "2026-11-09T13:58:07.048421+00:00"
+    },
+    {
+      "label": "stock-candidate-motion",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://aircraft/inspect_timber.gd",
+        "--",
+        "--suite=texture-motion",
+        "--size=1920x1080",
+        "--output-dir=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/stock-after"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/stock-candidate-motion-l06jak6g/report.json",
+      "report_sha256": "8decccff33b305cc81737cec52338060cc5cc9165317a42e30dd71ad6bf55578",
+      "log_sha256": "5fce62ec5b0857f0fe0ef2fc7a32d93a0b6fda5334124b4c5a97aef31c0614ac",
+      "started_utc": "2026-11-09T13:59:48.607711+00:00"
+    },
+    {
+      "label": "texture-export-pack-v2",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--editor",
+        "--path",
+        "tmp/texture-review-20261109/fresh-import",
+        "--audio-driver",
+        "Dummy",
+        "--export-pack",
+        "TextureProbe",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/texture-probe-v2.pck"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/texture-export-pack-v2-6nm7n08u/report.json",
+      "report_sha256": "49de15cddcd5afcc083256c0736bbbc6ca9b3ea6e64d1842c0c6d5019e371903",
+      "log_sha256": "4a507b31ae14eee92a59dae7d0332e0ab10e2b72096e30117c548705c0541fb2",
+      "started_utc": "2026-11-09T14:03:59.314866+00:00"
+    },
+    {
+      "label": "timber-runtime-inventory",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/runtime_texture_probe.gd"
+      ],
+      "completion": [],
+      "report": "tmp/texture-review-20261109/checks/timber-runtime-inventory-plyeyrzc/report.json",
+      "report_sha256": "f4a738c4917a2d0d2f8d5de13ea762d2ea93964acb8552e08ccda2084173f8e6",
+      "log_sha256": "d6bc935fa64927b7edf42f1ab1553573bdd9efb1844d63bcdc646d9594a33192",
+      "started_utc": "2026-11-09T14:05:40.827119+00:00"
+    },
+    {
+      "label": "timber-skin-fleet",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_skin_fleet.gd",
+        "--",
+        "turbo-lumber-evolution"
+      ],
+      "completion": [
+        "Skin fleet: 89 checks, 0 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/timber-skin-fleet-cseec4ae/report.json",
+      "report_sha256": "6035be06c7e613df6a3c67801d4ff9cede3df24828b086786c4058d8e42e36c2",
+      "log_sha256": "3f47f566f3bc5b62028f83e651139fd565ee3512822f0f242f9d887b31bf1bef",
+      "started_utc": "2026-11-09T14:05:01.507407+00:00"
+    },
+    {
+      "label": "timber-textures-candidate",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_timber_detail_textures.gd"
+      ],
+      "completion": [
+        "23 Timber detail texture checks, 0 failed"
+      ],
+      "report": "tmp/texture-review-20261109/checks/timber-textures-candidate-dbvgteme/report.json",
+      "report_sha256": "264d013c73b5e72a53f9f11068287f6bd0590f612efe255966b1064f41149cea",
+      "log_sha256": "062a0d546d49947e3be9c9fed802746c1338a6921982b83c9ccd9462cb3bbdce",
+      "started_utc": "2026-11-09T13:59:38.480554+00:00"
+    },
+    {
+      "label": "timber-visual-isolation",
+      "ok": true,
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/timber/visual-upgrade/verify_visual.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/texture-review-20261109/visual-isolation.json"
+      ],
+      "completion": [
+        "TT-20 visual isolation: 164 checks, 0 failed; 10 detail meshes"
+      ],
+      "report": "tmp/texture-review-20261109/checks/timber-visual-isolation-8m_7s73j/report.json",
+      "report_sha256": "ebe5ae3b4e725e65ee9d519163fddc3b2b31e00aef64c78d6fa92b460a6b2158",
+      "log_sha256": "dd5bd7020a52631a8a9f03f7d4559a6387e2960542055a672f2df56e57df871f",
+      "started_utc": "2026-11-09T14:05:05.828360+00:00"
+    }
+  ],
+  "app_textures": [
+    {
+      "base_sha256": "8b2913ceb7ea8eac5fe06fdad4b263fa6f8f1cc395c2b8588da13378d0c76be7",
+      "bytes": 4194303,
+      "data_sha256": "9f3f31f0d90ab0feff787dd4773fdaa21d65a23c18eda4fd9f15ae0d47809b6b",
+      "format": 4,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "base_sha256": "c39a0573fe34e3e4c29d5357ecfc1f445d9c200263f5512943322573b3f391e7",
+      "bytes": 4194303,
+      "data_sha256": "8c5515fbae34188e60f1d4e5f63fd835bebe7c1e2ef61448539d4ec7beb3f428",
+      "format": 4,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "base_sha256": "99ea2ef27e76048d42df64e0b11bacf6656da8f9aae2f987b64f696952d5e35c",
+      "bytes": 4194303,
+      "data_sha256": "f52ba9219cffc38cfc1f5db1cb2efb37335da09eebf95c83b13ea08dadc1c538",
+      "format": 4,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg",
+      "size": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "base_sha256": "f8dfd3c311d1ae1082a97b41b9246575d92a5d451172db17de6416213e9cf658",
+      "bytes": 1398101,
+      "data_sha256": "273b4e125e483ac5d84e944227ea8231d21b54562f8a96fa8dbd2536644276d2",
+      "format": 0,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg",
+      "size": [
+        1024,
+        1024
+      ]
+    }
+  ],
+  "packed_textures": [
+    {
+      "bytes": 4194303,
+      "data_sha256": "9f3f31f0d90ab0feff787dd4773fdaa21d65a23c18eda4fd9f15ae0d47809b6b",
+      "format": 4,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_nor_gl_1k.jpg"
+    },
+    {
+      "bytes": 4194303,
+      "data_sha256": "8c5515fbae34188e60f1d4e5f63fd835bebe7c1e2ef61448539d4ec7beb3f428",
+      "format": 4,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/polystyrene_rough_1k.jpg"
+    },
+    {
+      "bytes": 4194303,
+      "data_sha256": "f52ba9219cffc38cfc1f5db1cb2efb37335da09eebf95c83b13ea08dadc1c538",
+      "format": 4,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_NormalGL.jpg"
+    },
+    {
+      "bytes": 1398101,
+      "data_sha256": "273b4e125e483ac5d84e944227ea8231d21b54562f8a96fa8dbd2536644276d2",
+      "format": 0,
+      "mipmaps": 10,
+      "path": "res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg"
+    }
+  ],
+  "reducer_rejection_checks": {
+    "passed": [
+      "empty-textures",
+      "missing-frame",
+      "unrecognized-frames",
+      "camera-mismatch"
+    ],
+    "fixture_script_sha256": "76a79057b736b87fb66fde7b27dd0d5164afeca4e880f0a8d84c22890ed0b734"
+  },
+  "baseline_failure_reproduction": "HEAD app code; shared unchanged affected-family assets/import/native caches, read-only. Only electric Stik and Extra selected. Not a fresh full baseline import.",
+  "limits": [
+    "Fixed-light inspection, no ordinary-flight perception qualification",
+    "Solid-color custom paint, no player PNG fixture",
+    "No frame-time or resident-VRAM measurement",
+    "Isolated four-texture PCK, no full application release export",
+    "Full skin fleet remains failed on three reproduced unrelated kit checks",
+    "No full app or visual CI suite run locally"
+  ],
+  "runtime_inventory": {
+    "sha256": "ae6fafff833635e3b20c3b98fe66a33b7e8d19386bac6d0d839a8d77b34ac7bf",
+    "standard_material_filter_values": [
+      3
+    ],
+    "scope": "Off-tree production Timber material resources; property inspection, not GPU residency"
+  },
+  "concurrent_edits_outside_scope": [
+    "app/sim/flight_session.gd",
+    "app/render/overlays/overlay_manager.gd"
+  ]
+}

@@ -30,9 +30,9 @@ Drawn columns include the shadow pass. [Full per-subsystem table](runs/summary-7
 
 ## Method
 
-[`tools/scenery/attribute_views.gd`](../../../../tools/scenery/attribute_views.gd) builds the production world (`World.build`: field, scenery, lake, sky, sun) and renders all 20 postcard views at 1280×720, the qualification viewport. For each view it renders the complete world, then the world without each of 28 subsystems, and without the sun's shadow pass. Cost = complete − without. Compatibility's dedicated shadow counter reads zero, but its total counters include shadow-pass draws: removing sun shadows lowers the club view by 20 draws and 29,058 primitives. The parts sum to the total within 2 primitives, and a repeated complete render is identical in every view. The tool also records each subsystem's full-detail and LOD-carrying source triangles, real-time shadow casters and the renderer's memory estimates. [`attribution_report.py`](../../../../tools/scenery/attribution_report.py) reduces a run per view class (pilot 8 views, ground 8, aerial 4) and checks a budget.
+[`tools/scenery/attribute_views.gd`](../../../../tools/scenery/attribute_views.gd) builds the production world (`World.build`: field, scenery, lake, sky, sun) and renders all 20 postcard views at the historical 1280×720 measurement viewport. For each view it renders the complete world, then the world without each of 28 subsystems, and without the sun's shadow pass. Cost = complete − without. Compatibility's dedicated shadow counter reads zero, but its total counters include shadow-pass draws: removing sun shadows lowers the club view by 20 draws and 29,058 primitives. The parts sum to the total within 2 primitives, and a repeated complete render is identical in every view. The tool also records each subsystem's full-detail and LOD-carrying source triangles, real-time shadow casters and the renderer's memory estimates. [`attribution_report.py`](../../../../tools/scenery/attribution_report.py) reduces a run per view class (pilot 8 views, ground 8, aerial 4) and checks a budget.
 
-Counts are renderer submissions after culling and LOD, measured with Mesa llvmpipe. They are platform-independent workload, not GPU timings, and they do not measure fill-rate or alpha overdraw.
+Counts are renderer submissions after culling and LOD, measured with Mesa llvmpipe. They depend on the engine and renderer; they are not GPU timings and do not measure fill-rate or alpha overdraw.
 
 ## Results at 1280×720
 
@@ -136,9 +136,19 @@ In the app, three fresh headless processes at low machine load measured the firs
 
 ## Reproduction
 
+**2026-11-09 identity update.** The historical limits are bound to Godot 4.7.2 official
+(`ed1daf0bf`), Compatibility, High Scene detail and the 720p world-only settings recorded in
+[`scene_budget.json`](../../../../tools/scenery/scene_budget.json). The current repository pins
+4.8 beta 2, so the runner refuses it before rendering until a new engine-specific baseline and
+correction are validated. Historical v2 runs still summarize, but lack the newly required scope and
+settings metadata and cannot pass the identity check. The sun-shadow delta stays a raw counter, while
+the total and subsystem primitive values are per-instance estimates. No numeric allowance changed;
+neither this check nor the earlier 1080p counts qualify complete-flight performance on hardware.
+
 ```sh
-tools/scenery/budget.sh /tmp/scene-budget          # attribution + report + budget check, ~40 min on llvmpipe
-python3 tools/scenery/attribution_report.py /tmp/scene-budget/views --budget tools/scenery/scene_budget.json
+tools/scenery/budget.sh /tmp/scene-budget          # currently refuses the pinned 4.8 beta 2 engine
+tools/scenery/budget.sh /tmp/scene-report --report-only  # measure without applying historical limits
+python3 tools/scenery/attribution_report.py /tmp/scene-report/views  # summarize without budget qualification
 ```
 
 Use a new output folder. `capture.sh` remains the SC-03 scenery-on/off and byte-repeat check.

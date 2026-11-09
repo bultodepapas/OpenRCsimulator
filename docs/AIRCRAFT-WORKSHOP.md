@@ -44,6 +44,8 @@ If saving a manual trace fails during Return/Quit, recording has stopped. **Stay
 
 **Reset this page**, Undo and Redo cover physical recipe, appearance and smoke profile edits in one history; history retains up to 32 entries. One slider drag or preset is one edit; a new edit clears Redo. Loading or replacing the source starts a new history. Undo marks the draft clean only when its full saved payload matches the baseline.
 
+Daytime inspection uses a fixed neutral reflection environment so covering, varnish and metal have a consistent reference while orbiting the model. Night keeps the original dark-background reflections for evaluating aircraft lights. This is a controlled Workshop view, not a snapshot of outdoor weather or flight exposure. [Native comparison and limits](research/aircraft-editor/AE-08b-09/README.md#neutral-reflection-reference-ae-08-r1-2026-11-09).
+
 ## Supported adjustments
 
 | Parameter | Current range or choices | Meaning |

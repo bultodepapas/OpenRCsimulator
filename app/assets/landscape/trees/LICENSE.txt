@@ -10,30 +10,30 @@ https://creativecommons.org/licenses/by-sa/4.0/
 Attribution for included source assets
 --------------------------------------
 
-LandscapeLab Assets contributors — Quercus tree and joined pine tree.
+LandscapeLab Assets contributors — Quercus, Fagus (beech) and joined pine tree.
 Source repository: https://github.com/boku-ilen/landscapelab-assets
 Pinned revision: dfdde034c3547f9876967653d98827bd5348e52e
 Quercus: https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb
+Fagus: https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Fagus/Fagus.glb
 Pine: https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e/Natural/Plants/Trees/Pine/pine_joined.glb
 Source license: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/
 
-LOLIPOP (@lolipop_1707) — “Maple trees pack (lowpoly, game ready, LODs),”
-selected model Acer_large_3_LOD1.
-Source: https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0
-Source license: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+Krzysztof Golik — source photographs for the Fagus leaf textures:
+https://commons.wikimedia.org/wiki/File:Fagus_sylvatica_in_Aubrac_(2).jpg
+https://commons.wikimedia.org/wiki/File:Fagus_sylvatica_in_Aubrac_(3).jpg
+The upstream Fagus LICENSE.md identifies the photographs and derived leaves.png
+and leaves_normal.png as CC BY-SA. Its exact notice is retained in the source
+distribution as assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_Fagus.md.
 
 Changes made
 ------------
 
 The source trees are normalized to a 1 m height with a scene-root scale and
 translation wrapper for the offline bake. The source geometry and material
-identities are retained by that wrapper. The selected maple model was extracted
-from its source pack, converted to glTF with its supplied textures, and given a
-stem-ground origin. The bake renders the three sources into atlas tiles and
+identities are retained by that wrapper. The bake renders the three sources into atlas tiles and
 derives the aligned foliage material mask from their source materials.
 
-The Maple source remains credited under its original CC BY 4.0 notice; the
-combined atlas and mask carry the CC BY-SA 4.0 terms required by the included
+The combined atlas and mask carry the CC BY-SA 4.0 terms required by the included
 LandscapeLab material. These credits do not imply endorsement by the creators.
 Per-slot source notices are in `licenses/`.
 
@@ -43,4 +43,7 @@ Historical source
 The earlier tree atlas used Quaternius's Stylized Nature MegaKit Standard,
 recorded as CC0-1.0 for the exact downloaded archive in
 `assets/landscape/PROVENANCE.json`. That archive is historical provenance for
-the retired atlas; it is not a source of the current tree atlas.
+the retired atlas; it is not a source of the current tree atlas. The previous
+realistic atlas used LOLIPOP's Acer_large_3_LOD1 maple (CC BY 4.0) in the second
+slot. That source, attribution and recipe remain in the repository; it is not
+included in this field-tree atlas.

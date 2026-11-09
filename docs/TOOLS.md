@@ -133,6 +133,14 @@ For the longer abrupt-writer run, execute `test_workshop_store_interruptions.gd`
 
 ### Workshop captures
 
+For the fixed-light material reference and its cold/day/night/redraw checks, use the dedicated native fixture with a fresh destination:
+
+```powershell
+python tools/godot/run_checked.py --timeout 120 --require-text '8 captures, 0 failed' -- .tools/Godot_v4.8-beta2_win64_console.exe --path app --rendering-method gl_compatibility --audio-driver Dummy --script (Resolve-Path research/aircraft-editor/capture_material_reference.gd).Path -- --out=C:/captures/workshop-material-new
+```
+
+Optional fixture arguments are `--aircraft=<catalog-id>`, `--preview-script=<frozen-reference.gd>` and `--reference=<previous-output-directory>`. A reference comparison requires matching engine, renderer, camera, view state and actual image dimensions, verifies PNG hashes, and rejects changed night pixels. It also checks first/settled draws and return-to-day equality. Use `--rendering-method forward_plus` for that renderer's separate comparison. The manifest records the actual preview pixels inside the 1920×1080 window; this fixture does not qualify flight appearance or frame cost.
+
 For a native rendered still:
 
 ```powershell

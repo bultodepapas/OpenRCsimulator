@@ -318,7 +318,7 @@ the repository root, with a new output directory and the Windows console engine:
 $run = Join-Path $PWD ('tmp/frame-diagnostics-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $run | Out-Null
 $godot = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path
-python tools/godot/run_checked.py --out-dir "$run/checks" --timeout 100 -- $godot --path app --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- --scripted --frametimes="$run/run-1.json" --warmup=10 --t=60 --frame-diagnostics --frametimes-max-frames=60000
+python tools/godot/run_checked.py --out-dir "$run/checks" --timeout 100 -- $godot --path app --audio-driver Dummy --resolution 1920x1080 --windowed --max-fps 60 -- --scripted --frametimes="$run/run-1.json" --warmup=10 --t=60 --frame-diagnostics --frametimes-max-frames=60000
 $captureExit = $LASTEXITCODE
 $log = (Get-ChildItem "$run/checks" -Directory | Select-Object -First 1).FullName + '/engine.log'
 python research/performance/frame_diagnose.py --report "$run/run-1.json" --log $log --out "$run/diagnosis.json" --budget-ms 16.667 --top 10
@@ -354,6 +354,39 @@ consume the limit. Hitting the limit writes an incomplete prefix and exits nonze
 shorten `--t` or choose a larger limit. Exact completion on the last allowed frame
 succeeds. This default v2 mode has a 300-second duration bound. Use a fresh frame
 JSON path: the legacy v2 writer still accepts replacement of an existing path.
+
+### Geometry-audit follow-up (VQ-01c / VQ-06b, 2026-11-09)
+
+Frame reports now retain `scene_at_report`: the installed landscape, collision-world
+status/hash, built scenery tier, detailed-tree count and meadow inventory, separately from the
+currently requested Scene detail and live viewport LOD threshold. A changed preference
+can describe the next world; these endpoint observations do not establish settings
+or visibility history. Runtime provenance now includes `scenery/` and `landscapes/`;
+its declared source scope still does not inventory every imported asset or driver.
+
+`native_summary.py` rejects campaigns mixing aircraft, case, engine, renderer/driver,
+adapter, resolution, recorded source hashes, installed worlds/tiers, LOD, reconstruction,
+AA, effective shadows/grass or camera configuration, including mixed known/unknown fields. It ignores changing
+camera poses and autozoom's terminal FOV. Fixed-camera FOV must match. Historical
+all-unknown metadata remains readable for the existing numeric gate.
+
+Add `--require-1080p` to the existing reducer to require both recorded window size and
+the scoped render-target estimate to be 1920×1080, a named native adapter/renderer, runtime source hashes
+and an identified installed world. The usual active-flight, rendering, pacing,
+duration and three-run gates still apply. Software rendering and incomplete legacy
+context cannot pass this additional gate. The legacy `window` and `camera.viewport`
+fields describe the logical canvas; `window_size_at_report` records the separate
+DisplayServer window size. The output estimate comes from `Reconstruction.describe()`
+with scope `viewport_render_target_estimate_v1`; it does not prove physical drawable
+or presentation pixels. The sustained fixture also checks dimensions throughout
+sampling; live-input endpoint metadata does not establish that history.
+The gate covers only the measured workload;
+the full aircraft/view/lighting matrix and hardware acceptance remain separate.
+
+Use the active-flight fixture below for a complete-session baseline, with
+`--resolution 1920x1080 --windowed`. Preserve its full checked receipts and source
+hashes. A scripted camera fixture remains a rendering diagnostic. Retained local
+checks and measurements: [geometry-audit evidence](../../docs/research/visual-quality-implementation/VQ-06b-scene-detail/geometry-audit-20261109.md).
 
 ### Repeatable active flight (DT-MAC-03)
 

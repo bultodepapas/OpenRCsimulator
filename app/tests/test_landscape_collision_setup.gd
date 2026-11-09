@@ -103,6 +103,16 @@ func _test_quality_filter(field: Dictionary) -> void:
 	_check("low proxy IDs match low retained visible placements", _proxy_ids(low.world) == _proxy_ids(expected_low.world))
 	_check("quality option changes collision-world identity", low.world.identity != high_a.world.identity)
 	_check("quality option changes the retained collision inventory", _proxy_ids(low.world) != _proxy_ids(high_a.world))
+	# Automatic's conservative fallback uses Balanced. Its world is deliberate and
+	# must still match the visible seeded ornament selection, including proxy IDs.
+	var balanced_expected := _visible_filter(source_result.scenery, "balanced")
+	var expected_balanced: Dictionary = CollisionWorld.build(field, balanced_expected.scenery, lights_result.lights)
+	_set_options("on", "on", "balanced")
+	var balanced: Dictionary = CollisionSetup.build(field)
+	_check("balanced collision setup and independently filtered inventory build", balanced.ok and expected_balanced.ok)
+	if balanced.ok and expected_balanced.ok:
+		_check("balanced proxy IDs match balanced visible placements", _proxy_ids(balanced.world) == _proxy_ids(expected_balanced.world))
+		_check("balanced and high have distinct installed world identities", balanced.world.identity != high_a.world.identity)
 
 
 func _visible_filter(source: Dictionary, quality: String) -> Dictionary:

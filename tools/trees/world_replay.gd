@@ -2,7 +2,6 @@
 ## Reuses the established detached session probe; this is numerical evidence, not video.
 extends "../../research/performance/session_probe.gd"
 
-const FlightLog := preload("res://sim/flight_log.gd")
 const LogReader := preload("res://tools/flight_log_cli.gd")
 
 

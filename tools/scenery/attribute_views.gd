@@ -3,8 +3,8 @@
 ## without the sun's shadow pass. Cost(subsystem) = complete - without(subsystem); Compatibility's
 ## total counters include shadow-pass work, so the difference covers visible and shadow draws. It also
 ## records each subsystem's full-detail source triangles (the quantity the scenery tests cap).
-## llvmpipe counts are renderer-independent CPU-side submissions after culling and mesh LOD; they are
-## not GPU timings. Godot 4.7.2 Compatibility counts a MultiMesh surface that has LODs once per draw,
+## Counts are renderer-specific submissions after culling and mesh LOD, not GPU timings. Godot 4.7.2
+## Compatibility counts a MultiMesh surface that has LODs once per draw,
 ## not per instance (drivers/gles3/rasterizer_scene_gles3.cpp, _fill_render_list); each such node in
 ## view is therefore measured alone and recorded under "instanced_lod" (see _instanced_lod).
 ## Run through tools/scenery/budget.sh.
@@ -19,6 +19,10 @@ const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
 const Population = preload("res://scenery/population.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
+const Scenery = preload("res://scenery/scenery.gd")
+const LakeWorld = preload("res://render/lake/lake_world.gd")
+const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
+const GrassQuality = preload("res://render/grass_quality.gd")
 
 const FORMAT := "openrc-view-attribution v2"
 const SCENERY_PATTERNS := {"cell_": "scenery_cells", "shadows_": "scenery_contact_shadows",
@@ -47,7 +51,8 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(out)
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
 	ShaderClock.register()
-	ShaderClock.update(float(_args.get("t", "1.5")))
+	var shader_clock_s := float(_args.get("t", "1.5"))
+	ShaderClock.update(shader_clock_s)
 	# VQ-06b: measure the preset the world is built with (--scene_detail / OPENRC_SCENE_DETAIL; default High).
 	SceneDetail.apply(root.get_viewport(), "")
 	var world := Node3D.new()
@@ -66,13 +71,35 @@ func _run() -> void:
 	camera.current = true
 	var groups := _groups(world, field_node, camera)
 	var suns: Array[Node] = world.find_children("*", "DirectionalLight3D", true, false)
+	var sun_shadow_states: Array[bool] = []
+	var sun_shadows_enabled := not suns.is_empty()
+	for sun: DirectionalLight3D in suns:
+		sun_shadow_states.append(sun.shadow_enabled)
+		sun_shadows_enabled = sun_shadows_enabled and sun.shadow_enabled
+	var scenery_options := Scenery.options()
+	var lake_options := LakeWorld.options()
 	var report := {
 		format = FORMAT, renderer = RenderingServer.get_current_rendering_method(),
+		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		adapter = RenderingServer.get_video_adapter_name(), godot = Engine.get_version_info().string,
+		godot_hash = str(Engine.get_version_info().get("hash", "")),
 		viewport = [root.get_visible_rect().size.x, root.get_visible_rect().size.y],
 		mesh_lod_threshold = root.get_viewport().mesh_lod_threshold, scene_detail = SceneDetail.level(),
+		measurement_scope = "postcard-world-v1",
+		measurement_settings = {
+			shader_clock_s = shader_clock_s, sun_shadows_enabled = sun_shadows_enabled,
+			scenery_enabled = scenery_options.enabled, scenery_quality = scenery_options.quality,
+			scenery_theme = scenery_options.theme, scenery_birds = scenery_options.birds,
+			runway_meadow = scenery_options.runway_meadow, tree_wind = scenery_options.tree_wind,
+			tree_cell_size_m = scenery_options.tree_cell_size_m, scenery_file = scenery_options.file,
+			scenery_file_explicit = scenery_options.file_explicit,
+			lake_enabled = lake_options.enabled, lake_file = lake_options.path,
+			landscape_upgrade = LandscapeOptions.enabled(), enhanced_grass = GrassQuality.enhanced(),
+		},
+		viewport_settings = {msaa_3d = int(root.msaa_3d), screen_space_aa = int(root.screen_space_aa),
+			scaling_3d_scale = root.scaling_3d_scale},
 		field_sha256 = FileAccess.get_sha256(FieldLoader.DEFAULT_PATH),
-		scenery_sha256 = FileAccess.get_sha256("res://data/scenery/default.json"),
+		scenery_sha256 = FileAccess.get_sha256(str(scenery_options.file)),
 		groups = {}, views = {},
 	}
 	var lod_nodes := {}
@@ -102,8 +129,8 @@ func _run() -> void:
 		for sun: DirectionalLight3D in suns:
 			sun.shadow_enabled = false
 		row["without_sun_shadows"] = await _measure()
-		for sun: DirectionalLight3D in suns:
-			sun.shadow_enabled = true
+		for index in suns.size():
+			(suns[index] as DirectionalLight3D).shadow_enabled = sun_shadow_states[index]
 		for name: String in groups:
 			var hidden: Array[Node3D] = []
 			for node: Node3D in groups[name]:

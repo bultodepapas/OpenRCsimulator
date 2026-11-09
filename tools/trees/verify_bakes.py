@@ -15,10 +15,10 @@ def verify(left, right):
     if reports[0]['outputs_sha256'] != reports[1]['outputs_sha256']:
         raise ValueError('Bake output bytes differ')
     expected = {item['id']+'-'+variant+'.png' for item in reports[0]['bake']['species']
-                for variant in ('source_lit','source_albedo','adapted_lit','adapted_albedo')}
-    if len(expected) != 12 or any({p.name for p in (folder/'raw').glob('*.png')} != expected
+                for variant in ('source_lit','source_albedo','adapted_lit','adapted_albedo','adapted_foliage_mask')}
+    if len(expected) != 15 or any({p.name for p in (folder/'raw').glob('*.png')} != expected
                                   for folder in (left,right)):
-        raise ValueError('Expected all twelve raw comparison frames in both bakes')
+        raise ValueError('Expected all fifteen raw comparison/material-mask frames in both bakes')
     for file in (left/'raw').glob('*.png'):
         if file.read_bytes() != (right/'raw'/file.name).read_bytes():
             raise ValueError(f'Raw frame differs: {file.name}')

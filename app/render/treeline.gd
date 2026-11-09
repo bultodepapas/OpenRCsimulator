@@ -16,8 +16,8 @@ const PATCH_HASH_OFFSET: int = 32768
 const WIND_LEAN_M: float = 0.24
 # L8a-R1: near-ring trees in front of the pilot (within this half-angle of the runway as seen from
 # the pilot) render as 3D LandscapeLab trees (render/field_tree_detail.gd) and collide with their
-# imported bounds. Cards remain everywhere else. Species slots map to the card sources, with beech
-# for the maple slot because its 3D model has the qualified wind and distant-foliage path.
+# imported bounds. Cards remain everywhere else. Each slot's atlas bake uses the same source
+# as its detailed model (L8a-R3); quality presets never change the collision selection.
 const DETAIL_MAX_RADIUS_M: float = 600.0
 const DETAIL_HALF_ANGLE_DEG: float = 60.0
 const DETAIL_ASSETS: Array[String] = ["landscapelab_quercus", "landscapelab_fagus", "landscapelab_pine"]

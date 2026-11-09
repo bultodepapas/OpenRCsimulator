@@ -16,11 +16,11 @@ uniform sampler2D atlas : source_color, filter_linear_mipmap_anisotropic, repeat
 // Data mask baked from the source glTF material IDs; intentionally no source_color hint.
 uniform sampler2D foliage_mask : filter_linear_mipmap_anisotropic, repeat_disable;
 uniform vec3 frame_sizes = vec3(1.125001);
-// Stable slots now contain downloaded oak, maple and pine. Fractions measured
-// from the realistic atlas's source-material foliage mask (2026-10-20 bake).
-const vec3 CROWN_CENTRE = vec3(0.612061, 0.598877, 0.704346);
-const vec3 CROWN_HALF_W = vec3(0.416383, 0.339478, 0.187867);
-const vec3 CROWN_HALF_H = vec3(0.366, 0.404, 0.289);
+// Stable slots contain downloaded oak, beech and pine, matching the detailed models.
+// L8a-R3 beech fractions come from the 2026-11-09 source-material foliage-mask bake.
+const vec3 CROWN_CENTRE = vec3(0.612061, 0.559326, 0.704346);
+const vec3 CROWN_HALF_W = vec3(0.416383, 0.324097, 0.187867);
+const vec3 CROWN_HALF_H = vec3(0.366, 0.426, 0.289);
 uniform float up_bias = 0.5;
 uniform float underside = -0.5;
 uniform float backlight = 0.4;

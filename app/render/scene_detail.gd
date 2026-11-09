@@ -1,6 +1,7 @@
 ## VQ-06b: the Scene detail preset. One saved choice maps onto existing knobs: the scenery prop tier
 ## (SC-24), which field trees render in 3D (L8a-R1) and the viewport's mesh LOD threshold.
-## Presentation only: collision, simulation and replays never read it.
+## Prop selection also determines ornament collision at the next world build (LU-05).
+## Existing sessions keep their installed collision world; field-tree collision is unchanged.
 ## Precedence: --scene_detail=<level> after --, then OPENRC_SCENE_DETAIL, then the player's saved
 ## preference, then the default. The scene parts apply when the world is next built. "auto" (the
 ## saved default) resolves through recommend() at each launch; tools without a preference keep High.
@@ -9,9 +10,10 @@ extends RefCounted
 const LEVELS: Array[String] = ["low", "medium", "high", "extreme"]
 const DEFAULT := "high"
 const AUTO := "auto"
+const AUTO_FALLBACK := "medium"
 # VQ-06b-R1: Godot 4.7.2's Compatibility driver reports no device type (always DEVICE_TYPE_OTHER),
 # so Automatic classifies the GL renderer/vendor strings. Discrete markers are checked before
-# integrated ones ("Intel Arc", "Radeon RX"). Unknown GPUs keep High; Extreme is never automatic.
+# integrated ones ("Intel Arc", "Radeon RX"). Unknown GPUs start at Medium; Extreme is never automatic.
 const SOFTWARE_MARKERS: Array[String] = ["llvmpipe", "softpipe", "lavapipe", "swiftshader",
 	"microsoft basic render", "gdi generic", "software rasterizer"]
 const ENTRY_DISCRETE_MARKERS: Array[String] = ["geforce mx", "geforce gt ", "geforce 9", "geforce 8"]
@@ -72,14 +74,14 @@ static func detected() -> Dictionary:
 static func recommend(adapter_name: String, vendor: String) -> Dictionary:
 	var gpu := (adapter_name + " " + vendor).strip_edges().to_lower()
 	if gpu.is_empty():
-		return {level = DEFAULT, reason = "no GPU reported"}
+		return {level = AUTO_FALLBACK, reason = "no GPU reported"}
 	for rule: Array in [[SOFTWARE_MARKERS, "low", "software renderer"], [MOBILE_MARKERS, "low", "mobile GPU"],
 			[ENTRY_DISCRETE_MARKERS, "medium", "entry-level GPU"], [DISCRETE_MARKERS, "high", "dedicated GPU"],
 			[INTEGRATED_MARKERS, "medium", "integrated GPU"]]:
 		for marker: String in rule[0]:
 			if gpu.contains(marker):
 				return {level = rule[1], reason = rule[2]}
-	return {level = DEFAULT, reason = "unrecognized GPU"}
+	return {level = AUTO_FALLBACK, reason = "unrecognized GPU"}
 
 
 static func profile(detail_level: String = "") -> Dictionary:

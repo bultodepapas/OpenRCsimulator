@@ -33,6 +33,12 @@ REALISTIC_PINS = {
     'maple_license_sha256': '56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574',
 }
 
+FIELD_PINS = {
+    'fagus_sha256': '32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff',
+    'library_license_sha256': 'd30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99',
+    'fagus_license_sha256': '37024abfefe49fec375d961ebe9cb49d4ae61cf2d59b320fa7bb8f5dced8971e',
+}
+
 
 def _absolute(path: Path) -> str:
     return str(path.resolve())
@@ -131,6 +137,47 @@ def realistic_recipe() -> dict:
     }
 
 
+def field_recipe() -> dict:
+    """Bake the same three downloaded sources used by the detailed field trees.
+
+    The older realistic recipe stays reproducible, including its maple slot.
+    The library notice includes Fagus's original photographer attribution.
+    """
+    license_pin = _pin(LANDSCAPELAB_DIR / 'LICENSE_LANDSCAPELAB_LIBRARY.txt',
+                       FIELD_PINS['library_license_sha256'], 'LandscapeLab library license')
+    readme_pin = _pin(LANDSCAPELAB_DIR / 'README.md',
+                      REALISTIC_PINS['landscapelab_readme_sha256'], 'LandscapeLab provenance')
+    fagus_license = _pin(LANDSCAPELAB_DIR / 'LICENSE_Fagus.md',
+                         FIELD_PINS['fagus_license_sha256'], 'Fagus leaf attribution')
+    species = []
+    for slot, name, filename, source_hash, bark, leaves, upstream in (
+        ('CommonTree_1', 'quercus', 'quercus.glb', REALISTIC_PINS['quercus_sha256'],
+         'branches', 'leaves', 'Quercus/quercus.glb'),
+        ('CommonTree_3', 'fagus', 'Fagus.glb', FIELD_PINS['fagus_sha256'],
+         'branches', 'leaves', 'Fagus/Fagus.glb'),
+        ('Pine_1', 'pine', 'pine_joined.glb', REALISTIC_PINS['pine_sha256'],
+         'branches.001', 'leaves.001', 'Pine/pine_joined.glb'),
+    ):
+        model = _pin(LANDSCAPELAB_DIR / filename, source_hash, f'LandscapeLab {name}')
+        pins = [{**license_pin, 'role': 'license'}, {**readme_pin, 'role': 'source-provenance'}]
+        if name == 'fagus':
+            pins.append({**fagus_license, 'role': 'source-license-evidence'})
+        species.append({
+            'id': slot, 'source_asset_id': f'landscapelab:{name}',
+            'source_path': model['path'], 'source_sha256': model['sha256'], 'dependencies': [],
+            'bark_material_name': bark, 'foliage_material_name': leaves, 'pinned_files': pins,
+            'provenance': {
+                'creator': 'LandscapeLab Assets contributors', 'license': 'CC BY-SA 4.0',
+                'source_url': 'https://github.com/boku-ilen/landscapelab-assets/blob/'
+                              'dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/' + upstream,
+                'source_revision': 'dfdde034c3547f9876967653d98827bd5348e52e',
+                'source_title': f'{name.capitalize()} tree asset',
+            },
+        })
+    return {'format': 'openrc-tree-source-recipe v1',
+            'recipe_id': 'field-trees-2026-11-09-v1', 'species': species}
+
+
 def normalize_user_recipe(path: Path) -> tuple[dict, str]:
     """Resolve user recipe file paths before staging it beside the build evidence."""
     recipe_path = path.resolve()
@@ -205,7 +252,7 @@ def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--out', required=True, type=Path)
     recipe_group = parser.add_mutually_exclusive_group()
-    recipe_group.add_argument('--recipe', choices=('legacy', 'realistic'),
+    recipe_group.add_argument('--recipe', choices=('legacy', 'realistic', 'field'),
                               help='Source set to bake; legacy remains the default')
     recipe_group.add_argument('--source-recipe', type=Path,
                               help='Use an explicit pinned glTF/GLB recipe JSON instead of a built-in source set')
@@ -233,6 +280,8 @@ def main():
     recipe_data: dict | None = None
     if recipe_kind == 'realistic':
         recipe_data = realistic_recipe()
+    elif recipe_kind == 'field':
+        recipe_data = field_recipe()
     elif recipe_kind == 'user':
         recipe_data, original_recipe_sha256 = normalize_user_recipe(args.source_recipe)
     if recipe_data is not None:
@@ -296,10 +345,14 @@ def main():
         for input_path in sorted(set(p.resolve() for p in inputs)):
             if not input_path.is_file():
                 raise RuntimeError(f'bake input disappeared before manifest: {input_path}')
-            try:
-                input_name = input_path.relative_to(ROOT).as_posix()
-            except ValueError:
-                input_name = str(input_path)
+            if input_path == recipe_path.resolve():
+                # Independent output folders must still describe identical recipe inputs.
+                input_name = '<source-recipe>'
+            else:
+                try:
+                    input_name = input_path.relative_to(ROOT).as_posix()
+                except ValueError:
+                    input_name = str(input_path)
             input_hashes[input_name] = sha(input_path)
     if recipe_kind == 'legacy':
         output_hashes = {str(p.relative_to(out)): sha(p) for folder in ('derived', 'atlas')

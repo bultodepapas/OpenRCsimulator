@@ -91,8 +91,8 @@ func _test_recommendations() -> void:
 		"Mesa Intel(R) Iris(R) Xe Graphics (TGL GT2)|Intel": "medium",
 		"AMD Radeon(TM) Graphics|ATI Technologies Inc.": "medium",
 		"ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)|Google Inc.": "medium",
-		"Some Future GPU 9000|Acme": "high",
-		"|": "high",
+		"Some Future GPU 9000|Acme": "medium",
+		"|": "medium",
 	}
 	for gpu: String in cases:
 		var parts := gpu.split("|")
@@ -109,7 +109,17 @@ func _test_recommendations() -> void:
 	SceneDetail.adapter_override = PackedStringArray()
 	SceneDetail.set_preference("low")
 	_check("a saved level wins over detection", SceneDetail.level() == "low")
+	SceneDetail.adapter_override = PackedStringArray(["Some Future GPU 9000", "Acme"])
+	SceneDetail.set_preference("high")
+	_check("explicit High on unknown hardware remains High", SceneDetail.level() == "high")
+	SceneDetail.set_preference(SceneDetail.AUTO)
+	_check("Automatic on unknown hardware starts at Medium", SceneDetail.level() == "medium"
+		and Scenery.options().quality == "balanced")
+	SceneDetail.adapter_override = PackedStringArray(["", ""])
+	_check("Automatic without a reported GPU starts at Medium", SceneDetail.level() == "medium")
+	SceneDetail.adapter_override = PackedStringArray()
 	SceneDetail.set_preference("")
+	_check("tools without a saved preference retain High", SceneDetail.level() == "high")
 
 
 func _test_preferences() -> void:

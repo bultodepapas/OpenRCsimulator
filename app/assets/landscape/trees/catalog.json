@@ -64,49 +64,49 @@
         512,
         512
       ],
-      "bark_material_name": "Maple_Bark_PBR",
-      "derived_sha256": "f29d41f5495de3de176fb87acd20e3b45813767fed0b032dc98774ffb2149e52",
-      "foliage_material_name": "Maple_Leaves_PBR",
+      "bark_material_name": "branches",
+      "derived_sha256": "dcbf099770515a679bfe7ea24f7fff4722cc8e2c97376fb4adfbb570052faf5b",
+      "foliage_material_name": "leaves",
       "frame_size_m": 1.125001,
       "id": "CommonTree_3",
       "normalization": {
         "bottom_center_world_y_up": [
-          0.179934024810791,
-          -0.00265942118130624,
-          0.201440334320068
+          0.0110124498605728,
+          0.0,
+          0.0412513762712479
         ],
         "height_m": 1.0,
         "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
-        "scale": 0.0545640023449906,
+        "scale": 0.981071877837569,
         "source_bounds_world_y_up": {
           "max": [
-            6.48583698272705,
-            18.32444190979,
-            8.86783790588379
+            0.353193432092667,
+            1.01929330825806,
+            0.436788529157639
           ],
           "min": [
-            -6.12596893310547,
-            -0.00265942118130624,
-            -8.46495723724365
+            -0.331168532371521,
+            0.0,
+            -0.354285776615143
           ]
         },
-        "source_height_m": 18.3271013309713
+        "source_height_m": 1.01929330825806
       },
       "pivot_y_m": 0.5,
-      "source_asset_id": "lolipop:acer_large_3_lod1",
+      "source_asset_id": "landscapelab:fagus",
       "source_material_names": [
-        "Maple_Bark_PBR",
-        "Maple_Leaves_PBR"
+        "branches",
+        "leaves"
       ],
       "source_provenance": {
-        "creator": "LOLIPOP (@lolipop_1707)",
-        "license": "CC BY 4.0",
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
         "license_file": "licenses/CommonTree_3.txt",
-        "source_revision": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
-        "source_title": "Maple trees pack (lowpoly, game ready, LODs)",
-        "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0"
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Fagus tree asset",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Fagus/Fagus.glb"
       },
-      "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942"
+      "source_sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff"
     },
     {
       "atlas_rect_px": [
@@ -154,11 +154,11 @@
         "license": "CC BY-SA 4.0",
         "license_file": "licenses/Pine_1.txt",
         "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
-        "source_title": "Joined pine tree asset",
+        "source_title": "Pine tree asset",
         "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb"
       },
       "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8"
     }
   ],
-  "recipe_id": "realistic-trees-2026-10-20-v1"
+  "recipe_id": "field-trees-2026-11-09-v1"
 }

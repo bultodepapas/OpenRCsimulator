@@ -223,9 +223,14 @@ class FrameDiagnoseTests(unittest.TestCase):
             "warmup_poll_count": 120,
             "scope": "root_viewport",
         }
+        report["scene_at_report"] = {"landscape_id": "club_field", "collision_world_status": "installed",
+                                     "collision_world_identity": "a" * 64, "scenery_present": True,
+                                     "installed_scenery_quality": "high", "requested_scene_detail": "medium",
+                                     "mesh_lod_threshold_px": 2.0, "scope": "end of collection only"}
         result = diagnose_report(report)
 
         self.assertEqual(result["source_metadata"]["frame_diagnostics"], report["frame_diagnostics"])
+        self.assertEqual(result["source_metadata"]["scene_at_report"], report["scene_at_report"])
         self.assertEqual(result["observations"]["frame_count"], 4)
 
     def test_observer_invalid_sample_values_invalidate_diagnosis(self):

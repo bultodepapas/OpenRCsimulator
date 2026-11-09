@@ -42,6 +42,7 @@ python3 research/timber/tt01/manifest.py --check
   -- --out="$PWD/assets/aircraft/turbo-lumber-evolution/mesh-measurements.json" --check
 python3 assets/aircraft/turbo-lumber-evolution/build_geometry.py --check
 python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py --check
+python3 tools/godot/run_checked.py --timeout 90 -- "$GODOT" --headless --path app --audio-driver Dummy --script res://tests/test_timber_detail_textures.gd
 python3 research/timber/tt03/check_asset.py --check
 python3 research/timber/tt07/derive_physics.py --check
 python3 research/timber/tt07/sensitivity.py --check
@@ -69,6 +70,16 @@ The factory layout uses paired lower-cowl landing lamps, wingtip navigation lens
 [TT-20](../../../docs/research/timber-integration/TT-20/README.md) records the photographs, technical references, inspected flight footage and native visual verification.
 
 [TT-21](../../../docs/research/timber-integration/TT-21/README.md) records bounded finish-data caches, batched wheel hardware and skipped airborne dust work, with paired CPU measurements and unchanged-render checks. Cached data never owns a model's nodes or materials; meshes and finish materials remain per instance.
+
+The four script-bound foam/rubber maps use lossless data imports with complete mip chains. Keep their normal direction, channels, per-profile strength and local sampling scale intact. A single normal-driven roughness import is unsuitable for the several strengths sharing these maps. [TT-04-R1](../../../docs/research/timber-integration/TT-04-R1/README.md) records the paired import correction and its limits.
+
+For a controlled 1080p texture comparison, run the existing inspector through the checked runner with a fresh output directory:
+
+```powershell
+python tools/godot/run_checked.py --timeout 120 -- .tools/Godot_v4.8-beta2_win64_console.exe --path app --audio-driver Dummy --script res://aircraft/inspect_timber.gd -- --suite=texture-motion --size=1920x1080 --output-dir=C:/captures/timber-stock-new
+```
+
+`--finish=paint` exercises a fixed solid-color custom-paint shader; `--suite=distance` provides 20/50/100 m views. These are fixed-light inspection fixtures, not flights. For paired `stock-before/after`, `paint-before/after` and `distance-before/after` directories, use `research/timber/visual-upgrade/compare_texture_motion.py --root <pair-root> --out <new-directory>` with the [pinned visual Python environment](../../../app/tests/requirements-visual.txt). The reducer checks the expected resources, named camera sequence, declared metadata, image hashes and silhouette support, then reports bounded interior-pixel differences. Inspect the images too; this metric does not establish a perceptible flight improvement.
 
 ## Verification and review
 

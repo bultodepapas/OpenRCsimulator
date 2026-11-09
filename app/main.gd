@@ -79,6 +79,7 @@ const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
 const FrameSamples := preload("res://render/frame_samples.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 const ViewportColor := preload("res://render/viewport_color.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const Air := preload("res://physics/air_data.gd")
@@ -3475,6 +3476,18 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		ticks = int(sample_ticks[sample_ticks.size() - 1] - sample_ticks[0]) if sample_ticks.size() > 1 else 0,
 	}
 	var run_args: Dictionary = _user_args()
+	# The current preference can describe the NEXT world. Read the installed props and
+	# collision inventory instead of inferring them from SceneDetail.level().
+	var installed_scenery: Node = _field_node.get_node_or_null("Scenery") if is_instance_valid(_field_node) else null
+	var scenery_stats: Dictionary = installed_scenery.get_meta("stats", {}) if installed_scenery != null else {}
+	var installed_world: Dictionary = session.collision_world()
+	var meadow: Node = _field_node.get_node_or_null("RunwayMeadow") if is_instance_valid(_field_node) else null
+	var detail_trees: Node = _field_node.get_node_or_null("treelineDetail") if is_instance_valid(_field_node) else null
+	var detail_instances := 0
+	if detail_trees != null:
+		for batch: MultiMeshInstance3D in detail_trees.find_children("*", "MultiMeshInstance3D", true, false):
+			if batch.multimesh != null:
+				detail_instances += batch.multimesh.instance_count
 	var route_name: String = frametimes_route if not frametimes_route.is_empty() else \
 		("scripted-fixed" if _frametimes_scripted_fixed else "live-input")
 	# Endpoint evidence is read once after sampling; no new per-tick observer.
@@ -3493,6 +3506,20 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		route = route_name,
 		preset = "high-experimental" if Atmosphere.HighGraphics.active() else "current-default",
 		graphics_profile = Atmosphere.HighGraphics.describe(),
+		scene_at_report = {
+			scope = "end of collection only; not settings or visibility history",
+			landscape_id = landscape_id,
+			collision_world_status = "installed" if not installed_world.is_empty() else "absent",
+			collision_world_identity = installed_world.get("identity", ""),
+			scenery_present = installed_scenery != null,
+			installed_scenery_quality = scenery_stats.get("quality", "absent" if installed_scenery == null else "unknown"),
+			requested_scene_detail = SceneDetail.level(),
+			mesh_lod_threshold_px = get_viewport().mesh_lod_threshold,
+			field_tree_detail_instances = detail_instances,
+			runway_meadow = {present = meadow != null,
+				plants = meadow.get_meta("plants", 0) if meadow != null else 0,
+				source_triangles = meadow.get_meta("source_triangles", 0) if meadow != null else 0},
+		},
 		shadows = Atmosphere.ShadowSettings.describe(),
 		backend = RenderingServer.get_current_rendering_method(),
 		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
@@ -3521,6 +3548,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		architecture = Engine.get_architecture_name(),
 		pid = OS.get_process_id(),
 		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
+		window_size_at_report = [DisplayServer.window_get_size().x, DisplayServer.window_get_size().y],
 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,
 		# A CLI cap can differ from the shipped default even when VSync is enabled.
 		max_fps = Engine.max_fps,

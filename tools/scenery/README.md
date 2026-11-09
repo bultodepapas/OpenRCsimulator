@@ -13,10 +13,29 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 | `capture.sh` | Renders every view of `app/scenery/postcards.gd` with scenery off and twice on, then `check_views.py` checks per-view budgets (pilot views: ≤ +40 draws, ≤ +150 k primitives; 0 shadow-pass draws) and byte repeats | `tools/scenery/capture.sh [out-dir]` (needs `xvfb-run`) |
 | `check_birds.py` + `capture_birds.gd` | SC-BIRD: renders the bird layer at 1920×1080 with a long lens aimed at the position `bird_tracks.gd` predicts for one bird per flock, with and without birds, twice and in two processes; checks the bird is drawn within 10 px of the prediction at a plausible size and that the images repeat byte for byte ([evidence](../../docs/research/scenery-implementation/SC-BIRD-01-05/README.md)) | `"$(app/tests/visual-env.sh)" tools/scenery/check_birds.py --app app --godot "$(app/get-godot.sh)" --out tmp/<new>` (about 3 min) |
 | `bench_birds.gd` | SC-BIRD efficiency bench: the bird layer alone, K copies, mean frame time with and without; `--shader=<file>` and `--deindex` measure an older variant in the same process ([evidence](../../docs/research/scenery-implementation/SC-BIRD-08/README.md#efficiency-round)). llvmpipe compares versions only | `xvfb-run -a -s '-screen 0 1920x1080x24' "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --resolution 1920x1080 --script $PWD/tools/scenery/bench_birds.gd -- --copies=20` |
-| `budget.sh` + `attribute_views.gd` + `attribution_report.py` | [LU-34](../../docs/research/landscape-upgrade/LU-34/README.md) scene budget: renders every postcard view at 1280×720, then again without each subsystem and without sun shadows, attributing drawn primitives and draw calls (shadow pass included) per subsystem. Godot's counter counts an instanced mesh with LODs once per draw, so each such MultiMesh in view is also measured alone and its primitives are counted per instance ([LU-34-R1](../../docs/research/landscape-upgrade/LU-34/README.md#revision-lu-34-r1-instanced-lod-meshes-were-undercounted)). It also records full-detail (no-LOD) meshes, shadow casters and renderer texture memory, and checks `scene_budget.json`. Source-triangle allowances per subsystem live in `app/tests/scene_source_budget.gd` | `tools/scenery/budget.sh [out-dir]` (about 40 min on llvmpipe); `OPENRC_SCENE_DETAIL=<level>` measures another Scene detail preset, which the budget (High) reports but does not cap |
+| `budget.sh` + `attribute_views.gd` + `attribution_report.py` | [LU-34](../../docs/research/landscape-upgrade/LU-34/README.md) world-only postcard attribution and historical 1280×720 scene budget, with subsystem, shadow-caster, full-detail mesh and renderer texture-memory checks. See the measurement identity and compatibility note below. Source-triangle allowances live in `app/tests/scene_source_budget.gd`. | `tools/scenery/budget.sh [out-dir] [--report-only]` (about 40 min on llvmpipe; the historical gate currently refuses before rendering) |
 | `landscape_metrics.py` | The landscape-improvement metrics on two capture folders (before, after): grass hue/saturation, far-band spread, pilot box, top-down repetition (three off-runway views), crown seam, front-lit vs backlit crowns ([evidence](../../docs/research/landscape-improvement-2026-10-07/implementation/README.md)) | `.tools/visual-venv/bin/python tools/scenery/landscape_metrics.py <before> <after>` |
 
 **Downloads for `bake_models.gd`.** They are listed with their URLs in [assets/scenery/PROVENANCE.json](../../assets/scenery/PROVENANCE.json), and their SHA-256 values are in `app/scenery/models.gd`. They are never committed: only the baked derivatives are.
+
+**LU-34 identity and report compatibility.** The existing numerical allowances describe the 20 fixed
+world-only postcard views at 1280×720, High Scene detail, the listed world and viewport settings,
+and Godot 4.7.2 official (`ed1daf0bf`) Compatibility. A matching workload pass is not a complete-flight,
+1080p, frame-time or hardware qualification. The repository currently pins 4.8 beta 2, so `budget.sh`
+refuses that engine before rendering. A new engine or renderer needs an independently measured
+baseline and validated correction before changing the identity or allowances; no adapter name is a
+universal acceptance gate. `--report-only` collects the attribution without applying the historical
+limits, including for other Scene detail presets; the correction's validity on the new engine is still
+unverified. Such a report is evidence for investigation, not a budget pass.
+
+The v2 attribution still records the original engine counters and per-node instanced-LOD samples.
+The JSON summary's `primitives` and class/group primitive maxima use the per-instance **estimate**
+observed on 4.7.2 Compatibility. The sun-shadow delta is only a raw counter difference: its
+`counter_primitives_max` is also available under the old `primitives_max` alias, marked
+`primitives_kind: raw_engine_counter`; `corrected_primitives_max` is null. A shadow-only correction
+was not measured. Old v1/v2 attributions remain readable, but missing engine hash, scope or settings
+cannot satisfy the current budget identity. Missing repeat, geometry or memory evidence and partial
+view sets also cannot qualify. The reducer retains field/scenery hashes and renderer identity when present.
 
 **The rest of the scenery is procedural:** buildings, people, trees, hedges, flowers and landmarks are built in `app/scenery/prefabs.gd` and `ground_features.gd`.
 
