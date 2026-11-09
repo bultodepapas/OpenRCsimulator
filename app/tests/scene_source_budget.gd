@@ -22,6 +22,9 @@ const ALLOWANCES := {
 
 
 static func subsystem(node_name: String) -> String:
+	# Material-preserving tractor remains inside the existing prop allowance.
+	if node_name == "FarmTractor":
+		return "cells"
 	match node_name:
 		"Population":
 			return "population"

@@ -26,7 +26,7 @@ const GrassQuality = preload("res://render/grass_quality.gd")
 
 const FORMAT := "openrc-view-attribution v2"
 const SCENERY_PATTERNS := {"cell_": "scenery_cells", "shadows_": "scenery_contact_shadows",
-	"ImportedHedge_": "scenery_hedges", "PitShelter_": "scenery_pit_shelters"}
+	"ImportedHedge_": "scenery_hedges", "PitShelter_": "scenery_pit_shelters", "FarmTractor": "scenery_cells"}
 
 var _args := {}
 

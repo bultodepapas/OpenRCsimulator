@@ -28,6 +28,7 @@ const Flowers = preload("res://scenery/flowers.gd")
 const BotanicalHabitats = preload("res://scenery/botanical_habitats.gd")
 const SceneDetail = preload("res://render/scene_detail.gd")
 const AirfieldDetail = preload("res://scenery/airfield_detail.gd")
+const FarmTractor = preload("res://scenery/farm_tractor.gd")
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
 const Ambience = preload("res://scenery/ambience.gd")
 const Birds = preload("res://scenery/birds.gd")
@@ -68,6 +69,7 @@ static func options() -> Dictionary:
 		theme = get.call("scenery_theme", "OPENRC_SCENERY_THEME", ""),
 		# VQ-06b: the Scene detail preset supplies the default tier; the explicit switches still win.
 		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", str(SceneDetail.profile().scenery_quality)),
+		farm_tractor = on.call(get.call("farm_tractor", "OPENRC_FARM_TRACTOR", "on")),
 		audio = on.call(get.call("scenery_audio", "OPENRC_SCENERY_AUDIO", "on")),
 		birds = on.call(get.call("scenery_birds", "OPENRC_SCENERY_BIRDS", "on")),
 		# L11a-R3: the Runway meadow graphics setting supplies the default; the explicit switches still win.
@@ -615,15 +617,26 @@ static func _build_instance(context: _SceneryBuild, group: Dictionary, placement
 		stats.skipped += 1
 		return
 	var xf := _placement_xf(pl.north, pl.east, pl.heading)
+	var tractor: MeshInstance3D = null
+	if prefab == "tractor" and str(group.id) == "tractor" and placement_index == 0 \
+			and bool(context.opts.get("farm_tractor", true)) and not bool(context.opts.get("file_explicit", false)) \
+			and layout_file_applies(context.field, {file = Loader.DEFAULT_PATH, file_explicit = false}) \
+			and FarmTractor.eligible(context.scenery):
+		tractor = FarmTractor.create(xf, spec.size)
 	var kit: MeshKit = null
-	if not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
+	if tractor == null and not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
 		if prefab == "pit_shelter":
 			kit = MeshKit.new()
 			pit_shelter_kits[damage_id] = kit
 		else:
 			kit = _kit(cells, _cell(pl.north, pl.east))
 	var damage_first := kit.verts.size() if kit != null else 0
-	if VegetationPlacement.handles(prefab):
+	if tractor != null:
+		context.root.add_child(tractor)
+		stats["farm_tractor_instances"] = 1
+		stats["farm_tractor_triangles"] = Population.triangles(tractor.mesh)
+		stats["farm_tractor_surfaces"] = tractor.mesh.get_surface_count()
+	elif VegetationPlacement.handles(prefab):
 		var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
 		var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
 		var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
@@ -1024,6 +1037,7 @@ static func apply_damage(field_node: Node3D, damage: Dictionary, force_shadows: 
 	root.set_meta("damage_state", damage.duplicate(true))
 	if not changed and not force_shadows:
 		return
+	FarmTractor.apply_damage(root, damage)
 	var vegetation: Node3D = root.get_node_or_null("ImportedVegetationBatches")
 	if vegetation != null:
 		var state: Dictionary = vegetation.get_meta("_imported_vegetation_state", {})

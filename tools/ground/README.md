@@ -23,6 +23,21 @@ Motion-capture timings include readback/PNG work and cannot qualify performance.
 The [L9b evidence](../../docs/research/visual-quality-implementation/L9b/README.md#l9b-r1-finer-club-turf)
 records the comparison and remaining acceptance limits.
 
+## L9b-R2 worn-path review
+
+Use the same production capture at 1920 × 1080 with
+`--cases=entry_path,pilot_south,gravel_close`. `--worn_photo=off` disables only the
+sparse-grass scan; each case records the effective `worn_photo_enabled` binding.
+`--gravel_detail=off` controls aggregate detail and does not isolate that scan.
+Use a fresh output directory for every control. `--motion=camera --frames=32`
+records a slow translation; compare the same source snapshot and import settings.
+The source JPEG remains unchanged, while its checked-in import enables mipmaps.
+Run the pinned editor's `--headless --editor --path app --import` after that import
+setting changes, then check the actual texture via `test_landscape_gravel.gd`.
+`test_landscape_ground_lu18.gd` owns route, mirrored/collapsed corner, material-tag,
+batch and collision checks. [Dated evidence and limits](../../docs/research/visual-quality-implementation/L9b/README.md#l9b-r2-worn-path-color-and-filtering)
+remain separate from whole-flight performance qualification.
+
 ## DT-11a horizon construction
 
 `Horizon.mesh()` reuses per-build float64 azimuth tables and preallocates triangle

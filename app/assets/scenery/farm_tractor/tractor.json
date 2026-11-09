@@ -1,0 +1,31 @@
+{
+	"format": "openrc-farm-tractor v1",
+	"generator": "tools/scenery/bake_farm_tractor.gd",
+	"source_url": "https://grab3d.com/models/vehicles/tractor/",
+	"author": "Grab3D",
+	"license": "CC0-1.0",
+	"source_sha256": "67eefa2748276d0554373691b4002239c66823ed84fae256793173b307d05d6f",
+	"recipe_sha256": "abb81ab4c6e27ea243464e0b40497abfb3079cbab1c0a295bbd9ac404c7e42a3",
+	"source_triangles": 32784,
+	"triangles": 2954,
+	"surfaces": 5,
+	"texture_size_px": 1024,
+	"content_sha256": "4087affc004208338a692462261081e14a66f059d22f9e8fa2c536064877fdc1",
+	"size_m": [
+		1.80553615093231,
+		2.299968957901,
+		3.28529214859009
+	],
+	"notes": "Uniformly fitted within the existing tractor proxy; centred XZ, y=0, front -Z. PBR/UV retained, 1K S3TC mipmaps, automatic mesh LODs.",
+	"engine": {
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"hex": 264192,
+		"status": "beta2",
+		"build": "official",
+		"hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+		"timestamp": 0,
+		"string": "4.8-beta2 (official)"
+	}
+}

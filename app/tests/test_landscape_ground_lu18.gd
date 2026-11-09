@@ -38,6 +38,7 @@ func _initialize() -> void:
 		return
 	_scenery = loaded.scenery
 	_test_route_contract()
+	_test_worn_vertex_blend()
 	_test_clearances()
 	_test_existing_batches_only()
 	_test_collision_identity_is_unchanged()
@@ -109,6 +110,58 @@ func _test_route_contract() -> void:
 				under_slab = false
 				break
 		_check("%s stays at the low worn-ground lift, beneath concrete floors" % id, under_slab)
+
+
+## The shared opaque mesh must keep its winding and a single color at each lane/joint vertex.
+func _test_worn_vertex_blend() -> void:
+	var route := PackedVector2Array([Vector2(0, 0), Vector2(4, 0), Vector2(6, 3)])
+	for mirror: float in [1.0, -1.0]:
+		var kit := MeshKit.new()
+		kit.xf = Transform3D(Basis.from_scale(Vector3(mirror, 1, 1)), Vector3(4, 0, -3))
+		GroundFeatures.track(kit, route, 0.9, "worn", "temperate")
+		var colors_by_position := {}
+		var continuous := true
+		var tags_valid := true
+		var field_edge := false
+		var tread := false
+		var winding := true
+		for i in kit.verts.size():
+			var position: Vector3 = kit.verts[i]
+			var color: Color = kit.cols[i]
+			if colors_by_position.has(position):
+				continuous = continuous and colors_by_position[position] == color
+			colors_by_position[position] = color
+			tags_valid = tags_valid and color.a >= 0.179 and color.a <= 0.431
+			tread = tread or color.a < 0.19
+			if color.a > 0.42:
+				var expected: Color = GroundFeatures.PATCH_FIELD_GRASS_COLOR
+				field_edge = field_edge or (absf(color.r - expected.r) < 1e-6
+					and absf(color.g - expected.g) < 1e-6 and absf(color.b - expected.b) < 1e-6)
+		for i in range(0, kit.verts.size(), 3):
+			var face := (kit.verts[i + 1] - kit.verts[i]).cross(kit.verts[i + 2] - kit.verts[i])
+			winding = winding and face.dot(kit.norms[i]) < -1e-8
+		var label := "mirrored" if mirror < 0.0 else "ordinary"
+		_check("%s worn path shares colors across lane and segment joints" % label,
+			not kit.is_empty() and continuous)
+		_check("%s worn path keeps photo tags outside the aggregate range" % label, tags_valid and tread)
+		_check("%s worn path reaches the field palette at its outer edge" % label, field_edge)
+		_check("%s worn path preserves clockwise faces and outward normals" % label, winding)
+		# At a 180-degree route turn two quad corners can coincide. The surviving
+		# triangle must keep C's color rather than finding B by equal position.
+		var collapsed := MeshKit.new()
+		collapsed.xf = kit.xf
+		var corners: Array[Color] = [Color(0.2, 0.3, 0.1, 0.18), Color(0.8, 0.2, 0.1, 0.43),
+			Color(0.1, 0.4, 0.2, 0.25), Color(0.3, 0.2, 0.1, 0.3)]
+		GroundFeatures._worn_quad(collapsed, Vector2.ZERO, Vector2(1, 0), Vector2(1, 0),
+			Vector2(0, -1), GroundFeatures.LIFT_WORN, corners)
+		var surviving_corner := collapsed.xf * Vector3(1, GroundFeatures.LIFT_WORN, 0)
+		var correct := collapsed.verts.size() == 3
+		var corner_found := false
+		for i in collapsed.verts.size():
+			if collapsed.verts[i] == surviving_corner:
+				corner_found = true
+				correct = correct and collapsed.cols[i] == corners[2]
+		_check("%s collapsed worn quad retains the surviving corner's color" % label, correct and corner_found)
 
 
 func _test_clearances() -> void:

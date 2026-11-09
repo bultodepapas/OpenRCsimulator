@@ -5,6 +5,7 @@
 extends RefCounted
 
 const Projected = preload("res://render/projected_shadow.gd")
+const AircraftShadowProxy = preload("res://render/aircraft_shadow_proxy.gd")
 const ShadowSettings = preload("res://render/shadow_settings.gd")
 
 const Spec := preload("res://spec.gd")
@@ -87,14 +88,23 @@ static func create(parent: Node3D) -> MeshInstance3D:
 
 ## Bind the built model without modifying its meshes, materials or hinges.
 ## A precomputed shape is valid only for the same unchanged neutral model (e.g. a static Home preview).
-## Dynamic/flight callers omit it and retain the existing geometry collection path.
-static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}) -> void:
+## Only an explicitly admitted stock flight context may select the qualified aircraft proxy.
+## Cached Home geometry and callers without that context retain full collection.
+static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}, proxy_context: Dictionary = {}) -> void:
 	var old := shadow.get_node_or_null("ProjectedShadow")
 	if old != null:
 		shadow.remove_child(old)
 		old.queue_free()
 	if shape.is_empty():
-		shape = Projected.collect(model)
+		shape = AircraftShadowProxy.collect(model, AircraftShadowProxy.MAX_LOD_DISTANCE) \
+			if AircraftShadowProxy.qualified(model, proxy_context) else Projected.collect(model)
+	shadow.set_meta("projected_shadow_geometry", {
+		representation = shape.get("representation", "full" if not shape.is_empty() else "legacy"),
+		triangles = shape.get("triangles", 0), source_triangles = shape.get("source_triangles", shape.get("triangles", 0)),
+		lod_surfaces = shape.get("lod_surfaces", 0), max_lod_distance = shape.get("max_lod_distance", 0.0),
+		requested = AircraftShadowProxy.requested(),
+		model_manifest_sha256 = str(proxy_context.get("model_manifest_sha256", "")),
+	})
 	if shape.is_empty():
 		shadow.mesh = shadow.get_meta("legacy_shadow_mesh")
 		return # legacy mask remains a supported fallback

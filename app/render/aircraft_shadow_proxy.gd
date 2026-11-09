@@ -5,6 +5,7 @@ const Projected := preload("res://render/projected_shadow.gd")
 const AIRCRAFT_ID := "f4u-corsair-250"
 const ASSET_SHA256 := "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851"
 const ENGINE_HASH := "cafc17a192acf67903910a68aeb3c076c0907a4b"
+const MANIFEST_SHA256 := "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
 # This is the imported LOD selection criterion, not a certified geometric-error bound.
 const MAX_LOD_DISTANCE := 0.0005
 
@@ -16,8 +17,14 @@ static func source_supported(model: Node3D) -> bool:
 		and not model.has_meta("skin_base_sha256")
 
 
-static func qualified(model: Node3D) -> bool:
-	return requested() == "auto" and DisplayServer.get_name() != "headless" and source_supported(model) \
+static func context_supported(context: Dictionary) -> bool:
+	return typeof(context.get("stock_session")) == TYPE_BOOL and context.stock_session \
+		and str(context.get("model_manifest_sha256", "")) == MANIFEST_SHA256
+
+
+static func qualified(model: Node3D, context: Dictionary = {}) -> bool:
+	return context_supported(context) and requested() == "auto" \
+		and DisplayServer.get_name() != "headless" and source_supported(model) \
 		and str(Engine.get_version_info().get("hash", "")) == ENGINE_HASH \
 		and RenderingServer.get_current_rendering_method() == "gl_compatibility"
 

@@ -1243,6 +1243,7 @@ class MeasurementIdentityTests(unittest.TestCase):
             "missing-world": lambda r: r.pop("scene_at_report"),
             "source": lambda r: r["code_provenance"]["source_sha256"].update({"res://main.gd": "d" * 64}),
             "aa": lambda r: r["render_settings"].update(msaa_3d=0),
+            "aircraft-shadow-proxy": lambda r: r["render_settings"].update(projected_aircraft_geometry={"representation": "imported-lod-proxy"}),
             "shadows": lambda r: r["shadows"]["effective"].update(native=False),
             "grass": lambda r: r["effective_grass"]["near_grass"].update(present=False),
             "grass-count": lambda r: r["effective_grass"]["near_grass"].update(clump_count=30),

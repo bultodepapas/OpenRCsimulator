@@ -889,7 +889,7 @@ func _prepare_flight() -> void:
 		get_tree().quit(ERR_INVALID_DATA)
 		return
 	if session.aircraft.get("ok", false) and session.aircraft.model.propulsion.get("glow", {}).is_empty() and startup_checkpoint.is_valid():
-		Shadow.bind_model(_shadow, _airplane.root)
+		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context())
 	# D6e-R5: sport gives keyboard/gamepad full roll travel with normal pitch/yaw.
 	# --rates selects the high/low starting profile; radios retain transmitter rates.
 	var rates := str(args.get("rates", "sport"))
@@ -1435,7 +1435,7 @@ func _sync_accepted_installation_geometry(force_refresh := false) -> bool:
 	if not changed and not force_refresh:
 		return true
 	_extent = Shadow.model_extent(_airplane.root)
-	Shadow.bind_model(_shadow, _airplane.root)
+	Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context())
 	if force_refresh or not is_equal_approx(float(_rig.get("_span")), _extent.x):
 		_rig.set_span(_extent.x)
 	return true
@@ -3100,6 +3100,14 @@ func _view_name() -> String:
 	return _rig.view_name()
 
 
+## Workshop trials (even unit-scale customizations) and inspection fixtures are outside proxy qualification.
+func _shadow_proxy_context() -> Dictionary:
+	var args := _user_args()
+	if not workshop_trial.is_empty() or _scripted or args.has("capture") or args.has("trace"):
+		return {}
+	return {stock_session = true, model_manifest_sha256 = str(_airplane.get("model_manifest_sha256", ""))}
+
+
 func _build_world() -> bool:
 	if not await _startup_stage("Preparing aircraft"):
 		return false
@@ -3135,7 +3143,7 @@ func _build_world() -> bool:
 	_shadow = Shadow.create(self)
 	# Bind the aircraft silhouette before fitting luminous geometry.
 	if not startup_checkpoint.is_valid():
-		Shadow.bind_model(_shadow, _airplane.root)
+		Shadow.bind_model(_shadow, _airplane.root, {}, _shadow_proxy_context())
 	# Legacy profiles keep the established lazy kit and imported-material behavior.
 	var lighting_profile: Dictionary = workshop_trial.get("presentation_profile", {}).get("lighting", LightingProfile.defaults())
 	if lighting_profile.get("selection", "inherit") != "inherit":
@@ -3519,6 +3527,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		backend = RenderingServer.get_current_rendering_method(),
 		rendering_driver = RenderingServer.get_current_rendering_driver_name(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
+			projected_aircraft_geometry = _shadow.get_meta("projected_shadow_geometry", {}) if is_instance_valid(_shadow) else {},
 			use_hdr_2d = get_viewport().use_hdr_2d,
 			scaling_3d_scale = get_viewport().scaling_3d_scale, scaling_3d_mode = get_viewport().scaling_3d_mode,
 			reconstruction = Reconstruction.describe(get_viewport()),

@@ -22,7 +22,7 @@ candidate scripts default to the working runtime. Population rows include static
 base work, so report the two kinds separately. [Measurements and reproduction](../../docs/research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/triangle-runs-2026-10-21/README.md)
 record the exact-output and visual checks.
 
-Use the pinned official Godot 4.8-beta1 Compatibility engine for new native runs.
+Use the pinned official Godot 4.8-beta2 Compatibility engine for new native runs.
 Dated validation and timing evidence retain their recorded engine scope.
 
 Install the pinned offline analysis dependency with `python -m pip install -r
@@ -30,7 +30,7 @@ tools/shadows/requirements.txt`. Use the pinned Godot console executable and a
 display; headless rendering cannot validate masks or GPU cost.
 
 ```powershell
-python tools/shadows/vq04a_verify.py --godot .tools/Godot_v4.8-beta1_win64_console.exe --baseline PATH_TO_BEFORE_APP --candidate app --out NEW_OUTPUT_DIRECTORY
+python tools/shadows/vq04a_verify.py --godot .tools/Godot_v4.8-beta2_win64_console.exe --baseline PATH_TO_BEFORE_APP --candidate app --out NEW_OUTPUT_DIRECTORY
 ```
 
 The baseline must precede VQ-04a, with the same unrelated source/assets as the
@@ -67,5 +67,51 @@ is on by default; use `--scenery=off` or `OPENRC_SCENERY=off` for an explicit
 scenery-free comparison. See the [scenery tools](../scenery/README.md).
 
 Evidence and limits: [VQ-04a](../../docs/research/visual-quality-implementation/VQ-04a/README.md).
+
+## Aircraft mask LOD proxy
+
+The ordinary stock Corsair flight can reuse imported LOD indices for its shadow
+mask. Admission requires the exact asset, manifest, default `midnight` livery,
+pinned engine hash and a non-headless Compatibility renderer. Workshop trials,
+custom paint, scripted/capture/trace fixtures, Home previews and other aircraft
+keep full geometry. Invalid or unsupported LOD records retain full mesh faces;
+the original bounds and existing angular cache remain authoritative.
+
+Use `--aircraft-shadow-proxy=full` after `--`, or
+`OPENRC_AIRCRAFT_SHADOW_PROXY=full`, for the full-geometry comparison. CLI takes
+precedence; `auto` restores the stock-source policy. Unknown values select full.
+This switch does not change saved settings. Frame reports record the actual
+representation, triangle counts and manifest in
+`render_settings.projected_aircraft_geometry`; the native reducer treats these
+as measurement identity.
+
+Run the focused `res://tests/test_aircraft_shadow_proxy.gd` through the checked
+runner for decoder, bounds, source ownership and session-context checks. For
+native binding, image and component-timing evidence, use a display and a fresh
+absolute output directory. Run one rendered process at a time:
+
+```powershell
+$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path
+$TrialScript = (Resolve-Path 'tools/shadows/aircraft_proxy_trial.gd').Path
+python tools/godot/run_checked.py --label aircraft-shadow-proxy --timeout 240 --warnings-as-errors -- $GodotWindows --path app --audio-driver Dummy --rendering-method gl_compatibility --resolution 1920x1080 --script $TrialScript -- --out=C:/ABSOLUTE/NEW_DIRECTORY --cache-controls --profile-frames=240
+python tools/shadows/analyze_aircraft_proxy.py C:/ABSOLUTE/NEW_DIRECTORY --out C:/ABSOLUTE/NEW_DIRECTORY/summary.json
+```
+
+The trial exercises seven production `Shadow.bind_model` admission/fallback
+cases and eleven poses through the actual 256² MSAA 4× mask and 1080p receiver.
+Gear/flaps are set before collection, matching the existing bind-time geometry
+contract. `--cache-controls` adds three fresh full masks at 0.24° local-axis
+perturbations; these are sampled context, not a universal error bound.
+`--profile-frames=0..1200` collects four alternating pairs after 60 warmup frames
+per batch. Each frame changes roll enough to redraw. `--lod-distance=<positive>`
+changes the isolated candidate criterion; production admission still uses its
+pinned criterion. This is not the full-flight 10-second/60-second qualification.
+
+The analyzer verifies PNG hashes, measures mask-alpha and maximum RGB-channel
+differences, and reports interpolated p50/p95/p99 component samples. GPU polls
+can lag or repeat. Retain the raw report and captures for review; a component
+triangle saving or timing difference does not establish a whole-flight gain.
+[Dated source, visual and timing evidence](../../docs/research/visual-quality-implementation/VQ-04a/aircraft-proxy-20261109/README.md)
+records the extra binding cost and current hardware limits.
 
 The [VQ-04a-F2 windsock follow-up](../../docs/research/visual-quality-implementation/VQ-04a/windsock/README.md) shares the visible sleeve deformation and basket yaw with one 512² field map. Run `test_windsock_shadow.gd` and `test_field_projected_shadows.gd` headless for lifecycle/cache/budget checks. Native `windsock_capture.gd -- --out=<new directory>` saves seven wind/light cases, isolated masks, shadow-hidden appearance controls and a wide low-sun view. `windsock_probe.gd -- --out=<JSON path>` checks coverage against independent ray-plane intersections and records alternating dynamic/cached component timings. These native tools require a display and absolute script paths when run with `--path app`; timings are fixture evidence, not full-flight performance qualification. `check_windsock_pack.gd` accepts one exported PCK path as its sole user argument from an empty project and constructs the imported caster and shaders.

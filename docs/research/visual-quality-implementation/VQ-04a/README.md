@@ -5,6 +5,10 @@ the visual-quality plan's VQ-04a.
 
 2026-10-19 follow-up: [VQ-04a-F2 moving windsock shadows](windsock/README.md) adds the deformed sleeve and swivelling basket to the existing field caster. The original results below remain dated evidence.
 
+2026-11-09 follow-up: [stock Corsair mask LOD proxy](aircraft-proxy-20261109/README.md)
+reduces mask triangles by 44.44% for one verified source, with full fallbacks,
+1080p visual checks and explicit loading/timing limits.
+
 ## Ownership and coordination
 
 Initial status showed UI-21 menu files, propulsion/audio research, and L4c

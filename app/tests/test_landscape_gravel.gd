@@ -41,16 +41,20 @@ func _initialize() -> void:
 	var batches := 0
 	var cells := 0
 	var surfaces_valid := true
+	var worn_texture: Texture2D
 	for child: Node in node.get_children():
 		if child is MeshInstance3D and child.mesh != null and child.mesh.get_surface_count() > 0:
 			if str(child.name).begins_with("cell_"):
 				cells += 1
 			var mat: Material = child.mesh.surface_get_material(0)
 			if mat is ShaderMaterial and mat.shader == Scenery.GRAVEL_SHADER:
+				worn_texture = mat.get_shader_parameter("worn_albedo") as Texture2D
 				batches += 1
 				surfaces_valid = surfaces_valid and child.mesh.get_surface_count() == 1
 	_check("default scenery retains 60 nonempty cells and reports them accurately", cells == 60 and node.get_meta("stats").cells == cells)
 	_check("detail uses existing flat single-surface batches", batches > 0 and surfaces_valid)
+	_check("photographic path detail has real imported mipmaps", worn_texture != null
+		and worn_texture.get_image().has_mipmaps())
 	print("gravel flat batches: %d; cells: %d" % [batches, node.get_meta("stats").cells])
 	node.free()
 	print("landscape gravel: %d checks, %d failures" % [checks, failures])

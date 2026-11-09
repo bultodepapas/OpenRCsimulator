@@ -1595,6 +1595,7 @@ def measurement_identity(report: dict[str, Any]) -> dict[str, Any]:
     settings = report.get("render_settings")
     identity["render_settings"] = {key: settings.get(key) for key in (
         "msaa_3d", "screen_space_aa", "use_hdr_2d", "scaling_3d_scale", "scaling_3d_mode",
+        "projected_aircraft_geometry",
     )} if isinstance(settings, dict) else None
     reconstruction = settings.get("reconstruction") if isinstance(settings, dict) else None
     identity["reconstruction"] = {key: reconstruction.get(key) for key in (

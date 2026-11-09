@@ -44,13 +44,7 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 	var lanes: Array
 	if surface == "worn":
 		# A quiet, single pedestrian tread. Its lower lift lets an existing slab or gravel apron cover the join.
-		var edge := Color("#647a4b")
-		var tread := Color("#627747")
-		# Opaque shader markers, not transparency: the downloaded sparse grass
-		# scan breaks up the centre more strongly than the feathered shoulders.
-		edge.a = 0.32
-		tread.a = 0.18
-		lanes = [[-1.0, -0.62, edge], [-0.62, 0.62, tread], [0.62, 1.0, edge]]
+		lanes = [[-1.0, -0.62], [-0.62, 0.62], [0.62, 1.0]]
 	else:
 		# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge
 		lanes = [[-1.0, -0.62, dirt.lightened(0.06)], [-0.62, -0.22, dirt], [-0.22, 0.22, crown], [0.22, 0.62, dirt], [0.62, 1.0, dirt.lightened(0.06)]]
@@ -60,15 +54,57 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 		for lane: Array in lanes:
 			var a0: float = lane[0]
 			var a1: float = lane[1]
-			var c: Color = lane[2]
-			var tone := 0.94 + 0.1 * Palette.hash01(i, int(a0 * 10.0))
 			var w0 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i, 37)) if surface == "worn" else 1.0)
 			var w1 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i + 1, 37)) if surface == "worn" else 1.0)
 			var p00 := route[i] + offs[i] * a0 * w0
 			var p01 := route[i] + offs[i] * a1 * w0
 			var p10 := route[i + 1] + offs[i + 1] * a0 * w1
 			var p11 := route[i + 1] + offs[i + 1] * a1 * w1
-			_flat_quad(k, p00, p10, p11, p01, lift, c * Color(tone, tone, tone))
+			if surface == "worn":
+				_worn_quad(k, p00, p10, p11, p01, lift, [
+					_worn_color(a0, i), _worn_color(a0, i + 1),
+					_worn_color(a1, i + 1), _worn_color(a1, i)])
+			else:
+				var c: Color = lane[2]
+				var tone := 0.94 + 0.1 * Palette.hash01(i, int(a0 * 10.0))
+				_flat_quad(k, p00, p10, p11, p01, lift, c * Color(tone, tone, tone))
+
+
+## L9b-R2: shared lane/joint colors, with a grass-toned outer shoulder.
+## Alpha stays below the aggregate tag range; it selects photo wear, never transparency.
+static func _worn_color(across: float, station: int) -> Color:
+	var edge := smoothstep(0.62, 1.0, absf(across))
+	var tone := 0.98 + 0.04 * Palette.hash01(station, 37)
+	var tread := Color("#627747") * Color(tone, tone, tone)
+	var result := tread.lerp(PATCH_FIELD_GRASS_COLOR, edge)
+	result.a = lerpf(0.18, 0.43, edge)
+	return result
+
+
+## Keep the established quad geometry and mirrored winding, including collapsed corners.
+static func _worn_quad(k: MeshKit, a: Vector2, b: Vector2, c: Vector2, d: Vector2,
+		lift: float, colors: Array[Color]) -> void:
+	var pa := Vector3(a.x, lift, a.y)
+	var pb := Vector3(b.x, lift, b.y)
+	var pc := Vector3(c.x, lift, c.y)
+	var pd := Vector3(d.x, lift, d.y)
+	if (pb - pa).cross(pc - pa).y < 0.0:
+		_worn_triangle(k, pa, pd, pc, colors[0], colors[3], colors[2])
+		_worn_triangle(k, pa, pc, pb, colors[0], colors[2], colors[1])
+	else:
+		_worn_triangle(k, pa, pb, pc, colors[0], colors[1], colors[2])
+		_worn_triangle(k, pa, pc, pd, colors[0], colors[2], colors[3])
+
+
+static func _worn_triangle(k: MeshKit, a: Vector3, b: Vector3, c: Vector3,
+		ca: Color, cb: Color, cc: Color) -> void:
+	var first := k.verts.size()
+	k.tri(a, b, c, ca)
+	if k.verts.size() == first: # MeshKit omits degenerate triangles.
+		return
+	var mirrored := k.xf.basis.determinant() < 0.0
+	k.cols[first + 1] = cb if mirrored else cc
+	k.cols[first + 2] = cc if mirrored else cb
 
 
 ## Break long walking treads into small, uneven mowing/wear intervals. Endpoints and centre route are retained.

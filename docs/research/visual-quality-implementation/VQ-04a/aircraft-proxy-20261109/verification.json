@@ -1,0 +1,205 @@
+{
+  "format": "openrc-aircraft-shadow-proxy-verification v1",
+  "source_head_at_receipt": "eadf89edd350d26eca6470253ce9fe61fa1f706b",
+  "note": "Shared tree includes unrelated dirty paths; per-source hashes identify the checked candidate. No full-suite or whole-flight performance qualification is claimed.",
+  "source_sha256": {
+    "app/render/aircraft_shadow_proxy.gd": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+    "app/render/shadow.gd": "3fa6b020e32712dd32aa004f1945f8984ea896c8e05c73cd755cee751bd8a439",
+    "app/main.gd": "281d60c682f5fac608fe750bda25bde4aeaf1d1c347fca822c2646a725a1231e",
+    "tools/shadows/aircraft_proxy_trial.gd": "86194e446eacf569c7c4934932dadbd19d2cc55040a9a4075a786514ee8ab597",
+    "app/render/projected_shadow.gd": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+    "app/render/projected_shadow_mask.gdshader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+    "app/render/projected_shadow_receiver.gdshader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+    "app/tests/test_aircraft_shadow_proxy.gd": "27f0ff27b96e9c5e3117caa5a5f5dff5b92969a362bcf49b93d81fac3ae3f33e",
+    "research/performance/native_summary.py": "19b44e795271effa137180a26d408b5f94557391e5d412ba9d4080b0408777ba",
+    "research/performance/test_native_summary.py": "2ca2121734b3faa46fea3ef2980c05647f9bcf9bad2b97f43046758bb2f45723",
+    "tools/shadows/analyze_aircraft_proxy.py": "b8d2f995c08d532b9393dab020e3f38d853e526e56b030531ff9b976466d53cb"
+  },
+  "godot_checks": [
+    {
+      "label": "proxy-main-parse",
+      "started_utc": "2026-11-09T16:44:30.987068+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "process_exit": 0,
+      "elapsed_seconds": 12.453,
+      "receipt": "tmp/shadow-proxy-20261109/checks/proxy-main-parse-f119zwlv/report.json",
+      "receipt_sha256": "d0aea612d54a9768ce55594a8b1772e034efd6f83b528ef9a82c25605c799c50"
+    },
+    {
+      "label": "proxy-trial-parse",
+      "started_utc": "2026-11-09T16:45:02.004752+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "process_exit": 0,
+      "elapsed_seconds": 2.719,
+      "receipt": "tmp/shadow-proxy-20261109/checks/proxy-trial-parse-t2pjxxmv/report.json",
+      "receipt_sha256": "ebed23d861ff8c349c099c840b875d87ec1cc39598a54a09e77d0619eb50680a"
+    },
+    {
+      "label": "shadow-collection",
+      "started_utc": "2026-11-09T16:45:42.867406+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c9281901692a5ed108bc6dc4b988aee1edd7136b8a99ef0b60de22d0521a9fdb",
+      "process_exit": 0,
+      "elapsed_seconds": 0.531,
+      "receipt": "tmp/shadow-proxy-20261109/checks/shadow-collection-3e4_et47/report.json",
+      "receipt_sha256": "0f66b8c5200afc2d0ad98055643d8a830b2097e71bc4101baa4493649173eaf6"
+    },
+    {
+      "label": "projected-shadow",
+      "started_utc": "2026-11-09T16:45:43.890174+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "da2a94a64509bb51dcb227c8ad83c96f3bf545e2e92012073deb3f80a722abe1",
+      "process_exit": 0,
+      "elapsed_seconds": 4.859,
+      "receipt": "tmp/shadow-proxy-20261109/checks/projected-shadow-ecn10i1v/report.json",
+      "receipt_sha256": "afaca45e39facdad6e853ef80a77a6fcf385341e2036cdeed0c35ed3c3877fec"
+    },
+    {
+      "label": "shadow-ownership",
+      "started_utc": "2026-11-09T16:46:00.203358+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "571170ecc23cf7a10b86616915344969323610dac9245f4826a885bae1c02699",
+      "process_exit": 0,
+      "elapsed_seconds": 7.046,
+      "receipt": "tmp/shadow-proxy-20261109/checks/shadow-ownership-478_35hd/report.json",
+      "receipt_sha256": "bcbd154d7864fc782784e0dbc8c2d652f62139f038d59c43777080c7454131b7"
+    },
+    {
+      "label": "field-population",
+      "started_utc": "2026-11-09T16:46:00.214753+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "69ef1af97b4af9f1072dbf7690fe92d38765ed99a95a22d21b088a2b649567a6",
+      "process_exit": 0,
+      "elapsed_seconds": 2.828,
+      "receipt": "tmp/shadow-proxy-20261109/checks/field-population-_cru550c/report.json",
+      "receipt_sha256": "4df3bbfe912e5801fdb5c13886c6dbf2c19611af43ae5a3b5a078929cf5fa22d"
+    },
+    {
+      "label": "shadow-cue-controls",
+      "started_utc": "2026-11-09T16:46:00.214235+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "4d85eaed1c38cf9e81b9dfaad7af9ed6a7a433c09060a238df6a1431d442f274",
+      "process_exit": 0,
+      "elapsed_seconds": 10.359,
+      "receipt": "tmp/shadow-proxy-20261109/checks/shadow-cue-controls-lxi1otdg/report.json",
+      "receipt_sha256": "cba92195ca9a825ea654e6cf228344315de294d3534b8f1ebd38e18665c96416"
+    },
+    {
+      "label": "native-final",
+      "started_utc": "2026-11-09T16:46:23.115311+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "0c66ea589a7fc5c34e5b175e44484547911817ddf57ac555d355a6e85ef7b97b",
+      "process_exit": 0,
+      "elapsed_seconds": 13.859,
+      "receipt": "tmp/shadow-proxy-20261109/checks/native-final-aamne23z/report.json",
+      "receipt_sha256": "9ef78cdcfaee634f064c8cc3e8315b840754472d7f6c927601298c35f6ea85a9"
+    },
+    {
+      "label": "proxy-session-context",
+      "started_utc": "2026-11-09T16:45:33.332277+00:00",
+      "complete": true,
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c8cd232ff988c9f123c4352a9051cf8f0723bbd5fecc19a2f17d7bd5c2f59047",
+      "process_exit": 0,
+      "elapsed_seconds": 8.984,
+      "receipt": "tmp/shadow-proxy-20261109/tests/checks/proxy-session-context-wv58wli7/report.json",
+      "receipt_sha256": "40d8ba21fc67108fca2dc188c138e87749f44d4e0d1d23e5fea6a63d08a88708"
+    }
+  ],
+  "unit_checks": {
+    "proxy": 80,
+    "collection": 77,
+    "projector": 47,
+    "ownership": 49,
+    "population_collection": 57,
+    "cue_controls": 49,
+    "total": 359
+  },
+  "python_checks": {
+    "command": "python -m unittest research.performance.test_native_summary.MeasurementIdentityTests -v",
+    "tests": 5,
+    "failed": 0
+  },
+  "live_smoke": {
+    "route": "Home -> stock Corsair -> runway",
+    "output_size": [
+      1920,
+      1080
+    ],
+    "engine": "4.8-beta2 official",
+    "bridge_port": 29874,
+    "profile": "tmp/shadow-proxy-20261109/live-profile-home",
+    "output": "tmp/debug-bridge/20261109-114929-29874",
+    "observed_context": {
+      "stock_session": true,
+      "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
+    },
+    "observed_shadow_metadata": {
+      "representation": "imported-lod-proxy",
+      "triangles": 178551,
+      "source_triangles": 321287,
+      "lod_surfaces": 39,
+      "max_lod_distance": 0.0005,
+      "requested": "auto",
+      "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
+    },
+    "log_counts_observed": {
+      "info": 2,
+      "event": 28
+    },
+    "engine_log_sha256": "307df4c721f3aa46aa295436a7ce9d9caf7da39c5cf6aad5cd00db96021f3184",
+    "stop": {
+      "stopped": true,
+      "forced": false,
+      "crash": null,
+      "leaked_objects": 0
+    },
+    "limits": "Route/binding smoke only. Background/focus hitches were recorded; no FPS comparison. The assembled evening flight had 96 more full faces than the isolated fixture, retained in its proxy."
+  }
+}

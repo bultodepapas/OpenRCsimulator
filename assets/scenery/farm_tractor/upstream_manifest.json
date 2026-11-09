@@ -1,0 +1,47 @@
+{
+ "slug": "tractor",
+ "triangles": 32784,
+ "texture_px": 2048,
+ "triangles_light": null,
+ "texture_px_light": null,
+ "files": {
+  "glb": {
+   "name": "tractor.glb",
+   "bytes": 1687044
+  },
+  "blend": {
+   "name": "tractor.blend",
+   "bytes": 1517124
+  },
+  "fbx": {
+   "name": "tractor.fbx",
+   "bytes": 3029020
+  },
+  "obj": {
+   "name": "tractor-obj.zip",
+   "bytes": 1477637
+  },
+  "usdz": {
+   "name": "tractor.usdz",
+   "bytes": 2698241
+  }
+ },
+ "extras": {
+  "license": "CC0-1.0",
+  "source": "grab3d.com",
+  "dimensions_m": "2.382 x 4.725 x 3.028",
+  "triangles": 32784,
+  "textures": "PBR 2048px: base color, roughness, metallic, normal (baked)",
+  "generator": "Created by grab3d",
+  "created": "2026-09-26",
+  "real_size": "farm tractor, approx. 4.7 x 2.3 x 3.0 m (L x W x H), rear wheel diameter 1.6 m, front wheel diameter 1.0 m",
+  "notes": "front faces -Y; 4 wheels are separate objects with origin on the axle (rotate around local X to roll); the front wheels steer around their local Z axis; opaque tinted windows, no interior; no brand, no text",
+  "set": "Cozy Vehicles Kit"
+ },
+ "origin": {
+  "method": "procedural",
+  "detail": "Built procedurally with Blender scripts. The scripts were written with the help of an AI coding assistant. No generative AI model produced the geometry or textures directly.",
+  "ai_content": false,
+  "ai_assisted_code": true
+ }
+}

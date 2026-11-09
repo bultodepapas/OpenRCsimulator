@@ -47,6 +47,50 @@ reducer remain under ignored `tmp/ground-realism/`; no new images are committed.
 own the commands. Independent owner review, other renderers/hardware, required CI
 and the shared whole-flight frame-time/sim-rate gates remain open.
 
+## L9b-R2: worn-path color and filtering
+
+2026-11-09. The native `entry_path` control showed a dark tread with flat lane
+and segment bands. Disabling only `use_photo_worn` isolated the scan's dark cast
+from the underlying vertex-color steps. Worn tracks now share colors at lane
+and segment joints, grading the existing shoulder toward the field palette.
+Corner colors follow the mesh emitter's ordinary, mirrored and degenerate-face
+ordering. This applies to authored worn tracks in custom fields as well as Club;
+the photographic binding remains Club-only.
+
+The retained sparse-grass photograph supplies scalar value variation around the
+authored path color, using measured means in the active shader color domain.
+Clamping means this does not guarantee equal average luminance. Scalar modulation
+avoids amplifying the photograph's small blue-channel mean. The source JPEG is
+unchanged. Its import now generates real mipmaps, checked on the bound texture;
+the worn sampler also uses anisotropic mip filtering at low viewing angles.
+The mip chain adds texture storage. No mesh, instance, batch or texture asset was
+added.
+
+Godot `4.8.beta2.official.cafc17a19`, Windows RTX 3090 Compatibility/OpenGL,
+1920 × 1080, High detail: matched path, reverse pilot and parking views retain
+identical draw/primitive counts. The path's dark cast and triangular bands are
+reduced in sun and pavilion shade. Its opaque perimeter remains visibly distinct
+from the finer surrounding turf; this is a softer tonal transition, not seamless
+ground blending. Photo-disabled controls retain the continuous color profile.
+Camera-translation sequences are retained for review; their PNG/readback timings
+do not qualify performance or perceptual shimmer.
+
+Focused tests passed: LU-18 routes/material boundaries (37), gravel (7, including
+actual mipmaps), and LU-08 ground checks. Eight old/new geometry comparisons cover
+the authored access/worn routes and a U-turn with ordinary/mirrored transforms:
+positions/normals are byte-identical, and the dirt track's colors are unchanged.
+The route tests retain the collision identity, low lift, existing cell surfaces
+and obstacle clearances. A collapsed-corner regression guards corner identity
+rather than inferring it from position.
+
+[Source identities and results](worn-paths-2026-11-09.json) bind the successful
+runs. Raw evidence is in ignored `tmp/path-integration/`, using the prior reviewed
+ground snapshot plus this change; concurrent tractor/shadow edits were excluded.
+Asset/import-cache inputs remain shared junctions, and the texture reimport was
+serialized. [Capture controls](../../../../tools/ground/README.md#l9b-r2-worn-path-review)
+own reproduction. Independent art/flight acceptance, required CI, other
+renderers/hardware and shared whole-flight performance gates remain open.
+
 ## Original surface review
 
 2026-10-20. Native Godot 4.7.2 Compatibility/OpenGL captures at 1280 × 720 on an RTX 3090. This record covers presentation only; it does not qualify ground physics or owner flight readability.

@@ -22,6 +22,8 @@ func _initialize() -> void:
 	_test_invalid_limits_and_bounds()
 	_test_serialized_lod_validation()
 	_test_scope_and_policy()
+	_test_session_context()
+	_test_session_context_producer()
 	print("aircraft shadow proxy: %d checks, %d failed" % [checks, failed])
 	quit(1 if failed else 0)
 
@@ -370,3 +372,59 @@ func _test_scope_and_policy() -> void:
 		OS.set_environment("OPENRC_AIRCRAFT_SHADOW_PROXY", original_value)
 	else:
 		OS.unset_environment("OPENRC_AIRCRAFT_SHADOW_PROXY")
+
+
+func _test_session_context() -> void:
+	var manifest := "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
+	var stock := {stock_session = true, model_manifest_sha256 = manifest}
+	_check(FileAccess.get_sha256("res://data/aircraft_models/f4u-corsair-250.json") == manifest, "qualified manifest matches the checked-in Corsair manifest")
+	_check(proxy.call("context_supported", stock), "explicit stock Boolean and exact manifest are accepted")
+	var invalid: Array[Dictionary] = [
+		{},
+		{stock_session = true},
+		{model_manifest_sha256 = manifest},
+		{stock_session = false, model_manifest_sha256 = manifest},
+		{stock_session = 1, model_manifest_sha256 = manifest},
+		{stock_session = 1.0, model_manifest_sha256 = manifest},
+		{stock_session = "true", model_manifest_sha256 = manifest},
+		{stock_session = null, model_manifest_sha256 = manifest},
+		{stock_session = true, model_manifest_sha256 = ""},
+		{stock_session = true, model_manifest_sha256 = "0".repeat(64)},
+	]
+	for index in invalid.size():
+		_check(not proxy.call("context_supported", invalid[index]), "incomplete or unqualified session context is rejected: " + str(index))
+	var model := Node3D.new()
+	model.scale = Vector3.ONE # Workshop can also produce unit-scale geometry.
+	model.set_meta("aircraft_id", "f4u-corsair-250")
+	model.set_meta("asset_sha256", "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851")
+	model.set_meta("livery", "midnight")
+	_check(proxy.call("source_supported", model), "unit-scale stock-looking model passes source identity independently")
+	_check(not proxy.call("context_supported", {stock_session = false, model_manifest_sha256 = manifest}) and not proxy.call("qualified", model, {stock_session = false, model_manifest_sha256 = manifest}), "unit-scale Workshop context still fails closed")
+	_check(not proxy.call("qualified", model) and not proxy.call("qualified", model, {}) and not proxy.call("qualified", model, {stock_session = true, model_manifest_sha256 = "0".repeat(64)}), "qualification rejects omitted, empty, and wrong-manifest contexts")
+	_check(DisplayServer.get_name() != "headless" or not proxy.call("qualified", model, stock), "even a valid stock context cannot qualify without a native renderer")
+	model.free()
+
+
+func _test_session_context_producer() -> void:
+	var manifest := "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0"
+	var flight_script: Script = load("res://main.gd")
+	_check(flight_script != null, "flight context producer loads")
+	if flight_script == null: return
+	var flight: Node = flight_script.new()
+	flight.set("_airplane", {model_manifest_sha256 = manifest})
+	flight.set("_scripted", false)
+	flight.set("user_args", PackedStringArray())
+	flight.set("workshop_trial", {})
+	var context: Dictionary = flight.call("_shadow_proxy_context")
+	_check(context == {stock_session = true, model_manifest_sha256 = manifest} and proxy.call("context_supported", context), "ordinary stock flight produces the explicitly admitted context")
+	flight.set("workshop_trial", {presentation = {scale = 1.0}})
+	context = flight.call("_shadow_proxy_context")
+	_check(context.is_empty() and not proxy.call("context_supported", context), "unit-scale Workshop trial does not produce a stock context")
+	flight.set("workshop_trial", {})
+	flight.set("_scripted", true)
+	_check((flight.call("_shadow_proxy_context") as Dictionary).is_empty(), "scripted inspection does not produce a stock context")
+	flight.set("_scripted", false)
+	for argument: String in ["--capture=fixture", "--trace=fixture"]:
+		flight.set("user_args", PackedStringArray([argument]))
+		_check((flight.call("_shadow_proxy_context") as Dictionary).is_empty(), "capture or trace does not produce a stock context: " + argument)
+	flight.free()

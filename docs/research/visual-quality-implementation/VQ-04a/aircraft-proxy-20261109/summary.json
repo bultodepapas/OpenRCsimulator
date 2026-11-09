@@ -1,0 +1,1260 @@
+{
+  "format": "openrc-aircraft-shadow-proxy-summary v1",
+  "report_sha256": "e46b01dd865ca769fde76ecb5c2b2694b29bc99efcccb4008d4381fc1d873a0a",
+  "identity": {
+    "engine": {
+      "build": "official",
+      "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+      "hex": 264192,
+      "major": 4,
+      "minor": 8,
+      "patch": 0,
+      "status": "beta2",
+      "string": "4.8-beta2 (official)",
+      "timestamp": 0
+    },
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "renderer": "gl_compatibility",
+    "driver": "opengl3",
+    "window_size": [
+      1920,
+      1080
+    ],
+    "reconstruction": {
+      "effective": "native",
+      "effective_provider": "native",
+      "execution_status": "policy_selected",
+      "fallback": false,
+      "fallback_reason": "",
+      "fsr_sharpness": 0.200000002980232,
+      "history_reset": {
+        "api_available": false,
+        "last_reason": "",
+        "notifications": 0,
+        "submitted": 0
+      },
+      "logical_canvas_size": [
+        1920.0,
+        1080.0
+      ],
+      "msaa_3d": 2,
+      "nominal_3d_size": [
+        1920,
+        1080
+      ],
+      "nominal_3d_size_scope": "scaled_viewport_estimate_not_sdk_execution",
+      "nvidia_reflex": {
+        "accepted": "unconfirmed",
+        "available": false,
+        "pending": false,
+        "reason": "support_missing",
+        "requested": "on"
+      },
+      "output_size": [
+        1920,
+        1080
+      ],
+      "output_size_scope": "viewport_render_target_estimate_v1",
+      "provider": "native",
+      "provider_available": true,
+      "requested": "native",
+      "requested_provider": "native",
+      "scale": 1.0,
+      "scaling_3d_mode": 0,
+      "selected": "native",
+      "sharpening_active": false,
+      "sharpening_strength": 0.899999998509884,
+      "temporal": false,
+      "texture_mipmap_bias": 0.0
+    },
+    "asset_sha256": "9fa3b86a9b33cdc16eefde328b347bb8af2c4191684f4c7db922acf7ba2c0851",
+    "livery": "midnight",
+    "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+    "source_sha256": {
+      "main": "281d60c682f5fac608fe750bda25bde4aeaf1d1c347fca822c2646a725a1231e",
+      "mask_shader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+      "projected": "c9a8f07cbdf8f2cc973588be1f1be63e7236976b7616b51ccbc6b221c6dfb7f3",
+      "proxy": "79aa7cec46d2e158ca8627c3484bc7e64a715404a5c7d8c9765d3765d19c7a72",
+      "receiver_shader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+      "shadow": "3fa6b020e32712dd32aa004f1945f8984ea896c8e05c73cd755cee751bd8a439",
+      "tool": "86194e446eacf569c7c4934932dadbd19d2cc55040a9a4075a786514ee8ab597"
+    },
+    "max_lod_distance": 0.0005
+  },
+  "bindings": [
+    {
+      "actual": {
+        "lod_surfaces": 39,
+        "max_lod_distance": 0.0005,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "imported-lod-proxy",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 178455
+      },
+      "case_id": "qualified-stock",
+      "expected_representation": "imported-lod-proxy"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "full",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "explicit-full",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "missing-context",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "workshop",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "different",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "wrong-manifest",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "custom-paint",
+      "expected_representation": "full"
+    },
+    {
+      "actual": {
+        "lod_surfaces": 0,
+        "max_lod_distance": 0.0,
+        "model_manifest_sha256": "37456deee3c57870fed47ea623701e35aebc4ee0f38ac6fe6cc03519429c3fa0",
+        "representation": "full",
+        "requested": "auto",
+        "source_triangles": 321191,
+        "triangles": 321191
+      },
+      "case_id": "precomputed-home",
+      "expected_representation": "full"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "landing",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 17.151,
+      "proxy_collect_ms": 121.071,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 509,
+            "changed_pixels": 8,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 3412,
+            "changed_pixels": 1461,
+            "peak_8bit": 10,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 12566,
+            "changed_pixels": 188,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 106880,
+            "changed_pixels": 40802,
+            "peak_8bit": 25,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 38128,
+            "changed_pixels": 517,
+            "peak_8bit": 191,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 257381,
+            "changed_pixels": 51993,
+            "peak_8bit": 36,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 13140,
+            "changed_pixels": 194,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 80390,
+            "changed_pixels": 26358,
+            "peak_8bit": 23,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "takeoff",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 19.467,
+      "proxy_collect_ms": 121.855,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 701,
+            "changed_pixels": 11,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 4708,
+            "changed_pixels": 2452,
+            "peak_8bit": 8,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 16270,
+            "changed_pixels": 236,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 104851,
+            "changed_pixels": 41848,
+            "peak_8bit": 20,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 40437,
+            "changed_pixels": 535,
+            "peak_8bit": 191,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 272988,
+            "changed_pixels": 60807,
+            "peak_8bit": 33,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 14930,
+            "changed_pixels": 222,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 92515,
+            "changed_pixels": 40677,
+            "peak_8bit": 18,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.438,
+      "proxy_collect_ms": 119.641,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 318,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2108,
+            "changed_pixels": 325,
+            "peak_8bit": 22,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 18223,
+            "changed_pixels": 230,
+            "peak_8bit": 191,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 183469,
+            "changed_pixels": 21715,
+            "peak_8bit": 94,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 4646,
+            "changed_pixels": 69,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 51081,
+            "changed_pixels": 16674,
+            "peak_8bit": 45,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 17021,
+            "changed_pixels": 218,
+            "peak_8bit": 191,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 145646,
+            "changed_pixels": 20978,
+            "peak_8bit": 61,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun_bank",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.365,
+      "proxy_collect_ms": 125.03,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 320,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2134,
+            "changed_pixels": 308,
+            "peak_8bit": 24,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2866,
+            "changed_pixels": 44,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 46876,
+            "changed_pixels": 14147,
+            "peak_8bit": 41,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 3436,
+            "changed_pixels": 53,
+            "peak_8bit": 127,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 63506,
+            "changed_pixels": 15156,
+            "peak_8bit": 46,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2485,
+            "changed_pixels": 36,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 25018,
+            "changed_pixels": 9182,
+            "peak_8bit": 49,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun_knife",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 18.084,
+      "proxy_collect_ms": 124.103,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 128,
+            "changed_pixels": 2,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 855,
+            "changed_pixels": 128,
+            "peak_8bit": 23,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 1403,
+            "changed_pixels": 22,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 22126,
+            "changed_pixels": 12943,
+            "peak_8bit": 25,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 3635,
+            "changed_pixels": 56,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 84092,
+            "changed_pixels": 18673,
+            "peak_8bit": 42,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2295,
+            "changed_pixels": 36,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 30196,
+            "changed_pixels": 12694,
+            "peak_8bit": 26,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "low_sun_inverted",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 28.529,
+      "proxy_collect_ms": 170.548,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 255,
+            "changed_pixels": 4,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 1720,
+            "changed_pixels": 371,
+            "peak_8bit": 18,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 19250,
+            "changed_pixels": 242,
+            "peak_8bit": 191,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 181541,
+            "changed_pixels": 23653,
+            "peak_8bit": 83,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 5037,
+            "changed_pixels": 78,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 57610,
+            "changed_pixels": 18163,
+            "peak_8bit": 35,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 22309,
+            "changed_pixels": 251,
+            "peak_8bit": 255,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 156143,
+            "changed_pixels": 23716,
+            "peak_8bit": 83,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "gear_up",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 20.894,
+      "proxy_collect_ms": 166.197,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 318,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2138,
+            "changed_pixels": 1660,
+            "peak_8bit": 6,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 20009,
+            "changed_pixels": 283,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 148909,
+            "changed_pixels": 63147,
+            "peak_8bit": 22,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 33600,
+            "changed_pixels": 448,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 233318,
+            "changed_pixels": 71383,
+            "peak_8bit": 22,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 16447,
+            "changed_pixels": 241,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 107275,
+            "changed_pixels": 53871,
+            "peak_8bit": 18,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "gear_transit",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 19.956,
+      "proxy_collect_ms": 170.215,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 254,
+            "changed_pixels": 4,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 1700,
+            "changed_pixels": 250,
+            "peak_8bit": 24,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 5805,
+            "changed_pixels": 78,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 87485,
+            "changed_pixels": 14370,
+            "peak_8bit": 57,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2361,
+            "changed_pixels": 36,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 44962,
+            "changed_pixels": 12916,
+            "peak_8bit": 46,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 4590,
+            "changed_pixels": 60,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 56193,
+            "changed_pixels": 12819,
+            "peak_8bit": 51,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "bank_minus",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 29.819,
+      "proxy_collect_ms": 182.377,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 319,
+            "changed_pixels": 5,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 2145,
+            "changed_pixels": 1384,
+            "peak_8bit": 6,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 19820,
+            "changed_pixels": 286,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 137199,
+            "changed_pixels": 47308,
+            "peak_8bit": 22,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 22501,
+            "changed_pixels": 311,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 172592,
+            "changed_pixels": 48967,
+            "peak_8bit": 22,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 14671,
+            "changed_pixels": 217,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 101231,
+            "changed_pixels": 38449,
+            "peak_8bit": 19,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "knife_minus",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 30.248,
+      "proxy_collect_ms": 183.27,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 64,
+            "changed_pixels": 1,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 426,
+            "changed_pixels": 64,
+            "peak_8bit": 23,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2805,
+            "changed_pixels": 43,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 30136,
+            "changed_pixels": 13324,
+            "peak_8bit": 49,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 3824,
+            "changed_pixels": 59,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 80776,
+            "changed_pixels": 18303,
+            "peak_8bit": 48,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 3060,
+            "changed_pixels": 47,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 33488,
+            "changed_pixels": 12584,
+            "peak_8bit": 42,
+            "pixels": 2073600
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "horizon_clamp",
+      "full_triangles": 321191,
+      "representation": "imported-lod-proxy",
+      "lod_surfaces": 39,
+      "full_collect_ms": 27.694,
+      "proxy_collect_ms": 183.069,
+      "proxy_l1_below_largest_sampled_cache_control": {
+        "mask_alpha": true,
+        "receiver_rgb_max": true
+      },
+      "differences": [
+        {
+          "role": "proxy",
+          "triangles": 178455,
+          "mask_alpha": {
+            "l1": 127,
+            "changed_pixels": 2,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 840,
+            "changed_pixels": 113,
+            "peak_8bit": 25,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-0",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 1912,
+            "changed_pixels": 28,
+            "peak_8bit": 128,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 51510,
+            "changed_pixels": 10331,
+            "peak_8bit": 53,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-1",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2105,
+            "changed_pixels": 33,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 32240,
+            "changed_pixels": 9187,
+            "peak_8bit": 30,
+            "pixels": 2073600
+          }
+        },
+        {
+          "role": "cache-axis-2",
+          "triangles": 321191,
+          "mask_alpha": {
+            "l1": 2041,
+            "changed_pixels": 32,
+            "peak_8bit": 64,
+            "pixels": 65536
+          },
+          "receiver_rgb_max": {
+            "l1": 29634,
+            "changed_pixels": 8658,
+            "peak_8bit": 42,
+            "pixels": 2073600
+          }
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "pair": 0,
+      "role": "full",
+      "triangles": 321191,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.702,
+        "p95": 2.3069999999999995,
+        "p99": 2.7919399999999976
+      },
+      "mask_cpu_ms": {
+        "p50": 0.165999993681908,
+        "p95": 0.2030499942600729,
+        "p99": 0.22448999881744347
+      },
+      "mask_gpu_ms": {
+        "p50": 0.264999985694885,
+        "p95": 0.3959500119090033,
+        "p99": 2.304670031070704
+      },
+      "observed_mask_primitives": [
+        321191
+      ]
+    },
+    {
+      "pair": 0,
+      "role": "proxy",
+      "triangles": 178455,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.6665000000000001,
+        "p95": 0.9282999999999989,
+        "p99": 1.832639999999998
+      },
+      "mask_cpu_ms": {
+        "p50": 0.16950000077486,
+        "p95": 0.2120499975979329,
+        "p99": 0.24860999718308435
+      },
+      "mask_gpu_ms": {
+        "p50": 0.168999999761581,
+        "p95": 0.3095999866724016,
+        "p99": 1.3710500276088742
+      },
+      "observed_mask_primitives": [
+        178455
+      ]
+    },
+    {
+      "pair": 1,
+      "role": "proxy",
+      "triangles": 178455,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.6525000000000001,
+        "p95": 1.1402999999999999,
+        "p99": 2.480169999999987
+      },
+      "mask_cpu_ms": {
+        "p50": 0.160999998450279,
+        "p95": 0.22014999911189065,
+        "p99": 0.29560999721288655
+      },
+      "mask_gpu_ms": {
+        "p50": 0.160999998450279,
+        "p95": 0.45234999209642407,
+        "p99": 1.1930899786949156
+      },
+      "observed_mask_primitives": [
+        178455
+      ]
+    },
+    {
+      "pair": 1,
+      "role": "full",
+      "triangles": 321191,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.6755,
+        "p95": 1.1634,
+        "p99": 1.9604799999999991
+      },
+      "mask_cpu_ms": {
+        "p50": 0.173499993979931,
+        "p95": 0.23199999332428,
+        "p99": 0.28322000771760975
+      },
+      "mask_gpu_ms": {
+        "p50": 0.187999993562698,
+        "p95": 0.7123000115156172,
+        "p99": 1.8574599993228909
+      },
+      "observed_mask_primitives": [
+        321191
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "full",
+      "triangles": 321191,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.7,
+        "p95": 0.9960499999999993,
+        "p99": 1.3525699999999994
+      },
+      "mask_cpu_ms": {
+        "p50": 0.178000003099442,
+        "p95": 0.22410000637173666,
+        "p99": 0.36558999836444805
+      },
+      "mask_gpu_ms": {
+        "p50": 0.19200000166893,
+        "p95": 0.4955500036478045,
+        "p99": 1.245709962844846
+      },
+      "observed_mask_primitives": [
+        321191
+      ]
+    },
+    {
+      "pair": 2,
+      "role": "proxy",
+      "triangles": 178455,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.727,
+        "p95": 0.8834999999999998,
+        "p99": 1.145399999999998
+      },
+      "mask_cpu_ms": {
+        "p50": 0.187999993562698,
+        "p95": 0.23005000427365288,
+        "p99": 0.24322000116109874
+      },
+      "mask_gpu_ms": {
+        "p50": 0.193500004708767,
+        "p95": 0.45004998892545695,
+        "p99": 0.6902499973773952
+      },
+      "observed_mask_primitives": [
+        178455
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "proxy",
+      "triangles": 178455,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.7164999999999999,
+        "p95": 1.0498499999999995,
+        "p99": 1.8443999999999978
+      },
+      "mask_cpu_ms": {
+        "p50": 0.181999996304512,
+        "p95": 0.22614999637007666,
+        "p99": 0.2632700029015537
+      },
+      "mask_gpu_ms": {
+        "p50": 0.180999994277954,
+        "p95": 0.7102999925613398,
+        "p99": 1.860310002565374
+      },
+      "observed_mask_primitives": [
+        178455
+      ]
+    },
+    {
+      "pair": 3,
+      "role": "full",
+      "triangles": 321191,
+      "redraws": 300,
+      "root_draw_progress": 300,
+      "frames_including_warmup": 300,
+      "sample_count": 240,
+      "wall_ms": {
+        "p50": 0.72,
+        "p95": 1.4596499999999986,
+        "p99": 2.140249999999997
+      },
+      "mask_cpu_ms": {
+        "p50": 0.180999994277954,
+        "p95": 0.22105000093579288,
+        "p99": 0.2485900087654589
+      },
+      "mask_gpu_ms": {
+        "p50": 0.190499998629093,
+        "p95": 0.48034998923540106,
+        "p99": 0.813619984984397
+      },
+      "observed_mask_primitives": [
+        321191
+      ]
+    }
+  ],
+  "collection_median_ms": {
+    "full": 19.956,
+    "proxy": 166.197
+  },
+  "limits": "Isolated masks/receivers and deterministic animated attitude; not physics, pilot or whole-flight FPS. GPU timestamp polls may be delayed; wall samples include frame dispatch and receiver rendering. Gear/flaps are set before each bind; no dynamic articulation claim. Cache controls are sampled context, not a global simplification-error bound. Percentiles use linear interpolation; GPU samples may repeat or lag."
+}

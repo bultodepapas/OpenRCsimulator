@@ -1,0 +1,996 @@
+{
+  "format": "openrc-l9b-r2-worn-paths v1",
+  "date": "2026-11-09",
+  "observed_head_at_task_start": "f7b58bd830d4a5eb78901d00514ce1fc18286477",
+  "observed_head_at_reduction": "eadf89edd350d26eca6470253ce9fe61fa1f706b",
+  "snapshot": {
+    "path": "tmp/path-integration/snapshot/app",
+    "origin": "Copy of retained L9b-R1 reviewed source snapshot, then path-owned files applied.",
+    "excluded_live_work": "Concurrent countryside, tractor and aircraft-shadow edits.",
+    "shared_inputs": [
+      "app/assets",
+      "app/.godot",
+      "assets"
+    ],
+    "note": "Asset/import cache junctions were shared; no independent whole-asset snapshot. Editor reimport was serialized."
+  },
+  "source_sha256": {
+    "tmp/path-integration/snapshot/app/scenery/ground_features.gd": "57a30f1e901a9edc43a5ec2ccfa2d5a4f9d4a75f2d30494236eaa51a98f29523",
+    "tmp/path-integration/snapshot/app/scenery/gravel.gdshader": "6e555e9cb5da5025f329b84ad31100e236c6b88da87bf76421665f227d531d21",
+    "tmp/path-integration/snapshot/app/tests/test_landscape_ground_lu18.gd": "1bc5273f10cd8cd5eba7192ce2f640eba72df66737a7b495c0091304006550e9",
+    "tmp/path-integration/snapshot/app/tests/test_landscape_gravel.gd": "a6c65f7656bf41dc3a2311a7a498858618436efaabcf103faa6bdd4726dbd1a4",
+    "tmp/path-integration/snapshot/app/tests/capture_landscape_upgrade.gd": "878c88d0159caa0854e6b8e3b71e23e422841690f681d7d610bcff4e2359aef0",
+    "tmp/path-integration/snapshot/app/tests/test_scenery_ground_lu08.gd": "81e26134c60e24a0db73c64a6f4abcd87aacf2c0c1b6e7a47243f4e45e37b052",
+    "tmp/path-integration/snapshot/app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "tmp/path-integration/snapshot/app/scenery/scenery.gd": "62a3b05e0dbb1dae40e88b449bc195014c4b94159678c38f9324b0893aae4d76",
+    "tmp/path-integration/snapshot/app/scenery/vertex_color_linear.gdshaderinc": "61b97ddbb6278497e8f297ac7d6aaef67e258c15ce7d91ffd64dd04afea43ab2",
+    "tmp/path-integration/snapshot/app/data/scenery/default.json": "02e72dbb762b069ff7973a6571ee5baaea8177b334be033c215aeaa6016ee062",
+    "tmp/path-integration/snapshot/app/data/fields/default.json": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "tmp/path-integration/snapshot/app/project.godot": "2ca26f73592fe6fdf0b620a151c2455ac7ed4a854f61043d0bf99bccd8b694ae"
+  },
+  "baseline_sources": {
+    "tmp/path-integration/before-ground_features.gd": "a7770177c2d65b93986edee7ef1cb0f11a948ebfdda9e16e55d7eb9c102fb134",
+    "tmp/path-integration/before-gravel.gdshader": "d1900d7241556633158809710f0976459f736f663b93981719117ed16312ac41"
+  },
+  "preliminary_sources": {
+    "tmp/path-integration/preliminary-ground-features.gd": "58d757e4af24133d896a1155ba516deab5eec5891da78870083f45c13146df1a",
+    "tmp/path-integration/preliminary-gravel.gdshader": "f622fbe0eca598129ca52ae1160878fcb36cf6c1c99d8809acb069352ed8f12c",
+    "tmp/path-integration/isotropic-gravel.gdshader": "67803f0ea267f3e52a6793502266425cfa825233654313e665df92897edad6e3"
+  },
+  "texture": {
+    "path": "app/assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg",
+    "sha256": "3b655de96161164bf2324e136b3409ad8417c9f94750bc008e9c93ee507c2fac",
+    "width": 2048,
+    "height": 2048,
+    "rgb_mean_srgb": [
+      0.3113604601666313,
+      0.2407679295977307,
+      0.08327644946350587
+    ],
+    "rgb_mean_linear": [
+      0.08250688737776114,
+      0.04972764186137225,
+      0.008943962350769141
+    ],
+    "import": "app/assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg.import",
+    "import_sha256": "82b75e4eca9e26c0b33bc7259453272e748248f33650657a9cbf0ec576108081",
+    "mipmaps_metadata": true,
+    "runtime_mipmaps_verified_by": "test_landscape_gravel.gd bound texture.get_image().has_mipmaps()",
+    "before_metadata_mipmaps": false,
+    "before_runtime_mipmaps": "not separately probed",
+    "storage_note": "A full mip chain adds texels; no unchanged memory or frame-cost claim."
+  },
+  "engine": {
+    "build": "official",
+    "hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+    "hex": 264192,
+    "major": 4,
+    "minor": 8,
+    "patch": 0,
+    "status": "beta2",
+    "string": "4.8-beta2 (official)",
+    "timestamp": 0
+  },
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "driver": "3.3.0 NVIDIA 617.42",
+  "renderer": "gl_compatibility",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "matched_view_counters": {
+    "entry_path": {
+      "draws": 232.0,
+      "primitives": 408715.0
+    },
+    "gravel_close": {
+      "draws": 94.0,
+      "primitives": 296350.0
+    },
+    "pilot_south": {
+      "draws": 158.0,
+      "primitives": 376663.0
+    }
+  },
+  "parking_view_byte_identical": true,
+  "geometry": {
+    "cases": [
+      {
+        "after_triangles": 230,
+        "before_triangles": 230,
+        "colors_equal": true,
+        "geometry_bytes_equal": true,
+        "id": "access-track",
+        "mirror": 1.0,
+        "surface": "dirt"
+      },
+      {
+        "after_triangles": 230,
+        "before_triangles": 230,
+        "colors_equal": true,
+        "geometry_bytes_equal": true,
+        "id": "access-track",
+        "mirror": -1.0,
+        "surface": "dirt"
+      },
+      {
+        "after_triangles": 516,
+        "before_triangles": 516,
+        "colors_equal": false,
+        "geometry_bytes_equal": true,
+        "id": "worn-parking-door",
+        "mirror": 1.0,
+        "surface": "worn"
+      },
+      {
+        "after_triangles": 516,
+        "before_triangles": 516,
+        "colors_equal": false,
+        "geometry_bytes_equal": true,
+        "id": "worn-parking-door",
+        "mirror": -1.0,
+        "surface": "worn"
+      },
+      {
+        "after_triangles": 372,
+        "before_triangles": 372,
+        "colors_equal": false,
+        "geometry_bytes_equal": true,
+        "id": "worn-door-pits",
+        "mirror": 1.0,
+        "surface": "worn"
+      },
+      {
+        "after_triangles": 372,
+        "before_triangles": 372,
+        "colors_equal": false,
+        "geometry_bytes_equal": true,
+        "id": "worn-door-pits",
+        "mirror": -1.0,
+        "surface": "worn"
+      },
+      {
+        "after_triangles": 24,
+        "before_triangles": 24,
+        "colors_equal": false,
+        "geometry_bytes_equal": true,
+        "id": "u-turn",
+        "mirror": 1.0,
+        "surface": "worn"
+      },
+      {
+        "after_triangles": 24,
+        "before_triangles": 24,
+        "colors_equal": false,
+        "geometry_bytes_equal": true,
+        "id": "u-turn",
+        "mirror": -1.0,
+        "surface": "worn"
+      }
+    ],
+    "complete": true,
+    "failed": false
+  },
+  "geometry_probe": {
+    "path": "tmp/path-integration/compare_geometry.gd",
+    "sha256": "3074eba0a3935072412d4c13e023d3cd1366e89bdc00870fdba4c48c4002ae3b"
+  },
+  "run_stages": {
+    "before": "Original path colors/scan treatment; original import metadata.",
+    "photo-off": "Original geometry and colors; only sparse-grass scan disabled.",
+    "candidate": "Preliminary per-channel normalization, before mipmap repair; superseded.",
+    "final": "Scalar modulation and verified mipmaps, isotropic filtering; superseded sampler.",
+    "final-photo-off": "Continuous color profile with photo disabled; scalar/isotropic-stage shader.",
+    "pan-before-mipmapped": "Original colors/shader, with new mip chain; isolates color treatment from mip presence.",
+    "pan-final": "Scalar modulation plus mipmaps, isotropic-stage shader.",
+    "final-anisotropic": "Accepted source candidate: scalar modulation, mip chain and anisotropic filtering.",
+    "pan-anisotropic": "32-frame translations per view on the final source candidate."
+  },
+  "checks": [
+    {
+      "label": "path-before-1080",
+      "started_utc": "2026-11-09T16:27:05.294510+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/before",
+        "--cases=entry_path,pilot_south,gravel_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "ca3c65f104c9846871e27a6e0f16150262fbcb8762e685c465e629cd9387bc25",
+      "report": "tmp/path-integration/checks/path-before-1080-p30oq3bb/report.json",
+      "report_sha256": "edba60ea47590256019d9b59c9101d147b72fd7dd7c6a4c24dd4a1e27fc5741d"
+    },
+    {
+      "label": "path-candidate-1080",
+      "started_utc": "2026-11-09T16:29:35.418375+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/candidate",
+        "--cases=entry_path,pilot_south,gravel_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "2f716673ba4a547ae2f8ff34275e16707026d7c20def31d599b37ef2db408458",
+      "report": "tmp/path-integration/checks/path-candidate-1080-3b79dk7q/report.json",
+      "report_sha256": "5e5ff8c093b2777d108ab50fecf83242f422442be96a935a26e2fc263477de8e"
+    },
+    {
+      "label": "path-capture-parse",
+      "started_utc": "2026-11-09T16:26:51.890613+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "report": "tmp/path-integration/checks/path-capture-parse-m8u_nsdc/report.json",
+      "report_sha256": "cd84dd50feb1e08f16ea2f4777996e55240d0a91c95d13942b426b4113b87341"
+    },
+    {
+      "label": "path-contract",
+      "started_utc": "2026-11-09T16:31:13.205086+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_ground_lu18.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "1d384bfde6ae8fba7bc40376bcaa67266821ef4794ec012d5d65dde3b63b04fc",
+      "report": "tmp/path-integration/checks/path-contract-9uwif73x/report.json",
+      "report_sha256": "2169fe8526d99b0749d83104eced7c906b89ee1197fc59e0e83f12f91b691e70"
+    },
+    {
+      "label": "path-final-1080",
+      "started_utc": "2026-11-09T16:42:04.281424+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/final",
+        "--cases=entry_path,pilot_south,gravel_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=10",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "8de44bca22fb987a5b6c2d18220e1af41fe52467364837950de8894a3918221a",
+      "report": "tmp/path-integration/checks/path-final-1080-k44ycl8p/report.json",
+      "report_sha256": "51a7edfd53dc7a0bfec4d5747c7fa684151f15267ddca95ca31ec6014953bdfe"
+    },
+    {
+      "label": "path-final-anisotropic-1080",
+      "started_utc": "2026-11-09T16:44:49.812518+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/final-anisotropic",
+        "--cases=entry_path,pilot_south,gravel_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "817b9a1b85e157f4b829df1a5c2691c6325a4d5959e02fd4fb16221a46d52d95",
+      "report": "tmp/path-integration/checks/path-final-anisotropic-1080-8nn6v_tn/report.json",
+      "report_sha256": "24e76756a8f1b9d32d669ab90a7f6f8576b8d5794c390ced7dc869dd4f73718b"
+    },
+    {
+      "label": "path-final-photo-off-1080",
+      "started_utc": "2026-11-09T16:42:17.536417+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/final-photo-off",
+        "--cases=entry_path",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--worn_photo=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "9fe1b95dca4d49e712d5896e4691b5d6e08d721879da155c8186063ecd9a5052",
+      "report": "tmp/path-integration/checks/path-final-photo-off-1080-pt6z6y5x/report.json",
+      "report_sha256": "2e7329b6a35adebeb88c3218ae395567207ef3ab29b11701493f8cd641a07667"
+    },
+    {
+      "label": "path-frozen-test_landscape_gravel",
+      "started_utc": "2026-11-09T16:41:08.707998+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_gravel.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "056c89f1aed5e0d8631a884480717b76dcaf68f9101681685525a7144b6b79f5",
+      "report": "tmp/path-integration/checks/path-frozen-test_landscape_gravel-8t7a1tdz/report.json",
+      "report_sha256": "fdc13a36ee52587547724d2703525d45a7979bc23cf4cf13aa298727ee42e51c"
+    },
+    {
+      "label": "path-frozen-test_landscape_ground_lu18",
+      "started_utc": "2026-11-09T16:41:03.896500+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_ground_lu18.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "2a24bf734cb3636bfb48032df8e3877c0e793c13e1e8ff8e678cdece56ba028d",
+      "report": "tmp/path-integration/checks/path-frozen-test_landscape_ground_lu18-bb84upfr/report.json",
+      "report_sha256": "2b8b1cc1bb4309e1594ac35190f052980a3a683bbbb29cd45f78af788b44e721"
+    },
+    {
+      "label": "path-frozen-test_scenery_ground_lu08",
+      "started_utc": "2026-11-09T16:41:12.093562+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_ground_lu08.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "baf1c18b946b3a504ecf4583d82104e0a33a8d9573b15ad6c75ac529948c3e98",
+      "report": "tmp/path-integration/checks/path-frozen-test_scenery_ground_lu08-droxb6nz/report.json",
+      "report_sha256": "1435c11c7d4529b7d8a0f698bb3cf8780a63f587fb6dca4e787788d800beb232"
+    },
+    {
+      "label": "path-geometry-comparison",
+      "started_utc": "2026-11-09T16:39:35.918399+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/compare_geometry.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "3953afa6d56f742e82c72b290ce9332c9bcf0ebced33e2db30e77f719511976d",
+      "report": "tmp/path-integration/checks/path-geometry-comparison-o3y81o96/report.json",
+      "report_sha256": "b7bb5c70a0c03b7c7ded204054e8c2ddf645b3e54f91f06d3407ff094903a759"
+    },
+    {
+      "label": "path-mipmap-import",
+      "started_utc": "2026-11-09T16:35:50.967143+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--editor",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "d970cb2483d80a93a09e1b80a6a2218db6096ee7028f41e738993d9b86a90daf",
+      "report": "tmp/path-integration/checks/path-mipmap-import-w_402ibk/report.json",
+      "report_sha256": "73130f1ab98b5092eb2265e7b0d249a79edb94d0cfefd1e09d6d60176e688149"
+    },
+    {
+      "label": "path-pan-anisotropic-1080",
+      "started_utc": "2026-11-09T16:46:31.715430+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/pan-anisotropic",
+        "--cases=entry_path,pilot_south",
+        "--width=1920",
+        "--height=1080",
+        "--frames=32",
+        "--motion=camera",
+        "--scene_detail=high",
+        "--scenery_birds=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "b00be749233064503b44617c532607cd146ff5b899170a123148f17bddaff745",
+      "report": "tmp/path-integration/checks/path-pan-anisotropic-1080-qps5fmw7/report.json",
+      "report_sha256": "8ef5679cfbe905911877c63ce1987d8be99b1724ea935aa95a921d0f566895f1"
+    },
+    {
+      "label": "path-pan-before-mipmapped-1080",
+      "started_utc": "2026-11-09T16:42:27.798600+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/pan-before-mipmapped",
+        "--cases=entry_path,pilot_south",
+        "--width=1920",
+        "--height=1080",
+        "--frames=32",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--motion=camera"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "a852dd50a2f4bfee5195262f4a2a77d06a3f8bc1fde1dd557aba02392d43a045",
+      "report": "tmp/path-integration/checks/path-pan-before-mipmapped-1080-i3blpdup/report.json",
+      "report_sha256": "c335ec4c476df08fbdba0d430285b4a5e00d3b0ba0398f23c9a2d100ce009df9"
+    },
+    {
+      "label": "path-pan-final-1080",
+      "started_utc": "2026-11-09T16:43:09.483054+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/pan-final",
+        "--cases=entry_path,pilot_south",
+        "--width=1920",
+        "--height=1080",
+        "--frames=32",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--motion=camera"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "c65015d2ea429602fb83fd70e0a03de02b35da0c083d10734974be03255371d3",
+      "report": "tmp/path-integration/checks/path-pan-final-1080-b2_2b4_w/report.json",
+      "report_sha256": "ef12de6edba24a0e449dc410b8c7b3adc38d2bc86edb6b7748bc99ac8f20ccbe"
+    },
+    {
+      "label": "path-photo-off-1080",
+      "started_utc": "2026-11-09T16:27:19.894013+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--path",
+        "tmp/path-integration/snapshot/app",
+        "--rendering-method",
+        "gl_compatibility",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/photo-off",
+        "--cases=entry_path,pilot_south,gravel_close",
+        "--width=1920",
+        "--height=1080",
+        "--frames=5",
+        "--scene_detail=high",
+        "--scenery_birds=off",
+        "--worn_photo=off"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "a40939e6c5976c99517df7b5256baa5ba9592e9d3ab1e582801526241d49581d",
+      "report": "tmp/path-integration/checks/path-photo-off-1080-j8b27seh/report.json",
+      "report_sha256": "f9c44ddd58474ad294e807a2f84d13d1e42246ebd676221f7fdd0d8c515b218a"
+    },
+    {
+      "label": "path-source-gradient-parse",
+      "started_utc": "2026-11-09T16:29:27.043668+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://scenery/ground_features.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "report": "tmp/path-integration/checks/path-source-gradient-parse-mbu27pd2/report.json",
+      "report_sha256": "e88f066cb45e9a4baefea617a349b331a203a081a996922e8625d746d7934faf"
+    },
+    {
+      "label": "path-source-parse",
+      "started_utc": "2026-11-09T16:28:08.844253+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--check-only",
+        "--script",
+        "res://scenery/ground_features.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582",
+      "report": "tmp/path-integration/checks/path-source-parse-zayq9_qm/report.json",
+      "report_sha256": "e130c6d397e115d7e1c6f12ed9d50aa13809a4a9e73bfb140e16e2c356cbc4a7"
+    },
+    {
+      "label": "path-test_landscape_gravel",
+      "started_utc": "2026-11-09T16:36:41.209495+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_gravel.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "056c89f1aed5e0d8631a884480717b76dcaf68f9101681685525a7144b6b79f5",
+      "report": "tmp/path-integration/checks/path-test_landscape_gravel-s9sdm59t/report.json",
+      "report_sha256": "ed2f2bb0b38b3b0d9c0d52646e2e88c0d86a8bb986e992383ecce5d7fedd39b7"
+    },
+    {
+      "label": "path-test_landscape_ground_lu18",
+      "started_utc": "2026-11-09T16:36:36.393943+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_ground_lu18.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "742baf600e10c5dabf6b3850081c666ec42701e2adf39efab2ffcce066e4b8a5",
+      "report": "tmp/path-integration/checks/path-test_landscape_ground_lu18-fw1kp8y_/report.json",
+      "report_sha256": "e8b3ba279d7752b883865d1f6cb03f3cc92c2c82d7515dbb0c4cc133a1c80024"
+    },
+    {
+      "label": "path-test_scenery_ground_lu08",
+      "started_utc": "2026-11-09T16:36:44.444447+00:00",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_ground_lu08.gd"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "log_sha256": "baf1c18b946b3a504ecf4583d82104e0a33a8d9573b15ad6c75ac529948c3e98",
+      "report": "tmp/path-integration/checks/path-test_scenery_ground_lu08-or85gy2_/report.json",
+      "report_sha256": "82d7f5e74bf925ce825057b67bdf459294cd43d4568ec946696cbe6e95afeb01"
+    }
+  ],
+  "runs": {
+    "before": {
+      "report": "tmp/path-integration/before/report.json",
+      "report_sha256": "c4d37226aa98cec05602160083218f253e557e27da9af3c698820499f86115fb",
+      "arguments": {
+        "cases": "entry_path,pilot_south,gravel_close",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/before",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 3,
+      "image_inventory_sha256": "d92db3bae6e22e6d2b1db9a3bd0d5c7789241c17bc40657ed20f2e6bfd45ebfa",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "gravel_close": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    },
+    "photo-off": {
+      "report": "tmp/path-integration/photo-off/report.json",
+      "report_sha256": "6fa83b944d84e26601e41a02fd5a580aed3b530b1a67d715f8f2ade332b7cfa8",
+      "arguments": {
+        "cases": "entry_path,pilot_south,gravel_close",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/photo-off",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920",
+        "worn_photo": "off"
+      },
+      "images": 3,
+      "image_inventory_sha256": "ad2f4b0868aadb8a4f91615ebe3d5df811e522f0dd0e4470168f15556fc7c713",
+      "worn_photo_enabled": {
+        "entry_path": [
+          false
+        ],
+        "gravel_close": [
+          false
+        ],
+        "pilot_south": [
+          false
+        ]
+      }
+    },
+    "candidate": {
+      "report": "tmp/path-integration/candidate/report.json",
+      "report_sha256": "4b6b7bf29f7e69c20025fd44bbac2ece241a22d8e8aa33787b927777ac4c1624",
+      "arguments": {
+        "cases": "entry_path,pilot_south,gravel_close",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/candidate",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 3,
+      "image_inventory_sha256": "66eb2426c04880ff2e463708bd3bff171990e494a8fff9e2c9d8fa002bfca316",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "gravel_close": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    },
+    "final": {
+      "report": "tmp/path-integration/final/report.json",
+      "report_sha256": "42791b2397a5aeae7858b448163fda075fca7cc3a028f85fc30510aa75f0bebb",
+      "arguments": {
+        "cases": "entry_path,pilot_south,gravel_close",
+        "frames": "10",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/final",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 3,
+      "image_inventory_sha256": "473bda29dcd5f1ba1b3919a64c81eddf0bb96f36b97931241fdac7a7968f358f",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "gravel_close": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    },
+    "final-photo-off": {
+      "report": "tmp/path-integration/final-photo-off/report.json",
+      "report_sha256": "f42bdf2f37a3cd09affac2f3e3405b0adf926574643af7ae848ed7c83d57f47f",
+      "arguments": {
+        "cases": "entry_path",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/final-photo-off",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920",
+        "worn_photo": "off"
+      },
+      "images": 1,
+      "image_inventory_sha256": "f5fabbcfdc552c944978800f6c26c3f670729ae7b8c61623ea336d5a1f5436de",
+      "worn_photo_enabled": {
+        "entry_path": [
+          false
+        ]
+      }
+    },
+    "pan-before-mipmapped": {
+      "report": "tmp/path-integration/pan-before-mipmapped/report.json",
+      "report_sha256": "b9c46349e7f25a793e0701c40571b1cf237de84e85e4661489ed6400cc312ae2",
+      "arguments": {
+        "cases": "entry_path,pilot_south",
+        "frames": "32",
+        "height": "1080",
+        "motion": "camera",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/pan-before-mipmapped",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 66,
+      "image_inventory_sha256": "d2521b70c2bc2ce03cc869124001927ee24778387ce288d0fad50784b5cd2180",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    },
+    "pan-final": {
+      "report": "tmp/path-integration/pan-final/report.json",
+      "report_sha256": "c1be5346b286837595cd544edea8dfcb8acddb13b5cc4dc056527bedc33032a9",
+      "arguments": {
+        "cases": "entry_path,pilot_south",
+        "frames": "32",
+        "height": "1080",
+        "motion": "camera",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/pan-final",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 66,
+      "image_inventory_sha256": "39c47c1a8412229aa03df88fa62845127957a0d991d2b7bb1c82614f2db351dc",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    },
+    "final-anisotropic": {
+      "report": "tmp/path-integration/final-anisotropic/report.json",
+      "report_sha256": "4b33861da5f429047225391a44e1f5b8f2451055e295de63aabb83c493de55c3",
+      "arguments": {
+        "cases": "entry_path,pilot_south,gravel_close",
+        "frames": "5",
+        "height": "1080",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/final-anisotropic",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 3,
+      "image_inventory_sha256": "19428c689d1018b52718e6056c9ff0d3db92e0547ed92537c3bf4fd4573314bb",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "gravel_close": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    },
+    "pan-anisotropic": {
+      "report": "tmp/path-integration/pan-anisotropic/report.json",
+      "report_sha256": "cfebbcca80f059013f415f9e8bed0f94188c07b7854638ecdd72a8eef666047f",
+      "arguments": {
+        "cases": "entry_path,pilot_south",
+        "frames": "32",
+        "height": "1080",
+        "motion": "camera",
+        "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/path-integration/pan-anisotropic",
+        "scene_detail": "high",
+        "scenery_birds": "off",
+        "width": "1920"
+      },
+      "images": 66,
+      "image_inventory_sha256": "176dfaa8b9adc5ac835190c4ebd64ae581e63e25ca62612ad86c8591d7f40780",
+      "worn_photo_enabled": {
+        "entry_path": [
+          true
+        ],
+        "pilot_south": [
+          true
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Opaque path remains a visible ribbon against surrounding turf; no seamless blending claim.",
+    "Clamp does not guarantee identical mean brightness; modulation preserves authored hue before lighting.",
+    "Worn geometry colors affect custom fields; Club-only photo binding remains unchanged.",
+    "Sequences retained for visual review, not perceptual shimmer or hardware performance acceptance.",
+    "Required CI, other renderers/hardware and whole-flight frame/simulation-rate gates remain open."
+  ]
+}

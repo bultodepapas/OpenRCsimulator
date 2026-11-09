@@ -55,6 +55,7 @@ The [grass quality plan](plans/grass-quality.md) refines texture, silhouette, pl
 | --- | --- | --- |
 | L9e-R2 | Compare a grass-only binding of retained 2K Grass001 in shared flight/Home after the L9e-R1 outcome. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 | L9b-R1 | Finer Club base-turf scale with matching fallback/track/lake material sampling. | [1080p comparison, contract checks and remaining acceptance](research/visual-quality-implementation/L9b/README.md#l9b-r1-finer-club-turf). |
+| L9b-R2 | Continuous worn-path colors and filtered photographic value detail. | [1080p comparison, geometry/collision contracts and limits](research/visual-quality-implementation/L9b/README.md#l9b-r2-worn-path-color-and-filtering). |
 | L11a-R1 | Qualify imported-grass silhouette, species allocation, root/ground match and habitat placement using retained free assets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 | L11a-R2 | Repair a demonstrated grass batch-culling or transition defect within measured budgets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 | L11a-R3 | Runway meadow colonies of retained downloaded plants, placed with researched game/ecology clumping rules. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |

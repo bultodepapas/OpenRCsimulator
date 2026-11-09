@@ -8,7 +8,11 @@ uniform float detail_strength : hint_range(0.0, 1.0) = 1.0;
 uniform bool use_photo_aggregate = false;
 uniform sampler2D aggregate_albedo : source_color, repeat_enable, filter_linear_mipmap;
 uniform bool use_photo_worn = false;
-uniform sampler2D worn_albedo : source_color, repeat_enable, filter_linear_mipmap;
+uniform sampler2D worn_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
+// L9b-R2: measured RGB means of the retained sparse_grass_Diffuse_2k.jpg.
+// Use photographic variation around the authored turf palette, as on the field.
+const vec3 WORN_MEAN_SRGB = vec3(0.31136046, 0.24076793, 0.08327645);
+const vec3 WORN_MEAN_LINEAR = vec3(0.08250689, 0.04972764, 0.00894396);
 varying vec3 ground_color;
 varying vec2 ground_position;
 varying float aggregate_mask;
@@ -55,8 +59,12 @@ void fragment() {
 		base = mix(base, scanned, amount * 0.56 * broad_filter);
 	}
 	if (use_photo_worn && worn_mask > 0.01) {
-		vec3 sparse = texture(worn_albedo, p / 2.0).rgb * vec3(0.82, 0.92, 0.75);
-		base = mix(base, sparse, worn_mask * 0.65 * broad_filter);
+		vec3 sparse = texture(worn_albedo, p / 2.0).rgb;
+		vec3 source_mean = OUTPUT_IS_SRGB ? WORN_MEAN_SRGB : WORN_MEAN_LINEAR;
+		// Transfer value detail without amplifying the scan's very small blue mean.
+		vec3 value_weights = vec3(0.2126, 0.7152, 0.0722);
+		float worn_variation = clamp(dot(sparse, value_weights) / dot(source_mean, value_weights), 0.45, 1.8);
+		base *= mix(1.0, worn_variation, worn_mask * 0.65 * broad_filter);
 	}
 	ALBEDO = base;
 	ROUGHNESS = 0.88;

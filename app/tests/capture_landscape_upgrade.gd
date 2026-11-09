@@ -17,6 +17,11 @@ const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const FLEET_VIEWS := {
+	"tractor_pilot": {eye = [0.0, -13.0, -1.7], at = [-27.0, 326.0, -1.1], fov = 55.0},
+	"tractor_zoom": {eye = [0.0, -13.0, -1.7], at = [-27.0, 326.0, -1.1], fov = 3.5},
+	"tractor_close": {eye = [-21.0, 320.0, -1.8], at = [-27.0, 326.0, -1.1], fov = 45.0},
+	"tractor_rear": {eye = [-30.0, 331.0, -2.0], at = [-27.0, 326.0, -1.0], fov = 45.0},
+	"tractor_aerial": {eye = [-6.0, 307.0, -19.0], at = [-27.0, 326.0, 0.0], fov = 50.0},
 	"ground_200m": {eye = [0.0, -13.0, -1.7], at = [200.0, -13.0, 0.0], fov = 30.0},
 	"ground_raised": {eye = [40.0, -5.0, -55.0], at = [40.0, 0.0, 0.0], fov = 55.0},
 	"bank_detail": {eye = [76.0, 110.0, -1.6], at = [79.0, 112.0, 0.2], fov = 48.0},
@@ -201,7 +206,8 @@ func _run() -> void:
 				mat.set_shader_parameter("rim_start", 100000.0)
 				mat.set_shader_parameter("rim_end", 100001.0)
 	# LU-12 isolated material A/B. Same world, geometry and draws, no production setting.
-	if str(args.get("gravel_detail", "on")) in ["off", "legacy"]:
+	var ground_feature_materials: Array[ShaderMaterial] = []
+	if str(args.get("gravel_detail", "on")) in ["on", "off", "legacy"]:
 		var pending: Array[Node] = [parent]
 		while not pending.is_empty():
 			var item: Node = pending.pop_back()
@@ -210,9 +216,13 @@ func _run() -> void:
 				for surface in item.mesh.get_surface_count():
 					var material: Material = item.mesh.surface_get_material(surface)
 					if material is ShaderMaterial and material.shader.resource_path == "res://scenery/gravel.gdshader":
-						if str(args.gravel_detail) == "legacy":
+						if not ground_feature_materials.has(material):
+							ground_feature_materials.append(material)
+						if str(args.get("worn_photo", "on")) == "off":
+							material.set_shader_parameter("use_photo_worn", false)
+						if str(args.get("gravel_detail", "on")) == "legacy":
 							item.mesh.surface_set_material(surface, SceneryMaterials.opaque_material())
-						else:
+						elif str(args.get("gravel_detail", "on")) == "off":
 							material.set_shader_parameter("detail_strength", 0.0)
 	var habitats: Node3D = built.field.get_node_or_null("Scenery/BotanicalHabitats")
 	if habitats != null and str(args.get("botanicals", "on")) == "off":
@@ -473,6 +483,9 @@ func _run() -> void:
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
 			marker_center_px = camera.unproject_position(marker_world)}
 		case_report["ground_materials"] = []
+		case_report["worn_photo_enabled"] = []
+		for material: ShaderMaterial in ground_feature_materials:
+			case_report.worn_photo_enabled.append(_ground_parameter(material, "use_photo_worn"))
 		for material: ShaderMaterial in _ground_materials(built.field):
 			var record := {shader = material.shader.resource_path, parameters = {}}
 			for parameter: String in ["tile_m", "macro_amp", "dry_amount", "anti_tiling",
