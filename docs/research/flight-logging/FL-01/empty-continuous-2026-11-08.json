@@ -1,0 +1,112 @@
+{
+  "format": "openrc-audit-followup v1",
+  "date": "2026-11-08",
+  "baseline_commit": "a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e",
+  "frozen_candidate": "e667babcad5f4b4f0570cfb0650cffd6fea9582b",
+  "platform": "Windows x86-64 headless/Dummy",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "frozen_sources_unchanged": true,
+  "source_sha256": {
+    "app/tests/test_flight_log_empty_continuous.gd": "90bf2c2a489e6967ffbd0b2081cdf3839704dc56108723c38550b30184e7ce8a",
+    "app/sim/flight_log.gd": "b7f086ef6a749ed0ef3329d4e6aac95db8a045ccc7d7f55590931d3ea92e12e5",
+    "app/tools/flight_log_cli.gd": "1b3496a13b8a656126d3c59bb3ac2f0d04759a79167a8c72440f9a0ee66c9255",
+    "app/sim/flight_session.gd": "4c22817bb45d32fbb11440a65a19165f62c7045b07865cd840dd90379113c657"
+  },
+  "checks": [
+    {
+      "test": "test_flight_log_empty_continuous",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "93780ae6-b11b-403c-ae8d-82f20d57cb96",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_log_empty_continuous.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:42:13.083477+00:00",
+        "label": "stable-test_flight_log_empty_continuous",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_flight_log_empty_continuous-fanlphxs\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_flight_log_empty_continuous-fanlphxs\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.703,
+        "log_bytes": 1385,
+        "log_sha256": "bf8b5f0c684438d58c44f62dc92739b27efc5f92087d760fa48dc267fcc06940"
+      },
+      "retained_log": "test_flight_log_empty_continuous.log",
+      "completion": [
+        [
+          "Flight log empty continuous: 211 checks, 0 failed"
+        ]
+      ]
+    }
+  ],
+  "limits": [
+    "focused software verification",
+    "required CI not run",
+    "no packaged, physical, target performance or listening qualification"
+  ],
+  "final_helicopter_followup": {
+    "candidate": "9e1335a5d6a6bb1e05821fd4f95081828120ecde",
+    "checked_run": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "1855db97-9522-4c80-be6d-09a996e16ed5",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log_empty_continuous.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:37.480533+00:00",
+      "label": "followup-test_flight_log_empty_continuous",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_log_empty_continuous-oaxwk053\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_log_empty_continuous-oaxwk053\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.515,
+      "log_bytes": 1385,
+      "log_sha256": "7d52d9bafdd044b1721e3f82b842cf03f682c149e05c7c01fdf8916848d444a8"
+    },
+    "source_unchanged": true
+  }
+}

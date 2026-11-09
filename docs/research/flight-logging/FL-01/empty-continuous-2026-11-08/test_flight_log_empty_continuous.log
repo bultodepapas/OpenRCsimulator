@@ -1,0 +1,14 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-review/app/../tmp/flight-log-empty-continuous-4207279/empty-continuous.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-review/app/../tmp/flight-log-empty-continuous-4207279/empty-continuous.orfl (30 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-review/app/../tmp/flight-log-empty-continuous-4207279/nonempty-continuous.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-review/app/../tmp/flight-log-empty-continuous-4207279/nonempty-continuous.orfl (30 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log empty continuous: 211 checks, 0 failed

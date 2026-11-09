@@ -71,8 +71,11 @@ func _initialize() -> void:
 	shell._controller_action_edges = {"key:75": PackedStringArray(["throttle_cut"]), "1:button:6": PackedStringArray(["pause"])}
 	session.cut = true
 	shell._release_controller_holds()
-	check("menu transition releases flight holds", not session.cut and not shell._controller_action_edges.has("key:75"))
+	check("menu transition releases flight holds while retaining their physical edge", not session.cut \
+		and shell._controller_action_edges.has("key:75") and shell._controller_action_require_off.has("1:throttle_cut"))
 	check("menu transition retains pause edge against held repeat", shell._controller_action_edges["1:button:6"] == PackedStringArray(["pause"]))
+	shell._input(key)
+	check("a real key release clears the retained hold edge", not shell._controller_action_edges.has("key:75") and not shell._controller_action_require_off.has("1:throttle_cut"))
 	flight.received.clear()
 	var equipment := InputEventJoypadButton.new()
 	equipment.device = 1
@@ -88,6 +91,9 @@ func _initialize() -> void:
 	shell._input(equipment)
 	check("changing to fixed gear removes the automatic action", flight.received == ["gear_toggle"])
 	equipment.button_index = JOY_BUTTON_RIGHT_SHOULDER
+	equipment.pressed = false
+	shell._input(equipment) # the capability change installed a new binding; establish its OFF state
+	equipment.pressed = true
 	shell._input(equipment)
 	check("installed smoke picks up the standard shoulder button", flight.received == ["gear_toggle", "smoke_toggle"])
 	equipment.pressed = false
@@ -163,6 +169,8 @@ func _initialize() -> void:
 	shell._controller_action_edges.clear()
 	equipment.device = 1
 	equipment.button_index = JOY_BUTTON_B
+	equipment.pressed = false
+	shell._input(equipment) # the profile changed from radio to gamepad; require a new OFF
 	equipment.pressed = true
 	shell._input(equipment)
 	check("departure fixture begins with one gear action", flight.received == ["gear_toggle"])

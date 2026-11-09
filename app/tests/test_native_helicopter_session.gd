@@ -6,7 +6,7 @@ const Session := preload("res://sim/helicopter_flight_session.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Weather := preload("res://physics/wind_config.gd")
-const Recorder := preload("res://sim/recorder.gd")
+const Recorder := preload("res://sim/rotorcraft_recorder.gd")
 
 var checks := 0
 var failures := 0
@@ -363,12 +363,16 @@ func _reset_rollback(mode: String) -> void:
 	var helper: RefCounted = session._native_stage
 	var old_stage: Callable = model.stage
 	var resetting_count := [0]
-	var recorder := Recorder.new(session.sim)
+	var recorder := Recorder.new(session.sim, session.trace_controls)
 	recorder.start(session.trace_meta())
 	var trace_path := "user://heli-reset-%d-%d-%s.csv" % [OS.get_process_id(), Time.get_ticks_usec(), mode]
 	while FileAccess.file_exists(trace_path): trace_path += ".new"
+	var publication_checkpoint_empty := [false]
+	var publication_tick := [-1]
 	session.resetting.connect(func() -> void:
 		resetting_count[0] += 1
+		publication_checkpoint_empty[0] = session.checkpoint().is_empty()
+		publication_tick[0] = session.sim.tick
 		if recorder.recording: recorder.stop(trace_path))
 	reject[0] = true
 	var accepted: bool = session.reset()
@@ -394,14 +398,65 @@ func _reset_rollback(mode: String) -> void:
 	var rows_before_reset: int = recorder.trace.row_count()
 	check(mode + " accepted reset stops the old recording before tick zero", session.reset() \
 		and resetting_count[0] == 1 and not recorder.recording and recorder.trace.row_count() == rows_before_reset \
+		and publication_checkpoint_empty[0] and publication_tick[0] == 0 \
 		and session.radio._rate_throttle == session.commands.throttle, session.start_error)
 	recorder.detach()
 	if FileAccess.file_exists(trace_path): DirAccess.remove_absolute(ProjectSettings.globalize_path(trace_path))
 	session.free()
 
 
-func _reset_observer_reentry() -> void:
-	var session := _session(NativeStage.BACKEND_NATIVE)
+func _reset_context_rollback(mode: String, fail_hover: bool) -> void:
+	var session := _session(mode)
+	var model: RefCounted = session.sim.model
+	var attempted := [0]
+	var reject := [false]
+	if fail_hover:
+		# A finite but underground start forces the existing hover solver to refuse
+		# before kernel preparation; it is an injected fixture, not a stock start.
+		session._start[2] = 10.0
+	else:
+		model.aux_size = session.sim.aux.size()
+		model.continuous_size = session.sim.continuous.size()
+		model.modes_size = session.sim.modes.size()
+		model.state_layout_identity = "helicopter-reset-context-fixture-v1"
+		model.state_validator = func(_frame: Dictionary, context: Dictionary) -> bool:
+			if reject[0] and context.tick == 0:
+				attempted[0] += 1
+				return false
+			return true
+		check(mode + " validator fixture prepares its backend", session.reset(), session.start_error)
+		reject[0] = true
+	session.radio.connect_device(996, {"name": "EdgeTX test radio", "known": false})
+	check(mode + " calibration fixture starts", session.start_calibration())
+	session.hold("presentation")
+	session.pending_mode = "idle_up"
+	session._mode_confirmation = {message = "fixture mode"}
+	session.pause_reason = "fixture mode"
+	var calibration: RefCounted = session.calibration
+	var kernel: Dictionary = session.sim._capture_endpoint_guard()
+	var controls := var_to_bytes([session.commands, session.raw, session.power, session.flight_mode,
+		session.trainer_enabled, session.zero_drive_hold, session.pending_mode, session._mode_confirmation,
+		session.holds, session.pause_reason, session._start])
+	var resets := [0]
+	var pauses := [0]
+	session.resetting.connect(func() -> void: resets[0] += 1)
+	session.sim.paused_changed.connect(func(_paused: bool) -> void: pauses[0] += 1)
+	var accepted: bool = session.reset()
+	var after_controls := var_to_bytes([session.commands, session.raw, session.power, session.flight_mode,
+		session.trainer_enabled, session.zero_drive_hold, session.pending_mode, session._mode_confirmation,
+		session.holds, session.pause_reason, session._start])
+	var label := mode + (" hover" if fail_hover else " validator")
+	check(label + " refusal occurs before publication", not accepted and not session.start_error.is_empty() \
+		and (fail_hover and session.start_error.contains("hover-trim") or not fail_hover and attempted[0] > 0) \
+		and resets[0] == 0 and pauses[0] == 0, session.start_error)
+	check(label + " refusal preserves calibration, controls, hold and kernel", session.calibration == calibration \
+		and controls == after_controls and session.sim._endpoint_guard_matches(kernel))
+	session.free()
+
+
+func _reset_observer_reentry(mode: String) -> void:
+	var session := _session(mode)
+	for _i: int in 3: session.sim.step()
 	var attempted := [false]
 	var accepted := [true]
 	session.resetting.connect(func() -> void:
@@ -410,7 +465,7 @@ func _reset_observer_reentry() -> void:
 	var reset_ok: bool = session.reset()
 	check("reset observer cannot reenter the start transition", attempted[0] and not accepted[0] \
 		and not reset_ok and session.start_choice == "airborne" and not session.is_flyable() \
-		and session.sim.paused and not session.sim.reset_observer_fault.is_empty() \
+		and session.sim.paused and session.sim.tick == 0 and not session.sim.reset_observer_fault.is_empty() \
 		and not session.start_error.is_empty())
 	var tick: int = session.sim.tick
 	session.sim.step()
@@ -419,7 +474,7 @@ func _reset_observer_reentry() -> void:
 	for action: String in ["toggle_motor_arm", "set_drive_hold", "set_controller_cut", "request_flight_mode",
 			"cancel_calibration", "start_calibration", "advance_calibration", "apply_controller_selection",
 			"controller_disconnected", "controller_focus_lost"]:
-		var controls := _session(NativeStage.BACKEND_NATIVE)
+		var controls := _session(mode)
 		controls.resetting.connect(func() -> void:
 			if action == "set_drive_hold" or action == "set_controller_cut":
 				controls.call(action, true)
@@ -433,13 +488,13 @@ func _reset_observer_reentry() -> void:
 			and controls.flight_mode == "normal" and not controls.is_flyable() \
 			and controls.sim.paused and not controls.sim.reset_observer_fault.is_empty())
 		controls.free()
-	var direct := _session(NativeStage.BACKEND_NATIVE)
+	var direct := _session(mode)
 	direct.resetting.connect(func() -> void: direct.commands.roll = 0.3, CONNECT_ONE_SHOT)
 	check("reset observer cannot mutate committed commands directly", not direct.reset() \
 		and direct.commands.roll == 0.0 and not direct.is_flyable() and direct.sim.paused \
 		and not direct.sim.reset_observer_fault.is_empty())
 	direct.free()
-	var weather := _session(NativeStage.BACKEND_NATIVE)
+	var weather := _session(mode)
 	var prior_wind: PackedFloat64Array = weather._weather._mean_ned.duplicate()
 	weather.resetting.connect(func() -> void:
 		var changed: PackedFloat64Array = weather._weather._mean_ned.duplicate()
@@ -489,9 +544,9 @@ func _mock_native_publication() -> void:
 		session.free()
 
 
-func _publication_hold() -> void:
-	for transition: String in ["reset", "restore"]:
-		var session := _session(NativeStage.BACKEND_NATIVE)
+func _publication_hold(mode: String) -> void:
+	for transition: String in (["reset", "restore"] if mode == NativeStage.BACKEND_NATIVE else ["reset"]):
+		var session := _session(mode)
 		var saved: Dictionary = session.checkpoint()
 		session.resetting.connect(func() -> void: session.hold("presentation"), CONNECT_ONE_SHOT)
 		var accepted: bool
@@ -608,10 +663,15 @@ func _run() -> void:
 	_selection()
 	_reset_rollback(NativeStage.BACKEND_REFERENCE)
 	_reset_rollback(NativeStage.BACKEND_NATIVE)
-	_reset_observer_reentry()
+	for mode: String in [NativeStage.BACKEND_REFERENCE, NativeStage.BACKEND_NATIVE]:
+		_reset_context_rollback(mode, false)
+		_reset_context_rollback(mode, true)
+	_reset_observer_reentry(NativeStage.BACKEND_REFERENCE)
+	_reset_observer_reentry(NativeStage.BACKEND_NATIVE)
 	_restore_observer_reentry()
 	_mock_native_publication()
-	_publication_hold()
+	_publication_hold(NativeStage.BACKEND_REFERENCE)
+	_publication_hold(NativeStage.BACKEND_NATIVE)
 	_mock_native_restore_rollback()
 	_restore_validator_mutation()
 	if native_available:

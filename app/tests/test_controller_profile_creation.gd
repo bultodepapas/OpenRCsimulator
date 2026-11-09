@@ -195,7 +195,8 @@ func check_calibration_context(original: Dictionary) -> void:
 	registry.generation += 1
 	check("same-context update retains calibration connection guard", not setup._save_profile(false))
 	select_profile(setup, -1)
-	check("next New does not inherit stale calibration provenance", setup.current_profile().profile_id != calibrated_id and setup._save_profile(false))
+	check("next New does not inherit stale calibration provenance", setup.current_profile().profile_id != calibrated_id and not setup._save_profile(false))
+	check("next New needs and accepts its own current calibration", setup.apply_calibration_draft(calibration, 41, registry.generation) and setup._save_profile(false))
 	check("radio creation still leaves original profile unchanged", stored(original.profile_id) == original)
 	setup.free()
 	await process_frame

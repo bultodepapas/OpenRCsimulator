@@ -18,7 +18,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 ## A connected radio whose axes read `values` (axis index → value; others 0).
-func _radio(values: Dictionary, moved: Array, saved: Dictionary = {}) -> RcInput:
+func _radio(values: Dictionary, moved: Array, saved: Dictionary = RcInput.DEFAULT_PROFILE) -> RcInput:
 	var r := RcInput.new()
 	r.connect_device(3, INFO, saved)
 	for axis in moved:
@@ -89,7 +89,7 @@ func _initialize() -> void:
 	r = _radio({ 2: -1.0 }, [2])
 	r.disconnect_device()
 	_check("disconnect: disarmed, axes zeroed", not r.connected and not r.armed and r.axes[2] == 0.0)
-	r.connect_device(3, INFO)
+	r.connect_device(3, INFO, RcInput.DEFAULT_PROFILE)
 	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
 	_check("reconnect with the throttle high: SAFE until seen low again", not r.armed and r.sticks().throttle == 0.0)
 
@@ -115,12 +115,12 @@ func _initialize() -> void:
 	var th := { axis = 2, invert = true, min = -0.8, center = -0.8, max = 0.9 }
 	_check("inverted throttle: the min end is full", RcInput.normalize_throttle(-0.8, th) == 1.0 and RcInput.normalize_throttle(0.9, th) == 0.0)
 
-	# Profile choice on connection: saved calibration > known gamepad > default radio.
+	# Profile choice on connection: saved calibration or known gamepad; names do not prove radio mapping.
 	r = RcInput.new()
 	r.connect_device(0, { name = "Xbox Wireless Controller", known = true })
 	_check("an SDL-known gamepad gets the gamepad profile", r.profile_source == "gamepad" and r.profile.kind == "gamepad")
 	r.connect_device(0, { name = "EdgeTX RadioMaster Boxer Joystick", known = true })
-	_check("a radio SDL maps as a gamepad (Linux, EdgeTX Classic) stays a radio", r.profile_source == "default" and r.profile.kind == "radio")
+	_check("a known EdgeTX remains a radio but requires calibration", r.profile_source == "unconfigured" and r.profile.kind == "radio" and not r.profile.get("configured", false) and not r.armed)
 	var saved := RcInput.DEFAULT_PROFILE.duplicate(true)
 	saved.roll.axis = 5
 	r.connect_device(0, INFO, saved)

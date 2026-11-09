@@ -66,6 +66,7 @@ var _raw_warning_codes := PackedStringArray()
 var _selection_input := PackedStringArray()
 var _selection_filters := -1
 var _selected_warnings := PackedStringArray()
+var _has_warning_sample := false
 var _alert_policy := AlertPolicy.new()
 var _has_battery := false
 var _battery_dock := Vector3(-1.0, -1.0, -1.0)
@@ -239,6 +240,7 @@ func reset_flight() -> void:
 	_alert_policy.reset()
 	_raw_warning_codes = PackedStringArray()
 	_warning_codes = PackedStringArray()
+	_has_warning_sample = false
 	alert_audio.reset()
 	frames.warnings.clear_immediate()
 	frames.warnings.visible = false
@@ -472,11 +474,20 @@ func refresh_numbers(snap: Dictionary) -> void:
 			var summary := _statistics_summary(aircraft_id, "session")
 			frames.session_stats.refresh_statistics(summary, tr("This aircraft") if scope == "aircraft" else tr("All aircraft"))
 	_refresh_warnings()
+	# {} means no physics flight is available; it is not an observed clear state.
+	_has_warning_sample = snap.get("warnings") is PackedStringArray
 	# A lost controller/radio pauses the simulation itself; that new danger still deserves a cue.
 	var safety_pause := _warning_codes.has("failsafe") or _warning_codes.has("controller_lost")
 	var audible := visible and layer == FLIGHT_LAYER and is_overlay_visible("warnings") \
 		and (not bool(snap.get("paused", false)) or safety_pause)
 	alert_audio.observe(_warning_codes, sample_time, audible)
+
+
+## Last sampled category/priority selection, independent of the visible rail and its card cap.
+## Return a copy so a paused review cannot change the manager's selection.
+func warning_snapshot() -> Dictionary:
+	return {"sampled": _has_warning_sample,
+		"codes": _selected_warnings.duplicate() if _has_warning_sample else PackedStringArray()}
 
 
 func _refresh_warnings(animate := true) -> void:

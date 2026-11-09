@@ -9043,3 +9043,78 @@ msgstr "実験的：推定による6S電動改造で、飛行検証は未完了�
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "保存済みの設定は保護されているか利用できません。変更はこのセッションにのみ適用されます。"
+
+msgid "Review active alerts"
+msgstr "有効な警告を確認"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "飛行は一時停止中です。このリストは開いた時点の最新の警告サンプルを表示し、開いている間は更新されません。"
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "警告パネルが非表示でも、選択された警告カテゴリを表示します。"
+
+msgid "No selected alerts in the latest sample."
+msgstr "最新のサンプルに選択された警告はありません。"
+
+msgid "No alert sample is available yet."
+msgstr "警告サンプルはまだありません。"
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "エルロンのスティックをいっぱいに右へ倒したまま、Enter キーを押してください。"
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "エレベーターのスティックをいっぱいに手前へ倒したまま、Enter キーを押してください。"
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "ラダーのスティックをいっぱいに右へ倒したまま、Enter キーを押してください。"
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "エルロンのスティックをいっぱいに左へ倒し、中央に戻してから Enter キーを押してください。"
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "エレベーターのスティックをいっぱいに奥へ倒し、中央に戻してから Enter キーを押してください。"
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "ラダーのスティックをいっぱいに左へ倒し、中央に戻してから Enter キーを押してください。"
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "続行する前に、スティックを指示された方向へ中央から倒したままにして、もう一度試してください。"
+
+msgid "Learn axis"
+msgstr "軸を学習"
+
+msgid "Learn axis switch"
+msgstr "軸スイッチを学習"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "選んだスイッチを OFF にしたまま確定してください。操縦スティックは動かさないでください。次に、OFF に戻すよう指示されるまで ON を保持してください。"
+
+msgid "Confirm OFF"
+msgstr "OFF を確定"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "スイッチの取得が無効か中断されました。割り当ては変更されていません。"
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "スイッチを ON に保持してください。他のスイッチは動かさないでください。"
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "学習を完了するには、スイッチを OFF に戻して保持してください。"
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "軸スイッチを学習しました。保存後、使用前に OFF から動かして OFF に戻してください。"
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "複数のスイッチ軸が動きました。一度に一つのスイッチを取得してください。"
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "スイッチの範囲が無効です。割り当ては変更されていません。"
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "保存する前に、この新しい送信機をキャリブレーションしてください。デバイス名だけではチャンネルの割り当てを確認できません。"
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "飛行前に送信機の主操縦装置をキャリブレーションする必要があります。"
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "ジョイスティックのプロファイルには radio_absolute スロットルが必要です。stick_rate と trigger_absolute はゲームパッドでのみ使用できます。"

@@ -39,6 +39,32 @@ func _sweep(cal: RcCalibration, points: Array) -> void:
 			cal.sample(_axes(lerpf(p[0], q[0], t), lerpf(p[1], q[1], t), lerpf(p[2], q[2], t), lerpf(p[3], q[3], t)))
 
 
+func _direction_case(center: float, requested: float, opposite: float) -> void:
+	var cal := RcCalibration.new()
+	var rest := PackedFloat64Array()
+	rest.resize(RcInput.AXES)
+	rest[4] = -0.8
+	rest[6] = center
+	cal.advance(rest)
+	var throttle := rest.duplicate()
+	throttle[4] = 0.8
+	cal.sample(throttle)
+	cal.advance(rest)
+	var held := rest.duplicate()
+	held[6] = center + requested
+	cal.advance(held)
+	_check("direction confirms held axis and shows the opposite prompt", cal.step == 2 and "LEFT" in cal.instruction() and not cal.profile.has("roll"), cal.error)
+	var other := rest.duplicate()
+	other[6] = center + opposite
+	cal.sample(other)
+	cal.advance(rest)
+	var mapped: Dictionary = cal.profile.get("roll", {})
+	_check("reduced/asymmetric held direction %s/%s at %s" % [requested, opposite, center], \
+		cal.step == 3 and not mapped.is_empty() and mapped.invert == (requested < 0.0) \
+		and is_equal_approx(RcInput.normalize(center + requested, mapped), 1.0) \
+		and is_equal_approx(RcInput.normalize(center + opposite, mapped), -1.0), str(mapped))
+
+
 func _initialize() -> void:
 	var cal := RcCalibration.new()
 	var rest := _axes(0, 0, 0, 0)
@@ -50,16 +76,22 @@ func _initialize() -> void:
 	# Enter without moving anything: rejected, same step.
 	cal.advance(rest)
 	_check("no movement → error, stays on the step", cal.error != "" and "3/5" in cal.prompt(), cal.error)
-	_sweep(cal, [[0, 0, 0, 0], [0, 1, 0, 0], [0, -1, 0, 0], [0, 0, 0, 0]])
+	_sweep(cal, [[0, 0, 0, 0], [0, 1, 0, 0]])
+	cal.advance(_axes(0, 1, 0, 0))
+	_sweep(cal, [[0, 1, 0, 0], [0, -1, 0, 0], [0, 0, 0, 0]])
 	cal.advance(rest)
 	_check("aileron on axis 6, not inverted", cal.profile.roll.axis == 6 and not cal.profile.roll.invert, str(cal.profile.get("roll")))
-	_sweep(cal, [[0, 0, 0, 0], [0, 0, 1, 0], [0, 0, -1, 0], [0, 0, 0, 0]])
+	_sweep(cal, [[0, 0, 0, 0], [0, 0, 1, 0]])
+	cal.advance(_axes(0, 0, 1, 0))
+	_sweep(cal, [[0, 0, 1, 0], [0, 0, -1, 0], [0, 0, 0, 0]])
 	cal.advance(rest)
 	_check("elevator on axis 1, inverted (stick back reads −)", cal.profile.pitch.axis == 1 and cal.profile.pitch.invert, str(cal.profile.get("pitch")))
-	# Rudder moved LEFT first: the wizard believes the prompt (RIGHT first) and records an inversion.
-	_sweep(cal, [[0, 0, 0, 0], [0, 0, 0, -1], [0, 0, 0, 1], [0, 0, 0, 0]])
+	# The requested RIGHT direction reports a negative axis on this fixture.
+	_sweep(cal, [[0, 0, 0, 0], [0, 0, 0, -1]])
+	cal.advance(_axes(0, 0, 0, -1))
+	_sweep(cal, [[0, 0, 0, -1], [0, 0, 0, 1], [0, 0, 0, 0]])
 	var finished := cal.advance(rest)
-	_check("rudder on axis 0; moved left first → inverted", cal.profile.yaw.axis == 0 and cal.profile.yaw.invert, str(cal.profile.get("yaw")))
+	_check("rudder on axis 0; right reports negative → inverted", cal.profile.yaw.axis == 0 and cal.profile.yaw.invert, str(cal.profile.get("yaw")))
 	_check("wizard finished with a valid profile", finished and cal.done() and RcCalibration.valid(cal.profile))
 
 	# A competing sweep used to silently win the throttle step (and could map yaw as throttle).
@@ -91,11 +123,13 @@ func _initialize() -> void:
 	off_center.advance(rest)
 	_sweep(off_center, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
 	off_center.advance(rest)
-	_sweep(off_center, [[0, 0, 0, 0], [0, 1, 0, 0], [0, -1, 0, 0]])
+	_sweep(off_center, [[0, 0, 0, 0], [0, 1, 0, 0]])
+	off_center.advance(_axes(0, 1, 0, 0))
+	_sweep(off_center, [[0, 1, 0, 0], [0, -1, 0, 0]])
 	off_center.advance(_axes(0, 0.12, 0, 0))
 	_check("centered channel must return to rest before assignment", off_center.step == 2 and not off_center.profile.has("roll") and "centre" in off_center.error, off_center.error)
 
-	# The calibrated profile reproduces the pilot's sticks exactly (except the deliberately reversed rudder).
+	# The calibrated profile reproduces the pilot's sticks exactly (including the negative-reading rudder).
 	var r := RcInput.new()
 	r.connect_device(1, { name = "Odd radio" }, cal.profile)
 	r.on_motion(1, 4, 0.9)
@@ -104,6 +138,23 @@ func _initialize() -> void:
 		var s := r.sticks()
 		_check("calibrated sticks %s" % [stick], absf(r.throttle_position() - stick[0]) < 1e-9 and absf(s.roll - stick[1]) < 1e-9 and absf(s.pitch - stick[2]) < 1e-9 and absf(s.yaw + stick[3]) < 1e-9, str([r.throttle_position(), s]))
 	_check("a calibrated radio arms on its own low throttle", r.armed)
+	_direction_case(0.0, -0.2, 0.3)
+	_direction_case(0.0, 0.2, -0.3)
+	_direction_case(0.0, -0.25, 0.25)
+	_direction_case(0.0, 0.25, -0.25)
+	_direction_case(0.03, -0.22, 0.35)
+	_direction_case(-0.04, 0.22, -0.35)
+
+	var ambiguous := RcCalibration.new()
+	ambiguous.advance(rest)
+	_sweep(ambiguous, [[0, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
+	ambiguous.advance(rest)
+	_sweep(ambiguous, [[0, 0, 0, 0], [0, -0.25, 0, 0], [0, 0.35, 0, 0], [0, 0, 0, 0]])
+	ambiguous.advance(rest)
+	_check("a completed sweep cannot replace held direction confirmation", ambiguous.step == 2 and not ambiguous.profile.has("roll") and "Hold" in ambiguous.error, ambiguous.error)
+	var competing := _axes(0, 0.5, 0.5, 0)
+	ambiguous.advance(competing)
+	_check("simultaneously held axes cannot establish direction", ambiguous.step == 2 and not ambiguous.profile.has("roll") and "one axis" in ambiguous.error, ambiguous.error)
 
 	# One-way or off-centre sweeps are rejected for centred sticks.
 	var c2 := RcCalibration.new()

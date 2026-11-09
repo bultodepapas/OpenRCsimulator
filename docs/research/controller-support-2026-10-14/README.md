@@ -2,6 +2,34 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+## Controller audit corrections 2026-11-08
+
+D6-GP-01/02/03, F3-GP-02 and UI-15-GP-01. The supplied **OpenRC Controller Audit and Implementation Plan** audited commit `2e05ed08c7c4ffb2e3c83440756fba594015dec6`. Its recommendations were checked against current source before implementation; its proposed work and manufacturer research were not treated as completed qualification.
+
+| Audit finding | Resulting source behavior |
+| --- | --- |
+| F01 | Each centered channel explicitly confirms the requested direction before measuring the opposite endpoint; reduced/asymmetric travel cannot infer polarity from a later larger movement. Both calibration UI surfaces show the current phase. |
+| F02 | Legacy loads and writes require a unique current device in managed and standalone airplane/helicopter routes. Generic ambiguity changes invalidate cached matches; serial-qualified V2 matching remains available. An uninterrupted selected session keeps its actual profile, without lending it to a newly arrived handle. |
+| F03 | Setup and flight share the mode-aware channel transform. Absolute throttle retains direct endpoint normalization; unused trigger shaping controls are disabled. |
+| F04 | New radio/raw-joystick profiles use clean actions and keyboard recovery. Existing V2 and imported legacy effective behavior remains compatible; cleanup of older assignments stays an explicit draft operation with Save/Cancel. |
+| F05 | Explicit OFF confirmation, stable ON and return OFF learn finite reduced/reversed/offset axis ranges for flight actions and Pause. AUX normalization is reused; old signed thresholds remain valid. Native GUI actions reject the new range format until a normalized menu adapter exists. |
+| F07 | Generic edges observe releases across menu ownership, preserve held-source history and follow binding/connection identity. Focus/menu holds require rearming. Throttle cut reads only its selected flight source; recognized native gamepads can establish released generic controls through the existing trusted live-poll contract. |
+| F08 | Managed and draft calibration share a measured-field merge, retaining other saved channel metadata and removing AUX collisions. |
+| F09 | Unsupported joystick rate throttle is rejected explicitly. Rollback recovery retains the primary storage failure diagnostic. |
+| F10 | Names provide role hints, not flyable mappings. New unsaved radios require the draft calibration wizard before Save; an unrelated saved profile with identical axis values cannot qualify a new starter. Existing saved mappings and explicit legacy/duplicate recovery remain available. |
+
+F06 verified radio menu navigation remains open under UI-12-GP-02. F11 documentation now identifies the current engine, corrects the blanket EdgeTX Advanced recommendation and separates software support from device qualification; a new shareable diagnostic-export UI is still open. F12 remains a per-route hardware gate: transmitter-off can differ from USB unplug, and unchanged values cannot prove RF loss. No RF detector, vendor driver, physics tuning or new latency claim was introduced.
+
+Verification uses the pinned native Windows `4.8.beta2.official.cafc17a19` through the checked runner. The shell regression first reproduced the stale Pause release and held shared-axis failures, then added reconnect, remap, focus, 100 held/jittering samples and separate-device hold isolation. The draft wizard includes final FULL-to-LOW verification; the existing in-flight wizard retains its separate low-throttle arming behavior.
+
+Final scoped results: **49 test programs and 15 modified production-script parse checks passed**, with zero skipped, failed or invalid invocations in the validated final collection. The new setup, shell and identity regressions pass 86, 20 and 28 checks respectively. Existing calibration, profile/store, readiness, AUX, menu, fixed-wing, helicopter, car, capture/scroll and localization consumers also pass. Fixtures that assumed an unsaved radio could fly/save now supply an existing saved mapping or complete the real wizard; no physics goldens or production thresholds were weakened. Earlier baseline failures, stale-fixture failures and incomplete runs remain in the original local collections.
+
+The app debug smoke (`--steps 30 --cycles 1`) passed its 52 steps with no errors and zero leaked objects at exit. Its single soak cycle was warm-up only, so it provides no sustained-growth result. English/Spanish production Controls captures were inspected at **1920×1080**, native OpenGL Compatibility on an NVIDIA RTX 3090; the new setup test also checks Spanish radio-action bounds at that size. These are interface observations, not a performance qualification. All eight translated catalogs include the new prompts and pass the existing language inventory/format checks.
+
+The [retained manifest](controller-audit-2026-11-08.json) records the supplied audit hash, engine and final local source hashes, individual report/log hashes, checked-run verdicts and evidence limits. The checked-log summarizer validates **64/64 invocations** in ignored `tmp/controller-audit-verified-20261108/`, including its JUnit result. Full logs and native captures remain in ignored directories; images are not committed. Full required CI and release checks remain pending.
+
+The independent Good Enemy review identified the source-history, two-device hold and unrelated-profile reuse counterexamples during implementation and found no further confirmed blocker in its final focused source review. This is software review, not physical controller evidence. Native USB/Bluetooth/RF behavior, macOS/Linux packages, complete radio-only navigation and physical latency remain unqualified. The [current plan](../../plans/controller-support.md) owns their acceptance gates.
+
 ## New profile identity (2026-11-06, UI-15-GP-01-R1)
 
 External audit A11 F01 remains reproducible at `842339369`: selecting **New

@@ -203,7 +203,7 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 						break
 				step_scale *= 0.5
 			if not accepted_step:
-				return _result(false, "glow trim stalled: no finite residual-decreasing step within throttle [0,1]", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+				return _result(false, "glow trim stalled: no finite residual-decreasing step within throttle [0,1]", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio, x_rpm)
 			continue
 		for k in N:
 			x[k] += dx[k]
@@ -215,13 +215,13 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 		if not is_finite(residual_norm):
 			return _numerical_failure("nonfinite iterated trim residual", mode, V, iterations)
 	if residual_norm > 1e-8:
-		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+		return _result(false, "did not converge (|residual| %s)" % String.num_scientific(residual_norm), x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio, x_rpm if bounded_glow_level else NAN)
 	var limit_message := _throw_limit_message(x, throws, model)
 	if not limit_message.is_empty():
-		return _result(false, limit_message, x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+		return _result(false, limit_message, x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio, x_rpm if bounded_glow_level else NAN)
 	if mode == "level" and (x[2] < 0.0 or x[2] > 1.0):
-		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
-	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+		return _result(false, "needs throttle %.2f, outside 0…1" % x[2], x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio, x_rpm if bounded_glow_level else NAN)
+	return _result(true, "trimmed", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio, x_rpm if bounded_glow_level else NAN)
 
 
 ## Electric trim uses the same six-axis equations, with structured source failures and bounded duty probes.
@@ -349,11 +349,13 @@ static func _residual_from_evaluation(evaluation: Dictionary) -> PackedFloat64Ar
 	return PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 2], dot[RB.RATE + 1], dot[RB.VEL + 1], dot[RB.RATE], dot[RB.RATE + 2]])
 
 
-static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary, g: float, rho: float, engine_charge_ratio: float) -> Dictionary:
+## Reuse only the RPM belonging to this accepted iterate. Rejected line-search probes never replace it.
+## NAN retains the original finalization path for callers without that invariant.
+static func _result(ok: bool, message: String, x: PackedFloat64Array, mode: String, V: float, r: PackedFloat64Array, iterations: int, throws: Dictionary, model: Dictionary, g: float, rho: float, engine_charge_ratio: float, steady_rpm := NAN) -> Dictionary:
 	var gamma := 0.0 if mode == "level" else x[2]
 	var throttle := x[2] if mode == "level" else 0.0
-	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio)
-	var rpm: float = float(e.rpm) if Propulsion.is_electric(model.propulsion) else _rpm(throttle, e.state, mode, model, rho, engine_charge_ratio)
+	var e := _evaluate(x, mode, V, model, g, rho, engine_charge_ratio, steady_rpm)
+	var rpm: float = steady_rpm if not is_nan(steady_rpm) else (float(e.rpm) if Propulsion.is_electric(model.propulsion) else _rpm(throttle, e.state, mode, model, rho, engine_charge_ratio))
 	var thrust: float = e.propulsion_loads[0]
 	var bank := banked(model)
 	var result: Dictionary = {

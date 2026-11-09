@@ -1,0 +1,221 @@
+{
+  "format": "openrc-audit-followup v1",
+  "date": "2026-11-08",
+  "baseline_commit": "a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e",
+  "frozen_candidate": "e667babcad5f4b4f0570cfb0650cffd6fea9582b",
+  "platform": "Windows x86-64 headless/Dummy",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "frozen_sources_unchanged": true,
+  "source_sha256": {
+    "app/physics/wind_thermal_field.gd": "2e2b33f3cf0ae0247d7bef8a8ff75ea03d814dbd4d4eb1c2a60ae6c9a71e075e",
+    "app/physics/math3d.gd": "303ec52df24a2975bb15dcd105d54e8363c9d0c834edf0f17afa6fde06380aaf",
+    "app/sim/flight_session.gd": "4c22817bb45d32fbb11440a65a19165f62c7045b07865cd840dd90379113c657",
+    "research/wind/thermal_parity.gd": "26651bac2e31c26e880db92a596a586049e837afc023a1a02ac221f7b441414e"
+  },
+  "checks": [
+    {
+      "test": "test_balanced_thermal_field",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "25321c9a-4d10-41c1-ac28-b05a67180a16",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_balanced_thermal_field.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:42:17.069610+00:00",
+        "label": "stable-test_balanced_thermal_field",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_balanced_thermal_field-qwu886dh\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_balanced_thermal_field-qwu886dh\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.703,
+        "log_bytes": 117,
+        "log_sha256": "4e31d108e3d8ee37463c37d5747dc4ab9408d12782e2175265e377d17f3e80c8"
+      },
+      "retained_log": "test_balanced_thermal_field.log",
+      "completion": [
+        [
+          "balanced thermal field: 73 checks, 0 failed"
+        ]
+      ]
+    },
+    {
+      "test": "test_spatial_thermal_response",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d78df37c-d192-4bf7-9876-b637310c85bc",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_thermal_response.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:42:17.911100+00:00",
+        "label": "stable-test_spatial_thermal_response",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_spatial_thermal_response-us2nv86n\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_spatial_thermal_response-us2nv86n\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 11.078,
+        "log_bytes": 991,
+        "log_sha256": "3887cd6baca3a7de9ee2cfd64e9a72a66e85ab80087f16db62b01baa69017938"
+      },
+      "retained_log": "test_spatial_thermal_response.log",
+      "completion": [
+        [
+          "spatial thermal response: 33 checks, 0 failures"
+        ]
+      ]
+    },
+    {
+      "test": "test_spatial_weather_session",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "dafc2eeb-5d8e-4d93-9ff1-4bb392120211",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_spatial_weather_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:42:18.916000+00:00",
+        "label": "stable-test_spatial_weather_session",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_spatial_weather_session-2udvzy_v\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_spatial_weather_session-2udvzy_v\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 56.485,
+        "log_bytes": 8439,
+        "log_sha256": "4be00c83666cde60cde2d24d9cc6d9d5f02b5c0632a1c7aee2dd6693d287000d"
+      },
+      "retained_log": "test_spatial_weather_session.log",
+      "completion": [
+        [
+          "M5-W05c-R2 spatial weather session: 111 checks, 0 failures"
+        ]
+      ]
+    }
+  ],
+  "limits": [
+    "focused software verification",
+    "required CI not run",
+    "no packaged, physical, target performance or listening qualification"
+  ],
+  "parity_checked_run": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "fdb76d5a-ae0b-46df-b600-9656ee312366",
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+      "--headless",
+      "--path",
+      "tmp/audit-20261108-review/app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-review/research/wind/thermal_parity.gd",
+      "--",
+      "--baseline=C:/DEVELOPMENT/OpenRCsimulator/tmp/audit-20261108-wopt/baseline.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-11-09T01:44:00.659681+00:00",
+    "label": "stable-thermal-parity",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-thermal-parity-stcl634z\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-thermal-parity-stcl634z\\report.json",
+    "timeout_seconds": 150.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 2.172,
+    "log_bytes": 202,
+    "log_sha256": "fff393dc44397e6a744b5ef9f2d7dbd85f81007038ccc2812b68dbdbdd10a852"
+  },
+  "baseline_source_sha256": "3905638182f276f9c7d848ff351ee7a6c387078a09eeaba2a004b23b11ad6f2e",
+  "native_component": {
+    "total": {
+      "compared": 21549,
+      "identical": 21549,
+      "mismatched": 0
+    },
+    "run_valid": true,
+    "engine": "4.8-beta2 (official)",
+    "binary_sha256": "0c9c565109ab4e54e7192049bb8b96396dbcf7b605dc594bcdb28c92c1bc9fd4",
+    "scope": "WSL/Linux x86-64 weather component, not installed fleet/package qualification",
+    "final_candidate": "9e1335a5d6a6bb1e05821fd4f95081828120ecde",
+    "final_sources_unchanged": true
+  },
+  "baseline_git_blob": "a164b502d5d0dc0f085b68fd7ffb565f25ee768d",
+  "baseline_git_source_sha256": "b370bb9493b0f36119b6344781296525c0e188f18a8a1377e1321ddf0253f7e6",
+  "baseline_transport_note": "Retained PowerShell UTF-8 copy differs only in line endings from the Git blob."
+}

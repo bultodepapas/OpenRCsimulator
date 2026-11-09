@@ -199,6 +199,6 @@ func _refresh() -> void:
 		next_button.disabled = false
 		var step: int = int(_wizard.step)
 		_step_label.text = tr("Step %d of %d") % [step + 1, Calibration.STEPS.size()]
-		_prompt.text = tr(Calibration.PROMPTS[Calibration.STEPS[step]])
+		_prompt.text = tr(_wizard.instruction())
 	_error_label.text = tr(str(_wizard.error))
 	_error_label.visible = not _error_label.text.is_empty()

@@ -33,7 +33,7 @@ func load_all() -> Dictionary:
 	if backup_exists:
 		var backup := _read_file(backup_path)
 		if backup.ok:
-			return {"ok": true, "profiles": backup.profiles, "errors": ["Recovered profiles from rollback copy; primary storage is unreadable."], "recovered_from_backup": true}
+			return {"ok": true, "profiles": backup.profiles, "errors": ["Recovered profiles from rollback copy; primary storage is unreadable: " + str(primary.error)], "recovered_from_backup": true}
 		if primary.missing:
 			return {"ok": false, "profiles": [], "errors": ["Primary profile storage is missing and its rollback copy is unreadable: " + backup.error]}
 	if primary.missing:
@@ -122,6 +122,47 @@ func import_legacy_radio(source_path: String = "") -> Dictionary:
 		imported["name"] = "Imported radio profile"
 		candidates.append(imported)
 	return {"ok": true, "profiles": candidates, "errors": errors}
+
+
+## A legacy key contains no serial and can only identify one currently connected
+## handle. Requiring that handle in the snapshot prevents a stale observation
+## from borrowing the calibration of another connected device.
+static func legacy_identity_is_unique(info: Dictionary, connected_devices: Array) -> bool:
+	var id: Variant = info.get("id")
+	if typeof(id) != TYPE_INT or int(id) < 0:
+		return false
+	var key := _legacy_key(info)
+	var matches := 0
+	var includes_target := false
+	for device in connected_devices:
+		if typeof(device) != TYPE_DICTIONARY or not bool(device.get("connected", false)):
+			continue
+		if _legacy_key(device) == key:
+			matches += 1
+			if typeof(device.get("id")) == TYPE_INT and int(device.id) == int(id):
+				includes_target = true
+	return matches == 1 and includes_target
+
+
+## Standalone sessions do not own a registry; construct the same active snapshot
+## from their connection enumerator before loading or saving a legacy key.
+static func legacy_identity_is_unique_for_ids(id: int, info: Dictionary, ids: Array, read_info: Callable) -> bool:
+	if not read_info.is_valid():
+		return false
+	var target := info.duplicate(true)
+	target["id"] = id
+	var devices: Array[Dictionary] = []
+	for current in ids:
+		if typeof(current) != TYPE_INT or int(current) < 0:
+			return false
+		var observed: Variant = info if int(current) == id else read_info.call(int(current))
+		if typeof(observed) != TYPE_DICTIONARY:
+			return false
+		var device: Dictionary = observed.duplicate(true)
+		device["id"] = int(current)
+		device["connected"] = true
+		devices.append(device)
+	return legacy_identity_is_unique(target, devices)
 
 
 ## Returns saved profiles whose recorded identity evidence matches this observed device.
@@ -334,14 +375,14 @@ func _association_matches(info: Dictionary, association: Dictionary) -> bool:
 	return false
 
 
-func _legacy_key(info: Dictionary) -> String:
+static func _legacy_key(info: Dictionary) -> String:
 	if info.has("device_key") and typeof(info.device_key) == TYPE_STRING:
 		return info.device_key
 	var name := str(info.get("raw_name", info.get("name", "")))
 	return "%s|%04x:%04x|%s" % [str(info.get("guid", "")), _metadata_int(info.get("vendor_id", 0)), _metadata_int(info.get("product_id", 0)), name]
 
 
-func _metadata_int(value: Variant) -> int:
+static func _metadata_int(value: Variant) -> int:
 	if typeof(value) == TYPE_INT:
 		return int(value)
 	if typeof(value) == TYPE_STRING and value.strip_edges().is_valid_int():

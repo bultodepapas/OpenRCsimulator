@@ -1,0 +1,9 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ERROR: Malformed powertrain bank: family must be an array
+   at: push_error (core/variant/variant_utility.cpp:1024)
+   GDScript backtrace (most recent call first):
+       [0] configure (res://audio/powertrain_audio.gd:57)
+       [1] configure (res://audio/soundscape.gd:183)
+       [2] _run (res://tests/test_audio_bank_admission.gd:38)
+Audio bank admission badfamily: 9 checks, 0 failed

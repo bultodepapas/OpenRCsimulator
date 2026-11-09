@@ -3,6 +3,7 @@ extends SceneTree
 const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
+const Actions := preload("res://input/controller_actions.gd")
 
 var _checks := 0
 var _failures := 0
@@ -33,6 +34,8 @@ func _initialize() -> void:
 	_check("Mode 1 axes", [mode1.roll.axis, mode1.pitch.axis, mode1.yaw.axis, mode1.throttle.axis] == [2, 1, 0, 3])
 	_check("trigger preset is absolute and gamepad kind", trigger.kind == "gamepad" and trigger.throttle_mode == "trigger_absolute" and trigger.throttle.range_kind == "absolute" and trigger.throttle.axis == 5)
 	_check("radio custom uses absolute radio throttle", radio.kind == "radio" and radio.throttle_mode == "radio_absolute" and Profile.validate(radio).ok)
+	var joystick := Profile.defaults("joystick", "custom")
+	_check("new radio and joystick starters use clean actions", radio.actions == Actions.clean_radio_bindings() and joystick.actions == Actions.clean_radio_bindings())
 	_check("UUIDs are distinct", mode1.profile_id != mode2.profile_id)
 	_check("unknown preset rejected", Profile.defaults("gamepad", "future") == {})
 
@@ -124,6 +127,16 @@ func _initialize() -> void:
 	invalid = mode2.duplicate(true)
 	invalid.throttle_mode = "radio_absolute"
 	_check("gamepad cannot use radio throttle mode", not Profile.validate(invalid).ok)
+	invalid = joystick.duplicate(true)
+	invalid.throttle_mode = "stick_rate"
+	invalid.throttle.range_kind = "centered"
+	var unsupported_joystick := Profile.validate(invalid)
+	_check("joystick rate throttle has a specific unsupported diagnostic", not unsupported_joystick.ok \
+		and _has_issue(unsupported_joystick, "throttle_mode_unsupported", ["throttle_mode"]) \
+		and "stick_rate" in "; ".join(unsupported_joystick.errors))
+	var reject_input := RcInput.new()
+	_check("unsupported joystick rate cannot activate and reports why", not reject_input.use_profile(invalid, "test") \
+		and "stick_rate" in reject_input.profile_rejection_error)
 	invalid = mode2.duplicate(true)
 	invalid.aux = {"smoke": {"type": "axis", "axis": mode2.roll.axis, "invert": false, "off": -1.0, "on": 1.0}}
 	var aux_overlap_report := Profile.validate(invalid)
@@ -183,6 +196,19 @@ func _initialize() -> void:
 	_check("legacy radio output matches prior scalar mapping", absf(Profile.normalize_axis(-0.4, migrated.pitch) - RcInput.normalize(-0.4, legacy.pitch)) < 1e-12)
 	_check("legacy radio throttle mapping stays identical", Profile.normalize_axis(-1.0, migrated.throttle) == RcInput.normalize_throttle(-1.0, legacy.throttle) and Profile.normalize_axis(1.0, migrated.throttle) == RcInput.normalize_throttle(1.0, legacy.throttle))
 	_check("legacy smoke AUX survives upgrade", migrated.get("aux", {}).get("smoke", {}).get("axis", -1) == 9)
+	var legacy_actions: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	legacy_actions.actions = {"camera_cycle": {"type": "button", "button": 30}}
+	legacy_actions.aux = {"smoke": {"type": "button", "button": JOY_BUTTON_START, "mode": "level"}}
+	var migrated_actions := Profile.upgrade_legacy(legacy_actions)
+	_check("legacy upgrade preserves inherited and explicit effective actions with AUX", not migrated_actions.is_empty() \
+		and Actions.effective_bindings(legacy_actions) == Actions.effective_bindings(migrated_actions) \
+		and Actions.effective_bindings(legacy_actions, Actions.HELICOPTER_CAPABILITIES) == Actions.effective_bindings(migrated_actions, Actions.HELICOPTER_CAPABILITIES))
+	var saved_v2 := radio.duplicate(true)
+	saved_v2.actions = {"camera_cycle": {"type": "button", "button": 30}}
+	var loaded_v2 := Profile.upgrade_legacy(saved_v2)
+	_check("existing V2 partial overrides retain inherited effective actions", not loaded_v2.is_empty() \
+		and Actions.effective_bindings(saved_v2) == Actions.effective_bindings(loaded_v2) \
+		and Actions.effective_bindings(loaded_v2).pause.type == "button")
 	_check("migration does not mutate source", not legacy.has("schema_version") and not legacy.roll.has("range_kind"))
 	var unknown_schema: Dictionary = mode2.duplicate(true)
 	unknown_schema.schema_version = 1
@@ -203,6 +229,28 @@ func _initialize() -> void:
 	runtime_v2.aux = {&"smoke": {&"type": "button", &"button": 7, &"mode": "level"}}
 	var normalized_runtime_v2 := Profile.upgrade_legacy(runtime_v2)
 	_check("V2 activation normalizes StringName binding keys", Profile.validate(normalized_runtime_v2).ok and normalized_runtime_v2.aux.smoke.button == 7, str(normalized_runtime_v2))
+
+	var existing := Profile.defaults("radio", "radio_custom")
+	existing.roll.expo = 0.35
+	existing.roll.deadzone = 0.12
+	existing.roll.extension = {"label": "keep"}
+	existing.presentation.glyph_family = "generic"
+	existing.aux = {"smoke": {"type": "axis", "axis": 9, "off": -1.0, "on": 1.0, "invert": false}, \
+		"gear": {"type": "axis", "axis": 8, "off": -1.0, "on": 1.0, "invert": false}}
+	var existing_before := existing.duplicate(true)
+	var measured: Dictionary = RcInput.DEFAULT_PROFILE.duplicate(true)
+	measured.roll = {"axis": 9, "invert": true, "min": -0.7, "center": 0.01, "max": 0.9}
+	var merged := Profile.merge_radio_calibration(existing, measured)
+	_check("calibration merges measured fields but preserves metadata", not merged.is_empty() \
+		and merged.roll.axis == 9 and merged.roll.invert and merged.roll.expo == 0.35 \
+		and merged.roll.deadzone == 0.12 and merged.roll.extension == {"label": "keep"} \
+		and merged.profile_id == existing.profile_id and merged.presentation == existing.presentation)
+	_check("calibration removes only newly overlapping AUX", not merged.is_empty() and not merged.aux.has("smoke") and merged.aux.gear == existing.aux.gear and existing == existing_before)
+	measured.aux = {"smoke": {"type": "button", "button": 7, "mode": "level"}}
+	var merged_new_aux := Profile.merge_radio_calibration(existing, measured)
+	_check("calibration preserves supported explicit AUX handoff", not merged_new_aux.is_empty() and merged_new_aux.aux.smoke == measured.aux.smoke and merged_new_aux.aux.gear == existing.aux.gear)
+	measured.yaw.axis = measured.roll.axis
+	_check("invalid calibration leaves existing profile unchanged", Profile.merge_radio_calibration(existing, measured).is_empty() and existing == existing_before)
 
 	print("Controller profile: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

@@ -69,13 +69,13 @@ func _initialize() -> void:
 	check("disconnect edge accepted", registry.disconnect_device(5))
 	check("disconnect clears selected ownership without takeover", registry.selected_device_id("flight") == -1 and registry.selected_device_id("ui") == -1)
 	check("selection loss signal precedes device list signal", signal_order == ["selection:flight:-1", "devices"], str(signal_order))
-	check("disconnected record remains visible", not registry.device_for_id(5).connected and registry.connection_generation(5) == 1)
-	check("repeated disconnect does not advance generation", registry.disconnect_device(5) and registry.connection_generation(5) == 1)
+	check("disconnected record remains visible", not registry.device_for_id(5).connected and registry.connection_generation(5) == generation_before)
+	check("repeated disconnect does not advance generation", registry.disconnect_device(5) and registry.connection_generation(5) == generation_before)
 	registry.update_devices([{"id": 5, "name": "Xbox", "raw_name": "Xbox Wireless Controller", "known": true, "guid": "AABB", "vendor_id": 4617, "product_id": 20308, "serial_number": "serial-a", "backend": "SDL", "transport": "usb"}])
-	check("same handle reconnect advances generation and stays unselected", registry.connection_generation(5) == 2 and registry.selected_device_id("flight") == -1)
+	check("same handle reconnect advances generation and stays unselected", registry.connection_generation(5) == generation_before + 1 and registry.selected_device_id("flight") == -1)
 	registry.select_device("flight", 5)
 	registry.update_devices([{"id": 5, "name": "Changed firmware", "raw_name": "Xbox Wireless Controller", "known": true, "guid": "DIFFERENT", "vendor_id": 4617, "product_id": 20308, "serial_number": "serial-a", "backend": "SDL", "transport": "usb"}])
-	check("identity change clears selection and advances generation", registry.selected_device_id("flight") == -1 and registry.connection_generation(5) == 3)
+	check("identity change clears selection and advances generation", registry.selected_device_id("flight") == -1 and registry.connection_generation(5) == generation_before + 2)
 
 	var malformed := registry.update_devices([
 		{"id": -1, "name": "invalid"},

@@ -402,6 +402,30 @@ The following artifacts retain earlier implementation and research evidence. The
 
 [workloads](research/wind-implementation/M5-W05d-R5/workloads) · [artifact directory](research/wind-implementation/M5-W05d-R6) · [checkout-verification.json](research/wind-implementation/M5-W05d-R6/checkout-verification.json) · [comparison-manifest.json](research/wind-implementation/M5-W05d-R6/comparison-manifest.json) · [integrated-after.json](research/wind-implementation/M5-W05d-R6/integrated-after.json) · [integrated-before.json](research/wind-implementation/M5-W05d-R6/integrated-before.json) · [integration-comparison.json](research/wind-implementation/M5-W05d-R6/integration-comparison.json) · [payload-manifest.json](research/wind-implementation/M5-W05d-R6/payload-manifest.json) · [pinned-sequence.json](research/wind-implementation/M5-W05d-R6/pinned-sequence.json) · [parity.json](research/wind-implementation/M5-W05d-R6/replay/parity.json) · [timing-affinity.json](research/wind-implementation/M5-W05d-R6/timing-affinity.json) · [workload-parity.json](research/wind-implementation/M5-W05d-R6/workload-parity.json)
 
+### Thermal query reuse (M5-W-AUD-21 / WOPT-01, 2026-11-08)
+
+`WindThermalField._cell_velocity` allocates its zero result only on inactive
+returns and evaluates the repeated vertical sine once. The original left-to-right
+multiplication and cell/axis accumulation order remain intact; every query owns
+its result and there is no persistent cache or law/configuration change.
+
+The [baseline comparator](../research/wind/thermal_parity.gd) compares a retained
+`a3f2e38` provider against the current source on the same engine/host. Windows
+headless checks pass **63,613** result-byte, identity and ownership assertions:
+20,000 seeded queries over 0/1/4/16-cell agendas, lifecycle/taper/height boundaries,
+invalid queries, signed zeros, and mutation of one of two held outputs. Existing
+analytic thermal, aircraft response/refinement and spatial session/checkpoint
+suites pass 73, 33 and 111 checks. The [evidence index](research/wind-implementation/M5-W05d-R6/wopt01-2026-11-08.json)
+records source and checked-log identities.
+
+Reproduce by retaining `git show a3f2e38:app/physics/wind_thermal_field.gd` outside
+`app/`, then running the comparator through the checked runner with
+`-- --baseline=<absolute retained file>`. No baseline is rewritten. Native
+installation/fleet/package, required CI and complete-session/frame performance
+remain separate gates. A changed mirrored source invalidates older native
+receipts and selects the reference until independently requalified. No new
+speedup, FPS, target-hardware or physical claim is made.
+
 <a id="evidence-wind-implementation-m5-w04b-r1"></a>
 
 **wind-implementation/M5-W04b-R1**

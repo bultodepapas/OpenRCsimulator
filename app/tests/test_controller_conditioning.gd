@@ -101,6 +101,33 @@ func _initialize() -> void:
 	input.poll(func(_device: int, axis: int) -> float: return 0.7 if axis == 5 else (0.5 if axis == 2 else 0.0), DT)
 	check("absolute trigger stays direct and is not rate integrated", absf(input.throttle_position() - 0.7) < 1e-12)
 	check("trigger profile still uses gamepad-shaped flight axes", absf(input.sticks().roll - Profile.conditioned_axis(0.5, trigger_profile.roll, "gamepad")) < 1e-12)
+	# The setup preview and runtime share direct absolute-throttle semantics even
+	# with shaping metadata, reduced endpoints and inverted hardware.
+	for kind in ["gamepad", "radio"]:
+		var absolute := Profile.defaults("gamepad", "trigger_absolute") if kind == "gamepad" else Profile.defaults("radio", "radio_custom")
+		absolute.throttle.min = -0.6
+		absolute.throttle.center = -0.6
+		absolute.throttle.max = 0.8
+		absolute.throttle.deadzone = 0.0
+		absolute.throttle.expo = 1.0
+		for inverted in [false, true]:
+			absolute.throttle.invert = inverted
+			check("absolute profile applies for preview parity", input.use_profile(absolute, "preview-parity"))
+			for raw in [-0.6, -0.25, 0.1, 0.8]:
+				input.on_motion(PAD_ID, int(absolute.throttle.axis), raw)
+				var expected: float = (raw + 0.6) / 1.4
+				if inverted:
+					expected = 1.0 - expected
+				check("%s absolute throttle preview matches runtime %s inverted=%s" % [kind, raw, inverted], \
+					absf(Profile.channel_value(raw, "throttle", absolute) - expected) < 1e-12 \
+					and absf(input.throttle_position() - expected) < 1e-12)
+	var rate := Profile.defaults("gamepad", "mode2")
+	check("rate profile applies for preview parity", input.use_profile(rate, "preview-parity"))
+	input.on_motion(PAD_ID, int(rate.throttle.axis), -0.5)
+	check("rate preview is the shaped rate input used by runtime", \
+		absf(Profile.channel_value(-0.5, "throttle", rate) - input._stick("throttle")) < 1e-12)
+	# Restore the trigger fixture for the fault/recovery checks below.
+	input.use_profile(trigger_profile, "trigger-preset")
 
 	# Any non-finite sample is a safe invalidation, then requires new evidence.
 	input.on_motion(PAD_ID, 2, NAN)
@@ -130,6 +157,23 @@ func _initialize() -> void:
 	radio.on_button(2, 8, false)
 	radio.on_button(2, 8, true)
 	check("normalized radio AUX still routes only to smoke", radio.smoke_is_armed() and radio.smoke_amount() == 1.0 and not radio.armed)
+
+	var unsaved := RcInput.new()
+	unsaved.connect_device(9, {"name": "EdgeTX transmitter", "known": true})
+	check("recognized unsaved radio cannot fly with a guessed mapping", unsaved.profile_source == "unconfigured" \
+		and unsaved.profile.kind == "radio" and not unsaved.profile.configured and not unsaved.armed \
+		and "calibration" in unsaved.profile_error.to_lower())
+	unsaved.on_motion(9, 6, 0.4)
+	check("unconfigured motion is raw only, not mapping freshness", unsaved.axes[6] == 0.4 and not unsaved.has_axis_sample(6))
+	unsaved.poll(func(_device: int, axis: int) -> float: return 0.4 if axis == 6 else -0.2, DT)
+	check("unconfigured radio retains raw calibration samples without arming", unsaved.axes[6] == 0.4 \
+		and not unsaved.armed and not unsaved.has_axis_sample(6) \
+		and unsaved.sticks() == {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0})
+	unsaved.poll(func(_device: int, _axis: int) -> float: return NAN, DT)
+	check("invalid unconfigured sample clears raw data and cannot arm", not unsaved.armed and unsaved.axes[6] == 0.0 and not unsaved.input_error.is_empty())
+	unsaved.connect_device(9, {"name": "EdgeTX transmitter", "known": true}, aux_profile)
+	check("saved calibrated radio mapping remains available", unsaved.profile_source == "calibrated" \
+		and unsaved.profile.profile_id == aux_profile.profile_id and unsaved.profile.configured)
 
 	print("Controller conditioning: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

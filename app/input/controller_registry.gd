@@ -214,14 +214,17 @@ func _apply_ambiguity_flags() -> bool:
 		var ambiguity_changed := bool(device.get("ambiguous", false)) != ambiguous
 		if ambiguity_changed:
 			device["ambiguous"] = ambiguous
-			# Ambiguity participates in strict JETI matching. Invalidate its cached
-			# profile generation and release automatic ownership when that evidence changes.
-			if bool(device.get("connected", false)) and JetiRadio.has_jeti_identity_claim(device):
+			# A cached profile match depends on the complete connected snapshot, not
+			# only this handle. Invalidate it when another matching identity arrives
+			# or leaves. An uninterrupted generic connection remains session-bound.
+			if bool(device.get("connected", false)):
 				device["generation"] = int(device.get("generation", 0)) + 1
-				for role in ROLES:
-					if int(_selections[role]) == int(id):
-						_selections[role] = -1
-						lost_selections.append(role)
+				# JETI starter matching also requires unambiguous identity evidence.
+				if JetiRadio.has_jeti_identity_claim(device):
+					for role in ROLES:
+						if int(_selections[role]) == int(id):
+							_selections[role] = -1
+							lost_selections.append(role)
 			_devices[id] = device
 			changed = true
 	for role in lost_selections:

@@ -5,6 +5,7 @@ const VehicleModel = preload("res://sim/vehicle_model.gd")
 const Data = preload("res://physics/rotorcraft_data.gd")
 const ControllerProfile = preload("res://input/controller_profile.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
+const MainRotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const Hover = preload("res://physics/rotorcraft/trim.gd")
 const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
@@ -20,6 +21,7 @@ const Commands = preload("res://input/commands.gd")
 const Keyboard = preload("res://input/keyboard.gd")
 const RcInput = preload("res://input/rc_input.gd")
 const RcCalibration = preload("res://input/rc_calibration.gd")
+const ControllerStore = preload("res://input/controller_profile_store.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
 const SimEnvironment = preload("res://sim/environment.gd")
 const NativeStage = preload("res://sim/native_stage.gd")
@@ -39,6 +41,7 @@ var raw: Dictionary = Commands.neutral_raw()
 var read_raw: Callable = Keyboard.read_raw
 var read_axis: Callable = Input.get_joy_axis
 var read_button: Callable = Input.is_joy_button_pressed
+var connected_device_ids: Callable = Input.get_connected_joypads
 var device_info: Callable = func(id: int) -> Dictionary:
   var info: Dictionary = Input.get_joy_info(id)
   info.merge({name=Input.get_joy_name(id),guid=Input.get_joy_guid(id),known=Input.is_joy_known(id)})
@@ -90,6 +93,8 @@ var _hover: Dictionary = {}
 var _trim: Dictionary = {}
 var _ready_to_fly: bool = false
 var _stage_failure: String = ""
+var _stage_domain_diagnostics: Dictionary = {}
+var _fault_domain_diagnostics: Dictionary = {}
 ## The stopped-rotor tracking policy changes accepted controller state; older
 ## checkpoints cannot claim exact continuation under this law.
 const HEADING_MEMORY_LAW: String = "stopped-rotor-loaded-skid-tracking-v1"
@@ -153,6 +158,7 @@ const _PUBLICATION_FIELDS := ["aircraft","aircraft_path","_hover","_trim","comma
  "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","_mode_confirmation","start_choice","_start","_field",
  "environment","ground_surfaces","_weather","_collision_world","_impact_geometry","_pending_impact","_ground_start",
  "startup_collective","shaft_phase","_phase_omega","crash","_ready_to_fly","calibration",
+ "_stage_domain_diagnostics","_fault_domain_diagnostics",
  "_controller_cut_held","_controller_lost","_native_stage","_native_previous_pre_tick",
  "_stage_backend_requested","_backend_selection_locked"]
 
@@ -260,12 +266,22 @@ func _init() -> void:
  vehicle.step_policy=_step_with_heading_tracking
  vehicle.block_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
  if not sim.set_model(vehicle): push_error("Cannot install the rotorcraft vehicle model")
+ # A direct reset preparation can evaluate a rejected trial without a fault.
+ # Discard that tentative reason once per tick, before any stage can fail.
+ sim.before_step.connect(func(_tick: int) -> void:
+  _stage_failure=""
+  _stage_domain_diagnostics={})
  sim.faulted.connect(func(reason: String) -> void:
   _pending_impact={}
   if _native_stage!=null:
    var native_failure: String=_native_stage.last_failure()
    if not native_failure.is_empty(): _stage_failure=native_failure
-  pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
+  var stage_refused: bool=reason in ["step rejected: joint stage evaluation is nonfinite or malformed", "step rejected: RK joint stage evaluation is nonfinite or malformed"]
+  var rotor_refused: bool=_stage_failure=="main-rotor advance ratio exceeds the kernel domain at this speed"
+  _fault_domain_diagnostics=_stage_domain_diagnostics.duplicate(true) if stage_refused and rotor_refused and _native_stage==null else {}
+  var failure: String="" if rotor_refused and not stage_refused else _stage_failure
+  var detail: String=_rotor_domain_report(_fault_domain_diagnostics)
+  pause_reason=reason+(" · "+failure if not failure.is_empty() else "")+(" · "+detail if not detail.is_empty() else ""))
  sim.paused_changed.connect(func(value: bool) -> void:
   if value: _clear_mode_confirmation())
  sim.stepped.connect(_on_stepped)
@@ -279,6 +295,10 @@ func _init() -> void:
 func _step_with_heading_tracking(state: PackedFloat64Array,t: float,dt: float,f: Callable,first: PackedFloat64Array) -> Variant:
  _pending_impact={}
  var result: Variant=StepAdapter.step(state,t,dt,f,first)
+ # The kernel has already latched a refused reference RK stage. Its zero
+ # derivative fallback can still yield a finite speculative endpoint, which
+ # must not replace that earlier refusal with a later contact diagnostic.
+ if not _stage_failure.is_empty(): return result
  if result is Dictionary and result.get("state") is PackedFloat64Array \
  and _water_contact_possible(state,result.state):
   _stage_failure="Helicopter water contact is unsupported; the candidate tick was refused."
@@ -604,7 +624,7 @@ func set_start_choice(choice: String) -> bool:
  start_choice=selected
  return true
 
-const _RESET_FIELDS := ["_ready_to_fly","_stage_failure","_hover","_trim","commands","raw",
+const _RESET_FIELDS := ["_ready_to_fly","_stage_failure","_stage_domain_diagnostics","_fault_domain_diagnostics","_hover","_trim","commands","raw",
  "flight_mode","trainer_enabled","zero_drive_hold","power","pending_mode","_mode_confirmation","shaft_phase","_phase_omega",
  "crash","_ground_start","_pending_impact","startup_collective","calibration","_native_stage","_native_previous_pre_tick",
  "stage_backend_error","pause_reason"]
@@ -648,6 +668,8 @@ func _reset_impl() -> bool:
  _cancel_calibration_internal()
  _ready_to_fly=false
  _stage_failure=""
+ _stage_domain_diagnostics={}
+ _fault_domain_diagnostics={}
  if not aircraft.ok: return false
  var solved: Dictionary={ok=false}
  if start_choice=="ground":
@@ -707,15 +729,16 @@ func _reset_impl() -> bool:
  _detach_stage_backend()
  var prepared: Dictionary=sim.prepare_reset(solved.state.slice(0,13))
  if not prepared.get("ok",false):
-  start_error=str(prepared.get("message","helicopter reset preparation failed"))+(" · "+_stage_failure if not _stage_failure.is_empty() else "")
+  var detail: String=_rotor_domain_report(_stage_domain_diagnostics)
+  start_error=str(prepared.get("message","helicopter reset preparation failed"))+(" · "+_stage_failure if not _stage_failure.is_empty() else "")+(" · "+detail if not detail.is_empty() else "")
   return false
- # Observers see the complete accepted owner when the kernel calls the hook.
- # A pre-publication refusal restores this tentative owner in reset().
- _ready_to_fly=true
+ # The physical frame is committed before this hook, but keep checkpoints
+ # unavailable until the requested backend is installed after publication.
  if not sim.commit_prepared_reset(prepared,Callable(self,"_publish_reset_transition")):
   start_error="prepared helicopter reset was refused"
   return false
  _reset_committed=true
+ _ready_to_fly=true
  var reset_failure: String=""
  if not sim.reset_observer_fault.is_empty():
   _ready_to_fly=false
@@ -740,9 +763,12 @@ func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) ->
  var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces,false,continuous.slice(6) if continuous.size()==14 else PackedFloat64Array(),environment.lake)
  if not contact.ok: return {}
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind_at(t,state.slice(0,RB.SIZE)),false,contact.loads,_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,t))
+ var wind: PackedFloat64Array=wind_at(t,state.slice(0,RB.SIZE))
+ var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold or not power.armed,wind,false,contact.loads,_trim,_height_over_radius(state),Lifecycle.scale(power,zero_drive_hold,t))
  if not result.ok:
   _stage_failure=str(result.get("message","flight equation refused state"))
+  if result.get("fault","")=="main_rotor_advance_ratio_out_of_domain":
+   _stage_domain_diagnostics=_rotor_domain_at_stage(state,wind)
   return {}
  # Do not accumulate heading-hold I error against constrained skids during startup.
  # Existing airborne/contact trajectories retain their original control law.
@@ -750,6 +776,52 @@ func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) ->
   result.derivative[5]=0.0
  if continuous.size()==14: result.derivative.append_array(contact.bristle_derivative)
  return {loads=result.loads,body_derivative=result.body_derivative,derivative=result.derivative,rotor_momentum=result.rotor_momentum}
+
+
+## The reference evaluator normalizes attitude before converting CG velocity
+## and wind to body FRD. Use the same failed trial and its body-rate hub offset;
+## a rolled-back endpoint or world wind cannot reconstruct an RK-stage refusal.
+func _rotor_domain_at_stage(state: PackedFloat64Array,wind: PackedFloat64Array) -> Dictionary:
+ var attitude: PackedFloat64Array=state.slice(RB.ATT,RB.ATT+4)
+ var norm: float=sqrt(M.dot(attitude.slice(1,4),attitude.slice(1,4))+attitude[0]*attitude[0])
+ for index: int in 4: attitude[index]/=norm
+ var body_velocity: PackedFloat64Array=state.slice(RB.VEL,RB.VEL+3)
+ var velocity_ned: PackedFloat64Array=M.q_rotate(attitude,body_velocity)
+ var air_cg: PackedFloat64Array=M.q_rotate(M.q_conj(attitude),M.sub(velocity_ned,wind))
+ var rates: PackedFloat64Array=state.slice(RB.RATE,RB.RATE+3)
+ var model: Dictionary=aircraft.context.main_model
+ var arm: PackedFloat64Array=M.v3(model.hub_x_m,model.hub_y_m,model.hub_z_m)
+ return MainRotor.domain_diagnostics(model,state[Flight.OMEGA],M.add(air_cg,M.cross(rates,arm)))
+
+
+## Only a terminal reference-stage fault is published here. A direct reset
+## preparation can fail without publishing its candidate to the session.
+## Native stages do not expose their failed trial state to this owner.
+func stage_domain_diagnostics() -> Dictionary:
+ return {} if _native_stage!=null or sim.fault_reason.is_empty() else _fault_domain_diagnostics.duplicate(true)
+
+
+func _rotor_domain_report(d: Dictionary) -> String:
+ if d.is_empty(): return ""
+ if not d.get("ok",false): return "Main-rotor hub domain diagnostic unavailable."
+ var hub: PackedFloat64Array=d.hub_air_velocity_body_frd_m_s
+ var source_indicator: String=_diagnostic_value(d.mu_below_source_indicator) if d.mu_squared!=null else "unavailable"
+ return "Hub air-relative FRD (longitudinal, lateral, axial) %s m/s; crossflow %s m/s; head %s rad/s; transition %s–%s rad/s (%s); mu_x %s, mu_y %s, mu² %s; standard member required %s, algebraic mu² < %s valid %s, pole factor %s; source mu < %s indicator %s (not a validated aircraft limit)." % [
+  str(hub),str(d.hub_crossflow_m_s),str(d.head_speed_rad_s),str(d.transition_lower_rad_s),
+  str(d.transition_upper_rad_s),str(d.regime),_diagnostic_ratio(hub[0],d.tip_speed_m_s),
+  _diagnostic_ratio(hub[1],d.tip_speed_m_s),_diagnostic_value(d.mu_squared),str(d.standard_member_required),
+  str(d.standard_algebraic_mu_squared_limit),_diagnostic_value(d.standard_algebraic_mu_valid),
+  _diagnostic_value(d.pole_factor),str(d.source_identified_mu_indicator_limit),source_indicator]
+
+
+func _diagnostic_value(value: Variant) -> String:
+ return "unavailable" if value==null else str(value)
+
+
+func _diagnostic_ratio(component: float,tip: Variant) -> String:
+ if typeof(tip) not in [TYPE_FLOAT,TYPE_INT] or not is_finite(float(tip)) or float(tip)<=0.0: return "unavailable"
+ var ratio: float=component/float(tip)
+ return str(ratio) if is_finite(ratio) else "unavailable"
 
 func _hub_offset(state: PackedFloat64Array) -> PackedFloat64Array:
  var main: Dictionary=aircraft.context.main_model
@@ -866,7 +938,9 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
  if connected and not radio.connected:
   _clear_mode_confirmation()
   var info: Dictionary=device_info.call(id)
-  radio.connect_device(id,info,RcCalibration.load_profile(profiles_path,RcInput.key_for(id,info)))
+  var unique_legacy: bool=ControllerStore.legacy_identity_is_unique_for_ids(id,info,connected_device_ids.call(),device_info)
+  var saved: Dictionary=RcCalibration.load_profile(profiles_path,RcInput.key_for(id,info)) if unique_legacy else {}
+  radio.connect_device(id,info,saved)
   if radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
   sim.set_paused(true)
   pause_reason="Gamepad connected: P resumes the hover collective." if radio.is_rate_throttle() else "Radio: lower collective to arm, return it to %.0f%% for hover, then P."%(commands.throttle*100.0)
@@ -913,10 +987,14 @@ func advance_calibration() -> void:
    calibration=null
    pause_reason="Radio calibrated. Lower collective again before continuing." if result.get("ok",false) else "Calibration not saved: "+str(result.get("error","storage error"))
    return
-  radio.use_profile(calibration.profile,"calibrated")
-  RcCalibration.save_profile(profiles_path,radio.device_key,calibration.profile)
+  var completed: Dictionary=calibration.profile.duplicate(true)
+  if not radio.profile.get("configured",false): completed["actions"]=ControllerProfile.ControllerActions.clean_radio_bindings()
+  radio.use_profile(completed,"calibrated")
+  var info: Dictionary=device_info.call(radio.device_id)
+  var unique_legacy: bool=RcInput.key_for(radio.device_id,info)==radio.device_key and ControllerStore.legacy_identity_is_unique_for_ids(radio.device_id,info,connected_device_ids.call(),device_info)
+  var err: Error=RcCalibration.save_profile(profiles_path,radio.device_key,completed) if unique_legacy else ERR_ALREADY_IN_USE
   calibration=null
-  pause_reason="radio calibrated"
+  pause_reason="radio calibrated" if err==OK else "radio calibrated, NOT saved (error %d)"%err
 
 func controller_profile_rejection(profile: Dictionary) -> String:
  return "Choose a stick-rate or calibrated radio profile for helicopter collective." if profile.get("throttle_mode","")=="trigger_absolute" else ""
@@ -1286,6 +1364,8 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
   _ready_to_fly=true
   start_error=""
   _stage_failure=""
+  _stage_domain_diagnostics={}
+  _fault_domain_diagnostics={}
   pause_reason=""
   if not sim.restore_checkpoint(saved,Callable(self,"_publish_native_restore")):
    for field: String in _RESET_FIELDS:
@@ -1318,6 +1398,8 @@ func _restore_checkpoint_impl(candidate: Variant,transactional: bool) -> Diction
  _ready_to_fly=true
  start_error=""
  _stage_failure=""
+ _stage_domain_diagnostics={}
+ _fault_domain_diagnostics={}
  pause_reason=""
  sim.set_paused(true)
  if external_controller_selection and radio.connected:

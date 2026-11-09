@@ -1,0 +1,10 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/heli-reset-69432-3928376-gdscript_reference.csv (1 rows)
+FAIL gdscript_reference rejected reset restores owner, kernel, helper and callback physical=false model=true stage=true helper=true signals=1 checkpoint=false backend={ &"requested": "gdscript_reference", &"identity": { &"backend": "gdscript_reference" }, &"reason": "" }
+FAIL gdscript_reference rejected reset preserves recording and gamepad collective 
+FAIL gdscript_reference flight continues after reset rollback before=4 after=4 fault=reset rejected: endpoint state validator or layout refused the state backend={ &"requested": "gdscript_reference", &"identity": { &"backend": "gdscript_reference" }, &"reason": "" }
+FAIL gdscript_reference accepted reset stops the old recording before tick zero 
+FAIL native rejected reset preserves recording and gamepad collective 
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/heli-reset-69432-4109649-native.csv (2 rows)
+NK-3 helicopter native session: 186 checks, 5 failures, native exercised=false

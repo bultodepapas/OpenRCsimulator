@@ -17,7 +17,7 @@ func check(label: String, ok: bool) -> void:
 func _initialize() -> void:
 	var radio: Radio = Radio.new()
 	for selection: int in 1024:
-		radio.connect_device(15, INFO)
+		radio.connect_device(15, INFO, Radio.DEFAULT_PROFILE)
 		var observed: Dictionary = {}
 		# A set oracle verifies every sparse combination, including axes 0 and 9.
 		for axis: int in Radio.AXES:
@@ -47,7 +47,7 @@ func _initialize() -> void:
 			correct = correct and not radio.has_axis_sample(axis) and radio.axes[axis] == 0.0
 		check("disconnect clears every history combination %d" % selection, correct)
 	# An armed reader must continue receiving repeated and previously untouched axes.
-	radio.connect_device(15, INFO)
+	radio.connect_device(15, INFO, Radio.DEFAULT_PROFILE)
 	radio.on_motion(15, 2, -1.0)
 	radio.poll(func(_id: int, _axis: int) -> float: return -1.0, 1.0 / 240.0)
 	check("fixture armed", radio.armed)
@@ -65,7 +65,7 @@ func _initialize() -> void:
 	radio.on_motion(15, 2, -1.0)
 	radio.poll(func(_id: int, _axis: int) -> float: return -1.0, 1.0 / 240.0)
 	check("new profile arms after fresh low throttle event", radio.armed)
-	radio.connect_device(15, INFO)
+	radio.connect_device(15, INFO, Radio.DEFAULT_PROFILE)
 	var clear: bool = not radio.armed
 	for axis: int in Radio.AXES:
 		clear = clear and not radio.has_axis_sample(axis)

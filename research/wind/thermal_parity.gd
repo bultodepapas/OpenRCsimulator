@@ -70,6 +70,16 @@ func _initialize() -> void:
 			_compare(old, current, position, 120.0, "invalid position")
 		for time_s: float in [-1.0, NAN, INF, 86401.0]:
 			_compare(old, current, PackedFloat64Array([30.0, -80.0, -150.0]), time_s, "invalid time")
+		var negative_zero := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128]).decode_double(0)
+		_compare(old, current, PackedFloat64Array([negative_zero, 0.0, negative_zero]), negative_zero, "signed-zero query")
+		for cell: Dictionary in checked.config.cells:
+			for peak: float in [0.0, negative_zero, float(cell.peak_updraft_mps)]:
+				var signed_cell := cell.duplicate(true)
+				signed_cell.peak_updraft_mps = peak
+				for height: float in [0.0, 150.0, 300.0]:
+					var expected: PackedFloat64Array = old.call("_cell_velocity", signed_cell, 30.0, -80.0, height, 120.0 + float(cell.birth_s))
+					var actual: PackedFloat64Array = current.call("_cell_velocity", signed_cell, 30.0, -80.0, height, 120.0 + float(cell.birth_s))
+					_check("signed-zero cell bytes", expected.to_byte_array() == actual.to_byte_array())
 	print("thermal parity: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)
 
@@ -81,5 +91,8 @@ func _compare(old: RefCounted, current: RefCounted, position: PackedFloat64Array
 	_check(label + " result bytes", var_to_bytes(expected) == var_to_bytes(actual))
 	if actual.ok:
 		var before := var_to_bytes(actual)
+		var second: Dictionary = current.sample_world(position, time_s)
 		actual.wind_ned_mps[0] = NAN
-		_check(label + " detached result", var_to_bytes(current.sample_world(position, time_s)) == before)
+		_check(label + " mutation applied", is_nan(actual.wind_ned_mps[0]))
+		_check(label + " detached result", var_to_bytes(second) == before
+			and var_to_bytes(current.sample_world(position, time_s)) == before)

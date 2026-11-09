@@ -738,7 +738,7 @@ func _test_absorption_sequence(field: Dictionary) -> void:
 	var old := LegacyAbsorption.new()
 	var matches := true
 	var air: Dictionary = Atmosphere.evaluate(1500.0, 35.0, 1013.25, 50.0)
-	var given_values: Array = [0.0, -0.0, false, null, "1.2", 2.25]
+	var given_values: Array = [0.0, -0.0, false, "1.2", 2.25]
 	for step: int in 160:
 		if step == 91:
 			rig.reset_observer()

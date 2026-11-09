@@ -4,6 +4,10 @@ const Rotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
 const Data = preload("res://physics/rotorcraft_data.gd")
 const M = preload("res://physics/math3d.gd")
+const RB = preload("res://physics/rigid_body.gd")
+const Session = preload("res://sim/helicopter_flight_session.gd")
+const Weather = preload("res://physics/wind_config.gd")
+const ImpactDetector = preload("res://physics/rotorcraft/impact_detector.gd")
 
 var checks: int = 0
 var failures: int = 0
@@ -32,6 +36,10 @@ func evaluate(model: Dictionary, omega: float, air: PackedFloat64Array) -> Dicti
 
 
 func _initialize() -> void:
+	_run.call_deferred()
+
+
+func _run() -> void:
 	for fixture: Array in [
 		["xcell", "res://data/aircraft/xcell_60_research.json", 20.0],
 		["hx700 laboratory", "res://data/aircraft/hx700_electric_3d_experimental.json", 25.0],
@@ -40,6 +48,7 @@ func _initialize() -> void:
 		check(str(fixture[0]) + " data loads", data.ok)
 		if data.ok:
 			_exercise(str(fixture[0]), data.context.main_model, float(fixture[2]))
+	_session_reporting()
 	print("HELI H02 rotor domain diagnostics: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
@@ -149,3 +158,120 @@ func _exercise(name: String, model: Dictionary, high_crossflow: float) -> void:
 		and hub_diag.hub_air_velocity_body_frd_m_s == hub
 		and Flight._main_rotor_domain(model, near_pole, cg, rate) == hub_diag.standard_algebraic_mu_valid)
 	close(name + " body-rate contribution changes the hub crossflow", hub_diag.hub_crossflow_m_s, high_crossflow)
+
+
+func _session_reporting() -> void:
+	var session: Node = Session.new()
+	session.input_enabled = false
+	session.physics_enabled = false
+	root.add_child(session)
+	check("reference session prepares with steady wind", session.setup() \
+		and session.setup_weather(Weather.preset("steady")) and session.reset())
+	if not session.is_flyable():
+		print("Session setup refused: ", session.start_error)
+		session.free()
+		return
+	var trial: PackedFloat64Array = session.sim.state.duplicate()
+	var attitude: PackedFloat64Array = M.q_from_euler(0.35, 0.12, -0.08)
+	for i: int in 4: trial[RB.ATT + i] = attitude[i]
+	trial[RB.VEL] = 21.0
+	trial[RB.VEL + 1] = 1.0
+	trial[RB.VEL + 2] = 0.4
+	trial[RB.RATE] = 0.2
+	trial[RB.RATE + 1] = -4.0
+	trial[RB.RATE + 2] = 0.3
+	var continuous: PackedFloat64Array = session.sim.continuous.duplicate()
+	var model: Dictionary = session.aircraft.context.main_model
+	continuous[0] = model.omega_nominal_rad_s * 0.105
+	var wind: PackedFloat64Array = session.wind_at(session.sim.time(), trial)
+	var qnorm: float = sqrt(M.dot(attitude.slice(1, 4), attitude.slice(1, 4)) + attitude[0] * attitude[0])
+	for i: int in 4: attitude[i] /= qnorm
+	var body_velocity: PackedFloat64Array = trial.slice(RB.VEL, RB.VEL + 3)
+	var air_cg: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), \
+		M.sub(M.q_rotate(attitude, body_velocity), wind))
+	var arm: PackedFloat64Array = M.v3(model.hub_x_m, model.hub_y_m, model.hub_z_m)
+	var hub: PackedFloat64Array = M.add(air_cg, M.cross(trial.slice(RB.RATE, RB.RATE + 3), arm))
+	var expected: Dictionary = Rotor.domain_diagnostics(model, continuous[0], hub)
+	var invalid_continuous: PackedFloat64Array = continuous.duplicate()
+	check("trial has active invalid blend using actual hub airflow", expected.ok and expected.regime == "blend" \
+		and expected.standard_member_required and expected.standard_algebraic_mu_valid == false \
+		and hub.to_byte_array() != air_cg.to_byte_array() and M.norm(wind) > 0.0)
+	var accepted_body: PackedByteArray = session.sim.state.to_byte_array()
+	var accepted_continuous: PackedByteArray = session.sim.continuous.to_byte_array()
+	var accepted_tick: int = session.sim.tick
+	# Inject a detached RK trial while the real accepted frame remains intact.
+	session.sim.model.stage = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, time: float) -> Dictionary:
+		return session._stage(trial, continuous, time)
+	session.sim.step()
+	var diagnostic: Dictionary = session.stage_domain_diagnostics()
+	check("refused trial rolls back and publishes a pause reason", session.sim.paused \
+		and session.sim.tick == accepted_tick and session.sim.state.to_byte_array() == accepted_body \
+		and session.sim.continuous.to_byte_array() == accepted_continuous \
+		and session.pause_reason.contains("Hub air-relative FRD") and session.pause_reason.contains("algebraic mu²") \
+		and session.pause_reason.contains("not a validated aircraft limit"))
+	check("runtime receipt matches failed trial hub-domain API", var_to_bytes(diagnostic) == var_to_bytes(expected))
+	check("reference-native oracle failure message remains unchanged", \
+		session._stage_failure == "main-rotor advance ratio exceeds the kernel domain at this speed")
+	if diagnostic.get("ok", false):
+		diagnostic.hub_air_velocity_body_frd_m_s[0] += 100.0
+		check("runtime receipt is detached", \
+			session.stage_domain_diagnostics().hub_air_velocity_body_frd_m_s.to_byte_array() == hub.to_byte_array())
+	continuous[0] = -1.0
+	session._stage(trial, continuous, session.sim.time())
+	check("direct trial does not replace the published fault receipt", var_to_bytes(session.stage_domain_diagnostics()) == var_to_bytes(expected) \
+		and session._stage_failure.contains("crossed zero speed"))
+	session.sim.model.stage = Callable(session, "_stage")
+	check("accepted reset clears the published domain fault", session.reset() and session.stage_domain_diagnostics().is_empty())
+	session.sim.model.stage = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, time: float) -> Dictionary:
+		return session._stage(trial, continuous, time)
+	session.sim.step()
+	check("unrelated terminal refusal clears the prior domain receipt", session.stage_domain_diagnostics().is_empty() \
+		and not session.pause_reason.contains("Hub air-relative FRD"))
+	session.free()
+	_second_stage_precedence(trial, invalid_continuous, expected)
+
+
+func _second_stage_precedence(trial: PackedFloat64Array, invalid_continuous: PackedFloat64Array, expected: Dictionary) -> void:
+	var session: Node = Session.new()
+	session.input_enabled = false
+	session.physics_enabled = false
+	root.add_child(session)
+	check("second-stage fixture prepares steady reference hover", session.setup() \
+		and session.setup_weather(Weather.preset("steady")) and session.reset())
+	if not session.is_flyable():
+		session.free()
+		return
+	var accepted_body: PackedFloat64Array = session.sim.state.duplicate()
+	var accepted_continuous: PackedFloat64Array = session.sim.continuous.duplicate()
+	var accepted_tick: int = session.sim.tick
+	session._impact_geometry = {ok = false, error = "injected contact refusal"}
+	var contact: Dictionary = ImpactDetector.evaluate(accepted_body, accepted_body, accepted_continuous,
+		session.aircraft.context, session.aircraft.skids, session.ground_surfaces, session.shaft_phase,
+		session._collision_world, session._impact_geometry, session.environment.lake)
+	check("competing prepared contact geometry actually refuses", not contact.ok \
+		and contact.error == "injected contact refusal")
+	var calls := [0]
+	var first_ok := [false]
+	var second_refused := [false]
+	session.sim.model.stage = func(body: PackedFloat64Array, continuous: PackedFloat64Array, time: float) -> Dictionary:
+		calls[0] += 1
+		if calls[0] == 1:
+			var first: Dictionary = session._stage(body, continuous, time)
+			first_ok[0] = not first.is_empty()
+			return first
+		var second: Dictionary = session._stage(trial, invalid_continuous, time)
+		second_refused[0] = second.is_empty()
+		return second
+	session.sim.step()
+	check("first stage succeeds and second RK stage refuses", calls[0] == 2 and first_ok[0] and second_refused[0])
+	check("refused second-stage tick preserves the accepted frame", session.sim.paused \
+		and session.sim.tick == accepted_tick and session.sim.state.to_byte_array() == accepted_body.to_byte_array() \
+		and session.sim.continuous.to_byte_array() == accepted_continuous.to_byte_array() \
+		and session._pending_impact.is_empty() \
+		and session.sim.fault_reason == "step rejected: RK joint stage evaluation is nonfinite or malformed")
+	check("earlier rotor refusal and trial receipt beat speculative contact", \
+		session._stage_failure == "main-rotor advance ratio exceeds the kernel domain at this speed" \
+		and var_to_bytes(session.stage_domain_diagnostics()) == var_to_bytes(expected) \
+		and session.pause_reason.contains("Hub air-relative FRD") \
+		and not session.pause_reason.contains("Contact detection refused"))
+	session.free()

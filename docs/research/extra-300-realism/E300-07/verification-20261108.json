@@ -1,0 +1,503 @@
+{
+  "scope": "E300-07 accepted-iterate RPM finalization, Windows x86-64 headless Dummy; current dependencies with historical Trim only",
+  "baseline_commit": "a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e",
+  "observed_head": "4667f1cff4899b3fb656fb84f402cfb85ba8a0ce",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "source_sha256": {
+    "app/physics/trim.gd": "2a20692b6f1629a0fee381688cd4e86d8628d12f984065106f7875465f57c6fa",
+    "app/physics/cruise_trim.gd": "ff1a1d986e4c098eb2f57bed8735fb58b65d59d3e33462339d455ce6b3b24083",
+    "app/tests/test_trim_result_rpm.gd": "a442477e6d048ca66be77c0e90b32ea7fcf6962c28b1327fbafea0723be70a56",
+    "research/extra-300/ex07/compare_trim.gd": "087d6bc79def596ad236973a87d9d336e6e70f3b77e6ad779a05bbf8d6f9d689"
+  },
+  "numbered_checks": 866,
+  "checks": [
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f1a80450-b62c-40c3-9db5-1eae93184519",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_cruise_trim.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:39:07.131757+00:00",
+        "label": "e300-07-cruise",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-cruise-z13sd83g\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-cruise-z13sd83g\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "22 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.469,
+        "log_bytes": 1654,
+        "log_sha256": "69630a2e766f451ed22b7d28af640cd2d5cf7a7da9effd97a62b71d2a2f2eaed"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok    Ugly Stik loader model is valid\nok    50% throttle level trim solves  trimmed\nok    search stays above reference and within bound  V 20.59707 m/s\nok    selected throttle reached within 1e-7  throttle 0.4999999995\nok    solution remains on attached branch  alpha 1.604 deg\nok    trim residual remains small  residual 5.5820568030720796e-15\nok    result retains Trim fields and request metadata\nok    independent six-axis dynamics residual is below 1e-8  max |acceleration/rate derivative| 4.496403249731884e-15\nok    fixed-surface level rollout remains near equilibrium for 5 s  altitude drift 0.00000 m, speed drift 0.00000 m/s, max rate 2.613881930929272e-16 rad/s\nok    rejects throttle above one\nok    rejects nonfinite throttle\nok    rejects nonpositive reference speed\nok    rejects maximum speed below reference\nok    rejects maximum speed above hard bound\nok    rejects nonfinite gravity\nok    rejects nonfinite density\nok    rejects missing trim throws\nok    rejects an empty model\nok    fails explicitly if reference trim already exceeds target throttle  reference-speed trim already requires more than the requested throttle\nok    rejects a trim above the attached-flow alpha limit  level trim exceeds the attached-flow angle limit at 15.00 m/s\nok    propagates unavailable slow-speed trim failure  level trim failed at 5.00 m/s: singular or nonfinite Jacobian (no trim near this condition)\nok    fails when maximum speed cannot reach requested throttle  requested throttle was not bracketed by the maximum speed 20.00 m/s\n22 checks, 0 failed\n",
+      "numbered_checks": 22
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a46b79bb-ac26-43fd-adc1-807a7f6eed94",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_electric_trim_reuse.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:40:03.325950+00:00",
+        "label": "e300-07-electric",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-electric-m945wr0m\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-electric-m945wr0m\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.266,
+        "log_bytes": 1077,
+        "log_sha256": "da8321011ff754849150e23b5959a10ee0fe857c0871aad0fdf8fa3d1ba03984"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nok    Turbo Lumber pack data loads\nok    Turbo Lumber pack uses electric propulsion\nok    base level electric equilibrium succeeds\nok    base RPM is finite\nok    generic electric evaluation exposes the RPM it already computed\nok    control axis 1 leaves steady inputs unchanged\nok    control axis 1 reuse is byte-identical to a fresh solve\nok    control axis 4 leaves steady inputs unchanged\nok    control axis 4 reuse is byte-identical to a fresh solve\nok    control axis 5 leaves steady inputs unchanged\nok    control axis 5 reuse is byte-identical to a fresh solve\nok    alpha change requires a fresh steady point\nok    alpha change follows the fresh evaluation\nok    alpha change differs from forcing the previous RPM\nok    duty change requires a fresh steady point\nok    duty change follows the fresh evaluation\nok    duty change differs from forcing the previous RPM\nok    reused evaluation retains finite six-axis derivatives\nElectric trim RPM reuse fixture: 18 checks, 0 failed\n",
+      "numbered_checks": 18
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "c81b7cf1-0663-4b8b-a45e-fd0312b50d6d",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_trim_integrity.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:37:45.377279+00:00",
+        "label": "e300-07-integrity",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-integrity-4fkc3os5\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-integrity-4fkc3os5\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "731 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 16.563,
+        "log_bytes": 116,
+        "log_sha256": "8f165dd86f939e49634dc8654b19719e46871cc69fc38eaca4fb4612feb05d29"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nD4-R2 trim integrity: 731 checks, 0 failed\n",
+      "numbered_checks": 731
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "f70942b4-e6b7-4325-9849-b0e3c0e635c5",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_launch_trim_async.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:43:06.030286+00:00",
+        "label": "e300-07-launch-async",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-launch-async-c0ep8th9\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-launch-async-c0ep8th9\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 3.578,
+        "log_bytes": 504,
+        "log_sha256": "d7b886443db1714d4b0b81b9880db11e5c08d9cd8b0d4ced24116471830ae590"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nLaunch trim async fixture: 24 checks, 0 failed; stats={ &\"hits\": 4, &\"misses\": 4, &\"bypasses\": 1, &\"has_entry\": true, &\"entries\": 1, &\"entry_limit\": 2, &\"retained_key_bytes\": 20780, &\"retained_key_limit_bytes\": 1048576, &\"staged_worker_active\": false, &\"staged_workers_started\": 2, &\"menu_starts\": 0, &\"menu_adoptions\": 0, &\"menu_discarded\": 0, &\"menu_completed\": 0, &\"menu_skipped\": 0, &\"managed_owner\": \"\", &\"managed_token\": 0 }\n",
+      "numbered_checks": 24
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "a9e0c36d-198a-4730-ab93-ad1516e8e837",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_launch_trim_cache.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:40:19.814351+00:00",
+        "label": "e300-07-launch-cache",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-launch-cache-tax0olsu\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-launch-cache-tax0olsu\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 5.703,
+        "log_bytes": 655,
+        "log_sha256": "25a28f83d234156478290a0eca3a3e8337af864208c3672c42da323503ce98c0"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\nStik trim-cache fixture: 47 checks, 0 failures; stats={ &\"hits\": 0, &\"misses\": 1, &\"bypasses\": 0, &\"has_entry\": true, &\"entries\": 1, &\"entry_limit\": 2, &\"retained_key_bytes\": 16380, &\"retained_key_limit_bytes\": 1048576, &\"staged_worker_active\": false, &\"staged_workers_started\": 0, &\"menu_starts\": 0, &\"menu_adoptions\": 0, &\"menu_discarded\": 0, &\"menu_completed\": 0, &\"menu_skipped\": 0, &\"managed_owner\": \"\", &\"managed_token\": 0 }\nStik trim-cache fixture complete: 47 checks, 0 failures\n",
+      "numbered_checks": 47
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "656013f7-537b-4e6a-8693-c8bd7646a5c0",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--check-only",
+          "--script",
+          "res://tests/test_trim_result_rpm.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:36:54.293672+00:00",
+        "label": "e300-07-parse",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-parse-5tfgi8gw\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-parse-5tfgi8gw\\report.json",
+        "timeout_seconds": 60.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.344,
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "237fbebb-02f0-46d2-9bb8-7b6942bc7e30",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_trim_result_rpm.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:37:17.459397+00:00",
+        "label": "e300-07-result",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-result-h0r7jvlw\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-result-h0r7jvlw\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "24 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 8.438,
+        "log_bytes": 93,
+        "log_sha256": "1b41564da81bf910a67b725a57c5161dac4e718a7eb7275921bd003779dd061e"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\n24 checks, 0 failed\n",
+      "numbered_checks": 24
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e4ca42a3-02b4-4f55-a2ba-1fe73ef651a1",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://../research/extra-300/ex07/compare_trim.gd",
+          "--",
+          "--baseline=res://../tmp/audit-e300-07-20261108/trim_baseline.gd",
+          "--out=res://../tmp/audit-e300-07-20261108/published-comparison.json"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T01:38:11.093636+00:00",
+        "label": "e300-07-tool-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-tool-final-cn_22kdm\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-tool-final-cn_22kdm\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "E300-07 comparison: 38 cases, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 15.469,
+        "log_bytes": 112,
+        "log_sha256": "9783368f60e25aecfb24bfcbe09f09e885d9e948f6cc3eb5fe1b8f9f321fbe2c"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nE300-07 comparison: 38 cases, 0 failed\n"
+    }
+  ],
+  "measurement_limit": "No clean timing campaign: other sessions were editing and running Godot. No FPS/startup/native/physical qualification claimed.",
+  "expected_refusals": [
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "82b57bf0-8407-45c8-ba9c-ad1c0cc450d2",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://../research/extra-300/ex07/compare_trim.gd",
+          "--",
+          "--baseline=res://../tmp/audit-e300-07-20261108/trim_baseline.gd",
+          "--out=res://../tmp/audit-e300-07-20261108/published-comparison.json"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T01:38:55.289714+00:00",
+        "label": "e300-07-preserve-existing",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-preserve-existing-e1p63hyt\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-preserve-existing-e1p63hyt\\report.json",
+        "timeout_seconds": 30.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 1.328,
+        "log_bytes": 155,
+        "log_sha256": "85129b98f770b1c2bcba4a1623788b1f53dfafcca3eeb3aae437e5f1a34fb52b"
+      },
+      "log": "Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org\n\nprovide an existing project-local --baseline, a new --out and 0..100 timing pairs\n",
+      "check": "Existing published receipt SHA-256 unchanged; no .partial created."
+    }
+  ],
+  "inconclusive_attempts": [
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "5d7ded81-43a8-43e1-ba2b-f697d3ca6919",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://../research/extra-300/ex07/compare_trim.gd",
+          "--",
+          "--baseline=res://../tmp/audit-e300-07-20261108/trim_baseline.gd",
+          "--out=res://../tmp/audit-e300-07-20261108/reviewed-comparison.json"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:45:19.822142+00:00",
+        "label": "e300-07-tool-reviewed",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-tool-reviewed-zgvuxmlo\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-tool-reviewed-zgvuxmlo\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "E300-07 comparison: 38 cases, 0 failed"
+        ],
+        "process_exit": 1,
+        "complete": false,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [
+          "E300-07 comparison: 38 cases, 0 failed"
+        ],
+        "reason": "timeout",
+        "detail": "process-tree cleanup failed: Command '['taskkill', '/PID', '77808', '/T', '/F']' timed out after 10.0 seconds",
+        "exit_code": 124,
+        "ok": false,
+        "elapsed_seconds": 255.469,
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+      },
+      "note": "Host startup stall; banner only. Superseded by completed e300-07-tool-final / expected-refusal runs; never treated as pass."
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "86b1907f-7b83-4770-ac37-50f31972e367",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://../research/extra-300/ex07/compare_trim.gd",
+          "--",
+          "--baseline=res://../tmp/audit-e300-07-20261108/trim_baseline.gd",
+          "--out=res://../tmp/audit-e300-07-20261108/final-comparison.json"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:47:25.163913+00:00",
+        "label": "e300-07-no-overwrite",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-no-overwrite-v84_szp7\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-e300-07-20261108\\checks\\e300-07-no-overwrite-v84_szp7\\report.json",
+        "timeout_seconds": 30.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 1,
+        "complete": false,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "timeout",
+        "detail": "",
+        "exit_code": 124,
+        "ok": false,
+        "elapsed_seconds": 38.218,
+        "log_bytes": 72,
+        "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+      },
+      "note": "Host startup stall; banner only. Superseded by completed e300-07-tool-final / expected-refusal runs; never treated as pass."
+    }
+  ]
+}

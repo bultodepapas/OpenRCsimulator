@@ -1,0 +1,895 @@
+{
+  "format": "openrc-audit-followup v1",
+  "date": "2026-11-08",
+  "baseline_commit": "a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e",
+  "frozen_candidate": "e667babcad5f4b4f0570cfb0650cffd6fea9582b",
+  "platform": "Windows x86-64 headless/Dummy",
+  "engine": "4.8.beta2.official.cafc17a19",
+  "engine_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+  "frozen_sources_unchanged": true,
+  "source_sha256": {
+    "app/audio/flight_audio.gd": "20938fdde184a9d7c6e9cd73f44da247088993f8c095eaebf2110b959824543c",
+    "app/audio/powertrain_audio.gd": "fe2acdb9d93ab67af9d8f20c8755d0f72a98cb210840e697c68d126f10e1b52e",
+    "app/audio/soundscape.gd": "1dc94712c5c4518c46e207b44e2fd9443d31f3407b0cce3c395c2b052d2cfa89",
+    "app/audio/soundscape_model.gd": "6c3f84f733d2df2e8fa16929718a54e0203545100c0f2c916d7ade7dae70e9ae"
+  },
+  "checks": [
+    {
+      "test": "test_soundscape",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7352a715-804e-41df-95bf-77a0aaa3deb6",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_soundscape.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:41:49.952699+00:00",
+        "label": "stable-test_soundscape",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_soundscape-6xzpltue\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_soundscape-6xzpltue\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 2.468,
+        "log_bytes": 12983,
+        "log_sha256": "d3b11fab89b9831656f4d550c7c0d37cc84096628bb77a898aab0ef178ac8133"
+      },
+      "retained_log": "test_soundscape.log",
+      "completion": [
+        [
+          "180 checks, 0 failed"
+        ]
+      ]
+    },
+    {
+      "test": "test_audio_bank_admission",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e2579eea-0f62-49f8-8c06-60e6e81d0bae",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:41:52.567026+00:00",
+        "label": "stable-test_audio_bank_admission",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_audio_bank_admission-p98mnr1r\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_audio_bank_admission-p98mnr1r\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.25,
+        "log_bytes": 120,
+        "log_sha256": "ba1cec21ec37b4b81aae5a8982eaf5dda2a00e705b9a92fcbe2d3e76c50f8501"
+      },
+      "retained_log": "test_audio_bank_admission.log",
+      "completion": [
+        [
+          "Audio bank admission full: 18 checks, 0 failed"
+        ]
+      ]
+    },
+    {
+      "test": "test_powertrain_audio",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b9ed8dd0-f0db-4c1a-b8af-9d7532e23525",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_powertrain_audio.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:41:53.955497+00:00",
+        "label": "stable-test_powertrain_audio",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_powertrain_audio-c6pp79mu\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_powertrain_audio-c6pp79mu\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 17.468,
+        "log_bytes": 1313,
+        "log_sha256": "df990cda3fc2412ede14e94ebae5830089c76c8dfff5676201b0c2f5deb7f61b"
+      },
+      "retained_log": "test_powertrain_audio.log",
+      "completion": [
+        [
+          "AUD-15 powertrain checks: 49, failed: 0"
+        ]
+      ]
+    },
+    {
+      "test": "test_flight_audio_accepted",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "97ef6451-78ad-421a-8136-89b217e691ac",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_flight_audio_accepted.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:42:09.840166+00:00",
+        "label": "stable-test_flight_audio_accepted",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_flight_audio_accepted-5kf_ybrz\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_flight_audio_accepted-5kf_ybrz\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 7.094,
+        "log_bytes": 219,
+        "log_sha256": "60844fc5b32d601cb5cd83703b7c016922a9e8d3178d81fb77c4461dcbb21a52"
+      },
+      "retained_log": "test_flight_audio_accepted.log",
+      "completion": [
+        [
+          "FlightAudio accepted endpoints: 37 checks, 0 failed"
+        ]
+      ]
+    },
+    {
+      "test": "test_glow_audio",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7fb56086-0ac8-4ee5-a13d-c9b48d0ad53a",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_glow_audio.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+        "started_utc": "2026-11-09T01:42:11.564886+00:00",
+        "label": "stable-test_glow_audio",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_glow_audio-jc35edu7\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\stable-test_glow_audio-jc35edu7\\report.json",
+        "timeout_seconds": 240.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 1.375,
+        "log_bytes": 93,
+        "log_sha256": "d263fff3a7efe9c19d26c12f86824644e4bef53f7f5e31a9ff2dd102ee73e1d8"
+      },
+      "retained_log": "test_glow_audio.log",
+      "completion": [
+        [
+          "42 checks, 0 failed"
+        ]
+      ]
+    }
+  ],
+  "limits": [
+    "focused software verification",
+    "required CI not run",
+    "no packaged, physical, target performance or listening qualification"
+  ],
+  "bank_matrix": [
+    {
+      "case": "full",
+      "passed": true,
+      "expected_diagnostic": false,
+      "runner_exit": 0,
+      "manifest_sha256": "44b85d4a43ac2af0d81130f8df4c2fb9a101e5fc1c4bb86206015dcf8ff3e09e",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-full\\full-xcfa9_d1\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "b16bce6f-2ed7-438e-9e37-41d4ddbab307",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "full"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:43:25.182300+00:00",
+        "label": "full",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-full\\full-xcfa9_d1\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-full\\full-xcfa9_d1\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission full:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 17.703,
+        "log_bytes": 120,
+        "log_sha256": "ba1cec21ec37b4b81aae5a8982eaf5dda2a00e705b9a92fcbe2d3e76c50f8501"
+      }
+    },
+    {
+      "case": "partial",
+      "passed": true,
+      "expected_diagnostic": false,
+      "runner_exit": 0,
+      "manifest_sha256": "556735ba39ccfd48238e6f998cc8136fcd91065d9529057813b7f9e7035189ff",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-partial\\partial-jx6fanr3\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "3b39e3e3-e140-4bab-bc37-4b7f7774e3c3",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "partial"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:43:43.669927+00:00",
+        "label": "partial",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-partial\\partial-jx6fanr3\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-partial\\partial-jx6fanr3\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission partial:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.86,
+        "log_bytes": 123,
+        "log_sha256": "3739c0ac104a3cb982d1936aae9b3fd32ffd49b4e9c83b53c9b2fd45211ddc6c"
+      }
+    },
+    {
+      "case": "empty",
+      "passed": true,
+      "expected_diagnostic": false,
+      "runner_exit": 0,
+      "manifest_sha256": "6716bae852d5d2cf7c0f685114165669d1dfaeaedd5bfd595c7f9bf670132ff6",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-empty\\empty-14v4698f\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "11c2aa81-0412-4a3f-b6e5-ec825bfc6072",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "empty"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:43:49.940050+00:00",
+        "label": "empty",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-empty\\empty-14v4698f\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-empty\\empty-14v4698f\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission empty:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 21.437,
+        "log_bytes": 120,
+        "log_sha256": "8f1d675a95c4ca2efd1cf5ad3ca4730b92aafc2c7264439cbc2f21ea05d55d3f"
+      }
+    },
+    {
+      "case": "no_usable",
+      "passed": true,
+      "expected_diagnostic": false,
+      "runner_exit": 0,
+      "manifest_sha256": "c293f7a39c2ac4982d9f352df4a89c23051ccd5d60ff44449f03f4ca35ad1ab9",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-no_usable\\no_usable-75cj4dkb\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "2576c9e7-0bf9-4084-a586-b31463c005e4",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "no_usable"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:44:16.877844+00:00",
+        "label": "no_usable",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-no_usable\\no_usable-75cj4dkb\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-no_usable\\no_usable-75cj4dkb\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission no_usable:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 22.875,
+        "log_bytes": 124,
+        "log_sha256": "ee71895402326b1d507fad9c1c7bc016ddedfbc4bd2bcc0d6ebb2c4e48116913"
+      }
+    },
+    {
+      "case": "badfamily",
+      "passed": true,
+      "expected_diagnostic": true,
+      "runner_exit": 1,
+      "manifest_sha256": "49b99f8015bf6d547f40f0c67d948bd5558b42ac74258b46721204d56842528a",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-badfamily\\badfamily-umcnf_8o\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d89d6e1f-c484-4f9d-acc6-4e8808fd7843",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "badfamily"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:44:40.317761+00:00",
+        "label": "badfamily",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-badfamily\\badfamily-umcnf_8o\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-badfamily\\badfamily-umcnf_8o\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission badfamily:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Malformed powertrain bank: family must be an array",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] configure (res://audio/powertrain_audio.gd:57)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "engine_error",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 1.312,
+        "log_bytes": 467,
+        "log_sha256": "f309bd0624d80ae4c035ee932321ed053858816d259b790187a7595108937c37"
+      }
+    },
+    {
+      "case": "badentry",
+      "passed": true,
+      "expected_diagnostic": true,
+      "runner_exit": 1,
+      "manifest_sha256": "60ea5fbfd99b45706593b4d1f44d02af8e15f99b8f293d274d919d6488cfd6b4",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-badentry\\badentry-g4_0lt8s\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "1521cd65-2af3-4e02-8e64-83730acda264",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "badentry"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:44:42.073909+00:00",
+        "label": "badentry",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-badentry\\badentry-g4_0lt8s\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-badentry\\badentry-g4_0lt8s\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission badentry:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Malformed powertrain bank: layer must contain a file",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] configure (res://audio/powertrain_audio.gd:63)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "engine_error",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.688,
+        "log_bytes": 468,
+        "log_sha256": "5a74d5efec8529fe9232871d6bffae460eea655ac1ba695537e4b7248e7598bb"
+      }
+    },
+    {
+      "case": "missingfile",
+      "passed": true,
+      "expected_diagnostic": true,
+      "runner_exit": 1,
+      "manifest_sha256": "76b6188c7e94f9a8f4879dcaf274832f47b3c2ca1de3d81627a34ca1c9f3e510",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-missingfile\\missingfile-f46rq78b\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "aed7ad9c-b86f-4723-909b-06e7ef6794df",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "missingfile"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:44:42.943912+00:00",
+        "label": "missingfile",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-missingfile\\missingfile-f46rq78b\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-missingfile\\missingfile-f46rq78b\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission missingfile:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 1,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Malformed powertrain bank: layer must contain a file",
+            "context": [
+              "   at: push_error (core/variant/variant_utility.cpp:1024)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] configure (res://audio/powertrain_audio.gd:63)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "engine_error",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.547,
+        "log_bytes": 471,
+        "log_sha256": "370d0b6fe16726bf8f07183b33020ba708c0fa405f9620e30ed6a96ddecc7cf8"
+      }
+    },
+    {
+      "case": "invalidjson",
+      "passed": true,
+      "expected_diagnostic": true,
+      "runner_exit": 1,
+      "manifest_sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-invalidjson\\invalidjson-l578c3rj\\report.json",
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "e31d9c70-8ee8-496f-983c-767f4487ec64",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\bank-fixture",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_audio_bank_admission.gd",
+          "--",
+          "invalidjson"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:44:43.649916+00:00",
+        "label": "invalidjson",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-invalidjson\\invalidjson-l578c3rj\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\matrix-stable-invalidjson\\invalidjson-l578c3rj\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Audio bank admission invalidjson:"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 2,
+          "warning": 0
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 3,
+            "message": "Parse JSON failed. Error at line 0: Expected '}'",
+            "context": [
+              "   at: parse_string (core/io/json.cpp:601)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] configure (res://audio/powertrain_audio.gd:52)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 9,
+            "message": "Parse JSON failed. Error at line 0: Expected '}'",
+            "context": [
+              "   at: parse_string (core/io/json.cpp:601)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] configure (res://audio/powertrain_audio.gd:52)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "engine_error",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 0.578,
+        "log_bytes": 778,
+        "log_sha256": "ec3b6c6d8a570f43e9275e58a6878239de2aedefa89019cb2ceddca7219e49b3"
+      }
+    }
+  ],
+  "negative_baseline_comparison": [
+    {
+      "case": "temperature",
+      "passed": true,
+      "outputs": {
+        "baseline": {
+          "exit": 0,
+          "records": [
+            "NEGATIVE STATE primed=true clock=0.1 target=16000.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-temperature-baseline-runs\\temperature-hi6lxllg\\report.json"
+        },
+        "candidate": {
+          "exit": 0,
+          "records": [
+            "NEGATIVE STATE primed=true clock=0.1 target=16000.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-temperature-candidate-runs\\temperature-qvxqqljq\\report.json"
+        }
+      }
+    },
+    {
+      "case": "pressure",
+      "passed": true,
+      "outputs": {
+        "baseline": {
+          "exit": 0,
+          "records": [
+            "NEGATIVE STATE primed=true clock=0.1 target=20.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-pressure-baseline-runs\\pressure-gb9nk5sa\\report.json"
+        },
+        "candidate": {
+          "exit": 0,
+          "records": [
+            "NEGATIVE STATE primed=true clock=0.1 target=20.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-pressure-candidate-runs\\pressure-tf8adk6z\\report.json"
+        }
+      }
+    },
+    {
+      "case": "null",
+      "passed": true,
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "records": [
+            "SCRIPT ERROR: Invalid call. Nonexistent 'float' constructor.",
+            "NEGATIVE STATE primed=false clock=0.0 target=0.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-null-baseline-runs\\null-mh1v6lt6\\report.json"
+        },
+        "candidate": {
+          "exit": 1,
+          "records": [
+            "SCRIPT ERROR: Invalid call. Nonexistent 'float' constructor.",
+            "NEGATIVE STATE primed=false clock=0.0 target=0.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-null-candidate-runs\\null-8z5r3uhq\\report.json"
+        }
+      }
+    },
+    {
+      "case": "array",
+      "passed": true,
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "records": [
+            "SCRIPT ERROR: Invalid call. Nonexistent 'float' constructor.",
+            "NEGATIVE STATE primed=false clock=0.0 target=0.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-array-baseline-runs\\array-fted9kzc\\report.json"
+        },
+        "candidate": {
+          "exit": 1,
+          "records": [
+            "SCRIPT ERROR: Invalid call. Nonexistent 'float' constructor.",
+            "NEGATIVE STATE primed=false clock=0.0 target=0.0"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-array-candidate-runs\\array-88jtzrea\\report.json"
+        }
+      }
+    },
+    {
+      "case": "missing",
+      "passed": true,
+      "outputs": {
+        "baseline": {
+          "exit": 1,
+          "records": [
+            "ERROR: Resource file not found: res://assets/audio/soundscape/motor_combustion.wav (expected type: unknown)",
+            "ERROR: Missing soundscape source: motor_combustion",
+            "NEGATIVE STATE bank=true slots=14"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-missing-baseline-runs\\missing-k9_kciqr\\report.json"
+        },
+        "candidate": {
+          "exit": 1,
+          "records": [
+            "ERROR: Resource file not found: res://assets/audio/soundscape/motor_combustion.wav (expected type: unknown)",
+            "ERROR: Missing soundscape source: motor_combustion",
+            "NEGATIVE STATE bank=true slots=14"
+          ],
+          "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-audio\\negative-missing-candidate-runs\\missing-ohulrl58\\report.json"
+        }
+      }
+    }
+  ],
+  "initial_source_identity": {
+    "baseline_commit": "a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e",
+    "head": "4667f1cff4899b3fb656fb84f402cfb85ba8a0ce",
+    "files_sha256": {
+      "app/audio/flight_audio.gd": "20938fdde184a9d7c6e9cd73f44da247088993f8c095eaebf2110b959824543c",
+      "app/audio/powertrain_audio.gd": "fe2acdb9d93ab67af9d8f20c8755d0f72a98cb210840e697c68d126f10e1b52e",
+      "app/audio/soundscape.gd": "1dc94712c5c4518c46e207b44e2fd9443d31f3407b0cce3c395c2b052d2cfa89",
+      "app/audio/soundscape_model.gd": "6c3f84f733d2df2e8fa16929718a54e0203545100c0f2c916d7ade7dae70e9ae",
+      "app/tests/test_audio_bank_admission.gd": "15c3da200aec7a10ce11d922cc895447d3114170d32e0ba35b39361880e234e8",
+      "app/tests/test_audio_bank_admission.gd.uid": "6b6a204dbd046de6ee67e57a12be4694ca7225286dba1e96d7b91509ba7c2755",
+      "app/tests/test_flight_audio_accepted.gd": "3f9fd8140a9e4b9278b8d6ae5c5695573086a8eefc252b6e38567a2a6f7313e8",
+      "app/tests/test_powertrain_audio.gd": "7573997f540d16b68d2ca5b810b91b016454117bf432ae9dff757c58c68a17dc",
+      "app/tests/test_soundscape.gd": "e9a56b8f2bb2e5d27c837bd61c0210e3da1a2ad522414c8db4327ff5483502c2",
+      "app/sim/flight_session.gd": "4c22817bb45d32fbb11440a65a19165f62c7045b07865cd840dd90379113c657",
+      "app/sim/helicopter_flight_session.gd": "befa5d72f0ef9e870fce7248c6dd6d257906e1759ce358e74d53619af1b3270c",
+      ".tools/Godot_v4.8-beta2_win64_console.exe": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b"
+    },
+    "stable_bank_fixture_source_matches": {
+      "app/audio/powertrain_audio.gd": true,
+      "app/audio/soundscape.gd": true,
+      "app/audio/soundscape_model.gd": true,
+      "app/tests/test_audio_bank_admission.gd": true
+    }
+  },
+  "final_helicopter_followup": {
+    "candidate": "9e1335a5d6a6bb1e05821fd4f95081828120ecde",
+    "checked_run": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "45f26210-f605-470a-a703-d89d33194edc",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_audio_accepted.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:30.939874+00:00",
+      "label": "followup-test_flight_audio_accepted",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_audio_accepted-17lk5fl0\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_audio_accepted-17lk5fl0\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 6.422,
+      "log_bytes": 219,
+      "log_sha256": "60844fc5b32d601cb5cd83703b7c016922a9e8d3178d81fb77c4461dcbb21a52"
+    },
+    "source_unchanged": true
+  }
+}

@@ -1,8 +1,8 @@
 # Radio calibration wizard (D6b): "move the stick" channel assignment, per-side endpoints, inversion. Pure state
 # machine (the caller feeds raw axes, −1…+1, once per tick, and calls advance() when the pilot presses Enter).
-# Steps: rest (sticks centred, throttle low) → throttle → aileron → elevator → rudder. For each control the axis with
-# the largest sweep is assigned; its direction comes from the first deflection the prompt asks for (e.g. aileron
-# RIGHT first). Profiles are saved per device key in a ConfigFile (save/load below).
+# Steps: rest (sticks centred, throttle low) → throttle → aileron → elevator → rudder. Each centered stick's
+# requested direction is confirmed while held, before measuring the opposite endpoint. Profiles are saved per device
+# key in a ConfigFile (save/load below).
 extends RefCounted
 
 const RcInput := preload("res://input/rc_input.gd")
@@ -12,9 +12,14 @@ const STEPS := ["rest", "throttle", "roll", "pitch", "yaw"]
 const PROMPTS := {
 	rest = "Centre the sticks, throttle LOW, hands off. Press Enter",
 	throttle = "Move the THROTTLE to FULL and back to LOW. Press Enter",
-	roll = "Move the AILERON stick fully RIGHT, then LEFT, then centre. Press Enter",
-	pitch = "Pull the ELEVATOR stick fully BACK, then FORWARD, then centre. Press Enter",
-	yaw = "Move the RUDDER stick fully RIGHT, then LEFT, then centre. Press Enter",
+	roll = "Hold the AILERON stick fully RIGHT and press Enter",
+	pitch = "Hold the ELEVATOR stick fully BACK and press Enter",
+	yaw = "Hold the RUDDER stick fully RIGHT and press Enter",
+}
+const OPPOSITE_PROMPTS := {
+	roll = "Move the AILERON stick fully LEFT, then centre. Press Enter",
+	pitch = "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter",
+	yaw = "Move the RUDDER stick fully LEFT, then centre. Press Enter",
 }
 ## An axis must sweep at least this much (of the −1…+1 range) to count as moved.
 const MIN_SWEEP := 0.5
@@ -22,8 +27,9 @@ const MIN_SWEEP := 0.5
 const OTHER_AXIS_THRESHOLD := 0.25
 const THROTTLE_RETURN_FRACTION := 0.05
 const CENTER_RETURN_FRACTION := 0.1
-## A deflection beyond this from rest decides the direction (the first one the prompt asked for).
-const DIRECTION_THRESHOLD := 0.25
+## A held deflection must be distinguishable from small center noise. Endpoint validation still
+## requires a full sweep and adequate travel on both sides before accepting the channel.
+const DIRECTION_THRESHOLD := 0.1
 
 var step := 0
 var error := ""
@@ -31,7 +37,8 @@ var profile := {}
 var _rest := PackedFloat64Array()
 var _lo := PackedFloat64Array()
 var _hi := PackedFloat64Array()
-var _first := PackedFloat64Array() # sign of each axis's first deflection beyond the threshold (0 = none yet)
+var _direction_axis := -1
+var _direction_sign := 0.0
 var _used := {}
 var _preserved_smoke: Dictionary = {}
 var _preserved_extra_aux: Dictionary = {}
@@ -49,7 +56,7 @@ func _init(existing_profile: Dictionary = {}) -> void:
 		for channel_name in ["flaps", "gear"]:
 			if SmokeAux.valid_binding(aux.get(channel_name), SmokeAux.flight_axes(clean)):
 				_preserved_extra_aux[channel_name] = aux[channel_name].duplicate(true)
-	for a in [_rest, _lo, _hi, _first]:
+	for a in [_rest, _lo, _hi]:
 		a.resize(RcInput.AXES)
 
 
@@ -58,7 +65,15 @@ func done() -> bool:
 
 
 func prompt() -> String:
-	return "" if done() else "%d/%d %s" % [step + 1, STEPS.size(), PROMPTS[STEPS[step]]]
+	return "" if done() else "%d/%d %s" % [step + 1, STEPS.size(), instruction()]
+
+
+## The prompt changes within each centered-channel step after confirming direction.
+func instruction() -> String:
+	if done():
+		return ""
+	var name: String = STEPS[step]
+	return str(OPPOSITE_PROMPTS[name]) if _direction_axis >= 0 else str(PROMPTS[name])
 
 
 ## Feed the latest raw axes, once per tick.
@@ -72,9 +87,6 @@ func sample(axes: PackedFloat64Array) -> void:
 	for i in RcInput.AXES:
 		_lo[i] = minf(_lo[i], axes[i])
 		_hi[i] = maxf(_hi[i], axes[i])
-		var d := axes[i] - _rest[i]
-		if _first[i] == 0.0 and absf(d) > DIRECTION_THRESHOLD:
-			_first[i] = signf(d)
 
 
 ## The pilot pressed Enter. Returns true when the wizard finished. On a problem, sets `error` and stays on the step.
@@ -94,10 +106,16 @@ func advance(axes: PackedFloat64Array) -> bool:
 	var name: String = STEPS[step]
 	# Include the Enter sample even when a caller has not sampled this frame.
 	sample(axes)
+	if name != "throttle" and _direction_axis < 0:
+		_capture_direction(axes)
+		return false
 	var best := -1
-	for i in RcInput.AXES:
-		if not _used.has(i) and (best < 0 or _hi[i] - _lo[i] > _hi[best] - _lo[best]):
-			best = i
+	if name == "throttle":
+		for i in RcInput.AXES:
+			if not _used.has(i) and (best < 0 or _hi[i] - _lo[i] > _hi[best] - _lo[best]):
+				best = i
+	else:
+		best = _direction_axis
 	if best < 0 or _hi[best] - _lo[best] < MIN_SWEEP:
 		error = "An already assigned axis moved. Restart calibration and check each requested stick." if _assigned_axis_moved() else "no stick moved enough (need a full sweep); try again"
 		_reset_sweep()
@@ -123,11 +141,35 @@ func advance(axes: PackedFloat64Array) -> bool:
 			error = "the stick did not return to centre before Enter (or moved only one way); try again"
 			_reset_sweep()
 			return false
-		# Prompts ask for the positive direction first: aileron RIGHT, elevator BACK (nose up), rudder RIGHT.
-		profile[name] = { axis = best, invert = _first[best] < 0.0, min = lo, center = c, max = hi }
+		# The captured held direction is positive: aileron RIGHT, elevator BACK, rudder RIGHT.
+		profile[name] = { axis = best, invert = _direction_sign < 0.0, min = lo, center = c, max = hi }
 	_used[best] = true
 	_next()
 	return done()
+
+
+## Confirm the axis and sign from the currently held requested direction, not from a later larger sweep.
+func _capture_direction(axes: PackedFloat64Array) -> void:
+	var best := -1
+	for i in RcInput.AXES:
+		if not _used.has(i) and absf(axes[i] - _rest[i]) >= DIRECTION_THRESHOLD \
+				and (best < 0 or absf(axes[i] - _rest[i]) > absf(axes[best] - _rest[best])):
+			best = i
+	if best < 0:
+		error = "An already assigned axis moved. Restart calibration and check each requested stick." if _assigned_axis_moved() else "Hold the requested direction away from centre before continuing; then try again."
+		_reset_sweep()
+		return
+	for i in RcInput.AXES:
+		if i != best and (_hi[i] - _lo[i] >= OTHER_AXIS_THRESHOLD or absf(axes[i] - _rest[i]) >= DIRECTION_THRESHOLD):
+			error = "More than one axis moved. Move only the requested stick; check transmitter mixes, then try again."
+			_reset_sweep()
+			return
+	var direction := signf(axes[best] - _rest[best])
+	# Only the explicitly held endpoint and subsequent opposite sweep form the accepted range.
+	_reset_sweep()
+	_direction_axis = best
+	_direction_sign = direction
+	sample(axes)
 
 
 func _assigned_axis_moved() -> bool:
@@ -145,10 +187,11 @@ func _next() -> void:
 
 
 func _reset_sweep() -> void:
+	_direction_axis = -1
+	_direction_sign = 0.0
 	for i in RcInput.AXES:
 		_lo[i] = _rest[i]
 		_hi[i] = _rest[i]
-		_first[i] = 0.0
 
 
 static func _valid_axis_sample(axes: PackedFloat64Array) -> bool:

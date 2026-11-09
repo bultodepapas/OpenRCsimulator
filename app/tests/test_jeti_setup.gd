@@ -222,7 +222,9 @@ func _test_clean_radio_action_draft() -> void:
 func _test_switch_editor_capture_and_prompts() -> void:
 	_fixture_buttons.clear()
 	var store := FakeStore.new()
-	var setup := _make_setup(store)
+	var verified_profile := ControllerProfile.defaults("radio", "jeti_mode2")
+	store.profiles.append(verified_profile.duplicate(true))
+	var setup := _make_setup(store, str(verified_profile.profile_id))
 	await process_frame
 	var smoke_type := setup.find_child("AuxType_smoke", true, false) as OptionButton
 	smoke_type.select(3)

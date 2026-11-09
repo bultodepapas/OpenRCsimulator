@@ -1,8 +1,10 @@
 # Xbox, DualSense and general controller qualification plan
 
-Status: source implementation and focused software audit delivered, 2026-10-14. Physical qualification remains open. The owner prioritizes Xbox and/or DualSense on Windows. The [current player guide](../FIRST-LAUNCH.md#controller-settings-current-source) describes implemented behavior; [dated research and evidence](../research/controller-support-2026-10-14/README.md#software-audit-and-corrections) retain the original defects, primary references, implementation checks and audit results.
+Status: source implementation and focused controller audit corrections delivered, 2026-11-08. Physical qualification remains open. The owner prioritizes Xbox and/or DualSense on Windows. The [current player guide](../FIRST-LAUNCH.md#controller-settings-current-source) describes implemented behavior; [dated research and evidence](../research/controller-support-2026-10-14/README.md#software-audit-and-corrections) retain the original defects, primary references, implementation checks and audit results.
 
-This plan now tracks remaining work and acceptance. It does not count implemented classes as future work or treat synthetic tests as controller certification. Godot stays pinned to 4.7.2; engine upgrades require a separate change and qualification.
+This plan tracks remaining work and acceptance. It does not treat synthetic tests as controller certification. The current engine is Godot 4.8-beta2; [STACK](../STACK.md) and the verified engine downloader own its exact identity.
+
+The 8 November controller audit produced a focused correctness revision under D6-GP-01/02/03, F3-GP-02 and UI-15-GP-01. It corrects reduced-range direction calibration, ambiguous legacy matching and cache invalidation, truthful absolute-throttle previews, new radio defaults, calibration metadata retention and generic action continuity. [Findings and verification](../research/controller-support-2026-10-14/README.md#controller-audit-corrections-2026-11-08) distinguish implemented repairs from the remaining radio-menu feature and physical qualification.
 
 ## Ownership and delivered scope
 
@@ -38,6 +40,8 @@ The [JETI radio subtrack](jeti-support.md) owns manufacturer-supplied DC-16II ev
 
 | Priority / step | Concrete work | Completion evidence |
 | --- | --- | --- |
+| P1 / UI-12-GP-02 | Explicitly verified radio menu opt-in, calibrated selected-device navigation, saved unique-match preference and fresh centering across contexts | Second-launch radio-only Home → flight → Pause/settings → resume → accident → Home journey; Mode 1/2, throttle exclusion, native popup/repeat/capture tests. A configured starter is not navigation evidence. Radios remain excluded until this flow is implemented. |
+| P2 / F1-GP-02 | Accessible shareable diagnostic export and per-route qualification records | Exact build, OS, firmware, USB/Bluetooth mode, observed inputs, saved profile/actions and limitations; identifiers optional and redacted by default. Existing bounded input reports remain the diagnostic tool. |
 | Ongoing regression gate / D6-GP-02, F3-GP-02, UI-15-GP-01 | Preserve the completed audit fixes: calibration settings, corrupt-store rejection, activation rollback, stable draft/capture ownership, verified gamepad readiness, radio arming and key-chord validation | Focused audit tests and existing suites pass; whole-app parse and final changed-file parses pass. Recheck these contracts on later input changes; dated evidence records the limits of repository-wide testing. |
 | P1 / F1-GP-01 + D6-GP-03 | Inspect each available physical device and record all expected axes/buttons. Test RT/LT individually and together at 0/50/100%, stick direction/range and 30-second idle drift | Native F1 report, exact model/firmware/transport, profile revision and observed range table |
 | P1 / UI-12-GP-01 | Complete Home -> Controls -> select/configure/test -> aircraft -> launch -> pause -> settings -> resume -> Home -> quit without keyboard/mouse | EN/ES focus/scroll/cancel record on each primary controller; slider, selector, popup and remap cases included |
@@ -61,9 +65,15 @@ Do not estimate the already delivered core again. Windows qualification effort d
 
 ### Automated verification
 
-Run focused audit tests and the existing profile/store/registry/action/setup/menu/conditioning/RC rearming/calibration/AUX/flight-adapter suites. Include fixed-wing, helicopter and ground selection regressions, keyboard recovery and EN/ES navigation. Parse every GDScript file after integration; drafts stay outside `app/` until they parse. Run the canonical `app/test.sh` for repository acceptance and record its exact scope/failure if shared work prevents completion. Inspect logs, not only exit codes.
+Follow the [shared verification scope](../tools/shared.md#verification-scope): run focused audit tests and affected profile/store/registry/action/setup/menu/conditioning/RC rearming/calibration/AUX/flight-adapter suites. Include fixed-wing, helicopter and ground selection regressions, keyboard recovery and EN/ES navigation when those boundaries change. Parse modified production GDScript; drafts stay outside `app/` until they parse. Required CI retains full production coverage. A focused local pass does not replace that gate; inspect logs and completion, not only exit codes.
 
 Required adverse cases include malformed/nonfinite bindings, bad recovery files, failed save/apply, mismatched device IDs, a held button during selection/capture, cancellation/disconnect, profile replacement, focus recovery with raised throttle, neutral drift before Continue, AUX rearming and multiple controls held together. Synthetic events verify routing; they do not verify SDL enumeration, transport or latency. Do not re-record golden flights to hide input regressions.
+
+New radio starters require the mapping wizard before Save; a recognized family name does not establish channel order or throttle polarity. Existing saved profiles retain their effective actions and explicit recovery. New radio/raw-joystick profiles have clean actions with keyboard recovery; **Use safe radio actions in draft** remains a reviewable opt-in for older profiles. Absolute-trigger throttle keeps direct endpoint normalization, and its unused deadzone/expo controls are disabled. Joystick `stick_rate` is rejected with a diagnostic because the generic joystick sampler does not implement it.
+
+**Learn axis** supports flight shortcuts and Pause: explicitly confirm OFF, hold ON, then return OFF. It uses measured finite endpoints and hysteresis, including reduced/reversed/offset ranges. Existing signed raw-threshold bindings remain valid. Learned ranges are rejected for native GUI Accept/Back/navigation/calibration actions until a normalized menu adapter exists; passing them into raw InputMap axes would be incorrect.
+
+USB disconnect and RF loss are separate qualification cases. A wireless receiver can remain enumerated after transmitter-off; unchanged controls are not evidence of link loss. Record the observed failsafe behavior for every wireless route, and label unobservable RF loss as a limitation. No new RF-loss detector or physical latency claim is introduced by these fixes.
 
 ### Hardware matrix
 

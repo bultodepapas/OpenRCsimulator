@@ -191,9 +191,13 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 	if powertrain == null:
 		_assign_loop(0, motor_source, loop_cache, PATH + motor_name + ".wav")
 		_assign_loop(1, propeller_source, loop_cache, PATH + propeller_name + ".wav")
-	elif str(voice_profile.family) == "gasoline":
-		# The recorded bank contains the powered prop; retain the prop-only cut-engine coast layer.
-		_assign_loop(1, propeller_source, loop_cache, PATH + propeller_name + ".wav")
+	else:
+		_start_offsets.erase(0)
+		if str(voice_profile.family) == "gasoline":
+			# The recorded bank contains the powered prop; retain the prop-only cut-engine coast layer.
+			_assign_loop(1, propeller_source, loop_cache, PATH + propeller_name + ".wav")
+		else:
+			_start_offsets.erase(1)
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.get("type", "") == "windsock":
 			var anchor := Vector3(float(cue.east), float(cue.pole_height), -float(cue.north))
@@ -280,6 +284,9 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 			return null
 		if prepare_loop:
 			_assign_loop(voices.size() - 1, source, loop_cache, source_path + asset + ".wav")
+		else:
+			# Reserve the original insertion order: update_sound starts pending loops in dictionary order.
+			_start_offsets[voices.size() - 1] = 0.0
 		return source
 	return null
 

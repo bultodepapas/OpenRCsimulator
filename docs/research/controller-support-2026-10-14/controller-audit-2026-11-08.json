@@ -1,0 +1,1047 @@
+{
+  "date": "2026-11-08",
+  "timezone": "America/Bogota",
+  "track_steps": [
+    "D6-GP-01",
+    "D6-GP-02",
+    "D6-GP-03",
+    "F3-GP-02",
+    "UI-15-GP-01"
+  ],
+  "audit_baseline": "2e05ed08c7c4ffb2e3c83440756fba594015dec6",
+  "audit_sha256": "dc3a9f9e4d8aedab38df72e9908d8d86763c7d9e02d4ab84b138b2cd2b2dc987",
+  "working_tree_head": "4667f1cff4899b3fb656fb84f402cfb85ba8a0ce",
+  "source_note": "Working tree includes preserved parallel work. Hashes identify final local inputs. Individual checks were selected by affected behavior during the repair; this is not a full-app or CI qualification.",
+  "engine": {
+    "version": "4.8.beta2.official.cafc17a19",
+    "platform": "native Windows x86_64",
+    "console_sha256": "1a470886fc810b81a61e01bad7678e38989f1c94cf8e9733bfd1026224b3f42b",
+    "engine_sha256": "9d735a72c1a06bf42379829257b0bf966a6cf0ea507c6d8efa051bcfc8faccf2"
+  },
+  "runtime_test_programs": 49,
+  "production_parse_commands": 15,
+  "selection": "Latest completed report per runtime script and production parse mode; earlier failures and incomplete attempts remain in their original ignored directories.",
+  "verified_collection": "tmp/controller-audit-verified-20261108",
+  "runs": [
+    {
+      "script": "res://app_root.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:33.218264+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-app_root.gd-l84ccmvh/report.json",
+      "report_sha256": "79f4bd5121acb0e8d69ec52378fce2b5635137fe38991695cd798e7b1ce73d5b",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/action_axis_capture.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:42.966413+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_action_axis_capture.gd-k7n5eb_9/report.json",
+      "report_sha256": "3be9cb50022beab19431f8e744c5b653adec00ce0493c41f3f3c27de79a952b3",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/controller_actions.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:43.646331+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_controller_actions.gd-pckveq4i/report.json",
+      "report_sha256": "e2401801a6c1b859e460fd25c118291521265a027bd75826b172dc0424a77163",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/controller_profile.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:44.331197+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_controller_profile.gd-s_7ei9ws/report.json",
+      "report_sha256": "b5b74d0406789d41d8c6c010b92eda2fd79f722a5f431b9b41bae973a14f9b1f",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/controller_profile_store.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:45.107839+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_controller_profile_store.gd-7ebuymb3/report.json",
+      "report_sha256": "36e63f082e964ab89acb0b470985a6e338a2289951fbcffe660e646bb7367b1a",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/controller_registry.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:45.971521+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_controller_registry.gd-_2vfh8wf/report.json",
+      "report_sha256": "32d58ff942e60c993d41ef67d7cf78ceb228caf9076da074b0352ad3b91e2918",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/controller_service.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:46.643265+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_controller_service.gd-_nmowoc8/report.json",
+      "report_sha256": "99292616932be6be6a47b9fe71e73a01cdae1090ccc59ea1afea5ae4759f33df",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/rc_calibration.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:47.493143+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_rc_calibration.gd-_mvaypxj/report.json",
+      "report_sha256": "abd85e5a5b28122b8e4ccbebc361e23e2df5f85d4eb82270120fa1768faecc76",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://input/rc_input.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:48.317593+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-input_rc_input.gd-ysc2kmq0/report.json",
+      "report_sha256": "9776b3cd7f011e61189452d3096657a59c05869145c293e189abf3690a764014",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://sim/flight_session.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:49.081902+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-sim_flight_session.gd-beuhr053/report.json",
+      "report_sha256": "7a109e547f6510a463da66d3f24dda67e285b87f190d6f282681931c262daea8",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://sim/helicopter_flight_session.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:52.516348+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-sim_helicopter_flight_session.gd-2zgqdr8d/report.json",
+      "report_sha256": "70d81a2187be5d2f97e076241afe67cf5b05fd169f638b224c29857656cfc42f",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://tests/test_aux_pause_retention.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:54:56.075900+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_aux_pause_retention-z5w7wsu1/report.json",
+      "report_sha256": "ae0fa6bea4e780d87f93b563ae4d84cc9c779dcc4d1dcf61dc00775a5e129252",
+      "log_sha256": "e70615242980d4f3bdccefbd2670b0cf7be5135d6709adb90e07edbeefa2118f"
+    },
+    {
+      "script": "res://tests/test_controller_actions.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:31.473393+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_controller_actions.gd-as2lwpp3/report.json",
+      "report_sha256": "1b25e54e419d8e765461b0c56d198554382e9607da4ab7a57f8e54da8db7df26",
+      "log_sha256": "43be45166b2a7736e30d3f32501f7358efe0d0729695cfcd609d2329a95a1ad6"
+    },
+    {
+      "script": "res://tests/test_controller_audit_identity.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:45:55.211476+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-identity-final-20261108/test_controller_audit_identity.gd-rpffh2r4/report.json",
+      "report_sha256": "47a6fd0dd2ddbad9cd6f7edeea2de245de72a96b8c58113d1a15beaf8906b462",
+      "log_sha256": "13683be85935bca1ada4b6c5053a25b86596784e1f510ae2c1372195e3af0292"
+    },
+    {
+      "script": "res://tests/test_controller_audit_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:53:45.393125+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-setup-20261108/controller_audit_setup_1080-j3gde28a/report.json",
+      "report_sha256": "33543d0cbb4e4136e868c4bbab2b82a4a9639835652c1fbedf39d0c5926e8c48",
+      "log_sha256": "a77b33123234f0930e5182417a8e6b872cc85437b5e0650cd1f9deb6429e9b6b"
+    },
+    {
+      "script": "res://tests/test_controller_audit_shell.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:18.769836+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_controller_audit_shell.gd-5x9ie033/report.json",
+      "report_sha256": "30b84292a1cdf58a19890c8128ead0d8aa2f5a143e48e7232f53c8ac27f886f6",
+      "log_sha256": "b36777fab0c1fd8c23d9948b60d97920e96dc5c84fdce70c581fe1ef5423f77f"
+    },
+    {
+      "script": "res://tests/test_controller_auto_defaults.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:07.419291+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-identity-final-20261108/test_controller_auto_defaults.gd-wq1b_wev/report.json",
+      "report_sha256": "d95c54dfed452e71649feb53f566ced2aff2b1850a97726472e112af6fe09acd",
+      "log_sha256": "45af9ee51820f736ebec5003ba47d65a24893b60c9a5da1ca3ee4fc4cf6742c8"
+    },
+    {
+      "script": "res://tests/test_controller_aux_runtime.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:48.114165+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_controller_aux_runtime-fixed-8c22msbb/report.json",
+      "report_sha256": "1ef22aa7e687b64091ad5370b6ec281bb261bca7e084eacb6255335241dee87f",
+      "log_sha256": "5bff8c5ad41de59835abe1cc62ac6aa89221622777373a89ca136e16de4dcf8f"
+    },
+    {
+      "script": "res://tests/test_controller_aux_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:54:54.647763+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_controller_aux_setup-e6c60rbr/report.json",
+      "report_sha256": "c41fc569cb5e96a5318d0a87c0c04eebaa7c058067e16f5c02b4c2beeea7d70a",
+      "log_sha256": "e75865aec5934573bacfa432fece3f4f1d85e632bb1641212f73649dbd3887a2"
+    },
+    {
+      "script": "res://tests/test_controller_binding_audit.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:54:44.881882+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/test_controller_binding_audit-hc2olr1v/report.json",
+      "report_sha256": "7a70fcfb9658c89f003b93632ade153659464cb3bb268bb7bb0b91a8c2e4f755",
+      "log_sha256": "1e85e44ca9959329ab2924db0b8d09ccb152e98f005f5c3a4a69acdd53cb14ae"
+    },
+    {
+      "script": "res://tests/test_controller_calibration_disclosure.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:59:03.566158+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/final_test_controller_calibration_disclosure-ls7m6i8n/report.json",
+      "report_sha256": "fba1e289a52e719636ad493c6bbe37eae894a699dbdb595a58da296235efde0e",
+      "log_sha256": "3d6ade779c523441d5f0d768707cc5b7fa88aa88e3dc468fb4e1f294af024a36"
+    },
+    {
+      "script": "res://tests/test_controller_capture_scroll.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:56:38.077734+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-final-20261108/test_controller_capture_scroll.gd-pz9xhcpd/report.json",
+      "report_sha256": "2bc2ec6e396a0fb156b72ac145f5b1666524fd6661ab9a4add4a4a5bc15faaff",
+      "log_sha256": "691d99e0eba1469c17cd709b226a23d441d9b92ec3b2f3625d09909803e7ba15"
+    },
+    {
+      "script": "res://tests/test_controller_car.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:56:07.393405+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_car.gd-4_rj90ef/report.json",
+      "report_sha256": "d437d5805e427e313cbc915b63de40e05fd0d4d0a5f7ba9c3ffd8d027a6a39b8",
+      "log_sha256": "7d589ee52af80435ebebcc7940f874f8fca2345838d79e57d2cb7790e5310094"
+    },
+    {
+      "script": "res://tests/test_controller_conditioning.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:46.980251+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_controller_conditioning.gd-r510b_ye/report.json",
+      "report_sha256": "775f7325c4143b58aec53a896839f8e40e7ee481d7e7a30fdd25385e73627c8c",
+      "log_sha256": "0fcbdb59b3f46cc5a86985359c68f91704c38c1f72d9b1bba578c77912699433"
+    },
+    {
+      "script": "res://tests/test_controller_edge_continuity.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:39:06.047768+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-integration-20261108/test_controller_edge_continuity.gd-x9oivnpt/report.json",
+      "report_sha256": "9b595c1ca4f9b193fda4aa834bbcef5c9ce09971f4b97555539416d8316afc3c",
+      "log_sha256": "2b5c499f05d8d11ffa05448b33d7ed8b83124acca4e6d5261581abf7218d3096"
+    },
+    {
+      "script": "res://tests/test_controller_extended_actions.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:32.923008+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_extended_actions.gd-1g7f_vus/report.json",
+      "report_sha256": "4f9af9353c2680120d5f1964dc6dcb58eb889e193d4b85a5c3c1cadebd0e6243",
+      "log_sha256": "43487dbe7f620fd5e8819c144a2613417f8fcd2c1fa81ee1f8934a1f8d777c82"
+    },
+    {
+      "script": "res://tests/test_controller_flight_actions.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:42:33.619393+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-integration-20261108/test_controller_flight_actions.gd-29tp4i33/report.json",
+      "report_sha256": "3d768fb3d2512b2dee7d3f8d2a463d6f26ee636498f73eb989e7c41f5ddc1039",
+      "log_sha256": "cdee4f5fdc0f3c66b19cda57eecd6a6101be3d4fd985653c9916fbcc60f66f41"
+    },
+    {
+      "script": "res://tests/test_controller_ground.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:42:27.524821+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-integration-20261108/test_controller_ground.gd-ryhdb_4v/report.json",
+      "report_sha256": "8d8a5944040b463bc44b32463e8c6ae159ebf52983278afd8ce7cc602d2e7549",
+      "log_sha256": "45fd534e332c075b8462f5ff58b3968c8b3c66b278d739734cbcc5557f654b99"
+    },
+    {
+      "script": "res://tests/test_controller_integration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:42:22.374615+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-integration-20261108/test_controller_integration.gd-fulg19vl/report.json",
+      "report_sha256": "bb454ebc4507b4cc08785471e2fc97a1ca379cfa67f7292306cac5585e754e0a",
+      "log_sha256": "006769237aae717ebebca7ca2d22fdf752aa5162f21f243feba4e4fb52451705"
+    },
+    {
+      "script": "res://tests/test_controller_menu.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:48:40.280775+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_controller_menu.gd-1sdim9g6/report.json",
+      "report_sha256": "864f2680dcd23ea20f11072f6d16471b65239539e6b931851ba7823b737f846b",
+      "log_sha256": "ee9538e2e5076391a5a369dd0ab0aba46749eccdd819e988220ae928773a91d4"
+    },
+    {
+      "script": "res://tests/test_controller_pause_recovery.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:57:21.100999+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/fixed_test_controller_pause_recovery-q5mrovp0/report.json",
+      "report_sha256": "5284f9ba0346a8a7dc08ad773bece4cb9363b3c7655096b2879b7deeced8cf27",
+      "log_sha256": "61877e5b88863e260655b6076fe92dc7f700ded3ce459346d203851805412837"
+    },
+    {
+      "script": "res://tests/test_controller_persistence.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:00.543147+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-identity-final-20261108/test_controller_persistence.gd-5v7sjjje/report.json",
+      "report_sha256": "725b393286e391a117b2c321f66acd0a7b6a844a38c15d79bd3eb9fad5dd8ff7",
+      "log_sha256": "161ac6658f3176376bbdeeb0943466eecedc2d4a8af5b456d7d6cdc6d182d0f1"
+    },
+    {
+      "script": "res://tests/test_controller_preflight_calibration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:48.071405+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_controller_preflight_calibration.gd-_1sp61pt/report.json",
+      "report_sha256": "519cafa81e283c0aef00be1f901a6e1e2b9f01416bfc75fdd68e15ce5c89b323",
+      "log_sha256": "cf23ded6fe77ec6c76613b9eb662a2797fd71276c975f7b181dbe05f3f1be6ef"
+    },
+    {
+      "script": "res://tests/test_controller_profile.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T00:44:44.831281+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-core-20261108/final_test_controller_profile-32lbyail/report.json",
+      "report_sha256": "22062ca8a9c64f325a6454d21d5ef72de6a135345a4276e7666bfaf683642328",
+      "log_sha256": "8287254ce823e2ad31569d3fc44d558b0c6462672fe4b23de723dac9b4a69012"
+    },
+    {
+      "script": "res://tests/test_controller_profile_creation.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:57:21.100999+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/fixed_test_controller_profile_creation-po8e0j84/report.json",
+      "report_sha256": "9da4edde28a40db4d2e32d76ece53867c296d6e1f1260f6253ffb0a86e56c016",
+      "log_sha256": "5a265ccedc6f97010ec855b90eed288f06c20c6c0ee0816da233f10665c08b1e"
+    },
+    {
+      "script": "res://tests/test_controller_profile_hardening.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:57:21.099999+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/fixed_test_controller_profile_hardening-7dozbdse/report.json",
+      "report_sha256": "6fe98cdfd730779090c739a55f19ef7c995bbcebbcb6dd109ee282b589c1e92a",
+      "log_sha256": "300f7932fcd2c6547f2ff644ee90f0cb3cffd0e650403f43f352d03a89371425"
+    },
+    {
+      "script": "res://tests/test_controller_prompts.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:56:06.431557+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_prompts.gd-dnykigc3/report.json",
+      "report_sha256": "1beaca38f011062ba1de9c2d618a9b517dce323222268e76d0bfc1f4102b67dc",
+      "log_sha256": "a76cb5c3c1cd7ef553fb6e5cec6bf629ef917539c021a30ec556ff21d587bcb2"
+    },
+    {
+      "script": "res://tests/test_controller_rates.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:39:16.335758+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-integration-20261108/test_controller_rates.gd-s3oolmli/report.json",
+      "report_sha256": "7e52be1798584e9df8eca221e1b95e34f90eba220b422da25990c498d77cdb66",
+      "log_sha256": "401c1551347d2cccd635b238139e74f4a2d0d6687d1a4a975773c8bcdddd1aea"
+    },
+    {
+      "script": "res://tests/test_controller_recovery_focus.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:46.318351+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_recovery_focus.gd-99tkyfro/report.json",
+      "report_sha256": "0b78ece7e2c9905c331619d73864ee457dfe31719107468dc1bea2a0a98929a2",
+      "log_sha256": "fd13b370eaf0ffc14966e27c1ada486b8b57d13a619310ffad0ee5f1d4553aa8"
+    },
+    {
+      "script": "res://tests/test_controller_registry.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:05.407354+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-identity-final-20261108/test_controller_registry.gd-waw1rtix/report.json",
+      "report_sha256": "d59fd8a3da47e6983e84e696411321ceabbe7b73f85d1501e8c85000b5f90e3c",
+      "log_sha256": "27847f0e4ecd9cc761d57f395eba409efa68c06c9ebb15e77903e63f14357fd0"
+    },
+    {
+      "script": "res://tests/test_controller_responsive.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:33.649505+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_responsive.gd-2l_rxikb/report.json",
+      "report_sha256": "f54ac907601a9d32d2dd4c048322bbb3ed955ef7a0c78e6143812cd98e5f391c",
+      "log_sha256": "dd816fe7683f75b5eb13953ef936f7ed9aeb37295b81d31984ca4d0d873eca7b"
+    },
+    {
+      "script": "res://tests/test_controller_routing_audit.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:57:21.102509+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/fixed_test_controller_routing_audit-za_v6fbj/report.json",
+      "report_sha256": "86e9f29274350180eebcb55067fec8c5c9aa9036573b54dacd1862b326a3f4ff",
+      "log_sha256": "04379e55018607b90c50cb1cb358410a020e60cd80d21494c8980cedc175f7eb"
+    },
+    {
+      "script": "res://tests/test_controller_sections.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:43.165942+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_sections.gd-l17ujot0/report.json",
+      "report_sha256": "2924f4560ee91b67b0a323ff7056b6e578c4da0852add48f91980fb92921bd28",
+      "log_sha256": "3e61669b5be9d1c1fa273e04d5fd78bf90d60463ae42331b2545cb6cbdc4ba02"
+    },
+    {
+      "script": "res://tests/test_controller_settings_save.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:54:44.906042+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/test_controller_settings_save-8v_oxwwm/report.json",
+      "report_sha256": "decf594e171a81027b17e6634f8bba624f184114e993622aa617578287205752",
+      "log_sha256": "0f8281f81536babea08df62d2a0ded058a5c18a6ea36ab3ade730e32493136cd"
+    },
+    {
+      "script": "res://tests/test_controller_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:16.140772+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-final-20261108/test_controller_setup.gd-habd4de8/report.json",
+      "report_sha256": "d6a80046e0e83d2c878c28af4482efc4b28ac106224d0c27f2acae78b33807ce",
+      "log_sha256": "abeb1fe17b774ce33c3360fc13495d08a322c346fad8a763cbc7eea2af2b6cde"
+    },
+    {
+      "script": "res://tests/test_controller_setup_safety.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:54:44.887475+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-core-20261108/test_controller_setup_safety-6jbl_1fi/report.json",
+      "report_sha256": "8b2476e354e83933df4c0fd6862d22f71caca0f514ceb081b890cce67f6c80f4",
+      "log_sha256": "b68f07920279c95a1b62320b651dfae9bfe4ed5a3b8b6f037a7f454b1154ff38"
+    },
+    {
+      "script": "res://tests/test_controller_store.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:06.275374+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-identity-final-20261108/test_controller_store.gd-rhvro2f8/report.json",
+      "report_sha256": "f5eccc9c64676df83602a2f8e0dc367ea1ef75b263494c1c5dd350bd44d2d43a",
+      "log_sha256": "6fbeeab43e9f2e24747b11fc846b8db4428924491e81142fc5aedcdd79b69584"
+    },
+    {
+      "script": "res://tests/test_controller_verifier_loss.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:56:15.158079+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-root-20261108/test_controller_verifier_loss.gd-ak8ponwm/report.json",
+      "report_sha256": "5ce8e23b17890dd70431d8dffad42e4d89476f375c1339bcb1b999ca979770d8",
+      "log_sha256": "3d2cf38ecc9bc6b4ecd2ab5c6b4276772cbce5ceb9c3ee90ea340c7ab4cd5b56"
+    },
+    {
+      "script": "res://tests/test_jeti_identity.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:08.568056+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-identity-final-20261108/test_jeti_identity.gd-b8842e4h/report.json",
+      "report_sha256": "e6f2bf0b4392fdac3d46afd335f3bc7adb80f314d580ea71ed51c02edd7755ad",
+      "log_sha256": "3c13e0ad247e6ee4d445820a42d090b8536b9c5e68e2d5bbefb28002df795b28"
+    },
+    {
+      "script": "res://tests/test_jeti_runtime.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:16.671831+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_jeti_runtime.gd-da5z04e2/report.json",
+      "report_sha256": "c30ad5c78bf71e8c137527a0783d68d015349a55bea4a2999440ff8f558200f0",
+      "log_sha256": "6cf9b929bb587e4e1e5198f4801bf89243ba62e652d70bcd390e62bb30896e64"
+    },
+    {
+      "script": "res://tests/test_jeti_setup.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:55.199830+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_jeti_setup-fixed-d4d0d5vk/report.json",
+      "report_sha256": "4b709659184129b317b6d70d373ea56d314652bcfb66558e08ff94a4846dc369",
+      "log_sha256": "7b98c9f52162eb25fdc9acab3ea04d766b50a79fbb1c99f76f2b240dd37ca15f"
+    },
+    {
+      "script": "res://tests/test_rc_axis_history.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:50.267930+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_rc_axis_history-fixed-cst8cvdv/report.json",
+      "report_sha256": "fe9acca0094fe6940827b3696ff5dd4e9e135313e32e568123d12df69aaa0bf4",
+      "log_sha256": "8b2f375021c12dc63cc673a60608834d1870cbd7b65bd8b1b001d3d152b5d3e3"
+    },
+    {
+      "script": "res://tests/test_rc_calibration.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T00:44:44.823673+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-core-20261108/final_test_rc_calibration-mht5u_3_/report.json",
+      "report_sha256": "1651706d11c23a670ad2d96356eb822b69d2c86313d28a361c2701eb962911c9",
+      "log_sha256": "b037e0d10786d2d8fc9ed469d94cab734c8c823447c97a17bd60c35f0d0a98de"
+    },
+    {
+      "script": "res://tests/test_rc_fault_boundaries.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T00:47:38.329809+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-core-20261108/fixed_rc_fault_boundaries-9rxen72o/report.json",
+      "report_sha256": "6357fde3822327d411c05580ee8576b28508f7f8c5537af11df0256bb23e3013",
+      "log_sha256": "36341e3353b581d8c97c7b1d6ad0c795bb0f5170a7166f8918a0e6c87fadc5d5"
+    },
+    {
+      "script": "res://tests/test_rc_input.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:17.738807+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_rc_input.gd-yl61e3lo/report.json",
+      "report_sha256": "6b68e166096980556e3fe36a6594df39d93c5f71fc065ac8aa199ebb4202ed5f",
+      "log_sha256": "45ea8e42dede09e49ba2ded1582d933ad818058e922b9f1e7fb350bb5248b313"
+    },
+    {
+      "script": "res://tests/test_rc_profile_validation.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:03.160327+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_rc_profile_validation-itm59hvc/report.json",
+      "report_sha256": "d0c00ed277ecf1100f88f904bb3650ca92e7129500a6a9913d2860238b18a21d",
+      "log_sha256": "d12903b9b58c22414caaf163d1db999030cf179981177e4638127714b110e246"
+    },
+    {
+      "script": "res://tests/test_rc_rearm.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:55:48.964621+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-consumers-identity-20261108/test_rc_rearm-fixed-oqdy08co/report.json",
+      "report_sha256": "766e207d78d38693f4bc18e2ff0079e619ad9da40746479c150cece47444a4d1",
+      "log_sha256": "a313de2cbcb9a200c8928fbce4091ec983042416e9e267d2688d70f5bc3472ad"
+    },
+    {
+      "script": "res://tests/test_smoke_aux.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:46:03.509986+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "report": "tmp/controller-audit-setup-20261108/smoke_aux_fix-_uwxwgwc/report.json",
+      "report_sha256": "94df11b3226e47d488afd1effbdd45b514879d538d4192a3c78a725cdd324bbf",
+      "log_sha256": "2468a419ccc1e42e84cffa261b43f65961895d6c180a96bb62a7c9b7612eb027"
+    },
+    {
+      "script": "res://tests/test_ui_input.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:49:32.327663+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_ui_input.gd-tm2ut8l5/report.json",
+      "report_sha256": "5672869aa8ab9b401a8ca568f6a08fe2c8603031eb1114d23aec5c7002c4f3e9",
+      "log_sha256": "2f33e261d9770b27368bba4408cb00340156054fbb3fbe4ca71c0fa204db03bc"
+    },
+    {
+      "script": "res://tests/test_ui_language.gd",
+      "parse_only": false,
+      "started_utc": "2026-11-09T01:53:51.956726+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-acceptance-20261108/test_ui_language.gd-enhunxev/report.json",
+      "report_sha256": "84f5672b793bcdbbc34e8c3a406415583863ae7f4c675cf75378ee1dc8055c7a",
+      "log_sha256": "3c5af93ef7adeaa1188bb3864f4e725b262841bef15c9a056be253c245684060"
+    },
+    {
+      "script": "res://ui/calibration_card.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:56.502158+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-ui_calibration_card.gd-f4k845pj/report.json",
+      "report_sha256": "fad9d6515dd87821f6f5a79f880a0df68dd68e02fe24042a6dadb34d7ca33840",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://ui/controller_setup.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:57.268659+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-ui_controller_setup.gd-ssx4w76x/report.json",
+      "report_sha256": "99db48e9b973146b7921dd2e2ef23dd3d98008822fd8e2c7c88fc5c12eb2d1fb",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://ui/radio_calibration_setup.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:58.198229+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-ui_radio_calibration_setup.gd-h3la81hm/report.json",
+      "report_sha256": "bab94916b1c02f68832dd84dccf490f1de5731ffa34564ca4cd73ab4ca087238",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    },
+    {
+      "script": "res://ui/ui_input.gd",
+      "parse_only": true,
+      "started_utc": "2026-11-09T01:53:59.054855+00:00",
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "report": "tmp/controller-audit-parses-20261108/parse-ui_ui_input.gd-2rpr85tw/report.json",
+      "report_sha256": "699c534e478e0b5529ba44f63356b79b6a31cbd339a20f2af09a698115fc0370",
+      "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+    }
+  ],
+  "source_sha256": {
+    "app/app_root.gd": "162b76775f2add2a496eca8159164ba326711f3c179eda0b8d7a144f21a96ea9",
+    "app/i18n/de.po": "7dc01253ca96fef23d2dd12f4408151a6c5adfc12dd0904d95e68270e3a57e06",
+    "app/i18n/es.po": "b00743196d10ba05f1a5106adc5706afb33e9dc346625c153eeed77960e8e360",
+    "app/i18n/fr.po": "1289d807f3dedc801c0b187259b4929394c161e63bcbecd84c2995c613e91708",
+    "app/i18n/it.po": "3ef8ba9e1cfcd8e956cacc484d33689a1e8b284388347aca980dd01c9bfeb04a",
+    "app/i18n/ja.po": "5a0cca0f2fc7493b99779d630434b6168c7a4d363aed6f065db778e1dd3e2b80",
+    "app/i18n/pt_BR.po": "7521d39ca5caf8cee0257e0cf88d07f20cd656d59291f54f88f855666cf57c3f",
+    "app/i18n/ru.po": "e33fc9cbadd4924eb8519bb8946cd1e5e9d5d3d6c8e1e40417bb6168ce37ea39",
+    "app/i18n/zh_Hans.po": "7f33a7c5a9c9718ff85c6ace78068dcc1bd24fb438948bd51de213a5ab469850",
+    "app/input/action_axis_capture.gd": "805c80de95c95dd78eb17d24e33f0c75ae1748678d9f62ddb0176af026ff9d3a",
+    "app/input/controller_actions.gd": "2b993e3ffc7f96584865d0ad3f4aa634f40e31339d53854dcbe0efe9afcd36a5",
+    "app/input/controller_profile.gd": "cfa7f41b767b22c125908594f36cbfea9757f5ecda330ec6ef9aee38fc91f296",
+    "app/input/controller_profile_store.gd": "fc5e7daff68e7364b79e2bb65d791b51c5a81668aa0d505974c14e23d36ba81f",
+    "app/input/controller_registry.gd": "2e5ff50676de07e9ce31b30c8acebb64f387359b60042ecd797ec508d585811b",
+    "app/input/controller_service.gd": "2c73ccc64d6781dab867f8415983d795ae6a3f4c59be134ddba93fbe0133a289",
+    "app/input/rc_calibration.gd": "9c767491e67b01d46405013cb9c99afda39b2dd1de0c9e217bfc5ee401848da0",
+    "app/input/rc_input.gd": "295ed1c488f9188ed75c2f3b84633599557d8115d096d545f877c60ed14fb6db",
+    "app/sim/flight_session.gd": "4c22817bb45d32fbb11440a65a19165f62c7045b07865cd840dd90379113c657",
+    "app/sim/helicopter_flight_session.gd": "e73bb97380e704f957349b30c16cdda75de2498e9b14ab8fa4a4bb601bcbc3a6",
+    "app/tests/test_aux_pause_retention.gd": "0bf46199084e9659e011310f3f8e4d5d17eaaa656cb8a66f428688bcfabe202b",
+    "app/tests/test_controller_actions.gd": "e886d2c7f8433710c64acf55589fa3af52f1a3951f5a1031f214a021d5f15f05",
+    "app/tests/test_controller_audit_identity.gd": "53cbe1bb25813a6f7b3e5dad9c6adb6c24bb6b7bb13edb1a17894cd5c47bebf7",
+    "app/tests/test_controller_audit_setup.gd": "6fc4d261f84b806066900d01385ea8750858fc0aa3bbf831ebc63e3c8996d3f8",
+    "app/tests/test_controller_audit_shell.gd": "40aba4f033d931264242c81c46fb0264c783a6737b00f5ed6404d5640a456f08",
+    "app/tests/test_controller_auto_defaults.gd": "ac8364cee1a841927e2c3fa455f9678d331b7a5bff82f991786b9dfc48d08a3d",
+    "app/tests/test_controller_aux_runtime.gd": "bd9259591bf0b892ef0d0e82ab39f017663e153e4763793553e1b962981a577c",
+    "app/tests/test_controller_aux_setup.gd": "addd7ab01cb494d4b464486b12ef00f5c1a960148f3d17ac948b2987b8987096",
+    "app/tests/test_controller_binding_audit.gd": "d26b3788a5c084f5760ab88e2ccff1a05071f0e233e6f6674d5fdddf862a6948",
+    "app/tests/test_controller_calibration_disclosure.gd": "4c6227bb179f918532a7df08990d7081d77dea0eabb8be561473d061263647ba",
+    "app/tests/test_controller_capture_scroll.gd": "d84a9ad69137eed66ecb3a6a830b0740249b6eaaaa48b190acdd9565f38d92aa",
+    "app/tests/test_controller_car.gd": "e82c9f4ef2f2610304fafb600100699274a1fc26c693118c517b835b2fcfa604",
+    "app/tests/test_controller_conditioning.gd": "62d694d1eef04dd1fa90fdebe79f296300c00dcbdb139fc9373fb1efafc1d003",
+    "app/tests/test_controller_edge_continuity.gd": "9a3a2d2223ca50a8c00950957ecc505a2da14bca58dc77f2abf0de39ae9a99ec",
+    "app/tests/test_controller_extended_actions.gd": "5701831037b130b61c9ec39723ca0009636587ff9f5923712be70ae71e979470",
+    "app/tests/test_controller_flight_actions.gd": "dcc84f87483c3b28050ec4487df5ac427aca95b597f205ba7b37aae41447d28f",
+    "app/tests/test_controller_ground.gd": "54a8fe1ed42d3638f5cbfa5329bf12454f67f2d3ed8cefffedcf03c4c7111164",
+    "app/tests/test_controller_integration.gd": "a1eee604fd36b1df51d07888333b291c641f3eefad9475694e501b4ce6a208e6",
+    "app/tests/test_controller_menu.gd": "a50c1720966c43c6d260f67c08bff8021c5893fba1d93ec5168d64c74e0010bb",
+    "app/tests/test_controller_pause_recovery.gd": "e064ba1918148086765749f2d04733286023ca02739885143848c2be4424e1a3",
+    "app/tests/test_controller_persistence.gd": "1880721d044cb1c301804d51c0a4a55e58285ff520d876a05c1270fe19e05bcc",
+    "app/tests/test_controller_preflight_calibration.gd": "af3a6ce400a2dc54d245ee540c51c4aa3f1a5a735b831a7d30ac9fa33d4250db",
+    "app/tests/test_controller_profile.gd": "d39839b871820b7cf67440cf936e348d1449c2a709fa49b52e805123fbac8645",
+    "app/tests/test_controller_profile_creation.gd": "0ec167777009af65395b6759ecb39e7404cc7edd4b93306bfa4bf284dc67e1dd",
+    "app/tests/test_controller_profile_hardening.gd": "33d886329ee128101127d7ada18dce22358e0e51768a44e8ab2f82fc3b8739ef",
+    "app/tests/test_controller_prompts.gd": "d7f3df2336670b8145b7dff2beed13fab110d50930289745a664e79602e1a924",
+    "app/tests/test_controller_rates.gd": "12d207af88e20620167da71d10be2dc4c892b6b6b5de330eec4ad2304c476a44",
+    "app/tests/test_controller_recovery_focus.gd": "0a846b12c1f5a1739b1a773f34c19b5fb021d111656f00ae0d368d5000b47fe6",
+    "app/tests/test_controller_registry.gd": "f484c1a3261a88c71bd3f358ab81ed6f2d403628f70b55ee4f24ca834c8d5d45",
+    "app/tests/test_controller_responsive.gd": "1b64479df420a2d346ce477926856e895897470d5b47b49a0a6db0018282a286",
+    "app/tests/test_controller_routing_audit.gd": "b9fa1cc43fc9169324fe519ae4d08955ea645b344c9a9f4579421e67d1d3021d",
+    "app/tests/test_controller_sections.gd": "22f879b08bf117043b2917fb0e5caa5103fd9ce00a8aeae804c108fc16ada7c2",
+    "app/tests/test_controller_settings_save.gd": "39460872a0a40fb863f881f399175b7281d9b08d9e4736d437f4b9720224d74e",
+    "app/tests/test_controller_setup.gd": "8f2bce1176416978b4cf64d61c445b872a3745279348d8364967a34878424b00",
+    "app/tests/test_controller_setup_safety.gd": "757fe9f2897e202537ab4e321b6e9d4f8a87097de06444fd6dba30eee11d2174",
+    "app/tests/test_controller_store.gd": "ce19eb50e4c4a5004bd011e19924ea2b92ebe74459205e878d3cb66cee60610e",
+    "app/tests/test_controller_verifier_loss.gd": "e12b8c693ddcca9ae38b49334b8ac182c73c3b3132893af5808839c291c8f2bd",
+    "app/tests/test_jeti_identity.gd": "b89975a69d9d734267fdcf7a77e98d848c389602348cd58072e1c41b99cc7edb",
+    "app/tests/test_jeti_runtime.gd": "7bd818ecf110a26c9d7e0ba03677b7765afe7635c57f4a0ae11ad19953a6e7a8",
+    "app/tests/test_jeti_setup.gd": "ec9575735ea96fa5c2f991756d35f59c8690f2f902da2b90db5de88c5fe84603",
+    "app/tests/test_rc_axis_history.gd": "d2b84ec5fd9ed0454e6184c9394f0b362b37baeb937aa840a3f8c772cbe1a328",
+    "app/tests/test_rc_calibration.gd": "114f72253336186bc4d07884840e789de3eec0a100904c120738d3b168dd294a",
+    "app/tests/test_rc_fault_boundaries.gd": "9b68315e80816d7e46b4281a95ac80a652f8e58a11a1a837ea5707dfaedf6a2b",
+    "app/tests/test_rc_input.gd": "8dcf67de054a7cb930a83ec71f73ebf5a1ff6d6fe73b29a2c00b0e928c15001a",
+    "app/tests/test_rc_profile_validation.gd": "8d6d84cda76625b52f160615a397e8c7879bef455724f7ade762f34201f36eb9",
+    "app/tests/test_rc_rearm.gd": "f04cd62b3d7c9ee7ce6d1ac83763c9b90535f0d8d53dcef6f1034ad336880423",
+    "app/tests/test_smoke_aux.gd": "0eee34736a46b2b7553d63542e36109353091341b7ec85b5c51fe43927123713",
+    "app/tests/test_ui_input.gd": "913d98c55470da9fea90a037c6932aa457783af42ef4dfa76bf875f006868dc8",
+    "app/tests/test_ui_language.gd": "6c4b2fc6a75a3a6d1ffd7074d5d06e8c54482b36ca5b44342e6c2a2390630ebf",
+    "app/ui/calibration_card.gd": "1921b9d5c476671517c094cf9914372c263e272b54016ecd12147e7d52e8f1ba",
+    "app/ui/controller_setup.gd": "dd4e61905741d65570973bd4520e5f32e639f5e44a4320604e40218f760e5ed8",
+    "app/ui/radio_calibration_setup.gd": "28e4c79631844144b3f307fe53082db4be490749fb925d0bc7d3acd016b63489",
+    "app/ui/ui_input.gd": "075c9fd3a7b2a4a5473934ede6346e00d5f32219856c7cd0b2e7dc6cb20650a9"
+  },
+  "smoke": {
+    "command": "python tools/debug/debugctl.py smoke --steps 30 --cycles 1",
+    "ok": true,
+    "steps": 52,
+    "errors": 0,
+    "leaked_objects_at_exit": 0,
+    "directory": "tmp/debug-bridge/20261108-204842-47870",
+    "engine_log_sha256": "617b7ba4fbefd24676977f2576c57512598220bf1f207bca18044c3e8da2ef9d",
+    "limit": "One warm-up cycle with zero compared soak cycles; no sustained leak or performance qualification."
+  },
+  "visual": {
+    "renderer": "gl_compatibility",
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "resolution": [
+      1920,
+      1080
+    ],
+    "languages": [
+      "en",
+      "es"
+    ],
+    "files": [
+      {
+        "path": "tmp/controller-audit-visual-20261108/captures/en/fixture-buttons-footer-1920x1080-bottom.png",
+        "sha256": "8f4f82aa681f9750ce90491486486d905aeadcfd15a1cd10538f16b458c4cce3"
+      },
+      {
+        "path": "tmp/controller-audit-visual-20261108/captures/en/fixture-buttons-footer-1920x1080.png",
+        "sha256": "9d6cc20b9cb581d16b17b5ee66000aa4f1f12e92077d6d3447a0796be72bbeeb"
+      },
+      {
+        "path": "tmp/controller-audit-visual-20261108/captures/es/fixture-buttons-footer-1920x1080-bottom.png",
+        "sha256": "215fde849dd20d27f69ebab21e44cc49419565dd26fa286515f42fca83ee82a6"
+      }
+    ]
+  },
+  "remaining": [
+    "UI-12-GP-02 verified radio menu navigation",
+    "F1-GP-02 shareable diagnostic export UI",
+    "Physical USB/Bluetooth/RF device and native package qualification",
+    "Full required CI and release checks"
+  ],
+  "validated_collection_summary": {
+    "invocations": 64,
+    "passed": 64,
+    "skipped": 0,
+    "failed_or_invalid": 0,
+    "junit": "tmp/controller-audit-verified-20261108/results.xml",
+    "junit_sha256": "bd3c683242233b4f9970ddd639f150a88c117f030fd684026ad28539bac82166"
+  }
+}

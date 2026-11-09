@@ -124,11 +124,92 @@ The focused regression passes 81 checks; weather admission passes 50, and existi
 
 ## Rotor-domain diagnostics (HELI-20-H02, 2026-11-08)
 
-`MainRotor.domain_diagnostics` inspects the supplied **hub air-relative** body-FRD velocity, shaft speed, transition endpoints, standard-member requirement, advance-ratio square and signed pole factor. Callers must include the body-rate cross hub-arm velocity; a CG or world-wind vector alone is not the hub input. The source's `μ < 0.15` indicator and the standard law's `μ² < 2` algebraic bound are not validated aircraft operating limits. The API is diagnostic only and is not yet attached to the session's refusal message.
+`MainRotor.domain_diagnostics` inspects the supplied **hub air-relative** body-FRD velocity, shaft speed, transition endpoints, standard-member requirement, advance-ratio square and signed pole factor. Callers must include the body-rate cross hub-arm velocity; a CG or world-wind vector alone is not the hub input. The source's `μ < 0.15` indicator and the standard law's `μ² < 2` algebraic bound are not validated aircraft operating limits. The API is diagnostic only.
 
 The 104-check characterization exercises X-Cell and the laboratory HX-700, stopped and ordinary-flow states, both seams and adjacent binary64 values, the refused and accepted sides of the pole, signed flow and hub-rate contribution. The accepted-side probes still produce very large **local flap derivatives**; these are not established accepted-flight failures. The existing main-rotor and startup-kernel checks pass 65 and 62 checks. The [checked evidence](audit-20261108-checks.json) includes the development-test correction, selected source hashes and full checked-runner receipts. No rotor force, torque, transition, admission or guard changed, and the diagnostic cannot close H02.
 
 H02 remains open: establish a supported main/tail overlap or explicitly reject unsupported combined start/weather before launch, then qualify finite behavior, tail saturation, accepted-weather startup/coast-down, stop/refusal/rollback and actual native/reference equivalence. No arbitrary pole margin or physical flight envelope is implied by this diagnostic.
+
+### Runtime refusal and reset follow-up (A20 / A30, 2026-11-08)
+
+Terminal reference-stage domain faults now publish a detached receipt and a
+pause message using the actual failed RK trial, including normalized attitude,
+wind and body-rate hub offset. Tentative preparation/direct-stage queries do
+not replace a published fault. Reset/restore and unrelated terminal faults clear
+it. The original `_stage_failure` string remains unchanged for the native
+component/stage oracle; native failed-trial data is unavailable and is not
+reconstructed from the rolled-back endpoint. A constructed 118-check regression
+covers these distinctions without changing rotor loads, transition or admission.
+An already refused RK stage bypasses speculative endpoint checks, preserving
+its reason if a later contact query would also refuse. The injected second-stage
+and contact precedence witness fails before this guard and passes afterward.
+
+Both explicit reference and native-request reset routes now use the existing
+guarded transaction. Precommit refusal restores the prior physical/session
+owner, recorder, calibration and control demand; gamepad start demand is applied
+only after physical acceptance. Reset observers run before the tick-zero sample.
+A postcommit observer fault pauses the accepted replacement rather than claiming
+rollback. Checkpoints remain unavailable during publication until backend
+finalization; this does not qualify backend-status observation inside callbacks.
+
+The expanded focused reset suite passes 305 checks, including the actual
+rotorcraft recorder, rejected ground/hover preparation and guarded observer
+faults. Existing session and ground/replay suites pass 42 and 56 checks.
+The [evidence index](audit-recovery-2026-11-08.json) records the baseline failures,
+tested source bytes and checked logs. The isolated `a3f2e38` resource import
+timed out, so these focused tests do not establish that historical-checkout
+comparison; the runtime witness below retains its own source-overlay scope. Actual
+native reset execution, required CI, physical controls and aircraft validation
+remain separate; H01 powered-blocked tracking and H02 law closure remain open.
+
+All nine retained Stik companion tapes match at 2,881 rows each on the frozen
+source, and its regenerated profile passes 44 checks. The source-bound pin is
+retained on `codex/audit-validation-20261108`; apply the
+[rebind workflow](../../../../tools/companions/README.md) to the final shared
+commit before shipping. It is not installed over parallel uncommitted solver
+work in the shared checkout.
+
+### A20 rotor runtime reporting (2026-11-08)
+
+The reference-session refusal now reports the failed trial's signed hub
+air-relative FRD velocity and longitudinal/lateral advance ratios, shaft speed,
+transition regime, standard-member requirement, algebraic validity and pole
+factor. The source's advance-ratio indicator is explicitly not an aircraft
+limit. A detached terminal-fault receipt is separate from tentative stage data;
+an unrelated input or stage failure cannot publish an earlier refused reset
+candidate. An unavailable diagnostic preserves the original refusal reason.
+Pending data is cleared once per tick, with no additional diagnostic work per
+valid RK stage. Native stages do not expose the failed trial and retain their
+generic refusal; they are not diagnosed from the restored endpoint.
+
+The [38-check focused regression](../../../../app/tests/test_heli_rotor_refusal.gd)
+passes for actual intermediate-stage gust refusal, nonzero body-rate hub offset,
+rollback, detached receipts, checkpoint replay, stale reset candidates,
+unrelated stage/input faults, unavailable-diagnostic fallback and reset/restore
+observer mutation. Before the publication guard, the observer-mutation negative
+control failed three assertions. The
+[source-bound evidence](rotor-runtime-refusal-20261108.json) retains checked
+receipts, per-tick hashes and the
+[witness](../../../../research/helicopter/rotor_runtime_refusal/witness.gd).
+For the admitted A15 15 m/s mean plus 8 m/s gust, the baseline session source
+from `4667f1c` and the candidate accepted the same 740 ticks. The fixed input
+digest, every body/continuous/auxiliary/input/phase/load hash, checkpoints at
+ticks 0/360/740 and fault rollback agree. The rejected trial's head speed was
+16.722899 rad/s; the restored endpoint's was 16.651486 rad/s. These are distinct
+states. All 1,863 hashed app GDScript/JSON inputs were unchanged across these
+runs; other resource bytes and user preferences were not part of that manifest.
+Both witnesses used the same
+current dependencies and differed in the session source, so this does not claim
+a complete historical checkout or physical validation.
+
+To repeat this witness, place the exact `git show
+4667f1cff4899b3fb656fb84f402cfb85ba8a0ce:app/sim/helicopter_flight_session.gd`
+bytes at the `baseline_session.gd` path named in the retained script. Run it
+through the checked Godot runner once with `-- --baseline` and once without,
+then compare the input, checkpoint and tick hashes in the two reports. The
+script's scratch root is absolute; adapt it for another checkout and record the
+new script hash. These observations do not establish the supported main/tail
+overlap, actual-native reporting, required CI or physical aircraft behavior.
 
 ## Accepted collective display (HELI-20-H06, 2026-11-08)
 

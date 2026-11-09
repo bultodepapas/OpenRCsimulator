@@ -56,6 +56,8 @@ func _run() -> void:
 		{"id": 41, "name": "Persistence Gamepad", "raw_name": "Persistence Gamepad", "guid": "persistence-pad", "known": true, "kind": "gamepad", "vendor_id": 100, "product_id": 1, "serial_number": "pad-serial"},
 		{"id": 42, "name": "EdgeTX Persistence Radio", "raw_name": "EdgeTX Persistence Radio", "guid": "persistence-radio", "known": false, "kind": "radio", "vendor_id": 200, "product_id": 2, "serial_number": "radio-serial"},
 	]
+	check("previously calibrated radio fixture saves", RcCalibration.save_profile(LEGACY_PATH, RcInput.key_for(42, observed[1]), RcInput.DEFAULT_PROFILE) == OK)
+	legacy_before = FileAccess.get_file_as_bytes(LEGACY_PATH)
 	service.enumerate_devices = func() -> Array: return observed
 	service.refresh()
 	check("Home defaults prefer radio flight and gamepad menus", service.registry.selected_device_id("flight") == 42 and service.registry.selected_device_id("ui") == 41)
@@ -105,7 +107,13 @@ func _run() -> void:
 
 	check("explicit radio selection succeeds", service.select_devices(42, -1), str(service.registry.get_devices()))
 	var radio_before: Dictionary = service.profile_for_device(42)
+	radio_before.roll["deadzone"] = 0.11
+	radio_before.roll["expo"] = 0.35
+	radio_before.aux = {"flaps": {"type": "axis", "axis": 9, "invert": false, "off": -1.0, "on": 1.0},
+		"gear": {"type": "button", "button": 13, "mode": "level"}}
+	check("existing radio metadata and AUX fixture saves", service.save_profile_and_apply(radio_before).get("ok", false))
 	var calibration := RcInput.DEFAULT_PROFILE.duplicate(true)
+	calibration.roll.axis = 9
 	calibration["aux"] = {"smoke": {"type": "button", "button": 12, "mode": "level"}}
 	var calibration_result: Dictionary = session.persist_controller_profile.call(calibration)
 	var calibrated: Dictionary = _stored_profile(service, str(radio_before.get("profile_id", "")))
@@ -113,6 +121,13 @@ func _run() -> void:
 	check("calibration preserves radio role and profile UUID", calibrated.get("kind", "") == "radio" and calibrated.get("profile_id", "") == radio_before.get("profile_id", ""))
 	check("calibration preserves profile name, actions, and presentation", calibrated.get("name", "") == radio_before.get("name", "") and calibrated.get("actions", {}) == radio_before.get("actions", {}) and calibrated.get("presentation", {}) == radio_before.get("presentation", {}))
 	check("calibration preserves valid AUX data", calibrated.get("aux", {}).get("smoke", {}).get("button", -1) == 12)
+	check("calibration preserves saved channel shaping and commits measured axes", calibrated.get("roll", {}).get("deadzone", 0.0) == 0.11 and calibrated.get("roll", {}).get("expo", 0.0) == 0.35 and calibrated.get("roll", {}).get("axis", -1) == 9)
+	check("calibration removes only colliding AUX", not calibrated.get("aux", {}).has("flaps") and calibrated.get("aux", {}).get("gear", {}).get("button", -1) == 13)
+	check("committed calibration equals runtime and reload", calibration_result.get("profile", {}) == calibrated and session.radio.profile == calibrated)
+	var calibrated_bytes := FileAccess.get_file_as_bytes(PROFILE_PATH)
+	var invalid_calibration := calibration.duplicate(true)
+	invalid_calibration.throttle.axis = 99
+	check("invalid calibration leaves committed storage and runtime unchanged", not service.save_calibration(invalid_calibration).get("ok", false) and FileAccess.get_file_as_bytes(PROFILE_PATH) == calibrated_bytes and session.radio.profile == calibrated)
 	check("calibration leaves legacy file unchanged", FileAccess.get_file_as_bytes(LEGACY_PATH) == legacy_before)
 
 	observed.append({"id": 43, "name": "Custom unknown pad", "guid": "custom-pad", "known": false, "vendor_id": 300, "product_id": 3, "serial_number": "custom-serial"})

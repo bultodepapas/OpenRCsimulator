@@ -9833,3 +9833,78 @@ msgstr "Experimental: conversão elétrica 6S estimada, sem validação em voo. 
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "As configurações salvas estão protegidas ou indisponíveis. As alterações só serão aplicadas nesta sessão."
+
+msgid "Review active alerts"
+msgstr "Revisar alertas ativos"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "O voo está pausado. Esta lista mostra a amostra mais recente de alertas ao ser aberta; ela não é atualizada enquanto estiver aberta."
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "Mostra as categorias de alertas selecionadas, mesmo com o painel de avisos oculto."
+
+msgid "No selected alerts in the latest sample."
+msgstr "Não há alertas selecionados na amostra mais recente."
+
+msgid "No alert sample is available yet."
+msgstr "Ainda não há uma amostra de alertas disponível."
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "Mantenha o stick dos AILERONS totalmente à DIREITA e pressione Enter."
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "Mantenha o stick do PROFUNDOR totalmente para TRÁS e pressione Enter."
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "Mantenha o stick do LEME totalmente à DIREITA e pressione Enter."
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "Mova o stick dos AILERONS totalmente à ESQUERDA e depois ao centro. Pressione Enter."
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "Mova o stick do PROFUNDOR totalmente para FRENTE e depois ao centro. Pressione Enter."
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "Mova o stick do LEME totalmente à ESQUERDA e depois ao centro. Pressione Enter."
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "Antes de continuar, mantenha o stick fora do centro na direção indicada e tente novamente."
+
+msgid "Learn axis"
+msgstr "Aprender eixo"
+
+msgid "Learn axis switch"
+msgstr "Aprender interruptor de eixo"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "Mantenha o interruptor escolhido em OFF e confirme. Não mova os sticks de voo. Depois, mantenha-o em ON até ser solicitado a voltar para OFF."
+
+msgid "Confirm OFF"
+msgstr "Confirmar OFF"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "A captura do interruptor é inválida ou foi interrompida. A atribuição permanece inalterada."
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "Mantenha o interruptor em ON. Não mova os demais interruptores."
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "Volte o interruptor para OFF e mantenha-o nessa posição para concluir o aprendizado."
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "Interruptor de eixo aprendido. Salve e, antes de usar, mova-o para fora de OFF e volte para OFF."
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "Mais de um eixo de interruptor se moveu. Capture um interruptor de cada vez."
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "O intervalo do interruptor é inválido. A atribuição permanece inalterada."
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "Calibre este novo rádio antes de salvar. O nome do dispositivo não confirma o mapeamento dos canais."
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "Os controles principais do rádio precisam ser calibrados antes do voo."
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "Perfis de joystick exigem acelerador radio_absolute; stick_rate e trigger_absolute são compatíveis apenas com controles de jogo."

@@ -66,7 +66,7 @@ func _process(_delta: float) -> void:
 func _refresh(wizard: RefCounted) -> void:
 	var step := clampi(int(wizard.get("step")), 0, RcCalibration.STEPS.size() - 1)
 	_step_label.text = tr("Step %d of %d") % [step + 1, RcCalibration.STEPS.size()]
-	_prompt_label.text = tr(RcCalibration.PROMPTS[RcCalibration.STEPS[step]])
+	_prompt_label.text = tr(wizard.instruction())
 	var error := str(wizard.get("error"))
 	_error_label.text = tr(error) if not error.is_empty() else ""
 	_error_label.visible = not error.is_empty()

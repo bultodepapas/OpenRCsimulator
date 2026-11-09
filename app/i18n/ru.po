@@ -9794,3 +9794,78 @@ msgstr "Экспериментально: оценочная электриче�
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "Сохранённые настройки защищены или недоступны. Изменения действуют только в этом сеансе."
+
+msgid "Review active alerts"
+msgstr "Просмотреть активные предупреждения"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "Полёт приостановлен. При открытии список показывает последнюю выборку предупреждений и не обновляется, пока он открыт."
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "Показывает выбранные категории предупреждений, даже если панель предупреждений скрыта."
+
+msgid "No selected alerts in the latest sample."
+msgstr "В последней выборке нет выбранных предупреждений."
+
+msgid "No alert sample is available yet."
+msgstr "Выборка предупреждений пока недоступна."
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "Удерживайте стик ЭЛЕРОНОВ до упора ВПРАВО и нажмите Enter."
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "Удерживайте стик РУЛЯ ВЫСОТЫ до упора НАЗАД и нажмите Enter."
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "Удерживайте стик РУЛЯ НАПРАВЛЕНИЯ до упора ВПРАВО и нажмите Enter."
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "Отклоните стик ЭЛЕРОНОВ до упора ВЛЕВО, затем верните в центр. Нажмите Enter."
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "Отклоните стик РУЛЯ ВЫСОТЫ до упора ВПЕРЁД, затем верните в центр. Нажмите Enter."
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "Отклоните стик РУЛЯ НАПРАВЛЕНИЯ до упора ВЛЕВО, затем верните в центр. Нажмите Enter."
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "Перед продолжением удерживайте стик в указанном направлении от центра и повторите попытку."
+
+msgid "Learn axis"
+msgstr "Обучить ось"
+
+msgid "Learn axis switch"
+msgstr "Обучить переключатель на оси"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "Удерживайте выбранный переключатель в положении OFF и подтвердите. Не двигайте стики управления. Затем удерживайте ON до запроса вернуться в OFF."
+
+msgid "Confirm OFF"
+msgstr "Подтвердить OFF"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "Обучение переключателя неверно или прервано. Назначение не изменено."
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "Удерживайте переключатель в положении ON. Не двигайте другие переключатели."
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "Верните переключатель в положение OFF и удерживайте его там для завершения обучения."
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "Переключатель на оси обучен. Сохраните, затем перед использованием переведите его из OFF и обратно в OFF."
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "Двигалось несколько осей переключателей. Обучайте по одному переключателю за раз."
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "Недопустимый диапазон переключателя. Назначение не изменено."
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "Откалибруйте новую аппаратуру перед сохранением. Имя устройства не подтверждает назначение каналов."
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "Перед полётом необходимо откалибровать основные органы управления аппаратуры."
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "Для профилей джойстика требуется режим газа radio_absolute; stick_rate и trigger_absolute поддерживаются только для геймпадов."

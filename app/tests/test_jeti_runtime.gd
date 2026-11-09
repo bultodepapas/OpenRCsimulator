@@ -88,6 +88,8 @@ func _conflicts_and_persistence() -> void:
 		for value in ([1.0, -1.0] if axis == 2 else [1.0, -1.0, 0.0]):
 			samples[axis] = value
 			wizard.sample(samples)
+			if axis != 2 and value == 1.0:
+				wizard.advance(samples)
 		wizard.advance(samples)
 	_check("radio recalibration preserves named switch groups", wizard.done() and wizard.profile.get("aux", {}).get("flaps", {}) == profile.aux.flaps)
 	var invalid := profile.duplicate(true)
@@ -115,7 +117,7 @@ func _direct_identity_safety() -> void:
 	var info := {"name": "JETI DC/DS Mass Storage", "vendor_id": 1155, "product_id": 41084, "known": true}
 	var radio := RcInput.new()
 	radio.connect_device(DEVICE, info)
-	_check("direct recognized JETI uses radio preset despite known-gamepad flag", radio.profile.get("preset", "") == "jeti_mode2" and not radio.is_gamepad())
+	_check("direct recognized JETI needs radio calibration despite known-gamepad flag", radio.profile.get("kind", "") == "radio" and not radio.profile.get("configured", false) and not radio.is_gamepad())
 	_poll(radio, {})
 	_check("direct JETI still needs fresh throttle evidence", not radio.armed)
 	var saved := Profile.defaults("joystick", "radio_custom")

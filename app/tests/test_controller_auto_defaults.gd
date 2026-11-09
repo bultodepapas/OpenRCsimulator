@@ -55,7 +55,7 @@ func _run() -> void:
 	observed.append(device(3, "radio"))
 	service.refresh()
 	check("radio wins flight while pad retains menus", roles(service, 3, 9))
-	check("radio keeps its existing radio profile and calibration gate", service.profile_for_device(3).get("kind", "") == "radio")
+	check("unsaved radio is selected for setup but has no flight mapping", service.profile_for_device(3).is_empty())
 	observed.clear()
 	service.refresh()
 	check("unplugging everything at Home restores keyboard roles", roles(service, -1, -1))

@@ -25,8 +25,11 @@ func button(index: JoyButton, device := 15) -> void:
 
 func observe_flight_switches_off(device := 15) -> void:
 	# Synthetic devices have no real polling; supply the OFF observations that
-	# a changed flight-device assignment now requires before firing either edge.
-	for index: JoyButton in [JOY_BUTTON_LEFT_STICK, JOY_BUTTON_BACK]:
+	# a changed assignment needs. Native mapped pads also have trusted live polls.
+	for index: JoyButton in [JOY_BUTTON_LEFT_STICK, JOY_BUTTON_BACK, JOY_BUTTON_Y,
+		JOY_BUTTON_START, JOY_BUTTON_LEFT_SHOULDER, JOY_BUTTON_RIGHT_SHOULDER,
+		JOY_BUTTON_RIGHT_STICK, JOY_BUTTON_A, JOY_BUTTON_B, JOY_BUTTON_X,
+		JOY_BUTTON_DPAD_UP, JOY_BUTTON_DPAD_DOWN, JOY_BUTTON_DPAD_LEFT, JOY_BUTTON_DPAD_RIGHT]:
 		var event := InputEventJoypadButton.new()
 		event.device = device
 		event.button_index = index
@@ -190,11 +193,13 @@ func _run() -> void:
 	check("draft radio exposes calibration without an Apply step", session.radio.profile.kind == "gamepad" and setup.calibrate_button.visible and not setup.calibrate_button.disabled)
 	setup.calibrate_button.grab_focus()
 	await button(JOY_BUTTON_A)
-	check("Calibrate saves the chosen radio and starts its wizard in one action", session.radio.profile.kind == "radio" and session.calibration != null and app.pause_menu == null and session.sim.paused)
+	check("new radio calibration stays in the draft without replacing the flight controller", session.radio.profile.kind == "gamepad" and session.calibration == null and app.screens.is_top("radio_calibration") and session.sim.paused)
 	await button(JOY_BUTTON_A)
-	check("selected menu pad advances radio wizard", session.calibration != null and session.calibration.step == 1)
+	check("selected menu pad advances the draft radio wizard", app.screens.is_top("radio_calibration") and app.screens.top()._wizard.step == 1)
 	await button(JOY_BUTTON_B)
-	check("wizard cancel restores Pause without resuming", session.calibration == null and app.screens.is_top("pause") and session.sim.paused)
+	check("wizard cancel restores the uncommitted Controls draft", session.calibration == null and session.radio.profile.kind == "gamepad" and app.screens.is_top("controls") and session.sim.paused)
+	setup.request_close()
+	check("closing the draft restores Pause without resuming", app.screens.is_top("pause") and session.sim.paused)
 	app.pause_menu.exit_options_button.grab_focus()
 	await button(JOY_BUTTON_A) # reveal End inside Exit options
 	await button(JOY_BUTTON_DPAD_DOWN)
@@ -222,6 +227,7 @@ func _test_helicopter_flow() -> void:
 	await ui.settle() # the shared shell opens initial Pause on a deferred call
 	check("helicopter starts through the shared shell", app.flight != null and app.pause_menu != null)
 	if app.flight == null: return
+	observe_flight_switches_off() # synthetic OFF evidence for the new activity bindings
 	var session: Node = app.flight.session
 	session.set_physics_process(false)
 	session.sim.set_physics_process(false)

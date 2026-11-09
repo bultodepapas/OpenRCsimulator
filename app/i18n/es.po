@@ -8587,3 +8587,78 @@ msgstr "Experimental: conversión eléctrica 6S estimada, sin validación en vue
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "La configuración guardada está protegida o no está disponible. Los cambios solo se aplicarán a esta sesión."
+
+msgid "Review active alerts"
+msgstr "Revisar alertas activas"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "El vuelo está en pausa. Esta lista muestra la última muestra de alertas al abrirla; no se actualiza mientras está abierta."
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "Muestra las categorías de alertas seleccionadas, aunque el panel de advertencias esté oculto."
+
+msgid "No selected alerts in the latest sample."
+msgstr "No hay alertas seleccionadas en la última muestra."
+
+msgid "No alert sample is available yet."
+msgstr "Aún no hay ninguna muestra de alertas."
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "Mantén la palanca de ALERONES completamente a la DERECHA y pulsa Intro."
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "Mantén la palanca de PROFUNDIDAD completamente hacia ATRÁS y pulsa Intro."
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "Mantén la palanca del TIMÓN completamente a la DERECHA y pulsa Intro."
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "Mueve la palanca de ALERONES completamente a la IZQUIERDA y vuelve al centro. Pulsa Intro."
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "Mueve la palanca de PROFUNDIDAD completamente hacia DELANTE y vuelve al centro. Pulsa Intro."
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "Mueve la palanca del TIMÓN completamente a la IZQUIERDA y vuelve al centro. Pulsa Intro."
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "Mantén la palanca fuera del centro en la dirección indicada antes de continuar y vuelve a intentarlo."
+
+msgid "Learn axis"
+msgstr "Aprender eje"
+
+msgid "Learn axis switch"
+msgstr "Aprender interruptor de eje"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "Mantén el interruptor elegido en OFF y confirma. No muevas las palancas de vuelo. Después mantenlo en ON hasta que se indique volver a OFF."
+
+msgid "Confirm OFF"
+msgstr "Confirmar OFF"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "La captura del interruptor no es válida o se interrumpió. La asignación no ha cambiado."
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "Mantén el interruptor en ON. No muevas los demás interruptores."
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "Vuelve a poner el interruptor en OFF y mantenlo ahí para terminar el aprendizaje."
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "Interruptor de eje aprendido. Guarda y, antes de usarlo, sácalo de OFF y vuelve a ponerlo en OFF."
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "Se movió más de un eje de interruptor. Captura un interruptor a la vez."
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "El recorrido del interruptor no es válido. La asignación no ha cambiado."
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "Calibra esta emisora nueva antes de guardar. El nombre del dispositivo no verifica la asignación de canales."
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "Los controles principales de la emisora deben calibrarse antes de volar."
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "Los perfiles de joystick requieren el modo de acelerador radio_absolute; stick_rate y trigger_absolute solo son compatibles con mandos de juego."

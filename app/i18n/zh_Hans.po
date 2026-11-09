@@ -8992,3 +8992,78 @@ msgstr "实验性：估算的6S电动改装，尚未通过飞行验证。电池�
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "已保存的设置受保护或不可用。更改仅适用于本次会话。"
+
+msgid "Review active alerts"
+msgstr "查看当前警报"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "飞行已暂停。此列表显示打开时最近一次采样的警报；打开期间不会更新。"
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "即使警告面板已隐藏，也会显示所选的警报类别。"
+
+msgid "No selected alerts in the latest sample."
+msgstr "最近一次采样中没有所选警报。"
+
+msgid "No alert sample is available yet."
+msgstr "尚无警报采样。"
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "将副翼摇杆完全向右推住，然后按 Enter。"
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "将升降舵摇杆完全向后拉住，然后按 Enter。"
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "将方向舵摇杆完全向右推住，然后按 Enter。"
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "将副翼摇杆完全向左推，再回到中间。按 Enter。"
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "将升降舵摇杆完全向前推，再回到中间。按 Enter。"
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "将方向舵摇杆完全向左推，再回到中间。按 Enter。"
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "继续前，请将摇杆从中间推向指定方向并保持，然后重试。"
+
+msgid "Learn axis"
+msgstr "学习轴"
+
+msgid "Learn axis switch"
+msgstr "学习轴开关"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "将选定的开关保持在 OFF，然后确认。保持飞行摇杆不动。接着保持在 ON，直到提示返回 OFF。"
+
+msgid "Confirm OFF"
+msgstr "确认 OFF"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "开关采集无效或已中断。绑定保持不变。"
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "将开关保持在 ON。不要移动其他开关。"
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "将开关拨回 OFF 并保持，以完成学习。"
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "已学习轴开关。保存后，使用前请先将开关拨离 OFF，再拨回 OFF。"
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "检测到多个开关轴移动。请一次采集一个开关。"
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "开关范围无效。绑定保持不变。"
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "保存前请校准这台新遥控器。设备名称无法验证通道映射。"
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "飞行前必须校准遥控器的主要操纵通道。"
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "操纵杆配置需要使用 radio_absolute 油门模式；stick_rate 和 trigger_absolute 仅支持游戏手柄。"

@@ -203,6 +203,7 @@ func _run() -> void:
 	# A restart retains an already armed radio under unchanged ownership; absolute throttle stays live.
 	devices.append({"id": 14, "name": "Synthetic EdgeTX Radio", "kind": "radio", "known": false, "guid": "pause-test-radio"})
 	app.controllers.refresh()
+	check("radio restart fixture has an explicitly configured mapping", app.controllers.apply_profile(Profile.defaults("radio", "radio_custom"), 14))
 	app.open_pause()
 	check("radio can be explicitly selected", app.controllers.select_devices(14, 15))
 	fake_axes[2] = -1.0

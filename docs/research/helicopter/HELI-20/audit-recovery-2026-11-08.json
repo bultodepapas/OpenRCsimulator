@@ -1,0 +1,433 @@
+{
+  "format": "openrc-helicopter-audit-recovery v1",
+  "date": "2026-11-08",
+  "baseline_commit": "a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e",
+  "frozen_candidate": "9e1335a5d6a6bb1e05821fd4f95081828120ecde",
+  "source_unchanged": true,
+  "source_sha256": {
+    "app/sim/helicopter_flight_session.gd": "e73bb97380e704f957349b30c16cdda75de2498e9b14ab8fa4a4bb601bcbc3a6",
+    "app/tests/test_heli_rotor_domain.gd": "36df4459b8c9d7594d99e7f9af204eb6855c726458ca915da6f995747770c516",
+    "app/tests/test_native_helicopter_session.gd": "58fe216dfa044e94e235092ff3450ff65721aebe2df656a3b84ce5f84b9eb54a",
+    "app/sim/simulation.gd": "06a8f2c46240ea90e3390d58392066338ead99134a260436b71bc9dc6afb85ff",
+    "app/physics/rotorcraft/main_rotor.gd": "e864cada369d6586e1af90154123e17f0223f844e2b8b2bf5b435b94ad82cca9"
+  },
+  "checks": {
+    "test_native_helicopter_session": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e32a0f52-2c11-4246-9671-e440077a7889",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_native_helicopter_session.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:21.061556+00:00",
+      "label": "followup-test_native_helicopter_session",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_native_helicopter_session-eyb63h69\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_native_helicopter_session-eyb63h69\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 9.11,
+      "log_bytes": 318,
+      "log_sha256": "d4f05c1e643f9de18d2c552dfed453b21687e8d8d736ce4c1409f9832ecd4f65"
+    },
+    "test_heli_rotor_domain": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "3c7b7d02-4254-4391-8514-4484e10006f7",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_rotor_domain.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:21.061556+00:00",
+      "label": "followup-test_heli_rotor_domain",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_heli_rotor_domain-04un57nm\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_heli_rotor_domain-04un57nm\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.922,
+      "log_bytes": 129,
+      "log_sha256": "0958c22dbe33032d2d77e93e72bdc3ab127eed9cc90f29df319423e1f3b4531e"
+    },
+    "test_heli_session": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "7ce681fe-117a-48be-ae58-3782f03bc777",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_session.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:21.063062+00:00",
+      "label": "followup-test_heli_session",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_heli_session-jj9wozdx\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_heli_session-jj9wozdx\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 26.625,
+      "log_bytes": 190,
+      "log_sha256": "75ba48be5ec0ccb016b2e3121f67615a7a828224123ce2f4506cb41efa777723"
+    },
+    "test_heli_ground_session": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "5320cf0a-dcb9-4112-a1f4-ef26c250b2ab",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_heli_ground_session.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:25.111702+00:00",
+      "label": "followup-test_heli_ground_session",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_heli_ground_session-f3f5xyri\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_heli_ground_session-f3f5xyri\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 76.313,
+      "log_bytes": 445,
+      "log_sha256": "aff6041b643beee5e2da3c58dcff62bac7c1678aa0c111c68cbfc868a4dc85ed"
+    },
+    "test_helicopter_lake_context": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "34857951-0a38-4621-a530-73b56f60c75e",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/audit-20261108-review/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_helicopter_lake_context.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-09T01:53:06.128241+00:00",
+      "label": "followup-test_helicopter_lake_context",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_helicopter_lake_context-qq33y8lh\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_helicopter_lake_context-qq33y8lh\\report.json",
+      "timeout_seconds": 150.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 9.203,
+      "log_bytes": 112,
+      "log_sha256": "70e166878d3a591ac5aa85704348929e42cb4704e13088eae28c02473d2e1489"
+    },
+    "test_flight_audio_accepted": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "45f26210-f605-470a-a703-d89d33194edc",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_audio_accepted.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:30.939874+00:00",
+      "label": "followup-test_flight_audio_accepted",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_audio_accepted-17lk5fl0\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_audio_accepted-17lk5fl0\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 6.422,
+      "log_bytes": 219,
+      "log_sha256": "60844fc5b32d601cb5cd83703b7c016922a9e8d3178d81fb77c4461dcbb21a52"
+    },
+    "test_flight_log_empty_continuous": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "1855db97-9522-4c80-be6d-09a996e16ed5",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log_empty_continuous.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-review",
+      "started_utc": "2026-11-09T01:51:37.480533+00:00",
+      "label": "followup-test_flight_log_empty_continuous",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_log_empty_continuous-oaxwk053\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\heli-final\\followup-test_flight_log_empty_continuous-oaxwk053\\report.json",
+      "timeout_seconds": 240.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.515,
+      "log_bytes": 1385,
+      "log_sha256": "7d52d9bafdd044b1721e3f82b842cf03f682c149e05c7c01fdf8916848d444a8"
+    }
+  },
+  "counterexamples": {
+    "premature-reset": {
+      "expected_assertion_failure": true,
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "66580f95-26a4-4593-9716-3fbbad500c0a",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_native_helicopter_session.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T00:33:23.136884+00:00",
+        "label": "heli-reset-injected-before",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-helicopter\\reset-before\\heli-reset-injected-before-qpzvxmfc\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-helicopter\\reset-before\\heli-reset-injected-before-qpzvxmfc\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "NK-3 helicopter native session:"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 6.437,
+        "log_bytes": 1195,
+        "log_sha256": "5ee957fb5bd9a114b66e67910e29e0b3b2e6874bc956616a4fa4e2bd9771e945"
+      }
+    },
+    "second-stage-precedence": {
+      "expected_assertion_failure": true,
+      "checked_run": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "6ba00904-41a8-4a03-9878-0c52cd0d5386",
+        "command": [
+          ".tools/Godot_v4.8-beta2_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_heli_rotor_domain.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-11-09T01:48:11.942372+00:00",
+        "label": "heli-second-stage-before",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-helicopter\\second-stage-before\\heli-second-stage-before-stx5g71f\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-helicopter\\second-stage-before\\heli-second-stage-before-stx5g71f\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "HELI H02 rotor domain diagnostics: 118 checks"
+        ],
+        "process_exit": 1,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "process_exit",
+        "detail": "",
+        "exit_code": 1,
+        "ok": false,
+        "elapsed_seconds": 4.219,
+        "log_bytes": 200,
+        "log_sha256": "2d750fa50d3efe008a975de78b58eea119b7e2c7da895764970e07cfb918747a"
+      }
+    }
+  },
+  "setup_failure": {
+    "script": "test_heli_lake_context.gd",
+    "reason": "mistyped nonexistent script; corrected to test_helicopter_lake_context.gd",
+    "product_failure": false
+  },
+  "native_reset_exercised": false,
+  "historical_tape_equivalence": false,
+  "limits": [
+    "isolated a3 resource import timed out",
+    "constructed second-stage contact precedence witness",
+    "no rotor law or admission change",
+    "actual native reset, full CI and physical/controller qualification remain open"
+  ],
+  "companion_candidate": {
+    "accepted": {
+      "solver_sha256": "ca2bd1bdf7e2333d0da00e5f339f94b992fee93a9256d72167f9b472624dab55",
+      "rev": "9e1335a5d6a6bb1e05821fd4f95081828120ecde"
+    },
+    "validation_branch": "codex/audit-validation-20261108",
+    "identical_tapes": 9,
+    "rows_per_tape": 2881,
+    "profile_checks": 44,
+    "checked_run": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e8bd323c-1cde-4bd1-acd6-de49cce764d8",
+      "command": [
+        ".tools/Godot_v4.8-beta2_win64_console.exe",
+        "--headless",
+        "--path",
+        "tmp/audit-20261108-review/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-11-09T01:57:35.999927+00:00",
+      "label": "candidate-companions",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\candidate-companions-gtxdb2n_\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit-20261108-final\\candidate-companions-gtxdb2n_\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 6.985,
+      "log_bytes": 2635,
+      "log_sha256": "c799bdf4c7dc927420cd0dfb8bc94b2e04a5d09fae10aef30ab89abf89950ce2"
+    },
+    "shared_checkout_pin_updated": false,
+    "integration_gate": "Final shared source commit, profile, qualification and receipt must land together; retained isolated revision is not installed over concurrent dirty solver work."
+  }
+}

@@ -200,6 +200,14 @@ func _initialize() -> void:
 	check("rollback primary corruption writes", corrupt_cfg.save(rollback_path) == OK)
 	var recovered := rollback_store.load_all()
 	check("valid rollback copy recovers unreadable primary", recovered.ok and recovered.get("recovered_from_backup", false) and recovered.profiles.size() == 1)
+	var unsupported := Profile.defaults("joystick", "radio_custom")
+	unsupported.throttle_mode = "stick_rate"
+	unsupported.throttle.range_kind = "centered"
+	corrupt_cfg.set_value(Store.STORAGE_SECTION, "schema_version", Profile.SCHEMA_VERSION)
+	corrupt_cfg.set_value(Store.STORAGE_SECTION, "profiles", [unsupported])
+	check("unsupported joystick fixture writes", corrupt_cfg.save(rollback_path) == OK)
+	var unsupported_recovered := rollback_store.load_all()
+	check("rollback reports why the primary joystick profile was refused", unsupported_recovered.ok and unsupported_recovered.get("recovered_from_backup", false) and "stick_rate" in "; ".join(unsupported_recovered.errors))
 
 	_check_hardware_precision()
 

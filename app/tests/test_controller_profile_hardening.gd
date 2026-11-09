@@ -264,6 +264,7 @@ func _run() -> void:
 	var reject_device := {"id": 83, "name": "EdgeTX rejection radio", "raw_name": "EdgeTX rejection radio", "guid": "reject-radio", "kind": "radio", "known": false, "vendor_id": 201, "product_id": 2, "serial_number": "reject-serial"}
 	calibration_service.enumerate_devices = func() -> Array: return [calibration_device, reject_device]
 	calibration_service.refresh()
+	check("rejection fixture has an explicitly configured radio mapping", calibration_service.apply_profile(Profile.defaults("radio", "radio_custom"), 83))
 	check("rejection fixture selection succeeds", calibration_service.select_devices(83, -1))
 	calibration_session.reject_trigger = true
 	var trigger_profile := Profile.defaults("gamepad", "trigger_absolute")

@@ -126,6 +126,43 @@ func run() -> void:
 	check(select_id(setup.flight_device_picker, 18) and select_id(setup.ui_device_picker, 20), "flight draft changes both roles")
 	setup._on_profile_kind_selected(1)
 	setup._axis_controls.roll.axis.value = 4
+	var initial_roles := [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")]
+	var initial_store: Dictionary = app.controllers.store.load_all()
+	check(setup.calibrate_button.text == "Calibrate selected radio" and setup.calibration_scope_help.text.contains("draft"), "new radio in flight discloses calibration before Save")
+	setup.calibrate_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	check(app.screens.is_top("radio_calibration") and app.controllers.store.load_all() == initial_store \
+		and initial_roles == [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")], "new-radio wizard opens without saving or applying either role")
+	if not app.screens.is_top("radio_calibration"):
+		await ui.close_app(app)
+		quit(1)
+		return
+	# Complete a real draft-only wizard before exercising the already-verified
+	# radio's save-before-in-flight-calibration path below.
+	var wizard: Node = app.screens.top()
+	var raw: Array = [0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+	wizard.read_axis = func(_id: int, axis: int) -> float: return float(raw[axis])
+	wizard.advance() # rest: centered sticks and low throttle
+	raw[2] = 1.0
+	wizard._sample()
+	raw[2] = -1.0
+	wizard.advance()
+	for axis: int in [4, 1, 3]:
+		raw[axis] = 1.0
+		wizard.advance() # confirm requested direction while held
+		raw[axis] = -1.0
+		wizard._sample()
+		raw[axis] = 0.0
+		wizard.advance()
+	check(wizard._wizard.done() and app.controllers.store.load_all() == initial_store, "wizard measurement remains draft-only")
+	raw[2] = 1.0
+	wizard._sample()
+	raw[2] = -1.0
+	wizard._sample()
+	wizard.advance() # use verified full-to-low calibration, still without saving
+	await settle()
+	check(app.screens.is_top("controls") and setup.current_profile().roll.axis == 4 and app.controllers.store.load_all() == initial_store \
+		and initial_roles == [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")], "using calibration changes the draft without saving or applying roles")
 	check(setup.calibrate_button.text == "Save controller settings and calibrate" and setup.calibration_scope_help.text.contains("saved") and setup.calibration_scope_help.text.contains("Cancelling"), "flight action and adjacent explanation disclose save before calibration")
 	var old_roles := [app.controllers.registry.selected_device_id("flight"), app.controllers.registry.selected_device_id("ui")]
 	var stored_before: Dictionary = app.controllers.store.load_all()
@@ -138,7 +175,12 @@ func run() -> void:
 	setup.calibrate_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	check(app.flight.session.calibration != null and app.controllers.registry.selected_device_id("flight") == 18 and app.controllers.registry.selected_device_id("ui") == 20, "flight calibration commits distinct roles before starting")
-	var saved: Dictionary = app.controllers.store.load_all().profiles[0]
+	var saved_profiles: Array = app.controllers.store.load_all().profiles
+	if saved_profiles.is_empty():
+		await ui.close_app(app)
+		quit(1)
+		return
+	var saved: Dictionary = saved_profiles[0]
 	check(saved.roll.axis == 4 and saved.kind == "radio" and app.flight.session.radio.profile.roll.axis == 4, "actual saved and active radio profile carries changed mapping")
 	await ui.tap(KEY_ESCAPE)
 	await create_timer(0.3).timeout
@@ -202,7 +244,9 @@ func run() -> void:
 	app.open_controls()
 	await settle()
 	setup = app.screens.top()
-	setup._axis_controls.roll.axis.value = 5
+	# Keep the verified channel mapping intact while changing a saved field: changing
+	# an axis would correctly require a new draft-only calibration first.
+	setup.profile_name_edit.text = "Updated verified radio"
 	check(select_id(setup.ui_device_picker, 19), "second flight draft changes menu role")
 	var session: Node = app.flight.session
 	setup.profile_saved.connect(func(_profile: Dictionary) -> void: session.external_driver_enabled = true)
@@ -210,7 +254,7 @@ func run() -> void:
 	setup.calibrate_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await create_timer(0.3).timeout
-	check(app.pause_menu != null and app.flight.session.calibration == null and app.controllers.store.load_all().profiles[0].roll.axis == 5 and app.controllers.registry.selected_device_id("ui") == 19, "post-save start refusal leaves committed profile and menu role")
+	check(app.pause_menu != null and app.flight.session.calibration == null and app.controllers.store.load_all().profiles[0].name == "Updated verified radio" and app.controllers.registry.selected_device_id("ui") == 19, "post-save start refusal leaves committed profile and menu role")
 	if app.pause_menu != null:
 		var note: Label = app.pause_menu.note_label
 		check(note.visible and note.text == "Profile saved and device selections applied, but calibration could not start.", "start refusal says settings were saved, and note survives periodic refresh")

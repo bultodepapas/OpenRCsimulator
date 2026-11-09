@@ -20,6 +20,7 @@ signal time_of_day_requested(from: Control)
 signal failure_settings_requested(from: Control)
 signal companions_requested(from: Control)
 signal overlays_requested(from: Control)
+signal active_alerts_requested(from: Control)
 signal statistics_requested(from: Control, aircraft_id: String)
 var statistics_button: Button
 signal end_requested
@@ -47,6 +48,7 @@ var time_of_day_button: Button
 var failure_settings_button: Button
 var companions_button: Button
 var overlays_button: Button
+var active_alerts_button: Button
 var end_button: Button
 var help_button: Button
 var controls_button: Button
@@ -156,6 +158,10 @@ func _init(can_end := true, trial_mode := false) -> void:
 	session_options_button.pressed.connect(func() -> void: _toggle_group("session"))
 	column.add_child(session_options_button)
 	session_options_container = _option_group("SessionOptionsGroup", column)
+	active_alerts_button = _button("Review active alerts", "QuietButton", "ActiveAlerts")
+	active_alerts_button.visible = false # only flights with the alert manager can provide a sample
+	active_alerts_button.pressed.connect(func() -> void: active_alerts_requested.emit(active_alerts_button))
+	column.add_child(active_alerts_button)
 	settings_button = _button("Settings", "QuietButton", "Settings")
 	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
 	column.add_child(settings_button)

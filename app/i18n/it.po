@@ -9819,3 +9819,78 @@ msgstr "Sperimentale: conversione elettrica 6S stimata, non validata in volo. Il
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "Le impostazioni salvate sono protette o non disponibili. Le modifiche valgono solo per questa sessione."
+
+msgid "Review active alerts"
+msgstr "Esamina avvisi attivi"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "Il volo è in pausa. Questa lista mostra l’ultimo campione degli avvisi all’apertura; non si aggiorna mentre è aperta."
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "Mostra le categorie di avvisi selezionate, anche se il pannello degli avvertimenti è nascosto."
+
+msgid "No selected alerts in the latest sample."
+msgstr "Nessun avviso selezionato nell’ultimo campione."
+
+msgid "No alert sample is available yet."
+msgstr "Non è ancora disponibile un campione degli avvisi."
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "Tieni lo stick degli ALETTONI completamente a DESTRA e premi Invio."
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "Tieni lo stick dell'ELEVATORE completamente INDIETRO e premi Invio."
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "Tieni lo stick del TIMONE completamente a DESTRA e premi Invio."
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "Sposta lo stick degli ALETTONI completamente a SINISTRA, poi al centro. Premi Invio."
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "Sposta lo stick dell'ELEVATORE completamente AVANTI, poi al centro. Premi Invio."
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "Sposta lo stick del TIMONE completamente a SINISTRA, poi al centro. Premi Invio."
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "Prima di continuare, tieni lo stick fuori dal centro nella direzione richiesta e riprova."
+
+msgid "Learn axis"
+msgstr "Acquisisci asse"
+
+msgid "Learn axis switch"
+msgstr "Acquisisci interruttore su asse"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "Tieni l’interruttore scelto su OFF e conferma. Non muovere gli stick di volo. Poi tienilo su ON finché non viene richiesto di tornare su OFF."
+
+msgid "Confirm OFF"
+msgstr "Conferma OFF"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "L’acquisizione dell’interruttore non è valida o è stata interrotta. L’associazione non è cambiata."
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "Tieni l’interruttore su ON. Non muovere gli altri interruttori."
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "Riporta l’interruttore su OFF e tienilo lì per completare l’acquisizione."
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "Interruttore su asse acquisito. Salva, poi spostalo da OFF e riportalo su OFF prima dell’uso."
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "Si è mosso più di un asse di interruttore. Acquisisci un interruttore alla volta."
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "L’intervallo dell’interruttore non è valido. L’associazione non è cambiata."
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "Calibra questa nuova radio prima di salvare. Il nome del dispositivo non verifica la mappatura dei canali."
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "I comandi principali della radio devono essere calibrati prima del volo."
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "I profili joystick richiedono la modalità gas radio_absolute; stick_rate e trigger_absolute sono supportate solo per i gamepad."

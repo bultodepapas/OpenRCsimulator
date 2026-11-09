@@ -41,8 +41,10 @@ func _calibration_with_aux(aux_axis: int) -> RcCalibration:
 		var high := rest.duplicate()
 		low[axis] = -1.0
 		high[axis] = 1.0
-		calibration.sample(low)
 		calibration.sample(high)
+		if axis != 0:
+			calibration.advance(high)
+		calibration.sample(low)
 		calibration.advance(rest)
 	return calibration
 

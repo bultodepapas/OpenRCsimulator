@@ -9,6 +9,7 @@ const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const JetiRadio := preload("res://input/jeti_radio.gd")
+const ActionAxisCapture := preload("res://input/action_axis_capture.gd")
 
 signal close_requested
 signal profile_saved(profile: Dictionary)
@@ -108,6 +109,7 @@ var _draft_profile: Dictionary = {}
 var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
 var _calibration_origins: Dictionary = {} # draft context -> connection that supplied its ranges
+var _reused_radio_mappings: Dictionary = {} # explicit Duplicate/legacy choice, never inferred from matching axes
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
 var action_capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES.duplicate()
@@ -124,6 +126,10 @@ var _capture_button: Button
 var _capturing_aux_name := ""
 var _capturing_aux_position := -1
 var _capture_release_tokens: Dictionary = {}
+var _axis_capture_buttons: Dictionary = {}
+var _axis_capture: RefCounted
+var _axis_capture_dialog: ConfirmationDialog
+var _capturing_generation := 0
 var _preview_clock := 0.0
 var _initial_focus_wait_frames := 0
 var _profile_kind_label: Label
@@ -196,17 +202,15 @@ func apply_calibration_draft(calibration: Dictionary, device_id: int, generation
 		or not _calibration_connection_matches(device_id, generation):
 		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
 		return false
-	var calibrated: Dictionary = ControllerProfile.upgrade_legacy(calibration)
+	var calibrated: Dictionary = ControllerProfile.merge_radio_calibration(_draft_profile, calibration)
 	if calibrated.is_empty() or calibrated.get("kind", "") != "radio":
 		_set_status(tr("Invalid calibration. The draft is unchanged."), true)
 		return false
-	for channel: String in CHANNELS:
-		var updated_channel: Dictionary = _draft_profile.get(channel, {}).duplicate(true)
-		updated_channel.merge(calibrated[channel], true)
-		_draft_profile[channel] = updated_channel
+	_draft_profile = calibrated
 	# The wizard retains valid AUX and reports bindings consumed by newly assigned flight axes.
 	_draft_profile["aux"] = calibrated.get("aux", {}).duplicate(true)
-	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation}
+	_calibration_origins[_draft_context_key] = {"id": device_id, "generation": generation,
+		"mapping": _radio_mapping(_draft_profile)}
 	_update_axis_controls()
 	_update_aux_controls()
 	_update_preview()
@@ -244,6 +248,37 @@ func selected_flight_device_id() -> int:
 
 func selected_ui_device_id() -> int:
 	return _draft_ui_device_id
+
+
+static func _radio_mapping(profile: Dictionary) -> Dictionary:
+	var result := {}
+	for channel_name: String in CHANNELS:
+		var channel: Dictionary = profile.get(channel_name, {})
+		var measured := {}
+		for key: String in ["axis", "invert", "min", "center", "max"]:
+			measured[key] = channel.get(key)
+		result[channel_name] = measured
+	return result
+
+
+## Existing saved/imported mappings retain compatibility; a new starter needs
+## current calibration evidence. A duplicate UUID or a name is not that evidence.
+func radio_mapping_verified(candidate: Dictionary) -> bool:
+	var observed := _device_for_id(_draft_flight_device_id)
+	if candidate.get("kind", "") != "radio" and observed.get("kind", "") != "radio": return true
+	var mapping := _radio_mapping(candidate)
+	var origin: Dictionary = _calibration_origins.get(_draft_context_key, {})
+	if not origin.is_empty():
+		return _calibration_connection_matches(int(origin.id), int(origin.generation)) \
+			and origin.get("mapping", {}) == mapping
+	for saved: Dictionary in _profiles:
+		if str(saved.get("profile_id", "")) == str(candidate.get("profile_id", "")) and _radio_mapping(saved) == mapping:
+			return true
+	var reused: Dictionary = _reused_radio_mappings.get(str(candidate.get("profile_id", "")), {})
+	if not reused.is_empty():
+		return reused.mapping == mapping and reused.id == _draft_flight_device_id \
+			and _calibration_connection_matches(int(reused.id), int(reused.generation))
+	return false
 
 
 func _build() -> void:
@@ -796,6 +831,11 @@ func _build() -> void:
 		clear_button.pressed.connect(_clear_action_binding.bind(action_id))
 		binding_cell.add_child(clear_button)
 		_clear_action_buttons[action_id] = clear_button
+		var axis_button := _button("Learn axis")
+		axis_button.name = "LearnAxis_%s" % action_id
+		axis_button.pressed.connect(_start_axis_capture.bind(action_id, axis_button))
+		binding_cell.add_child(axis_button)
+		_axis_capture_buttons[action_id] = axis_button
 		action_grid.add_child(binding_cell)
 		var change_button := _button("Remap")
 		change_button.name = "Remap_%s" % action_id
@@ -1123,6 +1163,10 @@ func _ready() -> void:
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and _axis_capture_dialog != null:
+		_cancel_capture()
+	elif what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and _axis_capture_dialog != null:
+		_check_axis_capture_focus.call_deferred()
 	if what != NOTIFICATION_TRANSLATION_CHANGED or not is_node_ready():
 		return
 	_refresh_devices()
@@ -1135,6 +1179,14 @@ func _notification(what: int) -> void:
 	_update_action_controls()
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
 	_refresh_validation_feedback()
+
+
+## The OFF confirmation transfers focus to our own native popup. Resolve that
+## transfer after the window event; an actual application loss still cancels.
+func _check_axis_capture_focus() -> void:
+	if not is_instance_valid(_axis_capture_dialog) or DisplayServer.get_name() == "headless": return
+	if get_window().has_focus() or _axis_capture_dialog.has_focus(): return
+	_cancel_capture()
 
 
 func close_button_focus() -> void:
@@ -1151,6 +1203,8 @@ func close_button_focus() -> void:
 
 
 func _process(delta: float) -> void:
+	if _axis_capture != null:
+		_sample_axis_capture(delta)
 	# Containers finish sorting at the end of the previous frame. Coalesce their
 	# layout notifications; ordinary wheel scrolling must not force focus back.
 	if _mapping_focus_layout_pending:
@@ -1187,6 +1241,14 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if not _is_capture_active():
+		return
+	if _axis_capture_dialog != null:
+		if _axis_capture == null: return # native OFF confirmation owns its keys
+		if event is InputEventKey:
+			get_viewport().set_input_as_handled()
+			if event.pressed and (event.keycode == KEY_ESCAPE or event.physical_keycode == KEY_ESCAPE): _cancel_capture()
+		elif (event is InputEventJoypadMotion or event is InputEventJoypadButton) and event.device == _capturing_device_id:
+			get_viewport().set_input_as_handled()
 		return
 	if not _capturing_aux_name.is_empty():
 		if event is InputEventKey:
@@ -1281,7 +1343,8 @@ func _on_registry_devices_changed() -> void:
 	_update_preset_options()
 	if _is_capture_active():
 		var captured_device := _device_for_id(_capturing_device_id)
-		if captured_device.is_empty() or not bool(captured_device.get("connected", true)):
+		if captured_device.is_empty() or not bool(captured_device.get("connected", true)) \
+			or (_capturing_generation > 0 and not _calibration_connection_matches(_capturing_device_id, _capturing_generation)):
 			_capture_done()
 			_set_status(tr("The selected flight controller disconnected; remapping was cancelled."), true)
 	_update_action_controls()
@@ -1727,6 +1790,7 @@ func _apply_jeti_mode2_preset() -> void:
 
 
 func _duplicate_profile() -> void:
+	var verified := radio_mapping_verified(_draft_profile)
 	var calibration_origin: Dictionary = _calibration_origins.get(_draft_context_key, {}).duplicate(true)
 	var duplicate := _draft_profile.duplicate(true)
 	var id_source := ControllerProfile.defaults(str(duplicate.get("kind", "gamepad")), str(duplicate.get("preset", "mode2")))
@@ -1735,6 +1799,9 @@ func _duplicate_profile() -> void:
 	duplicate["profile_id"] = id_source.get("profile_id", "")
 	duplicate["name"] = "%s copy" % str(duplicate.get("name", "Controller profile"))
 	_set_draft_profile(duplicate)
+	if verified and duplicate.get("kind", "") == "radio":
+		_reused_radio_mappings[str(duplicate.profile_id)] = {mapping = _radio_mapping(duplicate),
+			id = _draft_flight_device_id, generation = int(registry.connection_generation(_draft_flight_device_id))}
 	if not calibration_origin.is_empty():
 		_calibration_origins[_draft_context_key] = calibration_origin
 	_set_status(tr("Profile duplicated. Save it to add a separate profile."), false)
@@ -1750,7 +1817,8 @@ func _update_axis_controls() -> void:
 		var axis_spin: SpinBox = controls.axis
 		axis_spin.set_value_no_signal(float(channel.get("axis", 0)))
 		var deadzone_spin: SpinBox = controls.deadzone
-		var has_shaping := profile_kind == "gamepad"
+		var has_shaping := profile_kind == "gamepad" and not (channel_name == "throttle" \
+			and str(_draft_profile.get("throttle_mode", "")) == "trigger_absolute")
 		deadzone_spin.set_value_no_signal(float(channel.get("deadzone", ControllerProfile.DEFAULT_DEADZONE)))
 		deadzone_spin.editable = has_shaping
 		var expo_spin: SpinBox = controls.expo
@@ -2208,7 +2276,7 @@ func _update_axis_preview() -> void:
 		var channel: Dictionary = _draft_profile.get(channel_name, {})
 		var axis := int(channel.get("axis", 0))
 		var raw := _read_axis_preview(_draft_flight_device_id, axis) if connected else 0.0
-		var conditioned := ControllerProfile.conditioned_axis(raw, channel, kind) if connected else 0.0
+		var conditioned := ControllerProfile.channel_value(raw, channel_name, _draft_profile) if connected else 0.0
 		var current: Label = _preview_labels[channel_name]
 		if connected and channel_name == "throttle" and str(_draft_profile.get("throttle_mode", "")) == "radio_absolute":
 			current.text = tr("%s: %.0f%% · raw %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), conditioned * 100.0, raw]
@@ -2245,6 +2313,11 @@ func _update_action_controls() -> void:
 		var glyph_control: TextureRect = binding_cell.get_node("BindingGlyph_%s" % action_id)
 		var capture_button: Button = action_grid.get_child(child_index + 2)
 		var clear_button: Button = _clear_action_buttons[action_id]
+		var axis_button: Button = _axis_capture_buttons[action_id]
+		axis_button.text = tr("Learn axis")
+		axis_button.visible = str(_draft_profile.get("kind", "")) in ["radio", "joystick"] \
+			and str(definition.context) in ["flight", "both"]
+		axis_button.disabled = _is_capture_active()
 		label_control.text = tr(str(definition.label))
 		if action_id == "rates_toggle":
 			label_control.tooltip_text = tr("Airplane dual rates: press the left stick (L3) on a gamepad, or remap Dual rates below for a joystick. Each press alternates normal and high rates. Existing assignments take priority. Radio profiles use the transmitter's rates.")
@@ -2324,6 +2397,7 @@ func _get_prompt_texture(texture_path: String) -> Texture2D:
 
 
 func _start_capture(action_id: String, button: Button) -> void:
+	if _is_capture_active(): _capture_done()
 	# Selecting even the current section resets its scroll and focuses its tab.
 	# A row edit is not navigation: keep its viewport and keyboard/gamepad focus.
 	if _selected_section != "buttons":
@@ -2336,6 +2410,8 @@ func _start_capture(action_id: String, button: Button) -> void:
 	_capturing_aux_position = -1
 	_capturing_action = action_id
 	_capturing_device_id = _draft_flight_device_id
+	_capturing_generation = int(registry.connection_generation(_capturing_device_id)) \
+		if registry != null and registry.has_method("connection_generation") else 0
 	_capture_button = button
 	_capture_button.grab_focus()
 	_set_status(tr("Press a keyboard key or an input on the selected flight controller. Escape cancels remapping."), false)
@@ -2345,6 +2421,7 @@ func _start_capture(action_id: String, button: Button) -> void:
 func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> void:
 	if button.disabled or not _aux_controls.has(aux_name):
 		return
+	if _is_capture_active(): _capture_done()
 	if _selected_section != "aux":
 		select_section("aux")
 	_capturing_action = ""
@@ -2367,6 +2444,10 @@ func _capture_binding(event: InputEvent) -> void:
 	var binding := ControllerActions.binding_from_event(event)
 	if binding.is_empty():
 		return
+	_accept_captured_binding(binding)
+
+
+func _accept_captured_binding(binding: Dictionary) -> void:
 	var candidate := _base_actions.duplicate(true)
 	candidate[_capturing_action] = binding
 	var candidate_profile := _draft_profile.duplicate(true)
@@ -2429,6 +2510,10 @@ func _cancel_capture() -> void:
 
 
 func _capture_done() -> void:
+	_axis_capture = null
+	if is_instance_valid(_axis_capture_dialog): _axis_capture_dialog.queue_free()
+	_axis_capture_dialog = null
+	_capturing_generation = 0
 	_capturing_action = ""
 	_capturing_aux_name = ""
 	_capturing_aux_position = -1
@@ -2436,6 +2521,67 @@ func _capture_done() -> void:
 	_capture_button = null
 	_update_action_controls()
 	_update_aux_controls()
+
+
+func _start_axis_capture(action_id: String, button: Button) -> void:
+	if _draft_flight_device_id < 0 or _is_capture_active(): return
+	var definition := ControllerActions.action_definition(action_id)
+	if definition.get("context", "menu") not in ["flight", "both"]: return
+	_capturing_action = action_id
+	_capturing_device_id = _draft_flight_device_id
+	_capturing_generation = int(registry.connection_generation(_capturing_device_id))
+	_capture_button = button
+	_axis_capture_dialog = ConfirmationDialog.new()
+	_axis_capture_dialog.dialog_autowrap = true
+	_axis_capture_dialog.title = tr("Learn axis switch")
+	_axis_capture_dialog.dialog_text = tr("Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF.")
+	_axis_capture_dialog.get_ok_button().text = tr("Confirm OFF")
+	_axis_capture_dialog.confirmed.connect(_confirm_axis_off)
+	_axis_capture_dialog.canceled.connect(_cancel_capture)
+	add_child(_axis_capture_dialog)
+	_axis_capture_dialog.popup_centered(Vector2i(540, 180))
+	_update_action_controls()
+
+
+func _capture_axes() -> PackedFloat64Array:
+	var axes := PackedFloat64Array()
+	for axis: int in SmokeAux.AXES:
+		var raw: Variant = axis_preview_provider.call(_capturing_device_id, axis) if axis_preview_provider.is_valid() \
+			else Input.get_joy_axis(_capturing_device_id, axis)
+		if typeof(raw) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(raw)) or absf(float(raw)) > 1.0:
+			return PackedFloat64Array()
+		axes.append(float(raw))
+	return axes
+
+
+func _confirm_axis_off() -> void:
+	if not _calibration_connection_matches(_capturing_device_id, _capturing_generation):
+		_cancel_capture()
+		return
+	_axis_capture = ActionAxisCapture.new()
+	if not _axis_capture.begin(_capture_axes(), SmokeAux.flight_axes(_draft_profile)):
+		_capture_done()
+		_set_status(tr("Invalid or interrupted switch capture. The binding is unchanged."), true)
+		return
+	_axis_capture_dialog.hide()
+	_set_status(tr("Hold the switch at ON. Keep all other switches still."), false)
+
+
+func _sample_axis_capture(delta: float) -> void:
+	if not _calibration_connection_matches(_capturing_device_id, _capturing_generation):
+		_cancel_capture()
+		return
+	var result: Dictionary = _axis_capture.sample(_capture_axes(), delta)
+	if result.has("error"):
+		_capture_done()
+		_set_status(tr(str(result.error)), true)
+	elif result.has("binding"):
+		var action_id := _capturing_action
+		_accept_captured_binding(result.binding)
+		if _base_actions.get(action_id, {}) == result.binding:
+			_set_status(tr("Axis switch learned. Save, then move away from OFF and back to OFF before use."), false)
+	elif _axis_capture.returning:
+		_set_status(tr("Return the switch to OFF and hold it there to finish learning."), false)
 
 
 func _profile_candidate() -> Dictionary:
@@ -2480,6 +2626,9 @@ func _save_profile(close_on_success := true) -> bool:
 		_set_status(tr("The radio connection changed. Calibrate again before saving these settings."), true)
 		return false
 	var candidate := _profile_candidate()
+	if not radio_mapping_verified(candidate):
+		_set_status(tr("Calibrate this new radio before saving. A device name cannot verify its channel mapping."), true)
+		return false
 	var validation := _validate_candidate(candidate)
 	if not bool(validation.ok):
 		_validation_active = true
@@ -2567,6 +2716,8 @@ func _keep_legacy_radio() -> void:
 	candidate["name"] = "%s · radio" % str(candidate.get("name", "Legacy profile"))
 	candidate["kind"] = "radio"
 	candidate["throttle_mode"] = "radio_absolute"
+	_reused_radio_mappings[str(candidate.profile_id)] = {mapping = _radio_mapping(candidate),
+		id = _draft_flight_device_id, generation = int(registry.connection_generation(_draft_flight_device_id))}
 	_set_draft_profile(candidate)
 	_set_status(tr("Radio semantics and auxiliary data are preserved. Save writes a separate v2 profile."), false)
 

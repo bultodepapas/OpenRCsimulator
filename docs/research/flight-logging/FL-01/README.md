@@ -132,6 +132,23 @@ source confirms a controlled `error:` diagnostic and exit 2, with no traceback:
 recorded baseline changed. This is malformed-input verification, not physical
 flight validation.
 
+## Empty continuous-state replay follow-up (FL-04 / A6 F5, 2026-11-08)
+
+The existing reader correction now has a checked record/inspect/exact-replay
+receipt: **211 checks pass** on native Windows x86-64, pinned Godot
+`4.8.beta2.official.cafc17a19`, headless/Dummy. The focused test compares the
+initial sample and all 30 accepted ticks for an absent optional checkpoint
+block, an explicit empty packed block, and the file-loaded Stik's nonempty
+wheel-spin block. Exact preparation enforces the same solver, engine and
+backend identity; no candidate override is used.
+
+Valid packet checksums and footer chains are rebuilt for the explicit-empty
+and malformed fixtures. A wrong type, unexpected nonempty block and changed
+nonempty state must fail specifically on the continuous field. Successful
+prepared sessions are released. The [receipt](empty-continuous-2026-11-08.json)
+retains the command, log identity and tested source hashes. This is same-host
+software verification, not packaged, cross-platform or physical qualification.
+
 ## References
 
 Primary documentation and project sources checked on 2026-10-14:

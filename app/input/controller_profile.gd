@@ -72,7 +72,7 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		"aux": {},
 	}
 	result["configured"] = true
-	if preset == "jeti_mode2":
+	if kind in ["radio", "joystick"]:
 		result.actions = ControllerActions.clean_radio_bindings()
 	return result if validate(result).ok else {}
 
@@ -140,6 +140,9 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 	var result := defaults(kind, preset)
 	if result.is_empty():
 		return {}
+	# Before clean starter defaults existed, legacy profiles inherited gamepad-style
+	# actions. Preserve that resolution (including AUX/capability rules) on upgrade.
+	result["actions"] = {}
 	var deadzone: Variant = legacy.get("deadzone", DEFAULT_DEADZONE)
 	var expo: Variant = legacy.get("expo", DEFAULT_EXPO)
 	if kind == "gamepad" and (not _is_number(deadzone) or not _is_number(expo)):
@@ -169,6 +172,41 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 	for key in legacy:
 		if not ["kind", "roll", "pitch", "yaw", "throttle", "deadzone", "expo", "throttle_rate", "name", "preset", "schema_version", "profile_id", "aux", "association", "throttle_mode", "configured"].has(str(key)):
 			result[key] = legacy[key].duplicate(true) if typeof(legacy[key]) in [TYPE_ARRAY, TYPE_DICTIONARY] else legacy[key]
+	return result if validate(result).ok else {}
+
+
+## Merge measured radio fields without replacing the user's other channel settings.
+## Existing AUX axes consumed by the new primary mapping cannot remain active.
+static func merge_radio_calibration(existing: Dictionary, calibration: Dictionary) -> Dictionary:
+	var normalized := _normalize_schema_keys(existing, 0)
+	if not normalized.ok or typeof(normalized.value) != TYPE_DICTIONARY:
+		return {}
+	var result: Dictionary = normalized.value
+	var measured := upgrade_legacy(calibration)
+	if result.get("kind", "") != "radio" or measured.is_empty() or measured.get("kind", "") != "radio":
+		return {}
+	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+		var channel: Variant = result.get(channel_name)
+		if typeof(channel) != TYPE_DICTIONARY:
+			return {}
+		for field in ["axis", "invert", "min", "center", "max"]:
+			channel[field] = measured[channel_name][field]
+	var aux: Variant = result.get("aux", {})
+	if typeof(aux) == TYPE_DICTIONARY:
+		var flight_axes := SmokeAux.flight_axes(result)
+		for aux_name in ["smoke", "flaps", "gear"]:
+			var binding: Variant = aux.get(aux_name)
+			if typeof(binding) == TYPE_DICTIONARY and binding.get("type", "") == "axis" \
+					and typeof(binding.get("axis")) == TYPE_INT and flight_axes.has(binding.axis):
+				aux.erase(aux_name)
+		# Existing managed callers may intentionally submit a newly assigned AUX
+		# together with calibration. Preserve that supported, validated handoff.
+		var measured_aux: Variant = measured.get("aux", {})
+		if typeof(measured_aux) == TYPE_DICTIONARY:
+			for aux_name in ["smoke", "flaps", "gear"]:
+				if measured_aux.has(aux_name) and SmokeAux.valid_binding(measured_aux[aux_name], flight_axes):
+					aux[aux_name] = measured_aux[aux_name].duplicate(true)
+		result["aux"] = aux
 	return result if validate(result).ok else {}
 
 
@@ -290,9 +328,9 @@ static func validate(value: Variant) -> Dictionary:
 		if kind_value == "gamepad" and not ["stick_rate", "trigger_absolute"].has(mode_value):
 			var error: String = "gamepad profiles require stick_rate or trigger_absolute throttle"
 			_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
-		if kind_value == "joystick" and mode_value == "trigger_absolute":
-			var error: String = "trigger_absolute is reserved for gamepad profiles"
-			_append_validation_issue(errors, issues, "profile_invalid", ["throttle_mode"], error)
+		if kind_value == "joystick" and mode_value != "radio_absolute":
+			var error: String = "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+			_append_validation_issue(errors, issues, "throttle_mode_unsupported", ["throttle_mode"], error)
 	# Later comparisons use typed copies: `==` between unlike Variant types raises a script
 	# error, which would abort validation after the type error above was recorded.
 	var kind := _string_field(value, "kind")
@@ -519,6 +557,29 @@ static func condition_axis(value: float, channel: Dictionary, kind: String) -> f
 ## Convenience for live previews: raw calibration, then one conditioning stage.
 static func conditioned_axis(raw: float, channel: Dictionary, kind: String) -> float:
 	return condition_axis(normalize_axis(raw, channel), channel, kind)
+
+
+## Absolute throttles use direct endpoint normalization, with no gamepad shaping.
+static func normalize_absolute(raw: float, channel: Dictionary) -> float:
+	if not is_finite(raw) or not _is_number(channel.get("min", -1.0)) or not _is_number(channel.get("max", 1.0)):
+		return 0.0
+	var lo: float = float(channel.get("min", -1.0))
+	var hi: float = float(channel.get("max", 1.0))
+	var normalized: float = clampf((raw - lo) / maxf(hi - lo, 0.000001), 0.0, 1.0)
+	return 1.0 - normalized if bool(channel.get("invert", false)) else normalized
+
+
+## Shared runtime/preview transformation. A stick-rate throttle is the shaped rate
+## input, not the accumulated throttle position shown in flight.
+static func channel_value(raw: float, channel_name: String, profile: Dictionary) -> float:
+	var channel: Variant = profile.get(channel_name, {})
+	if typeof(channel) != TYPE_DICTIONARY:
+		return 0.0
+	var kind := str(profile.get("kind", "radio"))
+	var mode := str(profile.get("throttle_mode", "stick_rate" if kind == "gamepad" else "radio_absolute"))
+	if channel_name == "throttle" and mode in ["trigger_absolute", "radio_absolute"]:
+		return normalize_absolute(raw, channel)
+	return conditioned_axis(raw, channel, kind)
 
 
 static func _centered_channel(axis: int, invert: bool, shape: bool, lo: float = -1.0, center: float = 0.0, hi: float = 1.0) -> Dictionary:

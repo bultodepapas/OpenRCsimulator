@@ -92,6 +92,30 @@ The search now stops at the first logically retained sample instead of scanning 
 
 On Windows with Godot 4.8-beta1 headless/Dummy and a Ryzen 9 5900X, nine alternating batches of 300 calls measured a median **56.17 → 39.34 µs/call** for a 144 Hz history with 790 expired samples and a 2,500 m source. At 1,000 m the same history measured **26.28 → 26.36 µs/call**. The model SHA-256 prefixes were `b90e7ea7b1c0` and `4a20a75b18a5`; the latter is the bounded version. The more distant case is beyond the normal 1,500 m aircraft-audio range. These are isolated script timings, not rendered-frame, mixer or audible-performance results.
 
+## Conditional humidity and voice preparation (A28, 2026-11-08)
+
+Accepted atmosphere snapshots select their existing humidity value without
+evaluating an unused fallback. Custom positive-pressure humidity is selected
+before the overwritten reference calculation. A conservative finite envelope
+limits the skipped arithmetic; outside it the previous eager path and its
+diagnostics remain. Target refresh, priming and per-update filter smoothing
+retain their original order and formulas.
+
+The 14 indexed soundscape slots and initial source loads retain their order,
+diagnostics, seeded state and start offsets. Guarded legacy motor/propeller
+streams are prepared after actual recorded-bank admission; gasoline keeps its
+propeller coast voice. A partial bank still admits one usable layer. Structural
+family/layer/file-key errors now take the diagnostic fallback; inherited RPM
+and gain metadata validation is outside this correction.
+
+Windows pinned Godot/Dummy checks pass 180 soundscape, 18 bank admission,
+49 powertrain, 37 accepted-snapshot and 42 glow assertions. Disposable full,
+partial, empty, unusable and malformed bank fixtures retain expected diagnostics;
+negative checked-run failures are recorded separately from passing tests.
+The [evidence index](audit-a28-2026-11-08.json) identifies sources, commands and
+fixture outcomes. These are software/PCM checks, not listening, startup latency,
+allocation, real Home/Workshop transition or complete-frame qualification.
+
 ## Open
 
 - Owner listening of both A/B pairs (AUD-13).

@@ -9966,3 +9966,78 @@ msgstr "Expérimental : conversion électrique 6S estimée, non validée en vol.
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "Les paramètres enregistrés sont protégés ou indisponibles. Les modifications ne s’appliqueront qu’à cette session."
+
+msgid "Review active alerts"
+msgstr "Examiner les alertes actives"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "Le vol est en pause. Cette liste montre le dernier relevé des alertes à son ouverture ; elle ne s’actualise pas tant qu’elle reste ouverte."
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "Affiche les catégories d’alertes sélectionnées, même si le panneau d’avertissement est masqué."
+
+msgid "No selected alerts in the latest sample."
+msgstr "Aucune alerte sélectionnée dans le dernier relevé."
+
+msgid "No alert sample is available yet."
+msgstr "Aucun relevé d’alertes n’est encore disponible."
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "Maintenez le manche des AILERONS complètement à DROITE et appuyez sur Entrée."
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "Maintenez le manche de PROFONDEUR complètement en ARRIÈRE et appuyez sur Entrée."
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "Maintenez le manche de DÉRIVE complètement à DROITE et appuyez sur Entrée."
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "Déplacez le manche des AILERONS complètement à GAUCHE, puis au centre. Appuyez sur Entrée."
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "Déplacez le manche de PROFONDEUR complètement en AVANT, puis au centre. Appuyez sur Entrée."
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "Déplacez le manche de DÉRIVE complètement à GAUCHE, puis au centre. Appuyez sur Entrée."
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "Maintenez le manche hors du centre dans la direction demandée avant de continuer, puis réessayez."
+
+msgid "Learn axis"
+msgstr "Apprendre l’axe"
+
+msgid "Learn axis switch"
+msgstr "Apprendre l’interrupteur sur axe"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "Maintenez l’interrupteur choisi sur OFF, puis confirmez. Gardez les manches de vol immobiles. Maintenez-le ensuite sur ON jusqu’à la demande de retour sur OFF."
+
+msgid "Confirm OFF"
+msgstr "Confirmer OFF"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "La capture de l’interrupteur est invalide ou interrompue. L’affectation reste inchangée."
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "Maintenez l’interrupteur sur ON. Ne bougez pas les autres interrupteurs."
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "Remettez l’interrupteur sur OFF et maintenez-le pour terminer l’apprentissage."
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "Interrupteur sur axe appris. Enregistrez, puis quittez OFF et revenez sur OFF avant utilisation."
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "Plusieurs axes d’interrupteur ont bougé. Capturez un seul interrupteur à la fois."
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "La plage de l’interrupteur est invalide. L’affectation reste inchangée."
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "Calibrez cette nouvelle radiocommande avant d’enregistrer. Le nom de l’appareil ne vérifie pas l’affectation des voies."
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "Les commandes principales de la radiocommande doivent être calibrées avant le vol."
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "Les profils de joystick exigent le mode des gaz radio_absolute ; stick_rate et trigger_absolute ne sont pris en charge que pour les manettes."

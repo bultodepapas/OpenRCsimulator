@@ -112,6 +112,24 @@ The local CLI observation is neither package qualification nor physical validati
 
 [EX-14](EX-14/README.md) compares the model with the RCM April 2000 review, the RC Universe build-thread owner reports and comparable 60-size Extras ([sources](EX-14/sources.json)). It replaces the virtual ballast with RCM's weighed 124 oz build, composes the tail propwash, P-factor and propeller normal force with the Glow shaft, adds the fuselage side force that knife-edge needs (D10-R3) and fits ground effect to this wing. It also fixes the full-throttle dive fault (NITRO-61FX-R1). The rudder-free takeoff swing, the earlier "failed qualitative target" above, now goes left. The open findings, led by propulsion strength at high rpm, are ranked there.
 
+## Accepted-iterate trim RPM reuse (E300-07, 2026-11-08)
+
+Bounded glow level trim now passes its accepted iterate's steady RPM into finalization, including stalled and throw-limited results. Rejected line-search candidates never replace the retained RPM. The default finalization path remains available for callers without that association; glide, legacy and electric paths retain their previous behavior. Two redundant equilibrium searches disappear per glow finalization; a solve with three refused starting guesses removes six searches. No force law, tolerance, root selection or launch-cache policy changes.
+
+The [baseline comparison](E300-07/comparison-20261108.json) retains **38 byte-identical complete results** with unchanged model bytes: full/10% fuel and live mass properties, reference/hot-high atmosphere, 17/22/30 m/s and warm starts, stalled/throw-limited/slow/invalid requests, glide, legacy, electric, four-stroke glow and the complete Extra half-power cruise search. Only the historical Trim owner is substituted; both variants use the same current dependencies and model inputs. The baseline is the exact `app/physics/trim.gd` blob from `a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e`, SHA-256 `a4d6be9967aa047464a11b00dcfbd24d7ca9822f98086ecf18460bff4dae8ea8`.
+
+The [Windows checked receipt](E300-07/verification-20261108.json) records **866 passing numbered checks**: accepted-state RPM/final-result regression (24), trim integrity (731), cruise (22), electric reuse (18), launch cache (47) and asynchronous launch/cache lifecycle (24). The probe and changed production/test scripts parse under pinned native Windows Godot 4.8-beta2, headless/Dummy. The independent Good Enemy review challenged accepted-iterate ownership and corrected release-build compilation and output-write handling in the retained probe.
+
+Reproduce with a new scratch directory and the [comparison probe](../../../research/extra-300/ex07/compare_trim.gd):
+
+```powershell
+New-Item -ItemType Directory -Path tmp/e30007-review -ErrorAction Stop | Out-Null
+python -c "import pathlib,subprocess; pathlib.Path('tmp/e30007-review/trim_baseline.gd').write_bytes(subprocess.check_output(['git','show','a3f2e38d63b2a82e64cfff8b5cfa0f511a113a4e:app/physics/trim.gd']))"
+python tools/godot/run_checked.py --timeout 240 --require-text 'E300-07 comparison: 38 cases, 0 failed' -- .tools/Godot_v4.8-beta2_win64_console.exe --headless --path app --audio-driver Dummy --script res://../research/extra-300/ex07/compare_trim.gd -- --baseline=res://../tmp/e30007-review/trim_baseline.gd --out=res://../tmp/e30007-review/comparison.json
+```
+
+The probe refuses existing outputs, compares serialized complete results, counts steady-RPM work in detached instrumented variants, and can collect uninstrumented alternating warm solver/cruise pairs with `--timing-pairs=12` (two warmup pairs per workload). No timing campaign was run here because concurrent sessions were editing and running Godot. Exact eliminated searches do not establish startup, frame-rate, native-backend, physical or target-hardware gains. Required CI and a controlled complete-workload measurement remain separate gates.
+
 ## Visual propeller handedness (E300-06, 2026-11-08)
 
 The procedural Extra propeller now presents its leading edge to positive production RPM. Reflecting the section's lateral coordinates changes leading edge, pitch orientation and forward camber together; the physical shaft convention, thrust installation and aircraft data retain their existing values. The builder revision and generated model, customization and Workshop bindings identify the corrected visual. Node and hinge names stay stable.

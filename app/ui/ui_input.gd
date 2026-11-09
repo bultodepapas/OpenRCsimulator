@@ -96,6 +96,9 @@ static func _add_action_binding(action: String, device_id: int, value: Variant, 
 		_add_button(action, device_id, fallback_button)
 		return
 	var binding: Dictionary = value
+	# Learned OFF/ON ranges require semantic normalization. Never silently turn
+	# them into raw native GUI axes, even if a caller bypasses profile validation.
+	if binding.get("type", "") == "axis" and (binding.has("off") or binding.has("on")): return
 	match str(binding.get("type", "")):
 		"button":
 			var button := int(binding.get("button", -1))

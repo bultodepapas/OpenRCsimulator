@@ -6,6 +6,8 @@ const Session := preload("res://sim/flight_session.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Motion := preload("res://audio/mechanical_motion.gd")
 const Cadence := preload("res://render/presentation_cadence.gd")
+const Weather := preload("res://physics/wind_config.gd")
+const SoundscapeModel := preload("res://audio/soundscape_model.gd")
 const P51 := "res://data/aircraft/p51d_mustang_120.json"
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 var checks := 0
@@ -115,6 +117,26 @@ func _run() -> void:
 	check("configure enables accepted mode and silently primes", mechanical.diagnostics().accepted_tick_observation
 		and mechanical.diagnostics().accepted_tick_samples == 1 and mechanical.diagnostics().accepted_pending_event_count == 0)
 	check("configure and current endpoint reads preserve full session checkpoint", before == var_to_bytes(player.checkpoint()))
+	var reference_air: Dictionary = player.atmosphere_configuration()
+	var reference_audio: Dictionary = audio.snapshot()
+	check("reference snapshot retains the selected ISO humidity formula", player.atmosphere_is_reference()
+		and reference_audio.humidity_molar_pct == SoundscapeModel.humidity_molar_pct(
+			SoundscapeModel.REFERENCE_RELATIVE_HUMIDITY_PCT, float(reference_air.temperature_k), float(reference_air.pressure_pa)))
+	var custom := Session.new()
+	custom.input_enabled = false
+	custom.crash_auto_restart = false
+	var custom_weather_ok: bool = custom.setup_weather(Weather.preset("hot-high"))
+	custom.setup(P51, "p51d-mustang-120")
+	custom.set_process(false)
+	custom.set_physics_process(false)
+	owner.session = custom
+	var custom_air: Dictionary = custom.atmosphere_configuration()
+	var custom_audio: Dictionary = audio.snapshot()
+	check("custom snapshot retains accepted vapor and pressure arithmetic", custom_weather_ok and custom.is_flyable()
+		and not custom.atmosphere_is_reference() and custom_audio.humidity_molar_pct
+		== 100.0 * float(custom_air.vapor_pressure_pa) / float(custom_air.pressure_pa))
+	owner.session = player
+	custom.free()
 	check("accepted observer connects exactly once", observer_connections(player.sim.stepped, audio_id) == 1
 		and observer_connections(player.sim.paused_changed, audio_id) == 1 and observer_connections(player.resetting, audio_id) == 1)
 	var primed := audio.accepted_mechanical_snapshot()

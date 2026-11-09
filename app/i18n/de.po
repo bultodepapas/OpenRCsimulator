@@ -9937,3 +9937,78 @@ msgstr "Experimentell: geschätzter 6S-Elektro-Umbau, nicht flugerprobt. Akku- u
 
 msgid "Saved settings are protected or unavailable. Changes will apply only to this session."
 msgstr "Die gespeicherten Einstellungen sind geschützt oder nicht verfügbar. Änderungen gelten nur für diese Sitzung."
+
+msgid "Review active alerts"
+msgstr "Aktive Warnungen prüfen"
+
+msgid "Flight is paused. This list shows the latest sampled alerts when opened; it does not update while open."
+msgstr "Der Flug ist pausiert. Diese Liste zeigt die letzte Warnungsstichprobe beim Öffnen und wird nicht aktualisiert, solange sie offen ist."
+
+msgid "Shows selected alert categories, even if the warning panel is hidden."
+msgstr "Zeigt ausgewählte Warnungskategorien, auch wenn das Warnungsfeld ausgeblendet ist."
+
+msgid "No selected alerts in the latest sample."
+msgstr "In der letzten Stichprobe gibt es keine ausgewählten Warnungen."
+
+msgid "No alert sample is available yet."
+msgstr "Es liegt noch keine Warnungsstichprobe vor."
+
+msgid "Hold the AILERON stick fully RIGHT and press Enter"
+msgstr "Halte den QUERRUDERKNÜPPEL ganz nach RECHTS und drücke die Eingabetaste."
+
+msgid "Hold the ELEVATOR stick fully BACK and press Enter"
+msgstr "Halte den HÖHENRUDERKNÜPPEL ganz nach HINTEN und drücke die Eingabetaste."
+
+msgid "Hold the RUDDER stick fully RIGHT and press Enter"
+msgstr "Halte den SEITENRUDERKNÜPPEL ganz nach RECHTS und drücke die Eingabetaste."
+
+msgid "Move the AILERON stick fully LEFT, then centre. Press Enter"
+msgstr "Bewege den QUERRUDERKNÜPPEL ganz nach LINKS und dann zur Mitte. Drücke die Eingabetaste."
+
+msgid "Move the ELEVATOR stick fully FORWARD, then centre. Press Enter"
+msgstr "Bewege den HÖHENRUDERKNÜPPEL ganz nach VORNE und dann zur Mitte. Drücke die Eingabetaste."
+
+msgid "Move the RUDDER stick fully LEFT, then centre. Press Enter"
+msgstr "Bewege den SEITENRUDERKNÜPPEL ganz nach LINKS und dann zur Mitte. Drücke die Eingabetaste."
+
+msgid "Hold the requested direction away from centre before continuing; then try again."
+msgstr "Halte den Knüppel vor dem Fortfahren in der angegebenen Richtung außerhalb der Mitte und versuche es erneut."
+
+msgid "Learn axis"
+msgstr "Achse anlernen"
+
+msgid "Learn axis switch"
+msgstr "Achsenschalter anlernen"
+
+msgid "Hold the chosen switch at OFF, then confirm. Keep the flight sticks still. Next hold ON until asked to return to OFF."
+msgstr "Halte den gewählten Schalter auf OFF und bestätige. Halte die Steuerknüppel still. Halte ihn danach auf ON, bis du zur Rückkehr auf OFF aufgefordert wirst."
+
+msgid "Confirm OFF"
+msgstr "OFF bestätigen"
+
+msgid "Invalid or interrupted switch capture. The binding is unchanged."
+msgstr "Das Erfassen des Schalters war ungültig oder wurde unterbrochen. Die Belegung bleibt unverändert."
+
+msgid "Hold the switch at ON. Keep all other switches still."
+msgstr "Halte den Schalter auf ON. Bewege keine anderen Schalter."
+
+msgid "Return the switch to OFF and hold it there to finish learning."
+msgstr "Stelle den Schalter wieder auf OFF und halte ihn dort, um das Anlernen abzuschließen."
+
+msgid "Axis switch learned. Save, then move away from OFF and back to OFF before use."
+msgstr "Achsenschalter angelernt. Speichere und bewege ihn vor der Verwendung von OFF weg und wieder auf OFF."
+
+msgid "More than one switch axis moved. Capture one switch at a time."
+msgstr "Mehr als eine Schalterachse wurde bewegt. Erfasse jeweils nur einen Schalter."
+
+msgid "Invalid switch range. The binding is unchanged."
+msgstr "Der Schalterbereich ist ungültig. Die Belegung bleibt unverändert."
+
+msgid "Calibrate this new radio before saving. A device name cannot verify its channel mapping."
+msgstr "Kalibriere diese neue Fernsteuerung vor dem Speichern. Der Gerätename bestätigt die Kanalbelegung nicht."
+
+msgid "Radio primary controls require calibration before flight."
+msgstr "Die Hauptsteuerungen der Fernsteuerung müssen vor dem Flug kalibriert werden."
+
+msgid "joystick profiles require radio_absolute throttle; stick_rate and trigger_absolute are supported only for gamepads"
+msgstr "Joystick-Profile benötigen den Gasmodus radio_absolute; stick_rate und trigger_absolute werden nur für Gamepads unterstützt."

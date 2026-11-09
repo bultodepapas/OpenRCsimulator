@@ -162,6 +162,7 @@ func _run() -> void:
 
 	var changed_metadata_service := service_for("user://jeti_changed_metadata.cfg", "user://jeti_changed_metadata_legacy.cfg")
 	var metadata_device := jeti_device(6)
+	check("changed-metadata legacy fixture saves", Calibration.save_profile(changed_metadata_service.store.legacy_path, RcInput.key_for(6, metadata_device), RcInput.DEFAULT_PROFILE) == OK)
 	changed_metadata_service.registry.update_devices([metadata_device])
 	var cached_metadata_profile: Dictionary = changed_metadata_service.profile_for_device(6)
 	var metadata_generation := changed_metadata_service.registry.connection_generation(6)
@@ -173,13 +174,14 @@ func _run() -> void:
 		changed_metadata_service.registry.connection_generation(6) == metadata_generation + 1 \
 		and changed_metadata_service.registry.selected_device_id("flight") == -1)
 	check("changed contradictory metadata cannot reuse a cached JETI profile", 
-		cached_metadata_profile.get("preset", "") == "jeti_mode2" \
+		cached_metadata_profile.get("kind", "") == "radio" \
 		and changed_metadata_service.profile_for_device(6).is_empty())
 	changed_metadata_service.free()
 	clean_paths("user://jeti_changed_metadata.cfg", "user://jeti_changed_metadata_legacy.cfg")
 
 	var emulated_service := service_for("user://jeti_emulated_metadata.cfg", "user://jeti_emulated_metadata_legacy.cfg")
 	var emulated_device := jeti_device(7)
+	check("emulation legacy fixture saves", Calibration.save_profile(emulated_service.store.legacy_path, RcInput.key_for(7, emulated_device), RcInput.DEFAULT_PROFILE) == OK)
 	emulated_service.registry.update_devices([emulated_device])
 	var cached_emulated_profile: Dictionary = emulated_service.profile_for_device(7)
 	var emulated_generation := emulated_service.registry.connection_generation(7)
@@ -189,7 +191,7 @@ func _run() -> void:
 	check("adding an emulation flag invalidates the same-handle generation", 
 		emulated_service.registry.connection_generation(7) == emulated_generation + 1)
 	check("an emulated identity cannot reuse its cached JETI profile", 
-		cached_emulated_profile.get("preset", "") == "jeti_mode2" \
+		cached_emulated_profile.get("kind", "") == "radio" \
 		and emulated_service.profile_for_device(7).is_empty())
 	emulated_service.free()
 	clean_paths("user://jeti_emulated_metadata.cfg", "user://jeti_emulated_metadata_legacy.cfg")
@@ -203,8 +205,9 @@ func _run() -> void:
 	check("valid JETI outranks generic pad for flight while pad keeps menus", service.registry.selected_device_id("flight") == 5 \
 		and service.registry.selected_device_id("ui") == 2)
 	check("JETI HID gamepad is excluded from the menu role", not service.is_ui_gamepad(5))
-	var starter: Dictionary = service.profile_for_device(5)
-	check("unsaved JETI receives the named Mode 2 radio preset", starter.get("kind", "") == "radio" \
+	check("unsaved JETI has no active mapping", service.profile_for_device(5).is_empty())
+	var starter: Dictionary = Profile.defaults("radio", "jeti_mode2")
+	check("JETI Mode 2 remains available as a setup draft", starter.get("kind", "") == "radio" \
 		and starter.get("preset", "") == "jeti_mode2")
 	check("JETI starter keeps low-throttle radio safety", starter.get("throttle_mode", "") == "radio_absolute" \
 		and starter.get("require_release", false) and starter.get("idle_threshold", 1.0) == 0.05)
@@ -286,6 +289,7 @@ func _run() -> void:
 			reentrant_selection_at_release = duplicate_service.registry.selected_device_id("flight")
 	)
 	var first_device := jeti_device(70)
+	check("duplicate-identity legacy fixture saves", Calibration.save_profile(duplicate_service.store.legacy_path, RcInput.key_for(70, first_device), RcInput.DEFAULT_PROFILE) == OK)
 	duplicate_service.registry.update_devices([first_device])
 	var cached: Dictionary = duplicate_service.profile_for_device(70)
 	duplicate_service.registry.select_device("flight", 70)
@@ -315,7 +319,7 @@ func _run() -> void:
 	duplicate_service.registry.update_devices([first_device])
 	var next_generation_profile: Dictionary = duplicate_service.profile_for_device(70)
 	check("same connection handle reconnect gets a new profile generation", duplicate_service.registry.connection_generation(70) > prior_generation \
-		and next_generation_profile.get("preset", "") == "jeti_mode2" \
+		and next_generation_profile.get("kind", "") == "radio" \
 		and next_generation_profile.get("profile_id", "") != cached.get("profile_id", "") \
 		and next_generation_profile.get("profile_id", "") != reconnected_profile.get("profile_id", ""))
 	duplicate_service.free()

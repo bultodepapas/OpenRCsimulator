@@ -65,7 +65,7 @@ func _test_rejected_profile_is_transactional() -> void:
 
 func _test_active_profile_mutation_rearms() -> void:
 	var radio := RcInput.new()
-	radio.connect_device(DEVICE_ID, INFO)
+	radio.connect_device(DEVICE_ID, INFO, RcInput.DEFAULT_PROFILE)
 	radio.on_motion(DEVICE_ID, 2, -1.0)
 	_poll(radio, {2: -1.0})
 	_check("profile mutation setup is armed", radio.armed)
@@ -92,7 +92,7 @@ func _test_fault_outputs_are_neutral() -> void:
 
 func _test_focus_rearm_requires_fresh_low() -> void:
 	var radio := RcInput.new()
-	radio.connect_device(DEVICE_ID, INFO)
+	radio.connect_device(DEVICE_ID, INFO, RcInput.DEFAULT_PROFILE)
 	radio.on_motion(DEVICE_ID, 2, -1.0)
 	_poll(radio, {2: -1.0})
 	radio.set_auxiliary_enabled(false)

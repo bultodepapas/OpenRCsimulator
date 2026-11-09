@@ -699,6 +699,8 @@ const ControlActuators := preload("res://physics/control_actuators.gd")
 const Keyboard := preload("res://input/keyboard.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
+const ControllerStore := preload("res://input/controller_profile_store.gd")
 const Sim := preload("res://sim/simulation.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
 const NativeStage := preload("res://sim/native_stage.gd")
@@ -1244,6 +1246,7 @@ var radio := RcInput.new()
 ## tests: Input.get_joy_guid on a device that does not exist prints an engine error.
 var read_axis: Callable = func(device: int, axis: int) -> float: return Input.get_joy_axis(device, axis as JoyAxis)
 var read_button: Callable = Input.is_joy_button_pressed
+var connected_device_ids: Callable = Input.get_connected_joypads
 var device_info: Callable = func(device: int) -> Dictionary:
 	var info := Input.get_joy_info(device)
 	return { guid = Input.get_joy_guid(device), name = Input.get_joy_name(device),
@@ -1723,8 +1726,10 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 		return
 	if is_connected and not radio.connected:
 		var info: Dictionary = device_info.call(device)
-		radio.connect_device(device, info, RcCalibration.load_profile(profiles_path, RcInput.key_for(device, info)))
-		if radio.profile.get("kind", "") == "gamepad":
+		var unique_legacy: bool = ControllerStore.legacy_identity_is_unique_for_ids(device, info, connected_device_ids.call(), device_info)
+		var saved: Dictionary = RcCalibration.load_profile(profiles_path, RcInput.key_for(device, info)) if unique_legacy else {}
+		radio.connect_device(device, info, saved)
+		if unique_legacy and radio.profile.get("kind", "") == "gamepad":
 			var smoke_binding: Dictionary = RcCalibration.load_smoke_binding(profiles_path, radio.device_key)
 			if not smoke_binding.is_empty():
 				var gamepad_profile: Dictionary = radio.profile.duplicate(true)
@@ -1757,8 +1762,14 @@ func advance_calibration() -> void:
 			calibration = null
 			pause_reason = "Radio calibrated. Lower throttle again before continuing." if result.get("ok", false) else "Calibration not saved: " + str(result.get("error", "storage error"))
 			return
-		radio.use_profile(calibration.profile, "calibrated")
-		var err := RcCalibration.save_profile(profiles_path, radio.device_key, calibration.profile)
+		var completed: Dictionary = calibration.profile.duplicate(true)
+		if not radio.profile.get("configured", false):
+			completed["actions"] = ControllerProfile.ControllerActions.clean_radio_bindings()
+		radio.use_profile(completed, "calibrated")
+		var current_info: Dictionary = device_info.call(radio.device_id)
+		var unique_legacy: bool = RcInput.key_for(radio.device_id, current_info) == radio.device_key \
+			and ControllerStore.legacy_identity_is_unique_for_ids(radio.device_id, current_info, connected_device_ids.call(), device_info)
+		var err := RcCalibration.save_profile(profiles_path, radio.device_key, completed) if unique_legacy else ERR_ALREADY_IN_USE
 		calibration = null
 		pause_reason = "radio calibrated%s" % ("" if err == OK else ", NOT saved (error %d)" % err)
 		print(pause_reason, ": ", radio.device_key)

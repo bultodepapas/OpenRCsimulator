@@ -71,11 +71,13 @@ func _apply_automatic_defaults() -> void:
 		var best_id := -1
 		var best_priority := 100
 		for info: Dictionary in devices:
-			if not bool(info.get("connected", false)) or (bool(info.get("ambiguous", false)) \
-					and JetiRadio.has_jeti_identity_claim(info)):
+			if not bool(info.get("connected", false)):
+				continue
+			var matching_profile: Dictionary = store.match_profile(info, devices)
+			if bool(info.get("ambiguous", false)) and JetiRadio.has_jeti_identity_claim(info) and matching_profile.is_empty():
 				continue
 			var priority := 3
-			if not store.match_profile(info, devices).is_empty():
+			if not matching_profile.is_empty():
 				priority = 0
 			elif info.get("kind", "") == "radio":
 				priority = 1
@@ -190,31 +192,40 @@ func is_ui_gamepad(id: int) -> bool:
 func profile_for_device(id: int) -> Dictionary:
 	var info: Dictionary = registry.device_for_id(id)
 	if not info.get("connected", false): return {}
-	# Duplicate or changing identities cannot reuse a cached default for this connection.
-	if bool(info.get("ambiguous", false)) and JetiRadio.has_jeti_identity_claim(info): return {}
+	# The registry advances the generation when identity-matching evidence changes.
 	var key := "%d:%d" % [id, registry.connection_generation(id)]
 	if _profiles.has(key): return _profiles[key].duplicate(true)
+	# Duplicate arrival does not change an uninterrupted physical handle. Keep
+	# its already active profile available to every session consumer, without
+	# treating that profile as a match for any newly arrived or reconnected device.
+	if bool(info.get("ambiguous", false)) and is_instance_valid(session) \
+			and registry.selected_device_id("flight") == id and session.radio is RcInput \
+			and session.radio.connected and session.radio.device_id == id \
+			and not bool(session.get("_controller_lost")) \
+			and session.radio.device_key == RcInput.key_for(id, info):
+		return session.radio.profile.duplicate(true)
 	# A corrupt or unsupported V2 store must not look like an empty store and
 	# silently enable a legacy mapping or a built-in default for this device.
 	var storage := store.load_all()
 	if not bool(storage.get("ok", false)):
 		return {}
-	var profile: Dictionary = store.match_profile(info, registry.get_devices())
+	var devices: Array[Dictionary] = registry.get_devices()
+	var profile: Dictionary = store.match_profile(info, devices)
 	if profile.is_empty() and not store.profiles_for_device(info).is_empty(): return {}
-	if profile.is_empty():
+	# A serial-qualified V2 match remains valid even when a family is duplicated.
+	# Legacy keys have no serial and need uniqueness across the current snapshot.
+	if profile.is_empty() and (not JetiRadio.has_jeti_identity_claim(info) or JetiRadio.matches(info)) \
+			and Store.legacy_identity_is_unique(info, devices):
 		var legacy: Dictionary = Calibration.load_profile(store.legacy_path, RcInput.key_for(id, info))
 		if not legacy.is_empty():
 			if info.get("known", false) and info.get("kind", "") == "gamepad": return {}
 			profile = Profile.upgrade_legacy(legacy, {"legacy_device_key": RcInput.key_for(id, info)})
 	if profile.is_empty() and JetiRadio.has_jeti_identity_claim(info):
-		if not JetiRadio.matches(info):
-			return {}
-		profile = Profile.defaults("radio", "jeti_mode2")
+		return {}
 	elif profile.is_empty() and info.get("known", false) and info.get("kind", "") == "gamepad":
 		profile = Profile.defaults()
-	# Known RC names retain their historical mapping and low-throttle gate. Unknown sticks stay unconfigured.
-	elif profile.is_empty() and info.get("kind", "") == "radio":
-		profile = Profile.defaults("radio", "radio_custom")
+	# Names suggest a radio role, not a verified physical mapping. Setup can offer
+	# a starter draft, but an unsaved radio cannot fly until it is calibrated.
 	if not profile.is_empty(): _profiles[key] = profile.duplicate(true)
 	return profile
 
@@ -294,23 +305,9 @@ func save_calibration(legacy_profile: Dictionary) -> Dictionary:
 	var previous: Dictionary = profile_for_device(id)
 	if id < 0 or previous.get("kind", "") != "radio":
 		return {"ok": false, "error": "Select a radio profile before calibration."}
-	var calibrated: Dictionary = Profile.upgrade_legacy(legacy_profile)
-	if calibrated.is_empty() or calibrated.get("kind", "") != "radio":
+	var profile: Dictionary = Profile.merge_radio_calibration(previous, legacy_profile)
+	if profile.is_empty():
 		return {"ok": false, "error": "Invalid calibration."}
-	var profile: Dictionary = previous.duplicate(true)
-	for channel in ["roll", "pitch", "yaw", "throttle"]:
-		profile[channel] = calibrated[channel].duplicate(true)
-	var merged_aux: Dictionary = profile.get("aux", {}).duplicate(true)
-	var calibrated_aux: Dictionary = calibrated.get("aux", {})
-	var flight_axes: Array = Profile.SmokeAux.flight_axes(profile)
-	for channel in ["smoke", "flaps", "gear"]:
-		if typeof(calibrated_aux) == TYPE_DICTIONARY and calibrated_aux.has(channel):
-			merged_aux[channel] = calibrated_aux[channel].duplicate(true)
-		elif merged_aux.has(channel) and not Profile.SmokeAux.valid_binding(merged_aux[channel], flight_axes):
-			# Recalibration can consume an auxiliary axis. Retain only a binding that
-			# still validates against the newly assigned flight channels.
-			merged_aux.erase(channel)
-	profile["aux"] = merged_aux
 	return save_profile_and_apply(profile)
 
 

@@ -126,6 +126,11 @@ static func validate(bindings: Dictionary) -> Dictionary:
 			var error: String = "Invalid binding: %s" % str(action_id)
 			errors.append(error)
 			_append_issue(issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
+		elif bindings[action_id].get("type", "") == "axis" and bindings[action_id].has("off") \
+				and str(action_id) != "pause" and definitions[str(action_id)].context == "menu":
+			var error: String = "Learned axis ranges are supported for flight actions and Pause only: %s" % str(action_id)
+			errors.append(error)
+			_append_issue(issues, "binding_invalid", ["actions.%s" % str(action_id)], error)
 	var ids: Array = bindings.keys()
 	for i in ids.size():
 		var left_id := str(ids[i])
@@ -324,6 +329,8 @@ static func binding_text(binding: Dictionary) -> String:
 		"button":
 			return _button_name(int(binding.get("button", -1)))
 		"axis":
+			if binding.has("off") and binding.has("on"):
+				return TranslationServer.translate("Axis %d · OFF %+.2f → ON %+.2f") % [int(binding.axis), float(binding.off), float(binding.on)]
 			var sign_text := "+" if int(binding.get("sign", binding.get("direction", 1))) > 0 else "−"
 			return TranslationServer.translate("Axis %d %s") % [int(binding.get("axis", -1)), sign_text]
 	return TranslationServer.translate("Unbound")
@@ -376,12 +383,13 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 			var motion := event as InputEventJoypadMotion
 			if not is_finite(motion.axis_value):
 				return false
-			var direction := 1 if motion.axis_value > 0.0 else -1
+			if motion.axis != int(binding.get("axis", -1)): return false
 			var threshold := float(binding.get("threshold", 0.65))
 			if previously_active:
 				threshold = maxf(threshold * 0.5, threshold - 0.15)
-			return motion.axis == int(binding.get("axis", -1)) and direction == int(binding.get("sign", binding.get("direction", 0))) \
-				and absf(motion.axis_value) >= threshold
+			var amount := SmokeAux.axis_amount(motion.axis_value, binding) if binding.has("off") \
+				else motion.axis_value * float(binding.get("sign", binding.get("direction", 0)))
+			return amount >= threshold
 	return false
 
 
@@ -433,6 +441,8 @@ static func valid_binding(value: Variant) -> bool:
 			return typeof(binding.get("button")) == TYPE_INT and binding.button >= 0 and binding.button < JOY_BUTTON_MAX
 		"axis":
 			if typeof(binding.get("axis")) != TYPE_INT or binding.axis < 0 or binding.axis >= JOY_AXIS_MAX: return false
+			if binding.has("off") or binding.has("on"):
+				if not SmokeAux.valid_binding(binding): return false
 			var direction: Variant = binding.get("sign", binding.get("direction", 0))
 			if typeof(direction) != TYPE_INT or direction not in [-1, 1]: return false
 			if binding.has("sign") and binding.has("direction") \
@@ -461,6 +471,8 @@ static func _same_binding(left: Dictionary, right: Dictionary) -> bool:
 		"button":
 			return int(left.get("button", -1)) == int(right.get("button", -2))
 		"axis":
+			if left.has("off") or right.has("off"):
+				return int(left.get("axis", -1)) == int(right.get("axis", -2))
 			return int(left.get("axis", -1)) == int(right.get("axis", -2)) \
 				and int(left.get("sign", left.get("direction", 0))) == int(right.get("sign", right.get("direction", 2)))
 	return false

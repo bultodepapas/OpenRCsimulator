@@ -217,7 +217,11 @@ func _calibrate(existing_profile: Dictionary, roll_axis: int) -> Dictionary:
 	var selected_axes := [2, roll_axis, 5, 6] # throttle, roll, pitch, yaw
 	for axis in selected_axes:
 		var samples := rest.duplicate()
-		for value in ([1.0, -1.0] if axis == 2 else [1.0, -1.0, 0.0]):
+		if axis != 2:
+			samples[axis] = 1.0
+			wizard.sample(samples)
+			wizard.advance(samples) # confirm the requested direction while held
+		for value in ([1.0, -1.0] if axis == 2 else [-1.0, 0.0]):
 			samples[axis] = value
 			wizard.sample(samples)
 		wizard.advance(samples)

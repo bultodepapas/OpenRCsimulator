@@ -108,7 +108,7 @@ func calibration_boundary(axis: int, endpoints: Array) -> void:
 
 func changed_channel() -> void:
 	var radio: Radio = Radio.new()
-	radio.connect_device(ID, INFO)
+	radio.connect_device(ID, INFO, Radio.DEFAULT_PROFILE)
 	radio.on_motion(ID, 2, -1.0)
 	radio.on_motion(ID, 9, -1.0)
 	poll(radio, -1.0)

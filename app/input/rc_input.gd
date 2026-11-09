@@ -82,21 +82,29 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	profile_rejection_error = ""
 	_focus_rearm_pending = false
 	_pressed_buttons.clear()
-	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(saved) if not saved.is_empty() else {}
+	# Historical radio data permits a malformed optional smoke binding to be
+	# discarded without discarding its otherwise valid primary calibration.
+	# Leave V2 handling unchanged and still validate the complete cleaned legacy
+	# primary mapping before it can drive the aircraft.
+	var candidate: Dictionary = saved
+	if not saved.is_empty() and not saved.has("schema_version") and str(saved.get("kind", "")) == "radio":
+		candidate = SmokeAux.sanitize_profile(saved, false)
+	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(candidate) if not candidate.is_empty() else {}
 	var jeti_claim := JetiRadio.has_jeti_identity_claim(info)
+	var radio_hint := JetiRadio.matches(info) or str(info.get("kind", "")) == "radio" \
+		or (looks_like_radio(device_name) and not jeti_claim)
 	if not upgraded.is_empty():
 		_activate_profile(upgraded, "calibrated", false)
-	elif saved.is_empty() and JetiRadio.matches(info):
-		_activate_profile(ControllerProfile.defaults("radio", "jeti_mode2"), "default", false)
-	elif bool(info.get("known", false)) and not looks_like_radio(device_name) and not jeti_claim:
+	elif bool(info.get("known", false)) and not radio_hint and not jeti_claim:
 		_activate_profile(ControllerProfile.defaults("gamepad", "mode2"), "gamepad", false)
-	elif looks_like_radio(device_name) and not jeti_claim:
-		_activate_profile(ControllerProfile.defaults("radio", "radio_custom"), "default", false)
 	else:
 		profile = ControllerProfile.unconfigured()
+		if radio_hint:
+			profile.kind = "radio" # Role hint permits calibration; it is not a flight mapping.
 		_profile_ready = false
+		_profile_snapshot.clear()
 		profile_source = "unconfigured"
-		profile_error = "Controller role and flight channels are not configured."
+		profile_error = "Radio primary controls require calibration before flight." if radio_hint else "Controller role and flight channels are not configured."
 		_reset_controls(false)
 		_configure_smoke_aux()
 	smoke_aux.connect_device(id)
@@ -125,6 +133,10 @@ func use_profile(candidate: Dictionary, source: String) -> bool:
 	var upgraded := ControllerProfile.upgrade_legacy(candidate)
 	if upgraded.is_empty():
 		profile_rejection_error = "Profile is invalid and was not applied."
+		if typeof(candidate.get("schema_version")) == TYPE_INT and candidate.get("schema_version") == ControllerProfile.SCHEMA_VERSION:
+			var validation := ControllerProfile.validate(candidate)
+			if not validation.errors.is_empty():
+				profile_rejection_error += " " + "; ".join(validation.errors)
 		return false
 	if not _activate_profile(upgraded, source, false, true):
 		profile_rejection_error = "Profile is invalid and was not applied."
@@ -214,6 +226,11 @@ func on_motion(id: int, axis: int, value: float) -> void:
 	if not is_finite(value):
 		_invalidate_input("Non-finite axis sample; controls require fresh neutral evidence.")
 		return
+	if not _profile_ready and profile_source == "unconfigured":
+		# Raw values remain available to calibration; no mapping freshness can
+		# carry over into the eventual configured profile.
+		axes[axis] = clampf(value, -1.0, 1.0)
+		return
 	_seen[axis] = true
 	axes[axis] = clampf(value, -1.0, 1.0)
 	if is_gamepad():
@@ -258,6 +275,9 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 	if not connected:
 		return
 	set_auxiliary_enabled(integrate)
+	if not _profile_ready and profile_source == "unconfigured" and profile.get("configured", true) == false:
+		_poll_unconfigured(read_axis, dt)
+		return
 	if not _profile_ready or profile != _profile_snapshot:
 		var validation := ControllerProfile.validate(profile)
 		if not validation.ok:
@@ -348,18 +368,29 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			input_error = ""
 
 
+## Direct-flight calibration needs raw readings even without a trusted mapping.
+## This path never arms or emits a flight command and never establishes axis evidence.
+func _poll_unconfigured(read_axis: Callable, dt: float) -> void:
+	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
+		_invalidate_input("Invalid input sample interval or axis reader.")
+		return
+	for axis in AXES:
+		var value: float = float(read_axis.call(device_id, axis))
+		if not is_finite(value):
+			_invalidate_input("Non-finite polled axis sample; controls require fresh neutral evidence.")
+			return
+		axes[axis] = clampf(value, -1.0, 1.0)
+	armed = false
+	input_error = ""
+
+
 ## Compatibility helpers for radio calibration scripts and old fixtures.
 static func normalize(value: float, channel: Dictionary) -> float:
 	return ControllerProfile.normalize_axis(value, channel)
 
 
 static func normalize_throttle(value: float, channel: Dictionary) -> float:
-	if not is_finite(value):
-		return 0.0
-	var low: float = float(channel.get("min", -1.0))
-	var high: float = float(channel.get("max", 1.0))
-	var normalized: float = clampf((value - low) / maxf(high - low, 0.000001), 0.0, 1.0)
-	return 1.0 - normalized if bool(channel.get("invert", false)) else normalized
+	return ControllerProfile.normalize_absolute(value, channel)
 
 
 func _stick(name: String) -> float:
@@ -368,7 +399,7 @@ func _stick(name: String) -> float:
 	var channel: Variant = profile.get(name, {})
 	if typeof(channel) != TYPE_DICTIONARY:
 		return 0.0
-	return ControllerProfile.conditioned_axis(axes[int(channel.get("axis", -1))], channel, str(profile.get("kind", "radio"))) if int(channel.get("axis", -1)) in range(AXES) else 0.0
+	return ControllerProfile.channel_value(axes[int(channel.get("axis", -1))], name, profile) if int(channel.get("axis", -1)) in range(AXES) else 0.0
 
 
 func _shaped(value: float) -> float:
@@ -378,8 +409,7 @@ func _shaped(value: float) -> float:
 
 
 func _normalized_throttle(value: float) -> float:
-	var channel: Variant = profile.get("throttle", {})
-	return normalize_throttle(value, channel) if typeof(channel) == TYPE_DICTIONARY else 0.0
+	return ControllerProfile.channel_value(value, "throttle", profile)
 
 
 func throttle_position() -> float:

@@ -33,6 +33,7 @@ const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
+const ActiveAlerts := preload("res://ui/active_alerts.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
 const CalibrationCard := preload("res://ui/calibration_card.gd")
 const RadioCalibrationSetup := preload("res://ui/radio_calibration_setup.gd")
@@ -208,6 +209,8 @@ var _out_of_trim_airframes: Dictionary = {}
 var has_home := false
 var controllers: Node
 var _controller_action_edges: Dictionary = {}
+var _controller_action_require_off: Dictionary = {}
+var _controller_action_identities: Dictionary = {}
 var _controller_restart_edges: Dictionary = {}
 var _controller_rate_edges: Dictionary = {}
 var _controller_edge_identities: Dictionary = {}
@@ -365,6 +368,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	_poll_controller_action_releases()
 	_tick_home_flight_preparation()
 	if not _home_scene_preparation_busy():
 		if _home_rebuild_queued:
@@ -1615,7 +1619,7 @@ func open_controls(from: Control = null) -> void:
 	setup.draft_changed.connect(func() -> void: _update_controller_calibration_button(setup))
 	setup.calibration_requested.connect(func() -> void:
 		if not screens.is_top("controls"): return
-		if flight == null:
+		if flight == null or not setup.radio_mapping_verified(setup.current_profile()):
 			_open_radio_calibration(setup)
 			return
 		if not setup._save_profile(false): return
@@ -1637,6 +1641,7 @@ func open_controls(from: Control = null) -> void:
 
 
 func _update_controller_calibration_button(setup: Node) -> void:
+	setup.calibration_saves_first = flight != null and setup.radio_mapping_verified(setup.current_profile())
 	var device: Dictionary = controllers.registry.device_for_id(setup.selected_flight_device_id())
 	var available: bool = bool(device.get("connected", false)) and setup.current_profile().get("kind", "") == "radio"
 	var connected_nonradio: bool = bool(device.get("connected", false)) \
@@ -1690,14 +1695,17 @@ func _restore_calibration_controls_focus(setup: Node) -> void:
 
 func _controller_bindings(id: int, flight_context := false) -> Dictionary:
 	if controllers != null and id >= 0:
+		var profile: Dictionary = controllers.profile_for_device(id)
+		if profile.is_empty() or not bool(profile.get("configured", true)):
+			return ControllerActions.clean_radio_bindings()
 		if flight_context:
 			var capabilities: Dictionary = ControllerActions.AIRPLANE_CAPABILITIES
 			if flight != null and flight.has_method("controller_capabilities"):
 				capabilities = flight.controller_capabilities()
 			elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
 				capabilities = ControllerActions.HELICOPTER_CAPABILITIES
-			return ControllerActions.effective_bindings(controllers.profile_for_device(id), capabilities)
-		return ControllerActions.effective_bindings(controllers.profile_for_device(id))
+			return ControllerActions.effective_bindings(profile, capabilities)
+		return ControllerActions.effective_bindings(profile)
 	return ControllerActions.default_bindings()
 
 
@@ -1712,10 +1720,12 @@ func _controller_ui_changed(id: int) -> void:
 
 
 func _clear_controller_actions(require_off := true) -> void:
-	_controller_action_edges.clear()
 	_release_controller_holds()
 	if controllers == null:
 		return
+	# Setup and menu routing do not end a physical activation. Preserve press
+	# history; focus/continuity loss additionally requires each flight source OFF.
+	_sync_controller_generic_actions(require_off)
 	var id: int = controllers.registry.selected_device_id("flight")
 	var bindings := _controller_bindings(id, true)
 	for action: String in ["restart_flight", "rates_toggle"]:
@@ -1724,6 +1734,53 @@ func _clear_controller_actions(require_off := true) -> void:
 		if require_off and id >= 0 and binding.get("type", "unbound") != "unbound":
 			_controller_edge_require_off[action] = true
 			_controller_edges_for(action).clear()
+
+
+func _sync_controller_generic_actions(require_off := false) -> void:
+	var id: int = controllers.registry.selected_device_id("flight")
+	var bindings := _controller_bindings(id, true)
+	var kind := str(controllers.profile_for_device(id).get("kind", ""))
+	for action_id: String in bindings:
+		if ControllerActions.action_definition(action_id).get("context", "menu") not in ["flight", "both"]: continue
+		var binding: Dictionary = bindings[action_id]
+		var identity := {device = id, generation = controllers.registry.connection_generation(id), binding = binding.duplicate(true)}
+		var changed: bool = _controller_action_identities.has(action_id) and _controller_action_identities[action_id] != identity
+		if changed:
+			var old_id: int = _controller_action_identities[action_id].device
+			_controller_action_require_off.erase("%d:%s" % [old_id, action_id])
+		var first_raw_device := not _controller_action_identities.has(action_id) and kind in ["radio", "joystick"]
+		_controller_action_identities[action_id] = identity
+		if (changed or require_off or first_raw_device) and id >= 0 and binding.get("type", "unbound") in ["button", "axis"]:
+			_controller_action_require_off["%d:%s" % [id, action_id]] = binding.duplicate(true)
+
+
+## Mapped gamepads can establish released controls from the same trusted live
+## poll used by flight readiness. Raw radios still require actual OFF events.
+func _poll_controller_action_releases() -> void:
+	if controllers == null or _controller_action_require_off.is_empty() \
+		or not controllers.has_method("_confirmed_gamepad_connection"): return
+	var id: int = controllers.registry.selected_device_id("flight")
+	if id < 0 or not controllers._confirmed_gamepad_connection(id, id, controllers.registry.connection_generation(id)): return
+	for key: String in _controller_action_require_off.keys():
+		if not key.begins_with("%d:" % id): continue
+		var binding: Dictionary = _controller_action_require_off[key]
+		var released := false
+		if binding.get("type", "") == "button":
+			released = not Input.is_joy_button_pressed(id, int(binding.button))
+		elif binding.get("type", "") == "axis":
+			var event := InputEventJoypadMotion.new()
+			event.device = id
+			event.axis = int(binding.axis) as JoyAxis
+			event.axis_value = Input.get_joy_axis(id, int(binding.axis))
+			released = is_finite(event.axis_value) and not ControllerActions.matches_binding(binding, event, id, true)
+		if released:
+			_controller_action_require_off.erase(key)
+			var action_id := key.substr(key.find(":") + 1)
+			var source := _controller_binding_source(binding, id)
+			var active: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
+			active.erase(action_id)
+			if active.is_empty(): _controller_action_edges.erase(source)
+			else: _controller_action_edges[source] = active
 
 
 ## The two edge-triggered flight actions keep their history through unrelated UI
@@ -1756,9 +1813,7 @@ func _controller_binding_observed_off(event: InputEvent, id: int, binding: Dicti
 			if not event is InputEventJoypadMotion or event.device != id \
 					or event.axis != int(binding.get("axis", -1)) or not is_finite(event.axis_value):
 				return false
-			var only_binding := {action: binding}
-			return ControllerActions.resolve_event(event, only_binding, id, "flight",
-				PackedStringArray([action])).is_empty()
+			return not ControllerActions.matches_binding(binding, event, id, true)
 		"key":
 			if not event is InputEventKey or event.pressed:
 				return false
@@ -1791,15 +1846,24 @@ func _controller_edge_transition(event: InputEvent, action: String, id: int, bin
 
 
 func _release_controller_holds() -> void:
-	for source: Variant in _controller_action_edges.keys():
-		var actions: PackedStringArray = _controller_action_edges[source]
-		var remaining := PackedStringArray()
-		for action: String in actions:
-			if ControllerActions.action_definition(action).get("mode", "press") != "hold": remaining.append(action)
-		if remaining.is_empty(): _controller_action_edges.erase(source)
-		else: _controller_action_edges[source] = remaining
+	if controllers != null:
+		var id: int = controllers.registry.selected_device_id("flight")
+		var bindings := _controller_bindings(id, true)
+		for action_id: String in bindings:
+			var source := _controller_binding_source(bindings[action_id], id)
+			if ControllerActions.action_definition(action_id).get("mode", "press") == "hold" \
+				and _controller_action_edges.get(source, PackedStringArray()).has(action_id):
+				_controller_action_require_off["%d:%s" % [id, action_id]] = bindings[action_id].duplicate(true)
 	if flight != null and flight.session != null and flight.session.has_method("set_controller_cut"):
 		flight.session.set_controller_cut(false)
+
+
+static func _controller_binding_source(binding: Dictionary, id: int) -> String:
+	match str(binding.get("type", "")):
+		"axis": return "%d:axis:%d" % [id, int(binding.get("axis", -1))]
+		"button": return "%d:button:%d" % [id, int(binding.get("button", -1))]
+		"key": return "key:%d" % int(binding.get("physical_keycode", 0) if binding.get("physical_keycode", 0) != 0 else binding.get("keycode", 0))
+	return ""
 
 
 func _update_controller_home() -> void:
@@ -1840,26 +1904,50 @@ func _input(event: InputEvent) -> void:
 	# Both observers need releases, including opposite directions of a shared axis.
 	var restart_handled := _route_controller_restart(event)
 	var rates_handled := _route_controller_rates(event)
+	_sync_controller_generic_actions()
+	var source := ControllerActions.event_source(event)
+	if source.is_empty(): return
+	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
+	# Observe the selected flight device even when another device (or keyboard)
+	# owns menus. Nonfinite samples cannot erase an activation or establish OFF.
+	if event is InputEventJoypadMotion and not is_finite(event.axis_value): return
+	var observed := PackedStringArray()
+	for role: String in ["flight", "ui"]:
+		var observer_id: int = controllers.registry.selected_device_id(role)
+		if observer_id < 0: continue
+		var observer_bindings := _controller_bindings(observer_id, role == "flight")
+		for action_id: String in observer_bindings:
+			var blocked_key := "%d:%s" % [observer_id, action_id]
+			if _controller_action_require_off.has(blocked_key) and _controller_binding_observed_off(
+				event, observer_id, _controller_action_require_off[blocked_key], action_id):
+				_controller_action_require_off.erase(blocked_key)
+		for action_id: String in ControllerActions.resolve_event(event, observer_bindings, observer_id, "both" if role == "flight" else "menu", previous):
+			if not observed.has(action_id): observed.append(action_id)
+	if observed.is_empty(): _controller_action_edges.erase(source)
+	else: _controller_action_edges[source] = observed
 	var in_menu := screens.top() != null
 	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
 	var accident_menu: bool = not in_menu and flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active()
 	var menu_context := in_menu or calibrating or accident_menu
-	if menu_context: _release_controller_holds()
+	if menu_context:
+		_release_controller_holds()
+		var flight_id: int = controllers.registry.selected_device_id("flight")
+		var flight_bindings := _controller_bindings(flight_id, true)
+		for action_id: String in observed:
+			if ControllerActions.action_definition(action_id).get("mode", "press") == "hold" and flight_bindings.has(action_id):
+				_controller_action_require_off["%d:%s" % [flight_id, action_id]] = flight_bindings[action_id].duplicate(true)
 	var id: int = controllers.registry.selected_device_id("ui" if menu_context else "flight")
 	if id < 0: return
-	var source := ControllerActions.event_source(event)
-	if source.is_empty(): return
-	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
 	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not menu_context), id, "menu" if menu_context else "flight", previous)
-	if actions.is_empty(): _controller_action_edges.erase(source)
-	else: _controller_action_edges[source] = actions
 	if _exit_request_active:
 		_release_controller_holds()
 		return # decision dialogs own input; observe edges without dispatching flight/menu actions
 	if flight != null and flight.session != null and flight.session.has_method("set_controller_cut"):
 		var held := false
-		for active: PackedStringArray in _controller_action_edges.values():
-			if active.has("throttle_cut"): held = true
+		if not menu_context and not _controller_action_require_off.has("%d:throttle_cut" % id):
+			var cut_binding: Dictionary = _controller_bindings(id, true).get("throttle_cut", {})
+			var cut_source := _controller_binding_source(cut_binding, id)
+			held = _controller_action_edges.get(cut_source, PackedStringArray()).has("throttle_cut")
 		flight.session.set_controller_cut(held)
 	# Edge observers consume presses only after ordinary holds have seen the release.
 	if restart_handled or rates_handled:
@@ -1867,8 +1955,9 @@ func _input(event: InputEvent) -> void:
 		return
 	for action: String in actions:
 		if previous.has(action): continue
-		# A held Back/Accept button cannot become an aircraft command when a menu closes.
-		if event is InputEventJoypadButton and not previous.is_empty(): continue
+		if _controller_action_require_off.has("%d:%s" % [id, action]): continue
+		# A held menu source cannot become a flight command, including signed axes.
+		if (event is InputEventJoypadButton or event is InputEventJoypadMotion) and not previous.is_empty(): continue
 		if in_menu:
 			if action in ["back", "pause"] and (_focused_editor_consumes_key(event) or _controller_capture_owns(event)): continue
 			if action == "calibrate" and (screens.is_top("home") or screens.is_top("pause")):
@@ -2174,10 +2263,13 @@ func open_pause() -> void:
 	pause_menu.time_of_day_button.visible = not helicopter_route
 	pause_menu.time_of_day_button.text = tr("Sky and lighting")
 	pause_menu.overlays_requested.connect(open_overlays)
+	pause_menu.active_alerts_requested.connect(open_active_alerts)
 	pause_menu.statistics_requested.connect(open_statistics)
 	pause_menu.statistics_button.visible = statistics_service != null and not trial_pause \
 		and session.has_signal("statistics_lifecycle")
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
+	pause_menu.active_alerts_button.visible = flight.get("_overlays") != null \
+		and flight.get("_overlays").has_method("warning_snapshot")
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
 	pause_menu.help_requested.connect(open_help)
@@ -2438,6 +2530,24 @@ func _exit_tree() -> void:
 	if is_instance_valid(_auto_accept_quit_tree):
 		_auto_accept_quit_tree.set_auto_accept_quit(_auto_accept_quit_before_root)
 		_auto_accept_quit_tree = null
+
+
+## Review the manager's latest selected sample while Pause retains the menu hold.
+func open_active_alerts(from: Control = null) -> void:
+	if not screens.is_top("pause") or flight == null:
+		return
+	var manager: Object = flight.get("_overlays")
+	if not is_instance_valid(manager) or not manager.has_method("warning_snapshot"):
+		return
+	var dialog := ActiveAlerts.new(manager.warning_snapshot())
+	dialog.closed.connect(close_active_alerts)
+	if not screens.push("active_alerts", dialog, from if from != null else pause_menu.active_alerts_button):
+		dialog.free()
+
+
+func close_active_alerts() -> void:
+	if screens.is_top("active_alerts"):
+		screens.pop()
 
 
 ## HUD-06: the flight overlays panel over the pause menu; changes apply and save at once.

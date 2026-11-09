@@ -200,6 +200,9 @@ func _sweep(axis: int, values: Array) -> void:
 	for value: float in values:
 		raw[axis] = value
 		await ui.settle()
+		if axis != 4 and value == float(values[0]):
+			await ui.tap(KEY_ENTER)
+			check("direction confirmation requests the opposite endpoint", "then centre" in app.screens.top()._prompt.text)
 	await ui.tap(KEY_ENTER)
 
 

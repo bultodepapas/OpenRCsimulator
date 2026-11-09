@@ -1,6 +1,7 @@
 extends SceneTree
 
 const ControllerSetup := preload("res://ui/controller_setup.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
 const Fixtures := preload("res://tests/test_jeti_setup.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
@@ -77,8 +78,12 @@ func _escape() -> void:
 
 func _test_capture(tag: String) -> void:
 	var store := Fixtures.FakeStore.new()
+	# Scroll/remap persistence uses an existing verified mapping. First-time
+	# radio verification is exercised by test_controller_audit_setup instead.
+	var saved := ControllerProfile.defaults("radio", "jeti_mode2")
+	store.profiles.append(saved)
 	var setup := ControllerSetup.new()
-	setup.configure(Fixtures.FakeRegistry.new(), store, 5, -1)
+	setup.configure(Fixtures.FakeRegistry.new(str(saved.profile_id)), store, 5, -1)
 	root.add_child(setup)
 	await _settle()
 	setup.select_section("buttons")
