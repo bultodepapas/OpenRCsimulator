@@ -270,6 +270,7 @@ func setup_shaft_integrator(mode: Variant) -> bool:
 	sim._publish_committed_boundary(func() -> void:
 		_reset_publication_active = true
 		_reset_closing_context = transaction.closing
+		_note_transition(TRANSITION_SHAFT)
 		resetting.emit()
 		_reset_closing_context = {}
 		_reset_publication_active = false, false, "shaft configuration", true)
@@ -539,6 +540,7 @@ func setup_weather(settings: Variant) -> bool:
 	sim._publish_committed_boundary(func() -> void:
 		_reset_publication_active = true
 		_reset_closing_context = transaction.closing
+		_note_transition(TRANSITION_WEATHER)
 		resetting.emit()
 		_reset_closing_context = {}
 		_reset_publication_active = false, false, "weather configuration", true)
@@ -1075,11 +1077,28 @@ func _trim_model(model: Dictionary) -> Dictionary:
 ## Pending weather selection uses the same guarded closure without a tick.
 ## Shaft configuration retains its historical ordering pending migration.
 signal resetting
+## Operational receipts identify accepted publications; they are not checkpoint state.
+const TRANSITION_START := "start"
+const TRANSITION_RESTORE := "restore"
+const TRANSITION_WEATHER := "weather_selection"
+const TRANSITION_SHAFT := "shaft_selection"
+var _transition_generation: int = 0
+var _transition_kind: String = ""
 var _reset_publication_active := false
 var _reset_transaction_active := false
 var _reset_transaction_reentry := false
 var _reset_physical_committed := false
 var _reset_closing_context := {}
+
+
+## Available during and after resetting; a new session has no receipt until its first publication.
+func last_transition() -> Dictionary:
+	return {} if _transition_generation == 0 else {generation = _transition_generation, kind = _transition_kind}
+
+
+func _note_transition(kind: String) -> void:
+	_transition_generation += 1
+	_transition_kind = kind
 
 
 ## Detached previous-flight boundary, available only during reset notifications.
@@ -1159,6 +1178,7 @@ func _commit_start_candidate(candidate: Dictionary, transaction: Dictionary) -> 
 		_reset_physical_committed = true
 		_reset_publication_active = true
 		_reset_closing_context = transaction.closing
+		_note_transition(TRANSITION_START)
 		resetting.emit()
 		_clear_scenery_damage(true)
 		_reset_contact_history()
@@ -1235,6 +1255,16 @@ var trim_throttle: float = NAN
 var external_driver_enabled := false
 var _external_pending_packet: Dictionary = {}
 var _external_packet_ready := false
+var _external_tick_busy := false
+var _external_attempt_tick: int = -1
+var _external_attempt_generation: int = 0
+var _external_attempt_sim: Node = null
+var _external_before_commands: Dictionary = {}
+var _external_before_raw: Dictionary = {}
+var _external_before_inputs := PackedFloat64Array()
+var _external_before_gear: bool = false
+var _external_before_flaps: float = 0.0
+var _external_before_brake: float = 0.0
 var _external_spawn_heading_rad := 0.0
 var _external_spawn_heading_set := false
 ## Empty after a successful reset; otherwise the explicit reason the requested start was refused.
@@ -1612,7 +1642,7 @@ func _begin_setup(path: String, expected_id: String, frozen_data: Dictionary) ->
 	# The kernel can publish located events before stepped, and pause before faulted.
 	# Drop every tick fact before any external observer can mutate configuration.
 	sim.events_located.connect(_drop_tick_facts.unbind(2))
-	sim.paused_changed.connect(_drop_tick_facts.unbind(1))
+	sim.paused_changed.connect(_on_sim_paused_changed)
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
 
@@ -2405,7 +2435,15 @@ func _start_failure_reason() -> String:
 	return "trimmed starting condition is invalid: " + str(start.get("message", "no valid trim"))
 
 
+func _on_sim_paused_changed(value: bool) -> void:
+	_drop_tick_facts()
+	if value and not sim.fault_reason.is_empty():
+		_rollback_uncommitted_external_tick()
+
+
 func _on_sim_faulted(reason: String) -> void:
+	# Simulation restores its last valid inputs before pause/fault notification.
+	_rollback_uncommitted_external_tick()
 	_drop_tick_facts()
 	if _failures != null:
 		_failures.rollback()
@@ -3007,6 +3045,8 @@ func _session_after_input() -> bool:
 func prepare_external_tick(packet: Dictionary) -> Dictionary:
 	if not external_driver_enabled:
 		return {ok = false, errors = ["external driver is not configured"]}
+	if _external_tick_busy:
+		return {ok = false, errors = ["external tick is in progress"]}
 	var errors: Array[String] = []
 	var required := ["roll", "pitch", "yaw", "throttle"]
 	var allowed := ["roll", "pitch", "yaw", "throttle", "gear_down", "flaps", "brake"]
@@ -3056,13 +3096,34 @@ func prepare_external_tick(packet: Dictionary) -> Dictionary:
 
 
 ## Consume one staged packet through the ordinary session guards and one kernel tick.
+## Commands/equipment describe the last accepted tick. A precommit fault restores them
+## before pause/fault observers; before_step still observes the attempted inputs.
 func step_external_tick() -> bool:
-	if not external_driver_enabled or not _external_packet_ready or sim == null:
+	if not external_driver_enabled or not _external_packet_ready or sim == null or _external_tick_busy:
 		return false
 	if not physics_enabled or not sim.fault_reason.is_empty() or not holds.is_empty() \
 			or calibration != null or not _flight_ready() or sim.stop_at_tick >= 0 and sim.tick >= sim.stop_at_tick:
 		_discard_external_packet()
 		return false
+	_external_tick_busy = true
+	# Guard the accepted frame first, including the crash countdown and any reset.
+	# A terminal observation may change crash/contact state without accepting input.
+	var guarded_sim: Node = sim
+	var guarded_generation: int = _transition_generation
+	if not _session_after_input() or sim != guarded_sim or _transition_generation != guarded_generation \
+			or sim.paused or not sim.fault_reason.is_empty():
+		_discard_external_packet()
+		_external_tick_busy = false
+		return false
+	_external_attempt_sim = sim
+	_external_attempt_tick = sim.tick
+	_external_attempt_generation = _transition_generation
+	_external_before_commands = commands
+	_external_before_raw = raw
+	_external_before_inputs = sim.inputs
+	_external_before_gear = _gear_requested_down
+	_external_before_flaps = _flap_requested
+	_external_before_brake = _wheel_brake_demand
 	var packet: Dictionary = _external_pending_packet
 	commands = {roll = packet.roll, pitch = packet.pitch, yaw = packet.yaw, throttle = packet.throttle}
 	raw = commands.duplicate()
@@ -3073,14 +3134,41 @@ func step_external_tick() -> bool:
 	if packet.has("brake"):
 		_wheel_brake_demand = packet.brake
 	sim.inputs = _inputs()
-	var previous_tick: int = sim.tick
-	if not _session_after_input() or sim.paused or not sim.fault_reason.is_empty():
-		_discard_external_packet()
-		return false
-	sim.step()
-	var accepted: bool = sim.tick == previous_tick + 1 and sim.fault_reason.is_empty()
+	var previous_tick: int = _external_attempt_tick
+	var attempt_sim: Node = sim
+	var attempt_generation: int = _external_attempt_generation
+	attempt_sim.step()
+	var accepted: bool = sim == attempt_sim and _transition_generation == attempt_generation \
+		and sim.tick == previous_tick + 1 and sim.fault_reason.is_empty()
+	_rollback_uncommitted_external_tick()
+	_clear_external_tick_attempt()
 	_discard_external_packet()
+	_external_tick_busy = false
 	return accepted
+
+
+func _rollback_uncommitted_external_tick() -> void:
+	if _external_attempt_tick < 0 or sim != _external_attempt_sim or sim.tick != _external_attempt_tick \
+			or _transition_generation != _external_attempt_generation:
+		return
+	commands = _external_before_commands
+	raw = _external_before_raw
+	_gear_requested_down = _external_before_gear
+	_flap_requested = _external_before_flaps
+	_wheel_brake_demand = _external_before_brake
+	# Fault recovery already installed the kernel's last valid inputs. A refusal
+	# without a fault instead restores the values present before this attempt.
+	if sim.fault_reason.is_empty():
+		sim.inputs = _external_before_inputs
+	_clear_external_tick_attempt()
+
+
+func _clear_external_tick_attempt() -> void:
+	_external_attempt_tick = -1
+	_external_attempt_sim = null
+	_external_before_commands = {}
+	_external_before_raw = {}
+	_external_before_inputs = PackedFloat64Array()
 
 
 func _discard_external_packet() -> void:
@@ -6199,6 +6287,7 @@ func _restore_checkpoint_impl(candidate: Dictionary, transaction: Dictionary) ->
 		_reset_physical_committed = true
 		_reset_publication_active = true
 		_reset_closing_context = transaction.closing
+		_note_transition(TRANSITION_RESTORE)
 		resetting.emit()
 		if gear_is_retractable():
 			_gear_requested_down = snapshot.inputs[4] == 1.0
