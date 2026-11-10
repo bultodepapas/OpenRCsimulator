@@ -2,6 +2,16 @@
 
 2026-10-07 · **Status: implemented and verified. The oracle data decision is made (owner delegated it); the Stik oracle's Cmq, CLq and Cnr are derived from its verified local model, and the downwash lag acts in both regimes. All four D11b responses are accepted within ±15% through α 0–11°.** Main-line ROADMAP M1 follow-up D11g; closes the [decision brief](../oracle-data-decision.md).
 
+## R02 provenance qualification for v4
+
+The current R02 derivation gives ARP Cmq **−8.082**, CLq **2.357**, and Cnr **−0.136** at the 15 m/s level trim. The aircraft records retain their original v3 source strings; “current” in those strings describes when they were derived. Updating those strings would also change the aircraft configuration identity.
+
+For this specific transition, the v3 solver was reconstructed from `630c8a5d7e3a89d22176b256bba47a38a56e3413` on the project, aircraft, wheel data and derivation script at `4f0ca86823a2398e668d63abbcb2d09a5a15974d`. In the two reconstructed projects only `aero.gd`, `aircraft_data.gd`, and `wing_polar.gd` differ: the separated-force option and stall-progression continuation. With the pinned Godot 4.8 beta2 on Windows and Linux, the original v3 stored-data check passed, and v3 and v4 returned exactly equal trim conditions, unrounded CG and ARP derivatives, four-significant-digit values, and the 0°, 2°, 4°, and 6° sensitivity rows on each host. The three provenance texts differed only in their law version.
+
+The generator always recomputes the v4 result. Its historical admission is restricted to the beta2 engine source-commit hash, normalized aircraft input, complete LF-normalized solver/input inventory, rounded values, and three individually pinned v3 source strings. The source inventory includes every physics GDScript, wheel profiles, and project settings; the generator itself is checked before and after derivation and excluded from the extra aggregate only to avoid a self-hash cycle. Any change to the qualified inputs or solver requires a new review and reconstruction, even if the displayed values still agree. The updater accepts the same qualified historical records in `--check`; its explicit `--write` advances the three source strings to the newly generated current law and consequently changes the aircraft configuration identity. Do not refresh the qualification hashes without reproducing and reviewing the comparison.
+
+This establishes model consistency only for these inputs and sampled conditions, not general equivalence of the laws or physical validation. The original 2026-10-07 values and checks below describe the earlier D11g decision, not the present R02 values.
+
 ## Decision
 
 Option 2 of the brief now, option 3 later as held-out validation (DECISIONS.md, 2026-10-07):

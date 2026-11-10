@@ -27,6 +27,23 @@ const SOURCE_INPUT_FILES := [
 ]
 const SOURCE_IDENTITY_SCHEME := "sha256-app-physics-gd-recursive-v2"
 
+# One qualified historical derivation: v3 and v4 were reconstructed on the same
+# Stik inputs and produced identical derivatives and sensitivity rows. Preserve
+# those truthful v3 source strings only for this exact input and solver inventory.
+# The generator remains in SOURCE_INPUT_FILES; excluding it from this additional
+# fingerprint avoids a self-hash cycle. See docs/research/aero-consistency/D11g.
+const QUALIFIED_CURRENT_LAW := "section-plane-source-weighted-wake-velocity-v4"
+const QUALIFIED_HISTORICAL_LAW := "section-plane-source-weighted-wake-velocity-v3"
+const QUALIFIED_ENGINE_HASH := "cafc17a192acf67903910a68aeb3c076c0907a4b"
+const QUALIFIED_AIRCRAFT_SHA256 := "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+const QUALIFIED_SOLVER_SHA256 := "f676516ffbad54911a4fead1daf0d1cf5fc4351819761ed5566b6f59226cb57f"
+const QUALIFIED_ROUNDED := {"Cmq": -8.082, "CLq": 2.357, "Cnr": -0.136}
+const HISTORICAL_SOURCE_SHA256 := {
+	"Cmq": "154c5a27ddabf76baa3a34c68196eb988c4691ebf2a1c10ef217a2f79ed33386",
+	"CLq": "10cce8e666594b0037227c496cd02754bd5ff867a7909413db909ad7b5f55cd0",
+	"Cnr": "650e01f26c7dec72d0c256393365c11a3c8a3f87a59f491344532177499ce751",
+}
+
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
@@ -132,6 +149,7 @@ func _initialize() -> void:
 		"schema": "d11g-rate-derivatives-v2",
 		"aircraft_id": model.id,
 		"law": Aero.LOADS_LAW,
+		"engine_hash": Engine.get_version_info().get("hash", ""),
 		"derivation_identity": {
 			"normalized_input": fingerprint,
 			"solver_source_scheme": source_identity.scheme,
@@ -163,8 +181,10 @@ func _initialize() -> void:
 	}
 	var check_issues := PackedStringArray()
 	if check_data:
-		check_issues = _check_stored_rates(rounded, provenance)
-		report["data_check"] = {"passed": check_issues.is_empty(), "issues": check_issues}
+		var rate_check := _check_stored_rates(rounded, provenance, fingerprint, source_identity)
+		check_issues = rate_check.issues
+		report["data_check"] = {"passed": check_issues.is_empty(), "issues": check_issues,
+			"historical_provenance": bool(rate_check.historical_provenance)}
 	if not report_file.is_empty():
 		if FileAccess.file_exists(report_file):
 			push_error("Report destination already exists: %s" % report_file)
@@ -182,7 +202,7 @@ func _initialize() -> void:
 	elif not json_only:
 		_print_human(report)
 		if check_data:
-			print("data check: %s" % ("current" if check_issues.is_empty() else "stale"))
+			print("data check: %s" % ("compatible" if check_issues.is_empty() else "stale"))
 			for issue in check_issues:
 				push_error(issue)
 	quit(1 if check_data and not check_issues.is_empty() else 0)
@@ -215,13 +235,20 @@ func _local(model: Dictionary, alpha: float, axis: int, rate: float) -> PackedFl
 	return Aero._local_loads(state, air, controls, model, RHO, settled_wake)
 
 
-func _check_stored_rates(rounded: Dictionary, provenance: Dictionary) -> PackedStringArray:
+func _check_stored_rates(rounded: Dictionary, provenance: Dictionary, fingerprint: Dictionary,
+		source_identity: Dictionary) -> Dictionary:
 	var issues := PackedStringArray()
+	var used_historical := false
+	var qualified: bool = Aero.LOADS_LAW == QUALIFIED_CURRENT_LAW \
+		and Engine.get_version_info().get("hash", "") == QUALIFIED_ENGINE_HASH \
+		and fingerprint.get("sha256", "") == QUALIFIED_AIRCRAFT_SHA256 \
+		and source_identity.get("qualified_sha256", "") == QUALIFIED_SOLVER_SHA256 \
+		and rounded == QUALIFIED_ROUNDED
 	var text := FileAccess.get_file_as_string(PATH)
 	var raw: Variant = JSON.parse_string(text)
 	if typeof(raw) != TYPE_DICTIONARY:
 		issues.append("aircraft JSON is not a dictionary")
-		return issues
+		return {issues = issues, historical_provenance = false}
 	var aero_raw: Dictionary = raw.get("aero", {})
 	var coefficients: Dictionary = aero_raw.get("coefficients", {})
 	for key in COEFFICIENT_KEYS:
@@ -235,9 +262,16 @@ func _check_stored_rates(rounded: Dictionary, provenance: Dictionary) -> PackedS
 			issues.append("aero.coefficients.%s.unit must remain 1/rad" % key)
 		if entry.get("kind", "") != "derived":
 			issues.append("aero.coefficients.%s.kind must remain derived" % key)
-		if entry.get("source", "") != provenance[key]:
-			issues.append("aero.coefficients.%s.source does not match current-law provenance" % key)
-	return issues
+		var source: Variant = entry.get("source", "")
+		if source != provenance[key]:
+			var historical_match: bool = qualified and typeof(source) == TYPE_STRING \
+				and str(source).sha256_text() == HISTORICAL_SOURCE_SHA256[key] \
+				and str(source) == str(provenance[key]).replace(QUALIFIED_CURRENT_LAW, QUALIFIED_HISTORICAL_LAW)
+			if historical_match:
+				used_historical = true
+			else:
+				issues.append("aero.coefficients.%s.source does not match current or qualified historical provenance" % key)
+	return {issues = issues, historical_provenance = used_historical}
 
 
 func _provenance(about_cg: Dictionary, rounded: Dictionary) -> Dictionary:
@@ -256,6 +290,7 @@ func _provenance(about_cg: Dictionary, rounded: Dictionary) -> Dictionary:
 func _source_identity() -> Dictionary:
 	var files: Array[Dictionary] = []
 	var relative_paths: Array[String] = []
+	var qualified_inventory := ""
 	var inventory_error := _collect_physics_sources("res://physics", "app/physics", relative_paths)
 	if not inventory_error.is_empty():
 		return {ok = false, reason = inventory_error}
@@ -275,7 +310,11 @@ func _source_identity() -> Dictionary:
 		digest.start(HashingContext.HASH_SHA256)
 		digest.update(bytes)
 		files.append({path = relative_path, sha256 = digest.finish().hex_encode()})
-	return {ok = true, scheme = SOURCE_IDENTITY_SCHEME, files = files}
+		if relative_path != "research/aero/d11g/derive_rate_derivatives.gd":
+			var normalized := bytes.get_string_from_utf8().replace("\r\n", "\n")
+			qualified_inventory += relative_path + "\t" + normalized.sha256_text() + "\n"
+	return {ok = true, scheme = SOURCE_IDENTITY_SCHEME, files = files,
+		qualified_sha256 = qualified_inventory.sha256_text()}
 
 
 func _collect_physics_sources(resource_directory: String, report_directory: String,

@@ -19,7 +19,17 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_AIRCRAFT = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
 RATE_KEYS = ("Cmq", "CLq", "Cnr")
 EXPECTED_SCHEMA = "d11g-rate-derivatives-v2"
-EXPECTED_LAW = "section-plane-source-weighted-wake-velocity-v3"
+EXPECTED_LAW = "section-plane-source-weighted-wake-velocity-v4"
+QUALIFIED_HISTORICAL_LAW = "section-plane-source-weighted-wake-velocity-v3"
+QUALIFIED_ENGINE_HASH = "cafc17a192acf67903910a68aeb3c076c0907a4b"
+QUALIFIED_AIRCRAFT_SHA256 = "a41da0a68ee0c62f7a937a73915e010cfe9d4d49a391e2548c6f8a13187b8a79"
+QUALIFIED_SOLVER_SHA256 = "f676516ffbad54911a4fead1daf0d1cf5fc4351819761ed5566b6f59226cb57f"
+QUALIFIED_ROUNDED = {"Cmq": -8.082, "CLq": 2.357, "Cnr": -0.136}
+HISTORICAL_SOURCE_SHA256 = {
+    "Cmq": "154c5a27ddabf76baa3a34c68196eb988c4691ebf2a1c10ef217a2f79ed33386",
+    "CLq": "10cce8e666594b0037227c496cd02754bd5ff867a7909413db909ad7b5f55cd0",
+    "Cnr": "650e01f26c7dec72d0c256393365c11a3c8a3f87a59f491344532177499ce751",
+}
 FINGERPRINT_SCHEME = "utf8-source-text-v1"
 SOURCE_IDENTITY_SCHEME = "sha256-app-physics-gd-recursive-v2"
 EXCLUDED_OUTPUT_LEAVES = tuple(
@@ -204,7 +214,30 @@ def load_target(data: dict) -> dict:
     return selected
 
 
-def leaf_differences(selected: dict, report: dict) -> list[str]:
+def qualified_historical_inputs(report: dict) -> bool:
+    """Admit only the reconstructed v3/v4 solver and aircraft-input pair.
+
+    The generator is already checked byte-for-byte by validated_report; it is
+    excluded here to avoid a self-hash cycle. Normalize checkout line endings.
+    """
+    if report.get("engine_hash") != QUALIFIED_ENGINE_HASH:
+        return False
+    if report["derivation_identity"]["normalized_input"]["sha256"] != QUALIFIED_AIRCRAFT_SHA256:
+        return False
+    if report["rounded_4_significant_digits"] != QUALIFIED_ROUNDED:
+        return False
+    inventory = []
+    for relative_path in solver_source_paths():
+        if relative_path == "research/aero/d11g/derive_rate_derivatives.gd":
+            continue
+        text = (ROOT / relative_path).read_bytes().decode("utf-8").replace("\r\n", "\n")
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        inventory.append(f"{relative_path}\t{digest}\n")
+    digest = hashlib.sha256("".join(inventory).encode("utf-8")).hexdigest()
+    return digest == QUALIFIED_SOLVER_SHA256
+
+
+def leaf_differences(selected: dict, report: dict, *, admit_historical: bool = False) -> list[str]:
     differences: list[str] = []
     values = report["rounded_4_significant_digits"]
     sources = report["provenance"]
@@ -212,8 +245,16 @@ def leaf_differences(selected: dict, report: dict) -> list[str]:
         record = selected[key]
         if float(record.get("value", math.nan)) != float(values[key]):
             differences.append(f"aero.coefficients.{key}.value: {record.get('value')!r} -> {values[key]!r}")
-        if record.get("source") != sources[key]:
-            differences.append(f"aero.coefficients.{key}.source: stale -> current-law provenance")
+        source = record.get("source")
+        if source != sources[key]:
+            historical_match = (
+                admit_historical
+                and isinstance(source, str)
+                and hashlib.sha256(source.encode("utf-8")).hexdigest() == HISTORICAL_SOURCE_SHA256[key]
+                and source.replace(QUALIFIED_HISTORICAL_LAW, EXPECTED_LAW) == sources[key]
+            )
+            if not historical_match:
+                differences.append(f"aero.coefficients.{key}.source: stale -> current-law provenance")
     return differences
 
 
@@ -281,14 +322,14 @@ def main() -> int:
         data = json.loads(text)
         selected = load_target(data)
         verify_target_identity(data, text, report)
-        differences = leaf_differences(selected, report)
         if args.check:
+            differences = leaf_differences(selected, report, admit_historical=qualified_historical_inputs(report))
             if differences:
                 print("stale D11g data:")
                 for difference in differences:
                     print("  " + difference)
                 return 1
-            print("D11g values and provenance match the current-law report.")
+            print("D11g values and current or qualified historical provenance match the current-law report.")
             return 0
         updated_text, changed = replace_target_leaves(text, report)
         updated_bytes = updated_text.encode("utf-8")
