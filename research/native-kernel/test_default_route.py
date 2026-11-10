@@ -8,6 +8,7 @@ missing-library case uses a private project and does not change the installation
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import hashlib
 import importlib.util
 import json
@@ -153,6 +154,85 @@ def corrupt_package(executable: Path, destination: Path, case: str) -> Path:
     return private_executable
 
 
+@contextmanager
+def default_lake_environment():
+    """Test the actual defaults even when a developer's shell overrides lake/scenery."""
+    names = ("OPENRC_LAKE", "OPENRC_SCENERY", "OPENRC_SCENERY_FILE")
+    saved = {name: os.environ.pop(name) for name in names if name in os.environ}
+    try:
+        yield
+    finally:
+        for name in names:
+            os.environ.pop(name, None)
+        os.environ.update(saved)
+
+
+def check_helicopter_routes(engine: Path, project: Path | None, missing_engine: Path,
+                            private_project: Path | None, output: Path, common: list[str]) -> None:
+    helicopter_rows = {}
+    for name, selected_engine, selected_project, extra, expected in (
+        ("native", engine, project, [], "native"),
+        ("reference", engine, project, ["--physics-backend=gdscript_reference"], "gdscript_reference"),
+        ("missing", missing_engine, private_project, [], "gdscript_reference"),
+    ):
+        helicopter_trace = output / f"helicopter-{name}.csv"
+        _, helicopter_log = run_case(selected_engine, selected_project, output, f"helicopter-{name}",
+                                     common + ["--aircraft=xcell-60-research", "--start=airborne",
+                                               "--landscape=green_paradise", f"--trace={helicopter_trace}"] + extra)
+        actual = status(helicopter_log)
+        requested = "gdscript_reference" if name == "reference" else "native"
+        if actual.get("requested") != requested or actual.get("identity", {}).get("backend") != expected:
+            raise AssertionError(f"helicopter {name} selected the wrong backend: {actual}")
+        if name == "missing":
+            if not any(word in actual.get("reason", "") for word in ("binary", "library")):
+                raise AssertionError(f"helicopter missing binary omitted the fallback reason: {actual}")
+        elif actual.get("reason") != "":
+            raise AssertionError(f"helicopter {name} unexpectedly fell back: {actual}")
+        metadata, helicopter_rows[name] = trace_parts(helicopter_trace)
+        if json.loads(metadata.get("lake_identity", "null")) != "" or json.loads(metadata.get("pad", "null")) != {}:
+            raise AssertionError(f"helicopter {name} did not use the lake-free Green field")
+        if ("stage_backend" in metadata) != (expected == "native"):
+            raise AssertionError(f"helicopter {name} trace omitted or misrepresented its backend")
+        if expected == "native" and json.loads(metadata["stage_backend"].replace('&"', '"')) != actual["identity"]:
+            raise AssertionError("helicopter trace identity differs from its selected native stage")
+    if not helicopter_rows["native"] == helicopter_rows["reference"] == helicopter_rows["missing"]:
+        raise AssertionError("helicopter native/reference/fallback trace rows differ")
+    print("PASS helicopter native, explicit reference and missing binary on the lake-free field", flush=True)
+    check_helicopter_default_lake(engine, project, output, common)
+
+
+def check_helicopter_default_lake(engine: Path, project: Path | None, output: Path, common: list[str]) -> None:
+    # Club is the default field and publishes its lake by default. Keep the native request:
+    # it must refuse unsupported lake terrain, then match an explicit reference flight.
+    lake_results = {}
+    with default_lake_environment():
+        for name, extra in (("fallback", []), ("reference", ["--physics-backend=gdscript_reference"])):
+            trace = output / f"helicopter-default-lake-{name}.csv"
+            _, log = run_case(engine, project, output, f"helicopter-default-lake-{name}",
+                              common + ["--aircraft=xcell-60-research", "--start=airborne",
+                                        f"--trace={trace}"] + extra)
+            actual = status(log)
+            expected_status = {
+                "requested": "native" if name == "fallback" else "gdscript_reference",
+                "identity": {"backend": "gdscript_reference"},
+                "reason": "native helicopter terrain does not support lakes; using gdscript_reference"
+                if name == "fallback" else "",
+            }
+            if actual != expected_status:
+                raise AssertionError(f"helicopter default-lake {name} selected the wrong backend: {actual}")
+            metadata, rows = trace_parts(trace)
+            lake = json.loads(metadata.get("lake_identity", "null"))
+            pad = json.loads(metadata.get("pad", "null"))
+            if not isinstance(lake, str) or len(lake) != 64 or any(c not in "0123456789abcdef" for c in lake) \
+                    or not isinstance(pad, dict) or pad.get("id") != "default-helicopter-pad" \
+                    or "stage_backend" in metadata:
+                raise AssertionError(f"helicopter default-lake {name} trace has wrong terrain or backend metadata")
+            lake_results[name] = (lake, rows)
+    if lake_results["fallback"] != lake_results["reference"]:
+        raise AssertionError("default-lake helicopter fallback and reference traces differ")
+    print("PASS helicopter default-lake fallback matches explicit reference", flush=True)
+
+
 def check(engine: Path, project: Path | None, output: Path) -> None:
     common = ["--quick-flight", "--weather=calm", "--t=.05"]
 
@@ -211,31 +291,7 @@ def check(engine: Path, project: Path | None, output: Path) -> None:
         raise AssertionError("missing-library trace metadata or reference sample rows differ")
     print("PASS missing binary fallback in private project or package", flush=True)
 
-    helicopter_rows = {}
-    for name, selected_engine, selected_project, extra, expected in (
-        ("native", engine, project, [], "native"),
-        ("reference", engine, project, ["--physics-backend=gdscript_reference"], "gdscript_reference"),
-        ("missing", missing_engine, private_project, [], "gdscript_reference"),
-    ):
-        helicopter_trace = output / f"helicopter-{name}.csv"
-        _, helicopter_log = run_case(selected_engine, selected_project, output, f"helicopter-{name}",
-                                     common + ["--aircraft=xcell-60-research", "--start=airborne",
-                                               f"--trace={helicopter_trace}"] + extra)
-        actual = status(helicopter_log)
-        requested = "gdscript_reference" if name == "reference" else "native"
-        if actual.get("requested") != requested or actual.get("identity", {}).get("backend") != expected:
-            raise AssertionError(f"helicopter {name} selected the wrong backend: {actual}")
-        if name == "missing":
-            if not any(word in actual.get("reason", "") for word in ("binary", "library")):
-                raise AssertionError(f"helicopter missing binary omitted the fallback reason: {actual}")
-        elif actual.get("reason") != "":
-            raise AssertionError(f"helicopter {name} unexpectedly fell back: {actual}")
-        metadata, helicopter_rows[name] = trace_parts(helicopter_trace)
-        if ("stage_backend" in metadata) != (expected == "native"):
-            raise AssertionError(f"helicopter {name} trace omitted or misrepresented its backend")
-    if not helicopter_rows["native"] == helicopter_rows["reference"] == helicopter_rows["missing"]:
-        raise AssertionError("helicopter native/reference/fallback trace rows differ")
-    print("PASS helicopter native default, explicit reference and missing binary fallback", flush=True)
+    check_helicopter_routes(engine, project, missing_engine, private_project, output, common)
     for mode in ("helicopter", "helicopter-radio"):
         _, refusal_log = run_case(missing_engine, private_project, output, f"missing-{mode}-qualification",
                                   ["--quick-flight", f"--native-qualification={mode}"], success=False)
