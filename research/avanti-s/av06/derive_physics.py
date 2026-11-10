@@ -570,7 +570,12 @@ K_adv = 0.15
 Cnda = -2 * K_adv * CL_ref * Clda
 tail_q = CLa_h * eta_h * Sh / S
 CLq = 2 * tail_q * (xh_ac - cg[0]) / c_ref + (0.5 + 2 * (cg[0] - x_ac_w) / mac) * CLa_w * mac / c_ref
-Cmq = -2 * tail_q * (xh_ac - cg[0]) ** 2 / c_ref ** 2 * 1.1
+Cmq_cg = -2 * tail_q * (xh_ac - cg[0]) ** 2 / c_ref ** 2 * 1.1
+# AV-17-R4: serialize the moment about the ARP, like every other pitch term.
+# The build-up above is about the authored inventory CG (fixed solver datum O).
+# Aero transfers ARP -> O; the finite-fuel adapter separately transfers O -> live CG.
+# Never re-anchor this coefficient as fuel burns: the physical force arms must remain.
+Cmq = Cmq_cg - CLq * arp_forward_of_cg / c_ref
 CLadot = 2 * tail_q * (xh_ac - cg[0]) / c_ref * deps
 th_a = math.acos(2 * cf_a - 1)
 cp_frac = 0.25 + 0.5 * math.sin(th_a) * (1 - math.cos(th_a)) / (2 * (math.pi - th_a + math.sin(th_a)))
@@ -684,7 +689,7 @@ coefficients = {
     "Cldr": coeff(Cldr, "1/rad", "derived", "rudder side force x fin height above the ARP"),
     "Cm0": coeff(Cm0, "1", "derived", "tail incidence about the ARP; symmetric wing section"),
     "Cma": coeff(Cma, "1/rad", "derived", "tail about the wing-body ac (Munk-Multhopp fuselage); the CG transfer gives the static margin"),
-    "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about the CG x1.1 for wing/fuselage"),
+    "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about authored inventory CG x1.1 for wing/fuselage, minus CLq*(x_CG-x_ARP)/c for the ARP moment contract; AV-17-R4"),
     "Cmde": coeff(Cmde, "1/rad", "derived", "elevator lift x tail arm from the ARP"),
     "Cmda_each": coeff(Cmda, "1/rad", "derived", "aileron lift increment at its thin-airfoil centre, arm from the ARP"),
     "Cnb": coeff(Cnb, "1/rad", "derived", "fin only (v1 contract: equals the vertical surface)"),
@@ -1270,7 +1275,18 @@ The same normal yaw command feeds nosewheel steering. See `docs/research/avanti-
 The lateral build-up obtains Cnp/Cnr about CG ({Cnp_cg:.6f}, {Cnr_cg:.6f}). AV-17-R3 writes their ARP values
 ({Cnp:.6f}, {Cnr:.6f}) by subtracting CYp/CYr times the ARP's forward CG arm / span, so the runtime's
 ARP-to-CG force-moment transfer applies exactly once. Static yaw stability, the fin, and its local flow law are unchanged.
-Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
+AV-17-R4 likewise converts the pitch build-up about the authored inventory CG ({Cmq_cg:.6f}) to
+the stored ARP value ({Cmq:.6f}): `Cmq_ARP = Cmq_O - CLq*(x_O-x_ARP)/c`, with
+`CLq={CLq:.6f}`, `x_O={cg[0]:.9f} m`, `x_ARP={x_arp:.9f} m` and `c={c_ref:.9f} m`.
+All stored Cm derivatives are ARP moments. At zero alpha/beta and fixed datum air state,
+the runtime's lift-rate force transfer recovers Cmq_O once. The finite-fuel adapter then transfers
+the complete wrench from O to live CG; this coefficient is not recomputed to hold live-CG damping constant.
+At nonzero alpha the wind-to-body force rotation also enters the transfer. Local surface damping remains
+an independent geometric prediction, not a second use of the stored Cmq. This corrects a reference
+convention, not the estimated damping's physical identification.
+Pitch-reference evidence: `docs/research/avanti-realism/AV-17-R4/README.md`.
+Earlier keyboard and yaw evidence: `docs/research/avanti-realism/AV-17-R1/README.md` and
+`docs/research/avanti-realism/AV-17-R3/README.md`.
 
 ## Turbine at sea level
 

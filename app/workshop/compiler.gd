@@ -5,6 +5,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const AircraftModules := preload("res://physics/aircraft_modules.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Parameters := preload("res://workshop/parameters.gd")
+const AirshipCompiler := preload("res://workshop/airship_compiler.gd")
 const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-2"
 const MEASURED_MASS_COMPILER_VERSION := "openrc-aircraft-workshop-v1-measured-mass-1"
 const VIRTUAL_SIZE_COMPILER_VERSION := "openrc-aircraft-workshop-v1-virtual-size-1"
@@ -19,6 +20,9 @@ const TANK_POLICY := "FUEL-11a dry-only mass and independent tank-capacity polic
 ## Compiles a detached v2 candidate from the pinned base on every call.
 ## data is the full AircraftData.validate_and_derive() result, with the selected base wheel profile inherited.
 static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
+	# BL-19a: an airship base compiles through its own family law (workshop/airship_compiler.gd).
+	if AirshipCompiler.is_family(base):
+		return AirshipCompiler.compile(base, recipe)
 	var parsed: Dictionary = Parameters.validate(recipe)
 	if not parsed.ok:
 		return _failure(parsed.errors)
@@ -123,6 +127,8 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 
 ## Reports the V1 operations exposed by the shared compiler registry for this validated base.
 static func capabilities(base: Dictionary) -> Dictionary:
+	if AirshipCompiler.is_family(base):
+		return AirshipCompiler.capabilities(base)
 	var checked: Dictionary = AircraftData.validate_and_derive(base.duplicate(true))
 	if not checked.ok:
 		return {
@@ -141,6 +147,11 @@ static func capabilities(base: Dictionary) -> Dictionary:
 
 static func defaults() -> Dictionary:
 	return Parameters.defaults()
+
+
+## Family-aware evaluator identity for a pinned base (airship bases use their own compiler versions).
+static func version_for(base: Dictionary, recipe: Dictionary) -> String:
+	return AirshipCompiler.version_for_recipe(recipe) if AirshipCompiler.is_family(base) else version_for_recipe(recipe)
 
 
 ## Extensions select their own evaluator identity; legacy recipes retain compiler-2.

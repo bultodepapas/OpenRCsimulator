@@ -1,0 +1,208 @@
+{
+	"aircraft_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
+	"checkpoint_boundary_sha256": "bb9c950a15611e2b01885bd2c38303db8c09cc7718c333e2c1b0b9028a410669",
+	"checks": 13,
+	"dt_s": 0.004166666666666667,
+	"engine": {
+		"build": "official",
+		"hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta2",
+		"string": "4.8-beta2 (official)",
+		"timestamp": 0
+	},
+	"errors": [],
+	"field_id": "default",
+	"fuel_start_fill": 0.5,
+	"gear_state": {
+		"available": true,
+		"brake": 1.0,
+		"extension": 1.0,
+		"inhibited": false,
+		"status": "down",
+		"target_down": true
+	},
+	"initial_body_speed_mps": 3.0,
+	"initial_continuous": [
+		44000.0,
+		2.9999691323701314,
+		2.9999985655036983,
+		2.999999803861082,
+		1.2800765,
+		1.0
+	],
+	"initial_inputs": [
+		0,
+		0,
+		0,
+		0,
+		1,
+		0,
+		0
+	],
+	"initial_state": [
+		14.99994778615383,
+		-46.99922972887024,
+		-0.21971592723558145,
+		3.0,
+		0.0,
+		0.0,
+		0.7070541103031635,
+		-0.000131248814665152,
+		-0.0006756563835707068,
+		0.7071591131885397,
+		0.0,
+		0.0,
+		0.0
+	],
+	"maneuver": "seeded runway state, 6 s idle-throttle direct simulation ticks; brake 0 or 1 from first tick",
+	"mass_properties": {
+		"cg_body_m": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"consumption_law": "turbine_map_v1",
+		"fill_fraction": 0.5,
+		"finite_fuel": true,
+		"format": "openrc-mass-sample v1",
+		"fuel_capacity_kg": 2.59256,
+		"fuel_remaining_kg": 1.29628,
+		"fuel_usable_kg": 1.2800765,
+		"inertia": [
+			0.6867141084677761,
+			2.2171754274253477,
+			2.811221820966937,
+			0.0,
+			-0.026352235155568737,
+			0.0
+		],
+		"inertia_origin": [
+			0.6867141084677761,
+			2.2171754274253477,
+			2.811221820966937,
+			0.0,
+			-0.026352235155568737,
+			0.0
+		],
+		"inverse": [
+			1.4567340855293764,
+			0.4510243021957133,
+			0.3558452205222451,
+			0.0,
+			0.013655343343841383,
+			0.0
+		],
+		"law": "single-store-finite-liquid-fixed-datum-v1",
+		"low_fuel": false,
+		"mass_kg": 11.438577999999994,
+		"ok": true,
+		"registry_sha256": "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043",
+		"reserve_basis": "estimated reserve",
+		"reserve_estimated": true,
+		"reserve_fraction": 0.10624999999999998,
+		"store_amounts_by_id": {
+			"main_tank": {
+				"below_unusable": false,
+				"capacity_kg": 2.59256,
+				"onboard_kg": 1.29628,
+				"requested_onboard_kg": 1.29628,
+				"unusable_kg": 0.0162035,
+				"usable_kg": 1.2800765
+			}
+		},
+		"stores": [
+			{
+				"blend": "kerosene_5pct_turbine_oil",
+				"capacity_kg": 2.59256,
+				"density_kg_m3": 810.175,
+				"family": "kerosene",
+				"fill_fraction": 0.5,
+				"id": "main_tank",
+				"kind": "tank",
+				"low_fuel": false,
+				"remaining_kg": 1.29628,
+				"reserve_estimated": true,
+				"reserve_fraction": 0.10625,
+				"unusable_kg": 0.0162035,
+				"usable_kg": 1.2800765,
+				"volume_ml": 1600.0000000000002
+			}
+		],
+		"tick": 0,
+		"time_s": 0.0,
+		"volume_ml": 1600.0000000000002
+	},
+	"outcomes": [
+		{
+			"brake": 0.0,
+			"end_state": [
+				14.999618585131657,
+				-39.504934714445724,
+				-0.2200753422553089,
+				0.0006119424874151039,
+				-2.813424018439576e-06,
+				-1.4199538991419245e-05,
+				0.7073497768928435,
+				0.0003412635040023114,
+				0.00018235294029462877,
+				0.7068635960468403,
+				-5.871139368125291e-06,
+				-0.0018157362556666544,
+				-6.30552889221438e-06
+			],
+			"log_sha256": "67296e651f5f46463d32799de54e3621a587a8e02b09ba8d56f5f969d24a0692",
+			"name": "coast",
+			"recorder_peak_buffer_rows": 240,
+			"ticks": 1440
+		},
+		{
+			"brake": 1.0,
+			"end_state": [
+				14.999855698863685,
+				-41.12534744093648,
+				-0.21989241892903597,
+				-4.2017637724451e-05,
+				-4.986751646540623e-08,
+				-1.3545684459707153e-06,
+				0.7071388779722333,
+				-0.00040789483147616706,
+				-0.000513741637678794,
+				0.7070743786558152,
+				-1.1709055671186793e-07,
+				0.00012503489687433554,
+				4.263211425044601e-07
+			],
+			"log_sha256": "105b76b9b5ab2f3fa4aa586cf65e7c7c4d285bfaf467ca3e93633f2df290da46",
+			"name": "brake",
+			"recorder_peak_buffer_rows": 240,
+			"ticks": 1440
+		}
+	],
+	"solver_sha256": "6e8951de37d288138e43c07bb9e348ec31e7f920f4b9d74d6f0227827b95cdef",
+	"stage_backend": {
+		"backend": "gdscript_reference"
+	},
+	"turbine_start": {
+		"axial_airspeed_m_s": 3.0,
+		"demand_rpm": 44000.0,
+		"engine_running": true,
+		"fuel_flow_kg_s": 0.001067,
+		"fuel_mass_policy": "finite_single_store",
+		"gross_thrust_n": 1.857016762327296,
+		"intake_air_velocity_body_m_s": [
+			3.0,
+			0.0,
+			0.0
+		],
+		"mass_flow_kg_s": 0.06571295695000001,
+		"net_thrust_n": 1.6598778914772958,
+		"ok": true,
+		"rpm": 44000.0,
+		"tick": 0,
+		"time_s": 0.0
+	}
+}

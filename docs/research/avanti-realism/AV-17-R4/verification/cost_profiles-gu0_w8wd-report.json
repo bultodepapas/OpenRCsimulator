@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "49c1a0c2-6230-4db9-bd80-303837963afa",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_cost_profiles.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-10T23:20:28.435250+00:00",
+  "label": "cost_profiles",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\checks\\cost_profiles-gu0_w8wd\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\checks\\cost_profiles-gu0_w8wd\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.531,
+  "log_bytes": 93,
+  "log_sha256": "39cab793b28d6e3b98bf4979270c10be61ee507024e2140ccd983b0a96b02244"
+}

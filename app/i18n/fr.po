@@ -10383,3 +10383,18 @@ msgstr "Dirigeable RC (expérimental)"
 
 msgid "Fly RC blimp"
 msgstr "Piloter le dirigeable RC"
+
+msgid "Flag animation"
+msgstr "Animation du drapeau"
+
+msgid "Static"
+msgstr "Statique"
+
+msgid "Basic"
+msgstr "Simple"
+
+msgid "Detailed"
+msgstr "Détaillée"
+
+msgid "Automatic follows Scene detail. Changes apply immediately."
+msgstr "Le mode automatique suit le niveau de détail de la scène. Les modifications s’appliquent immédiatement."

@@ -267,6 +267,8 @@ func _test_catalog_sizes() -> void:
 		# Person catalogs describe the full body, including the selected shader-driven arm.
 		if id.begins_with("person_"):
 			for part: Dictionary in moving:
+				if part.kind == "flag":
+					continue # Dedicated renderer owns the deformable cloth bounds.
 				var part_kit: MeshKit = part.kit
 				for v: Vector3 in part_kit.verts:
 					box = box.expand(v + part.pivot)

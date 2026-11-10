@@ -71,6 +71,7 @@ var _fsr2_sharpness_slider: HSlider
 var _fsr2_sharpness_value: Label
 var _fsr2_sharpness_dragging := false
 var _scene_detail_picker: OptionButton
+var _flag_animation_picker: OptionButton
 var _birds_picker: OptionButton
 var _runway_meadow_picker: OptionButton
 var _rc_track_picker: OptionButton
@@ -298,6 +299,15 @@ func _build() -> void:
 	_scene_detail_picker.item_selected.connect(_scene_detail_selected)
 	_add_row(graphics_page, "Scene detail", _scene_detail_picker)
 	_refresh_scene_detail_tooltip()
+	# L15c-F07: presentation only; changes preview without a display safety trial.
+	_flag_animation_picker = OptionButton.new()
+	_flag_animation_picker.name = "FlagAnimation"
+	for mode: String in DisplayPreferences.FLAG_ANIMATIONS:
+		_flag_animation_picker.add_item(_choice_caption("flag_animation", mode))
+		_flag_animation_picker.set_item_metadata(_flag_animation_picker.item_count - 1, mode)
+	_flag_animation_picker.item_selected.connect(_flag_animation_selected)
+	_add_row(graphics_page, "Flag animation", _flag_animation_picker)
+	_set_localized_tooltip(_flag_animation_picker, "Automatic follows Scene detail. Changes apply immediately.")
 	# SC-BIRD (birds-sky-life plan D2): presentation only and live; birds fly away or arrive instead of popping.
 	_birds_picker = OptionButton.new()
 	_birds_picker.name = "Birds"
@@ -708,6 +718,8 @@ func _choice_caption(key: String, value: Variant) -> String:
 			if value == SceneDetail.AUTO:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
+		"flag_animation": return {"auto": tr("Automatic"), "static": tr("Static"), "basic": tr("Basic"),
+			"detailed": tr("Detailed")}.get(value, str(value))
 		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
 		"runway_meadow": return {off = tr("Off"), on = tr("On")}.get(value, str(value))
 		"rc_track":
@@ -776,7 +788,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction", "fsr2_sharpness", "nvidia_reflex"] + DisplayPreferences.SHADOW_FILE_KEYS.keys():
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -894,6 +906,11 @@ func _scale_selected(index: int) -> void:
 func _scene_detail_selected(index: int) -> void:
 	_draft.scene_detail = str(_scene_detail_picker.get_item_metadata(index))
 	_refresh_rc_track_captions()
+	_on_presentation_option_changed()
+
+
+func _flag_animation_selected(index: int) -> void:
+	_draft.flag_animation = str(_flag_animation_picker.get_item_metadata(index))
 	_on_presentation_option_changed()
 
 
@@ -1046,6 +1063,7 @@ func _sync_controls() -> void:
 	_select_metadata(_reflex_picker, _draft.get("nvidia_reflex", NvidiaReflex.DEFAULT_MODE))
 	_sync_reflex_controls()
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
+	_select_metadata(_flag_animation_picker, _draft.get("flag_animation", DisplayPreferences.DEFAULTS.flag_animation))
 	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
 	_select_metadata(_runway_meadow_picker, _draft.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow))
 	_refresh_rc_track_captions()
@@ -1325,7 +1343,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_reconstruction_picker, "reconstruction"], [_reflex_picker, "nvidia_reflex"], [_scene_detail_picker, "scene_detail"], [_flag_animation_picker, "flag_animation"], [_birds_picker, "birds"], [_runway_meadow_picker, "runway_meadow"], [_rc_track_picker, "rc_track"],
 			[_shadow_quality_picker, "shadow_quality"], [_shadow_technique_picker, "shadow_technique"],
 			[_shadow_cue_picker, "shadow_aircraft_cue"], [_shadow_distance_picker, "shadow_distance"], [_shadow_softness_picker, "shadow_softness"],
 			[_lighting_quality_picker, "aircraft_lighting_quality"],

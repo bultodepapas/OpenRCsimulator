@@ -78,6 +78,9 @@ const ShadowSettings := preload("res://render/shadow_settings.gd")
 const Reconstruction := preload("res://render/reconstruction.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const BirdDirector := preload("res://scenery/birds/bird_director.gd")
+const FlagQuality := preload("res://render/flag_quality.gd")
+const FlagIdentity := preload("res://app_state/flag_identity.gd")
+var _flag_identity: RefCounted = FlagIdentity.shared()
 const RunwayMeadow := preload("res://scenery/runway_meadow.gd")
 const RcTrackOption := preload("res://scenery/rc_track_option.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
@@ -1595,6 +1598,8 @@ func _apply_presentation(config: Dictionary) -> void:
 	SceneDetail.apply(get_viewport(), str(config.get("scene_detail", DisplayPreferences.DEFAULTS.scene_detail)))
 	# SC-BIRD: live; a built bird layer sends birds away or brings them in (scenery/birds/birds_runtime.gd).
 	BirdDirector.set_preference(str(config.get("birds", DisplayPreferences.DEFAULTS.birds)))
+	FlagQuality.set_preference(str(config.get("flag_animation", "auto")))
+	get_tree().call_group("landscape_flags", "apply_quality")
 	# L11a-R3: hiding is live; turning the meadow on builds it at the next field load.
 	RunwayMeadow.set_preference(str(config.get("runway_meadow", DisplayPreferences.DEFAULTS.runway_meadow)))
 	get_tree().call_group(RunwayMeadow.GROUP, "set_visible", RunwayMeadow.preference() == "on")

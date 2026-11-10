@@ -9409,3 +9409,18 @@ msgstr "遥控飞艇（实验性）"
 
 msgid "Fly RC blimp"
 msgstr "驾驶遥控飞艇"
+
+msgid "Flag animation"
+msgstr "旗帜动画"
+
+msgid "Static"
+msgstr "静态"
+
+msgid "Basic"
+msgstr "基础"
+
+msgid "Detailed"
+msgstr "详细"
+
+msgid "Automatic follows Scene detail. Changes apply immediately."
+msgstr "自动模式跟随场景细节。更改立即生效。"

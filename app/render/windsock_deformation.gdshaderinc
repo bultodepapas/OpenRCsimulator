@@ -8,6 +8,8 @@ uniform float basket_yaw_rad = 0.0;
 uniform float inflation = 0.0;
 uniform vec3 centerline_points[13];
 global uniform float sim_clock;
+// Live cues advance only on accepted wind observations, including their flutter.
+uniform float cue_clock = -1.0;
 
 const float RIGID_FRACTION = 0.375;
 
@@ -93,8 +95,9 @@ void windsock_fabric_geometry(float t, float angle, out vec3 centreline, out vec
 	radial = up * (cos(angle) * up_scale) + side * (sin(angle) * side_scale);
 	around = normalize(up * (-sin(angle) * up_scale) + side * (cos(angle) * side_scale));
 	float flex_envelope = smoothstep(RIGID_FRACTION, 1.0, t) * extension;
-	float flutter_a = sin(TAU * fract((2560.0 / 1024.0) * sim_clock - 1.75 * t));
-	float flutter_b = sin(TAU * fract((1792.0 / 1024.0) * sim_clock + 1.25 * t));
+	float clock_s = cue_clock < 0.0 ? sim_clock : cue_clock;
+	float flutter_a = sin(TAU * fract((2560.0 / 1024.0) * clock_s - 1.75 * t));
+	float flutter_b = sin(TAU * fract((1792.0 / 1024.0) * clock_s + 1.25 * t));
 	float flutter_m = length_m * 0.004 * flex_envelope * (0.65 * flutter_a + 0.35 * flutter_b);
 	centreline += side * flutter_m;
 }

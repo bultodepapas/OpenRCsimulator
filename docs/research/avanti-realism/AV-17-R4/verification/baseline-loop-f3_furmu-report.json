@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1423e94f-1c11-4327-bde9-df64baaed2e7",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/avanti-s/av17-r4/record_pitch.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/loop.orfl",
+    "--maneuver=loop_entry"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-10T23:04:14.528326+00:00",
+  "label": "baseline-loop",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\checks\\baseline-loop-f3_furmu\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\checks\\baseline-loop-f3_furmu\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "complete=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.079,
+  "log_bytes": 436,
+  "log_sha256": "51f17d45cdde7397e1af0f77bee2a4c89441f3a7de7fa16717ad137a848abebb"
+}

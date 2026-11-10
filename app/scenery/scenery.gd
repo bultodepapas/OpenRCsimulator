@@ -38,6 +38,7 @@ const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const GRAVEL_SHADER: Shader = preload("res://scenery/gravel.gdshader")
 const MOTION_SHADER: Shader = preload("res://scenery/motion.gdshader")
+const LandscapeFlag = preload("res://render/flag.gd")
 const PIT_SHELTER_SHADER: Shader = preload("res://scenery/pit_shelter_roof.gdshader")
 
 const CELL_M := 40.0
@@ -445,6 +446,7 @@ static func _setup_build(context: _SceneryBuild) -> void:
 	var root := Node3D.new()
 	context.root = root
 	root.name = "Scenery"
+	root.set_meta("flag_cues", [])
 	root.set_meta("source_definition", scenery.duplicate(true))
 	root.set_meta("grass_exclusions", GrassMask.footprints(scenery))
 	var theme: String = opts.theme if Palette.THEMES.has(opts.theme) else scenery.theme
@@ -679,6 +681,8 @@ static func _build_instance(context: _SceneryBuild, group: Dictionary, placement
 			var moving_node := _motion_node(part, xf, pl.seed)
 			moving_node.set_meta("damage_motion_id", damage_id)
 			motion_parent.add_child(moving_node)
+			if part.kind == "flag":
+				(context.root.get_meta("flag_cues") as Array).append(moving_node)
 			stats.motion += 1
 	else:
 		var arr := Models.arrays(prefab)
@@ -1094,6 +1098,8 @@ static func _xz(ne: Vector2) -> Vector2:
 
 
 static func _motion_node(part: Dictionary, xf: Transform3D, seed: int) -> MeshInstance3D:
+	if part.kind == "flag":
+		return LandscapeFlag.build(part, xf, seed)
 	var mat := ShaderMaterial.new()
 	mat.shader = MOTION_SHADER
 	mat.set_shader_parameter("mode", int(part.get("motion_mode", 0 if part.kind == "rotor" else 1)))

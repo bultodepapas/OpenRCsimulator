@@ -41,6 +41,9 @@ original goldens for the current OS using the verified historical beta1 editor.
 It then imports the verified source with the current beta2 editor and compares the
 candidate against a same-host beta2 reference. Only after the original golden run,
 the disposable reference matches pinned fuel, Avanti, Extra, and Stik input bytes.
+The current Avanti must reduce to the previous pinned bytes by replacing exactly
+the reviewed AV-17-R4 Cmq value and provenance; prior and historical pins remain
+admitted.
 The current Extra must reduce to the previous pinned bytes by removing exactly the
 two reviewed EX-14i/j additions. Exact-once edits update the glow flight and trace
 law declarations, the aero loads law declaration, and the propulsion coefficient

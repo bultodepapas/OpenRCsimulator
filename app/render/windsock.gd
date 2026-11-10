@@ -165,7 +165,8 @@ static func advance(root: Node3D, time_s: float, wind_ned: Array) -> void:
 	var motion: Variant = _motion_model(root)
 	if motion == null:
 		return
-	motion.update_to(time_s, wind_ned)
+	if motion.update_to(time_s, wind_ned):
+		_accept_flutter_clock(root, time_s, wind_ned)
 
 
 ## Render the latest state once per frame. The model itself is deterministic and
@@ -181,7 +182,8 @@ static func reset(root: Node3D, time_s: float = 0.0, wind_ned: Array = [0.0, 0.0
 	var motion: Variant = _motion_model(root)
 	if motion == null:
 		return
-	motion.reset(time_s, wind_ned)
+	if motion.reset(time_s, wind_ned):
+		_accept_flutter_clock(root, time_s, wind_ned)
 	_apply_motion(root, motion, true)
 
 
@@ -245,11 +247,31 @@ static func _motion_model(root: Node3D) -> Variant:
 	return root.get_meta("windsock_motion")
 
 
+## Publish without another wind sample or simulation advance.
+static func _accept_flutter_clock(root: Node3D, time_s: float, wind_ned: Array) -> void:
+	if not is_finite(time_s) or time_s < 0.0 or wind_ned.size() != 3:
+		return
+	for value: Variant in wind_ned:
+		if not (value is float or value is int) or not is_finite(float(value)):
+			return
+	root.set_meta("windsock_observed_clock", fposmod(time_s, 1024.0))
+
+
+static func publish(root: Node3D) -> void:
+	var motion: Variant = _motion_model(root)
+	if motion != null:
+		_apply_motion(root, motion)
+
+
 static func _apply_motion(root: Node3D, motion: Variant, force: bool = false) -> void:
 	var view: Dictionary = root.get_meta("_windsock_view", {})
 	if view.is_empty() or not is_instance_valid(view.fabric) \
 			or not is_instance_valid(view.basket) or not is_instance_valid(view.support):
 		return
+	var observed_clock: float = root.get_meta("windsock_observed_clock", 0.0)
+	if view.get("clock", -1.0) != observed_clock:
+		view.material.set_shader_parameter("cue_clock", observed_clock)
+		view.clock = observed_clock
 	var chain: PackedVector3Array = motion.centerline_local
 	if chain.size() != MOTION_POINTS:
 		return

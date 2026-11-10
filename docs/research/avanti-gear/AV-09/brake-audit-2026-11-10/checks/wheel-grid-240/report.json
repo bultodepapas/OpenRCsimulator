@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "38d5e80b-592e-44ca-a063-db813bd95366",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\avanti-s\\av09-brake-audit\\wheel_grid.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-brake-audit-20261110/grid-240",
+    "--hz=240"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-10T23:08:48.116605+00:00",
+  "label": "wheel-grid-240",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-brake-audit-20261110\\checks\\wheel-grid-240-k7mcoojy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-brake-audit-20261110\\checks\\wheel-grid-240-k7mcoojy\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AV09_WHEEL_GRID 386 cases, 8 checks, 0 failures"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.953,
+  "log_bytes": 121,
+  "log_sha256": "8709a3b85832bcca42b5dd31a3121130bec238c3bca6dee55a95f5b5177c5750"
+}

@@ -1,0 +1,115 @@
+Country flag artwork — Wikimedia Commons
+
+The listed source files were retrieved on 2026-11-10. Wikimedia Commons lists each
+as public domain. Follow each source page for the basis and independent
+restrictions on official insignia. The source SVG revision and SHA-256 are
+listed below; images were rasterized to 512 px with the pinned Godot engine.
+
+AR — https://commons.wikimedia.org/wiki/File:Flag_of_Argentina.svg
+  Revision 2012-09-12T08:22:42Z; SVG SHA-256 dafb5bc6543c59249be9c7dec2298eaeaa1fe7805a62754990315cc6db93b2f3
+  Creator as recorded: Manuel Belgrano
+
+BO — https://commons.wikimedia.org/wiki/File:Flag_of_Bolivia.svg
+  Revision 2023-10-30T03:48:47Z; SVG SHA-256 714854e37084cc25c195efdd14d5392a8c64ea03128f7fa858b7677e83a5556e
+  Creator as recorded: See file history' below for details.
+
+BR — https://commons.wikimedia.org/wiki/File:Flag_of_Brazil.svg
+  Revision 2024-08-09T05:52:11Z; SVG SHA-256 041479c6a955990d32c8e45b7283afcd62eacc3592eba9bbf0162299ad77ff01
+  Creator as recorded: Raimundo Teixeira Mendes
+
+CL — https://commons.wikimedia.org/wiki/File:Flag_of_Chile.svg
+  Revision 2025-05-11T09:28:52Z; SVG SHA-256 ca4d50dcf36926c82f02b895975f351a639b0aa1b91bb6ef776f4f07f225cc34
+  Creator as recorded: See file history below for details.
+
+CN — https://commons.wikimedia.org/wiki/File:Flag_of_the_People%27s_Republic_of_China.svg
+  Revision 2025-04-17T14:46:06Z; SVG SHA-256 5fce7409cd290e6b3c5ecd09c0d2c400ae459e3d59c6c0539793ac0e803d0179
+  Creator as recorded: Zeng Liansong
+
+CO — https://commons.wikimedia.org/wiki/File:Flag_of_Colombia.svg
+  Revision 2026-11-08T20:37:54Z; SVG SHA-256 85fd47e9d0c91d088b196609e0cb49424950d30084f31c80a44fbac18b7a377b
+  Creator as recorded: See File history below for details.
+
+CR — https://commons.wikimedia.org/wiki/File:Flag_of_Costa_Rica.svg
+  Revision 2026-11-09T01:09:29Z; SVG SHA-256 fe4927d79e735bd7765cba91830b28c7e2aacc316365f5d8d2cea3f1e75167ac
+  Creator as recorded: See File history below for details.
+
+CU — https://commons.wikimedia.org/wiki/File:Flag_of_Cuba.svg
+  Revision 2023-10-30T04:06:03Z; SVG SHA-256 40bf19be4756ad71ee67f889b6c3880ac2114a105c608c9453d89a6064558886
+  Creator as recorded: Miguel Teurbe Tolón and Narciso López
+
+DE — https://commons.wikimedia.org/wiki/File:Flag_of_Germany.svg
+  Revision 2007-09-26T18:28:38Z; SVG SHA-256 44a4580e94ae11037b8983e43e37a220e72f884217dba5b33a94309db2dcd88b
+  Creator as recorded: User:SKopp , User:Madden , and other users
+
+DO — https://commons.wikimedia.org/wiki/File:Flag_of_the_Dominican_Republic.svg
+  Revision 2026-03-31T16:54:24Z; SVG SHA-256 abf70de3568a7ea4c502cf1d9972a8a7dc00ce05358eacc2336aff7851de3240
+  Creator as recorded: Juan Pablo Duarte
+
+EC — https://commons.wikimedia.org/wiki/File:Flag_of_Ecuador.svg
+  Revision 2014-07-20T20:40:51Z; SVG SHA-256 b6579b12e0f49555d608ee7a59e82aa932d4481af439f936bf1009e115f2d20e
+  Creator as recorded: President of the Republic of Ecuador, first uploaded by Denelson83 as Flag of Ecuador.svg, modifications by Husunqu, Zscout370
+
+ES — https://commons.wikimedia.org/wiki/File:Flag_of_Spain.svg
+  Revision 2024-01-15T20:54:09Z; SVG SHA-256 af0b860424a9bd6af63dce070d7f7cb4c7b490c6269fc1cd4f35c45679a20500
+  Creator as recorded: RelShot 263 , Echando una mano ; earlier version was Pedro A. Gracia Fajardo, escudo de Manual de Imagen Institucional de la Administración General del Estado
+
+FR — https://commons.wikimedia.org/wiki/File:Flag_of_France.svg
+  Revision 2024-09-25T13:23:18Z; SVG SHA-256 e949902c7677422d88137d385b9edbe91323470c7933824cc968aca3965fc37c
+  Creator as recorded: Original: Unknown Vector: SKopp
+
+GQ — https://commons.wikimedia.org/wiki/File:Flag_of_Equatorial_Guinea.svg
+  Revision 2026-03-31T17:10:01Z; SVG SHA-256 88d8921155c8d8d664afc4a417b3947643d51428cff237dcd43c9d0a366af653
+  Creator as recorded: See File history below for details.
+
+GT — https://commons.wikimedia.org/wiki/File:Flag_of_Guatemala.svg
+  Revision 2026-03-31T17:08:41Z; SVG SHA-256 46f3b0c5a8db682596b47c2bb786c6f5a40f8b785b9d19572cb2040b3bdfe21a
+  Creator as recorded: K21edgo
+
+HN — https://commons.wikimedia.org/wiki/File:Flag_of_Honduras_(1949%E2%80%932022,_2026%E2%80%93present).svg
+  Revision 2024-03-16T02:00:21Z; SVG SHA-256 9b16a4626ae4f9a4f352b8ab1083643ada57eb3b92b5bc265ca4db4c47f3f772
+  Creator as recorded: Kes47
+
+IT — https://commons.wikimedia.org/wiki/File:Flag_of_Italy.svg
+  Revision 2016-05-18T04:44:16Z; SVG SHA-256 c939e50605c5a08df1aaf19818f74d2919a9d3c3b7aa7cd90520b8bfc9c5dddc
+  Creator as recorded: See below.
+
+JP — https://commons.wikimedia.org/wiki/File:Flag_of_Japan.svg
+  Revision 2009-09-16T03:28:38Z; SVG SHA-256 35e785339e19d1ec1987cb9c3d8e66fc97f29a287db0b0b590b8dfdd96d4766b
+  Creator as recorded: Various
+
+MX — https://commons.wikimedia.org/wiki/File:Flag_of_Mexico.svg
+  Revision 2026-05-03T06:29:24Z; SVG SHA-256 bcfebaa9d94827919e65c5414e4ee35a076f89520a1b57d75e0949e1ca81c3b9
+  Creator as recorded: Omar Alejandro Covarrubias Neri , 9 April 2006. Based on the 1968 arms by Francisco Eppens Helguera and Juan Manuel Gabino Villascán.
+
+NI — https://commons.wikimedia.org/wiki/File:Flag_of_Nicaragua.svg
+  Revision 2022-11-27T16:53:39Z; SVG SHA-256 fdb152e6dcb6090b662d14d41c6c04edb3ecc4368c0825b8cf49eb87e5a5f3e5
+  Creator as recorded: C records
+
+PA — https://commons.wikimedia.org/wiki/File:Flag_of_Panama.svg
+  Revision 2026-03-31T16:55:17Z; SVG SHA-256 464fc8f974b506c5a8353899dba96d68154f2f991a5a9319f68184be86c31556
+  Creator as recorded: Zscout370 et al.
+
+PE — https://commons.wikimedia.org/wiki/File:Flag_of_Peru.svg
+  Revision 2013-11-11T13:31:28Z; SVG SHA-256 4358cec747829a0009dac86055e74e60b05e6eb57eba5f7bc30da2c88168a7f2
+  Creator as recorded: David Benbennick
+
+RU — https://commons.wikimedia.org/wiki/File:Flag_of_Russia.svg
+  Revision 2025-09-20T15:43:09Z; SVG SHA-256 eb1dbd977fdb824dcae7767ce9ec3a023e41158e81b5f524772609ddcb622025
+  Creator as recorded: Peter the Great
+
+SV — https://commons.wikimedia.org/wiki/File:Flag_of_El_Salvador.svg
+  Revision 2026-03-31T17:17:57Z; SVG SHA-256 20bf4c3b91d2ec2a08e60f90797db1a45efd59601bd9036ffd4a55477d5e5f6f
+  Creator as recorded: See File history below for details.
+
+US — https://commons.wikimedia.org/wiki/File:Flag_of_the_United_States.svg
+  Revision 2024-05-24T03:53:22Z; SVG SHA-256 48f0d3e4a7bf2d5c0c8d09cd975696acb2f3af601aaca80c537933ad9ec166ec
+  Creator as recorded: Uploaded by Dbenbenn ; edited by users such as Zscout370 , Jacobolus , Indolences , and Technion .
+
+UY — https://commons.wikimedia.org/wiki/File:Flag_of_Uruguay.svg
+  Revision 2024-06-01T00:08:42Z; SVG SHA-256 34b6a6675698eaadafdafffbf9d3cfa72761b893e49659e3a0e8523f5b7fc1f7
+  Creator as recorded: See File history below for details.
+
+VE — https://commons.wikimedia.org/wiki/File:Flag_of_Venezuela.svg
+  Revision 2024-03-09T12:13:36Z; SVG SHA-256 facdf9d3992996b00daa7cd1749d2f583528f7bcc9c4b4c88bc7b9cd16f2712c
+  Creator as recorded: Various, see File history below for details.
+

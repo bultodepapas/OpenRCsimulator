@@ -1,0 +1,984 @@
+{
+  "format": "openrc-airship-presentation-source",
+  "version": 1,
+  "visual_family": "rc-blimp-5m",
+  "frame": "Paths are relative to the AirshipVisual root (Model = the skin GLB scene). Positions are metres in each host node's local frame: Godot axes, nose -Z, right +X, up +Y.",
+  "provenance": "Authored from assets/aircraft/rc-blimp-5m/geometry.json (envelope radius profile, fins, gondola) and the GLB surface inventory; GLB sha256 pins copy source-manifest.json.",
+  "default_skin": "tiburon-blanco",
+  "skins": [
+    {
+      "id": "tiburon-blanco",
+      "asset": {
+        "path": "res://assets/airships/rc-blimp-5m/tiburon-blanco.glb",
+        "sha256": "aea18667642f9da6336f822b4280eec7c05e2c47c374b1cc07494db814322afd"
+      },
+      "light_materials": {
+        "tiburon-blanco_baliza_rojo": "strobe"
+      },
+      "paint_slots": [
+        {
+          "id": "envelope",
+          "label": "Envelope",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 13,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 22,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_piezas"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 14,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_envolvente_gris_perla_satinado"
+            }
+          ]
+        },
+        {
+          "id": "fins",
+          "label": "Fins",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 6,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_aleta_dorsal_estabilizador"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 4,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_aleta_babor_estabilizador"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 7,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_aleta_estribor_estabilizador"
+            }
+          ]
+        },
+        {
+          "id": "gondola",
+          "label": "Gondola",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 16,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_v5_gondola_pintura_anclada_a_cabina"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 27,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_v5_puerta_babor_pintura_solidaria_a_hoja"
+            }
+          ]
+        },
+        {
+          "id": "gondola_stripe",
+          "label": "Gondola stripe",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 29,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_v5_gondola_banda_naranja_pintada"
+            }
+          ]
+        },
+        {
+          "id": "pods",
+          "label": "Motor pods",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 17,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/vector_port_hinge/vector_port_hinge_mesh",
+              "surface": 0,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/vector_starboard_hinge/vector_starboard_hinge_mesh",
+              "surface": 0,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/vector_stern_hinge/vector_stern_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/vector_port_hinge/rotor_port/rotor_port_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/vector_starboard_hinge/rotor_starboard/rotor_starboard_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/vector_stern_hinge/rotor_stern_axial/rotor_stern_axial_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            },
+            {
+              "node_path": "Model/airship/rotor_stern_lateral/rotor_stern_lateral_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_pez_globo_blanco_marfil"
+            }
+          ]
+        },
+        {
+          "id": "rudders",
+          "label": "Fin control surfaces",
+          "targets": [
+            {
+              "node_path": "Model/airship/rudder_dorsal_hinge/rudder_dorsal_hinge_mesh",
+              "surface": 3,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_aleta_dorsal_timon_movil"
+            },
+            {
+              "node_path": "Model/airship/fin_port_hinge/fin_port_hinge_mesh",
+              "surface": 3,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_aleta_babor_timon_movil"
+            },
+            {
+              "node_path": "Model/airship/fin_starboard_hinge/fin_starboard_hinge_mesh",
+              "surface": 3,
+              "kind": "standard_albedo",
+              "material": "tiburon-blanco_tiburon_v1_aleta_estribor_timon_movil"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "historico",
+      "asset": {
+        "path": "res://assets/airships/rc-blimp-5m/historico.glb",
+        "sha256": "525d17e8af1f311b49a065446b439fcc1bc1f475ae21f84cd453afa10f6de4e0"
+      },
+      "light_materials": {
+        "historico_baliza_rojo": "strobe"
+      },
+      "paint_slots": [
+        {
+          "id": "envelope",
+          "label": "Envelope",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 9,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_envolvente_de_algodon_aluminizado"
+            }
+          ]
+        },
+        {
+          "id": "fins",
+          "label": "Fins",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 4,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_tela_solidaria_dorsal_estabilizador"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 2,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_tela_solidaria_babor_estabilizador"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 5,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_tela_solidaria_estribor_estabilizador"
+            }
+          ]
+        },
+        {
+          "id": "gondola",
+          "label": "Gondola",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 11,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_gondola_marfil_y_gris"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 16,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_puerta_solidaria_marfil_y_gris"
+            }
+          ]
+        },
+        {
+          "id": "pods",
+          "label": "Motor pods",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 12,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/vector_port_hinge/vector_port_hinge_mesh",
+              "surface": 0,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/vector_starboard_hinge/vector_starboard_hinge_mesh",
+              "surface": 0,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/vector_stern_hinge/vector_stern_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/vector_port_hinge/rotor_port/rotor_port_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/vector_starboard_hinge/rotor_starboard/rotor_starboard_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/vector_stern_hinge/rotor_stern_axial/rotor_stern_axial_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            },
+            {
+              "node_path": "Model/airship/rotor_stern_lateral/rotor_stern_lateral_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_esmalte_marfil_calido"
+            }
+          ]
+        },
+        {
+          "id": "rudders",
+          "label": "Fin control surfaces",
+          "targets": [
+            {
+              "node_path": "Model/airship/rudder_dorsal_hinge/rudder_dorsal_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_tela_solidaria_dorsal_timon_movil"
+            },
+            {
+              "node_path": "Model/airship/fin_port_hinge/fin_port_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_tela_solidaria_babor_timon_movil"
+            },
+            {
+              "node_path": "Model/airship/fin_starboard_hinge/fin_starboard_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "historico_historico_v1_tela_solidaria_estribor_timon_movil"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cromo-carbono-azul",
+      "asset": {
+        "path": "res://assets/airships/rc-blimp-5m/cromo-carbono-azul.glb",
+        "sha256": "85a0fc772a7d7febe78c68e37820426c0ea4b49f2aae0d27e0a3abd6757eb216"
+      },
+      "light_materials": {
+        "cromo-carbono-azul_baliza_rojo": "strobe"
+      },
+      "paint_slots": [
+        {
+          "id": "accents",
+          "label": "Blue accents",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/rudder_dorsal_hinge/rudder_dorsal_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/fin_port_hinge/fin_port_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/fin_starboard_hinge/fin_starboard_hinge_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/vector_port_hinge/rotor_port/rotor_port_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/vector_starboard_hinge/rotor_starboard/rotor_starboard_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/vector_stern_hinge/rotor_stern_axial/rotor_stern_axial_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            },
+            {
+              "node_path": "Model/airship/rotor_stern_lateral/rotor_stern_lateral_mesh",
+              "surface": 1,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado"
+            }
+          ]
+        },
+        {
+          "id": "envelope",
+          "label": "Envelope",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 10,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_envolvente_espejo"
+            }
+          ]
+        },
+        {
+          "id": "fins",
+          "label": "Fins",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 5,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 3,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_aleta_babor_estabilizador_solidaria"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 6,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_aleta_estribor_estabilizador_solidaria"
+            }
+          ]
+        },
+        {
+          "id": "gondola",
+          "label": "Gondola",
+          "targets": [
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 12,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul"
+            },
+            {
+              "node_path": "Model/airship/airship_mesh",
+              "surface": 17,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul"
+            }
+          ]
+        },
+        {
+          "id": "rudders",
+          "label": "Fin control surfaces",
+          "targets": [
+            {
+              "node_path": "Model/airship/rudder_dorsal_hinge/rudder_dorsal_hinge_mesh",
+              "surface": 2,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria"
+            },
+            {
+              "node_path": "Model/airship/fin_port_hinge/fin_port_hinge_mesh",
+              "surface": 2,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_aleta_babor_timon_movil_solidaria"
+            },
+            {
+              "node_path": "Model/airship/fin_starboard_hinge/fin_starboard_hinge_mesh",
+              "surface": 2,
+              "kind": "standard_albedo",
+              "material": "cromo-carbono-azul_cromo_v1_aleta_estribor_timon_movil_solidaria"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "marking_slots": [
+    {
+      "id": "registration",
+      "label": "Envelope name",
+      "max_chars": 12,
+      "targets": [
+        {
+          "node_path": "Model/airship/airship_mesh",
+          "position_m": [
+            -0.493173,
+            0.0,
+            -0.1
+          ],
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ],
+          "width_m": 0.9,
+          "height_m": 0.22
+        },
+        {
+          "node_path": "Model/airship/airship_mesh",
+          "position_m": [
+            0.493173,
+            0.0,
+            -0.1
+          ],
+          "direction": [
+            1,
+            0,
+            0
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ],
+          "width_m": 0.9,
+          "height_m": 0.22
+        }
+      ]
+    }
+  ],
+  "smoke_slots": [],
+  "lighting_layout": {
+    "version": 2,
+    "anchors": [
+      {
+        "id": "landing",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          0.0,
+          -0.575,
+          -1.376
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "nav_left",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          -0.47757,
+          0.0,
+          -1.2
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "nav_right",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          0.47757,
+          0.0,
+          -1.2
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "nav_tail",
+        "node_path": "Model/airship/rudder_dorsal_hinge",
+        "position_m": [
+          0.0,
+          0.3345,
+          -0.02
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "strobe_dorsal",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          0.0,
+          0.505,
+          -0.31
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "strobe_left",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          -0.5442,
+          -0.3087,
+          1.88
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "strobe_right",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          0.5442,
+          -0.3087,
+          1.88
+        ],
+        "gear_gated": false
+      },
+      {
+        "id": "strobe_ventral",
+        "node_path": "Model/airship/airship_mesh",
+        "position_m": [
+          0.0,
+          -0.625,
+          -0.95
+        ],
+        "gear_gated": false
+      }
+    ],
+    "strips": [
+      {
+        "id": "strip_belly",
+        "node_path": "Model/airship/airship_mesh",
+        "face": [
+          0,
+          -1,
+          0
+        ],
+        "width_m": 0.02,
+        "points_m": [
+          [
+            0.0,
+            -0.492368,
+            -0.45
+          ],
+          [
+            0.0,
+            -0.492052,
+            -0.295455
+          ],
+          [
+            0.0,
+            -0.49091,
+            -0.140909
+          ],
+          [
+            0.0,
+            -0.48732,
+            0.013636
+          ],
+          [
+            0.0,
+            -0.482153,
+            0.168182
+          ],
+          [
+            0.0,
+            -0.476117,
+            0.322727
+          ],
+          [
+            0.0,
+            -0.467665,
+            0.477273
+          ],
+          [
+            0.0,
+            -0.457029,
+            0.631818
+          ],
+          [
+            0.0,
+            -0.444227,
+            0.786364
+          ],
+          [
+            0.0,
+            -0.427557,
+            0.940909
+          ],
+          [
+            0.0,
+            -0.407347,
+            1.095455
+          ],
+          [
+            0.0,
+            -0.383969,
+            1.25
+          ]
+        ]
+      },
+      {
+        "id": "strip_left",
+        "node_path": "Model/airship/airship_mesh",
+        "face": [
+          -0.707107,
+          -0.707107,
+          0
+        ],
+        "width_m": 0.02,
+        "points_m": [
+          [
+            -0.348157,
+            -0.348157,
+            -0.45
+          ],
+          [
+            -0.347957,
+            -0.347957,
+            -0.309091
+          ],
+          [
+            -0.3474,
+            -0.3474,
+            -0.168182
+          ],
+          [
+            -0.345392,
+            -0.345392,
+            -0.027273
+          ],
+          [
+            -0.342296,
+            -0.342296,
+            0.113636
+          ],
+          [
+            -0.338708,
+            -0.338708,
+            0.254545
+          ],
+          [
+            -0.334068,
+            -0.334068,
+            0.395455
+          ],
+          [
+            -0.327973,
+            -0.327973,
+            0.536364
+          ],
+          [
+            -0.320693,
+            -0.320693,
+            0.677273
+          ],
+          [
+            -0.311974,
+            -0.311974,
+            0.818182
+          ],
+          [
+            -0.300721,
+            -0.300721,
+            0.959091
+          ],
+          [
+            -0.287592,
+            -0.287592,
+            1.1
+          ]
+        ]
+      },
+      {
+        "id": "strip_right",
+        "node_path": "Model/airship/airship_mesh",
+        "face": [
+          0.707107,
+          -0.707107,
+          0
+        ],
+        "width_m": 0.02,
+        "points_m": [
+          [
+            0.348157,
+            -0.348157,
+            -0.45
+          ],
+          [
+            0.347957,
+            -0.347957,
+            -0.309091
+          ],
+          [
+            0.3474,
+            -0.3474,
+            -0.168182
+          ],
+          [
+            0.345392,
+            -0.345392,
+            -0.027273
+          ],
+          [
+            0.342296,
+            -0.342296,
+            0.113636
+          ],
+          [
+            0.338708,
+            -0.338708,
+            0.254545
+          ],
+          [
+            0.334068,
+            -0.334068,
+            0.395455
+          ],
+          [
+            0.327973,
+            -0.327973,
+            0.536364
+          ],
+          [
+            0.320693,
+            -0.320693,
+            0.677273
+          ],
+          [
+            0.311974,
+            -0.311974,
+            0.818182
+          ],
+          [
+            0.300721,
+            -0.300721,
+            0.959091
+          ],
+          [
+            0.287592,
+            -0.287592,
+            1.1
+          ]
+        ]
+      },
+      {
+        "id": "strip_top_left",
+        "node_path": "Model/airship/airship_mesh",
+        "face": [
+          -0.707107,
+          0.707107,
+          0
+        ],
+        "width_m": 0.02,
+        "points_m": [
+          [
+            -0.310359,
+            0.310359,
+            -1.6
+          ],
+          [
+            -0.326269,
+            0.326269,
+            -1.392308
+          ],
+          [
+            -0.336888,
+            0.336888,
+            -1.184615
+          ],
+          [
+            -0.344039,
+            0.344039,
+            -0.976923
+          ],
+          [
+            -0.348087,
+            0.348087,
+            -0.769231
+          ],
+          [
+            -0.348263,
+            0.348263,
+            -0.561538
+          ],
+          [
+            -0.348028,
+            0.348028,
+            -0.353846
+          ],
+          [
+            -0.347179,
+            0.347179,
+            -0.146154
+          ],
+          [
+            -0.34354,
+            0.34354,
+            0.061538
+          ],
+          [
+            -0.338277,
+            0.338277,
+            0.269231
+          ],
+          [
+            -0.330705,
+            0.330705,
+            0.476923
+          ],
+          [
+            -0.320293,
+            0.320293,
+            0.684615
+          ],
+          [
+            -0.306324,
+            0.306324,
+            0.892308
+          ],
+          [
+            -0.287592,
+            0.287592,
+            1.1
+          ]
+        ]
+      },
+      {
+        "id": "strip_top_right",
+        "node_path": "Model/airship/airship_mesh",
+        "face": [
+          0.707107,
+          0.707107,
+          0
+        ],
+        "width_m": 0.02,
+        "points_m": [
+          [
+            0.310359,
+            0.310359,
+            -1.6
+          ],
+          [
+            0.326269,
+            0.326269,
+            -1.392308
+          ],
+          [
+            0.336888,
+            0.336888,
+            -1.184615
+          ],
+          [
+            0.344039,
+            0.344039,
+            -0.976923
+          ],
+          [
+            0.348087,
+            0.348087,
+            -0.769231
+          ],
+          [
+            0.348263,
+            0.348263,
+            -0.561538
+          ],
+          [
+            0.348028,
+            0.348028,
+            -0.353846
+          ],
+          [
+            0.347179,
+            0.347179,
+            -0.146154
+          ],
+          [
+            0.34354,
+            0.34354,
+            0.061538
+          ],
+          [
+            0.338277,
+            0.338277,
+            0.269231
+          ],
+          [
+            0.330705,
+            0.330705,
+            0.476923
+          ],
+          [
+            0.320293,
+            0.320293,
+            0.684615
+          ],
+          [
+            0.306324,
+            0.306324,
+            0.892308
+          ],
+          [
+            0.287592,
+            0.287592,
+            1.1
+          ]
+        ]
+      }
+    ],
+    "skins": []
+  }
+}

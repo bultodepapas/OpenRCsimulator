@@ -12,8 +12,8 @@
     "Game purchase availability and compatibility describe this offline cost model; dated merchant stock and physical installation fit are separate evidence."
   ],
   "generated_from": {
-    "source_sha256": "a1f99dac773f14ddab72b8494c42e2d13da888aa0eeed870c468bb676803042c",
-    "legacy_catalog_sha256": "09c5904cd6d852ef12bf36ccd09be31711220c366426e379b2fe8f7f4b2642ef",
+    "source_sha256": "22a68c6d7868986da7abcd3c990a1d21921ffe68ef25537f07949cfd120527e2",
+    "legacy_catalog_sha256": "1e353c8a1b505496067dcb5ffec5d6d0d88bdbbc264ce12ea86869c340c78092",
     "generator_sha256": "770868ae7cb9977fe6247c1f92aa4aaf71eb51eaf7b23defd886244eca399578"
   },
   "aircraft": {
@@ -7592,7 +7592,7 @@
         ]
       },
       "source_hashes": [
-        "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd"
+        "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9"
       ],
       "construction_class": "composite",
       "propeller_followups": [],

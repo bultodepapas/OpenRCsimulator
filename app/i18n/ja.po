@@ -9460,3 +9460,18 @@ msgstr "RC飛行船（実験的）"
 
 msgid "Fly RC blimp"
 msgstr "RC飛行船を飛ばす"
+
+msgid "Flag animation"
+msgstr "旗のアニメーション"
+
+msgid "Static"
+msgstr "静止"
+
+msgid "Basic"
+msgstr "簡易"
+
+msgid "Detailed"
+msgstr "詳細"
+
+msgid "Automatic follows Scene detail. Changes apply immediately."
+msgstr "自動はシーンの詳細設定に従います。変更は直ちに反映されます。"

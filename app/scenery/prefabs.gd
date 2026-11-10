@@ -511,20 +511,9 @@ static func _flagpole(k: MeshKit) -> Array:
 	k.cylinder(0.06, 0.04, 8.0, 8, Vector3.ZERO, _c("trim"))
 	k.cylinder(0.25, 0.25, 0.25, 8, Vector3.ZERO, _c("concrete"))
 	k.blob(Vector3(0, 8.03, 0), Vector3(0.12, 0.12, 0.12), Color("#c9a64a"), 3, 0.05)
-	# The club flag: 1.5 × 0.9 m, subdivided so the flag shader can wave it; pivot on the pole at the hoist.
-	var flag := MeshKit.new()
-	var cols := 10
-	var rows := 4
-	for i in cols:
-		for j in rows:
-			var x0 := 1.5 * i / cols
-			var x1 := 1.5 * (i + 1) / cols
-			var y0 := -0.9 * (j + 1) / rows
-			var y1 := -0.9 * j / rows
-			var c: Color = _c("flag_blue") if j == 0 or j == rows - 1 else (_c("flag_white") if j == 1 else _c("flag_red"))
-			flag.quad(Vector3(x0, y0, 0), Vector3(x1, y0, 0), Vector3(x1, y1, 0), Vector3(x0, y1, 0), c)
-			flag.quad(Vector3(x1, y0, 0), Vector3(x0, y0, 0), Vector3(x0, y1, 0), Vector3(x1, y1, 0), c.darkened(0.12))
-	return [{kind = "flag", kit = flag, pivot = Vector3(0.06, 7.85, 0), axis = Vector3.UP, rate = 0.0}]
+	# Cloth geometry/materials belong to the scalable landscape flag renderer.
+	return [{kind = "flag", pivot = Vector3(0.06, 7.85, 0), axis = Vector3.UP, rate = 0.0}]
+
 
 
 static func _club_sign(k: MeshKit) -> void:

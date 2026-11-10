@@ -2,12 +2,15 @@ extends RefCounted
 ## Pins the bundled source files that affect a Workshop compilation.
 
 const FORMAT: String = "openrc-aircraft-workshop-dependencies v1"
+const AirshipFamily := preload("res://workshop/airship_family.gd")
 const WHEEL_PROFILES_PATH: String = "res://data/ground/wheel_profiles.json"
 const GLOW_DIRECTORY: String = "res://data/glow/"
 const MANIFEST_KEYS: PackedStringArray = ["format", "files"]
 
 
 static func capture(base: Dictionary) -> Dictionary:
+	if AirshipFamily.is_base(base):
+		return AirshipFamily.capture_dependencies(base)
 	var errors := PackedStringArray()
 	var paths_result: Dictionary = _current_paths(base)
 	if not bool(paths_result["ok"]):
@@ -61,6 +64,8 @@ static func verify(base: Dictionary, expected: Variant) -> Dictionary:
 ## Checks schema and safe source bindings without consulting current dependency files.
 ## This lets an old saved variant remain visible when a bundled dependency has changed or disappeared.
 static func validate_manifest(base: Dictionary, value: Variant) -> Dictionary:
+	if AirshipFamily.is_base(base):
+		return AirshipFamily.validate_dependencies(base, value)
 	var errors := PackedStringArray()
 	var source_result: Dictionary = _source_bindings(base)
 	if not bool(source_result["ok"]):

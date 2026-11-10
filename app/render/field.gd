@@ -281,6 +281,9 @@ static func _advance_build(context: _BuildContext) -> void:
 				if WornGroundMaterial.enabled() and str(context.field.get("id", "")) == "default" and not bool(context.scenery_options.get("file_explicit", false)):
 					WornGroundMaterial.bind(attached_scenery, context.grass)
 				context.result.add_child(attached_scenery)
+				var wind_cues: Array = context.result.get_meta("wind_cues", [])
+				wind_cues.append_array(attached_scenery.get_meta("flag_cues", []))
+				context.result.set_meta("wind_cues", wind_cues)
 				context.scenery_build = null
 				context.phase = _BuildPhase.LAKE_ATTACH
 		_BuildPhase.LAKE_ATTACH:
@@ -425,43 +428,72 @@ static func _default_field_light_exclusions() -> Array[Dictionary]:
 	return _default_light_exclusions_cache
 
 
-## Read-only consumer of committed wind samples. No flight solver, RNG or input changes.
+## Observe once at the presentation cadence; World only publishes these committed poses.
 static func advance_wind(field_node: Node3D, time_s: float, wind_ned: Array, sampler: Callable = Callable()) -> void:
-	if field_node == null:
-		return
-	field_node.set_meta("wind_world_sampler", sampler)
-	for cue: Node3D in field_node.get_meta("wind_cues", []):
-		var local: Array = _cue_wind(field_node, cue, time_s, wind_ned)
-		if local.size() == 3:
-			Windsock.advance(cue, time_s, local)
+	_observe_wind(field_node, time_s, wind_ned, sampler, false, true)
 
 
 static func reset_wind(field_node: Node3D, time_s: float, wind_ned: Array, sampler: Callable = Callable()) -> void:
+	_observe_wind(field_node, time_s, wind_ned, sampler, true, true)
+
+
+static func _valid_wind(time_s: float, wind: Array) -> bool:
+	if not is_finite(time_s) or time_s < 0.0 or wind.size() != 3:
+		return false
+	for value: Variant in wind:
+		if not (value is float or value is int) or not is_finite(float(value)):
+			return false
+	return true
+
+
+static func _observe_wind(field_node: Node3D, time_s: float, wind_ned: Array,
+		sampler: Callable, reset: bool, committed: bool) -> void:
 	if field_node == null:
 		return
-	field_node.set_meta("wind_world_sampler", sampler)
+	if committed:
+		field_node.set_meta("wind_committed_owner", true)
+	# Invalid session observations must not be bypassed by the spatial sampler.
+	if not _valid_wind(time_s, wind_ned):
+		return
+	if not reset and field_node.get_meta("wind_observed_time", -INF) == time_s:
+		return
+	field_node.set_meta("wind_observed_time", time_s)
+	var samples := {}
 	for cue: Node3D in field_node.get_meta("wind_cues", []):
-		var local: Array = _cue_wind(field_node, cue, time_s, wind_ned)
-		if local.size() == 3:
+		if not is_instance_valid(cue):
+			continue
+		var is_flag: bool = cue.get_meta("wind_cue_kind", "") == "flag"
+		if is_flag and not cue.needs_wind():
+			continue
+		var local := _cue_wind(cue, time_s, wind_ned, sampler, samples)
+		if local.is_empty():
+			continue
+		if is_flag:
+			if reset: cue.reset_wind(time_s, local)
+			else: cue.advance_wind(time_s, local)
+		elif reset:
 			Windsock.reset(cue, time_s, local)
+		else:
+			Windsock.advance(cue, time_s, local)
 
 
-## Fixed observation point at the pole head; cloth motion does not move the physical sample.
-## Conversion happens only here at the render boundary. Invalid observations leave the cue unchanged.
-static func _cue_wind(field_node: Node3D, cue: Node3D, time_s: float, fallback: Array) -> Array:
-	var sampler: Variant = field_node.get_meta("wind_world_sampler", Callable())
-	if not sampler is Callable or not sampler.is_valid():
+## Cache only within this observation. Cloth motion never moves the sample point.
+static func _cue_wind(cue: Node3D, time_s: float, fallback: Array,
+		sampler: Callable, samples: Dictionary) -> Array:
+	if not sampler.is_valid():
 		return fallback
 	var dimensions: Dictionary = cue.get_meta("windsock_dimensions", {})
-	var height: float = float(dimensions.get("height_m", 0.0))
-	var position: Vector3 = cue.global_transform * Vector3(0.0, height, 0.0)
-	var result: Variant = sampler.call(PackedFloat64Array([-position.z, position.x, -position.y]), time_s)
-	if not result is PackedFloat64Array or result.size() != 3:
-		return []
-	for value: float in result:
-		if not is_finite(value):
-			return []
-	return Array(result)
+	var offset: Vector3 = cue.get_meta("wind_sample_offset", Vector3(0, float(dimensions.get("height_m", 0)), 0))
+	var xf := cue.global_transform if cue.is_inside_tree() else cue.transform
+	var position: Vector3 = xf * offset
+	if samples.has(position):
+		return samples[position]
+	var sampled: Variant = sampler.call(PackedFloat64Array([-position.z, position.x, -position.y]), time_s)
+	var result: Array = Array(sampled) if sampled is PackedFloat64Array else []
+	if not _valid_wind(time_s, result):
+		result = []
+	samples[position] = result
+	return result
 
 
 ## SC-HUM-03/04: advance the people's head state with the simulation tick. `aircraft_ned` is the
@@ -490,15 +522,19 @@ static func update_people(field_node: Node3D) -> void:
 	(field_node.get_meta("people_gaze") as RefCounted).apply()
 
 
-## Render boundary: world wind is east/up/south; the motion model consumes north/east/down.
+## Legacy capture/scripted worlds observe here; live sessions publish only committed observations.
 static func update_wind(field_node: Node3D, time_s: float, wind: Vector3) -> void:
 	if field_node == null:
 		return
-	var wind_ned: Array = [-wind.z, wind.x, -wind.y]
+	if not field_node.get_meta("wind_committed_owner", false):
+		_observe_wind(field_node, time_s, [-wind.z, wind.x, -wind.y], Callable(), false, false)
 	for cue: Node3D in field_node.get_meta("wind_cues", []):
-		var local: Array = _cue_wind(field_node, cue, time_s, wind_ned)
-		if local.size() == 3:
-			Windsock.update(cue, time_s, local)
+		if not is_instance_valid(cue):
+			continue
+		if cue.get_meta("wind_cue_kind", "") == "flag":
+			cue.publish()
+		else:
+			Windsock.publish(cue)
 
 
 ## Prepare shadow geometry before a checkpoint can commit physical state. Materials are retained by this field.

@@ -147,6 +147,32 @@ class ComparisonTests(unittest.TestCase):
             with self.subTest(index=index), self.assertRaises(ValueError):
                 gate.check_input_bytes(*changed)
 
+    def test_avanti_cmq_is_the_only_change_from_the_prior_pin(self) -> None:
+        project = gate.ROOT / "app"
+        fuel = (project / "data/fuels/openrc-fuel-registry.json").read_bytes()
+        avanti = (project / "data/aircraft/sebart_avanti_s_a200.json").read_bytes()
+        extra = (project / gate.EXTRA_PATH).read_bytes()
+        stik = (project / gate.STIK_PATH).read_bytes()
+        self.assertEqual(gate.sha(avanti), gate.AVANTI_CURRENT)
+        prior = gate.replace_once(avanti, gate.AVANTI_CMQ_CURRENT, gate.AVANTI_CMQ_PRIOR, "test")
+        self.assertEqual(gate.sha(prior), gate.AVANTI_PRIOR)
+        gate.check_input_bytes(fuel, avanti, extra, stik)
+        gate.check_input_bytes(fuel, prior, extra, stik)
+        block = gate.AVANTI_CMQ_CURRENT
+        for altered in (avanti.replace(block, b"", 1), avanti + block,
+                        avanti.replace(block, block.replace(b'-8.165939', b'-8.165938', 1), 1),
+                        avanti.replace(block, block.replace(b'AV-17-R4', b'AV-17-R5', 1), 1)):
+            # A refreshed current hash alone must not admit a missing,
+            # duplicated or changed Cmq quantity or provenance.
+            with self.subTest(length=len(altered)), \
+                 mock.patch.object(gate, "AVANTI_CURRENT", gate.sha(altered)), self.assertRaises(ValueError):
+                gate.check_input_bytes(fuel, altered, extra, stik)
+        altered = avanti.replace(b'"format":', b'"FORMAT":', 1)
+        self.assertNotEqual(avanti, altered)
+        with mock.patch.object(gate, "AVANTI_CURRENT", gate.sha(altered)), \
+             self.assertRaisesRegex(ValueError, "evolution differs"):
+            gate.check_input_bytes(fuel, altered, extra, stik)
+
     def test_extra_data_must_be_exactly_the_reviewed_additions_to_the_prior_pin(self) -> None:
         project = gate.ROOT / "app"
         fuel = (project / "data/fuels/openrc-fuel-registry.json").read_bytes()
@@ -426,6 +452,20 @@ class ReferenceIdentityOverlayTests(unittest.TestCase):
 
 
 class RealHistoricalReferenceTests(unittest.TestCase):
+    def test_historical_avanti_remains_admitted(self) -> None:
+        result = subprocess.run(["git", "-C", str(gate.ROOT), "show",
+                                 "fa9f387f6:app/data/aircraft/sebart_avanti_s_a200.json"],
+                                capture_output=True, check=False)
+        if result.returncode:
+            self.skipTest("historical reference commit is not present in this checkout")
+        avanti = result.stdout.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+        self.assertEqual(gate.sha(avanti), gate.AVANTI_OLD)
+        project = gate.ROOT / "app"
+        fuel = (project / "data/fuels/openrc-fuel-registry.json").read_bytes()
+        extra = (project / gate.EXTRA_PATH).read_bytes()
+        stik = (project / gate.STIK_PATH).read_bytes()
+        gate.check_input_bytes(fuel, avanti, extra, stik)
+
     def test_pinned_historical_sources_derive_every_supported_overlay(self) -> None:
         paths = set(gate.REFERENCE_LAW_DECLARATIONS) | set(gate.REFERENCE_IDENTITY_EDITS) | {gate.CONTRACT_PATH}
         sources = {}

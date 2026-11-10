@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "967f8566-1f6c-4bad-b88f-e356dfcef73f",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--check-only",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\avanti-s\\av09-brake-audit\\record_rollouts.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-10T23:11:55.356696+00:00",
+  "label": "rollout-parse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-brake-audit-20261110\\checks\\rollout-parse-qop8mrcv\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-brake-audit-20261110\\checks\\rollout-parse-qop8mrcv\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.25,
+  "log_bytes": 72,
+  "log_sha256": "85a9a395b33d3edaf4ecf388c3ad3c946ec46c9a56fffeadcb074949604e5582"
+}

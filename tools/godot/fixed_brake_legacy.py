@@ -31,7 +31,8 @@ IDS = {"gp-extra-300s-60", "jensen-das-ugly-stik-60", "p51d-mustang-120", "sebar
 FUEL_LF = "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043"
 FUEL_CRLF = "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1"
 AVANTI_OLD = "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1"
-AVANTI_CURRENT = "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd"
+AVANTI_PRIOR = "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd"
+AVANTI_CURRENT = "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9"
 EXTRA_PRIOR = "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc"
 EXTRA_CURRENT = "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf"
 STIK_CURRENT = "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
@@ -52,6 +53,24 @@ AIRCRAFT_DATA_PATH = "physics/aircraft_data.gd"
 CONTRACT_PATH = "data/schema/aircraft-contract-v2.json"
 CONTRACT_OLD_LF = "e06159d51a54feea95c498ee81e05903d85246bb512e7dcc7af95f0d8079af34"
 CONTRACT_OVERLAY_LF = "346ca1bbbc2e7fc7a7a3c6028dae81427bfa149a3c570c497a1091f1f66f1007"
+# AV-17-R4 changes only this quantity and its provenance. Both the full current
+# bytes and the exact recovered previous bytes are checked before admission.
+AVANTI_CMQ_PRIOR = (
+    b'      "Cmq": {\r\n'
+    b'        "value": -7.751139,\r\n'
+    b'        "unit": "1/rad",\r\n'
+    b'        "kind": "derived",\r\n'
+    b'        "source": "research/avanti-s/av06/derive_physics.py: tail damping about the CG x1.1 for wing/fuselage"\r\n'
+    b'      },\r\n'
+)
+AVANTI_CMQ_CURRENT = (
+    b'      "Cmq": {\r\n'
+    b'        "value": -8.165939,\r\n'
+    b'        "unit": "1/rad",\r\n'
+    b'        "kind": "derived",\r\n'
+    b'        "source": "research/avanti-s/av06/derive_physics.py: tail damping about authored inventory CG x1.1 for wing/fuselage, minus CLq*(x_CG-x_ARP)/c for the ARP moment contract; AV-17-R4"\r\n'
+    b'      },\r\n'
+)
 # These are the only two changes from the previously pinned Extra. Both the
 # full current bytes and the exact recovered previous bytes are checked.
 EXTRA_ADDITIONS = (
@@ -187,7 +206,11 @@ def require(condition: bool, message: str) -> None:
 
 def check_input_bytes(fuel: bytes, avanti: bytes, extra: bytes, stik: bytes) -> None:
     require(sha(fuel) in {FUEL_LF, FUEL_CRLF}, "candidate fuel registry is not a pinned identity")
-    require(sha(avanti) in {AVANTI_OLD, AVANTI_CURRENT}, "candidate Avanti is not a pinned identity")
+    avanti_sha = sha(avanti)
+    require(avanti_sha in {AVANTI_OLD, AVANTI_PRIOR, AVANTI_CURRENT}, "candidate Avanti is not a pinned identity")
+    if avanti_sha == AVANTI_CURRENT:
+        previous_avanti = replace_once(avanti, AVANTI_CMQ_CURRENT, AVANTI_CMQ_PRIOR, "candidate Avanti Cmq")
+        require(sha(previous_avanti) == AVANTI_PRIOR, "candidate Avanti evolution differs from the pinned prior data")
     require(sha(extra) == EXTRA_CURRENT, "candidate Extra is not the pinned identity")
     previous = extra
     for block in EXTRA_ADDITIONS:

@@ -143,7 +143,7 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 | Cldr | 0.03904 | derived |
 | Cm0 | -0 | derived |
 | Cma | -0.85079 | derived |
-| Cmq | -7.7511 | derived |
+| Cmq | -8.1659 | derived |
 | Cmde | -0.9546 | derived |
 | Cmda_each | -0.14906 | derived |
 | Cnb | 0.20234 | derived |
@@ -186,7 +186,18 @@ The same normal yaw command feeds nosewheel steering. See `docs/research/avanti-
 The lateral build-up obtains Cnp/Cnr about CG (0.007615, -0.139429). AV-17-R3 writes their ARP values
 (0.009509, -0.144102) by subtracting CYp/CYr times the ARP's forward CG arm / span, so the runtime's
 ARP-to-CG force-moment transfer applies exactly once. Static yaw stability, the fin, and its local flow law are unchanged.
-Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
+AV-17-R4 likewise converts the pitch build-up about the authored inventory CG (-7.751139) to
+the stored ARP value (-8.165939): `Cmq_ARP = Cmq_O - CLq*(x_O-x_ARP)/c`, with
+`CLq=6.059633`, `x_O=0.230367352 m`, `x_ARP=0.206330932 m` and `c=0.351137500 m`.
+All stored Cm derivatives are ARP moments. At zero alpha/beta and fixed datum air state,
+the runtime's lift-rate force transfer recovers Cmq_O once. The finite-fuel adapter then transfers
+the complete wrench from O to live CG; this coefficient is not recomputed to hold live-CG damping constant.
+At nonzero alpha the wind-to-body force rotation also enters the transfer. Local surface damping remains
+an independent geometric prediction, not a second use of the stored Cmq. This corrects a reference
+convention, not the estimated damping's physical identification.
+Pitch-reference evidence: `docs/research/avanti-realism/AV-17-R4/README.md`.
+Earlier keyboard and yaw evidence: `docs/research/avanti-realism/AV-17-R1/README.md` and
+`docs/research/avanti-realism/AV-17-R3/README.md`.
 
 ## Turbine at sea level
 

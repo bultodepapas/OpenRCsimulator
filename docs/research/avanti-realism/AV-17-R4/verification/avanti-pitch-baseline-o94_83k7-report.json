@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ecdac214-4334-4b1d-8e31-1337d10f5996",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/derivative-checks/test_avanti_pitch_reference_draft.gd",
+    "--",
+    "--aircraft=C:/DEVELOPMENT/OpenRCsimulator/tmp/avanti-pitch-20261110/baseline-aircraft.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-11-10T23:06:50.373495+00:00",
+  "label": "avanti-pitch-baseline",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\derivative-checks\\avanti-pitch-baseline-o94_83k7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\avanti-pitch-20261110\\derivative-checks\\avanti-pitch-baseline-o94_83k7\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 5.75,
+  "log_bytes": 2150,
+  "log_sha256": "b884e9346bfefb78216c85b14aed772265de971eeb9fffbb10f49de69e16c600"
+}

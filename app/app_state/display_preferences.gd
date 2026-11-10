@@ -30,6 +30,8 @@ const RECONSTRUCTION_MODES: Array[String] = [
 ]
 # VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
 const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"]
+# L15c-F07: mirrors render/flag_quality.gd PREFERENCES.
+const FLAG_ANIMATIONS: Array[String] = ["auto", "static", "basic", "detailed"]
 # SC-BIRD (birds-sky-life plan D2): mirrors scenery/birds/bird_director.gd PREFERENCES (test_birds.gd keeps them equal).
 const BIRD_LEVELS: Array[String] = ["off", "few", "normal", "many"]
 const LIGHTING_QUALITY_LEVELS: Array[String] = ["low", "standard", "high"]
@@ -47,6 +49,7 @@ const DEFAULTS := {
 	"nvidia_reflex": "on",
 	"fsr2_sharpness": 0.9,
 	"scene_detail": "auto",
+	"flag_animation": "auto",
 	"birds": "normal",
 	"runway_meadow": "on",
 	"rc_track": "auto",
@@ -77,7 +80,7 @@ const DEFAULTS := {
 	"camera_invert_y": CameraSettings.DEFAULTS.camera_invert_y,
 }
 const OPTIONAL_KEYS: Array[String] = [
-	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds", "runway_meadow", "rc_track", "reconstruction",
+	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail", "flag_animation", "birds", "runway_meadow", "rc_track", "reconstruction",
 	"camera_view", "camera_fov", "camera_auto_zoom", "camera_chase_distance", "camera_sensitivity", "camera_invert_y",
 	"fsr2_sharpness", "nvidia_reflex",
 	"camera_zoom_law", "camera_horizon_bias", "camera_overhead_smoothing", "camera_magnifier",
@@ -171,6 +174,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.nvidia_reflex = cfg.get_value("graphics", "nvidia_reflex", DEFAULTS.nvidia_reflex)
 	raw.fsr2_sharpness = cfg.get_value("graphics", "fsr2_sharpness", DEFAULTS.fsr2_sharpness)
 	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
+	raw.flag_animation = cfg.get_value("graphics", "flag_animation", DEFAULTS.flag_animation)
 	raw.birds = cfg.get_value("graphics", "birds", DEFAULTS.birds)
 	raw.runway_meadow = cfg.get_value("graphics", "runway_meadow", DEFAULTS.runway_meadow)
 	raw.rc_track = cfg.get_value("graphics", "rc_track", DEFAULTS.rc_track)
@@ -241,6 +245,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("graphics", "nvidia_reflex", checked.config.nvidia_reflex)
 	cfg.set_value("graphics", "fsr2_sharpness", checked.config.fsr2_sharpness)
 	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
+	cfg.set_value("graphics", "flag_animation", checked.config.flag_animation)
 	cfg.set_value("graphics", "birds", checked.config.birds)
 	cfg.set_value("graphics", "runway_meadow", checked.config.runway_meadow)
 	cfg.set_value("graphics", "rc_track", checked.config.rc_track)
@@ -292,6 +297,9 @@ static func validate(raw: Variant) -> Dictionary:
 		errors.append("fsr2_sharpness must be finite and between 0 and 1")
 	if typeof(scene_detail) != TYPE_STRING or scene_detail not in SCENE_DETAILS:
 		errors.append("scene_detail must be auto, low, medium, high or extreme")
+	var flag_animation: Variant = raw.get("flag_animation", DEFAULTS.flag_animation)
+	if typeof(flag_animation) != TYPE_STRING or flag_animation not in FLAG_ANIMATIONS:
+		errors.append("flag_animation must be auto, static, basic or detailed")
 	var birds: Variant = raw.get("birds", DEFAULTS.birds)
 	if typeof(birds) != TYPE_STRING or birds not in BIRD_LEVELS:
 		errors.append("birds must be off, few, normal or many")
@@ -333,6 +341,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"nvidia_reflex": reflex,
 		"fsr2_sharpness": float(sharpness),
 		"scene_detail": scene_detail,
+		"flag_animation": flag_animation,
 		"birds": birds,
 		"runway_meadow": runway_meadow,
 		"rc_track": rc_track,

@@ -1,0 +1,25 @@
+Godot Engine v4.8.beta2.official.cafc17a19 - https://godotengine.org
+
+ok   Avanti aircraft loads []
+ok   tail carries the free-slope basis 
+ok   global ARP-to-reference-CG identity at 0 degrees measured=-7.751139876 transferred=-7.751139876
+ok   reference-CG damping equals independent tail-volume build-up measured=-7.751139876 target=-7.751168970
+ok   local/global comparison is finite at 0 degrees local=-7.233907292 global=-7.751139876
+ok   global ARP-to-reference-CG identity at 4 degrees measured=-7.745854376 transferred=-7.745854376
+ok   local/global comparison is finite at 4 degrees local=-7.276397078 global=-7.745854376
+ok   global ARP-to-reference-CG identity at 8 degrees measured=-7.742615487 transferred=-7.742615487
+ok   local/global comparison is finite at 8 degrees local=-7.357036997 global=-7.742615487
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   finite-liquid Avanti session prepares 
+ok   session probe is in the attached global regime 
+ok   finite-liquid stage evaluates at 100% usable fuel 
+ok   live-CG shift transfers the stage force once at 100% fuel live=-7.750606682 fixed=-7.619584352 shift=-0.131022330
+ok   live stage retains the independent pitch build-up at 100% fuel live=-7.750606682 target+other+shift=-7.750635776 other=0.131555524
+ok   finite-liquid stage evaluates at 50% usable fuel 
+ok   live-CG shift transfers the stage force once at 50% fuel live=-7.620495398 fixed=-7.619584352 shift=-0.000911045
+ok   live stage retains the independent pitch build-up at 50% fuel live=-7.620495398 target+other+shift=-7.620524491 other=0.131555524
+ok   finite-liquid stage evaluates at 0% usable fuel 
+ok   live-CG shift transfers the stage force once at 0% fuel live=-7.457385835 fixed=-7.619584352 shift=0.162198517
+ok   live stage retains the independent pitch build-up at 0% fuel live=-7.457385835 target+other+shift=-7.457414929 other=0.131555524
+ok   fuel shift changes pitch derivative with fixed-datum air state full=-7.882162206 empty=-7.588941359
+AV-17-R4 pitch reference: 21 checks, 0 failed

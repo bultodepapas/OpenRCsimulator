@@ -135,13 +135,13 @@ func _local_visual_cue() -> void:
 		observations.append([point.duplicate(), time_s])
 		return PackedFloat64Array([point[0] * 0.1, point[1] * 0.1, point[2] * 0.1])
 	field.set_meta("wind_world_sampler", sampler)
-	var actual := FieldBuilder._cue_wind(field, cue, 3.5, [99.0, 99.0, 99.0])
+	var actual := FieldBuilder._cue_wind(cue, 3.5, [99.0, 99.0, 99.0], field.get_meta("wind_world_sampler"), {})
 	_check("cue samples its own fixed pole head in NED", observations.size() == 1 and observations[0][0] == PackedFloat64Array([24.0, 13.0, -7.0]) and observations[0][1] == 3.5)
 	_check("cue receives its local wind instead of aircraft fallback", actual == [2.4, 1.3, -0.7] or (absf(actual[0] - 2.4) < 1e-14 and absf(actual[1] - 1.3) < 1e-14 and absf(actual[2] + 0.7) < 1e-14))
 	field.set_meta("wind_world_sampler", func(_p: PackedFloat64Array, _t: float) -> PackedFloat64Array: return PackedFloat64Array([NAN, 0.0, 0.0]))
-	_check("invalid local wind does not become calm or aircraft wind", FieldBuilder._cue_wind(field, cue, 3.5, [99.0, 99.0, 99.0]).is_empty())
+	_check("invalid local wind does not become calm or aircraft wind", FieldBuilder._cue_wind(cue, 3.5, [99.0, 99.0, 99.0], field.get_meta("wind_world_sampler"), {}).is_empty())
 	field.set_meta("wind_world_sampler", Callable())
-	_check("legacy visual route retains exact uniform fallback", FieldBuilder._cue_wind(field, cue, 3.5, [1.25, -3.5, 0.0]) == [1.25, -3.5, 0.0])
+	_check("legacy visual route retains exact uniform fallback", FieldBuilder._cue_wind(cue, 3.5, [1.25, -3.5, 0.0], Callable(), {}) == [1.25, -3.5, 0.0])
 	field.free()
 
 

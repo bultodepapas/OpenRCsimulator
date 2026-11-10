@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "433f4a6e-abdb-4c5a-9a98-788c220148dc",
+  "command": [
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.8-beta2_linux.x86_64",
+    "--headless",
+    "--path",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/app",
+    "--script",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/native-kernel/liquid_stage_oracle.gd",
+    "--",
+    "--extension=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/native-kernel/openrc_native_kernel.gdextension",
+    "--output=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/native-kernel/liquid-stage-20261110T230814768051Z.json",
+    "--seed=20261027",
+    "--states=500",
+    "--variant-states=1500",
+    "--timing-rounds=15",
+    "--ticks=64"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "started_utc": "2026-11-10T23:08:15.001517+00:00",
+  "label": "nk3-liquid-stage",
+  "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/native-kernel/checks/liquid-stage-iroyw9pg/nk3-liquid-stage-nwray_5u/engine.log",
+  "report": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/native-kernel/checks/liquid-stage-iroyw9pg/nk3-liquid-stage-nwray_5u/report.json",
+  "timeout_seconds": 1800.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "NK3_ORACLE verdict=pass"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 67.408663,
+  "log_bytes": 1927,
+  "log_sha256": "ec3ee0b270d4ee46419a5f8ea67344634bfecba6d8148434bd8fa35f35c830c9"
+}

@@ -1,0 +1,34 @@
+{
+	"cases": 386,
+	"checks": 8,
+	"engine": {
+		"build": "official",
+		"hash": "cafc17a192acf67903910a68aeb3c076c0907a4b",
+		"hex": 264192,
+		"major": 4,
+		"minor": 8,
+		"patch": 0,
+		"status": "beta2",
+		"string": "4.8-beta2 (official)",
+		"timestamp": 0
+	},
+	"failures": 0,
+	"hz": 480,
+	"max_case_ticks": 2400,
+	"max_energy_closure_error_j": 1.2542085940481229e-05,
+	"max_final_rim_acceleration_mps2": 0.0010739874488513866,
+	"max_formula_error": 8.881784197001252e-15,
+	"max_positive_power_w": 0.0,
+	"maximum_ticks": 2400,
+	"minimum_ticks": 480,
+	"profile": {
+		"inertia_kg_m2": 5.5552e-05,
+		"name": "main_left",
+		"radius_m": 0.04338,
+		"relaxation_s": 0.03,
+		"stock_capacity_nm": 1.0,
+		"stock_crr": 0.03,
+		"stock_mu": 0.8
+	},
+	"unsettled_cases": 1
+}

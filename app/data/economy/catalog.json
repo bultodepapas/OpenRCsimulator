@@ -4,7 +4,7 @@
   "price_date": "2026-10-25",
   "generated_from": {
     "price_catalog_sha256": "a4b6017efc68b5840d68a4701783f5b8b511d4d85aeb8304104a1dd416c06dea",
-    "aircraft_costing_sha256": "69d6be85f8879088cc56f33af846648d694ee8efca7b8f94bf7c6b0fe345dcfb",
+    "aircraft_costing_sha256": "9ede5ad5d28288a088f698f21e3310a04f26fe0d55b044c5925cd81fb556ea5f",
     "aircraft_catalog_sha256": "327b292ed158eb80a5efdefe7245b32fdda53dfc22a306b62a16786e42b79cf2",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "c8b34bac1aabf0ce74a9c696e8bb65c888b39021f50e350b01c67dd46a4a9708"
@@ -8072,7 +8072,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
-      "source_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
+      "source_sha256": "77674df18312f6235352a28a797c497013ef18451a41eb0141e3f16dffd220b9",
       "currency": "USD",
       "price_date": "2026-10-25",
       "valuation_kind": "independent_partial_inventory_costing",

@@ -5,7 +5,7 @@ extends "res://render/projected_shadow.gd"
 const SockMask = preload("res://render/windsock_shadow_mask.gdshader")
 const Clock = preload("res://render/shader_clock.gd")
 const DIMENSION_UNIFORMS := ["length_m", "throat_diameter_m", "tail_diameter_m", "basket_height_m", "arm_m"]
-const POSE_UNIFORMS := ["centerline_points", "basket_yaw_rad", "inflation"]
+const POSE_UNIFORMS := ["centerline_points", "basket_yaw_rad", "inflation", "cue_clock"]
 const PROJECTION_UNIFORMS := ["aircraft_basis", "light_direction", "frame_center", "frame_size"]
 ## Below this inflation, flutter is micrometre-scale (1 µm on the default sleeve).
 const FLUTTER_INFLATION_EPSILON: float = 0.0001
@@ -57,7 +57,10 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 			signature.append(_fabric_material.get_shader_parameter(parameter))
 		# Exponential deflation approaches zero asymptotically. Do not keep drawing
 		# invisible flutter or subpixel settling after the wind has calmed.
-		signature.append(Clock.last_clock if float(signature[2]) > FLUTTER_INFLATION_EPSILON else 0.0)
+		var clock_s: float = float(signature[3])
+		if clock_s < 0.0:
+			clock_s = Clock.last_clock
+		signature.append(clock_s if float(signature[2]) > FLUTTER_INFLATION_EPSILON else 0.0)
 		var current_bounds: AABB = source.get_meta("visual_bounds", bounds)
 		if not _same_pose(signature, current_bounds):
 			for material: ShaderMaterial in _moving_materials:
@@ -75,11 +78,12 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 
 
 func _same_pose(signature: Array, current_bounds: AABB) -> bool:
-	if _pose_signature.size() != 4 or not current_bounds.is_equal_approx(bounds):
+	if _pose_signature.size() != POSE_UNIFORMS.size() + 1 or not current_bounds.is_equal_approx(bounds):
 		return false
 	if not is_equal_approx(float(signature[1]), float(_pose_signature[1])) \
 			or not is_equal_approx(float(signature[2]), float(_pose_signature[2])) \
-			or signature[3] != _pose_signature[3]:
+			or (float(signature[3]) < 0.0) != (float(_pose_signature[3]) < 0.0) \
+			or signature[4] != _pose_signature[4]:
 		return false
 	var points: PackedVector3Array = signature[0]
 	var previous: PackedVector3Array = _pose_signature[0]

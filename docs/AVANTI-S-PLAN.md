@@ -1,6 +1,6 @@
 # Vantage Jet: current scope and remaining work
 
-Checked 2026-10-19 · Aircraft/model owner · Prefix **AV-00…31** and repair steps AV-17-R1/R2/R3. Code, accepted configuration and generated data define implemented behavior. Implementation, passing software checks and physical validation are separate claims.
+Checked 2026-11-10 · Aircraft/model owner · Prefix **AV-00…31** and repair steps AV-17-R1/R2/R3/R4. Code, accepted configuration and generated data define implemented behavior. Implementation, passing software checks and physical validation are separate claims.
 
 ## 1. Identity and scope
 
@@ -44,11 +44,12 @@ Delivered foundations are recorded in the linked evidence, not an instruction to
 | AV-04 | Rig implemented | [AV-31](research/avanti-blender/AV-31/README.md) records rest/sign/pose checks. Installed servo response, loaded clearance and physical travel remain unmeasured. |
 | AV-07/16 | Flight/probe infrastructure implemented; current verification pending | Dated trim/envelope/lifecycle evidence exists. Recheck the real current session, refinement and replay; resolve native handling/recording failures before claiming a green current suite. Pilot evaluation remains open. |
 | AV-08 | Finish/audio integrated | Acoustic identification for the installed P100 and independent visual/pilot reading remain open. |
-| AV-09 / AV-09-F | Gear and flaps implemented | [Gear](research/avanti-gear/AV-09/README.md) and [flap](research/avanti-flaps/AV-09/README.md) evidence covers software integration. Current gear trace/ground checks have failures; physical contact/flap identification and matched approach/landing/braking acceptance remain pending. |
+| AV-09 / AV-09-F | Gear and flaps implemented | [Gear](research/avanti-gear/AV-09/README.md) and [flap](research/avanti-flaps/AV-09/README.md) evidence covers software integration. The 2026-10-19 recheck recorded gear trace/ground failures; the November brake characterization does not requalify that whole suite. Physical contact/flap identification and matched approach/landing/braking acceptance remain pending. |
 | AV-11 | Physical validation pending | Matched-build metrology, bench/flight observations and uncertainty-qualified comparisons. No simulator-only trace closes this gate. |
 | AV-12 / AV-17 integration gate | Partial delivery evidence | AV-31 has isolated Windows package/capture proof. Current full-suite, target-machine performance and cross-platform release qualification remain open; coordinate AV-30. |
 | AV-13 | Future extensions | Scope additional ground/propulsion behavior explicitly; existing retracts, brakes, runway starts and flaps are already implemented. |
 | AV-17-R1/R2/R3 | Implemented repairs | [Keyboard](research/avanti-realism/AV-17-R1/README.md), [polar/gamepad](research/avanti-realism/AV-17-R2/README.md), [yaw](research/avanti-realism/AV-17-R3/README.md) retain dated proof. Pilot acceptance and aircraft-specific identification remain open. |
+| AV-17-R4 | Pitch datum corrected | [Reference-point correction and accepted-command evidence](research/avanti-realism/AV-17-R4/README.md). The generator converts CG-referenced Cmq to the stored ARP convention; runtime fuel transfer remains unchanged. Local/global consistency and physical identification are separate gates. |
 | AV-31 | Imported model integrated | Build/binding/section checks and local package evidence exist; physical installation calibration and target cost remain separate. |
 
 AV-05b, AV-10a/b/c and AV-18…30 have one detailed register in the turbine plan. Finite-fuel runtime is already present; ECU/thermal/pump work remains planned. Do not reset completed implementation to “future” merely because physical acceptance is open.
@@ -60,3 +61,26 @@ The physical wing/tail/installation still use an estimated surrogate. The neutra
 The [AV-14…17 record](research/avanti-realism/README.md) retains original audits, independent arithmetic, refinement bands, loop diagnostics and baseline suite failures. It predates continuous turbine integration, gear/flaps and finite fuel. A body-pitch integral is not proof of a planar loop; model speed/polar predictions are not an identified flight or structural envelope.
 
 Aircraft acceptance requires a fixed hardware/engine/ECU/fuel configuration, measured mass/CG/inertia, identified forces/response and held-out flight observations. Keep source/run identities, input tapes, complete traces and uncertainty verdicts. Software regression, target cost, rendered readability and owner radio/pilot acceptance each need their own evidence.
+
+## 5. November review implementation sequence
+
+The [retained external review](research/avanti-realism/review-2026-11-10.md) describes snapshot
+`313bb24e`; its R0–R12 labels are cross-references, not new repository track IDs.
+Implementation started from `3699b237`. Current code and the evidence below supersede
+the review's implementation assumptions. Keep each behavioral correction independently attributable.
+
+| Review package | Owner / current disposition |
+| --- | --- |
+| R0 baseline | AV-07/16: reference accepted-command pulse and loop-entry tapes, exact replay and pinned data/solver retained under AV-17-R4. Normal UI/device path and target-machine baseline remain open. |
+| R1 pitch reference | AV-17-R4: generator correction and software checks implemented, including native parity and same-tape comparison. Full handling/energy and lateral-effect interpretation remains open; see its evidence. |
+| R2 brake diagnosis | AV-09 + GP: [active-wheel characterization](research/avanti-gear/AV-09/brake-audit-2026-11-10/README.md). This does not calibrate stopping distance or promote the GP-12 candidate law. |
+| R3 ground correction | GP + AV-09: pending the R2 branch/rollout evidence and an identified torque/traction target; preserve rest, release, steering, touchdown, refinement and native gates. |
+| R4 control ownership | Input + AV/session: pending explicit simulator/transmitter flap-mix ownership, profile migration and surface-chain diagnostics. Preserve existing profile behavior. |
+| R5 lateral consistency | AV + physics/native: next aerodynamic investigation; map residual body terms and global/local derivatives before selecting one correction. |
+| R6 spatial ailerons | Shared aero + AV geometry: after R5, identify coverage and preserve initial aggregate authority; validate strip loading and flap interaction. |
+| R7 physical sheet | AV-01/11: existing AV-06 inputs/derivation remain the estimate ledger; matched A200 mass, geometry, fuel arms, inertia and installation measurements are still needed. |
+| R8 propulsion/energy | AV-18…30 + AV-11: await matched installation measurements and held-out level/glide/acceleration/dive comparisons. |
+| R9 flap/stall | AV-09-F + AV-11: follows controls, spatial model and metrology; retain independent first-load-loss and approach/recovery evidence. |
+| R10 engineering debrief | FL + UI-FS: pending defined maneuver/energy metrics with sample timing and configuration labels; reuse the existing recorder/debrief. |
+| R11 optimization | Performance/native/UI owners: profile the full 1080p path before changing algorithms; current headless tests make no performance claim. |
+| R12 acceptance | AV-11/12 + release/pilots: independent physical identification, pilot comparison and target-machine package gates remain open. |

@@ -1,0 +1,31 @@
+{
+  "format": "openrc-recorded-command-results-v1",
+  "date": "2026-11-10",
+  "scope": "Lead-observed stdout/exit results; not checked-Godot receipts",
+  "commands": [
+    {
+      "command": "python research/avanti-s/av14/test_geometry_inventory.py",
+      "exit_code": 0,
+      "tests": 6,
+      "result": "OK"
+    },
+    {
+      "command": "python research/avanti-s/av14/test_sensitivity.py",
+      "exit_code": 0,
+      "tests": 6,
+      "result": "OK"
+    },
+    {
+      "command": "python research/avanti-s/av06/derive_physics.py --check",
+      "exit_code": 0,
+      "result": "sebart_avanti_s_a200.json and derivation.md are up to date"
+    },
+    {
+      "command": "python tmp/avanti-pitch-20261110/fresh-clone/research/avanti-s/av06/derive_physics.py --check",
+      "exit_code": 0,
+      "result": "sebart_avanti_s_a200.json and derivation.md are up to date",
+      "clone_base": "3699b237a417413f3942736bbfa2bb229a2d6125",
+      "method": "git clone --shared --no-checkout, sparse source checkout; overlay candidate generator, derivation.md and generated aircraft JSON only"
+    }
+  ]
+}

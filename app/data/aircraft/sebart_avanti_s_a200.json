@@ -1708,10 +1708,10 @@
         "source": "research/avanti-s/av06/derive_physics.py: tail about the wing-body ac (Munk-Multhopp fuselage); the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -7.751139,
+        "value": -8.165939,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/avanti-s/av06/derive_physics.py: tail damping about the CG x1.1 for wing/fuselage"
+        "source": "research/avanti-s/av06/derive_physics.py: tail damping about authored inventory CG x1.1 for wing/fuselage, minus CLq*(x_CG-x_ARP)/c for the ARP moment contract; AV-17-R4"
       },
       "Cmde": {
         "value": -0.954598,

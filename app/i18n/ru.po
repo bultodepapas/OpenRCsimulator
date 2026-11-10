@@ -10211,3 +10211,18 @@ msgstr "Радиоуправляемый дирижабль (экспериме�
 
 msgid "Fly RC blimp"
 msgstr "Управлять дирижаблем"
+
+msgid "Flag animation"
+msgstr "Анимация флага"
+
+msgid "Static"
+msgstr "Статичная"
+
+msgid "Basic"
+msgstr "Базовая"
+
+msgid "Detailed"
+msgstr "Подробная"
+
+msgid "Automatic follows Scene detail. Changes apply immediately."
+msgstr "Автоматический режим следует уровню детализации сцены. Изменения применяются сразу."

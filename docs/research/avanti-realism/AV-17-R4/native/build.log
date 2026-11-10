@@ -1,0 +1,8 @@
+scons: Entering directory `/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/native-kernel/build/linux-x86_64-template_release'
+scons: Reading SConscript files ...
+Building for architecture x86_64 on platform linux
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/native-kernel/godot-cpp/bin/libgodot-cpp.linux.template_release.x86_64.a' is up to date.
+scons: `lib/libopenrc_native_kernel.so' is up to date.
+scons: done building targets.

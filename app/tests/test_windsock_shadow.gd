@@ -119,16 +119,71 @@ func _test_dynamic_shadow() -> void:
 		projector.get("bounds") == sock.get_meta("visual_bounds")
 		and viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
 
-	# The shader flutter follows the shared simulation clock while inflated, so every
-	# new shared frame invalidates the moving silhouette even when wind is held.
+	# An accepted observation advances the cue's own clock, even when wind is held.
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	Windsock.update(sock, 2.1, wind_ned)
 	ShaderClock.update(2.1, render_wind)
 	projector.call("_process", 0.0)
-	_check("advancing the shared clock invalidates an inflated windsock mask", viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
+	_check("advancing the accepted cue clock invalidates an inflated windsock mask",
+		viewport.render_target_update_mode == SubViewport.UPDATE_ONCE
+		and is_equal_approx(float(model_material.get_shader_parameter("cue_clock")), 2.1)
+		and is_equal_approx(float(fabric_shadow_material.get_shader_parameter("cue_clock")), 2.1))
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	var redraws := int(projector.get("redraw_count"))
+	ShaderClock.update(2.4, render_wind)
+	projector.call("_process", 0.0)
+	projector.call("_process", 0.0)
+	_check("a frozen cue clock ignores global time and repeated paused frames",
+		viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+		and int(projector.get("redraw_count")) == redraws)
+
+	# Change only the uniform, not the shape, so this isolates the cache key.
+	model_material.set_shader_parameter("cue_clock", 2.5)
+	projector.call("_process", 0.0)
+	_check("an explicit cue clock change alone redraws the inflated mask once",
+		viewport.render_target_update_mode == SubViewport.UPDATE_ONCE
+		and int(projector.get("redraw_count")) == redraws + 1
+		and is_equal_approx(float(fabric_shadow_material.get_shader_parameter("cue_clock")), 2.5))
+	ShaderClock.update(2.5, render_wind)
 	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	projector.call("_process", 0.0)
-	_check("paused repeated clock and pose do not invalidate the mask", viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	model_material.set_shader_parameter("cue_clock", -1.0)
+	projector.call("_process", 0.0)
+	_check("switching to the legacy global clock synchronizes the proxy even at equal times",
+		float(fabric_shadow_material.get_shader_parameter("cue_clock")) < 0.0)
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	redraws = int(projector.get("redraw_count"))
+	ShaderClock.update(2.6, render_wind)
+	projector.call("_process", 0.0)
+	_check("legacy global clock changes redraw an inflated mask once",
+		viewport.render_target_update_mode == SubViewport.UPDATE_ONCE
+		and int(projector.get("redraw_count")) == redraws + 1)
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	redraws = int(projector.get("redraw_count"))
+	projector.call("_process", 0.0)
+	projector.call("_process", 0.0)
+	_check("legacy clock and pose held constant do not request repeated redraws",
+		viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+		and int(projector.get("redraw_count")) == redraws)
+
+	# Equal effective times must still copy the source mode. Otherwise a later
+	# projection redraw would use the global clock for a now-frozen visible cue.
+	model_material.set_shader_parameter("cue_clock", 2.6)
+	projector.call("_process", 0.0)
+	_check("switching from legacy to an equal explicit clock synchronizes the proxy",
+		is_equal_approx(float(fabric_shadow_material.get_shader_parameter("cue_clock")), 2.6))
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	redraws = int(projector.get("redraw_count"))
+	ShaderClock.update(2.7, render_wind)
+	projector.call("_process", 0.0)
+	_check("global time cannot invalidate the restored frozen cue clock",
+		viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+		and int(projector.get("redraw_count")) == redraws)
+	var request: Array = projector.get("_last_request")
+	projector.call("refresh", request[0], Vector3(-0.7, 1.0, 0.2).normalized(), request[2], true)
+	_check("a later projection redraw retains the visible cue's explicit clock",
+		viewport.render_target_update_mode == SubViewport.UPDATE_ONCE
+		and is_equal_approx(float(fabric_shadow_material.get_shader_parameter("cue_clock")), 2.6))
 
 	Windsock.reset(sock, 0.0, [0.0, 0.0, 0.0])
 	ShaderClock.update(0.0, Vector3.ZERO)

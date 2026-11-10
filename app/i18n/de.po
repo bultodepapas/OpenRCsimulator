@@ -10354,3 +10354,18 @@ msgstr "RC-Luftschiff (experimentell)"
 
 msgid "Fly RC blimp"
 msgstr "RC-Luftschiff fliegen"
+
+msgid "Flag animation"
+msgstr "Flaggenanimation"
+
+msgid "Static"
+msgstr "Statisch"
+
+msgid "Basic"
+msgstr "Einfach"
+
+msgid "Detailed"
+msgstr "Detailliert"
+
+msgid "Automatic follows Scene detail. Changes apply immediately."
+msgstr "Automatisch folgt dem Szenendetail. Änderungen werden sofort angewendet."
