@@ -142,3 +142,14 @@ atlases on Extra, P-51 and Timber. Timber retained its custom paint in a short
 flight and returned to stock paint afterward. Both owned rendered sessions ended
 with no engine error records, crashes or leaked objects. Export-plugin parsing
 passed; an exported application was not produced or qualified by these checks.
+
+Release repair on Windows, 2026-11-09 (`755eb8813`): the checked fleet passed 628
+assertions, packaged source proofs passed 339, and an isolated host loaded the
+final PCK with 54 paint/resource assertions. Blender 5.2.2 reopened and exported
+the regenerated electric and Extra starters; decompressed archive scans found no
+local paths. Both exported paints were inspected in Home and the flight route at
+1920×1080 using GL Compatibility on an RTX 3090, including moving controls.
+The owned session stopped with no reported crash, leaked objects or error-level
+records; hitches and experimental-aircraft warnings remain recorded. Evidence is
+outside Git under `D:/OpenRCsimulator-evidence/release-skins/`. This does not
+qualify a distributable executable, sustained performance or physical behavior.
