@@ -178,6 +178,8 @@ var _navigation_in_scroll := false
 var _primary_actions: VBoxContainer
 var _launch_notices: VBoxContainer
 var _scroll_focus_mode: Control.FocusMode
+var _last_gui_focus: Control
+var _notice_scroll_from_action := false
 var _conditions_row: GridContainer
 var _nav_buttons: Array[Button] = []
 var _catalog_buttons: Array[Button] = []
@@ -897,6 +899,8 @@ func _update_details_disclosure() -> void:
 
 
 func _ready() -> void:
+	_last_gui_focus = get_viewport().gui_get_focus_owner()
+	get_viewport().gui_focus_changed.connect(_on_gui_focus_changed)
 	_apply_responsive_layout()
 	_select_page(0)
 	var page_first_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button, ground_vehicle_choice]
@@ -1194,9 +1198,21 @@ func _update_notice_focus_links() -> void:
 		action.focus_neighbor_top = action.get_path_to(_scroll)
 		_scroll.focus_neighbor_top = _scroll.get_path_to(previous)
 		_scroll.focus_neighbor_bottom = _scroll.get_path_to(action)
-		_scroll.focus_next = _scroll.get_path_to(action)
+		_scroll.focus_next = _scroll.get_path_to(action) if _scroll.has_focus() and _notice_scroll_from_action else NodePath()
 	else:
 		action.focus_neighbor_top = action.get_path_to(previous)
+		_scroll.focus_next = NodePath()
+		_notice_scroll_from_action = false
+
+
+func _on_gui_focus_changed(focused: Control) -> void:
+	if focused == _scroll and _launch_notices.get_parent() == _page_host:
+		# Up from the pinned action enters the notices: Tab returns to that action. When Tab enters
+		# from elsewhere, let Godot continue through the scroller's page controls instead of skipping them.
+		var action := _scroll.get_node_or_null(_scroll.focus_neighbor_bottom) as Control
+		_notice_scroll_from_action = action != null and _last_gui_focus == action
+		_scroll.focus_next = _scroll.get_path_to(action) if _notice_scroll_from_action else NodePath()
+	_last_gui_focus = focused
 
 
 func _on_notice_scroll_focus() -> void:

@@ -266,6 +266,8 @@ func _run() -> void:
 	await ui.tap(KEY_ESCAPE)
 	await ui.tap(KEY_DOWN) # Restart
 	await ui.tap(KEY_DOWN) # Session options
+	await ui.tap(KEY_DOWN) # Review active alerts
+	_check("active alerts is keyboard reachable", ui.focus_name() == "ActiveAlerts", ui.focus_name())
 	await ui.tap(KEY_DOWN) # Settings
 	await ui.tap(KEY_DOWN) # Help
 	await ui.tap(KEY_DOWN) # Change aircraft (UI-34a)

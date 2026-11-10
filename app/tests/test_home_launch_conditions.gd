@@ -194,8 +194,81 @@ func check_scroll_notice(scroll: ScrollContainer, control: Control, case: String
 			and (control as Label).get_visible_line_count() == (control as Label).get_line_count())))
 	scroll.scroll_vertical = 0
 
+func check_tab_cycle(h: Control, ui: RefCounted, page: int, notice: bool, blocked: bool, reverse: bool) -> void:
+	h._select_page(page)
+	h.set_aircraft("xcell-60-research" if blocked else Catalog.DEFAULT_ID)
+	h.set_weather_config(Weather.spatial_defaults() if blocked else Weather.defaults())
+	h.set_note("Settings from a newer version are read-only." if notice else "")
+	await frames(8)
+	root.gui_release_focus()
+	h.ensure_focus()
+	await frames(2)
+	var visited: Array[Control] = []
+	for _step in 100:
+		var focused := root.gui_get_focus_owner()
+		if focused == null or visited.has(focused):
+			break
+		visited.append(focused)
+		if reverse:
+			for pressed in [true, false]:
+				var event := InputEventKey.new()
+				event.keycode = KEY_TAB
+				event.physical_keycode = KEY_TAB
+				event.shift_pressed = true
+				event.pressed = pressed
+				Input.parse_input_event(event)
+			await ui.settle()
+		else:
+			await ui.tap(KEY_TAB)
+	var expected: Array[Control] = [h.language_button, h.settings_button, h.workshop_button,
+		h.controls_button, h.help_button, h.quit_button]
+	for button: Control in h._page_buttons:
+		expected.append(button)
+	match page:
+		0:
+			expected.append_array([h.previous_button, h.next_button, h.start_button, h.landscape_button,
+				h.weather_button, h.time_button, h._details_button])
+		1:
+			expected.append_array([h._catalog_buttons[0], h._catalog_buttons[-1]])
+		2:
+			expected.append_array([h.statistics_button, h.natural_random_button, h.failures_button, h.trim_practice_button])
+		3:
+			expected.append_array([h.ground_vehicle_choice, h.ground_vehicle_button])
+	if notice:
+		expected.append(h._scroll)
+	var missing := PackedStringArray()
+	for control: Control in expected:
+		if control.is_visible_in_tree() and control.focus_mode != Control.FOCUS_NONE and not (control is BaseButton and control.disabled) and not visited.has(control):
+			missing.append(control.name)
+	var names := PackedStringArray()
+	for control: Control in visited:
+		names.append(control.name)
+	var label := "%s/%.1f page %d notice=%s blocked=%s %s" % [str(root.size), UiTheme.text_scale, page, notice, blocked, "Shift-Tab" if reverse else "Tab"]
+	check("%s reaches visible controls (missing: %s; cycle: %s)" % [label, str(missing), " -> ".join(names)], missing.is_empty())
+	if blocked:
+		check("%s skips disabled Fly and reaches recovery" % label,
+			h.fly_button.disabled and not visited.has(h.fly_button) and visited.has(h.review_conditions_button))
+
+
 func run() -> void:
 	var ui = Driver.new(self)
+	TranslationServer.set_locale("en")
+	for layout: Array in [[Vector2i(1920, 1080), 1.0], [Vector2i(1280, 600), 1.0], [Vector2i(1920, 1080), 2.0]]:
+		root.size = layout[0]
+		UiTheme.text_scale = layout[1]
+		var focus_home = Home.new()
+		focus_home.theme = UiTheme.build()
+		root.add_child(focus_home)
+		await frames(8)
+		for page in range(4):
+			for notice in [false, true]:
+				await check_tab_cycle(focus_home, ui, page, notice, false, false)
+				await check_tab_cycle(focus_home, ui, page, notice, false, true)
+		await check_tab_cycle(focus_home, ui, 0, true, true, false)
+		await check_tab_cycle(focus_home, ui, 0, true, true, true)
+		focus_home.free()
+		await frames(1)
+	UiTheme.text_scale = 1.0
 	var malformed: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(FieldLoader.DEFAULT_PATH))
 	for index in 8:
 		malformed.surfaces.append({"id": "broken-%d" % index})
