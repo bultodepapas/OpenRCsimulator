@@ -315,15 +315,26 @@ static func _source_shrub_manifest(asset_id: String) -> Dictionary:
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
 	var result := {}
 	if data is Dictionary and data.get("format") == "openrc-vegetation-impostor v1" \
-			and data.get("derived_from_asset_id") == asset_id and data.get("atlas_size_px") == [1024, 256] \
-			and data.get("baked_azimuth_deg") == [0, 90, 180, 270]:
+			and data.get("derived_from_asset_id") == asset_id and _numbers_equal(data.get("atlas_size_px"), [1024, 256]) \
+			and _numbers_equal(data.get("baked_azimuth_deg"), [0, 90, 180, 270]):
 		var size: Variant = data.get("frame_world_size_m")
-		var height := float(data.get("source_height_m", 0.0))
-		if size is Array and size.size() == 2 and is_finite(height) and height > 0.0:
+		var height_value: Variant = data.get("source_height_m")
+		if size is Array and size.size() == 2 and typeof(height_value) in [TYPE_INT, TYPE_FLOAT] \
+				and typeof(size[0]) in [TYPE_INT, TYPE_FLOAT] and typeof(size[1]) in [TYPE_INT, TYPE_FLOAT]:
+			var height := float(height_value)
 			var side := float(size[0])
-			if is_finite(side) and side >= height and side > 0.0: result = data
+			if is_finite(height) and height > 0.0 and is_finite(side) and side >= height \
+					and side > 0.0 and float(size[1]) == side: result = data
 	_shrub_manifests[asset_id] = result
 	return result
+
+
+## JSON arrays contain floats; compare numeric values rather than typed Array identity.
+static func _numbers_equal(value: Variant, expected: Array) -> bool:
+	if not value is Array or value.size() != expected.size(): return false
+	for index in expected.size():
+		if typeof(value[index]) not in [TYPE_INT, TYPE_FLOAT] or float(value[index]) != float(expected[index]): return false
+	return true
 
 
 ## applicable() restricts builds to the immutable default world held in _defaults.

@@ -51,12 +51,62 @@ func _initialize() -> void:
 		image_sha256 = image_hash, decoded_bytes = picture.get_data().size(),
 		manifest_sha256 = FileAccess.get_sha256(MANIFEST), source_selected = selected,
 		legacy_selected = legacy_selected, original_png_present = FileAccess.file_exists(ATLAS)}
+	if args.has("require-shrubs"):
+		var shrubs := _check_shrubs(builder, args)
+		if shrubs.is_empty(): return
+		report["shrubs"] = shrubs
 	var file := FileAccess.open(str(args.out), FileAccess.WRITE)
 	if file == null: return _fail("could not write output")
 	file.store_string(JSON.stringify(report, "\t") + "\n")
 	file.close()
 	print("FERN PACK VERIFIED: ", image_hash)
 	quit(0)
+
+
+func _check_shrubs(builder: Script, args: Dictionary) -> Dictionary:
+	var had_override := OS.has_environment("OPENRC_WOODLAND_SHRUBS")
+	var previous := OS.get_environment("OPENRC_WOODLAND_SHRUBS")
+	OS.unset_environment("OPENRC_WOODLAND_SHRUBS")
+	var selected: bool = builder._use_source_shrubs()
+	var material: ShaderMaterial = builder._material() if selected else null
+	OS.set_environment("OPENRC_WOODLAND_SHRUBS", "legacy")
+	var legacy_selected: bool = builder._use_source_shrubs()
+	if had_override: OS.set_environment("OPENRC_WOODLAND_SHRUBS", previous)
+	else: OS.unset_environment("OPENRC_WOODLAND_SHRUBS")
+	if not selected or legacy_selected or material == null:
+		_fail("packed shrub selection or legacy fallback failed")
+		return {}
+	var names: Array[String] = []
+	for uniform: Dictionary in material.shader.get_shader_uniform_list(): names.append(str(uniform.name))
+	if "shrub_atlas_a" not in names or "shrub_atlas_b" not in names:
+		_fail("packed source-shrub shader lost its sampler declarations")
+		return {}
+	var textures := {}
+	for index in 2:
+		var asset_id: String = builder.SHRUB_CARD_IDS[index]
+		var path := "res://assets/landscape/vegetation/impostors/%s_4view.png" % asset_id
+		if args.has("require-packed") and FileAccess.file_exists(path):
+			_fail("packed shrub check can still read an original PNG")
+			return {}
+		var texture := material.get_shader_parameter("shrub_atlas_a" if index == 0 else "shrub_atlas_b") as Texture2D
+		var image := texture.get_image() if texture != null else null
+		if image == null or image.get_size() != Vector2i(1024, 256) or image.has_mipmaps() \
+				or image.get_format() != Image.FORMAT_RGBA8:
+			_fail("packed shrub atlas is missing or has changed format")
+			return {}
+		var hash := HashingContext.new()
+		hash.start(HashingContext.HASH_SHA256)
+		hash.update(image.get_data())
+		var digest := hash.finish().hex_encode()
+		var expected := str(args.get("expect-shrub-images", "")).split(",")
+		if args.has("expect-shrub-images") and (expected.size() != 2 or digest != expected[index]):
+			_fail("packed shrub pixels differ from their source run")
+			return {}
+		textures[asset_id] = {image_sha256 = digest, decoded_bytes = image.get_data().size(),
+			original_png_present = FileAccess.file_exists(path),
+			manifest_sha256 = FileAccess.get_sha256(path.get_basename() + ".json")}
+	return {source_selected = selected, legacy_selected = legacy_selected,
+		shader_path = material.shader.resource_path, atlases = textures}
 
 
 func _fail(message: String) -> void:

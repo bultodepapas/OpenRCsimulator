@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://6vad3ugib0md"
+path="res://.godot/imported/polyhaven_shrub_03_b_4view.png-73e7ca0e7b138053020b2162ee0cd43e.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/landscape/vegetation/impostors/polyhaven_shrub_03_b_4view.png"
+dest_files=["res://.godot/imported/polyhaven_shrub_03_b_4view.png-73e7ca0e7b138053020b2162ee0cd43e.ctex"]
 
 [params]
 
