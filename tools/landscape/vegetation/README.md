@@ -83,6 +83,29 @@ python tools/landscape/vegetation/test_build_library.py
 
 The LandscapeLab conversion manifest and per-source notices are under `assets/landscape/vegetation/derived/landscapelab_tree_2026/` and `assets/landscape/vegetation/source/landscapelab_tree_2026/`; the Poly Haven receipts and conversion proofs are under `assets/landscape/vegetation/source/realistic_understory_2026/` and `assets/landscape/vegetation/derived/realistic_understory_2026/`. See the dated [vegetation-renewal research record](../../../docs/research/vegetation-renewal-2026-10-20.md) and its [current evidence report](../../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md).
 
+## Woodland fern cards (L7-R7)
+
+The woodland margins use a four-view, unlit Base Color/Alpha bake of the existing
+`polyhaven_fern_02_a` source for their remaining fern cards. The 1024×256 RGBA atlas
+keeps the established lossless, unmipped import policy and four 256×256 frames.
+No source geometry or texture is edited. The manifest binds the Poly Haven source,
+CC0 notice and every external buffer/image; it does not inherit Quaternius's notice.
+
+Stage two independent bakes before promotion, using the pinned Blender 5.2.2:
+
+```powershell
+& $Blender --background --python-exit-code 1 --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id polyhaven_fern_02_a --frame-size 256 --output-dir tmp/fern-bake-a
+& $Blender --background --python-exit-code 1 --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id polyhaven_fern_02_a --frame-size 256 --output-dir tmp/fern-bake-b
+& $Blender --background --python-exit-code 1 --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id polyhaven_fern_02_a --check
+```
+
+Compare both PNGs and manifests byte for byte, inspect all four views, and promote
+only the reviewed outputs into `app/assets/landscape/vegetation/impostors/`.
+`--check` accepts `--output-dir` for staged artifacts. The baker resolves supplier
+evidence per asset and refuses BLEND materials until their transparency conversion
+is separately reviewed. Existing Quaternius manifests remain verifiable.
+See [native evidence and limits](../../../docs/research/visual-quality-implementation/L7-R7/README.md).
+
 ## Downloaded map accents (L6c)
 
 `convert_grass_pack.py` extracts LOLIPOP's 26-triangle small and 20-triangle tall tufts. `convert_forest_shrub.py` extracts one 144-triangle leafy shrub from dasy444's forest scene. Both use supplied meshes/maps under CC BY 4.0, pin the licensed glTF archives and preserve source geometry. The grass uses double-sided MASK; the shrub preserves source BLEND. All seven new maps use compressed mipmaps. Runtime notices are `LICENSE_GRASS.txt` and `LICENSE_FOREST.txt`.

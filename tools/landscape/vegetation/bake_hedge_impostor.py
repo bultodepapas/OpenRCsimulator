@@ -39,6 +39,14 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def source_scene_path(scene: str) -> Path:
+    # Atlas-only suppliers stay outside app/ so exports do not ship unused meshes/maps.
+    path = ROOT / "app" / scene.removeprefix("res://") if scene.startswith("res://") else ROOT / scene
+    if not path.resolve().is_relative_to(ROOT):
+        raise ValueError("source scene must stay inside the repository")
+    return path
+
+
 def source_evidence(catalog: dict[str, Any], asset: dict[str, Any]) -> dict[str, Any]:
     """Bind each derived image to its own supplier, not the legacy catalog default."""
     source_id = asset.get("source_id")
@@ -219,21 +227,20 @@ def bake(
 	source_asset_id: str = DEFAULT_SOURCE_ASSET_ID,
 	output_stem: str = "",
 	output_dir: Path = OUTPUT_DIR,
+	catalog_path: Path = CATALOG_PATH,
 ) -> dict[str, Any]:
     output_dir = output_dir.resolve()
     if frame_size < 128 or frame_size > 1024 or frame_size % 2:
         raise ValueError("frame size must be an even integer from 128 to 1024")
-    if not CATALOG_PATH.is_file():
+    if not catalog_path.is_file():
         raise FileNotFoundError("pinned vegetation catalog is missing")
 
-    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     source_asset = next((item for item in catalog.get("assets", []) if item.get("id") == source_asset_id), None)
     if source_asset is None:
         raise ValueError(f"catalog does not contain source asset {source_asset_id!r}")
     scene_resource_path = str(source_asset.get("scene", ""))
-    if not scene_resource_path.startswith("res://"):
-        raise ValueError(f"catalog source scene is not a Godot resource path: {scene_resource_path!r}")
-    source_scene = ROOT / "app" / scene_resource_path.removeprefix("res://")
+    source_scene = source_scene_path(scene_resource_path)
     if not source_scene.is_file():
         raise FileNotFoundError(f"pinned source scene is missing: {source_scene}")
     if output_stem == "":
@@ -400,6 +407,7 @@ def bake(
             "source_archive_sha256": source_record.get("archive_sha256", ""),
             "source_id": source_asset["source_id"],
             "source_url": source_record.get("url", ""),
+            "source_author": source_record.get("author", ""),
             "source_dependencies": dependencies,
             "license": source_record["license"],
             "license_evidence": source_record["license_evidence"],
@@ -441,6 +449,7 @@ def bake(
             "rebuild_command": (
                 "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- "
                 f"--source-asset-id {source_asset_id} --output-stem {output_stem} --frame-size {frame_size}"
+                + (f" --catalog {catalog_path.resolve().relative_to(ROOT).as_posix()}" if catalog_path.resolve() != CATALOG_PATH else "")
             ),
         }
         output_manifest.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -460,6 +469,7 @@ def main() -> None:
     parser.add_argument("--source-asset-id", default=DEFAULT_SOURCE_ASSET_ID)
     parser.add_argument("--output-stem", default="")
     parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR, help="stage a bake outside app/ before promotion")
+    parser.add_argument("--catalog", type=Path, default=CATALOG_PATH, help="runtime library or external atlas-only source catalog")
     parser.add_argument("--check", action="store_true", help="verify generated atlas and manifest match source hashes")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
     args.output_dir = args.output_dir.resolve()
@@ -473,12 +483,12 @@ def main() -> None:
     output_manifest = args.output_dir / f"{output_stem}.json"
     if args.check:
         manifest = json.loads(output_manifest.read_text(encoding="utf-8"))
-        catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+        catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
         source_asset = next((item for item in catalog.get("assets", []) if item.get("id") == source_asset_id), None)
         if source_asset is None:
             raise SystemExit(f"catalog does not contain source asset {source_asset_id!r}")
         scene_resource_path = str(source_asset.get("scene", ""))
-        source_scene = ROOT / "app" / scene_resource_path.removeprefix("res://")
+        source_scene = source_scene_path(scene_resource_path)
         expected_source = source_evidence(catalog, source_asset)
         dependencies = source_dependencies(source_scene, source_asset)
         if manifest.get("derived_from_asset_id") != source_asset_id \
@@ -520,7 +530,7 @@ def main() -> None:
             raise SystemExit(f"{source_asset_id} atlas changed since its manifest was written")
         print(json.dumps(manifest, indent=2))
         return
-    result = bake(args.frame_size, source_asset_id, output_stem, args.output_dir)
+    result = bake(args.frame_size, source_asset_id, output_stem, args.output_dir, args.catalog)
     print(json.dumps(result, indent=2))
 
 

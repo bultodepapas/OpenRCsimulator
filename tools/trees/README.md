@@ -256,6 +256,30 @@ its timings do not qualify whole-flight performance.
 
 See [accepted sources, geometry cost and remaining gates](../../docs/research/visual-quality-implementation/L7-R6/README.md).
 
+## Woodland fern-card review (L7-R7)
+
+`--woodland_cards=source|legacy` compares the source-derived Poly Haven fern cards
+with the previous Quaternius fern cards on the same production field. The game
+defaults to `source`; `OPENRC_WOODLAND_CARDS=legacy` restores the prior appearance.
+This is independent of `--woodland_meshes=on|off`. Geometry counts, four-view frame
+selection and the two existing 3D fern instances stay unchanged. Reports identify
+the effective mode and atlas hashes. Use the existing 1080p woodland cameras and
+calm orbit above. [Bake procedure](../landscape/vegetation/README.md#woodland-fern-cards-l7-r7).
+
+`check_fern_pack.gd` provides a narrower source/PCK resource check than the historical
+seven-tree/oak inventory. Run it natively with `--out=<new absolute JSON>` against
+the source app first. For the PCK run, use an empty project directory, the exact
+engine, `--main-pack <absolute PCK>`, `--script <absolute check_fern_pack.gd>`, and
+`-- --require-packed --expect-image-sha256=<source report image_sha256> --out=<new JSON>`.
+It requires the default source route and explicit legacy fallback to work, checks
+the manifest, decoded atlas size/format/mips and pixel identity, and refuses a
+packed test that can still read the original PNG. It does not qualify a complete
+release or render the flight scene. Imported texture existence uses
+[`ResourceLoader.exists`](https://docs.godotengine.org/en/latest/classes/class_fileaccess.html#class-fileaccess-method-file-exists)
+so remapped resources work without their original PNG.
+
+See [visual evidence, packed-resource proof and remaining limits](../../docs/research/visual-quality-implementation/L7-R7/README.md).
+
 ## Decorative woodland margins
 
 `python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` adds four small default-field pockets. High keeps 220 plants: 202 cards and 18 downloaded mesh plants, totaling 2,656 source triangles in 13 batches. Balanced is a stable subset and Low omits the decoration. The all-card option retains 472 triangles/five batches; the recipe's source budget describes that original card realization. The mixed renderer separately verifies actual geometry and fits mesh replacements inside its certified plant envelopes.

@@ -268,7 +268,7 @@ static func _fit_fern_card(record: Dictionary) -> void:
 static func _use_source_ferns() -> bool:
 	return OS.get_environment("OPENRC_WOODLAND_CARDS").to_lower() != "legacy" \
 		and FileAccess.file_exists("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.json") \
-		and FileAccess.file_exists("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png")
+		and ResourceLoader.exists("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png")
 
 
 static func _source_fern_manifest() -> Dictionary:
