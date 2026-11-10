@@ -1300,23 +1300,66 @@ static func _format_slider_value(value: float, decimals: int) -> String:
 
 static func _format_number(value: float) -> String:
 	if value == 0.0:
-		return "0"
+		var bits := PackedByteArray()
+		bits.resize(8)
+		bits.encode_double(0, value)
+		return "-0" if bits[7] == 128 and _number_text_matches("-0", value) else "0"
 	var text: String = ""
 	for decimals: int in 18:
 		text = String.num(value, decimals)
-		if text.to_float() == value:
-			break
-	if text.to_float() != value:
-		text = String.num_scientific(value)
-	else:
-		var exponent_at: int = text.find("e")
-		var mantissa: String = text.substr(0, exponent_at) if exponent_at >= 0 else text
-		while mantissa.contains(".") and mantissa.ends_with("0"):
-			mantissa = mantissa.left(-1)
-		if mantissa.ends_with("."):
-			mantissa = mantissa.left(-1)
-		text = mantissa + (text.substr(exponent_at) if exponent_at >= 0 else "")
-	return text
+		var trimmed := _trim_number_text(text)
+		if _number_text_matches(trimmed, value):
+			return trimmed
+		if _number_text_matches(text, value):
+			return text
+	var scientific := String.num_scientific(value)
+	if _number_text_matches(scientific, value):
+		return scientific
+	# Godot's formatter and parser can disagree by one bit. Try adjacent final decimal digits,
+	# but accept only a spelling that the same parser reads back to the original float64 bits.
+	for base: String in [text, scientific]:
+		for direction: int in [-1, 1]:
+			var candidate := base
+			for _step: int in 2:
+				candidate = _adjacent_number_text(candidate, direction)
+				if candidate.is_empty():
+					break
+				var trimmed := _trim_number_text(candidate)
+				if _number_text_matches(trimmed, value):
+					return trimmed
+				if _number_text_matches(candidate, value):
+					return candidate
+	# Some finite values, including subnormals, have no spelling this engine can parse exactly.
+	# The unchanged field still uses the retained source value, not this display fallback.
+	return scientific
+
+
+static func _number_text_matches(text: String, value: float) -> bool:
+	return text.is_valid_float() and var_to_bytes(text.to_float()) == var_to_bytes(value)
+
+
+static func _trim_number_text(text: String) -> String:
+	var exponent_at := text.find("e")
+	var mantissa := text.substr(0, exponent_at) if exponent_at >= 0 else text
+	while mantissa.contains(".") and mantissa.ends_with("0"):
+		mantissa = mantissa.left(-1)
+	if mantissa.ends_with("."):
+		mantissa = mantissa.left(-1)
+	return mantissa + (text.substr(exponent_at) if exponent_at >= 0 else "")
+
+
+static func _adjacent_number_text(text: String, direction: int) -> String:
+	var exponent_at := text.find("e")
+	var end := exponent_at if exponent_at >= 0 else text.length()
+	for index: int in range(end - 1, -1, -1):
+		var digit := text.unicode_at(index)
+		if digit < 48 or digit > 57:
+			continue
+		var next := digit - 48 + direction
+		if next >= 0 and next <= 9:
+			return text.substr(0, index) + str(next) + text.substr(index + 1)
+		text = text.substr(0, index) + ("0" if direction > 0 else "9") + text.substr(index + 1)
+	return ""
 
 
 static func _label(text: String, variation: String, should_wrap: bool = false, translate: bool = true) -> Label:

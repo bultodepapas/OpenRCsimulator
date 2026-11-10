@@ -46,7 +46,7 @@ func _run() -> void:
 
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	var invalid_file := ConfigFile.new()
-	invalid_file.set_value("meta", "schema", Preferences.SCHEMA)
+	invalid_file.set_value("meta", "schema", 6) # Legacy-shaped fixture, without a schema-7 weather witness.
 	invalid_file.set_value("failures", "config", {
 		"probability_percent": "often", "include_catastrophic": false, "notify": true,
 	})

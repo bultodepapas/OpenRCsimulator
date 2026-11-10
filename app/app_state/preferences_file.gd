@@ -1,9 +1,87 @@
 # Bounded settings transaction. Godot's Windows rename can remove the destination before failure.
 extends RefCounted
 
+const WeatherSettings := preload("res://physics/wind_config.gd")
+const CURRENT_SCHEMA := 7
+const WEATHER_EXACT_SCHEMA := 7
+const WEATHER_WITNESS_FORMAT := "openrc-weather-witness v1"
+# Valid weather has at most 16 layers, 32 gusts and 16 thermal cells, with bounded IDs.
+const MAX_WEATHER_WITNESS_BYTES := 1024 * 1024
 static var _serial := 0
 const PREVIOUS_SUFFIX := ".openrc-previous"
 const LOCK_SUFFIX := ".openrc-lock"
+
+
+## Schemas 1-6 stay unchanged when the engine can write and read every weather bit.
+static func weather_requires_witness(weather: Dictionary) -> bool:
+	var probe := ConfigFile.new()
+	probe.set_value("flight", "weather_config", weather)
+	var text := probe.encode_to_text()
+	var parsed := ConfigFile.new()
+	if parsed.parse(text) != OK or parsed.encode_to_text() != text:
+		return true
+	var checked := WeatherSettings.validate(parsed.get_value("flight", "weather_config"))
+	return not checked.ok or var_to_bytes(checked.config) != var_to_bytes(weather)
+
+
+## Schema 7 stores canonical validated weather as object-free binary; the calm fallback is not authoritative.
+static func set_weather_witness(config: ConfigFile, weather: Dictionary) -> Error:
+	var payload := var_to_bytes(weather)
+	if payload.is_empty() or payload.size() > MAX_WEATHER_WITNESS_BYTES:
+		return ERR_INVALID_DATA
+	config.set_value("flight", "weather_config", WeatherSettings.defaults())
+	config.set_value("flight", "weather_exact_format", WEATHER_WITNESS_FORMAT)
+	config.set_value("flight", "weather_exact_bytes", payload)
+	config.set_value("flight", "weather_exact_sha256", _sha256(payload))
+	return OK
+
+
+static func read_weather_witness(config: ConfigFile) -> Dictionary:
+	var failed := {ok = false, config = {}}
+	for key: String in ["weather_config", "weather_exact_format", "weather_exact_bytes", "weather_exact_sha256"]:
+		if not config.has_section_key("flight", key):
+			return failed
+	if config.get_value("flight", "weather_exact_format") != WEATHER_WITNESS_FORMAT:
+		return failed
+	var payload: Variant = config.get_value("flight", "weather_exact_bytes")
+	var digest: Variant = config.get_value("flight", "weather_exact_sha256")
+	if typeof(payload) != TYPE_PACKED_BYTE_ARRAY or payload.is_empty() \
+			or payload.size() > MAX_WEATHER_WITNESS_BYTES or typeof(digest) != TYPE_STRING \
+			or digest.length() != 64 or _sha256(payload) != digest:
+		return failed
+	# Only bytes_to_var (never bytes_to_var_with_objects) is allowed for this file.
+	var decoded: Variant = bytes_to_var(payload)
+	if typeof(decoded) != TYPE_DICTIONARY:
+		return failed
+	var checked := WeatherSettings.validate(decoded)
+	if not checked.ok or var_to_bytes(checked.config) != payload:
+		return failed
+	var fallback: Variant = config.get_value("flight", "weather_config")
+	var checked_fallback := WeatherSettings.validate(fallback)
+	if not checked_fallback.ok or var_to_bytes(checked_fallback.config) != var_to_bytes(WeatherSettings.defaults()):
+		return failed
+	return {ok = true, config = checked.config}
+
+
+static func _sha256(payload: PackedByteArray) -> String:
+	var hashing := HashingContext.new()
+	if hashing.start(HashingContext.HASH_SHA256) != OK or hashing.update(payload) != OK:
+		return ""
+	return hashing.finish().hex_encode()
+
+
+static func _check_current(config: ConfigFile) -> Error:
+	var schema: Variant = config.get_value("meta", "schema", 0)
+	if typeof(schema) != TYPE_INT:
+		# Preserve the pre-schema-7 guard for coercible malformed/future version markers.
+		if typeof(schema) in [TYPE_FLOAT, TYPE_STRING, TYPE_BOOL] and int(schema) > 6:
+			return ERR_FILE_NO_PERMISSION
+		return OK
+	if schema > CURRENT_SCHEMA:
+		return ERR_FILE_NO_PERMISSION
+	if schema == WEATHER_EXACT_SCHEMA and not read_weather_witness(config).ok:
+		return ERR_FILE_CORRUPT
+	return OK
 
 
 ## One writer/recovery per profile, also across app processes. Unknown owners fail closed.
@@ -52,11 +130,21 @@ static func _recover_locked(path: String) -> Error:
 	if not FileAccess.file_exists(previous):
 		return OK
 	var current := ConfigFile.new()
-	if FileAccess.file_exists(path) and current.load(path) == OK and int(current.get_value("meta", "schema", 0)) > 6:
-		return ERR_FILE_NO_PERMISSION
+	if FileAccess.file_exists(path) and current.load(path) == OK:
+		var current_error := _check_current(current)
+		if current_error != OK:
+			return current_error
+	return _restore_locked(path)
+
+
+static func _restore_locked(path: String) -> Error:
+	var previous := path + PREVIOUS_SUFFIX
 	var checked := ConfigFile.new()
 	if checked.load(previous) != OK:
 		return ERR_FILE_CORRUPT
+	var previous_error := _check_current(checked)
+	if previous_error != OK:
+		return previous_error
 	var bytes := FileAccess.get_file_as_bytes(previous)
 	var error := DirAccess.copy_absolute(previous, path)
 	if error != OK or FileAccess.get_file_as_bytes(path) != bytes:
@@ -75,8 +163,13 @@ static func save(path: String, config: ConfigFile, publish := Callable()) -> Err
 
 static func _save_locked(path: String, config: ConfigFile, publish: Callable) -> Error:
 	var current := ConfigFile.new()
-	if FileAccess.file_exists(path) and current.load(path) == OK and int(current.get_value("meta", "schema", 0)) > 6:
-		return ERR_FILE_NO_PERMISSION
+	if FileAccess.file_exists(path) and current.load(path) == OK:
+		var current_error := _check_current(current)
+		if current_error != OK:
+			return current_error
+	var candidate_error := _check_current(config)
+	if candidate_error != OK:
+		return candidate_error
 	var error := _recover_locked(path)
 	if error != OK:
 		return error
@@ -90,6 +183,8 @@ static func _save_locked(path: String, config: ConfigFile, publish: Callable) ->
 		error = checked.load(temporary)
 		if error == OK and checked.encode_to_text() != config.encode_to_text():
 			error = ERR_FILE_CORRUPT
+		if error == OK:
+			error = _check_current(checked)
 	var previous := path + PREVIOUS_SUFFIX
 	var previous_temporary := temporary + ".previous"
 	if error == OK and FileAccess.file_exists(path):
@@ -113,8 +208,9 @@ static func _save_locked(path: String, config: ConfigFile, publish: Callable) ->
 		if error == OK and FileAccess.file_exists(previous):
 			error = DirAccess.remove_absolute(previous)
 		if error != OK and FileAccess.file_exists(previous):
-			# If rollback itself fails, retain the validated previous copy for recover() on next load.
-			_recover_locked(path)
+			# This writer owns the attempted publication; restore its verified previous bytes directly.
+			# If rollback fails, retain that copy for recover() on next load.
+			_restore_locked(path)
 	if FileAccess.file_exists(temporary):
 		DirAccess.remove_absolute(temporary)
 	if FileAccess.file_exists(previous_temporary):

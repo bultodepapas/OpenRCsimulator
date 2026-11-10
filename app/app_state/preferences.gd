@@ -27,7 +27,7 @@ const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false, "field_act
 const FUEL_FILLS := [1.0, 0.75, 0.5, 0.25]
 
 const DEFAULT_PATH := "user://settings.cfg"
-const SCHEMA := 6
+const SCHEMA := PreferencesFile.CURRENT_SCHEMA
 const LIGHTING_SCHEMA := 4
 const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
@@ -158,10 +158,18 @@ static func _load_locked(path: String) -> Dictionary:
 	var time_of_day: Variant = cfg.get_value("flight", "time_of_day", DEFAULTS.time_of_day)
 	if typeof(time_of_day) == TYPE_STRING and Conditions.HOME_CHOICES.has(time_of_day):
 		prefs.time_of_day = time_of_day
-	var weather: Variant = cfg.get_value("flight", "weather_config", DEFAULTS.weather_config)
-	var checked_weather := WeatherSettings.validate(weather)
-	if checked_weather.ok:
-		prefs.weather_config = checked_weather.config.duplicate(true)
+	if schema == PreferencesFile.WEATHER_EXACT_SCHEMA:
+		var exact := PreferencesFile.read_weather_witness(cfg)
+		if exact.ok:
+			prefs.weather_config = exact.config.duplicate(true)
+		else:
+			prefs.writable = false
+			prefs.note = _append_note(prefs.note, "invalid exact weather; saved settings were retained")
+	else:
+		var weather: Variant = cfg.get_value("flight", "weather_config", DEFAULTS.weather_config)
+		var checked_weather := WeatherSettings.validate(weather)
+		if checked_weather.ok:
+			prefs.weather_config = checked_weather.config.duplicate(true)
 	if cfg.has_section("hud"):
 		var hud := {}
 		for key: String in ["preset", "visible", "units", "stick_mode", "radio_model", "positions", "layout_locked", "widget_size", "widget_opacity", "widget_compact", "session_stats_scope"] + OverlaySettings.WARNING_DEFAULTS.keys():
@@ -303,6 +311,9 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA))
 	if checked_weather.config.format == WeatherSettings.SPATIAL_FORMAT:
 		weather_schema = 6
+	var exact_weather := PreferencesFile.weather_requires_witness(checked_weather.config)
+	if exact_weather:
+		weather_schema = PreferencesFile.WEATHER_EXACT_SCHEMA
 	var schema: int = maxi(LIGHTING_SCHEMA, weather_schema) if checked_lighting.config != TimeOfDay.defaults() else weather_schema
 	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)
@@ -317,7 +328,12 @@ static func save_to(path: String, prefs: Dictionary, commit_aircraft := false) -
 	cfg.set_value("flight", "fuel_fill", float(prefs.get("fuel_fill", DEFAULTS.fuel_fill)))
 	cfg.set_value("flight", "time_of_day", time_of_day)
 	cfg.set_value("flight", "latency_marker", prefs.get("latency_marker", DEFAULTS.latency_marker))
-	cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))
+	if exact_weather:
+		var witness_error := PreferencesFile.set_weather_witness(cfg, checked_weather.config)
+		if witness_error != OK:
+			return witness_error
+	else:
+		cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))
 	if checked_lighting.config != TimeOfDay.defaults():
 		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))
 	cfg.set_value("night", "field_lighting", checked_night.options.field_lighting)

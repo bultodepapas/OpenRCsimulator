@@ -15,7 +15,7 @@ func _initialize() -> void:
 	_check("CLI canonical ID remains canonical", AppRoot.aircraft_argument(PackedStringArray(["--aircraft=moonrunner-x99"])) == "moonrunner-x99")
 	var path := "user://moonrunner-identity-test-%d.cfg" % Time.get_ticks_usec()
 	var config := ConfigFile.new()
-	config.set_value("meta", "schema", Preferences.SCHEMA)
+	config.set_value("meta", "schema", 6) # Legacy-shaped fixture, without a schema-7 weather witness.
 	config.set_value("flight", "aircraft", "skywalker-x8")
 	config.set_value("liveries", "skywalker-x8", "abisal")
 	_check("legacy preferences fixture saves", config.save(path) == OK)

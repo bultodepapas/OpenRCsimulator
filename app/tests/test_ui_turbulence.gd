@@ -256,8 +256,8 @@ func _future_schema_v2() -> void:
 
 
 func _home_to_flight_v2() -> void:
+	_remove_prefs() # The preceding future-schema fixture must remain protected until its assertions complete.
 	var prefs: Dictionary = Preferences.load_from(PREFS)
-	prefs.writable = true
 	prefs.weather_config = WeatherSettings.preset("turbulent")
 	_check("flight-handoff v2 fixture saves", Preferences.save_to(PREFS, prefs) == OK)
 	var app: Node = await _app()
@@ -276,7 +276,6 @@ func _home_to_flight_v2() -> void:
 
 func _direct_route_ignores_v2_preferences() -> void:
 	var prefs: Dictionary = Preferences.load_from(PREFS)
-	prefs.writable = true
 	prefs.weather_config = WeatherSettings.preset("turbulent")
 	_check("direct-route v2 fixture saves", Preferences.save_to(PREFS, prefs) == OK)
 	var original: String = FileAccess.get_file_as_string(PREFS)

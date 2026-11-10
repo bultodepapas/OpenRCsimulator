@@ -3,6 +3,7 @@
 extends SceneTree
 
 const Preferences := preload("res://app_state/preferences.gd")
+const PreferencesFile := preload("res://app_state/preferences_file.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const CruiseTrim := preload("res://physics/cruise_trim.gd")
 const Session := preload("res://sim/flight_session.gd")
@@ -33,6 +34,7 @@ func _run() -> void:
 	TranslationServer.set_locale("en")
 	root.size = Vector2i(1280, 720)
 	_preferences_contract()
+	_exact_weather_contract()
 	await _legacy_preservation()
 	await _atmosphere_flow()
 	await _future_schema_v3()
@@ -61,6 +63,129 @@ func _preferences_contract() -> void:
 	_check("v3 atmosphere preferences use outer schema 3 and reload exactly",
 		Preferences.save_to(PREFS, prefs) == OK and _saved_schema() == 3
 		and Preferences.load_from(PREFS).weather_config == v3)
+
+
+func _exact_weather_contract() -> void:
+	_remove_prefs()
+	var prefs: Dictionary = Preferences.load_from(PREFS)
+	var subnormal := PackedByteArray([1, 0, 0, 0, 0, 0, 0, 0]).decode_double(0)
+	var negative_zero := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128]).decode_double(0)
+	var exact := WeatherSettings.upgrade_atmosphere(WeatherSettings.defaults(), {
+		"atmosphere_mode": "custom", "qnh_hpa": 1001.2345678901234,
+		"field_elevation_m": 4000.0, "temperature_c": -20.0, "relative_humidity_pct": 0.0,
+	})
+	exact.speed_mps = subnormal
+	exact.gust_up_mps = negative_zero
+	var canonical: Dictionary = WeatherSettings.validate(exact).config
+	prefs.weather_config = exact
+	_check("schema 7 exact subnormal and boundary fixture saves", Preferences.save_to(PREFS, prefs) == OK
+		and _saved_schema() == 7)
+	var actual: Dictionary = Preferences.load_from(PREFS)
+	_check("schema 7 reload preserves all canonical weather bits", actual.writable
+		and var_to_bytes(actual.weather_config) == var_to_bytes(canonical))
+	var encoded_zero := PackedByteArray()
+	encoded_zero.resize(8)
+	encoded_zero.encode_double(0, actual.weather_config.gust_up_mps)
+	var encoded_tiny := PackedByteArray()
+	encoded_tiny.resize(8)
+	encoded_tiny.encode_double(0, actual.weather_config.speed_mps)
+	_check("schema 7 preserves signed zero and the smallest subnormal", encoded_zero[7] == 128
+		and encoded_tiny == PackedByteArray([1, 0, 0, 0, 0, 0, 0, 0]))
+	var good := ConfigFile.new()
+	_check("schema 7 file exposes a validated typed witness", good.load(PREFS) == OK
+		and typeof(good.get_value("flight", "weather_exact_bytes")) == TYPE_PACKED_BYTE_ARRAY
+		and PreferencesFile.read_weather_witness(good).ok)
+	var good_bytes := FileAccess.get_file_as_bytes(PREFS)
+	var next := ConfigFile.new()
+	next.parse(good.encode_to_text())
+	_check("schema 7 failed publication is reported", PreferencesFile.save(PREFS, next,
+		func(_temporary: String, destination: String) -> Error:
+			DirAccess.remove_absolute(destination)
+			return ERR_FILE_CANT_WRITE) == ERR_FILE_CANT_WRITE)
+	_check("schema 7 failed publication restores exact accepted bytes", FileAccess.get_file_as_bytes(PREFS) == good_bytes
+		and not FileAccess.file_exists(PREFS + PreferencesFile.PREVIOUS_SUFFIX))
+	_check("schema 7 interrupted publication backup created", DirAccess.copy_absolute(PREFS,
+		PREFS + PreferencesFile.PREVIOUS_SUFFIX) == OK)
+	DirAccess.remove_absolute(PREFS)
+	_check("schema 7 interrupted publication recovers its witness", Preferences.load_from(PREFS).writable
+		and FileAccess.get_file_as_bytes(PREFS) == good_bytes)
+	var invalid_candidate := ConfigFile.new()
+	invalid_candidate.parse(good.encode_to_text())
+	invalid_candidate.erase_section_key("flight", "weather_exact_bytes")
+	_check("invalid schema 7 candidate cannot replace accepted settings",
+		PreferencesFile.save(PREFS, invalid_candidate) == ERR_FILE_CORRUPT
+		and FileAccess.get_file_as_bytes(PREFS) == good_bytes)
+
+	for kind: String in ["missing", "digest", "wrong type", "oversized", "invalid weather", "fallback", "format"]:
+		var damaged := ConfigFile.new()
+		damaged.parse(good.encode_to_text())
+		match kind:
+			"missing":
+				damaged.erase_section_key("flight", "weather_exact_bytes")
+			"digest":
+				damaged.set_value("flight", "weather_exact_sha256", "0".repeat(64))
+			"wrong type":
+				damaged.set_value("flight", "weather_exact_bytes", "not binary")
+			"oversized":
+				var too_large := PackedByteArray()
+				too_large.resize(PreferencesFile.MAX_WEATHER_WITNESS_BYTES + 1)
+				damaged.set_value("flight", "weather_exact_bytes", too_large)
+			"invalid weather":
+				var invalid := var_to_bytes({"format": "not weather"})
+				damaged.set_value("flight", "weather_exact_bytes", invalid)
+				damaged.set_value("flight", "weather_exact_sha256", PreferencesFile._sha256(invalid))
+			"fallback":
+				damaged.set_value("flight", "weather_config", WeatherSettings.preset("steady"))
+			"format":
+				damaged.set_value("flight", "weather_exact_format", "unknown")
+		_check("damaged " + kind + " fixture writes", damaged.save(PREFS) == OK)
+		var damaged_bytes := FileAccess.get_file_as_bytes(PREFS)
+		var rejected := Preferences.load_from(PREFS)
+		var fake_writable := Preferences.DEFAULTS.duplicate(true)
+		_check("damaged " + kind + " witness is read-only and cannot be overwritten",
+			not rejected.writable and rejected.note.contains("invalid exact weather")
+			and Preferences.save_to(PREFS, rejected) == ERR_FILE_NO_PERMISSION
+			and Preferences.save_to(PREFS, fake_writable) == ERR_FILE_CORRUPT
+			and FileAccess.get_file_as_bytes(PREFS) == damaged_bytes)
+	# A corrupt current witness must not be replaced by even a valid transaction backup.
+	var backup := FileAccess.open(PREFS + PreferencesFile.PREVIOUS_SUFFIX, FileAccess.WRITE)
+	backup.store_buffer(good_bytes)
+	backup.close()
+	var corrupt_bytes := FileAccess.get_file_as_bytes(PREFS)
+	_check("corrupt schema 7 and backup are both retained", not Preferences.load_from(PREFS).writable
+		and FileAccess.get_file_as_bytes(PREFS) == corrupt_bytes
+		and FileAccess.get_file_as_bytes(PREFS + PreferencesFile.PREVIOUS_SUFFIX) == good_bytes)
+	DirAccess.remove_absolute(PREFS + PreferencesFile.PREVIOUS_SUFFIX)
+	DirAccess.remove_absolute(PREFS)
+	backup = FileAccess.open(PREFS + PreferencesFile.PREVIOUS_SUFFIX, FileAccess.WRITE)
+	backup.store_buffer(corrupt_bytes)
+	backup.close()
+	_check("corrupt schema 7 backup is retained instead of restored", not Preferences.load_from(PREFS).writable
+		and not FileAccess.file_exists(PREFS)
+		and Preferences.save_to(PREFS, Preferences.DEFAULTS.duplicate(true)) == ERR_FILE_CORRUPT
+		and FileAccess.get_file_as_bytes(PREFS + PreferencesFile.PREVIOUS_SUFFIX) == corrupt_bytes)
+	DirAccess.remove_absolute(PREFS + PreferencesFile.PREVIOUS_SUFFIX)
+
+	var spatial := WeatherSettings.spatial_defaults()
+	spatial.spatial_wind.identity.epoch_offset_s = subnormal
+	spatial.spatial_wind.profile.free_air_wind_ned_mps[0] = 0.12345678901234567
+	var spatial_checked := WeatherSettings.validate(spatial)
+	prefs.weather_config = spatial
+	_check("nested exact spatial fixture is valid and saves", spatial_checked.ok
+		and Preferences.save_to(PREFS, prefs) == OK and _saved_schema() == 7)
+	_check("nested spatial weather retains exact bits", var_to_bytes(Preferences.load_from(PREFS).weather_config)
+		== var_to_bytes(spatial_checked.config))
+	_remove_prefs()
+	for marker: Variant in [8, 7.5, "99"]:
+		var future := ConfigFile.new()
+		future.set_value("meta", "schema", marker)
+		future.set_value("flight", "weather_config", WeatherSettings.defaults())
+		_check("future or malformed version fixture writes " + str(marker), future.save(PREFS) == OK)
+		var future_bytes := FileAccess.get_file_as_bytes(PREFS)
+		_check("future or malformed version cannot be overwritten " + str(marker),
+			Preferences.save_to(PREFS, Preferences.DEFAULTS.duplicate(true)) == ERR_FILE_NO_PERMISSION
+			and FileAccess.get_file_as_bytes(PREFS) == future_bytes)
+	_remove_prefs()
 
 
 func _legacy_preservation() -> void:
@@ -233,8 +358,11 @@ func _atmosphere_flow() -> void:
 	})
 	prefs = Preferences.load_from(PREFS)
 	prefs.weather_config = precise
-	_check("float64 atmosphere fixture saves", Preferences.save_to(PREFS, prefs) == OK)
+	var precise_save_error := Preferences.save_to(PREFS, prefs)
+	_check("float64 atmosphere fixture saves", precise_save_error == OK, "error=%s" % error_string(precise_save_error))
 	var persisted_precise: Dictionary = Preferences.load_from(PREFS).weather_config
+	_check("saved atmosphere retains the requested float64 fixture", persisted_precise == precise,
+		"actual=%s expected=%s" % [str(persisted_precise), str(precise)])
 	app.preferences.weather_config = persisted_precise
 	app.home.set_weather_config(persisted_precise)
 	dialog = await _open_weather(app)
@@ -251,6 +379,18 @@ func _atmosphere_flow() -> void:
 	_check("untouched v3 Apply preserves all atmosphere float64 values",
 		Preferences.load_from(PREFS).weather_config == persisted_precise,
 		"actual=%s expected=%s" % [str(Preferences.load_from(PREFS).weather_config), str(persisted_precise)])
+	var tiny_weather := persisted_precise.duplicate(true)
+	tiny_weather.speed_mps = PackedByteArray([1, 0, 0, 0, 0, 0, 0, 0]).decode_double(0)
+	tiny_weather.gust_up_mps = PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128]).decode_double(0)
+	prefs = Preferences.load_from(PREFS)
+	prefs.weather_config = tiny_weather
+	_check("subnormal weather fixture saves for the dialog", Preferences.save_to(PREFS, prefs) == OK)
+	app.preferences.weather_config = Preferences.load_from(PREFS).weather_config
+	app.home.set_weather_config(app.preferences.weather_config)
+	dialog = await _open_weather(app)
+	await _apply(dialog)
+	_check("untouched Apply preserves subnormal and signed-zero weather despite the engine text parser",
+		var_to_bytes(Preferences.load_from(PREFS).weather_config) == var_to_bytes(WeatherSettings.validate(tiny_weather).config))
 	await _close(app)
 
 
