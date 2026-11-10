@@ -2,7 +2,7 @@
 
 The reconstructed R3 owner must first reproduce every original OS golden under
 the historical engine with the original CRLF fuel registry. A disposable reference
-then matches pinned candidate inputs and strictly derived law-identity overlays.
+then matches pinned candidate inputs and strictly derived data/identity overlays.
 Its historical dynamics remain intact; no outputs are normalized.
 """
 from __future__ import annotations
@@ -32,14 +32,15 @@ FUEL_LF = "6f4908ba7ea67eac4f5c01580ce88aae95355b76852586ee9ef299ba03f7e043"
 FUEL_CRLF = "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1"
 AVANTI_OLD = "3ebd08c2869207e869c3c127da6f0db7be1409a32ab0903b17d3211d0b2807b1"
 AVANTI_CURRENT = "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd"
-EXTRA_CURRENT = "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc"
+EXTRA_PRIOR = "0485b9f5713d0f4c7608c027a1ab3dbe2b0d8999820ec0c8548aa452c2f3ecfc"
+EXTRA_CURRENT = "0f1824940a58aa121bf001ccbf74234c0473a59a607561b0b91ad2b6fc912edf"
 STIK_CURRENT = "5635e7f7b2a44bdfc7db5ad2646c74654af42944133bc39a91a0908bac887b66"
 SESSION_OLD = "2bc02a0f52601a60193c4724c597f47d57b11f5fb0a7a851095fd08c5f29a864"
 SESSION_IDENTITY_OVERLAY = "802232fb200d07341fd034d56fb39b4425011a268122abb7ea0faf1ff0466ee9"
 TRACE_OLD = "1c529262fb33b7db3137f9cba064be0e32a6d9c7620ae224cc06500a5a05a62e"
-TRACE_LAW_OVERLAY = "9e52848c5c6831dab8993a6b638ab953f5bf680eb22059ec3f328dd1717ff65b"
+TRACE_LAW_OVERLAY = "71fda5648adda1628d38badb99a469eb5c9558d14d4c302d7b63c4960f791205"
 GLOW_FLIGHT_OLD_LF = "37b5e2d58ffb3615a8aabcaceb26db4408835135723200d07fb5f6b4dd8b60a0"
-GLOW_FLIGHT_LAW_OVERLAY_LF = "28262e121121cb50b4db3fef22304f5139a9d166d47795c5b80a83d9fd0ec0c6"
+GLOW_FLIGHT_LAW_OVERLAY_LF = "4ab6672f10cd040db430b0f0b7aa3b5b1c3dd305f60c32410c8d6ed31cac4f5a"
 GLOW_FLIGHT_PATH = "physics/glow/flight.gd"
 TRACE_PATH = "sim/trace.gd"
 AERO_PATH = "physics/aero.gd"
@@ -47,6 +48,26 @@ PROPULSION_PATH = "physics/propulsion.gd"
 SESSION_PATH = "sim/flight_session.gd"
 EXTRA_PATH = "data/aircraft/gp_extra_300s_60.json"
 STIK_PATH = "data/aircraft/jensen_ugly_stik_60.json"
+AIRCRAFT_DATA_PATH = "physics/aircraft_data.gd"
+CONTRACT_PATH = "data/schema/aircraft-contract-v2.json"
+CONTRACT_OLD_LF = "e06159d51a54feea95c498ee81e05903d85246bb512e7dcc7af95f0d8079af34"
+CONTRACT_OVERLAY_LF = "346ca1bbbc2e7fc7a7a3c6028dae81427bfa149a3c570c497a1091f1f66f1007"
+# These are the only two changes from the previously pinned Extra. Both the
+# full current bytes and the exact recovered previous bytes are checked.
+EXTRA_ADDITIONS = (
+    b'      "wing_body_cl_beta": {\r\n'
+    b'        "value": 0.004131611225752681,\r\n'
+    b'        "unit": "1/rad",\r\n'
+    b'        "kind": "derived",\r\n'
+    b'        "source": "research/extra-300/ex05/derive_physics.py: EX-14j: existing DATCOM wing-at-CL_ref plus low-wing interference, carried into the local law; exact closure of the serialized oracle Clb and fin force arm; estimated, not separated-flow identification"\r\n'
+    b'      },\r\n',
+    b'      "wing_separated_force_offset": {\r\n'
+    b'        "value": 0.25,\r\n'
+    b'        "unit": "1",\r\n'
+    b'        "kind": "estimated",\r\n'
+    b'        "source": "EX-14i candidate: maximum aft shift in strip chords relative to the modeled wing force point; quasi-steady separated-pressure estimate, SAND80-2114 NACA 0015 moment trend; not Extra flight identification"\r\n'
+    b'      },\r\n',
+)
 GLOW_LAW_OLD = b"glow-mean-cycle-carburettor-v4"
 GLOW_LAW_CURRENT = b"glow-mean-cycle-zero-line-trial-v7"
 REFERENCE_LAW_DECLARATIONS = {
@@ -66,10 +87,24 @@ SESSION_OLD_CONFIG = (b'\tif Turbine.is_turbine(aircraft.model.propulsion):\n'
 SESSION_CURRENT_CONFIG = (b'\tif Turbine.is_turbine(aircraft.model.propulsion):\n'
                           b'\t\tparts.append(Turbine.LOADS_LAW)\n\telse:\n'
                           b'\t\tparts.append(Propulsion.COEFFICIENT_LAW)\n\tif gear_is_retractable():')
+# The historical decoder ignores the new field. Admit and decode it only for
+# matching the normalized aircraft model used in the checkpoint identity;
+# the independently pinned historical aerodynamic evaluator never reads it.
+EXTRA_DECODER = (b'\tif node.has("wing_separated_force_offset"):\n'
+                 b'\t\tvar cp_offset = _dq(domain, errors, "aero.surfaces.wing_separated_force_offset", node.get("wing_separated_force_offset"), "1", 0.0, 0.25)\n'
+                 b'\t\tif cp_offset != null:\n'
+                 b'\t\t\tout.wing_separated_force_offset = float(cp_offset)\n')
+CONTRACT_BEFORE = (b'        "horizontal",\n        "vertical"\n      ]\n    },\n'
+                   b'    {\n      "path": "/aero/surfaces/horizontal",')
+CONTRACT_AFTER = (b'        "horizontal",\n        "vertical",\n'
+                  b'        "wing_separated_force_offset"\n      ]\n    },\n'
+                  b'    {\n      "path": "/aero/surfaces/horizontal",')
 REFERENCE_IDENTITY_EDITS = {
     AERO_PATH: (AERO_OLD, AERO_CURRENT),
     PROPULSION_PATH: (b'const CP_FLOOR := 0.0', b'const CP_FLOOR := 0.0\n' + COEFFICIENT_DECLARATION),
     SESSION_PATH: (SESSION_OLD_CONFIG, SESSION_CURRENT_CONFIG),
+    AIRCRAFT_DATA_PATH: (b'\t\t\tout.wing_cm_ac = float(cm_ac)\n\t# Optional (P51-25):',
+                         b'\t\t\tout.wing_cm_ac = float(cm_ac)\n' + EXTRA_DECODER + b'\t# Optional (P51-25):'),
 }
 # LF-normalized hashes still bind every byte apart from checkout line endings.
 REFERENCE_IDENTITY_HASHES = {
@@ -79,6 +114,8 @@ REFERENCE_IDENTITY_HASHES = {
                       "fec3f41604cd5e012d6df12662efa5db05549fbd5f345ba8f7fcc55542b1992d"),
     SESSION_PATH: ("32b4ce2a20bee139d59260ef0f93da0904a9fc72e4537f018a9de8dad74d5654",
                    "98dd5aff8b95f88ac557274029584c49f896d4a0c2046d5763f1e93ea7f50dbd"),
+    AIRCRAFT_DATA_PATH: ("189e1178c1c939804528e1036e2f67299f5b8c51af3d35ee002f48f0e574fa2b",
+                         "0fe78a0bd1a82714d72282d5dda781e835929039d5a3507d28463dc796f95d81"),
 }
 CANDIDATE_IDENTITY_MARKERS = {
     AERO_PATH: (AERO_CURRENT,
@@ -89,6 +126,7 @@ CANDIDATE_IDENTITY_MARKERS = {
                    b'\t\tparts.append(Turbine.LOADS_LAW)\n\telse:\n'
                    b'\t\t# Propeller Ct/Cp, engine power and optional crossflow tables share this continuation.\n'
                    b'\t\tparts.append(Propulsion.COEFFICIENT_LAW)\n\tif gear_is_retractable():',),
+    AIRCRAFT_DATA_PATH: (EXTRA_DECODER,),
 }
 CARB_R3 = "16d8065ae5ce49d1d79d8d6f14ea3f7e613983587b5b00eeb0f357e536505505"
 FROZEN_FIXTURE = "61b27a375e3d29808b2f84a0e69dfaa4057a6b0c58b3e1abe8a1c62bd31dc9bd"
