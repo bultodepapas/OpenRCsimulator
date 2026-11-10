@@ -8995,3 +8995,9 @@ msgstr "Estimación máxima"
 
 msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
 msgstr "La variación de precios y las alternativas del modelo son límites, no probabilidades de confianza."
+
+msgid "RC blimp (experimental)"
+msgstr "Dirigible RC (experimental)"
+
+msgid "Fly RC blimp"
+msgstr "Volar dirigible RC"

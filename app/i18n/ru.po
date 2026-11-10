@@ -10204,3 +10204,10 @@ msgstr "Верхняя оценка"
 
 msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
 msgstr "Изменение цен и моделируемые альтернативы задают границы, а не доверительные вероятности."
+
+
+msgid "RC blimp (experimental)"
+msgstr "Радиоуправляемый дирижабль (экспериментально)"
+
+msgid "Fly RC blimp"
+msgstr "Управлять дирижаблем"

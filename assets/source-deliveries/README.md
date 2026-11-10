@@ -15,6 +15,7 @@ This directory groups the source packages below. The owner-supplied packages pre
 | Skywalker X8 r4 game source (X8 flying wing; images and demo omitted, zip kept local) | [skywalker-x8-r4](skywalker-x8-r4/) | [asset guide](../aircraft/skywalker-x8/README.md) · [source manifest](../aircraft/skywalker-x8/source-manifest.json) · [X8 plan](../../docs/X8-PLAN.md) |
 | O.S. MAX 61 SF engine, mount, carburettors and propellers (Ugly Stik) | [Blender scene copies](glow-engine-61/README.md) | [complete owner package](glow-engine-61/owner-package/LEEME.txt) · [Ugly Stik asset guide](../aircraft/ugly-stik-60/README.md) |
 | Radiolink T12D transmitter (owner draft) | [radiolink-t12d](radiolink-t12d/) | [package notes](radiolink-t12d/README.md) · [SC-HUM-01 evidence](../../docs/research/scenery-implementation/SC-HUM-01/README.md) · [generator](../../tools/scenery/population/generate_people.py) |
+| RC blimp 5 m: three skins (Tiburón Blanco, Histórico, Cromo Carbono Azul) | [rc-blimp-5m](rc-blimp-5m/) | [asset guide](../aircraft/rc-blimp-5m/README.md) · [source manifest](../aircraft/rc-blimp-5m/source-manifest.json) · [airship plan](../../docs/plans/rc-airship.md) |
 | Poly Haven concrete road barrier | [concrete-road-barrier-polyhaven](concrete-road-barrier-polyhaven/) | [source manifest](concrete-road-barrier-polyhaven/source-manifest.json) · [runtime LOD2](../../app/assets/landscape/track-barrier/concrete-road-barrier-lod2.glb) · [export script](../../tools/landscape/export_track_barrier_lod.py) |
 
 ## Aircraft Blender scene index

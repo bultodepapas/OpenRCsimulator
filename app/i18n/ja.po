@@ -9453,3 +9453,10 @@ msgstr "高い概算"
 
 msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
 msgstr "価格変動とモデル化された代替案は範囲の上下限であり、信頼確率ではありません。"
+
+
+msgid "RC blimp (experimental)"
+msgstr "RC飛行船（実験的）"
+
+msgid "Fly RC blimp"
+msgstr "RC飛行船を飛ばす"

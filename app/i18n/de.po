@@ -10347,3 +10347,10 @@ msgstr "Hohe Schätzung"
 
 msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
 msgstr "Preisschwankungen und modellierte Alternativen sind Grenzen, keine Konfidenzwahrscheinlichkeiten."
+
+
+msgid "RC blimp (experimental)"
+msgstr "RC-Luftschiff (experimentell)"
+
+msgid "Fly RC blimp"
+msgstr "RC-Luftschiff fliegen"

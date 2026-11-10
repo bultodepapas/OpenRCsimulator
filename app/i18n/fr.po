@@ -10376,3 +10376,10 @@ msgstr "Estimation haute"
 
 msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
 msgstr "Les variations de prix et les alternatives modélisées sont des bornes, pas des probabilités de confiance."
+
+
+msgid "RC blimp (experimental)"
+msgstr "Dirigeable RC (expérimental)"
+
+msgid "Fly RC blimp"
+msgstr "Piloter le dirigeable RC"

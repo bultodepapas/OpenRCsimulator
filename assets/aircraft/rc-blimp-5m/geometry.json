@@ -1,0 +1,1642 @@
+{
+ "schema": "openrc-airship-geometry v1",
+ "asset": "rc-blimp-5m",
+ "skin": "tiburon-blanco",
+ "frame": "physics body FRD: x forward (= -X blender), y right (= +Y blender), z down (= -Z blender); metres at 5 m scale; datum = scaled Blender origin on the hull axis",
+ "source": {
+  "file": "Tiburon_Blanco_V1.blend",
+  "bytes": 10323228,
+  "sha256": "89137079a348a9147782d8eb8af6a76d58b7e1c60724d95cef920deae8852578"
+ },
+ "scale": 0.06882312312435304,
+ "source_envelope_length_m": 72.650002,
+ "envelope_length_m": 5.0,
+ "bounds_m": {
+  "min": [
+   -2.587759,
+   -0.647525,
+   -0.619408
+  ],
+  "max": [
+   2.580867,
+   0.666565,
+   0.728202
+  ],
+  "note": "all exported GLB geometry at rest"
+ },
+ "envelope": {
+  "object": "Envolvente · perfil auditado Ø14.2 m",
+  "volume_m3": 2.502001,
+  "volume_method": "closed manifold mesh: bmesh calc_volume after modifiers (non-manifold edges 0, boundary edges 0)",
+  "volume_check_sections_m3": 2.501997,
+  "centroid_m": [
+   0.281273,
+   -0.0,
+   -0.0
+  ],
+  "surface_area_m2": 12.132551,
+  "max_diameter_m": 0.977288,
+  "max_equivalent_diameter_m": 0.977201,
+  "nose_x_m": 2.56022,
+  "tail_x_m": -2.43978,
+  "radius_profile_note": "[x_m FRD, sqrt(section_area/pi) m], 81 equally spaced stations nose to tail",
+  "radius_profile": [
+   [
+    2.56022,
+    0.0
+   ],
+   [
+    2.49772,
+    0.126731
+   ],
+   [
+    2.43522,
+    0.186726
+   ],
+   [
+    2.37272,
+    0.227815
+   ],
+   [
+    2.31022,
+    0.259546
+   ],
+   [
+    2.24772,
+    0.285654
+   ],
+   [
+    2.18522,
+    0.30862
+   ],
+   [
+    2.12272,
+    0.329655
+   ],
+   [
+    2.06022,
+    0.348594
+   ],
+   [
+    1.99772,
+    0.365194
+   ],
+   [
+    1.93522,
+    0.379373
+   ],
+   [
+    1.87272,
+    0.392177
+   ],
+   [
+    1.81022,
+    0.40387
+   ],
+   [
+    1.74772,
+    0.414443
+   ],
+   [
+    1.68522,
+    0.423886
+   ],
+   [
+    1.62272,
+    0.432189
+   ],
+   [
+    1.56022,
+    0.439686
+   ],
+   [
+    1.49772,
+    0.446766
+   ],
+   [
+    1.43522,
+    0.453331
+   ],
+   [
+    1.37272,
+    0.459278
+   ],
+   [
+    1.31022,
+    0.464499
+   ],
+   [
+    1.24772,
+    0.468889
+   ],
+   [
+    1.18522,
+    0.4724
+   ],
+   [
+    1.12272,
+    0.475655
+   ],
+   [
+    1.06022,
+    0.478795
+   ],
+   [
+    0.99772,
+    0.481698
+   ],
+   [
+    0.93522,
+    0.484244
+   ],
+   [
+    0.87272,
+    0.486311
+   ],
+   [
+    0.81022,
+    0.487779
+   ],
+   [
+    0.74772,
+    0.488527
+   ],
+   [
+    0.68522,
+    0.488596
+   ],
+   [
+    0.62272,
+    0.488568
+   ],
+   [
+    0.56022,
+    0.488517
+   ],
+   [
+    0.49772,
+    0.488442
+   ],
+   [
+    0.43522,
+    0.488345
+   ],
+   [
+    0.37272,
+    0.488227
+   ],
+   [
+    0.31022,
+    0.488089
+   ],
+   [
+    0.24772,
+    0.487931
+   ],
+   [
+    0.18522,
+    0.487541
+   ],
+   [
+    0.12272,
+    0.486651
+   ],
+   [
+    0.06022,
+    0.485335
+   ],
+   [
+    -0.00228,
+    0.483671
+   ],
+   [
+    -0.06478,
+    0.481739
+   ],
+   [
+    -0.12728,
+    0.479616
+   ],
+   [
+    -0.18978,
+    0.477381
+   ],
+   [
+    -0.25228,
+    0.4751
+   ],
+   [
+    -0.31478,
+    0.472505
+   ],
+   [
+    -0.37728,
+    0.469454
+   ],
+   [
+    -0.43978,
+    0.465981
+   ],
+   [
+    -0.50228,
+    0.462121
+   ],
+   [
+    -0.56478,
+    0.457909
+   ],
+   [
+    -0.62728,
+    0.453379
+   ],
+   [
+    -0.68978,
+    0.448565
+   ],
+   [
+    -0.75228,
+    0.443428
+   ],
+   [
+    -0.81478,
+    0.437558
+   ],
+   [
+    -0.87728,
+    0.430952
+   ],
+   [
+    -0.93978,
+    0.423698
+   ],
+   [
+    -1.00228,
+    0.415884
+   ],
+   [
+    -1.06478,
+    0.4076
+   ],
+   [
+    -1.12728,
+    0.398935
+   ],
+   [
+    -1.18978,
+    0.389713
+   ],
+   [
+    -1.25228,
+    0.3796
+   ],
+   [
+    -1.31478,
+    0.368668
+   ],
+   [
+    -1.37728,
+    0.357002
+   ],
+   [
+    -1.43978,
+    0.344684
+   ],
+   [
+    -1.50228,
+    0.331745
+   ],
+   [
+    -1.56478,
+    0.317719
+   ],
+   [
+    -1.62728,
+    0.302607
+   ],
+   [
+    -1.68978,
+    0.286581
+   ],
+   [
+    -1.75228,
+    0.269814
+   ],
+   [
+    -1.81478,
+    0.252248
+   ],
+   [
+    -1.87728,
+    0.233662
+   ],
+   [
+    -1.93978,
+    0.214037
+   ],
+   [
+    -2.00228,
+    0.193352
+   ],
+   [
+    -2.06478,
+    0.171384
+   ],
+   [
+    -2.12728,
+    0.147505
+   ],
+   [
+    -2.18978,
+    0.122395
+   ],
+   [
+    -2.25228,
+    0.096772
+   ],
+   [
+    -2.31478,
+    0.069772
+   ],
+   [
+    -2.37728,
+    0.043619
+   ],
+   [
+    -2.43978,
+    0.0
+   ]
+  ]
+ },
+ "fins": {
+  "dorsal": {
+   "fixed_object": "Aleta dorsal · estabilizador",
+   "moving_object": "Aleta dorsal · timón móvil",
+   "fixed_area_m2": 0.153368,
+   "moving_area_m2": 0.049845,
+   "area_note": "one-side planform projected on the fin mid-plane; triangles whose centroid lies inside the envelope radius are excluded",
+   "fixed_area_including_buried_root_m2": 0.21042,
+   "centroid_m": [
+    -1.815831,
+    0.0,
+    -0.420332
+   ],
+   "span_dir": [
+    -0.0,
+    -0.0,
+    -1.0
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "span_m": 0.367488,
+   "span_note": "tip radius from hull axis minus envelope radius at the planform-centroid station",
+   "mean_chord_m": 0.552977,
+   "hinge_point_m": [
+    -2.009635,
+    0.0,
+    -0.206469
+   ],
+   "hinge_axis": [
+    0.219512,
+    0.0,
+    -0.97561
+   ],
+   "te_dir_at_plus_10deg": [
+    0.08503,
+    0.996195,
+    0.019132
+   ],
+   "te_point_m": [
+    -2.126015,
+    0.0,
+    -0.209222
+   ],
+   "travel_deg": [
+    -20.0,
+    20.0
+   ]
+  },
+  "port": {
+   "fixed_object": "Aleta babor · estabilizador",
+   "moving_object": "Aleta babor · timón móvil",
+   "fixed_area_m2": 0.153368,
+   "moving_area_m2": 0.049844,
+   "area_note": "one-side planform projected on the fin mid-plane; triangles whose centroid lies inside the envelope radius are excluded",
+   "fixed_area_including_buried_root_m2": 0.21042,
+   "centroid_m": [
+    -1.815831,
+    -0.364018,
+    0.210166
+   ],
+   "span_dir": [
+    0.0,
+    -0.866025,
+    0.5
+   ],
+   "normal": [
+    0.0,
+    -0.5,
+    -0.866025
+   ],
+   "span_m": 0.367488,
+   "span_note": "tip radius from hull axis minus envelope radius at the planform-centroid station",
+   "mean_chord_m": 0.552977,
+   "hinge_point_m": [
+    -2.009635,
+    -0.178808,
+    0.103235
+   ],
+   "hinge_axis": [
+    0.219512,
+    -0.844903,
+    0.487805
+   ],
+   "te_dir_at_plus_10deg": [
+    0.08503,
+    -0.481529,
+    -0.872296
+   ],
+   "te_point_m": [
+    -2.126015,
+    -0.181192,
+    0.104611
+   ],
+   "travel_deg": [
+    -20.0,
+    20.0
+   ]
+  },
+  "starboard": {
+   "fixed_object": "Aleta estribor · estabilizador",
+   "moving_object": "Aleta estribor · timón móvil",
+   "fixed_area_m2": 0.153368,
+   "moving_area_m2": 0.049844,
+   "area_note": "one-side planform projected on the fin mid-plane; triangles whose centroid lies inside the envelope radius are excluded",
+   "fixed_area_including_buried_root_m2": 0.21042,
+   "centroid_m": [
+    -1.815831,
+    0.364018,
+    0.210166
+   ],
+   "span_dir": [
+    0.0,
+    0.866025,
+    0.5
+   ],
+   "normal": [
+    -0.0,
+    -0.5,
+    0.866025
+   ],
+   "span_m": 0.367488,
+   "span_note": "tip radius from hull axis minus envelope radius at the planform-centroid station",
+   "mean_chord_m": 0.552977,
+   "hinge_point_m": [
+    -2.009635,
+    0.178808,
+    0.103235
+   ],
+   "hinge_axis": [
+    0.219512,
+    0.844903,
+    0.487805
+   ],
+   "te_dir_at_plus_10deg": [
+    0.085029,
+    -0.514666,
+    0.853164
+   ],
+   "te_point_m": [
+    -2.126015,
+    0.181192,
+    0.104611
+   ],
+   "travel_deg": [
+    -20.0,
+    20.0
+   ]
+  }
+ },
+ "rotors": {
+  "port": {
+   "ctrl": "CTRL · rotor lateral babor",
+   "hub_m": [
+    0.898142,
+    -0.578114,
+    0.168617
+   ],
+   "axis_rest": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "axis_note": "slipstream direction for the delivered positive spin (+'Giro grados', the demo's 0->1800 deg sense); thrust on the vehicle is -axis_rest. Blade sections are symmetric, so leading edge was inferred from the spin sense: the chord's +tangential end sits on the -axis side (about 20 deg pitch at 0.7 R)",
+   "spin_axis_positive_ctrl": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "radius_m": 0.092911,
+   "blade_count": 3,
+   "documented_rpm": 1250.0,
+   "documented_diameter_full_scale_m": 2.7
+  },
+  "starboard": {
+   "ctrl": "CTRL · rotor lateral estribor",
+   "hub_m": [
+    0.898142,
+    0.578114,
+    0.168617
+   ],
+   "axis_rest": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "axis_note": "slipstream direction for the delivered positive spin (+'Giro grados', the demo's 0->1800 deg sense); thrust on the vehicle is -axis_rest. Blade sections are symmetric, so leading edge was inferred from the spin sense: the chord's +tangential end sits on the -axis side (about 20 deg pitch at 0.7 R)",
+   "spin_axis_positive_ctrl": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "radius_m": 0.092911,
+   "blade_count": 3,
+   "documented_rpm": 1250.0,
+   "documented_diameter_full_scale_m": 2.7
+  },
+  "stern_axial": {
+   "ctrl": "CTRL · rotor popa axial",
+   "hub_m": [
+    -2.561596,
+    0.0,
+    -0.006882
+   ],
+   "axis_rest": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "axis_note": "slipstream direction for the delivered positive spin (+'Giro grados', the demo's 0->1800 deg sense); thrust on the vehicle is -axis_rest. Blade sections are symmetric, so leading edge was inferred from the spin sense: the chord's +tangential end sits on the -axis side (about 20 deg pitch at 0.7 R)",
+   "spin_axis_positive_ctrl": [
+    -1.0,
+    0.0,
+    -0.0
+   ],
+   "radius_m": 0.092911,
+   "blade_count": 3,
+   "documented_rpm": 1250.0,
+   "documented_diameter_full_scale_m": 2.7
+  },
+  "stern_lateral": {
+   "ctrl": "CTRL · rotor popa transversal",
+   "hub_m": [
+    -2.41225,
+    -0.11287,
+    -0.020647
+   ],
+   "axis_rest": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "axis_note": "slipstream direction for the delivered positive spin (+'Giro grados', the demo's 0->1800 deg sense); thrust on the vehicle is -axis_rest. Blade sections are symmetric, so leading edge was inferred from the spin sense: the chord's +tangential end sits on the -axis side (about 20 deg pitch at 0.7 R)",
+   "spin_axis_positive_ctrl": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "radius_m": 0.075706,
+   "blade_count": 3,
+   "documented_rpm": 2025.0,
+   "documented_diameter_full_scale_m": 2.2
+  }
+ },
+ "vectors": {
+  "port": {
+   "ctrl": "CTRL · vector lateral babor",
+   "pivot_m": [
+    0.805231,
+    -0.526497,
+    0.168617
+   ],
+   "axis": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "travel_deg": [
+    0.0,
+    120.0
+   ],
+   "rotor": "port",
+   "rotor_axis_at": {
+    "0": [
+     -1.0,
+     0.0,
+     -0.0
+    ],
+    "45": [
+     -0.707107,
+     0.0,
+     0.707107
+    ],
+    "90": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "120": [
+     0.5,
+     0.0,
+     0.866025
+    ]
+   }
+  },
+  "starboard": {
+   "ctrl": "CTRL · vector lateral estribor",
+   "pivot_m": [
+    0.805231,
+    0.526497,
+    0.168617
+   ],
+   "axis": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "travel_deg": [
+    0.0,
+    120.0
+   ],
+   "rotor": "starboard",
+   "rotor_axis_at": {
+    "0": [
+     -1.0,
+     0.0,
+     -0.0
+    ],
+    "45": [
+     -0.707107,
+     0.0,
+     0.707107
+    ],
+    "90": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "120": [
+     0.5,
+     0.0,
+     0.866025
+    ]
+   }
+  },
+  "stern": {
+   "ctrl": "CTRL · vector popa",
+   "pivot_m": [
+    -2.467309,
+    0.0,
+    -0.006882
+   ],
+   "axis": [
+    -0.0,
+    1.0,
+    -0.0
+   ],
+   "travel_deg": [
+    0.0,
+    90.0
+   ],
+   "rotor": "stern_axial",
+   "rotor_axis_at": {
+    "0": [
+     -1.0,
+     0.0,
+     -0.0
+    ],
+    "45": [
+     -0.707107,
+     0.0,
+     0.707107
+    ],
+    "90": [
+     -0.0,
+     0.0,
+     1.0
+    ]
+   }
+  }
+ },
+ "gondola": {
+  "min_m": [
+   0.55646,
+   -0.095136,
+   0.441163
+  ],
+  "max_m": [
+   1.414362,
+   0.095136,
+   0.66139
+  ],
+  "note": "all exported objects of collection '04 · GÓNDOLA' (cabin, glazing, doors)"
+ },
+ "gear": {
+  "front": {
+   "object": "Tren delantero V3 · neumático",
+   "contact_point_m": [
+    1.135582,
+    -0.004738,
+    0.728149
+   ],
+   "wheel_radius_m": 0.025465
+  },
+  "rear": {
+   "object": "Tren trasero V3 · neumático",
+   "contact_point_m": [
+    -1.424639,
+    -0.004274,
+    0.620096
+   ],
+   "wheel_radius_m": 0.022023
+  }
+ },
+ "collision_witnesses": [
+  {
+   "id": "hull_nose",
+   "part": "envelope",
+   "point_m": [
+    2.56022,
+    -0.001376,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_tail",
+   "part": "envelope",
+   "point_m": [
+    -2.43978,
+    -0.020126,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s1_top",
+   "part": "envelope",
+   "point_m": [
+    1.930489,
+    -0.0,
+    -0.380422
+   ]
+  },
+  {
+   "id": "hull_s1_bottom",
+   "part": "envelope",
+   "point_m": [
+    1.930489,
+    0.0,
+    0.380422
+   ]
+  },
+  {
+   "id": "hull_s1_port",
+   "part": "envelope",
+   "point_m": [
+    1.930489,
+    -0.380422,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s1_starboard",
+   "part": "envelope",
+   "point_m": [
+    1.930489,
+    0.380422,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s2_top",
+   "part": "envelope",
+   "point_m": [
+    1.300757,
+    -0.0,
+    -0.465268
+   ]
+  },
+  {
+   "id": "hull_s2_bottom",
+   "part": "envelope",
+   "point_m": [
+    1.300757,
+    0.0,
+    0.465268
+   ]
+  },
+  {
+   "id": "hull_s2_port",
+   "part": "envelope",
+   "point_m": [
+    1.300757,
+    -0.465268,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s2_starboard",
+   "part": "envelope",
+   "point_m": [
+    1.300757,
+    0.465268,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s3_top",
+   "part": "envelope",
+   "point_m": [
+    0.686769,
+    -0.0,
+    -0.48864
+   ]
+  },
+  {
+   "id": "hull_s3_bottom",
+   "part": "envelope",
+   "point_m": [
+    0.686769,
+    0.0,
+    0.48864
+   ]
+  },
+  {
+   "id": "hull_s3_port",
+   "part": "envelope",
+   "point_m": [
+    0.686769,
+    -0.48864,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s3_starboard",
+   "part": "envelope",
+   "point_m": [
+    0.686769,
+    0.48864,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s4_top",
+   "part": "envelope",
+   "point_m": [
+    0.07278,
+    -0.0,
+    -0.485675
+   ]
+  },
+  {
+   "id": "hull_s4_bottom",
+   "part": "envelope",
+   "point_m": [
+    0.07278,
+    0.0,
+    0.485675
+   ]
+  },
+  {
+   "id": "hull_s4_port",
+   "part": "envelope",
+   "point_m": [
+    0.07278,
+    -0.485675,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s4_starboard",
+   "part": "envelope",
+   "point_m": [
+    0.07278,
+    0.485675,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s5_top",
+   "part": "envelope",
+   "point_m": [
+    -0.556951,
+    -0.0,
+    -0.458498
+   ]
+  },
+  {
+   "id": "hull_s5_bottom",
+   "part": "envelope",
+   "point_m": [
+    -0.556951,
+    0.0,
+    0.458498
+   ]
+  },
+  {
+   "id": "hull_s5_port",
+   "part": "envelope",
+   "point_m": [
+    -0.556951,
+    -0.458498,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s5_starboard",
+   "part": "envelope",
+   "point_m": [
+    -0.556951,
+    0.458498,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s6_top",
+   "part": "envelope",
+   "point_m": [
+    -1.186683,
+    -0.0,
+    -0.390231
+   ]
+  },
+  {
+   "id": "hull_s6_bottom",
+   "part": "envelope",
+   "point_m": [
+    -1.186683,
+    0.0,
+    0.390231
+   ]
+  },
+  {
+   "id": "hull_s6_port",
+   "part": "envelope",
+   "point_m": [
+    -1.186683,
+    -0.390231,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s6_starboard",
+   "part": "envelope",
+   "point_m": [
+    -1.186683,
+    0.390231,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s7_top",
+   "part": "envelope",
+   "point_m": [
+    -1.800671,
+    -0.0,
+    -0.256327
+   ]
+  },
+  {
+   "id": "hull_s7_bottom",
+   "part": "envelope",
+   "point_m": [
+    -1.800671,
+    0.0,
+    0.256327
+   ]
+  },
+  {
+   "id": "hull_s7_port",
+   "part": "envelope",
+   "point_m": [
+    -1.800671,
+    -0.256327,
+    -0.0
+   ]
+  },
+  {
+   "id": "hull_s7_starboard",
+   "part": "envelope",
+   "point_m": [
+    -1.800671,
+    0.256327,
+    -0.0
+   ]
+  },
+  {
+   "id": "fin_dorsal_tip",
+   "part": "fin_dorsal",
+   "point_m": [
+    -1.851156,
+    0.005161,
+    -0.619408
+   ]
+  },
+  {
+   "id": "fin_dorsal_te_tip",
+   "part": "fin_dorsal",
+   "point_m": [
+    -2.035371,
+    0.0,
+    -0.612083
+   ]
+  },
+  {
+   "id": "fin_dorsal_te_root",
+   "part": "fin_dorsal",
+   "point_m": [
+    -2.126015,
+    0.0,
+    -0.209222
+   ]
+  },
+  {
+   "id": "fin_port_tip",
+   "part": "fin_port",
+   "point_m": [
+    -1.851156,
+    -0.533842,
+    0.314174
+   ]
+  },
+  {
+   "id": "fin_port_te_tip",
+   "part": "fin_port",
+   "point_m": [
+    -2.035372,
+    -0.53008,
+    0.306042
+   ]
+  },
+  {
+   "id": "fin_port_te_root",
+   "part": "fin_port",
+   "point_m": [
+    -2.126015,
+    -0.181192,
+    0.104611
+   ]
+  },
+  {
+   "id": "fin_starboard_tip",
+   "part": "fin_starboard",
+   "point_m": [
+    -1.851156,
+    0.533842,
+    0.314174
+   ]
+  },
+  {
+   "id": "fin_starboard_te_tip",
+   "part": "fin_starboard",
+   "point_m": [
+    -2.035372,
+    0.53008,
+    0.306042
+   ]
+  },
+  {
+   "id": "fin_starboard_te_root",
+   "part": "fin_starboard",
+   "point_m": [
+    -2.126015,
+    0.181192,
+    0.104611
+   ]
+  },
+  {
+   "id": "rotor_port_disc_a",
+   "part": "rotor_port",
+   "point_m": [
+    0.898142,
+    -0.671025,
+    0.168617
+   ]
+  },
+  {
+   "id": "rotor_port_disc_b",
+   "part": "rotor_port",
+   "point_m": [
+    0.898142,
+    -0.485203,
+    0.168617
+   ]
+  },
+  {
+   "id": "rotor_port_disc_c",
+   "part": "rotor_port",
+   "point_m": [
+    0.898142,
+    -0.578114,
+    0.261528
+   ]
+  },
+  {
+   "id": "rotor_port_disc_d",
+   "part": "rotor_port",
+   "point_m": [
+    0.898142,
+    -0.578114,
+    0.075705
+   ]
+  },
+  {
+   "id": "rotor_starboard_disc_a",
+   "part": "rotor_starboard",
+   "point_m": [
+    0.898142,
+    0.485203,
+    0.168617
+   ]
+  },
+  {
+   "id": "rotor_starboard_disc_b",
+   "part": "rotor_starboard",
+   "point_m": [
+    0.898142,
+    0.671025,
+    0.168617
+   ]
+  },
+  {
+   "id": "rotor_starboard_disc_c",
+   "part": "rotor_starboard",
+   "point_m": [
+    0.898142,
+    0.578114,
+    0.261528
+   ]
+  },
+  {
+   "id": "rotor_starboard_disc_d",
+   "part": "rotor_starboard",
+   "point_m": [
+    0.898142,
+    0.578114,
+    0.075705
+   ]
+  },
+  {
+   "id": "rotor_stern_axial_disc_a",
+   "part": "rotor_stern_axial",
+   "point_m": [
+    -2.561596,
+    -0.092911,
+    -0.006882
+   ]
+  },
+  {
+   "id": "rotor_stern_axial_disc_b",
+   "part": "rotor_stern_axial",
+   "point_m": [
+    -2.561596,
+    0.092911,
+    -0.006882
+   ]
+  },
+  {
+   "id": "rotor_stern_axial_disc_c",
+   "part": "rotor_stern_axial",
+   "point_m": [
+    -2.561596,
+    0.0,
+    0.086029
+   ]
+  },
+  {
+   "id": "rotor_stern_axial_disc_d",
+   "part": "rotor_stern_axial",
+   "point_m": [
+    -2.561596,
+    0.0,
+    -0.099794
+   ]
+  },
+  {
+   "id": "rotor_stern_lateral_disc_a",
+   "part": "rotor_stern_lateral",
+   "point_m": [
+    -2.487956,
+    -0.11287,
+    -0.020647
+   ]
+  },
+  {
+   "id": "rotor_stern_lateral_disc_b",
+   "part": "rotor_stern_lateral",
+   "point_m": [
+    -2.336545,
+    -0.11287,
+    -0.020647
+   ]
+  },
+  {
+   "id": "rotor_stern_lateral_disc_c",
+   "part": "rotor_stern_lateral",
+   "point_m": [
+    -2.41225,
+    -0.11287,
+    0.055059
+   ]
+  },
+  {
+   "id": "rotor_stern_lateral_disc_d",
+   "part": "rotor_stern_lateral",
+   "point_m": [
+    -2.41225,
+    -0.11287,
+    -0.096352
+   ]
+  },
+  {
+   "id": "gondola_bottom_front",
+   "part": "gondola",
+   "point_m": [
+    1.335857,
+    0.004943,
+    0.646374
+   ]
+  },
+  {
+   "id": "gondola_bottom_aft",
+   "part": "gondola",
+   "point_m": [
+    1.293249,
+    -0.0,
+    0.644047
+   ]
+  },
+  {
+   "id": "gondola_bottom_port",
+   "part": "gondola",
+   "point_m": [
+    1.314522,
+    -0.019943,
+    0.644047
+   ]
+  },
+  {
+   "id": "gondola_bottom_starboard",
+   "part": "gondola",
+   "point_m": [
+    1.314522,
+    0.019943,
+    0.644047
+   ]
+  },
+  {
+   "id": "gear_front_contact",
+   "part": "gear_front",
+   "point_m": [
+    1.135582,
+    -0.004738,
+    0.728149
+   ]
+  },
+  {
+   "id": "gear_rear_contact",
+   "part": "gear_rear",
+   "point_m": [
+    -1.424639,
+    -0.004274,
+    0.620096
+   ]
+  }
+ ],
+ "glb_nodes": [
+  {
+   "name": "airship",
+   "parent": null,
+   "rest_translation": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "name": "vector_port_hinge",
+   "parent": "airship",
+   "rest_translation": [
+    -0.526497,
+    -0.168617,
+    -0.80523
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · vector lateral babor",
+   "ctrl_property": "Vector grados",
+   "local_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "godot_world_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "travel_deg": [
+    0.0,
+    120.0
+   ],
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "vector_starboard_hinge",
+   "parent": "airship",
+   "rest_translation": [
+    0.526497,
+    -0.168617,
+    -0.80523
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · vector lateral estribor",
+   "ctrl_property": "Vector grados",
+   "local_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "godot_world_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "travel_deg": [
+    0.0,
+    120.0
+   ],
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "vector_stern_hinge",
+   "parent": "airship",
+   "rest_translation": [
+    0.0,
+    0.006882,
+    2.467309
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · vector popa",
+   "ctrl_property": "Vector grados",
+   "local_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "godot_world_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "travel_deg": [
+    0.0,
+    90.0
+   ],
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "rotor_port",
+   "parent": "vector_port_hinge",
+   "rest_translation": [
+    -0.051617,
+    0.0,
+    -0.092911
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · rotor lateral babor",
+   "ctrl_property": "Giro grados",
+   "local_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "godot_world_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "travel_deg": null,
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "rotor_starboard",
+   "parent": "vector_starboard_hinge",
+   "rest_translation": [
+    0.051617,
+    0.0,
+    -0.092911
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · rotor lateral estribor",
+   "ctrl_property": "Giro grados",
+   "local_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "godot_world_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "travel_deg": null,
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "rotor_stern_axial",
+   "parent": "vector_stern_hinge",
+   "rest_translation": [
+    0.0,
+    0.0,
+    0.094288
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · rotor popa axial",
+   "ctrl_property": "Giro grados",
+   "local_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "godot_world_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "travel_deg": null,
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "rotor_stern_lateral",
+   "parent": "airship",
+   "rest_translation": [
+    -0.11287,
+    0.020647,
+    2.41225
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · rotor popa transversal",
+   "ctrl_property": "Giro grados",
+   "local_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "godot_world_axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "travel_deg": null,
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "rudder_dorsal_hinge",
+   "parent": "airship",
+   "rest_translation": [
+    0.0,
+    0.206469,
+    2.009635
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · Aleta dorsal timón",
+   "ctrl_property": "Deflexión grados",
+   "local_axis": [
+    0.0,
+    0.97561,
+    -0.219512
+   ],
+   "godot_world_axis": [
+    0.0,
+    0.97561,
+    -0.219512
+   ],
+   "travel_deg": [
+    -20.0,
+    20.0
+   ],
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "fin_port_hinge",
+   "parent": "airship",
+   "rest_translation": [
+    -0.178808,
+    -0.103235,
+    2.009635
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · Aleta babor timón",
+   "ctrl_property": "Deflexión grados",
+   "local_axis": [
+    -0.844903,
+    -0.487805,
+    -0.219512
+   ],
+   "godot_world_axis": [
+    -0.844903,
+    -0.487805,
+    -0.219512
+   ],
+   "travel_deg": [
+    -20.0,
+    20.0
+   ],
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  },
+  {
+   "name": "fin_starboard_hinge",
+   "parent": "airship",
+   "rest_translation": [
+    0.178808,
+    -0.103235,
+    2.009635
+   ],
+   "rest_rotation_quat_xyzw": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "source_ctrl": "CTRL · Aleta estribor timón",
+   "ctrl_property": "Deflexión grados",
+   "local_axis": [
+    0.844903,
+    -0.487805,
+    -0.219512
+   ],
+   "godot_world_axis": [
+    0.844903,
+    -0.487805,
+    -0.219512
+   ],
+   "travel_deg": [
+    -20.0,
+    20.0
+   ],
+   "positive_rule": "CTRL value +theta == rotate node by +theta (right-handed) about local_axis"
+  }
+ ]
+}

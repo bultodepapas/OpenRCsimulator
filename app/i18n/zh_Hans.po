@@ -9402,3 +9402,10 @@ msgstr "高估算"
 
 msgid "Price variation and modeled alternatives are bounds, not confidence probabilities."
 msgstr "价格变化和模型替代方案只构成上下界，并非置信概率。"
+
+
+msgid "RC blimp (experimental)"
+msgstr "遥控飞艇（实验性）"
+
+msgid "Fly RC blimp"
+msgstr "驾驶遥控飞艇"

@@ -1,0 +1,11 @@
+Tiburón Blanco V1: variante independiente.
+Archivo: Tiburon_Blanco_V1.blend
+
+CÓMO ABRIR Y USAR
+Extrae el ZIP y abre el archivo .blend en Blender. Cada modelo es un archivo independiente; no necesita los demás ZIP ni unir partes.
+
+CONTROLES
+Busca «CTRL · INSPECCIÓN V6» y la opción «Activar demostración». Rango de la demostración: fotogramas 1–673.
+
+ALCANCE
+Modelos para Blender. No incluyen certificación de vuelo o de colisión ni integración de juego. Los archivos .blend se han conservado sin modificaciones.

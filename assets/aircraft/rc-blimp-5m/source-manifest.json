@@ -1,0 +1,4706 @@
+{
+ "schema": "openrc-airship-source-manifest v1",
+ "asset": "rc-blimp-5m",
+ "exporter": {
+  "path": "assets/aircraft/rc-blimp-5m/export_blender.py",
+  "version": "rc-blimp-5m-export 1",
+  "sha256": "6e1638530c6bdbead8db1345af250006bd7ff6c36943a4e16c82e334a04317db"
+ },
+ "delivered_zips": [
+  {
+   "file": "04_Tiburon_Blanco.zip",
+   "bytes": 10040190,
+   "sha256": "4cbe057047f237bd9b6a7fedcfb4c6ad5ca4326160fb05dac2fb64557166813e"
+  },
+  {
+   "file": "05_Historico.zip",
+   "bytes": 10109603,
+   "sha256": "4e2ca1b8e81ca37f69805bf12ee82be56ceaca73775bb47bcd768ec2f5be1d01"
+  },
+  {
+   "file": "06_Cromo_Carbono_Azul.zip",
+   "bytes": 10027447,
+   "sha256": "eaabe83230d86828abe46af551787fef3403ab979617d80bc0c1cef8bffa6358"
+  },
+  {
+   "file": "Eden-Windows-v0.2.1-amd64-gcc-standard.zip",
+   "bytes": 41352380,
+   "sha256": "b9824ee73d0aa16e783d52c4d1772a84003133fa30cd8968c5edbe4ea435c32f"
+  }
+ ],
+ "source_files": [
+  {
+   "path": "04_Tiburon_Blanco/LEEME.txt",
+   "bytes": 529,
+   "sha256": "3f9239536743b0dd1823cc07cc792e5e2062fd3ecec17a7320cd1c918475e0ee"
+  },
+  {
+   "path": "04_Tiburon_Blanco/Tiburon_Blanco_V1.blend",
+   "bytes": 10323228,
+   "sha256": "89137079a348a9147782d8eb8af6a76d58b7e1c60724d95cef920deae8852578"
+  },
+  {
+   "path": "05_Historico/LEEME.txt",
+   "bytes": 537,
+   "sha256": "3ca9373be193811a83cc9cad633da6394bf816e0d1ecb8b47447e5f3dfb7f078"
+  },
+  {
+   "path": "05_Historico/Zeppelin_Historico_V1.blend",
+   "bytes": 10406738,
+   "sha256": "0c84ef00f5492786b7a7afd64396dd41816b484a2c5ee0c3ffb84d4d9411cbbe"
+  },
+  {
+   "path": "06_Cromo_Carbono_Azul/LEEME.txt",
+   "bytes": 548,
+   "sha256": "6360700fab55185ab0c6b88739aa2500241f6412d522391ac304900b17aef383"
+  },
+  {
+   "path": "06_Cromo_Carbono_Azul/Zeppelin_Cromo_Carbono_Azul_V1.blend",
+   "bytes": 10325865,
+   "sha256": "606884e991ff7e33da02f1601fae9b82d85ebac00e1b458cb711b5a905cb0e87"
+  }
+ ],
+ "geometry": {
+  "path": "assets/aircraft/rc-blimp-5m/geometry.json",
+  "generated_from": "tiburon-blanco",
+  "cross_skin_agreement": {
+   "historico": {
+    "compared_numbers": 572,
+    "only_in_reference": [],
+    "only_in_skin": [],
+    "max_abs_difference_by_section": {
+     "bounds_m": 0.0,
+     "collision_witnesses": 0.0,
+     "envelope": 0.0,
+     "envelope_length_m": 0.0,
+     "fins": 0.0,
+     "gear": 0.0,
+     "gondola": 0.0,
+     "rotors": 0.0,
+     "scale": 0.0,
+     "source": 83510.0,
+     "source_envelope_length_m": 0.0,
+     "vectors": 0.0
+    },
+    "largest_differences": [
+     [
+      "source/bytes",
+      83510.0
+     ],
+     [
+      "bounds_m/max[0]",
+      0.0
+     ],
+     [
+      "bounds_m/max[1]",
+      0.0
+     ],
+     [
+      "bounds_m/max[2]",
+      0.0
+     ],
+     [
+      "bounds_m/min[0]",
+      0.0
+     ]
+    ]
+   },
+   "cromo-carbono-azul": {
+    "compared_numbers": 572,
+    "only_in_reference": [],
+    "only_in_skin": [],
+    "max_abs_difference_by_section": {
+     "bounds_m": 0.0,
+     "collision_witnesses": 0.0,
+     "envelope": 0.0,
+     "envelope_length_m": 0.0,
+     "fins": 0.0,
+     "gear": 0.0,
+     "gondola": 0.0,
+     "rotors": 0.0,
+     "scale": 0.0,
+     "source": 2637.0,
+     "source_envelope_length_m": 0.0,
+     "vectors": 0.0
+    },
+    "largest_differences": [
+     [
+      "source/bytes",
+      2637.0
+     ],
+     [
+      "bounds_m/max[0]",
+      0.0
+     ],
+     [
+      "bounds_m/max[1]",
+      0.0
+     ],
+     [
+      "bounds_m/max[2]",
+      0.0
+     ],
+     [
+      "bounds_m/min[0]",
+      0.0
+     ]
+    ]
+   }
+  }
+ },
+ "skins": {
+  "tiburon-blanco": {
+   "skin": "tiburon-blanco",
+   "exporter_version": "rc-blimp-5m-export 1",
+   "source": {
+    "file": "Tiburon_Blanco_V1.blend",
+    "bytes": 10323228,
+    "sha256": "89137079a348a9147782d8eb8af6a76d58b7e1c60724d95cef920deae8852578"
+   },
+   "blender": "5.2.2 LTS",
+   "scale": 0.06882312312435304,
+   "source_envelope_length_m": 72.6500015258789,
+   "source_objects": {
+    "render_visible_geometry": 774,
+    "skipped": {
+     "hidden": 28,
+     "camera_invisible": 0,
+     "excluded_collection": 0
+    }
+   },
+   "articulation_axes_measured": {
+    "vector_port_hinge": {
+     "ctrl": "CTRL · vector lateral babor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "vector_starboard_hinge": {
+     "ctrl": "CTRL · vector lateral estribor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "vector_stern_hinge": {
+     "ctrl": "CTRL · vector popa",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_port": {
+     "ctrl": "CTRL · rotor lateral babor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_starboard": {
+     "ctrl": "CTRL · rotor lateral estribor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_stern_axial": {
+     "ctrl": "CTRL · rotor popa axial",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_stern_lateral": {
+     "ctrl": "CTRL · rotor popa transversal",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rudder_dorsal_hinge": {
+     "ctrl": "CTRL · Aleta dorsal timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    },
+    "fin_port_hinge": {
+     "ctrl": "CTRL · Aleta babor timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    },
+    "fin_starboard_hinge": {
+     "ctrl": "CTRL · Aleta estribor timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    }
+   },
+   "reduction": {
+    "tiny_removed_rule": "largest bounding-box side < 2.0 mm at 5 m",
+    "tiny_removed": [
+     "Aleta babor · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta babor · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta babor · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta babor · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil 1 0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil 1 0.0693",
+     "Aleta estribor · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta estribor · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta estribor · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta estribor · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil 1 0.0693",
+     "Motor lateral babor · cierre tapa",
+     "Motor lateral babor · cierre tapa.001",
+     "Motor lateral babor · cierre tapa.002",
+     "Motor lateral babor · cierre tapa.003",
+     "Motor lateral babor · cierre tapa.004",
+     "Motor lateral babor · cierre tapa.005",
+     "Motor lateral babor · cierre tapa.006",
+     "Motor lateral babor · cierre tapa.007",
+     "Motor lateral estribor · cierre tapa",
+     "Motor lateral estribor · cierre tapa.001",
+     "Motor lateral estribor · cierre tapa.002",
+     "Motor lateral estribor · cierre tapa.003",
+     "Motor lateral estribor · cierre tapa.004",
+     "Motor lateral estribor · cierre tapa.005",
+     "Motor lateral estribor · cierre tapa.006",
+     "Motor lateral estribor · cierre tapa.007",
+     "Puerta babor V5 · fijación 1.False.-7.384",
+     "Puerta babor V5 · fijación 1.False.-7.416",
+     "Puerta babor V5 · fijación 1.True.-7.384",
+     "Puerta babor V5 · fijación 1.True.-7.416",
+     "Puerta babor V5 · fijación 2.False.-8.134",
+     "Puerta babor V5 · fijación 2.False.-8.166",
+     "Puerta babor V5 · fijación 2.True.-8.134",
+     "Puerta babor V5 · fijación 2.True.-8.166",
+     "Puerta estribor V5 · fijación 1.False.-7.244",
+     "Puerta estribor V5 · fijación 1.False.-7.276",
+     "Puerta estribor V5 · fijación 1.True.-7.244",
+     "Puerta estribor V5 · fijación 1.True.-7.276",
+     "Puerta estribor V5 · fijación 2.False.-8.064",
+     "Puerta estribor V5 · fijación 2.False.-8.096",
+     "Puerta estribor V5 · fijación 2.True.-8.064",
+     "Puerta estribor V5 · fijación 2.True.-8.096",
+     "Tren delantero V3 · hub bolt -1 / 1",
+     "Tren delantero V3 · hub bolt -1 / 2",
+     "Tren delantero V3 · hub bolt -1 / 3",
+     "Tren delantero V3 · hub bolt -1 / 4",
+     "Tren delantero V3 · hub bolt -1 / 5",
+     "Tren delantero V3 · hub bolt -1 / 6",
+     "Tren delantero V3 · hub bolt 1 / 1",
+     "Tren delantero V3 · hub bolt 1 / 2",
+     "Tren delantero V3 · hub bolt 1 / 3",
+     "Tren delantero V3 · hub bolt 1 / 4",
+     "Tren delantero V3 · hub bolt 1 / 5",
+     "Tren delantero V3 · hub bolt 1 / 6",
+     "Tren delantero V3 · inflation valve",
+     "Tren trasero V3 · ballast lid fastener",
+     "Tren trasero V3 · ballast lid fastener.001",
+     "Tren trasero V3 · ballast lid fastener.002",
+     "Tren trasero V3 · ballast lid fastener.003",
+     "Tren trasero V3 · ballast lid fastener.004",
+     "Tren trasero V3 · ballast lid fastener.005",
+     "Tren trasero V3 · ballast lid fastener.006",
+     "Tren trasero V3 · ballast lid fastener.007",
+     "Tren trasero V3 · hub bolt -1 / 1",
+     "Tren trasero V3 · hub bolt -1 / 2",
+     "Tren trasero V3 · hub bolt -1 / 3",
+     "Tren trasero V3 · hub bolt -1 / 4",
+     "Tren trasero V3 · hub bolt -1 / 5",
+     "Tren trasero V3 · hub bolt -1 / 6",
+     "Tren trasero V3 · hub bolt 1 / 1",
+     "Tren trasero V3 · hub bolt 1 / 2",
+     "Tren trasero V3 · hub bolt 1 / 3",
+     "Tren trasero V3 · hub bolt 1 / 4",
+     "Tren trasero V3 · hub bolt 1 / 5",
+     "Tren trasero V3 · hub bolt 1 / 6",
+     "Tren trasero V3 · inflation valve",
+     "lateral babor · tornillo cono",
+     "lateral babor · tornillo cono.001",
+     "lateral babor · tornillo cono.002",
+     "lateral babor · tornillo cono.003",
+     "lateral babor · tornillo cono.004",
+     "lateral babor · tornillo cono.005",
+     "lateral babor · tornillo cono.006",
+     "lateral babor · tornillo cono.007",
+     "lateral babor · tornillo cono.008",
+     "lateral estribor · tornillo cono",
+     "lateral estribor · tornillo cono.001",
+     "lateral estribor · tornillo cono.002",
+     "lateral estribor · tornillo cono.003",
+     "lateral estribor · tornillo cono.004",
+     "lateral estribor · tornillo cono.005",
+     "lateral estribor · tornillo cono.006",
+     "lateral estribor · tornillo cono.007",
+     "lateral estribor · tornillo cono.008",
+     "popa axial · tornillo cono",
+     "popa axial · tornillo cono.001",
+     "popa axial · tornillo cono.002",
+     "popa axial · tornillo cono.003",
+     "popa axial · tornillo cono.004",
+     "popa axial · tornillo cono.005",
+     "popa axial · tornillo cono.006",
+     "popa axial · tornillo cono.007",
+     "popa axial · tornillo cono.008",
+     "popa transversal · tornillo cono",
+     "popa transversal · tornillo cono.001",
+     "popa transversal · tornillo cono.002",
+     "popa transversal · tornillo cono.003",
+     "popa transversal · tornillo cono.004",
+     "popa transversal · tornillo cono.005",
+     "popa transversal · tornillo cono.006",
+     "popa transversal · tornillo cono.007",
+     "popa transversal · tornillo cono.008"
+    ],
+    "bevel_modifiers_not_applied": 276,
+    "bevel_rule": "bevel width < 0.50 mm at 5 m; sharp edges marked at 30 deg instead",
+    "glass_solidify_not_applied": [
+     "Parabrisas · cristal babor",
+     "Parabrisas · cristal estribor",
+     "Pasajero 1 · cristal babor",
+     "Pasajero 1 · cristal estribor",
+     "Pasajero 2 · cristal babor",
+     "Pasajero 2 · cristal estribor",
+     "Pasajero 3 · cristal babor",
+     "Pasajero 3 · cristal estribor",
+     "Piloto · cristal babor",
+     "Piloto · cristal estribor",
+     "Puerta · cristal babor",
+     "Puerta · cristal estribor",
+     "Ventanilla posterior · cristal babor"
+    ],
+    "decimation_rule": "collapse decimation of meshes with >= 2000 triangles, smallest ratio (7-step bisection) whose two-sided vertex deviation stays <= 0.25 mm at 5 m; material-border vertices are protected (vertex-group weight 0, factor 100) and every material must keep its area within 10 %",
+    "decimated": [
+     {
+      "object": "Envolvente · perfil auditado Ø14.2 m",
+      "tris_before": 122492,
+      "tris_after": 21012,
+      "ratio": 0.1715,
+      "max_deviation_mm_at_5m": 0.2377
+     },
+     {
+      "object": "Góndola · casco redondeado N1A",
+      "tris_before": 113518,
+      "tris_after": 9830,
+      "ratio": 0.0866,
+      "max_deviation_mm_at_5m": 0.2391
+     },
+     {
+      "object": "Motor popa · cono FIJO",
+      "tris_before": 72654,
+      "tris_after": 2380,
+      "ratio": 0.0328,
+      "max_deviation_mm_at_5m": 0.2493
+     },
+     {
+      "object": "Motor popa · cápsula fija envolvente V4",
+      "tris_before": 34268,
+      "tris_after": 2966,
+      "ratio": 0.0866,
+      "max_deviation_mm_at_5m": 0.2093
+     },
+     {
+      "object": "Góndola V5 · faldón flexible continuo",
+      "tris_before": 19200,
+      "tris_after": 1100,
+      "ratio": 0.0573,
+      "max_deviation_mm_at_5m": 0.1762
+     },
+     {
+      "object": "Motor lateral babor · torpedo NO giratorio",
+      "tris_before": 18620,
+      "tris_after": 716,
+      "ratio": 0.0385,
+      "max_deviation_mm_at_5m": 0.2393
+     },
+     {
+      "object": "Motor lateral estribor · torpedo NO giratorio",
+      "tris_before": 18620,
+      "tris_after": 716,
+      "ratio": 0.0385,
+      "max_deviation_mm_at_5m": 0.2393
+     },
+     {
+      "object": "Aleta babor · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1256
+     },
+     {
+      "object": "Aleta dorsal · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1267
+     },
+     {
+      "object": "Aleta estribor · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1048
+     },
+     {
+      "object": "Puerta babor V5 · hoja compuesta",
+      "tris_before": 12784,
+      "tris_after": 438,
+      "ratio": 0.0344,
+      "max_deviation_mm_at_5m": 0.2401
+     },
+     {
+      "object": "Puerta estribor V5 · hoja compuesta",
+      "tris_before": 12784,
+      "tris_after": 414,
+      "ratio": 0.0324,
+      "max_deviation_mm_at_5m": 0.1869
+     },
+     {
+      "object": "Motor popa · torpedo basculante",
+      "tris_before": 12584,
+      "tris_after": 318,
+      "ratio": 0.0253,
+      "max_deviation_mm_at_5m": 0.2192
+     },
+     {
+      "object": "Aleta babor · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Aleta dorsal · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Aleta estribor · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Mandíbula · cavidad pintada conformada",
+      "tris_before": 6720,
+      "tris_after": 1320,
+      "ratio": 0.1964,
+      "max_deviation_mm_at_5m": 0.2271
+     },
+     {
+      "object": "Parabrisas · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 334,
+      "ratio": 0.066,
+      "max_deviation_mm_at_5m": 0.2402
+     },
+     {
+      "object": "Parabrisas · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 358,
+      "ratio": 0.0705,
+      "max_deviation_mm_at_5m": 0.1925
+     },
+     {
+      "object": "Pasajero 1 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0189
+     },
+     {
+      "object": "Pasajero 1 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0178
+     },
+     {
+      "object": "Pasajero 2 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0175
+     },
+     {
+      "object": "Pasajero 2 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0167
+     },
+     {
+      "object": "Pasajero 3 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.019
+     },
+     {
+      "object": "Pasajero 3 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0677
+     },
+     {
+      "object": "Piloto · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.096
+     },
+     {
+      "object": "Piloto · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0762
+     },
+     {
+      "object": "Puerta · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0191
+     },
+     {
+      "object": "Puerta · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0136
+     },
+     {
+      "object": "Ventanilla posterior · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0713
+     },
+     {
+      "object": "Tren delantero V3 · neumático",
+      "tris_before": 4608,
+      "tris_after": 948,
+      "ratio": 0.2061,
+      "max_deviation_mm_at_5m": 0.2447
+     },
+     {
+      "object": "Tren trasero V3 · neumático",
+      "tris_before": 4608,
+      "tris_after": 890,
+      "ratio": 0.1933,
+      "max_deviation_mm_at_5m": 0.1954
+     },
+     {
+      "object": "Mandíbula · labio inferior",
+      "tris_before": 3600,
+      "tris_after": 942,
+      "ratio": 0.262,
+      "max_deviation_mm_at_5m": 0.2412
+     },
+     {
+      "object": "Mandíbula · labio superior",
+      "tris_before": 3600,
+      "tris_after": 1038,
+      "ratio": 0.2887,
+      "max_deviation_mm_at_5m": 0.2286
+     },
+     {
+      "object": "Motor lateral babor · toma V4 · reborde",
+      "tris_before": 3456,
+      "tris_after": 304,
+      "ratio": 0.0885,
+      "max_deviation_mm_at_5m": 0.0459
+     },
+     {
+      "object": "Motor lateral estribor · toma V4 · reborde",
+      "tris_before": 3456,
+      "tris_after": 304,
+      "ratio": 0.0885,
+      "max_deviation_mm_at_5m": 0.0462
+     },
+     {
+      "object": "Motor popa · junta carenado V4",
+      "tris_before": 3072,
+      "tris_after": 304,
+      "ratio": 0.0994,
+      "max_deviation_mm_at_5m": 0.1907
+     },
+     {
+      "object": "Ojo negro · babor",
+      "tris_before": 3072,
+      "tris_after": 430,
+      "ratio": 0.1405,
+      "max_deviation_mm_at_5m": 0.2375
+     },
+     {
+      "object": "Ojo negro · estribor",
+      "tris_before": 3072,
+      "tris_after": 438,
+      "ratio": 0.143,
+      "max_deviation_mm_at_5m": 0.2318
+     },
+     {
+      "object": "Puerta babor V5 · rebaje y jamba",
+      "tris_before": 3008,
+      "tris_after": 514,
+      "ratio": 0.1712,
+      "max_deviation_mm_at_5m": 0.2348
+     },
+     {
+      "object": "Puerta estribor V5 · rebaje y jamba",
+      "tris_before": 3008,
+      "tris_after": 478,
+      "ratio": 0.1593,
+      "max_deviation_mm_at_5m": 0.2191
+     },
+     {
+      "object": "Proa · parche circular amarillo",
+      "tris_before": 2880,
+      "tris_after": 305,
+      "ratio": 0.106,
+      "max_deviation_mm_at_5m": 0.1635
+     },
+     {
+      "object": "Ojo · borde cutáneo babor",
+      "tris_before": 2560,
+      "tris_after": 548,
+      "ratio": 0.2142,
+      "max_deviation_mm_at_5m": 0.2477
+     },
+     {
+      "object": "Ojo · borde cutáneo estribor",
+      "tris_before": 2560,
+      "tris_after": 575,
+      "ratio": 0.2252,
+      "max_deviation_mm_at_5m": 0.2272
+     },
+     {
+      "object": "Góndola V5 · labio de abertura -1",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0839
+     },
+     {
+      "object": "Góndola V5 · labio de abertura 1",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.096
+     },
+     {
+      "object": "Parabrisas · junta babor",
+      "tris_before": 2256,
+      "tris_after": 404,
+      "ratio": 0.1794,
+      "max_deviation_mm_at_5m": 0.2381
+     },
+     {
+      "object": "Parabrisas · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 488,
+      "ratio": 0.2168,
+      "max_deviation_mm_at_5m": 0.2456
+     },
+     {
+      "object": "Pasajero 1 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1038
+     },
+     {
+      "object": "Pasajero 1 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0797
+     },
+     {
+      "object": "Pasajero 2 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1024
+     },
+     {
+      "object": "Pasajero 2 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1104
+     },
+     {
+      "object": "Pasajero 3 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0758
+     },
+     {
+      "object": "Pasajero 3 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1388
+     },
+     {
+      "object": "Piloto · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1445
+     },
+     {
+      "object": "Piloto · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1435
+     },
+     {
+      "object": "Puerta · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.081
+     },
+     {
+      "object": "Puerta · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0508
+     },
+     {
+      "object": "Ventanilla posterior · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1107
+     },
+     {
+      "object": "lateral babor · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral babor · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral babor · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa transversal · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa transversal · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0356
+     },
+     {
+      "object": "popa transversal · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0357
+     },
+     {
+      "object": "popa axial · cono giratorio",
+      "tris_before": 2044,
+      "tris_after": 398,
+      "ratio": 0.1951,
+      "max_deviation_mm_at_5m": 0.2378
+     },
+     {
+      "object": "lateral babor · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2129
+     },
+     {
+      "object": "lateral estribor · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2129
+     },
+     {
+      "object": "popa transversal · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2009
+     }
+    ]
+   },
+   "triangles_before_decimation": 852382,
+   "triangles_after_decimation": 223249,
+   "materials_source": {
+    "Baliza · rojo": "plain",
+    "Cabina · tapicería azul": "plain",
+    "Cristal · azul ahumado": "glass",
+    "Envolvente · gris perla satinado": "plain",
+    "Herrajes · aluminio": "plain",
+    "Hélices · bandas rojas": "plain",
+    "Hélices · gris claro": "plain",
+    "Llantas y carenados · blanco cálido": "plain",
+    "Marcos · grafito": "plain",
+    "Neumáticos · caucho": "plain",
+    "PEZ GLOBO · blanco marfil": "plain",
+    "PEZ GLOBO · tinta verde profunda": "plain",
+    "Pistones · acero pulido": "plain",
+    "Rejillas · negro profundo": "plain",
+    "TIBURÓN V1 · aleta babor estabilizador": "procedural",
+    "TIBURÓN V1 · aleta babor timón móvil": "procedural",
+    "TIBURÓN V1 · aleta dorsal estabilizador": "procedural",
+    "TIBURÓN V1 · aleta dorsal timón móvil": "procedural",
+    "TIBURÓN V1 · aleta estribor estabilizador": "procedural",
+    "TIBURÓN V1 · aleta estribor timón móvil": "procedural",
+    "TIBURÓN V1 · borde labial gris": "plain",
+    "TIBURÓN V1 · cavidad oscura mate": "plain",
+    "TIBURÓN V1 · esmalte marfil natural": "procedural",
+    "TIBURÓN V1 · herrajes gris grafito": "plain",
+    "TIBURÓN V1 · ojos negros húmedos": "plain",
+    "TIBURÓN V1 · piel acero y vientre blanco": "procedural",
+    "TIBURÓN V1 · piel acero y vientre blanco · piezas": "procedural",
+    "V3 · Tren · testigo de servicio": "plain",
+    "V3 · acero pasadores": "plain",
+    "V3 · juntas discretas": "plain",
+    "V3 · placas mecanizadas": "plain",
+    "V5 Góndola · EPDM negro mate": "plain",
+    "V5 Góndola · banda naranja pintada": "plain",
+    "V5 Góndola · herrajes satinado": "plain",
+    "V5 Góndola · interior aberturas": "plain",
+    "V5 Góndola · pintura anclada a cabina": "procedural",
+    "V5 Góndola · revestimiento interior": "plain",
+    "V5 Góndola · tejido gris de unión": "plain",
+    "V5 Puerta babor · pintura solidaria a hoja": "procedural"
+   },
+   "bake": {
+    "engine": "Cycles CPU",
+    "type": "EMIT (channel wired to an Emission shader, no lighting)",
+    "proxy": "all baked parts joined into one world-space proxy (one scene sync per pass); each part's object-space and generated coordinates are stored as attributes and replace the TexCoord Object/Generated outputs, so the shaders see the same coordinates",
+    "baked_parts": 65,
+    "samples": 16,
+    "margin_px": 8,
+    "margin_type": "EXTEND",
+    "seconds": 29.0,
+    "uv": {
+     "envelope": "cylindrical: u = hull station, v = angle around the X axis, seam on the dorsal line",
+     "others": "smart UV project per material (66 deg, island margin 0.004), all users packed together"
+    },
+    "texel_target_mm_at_5m": 1.2,
+    "envelope_texture": [
+     2048,
+     1024
+    ],
+    "uniform_rule": "bake collapses to a constant when its p0.05..p99.95 range is below 0.025 (color) / 0.03 (data)",
+    "normal_maps": "not baked: the procedural bump is sub-millimetre at 5 m",
+    "materials": {
+     "TIBURÓN V1 · aleta babor estabilizador": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.6176
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0196,
+        "coverage": 0.6176
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     },
+     "TIBURÓN V1 · aleta babor timón móvil": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.5787
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0196,
+        "coverage": 0.5787
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     },
+     "TIBURÓN V1 · aleta dorsal estabilizador": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0039,
+        "coverage": 0.6171
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0196,
+        "coverage": 0.6171
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     },
+     "TIBURÓN V1 · aleta dorsal timón móvil": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0039,
+        "coverage": 0.5769
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0196,
+        "coverage": 0.5769
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     },
+     "TIBURÓN V1 · aleta estribor estabilizador": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.6191
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0196,
+        "coverage": 0.6191
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     },
+     "TIBURÓN V1 · aleta estribor timón móvil": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.5787
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0196,
+        "coverage": 0.5787
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     },
+     "TIBURÓN V1 · esmalte marfil natural": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.2863,
+        "coverage": 0.7259,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "constant (unlinked)"
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "tiburon-blanco_tiburon_v1_esmalte_marfil_natural_basecolor.jpg"
+      }
+     },
+     "TIBURÓN V1 · piel acero y vientre blanco": {
+      "size": [
+       2048,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.8196,
+        "coverage": 0.9614,
+        "size": [
+         2048,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0118,
+        "coverage": 0.9692
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_basecolor.jpg"
+      }
+     },
+     "V5 Góndola · pintura anclada a cabina": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.7686,
+        "coverage": 0.6096,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "constant (unlinked)"
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "tiburon-blanco_v5_gondola_pintura_anclada_a_cabina_basecolor.jpg"
+      }
+     },
+     "TIBURÓN V1 · piel acero y vientre blanco · piezas": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.6745,
+        "coverage": 0.6951,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0157,
+        "coverage": 0.6951
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_piezas_basecolor.jpg"
+      }
+     },
+     "V5 Puerta babor · pintura solidaria a hoja": {
+      "size": [
+       256,
+       256
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.7307
+       },
+       "rough": {
+        "mode": "constant (unlinked)"
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {}
+     }
+    }
+   },
+   "materials": {
+    "V3 · placas mecanizadas": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v3_placas_mecanizadas",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · herrajes gris grafito": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_tiburon_v1_herrajes_gris_grafito",
+     "note": "plain Principled constants"
+    },
+    "Herrajes · aluminio": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_herrajes_aluminio",
+     "note": "plain Principled constants"
+    },
+    "V3 · acero pasadores": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v3_acero_pasadores",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · aleta babor estabilizador": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_aleta_babor_estabilizador",
+     "note": "baked"
+    },
+    "V3 · juntas discretas": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v3_juntas_discretas",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · aleta babor timón móvil": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_aleta_babor_timon_movil",
+     "note": "baked"
+    },
+    "TIBURÓN V1 · aleta dorsal estabilizador": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_aleta_dorsal_estabilizador",
+     "note": "baked"
+    },
+    "TIBURÓN V1 · aleta dorsal timón móvil": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_aleta_dorsal_timon_movil",
+     "note": "baked"
+    },
+    "TIBURÓN V1 · aleta estribor estabilizador": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_aleta_estribor_estabilizador",
+     "note": "baked"
+    },
+    "TIBURÓN V1 · aleta estribor timón móvil": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_aleta_estribor_timon_movil",
+     "note": "baked"
+    },
+    "Cabina · tapicería azul": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_cabina_tapiceria_azul",
+     "note": "plain Principled constants"
+    },
+    "Marcos · grafito": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_marcos_grafito",
+     "note": "plain Principled constants"
+    },
+    "Cristal · azul ahumado": {
+     "kind": "glass",
+     "gltf_material": "tiburon-blanco_cristal_azul_ahumado",
+     "note": "non-Principled glass replaced by Principled glass, alpha blend"
+    },
+    "TIBURÓN V1 · esmalte marfil natural": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_esmalte_marfil_natural",
+     "note": "baked"
+    },
+    "Baliza · rojo": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_baliza_rojo",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · piel acero y vientre blanco": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco",
+     "note": "baked"
+    },
+    "Envolvente · gris perla satinado": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_envolvente_gris_perla_satinado",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · tejido gris de unión": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v5_gondola_tejido_gris_de_union",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · pintura anclada a cabina": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_v5_gondola_pintura_anclada_a_cabina",
+     "note": "baked"
+    },
+    "PEZ GLOBO · blanco marfil": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_pez_globo_blanco_marfil",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · interior aberturas": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v5_gondola_interior_aberturas",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · cavidad oscura mate": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_tiburon_v1_cavidad_oscura_mate",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · borde labial gris": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_tiburon_v1_borde_labial_gris",
+     "note": "plain Principled constants"
+    },
+    "Rejillas · negro profundo": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_rejillas_negro_profundo",
+     "note": "plain Principled constants"
+    },
+    "Pistones · acero pulido": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_pistones_acero_pulido",
+     "note": "plain Principled constants"
+    },
+    "TIBURÓN V1 · piel acero y vientre blanco · piezas": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_piezas",
+     "note": "baked"
+    },
+    "TIBURÓN V1 · ojos negros húmedos": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_tiburon_v1_ojos_negros_humedos",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · EPDM negro mate": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v5_gondola_epdm_negro_mate",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · herrajes satinado": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v5_gondola_herrajes_satinado",
+     "note": "plain Principled constants"
+    },
+    "V5 Puerta babor · pintura solidaria a hoja": {
+     "kind": "procedural",
+     "gltf_material": "tiburon-blanco_v5_puerta_babor_pintura_solidaria_a_hoja",
+     "note": "baked"
+    },
+    "V5 Góndola · revestimiento interior": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v5_gondola_revestimiento_interior",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · banda naranja pintada": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v5_gondola_banda_naranja_pintada",
+     "note": "plain Principled constants"
+    },
+    "Llantas y carenados · blanco cálido": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_llantas_y_carenados_blanco_calido",
+     "note": "plain Principled constants"
+    },
+    "Neumáticos · caucho": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_neumaticos_caucho",
+     "note": "plain Principled constants"
+    },
+    "V3 · Tren · testigo de servicio": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_v3_tren_testigo_de_servicio",
+     "note": "plain Principled constants"
+    },
+    "Hélices · gris claro": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_helices_gris_claro",
+     "note": "plain Principled constants"
+    },
+    "Hélices · bandas rojas": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_helices_bandas_rojas",
+     "note": "plain Principled constants"
+    },
+    "PEZ GLOBO · tinta verde profunda": {
+     "kind": "plain",
+     "gltf_material": "tiburon-blanco_pez_globo_tinta_verde_profunda",
+     "note": "plain Principled constants"
+    }
+   },
+   "negative_scale_parts": 0,
+   "export_options": {
+    "export_format": "GLB",
+    "use_selection": true,
+    "export_yup": true,
+    "export_apply": true,
+    "export_animations": false,
+    "export_cameras": false,
+    "export_lights": false,
+    "export_extras": true,
+    "export_draco_mesh_compression_enable": false,
+    "export_image_format": "AUTO",
+    "export_jpeg_quality": 90,
+    "export_texcoords": true,
+    "export_normals": true,
+    "export_tangents": false,
+    "export_materials": "EXPORT",
+    "export_skins": false,
+    "export_morph": false,
+    "export_attributes": false,
+    "export_vertex_color": "NONE"
+   },
+   "glb": {
+    "bytes": 7676404,
+    "sha256": "aea18667642f9da6336f822b4280eec7c05e2c47c374b1cc07494db814322afd",
+    "triangles": 223249,
+    "primitives_draw_calls": 82,
+    "mesh_nodes": 11,
+    "per_mesh": {
+     "airship_mesh": {
+      "triangles": 172339,
+      "primitives": 33
+     },
+     "fin_port_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 4
+     },
+     "fin_starboard_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 4
+     },
+     "rotor_stern_lateral_mesh": {
+      "triangles": 9090,
+      "primitives": 7
+     },
+     "rudder_dorsal_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 4
+     },
+     "rotor_port_mesh": {
+      "triangles": 9078,
+      "primitives": 7
+     },
+     "vector_port_hinge_mesh": {
+      "triangles": 4676,
+      "primitives": 3
+     },
+     "rotor_starboard_mesh": {
+      "triangles": 9078,
+      "primitives": 7
+     },
+     "vector_starboard_hinge_mesh": {
+      "triangles": 4676,
+      "primitives": 3
+     },
+     "rotor_stern_axial_mesh": {
+      "triangles": 9034,
+      "primitives": 7
+     },
+     "vector_stern_hinge_mesh": {
+      "triangles": 1594,
+      "primitives": 3
+     }
+    },
+    "materials": 39,
+    "textures": 4,
+    "images": [
+     {
+      "name": "tiburon-blanco_tiburon_v1_esmalte_marfil_natural_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 241942
+     },
+     {
+      "name": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 65587
+     },
+     {
+      "name": "tiburon-blanco_v5_gondola_pintura_anclada_a_cabina_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 96263
+     },
+     {
+      "name": "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_piezas_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 44422
+     }
+    ],
+    "bounds_godot_m": {
+     "min": [
+      -0.647525,
+      -0.728202,
+      -2.580867
+     ],
+     "max": [
+      0.666565,
+      0.619408,
+      2.587759
+     ]
+    },
+    "extensions_used": [],
+    "alpha_modes": [
+     "BLEND",
+     "OPAQUE"
+    ],
+    "invalid_texcoord_refs": 0,
+    "texture_sizes": {
+     "tiburon-blanco_tiburon_v1_esmalte_marfil_natural_basecolor": [
+      1024,
+      1024
+     ],
+     "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_basecolor": [
+      2048,
+      1024
+     ],
+     "tiburon-blanco_v5_gondola_pintura_anclada_a_cabina_basecolor": [
+      1024,
+      1024
+     ],
+     "tiburon-blanco_tiburon_v1_piel_acero_y_vientre_blanco_piezas_basecolor": [
+      512,
+      512
+     ]
+    },
+    "within_triangle_budget": true
+   },
+   "seconds": 136.6
+  },
+  "historico": {
+   "skin": "historico",
+   "exporter_version": "rc-blimp-5m-export 1",
+   "source": {
+    "file": "Zeppelin_Historico_V1.blend",
+    "bytes": 10406738,
+    "sha256": "0c84ef00f5492786b7a7afd64396dd41816b484a2c5ee0c3ffb84d4d9411cbbe"
+   },
+   "blender": "5.2.2 LTS",
+   "scale": 0.06882312312435304,
+   "source_envelope_length_m": 72.6500015258789,
+   "source_objects": {
+    "render_visible_geometry": 719,
+    "skipped": {
+     "hidden": 28,
+     "camera_invisible": 0,
+     "excluded_collection": 0
+    }
+   },
+   "articulation_axes_measured": {
+    "vector_port_hinge": {
+     "ctrl": "CTRL · vector lateral babor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "vector_starboard_hinge": {
+     "ctrl": "CTRL · vector lateral estribor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "vector_stern_hinge": {
+     "ctrl": "CTRL · vector popa",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_port": {
+     "ctrl": "CTRL · rotor lateral babor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_starboard": {
+     "ctrl": "CTRL · rotor lateral estribor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_stern_axial": {
+     "ctrl": "CTRL · rotor popa axial",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_stern_lateral": {
+     "ctrl": "CTRL · rotor popa transversal",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rudder_dorsal_hinge": {
+     "ctrl": "CTRL · Aleta dorsal timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    },
+    "fin_port_hinge": {
+     "ctrl": "CTRL · Aleta babor timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    },
+    "fin_starboard_hinge": {
+     "ctrl": "CTRL · Aleta estribor timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    }
+   },
+   "reduction": {
+    "tiny_removed_rule": "largest bounding-box side < 2.0 mm at 5 m",
+    "tiny_removed": [
+     "Aleta babor · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta babor · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta babor · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta babor · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil 1 0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil 1 0.0693",
+     "Aleta estribor · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta estribor · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta estribor · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta estribor · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil 1 0.0693",
+     "Motor lateral babor · cierre tapa",
+     "Motor lateral babor · cierre tapa.001",
+     "Motor lateral babor · cierre tapa.002",
+     "Motor lateral babor · cierre tapa.003",
+     "Motor lateral babor · cierre tapa.004",
+     "Motor lateral babor · cierre tapa.005",
+     "Motor lateral babor · cierre tapa.006",
+     "Motor lateral babor · cierre tapa.007",
+     "Motor lateral estribor · cierre tapa",
+     "Motor lateral estribor · cierre tapa.001",
+     "Motor lateral estribor · cierre tapa.002",
+     "Motor lateral estribor · cierre tapa.003",
+     "Motor lateral estribor · cierre tapa.004",
+     "Motor lateral estribor · cierre tapa.005",
+     "Motor lateral estribor · cierre tapa.006",
+     "Motor lateral estribor · cierre tapa.007",
+     "Puerta babor V5 · fijación 1.False.-7.384",
+     "Puerta babor V5 · fijación 1.False.-7.416",
+     "Puerta babor V5 · fijación 1.True.-7.384",
+     "Puerta babor V5 · fijación 1.True.-7.416",
+     "Puerta babor V5 · fijación 2.False.-8.134",
+     "Puerta babor V5 · fijación 2.False.-8.166",
+     "Puerta babor V5 · fijación 2.True.-8.134",
+     "Puerta babor V5 · fijación 2.True.-8.166",
+     "Puerta estribor V5 · fijación 1.False.-7.244",
+     "Puerta estribor V5 · fijación 1.False.-7.276",
+     "Puerta estribor V5 · fijación 1.True.-7.244",
+     "Puerta estribor V5 · fijación 1.True.-7.276",
+     "Puerta estribor V5 · fijación 2.False.-8.064",
+     "Puerta estribor V5 · fijación 2.False.-8.096",
+     "Puerta estribor V5 · fijación 2.True.-8.064",
+     "Puerta estribor V5 · fijación 2.True.-8.096",
+     "Tren delantero V3 · hub bolt -1 / 1",
+     "Tren delantero V3 · hub bolt -1 / 2",
+     "Tren delantero V3 · hub bolt -1 / 3",
+     "Tren delantero V3 · hub bolt -1 / 4",
+     "Tren delantero V3 · hub bolt -1 / 5",
+     "Tren delantero V3 · hub bolt -1 / 6",
+     "Tren delantero V3 · hub bolt 1 / 1",
+     "Tren delantero V3 · hub bolt 1 / 2",
+     "Tren delantero V3 · hub bolt 1 / 3",
+     "Tren delantero V3 · hub bolt 1 / 4",
+     "Tren delantero V3 · hub bolt 1 / 5",
+     "Tren delantero V3 · hub bolt 1 / 6",
+     "Tren delantero V3 · inflation valve",
+     "Tren trasero V3 · ballast lid fastener",
+     "Tren trasero V3 · ballast lid fastener.001",
+     "Tren trasero V3 · ballast lid fastener.002",
+     "Tren trasero V3 · ballast lid fastener.003",
+     "Tren trasero V3 · ballast lid fastener.004",
+     "Tren trasero V3 · ballast lid fastener.005",
+     "Tren trasero V3 · ballast lid fastener.006",
+     "Tren trasero V3 · ballast lid fastener.007",
+     "Tren trasero V3 · hub bolt -1 / 1",
+     "Tren trasero V3 · hub bolt -1 / 2",
+     "Tren trasero V3 · hub bolt -1 / 3",
+     "Tren trasero V3 · hub bolt -1 / 4",
+     "Tren trasero V3 · hub bolt -1 / 5",
+     "Tren trasero V3 · hub bolt -1 / 6",
+     "Tren trasero V3 · hub bolt 1 / 1",
+     "Tren trasero V3 · hub bolt 1 / 2",
+     "Tren trasero V3 · hub bolt 1 / 3",
+     "Tren trasero V3 · hub bolt 1 / 4",
+     "Tren trasero V3 · hub bolt 1 / 5",
+     "Tren trasero V3 · hub bolt 1 / 6",
+     "Tren trasero V3 · inflation valve",
+     "lateral babor · tornillo cono",
+     "lateral babor · tornillo cono.001",
+     "lateral babor · tornillo cono.002",
+     "lateral babor · tornillo cono.003",
+     "lateral babor · tornillo cono.004",
+     "lateral babor · tornillo cono.005",
+     "lateral babor · tornillo cono.006",
+     "lateral babor · tornillo cono.007",
+     "lateral babor · tornillo cono.008",
+     "lateral estribor · tornillo cono",
+     "lateral estribor · tornillo cono.001",
+     "lateral estribor · tornillo cono.002",
+     "lateral estribor · tornillo cono.003",
+     "lateral estribor · tornillo cono.004",
+     "lateral estribor · tornillo cono.005",
+     "lateral estribor · tornillo cono.006",
+     "lateral estribor · tornillo cono.007",
+     "lateral estribor · tornillo cono.008",
+     "popa axial · tornillo cono",
+     "popa axial · tornillo cono.001",
+     "popa axial · tornillo cono.002",
+     "popa axial · tornillo cono.003",
+     "popa axial · tornillo cono.004",
+     "popa axial · tornillo cono.005",
+     "popa axial · tornillo cono.006",
+     "popa axial · tornillo cono.007",
+     "popa axial · tornillo cono.008",
+     "popa transversal · tornillo cono",
+     "popa transversal · tornillo cono.001",
+     "popa transversal · tornillo cono.002",
+     "popa transversal · tornillo cono.003",
+     "popa transversal · tornillo cono.004",
+     "popa transversal · tornillo cono.005",
+     "popa transversal · tornillo cono.006",
+     "popa transversal · tornillo cono.007",
+     "popa transversal · tornillo cono.008"
+    ],
+    "bevel_modifiers_not_applied": 276,
+    "bevel_rule": "bevel width < 0.50 mm at 5 m; sharp edges marked at 30 deg instead",
+    "glass_solidify_not_applied": [
+     "Parabrisas · cristal babor",
+     "Parabrisas · cristal estribor",
+     "Pasajero 1 · cristal babor",
+     "Pasajero 1 · cristal estribor",
+     "Pasajero 2 · cristal babor",
+     "Pasajero 2 · cristal estribor",
+     "Pasajero 3 · cristal babor",
+     "Pasajero 3 · cristal estribor",
+     "Piloto · cristal babor",
+     "Piloto · cristal estribor",
+     "Puerta · cristal babor",
+     "Puerta · cristal estribor",
+     "Ventanilla posterior · cristal babor"
+    ],
+    "decimation_rule": "collapse decimation of meshes with >= 2000 triangles, smallest ratio (7-step bisection) whose two-sided vertex deviation stays <= 0.25 mm at 5 m; material-border vertices are protected (vertex-group weight 0, factor 100) and every material must keep its area within 10 %",
+    "decimated": [
+     {
+      "object": "Envolvente · perfil auditado Ø14.2 m",
+      "tris_before": 122492,
+      "tris_after": 21012,
+      "ratio": 0.1715,
+      "max_deviation_mm_at_5m": 0.2377
+     },
+     {
+      "object": "Góndola · casco redondeado N1A",
+      "tris_before": 113518,
+      "tris_after": 9830,
+      "ratio": 0.0866,
+      "max_deviation_mm_at_5m": 0.2391
+     },
+     {
+      "object": "Motor popa · cono FIJO",
+      "tris_before": 72654,
+      "tris_after": 2380,
+      "ratio": 0.0328,
+      "max_deviation_mm_at_5m": 0.2493
+     },
+     {
+      "object": "Motor popa · cápsula fija envolvente V4",
+      "tris_before": 34268,
+      "tris_after": 2966,
+      "ratio": 0.0866,
+      "max_deviation_mm_at_5m": 0.2093
+     },
+     {
+      "object": "Góndola V5 · faldón flexible continuo",
+      "tris_before": 19200,
+      "tris_after": 1100,
+      "ratio": 0.0573,
+      "max_deviation_mm_at_5m": 0.1762
+     },
+     {
+      "object": "Motor lateral babor · torpedo NO giratorio",
+      "tris_before": 18620,
+      "tris_after": 716,
+      "ratio": 0.0385,
+      "max_deviation_mm_at_5m": 0.2393
+     },
+     {
+      "object": "Motor lateral estribor · torpedo NO giratorio",
+      "tris_before": 18620,
+      "tris_after": 716,
+      "ratio": 0.0385,
+      "max_deviation_mm_at_5m": 0.2393
+     },
+     {
+      "object": "Aleta babor · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1256
+     },
+     {
+      "object": "Aleta dorsal · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1267
+     },
+     {
+      "object": "Aleta estribor · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1048
+     },
+     {
+      "object": "Puerta babor V5 · hoja compuesta",
+      "tris_before": 12784,
+      "tris_after": 438,
+      "ratio": 0.0344,
+      "max_deviation_mm_at_5m": 0.2401
+     },
+     {
+      "object": "Puerta estribor V5 · hoja compuesta",
+      "tris_before": 12784,
+      "tris_after": 414,
+      "ratio": 0.0324,
+      "max_deviation_mm_at_5m": 0.1869
+     },
+     {
+      "object": "Motor popa · torpedo basculante",
+      "tris_before": 12584,
+      "tris_after": 318,
+      "ratio": 0.0253,
+      "max_deviation_mm_at_5m": 0.2192
+     },
+     {
+      "object": "Aleta babor · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Aleta dorsal · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Aleta estribor · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Parabrisas · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 334,
+      "ratio": 0.066,
+      "max_deviation_mm_at_5m": 0.2402
+     },
+     {
+      "object": "Parabrisas · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 358,
+      "ratio": 0.0705,
+      "max_deviation_mm_at_5m": 0.1925
+     },
+     {
+      "object": "Pasajero 1 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0189
+     },
+     {
+      "object": "Pasajero 1 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0178
+     },
+     {
+      "object": "Pasajero 2 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0175
+     },
+     {
+      "object": "Pasajero 2 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0167
+     },
+     {
+      "object": "Pasajero 3 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.019
+     },
+     {
+      "object": "Pasajero 3 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0677
+     },
+     {
+      "object": "Piloto · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.096
+     },
+     {
+      "object": "Piloto · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0762
+     },
+     {
+      "object": "Puerta · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0191
+     },
+     {
+      "object": "Puerta · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0136
+     },
+     {
+      "object": "Ventanilla posterior · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0713
+     },
+     {
+      "object": "Tren delantero V3 · neumático",
+      "tris_before": 4608,
+      "tris_after": 948,
+      "ratio": 0.2061,
+      "max_deviation_mm_at_5m": 0.2447
+     },
+     {
+      "object": "Tren trasero V3 · neumático",
+      "tris_before": 4608,
+      "tris_after": 890,
+      "ratio": 0.1933,
+      "max_deviation_mm_at_5m": 0.1954
+     },
+     {
+      "object": "Motor lateral babor · toma V4 · reborde",
+      "tris_before": 3456,
+      "tris_after": 304,
+      "ratio": 0.0885,
+      "max_deviation_mm_at_5m": 0.0459
+     },
+     {
+      "object": "Motor lateral estribor · toma V4 · reborde",
+      "tris_before": 3456,
+      "tris_after": 304,
+      "ratio": 0.0885,
+      "max_deviation_mm_at_5m": 0.0462
+     },
+     {
+      "object": "Motor popa · junta carenado V4",
+      "tris_before": 3072,
+      "tris_after": 304,
+      "ratio": 0.0994,
+      "max_deviation_mm_at_5m": 0.1907
+     },
+     {
+      "object": "Puerta babor V5 · rebaje y jamba",
+      "tris_before": 3008,
+      "tris_after": 514,
+      "ratio": 0.1712,
+      "max_deviation_mm_at_5m": 0.2348
+     },
+     {
+      "object": "Puerta estribor V5 · rebaje y jamba",
+      "tris_before": 3008,
+      "tris_after": 478,
+      "ratio": 0.1593,
+      "max_deviation_mm_at_5m": 0.2191
+     },
+     {
+      "object": "Proa · parche circular amarillo",
+      "tris_before": 2880,
+      "tris_after": 305,
+      "ratio": 0.106,
+      "max_deviation_mm_at_5m": 0.1635
+     },
+     {
+      "object": "Góndola V5 · labio de abertura -1",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0839
+     },
+     {
+      "object": "Góndola V5 · labio de abertura 1",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.096
+     },
+     {
+      "object": "Parabrisas · junta babor",
+      "tris_before": 2256,
+      "tris_after": 404,
+      "ratio": 0.1794,
+      "max_deviation_mm_at_5m": 0.2381
+     },
+     {
+      "object": "Parabrisas · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 488,
+      "ratio": 0.2168,
+      "max_deviation_mm_at_5m": 0.2456
+     },
+     {
+      "object": "Pasajero 1 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1038
+     },
+     {
+      "object": "Pasajero 1 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0797
+     },
+     {
+      "object": "Pasajero 2 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1024
+     },
+     {
+      "object": "Pasajero 2 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1104
+     },
+     {
+      "object": "Pasajero 3 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0758
+     },
+     {
+      "object": "Pasajero 3 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1388
+     },
+     {
+      "object": "Piloto · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1445
+     },
+     {
+      "object": "Piloto · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1435
+     },
+     {
+      "object": "Puerta · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.081
+     },
+     {
+      "object": "Puerta · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0508
+     },
+     {
+      "object": "Ventanilla posterior · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1107
+     },
+     {
+      "object": "lateral babor · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral babor · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral babor · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa transversal · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa transversal · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0356
+     },
+     {
+      "object": "popa transversal · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0357
+     },
+     {
+      "object": "popa axial · cono giratorio",
+      "tris_before": 2044,
+      "tris_after": 398,
+      "ratio": 0.1951,
+      "max_deviation_mm_at_5m": 0.2378
+     },
+     {
+      "object": "lateral babor · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2129
+     },
+     {
+      "object": "lateral estribor · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2129
+     },
+     {
+      "object": "popa transversal · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2009
+     }
+    ]
+   },
+   "triangles_before_decimation": 820958,
+   "triangles_after_decimation": 211718,
+   "materials_source": {
+    "Baliza · rojo": "plain",
+    "Cristal · azul ahumado": "glass",
+    "HISTÓRICO V1 · acero pulido funcional": "procedural",
+    "HISTÓRICO V1 · aluminio satinado envejecido": "procedural",
+    "HISTÓRICO V1 · caucho negro mate": "procedural",
+    "HISTÓRICO V1 · costura heredada plata tenue": "procedural",
+    "HISTÓRICO V1 · envolvente de algodón aluminizado": "procedural",
+    "HISTÓRICO V1 · esmalte marfil cálido": "procedural",
+    "HISTÓRICO V1 · grafito y juntas": "procedural",
+    "HISTÓRICO V1 · góndola marfil y gris": "procedural",
+    "HISTÓRICO V1 · marcas de pala rojo oscuro": "procedural",
+    "HISTÓRICO V1 · puerta solidaria marfil y gris": "procedural",
+    "HISTÓRICO V1 · revestimiento interior lino crema": "procedural",
+    "HISTÓRICO V1 · tela solidaria babor estabilizador": "procedural",
+    "HISTÓRICO V1 · tela solidaria babor timón móvil": "procedural",
+    "HISTÓRICO V1 · tela solidaria dorsal estabilizador": "procedural",
+    "HISTÓRICO V1 · tela solidaria dorsal timón móvil": "procedural",
+    "HISTÓRICO V1 · tela solidaria estribor estabilizador": "procedural",
+    "HISTÓRICO V1 · tela solidaria estribor timón móvil": "procedural",
+    "Rejillas · negro profundo": "plain",
+    "V3 · Tren · testigo de servicio": "plain",
+    "V5 Góndola · EPDM negro mate": "plain",
+    "V5 Góndola · interior aberturas": "plain"
+   },
+   "bake": {
+    "engine": "Cycles CPU",
+    "type": "EMIT (channel wired to an Emission shader, no lighting)",
+    "proxy": "all baked parts joined into one world-space proxy (one scene sync per pass); each part's object-space and generated coordinates are stored as attributes and replace the TexCoord Object/Generated outputs, so the shaders see the same coordinates",
+    "baked_parts": 527,
+    "samples": 16,
+    "margin_px": 8,
+    "margin_type": "EXTEND",
+    "seconds": 30.3,
+    "uv": {
+     "envelope": "cylindrical: u = hull station, v = angle around the X axis, seam on the dorsal line",
+     "others": "smart UV project per material (66 deg, island margin 0.004), all users packed together"
+    },
+    "texel_target_mm_at_5m": 1.2,
+    "envelope_texture": [
+     2048,
+     1024
+    ],
+    "uniform_rule": "bake collapses to a constant when its p0.05..p99.95 range is below 0.025 (color) / 0.03 (data)",
+    "normal_maps": "not baked: the procedural bump is sub-millimetre at 5 m",
+    "materials": {
+     "HISTÓRICO V1 · aluminio satinado envejecido": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0039,
+        "coverage": 0.7849
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0118,
+        "coverage": 0.7849
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · acero pulido funcional": {
+      "size": [
+       256,
+       256
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.9797
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.9797
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · tela solidaria babor estabilizador": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0667,
+        "coverage": 0.6176,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0824,
+        "coverage": 0.6176,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_tela_solidaria_babor_estabilizador_basecolor.jpg",
+       "mr": "historico_historico_v1_tela_solidaria_babor_estabilizador_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · grafito y juntas": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.8546
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0118,
+        "coverage": 0.8546
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · tela solidaria babor timón móvil": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0588,
+        "coverage": 0.5787,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0784,
+        "coverage": 0.5787,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_tela_solidaria_babor_timon_movil_basecolor.jpg",
+       "mr": "historico_historico_v1_tela_solidaria_babor_timon_movil_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · tela solidaria dorsal estabilizador": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0706,
+        "coverage": 0.6171,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0745,
+        "coverage": 0.6171,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_tela_solidaria_dorsal_estabilizador_basecolor.jpg",
+       "mr": "historico_historico_v1_tela_solidaria_dorsal_estabilizador_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · tela solidaria dorsal timón móvil": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0745,
+        "coverage": 0.5769,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0745,
+        "coverage": 0.5769,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_tela_solidaria_dorsal_timon_movil_basecolor.jpg",
+       "mr": "historico_historico_v1_tela_solidaria_dorsal_timon_movil_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · tela solidaria estribor estabilizador": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0667,
+        "coverage": 0.6191,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0824,
+        "coverage": 0.6191,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_tela_solidaria_estribor_estabilizador_basecolor.jpg",
+       "mr": "historico_historico_v1_tela_solidaria_estribor_estabilizador_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · tela solidaria estribor timón móvil": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0588,
+        "coverage": 0.5787,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0784,
+        "coverage": 0.5787,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_tela_solidaria_estribor_timon_movil_basecolor.jpg",
+       "mr": "historico_historico_v1_tela_solidaria_estribor_timon_movil_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · revestimiento interior lino crema": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.8096
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0039,
+        "coverage": 0.8096
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · envolvente de algodón aluminizado": {
+      "size": [
+       2048,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0784,
+        "coverage": 0.9614,
+        "size": [
+         2048,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0784,
+        "coverage": 0.9692,
+        "size": [
+         1024,
+         512
+        ]
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_envolvente_de_algodon_aluminizado_basecolor.jpg",
+       "mr": "historico_historico_v1_envolvente_de_algodon_aluminizado_metallicroughness.png"
+      }
+     },
+     "HISTÓRICO V1 · costura heredada plata tenue": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.2416
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0118,
+        "coverage": 0.2416
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · góndola marfil y gris": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.4784,
+        "coverage": 0.6096,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.6096
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_gondola_marfil_y_gris_basecolor.jpg"
+      }
+     },
+     "HISTÓRICO V1 · esmalte marfil cálido": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0039,
+        "coverage": 0.8746
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.8746
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · puerta solidaria marfil y gris": {
+      "size": [
+       256,
+       256
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.4824,
+        "coverage": 0.7307,
+        "size": [
+         256,
+         256
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0118,
+        "coverage": 0.7307
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "historico_historico_v1_puerta_solidaria_marfil_y_gris_basecolor.jpg"
+      }
+     },
+     "HISTÓRICO V1 · caucho negro mate": {
+      "size": [
+       256,
+       256
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.889
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.889
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     },
+     "HISTÓRICO V1 · marcas de pala rojo oscuro": {
+      "size": [
+       256,
+       256
+      ],
+      "channels": {
+       "base": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0078,
+        "coverage": 0.9509
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0118,
+        "coverage": 0.9509
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {}
+     }
+    }
+   },
+   "materials": {
+    "HISTÓRICO V1 · aluminio satinado envejecido": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_aluminio_satinado_envejecido",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · acero pulido funcional": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_acero_pulido_funcional",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · tela solidaria babor estabilizador": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_tela_solidaria_babor_estabilizador",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · grafito y juntas": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_grafito_y_juntas",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · tela solidaria babor timón móvil": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_tela_solidaria_babor_timon_movil",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · tela solidaria dorsal estabilizador": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_tela_solidaria_dorsal_estabilizador",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · tela solidaria dorsal timón móvil": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_tela_solidaria_dorsal_timon_movil",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · tela solidaria estribor estabilizador": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_tela_solidaria_estribor_estabilizador",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · tela solidaria estribor timón móvil": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_tela_solidaria_estribor_timon_movil",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · revestimiento interior lino crema": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_revestimiento_interior_lino_crema",
+     "note": "baked"
+    },
+    "Cristal · azul ahumado": {
+     "kind": "glass",
+     "gltf_material": "historico_cristal_azul_ahumado",
+     "note": "non-Principled glass replaced by Principled glass, alpha blend"
+    },
+    "Baliza · rojo": {
+     "kind": "plain",
+     "gltf_material": "historico_baliza_rojo",
+     "note": "plain Principled constants"
+    },
+    "HISTÓRICO V1 · envolvente de algodón aluminizado": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_envolvente_de_algodon_aluminizado",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · costura heredada plata tenue": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_costura_heredada_plata_tenue",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · góndola marfil y gris": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_gondola_marfil_y_gris",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · esmalte marfil cálido": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_esmalte_marfil_calido",
+     "note": "baked"
+    },
+    "V5 Góndola · interior aberturas": {
+     "kind": "plain",
+     "gltf_material": "historico_v5_gondola_interior_aberturas",
+     "note": "plain Principled constants"
+    },
+    "Rejillas · negro profundo": {
+     "kind": "plain",
+     "gltf_material": "historico_rejillas_negro_profundo",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · EPDM negro mate": {
+     "kind": "plain",
+     "gltf_material": "historico_v5_gondola_epdm_negro_mate",
+     "note": "plain Principled constants"
+    },
+    "HISTÓRICO V1 · puerta solidaria marfil y gris": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_puerta_solidaria_marfil_y_gris",
+     "note": "baked"
+    },
+    "HISTÓRICO V1 · caucho negro mate": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_caucho_negro_mate",
+     "note": "baked"
+    },
+    "V3 · Tren · testigo de servicio": {
+     "kind": "plain",
+     "gltf_material": "historico_v3_tren_testigo_de_servicio",
+     "note": "plain Principled constants"
+    },
+    "HISTÓRICO V1 · marcas de pala rojo oscuro": {
+     "kind": "procedural",
+     "gltf_material": "historico_historico_v1_marcas_de_pala_rojo_oscuro",
+     "note": "baked"
+    }
+   },
+   "negative_scale_parts": 0,
+   "export_options": {
+    "export_format": "GLB",
+    "use_selection": true,
+    "export_yup": true,
+    "export_apply": true,
+    "export_animations": false,
+    "export_cameras": false,
+    "export_lights": false,
+    "export_extras": true,
+    "export_draco_mesh_compression_enable": false,
+    "export_image_format": "AUTO",
+    "export_jpeg_quality": 90,
+    "export_texcoords": true,
+    "export_normals": true,
+    "export_tangents": false,
+    "export_materials": "EXPORT",
+    "export_skins": false,
+    "export_morph": false,
+    "export_attributes": false,
+    "export_vertex_color": "NONE"
+   },
+   "glb": {
+    "bytes": 8259584,
+    "sha256": "525d17e8af1f311b49a065446b439fcc1bc1f475ae21f84cd453afa10f6de4e0",
+    "triangles": 211718,
+    "primitives_draw_calls": 54,
+    "mesh_nodes": 11,
+    "per_mesh": {
+     "airship_mesh": {
+      "triangles": 160808,
+      "primitives": 19
+     },
+     "fin_port_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 2
+     },
+     "fin_starboard_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 2
+     },
+     "rotor_stern_lateral_mesh": {
+      "triangles": 9090,
+      "primitives": 5
+     },
+     "rudder_dorsal_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 2
+     },
+     "rotor_port_mesh": {
+      "triangles": 9078,
+      "primitives": 5
+     },
+     "vector_port_hinge_mesh": {
+      "triangles": 4676,
+      "primitives": 3
+     },
+     "rotor_starboard_mesh": {
+      "triangles": 9078,
+      "primitives": 5
+     },
+     "vector_starboard_hinge_mesh": {
+      "triangles": 4676,
+      "primitives": 3
+     },
+     "rotor_stern_axial_mesh": {
+      "triangles": 9034,
+      "primitives": 5
+     },
+     "vector_stern_hinge_mesh": {
+      "triangles": 1594,
+      "primitives": 3
+     }
+    },
+    "materials": 23,
+    "textures": 16,
+    "images": [
+     {
+      "name": "historico_historico_v1_tela_solidaria_babor_estabilizador_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 42778
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_babor_estabilizador_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 258536
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_dorsal_estabilizador_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 45338
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_dorsal_estabilizador_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 251498
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_estribor_estabilizador_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 44367
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_estribor_estabilizador_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 259043
+     },
+     {
+      "name": "historico_historico_v1_envolvente_de_algodon_aluminizado_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 104333
+     },
+     {
+      "name": "historico_historico_v1_envolvente_de_algodon_aluminizado_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 236195
+     },
+     {
+      "name": "historico_historico_v1_gondola_marfil_y_gris_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 103633
+     },
+     {
+      "name": "historico_historico_v1_puerta_solidaria_marfil_y_gris_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 9300
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_babor_timon_movil_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 11846
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_babor_timon_movil_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 75391
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_estribor_timon_movil_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 11872
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_estribor_timon_movil_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 75969
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_dorsal_timon_movil_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 12743
+     },
+     {
+      "name": "historico_historico_v1_tela_solidaria_dorsal_timon_movil_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 71594
+     }
+    ],
+    "bounds_godot_m": {
+     "min": [
+      -0.647525,
+      -0.728202,
+      -2.580867
+     ],
+     "max": [
+      0.666565,
+      0.619408,
+      2.587759
+     ]
+    },
+    "extensions_used": [],
+    "alpha_modes": [
+     "BLEND",
+     "OPAQUE"
+    ],
+    "invalid_texcoord_refs": 0,
+    "texture_sizes": {
+     "historico_historico_v1_tela_solidaria_babor_estabilizador_basecolor": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_tela_solidaria_babor_estabilizador_metallicroughness": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_tela_solidaria_babor_timon_movil_basecolor": [
+      512,
+      512
+     ],
+     "historico_historico_v1_tela_solidaria_babor_timon_movil_metallicroughness": [
+      512,
+      512
+     ],
+     "historico_historico_v1_tela_solidaria_dorsal_estabilizador_basecolor": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_tela_solidaria_dorsal_estabilizador_metallicroughness": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_tela_solidaria_dorsal_timon_movil_basecolor": [
+      512,
+      512
+     ],
+     "historico_historico_v1_tela_solidaria_dorsal_timon_movil_metallicroughness": [
+      512,
+      512
+     ],
+     "historico_historico_v1_tela_solidaria_estribor_estabilizador_basecolor": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_tela_solidaria_estribor_estabilizador_metallicroughness": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_tela_solidaria_estribor_timon_movil_basecolor": [
+      512,
+      512
+     ],
+     "historico_historico_v1_tela_solidaria_estribor_timon_movil_metallicroughness": [
+      512,
+      512
+     ],
+     "historico_historico_v1_envolvente_de_algodon_aluminizado_basecolor": [
+      2048,
+      1024
+     ],
+     "historico_historico_v1_envolvente_de_algodon_aluminizado_metallicroughness": [
+      1024,
+      512
+     ],
+     "historico_historico_v1_gondola_marfil_y_gris_basecolor": [
+      1024,
+      1024
+     ],
+     "historico_historico_v1_puerta_solidaria_marfil_y_gris_basecolor": [
+      256,
+      256
+     ]
+    },
+    "within_triangle_budget": true
+   },
+   "seconds": 136.2
+  },
+  "cromo-carbono-azul": {
+   "skin": "cromo-carbono-azul",
+   "exporter_version": "rc-blimp-5m-export 1",
+   "source": {
+    "file": "Zeppelin_Cromo_Carbono_Azul_V1.blend",
+    "bytes": 10325865,
+    "sha256": "606884e991ff7e33da02f1601fae9b82d85ebac00e1b458cb711b5a905cb0e87"
+   },
+   "blender": "5.2.2 LTS",
+   "scale": 0.06882312312435304,
+   "source_envelope_length_m": 72.6500015258789,
+   "source_objects": {
+    "render_visible_geometry": 719,
+    "skipped": {
+     "hidden": 28,
+     "camera_invisible": 0,
+     "excluded_collection": 0
+    }
+   },
+   "articulation_axes_measured": {
+    "vector_port_hinge": {
+     "ctrl": "CTRL · vector lateral babor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "vector_starboard_hinge": {
+     "ctrl": "CTRL · vector lateral estribor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "vector_stern_hinge": {
+     "ctrl": "CTRL · vector popa",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_port": {
+     "ctrl": "CTRL · rotor lateral babor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_starboard": {
+     "ctrl": "CTRL · rotor lateral estribor",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_stern_axial": {
+     "ctrl": "CTRL · rotor popa axial",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rotor_stern_lateral": {
+     "ctrl": "CTRL · rotor popa transversal",
+     "test_deg": 30.0,
+     "measured_deg": 29.999953
+    },
+    "rudder_dorsal_hinge": {
+     "ctrl": "CTRL · Aleta dorsal timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    },
+    "fin_port_hinge": {
+     "ctrl": "CTRL · Aleta babor timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    },
+    "fin_starboard_hinge": {
+     "ctrl": "CTRL · Aleta estribor timón",
+     "test_deg": 10.0,
+     "measured_deg": 9.999971
+    }
+   },
+   "reduction": {
+    "tiny_removed_rule": "largest bounding-box side < 2.0 mm at 5 m",
+    "tiny_removed": [
+     "Aleta babor · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta babor · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta babor · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta babor · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta babor · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta babor · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta babor · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta babor · bisagra 2 · tornillo móvil 1 0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta dorsal · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta dorsal · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta dorsal · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta dorsal · bisagra 2 · tornillo móvil 1 0.0693",
+     "Aleta estribor · bisagra 1 · tornillo fijo -1 -0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo -1 0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo 1 -0.08316",
+     "Aleta estribor · bisagra 1 · tornillo fijo 1 0.08316",
+     "Aleta estribor · bisagra 1 · tornillo móvil -1 -0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil -1 0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil 1 -0.0693",
+     "Aleta estribor · bisagra 1 · tornillo móvil 1 0.0693",
+     "Aleta estribor · bisagra 2 · tornillo fijo -1 -0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo -1 0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo 1 -0.08316",
+     "Aleta estribor · bisagra 2 · tornillo fijo 1 0.08316",
+     "Aleta estribor · bisagra 2 · tornillo móvil -1 -0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil -1 0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil 1 -0.0693",
+     "Aleta estribor · bisagra 2 · tornillo móvil 1 0.0693",
+     "Motor lateral babor · cierre tapa",
+     "Motor lateral babor · cierre tapa.001",
+     "Motor lateral babor · cierre tapa.002",
+     "Motor lateral babor · cierre tapa.003",
+     "Motor lateral babor · cierre tapa.004",
+     "Motor lateral babor · cierre tapa.005",
+     "Motor lateral babor · cierre tapa.006",
+     "Motor lateral babor · cierre tapa.007",
+     "Motor lateral estribor · cierre tapa",
+     "Motor lateral estribor · cierre tapa.001",
+     "Motor lateral estribor · cierre tapa.002",
+     "Motor lateral estribor · cierre tapa.003",
+     "Motor lateral estribor · cierre tapa.004",
+     "Motor lateral estribor · cierre tapa.005",
+     "Motor lateral estribor · cierre tapa.006",
+     "Motor lateral estribor · cierre tapa.007",
+     "Puerta babor V5 · fijación 1.False.-7.384",
+     "Puerta babor V5 · fijación 1.False.-7.416",
+     "Puerta babor V5 · fijación 1.True.-7.384",
+     "Puerta babor V5 · fijación 1.True.-7.416",
+     "Puerta babor V5 · fijación 2.False.-8.134",
+     "Puerta babor V5 · fijación 2.False.-8.166",
+     "Puerta babor V5 · fijación 2.True.-8.134",
+     "Puerta babor V5 · fijación 2.True.-8.166",
+     "Puerta estribor V5 · fijación 1.False.-7.244",
+     "Puerta estribor V5 · fijación 1.False.-7.276",
+     "Puerta estribor V5 · fijación 1.True.-7.244",
+     "Puerta estribor V5 · fijación 1.True.-7.276",
+     "Puerta estribor V5 · fijación 2.False.-8.064",
+     "Puerta estribor V5 · fijación 2.False.-8.096",
+     "Puerta estribor V5 · fijación 2.True.-8.064",
+     "Puerta estribor V5 · fijación 2.True.-8.096",
+     "Tren delantero V3 · hub bolt -1 / 1",
+     "Tren delantero V3 · hub bolt -1 / 2",
+     "Tren delantero V3 · hub bolt -1 / 3",
+     "Tren delantero V3 · hub bolt -1 / 4",
+     "Tren delantero V3 · hub bolt -1 / 5",
+     "Tren delantero V3 · hub bolt -1 / 6",
+     "Tren delantero V3 · hub bolt 1 / 1",
+     "Tren delantero V3 · hub bolt 1 / 2",
+     "Tren delantero V3 · hub bolt 1 / 3",
+     "Tren delantero V3 · hub bolt 1 / 4",
+     "Tren delantero V3 · hub bolt 1 / 5",
+     "Tren delantero V3 · hub bolt 1 / 6",
+     "Tren delantero V3 · inflation valve",
+     "Tren trasero V3 · ballast lid fastener",
+     "Tren trasero V3 · ballast lid fastener.001",
+     "Tren trasero V3 · ballast lid fastener.002",
+     "Tren trasero V3 · ballast lid fastener.003",
+     "Tren trasero V3 · ballast lid fastener.004",
+     "Tren trasero V3 · ballast lid fastener.005",
+     "Tren trasero V3 · ballast lid fastener.006",
+     "Tren trasero V3 · ballast lid fastener.007",
+     "Tren trasero V3 · hub bolt -1 / 1",
+     "Tren trasero V3 · hub bolt -1 / 2",
+     "Tren trasero V3 · hub bolt -1 / 3",
+     "Tren trasero V3 · hub bolt -1 / 4",
+     "Tren trasero V3 · hub bolt -1 / 5",
+     "Tren trasero V3 · hub bolt -1 / 6",
+     "Tren trasero V3 · hub bolt 1 / 1",
+     "Tren trasero V3 · hub bolt 1 / 2",
+     "Tren trasero V3 · hub bolt 1 / 3",
+     "Tren trasero V3 · hub bolt 1 / 4",
+     "Tren trasero V3 · hub bolt 1 / 5",
+     "Tren trasero V3 · hub bolt 1 / 6",
+     "Tren trasero V3 · inflation valve",
+     "lateral babor · tornillo cono",
+     "lateral babor · tornillo cono.001",
+     "lateral babor · tornillo cono.002",
+     "lateral babor · tornillo cono.003",
+     "lateral babor · tornillo cono.004",
+     "lateral babor · tornillo cono.005",
+     "lateral babor · tornillo cono.006",
+     "lateral babor · tornillo cono.007",
+     "lateral babor · tornillo cono.008",
+     "lateral estribor · tornillo cono",
+     "lateral estribor · tornillo cono.001",
+     "lateral estribor · tornillo cono.002",
+     "lateral estribor · tornillo cono.003",
+     "lateral estribor · tornillo cono.004",
+     "lateral estribor · tornillo cono.005",
+     "lateral estribor · tornillo cono.006",
+     "lateral estribor · tornillo cono.007",
+     "lateral estribor · tornillo cono.008",
+     "popa axial · tornillo cono",
+     "popa axial · tornillo cono.001",
+     "popa axial · tornillo cono.002",
+     "popa axial · tornillo cono.003",
+     "popa axial · tornillo cono.004",
+     "popa axial · tornillo cono.005",
+     "popa axial · tornillo cono.006",
+     "popa axial · tornillo cono.007",
+     "popa axial · tornillo cono.008",
+     "popa transversal · tornillo cono",
+     "popa transversal · tornillo cono.001",
+     "popa transversal · tornillo cono.002",
+     "popa transversal · tornillo cono.003",
+     "popa transversal · tornillo cono.004",
+     "popa transversal · tornillo cono.005",
+     "popa transversal · tornillo cono.006",
+     "popa transversal · tornillo cono.007",
+     "popa transversal · tornillo cono.008"
+    ],
+    "bevel_modifiers_not_applied": 276,
+    "bevel_rule": "bevel width < 0.50 mm at 5 m; sharp edges marked at 30 deg instead",
+    "glass_solidify_not_applied": [
+     "Parabrisas · cristal babor",
+     "Parabrisas · cristal estribor",
+     "Pasajero 1 · cristal babor",
+     "Pasajero 1 · cristal estribor",
+     "Pasajero 2 · cristal babor",
+     "Pasajero 2 · cristal estribor",
+     "Pasajero 3 · cristal babor",
+     "Pasajero 3 · cristal estribor",
+     "Piloto · cristal babor",
+     "Piloto · cristal estribor",
+     "Puerta · cristal babor",
+     "Puerta · cristal estribor",
+     "Ventanilla posterior · cristal babor"
+    ],
+    "decimation_rule": "collapse decimation of meshes with >= 2000 triangles, smallest ratio (7-step bisection) whose two-sided vertex deviation stays <= 0.25 mm at 5 m; material-border vertices are protected (vertex-group weight 0, factor 100) and every material must keep its area within 10 %",
+    "decimated": [
+     {
+      "object": "Envolvente · perfil auditado Ø14.2 m",
+      "tris_before": 122492,
+      "tris_after": 21012,
+      "ratio": 0.1715,
+      "max_deviation_mm_at_5m": 0.2377
+     },
+     {
+      "object": "Góndola · casco redondeado N1A",
+      "tris_before": 113518,
+      "tris_after": 9830,
+      "ratio": 0.0866,
+      "max_deviation_mm_at_5m": 0.2391
+     },
+     {
+      "object": "Motor popa · cono FIJO",
+      "tris_before": 72654,
+      "tris_after": 2380,
+      "ratio": 0.0328,
+      "max_deviation_mm_at_5m": 0.2493
+     },
+     {
+      "object": "Motor popa · cápsula fija envolvente V4",
+      "tris_before": 34268,
+      "tris_after": 2966,
+      "ratio": 0.0866,
+      "max_deviation_mm_at_5m": 0.2093
+     },
+     {
+      "object": "Góndola V5 · faldón flexible continuo",
+      "tris_before": 19200,
+      "tris_after": 1100,
+      "ratio": 0.0573,
+      "max_deviation_mm_at_5m": 0.1762
+     },
+     {
+      "object": "Motor lateral babor · torpedo NO giratorio",
+      "tris_before": 18620,
+      "tris_after": 716,
+      "ratio": 0.0385,
+      "max_deviation_mm_at_5m": 0.2393
+     },
+     {
+      "object": "Motor lateral estribor · torpedo NO giratorio",
+      "tris_before": 18620,
+      "tris_after": 716,
+      "ratio": 0.0385,
+      "max_deviation_mm_at_5m": 0.2393
+     },
+     {
+      "object": "Aleta babor · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1256
+     },
+     {
+      "object": "Aleta dorsal · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1267
+     },
+     {
+      "object": "Aleta estribor · estabilizador",
+      "tris_before": 13960,
+      "tris_after": 308,
+      "ratio": 0.0221,
+      "max_deviation_mm_at_5m": 0.1048
+     },
+     {
+      "object": "Puerta babor V5 · hoja compuesta",
+      "tris_before": 12784,
+      "tris_after": 438,
+      "ratio": 0.0344,
+      "max_deviation_mm_at_5m": 0.2401
+     },
+     {
+      "object": "Puerta estribor V5 · hoja compuesta",
+      "tris_before": 12784,
+      "tris_after": 414,
+      "ratio": 0.0324,
+      "max_deviation_mm_at_5m": 0.1869
+     },
+     {
+      "object": "Motor popa · torpedo basculante",
+      "tris_before": 12584,
+      "tris_after": 318,
+      "ratio": 0.0253,
+      "max_deviation_mm_at_5m": 0.2192
+     },
+     {
+      "object": "Aleta babor · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Aleta dorsal · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Aleta estribor · timón móvil",
+      "tris_before": 11406,
+      "tris_after": 308,
+      "ratio": 0.0271,
+      "max_deviation_mm_at_5m": 0.1383
+     },
+     {
+      "object": "Parabrisas · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 334,
+      "ratio": 0.066,
+      "max_deviation_mm_at_5m": 0.2402
+     },
+     {
+      "object": "Parabrisas · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 358,
+      "ratio": 0.0705,
+      "max_deviation_mm_at_5m": 0.1925
+     },
+     {
+      "object": "Pasajero 1 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0189
+     },
+     {
+      "object": "Pasajero 1 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0178
+     },
+     {
+      "object": "Pasajero 2 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0175
+     },
+     {
+      "object": "Pasajero 2 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0167
+     },
+     {
+      "object": "Pasajero 3 · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.019
+     },
+     {
+      "object": "Pasajero 3 · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0677
+     },
+     {
+      "object": "Piloto · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.096
+     },
+     {
+      "object": "Piloto · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0762
+     },
+     {
+      "object": "Puerta · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 305,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0191
+     },
+     {
+      "object": "Puerta · cristal estribor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0136
+     },
+     {
+      "object": "Ventanilla posterior · cristal babor",
+      "tris_before": 5076,
+      "tris_after": 306,
+      "ratio": 0.0604,
+      "max_deviation_mm_at_5m": 0.0713
+     },
+     {
+      "object": "Tren delantero V3 · neumático",
+      "tris_before": 4608,
+      "tris_after": 948,
+      "ratio": 0.2061,
+      "max_deviation_mm_at_5m": 0.2447
+     },
+     {
+      "object": "Tren trasero V3 · neumático",
+      "tris_before": 4608,
+      "tris_after": 890,
+      "ratio": 0.1933,
+      "max_deviation_mm_at_5m": 0.1954
+     },
+     {
+      "object": "Motor lateral babor · toma V4 · reborde",
+      "tris_before": 3456,
+      "tris_after": 304,
+      "ratio": 0.0885,
+      "max_deviation_mm_at_5m": 0.0459
+     },
+     {
+      "object": "Motor lateral estribor · toma V4 · reborde",
+      "tris_before": 3456,
+      "tris_after": 304,
+      "ratio": 0.0885,
+      "max_deviation_mm_at_5m": 0.0462
+     },
+     {
+      "object": "Motor popa · junta carenado V4",
+      "tris_before": 3072,
+      "tris_after": 304,
+      "ratio": 0.0994,
+      "max_deviation_mm_at_5m": 0.1907
+     },
+     {
+      "object": "Puerta babor V5 · rebaje y jamba",
+      "tris_before": 3008,
+      "tris_after": 514,
+      "ratio": 0.1712,
+      "max_deviation_mm_at_5m": 0.2348
+     },
+     {
+      "object": "Puerta estribor V5 · rebaje y jamba",
+      "tris_before": 3008,
+      "tris_after": 478,
+      "ratio": 0.1593,
+      "max_deviation_mm_at_5m": 0.2191
+     },
+     {
+      "object": "Proa · parche circular amarillo",
+      "tris_before": 2880,
+      "tris_after": 305,
+      "ratio": 0.106,
+      "max_deviation_mm_at_5m": 0.1635
+     },
+     {
+      "object": "Góndola V5 · labio de abertura -1",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0839
+     },
+     {
+      "object": "Góndola V5 · labio de abertura 1",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.096
+     },
+     {
+      "object": "Parabrisas · junta babor",
+      "tris_before": 2256,
+      "tris_after": 404,
+      "ratio": 0.1794,
+      "max_deviation_mm_at_5m": 0.2381
+     },
+     {
+      "object": "Parabrisas · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 488,
+      "ratio": 0.2168,
+      "max_deviation_mm_at_5m": 0.2456
+     },
+     {
+      "object": "Pasajero 1 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1038
+     },
+     {
+      "object": "Pasajero 1 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0797
+     },
+     {
+      "object": "Pasajero 2 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1024
+     },
+     {
+      "object": "Pasajero 2 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1104
+     },
+     {
+      "object": "Pasajero 3 · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0758
+     },
+     {
+      "object": "Pasajero 3 · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1388
+     },
+     {
+      "object": "Piloto · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1445
+     },
+     {
+      "object": "Piloto · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1435
+     },
+     {
+      "object": "Puerta · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.081
+     },
+     {
+      "object": "Puerta · junta estribor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.0508
+     },
+     {
+      "object": "Ventanilla posterior · junta babor",
+      "tris_before": 2256,
+      "tris_after": 304,
+      "ratio": 0.1351,
+      "max_deviation_mm_at_5m": 0.1107
+     },
+     {
+      "object": "lateral babor · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral babor · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral babor · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "lateral estribor · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa axial · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa transversal · pala 1",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0355
+     },
+     {
+      "object": "popa transversal · pala 2",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0356
+     },
+     {
+      "object": "popa transversal · pala 3",
+      "tris_before": 2068,
+      "tris_after": 740,
+      "ratio": 0.3586,
+      "max_deviation_mm_at_5m": 0.0357
+     },
+     {
+      "object": "popa axial · cono giratorio",
+      "tris_before": 2044,
+      "tris_after": 398,
+      "ratio": 0.1951,
+      "max_deviation_mm_at_5m": 0.2378
+     },
+     {
+      "object": "lateral babor · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2129
+     },
+     {
+      "object": "lateral estribor · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2129
+     },
+     {
+      "object": "popa transversal · cono giratorio",
+      "tris_before": 2040,
+      "tris_after": 442,
+      "ratio": 0.2171,
+      "max_deviation_mm_at_5m": 0.2009
+     }
+    ]
+   },
+   "triangles_before_decimation": 820958,
+   "triangles_after_decimation": 211718,
+   "materials_source": {
+    "Baliza · rojo": "plain",
+    "CROMO V1 · acero pulido de pistones": "plain",
+    "CROMO V1 · aleta babor estabilizador solidaria": "procedural",
+    "CROMO V1 · aleta babor timón móvil solidaria": "procedural",
+    "CROMO V1 · aleta dorsal estabilizador solidaria": "procedural",
+    "CROMO V1 · aleta dorsal timón móvil solidaria": "procedural",
+    "CROMO V1 · aleta estribor estabilizador solidaria": "procedural",
+    "CROMO V1 · aleta estribor timón móvil solidaria": "procedural",
+    "CROMO V1 · aluminio mecanizado satinado": "plain",
+    "CROMO V1 · azul eléctrico lacado": "plain",
+    "CROMO V1 · carbono 3K de carenados": "procedural",
+    "CROMO V1 · caucho negro mate": "plain",
+    "CROMO V1 · cromo espejo herrajes": "plain",
+    "CROMO V1 · envolvente espejo": "procedural",
+    "CROMO V1 · grafito juntas": "plain",
+    "CROMO V1 · góndola carbono + cromo + azul": "procedural",
+    "CROMO V1 · puerta babor solidaria carbono + azul": "procedural",
+    "CROMO V1 · tapicería técnica": "plain",
+    "Cristal · azul ahumado": "glass",
+    "Rejillas · negro profundo": "plain",
+    "V3 · Tren · testigo de servicio": "plain",
+    "V5 Góndola · EPDM negro mate": "plain",
+    "V5 Góndola · interior aberturas": "plain"
+   },
+   "bake": {
+    "engine": "Cycles CPU",
+    "type": "EMIT (channel wired to an Emission shader, no lighting)",
+    "proxy": "all baked parts joined into one world-space proxy (one scene sync per pass); each part's object-space and generated coordinates are stored as attributes and replace the TexCoord Object/Generated outputs, so the shaders see the same coordinates",
+    "baked_parts": 32,
+    "samples": 16,
+    "margin_px": 8,
+    "margin_type": "EXTEND",
+    "seconds": 22.0,
+    "uv": {
+     "envelope": "cylindrical: u = hull station, v = angle around the X axis, seam on the dorsal line",
+     "others": "smart UV project per material (66 deg, island margin 0.004), all users packed together"
+    },
+    "texel_target_mm_at_5m": 1.2,
+    "envelope_texture": [
+     2048,
+     1024
+    ],
+    "uniform_rule": "bake collapses to a constant when its p0.05..p99.95 range is below 0.025 (color) / 0.03 (data)",
+    "normal_maps": "not baked: the procedural bump is sub-millimetre at 5 m",
+    "materials": {
+     "CROMO V1 · aleta babor estabilizador solidaria": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0314,
+        "coverage": 0.6176,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.6176
+       },
+       "metal": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.6176
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_aleta_babor_estabilizador_solidaria_basecolor.jpg"
+      }
+     },
+     "CROMO V1 · aleta babor timón móvil solidaria": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0275,
+        "coverage": 0.5787,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.5787
+       },
+       "metal": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.5787
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_aleta_babor_timon_movil_solidaria_basecolor.jpg"
+      }
+     },
+     "CROMO V1 · aleta dorsal estabilizador solidaria": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.8039,
+        "coverage": 0.6171,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.1569,
+        "coverage": 0.6171,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "metal": {
+        "mode": "texture",
+        "range": 0.0784,
+        "coverage": 0.6171,
+        "size": [
+         1024,
+         1024
+        ]
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria_basecolor.jpg",
+       "mr": "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria_metallicroughness.png"
+      }
+     },
+     "CROMO V1 · aleta dorsal timón móvil solidaria": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.8039,
+        "coverage": 0.5769,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.1569,
+        "coverage": 0.5769,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "metal": {
+        "mode": "texture",
+        "range": 0.0784,
+        "coverage": 0.5769,
+        "size": [
+         512,
+         512
+        ]
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria_basecolor.jpg",
+       "mr": "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria_metallicroughness.png"
+      }
+     },
+     "CROMO V1 · aleta estribor estabilizador solidaria": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0314,
+        "coverage": 0.6191,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.6191
+       },
+       "metal": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.6191
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_aleta_estribor_estabilizador_solidaria_basecolor.jpg"
+      }
+     },
+     "CROMO V1 · aleta estribor timón móvil solidaria": {
+      "size": [
+       512,
+       512
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0314,
+        "coverage": 0.5787,
+        "size": [
+         512,
+         512
+        ]
+       },
+       "rough": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.5787
+       },
+       "metal": {
+        "mode": "baked, uniform -> constant",
+        "range": 0.0,
+        "coverage": 0.5787
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_aleta_estribor_timon_movil_solidaria_basecolor.jpg"
+      }
+     },
+     "CROMO V1 · envolvente espejo": {
+      "size": [
+       2048,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.8314,
+        "coverage": 0.9614,
+        "size": [
+         2048,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.0902,
+        "coverage": 0.9692,
+        "size": [
+         1024,
+         512
+        ]
+       },
+       "metal": {
+        "mode": "texture",
+        "range": 0.5412,
+        "coverage": 0.9692,
+        "size": [
+         1024,
+         512
+        ]
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_envolvente_espejo_basecolor.jpg",
+       "mr": "cromo-carbono-azul_cromo_v1_envolvente_espejo_metallicroughness.png"
+      }
+     },
+     "CROMO V1 · góndola carbono + cromo + azul": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.8314,
+        "coverage": 0.6096,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.2471,
+        "coverage": 0.6096,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "metal": {
+        "mode": "texture",
+        "range": 0.6196,
+        "coverage": 0.6096,
+        "size": [
+         1024,
+         1024
+        ]
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul_basecolor.jpg",
+       "mr": "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul_metallicroughness.png"
+      }
+     },
+     "CROMO V1 · carbono 3K de carenados": {
+      "size": [
+       1024,
+       1024
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.0314,
+        "coverage": 0.7973,
+        "size": [
+         1024,
+         1024
+        ]
+       },
+       "rough": {
+        "mode": "constant (unlinked)"
+       },
+       "metal": {
+        "mode": "constant (unlinked)"
+       }
+      },
+      "texcoords": [
+       "Object -> attribute openrc_object_co"
+      ],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_carbono_3k_de_carenados_basecolor.jpg"
+      }
+     },
+     "CROMO V1 · puerta babor solidaria carbono + azul": {
+      "size": [
+       256,
+       256
+      ],
+      "channels": {
+       "base": {
+        "mode": "texture",
+        "range": 0.8314,
+        "coverage": 0.7307,
+        "size": [
+         256,
+         256
+        ]
+       },
+       "rough": {
+        "mode": "texture",
+        "range": 0.2471,
+        "coverage": 0.7307,
+        "size": [
+         256,
+         256
+        ]
+       },
+       "metal": {
+        "mode": "texture",
+        "range": 0.6196,
+        "coverage": 0.7307,
+        "size": [
+         256,
+         256
+        ]
+       }
+      },
+      "texcoords": [],
+      "files": {
+       "base": "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul_basecolor.jpg",
+       "mr": "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul_metallicroughness.png"
+      }
+     }
+    }
+   },
+   "materials": {
+    "CROMO V1 · aluminio mecanizado satinado": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aluminio_mecanizado_satinado",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · azul eléctrico lacado": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_azul_electrico_lacado",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · acero pulido de pistones": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_acero_pulido_de_pistones",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · aleta babor estabilizador solidaria": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aleta_babor_estabilizador_solidaria",
+     "note": "baked"
+    },
+    "CROMO V1 · grafito juntas": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_grafito_juntas",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · aleta babor timón móvil solidaria": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aleta_babor_timon_movil_solidaria",
+     "note": "baked"
+    },
+    "CROMO V1 · aleta dorsal estabilizador solidaria": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria",
+     "note": "baked"
+    },
+    "CROMO V1 · aleta dorsal timón móvil solidaria": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria",
+     "note": "baked"
+    },
+    "CROMO V1 · aleta estribor estabilizador solidaria": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aleta_estribor_estabilizador_solidaria",
+     "note": "baked"
+    },
+    "CROMO V1 · aleta estribor timón móvil solidaria": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_aleta_estribor_timon_movil_solidaria",
+     "note": "baked"
+    },
+    "CROMO V1 · tapicería técnica": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_tapiceria_tecnica",
+     "note": "plain Principled constants"
+    },
+    "Cristal · azul ahumado": {
+     "kind": "glass",
+     "gltf_material": "cromo-carbono-azul_cristal_azul_ahumado",
+     "note": "non-Principled glass replaced by Principled glass, alpha blend"
+    },
+    "Baliza · rojo": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_baliza_rojo",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · envolvente espejo": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_envolvente_espejo",
+     "note": "baked"
+    },
+    "CROMO V1 · cromo espejo herrajes": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_cromo_espejo_herrajes",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · góndola carbono + cromo + azul": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul",
+     "note": "baked"
+    },
+    "V5 Góndola · interior aberturas": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_v5_gondola_interior_aberturas",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · carbono 3K de carenados": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_carbono_3k_de_carenados",
+     "note": "baked"
+    },
+    "Rejillas · negro profundo": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_rejillas_negro_profundo",
+     "note": "plain Principled constants"
+    },
+    "V5 Góndola · EPDM negro mate": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_v5_gondola_epdm_negro_mate",
+     "note": "plain Principled constants"
+    },
+    "CROMO V1 · puerta babor solidaria carbono + azul": {
+     "kind": "procedural",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul",
+     "note": "baked"
+    },
+    "CROMO V1 · caucho negro mate": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_cromo_v1_caucho_negro_mate",
+     "note": "plain Principled constants"
+    },
+    "V3 · Tren · testigo de servicio": {
+     "kind": "plain",
+     "gltf_material": "cromo-carbono-azul_v3_tren_testigo_de_servicio",
+     "note": "plain Principled constants"
+    }
+   },
+   "negative_scale_parts": 0,
+   "export_options": {
+    "export_format": "GLB",
+    "use_selection": true,
+    "export_yup": true,
+    "export_apply": true,
+    "export_animations": false,
+    "export_cameras": false,
+    "export_lights": false,
+    "export_extras": true,
+    "export_draco_mesh_compression_enable": false,
+    "export_image_format": "AUTO",
+    "export_jpeg_quality": 90,
+    "export_texcoords": true,
+    "export_normals": true,
+    "export_tangents": false,
+    "export_materials": "EXPORT",
+    "export_skins": false,
+    "export_morph": false,
+    "export_attributes": false,
+    "export_vertex_color": "NONE"
+   },
+   "glb": {
+    "bytes": 7670252,
+    "sha256": "85a0fc772a7d7febe78c68e37820426c0ea4b49f2aae0d27e0a3abd6757eb216",
+    "triangles": 211718,
+    "primitives_draw_calls": 60,
+    "mesh_nodes": 11,
+    "per_mesh": {
+     "airship_mesh": {
+      "triangles": 160808,
+      "primitives": 20
+     },
+     "fin_port_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 3
+     },
+     "fin_starboard_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 3
+     },
+     "rotor_stern_lateral_mesh": {
+      "triangles": 9090,
+      "primitives": 5
+     },
+     "rudder_dorsal_hinge_mesh": {
+      "triangles": 1228,
+      "primitives": 3
+     },
+     "rotor_port_mesh": {
+      "triangles": 9078,
+      "primitives": 5
+     },
+     "vector_port_hinge_mesh": {
+      "triangles": 4676,
+      "primitives": 4
+     },
+     "rotor_starboard_mesh": {
+      "triangles": 9078,
+      "primitives": 5
+     },
+     "vector_starboard_hinge_mesh": {
+      "triangles": 4676,
+      "primitives": 4
+     },
+     "rotor_stern_axial_mesh": {
+      "triangles": 9034,
+      "primitives": 5
+     },
+     "vector_stern_hinge_mesh": {
+      "triangles": 1594,
+      "primitives": 3
+     }
+    },
+    "materials": 23,
+    "textures": 15,
+    "images": [
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_babor_estabilizador_solidaria_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 52923
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 51611
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 35532
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_estribor_estabilizador_solidaria_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 54132
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_envolvente_espejo_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 61493
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_envolvente_espejo_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 20123
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 115878
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 98548
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_carbono_3k_de_carenados_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 103697
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 9908
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 7213
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_babor_timon_movil_solidaria_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 13590
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_estribor_timon_movil_solidaria_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 13539
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria_basecolor",
+      "mimeType": "image/jpeg",
+      "bytes": 13104
+     },
+     {
+      "name": "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria_metallicroughness",
+      "mimeType": "image/png",
+      "bytes": 9546
+     }
+    ],
+    "bounds_godot_m": {
+     "min": [
+      -0.647525,
+      -0.728202,
+      -2.580867
+     ],
+     "max": [
+      0.666565,
+      0.619408,
+      2.587759
+     ]
+    },
+    "extensions_used": [],
+    "alpha_modes": [
+     "BLEND",
+     "OPAQUE"
+    ],
+    "invalid_texcoord_refs": 0,
+    "texture_sizes": {
+     "cromo-carbono-azul_cromo_v1_aleta_babor_estabilizador_solidaria_basecolor": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_babor_timon_movil_solidaria_basecolor": [
+      512,
+      512
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria_basecolor": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_dorsal_estabilizador_solidaria_metallicroughness": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria_basecolor": [
+      512,
+      512
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_dorsal_timon_movil_solidaria_metallicroughness": [
+      512,
+      512
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_estribor_estabilizador_solidaria_basecolor": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_aleta_estribor_timon_movil_solidaria_basecolor": [
+      512,
+      512
+     ],
+     "cromo-carbono-azul_cromo_v1_envolvente_espejo_basecolor": [
+      2048,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_envolvente_espejo_metallicroughness": [
+      1024,
+      512
+     ],
+     "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul_basecolor": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_gondola_carbono_cromo_azul_metallicroughness": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_carbono_3k_de_carenados_basecolor": [
+      1024,
+      1024
+     ],
+     "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul_basecolor": [
+      256,
+      256
+     ],
+     "cromo-carbono-azul_cromo_v1_puerta_babor_solidaria_carbono_azul_metallicroughness": [
+      256,
+      256
+     ]
+    },
+    "within_triangle_budget": true
+   },
+   "seconds": 125.2
+  }
+ }
+}

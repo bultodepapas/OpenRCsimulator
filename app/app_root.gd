@@ -182,6 +182,7 @@ var _home_rebuild_source: WeakRef
 var flight: Node
 var ground_vehicle: Node3D
 var selected_ground_vehicle_id := "mt8-bisonte"
+var selected_airship_skin := "tiburon-blanco"
 ## Test seam: custom ground activity factory, default remains the packaged scene script.
 var ground_vehicle_factory := Callable()
 var pause_menu: CanvasLayer:
@@ -299,6 +300,11 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 		start_ground_vehicle(user_args[0].trim_prefix("--vehicle="))
+		return
+	# BL-10: the experimental RC blimp has its own activity route and data contract.
+	if user_args.size() == 1 and user_args[0].begins_with("--airship="):
+		TranslationServer.set_locale("en")
+		start_airship(user_args[0].trim_prefix("--airship="))
 		return
 	for arg in user_args:
 		if arg.begins_with("--vehicle"):
@@ -526,6 +532,7 @@ func show_home() -> void:
 	var home := Home.new()
 	home.statistics_service = statistics_service
 	home.ground_vehicle_id = selected_ground_vehicle_id
+	home.airship_skin_id = selected_airship_skin
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
@@ -545,6 +552,7 @@ func show_home() -> void:
 	home.fly_requested.connect(start_flight)
 	home.launch_setup_changed.connect(_on_home_launch_setup_changed)
 	home.ground_vehicle_requested.connect(start_ground_vehicle)
+	home.airship_requested.connect(start_airship)
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
@@ -624,6 +632,66 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_ground_vehicle_id = vehicle_id
+			ground_vehicle.home_requested.connect(end_ground_vehicle)
+			if departing_home != null: departing_home.queue_free()
+			if home_scene != null: home_scene.queue_free()
+			home_scene = null
+			return
+		remove_child(candidate)
+		candidate.queue_free()
+	if home_scene != null:
+		add_child(home_scene)
+		home_scene.camera.make_current()
+	if departing_home != null:
+		screens.push("home", departing_home)
+		departing_home.set_note(error)
+		_menu_feedback(&"reject")
+	else:
+		printerr(error)
+		get_tree().quit(ERR_CANT_CREATE)
+
+
+## BL-10: the RC blimp activity occupies the same exclusive activity slot as ground vehicles, so every existing
+## "no activity running" guard, controller hook and exit request also covers it. Its physics/data are its own.
+func start_airship(skin_id: String = "") -> void:
+	if _home_preparation_route_pending or _home_preparation_quit_pending or _loading_active:
+		return
+	if _home_scene_preparation_busy() or (is_instance_valid(_home_flight_preparation) and not _home_flight_preparation.is_drained()):
+		_home_preparation_route_pending = true
+		await shutdown_home_flight_preparation()
+		_home_preparation_route_pending = false
+		_home_prefetch_suspended = false
+		if not is_inside_tree() or not screens.is_top("home") or _home_preparation_quit_pending or _loading_active:
+			return
+	if ground_vehicle != null or flight != null:
+		return
+	if skin_id.is_empty():
+		skin_id = home.airship_skin_id if home != null else "tiburon-blanco"
+	var departing_home := home
+	if departing_home != null and not screens.is_top("home"):
+		return
+	if departing_home != null:
+		screens.pop(false, false)
+	if home_scene != null:
+		remove_child(home_scene)
+	var candidate: Node3D
+	var script = load("res://vehicles/airship/airship_scene.gd")
+	if script != null and script.can_instantiate():
+		candidate = script.new()
+	var error := "RC blimp activity could not be loaded"
+	if candidate != null:
+		candidate.departure_managed = true
+		candidate.skin_id = skin_id
+		candidate.field_path = field_path
+		candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
+		candidate.night_options = _night_options_from_preferences()
+		candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
+		add_child(candidate)
+		error = str(candidate.get("startup_error"))
+		if error.is_empty():
+			_menu_feedback(&"accept")
+			ground_vehicle = candidate
+			selected_airship_skin = skin_id
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
