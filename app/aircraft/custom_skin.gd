@@ -13,6 +13,11 @@ const MOONRUNNER_DERIVATIVE_ASSET_SHA256 := "54d67d9bbfe4ce4abdc4bafa523c3bf8124
 # any later source/manifest change must be reviewed again, not admitted by this pair.
 const TIMBER_LEGACY_PAINT_IDENTITY := "1cfbbec926b1589005a35769d957edcd3e67e7edfe690278aefd2b5f627540e6"
 const TIMBER_LOD_PAINT_IDENTITY := "375f9373e4755aad93a9907e829ed267e340c16142584991de0fb22aa4e9eedd"
+# Reviewed old-template/current-model pairs retain identical paint surfaces and UVs.
+const STIK_LEGACY_PAINT_IDENTITY := "2ef3a67e9501f9f85c80f795303ac8cd49f3449563dfbc83e351e7e2dfc0d94b"
+const STIK_CURRENT_PAINT_IDENTITY := "1e95c2880ca8cf3a4bf5a8d14f5457ad2e7fbeced0311fe00833ff6eead0a159"
+const EXTRA_LEGACY_PAINT_IDENTITY := "7140c5cd31758a880f955bb13016a300847aee448e24692d2dd1b0cea00478d6"
+const EXTRA_CURRENT_PAINT_IDENTITY := "2be252a5f0be9b31ef647a497b779537062e30f2f62b0dba4e003df8a5ea7d4c"
 const ROOT := "user://skins/"
 const ARCHIVE_LIMIT := 32 * 1024 * 1024
 const MANIFEST_LIMIT := 64 * 1024
@@ -56,6 +61,12 @@ static func kit_path(aircraft_id: String) -> String:
 static func base_identity(aircraft_id: String) -> String:
 	var base := _base(aircraft_id)
 	return str(base.get("sha256", "")) if base.get("ok", false) else ""
+
+
+static func _adapter_for(visual_family: String) -> Script:
+	if visual_family == "stik-electric-6s":
+		return load("res://aircraft/stik_electric_skin.gd")
+	return load("res://aircraft/procedural_skin.gd")
 
 
 ## The ID fits the existing livery preference contract; the stored file name uses a hyphen.
@@ -205,7 +216,8 @@ static func apply(aircraft_id: String, id: String, stock_sha256: String, root: N
 					if texture == null: return _failure("Could not create a custom paint texture.")
 				var painted: Material
 				if material is ShaderMaterial or kit(aircraft_id).get("adapter", "") == "procedural_skin":
-					var adapter: Script = load("res://aircraft/procedural_skin.gd")
+					var adapter := _adapter_for(family(aircraft_id))
+					if adapter == null: return _failure("The paint adapter is unavailable.")
 					painted = adapter.paint(material, record, texture)
 				else:
 					var standard := material.duplicate() as StandardMaterial3D
@@ -269,9 +281,9 @@ static func _base(aircraft_id: String = "moonrunner-x99") -> Dictionary:
 		var described: Dictionary = Registry.describe(visual_family)
 		if not described.get("ok", false): return _failure("The stock aircraft model could not be verified.")
 		if described.manifest.asset.get("kind") == "procedural" or spec.get("adapter", "") == "procedural_skin":
-			var adapter: Script = load("res://aircraft/procedural_skin.gd")
+			var adapter := _adapter_for(visual_family)
 			var actual_identity: String = str(adapter.identity(visual_family)) if adapter != null else ""
-			if actual_identity != sha and not _compatible_timber_template(visual_family, sha, actual_identity):
+			if actual_identity != sha and not _compatible_paint_template(visual_family, sha, actual_identity):
 				return _failure("The paint template no longer matches the stock model.")
 		elif str(described.manifest.asset.get("sha256", "")) != sha:
 			return _failure("The paint template no longer matches the stock model.")
@@ -288,6 +300,15 @@ static func _base(aircraft_id: String = "moonrunner-x99") -> Dictionary:
 static func _compatible_timber_template(visual_family: String, template_identity: String, actual_identity: String) -> bool:
 	return visual_family == "turbo-lumber-evolution" and template_identity == TIMBER_LEGACY_PAINT_IDENTITY \
 		and actual_identity == TIMBER_LOD_PAINT_IDENTITY
+
+
+static func _compatible_paint_template(visual_family: String, template_identity: String, actual_identity: String) -> bool:
+	if _compatible_timber_template(visual_family, template_identity, actual_identity): return true
+	if visual_family == "jensen-das-ugly-stik-60":
+		return template_identity == STIK_LEGACY_PAINT_IDENTITY and actual_identity == STIK_CURRENT_PAINT_IDENTITY
+	if visual_family == "gp-extra-300s-60":
+		return template_identity == EXTRA_LEGACY_PAINT_IDENTITY and actual_identity == EXTRA_CURRENT_PAINT_IDENTITY
+	return false
 
 
 static func _load_id(aircraft_id: String, id: String, base: Dictionary, decode_textures := true) -> Dictionary:

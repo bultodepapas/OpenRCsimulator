@@ -6,10 +6,13 @@ Run from the repository root: python tools/skins/test_skin_kits.py
 import hashlib
 import json
 from pathlib import Path
+import runpy
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
+from unittest import mock
 import zipfile
 import zlib
 
@@ -69,16 +72,30 @@ class SkinKits(unittest.TestCase):
         families = {json.loads(path.read_text(encoding="utf-8"))["family_id"]
                     for path in (APP / "data/aircraft_models").glob("*.json")
                     if json.loads(path.read_text(encoding="utf-8")).get("schema") == "openrc-aircraft-model"}
-        # The old wing manifest remains a frozen Workshop binding; only the
-        # explicitly registered overlay is an active skin-kit family.
+        # The old wing manifest remains a frozen Workshop binding; registered
+        # overlay families have their own active skin kits.
         self.assertIn("skywalker-x8", families)
         families.remove("skywalker-x8")
-        overlay = json.loads((APP / "data/aircraft_model_overlays/moonrunner-x99.json").read_text(encoding="utf-8"))
-        self.assertEqual(overlay["family_id"], "moonrunner-x99")
-        self.assertNotIn(overlay["family_id"], families)
-        families.add(overlay["family_id"])
+        for family in ("moonrunner-x99", "stik-electric-6s"):
+            overlay = json.loads((APP / f"data/aircraft_model_overlays/{family}.json").read_text(encoding="utf-8"))
+            self.assertEqual(overlay["family_id"], family)
+            self.assertNotIn(family, families)
+            families.add(family)
         families.add("hx-700")
         self.assertEqual(set(self.models), families)
+
+    def test_generator_clears_active_and_inactive_browser_paths(self):
+        with mock.patch.dict(sys.modules, {"bpy": types.ModuleType("bpy")}):
+            generator = runpy.run_path(str(ROOT / "tools/skins/build_skin_kits.py"))
+        active = types.SimpleNamespace(type="FILE_BROWSER", params=types.SimpleNamespace(directory=b"C:\\Users\\owner\\Documents", filename="private.blend"))
+        inactive = types.SimpleNamespace(type="FILE_BROWSER", params=types.SimpleNamespace(directory=b"D:\\scratch", filename="other.blend"))
+        other = types.SimpleNamespace(type="VIEW_3D")
+        area = types.SimpleNamespace(spaces=[active, other, inactive])
+        workspaces = [types.SimpleNamespace(screens=[types.SimpleNamespace(areas=[area])])]
+        generator["clear_file_browser_paths"](workspaces)
+        for space in (active, inactive):
+            self.assertEqual(space.params.directory, b"//")
+            self.assertEqual(space.params.filename, "")
 
     def test_kits_and_roundtrip_image_packages(self):
         for family, model in self.models.items():

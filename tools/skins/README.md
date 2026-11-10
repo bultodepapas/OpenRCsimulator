@@ -1,7 +1,7 @@
 # Aircraft skin toolkit
 
-The registry at `app/assets/skin-kit/models.json` covers eight visual families:
-Ugly Stick (four engine configurations), Extra 300S, P-51D, Corsair, Vantage Jet,
+The registry at `app/assets/skin-kit/models.json` covers nine visual families:
+Ugly Stick (basic and three glow configurations), electric 6S, Extra 300S, P-51D, Corsair, Vantage Jet,
 Turbo Lumber, MoonRunner X99 and HX-700/X-Cell. Kits use the same paint bindings as the runtime.
 See [the skin contract and player flow](../../docs/AIRCRAFT-SKINS.md).
 
@@ -10,12 +10,12 @@ See [the skin contract and player flow](../../docs/AIRCRAFT-SKINS.md).
 Run `python tools/skins/build_guide.py` and `--check` first. The guide includes
 all nine simulator languages, image and Blender prompts, and community submissions.
 
-The three procedural families and Turbo Lumber need a prepared scene. Run the
-checked Godot exporter for each of `jensen-das-ugly-stik-60`, `gp-extra-300s-60`,
+The procedural families and Turbo Lumber need a prepared scene. Run the
+checked Godot exporter for each of `jensen-das-ugly-stik-60`, `stik-electric-6s`, `gp-extra-300s-60`,
 `p51d-mustang-120`, and `turbo-lumber-evolution`:
 
 ```powershell
-$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta1_win64_console.exe').Path
+$GodotWindows = (Resolve-Path '.tools/Godot_v4.8-beta2_win64_console.exe').Path
 python tools/godot/run_checked.py --timeout 180 -- $GodotWindows --headless --path app --audio-driver Dummy --script ../tools/skins/export_procedural.gd -- <family> <absolute-output-directory>/<family>.glb
 ```
 
@@ -23,8 +23,9 @@ Create the output directory first. The exporter validates the stock model before
 copying it, applies the same paint mapping as the runtime and reports its identity.
 The neutral six-view starters for Extra, P-51 and Timber are not stock-paint bakes;
 unchanged packaging yields neutral paint. Projection overlaps and seams are
-intentional limitations documented in the guide. Ugly Stick retains its existing
-covering atlas. Hidden maintenance/fracture subtrees are omitted from the editable
+intentional limitations documented in the guide. Both Ugly Stick families retain the
+existing covering atlas; electric 6S has its own model and package identity.
+Hidden maintenance/fracture subtrees are omitted from the editable
 kit copy where required for glTF import; runtime nodes remain intact.
 
 Then use Blender 5.2.2:
@@ -100,6 +101,15 @@ keeps the distributed Timber paint identity through one exact, reviewed old-kit/
 runtime-identity pair. Base geometry/paint mapping and existing kit bytes are unchanged;
 unrelated identities and future source drift remain rejected. Its `source_sha256`
 generation fingerprint is separately updated to the repeated pinned-engine export.
+
+The Stik and Extra retain their distributed paint identities through separate
+exact old-kit/current-model pairs. A same-engine comparison of the historical
+assemblies found identical target paths, transforms, mesh arrays, UVs and materials
+on all 19 Stik and 14 Extra paint surfaces. The Stik engine loading change leaves
+its paint unchanged; the Extra propeller correction changes non-paintable geometry,
+so its starter was regenerated to show the current propeller. Source fingerprints
+were refreshed from repeated beta2 exports. The electric kit uses its own verified
+overlay and adapter identity, and does not accept basic Stik packages.
 
 ## Evidence
 

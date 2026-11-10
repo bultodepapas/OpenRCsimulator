@@ -177,7 +177,11 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if custom_livery:
 		var skin_spec := CustomSkin.kit(id)
 		if manifest.asset.get("kind") == "procedural" or skin_spec.get("adapter", "") == "procedural_skin":
-			var adapter: Script = load("res://aircraft/procedural_skin.gd")
+			var adapter := CustomSkin._adapter_for(family)
+			if adapter == null:
+				airplane.root.free()
+				push_warning("Custom paint adapter is unavailable.")
+				return {}
 			var prepared: Dictionary = adapter.prepare(family, airplane.root)
 			if family == TIMBER_ID: _retain_surface_override_materials(airplane.root)
 			if not prepared.get("ok", false):

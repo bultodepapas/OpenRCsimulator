@@ -29,6 +29,7 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 	var model_sources: Dictionary = {
 		RotorcraftModel.SCENE_PATH: true,
 		"res://aircraft/procedural_skin.gd": true,
+		"res://aircraft/stik_electric_skin.gd": true,
 		"res://aircraft/timber_visual_details.gd": true,
 		"res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": true,
 		"res://aircraft/timber_visual_lighting.gd": true,

@@ -230,6 +230,18 @@ def uv_boundary_png(materials, width, height, repeat=True):
     return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", header) + chunk(b"IDAT", zlib.compress(rows, 9)) + chunk(b"IEND", b"")
 
 
+def clear_file_browser_paths(workspaces):
+    """Avoid saving the author's local file-browser location in player kits."""
+    for workspace in workspaces:
+        for screen in workspace.screens:
+            for area in screen.areas:
+                # Inactive spaces are serialized along with the visible space.
+                for space in area.spaces:
+                    if space.type == "FILE_BROWSER" and space.params is not None:
+                        space.params.directory = b"//"
+                        space.params.filename = ""
+
+
 def build(family, model, output=None, source_override=None):
     if not family or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in family):
         raise ValueError("Unsafe aircraft family identity")
@@ -344,6 +356,7 @@ def build(family, model, output=None, source_override=None):
                 elif area.type == "VIEW_3D":
                     area.spaces.active.region_3d.view_distance = 4.5
                     area.spaces.active.shading.type = "MATERIAL"
+    clear_file_browser_paths(bpy.data.workspaces)
     bpy.ops.object.select_all(action="DESELECT")
     for obj in bpy.data.objects:
         if obj.type == "MESH" and any(slot.material == group_images[0][1][0] for slot in obj.material_slots):

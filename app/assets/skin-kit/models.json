@@ -46,9 +46,20 @@
       "display_name": "Ugly Stik",
       "adapter": "procedural_skin",
       "stock_sha256": "2ef3a67e9501f9f85c80f795303ac8cd49f3449563dfbc83e351e7e2dfc0d94b",
-      "source_sha256": "e90976fb26835cbb2b913989618ae703552db2a0aa1d5360be6a7185a08daec4",
+      "source_sha256": "d79b57574fee352dd7c3c3f37b2c137ff2c326a24f47f4ccfbe93a3b8abd4bbf",
       "source_path": "res://data/aircraft_models/jensen-das-ugly-stik-60.json",
       "kit": "res://assets/skin-kit/jensen-das-ugly-stik-60.zip",
+      "paints": [
+        {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["classic-covering-v4"], "base_colors": {"classic-covering-v4": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
+      ]
+    },
+    "stik-electric-6s": {
+      "display_name": "Ugly Stik Electric 6S",
+      "adapter": "procedural_skin",
+      "stock_sha256": "1bbbc6972fb9c65b9308f04bdb57926fccd74403c002284584133c424fd0c30a",
+      "source_sha256": "70181663f64a003489000411759dd340fe047150218e1757046a5727e041255f",
+      "source_path": "res://data/aircraft_model_overlays/stik-electric-6s.json",
+      "kit": "res://assets/skin-kit/stik-electric-6s.zip",
       "paints": [
         {"image": "Paint-01.png", "uv": "UV-01.png", "materials": ["classic-covering-v4"], "base_colors": {"classic-covering-v4": [1, 1, 1, 1]}, "width": 2048, "height": 2048}
       ]
@@ -58,7 +69,7 @@
       "adapter": "procedural_skin",
       "template_kind": "neutral_six_view",
       "stock_sha256": "7140c5cd31758a880f955bb13016a300847aee448e24692d2dd1b0cea00478d6",
-      "source_sha256": "e31f6b8397622b263c1c6aa4b41387709578b0d111df073a2d6d5a21a3e3d065",
+      "source_sha256": "d50d5ffdaa4e0fd85a7616f430014a6b291adf58ff0a1e8932949fb777c7036f",
       "source_path": "res://data/aircraft_models/gp-extra-300s-60.json",
       "kit": "res://assets/skin-kit/gp-extra-300s-60.zip",
       "paints": [

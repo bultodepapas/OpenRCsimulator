@@ -3,6 +3,8 @@ extends SceneTree
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Skins := preload("res://aircraft/custom_skin.gd")
 const Builder := preload("res://render/airplane.gd")
+const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
+const ElectricSkin := preload("res://aircraft/stik_electric_skin.gd")
 const TIMBER := "turbo-lumber-evolution"
 var checks := 0
 var failures := 0
@@ -44,6 +46,7 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(Skins._root)
 	var requested := OS.get_cmdline_user_args()
 	var ids := requested if not requested.is_empty() else Catalog.ids()
+	_test_paint_identity_guards(ids)
 	var packages := {}
 	for id: String in ids:
 		var spec := Skins.kit(id)
@@ -100,6 +103,40 @@ func _run() -> void:
 	Skins._root = Skins.ROOT
 	print("Skin fleet: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
+
+
+func _test_paint_identity_guards(ids: PackedStringArray) -> void:
+	for pair: Array in [
+		[ProceduralSkin.STIK, Skins.STIK_LEGACY_PAINT_IDENTITY, Skins.STIK_CURRENT_PAINT_IDENTITY],
+		[ProceduralSkin.EXTRA, Skins.EXTRA_LEGACY_PAINT_IDENTITY, Skins.EXTRA_CURRENT_PAINT_IDENTITY],
+	]:
+		var family: String = pair[0]
+		if not ids.has(family): continue
+		var legacy: String = pair[1]
+		var current: String = pair[2]
+		check(family + " has the reviewed live paint identity", ProceduralSkin.identity(family) == current)
+		check(family + " admits the reviewed template pair", Skins._compatible_paint_template(family, legacy, current))
+		check(family + " rejects another template identity", not Skins._compatible_paint_template(family, "0".repeat(64), current))
+		check(family + " rejects another live identity", not Skins._compatible_paint_template(family, legacy, "0".repeat(64)))
+		check(family + " rejects the pair for another family", not Skins._compatible_paint_template(ElectricSkin.FAMILY, legacy, current))
+		var spec := Skins.kit(family)
+		if not spec.is_empty():
+			var saved: String = spec.stock_sha256
+			spec.stock_sha256 = "0".repeat(64)
+			check(family + " rejects a changed kit identity", Skins.base_identity(family).is_empty())
+			spec.stock_sha256 = saved
+			check(family + " accepts the restored kit identity", Skins.base_identity(family) == saved)
+	if ids.has(ElectricSkin.FAMILY):
+		var spec := Skins.kit(ElectricSkin.FAMILY)
+		check("electric paint binds its own verified model", not spec.is_empty() and ElectricSkin.identity(ElectricSkin.FAMILY) == spec.get("stock_sha256", ""))
+		check("electric paint rejects the Stik family", ElectricSkin.identity(ProceduralSkin.STIK).is_empty())
+		check("electric adapter rejects an unrelated family", not ElectricSkin.prepare(ProceduralSkin.STIK, null).ok)
+		if not spec.is_empty():
+			var saved: String = spec.stock_sha256
+			spec.stock_sha256 = "0".repeat(64)
+			check("electric paint rejects a changed kit identity", Skins.base_identity(ElectricSkin.FAMILY).is_empty())
+			spec.stock_sha256 = saved
+			check("electric paint accepts the restored kit identity", Skins.base_identity(ElectricSkin.FAMILY) == saved)
 
 
 func _timber_paint_ref(model: Node3D) -> WeakRef:

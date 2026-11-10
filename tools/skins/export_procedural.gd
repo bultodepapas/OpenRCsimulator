@@ -4,12 +4,13 @@ extends SceneTree
 
 const Registry := preload("res://aircraft/model_registry.gd")
 const ProceduralSkin := preload("res://aircraft/procedural_skin.gd")
+const ElectricSkin := preload("res://aircraft/stik_electric_skin.gd")
 const TimberDetails := preload("res://aircraft/timber_visual_details.gd")
 const TimberLighting := preload("res://aircraft/timber_visual_lighting.gd")
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
-	if args.size() != 2 or args[0] not in ProceduralSkin.FAMILIES or not args[1].is_absolute_path() or not args[1].ends_with(".glb"):
+	if args.size() != 2 or (args[0] not in ProceduralSkin.FAMILIES and args[0] != ElectricSkin.FAMILY) or not args[1].is_absolute_path() or not args[1].ends_with(".glb"):
 		printerr("Usage: export_procedural.gd -- <family> <absolute-output.glb>")
 		quit(2)
 		return
@@ -36,13 +37,14 @@ func _initialize() -> void:
 			quit(1)
 			return
 		TimberLighting.apply(root)
-	var adapted: Dictionary = ProceduralSkin.prepare(family, root)
+	var adapter: Script = ElectricSkin if family == ElectricSkin.FAMILY else ProceduralSkin
+	var adapted: Dictionary = adapter.prepare(family, root)
 	if not adapted.get("ok", false):
 		printerr("Paint preparation failed: ", adapted.get("errors", []))
 		root.free()
 		quit(1)
 		return
-	if family != ProceduralSkin.STIK: _preview_materials(root, family)
+	if family != ProceduralSkin.STIK and family != ElectricSkin.FAMILY: _preview_materials(root, family)
 	_owner(root, root)
 	var document := GLTFDocument.new()
 	var state := GLTFState.new()
@@ -53,7 +55,7 @@ func _initialize() -> void:
 		printerr("GLB export failed: ", code)
 		quit(1)
 		return
-	print("EXPORT_OK ", family, " identity=", ProceduralSkin.identity(family), " surfaces=", adapted.surfaces, " path=", args[1])
+	print("EXPORT_OK ", family, " identity=", adapter.identity(family), " surfaces=", adapted.surfaces, " path=", args[1])
 	quit()
 
 

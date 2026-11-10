@@ -1,7 +1,8 @@
 # Create an aircraft skin with AI
 
 Every selectable airplane and the X-Cell helicopter has a model-specific paint
-kit. The four Ugly Stick engine configurations share one visual family and kit.
+kit. The basic and three glow Ugly Stick configurations share one kit; the
+electric 6S has a separate kit and model identity.
 Skins change paint, retaining the stock geometry, articulation and physics.
 The [offline player tutorial](../app/assets/skin-kit/guide.html) includes editable
 image and Blender prompts in all nine simulator languages. Opening it from the
@@ -29,14 +30,17 @@ identifies its model and follows the browser language.
 
 A PNG is an image and a `.blend` is an editable project; the simulator imports
 the `.orskin` package. Templates and packages belong to their visual family and
-stock revision. A skin for a different model or revision is rejected. Existing
-Legacy X8 skin packages remain compatible; Ugly Stick variants share installed paints.
+stock revision. Different models and unreviewed revisions are rejected. Reviewed
+legacy X8, Stik, Extra and Turbo Lumber template revisions remain compatible with
+their exact verified current models. The basic and three glow Ugly Stick
+configurations share installed paints. Electric 6S packages remain separate.
 
 ## Reference mapping
 
 | Visual family | Image references |
 | --- | --- |
-| Ugly Stick (all four configurations) | Existing covering atlas |
+| Ugly Stick (basic and three glow configurations) | Existing covering atlas |
+| Ugly Stick Electric 6S | Existing covering atlas, separate electric kit |
 | Extra 300S | Neutral six-view paint mapping |
 | P-51D Mustang | Neutral six-view paint mapping |
 | Turbo Lumber | Neutral six-view exterior paint mapping |

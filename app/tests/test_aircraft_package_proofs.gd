@@ -5,6 +5,9 @@ const ExportProofs := preload("res://addons/aircraft_contract/export_plugin.gd")
 const OverlayProof := preload("res://aircraft/overlay_source_proof.gd")
 const OverlayCustomization := preload("res://aircraft/customization_overlay.gd")
 const PresentationSources := preload("res://render/presentation_sources.gd")
+const ElectricSkin := preload("res://aircraft/stik_electric_skin.gd")
+const SharedSkin := preload("res://aircraft/procedural_skin.gd")
+const CustomSkin := preload("res://aircraft/custom_skin.gd")
 const PACKAGE_PROOF_PATH := "res://data/aircraft_models/package_proofs.json"
 const PACKAGE_PROOF_FORMAT := "openrc-aircraft-model-package v1"
 const TEMP_ROOT := "user://aircraft-package-proof-tests"
@@ -64,7 +67,7 @@ func _run_parent() -> void:
 		_run_child(str(test_case.name), pack_path)
 	var lazy_pack := _build_pack(temp_dir, "deferred_glb", "", true)
 	_run_child("deferred_glb", lazy_pack)
-	for case_name: String in ["electric_proofs", "electric_missing_proof"]:
+	for case_name: String in ["electric_proofs", "electric_missing_proof", "electric_missing_skin_proof", "electric_missing_mapping_proof", "electric_changed_skin_proof"]:
 		var electric_pack := _build_pack(temp_dir, case_name, "", true)
 		_run_child(case_name, electric_pack)
 	# Keep this last: it mounts an exported-project sentinel without a marker in a fresh process.
@@ -108,14 +111,18 @@ func _run_case(case_name: String, pack_path: String) -> void:
 	if case_name == "deferred_glb":
 		_check_deferred_glb()
 		return
-	if case_name in ["electric_proofs", "electric_missing_proof"]:
+	if case_name in ["electric_proofs", "electric_missing_proof", "electric_missing_skin_proof", "electric_missing_mapping_proof", "electric_changed_skin_proof"]:
 		var electric: Dictionary = Registry.describe("stik-electric-6s")
 		if case_name == "electric_proofs":
 			_check("electric model resolves from packaged source proofs", electric.get("ok", false), str(electric.get("errors", [])))
 			var companion: Dictionary = OverlayCustomization.describe("stik-electric-6s")
 			_check("electric companion resolves with packaged presentation proofs", companion.get("ok", false), str(companion.get("errors", [])))
-		else:
+			_check("electric paint resolves with packaged adapter proofs", not ElectricSkin.identity(ElectricSkin.FAMILY).is_empty() and CustomSkin.base_identity(ElectricSkin.FAMILY) == ElectricSkin.identity(ElectricSkin.FAMILY))
+		elif case_name == "electric_missing_proof":
 			_check("electric model rejects an omitted packaged proof", not electric.get("ok", false) and _has_code(electric, "MODEL_PACKAGE_PROOF_MISSING"), str(electric))
+		else:
+			_check("electric model remains verified in paint-proof mutation", electric.get("ok", false), str(electric.get("errors", [])))
+			_check("electric paint rejects the changed or missing adapter proof", CustomSkin.base_identity(ElectricSkin.FAMILY).is_empty(), ElectricSkin.identity(ElectricSkin.FAMILY))
 		return
 	var result: Dictionary = Registry._read_package_proofs()
 	var expected_code := "MODEL_PACKAGE_PROOF_INVALID"
@@ -141,7 +148,7 @@ func _build_pack(temp_dir: String, case_name: String, marker: String, include_se
 		if error != OK:
 			return ""
 	var proof_marker := marker
-	if case_name in ["electric_proofs", "electric_missing_proof"]:
+	if case_name in ["electric_proofs", "electric_missing_proof", "electric_missing_skin_proof", "electric_missing_mapping_proof", "electric_changed_skin_proof"]:
 		var packaged := _add_electric_proofs(packer, temp_dir, case_name)
 		if not packaged.get("ok", false): return ""
 		proof_marker = str(packaged.marker)
@@ -173,10 +180,16 @@ func _add_electric_proofs(packer: PCKPacker, temp_dir: String, case_name: String
 	for record: Dictionary in [manifest.source_registry, manifest.geometry.source]: sources[str(record.path)] = true
 	for record: Dictionary in manifest.authoring_sources + manifest.dependencies: sources[str(record.path)] = true
 	for source: String in OverlayProof.source_paths("stik-electric-6s"): sources[source] = true
+	sources[ElectricSkin.SCRIPT_PATH] = true
+	sources[SharedSkin.SCRIPT_PATH] = true
 	var files := {}
 	for source: String in sources:
 		if case_name == "electric_missing_proof" and source == "res://aircraft/stik_electric_model.gd": continue
+		if case_name == "electric_missing_skin_proof" and source == ElectricSkin.SCRIPT_PATH: continue
+		if case_name == "electric_missing_mapping_proof" and source == SharedSkin.SCRIPT_PATH: continue
 		var input := source if source.begins_with("res://") else ProjectSettings.globalize_path("res://").path_join("../" + source)
+		if case_name == "electric_changed_skin_proof" and source == ElectricSkin.SCRIPT_PATH:
+			input = _write_source(temp_dir, case_name + "-adapter", FileAccess.get_file_as_string(source) + "\n# changed proof\n")
 		var proof := Registry._expected_proof_path(source)
 		var error := packer.add_file(proof, ProjectSettings.globalize_path(input))
 		_check("pack contains electric model proof " + source, error == OK, error_string(error))
