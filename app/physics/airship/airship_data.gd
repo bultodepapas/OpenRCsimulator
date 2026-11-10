@@ -74,7 +74,7 @@ static func parse(raw: Dictionary) -> Dictionary:
 	}
 	var gas: Dictionary = _object(raw, "gas", e)
 	d.gas = {density = _q(gas, "density", "kg/m^3", e, 0.08, 0.6),
-		fill_fraction = _q(gas, "fill_fraction", "1", e, 0.5, 1.0)}
+		fill_fraction = _q(gas, "fill_fraction", "1", e, 1.0, 1.0)}
 	var hull: Dictionary = _object(raw, "hull_aero", e)
 	d.hull_aero = {
 		axial_drag = _q(hull, "axial_drag_coefficient", "1", e, 0.0, 1.0),
@@ -321,7 +321,11 @@ static func derive(data: Dictionary, rho: float, gravity: float, heaviness_kg: f
 	model.lower = factor.lower
 	model.hull_stations = _hull_stations(profile, float(data.hull_aero.crossflow_drag) * float(data.hull_aero.crossflow_efficiency))
 	model.ref_area = pow(volume, 2.0 / 3.0)
-	model.afterbody = _afterbody(profile)
+	# The cancelled load uses the same lateral added mass per length as C_A: k2 * hull_scale * rho * pi * R^2.
+	var half_length: float = 0.5 * float(data.envelope.length)
+	var lateral: float = spheroid_coefficients(half_length, sqrt(3.0 * volume / (4.0 * PI * half_length))).k2 \
+		* float(data.added_mass.hull_scale)
+	model.afterbody = _afterbody(profile, lateral)
 	model.separation_x = model.afterbody[0] if model.afterbody.size() >= 2 else 0.0
 	model.bound_radius = _bound_radius(data)
 	_prepare_runtime(model)
@@ -444,9 +448,9 @@ static func _hull_stations(profile: PackedFloat64Array, crossflow: float) -> Pac
 	return out
 
 
-## Profile points [x, section area] from the separation station x0 to the tail. Hopkins: x0 is where the section
-## area decreases fastest going aft (most negative dS/ds along the flow).
-static func _afterbody(profile: PackedFloat64Array) -> PackedFloat64Array:
+## Profile points [x, lateral * section area] from the separation station x0 to the tail. Hopkins: x0 is where the
+## section area decreases fastest going aft (most negative dS/ds along the flow).
+static func _afterbody(profile: PackedFloat64Array, lateral: float) -> PackedFloat64Array:
 	var stations := profile.size() / 2
 	var best := -1
 	var steepest := 0.0
@@ -461,7 +465,7 @@ static func _afterbody(profile: PackedFloat64Array) -> PackedFloat64Array:
 		return out
 	for i in range(best, stations):
 		out.append(profile[2 * i])
-		out.append(PI * profile[2 * i + 1] * profile[2 * i + 1])
+		out.append(lateral * PI * profile[2 * i + 1] * profile[2 * i + 1])
 	return out
 
 

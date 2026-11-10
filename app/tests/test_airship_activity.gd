@@ -68,6 +68,16 @@ func _run() -> void:
 		await physics_frame
 	check(activity.session.sim.tick > started and not activity.session.paused, "resumed flight advances accepted ticks")
 	check(activity.session.crash.is_empty() and activity.session.fault_reason.is_empty(), "no fault or crash in a short powered run")
+	root.propagate_notification(NOTIFICATION_APPLICATION_FOCUS_OUT)
+	var paused_tick: int = activity.session.sim.tick
+	for i in 10:
+		await physics_frame
+	check(activity.session.paused and activity.hud.menu_visible and activity.session.sim.tick == paused_tick,
+		"losing window focus pauses the blimp behind its menu")
+	activity.handle_action("resume")
+	for i in 10:
+		await physics_frame
+	check(not activity.session.paused and activity.session.sim.tick > paused_tick, "explicit resume continues the flight")
 	activity.handle_action("home")
 	for i in 8:
 		await process_frame

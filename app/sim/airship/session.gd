@@ -22,11 +22,15 @@ const FIXED_HZ := 240
 const MAX_TAPE_TICKS := FIXED_HZ * 60 * 30
 const MAX_WIND_MPS := 4.0
 const ARM_THROTTLE := 0.05
+const ARM_YAW := 0.1
+const FOCUS_PAUSE := "Paused: the window lost focus."
 
 signal tick_advanced(tick: int, time_s: float)
 signal crashed(reason: String)
 signal pause_changed(paused: bool, reason: String)
 signal faulted(reason: String)
+## Emitted before a reset or reconfiguration replaces the flight (recorders close their file here).
+signal resetting
 
 var sim: Node = Sim.new()
 var environment: SimEnvironment = SimEnvironment.new()
@@ -51,6 +55,14 @@ var _last_info: Dictionary = {}
 var _info_tick := -1
 ## BL-11: immutable scenery obstacle inventory (scenery/collision_world.gd); empty = terrain only.
 var _collision_world: Dictionary = {}
+## Broad-phase superset of nearby proxies and its query centre [north, east, down, reach].
+const BROAD_SLACK_M := 2.0
+var _broad: Array[Dictionary] = []
+var _broad_center := PackedFloat64Array()
+## Envelope axis samples [x, R, margin] (see _obstacle_hit).
+const AXIS_STEP_M := 0.05
+const AXIS_BLOCK := 10
+var _axis := PackedFloat64Array()
 
 
 func _init() -> void:
@@ -58,6 +70,10 @@ func _init() -> void:
 	sim.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(sim)
 	sim.faulted.connect(func(reason: String) -> void: _fault("airship kernel: " + reason))
+	# The kernel pauses itself when the application loses focus; the flight follows and needs an explicit resume.
+	sim.paused_changed.connect(func(value: bool) -> void:
+		if value and not paused:
+			_set_paused(true, FOCUS_PAUSE))
 
 
 static func default_options() -> Dictionary:
@@ -145,6 +161,7 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 	sim.mass = model.mass
 	sim.inertia = model.inertia.duplicate()
 	sim.gravity = environment.gravity
+	_build_axis_samples()
 	prepared = true
 	load_error = ""
 	return reset()
@@ -155,6 +172,7 @@ func prepare(field: Dictionary, requested: Dictionary = {}) -> bool:
 func reset() -> bool:
 	if not prepared:
 		return false
+	resetting.emit()
 	var heading := deg_to_rad(float(options.heading_deg))
 	var pilot: Dictionary = _field.get("pilot", {north = 0.0, east = 0.0, down = 0.0})
 	var north := float(pilot.north) + float(options.north_offset_m)
@@ -213,6 +231,11 @@ func resume(sticks: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0, 0.0]
 	if sticks.size() != 4 or sticks[3] > ARM_THROTTLE:
 		pause_reason = "Lower the throttle to resume."
 		return false
+	# Yaw drives the reversible stern lateral motor directly, so it must be centred too.
+	if absf(sticks[2]) > ARM_YAW:
+		pause_reason = "Centre the yaw stick to resume."
+		return false
+	sim.set_paused(false)
 	_set_paused(false, "")
 	return true
 
@@ -256,8 +279,8 @@ func tick_once(sticks: PackedFloat64Array) -> bool:
 ## Terminal observation on the accepted tick-end state: a propeller touching the ground, or the envelope striking
 ## at more than the declared impact speed, ends the flight (deterministic, replayed identically).
 func _observe_accepted() -> void:
-	var info := telemetry_info()
-	var contact: Dictionary = info.get("contact", {})
+	# Contacts only: the detailed telemetry evaluation is computed lazily by its readers (HUD, logs).
+	var contact := Dynamics.observe_contacts(model, sim.state, sim.continuous, _ground)
 	var reason := ""
 	var obstacle := _obstacle_hit()
 	if not obstacle.is_empty():
@@ -283,99 +306,130 @@ func set_collision_world(world: Dictionary) -> bool:
 			if not CollisionWorld._proxy_is_valid(proxy):
 				return false
 	_collision_world = world.duplicate(true)
+	_broad_center = PackedFloat64Array()
 	return true
 
 
-## Accepted-tick obstacle test: every hull, fin, gondola, gear and propeller witness against the nearby box and
-## vertical-capsule proxies. Below 10 m/s a tick moves under 4.2 cm, well inside the thinnest proxy (0.36 m trunk);
-## faster motion is outside the admitted collision domain. Returns the struck proxy kind, or "".
+## Proxies overlapping the reach sphere around O. The broad phase queries the world once with an extra
+## BROAD_SLACK_M and reuses that superset while O stays within the slack; the exact sphere filter keeps the
+## world's own candidate order, so the result equals a fresh CollisionWorld.nearby query.
+func _nearby_proxies(north: float, east: float, down: float, reach: float) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var c := _broad_center
+	var moved := INF if c.size() != 4 or c[3] != reach else \
+		sqrt((north - c[0]) * (north - c[0]) + (east - c[1]) * (east - c[1]) + (down - c[2]) * (down - c[2]))
+	if moved > BROAD_SLACK_M:
+		_broad = CollisionWorld.nearby(_collision_world, north, east, down, reach + BROAD_SLACK_M)
+		_broad_center = PackedFloat64Array([north, east, down, reach])
+	for proxy: Dictionary in _broad:
+		if CollisionWorld._aabb_sphere_overlap(proxy, north, east, down, reach):
+			out.append(proxy)
+	return out
+
+
+## Accepted-tick obstacle test, two parts:
+## 1. Envelope: the hull of revolution R(x) against every nearby proxy, by axis samples at most AXIS_STEP_M apart.
+##    Between samples the clearance dist(P(x), proxy) - R(x) cannot drop by more than h/2 * (1 + |dR/dx|) (distance
+##    is 1-Lipschitz along the axis), so each sample carries that margin: thin wires, poles and off-axis intrusions
+##    are found, at worst a few centimetres early. Samples are also inflated by the largest witness travel of one
+##    tick, so a crossing between two clear endpoints is reported (swept superset; admitted below 10 m/s).
+## 2. Appendages: fin, gondola, gear and vector-following propeller witnesses inside a proxy. A proxy thinner than
+##    the witness spacing can pass between appendage witnesses (declared limit).
+## Every response class is terminal for the fabric envelope. Returns "kind (response class)" or "".
 func _obstacle_hit() -> String:
 	if _collision_world.is_empty():
 		return ""
 	var s: PackedFloat64Array = sim.state
 	var reach: float = float(model.bound_radius) + 0.25
-	var near := CollisionWorld.nearby(_collision_world, s[0], s[1], s[2], reach)
+	var near := _nearby_proxies(s[0], s[1], s[2], reach)
 	if near.is_empty():
 		return ""
 	var q := s.slice(6, 10)
+	var nose := M.q_rotate(q, PackedFloat64Array([1.0, 0.0, 0.0]))
+	var speed := sqrt(s[3] * s[3] + s[4] * s[4] + s[5] * s[5])
+	var rate := sqrt(s[10] * s[10] + s[11] * s[11] + s[12] * s[12])
+	var travel: float = (speed + rate * float(model.bound_radius)) * float(sim.dt())
+	for proxy: Dictionary in near:
+		if _envelope_hits(proxy, s, nose, travel):
+			return _strike_label(proxy)
 	var points := PackedFloat64Array()
 	points.append_array(model.contacts.hull_points)
-	points.append_array(model.contacts.prop_points)
+	points.append_array(Dynamics.prop_points(model, sim.continuous))
 	for gear: Dictionary in model.contacts.gear:
 		points.append_array(gear.point)
 	for i in points.size() / 3:
 		var w := M.q_rotate(q, points.slice(3 * i, 3 * i + 3))
-		var n := s[0] + w[0]
-		var e := s[1] + w[1]
-		var d := s[2] + w[2]
 		for proxy: Dictionary in near:
-			if _inside(proxy, n, e, d):
-				return str(proxy.kind)
-	# Reverse test: thin proxies (trunks, poles) can pierce the envelope between surface witnesses.
-	var qc := M.q_conj(q)
-	for proxy: Dictionary in near:
-		for sample: PackedFloat64Array in _proxy_samples(proxy):
-			var b := M.q_rotate(qc, PackedFloat64Array([sample[0] - s[0], sample[1] - s[1], sample[2] - s[2]]))
-			if _inside_hull(b, sample[3]):
-				return str(proxy.kind)
+			if _clearance(proxy, s[0] + w[0], s[1] + w[1], s[2] + w[2]) <= travel:
+				return _strike_label(proxy)
 	return ""
 
 
-## [north, east, down, margin] samples: a capsule axis every <= 0.4 m with its radius; a box centre and corners.
-static func _proxy_samples(proxy: Dictionary) -> Array[PackedFloat64Array]:
-	var out: Array[PackedFloat64Array] = []
-	var n0: float = proxy.north
-	var e0: float = proxy.east
-	var d0: float = proxy.down
-	if proxy.shape == "capsule":
-		var half: float = proxy.half_length
-		var steps := maxi(1, ceili(2.0 * half / 0.4))
-		for i in steps + 1:
-			out.append(PackedFloat64Array([n0, e0, d0 - half + 2.0 * half * float(i) / float(steps), float(proxy.radius)]))
-		return out
-	out.append(PackedFloat64Array([n0, e0, d0, 0.0]))
-	var sh: float = proxy.sin_heading
-	var ch: float = proxy.cos_heading
-	for sx: float in [-1.0, 1.0]:
-		for sz: float in [-1.0, 1.0]:
-			for sd: float in [-1.0, 1.0]:
-				var lx := sx * float(proxy.half_x)
-				var lz := sz * float(proxy.half_z)
-				out.append(PackedFloat64Array([n0 + lz * ch - lx * sh, e0 + lz * sh + lx * ch, d0 + sd * float(proxy.half_down), 0.0]))
-	return out
+static func _strike_label(proxy: Dictionary) -> String:
+	return "%s (%s)" % [proxy.kind, proxy.get("response_class", "rigid")]
 
 
-## Body-frame point inside the envelope of revolution R(x), enlarged by margin.
-func _inside_hull(b: PackedFloat64Array, margin: float) -> bool:
+## Axis samples [x, R(x), margin] of the envelope from nose to tail, built once per prepared model.
+func _build_axis_samples() -> void:
+	_axis = PackedFloat64Array()
 	var profile: PackedFloat64Array = model.envelope.radius_profile
 	var count := profile.size() / 2
-	if b[0] > profile[0] + margin or b[0] < profile[2 * count - 2] - margin:
-		return false
-	var radius := 0.0
 	for i in count - 1:
 		var xa := profile[2 * i]
+		var ra := profile[2 * i + 1]
 		var xb := profile[2 * i + 2]
-		if b[0] <= xa and b[0] >= xb:
-			var f := (b[0] - xa) / (xb - xa) if xa != xb else 0.0
-			radius = lerpf(profile[2 * i + 1], profile[2 * i + 3], f)
-			break
-	return sqrt(b[1] * b[1] + b[2] * b[2]) <= radius + margin
+		var rb := profile[2 * i + 3]
+		var length := absf(xa - xb)
+		var steps := maxi(1, ceili(length / AXIS_STEP_M))
+		var h := length / float(steps)
+		var margin := 0.5 * h * (1.0 + (absf(rb - ra) / length if length > 0.0 else 0.0))
+		for k in steps + (1 if i == count - 2 else 0):
+			var f := float(k) / float(steps)
+			# A sample on a segment boundary keeps the larger margin of its two segments.
+			if k == 0 and _axis.size() >= 3:
+				_axis[_axis.size() - 1] = maxf(_axis[_axis.size() - 1], margin)
+				continue
+			_axis.append_array([lerpf(xa, xb, f), lerpf(ra, rb, f), margin])
 
 
-static func _inside(proxy: Dictionary, n: float, e: float, d: float) -> bool:
+## Envelope against one proxy. Blocks of AXIS_BLOCK samples are rejected first from their centre sample (clearance
+## is 1-Lipschitz along the axis), so a far proxy costs a few distance evaluations.
+func _envelope_hits(proxy: Dictionary, s: PackedFloat64Array, nose: PackedFloat64Array, travel: float) -> bool:
+	var samples := _axis.size() / 3
+	var block := 0
+	while block < samples:
+		var last := mini(block + AXIS_BLOCK, samples) - 1
+		var mid := (block + last) / 2
+		var half_span := maxf(absf(_axis[3 * block] - _axis[3 * mid]), absf(_axis[3 * last] - _axis[3 * mid]))
+		var widest := 0.0
+		for i in range(block, last + 1):
+			widest = maxf(widest, _axis[3 * i + 1] + _axis[3 * i + 2])
+		var xm := _axis[3 * mid]
+		if _clearance(proxy, s[0] + nose[0] * xm, s[1] + nose[1] * xm, s[2] + nose[2] * xm) - half_span <= widest + travel:
+			for i in range(block, last + 1):
+				var x := _axis[3 * i]
+				var gap := _clearance(proxy, s[0] + nose[0] * x, s[1] + nose[1] * x, s[2] + nose[2] * x)
+				if gap <= _axis[3 * i + 1] + _axis[3 * i + 2] + travel:
+					return true
+		block = last + 1
+	return false
+
+
+## Euclidean distance from a world NED point to the proxy solid (<= 0 inside).
+static func _clearance(proxy: Dictionary, n: float, e: float, d: float) -> float:
 	var dn := n - float(proxy.north)
 	var de := e - float(proxy.east)
 	var dd := d - float(proxy.down)
 	if proxy.shape == "capsule":
 		var along := clampf(dd, -float(proxy.half_length), float(proxy.half_length))
-		var r: float = proxy.radius
-		return dn * dn + de * de + (dd - along) * (dd - along) <= r * r
+		return sqrt(dn * dn + de * de + (dd - along) * (dd - along)) - float(proxy.radius)
 	var sh: float = proxy.sin_heading
 	var ch: float = proxy.cos_heading
-	var local_z := dn * ch + de * sh
-	var local_x := -dn * sh + de * ch
-	return absf(local_x) <= float(proxy.half_x) and absf(local_z) <= float(proxy.half_z) and absf(dd) <= float(proxy.half_down)
-
+	var ox := absf(-dn * sh + de * ch) - float(proxy.half_x)
+	var oz := absf(dn * ch + de * sh) - float(proxy.half_z)
+	var od := absf(dd) - float(proxy.half_down)
+	var outside := sqrt(maxf(ox, 0.0) ** 2 + maxf(oz, 0.0) ** 2 + maxf(od, 0.0) ** 2)
+	return outside + minf(maxf(ox, maxf(oz, od)), 0.0)
 
 func _fault(reason: String) -> void:
 	fault_reason = reason
@@ -440,6 +494,31 @@ func continuous_snapshot() -> PackedFloat64Array:
 
 func interpolated(fraction: float) -> PackedFloat64Array:
 	return sim.interpolated(fraction)
+
+
+## Identity of the installed obstacle inventory ("" = terrain only).
+func collision_identity() -> String:
+	return str(_collision_world.get("identity", ""))
+
+
+## BL-08 replay: continue from a recorded accepted state (tick numbering restarts; the law is time-invariant in the
+## admitted calm/steady weather). Leaves the flight running, ready for the recorded sticks.
+func restore_checkpoint(state: PackedFloat64Array, continuous: PackedFloat64Array) -> bool:
+	if not prepared or continuous.size() != Data.CONTINUOUS_SIZE:
+		return false
+	resetting.emit()
+	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	sim.continuous = continuous.duplicate()
+	if not sim.reset(state.duplicate()):
+		return false
+	tape = PackedFloat64Array()
+	tape_overflow = false
+	crash = {}
+	fault_reason = ""
+	_info_tick = -1
+	sim.set_paused(false)
+	_set_paused(false, "")
+	return true
 
 
 func identity() -> Dictionary:

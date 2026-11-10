@@ -17,6 +17,7 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const Spec = preload("res://spec.gd")
 const CollisionSetup = preload("res://scenery/collision_setup.gd")
+const AirshipLog = preload("res://sim/airship/flight_log.gd")
 
 const DATA_PATH := "res://data/airships/rc-blimp-5m.json"
 const MOTOR_AUDIO := "res://assets/audio/powertrains/electric_quad.wav"
@@ -41,6 +42,8 @@ var enable_world := true
 var scripted_sticks := Callable()
 
 var session: Node
+## BL-08 opt-in black box (F10 start/stop, F11 marker).
+var flight_log: RefCounted
 var visual: RefCounted
 var hud: CanvasLayer
 var camera: Camera3D
@@ -128,7 +131,15 @@ func _disable() -> void:
 	set_process_unhandled_input(false)
 
 
+## Losing focus pauses the flight behind the menu; resuming is explicit and re-arms the controls.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and session != null and session.prepared and hud != null:
+		input.reset_throttle()
+		_open_menu(Session.FOCUS_PAUSE)
+
+
 func _exit_tree() -> void:
+	_stop_recording("left the blimp activity")
 	if Input.joy_connection_changed.is_connected(_joy_connection_changed):
 		Input.joy_connection_changed.disconnect(_joy_connection_changed)
 
@@ -204,6 +215,14 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_H:
 				hud.help.visible = not hud.help.visible
 				get_viewport().set_input_as_handled()
+			KEY_F10:
+				toggle_recording()
+				get_viewport().set_input_as_handled()
+			KEY_F11:
+				if flight_log != null and flight_log.recording:
+					flight_log.mark()
+					hud.flash("Flight log marker")
+				get_viewport().set_input_as_handled()
 	elif event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START:
 		if hud.menu_visible: handle_action("resume")
 		else: _open_menu("Paused")
@@ -241,6 +260,7 @@ func handle_action(action: String) -> void:
 		"help":
 			hud.help.visible = not hud.help.visible
 		"home":
+			_stop_recording("left the blimp activity")
 			session.pause("Leaving")
 			home_requested.emit()
 			if not departure_managed:
@@ -254,26 +274,36 @@ func _option_selected(option: String, index: int) -> void:
 			if index >= 0 and index < skins.size() and str(skins[index].id) != skin_id:
 				_swap_skin(str(skins[index].id))
 		"ballast":
+			var previous := ballast_index
 			ballast_index = index
-			_restart()
+			if not _restart():
+				ballast_index = previous
+				hud.select_choice("ballast", previous)
 		"wind":
+			var previous := wind_index
 			wind_index = index
-			_restart()
+			if not _restart():
+				wind_index = previous
+				hud.select_choice("wind", previous)
 		"start":
+			var previous := start_index
 			start_index = index
-			_restart()
+			if not _restart():
+				start_index = previous
+				hud.select_choice("start", previous)
 		"camera":
 			camera_mode = index
 
 
 ## A configuration change is a new admitted model: prepare and reset, keeping the old session on refusal.
-func _restart() -> void:
+func _restart() -> bool:
 	if not session.prepare(field, _session_options()):
 		hud.flash("Configuration refused: " + str(session.load_error))
-		return
+		return false
 	input.reset_throttle()
 	_chase_heading = deg_to_rad(float(session.options.heading_deg))
 	_open_menu(session.pause_reason)
+	return true
 
 
 func _swap_skin(next_skin: String) -> void:
@@ -393,6 +423,24 @@ func _motor_sound(player: AudioStreamPlayer3D, n: float, position: Vector3) -> v
 	var blade_hz := FULL_SPEED_RPM * n * BLADES / 60.0
 	player.pitch_scale = clampf(blade_hz / MOTOR_AUDIO_REFERENCE_HZ, 0.35, 2.5)
 	player.volume_db = linear_to_db(clampf(0.15 + 0.85 * n * n, 0.001, 1.0)) - 6.0
+
+
+## Start or stop the opt-in flight log of the current flight; a reset or reconfiguration closes it.
+func toggle_recording() -> void:
+	if session == null or not session.prepared:
+		return
+	if flight_log != null and flight_log.recording:
+		flight_log.stop("pilot stopped recording")
+		hud.flash(str(flight_log.note))
+		return
+	flight_log = AirshipLog.new(session)
+	flight_log.start({field_path = field_path})
+	hud.flash(str(flight_log.note))
+
+
+func _stop_recording(reason: String) -> void:
+	if flight_log != null and flight_log.recording:
+		flight_log.stop(reason)
 
 
 ## AppRoot controller hooks shared with the ground activity slot.

@@ -77,7 +77,10 @@ func _ready() -> void:
 		"Roll (right stick sides / Left-Right): differential side thrust",
 		"Full back stick vectors past vertical: brake and hover",
 		"P or Esc: pause menu   R: restart   C: camera   H: this help",
+		"F10: start/stop the flight log (.orfl)   F11: log marker",
+		"Resume needs the throttle low and the yaw stick centred.",
 		"", "A blimp keeps drifting: reduce thrust early, brake with vectoring.",
+		"It is only marginally stable, like a real airship: keep correcting with small rudder.",
 	]))
 	root_control.add_child(help)
 	_build_menu(scale)

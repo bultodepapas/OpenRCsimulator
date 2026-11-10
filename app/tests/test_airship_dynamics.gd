@@ -142,6 +142,7 @@ func _initialize() -> void:
 	_restoring()
 	_mixer_signs()
 	_discriminating()
+	_afterbody_law()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -425,3 +426,35 @@ func _discriminating() -> void:
 	var first := Dynamics.evaluate(geared, touch, _cont(), _zero_inputs(), _calm(), _flat, true)
 	# Undamped jump would be c * |vn| = 25 N; the depth-ramped damping gives k d + c (d / 5 mm) |vn| = 0.54 N.
 	_check("first touch starts without a damping jump", float(first.info.contact.gear_load_n) < 1.0 and sliding.loads.size() == 6, str(first.info.contact.gear_load_n))
+
+
+## I06 afterbody (Hopkins): for the spheroid fixture the steepest area decrease is the last strip, so x0 = -0.95 a,
+## and the cancelled slender-body load at incidence is dFz = -u w rho k2 pi R(x0)^2 (R = 0 at the tail), acting aft
+## of x0 with a restoring (nose-down for w > 0) moment. Reverse flow leaves the load untouched.
+func _afterbody_law() -> void:
+	var ideal := _model(fixture(5.0, 1.0, {afterbody = 0.0}))
+	var loss := _model(fixture(5.0, 1.0, {afterbody = 1.0}))
+	if ideal.is_empty() or loss.is_empty():
+		return
+	_check("afterbody separation station is the steepest area decrease", absf(float(loss.separation_x) + 2.375) < 1e-9, str(loss.separation_x))
+	var u := 5.0
+	var w := 0.5
+	var body := _body(PackedFloat64Array([u, 0.0, w]))
+	var a: Dictionary = Dynamics.evaluate(ideal, body, _cont(), _zero_inputs(), _calm(), Callable(), false)
+	var b: Dictionary = Dynamics.evaluate(loss, body, _cont(), _zero_inputs(), _calm(), Callable(), false)
+	var dfz: float = b.loads[2] - a.loads[2]
+	var dmy: float = b.loads[4] - a.loads[4]
+	var k2: float = Data.spheroid_coefficients(2.5, 0.5).k2
+	var expected := -u * w * RHO * k2 * PI * 0.25 * (1.0 - 0.95 * 0.95)
+	_check("afterbody normal force equals -u w rho k2 S(x0)", absf(dfz - expected) < 1e-9 * absf(expected) + 1e-12, "%.6f vs %.6f N" % [dfz, expected])
+	var lever := -dmy / dfz
+	_check("afterbody moment restores (nose down) and acts aft of x0", dmy < 0.0 and lever < -2.375 and lever > -2.5, "dMy %.5f, lever %.3f m" % [dmy, lever])
+	var reverse := _body(PackedFloat64Array([-u, 0.0, w]))
+	var ra: Dictionary = Dynamics.evaluate(ideal, reverse, _cont(), _zero_inputs(), _calm(), Callable(), false)
+	var rb: Dictionary = Dynamics.evaluate(loss, reverse, _cont(), _zero_inputs(), _calm(), Callable(), false)
+	_check("reverse flow: no afterbody correction", ra.loads.to_byte_array() == rb.loads.to_byte_array())
+	var half := _model(fixture(5.0, 1.0, {afterbody = 1.0, hull_scale = 0.5}))
+	var c: Dictionary = Dynamics.evaluate(half, body, _cont(), _zero_inputs(), _calm(), Callable(), false)
+	var ih := _model(fixture(5.0, 1.0, {afterbody = 0.0, hull_scale = 0.5}))
+	var d: Dictionary = Dynamics.evaluate(ih, body, _cont(), _zero_inputs(), _calm(), Callable(), false)
+	_check("afterbody load scales with the hull added-mass scale", absf((c.loads[2] - d.loads[2]) - 0.5 * expected) < 1e-9, "%.6f" % (c.loads[2] - d.loads[2]))

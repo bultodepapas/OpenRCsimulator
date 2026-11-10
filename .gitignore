@@ -31,3 +31,5 @@ app/captures/
 
 # Claude Code subagent worktrees (local, disposable)
 .claude/worktrees/
+# Owner delivery drop folder: the extracted blimp deliveries live in assets/source-deliveries/rc-blimp-5m.
+/BLIMP/

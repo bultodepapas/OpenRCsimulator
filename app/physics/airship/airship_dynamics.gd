@@ -91,8 +91,8 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 	var info := {}
 	# --- buoyancy (gravity enters the body derivative below) ---
 	var gb := M.q_rotate(qc, PackedFloat64Array([0.0, 0.0, g]))
-	var buoy := M.scale(gb, -rho * volume)
-	_apply(force, moment, buoy, cb)
+	var lift := -rho * volume
+	_apply3(force, moment, gb[0] * lift, gb[1] * lift, gb[2] * lift, cb)
 	if detail:
 		info.buoyancy_n = rho * volume * g
 	# --- hull: axial drag and viscous crossflow strips ---
@@ -150,11 +150,13 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 	for i in 3:
 		var fin: Dictionary = fins[i]
 		var rf: PackedFloat64Array = fin.centroid
-		var vf := M.add(vr, M.cross(w, rf))
+		var vfx := vr[0] + (w[1] * rf[2] - w[2] * rf[1])
+		var vfy := vr[1] + (w[2] * rf[0] - w[0] * rf[2])
+		var vfz := vr[2] + (w[0] * rf[1] - w[1] * rf[0])
 		var n: PackedFloat64Array = fin.normal
 		var aft: PackedFloat64Array = fin.aft
-		var a_n := -M.dot(vf, n)
-		var a_t := -M.dot(vf, aft)
+		var a_n := -(vfx * n[0] + vfy * n[1] + vfz * n[2])
+		var a_t := -(vfx * aft[0] + vfy * aft[1] + vfz * aft[2])
 		var area: float = fin.area
 		var q_area := half_rho * area * (a_n * a_n + a_t * a_t)
 		var alpha := M.atan2_(a_n, a_t) if q_area > 0.0 else 0.0
@@ -163,21 +165,25 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		var sa := M.sin_(alpha_e)
 		var ca := M.cos_(alpha_e)
 		var cn: float = float(fin.lift_slope) * sa * ca + float(fin.crossflow_drag) * sa * absf(sa)
-		var air_speed := M.norm(vf)
+		var air_speed := sqrt(vfx * vfx + vfy * vfy + vfz * vfz)
 		var drag_k := half_rho * area * float(fin.drag) * air_speed
-		var fin_force := PackedFloat64Array([n[0] * q_area * cn - drag_k * vf[0], n[1] * q_area * cn - drag_k * vf[1],
-			n[2] * q_area * cn - drag_k * vf[2]])
-		_apply(force, moment, fin_force, rf)
+		var normal_force := q_area * cn
+		var ffx := n[0] * normal_force - drag_k * vfx
+		var ffy := n[1] * normal_force - drag_k * vfy
+		var ffz := n[2] * normal_force - drag_k * vfz
+		_apply3(force, moment, ffx, ffy, ffz, rf)
 		if detail:
-			fin_detail.append({id = fin.id, alpha_deg = rad_to_deg(alpha), normal_force_n = q_area * cn, force = fin_force})
+			fin_detail.append({id = fin.id, alpha_deg = rad_to_deg(alpha), normal_force_n = normal_force,
+				force = PackedFloat64Array([ffx, ffy, ffz])})
 	# --- gondola bluff-body drag ---
 	var gondola: Dictionary = model.gondola
 	var gc: PackedFloat64Array = gondola.center
-	var vg := M.add(vr, M.cross(w, gc))
-	var vg_speed := M.norm(vg)
+	var vgx := vr[0] + (w[1] * gc[2] - w[2] * gc[1])
+	var vgy := vr[1] + (w[2] * gc[0] - w[0] * gc[2])
+	var vgz := vr[2] + (w[0] * gc[1] - w[1] * gc[0])
 	var areas: PackedFloat64Array = gondola.areas
-	var gk := -half_rho * float(gondola.drag) * vg_speed
-	_apply(force, moment, PackedFloat64Array([gk * areas[0] * vg[0], gk * areas[1] * vg[1], gk * areas[2] * vg[2]]), gc)
+	var gk := -half_rho * float(gondola.drag) * sqrt(vgx * vgx + vgy * vgy + vgz * vgz)
+	_apply3(force, moment, gk * areas[0] * vgx, gk * areas[1] * vgy, gk * areas[2] * vgz, gc)
 	# --- battery bus: one pack, one terminal voltage per stage ---
 	var battery: Dictionary = model.battery
 	var soc: float = continuous[Data.SOC]
@@ -224,17 +230,17 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		if vector_index >= 0:
 			var vec: Dictionary = vectors[vector_index]
 			var angle: float = continuous[Data.VECTOR + vector_index]
-			d = _rotate_about(d, vec.axis, angle)
-			hub = M.add(vec.pivot, _rotate_about(M.sub(hub, vec.pivot), vec.axis, angle))
+			var moved := _rotate_axis_and_hub(d, hub, vec.pivot, vec.axis, angle)
+			d = moved.slice(0, 3)
+			hub = moved.slice(3, 6)
 		var n_i: float = continuous[Data.MOTOR + i]
-		var v_hub := M.add(vr, M.cross(w, hub))
-		var inflow := M.dot(v_hub, d)
+		var inflow := (vr[0] + (w[1] * hub[2] - w[2] * hub[1])) * d[0] + (vr[1] + (w[2] * hub[0] - w[0] * hub[2])) * d[1] \
+			+ (vr[2] + (w[0] * hub[1] - w[1] * hub[0])) * d[2]
 		var efficiency: float = 1.0 if n_i >= 0.0 else float(rotor.reverse_efficiency)
 		var t0: float = rotor.static_thrust
 		var thrust := clampf(t0 * efficiency * (n_i * absf(n_i) - absf(n_i) * inflow / float(rotor.pitch_speed)),
 			-THRUST_LIMIT * t0, THRUST_LIMIT * t0)
-		var tf := M.scale(d, thrust)
-		_apply(force, moment, tf, hub)
+		_apply3(force, moment, d[0] * thrust, d[1] * thrust, d[2] * thrust, hub)
 		var reaction := -float(rotor.rotation_sense) * signf(n_i) * float(rotor.torque_ratio) * t0 * n_i * n_i
 		moment[0] += reaction * d[0]
 		moment[1] += reaction * d[1]
@@ -243,28 +249,37 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 		if detail:
 			thrust_dirs.append(d)
 	# --- contacts (conservative skip when the whole vehicle is clearly above the ground) ---
-	var contact := _contacts(model, body, continuous, q, v, w, ground, force, moment)
+	var contact := _contacts(model, body, continuous, q, v, w, ground, force, moment, detail)
 	# --- coupled rigid body + added mass solve ---
 	var tau := PackedFloat64Array([force[0] + mass * gb[0], force[1] + mass * gb[1], force[2] + mass * gb[2],
 		moment[0], moment[1], moment[2]])
-	var mg := M.scale(gb, mass)
-	var mg_moment := M.cross(cg, mg)
-	tau[3] += mg_moment[0]
-	tau[4] += mg_moment[1]
-	tau[5] += mg_moment[2]
-	var p_rb := M.scale(M.add(v, M.cross(w, cg)), mass)
-	var h_rb := M.add(_mul3(model.inertia, w), M.scale(M.cross(cg, v), mass))
-	var c1 := M.cross(w, p_rb)
-	var c2 := M.add(M.cross(w, h_rb), M.cross(v, p_rb))
+	# Weight moment about O: cg x (m g_b).
+	var mgx := gb[0] * mass
+	var mgy := gb[1] * mass
+	var mgz := gb[2] * mass
+	tau[3] += cg[1] * mgz - cg[2] * mgy
+	tau[4] += cg[2] * mgx - cg[0] * mgz
+	tau[5] += cg[0] * mgy - cg[1] * mgx
+	# Rigid momenta p = m (v + w x r_g), h = I_O w + m r_g x v, and C_RB = [w x p, w x h + v x p].
+	var p_rb := PackedFloat64Array([mass * (v[0] + (w[1] * cg[2] - w[2] * cg[1])), mass * (v[1] + (w[2] * cg[0] - w[0] * cg[2])),
+		mass * (v[2] + (w[0] * cg[1] - w[1] * cg[0]))])
+	var iw := _mul3(model.inertia, w)
+	var h_rb := PackedFloat64Array([iw[0] + mass * (cg[1] * v[2] - cg[2] * v[1]), iw[1] + mass * (cg[2] * v[0] - cg[0] * v[2]),
+		iw[2] + mass * (cg[0] * v[1] - cg[1] * v[0])])
+	var c1 := _cross(w, p_rb)
+	var c2 := _cross_sum(w, h_rb, v, p_rb)
 	var m_a: PackedFloat64Array = model.m_a
 	var nu_r := PackedFloat64Array([vr[0], vr[1], vr[2], w[0], w[1], w[2]])
+	# Fluid momenta [p_a, h_a] = M_A nu_r and C_A = [w x p_a, w x h_a + v_r x p_a].
 	var fluid := _mul6(m_a, nu_r)
-	var pa := PackedFloat64Array([fluid[0], fluid[1], fluid[2]])
-	var ha := PackedFloat64Array([fluid[3], fluid[4], fluid[5]])
-	var ca1 := M.cross(w, pa)
-	var ca2 := M.add(M.cross(w, ha), M.cross(vr, pa))
-	var transport_v := M.cross(w, wind_b)
-	var transport := _mul6(m_a, PackedFloat64Array([transport_v[0], transport_v[1], transport_v[2], 0.0, 0.0, 0.0]))
+	var pa := fluid.slice(0, 3)
+	var ca1 := _cross(w, pa)
+	var ca2 := _cross_sum(w, fluid.slice(3, 6), vr, pa)
+	# Fluid transport of a world-fixed wind seen from rotating axes (zero, and skipped, in calm air).
+	var transport := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	if wind_b[0] != 0.0 or wind_b[1] != 0.0 or wind_b[2] != 0.0:
+		var transport_v := M.cross(w, wind_b)
+		transport = _mul6(m_a, PackedFloat64Array([transport_v[0], transport_v[1], transport_v[2], 0.0, 0.0, 0.0]))
 	var rhs := PackedFloat64Array([
 		tau[0] - c1[0] - ca1[0] - transport[0], tau[1] - c1[1] - ca1[1] - transport[1], tau[2] - c1[2] - ca1[2] - transport[2],
 		tau[3] - c2[0] - ca2[0] - transport[3], tau[4] - c2[1] - ca2[1] - transport[4], tau[5] - c2[2] - ca2[2] - transport[5]])
@@ -301,65 +316,152 @@ static func evaluate(model: Dictionary, body: PackedFloat64Array, continuous: Pa
 
 ## Gear and envelope contacts against the terrain sampler [height_up, dh/dnorth, dh/deast]. Penalty normal force
 ## with depth-scaled damping (Hunt-Crossley-like: no force jump at first touch, never pulling) and regularized
-## Coulomb friction in the ground plane. Propeller points follow their vector pivots and are observed only
-## (terminal event). The skip test samples the terrain under O and at +-R north/east and adds a 30 % slope margin;
-## a cliff steeper than that inside the footprint is outside the admitted field domain.
+## Coulomb friction in the ground plane. The skip tests sample the terrain under O and at +-R north/east and rely on
+## the admitted field slope (at most TERRAIN_SLOPE_LIMIT inside the footprint; a steeper cliff is outside the
+## domain): a witness higher than min(field ceiling, min_k(h_k + slope * distance_k)) + TERRAIN_SKIP_MARGIN cannot
+## touch, so it is not sampled; the field ceiling bound holds without any slope assumption. Skipping changes no
+## arithmetic: an unsampled witness would contribute exactly nothing.
+## Propeller points follow their vector pivots and are observed only (terminal event, observe_props = true); the
+## integration stages never evaluate them.
+const TERRAIN_SLOPE_LIMIT := 0.3
+const TERRAIN_SKIP_MARGIN := 0.05
+
+
 static func _contacts(model: Dictionary, body: PackedFloat64Array, continuous: PackedFloat64Array, q: PackedFloat64Array,
-		v: PackedFloat64Array, w: PackedFloat64Array, ground: Callable, force: PackedFloat64Array, moment: PackedFloat64Array) -> Dictionary:
+		v: PackedFloat64Array, w: PackedFloat64Array, ground: Callable, force: PackedFloat64Array, moment: PackedFloat64Array,
+		observe_props: bool) -> Dictionary:
 	var out := {checked = false, gear_load_n = 0.0, hull_contact = false, prop_contact = false, max_approach_mps = 0.0,
 		hull_approach_mps = 0.0, clearance_m = INF}
 	if not ground.is_valid():
 		return out
 	var radius: float = model.bound_radius
+	var ceiling: float = model.get("ground_ceiling", INF)
 	# Global ceiling of the field (session-supplied) first: far above every terrain point, no sampling is needed.
-	if -body[2] - 1.3 * radius - 0.5 > float(model.get("ground_ceiling", INF)):
+	if -body[2] - 1.3 * radius - 0.5 > ceiling:
 		return out
+	# World-down direction in body axes: a body point p sits dot(down_b, p) below O. The deepest gear or envelope
+	# witness bounds the whole contact set; a vectored propeller point stays within |p - pivot| of its pivot.
+	var down_b := M.q_rotate(PackedFloat64Array([q[0], -q[1], -q[2], -q[3]]), PackedFloat64Array([0.0, 0.0, 1.0]))
+	var contacts: Dictionary = model.contacts
+	var hull: PackedFloat64Array = contacts.hull_points
+	var gear_items: Array = contacts.gear
+	var deepest := -INF
+	for i in hull.size() / 3:
+		deepest = maxf(deepest, down_b[0] * hull[3 * i] + down_b[1] * hull[3 * i + 1] + down_b[2] * hull[3 * i + 2])
+	for gear: Dictionary in gear_items:
+		var gp: PackedFloat64Array = gear.point
+		deepest = maxf(deepest, down_b[0] * gp[0] + down_b[1] * gp[1] + down_b[2] * gp[2])
+	var props: PackedFloat64Array = contacts.prop_points
+	var assign: PackedInt64Array = model.prop_vector
+	var vectors: Array = model.vectors
+	var props_low := false
+	if observe_props:
+		var deepest_prop := -INF
+		for i in props.size() / 3:
+			var px := props[3 * i]
+			var py := props[3 * i + 1]
+			var pz := props[3 * i + 2]
+			var reach := down_b[0] * px + down_b[1] * py + down_b[2] * pz
+			if assign[i] >= 0:
+				var pivot: PackedFloat64Array = vectors[assign[i]].pivot
+				var dx := px - pivot[0]
+				var dy := py - pivot[1]
+				var dz := pz - pivot[2]
+				reach = down_b[0] * pivot[0] + down_b[1] * pivot[1] + down_b[2] * pivot[2] + sqrt(dx * dx + dy * dy + dz * dz)
+			deepest_prop = maxf(deepest_prop, reach)
+		props_low = -(body[2] + deepest_prop) <= ceiling + TERRAIN_SKIP_MARGIN
+	if -(body[2] + deepest) > ceiling + TERRAIN_SKIP_MARGIN and not props_low:
+		return out
+	# Footprint samples: samples[0] is the global ceiling, then [north, east, height] under O and at +-R north/east.
+	var samples := PackedFloat64Array([ceiling])
 	var under: PackedFloat64Array = ground.call(body[0], body[1])
 	out.clearance_m = -body[2] - under[0]
+	samples.append_array([body[0], body[1], under[0]])
 	var highest := under[0]
 	for k in 4:
 		var dn := radius if k == 0 else (-radius if k == 1 else 0.0)
 		var de := radius if k == 2 else (-radius if k == 3 else 0.0)
-		highest = maxf(highest, ground.call(body[0] + dn, body[1] + de)[0])
+		var h_k: float = ground.call(body[0] + dn, body[1] + de)[0]
+		samples.append_array([body[0] + dn, body[1] + de, h_k])
+		highest = maxf(highest, h_k)
 	if -body[2] - highest > 1.3 * radius + 0.5:
 		return out
 	out.checked = true
-	var contacts: Dictionary = model.contacts
-	for gear: Dictionary in contacts.gear:
-		var load := _contact_point(body, q, v, w, gear.point, gear.stiffness, gear.damping, gear.mu_roll, gear.mu_side,
-			true, ground, force, moment, out)
+	# Coarse per-witness bound (every witness lies within R of O, so it dominates the per-point bound).
+	var coarse := minf(ceiling, highest + TERRAIN_SLOPE_LIMIT * radius) + TERRAIN_SKIP_MARGIN
+	for gear: Dictionary in gear_items:
+		var gp: PackedFloat64Array = gear.point
+		if -(body[2] + down_b[0] * gp[0] + down_b[1] * gp[1] + down_b[2] * gp[2]) > coarse:
+			continue
+		var load := _contact_point(body, q, v, w, gp, gear.stiffness, gear.damping, gear.mu_roll, gear.mu_side,
+			true, ground, force, moment, out, samples)
 		out.gear_load_n += load
-	var hull: PackedFloat64Array = contacts.hull_points
 	for i in hull.size() / 3:
+		if -(body[2] + down_b[0] * hull[3 * i] + down_b[1] * hull[3 * i + 1] + down_b[2] * hull[3 * i + 2]) > coarse:
+			continue
 		var before: float = out.max_approach_mps
 		out.max_approach_mps = 0.0
 		var load := _contact_point(body, q, v, w, hull.slice(3 * i, 3 * i + 3), contacts.hull_stiffness, contacts.hull_damping,
-			contacts.hull_mu, contacts.hull_mu, false, ground, force, moment, out)
+			contacts.hull_mu, contacts.hull_mu, false, ground, force, moment, out, samples)
 		if load > 0.0:
 			out.hull_contact = true
 			out.hull_approach_mps = maxf(float(out.hull_approach_mps), float(out.max_approach_mps))
 		out.max_approach_mps = maxf(before, float(out.max_approach_mps))
-	var props: PackedFloat64Array = contacts.prop_points
+	if not props_low:
+		return out
+	var moved := prop_points(model, continuous)
+	for i in moved.size() / 3:
+		var world := M.add(body.slice(0, 3), M.q_rotate(q, moved.slice(3 * i, 3 * i + 3)))
+		if _terrain_clear(world, samples):
+			continue
+		var h: PackedFloat64Array = ground.call(world[0], world[1])
+		if world[2] + h[0] > 0.0:
+			out.prop_contact = true
+	return out
+
+## Propeller witness points (body FRD from O) rotated with their vector pivots at the current vector angles.
+static func prop_points(model: Dictionary, continuous: PackedFloat64Array) -> PackedFloat64Array:
+	var props: PackedFloat64Array = model.contacts.prop_points
 	var assign: PackedInt64Array = model.prop_vector
 	var vectors: Array = model.vectors
+	var out := PackedFloat64Array()
 	for i in props.size() / 3:
 		var p := props.slice(3 * i, 3 * i + 3)
 		var vector_index := assign[i]
 		if vector_index >= 0:
 			var vec: Dictionary = vectors[vector_index]
 			p = M.add(vec.pivot, _rotate_about(M.sub(p, vec.pivot), vec.axis, continuous[Data.VECTOR + vector_index]))
-		var world := M.add(body.slice(0, 3), M.q_rotate(q, p))
-		var h: PackedFloat64Array = ground.call(world[0], world[1])
-		if world[2] + h[0] > 0.0:
-			out.prop_contact = true
+		out.append_array(p)
 	return out
+
+
+## True when a world NED point is provably above the terrain under the admitted footprint slope limit.
+static func _terrain_clear(world: PackedFloat64Array, samples: PackedFloat64Array) -> bool:
+	var bound := samples[0]
+	for k in (samples.size() - 1) / 3:
+		var dn := world[0] - samples[3 * k + 1]
+		var de := world[1] - samples[3 * k + 2]
+		bound = minf(bound, samples[3 * k + 3] + TERRAIN_SLOPE_LIMIT * sqrt(dn * dn + de * de))
+	return -world[2] > bound + TERRAIN_SKIP_MARGIN
+
+
+## Terminal-event observation of an accepted state: gear, envelope and propeller contacts without integrating.
+static func observe_contacts(model: Dictionary, body: PackedFloat64Array, continuous: PackedFloat64Array,
+		ground: Callable) -> Dictionary:
+	var q := PackedFloat64Array([body[6], body[7], body[8], body[9]])
+	var v := PackedFloat64Array([body[3], body[4], body[5]])
+	var w := PackedFloat64Array([body[10], body[11], body[12]])
+	return _contacts(model, body, continuous, q, v, w, ground, PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]), true)
 
 
 static func _contact_point(body: PackedFloat64Array, q: PackedFloat64Array, v: PackedFloat64Array, w: PackedFloat64Array,
 		p: PackedFloat64Array, stiffness: float, damping: float, mu_roll: float, mu_side: float, wheel: bool, ground: Callable,
-		force: PackedFloat64Array, moment: PackedFloat64Array, out: Dictionary) -> float:
+		force: PackedFloat64Array, moment: PackedFloat64Array, out: Dictionary, samples: PackedFloat64Array) -> float:
 	var offset := M.q_rotate(q, p)
 	var world := PackedFloat64Array([body[0] + offset[0], body[1] + offset[1], body[2] + offset[2]])
+	if _terrain_clear(world, samples):
+		return 0.0
 	var h: PackedFloat64Array = ground.call(world[0], world[1])
 	var penetration := world[2] + h[0]
 	if not (penetration > 0.0):
@@ -392,6 +494,16 @@ static func _contact_point(body: PackedFloat64Array, q: PackedFloat64Array, v: P
 	return normal
 
 
+static func _apply3(force: PackedFloat64Array, moment: PackedFloat64Array, fx: float, fy: float, fz: float,
+		r: PackedFloat64Array) -> void:
+	force[0] += fx
+	force[1] += fy
+	force[2] += fz
+	moment[0] += r[1] * fz - r[2] * fy
+	moment[1] += r[2] * fx - r[0] * fz
+	moment[2] += r[0] * fy - r[1] * fx
+
+
 static func _apply(force: PackedFloat64Array, moment: PackedFloat64Array, f: PackedFloat64Array, r: PackedFloat64Array) -> void:
 	force[0] += f[0]
 	force[1] += f[1]
@@ -399,6 +511,37 @@ static func _apply(force: PackedFloat64Array, moment: PackedFloat64Array, f: Pac
 	moment[0] += r[1] * f[2] - r[2] * f[1]
 	moment[1] += r[2] * f[0] - r[0] * f[2]
 	moment[2] += r[0] * f[1] - r[1] * f[0]
+
+
+## Rotor thrust axis d and hub rotated together about a vector pivot (one sine/cosine pair): [d, hub].
+static func _rotate_axis_and_hub(d: PackedFloat64Array, hub: PackedFloat64Array, pivot: PackedFloat64Array,
+		k: PackedFloat64Array, angle: float) -> PackedFloat64Array:
+	var c := M.cos_(angle)
+	var s := M.sin_(angle)
+	var out := PackedFloat64Array()
+	out.resize(6)
+	for part in 2:
+		var x := d[0] if part == 0 else hub[0] - pivot[0]
+		var y := d[1] if part == 0 else hub[1] - pivot[1]
+		var z := d[2] if part == 0 else hub[2] - pivot[2]
+		var kd := (k[0] * x + k[1] * y + k[2] * z) * (1.0 - c)
+		var rx := x * c + (k[1] * z - k[2] * y) * s + k[0] * kd
+		var ry := y * c + (k[2] * x - k[0] * z) * s + k[1] * kd
+		var rz := z * c + (k[0] * y - k[1] * x) * s + k[2] * kd
+		out[3 * part] = rx if part == 0 else pivot[0] + rx
+		out[3 * part + 1] = ry if part == 0 else pivot[1] + ry
+		out[3 * part + 2] = rz if part == 0 else pivot[2] + rz
+	return out
+
+
+static func _cross(a: PackedFloat64Array, b: PackedFloat64Array) -> PackedFloat64Array:
+	return PackedFloat64Array([a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]])
+
+
+## a x b + c x d.
+static func _cross_sum(a: PackedFloat64Array, b: PackedFloat64Array, c: PackedFloat64Array, d: PackedFloat64Array) -> PackedFloat64Array:
+	return PackedFloat64Array([(a[1] * b[2] - a[2] * b[1]) + (c[1] * d[2] - c[2] * d[1]),
+		(a[2] * b[0] - a[0] * b[2]) + (c[2] * d[0] - c[0] * d[2]), (a[0] * b[1] - a[1] * b[0]) + (c[0] * d[1] - c[1] * d[0])])
 
 
 ## Rodrigues rotation of v about unit axis k by angle (right-handed).

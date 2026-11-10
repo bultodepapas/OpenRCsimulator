@@ -50,6 +50,7 @@ func _initialize() -> void:
 	print("CG %s  CB %s" % [s.model.cg, s.model.cb])
 	_check("CG below CB (pendulum stability)", float(s.model.cg[2]) > float(s.model.cb[2]), "%s vs %s" % [s.model.cg, s.model.cb])
 	_check("resume refuses raised throttle", not s.resume(PackedFloat64Array([0.0, 0.0, 0.0, 0.5])))
+	_check("resume refuses a deflected yaw stick (stern lateral motor)", not s.resume(PackedFloat64Array([0.0, 0.0, 1.0, 0.0])) and s.paused)
 	# Motors off, slightly heavy: gentle sink, no position hold.
 	_fly(s, 8.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
 	t = s.telemetry()
@@ -64,7 +65,8 @@ func _initialize() -> void:
 	_check("cruise draws plausible current", float(t.battery.current_a) > 3.0 and float(t.battery.current_a) < 20.0, "%.2f A" % t.battery.current_a)
 	_check("cruise attitude stays moderate", absf(float(t.pitch_deg)) < 25.0 and absf(float(t.roll_deg)) < 15.0, "pitch %.1f roll %.1f" % [t.pitch_deg, t.roll_deg])
 	print("cruise: %.2f m/s, %.1f W, AGL %.2f m, per tick %.1f us" % [t.ground_speed_mps, t.battery.power_w, t.agl_m, per_tick])
-	_check("tick cost bounded (reference GDScript)", per_tick < 3000.0, "%.0f us" % per_tick)
+	_check("tick cost bounded (reference GDScript, coarse CI bound)", per_tick < 1500.0, "%.0f us" % per_tick)
+	_check("untrimmed full-throttle climb stays gentle (hull dynamic lift)", absf(float(t.vertical_speed_mps)) < 2.5, "%.2f m/s" % t.vertical_speed_mps)
 	# Braking: full back stick vectors past vertical.
 	var before := float(t.ground_speed_mps)
 	_fly(s, 6.0, PackedFloat64Array([0.0, 1.0, 0.0, 1.0]))
@@ -143,6 +145,9 @@ func _initialize() -> void:
 		_fly(hit, 0.1, PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
 		_check("thin %s through the envelope is an obstacle strike" % pole.kind, str(hit.crash.get("reason", "")).begins_with("Obstacle strike"),
 			str(hit.crash.get("reason", "none")))
+	_synthetic_obstacles()
+	_focus_pause()
+	_pilot_model()
 	# Weather admission.
 	var w: Node = Session.new()
 	root.add_child(w)
@@ -153,6 +158,90 @@ func _initialize() -> void:
 	_check("released in a steady breeze, drifts with the air", float(t.ground_speed_mps) > 1.7 and float(t.air_speed_mps) < 0.3,
 		"ground %.2f air %.2f" % [t.ground_speed_mps, t.air_speed_mps])
 	_finish()
+
+
+## World of synthetic proxies around the default air release (O at north 22, east 0, down -6; nose east).
+func _world(proxies: Array[Dictionary]) -> Dictionary:
+	var CollisionWorld = load("res://scenery/collision_world.gd")
+	return {format = CollisionWorld.FORMAT, identity = "airship-test", cell_size_m = CollisionWorld.CELL_SIZE_M, proxies = proxies,
+		bins = CollisionWorld._build_bins(proxies)}
+
+
+func _hit_with(box: Array, velocity := PackedFloat64Array([0.0, 0.0, 0.0])) -> String:
+	var CollisionWorld = load("res://scenery/collision_world.gd")
+	var proxies: Array[Dictionary] = []
+	CollisionWorld._add_box_at_down(proxies, "probe", "probe", "probe", "hard_terminal", box[0], box[1], box[2], box[3], box[4], box[5], box[6])
+	var s: Node = Session.new()
+	root.add_child(s)
+	if not s.set_collision_world(_world(proxies)) or not s.prepare({}, {}):
+		return "refused"
+	var state: PackedFloat64Array = s.sim.state.duplicate()
+	state[3] = velocity[0]
+	state[4] = velocity[1]
+	state[5] = velocity[2]
+	s.sim.state = state
+	var hit: String = s._obstacle_hit()
+	s.queue_free()
+	return hit
+
+
+## BL-11 envelope test (Good Enemy audit): thin and off-axis intrusions are found, a clear neighbour is not, and the
+## swept inflation reports a box the hull reaches within one tick of travel. Box = [north, east, down, width (local
+## x), height, length (local z, along the heading), heading_deg].
+func _synthetic_obstacles() -> void:
+	var probe: Node = Session.new()
+	root.add_child(probe)
+	probe.prepare({}, {})
+	var r_max := 0.0
+	var profile: PackedFloat64Array = probe.model.envelope.radius_profile
+	for i in profile.size() / 2:
+		r_max = maxf(r_max, profile[2 * i + 1])
+	var x_max := 0.0
+	for i in profile.size() / 2:
+		if profile[2 * i + 1] == r_max:
+			x_max = profile[2 * i]
+	probe.queue_free()
+	# A 12 mm fence wire running north-south through the hull axis 1.5 m ahead of O.
+	_check("12 mm wire through the envelope away from the centre", _hit_with([22.0, 1.5, -6.0, 0.012, 0.012, 6.0, 0.0]).begins_with("probe"))
+	# Upper-starboard quadrant box (body y 0.1..0.6, z -0.6..-0.1) along the forebody: misses the axis.
+	_check("off-axis quadrant intrusion", _hit_with([21.65, 0.75, -6.35, 0.5, 0.5, 2.5, 90.0]).begins_with("probe"))
+	# Same box raised 0.52 m (nearest point 0.63 m from the axis, R max %.3f): clear.
+	_check("box clear of the envelope is not a strike", _hit_with([21.65, 0.75, -6.87, 0.5, 0.5, 2.5, 90.0]) == "", "R max %.3f" % r_max)
+	# Box 35 mm above the top of the widest section: clear at rest, struck when climbing at 10 m/s (42 mm per tick).
+	var above := [22.0, x_max, -6.0 - r_max - 0.035 - 0.1, 0.3, 0.2, 0.3, 0.0]
+	_check("hovering 35 mm under a beam is clear", _hit_with(above) == "")
+	_check("climbing into the beam within one tick is a strike (swept inflation)",
+		_hit_with(above, PackedFloat64Array([0.0, 0.0, -10.0])).begins_with("probe"))
+
+
+## The kernel pauses on focus loss; the flight follows, refuses ticks and needs an explicit resume.
+func _focus_pause() -> void:
+	var s := _session()
+	_fly(s, 0.5, PackedFloat64Array([0.0, 0.0, 0.0, 0.3]))
+	s.sim.set_paused(true)
+	_check("focus loss pauses the flight", s.paused and s.pause_reason == Session.FOCUS_PAUSE and not s.tick_once(PackedFloat64Array([0.0, 0.0, 0.0, 0.3])))
+	_check("explicit resume clears the kernel pause", s.resume(PackedFloat64Array([0.0, 0.0, 0.0, 0.0])) and not s.sim.paused and not s.paused)
+
+
+## Handling is marginally stable, as on real airships, but a gentle proportional pilot (rudder on heading error,
+## elevator on pitch and climb) holds course and height at full-throttle cruise.
+func _pilot_model() -> void:
+	var s := _session({altitude_m = 30.0})
+	s.resume(PackedFloat64Array([0.0, 0.0, 0.0, 0.0]))
+	var worst_heading := 0.0
+	var worst_climb := 0.0
+	for i in 240 * 30:
+		var t: Dictionary = s.telemetry()
+		var error := fposmod(90.0 - float(t.heading_deg) + 180.0, 360.0) - 180.0
+		if i >= 240 * 10:
+			worst_heading = maxf(worst_heading, absf(error))
+			worst_climb = maxf(worst_climb, absf(float(t.vertical_speed_mps)))
+		var pitch := clampf(-0.03 * float(t.pitch_deg) - 0.3 * float(t.vertical_speed_mps), -1.0, 1.0)
+		if not s.tick_once(PackedFloat64Array([0.0, pitch, clampf(0.04 * error, -1.0, 1.0), 1.0])):
+			break
+	var final: Dictionary = s.telemetry()
+	_check("a gentle pilot holds heading and height at full-throttle cruise", s.crash.is_empty() and worst_heading < 3.0 and worst_climb < 0.5
+		and float(final.ground_speed_mps) > 5.0, "heading %.1f deg, climb %.2f m/s, %.2f m/s" % [worst_heading, worst_climb, final.ground_speed_mps])
 
 
 func _finish() -> void:
