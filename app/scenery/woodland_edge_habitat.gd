@@ -15,12 +15,15 @@ const Population = preload("res://scenery/population.gd")
 
 const DATA_PATH := "res://data/woodland_edges.json"
 const GRASS_ID := "grass_common_short"
+const FERN_CARD_ID := "polyhaven_fern_02_a"
 const CARD_TRIANGLE_BUDGET := 472
 const TRIANGLE_BUDGET := 2656
 const FERN_MESH_PATCHES := ["woodland-edge-east-north", "woodland-edge-northwest"]
 const SHRUB_MESH_PATCHES := ["woodland-edge-east-south", "woodland-edge-southwest"]
 const SPECIES: Array[String] = ["grass_common_tall", "bush_common_flowers", "fern_1", GRASS_ID]
 static var _card_material: ShaderMaterial
+static var _source_card_material: ShaderMaterial
+static var _fern_manifest: Dictionary = {}
 static var _floor_material: ShaderMaterial
 static var _card_manifests: Dictionary = {}
 static var _defaults: Dictionary = {}
@@ -63,6 +66,7 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	var plants: Array[Dictionary] = []
 	var mesh_plans: Array[Dictionary] = []
 	var use_meshes := OS.get_environment("OPENRC_WOODLAND_MESHES").to_lower() != "off"
+	var source_fern_cards := _use_source_ferns()
 	for patch: Dictionary in data.patches:
 		var shrub_records: Array[Dictionary] = []
 		var mesh_batches := {}
@@ -85,8 +89,9 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 				if queued:
 					mesh_plans.append(plan)
 				else:
+					if source_fern_cards and record.species == "fern_1": _fit_fern_card(record)
 					shrub_records.append(record)
-				plants.append({id = record.id, asset_id = asset_id if queued else record.species,
+				plants.append({id = record.id, asset_id = asset_id if queued else record.get("visual_source_asset_id", record.species),
 					source_asset_id = record.species, rendering = "mesh" if queued else "card",
 					north = -location.y, east = location.x, yaw_rad = record.yaw_rad,
 					height_m = plan.height_m if queued else record.height_m, patch = patch.id})
@@ -121,6 +126,7 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	root.set_meta("plants", plants)
 	root.set_meta("mesh_plans", mesh_plans)
 	root.set_meta("mesh_details", use_meshes)
+	root.set_meta("fern_cards", "source" if source_fern_cards else "legacy")
 	root.set_meta("card_recipe_triangle_budget", CARD_TRIANGLE_BUDGET)
 	root.set_meta("source_recipe_sha256", FileAccess.get_sha256(DATA_PATH))
 	return root
@@ -217,11 +223,15 @@ static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Arr
 	mesh.instance_count = count
 	var bounds := AABB()
 	var cursor := 0
+	var source_card_records: Array[Dictionary] = []
 	# Read the existing CPU placement records, not GPU buffers (headless renderers return dummy transforms).
 	for record in records:
 		var transform: Transform3D = record.transform
 		transform.origin.y += _ground_height(transform.origin.x, transform.origin.z, surfaces, lake)
 		mesh.set_instance_transform(cursor, transform)
+		if record.has("visual_source_asset_id"):
+			source_card_records.append({id = record.id, asset_id = record.visual_source_asset_id,
+				transform = transform, height_m = record.height_m, index = cursor})
 		mesh.set_instance_color(cursor, record.tint)
 		mesh.set_instance_custom_data(cursor, Color(fposmod(float(record.yaw_rad), TAU) / TAU, float(SPECIES.find(record.species)), 0.0, 1.0))
 		# A sphere also contains the source card after its shader rotates it toward the camera.
@@ -236,7 +246,36 @@ static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Arr
 	instance.material_override = _material()
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	instance.set_meta("source_asset_ids", SPECIES.duplicate())
+	instance.set_meta("source_card_records", source_card_records)
 	return instance
+
+
+## Refit only cards that survived mesh selection; the existing 3D fern placement stays unchanged.
+## Keep the old square envelope and plant height, and anchor the new source's visible base.
+static func _fit_fern_card(record: Dictionary) -> void:
+	var manifest := _source_fern_manifest()
+	var fraction := float(manifest.source_height_m) / float(manifest.frame_world_size_m[0])
+	var original: Transform3D = record.transform
+	var frame := Hedge._frame_size(Hedge._manifest())
+	var side := minf(frame * original.basis.get_scale().x, float(record.height_m) / fraction)
+	var height := side * fraction
+	record.transform = Transform3D(Basis(Vector3.UP, float(record.yaw_rad)).scaled(Vector3.ONE * side / frame),
+		Vector3(original.origin.x, height * 0.5, original.origin.z))
+	record.height_m = height
+	record.visual_source_asset_id = FERN_CARD_ID
+
+
+static func _use_source_ferns() -> bool:
+	return OS.get_environment("OPENRC_WOODLAND_CARDS").to_lower() != "legacy" \
+		and FileAccess.file_exists("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.json") \
+		and FileAccess.file_exists("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png")
+
+
+static func _source_fern_manifest() -> Dictionary:
+	if _fern_manifest.is_empty():
+		_fern_manifest = JSON.parse_string(FileAccess.get_file_as_string(
+			"res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.json"))
+	return _fern_manifest
 
 
 ## applicable() restricts builds to the immutable default world held in _defaults.
@@ -294,21 +333,34 @@ static func _grass_record(plant: Dictionary) -> Dictionary:
 
 
 static func _material() -> ShaderMaterial:
+	if _use_source_ferns():
+		if _source_card_material == null:
+			_source_card_material = _make_material("res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png")
+		return _source_card_material
+	return _legacy_material()
+
+
+static func _legacy_material() -> ShaderMaterial:
 	if _card_material == null:
-		_card_material = ShaderMaterial.new()
-		_card_material.shader = load("res://scenery/woodland_cards.gdshader")
-		_card_material.set_shader_parameter("alpha_cutoff", 0.32)
-		_card_material.set_shader_parameter("atlas_frames", 4.0)
-		_card_material.set_shader_parameter("impostor_atlas", Hedge._atlas())
-		_card_material.set_shader_parameter("plain_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png"))
-		_card_material.set_shader_parameter("short_grass_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_short_4view.png"))
-		_card_material.set_shader_parameter("fern_atlas", load("res://assets/landscape/vegetation/impostors/fern_1_4view.png"))
-		var tall := _species_manifest("grass_common_tall")
-		var short := _species_manifest(GRASS_ID)
-		_card_material.set_shader_parameter("grass_height_fractions", Vector2(
-			float(tall.source_height_m) / float(tall.frame_world_size_m[0]),
-			float(short.source_height_m) / float(short.frame_world_size_m[0])))
+		_card_material = _make_material("res://assets/landscape/vegetation/impostors/fern_1_4view.png")
 	return _card_material
+
+
+static func _make_material(fern_atlas: String) -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = load("res://scenery/woodland_cards.gdshader")
+	material.set_shader_parameter("alpha_cutoff", 0.32)
+	material.set_shader_parameter("atlas_frames", 4.0)
+	material.set_shader_parameter("impostor_atlas", Hedge._atlas())
+	material.set_shader_parameter("plain_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png"))
+	material.set_shader_parameter("short_grass_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_short_4view.png"))
+	material.set_shader_parameter("fern_atlas", load(fern_atlas))
+	var tall := _species_manifest("grass_common_tall")
+	var short := _species_manifest(GRASS_ID)
+	material.set_shader_parameter("grass_height_fractions", Vector2(
+		float(tall.source_height_m) / float(tall.frame_world_size_m[0]),
+		float(short.source_height_m) / float(short.frame_world_size_m[0])))
+	return material
 
 
 ## Small, terrain-sampled litter patches: 2x2 cells each, combined in one draw batch.

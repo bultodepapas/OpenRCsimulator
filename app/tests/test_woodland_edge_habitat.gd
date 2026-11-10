@@ -11,6 +11,7 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const SceneryLoader = preload("res://scenery/scenery_loader.gd")
 const LakeLoader = preload("res://data/lake_loader.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
+const SOURCE_FERN_ATLAS := "res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png"
 
 var _checks := 0
 var _failures := 0
@@ -61,6 +62,9 @@ func _run() -> void:
 	# Pin the fallback explicitly even if the test process inherited a user override.
 	var environment_had_override := OS.has_environment("OPENRC_WOODLAND_MESHES")
 	var environment_before := OS.get_environment("OPENRC_WOODLAND_MESHES")
+	var card_mode_had_override := OS.has_environment("OPENRC_WOODLAND_CARDS")
+	var card_mode_before := OS.get_environment("OPENRC_WOODLAND_CARDS")
+	OS.set_environment("OPENRC_WOODLAND_CARDS", "legacy")
 	OS.set_environment("OPENRC_WOODLAND_MESHES", "off")
 	var cards: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
 	var card_plants: Array = cards.get_meta("plants", [])
@@ -155,6 +159,10 @@ func _run() -> void:
 	# An empty process-local parts cache makes accidental mesh work observable.
 	var previous_parts_cache: Dictionary = PlantLibrary._parts_cache
 	PlantLibrary._parts_cache = {}
+	OS.set_environment("OPENRC_WOODLAND_CARDS", "source")
+	_check("source fern caches are cold before low and custom builds",
+		WoodlandEdges._fern_manifest.is_empty() and WoodlandEdges._source_card_material == null
+		and not ResourceLoader.has_cached(SOURCE_FERN_ATLAS))
 	var low: Node3D = WoodlandEdges.build(field, scenery, "low", lake)
 	_check("low tier builds zero woodland plants, triangles and batches",
 		low.get_meta("plants", []).is_empty() and int(low.get_meta("triangles", -1)) == 0
@@ -182,6 +190,44 @@ func _run() -> void:
 		and int(custom_lake_root.get_meta("triangles", -1)) == 0)
 	_check("custom inputs skip source mesh loading", PlantLibrary._parts_cache.is_empty())
 	PlantLibrary._parts_cache = previous_parts_cache
+	_check("low and custom inputs skip source fern manifest and texture loading",
+		WoodlandEdges._fern_manifest.is_empty() and WoodlandEdges._source_card_material == null
+		and not ResourceLoader.has_cached(SOURCE_FERN_ATLAS))
+
+	var source_high: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
+	var source_balanced: Node3D = WoodlandEdges.build(field, scenery, "balanced", lake)
+	OS.set_environment("OPENRC_WOODLAND_MESHES", "off")
+	var source_cards: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
+	OS.unset_environment("OPENRC_WOODLAND_MESHES")
+	_check("fern mode identifies source and legacy builds",
+		str(high.get_meta("fern_cards", "")) == "legacy" and str(cards.get_meta("fern_cards", "")) == "legacy"
+		and str(source_high.get_meta("fern_cards", "")) == "source"
+		and str(source_cards.get_meta("fern_cards", "")) == "source")
+	var mixed_source := _source_fern_contract(source_high, high, field, lake, 22)
+	_check("source mode refits exactly 22 mixed fern cards within their legacy envelopes",
+		bool(mixed_source.ok), str(mixed_source))
+	var cards_source := _source_fern_contract(source_cards, cards, field, lake, 24)
+	_check("mesh opt-out refits exactly 24 fern cards within their legacy envelopes",
+		bool(cards_source.ok), str(cards_source))
+	var balanced_fern_count := _fern_card_count(balanced_plants)
+	var balanced_source := _source_fern_contract(source_balanced, balanced, field, lake, balanced_fern_count)
+	_check("balanced source ferns retain the same bounded placement identities",
+		bool(balanced_source.ok), str(balanced_source))
+	_check("source fern mode preserves all mixed and balanced mesh plans exactly",
+		var_to_bytes(source_high.get_meta("mesh_plans", [])) == var_to_bytes(high.get_meta("mesh_plans", []))
+		and var_to_bytes(source_balanced.get_meta("mesh_plans", [])) == var_to_bytes(balanced.get_meta("mesh_plans", [])))
+	_check("source fern mode binds its own atlas without changing the other card textures",
+		_source_material_contract(high, source_high))
+	_check("source fern mode preserves the mixed and card-only geometry budgets",
+		_geometry_totals(source_high) == high_geometry and _geometry_totals(source_cards) == card_geometry
+		and int(source_high.get_meta("triangles", -1)) == 2656 and int(source_high.get_meta("batches", -1)) == 13
+		and int(source_cards.get_meta("triangles", -1)) == 472 and int(source_cards.get_meta("batches", -1)) == 5)
+	OS.unset_environment("OPENRC_WOODLAND_CARDS")
+	var default_fern: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
+	_check("the default fern-card mode selects the available source atlas",
+		str(default_fern.get_meta("fern_cards", "")) == "source"
+		and default_fern.get_meta("plants", []) == source_high.get_meta("plants", []))
+	OS.set_environment("OPENRC_WOODLAND_CARDS", "legacy")
 
 	_check("field/scenery/lake dictionaries are read-only",
 		JSON.stringify(field) == field_before and JSON.stringify(scenery) == scenery_before
@@ -190,6 +236,7 @@ func _run() -> void:
 		_input_hashes() == input_hashes_before, str(input_hashes_before) + " -> " + str(_input_hashes()))
 
 	for node: Node in [cards, balanced_cards, high, high_again, balanced, balanced_again, low,
+		source_high, source_balanced, source_cards, default_fern,
 		custom_field_root, custom_scenery_root, custom_lake_root]:
 		node.free()
 	if environment_had_override:
@@ -197,6 +244,10 @@ func _run() -> void:
 	else:
 		OS.unset_environment("OPENRC_WOODLAND_MESHES")
 	await _check_impostor_view_frames()
+	if card_mode_had_override:
+		OS.set_environment("OPENRC_WOODLAND_CARDS", card_mode_before)
+	else:
+		OS.unset_environment("OPENRC_WOODLAND_CARDS")
 	_finish()
 
 
@@ -360,6 +411,124 @@ func _counts(plants: Array, key: String) -> Dictionary:
 		var value := str(plant.get(key, ""))
 		result[value] = int(result.get(value, 0)) + 1
 	return result
+
+
+func _fern_card_count(plants: Array) -> int:
+	var count := 0
+	for plant: Dictionary in plants:
+		if str(plant.get("source_asset_id", "")) == "fern_1" and str(plant.get("rendering", "")) == "card":
+			count += 1
+	return count
+
+
+## Verify the actual CPU transforms consumed by card batches: headless MultiMesh
+## transform readback is a dummy. The original side comes from the legacy atlas.
+func _source_fern_contract(source: Node3D, legacy: Node3D, field: Dictionary, lake: Dictionary,
+		expected_count: int) -> Dictionary:
+	var errors: Array[String] = []
+	var source_plants: Array = source.get_meta("plants", [])
+	var legacy_plants: Array = legacy.get_meta("plants", [])
+	var source_index := _plant_index(source_plants)
+	var legacy_index := _plant_index(legacy_plants)
+	var source_manifest := WoodlandEdges._source_fern_manifest()
+	var legacy_manifest := WoodlandEdges._species_manifest("fern_1")
+	var surfaces := _surface_rects(field)
+	if not bool(source_index.unique) or not bool(legacy_index.unique) or source_plants.size() != legacy_plants.size() \
+			or source_manifest.is_empty() or legacy_manifest.is_empty() or surfaces.is_empty():
+		return {ok = false, errors = ["missing unique plants, manifests or ground surfaces"]}
+	var source_fraction := float(source_manifest.source_height_m) / float(source_manifest.frame_world_size_m[0])
+	var legacy_fraction := float(legacy_manifest.source_height_m) / float(legacy_manifest.frame_world_size_m[0])
+	if source_fraction <= 0.0 or legacy_fraction <= 0.0:
+		return {ok = false, errors = ["invalid source height/frame fraction"]}
+	var expected_ids: Dictionary = {}
+	for plant: Dictionary in legacy_plants:
+		var id := str(plant.id)
+		if not source_index.ids.has(id):
+			_problem(errors, "source build lost plant " + id)
+			continue
+		var current: Dictionary = source_index.ids[id]
+		if str(plant.source_asset_id) == "fern_1" and str(plant.rendering) == "card":
+			expected_ids[id] = true
+			var normalized := current.duplicate(true)
+			normalized["asset_id"] = plant.asset_id
+			normalized["height_m"] = plant.height_m
+			if normalized != plant or str(current.asset_id) != "polyhaven_fern_02_a" \
+					or float(current.height_m) <= 0.0 or float(current.height_m) > float(plant.height_m) + 0.00001:
+				_problem(errors, "source fern changed identity or exceeded height for " + id)
+		elif current != plant:
+			_problem(errors, "source fern mode changed another plant " + id)
+	if expected_ids.size() != expected_count:
+		_problem(errors, "unexpected source fern card count")
+
+	var seen: Dictionary = {}
+	var frame := Hedge._frame_size(Hedge._manifest())
+	for batch_value: Variant in _shrub_batches(source).values():
+		var batch := batch_value as MultiMeshInstance3D
+		var indices: Dictionary = {}
+		for item: Dictionary in batch.get_meta("source_card_records", []):
+			var id := str(item.get("id", ""))
+			var index := int(item.get("index", -1))
+			if not expected_ids.has(id) or seen.has(id) or indices.has(index) \
+					or index < 0 or index >= batch.multimesh.instance_count or not item.get("transform") is Transform3D:
+				_problem(errors, "missing, duplicated or malformed source-card record " + id)
+				continue
+			seen[id] = true
+			indices[index] = true
+			var plant: Dictionary = source_index.ids[id]
+			var old: Dictionary = legacy_index.ids[id]
+			var transform: Transform3D = item.transform
+			var ground: PackedFloat64Array = GroundTerrain.sample_validated(float(old.north), float(old.east), surfaces, lake)
+			if ground.size() != 3:
+				_problem(errors, "terrain sample missing for " + id)
+				continue
+			var scale := transform.basis.get_scale().abs()
+			var actual_side := frame * scale.x
+			var old_side := float(old.height_m) / legacy_fraction
+			var desired_side := minf(old_side, float(old.height_m) / source_fraction)
+			var yaw := Basis(Vector3.UP, float(old.yaw_rad))
+			if str(item.get("asset_id", "")) != "polyhaven_fern_02_a" \
+					or absf(float(item.get("height_m", -1.0)) - float(plant.height_m)) > 0.00001 \
+					or absf(actual_side - desired_side) > 0.0001 \
+					or absf(actual_side * source_fraction - float(plant.height_m)) > 0.0001 \
+					or absf(scale.x - scale.y) > 0.0001 or absf(scale.x - scale.z) > 0.0001 \
+					or absf(transform.origin.x - float(old.east)) > 0.002 \
+					or absf(transform.origin.z + float(old.north)) > 0.002 \
+					or absf(transform.origin.y - 0.5 * actual_side * source_fraction - float(ground[0])) > 0.002 \
+					or transform.basis.orthonormalized().x.distance_to(yaw.x) > 0.0001 \
+					or transform.basis.orthonormalized().z.distance_to(yaw.z) > 0.0001:
+				_problem(errors, "source-card size, yaw or ground contact differs for " + id)
+			if DisplayServer.get_name() != "headless" \
+					and not batch.multimesh.get_instance_transform(index).is_equal_approx(transform):
+				_problem(errors, "rendered instance transform differs from its CPU record " + id)
+	if seen.size() != expected_count:
+		_problem(errors, "CPU source-card record count does not match retained fern cards")
+	return {ok = errors.is_empty(), cards = expected_ids.size(), records = seen.size(), errors = errors}
+
+
+func _source_material_contract(legacy: Node3D, source: Node3D) -> bool:
+	var old_batches := _shrub_batches(legacy)
+	var new_batches := _shrub_batches(source)
+	if old_batches.size() != 4 or new_batches.size() != 4 or WoodlandEdges._card_material == null \
+			or WoodlandEdges._source_card_material == null or WoodlandEdges._card_material == WoodlandEdges._source_card_material:
+		return false
+	var old_material := WoodlandEdges._card_material
+	var new_material := WoodlandEdges._source_card_material
+	var source_texture := new_material.get_shader_parameter("fern_atlas") as Texture2D
+	var manifest := WoodlandEdges._source_fern_manifest()
+	if old_material.shader != new_material.shader or source_texture == null \
+			or source_texture.resource_path != SOURCE_FERN_ATLAS or str(manifest.get("atlas_path", "")) != SOURCE_FERN_ATLAS \
+			or old_material.get_shader_parameter("fern_atlas") == source_texture:
+		return false
+	for parameter: String in ["impostor_atlas", "plain_atlas", "short_grass_atlas", "alpha_cutoff", "atlas_frames", "grass_height_fractions"]:
+		if old_material.get_shader_parameter(parameter) != new_material.get_shader_parameter(parameter):
+			return false
+	for value: Variant in old_batches.values():
+		if (value as MultiMeshInstance3D).material_override != old_material:
+			return false
+	for value: Variant in new_batches.values():
+		if (value as MultiMeshInstance3D).material_override != new_material:
+			return false
+	return true
 
 
 ## Compare fallback records to the retained recipe and the existing hedge placement

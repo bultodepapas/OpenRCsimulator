@@ -1,0 +1,162 @@
+{
+  "format": "openrc-vegetation-impostor v1",
+  "asset_id": "polyhaven_fern_02_a_4view_impostor",
+  "derived_from_asset_id": "polyhaven_fern_02_a",
+  "source_name": "fern_02_a",
+  "source_scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf",
+  "source_geometry_sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+  "source_triangles": 784,
+  "source_surfaces": 1,
+  "source_materials": 1,
+  "source_archive_sha256": "",
+  "source_id": "polyhaven_fern_02",
+  "source_url": "https://polyhaven.com/a/fern_02",
+  "source_dependencies": [
+    {
+      "uri": "fern_02_a.bin",
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c"
+    },
+    {
+      "uri": "textures/fern_02_a_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    },
+    {
+      "uri": "textures/fern_02_a_base_color_alpha_1k.png",
+      "sha256": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd"
+    },
+    {
+      "uri": "textures/fern_02_a_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    }
+  ],
+  "license": "CC0-1.0",
+  "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+  "license_evidence_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
+  "source_textures": [
+    {
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+      "uri": "textures/fern_02_a_base_color_alpha_1k.png",
+      "sha256": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd"
+    },
+    {
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg",
+      "uri": "textures/fern_02_a_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    },
+    {
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+      "uri": "textures/fern_02_a_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    }
+  ],
+  "source_base_color_factors": [
+    {
+      "material": "fern_02",
+      "gltf_value": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "explicit_in_source": false,
+      "gltf_default_when_omitted": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "source_vertex_colors": {
+    "attributes": []
+  },
+  "source_bounds_m": {
+    "ground_offset": 0.028774,
+    "height": 0.286804,
+    "max": [
+      0.254283,
+      0.25803,
+      0.302153
+    ],
+    "min": [
+      -0.297657,
+      -0.028774,
+      -0.311268
+    ],
+    "size": [
+      0.551941,
+      0.286804,
+      0.613421
+    ]
+  },
+  "source_mesh_bounds_blender_z_up_m": {
+    "min": [
+      -0.297657,
+      -0.302153,
+      0.0
+    ],
+    "max": [
+      0.254283,
+      0.311268,
+      0.286804
+    ]
+  },
+  "source_height_m": 0.286804,
+  "frame_world_size_m": [
+    0.674763,
+    0.674763
+  ],
+  "baked_azimuth_deg": [
+    0,
+    90,
+    180,
+    270
+  ],
+  "view_up": "source Y-up, imported and rendered with Blender Z-up",
+  "frame_size_px": [
+    256,
+    256
+  ],
+  "atlas_size_px": [
+    1024,
+    256
+  ],
+  "atlas_path": "res://assets/landscape/vegetation/impostors/polyhaven_fern_02_a_4view.png",
+  "atlas_sha256": "e068bc7bcbc2062217b10fa319d22de718dd79a8891c3e75ecd07285a06a9d44",
+  "color_pipeline": {
+    "source_color": "glTF material Base Color input, routed directly to Emission Color",
+    "source_color_chain": "full Blender-imported Principled Base Color socket link, including the source image and COLOR_0 node chain",
+    "lighting": "unshaded emission only; no light objects and world strength 0",
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": 0.0,
+    "gamma": 1.0,
+    "output_colorspace": "sRGB PNG",
+    "alpha": "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
+    "alpha_cutoff": 0.5,
+    "alpha_mode": "MASK",
+    "png_channels": "RGBA",
+    "png_bit_depth": 8,
+    "alpha_mode_storage": "straight",
+    "material_routes": [
+      {
+        "material": "fern_02",
+        "base_color_source": "complete imported glTF Principled Base Color input link, routed to Emission",
+        "base_color_input_network": [
+          "TEX_IMAGE"
+        ],
+        "alpha_source": "complete imported glTF Principled Alpha input link, thresholded",
+        "alpha_input_network": [
+          "MATH",
+          "MATH",
+          "TEX_IMAGE"
+        ],
+        "alpha_mode": "MASK",
+        "alpha_cutoff": 0.5,
+        "surface_render_method": "DITHERED"
+      }
+    ]
+  },
+  "renderer": "Blender 5.2.2 LTS EEVEE, unshaded source Base Color/Alpha, Standard view transform, transparent background",
+  "rebuild_command": "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id polyhaven_fern_02_a --output-stem polyhaven_fern_02_a_4view --frame-size 256"
+}

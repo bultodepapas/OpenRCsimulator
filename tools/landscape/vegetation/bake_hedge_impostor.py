@@ -25,7 +25,6 @@ from mathutils import Vector  # type: ignore
 
 ROOT = Path(__file__).resolve().parents[3]
 CATALOG_PATH = ROOT / "app/assets/landscape/vegetation/catalog.json"
-LICENSE_PATH = ROOT / "assets/landscape/vegetation/source/License_Standard.txt"
 OUTPUT_DIR = ROOT / "app/assets/landscape/vegetation/impostors"
 DEFAULT_SOURCE_ASSET_ID = "bush_common_flowers"
 DEFAULT_OUTPUT_STEM = "bush_common_flowers_4view"
@@ -38,6 +37,41 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def source_evidence(catalog: dict[str, Any], asset: dict[str, Any]) -> dict[str, Any]:
+    """Bind each derived image to its own supplier, not the legacy catalog default."""
+    source_id = asset.get("source_id")
+    source = next((item for item in catalog.get("sources", []) if item.get("id") == source_id), None)
+    if source is None:
+        raise ValueError(f"no source evidence for {source_id!r}")
+    notice = ROOT / str(source.get("license_evidence", ""))
+    if not notice.is_file() or not source.get("license_sha256") or sha256(notice) != source["license_sha256"]:
+        raise ValueError(f"source license evidence changed for {source_id!r}")
+    archive = source.get("archive", "")
+    if archive:
+        archive_path = ROOT / archive
+        if not archive_path.is_file() or sha256(archive_path) != source.get("archive_sha256"):
+            raise ValueError(f"source archive changed for {source_id!r}")
+    return source
+
+
+def source_dependencies(scene: Path, asset: dict[str, Any]) -> list[dict[str, str]]:
+    """Record every external glTF buffer/image, including dependencies absent from textures[]."""
+    if sha256(scene) != asset.get("source_sha256"):
+        raise ValueError("source glTF changed from the catalog pin")
+    gltf = json.loads(scene.read_text(encoding="utf-8"))
+    records = []
+    for uri in sorted({item["uri"] for key in ("buffers", "images") for item in gltf.get(key, []) if "uri" in item}):
+        dependency = (scene.parent / uri).resolve()
+        if not dependency.is_relative_to(scene.parent.resolve()) or not dependency.is_file():
+            raise ValueError(f"missing or non-local source dependency: {uri}")
+        actual = sha256(dependency)
+        pins = [value for key, value in asset.get("source_dependency_sha256", {}).items() if key.endswith("/" + uri)]
+        if pins and any(value != actual for value in pins):
+            raise ValueError(f"source dependency changed from catalog pin: {uri}")
+        records.append({"uri": uri, "sha256": actual})
+    return records
 
 
 def _created_id_snapshot() -> dict[str, set[int]]:
@@ -184,7 +218,9 @@ def bake(
 	frame_size: int = 256,
 	source_asset_id: str = DEFAULT_SOURCE_ASSET_ID,
 	output_stem: str = "",
+	output_dir: Path = OUTPUT_DIR,
 ) -> dict[str, Any]:
+    output_dir = output_dir.resolve()
     if frame_size < 128 or frame_size > 1024 or frame_size % 2:
         raise ValueError("frame size must be an even integer from 128 to 1024")
     if not CATALOG_PATH.is_file():
@@ -204,14 +240,18 @@ def bake(
         output_stem = DEFAULT_OUTPUT_STEM if source_asset_id == DEFAULT_SOURCE_ASSET_ID else f"{source_asset_id}_4view"
     if Path(output_stem).name != output_stem or output_stem in ("", ".", ".."):
         raise ValueError("output stem must be a simple filename stem")
-    output_atlas = OUTPUT_DIR / f"{output_stem}.png"
-    output_manifest = OUTPUT_DIR / f"{output_stem}.json"
+    output_atlas = output_dir / f"{output_stem}.png"
+    output_manifest = output_dir / f"{output_stem}.json"
+    source_record = source_evidence(catalog, source_asset)
+    dependencies = source_dependencies(source_scene, source_asset)
 
     source_gltf = json.loads(source_scene.read_text(encoding="utf-8"))
     source_materials = source_gltf.get("materials", []) or [{}]
     source_material = source_materials[0]
     alpha_cutoff = float(source_material.get("alphaCutoff", 0.5))
     alpha_mode = str(source_material.get("alphaMode", "OPAQUE"))
+    if any(material.get("alphaMode", "OPAQUE") == "BLEND" for material in source_materials):
+        raise ValueError("BLEND source needs a separately reviewed transparency conversion; this baker supports OPAQUE/MASK")
 
     scene_before = bpy.context.window.scene if bpy.context.window is not None else bpy.context.scene
     before = _created_id_snapshot()
@@ -290,7 +330,7 @@ def bake(
         camera_data.lens = 50.0
         bake_scene.camera = camera
 
-        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="openrc_bush_impostor_") as temp_dir:
             panel_paths: list[Path] = []
             for view_index, azimuth_degrees in enumerate(AZIMUTHS_DEG):
@@ -329,7 +369,6 @@ def bake(
             atlas.save()
 
         source_bounds = source_asset.get("source_bounds_m", {})
-        source_record = catalog.get("source", {})
         source_texture_records = []
         for texture in source_asset.get("textures", []):
             texture_uri = str(texture.get("uri", ""))
@@ -359,9 +398,12 @@ def bake(
             "source_surfaces": int(source_asset.get("source_surfaces", 0)),
             "source_materials": int(source_asset.get("source_materials", 0)),
             "source_archive_sha256": source_record.get("archive_sha256", ""),
-            "license": source_record.get("license", "CC0-1.0 (Quaternius Stylized Nature MegaKit Standard)"),
-            "license_evidence": "assets/landscape/vegetation/source/License_Standard.txt",
-            "license_evidence_sha256": sha256(LICENSE_PATH) if LICENSE_PATH.is_file() else "",
+            "source_id": source_asset["source_id"],
+            "source_url": source_record.get("url", ""),
+            "source_dependencies": dependencies,
+            "license": source_record["license"],
+            "license_evidence": source_record["license_evidence"],
+            "license_evidence_sha256": source_record["license_sha256"],
             "source_textures": source_texture_records,
             "source_base_color_factors": base_color_factors,
             "source_vertex_colors": _source_vertex_color_metadata(mesh_objects),
@@ -398,7 +440,7 @@ def bake(
             "renderer": f"Blender {bpy.app.version_string} EEVEE, unshaded source Base Color/Alpha, Standard view transform, transparent background",
             "rebuild_command": (
                 "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- "
-                f"--source-asset-id {source_asset_id} --output-stem {output_stem} --frame-size 256"
+                f"--source-asset-id {source_asset_id} --output-stem {output_stem} --frame-size {frame_size}"
             ),
         }
         output_manifest.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -417,16 +459,18 @@ def main() -> None:
     parser.add_argument("--frame-size", type=int, default=256)
     parser.add_argument("--source-asset-id", default=DEFAULT_SOURCE_ASSET_ID)
     parser.add_argument("--output-stem", default="")
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR, help="stage a bake outside app/ before promotion")
     parser.add_argument("--check", action="store_true", help="verify generated atlas and manifest match source hashes")
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else [])
+    args.output_dir = args.output_dir.resolve()
     source_asset_id = args.source_asset_id
     output_stem = args.output_stem or (
         DEFAULT_OUTPUT_STEM if source_asset_id == DEFAULT_SOURCE_ASSET_ID else f"{source_asset_id}_4view"
     )
     if Path(output_stem).name != output_stem or output_stem in ("", ".", ".."):
         raise SystemExit("output stem must be a simple filename stem")
-    output_atlas = OUTPUT_DIR / f"{output_stem}.png"
-    output_manifest = OUTPUT_DIR / f"{output_stem}.json"
+    output_atlas = args.output_dir / f"{output_stem}.png"
+    output_manifest = args.output_dir / f"{output_stem}.json"
     if args.check:
         manifest = json.loads(output_manifest.read_text(encoding="utf-8"))
         catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
@@ -435,8 +479,8 @@ def main() -> None:
             raise SystemExit(f"catalog does not contain source asset {source_asset_id!r}")
         scene_resource_path = str(source_asset.get("scene", ""))
         source_scene = ROOT / "app" / scene_resource_path.removeprefix("res://")
-        expected_source = catalog.get("source", {})
-        archive_path = ROOT / str(expected_source.get("archive", ""))
+        expected_source = source_evidence(catalog, source_asset)
+        dependencies = source_dependencies(source_scene, source_asset)
         if manifest.get("derived_from_asset_id") != source_asset_id \
             or manifest.get("asset_id") != f"{source_asset_id}_4view_impostor" \
             or manifest.get("source_scene") != scene_resource_path \
@@ -448,12 +492,16 @@ def main() -> None:
         for field in ("source_triangles", "source_surfaces", "source_materials"):
             if int(manifest.get(field, -1)) != int(source_asset.get(field, -2)):
                 raise SystemExit(f"{source_asset_id} {field} no longer matches the pinned catalog")
-        if not archive_path.is_file() or manifest.get("source_archive_sha256") != expected_source.get("archive_sha256") \
-            or manifest.get("source_archive_sha256") != sha256(archive_path):
+        if manifest.get("source_archive_sha256") != expected_source.get("archive_sha256", ""):
             raise SystemExit("vegetation source archive changed; revalidate the pinned source")
-        if manifest.get("license_evidence_sha256") != sha256(LICENSE_PATH) \
-            or manifest.get("license_evidence_sha256") != expected_source.get("license_sha256"):
+        if manifest.get("license_evidence") != expected_source.get("license_evidence") \
+            or manifest.get("license_evidence_sha256") != expected_source.get("license_sha256") \
+            or manifest.get("license") != expected_source.get("license"):
             raise SystemExit("vegetation license evidence changed; rebake provenance")
+        needs_dependencies = "source_id" in manifest or source_asset["source_id"] != "quaternius_standard"
+        if manifest.get("source_id", source_asset["source_id"]) != source_asset["source_id"] \
+            or (needs_dependencies and manifest.get("source_dependencies") != dependencies):
+            raise SystemExit("vegetation source identity/dependencies changed; rebake provenance")
         expected_textures = source_asset.get("textures", [])
         manifest_textures = manifest.get("source_textures", [])
         if len(manifest_textures) != len(expected_textures):
@@ -472,7 +520,7 @@ def main() -> None:
             raise SystemExit(f"{source_asset_id} atlas changed since its manifest was written")
         print(json.dumps(manifest, indent=2))
         return
-    result = bake(args.frame_size, source_asset_id, output_stem)
+    result = bake(args.frame_size, source_asset_id, output_stem, args.output_dir)
     print(json.dumps(result, indent=2))
 
 

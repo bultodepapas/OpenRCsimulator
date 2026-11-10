@@ -165,6 +165,11 @@ func _field() -> bool:
 			_fail("woodland_meshes must be on or off")
 			return false
 		OS.set_environment("OPENRC_WOODLAND_MESHES", str(args.woodland_meshes))
+	if args.has("woodland_cards"):
+		if str(args.woodland_cards) not in ["source", "legacy"]:
+			_fail("woodland_cards must be source or legacy")
+			return false
+		OS.set_environment("OPENRC_WOODLAND_CARDS", str(args.woodland_cards))
 	var path := str(args.get("field", Loader.DEFAULT_PATH))
 	var loaded: Dictionary = Loader.load_from(path)
 	if not loaded.ok:
@@ -302,6 +307,7 @@ func _woodland_review(field: Dictionary) -> bool:
 		batches = woodland.get_meta("batches", 0), recipe_sha256 = FileAccess.get_sha256("res://data/woodland_edges.json"),
 		builder_sha256 = FileAccess.get_sha256("res://scenery/woodland_edge_habitat.gd"),
 		mesh_details = woodland.get_meta("mesh_details", false), mesh_plans = woodland.get_meta("mesh_plans", []),
+		fern_cards = woodland.get_meta("fern_cards", "legacy"),
 		plant_records = woodland.get_meta("plants", []), source_triangle_allowances = {}}
 	var scenery := content.get_node_or_null("Scenery")
 	if scenery != null:
