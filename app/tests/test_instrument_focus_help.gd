@@ -7,18 +7,17 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const Shell := preload("res://app_root.gd")
-const Registry := preload("res://input/controller_registry.gd")
+const Service := preload("res://input/controller_service.gd")
 const Profile := preload("res://input/controller_profile.gd")
 const Store := preload("res://input/controller_profile_store.gd")
 
 class RoutingShell extends Shell:
 	func _ready() -> void: pass
 
-class FixtureService extends Node:
-	var registry := Registry.new()
+class FixtureService extends Service:
 	var ui_profile := Profile.defaults()
-	func profile_for_device(_id: int) -> Dictionary:
-		return ui_profile.duplicate(true)
+	func profile_for_device(id: int) -> Dictionary:
+		return ui_profile.duplicate(true) if registry.device_for_id(id).get("connected", false) else {}
 
 var checks := 0
 var failures := 0
@@ -378,6 +377,9 @@ func _saved_binding_checks() -> void:
 	profile["actions"]["pause"] = {"type": "key", "physical_keycode": int(KEY_PAGEDOWN)}
 	var path := "user://instrument_help_bindings_%d.cfg" % OS.get_process_id()
 	var store := Store.new(path, path + ".legacy")
+	service.store = store
+	_check("fixture admits only its connected known gamepad", service.is_ui_gamepad(UiDriver.FAKE_DEVICE)
+		and not service.is_ui_gamepad(-1) and not service.is_ui_gamepad(UiDriver.FAKE_DEVICE + 1))
 	var saved := store.save_profile(profile)
 	var loaded := Store.new(path, path + ".legacy").load_all()
 	_check("Page Down Pause binding survives storage", saved.ok and loaded.ok and loaded.profiles.size() == 1,
