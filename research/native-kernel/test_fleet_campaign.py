@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import ast
 import base64
 import copy
 import hashlib
@@ -10,6 +11,7 @@ import importlib.util
 import json
 import math
 from pathlib import Path
+import re
 import struct
 import tempfile
 import unittest
@@ -73,7 +75,8 @@ FS64V_CONTEXT_HEX = (
     "72130dac128785bf0000000000000000030001005555555555d50a4003000000000000000300000000000000010000000000"
     "00000100000000000000"
 )
-FS64V_AIRCRAFT_SHA = "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+FS64V_HISTORICAL_AIRCRAFT_SHA = "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a"
+FS64V_AIRCRAFT_SHA = "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8"
 FS64V_CAUSE_BYTES_HEX = "210000000700000000000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903ffb702e7c620d903fd22f068cdc4b333f85580189a0cd453f"
 
 
@@ -623,6 +626,20 @@ class FleetCampaignTests(unittest.TestCase):
                             self.assertFalse(row["native"]["complete"])
                             self.assertFalse(row["fingerprint_equal"])
 
+    def test_runway_live_pins_match_the_godot_producer(self):
+        source = (HERE / "fleet.gd").read_text(encoding="utf-8")
+        match = re.search(r"(?ms)^const RUNWAY_LIVE_CONFIG_V4 := (\{.*?^\})", source)
+        self.assertIsNotNone(match, "Godot producer's v4 live-configuration pins are missing")
+        producer = ast.literal_eval(match.group(1))
+        consumer = {
+            aircraft: {
+                battery: {"on": spec["live_config_sha256"][True], "off": spec["live_config_sha256"][False]}
+                for battery, spec in group["batteries"].items()
+            }
+            for aircraft, group in campaign.RUNWAY_START_CASES.items()
+        }
+        self.assertEqual(producer, consumer)
+
     def test_x8_trim_refusal_is_distinct_from_runway_failures(self):
         for soft in (True, False):
             expected, row, spec = runway_start_fixture("skywalker-x8", soft, trim=True)
@@ -675,6 +692,32 @@ class FleetCampaignTests(unittest.TestCase):
                 with mock.patch.dict(campaign.RUNWAY_START_CASES, {expected["aircraft"]: spec}):
                     with self.assertRaises(campaign.CampaignError):
                         campaign.validate_refusal(row, expected)
+
+    def test_each_startup_live_identity_is_required_and_pinned(self):
+        for backend in ("reference", "native"):
+            for defect in ("missing_before", "missing_bytes", "missing_digest", "before_mismatch",
+                           "empty_bytes", "malformed_bytes", "different_rehashed"):
+                with self.subTest(backend=backend, defect=defect):
+                    expected, row, spec = runway_start_fixture()
+                    proof = row["startup_proof"][backend]
+                    if defect.startswith("missing_"):
+                        proof.pop({"missing_before": "before_live_config_bytes_hex",
+                                   "missing_bytes": "live_config_bytes_hex",
+                                   "missing_digest": "live_config_sha256"}[defect])
+                    elif defect == "before_mismatch":
+                        proof["before_live_config_bytes_hex"] = "00"
+                    elif defect == "empty_bytes":
+                        proof["live_config_bytes_hex"] = ""
+                    elif defect == "malformed_bytes":
+                        proof["live_config_bytes_hex"] = "zz"
+                    else:
+                        changed = b"different typed live configuration"
+                        proof["before_live_config_bytes_hex"] = changed.hex()
+                        proof["live_config_bytes_hex"] = changed.hex()
+                        proof["live_config_sha256"] = hashlib.sha256(changed).hexdigest()
+                    with mock.patch.dict(campaign.RUNWAY_START_CASES, {expected["aircraft"]: spec}):
+                        with self.assertRaises(campaign.CampaignError):
+                            campaign.validate_refusal(row, expected)
 
     def test_runway_start_rejects_owner_outcome_and_typed_identity_mutations(self):
         mutations = [
@@ -740,6 +783,20 @@ class FleetCampaignTests(unittest.TestCase):
                 manifest, reports, guard = runtime_fixture("stik-glow-fs64v-4t", 805, 0.5, 2, soft_hull)
                 self.assertEqual(campaign.validate_reports(manifest, reports, guard, 600, 2400),
                                  {"declared": 1, "flight_passed": 0, "reference_refused": 0, "runtime_refused": 1, "physical_terminal": 0})
+
+    def test_fs64v_identity_pins_current_source_and_rejects_changed_bytes(self):
+        source = campaign.ROOT / "app/data/aircraft/stik_glow_fs64v_4t.json"
+        data = source.read_bytes()
+        self.assertEqual(hashlib.sha256(data).hexdigest(), FS64V_AIRCRAFT_SHA)
+        self.assertEqual(campaign.RUNTIME_CASES["stik-glow-fs64v-4t"]["aircraft_sha256"], FS64V_AIRCRAFT_SHA)
+        changed = hashlib.sha256(data + b"\n").hexdigest()
+        for identity in (FS64V_HISTORICAL_AIRCRAFT_SHA, changed):
+            with self.subTest(identity=identity):
+                manifest, reports, guard = runtime_fixture("stik-glow-fs64v-4t", 805, 0.5, 2)
+                proof = next(iter(reports.values()))["fleet"][0]["runtime_domain"]
+                proof.update(reference_aircraft_sha256=identity, native_aircraft_sha256=identity)
+                with self.assertRaisesRegex(campaign.CampaignError, "aircraft differs from the observed fixture"):
+                    campaign.validate_reports(manifest, reports, guard, 600, 2400)
 
     def test_fs64v_rejects_wrong_phase_ordinals_and_forged_evidence(self):
         def fixture():

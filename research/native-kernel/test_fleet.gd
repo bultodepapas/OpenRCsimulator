@@ -408,6 +408,11 @@ func _initialize() -> void:
 		_check(terminal_route.normal_calls == 1 and terminal_route.terminal_calls == 1,
 			"a horizon ending at the accepted collision requires the physical-terminal proof")
 		terminal_route.free()
+	var fs64v_path: String = Catalog.data_for("stik-glow-fs64v-4t", "ideal")
+	_check(fs64v_path == "res://data/aircraft/stik_glow_fs64v_4t.json" \
+		and FileAccess.get_sha256(fs64v_path) == FS64V_AIRCRAFT_SHA \
+		and Fleet.GLOW_REVERSE_CASES["stik-glow-fs64v-4t"].aircraft_sha256 == FS64V_AIRCRAFT_SHA,
+		"FS64V runtime proof pins the catalog-selected source bytes")
 	var fs64v_runway_rows := 0
 	for declared_row: Dictionary in Fleet._fleet_selected_rows(declared, "stik-glow-fs64v-4t", "gusty", ""):
 		if declared_row.case != "runway" or declared_row.battery != "ideal":
@@ -766,11 +771,18 @@ func _initialize() -> void:
 			forged.startup_proof.live_config_sha256 = Fleet._fleet_encoded_sha256(PackedByteArray([0]))
 		_check(not Fleet._fleet_expected_refusal_pair(row, forged_reference, forged_native),
 			"matching rehashed live configurations cannot replace the pinned observation")
+		for field: String in ["before_live_config_bytes_hex", "live_config_bytes_hex", "live_config_sha256"]:
+			var incomplete: Dictionary = synthetic_native.duplicate(true)
+			incomplete.startup_proof.erase(field)
+			_check(not Fleet._fleet_expected_refusal_pair(row, observed, incomplete),
+				"bounded proof rejects missing " + field)
 		for change: Array in [["before_helper_absent", false], ["after_helper_absent", false],
 				["model_retained", false], ["callbacks_retained", false], ["kernel_guard_retained", false],
 				["owner_guard_retained", false], ["input_configuration_retained", false],
 				["selection_valid_before", false], ["selection_valid_after", false],
-				["live_configuration_retained", false], ["live_config_bytes_hex", "00"],
+				["live_configuration_retained", false], ["before_live_config_bytes_hex", "00"],
+				["live_config_bytes_hex", "00"], ["live_config_bytes_hex", ""],
+				["live_config_sha256", "0".repeat(64)],
 				["reference_callbacks_before", false], ["reference_callbacks_after", false],
 				["callbacks_retained", 1], ["outcome_dictionary_empty", 1],
 				["outcome_status", "invalid_input"], ["outcome_empty", false],

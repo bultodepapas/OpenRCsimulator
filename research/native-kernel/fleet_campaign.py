@@ -33,7 +33,9 @@ MIN_SAMPLES = 2400
 MAX_JOBS = 4
 KEY_FIELDS = ("aircraft", "vehicle", "battery", "case", "weather", "soft_hull")
 HEX64 = re.compile(r"[0-9a-f]{64}\Z")
-# Independently pin only the paired source observations for these ten rows.
+# Independently pin the named source observations. Runway live-configuration
+# hashes reflect the Linux beta2 reference observations after the v4 aero-law
+# identity and collision-world changes; paired native verification remains required.
 RUNWAY_START_REASON = "reset failed: runway start: idle support pose unresolved: bounded line search found no feasible descent step"
 RUNWAY_START_CASES = {
     "sebart-avanti-s-a200-p100rx": {
@@ -41,8 +43,8 @@ RUNWAY_START_CASES = {
         "aircraft_sha256": "048305d4000829fbcf4b1854bd0a89e506b7b01a6ed4a64f1c758519716dbbbd",
         "frame_sha256": "0de0b838cd3db1f12fa815852333a9204b7f2d8a0bf77ab98c3acf457f652014",
         "outcome_sha256": "6daae9ec4959442f88cac3cb61b87cf9595c2d5ea699f41eecbade6e467f1d06",
-        "live_config_sha256": {True: "110962b5c44c080ea60d3c0e88a3a0db426698778ad51fefd2849fcdd172ddf7",
-                               False: "e5ab9b80b14ec1f2098210d56b95b0d1ec6ada9b27f41086637b97211a0ea4d3"},
+        "live_config_sha256": {True: "9b6bf87499957e5b3cab7b5f43ef04c660b324341c91ee3a15108a4234e61b03",
+                               False: "f3aa4fbbf22f522341b09c77534f206bfc46ee32e8d354ac34a0edafb83a7632"},
         "config_sha256": {True: "41f3139037fdd2fd220bc67643467e31d2c75e9482d3aa18869573deeb783e5d",
                           False: "0f8bd1e3d440b1bb57cb084205d059093cc6ef53594c932f9a752cf6cea1428d"}}}},
     "p51d-mustang-120": {
@@ -50,8 +52,8 @@ RUNWAY_START_CASES = {
         "aircraft_sha256": "45a9b854007e4ceed22f4c8ad8bcff166904ef3bb5c23c87f308174e6b31489c",
         "frame_sha256": "51cd43739d1a48e281f34c4d13caed9bd2f98a90129074db722b43bd037e94e7",
         "outcome_sha256": "81c03ca68d0e52dad256ff6106751c0c82edda7decc4047a74ba95c70ee59249",
-        "live_config_sha256": {True: "347cf6357b720055bd219e6bc9951bdfbde0d42957a4ded40dc1d21a62968f96",
-                               False: "64f069ef1e8308f1b51c10867f207d0adddaa3524dd82c375d80b617e30c6201"},
+        "live_config_sha256": {True: "59f263f57edd0b2ec2295c0516cc0bebda4aca1c92bed0ea9bcfb7c49d73ddf8",
+                               False: "99bb750afd144ff53351cb1f385956b81ad19b43b7e74b8dad8f301fdbc4cfbb"},
         "config_sha256": {True: "ebca46e332e77ae231896e9e248845c0e885ddacc04e0f41e674bf6dc32a7695",
                           False: "a06be6a7cf1f178d6b2d2ae0b4cbe16994314c1a2c9d9b466283a78b1fbf54ef"}}}},
     "turbo-lumber-evolution": {"weather": "crosswind", "batteries": {
@@ -59,16 +61,16 @@ RUNWAY_START_CASES = {
                  "aircraft_sha256": "63c9fe2d2c89e88eb1d3248115716356a92994ae25e105db3709b364da0dcc53",
                  "frame_sha256": "027e61fc3c4084f20fa738c360d6f0df7e51c7bae8d7a946f982107dae5ae04c",
                  "outcome_sha256": "469d10021d52ed3a5e0b6cb57f3a22ec1a9e755dc53acd227cb4dbea0b5e92a9",
-                 "live_config_sha256": {True: "1238c4f8bcfaef12eabdc87953126ed563a7dfe891861f6153814239de5be52f",
-                                        False: "28630dfcea8e6cffacb6ea2b5b651d7bbeafe7b65940b132b6738fe1069d04c0"},
+                 "live_config_sha256": {True: "0f9ad0647542f3f9ef12796d9fb37574fc4d81f6ef29b822bc1c5f8439d9d7c8",
+                                        False: "24e28bc0b02491b597c3ab873bca4b25998434c0652a979833ceebc320bb4807"},
                  "config_sha256": {True: "8880fb3b68a8cf3b16db29341d7342775b1f084c118a958dee78f20a6151e1cf",
                                    False: "a09fd32a2840316885d8f7e88882f4d8e4eace8f0d02a992e01825af8e5affa9"}},
         "ideal": {"default_battery": False,
                   "aircraft_sha256": "3d47e8c4c40665a0b1e2123c8eb1c8919697ca5b2f931472b02e85897d8bc46c",
                   "frame_sha256": "81e991aaadd6862d2fe7ef06ccfe0aa398d48d8c2eff444b4784aa5cd06120cb",
                   "outcome_sha256": "b936ff0ac0487770f2cd26f4bb6c89facf55008a23d272647ecb9dded68f789e",
-                  "live_config_sha256": {True: "f5976ab55c7b85a15b8a1c89100e64a4aae87de5ceb8f20adc15898175316f26",
-                                         False: "75fb61e6e6d0429c5508d8cb369cf6162a333bf706172304c8a0dc9caf17304a"},
+                  "live_config_sha256": {True: "9a8e7a58a156a46dd9280b7d7b441ed4fe16e77c5b5f8a8e88e488e7cb80d7cf",
+                                         False: "3eef9a988d3c6e0c7718145e2527cceb186a6cf79d81c83470bee94c82a522c0"},
                   "config_sha256": {True: "6c91ea8e73d84b0a9a4386431dbd8b06f9bdf89fa15c016baf579f0e381b031d",
                                     False: "7504b456498aca6db0771141d1d8a2ec3cc145984c28ec9f723604d4fd1991e6"}}}},
 }
@@ -91,7 +93,7 @@ RUNTIME_CASES = {
     "stik-glow-61fx-2t": {"tick": 873, "stage_fraction": 1.0, "rejected_stage_calls": 4},
     "stik-glow-55ax-2t": {"tick": 801, "stage_fraction": 1.0, "rejected_stage_calls": 4},
     "stik-glow-fs64v-4t": {"tick": 805, "stage_fraction": 0.5, "rejected_stage_calls": 2, "feed_factor": 0.0,
-                            "aircraft_sha256": "c42f72ac9f714e67801466fdd652f7bd214f59cc6577340ace348752f2f9a91a",
+                            "aircraft_sha256": "47c0972622f328dbeb62c64fcde0f13057414c18a026cd9c1e74499096b885d8",
                             "trial_sha256": "e064ab046fc2119231564b6b6c125fc256c752ebb2fb04d557d7ee7bef0e16c8",
                             "context_sha256": "e7cc667d8cf303f497701c1079db0c5936303c31da51e236791b13f238cc61b6",
                             "cause_bytes_hex": "00000000000000000000000000000000acf7f5a16f0d90bf442c89836c0a903f"
