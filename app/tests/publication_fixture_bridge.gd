@@ -2,10 +2,10 @@
 extends RefCounted
 
 const FIXTURE_PATH := "res://tests/fixtures/publication_fixture_bridge.json"
-const FIXTURE_SHA256 := "a57dc4c7a8b5687b59fcb4886b6a1235a22a32f96bc5e5cfe37b35a347001c4a"
+const FIXTURE_SHA256 := "5493c5c96964c1a94de2509dada739345980407dc22c8b71069338c883063e19"
 const CURRENT_ENGINE := "cafc17a192acf67903910a68aeb3c076c0907a4b"
 const OLD_AERO := "section-plane-source-weighted-wake-velocity-v2"
-const CURRENT_AERO := "section-plane-source-weighted-wake-velocity-v3"
+const CURRENT_AERO := "section-plane-source-weighted-wake-velocity-v4"
 const CASES := {"shaft": ["coupled-rk4", "split"],
 	"weather": ["calm", "cool-dense", "gusty", "turbulent"]}
 const MAX_UNPACKED_BYTES := 1048576
@@ -27,7 +27,7 @@ static func _hex256(value: Variant) -> bool:
 
 
 static func _sources_match(pins: Variant) -> bool:
-	if not pins is Dictionary or pins.size() != 18:
+	if not pins is Dictionary or pins.size() != 19:
 		return false
 	for path: String in pins:
 		var pin: Variant = pins[path]

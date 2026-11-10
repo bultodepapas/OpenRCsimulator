@@ -5,6 +5,20 @@ qualifies the current Session and wheel-reader source pins against the unchanged
 typed reference captures on Windows and Linux. Historical family data and source
 drift rejection remain intact. The original campaign below remains dated evidence.
 
+The 2026-11-09 v4 follow-up reconstructs `630c8a5d7`'s aero, aircraft-data and
+wing-polar sources against candidate `d1806cc26`. The four prior Windows/Linux
+weather and shaft captures reproduced byte-for-byte. Across 300 paired endpoints,
+only the aero-law declaration and its configuration hash changed; all 300 event
+arrays matched. A disposable exact-once observer confirmed that each of the 12
+configuration hash inputs changes only that one declaration. The event arrays are
+empty, and these short traces do not establish general aerodynamic equivalence.
+The bridge retains every original frame, event and reference digest, updates only
+the current identity and digest, and adds `physics/wing_polar.gd` to its guarded
+source roster. The packer's `--requalify-v4-from` mode takes the prior fixture,
+`--capture-dir` and a fresh `--output`. It requires the pinned prior, reconstructed
+and candidate captures, typed comparisons and configuration pairs, verifies all
+source pins, and refuses an existing output.
+
 2026-11-08. The historical checkpoints and the original fleet and glow identities remain recorded. The publication tests now compare every complete typed checkpoint and the separate event tape after two explicitly checked identity substitutions. This is a bounded software-preservation result, not aircraft validation.
 
 The [compressed evidence](ci-audit-fixtures-2026-11-08.json.gz) (SHA-256 `c6bfd8964c9cb52b5304ef4aed7de3912db6e3730df843ff2dddfbf011b4abe1`) contains 48 raw UTF-8 captures with their original hashes, 59 checked reports and exact log bytes, and nine observer/comparison recipes. Its `captures` entries contain `raw_utf8`; `checks` contain `report_raw_utf8` and base64 log bytes. Their individual hashes were verified after decompression.
