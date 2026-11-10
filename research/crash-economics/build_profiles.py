@@ -22,6 +22,8 @@ def digest(data: bytes) -> str:
 
 def build(root: Path = ROOT) -> dict:
     source, source_bytes = build_runtime._read_json(root / SOURCE)
+    if b"\r" in source_bytes:
+        raise ValueError("cost profile source must use the LF line endings declared in .gitattributes")
     legacy, context = build_runtime.build_runtime_data(root)
     if set(source) != {"format", "policy_version", "price_date", "assumptions", "aircraft"} \
             or source["format"] != FORMAT or source["policy_version"] != POLICY:

@@ -12,9 +12,9 @@
     "Game purchase availability and compatibility describe this offline cost model; dated merchant stock and physical installation fit are separate evidence."
   ],
   "generated_from": {
-    "source_sha256": "f9b2cfcc2170b7be1b972985fabd623860d7ef4db9964b4bb5b840293c9cdf19",
+    "source_sha256": "a1f99dac773f14ddab72b8494c42e2d13da888aa0eeed870c468bb676803042c",
     "legacy_catalog_sha256": "09c5904cd6d852ef12bf36ccd09be31711220c366426e379b2fe8f7f4b2642ef",
-    "generator_sha256": "5bd6ead038261389216f2bab38afb60b148c38899e7824e3ced9f5de00b0a895"
+    "generator_sha256": "770868ae7cb9977fe6247c1f92aa4aaf71eb51eaf7b23defd886244eca399578"
   },
   "aircraft": {
     "jensen-das-ugly-stik-60": {

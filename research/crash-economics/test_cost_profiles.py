@@ -10,6 +10,19 @@ import build_runtime
 
 
 class CostProfileTests(unittest.TestCase):
+    def test_noncanonical_source_cannot_emit_checkout_dependent_hashes(self):
+        original = build_runtime._read_json
+
+        def read(path):
+            value, raw = original(path)
+            if path == build_profiles.ROOT / build_profiles.SOURCE:
+                raw = raw.replace(b"\n", b"\r\n")
+            return value, raw
+
+        with patch.object(build_runtime, "_read_json", read):
+            with self.assertRaisesRegex(ValueError, "LF line endings"):
+                build_profiles.build()
+
     def test_generated_and_registered_modes(self):
         document = build_profiles.build()
         self.assertEqual(build_profiles.render(document), (build_profiles.ROOT / build_profiles.OUTPUT).read_bytes())
