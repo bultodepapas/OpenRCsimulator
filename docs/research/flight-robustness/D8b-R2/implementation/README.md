@@ -72,13 +72,16 @@ Reproduce directed tests with the pinned Godot binary and the full integration r
 
 ```powershell
 $generator = (Resolve-Path research/flight-robustness/d8b-r2/make_candidates.gd).Path
-.\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$generator"
+$godot = (Resolve-Path .tools/Godot_v4.8-beta2_win64_console.exe).Path
+& $godot --headless --path app --script "$generator"
 # Append: -- --check   to check freshness without writing.
 ```
 
 The [matrix README](matrix/README.md) supplies complete run/comparison commands. Original diagnosis and matrix captures retain their historical source hashes; later integration hashes must not be substituted for those run identities.
 
 Release integration, 2026-10-19: regenerated the three synthetic candidates with `make_candidates.gd` after the production Stik adopted FUEL-05f inventory/balance and the corresponding D11g derivatives. The synthetic polar tables are unchanged; the candidates now inherit the current base aircraft's fuel-system, mass, thrust-datum and derivative data. Generator freshness and loader validation pass. Historical matrix measurements above retain their original identities and are not measurements of these regenerated candidates.
+
+Release integration, 2026-11-10: the donor's D11g source descriptions had advanced from v2 to v3 without regenerating these fixtures. The three existing generators reproduced all five candidates; each differs from its prior file only in the three Cmq, CLq and Cnr source strings, with all coefficient values and polar tables unchanged. All three generator freshness checks pass with pinned Godot 4.8 beta2 on Windows and Linux. On Windows the polar test passes 126 checks, the session test passes 8, and the experimental CLI suite passes its 3 methods and 13 launches. These remain experimental research fixtures, and the historical matrix results retain their original input identities.
 
 ## Still required for a production repair
 

@@ -57,7 +57,7 @@
       },
       "CLq": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v3 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
         "unit": "1/rad",
         "value": 2.357
       },
@@ -147,7 +147,7 @@
       },
       "Cmq": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v3 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
         "unit": "1/rad",
         "value": -8.082
       },
@@ -183,7 +183,7 @@
       },
       "Cnr": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated.",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v3 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated.",
         "unit": "1/rad",
         "value": -0.136
       },
